@@ -1,0 +1,30 @@
+treasurehunt:
+  findtime: 60
+  # Time players have to find the treasure (minutes)
+  waittime: 60
+  # Time to wait before spawning a new treasure after the time was up (minutes)
+
+lastmanstanding:
+  waitforplayers: 10
+  # Time to wait for players before starting
+  startcountdown: 5
+  # Time before game actually starts
+  broadcastwin: true
+  
+spleef:
+  floordegenerate:
+    time: 30
+    enabled: true
+  
+singleplayer:
+  broadcastcompletion: true
+  
+use-sql: false
+sql-host: localhost
+sql-port: 3306
+sql-database: database
+sql-username: root
+sql-password: root
+
+minigames:
+  {}
