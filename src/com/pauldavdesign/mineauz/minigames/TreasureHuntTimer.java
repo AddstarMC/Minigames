@@ -191,7 +191,8 @@ public class TreasureHuntTimer extends Thread{
 			lastCommand.put(player.getName(), Calendar.getInstance().getTimeInMillis());
 		}
 		else{
-			player.sendMessage(ChatColor.RED + "You currently cannot use this command for this treasure hunt");
+			player.sendMessage(ChatColor.RED + "You currently cannot use this command for the " + minigame + " treasure hunt");
+			player.sendMessage(ChatColor.GRAY + "Time left: " + time + " minutes");
 		}
 	}
 	
@@ -213,5 +214,9 @@ public class TreasureHuntTimer extends Thread{
 	
 	public boolean getActive(){
 		return active;
+	}
+	
+	public boolean getChestInWorld(){
+		return inworld;
 	}
 }

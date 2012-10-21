@@ -640,7 +640,7 @@ public class Minigame {
 	}
 
 	public void addFloorDegenerator() {
-		sfloordegen = new FloorDegenerator(getSpleefFloor1(), getSpleefFloor2());
+		sfloordegen = new FloorDegenerator(getSpleefFloor1(), getSpleefFloor2(), this);
 	}
 
 	public Material getSpleefFloorMaterial() {

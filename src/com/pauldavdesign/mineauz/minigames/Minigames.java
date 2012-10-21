@@ -12,6 +12,7 @@ import lib.PatPeter.SQLibrary.MySQL;
 
 import net.milkbowl.vault.economy.Economy;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -96,15 +97,21 @@ public class Minigames extends JavaPlugin{
 			if(getConfig().contains("minigames")){
 				mgs = getConfig().getStringList("minigames");
 			}
-			else{
-				mgs = new ArrayList<String>();
-			}
+			final List<String> allMGS = new ArrayList<String>();
+			allMGS.addAll(mgs);
+			
 			if(!mgs.isEmpty()){
-				for(String minigame : mgs){
-					Minigame game = new Minigame(minigame);
-					game.loadMinigame();
-					mdata.addMinigame(game);
-				}
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					
+					@Override
+					public void run() {
+						for(String minigame : allMGS){
+							Minigame game = new Minigame(minigame);
+							game.loadMinigame();
+							mdata.addMinigame(game);
+						}
+					}
+				}, 1L);
 			}
 		}
 		catch(FileNotFoundException ex){
@@ -242,15 +249,7 @@ public class Minigames extends JavaPlugin{
 				}
 				return true;
 			}
-			else if(args[0].equalsIgnoreCase("set")){
-
-//				String minigame = "";
-//				Set<String> mgmset = mdata.getAllMinigames().keySet();
-//				for(int i = 0; i < mgmset.size(); i++){
-//					if(getConfig().getStringList("minigames").get(i).equalsIgnoreCase(args[1])){
-//						minigame = getConfig().getStringList("minigames").get(i);
-//					}
-//				}
+			else if(args[0].equalsIgnoreCase("set") && args.length > 2){
 				Set<String> mgtypes = mdata.getMinigameTypes();
 				
 				Minigame mgm = mdata.getMinigame(args[1]);
@@ -413,8 +412,8 @@ public class Minigames extends JavaPlugin{
 						}
 					}
 					else if(args[2].equalsIgnoreCase("type") && player.hasPermission("minigame.set.type")){
-						if(mgtypes.contains(args[3]) || args[3].equalsIgnoreCase("th")){
-							mgm.setType(args[3]);
+						if(mgtypes.contains(args[3].toLowerCase()) || args[3].equalsIgnoreCase("th")){
+							mgm.setType(args[3].toLowerCase());
 							sender.sendMessage(ChatColor.GRAY + "Minigame type has been set to " + args[3]);
 						}
 						else{

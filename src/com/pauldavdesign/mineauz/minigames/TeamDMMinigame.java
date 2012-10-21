@@ -7,6 +7,7 @@ import java.util.Set;
 
 import net.minecraft.server.EntityPlayer;
 import net.minecraft.server.Packet20NamedEntitySpawn;
+import net.minecraft.server.Packet5EntityEquipment;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,6 +19,7 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.block.Furnace;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -259,7 +261,7 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 		
 		EntityPlayer changeingName = ((CraftPlayer) player).getHandle();
 		for(Player ply : plugin.getServer().getOnlinePlayers()){
-			if(ply != player){
+			if(ply != player && !player.isDead() && player.isOnline()){
 				((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet20NamedEntitySpawn(changeingName));
 			}
 		}
@@ -458,7 +460,50 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 		
 		for(Player ply : plugin.getServer().getOnlinePlayers()){
 			if(ply != player){
-				((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet20NamedEntitySpawn(changeingName));
+//				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+//					
+//					@Override
+//					public void run() {
+						CraftItemStack hand = null;
+						CraftItemStack boots = null;
+						CraftItemStack leggings = null;
+						CraftItemStack chest = null;
+						CraftItemStack helmet = null;
+						if(player.getItemInHand() instanceof CraftItemStack){
+							hand = (CraftItemStack) player.getItemInHand();
+						}
+						if(player.getInventory().getBoots() instanceof CraftItemStack){
+							boots = (CraftItemStack) player.getInventory().getBoots();
+						}
+						if(player.getInventory().getLeggings() instanceof CraftItemStack){
+							leggings = (CraftItemStack) player.getInventory().getLeggings();
+						}
+						if(player.getInventory().getChestplate() instanceof CraftItemStack){
+							chest = (CraftItemStack) player.getInventory().getChestplate();
+						}
+						if(player.getInventory().getHelmet() instanceof CraftItemStack){
+							helmet = (CraftItemStack) player.getInventory().getHelmet();
+						}
+						
+						((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet20NamedEntitySpawn(changeingName));
+						
+						if(hand != null){
+							((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 0, hand.getHandle()));
+						}
+						if(boots != null){
+							((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 1, boots.getHandle()));
+						}
+						if(leggings != null){
+							((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 2, leggings.getHandle()));
+						}
+						if(chest != null){
+							((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 3, chest.getHandle()));
+						}
+						if(helmet != null){
+							((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 4, helmet.getHandle()));
+						}
+//					}
+//				});
 			}
 		}
 		
@@ -476,8 +521,44 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 			changeingName.name = ChatColor.RED.toString() + player.getName();
 		}
 		
+		CraftItemStack hand = null;
+		CraftItemStack boots = null;
+		CraftItemStack leggings = null;
+		CraftItemStack chest = null;
+		CraftItemStack helmet = null;
+		if(player.getItemInHand() instanceof CraftItemStack){
+			hand = (CraftItemStack) player.getItemInHand();
+		}
+		if(player.getInventory().getBoots() instanceof CraftItemStack){
+			boots = (CraftItemStack) player.getInventory().getBoots();
+		}
+		if(player.getInventory().getLeggings() instanceof CraftItemStack){
+			leggings = (CraftItemStack) player.getInventory().getLeggings();
+		}
+		if(player.getInventory().getChestplate() instanceof CraftItemStack){
+			chest = (CraftItemStack) player.getInventory().getChestplate();
+		}
+		if(player.getInventory().getHelmet() instanceof CraftItemStack){
+			helmet = (CraftItemStack) player.getInventory().getHelmet();
+		}
 		
 		((CraftPlayer) toPlayer).getHandle().netServerHandler.sendPacket(new Packet20NamedEntitySpawn(changeingName));
+		
+		if(hand != null){
+			((CraftPlayer) toPlayer).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 0, hand.getHandle()));
+		}
+		if(boots != null){
+			((CraftPlayer) toPlayer).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 1, boots.getHandle()));
+		}
+		if(leggings != null){
+			((CraftPlayer) toPlayer).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 2, leggings.getHandle()));
+		}
+		if(chest != null){
+			((CraftPlayer) toPlayer).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 3, chest.getHandle()));
+		}
+		if(helmet != null){
+			((CraftPlayer) toPlayer).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 4, helmet.getHandle()));
+		}
 		
 		changeingName.name = oldName;
 	}
@@ -568,7 +649,7 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 								applyTeam(player, 1);
 							}
 						}
-					}, 20L);
+					}, 40L);
 				}
 				else{
 					starts.addAll(mg.getStartLocationsRed());
@@ -580,11 +661,33 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 								applyTeam(player, 0);
 							}
 						}
-					}, 20L);
+					}, 40L);
 				}
 			}
 			else{
 				starts.addAll(mg.getStartLocations());
+				if(team == 1){
+					Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+						final Player player = ply;
+						@Override
+						public void run() {
+							if(pdata.getPlayersMinigame(ply) != null){
+								applyTeam(player, 1);
+							}
+						}
+					}, 40L);
+				}
+				else{
+					Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+						final Player player = ply;
+						@Override
+						public void run() {
+							if(pdata.getPlayersMinigame(ply) != null){
+								applyTeam(player, 0);
+							}
+						}
+					}, 40L);
+				}
 			}
 			Collections.shuffle(starts);
 			event.setRespawnLocation(starts.get(0));
@@ -648,21 +751,34 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 							event.setCancelled(true);
 						}
 						else if(event.getDamage() >= ply.getHealth() && team != ateam){
-							for(Player pl : mg.getPlayers()){
-								pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + attacker.getName() + " took the final kill against " + ply.getName());
-							}
-							if(ateam == 1){
-								if(mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-									event.setCancelled(true);
-									mg.incrementBlueTeamScore();
-									endTeamMinigame(1, mg);
+							boolean end = false;
+							if(ateam == 0){
+								if(mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+									end = true;
 								}
 							}
 							else{
-								if(mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-									event.setCancelled(true);
-									mg.incrementRedTeamScore();
-									endTeamMinigame(0, mg);
+								if(mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+									end = true;
+								}
+							}
+							if(end){
+								for(Player pl : mg.getPlayers()){
+									pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + attacker.getName() + " took the final kill against " + ply.getName());
+								}
+								if(ateam == 1){
+									if(mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+										event.setCancelled(true);
+										mg.incrementBlueTeamScore();
+										endTeamMinigame(1, mg);
+									}
+								}
+								else{
+									if(mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+										event.setCancelled(true);
+										mg.incrementRedTeamScore();
+										endTeamMinigame(0, mg);
+									}
 								}
 							}
 						}
@@ -691,21 +807,34 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 								event.setCancelled(true);
 							}
 							else if(event.getDamage() >= ply.getHealth() && team != ateam){
-								for(Player pl : mg.getPlayers()){
-									pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + attacker.getName() + " took the final shot against " + ply.getName());
-								}
-								if(ateam == 1){
-									if(mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-										event.setCancelled(true);
-										mg.incrementBlueTeamScore();
-										endTeamMinigame(1, mg);
+								boolean end = false;
+								if(ateam == 0){
+									if(mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+										end = true;
 									}
 								}
 								else{
-									if(mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-										event.setCancelled(true);
-										mg.incrementRedTeamScore();
-										endTeamMinigame(0, mg);
+									if(mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+										end = true;
+									}
+								}
+								if(end){
+									for(Player pl : mg.getPlayers()){
+										pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + attacker.getName() + " took the final shot against " + ply.getName());
+									}
+									if(ateam == 1){
+										if(mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+											event.setCancelled(true);
+											mg.incrementBlueTeamScore();
+											endTeamMinigame(1, mg);
+										}
+									}
+									else{
+										if(mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+											event.setCancelled(true);
+											mg.incrementRedTeamScore();
+											endTeamMinigame(0, mg);
+										}
 									}
 								}
 							}

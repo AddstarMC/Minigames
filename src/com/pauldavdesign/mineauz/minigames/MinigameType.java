@@ -44,25 +44,21 @@ public class MinigameType {
 		plugin.getLogger().info(player.getName() + " quit " + minigame);
 	}
 	
-	//public void issuePlayerRewards(Player player, Minigame save, Configuration hascompleted){
+	@SuppressWarnings("deprecation")
 	public void issuePlayerRewards(Player player, Minigame save, boolean hascompleted){
-		//String minigame = pdata.getPlayersMinigame(player);
-		//if(save.getRewardItem() != null && !hascompleted.getStringList(minigame).contains(player.getName())){
 		if(save.getRewardItem() != null && !hascompleted){
 			player.getInventory().addItem(save.getRewardItem());
 		}
-		//else if(save.getSecondaryRewardItem() != null && hascompleted.getStringList(minigame).contains(player.getName())){
 		else if(save.getSecondaryRewardItem() != null && hascompleted){
 			player.getInventory().addItem(save.getSecondaryRewardItem());
 		}
+		player.updateInventory();
 		
 		if(Minigames.plugin.hasEconomy()){
-			//if(save.getRewardPrice() != 0 && !hascompleted.getStringList(minigame).contains(player.getName())){
 			if(save.getRewardPrice() != 0 && !hascompleted){
 				Minigames.plugin.getEconomy().depositPlayer(player.getName(), save.getRewardPrice());
 				player.sendMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + String.format("You have been awarded $%s.", save.getRewardPrice()));
 			}
-			//else if(save.getSecondaryRewardPrice() != 0 && hascompleted.getStringList(minigame).contains(player.getName())){
 			else if(save.getSecondaryRewardPrice() != 0 && hascompleted){
 				Minigames.plugin.getEconomy().depositPlayer(player.getName(), save.getSecondaryRewardPrice());
 				player.sendMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + String.format("You have been awarded $%s.", save.getSecondaryRewardPrice()));

@@ -305,7 +305,7 @@ public class Events implements Listener{
 				if(mdata.hasTreasureHuntLocations()){
 					for(String minigame : mdata.getAllTreasureHuntLocation()){
 						if(mdata.getMinigame(minigame).getThTimer() != null){
-							if(mdata.getMinigame(minigame).getThTimer().getTreasureFound() == false){
+							if(mdata.getMinigame(minigame).getThTimer().getTreasureFound() == false && mdata.getMinigame(minigame).getThTimer().getChestInWorld()){
 								int x1 = mdata.getTreasureHuntLocation(minigame).getBlockX();
 								int x2 = cblock.getLocation().getBlockX();
 								int y1 = mdata.getTreasureHuntLocation(minigame).getBlockY();
@@ -380,7 +380,7 @@ public class Events implements Listener{
 					}
 					else{
 						event.setCancelled(true);
-						if(event.getBlock().getType() == Material.SNOW_BLOCK){
+						if(event.getBlock().getType() == mdata.getMinigame(minigame).getSpleefFloorMaterial()){
 							event.getBlock().setType(Material.AIR);
 						}
 					}

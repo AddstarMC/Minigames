@@ -16,10 +16,12 @@ public class FloorDegenerator extends Thread{
 	private Location zSidePos2;
 	private static Minigames plugin = Minigames.plugin;
 	private int timeDelay = 30;
+	private Minigame mgm = null;
 	
-	public FloorDegenerator(Location point1, Location point2){
+	public FloorDegenerator(Location point1, Location point2, Minigame mgm){
 		timeDelay = plugin.getConfig().getInt("spleef.floordegenerate.time");
 		running = plugin.getConfig().getBoolean("spleef.floordegenerate.enabled");
+		this.mgm = mgm;
 		double minX;
 		double maxX;
 		double minY;
@@ -124,7 +126,9 @@ public class FloorDegenerator extends Thread{
 			curblock.setY(y);
 			for(int i = loc1.getBlockX(); i <= loc2.getBlockX() + 1; i++){
 				for(int k = loc1.getBlockZ(); k <= loc2.getBlockZ() + 1; k++){
-					curblock.getBlock().setType(Material.AIR);
+					if(curblock.getBlock().getType() == mgm.getSpleefFloorMaterial()){
+						curblock.getBlock().setType(Material.AIR);
+					}
 					curblock.setZ(k);
 				}
 				curblock.setX(i);

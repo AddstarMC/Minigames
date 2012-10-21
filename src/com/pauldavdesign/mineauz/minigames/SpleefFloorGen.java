@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -61,24 +62,38 @@ public class SpleefFloorGen {
 		spoint2.setZ(maxZ);
 	}
 	
-	public void regenFloor(Material mat){
-		Location curblock = spoint1.clone();
-		int x = curblock.getBlockX();
-		int z = curblock.getBlockZ();
-		int y = spoint2.getBlockY();
-		do{
-			curblock.setZ(z);
-			curblock.setX(x);
-			curblock.setY(y);
-			for(int i = spoint1.getBlockX(); i <= spoint2.getBlockX() + 1; i++){
-				for(int k = spoint1.getBlockZ(); k <= spoint2.getBlockZ() + 1; k++){
-					curblock.getBlock().setType(mat);
-					curblock.setZ(k);
-				}
-				curblock.setX(i);
-				curblock.setZ(z);
+	public void regenFloor(final Material mat){
+		Bukkit.getScheduler().scheduleAsyncDelayedTask(Minigames.plugin, new Runnable() {
+
+			Location curblock = spoint1.clone();
+			int x = curblock.getBlockX();
+			int z = curblock.getBlockZ();
+			int y = spoint2.getBlockY();
+			
+			@Override
+			public void run() {
+				do{
+					curblock.setZ(z);
+					curblock.setX(x);
+					curblock.setY(y);
+					for(int i = spoint1.getBlockX(); i <= spoint2.getBlockX() + 1; i++){
+						for(int k = spoint1.getBlockZ(); k <= spoint2.getBlockZ() + 1; k++){
+							if(curblock.getBlock().getType() == Material.AIR){
+								curblock.getBlock().setType(mat);
+							}
+							curblock.setZ(k);
+						}
+						curblock.setX(i);
+						curblock.setZ(z);
+						try{
+							Thread.sleep(5);
+						}catch(InterruptedException e){
+							e.printStackTrace();
+						}
+					}
+					y -= 3;
+				}while(y >= spoint1.getBlockY());
 			}
-			y -= 3;
-		}while(y >= spoint1.getBlockY());
+		});
 	}
 }
