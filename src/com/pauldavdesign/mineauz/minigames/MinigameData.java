@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -79,20 +80,24 @@ public class MinigameData {
 				Chest chest = (Chest) rpos.getBlock().getState();
 				
 				if(!getMinigame(minigame).getLoadout().isEmpty()){
-					int numitems = (int)(Math.random() * getMinigame(minigame).getLoadout().size());
-					Collections.shuffle(getMinigame(minigame).getLoadout());
-					for(int i = 0; i < numitems + 1; i++){
-						chest.getInventory().addItem(getMinigame(minigame).getLoadout().get(i));
+					int numitems = (int) Math.round(Math.random() * (mgm.getMaxTreasure() - mgm.getMinTreasure())) + mgm.getMinTreasure();
+					if(numitems > mgm.getLoadout().size()){
+						numitems = mgm.getLoadout().size();
 					}
+					Collections.shuffle(getMinigame(minigame).getLoadout());
+					ItemStack[] items = new ItemStack[27];
+					for(int i = 0; i < numitems; i++){
+						items[i] = mgm.getLoadout().get(i);
+					}
+					Collections.shuffle(Arrays.asList(items));
+					chest.getInventory().setContents(items);
 				}
 			}
 			
-			//setTreasureHuntLocation(minigame, rpos.getBlock().getLocation());
 			setTreasureHuntLocation(minigame, rpos.getBlock().getLocation());
 			
 			plugin.getServer().broadcast(ChatColor.LIGHT_PURPLE + "A treasure chest has appeared within " + maxradius + "m of " + getMinigame(minigame).getLocation() + "!", "minigame.treasure.announce");
 			if(getMinigame(minigame).getThTimer() == null){
-				//treasureHuntTimers.put(minigame, new TreasureHuntTimer(minigame));
 				getMinigame(minigame).setThTimer(new TreasureHuntTimer(minigame));
 				getMinigame(minigame).getThTimer().start();
 			}

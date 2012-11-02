@@ -150,49 +150,54 @@ public class TreasureHuntTimer extends Thread{
 	}
 	
 	public void hints(Player player){
-		long lastuse = 300000;
-		Location ploc = player.getLocation();
-		if(lastCommand.containsKey(player.getName())){
-			long curtime = Calendar.getInstance().getTimeInMillis();
-			lastuse = curtime - lastCommand.get(player.getName());
-		}
-		double distance = ploc.distance(block);
-		int maxradius = mgm.getMaxRadius();
-		if(lastuse >= 300000){
-			if(distance > maxradius){
-				player.sendMessage(ChatColor.LIGHT_PURPLE + "You are not even close to finding the treasure!");
+		if(player.getWorld().getName().equals(block.getWorld().getName())){
+			long lastuse = 300000;
+			Location ploc = player.getLocation();
+			if(lastCommand.containsKey(player.getName())){
+				long curtime = Calendar.getInstance().getTimeInMillis();
+				lastuse = curtime - lastCommand.get(player.getName());
 			}
-			else if(distance > maxradius / 2){
-				player.sendMessage(ChatColor.LIGHT_PURPLE + "You are still a fair way off");
-			}
-			else if(distance > maxradius / 4){
-				player.sendMessage(ChatColor.LIGHT_PURPLE + "You are close, but no cigar!");
-			}
-			else if(distance > 50){
-				player.sendMessage(ChatColor.LIGHT_PURPLE + "You are really close now!");
-			}
-			else if(distance > 20){
-				player.sendMessage(ChatColor.LIGHT_PURPLE + "You are within 50m of it!");
-			}
-			else if(distance < 20){
-				player.sendMessage(ChatColor.LIGHT_PURPLE + "Oh my, you're so close! I can smell its riches!");
-			}
-			player.sendMessage(ChatColor.GRAY + "Time left: " + time + " minutes");
-			player.sendMessage(ChatColor.GREEN + "Global Hints:");
-			if(curHints.isEmpty()){
-				player.sendMessage(ChatColor.GRAY + "Sorry, there are no public hints to be displayed right now");
+			double distance = ploc.distance(block);
+			int maxradius = mgm.getMaxRadius();
+			if(lastuse >= 300000){
+				if(distance > maxradius){
+					player.sendMessage(ChatColor.LIGHT_PURPLE + "You are not even close to finding the treasure!");
+				}
+				else if(distance > maxradius / 2){
+					player.sendMessage(ChatColor.LIGHT_PURPLE + "You are still a fair way off");
+				}
+				else if(distance > maxradius / 4){
+					player.sendMessage(ChatColor.LIGHT_PURPLE + "You are close, but no cigar!");
+				}
+				else if(distance > 50){
+					player.sendMessage(ChatColor.LIGHT_PURPLE + "You are really close now!");
+				}
+				else if(distance > 20){
+					player.sendMessage(ChatColor.LIGHT_PURPLE + "You are within 50m of it!");
+				}
+				else if(distance < 20){
+					player.sendMessage(ChatColor.LIGHT_PURPLE + "Oh my, you're so close! I can smell its riches!");
+				}
+				player.sendMessage(ChatColor.GRAY + "Time left: " + time + " minutes");
+				player.sendMessage(ChatColor.GREEN + "Global Hints:");
+				if(curHints.isEmpty()){
+					player.sendMessage(ChatColor.GRAY + "Sorry, there are no public hints to be displayed right now");
+				}
+				else{
+					for(String h : curHints){
+						player.sendMessage(h);
+					}
+				}
+	
+				lastCommand.put(player.getName(), Calendar.getInstance().getTimeInMillis());
 			}
 			else{
-				for(String h : curHints){
-					player.sendMessage(h);
-				}
+				player.sendMessage(ChatColor.RED + "You currently cannot use this command for the " + minigame + " treasure hunt");
+				player.sendMessage(ChatColor.GRAY + "Time left: " + time + " minutes");
 			}
-
-			lastCommand.put(player.getName(), Calendar.getInstance().getTimeInMillis());
 		}
 		else{
-			player.sendMessage(ChatColor.RED + "You currently cannot use this command for the " + minigame + " treasure hunt");
-			player.sendMessage(ChatColor.GRAY + "Time left: " + time + " minutes");
+			player.sendMessage(ChatColor.RED + "You need to be in the " + block.getWorld().getName() + " world to use this hint.");
 		}
 	}
 	

@@ -182,7 +182,7 @@ public class Events implements Listener{
 			else if(signinfo[1].equalsIgnoreCase("Finish")){
 				event.setLine(1, ChatColor.GREEN + "Finish");
 			}
-			else if(signinfo[1].equalsIgnoreCase("Checkpoint") && event.getBlock().getType() == Material.SIGN_POST){
+			else if(signinfo[1].equalsIgnoreCase("Checkpoint")){
 				event.setLine(1, ChatColor.GREEN + "Checkpoint");
 			}
 			else if(signinfo[1].equalsIgnoreCase("Flag") && !signinfo[2].isEmpty()){

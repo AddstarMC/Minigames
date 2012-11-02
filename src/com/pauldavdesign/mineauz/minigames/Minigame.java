@@ -32,6 +32,8 @@ public class Minigame {
 	private boolean betting = false;
 	private String location = null;
 	private int maxRadius = 1000;
+	private int minTreasure = 0;
+	private int maxTreasure = 8;
 	private ItemStack rewardItem = null;
 	private double rewardPrice = 0;
 	private ItemStack secondaryRewardItem = null;
@@ -433,9 +435,41 @@ public class Minigame {
 	}
 	
 	public int getMaxScorePerPlayer(int playerCount){
-		int scorePerPlayer = (int) Math.ceil(getMaxScore() / getMaxPlayers());
-		int score = scorePerPlayer * playerCount;
+		float scorePerPlayer = getMaxScore() / getMaxPlayers();
+		int score = (int) Math.round(scorePerPlayer * playerCount);
 		return score;
+	}
+
+	public int getMinTreasure() {
+		return minTreasure;
+	}
+
+	public void setMinTreasure(int minTreasure) {
+		this.minTreasure = minTreasure;
+	}
+
+	public int getMaxTreasure() {
+		return maxTreasure;
+	}
+
+	public void setMaxTreasure(int maxTreasure) {
+		this.maxTreasure = maxTreasure;
+	}
+
+	public FloorDegenerator getFloorDegenerator() {
+		return sfloordegen;
+	}
+
+	public void addFloorDegenerator() {
+		sfloordegen = new FloorDegenerator(getSpleefFloor1(), getSpleefFloor2(), this);
+	}
+
+	public Material getSpleefFloorMaterial() {
+		return spleefFloorMaterial;
+	}
+
+	public void setSpleefFloorMaterial(Material spleefFloorMaterial) {
+		this.spleefFloorMaterial = spleefFloorMaterial;
 	}
 
 	public void saveMinigame(){
@@ -471,6 +505,12 @@ public class Minigame {
 		if(getSpleefFloor2() != null){
 			Minigames.plugin.mdata.minigameSetLocations(name, getSpleefFloor2(), "sfloorpos.2", minigame.getConfig());
 		}
+		if(getMinTreasure() != 0){
+			minigame.getConfig().set(name + ".mintreasure", getMinTreasure());
+		}
+		if(getMaxTreasure() != 8){
+			minigame.getConfig().set(name + ".maxtreasure", getMaxTreasure());
+		}
 		minigame.getConfig().set(name + ".type", getType());
 		minigame.getConfig().set(name + ".minplayers", getMinPlayers());
 		minigame.getConfig().set(name + ".maxplayers", getMaxPlayers());
@@ -497,6 +537,7 @@ public class Minigame {
 			minigame.getConfig().set(name + ".spleeffloormat", getSpleefFloorMaterial().getId());
 		}
 		if(!getLoadout().isEmpty()){
+			minigame.getConfig().set(name + ".loadout", null);
 			for(int i = 0; i < getLoadout().size(); i++){
 				minigame.getConfig().set(name + ".loadout." + i, getLoadout().get(i));
 			}
@@ -570,6 +611,12 @@ public class Minigame {
 		if(minigame.getConfig().contains(name + ".spleeffloormat")){
 			setSpleefFloorMaterial(Material.getMaterial(minigame.getConfig().getInt(name + ".spleeffloormat")));
 		}
+		if(minigame.getConfig().contains(name + ".mintreasure")){
+			setMinTreasure(minigame.getConfig().getInt(name + ".mintreasure"));
+		}
+		if(minigame.getConfig().contains(name + ".maxtreasure")){
+			setMaxTreasure(minigame.getConfig().getInt(name + ".maxtreasure"));
+		}
 		setType(minigame.getConfig().getString(name + ".type"));
 		setMinPlayers(minigame.getConfig().getInt(name + ".minplayers"));
 		setMaxPlayers(minigame.getConfig().getInt(name + ".maxplayers"));
@@ -633,21 +680,5 @@ public class Minigame {
 		}
 		
 		saveMinigame();
-	}
-
-	public FloorDegenerator getFloorDegenerator() {
-		return sfloordegen;
-	}
-
-	public void addFloorDegenerator() {
-		sfloordegen = new FloorDegenerator(getSpleefFloor1(), getSpleefFloor2(), this);
-	}
-
-	public Material getSpleefFloorMaterial() {
-		return spleefFloorMaterial;
-	}
-
-	public void setSpleefFloorMaterial(Material spleefFloorMaterial) {
-		this.spleefFloorMaterial = spleefFloorMaterial;
 	}
 }

@@ -1,6 +1,6 @@
 name: Minigames
 main: com.pauldavdesign.mineauz.minigames.Minigames
-version: 1.3.1
+version: 1.3.2a
 author: _Razz_
 
 commands:
@@ -92,9 +92,11 @@ permissions:
             minigame.set.location: true
             minigame.set.maxradius: true
             minigame.set.enabled: true
-            minigame.set.usepermission: true
+            minigame.set.usepermissions: true
             minigame.set.maxscore: true
             minigame.set.sfloormat: true
+            minigame.set.mintreasure: true
+            minigame.set.maxtreasure: true
     minigame.set.start:
         description: Gives access to setting a minigames starting position
         default: op
@@ -149,10 +151,16 @@ permissions:
     minigame.set.maxradius:
         description: Allows player to change a treasure hunts max radius
         default: op
+    minigame.set.mintreasure:
+        description: Allows player to change the minimum number of items to spawn in a treasure chest
+        default: op
+    minigame.set.maxtreasure:
+        description: Allows player to change the maximum number of items to spawn in a treasure chest
+        default: op
     minigame.set.enabled:
         description: Allows player to set whether the Minigame is enabled.
         default: op
-    minigame.set.usepermission:
+    minigame.set.usepermissions:
         description: Allows player to change a minigame to use a permission to join
         default: op
     minigame.set.maxscore:
@@ -190,4 +198,7 @@ permissions:
         default: true
     minigame.toggletimer:
         description: Allows a player to pause a multiplayer countdown timer.
+        default: op
+    minigame.sregen:
+        description: Allows a player to regenerate a spleef floor.
         default: op
