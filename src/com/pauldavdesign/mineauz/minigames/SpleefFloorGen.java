@@ -63,7 +63,7 @@ public class SpleefFloorGen {
 	}
 	
 	public void regenFloor(final Material mat){
-		Bukkit.getScheduler().scheduleAsyncDelayedTask(Minigames.plugin, new Runnable() {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
 
 			Location curblock = spoint1.clone();
 			int x = curblock.getBlockX();

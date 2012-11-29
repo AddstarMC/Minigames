@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.bukkit.entity.Player;
 
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
+
 import lib.PatPeter.SQLibrary.MySQL;
 
 public class SQLCompletionSaver extends Thread{

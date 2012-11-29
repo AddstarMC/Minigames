@@ -47,6 +47,7 @@ public class Minigame {
 	private int redTeamScore = 0;
 	private int blueTeamScore = 0;
 	
+	private int minScore = 5;
 	private int maxScore = 10;
 
 	private List<Location> startLocationsBlue = new ArrayList<Location>();
@@ -384,6 +385,14 @@ public class Minigame {
 		blueTeamScore++;
 	}
 
+	public int getMinScore() {
+		return minScore;
+	}
+
+	public void setMinScore(int minScore) {
+		this.minScore = minScore;
+	}
+
 	public int getMaxScore() {
 		return maxScore;
 	}
@@ -437,6 +446,9 @@ public class Minigame {
 	public int getMaxScorePerPlayer(int playerCount){
 		float scorePerPlayer = getMaxScore() / getMaxPlayers();
 		int score = (int) Math.round(scorePerPlayer * playerCount);
+		if(score < minScore){
+			score = minScore;
+		}
 		return score;
 	}
 
@@ -548,6 +560,9 @@ public class Minigame {
 		if(getMaxScore() != 10){
 			minigame.getConfig().set(name + ".maxscore", getMaxScore());
 		}
+		if(getMinScore() != 5){
+			minigame.getConfig().set(name + ".minscore", getMinScore());
+		}
 		if(!restoreBlocks.isEmpty()){
 			Set<String> blocks = restoreBlocks.keySet();
 			for(String block : blocks){
@@ -647,6 +662,9 @@ public class Minigame {
 		}
 		if(minigame.getConfig().contains(name + ".maxscore")){
 			setMaxScore(minigame.getConfig().getInt(name + ".maxscore"));
+		}
+		if(minigame.getConfig().contains(name + ".minscore")){
+			setMinScore(minigame.getConfig().getInt(name + ".minscore"));
 		}
 		if(minigame.getConfig().contains(name + ".resblocks") && minigame.getConfig().getString(name + ".resblocks") != "true" && minigame.getConfig().getString(name + ".resblocks") != "false"){
 			Set<String> blocks = minigame.getConfig().getConfigurationSection(name + ".resblocks").getKeys(false);

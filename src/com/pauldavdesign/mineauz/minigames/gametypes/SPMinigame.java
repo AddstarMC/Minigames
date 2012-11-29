@@ -1,4 +1,4 @@
-package com.pauldavdesign.mineauz.minigames;
+package com.pauldavdesign.mineauz.minigames.gametypes;
 
 import java.util.List;
 
@@ -8,33 +8,45 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffectType;
+
+import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.MinigameData;
+import com.pauldavdesign.mineauz.minigames.MinigameSave;
+import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.PlayerData;
+import com.pauldavdesign.mineauz.minigames.SQLCompletionSaver;
 
 public class SPMinigame extends MinigameType{
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
 	private MinigameData mdata = plugin.mdata;
 	
-	public SPMinigame(){}
+	public SPMinigame() {
+		setLabel("sp");
+	}
 	
-	public void joinMinigame(Player player, String minigame, Minigame mgm){
-		if(mgm.getQuitPosition() != null && player.getGameMode() == GameMode.SURVIVAL && mgm.isEnabled()){
-			pdata.addPlayerMinigame(player, minigame);
+	@Override
+	public void joinMinigame(Player player, Minigame mgm){
+		if(mgm.getQuitPosition() != null && mgm.isEnabled()){
+			pdata.storePlayerData(player, GameMode.ADVENTURE);
+			pdata.addPlayerMinigame(player, mgm.getName());
 			player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
 			player.setAllowFlight(false);
-			plugin.getLogger().info(player.getName() + " started " + minigame);
+			plugin.getLogger().info(player.getName() + " started " + mgm.getName());
 			
-			Location startpos = mdata.getMinigame(minigame).getStartLocations().get(0);
+			Location startpos = mdata.getMinigame(mgm.getName()).getStartLocations().get(0);
 			player.teleport(startpos);
 			player.sendMessage(ChatColor.GREEN + "You have started a singleplayer minigame, type /minigame quit to exit.");
 			pdata.setPlayerCheckpoints(player, startpos);
-				
-			pdata.storePlayerData(player);
 			
 			List<Player> plys = pdata.playersInMinigame();
 			for(Player ply : plys){
-				if(minigame.equals(pdata.getPlayersMinigame(ply)) && !ply.getName().equals(player.getName())){
-					ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + player.getName() + " has joined " + minigame);
+				if(mgm.getName().equals(pdata.getPlayersMinigame(ply)) && !ply.getName().equals(player.getName())){
+					ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + player.getName() + " has joined " + mgm.getName());
 				}
 			}
 		}
@@ -45,17 +57,13 @@ public class SPMinigame extends MinigameType{
 			player.sendMessage(ChatColor.RED + "This minigame is not enabled!");
 		}
 		if(!mgm.getLoadout().isEmpty()){
-			mdata.equiptLoadout(minigame, player);
+			mdata.equiptLoadout(mgm.getName(), player);
 		}
 	}
 	
+	@Override
 	public void endMinigame(Player player, Minigame mgm){
-		
-		player.getInventory().clear();
 		String minigame = pdata.getPlayersMinigame(player);
-		
-		pdata.restorePlayerData(player);
-		pdata.saveItems(player);
 		
 		boolean hascompleted = false;
 		Configuration completion = null;
@@ -92,6 +100,31 @@ public class SPMinigame extends MinigameType{
 		}
 		else{
 			new SQLCompletionSaver(minigame, player, this);
+		}
+	}
+
+	@Override
+	public void quitMinigame(Player player, Minigame mgm, boolean forced) {
+		callGeneralQuit(player);
+	}
+	
+	/*----------------*/
+	/*-----EVENTS-----*/
+	/*----------------*/
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerRespawn(PlayerRespawnEvent event){
+		if(pdata.playerInMinigame(event.getPlayer())){
+			String minigame = pdata.getPlayersMinigame(event.getPlayer());
+			Minigame mgm = mdata.getMinigame(minigame);
+			if(!mdata.getMinigame(minigame).hasPlayers()){
+				event.setRespawnLocation(pdata.getPlayerCheckpoint(event.getPlayer()));
+				event.getPlayer().sendMessage(ChatColor.GRAY + "Bad Luck! Returning to checkpoint.");
+				
+				if(!mgm.getLoadout().isEmpty()){
+					mdata.equiptLoadout(minigame, event.getPlayer());
+				}
+			}
 		}
 	}
 }

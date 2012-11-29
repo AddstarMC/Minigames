@@ -8,22 +8,17 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -34,105 +29,6 @@ public class Events implements Listener{
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
 	private MinigameData mdata = plugin.mdata;
-	
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerRespawn(PlayerRespawnEvent event){
-		if(pdata.playerInMinigame(event.getPlayer())){
-			String minigame = pdata.getPlayersMinigame(event.getPlayer());
-			Minigame mgm = mdata.getMinigame(minigame);
-			if(mdata.getMinigame(minigame).hasPlayers()){
-				String mgtype = mgm.getType();
-				if(mgtype.equals("spleef") || mgtype.equals("lms")){
-					event.setRespawnLocation(mdata.getMinigame(minigame).getQuitPosition());
-					pdata.quitMinigame(event.getPlayer(), true);
-					event.getPlayer().sendMessage(ChatColor.GRAY + "Bad Luck! Leaving the minigame.");
-				}
-				else if(mgtype.equals("race")){
-					event.setRespawnLocation(pdata.getPlayerCheckpoint(event.getPlayer()));
-					event.getPlayer().sendMessage(ChatColor.GRAY + "Bad Luck! Returning to checkpoint.");
-					
-					if(!mgm.getLoadout().isEmpty()){
-						mdata.equiptLoadout(minigame, event.getPlayer());
-					}
-				}
-			}
-			else {
-				event.setRespawnLocation(pdata.getPlayerCheckpoint(event.getPlayer()));
-				event.getPlayer().sendMessage(ChatColor.GRAY + "Bad Luck! Returning to checkpoint.");
-				
-				if(!mgm.getLoadout().isEmpty()){
-					mdata.equiptLoadout(minigame, event.getPlayer());
-				}
-			}
-		}
-	}
-	
-	@EventHandler
-	public void playerTakeDamage(EntityDamageEvent event){
-		if(event.getEntity() instanceof Player){
-			final Player ply = (Player) event.getEntity();
-			if(pdata.playerInMinigame(ply)){
-				String minigame = pdata.getPlayersMinigame(ply);
-				Minigame mgm = mdata.getMinigame(minigame);
-				if(mdata.getMinigame(minigame).hasPlayers() && ply.getHealth() - event.getDamage() <= 0){
-					String mgtype = mgm.getType();
-					if(mgtype.equals("spleef") || mgtype.equals("lms")){
-						pdata.quitMinigame(ply, true);
-						event.setCancelled(true);
-						ply.sendMessage(ChatColor.GRAY + "Bad Luck! Leaving the minigame.");
-						plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-							@Override
-							public void run() {
-								ply.setFireTicks(0);
-							}
-						}, 20);
-					}
-				}
-			}
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.HIGH)
-	public void playerDamagePlayer(EntityDamageByEntityEvent event){
-		if(event.getEntity() instanceof Player){
-			final Player ply = (Player) event.getEntity();
-			if(pdata.playerInMinigame(ply)){
-				String minigame = pdata.getPlayersMinigame(ply);
-				Minigame mgm = mdata.getMinigame(minigame);
-				if(mdata.getMinigame(minigame).hasPlayers() && ply.getHealth() - event.getDamage() <= 0){
-					String mgtype = mgm.getType();
-					if(mgtype.equals("spleef") || mgtype.equals("lms")){
-						pdata.quitMinigame(ply, true);
-						event.setCancelled(true);
-						if(event.getDamager() instanceof Player){
-							Player att = (Player) event.getDamager();
-							pdata.addPlayerKill(att);
-							for(Player pl : mgm.getPlayers()){
-								pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + att.getName() + " killed " + ply.getName());
-							}
-						}
-						else if(event.getDamager() instanceof Arrow){
-							Arrow arr = (Arrow) event.getDamager();
-							if(arr.getShooter() instanceof Player){
-								Player att = (Player) arr.getShooter();
-								pdata.addPlayerKill(att);
-								for(Player pl : mgm.getPlayers()){
-									pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + att.getName() + " shot " + ply.getName());
-								}
-							}
-						}
-						ply.sendMessage(ChatColor.GRAY + "Bad Luck! Leaving the minigame.");
-						plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-							@Override
-							public void run() {
-								ply.setFireTicks(0);
-							}
-						}, 20);
-					}
-				}
-			}
-		}
-	}
 	
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event){
@@ -354,6 +250,7 @@ public class Events implements Listener{
 	public void onFlyToggle(PlayerToggleFlightEvent event){
 		if(pdata.playerInMinigame(event.getPlayer())){
 			event.setCancelled(true);
+			pdata.quitMinigame(event.getPlayer(), true);
 			event.getPlayer().sendMessage(ChatColor.RED + "Error: You cannot fly while in a Minigame!");
 		}
 	}

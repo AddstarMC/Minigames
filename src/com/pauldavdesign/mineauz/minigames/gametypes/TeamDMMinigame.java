@@ -1,4 +1,4 @@
-package com.pauldavdesign.mineauz.minigames;
+package com.pauldavdesign.mineauz.minigames.gametypes;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,23 +24,30 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffectType;
 
-public class TeamDMMinigame extends MinigameType implements Listener{
+import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.MinigameData;
+import com.pauldavdesign.mineauz.minigames.MinigameSave;
+import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.MultiplayerTimer;
+import com.pauldavdesign.mineauz.minigames.PlayerData;
+import com.pauldavdesign.mineauz.minigames.SQLCompletionSaver;
+
+public class TeamDMMinigame extends MinigameType{
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
 	private MinigameData mdata = plugin.mdata;
 	
-	public TeamDMMinigame(){
-		plugin.getServer().getPluginManager().registerEvents(this, plugin);
+	public TeamDMMinigame() {
+		setLabel("teamdm");
 	}
 	
 	@Override
-	public void joinMinigame(final Player player, String minigame, Minigame mgm){
+	public void joinMinigame(final Player player, Minigame mgm){
 		if(mgm.getQuitPosition() != null && player.getGameMode() == GameMode.SURVIVAL && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
 			
 			int redSize = mgm.getRedTeam().size();
@@ -48,15 +55,15 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 			
 			player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
 			player.setAllowFlight(false);
-			plugin.getLogger().info(player.getName() + " started " + minigame);
+			plugin.getLogger().info(player.getName() + " started " + mgm.getName());
 			
 			Location lobby = mgm.getLobbyPosition();
 			
 			String gametype = mgm.getType();
 			
-			if(!mdata.getMinigame(minigame).getPlayers().isEmpty() && mdata.getMinigame(minigame).getPlayers().size() < mgm.getMaxPlayers()){
-				if(mdata.getMinigame(minigame).getMpTimer() == null || mdata.getMinigame(minigame).getMpTimer().getPlayerWaitTimeLeft() != 0){
-					mdata.getMinigame(minigame).addPlayer(player);
+			if(!mgm.getPlayers().isEmpty() && mgm.getPlayers().size() < mgm.getMaxPlayers()){
+				if(mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
+					mgm.addPlayer(player);
 					
 					if(redSize <= blueSize){
 						mgm.addRedTeamPlayer(player);
@@ -95,15 +102,15 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 						}, 20L);
 					}
 					
-					pdata.storePlayerData(player);
+					pdata.storePlayerData(player, GameMode.ADVENTURE);
 					
 					player.teleport(lobby);
-					pdata.addPlayerMinigame(player, minigame);
+					pdata.addPlayerMinigame(player, mgm.getName());
 					player.sendMessage(ChatColor.GREEN + "You have started a " + gametype + " minigame, type /minigame quit to exit.");
 				
-					if(mdata.getMinigame(minigame).getMpTimer() == null && mdata.getMinigame(minigame).getPlayers().size() >= mgm.getMinPlayers()){
-						mdata.getMinigame(minigame).setMpTimer(new MultiplayerTimer(minigame));
-						mdata.getMinigame(minigame).getMpTimer().start();
+					if(mgm.getMpTimer() == null && mgm.getPlayers().size() >= mgm.getMinPlayers()){
+						mgm.setMpTimer(new MultiplayerTimer(mgm.getName()));
+						mgm.getMpTimer().start();
 					}
 					else if(mgm.getMpTimer() != null && mgm.getMpTimer().isPaused() && 
 							(mgm.getBlueTeam().size() == mgm.getRedTeam().size() || 
@@ -112,7 +119,7 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 						mgm.getMpTimer().resumeTimer();
 					}
 					else{
-						int neededPlayers = mgm.getMinPlayers() - mdata.getMinigame(minigame).getPlayers().size();
+						int neededPlayers = mgm.getMinPlayers() - mgm.getPlayers().size();
 						if(neededPlayers == 1){
 							player.sendMessage(ChatColor.BLUE + "Waiting for 1 more player.");
 						}
@@ -123,7 +130,7 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 
 					List<Player> plys = pdata.playersInMinigame();
 					for(Player ply : plys){
-						if(minigame.equals(pdata.getPlayersMinigame(ply)) && !ply.getName().equals(player.getName())){
+						if(mgm.getName().equals(pdata.getPlayersMinigame(ply)) && !ply.getName().equals(player.getName())){
 							String teamColour = ChatColor.RED + "Red";
 							if(mgm.getBlueTeam().contains(player)){
 								teamColour = ChatColor.BLUE + "Blue";
@@ -132,12 +139,12 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 						}
 					}
 				}
-				else if(mdata.getMinigame(minigame).getMpTimer().getPlayerWaitTimeLeft() == 0){
+				else if(mgm.getMpTimer().getPlayerWaitTimeLeft() == 0){
 					player.sendMessage(ChatColor.RED + "The minigame has already started. Try again soon.");
 				}
 			}
-			else if(mdata.getMinigame(minigame).getPlayers().isEmpty()){
-				mdata.getMinigame(minigame).addPlayer(player);
+			else if(mgm.getPlayers().isEmpty()){
+				mgm.addPlayer(player);
 				
 				EntityPlayer changeingName = ((CraftPlayer) player).getHandle();
 				String oldName = player.getName();
@@ -163,10 +170,10 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 				
 				changeingName.name = oldName;
 				
-				pdata.storePlayerData(player);
+				pdata.storePlayerData(player, GameMode.ADVENTURE);
 				
 				player.teleport(lobby);
-				pdata.addPlayerMinigame(player, minigame);
+				pdata.addPlayerMinigame(player, mgm.getName());
 				player.sendMessage(ChatColor.GREEN + "You have started a " + gametype + " minigame, type /minigame quit to exit.");
 				
 				int neededPlayers = mgm.getMinPlayers() - 1;
@@ -176,13 +183,13 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 				}
 				else
 				{
-					mdata.getMinigame(minigame).setMpTimer(new MultiplayerTimer(minigame));
-					mdata.getMinigame(minigame).getMpTimer().start();
+					mgm.setMpTimer(new MultiplayerTimer(mgm.getName()));
+					mgm.getMpTimer().start();
 				}
 
 				List<Player> plys = pdata.playersInMinigame();
 				for(Player ply : plys){
-					if(minigame.equals(pdata.getPlayersMinigame(ply)) && !ply.getName().equals(player.getName())){
+					if(mgm.getName().equals(pdata.getPlayersMinigame(ply)) && !ply.getName().equals(player.getName())){
 						String teamColour = ChatColor.RED + "Red";
 						if(mgm.getBlueTeam().contains(player)){
 							teamColour = ChatColor.BLUE + "Blue";
@@ -191,7 +198,7 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 					}
 				}
 			}
-			else if(mdata.getMinigame(minigame).getPlayers().size() == mgm.getMaxPlayers()){
+			else if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
 				player.sendMessage(ChatColor.RED + "Sorry, this minigame is full.");
 			}
 		}
@@ -278,7 +285,6 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 	@Override
 	//@SuppressWarnings("deprecation")
 	public void endMinigame(Player player, Minigame mgm){
-		player.getInventory().clear();
 		String minigame = pdata.getPlayersMinigame(player);
 		
 		/*if(mdata.getMinigame(minigame).getMpBets() != null){
@@ -332,10 +338,6 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 			
 			issuePlayerRewards(player, mgm, hascompleted);
 		}
-		
-		pdata.restorePlayerData(player);
-		pdata.saveItems(player);
-		pdata.saveInventoryConfig();
 	}
 	
 	public void endTeamMinigame(int teamnum, Minigame mgm){
@@ -573,6 +575,10 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 			mgm.addBlueTeamPlayer(player);
 		}
 	}
+	
+	/*----------------*/
+	/*-----EVENTS-----*/
+	/*----------------*/
 	
 	@EventHandler
 	public void playerDeath(PlayerDeathEvent event){
@@ -825,6 +831,7 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 									if(ateam == 1){
 										if(mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
 											event.setCancelled(true);
+											pdata.addPlayerKill(attacker);
 											mg.incrementBlueTeamScore();
 											endTeamMinigame(1, mg);
 										}
@@ -832,6 +839,7 @@ public class TeamDMMinigame extends MinigameType implements Listener{
 									else{
 										if(mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
 											event.setCancelled(true);
+											pdata.addPlayerKill(attacker);
 											mg.incrementRedTeamScore();
 											endTeamMinigame(0, mg);
 										}

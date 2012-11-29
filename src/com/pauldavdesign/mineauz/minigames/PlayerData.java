@@ -30,6 +30,7 @@ public class PlayerData {
 	private Map<String, Integer> playerHealth = new HashMap<String, Integer>();
 	private Map<String, Float> playerSaturation = new HashMap<String, Float>();
 	private Map<String, Boolean> allowTP = new HashMap<String, Boolean>();
+	private Map<Player, GameMode> lastGM = new HashMap<Player, GameMode>();
 	
 	//Stats
 	private Map<String, Integer> plyDeaths = new HashMap<String, Integer>();
@@ -51,7 +52,7 @@ public class PlayerData {
 		if(!event.isCancelled()){
 			if(mdata.getMinigameTypes().contains(gametype)){
 				setAllowTP(player, true);
-				mdata.minigameType(gametype).joinMinigame(player, minigame, mgm);
+				mdata.minigameType(gametype).joinMinigame(player, mgm);
 				setAllowTP(player, false);
 			}
 			else{
@@ -68,7 +69,7 @@ public class PlayerData {
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
 		if(!event.isCancelled()){
-			if(mgm != null && mgm.bettingEnabled() && mgm.isEnabled() && player.getGameMode() == GameMode.SURVIVAL && (mdata.getMinigame(minigame).getMpTimer() == null || mdata.getMinigame(minigame).getMpTimer().getPlayerWaitTimeLeft() != 0)){
+			if(mgm != null && mgm.bettingEnabled() && mgm.isEnabled() && (mdata.getMinigame(minigame).getMpTimer() == null || mdata.getMinigame(minigame).getMpTimer().getPlayerWaitTimeLeft() != 0)){
 				if(mdata.getMinigame(minigame).getMpBets() == null){
 					mdata.getMinigame(minigame).setMpBets(new MultiplayerBets());
 				}
@@ -96,9 +97,6 @@ public class PlayerData {
 			else if (player.getItemInHand().getType() != Material.AIR){
 				player.sendMessage(ChatColor.GRAY + "Bets are not enabled in this minigame.");
 				player.sendMessage(ChatColor.RED + "Your hand must be empty to join this minigame!");
-			}
-			else if(player.getGameMode() != GameMode.SURVIVAL){
-				player.sendMessage(ChatColor.RED + "You must be in survival mode to join a minigame");
 			}
 			else if(mdata.getMinigame(minigame).getMpTimer().getPlayerWaitTimeLeft() == 0){
 				player.sendMessage(ChatColor.RED + "The game has already started. Please try again later.");
@@ -254,6 +252,7 @@ public class PlayerData {
 			setAllowTP(player, true);
 			
 			player.closeInventory();
+			restorePlayerData(player);
 			
 			List<Player> plys = mdata.getMinigame(minigame).getPlayers();
 			for(Player ply : plys){
@@ -269,10 +268,14 @@ public class PlayerData {
 			
 			mdata.minigameType(mgm.getType()).quitMinigame(player, mgm, forced);
 			removePlayerMinigame(player);
+			saveItems(player);
+			saveInventoryConfig();
 			
 			for(PotionEffect potion : player.getActivePotionEffects()){
 				player.removePotionEffect(potion.getType());
 			}
+			player.setFireTicks(0);
+			player.setNoDamageTicks(60);
 			
 			removeAllPlayerFlags(player);
 			
@@ -294,14 +297,19 @@ public class PlayerData {
 			setAllowTP(player, true);
 			
 			player.closeInventory();
+			restorePlayerData(player);
 			
 			mdata.minigameType(mgm.getType()).endMinigame(player, mgm);
 			
 			removePlayerMinigame(player);
+			saveItems(player);
+			saveInventoryConfig();
 			
 			for(PotionEffect potion : player.getActivePotionEffects()){
 				player.removePotionEffect(potion.getType());
 			}
+			player.setFireTicks(0);
+			player.setNoDamageTicks(60);
 			
 			removeAllPlayerFlags(player);
 			
@@ -343,7 +351,7 @@ public class PlayerData {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public void storePlayerData(Player player){
+	public void storePlayerData(Player player, GameMode gm){
 		ItemStack[] items = player.getInventory().getContents();
 		ItemStack[] armour = player.getInventory().getArmorContents();
 		itemStore.put(player.getName(), items);
@@ -351,6 +359,9 @@ public class PlayerData {
 		playerFood.put(player.getName(), player.getFoodLevel());
 		playerHealth.put(player.getName(), player.getHealth());
 		playerSaturation.put(player.getName(), player.getSaturation());
+		
+		lastGM.put(player, player.getGameMode());
+		player.setGameMode(gm);
 		
 		player.setSaturation(15);
 		player.setFoodLevel(20);
@@ -371,7 +382,7 @@ public class PlayerData {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public void restorePlayerData(Player player){
+	public void restorePlayerData(final Player player){
 		player.getInventory().clear();
 		player.getInventory().setArmorContents(null);
 		
@@ -383,6 +394,15 @@ public class PlayerData {
 		player.setFoodLevel(playerFood.get(player.getName()));
 		player.setHealth(playerHealth.get(player.getName()));
 		player.setSaturation(playerSaturation.get(player.getName()));
+		
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			
+			@Override
+			public void run() {
+				player.setGameMode(lastGM.get(player));
+				lastGM.remove(player);
+			}
+		});
 		
 		invsave.getConfig().set("inventories." + player.getName(), null);
 		invsave.saveConfig();
@@ -430,7 +450,8 @@ public class PlayerData {
 	}
 	
 	public List<String> checkRequiredFlags(Player player, String minigame){
-		List<String> checkpoints = mdata.getMinigame(minigame).getFlags();
+		List<String> checkpoints = new ArrayList<String>();
+		checkpoints.addAll(mdata.getMinigame(minigame).getFlags());
 		List<String> pchecks = playerFlags.get(player.getName());
 		
 		if(playerFlags.containsKey(player.getName()) && !pchecks.isEmpty()){
@@ -484,6 +505,22 @@ public class PlayerData {
 		if(plyDeaths.containsKey(ply.getName())){
 			plyDeaths.remove(ply.getName());
 		}
+	}
+	
+	public GameMode getPlayersLastGameMode(Player player){
+		return lastGM.get(player);
+	}
+	
+	public void setPlayersLastGameMode(Player player, GameMode gm){
+		lastGM.put(player, gm);
+	}
+	
+	public boolean removePlayersLastGameMode(Player player){
+		if(lastGM.containsKey(player)){
+			lastGM.remove(player);
+			return true;
+		}
+		return false;
 	}
 	
 	public void saveItems(Player player){

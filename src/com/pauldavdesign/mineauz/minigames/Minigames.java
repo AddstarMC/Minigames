@@ -28,6 +28,13 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.pauldavdesign.mineauz.minigames.gametypes.DMMinigame;
+import com.pauldavdesign.mineauz.minigames.gametypes.LMSMinigame;
+import com.pauldavdesign.mineauz.minigames.gametypes.RaceMinigame;
+import com.pauldavdesign.mineauz.minigames.gametypes.SPMinigame;
+import com.pauldavdesign.mineauz.minigames.gametypes.SpleefMinigame;
+import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
+
 public class Minigames extends JavaPlugin{
 	static Logger log = Logger.getLogger("Minecraft");
 	public PlayerData pdata;
@@ -44,11 +51,12 @@ public class Minigames extends JavaPlugin{
 		mdata = new MinigameData();
 		pdata = new PlayerData();
 		
-		mdata.addMinigameType("sp", new SPMinigame());
-		mdata.addMinigameType("spleef", new MPMinigame());
-		mdata.addMinigameType("race", new MPMinigame());
-		mdata.addMinigameType("lms", new MPMinigame());
-		mdata.addMinigameType("teamdm", new TeamDMMinigame());
+		mdata.addMinigameType(new SPMinigame());
+		mdata.addMinigameType(new SpleefMinigame());
+		mdata.addMinigameType(new RaceMinigame());
+		mdata.addMinigameType(new LMSMinigame());
+		mdata.addMinigameType(new TeamDMMinigame());
+		mdata.addMinigameType(new DMMinigame());
 		
 		if(!pdata.invsave.getConfig().contains("inventories")){
 			pdata.invsave.getConfig().createSection("inventories");
@@ -1050,6 +1058,30 @@ public class Minigames extends JavaPlugin{
 							player.sendMessage(ChatColor.RED + "minigame.set.usepermissions");
 						}
 					}
+					else if(args[2].equalsIgnoreCase("minscore")){
+						if(player.hasPermission("minigame.set.minscore")){
+							if(args.length == 4){
+								if(args[3].matches("[0-9]+")){
+									int minscore = Integer.parseInt(args[3]);
+									mgm.setMinScore(minscore);
+									player.sendMessage(ChatColor.GRAY + "Minimum score has been set to " + minscore + " for " + mgm.getName());
+								}
+								else{
+									sender.sendMessage(ChatColor.RED + "Error: " + args[3] + " is not a number!");
+								}
+							}
+							else{
+								player.sendMessage(ChatColor.GREEN + "------------------Command Info------------------");
+								player.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + "Sets the minimum score for a Team Deathmatch Minigame. (Default: 5)");
+								player.sendMessage(ChatColor.BLUE + "Usage:");
+								player.sendMessage("/minigame set <Minigame> minscore <Number>");
+							}
+						}
+						else{
+							player.sendMessage(ChatColor.RED + "You do not have permission to change the maximum score!");
+							player.sendMessage(ChatColor.RED + "minigame.set.maxscore");
+						}
+					}
 					else if(args[2].equalsIgnoreCase("maxscore")){
 						if(player.hasPermission("minigame.set.maxscore")){
 							if(args.length == 4){
@@ -1066,12 +1098,12 @@ public class Minigames extends JavaPlugin{
 								player.sendMessage(ChatColor.GREEN + "------------------Command Info------------------");
 								player.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + "Sets the maximum score for a Team Deathmatch Minigame. " +
 										"Note: This score depends on how many players are playing the Minigame at one time and the " +
-										"number of max players.");
+										"number of max players. (Default: 10)");
 								player.sendMessage("For example, if the max players is 16, the max score is 20 and the current players " +
 										"playing equals 4, the max score for that round will be 5. " +
 										"Equation: (maxscore / maxplayers) * current players (Rounded up)");
 								player.sendMessage(ChatColor.BLUE + "Usage:");
-								player.sendMessage("/minigame set <Minigame> restoreblock add/remove <Name>");
+								player.sendMessage("/minigame set <Minigame> maxscore <Number>");
 							}
 						}
 						else{
@@ -1540,7 +1572,7 @@ public class Minigames extends JavaPlugin{
 						floor.regenFloor(mgm.getSpleefFloorMaterial());
 						player.sendMessage(ChatColor.GRAY + "Regenerating " + mgm.getName() + " Spleef Floor");
 					}
-					if(mgm == null){
+					else if(mgm == null){
 						player.sendMessage(ChatColor.RED + "Error: There is no Minigame by the name " + args[1]);
 					}
 					else{
@@ -1724,6 +1756,10 @@ public class Minigames extends JavaPlugin{
 	
 	public PlayerData getPlayerData(){
 		return pdata;
+	}
+	
+	public MinigameData getMinigameData(){
+		return mdata;
 	}
 	
 	public MySQL getSQL(){

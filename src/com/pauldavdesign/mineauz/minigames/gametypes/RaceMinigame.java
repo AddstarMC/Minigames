@@ -1,4 +1,4 @@
-package com.pauldavdesign.mineauz.minigames;
+package com.pauldavdesign.mineauz.minigames.gametypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,118 +13,40 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.block.Furnace;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
-public class MPMinigame extends MinigameType {
+import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.MinigameData;
+import com.pauldavdesign.mineauz.minigames.MinigameSave;
+import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.PlayerData;
+import com.pauldavdesign.mineauz.minigames.SQLCompletionSaver;
+
+public class RaceMinigame extends MinigameType{
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
 	private MinigameData mdata = plugin.mdata;
 	
-	public MPMinigame(){}
-	
-	public void joinMinigame(Player player, String minigame, Minigame mgm){
-		if(mgm.getQuitPosition() != null && player.getGameMode() == GameMode.SURVIVAL && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
-			
-			player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
-			player.setAllowFlight(false);
-			plugin.getLogger().info(player.getName() + " started " + minigame);
-
-			String gametype = mgm.getType();
-			
-			Location lobby = mgm.getLobbyPosition();
-			if(!mdata.getMinigame(minigame).getPlayers().isEmpty() && mdata.getMinigame(minigame).getPlayers().size() < mgm.getMaxPlayers()){
-				if(mdata.getMinigame(minigame).getMpTimer() == null || mdata.getMinigame(minigame).getMpTimer().getPlayerWaitTimeLeft() != 0){
-					mdata.getMinigame(minigame).addPlayer(player);
-					
-					pdata.storePlayerData(player);
-					
-					player.teleport(lobby);
-					pdata.addPlayerMinigame(player, minigame);
-					player.sendMessage(ChatColor.GREEN + "You have started a " + gametype + " minigame, type /minigame quit to exit.");
-				
-					if(mdata.getMinigame(minigame).getMpTimer() == null && mdata.getMinigame(minigame).getPlayers().size() == mgm.getMinPlayers()){
-						mdata.getMinigame(minigame).setMpTimer(new MultiplayerTimer(minigame));
-						mdata.getMinigame(minigame).getMpTimer().start();
-					}
-					else{
-						int neededPlayers = mgm.getMinPlayers() - mdata.getMinigame(minigame).getPlayers().size();
-						if(neededPlayers == 1){
-							player.sendMessage(ChatColor.BLUE + "Waiting for 1 more player.");
-						}
-						else if(neededPlayers > 1){
-							player.sendMessage(ChatColor.BLUE + "Waiting for " + neededPlayers + " more players.");
-						}
-					}
-
-					List<Player> plys = pdata.playersInMinigame();
-					for(Player ply : plys){
-						if(minigame.equals(pdata.getPlayersMinigame(ply)) && !ply.getName().equals(player.getName())){
-							ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + player.getName() + " has joined " + minigame);
-						}
-					}
-				}
-				else if(mdata.getMinigame(minigame).getMpTimer().getPlayerWaitTimeLeft() == 0){
-					player.sendMessage(ChatColor.RED + "The minigame has already started. Try again soon.");
-				}
-			}
-			else if(mdata.getMinigame(minigame).getPlayers().isEmpty()){
-				mdata.getMinigame(minigame).addPlayer(player);
-				
-				pdata.storePlayerData(player);
-				
-				player.teleport(lobby);
-				pdata.addPlayerMinigame(player, minigame);
-				player.sendMessage(ChatColor.GREEN + "You have started a " + gametype + " minigame, type /minigame quit to exit.");
-				
-				int neededPlayers = mgm.getMinPlayers() - 1;
-				
-				if(neededPlayers > 0){
-					player.sendMessage(ChatColor.BLUE + "Waiting for " + neededPlayers + " more players.");
-				}
-				else
-				{
-					mdata.getMinigame(minigame).setMpTimer(new MultiplayerTimer(minigame));
-					mdata.getMinigame(minigame).getMpTimer().start();
-				}
-
-				List<Player> plys = pdata.playersInMinigame();
-				for(Player ply : plys){
-					if(minigame.equals(pdata.getPlayersMinigame(ply)) && !ply.getName().equals(player.getName())){
-						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + player.getName() + " has joined " + minigame);
-					}
-				}
-			}
-			else if(mdata.getMinigame(minigame).getPlayers().size() == mgm.getMaxPlayers()){
-				player.sendMessage(ChatColor.RED + "Sorry, this minigame is full.");
-			}
-		}
-		else if(mgm.getQuitPosition() == null){
-			player.sendMessage(ChatColor.RED + "This minigame has no quit position!");
-		}
-		else if(mgm.getEndPosition() == null){
-			player.sendMessage(ChatColor.RED + "This minigame has no end position!");
-		}
-		else if(mgm.getLobbyPosition() == null){
-			player.sendMessage(ChatColor.RED + "This minigame has no lobby!");
-		}
+	public RaceMinigame() {
+		setLabel("race");
 	}
-	
-	@SuppressWarnings("deprecation")
-	public void quitMinigame(Player player, Minigame mgm, boolean forced){
 
+	@Override
+	public void joinMinigame(Player player, Minigame mgm) {
+		callLMSJoin(player, mgm, GameMode.ADVENTURE);
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public void quitMinigame(Player player, Minigame mgm, boolean forced) {
 		String minigame = pdata.getPlayersMinigame(player);
 		if(!mdata.getMinigame(minigame).getPlayers().isEmpty()){
 			mdata.getMinigame(minigame).removePlayer(player);
 			if(mdata.getMinigame(minigame).getPlayers().size() == 0){
 				if(mdata.getMinigame(minigame).getMpTimer() != null){
 					mdata.getMinigame(minigame).getMpTimer().setStartWaitTime(0);
-					if(mgm.getType().equals("spleef")){
-						SpleefFloorGen floor = new SpleefFloorGen(mgm.getSpleefFloor1(), mgm.getSpleefFloor2());
-						if(mgm.getFloorDegenerator() != null){
-							mgm.getFloorDegenerator().stopDegenerator();
-						}
-						floor.regenFloor(mgm.getSpleefFloorMaterial());
-					}
 					if(mdata.getMinigame(minigame).getMpBets() != null){
 						player.getInventory().addItem(mdata.getMinigame(minigame).getMpBets().getPlayersBet(player));
 						mdata.getMinigame(minigame).setMpBets(null);
@@ -133,9 +55,7 @@ public class MPMinigame extends MinigameType {
 				}
 			}
 			else if(mdata.getMinigame(minigame).getPlayers().size() == 1 && mdata.getMinigame(minigame).getMpTimer() != null && mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() == 0){
-				if(!mdata.getMinigame(minigame).getType().equals("race")){
-					pdata.endMinigame(mdata.getMinigame(minigame).getPlayers().get(0));
-				}
+				//pdata.endMinigame(mdata.getMinigame(minigame).getPlayers().get(0));
 				
 				if(mdata.getMinigame(minigame).getMpBets() != null){
 					mdata.getMinigame(minigame).setMpBets(null);
@@ -160,13 +80,11 @@ public class MPMinigame extends MinigameType {
 			}
 		}
 	}
-	
+
 	@SuppressWarnings("deprecation")
-	public void endMinigame(Player player, Minigame mgm){
-		player.getInventory().clear();
+	@Override
+	public void endMinigame(Player player, Minigame mgm) {
 		String minigame = pdata.getPlayersMinigame(player);
-		
-		pdata.restorePlayerData(player);
 		
 		if(mdata.getMinigame(minigame).getMpBets() != null){
 			player.getInventory().addItem(mdata.getMinigame(minigame).getMpBets().claimBets());
@@ -192,11 +110,6 @@ public class MPMinigame extends MinigameType {
 		
 		if(mgm.getPlayers().isEmpty()){
 			mdata.getMinigame(minigame).getMpTimer().setStartWaitTime(0);
-			if(mgm.getType().equals("spleef")){
-				SpleefFloorGen floor = new SpleefFloorGen(mgm.getSpleefFloor1(), mgm.getSpleefFloor2());
-				mgm.getFloorDegenerator().stopDegenerator();
-				floor.regenFloor(mgm.getSpleefFloorMaterial());
-			}
 			
 			mdata.getMinigame(minigame).setMpTimer(null);
 			for(Player pl : mdata.getMinigame(minigame).getPlayers()){
@@ -280,6 +193,28 @@ public class MPMinigame extends MinigameType {
 		}
 		else{
 			new SQLCompletionSaver(minigame, player, this);
+		}
+	}
+	/*----------------*/
+	/*-----EVENTS-----*/
+	/*----------------*/
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerRespawn(PlayerRespawnEvent event){
+		if(pdata.playerInMinigame(event.getPlayer())){
+			String minigame = pdata.getPlayersMinigame(event.getPlayer());
+			Minigame mgm = mdata.getMinigame(minigame);
+			if(mdata.getMinigame(minigame).hasPlayers()){
+				String mgtype = mgm.getType();
+				if(mgtype.equals("race")){
+					event.setRespawnLocation(pdata.getPlayerCheckpoint(event.getPlayer()));
+					event.getPlayer().sendMessage(ChatColor.GRAY + "Bad Luck! Returning to checkpoint.");
+					
+					if(!mgm.getLoadout().isEmpty()){
+						mdata.equiptLoadout(minigame, event.getPlayer());
+					}
+				}
+			}
 		}
 	}
 }

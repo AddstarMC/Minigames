@@ -15,6 +15,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
+
 public class MinigameData {
 	private Map<String, Minigame> minigames = new HashMap<String, Minigame>();
 	private Map<String, Configuration> configs = new HashMap<String, Configuration>();
@@ -279,9 +281,9 @@ public class MinigameData {
 		save.set(minigame + "." + type + "." + ".world", loc.getWorld().getName());
 	}
 	
-	public void addMinigameType(String name, MinigameType minigameType){
-		minigameTypes.put(name, minigameType);
-		Minigames.log.info("Loaded " + name + " minigame type.");
+	public void addMinigameType(MinigameType minigameType){
+		minigameTypes.put(minigameType.getLabel(), minigameType);
+		Minigames.log.info("Loaded " + minigameType.getLabel() + " minigame type.");
 	}
 	
 	MinigameType minigameType(String name){
