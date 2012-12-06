@@ -2,4 +2,5 @@
 .classpath
 .DS_Store
 bin
+src
 .settings/org.eclipse.jdt.core.prefs
