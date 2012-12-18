@@ -10,9 +10,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
+import org.bukkit.block.Dispenser;
+import org.bukkit.block.Furnace;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
@@ -81,15 +82,15 @@ public class MinigameData {
 			if(rpos.getBlock().getState() instanceof Chest){
 				Chest chest = (Chest) rpos.getBlock().getState();
 				
-				if(!getMinigame(minigame).getLoadout().isEmpty()){
+				if(!getMinigame(minigame).getDefaultPlayerLoadout().getItems().isEmpty()){
 					int numitems = (int) Math.round(Math.random() * (mgm.getMaxTreasure() - mgm.getMinTreasure())) + mgm.getMinTreasure();
-					if(numitems > mgm.getLoadout().size()){
-						numitems = mgm.getLoadout().size();
+					if(numitems > mgm.getDefaultPlayerLoadout().getItems().size()){
+						numitems = mgm.getDefaultPlayerLoadout().getItems().size();
 					}
-					Collections.shuffle(getMinigame(minigame).getLoadout());
+					Collections.shuffle(getMinigame(minigame).getDefaultPlayerLoadout().getItems());
 					ItemStack[] items = new ItemStack[27];
 					for(int i = 0; i < numitems; i++){
-						items[i] = mgm.getLoadout().get(i);
+						items[i] = mgm.getDefaultPlayerLoadout().getItems().get(i);
 					}
 					Collections.shuffle(Arrays.asList(items));
 					chest.getInventory().setContents(items);
@@ -115,8 +116,7 @@ public class MinigameData {
 			return minigames.get(minigame);
 		}
 		
-		Set<String> mgmset = minigames.keySet();
-		for(String mg : mgmset){
+		for(String mg : minigames.keySet()){
 			if(minigame.equalsIgnoreCase(mg)){
 				return minigames.get(mg);
 			}
@@ -130,7 +130,16 @@ public class MinigameData {
 	}
 	
 	public boolean hasMinigame(String minigame){
-		return minigames.containsKey(minigame);
+		boolean hasmg = minigames.containsKey(minigame);
+		if(!hasmg){
+			for(String mg : minigames.keySet()){
+				if(mg.equalsIgnoreCase(minigame)){
+					hasmg = true;
+					break;
+				}
+			}
+		}
+		return hasmg;
 	}
 	
 	public void removeMinigame(String minigame){
@@ -157,48 +166,6 @@ public class MinigameData {
 	public void removeConfigurationFile(String filename){
 		if(configs.containsKey(filename)){
 			configs.remove(filename);
-		}
-	}
-	
-	@SuppressWarnings("deprecation")
-	public void equiptLoadout(String minigame, Player player){
-		if(!getMinigame(minigame).getLoadout().isEmpty()){
-			for(ItemStack item : getMinigame(minigame).getLoadout()){
-				if(item.getTypeId() >= 298 && item.getTypeId() <= 317){
-					if(item.getTypeId() == 298 ||
-							item.getTypeId() == 302 ||
-							item.getTypeId() == 306 ||
-							item.getTypeId() == 310 ||
-							item.getTypeId() == 314){
-						player.getInventory().setHelmet(item);
-					}
-					else if(item.getTypeId() == 299 ||
-							item.getTypeId() == 303 ||
-							item.getTypeId() == 307 ||
-							item.getTypeId() == 311 ||
-							item.getTypeId() == 315){
-						player.getInventory().setChestplate(item);
-					}
-					else if(item.getTypeId() == 300 ||
-							item.getTypeId() == 304 ||
-							item.getTypeId() == 308 ||
-							item.getTypeId() == 312 ||
-							item.getTypeId() == 316){
-						player.getInventory().setLeggings(item);
-					}
-					else if(item.getTypeId() == 301 ||
-							item.getTypeId() == 305 ||
-							item.getTypeId() == 309 ||
-							item.getTypeId() == 313 ||
-							item.getTypeId() == 317){
-						player.getInventory().setBoots(item);
-					}
-				}
-				else{
-					player.getInventory().addItem(item);
-				}
-			}
-			player.updateInventory();
 		}
 	}
 	
@@ -295,5 +262,36 @@ public class MinigameData {
 	
 	public Set<String> getMinigameTypes(){
 		return minigameTypes.keySet();
+	}
+	
+	public void restoreMinigameBlocks(Minigame mgm){
+		Set<String> blocks = mgm.getRestoreBlocks().keySet();
+		
+		for(String name : blocks){
+			String mat = mgm.getRestoreBlocks().get(name).getBlock().toString();
+			if(mat.equalsIgnoreCase("CHEST") || mat.equalsIgnoreCase("FURNACE") || mat.equalsIgnoreCase("DISPENSER")){
+				Location loc = mgm.getRestoreBlocks().get(name).getLocation();
+				
+				if(loc.getBlock().getType() != Material.getMaterial(mat)){
+					loc.getBlock().setType(Material.getMaterial(mat));
+				}
+				
+				if(loc.getBlock().getState() instanceof Chest){
+					Chest chest = (Chest) loc.getBlock().getState();
+					chest.getInventory().clear();
+					chest.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
+				}
+				else if(loc.getBlock().getState() instanceof Furnace){
+					Furnace furnace = (Furnace) loc.getBlock().getState();
+					furnace.getInventory().clear();
+					furnace.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
+				}
+				else if(loc.getBlock().getState() instanceof Dispenser){
+					Dispenser dispenser = (Dispenser) loc.getBlock().getState();
+					dispenser.getInventory().clear();
+					dispenser.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
+				}
+			}
+		}
 	}
 }

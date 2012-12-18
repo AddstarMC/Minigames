@@ -30,6 +30,7 @@ public class PlayerData {
 	private Map<String, Integer> playerHealth = new HashMap<String, Integer>();
 	private Map<String, Float> playerSaturation = new HashMap<String, Float>();
 	private Map<String, Boolean> allowTP = new HashMap<String, Boolean>();
+	private Map<String, Boolean> allowGMChange = new HashMap<String, Boolean>();
 	private Map<Player, GameMode> lastGM = new HashMap<Player, GameMode>();
 	
 	//Stats
@@ -42,41 +43,40 @@ public class PlayerData {
 	
 	public PlayerData(){}
 	
-	public void joinMinigame(Player player, String minigame) {
-		Minigame mgm = mdata.getMinigame(minigame);
-		String gametype = mgm.getType();
+	public void joinMinigame(Player player, Minigame minigame) {
+		String gametype = minigame.getType();
 		
-		JoinMinigameEvent event = new JoinMinigameEvent(player, mgm);
+		JoinMinigameEvent event = new JoinMinigameEvent(player, minigame);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
 		if(!event.isCancelled()){
 			if(mdata.getMinigameTypes().contains(gametype)){
 				setAllowTP(player, true);
-				mdata.minigameType(gametype).joinMinigame(player, mgm);
+				mdata.minigameType(gametype).joinMinigame(player, minigame);
 				setAllowTP(player, false);
 			}
 			else{
 				player.sendMessage(ChatColor.RED + "That gametype doesn't exist!");
 			}
 			setAllowTP(player, false);
+			setAllowGMChange(player, false);
 		}
 	}
 	
-	public void joinWithBet(Player player, String minigame){
-		Minigame mgm = mdata.getMinigame(minigame);
+	public void joinWithBet(Player player, Minigame minigame){
 		
-		JoinMinigameEvent event = new JoinMinigameEvent(player, mgm, true);
+		JoinMinigameEvent event = new JoinMinigameEvent(player, minigame, true);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
 		if(!event.isCancelled()){
-			if(mgm != null && mgm.bettingEnabled() && mgm.isEnabled() && (mdata.getMinigame(minigame).getMpTimer() == null || mdata.getMinigame(minigame).getMpTimer().getPlayerWaitTimeLeft() != 0)){
-				if(mdata.getMinigame(minigame).getMpBets() == null){
-					mdata.getMinigame(minigame).setMpBets(new MultiplayerBets());
+			if(minigame != null && minigame.bettingEnabled() && minigame.isEnabled() && (minigame.getMpTimer() == null || minigame.getMpTimer().getPlayerWaitTimeLeft() != 0)){
+				if(minigame.getMpBets() == null){
+					minigame.setMpBets(new MultiplayerBets());
 				}
-				MultiplayerBets pbet = mdata.getMinigame(minigame).getMpBets(); 
+				MultiplayerBets pbet = minigame.getMpBets(); 
 				ItemStack item = player.getItemInHand().clone();
 				if(pbet.canBet(player, item) && item.getType() != Material.AIR && pbet.betValue(item.getType()) > 0){
-					if(mdata.getMinigame(minigame).getPlayers().isEmpty() || mdata.getMinigame(minigame).getPlayers().size() != mgm.getMaxPlayers()){
+					if(minigame.getPlayers().isEmpty() || minigame.getPlayers().size() != minigame.getMaxPlayers()){
 						player.sendMessage(ChatColor.GRAY + "You've placed your bet! Good Luck!");
 						pbet.addBet(player, item);
 						player.getInventory().removeItem(new ItemStack(item.getType(), 1));
@@ -91,14 +91,14 @@ public class PlayerData {
 				}
 				else{
 					player.sendMessage(ChatColor.RED + "You haven't placed a high enough bet.");
-					player.sendMessage(ChatColor.RED + "You must bet a " + mdata.getMinigame(minigame).getMpBets().highestBetName() + " or better.");
+					player.sendMessage(ChatColor.RED + "You must bet a " + minigame.getMpBets().highestBetName() + " or better.");
 				}
 			}
 			else if (player.getItemInHand().getType() != Material.AIR){
 				player.sendMessage(ChatColor.GRAY + "Bets are not enabled in this minigame.");
 				player.sendMessage(ChatColor.RED + "Your hand must be empty to join this minigame!");
 			}
-			else if(mdata.getMinigame(minigame).getMpTimer().getPlayerWaitTimeLeft() == 0){
+			else if(minigame.getMpTimer().getPlayerWaitTimeLeft() == 0){
 				player.sendMessage(ChatColor.RED + "The game has already started. Please try again later.");
 			}
 			else{
@@ -213,8 +213,8 @@ public class PlayerData {
 				//}
 			}
 			
-			if(!mgm.getLoadout().isEmpty()){
-				mdata.equiptLoadout(minigame, players.get(i));
+			if(mgm.hasDefaultLoadout()){
+				mgm.getDefaultPlayerLoadout().equiptLoadout(players.get(i));
 			}
 		}
 
@@ -268,6 +268,7 @@ public class PlayerData {
 			
 			mdata.minigameType(mgm.getType()).quitMinigame(player, mgm, forced);
 			removePlayerMinigame(player);
+			mgm.removePlayersLoadout(player);
 			saveItems(player);
 			saveInventoryConfig();
 			
@@ -302,6 +303,7 @@ public class PlayerData {
 			mdata.minigameType(mgm.getType()).endMinigame(player, mgm);
 			
 			removePlayerMinigame(player);
+			mgm.removePlayersLoadout(player);
 			saveItems(player);
 			saveInventoryConfig();
 			
@@ -313,7 +315,7 @@ public class PlayerData {
 			
 			removeAllPlayerFlags(player);
 			
-			if(plugin.getSQL() == null){
+			if(plugin.getSQL() == null || !plugin.getSQL().checkConnection()){
 				removePlayerDeath(player);
 				removePlayerKills(player);
 			}
@@ -394,15 +396,9 @@ public class PlayerData {
 		player.setFoodLevel(playerFood.get(player.getName()));
 		player.setHealth(playerHealth.get(player.getName()));
 		player.setSaturation(playerSaturation.get(player.getName()));
-		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-			
-			@Override
-			public void run() {
-				player.setGameMode(lastGM.get(player));
-				lastGM.remove(player);
-			}
-		});
+		setAllowGMChange(player, true);
+		player.setGameMode(lastGM.get(player));
+		setAllowGMChange(player, false);
 		
 		invsave.getConfig().set("inventories." + player.getName(), null);
 		invsave.saveConfig();
@@ -416,6 +412,14 @@ public class PlayerData {
 	
 	public void setAllowTP(Player player, Boolean var){
 		allowTP.put(player.getName(), var);
+	}
+	
+	public Boolean getAllowGMChange(Player player){
+		return allowGMChange.get(player.getName());
+	}
+	
+	public void setAllowGMChange(Player player, Boolean var){
+		allowGMChange.put(player.getName(), var);
 	}
 	
 	public void setPlayerCheckpoints(Player player, Location checkpoint){

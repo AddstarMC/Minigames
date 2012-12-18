@@ -1,6 +1,6 @@
 name: Minigames
 main: com.pauldavdesign.mineauz.minigames.Minigames
-version: 1.3.3
+version: 1.3.4 Dev 1
 author: _Razz_
 
 commands:
@@ -44,6 +44,7 @@ permissions:
             minigame.treasure.announce: true
             minigame.treasure.hint: true
             minigame.list: true
+            minigame.regen: true
     minigame.join:
         description: Allows access to start a minigame
         default: op
@@ -78,16 +79,14 @@ permissions:
             minigame.set.end: true
             minigame.set.quit: true
             minigame.set.reward: true
-            minigame.set.sfloor: true
+            minigame.set.spleeffloor: true
             minigame.set.type: true
             minigame.set.lobby: true
             minigame.set.bets: true
             minigame.set.maxplayers: true
             minigame.set.minplayers: true
             minigame.set.loadout: true
-            minigame.set.flag.add: true
-            minigame.set.flag.remove: true
-            minigame.set.flag.list: true
+            minigame.set.flag: true
             minigame.set.restoreblock: true
             minigame.set.location: true
             minigame.set.maxradius: true
@@ -95,7 +94,7 @@ permissions:
             minigame.set.usepermissions: true
             minigame.set.minscore: true
             minigame.set.maxscore: true
-            minigame.set.sfloormat: true
+            minigame.set.spleeffloormat: true
             minigame.set.mintreasure: true
             minigame.set.maxtreasure: true
     minigame.set.start:
@@ -116,10 +115,10 @@ permissions:
     minigame.set.lobby:
         description: Allows players to set lobby position
         default: op
-    minigame.set.sfloor:
+    minigame.set.spleeffloor:
         description: Allows players to set the spleef floor corners
         default: op
-    minigame.set.sfloormat:
+    minigame.set.spleeffloormat:
         description: Allows a player to change the floor material for spleef.
         default: op
     minigame.set.bets:
@@ -134,14 +133,8 @@ permissions:
     minigame.set.loadout:
         description: Access to setting loadout item for a minigame
         default: op
-    minigame.set.flag.add:
-        description: Access to adding a flag to a minigame
-        default: op
-    minigame.set.flag.remove:
-        description: Access to removing a flag to a minigame
-        default: op
-    minigame.set.flag.list:
-        description: Lets the player see a list of all flags in a minigame.
+    minigame.set.flag:
+        description: Access to adding, removing and clearing flags in a Minigame
         default: op
     minigame.set.location:
         description: Access to adding a treasure hunt location name
@@ -203,6 +196,6 @@ permissions:
     minigame.toggletimer:
         description: Allows a player to pause a multiplayer countdown timer.
         default: op
-    minigame.sregen:
+    minigame.regen:
         description: Allows a player to regenerate a spleef floor.
         default: op

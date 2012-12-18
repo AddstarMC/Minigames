@@ -288,9 +288,11 @@ public class DMMinigame extends MinigameType{
 				}
 			});
 			
-			if(!mg.getLoadout().isEmpty()){
-				mdata.equiptLoadout(mg.getName(), event.getPlayer());
-			}
+			mg.getLoadout(mg.getPlayersLoadout(event.getPlayer())).equiptLoadout(event.getPlayer());
+			
+//			if(mg.hasDefaultLoadout()){
+//				mg.getDefaultPlayerLoadout().equiptLoadout(event.getPlayer());
+//			}
 		}
 	}
 }

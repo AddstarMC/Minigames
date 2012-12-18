@@ -62,7 +62,7 @@ public class SpleefFloorGen {
 		spoint2.setZ(maxZ);
 	}
 	
-	public void regenFloor(final Material mat){
+	public void regenFloor(final Material mat, final boolean overwrite){
 		Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
 
 			Location curblock = spoint1.clone();
@@ -78,7 +78,7 @@ public class SpleefFloorGen {
 					curblock.setY(y);
 					for(int i = spoint1.getBlockX(); i <= spoint2.getBlockX() + 1; i++){
 						for(int k = spoint1.getBlockZ(); k <= spoint2.getBlockZ() + 1; k++){
-							if(curblock.getBlock().getType() == Material.AIR){
+							if(overwrite || curblock.getBlock().getType() == Material.AIR){
 								curblock.getBlock().setType(mat);
 							}
 							curblock.setZ(k);

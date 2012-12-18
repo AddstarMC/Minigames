@@ -50,7 +50,7 @@ public class SpleefMinigame extends MinigameType{
 					if(mgm.getFloorDegenerator() != null){
 						mgm.getFloorDegenerator().stopDegenerator();
 					}
-					floor.regenFloor(mgm.getSpleefFloorMaterial());
+					floor.regenFloor(mgm.getSpleefFloorMaterial(), false);
 						
 					if(mdata.getMinigame(minigame).getMpBets() != null){
 						player.getInventory().addItem(mdata.getMinigame(minigame).getMpBets().getPlayersBet(player));
@@ -117,7 +117,7 @@ public class SpleefMinigame extends MinigameType{
 			mdata.getMinigame(minigame).getMpTimer().setStartWaitTime(0);
 			SpleefFloorGen floor = new SpleefFloorGen(mgm.getSpleefFloor1(), mgm.getSpleefFloor2());
 			mgm.getFloorDegenerator().stopDegenerator();
-			floor.regenFloor(mgm.getSpleefFloorMaterial());
+			floor.regenFloor(mgm.getSpleefFloorMaterial(), false);
 			
 			mdata.getMinigame(minigame).setMpTimer(null);
 			for(Player pl : mdata.getMinigame(minigame).getPlayers()){

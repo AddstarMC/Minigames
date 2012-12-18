@@ -1,0 +1,183 @@
+package com.pauldavdesign.mineauz.minigames.commands.set;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.commands.ICommand;
+
+public class SetCommand implements ICommand{
+	private static Map<String, ICommand> parameterList = new HashMap<String, ICommand>();
+	static{
+		registerSetCommand(new SetStartCommand());
+		registerSetCommand(new SetEndCommand());
+		registerSetCommand(new SetQuitCommand());
+		registerSetCommand(new SetLobbyCommand());
+		registerSetCommand(new SetRewardCommand());
+		registerSetCommand(new SetSecondaryRewardCommand());
+		registerSetCommand(new SetTypeCommand());
+		registerSetCommand(new SetSpleefFloorCommand());
+		registerSetCommand(new SetSpleefFloorMatCommand());
+		registerSetCommand(new SetMaxPlayersCommand());
+		registerSetCommand(new SetMinPlayersCommand());
+		registerSetCommand(new SetLoadoutCommand());
+		registerSetCommand(new SetEnabledCommand());
+		registerSetCommand(new SetMaxRadiusCommand());
+		registerSetCommand(new SetMinTreasureCommand());
+		registerSetCommand(new SetMaxTreasureCommand());
+		registerSetCommand(new SetFlagCommand());
+		registerSetCommand(new SetBetsCommand());
+		registerSetCommand(new SetLocationCommand());
+		registerSetCommand(new SetRestoreBlockCommand());
+		registerSetCommand(new SetUsePermissionsCommand());
+		registerSetCommand(new SetMinScoreCommand());
+		registerSetCommand(new SetMaxScoreCommand());
+	}
+	
+	public static void registerSetCommand(ICommand command){
+		parameterList.put(command.getName(), command);
+	}
+
+	@Override
+	public String getName() {
+		return "set";
+	}
+	
+	@Override
+	public String[] getAliases(){
+		return null;
+	}
+
+	@Override
+	public boolean canBeConsole() {
+		return true;
+	}
+
+	@Override
+	public String getDescription() {
+		return "Modifies a Minigame using special parameters for each game type.";
+	}
+
+	@Override
+	public String[] getUsage() {
+		return new String[] {"/minigame set <Minigame> <Parameters>..."};
+	}
+
+	@Override
+	public String[] getParameters(){
+		String[] parameters = new String[parameterList.size()];
+		int inc = 0;
+		for(String key : parameterList.keySet()){
+			parameters[inc] = key;
+			inc++;
+		}
+		return parameters;
+	}
+	
+	@Override
+	public String getPermissionMessage() {
+		return null;
+	}
+
+	@Override
+	public String getPermission() {
+		return null;
+	}
+
+	@Override
+	public boolean onCommand(CommandSender sender, Minigame minigame, String label, String[] args) {
+		Player ply = null;
+		if(sender instanceof Player){
+			ply = (Player)sender;
+		}
+		
+		if(args != null){
+			ICommand comd = null;
+			Minigame mgm = null;
+			String[] shortArgs = null;
+			
+			if(args.length >= 1){
+				if(mdata.hasMinigame(args[0])){
+					mgm = mdata.getMinigame(args[0]);
+				}
+				if(args.length >= 2){
+					if(parameterList.containsKey(args[1].toLowerCase())){
+						comd = parameterList.get(args[1].toLowerCase());
+					}
+					else{
+AliasCheck:				for(ICommand com : parameterList.values()){
+							if(com.getAliases() != null){
+								for(String alias : com.getAliases()){
+									if(args[1].equalsIgnoreCase(alias)){
+										comd = com;
+										break AliasCheck;
+									}
+								}
+							}
+						}
+					}
+				}
+				
+				if(args != null && args.length > 2){
+					shortArgs = new String[args.length - 2];
+					for(int i = 2; i < args.length; i++){
+						shortArgs[i - 2] = args[i];
+					}
+				}
+			}
+			
+			if(comd != null && mgm != null){
+				if((ply == null && comd.canBeConsole()) || ply != null){
+					if(ply == null || (comd.getPermission() == null || ply.hasPermission(comd.getPermission()))){
+						boolean returnValue = comd.onCommand(sender, mgm, label, shortArgs);
+						if(!returnValue){
+							sender.sendMessage(ChatColor.GREEN + "------------------Command Info------------------");
+							sender.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + comd.getDescription());
+							if(comd.getParameters() != null){
+								String parameters = "";
+								boolean switchColour = false;
+								for(String par : comd.getParameters()){
+									if(switchColour){
+										parameters += ChatColor.WHITE + par;
+										if(!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])){
+											parameters += ChatColor.WHITE + ", ";
+										}
+										switchColour = false;
+									}
+									else{
+										parameters += ChatColor.GRAY + par;
+										if(!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])){
+											parameters += ChatColor.WHITE + ", ";
+										}
+										switchColour = true;
+									}
+								}
+								sender.sendMessage(ChatColor.BLUE + "Parameters: " + parameters);
+							}
+							sender.sendMessage(ChatColor.BLUE + "Usage: ");
+							sender.sendMessage(comd.getUsage());
+						}
+					}
+					else{
+						sender.sendMessage(ChatColor.RED + comd.getPermissionMessage());
+						sender.sendMessage(ChatColor.RED + comd.getPermission());
+					}
+					return true;
+				}
+				else{
+					sender.sendMessage(ChatColor.RED + "You must be a player to execute this command!");
+					return true;
+				}
+			}
+			else if(mgm == null){
+				sender.sendMessage(ChatColor.RED + "There is no Minigame by the name \"" + args[0] + "\"");
+			}
+		}
+		return false;
+	}
+	
+}

@@ -27,7 +27,9 @@ public class Minigame {
 	private Location endPosition = null;
 	private Location quitPosition = null;
 	private Location lobbyPosisiton = null;
-	private List<ItemStack> loadout = new ArrayList<ItemStack>();
+	private PlayerLoadout defaultLoadout = new PlayerLoadout("default");
+	private Map<String, PlayerLoadout> extraLoadouts = new HashMap<String, PlayerLoadout>();
+	private Map<Player, String> playerLoadouts = new HashMap<Player, String>();
 	private Map<String, RestoreBlock> restoreBlocks = new HashMap<String, RestoreBlock>();
 	private boolean betting = false;
 	private String location = null;
@@ -199,20 +201,93 @@ public class Minigame {
 		return false;
 	}
 	
-	public void addLoadoutItem(ItemStack item){
-		loadout.add(item);
+//	public void addLoadoutItem(ItemStack item){
+//		loadout.add(item);
+//	}
+//	
+//	public List<ItemStack> getLoadout(){
+//		return loadout;
+//	}
+//	
+//	public boolean removeLoadoutItem(ItemStack item){
+//		if(loadout.contains(item)){
+//			loadout.remove(item);
+//			return true;
+//		}
+//		return false;
+//	}
+	
+	public PlayerLoadout getDefaultPlayerLoadout(){
+		return defaultLoadout;
 	}
 	
-	public List<ItemStack> getLoadout(){
-		return loadout;
+	public boolean hasDefaultLoadout(){
+		if(defaultLoadout.getItems().isEmpty()){
+			return false;
+		}
+		return true;
 	}
 	
-	public boolean removeLoadoutItem(ItemStack item){
-		if(loadout.contains(item)){
-			loadout.remove(item);
+	public void addLoadout(String name){
+		extraLoadouts.put(name, new PlayerLoadout(name));
+	}
+	
+	public void deleteLoadout(String name){
+		if(extraLoadouts.containsKey(name)){
+			extraLoadouts.remove(name);
+		}
+	}
+	
+	public Set<String> getLoadouts(){
+		return extraLoadouts.keySet();
+	}
+	
+	public PlayerLoadout getLoadout(String name){
+		PlayerLoadout pl = null;
+		if(name == "default"){
+			pl = getDefaultPlayerLoadout();
+		}
+		else{
+			if(extraLoadouts.containsKey(name)){
+				pl = extraLoadouts.get(name);
+			}
+		}
+		return pl;
+	}
+	
+	public boolean hasLoadouts(){
+		if(extraLoadouts.isEmpty()){
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean hasLoadout(String name){
+		if(!name.equalsIgnoreCase("default")){
+			return extraLoadouts.containsKey(name);
+		}
+		else{
 			return true;
 		}
-		return false;
+	}
+	
+	public String getPlayersLoadout(Player player){
+		if(playerLoadouts.containsKey(player)){
+			return playerLoadouts.get(player);
+		}
+		return "default";
+	}
+	
+	public void setPlayersLoadout(Player player, String loadout){
+		playerLoadouts.put(player, loadout);
+	}
+	
+	public void removePlayersLoadout(Player player){
+		playerLoadouts.remove(player);
+	}
+	
+	public void removeAllPlayerLoadouts(){
+		playerLoadouts.clear();
 	}
 	
 	public boolean isEnabled(){
@@ -517,12 +592,21 @@ public class Minigame {
 		if(getSpleefFloor2() != null){
 			Minigames.plugin.mdata.minigameSetLocations(name, getSpleefFloor2(), "sfloorpos.2", minigame.getConfig());
 		}
+		
 		if(getMinTreasure() != 0){
 			minigame.getConfig().set(name + ".mintreasure", getMinTreasure());
 		}
+		else{
+			minigame.getConfig().set(name + ".mintreasure", null);
+		}
+		
 		if(getMaxTreasure() != 8){
 			minigame.getConfig().set(name + ".maxtreasure", getMaxTreasure());
 		}
+		else{
+			minigame.getConfig().set(name + ".maxtreasure", null);
+		}
+		
 		minigame.getConfig().set(name + ".type", getType());
 		minigame.getConfig().set(name + ".minplayers", getMinPlayers());
 		minigame.getConfig().set(name + ".maxplayers", getMaxPlayers());
@@ -533,36 +617,85 @@ public class Minigame {
 		if(getRewardItem() != null){
 			minigame.getConfig().set(name + ".reward", getRewardItem());
 		}
+		else{
+			minigame.getConfig().set(name + ".reward", null);
+		}
+		
 		if(getSecondaryRewardItem() != null){
 			minigame.getConfig().set(name + ".reward2", getSecondaryRewardItem());
 		}
+		else{
+			minigame.getConfig().set(name + ".reward2", null);
+		}
+				
 		if(getRewardPrice() != 0){
 			minigame.getConfig().set(name + ".rewardprice", getRewardPrice());
 		}
+		else{
+			minigame.getConfig().set(name + ".rewardprice", null);
+		}
+		
 		if(getSecondaryRewardPrice() != 0){
 			minigame.getConfig().set(name + ".rewardprice2", getSecondaryRewardPrice());
 		}
+		else{
+			minigame.getConfig().set(name + ".rewardprice2", null);
+		}
+		
 		if(!getFlags().isEmpty()){
 			minigame.getConfig().set(name + ".flags", getFlags());
 		}
+		else{
+			minigame.getConfig().set(name + ".flags", null);
+		}
+		
 		if(getSpleefFloorMaterial() != Material.SNOW_BLOCK){
 			minigame.getConfig().set(name + ".spleeffloormat", getSpleefFloorMaterial().getId());
 		}
-		if(!getLoadout().isEmpty()){
+		else{
+			minigame.getConfig().set(name + ".spleeffloormat", null);
+		}
+//		if(!getLoadout().isEmpty()){
+//			minigame.getConfig().set(name + ".loadout", null);
+//			for(int i = 0; i < getLoadout().size(); i++){
+//				minigame.getConfig().set(name + ".loadout." + i, getLoadout().get(i));
+//			}
+//		}
+		if(hasDefaultLoadout()){
 			minigame.getConfig().set(name + ".loadout", null);
-			for(int i = 0; i < getLoadout().size(); i++){
-				minigame.getConfig().set(name + ".loadout." + i, getLoadout().get(i));
+			for(int i = 0; i < getDefaultPlayerLoadout().getItems().size(); i++){
+				minigame.getConfig().set(name + ".loadout." + i, getDefaultPlayerLoadout().getItems().get(i));
 			}
 		}
 		else{
 			minigame.getConfig().set(name + ".loadout", null);
 		}
+		
+		if(hasLoadouts()){
+			for(String loadout : getLoadouts()){
+				for(int i = 0; i < getLoadout(loadout).getItems().size(); i++){
+					minigame.getConfig().set(name + ".extraloadouts." + loadout + "." + i, getLoadout(loadout).getItems().get(i));
+				}
+			}
+		}
+		else{
+			minigame.getConfig().set(name + ".extraloadouts", null);
+		}
+		
 		if(getMaxScore() != 10){
 			minigame.getConfig().set(name + ".maxscore", getMaxScore());
 		}
+		else{
+			minigame.getConfig().set(name + ".maxscore", null);
+		}
+		
 		if(getMinScore() != 5){
 			minigame.getConfig().set(name + ".minscore", getMinScore());
 		}
+		else{
+			minigame.getConfig().set(name + ".minscore", null);
+		}
+		
 		if(!restoreBlocks.isEmpty()){
 			Set<String> blocks = restoreBlocks.keySet();
 			for(String block : blocks){
@@ -575,8 +708,15 @@ public class Minigame {
 						}
 					}
 				}
+				else{
+					minigame.getConfig().set(name + ".resblocks." + block + ".items", null);
+				}
 			}
 		}
+		else{
+			minigame.getConfig().set(name + ".resblocks", null);
+		}
+		
 		if(getLocation() != null){
 			minigame.getConfig().set(name + ".location", getLocation());
 		}
@@ -657,7 +797,17 @@ public class Minigame {
 		if(minigame.getConfig().contains(name + ".loadout")){
 			Set<String> keys = minigame.getConfig().getConfigurationSection(name + ".loadout").getKeys(false);
 			for(int i = 0; i < keys.size(); i++){
-				addLoadoutItem(minigame.getConfig().getItemStack(name + ".loadout." + i));
+				getDefaultPlayerLoadout().addItemToLoadout(minigame.getConfig().getItemStack(name + ".loadout." + i));
+			}
+		}
+		if(minigame.getConfig().contains(name + ".extraloadouts")){
+			Set<String> keys = minigame.getConfig().getConfigurationSection(name + ".extraloadouts").getKeys(false);
+			for(String loadout : keys){
+				addLoadout(loadout);
+				Set<String> items = minigame.getConfig().getConfigurationSection(name + ".extraloadouts." + loadout).getKeys(false);
+				for(int i = 0; i < items.size(); i++){
+					getDefaultPlayerLoadout().addItemToLoadout(minigame.getConfig().getItemStack(name + ".extraloadouts." + loadout + "." + i));
+				}
 			}
 		}
 		if(minigame.getConfig().contains(name + ".maxscore")){
@@ -698,5 +848,10 @@ public class Minigame {
 		}
 		
 		saveMinigame();
+	}
+	
+	@Override
+	public String toString(){
+		return getName();
 	}
 }

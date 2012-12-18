@@ -2,15 +2,9 @@ package com.pauldavdesign.mineauz.minigames.gametypes;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Chest;
-import org.bukkit.block.Dispenser;
-import org.bukkit.block.Furnace;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -142,34 +136,7 @@ public class LMSMinigame extends MinigameType {
 		}
 		
 		if(mgm.hasRestoreBlocks()){
-			Set<String> blocks = mgm.getRestoreBlocks().keySet();
-			
-			for(String name : blocks){
-				String mat = mgm.getRestoreBlocks().get(name).getBlock().toString();
-				if(mat.equalsIgnoreCase("CHEST") || mat.equalsIgnoreCase("FURNACE") || mat.equalsIgnoreCase("DISPENSER")){
-					Location loc = mgm.getRestoreBlocks().get(name).getLocation();
-					
-					if(loc.getBlock().getType() != Material.getMaterial(mat)){
-						loc.getBlock().setType(Material.getMaterial(mat));
-					}
-					
-					if(loc.getBlock().getState() instanceof Chest){
-						Chest chest = (Chest) loc.getBlock().getState();
-						chest.getInventory().clear();
-						chest.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
-					}
-					else if(loc.getBlock().getState() instanceof Furnace){
-						Furnace furnace = (Furnace) loc.getBlock().getState();
-						furnace.getInventory().clear();
-						furnace.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
-					}
-					else if(loc.getBlock().getState() instanceof Dispenser){
-						Dispenser dispenser = (Dispenser) loc.getBlock().getState();
-						dispenser.getInventory().clear();
-						dispenser.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
-					}
-				}
-			}
+			mdata.restoreMinigameBlocks(mgm);
 		}
 
 		player.setFireTicks(0);

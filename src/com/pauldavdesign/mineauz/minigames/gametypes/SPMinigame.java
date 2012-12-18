@@ -56,9 +56,11 @@ public class SPMinigame extends MinigameType{
 		else if(!mgm.isEnabled()){
 			player.sendMessage(ChatColor.RED + "This minigame is not enabled!");
 		}
-		if(!mgm.getLoadout().isEmpty()){
-			mdata.equiptLoadout(mgm.getName(), player);
-		}
+		
+		mgm.getLoadout(mgm.getPlayersLoadout(player)).equiptLoadout(player);
+//		if(mgm.hasDefaultLoadout()){
+//			mgm.getDefaultPlayerLoadout().equiptLoadout(player);
+//		}
 	}
 	
 	@Override
@@ -121,9 +123,10 @@ public class SPMinigame extends MinigameType{
 				event.setRespawnLocation(pdata.getPlayerCheckpoint(event.getPlayer()));
 				event.getPlayer().sendMessage(ChatColor.GRAY + "Bad Luck! Returning to checkpoint.");
 				
-				if(!mgm.getLoadout().isEmpty()){
-					mdata.equiptLoadout(minigame, event.getPlayer());
-				}
+				mgm.getLoadout(mgm.getPlayersLoadout(event.getPlayer())).equiptLoadout(event.getPlayer());
+//				if(mgm.hasDefaultLoadout()){
+//					mgm.getDefaultPlayerLoadout().equiptLoadout(event.getPlayer());
+//				}
 			}
 		}
 	}
