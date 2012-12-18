@@ -134,10 +134,6 @@ public class LMSMinigame extends MinigameType {
 				mdata.getMinigame(minigame).getPlayers().remove(pl);
 			}
 		}
-		
-		if(mgm.hasRestoreBlocks()){
-			mdata.restoreMinigameBlocks(mgm);
-		}
 
 		player.setFireTicks(0);
 		

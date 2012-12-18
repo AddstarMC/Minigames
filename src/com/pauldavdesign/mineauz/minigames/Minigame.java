@@ -244,7 +244,7 @@ public class Minigame {
 	
 	public PlayerLoadout getLoadout(String name){
 		PlayerLoadout pl = null;
-		if(name == "default"){
+		if(name.equalsIgnoreCase("default")){
 			pl = getDefaultPlayerLoadout();
 		}
 		else{
@@ -806,7 +806,7 @@ public class Minigame {
 				addLoadout(loadout);
 				Set<String> items = minigame.getConfig().getConfigurationSection(name + ".extraloadouts." + loadout).getKeys(false);
 				for(int i = 0; i < items.size(); i++){
-					getDefaultPlayerLoadout().addItemToLoadout(minigame.getConfig().getItemStack(name + ".extraloadouts." + loadout + "." + i));
+					getLoadout(loadout).addItemToLoadout(minigame.getConfig().getItemStack(name + ".extraloadouts." + loadout + "." + i));
 				}
 			}
 		}

@@ -36,6 +36,11 @@ public class PlayerLoadout {
 	}
 	
 	public void equiptLoadout(Player player){
+		player.getInventory().clear();
+		player.getInventory().setHelmet(new ItemStack(0));
+		player.getInventory().setChestplate(new ItemStack(0));
+		player.getInventory().setLeggings(new ItemStack(0));
+		player.getInventory().setBoots(new ItemStack(0));
 		if(!items.isEmpty()){
 			for(ItemStack item : items){
 				if(item.getTypeId() >= 298 && item.getTypeId() <= 317){

@@ -320,6 +320,10 @@ public class PlayerData {
 				removePlayerKills(player);
 			}
 			
+			if(mgm.hasRestoreBlocks()){
+				mdata.restoreMinigameBlocks(mgm);
+			}
+			
 			setAllowTP(player, false);
 		}
 	}

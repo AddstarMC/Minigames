@@ -22,7 +22,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.events.RevertCheckpointEvent;
 
@@ -206,8 +205,6 @@ public class Events implements Listener{
 							Player ply = event.getPlayer();
 							Minigame mgm = mdata.getMinigame(minigame);
 							if(mgm.hasLoadout(sign.getLine(2))){
-								ply.getInventory().clear();
-								ply.getInventory().setArmorContents(new ItemStack[] {});
 								mgm.getLoadout(sign.getLine(2)).equiptLoadout(ply);
 								mgm.setPlayersLoadout(ply, sign.getLine(2));
 								ply.updateInventory();
