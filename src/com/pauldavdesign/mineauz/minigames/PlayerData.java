@@ -213,8 +213,8 @@ public class PlayerData {
 				//}
 			}
 			
-			if(mgm.hasDefaultLoadout()){
-				mgm.getDefaultPlayerLoadout().equiptLoadout(players.get(i));
+			if(mgm.hasDefaultLoadout() || mgm.hasLoadouts()){
+				mgm.getLoadout(mgm.getPlayersLoadout(players.get(i))).equiptLoadout(players.get(i));
 			}
 		}
 

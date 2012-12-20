@@ -205,7 +205,9 @@ public class Events implements Listener{
 							Player ply = event.getPlayer();
 							Minigame mgm = mdata.getMinigame(minigame);
 							if(mgm.hasLoadout(sign.getLine(2))){
-								mgm.getLoadout(sign.getLine(2)).equiptLoadout(ply);
+								if(mgm.getType() == "sp" || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
+									mgm.getLoadout(sign.getLine(2)).equiptLoadout(ply);
+								}
 								mgm.setPlayersLoadout(ply, sign.getLine(2));
 								ply.updateInventory();
 								ply.sendMessage(ChatColor.GREEN + "You have been equip with the " + sign.getLine(2) + " loadout.");

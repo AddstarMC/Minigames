@@ -62,7 +62,7 @@ public class QuitCommand implements ICommand{
 			}
 			return true;
 		}
-		else if(args.length > 1){
+		else if(args != null){
 			Player player = null;
 			if(sender instanceof Player){
 				player = (Player)sender;
@@ -71,12 +71,12 @@ public class QuitCommand implements ICommand{
 				List<Player> plist = pdata.playersInMinigame();
 				Player ply = null;
 				for(Player p : plist){
-					if(p.getName().toLowerCase().contains(args[1].toLowerCase())){
+					if(p.getName().toLowerCase().contains(args[0].toLowerCase())){
 						ply = p;
 					}
 				}
 				if(ply != null){
-					pdata.quitMinigame(ply, false);
+					pdata.quitMinigame(ply, true);
 					sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to quit the minigame.");
 				}
 				else{

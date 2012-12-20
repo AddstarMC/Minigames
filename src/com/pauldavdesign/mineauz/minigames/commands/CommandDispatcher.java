@@ -47,7 +47,7 @@ public class CommandDispatcher implements CommandExecutor{
 			ply = (Player)sender;
 		}
 		
-		if(args != null){
+		if(args != null && args.length > 0){
 			ICommand comd = null;
 			String[] shortArgs = null;
 			

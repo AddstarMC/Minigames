@@ -71,7 +71,7 @@ public class EndCommand implements ICommand{
 				List<Player> plist = pdata.playersInMinigame();
 				Player ply = null;
 				for(Player p : plist){
-					if(p.getName().toLowerCase().contains(args[1].toLowerCase())){
+					if(p.getName().toLowerCase().contains(args[0].toLowerCase())){
 						ply = p;
 					}
 				}
