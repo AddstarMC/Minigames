@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraft.server.v1_4_5.EntityPlayer;
-import net.minecraft.server.v1_4_5.Packet20NamedEntitySpawn;
-import net.minecraft.server.v1_4_5.Packet5EntityEquipment;
+import net.minecraft.server.v1_4_6.EntityPlayer;
+import net.minecraft.server.v1_4_6.Packet20NamedEntitySpawn;
+import net.minecraft.server.v1_4_6.Packet5EntityEquipment;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,8 +18,8 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.Furnace;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.craftbukkit.v1_4_5.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -164,7 +164,7 @@ public class TeamDMMinigame extends MinigameType{
 				
 				for(Player ply : plugin.getServer().getOnlinePlayers()){
 					if(ply != player){
-						((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet20NamedEntitySpawn(changeingName));
+						((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet20NamedEntitySpawn(changeingName));
 					}
 				}
 				
@@ -269,7 +269,7 @@ public class TeamDMMinigame extends MinigameType{
 		EntityPlayer changeingName = ((CraftPlayer) player).getHandle();
 		for(Player ply : plugin.getServer().getOnlinePlayers()){
 			if(ply != player && !player.isDead() && player.isOnline()){
-				((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet20NamedEntitySpawn(changeingName));
+				((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet20NamedEntitySpawn(changeingName));
 			}
 		}
 		
@@ -315,7 +315,7 @@ public class TeamDMMinigame extends MinigameType{
 		EntityPlayer changeingName = ((CraftPlayer) player).getHandle();
 		for(Player ply : plugin.getServer().getOnlinePlayers()){
 			if(ply != player){
-				((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet20NamedEntitySpawn(changeingName));
+				((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet20NamedEntitySpawn(changeingName));
 			}
 		}
 		
@@ -483,22 +483,23 @@ public class TeamDMMinigame extends MinigameType{
 					helmet = (CraftItemStack) player.getInventory().getHelmet();
 				}
 				
-				((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet20NamedEntitySpawn(changeingName));
+				//((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet20NamedEntitySpawn(changeingName));
+				((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet20NamedEntitySpawn(changeingName));
 				
 				if(hand != null){
-					((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 0, CraftItemStack.asNMSCopy(hand)));
+					((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 0, CraftItemStack.asNMSCopy(hand)));
 				}
 				if(boots != null){
-					((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 1, CraftItemStack.asNMSCopy(boots)));
+					((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 1, CraftItemStack.asNMSCopy(boots)));
 				}
 				if(leggings != null){
-					((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 2, CraftItemStack.asNMSCopy(leggings)));
+					((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 2, CraftItemStack.asNMSCopy(leggings)));
 				}
 				if(chest != null){
-					((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 3, CraftItemStack.asNMSCopy(chest)));
+					((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 3, CraftItemStack.asNMSCopy(chest)));
 				}
 				if(helmet != null){
-					((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 4, CraftItemStack.asNMSCopy(helmet)));
+					((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 4, CraftItemStack.asNMSCopy(helmet)));
 				}
 			}
 		}
@@ -538,22 +539,22 @@ public class TeamDMMinigame extends MinigameType{
 			helmet = (CraftItemStack) player.getInventory().getHelmet();
 		}
 		
-		((CraftPlayer) toPlayer).getHandle().netServerHandler.sendPacket(new Packet20NamedEntitySpawn(changeingName));
+		((CraftPlayer) toPlayer).getHandle().playerConnection.sendPacket(new Packet20NamedEntitySpawn(changeingName));
 		
 		if(hand != null){
-			((CraftPlayer) toPlayer).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 0, CraftItemStack.asNMSCopy(hand)));
+			((CraftPlayer) toPlayer).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 0, CraftItemStack.asNMSCopy(hand)));
 		}
 		if(boots != null){
-			((CraftPlayer) toPlayer).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 1, CraftItemStack.asNMSCopy(boots)));
+			((CraftPlayer) toPlayer).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 1, CraftItemStack.asNMSCopy(boots)));
 		}
 		if(leggings != null){
-			((CraftPlayer) toPlayer).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 2, CraftItemStack.asNMSCopy(leggings)));
+			((CraftPlayer) toPlayer).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 2, CraftItemStack.asNMSCopy(leggings)));
 		}
 		if(chest != null){
-			((CraftPlayer) toPlayer).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 3, CraftItemStack.asNMSCopy(chest)));
+			((CraftPlayer) toPlayer).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 3, CraftItemStack.asNMSCopy(chest)));
 		}
 		if(helmet != null){
-			((CraftPlayer) toPlayer).getHandle().netServerHandler.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 4, CraftItemStack.asNMSCopy(helmet)));
+			((CraftPlayer) toPlayer).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 4, CraftItemStack.asNMSCopy(helmet)));
 		}
 		
 		changeingName.name = oldName;
