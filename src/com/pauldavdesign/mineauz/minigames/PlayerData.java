@@ -53,6 +53,7 @@ public class PlayerData {
 			if(mdata.getMinigameTypes().contains(gametype)){
 				setAllowTP(player, true);
 				mdata.minigameType(gametype).joinMinigame(player, minigame);
+				addPlayerMinigame(player, minigame.getName());
 				setAllowTP(player, false);
 			}
 			else{
