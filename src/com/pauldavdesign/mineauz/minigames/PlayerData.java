@@ -359,6 +359,7 @@ public class PlayerData {
 	
 	@SuppressWarnings("deprecation")
 	public void storePlayerData(Player player, GameMode gm){
+		Bukkit.getLogger().info("Store: " + player.getName());
 		ItemStack[] items = player.getInventory().getContents();
 		ItemStack[] armour = player.getInventory().getArmorContents();
 		itemStore.put(player.getName(), items);
@@ -390,6 +391,7 @@ public class PlayerData {
 	
 	@SuppressWarnings("deprecation")
 	public void restorePlayerData(final Player player){
+		Bukkit.getLogger().info("Restore: " + player.getName());
 		player.getInventory().clear();
 		player.getInventory().setArmorContents(null);
 		

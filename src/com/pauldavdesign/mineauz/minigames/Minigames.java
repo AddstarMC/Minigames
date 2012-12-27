@@ -141,7 +141,6 @@ public class Minigames extends JavaPlugin{
 		
 		if(!setupEconomy()){
 	        getLogger().info("No Vault plugin found! You may only reward items.");
-	        return;
 		 }
 		
 		getConfig().options().copyDefaults(true);
