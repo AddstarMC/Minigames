@@ -1,6 +1,6 @@
 name: Minigames
 main: com.pauldavdesign.mineauz.minigames.Minigames
-version: 1.3.4a
+version: 1.3.5
 author: _Razz_
 
 commands:
@@ -9,7 +9,7 @@ commands:
         usage: Invalid command. Type "/minigame help" for help
         permission: minigame.minigame
         permisison-message: You don't have <permission>
-        aliases: [mgm, minigm, mgame]
+        aliases: [mgm, minigm, mgame, mg]
         
 permissions:
     minigame.minigame:
