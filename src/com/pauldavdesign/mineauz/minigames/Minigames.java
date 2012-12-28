@@ -132,7 +132,6 @@ public class Minigames extends JavaPlugin{
 				log.log(Level.SEVERE, "Could not save config.yml!");
 				e.printStackTrace();
 			}
-			ex.printStackTrace();
 		}
 		catch(Exception e){
 			log.log(Level.SEVERE, "Failed to load config!");
