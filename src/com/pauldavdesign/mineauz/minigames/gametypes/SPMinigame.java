@@ -30,8 +30,9 @@ public class SPMinigame extends MinigameType{
 	}
 	
 	@Override
-	public void joinMinigame(Player player, Minigame mgm){
+	public boolean joinMinigame(Player player, Minigame mgm){
 		if(mgm.getQuitPosition() != null && mgm.isEnabled()){
+			pdata.setAllowTP(player, true);
 			pdata.storePlayerData(player, GameMode.ADVENTURE);
 			pdata.addPlayerMinigame(player, mgm.getName());
 			player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
@@ -49,6 +50,9 @@ public class SPMinigame extends MinigameType{
 					ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + player.getName() + " has joined " + mgm.getName());
 				}
 			}
+			
+			mgm.getLoadout(mgm.getPlayersLoadout(player)).equiptLoadout(player);
+			return true;
 		}
 		else if(mgm.getQuitPosition() == null){
 			player.sendMessage(ChatColor.RED + "This minigame has no quit position!");
@@ -56,8 +60,7 @@ public class SPMinigame extends MinigameType{
 		else if(!mgm.isEnabled()){
 			player.sendMessage(ChatColor.RED + "This minigame is not enabled!");
 		}
-		
-		mgm.getLoadout(mgm.getPlayersLoadout(player)).equiptLoadout(player);
+		return false;
 //		if(mgm.hasDefaultLoadout()){
 //			mgm.getDefaultPlayerLoadout().equiptLoadout(player);
 //		}

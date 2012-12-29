@@ -47,8 +47,8 @@ public class TeamDMMinigame extends MinigameType{
 	}
 	
 	@Override
-	public void joinMinigame(final Player player, Minigame mgm){
-		if(mgm.getQuitPosition() != null && player.getGameMode() == GameMode.SURVIVAL && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
+	public boolean joinMinigame(final Player player, Minigame mgm){
+		if(mgm.getQuitPosition() != null && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
 			
 			int redSize = mgm.getRedTeam().size();
 			int blueSize = mgm.getBlueTeam().size();
@@ -138,9 +138,11 @@ public class TeamDMMinigame extends MinigameType{
 							ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + player.getName() + " has joined " + teamColour + ChatColor.WHITE + " team!");
 						}
 					}
+					return true;
 				}
 				else if(mgm.getMpTimer().getPlayerWaitTimeLeft() == 0){
 					player.sendMessage(ChatColor.RED + "The minigame has already started. Try again soon.");
+					return false;
 				}
 			}
 			else if(mgm.getPlayers().isEmpty()){
@@ -197,11 +199,14 @@ public class TeamDMMinigame extends MinigameType{
 						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + player.getName() + " has joined " + teamColour + ChatColor.WHITE + " team!");
 					}
 				}
+				return true;
 			}
 			else if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
 				player.sendMessage(ChatColor.RED + "Sorry, this minigame is full.");
+				return false;
 			}
 		}
+		return false;
 	}
 	
 	@Override

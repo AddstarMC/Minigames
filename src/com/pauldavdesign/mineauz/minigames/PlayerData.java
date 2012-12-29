@@ -31,7 +31,7 @@ public class PlayerData {
 	private Map<String, Float> playerSaturation = new HashMap<String, Float>();
 	private Map<String, Boolean> allowTP = new HashMap<String, Boolean>();
 	private Map<String, Boolean> allowGMChange = new HashMap<String, Boolean>();
-	private Map<Player, GameMode> lastGM = new HashMap<Player, GameMode>();
+	private Map<String, GameMode> lastGM = new HashMap<String, GameMode>();
 	
 	//Stats
 	private Map<String, Integer> plyDeaths = new HashMap<String, Integer>();
@@ -51,16 +51,15 @@ public class PlayerData {
 		
 		if(!event.isCancelled()){
 			if(mdata.getMinigameTypes().contains(gametype)){
-				setAllowTP(player, true);
-				mdata.minigameType(gametype).joinMinigame(player, minigame);
-				addPlayerMinigame(player, minigame.getName());
-				setAllowTP(player, false);
+				if(mdata.minigameType(gametype).joinMinigame(player, minigame)){
+					addPlayerMinigame(player, minigame.getName());
+					setAllowTP(player, false);
+					setAllowGMChange(player, false);
+				}
 			}
 			else{
 				player.sendMessage(ChatColor.RED + "That gametype doesn't exist!");
 			}
-			setAllowTP(player, false);
-			setAllowGMChange(player, false);
 		}
 	}
 	
@@ -253,7 +252,6 @@ public class PlayerData {
 			setAllowTP(player, true);
 			
 			player.closeInventory();
-			restorePlayerData(player);
 			
 			List<Player> plys = mdata.getMinigame(minigame).getPlayers();
 			for(Player ply : plys){
@@ -270,6 +268,8 @@ public class PlayerData {
 			mdata.minigameType(mgm.getType()).quitMinigame(player, mgm, forced);
 			removePlayerMinigame(player);
 			mgm.removePlayersLoadout(player);
+			restorePlayerData(player);
+			
 			saveItems(player);
 			saveInventoryConfig();
 			
@@ -367,7 +367,8 @@ public class PlayerData {
 		playerHealth.put(player.getName(), player.getHealth());
 		playerSaturation.put(player.getName(), player.getSaturation());
 		
-		lastGM.put(player, player.getGameMode());
+		//lastGM.put(player, player.getGameMode());
+		setPlayersLastGameMode(player, player.getGameMode());
 		player.setGameMode(gm);
 		
 		player.setSaturation(15);
@@ -402,7 +403,8 @@ public class PlayerData {
 		player.setHealth(playerHealth.get(player.getName()));
 		player.setSaturation(playerSaturation.get(player.getName()));
 		setAllowGMChange(player, true);
-		player.setGameMode(lastGM.get(player));
+		player.setGameMode(getPlayersLastGameMode(player));
+		removePlayersLastGameMode(player);
 		setAllowGMChange(player, false);
 		
 		invsave.getConfig().set("inventories." + player.getName(), null);
@@ -517,16 +519,16 @@ public class PlayerData {
 	}
 	
 	public GameMode getPlayersLastGameMode(Player player){
-		return lastGM.get(player);
+		return lastGM.get(player.getName());
 	}
 	
 	public void setPlayersLastGameMode(Player player, GameMode gm){
-		lastGM.put(player, gm);
+		lastGM.put(player.getName(), gm);
 	}
 	
 	public boolean removePlayersLastGameMode(Player player){
-		if(lastGM.containsKey(player)){
-			lastGM.remove(player);
+		if(lastGM.containsKey(player.getName())){
+			lastGM.remove(player.getName());
 			return true;
 		}
 		return false;

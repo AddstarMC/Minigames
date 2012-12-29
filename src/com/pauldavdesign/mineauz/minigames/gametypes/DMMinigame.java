@@ -39,8 +39,8 @@ public class DMMinigame extends MinigameType{
 	}
 
 	@Override
-	public void joinMinigame(Player player, Minigame mgm) {
-		callLMSJoin(player, mgm, GameMode.ADVENTURE);
+	public boolean joinMinigame(Player player, Minigame mgm) {
+		return callLMSJoin(player, mgm, GameMode.ADVENTURE);
 	}
 
 	@SuppressWarnings("deprecation")

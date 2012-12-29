@@ -38,7 +38,7 @@ public abstract class MinigameType implements Listener{
 		return typeLabel;
 	}
 	
-	public abstract void joinMinigame(Player player, Minigame mgm);
+	public abstract boolean joinMinigame(Player player, Minigame mgm);
 	
 	public abstract void quitMinigame(Player player, Minigame mgm, boolean forced);
 	
@@ -62,7 +62,7 @@ public abstract class MinigameType implements Listener{
 		plugin.getLogger().info(player.getName() + " quit " + minigame);
 	}
 	
-	public void callLMSJoin(Player player, Minigame mgm, GameMode gm){
+	public boolean callLMSJoin(Player player, Minigame mgm, GameMode gm){
 		if(mgm.getQuitPosition() != null && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
 			
 			player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
@@ -79,7 +79,6 @@ public abstract class MinigameType implements Listener{
 					pdata.storePlayerData(player, gm);
 					
 					player.teleport(lobby);
-					pdata.addPlayerMinigame(player, mgm.getName());
 					player.sendMessage(ChatColor.GREEN + "You have started a spleef minigame, type /minigame quit to exit.");
 				
 					if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMinPlayers()){
@@ -102,9 +101,11 @@ public abstract class MinigameType implements Listener{
 							ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + player.getName() + " has joined " + mgm.getName());
 						}
 					}
+					return true;
 				}
 				else if(mgm.getMpTimer().getPlayerWaitTimeLeft() == 0){
 					player.sendMessage(ChatColor.RED + "The minigame has already started. Try again soon.");
+					return false;
 				}
 			}
 			else if(mgm.getPlayers().isEmpty()){
@@ -113,7 +114,6 @@ public abstract class MinigameType implements Listener{
 				pdata.storePlayerData(player, gm);
 				
 				player.teleport(lobby);
-				pdata.addPlayerMinigame(player, mgm.getName());
 				player.sendMessage(ChatColor.GREEN + "You have started a " + gametype + " minigame, type /minigame quit to exit.");
 				
 				int neededPlayers = mgm.getMinPlayers() - 1;
@@ -133,6 +133,7 @@ public abstract class MinigameType implements Listener{
 						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + player.getName() + " has joined " + mgm.getName());
 					}
 				}
+				return true;
 			}
 			else if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
 				player.sendMessage(ChatColor.RED + "Sorry, this minigame is full.");
@@ -147,6 +148,7 @@ public abstract class MinigameType implements Listener{
 		else if(mgm.getLobbyPosition() == null){
 			player.sendMessage(ChatColor.RED + "This minigame has no lobby!");
 		}
+		return false;
 	}
 	
 	@SuppressWarnings("deprecation")
