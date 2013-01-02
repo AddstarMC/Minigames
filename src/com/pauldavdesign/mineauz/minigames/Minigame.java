@@ -41,6 +41,7 @@ public class Minigame {
 	private ItemStack secondaryRewardItem = null;
 	private double secondaryRewardPrice = 0;
 	private boolean usePermissions = false;
+	private int timer = 0;
 	
 	//Teams
 	private List<Player> redTeam = new ArrayList<Player>();
@@ -557,6 +558,14 @@ public class Minigame {
 
 	public void setSpleefFloorMaterial(Material spleefFloorMaterial) {
 		this.spleefFloorMaterial = spleefFloorMaterial;
+	}
+	
+	public void setTimer(int time){
+		timer = time;
+	}
+	
+	public int getTimer(){
+		return timer;
 	}
 
 	public void saveMinigame(){

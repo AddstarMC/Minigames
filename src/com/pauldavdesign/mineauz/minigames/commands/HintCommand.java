@@ -29,7 +29,7 @@ public class HintCommand implements ICommand{
 
 	@Override
 	public String getDescription() {
-		return null;
+		return "Hints a player to the whereabouts of a treasure hunt treasure. If more than one, the name of the Minigame must be entered. (Will be listed)";
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class HintCommand implements ICommand{
 
 	@Override
 	public String[] getUsage() {
-		return null;
+		return new String[] {"/minigame hint [Minigame Name]"};
 	}
 
 	@Override

@@ -25,7 +25,7 @@ public class HelpCommand implements ICommand{
 
 	@Override
 	public String getDescription() {
-		return null;
+		return "The main help command.";
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class HelpCommand implements ICommand{
 
 	@Override
 	public String[] getUsage() {
-		return null;
+		return new String[] {"/minigame help"};
 	}
 
 	@Override

@@ -15,15 +15,15 @@ public class MultiplayerTimer extends Thread{
 	private boolean paused = false;
 	
 	public MultiplayerTimer(String mg){
-		playerWaitTime = plugin.getConfig().getInt("lastmanstanding.waitforplayers");
-		startWaitTime = plugin.getConfig().getInt("lastmanstanding.startcountdown");
+		playerWaitTime = plugin.getConfig().getInt("multiplayer.waitforplayers");
+		startWaitTime = plugin.getConfig().getInt("multiplayer.startcountdown");
 		minigame = mg;
 	}
 	
 	public void run(){
 		while(startWaitTime != 0){
 			if(playerWaitTime != 0 && !paused){
-				if(playerWaitTime == plugin.getConfig().getInt("lastmanstanding.waitforplayers")){
+				if(playerWaitTime == plugin.getConfig().getInt("multiplayer.waitforplayers")){
 					sendPlayersMessage(minigame, ChatColor.GRAY + "Waiting for players:");
 				}
 				sendPlayersMessage(minigame, ChatColor.GRAY + "" + playerWaitTime + "sec.");
@@ -36,7 +36,7 @@ public class MultiplayerTimer extends Thread{
 				}
 			}
 			else if(playerWaitTime == 0 && startWaitTime !=0){
-				if(startWaitTime == plugin.getConfig().getInt("lastmanstanding.startcountdown")){
+				if(startWaitTime == plugin.getConfig().getInt("multiplayer.startcountdown")){
 					sendPlayersMessage(minigame, ChatColor.GRAY + "Minigame starts in:");
 				}
 				sendPlayersMessage(minigame, ChatColor.GRAY + "" + startWaitTime + "sec.");

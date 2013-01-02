@@ -1,6 +1,6 @@
 name: Minigames
 main: com.pauldavdesign.mineauz.minigames.Minigames
-version: 1.3.5
+version: 1.4.0 Dev 1
 author: _Razz_
 
 commands:
@@ -97,6 +97,7 @@ permissions:
             minigame.set.spleeffloormat: true
             minigame.set.mintreasure: true
             minigame.set.maxtreasure: true
+            minigame.set.timer: true
     minigame.set.start:
         description: Gives access to setting a minigames starting position
         default: op
@@ -163,6 +164,9 @@ permissions:
     minigame.set.maxscore:
         description: Allows a player to set the maximum score for scoring Minigames.
         default: op
+    minigame.set.timer:
+        description: Allows a player to set the time limit on a Minigame.
+        default: op
     minigame.info:
         description: Allows check to see if a minigames variables have been set
         default: op
@@ -198,4 +202,7 @@ permissions:
         default: op
     minigame.regen:
         description: Allows a player to regenerate a spleef floor.
+        default: op
+    minigame.partymode:
+        description: Party Mode.
         default: op

@@ -1,5 +1,8 @@
 package com.pauldavdesign.mineauz.minigames.commands;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,9 +17,17 @@ import com.pauldavdesign.mineauz.minigames.commands.set.SetCommand;
 
 public class CommandDispatcher implements CommandExecutor{
 	private static Map<String, ICommand> commands = new HashMap<String, ICommand>();
-	public Minigames plugin = Minigames.plugin;
+	private static Minigames plugin = Minigames.plugin;
+	private static BufferedWriter cmdFile;
 	
 	static{
+		if(plugin.getConfig().getBoolean("outputCMDToFile")){
+			try {
+				cmdFile = new BufferedWriter(new FileWriter(plugin.getDataFolder() + "/cmds.txt"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		registerCommand(new CreateCommand());
 		registerCommand(new SetCommand());
 		registerCommand(new JoinCommand());
@@ -34,10 +45,65 @@ public class CommandDispatcher implements CommandExecutor{
 		registerCommand(new ListCommand());
 		registerCommand(new ToggleTimerCommand());
 		registerCommand(new DeleteCommand());
+		registerCommand(new PartyModeCommand());
+		
+		if(plugin.getConfig().getBoolean("outputCMDToFile")){
+			try {
+				cmdFile.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public static void registerCommand(ICommand command){
 		commands.put(command.getName(), command);
+		
+		if(plugin.getConfig().getBoolean("outputCMDToFile")){
+			try {
+				cmdFile.write("Command: " + command.getName());
+				cmdFile.newLine();
+				if(command.getDescription() != null){
+					cmdFile.write("Description:");
+					cmdFile.newLine();
+					cmdFile.write(command.getDescription());
+					cmdFile.newLine();
+				}
+				if(command.getParameters() != null){
+					cmdFile.write("Parameters:");
+					cmdFile.newLine();
+					for(String par : command.getParameters()){
+						cmdFile.write(par + ", ");
+					}
+					cmdFile.newLine();
+				}
+				if(command.getUsage() != null){
+					cmdFile.write("Usage:");
+					cmdFile.newLine();
+					for(String use : command.getUsage()){
+						cmdFile.write(use);
+						cmdFile.newLine();
+					}
+				}
+				if(command.getAliases() != null){
+					cmdFile.write("Aliases:");
+					cmdFile.newLine();
+					for(String alias : command.getAliases()){
+						cmdFile.write(alias + ", ");
+					}
+					cmdFile.newLine();
+				}
+				if(command.getPermission() != null){
+					cmdFile.write("Permission:");
+					cmdFile.newLine();
+					cmdFile.write(command.getPermission());
+					cmdFile.newLine();
+				}
+				cmdFile.newLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	@Override

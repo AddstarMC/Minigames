@@ -2,30 +2,29 @@ package com.pauldavdesign.mineauz.minigames.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 
-public class RevertCommand implements ICommand{
+public class PartyModeCommand implements ICommand{
 
 	@Override
 	public String getName() {
-		return "revert";
+		return "partymode";
 	}
 
 	@Override
 	public String[] getAliases() {
-		return new String[] {"r"};
+		return new String[] {"pm", "party"};
 	}
 
 	@Override
 	public boolean canBeConsole() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public String getDescription() {
-		return "Reverts the player that issues the command to their last checkpoint or to the start position if none is set.";
+		return "Changes party mode state between on and off.";
 	}
 
 	@Override
@@ -35,31 +34,34 @@ public class RevertCommand implements ICommand{
 
 	@Override
 	public String[] getUsage() {
-		return new String[] {"/minigame revert"};
+		return new String[] {"/minigame partymode <true/false>"};
 	}
 
 	@Override
 	public String getPermissionMessage() {
-		return "You do not have permission to revert to your checkpoint!";
+		return "You don't have permission to change party mode!";
 	}
 
 	@Override
 	public String getPermission() {
-		return "minigame.revert";
+		return "minigame.partymode";
 	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
-		Player player = (Player)sender;
-		
-		if(pdata.playerInMinigame(player)){
-			pdata.revertToCheckpoint(player);
+		if(args != null){
+			boolean bool = Boolean.parseBoolean(args[0]);
+			pdata.setPartyMode(bool);
+			if(bool){
+				sender.sendMessage(ChatColor.GREEN + "Party mode has been enabled! WooHoo!");
+			}
+			else{
+				sender.sendMessage(ChatColor.RED + "Party mode has been disabled. :(");
+			}
+			return true;
 		}
-		else {
-			player.sendMessage(ChatColor.RED + "Error: You are not in a minigame!");
-		}
-		return true;
+		return false;
 	}
 
 }

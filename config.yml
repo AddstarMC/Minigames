@@ -4,11 +4,18 @@ treasurehunt:
   waittime: 60
   # Time to wait before spawning a new treasure after the time was up (minutes)
 
-lastmanstanding:
+multiplayer:
   waitforplayers: 10
   # Time to wait for players before starting
   startcountdown: 5
   # Time before game actually starts
+  timerMessageInterval:
+    - 900
+    - 600
+    - 300
+    - 60
+    - 30
+    - 10
   broadcastwin: true
   
 spleef:
@@ -25,6 +32,8 @@ sql-port: 3306
 sql-database: database
 sql-username: root
 sql-password: root
+
+outputCMDToFile: false
 
 minigames:
   {}

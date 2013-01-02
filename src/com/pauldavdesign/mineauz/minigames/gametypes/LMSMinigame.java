@@ -235,7 +235,7 @@ public class LMSMinigame extends MinigameType {
 								}
 							}
 						}
-						
+						pdata.partyMode(ply);
 						ply.sendMessage(ChatColor.GRAY + "Bad Luck! Leaving the minigame.");
 						plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 							@Override

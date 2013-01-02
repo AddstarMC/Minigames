@@ -18,6 +18,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
@@ -43,6 +44,8 @@ public class Events implements Listener{
 			
 			pdata.addPlayerDeath(ply);
 			
+			pdata.partyMode(ply);
+			
 			String minigame = pdata.getPlayersMinigame(ply);
 			if(mdata.getMinigame(minigame).hasPlayers()){
 				for(Player pl : mdata.getMinigame(minigame).getPlayers()){
@@ -56,6 +59,23 @@ public class Events implements Listener{
 	public void onPlayerDisconnect(PlayerQuitEvent event){
 		if(pdata.playerInMinigame(event.getPlayer())){
 			pdata.quitMinigame(event.getPlayer(), false);
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerConnect(PlayerJoinEvent event){
+		if(event.getPlayer().isOp()){
+			List<String> update = MinigameUtils.checkForUpdate("http://mineauz.pauldavdesign.com/mgmversion.txt", plugin.getDescription().getVersion());
+			if(update != null){
+				Player ply = event.getPlayer();
+				ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "There is an update available! Version: " + update.get(0));
+				if(update.size() > 1){
+					ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Changes:");
+					for(int i = 1; i < update.size(); i++){
+						ply.sendMessage("- " + update.get(i));
+					}
+				}
+			}
 		}
 	}
 	
@@ -117,6 +137,7 @@ public class Events implements Listener{
 								
 								if(pdata.checkRequiredFlags(event.getPlayer(), minigame).isEmpty()){
 									pdata.endMinigame(event.getPlayer());
+									pdata.partyMode(event.getPlayer());
 								}
 								else{
 									List<String> requiredFlags = pdata.checkRequiredFlags(event.getPlayer(), minigame);

@@ -3,6 +3,7 @@ package com.pauldavdesign.mineauz.minigames;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -13,6 +14,7 @@ import lib.PatPeter.SQLibrary.MySQL;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 //import org.bukkit.ChatColor;
 //import org.bukkit.Location;
 //import org.bukkit.Material;
@@ -153,6 +155,14 @@ public class Minigames extends JavaPlugin{
 					getConfig().getString("sql-database"), 
 					getConfig().getString("sql-username"), 
 					getConfig().getString("sql-password"));
+		}
+		
+		Calendar cal = Calendar.getInstance();
+		if(cal.get(Calendar.DAY_OF_MONTH) == 21 && cal.get(Calendar.MONTH) == 8 ||
+				cal.get(Calendar.DAY_OF_MONTH) == 25 && cal.get(Calendar.MONTH) == 11 ||
+				cal.get(Calendar.DAY_OF_MONTH) == 1 && cal.get(Calendar.MONTH) == 0){
+			getLogger().info(ChatColor.GREEN.name() + "Party Mode enabled!");
+			pdata.setPartyMode(true);
 		}
 		
 		getCommand("minigame").setExecutor(new CommandDispatcher());

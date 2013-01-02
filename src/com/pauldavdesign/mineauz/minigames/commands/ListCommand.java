@@ -26,7 +26,7 @@ public class ListCommand implements ICommand{
 
 	@Override
 	public String getDescription() {
-		return null;
+		return "Lists all the Minigames.";
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class ListCommand implements ICommand{
 
 	@Override
 	public String[] getUsage() {
-		return null;
+		return new String[] {"/minigame list"};
 	}
 
 	@Override

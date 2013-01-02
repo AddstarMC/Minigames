@@ -25,7 +25,7 @@ public class ReloadCommand implements ICommand{
 
 	@Override
 	public String getDescription() {
-		return null;
+		return "Reloads the Minigames config files.";
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class ReloadCommand implements ICommand{
 
 	@Override
 	public String[] getUsage() {
-		return null;
+		return new String[] {"/minigame reload"};
 	}
 
 	@Override

@@ -4,15 +4,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.FireworkEffect.Type;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 
 import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
@@ -32,6 +39,7 @@ public class PlayerData {
 	private Map<String, Boolean> allowTP = new HashMap<String, Boolean>();
 	private Map<String, Boolean> allowGMChange = new HashMap<String, Boolean>();
 	private Map<String, GameMode> lastGM = new HashMap<String, GameMode>();
+	private boolean partyMode = false;
 	
 	//Stats
 	private Map<String, Integer> plyDeaths = new HashMap<String, Integer>();
@@ -578,5 +586,34 @@ public class PlayerData {
 	
 	public void saveInventoryConfig(){
 		invsave.saveConfig();
+	}
+	
+	public boolean onPartyMode(){
+		return partyMode;
+	}
+	
+	public void setPartyMode(boolean mode){
+		partyMode = mode;
+	}
+	
+	public void partyMode(Player player){
+		if(onPartyMode()){
+			Location loc = player.getLocation();
+			Firework firework = (Firework) player.getWorld().spawnEntity(loc, EntityType.FIREWORK);
+			FireworkMeta fwm = firework.getFireworkMeta();
+			
+			Random chance = new Random();
+			Type type = Type.BALL_LARGE;
+			if(chance.nextInt(100) < 50){
+				type = Type.BALL;
+			}
+			
+			Color col = Color.fromRGB(chance.nextInt(255), chance.nextInt(255), chance.nextInt(255));
+			
+			FireworkEffect effect = FireworkEffect.builder().with(type).withColor(col).flicker(chance.nextBoolean()).trail(chance.nextBoolean()).build();
+			fwm.addEffect(effect);
+			fwm.setPower(0);
+			firework.setFireworkMeta(fwm);
+		}
 	}
 }

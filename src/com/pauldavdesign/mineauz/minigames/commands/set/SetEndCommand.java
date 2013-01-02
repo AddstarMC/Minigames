@@ -26,7 +26,7 @@ public class SetEndCommand implements ICommand{
 
 	@Override
 	public String getDescription() {
-		return null;
+		return "Sets the ending position for a player when they win a Minigame.";
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class SetEndCommand implements ICommand{
 
 	@Override
 	public String[] getUsage() {
-		return null;
+		return new String[] {"/minigame set <Minigame> end"};
 	}
 
 	@Override

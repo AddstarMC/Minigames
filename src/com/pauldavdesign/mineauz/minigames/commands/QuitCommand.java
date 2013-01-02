@@ -27,7 +27,7 @@ public class QuitCommand implements ICommand{
 
 	@Override
 	public String getDescription() {
-		return null;
+		return "Quits the player that issues the command or if a player name is inserted, the named player.";
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class QuitCommand implements ICommand{
 
 	@Override
 	public String[] getUsage() {
-		return null;
+		return new String[] {"/minigame quit [Player]"};
 	}
 
 	@Override
