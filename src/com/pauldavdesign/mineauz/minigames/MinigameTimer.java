@@ -14,15 +14,17 @@ public class MinigameTimer extends Thread{
 	private Minigame minigame;
 	private List<Integer> timeMsg = new ArrayList<Integer>();
 	private static Minigames plugin = Minigames.plugin;
+	private boolean running = true;
 	
 	public MinigameTimer(Minigame minigame, int time){
 		this.time = time;
 		this.minigame = minigame;
 		timeMsg.addAll(plugin.getConfig().getIntegerList("multiplayer.timerMessageInterval"));
+		start();
 	}
 	
 	public void run(){
-		while(time > 0){
+		while(time > 0 && running){
 			time -= 1;
 			if(timeMsg.contains(time)){
 				for(Player pl : minigame.getPlayers()){
@@ -36,6 +38,12 @@ public class MinigameTimer extends Thread{
 				e.printStackTrace();
 			}
 		}
-		Bukkit.getServer().getPluginManager().callEvent(new TimerExpireEvent(this, minigame));
+		if(running){
+			Bukkit.getServer().getPluginManager().callEvent(new TimerExpireEvent(this, minigame));
+		}
+	}
+	
+	public void stopTimer(){
+		running = false;
 	}
 }

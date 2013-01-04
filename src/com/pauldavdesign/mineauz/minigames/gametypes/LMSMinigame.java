@@ -20,6 +20,7 @@ import com.pauldavdesign.mineauz.minigames.MinigameSave;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.SQLCompletionSaver;
+import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
 
 public class LMSMinigame extends MinigameType {
 	private static Minigames plugin = Minigames.plugin;
@@ -51,7 +52,7 @@ public class LMSMinigame extends MinigameType {
 					mgm.setMpTimer(null);
 				}
 			}
-			else if(mgm.getPlayers().size() == 1 && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0){
+			else if(mgm.getPlayers().size() == 1 && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0 && !forced){
 				pdata.endMinigame(mgm.getPlayers().get(0));
 				
 				if(mgm.getMpBets() != null){
@@ -59,7 +60,7 @@ public class LMSMinigame extends MinigameType {
 				}
 			}
 			else if(mgm.getPlayers().size() < mgm.getMinPlayers() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() != 0){
-				mgm.getMpTimer().setStartWaitTime(0);
+				mgm.getMpTimer().pauseTimer();
 				mgm.setMpTimer(null);
 				for(Player pl : mgm.getPlayers()){
 					pl.sendMessage(ChatColor.BLUE + "Waiting for " + (mgm.getMinPlayers() - 1) + " more players.");
@@ -245,6 +246,18 @@ public class LMSMinigame extends MinigameType {
 						}, 20);
 					}
 				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void timerExpire(TimerExpireEvent event){
+		if(event.getMinigame().getType().equals(getLabel())){
+			List<Player> players = new ArrayList<Player>();
+			players.addAll(event.getMinigame().getPlayers());
+			for(Player ply : players){
+				ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "The timer has expired!");
+				pdata.quitMinigame(ply, true);
 			}
 		}
 	}

@@ -78,12 +78,12 @@ public class PlayerData {
 		
 		if(!event.isCancelled()){
 			if(minigame != null && minigame.bettingEnabled() && minigame.isEnabled() && (minigame.getMpTimer() == null || minigame.getMpTimer().getPlayerWaitTimeLeft() != 0)){
-				if(minigame.getMpBets() == null){
+				if(minigame.getMpBets() == null && player.getItemInHand().getType() != Material.AIR){
 					minigame.setMpBets(new MultiplayerBets());
 				}
 				MultiplayerBets pbet = minigame.getMpBets(); 
 				ItemStack item = player.getItemInHand().clone();
-				if(pbet.canBet(player, item) && item.getType() != Material.AIR && pbet.betValue(item.getType()) > 0){
+				if(pbet != null && pbet.canBet(player, item) && item.getType() != Material.AIR && pbet.betValue(item.getType()) > 0){
 					if(minigame.getPlayers().isEmpty() || minigame.getPlayers().size() != minigame.getMaxPlayers()){
 						player.sendMessage(ChatColor.GRAY + "You've placed your bet! Good Luck!");
 						pbet.addBet(player, item);
@@ -102,7 +102,7 @@ public class PlayerData {
 					player.sendMessage(ChatColor.RED + "You must bet a " + minigame.getMpBets().highestBetName() + " or better.");
 				}
 			}
-			else if (player.getItemInHand().getType() != Material.AIR){
+			else if(!minigame.bettingEnabled() && player.getItemInHand().getType() != Material.AIR){
 				player.sendMessage(ChatColor.GRAY + "Bets are not enabled in this minigame.");
 				player.sendMessage(ChatColor.RED + "Your hand must be empty to join this minigame!");
 			}
@@ -234,6 +234,13 @@ public class PlayerData {
 		for(Player pl : players){
 			setAllowTP(pl, false);
 		}
+		
+		if(mgm.getTimer() > 0){
+			mgm.setMinigameTimer(new MinigameTimer(mgm, mgm.getTimer()));
+			for(Player pl : players){
+				pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.convertTime(mgm.getTimer()) + " left.");
+			}
+		}
 	}
 	
 	public void revertToCheckpoint(Player player) {
@@ -268,7 +275,7 @@ public class PlayerData {
 						ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + player.getName() + " has left " + minigame);
 					}
 					else{
-						ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + player.getName() + " was killed and removed from " + minigame);
+						ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + player.getName() + " was removed from " + minigame);
 					}
 				}
 			}
@@ -291,6 +298,11 @@ public class PlayerData {
 			
 			removePlayerDeath(player);
 			removePlayerKills(player);
+			
+			if(mgm.getMinigameTimer() != null && mgm.getPlayers().size() == 0){
+				mgm.getMinigameTimer().stopTimer();
+				mgm.setMinigameTimer(null);
+			}
 			
 			setAllowTP(player, false);
 		}
@@ -331,6 +343,11 @@ public class PlayerData {
 			
 			if(mgm.hasRestoreBlocks()){
 				mdata.restoreMinigameBlocks(mgm);
+			}
+			
+			if(mgm.getMinigameTimer() != null){
+				mgm.getMinigameTimer().stopTimer();
+				mgm.setMinigameTimer(null);
 			}
 			
 			setAllowTP(player, false);

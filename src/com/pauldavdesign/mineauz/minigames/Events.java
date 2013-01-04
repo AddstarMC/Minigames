@@ -16,6 +16,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -35,7 +36,9 @@ public class Events implements Listener{
 	public void onPlayerDeath(PlayerDeathEvent event){
 		if(pdata.playerInMinigame(event.getEntity().getPlayer())){
 			Player ply = event.getEntity().getPlayer();
-			event.getDrops().clear();
+			if(!mdata.getMinigame(pdata.getPlayersMinigame(ply)).hasDeathDrops()){
+				event.getDrops().clear();
+			}
 			String msg = "";
 			msg += event.getDeathMessage();
 			event.setDeathMessage(null);
@@ -51,6 +54,15 @@ public class Events implements Listener{
 				for(Player pl : mdata.getMinigame(minigame).getPlayers()){
 					pl.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + msg);
 				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void playerDropItem(PlayerDropItemEvent event){
+		if(pdata.playerInMinigame(event.getPlayer())){
+			if(!mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).hasItemDrops()){
+				event.setCancelled(true);
 			}
 		}
 	}

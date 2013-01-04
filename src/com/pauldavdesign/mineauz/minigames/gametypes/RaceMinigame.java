@@ -23,6 +23,7 @@ import com.pauldavdesign.mineauz.minigames.MinigameSave;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.SQLCompletionSaver;
+import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
 
 public class RaceMinigame extends MinigameType{
 	private static Minigames plugin = Minigames.plugin;
@@ -54,15 +55,15 @@ public class RaceMinigame extends MinigameType{
 					mdata.getMinigame(minigame).setMpTimer(null);
 				}
 			}
-			else if(mdata.getMinigame(minigame).getPlayers().size() == 1 && mdata.getMinigame(minigame).getMpTimer() != null && mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() == 0){
-				//pdata.endMinigame(mdata.getMinigame(minigame).getPlayers().get(0));
-				
-				if(mdata.getMinigame(minigame).getMpBets() != null){
-					mdata.getMinigame(minigame).setMpBets(null);
-				}
-			}
+//			else if(mdata.getMinigame(minigame).getPlayers().size() == 1 && mdata.getMinigame(minigame).getMpTimer() != null && mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() == 0){
+//				//pdata.endMinigame(mdata.getMinigame(minigame).getPlayers().get(0));
+//				
+//				if(mdata.getMinigame(minigame).getMpBets() != null){
+//					mdata.getMinigame(minigame).setMpBets(null);
+//				}
+//			}
 			else if(mdata.getMinigame(minigame).getPlayers().size() < mgm.getMinPlayers() && mdata.getMinigame(minigame).getMpTimer() != null && mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() != 0){
-				mdata.getMinigame(minigame).getMpTimer().setStartWaitTime(0);
+				mdata.getMinigame(minigame).getMpTimer().pauseTimer();
 				mdata.getMinigame(minigame).setMpTimer(null);
 				for(Player pl : mdata.getMinigame(minigame).getPlayers()){
 					pl.sendMessage(ChatColor.BLUE + "Waiting for " + (mgm.getMinPlayers() - 1) + " more players.");
@@ -216,6 +217,18 @@ public class RaceMinigame extends MinigameType{
 //						mgm.getDefaultPlayerLoadout().equiptLoadout(event.getPlayer());
 //					}
 				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void timerExpire(TimerExpireEvent event){
+		if(event.getMinigame().getType().equals(getLabel())){
+			List<Player> players = new ArrayList<Player>();
+			players.addAll(event.getMinigame().getPlayers());
+			for(Player ply : players){
+				ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "The timer has expired!");
+				pdata.quitMinigame(ply, true);
 			}
 		}
 	}

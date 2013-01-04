@@ -43,6 +43,9 @@ public class Minigame {
 	private boolean usePermissions = false;
 	private int timer = 0;
 	
+	private boolean itemDrops = false;
+	private boolean deathDrops = false;
+	
 	//Teams
 	private List<Player> redTeam = new ArrayList<Player>();
 	private List<Player> blueTeam = new ArrayList<Player>();
@@ -60,6 +63,7 @@ public class Minigame {
 	private List<Player> players = new ArrayList<Player>();
 	//Multiplayer
 	private MultiplayerTimer mpTimer = null;
+	private MinigameTimer miniTimer = null;
 	private MultiplayerBets mpBets = null;
 	//TreasureHunt
 	private TreasureHuntTimer thTimer = null;
@@ -378,6 +382,14 @@ public class Minigame {
 	public void setMpTimer(MultiplayerTimer mpTimer) {
 		this.mpTimer = mpTimer;
 	}
+	
+	public MinigameTimer getMinigameTimer() {
+		return miniTimer;
+	}
+
+	public void setMinigameTimer(MinigameTimer mgTimer) {
+		this.miniTimer = mgTimer;
+	}
 
 	public MultiplayerBets getMpBets() {
 		return mpBets;
@@ -568,6 +580,22 @@ public class Minigame {
 		return timer;
 	}
 
+	public boolean hasItemDrops() {
+		return itemDrops;
+	}
+
+	public void setItemDrops(boolean itemDrops) {
+		this.itemDrops = itemDrops;
+	}
+
+	public boolean hasDeathDrops() {
+		return deathDrops;
+	}
+
+	public void setDeathDrops(boolean deathDrops) {
+		this.deathDrops = deathDrops;
+	}
+
 	public void saveMinigame(){
 		MinigameSave minigame = new MinigameSave(name, "config");
 		
@@ -730,6 +758,27 @@ public class Minigame {
 			minigame.getConfig().set(name + ".location", getLocation());
 		}
 		
+		if(getTimer() > 0){
+			minigame.getConfig().set(name + ".timer", getTimer());
+		}
+		else{
+			minigame.getConfig().set(name + ".timer", null);
+		}
+		
+		if(hasItemDrops()){
+			minigame.getConfig().set(name + ".itemdrops", hasItemDrops());
+		}
+		else{
+			minigame.getConfig().set(name + ".itemdrops", null);
+		}
+		
+		if(hasDeathDrops()){
+			minigame.getConfig().set(name + ".deathdrops", hasDeathDrops());
+		}
+		else{
+			minigame.getConfig().set(name + ".deathdrops", null);
+		}
+		
 		minigame.saveConfig();
 	}
 	
@@ -854,6 +903,18 @@ public class Minigame {
 		}
 		if(minigame.getConfig().contains(name + ".location")){
 			setLocation(minigame.getConfig().getString(name + ".location"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".timer")){
+			setTimer(minigame.getConfig().getInt(name + ".timer"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".itemdrops")){
+			setItemDrops(minigame.getConfig().getBoolean(name + ".itemdrops"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".deathdrops")){
+			setItemDrops(minigame.getConfig().getBoolean(name + ".deathdrops"));
 		}
 		
 		saveMinigame();

@@ -28,6 +28,7 @@ import com.pauldavdesign.mineauz.minigames.MinigameSave;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.SQLCompletionSaver;
+import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
 
 public class DMMinigame extends MinigameType{
 	private static Minigames plugin = Minigames.plugin;
@@ -59,7 +60,7 @@ public class DMMinigame extends MinigameType{
 					mgm.setMpTimer(null);
 				}
 			}
-			else if(mgm.getPlayers().size() == 1 && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0){
+			else if(mgm.getPlayers().size() == 1 && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0 && !forced){
 				pdata.endMinigame(mgm.getPlayers().get(0));
 				
 				if(mgm.getMpBets() != null){
@@ -67,7 +68,7 @@ public class DMMinigame extends MinigameType{
 				}
 			}
 			else if(mgm.getPlayers().size() < mgm.getMinPlayers() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() != 0){
-				mgm.getMpTimer().setStartWaitTime(0);
+				mgm.getMpTimer().pauseTimer();
 				mgm.setMpTimer(null);
 				for(Player pl : mgm.getPlayers()){
 					pl.sendMessage(ChatColor.BLUE + "Waiting for " + (mgm.getMinPlayers() - 1) + " more players.");
@@ -213,7 +214,7 @@ public class DMMinigame extends MinigameType{
 			
 			pdata.addPlayerKill(ply.getKiller());
 			
-			if(pdata.getPlayerKills(ply.getKiller()) >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+			if(mgm.getMaxScore() != 0 && pdata.getPlayerKills(ply.getKiller()) >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
 				for(Player pl : mgm.getPlayers()){
 					if(pl != ply.getKiller()){
 						pdata.quitMinigame(pl, false);
@@ -293,6 +294,37 @@ public class DMMinigame extends MinigameType{
 //			if(mg.hasDefaultLoadout()){
 //				mg.getDefaultPlayerLoadout().equiptLoadout(event.getPlayer());
 //			}
+		}
+	}
+	
+	@EventHandler
+	public void timerExpire(TimerExpireEvent event){
+		if(event.getMinigame().getType().equals(getLabel())){
+			Player player = null;
+			int score = 0;
+			for(Player ply : event.getMinigame().getPlayers()){
+				if(pdata.getPlayerKills(ply) > score){
+					player = ply;
+					score = pdata.getPlayerKills(ply);
+				}
+				else if(pdata.getPlayerKills(ply) == score){
+					if(player != null && pdata.getPlayerDeath(ply) < pdata.getPlayerDeath(player)){
+						player = ply;
+					}
+					else if(player == null){
+						player = ply;
+					}
+				}
+			}
+			List<Player> players = new ArrayList<Player>();
+			players.addAll(event.getMinigame().getPlayers());
+			
+			for(Player ply : players){
+				if(ply != player){
+					pdata.quitMinigame(ply, true);
+				}
+			}
+			pdata.endMinigame(player);
 		}
 	}
 }

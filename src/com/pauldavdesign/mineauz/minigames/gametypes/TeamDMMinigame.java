@@ -36,6 +36,7 @@ import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.MultiplayerTimer;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.SQLCompletionSaver;
+import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
 
 public class TeamDMMinigame extends MinigameType{
 	private static Minigames plugin = Minigames.plugin;
@@ -256,7 +257,7 @@ public class TeamDMMinigame extends MinigameType{
 					mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() != 0
 					&& !forced){
 				mdata.getMinigame(minigame).getMpTimer().setPlayerWaitTime(10);
-				mdata.getMinigame(minigame).getMpTimer().setStartWaitTime(0);
+				mdata.getMinigame(minigame).getMpTimer().pauseTimer();
 				mdata.getMinigame(minigame).setMpTimer(null);
 				for(Player pl : mdata.getMinigame(minigame).getPlayers()){
 					pl.sendMessage(ChatColor.BLUE + "Waiting for " + (mgm.getMinPlayers() - 1) + " more players.");
@@ -853,6 +854,18 @@ public class TeamDMMinigame extends MinigameType{
 						}
 					}
 				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void timerExpire(TimerExpireEvent event){
+		if(event.getMinigame().getType().equals(getLabel())){
+			if(event.getMinigame().getBlueTeamScore() > event.getMinigame().getRedTeamScore()){
+				endTeamMinigame(1, event.getMinigame());
+			}
+			else{
+				endTeamMinigame(0, event.getMinigame());
 			}
 		}
 	}
