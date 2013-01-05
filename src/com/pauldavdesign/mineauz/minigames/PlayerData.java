@@ -135,7 +135,9 @@ public class PlayerData {
 					start = mgm.getStartLocations().get(i);
 					players.get(i).teleport(start);
 					setPlayerCheckpoints(players.get(pos - 1), start);
-//					players.get(i).sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
+					if(mgm.getType().equals("dm")){
+						players.get(i).sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
+					}
 				} 
 				else{
 					pos = 1;
@@ -348,6 +350,10 @@ public class PlayerData {
 			if(mgm.getMinigameTimer() != null){
 				mgm.getMinigameTimer().stopTimer();
 				mgm.setMinigameTimer(null);
+			}
+			
+			if(mgm.getBlockRecorder().hasData()){
+				mgm.getBlockRecorder().restoreBlocks();
 			}
 			
 			setAllowTP(player, false);

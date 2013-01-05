@@ -103,7 +103,7 @@ public class TeamDMMinigame extends MinigameType{
 						}, 20L);
 					}
 					
-					pdata.storePlayerData(player, GameMode.ADVENTURE);
+					pdata.storePlayerData(player, mgm.getDefaultGamemode());
 					
 					player.teleport(lobby);
 					pdata.addPlayerMinigame(player, mgm.getName());

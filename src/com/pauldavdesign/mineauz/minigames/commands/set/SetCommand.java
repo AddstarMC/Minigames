@@ -49,6 +49,12 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetMinScoreCommand());
 		registerSetCommand(new SetMaxScoreCommand());
 		registerSetCommand(new SetTimerCommand());
+		registerSetCommand(new SetItemDropCommand());
+		registerSetCommand(new SetItemPickupCommand());
+		registerSetCommand(new SetBlockBreakCommand());
+		registerSetCommand(new SetBlockPlaceCommand());
+		registerSetCommand(new SetPlayersGamemodeCommand());
+		registerSetCommand(new SetBlockWhitelistCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {

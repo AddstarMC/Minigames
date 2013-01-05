@@ -1,6 +1,6 @@
 name: Minigames
 main: com.pauldavdesign.mineauz.minigames.Minigames
-version: 1.4.0 Dev 1
+version: 1.4.0 Dev 2
 author: _Razz_
 
 commands:
@@ -166,6 +166,12 @@ permissions:
         default: op
     minigame.set.timer:
         description: Allows a player to set the time limit on a Minigame.
+        default: op
+    minigame.set.itemdrop:
+        description: Allows a player to change whether a player can drop items in a Minigame
+        default: op
+    minigame.set.itempickup:
+        description: Allows a player to change whether a player can pick up items in a Minigame
         default: op
     minigame.info:
         description: Allows check to see if a minigames variables have been set

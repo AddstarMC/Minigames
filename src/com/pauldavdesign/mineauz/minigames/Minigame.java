@@ -6,11 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
+
+import com.pauldavdesign.mineauz.minigames.blockRecorder.RecorderData;
 
 public class Minigame {
 	private String name = "GenericName";
@@ -45,6 +48,12 @@ public class Minigame {
 	
 	private boolean itemDrops = false;
 	private boolean deathDrops = false;
+	private boolean itemPickup = true;
+	private boolean blockBreak = false;
+	private boolean blockPlace = false;
+	private int defaultGamemode = 2;
+	
+	private RecorderData blockRecorder = new RecorderData(this);
 	
 	//Teams
 	private List<Player> redTeam = new ArrayList<Player>();
@@ -279,6 +288,12 @@ public class Minigame {
 	public String getPlayersLoadout(Player player){
 		if(playerLoadouts.containsKey(player)){
 			return playerLoadouts.get(player);
+		}
+		else if(getRedTeam().contains(player) && extraLoadouts.containsKey("red")){
+			return "red";
+		}
+		else if(getBlueTeam().contains(player) && extraLoadouts.containsKey("blue")){
+			return "blue";
 		}
 		return "default";
 	}
@@ -596,6 +611,46 @@ public class Minigame {
 		this.deathDrops = deathDrops;
 	}
 
+	public boolean hasItemPickup() {
+		return itemPickup;
+	}
+
+	public void setItemPickup(boolean itemPickup) {
+		this.itemPickup = itemPickup;
+	}
+
+	public RecorderData getBlockRecorder() {
+		return blockRecorder;
+	}
+
+	public boolean canBlockBreak() {
+		return blockBreak;
+	}
+
+	public boolean canBlockPlace() {
+		return blockPlace;
+	}
+
+	public void setCanBlockPlace(boolean blockPlace) {
+		this.blockPlace = blockPlace;
+	}
+
+	public void setCanBlockBreak(boolean blockBreak) {
+		this.blockBreak = blockBreak;
+	}
+
+	public int getDefaultGamemodeInt() {
+		return defaultGamemode;
+	}
+	
+	public GameMode getDefaultGamemode() {
+		return GameMode.getByValue(defaultGamemode);
+	}
+
+	public void setDefaultGamemode(int defaultGamemode) {
+		this.defaultGamemode = defaultGamemode;
+	}
+
 	public void saveMinigame(){
 		MinigameSave minigame = new MinigameSave(name, "config");
 		
@@ -779,6 +834,52 @@ public class Minigame {
 			minigame.getConfig().set(name + ".deathdrops", null);
 		}
 		
+		if(hasItemPickup()){
+			minigame.getConfig().set(name + ".itempickup", hasItemPickup());
+		}
+		else{
+			minigame.getConfig().set(name + ".itempickup", null);
+		}
+		
+		if(canBlockBreak()){
+			minigame.getConfig().set(name + ".blockbreak", canBlockBreak());
+		}
+		else{
+			minigame.getConfig().set(name + ".blockbreak", null);
+		}
+		
+		if(canBlockPlace()){
+			minigame.getConfig().set(name + ".blockplace", canBlockPlace());
+		}
+		else{
+			minigame.getConfig().set(name + ".blockplace", null);
+		}
+		
+		if(getDefaultGamemodeInt() != 2){
+			minigame.getConfig().set(name + ".gamemode", getDefaultGamemodeInt());
+		}
+		else{
+			minigame.getConfig().set(name + ".gamemode", null);
+		}
+		
+		if(!getBlockRecorder().getWBBlocks().isEmpty()){
+			List<String> blocklist = new ArrayList<String>();
+			for(Material mat : getBlockRecorder().getWBBlocks()){
+				blocklist.add(mat.toString());
+			}
+			minigame.getConfig().set(name + ".whitelistblocks", blocklist);
+		}
+		else{
+			minigame.getConfig().set(name + ".whitelistblocks", null);
+		}
+		
+		if(getBlockRecorder().getWhitelistMode()){
+			minigame.getConfig().set(name + ".whitelistmode", getBlockRecorder().getWhitelistMode());
+		}
+		else{
+			minigame.getConfig().set(name + ".whitelistmode", null);
+		}
+		
 		minigame.saveConfig();
 	}
 	
@@ -915,6 +1016,33 @@ public class Minigame {
 		
 		if(minigame.getConfig().contains(name + ".deathdrops")){
 			setItemDrops(minigame.getConfig().getBoolean(name + ".deathdrops"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".itempickup")){
+			setItemPickup(minigame.getConfig().getBoolean(name + ".itempickup"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".blockbreak")){
+			setCanBlockBreak(minigame.getConfig().getBoolean(name + ".blockbreak"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".blockplace")){
+			setCanBlockPlace(minigame.getConfig().getBoolean(name + ".blockplace"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".gamemode")){
+			setDefaultGamemode(minigame.getConfig().getInt(name + ".gamemode"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".whitelistmode")){
+			getBlockRecorder().setWhitelistMode(minigame.getConfig().getBoolean(name + ".whitelistmode"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".whitelistblocks")){
+			List<String> blocklist = minigame.getConfig().getStringList(name + ".whitelistblocks");
+			for(String block : blocklist){
+				getBlockRecorder().addWBBlock(Material.matchMaterial(block));
+			}
 		}
 		
 		saveMinigame();

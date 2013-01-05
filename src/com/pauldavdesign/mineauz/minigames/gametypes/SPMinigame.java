@@ -4,7 +4,6 @@ import java.util.List;
 
 
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
@@ -33,7 +32,7 @@ public class SPMinigame extends MinigameType{
 	public boolean joinMinigame(Player player, Minigame mgm){
 		if(mgm.getQuitPosition() != null && mgm.isEnabled()){
 			pdata.setAllowTP(player, true);
-			pdata.storePlayerData(player, GameMode.ADVENTURE);
+			pdata.storePlayerData(player, mgm.getDefaultGamemode());
 			pdata.addPlayerMinigame(player, mgm.getName());
 			player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
 			player.setAllowFlight(false);
@@ -87,6 +86,10 @@ public class SPMinigame extends MinigameType{
 		
 		plugin.getLogger().info(player.getName() + " completed " + minigame);
 		
+		if(mgm.getBlockRecorder().hasData()){
+			mgm.getBlockRecorder().restoreBlocks(player);
+		}
+		
 		if(plugin.getSQL() == null){
 			completion = mdata.getConfigurationFile("completion");
 			hascompleted = completion.getStringList(minigame).contains(player.getName());
@@ -111,6 +114,10 @@ public class SPMinigame extends MinigameType{
 	@Override
 	public void quitMinigame(Player player, Minigame mgm, boolean forced) {
 		callGeneralQuit(player);
+		
+		if(mgm.getBlockRecorder().hasData()){
+			mgm.getBlockRecorder().restoreBlocks(player);
+		}
 	}
 	
 	/*----------------*/

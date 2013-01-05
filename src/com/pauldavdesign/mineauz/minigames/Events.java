@@ -20,6 +20,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
@@ -62,6 +63,15 @@ public class Events implements Listener{
 	public void playerDropItem(PlayerDropItemEvent event){
 		if(pdata.playerInMinigame(event.getPlayer())){
 			if(!mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).hasItemDrops()){
+				event.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler
+	public void itemPickup(PlayerPickupItemEvent event){
+		if(pdata.playerInMinigame(event.getPlayer())){
+			if(!mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).hasItemPickup()){
 				event.setCancelled(true);
 			}
 		}
@@ -315,7 +325,7 @@ public class Events implements Listener{
 	
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event){
-		if(pdata.playerInMinigame(event.getPlayer())){
+		if(pdata.playerInMinigame(event.getPlayer()) && !mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).canBlockPlace()){
 			event.setCancelled(true);
 		}
 	}
@@ -325,8 +335,17 @@ public class Events implements Listener{
 		if(pdata.playerInMinigame(event.getPlayer())){
 			String minigame = pdata.getPlayersMinigame(event.getPlayer());
 			
-			if(!mdata.getMinigame(minigame).getType().equals("spleef")){
-				event.setCancelled(true);
+			if(!mdata.getMinigame(minigame).getType().equals("spleef") && 
+					mdata.getMinigame(minigame).getMpTimer() != null && 
+					mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() == 0){
+				if(!mdata.getMinigame(minigame).canBlockBreak()){
+					event.setCancelled(true);
+				}
+			}
+			else if(mdata.getMinigame(minigame).getType().equals("sp")){
+				if(!mdata.getMinigame(minigame).canBlockBreak()){
+					event.setCancelled(true);
+				}
 			}
 			else{
 				if(mdata.getMinigame(minigame).getMpTimer() != null){

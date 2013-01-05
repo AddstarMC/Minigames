@@ -62,7 +62,7 @@ public abstract class MinigameType implements Listener{
 		plugin.getLogger().info(player.getName() + " quit " + minigame);
 	}
 	
-	public boolean callLMSJoin(Player player, Minigame mgm, GameMode gm){
+	public boolean callLMSJoin(Player player, Minigame mgm, GameMode gm){ //TODO: Remove gamemode later as its defined in the Minigame
 		if(mgm.getQuitPosition() != null && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
 			
 			player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);

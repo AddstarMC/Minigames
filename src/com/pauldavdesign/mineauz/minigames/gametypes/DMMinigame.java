@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
@@ -41,7 +40,7 @@ public class DMMinigame extends MinigameType{
 
 	@Override
 	public boolean joinMinigame(Player player, Minigame mgm) {
-		return callLMSJoin(player, mgm, GameMode.ADVENTURE);
+		return callLMSJoin(player, mgm, mgm.getDefaultGamemode());
 	}
 
 	@SuppressWarnings("deprecation")
