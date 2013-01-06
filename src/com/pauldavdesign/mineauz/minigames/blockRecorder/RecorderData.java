@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -82,7 +81,6 @@ public class RecorderData implements Listener{
 		String sloc = String.valueOf(bdata.getLocation().getBlockX()) + ":" + bdata.getLocation().getBlockY() + ":" + bdata.getLocation().getBlockZ();
 		if(!blockdata.containsKey(sloc)){
 			blockdata.put(sloc, bdata);
-			Bukkit.getLogger().info("ADDING: " + bdata.getBlockState().getType().toString());
 		}
 		else{
 			blockdata.get(sloc).setModifier(modifier);
@@ -94,7 +92,6 @@ public class RecorderData implements Listener{
 		String sloc = String.valueOf(bdata.getLocation().getBlockX()) + ":" + bdata.getLocation().getBlockY() + ":" + bdata.getLocation().getBlockZ();
 		if(!blockdata.containsKey(sloc)){
 			blockdata.put(sloc, bdata);
-			Bukkit.getLogger().info("ADDING: " + bdata.getBlockState().getType().toString());
 		}
 		else{
 			blockdata.get(sloc).setModifier(modifier);
@@ -106,7 +103,6 @@ public class RecorderData implements Listener{
 		String sloc = String.valueOf(bdata.getLocation().getBlockX()) + ":" + bdata.getLocation().getBlockY() + ":" + bdata.getLocation().getBlockZ();
 		if(!blockdata.containsKey(sloc)){
 			blockdata.put(sloc, bdata);
-			Bukkit.getLogger().info("ADDING: " + bdata.getBlockState().getType().toString());
 		}
 		else{
 			blockdata.get(sloc).setModifier(modifier);
@@ -146,21 +142,21 @@ public class RecorderData implements Listener{
 			if(bdata.getLocation().getBlock().getType() == Material.CHEST){
 				if(bdata.getLocation().getBlock().getState() instanceof DoubleChest){
 					DoubleChest dchest = (DoubleChest) bdata.getLocation().getBlock().getState();
-					for(int i = 0; i < bdata.getItems().length; i++){
-						dchest.getInventory().setItem(i, bdata.getItems()[i]);
+					if(bdata.getItems() != null){
+						dchest.getInventory().setContents(bdata.getItems().clone());
 					}
 				}
 				else{
 					Chest chest = (Chest) bdata.getLocation().getBlock().getState();
-					for(int i = 0; i < bdata.getItems().length; i++){
-						chest.getInventory().setItem(i, bdata.getItems()[i]);
+					if(bdata.getItems() != null){
+						chest.getInventory().setContents(bdata.getItems().clone());
 					}
 				}
 			}
 			else if(bdata.getLocation().getBlock().getType() == Material.FURNACE){
 				Furnace furnace = (Furnace) bdata.getLocation().getBlock().getState();
-				for(int i = 0; i < bdata.getItems().length; i++){
-					furnace.getInventory().setItem(i, bdata.getItems()[i]);
+				if(bdata.getItems() != null){
+					furnace.getInventory().setContents(bdata.getItems().clone());
 				}
 			}
 		}
@@ -187,7 +183,9 @@ public class RecorderData implements Listener{
 					furnace.getInventory().clear();
 				}
 				
-				bdata.getLocation().getBlock().setType(bdata.getBlockState().getType());
+				if(bdata.getLocation().getBlock().getType() != bdata.getBlockState().getType()){
+					bdata.getLocation().getBlock().setType(bdata.getBlockState().getType());
+				}
 				bdata.getLocation().getBlock().setData(bdata.getBlockState().getRawData());
 				changes.add(id);
 				
@@ -195,32 +193,20 @@ public class RecorderData implements Listener{
 					if(bdata.getLocation().getBlock().getState() instanceof DoubleChest){
 						DoubleChest dchest = (DoubleChest) bdata.getLocation().getBlock().getState();
 						if(bdata.getItems() != null){
-							for(int i = 0; i < bdata.getItems().length; i++){
-								if(bdata.getItems()[i] != null){
-									dchest.getInventory().setItem(i, bdata.getItems()[i]);
-								}
-							}
+							dchest.getInventory().setContents(bdata.getItems().clone());
 						}
 					}
 					else{
 						Chest chest = (Chest) bdata.getLocation().getBlock().getState();
 						if(bdata.getItems() != null){
-							for(int i = 0; i < bdata.getItems().length; i++){
-								if(bdata.getItems()[i] != null){
-									chest.getInventory().setItem(i, bdata.getItems()[i]);
-								}
-							}
+							chest.getInventory().setContents(bdata.getItems().clone());
 						}
 					}
 				}
 				else if(bdata.getLocation().getBlock().getType() == Material.FURNACE){
 					Furnace furnace = (Furnace) bdata.getLocation().getBlock().getState();
 					if(bdata.getItems() != null){
-						for(int i = 0; i < bdata.getItems().length; i++){
-							if(bdata.getItems()[i] != null){
-								furnace.getInventory().setItem(i, bdata.getItems()[i]);
-							}
-						}
+						furnace.getInventory().setContents(bdata.getItems().clone());
 					}
 				}
 			}
@@ -250,16 +236,34 @@ public class RecorderData implements Listener{
 				else if(event.getBlock().getType() == Material.CHEST){
 					if(event.getBlock().getState() instanceof DoubleChest){
 						DoubleChest dchest = (DoubleChest) event.getBlock().getState();
-						addBlock(dchest.getLocation().getBlock(), ply, dchest.getInventory().getContents());
+						ItemStack[] items = new ItemStack[dchest.getInventory().getContents().length];
+						for(int i = 0; i < items.length; i++){
+							if(dchest.getInventory().getItem(i) != null){
+								items[i] = dchest.getInventory().getItem(i).clone();
+							}
+						}
+						addBlock(dchest.getLocation().getBlock(), ply, items);
 					}
 					else{
 						Chest chest = (Chest) event.getBlock().getState();
-						addBlock(event.getBlock(), ply, chest.getInventory().getContents());
+						ItemStack[] items = new ItemStack[chest.getInventory().getContents().length];
+						for(int i = 0; i < items.length; i++){
+							if(chest.getInventory().getItem(i) != null){
+								items[i] = chest.getInventory().getItem(i).clone();
+							}
+						}
+						addBlock(chest.getBlock(), ply, items);
 					}
 				}
 				else if(event.getBlock().getType() == Material.FURNACE){
 					Furnace furnace = (Furnace) event.getBlock().getState();
-					addBlock(event.getBlock(), ply, furnace.getInventory().getContents());
+					ItemStack[] items = new ItemStack[furnace.getInventory().getContents().length];
+					for(int i = 0; i < items.length; i++){
+						if(furnace.getInventory().getItem(i) != null){
+							items[i] = furnace.getInventory().getItem(i).clone();
+						}
+					}
+					addBlock(event.getBlock(), ply, items);
 				}
 				else{
 					addBlock(event.getBlock(), ply);
@@ -297,16 +301,34 @@ public class RecorderData implements Listener{
 			if(event.getClickedBlock().getType() == Material.CHEST){
 				if(event.getClickedBlock().getState() instanceof DoubleChest){
 					DoubleChest dchest = (DoubleChest) event.getClickedBlock().getState();
-					addBlock(dchest.getLocation().getBlock(), ply, dchest.getInventory().getContents());
+					ItemStack[] items = new ItemStack[dchest.getInventory().getContents().length];
+					for(int i = 0; i < items.length; i++){
+						if(dchest.getInventory().getItem(i) != null){
+							items[i] = dchest.getInventory().getItem(i).clone();
+						}
+					}
+					addBlock(dchest.getLocation().getBlock(), ply, items);
 				}
 				else if(event.getClickedBlock().getState() instanceof Chest){
 					Chest chest = (Chest) event.getClickedBlock().getState();
-					addBlock(event.getClickedBlock(), ply, chest.getInventory().getContents());
+					ItemStack[] items = new ItemStack[chest.getInventory().getContents().length];
+					for(int i = 0; i < items.length; i++){
+						if(chest.getInventory().getItem(i) != null){
+							items[i] = chest.getInventory().getItem(i).clone();
+						}
+					}
+					addBlock(event.getClickedBlock(), ply, items);
 				}
 			}
 			else if(event.getClickedBlock().getType() == Material.FURNACE){
 				Furnace furnace = (Furnace) event.getClickedBlock().getState();
-				addBlock(event.getClickedBlock(), ply, furnace.getInventory().getContents());
+				ItemStack[] items = new ItemStack[furnace.getInventory().getContents().length];
+				for(int i = 0; i < items.length; i++){
+					if(furnace.getInventory().getItem(i) != null){
+						items[i] = furnace.getInventory().getItem(i).clone();
+					}
+				}
+				addBlock(event.getClickedBlock(), ply, items);
 			}
 		}
 	}
