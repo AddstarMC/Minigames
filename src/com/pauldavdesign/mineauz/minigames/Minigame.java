@@ -52,6 +52,7 @@ public class Minigame {
 	private boolean blockBreak = false;
 	private boolean blockPlace = false;
 	private int defaultGamemode = 2;
+	private boolean blocksdrop = true;
 	
 	private RecorderData blockRecorder = new RecorderData(this);
 	
@@ -651,6 +652,14 @@ public class Minigame {
 		this.defaultGamemode = defaultGamemode;
 	}
 
+	public boolean canBlocksdrop() {
+		return blocksdrop;
+	}
+
+	public void setBlocksdrop(boolean blocksdrop) {
+		this.blocksdrop = blocksdrop;
+	}
+
 	public void saveMinigame(){
 		MinigameSave minigame = new MinigameSave(name, "config");
 		
@@ -880,6 +889,13 @@ public class Minigame {
 			minigame.getConfig().set(name + ".whitelistmode", null);
 		}
 		
+		if(canBlocksdrop()){
+			minigame.getConfig().set(name + ".blocksdrop", canBlocksdrop());
+		}
+		else{
+			minigame.getConfig().set(name + ".blocksdrop", null);
+		}
+		
 		minigame.saveConfig();
 	}
 	
@@ -1043,6 +1059,10 @@ public class Minigame {
 			for(String block : blocklist){
 				getBlockRecorder().addWBBlock(Material.matchMaterial(block));
 			}
+		}
+		
+		if(minigame.getConfig().contains(name + ".blocksdrop")){
+			setBlocksdrop(minigame.getConfig().getBoolean(name + ".blocksdrop"));
 		}
 		
 		saveMinigame();

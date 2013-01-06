@@ -127,6 +127,7 @@ public class FloorDegenerator extends Thread{
 			for(int i = loc1.getBlockX(); i <= loc2.getBlockX() + 1; i++){
 				for(int k = loc1.getBlockZ(); k <= loc2.getBlockZ() + 1; k++){
 					if(curblock.getBlock().getType() == mgm.getSpleefFloorMaterial()){
+						mgm.getBlockRecorder().addBlock(curblock.getBlock(), null);
 						curblock.getBlock().setType(Material.AIR);
 					}
 					curblock.setZ(k);

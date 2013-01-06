@@ -12,8 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+//import org.bukkit.event.block.BlockBreakEvent;
+//import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -320,49 +320,6 @@ public class Events implements Listener{
 			event.setCancelled(true);
 			pdata.quitMinigame(event.getPlayer(), true);
 			event.getPlayer().sendMessage(ChatColor.RED + "Error: You cannot fly while in a Minigame!");
-		}
-	}
-	
-	@EventHandler
-	public void onBlockPlace(BlockPlaceEvent event){
-		if(pdata.playerInMinigame(event.getPlayer()) && !mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).canBlockPlace()){
-			event.setCancelled(true);
-		}
-	}
-	
-	@EventHandler
-	public void onBlockBreak(BlockBreakEvent event){
-		if(pdata.playerInMinigame(event.getPlayer())){
-			String minigame = pdata.getPlayersMinigame(event.getPlayer());
-			
-			if(!mdata.getMinigame(minigame).getType().equals("spleef") && 
-					mdata.getMinigame(minigame).getMpTimer() != null && 
-					mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() == 0){
-				if(!mdata.getMinigame(minigame).canBlockBreak()){
-					event.setCancelled(true);
-				}
-			}
-			else if(mdata.getMinigame(minigame).getType().equals("sp")){
-				if(!mdata.getMinigame(minigame).canBlockBreak()){
-					event.setCancelled(true);
-				}
-			}
-			else{
-				if(mdata.getMinigame(minigame).getMpTimer() != null){
-					if(mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() != 0){
-						event.setCancelled(true);
-					}
-					else{
-						event.setCancelled(true);
-						if(event.getBlock().getType() == mdata.getMinigame(minigame).getSpleefFloorMaterial()){
-							event.getBlock().setType(Material.AIR);
-						}
-					}
-				}
-				else {
-					event.setCancelled(true);
-				}
-			}
 		}
 	}
 	

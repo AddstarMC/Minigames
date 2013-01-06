@@ -4,11 +4,13 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class BlockData {
 	private Location location;
 	private BlockState state;
 	private Player player;
+	private ItemStack[] items = null;
 	
 	public BlockData(Block original, Player modifier){
 		location = original.getLocation();
@@ -20,6 +22,13 @@ public class BlockData {
 		location = original.getLocation();
 		state = original;
 		player = modifier;
+	}
+	
+	public BlockData(Block original, Player modifier, ItemStack[] items){
+		location = original.getLocation();
+		state = original.getState();
+		player = modifier;
+		this.items = items;
 	}
 	
 	public Location getLocation(){
@@ -36,5 +45,13 @@ public class BlockData {
 	
 	public void setModifier(Player modifier){
 		player = modifier;
+	}
+	
+	public ItemStack[] getItems(){
+		return items;
+	}
+	
+	public void setItems(ItemStack[] items){
+		this.items = items;
 	}
 }

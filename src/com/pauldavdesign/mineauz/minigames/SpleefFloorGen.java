@@ -7,7 +7,7 @@ import org.bukkit.Material;
 public class SpleefFloorGen {
 	public Location spoint1;
 	public Location spoint2;
-	
+	@Deprecated
 	public SpleefFloorGen(Location point1, Location point2){
 		Double minX;
 		Double maxX;

@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
-import com.pauldavdesign.mineauz.minigames.SpleefFloorGen;
 
 public class RegenCommand implements ICommand{
 
@@ -56,8 +55,8 @@ public class RegenCommand implements ICommand{
 			
 			if(mgm != null){
 				if(mgm.getType().equals("spleef")){
-					SpleefFloorGen floor = new SpleefFloorGen(mgm.getSpleefFloor1(), mgm.getSpleefFloor2());
-					floor.regenFloor(mgm.getSpleefFloorMaterial(), true);
+					//SpleefFloorGen floor = new SpleefFloorGen(mgm.getSpleefFloor1(), mgm.getSpleefFloor2());
+					//floor.regenFloor(mgm.getSpleefFloorMaterial(), true);
 					sender.sendMessage(ChatColor.GRAY + "Regenerating " + mgm.getName() + "'s spleef floor");
 				}
 				

@@ -19,7 +19,6 @@ import com.pauldavdesign.mineauz.minigames.MinigameSave;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.SQLCompletionSaver;
-import com.pauldavdesign.mineauz.minigames.SpleefFloorGen;
 import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
 
 public class SpleefMinigame extends MinigameType{
@@ -46,11 +45,14 @@ public class SpleefMinigame extends MinigameType{
 				if(mdata.getMinigame(minigame).getMpTimer() != null){
 					mdata.getMinigame(minigame).getMpTimer().setStartWaitTime(0);
 					
-					SpleefFloorGen floor = new SpleefFloorGen(mgm.getSpleefFloor1(), mgm.getSpleefFloor2());
+					//SpleefFloorGen floor = new SpleefFloorGen(mgm.getSpleefFloor1(), mgm.getSpleefFloor2());
 					if(mgm.getFloorDegenerator() != null){
 						mgm.getFloorDegenerator().stopDegenerator();
 					}
-					floor.regenFloor(mgm.getSpleefFloorMaterial(), false);
+					//floor.regenFloor(mgm.getSpleefFloorMaterial(), false);
+					if(mgm.getBlockRecorder().hasData()){
+						mgm.getBlockRecorder().restoreBlocks();
+					}
 						
 					if(mdata.getMinigame(minigame).getMpBets() != null){
 						player.getInventory().addItem(mdata.getMinigame(minigame).getMpBets().getPlayersBet(player));
@@ -115,9 +117,9 @@ public class SpleefMinigame extends MinigameType{
 		
 		if(mgm.getPlayers().isEmpty()){
 			mdata.getMinigame(minigame).getMpTimer().setStartWaitTime(0);
-			SpleefFloorGen floor = new SpleefFloorGen(mgm.getSpleefFloor1(), mgm.getSpleefFloor2());
+			//SpleefFloorGen floor = new SpleefFloorGen(mgm.getSpleefFloor1(), mgm.getSpleefFloor2());
 			mgm.getFloorDegenerator().stopDegenerator();
-			floor.regenFloor(mgm.getSpleefFloorMaterial(), false);
+			//floor.regenFloor(mgm.getSpleefFloorMaterial(), false);
 			
 			mdata.getMinigame(minigame).setMpTimer(null);
 			for(Player pl : mdata.getMinigame(minigame).getPlayers()){
