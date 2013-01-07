@@ -5,12 +5,8 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
-import org.bukkit.block.Dispenser;
-import org.bukkit.block.Furnace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.RestoreBlock;
@@ -35,7 +31,7 @@ public class SetRestoreBlockCommand implements ICommand {
 
 	@Override
 	public String getDescription() {
-		return "Adds, removes, lists or clears all restore blocks in a Minigame. " +
+		return "Adds, removes, lists or clears all restore blocks in a Minigame. Note: Only needed for blocks a player won't interact with (ie: Dispensers). " +
 				"You must be standing on the block to assign it, or type \"-l\" to assign it to what you are looking at.";
 	}
 
@@ -85,21 +81,8 @@ public class SetRestoreBlockCommand implements ICommand {
 					List<Block> blocks = player.getLineOfSight(null, 20);
 					loc = blocks.get(blocks.size() - 1).getLocation();
 				}
-				ItemStack[] items = null;
-				if(loc.getBlock().getState() instanceof Chest){
-					Chest chest = (Chest) loc.getBlock().getState();
-					items = chest.getInventory().getContents().clone();
-				}
-				else if(loc.getBlock().getState() instanceof Furnace){
-					Furnace furnace = (Furnace) loc.getBlock().getState();
-					items = furnace.getInventory().getContents().clone();
-				}
-				else if(loc.getBlock().getState() instanceof Dispenser){
-					Dispenser dispenser = (Dispenser) loc.getBlock().getState();
-					items = dispenser.getInventory().getContents().clone();
-				}
+				
 				RestoreBlock rb = new RestoreBlock(args[1], loc.getBlock().getType(), loc);
-				rb.setItems(items);
 				minigame.addRestoreBlock(rb);
 				player.sendMessage(ChatColor.GRAY + "Saved block \"" + loc.getBlock().getType().toString() + "\" for " + minigame.getName() + " under the name " + args[1]);
 				return true;

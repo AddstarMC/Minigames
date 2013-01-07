@@ -32,6 +32,9 @@ public class SpleefMinigame extends MinigameType{
 
 	@Override
 	public boolean joinMinigame(Player player, Minigame mgm) {
+		player.sendMessage(ChatColor.RED + "---------------------Warning---------------------");
+		player.sendMessage(ChatColor.RED + "This Minigame type will become deprecated in later versions of Minigames! Please see the tutorial on " +
+				"http://dev.bukkit.org/server-mods/minigames/ to see how to set up spleef in the new way. Please notify an Admin!");
 		return callLMSJoin(player, mgm, mgm.getDefaultGamemode());
 	}
 
@@ -43,7 +46,8 @@ public class SpleefMinigame extends MinigameType{
 			mdata.getMinigame(minigame).removePlayer(player);
 			if(mdata.getMinigame(minigame).getPlayers().size() == 0){
 				if(mdata.getMinigame(minigame).getMpTimer() != null){
-					mdata.getMinigame(minigame).getMpTimer().setStartWaitTime(0);
+//					mdata.getMinigame(minigame).getMpTimer().setStartWaitTime(0);
+					mgm.getMpTimer().pauseTimer();
 					
 					//SpleefFloorGen floor = new SpleefFloorGen(mgm.getSpleefFloor1(), mgm.getSpleefFloor2());
 					if(mgm.getFloorDegenerator() != null){

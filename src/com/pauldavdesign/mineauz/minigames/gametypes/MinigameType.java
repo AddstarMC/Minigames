@@ -46,7 +46,7 @@ public abstract class MinigameType implements Listener{
 	
 	public void callGeneralQuit(Player player){
 		String minigame = pdata.getPlayersMinigame(player);
-
+		
 		player.teleport(mdata.getMinigame(minigame).getQuitPosition());
 		
 		pdata.removePlayerCheckpoints(player);

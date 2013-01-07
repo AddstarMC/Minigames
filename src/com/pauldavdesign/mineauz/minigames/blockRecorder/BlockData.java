@@ -24,13 +24,6 @@ public class BlockData {
 		player = modifier;
 	}
 	
-	public BlockData(Block original, Player modifier, ItemStack[] items){
-		location = original.getLocation();
-		state = original.getState();
-		player = modifier;
-		this.items = items;
-	}
-	
 	public Location getLocation(){
 		return location;
 	}

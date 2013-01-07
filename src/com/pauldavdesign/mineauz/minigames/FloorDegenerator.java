@@ -19,8 +19,7 @@ public class FloorDegenerator extends Thread{
 	private Minigame mgm = null;
 	
 	public FloorDegenerator(Location point1, Location point2, Minigame mgm){
-		timeDelay = plugin.getConfig().getInt("spleef.floordegenerate.time");
-		running = plugin.getConfig().getBoolean("spleef.floordegenerate.enabled");
+		timeDelay = plugin.getConfig().getInt("multiplayer.floordegenerator.time");
 		this.mgm = mgm;
 		double minX;
 		double maxX;

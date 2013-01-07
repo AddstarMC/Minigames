@@ -42,13 +42,18 @@ public class LMSMinigame extends MinigameType {
 			mgm.removePlayer(player);
 			if(mgm.getPlayers().size() == 0){
 				if(mgm.getMpTimer() != null){
-					mgm.getMpTimer().setStartWaitTime(0);
+					//mgm.getMpTimer().setStartWaitTime(0);
+					mgm.getMpTimer().pauseTimer();
 					
 					if(mgm.getMpBets() != null){
 						player.getInventory().addItem(mgm.getMpBets().getPlayersBet(player));
 						mgm.setMpBets(null);
 					}
 					mgm.setMpTimer(null);
+					
+					if(mgm.getFloorDegenerator() != null){
+						mgm.getFloorDegenerator().stopDegenerator();
+					}
 				}
 			}
 			else if(mgm.getPlayers().size() == 1 && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0 && !forced){

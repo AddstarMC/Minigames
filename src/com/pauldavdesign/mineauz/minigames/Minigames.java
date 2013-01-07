@@ -45,7 +45,7 @@ public class Minigames extends JavaPlugin{
 	public static Minigames plugin;
     private static Economy econ = null;
 	private MySQL sql = null;
-	
+
 	public void onEnable(){
 		plugin = this;
 		PluginDescriptionFile desc = this.getDescription();
@@ -165,6 +165,9 @@ public class Minigames extends JavaPlugin{
 			pdata.setPartyMode(true);
 		}
 		
+		pdata.loadDCPlayers();
+		pdata.loadDeniedCommands();
+		
 		getCommand("minigame").setExecutor(new CommandDispatcher());
 	}
 
@@ -189,6 +192,9 @@ public class Minigames extends JavaPlugin{
 		if(sql != null){
 			sql.close();
 		}
+		
+		pdata.saveDCPlayers();
+		pdata.saveDeniedCommands();
 	}
 	
 	private boolean setupEconomy(){

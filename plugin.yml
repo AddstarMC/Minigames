@@ -1,6 +1,6 @@
 name: Minigames
 main: com.pauldavdesign.mineauz.minigames.Minigames
-version: 1.4.0 Dev 4
+version: 1.4.0 Dev 5
 author: _Razz_
 
 commands:
@@ -79,7 +79,7 @@ permissions:
             minigame.set.end: true
             minigame.set.quit: true
             minigame.set.reward: true
-            minigame.set.spleeffloor: true
+            minigame.set.floordegenerator: true
             minigame.set.type: true
             minigame.set.lobby: true
             minigame.set.bets: true
@@ -94,7 +94,6 @@ permissions:
             minigame.set.usepermissions: true
             minigame.set.minscore: true
             minigame.set.maxscore: true
-            minigame.set.spleeffloormat: true
             minigame.set.mintreasure: true
             minigame.set.maxtreasure: true
             minigame.set.timer: true
@@ -123,8 +122,8 @@ permissions:
     minigame.set.lobby:
         description: Allows players to set lobby position
         default: op
-    minigame.set.spleeffloor:
-        description: Allows players to set the spleef floor corners
+    minigame.set.floordegenerator:
+        description: Allows players to set the floor degenerator corners
         default: op
     minigame.set.spleeffloormat:
         description: Allows a player to change the floor material for spleef.

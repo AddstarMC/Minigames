@@ -7,15 +7,15 @@ import org.bukkit.entity.Player;
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 
-public class SetSpleefFloorCommand implements ICommand{
+public class SetFloorDegeneratorCommand implements ICommand{
 	@Override
 	public String getName() {
-		return "spleeffloor";
+		return "floordegenerator";
 	}
 
 	@Override
 	public String[] getAliases() {
-		return new String[] {"sfloor"};
+		return new String[] {"floord", "floordegen"};
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class SetSpleefFloorCommand implements ICommand{
 
 	@Override
 	public String getDescription() {
-		return "Sets the two corners of a spleef floor (cubeoid/rectangle)";
+		return "Sets the two corners of a floor to degenerate (cubeoid/rectangle)";
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class SetSpleefFloorCommand implements ICommand{
 
 	@Override
 	public String[] getUsage() {
-		return new String[] {"/minigame set <Minigame> spleeffloor <1/2>"};
+		return new String[] {"/minigame set <Minigame> floordegenerator <1/2>"};
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class SetSpleefFloorCommand implements ICommand{
 
 	@Override
 	public String getPermission() {
-		return "minigame.set.spleeffloor";
+		return "minigame.set.floordegenerator";
 	}
 
 	@Override
@@ -55,14 +55,14 @@ public class SetSpleefFloorCommand implements ICommand{
 			Player player = (Player)sender;
 			if(args[0].equals("1")){
 				minigame.setSpleefFloor1(player.getLocation());
-				sender.sendMessage(ChatColor.GRAY + "Spleef floor corner 1 has been set for " + minigame);
+				sender.sendMessage(ChatColor.GRAY + "Floor degenerator corner 1 has been set for " + minigame);
 			}
 			else if(args[0].equals("2")){
 				minigame.setSpleefFloor2(player.getLocation());
-				sender.sendMessage(ChatColor.GRAY + "Spleef floor corner 2 has been set for " + minigame);
+				sender.sendMessage(ChatColor.GRAY + "Floor degenerator corner 2 has been set for " + minigame);
 			}
 			else{
-				sender.sendMessage(ChatColor.RED + "Error: Invalid spleef floor position, use 1 or 2");
+				sender.sendMessage(ChatColor.RED + "Error: Invalid floor degenerator position, use 1 or 2");
 			}
 			return true;
 		}

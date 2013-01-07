@@ -10,7 +10,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.blockRecorder.RecorderData;
@@ -802,16 +801,7 @@ public class Minigame {
 			for(String block : blocks){
 				minigame.getConfig().set(name + ".resblocks." + block + ".type", restoreBlocks.get(block).getBlock().toString());
 				Minigames.plugin.mdata.minigameSetLocationsShort(name, restoreBlocks.get(block).getLocation(), "resblocks." + block + ".location", minigame.getConfig());
-				if(restoreBlocks.get(block).getItems() != null){
-					for(int i = 0; i < restoreBlocks.get(block).getItems().length; i++){
-						if(restoreBlocks.get(block).getItems()[i] != null){
-							minigame.getConfig().set(name + ".resblocks." + block + ".items." + i, restoreBlocks.get(block).getItems()[i]);
-						}
-					}
-				}
-				else{
-					minigame.getConfig().set(name + ".resblocks." + block + ".items", null);
-				}
+				minigame.getConfig().set(name + ".resblocks." + block + ".items", null); //TODO: Remove this line after next public version
 			}
 		}
 		else{
@@ -889,7 +879,7 @@ public class Minigame {
 			minigame.getConfig().set(name + ".whitelistmode", null);
 		}
 		
-		if(canBlocksdrop()){
+		if(!canBlocksdrop()){
 			minigame.getConfig().set(name + ".blocksdrop", canBlocksdrop());
 		}
 		else{
@@ -995,26 +985,7 @@ public class Minigame {
 			Set<String> blocks = minigame.getConfig().getConfigurationSection(name + ".resblocks").getKeys(false);
 			for(String block : blocks){
 				RestoreBlock res = new RestoreBlock(block, Material.getMaterial(minigame.getConfig().getString(name + ".resblocks." + block + ".type")), Minigames.plugin.mdata.minigameLocationsShort(name, ".resblocks." + block + ".location", minigame.getConfig()));
-				if(minigame.getConfig().contains(name + ".resblocks." + block + ".items")){
-					Set<String> itemset = minigame.getConfig().getConfigurationSection(name + ".resblocks." + block + ".items").getKeys(false);
-					if(!itemset.isEmpty()){
-						InventoryType type = null;
-						if(res.getBlock().toString().equals("CHEST")){
-							type = InventoryType.CHEST;
-						}
-						else if(res.getBlock().toString().equals("DISPENSER")){
-							type = InventoryType.DISPENSER;
-						}
-						else if(res.getBlock().toString().equals("FURNACE")){
-							type = InventoryType.FURNACE;
-						}
-						ItemStack[] items = new ItemStack[Minigames.plugin.getServer().createInventory(null, type).getSize()];
-						for(String item : itemset){
-							items[Integer.parseInt(item)] = minigame.getConfig().getItemStack(name + ".resblocks." + block + ".items." + item);
-						}
-						res.setItems(items);
-					}
-				}
+				
 				addRestoreBlock(res);
 			}
 		}

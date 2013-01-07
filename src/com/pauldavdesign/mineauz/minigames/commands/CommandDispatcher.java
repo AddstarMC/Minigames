@@ -46,6 +46,7 @@ public class CommandDispatcher implements CommandExecutor{
 		registerCommand(new ToggleTimerCommand());
 		registerCommand(new DeleteCommand());
 		registerCommand(new PartyModeCommand());
+		registerCommand(new DeniedCommandCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {
@@ -170,6 +171,27 @@ AliasCheck:		for(ICommand com : commands.values()){
 							}
 							sender.sendMessage(ChatColor.BLUE + "Usage: ");
 							sender.sendMessage(comd.getUsage());
+							if(comd.getAliases() != null){
+								String aliases = "";
+								boolean switchColour = false;
+								for(String alias : comd.getAliases()){
+									if(switchColour){
+										aliases += ChatColor.WHITE + alias;
+										if(!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])){
+											aliases += ChatColor.WHITE + ", ";
+										}
+										switchColour = false;
+									}
+									else{
+										aliases += ChatColor.GRAY + alias;
+										if(!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])){
+											aliases += ChatColor.WHITE + ", ";
+										}
+										switchColour = true;
+									}
+								}
+								sender.sendMessage(ChatColor.BLUE + "Aliases: " + aliases);
+							}
 						}
 					}
 					else{

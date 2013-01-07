@@ -16,15 +16,17 @@ multiplayer:
     - 60
     - 30
     - 10
-  broadcastwin: true
-  
-spleef:
-  floordegenerate:
+  floordegenerator:
     time: 30
-    enabled: true
+  broadcastwin: true
   
 singleplayer:
   broadcastcompletion: true
+  
+disabledCommands:
+  - home
+  - warp
+  - spawn
   
 use-sql: false
 sql-host: localhost

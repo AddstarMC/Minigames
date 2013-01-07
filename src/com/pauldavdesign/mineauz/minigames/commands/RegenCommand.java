@@ -61,7 +61,7 @@ public class RegenCommand implements ICommand{
 				}
 				
 				if(mgm.hasRestoreBlocks()){
-					mdata.restoreMinigameBlocks(mgm);
+					//mdata.restoreMinigameBlocks(mgm);
 					sender.sendMessage(ChatColor.GRAY + "Regenerating " + mgm.getName() + "'s restore blocks");
 				}
 			}

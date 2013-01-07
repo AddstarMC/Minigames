@@ -41,6 +41,9 @@ public class PlayerData {
 	private Map<String, GameMode> lastGM = new HashMap<String, GameMode>();
 	private boolean partyMode = false;
 	
+	private Map<String, Location> dcPlayers = new HashMap<String, Location>();
+	private List<String> deniedCommands = new ArrayList<String>();
+	
 	//Stats
 	private Map<String, Integer> plyDeaths = new HashMap<String, Integer>();
 	private Map<String, Integer> plyKills = new HashMap<String, Integer>();
@@ -204,23 +207,6 @@ public class PlayerData {
 					setPlayerCheckpoints(players.get(pos - 1), start);
 					players.get(i).sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
 				}
-				//} 
-				//else{
-//					pos = 1;
-//					if(!mgm.getStartLocations().isEmpty()){
-//						if(team == 0){
-//							start = mgm.getStartLocationsRed().get(0);
-//						}
-//						else{
-//							start = mgm.getStartLocationsBlue().get(0);
-//						}
-//						players.get(i).teleport(start);
-//					}
-//					else {
-//						players.get(i).sendMessage(ChatColor.RED + "Error: Starting positions are incorrectly configured!");
-//						quitMinigame(players.get(i), false);
-//					}
-				//}
 			}
 			
 			if(mgm.hasDefaultLoadout() || mgm.hasLoadouts()){
@@ -228,9 +214,15 @@ public class PlayerData {
 			}
 		}
 
-		if(mgm.getType().equals("spleef")){
+		if(mgm.getSpleefFloor1() != null && mgm.getSpleefFloor2() != null){
 			mgm.addFloorDegenerator();
 			mgm.getFloorDegenerator().start();
+		}
+
+		if(mgm.hasRestoreBlocks()){
+			for(RestoreBlock block : mgm.getRestoreBlocks().values()){
+				mgm.getBlockRecorder().addBlock(block.getLocation().getBlock(), null);
+			}
 		}
 		
 		for(Player pl : players){
@@ -306,6 +298,10 @@ public class PlayerData {
 				mgm.setMinigameTimer(null);
 			}
 			
+			if(mgm.getPlayers().size() == 0){
+				mgm.getBlockRecorder().restoreBlocks();
+			}
+			
 			setAllowTP(player, false);
 		}
 	}
@@ -343,9 +339,9 @@ public class PlayerData {
 				removePlayerKills(player);
 			}
 			
-			if(mgm.hasRestoreBlocks()){
-				mdata.restoreMinigameBlocks(mgm);
-			}
+//			if(mgm.hasRestoreBlocks()){
+//				mdata.restoreMinigameBlocks(mgm);
+//			}
 			
 			if(mgm.getMinigameTimer() != null){
 				mgm.getMinigameTimer().stopTimer();
@@ -638,5 +634,68 @@ public class PlayerData {
 			fwm.setPower(0);
 			firework.setFireworkMeta(fwm);
 		}
+	}
+	
+	public void addDCPlayer(Player player, Location location){
+		dcPlayers.put(player.getName(), location);
+	}
+	
+	public void addDCPlayer(String player, Location location){
+		dcPlayers.put(player, location);
+	}
+	
+	public Location getDCPlayer(Player player){
+		return dcPlayers.get(player.getName());
+	}
+	
+	public boolean hasDCPlayer(Player player){
+		return dcPlayers.containsKey(player.getName());
+	}
+	
+	public void removeDCPlayer(Player player){
+		dcPlayers.remove(player.getName());
+	}
+	
+	public void saveDCPlayers(){
+		MinigameSave save = new MinigameSave("dcPlayers");
+		for(String player : dcPlayers.keySet()){
+			mdata.minigameSetLocations(player, dcPlayers.get(player), "rejoin", save.getConfig());
+		}
+		save.saveConfig();
+	}
+	
+	public void loadDCPlayers(){
+		MinigameSave save = new MinigameSave("dcPlayers");
+		for(String player : save.getConfig().getKeys(false)){
+			addDCPlayer(player, mdata.minigameLocations(player, "rejoin", save.getConfig()));
+			save.getConfig().set(player, null);
+		}
+		save.saveConfig();
+		save.deleteFile();
+	}
+
+	public List<String> getDeniedCommands() {
+		return deniedCommands;
+	}
+
+	public void setDeniedCommands(List<String> deniedCommands) {
+		this.deniedCommands = deniedCommands;
+	}
+	
+	public void addDeniedCommand(String command){
+		deniedCommands.add(command);
+	}
+	
+	public void removeDeniedCommand(String command){
+		deniedCommands.remove(command);
+	}
+	
+	public void saveDeniedCommands(){
+		plugin.getConfig().set("disabledCommands", deniedCommands);
+		plugin.saveConfig();
+	}
+	
+	public void loadDeniedCommands(){
+		setDeniedCommands(plugin.getConfig().getStringList("disabledCommands"));
 	}
 }

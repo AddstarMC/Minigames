@@ -16,6 +16,7 @@ import org.bukkit.event.block.Action;
 //import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -80,6 +81,9 @@ public class Events implements Listener{
 	@EventHandler
 	public void onPlayerDisconnect(PlayerQuitEvent event){
 		if(pdata.playerInMinigame(event.getPlayer())){
+			if(event.getPlayer().isDead()){
+				pdata.addDCPlayer(event.getPlayer(), mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).getQuitPosition());
+			}
 			pdata.quitMinigame(event.getPlayer(), false);
 		}
 	}
@@ -98,6 +102,11 @@ public class Events implements Listener{
 					}
 				}
 			}
+		}
+		if(pdata.hasDCPlayer(event.getPlayer())){
+			event.getPlayer().teleport(pdata.getDCPlayer(event.getPlayer()));
+			pdata.removeDCPlayer(event.getPlayer());
+			pdata.removeDCPlayer(event.getPlayer());
 		}
 	}
 	
@@ -328,6 +337,18 @@ public class Events implements Listener{
 		if(pdata.playerInMinigame(event.getPlayer()) && (mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).getType().equals("lms") || mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).getType().equals("spleef") || mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).getType().equals("teamdm"))){
 			event.setCancelled(true);
 			event.getPlayer().sendMessage(ChatColor.RED + "You can't revert while playing " + mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).getType());
+		}
+	}
+	
+	@EventHandler
+	private void commandExecute(PlayerCommandPreprocessEvent event){
+		if(pdata.playerInMinigame(event.getPlayer())){
+			for(String comd : pdata.getDeniedCommands()){
+				if(event.getMessage().contains(comd)){
+					event.setCancelled(true);
+					event.getPlayer().sendMessage(ChatColor.RED + "You are not allowed to use that command while playing a Minigame!");
+				}
+			}
 		}
 	}
 

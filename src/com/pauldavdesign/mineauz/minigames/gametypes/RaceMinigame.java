@@ -2,14 +2,8 @@ package com.pauldavdesign.mineauz.minigames.gametypes;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Chest;
-import org.bukkit.block.Dispenser;
-import org.bukkit.block.Furnace;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -46,7 +40,8 @@ public class RaceMinigame extends MinigameType{
 			mdata.getMinigame(minigame).removePlayer(player);
 			if(mdata.getMinigame(minigame).getPlayers().size() == 0){
 				if(mdata.getMinigame(minigame).getMpTimer() != null){
-					mdata.getMinigame(minigame).getMpTimer().setStartWaitTime(0);
+//					mdata.getMinigame(minigame).getMpTimer().setStartWaitTime(0);
+					mgm.getMpTimer().pauseTimer();
 					if(mdata.getMinigame(minigame).getMpBets() != null){
 						player.getInventory().addItem(mdata.getMinigame(minigame).getMpBets().getPlayersBet(player));
 						mdata.getMinigame(minigame).setMpBets(null);
@@ -138,36 +133,36 @@ public class RaceMinigame extends MinigameType{
 			}
 		}
 		
-		if(mgm.hasRestoreBlocks()){
-			Set<String> blocks = mgm.getRestoreBlocks().keySet();
-			
-			for(String name : blocks){
-				String mat = mgm.getRestoreBlocks().get(name).getBlock().toString();
-				if(mat.equalsIgnoreCase("CHEST") || mat.equalsIgnoreCase("FURNACE") || mat.equalsIgnoreCase("DISPENSER")){
-					Location loc = mgm.getRestoreBlocks().get(name).getLocation();
-					
-					if(loc.getBlock().getType() != Material.getMaterial(mat)){
-						loc.getBlock().setType(Material.getMaterial(mat));
-					}
-					
-					if(loc.getBlock().getState() instanceof Chest){
-						Chest chest = (Chest) loc.getBlock().getState();
-						chest.getInventory().clear();
-						chest.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
-					}
-					else if(loc.getBlock().getState() instanceof Furnace){
-						Furnace furnace = (Furnace) loc.getBlock().getState();
-						furnace.getInventory().clear();
-						furnace.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
-					}
-					else if(loc.getBlock().getState() instanceof Dispenser){
-						Dispenser dispenser = (Dispenser) loc.getBlock().getState();
-						dispenser.getInventory().clear();
-						dispenser.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
-					}
-				}
-			}
-		}
+//		if(mgm.hasRestoreBlocks()){
+//			Set<String> blocks = mgm.getRestoreBlocks().keySet();
+//			
+//			for(String name : blocks){
+//				String mat = mgm.getRestoreBlocks().get(name).getBlock().toString();
+//				if(mat.equalsIgnoreCase("CHEST") || mat.equalsIgnoreCase("FURNACE") || mat.equalsIgnoreCase("DISPENSER")){
+//					Location loc = mgm.getRestoreBlocks().get(name).getLocation();
+//					
+//					if(loc.getBlock().getType() != Material.getMaterial(mat)){
+//						loc.getBlock().setType(Material.getMaterial(mat));
+//					}
+//					
+//					if(loc.getBlock().getState() instanceof Chest){
+//						Chest chest = (Chest) loc.getBlock().getState();
+//						chest.getInventory().clear();
+//						chest.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
+//					}
+//					else if(loc.getBlock().getState() instanceof Furnace){
+//						Furnace furnace = (Furnace) loc.getBlock().getState();
+//						furnace.getInventory().clear();
+//						furnace.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
+//					}
+//					else if(loc.getBlock().getState() instanceof Dispenser){
+//						Dispenser dispenser = (Dispenser) loc.getBlock().getState();
+//						dispenser.getInventory().clear();
+//						dispenser.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
+//					}
+//				}
+//			}
+//		}
 
 		player.setFireTicks(0);
 		

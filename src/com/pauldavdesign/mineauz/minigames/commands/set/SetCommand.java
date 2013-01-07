@@ -32,8 +32,7 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetRewardCommand());
 		registerSetCommand(new SetSecondaryRewardCommand());
 		registerSetCommand(new SetTypeCommand());
-		registerSetCommand(new SetSpleefFloorCommand());
-		registerSetCommand(new SetSpleefFloorMatCommand());
+		registerSetCommand(new SetFloorDegeneratorCommand());
 		registerSetCommand(new SetMaxPlayersCommand());
 		registerSetCommand(new SetMinPlayersCommand());
 		registerSetCommand(new SetLoadoutCommand());
@@ -234,6 +233,27 @@ AliasCheck:				for(ICommand com : parameterList.values()){
 							}
 							sender.sendMessage(ChatColor.BLUE + "Usage: ");
 							sender.sendMessage(comd.getUsage());
+							if(comd.getAliases() != null){
+								String aliases = "";
+								boolean switchColour = false;
+								for(String alias : comd.getAliases()){
+									if(switchColour){
+										aliases += ChatColor.WHITE + alias;
+										if(!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])){
+											aliases += ChatColor.WHITE + ", ";
+										}
+										switchColour = false;
+									}
+									else{
+										aliases += ChatColor.GRAY + alias;
+										if(!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])){
+											aliases += ChatColor.WHITE + ", ";
+										}
+										switchColour = true;
+									}
+								}
+								sender.sendMessage(ChatColor.BLUE + "Aliases: " + aliases);
+							}
 						}
 					}
 					else{
