@@ -159,7 +159,7 @@ public class Events implements Listener{
 			if(cblock.getState() instanceof Sign){
 				Sign sign = (Sign) cblock.getState();
 				String minigame = pdata.getPlayersMinigame(event.getPlayer());
-				if(sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]")){
+				if(sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]") && event.getPlayer().getItemInHand().getType() == Material.AIR){
 					if(sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Finish") && pdata.playerInMinigame(event.getPlayer())){
 						if(!mdata.getMinigame(minigame).getFlags().isEmpty()){
 							Location loc = event.getPlayer().getLocation();
@@ -197,11 +197,8 @@ public class Events implements Listener{
 					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Join") && !pdata.playerInMinigame(event.getPlayer())){
 						Minigame mgm = mdata.getMinigame(sign.getLine(2));
 						if(mgm != null && (!mgm.getUsePermissions() || event.getPlayer().hasPermission("minigame.join." + mgm.getName().toLowerCase()))){
-							if(event.getPlayer().getItemInHand().getType() == Material.AIR && mgm.isEnabled()){
+							if(mgm.isEnabled()){
 								pdata.joinMinigame(event.getPlayer(), mdata.getMinigame(sign.getLine(2)));
-							}
-							else if(event.getPlayer().getItemInHand().getType() != Material.AIR){
-								event.getPlayer().sendMessage(ChatColor.RED + "Your hand must be empty to join this minigame!");
 							}
 							else if(!mgm.isEnabled()){
 								event.getPlayer().sendMessage(ChatColor.RED + "Error: This minigame is currently not enabled.");
@@ -253,26 +250,25 @@ public class Events implements Listener{
 						pdata.quitMinigame(event.getPlayer(), false);
 					}
 					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Loadout") && pdata.playerInMinigame(event.getPlayer())){
-						if(event.getPlayer().getItemInHand().getType() == Material.AIR){
-							Player ply = event.getPlayer();
-							Minigame mgm = mdata.getMinigame(minigame);
-							if(mgm.hasLoadout(sign.getLine(2))){
-								if(mgm.getType() == "sp" || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
-									mgm.getLoadout(sign.getLine(2)).equiptLoadout(ply);
-								}
-								mgm.setPlayersLoadout(ply, sign.getLine(2));
-								ply.updateInventory();
-								ply.sendMessage(ChatColor.GREEN + "You have been equip with the " + sign.getLine(2) + " loadout.");
+						Player ply = event.getPlayer();
+						Minigame mgm = mdata.getMinigame(minigame);
+						if(mgm.hasLoadout(sign.getLine(2))){
+							if(mgm.getType() == "sp" || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
+								mgm.getLoadout(sign.getLine(2)).equiptLoadout(ply);
 							}
-							else{
-								ply.sendMessage(ChatColor.RED + "Error: This loadout does not exist!");
-							}
+							mgm.setPlayersLoadout(ply, sign.getLine(2));
+							ply.updateInventory();
+							ply.sendMessage(ChatColor.GREEN + "You have been equip with the " + sign.getLine(2) + " loadout.");
 						}
 						else{
-							event.getPlayer().sendMessage(ChatColor.RED + "Your hand must be empty to equip a loadout!");
+							ply.sendMessage(ChatColor.RED + "Error: This loadout does not exist!");
 						}
 					}
 				}
+				else if(sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]")){
+					event.getPlayer().sendMessage(ChatColor.RED + "Your hand must be empty to use this sign!");
+				}
+				event.setCancelled(true);
 			}
 			else if(cblock.getState() instanceof Chest){
 				if(mdata.hasTreasureHuntLocations()){

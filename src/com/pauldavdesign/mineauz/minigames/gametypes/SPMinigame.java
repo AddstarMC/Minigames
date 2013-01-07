@@ -42,6 +42,7 @@ public class SPMinigame extends MinigameType{
 			player.teleport(startpos);
 			player.sendMessage(ChatColor.GREEN + "You have started a singleplayer minigame, type /minigame quit to exit.");
 			pdata.setPlayerCheckpoints(player, startpos);
+			mgm.addPlayer(player);
 			
 			List<Player> plys = pdata.playersInMinigame();
 			for(Player ply : plys){
@@ -90,6 +91,8 @@ public class SPMinigame extends MinigameType{
 			mgm.getBlockRecorder().restoreBlocks(player);
 		}
 		
+		mgm.removePlayer(player);
+		
 		if(plugin.getSQL() == null){
 			completion = mdata.getConfigurationFile("completion");
 			hascompleted = completion.getStringList(minigame).contains(player.getName());
@@ -114,6 +117,8 @@ public class SPMinigame extends MinigameType{
 	@Override
 	public void quitMinigame(Player player, Minigame mgm, boolean forced) {
 		callGeneralQuit(player);
+
+		mgm.removePlayer(player);
 		
 		if(mgm.getBlockRecorder().hasData()){
 			mgm.getBlockRecorder().restoreBlocks(player);

@@ -18,6 +18,7 @@ import org.bukkit.block.Furnace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -363,10 +364,10 @@ public class RecorderData implements Listener{
 		return !blockdata.isEmpty();
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	private void blockBreak(BlockBreakEvent event){
 		Player ply = event.getPlayer();
-		if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).equals(minigame.getName())){
+		if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).equals(minigame.getName()) && !event.isCancelled()){
 			if(((whitelistMode && getWBBlocks().contains(event.getBlock().getType())) || 
 					(!whitelistMode && !getWBBlocks().contains(event.getBlock().getType()))) && 
 					minigame.canBlockBreak()){
@@ -390,10 +391,10 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	private void blockPlace(BlockPlaceEvent event){
 		Player ply = event.getPlayer();
-		if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).equals(minigame.getName())){
+		if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).equals(minigame.getName()) && !event.isCancelled()){
 			if(((whitelistMode && getWBBlocks().contains(event.getBlock().getType())) || 
 					(!whitelistMode && !getWBBlocks().contains(event.getBlock().getType()))) &&
 					 minigame.canBlockPlace()){

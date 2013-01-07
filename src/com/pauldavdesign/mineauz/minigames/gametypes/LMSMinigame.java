@@ -99,8 +99,12 @@ public class LMSMinigame extends MinigameType {
 		boolean hascompleted = false;
 		Configuration completion = null;
 		
+		if(mgm.getFloorDegenerator() != null){
+			mgm.getFloorDegenerator().stopDegenerator();
+		}
+		
 		player.sendMessage(ChatColor.GREEN + "You've won the " + minigame + " minigame. Congratulations!");
-		if(plugin.getConfig().getBoolean("lastmanstanding.broadcastwin")){
+		if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
 			plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + player.getName() + " won " + mgm.getName());
 		}
 		
@@ -111,7 +115,9 @@ public class LMSMinigame extends MinigameType {
 		mdata.getMinigame(minigame).removePlayer(player);
 		
 		if(mgm.getPlayers().isEmpty()){
-			mdata.getMinigame(minigame).getMpTimer().setStartWaitTime(0);
+			if(mgm.getMpTimer() != null){
+				mdata.getMinigame(minigame).getMpTimer().pauseTimer();
+			}
 			
 			mdata.getMinigame(minigame).setMpTimer(null);
 			for(Player pl : mdata.getMinigame(minigame).getPlayers()){
@@ -179,7 +185,7 @@ public class LMSMinigame extends MinigameType {
 				String mgtype = mgm.getType();
 				if(mgtype.equals("lms")){
 					event.setRespawnLocation(mdata.getMinigame(minigame).getQuitPosition());
-					pdata.quitMinigame(event.getPlayer(), true);
+					pdata.quitMinigame(event.getPlayer(), false);
 					event.getPlayer().sendMessage(ChatColor.GRAY + "Bad Luck! Leaving the minigame.");
 				}
 			}
@@ -196,7 +202,7 @@ public class LMSMinigame extends MinigameType {
 				if(mdata.getMinigame(minigame).hasPlayers() && ply.getHealth() - event.getDamage() <= 0){
 					String mgtype = mgm.getType();
 					if(mgtype.equals("lms")){
-						pdata.quitMinigame(ply, true);
+						pdata.quitMinigame(ply, false);
 						event.setCancelled(true);
 						ply.sendMessage(ChatColor.GRAY + "Bad Luck! Leaving the minigame.");
 						plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -221,7 +227,7 @@ public class LMSMinigame extends MinigameType {
 				if(mdata.getMinigame(minigame).hasPlayers() && ply.getHealth() - event.getDamage() <= 0){
 					String mgtype = mgm.getType();
 					if(mgtype.equals("lms")){
-						pdata.quitMinigame(ply, true);
+						pdata.quitMinigame(ply, false);
 						event.setCancelled(true);
 						if(event.getDamager() instanceof Player){
 							Player att = (Player) event.getDamager();

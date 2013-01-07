@@ -99,7 +99,7 @@ public class DMMinigame extends MinigameType{
 		Configuration completion = null;
 		
 		player.sendMessage(ChatColor.GREEN + "You've won the " + minigame + " minigame. Congratulations!");
-		if(plugin.getConfig().getBoolean("lastmanstanding.broadcastwin")){
+		if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
 			plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + player.getName() + " won " + mgm.getName() + ". Score: " + pdata.getPlayerKills(player));
 		}
 		
@@ -251,7 +251,7 @@ public class DMMinigame extends MinigameType{
 					return;
 				}
 				
-				if(pdata.getPlayerKills(attacker) + 1 >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+				if(mgm.getMaxScore() != 0 && pdata.getPlayerKills(attacker) + 1 >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
 					event.setCancelled(true);
 					pdata.addPlayerKill(attacker);
 					List<Player> conPlayers = new ArrayList<Player>();

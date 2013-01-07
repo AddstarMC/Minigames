@@ -351,7 +351,7 @@ public class TeamDMMinigame extends MinigameType{
 			//Blue team
 			losers = mgm.getRedTeam();
 			winners = mgm.getBlueTeam();
-			if(plugin.getConfig().getBoolean("lastmanstanding.broadcastwin")){
+			if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
 				plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " won " + mgm.getName() + ", " + ChatColor.BLUE + mgm.getBlueTeamScore() + ChatColor.WHITE + " to " + ChatColor.RED + mgm.getRedTeamScore());
 			}
 		}
@@ -359,7 +359,7 @@ public class TeamDMMinigame extends MinigameType{
 			//Red team
 			losers = mgm.getBlueTeam();
 			winners = mgm.getRedTeam();
-			if(plugin.getConfig().getBoolean("lastmanstanding.broadcastwin")){
+			if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
 				plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " won " + mgm.getName() + ", " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore());
 			}
 		}
@@ -591,13 +591,13 @@ public class TeamDMMinigame extends MinigameType{
 			
 			if(pteam == 0){
 				mgm.incrementBlueTeamScore();
-				if(mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+				if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
 					endTeamMinigame(1, mgm);
 				}
 			}
 			else{
 				mgm.incrementRedTeamScore();
-				if(mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+				if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
 					endTeamMinigame(0, mgm);
 				}
 			}
@@ -757,12 +757,12 @@ public class TeamDMMinigame extends MinigameType{
 						else if(event.getDamage() >= ply.getHealth() && team != ateam){
 							boolean end = false;
 							if(ateam == 0){
-								if(mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+								if(mg.getMaxScore() != 0 && mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
 									end = true;
 								}
 							}
 							else{
-								if(mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+								if(mg.getMaxScore() != 0 && mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
 									end = true;
 								}
 							}
@@ -771,14 +771,14 @@ public class TeamDMMinigame extends MinigameType{
 									pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + attacker.getName() + " took the final kill against " + ply.getName());
 								}
 								if(ateam == 1){
-									if(mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+									if(mg.getMaxScore() != 0 && mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
 										event.setCancelled(true);
 										mg.incrementBlueTeamScore();
 										endTeamMinigame(1, mg);
 									}
 								}
 								else{
-									if(mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+									if(mg.getMaxScore() != 0 && mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
 										event.setCancelled(true);
 										mg.incrementRedTeamScore();
 										endTeamMinigame(0, mg);
@@ -813,12 +813,12 @@ public class TeamDMMinigame extends MinigameType{
 							else if(event.getDamage() >= ply.getHealth() && team != ateam){
 								boolean end = false;
 								if(ateam == 0){
-									if(mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+									if(mg.getMaxScore() != 0 && mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
 										end = true;
 									}
 								}
 								else{
-									if(mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+									if(mg.getMaxScore() != 0 && mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
 										end = true;
 									}
 								}
@@ -827,7 +827,7 @@ public class TeamDMMinigame extends MinigameType{
 										pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + attacker.getName() + " took the final shot against " + ply.getName());
 									}
 									if(ateam == 1){
-										if(mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+										if(mg.getMaxScore() != 0 && mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
 											event.setCancelled(true);
 											pdata.addPlayerKill(attacker);
 											mg.incrementBlueTeamScore();
@@ -835,7 +835,7 @@ public class TeamDMMinigame extends MinigameType{
 										}
 									}
 									else{
-										if(mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+										if(mg.getMaxScore() != 0 && mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
 											event.setCancelled(true);
 											pdata.addPlayerKill(attacker);
 											mg.incrementRedTeamScore();

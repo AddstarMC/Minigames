@@ -93,7 +93,7 @@ public class RaceMinigame extends MinigameType{
 		Configuration completion = null;
 		
 		player.sendMessage(ChatColor.GREEN + "You've finished the " + minigame + " minigame. Congratulations!");
-		if(plugin.getConfig().getBoolean("lastmanstanding.broadcastwin")){
+		if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
 			plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + player.getName() + " won " + mgm.getName());
 		}
 		
