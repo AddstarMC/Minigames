@@ -251,7 +251,7 @@ public class MinigameData {
 		Minigames.log.info("Loaded " + minigameType.getLabel() + " minigame type.");
 	}
 	
-	MinigameType minigameType(String name){
+	public MinigameType minigameType(String name){
 		if(minigameTypes.containsKey(name)){
 			return minigameTypes.get(name);
 		}

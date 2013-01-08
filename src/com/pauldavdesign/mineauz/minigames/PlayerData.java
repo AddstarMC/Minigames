@@ -138,7 +138,7 @@ public class PlayerData {
 					start = mgm.getStartLocations().get(i);
 					players.get(i).teleport(start);
 					setPlayerCheckpoints(players.get(pos - 1), start);
-					if(mgm.getMaxScore() != 0 && mgm.getType().equals("dm")){
+					if(mgm.getType().equals("dm") && !mgm.getScoreType().equals("none")){
 						players.get(i).sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
 					}
 				} 
@@ -205,7 +205,7 @@ public class PlayerData {
 				if(start != null){
 					players.get(i).teleport(start);
 					setPlayerCheckpoints(players.get(pos - 1), start);
-					if(mgm.getMaxScore() != 0){
+					if(!mgm.getScoreType().equals("none")){
 						players.get(i).sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
 					}
 				}
@@ -367,6 +367,84 @@ public class PlayerData {
 			}
 			
 			setAllowTP(player, false);
+		}
+	}
+	
+public void endTeamMinigame(int teamnum, Minigame mgm){
+		
+		List<Player> losers = null;
+		List<Player> winners = null;
+		
+		if(teamnum == 1){
+			//Blue team
+			losers = mgm.getRedTeam();
+			winners = mgm.getBlueTeam();
+			if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
+				plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " won " + mgm.getName() + ", " + ChatColor.BLUE + mgm.getBlueTeamScore() + ChatColor.WHITE + " to " + ChatColor.RED + mgm.getRedTeamScore());
+			}
+		}
+		else{
+			//Red team
+			losers = mgm.getBlueTeam();
+			winners = mgm.getRedTeam();
+			if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
+				plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " won " + mgm.getName() + ", " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore());
+			}
+		}
+		
+		mgm.setRedTeamScore(0);
+		mgm.setBlueTeamScore(0);
+		
+		mgm.getMpTimer().setStartWaitTime(0);
+		mgm.setMpTimer(null);
+		
+		List<Player> winplayers = new ArrayList<Player>();
+		winplayers.addAll(winners);
+
+		if(plugin.getSQL() != null){
+			new SQLCompletionSaver(mgm.getName(), winplayers, mdata.minigameType(mgm.getType()));
+		}
+		
+		if(!losers.isEmpty()){
+			List<Player> loseplayers = new ArrayList<Player>();
+			loseplayers.addAll(losers);
+			for(int i = 0; i < loseplayers.size(); i++){
+				if(loseplayers.get(i) instanceof Player){
+					final Player p = loseplayers.get(i);
+					
+					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+
+						@Override
+						public void run() {
+							p.sendMessage(ChatColor.RED + "You have been beaten! Bad luck!");
+							quitMinigame(p, false);
+						}
+					});
+				}
+				else{
+					loseplayers.remove(i);
+				}
+			}
+			mgm.setMpTimer(null);
+			for(Player pl : loseplayers){
+				mgm.getPlayers().remove(pl);
+			}
+		}
+		
+		for(int i = 0; i < winplayers.size(); i++){
+			if(winplayers.get(i) instanceof Player){
+				final Player p = winplayers.get(i);
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					
+					@Override
+					public void run() {
+						endMinigame(p);
+					}
+				});
+			}
+			else{
+				winplayers.remove(i);
+			}
 		}
 	}
 	

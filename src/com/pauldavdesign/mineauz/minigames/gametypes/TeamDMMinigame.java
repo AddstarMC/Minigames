@@ -15,11 +15,9 @@ import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffectType;
@@ -30,7 +28,6 @@ import com.pauldavdesign.mineauz.minigames.MinigameSave;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.MultiplayerTimer;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
-import com.pauldavdesign.mineauz.minigames.SQLCompletionSaver;
 import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
 
 public class TeamDMMinigame extends MinigameType{
@@ -238,10 +235,10 @@ public class TeamDMMinigame extends MinigameType{
 					&& !forced){
 				
 				if(mdata.getMinigame(minigame).getRedTeam().size() == 0){
-					endTeamMinigame(1, mgm);
+					pdata.endTeamMinigame(1, mgm);
 				}
 				else{
-					endTeamMinigame(0, mgm);
+					pdata.endTeamMinigame(0, mgm);
 				}
 				
 				if(mdata.getMinigame(minigame).getMpBets() != null){
@@ -342,114 +339,83 @@ public class TeamDMMinigame extends MinigameType{
 		}
 	}
 	
-	public void endTeamMinigame(int teamnum, Minigame mgm){
-		
-		List<Player> losers = null;
-		List<Player> winners = null;
-		
-		if(teamnum == 1){
-			//Blue team
-			losers = mgm.getRedTeam();
-			winners = mgm.getBlueTeam();
-			if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
-				plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " won " + mgm.getName() + ", " + ChatColor.BLUE + mgm.getBlueTeamScore() + ChatColor.WHITE + " to " + ChatColor.RED + mgm.getRedTeamScore());
-			}
-		}
-		else{
-			//Red team
-			losers = mgm.getBlueTeam();
-			winners = mgm.getRedTeam();
-			if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
-				plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " won " + mgm.getName() + ", " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore());
-			}
-		}
-		
-		mgm.setRedTeamScore(0);
-		mgm.setBlueTeamScore(0);
-		
-		mgm.getMpTimer().setStartWaitTime(0);
-		mgm.setMpTimer(null);
-		
-		List<Player> winplayers = new ArrayList<Player>();
-		winplayers.addAll(winners);
-
-		if(plugin.getSQL() != null){
-			new SQLCompletionSaver(mgm.getName(), winplayers, this);
-		}
-		
-		if(!losers.isEmpty()){
-			List<Player> loseplayers = new ArrayList<Player>();
-			loseplayers.addAll(losers);
-			for(int i = 0; i < loseplayers.size(); i++){
-				if(loseplayers.get(i) instanceof Player){
-					final Player p = loseplayers.get(i);
-					
-					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-
-						@Override
-						public void run() {
-							p.sendMessage(ChatColor.RED + "You have been beaten! Bad luck!");
-							pdata.quitMinigame(p, false);
-						}
-					});
-				}
-				else{
-					loseplayers.remove(i);
-				}
-			}
-			mgm.setMpTimer(null);
-			for(Player pl : loseplayers){
-				mgm.getPlayers().remove(pl);
-			}
-		}
-		
-		for(int i = 0; i < winplayers.size(); i++){
-			if(winplayers.get(i) instanceof Player){
-				final Player p = winplayers.get(i);
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						pdata.endMinigame(p);
-					}
-				});
-			}
-			else{
-				winplayers.remove(i);
-			}
-		}
-		
-//		if(mgm.hasRestoreBlocks()){
-//			Set<String> blocks = mgm.getRestoreBlocks().keySet();
-//			
-//			for(String name : blocks){
-//				String mat = mgm.getRestoreBlocks().get(name).getBlock().toString();
-//				if(mat.equalsIgnoreCase("CHEST") || mat.equalsIgnoreCase("FURNACE") || mat.equalsIgnoreCase("DISPENSER")){
-//					Location loc = mgm.getRestoreBlocks().get(name).getLocation();
-//					
-//					if(loc.getBlock().getType() != Material.getMaterial(mat)){
-//						loc.getBlock().setType(Material.getMaterial(mat));
-//					}
-//					
-//					if(loc.getBlock().getState() instanceof Chest){
-//						Chest chest = (Chest) loc.getBlock().getState();
-//						chest.getInventory().clear();
-//						chest.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
-//					}
-//					else if(loc.getBlock().getState() instanceof Furnace){
-//						Furnace furnace = (Furnace) loc.getBlock().getState();
-//						furnace.getInventory().clear();
-//						furnace.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
-//					}
-//					else if(loc.getBlock().getState() instanceof Dispenser){
-//						Dispenser dispenser = (Dispenser) loc.getBlock().getState();
-//						dispenser.getInventory().clear();
-//						dispenser.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
-//					}
-//				}
+//	public void endTeamMinigame(int teamnum, Minigame mgm){
+//		
+//		List<Player> losers = null;
+//		List<Player> winners = null;
+//		
+//		if(teamnum == 1){
+//			//Blue team
+//			losers = mgm.getRedTeam();
+//			winners = mgm.getBlueTeam();
+//			if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
+//				plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " won " + mgm.getName() + ", " + ChatColor.BLUE + mgm.getBlueTeamScore() + ChatColor.WHITE + " to " + ChatColor.RED + mgm.getRedTeamScore());
 //			}
 //		}
-	}
+//		else{
+//			//Red team
+//			losers = mgm.getBlueTeam();
+//			winners = mgm.getRedTeam();
+//			if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
+//				plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " won " + mgm.getName() + ", " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore());
+//			}
+//		}
+//		
+//		mgm.setRedTeamScore(0);
+//		mgm.setBlueTeamScore(0);
+//		
+//		mgm.getMpTimer().setStartWaitTime(0);
+//		mgm.setMpTimer(null);
+//		
+//		List<Player> winplayers = new ArrayList<Player>();
+//		winplayers.addAll(winners);
+//
+//		if(plugin.getSQL() != null){
+//			new SQLCompletionSaver(mgm.getName(), winplayers, this);
+//		}
+//		
+//		if(!losers.isEmpty()){
+//			List<Player> loseplayers = new ArrayList<Player>();
+//			loseplayers.addAll(losers);
+//			for(int i = 0; i < loseplayers.size(); i++){
+//				if(loseplayers.get(i) instanceof Player){
+//					final Player p = loseplayers.get(i);
+//					
+//					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+//
+//						@Override
+//						public void run() {
+//							p.sendMessage(ChatColor.RED + "You have been beaten! Bad luck!");
+//							pdata.quitMinigame(p, false);
+//						}
+//					});
+//				}
+//				else{
+//					loseplayers.remove(i);
+//				}
+//			}
+//			mgm.setMpTimer(null);
+//			for(Player pl : loseplayers){
+//				mgm.getPlayers().remove(pl);
+//			}
+//		}
+//		
+//		for(int i = 0; i < winplayers.size(); i++){
+//			if(winplayers.get(i) instanceof Player){
+//				final Player p = winplayers.get(i);
+//				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+//					
+//					@Override
+//					public void run() {
+//						pdata.endMinigame(p);
+//					}
+//				});
+//			}
+//			else{
+//				winplayers.remove(i);
+//			}
+//		}
+//	}
 	
 	public void applyTeam(Player player, int team){
 		EntityPlayer changeingName = ((CraftPlayer) player).getHandle();
@@ -587,20 +553,20 @@ public class TeamDMMinigame extends MinigameType{
 			}
 			final Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
 			
-			pdata.addPlayerKill(ply.getKiller());
-			
-			if(pteam == 0){
-				mgm.incrementBlueTeamScore();
-				if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
-					endTeamMinigame(1, mgm);
-				}
-			}
-			else{
-				mgm.incrementRedTeamScore();
-				if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
-					endTeamMinigame(0, mgm);
-				}
-			}
+//			pdata.addPlayerKill(ply.getKiller());
+//			
+//			if(pteam == 0){
+//				mgm.incrementBlueTeamScore();
+//				if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+//					pdata.endTeamMinigame(1, mgm);
+//				}
+//			}
+//			else{
+//				mgm.incrementRedTeamScore();
+//				if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+//					pdata.endTeamMinigame(0, mgm);
+//				}
+//			}
 			
 			if(pteam == 1){
 				if(mgm.getRedTeam().size() < mgm.getBlueTeam().size() - 1){
@@ -625,9 +591,9 @@ public class TeamDMMinigame extends MinigameType{
 				}
 			}
 			
-			for(Player pl : mgm.getPlayers()){
-				pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore());
-			}
+//			for(Player pl : mgm.getPlayers()){
+//				pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore());
+//			}
 		}
 	}
 	
@@ -732,136 +698,136 @@ public class TeamDMMinigame extends MinigameType{
 		}
 	}
 	
-	@EventHandler
-	public void friendlyPvP(EntityDamageByEntityEvent event){
-		if(event.getEntity() instanceof Player){
-			Player ply = (Player) event.getEntity();
-			if(pdata.getPlayersMinigame(ply) != null && mdata.getMinigame(pdata.getPlayersMinigame(ply)).getType().equals("teamdm")){
-				if(event.getDamager() instanceof Player){
-					Player attacker = (Player) event.getDamager();
-					if(pdata.getPlayersMinigame(attacker) != null && mdata.getMinigame(pdata.getPlayersMinigame(attacker)).getType().equals("teamdm")){
-						Minigame mg = mdata.getMinigame(pdata.getPlayersMinigame(ply));
-						int team = 0;
-						int ateam = 0;
-						if(mg.getBlueTeam().contains(ply)){
-							team = 1;
-						}
-						
-						if(mg.getBlueTeam().contains(attacker)){
-							ateam = 1;
-						}
-						
-						if(team == ateam){
-							event.setCancelled(true);
-						}
-						else if(event.getDamage() >= ply.getHealth() && team != ateam){
-							boolean end = false;
-							if(ateam == 0){
-								if(mg.getMaxScore() != 0 && mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-									end = true;
-								}
-							}
-							else{
-								if(mg.getMaxScore() != 0 && mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-									end = true;
-								}
-							}
-							if(end){
-								for(Player pl : mg.getPlayers()){
-									pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + attacker.getName() + " took the final kill against " + ply.getName());
-								}
-								if(ateam == 1){
-									if(mg.getMaxScore() != 0 && mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-										event.setCancelled(true);
-										mg.incrementBlueTeamScore();
-										endTeamMinigame(1, mg);
-									}
-								}
-								else{
-									if(mg.getMaxScore() != 0 && mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-										event.setCancelled(true);
-										mg.incrementRedTeamScore();
-										endTeamMinigame(0, mg);
-									}
-								}
-							}
-						}
-					}
-					else{
-						event.setCancelled(true);
-					}
-				}
-				else if(event.getDamager() instanceof Arrow){
-					Arrow arrow = (Arrow) event.getDamager();
-					if(arrow.getShooter() instanceof Player){
-						Player attacker = (Player) arrow.getShooter();
-						if(pdata.getPlayersMinigame(attacker) != null && mdata.getMinigame(pdata.getPlayersMinigame(attacker)).getType().equals("teamdm")){
-							Minigame mg = mdata.getMinigame(pdata.getPlayersMinigame(ply));
-							int team = 0;
-							int ateam = 0;
-							if(mg.getBlueTeam().contains(ply)){
-								team = 1;
-							}
-							
-							if(mg.getBlueTeam().contains(attacker)){
-								ateam = 1;
-							}
-							
-							if(team == ateam){
-								event.setCancelled(true);
-							}
-							else if(event.getDamage() >= ply.getHealth() && team != ateam){
-								boolean end = false;
-								if(ateam == 0){
-									if(mg.getMaxScore() != 0 && mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-										end = true;
-									}
-								}
-								else{
-									if(mg.getMaxScore() != 0 && mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-										end = true;
-									}
-								}
-								if(end){
-									for(Player pl : mg.getPlayers()){
-										pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + attacker.getName() + " took the final shot against " + ply.getName());
-									}
-									if(ateam == 1){
-										if(mg.getMaxScore() != 0 && mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-											event.setCancelled(true);
-											pdata.addPlayerKill(attacker);
-											mg.incrementBlueTeamScore();
-											endTeamMinigame(1, mg);
-										}
-									}
-									else{
-										if(mg.getMaxScore() != 0 && mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-											event.setCancelled(true);
-											pdata.addPlayerKill(attacker);
-											mg.incrementRedTeamScore();
-											endTeamMinigame(0, mg);
-										}
-									}
-								}
-							}
-						}
-						else{
-							event.setCancelled(true);
-						}
-					}
-				}
-			}
-		}
-	}
+//	@EventHandler
+//	public void friendlyPvP(EntityDamageByEntityEvent event){
+//		if(event.getEntity() instanceof Player){
+//			Player ply = (Player) event.getEntity();
+//			if(pdata.getPlayersMinigame(ply) != null && mdata.getMinigame(pdata.getPlayersMinigame(ply)).getType().equals("teamdm")){
+//				if(event.getDamager() instanceof Player){
+//					Player attacker = (Player) event.getDamager();
+//					if(pdata.getPlayersMinigame(attacker) != null && mdata.getMinigame(pdata.getPlayersMinigame(attacker)).getType().equals("teamdm")){
+//						Minigame mg = mdata.getMinigame(pdata.getPlayersMinigame(ply));
+//						int team = 0;
+//						int ateam = 0;
+//						if(mg.getBlueTeam().contains(ply)){
+//							team = 1;
+//						}
+//						
+//						if(mg.getBlueTeam().contains(attacker)){
+//							ateam = 1;
+//						}
+//						
+//						if(team == ateam){
+//							event.setCancelled(true);
+//						}
+//						else if(event.getDamage() >= ply.getHealth() && team != ateam){
+//							boolean end = false;
+//							if(ateam == 0){
+//								if(mg.getMaxScore() != 0 && mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+//									end = true;
+//								}
+//							}
+//							else{
+//								if(mg.getMaxScore() != 0 && mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+//									end = true;
+//								}
+//							}
+//							if(end){
+//								for(Player pl : mg.getPlayers()){
+//									pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + attacker.getName() + " took the final kill against " + ply.getName());
+//								}
+//								if(ateam == 1){
+//									if(mg.getMaxScore() != 0 && mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+//										event.setCancelled(true);
+//										mg.incrementBlueTeamScore();
+//										pdata.endTeamMinigame(1, mg);
+//									}
+//								}
+//								else{
+//									if(mg.getMaxScore() != 0 && mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+//										event.setCancelled(true);
+//										mg.incrementRedTeamScore();
+//										pdata.endTeamMinigame(0, mg);
+//									}
+//								}
+//							}
+//						}
+//					}
+//					else{
+//						event.setCancelled(true);
+//					}
+//				}
+//				else if(event.getDamager() instanceof Arrow){
+//					Arrow arrow = (Arrow) event.getDamager();
+//					if(arrow.getShooter() instanceof Player){
+//						Player attacker = (Player) arrow.getShooter();
+//						if(pdata.getPlayersMinigame(attacker) != null && mdata.getMinigame(pdata.getPlayersMinigame(attacker)).getType().equals("teamdm")){
+//							Minigame mg = mdata.getMinigame(pdata.getPlayersMinigame(ply));
+//							int team = 0;
+//							int ateam = 0;
+//							if(mg.getBlueTeam().contains(ply)){
+//								team = 1;
+//							}
+//							
+//							if(mg.getBlueTeam().contains(attacker)){
+//								ateam = 1;
+//							}
+//							
+//							if(team == ateam){
+//								event.setCancelled(true);
+//							}
+//							else if(event.getDamage() >= ply.getHealth() && team != ateam){
+//								boolean end = false;
+//								if(ateam == 0){
+//									if(mg.getMaxScore() != 0 && mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+//										end = true;
+//									}
+//								}
+//								else{
+//									if(mg.getMaxScore() != 0 && mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+//										end = true;
+//									}
+//								}
+//								if(end){
+//									for(Player pl : mg.getPlayers()){
+//										pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + attacker.getName() + " took the final shot against " + ply.getName());
+//									}
+//									if(ateam == 1){
+//										if(mg.getMaxScore() != 0 && mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+//											event.setCancelled(true);
+//											pdata.addPlayerKill(attacker);
+//											mg.incrementBlueTeamScore();
+//											pdata.endTeamMinigame(1, mg);
+//										}
+//									}
+//									else{
+//										if(mg.getMaxScore() != 0 && mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
+//											event.setCancelled(true);
+//											pdata.addPlayerKill(attacker);
+//											mg.incrementRedTeamScore();
+//											pdata.endTeamMinigame(0, mg);
+//										}
+//									}
+//								}
+//							}
+//						}
+//						else{
+//							event.setCancelled(true);
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
 	
 	@EventHandler
 	public void timerExpire(TimerExpireEvent event){
 		if(event.getMinigame().getType().equals(getLabel())){
 			if(event.getMinigame().getBlueTeamScore() > event.getMinigame().getRedTeamScore()){
-				endTeamMinigame(1, event.getMinigame());
+				pdata.endTeamMinigame(1, event.getMinigame());
 			}
 			else{
-				endTeamMinigame(0, event.getMinigame());
+				pdata.endTeamMinigame(0, event.getMinigame());
 			}
 		}
 	}

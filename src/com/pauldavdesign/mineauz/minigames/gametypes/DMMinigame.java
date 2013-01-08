@@ -8,12 +8,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
@@ -201,71 +198,71 @@ public class DMMinigame extends MinigameType{
 	/*-----EVENTS-----*/
 	/*----------------*/
 
-	@EventHandler
-	public void playerDeath(PlayerDeathEvent event){
-		Player ply = (Player) event.getEntity();
-		if(pdata.getPlayersMinigame(ply) != null && mdata.getMinigame(pdata.getPlayersMinigame(ply)).getType().equals("dm") && ply.getKiller() != null && ply.getKiller() instanceof Player){
-			Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
-			
-			pdata.addPlayerKill(ply.getKiller());
-			
-			if(mgm.getMaxScore() != 0 && pdata.getPlayerKills(ply.getKiller()) >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
-				for(Player pl : mgm.getPlayers()){
-					if(pl != ply.getKiller()){
-						pdata.quitMinigame(pl, false);
-					}
-				}
-			}
-			else{
-				for(Player pl : mgm.getPlayers()){
-					pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getKiller().getName() + "'s Score: " + pdata.getPlayerKills(ply.getKiller()));
-				}
-			}
-		}
-	}
+//	@EventHandler
+//	public void playerDeath(PlayerDeathEvent event){
+//		Player ply = (Player) event.getEntity();
+//		if(pdata.getPlayersMinigame(ply) != null && mdata.getMinigame(pdata.getPlayersMinigame(ply)).getType().equals("dm") && ply.getKiller() != null && ply.getKiller() instanceof Player){
+//			Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
+//			
+//			pdata.addPlayerKill(ply.getKiller());
+//			
+//			if(mgm.getMaxScore() != 0 && pdata.getPlayerKills(ply.getKiller()) >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+//				for(Player pl : mgm.getPlayers()){
+//					if(pl != ply.getKiller()){
+//						pdata.quitMinigame(pl, false);
+//					}
+//				}
+//			}
+//			else{
+//				for(Player pl : mgm.getPlayers()){
+//					pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getKiller().getName() + "'s Score: " + pdata.getPlayerKills(ply.getKiller()));
+//				}
+//			}
+//		}
+//	}
 	
-	@EventHandler
-	public void playerAttack(EntityDamageByEntityEvent event){
-		if(event.getEntity() instanceof Player){
-			Player ply = (Player) event.getEntity();
-			if(pdata.getPlayersMinigame(ply) != null && mdata.getMinigame(pdata.getPlayersMinigame(ply)).getType().equals("dm") && event.getDamage() >= ply.getHealth()){
-				Player attacker = null;
-				if(event.getDamager() instanceof Player){
-					attacker = (Player) event.getDamager();
-				}
-				else if(event.getDamager() instanceof Arrow){
-					Arrow arr = (Arrow) event.getDamager();
-					if(arr.getShooter() instanceof Player){
-						attacker = (Player) arr.getShooter();
-					}
-					else{
-						return;
-					}
-				}
-				else{
-					return;
-				}
-				Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
-				
-				if(!pdata.getPlayersMinigame(ply).equals(pdata.getPlayersMinigame(attacker))){
-					return;
-				}
-				
-				if(mgm.getMaxScore() != 0 && pdata.getPlayerKills(attacker) + 1 >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
-					event.setCancelled(true);
-					pdata.addPlayerKill(attacker);
-					List<Player> conPlayers = new ArrayList<Player>();
-					conPlayers.addAll(mgm.getPlayers());
-					conPlayers.remove(attacker);
-					for(Player pl : conPlayers){
-						if(pl != attacker){
-							pdata.quitMinigame(pl, false);
-						}
-					}
-				}
-			}
-		}
-	}
+//	@EventHandler
+//	public void playerAttack(EntityDamageByEntityEvent event){
+//		if(event.getEntity() instanceof Player){
+//			Player ply = (Player) event.getEntity();
+//			if(pdata.getPlayersMinigame(ply) != null && mdata.getMinigame(pdata.getPlayersMinigame(ply)).getType().equals("dm") && event.getDamage() >= ply.getHealth()){
+//				Player attacker = null;
+//				if(event.getDamager() instanceof Player){
+//					attacker = (Player) event.getDamager();
+//				}
+//				else if(event.getDamager() instanceof Arrow){
+//					Arrow arr = (Arrow) event.getDamager();
+//					if(arr.getShooter() instanceof Player){
+//						attacker = (Player) arr.getShooter();
+//					}
+//					else{
+//						return;
+//					}
+//				}
+//				else{
+//					return;
+//				}
+//				Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
+//				
+//				if(!pdata.getPlayersMinigame(ply).equals(pdata.getPlayersMinigame(attacker))){
+//					return;
+//				}
+//				
+//				if(mgm.getMaxScore() != 0 && pdata.getPlayerKills(attacker) + 1 >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+//					event.setCancelled(true);
+//					pdata.addPlayerKill(attacker);
+//					List<Player> conPlayers = new ArrayList<Player>();
+//					conPlayers.addAll(mgm.getPlayers());
+//					conPlayers.remove(attacker);
+//					for(Player pl : conPlayers){
+//						if(pl != attacker){
+//							pdata.quitMinigame(pl, false);
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void playerRespawn(PlayerRespawnEvent event){
@@ -285,10 +282,6 @@ public class DMMinigame extends MinigameType{
 			});
 			
 			mg.getLoadout(mg.getPlayersLoadout(event.getPlayer())).equiptLoadout(event.getPlayer());
-			
-//			if(mg.hasDefaultLoadout()){
-//				mg.getDefaultPlayerLoadout().equiptLoadout(event.getPlayer());
-//			}
 		}
 	}
 	

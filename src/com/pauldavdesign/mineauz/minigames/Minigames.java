@@ -37,6 +37,7 @@ import com.pauldavdesign.mineauz.minigames.gametypes.RaceMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.SPMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.SpleefMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
+import com.pauldavdesign.mineauz.minigames.scoring.ScoreTypes;
 
 public class Minigames extends JavaPlugin{
 	static Logger log = Logger.getLogger("Minecraft");
@@ -45,6 +46,7 @@ public class Minigames extends JavaPlugin{
 	public static Minigames plugin;
     private static Economy econ = null;
 	private MySQL sql = null;
+	private ScoreTypes scoretypes;
 
 	public void onEnable(){
 		plugin = this;
@@ -168,6 +170,8 @@ public class Minigames extends JavaPlugin{
 		pdata.loadDCPlayers();
 		pdata.loadDeniedCommands();
 		
+		scoretypes = new ScoreTypes();
+		
 		getCommand("minigame").setExecutor(new CommandDispatcher());
 	}
 
@@ -230,5 +234,9 @@ public class Minigames extends JavaPlugin{
 	
 	public MySQL getSQL(){
 		return sql;
+	}
+	
+	public ScoreTypes getScoreTypes(){
+		return scoretypes;
 	}
 }

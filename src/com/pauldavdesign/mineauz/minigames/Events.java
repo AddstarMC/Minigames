@@ -267,8 +267,8 @@ public class Events implements Listener{
 					else if(event.getPlayer().getItemInHand().getType() == Material.AIR){
 						event.getPlayer().sendMessage(ChatColor.RED + "Your hand must be empty to use this sign!");
 					}
+					event.setCancelled(true);
 				}
-				event.setCancelled(true);
 			}
 			else if(cblock.getState() instanceof Chest){
 				if(mdata.hasTreasureHuntLocations()){

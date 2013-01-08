@@ -53,6 +53,8 @@ public class Minigame {
 	private int defaultGamemode = 2;
 	private boolean blocksdrop = true;
 	
+	private String scoreType = "none";
+	
 	private RecorderData blockRecorder = new RecorderData(this);
 	
 	//Teams
@@ -657,6 +659,14 @@ public class Minigame {
 
 	public void setBlocksdrop(boolean blocksdrop) {
 		this.blocksdrop = blocksdrop;
+	}
+
+	public String getScoreType() {
+		return scoreType;
+	}
+
+	public void setScoreType(String scoreType) {
+		this.scoreType = scoreType;
 	}
 
 	public void saveMinigame(){
