@@ -159,8 +159,8 @@ public class Events implements Listener{
 			if(cblock.getState() instanceof Sign){
 				Sign sign = (Sign) cblock.getState();
 				String minigame = pdata.getPlayersMinigame(event.getPlayer());
-				if(sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]") && event.getPlayer().getItemInHand().getType() == Material.AIR){
-					if(sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Finish") && pdata.playerInMinigame(event.getPlayer())){
+				if(sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]")){
+					if(sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Finish") && pdata.playerInMinigame(event.getPlayer()) && event.getPlayer().getItemInHand().getType() == Material.AIR){
 						if(!mdata.getMinigame(minigame).getFlags().isEmpty()){
 							Location loc = event.getPlayer().getLocation();
 							loc.setY(loc.getY() - 1);
@@ -194,7 +194,7 @@ public class Events implements Listener{
 							}
 						}
 					}
-					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Join") && !pdata.playerInMinigame(event.getPlayer())){
+					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Join") && !pdata.playerInMinigame(event.getPlayer()) && event.getPlayer().getItemInHand().getType() == Material.AIR){
 						Minigame mgm = mdata.getMinigame(sign.getLine(2));
 						if(mgm != null && (!mgm.getUsePermissions() || event.getPlayer().hasPermission("minigame.join." + mgm.getName().toLowerCase()))){
 							if(mgm.isEnabled()){
@@ -226,7 +226,7 @@ public class Events implements Listener{
 							event.getPlayer().sendMessage(ChatColor.RED + "Error: This minigame doesn't exist!");
 						}
 					}
-					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Checkpoint") && pdata.playerInMinigame(event.getPlayer())){
+					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Checkpoint") && pdata.playerInMinigame(event.getPlayer()) && event.getPlayer().getItemInHand().getType() == Material.AIR){
 						Location loc = event.getPlayer().getLocation();
 						loc.setY(loc.getY() - 1);
 						if(loc.getBlock().getType() != Material.AIR){
@@ -238,7 +238,7 @@ public class Events implements Listener{
 							event.getPlayer().sendMessage(ChatColor.RED + "You can not set a checkpoint here!");
 						}
 					}
-					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Flag") && pdata.playerInMinigame(event.getPlayer())){
+					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Flag") && pdata.playerInMinigame(event.getPlayer()) && event.getPlayer().getItemInHand().getType() == Material.AIR){
 						Location loc = event.getPlayer().getLocation();
 						loc.setY(loc.getY() - 1);
 						if(!sign.getLine(2).isEmpty() && loc.getBlock().getType() != Material.AIR){
@@ -246,10 +246,10 @@ public class Events implements Listener{
 							event.getPlayer().sendMessage(ChatColor.GRAY + sign.getLine(2) + " flag taken!");
 						}
 					}
-					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Quit") && pdata.playerInMinigame(event.getPlayer())){
+					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Quit") && pdata.playerInMinigame(event.getPlayer()) && event.getPlayer().getItemInHand().getType() == Material.AIR){
 						pdata.quitMinigame(event.getPlayer(), false);
 					}
-					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Loadout") && pdata.playerInMinigame(event.getPlayer())){
+					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Loadout") && pdata.playerInMinigame(event.getPlayer()) && event.getPlayer().getItemInHand().getType() == Material.AIR){
 						Player ply = event.getPlayer();
 						Minigame mgm = mdata.getMinigame(minigame);
 						if(mgm.hasLoadout(sign.getLine(2))){
@@ -264,9 +264,9 @@ public class Events implements Listener{
 							ply.sendMessage(ChatColor.RED + "Error: This loadout does not exist!");
 						}
 					}
-				}
-				else if(sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]")){
-					event.getPlayer().sendMessage(ChatColor.RED + "Your hand must be empty to use this sign!");
+					else if(event.getPlayer().getItemInHand().getType() == Material.AIR){
+						event.getPlayer().sendMessage(ChatColor.RED + "Your hand must be empty to use this sign!");
+					}
 				}
 				event.setCancelled(true);
 			}

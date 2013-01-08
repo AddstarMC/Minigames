@@ -255,7 +255,7 @@ public class PlayerData {
 	
 	public void quitMinigame(Player player, boolean forced){
 		String minigame = getPlayersMinigame(player);
-		Minigame mgm = mdata.getMinigame(minigame);
+		final Minigame mgm = mdata.getMinigame(minigame);
 
 		QuitMinigameEvent event = new QuitMinigameEvent(player, mgm);
 		Bukkit.getServer().getPluginManager().callEvent(event);
@@ -300,8 +300,14 @@ public class PlayerData {
 				mgm.setMinigameTimer(null);
 			}
 			
-			if(mgm.getPlayers().size() == 0){
-				mgm.getBlockRecorder().restoreBlocks();
+			if(mgm.getPlayers().size() == 0 && mgm.getBlockRecorder().hasData()){
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					
+					@Override
+					public void run() {
+						mgm.getBlockRecorder().restoreBlocks();
+					}
+				});
 			}
 			
 			setAllowTP(player, false);
@@ -310,7 +316,7 @@ public class PlayerData {
 	
 	public void endMinigame(Player player){
 		String minigame = getPlayersMinigame(player);
-		Minigame mgm = mdata.getMinigame(minigame);
+		final Minigame mgm = mdata.getMinigame(minigame);
 		
 		EndMinigameEvent event = new EndMinigameEvent(player, mgm);
 		Bukkit.getServer().getPluginManager().callEvent(event);
@@ -351,7 +357,13 @@ public class PlayerData {
 			}
 			
 			if(mgm.getBlockRecorder().hasData()){
-				mgm.getBlockRecorder().restoreBlocks();
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					
+					@Override
+					public void run() {
+						mgm.getBlockRecorder().restoreBlocks();
+					}
+				});
 			}
 			
 			setAllowTP(player, false);

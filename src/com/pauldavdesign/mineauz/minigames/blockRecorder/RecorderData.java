@@ -367,7 +367,7 @@ public class RecorderData implements Listener{
 	@EventHandler(priority = EventPriority.HIGH)
 	private void blockBreak(BlockBreakEvent event){
 		Player ply = event.getPlayer();
-		if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).equals(minigame.getName()) && !event.isCancelled()){
+		if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).equals(minigame.getName())){
 			if(((whitelistMode && getWBBlocks().contains(event.getBlock().getType())) || 
 					(!whitelistMode && !getWBBlocks().contains(event.getBlock().getType()))) && 
 					minigame.canBlockBreak()){
@@ -375,6 +375,13 @@ public class RecorderData implements Listener{
 					Sign sign = (Sign) event.getBlock().getState();
 					if(sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]")){
 						event.setCancelled(true);
+					}
+					else{
+						addBlock(event.getBlock(), ply);
+						if(!minigame.canBlocksdrop()){
+							event.setCancelled(true);
+							event.getBlock().setType(Material.AIR);
+						}
 					}
 				}
 				else{

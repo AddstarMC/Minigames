@@ -134,7 +134,7 @@ public class SPMinigame extends MinigameType{
 		if(pdata.playerInMinigame(event.getPlayer())){
 			String minigame = pdata.getPlayersMinigame(event.getPlayer());
 			Minigame mgm = mdata.getMinigame(minigame);
-			if(!mdata.getMinigame(minigame).hasPlayers()){
+			if(mgm.getType().equalsIgnoreCase("sp")){
 				event.setRespawnLocation(pdata.getPlayerCheckpoint(event.getPlayer()));
 				event.getPlayer().sendMessage(ChatColor.GRAY + "Bad Luck! Returning to checkpoint.");
 				

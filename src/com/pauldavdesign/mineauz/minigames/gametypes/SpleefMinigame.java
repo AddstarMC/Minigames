@@ -54,9 +54,9 @@ public class SpleefMinigame extends MinigameType{
 						mgm.getFloorDegenerator().stopDegenerator();
 					}
 					//floor.regenFloor(mgm.getSpleefFloorMaterial(), false);
-					if(mgm.getBlockRecorder().hasData()){
-						mgm.getBlockRecorder().restoreBlocks();
-					}
+//					if(mgm.getBlockRecorder().hasData()){
+//						mgm.getBlockRecorder().restoreBlocks();
+//					}
 						
 					if(mdata.getMinigame(minigame).getMpBets() != null){
 						player.getInventory().addItem(mdata.getMinigame(minigame).getMpBets().getPlayersBet(player));
