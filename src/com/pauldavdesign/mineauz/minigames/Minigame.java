@@ -44,6 +44,8 @@ public class Minigame {
 	private double secondaryRewardPrice = 0;
 	private boolean usePermissions = false;
 	private int timer = 0;
+	private Map<Player, CTFFlag> flagCarriers = new HashMap<Player, CTFFlag>();
+	private Map<String, CTFFlag> droppedFlag = new HashMap<String, CTFFlag>();
 	
 	private boolean itemDrops = false;
 	private boolean deathDrops = false;
@@ -668,6 +670,52 @@ public class Minigame {
 	public void setScoreType(String scoreType) {
 		this.scoreType = scoreType;
 	}
+	
+	public boolean isFlagCarrier(Player ply){
+		return flagCarriers.containsKey(ply);
+	}
+	
+	public void addFlagCarrier(Player ply, CTFFlag flag){
+		flagCarriers.put(ply, flag);
+	}
+	
+	public void removeFlagCarrier(Player ply){
+		flagCarriers.remove(ply);
+	}
+	
+	public CTFFlag getFlagCarrier(Player ply){
+		return flagCarriers.get(ply);
+	}
+	
+	public void resetFlags(){
+		for(Player ply : flagCarriers.keySet()){
+			getFlagCarrier(ply).respawnFlag();
+		}
+		flagCarriers.clear();
+		for(String id : droppedFlag.keySet()){
+			if(!getDroppedFlag(id).isAtHome()){
+				getDroppedFlag(id).stopTimer();
+				getDroppedFlag(id).respawnFlag();
+			}
+		}
+		droppedFlag.clear();
+	}
+	
+	public boolean hasDroppedFlag(String id){
+		return droppedFlag.containsKey(id);
+	}
+	
+	public void addDroppedFlag(String id, CTFFlag flag){
+		droppedFlag.put(id, flag);
+	}
+	
+	public void removeDroppedFlag(String id){
+		droppedFlag.remove(id);
+	}
+	
+	public CTFFlag getDroppedFlag(String id){
+		return droppedFlag.get(id);
+	}
 
 	public void saveMinigame(){
 		MinigameSave minigame = new MinigameSave(name, "config");
@@ -896,6 +944,12 @@ public class Minigame {
 			minigame.getConfig().set(name + ".blocksdrop", null);
 		}
 		
+		if(!getScoreType().equals("none")){
+			minigame.getConfig().set(name + ".scoretype", getScoreType());
+		}else{
+			minigame.getConfig().set(name + ".scoretype", null);
+		}
+		
 		minigame.saveConfig();
 	}
 	
@@ -1044,6 +1098,10 @@ public class Minigame {
 		
 		if(minigame.getConfig().contains(name + ".blocksdrop")){
 			setBlocksdrop(minigame.getConfig().getBoolean(name + ".blocksdrop"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".scoretype")){
+			setScoreType(minigame.getConfig().getString(name + ".scoretype"));
 		}
 		
 		saveMinigame();

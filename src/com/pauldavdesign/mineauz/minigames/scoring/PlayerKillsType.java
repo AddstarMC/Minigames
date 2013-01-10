@@ -114,14 +114,14 @@ public class PlayerKillsType extends ScoreType{
 							boolean end = false;
 							
 							if(ateam == 0){
-								mgm.incrementBlueTeamScore();
+								mgm.incrementRedTeamScore();
 								
 								if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
 									end = true;
 								}
 							}
 							else{
-								mgm.incrementRedTeamScore();
+								mgm.incrementBlueTeamScore();
 								
 								if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
 									end = true;

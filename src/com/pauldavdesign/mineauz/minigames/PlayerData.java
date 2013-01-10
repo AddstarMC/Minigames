@@ -39,6 +39,7 @@ public class PlayerData {
 	private Map<String, Boolean> allowTP = new HashMap<String, Boolean>();
 	private Map<String, Boolean> allowGMChange = new HashMap<String, Boolean>();
 	private Map<String, GameMode> lastGM = new HashMap<String, GameMode>();
+	
 	private boolean partyMode = false;
 	
 	private Map<String, Location> dcPlayers = new HashMap<String, Location>();
@@ -138,7 +139,7 @@ public class PlayerData {
 					start = mgm.getStartLocations().get(i);
 					players.get(i).teleport(start);
 					setPlayerCheckpoints(players.get(pos - 1), start);
-					if(mgm.getType().equals("dm") && !mgm.getScoreType().equals("none")){
+					if(mgm.getMaxScore() != 0 && mgm.getType().equals("dm") && !mgm.getScoreType().equals("none")){
 						players.get(i).sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
 					}
 				} 
@@ -205,7 +206,7 @@ public class PlayerData {
 				if(start != null){
 					players.get(i).teleport(start);
 					setPlayerCheckpoints(players.get(pos - 1), start);
-					if(!mgm.getScoreType().equals("none")){
+					if(mgm.getMaxScore() != 0 && !mgm.getScoreType().equals("none")){
 						players.get(i).sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
 					}
 				}
@@ -257,7 +258,7 @@ public class PlayerData {
 		String minigame = getPlayersMinigame(player);
 		final Minigame mgm = mdata.getMinigame(minigame);
 
-		QuitMinigameEvent event = new QuitMinigameEvent(player, mgm);
+		QuitMinigameEvent event = new QuitMinigameEvent(player, mgm, forced);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		if(!event.isCancelled()){
 			setAllowTP(player, true);

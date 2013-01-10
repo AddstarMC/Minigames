@@ -40,7 +40,6 @@ public class RaceMinigame extends MinigameType{
 			mdata.getMinigame(minigame).removePlayer(player);
 			if(mdata.getMinigame(minigame).getPlayers().size() == 0){
 				if(mdata.getMinigame(minigame).getMpTimer() != null){
-//					mdata.getMinigame(minigame).getMpTimer().setStartWaitTime(0);
 					mgm.getMpTimer().pauseTimer();
 					if(mdata.getMinigame(minigame).getMpBets() != null){
 						player.getInventory().addItem(mdata.getMinigame(minigame).getMpBets().getPlayersBet(player));
@@ -49,13 +48,13 @@ public class RaceMinigame extends MinigameType{
 					mdata.getMinigame(minigame).setMpTimer(null);
 				}
 			}
-//			else if(mdata.getMinigame(minigame).getPlayers().size() == 1 && mdata.getMinigame(minigame).getMpTimer() != null && mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() == 0){
-//				//pdata.endMinigame(mdata.getMinigame(minigame).getPlayers().get(0));
-//				
-//				if(mdata.getMinigame(minigame).getMpBets() != null){
-//					mdata.getMinigame(minigame).setMpBets(null);
-//				}
-//			}
+			else if(mdata.getMinigame(minigame).getPlayers().size() == 1 && mdata.getMinigame(minigame).getMpTimer() != null && mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() == 0){
+				pdata.endMinigame(mdata.getMinigame(minigame).getPlayers().get(0));
+				
+				if(mdata.getMinigame(minigame).getMpBets() != null){
+					mdata.getMinigame(minigame).setMpBets(null);
+				}
+			}
 			else if(mdata.getMinigame(minigame).getPlayers().size() < mgm.getMinPlayers() && mdata.getMinigame(minigame).getMpTimer() != null && mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() != 0){
 				mdata.getMinigame(minigame).getMpTimer().pauseTimer();
 				mdata.getMinigame(minigame).setMpTimer(null);
@@ -86,7 +85,7 @@ public class RaceMinigame extends MinigameType{
 			mdata.getMinigame(minigame).setMpBets(null);
 			player.updateInventory();
 		}
-		//pdata.saveItems(player);
+		
 		pdata.saveInventoryConfig();
 		
 		boolean hascompleted = false;
@@ -132,37 +131,6 @@ public class RaceMinigame extends MinigameType{
 				mdata.getMinigame(minigame).getPlayers().remove(pl);
 			}
 		}
-		
-//		if(mgm.hasRestoreBlocks()){
-//			Set<String> blocks = mgm.getRestoreBlocks().keySet();
-//			
-//			for(String name : blocks){
-//				String mat = mgm.getRestoreBlocks().get(name).getBlock().toString();
-//				if(mat.equalsIgnoreCase("CHEST") || mat.equalsIgnoreCase("FURNACE") || mat.equalsIgnoreCase("DISPENSER")){
-//					Location loc = mgm.getRestoreBlocks().get(name).getLocation();
-//					
-//					if(loc.getBlock().getType() != Material.getMaterial(mat)){
-//						loc.getBlock().setType(Material.getMaterial(mat));
-//					}
-//					
-//					if(loc.getBlock().getState() instanceof Chest){
-//						Chest chest = (Chest) loc.getBlock().getState();
-//						chest.getInventory().clear();
-//						chest.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
-//					}
-//					else if(loc.getBlock().getState() instanceof Furnace){
-//						Furnace furnace = (Furnace) loc.getBlock().getState();
-//						furnace.getInventory().clear();
-//						furnace.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
-//					}
-//					else if(loc.getBlock().getState() instanceof Dispenser){
-//						Dispenser dispenser = (Dispenser) loc.getBlock().getState();
-//						dispenser.getInventory().clear();
-//						dispenser.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
-//					}
-//				}
-//			}
-//		}
 
 		player.setFireTicks(0);
 		
@@ -205,11 +173,7 @@ public class RaceMinigame extends MinigameType{
 					event.setRespawnLocation(pdata.getPlayerCheckpoint(event.getPlayer()));
 					event.getPlayer().sendMessage(ChatColor.GRAY + "Bad Luck! Returning to checkpoint.");
 					
-					
 					mgm.getLoadout(mgm.getPlayersLoadout(event.getPlayer())).equiptLoadout(event.getPlayer());
-//					if(mgm.hasDefaultLoadout()){
-//						mgm.getDefaultPlayerLoadout().equiptLoadout(event.getPlayer());
-//					}
 				}
 			}
 		}

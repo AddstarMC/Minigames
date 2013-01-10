@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.Location;
 import org.bukkit.Material;
 
 public class MinigameUtils {
@@ -186,5 +187,14 @@ public class MinigameUtils {
 		}
 		
 		return msg;
+	}
+	
+	/**
+	 * Creates a string ID to compare locations.
+	 * @param location - The location to give an ID to.
+	 * @return The ID
+	 */
+	public static String createLocationID(Location location){
+		return location.getBlockX() + ":" + location.getBlockY() + ":" + location.getBlockZ() + ":" + location.getWorld().getName();
 	}
 }

@@ -8,6 +8,7 @@ public class ScoreTypes {
 	
 	static{
 		addScoreType(new PlayerKillsType());
+		addScoreType(new CTFType());
 	}
 	
 	public static void addScoreType(ScoreType type){
