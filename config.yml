@@ -18,6 +18,8 @@ multiplayer:
     - 10
   floordegenerator:
     time: 30
+  ctf:
+    flagrespawntime: 60
   broadcastwin: true
   
 singleplayer:

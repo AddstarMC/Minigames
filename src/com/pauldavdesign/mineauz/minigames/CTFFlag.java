@@ -18,7 +18,8 @@ public class CTFFlag extends Thread{
 	private boolean atHome = true;
 	private boolean stopTimer = false;
 	private int team = -1;
-	private int respawnTime = 10;
+	private int respawnTime = 60;
+	private int curTime = 0;
 	private Minigame minigame = null;
 	
 	public CTFFlag(Location spawn, int team, Player carrier, Minigame minigame){
@@ -27,6 +28,7 @@ public class CTFFlag extends Thread{
 		signText = ((Sign)spawnLocation.getBlock().getState()).getLines();
 		this.team = team;
 		this.setMinigame(minigame);
+		respawnTime = Minigames.plugin.getConfig().getInt("multiplayer.ctf.flagrespawntime");
 		start();
 	}
 	
@@ -169,12 +171,11 @@ public class CTFFlag extends Thread{
 
 	@Override
 	public void run(){
-		Bukkit.getLogger().info("I've Been initiated!");
 		while(true){
 			if(!atHome){
-				while(respawnTime > 0 && !stopTimer){
-					respawnTime -= 1;
-					Bukkit.getLogger().info("TICK: " + respawnTime);
+				curTime = respawnTime;
+				while(curTime > 0 && !stopTimer){
+					curTime -= 1;
 					try{
 						Thread.sleep(1000);
 					}catch(InterruptedException e){
@@ -185,9 +186,7 @@ public class CTFFlag extends Thread{
 				
 				if(stopTimer){
 					stopTimer = false;
-					respawnTime = 10;
 					atHome = true;
-					Bukkit.getLogger().info("Timer Stopped");
 				}
 				else{
 					String id = MinigameUtils.createLocationID(currentLocation);
@@ -196,9 +195,7 @@ public class CTFFlag extends Thread{
 						String newID = MinigameUtils.createLocationID(spawnLocation);
 						minigame.addDroppedFlag(newID, this);
 					}
-					respawnTime = 10;
 					respawnFlag();
-					Bukkit.getLogger().info("Respawning Flag");
 				}
 			}
 			
