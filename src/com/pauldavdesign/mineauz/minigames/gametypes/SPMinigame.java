@@ -115,13 +115,30 @@ public class SPMinigame extends MinigameType{
 	}
 
 	@Override
-	public void quitMinigame(Player player, Minigame mgm, boolean forced) {
+	public void quitMinigame(final Player player, final Minigame mgm, boolean forced) {
 		callGeneralQuit(player);
 
 		mgm.removePlayer(player);
 		
 		if(mgm.getBlockRecorder().hasData()){
-			mgm.getBlockRecorder().restoreBlocks(player);
+			if(mgm.getPlayers().isEmpty()){
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					
+					@Override
+					public void run() {
+						mgm.getBlockRecorder().restoreBlocks();
+					}
+				});
+			}
+			else{
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					
+					@Override
+					public void run() {
+						mgm.getBlockRecorder().restoreBlocks(player);
+					}
+				});
+			}
 		}
 	}
 	

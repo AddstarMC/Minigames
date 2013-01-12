@@ -15,9 +15,11 @@ import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffectType;
@@ -698,127 +700,61 @@ public class TeamDMMinigame extends MinigameType{
 		}
 	}
 	
-//	@EventHandler
-//	public void friendlyPvP(EntityDamageByEntityEvent event){
-//		if(event.getEntity() instanceof Player){
-//			Player ply = (Player) event.getEntity();
-//			if(pdata.getPlayersMinigame(ply) != null && mdata.getMinigame(pdata.getPlayersMinigame(ply)).getType().equals("teamdm")){
-//				if(event.getDamager() instanceof Player){
-//					Player attacker = (Player) event.getDamager();
-//					if(pdata.getPlayersMinigame(attacker) != null && mdata.getMinigame(pdata.getPlayersMinigame(attacker)).getType().equals("teamdm")){
-//						Minigame mg = mdata.getMinigame(pdata.getPlayersMinigame(ply));
-//						int team = 0;
-//						int ateam = 0;
-//						if(mg.getBlueTeam().contains(ply)){
-//							team = 1;
-//						}
-//						
-//						if(mg.getBlueTeam().contains(attacker)){
-//							ateam = 1;
-//						}
-//						
-//						if(team == ateam){
-//							event.setCancelled(true);
-//						}
-//						else if(event.getDamage() >= ply.getHealth() && team != ateam){
-//							boolean end = false;
-//							if(ateam == 0){
-//								if(mg.getMaxScore() != 0 && mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-//									end = true;
-//								}
-//							}
-//							else{
-//								if(mg.getMaxScore() != 0 && mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-//									end = true;
-//								}
-//							}
-//							if(end){
-//								for(Player pl : mg.getPlayers()){
-//									pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + attacker.getName() + " took the final kill against " + ply.getName());
-//								}
-//								if(ateam == 1){
-//									if(mg.getMaxScore() != 0 && mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-//										event.setCancelled(true);
-//										mg.incrementBlueTeamScore();
-//										pdata.endTeamMinigame(1, mg);
-//									}
-//								}
-//								else{
-//									if(mg.getMaxScore() != 0 && mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-//										event.setCancelled(true);
-//										mg.incrementRedTeamScore();
-//										pdata.endTeamMinigame(0, mg);
-//									}
-//								}
-//							}
-//						}
-//					}
-//					else{
-//						event.setCancelled(true);
-//					}
-//				}
-//				else if(event.getDamager() instanceof Arrow){
-//					Arrow arrow = (Arrow) event.getDamager();
-//					if(arrow.getShooter() instanceof Player){
-//						Player attacker = (Player) arrow.getShooter();
-//						if(pdata.getPlayersMinigame(attacker) != null && mdata.getMinigame(pdata.getPlayersMinigame(attacker)).getType().equals("teamdm")){
-//							Minigame mg = mdata.getMinigame(pdata.getPlayersMinigame(ply));
-//							int team = 0;
-//							int ateam = 0;
-//							if(mg.getBlueTeam().contains(ply)){
-//								team = 1;
-//							}
-//							
-//							if(mg.getBlueTeam().contains(attacker)){
-//								ateam = 1;
-//							}
-//							
-//							if(team == ateam){
-//								event.setCancelled(true);
-//							}
-//							else if(event.getDamage() >= ply.getHealth() && team != ateam){
-//								boolean end = false;
-//								if(ateam == 0){
-//									if(mg.getMaxScore() != 0 && mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-//										end = true;
-//									}
-//								}
-//								else{
-//									if(mg.getMaxScore() != 0 && mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-//										end = true;
-//									}
-//								}
-//								if(end){
-//									for(Player pl : mg.getPlayers()){
-//										pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + attacker.getName() + " took the final shot against " + ply.getName());
-//									}
-//									if(ateam == 1){
-//										if(mg.getMaxScore() != 0 && mg.getBlueTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-//											event.setCancelled(true);
-//											pdata.addPlayerKill(attacker);
-//											mg.incrementBlueTeamScore();
-//											pdata.endTeamMinigame(1, mg);
-//										}
-//									}
-//									else{
-//										if(mg.getMaxScore() != 0 && mg.getRedTeamScore() + 1 >= mg.getMaxScorePerPlayer(mg.getPlayers().size())){
-//											event.setCancelled(true);
-//											pdata.addPlayerKill(attacker);
-//											mg.incrementRedTeamScore();
-//											pdata.endTeamMinigame(0, mg);
-//										}
-//									}
-//								}
-//							}
-//						}
-//						else{
-//							event.setCancelled(true);
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
+	@EventHandler
+	public void friendlyPvP(EntityDamageByEntityEvent event){
+		if(event.getEntity() instanceof Player){
+			Player ply = (Player) event.getEntity();
+			if(pdata.getPlayersMinigame(ply) != null && mdata.getMinigame(pdata.getPlayersMinigame(ply)).getType().equals("teamdm")){
+				if(event.getDamager() instanceof Player){
+					Player attacker = (Player) event.getDamager();
+					if(pdata.getPlayersMinigame(attacker) != null && mdata.getMinigame(pdata.getPlayersMinigame(attacker)).getType().equals("teamdm")){
+						Minigame mg = mdata.getMinigame(pdata.getPlayersMinigame(ply));
+						int team = 0;
+						int ateam = 0;
+						if(mg.getBlueTeam().contains(ply)){
+							team = 1;
+						}
+						
+						if(mg.getBlueTeam().contains(attacker)){
+							ateam = 1;
+						}
+						
+						if(team == ateam){
+							event.setCancelled(true);
+						}
+					}
+					else{
+						event.setCancelled(true);
+					}
+				}
+				else if(event.getDamager() instanceof Arrow){
+					Arrow arrow = (Arrow) event.getDamager();
+					if(arrow.getShooter() instanceof Player){
+						Player attacker = (Player) arrow.getShooter();
+						if(pdata.getPlayersMinigame(attacker) != null && mdata.getMinigame(pdata.getPlayersMinigame(attacker)).getType().equals("teamdm")){
+							Minigame mg = mdata.getMinigame(pdata.getPlayersMinigame(ply));
+							int team = 0;
+							int ateam = 0;
+							if(mg.getBlueTeam().contains(ply)){
+								team = 1;
+							}
+							
+							if(mg.getBlueTeam().contains(attacker)){
+								ateam = 1;
+							}
+							
+							if(team == ateam){
+								event.setCancelled(true);
+							}
+						}
+						else{
+							event.setCancelled(true);
+						}
+					}
+				}
+			}
+		}
+	}
 	
 	@EventHandler
 	public void timerExpire(TimerExpireEvent event){

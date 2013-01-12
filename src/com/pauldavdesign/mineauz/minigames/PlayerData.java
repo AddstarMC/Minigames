@@ -311,11 +311,12 @@ public class PlayerData {
 				});
 			}
 			
-			setAllowTP(player, false);
+			removeAllowTP(player);
+			removeAllowGMChange(player);
 		}
 	}
 	
-	public void endMinigame(Player player){
+	public void endMinigame(final Player player){
 		String minigame = getPlayersMinigame(player);
 		final Minigame mgm = mdata.getMinigame(minigame);
 		
@@ -358,16 +359,28 @@ public class PlayerData {
 			}
 			
 			if(mgm.getBlockRecorder().hasData()){
-				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						mgm.getBlockRecorder().restoreBlocks();
-					}
-				});
+				if(!mgm.getType().equalsIgnoreCase("sp") || mgm.getPlayers().isEmpty()){
+					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+						
+						@Override
+						public void run() {
+							mgm.getBlockRecorder().restoreBlocks();
+						}
+					});
+				}
+				else{
+					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+						
+						@Override
+						public void run() {
+							mgm.getBlockRecorder().restoreBlocks(player);
+						}
+					});
+				}
 			}
 			
-			setAllowTP(player, false);
+			removeAllowTP(player);
+			removeAllowGMChange(player);
 		}
 	}
 	
@@ -541,12 +554,20 @@ public void endTeamMinigame(int teamnum, Minigame mgm){
 		allowTP.put(player.getName(), var);
 	}
 	
+	public void removeAllowTP(Player player){
+		allowTP.remove(player.getName());
+	}
+	
 	public Boolean getAllowGMChange(Player player){
 		return allowGMChange.get(player.getName());
 	}
 	
 	public void setAllowGMChange(Player player, Boolean var){
 		allowGMChange.put(player.getName(), var);
+	}
+	
+	public void removeAllowGMChange(Player player){
+		allowGMChange.remove(player.getName());
 	}
 	
 	public void setPlayerCheckpoints(Player player, Location checkpoint){

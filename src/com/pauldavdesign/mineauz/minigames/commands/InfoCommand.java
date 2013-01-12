@@ -252,7 +252,7 @@ public class InfoCommand implements ICommand{
 				int pages = 1;
 				
 				if(lines.size() > 9){
-					pages = (int) Math.ceil(lines.size() / 9);
+					pages = (int) Math.ceil(lines.size() / 8);
 				}
 				
 				if(args.length >= 2 && args[1].matches("[0-9]+")){

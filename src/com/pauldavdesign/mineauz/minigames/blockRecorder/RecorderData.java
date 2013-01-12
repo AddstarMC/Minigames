@@ -24,7 +24,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
@@ -364,6 +366,37 @@ public class RecorderData implements Listener{
 		return !blockdata.isEmpty();
 	}
 	
+	public boolean checkBlockSides(Location location){
+		Location temp = location.clone();
+		temp.setX(temp.getX() + 1);
+		if(hasBlock(temp.getBlock())){
+			return true;
+		}
+		temp.setX(temp.getX() - 2);
+		if(hasBlock(temp.getBlock())){
+			return true;
+		}
+		temp = location.clone();
+		temp.setZ(temp.getZ() + 1);
+		if(hasBlock(temp.getBlock())){
+			return true;
+		}
+		temp.setZ(temp.getZ() - 2);
+		if(hasBlock(temp.getBlock())){
+			return true;
+		}
+		temp = location.clone();
+		temp.setY(temp.getY() + 1);
+		if(hasBlock(temp.getBlock())){
+			return true;
+		}
+		temp.setY(temp.getY() - 2);
+		if(hasBlock(temp.getBlock())){
+			return true;
+		}
+		return false;
+	}
+	
 	@EventHandler(priority = EventPriority.HIGH)
 	private void blockBreak(BlockBreakEvent event){
 		Player ply = event.getPlayer();
@@ -385,7 +418,16 @@ public class RecorderData implements Listener{
 					}
 				}
 				else{
+					Location above = event.getBlock().getLocation().clone();
+					above.setY(above.getY() + 1);
 					addBlock(event.getBlock(), ply);
+					
+					if(above.getBlock().getType() == Material.GRAVEL || 
+							above.getBlock().getType() == Material.SAND || 
+							above.getBlock().getType() == Material.ANVIL || 
+							above.getBlock().getType() == Material.DRAGON_EGG){
+						addBlock(above.getBlock(), ply);
+					}
 					if(!minigame.canBlocksdrop()){
 						event.setCancelled(true);
 						event.getBlock().setType(Material.AIR);
@@ -439,10 +481,47 @@ public class RecorderData implements Listener{
 	
 	@EventHandler
 	private void blockPhysics(BlockPhysicsEvent event){
-		Location blockBelow = event.getBlock().getLocation();
-		blockBelow.setY(blockBelow.getBlockY() - 1);
-		if(hasBlock(blockBelow.getBlock())){
-			event.setCancelled(true);
+		if((event.getBlock().getType() == Material.GRAVEL || 
+				event.getBlock().getType() == Material.SAND ||
+				event.getBlock().getType() == Material.ANVIL ||
+				event.getBlock().getType() == Material.DRAGON_EGG) &&
+				checkBlockSides(event.getBlock().getLocation())){
+			addBlock(event.getBlock(), null);
 		}
 	}
+	
+	@EventHandler
+	private void leafDecay(LeavesDecayEvent event){
+		if(checkBlockSides(event.getBlock().getLocation())){
+			addBlock(event.getBlock(), null);
+		}
+	}
+	
+	@EventHandler
+	private void treeGrow(StructureGrowEvent event){
+		if(hasBlock(event.getLocation().getBlock())){
+			for(BlockState block : event.getBlocks()){
+				addBlock(block.getLocation().getBlock(), event.getPlayer());
+			}
+		}
+	}
+	
+//	@EventHandler TODO: Reopen me later, this was apparently added in a new version of bukkit.
+//	private void blockForm(EntityBlockFormEvent event){
+//		String idloc = MinigameUtils.createLocationID(event.getBlock().getLocation());
+//		int y = event.getBlock().getY();
+//		int x = event.getBlock().getX();
+//		int z = event.getBlock().getZ();
+//		String world = event.getBlock().getWorld().getName();
+//		
+//		while(y < 256){
+//			y++;
+//			idloc = x + ":" + y + ":" + z + ":" + world;
+//			Bukkit.getLogger().info(idloc);
+//			if(blockdata.containsKey(idloc)){
+//				addBlock(event.getBlock().getLocation().getBlock(), null);
+//				return;
+//			}
+//		}
+//	}
 }
