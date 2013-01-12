@@ -54,7 +54,7 @@ public class DeleteCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-			Minigame mgm = mdata.getMinigame(args[0]);
+			Minigame mgm = plugin.mdata.getMinigame(args[0]);
 			
 			if(mgm != null){
 				MinigameSave save = new MinigameSave(mgm.getName(), "config");
@@ -64,7 +64,7 @@ public class DeleteCommand implements ICommand{
 					List<String> ls = plugin.getConfig().getStringList("minigames");
 					ls.remove(mgm.getName());
 					plugin.getConfig().set("minigames", ls);
-					mdata.removeMinigame(mgm.getName());
+					plugin.mdata.removeMinigame(mgm.getName());
 					plugin.saveConfig();
 					sender.sendMessage(ChatColor.RED + "The minigame " + mgm.getName() + " has been removed");
 				}

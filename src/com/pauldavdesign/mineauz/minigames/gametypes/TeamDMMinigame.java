@@ -58,8 +58,6 @@ public class TeamDMMinigame extends MinigameType{
 			
 			if(!mgm.getPlayers().isEmpty() && mgm.getPlayers().size() < mgm.getMaxPlayers()){
 				if(mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
-					mgm.addPlayer(player);
-					
 					if(redSize <= blueSize){
 						mgm.addRedTeamPlayer(player);
 						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.RED + "Red Team");
@@ -141,8 +139,6 @@ public class TeamDMMinigame extends MinigameType{
 				}
 			}
 			else if(mgm.getPlayers().isEmpty()){
-				mgm.addPlayer(player);
-				
 				EntityPlayer changeingName = ((CraftPlayer) player).getHandle();
 				String oldName = player.getName();
 				

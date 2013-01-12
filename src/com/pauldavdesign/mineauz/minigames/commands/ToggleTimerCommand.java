@@ -51,7 +51,7 @@ public class ToggleTimerCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-			Minigame mgm = mdata.getMinigame(args[0]);
+			Minigame mgm = plugin.mdata.getMinigame(args[0]);
 			if(mgm != null){
 				if(mgm.getMpTimer() != null){
 					if(mgm.getMpTimer().isPaused()){

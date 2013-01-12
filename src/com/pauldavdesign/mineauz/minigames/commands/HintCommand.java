@@ -57,7 +57,7 @@ public class HintCommand implements ICommand{
 			String label, String[] args) {
 		Player player = (Player)sender;
 		if(args != null){
-			Minigame mgm = mdata.getMinigame(args[0]);
+			Minigame mgm = plugin.mdata.getMinigame(args[0]);
 			
 			if(mgm != null && mgm.getThTimer() != null && mgm.getType().equals("th")){
 				TreasureHuntTimer treasure = mgm.getThTimer();
@@ -74,7 +74,7 @@ public class HintCommand implements ICommand{
 		}
 		else{
 			List<Minigame> mgs = new ArrayList<Minigame>();
-			for(Minigame mg : mdata.getAllMinigames().values()){
+			for(Minigame mg : plugin.mdata.getAllMinigames().values()){
 				if(mg.getType() != null && mg.getType().equals("th")){
 					mgs.add(mg);
 				}

@@ -30,9 +30,9 @@ public class SetTypeCommand implements ICommand{
 
 	@Override
 	public String[] getParameters() {
-		String[] mgtypes = new String[mdata.getMinigameTypes().size() + 1];
+		String[] mgtypes = new String[plugin.mdata.getMinigameTypes().size() + 1];
 		int inc = 0;
-		for(String type : mdata.getMinigameTypes()){
+		for(String type : plugin.mdata.getMinigameTypes()){
 			mgtypes[inc] = type;
 			inc++;
 		}
@@ -59,7 +59,7 @@ public class SetTypeCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-			if(mdata.getMinigameTypes().contains(args[0].toLowerCase()) || args[0].equalsIgnoreCase("th")){
+			if(plugin.mdata.getMinigameTypes().contains(args[0].toLowerCase()) || args[0].equalsIgnoreCase("th")){
 				minigame.setType(args[0].toLowerCase());
 				sender.sendMessage(ChatColor.GRAY + "Minigame type has been set to " + args[0]);
 			}

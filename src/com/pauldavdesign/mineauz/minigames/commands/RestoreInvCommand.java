@@ -56,7 +56,7 @@ public class RestoreInvCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-			Set<String> set = pdata.getInventorySaveConfig().getConfigurationSection("inventories").getKeys(false);
+			Set<String> set = plugin.pdata.getInventorySaveConfig().getConfigurationSection("inventories").getKeys(false);
 			List<Player> players = new ArrayList<Player>();
 			
 			for(Player pl : plugin.getServer().getOnlinePlayers()){
@@ -72,17 +72,17 @@ public class RestoreInvCommand implements ICommand{
 				}
 			}
 			
-			if(!pdata.playerInMinigame(reqpl) && set.contains(reqpl.getName())){
-				pdata.restorePlayerData(reqpl);
+			if(!plugin.pdata.playerInMinigame(reqpl) && set.contains(reqpl.getName())){
+				plugin.pdata.restorePlayerData(reqpl);
 				
 				sender.sendMessage(ChatColor.GRAY + "The inventory for " + reqpl.getName() + " has been restored.");
 				reqpl.sendMessage(ChatColor.GRAY + "Your inventory has been restored.");
-				pdata.saveItems(reqpl);
+				plugin.pdata.saveItems(reqpl);
 			}
 			else if(set.contains(reqpl.getName())){
 				sender.sendMessage(ChatColor.RED + "This players inventory is not stored!");
 			}
-			else if(pdata.playerInMinigame(reqpl)){
+			else if(plugin.pdata.playerInMinigame(reqpl)){
 				sender.sendMessage(ChatColor.RED + "This player is currently in a minigame, old inventory cannot be restored!");
 			}
 			return true;

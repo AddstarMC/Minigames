@@ -175,8 +175,8 @@ public class SetCommand implements ICommand{
 			String[] shortArgs = null;
 			
 			if(args.length >= 1){
-				if(mdata.hasMinigame(args[0])){
-					mgm = mdata.getMinigame(args[0]);
+				if(plugin.mdata.hasMinigame(args[0])){
+					mgm = plugin.mdata.getMinigame(args[0]);
 				}
 				if(args.length >= 2){
 					if(parameterList.containsKey(args[1].toLowerCase())){

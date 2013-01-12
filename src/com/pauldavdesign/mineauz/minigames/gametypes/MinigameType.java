@@ -80,8 +80,6 @@ public abstract class MinigameType implements Listener{
 			Location lobby = mgm.getLobbyPosition();
 			if(!mgm.getPlayers().isEmpty() && mdata.getMinigame(mgm.getName()).getPlayers().size() < mgm.getMaxPlayers()){
 				if(mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
-					mgm.addPlayer(player);
-					
 					pdata.storePlayerData(player, gm);
 					
 					player.teleport(lobby);
@@ -115,8 +113,6 @@ public abstract class MinigameType implements Listener{
 				}
 			}
 			else if(mgm.getPlayers().isEmpty()){
-				mgm.addPlayer(player);
-				
 				pdata.storePlayerData(player, gm);
 				
 				player.teleport(lobby);

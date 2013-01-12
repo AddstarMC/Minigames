@@ -52,27 +52,27 @@ public class DeniedCommandCommand implements ICommand {
 			String label, String[] args) {
 		if(args != null){
 			if(args[0].equalsIgnoreCase("add") && args.length >= 2){
-				pdata.addDeniedCommand(args[1]);
+				plugin.pdata.addDeniedCommand(args[1]);
 				sender.sendMessage(ChatColor.GRAY + "Added \"" + args[1] + "\" to the denied command list.");
 			}
 			else if(args[0].equalsIgnoreCase("remove") && args.length >= 2){
-				pdata.removeDeniedCommand(args[1]);
+				plugin.pdata.removeDeniedCommand(args[1]);
 				sender.sendMessage(ChatColor.GRAY + "Removed \"" + args[1] + "\" from the denied command list.");
 			}
 			else if(args[0].equalsIgnoreCase("list")){
 				String coms = "";
 				boolean switchColour = false;
-				for(String par : pdata.getDeniedCommands()){
+				for(String par : plugin.pdata.getDeniedCommands()){
 					if(switchColour){
 						coms += ChatColor.WHITE + par;
-						if(!par.equalsIgnoreCase(pdata.getDeniedCommands().get(pdata.getDeniedCommands().size() - 1))){
+						if(!par.equalsIgnoreCase(plugin.pdata.getDeniedCommands().get(plugin.pdata.getDeniedCommands().size() - 1))){
 							coms += ChatColor.WHITE + ", ";
 						}
 						switchColour = false;
 					}
 					else{
 						coms += ChatColor.GRAY + par;
-						if(!par.equalsIgnoreCase(pdata.getDeniedCommands().get(pdata.getDeniedCommands().size() - 1))){
+						if(!par.equalsIgnoreCase(plugin.pdata.getDeniedCommands().get(plugin.pdata.getDeniedCommands().size() - 1))){
 							coms += ChatColor.WHITE + ", ";
 						}
 						switchColour = true;

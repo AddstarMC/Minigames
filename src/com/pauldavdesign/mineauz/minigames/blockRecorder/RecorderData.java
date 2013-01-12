@@ -22,9 +22,15 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
+import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
@@ -502,6 +508,63 @@ public class RecorderData implements Listener{
 		if(hasBlock(event.getLocation().getBlock())){
 			for(BlockState block : event.getBlocks()){
 				addBlock(block.getLocation().getBlock(), event.getPlayer());
+			}
+		}
+	}
+	
+	@EventHandler
+	private void bucketFill(PlayerBucketFillEvent event){
+		if(pdata.playerInMinigame(event.getPlayer())){
+			if(((whitelistMode && getWBBlocks().contains(event.getBlockClicked().getType())) || 
+					(!whitelistMode && !getWBBlocks().contains(event.getBlockClicked().getType()))) && 
+					minigame.canBlockBreak()){
+				addBlock(event.getBlockClicked(), event.getPlayer());
+			}
+			else{
+				event.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler
+	private void bucketEmpty(PlayerBucketEmptyEvent event){
+		if(pdata.playerInMinigame(event.getPlayer())){
+			if(((whitelistMode && getWBBlocks().contains(event.getBlockClicked().getType())) || 
+					(!whitelistMode && !getWBBlocks().contains(event.getBlockClicked().getType()))) && 
+					minigame.canBlockBreak()){
+				addBlock(event.getBlockClicked(), event.getPlayer());
+			}
+			else{
+				event.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler
+	public void blockFromTo(BlockBurnEvent event){
+		if(checkBlockSides(event.getBlock().getLocation())){
+			addBlock(event.getBlock(), null);
+		}
+	}
+	
+	@EventHandler
+	public void fireSpread(BlockSpreadEvent event){
+		if(hasBlock(event.getSource())){
+			addBlock(event.getBlock(), null);
+		}
+	}
+	
+	@EventHandler
+	public void igniteblock(BlockIgniteEvent event){
+		if(pdata.playerInMinigame(event.getPlayer()) && 
+				(event.getCause() == IgniteCause.FIREBALL || event.getCause() == IgniteCause.FLINT_AND_STEEL)){
+			if(((whitelistMode && getWBBlocks().contains(Material.FIRE)) || 
+					(!whitelistMode && !getWBBlocks().contains(Material.FIRE))) && 
+					minigame.canBlockPlace()){
+				addBlock(event.getBlock(), event.getPlayer());
+			}
+			else{
+				event.setCancelled(true);
 			}
 		}
 	}

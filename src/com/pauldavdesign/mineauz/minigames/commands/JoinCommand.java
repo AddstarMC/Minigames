@@ -53,11 +53,11 @@ public class JoinCommand implements ICommand{
 			String label, String[] args) {
 		Player player = (Player)sender;
 		if(args != null){
-			Minigame mgm = mdata.getMinigame(args[0]);
+			Minigame mgm = plugin.mdata.getMinigame(args[0]);
 			if(mgm != null && (!mgm.getUsePermissions() || player.hasPermission("minigame.join." + mgm.getName().toLowerCase()))){
-				if(!pdata.playerInMinigame(player)){
+				if(!plugin.pdata.playerInMinigame(player)){
 					sender.sendMessage(ChatColor.GREEN + "Starting " + mgm);
-					pdata.joinMinigame(player, mgm);
+					plugin.pdata.joinMinigame(player, mgm);
 				}
 				else {
 					player.sendMessage(ChatColor.RED + "Error: You are already playing a minigame! Quit this one before joining another.");

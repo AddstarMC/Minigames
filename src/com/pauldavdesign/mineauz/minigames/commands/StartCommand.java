@@ -51,10 +51,10 @@ public class StartCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-			Minigame mgm = mdata.getMinigame(args[0]);
+			Minigame mgm = plugin.mdata.getMinigame(args[0]);
 			
 			if(mgm != null && mgm.getThTimer() == null && mgm.getType().equals("th")){
-				mdata.startGlobalMinigame(mgm.getName());
+				plugin.mdata.startGlobalMinigame(mgm.getName());
 			}
 			else if(mgm == null || !mgm.getType().equals("th")){
 				sender.sendMessage(ChatColor.RED + "There is no TreasureHunt Minigame by the name \"" + args[0] + "\"");

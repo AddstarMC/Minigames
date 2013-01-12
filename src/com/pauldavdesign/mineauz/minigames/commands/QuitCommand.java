@@ -54,8 +54,8 @@ public class QuitCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args == null && sender instanceof Player){
-			if(pdata.playerInMinigame((Player)sender)){
-				pdata.quitMinigame((Player)sender, false);
+			if(plugin.pdata.playerInMinigame((Player)sender)){
+				plugin.pdata.quitMinigame((Player)sender, false);
 			}
 			else {
 				sender.sendMessage(ChatColor.RED + "Error: You are not in a minigame!");
@@ -68,7 +68,7 @@ public class QuitCommand implements ICommand{
 				player = (Player)sender;
 			}
 			if(player == null || player.hasPermission("minigame.quit.other")){
-				List<Player> plist = pdata.playersInMinigame();
+				List<Player> plist = plugin.pdata.playersInMinigame();
 				Player ply = null;
 				for(Player p : plist){
 					if(p.getName().toLowerCase().contains(args[0].toLowerCase())){
@@ -76,7 +76,7 @@ public class QuitCommand implements ICommand{
 					}
 				}
 				if(ply != null){
-					pdata.quitMinigame(ply, true);
+					plugin.pdata.quitMinigame(ply, true);
 					sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to quit the minigame.");
 				}
 				else{

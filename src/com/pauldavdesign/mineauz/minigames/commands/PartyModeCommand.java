@@ -52,7 +52,7 @@ public class PartyModeCommand implements ICommand{
 			String label, String[] args) {
 		if(args != null){
 			boolean bool = Boolean.parseBoolean(args[0]);
-			pdata.setPartyMode(bool);
+			plugin.pdata.setPartyMode(bool);
 			if(bool){
 				sender.sendMessage(ChatColor.GREEN + "Party mode has been enabled! WooHoo!");
 			}

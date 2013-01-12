@@ -53,8 +53,8 @@ public class ReloadCommand implements ICommand{
 			String label, String[] args) {
 		Player[] players = plugin.getServer().getOnlinePlayers();
 		for(Player p : players){
-			if(pdata.playerInMinigame(p)){
-				pdata.quitMinigame(p, true);
+			if(plugin.pdata.playerInMinigame(p)){
+				plugin.pdata.quitMinigame(p, true);
 			}
 		}
 		

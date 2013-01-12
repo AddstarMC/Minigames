@@ -53,8 +53,8 @@ public class RevertCommand implements ICommand{
 			String label, String[] args) {
 		Player player = (Player)sender;
 		
-		if(pdata.playerInMinigame(player)){
-			pdata.revertToCheckpoint(player);
+		if(plugin.pdata.playerInMinigame(player)){
+			plugin.pdata.revertToCheckpoint(player);
 		}
 		else {
 			player.sendMessage(ChatColor.RED + "Error: You are not in a minigame!");

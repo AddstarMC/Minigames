@@ -51,12 +51,12 @@ public class StopCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-			Minigame mgm = mdata.getMinigame(args[0]);
+			Minigame mgm = plugin.mdata.getMinigame(args[0]);
 			
 			if(mgm != null && mgm.getThTimer() != null && mgm.getType().equals("th")){
 				plugin.getServer().broadcast(ChatColor.LIGHT_PURPLE + "The " + mgm.getName() + " treasure has been removed from the world", "minigame.treasure.announce");
 				mgm.getThTimer().setActive(false);
-				mdata.removeTreasure(mgm.getName());
+				plugin.mdata.removeTreasure(mgm.getName());
 				mgm.setThTimer(null);
 			}
 			else if(mgm == null || !mgm.getType().equals("th")){
