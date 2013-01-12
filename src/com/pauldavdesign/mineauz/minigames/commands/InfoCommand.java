@@ -1,11 +1,13 @@
 package com.pauldavdesign.mineauz.minigames.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 
 public class InfoCommand implements ICommand{
 
@@ -36,7 +38,7 @@ public class InfoCommand implements ICommand{
 
 	@Override
 	public String[] getUsage() {
-		return new String[] {"/minigame info <Minigame>"};
+		return new String[] {"/minigame info <Minigame> [Page]"};
 	}
 
 	@Override
@@ -56,166 +58,220 @@ public class InfoCommand implements ICommand{
 			Minigame mgm = mdata.getMinigame(args[0]);
 		
 			if(mgm != null){
-				sender.sendMessage(ChatColor.GRAY + "Checking " + mgm.getName() + " minigame...");
+				//Ten lines per page
+				List<String> lines = new ArrayList<String>();
+				
+				lines.add(ChatColor.GRAY + "Game Type: " + ChatColor.GREEN + mgm.getType());
 				if(!mgm.getType().equals("th")){
-					if(!mgm.getType().equals("teamdm")){
-						if(!mgm.getStartLocations().isEmpty()){
-							sender.sendMessage(ChatColor.GREEN + "Starting position set (" + mgm.getStartLocations().size() + ")");
-						}
-						else {
-							sender.sendMessage(ChatColor.RED + "Starting position is not set!");
-						}
+					lines.add(ChatColor.GRAY + "Score Type: " + ChatColor.GREEN + mgm.getScoreType());
+					
+					if(mgm.isEnabled()){
+						lines.add(ChatColor.GRAY + "Enabled: " + ChatColor.GREEN + "true");
+					}else{
+						lines.add(ChatColor.GRAY + "Enabled: " + ChatColor.RED + "false");
+					}
+					
+					if(mgm.getUsePermissions()){
+						lines.add(ChatColor.GRAY + "Use Permissions: " + ChatColor.GREEN + "true");
+					}else{
+						lines.add(ChatColor.GRAY + "Use Permissions: " + ChatColor.RED + "false");
+					}
+					
+					if(mgm.getStartLocations().size() > 0){
+						lines.add(ChatColor.GRAY + "Starting Positions: " + ChatColor.GREEN + mgm.getStartLocations().size());
 					}
 					else{
-						if(!mgm.getStartLocationsRed().isEmpty()){
-							sender.sendMessage(ChatColor.GREEN + "Red starting positions set (" + mgm.getStartLocationsRed().size() + ")");
+						lines.add(ChatColor.GRAY + "Starting Positions: " + ChatColor.RED + "0");
+					}
+					if(mgm.getType().equals("teamdm")){
+						if(mgm.getStartLocationsRed().size() > 0){
+							lines.add(ChatColor.RED + "Red Team " + ChatColor.GRAY + "Starting Positions: " + ChatColor.GREEN + mgm.getStartLocationsRed().size());
 						}
-						else {
-							sender.sendMessage(ChatColor.RED + "Red starting positions are not set!");
+						else{
+							lines.add(ChatColor.GRAY + "Red Team Starting Positions: " + ChatColor.RED + "0");
 						}
-						
-						if(!mgm.getStartLocationsBlue().isEmpty()){
-							sender.sendMessage(ChatColor.GREEN + "Blue starting positions set (" + mgm.getStartLocationsBlue().size() + ")");
+						if(mgm.getStartLocationsBlue().size() > 0){
+							lines.add(ChatColor.BLUE + "Blue Team " + ChatColor.GRAY + "Starting Positions: " + ChatColor.GREEN + mgm.getStartLocationsBlue().size());
 						}
-						else {
-							sender.sendMessage(ChatColor.RED + "Blue starting positions are not set!");
+						else{
+							lines.add(ChatColor.RED + "Blue Team Starting Positions: 0");
 						}
 					}
 					
 					if(mgm.getEndPosition() != null){
-						sender.sendMessage(ChatColor.GREEN + "Ending position set");
+						lines.add(ChatColor.GRAY + "End Position: " + ChatColor.GREEN + "Set");
 					}
-					else {
-						sender.sendMessage(ChatColor.RED + "Ending position is not set!");
+					else{
+						lines.add(ChatColor.GRAY + "End Position: " + ChatColor.RED + "Not Set");
 					}
 					
 					if(mgm.getQuitPosition() != null){
-						sender.sendMessage(ChatColor.GREEN + "Quit position set");
+						lines.add(ChatColor.GRAY + "Quit Position: " + ChatColor.GREEN + "Set");
 					}
-					else {
-						sender.sendMessage(ChatColor.RED + "Quit position is not set!");
+					else{
+						lines.add(ChatColor.GRAY + "Quit Position: " + ChatColor.RED + "Not Set");
+					}
+					
+					if(!mgm.getType().equals("sp")){
+						if(mgm.getLobbyPosition() != null){
+							lines.add(ChatColor.GRAY + "Lobby Position: " + ChatColor.GREEN + "Set");
+						}
+						else{
+							lines.add(ChatColor.GRAY + "Lobby Position: " + ChatColor.RED + "Not Set");
+						}
+						
+						if(mgm.bettingEnabled()){
+							lines.add(ChatColor.GRAY + "Bets: " + ChatColor.GREEN + "true");
+						}
+						else{
+							lines.add(ChatColor.GRAY + "Bets: " + ChatColor.RED + "false");
+						}
+						
+						if(mgm.getSpleefFloor1() != null){
+							lines.add(ChatColor.GRAY + "Floor Degenerator Position 1: " + ChatColor.GREEN + "true");
+						}
+						else{
+							lines.add(ChatColor.GRAY + "Floor Degenerator Position 1: " + ChatColor.RED + "false");
+						}
+						
+						if(mgm.getSpleefFloor2() != null){
+							lines.add(ChatColor.GRAY + "Floor Degenerator Position 2: " + ChatColor.GREEN + "true");
+						}
+						else{
+							lines.add(ChatColor.GRAY + "Floor Degenerator Position 2: " + ChatColor.RED + "false");
+						}
+					}
+					
+					lines.add(ChatColor.GRAY + "Player Gamemode: " + ChatColor.GREEN + mgm.getDefaultGamemode().name().toLowerCase());
+					
+					if(mgm.hasDeathDrops()){
+						lines.add(ChatColor.GRAY + "Drop Items on Death: " + ChatColor.GREEN + "true");
+					}else{
+						lines.add(ChatColor.GRAY + "Drop Items on Death: " + ChatColor.RED + "false");
+					}
+					
+					if(mgm.hasItemDrops()){
+						lines.add(ChatColor.GRAY + "Player Drop Items: " + ChatColor.GREEN + "true");
+					}else{
+						lines.add(ChatColor.GRAY + "Player Drop Items: " + ChatColor.RED + "false");
+					}
+					
+					if(mgm.hasItemPickup()){
+						lines.add(ChatColor.GRAY + "Player Pickup Items: " + ChatColor.GREEN + "true");
+					}else{
+						lines.add(ChatColor.GRAY + "Player Pickup Items: " + ChatColor.RED + "false");
+					}
+					
+					if(mgm.hasFlags()){
+						lines.add(ChatColor.GRAY + "Flags: " + ChatColor.GREEN + mgm.getFlags().size());
+					}else{
+						lines.add(ChatColor.GRAY + "Flags: " + ChatColor.RED + "0");
+					}
+					
+					if(mgm.hasDefaultLoadout()){
+						lines.add(ChatColor.GRAY + "Default Loadout: " + ChatColor.GREEN + mgm.getDefaultPlayerLoadout().getItems().size() + " items");
+					}else{
+						lines.add(ChatColor.GRAY + "Default Loadout: " + ChatColor.RED + "0 items");
+					}
+					
+					if(!mgm.getLoadouts().isEmpty()){
+						lines.add(ChatColor.GRAY + "Additional Loadouts: " + ChatColor.GREEN + mgm.getLoadouts().size());
+					}else{
+						lines.add(ChatColor.GRAY + "Additional Loadouts: " + ChatColor.RED + "0");
+					}
+					
+					if(!mgm.getType().equals("sp")){
+						lines.add(ChatColor.GRAY + "Maximum Players: " + ChatColor.GREEN + mgm.getMaxPlayers());
+						lines.add(ChatColor.GRAY + "Minimum Players: " + ChatColor.GREEN + mgm.getMinPlayers());
 					}
 					
 					if(mgm.getRewardItem() != null){
-						sender.sendMessage(ChatColor.GREEN + "Reward Item: " + mgm.getRewardItem().getType().toString().toLowerCase().replace("_", " "));
-					}
-					else {
-						sender.sendMessage(ChatColor.RED + "Reward Item is not set!");
+						lines.add(ChatColor.GRAY + "Reward Item: " + ChatColor.GREEN + MinigameUtils.getItemStackName(mgm.getRewardItem()) + "(x" + mgm.getRewardItem().getAmount() + ")");
+					}else{
+						lines.add(ChatColor.GRAY + "Reward Item: " + ChatColor.RED + "Not Set");
 					}
 					
-					if(mgm.getRewardPrice() > 0 && plugin.getEconomy() != null){
-						sender.sendMessage(ChatColor.GREEN + "Reward Money: $" + mgm.getRewardPrice());
+					if(mgm.getRewardPrice() != 0){
+						lines.add(ChatColor.GRAY + "Reward Money: " + ChatColor.GREEN + "$" + mgm.getRewardPrice());
 					}
-					else if(plugin.getEconomy() != null){
-						sender.sendMessage(ChatColor.RED + "Reward money is not set!");
+					else{
+						lines.add(ChatColor.GRAY + "Reward Money: " + ChatColor.RED + "Not Set");
 					}
 					
 					if(mgm.getSecondaryRewardItem() != null){
-						sender.sendMessage(ChatColor.GREEN + "Secondary Reward Item: " + mgm.getSecondaryRewardItem().getType().toString().toLowerCase().replace("_", " "));
-					}
-					else {
-						sender.sendMessage(ChatColor.RED + "Secondary reward is not set!");
-					}
-					
-					if(mgm.getSecondaryRewardPrice() > 0 && plugin.getEconomy() != null){
-						sender.sendMessage(ChatColor.GREEN + "Secondary Reward Money: $" + mgm.getSecondaryRewardPrice());
-					}
-					else if(plugin.getEconomy() != null){
-						sender.sendMessage(ChatColor.RED + "Secondary Reward money is not set!");
+						lines.add(ChatColor.GRAY + "Secondary Reward Item: " + ChatColor.GREEN + MinigameUtils.getItemStackName(mgm.getSecondaryRewardItem()) + "(x" + mgm.getSecondaryRewardItem().getAmount() + ")");
+					}else{
+						lines.add(ChatColor.GRAY + "Secondary Reward Item: " + ChatColor.RED + "Not Set");
 					}
 					
-					if(mgm.isEnabled()){
-						sender.sendMessage(ChatColor.GREEN + "Enabled: true");
+					if(mgm.getSecondaryRewardPrice() != 0){
+						lines.add(ChatColor.GRAY + "Secondary Reward Money: " + ChatColor.GREEN + "$" + mgm.getSecondaryRewardPrice());
 					}
 					else{
-						sender.sendMessage(ChatColor.RED + "Enabled: false");
+						lines.add(ChatColor.GRAY + "Secondary Reward Money: " + ChatColor.RED + "Not Set");
 					}
 					
-					if(mgm.getType() != null){
-						sender.sendMessage(ChatColor.GREEN + "Type: (" + mgm.getType() + ")");
-						
-						if(mgm.getType().equalsIgnoreCase("spleef")){
-							if(mgm.getSpleefFloor1() != null){
-								sender.sendMessage(ChatColor.GREEN + "Floor corner 1 set");
-							}
-							else {
-								sender.sendMessage(ChatColor.RED + "Floor corner 1 is not set!");
-							}
-							
-							if(mgm.getSpleefFloor2() != null){
-								sender.sendMessage(ChatColor.GREEN + "Floor corner 2 set");
-							}
-							else {
-								sender.sendMessage(ChatColor.RED + "Floor corner 2 is not set!");
-							}
-							
-							sender.sendMessage(ChatColor.GREEN + "Floor material: " + mgm.getSpleefFloorMaterial().toString().toLowerCase().replace("_", " "));
+					if(!mgm.getType().equals("sp")){
+						if(mgm.getTimer() != 0){
+							lines.add(ChatColor.GRAY + "Game Timer: " + ChatColor.GREEN + MinigameUtils.convertTime(mgm.getTimer()));
 						}
-						
-						if(!mgm.getType().equalsIgnoreCase("sp")){
-							if(!mgm.getType().equals("teamdm")){
-								if(mgm.bettingEnabled()){
-									sender.sendMessage(ChatColor.GREEN + "Betting enabled: true");
-								}
-								else{
-									sender.sendMessage(ChatColor.RED + "Betting enabled: false");
-								}
-							}
-							
-							if(mgm.getLobbyPosition() != null){
-								sender.sendMessage(ChatColor.GREEN + "Lobby Set");
-							}
-							else{
-								sender.sendMessage(ChatColor.RED + "Lobby is not set!");
-							}
-							
-							
-							sender.sendMessage(ChatColor.GREEN + "Maximum players: " + mgm.getMaxPlayers());
-							
-							sender.sendMessage(ChatColor.GREEN + "Minimum players: " + mgm.getMinPlayers());
-						}
-						
-						if(mgm.getType().equals("teamdm") || mgm.getType().equals("dm")){
-							sender.sendMessage(ChatColor.GREEN + "Max Score: " + mgm.getMaxScore());
-							sender.sendMessage(ChatColor.GRAY + "Min Score: " + mgm.getMaxScorePerPlayer(mgm.getMinPlayers()));
+						else{
+							lines.add(ChatColor.GRAY + "Game Timer: " + ChatColor.RED + "Not Set");
 						}
 					}
-					else {
-						sender.sendMessage(ChatColor.RED + "Type is not set!");
-					}
-					
-					if(mgm.getType().equalsIgnoreCase("sp")){
-						if(!mgm.getFlags().isEmpty()){
-							sender.sendMessage(ChatColor.GREEN + "Require flags: true");
-							List<String> list = mgm.getFlags();
-							String flags = "";
-							for(String item : list){
-								flags += item + ", ";
-							}
-							flags = flags.substring(0, flags.length() - 1);
-							sender.sendMessage(ChatColor.GREEN + "Flags: " + ChatColor.GRAY + flags);
-						}
-						else {
-							sender.sendMessage(ChatColor.RED + "Require flags: false");
-						}
-					}
-					
-					sender.sendMessage(ChatColor.GREEN + "Use permissions: " + mgm.getUsePermissions());
-					if(mgm.getUsePermissions())
-						sender.sendMessage(ChatColor.GRAY + "minigame.join." + mgm.getName().toLowerCase());
 				}
 				else{
-					sender.sendMessage(ChatColor.GREEN + "Maximum radius: " + mgm.getMaxRadius());
-					sender.sendMessage(ChatColor.GREEN + "Minimum treasure: " + mgm.getMinTreasure());
-					sender.sendMessage(ChatColor.GREEN + "Maximum treasure: " + mgm.getMaxTreasure());
-					if(mgm.getLocation() != null){
-						sender.sendMessage(ChatColor.GREEN + "Location: " + mgm.getLocation());
+					if(mgm.getStartLocations().size() > 0){
+						lines.add(ChatColor.GRAY + "Starting Position: " + ChatColor.GREEN + mgm.getStartLocations().get(0).getBlockX() + "x, " + 
+								mgm.getStartLocations().get(0).getBlockY() + "y, " + 
+								mgm.getStartLocations().get(0).getBlockZ() + "z");
 					}
-					else {
-						sender.sendMessage(ChatColor.RED + "Location: Unset!");
+					else{
+						lines.add(ChatColor.GRAY + "Starting Position: " + ChatColor.RED + "Not Set");
+					}
+					
+					if(mgm.getLocation() != null){
+						lines.add(ChatColor.GRAY + "Location Name: " + ChatColor.GREEN + mgm.getLocation());
+					}
+					else{
+						lines.add(ChatColor.GRAY + "Location Name: " + ChatColor.RED + "Not Set");
+					}
+					
+					lines.add(ChatColor.GRAY + "Maximum Radius: " + ChatColor.GREEN + mgm.getMaxRadius());
+					lines.add(ChatColor.GRAY + "Minimum Treasure: " + ChatColor.GREEN + mgm.getMinTreasure());
+					lines.add(ChatColor.GRAY + "Maximum Treasure: " + ChatColor.GREEN + mgm.getMaxTreasure());
+					
+					if(mgm.hasDefaultLoadout()){
+						lines.add(ChatColor.GRAY + "Default Loadout: " + ChatColor.GREEN + mgm.getDefaultPlayerLoadout().getItems().size() + " items");
+					}else{
+						lines.add(ChatColor.GRAY + "Default Loadout: " + ChatColor.RED + "0 items");
 					}
 				}
-				sender.sendMessage(ChatColor.GRAY + "The minigame " + mgm.getName() + "s check is complete");
+				
+				int page = 1;
+				int pages = 1;
+				
+				if(lines.size() > 9){
+					pages = (int) Math.ceil(lines.size() / 9);
+				}
+				
+				if(args.length >= 2 && args[1].matches("[0-9]+")){
+					page = Integer.parseInt(args[1]);
+					if(page > pages){
+						page = pages;
+					}
+				}
+				sender.sendMessage(ChatColor.GREEN + "-------------------Page " + page + "/" + pages + "-------------------");
+				
+				int offset = 0 + (page * 9 - 9);
+				int offsetUpper = offset + 8;
+				if(offsetUpper >= lines.size()){
+					offsetUpper = lines.size() - 1;
+				}
+				
+				for(int i = offset; i <= offsetUpper; i++){
+					sender.sendMessage(lines.get(i));
+				}
 			}
 			else{
 				sender.sendMessage(ChatColor.RED + "There is no Minigame by the name " + args[0]);

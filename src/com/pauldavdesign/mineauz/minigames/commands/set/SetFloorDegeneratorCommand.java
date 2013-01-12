@@ -25,17 +25,17 @@ public class SetFloorDegeneratorCommand implements ICommand{
 
 	@Override
 	public String getDescription() {
-		return "Sets the two corners of a floor to degenerate (cubeoid/rectangle)";
+		return "Sets the two corners of a floor to degenerate (cubeoid/rectangle) or clears both of them (if set).";
 	}
 
 	@Override
 	public String[] getParameters() {
-		return null;
+		return new String[] {"1", "2", "clear"};
 	}
 
 	@Override
 	public String[] getUsage() {
-		return new String[] {"/minigame set <Minigame> floordegenerator <1/2>"};
+		return new String[] {"/minigame set <Minigame> floordegenerator <Parameters>"};
 	}
 
 	@Override
@@ -61,8 +61,13 @@ public class SetFloorDegeneratorCommand implements ICommand{
 				minigame.setSpleefFloor2(player.getLocation());
 				sender.sendMessage(ChatColor.GRAY + "Floor degenerator corner 2 has been set for " + minigame);
 			}
+			else if(args[0].equalsIgnoreCase("clear")){
+				minigame.setSpleefFloor1(null);
+				minigame.setSpleefFloor2(null);
+				sender.sendMessage(ChatColor.GRAY + "Floor degenerator corners have been removed for " + minigame);
+			}
 			else{
-				sender.sendMessage(ChatColor.RED + "Error: Invalid floor degenerator position, use 1 or 2");
+				sender.sendMessage(ChatColor.RED + "Error: Invalid floor degenerator position, use 1, 2 or clear");
 			}
 			return true;
 		}

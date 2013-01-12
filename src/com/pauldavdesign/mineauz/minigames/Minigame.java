@@ -24,7 +24,6 @@ public class Minigame {
 	private Location spleefFloor1 = null;
 	private Location spleefFloor2 = null;
 	private FloorDegenerator sfloordegen;
-	private Material spleefFloorMaterial = Material.SNOW_BLOCK;
 	private List<Location> startLocations = new ArrayList<Location>();
 	private Location endPosition = null;
 	private Location quitPosition = null;
@@ -57,8 +56,6 @@ public class Minigame {
 	
 	private String scoreType = "none";
 	
-	private RecorderData blockRecorder = new RecorderData(this);
-	
 	//Teams
 	private List<Player> redTeam = new ArrayList<Player>();
 	private List<Player> blueTeam = new ArrayList<Player>();
@@ -74,6 +71,7 @@ public class Minigame {
 	
 	//Unsaved data
 	private List<Player> players = new ArrayList<Player>();
+	private RecorderData blockRecorder = new RecorderData(this);
 	//Multiplayer
 	private MultiplayerTimer mpTimer = null;
 	private MinigameTimer miniTimer = null;
@@ -582,14 +580,6 @@ public class Minigame {
 	public void addFloorDegenerator() {
 		sfloordegen = new FloorDegenerator(getSpleefFloor1(), getSpleefFloor2(), this);
 	}
-
-	public Material getSpleefFloorMaterial() {
-		return spleefFloorMaterial;
-	}
-
-	public void setSpleefFloorMaterial(Material spleefFloorMaterial) {
-		this.spleefFloorMaterial = spleefFloorMaterial;
-	}
 	
 	public void setTimer(int time){
 		timer = time;
@@ -807,12 +797,7 @@ public class Minigame {
 			minigame.getConfig().set(name + ".flags", null);
 		}
 		
-		if(getSpleefFloorMaterial() != Material.SNOW_BLOCK){
-			minigame.getConfig().set(name + ".spleeffloormat", getSpleefFloorMaterial().getId());
-		}
-		else{
-			minigame.getConfig().set(name + ".spleeffloormat", null);
-		}
+		minigame.getConfig().set(name + ".spleeffloormat", null); //TODO: Remove this line in next public release
 //		if(!getLoadout().isEmpty()){
 //			minigame.getConfig().set(name + ".loadout", null);
 //			for(int i = 0; i < getLoadout().size(); i++){
@@ -991,9 +976,6 @@ public class Minigame {
 		}
 		if(minigame.getConfig().contains(name + ".sfloorpos.2")){
 			setSpleefFloor2(Minigames.plugin.mdata.minigameLocations(name, "sfloorpos.2", minigame.getConfig()));
-		}
-		if(minigame.getConfig().contains(name + ".spleeffloormat")){
-			setSpleefFloorMaterial(Material.getMaterial(minigame.getConfig().getInt(name + ".spleeffloormat")));
 		}
 		if(minigame.getConfig().contains(name + ".mintreasure")){
 			setMinTreasure(minigame.getConfig().getInt(name + ".mintreasure"));

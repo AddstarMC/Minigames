@@ -197,7 +197,7 @@ public class TreasureHuntTimer extends Thread{
 			}
 		}
 		else{
-			player.sendMessage(ChatColor.RED + "You need to be in the " + block.getWorld().getName() + " world to use this hint.");
+			player.sendMessage(ChatColor.RED + "You need to be in the \"" + block.getWorld().getName() + "\" world to use this hint.");
 		}
 	}
 	
