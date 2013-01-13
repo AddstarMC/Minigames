@@ -164,6 +164,9 @@ public class Events implements Listener{
 			else if(signinfo[1].equalsIgnoreCase("Bet") && plugin.getConfig().getStringList("minigames").contains(minigame)){
 				event.setLine(1, ChatColor.GREEN + "Bet");
 				event.setLine(2, minigame);
+				if(event.getLine(3).matches("[0-9]+")){
+					event.setLine(3, "$" + event.getLine(3));
+				}
 			}
 			else if(signinfo[1].equalsIgnoreCase("Quit")){
 				event.setLine(1, ChatColor.GREEN + "Quit");
@@ -246,7 +249,18 @@ public class Events implements Listener{
 					else if(sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Bet") && !pdata.playerInMinigame(event.getPlayer())){
 						Minigame mgm = mdata.getMinigame(sign.getLine(2));
 						if(mgm != null && mgm.isEnabled() && (!mgm.getUsePermissions() || event.getPlayer().hasPermission("minigame.join." + mgm.getName().toLowerCase()))){
-							pdata.joinWithBet(event.getPlayer(), mdata.getMinigame(sign.getLine(2)));
+							if(!sign.getLine(3).startsWith("$")){
+								pdata.joinWithBet(event.getPlayer(), mdata.getMinigame(sign.getLine(2)), 0d);
+							}
+							else{
+								if(plugin.hasEconomy()){
+									Double bet = Double.parseDouble(sign.getLine(3).replace("$", ""));
+									pdata.joinWithBet(event.getPlayer(), mdata.getMinigame(sign.getLine(2)), bet);
+								}
+								else{
+									event.getPlayer().sendMessage(ChatColor.RED + "This server does not have Vault! Money bets are not enabled.");
+								}
+							}
 						}
 						else if(!mgm.isEnabled()){
 							event.getPlayer().sendMessage(ChatColor.RED + "Error: This minigame is currently not enabled.");

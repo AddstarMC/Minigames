@@ -58,6 +58,8 @@ public class TeamDMMinigame extends MinigameType{
 			
 			if(!mgm.getPlayers().isEmpty() && mgm.getPlayers().size() < mgm.getMaxPlayers()){
 				if(mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
+					mgm.addPlayer(player);
+					
 					if(redSize <= blueSize){
 						mgm.addRedTeamPlayer(player);
 						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.RED + "Red Team");
@@ -141,6 +143,7 @@ public class TeamDMMinigame extends MinigameType{
 			else if(mgm.getPlayers().isEmpty()){
 				EntityPlayer changeingName = ((CraftPlayer) player).getHandle();
 				String oldName = player.getName();
+				mgm.addPlayer(player);
 				
 				if(redSize <= blueSize){
 					mgm.addRedTeamPlayer(player);
@@ -201,7 +204,6 @@ public class TeamDMMinigame extends MinigameType{
 	}
 	
 	@Override
-	@SuppressWarnings("deprecation")
 	public void quitMinigame(Player player, Minigame mgm, boolean forced){
 
 		String minigame = pdata.getPlayersMinigame(player);
@@ -216,10 +218,9 @@ public class TeamDMMinigame extends MinigameType{
 			
 			if(mdata.getMinigame(minigame).getPlayers().size() == 0 && !forced){
 				if(mdata.getMinigame(minigame).getMpTimer() != null){
-//					mdata.getMinigame(minigame).getMpTimer().setStartWaitTime(0);
 					mgm.getMpTimer().pauseTimer();
 					if(mdata.getMinigame(minigame).getMpBets() != null){
-						player.getInventory().addItem(mdata.getMinigame(minigame).getMpBets().getPlayersBet(player));
+						plugin.getEconomy().bankDeposit(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
 						mdata.getMinigame(minigame).setMpBets(null);
 					}
 					mdata.getMinigame(minigame).setMpTimer(null);
@@ -270,12 +271,9 @@ public class TeamDMMinigame extends MinigameType{
 			}
 		}
 		
-		if(mdata.getMinigame(minigame).getMpTimer() == null){
-			if(mdata.getMinigame(minigame).getMpBets() != null){
-				player.getInventory().addItem(mdata.getMinigame(minigame).getMpBets().getPlayersBet(player));
-				mdata.getMinigame(minigame).getMpBets().removePlayersBet(player);
-				player.updateInventory();
-			}
+		if(mgm.getMpBets() != null){
+			plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
+			mgm.getMpBets().removePlayersBet(player);
 		}
 	}
 	
@@ -284,11 +282,21 @@ public class TeamDMMinigame extends MinigameType{
 	public void endMinigame(Player player, Minigame mgm){
 		String minigame = pdata.getPlayersMinigame(player);
 		
-		/*if(mdata.getMinigame(minigame).getMpBets() != null){
-			player.getInventory().addItem(mdata.getMinigame(minigame).getMpBets().claimBets());
-			mdata.getMinigame(minigame).setMpBets(null);
-			player.updateInventory();
-		}*/ //TODO Fix betting system for teams
+		if(mdata.getMinigame(minigame).getMpBets() != null){
+			if(mgm.getMpBets().hasMoneyBets()){
+				int players = 1;
+				if(mgm.getRedTeam().contains(player)){
+					players = mgm.getRedTeam().size();
+				}
+				else{
+					players = mgm.getBlueTeam().size();
+				}
+				double bets = mgm.getMpBets().claimMoneyBets() / (double) players;
+				plugin.getEconomy().depositPlayer(player.getName(), bets);
+				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You won $" + bets);
+				mgm.setMpBets(null);
+			}
+		}
 		
 		boolean hascompleted = false;
 		Configuration completion = null;

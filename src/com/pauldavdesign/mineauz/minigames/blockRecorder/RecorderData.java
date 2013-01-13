@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,7 +23,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -231,7 +232,7 @@ public class RecorderData implements Listener{
 	
 	public void restoreBlocks(){
 		for(String id : blockdata.keySet()){
-			BlockData bdata = blockdata.get(id);
+			final BlockData bdata = blockdata.get(id);
 			
 			if(bdata.getLocation().getBlock().getType() == Material.CHEST){
 				if(bdata.getLocation().getBlock().getState() instanceof DoubleChest){
@@ -256,41 +257,47 @@ public class RecorderData implements Listener{
 				stand.getInventory().clear();
 			}
 			
-			bdata.getLocation().getBlock().setType(bdata.getBlockState().getType());
-			bdata.getLocation().getBlock().setData(bdata.getBlockState().getRawData());
-			
-			if(bdata.getLocation().getBlock().getType() == Material.CHEST){
-				if(bdata.getLocation().getBlock().getState() instanceof DoubleChest){
-					DoubleChest dchest = (DoubleChest) bdata.getLocation().getBlock().getState();
-					if(bdata.getItems() != null){
-						dchest.getInventory().setContents(bdata.getItems().clone());
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				
+				@Override
+				public void run() {
+					bdata.getLocation().getBlock().setType(bdata.getBlockState().getType());
+					bdata.getLocation().getBlock().setData(bdata.getBlockState().getRawData());
+					
+					if(bdata.getLocation().getBlock().getType() == Material.CHEST){
+						if(bdata.getLocation().getBlock().getState() instanceof DoubleChest){
+							DoubleChest dchest = (DoubleChest) bdata.getLocation().getBlock().getState();
+							if(bdata.getItems() != null){
+								dchest.getInventory().setContents(bdata.getItems().clone());
+							}
+						}
+						else{
+							Chest chest = (Chest) bdata.getLocation().getBlock().getState();
+							if(bdata.getItems() != null){
+								chest.getInventory().setContents(bdata.getItems().clone());
+							}
+						}
+					}
+					else if(bdata.getLocation().getBlock().getType() == Material.FURNACE){
+						Furnace furnace = (Furnace) bdata.getLocation().getBlock().getState();
+						if(bdata.getItems() != null){
+							furnace.getInventory().setContents(bdata.getItems().clone());
+						}
+					}
+					else if(bdata.getLocation().getBlock().getType() == Material.BREWING_STAND){
+						BrewingStand bstand = (BrewingStand) bdata.getLocation().getBlock().getState();
+						if(bdata.getItems() != null){
+							bstand.getInventory().setContents(bdata.getItems().clone());
+						}
+					}
+					else if(bdata.getLocation().getBlock().getType() == Material.DISPENSER){
+						Dispenser dispenser = (Dispenser) bdata.getLocation().getBlock().getState();
+						if(bdata.getItems() != null){
+							dispenser.getInventory().setContents(bdata.getItems().clone());
+						}
 					}
 				}
-				else{
-					Chest chest = (Chest) bdata.getLocation().getBlock().getState();
-					if(bdata.getItems() != null){
-						chest.getInventory().setContents(bdata.getItems().clone());
-					}
-				}
-			}
-			else if(bdata.getLocation().getBlock().getType() == Material.FURNACE){
-				Furnace furnace = (Furnace) bdata.getLocation().getBlock().getState();
-				if(bdata.getItems() != null){
-					furnace.getInventory().setContents(bdata.getItems().clone());
-				}
-			}
-			else if(bdata.getLocation().getBlock().getType() == Material.BREWING_STAND){
-				BrewingStand bstand = (BrewingStand) bdata.getLocation().getBlock().getState();
-				if(bdata.getItems() != null){
-					bstand.getInventory().setContents(bdata.getItems().clone());
-				}
-			}
-			else if(bdata.getLocation().getBlock().getType() == Material.DISPENSER){
-				Dispenser dispenser = (Dispenser) bdata.getLocation().getBlock().getState();
-				if(bdata.getItems() != null){
-					dispenser.getInventory().setContents(bdata.getItems().clone());
-				}
-			}
+			});
 		}
 		blockdata.clear();
 	}
@@ -514,7 +521,7 @@ public class RecorderData implements Listener{
 	
 	@EventHandler
 	private void bucketFill(PlayerBucketFillEvent event){
-		if(pdata.playerInMinigame(event.getPlayer())){
+		if(pdata.playerInMinigame(event.getPlayer()) && pdata.getPlayersMinigame(event.getPlayer()).equals(minigame.getName())){
 			if(((whitelistMode && getWBBlocks().contains(event.getBlockClicked().getType())) || 
 					(!whitelistMode && !getWBBlocks().contains(event.getBlockClicked().getType()))) && 
 					minigame.canBlockBreak()){
@@ -528,11 +535,15 @@ public class RecorderData implements Listener{
 	
 	@EventHandler
 	private void bucketEmpty(PlayerBucketEmptyEvent event){
-		if(pdata.playerInMinigame(event.getPlayer())){
+		if(pdata.playerInMinigame(event.getPlayer()) && pdata.getPlayersMinigame(event.getPlayer()).equals(minigame.getName())){
 			if(((whitelistMode && getWBBlocks().contains(event.getBlockClicked().getType())) || 
 					(!whitelistMode && !getWBBlocks().contains(event.getBlockClicked().getType()))) && 
-					minigame.canBlockBreak()){
-				addBlock(event.getBlockClicked(), event.getPlayer());
+					minigame.canBlockPlace()){
+				Location loc = new Location(event.getBlockClicked().getWorld(), 
+						event.getBlockFace().getModX() + event.getBlockClicked().getX(), 
+						event.getBlockFace().getModY() + event.getBlockClicked().getY(), 
+						event.getBlockFace().getModZ() + event.getBlockClicked().getZ());
+				addBlock(loc.getBlock(), event.getPlayer());
 			}
 			else{
 				event.setCancelled(true);
@@ -541,11 +552,18 @@ public class RecorderData implements Listener{
 	}
 	
 	@EventHandler
-	public void blockFromTo(BlockBurnEvent event){
+	public void blockFromTo(BlockFromToEvent event){
 		if(checkBlockSides(event.getBlock().getLocation())){
-			addBlock(event.getBlock(), null);
+			addBlock(event.getToBlock(), null);
 		}
 	}
+	
+//	@EventHandler
+//	public void blockBurn(BlockBurnEvent event){
+//		if(checkBlockSides(event.getBlock().getLocation())){
+//			addBlock(event.getBlock(), null);
+//		}
+//	}
 	
 	@EventHandler
 	public void fireSpread(BlockSpreadEvent event){
@@ -556,7 +574,8 @@ public class RecorderData implements Listener{
 	
 	@EventHandler
 	public void igniteblock(BlockIgniteEvent event){
-		if(pdata.playerInMinigame(event.getPlayer()) && 
+		if(event.getPlayer() != null && pdata.playerInMinigame(event.getPlayer()) && 
+				pdata.getPlayersMinigame(event.getPlayer()).equals(minigame.getName()) && 
 				(event.getCause() == IgniteCause.FIREBALL || event.getCause() == IgniteCause.FLINT_AND_STEEL)){
 			if(((whitelistMode && getWBBlocks().contains(Material.FIRE)) || 
 					(!whitelistMode && !getWBBlocks().contains(Material.FIRE))) && 
@@ -566,6 +585,7 @@ public class RecorderData implements Listener{
 			else{
 				event.setCancelled(true);
 			}
+			
 		}
 	}
 	

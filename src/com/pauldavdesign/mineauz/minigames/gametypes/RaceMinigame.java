@@ -38,14 +38,18 @@ public class RaceMinigame extends MinigameType{
 		String minigame = pdata.getPlayersMinigame(player);
 		if(!mdata.getMinigame(minigame).getPlayers().isEmpty()){
 			mdata.getMinigame(minigame).removePlayer(player);
-			if(mdata.getMinigame(minigame).getPlayers().size() == 0){
-				if(mdata.getMinigame(minigame).getMpTimer() != null){
-					mgm.getMpTimer().pauseTimer();
-					if(mdata.getMinigame(minigame).getMpBets() != null){
-						player.getInventory().addItem(mdata.getMinigame(minigame).getMpBets().getPlayersBet(player));
-						mdata.getMinigame(minigame).setMpBets(null);
+			if(mdata.getMinigame(minigame).getPlayers().size() == 0 && mdata.getMinigame(minigame).getMpTimer() != null){
+				mgm.getMpTimer().pauseTimer();
+				mdata.getMinigame(minigame).setMpTimer(null);
+				
+				if(mgm.getMpBets() != null){
+					if(mgm.getMpBets().getPlayersBet(player) != null){
+						player.getInventory().addItem(mgm.getMpBets().getPlayersBet(player));
 					}
-					mdata.getMinigame(minigame).setMpTimer(null);
+					else{
+						plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
+					}
+					mgm.setMpBets(null);
 				}
 			}
 			else if(mdata.getMinigame(minigame).getPlayers().size() == 1 && mdata.getMinigame(minigame).getMpTimer() != null && mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() == 0){
@@ -65,14 +69,17 @@ public class RaceMinigame extends MinigameType{
 		}
 		
 		callGeneralQuit(player);
-		
-		if(mdata.getMinigame(minigame).getMpTimer() == null){
-			if(mdata.getMinigame(minigame).getMpBets() != null){
-				player.getInventory().addItem(mdata.getMinigame(minigame).getMpBets().getPlayersBet(player));
-				mdata.getMinigame(minigame).getMpBets().removePlayersBet(player);
-				player.updateInventory();
+
+		if(mgm.getMpBets() != null){
+			if(mgm.getMpBets().getPlayersBet(player) != null){
+				player.getInventory().addItem(mgm.getMpBets().getPlayersBet(player));
 			}
+			else{
+				plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
+			}
+			mgm.getMpBets().removePlayersBet(player);
 		}
+		player.updateInventory();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -81,9 +88,16 @@ public class RaceMinigame extends MinigameType{
 		String minigame = pdata.getPlayersMinigame(player);
 		
 		if(mdata.getMinigame(minigame).getMpBets() != null){
-			player.getInventory().addItem(mdata.getMinigame(minigame).getMpBets().claimBets());
-			mdata.getMinigame(minigame).setMpBets(null);
-			player.updateInventory();
+			if(mgm.getMpBets().hasBets()){
+				player.getInventory().addItem(mdata.getMinigame(minigame).getMpBets().claimBets());
+				mdata.getMinigame(minigame).setMpBets(null);
+				player.updateInventory();
+			}
+			else{
+				plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().claimMoneyBets());
+				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You won $" + mgm.getMpBets().claimMoneyBets());
+				mgm.setMpBets(null);
+			}
 		}
 		
 		pdata.saveInventoryConfig();

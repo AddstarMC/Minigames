@@ -9,6 +9,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class MultiplayerBets {
 	private Map<Player, ItemStack> bet = new HashMap<Player, ItemStack>();
+	private double greatestBet = 0;
+	private Map<Player, Double> moneyBet = new HashMap<Player, Double>();
 	
 	public MultiplayerBets(){
 	}
@@ -18,6 +20,15 @@ public class MultiplayerBets {
 			if(betValue(item.getType()) >= highestBet()){
 				item.setAmount(1);
 				bet.put(player, item);
+			}
+		}
+	}
+	
+	public void addBet(Player player, Double money){
+		if(!moneyBet.containsKey(player)){
+			if(money >= greatestBet){
+				greatestBet = money;
+				moneyBet.put(player, money);
 			}
 		}
 	}
@@ -33,6 +44,17 @@ public class MultiplayerBets {
 		return true;
 	}
 	
+	public boolean canBet(Player player, Double money){
+		if(moneyBet.containsKey(player)){
+			return false;
+		}
+		
+		if(money < greatestBet){
+			return false;
+		}
+		return true;
+	}
+	
 	public ItemStack[] claimBets(){
 		ItemStack[] items = new ItemStack[bet.values().size()];
 		int num = 0;
@@ -41,6 +63,14 @@ public class MultiplayerBets {
 			num++;
 		}
 		return items;
+	}
+	
+	public Double claimMoneyBets(){
+		Double money = 0d;
+		for(Double mon : moneyBet.values()){
+			money += mon;
+		}
+		return money;
 	}
 	
 	public int highestBet(){
@@ -85,7 +115,27 @@ public class MultiplayerBets {
 		return null;
 	}
 	
+	public Double getPlayersMoneyBet(Player player){
+		if(moneyBet.containsKey(player)){
+			return moneyBet.get(player);
+		}
+		return null;
+	}
+	
 	public void removePlayersBet(Player player){
 		bet.remove(player);
+		moneyBet.remove(player);
+	}
+	
+	public boolean hasBets(){
+		return !bet.isEmpty();
+	}
+	
+	public boolean hasMoneyBets(){
+		return !moneyBet.isEmpty();
+	}
+	
+	public double getHighestMoneyBet(){
+		return greatestBet;
 	}
 }

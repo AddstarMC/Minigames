@@ -83,6 +83,7 @@ public abstract class MinigameType implements Listener{
 					pdata.storePlayerData(player, gm);
 					
 					player.teleport(lobby);
+					mgm.addPlayer(player);
 					player.sendMessage(ChatColor.GREEN + "You have started a spleef minigame, type /minigame quit to exit.");
 				
 					if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMinPlayers()){
@@ -116,6 +117,7 @@ public abstract class MinigameType implements Listener{
 				pdata.storePlayerData(player, gm);
 				
 				player.teleport(lobby);
+				mgm.addPlayer(player);
 				player.sendMessage(ChatColor.GREEN + "You have started a " + gametype + " minigame, type /minigame quit to exit.");
 				
 				int neededPlayers = mgm.getMinPlayers() - 1;

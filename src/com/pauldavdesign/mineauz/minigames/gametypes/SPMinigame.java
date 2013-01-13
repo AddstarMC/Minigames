@@ -36,6 +36,7 @@ public class SPMinigame extends MinigameType{
 			pdata.addPlayerMinigame(player, mgm.getName());
 			player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
 			player.setAllowFlight(false);
+			mgm.addPlayer(player);
 			plugin.getLogger().info(player.getName() + " started " + mgm.getName());
 			
 			Location startpos = mdata.getMinigame(mgm.getName()).getStartLocations().get(0);
@@ -121,22 +122,10 @@ public class SPMinigame extends MinigameType{
 		
 		if(mgm.getBlockRecorder().hasData()){
 			if(mgm.getPlayers().isEmpty()){
-				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						mgm.getBlockRecorder().restoreBlocks();
-					}
-				});
+				mgm.getBlockRecorder().restoreBlocks();
 			}
 			else{
-				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						mgm.getBlockRecorder().restoreBlocks(player);
-					}
-				});
+				mgm.getBlockRecorder().restoreBlocks(player);
 			}
 		}
 	}

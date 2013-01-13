@@ -65,7 +65,6 @@ public class PlayerData {
 			if(mdata.getMinigameTypes().contains(gametype)){
 				if(mdata.minigameType(gametype).joinMinigame(player, minigame)){
 					addPlayerMinigame(player, minigame.getName());
-					minigame.addPlayer(player);
 					setAllowTP(player, false);
 					setAllowGMChange(player, false);
 				}
@@ -76,22 +75,30 @@ public class PlayerData {
 		}
 	}
 	
-	public void joinWithBet(Player player, Minigame minigame){
+	public void joinWithBet(Player player, Minigame minigame, Double money){
 		
 		JoinMinigameEvent event = new JoinMinigameEvent(player, minigame, true);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
 		if(!event.isCancelled()){
 			if(minigame != null && minigame.bettingEnabled() && minigame.isEnabled() && (minigame.getMpTimer() == null || minigame.getMpTimer().getPlayerWaitTimeLeft() != 0)){
-				if(minigame.getMpBets() == null && player.getItemInHand().getType() != Material.AIR){
+				if(minigame.getMpBets() == null && (player.getItemInHand().getType() != Material.AIR || money != 0)){
 					minigame.setMpBets(new MultiplayerBets());
 				}
 				MultiplayerBets pbet = minigame.getMpBets(); 
 				ItemStack item = player.getItemInHand().clone();
-				if(pbet != null && pbet.canBet(player, item) && item.getType() != Material.AIR && pbet.betValue(item.getType()) > 0){
+				if(pbet != null && 
+						((money != 0 && pbet.canBet(player, money) && plugin.getEconomy().getBalance(player.getName()) >= money) || 
+								(pbet.canBet(player, item) && item.getType() != Material.AIR && pbet.betValue(item.getType()) > 0))){
 					if(minigame.getPlayers().isEmpty() || minigame.getPlayers().size() != minigame.getMaxPlayers()){
 						player.sendMessage(ChatColor.GRAY + "You've placed your bet! Good Luck!");
-						pbet.addBet(player, item);
+						if(money == 0){
+							pbet.addBet(player, item);
+						}
+						else{
+							pbet.addBet(player, money);
+							plugin.getEconomy().withdrawPlayer(player.getName(), money);
+						}
 						player.getInventory().removeItem(new ItemStack(item.getType(), 1));
 						joinMinigame(player, minigame);
 					}
@@ -99,8 +106,16 @@ public class PlayerData {
 						player.sendMessage(ChatColor.RED + "Sorry, this minigame is full.");
 					}
 				}
-				else if(item.getType() == Material.AIR){
+				else if(item.getType() == Material.AIR && money == 0){
 					player.sendMessage(ChatColor.RED + "You can not bet nothing!");
+				}
+				else if(money != 0 && !pbet.canBet(player, money)){
+					player.sendMessage(ChatColor.RED + "You haven't placed a high enough bet!");
+					player.sendMessage(ChatColor.RED + "You must bet $" + minigame.getMpBets().getHighestMoneyBet() + " or better.");
+				}
+				else if(money != 0 && plugin.getEconomy().getBalance(player.getName()) < money){
+					player.sendMessage(ChatColor.RED + "You haven't got enough money!");
+					player.sendMessage(ChatColor.RED + "You must have $" + minigame.getMpBets().getHighestMoneyBet() + ".");
 				}
 				else{
 					player.sendMessage(ChatColor.RED + "You haven't placed a high enough bet.");
@@ -303,13 +318,7 @@ public class PlayerData {
 			}
 			
 			if(mgm.getPlayers().size() == 0 && mgm.getBlockRecorder().hasData()){
-				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						mgm.getBlockRecorder().restoreBlocks();
-					}
-				});
+				mgm.getBlockRecorder().restoreBlocks();
 			}
 			
 			removeAllowTP(player);
@@ -361,22 +370,10 @@ public class PlayerData {
 			
 			if(mgm.getBlockRecorder().hasData()){
 				if(!mgm.getType().equalsIgnoreCase("sp") || mgm.getPlayers().isEmpty()){
-					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-						
-						@Override
-						public void run() {
-							mgm.getBlockRecorder().restoreBlocks();
-						}
-					});
+					mgm.getBlockRecorder().restoreBlocks();
 				}
 				else{
-					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-						
-						@Override
-						public void run() {
-							mgm.getBlockRecorder().restoreBlocks(player);
-						}
-					});
+					mgm.getBlockRecorder().restoreBlocks(player);
 				}
 			}
 			

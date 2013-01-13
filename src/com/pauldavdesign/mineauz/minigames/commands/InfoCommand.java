@@ -162,6 +162,31 @@ public class InfoCommand implements ICommand{
 						lines.add(ChatColor.GRAY + "Player Pickup Items: " + ChatColor.RED + "false");
 					}
 					
+					if(mgm.canBlockBreak()){
+						lines.add(ChatColor.GRAY + "Block Break: " + ChatColor.GREEN + "true");
+					}else{
+						lines.add(ChatColor.GRAY + "Block Break: " + ChatColor.RED + "false");
+					}
+					
+					if(mgm.canBlockPlace()){
+						lines.add(ChatColor.GRAY + "Block Place: " + ChatColor.GREEN + "true");
+					}else{
+						lines.add(ChatColor.GRAY + "Block Place: " + ChatColor.RED + "false");
+					}
+					
+					if(mgm.canBlocksdrop()){
+						lines.add(ChatColor.GRAY + "Block Drop Items: " + ChatColor.GREEN + "true");
+					}else{
+						lines.add(ChatColor.GRAY + "Block Drop Items: " + ChatColor.RED + "false");
+					}
+					
+					if(mgm.getBlockRecorder().getWhitelistMode()){
+						lines.add(ChatColor.GRAY + "Block Placement/Breaking: " + ChatColor.GREEN + "Whitelist Mode");
+					}
+					else{
+						lines.add(ChatColor.GRAY + "Block Placement/Breaking: " + ChatColor.RED + "Blacklist Mode");
+					}
+					
 					if(mgm.hasFlags()){
 						lines.add(ChatColor.GRAY + "Flags: " + ChatColor.GREEN + mgm.getFlags().size());
 					}else{
@@ -252,7 +277,8 @@ public class InfoCommand implements ICommand{
 				int pages = 1;
 				
 				if(lines.size() > 9){
-					pages = (int) Math.ceil(lines.size() / 8);
+					double pageamnt = Math.ceil(((double)lines.size()) / 9);
+					pages = (int) pageamnt;
 				}
 				
 				if(args.length >= 2 && args[1].matches("[0-9]+")){

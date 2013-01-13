@@ -40,17 +40,19 @@ public class DMMinigame extends MinigameType{
 	public void quitMinigame(Player player, Minigame mgm, boolean forced) {
 		if(!mgm.getPlayers().isEmpty()){
 			mgm.removePlayer(player);
-			if(mgm.getPlayers().size() == 0){
-				if(mgm.getMpTimer() != null){
-//					mgm.getMpTimer().setStartWaitTime(0);
-					mgm.getMpTimer().pauseTimer();
-					
-					if(mgm.getMpBets() != null){
+			if(mgm.getPlayers().size() == 0 && mgm.getMpTimer() != null){
+				mgm.getMpTimer().pauseTimer();
+				
+				if(mgm.getMpBets() != null){
+					if(mgm.getMpBets().getPlayersBet(player) != null){
 						player.getInventory().addItem(mgm.getMpBets().getPlayersBet(player));
-						mgm.setMpBets(null);
 					}
-					mgm.setMpTimer(null);
+					else{
+						plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
+					}
+					mgm.setMpBets(null);
 				}
+				mgm.setMpTimer(null);
 			}
 			else if(mgm.getPlayers().size() == 1 && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0 && !forced){
 				pdata.endMinigame(mgm.getPlayers().get(0));
@@ -69,14 +71,17 @@ public class DMMinigame extends MinigameType{
 		}
 		
 		callGeneralQuit(player);
-		
-		if(mgm.getMpTimer() == null){
-			if(mgm.getMpBets() != null){
+
+		if(mgm.getMpBets() != null){
+			if(mgm.getMpBets().getPlayersBet(player) != null){
 				player.getInventory().addItem(mgm.getMpBets().getPlayersBet(player));
-				mgm.getMpBets().removePlayersBet(player);
-				player.updateInventory();
 			}
+			else{
+				plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
+			}
+			mgm.getMpBets().removePlayersBet(player);
 		}
+		player.updateInventory();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -85,9 +90,16 @@ public class DMMinigame extends MinigameType{
 		String minigame = pdata.getPlayersMinigame(player);
 		
 		if(mdata.getMinigame(minigame).getMpBets() != null){
-			player.getInventory().addItem(mdata.getMinigame(minigame).getMpBets().claimBets());
-			mdata.getMinigame(minigame).setMpBets(null);
-			player.updateInventory();
+			if(mgm.getMpBets().hasBets()){
+				player.getInventory().addItem(mdata.getMinigame(minigame).getMpBets().claimBets());
+				mdata.getMinigame(minigame).setMpBets(null);
+				player.updateInventory();
+			}
+			else{
+				plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().claimMoneyBets());
+				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You won $" + mgm.getMpBets().claimMoneyBets());
+				mgm.setMpBets(null);
+			}
 		}
 		//pdata.saveItems(player);
 		pdata.saveInventoryConfig();
