@@ -40,8 +40,11 @@ public class DMMinigame extends MinigameType{
 	public void quitMinigame(Player player, Minigame mgm, boolean forced) {
 		if(!mgm.getPlayers().isEmpty()){
 			mgm.removePlayer(player);
-			if(mgm.getPlayers().size() == 0 && mgm.getMpTimer() != null){
-				mgm.getMpTimer().pauseTimer();
+			if(mgm.getPlayers().size() == 0){
+				if(mgm.getMpTimer() != null){
+					mgm.getMpTimer().pauseTimer();
+					mgm.setMpTimer(null);
+				}
 				
 				if(mgm.getMpBets() != null){
 					if(mgm.getMpBets().getPlayersBet(player) != null){
@@ -52,7 +55,6 @@ public class DMMinigame extends MinigameType{
 					}
 					mgm.setMpBets(null);
 				}
-				mgm.setMpTimer(null);
 			}
 			else if(mgm.getPlayers().size() == 1 && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0 && !forced){
 				pdata.endMinigame(mgm.getPlayers().get(0));

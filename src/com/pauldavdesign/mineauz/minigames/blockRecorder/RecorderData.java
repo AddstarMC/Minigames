@@ -23,6 +23,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
@@ -558,12 +559,12 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-//	@EventHandler
-//	public void blockBurn(BlockBurnEvent event){
-//		if(checkBlockSides(event.getBlock().getLocation())){
-//			addBlock(event.getBlock(), null);
-//		}
-//	}
+	@EventHandler
+	public void blockBurn(BlockBurnEvent event){
+		if(checkBlockSides(event.getBlock().getLocation())){
+			addBlock(event.getBlock(), null);
+		}
+	}
 	
 	@EventHandler
 	public void fireSpread(BlockSpreadEvent event){

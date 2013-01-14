@@ -219,11 +219,12 @@ public class TeamDMMinigame extends MinigameType{
 			if(mdata.getMinigame(minigame).getPlayers().size() == 0 && !forced){
 				if(mdata.getMinigame(minigame).getMpTimer() != null){
 					mgm.getMpTimer().pauseTimer();
-					if(mdata.getMinigame(minigame).getMpBets() != null){
-						plugin.getEconomy().bankDeposit(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
-						mdata.getMinigame(minigame).setMpBets(null);
-					}
 					mdata.getMinigame(minigame).setMpTimer(null);
+				}
+				
+				if(mdata.getMinigame(minigame).getMpBets() != null){
+					plugin.getEconomy().bankDeposit(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
+					mdata.getMinigame(minigame).setMpBets(null);
 				}
 			}
 			else if(mdata.getMinigame(minigame).getPlayers().size() >= 1 && 

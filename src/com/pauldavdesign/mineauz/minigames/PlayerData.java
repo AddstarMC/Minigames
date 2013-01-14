@@ -126,7 +126,7 @@ public class PlayerData {
 				player.sendMessage(ChatColor.GRAY + "Bets are not enabled in this minigame.");
 				player.sendMessage(ChatColor.RED + "Your hand must be empty to join this minigame!");
 			}
-			else if(minigame.getMpTimer().getPlayerWaitTimeLeft() == 0){
+			else if(minigame.getMpTimer() != null && minigame.getMpTimer().getPlayerWaitTimeLeft() == 0){
 				player.sendMessage(ChatColor.RED + "The game has already started. Please try again later.");
 			}
 			else{
@@ -298,9 +298,6 @@ public class PlayerData {
 			mgm.removePlayersLoadout(player);
 			restorePlayerData(player);
 			
-			saveItems(player);
-			saveInventoryConfig();
-			
 			for(PotionEffect potion : player.getActivePotionEffects()){
 				player.removePotionEffect(potion.getType());
 			}
@@ -343,8 +340,6 @@ public class PlayerData {
 			
 			removePlayerMinigame(player);
 			mgm.removePlayersLoadout(player);
-			saveItems(player);
-			saveInventoryConfig();
 			
 			for(PotionEffect potion : player.getActivePotionEffects()){
 				player.removePotionEffect(potion.getType());

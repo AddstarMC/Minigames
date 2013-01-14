@@ -40,9 +40,11 @@ public class LMSMinigame extends MinigameType {
 	public void quitMinigame(Player player, Minigame mgm, boolean forced){
 		if(!mgm.getPlayers().isEmpty()){
 			mgm.removePlayer(player);
-			if(mgm.getPlayers().size() == 0 && mgm.getMpTimer() != null){
-				mgm.getMpTimer().pauseTimer();
-				mgm.setMpTimer(null);
+			if(mgm.getPlayers().size() == 0){
+				if(mgm.getMpTimer() != null){
+					mgm.getMpTimer().pauseTimer();
+					mgm.setMpTimer(null);
+				}
 				
 				if(mgm.getMpBets() != null){
 					if(mgm.getMpBets().getPlayersBet(player) != null){

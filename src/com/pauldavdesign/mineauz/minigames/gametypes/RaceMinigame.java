@@ -38,9 +38,11 @@ public class RaceMinigame extends MinigameType{
 		String minigame = pdata.getPlayersMinigame(player);
 		if(!mdata.getMinigame(minigame).getPlayers().isEmpty()){
 			mdata.getMinigame(minigame).removePlayer(player);
-			if(mdata.getMinigame(minigame).getPlayers().size() == 0 && mdata.getMinigame(minigame).getMpTimer() != null){
-				mgm.getMpTimer().pauseTimer();
-				mdata.getMinigame(minigame).setMpTimer(null);
+			if(mdata.getMinigame(minigame).getPlayers().size() == 0){
+				if(mgm.getMpTimer() != null){
+					mgm.getMpTimer().pauseTimer();
+					mgm.setMpTimer(null);
+				}
 				
 				if(mgm.getMpBets() != null){
 					if(mgm.getMpBets().getPlayersBet(player) != null){
