@@ -48,8 +48,8 @@ public class RaceMinigame extends MinigameType{
 					if(mgm.getMpBets().getPlayersBet(player) != null){
 						player.getInventory().addItem(mgm.getMpBets().getPlayersBet(player));
 					}
-					else{
-						plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
+					else if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
+						plugin.getEconomy().bankDeposit(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
 					}
 					mgm.setMpBets(null);
 				}
@@ -76,8 +76,8 @@ public class RaceMinigame extends MinigameType{
 			if(mgm.getMpBets().getPlayersBet(player) != null){
 				player.getInventory().addItem(mgm.getMpBets().getPlayersBet(player));
 			}
-			else{
-				plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
+			else if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
+				plugin.getEconomy().bankDeposit(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
 			}
 			mgm.getMpBets().removePlayersBet(player);
 		}

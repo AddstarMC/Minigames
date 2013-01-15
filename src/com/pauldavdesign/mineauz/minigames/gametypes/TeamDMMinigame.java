@@ -223,7 +223,9 @@ public class TeamDMMinigame extends MinigameType{
 				}
 				
 				if(mdata.getMinigame(minigame).getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
-					plugin.getEconomy().bankDeposit(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
+					if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
+						plugin.getEconomy().bankDeposit(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
+					}
 					mdata.getMinigame(minigame).setMpBets(null);
 				}
 			}
@@ -273,7 +275,9 @@ public class TeamDMMinigame extends MinigameType{
 		}
 		
 		if(mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0) && !forced){
-			plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
+			if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
+				plugin.getEconomy().bankDeposit(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
+			}
 			mgm.getMpBets().removePlayersBet(player);
 		}
 	}

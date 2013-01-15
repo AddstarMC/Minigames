@@ -27,7 +27,7 @@ public class CTFType extends ScoreType{
 	private void takeFlag(PlayerInteractEvent event){
 		Player ply = event.getPlayer();
 		if(pdata.playerInMinigame(ply)){
-			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() == Material.SIGN_POST){
+			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && (event.getClickedBlock().getType() == Material.SIGN_POST || event.getClickedBlock().getType() == Material.WALL_SIGN)){
 				Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
 				Sign sign = (Sign) event.getClickedBlock().getState();
 				if(mgm.getScoreType().equals("ctf")){
@@ -165,6 +165,7 @@ public class CTFType extends ScoreType{
 				}
 				else{
 					flag.respawnFlag();
+					mgm.removeFlagCarrier(ply);
 				}
 			}
 		}
@@ -175,6 +176,7 @@ public class CTFType extends ScoreType{
 		if(event.getMinigame().getScoreType().equals("ctf")){
 			if(!event.isForced() && event.getMinigame().getPlayers().size() == 1){
 				event.getMinigame().resetFlags();
+				event.getMinigame().removeFlagCarrier(event.getPlayer());
 			}
 			else if(event.getMinigame().isFlagCarrier(event.getPlayer())){
 				event.getMinigame().getFlagCarrier(event.getPlayer()).respawnFlag();

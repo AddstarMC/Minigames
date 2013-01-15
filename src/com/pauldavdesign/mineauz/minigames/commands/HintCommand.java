@@ -49,7 +49,7 @@ public class HintCommand implements ICommand{
 
 	@Override
 	public String getPermission() {
-		return "minigame.hint";
+		return "minigame.treasure.hint";
 	}
 
 	@Override
