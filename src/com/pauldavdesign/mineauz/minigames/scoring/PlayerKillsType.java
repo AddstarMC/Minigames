@@ -33,21 +33,11 @@ public class PlayerKillsType extends ScoreType{
 					if(ply.getKiller() != null){
 						attacker = (Player) ply.getKiller();
 					}
-//					else if(event.getDamager() instanceof Arrow){
-//						Arrow arr = (Arrow) event.getDamager();
-//						if(arr.getShooter() instanceof Player){
-//							attacker = (Player) arr.getShooter();
-//						}
-//						else{
-//							return;
-//						}
-//					}
 					else{
 						return;
 					}
 					
 					if(!mgm.getName().equals(pdata.getPlayersMinigame(attacker))){
-//						event.setCancelled(true);
 						return;
 					}
 
@@ -59,7 +49,6 @@ public class PlayerKillsType extends ScoreType{
 						}
 					
 						if(mgm.getMaxScore() != 0 && pdata.getPlayerKills(attacker) >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
-//							event.setCancelled(true);
 							List<Player> conPlayers = new ArrayList<Player>();
 							conPlayers.addAll(mgm.getPlayers());
 							conPlayers.remove(attacker);
@@ -76,21 +65,11 @@ public class PlayerKillsType extends ScoreType{
 					if(ply.getKiller() instanceof Player){
 						attacker = (Player) ply.getKiller();
 					}
-//					else if(event.getDamager() instanceof Arrow){
-//						Arrow arr = (Arrow) event.getDamager();
-//						if(arr.getShooter() instanceof Player){
-//							attacker = (Player) arr.getShooter();
-//						}
-//						else{
-//							return;
-//						}
-//					}
 					else{
 						return;
 					}
 					
 					if(!mgm.getName().equals(pdata.getPlayersMinigame(attacker))){
-//						event.setCancelled(true);
 						return;
 					}
 					
@@ -104,10 +83,7 @@ public class PlayerKillsType extends ScoreType{
 						ateam = 1;
 					}
 					
-					if(team == ateam){
-//						event.setCancelled(true);
-					}
-					else if(team != ateam){
+					if(team != ateam){
 						pdata.addPlayerKill(attacker);
 						
 						if(mgm.getScoreType().equals("kills")){
@@ -138,13 +114,11 @@ public class PlayerKillsType extends ScoreType{
 								}
 								if(ateam == 1){
 									if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
-//										event.setCancelled(true);
 										pdata.endTeamMinigame(1, mgm);
 									}
 								}
 								else{
 									if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
-//										event.setCancelled(true);
 										pdata.endTeamMinigame(0, mgm);
 									}
 								}

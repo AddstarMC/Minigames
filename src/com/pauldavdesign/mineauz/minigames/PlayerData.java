@@ -292,11 +292,11 @@ public class PlayerData {
 					}
 				}
 			}
-			
-			mdata.minigameType(mgm.getType()).quitMinigame(player, mgm, forced);
-			removePlayerMinigame(player);
+
 			mgm.removePlayersLoadout(player);
 			restorePlayerData(player);
+			mdata.minigameType(mgm.getType()).quitMinigame(player, mgm, forced);
+			removePlayerMinigame(player);
 			
 			for(PotionEffect potion : player.getActivePotionEffects()){
 				player.removePotionEffect(potion.getType());
@@ -403,13 +403,30 @@ public void endTeamMinigame(int teamnum, Minigame mgm){
 		mgm.setBlueTeamScore(0);
 		
 		mgm.getMpTimer().setStartWaitTime(0);
-		mgm.setMpTimer(null);
 		
 		List<Player> winplayers = new ArrayList<Player>();
 		winplayers.addAll(winners);
 
 		if(plugin.getSQL() != null){
 			new SQLCompletionSaver(mgm.getName(), winplayers, mdata.minigameType(mgm.getType()));
+		}
+		
+		if(mgm.getMpBets() != null){
+			if(mgm.getMpBets().hasMoneyBets()){
+				List<Player> plys = null;
+				if(teamnum == 0){
+					plys = mgm.getRedTeam();
+				}
+				else{
+					plys = mgm.getBlueTeam();
+				}
+				double bets = mgm.getMpBets().claimMoneyBets() / (double) plys.size();
+				for(Player ply : plys){
+					plugin.getEconomy().depositPlayer(ply.getName(), bets);
+					ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You won $" + bets);
+				}
+			}
+			mgm.setMpBets(null);
 		}
 		
 		if(!losers.isEmpty()){
@@ -424,7 +441,7 @@ public void endTeamMinigame(int teamnum, Minigame mgm){
 						@Override
 						public void run() {
 							p.sendMessage(ChatColor.RED + "You have been beaten! Bad luck!");
-							quitMinigame(p, false);
+							quitMinigame(p, true);
 						}
 					});
 				}
@@ -453,6 +470,8 @@ public void endTeamMinigame(int teamnum, Minigame mgm){
 				winplayers.remove(i);
 			}
 		}
+		
+		mgm.setMpTimer(null);
 	}
 	
 	public boolean playerInMinigame(Player player){

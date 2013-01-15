@@ -46,7 +46,7 @@ public class DMMinigame extends MinigameType{
 					mgm.setMpTimer(null);
 				}
 				
-				if(mgm.getMpBets() != null){
+				if(mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
 					if(mgm.getMpBets().getPlayersBet(player) != null){
 						player.getInventory().addItem(mgm.getMpBets().getPlayersBet(player));
 					}
@@ -74,7 +74,7 @@ public class DMMinigame extends MinigameType{
 		
 		callGeneralQuit(player);
 
-		if(mgm.getMpBets() != null){
+		if(mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
 			if(mgm.getMpBets().getPlayersBet(player) != null){
 				player.getInventory().addItem(mgm.getMpBets().getPlayersBet(player));
 			}

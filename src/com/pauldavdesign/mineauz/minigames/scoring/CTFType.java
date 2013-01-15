@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import com.pauldavdesign.mineauz.minigames.CTFFlag;
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
+import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 
 public class CTFType extends ScoreType{
@@ -174,6 +175,20 @@ public class CTFType extends ScoreType{
 		if(event.getMinigame().getScoreType().equals("ctf")){
 			if(!event.isForced() && event.getMinigame().getPlayers().size() == 1){
 				event.getMinigame().resetFlags();
+			}
+			else if(event.getMinigame().isFlagCarrier(event.getPlayer())){
+				event.getMinigame().getFlagCarrier(event.getPlayer()).respawnFlag();
+				event.getMinigame().removeFlagCarrier(event.getPlayer());
+			}
+		}
+	}
+	
+	@EventHandler
+	private void playerEndMinigame(EndMinigameEvent event){
+		if(event.getMinigame().getScoreType().equals("ctf")){
+			if(event.getMinigame().isFlagCarrier(event.getPlayer())){
+				event.getMinigame().getFlagCarrier(event.getPlayer()).respawnFlag();
+				event.getMinigame().removeFlagCarrier(event.getPlayer());
 			}
 		}
 	}

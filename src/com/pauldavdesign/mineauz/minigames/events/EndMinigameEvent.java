@@ -29,7 +29,7 @@ public class EndMinigameEvent extends Event{
 		return player;
 	}
 
-	public Minigame getMgm() {
+	public Minigame getMinigame() {
 		return mgm;
 	}
 

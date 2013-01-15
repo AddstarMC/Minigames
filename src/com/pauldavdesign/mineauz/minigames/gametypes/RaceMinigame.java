@@ -44,7 +44,7 @@ public class RaceMinigame extends MinigameType{
 					mgm.setMpTimer(null);
 				}
 				
-				if(mgm.getMpBets() != null){
+				if(mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
 					if(mgm.getMpBets().getPlayersBet(player) != null){
 						player.getInventory().addItem(mgm.getMpBets().getPlayersBet(player));
 					}
@@ -54,7 +54,7 @@ public class RaceMinigame extends MinigameType{
 					mgm.setMpBets(null);
 				}
 			}
-			else if(mdata.getMinigame(minigame).getPlayers().size() == 1 && mdata.getMinigame(minigame).getMpTimer() != null && mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() == 0){
+			else if(mdata.getMinigame(minigame).getPlayers().size() == 1 && mdata.getMinigame(minigame).getMpTimer() != null && mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() == 0 && !forced){
 				pdata.endMinigame(mdata.getMinigame(minigame).getPlayers().get(0));
 				
 				if(mdata.getMinigame(minigame).getMpBets() != null){
@@ -72,7 +72,7 @@ public class RaceMinigame extends MinigameType{
 		
 		callGeneralQuit(player);
 
-		if(mgm.getMpBets() != null){
+		if(mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
 			if(mgm.getMpBets().getPlayersBet(player) != null){
 				player.getInventory().addItem(mgm.getMpBets().getPlayersBet(player));
 			}
@@ -135,7 +135,7 @@ public class RaceMinigame extends MinigameType{
 					Player p = players.get(i);
 					if(!p.getName().equals(player.getName())){
 						p.sendMessage(ChatColor.RED + "You have been beaten! Bad luck!");
-						pdata.quitMinigame(p, false);
+						pdata.quitMinigame(p, true);
 					}
 				}
 				else{
