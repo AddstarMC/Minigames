@@ -41,6 +41,13 @@ public class TreasureHuntTimer extends Thread{
 	
 	public void run(){
 		while(active){
+			try{
+				Thread.sleep(60000);
+			}
+			catch(Exception e){
+				plugin.getLogger().log(Level.SEVERE, "Error in TreasureTimer Thread.sleep!");
+			}
+			
 			if(inworld){
 				time -= 1;
 				if(time <= 0){
@@ -50,14 +57,14 @@ public class TreasureHuntTimer extends Thread{
 					mdata.removeTreasure(minigame);
 					curHints = new ArrayList<String>();
 					if(chestfound == false){
-						plugin.getServer().broadcast(ChatColor.LIGHT_PURPLE + "Time's up! The " + minigame + " treasure was not found and has been removed from the world.", "minigame.treasure.announce");
+						plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Time's up! The " + minigame + " treasure was not found and has been removed from the world.", "minigame.treasure.announce");
 						plugin.getServer().broadcast(ChatColor.GRAY + "Coordinates: X:" + old.getBlockX() + ", Y:" + old.getBlockY() + ", Z:" + old.getBlockZ(), "minigame.treasure.announce");
 					}
 				}
 				else if(time == hintTime2 && chestfound == false){
 					block = mdata.getTreasureHuntLocation(minigame);
 					block.setY(block.getY() - 1);
-					plugin.getServer().broadcast(ChatColor.GREEN + "Hint:" + ChatColor.GRAY + " The " + minigame + " treasure rests upon " + block.getBlock().getType().toString().toLowerCase().replace("_", " "), "minigame.treasure.announce");
+					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.GREEN + "Hint:" + ChatColor.WHITE + " The " + minigame + " treasure rests upon " + block.getBlock().getType().toString().toLowerCase().replace("_", " "), "minigame.treasure.announce");
 					curHints.add(ChatColor.GRAY + "The " + minigame + " treasure rests upon " + block.getBlock().getType().toString().toLowerCase().replace("_", " "));
 					block.setY(block.getY() + 1);
 				}
@@ -102,22 +109,22 @@ public class TreasureHuntTimer extends Thread{
 						}
 					}
 					
-					plugin.getServer().broadcast(ChatColor.GREEN + "Hint:" + ChatColor.GRAY + " The " + minigame + " treasure lies to the " + dir + " of " + mdata.getMinigame(minigame).getLocation(), "minigame.treasure.hint");
+					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.GREEN + "Hint:" + ChatColor.WHITE + " The " + minigame + " treasure lies to the " + dir + " of " + mdata.getMinigame(minigame).getLocation(), "minigame.treasure.hint");
 					curHints.add(ChatColor.GRAY + "The " + minigame + " treasure lies to the " + dir + " of " + mgm.getLocation());
 				}
 				else if(time == hintTime3 && chestfound == false){
 					int height = block.getBlockY();
 					if(height > 62){
-						plugin.getServer().broadcast(ChatColor.GREEN + "Hint:" + ChatColor.GRAY + " The " + minigame + " treasure is " + (height - 62) + "m above sea level", "minigame.treasure.hint");
+						plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.GREEN + "Hint:" + ChatColor.WHITE + " The " + minigame + " treasure is " + (height - 62) + "m above sea level", "minigame.treasure.hint");
 						curHints.add(ChatColor.GRAY + "The " + minigame + " treasure is " + (height - 62) + "m above sea level");
 					}
 					else{
-						plugin.getServer().broadcast(ChatColor.GREEN + "Hint:" + ChatColor.GRAY + " The " + minigame + " treasure is " + (62 - height) + "m below sea level", "minigame.treasure.hint");
+						plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.GREEN + "Hint:" + ChatColor.WHITE + " The " + minigame + " treasure is " + (62 - height) + "m below sea level", "minigame.treasure.hint");
 						curHints.add(ChatColor.GRAY + "The " + minigame + " treasure is " + (62 - height) + "m below sea level");
 					}
 				}
 				else if(time == hintTime4 && chestfound == false){
-					plugin.getServer().broadcast(ChatColor.GREEN + "Hint:" + ChatColor.GRAY + " The " + minigame + " treasure resides in the " + block.getBlock().getBiome().toString().toLowerCase().replace("_", " ") + " biome", "minigame.treasure.hint");
+					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.GREEN + "Hint:" + ChatColor.WHITE + " The " + minigame + " treasure resides in the " + block.getBlock().getBiome().toString().toLowerCase().replace("_", " ") + " biome", "minigame.treasure.hint");
 					curHints.add(ChatColor.GRAY + "The " + minigame + " treasure resides in the " + block.getBlock().getBiome().toString().toLowerCase().replace("_", " ") + " biome");
 				}
 				
@@ -138,13 +145,6 @@ public class TreasureHuntTimer extends Thread{
 					hintTime3 = (int) (findtime * 0.5);
 					hintTime4 = (int) (findtime * 0.25);
 				}
-			}
-			
-			try{
-				Thread.sleep(60000);
-			}
-			catch(Exception e){
-				plugin.getLogger().log(Level.SEVERE, "Error in TreasureTimer Thread.sleep!");
 			}
 		}
 	}

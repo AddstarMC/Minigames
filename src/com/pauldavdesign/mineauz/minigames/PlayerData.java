@@ -70,7 +70,7 @@ public class PlayerData {
 				}
 			}
 			else{
-				player.sendMessage(ChatColor.RED + "That gametype doesn't exist!");
+				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "That gametype doesn't exist!");
 			}
 		}
 	}
@@ -91,7 +91,7 @@ public class PlayerData {
 						((money != 0 && pbet.canBet(player, money) && plugin.getEconomy().getBalance(player.getName()) >= money) || 
 								(pbet.canBet(player, item) && item.getType() != Material.AIR && pbet.betValue(item.getType()) > 0))){
 					if(minigame.getPlayers().isEmpty() || minigame.getPlayers().size() != minigame.getMaxPlayers()){
-						player.sendMessage(ChatColor.GRAY + "You've placed your bet! Good Luck!");
+						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You've placed your bet! Good Luck!");
 						if(money == 0){
 							pbet.addBet(player, item);
 						}
@@ -103,19 +103,19 @@ public class PlayerData {
 						joinMinigame(player, minigame);
 					}
 					else{
-						player.sendMessage(ChatColor.RED + "Sorry, this minigame is full.");
+						player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Sorry, this minigame is full.");
 					}
 				}
 				else if(item.getType() == Material.AIR && money == 0){
-					player.sendMessage(ChatColor.RED + "You can not bet nothing!");
+					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You can not bet nothing!");
 				}
 				else if(money != 0 && !pbet.canBet(player, money)){
-					player.sendMessage(ChatColor.RED + "You haven't placed a high enough bet!");
-					player.sendMessage(ChatColor.RED + "You must bet $" + minigame.getMpBets().getHighestMoneyBet() + " or better.");
+					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You haven't placed a high enough bet!");
+					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You must bet $" + minigame.getMpBets().getHighestMoneyBet() + " or better.");
 				}
 				else if(money != 0 && plugin.getEconomy().getBalance(player.getName()) < money){
-					player.sendMessage(ChatColor.RED + "You haven't got enough money!");
-					player.sendMessage(ChatColor.RED + "You must have $" + minigame.getMpBets().getHighestMoneyBet() + ".");
+					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You haven't got enough money!");
+					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You must have $" + minigame.getMpBets().getHighestMoneyBet() + ".");
 				}
 				else{
 					player.sendMessage(ChatColor.RED + "You haven't placed a high enough bet.");
@@ -123,14 +123,14 @@ public class PlayerData {
 				}
 			}
 			else if(!minigame.bettingEnabled() && player.getItemInHand().getType() != Material.AIR){
-				player.sendMessage(ChatColor.GRAY + "Bets are not enabled in this minigame.");
-				player.sendMessage(ChatColor.RED + "Your hand must be empty to join this minigame!");
+				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Bets are not enabled in this minigame.");
+				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Your hand must be empty to join this minigame!");
 			}
 			else if(minigame.getMpTimer() != null && minigame.getMpTimer().getPlayerWaitTimeLeft() == 0){
 				player.sendMessage(ChatColor.RED + "The game has already started. Please try again later.");
 			}
 			else{
-				player.sendMessage(ChatColor.GRAY + "Bets are not enabled in this minigame.");
+				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Bets are not enabled in this minigame.");
 				joinMinigame(player, minigame);
 			}
 		}
@@ -166,7 +166,7 @@ public class PlayerData {
 						players.get(i).teleport(start);
 					}
 					else {
-						players.get(i).sendMessage(ChatColor.RED + "Error: Starting positions are incorrectly configured!");
+						players.get(i).sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Starting positions are incorrectly configured!");
 						quitMinigame(players.get(i), false);
 					}
 				}
@@ -215,7 +215,7 @@ public class PlayerData {
 					bluepos++;
 				}
 				else if(mgm.getStartLocationsBlue().isEmpty() || mgm.getStartLocationsRed().isEmpty()){
-					players.get(i).sendMessage(ChatColor.RED + "Error: Starting positions are incorrectly configured!");
+					players.get(i).sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Starting positions are incorrectly configured!");
 					quitMinigame(players.get(i), false);
 				}
 				
@@ -265,7 +265,7 @@ public class PlayerData {
 			setAllowTP(player, true);
 			Location loc = getPlayerCheckpoint(player);
 			player.teleport(loc);
-			player.sendMessage(ChatColor.GREEN + "You have been reverted to the checkpoint.");
+			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been reverted to the checkpoint.");
 			setAllowTP(player, false);
 		}
 	}
@@ -440,7 +440,7 @@ public void endTeamMinigame(int teamnum, Minigame mgm){
 
 						@Override
 						public void run() {
-							p.sendMessage(ChatColor.RED + "You have been beaten! Bad luck!");
+							p.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You have been beaten! Bad luck!");
 							quitMinigame(p, true);
 						}
 					});
@@ -672,7 +672,12 @@ public void endTeamMinigame(int teamnum, Minigame mgm){
 	}
 	
 	public GameMode getPlayersLastGameMode(Player player){
-		return lastGM.get(player.getName());
+		if(lastGM.containsKey(player.getName())){
+			return lastGM.get(player.getName());
+		}
+		else{
+			return player.getGameMode();
+		}
 	}
 	
 	public void setPlayersLastGameMode(Player player, GameMode gm){

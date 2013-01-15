@@ -97,7 +97,7 @@ public class SetLoadoutCommand implements ICommand {
 						else{
 							if(minigame.hasLoadout(loadout)){
 								minigame.getLoadout(loadout).addItemToLoadout(item);
-								sender.sendMessage(ChatColor.GRAY + "Added " + quantity + " item " + MinigameUtils.getItemStackName(item) + " to the " + loadout + " loadout in " + minigame);
+								sender.sendMessage(ChatColor.GRAY + "Added " + quantity + " of item " + MinigameUtils.getItemStackName(item) + " to the " + loadout + " loadout in " + minigame);
 							}
 							else{
 								sender.sendMessage(ChatColor.RED + "There is no loadout by the name of \"" + loadout + "\" in " + minigame);

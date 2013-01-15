@@ -103,7 +103,7 @@ public class SetRestoreBlockCommand implements ICommand {
 					player.sendMessage(ChatColor.GRAY + "Removed all restore blocks from " + minigame.getName());
 				}
 				else{
-					player.sendMessage(ChatColor.RED + "There is no restore blocks in the Minigame \"" + minigame.getName() + "\"");
+					player.sendMessage(ChatColor.RED + "There are no restore blocks in the Minigame \"" + minigame.getName() + "\"");
 				}
 				return true;
 			}
@@ -118,7 +118,7 @@ public class SetRestoreBlockCommand implements ICommand {
 					player.sendMessage(ChatColor.GRAY + list);
 				}
 				else{
-					player.sendMessage(ChatColor.RED + "There is no restore blocks in the Minigame \"" + minigame.getName() + "\"");
+					player.sendMessage(ChatColor.RED + "There are no restore blocks in the Minigame \"" + minigame.getName() + "\"");
 				}
 				return true;
 			}
