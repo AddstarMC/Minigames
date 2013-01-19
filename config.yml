@@ -24,7 +24,7 @@ multiplayer:
   
 singleplayer:
   broadcastcompletion: true
-  
+
 disabledCommands:
   - home
   - warp

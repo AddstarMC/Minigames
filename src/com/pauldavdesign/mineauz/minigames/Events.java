@@ -81,9 +81,7 @@ public class Events implements Listener{
 	@EventHandler
 	public void onPlayerDisconnect(PlayerQuitEvent event){
 		if(pdata.playerInMinigame(event.getPlayer())){
-			if(event.getPlayer().isDead()){
-				pdata.addDCPlayer(event.getPlayer(), mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).getQuitPosition());
-			}
+			pdata.addDCPlayer(event.getPlayer(), mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).getQuitPosition());
 			pdata.quitMinigame(event.getPlayer(), false);
 		}
 	}
@@ -105,7 +103,6 @@ public class Events implements Listener{
 		}
 		if(pdata.hasDCPlayer(event.getPlayer())){
 			event.getPlayer().teleport(pdata.getDCPlayer(event.getPlayer()));
-			pdata.removeDCPlayer(event.getPlayer());
 			pdata.removeDCPlayer(event.getPlayer());
 		}
 	}
@@ -346,7 +343,7 @@ public class Events implements Listener{
 								int y2 = cblock.getLocation().getBlockY();
 								int z1 = mdata.getTreasureHuntLocation(minigame).getBlockZ();
 								int z2 = cblock.getLocation().getBlockZ();
-								if(x2 <= x1 + 2 && x2 >= x1 - 2 && y2 <= y1 + 2 && y2 >= y1 - 2 && z2 <= z1 + 2 && z2 >= z1 - 2){
+								if(x2 == x1 && y2 == y1 && z2 == z1){
 									plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + event.getPlayer().getName() + " found the " + minigame + " treasure!", "minigame.treasure.announce");
 									event.setCancelled(true);
 									Chest chest = (Chest) cblock.getState();

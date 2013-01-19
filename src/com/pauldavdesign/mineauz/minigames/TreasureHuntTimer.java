@@ -62,13 +62,14 @@ public class TreasureHuntTimer extends Thread{
 					}
 				}
 				else if(time == hintTime2 && chestfound == false){
-					block = mdata.getTreasureHuntLocation(minigame);
 					block.setY(block.getY() - 1);
-					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.GREEN + "Hint:" + ChatColor.WHITE + " The " + minigame + " treasure rests upon " + block.getBlock().getType().toString().toLowerCase().replace("_", " "), "minigame.treasure.announce");
+					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + " The " + minigame + " treasure rests upon " + block.getBlock().getType().toString().toLowerCase().replace("_", " "), "minigame.treasure.announce");
 					curHints.add(ChatColor.GRAY + "The " + minigame + " treasure rests upon " + block.getBlock().getType().toString().toLowerCase().replace("_", " "));
 					block.setY(block.getY() + 1);
 				}
 				else if(time == hintTime1 && chestfound == false){
+					block = mdata.getTreasureHuntLocation(minigame);
+					
 					double dfcx = 0.0;
 					double dfcz = 0.0;
 					String xdir = null;
@@ -109,22 +110,22 @@ public class TreasureHuntTimer extends Thread{
 						}
 					}
 					
-					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.GREEN + "Hint:" + ChatColor.WHITE + " The " + minigame + " treasure lies to the " + dir + " of " + mdata.getMinigame(minigame).getLocation(), "minigame.treasure.hint");
+					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + " The " + minigame + " treasure lies to the " + dir + " of " + mdata.getMinigame(minigame).getLocation(), "minigame.treasure.hint");
 					curHints.add(ChatColor.GRAY + "The " + minigame + " treasure lies to the " + dir + " of " + mgm.getLocation());
 				}
 				else if(time == hintTime3 && chestfound == false){
 					int height = block.getBlockY();
 					if(height > 62){
-						plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.GREEN + "Hint:" + ChatColor.WHITE + " The " + minigame + " treasure is " + (height - 62) + "m above sea level", "minigame.treasure.hint");
+						plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + " The " + minigame + " treasure is " + (height - 62) + "m above sea level", "minigame.treasure.hint");
 						curHints.add(ChatColor.GRAY + "The " + minigame + " treasure is " + (height - 62) + "m above sea level");
 					}
 					else{
-						plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.GREEN + "Hint:" + ChatColor.WHITE + " The " + minigame + " treasure is " + (62 - height) + "m below sea level", "minigame.treasure.hint");
+						plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + " The " + minigame + " treasure is " + (62 - height) + "m below sea level", "minigame.treasure.hint");
 						curHints.add(ChatColor.GRAY + "The " + minigame + " treasure is " + (62 - height) + "m below sea level");
 					}
 				}
 				else if(time == hintTime4 && chestfound == false){
-					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.GREEN + "Hint:" + ChatColor.WHITE + " The " + minigame + " treasure resides in the " + block.getBlock().getBiome().toString().toLowerCase().replace("_", " ") + " biome", "minigame.treasure.hint");
+					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + " The " + minigame + " treasure resides in the " + block.getBlock().getBiome().toString().toLowerCase().replace("_", " ") + " biome", "minigame.treasure.hint");
 					curHints.add(ChatColor.GRAY + "The " + minigame + " treasure resides in the " + block.getBlock().getBiome().toString().toLowerCase().replace("_", " ") + " biome");
 				}
 				
@@ -136,7 +137,6 @@ public class TreasureHuntTimer extends Thread{
 					chestfound = false;
 					mdata.startGlobalMinigame(minigame);
 					
-					block = mdata.getTreasureHuntLocation(minigame);
 					findtime = plugin.getConfig().getInt("treasurehunt.findtime");
 					waittime = plugin.getConfig().getInt("treasurehunt.waittime");
 					time = findtime;

@@ -116,7 +116,7 @@ public class MinigameData {
 					
 					setTreasureHuntLocation(minigame, rpos.getBlock().getLocation());
 					
-					plugin.getServer().broadcast(ChatColor.LIGHT_PURPLE + "A treasure chest has appeared within " + maxradius + "m of " + getMinigame(minigame).getLocation() + "!", "minigame.treasure.announce");
+					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "A treasure chest has appeared within " + maxradius + "m of " + getMinigame(minigame).getLocation() + "!", "minigame.treasure.announce");
 					if(getMinigame(minigame).getThTimer() == null){
 						getMinigame(minigame).setThTimer(new TreasureHuntTimer(minigame));
 						getMinigame(minigame).getThTimer().start();

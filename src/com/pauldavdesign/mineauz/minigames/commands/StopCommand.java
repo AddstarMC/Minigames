@@ -54,7 +54,7 @@ public class StopCommand implements ICommand{
 			Minigame mgm = plugin.mdata.getMinigame(args[0]);
 			
 			if(mgm != null && mgm.getThTimer() != null && mgm.getType().equals("th")){
-				plugin.getServer().broadcast(ChatColor.LIGHT_PURPLE + "The " + mgm.getName() + " treasure has been removed from the world", "minigame.treasure.announce");
+				plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "The " + mgm.getName() + " treasure has been removed from the world", "minigame.treasure.announce");
 				mgm.getThTimer().setActive(false);
 				plugin.mdata.removeTreasure(mgm.getName());
 				mgm.setThTimer(null);
