@@ -18,6 +18,7 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
@@ -279,6 +280,11 @@ public class PlayerData {
 		if(!event.isCancelled()){
 			setAllowTP(player, true);
 			
+			if(player.getVehicle() != null){
+				Vehicle vehicle = (Vehicle) player.getVehicle();
+				vehicle.eject();
+			}
+			
 			player.closeInventory();
 			
 			List<Player> plys = mdata.getMinigame(minigame).getPlayers();
@@ -332,6 +338,11 @@ public class PlayerData {
 		
 		if(!event.isCancelled()){
 			setAllowTP(player, true);
+			
+			if(player.getVehicle() != null){
+				Vehicle vehicle = (Vehicle) player.getVehicle();
+				vehicle.eject();
+			}
 			
 			player.closeInventory();
 			restorePlayerData(player);

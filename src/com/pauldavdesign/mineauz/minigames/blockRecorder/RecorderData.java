@@ -590,7 +590,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-//	@EventHandler TODO: Reopen me later, this was apparently added in a new version of bukkit.
+//	@EventHandler
 //	private void blockForm(EntityBlockFormEvent event){
 //		String idloc = MinigameUtils.createLocationID(event.getBlock().getLocation());
 //		int y = event.getBlock().getY();

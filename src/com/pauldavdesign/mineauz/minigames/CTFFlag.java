@@ -1,6 +1,7 @@
 package com.pauldavdesign.mineauz.minigames;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -196,6 +197,16 @@ public class CTFFlag extends Thread{
 						minigame.addDroppedFlag(newID, this);
 					}
 					respawnFlag();
+					for(Player pl : minigame.getPlayers()){
+						if(getTeam() == 0){
+							pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.RED + "Red Team's" + ChatColor.WHITE + " flag has been returned home!");
+						}else if(getTeam() == 1){
+							pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.BLUE + "Blue Team's" + ChatColor.WHITE + " flag has been returned home!");
+						}
+						else{
+							pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "The " + ChatColor.GRAY + "Neutral" + ChatColor.WHITE + " flag has been returned home!");
+						}
+					}
 				}
 			}
 			

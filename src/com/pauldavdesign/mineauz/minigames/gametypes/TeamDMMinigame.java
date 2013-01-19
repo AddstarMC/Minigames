@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.server.v1_4_6.EntityPlayer;
-import net.minecraft.server.v1_4_6.Packet20NamedEntitySpawn;
-import net.minecraft.server.v1_4_6.Packet5EntityEquipment;
+import net.minecraft.server.v1_4_R1.EntityPlayer;
+import net.minecraft.server.v1_4_R1.Packet20NamedEntitySpawn;
+import net.minecraft.server.v1_4_R1.Packet5EntityEquipment;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_4_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -224,7 +224,7 @@ public class TeamDMMinigame extends MinigameType{
 				
 				if(mdata.getMinigame(minigame).getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
 					if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
-						plugin.getEconomy().bankDeposit(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
+						plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
 					}
 					mdata.getMinigame(minigame).setMpBets(null);
 				}
@@ -276,7 +276,7 @@ public class TeamDMMinigame extends MinigameType{
 		
 		if(mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0) && !forced){
 			if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
-				plugin.getEconomy().bankDeposit(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
+				plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
 			}
 			mgm.getMpBets().removePlayersBet(player);
 		}

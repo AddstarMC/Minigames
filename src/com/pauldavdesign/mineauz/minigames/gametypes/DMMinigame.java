@@ -51,7 +51,7 @@ public class DMMinigame extends MinigameType{
 						player.getInventory().addItem(mgm.getMpBets().getPlayersBet(player));
 					}
 					else if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
-						plugin.getEconomy().bankDeposit(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
+						plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
 					}
 					mgm.setMpBets(null);
 				}
@@ -79,7 +79,7 @@ public class DMMinigame extends MinigameType{
 				player.getInventory().addItem(mgm.getMpBets().getPlayersBet(player));
 			}
 			else if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
-				plugin.getEconomy().bankDeposit(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
+				plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
 			}
 			mgm.getMpBets().removePlayersBet(player);
 		}
