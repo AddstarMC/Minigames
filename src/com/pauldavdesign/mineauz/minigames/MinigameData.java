@@ -71,33 +71,48 @@ public class MinigameData {
 				}
 			});
 			
+			if(getTreasureHuntLocation(minigame) != null){
+				Location old = getTreasureHuntLocation(minigame);
+				old.getBlock().setType(Material.AIR);
+			}
+			
+			if(rpos.getBlock().getType() == Material.AIR){
+				while(rpos.getBlock().getType() == Material.AIR){
+					rpos.setY(rpos.getY() - 1);
+				}
+				rpos.setY(rpos.getY() + 1);
+				
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					
+					@Override
+					public void run() {
+						rpos.getBlock().setType(Material.CHEST);
+					}
+
+				});
+			}
+			else
+			{
+				while(rpos.getBlock().getType() != Material.AIR){
+					rpos.setY(rpos.getY() + 1);
+				}
+				
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					
+					@Override
+					public void run() {
+						rpos.getBlock().setType(Material.CHEST);
+					}
+
+				});
+			}
+			
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				
 				@Override
 				public void run() {
-					if(getTreasureHuntLocation(minigame) != null){
-						Location old = getTreasureHuntLocation(minigame);
-						old.getBlock().setType(Material.AIR);
-					}
-					
-					if(rpos.getBlock().getType() == Material.AIR){
-						while(rpos.getBlock().getType() == Material.AIR){
-							rpos.setY(rpos.getY() - 1);
-						}
-						rpos.setY(rpos.getY() + 1);
-
-						rpos.getBlock().setType(Material.CHEST);
-					}
-					else
-					{
-						while(rpos.getBlock().getType() != Material.AIR){
-							rpos.setY(rpos.getY() + 1);
-						}
-						rpos.getBlock().setType(Material.CHEST);
-					}
-					
 					if(rpos.getBlock().getState() instanceof Chest){
-						Chest chest = (Chest) rpos.getBlock().getState();
+						final Chest chest = (Chest) rpos.getBlock().getState();
 						
 						if(!getMinigame(minigame).getDefaultPlayerLoadout().getItems().isEmpty()){
 							int numitems = (int) Math.round(Math.random() * (mgm.getMaxTreasure() - mgm.getMinTreasure())) + mgm.getMinTreasure();
@@ -105,7 +120,7 @@ public class MinigameData {
 								numitems = mgm.getDefaultPlayerLoadout().getItems().size();
 							}
 							Collections.shuffle(getMinigame(minigame).getDefaultPlayerLoadout().getItems());
-							ItemStack[] items = new ItemStack[27];
+							final ItemStack[] items = new ItemStack[27];
 							for(int i = 0; i < numitems; i++){
 								items[i] = mgm.getDefaultPlayerLoadout().getItems().get(i);
 							}
@@ -113,17 +128,17 @@ public class MinigameData {
 							chest.getInventory().setContents(items);
 						}
 					}
-					
-					setTreasureHuntLocation(minigame, rpos.getBlock().getLocation());
-					
-					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "A treasure chest has appeared within " + maxradius + "m of " + getMinigame(minigame).getLocation() + "!", "minigame.treasure.announce");
-					if(getMinigame(minigame).getThTimer() == null){
-						getMinigame(minigame).setThTimer(new TreasureHuntTimer(minigame));
-						getMinigame(minigame).getThTimer().start();
-					}
 				}
+
 			});
 			
+			setTreasureHuntLocation(minigame, rpos.getBlock().getLocation());
+			
+			plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "A treasure chest has appeared within " + maxradius + "m of " + getMinigame(minigame).getLocation() + "!", "minigame.treasure.announce");
+			if(getMinigame(minigame).getThTimer() == null){
+				getMinigame(minigame).setThTimer(new TreasureHuntTimer(minigame));
+				getMinigame(minigame).getThTimer().start();
+			}
 		}
 	}
 	

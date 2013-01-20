@@ -67,41 +67,38 @@ public class CTFFlag extends Thread{
 	
 	public Location spawnFlag(Location location){
 		Location blockBelow = location.clone();
+		Location newLocation = location.clone();
 		blockBelow.setY(blockBelow.getBlockY() - 1);
 		
-		while(blockBelow.getBlock().getType() == Material.AIR &&
-				blockBelow.getBlock().getType() == Material.FURNACE &&
-				blockBelow.getBlock().getType() == Material.DISPENSER &&
-				blockBelow.getBlock().getType() == Material.CHEST &&
-				blockBelow.getBlock().getType() == Material.BREWING_STAND){
-			if(blockBelow.getY() > 1){
-				blockBelow.setY(blockBelow.getY() - 1);
-			}
-			else{
-				return null;
+		if(blockBelow.getBlock().getType() == Material.AIR){
+			while(blockBelow.getBlock().getType() == Material.AIR){
+				if(blockBelow.getY() > 1){
+					blockBelow.setY(blockBelow.getY() - 1);
+				}
+				else{
+					return null;
+				}
 			}
 		}
-		Location newLocation = blockBelow.clone();
-		newLocation.setY(newLocation.getBlockY() + 1);
-		
-		while(newLocation.getBlock().getType() != Material.AIR){
-			if(newLocation.getY() > 255){
-				newLocation.setY(blockBelow.getY() - 1);
-			}
-			else{
-				return null;
+		else if(location.getBlock().getType() != Material.AIR){
+			while(newLocation.getBlock().getType() != Material.AIR){
+				if(newLocation.getY() > 255){
+					newLocation.setY(blockBelow.getY() + 1);
+				}
+				else{
+					return null;
+				}
 			}
 		}
-		
+
 		blockBelow = newLocation.clone();
-		blockBelow.setY(blockBelow.getBlockY() - 1);
-		
+		blockBelow.setY(blockBelow.getY() - 1);
+
 		if(blockBelow.getBlock().getType() == Material.FURNACE ||
 				blockBelow.getBlock().getType() == Material.DISPENSER ||
 				blockBelow.getBlock().getType() == Material.CHEST ||
 				blockBelow.getBlock().getType() == Material.BREWING_STAND){
-			blockBelow.setY(blockBelow.getBlockY() + 1);
-			newLocation.setY(newLocation.getBlockY() + 1);
+			blockBelow.setY(blockBelow.getY() + 1);
 		}
 		
 		newLocation.getBlock().setType(Material.SIGN_POST);
