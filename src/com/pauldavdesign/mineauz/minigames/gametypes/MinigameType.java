@@ -8,7 +8,7 @@ import org.bukkit.Location;
 //import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionEffect;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
@@ -71,7 +71,9 @@ public abstract class MinigameType implements Listener{
 	public boolean callLMSJoin(Player player, Minigame mgm, GameMode gm){ //TODO: Remove gamemode later as its defined in the Minigame
 		if(mgm.getQuitPosition() != null && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
 			
-			player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
+			for(PotionEffect potion : player.getActivePotionEffects()){
+				player.removePotionEffect(potion.getType());
+			}
 			player.setAllowFlight(false);
 			plugin.getLogger().info(player.getName() + " started " + mgm.getName());
 

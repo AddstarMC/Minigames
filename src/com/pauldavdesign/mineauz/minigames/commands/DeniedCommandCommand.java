@@ -54,10 +54,12 @@ public class DeniedCommandCommand implements ICommand {
 			if(args[0].equalsIgnoreCase("add") && args.length >= 2){
 				plugin.pdata.addDeniedCommand(args[1]);
 				sender.sendMessage(ChatColor.GRAY + "Added \"" + args[1] + "\" to the denied command list.");
+				return true;
 			}
 			else if(args[0].equalsIgnoreCase("remove") && args.length >= 2){
 				plugin.pdata.removeDeniedCommand(args[1]);
 				sender.sendMessage(ChatColor.GRAY + "Removed \"" + args[1] + "\" from the denied command list.");
+				return true;
 			}
 			else if(args[0].equalsIgnoreCase("list")){
 				String coms = "";
@@ -79,6 +81,7 @@ public class DeniedCommandCommand implements ICommand {
 					}
 				}
 				sender.sendMessage(ChatColor.GRAY + "Disabled Commands: " + coms);
+				return true;
 			}
 		}
 		return false;

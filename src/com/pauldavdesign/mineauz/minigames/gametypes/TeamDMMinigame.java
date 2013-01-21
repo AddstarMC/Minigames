@@ -21,7 +21,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionEffect;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
@@ -47,7 +47,9 @@ public class TeamDMMinigame extends MinigameType{
 			int redSize = mgm.getRedTeam().size();
 			int blueSize = mgm.getBlueTeam().size();
 			
-			player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
+			for(PotionEffect potion : player.getActivePotionEffects()){
+				player.removePotionEffect(potion.getType());
+			}
 			player.setAllowFlight(false);
 			plugin.getLogger().info(player.getName() + " started " + mgm.getName());
 			
