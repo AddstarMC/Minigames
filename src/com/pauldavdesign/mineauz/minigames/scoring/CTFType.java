@@ -48,6 +48,9 @@ public class CTFType extends ScoreType{
 									if(team == 1){
 										oTeam = 0;
 									}
+									if(sign.getLine(2).equalsIgnoreCase(ChatColor.GRAY + "Neutral")){
+										oTeam = -1;
+									}
 									CTFFlag flag = new CTFFlag(event.getClickedBlock().getLocation(), oTeam, event.getPlayer(), mgm);
 									mgm.addFlagCarrier(ply, flag);
 									flag.removeFlag();

@@ -283,6 +283,9 @@ public class LMSMinigame extends MinigameType {
 				ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "The timer has expired!");
 				pdata.quitMinigame(ply, true);
 			}
+			if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
+				plugin.getServer().broadcastMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "The timer expired for " + event.getMinigame().getName());
+			}
 		}
 	}
 }

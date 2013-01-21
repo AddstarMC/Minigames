@@ -10,7 +10,6 @@ import net.minecraft.server.v1_4_R1.Packet5EntityEquipment;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.craftbukkit.v1_4_R1.entity.CraftPlayer;
@@ -166,7 +165,7 @@ public class TeamDMMinigame extends MinigameType{
 				
 				changeingName.name = oldName;
 				
-				pdata.storePlayerData(player, GameMode.ADVENTURE);
+				pdata.storePlayerData(player, mgm.getDefaultGamemode());
 				
 				player.teleport(lobby);
 				pdata.addPlayerMinigame(player, mgm.getName());
