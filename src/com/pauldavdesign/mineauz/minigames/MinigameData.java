@@ -234,14 +234,21 @@ public class MinigameData {
 		treasureLoc.remove(minigame);
 	}
 	
-	public void removeTreasure(String minigame){
+	public void removeTreasure(final String minigame){
 		if(getTreasureHuntLocation(minigame) != null){
-			if(getTreasureHuntLocation(minigame).getBlock().getState() instanceof Chest){
-				Chest chest = (Chest) getTreasureHuntLocation(minigame).getBlock().getState();
-				chest.getInventory().clear();
-			}
-			Location old = getTreasureHuntLocation(minigame);
-			old.getBlock().setType(Material.AIR);
+			final Location old = getTreasureHuntLocation(minigame);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				
+				@Override
+				public void run() {
+					if(getTreasureHuntLocation(minigame).getBlock().getState() instanceof Chest){
+						Chest chest = (Chest) getTreasureHuntLocation(minigame).getBlock().getState();
+						chest.getInventory().clear();
+					}
+					
+					old.getBlock().setType(Material.AIR);
+				}
+			});
 		}
 	}
 	
