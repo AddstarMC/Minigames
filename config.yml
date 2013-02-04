@@ -30,6 +30,9 @@ disabledCommands:
   - warp
   - spawn
   
+updateChecker: true
+# Whether the plugin should check for updates
+  
 use-sql: false
 sql-host: localhost
 sql-port: 3306

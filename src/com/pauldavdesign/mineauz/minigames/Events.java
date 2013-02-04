@@ -88,7 +88,7 @@ public class Events implements Listener{
 	
 	@EventHandler
 	public void onPlayerConnect(PlayerJoinEvent event){
-		if(event.getPlayer().isOp()){
+		if(event.getPlayer().isOp() && plugin.getConfig().getBoolean("updateChecker")){
 			List<String> update = MinigameUtils.checkForUpdate("http://mineauz.pauldavdesign.com/mgmversion.txt", plugin.getDescription().getVersion());
 			if(update != null){
 				Player ply = event.getPlayer();
