@@ -35,7 +35,7 @@ public class MultiplayerTimer extends Thread{
 					plugin.getLogger().log(Level.SEVERE, "Error in wait time Thread.sleep!");
 				}
 			}
-			else if(playerWaitTime == 0 && startWaitTime !=0){
+			else if(playerWaitTime == 0 && startWaitTime !=0 && !paused){
 				if(startWaitTime == plugin.getConfig().getInt("multiplayer.startcountdown")){
 					sendPlayersMessage(minigame, ChatColor.GRAY + "Minigame starts in:");
 				}
