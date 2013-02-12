@@ -17,6 +17,7 @@ import com.pauldavdesign.mineauz.minigames.MinigameData;
 import com.pauldavdesign.mineauz.minigames.MinigameSave;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
+import com.pauldavdesign.mineauz.minigames.RestoreBlock;
 import com.pauldavdesign.mineauz.minigames.SQLCompletionSaver;
 
 public class SPMinigame extends MinigameType{
@@ -49,6 +50,12 @@ public class SPMinigame extends MinigameType{
 			for(Player ply : plys){
 				if(mgm.getName().equals(pdata.getPlayersMinigame(ply)) && !ply.getName().equals(player.getName())){
 					ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + player.getName() + " has joined " + mgm.getName());
+				}
+			}
+			
+			if(mgm.hasRestoreBlocks() && !mgm.hasPlayers()){
+				for(RestoreBlock block : mgm.getRestoreBlocks().values()){
+					mgm.getBlockRecorder().addBlock(block.getLocation().getBlock(), null);
 				}
 			}
 			
