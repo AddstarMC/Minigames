@@ -17,7 +17,9 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.Furnace;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -31,6 +33,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -382,31 +385,26 @@ public class RecorderData implements Listener{
 	
 	public boolean checkBlockSides(Location location){
 		Location temp = location.clone();
-		temp.setX(temp.getX() + 1);
-		if(hasBlock(temp.getBlock())){
-			return true;
-		}
-		temp.setX(temp.getX() - 2);
-		if(hasBlock(temp.getBlock())){
-			return true;
-		}
-		temp = location.clone();
-		temp.setZ(temp.getZ() + 1);
-		if(hasBlock(temp.getBlock())){
-			return true;
-		}
-		temp.setZ(temp.getZ() - 2);
-		if(hasBlock(temp.getBlock())){
-			return true;
-		}
-		temp = location.clone();
-		temp.setY(temp.getY() + 1);
-		if(hasBlock(temp.getBlock())){
-			return true;
-		}
-		temp.setY(temp.getY() - 2);
-		if(hasBlock(temp.getBlock())){
-			return true;
+		temp.setX(temp.getX() - 4);
+		temp.setY(temp.getY() - 4);
+		temp.setZ(temp.getZ() - 4);
+		
+		for(int y = 0; y < 8; y++){
+			for(int x = 0; x < 8; x++){
+				for(int z = 0; z < 8; z++){
+					if(hasBlock(temp.getBlock())){
+						return true;
+					}
+					temp.setZ(temp.getZ() + 1);
+				}
+				if(hasBlock(temp.getBlock())){
+					return true;
+				}
+				temp.setZ(temp.getZ() - 8);
+				temp.setX(temp.getX() + 1);
+			}
+			temp.setX(temp.getX() - 8);
+			temp.setY(temp.getY() + 1);
 		}
 		return false;
 	}
@@ -586,7 +584,35 @@ public class RecorderData implements Listener{
 			else{
 				event.setCancelled(true);
 			}
-			
+		}
+	}
+	
+	@EventHandler
+	public void tntExplode(EntityExplodeEvent event){
+		if(event.getEntity() instanceof TNTPrimed){
+			List<Entity> ents = event.getEntity().getNearbyEntities(80, 80, 80);
+			for(Entity ent : ents){
+				if(ent instanceof Player){
+					Player ply = (Player) ent;
+					if(plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(ply)).equals(minigame) && 
+							((whitelistMode && getWBBlocks().contains(Material.TNT)) || 
+							(!whitelistMode && !getWBBlocks().contains(Material.TNT)))){
+						List<Block> removal = new ArrayList<Block>();
+						for(Block block : event.blockList()){
+							if(((whitelistMode && getWBBlocks().contains(block.getType())) || 
+									(!whitelistMode && !getWBBlocks().contains(block.getType()))) && 
+									minigame.canBlockBreak()){
+								addBlock(block, null);
+							}
+							else{
+								removal.add(block);
+							}
+						}
+						event.blockList().removeAll(removal);
+						break;
+					}
+				}
+			}
 		}
 	}
 	
