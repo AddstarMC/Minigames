@@ -46,4 +46,8 @@ public class MinigameTimer extends Thread{
 	public void stopTimer(){
 		running = false;
 	}
+	
+	public int getTimeLeft(){
+		return time;
+	}
 }

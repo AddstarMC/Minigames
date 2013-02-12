@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -354,6 +355,86 @@ public class Events implements Listener{
 						}
 					}
 				}
+			}
+		}
+		else if(event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("minigame.sign.use")){
+			Block cblock = event.getClickedBlock();
+			if(cblock.getState() instanceof Sign){
+				Sign sign = (Sign) cblock.getState();
+				if(sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]")){
+					if((sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Join") || sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Bet")) && !pdata.playerInMinigame(event.getPlayer())){
+						Minigame mgm = mdata.getMinigame(sign.getLine(2));
+						if(mgm != null && (!mgm.getUsePermissions() || event.getPlayer().hasPermission("minigame.join." + mgm.getName().toLowerCase()))){
+							if(!mgm.isEnabled()){
+								event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "This minigame is currently not enabled.");
+							}
+							else{
+								event.getPlayer().sendMessage(ChatColor.GREEN + "------------------Minigame Info------------------");
+								String status = ChatColor.BLUE + "Status: ";
+								if(!mgm.hasPlayers()){
+									status += ChatColor.GREEN + "Empty";
+								}
+								else if(mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() > 0){
+									status += ChatColor.GREEN + "Waiting for Players";
+								}
+								else{
+									status += ChatColor.RED + "Started";
+								}
+								
+								if(!mgm.getType().equals("sp"))
+									event.getPlayer().sendMessage(status);
+								
+								if(mgm.getMinigameTimer() != null){
+									event.getPlayer().sendMessage(ChatColor.BLUE + "Time left: " + MinigameUtils.convertTime(mgm.getMinigameTimer().getTimeLeft()));
+								}
+								
+								if(mgm.getType().equals("teamdm")){
+									event.getPlayer().sendMessage(ChatColor.BLUE + "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore());
+								}
+								
+								String playerCount = ChatColor.BLUE + "Player Count: " + ChatColor.GRAY;
+								String players = ChatColor.BLUE + "Players: ";
+								
+								if(mgm.hasPlayers()){
+									playerCount += mgm.getPlayers().size() + "/";
+									if(!mgm.getType().equals("sp")){
+										playerCount += mgm.getMaxPlayers();
+									}
+									else{
+										playerCount += "inf";
+									}
+									
+									List<String> plyList = new ArrayList<String>();
+									for(Player ply : mgm.getPlayers()){
+										plyList.add(ply.getName());
+									}
+									players += MinigameUtils.listToString(plyList);
+								}
+								else{
+									playerCount += "0/";
+									
+									if(!mgm.getType().equals("sp")){
+										playerCount += mgm.getMaxPlayers();
+									}
+									else{
+										playerCount += "inf";
+									}
+									
+									players += ChatColor.GRAY + "None";
+								}
+								
+								event.getPlayer().sendMessage(playerCount);
+								event.getPlayer().sendMessage(players);
+							}
+						}
+						else if(mgm == null){
+							event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "This minigame doesn't exist!");
+						}
+						else if(mgm.getUsePermissions()){
+							event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You do not have permission minigame.join." + mgm.getName().toLowerCase());
+						}
+					}
+				}	
 			}
 		}
 	}

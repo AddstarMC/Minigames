@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -196,5 +197,27 @@ public class MinigameUtils {
 	 */
 	public static String createLocationID(Location location){
 		return location.getBlockX() + ":" + location.getBlockY() + ":" + location.getBlockZ() + ":" + location.getWorld().getName();
+	}
+	
+	public static String listToString(List<String> list){
+		String slist = "";
+		boolean switchColour = false;
+		for(String entry : list){
+			if(switchColour){
+				slist += ChatColor.WHITE + entry;
+				if(!entry.equalsIgnoreCase(list.get(list.size() - 1))){
+					slist += ChatColor.WHITE + ", ";
+				}
+				switchColour = false;
+			}
+			else{
+				slist += ChatColor.GRAY + entry;
+				if(!entry.equalsIgnoreCase(list.get(list.size() - 1))){
+					slist += ChatColor.WHITE + ", ";
+				}
+				switchColour = true;
+			}
+		}
+		return slist;
 	}
 }
