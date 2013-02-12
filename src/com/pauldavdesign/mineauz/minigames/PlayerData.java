@@ -322,6 +322,7 @@ public class PlayerData {
 			
 			if(mgm.getPlayers().size() == 0 && mgm.getBlockRecorder().hasData()){
 				mgm.getBlockRecorder().restoreBlocks();
+				mgm.getBlockRecorder().restoreEntities();
 			}
 			
 			removeAllowTP(player);
@@ -377,9 +378,11 @@ public class PlayerData {
 			if(mgm.getBlockRecorder().hasData()){
 				if(!mgm.getType().equalsIgnoreCase("sp") || mgm.getPlayers().isEmpty()){
 					mgm.getBlockRecorder().restoreBlocks();
+					mgm.getBlockRecorder().restoreEntities();
 				}
-				else{
+				else if(mgm.getPlayers().isEmpty()){
 					mgm.getBlockRecorder().restoreBlocks(player);
+					mgm.getBlockRecorder().restoreEntities(player);
 				}
 			}
 			

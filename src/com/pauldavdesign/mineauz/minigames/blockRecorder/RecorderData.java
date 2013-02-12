@@ -17,6 +17,7 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.Furnace;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -33,10 +34,13 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.vehicle.VehicleCreateEvent;
+import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -53,6 +57,7 @@ public class RecorderData implements Listener{
 	private List<Material> wbBlocks = new ArrayList<Material>();
 	
 	private Map<String, BlockData> blockdata;
+	private Map<Integer, EntityData> entdata;
 	
 	public RecorderData(Minigame minigame){
 		plugin = Minigames.plugin;
@@ -60,6 +65,7 @@ public class RecorderData implements Listener{
 		
 		this.minigame = minigame;
 		blockdata = new HashMap<String, BlockData>();
+		entdata = new HashMap<Integer, EntityData>();
 		
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
@@ -215,16 +221,17 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-//	public void addBlock(Block block, Player modifier, ItemStack[] items){
-//		BlockData bdata = new BlockData(block, modifier, items);
-//		String sloc = String.valueOf(bdata.getLocation().getBlockX()) + ":" + bdata.getLocation().getBlockY() + ":" + bdata.getLocation().getBlockZ();
-//		if(!blockdata.containsKey(sloc)){
-//			blockdata.put(sloc, bdata);
-//		}
-//		else{
-//			blockdata.get(sloc).setModifier(modifier);
-//		}
-//	}
+	public void addEntity(Entity ent, Player player, boolean created){
+		EntityData edata = new EntityData(ent, player, created);
+		entdata.put(ent.getEntityId(), edata);
+	}
+	
+	public boolean hasEntity(Entity ent){
+		if(entdata.containsKey(ent.getEntityId())){
+			return true;
+		}
+		return false;
+	}
 	
 	public boolean hasBlock(Block block){
 		String sloc = String.valueOf(block.getLocation().getBlockX()) + ":" + block.getLocation().getBlockY() + ":" + block.getLocation().getBlockZ();
@@ -306,6 +313,21 @@ public class RecorderData implements Listener{
 		blockdata.clear();
 	}
 	
+	public void restoreEntities(){
+		for(Integer entID : entdata.keySet()){
+			if(entdata.get(entID).getEntity().isValid()){
+				if(entdata.get(entID).wasCreated()){
+					entdata.get(entID).getEntity().remove();
+				}
+			}
+			else{
+				entdata.get(entID).getEntityLocation().getWorld().spawnEntity(entdata.get(entID).getEntityLocation(), 
+					entdata.get(entID).getEntityType());
+			}
+		}
+		entdata.clear();
+	}
+	
 	public void restoreBlocks(Player modifier){
 		List<String> changes = new ArrayList<String>();
 		for(String id : blockdata.keySet()){
@@ -379,8 +401,30 @@ public class RecorderData implements Listener{
 		}
 	}
 	
+	public void restoreEntities(Player player){
+		List<Integer> removal = new ArrayList<Integer>();
+		for(Integer entID : entdata.keySet()){
+			if(entdata.get(entID).getEntity().isValid() && entdata.get(entID).getModifier() == player){
+				if(entdata.get(entID).wasCreated()){
+					entdata.get(entID).getEntity().remove();
+					removal.add(entID);
+				}
+			}
+			else if(entdata.get(entID).getModifier() == player){
+				entdata.get(entID).getEntityLocation().getWorld().spawnEntity(entdata.get(entID).getEntityLocation(), 
+					entdata.get(entID).getEntityType());
+				removal.add(entID);
+			}
+		}
+		for(Integer entID : removal){
+			entdata.remove(entID);
+		}
+	}
+	
 	public boolean hasData(){
-		return !blockdata.isEmpty();
+		if(blockdata.isEmpty() && entdata.isEmpty())
+			return false;
+		return true;
 	}
 	
 	public boolean checkBlockSides(Location location){
@@ -588,7 +632,7 @@ public class RecorderData implements Listener{
 	}
 	
 	@EventHandler
-	public void tntExplode(EntityExplodeEvent event){
+	private void tntExplode(EntityExplodeEvent event){
 		if(event.getEntity() instanceof TNTPrimed){
 			List<Entity> ents = event.getEntity().getNearbyEntities(80, 80, 80);
 			for(Entity ent : ents){
@@ -610,6 +654,63 @@ public class RecorderData implements Listener{
 						}
 						event.blockList().removeAll(removal);
 						break;
+					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	private void vehicleCreate(VehicleCreateEvent event){
+		List<Entity> ents = event.getVehicle().getNearbyEntities(8, 8, 8);
+		for(Entity ent : ents){
+			if(ent instanceof Player){
+				Player ply = (Player) ent;
+				if(plugin.pdata.playerInMinigame(ply) && plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(ply)).equals(minigame)){
+					addEntity(event.getVehicle(), ply, true);
+					break;
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	private void vehicleDestroy(VehicleDestroyEvent event){
+		List<Entity> ents = event.getVehicle().getNearbyEntities(15, 15, 15);
+		if(event.getAttacker() == null){
+			for(Entity ent : ents){
+				if(ent instanceof Player){
+					Player ply = (Player) ent;
+					if(plugin.pdata.playerInMinigame(ply) && plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(ply)).equals(minigame)){
+						if(!hasEntity(event.getVehicle())){
+							addEntity(event.getVehicle(), ply, false);
+						}
+						break;
+					}
+				}
+			}
+		}
+		else{
+			if(event.getAttacker() instanceof Player){
+				Player ply = (Player) event.getAttacker();
+				if(plugin.pdata.playerInMinigame(ply) && plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(ply)).equals(minigame)){
+					if(!hasEntity(event.getVehicle())){
+						addEntity(event.getVehicle(), ply, false);
+					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void animalDeath(EntityDamageByEntityEvent event){
+		if(event.getEntity() instanceof Animals){
+			Animals animal = (Animals) event.getEntity();
+			if(animal.getHealth() <= event.getDamage()){
+				if(event.getDamager() instanceof Player){
+					Player ply = (Player) event.getDamager();
+					if(plugin.pdata.playerInMinigame(ply) && plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(ply)).equals(minigame)){
+						addEntity(animal, ply, false);
 					}
 				}
 			}

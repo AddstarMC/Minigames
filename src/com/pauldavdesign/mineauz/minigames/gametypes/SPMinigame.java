@@ -93,7 +93,14 @@ public class SPMinigame extends MinigameType{
 		plugin.getLogger().info(player.getName() + " completed " + minigame);
 		
 		if(mgm.getBlockRecorder().hasData()){
-			mgm.getBlockRecorder().restoreBlocks(player);
+			if(mgm.getPlayers().isEmpty()){
+				mgm.getBlockRecorder().restoreBlocks();
+				mgm.getBlockRecorder().restoreEntities();
+			}
+			else{
+				mgm.getBlockRecorder().restoreBlocks(player);
+				mgm.getBlockRecorder().restoreEntities(player);
+			}
 		}
 		
 		mgm.removePlayer(player);
@@ -128,9 +135,11 @@ public class SPMinigame extends MinigameType{
 		if(mgm.getBlockRecorder().hasData()){
 			if(mgm.getPlayers().isEmpty()){
 				mgm.getBlockRecorder().restoreBlocks();
+				mgm.getBlockRecorder().restoreEntities();
 			}
 			else{
 				mgm.getBlockRecorder().restoreBlocks(player);
+				mgm.getBlockRecorder().restoreEntities(player);
 			}
 		}
 	}
