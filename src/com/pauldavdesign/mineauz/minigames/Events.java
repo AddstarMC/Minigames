@@ -290,12 +290,11 @@ public class Events implements Listener{
 							Location loc = event.getPlayer().getLocation();
 							loc.setY(loc.getY() - 1);
 							if(!sign.getLine(2).isEmpty() && loc.getBlock().getType() != Material.AIR && 
-									!sign.getLine(2).equalsIgnoreCase(ChatColor.RED + "Red") && 
-									!sign.getLine(2).equalsIgnoreCase(ChatColor.BLUE + "Blue") &&
-									!sign.getLine(2).equalsIgnoreCase(ChatColor.GRAY + "Neutral") &&
-									!sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture")){
-								pdata.addPlayerFlags(event.getPlayer(), sign.getLine(2));
-								event.getPlayer().sendMessage(ChatColor.GRAY + sign.getLine(2) + " flag taken!");
+									!mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).getType().equals("ctf") &&
+									!pdata.playerHasFlag(event.getPlayer(), sign.getLine(2).replaceAll(ChatColor.RED.toString(), "").replaceAll(ChatColor.BLUE.toString(), ""))){
+								pdata.addPlayerFlags(event.getPlayer(), sign.getLine(2).replaceAll(ChatColor.RED.toString(), "").replaceAll(ChatColor.BLUE.toString(), ""));
+								event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + 
+										ChatColor.WHITE + sign.getLine(2).replaceAll(ChatColor.RED.toString(), "").replaceAll(ChatColor.BLUE.toString(), "") + " flag taken!");
 							}
 						}
 						else

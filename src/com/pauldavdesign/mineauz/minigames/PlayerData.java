@@ -636,6 +636,16 @@ public void endTeamMinigame(int teamnum, Minigame mgm){
 		return checkpoints;
 	}
 	
+	public boolean playerHasFlag(Player player, String flag){
+		if(playerFlags.containsKey(player.getName())){
+			List<String> flags = playerFlags.get(player.getName());
+			if(flags.contains("flag")){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public void removeAllPlayerFlags(Player player){
 		if(playerFlags.containsKey(player.getName())){
 			playerFlags.remove(player.getName());

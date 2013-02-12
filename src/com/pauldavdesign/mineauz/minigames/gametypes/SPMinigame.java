@@ -41,7 +41,8 @@ public class SPMinigame extends MinigameType{
 			
 			Location startpos = mdata.getMinigame(mgm.getName()).getStartLocations().get(0);
 			player.teleport(startpos);
-			player.sendMessage(ChatColor.GREEN + "You have started a singleplayer minigame, type /minigame quit to exit.");
+			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + 
+					"You have started a singleplayer minigame, type /minigame quit to exit.");
 			pdata.setPlayerCheckpoints(player, startpos);
 			
 			List<Player> plys = pdata.playersInMinigame();
@@ -55,15 +56,12 @@ public class SPMinigame extends MinigameType{
 			return true;
 		}
 		else if(mgm.getQuitPosition() == null){
-			player.sendMessage(ChatColor.RED + "This minigame has no quit position!");
+			player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "This Minigame has no quit position!");
 		}
 		else if(!mgm.isEnabled()){
-			player.sendMessage(ChatColor.RED + "This minigame is not enabled!");
+			player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "This Minigame is not enabled!");
 		}
 		return false;
-//		if(mgm.hasDefaultLoadout()){
-//			mgm.getDefaultPlayerLoadout().equiptLoadout(player);
-//		}
 	}
 	
 	@Override
@@ -141,12 +139,9 @@ public class SPMinigame extends MinigameType{
 			Minigame mgm = mdata.getMinigame(minigame);
 			if(mgm.getType().equalsIgnoreCase("sp")){
 				event.setRespawnLocation(pdata.getPlayerCheckpoint(event.getPlayer()));
-				event.getPlayer().sendMessage(ChatColor.GRAY + "Bad Luck! Returning to checkpoint.");
+				event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Bad Luck! Returning to checkpoint.");
 				
 				mgm.getLoadout(mgm.getPlayersLoadout(event.getPlayer())).equiptLoadout(event.getPlayer());
-//				if(mgm.hasDefaultLoadout()){
-//					mgm.getDefaultPlayerLoadout().equiptLoadout(event.getPlayer());
-//				}
 			}
 		}
 	}
