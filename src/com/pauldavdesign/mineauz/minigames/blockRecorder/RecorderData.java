@@ -18,6 +18,7 @@ import org.bukkit.block.DoubleChest;
 import org.bukkit.block.Furnace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Animals;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -32,10 +33,13 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -45,6 +49,7 @@ import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
 
@@ -322,7 +327,7 @@ public class RecorderData implements Listener{
 			}
 			else{
 				entdata.get(entID).getEntityLocation().getWorld().spawnEntity(entdata.get(entID).getEntityLocation(), 
-					entdata.get(entID).getEntityType());
+							entdata.get(entID).getEntityType());
 			}
 		}
 		entdata.clear();
@@ -638,7 +643,7 @@ public class RecorderData implements Listener{
 			for(Entity ent : ents){
 				if(ent instanceof Player){
 					Player ply = (Player) ent;
-					if(plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(ply)).equals(minigame) && 
+					if(plugin.pdata.playerInMinigame(ply) && plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(ply)).equals(minigame) && 
 							((whitelistMode && getWBBlocks().contains(Material.TNT)) || 
 							(!whitelistMode && !getWBBlocks().contains(Material.TNT)))){
 						List<Block> removal = new ArrayList<Block>();
@@ -703,12 +708,21 @@ public class RecorderData implements Listener{
 	}
 	
 	@EventHandler
-	public void animalDeath(EntityDamageByEntityEvent event){
+	private void animalDeath(EntityDamageByEntityEvent event){
 		if(event.getEntity() instanceof Animals){
 			Animals animal = (Animals) event.getEntity();
 			if(animal.getHealth() <= event.getDamage()){
+				Player ply = null;
 				if(event.getDamager() instanceof Player){
-					Player ply = (Player) event.getDamager();
+					ply = (Player) event.getDamager();
+				}
+				else if(event.getDamager() instanceof Arrow){
+					Arrow arr = (Arrow) event.getDamager();
+					if(arr.getShooter() instanceof Player){
+						ply = (Player) arr.getShooter();
+					}
+				}
+				if(ply != null){
 					if(plugin.pdata.playerInMinigame(ply) && plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(ply)).equals(minigame)){
 						addEntity(animal, ply, false);
 					}
@@ -717,22 +731,56 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-//	@EventHandler
-//	private void blockForm(EntityBlockFormEvent event){
-//		String idloc = MinigameUtils.createLocationID(event.getBlock().getLocation());
-//		int y = event.getBlock().getY();
-//		int x = event.getBlock().getX();
-//		int z = event.getBlock().getZ();
-//		String world = event.getBlock().getWorld().getName();
-//		
-//		while(y < 256){
-//			y++;
-//			idloc = x + ":" + y + ":" + z + ":" + world;
-//			Bukkit.getLogger().info(idloc);
-//			if(blockdata.containsKey(idloc)){
-//				addBlock(event.getBlock().getLocation().getBlock(), null);
-//				return;
-//			}
-//		}
-//	}
+	@EventHandler
+	private void paintingPlace(HangingPlaceEvent event){
+		Player ply = event.getPlayer();
+		if(plugin.pdata.playerInMinigame(ply) && plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(ply)).equals(minigame)){
+			if(((whitelistMode && getWBBlocks().contains(Material.PAINTING)) || 
+					(!whitelistMode && !getWBBlocks().contains(Material.PAINTING))) ||
+					((whitelistMode && getWBBlocks().contains(Material.ITEM_FRAME)) || 
+							(!whitelistMode && !getWBBlocks().contains(Material.ITEM_FRAME)))){
+				addEntity(event.getEntity(), ply, true);
+			}
+			else{
+				event.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler
+	private void paintingBreak(HangingBreakByEntityEvent event){
+		Player ply = null;
+		if(event.getRemover() instanceof Player){
+			ply = (Player) event.getRemover();
+		}
+		else if(event.getRemover() instanceof Arrow){
+			if(((Arrow)event.getRemover()).getShooter() instanceof Player){
+				ply = (Player)((Arrow)event.getRemover()).getShooter();
+			}
+		}
+		if(ply != null){
+			if(plugin.pdata.playerInMinigame(ply) && plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(ply)).equals(minigame)){
+				event.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler
+	private void blockForm(EntityBlockFormEvent event){
+		String idloc = MinigameUtils.createLocationID(event.getBlock().getLocation());
+		int y = event.getBlock().getY();
+		int x = event.getBlock().getX();
+		int z = event.getBlock().getZ();
+		String world = event.getBlock().getWorld().getName();
+		
+		while(y < 256){
+			y++;
+			idloc = x + ":" + y + ":" + z + ":" + world;
+			Bukkit.getLogger().info(idloc);
+			if(blockdata.containsKey(idloc)){
+				addBlock(event.getBlock().getLocation().getBlock(), null);
+				return;
+			}
+		}
+	}
 }
