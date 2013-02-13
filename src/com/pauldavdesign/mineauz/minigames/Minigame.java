@@ -55,6 +55,8 @@ public class Minigame {
 	private boolean blocksdrop = true;
 	
 	private String scoreType = "none";
+	private boolean paintBallMode = false;
+	private int paintBallDamage = 2;
 	
 	//Teams
 	private List<Player> redTeam = new ArrayList<Player>();
@@ -707,6 +709,22 @@ public class Minigame {
 		return droppedFlag.get(id);
 	}
 
+	public boolean hasPaintBallMode() {
+		return paintBallMode;
+	}
+
+	public void setPaintBallMode(boolean paintBallMode) {
+		this.paintBallMode = paintBallMode;
+	}
+
+	public int getPaintBallDamage() {
+		return paintBallDamage;
+	}
+
+	public void setPaintBallDamage(int paintBallDamage) {
+		this.paintBallDamage = paintBallDamage;
+	}
+
 	public void saveMinigame(){
 		MinigameSave minigame = new MinigameSave(name, "config");
 		
@@ -797,13 +815,6 @@ public class Minigame {
 			minigame.getConfig().set(name + ".flags", null);
 		}
 		
-		minigame.getConfig().set(name + ".spleeffloormat", null); //TODO: Remove this line in next public release
-//		if(!getLoadout().isEmpty()){
-//			minigame.getConfig().set(name + ".loadout", null);
-//			for(int i = 0; i < getLoadout().size(); i++){
-//				minigame.getConfig().set(name + ".loadout." + i, getLoadout().get(i));
-//			}
-//		}
 		if(hasDefaultLoadout()){
 			minigame.getConfig().set(name + ".loadout", null);
 			for(int i = 0; i < getDefaultPlayerLoadout().getItems().size(); i++){
@@ -844,7 +855,6 @@ public class Minigame {
 			for(String block : blocks){
 				minigame.getConfig().set(name + ".resblocks." + block + ".type", restoreBlocks.get(block).getBlock().toString());
 				Minigames.plugin.mdata.minigameSetLocationsShort(name, restoreBlocks.get(block).getLocation(), "resblocks." + block + ".location", minigame.getConfig());
-				minigame.getConfig().set(name + ".resblocks." + block + ".items", null); //TODO: Remove this line after next public version
 			}
 		}
 		else{
@@ -933,6 +943,20 @@ public class Minigame {
 			minigame.getConfig().set(name + ".scoretype", getScoreType());
 		}else{
 			minigame.getConfig().set(name + ".scoretype", null);
+		}
+		
+		if(hasPaintBallMode()){
+			minigame.getConfig().set(name + ".paintball", hasPaintBallMode());
+		}
+		else{
+			minigame.getConfig().set(name + ".paintball", null);
+		}
+		
+		if(getPaintBallDamage() != 2){
+			minigame.getConfig().set(name + ".paintballdmg", getPaintBallDamage());
+		}
+		else{
+			minigame.getConfig().set(name + ".paintballdmg", null);
 		}
 		
 		minigame.saveConfig();
@@ -1084,6 +1108,14 @@ public class Minigame {
 		
 		if(minigame.getConfig().contains(name + ".scoretype")){
 			setScoreType(minigame.getConfig().getString(name + ".scoretype"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".paintball")){
+			setPaintBallMode(minigame.getConfig().getBoolean(name + ".paintball"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".paintballdmg")){
+			setPaintBallDamage(minigame.getConfig().getInt(name + ".paintballdmg"));
 		}
 		
 		saveMinigame();

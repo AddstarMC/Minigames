@@ -56,6 +56,7 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetBlockWhitelistCommand());
 		registerSetCommand(new SetBlocksDropCommand());
 		registerSetCommand(new SetScoreTypeCommand());
+		registerSetCommand(new SetPaintballCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {

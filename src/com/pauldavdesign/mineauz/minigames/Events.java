@@ -10,12 +10,14 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 //import org.bukkit.event.block.BlockBreakEvent;
 //import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -485,6 +487,22 @@ public class Events implements Listener{
 				if(event.getMessage().contains(comd)){
 					event.setCancelled(true);
 					event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You are not allowed to use that command while playing a Minigame!");
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	private void paintballHit(EntityDamageByEntityEvent event){
+		if(event.getEntity() instanceof Player && event.getDamager() instanceof Snowball){
+			Player ply = (Player) event.getEntity();
+			Snowball sb = (Snowball) event.getDamager();
+			if(pdata.playerInMinigame(ply) && mdata.getMinigame(pdata.getPlayersMinigame(ply)).hasPaintBallMode()){
+				if(sb.getShooter() instanceof Player){
+					Player shooter = (Player) sb.getShooter();
+					if(pdata.playerInMinigame(shooter) && pdata.getPlayersMinigame(shooter).equals(pdata.getPlayersMinigame(ply))){
+						ply.damage(mdata.getMinigame(pdata.getPlayersMinigame(ply)).getPaintBallDamage());
+					}
 				}
 			}
 		}

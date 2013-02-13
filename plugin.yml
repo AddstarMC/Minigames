@@ -104,6 +104,7 @@ permissions:
             minigame.set.blockbreak: true
             minigame.set.itempickup: true
             minigame.set.itemdrop: true
+            minigame.set.paintball: true
     minigame.set.start:
         description: Gives access to setting a minigames starting position
         default: op
@@ -193,6 +194,9 @@ permissions:
         default: op
     minigame.set.blockbreak:
         description: Allows a player to change whether a player can break blocks
+        default: op
+    minigame.set.paintball:
+        description: Lets a player set a Minigame to Paintball Mode
         default: op
     minigame.info:
         description: Allows check to see if a minigames variables have been set

@@ -244,6 +244,14 @@ public class InfoCommand implements ICommand{
 							lines.add(ChatColor.GRAY + "Game Timer: " + ChatColor.RED + "Not Set");
 						}
 					}
+					
+					if(mgm.hasPaintBallMode()){
+						lines.add(ChatColor.GRAY + "PaintBall Mode: " + ChatColor.GREEN + "true");
+						lines.add(ChatColor.GRAY + "PaintBall Damage: " + ChatColor.GREEN + mgm.getPaintBallDamage());
+					}
+					else{
+						lines.add(ChatColor.GRAY + "PaintBall Mode: " + ChatColor.RED + "false");
+					}
 				}
 				else{
 					if(mgm.getStartLocations().size() > 0){
