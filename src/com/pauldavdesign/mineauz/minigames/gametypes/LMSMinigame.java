@@ -8,10 +8,7 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
@@ -71,7 +68,7 @@ public class LMSMinigame extends MinigameType {
 				mgm.getMpTimer().pauseTimer();
 				mgm.setMpTimer(null);
 				for(Player pl : mgm.getPlayers()){
-					pl.sendMessage(ChatColor.BLUE + "Waiting for " + (mgm.getMinPlayers() - 1) + " more players.");
+					pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Waiting for " + (mgm.getMinPlayers() - 1) + " more players.");
 				}
 			}
 		}
@@ -107,7 +104,6 @@ public class LMSMinigame extends MinigameType {
 				mgm.setMpBets(null);
 			}
 		}
-		//pdata.saveItems(player);
 		pdata.saveInventoryConfig();
 		
 		boolean hascompleted = false;
@@ -117,7 +113,7 @@ public class LMSMinigame extends MinigameType {
 			mgm.getFloorDegenerator().stopDegenerator();
 		}
 		
-		player.sendMessage(ChatColor.GREEN + "You've won the " + minigame + " minigame. Congratulations!");
+		player.sendMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + "You've won the " + minigame + " minigame. Congratulations!");
 		if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
 			plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + player.getName() + " won " + mgm.getName());
 		}
@@ -146,7 +142,7 @@ public class LMSMinigame extends MinigameType {
 				if(players.get(i) instanceof Player){
 					Player p = players.get(i);
 					if(!p.getName().equals(player.getName())){
-						p.sendMessage(ChatColor.RED + "You have been beaten! Bad luck!");
+						p.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You have been beaten! Bad luck!");
 						pdata.quitMinigame(p, false);
 					}
 				}
@@ -190,85 +186,48 @@ public class LMSMinigame extends MinigameType {
 	/*-----EVENTS-----*/
 	/*----------------*/
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerRespawn(PlayerRespawnEvent event){
-		if(pdata.playerInMinigame(event.getPlayer())){
-			String minigame = pdata.getPlayersMinigame(event.getPlayer());
-			Minigame mgm = mdata.getMinigame(minigame);
-			if(mdata.getMinigame(minigame).hasPlayers()){
+	@EventHandler
+	public void playerDeath(PlayerDeathEvent event){
+		if(event.getEntity() instanceof Player){
+			final Player ply = (Player) event.getEntity();
+			if(pdata.playerInMinigame(ply)){
+				String minigame = pdata.getPlayersMinigame(ply);
+				Minigame mgm = mdata.getMinigame(minigame);
+				
 				String mgtype = mgm.getType();
 				if(mgtype.equals("lms")){
-					event.setRespawnLocation(mdata.getMinigame(minigame).getQuitPosition());
-					pdata.quitMinigame(event.getPlayer(), false);
-					event.getPlayer().sendMessage(ChatColor.GRAY + "Bad Luck! Leaving the minigame.");
-				}
-			}
-		}
-	}
-
-	@EventHandler
-	public void playerTakeDamage(EntityDamageEvent event){
-		if(event.getEntity() instanceof Player){
-			final Player ply = (Player) event.getEntity();
-			if(pdata.playerInMinigame(ply)){
-				String minigame = pdata.getPlayersMinigame(ply);
-				Minigame mgm = mdata.getMinigame(minigame);
-				if(mdata.getMinigame(minigame).hasPlayers() && ply.getHealth() - event.getDamage() <= 0){
-					String mgtype = mgm.getType();
-					if(mgtype.equals("lms")){
-						pdata.quitMinigame(ply, false);
-						event.setCancelled(true);
-						ply.sendMessage(ChatColor.GRAY + "Bad Luck! Leaving the minigame.");
-						plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-							@Override
-							public void run() {
-								ply.setFireTicks(0);
-							}
-						}, 20);
+					for(Player pl : mgm.getPlayers()){
+						pl.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + event.getDeathMessage());
 					}
-				}
-			}
-		}
-	}
-
-	@EventHandler(priority = EventPriority.HIGH)
-	public void playerDamagePlayer(EntityDamageByEntityEvent event){
-		if(event.getEntity() instanceof Player){
-			final Player ply = (Player) event.getEntity();
-			if(pdata.playerInMinigame(ply)){
-				String minigame = pdata.getPlayersMinigame(ply);
-				Minigame mgm = mdata.getMinigame(minigame);
-				if(mdata.getMinigame(minigame).hasPlayers() && ply.getHealth() - event.getDamage() <= 0){
-					String mgtype = mgm.getType();
-					if(mgtype.equals("lms")){
-						pdata.quitMinigame(ply, false);
-						event.setCancelled(true);
-						if(event.getDamager() instanceof Player){
-							Player att = (Player) event.getDamager();
-							pdata.addPlayerKill(att);
-							for(Player pl : mgm.getPlayers()){
-								pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + att.getName() + " killed " + ply.getName());
+					ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Bad Luck! Leaving the minigame.");
+					if(ply.getLastDamageCause().getEntity() instanceof Player){
+						Player attacker = (Player) ply.getLastDamageCause().getEntity();
+						if(mgm.getName().equals(pdata.getPlayersMinigame(attacker))){
+							pdata.addPlayerKill(attacker);
+						}
+					}
+					else if(ply.getLastDamageCause().getEntity() instanceof Arrow){
+						Arrow arr = (Arrow) ply.getLastDamageCause().getEntity();
+						if(arr.getShooter() instanceof Player){
+							Player attacker = (Player) arr.getShooter();
+							if(mgm.getName().equals(pdata.getPlayersMinigame(attacker))){
+								pdata.addPlayerKill(attacker);
 							}
 						}
-						else if(event.getDamager() instanceof Arrow){
-							Arrow arr = (Arrow) event.getDamager();
-							if(arr.getShooter() instanceof Player){
-								Player att = (Player) arr.getShooter();
-								pdata.addPlayerKill(att);
-								for(Player pl : mgm.getPlayers()){
-									pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + att.getName() + " shot " + ply.getName());
-								}
-							}
-						}
-						pdata.partyMode(ply);
-						ply.sendMessage(ChatColor.GRAY + "Bad Luck! Leaving the minigame.");
-						plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-							@Override
-							public void run() {
-								ply.setFireTicks(0);
-							}
-						}, 20);
 					}
+					
+					if(!mgm.hasDeathDrops()){
+						event.getDrops().clear();
+					}
+					
+					pdata.quitMinigame(ply, false);
+					event.setDeathMessage(null);
+					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+						@Override
+						public void run() {
+							ply.setFireTicks(0);
+						}
+					}, 20);
 				}
 			}
 		}

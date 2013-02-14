@@ -300,7 +300,16 @@ public class PlayerData {
 			}
 
 			mgm.removePlayersLoadout(player);
-			restorePlayerData(player);
+			
+			final Player ply = player;
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				
+				@Override
+				public void run() {
+					restorePlayerData(ply);
+				}
+			});
+			
 			mdata.minigameType(mgm.getType()).quitMinigame(player, mgm, forced);
 			removePlayerMinigame(player);
 			
