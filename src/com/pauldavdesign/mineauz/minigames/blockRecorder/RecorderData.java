@@ -521,8 +521,52 @@ public class RecorderData implements Listener{
 		Player ply = (Player) event.getPlayer();
 		if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).equals(minigame.getName()) && event.getAction() == Action.RIGHT_CLICK_BLOCK){
 			if(event.getClickedBlock().getType() == Material.CHEST){
-				if(event.getClickedBlock().getState() instanceof DoubleChest){
-					addBlock(event.getClickedBlock().getLocation().getBlock(), ply);
+				Chest chest = (Chest) event.getClickedBlock().getState();
+				if(chest.getInventory().getSize() > 27){
+					Location loc = event.getClickedBlock().getLocation().clone();
+					boolean isLeft = false;
+					//West = -z; East = +z; North = +x; South = -x;
+					if(!isLeft && event.getClickedBlock().getData() == 0x2){
+						loc.setX(loc.getX() + 1);
+						if(loc.getBlock().getType() == Material.CHEST){
+							Bukkit.getLogger().info(MinigameUtils.createLocationID(loc));
+							isLeft = true;
+						}
+						else{
+							loc = event.getClickedBlock().getLocation().clone();
+						}
+					}
+					else if(!isLeft && event.getClickedBlock().getData() == 0x3){
+						loc.setX(loc.getX() - 1);
+						if(loc.getBlock().getType() == Material.CHEST){
+							Bukkit.getLogger().info(MinigameUtils.createLocationID(loc));
+							isLeft = true;
+						}
+						else{
+							loc = event.getClickedBlock().getLocation().clone();
+						}
+					}
+					else if(!isLeft && event.getClickedBlock().getData() == 0x4){
+						loc.setZ(loc.getZ() - 1);
+						if(loc.getBlock().getType() == Material.CHEST){
+							Bukkit.getLogger().info(MinigameUtils.createLocationID(loc));
+							isLeft = true;
+						}
+						else{
+							loc = event.getClickedBlock().getLocation().clone();
+						}
+					}
+					else if(!isLeft && event.getClickedBlock().getData() == 0x5){
+						loc.setZ(loc.getZ() + 1);
+						if(loc.getBlock().getType() == Material.CHEST){
+							Bukkit.getLogger().info(MinigameUtils.createLocationID(loc));
+							isLeft = true;
+						}
+						else{
+							loc = event.getClickedBlock().getLocation().clone();
+						}
+					}
+					addBlock(loc.getBlock(), ply);
 				}
 				else if(event.getClickedBlock().getState() instanceof Chest){
 					addBlock(event.getClickedBlock().getLocation().getBlock(), ply);
