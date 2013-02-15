@@ -149,37 +149,6 @@ public class DMMinigame extends MinigameType{
 				mdata.getMinigame(minigame).getPlayers().remove(pl);
 			}
 		}
-		
-//		if(mgm.hasRestoreBlocks()){
-//			Set<String> blocks = mgm.getRestoreBlocks().keySet();
-//			
-//			for(String name : blocks){
-//				String mat = mgm.getRestoreBlocks().get(name).getBlock().toString();
-//				if(mat.equalsIgnoreCase("CHEST") || mat.equalsIgnoreCase("FURNACE") || mat.equalsIgnoreCase("DISPENSER")){
-//					Location loc = mgm.getRestoreBlocks().get(name).getLocation();
-//					
-//					if(loc.getBlock().getType() != Material.getMaterial(mat)){
-//						loc.getBlock().setType(Material.getMaterial(mat));
-//					}
-//					
-//					if(loc.getBlock().getState() instanceof Chest){
-//						Chest chest = (Chest) loc.getBlock().getState();
-//						chest.getInventory().clear();
-//						chest.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
-//					}
-//					else if(loc.getBlock().getState() instanceof Furnace){
-//						Furnace furnace = (Furnace) loc.getBlock().getState();
-//						furnace.getInventory().clear();
-//						furnace.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
-//					}
-//					else if(loc.getBlock().getState() instanceof Dispenser){
-//						Dispenser dispenser = (Dispenser) loc.getBlock().getState();
-//						dispenser.getInventory().clear();
-//						dispenser.getInventory().setContents(mgm.getRestoreBlocks().get(name).getItems());
-//					}
-//				}
-//			}
-//		}
 
 		player.setFireTicks(0);
 		
@@ -211,72 +180,6 @@ public class DMMinigame extends MinigameType{
 	/*----------------*/
 	/*-----EVENTS-----*/
 	/*----------------*/
-
-//	@EventHandler
-//	public void playerDeath(PlayerDeathEvent event){
-//		Player ply = (Player) event.getEntity();
-//		if(pdata.getPlayersMinigame(ply) != null && mdata.getMinigame(pdata.getPlayersMinigame(ply)).getType().equals("dm") && ply.getKiller() != null && ply.getKiller() instanceof Player){
-//			Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
-//			
-//			pdata.addPlayerKill(ply.getKiller());
-//			
-//			if(mgm.getMaxScore() != 0 && pdata.getPlayerKills(ply.getKiller()) >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
-//				for(Player pl : mgm.getPlayers()){
-//					if(pl != ply.getKiller()){
-//						pdata.quitMinigame(pl, false);
-//					}
-//				}
-//			}
-//			else{
-//				for(Player pl : mgm.getPlayers()){
-//					pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getKiller().getName() + "'s Score: " + pdata.getPlayerKills(ply.getKiller()));
-//				}
-//			}
-//		}
-//	}
-	
-//	@EventHandler
-//	public void playerAttack(EntityDamageByEntityEvent event){
-//		if(event.getEntity() instanceof Player){
-//			Player ply = (Player) event.getEntity();
-//			if(pdata.getPlayersMinigame(ply) != null && mdata.getMinigame(pdata.getPlayersMinigame(ply)).getType().equals("dm") && event.getDamage() >= ply.getHealth()){
-//				Player attacker = null;
-//				if(event.getDamager() instanceof Player){
-//					attacker = (Player) event.getDamager();
-//				}
-//				else if(event.getDamager() instanceof Arrow){
-//					Arrow arr = (Arrow) event.getDamager();
-//					if(arr.getShooter() instanceof Player){
-//						attacker = (Player) arr.getShooter();
-//					}
-//					else{
-//						return;
-//					}
-//				}
-//				else{
-//					return;
-//				}
-//				Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
-//				
-//				if(!pdata.getPlayersMinigame(ply).equals(pdata.getPlayersMinigame(attacker))){
-//					return;
-//				}
-//				
-//				if(mgm.getMaxScore() != 0 && pdata.getPlayerKills(attacker) + 1 >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
-//					event.setCancelled(true);
-//					pdata.addPlayerKill(attacker);
-//					List<Player> conPlayers = new ArrayList<Player>();
-//					conPlayers.addAll(mgm.getPlayers());
-//					conPlayers.remove(attacker);
-//					for(Player pl : conPlayers){
-//						if(pl != attacker){
-//							pdata.quitMinigame(pl, false);
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void playerRespawn(PlayerRespawnEvent event){
