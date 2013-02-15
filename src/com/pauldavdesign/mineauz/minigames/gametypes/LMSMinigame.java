@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -200,25 +199,18 @@ public class LMSMinigame extends MinigameType {
 						pl.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + event.getDeathMessage());
 					}
 					ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Bad Luck! Leaving the minigame.");
-					if(ply.getLastDamageCause().getEntity() instanceof Player){
-						Player attacker = (Player) ply.getLastDamageCause().getEntity();
+					if(ply.getKiller() != null){
+						Player attacker = ply.getKiller();
 						if(mgm.getName().equals(pdata.getPlayersMinigame(attacker))){
 							pdata.addPlayerKill(attacker);
-						}
-					}
-					else if(ply.getLastDamageCause().getEntity() instanceof Arrow){
-						Arrow arr = (Arrow) ply.getLastDamageCause().getEntity();
-						if(arr.getShooter() instanceof Player){
-							Player attacker = (Player) arr.getShooter();
-							if(mgm.getName().equals(pdata.getPlayersMinigame(attacker))){
-								pdata.addPlayerKill(attacker);
-							}
 						}
 					}
 					
 					if(!mgm.hasDeathDrops()){
 						event.getDrops().clear();
 					}
+					
+					pdata.partyMode(ply);
 					
 					pdata.quitMinigame(ply, false);
 					event.setDeathMessage(null);
@@ -227,7 +219,7 @@ public class LMSMinigame extends MinigameType {
 						public void run() {
 							ply.setFireTicks(0);
 						}
-					}, 20);
+					});
 				}
 			}
 		}
