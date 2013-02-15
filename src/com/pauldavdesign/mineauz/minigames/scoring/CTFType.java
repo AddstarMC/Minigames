@@ -76,6 +76,34 @@ public class CTFType extends ScoreType{
 							}
 							
 						}
+						else if((sign.getLine(2).equalsIgnoreCase(ChatColor.RED + "Red") && team == 0) || 
+								(sign.getLine(2).equalsIgnoreCase(ChatColor.BLUE + "Blue") && team == 1)){
+							if(mgm.getFlagCarrier(ply) == null){
+								if(mgm.hasDroppedFlag(sloc) && !mgm.getDroppedFlag(sloc).isAtHome()){
+									CTFFlag flag = mgm.getDroppedFlag(sloc);
+									if(mgm.hasDroppedFlag(sloc)){
+										mgm.removeDroppedFlag(sloc);
+										String newID = MinigameUtils.createLocationID(flag.getSpawnLocation());
+										mgm.addDroppedFlag(newID, flag);
+									}
+									flag.respawnFlag();
+									
+									for(Player pl : mgm.getPlayers()){
+										if(flag.getTeam() == 1){
+											pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " returned " + ChatColor.BLUE + "Blue Team's" + ChatColor.WHITE + " flag!");
+										}else if(flag.getTeam() == 0){
+											pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " returned " + ChatColor.RED + "Red Team's" + ChatColor.WHITE + " flag!");
+										}
+										else{
+											pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " stole the " + ChatColor.GRAY + "neutral" + ChatColor.WHITE + " flag!");
+										}
+									}
+								}
+							}
+							else{
+								ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You cannot return the flag if you're the carrier!");
+							}
+						}
 						else if((team == 0 && sign.getLine(2).equalsIgnoreCase(ChatColor.RED + "Red") ||
 								(team == 1 && sign.getLine(2).equalsIgnoreCase(ChatColor.BLUE + "Blue")) || 
 								(team == 0 && sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture") && sign.getLine(3).equalsIgnoreCase(ChatColor.RED + "Red")) ||
