@@ -683,7 +683,7 @@ public class RecorderData implements Listener{
 	@EventHandler
 	private void tntExplode(EntityExplodeEvent event){
 		if(event.getEntity() instanceof TNTPrimed){
-			List<Entity> ents = event.getEntity().getNearbyEntities(80, 80, 80);
+			List<Entity> ents = event.getEntity().getNearbyEntities(40, 40, 40);
 			for(Entity ent : ents){
 				if(ent instanceof Player){
 					Player ply = (Player) ent;
