@@ -31,6 +31,7 @@ import com.pauldavdesign.mineauz.minigames.events.RevertCheckpointEvent;
 public class PlayerData {
 	private Map<String, String> minigamePlayers = new HashMap<String, String>();
 	private Map<String, Location> playerCheckpoints = new HashMap<String, Location>();
+	private Map<String, StoredPlayerCheckpoints> storedPlayerCheckpoints = new HashMap<String, StoredPlayerCheckpoints>();
 	private Map<String, ItemStack[]> itemStore = new HashMap<String, ItemStack[]>();
 	private Map<String, ItemStack[]> armourStore = new HashMap<String, ItemStack[]>();
 	private Map<String, List<String>> playerFlags = new HashMap<String, List<String>>();
@@ -68,6 +69,17 @@ public class PlayerData {
 					addPlayerMinigame(player, minigame.getName());
 					setAllowTP(player, false);
 					setAllowGMChange(player, false);
+					
+					if(hasStoredPlayerCheckpoint(player)){
+						if(getPlayersStoredCheckpoints(player).hasCheckpoint(minigame.getName())){
+							playerCheckpoints.put(player.getName(), getPlayersStoredCheckpoints(player).getCheckpoint(minigame.getName()));
+							getPlayersStoredCheckpoints(player).removeCheckpoint(minigame.getName());
+							if(getPlayersStoredCheckpoints(player).hasNoCheckpoints()){
+								storedPlayerCheckpoints.remove(player.getName());
+							}
+							revertToCheckpoint(player);
+						}
+					}
 				}
 			}
 			else{
@@ -400,7 +412,7 @@ public class PlayerData {
 		}
 	}
 	
-public void endTeamMinigame(int teamnum, Minigame mgm){
+	public void endTeamMinigame(int teamnum, Minigame mgm){
 		
 		List<Player> losers = null;
 		List<Player> winners = null;
@@ -861,5 +873,25 @@ public void endTeamMinigame(int teamnum, Minigame mgm){
 	
 	public void loadDeniedCommands(){
 		setDeniedCommands(plugin.getConfig().getStringList("disabledCommands"));
+	}
+	
+	public boolean hasStoredPlayerCheckpoint(Player player){
+		if(storedPlayerCheckpoints.containsKey(player.getName())){
+			return true;
+		}
+		return false;
+	}
+	
+	public StoredPlayerCheckpoints getPlayersStoredCheckpoints(Player player){
+		return storedPlayerCheckpoints.get(player.getName());
+	}
+	
+	public void addStoredPlayerCheckpoint(Player player, String minigame, Location checkpoint){
+		StoredPlayerCheckpoints spc = new StoredPlayerCheckpoints(player.getName(), minigame, checkpoint);
+		storedPlayerCheckpoints.put(player.getName(), spc);
+	}
+	
+	public void addStoredPlayerCheckpoints(String name, StoredPlayerCheckpoints spc){
+		storedPlayerCheckpoints.put(name, spc);
 	}
 }

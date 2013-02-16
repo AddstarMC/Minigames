@@ -502,6 +502,7 @@ public class Events implements Listener{
 					Player shooter = (Player) sb.getShooter();
 					if(pdata.playerInMinigame(shooter) && pdata.getPlayersMinigame(shooter).equals(pdata.getPlayersMinigame(ply))){
 						ply.damage(mdata.getMinigame(pdata.getPlayersMinigame(ply)).getPaintBallDamage());
+						event.setCancelled(true);
 					}
 				}
 			}

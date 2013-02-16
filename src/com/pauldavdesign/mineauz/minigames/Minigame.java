@@ -57,6 +57,7 @@ public class Minigame {
 	private String scoreType = "none";
 	private boolean paintBallMode = false;
 	private int paintBallDamage = 2;
+	private boolean saveCheckpoint = false;
 	
 	//Teams
 	private List<Player> redTeam = new ArrayList<Player>();
@@ -725,6 +726,14 @@ public class Minigame {
 		this.paintBallDamage = paintBallDamage;
 	}
 
+	public boolean canSaveCheckpoint() {
+		return saveCheckpoint;
+	}
+
+	public void setSaveCheckpoint(boolean saveCheckpoint) {
+		this.saveCheckpoint = saveCheckpoint;
+	}
+
 	public void saveMinigame(){
 		MinigameSave minigame = new MinigameSave(name, "config");
 		
@@ -959,6 +968,13 @@ public class Minigame {
 			minigame.getConfig().set(name + ".paintballdmg", null);
 		}
 		
+		if(canSaveCheckpoint()){
+			minigame.getConfig().set(name + ".savecheckpoint", canSaveCheckpoint());
+		}
+		else{
+			minigame.getConfig().set(name + ".savecheckpoint", null);
+		}
+		
 		minigame.saveConfig();
 	}
 	
@@ -1116,6 +1132,10 @@ public class Minigame {
 		
 		if(minigame.getConfig().contains(name + ".paintballdmg")){
 			setPaintBallDamage(minigame.getConfig().getInt(name + ".paintballdmg"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".savecheckpoint")){
+			setSaveCheckpoint(minigame.getConfig().getBoolean(name + ".savecheckpoint"));
 		}
 		
 		saveMinigame();

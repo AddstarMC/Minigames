@@ -177,6 +177,13 @@ public class Minigames extends JavaPlugin{
 		
 		scoretypes = new ScoreTypes();
 		
+		MinigameSave save = new MinigameSave("storedCheckpoints");
+		for(String player : save.getConfig().getKeys(false)){
+			StoredPlayerCheckpoints spc = new StoredPlayerCheckpoints(player);
+			spc.loadCheckpoints();
+			pdata.addStoredPlayerCheckpoints(player, spc);
+		}
+		
 		getCommand("minigame").setExecutor(new CommandDispatcher());
 	}
 

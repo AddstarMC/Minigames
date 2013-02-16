@@ -46,6 +46,7 @@ public abstract class MinigameType implements Listener{
 	
 	public void callGeneralQuit(final Player player){
 		final String minigame = pdata.getPlayersMinigame(player);
+		Minigame mgm = mdata.getMinigame(minigame);
 		
 		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			
@@ -55,6 +56,14 @@ public abstract class MinigameType implements Listener{
 			}
 		});
 		
+		if(mgm.canSaveCheckpoint() && mgm.getType().equals("sp")){
+			if(pdata.hasStoredPlayerCheckpoint(player)){
+				pdata.getPlayersStoredCheckpoints(player).addCheckpoint(minigame, pdata.getPlayerCheckpoint(player));
+			}
+			else{
+				pdata.addStoredPlayerCheckpoint(player, minigame, pdata.getPlayerCheckpoint(player));
+			}
+		}
 		pdata.removePlayerCheckpoints(player);
 		pdata.removeAllPlayerFlags(player);
 		

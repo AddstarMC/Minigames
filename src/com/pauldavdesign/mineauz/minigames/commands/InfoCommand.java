@@ -64,6 +64,10 @@ public class InfoCommand implements ICommand{
 				lines.add(ChatColor.GRAY + "Game Type: " + ChatColor.GREEN + mgm.getType());
 				if(!mgm.getType().equals("th")){
 					lines.add(ChatColor.GRAY + "Score Type: " + ChatColor.GREEN + mgm.getScoreType());
+					if(!mgm.getType().equals("sp")){
+						lines.add(ChatColor.GRAY + "Minimum Score: " + ChatColor.GREEN + mgm.getMinScore());
+						lines.add(ChatColor.GRAY + "Maximum Score: " + ChatColor.GREEN + mgm.getMaxScore());
+					}
 					
 					if(mgm.isEnabled()){
 						lines.add(ChatColor.GRAY + "Enabled: " + ChatColor.GREEN + "true");
@@ -251,6 +255,15 @@ public class InfoCommand implements ICommand{
 					}
 					else{
 						lines.add(ChatColor.GRAY + "PaintBall Mode: " + ChatColor.RED + "false");
+					}
+					
+					if(mgm.getType().equals("sp")){
+						if(mgm.canSaveCheckpoint()){
+							lines.add(ChatColor.GRAY + "Save Checkpoints: " + ChatColor.GREEN + "true");
+						}
+						else{
+							lines.add(ChatColor.GRAY + "Save Checkpoints: " + ChatColor.RED + "false");
+						}
 					}
 				}
 				else{

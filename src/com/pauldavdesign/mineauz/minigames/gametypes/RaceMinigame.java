@@ -107,7 +107,7 @@ public class RaceMinigame extends MinigameType{
 		boolean hascompleted = false;
 		Configuration completion = null;
 		
-		player.sendMessage(ChatColor.GREEN + "You've finished the " + minigame + " minigame. Congratulations!");
+		player.sendMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + "You've finished the " + minigame + " minigame. Congratulations!");
 		if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
 			plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + player.getName() + " won " + mgm.getName());
 		}
@@ -134,7 +134,7 @@ public class RaceMinigame extends MinigameType{
 				if(players.get(i) instanceof Player){
 					Player p = players.get(i);
 					if(!p.getName().equals(player.getName())){
-						p.sendMessage(ChatColor.RED + "You have been beaten! Bad luck!");
+						p.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You have been beaten! Bad luck!");
 						pdata.quitMinigame(p, true);
 					}
 				}
@@ -187,7 +187,7 @@ public class RaceMinigame extends MinigameType{
 				String mgtype = mgm.getType();
 				if(mgtype.equals("race")){
 					event.setRespawnLocation(pdata.getPlayerCheckpoint(event.getPlayer()));
-					event.getPlayer().sendMessage(ChatColor.GRAY + "Bad Luck! Returning to checkpoint.");
+					event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Bad Luck! Returning to checkpoint.");
 					
 					mgm.getLoadout(mgm.getPlayersLoadout(event.getPlayer())).equiptLoadout(event.getPlayer());
 				}
