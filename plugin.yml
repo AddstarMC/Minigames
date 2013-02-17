@@ -45,6 +45,7 @@ permissions:
             minigame.treasure.hint: true
             minigame.list: true
             minigame.regen: true
+            minigame.globalloadout: true
     minigame.join:
         description: Allows access to start a minigame
         default: op
@@ -236,4 +237,7 @@ permissions:
         default: op
     minigame.partymode:
         description: Party Mode.
+        default: op
+    minigame.globalloadout:
+        description: Allows a player to modify global loadouts.
         default: op

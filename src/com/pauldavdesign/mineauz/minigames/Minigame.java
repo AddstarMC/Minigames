@@ -30,7 +30,7 @@ public class Minigame {
 	private Location lobbyPosisiton = null;
 	private PlayerLoadout defaultLoadout = new PlayerLoadout("default");
 	private Map<String, PlayerLoadout> extraLoadouts = new HashMap<String, PlayerLoadout>();
-	private Map<Player, String> playerLoadouts = new HashMap<Player, String>();
+	private Map<Player, PlayerLoadout> playerLoadouts = new HashMap<Player, PlayerLoadout>();
 	private Map<String, RestoreBlock> restoreBlocks = new HashMap<String, RestoreBlock>();
 	private boolean betting = false;
 	private String location = null;
@@ -290,20 +290,20 @@ public class Minigame {
 		}
 	}
 	
-	public String getPlayersLoadout(Player player){
+	public PlayerLoadout getPlayersLoadout(Player player){
 		if(playerLoadouts.containsKey(player)){
 			return playerLoadouts.get(player);
 		}
 		else if(getRedTeam().contains(player) && extraLoadouts.containsKey("red")){
-			return "red";
+			return extraLoadouts.get("red");
 		}
 		else if(getBlueTeam().contains(player) && extraLoadouts.containsKey("blue")){
-			return "blue";
+			return extraLoadouts.get("blue");
 		}
-		return "default";
+		return getDefaultPlayerLoadout();
 	}
 	
-	public void setPlayersLoadout(Player player, String loadout){
+	public void setPlayersLoadout(Player player, PlayerLoadout loadout){
 		playerLoadouts.put(player, loadout);
 	}
 	

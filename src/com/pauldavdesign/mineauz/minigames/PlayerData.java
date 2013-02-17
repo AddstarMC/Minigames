@@ -70,10 +70,18 @@ public class PlayerData {
 					setAllowTP(player, false);
 					setAllowGMChange(player, false);
 					
+					for(PotionEffect potion : player.getActivePotionEffects()){
+						player.removePotionEffect(potion.getType());
+					}
+					
 					if(hasStoredPlayerCheckpoint(player)){
 						if(getPlayersStoredCheckpoints(player).hasCheckpoint(minigame.getName())){
 							playerCheckpoints.put(player.getName(), getPlayersStoredCheckpoints(player).getCheckpoint(minigame.getName()));
+							if(getPlayersStoredCheckpoints(player).hasFlags(minigame.getName())){
+								playerFlags.put(player.getName(), getPlayersStoredCheckpoints(player).getFlags(minigame.getName()));
+							}
 							getPlayersStoredCheckpoints(player).removeCheckpoint(minigame.getName());
+							getPlayersStoredCheckpoints(player).removeFlags(minigame.getName());
 							if(getPlayersStoredCheckpoints(player).hasNoCheckpoints()){
 								storedPlayerCheckpoints.remove(player.getName());
 							}
@@ -241,8 +249,8 @@ public class PlayerData {
 				}
 			}
 			
-			if(mgm.hasDefaultLoadout() || mgm.hasLoadouts()){
-				mgm.getLoadout(mgm.getPlayersLoadout(players.get(i))).equiptLoadout(players.get(i));
+			if(!mgm.getPlayersLoadout(players.get(i)).getItems().isEmpty()){
+				mgm.getPlayersLoadout(players.get(i)).equiptLoadout(players.get(i));
 			}
 		}
 
@@ -674,6 +682,17 @@ public class PlayerData {
 		if(playerFlags.containsKey(player.getName())){
 			playerFlags.remove(player.getName());
 		}
+	}
+	
+	public boolean playerHasFlags(Player player){
+		if(playerFlags.containsKey(player.getName())){
+			return true;
+		}
+		return false;
+	}
+	
+	public List<String> getPlayerFlags(Player player){
+		return playerFlags.get(player.getName());
 	}
 	
 	public void addPlayerKill(Player ply){

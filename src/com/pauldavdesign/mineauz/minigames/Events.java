@@ -314,10 +314,18 @@ public class Events implements Listener{
 							Player ply = event.getPlayer();
 							Minigame mgm = mdata.getMinigame(minigame);
 							if(mgm.hasLoadout(sign.getLine(2))){
-								if(mgm.getType() == "sp" || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
+								if(mgm.getType().equals("sp") || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
 									mgm.getLoadout(sign.getLine(2)).equiptLoadout(ply);
 								}
-								mgm.setPlayersLoadout(ply, sign.getLine(2));
+								mgm.setPlayersLoadout(ply, mgm.getLoadout(sign.getLine(2)));
+								ply.updateInventory();
+								ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been equip with the " + sign.getLine(2) + " loadout.");
+							}
+							else if(mdata.hasLoadout(sign.getLine(2))){
+								if(mgm.getType().equals("sp") || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
+									mdata.getLoadout(sign.getLine(2)).equiptLoadout(ply);
+								}
+								mgm.setPlayersLoadout(ply, mdata.getLoadout(sign.getLine(2)));
 								ply.updateInventory();
 								ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been equip with the " + sign.getLine(2) + " loadout.");
 							}

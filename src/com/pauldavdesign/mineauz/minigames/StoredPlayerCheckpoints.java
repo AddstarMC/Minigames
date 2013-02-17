@@ -1,6 +1,7 @@
 package com.pauldavdesign.mineauz.minigames;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -9,16 +10,19 @@ import org.bukkit.Location;
 public class StoredPlayerCheckpoints {
 	private String playerName;
 	private Map<String, Location> checkpoints;
+	private Map<String, List<String>> flags;
 	
 	public StoredPlayerCheckpoints(String name){
 		playerName = name;
 		checkpoints = new HashMap<String, Location>();
+		flags = new HashMap<String, List<String>>();
 	}
 	
 	public StoredPlayerCheckpoints(String name, String minigame, Location checkpoint){
 		playerName = name;
 		checkpoints = new HashMap<String, Location>();
 		checkpoints.put(minigame, checkpoint);
+		flags = new HashMap<String, List<String>>();
 		saveCheckpoints();
 	}
 	
@@ -49,6 +53,27 @@ public class StoredPlayerCheckpoints {
 		return checkpoints.isEmpty();
 	}
 	
+	public boolean hasFlags(String minigame){
+		if(flags.containsKey(minigame)){
+			return true;
+		}
+		return false;
+	}
+	
+	public void addFlags(String minigame, List<String> flagList){
+		flags.put(minigame, flagList);
+		saveCheckpoints();
+	}
+	
+	public List<String> getFlags(String minigame){
+		return flags.get(minigame);
+	}
+	
+	public void removeFlags(String minigame){
+		flags.remove(minigame);
+		saveCheckpoints();
+	}
+	
 	public void saveCheckpoints(){
 		MinigameSave save = new MinigameSave("storedCheckpoints");
 		save.getConfig().set(playerName, null);
@@ -59,6 +84,9 @@ public class StoredPlayerCheckpoints {
 			save.getConfig().set(playerName + "." + mgm + ".yaw", checkpoints.get(mgm).getYaw());
 			save.getConfig().set(playerName + "." + mgm + ".pitch", checkpoints.get(mgm).getPitch());
 			save.getConfig().set(playerName + "." + mgm + ".world", checkpoints.get(mgm).getWorld().getName());
+		}
+		for(String mgm : flags.keySet()){
+			save.getConfig().set(playerName + "." + mgm + ".flags", getFlags(mgm));
 		}
 		save.saveConfig();
 	}
@@ -76,6 +104,9 @@ public class StoredPlayerCheckpoints {
 			
 			Location loc = new Location(Minigames.plugin.getServer().getWorld(world), locx, locy, locz, yaw, pitch);
 			checkpoints.put(mgm, loc);
+			if(save.getConfig().contains(playerName + "." + mgm + ".flags")){
+				flags.put(mgm, save.getConfig().getStringList(playerName + "." + mgm + ".flags"));
+			}
 		}
 	}
 }

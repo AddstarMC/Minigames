@@ -37,7 +37,9 @@ public class SetSecondaryRewardCommand implements ICommand{
 
 	@Override
 	public String[] getUsage() {
-		return new String[] {"/minigame set <Minigame> reward2 <Item ID / Item Name> [Quantity]"};
+		return new String[] {"/minigame set <Minigame> reward2 <Item ID / Item Name> [Quantity]",
+				"/minigame set <Minigame> reward2 $<Money Amount>"
+		};
 	}
 
 	@Override

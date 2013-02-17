@@ -184,6 +184,16 @@ public class Minigames extends JavaPlugin{
 			pdata.addStoredPlayerCheckpoints(player, spc);
 		}
 		
+		MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
+		Set<String> keys = globalLoadouts.getConfig().getKeys(false);
+		for(String loadout : keys){
+			mdata.addLoadout(loadout);
+			Set<String> items = globalLoadouts.getConfig().getConfigurationSection(loadout).getKeys(false);
+			for(int i = 0; i < items.size(); i++){
+				mdata.getLoadout(loadout).addItemToLoadout(globalLoadouts.getConfig().getItemStack(loadout + "." + i));
+			}
+		}
+		
 		getCommand("minigame").setExecutor(new CommandDispatcher());
 	}
 
@@ -211,6 +221,19 @@ public class Minigames extends JavaPlugin{
 		
 		pdata.saveDCPlayers();
 		pdata.saveDeniedCommands();
+		
+		MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
+		if(mdata.hasLoadouts()){
+			for(String loadout : mdata.getLoadouts()){
+				for(int i = 0; i < mdata.getLoadout(loadout).getItems().size(); i++){
+					globalLoadouts.getConfig().set(loadout + "." + i, mdata.getLoadout(loadout).getItems().get(i));
+				}
+			}
+		}
+		else{
+			globalLoadouts.getConfig().set("globalloadouts", null);
+		}
+		globalLoadouts.saveConfig();
 	}
 	
 	private boolean setupEconomy(){

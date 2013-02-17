@@ -663,10 +663,7 @@ public class TeamDMMinigame extends MinigameType{
 				}
 			});
 			
-			mg.getLoadout(mg.getPlayersLoadout(event.getPlayer())).equiptLoadout(event.getPlayer());
-//			if(mg.hasDefaultLoadout()){
-//				mg.getDefaultPlayerLoadout().equiptLoadout(event.getPlayer());
-//			}
+			mg.getPlayersLoadout(event.getPlayer()).equiptLoadout(event.getPlayer());
 			
 			for(final Player play : mg.getBlueTeam()){
 				Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {

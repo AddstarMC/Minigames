@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
 public class PlayerLoadout {
 	private List<ItemStack> items = new ArrayList<ItemStack>();
@@ -77,6 +78,10 @@ public class PlayerLoadout {
 					player.getInventory().addItem(item);
 				}
 			}
+		}
+		
+		for(PotionEffect potion : player.getActivePotionEffects()){
+			player.removePotionEffect(potion.getType());
 		}
 	}
 	

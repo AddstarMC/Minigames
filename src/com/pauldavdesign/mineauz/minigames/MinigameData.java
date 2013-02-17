@@ -22,6 +22,7 @@ public class MinigameData {
 	private Map<String, Configuration> configs = new HashMap<String, Configuration>();
 	private Map<String, MinigameType> minigameTypes = new HashMap<String, MinigameType>();
 	private Map<String, Location> treasureLoc = new HashMap<String, Location>();
+	private Map<String, PlayerLoadout> globalLoadouts = new HashMap<String, PlayerLoadout>();
 	private static Minigames plugin = Minigames.plugin;
 	
 	public MinigameData(){}
@@ -304,5 +305,38 @@ public class MinigameData {
 	
 	public Set<String> getMinigameTypes(){
 		return minigameTypes.keySet();
+	}
+	
+	public void addLoadout(String name){
+		globalLoadouts.put(name, new PlayerLoadout(name));
+	}
+	
+	public void deleteLoadout(String name){
+		if(globalLoadouts.containsKey(name)){
+			globalLoadouts.remove(name);
+		}
+	}
+	
+	public Set<String> getLoadouts(){
+		return globalLoadouts.keySet();
+	}
+	
+	public PlayerLoadout getLoadout(String name){
+		PlayerLoadout pl = null;
+		if(globalLoadouts.containsKey(name)){
+			pl = globalLoadouts.get(name);
+		}
+		return pl;
+	}
+	
+	public boolean hasLoadouts(){
+		if(globalLoadouts.isEmpty()){
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean hasLoadout(String name){
+		return globalLoadouts.containsKey(name);
 	}
 }

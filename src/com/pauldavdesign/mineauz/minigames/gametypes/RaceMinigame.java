@@ -189,7 +189,7 @@ public class RaceMinigame extends MinigameType{
 					event.setRespawnLocation(pdata.getPlayerCheckpoint(event.getPlayer()));
 					event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Bad Luck! Returning to checkpoint.");
 					
-					mgm.getLoadout(mgm.getPlayersLoadout(event.getPlayer())).equiptLoadout(event.getPlayer());
+					mgm.getPlayersLoadout(event.getPlayer()).equiptLoadout(event.getPlayer());
 				}
 			}
 		}
