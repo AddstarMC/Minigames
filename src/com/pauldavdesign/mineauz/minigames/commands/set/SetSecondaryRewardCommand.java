@@ -58,7 +58,7 @@ public class SetSecondaryRewardCommand implements ICommand{
 		if(args != null){
 			int quantity = 1;
 			double money = -1;
-			if(args.length >= 2 && args[1].matches("[0-9]")){
+			if(args.length >= 2 && args[1].matches("[0-9]+")){
 				quantity = Integer.parseInt(args[1]);
 			}
 			ItemStack item = null;
