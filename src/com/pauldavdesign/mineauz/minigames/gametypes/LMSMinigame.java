@@ -211,9 +211,10 @@ public class LMSMinigame extends MinigameType {
 					}
 					
 					pdata.partyMode(ply);
+					event.setDeathMessage(null);
+					ply.setHealth(2);
 					
 					pdata.quitMinigame(ply, false);
-					event.setDeathMessage(null);
 					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 						@Override
 						public void run() {
