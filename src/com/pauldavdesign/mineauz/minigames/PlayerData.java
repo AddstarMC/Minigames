@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -480,6 +481,9 @@ public class PlayerData {
 					plys = mgm.getBlueTeam();
 				}
 				double bets = mgm.getMpBets().claimMoneyBets() / (double) plys.size();
+				BigDecimal roundBets = new BigDecimal(bets);
+				roundBets = roundBets.setScale(2, BigDecimal.ROUND_HALF_UP);
+				bets = roundBets.doubleValue();
 				for(Player ply : plys){
 					plugin.getEconomy().depositPlayer(ply.getName(), bets);
 					ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You won $" + bets);
