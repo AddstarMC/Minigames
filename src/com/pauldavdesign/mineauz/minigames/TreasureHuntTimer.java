@@ -63,7 +63,7 @@ public class TreasureHuntTimer extends Thread{
 				}
 				else if(time == hintTime2 && chestfound == false){
 					block.setY(block.getY() - 1);
-					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + " The " + minigame + " treasure rests upon " + block.getBlock().getType().toString().toLowerCase().replace("_", " "), "minigame.treasure.announce");
+					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "The " + minigame + " treasure rests upon " + block.getBlock().getType().toString().toLowerCase().replace("_", " "), "minigame.treasure.announce");
 					curHints.add(ChatColor.GRAY + "The " + minigame + " treasure rests upon " + block.getBlock().getType().toString().toLowerCase().replace("_", " "));
 					block.setY(block.getY() + 1);
 				}
@@ -110,22 +110,22 @@ public class TreasureHuntTimer extends Thread{
 						}
 					}
 					
-					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + " The " + minigame + " treasure lies to the " + dir + " of " + mdata.getMinigame(minigame).getLocation(), "minigame.treasure.hint");
+					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "The " + minigame + " treasure lies to the " + dir + " of " + mdata.getMinigame(minigame).getLocation(), "minigame.treasure.hint");
 					curHints.add(ChatColor.GRAY + "The " + minigame + " treasure lies to the " + dir + " of " + mgm.getLocation());
 				}
 				else if(time == hintTime3 && chestfound == false){
 					int height = block.getBlockY();
 					if(height > 62){
-						plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + " The " + minigame + " treasure is " + (height - 62) + "m above sea level", "minigame.treasure.hint");
+						plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "The " + minigame + " treasure is " + (height - 62) + "m above sea level", "minigame.treasure.hint");
 						curHints.add(ChatColor.GRAY + "The " + minigame + " treasure is " + (height - 62) + "m above sea level");
 					}
 					else{
-						plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + " The " + minigame + " treasure is " + (62 - height) + "m below sea level", "minigame.treasure.hint");
+						plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "The " + minigame + " treasure is " + (62 - height) + "m below sea level", "minigame.treasure.hint");
 						curHints.add(ChatColor.GRAY + "The " + minigame + " treasure is " + (62 - height) + "m below sea level");
 					}
 				}
 				else if(time == hintTime4 && chestfound == false){
-					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + " The " + minigame + " treasure resides in the " + block.getBlock().getBiome().toString().toLowerCase().replace("_", " ") + " biome", "minigame.treasure.hint");
+					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "The " + minigame + " treasure resides in the " + block.getBlock().getBiome().toString().toLowerCase().replace("_", " ") + " biome", "minigame.treasure.hint");
 					curHints.add(ChatColor.GRAY + "The " + minigame + " treasure resides in the " + block.getBlock().getBiome().toString().toLowerCase().replace("_", " ") + " biome");
 				}
 				
@@ -193,7 +193,9 @@ public class TreasureHuntTimer extends Thread{
 			}
 			else{
 				player.sendMessage(ChatColor.RED + "You currently cannot use this command for the " + minigame + " treasure hunt");
-				player.sendMessage(ChatColor.GRAY + "Time left: " + time + " minutes");
+				int nextuse = (300000 - (int) (Calendar.getInstance().getTimeInMillis() - lastCommand.get(player.getName()))) / 1000;
+				player.sendMessage(ChatColor.GRAY + "Next use: " + MinigameUtils.convertTime(nextuse));
+				player.sendMessage(ChatColor.GRAY + "Treasure Time left: " + time + " minutes");
 			}
 		}
 		else{

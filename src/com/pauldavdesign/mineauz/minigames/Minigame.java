@@ -35,6 +35,7 @@ public class Minigame {
 	private boolean betting = false;
 	private String location = null;
 	private int maxRadius = 1000;
+	private int maxHeight = 20;
 	private int minTreasure = 0;
 	private int maxTreasure = 8;
 	private ItemStack rewardItem = null;
@@ -130,6 +131,14 @@ public class Minigame {
 
 	public int getMaxRadius(){
 		return maxRadius;
+	}
+
+	public int getMaxHeight() {
+		return maxHeight;
+	}
+
+	public void setMaxHeight(int maxHeight) {
+		this.maxHeight = maxHeight;
 	}
 
 	public String getLocation(){
@@ -787,7 +796,18 @@ public class Minigame {
 		minigame.getConfig().set(name + ".maxplayers", getMaxPlayers());
 		minigame.getConfig().set(name + ".bets", bettingEnabled());
 		minigame.getConfig().set(name + ".enabled", isEnabled());
-		minigame.getConfig().set(name + ".maxradius", getMaxRadius());
+		if(getMaxRadius() != 1000){
+			minigame.getConfig().set(name + ".maxradius", getMaxRadius());
+		}
+		else{
+			minigame.getConfig().set(name + ".maxradius", null);
+		}
+		if(getMaxHeight() != 20){
+			minigame.getConfig().set(name + ".maxheight", getMaxHeight());
+		}
+		else{
+			minigame.getConfig().set(name + ".maxheight", null);
+		}
 		minigame.getConfig().set(name + ".usepermissions", usePermissions);
 		if(getRewardItem() != null){
 			minigame.getConfig().set(name + ".reward", getRewardItem());
@@ -1028,7 +1048,12 @@ public class Minigame {
 		setMaxPlayers(minigame.getConfig().getInt(name + ".maxplayers"));
 		setBetting(minigame.getConfig().getBoolean(name + ".bets"));
 		setEnabled(minigame.getConfig().getBoolean(name + ".enabled"));
-		setMaxRadius(minigame.getConfig().getInt(name + ".maxradius"));
+		if(minigame.getConfig().contains(name + ".maxradius")){
+			setMaxRadius(minigame.getConfig().getInt(name + ".maxradius"));
+		}
+		if(minigame.getConfig().contains(name + ".maxheight")){
+			setMaxHeight(minigame.getConfig().getInt(name + ".maxheight"));
+		}
 		setUsePermissions(minigame.getConfig().getBoolean(name + ".usepermissions"));
 		if(minigame.getConfig().contains(name + ".reward")){
 			setRewardItem(minigame.getConfig().getItemStack(name + ".reward"));

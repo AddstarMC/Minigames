@@ -206,11 +206,11 @@ public class Minigames extends JavaPlugin{
 				pdata.quitMinigame(p, false);
 			}
 		}
-		for(Minigame mg : mdata.getAllMinigames().values()){
-			if(mg.getThTimer() != null){
-				mg.getThTimer().setActive(false);
-				mdata.removeTreasure(mg.getName());
-			}
+		Set<String> mgtreasure = mdata.getAllTreasureHuntLocation();
+		for(String minigame : mgtreasure){
+			mdata.getMinigame(minigame).getThTimer().setActive(false);
+			mdata.getMinigame(minigame).getThTimer().setTreasureFound(true);
+			mdata.removeTreasureNoDelay(minigame);
 		}
 		for(Minigame mg : mdata.getAllMinigames().values()){
 			mg.saveMinigame();

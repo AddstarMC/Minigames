@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -32,8 +33,6 @@ public class MinigameData {
 		String gametype = mgm.getType();
 		if(gametype.equals("th") && mgm.getLocation() != null){
 			Location tcpos = mgm.getStartLocations().get(0).clone();
-			Location maxcpos = new Location(tcpos.getWorld(), 0, 0, 0);
-			Location mincpos = new Location(tcpos.getWorld(), 0, 0, 0);
 			final Location rpos = tcpos;
 			double rx = 0;
 			double ry = 0;
@@ -45,40 +44,23 @@ public class MinigameData {
 			else{
 				maxradius = mgm.getMaxRadius();
 			}
+			final int maxheight = mgm.getMaxHeight();
 			
-			maxcpos.setX(tcpos.getX() + maxradius);
-			mincpos.setX(tcpos.getX() - maxradius);
-			maxcpos.setZ(tcpos.getZ() + maxradius);
-			mincpos.setZ(tcpos.getZ() - maxradius);
-			maxcpos.setY(tcpos.getY() + maxradius);
-			mincpos.setY(tcpos.getY());
+			Random rand = new Random();
+			int rrad = rand.nextInt(maxradius);
+			double randCir = 2 * Math.PI * rand.nextInt(360) / 360;
+			rx = Math.round(tcpos.getX() + rrad * Math.cos(randCir));
+			rz = Math.round(tcpos.getZ() + rrad * Math.sin(randCir));
 			
-			rx = mincpos.getX() + (Math.random() * ((maxcpos.getX() - mincpos.getX()) + 1));
-			ry = mincpos.getY() + (Math.random() * ((maxcpos.getY() - mincpos.getY()) + 1));
-			rz = mincpos.getZ() + (Math.random() * ((maxcpos.getZ() - mincpos.getZ()) + 1));
+			ry = tcpos.getY() + rand.nextInt(maxheight);
 			
 			rpos.setX(rx);
 			rpos.setY(ry);
 			rpos.setZ(rz);
 			
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					if(getTreasureHuntLocation(minigame) != null){
-						Location old = getTreasureHuntLocation(minigame);
-						old.getBlock().setType(Material.AIR);
-					}
-				}
-			});
-			
-			if(getTreasureHuntLocation(minigame) != null){
-				Location old = getTreasureHuntLocation(minigame);
-				old.getBlock().setType(Material.AIR);
-			}
-			
+			//Add a new Chest
 			if(rpos.getBlock().getType() == Material.AIR){
-				while(rpos.getBlock().getType() == Material.AIR){
+				while(rpos.getBlock().getType() == Material.AIR && rpos.getY() > 1){
 					rpos.setY(rpos.getY() - 1);
 				}
 				rpos.setY(rpos.getY() + 1);
@@ -94,7 +76,7 @@ public class MinigameData {
 			}
 			else
 			{
-				while(rpos.getBlock().getType() != Material.AIR){
+				while(rpos.getBlock().getType() != Material.AIR && rpos.getY() < 255){
 					rpos.setY(rpos.getY() + 1);
 				}
 				
@@ -108,8 +90,8 @@ public class MinigameData {
 				});
 			}
 			
+			//Fill new chest
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
 				@Override
 				public void run() {
 					if(rpos.getBlock().getState() instanceof Chest){
@@ -134,7 +116,7 @@ public class MinigameData {
 			});
 			
 			setTreasureHuntLocation(minigame, rpos.getBlock().getLocation());
-			
+			plugin.getLogger().info(mgm.getName() + " treasure chest spawned at: " + rpos.getBlockX() + ", " + rpos.getBlockY() + ", " + rpos.getBlockZ());
 			plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "A treasure chest has appeared within " + maxradius + "m of " + getMinigame(minigame).getLocation() + "!", "minigame.treasure.announce");
 			if(getMinigame(minigame).getThTimer() == null){
 				getMinigame(minigame).setThTimer(new TreasureHuntTimer(minigame));
@@ -250,6 +232,17 @@ public class MinigameData {
 					old.getBlock().setType(Material.AIR);
 				}
 			});
+		}
+	}
+	public void removeTreasureNoDelay(String minigame){
+		if(getTreasureHuntLocation(minigame) != null){
+			Location old = getTreasureHuntLocation(minigame);
+			if(getTreasureHuntLocation(minigame).getBlock().getState() instanceof Chest){
+				Chest chest = (Chest) getTreasureHuntLocation(minigame).getBlock().getState();
+				chest.getInventory().clear();
+			}
+			
+			old.getBlock().setType(Material.AIR);
 		}
 	}
 	
