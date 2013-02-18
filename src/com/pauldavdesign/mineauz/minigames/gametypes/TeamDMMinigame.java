@@ -753,8 +753,28 @@ public class TeamDMMinigame extends MinigameType{
 			if(event.getMinigame().getBlueTeamScore() > event.getMinigame().getRedTeamScore()){
 				pdata.endTeamMinigame(1, event.getMinigame());
 			}
-			else{
+			else if(event.getMinigame().getBlueTeamScore() < event.getMinigame().getRedTeamScore()){
 				pdata.endTeamMinigame(0, event.getMinigame());
+			}
+			else{
+				List<Player> players = new ArrayList<Player>();
+				players.addAll(event.getMinigame().getPlayers());
+				
+				for(Player ply : players){
+					pdata.quitMinigame(ply, true);
+					if(!plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
+						ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " tied against " + 
+								ChatColor.RED + "Red Team" + ChatColor.WHITE + " in " + event.getMinigame().getName() + ", ");
+						ply.sendMessage("Score: " + ChatColor.BLUE + String.valueOf(event.getMinigame().getBlueTeamScore()) + ChatColor.WHITE + " to " + 
+								ChatColor.RED + event.getMinigame().getRedTeamScore());
+					}
+				}
+				if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
+					plugin.getServer().broadcastMessage(ChatColor.RED + "[Minigames] " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " tied against " + 
+							ChatColor.RED + "Red Team" + ChatColor.WHITE + " in " + event.getMinigame().getName() + ", ");
+					plugin.getServer().broadcastMessage("Score: " + ChatColor.BLUE + String.valueOf(event.getMinigame().getBlueTeamScore()) + ChatColor.WHITE + " to " + 
+							ChatColor.RED + event.getMinigame().getRedTeamScore());
+				}
 			}
 		}
 	}

@@ -773,8 +773,14 @@ public class Minigame {
 		if(getSpleefFloor1() != null){
 			Minigames.plugin.mdata.minigameSetLocations(name, getSpleefFloor1(), "sfloorpos.1", minigame.getConfig());
 		}
+		else{
+			minigame.getConfig().set(name + ".sfloorpos", null);
+		}
 		if(getSpleefFloor2() != null){
 			Minigames.plugin.mdata.minigameSetLocations(name, getSpleefFloor2(), "sfloorpos.2", minigame.getConfig());
+		}
+		else{
+			minigame.getConfig().set(name + ".sfloorpos", null);
 		}
 		
 		if(getMinTreasure() != 0){

@@ -349,9 +349,17 @@ public class PlayerData {
 				mgm.setMinigameTimer(null);
 			}
 			
+			if(mgm.getFloorDegenerator() != null && mgm.getPlayers().size() == 0){
+				mgm.getFloorDegenerator().stopDegenerator();
+			}
+			
 			if(mgm.getPlayers().size() == 0 && mgm.getBlockRecorder().hasData()){
 				mgm.getBlockRecorder().restoreBlocks();
 				mgm.getBlockRecorder().restoreEntities();
+			}
+			
+			if(mgm.getMpBets() != null && mgm.getPlayers().size() == 0){
+				mgm.setMpBets(null);
 			}
 			
 			removeAllowTP(player);
@@ -402,6 +410,14 @@ public class PlayerData {
 			if(mgm.getMinigameTimer() != null){
 				mgm.getMinigameTimer().stopTimer();
 				mgm.setMinigameTimer(null);
+			}
+			
+			if(mgm.getFloorDegenerator() != null && mgm.getPlayers().size() == 0){
+				mgm.getFloorDegenerator().stopDegenerator();
+			}
+			
+			if(mgm.getMpBets() != null && mgm.getPlayers().size() == 0){
+				mgm.setMpBets(null);
 			}
 			
 			if(mgm.getBlockRecorder().hasData()){
