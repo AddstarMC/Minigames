@@ -199,6 +199,9 @@ permissions:
     minigame.set.paintball:
         description: Lets a player set a Minigame to Paintball Mode
         default: op
+    minigame.set.preset:
+        description: Lets a player use a preset on a Minigame.
+        default: op
     minigame.info:
         description: Allows check to see if a minigames variables have been set
         default: op

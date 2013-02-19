@@ -1,8 +1,10 @@
 package com.pauldavdesign.mineauz.minigames;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -17,6 +19,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
+import com.pauldavdesign.mineauz.minigames.presets.BasePreset;
+import com.pauldavdesign.mineauz.minigames.presets.SpleefPreset;
 
 public class MinigameData {
 	private Map<String, Minigame> minigames = new HashMap<String, Minigame>();
@@ -26,7 +30,11 @@ public class MinigameData {
 	private Map<String, PlayerLoadout> globalLoadouts = new HashMap<String, PlayerLoadout>();
 	private static Minigames plugin = Minigames.plugin;
 	
-	public MinigameData(){}
+	private Map<String, BasePreset> presets = new HashMap<String, BasePreset>();
+	
+	public MinigameData(){
+		addPreset(new SpleefPreset());
+	}
 	
 	public void startGlobalMinigame(final String minigame){
 		final Minigame mgm = getMinigame(minigame);
@@ -331,5 +339,26 @@ public class MinigameData {
 	
 	public boolean hasLoadout(String name){
 		return globalLoadouts.containsKey(name);
+	}
+	
+	public void addPreset(BasePreset preset){
+		presets.put(preset.getName(), preset);
+	}
+	
+	public BasePreset getPreset(String presetName){
+		if(presets.containsKey(presetName)){
+			return presets.get(presetName);
+		}
+		return null;
+	}
+	
+	public boolean hasPreset(String presetName){
+		return presets.containsKey(presetName);
+	}
+	
+	public List<String> getAllPresets(){
+		List<String> list = new ArrayList<String>();
+		list.addAll(presets.keySet());
+		return list;
 	}
 }
