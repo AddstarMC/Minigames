@@ -35,7 +35,6 @@ import com.pauldavdesign.mineauz.minigames.gametypes.DMMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.LMSMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.RaceMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.SPMinigame;
-import com.pauldavdesign.mineauz.minigames.gametypes.SpleefMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 import com.pauldavdesign.mineauz.minigames.scoring.ScoreTypes;
 
@@ -57,16 +56,15 @@ public class Minigames extends JavaPlugin{
 		pdata = new PlayerData();
 		
 		mdata.addMinigameType(new SPMinigame());
-		mdata.addMinigameType(new SpleefMinigame());
 		mdata.addMinigameType(new RaceMinigame());
 		mdata.addMinigameType(new LMSMinigame());
+		mdata.addMinigameType(new DMMinigame());
 		try{
 			Class.forName("net.minecraft.server.v1_4_R1.EntityPlayer");
 			mdata.addMinigameType(new TeamDMMinigame());
 		}catch(ClassNotFoundException e){
 			getLogger().info("Note: Team Deathmatch cannot be run on this server version, please check for updates!");
 		}
-		mdata.addMinigameType(new DMMinigame());
 		
 		if(!pdata.invsave.getConfig().contains("inventories")){
 			pdata.invsave.getConfig().createSection("inventories");
@@ -192,6 +190,9 @@ public class Minigames extends JavaPlugin{
 			for(int i = 0; i < items.size(); i++){
 				mdata.getLoadout(loadout).addItemToLoadout(globalLoadouts.getConfig().getItemStack(loadout + "." + i));
 			}
+			if(globalLoadouts.getConfig().contains(loadout + ".usepermissions")){
+				mdata.getLoadout(loadout).setUsePermissions(globalLoadouts.getConfig().getBoolean(loadout + ".usepermissions"));
+			}
 		}
 		
 		getCommand("minigame").setExecutor(new CommandDispatcher());
@@ -227,6 +228,12 @@ public class Minigames extends JavaPlugin{
 			for(String loadout : mdata.getLoadouts()){
 				for(int i = 0; i < mdata.getLoadout(loadout).getItems().size(); i++){
 					globalLoadouts.getConfig().set(loadout + "." + i, mdata.getLoadout(loadout).getItems().get(i));
+				}
+				if(mdata.getLoadout(loadout).getUsePermissions()){
+					globalLoadouts.getConfig().set(loadout + ".usepermissions", true);
+				}
+				else{
+					globalLoadouts.getConfig().set(loadout + ".usepermissions", null);
 				}
 			}
 		}

@@ -36,7 +36,7 @@ public class SetLoadoutCommand implements ICommand {
 
 	@Override
 	public String[] getParameters() {
-		return new String[] {"create", "delete", "add", "remove", "clear", "list"};
+		return new String[] {"create", "delete", "usepermissions", "add", "remove", "clear", "list"};
 	}
 
 	@Override
@@ -47,6 +47,7 @@ public class SetLoadoutCommand implements ICommand {
 				"/minigame set <Minigame> loadout clear [-l loadoutName]",
 				"/minigame set <Minigame> loadout create <loadoutName>",
 				"/minigame set <Minigame> loadout delete <loadoutName>",
+				"/minigame set <Minigame> loadout usepermissions <loadoutName> <true/false>",
 				"/minigame set <Minigame> loadout list"
 		};
 	}
@@ -241,6 +242,22 @@ public class SetLoadoutCommand implements ICommand {
 				}
 				sender.sendMessage(ChatColor.GRAY + "List of loadouts:");
 				sender.sendMessage(ChatColor.GRAY + list);
+				return true;
+			}
+			else if(args[0].equalsIgnoreCase("usepermissions") && args.length >= 3){
+				boolean bool = Boolean.parseBoolean(args[2]);
+				if(minigame.hasLoadout(args[1])){
+					minigame.getLoadout(args[1]).setUsePermissions(bool);
+					if(bool){
+						sender.sendMessage(ChatColor.GRAY + args[1] + " now uses the permission: minigame.loadout." + args[1].toLowerCase());
+					}
+					else{
+						sender.sendMessage(ChatColor.GRAY + args[1] + " no longer needs a permission to use.");
+					}
+				}
+				else{
+					sender.sendMessage(ChatColor.RED + "There is no loadout by the name " + args[1]);
+				}
 				return true;
 			}
 		}

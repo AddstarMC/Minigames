@@ -48,6 +48,7 @@ public class GlobalLoadoutCommand implements ICommand {
 				"/minigame globalloadout <loadoutName> clear",
 				"/minigame globalloadout <loadoutName> create",
 				"/minigame globalloadout <loadoutName> delete",
+				"/minigame globalloadout <loadoutName> usepermissions <true/false>",
 				"/minigame globalloadout list"
 		};
 	}
@@ -182,6 +183,22 @@ public class GlobalLoadoutCommand implements ICommand {
 				}
 				sender.sendMessage(ChatColor.GRAY + "List of global loadouts:");
 				sender.sendMessage(ChatColor.GRAY + list);
+				return true;
+			}
+			else if(args[1].equalsIgnoreCase("usepermissions") && args.length >= 3){
+				boolean bool = Boolean.parseBoolean(args[2]);
+				if(mdata.hasLoadout(args[0])){
+					mdata.getLoadout(args[0]).setUsePermissions(bool);
+					if(bool){
+						sender.sendMessage(ChatColor.GRAY + args[0] + " now uses the permission: minigame.loadout." + args[0].toLowerCase());
+					}
+					else{
+						sender.sendMessage(ChatColor.GRAY + args[0] + " no longer needs a permission to use.");
+					}
+				}
+				else{
+					sender.sendMessage(ChatColor.RED + "There is no global loadout by the name " + args[0]);
+				}
 				return true;
 			}
 		}

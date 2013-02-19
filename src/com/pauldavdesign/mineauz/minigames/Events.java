@@ -314,20 +314,30 @@ public class Events implements Listener{
 							Player ply = event.getPlayer();
 							Minigame mgm = mdata.getMinigame(minigame);
 							if(mgm.hasLoadout(sign.getLine(2))){
-								if(mgm.getType().equals("sp") || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
-									mgm.getLoadout(sign.getLine(2)).equiptLoadout(ply);
+								if(!mgm.getLoadout(sign.getLine(2)).getUsePermissions() || ply.hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
+									if(mgm.getType().equals("sp") || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
+										mgm.getLoadout(sign.getLine(2)).equiptLoadout(ply);
+									}
+									mgm.setPlayersLoadout(ply, mgm.getLoadout(sign.getLine(2)));
+									ply.updateInventory();
+									ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been equip with the " + sign.getLine(2) + " loadout.");
 								}
-								mgm.setPlayersLoadout(ply, mgm.getLoadout(sign.getLine(2)));
-								ply.updateInventory();
-								ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been equip with the " + sign.getLine(2) + " loadout.");
+								else{
+									ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You don't have permission to use the " + sign.getLine(2) + " loadout.");
+								}
 							}
 							else if(mdata.hasLoadout(sign.getLine(2))){
-								if(mgm.getType().equals("sp") || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
-									mdata.getLoadout(sign.getLine(2)).equiptLoadout(ply);
+								if(!mdata.getLoadout(sign.getLine(2)).getUsePermissions() || ply.hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
+									if(mgm.getType().equals("sp") || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
+										mdata.getLoadout(sign.getLine(2)).equiptLoadout(ply);
+									}
+									mgm.setPlayersLoadout(ply, mdata.getLoadout(sign.getLine(2)));
+									ply.updateInventory();
+									ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been equip with the " + sign.getLine(2) + " loadout.");
 								}
-								mgm.setPlayersLoadout(ply, mdata.getLoadout(sign.getLine(2)));
-								ply.updateInventory();
-								ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been equip with the " + sign.getLine(2) + " loadout.");
+								else{
+									ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You don't have permission to use the " + sign.getLine(2) + " loadout.");
+								}
 							}
 							else{
 								ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "This loadout does not exist!");

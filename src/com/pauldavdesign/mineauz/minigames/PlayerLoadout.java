@@ -10,9 +10,18 @@ import org.bukkit.potion.PotionEffect;
 public class PlayerLoadout {
 	private List<ItemStack> items = new ArrayList<ItemStack>();
 	private String loadoutName = "default";
+	private boolean usePermission = false;
 	
 	public PlayerLoadout(String name){
 		loadoutName = name;
+	}
+	
+	public void setUsePermissions(boolean bool){
+		usePermission = bool;
+	}
+	
+	public boolean getUsePermissions(){
+		return usePermission;
 	}
 	
 	public void setName(String name){

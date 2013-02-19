@@ -186,6 +186,10 @@ public class PlayerData {
 					if(!mgm.getStartLocations().isEmpty()){
 						start = mgm.getStartLocations().get(0);
 						players.get(i).teleport(start);
+						setPlayerCheckpoints(players.get(pos - 1), start);
+						if(mgm.getMaxScore() != 0 && mgm.getType().equals("dm") && !mgm.getScoreType().equals("none")){
+							players.get(i).sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
+						}
 					}
 					else {
 						players.get(i).sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Starting positions are incorrectly configured!");

@@ -855,6 +855,12 @@ public class Minigame {
 			for(int i = 0; i < getDefaultPlayerLoadout().getItems().size(); i++){
 				minigame.getConfig().set(name + ".loadout." + i, getDefaultPlayerLoadout().getItems().get(i));
 			}
+			if(getDefaultPlayerLoadout().getUsePermissions()){
+				minigame.getConfig().set(name + ".loadout.usepermissions", true);
+			}
+			else{
+				minigame.getConfig().set(name + ".loadout.usepermissions", null);
+			}
 		}
 		else{
 			minigame.getConfig().set(name + ".loadout", null);
@@ -864,6 +870,12 @@ public class Minigame {
 			for(String loadout : getLoadouts()){
 				for(int i = 0; i < getLoadout(loadout).getItems().size(); i++){
 					minigame.getConfig().set(name + ".extraloadouts." + loadout + "." + i, getLoadout(loadout).getItems().get(i));
+				}
+				if(getLoadout(loadout).getUsePermissions()){
+					minigame.getConfig().set(name + ".extraloadouts." + loadout + ".usepermissions", true);
+				}
+				else{
+					minigame.getConfig().set(name + ".extraloadouts." + loadout + ".usepermissions", null);
 				}
 			}
 		}
@@ -1081,6 +1093,9 @@ public class Minigame {
 			for(int i = 0; i < keys.size(); i++){
 				getDefaultPlayerLoadout().addItemToLoadout(minigame.getConfig().getItemStack(name + ".loadout." + i));
 			}
+			if(minigame.getConfig().contains(name + ".loadout.usepermissions")){
+				getDefaultPlayerLoadout().setUsePermissions(minigame.getConfig().getBoolean(name + ".loadout.usepermissions"));
+			}
 		}
 		if(minigame.getConfig().contains(name + ".extraloadouts")){
 			Set<String> keys = minigame.getConfig().getConfigurationSection(name + ".extraloadouts").getKeys(false);
@@ -1089,6 +1104,9 @@ public class Minigame {
 				Set<String> items = minigame.getConfig().getConfigurationSection(name + ".extraloadouts." + loadout).getKeys(false);
 				for(int i = 0; i < items.size(); i++){
 					getLoadout(loadout).addItemToLoadout(minigame.getConfig().getItemStack(name + ".extraloadouts." + loadout + "." + i));
+				}
+				if(minigame.getConfig().contains(name + ".extraloadouts." + loadout + ".usepermissions")){
+					getLoadout(loadout).setUsePermissions(minigame.getConfig().getBoolean(name + ".extraloadouts." + loadout + ".usepermissions"));
 				}
 			}
 		}
