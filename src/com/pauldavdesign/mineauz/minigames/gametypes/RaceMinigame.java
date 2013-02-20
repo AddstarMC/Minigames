@@ -51,8 +51,8 @@ public class RaceMinigame extends MinigameType{
 					else if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
 						plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
 					}
-					mgm.setMpBets(null);
 				}
+				mgm.setMpBets(null);
 			}
 			else if(mdata.getMinigame(minigame).getPlayers().size() == 1 && mdata.getMinigame(minigame).getMpTimer() != null && mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() == 0 && !forced){
 				pdata.endMinigame(mdata.getMinigame(minigame).getPlayers().get(0));

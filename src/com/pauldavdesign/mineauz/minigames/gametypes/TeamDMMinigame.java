@@ -227,8 +227,8 @@ public class TeamDMMinigame extends MinigameType{
 					if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
 						plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
 					}
-					mdata.getMinigame(minigame).setMpBets(null);
 				}
+				mdata.getMinigame(minigame).setMpBets(null);
 			}
 			else if(mdata.getMinigame(minigame).getPlayers().size() >= 1 && 
 					(mdata.getMinigame(minigame).getRedTeam().size() == 0 ||

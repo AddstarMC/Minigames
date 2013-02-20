@@ -325,13 +325,15 @@ public class PlayerData {
 			}
 
 			mgm.removePlayersLoadout(player);
-			
+			player.getInventory().clear();
 			final Player ply = player;
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				
 				@Override
 				public void run() {
-					restorePlayerData(ply);
+					if(ply.isOnline()){
+						restorePlayerData(ply);
+					}
 				}
 			});
 			
@@ -621,8 +623,17 @@ public class PlayerData {
 		
 		invsave.getConfig().set("inventories." + player.getName(), null);
 		invsave.saveConfig();
+		itemStore.remove(player.getName());
+		armourStore.remove(player.getName());
+		playerFood.remove(player.getName());
+		playerHealth.remove(player.getName());
+		playerSaturation.remove(player.getName());
 		
 		player.updateInventory();
+	}
+	
+	public boolean playerHasStoredItems(Player player){
+		return itemStore.containsKey(player.getName());
 	}
 	
 	public Boolean getAllowTP(Player player){

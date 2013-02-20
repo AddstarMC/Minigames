@@ -53,8 +53,8 @@ public class DMMinigame extends MinigameType{
 					else if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
 						plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
 					}
-					mgm.setMpBets(null);
 				}
+				mgm.setMpBets(null);
 			}
 			else if(mgm.getPlayers().size() == 1 && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0 && !forced){
 				pdata.endMinigame(mgm.getPlayers().get(0));

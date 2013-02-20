@@ -48,13 +48,18 @@ public abstract class MinigameType implements Listener{
 		final String minigame = pdata.getPlayersMinigame(player);
 		Minigame mgm = mdata.getMinigame(minigame);
 		
-		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-			
-			@Override
-			public void run() {
-				player.teleport(mdata.getMinigame(minigame).getQuitPosition());
-			}
-		});
+		if(player.isDead()){
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				
+				@Override
+				public void run() {
+					player.teleport(mdata.getMinigame(minigame).getQuitPosition());
+				}
+			});
+		}
+		else{
+			player.teleport(mdata.getMinigame(minigame).getQuitPosition());
+		}
 		
 		if(mgm.canSaveCheckpoint() && mgm.getType().equals("sp")){
 			if(pdata.hasStoredPlayerCheckpoint(player)){

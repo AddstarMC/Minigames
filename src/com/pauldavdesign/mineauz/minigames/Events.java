@@ -108,6 +108,10 @@ public class Events implements Listener{
 			event.getPlayer().teleport(pdata.getDCPlayer(event.getPlayer()));
 			pdata.removeDCPlayer(event.getPlayer());
 		}
+		
+		if(pdata.playerHasStoredItems(event.getPlayer())){
+			pdata.restorePlayerData(event.getPlayer());
+		}
 	}
 	
 	@EventHandler

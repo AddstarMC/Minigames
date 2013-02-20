@@ -49,8 +49,8 @@ public class LMSMinigame extends MinigameType {
 					else if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
 						plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
 					}
-					mgm.setMpBets(null);
 				}
+				mgm.setMpBets(null);
 				
 				if(mgm.getFloorDegenerator() != null){
 					mgm.getFloorDegenerator().stopDegenerator();
