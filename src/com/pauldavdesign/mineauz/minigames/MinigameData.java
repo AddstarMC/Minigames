@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.presets.BasePreset;
+import com.pauldavdesign.mineauz.minigames.presets.CTFPreset;
 import com.pauldavdesign.mineauz.minigames.presets.SpleefPreset;
 
 public class MinigameData {
@@ -34,6 +35,7 @@ public class MinigameData {
 	
 	public MinigameData(){
 		addPreset(new SpleefPreset());
+		addPreset(new CTFPreset());
 	}
 	
 	public void startGlobalMinigame(final String minigame){
