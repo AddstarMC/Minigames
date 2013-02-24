@@ -3,6 +3,7 @@ package com.pauldavdesign.mineauz.minigames;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -105,8 +106,15 @@ public class Events implements Listener{
 			}
 		}
 		if(pdata.hasDCPlayer(event.getPlayer())){
-			event.getPlayer().teleport(pdata.getDCPlayer(event.getPlayer()));
-			pdata.removeDCPlayer(event.getPlayer());
+			final Player ply = event.getPlayer();
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				
+				@Override
+				public void run() {
+					ply.teleport(pdata.getDCPlayer(ply));
+					pdata.removeDCPlayer(ply);
+				}
+			});
 		}
 		
 		if(pdata.playerHasStoredItems(event.getPlayer())){
