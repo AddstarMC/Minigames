@@ -291,6 +291,22 @@ public class Events implements Listener{
 							if(loc.getBlock().getType() != Material.AIR){
 								Location newloc = event.getPlayer().getLocation();
 								pdata.setPlayerCheckpoints(event.getPlayer(), newloc);
+								
+								if(mdata.getMinigame(minigame).canSaveCheckpoint() && mdata.getMinigame(minigame).getType().equals("sp")){
+									if(pdata.hasStoredPlayerCheckpoint(event.getPlayer())){
+										pdata.getPlayersStoredCheckpoints(event.getPlayer()).addCheckpoint(minigame, pdata.getPlayerCheckpoint(event.getPlayer()));
+										if(pdata.playerHasFlags(event.getPlayer())){
+											pdata.getPlayersStoredCheckpoints(event.getPlayer()).addFlags(minigame, pdata.getPlayerFlags(event.getPlayer()));
+										}
+									}
+									else{
+										pdata.addStoredPlayerCheckpoint(event.getPlayer(), minigame, pdata.getPlayerCheckpoint(event.getPlayer()));
+										if(pdata.playerHasFlags(event.getPlayer())){
+											pdata.getPlayersStoredCheckpoints(event.getPlayer()).addFlags(minigame, pdata.getPlayerFlags(event.getPlayer()));
+										}
+									}
+								}
+								
 								event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Checkpoint set!");
 							}
 							else{
@@ -305,7 +321,7 @@ public class Events implements Listener{
 							Location loc = event.getPlayer().getLocation();
 							loc.setY(loc.getY() - 1);
 							if(!sign.getLine(2).isEmpty() && loc.getBlock().getType() != Material.AIR && 
-									!mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).getType().equals("ctf") &&
+									!mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).getScoreType().equals("ctf") &&
 									!pdata.playerHasFlag(event.getPlayer(), sign.getLine(2).replaceAll(ChatColor.RED.toString(), "").replaceAll(ChatColor.BLUE.toString(), ""))){
 								pdata.addPlayerFlags(event.getPlayer(), sign.getLine(2).replaceAll(ChatColor.RED.toString(), "").replaceAll(ChatColor.BLUE.toString(), ""));
 								event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + 
