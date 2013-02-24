@@ -33,7 +33,6 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
-import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -809,22 +808,22 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
-	private void blockForm(EntityBlockFormEvent event){
-		String idloc = MinigameUtils.createLocationID(event.getBlock().getLocation());
-		int y = event.getBlock().getY();
-		int x = event.getBlock().getX();
-		int z = event.getBlock().getZ();
-		String world = event.getBlock().getWorld().getName();
-		
-		while(y < 256){
-			y++;
-			idloc = x + ":" + y + ":" + z + ":" + world;
-			Bukkit.getLogger().info(idloc);
-			if(blockdata.containsKey(idloc)){
-				addBlock(event.getBlock().getLocation().getBlock(), null);
-				return;
-			}
-		}
-	}
+//	@EventHandler
+//	private void blockForm(EntityBlockFormEvent event){
+//		String idloc = MinigameUtils.createLocationID(event.getBlock().getLocation());
+//		int y = event.getBlock().getY();
+//		int x = event.getBlock().getX();
+//		int z = event.getBlock().getZ();
+//		String world = event.getBlock().getWorld().getName();
+//		
+//		while(y < 256){
+//			y++;
+//			idloc = x + ":" + y + ":" + z + ":" + world;
+//			Bukkit.getLogger().info(idloc);
+//			if(blockdata.containsKey(idloc)){
+//				addBlock(event.getBlock().getLocation().getBlock(), null);
+//				return;
+//			}
+//		}
+//	}
 }
