@@ -410,10 +410,6 @@ public class PlayerData {
 				removePlayerKills(player);
 			}
 			
-//			if(mgm.hasRestoreBlocks()){
-//				mdata.restoreMinigameBlocks(mgm);
-//			}
-			
 			if(mgm.getMinigameTimer() != null){
 				mgm.getMinigameTimer().stopTimer();
 				mgm.setMinigameTimer(null);

@@ -60,6 +60,7 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetStoreCheckpointsCommand());
 		registerSetCommand(new SetMaxHeightCommand());
 		registerSetCommand(new SetPresetCommand());
+		registerSetCommand(new SetLateJoinCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {

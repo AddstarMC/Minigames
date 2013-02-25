@@ -59,6 +59,7 @@ public class Minigame {
 	private boolean paintBallMode = false;
 	private int paintBallDamage = 2;
 	private boolean saveCheckpoint = false;
+	private boolean lateJoin = false;
 	
 	//Teams
 	private List<Player> redTeam = new ArrayList<Player>();
@@ -743,6 +744,14 @@ public class Minigame {
 		this.saveCheckpoint = saveCheckpoint;
 	}
 
+	public boolean canLateJoin() {
+		return lateJoin;
+	}
+
+	public void setLateJoin(boolean lateJoin) {
+		this.lateJoin = lateJoin;
+	}
+
 	public void saveMinigame(){
 		MinigameSave minigame = new MinigameSave(name, "config");
 		
@@ -1013,6 +1022,13 @@ public class Minigame {
 			minigame.getConfig().set(name + ".savecheckpoint", null);
 		}
 		
+		if(canLateJoin()){
+			minigame.getConfig().set(name + ".latejoin", canLateJoin());
+		}
+		else{
+			minigame.getConfig().set(name + ".latejoin", null);
+		}
+		
 		minigame.saveConfig();
 	}
 	
@@ -1185,6 +1201,10 @@ public class Minigame {
 		
 		if(minigame.getConfig().contains(name + ".savecheckpoint")){
 			setSaveCheckpoint(minigame.getConfig().getBoolean(name + ".savecheckpoint"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".latejoin")){
+			setLateJoin(minigame.getConfig().getBoolean(name + ".latejoin"));
 		}
 		
 		saveMinigame();

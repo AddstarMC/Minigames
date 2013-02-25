@@ -58,20 +58,23 @@ public class TeamDMMinigame extends MinigameType{
 			String gametype = mgm.getType();
 			
 			if(!mgm.getPlayers().isEmpty() && mgm.getPlayers().size() < mgm.getMaxPlayers()){
-				if(mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
+				if(mgm.canLateJoin() || mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
 					mgm.addPlayer(player);
+					int team;
 					
 					if(redSize <= blueSize){
 						mgm.addRedTeamPlayer(player);
 						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.RED + "Red Team");
 						
 						applyTeam(player, 0);
+						team = 0;
 					}
 					else{
 						mgm.addBlueTeamPlayer(player);
 						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.BLUE + "Blue Team");
 						
 						applyTeam(player, 1);
+						team = 1;
 					}
 					
 					for(final Player play : mgm.getBlueTeam()){
@@ -100,7 +103,25 @@ public class TeamDMMinigame extends MinigameType{
 					
 					pdata.storePlayerData(player, mgm.getDefaultGamemode());
 					
-					player.teleport(lobby);
+					if(mgm.getMpTimer() == null || mgm.getMpTimer().getStartWaitTimeLeft() != 0){
+						player.teleport(lobby);
+					}
+					else{
+						List<Location> locs = new ArrayList<Location>();
+						if(!mgm.getStartLocationsRed().isEmpty()){
+							if(team == 0){
+								locs.addAll(mgm.getStartLocationsRed());
+							}
+							else{
+								locs.addAll(mgm.getStartLocationsBlue());
+							}
+						}
+						else{
+							locs.addAll(mgm.getStartLocations());
+						}
+						Collections.shuffle(locs);
+						player.teleport(locs.get(0));
+					}
 					pdata.addPlayerMinigame(player, mgm.getName());
 					player.sendMessage(ChatColor.GREEN + "You have started a " + gametype + " minigame, type /minigame quit to exit.");
 				

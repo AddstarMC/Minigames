@@ -1,5 +1,7 @@
 package com.pauldavdesign.mineauz.minigames.gametypes;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -101,12 +103,20 @@ public abstract class MinigameType implements Listener{
 			
 			Location lobby = mgm.getLobbyPosition();
 			if(!mgm.getPlayers().isEmpty() && mdata.getMinigame(mgm.getName()).getPlayers().size() < mgm.getMaxPlayers()){
-				if(mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
+				if(mgm.canLateJoin() || mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
 					pdata.storePlayerData(player, gm);
 					
-					player.teleport(lobby);
+					if(mgm.getMpTimer() == null || mgm.getMpTimer().getStartWaitTimeLeft() != 0){
+						player.teleport(lobby);
+					}
+					else{
+						List<Location> locs = new ArrayList<Location>();
+						locs.addAll(mgm.getStartLocations());
+						Collections.shuffle(locs);
+						player.teleport(locs.get(0));
+					}
 					mgm.addPlayer(player);
-					player.sendMessage(ChatColor.GREEN + "You have started a spleef minigame, type /minigame quit to exit.");
+					player.sendMessage(ChatColor.GREEN + "You have started a " + mgm.getType() + " minigame, type /minigame quit to exit.");
 				
 					if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMinPlayers()){
 						mgm.setMpTimer(new MultiplayerTimer(mgm.getName()));

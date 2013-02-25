@@ -418,7 +418,7 @@ public class Events implements Listener{
 							}
 							else{
 								event.getPlayer().sendMessage(ChatColor.GREEN + "------------------Minigame Info------------------");
-								String status = ChatColor.BLUE + "Status: ";
+								String status = ChatColor.AQUA + "Status: ";
 								if(!mgm.hasPlayers()){
 									status += ChatColor.GREEN + "Empty";
 								}
@@ -432,24 +432,25 @@ public class Events implements Listener{
 								if(!mgm.getType().equals("sp"))
 									event.getPlayer().sendMessage(status);
 								
+
+								if(mgm.canLateJoin())
+									event.getPlayer().sendMessage(ChatColor.AQUA + "Late join: " + ChatColor.WHITE + "enabled");
+								
 								if(mgm.getMinigameTimer() != null){
-									event.getPlayer().sendMessage(ChatColor.BLUE + "Time left: " + MinigameUtils.convertTime(mgm.getMinigameTimer().getTimeLeft()));
+									event.getPlayer().sendMessage(ChatColor.AQUA + "Time left: " + MinigameUtils.convertTime(mgm.getMinigameTimer().getTimeLeft()));
 								}
 								
 								if(mgm.getType().equals("teamdm")){
-									event.getPlayer().sendMessage(ChatColor.BLUE + "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore());
+									event.getPlayer().sendMessage(ChatColor.AQUA + "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore());
 								}
 								
-								String playerCount = ChatColor.BLUE + "Player Count: " + ChatColor.GRAY;
-								String players = ChatColor.BLUE + "Players: ";
+								String playerCount = ChatColor.AQUA + "Player Count: " + ChatColor.GRAY;
+								String players = ChatColor.AQUA + "Players: ";
 								
 								if(mgm.hasPlayers()){
-									playerCount += mgm.getPlayers().size() + "/";
+									playerCount += mgm.getPlayers().size() ;
 									if(!mgm.getType().equals("sp")){
-										playerCount += mgm.getMaxPlayers();
-									}
-									else{
-										playerCount += "inf";
+										playerCount += "/" + mgm.getMaxPlayers();
 									}
 									
 									List<String> plyList = new ArrayList<String>();
@@ -459,13 +460,10 @@ public class Events implements Listener{
 									players += MinigameUtils.listToString(plyList);
 								}
 								else{
-									playerCount += "0/";
+									playerCount += "0";
 									
 									if(!mgm.getType().equals("sp")){
-										playerCount += mgm.getMaxPlayers();
-									}
-									else{
-										playerCount += "inf";
+										playerCount += "/" + mgm.getMaxPlayers();
 									}
 									
 									players += ChatColor.GRAY + "None";
