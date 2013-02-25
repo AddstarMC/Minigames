@@ -292,21 +292,6 @@ public class Events implements Listener{
 								Location newloc = event.getPlayer().getLocation();
 								pdata.setPlayerCheckpoints(event.getPlayer(), newloc);
 								
-								if(mdata.getMinigame(minigame).canSaveCheckpoint() && mdata.getMinigame(minigame).getType().equals("sp")){
-									if(pdata.hasStoredPlayerCheckpoint(event.getPlayer())){
-										pdata.getPlayersStoredCheckpoints(event.getPlayer()).addCheckpoint(minigame, pdata.getPlayerCheckpoint(event.getPlayer()));
-										if(pdata.playerHasFlags(event.getPlayer())){
-											pdata.getPlayersStoredCheckpoints(event.getPlayer()).addFlags(minigame, pdata.getPlayerFlags(event.getPlayer()));
-										}
-									}
-									else{
-										pdata.addStoredPlayerCheckpoint(event.getPlayer(), minigame, pdata.getPlayerCheckpoint(event.getPlayer()));
-										if(pdata.playerHasFlags(event.getPlayer())){
-											pdata.getPlayersStoredCheckpoints(event.getPlayer()).addFlags(minigame, pdata.getPlayerFlags(event.getPlayer()));
-										}
-									}
-								}
-								
 								event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Checkpoint set!");
 							}
 							else{

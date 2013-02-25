@@ -63,20 +63,6 @@ public abstract class MinigameType implements Listener{
 			player.teleport(mdata.getMinigame(minigame).getQuitPosition());
 		}
 		
-//		if(mgm.canSaveCheckpoint() && mgm.getType().equals("sp")){
-//			if(pdata.hasStoredPlayerCheckpoint(player)){
-//				pdata.getPlayersStoredCheckpoints(player).addCheckpoint(minigame, pdata.getPlayerCheckpoint(player));
-//				if(pdata.playerHasFlags(player)){
-//					pdata.getPlayersStoredCheckpoints(player).addFlags(minigame, pdata.getPlayerFlags(player));
-//				}
-//			}
-//			else{
-//				pdata.addStoredPlayerCheckpoint(player, minigame, pdata.getPlayerCheckpoint(player));
-//				if(pdata.playerHasFlags(player)){
-//					pdata.getPlayersStoredCheckpoints(player).addFlags(minigame, pdata.getPlayerFlags(player));
-//				}
-//			}
-//		}
 		pdata.removePlayerCheckpoints(player);
 		pdata.removeAllPlayerFlags(player);
 		

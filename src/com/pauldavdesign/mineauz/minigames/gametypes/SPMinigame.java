@@ -128,6 +128,25 @@ public class SPMinigame extends MinigameType{
 
 	@Override
 	public void quitMinigame(final Player player, final Minigame mgm, boolean forced) {
+		if(mgm.canSaveCheckpoint()){
+			Location pcp = pdata.getPlayerCheckpoint(player);
+			Location start = mgm.getStartLocations().get(0);
+			if(pcp.getBlockX() != start.getBlockX() || pcp.getBlockY() != start.getBlockY() || pcp.getBlockZ() != start.getBlockZ()){
+				if(pdata.hasStoredPlayerCheckpoint(player)){
+					pdata.getPlayersStoredCheckpoints(player).addCheckpoint(mgm.getName(), pdata.getPlayerCheckpoint(player));
+					if(pdata.playerHasFlags(player)){
+						pdata.getPlayersStoredCheckpoints(player).addFlags(mgm.getName(), pdata.getPlayerFlags(player));
+					}
+				}
+				else{
+					pdata.addStoredPlayerCheckpoint(player, mgm.getName(), pdata.getPlayerCheckpoint(player));
+					if(pdata.playerHasFlags(player)){
+						pdata.getPlayersStoredCheckpoints(player).addFlags(mgm.getName(), pdata.getPlayerFlags(player));
+					}
+				}
+			}
+		}
+
 		callGeneralQuit(player);
 
 		mgm.removePlayer(player);
