@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
@@ -48,7 +49,15 @@ public class DMMinigame extends MinigameType{
 				
 				if(mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
 					if(mgm.getMpBets().getPlayersBet(player) != null){
-						player.getInventory().addItem(mgm.getMpBets().getPlayersBet(player));
+						final ItemStack item = mgm.getMpBets().getPlayersBet(player).clone();
+						final Player ply = player;
+						Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+							
+							@Override
+							public void run() {
+								ply.getInventory().addItem(item);
+							}
+						});
 					}
 					else if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
 						plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
@@ -76,7 +85,15 @@ public class DMMinigame extends MinigameType{
 
 		if(mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
 			if(mgm.getMpBets().getPlayersBet(player) != null){
-				player.getInventory().addItem(mgm.getMpBets().getPlayersBet(player));
+				final ItemStack item = mgm.getMpBets().getPlayersBet(player).clone();
+				final Player ply = player;
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					
+					@Override
+					public void run() {
+						ply.getInventory().addItem(item);
+					}
+				});
 			}
 			else if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
 				plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));

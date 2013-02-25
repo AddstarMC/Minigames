@@ -48,7 +48,6 @@ public abstract class MinigameType implements Listener{
 	
 	public void callGeneralQuit(final Player player){
 		final String minigame = pdata.getPlayersMinigame(player);
-//		Minigame mgm = mdata.getMinigame(minigame);
 		
 		if(player.isDead()){
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
