@@ -32,7 +32,6 @@ public class Minigame {
 	private Map<String, PlayerLoadout> extraLoadouts = new HashMap<String, PlayerLoadout>();
 	private Map<Player, PlayerLoadout> playerLoadouts = new HashMap<Player, PlayerLoadout>();
 	private Map<String, RestoreBlock> restoreBlocks = new HashMap<String, RestoreBlock>();
-	private boolean betting = false;
 	private String location = null;
 	private int maxRadius = 1000;
 	private int maxHeight = 20;
@@ -148,14 +147,6 @@ public class Minigame {
 
 	public void setLocation(String location){
 		this.location = location;
-	}
-
-	public boolean bettingEnabled(){
-		return betting;
-	}
-
-	public void setBetting(boolean betting){
-		this.betting = betting;
 	}
 	
 	public boolean hasRestoreBlocks(){
@@ -809,7 +800,7 @@ public class Minigame {
 		minigame.getConfig().set(name + ".type", getType());
 		minigame.getConfig().set(name + ".minplayers", getMinPlayers());
 		minigame.getConfig().set(name + ".maxplayers", getMaxPlayers());
-		minigame.getConfig().set(name + ".bets", bettingEnabled());
+		minigame.getConfig().set(name + ".bets", null);
 		minigame.getConfig().set(name + ".enabled", isEnabled());
 		if(getMaxRadius() != 1000){
 			minigame.getConfig().set(name + ".maxradius", getMaxRadius());
@@ -1080,7 +1071,6 @@ public class Minigame {
 		setType(minigame.getConfig().getString(name + ".type"));
 		setMinPlayers(minigame.getConfig().getInt(name + ".minplayers"));
 		setMaxPlayers(minigame.getConfig().getInt(name + ".maxplayers"));
-		setBetting(minigame.getConfig().getBoolean(name + ".bets"));
 		setEnabled(minigame.getConfig().getBoolean(name + ".enabled"));
 		if(minigame.getConfig().contains(name + ".maxradius")){
 			setMaxRadius(minigame.getConfig().getInt(name + ".maxradius"));

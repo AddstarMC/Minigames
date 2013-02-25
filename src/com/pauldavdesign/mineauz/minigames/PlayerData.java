@@ -103,7 +103,7 @@ public class PlayerData {
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
 		if(!event.isCancelled()){
-			if(minigame != null && minigame.bettingEnabled() && minigame.isEnabled() && (minigame.getMpTimer() == null || minigame.getMpTimer().getPlayerWaitTimeLeft() != 0)){
+			if(minigame != null && minigame.isEnabled() && (minigame.getMpTimer() == null || minigame.getMpTimer().getPlayerWaitTimeLeft() != 0)){
 				if(minigame.getMpBets() == null && (player.getItemInHand().getType() != Material.AIR || money != 0)){
 					minigame.setMpBets(new MultiplayerBets());
 				}
@@ -144,16 +144,8 @@ public class PlayerData {
 					player.sendMessage(ChatColor.RED + "You must bet a " + minigame.getMpBets().highestBetName() + " or better.");
 				}
 			}
-			else if(!minigame.bettingEnabled() && player.getItemInHand().getType() != Material.AIR){
-				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Bets are not enabled in this minigame.");
-				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Your hand must be empty to join this minigame!");
-			}
 			else if(minigame.getMpTimer() != null && minigame.getMpTimer().getPlayerWaitTimeLeft() == 0){
 				player.sendMessage(ChatColor.RED + "The game has already started. Please try again later.");
-			}
-			else{
-				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Bets are not enabled in this minigame.");
-				joinMinigame(player, minigame);
 			}
 		}
 	}

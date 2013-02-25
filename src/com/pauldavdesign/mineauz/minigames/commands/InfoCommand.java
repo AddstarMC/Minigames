@@ -124,13 +124,6 @@ public class InfoCommand implements ICommand{
 							lines.add(ChatColor.GRAY + "Lobby Position: " + ChatColor.RED + "Not Set");
 						}
 						
-						if(mgm.bettingEnabled()){
-							lines.add(ChatColor.GRAY + "Bets: " + ChatColor.GREEN + "true");
-						}
-						else{
-							lines.add(ChatColor.GRAY + "Bets: " + ChatColor.RED + "false");
-						}
-						
 						if(mgm.getSpleefFloor1() != null){
 							lines.add(ChatColor.GRAY + "Floor Degenerator Position 1: " + ChatColor.GREEN + "true");
 						}
