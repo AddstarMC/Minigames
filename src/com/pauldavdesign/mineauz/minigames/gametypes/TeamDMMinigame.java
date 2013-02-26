@@ -107,20 +107,35 @@ public class TeamDMMinigame extends MinigameType{
 						player.teleport(lobby);
 					}
 					else{
-						List<Location> locs = new ArrayList<Location>();
-						if(!mgm.getStartLocationsRed().isEmpty()){
-							if(team == 0){
-								locs.addAll(mgm.getStartLocationsRed());
+						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You will join in 5 seconds...");
+						player.teleport(lobby);
+						
+						final Player fply = player;
+						final Minigame fmgm = mgm;
+						final int fteam = team;
+						Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+							
+							@Override
+							public void run() {
+								if(pdata.playerInMinigame(fply)){
+									List<Location> locs = new ArrayList<Location>();
+									if(!fmgm.getStartLocationsRed().isEmpty()){
+										if(fteam == 0){
+											locs.addAll(fmgm.getStartLocationsRed());
+										}
+										else{
+											locs.addAll(fmgm.getStartLocationsBlue());
+										}
+									}
+									else{
+										locs.addAll(fmgm.getStartLocations());
+									}
+									Collections.shuffle(locs);
+									pdata.minigameTeleport(fply, locs.get(0));
+									fmgm.getPlayersLoadout(fply).equiptLoadout(fply);
+								}
 							}
-							else{
-								locs.addAll(mgm.getStartLocationsBlue());
-							}
-						}
-						else{
-							locs.addAll(mgm.getStartLocations());
-						}
-						Collections.shuffle(locs);
-						player.teleport(locs.get(0));
+						}, 100);
 					}
 					pdata.addPlayerMinigame(player, mgm.getName());
 					player.sendMessage(ChatColor.GREEN + "You have started a " + gametype + " minigame, type /minigame quit to exit.");

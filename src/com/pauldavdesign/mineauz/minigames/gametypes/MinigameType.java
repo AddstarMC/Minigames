@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -95,10 +96,23 @@ public abstract class MinigameType implements Listener{
 						player.teleport(lobby);
 					}
 					else{
-						List<Location> locs = new ArrayList<Location>();
-						locs.addAll(mgm.getStartLocations());
-						Collections.shuffle(locs);
-						player.teleport(locs.get(0));
+						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You will join in 5 seconds...");
+						player.teleport(lobby);
+						final Player fply = player;
+						final Minigame fmgm = mgm;
+						Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+							
+							@Override
+							public void run() {
+								if(pdata.playerInMinigame(fply)){
+									List<Location> locs = new ArrayList<Location>();
+									locs.addAll(fmgm.getStartLocations());
+									Collections.shuffle(locs);
+									pdata.minigameTeleport(fply, locs.get(0));
+									fmgm.getPlayersLoadout(fply).equiptLoadout(fply);
+								}
+							}
+						}, 100);
 					}
 					mgm.addPlayer(player);
 					player.sendMessage(ChatColor.GREEN + "You have started a " + mgm.getType() + " minigame, type /minigame quit to exit.");

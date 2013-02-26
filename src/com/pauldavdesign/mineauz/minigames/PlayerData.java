@@ -936,4 +936,12 @@ public class PlayerData {
 	public void addStoredPlayerCheckpoints(String name, StoredPlayerCheckpoints spc){
 		storedPlayerCheckpoints.put(name, spc);
 	}
+	
+	public void minigameTeleport(Player player, Location location){
+		if(playerInMinigame(player)){
+			setAllowTP(player, true);
+			player.teleport(location);
+			setAllowTP(player, false);
+		}
+	}
 }
