@@ -128,7 +128,7 @@ public class DMMinigame extends MinigameType{
 		
 		player.sendMessage(ChatColor.GREEN + "You've won the " + minigame + " minigame. Congratulations!");
 		if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
-			plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + player.getName() + " won " + mgm.getName() + ". Score: " + pdata.getPlayerKills(player));
+			plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + player.getName() + " won " + mgm.getName() + ". Score: " + pdata.getPlayerScore(player));
 		}
 		
 		if(mgm.getEndPosition() != null){

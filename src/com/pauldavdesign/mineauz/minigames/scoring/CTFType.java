@@ -31,10 +31,14 @@ public class CTFType extends ScoreType{
 				Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
 				Sign sign = (Sign) event.getClickedBlock().getState();
 				if(mgm.getScoreType().equals("ctf")){
-					if(!mgm.getBlueTeam().isEmpty() || !mgm.getRedTeam().isEmpty()){
+					if(!mgm.getBlueTeam().isEmpty() || !mgm.getRedTeam().isEmpty() || !mgm.getType().equals("teamdm")){
 						int team = 0;
 						if(mgm.getBlueTeam().contains(event.getPlayer())){
 							team = 1;
+						}
+						
+						if(!mgm.getType().equals("teamdm")){
+							team = -1;
 						}
 						
 						String sloc = MinigameUtils.createLocationID(event.getClickedBlock().getLocation());
@@ -93,44 +97,66 @@ public class CTFType extends ScoreType{
 								
 								boolean end = false;
 								
-								if(team == 1){
-									mgm.incrementBlueTeamScore();
+								if(mgm.getType().equals("teamdm")){
+									if(team == 1){
+										mgm.incrementBlueTeamScore();
+										
+										if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+											end = true;
+										}
+									}
+									else{
+										mgm.incrementRedTeamScore();
+										
+										if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+											end = true;
+										}
+									}
 									
-									if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
-										end = true;
+									for(Player pl : mgm.getPlayers()){
+										if(team == 0){
+											pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " captured a flag for " + ChatColor.RED + "Red Team");
+										}else{
+											pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " captured a flag for " + ChatColor.BLUE + "Blue Team");
+										}
+										pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore());
+									}
+									
+									if(end){
+										for(Player pl : mgm.getPlayers()){
+											if(team == 0){
+												pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " captured the final flag for " + ChatColor.RED + "Red Team");
+											}
+											else
+												pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " captured the final flag for " + ChatColor.BLUE + "Blue Team");
+										}
+										if(team == 1){
+											pdata.endTeamMinigame(1, mgm);
+											mgm.resetFlags();
+										}
+										else{
+											pdata.endTeamMinigame(0, mgm);
+											mgm.resetFlags();
+										}
 									}
 								}
 								else{
-									mgm.incrementRedTeamScore();
-									
-									if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+									pdata.addPlayerScore(ply);
+									if(mgm.getMaxScore() != 0 && pdata.getPlayerScore(ply) >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
 										end = true;
 									}
-								}
-								
-								for(Player pl : mgm.getPlayers()){
-									if(team == 0){
-										pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " captured a flag for " + ChatColor.RED + "Red Team");
-									}else{
-										pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " captured a flag for " + ChatColor.BLUE + "Blue Team");
-									}
-									pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore());
-								}
-								
-								if(end){
+									
 									for(Player pl : mgm.getPlayers()){
-										if(team == 0){
-											pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " captured the final flag for " + ChatColor.RED + "Red Team");
+										pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " captured a flag");
+										pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + "'s Score: " + pdata.getPlayerScore(ply));
+									}
+									
+									if(end){
+										for(Player pl : mgm.getPlayers()){
+											pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " captured the final flag");
 										}
-										else
-											pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " captured the final flag for " + ChatColor.BLUE + "Blue Team");
-									}
-									if(team == 1){
-										pdata.endTeamMinigame(1, mgm);
-										mgm.resetFlags();
-									}
-									else{
-										pdata.endTeamMinigame(0, mgm);
+										
+										pdata.endMinigame(ply);
 										mgm.resetFlags();
 									}
 								}

@@ -51,6 +51,7 @@ public class PlayerData {
 	//Stats
 	private Map<String, Integer> plyDeaths = new HashMap<String, Integer>();
 	private Map<String, Integer> plyKills = new HashMap<String, Integer>();
+	private Map<String, Integer> plyScore = new HashMap<String, Integer>();
 	
 	private static Minigames plugin = Minigames.plugin;
 	private MinigameData mdata = plugin.mdata;
@@ -755,6 +756,26 @@ public class PlayerData {
 	public void removePlayerDeath(Player ply){
 		if(plyDeaths.containsKey(ply.getName())){
 			plyDeaths.remove(ply.getName());
+		}
+	}
+	
+	public void addPlayerScore(Player ply){
+		if(!plyScore.containsKey(ply.getName())){
+			plyScore.put(ply.getName(), 0);
+		}
+		plyScore.put(ply.getName(), plyScore.get(ply.getName()) + 1);
+	}
+	
+	public Integer getPlayerScore(Player ply){
+		if(plyScore.containsKey(ply.getName())){
+			return plyScore.get(ply.getName());
+		}
+		return 0;
+	}
+	
+	public void removePlayerScore(Player ply){
+		if(plyScore.containsKey(ply.getName())){
+			plyScore.remove(ply.getName());
 		}
 	}
 	

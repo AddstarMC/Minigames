@@ -42,13 +42,14 @@ public class PlayerKillsType extends ScoreType{
 					}
 
 					pdata.addPlayerKill(attacker);
+					pdata.addPlayerScore(attacker);
 					
 					if(mgm.getScoreType().equals("kills")){
 						for(Player pl : mgm.getPlayers()){
-							pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getKiller().getName() + "'s Score: " + pdata.getPlayerKills(ply.getKiller()));
+							pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getKiller().getName() + "'s Score: " + pdata.getPlayerScore(ply.getKiller()));
 						}
 					
-						if(mgm.getMaxScore() != 0 && pdata.getPlayerKills(attacker) >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+						if(mgm.getMaxScore() != 0 && pdata.getPlayerScore(attacker) >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
 							List<Player> conPlayers = new ArrayList<Player>();
 							conPlayers.addAll(mgm.getPlayers());
 							conPlayers.remove(attacker);
