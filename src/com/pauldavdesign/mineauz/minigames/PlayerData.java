@@ -343,6 +343,7 @@ public class PlayerData {
 			
 			removePlayerDeath(player);
 			removePlayerKills(player);
+			removePlayerScore(player);
 			
 			if(mgm.getMinigameTimer() != null && mgm.getPlayers().size() == 0){
 				mgm.getMinigameTimer().stopTimer();
@@ -401,6 +402,7 @@ public class PlayerData {
 			if(plugin.getSQL() == null || !plugin.getSQL().checkConnection()){
 				removePlayerDeath(player);
 				removePlayerKills(player);
+				removePlayerScore(player);
 			}
 			
 			if(mgm.getMinigameTimer() != null){
