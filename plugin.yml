@@ -107,6 +107,7 @@ permissions:
             minigame.set.itemdrop: true
             minigame.set.paintball: true
             minigame.set.latejoin: true
+            minigame.set.unlimitedammo: true
     minigame.set.start:
         description: Gives access to setting a minigames starting position
         default: op
@@ -205,6 +206,9 @@ permissions:
         default: op
     minigame.set.latejoin:
         description: Lets a player set if players can join late to a Minigame.
+        default: op
+    minigame.set.unlimitedammo:
+        description: Lets a player turn on infinite ammo for a Minigame.
         default: op
     minigame.info:
         description: Allows check to see if a minigames variables have been set

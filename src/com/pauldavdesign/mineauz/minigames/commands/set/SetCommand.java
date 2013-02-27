@@ -60,6 +60,7 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetMaxHeightCommand());
 		registerSetCommand(new SetPresetCommand());
 		registerSetCommand(new SetLateJoinCommand());
+		registerSetCommand(new SetUnlimitedAmmoCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {

@@ -57,6 +57,7 @@ public class Minigame {
 	private String scoreType = "none";
 	private boolean paintBallMode = false;
 	private int paintBallDamage = 2;
+	private boolean unlimitedAmmo = false;
 	private boolean saveCheckpoint = false;
 	private boolean lateJoin = false;
 	
@@ -727,6 +728,14 @@ public class Minigame {
 		this.paintBallDamage = paintBallDamage;
 	}
 
+	public boolean hasUnlimitedAmmo() {
+		return unlimitedAmmo;
+	}
+
+	public void setUnlimitedAmmo(boolean unlimitedAmmo) {
+		this.unlimitedAmmo = unlimitedAmmo;
+	}
+
 	public boolean canSaveCheckpoint() {
 		return saveCheckpoint;
 	}
@@ -1006,6 +1015,13 @@ public class Minigame {
 			minigame.getConfig().set(name + ".paintballdmg", null);
 		}
 		
+		if(hasUnlimitedAmmo()){
+			minigame.getConfig().set(name + ".unlimitedammo", hasUnlimitedAmmo());
+		}
+		else{
+			minigame.getConfig().set(name + ".unlimitedammo", null);
+		}
+		
 		if(canSaveCheckpoint()){
 			minigame.getConfig().set(name + ".savecheckpoint", canSaveCheckpoint());
 		}
@@ -1187,6 +1203,10 @@ public class Minigame {
 		
 		if(minigame.getConfig().contains(name + ".paintballdmg")){
 			setPaintBallDamage(minigame.getConfig().getInt(name + ".paintballdmg"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".unlimitedammo")){
+			setUnlimitedAmmo(minigame.getConfig().getBoolean(name + ".unlimitedammo"));
 		}
 		
 		if(minigame.getConfig().contains(name + ".savecheckpoint")){

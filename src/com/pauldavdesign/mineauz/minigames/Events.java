@@ -10,16 +10,17 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Egg;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-//import org.bukkit.event.block.BlockBreakEvent;
-//import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
@@ -30,6 +31,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.events.RevertCheckpointEvent;
 
@@ -529,13 +531,49 @@ public class Events implements Listener{
 			if(pdata.playerInMinigame(ply) && mdata.getMinigame(pdata.getPlayersMinigame(ply)).hasPaintBallMode()){
 				if(sb.getShooter() instanceof Player){
 					Player shooter = (Player) sb.getShooter();
+					Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
 					if(pdata.playerInMinigame(shooter) && pdata.getPlayersMinigame(shooter).equals(pdata.getPlayersMinigame(ply))){
-						ply.damage(mdata.getMinigame(pdata.getPlayersMinigame(ply)).getPaintBallDamage());
-						event.setCancelled(true);
+						int plyTeam = -1;
+						int atcTeam = -2;
+						if(mgm.getType().equals("teamdm")){
+							plyTeam = 0;
+							if(mgm.getBlueTeam().contains(ply)){
+								plyTeam = 1;
+							}
+							atcTeam = 0;
+							if(mgm.getBlueTeam().contains(shooter)){
+								atcTeam = 1;
+							}
+						}
+						if(plyTeam != atcTeam){
+							ply.damage(mdata.getMinigame(pdata.getPlayersMinigame(ply)).getPaintBallDamage());
+							event.setCancelled(true);
+						}
 					}
 				}
 			}
 		}
 	}
-
+	
+	@EventHandler
+	private void playerShoot(ProjectileLaunchEvent event){
+		if(event.getEntityType() == EntityType.SNOWBALL){
+			Snowball snowball = (Snowball) event.getEntity();
+			if(snowball.getShooter() != null && snowball.getShooter() instanceof Player){
+				Player ply = (Player) snowball.getShooter();
+				if(pdata.playerInMinigame(ply) && mdata.getMinigame(pdata.getPlayersMinigame(ply)).hasUnlimitedAmmo()){
+					ply.getInventory().addItem(new ItemStack(Material.SNOW_BALL));
+				}
+			}
+		}
+		else if(event.getEntityType() == EntityType.EGG){
+			Egg egg = (Egg) event.getEntity();
+			if(egg.getShooter() != null && egg.getShooter() instanceof Player){
+				Player ply = (Player) egg.getShooter();
+				if(pdata.playerInMinigame(ply) && mdata.getMinigame(pdata.getPlayersMinigame(ply)).hasUnlimitedAmmo()){
+					ply.getInventory().addItem(new ItemStack(Material.EGG));
+				}
+			}
+		}
+	}
 }
