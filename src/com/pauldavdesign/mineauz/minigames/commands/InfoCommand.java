@@ -89,16 +89,16 @@ public class InfoCommand implements ICommand{
 					}
 					if(mgm.getType().equals("teamdm")){
 						if(mgm.getStartLocationsRed().size() > 0){
-							lines.add(ChatColor.RED + "Red Team " + ChatColor.GRAY + "Starting Positions: " + ChatColor.GREEN + mgm.getStartLocationsRed().size());
+							lines.add(ChatColor.GRAY + "Red Team Starting Positions: " + ChatColor.GREEN + mgm.getStartLocationsRed().size());
 						}
 						else{
 							lines.add(ChatColor.GRAY + "Red Team Starting Positions: " + ChatColor.RED + "0");
 						}
 						if(mgm.getStartLocationsBlue().size() > 0){
-							lines.add(ChatColor.BLUE + "Blue Team " + ChatColor.GRAY + "Starting Positions: " + ChatColor.GREEN + mgm.getStartLocationsBlue().size());
+							lines.add(ChatColor.GRAY + "Blue Team Starting Positions: " + ChatColor.GREEN + mgm.getStartLocationsBlue().size());
 						}
 						else{
-							lines.add(ChatColor.RED + "Blue Team Starting Positions: 0");
+							lines.add(ChatColor.GRAY + "Blue Team Starting Positions:" + ChatColor.RED + "0");
 						}
 					}
 					
@@ -250,12 +250,27 @@ public class InfoCommand implements ICommand{
 						lines.add(ChatColor.GRAY + "PaintBall Mode: " + ChatColor.RED + "false");
 					}
 					
+					if(mgm.hasUnlimitedAmmo()){
+						lines.add(ChatColor.GRAY + "Unlimited Ammo: " + ChatColor.GREEN + "true");
+					}
+					else{
+						lines.add(ChatColor.GRAY + "Unlimited Ammo: " + ChatColor.RED + "false");
+					}
+					
 					if(mgm.getType().equals("sp")){
 						if(mgm.canSaveCheckpoint()){
 							lines.add(ChatColor.GRAY + "Save Checkpoints: " + ChatColor.GREEN + "true");
 						}
 						else{
 							lines.add(ChatColor.GRAY + "Save Checkpoints: " + ChatColor.RED + "false");
+						}
+					}
+					else{
+						if(mgm.canLateJoin()){
+							lines.add(ChatColor.GRAY + "Late Join: " + ChatColor.GREEN + "true");
+						}
+						else{
+							lines.add(ChatColor.GRAY + "Late Join: " + ChatColor.RED + "false");
 						}
 					}
 				}
