@@ -80,19 +80,17 @@ public class CTFFlag extends Thread{
 				}
 			}
 		}
-		else if(location.getBlock().getType() != Material.AIR){
-			while(newLocation.getBlock().getType() != Material.AIR){
-				if(newLocation.getY() > 255){
-					newLocation.setY(blockBelow.getY() + 1);
+		else if(blockBelow.getBlock().getType() != Material.AIR){
+			while(blockBelow.getBlock().getType() != Material.AIR){
+				if(blockBelow.getY() > 255){
+					blockBelow.setY(blockBelow.getY() + 1);
 				}
 				else{
 					return null;
 				}
 			}
+			blockBelow.setY(blockBelow.getY() - 1);
 		}
-
-		blockBelow = newLocation.clone();
-		blockBelow.setY(blockBelow.getY() - 1);
 
 		if(blockBelow.getBlock().getType() == Material.FURNACE ||
 				blockBelow.getBlock().getType() == Material.DISPENSER ||
@@ -100,6 +98,9 @@ public class CTFFlag extends Thread{
 				blockBelow.getBlock().getType() == Material.BREWING_STAND){
 			blockBelow.setY(blockBelow.getY() + 1);
 		}
+
+		newLocation = blockBelow.clone();
+		newLocation.setY(newLocation.getY() + 1);
 		
 		newLocation.getBlock().setType(Material.SIGN_POST);
 		Sign sign = (Sign) newLocation.getBlock().getState();
