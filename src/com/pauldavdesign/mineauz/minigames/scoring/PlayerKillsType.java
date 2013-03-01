@@ -137,4 +137,32 @@ public class PlayerKillsType extends ScoreType{
 			}
 		}
 	}
+	
+	@EventHandler
+	private void playerSuicide(PlayerDeathEvent event){
+		Player ply = event.getEntity();
+		if(pdata.playerInMinigame(ply) && (ply.getKiller() == null || ply.getKiller() == ply)){
+			Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
+			if(mgm.getScoreType().equals("kills")){
+				if(mgm.getRedTeam().isEmpty() && mgm.getBlueTeam().isEmpty()){
+					pdata.takePlayerScore(ply);
+					for(Player pl : mgm.getPlayers()){
+						pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + "'s Score: " + pdata.getPlayerScore(ply));
+					}
+				}
+				else{
+					pdata.takePlayerScore(ply);
+					if(mgm.getRedTeam().contains(ply)){
+						mgm.setRedTeamScore(mgm.getRedTeamScore() - 1);
+					}
+					else{
+						mgm.setBlueTeamScore(mgm.getBlueTeamScore() - 1);
+					}
+					for(Player pl : mgm.getPlayers()){
+						pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore());
+					}
+				}
+			}
+		}
+	}
 }

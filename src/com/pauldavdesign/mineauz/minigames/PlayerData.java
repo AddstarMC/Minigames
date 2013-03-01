@@ -768,6 +768,13 @@ public class PlayerData {
 		plyScore.put(ply.getName(), plyScore.get(ply.getName()) + 1);
 	}
 	
+	public void takePlayerScore(Player ply){
+		if(!plyScore.containsKey(ply.getName())){
+			plyScore.put(ply.getName(), 0);
+		}
+		plyScore.put(ply.getName(), plyScore.get(ply.getName()) - 1);
+	}
+	
 	public Integer getPlayerScore(Player ply){
 		if(plyScore.containsKey(ply.getName())){
 			return plyScore.get(ply.getName());
