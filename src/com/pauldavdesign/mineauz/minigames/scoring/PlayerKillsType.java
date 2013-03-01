@@ -32,6 +32,9 @@ public class PlayerKillsType extends ScoreType{
 					Player attacker = null;
 					if(ply.getKiller() != null){
 						attacker = (Player) ply.getKiller();
+						if(attacker == ply){
+							return;
+						}
 					}
 					else{
 						return;
@@ -65,6 +68,9 @@ public class PlayerKillsType extends ScoreType{
 					Player attacker = null;
 					if(ply.getKiller() instanceof Player){
 						attacker = (Player) ply.getKiller();
+						if(attacker == ply){
+							return;
+						}
 					}
 					else{
 						return;
@@ -86,6 +92,7 @@ public class PlayerKillsType extends ScoreType{
 					
 					if(team != ateam){
 						pdata.addPlayerKill(attacker);
+						pdata.addPlayerScore(attacker);
 						
 						if(mgm.getScoreType().equals("kills")){
 							boolean end = false;
