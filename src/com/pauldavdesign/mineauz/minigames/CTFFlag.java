@@ -82,7 +82,7 @@ public class CTFFlag extends Thread{
 		}
 		else if(blockBelow.getBlock().getType() != Material.AIR){
 			while(blockBelow.getBlock().getType() != Material.AIR){
-				if(blockBelow.getY() > 255){
+				if(blockBelow.getY() < 255){
 					blockBelow.setY(blockBelow.getY() + 1);
 				}
 				else{
