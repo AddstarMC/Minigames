@@ -547,6 +547,10 @@ public class Events implements Listener{
 						}
 						if(plyTeam != atcTeam){
 							ply.damage(mdata.getMinigame(pdata.getPlayersMinigame(ply)).getPaintBallDamage());
+							if(ply.isDead()){
+								pdata.addPlayerKill(shooter);
+								pdata.addPlayerScore(shooter);
+							}
 							event.setCancelled(true);
 						}
 					}
