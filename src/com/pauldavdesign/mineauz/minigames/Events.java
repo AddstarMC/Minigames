@@ -15,6 +15,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
@@ -48,7 +49,7 @@ public class Events implements Listener{
 				event.getDrops().clear();
 			}
 			String msg = "";
-			msg += event.getDeathMessage();
+			msg = event.getDeathMessage();
 			event.setDeathMessage(null);
 			event.setKeepLevel(true);
 			event.setDroppedExp(0);
@@ -523,7 +524,7 @@ public class Events implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	private void paintballHit(EntityDamageByEntityEvent event){
 		if(event.getEntity() instanceof Player && event.getDamager() instanceof Snowball){
 			Player ply = (Player) event.getEntity();
@@ -546,12 +547,8 @@ public class Events implements Listener{
 							}
 						}
 						if(plyTeam != atcTeam){
-							ply.damage(mdata.getMinigame(pdata.getPlayersMinigame(ply)).getPaintBallDamage());
-							if(ply.isDead()){
-								pdata.addPlayerKill(shooter);
-								pdata.addPlayerScore(shooter);
-							}
-							event.setCancelled(true);
+							int damage = mdata.getMinigame(pdata.getPlayersMinigame(ply)).getPaintBallDamage();
+							event.setDamage(damage);
 						}
 					}
 				}
