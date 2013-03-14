@@ -37,7 +37,7 @@ public class Minigames extends JavaPlugin{
 	private SQLDatabase sql = null;
 	private ScoreTypes scoretypes;
 	
-	private long lastUpdateCheck;
+	private long lastUpdateCheck = 0;
 
 	public void onEnable(){
 		plugin = this;

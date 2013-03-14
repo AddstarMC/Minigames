@@ -97,8 +97,10 @@ public class Events implements Listener{
 	@EventHandler
 	public void onPlayerConnect(PlayerJoinEvent event){
 		if(event.getPlayer().isOp() && plugin.getConfig().getBoolean("updateChecker")){
-			if(plugin.getLastUpdateCheck() == 0 || plugin.getLastUpdateCheck() + 86400000 >= Calendar.getInstance().getTimeInMillis()){
-				new UpdateChecker(event.getPlayer());
+			long nextCheck = plugin.getLastUpdateCheck() + 86400000;
+			if(nextCheck <= Calendar.getInstance().getTimeInMillis()){
+				UpdateChecker check = new UpdateChecker(event.getPlayer());
+				check.start();
 				plugin.setLastUpdateCheck(Calendar.getInstance().getTimeInMillis());
 			}
 		}

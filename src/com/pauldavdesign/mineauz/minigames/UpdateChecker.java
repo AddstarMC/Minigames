@@ -11,7 +11,6 @@ public class UpdateChecker extends Thread{
 	
 	public UpdateChecker(Player player){
 		ply = player;
-		start();
 	}
 	
 	@Override
