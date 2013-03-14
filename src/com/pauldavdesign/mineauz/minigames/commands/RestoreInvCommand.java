@@ -79,7 +79,7 @@ public class RestoreInvCommand implements ICommand{
 				reqpl.sendMessage(ChatColor.GRAY + "Your inventory has been restored.");
 				plugin.pdata.saveItems(reqpl);
 			}
-			else if(set.contains(reqpl.getName())){
+			else if(!set.contains(reqpl.getName())){
 				sender.sendMessage(ChatColor.RED + "This players inventory is not stored!");
 			}
 			else if(plugin.pdata.playerInMinigame(reqpl)){

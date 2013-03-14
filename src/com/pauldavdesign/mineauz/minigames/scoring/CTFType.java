@@ -26,7 +26,7 @@ public class CTFType extends ScoreType{
 	@EventHandler
 	private void takeFlag(PlayerInteractEvent event){
 		Player ply = event.getPlayer();
-		if(pdata.playerInMinigame(ply)){
+		if(pdata.playerInMinigame(ply) && !ply.isDead()){
 			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && (event.getClickedBlock().getType() == Material.SIGN_POST || event.getClickedBlock().getType() == Material.WALL_SIGN) && ply.getItemInHand().getType() == Material.AIR){
 				Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
 				Sign sign = (Sign) event.getClickedBlock().getState();

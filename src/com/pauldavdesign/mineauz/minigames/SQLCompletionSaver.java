@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 
-import lib.PatPeter.SQLibrary.MySQL;
+import lib.PatPeter.SQLibrary.Database;
 
 public class SQLCompletionSaver extends Thread{
 	private boolean hascompleted = false;
@@ -34,32 +34,38 @@ public class SQLCompletionSaver extends Thread{
 	}
 	
 	public void run(){
-		MySQL sql = Minigames.plugin.getSQL();
+		Database sql = Minigames.plugin.getSQL();
 		sql.open();
-		if(sql.checkConnection()){
-			if(!sql.checkTable("mgm_" + minigame + "_comp")){
-				sql.createTable("CREATE TABLE mgm_" + minigame + "_comp " +
-						"( " +
-						"Player varchar(32) NOT NULL PRIMARY KEY, " +
-						"Completion int, " +
-						"Kills int, " +
-						"Deaths int " +
-						")");
+		if(sql.isOpen()){
+			if(!sql.isTable("mgm_" + minigame + "_comp")){
+				try {
+					sql.query("CREATE TABLE mgm_" + minigame + "_comp " +
+							"( " +
+							"Player varchar(32) NOT NULL PRIMARY KEY, " +
+							"Completion int, " +
+							"Kills int, " +
+							"Deaths int " +
+							")");
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
 			
 			if(player != null){
-				ResultSet set = sql.query("SELECT * FROM mgm_" + minigame + "_comp WHERE Player='" + player.getName() + "'");
-	
-				//TODO remove these checks later
-				try{
-					set.absolute(1);
-					set.findColumn("Kills");
-				}catch (SQLException e){
-					sql.query("ALTER TABLE mgm_" + minigame + "_comp ADD Kills int DEFAULT 0");
-					sql.query("ALTER TABLE mgm_" + minigame + "_comp ADD Deaths int DEFAULT -1");
+				ResultSet set = null;
+				try {
+					set = sql.query("SELECT * FROM mgm_" + minigame + "_comp WHERE Player='" + player.getName() + "'");
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					return;
 				}
 				
-				set = sql.query("SELECT * FROM mgm_" + minigame + "_comp WHERE Player='" + player.getName() + "'");
+				try {
+					set = sql.query("SELECT * FROM mgm_" + minigame + "_comp WHERE Player='" + player.getName() + "'");
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					return;
+				}
 				
 				String name = null;
 				int completed = 0;
@@ -90,18 +96,34 @@ public class SQLCompletionSaver extends Thread{
 				
 				if(name != null){
 					hascompleted = true;
-					sql.query("UPDATE mgm_" + minigame + "_comp SET Completion='" + completed + "', Kills=" + kills + ", Deaths=" + deaths + " WHERE Player='" + name + "'");
+					try {
+						sql.query("UPDATE mgm_" + minigame + "_comp SET Completion='" + completed + "', Kills=" + kills + ", Deaths=" + deaths + " WHERE Player='" + name + "'");
+					} catch (SQLException e) {
+						e.printStackTrace();
+						return;
+					}
 				}
 				else{
 					name = player.getName();
-					sql.query("INSERT INTO mgm_" + minigame + "_comp VALUES ( '" + name + "', " + completed + ", " + kills + ", " + deaths + " )");
+					try {
+						sql.query("INSERT INTO mgm_" + minigame + "_comp VALUES ( '" + name + "', " + completed + ", " + kills + ", " + deaths + " )");
+					} catch (SQLException e) {
+						e.printStackTrace();
+						return;
+					}
 				}
 				
 				mgtype.issuePlayerRewards(player, Minigames.plugin.mdata.getMinigame(minigame), hascompleted);
 			}
 			else{
 				for(Player player : players){
-					ResultSet set = sql.query("SELECT * FROM mgm_" + minigame + "_comp WHERE Player='" + player.getName() + "'");
+					ResultSet set = null;
+					try {
+						set = sql.query("SELECT * FROM mgm_" + minigame + "_comp WHERE Player='" + player.getName() + "'");
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+						return;
+					}
 					
 					String name = null;
 					int completed = 0;
@@ -132,11 +154,21 @@ public class SQLCompletionSaver extends Thread{
 					
 					if(name != null){
 						hascompleted = true;
-						sql.query("UPDATE mgm_" + minigame + "_comp SET Completion='" + completed + "', Kills=" + kills + ", Deaths=" + deaths + " WHERE Player='" + name + "'");
+						try {
+							sql.query("UPDATE mgm_" + minigame + "_comp SET Completion='" + completed + "', Kills=" + kills + ", Deaths=" + deaths + " WHERE Player='" + name + "'");
+						} catch (SQLException e) {
+							e.printStackTrace();
+							return;
+						}
 					}
 					else{
 						name = player.getName();
-						sql.query("INSERT INTO mgm_" + minigame + "_comp VALUES ( '" + name + "', " + completed + ", " + kills + ", " + deaths + " )");
+						try {
+							sql.query("INSERT INTO mgm_" + minigame + "_comp VALUES ( '" + name + "', " + completed + ", " + kills + ", " + deaths + " )");
+						} catch (SQLException e) {
+							e.printStackTrace();
+							return;
+						}
 					}
 					
 					mgtype.issuePlayerRewards(player, Minigames.plugin.mdata.getMinigame(minigame), hascompleted);

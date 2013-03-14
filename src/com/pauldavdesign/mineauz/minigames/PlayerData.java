@@ -399,7 +399,7 @@ public class PlayerData {
 			
 			removeAllPlayerFlags(player);
 			
-			if(plugin.getSQL() == null || !plugin.getSQL().checkConnection()){
+			if(plugin.getSQL() == null || !plugin.getSQL().isOpen()){
 				removePlayerDeath(player);
 				removePlayerKills(player);
 				removePlayerScore(player);

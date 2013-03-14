@@ -31,6 +31,7 @@ public class SetLoadoutCommand implements ICommand {
 	public String getDescription() {
 		return "Creates, edits, deletes and lists loadouts. Custom loadouts can be equipt via [Loadout] signs.\n" +
 				"Typing \"ME\" in capital letters in the add command will add all the items in your inventory for that loadout.\n" +
+				"Typing \"SELECTED\" or \"SLOT\" in capital letters in the add command will add the item you are holding to the loadout.\n" +
 				"Note: Loadout names are case sensitive.";
 	}
 
@@ -42,7 +43,8 @@ public class SetLoadoutCommand implements ICommand {
 	@Override
 	public String[] getUsage() {
 		return new String[] {
-				"/minigame set <Minigame> loadout add <Item Name / ID / ME> [Quantity] [-l loadoutName]",
+				"/minigame set <Minigame> loadout add <Item Name / ID> [Quantity] [-l loadoutName]",
+				"/minigame set <Minigame> loadout add <ME / SELECTED / SLOT>",
 				"/minigame set <Minigame> loadout remove <Item Name / ID> [-l loadoutName]", 
 				"/minigame set <Minigame> loadout clear [-l loadoutName]",
 				"/minigame set <Minigame> loadout create <loadoutName>",
@@ -79,38 +81,7 @@ public class SetLoadoutCommand implements ICommand {
 					argloadout++;
 				}
 				
-				if(!args[1].equals("ME")){
-					if(args.length == 5 || args.length == 3){
-						if(args[2].matches("[0-9]+")){
-							quantity = Integer.parseInt(args[2]);
-						}
-						else{
-							return false;
-						}
-					}
-					
-					ItemStack item = MinigameUtils.stringToItemStack(args[1], quantity);
-					if(item != null){
-						if(loadout.equals("default")){
-							minigame.getDefaultPlayerLoadout().addItemToLoadout(item);
-							sender.sendMessage(ChatColor.GRAY + "Added " + quantity + " of item " + MinigameUtils.getItemStackName(item) + " to " + minigame);
-						}
-						else{
-							if(minigame.hasLoadout(loadout)){
-								minigame.getLoadout(loadout).addItemToLoadout(item);
-								sender.sendMessage(ChatColor.GRAY + "Added " + quantity + " of item " + MinigameUtils.getItemStackName(item) + " to the " + loadout + " loadout in " + minigame);
-							}
-							else{
-								sender.sendMessage(ChatColor.RED + "There is no loadout by the name of \"" + loadout + "\" in " + minigame);
-							}
-						}
-						return true;
-					}
-					else{
-						return false;
-					}
-				}
-				else{
+				if(args[1].equals("ME")){
 					if(sender instanceof Player){
 						Player player = (Player)sender;
 						
@@ -128,7 +99,7 @@ public class SetLoadoutCommand implements ICommand {
 								}
 								else{
 									sender.sendMessage(ChatColor.RED + "There is no loadout by the name of \"" + loadout + "\" in " + minigame);
-									break;
+									return true;
 								}
 							}
 						}
@@ -145,7 +116,7 @@ public class SetLoadoutCommand implements ICommand {
 								}
 								else{
 									sender.sendMessage(ChatColor.RED + "There is no loadout by the name of \"" + loadout + "\" in " + minigame);
-									break;
+									return true;
 								}
 							}
 						}
@@ -157,6 +128,75 @@ public class SetLoadoutCommand implements ICommand {
 						sender.sendMessage(ChatColor.RED + "You must be a player to use the \"ME\" variable!");
 					}
 					return true;
+				}
+				else if(args[1].equals("SELECTED") || args[1].equals("SLOT")){
+					if(sender instanceof Player){
+						Player player = (Player)sender;
+						
+						ItemStack item = player.getItemInHand();
+						
+						if(item.getType() != Material.AIR){
+							if(loadout.equals("default")){
+								if(item != null){
+									minigame.getDefaultPlayerLoadout().addItemToLoadout(item);
+								}
+							}
+							else{
+								if(minigame.hasLoadout(loadout)){
+									if(item != null){
+										minigame.getLoadout(loadout).addItemToLoadout(item);
+									}
+								}
+								else{
+									sender.sendMessage(ChatColor.RED + "There is no loadout by the name of \"" + loadout + "\" in " + minigame);
+									return true;
+								}
+							}
+							
+							if(minigame.hasLoadout(loadout)){
+								sender.sendMessage(ChatColor.GRAY + "Added " + MinigameUtils.getItemStackName(item) + " to the " + loadout + " loadout for " + minigame);
+							}
+						}
+						else{
+							sender.sendMessage(ChatColor.RED + "Your hand is empty!");
+						}
+					}
+					else{
+						sender.sendMessage(ChatColor.RED + "You must be a player to use the \"" + args[1] + "\" variable!");
+					}
+					return true;
+				}
+				else{
+					if(args.length == 5 || args.length == 3){
+						if(args[2].matches("[0-9]+")){
+							quantity = Integer.parseInt(args[2]);
+						}
+						else{
+							return false;
+						}
+					}
+					
+					ItemStack item = MinigameUtils.stringToItemStack(args[1], quantity);
+					if(item.getType() != Material.AIR && item != null){
+						if(loadout.equals("default")){
+							minigame.getDefaultPlayerLoadout().addItemToLoadout(item);
+							sender.sendMessage(ChatColor.GRAY + "Added " + quantity + " of item " + MinigameUtils.getItemStackName(item) + " to " + minigame);
+						}
+						else{
+							if(minigame.hasLoadout(loadout)){
+								minigame.getLoadout(loadout).addItemToLoadout(item);
+								sender.sendMessage(ChatColor.GRAY + "Added " + quantity + " of item " + MinigameUtils.getItemStackName(item) + " to the " + loadout + " loadout in " + minigame);
+							}
+							else{
+								sender.sendMessage(ChatColor.RED + "There is no loadout by the name of \"" + loadout + "\" in " + minigame);
+							}
+						}
+						return true;
+					}
+					else{
+						sender.sendMessage(ChatColor.RED + args[1] + " is an invalid item!");
+						return true;
+					}
 				}
 					
 			}

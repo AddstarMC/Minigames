@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import lib.PatPeter.SQLibrary.Database;
 import lib.PatPeter.SQLibrary.MySQL;
 
 import net.milkbowl.vault.economy.Economy;
@@ -44,7 +45,7 @@ public class Minigames extends JavaPlugin{
 	public MinigameData mdata;
 	public static Minigames plugin;
     private static Economy econ = null;
-	private MySQL sql = null;
+	private Database sql = null;
 	private ScoreTypes scoretypes;
 
 	public void onEnable(){
@@ -152,15 +153,7 @@ public class Minigames extends JavaPlugin{
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 		
-		if(getConfig().getBoolean("use-sql")){
-			sql = new MySQL(log, 
-					"[Minigames] ", 
-					getConfig().getString("sql-host"), 
-					getConfig().getString("sql-port"), 
-					getConfig().getString("sql-database"), 
-					getConfig().getString("sql-username"), 
-					getConfig().getString("sql-password"));
-		}
+		loadSQL();
 		
 		Calendar cal = Calendar.getInstance();
 		if(cal.get(Calendar.DAY_OF_MONTH) == 21 && cal.get(Calendar.MONTH) == 8 ||
@@ -270,12 +263,34 @@ public class Minigames extends JavaPlugin{
 		return pdata;
 	}
 	
+	public void newPlayerData(){
+		pdata = new PlayerData();
+	}
+	
 	public MinigameData getMinigameData(){
 		return mdata;
 	}
 	
-	public MySQL getSQL(){
+	public void newMinigameData(){
+		mdata = new MinigameData();
+	}
+	
+	public Database getSQL(){
 		return sql;
+	}
+	
+	public void loadSQL(){
+		if(getServer().getPluginManager().getPlugin("SQLibrary") != null){
+			if(getConfig().getBoolean("use-sql")){
+				sql = new MySQL(log, 
+						"[Minigames] ", 
+						getConfig().getString("sql-host"), 
+						getConfig().getInt("sql-port"), 
+						getConfig().getString("sql-database"), 
+						getConfig().getString("sql-username"), 
+						getConfig().getString("sql-password"));
+			}
+		}
 	}
 	
 	public ScoreTypes getScoreTypes(){

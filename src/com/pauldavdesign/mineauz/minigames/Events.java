@@ -96,17 +96,23 @@ public class Events implements Listener{
 	@EventHandler
 	public void onPlayerConnect(PlayerJoinEvent event){
 		if(event.getPlayer().isOp() && plugin.getConfig().getBoolean("updateChecker")){
-			List<String> update = MinigameUtils.checkForUpdate("http://mineauz.pauldavdesign.com/mgmversion.txt", plugin.getDescription().getVersion());
-			if(update != null){
-				Player ply = event.getPlayer();
-				ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "There is an update available! Version: " + update.get(0));
-				if(update.size() > 1){
-					ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Changes:");
-					for(int i = 1; i < update.size(); i++){
-						ply.sendMessage("- " + update.get(i));
+			final Player ply = event.getPlayer();
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				
+				@Override
+				public void run() {
+					List<String> update = MinigameUtils.checkForUpdate("http://mineauz.pauldavdesign.com/mgmversion.txt", plugin.getDescription().getVersion());
+					if(update != null){
+						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "There is an update available! Version: " + update.get(0));
+						if(update.size() > 1){
+							ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Changes:");
+							for(int i = 1; i < update.size(); i++){
+								ply.sendMessage("- " + update.get(i));
+							}
+						}
 					}
 				}
-			}
+			});
 		}
 		if(pdata.hasDCPlayer(event.getPlayer())){
 			final Player ply = event.getPlayer();

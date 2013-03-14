@@ -50,7 +50,7 @@ public abstract class MinigameType implements Listener{
 	public void callGeneralQuit(final Player player){
 		final String minigame = pdata.getPlayersMinigame(player);
 		
-		if(player.isDead()){
+		//if(player.isDead()){
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				
 				@Override
@@ -58,10 +58,10 @@ public abstract class MinigameType implements Listener{
 					player.teleport(mdata.getMinigame(minigame).getQuitPosition());
 				}
 			});
-		}
-		else{
-			player.teleport(mdata.getMinigame(minigame).getQuitPosition());
-		}
+		//}
+		//else{
+		//	player.teleport(mdata.getMinigame(minigame).getQuitPosition());
+		//}
 		
 		pdata.removePlayerCheckpoints(player);
 		pdata.removeAllPlayerFlags(player);

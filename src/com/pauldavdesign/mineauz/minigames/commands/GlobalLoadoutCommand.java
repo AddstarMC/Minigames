@@ -1,6 +1,7 @@
 package com.pauldavdesign.mineauz.minigames.commands;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -32,6 +33,7 @@ public class GlobalLoadoutCommand implements ICommand {
 	public String getDescription() {
 		return "Creates, edits, deletes and lists global loadouts. Custom loadouts can be equipt via [Loadout] signs.\n" +
 				"Typing \"ME\" in capital letters in the add command will add all the items in your inventory for that loadout.\n" +
+				"Typing \"SELECTED\" or \"SLOT\" in capital letters in the add command will add the item you are holding to the loadout.\n" +
 				"Note: Loadout names are case sensitive.";
 	}
 
@@ -43,7 +45,8 @@ public class GlobalLoadoutCommand implements ICommand {
 	@Override
 	public String[] getUsage() {
 		return new String[] {
-				"/minigame globalloadout <loadoutName> add <Item Name / ID / ME> [Quantity]",
+				"/minigame globalloadout <loadoutName> add <Item Name / ID> [Quantity]",
+				"/minigame set <Minigame> loadout add <ME / SELECTED / SLOT>",
 				"/minigame globalloadout <loadoutName> remove <Item Name / ID>", 
 				"/minigame globalloadout <loadoutName> clear",
 				"/minigame globalloadout <loadoutName> create",
@@ -71,32 +74,8 @@ public class GlobalLoadoutCommand implements ICommand {
 				String loadout = args[0];
 				int quantity = 1;
 				
-				if(!args[2].equals("ME")){
-					if(args.length == 4){
-						if(args[3].matches("[0-9]+")){
-							quantity = Integer.parseInt(args[2]);
-						}
-						else{
-							return false;
-						}
-					}
-					
-					ItemStack item = MinigameUtils.stringToItemStack(args[1], quantity);
-					if(item != null){
-						if(mdata.hasLoadout(loadout)){
-							mdata.getLoadout(loadout).addItemToLoadout(item);
-							sender.sendMessage(ChatColor.GRAY + "Added " + quantity + " of item " + MinigameUtils.getItemStackName(item) + " to the " + loadout + " loadout in global loadouts");
-						}
-						else{
-							sender.sendMessage(ChatColor.RED + "There is no loadout by the name of \"" + loadout + "\" in global loadouts!");
-						}
-						return true;
-					}
-					else{
-						return false;
-					}
-				}
-				else{
+				
+				if(args[2].equals("ME")){
 					if(sender instanceof Player){
 						Player player = (Player)sender;
 						
@@ -108,7 +87,7 @@ public class GlobalLoadoutCommand implements ICommand {
 							}
 							else{
 								sender.sendMessage(ChatColor.RED + "There is no loadout by the name of \"" + loadout + "\" in global loadouts!");
-								break;
+								return true;
 							}
 						}
 						
@@ -118,7 +97,7 @@ public class GlobalLoadoutCommand implements ICommand {
 							}
 							else{
 								sender.sendMessage(ChatColor.RED + "There is no loadout by the name of \"" + loadout + "\" in global loadouts!");
-								break;
+								return true;
 							}
 						}
 						if(mdata.hasLoadout(loadout)){
@@ -130,9 +109,65 @@ public class GlobalLoadoutCommand implements ICommand {
 					}
 					return true;
 				}
+				else if(args[2].equals("SELECTED") || args[2].equals("SLOT")){
+					if(sender instanceof Player){
+						Player player = (Player)sender;
+						
+						ItemStack item = player.getItemInHand();
+						
+						if(item.getType() != Material.AIR){
+							if(mdata.hasLoadout(loadout)){
+								if(item != null){
+									mdata.getLoadout(loadout).addItemToLoadout(item);
+								}
+							}
+							else{
+								sender.sendMessage(ChatColor.RED + "There is no loadout by the name of \"" + loadout + "\" in global loadouts!");
+								return true;
+							}
+							
+							if(mdata.hasLoadout(loadout)){
+								sender.sendMessage(ChatColor.GRAY + "Added " + MinigameUtils.getItemStackName(item) + " to the " + loadout + " loadout in global loadouts");
+							}
+						}
+						else{
+							sender.sendMessage(ChatColor.RED + "Your hand is empty!");
+						}
+					}
+					else{
+						sender.sendMessage(ChatColor.RED + "You must be a player to use the \"" + args[1] + "\" variable!");
+					}
+					return true;
+				}
+				else{
+					if(args.length == 4){
+						if(args[3].matches("[0-9]+")){
+							quantity = Integer.parseInt(args[2]);
+						}
+						else{
+							return false;
+						}
+					}
+					
+					ItemStack item = MinigameUtils.stringToItemStack(args[1], quantity);
+					if(item.getType() != Material.AIR && item != null){
+						if(mdata.hasLoadout(loadout)){
+							mdata.getLoadout(loadout).addItemToLoadout(item);
+							sender.sendMessage(ChatColor.GRAY + "Added " + quantity + " of item " + MinigameUtils.getItemStackName(item) + " to the " + loadout + " loadout in global loadouts");
+						}
+						else{
+							sender.sendMessage(ChatColor.RED + "There is no loadout by the name of \"" + loadout + "\" in global loadouts!");
+						}
+						return true;
+					}
+					else{
+						sender.sendMessage(ChatColor.RED + args[1] + " is an invalid item!");
+						return true;
+					}
+				}
 					
 			}
-			else if(args.length >= 3 && args[0].equalsIgnoreCase("remove")){
+			else if(args.length >= 3 && args[1].equalsIgnoreCase("remove")){
 				String loadout = args[0];
 				
 				if(mdata.hasLoadout(loadout)){
@@ -166,7 +201,7 @@ public class GlobalLoadoutCommand implements ICommand {
 				}
 				return true;
 			}
-			else if(args[0].equalsIgnoreCase("delete") && args.length >= 2){
+			else if(args.length >= 2 && args[1].equalsIgnoreCase("delete")){
 				if(mdata.hasLoadout(args[0])){
 					mdata.deleteLoadout(args[0]);
 					sender.sendMessage(ChatColor.GRAY + "Deleted the " + args[0] + " loadout from global loadouts");
@@ -177,9 +212,14 @@ public class GlobalLoadoutCommand implements ICommand {
 				return true;
 			}
 			else if(args[0].equalsIgnoreCase("list")){
-				String list = "default";
+				String list = "";
+				int count = 0;
 				for(String loadout : mdata.getLoadouts()){
-					list += ", " + loadout;
+					list += loadout;
+					count++;
+					if(count != mdata.getLoadouts().size()){
+						list += ", ";
+					}
 				}
 				sender.sendMessage(ChatColor.GRAY + "List of global loadouts:");
 				sender.sendMessage(ChatColor.GRAY + list);
