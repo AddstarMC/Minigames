@@ -1,6 +1,7 @@
 package com.pauldavdesign.mineauz.minigames;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -96,23 +97,10 @@ public class Events implements Listener{
 	@EventHandler
 	public void onPlayerConnect(PlayerJoinEvent event){
 		if(event.getPlayer().isOp() && plugin.getConfig().getBoolean("updateChecker")){
-			final Player ply = event.getPlayer();
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					List<String> update = MinigameUtils.checkForUpdate("http://mineauz.pauldavdesign.com/mgmversion.txt", plugin.getDescription().getVersion());
-					if(update != null){
-						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "There is an update available! Version: " + update.get(0));
-						if(update.size() > 1){
-							ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Changes:");
-							for(int i = 1; i < update.size(); i++){
-								ply.sendMessage("- " + update.get(i));
-							}
-						}
-					}
-				}
-			});
+			if(plugin.getLastUpdateCheck() == 0 || plugin.getLastUpdateCheck() + 86400000 >= Calendar.getInstance().getTimeInMillis()){
+				new UpdateChecker(event.getPlayer());
+				plugin.setLastUpdateCheck(Calendar.getInstance().getTimeInMillis());
+			}
 		}
 		if(pdata.hasDCPlayer(event.getPlayer())){
 			final Player ply = event.getPlayer();

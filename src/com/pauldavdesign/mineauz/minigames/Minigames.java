@@ -36,6 +36,8 @@ public class Minigames extends JavaPlugin{
     private static Economy econ = null;
 	private SQLDatabase sql = null;
 	private ScoreTypes scoretypes;
+	
+	private long lastUpdateCheck;
 
 	public void onEnable(){
 		plugin = this;
@@ -280,5 +282,13 @@ public class Minigames extends JavaPlugin{
 	
 	public ScoreTypes getScoreTypes(){
 		return scoretypes;
+	}
+	
+	public long getLastUpdateCheck(){
+		return lastUpdateCheck;
+	}
+	
+	public void setLastUpdateCheck(long time){
+		lastUpdateCheck = time;
 	}
 }
