@@ -5,11 +5,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import lib.PatPeter.SQLibrary.Database;
+
 import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
-
-import lib.PatPeter.SQLibrary.Database;
 
 public class SQLCompletionSaver extends Thread{
 	private boolean hascompleted = false;
@@ -34,8 +34,10 @@ public class SQLCompletionSaver extends Thread{
 	}
 	
 	public void run(){
-		Database sql = Minigames.plugin.getSQL();
-		sql.open();
+		Database sql = Minigames.plugin.getSQL().getSql();
+		if(!sql.isOpen()){
+		    sql.open();
+		}
 		if(sql.isOpen()){
 			if(!sql.isTable("mgm_" + minigame + "_comp")){
 				try {

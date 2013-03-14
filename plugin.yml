@@ -2,6 +2,7 @@ name: Minigames
 main: com.pauldavdesign.mineauz.minigames.Minigames
 version: 1.4.2
 author: _Razz_
+softdepend: [SQLibrary]
 
 commands:
     minigame:

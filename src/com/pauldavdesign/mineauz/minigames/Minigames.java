@@ -9,21 +9,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import lib.PatPeter.SQLibrary.Database;
-import lib.PatPeter.SQLibrary.MySQL;
-
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-//import org.bukkit.ChatColor;
-//import org.bukkit.Location;
-//import org.bukkit.Material;
-//import org.bukkit.block.Chest;
-//import org.bukkit.block.Dispenser;
-//import org.bukkit.block.Furnace;
-//import org.bukkit.command.Command;
-//import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
@@ -45,7 +34,7 @@ public class Minigames extends JavaPlugin{
 	public MinigameData mdata;
 	public static Minigames plugin;
     private static Economy econ = null;
-	private Database sql = null;
+	private SQLDatabase sql = null;
 	private ScoreTypes scoretypes;
 
 	public void onEnable(){
@@ -210,7 +199,7 @@ public class Minigames extends JavaPlugin{
 			mg.saveMinigame();
 		}
 		if(sql != null){
-			sql.close();
+			getSQL().getSql().close();
 		}
 		
 		pdata.saveDCPlayers();
@@ -275,21 +264,17 @@ public class Minigames extends JavaPlugin{
 		mdata = new MinigameData();
 	}
 	
-	public Database getSQL(){
+	public SQLDatabase getSQL(){
 		return sql;
 	}
 	
 	public void loadSQL(){
 		if(getServer().getPluginManager().getPlugin("SQLibrary") != null){
-			if(getConfig().getBoolean("use-sql")){
-				sql = new MySQL(log, 
-						"[Minigames] ", 
-						getConfig().getString("sql-host"), 
-						getConfig().getInt("sql-port"), 
-						getConfig().getString("sql-database"), 
-						getConfig().getString("sql-username"), 
-						getConfig().getString("sql-password"));
-			}
+			sql = new SQLDatabase();
+			sql.loadSQL();
+		}
+		else{
+			getLogger().info("SQLibrary not found! You cannot use SQL to save data!");
 		}
 	}
 	
