@@ -1,6 +1,6 @@
 name: Minigames
 main: com.pauldavdesign.mineauz.minigames.Minigames
-version: 1.4.2
+version: 1.5 Dev 1
 author: _Razz_
 softdepend: [SQLibrary]
 
@@ -38,8 +38,8 @@ permissions:
             minigame.treasure.hint: true
             minigame.treasure.announce: true
             minigame.reload: true
-            minigame.sign.use: true
-            minigame.sign.create: true
+            minigame.sign.create.*: true
+            minigame.sign.use.*: true
             minigame.restoreinv: true
             minigame.info: true
             minigame.treasure.announce: true
@@ -223,12 +223,60 @@ permissions:
     minigame.restoreinv:
         description: Allows access to inventory restore command
         default: op
-    minigame.sign.create:
-        description: Allows the creation of a minigame sign
+    minigame.sign.create.finish:
+        description: Allows the creation of a minigame finish sign
         default: op
-    minigame.sign.use:
-        description: Allows the usage of a minigame sign
+    minigame.sign.create.join:
+        description: Allows the creation of a minigame create sign
+        default: op
+    minigame.sign.create.bet:
+        description: Allows the creation of a minigame bet sign
+        default: op
+    minigame.sign.create.checkpoint:
+        description: Allows the creation of a minigame checkpoint sign
+        default: op
+    minigame.sign.create.flag:
+        description: Allows the creation of a minigame flag sign
+        default: op
+    minigame.sign.create.quit:
+        description: Allows the creation of a minigame quit sign
+        default: op
+    minigame.sign.create.loadout:
+        description: Allows the creation of a minigame loadout sign
+        default: op
+    minigame.sign.create.*:
+        description: Allows a player to create all Minigame signs
+        children:
+            minigame.sign.create.finish: true
+            minigame.sign.create.join: true
+            minigame.sign.create.bet: true
+            minigame.sign.create.checkpoint: true
+            minigame.sign.create.flag: true
+            minigame.sign.create.quit: true
+            minigame.sign.create.loadout: true
+    minigame.sign.use.details:
+        description: Allows the usage of a minigame sign to show the details
         default: true
+    minigame.sign.use.join:
+        description: Allows the usage of a minigame sign to join
+        default: true
+    minigame.sign.use.bet:
+        description: Allows the usage of a minigame sign to bet
+        default: true
+    minigame.sign.use.checkpoint:
+        description: Allows the usage of a minigame sign to set a checkpoint
+        default: true
+    minigame.sign.use.loadout:
+        description: Allows the usage of a minigame sign to get a loadout
+        default: true
+    minigame.sign.use.*:
+        description: Allows a player to use all the Minigame sign uses
+        children:
+            minigame.sign.use.details: true
+            minigame.sign.use.join: true
+            minigame.sign.use.bet: true
+            minigame.sign.use.checkpoint: true
+            minigame.sign.use.loadout: true
     minigame.reload:
         description: Allows player to reload the currently loaded configuration files
         default: op

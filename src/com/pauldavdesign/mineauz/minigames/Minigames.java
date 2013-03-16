@@ -27,6 +27,7 @@ import com.pauldavdesign.mineauz.minigames.gametypes.RaceMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.SPMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 import com.pauldavdesign.mineauz.minigames.scoring.ScoreTypes;
+import com.pauldavdesign.mineauz.minigames.signs.SignBase;
 
 public class Minigames extends JavaPlugin{
 	static Logger log = Logger.getLogger("Minecraft");
@@ -35,7 +36,8 @@ public class Minigames extends JavaPlugin{
 	public static Minigames plugin;
     private static Economy econ = null;
 	private SQLDatabase sql = null;
-	private ScoreTypes scoretypes;
+	private static ScoreTypes scoretypes;
+	private static SignBase minigameSigns;
 	
 	private long lastUpdateCheck = 0;
 
@@ -179,6 +181,8 @@ public class Minigames extends JavaPlugin{
 			}
 		}
 		
+		minigameSigns = new SignBase();
+		
 		getCommand("minigame").setExecutor(new CommandDispatcher());
 	}
 
@@ -290,5 +294,9 @@ public class Minigames extends JavaPlugin{
 	
 	public void setLastUpdateCheck(long time){
 		lastUpdateCheck = time;
+	}
+	
+	public SignBase getMinigameSigns(){
+		return minigameSigns;
 	}
 }
