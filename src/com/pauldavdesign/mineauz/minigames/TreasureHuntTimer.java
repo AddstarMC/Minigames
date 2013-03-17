@@ -18,7 +18,6 @@ public class TreasureHuntTimer{
 	private int time = 0;
 	private int findtime;
 	private int waittime;
-//	private boolean active = true;
 	private boolean inworld = true;
 	private boolean chestfound = false;
 	private ArrayList<String> curHints = new ArrayList<String>();
@@ -216,14 +215,6 @@ public class TreasureHuntTimer{
 	public void setTimeLeft(int time){
 		this.time = time;
 	}
-	
-//	public void setActive(boolean active){
-//		this.active = active;
-//	}
-//	
-//	public boolean getActive(){
-//		return active;
-//	}
 	
 	public boolean getChestInWorld(){
 		return inworld;
