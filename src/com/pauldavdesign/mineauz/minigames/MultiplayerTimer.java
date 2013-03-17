@@ -49,47 +49,6 @@ public class MultiplayerTimer{
 				}
 			}
 		}, 0, 20);
-//		while(startWaitTime != 0){
-//			if(playerWaitTime != 0 && !paused){
-//				if(playerWaitTime == plugin.getConfig().getInt("multiplayer.waitforplayers")){
-//					sendPlayersMessage(minigame, ChatColor.GRAY + "Waiting for players:");
-//				}
-//				sendPlayersMessage(minigame, ChatColor.GRAY + "" + playerWaitTime + "sec.");
-//				playerWaitTime -= 1;
-//				try{
-//					Thread.sleep(1000);
-//				}
-//				catch(Exception e){
-//					plugin.getLogger().log(Level.SEVERE, "Error in wait time Thread.sleep!");
-//				}
-//			}
-//			else if(playerWaitTime == 0 && startWaitTime !=0 && !paused){
-//				if(startWaitTime == plugin.getConfig().getInt("multiplayer.startcountdown")){
-//					sendPlayersMessage(minigame, ChatColor.GRAY + "Minigame starts in:");
-//				}
-//				sendPlayersMessage(minigame, ChatColor.GRAY + "" + startWaitTime + "sec.");
-//				startWaitTime -= 1;
-//				try{
-//					Thread.sleep(1000);
-//				}
-//				catch(Exception e){
-//					plugin.getLogger().log(Level.SEVERE, "Error in wait time Thread.sleep!");
-//				}
-//				if(startWaitTime == 0 && playerWaitTime == 0){
-//					sendPlayersMessage(minigame, ChatColor.GREEN + "Go!");
-//					reclearInventories(minigame);
-//					pdata.startMPMinigame(minigame);
-//				}
-//			}
-//			else{
-//				try{
-//					Thread.sleep(1000);
-//				}
-//				catch(Exception e){
-//					plugin.getLogger().log(Level.SEVERE, "Error in wait time Thread.sleep!");
-//				}
-//			}
-//		}
 	}
 	
 	public void sendPlayersMessage(String minigame, String message){

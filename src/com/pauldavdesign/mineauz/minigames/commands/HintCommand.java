@@ -61,7 +61,7 @@ public class HintCommand implements ICommand{
 			
 			if(mgm != null && mgm.getThTimer() != null && mgm.getType().equals("th")){
 				TreasureHuntTimer treasure = mgm.getThTimer();
-				if(treasure.getActive() && treasure.getTreasureFound() == false){
+				if(treasure.getChestInWorld() && treasure.getTreasureFound() == false){
 					treasure.hints(player);
 				}
 				else{
@@ -93,7 +93,7 @@ public class HintCommand implements ICommand{
 				}
 				else{
 					TreasureHuntTimer treasure = mgs.get(0).getThTimer();
-					if(treasure.getChestInWorld() && treasure.getActive() && !treasure.getTreasureFound()){
+					if(treasure.getChestInWorld() && treasure.getChestInWorld() && !treasure.getTreasureFound()){
 						treasure.hints(player);
 					}
 					else{

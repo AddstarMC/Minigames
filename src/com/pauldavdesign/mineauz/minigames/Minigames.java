@@ -197,8 +197,7 @@ public class Minigames extends JavaPlugin{
 		}
 		Set<String> mgtreasure = mdata.getAllTreasureHuntLocation();
 		for(String minigame : mgtreasure){
-			mdata.getMinigame(minigame).getThTimer().setActive(false);
-			mdata.getMinigame(minigame).getThTimer().setTreasureFound(true);
+			mdata.getMinigame(minigame).getThTimer().stopTimer();
 			mdata.removeTreasureNoDelay(minigame);
 		}
 		for(Minigame mg : mdata.getAllMinigames().values()){
