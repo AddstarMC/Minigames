@@ -254,7 +254,7 @@ public class PlayerData {
 
 		if(mgm.getSpleefFloor1() != null && mgm.getSpleefFloor2() != null){
 			mgm.addFloorDegenerator();
-			mgm.getFloorDegenerator().start();
+			mgm.getFloorDegenerator().startDegeneration();
 		}
 
 		if(mgm.hasRestoreBlocks()){

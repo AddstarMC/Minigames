@@ -4,8 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
-public class FloorDegenerator extends Thread{
-	private boolean running = true;
+public class FloorDegenerator{
 	private Location xSideNeg1;
 	private Location xSidePos1;
 	private Location zSideNeg1;
@@ -17,6 +16,7 @@ public class FloorDegenerator extends Thread{
 	private static Minigames plugin = Minigames.plugin;
 	private int timeDelay = 30;
 	private Minigame mgm = null;
+	private int taskID = -1;
 	
 	public FloorDegenerator(Location point1, Location point2, Minigame mgm){
 		timeDelay = plugin.getConfig().getInt("multiplayer.floordegenerator.time");
@@ -75,32 +75,22 @@ public class FloorDegenerator extends Thread{
 		zSidePos2 = new Location(point1.getWorld(), maxX, maxY, maxZ);
 	}
 	
-	public void run(){
-		try{
-			Thread.sleep(timeDelay * 1000);
-		}
-		catch(InterruptedException e){
-			Bukkit.getLogger().severe("Floor degenerator failed!");
-			e.printStackTrace();
-		}
-		while(running){
-			degenerateSide(xSideNeg1, xSideNeg2);
-			degenerateSide(xSidePos1, xSidePos2);
-			degenerateSide(zSideNeg1, zSideNeg2);
-			degenerateSide(zSidePos1, zSidePos2);
+	public void startDegeneration(){
+		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 			
-			incrementSide();
-			if(xSideNeg1.getZ() >= xSidePos1.getZ() || zSideNeg1.getX() >= zSidePos1.getX()){
-				stopDegenerator();
+			@Override
+			public void run() {
+				degenerateSide(xSideNeg1, xSideNeg2);
+				degenerateSide(xSidePos1, xSidePos2);
+				degenerateSide(zSideNeg1, zSideNeg2);
+				degenerateSide(zSidePos1, zSidePos2);
+				
+				incrementSide();
+				if(xSideNeg1.getZ() >= xSidePos1.getZ() || zSideNeg1.getX() >= zSidePos1.getX()){
+					stopDegenerator();
+				}
 			}
-			try{
-				Thread.sleep(timeDelay * 1000);
-			}
-			catch(InterruptedException e){
-				Bukkit.getLogger().severe("Floor degenerator failed!");
-				e.printStackTrace();
-			}
-		}
+		}, timeDelay * 20, timeDelay * 20);
 	}
 	
 	private void incrementSide(){
@@ -139,6 +129,8 @@ public class FloorDegenerator extends Thread{
 	}
 	
 	public void stopDegenerator(){
-		running = false;
+		if(taskID != -1){
+			Bukkit.getScheduler().cancelTask(taskID);
+		}
 	}
 }
