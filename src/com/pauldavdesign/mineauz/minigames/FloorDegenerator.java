@@ -1,10 +1,15 @@
 package com.pauldavdesign.mineauz.minigames;
 
+import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
 public class FloorDegenerator{
+	private Location topCorner;
+	private Location bottomCorner;
+	
 	private Location xSideNeg1;
 	private Location xSidePos1;
 	private Location zSideNeg1;
@@ -17,6 +22,8 @@ public class FloorDegenerator{
 	private int timeDelay = 30;
 	private Minigame mgm = null;
 	private int taskID = -1;
+	
+	private int radiusModifier = 0;
 	
 	public FloorDegenerator(Location point1, Location point2, Minigame mgm){
 		timeDelay = plugin.getConfig().getInt("multiplayer.floordegenerator.time");
@@ -65,6 +72,9 @@ public class FloorDegenerator{
 		minY--;
 		maxY--;
 		
+		topCorner = new Location(point1.getWorld(), maxX, maxY, maxZ);
+		bottomCorner = new Location(point1.getWorld(), minX, minY, minZ);
+		
 		xSideNeg1 = new Location(point1.getWorld(), minX, minY, minZ);
 		xSideNeg2 = new Location(point1.getWorld(), maxX, maxY, minZ);
 		zSideNeg1 = new Location(point1.getWorld(), minX, minY, minZ);
@@ -80,14 +90,22 @@ public class FloorDegenerator{
 			
 			@Override
 			public void run() {
-				degenerateSide(xSideNeg1, xSideNeg2);
-				degenerateSide(xSidePos1, xSidePos2);
-				degenerateSide(zSideNeg1, zSideNeg2);
-				degenerateSide(zSidePos1, zSidePos2);
-				
-				incrementSide();
-				if(xSideNeg1.getZ() >= xSidePos1.getZ() || zSideNeg1.getX() >= zSidePos1.getX()){
-					stopDegenerator();
+				if(mgm.getDegenType().equals("inward")){
+					degenerateSide(xSideNeg1, xSideNeg2);
+					degenerateSide(xSidePos1, xSidePos2);
+					degenerateSide(zSideNeg1, zSideNeg2);
+					degenerateSide(zSidePos1, zSidePos2);
+					
+					incrementSide();
+					if(xSideNeg1.getZ() >= xSidePos1.getZ() || zSideNeg1.getX() >= zSidePos1.getX()){
+						stopDegenerator();
+					}
+				}
+				else if(mgm.getDegenType().equals("random")){
+					degenerateRandom(bottomCorner, topCorner, mgm.getDegenRandomChance());
+				}
+				else if(mgm.getDegenType().equals("circle")){
+					degenerateCircle(bottomCorner, topCorner);
 				}
 			}
 		}, timeDelay * 20, timeDelay * 20);
@@ -126,6 +144,66 @@ public class FloorDegenerator{
 			}
 			y++;
 		}while(y <= loc2.getBlockY());
+	}
+	
+	private void degenerateRandom(Location lowest, Location highest, int chance){
+		Location curblock = lowest.clone();
+		int x = curblock.getBlockX();
+		int z = curblock.getBlockZ();
+		int y = curblock.getBlockY();
+		do{
+			curblock.setZ(z);
+			curblock.setX(x);
+			curblock.setY(y);
+			for(int i = lowest.getBlockX(); i <= highest.getBlockX() + 1; i++){
+				for(int k = lowest.getBlockZ(); k <= highest.getBlockZ() + 1; k++){
+					Random random = new Random();
+					if(curblock.getBlock().getType() != Material.AIR && random.nextInt(100) < chance){
+						mgm.getBlockRecorder().addBlock(curblock.getBlock(), null);
+						curblock.getBlock().setType(Material.AIR);
+					}
+					curblock.setZ(k);
+				}
+				curblock.setX(i);
+				curblock.setZ(z);
+			}
+			y++;
+		}while(y <= highest.getBlockY());
+	}
+	
+	private void degenerateCircle(Location lowest, Location highest){
+		int middledist = (int) Math.abs(Math.floor((highest.getBlockX() - lowest.getBlockX()) / 2));
+		Bukkit.getLogger().info("Dist: " + middledist);
+		int radius = middledist - radiusModifier;
+		Bukkit.getLogger().info("Rad: " + radius);
+		Location centerBlock = lowest.clone();
+		centerBlock.setX(centerBlock.getX() + middledist);
+		centerBlock.setZ(centerBlock.getZ() + middledist);
+		Location curBlock = centerBlock.clone();
+		
+		Bukkit.getLogger().info("Centerblock X: " + centerBlock.getBlockX());
+		Bukkit.getLogger().info("Centerblock Z: " + centerBlock.getBlockZ());
+		
+		for(int i = 1; i <= 360; i++){
+			double cirPoint = 2 * Math.PI * i / 360;
+			double cx = Math.floor(centerBlock.getX() + radius * Math.cos(cirPoint));
+			double cz = Math.floor(centerBlock.getZ() + radius * Math.sin(cirPoint));
+			curBlock.setX(cx);
+			curBlock.setZ(cz);
+			for(int k = lowest.getBlockY(); k <= highest.getBlockY(); k++){
+				curBlock.setY(k);
+				mgm.getBlockRecorder().addBlock(curBlock.getBlock(), null);
+				curBlock.getBlock().setType(Material.AIR);
+				Bukkit.getLogger().info("CurBlock X: " + curBlock.getBlockX());
+				Bukkit.getLogger().info("CurBlock Z: " + curBlock.getBlockZ());
+			}
+		}
+		
+		radiusModifier++;
+		
+		if(middledist == radiusModifier){
+			stopDegenerator();
+		}
 	}
 	
 	public void stopDegenerator(){

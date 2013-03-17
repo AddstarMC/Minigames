@@ -21,9 +21,13 @@ public class Minigame {
 	private int minPlayers = 2;
 	private int maxPlayers = 4;
 	private List<String> flags = new ArrayList<String>();
+	
 	private Location spleefFloor1 = null;
 	private Location spleefFloor2 = null;
+	private String degenType = "inward";
+	private int degenRandomChance = 15;
 	private FloorDegenerator sfloordegen;
+	
 	private List<Location> startLocations = new ArrayList<Location>();
 	private Location endPosition = null;
 	private Location quitPosition = null;
@@ -355,6 +359,22 @@ public class Minigame {
 
 	public void setSpleefFloor2(Location spleefFloor2){
 		this.spleefFloor2 = spleefFloor2;
+	}
+
+	public String getDegenType() {
+		return degenType;
+	}
+
+	public void setDegenType(String degenType) {
+		this.degenType = degenType;
+	}
+
+	public int getDegenRandomChance() {
+		return degenRandomChance;
+	}
+
+	public void setDegenRandomChance(int degenRandomChance) {
+		this.degenRandomChance = degenRandomChance;
 	}
 
 	public Location getEndPosition(){
@@ -792,6 +812,20 @@ public class Minigame {
 			minigame.getConfig().set(name + ".sfloorpos", null);
 		}
 		
+		if(getDegenType() != "inward"){
+			minigame.getConfig().set(name + ".degentype", getDegenType());
+		}
+		else{
+			minigame.getConfig().set(name + ".degentype", null);
+		}
+		
+		if(getDegenRandomChance() != 15){
+			minigame.getConfig().set(name + ".degenrandom", getDegenRandomChance());
+		}
+		else{
+			minigame.getConfig().set(name + ".degenrandom", null);
+		}
+		
 		if(getMinTreasure() != 0){
 			minigame.getConfig().set(name + ".mintreasure", getMinTreasure());
 		}
@@ -1077,6 +1111,12 @@ public class Minigame {
 		}
 		if(minigame.getConfig().contains(name + ".sfloorpos.2")){
 			setSpleefFloor2(Minigames.plugin.mdata.minigameLocations(name, "sfloorpos.2", minigame.getConfig()));
+		}
+		if(minigame.getConfig().contains(name + ".degentype")){
+			setDegenType(minigame.getConfig().getString(name + ".degentype"));
+		}
+		if(minigame.getConfig().contains(name + ".degenrandom")){
+			setDegenRandomChance(minigame.getConfig().getInt(name + ".degenrandom"));
 		}
 		if(minigame.getConfig().contains(name + ".mintreasure")){
 			setMinTreasure(minigame.getConfig().getInt(name + ".mintreasure"));
