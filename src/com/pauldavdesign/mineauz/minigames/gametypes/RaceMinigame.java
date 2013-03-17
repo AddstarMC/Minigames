@@ -41,6 +41,7 @@ public class RaceMinigame extends MinigameType{
 			if(mdata.getMinigame(minigame).getPlayers().size() == 0){
 				if(mgm.getMpTimer() != null){
 					mgm.getMpTimer().pauseTimer();
+					mgm.getMpTimer().removeTimer();
 					mgm.setMpTimer(null);
 				}
 				
@@ -63,9 +64,10 @@ public class RaceMinigame extends MinigameType{
 			}
 			else if(mdata.getMinigame(minigame).getPlayers().size() < mgm.getMinPlayers() && mdata.getMinigame(minigame).getMpTimer() != null && mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() != 0){
 				mdata.getMinigame(minigame).getMpTimer().pauseTimer();
+				mgm.getMpTimer().removeTimer();
 				mdata.getMinigame(minigame).setMpTimer(null);
 				for(Player pl : mdata.getMinigame(minigame).getPlayers()){
-					pl.sendMessage(ChatColor.BLUE + "Waiting for " + (mgm.getMinPlayers() - 1) + " more players.");
+					pl.sendMessage(ChatColor.BLUE + "Waiting for 1 more player.");
 				}
 			}
 		}

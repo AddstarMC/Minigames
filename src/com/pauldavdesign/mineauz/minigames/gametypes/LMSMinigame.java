@@ -41,6 +41,7 @@ public class LMSMinigame extends MinigameType {
 			if(mgm.getPlayers().size() == 0){
 				if(mgm.getMpTimer() != null){
 					mgm.getMpTimer().pauseTimer();
+					mgm.getMpTimer().removeTimer();
 					mgm.setMpTimer(null);
 				}
 				
@@ -75,9 +76,10 @@ public class LMSMinigame extends MinigameType {
 			}
 			else if(mgm.getPlayers().size() < mgm.getMinPlayers() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() != 0){
 				mgm.getMpTimer().pauseTimer();
+				mgm.getMpTimer().removeTimer();
 				mgm.setMpTimer(null);
 				for(Player pl : mgm.getPlayers()){
-					pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Waiting for " + (mgm.getMinPlayers() - 1) + " more players.");
+					pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Waiting for 1 more player.");
 				}
 			}
 		}
@@ -144,6 +146,7 @@ public class LMSMinigame extends MinigameType {
 		if(mgm.getPlayers().isEmpty()){
 			if(mgm.getMpTimer() != null){
 				mdata.getMinigame(minigame).getMpTimer().pauseTimer();
+				mgm.getMpTimer().removeTimer();
 			}
 			
 			mdata.getMinigame(minigame).setMpTimer(null);

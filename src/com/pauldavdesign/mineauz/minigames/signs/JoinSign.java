@@ -69,7 +69,7 @@ public class JoinSign implements MinigameSign {
 				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You do not have permission minigame.join." + mgm.getName().toLowerCase());
 			}
 		}
-		else
+		else if(!plugin.pdata.playerInMinigame(player))
 			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Your hand must be empty to use this sign!");
 		return false;
 	}

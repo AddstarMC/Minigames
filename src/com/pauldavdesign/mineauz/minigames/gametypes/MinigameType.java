@@ -119,7 +119,7 @@ public abstract class MinigameType implements Listener{
 				
 					if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMinPlayers()){
 						mgm.setMpTimer(new MultiplayerTimer(mgm.getName()));
-						mgm.getMpTimer().start();
+						mgm.getMpTimer().startTimer();
 					}
 					else{
 						int neededPlayers = mgm.getMinPlayers() - mgm.getPlayers().size();
@@ -159,7 +159,7 @@ public abstract class MinigameType implements Listener{
 				else
 				{
 					mgm.setMpTimer(new MultiplayerTimer(mgm.getName()));
-					mgm.getMpTimer().start();
+					mgm.getMpTimer().startTimer();
 				}
 
 				List<Player> plys = pdata.playersInMinigame();

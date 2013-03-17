@@ -44,6 +44,7 @@ public class DMMinigame extends MinigameType{
 			if(mgm.getPlayers().size() == 0){
 				if(mgm.getMpTimer() != null){
 					mgm.getMpTimer().pauseTimer();
+					mgm.getMpTimer().removeTimer();
 					mgm.setMpTimer(null);
 				}
 				
@@ -74,9 +75,10 @@ public class DMMinigame extends MinigameType{
 			}
 			else if(mgm.getPlayers().size() < mgm.getMinPlayers() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() != 0){
 				mgm.getMpTimer().pauseTimer();
+				mgm.getMpTimer().removeTimer();
 				mgm.setMpTimer(null);
 				for(Player pl : mgm.getPlayers()){
-					pl.sendMessage(ChatColor.BLUE + "Waiting for " + (mgm.getMinPlayers() - 1) + " more players.");
+					pl.sendMessage(ChatColor.BLUE + "Waiting for 1 more player.");
 				}
 			}
 		}
