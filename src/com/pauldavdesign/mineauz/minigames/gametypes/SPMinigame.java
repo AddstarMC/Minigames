@@ -46,12 +46,7 @@ public class SPMinigame extends MinigameType{
 					"You have started a singleplayer minigame, type /minigame quit to exit.");
 			pdata.setPlayerCheckpoints(player, startpos);
 			
-			List<Player> plys = pdata.playersInMinigame();
-			for(Player ply : plys){
-				if(mgm.getName().equals(pdata.getPlayersMinigame(ply)) && !ply.getName().equals(player.getName())){
-					ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + player.getName() + " has joined " + mgm.getName());
-				}
-			}
+			mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + mgm.getName(), null);
 			
 			if(mgm.hasRestoreBlocks() && !mgm.hasPlayers()){
 				for(RestoreBlock block : mgm.getRestoreBlocks().values()){

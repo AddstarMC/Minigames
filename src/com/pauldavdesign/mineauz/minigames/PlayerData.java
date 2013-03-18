@@ -306,9 +306,7 @@ public class PlayerData {
 		
 		if(mgm.getTimer() > 0){
 			mgm.setMinigameTimer(new MinigameTimer(mgm, mgm.getTimer()));
-			for(Player pl : players){
-				pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.convertTime(mgm.getTimer()) + " left.");
-			}
+			mdata.sendMinigameMessage(mgm, MinigameUtils.convertTime(mgm.getTimer()) + " left.", null);
 		}
 	}
 	
@@ -343,16 +341,11 @@ public class PlayerData {
 				
 				player.closeInventory();
 				
-				List<Player> plys = mdata.getMinigame(minigame).getPlayers();
-				for(Player ply : plys){
-					if(!ply.getName().equals(player.getName())){
-						if(!forced){
-							ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + player.getName() + " has left " + minigame);
-						}
-						else{
-							ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + player.getName() + " was removed from " + minigame);
-						}
-					}
+				if(!forced){
+					mdata.sendMinigameMessage(mgm, player.getName() + " has left " + minigame, "error");
+				}
+				else{
+					mdata.sendMinigameMessage(mgm, player.getName() + " was removed from " + minigame, "error");
 				}
 	
 				mgm.removePlayersLoadout(player);

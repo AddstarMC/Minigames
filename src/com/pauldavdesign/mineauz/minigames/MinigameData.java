@@ -16,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
@@ -362,5 +363,26 @@ public class MinigameData {
 		List<String> list = new ArrayList<String>();
 		list.addAll(presets.keySet());
 		return list;
+	}
+	
+	public void sendMinigameMessage(Minigame minigame, String message, String type){
+		String finalMessage = "";
+		if(type == null){
+			type = "info";
+		}
+		if(type.equals("error")){
+			finalMessage = ChatColor.RED + "[Minigames] " + ChatColor.WHITE;
+		}
+		else{
+			finalMessage = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
+		}
+		
+		finalMessage += message;
+		for(Player pl : minigame.getPlayers()){
+			pl.sendMessage(finalMessage);
+		}
+		for(Player pl : minigame.getSpectators()){
+			pl.sendMessage(finalMessage);
+		}
 	}
 }

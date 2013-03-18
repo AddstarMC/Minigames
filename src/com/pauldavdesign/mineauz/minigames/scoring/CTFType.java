@@ -67,15 +67,17 @@ public class CTFType extends ScoreType{
 									}
 									flag.removeFlag();
 								}
-								for(Player pl : mgm.getPlayers()){
-									if(team == 0 && mgm.getFlagCarrier(ply).getTeam() == 1){
-										pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " stole " + ChatColor.BLUE + "Blue Team's" + ChatColor.WHITE + " flag!");
-									}else if(team == 1 && mgm.getFlagCarrier(ply).getTeam() == 0){
-										pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " stole " + ChatColor.RED + "Red Team's" + ChatColor.WHITE + " flag!");
-									}
-									else{
-										pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " stole the " + ChatColor.GRAY + "neutral" + ChatColor.WHITE + " flag!");
-									}
+								
+								if(team == 0 && mgm.getFlagCarrier(ply).getTeam() == 1){
+									String message = ply.getName() + " stole " + ChatColor.BLUE + "Blue Team's" + ChatColor.WHITE + " flag!";
+									mdata.sendMinigameMessage(mgm, message, null);
+								}else if(team == 1 && mgm.getFlagCarrier(ply).getTeam() == 0){
+									String message = ply.getName() + " stole " + ChatColor.RED + "Red Team's" + ChatColor.WHITE + " flag!";
+									mdata.sendMinigameMessage(mgm, message, null);
+								}
+								else{
+									String message = ply.getName() + " stole the " + ChatColor.GRAY + "neutral" + ChatColor.WHITE + " flag!";
+									mdata.sendMinigameMessage(mgm, message, null);
 								}
 							}
 							
@@ -113,22 +115,21 @@ public class CTFType extends ScoreType{
 										}
 									}
 									
-									for(Player pl : mgm.getPlayers()){
-										if(team == 0){
-											pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " captured a flag for " + ChatColor.RED + "Red Team");
-										}else{
-											pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " captured a flag for " + ChatColor.BLUE + "Blue Team");
-										}
-										pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore());
+									if(team == 0){
+										String message = ply.getName() + " captured a flag for " + ChatColor.RED + "Red Team";
+										mdata.sendMinigameMessage(mgm, message, null);
+									}else{
+										String message = ply.getName() + " captured a flag for " + ChatColor.BLUE + "Blue Team";
+										mdata.sendMinigameMessage(mgm, message, null);
 									}
+									mdata.sendMinigameMessage(mgm, "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore(), null);
 									
 									if(end){
-										for(Player pl : mgm.getPlayers()){
-											if(team == 0){
-												pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " captured the final flag for " + ChatColor.RED + "Red Team");
-											}
-											else
-												pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " captured the final flag for " + ChatColor.BLUE + "Blue Team");
+										if(team == 0){
+											mdata.sendMinigameMessage(mgm, ply.getName() + " captured the final flag for " + ChatColor.RED + "Red Team", null);
+										}
+										else{
+											mdata.sendMinigameMessage(mgm, ply.getName() + " captured the final flag for " + ChatColor.BLUE + "Blue Team", null);
 										}
 										if(team == 1){
 											pdata.endTeamMinigame(1, mgm);
@@ -146,15 +147,11 @@ public class CTFType extends ScoreType{
 										end = true;
 									}
 									
-									for(Player pl : mgm.getPlayers()){
-										pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " captured a flag");
-										pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + "'s Score: " + pdata.getPlayerScore(ply));
-									}
+									mdata.sendMinigameMessage(mgm, ply.getName() + " captured a flag", null);
+									mdata.sendMinigameMessage(mgm, ply.getName() + "'s Score: " + pdata.getPlayerScore(ply), null);
 									
 									if(end){
-										for(Player pl : mgm.getPlayers()){
-											pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " captured the final flag");
-										}
+										mdata.sendMinigameMessage(mgm, ChatColor.WHITE + ply.getName() + " captured the final flag", null);
 										
 										pdata.endMinigame(ply);
 										mgm.resetFlags();
@@ -170,15 +167,13 @@ public class CTFType extends ScoreType{
 								}
 								flag.respawnFlag();
 								
-								for(Player pl : mgm.getPlayers()){
-									if(flag.getTeam() == 1){
-										pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " returned " + ChatColor.BLUE + "Blue Team's" + ChatColor.WHITE + " flag!");
-									}else if(flag.getTeam() == 0){
-										pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " returned " + ChatColor.RED + "Red Team's" + ChatColor.WHITE + " flag!");
-									}
-									else{
-										pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " stole the " + ChatColor.GRAY + "neutral" + ChatColor.WHITE + " flag!");
-									}
+								if(flag.getTeam() == 1){
+									mdata.sendMinigameMessage(mgm, ply.getName() + " returned " + ChatColor.BLUE + "Blue Team's" + ChatColor.WHITE + " flag!", null);
+								}else if(flag.getTeam() == 0){
+									mdata.sendMinigameMessage(mgm, ply.getName() + " returned " + ChatColor.RED + "Red Team's" + ChatColor.WHITE + " flag!", null);
+								}
+								else{
+									mdata.sendMinigameMessage(mgm, ply.getName() + " stole the " + ChatColor.GRAY + "neutral" + ChatColor.WHITE + " flag!", null);
 								}
 							}
 							else if(mgm.getFlagCarrier(ply) != null && mgm.hasDroppedFlag(clickID) && !mgm.getDroppedFlag(clickID).isAtHome()){
@@ -203,15 +198,14 @@ public class CTFType extends ScoreType{
 					String id = MinigameUtils.createLocationID(loc);
 					mgm.addDroppedFlag(id, flag);
 					mgm.removeFlagCarrier(ply);
-					for(Player pl : mgm.getPlayers()){
-						if(flag.getTeam() == 0){
-							pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " dropped " + ChatColor.RED + "Red Team's" + ChatColor.WHITE + " flag!");
-						}else if(flag.getTeam() == 1){
-							pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " dropped " + ChatColor.BLUE + "Blue Team's" + ChatColor.WHITE + " flag!");
-						}
-						else{
-							pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ply.getName() + " dropped the " + ChatColor.GRAY + "neutral" + ChatColor.WHITE + " flag!");
-						}
+
+					if(flag.getTeam() == 0){
+						mdata.sendMinigameMessage(mgm, ply.getName() + " dropped " + ChatColor.RED + "Red Team's" + ChatColor.WHITE + " flag!", null);
+					}else if(flag.getTeam() == 1){
+						mdata.sendMinigameMessage(mgm, ply.getName() + " dropped " + ChatColor.BLUE + "Blue Team's" + ChatColor.WHITE + " flag!", null);
+					}
+					else{
+						mdata.sendMinigameMessage(mgm, ply.getName() + " dropped the " + ChatColor.GRAY + "neutral" + ChatColor.WHITE + " flag!", null);
 					}
 				}
 				else{

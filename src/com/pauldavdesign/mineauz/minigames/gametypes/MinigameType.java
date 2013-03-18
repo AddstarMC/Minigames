@@ -130,13 +130,8 @@ public abstract class MinigameType implements Listener{
 							player.sendMessage(ChatColor.BLUE + "Waiting for " + neededPlayers + " more players.");
 						}
 					}
-
-					List<Player> plys = pdata.playersInMinigame();
-					for(Player ply : plys){
-						if(mgm.getName().equals(pdata.getPlayersMinigame(ply)) && !ply.getName().equals(player.getName())){
-							ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + player.getName() + " has joined " + mgm.getName());
-						}
-					}
+					
+					mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + mgm.getName(), null);
 					return true;
 				}
 				else if(mgm.getMpTimer().getPlayerWaitTimeLeft() == 0){
@@ -162,12 +157,7 @@ public abstract class MinigameType implements Listener{
 					mgm.getMpTimer().startTimer();
 				}
 
-				List<Player> plys = pdata.playersInMinigame();
-				for(Player ply : plys){
-					if(mgm.getName().equals(pdata.getPlayersMinigame(ply)) && !ply.getName().equals(player.getName())){
-						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + player.getName() + " has joined " + mgm.getName());
-					}
-				}
+				mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + mgm.getName(), null);
 				return true;
 			}
 			else if(mgm.getPlayers().size() == mgm.getMaxPlayers()){

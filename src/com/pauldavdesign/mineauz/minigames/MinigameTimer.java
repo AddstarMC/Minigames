@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
 
@@ -30,9 +28,7 @@ public class MinigameTimer{
 			public void run() {
 				time -= 1;
 				if(timeMsg.contains(time)){
-					for(Player pl : minigame.getPlayers()){
-						pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.convertTime(time) + " left.");
-					}
+					plugin.mdata.sendMinigameMessage(minigame, MinigameUtils.convertTime(time) + " left.", null);
 				}
 				else if(time == 0){
 					Bukkit.getServer().getPluginManager().callEvent(new TimerExpireEvent(minigame));

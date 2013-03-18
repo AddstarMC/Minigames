@@ -160,16 +160,11 @@ public class TeamDMMinigame extends MinigameType{
 						}
 					}
 
-					List<Player> plys = pdata.playersInMinigame();
-					for(Player ply : plys){
-						if(mgm.getName().equals(pdata.getPlayersMinigame(ply)) && !ply.getName().equals(player.getName())){
-							String teamColour = ChatColor.RED + "Red";
-							if(mgm.getBlueTeam().contains(player)){
-								teamColour = ChatColor.BLUE + "Blue";
-							}
-							ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + player.getName() + " has joined " + teamColour + ChatColor.WHITE + " team!");
-						}
+					String teamColour = ChatColor.RED + "Red";
+					if(mgm.getBlueTeam().contains(player)){
+						teamColour = ChatColor.BLUE + "Blue";
 					}
+					mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + teamColour + ChatColor.WHITE + " team!", null);
 					return true;
 				}
 				else if(mgm.getMpTimer().getPlayerWaitTimeLeft() == 0){
@@ -220,16 +215,11 @@ public class TeamDMMinigame extends MinigameType{
 					mgm.getMpTimer().startTimer();
 				}
 
-				List<Player> plys = pdata.playersInMinigame();
-				for(Player ply : plys){
-					if(mgm.getName().equals(pdata.getPlayersMinigame(ply)) && !ply.getName().equals(player.getName())){
-						String teamColour = ChatColor.RED + "Red";
-						if(mgm.getBlueTeam().contains(player)){
-							teamColour = ChatColor.BLUE + "Blue";
-						}
-						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + player.getName() + " has joined " + teamColour + ChatColor.WHITE + " team!");
-					}
+				String teamColour = ChatColor.RED + "Red";
+				if(mgm.getBlueTeam().contains(player)){
+					teamColour = ChatColor.BLUE + "Blue";
 				}
+				mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + teamColour + ChatColor.WHITE + " team!", null);
 				return true;
 			}
 			else if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
@@ -413,7 +403,6 @@ public class TeamDMMinigame extends MinigameType{
 					helmet = (CraftItemStack) player.getInventory().getHelmet();
 				}
 				
-				//((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(new Packet20NamedEntitySpawn(changeingName));
 				((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet20NamedEntitySpawn(changeingName));
 				
 				if(hand != null){
@@ -515,21 +504,6 @@ public class TeamDMMinigame extends MinigameType{
 			}
 			final Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
 			
-//			pdata.addPlayerKill(ply.getKiller());
-//			
-//			if(pteam == 0){
-//				mgm.incrementBlueTeamScore();
-//				if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
-//					pdata.endTeamMinigame(1, mgm);
-//				}
-//			}
-//			else{
-//				mgm.incrementRedTeamScore();
-//				if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
-//					pdata.endTeamMinigame(0, mgm);
-//				}
-//			}
-			
 			if(pteam == 1){
 				if(mgm.getRedTeam().size() < mgm.getBlueTeam().size() - 1){
 					switchTeam(mgm, ply);
@@ -552,10 +526,6 @@ public class TeamDMMinigame extends MinigameType{
 					}
 				}
 			}
-			
-//			for(Player pl : mgm.getPlayers()){
-//				pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore());
-//			}
 		}
 	}
 	

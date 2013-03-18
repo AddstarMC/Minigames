@@ -133,6 +133,7 @@ public class CTFFlag{
 				blockBelow.getBlock().setData(originalBlock.getRawData());
 				
 				currentLocation = null;
+				stopTimer();
 			}
 		}
 		else{
@@ -156,7 +157,6 @@ public class CTFFlag{
 	}
 	
 	public void stopTimer(){
-//		stopTimer = true;
 		if(taskID != -1){
 			Bukkit.getScheduler().cancelTask(taskID);
 		}
@@ -193,6 +193,7 @@ public class CTFFlag{
 						pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "The " + ChatColor.GRAY + "Neutral" + ChatColor.WHITE + " flag has been returned home!");
 					}
 				}
+				taskID = -1;
 			}
 		}, respawnTime * 20);
 	}
