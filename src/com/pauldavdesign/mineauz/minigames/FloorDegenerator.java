@@ -173,19 +173,16 @@ public class FloorDegenerator{
 	
 	private void degenerateCircle(Location lowest, Location highest){
 		int middledist = (int) Math.abs(Math.floor((highest.getBlockX() - lowest.getBlockX()) / 2));
-		Bukkit.getLogger().info("Dist: " + middledist);
 		int radius = middledist - radiusModifier;
-		Bukkit.getLogger().info("Rad: " + radius);
 		Location centerBlock = lowest.clone();
 		centerBlock.setX(centerBlock.getX() + middledist);
 		centerBlock.setZ(centerBlock.getZ() + middledist);
 		Location curBlock = centerBlock.clone();
 		
-		Bukkit.getLogger().info("Centerblock X: " + centerBlock.getBlockX());
-		Bukkit.getLogger().info("Centerblock Z: " + centerBlock.getBlockZ());
+		int size = (int) Math.pow(radius, 3);
 		
-		for(int i = 1; i <= 360; i++){
-			double cirPoint = 2 * Math.PI * i / 360;
+		for(int i = 1; i <= size; i++){
+			double cirPoint = 2 * Math.PI * i / size;
 			double cx = Math.floor(centerBlock.getX() + radius * Math.cos(cirPoint));
 			double cz = Math.floor(centerBlock.getZ() + radius * Math.sin(cirPoint));
 			curBlock.setX(cx);
@@ -194,8 +191,6 @@ public class FloorDegenerator{
 				curBlock.setY(k);
 				mgm.getBlockRecorder().addBlock(curBlock.getBlock(), null);
 				curBlock.getBlock().setType(Material.AIR);
-				Bukkit.getLogger().info("CurBlock X: " + curBlock.getBlockX());
-				Bukkit.getLogger().info("CurBlock Z: " + curBlock.getBlockZ());
 			}
 		}
 		
