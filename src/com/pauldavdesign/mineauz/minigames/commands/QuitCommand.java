@@ -17,7 +17,7 @@ public class QuitCommand implements ICommand{
 	
 	@Override
 	public String[] getAliases(){
-		return null;
+		return new String[] {"q"};
 	}
 
 	@Override

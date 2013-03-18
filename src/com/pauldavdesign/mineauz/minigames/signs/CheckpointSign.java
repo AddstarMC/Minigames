@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.StoredPlayerCheckpoints;
 
 public class CheckpointSign implements MinigameSign {
 	
@@ -41,20 +42,36 @@ public class CheckpointSign implements MinigameSign {
 	@Override
 	public boolean signCreate(SignChangeEvent event) {
 		event.setLine(1, ChatColor.GREEN + "Checkpoint");
+		if(event.getLine(2).equalsIgnoreCase("global")){
+			event.setLine(2, ChatColor.BLUE + "Global");
+		}
 		return true;
 	}
 
 	@Override
 	public boolean signUse(Sign sign, Player player) {
-		if(plugin.pdata.playerInMinigame(player) && player.getItemInHand().getType() == Material.AIR){
-			if(plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(player)).isSpectator(player)){
+		if((plugin.pdata.playerInMinigame(player) || (!plugin.pdata.playerInMinigame(player) && sign.getLine(2).equals(ChatColor.BLUE + "Global"))) 
+				&& player.getItemInHand().getType() == Material.AIR){
+			if(plugin.pdata.playerInMinigame(player) && plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(player)).isSpectator(player)){
 				return false;
 			}
 			Location loc = player.getLocation();
 			loc.setY(loc.getY() - 0.5);
 			if(loc.getBlock().getType() != Material.AIR){
 				Location newloc = player.getLocation();
-				plugin.pdata.setPlayerCheckpoints(player, newloc);
+				if(!sign.getLine(2).equals(ChatColor.BLUE + "Global")){
+					plugin.pdata.setPlayerCheckpoints(player, newloc);
+				}
+				else{
+					if(!plugin.pdata.hasStoredPlayerCheckpoint(player)){
+						StoredPlayerCheckpoints spc = new StoredPlayerCheckpoints(player.getName(), newloc);
+						plugin.pdata.addStoredPlayerCheckpoints(player.getName(), spc);
+					}
+					else{
+						StoredPlayerCheckpoints spc = plugin.pdata.getPlayersStoredCheckpoints(player);
+						spc.setGlobalCheckpoint(newloc);
+					}
+				}
 				
 				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Checkpoint set!");
 				return true;

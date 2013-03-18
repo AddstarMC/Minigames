@@ -85,7 +85,7 @@ public class PlayerData {
 							}
 							getPlayersStoredCheckpoints(player).removeCheckpoint(minigame.getName());
 							getPlayersStoredCheckpoints(player).removeFlags(minigame.getName());
-							if(getPlayersStoredCheckpoints(player).hasNoCheckpoints()){
+							if(getPlayersStoredCheckpoints(player).hasNoCheckpoints() && !getPlayersStoredCheckpoints(player).hasGlobalCheckpoint()){
 								storedPlayerCheckpoints.remove(player.getName());
 							}
 							revertToCheckpoint(player);

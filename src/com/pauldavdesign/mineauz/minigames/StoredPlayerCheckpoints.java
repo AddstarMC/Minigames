@@ -11,6 +11,7 @@ public class StoredPlayerCheckpoints {
 	private String playerName;
 	private Map<String, Location> checkpoints;
 	private Map<String, List<String>> flags;
+	private Location globalCheckpoint;
 	
 	public StoredPlayerCheckpoints(String name){
 		playerName = name;
@@ -22,6 +23,14 @@ public class StoredPlayerCheckpoints {
 		playerName = name;
 		checkpoints = new HashMap<String, Location>();
 		checkpoints.put(minigame, checkpoint);
+		flags = new HashMap<String, List<String>>();
+		saveCheckpoints();
+	}
+	
+	public StoredPlayerCheckpoints(String name, Location checkpoint){
+		playerName = name;
+		globalCheckpoint = checkpoint;
+		checkpoints = new HashMap<String, Location>();
 		flags = new HashMap<String, List<String>>();
 		saveCheckpoints();
 	}
@@ -47,6 +56,21 @@ public class StoredPlayerCheckpoints {
 	
 	public Location getCheckpoint(String minigame){
 		return checkpoints.get(minigame);
+	}
+	
+	public boolean hasGlobalCheckpoint(){
+		if(globalCheckpoint != null){
+			return true;
+		}
+		return false;
+	}
+	
+	public Location getGlobalCheckpoint(){
+		return globalCheckpoint;
+	}
+	
+	public void setGlobalCheckpoint(Location checkpoint){
+		globalCheckpoint = checkpoint;
 	}
 	
 	public boolean hasNoCheckpoints(){
@@ -88,6 +112,15 @@ public class StoredPlayerCheckpoints {
 		for(String mgm : flags.keySet()){
 			save.getConfig().set(playerName + "." + mgm + ".flags", getFlags(mgm));
 		}
+		
+		if(hasGlobalCheckpoint()){
+			save.getConfig().set(playerName + ".globalcheckpoint.x", globalCheckpoint.getX());
+			save.getConfig().set(playerName + ".globalcheckpoint.y", globalCheckpoint.getY());
+			save.getConfig().set(playerName + ".globalcheckpoint.z", globalCheckpoint.getZ());
+			save.getConfig().set(playerName + ".globalcheckpoint.yaw", globalCheckpoint.getYaw());
+			save.getConfig().set(playerName + ".globalcheckpoint.pitch", globalCheckpoint.getPitch());
+			save.getConfig().set(playerName + ".globalcheckpoint.world", globalCheckpoint.getWorld().getName());
+		}
 		save.saveConfig();
 	}
 	
@@ -107,6 +140,17 @@ public class StoredPlayerCheckpoints {
 			if(save.getConfig().contains(playerName + "." + mgm + ".flags")){
 				flags.put(mgm, save.getConfig().getStringList(playerName + "." + mgm + ".flags"));
 			}
+		}
+		
+		if(save.getConfig().contains(playerName + ".globalcheckpoint")){
+			double x = save.getConfig().getDouble(playerName + ".globalcheckpoint.x");
+			double y = save.getConfig().getDouble(playerName + ".globalcheckpoint.y");
+			double z = save.getConfig().getDouble(playerName + ".globalcheckpoint.z");
+			Float yaw = new Float(save.getConfig().get(playerName + ".globalcheckpoint.yaw").toString());
+			Float pitch = new Float(save.getConfig().get(playerName + ".globalcheckpoint.pitch").toString());
+			String world = save.getConfig().getString(playerName + ".globalcheckpoint.world");
+			
+			globalCheckpoint = new Location(Minigames.plugin.getServer().getWorld(world), x, y, z, yaw, pitch);
 		}
 	}
 }
