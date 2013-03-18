@@ -16,6 +16,11 @@ import org.bukkit.entity.Player;
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameSave;
 import com.pauldavdesign.mineauz.minigames.StoredPlayerCheckpoints;
+import com.pauldavdesign.mineauz.minigames.gametypes.DMMinigame;
+import com.pauldavdesign.mineauz.minigames.gametypes.LMSMinigame;
+import com.pauldavdesign.mineauz.minigames.gametypes.RaceMinigame;
+import com.pauldavdesign.mineauz.minigames.gametypes.SPMinigame;
+import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 
 public class ReloadCommand implements ICommand{
 
@@ -71,6 +76,17 @@ public class ReloadCommand implements ICommand{
 		
 		plugin.newMinigameData();
 		plugin.newPlayerData();
+		
+		plugin.mdata.addMinigameType(new SPMinigame());
+		plugin.mdata.addMinigameType(new RaceMinigame());
+		plugin.mdata.addMinigameType(new LMSMinigame());
+		plugin.mdata.addMinigameType(new DMMinigame());
+		try{
+			Class.forName("net.minecraft.server.v1_4_R1.EntityPlayer");
+			plugin.mdata.addMinigameType(new TeamDMMinigame());
+		}catch(ClassNotFoundException e){
+			plugin.getLogger().info("Note: Team Deathmatch cannot be run on this server version, please check for updates!");
+		}
 		
 		MinigameSave completion = new MinigameSave("completion");
 		plugin.mdata.removeConfigurationFile("completion");
