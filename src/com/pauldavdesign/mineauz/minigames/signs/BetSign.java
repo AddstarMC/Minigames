@@ -55,6 +55,9 @@ public class BetSign implements MinigameSign{
 	@Override
 	public boolean signUse(Sign sign, Player player) {
 		Minigame mgm = plugin.mdata.getMinigame(sign.getLine(2));
+		if(mgm.isSpectator(player)){
+			return false;
+		}
 		if(mgm != null && mgm.isEnabled() && (!mgm.getUsePermissions() || player.hasPermission("minigame.join." + mgm.getName().toLowerCase())) && player.getItemInHand().getType() != Material.AIR){
 			if(!sign.getLine(3).startsWith("$")){
 				plugin.pdata.joinWithBet(player, plugin.mdata.getMinigame(sign.getLine(2)), 0d);

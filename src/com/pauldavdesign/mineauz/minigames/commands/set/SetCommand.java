@@ -61,6 +61,7 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetPresetCommand());
 		registerSetCommand(new SetLateJoinCommand());
 		registerSetCommand(new SetUnlimitedAmmoCommand());
+		registerSetCommand(new SetSpectateCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {

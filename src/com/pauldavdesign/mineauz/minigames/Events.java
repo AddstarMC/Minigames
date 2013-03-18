@@ -20,6 +20,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -70,7 +71,8 @@ public class Events implements Listener{
 	@EventHandler
 	public void playerDropItem(PlayerDropItemEvent event){
 		if(pdata.playerInMinigame(event.getPlayer())){
-			if(!mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).hasItemDrops()){
+			if(!mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).hasItemDrops() || 
+					mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).isSpectator(event.getPlayer())){
 				event.setCancelled(true);
 			}
 		}
@@ -79,7 +81,8 @@ public class Events implements Listener{
 	@EventHandler
 	public void itemPickup(PlayerPickupItemEvent event){
 		if(pdata.playerInMinigame(event.getPlayer())){
-			if(!mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).hasItemPickup()){
+			if(!mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).hasItemPickup() || 
+					mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).isSpectator(event.getPlayer())){
 				event.setCancelled(true);
 			}
 		}
@@ -227,6 +230,11 @@ public class Events implements Listener{
 				}	
 			}
 		}
+		
+		//Spectator disables:
+		if(pdata.playerInMinigame(event.getPlayer()) && mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).isSpectator(event.getPlayer())){
+			event.setCancelled(true);
+		}
 	}
 	
 	@EventHandler
@@ -253,7 +261,7 @@ public class Events implements Listener{
 	
 	@EventHandler
 	public void onFlyToggle(PlayerToggleFlightEvent event){
-		if(pdata.playerInMinigame(event.getPlayer())){
+		if(pdata.playerInMinigame(event.getPlayer()) && !mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).isSpectator(event.getPlayer())){
 			event.setCancelled(true);
 			pdata.quitMinigame(event.getPlayer(), true);
 			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Error: You cannot fly while in a Minigame!");
@@ -330,6 +338,29 @@ public class Events implements Listener{
 				if(pdata.playerInMinigame(ply) && mdata.getMinigame(pdata.getPlayersMinigame(ply)).hasUnlimitedAmmo()){
 					ply.getInventory().addItem(new ItemStack(Material.EGG));
 				}
+			}
+		}
+	}
+	
+	@EventHandler
+	private void playerHurt(EntityDamageEvent event){
+		if(event.getEntity() instanceof Player){
+			Player ply = (Player) event.getEntity();
+			if(pdata.playerInMinigame(ply)){
+				Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
+				if(mgm.isSpectator(ply)){
+					event.setCancelled(true);
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	private void spectatorAttack(EntityDamageByEntityEvent event){
+		if(event.getDamager() instanceof Player){
+			Player ply = (Player) event.getDamager();
+			if(pdata.playerInMinigame(ply) && mdata.getMinigame(pdata.getPlayersMinigame(ply)).isSpectator(ply)){
+				event.setCancelled(true);
 			}
 		}
 	}

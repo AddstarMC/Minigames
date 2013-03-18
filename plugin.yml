@@ -109,6 +109,7 @@ permissions:
             minigame.set.paintball: true
             minigame.set.latejoin: true
             minigame.set.unlimitedammo: true
+            minigame.set.spectatefly: true
     minigame.set.start:
         description: Gives access to setting a minigames starting position
         default: op
@@ -211,6 +212,9 @@ permissions:
     minigame.set.unlimitedammo:
         description: Lets a player turn on infinite ammo for a Minigame.
         default: op
+    minigame.set.spectatefly:
+        description: Allows a player to enable or disable spectator fly mode
+        default: op
     minigame.info:
         description: Allows check to see if a minigames variables have been set
         default: op
@@ -244,6 +248,9 @@ permissions:
     minigame.sign.create.loadout:
         description: Allows the creation of a minigame loadout sign
         default: op
+    minigame.sign.create.spectate:
+        description: Allows the creation of a Minigame spectate sign
+        default: op
     minigame.sign.create.*:
         description: Allows a player to create all Minigame signs
         children:
@@ -254,6 +261,7 @@ permissions:
             minigame.sign.create.flag: true
             minigame.sign.create.quit: true
             minigame.sign.create.loadout: true
+            minigame.sign.create.spectate: true
     minigame.sign.use.details:
         description: Allows the usage of a minigame sign to show the details
         default: true
@@ -269,6 +277,9 @@ permissions:
     minigame.sign.use.loadout:
         description: Allows the usage of a minigame sign to get a loadout
         default: true
+    minigame.sign.use.spectate:
+        description: Allows the usage of a Minigame spectate sign
+        default: true
     minigame.sign.use.*:
         description: Allows a player to use all the Minigame sign uses
         children:
@@ -277,6 +288,7 @@ permissions:
             minigame.sign.use.bet: true
             minigame.sign.use.checkpoint: true
             minigame.sign.use.loadout: true
+            minigame.sign.use.spectate: true
     minigame.reload:
         description: Allows player to reload the currently loaded configuration files
         default: op

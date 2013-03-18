@@ -28,6 +28,7 @@ import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.JoinMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.RevertCheckpointEvent;
+import com.pauldavdesign.mineauz.minigames.events.SpectateMinigameEvent;
 
 public class PlayerData {
 	private Map<String, String> minigamePlayers = new HashMap<String, String>();
@@ -90,11 +91,47 @@ public class PlayerData {
 							revertToCheckpoint(player);
 						}
 					}
+					
+					for(Player pl : minigame.getSpectators()){
+						player.hidePlayer(pl);
+					}
 				}
 			}
 			else{
 				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "That gametype doesn't exist!");
 			}
+		}
+	}
+	
+	public void spectateMinigame(Player player, Minigame minigame) {
+		SpectateMinigameEvent event = new SpectateMinigameEvent(player, minigame);
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		
+		if(!event.isCancelled()){
+			addPlayerMinigame(player, minigame.getName());
+			setAllowTP(player, true);
+			setAllowGMChange(player, true);
+			
+			minigame.addSpectator(player);
+			storePlayerData(player, GameMode.ADVENTURE);
+			player.getInventory().clear();
+			player.teleport(minigame.getStartLocations().get(0));
+			
+			setAllowTP(player, false);
+			setAllowGMChange(player, false);
+			
+			if(minigame.canSpectateFly()){
+				player.setAllowFlight(true);
+			}
+			for(Player pl : minigame.getPlayers()){
+				pl.hidePlayer(player);
+			}
+			
+			for(PotionEffect potion : player.getActivePotionEffects()){
+				player.removePotionEffect(potion.getType());
+			}
+			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have started spectating " + minigame + ".\n" +
+					"Type \"/minigame quit\" to leave spectator mode.");
 		}
 	}
 	
@@ -296,75 +333,119 @@ public class PlayerData {
 		QuitMinigameEvent event = new QuitMinigameEvent(player, mgm, forced);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		if(!event.isCancelled()){
-			setAllowTP(player, true);
-			
-			if(player.getVehicle() != null){
-				Vehicle vehicle = (Vehicle) player.getVehicle();
-				vehicle.eject();
-			}
-			
-			player.closeInventory();
-			
-			List<Player> plys = mdata.getMinigame(minigame).getPlayers();
-			for(Player ply : plys){
-				if(!ply.getName().equals(player.getName())){
-					if(!forced){
-						ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + player.getName() + " has left " + minigame);
-					}
-					else{
-						ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + player.getName() + " was removed from " + minigame);
-					}
-				}
-			}
-
-			mgm.removePlayersLoadout(player);
-			player.getInventory().clear();
-			final Player ply = player;
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			if(!mgm.isSpectator(player)){
+				setAllowTP(player, true);
 				
-				@Override
-				public void run() {
-					if(ply.isOnline()){
-						restorePlayerData(ply);
+				if(player.getVehicle() != null){
+					Vehicle vehicle = (Vehicle) player.getVehicle();
+					vehicle.eject();
+				}
+				
+				player.closeInventory();
+				
+				List<Player> plys = mdata.getMinigame(minigame).getPlayers();
+				for(Player ply : plys){
+					if(!ply.getName().equals(player.getName())){
+						if(!forced){
+							ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + player.getName() + " has left " + minigame);
+						}
+						else{
+							ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + player.getName() + " was removed from " + minigame);
+						}
 					}
 				}
-			});
-			
-			mdata.minigameType(mgm.getType()).quitMinigame(player, mgm, forced);
-			removePlayerMinigame(player);
-			
-			for(PotionEffect potion : player.getActivePotionEffects()){
-				player.removePotionEffect(potion.getType());
+	
+				mgm.removePlayersLoadout(player);
+				player.getInventory().clear();
+				final Player ply = player;
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					
+					@Override
+					public void run() {
+						if(ply.isOnline()){
+							restorePlayerData(ply);
+						}
+					}
+				});
+				
+				mdata.minigameType(mgm.getType()).quitMinigame(player, mgm, forced);
+				removePlayerMinigame(player);
+				
+				for(PotionEffect potion : player.getActivePotionEffects()){
+					player.removePotionEffect(potion.getType());
+				}
+				player.setFireTicks(0);
+				player.setNoDamageTicks(60);
+				
+				removeAllPlayerFlags(player);
+				
+				removePlayerDeath(player);
+				removePlayerKills(player);
+				removePlayerScore(player);
+				
+				if(mgm.getMinigameTimer() != null && mgm.getPlayers().size() == 0){
+					mgm.getMinigameTimer().stopTimer();
+					mgm.setMinigameTimer(null);
+				}
+				
+				if(mgm.getFloorDegenerator() != null && mgm.getPlayers().size() == 0){
+					mgm.getFloorDegenerator().stopDegenerator();
+				}
+				
+				if(mgm.getPlayers().size() == 0 && mgm.getBlockRecorder().hasData()){
+					mgm.getBlockRecorder().restoreBlocks();
+					mgm.getBlockRecorder().restoreEntities();
+				}
+				
+				if(mgm.getMpBets() != null && mgm.getPlayers().size() == 0){
+					mgm.setMpBets(null);
+				}
+				
+				removeAllowTP(player);
+				removeAllowGMChange(player);
+				
+				for(Player pl : mgm.getSpectators()){
+					player.showPlayer(pl);
+				}
 			}
-			player.setFireTicks(0);
-			player.setNoDamageTicks(60);
-			
-			removeAllPlayerFlags(player);
-			
-			removePlayerDeath(player);
-			removePlayerKills(player);
-			removePlayerScore(player);
-			
-			if(mgm.getMinigameTimer() != null && mgm.getPlayers().size() == 0){
-				mgm.getMinigameTimer().stopTimer();
-				mgm.setMinigameTimer(null);
+			else{
+				setAllowTP(player, true);
+				setAllowGMChange(player, true);
+				
+				if(player.getVehicle() != null){
+					Vehicle vehicle = (Vehicle) player.getVehicle();
+					vehicle.eject();
+				}
+				
+				player.closeInventory();
+				
+				player.getInventory().clear();
+				final Player ply = player;
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					
+					@Override
+					public void run() {
+						if(ply.isOnline()){
+							restorePlayerData(ply);
+						}
+					}
+				});
+				
+				player.teleport(mgm.getQuitPosition());
+				removePlayerMinigame(player);
+				mgm.removeSpectator(player);
+				
+				for(PotionEffect potion : player.getActivePotionEffects()){
+					player.removePotionEffect(potion.getType());
+				}
+				
+				for(Player pl : mgm.getPlayers()){
+					pl.showPlayer(player);
+				}
+				
+				removeAllowTP(player);
+				removeAllowGMChange(player);
 			}
-			
-			if(mgm.getFloorDegenerator() != null && mgm.getPlayers().size() == 0){
-				mgm.getFloorDegenerator().stopDegenerator();
-			}
-			
-			if(mgm.getPlayers().size() == 0 && mgm.getBlockRecorder().hasData()){
-				mgm.getBlockRecorder().restoreBlocks();
-				mgm.getBlockRecorder().restoreEntities();
-			}
-			
-			if(mgm.getMpBets() != null && mgm.getPlayers().size() == 0){
-				mgm.setMpBets(null);
-			}
-			
-			removeAllowTP(player);
-			removeAllowGMChange(player);
 		}
 	}
 	
@@ -427,6 +508,10 @@ public class PlayerData {
 					mgm.getBlockRecorder().restoreBlocks(player);
 					mgm.getBlockRecorder().restoreEntities(player);
 				}
+			}
+			
+			for(Player pl : mgm.getPlayers()){
+				pl.showPlayer(player);
 			}
 			
 			removeAllowTP(player);

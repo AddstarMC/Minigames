@@ -17,10 +17,8 @@ public class CTFFlag{
 	private BlockState originalBlock = null;
 	private String[] signText = null;
 	private boolean atHome = true;
-//	private boolean stopTimer = false;
 	private int team = -1;
 	private int respawnTime = 60;
-//	private int curTime = 0;
 	private int taskID = -1;
 	private Minigame minigame = null;
 	
@@ -197,50 +195,5 @@ public class CTFFlag{
 				}
 			}
 		}, respawnTime * 20);
-//		while(true){
-//			if(!atHome){
-//				curTime = respawnTime;
-//				while(curTime > 0 && !stopTimer){
-//					curTime -= 1;
-//					try{
-//						Thread.sleep(1000);
-//					}catch(InterruptedException e){
-//						Bukkit.getLogger().info("Failed to sleep in Flag respawn timer!");
-//						e.printStackTrace();
-//					}
-//				}
-//				
-//				if(stopTimer){
-//					stopTimer = false;
-//					atHome = true;
-//				}
-//				else{
-//					String id = MinigameUtils.createLocationID(currentLocation);
-//					if(minigame.hasDroppedFlag(id)){
-//						minigame.removeDroppedFlag(id);
-//						String newID = MinigameUtils.createLocationID(spawnLocation);
-//						minigame.addDroppedFlag(newID, this);
-//					}
-//					respawnFlag();
-//					for(Player pl : minigame.getPlayers()){
-//						if(getTeam() == 0){
-//							pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.RED + "Red Team's" + ChatColor.WHITE + " flag has been returned home!");
-//						}else if(getTeam() == 1){
-//							pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.BLUE + "Blue Team's" + ChatColor.WHITE + " flag has been returned home!");
-//						}
-//						else{
-//							pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "The " + ChatColor.GRAY + "Neutral" + ChatColor.WHITE + " flag has been returned home!");
-//						}
-//					}
-//				}
-//			}
-//			
-//			try{
-//				Thread.sleep(10);
-//			}catch(InterruptedException e){
-//				Bukkit.getLogger().info("Failed to sleep in Flag respawn timer!");
-//				e.printStackTrace();
-//			}
-//		}
 	}
 }

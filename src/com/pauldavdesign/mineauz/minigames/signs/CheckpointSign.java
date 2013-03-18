@@ -46,7 +46,10 @@ public class CheckpointSign implements MinigameSign {
 
 	@Override
 	public boolean signUse(Sign sign, Player player) {
-		if(player.getItemInHand().getType() == Material.AIR){
+		if(plugin.pdata.playerInMinigame(player) && player.getItemInHand().getType() == Material.AIR){
+			if(plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(player)).isSpectator(player)){
+				return false;
+			}
 			Location loc = player.getLocation();
 			loc.setY(loc.getY() - 0.5);
 			if(loc.getBlock().getType() != Material.AIR){

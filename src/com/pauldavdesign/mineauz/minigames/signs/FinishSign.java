@@ -51,6 +51,11 @@ public class FinishSign implements MinigameSign {
 	public boolean signUse(Sign sign, Player player) {
 		if(plugin.pdata.playerInMinigame(player) && player.getItemInHand().getType() == Material.AIR){
 			Minigame minigame = plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(player));
+
+			if(minigame.isSpectator(player)){
+				return false;
+			}
+			
 			if(!minigame.getFlags().isEmpty()){
 				Location loc = player.getLocation();
 				loc.setY(loc.getY() - 1);

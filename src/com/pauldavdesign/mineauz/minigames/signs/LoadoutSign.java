@@ -49,6 +49,10 @@ public class LoadoutSign implements MinigameSign {
 	public boolean signUse(Sign sign, Player player) {
 		if(player.getItemInHand().getType() == Material.AIR && plugin.pdata.playerInMinigame(player)){
 			Minigame mgm = plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(player));
+			if(mgm.isSpectator(player)){
+				return false;
+			}
+			
 			if(mgm.hasLoadout(sign.getLine(2))){
 				if(!mgm.getLoadout(sign.getLine(2)).getUsePermissions() || player.hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
 					if(mgm.getType().equals("sp") || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){

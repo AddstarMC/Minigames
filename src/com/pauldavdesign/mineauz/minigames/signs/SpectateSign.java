@@ -9,39 +9,39 @@ import org.bukkit.event.block.SignChangeEvent;
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 
-public class JoinSign implements MinigameSign {
+public class SpectateSign implements MinigameSign {
 	
-	private static Minigames plugin = Minigames.plugin;
+	private Minigames plugin = Minigames.plugin;
 
 	@Override
 	public String getName() {
-		return "Join";
+		return "Spectate";
 	}
 
 	@Override
 	public String getCreatePermission() {
-		return "minigame.sign.create.join";
+		return "minigame.sign.create.spectate";
 	}
 
 	@Override
 	public String getCreatePermissionMessage() {
-		return "You do not have permission to create a Minigame join sign!";
+		return "You do not have permission to create a Minigame specate sign!";
 	}
 
 	@Override
 	public String getUsePermission() {
-		return "minigame.sign.use.join";
+		return "minigame.sign.use.spectate";
 	}
 
 	@Override
 	public String getUsePermissionMessage() {
-		return "You do not have permission to use a Minigame join sign!";
+		return "You do not have permission to use a Minigame spectate sign!";
 	}
 
 	@Override
 	public boolean signCreate(SignChangeEvent event) {
 		if(plugin.mdata.hasMinigame(event.getLine(2))){
-			event.setLine(1, ChatColor.GREEN + "Join");
+			event.setLine(1, ChatColor.GREEN + "Spectate");
 			event.setLine(2, plugin.mdata.getMinigame(event.getLine(2)).getName());
 			return true;
 		}
@@ -53,9 +53,9 @@ public class JoinSign implements MinigameSign {
 	public boolean signUse(Sign sign, Player player) {
 		if(player.getItemInHand().getType() == Material.AIR && !plugin.pdata.playerInMinigame(player)){
 			Minigame mgm = plugin.mdata.getMinigame(sign.getLine(2));
-			if(mgm != null && (!mgm.getUsePermissions() || player.hasPermission("minigame.join." + mgm.getName().toLowerCase()))){
+			if(mgm != null){
 				if(mgm.isEnabled()){
-					plugin.pdata.joinMinigame(player, mgm);
+					plugin.pdata.spectateMinigame(player, mgm);
 					return true;
 				}
 				else if(!mgm.isEnabled()){
@@ -64,9 +64,6 @@ public class JoinSign implements MinigameSign {
 			}
 			else if(mgm == null){
 				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "This minigame doesn't exist!");
-			}
-			else if(mgm.getUsePermissions()){
-				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You do not have permission minigame.join." + mgm.getName().toLowerCase());
 			}
 		}
 		else if(!plugin.pdata.playerInMinigame(player))

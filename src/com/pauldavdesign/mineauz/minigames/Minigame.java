@@ -78,8 +78,11 @@ public class Minigame {
 	private List<Location> startLocationsBlue = new ArrayList<Location>();
 	private List<Location> startLocationsRed = new ArrayList<Location>();
 	
+	private boolean canSpectateFly = false;
+	
 	//Unsaved data
 	private List<Player> players = new ArrayList<Player>();
+	private List<Player> spectators = new ArrayList<Player>();
 	private RecorderData blockRecorder = new RecorderData(this);
 	//Multiplayer
 	private MultiplayerTimer mpTimer = null;
@@ -474,6 +477,28 @@ public class Minigame {
 	public boolean hasPlayers(){
 		return !players.isEmpty();
 	}
+	
+	public boolean hasSpectators(){
+		return !spectators.isEmpty();
+	}
+	
+	public List<Player> getSpectators() {
+		return spectators;
+	}
+	
+	public void addSpectator(Player player){
+		spectators.add(player);
+	}
+	
+	public void removeSpectator(Player player){
+		if(spectators.contains(player)){
+			spectators.remove(player);
+		}
+	}
+	
+	public boolean isSpectator(Player player){
+		return spectators.contains(player);
+	}
 
 	public List<Player> getRedTeam() {
 		return redTeam;
@@ -770,6 +795,14 @@ public class Minigame {
 
 	public void setLateJoin(boolean lateJoin) {
 		this.lateJoin = lateJoin;
+	}
+
+	public boolean canSpectateFly() {
+		return canSpectateFly;
+	}
+
+	public void setCanSpectateFly(boolean canSpectateFly) {
+		this.canSpectateFly = canSpectateFly;
 	}
 
 	public void saveMinigame(){
@@ -1070,6 +1103,13 @@ public class Minigame {
 			minigame.getConfig().set(name + ".latejoin", null);
 		}
 		
+		if(canSpectateFly()){
+			minigame.getConfig().set(name + ".canspectatefly", canSpectateFly());
+		}
+		else{
+			minigame.getConfig().set(name + ".canspectatefly", null);
+		}
+		
 		minigame.saveConfig();
 	}
 	
@@ -1255,6 +1295,10 @@ public class Minigame {
 		
 		if(minigame.getConfig().contains(name + ".latejoin")){
 			setLateJoin(minigame.getConfig().getBoolean(name + ".latejoin"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".canspectatefly")){
+			setCanSpectateFly(minigame.getConfig().getBoolean(name + ".canspectatefly"));
 		}
 		
 		saveMinigame();
