@@ -61,7 +61,7 @@ public class Events implements Listener{
 			
 			String minigame = pdata.getPlayersMinigame(ply);
 			if(mdata.getMinigame(minigame).hasPlayers()){
-				mdata.sendMinigameMessage(mdata.getMinigame(minigame), msg, "error");
+				mdata.sendMinigameMessage(mdata.getMinigame(minigame), msg, "error", null);
 			}
 		}
 	}

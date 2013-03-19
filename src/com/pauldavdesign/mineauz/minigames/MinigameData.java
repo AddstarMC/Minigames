@@ -365,7 +365,7 @@ public class MinigameData {
 		return list;
 	}
 	
-	public void sendMinigameMessage(Minigame minigame, String message, String type){
+	public void sendMinigameMessage(Minigame minigame, String message, String type, Player exclude){
 		String finalMessage = "";
 		if(type == null){
 			type = "info";
@@ -379,10 +379,12 @@ public class MinigameData {
 		
 		finalMessage += message;
 		for(Player pl : minigame.getPlayers()){
-			pl.sendMessage(finalMessage);
+			if(exclude == null || exclude != pl)
+				pl.sendMessage(finalMessage);
 		}
 		for(Player pl : minigame.getSpectators()){
-			pl.sendMessage(finalMessage);
+			if(exclude == null || exclude != pl)
+				pl.sendMessage(finalMessage);
 		}
 	}
 }

@@ -28,7 +28,7 @@ public class MinigameTimer{
 			public void run() {
 				time -= 1;
 				if(timeMsg.contains(time)){
-					plugin.mdata.sendMinigameMessage(minigame, MinigameUtils.convertTime(time) + " left.", null);
+					plugin.mdata.sendMinigameMessage(minigame, MinigameUtils.convertTime(time) + " left.", null, null);
 				}
 				else if(time == 0){
 					Bukkit.getServer().getPluginManager().callEvent(new TimerExpireEvent(minigame));

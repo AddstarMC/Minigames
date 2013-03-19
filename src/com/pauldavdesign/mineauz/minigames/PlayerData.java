@@ -132,6 +132,7 @@ public class PlayerData {
 			}
 			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have started spectating " + minigame + ".\n" +
 					"Type \"/minigame quit\" to leave spectator mode.");
+			mdata.sendMinigameMessage(minigame, player.getName() + " is now spectating " + minigame, null, player);
 		}
 	}
 	
@@ -306,7 +307,7 @@ public class PlayerData {
 		
 		if(mgm.getTimer() > 0){
 			mgm.setMinigameTimer(new MinigameTimer(mgm, mgm.getTimer()));
-			mdata.sendMinigameMessage(mgm, MinigameUtils.convertTime(mgm.getTimer()) + " left.", null);
+			mdata.sendMinigameMessage(mgm, MinigameUtils.convertTime(mgm.getTimer()) + " left.", null, null);
 		}
 	}
 	
@@ -342,10 +343,10 @@ public class PlayerData {
 				player.closeInventory();
 				
 				if(!forced){
-					mdata.sendMinigameMessage(mgm, player.getName() + " has left " + minigame, "error");
+					mdata.sendMinigameMessage(mgm, player.getName() + " has left " + minigame, "error", player);
 				}
 				else{
-					mdata.sendMinigameMessage(mgm, player.getName() + " was removed from " + minigame, "error");
+					mdata.sendMinigameMessage(mgm, player.getName() + " was removed from " + minigame, "error", player);
 				}
 	
 				mgm.removePlayersLoadout(player);
@@ -438,6 +439,9 @@ public class PlayerData {
 				
 				removeAllowTP(player);
 				removeAllowGMChange(player);
+				
+				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You quit spectator mode in " + minigame);
+				mdata.sendMinigameMessage(mgm, player.getName() + " is no longer spectating " + minigame, "error", player);
 			}
 		}
 	}

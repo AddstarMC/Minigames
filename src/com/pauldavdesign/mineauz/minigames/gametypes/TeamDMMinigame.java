@@ -164,7 +164,7 @@ public class TeamDMMinigame extends MinigameType{
 					if(mgm.getBlueTeam().contains(player)){
 						teamColour = ChatColor.BLUE + "Blue";
 					}
-					mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + teamColour + ChatColor.WHITE + " team!", null);
+					mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + teamColour + ChatColor.WHITE + " team!", null, player);
 					return true;
 				}
 				else if(mgm.getMpTimer().getPlayerWaitTimeLeft() == 0){
@@ -219,7 +219,7 @@ public class TeamDMMinigame extends MinigameType{
 				if(mgm.getBlueTeam().contains(player)){
 					teamColour = ChatColor.BLUE + "Blue";
 				}
-				mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + teamColour + ChatColor.WHITE + " team!", null);
+				mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + teamColour + ChatColor.WHITE + " team!", null, player);
 				return true;
 			}
 			else if(mgm.getPlayers().size() == mgm.getMaxPlayers()){

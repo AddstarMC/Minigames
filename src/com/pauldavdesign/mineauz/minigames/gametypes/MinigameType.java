@@ -131,7 +131,7 @@ public abstract class MinigameType implements Listener{
 						}
 					}
 					
-					mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + mgm.getName(), null);
+					mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + mgm.getName(), null, player);
 					return true;
 				}
 				else if(mgm.getMpTimer().getPlayerWaitTimeLeft() == 0){
@@ -157,7 +157,7 @@ public abstract class MinigameType implements Listener{
 					mgm.getMpTimer().startTimer();
 				}
 
-				mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + mgm.getName(), null);
+				mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + mgm.getName(), null, player);
 				return true;
 			}
 			else if(mgm.getPlayers().size() == mgm.getMaxPlayers()){

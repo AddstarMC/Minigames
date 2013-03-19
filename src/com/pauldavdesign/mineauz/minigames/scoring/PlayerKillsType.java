@@ -48,7 +48,7 @@ public class PlayerKillsType extends ScoreType{
 					pdata.addPlayerScore(attacker);
 					
 					if(mgm.getScoreType().equals("kills")){
-						mdata.sendMinigameMessage(mgm, ply.getKiller().getName() + "'s Score: " + pdata.getPlayerScore(ply.getKiller()), null);
+						mdata.sendMinigameMessage(mgm, ply.getKiller().getName() + "'s Score: " + pdata.getPlayerScore(ply.getKiller()), null, null);
 					
 						if(mgm.getMaxScore() != 0 && pdata.getPlayerScore(attacker) >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
 							List<Player> conPlayers = new ArrayList<Player>();
@@ -110,10 +110,10 @@ public class PlayerKillsType extends ScoreType{
 								}
 							}
 							
-							mdata.sendMinigameMessage(mgm, "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore(), null);
+							mdata.sendMinigameMessage(mgm, "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore(), null, null);
 							
 							if(end){
-								mdata.sendMinigameMessage(mgm, attacker.getName() + " took the final kill against " + ply.getName(), null);
+								mdata.sendMinigameMessage(mgm, attacker.getName() + " took the final kill against " + ply.getName(), null, null);
 								if(ateam == 1){
 									if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
 										pdata.endTeamMinigame(1, mgm);
@@ -141,7 +141,7 @@ public class PlayerKillsType extends ScoreType{
 				if(mgm.getRedTeam().isEmpty() && mgm.getBlueTeam().isEmpty()){
 					pdata.takePlayerScore(ply);
 					
-					mdata.sendMinigameMessage(mgm, ply.getName() + "'s Score: " + pdata.getPlayerScore(ply), null);
+					mdata.sendMinigameMessage(mgm, ply.getName() + "'s Score: " + pdata.getPlayerScore(ply), null, null);
 				}
 				else{
 					pdata.takePlayerScore(ply);
@@ -151,7 +151,7 @@ public class PlayerKillsType extends ScoreType{
 					else{
 						mgm.setBlueTeamScore(mgm.getBlueTeamScore() - 1);
 					}
-					mdata.sendMinigameMessage(mgm, "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore(), null);
+					mdata.sendMinigameMessage(mgm, "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore(), null, null);
 				}
 			}
 		}
