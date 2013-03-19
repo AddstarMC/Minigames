@@ -44,7 +44,7 @@ public class TeleportSign implements MinigameSign {
 			return false;
 		}
 		else{
-			if(!event.getLine(2).matches("[0-9]+,[0-9]+,[0-9]+")){
+			if(!event.getLine(2).matches("-?[0-9]+,[0-9]+,-?[0-9]+")){
 				return false;
 			}
 		}
@@ -53,7 +53,7 @@ public class TeleportSign implements MinigameSign {
 
 	@Override
 	public boolean signUse(Sign sign, Player player) {
-		if(!sign.getLine(2).isEmpty() && sign.getLine(2).matches("[0-9]+,[0-9]+,[0-9]+")){
+		if(!sign.getLine(2).isEmpty() && sign.getLine(2).matches("-?[0-9]+,[0-9]+,-?[0-9]+")){
 			int x;
 			int y;
 			int z;
@@ -66,7 +66,7 @@ public class TeleportSign implements MinigameSign {
 				plugin.pdata.setAllowTP(player, true);
 			}
 			
-			if(!sign.getLine(3).isEmpty() && sign.getLine(3).matches("[0-9]+,[0-9]+")){
+			if(!sign.getLine(3).isEmpty() && sign.getLine(3).matches("-?[0-9]+,-?[0-9]+")){
 				float yaw;
 				float pitch;
 				String[] split2 = sign.getLine(3).split(",");
