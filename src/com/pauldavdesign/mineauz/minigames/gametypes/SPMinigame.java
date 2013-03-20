@@ -104,16 +104,15 @@ public class SPMinigame extends MinigameType{
 			completion = mdata.getConfigurationFile("completion");
 			hascompleted = completion.getStringList(minigame).contains(player.getName());
 			
-			if(plugin.getSQL() == null){
-				if(!completion.getStringList(minigame).contains(player.getName())){
-					List<String> completionlist = completion.getStringList(minigame);
-					completionlist.add(player.getName());
-					completion.set(minigame, completionlist);
-					MinigameSave completionsave = new MinigameSave("completion");
-					completionsave.getConfig().set(minigame, completionlist);
-					completionsave.saveConfig();
-				}
+			if(!completion.getStringList(minigame).contains(player.getName())){
+				List<String> completionlist = completion.getStringList(minigame);
+				completionlist.add(player.getName());
+				completion.set(minigame, completionlist);
+				MinigameSave completionsave = new MinigameSave("completion");
+				completionsave.getConfig().set(minigame, completionlist);
+				completionsave.saveConfig();
 			}
+			
 			issuePlayerRewards(player, mgm, hascompleted);
 		}
 		else{

@@ -28,6 +28,7 @@ public class SignBase implements Listener{
 		registerMinigameSign(new LoadoutSign());
 		registerMinigameSign(new TeleportSign());
 		registerMinigameSign(new SpectateSign());
+		registerMinigameSign(new RewardSign());
 	}
 	
 	public SignBase(){
@@ -82,7 +83,7 @@ public class SignBase implements Listener{
 						return;
 					}
 					
-					if(!mgSign.signUse(sign, event.getPlayer())){
+					if(mgSign.signUse(sign, event.getPlayer())){
 						event.setCancelled(true);
 					}
 				}
