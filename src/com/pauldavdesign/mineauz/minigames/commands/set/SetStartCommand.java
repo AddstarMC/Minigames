@@ -31,13 +31,14 @@ public class SetStartCommand implements ICommand{
 
 	@Override
 	public String[] getParameters() {
-		return null;
+		return new String[] {"red", "blue", "clear"};
 	}
 
 	@Override
 	public String[] getUsage() {
 		return new String[] {"/minigame set <Minigame> start [player number]", 
-				"/minigame set <Minigame> start <team colour> [player number]"};
+				"/minigame set <Minigame> start <team colour> [player number]",
+				"/minigame set <Minigame> start clear [team colour]"};
 	}
 
 	@Override
@@ -95,6 +96,22 @@ public class SetStartCommand implements ICommand{
 				return false;
 			}
 			return true;
+		}
+		else if(args[0].equalsIgnoreCase("clear")){
+			if(args.length >= 2 && (args[0].matches("b|blue") || args[0].matches("r|red"))){
+				if(args[0].matches("b|blue")){
+					minigame.getStartLocationsBlue().clear();
+					sender.sendMessage(ChatColor.GRAY + "Starting positions for " + ChatColor.BLUE + "blue team" + ChatColor.GRAY + " have been cleared in " + minigame);
+				}
+				else{
+					minigame.getStartLocationsRed().clear();
+					sender.sendMessage(ChatColor.GRAY + "Starting positions for " + ChatColor.RED + "red team" + ChatColor.GRAY + " have been cleared in " + minigame);
+				}
+			}
+			else{
+				minigame.getStartLocations().clear();
+				sender.sendMessage(ChatColor.GRAY + "Starting positions have been cleared in " + minigame);
+			}
 		}
 		return false;
 	}
