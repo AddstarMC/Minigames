@@ -542,7 +542,8 @@ public class RecorderData implements Listener{
 	@EventHandler
 	private void takeItem(PlayerInteractEvent event){
 		Player ply = (Player) event.getPlayer();
-		if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).equals(minigame.getName()) && event.getAction() == Action.RIGHT_CLICK_BLOCK){
+		if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).equals(minigame.getName()) && event.getAction() == Action.RIGHT_CLICK_BLOCK
+				&& !minigame.isSpectator(ply)){
 			if(event.getClickedBlock().getType() == Material.CHEST){
 				Chest chest = (Chest) event.getClickedBlock().getState();
 				if(chest.getInventory().getSize() > 27){
