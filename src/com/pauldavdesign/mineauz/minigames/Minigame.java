@@ -80,6 +80,10 @@ public class Minigame {
 	
 	private boolean canSpectateFly = false;
 	
+	private boolean randomizeChests = false;
+	private int minChestRandom = 5;
+	private int maxChestRandom = 10;
+	
 	//Unsaved data
 	private List<Player> players = new ArrayList<Player>();
 	private List<Player> spectators = new ArrayList<Player>();
@@ -805,6 +809,30 @@ public class Minigame {
 		this.canSpectateFly = canSpectateFly;
 	}
 
+	public boolean isRandomizeChests() {
+		return randomizeChests;
+	}
+
+	public void setRandomizeChests(boolean randomizeChests) {
+		this.randomizeChests = randomizeChests;
+	}
+
+	public int getMinChestRandom() {
+		return minChestRandom;
+	}
+
+	public void setMinChestRandom(int minChestRandom) {
+		this.minChestRandom = minChestRandom;
+	}
+
+	public int getMaxChestRandom() {
+		return maxChestRandom;
+	}
+
+	public void setMaxChestRandom(int maxChestRandom) {
+		this.maxChestRandom = maxChestRandom;
+	}
+
 	public void saveMinigame(){
 		MinigameSave minigame = new MinigameSave(name, "config");
 		
@@ -1110,6 +1138,25 @@ public class Minigame {
 			minigame.getConfig().set(name + ".canspectatefly", null);
 		}
 		
+		if(isRandomizeChests()){
+			minigame.getConfig().set(name + ".randomizechests", isRandomizeChests());
+		}
+		else{
+			minigame.getConfig().set(name + ".randomizechests", null);
+		}
+		if(getMinChestRandom() != 5){
+			minigame.getConfig().set(name + ".minchestrandom", getMinChestRandom());
+		}
+		else{
+			minigame.getConfig().set(name + ".minchestrandom", null);
+		}
+		if(getMaxChestRandom() != 10){
+			minigame.getConfig().set(name + ".maxchestrandom", getMaxChestRandom());
+		}
+		else{
+			minigame.getConfig().set(name + ".maxchestrandom", null);
+		}
+		
 		minigame.saveConfig();
 	}
 	
@@ -1299,6 +1346,16 @@ public class Minigame {
 		
 		if(minigame.getConfig().contains(name + ".canspectatefly")){
 			setCanSpectateFly(minigame.getConfig().getBoolean(name + ".canspectatefly"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".randomizechests")){
+			setRandomizeChests(minigame.getConfig().getBoolean(name + ".randomizechests"));
+		}
+		if(minigame.getConfig().contains(name + ".minchestrandom")){
+			setMinChestRandom(minigame.getConfig().getInt(name + ".minchestrandom"));
+		}
+		if(minigame.getConfig().contains(name + ".maxchestrandom")){
+			setMaxChestRandom(minigame.getConfig().getInt(name + ".maxchestrandom"));
 		}
 		
 		saveMinigame();

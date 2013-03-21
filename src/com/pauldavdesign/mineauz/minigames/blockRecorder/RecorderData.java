@@ -99,7 +99,7 @@ public class RecorderData implements Listener{
 		return minigame;
 	}
 	
-	public void addBlock(Block block, Player modifier){
+	public BlockData addBlock(Block block, Player modifier){
 		BlockData bdata = new BlockData(block, modifier);
 		String sloc = String.valueOf(bdata.getLocation().getBlockX()) + ":" + bdata.getLocation().getBlockY() + ":" + bdata.getLocation().getBlockZ();
 		if(!blockdata.containsKey(sloc)){
@@ -154,9 +154,11 @@ public class RecorderData implements Listener{
 			bdata.setItems(items);
 			
 			blockdata.put(sloc, bdata);
+			return bdata;
 		}
 		else{
 			blockdata.get(sloc).setModifier(modifier);
+			return blockdata.get(sloc);
 		}
 	}
 	
@@ -587,10 +589,16 @@ public class RecorderData implements Listener{
 							loc = event.getClickedBlock().getLocation().clone();
 						}
 					}
-					addBlock(loc.getBlock(), ply);
+					BlockData bdata = addBlock(loc.getBlock(), ply);
+					if(minigame.isRandomizeChests()){
+						bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
+					}
 				}
 				else if(event.getClickedBlock().getState() instanceof Chest){
-					addBlock(event.getClickedBlock().getLocation().getBlock(), ply);
+					BlockData bdata = addBlock(event.getClickedBlock().getLocation().getBlock(), ply);
+					if(minigame.isRandomizeChests()){
+						bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
+					}
 				}
 			}
 			else if(event.getClickedBlock().getType() == Material.FURNACE){

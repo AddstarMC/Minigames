@@ -215,6 +215,9 @@ permissions:
     minigame.set.spectatefly:
         description: Allows a player to enable or disable spectator fly mode
         default: op
+    minigame.set.randomizechests:
+        description: Allows the toggle of randomizing the contents of a chest.
+        default: op
     minigame.info:
         description: Allows check to see if a minigames variables have been set
         default: op
