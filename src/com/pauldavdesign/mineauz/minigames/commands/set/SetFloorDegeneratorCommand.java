@@ -68,7 +68,7 @@ public class SetFloorDegeneratorCommand implements ICommand{
 				sender.sendMessage(ChatColor.GRAY + "Floor degenerator corners have been removed for " + minigame);
 			}
 			else if(args[0].equalsIgnoreCase("type") && args.length >= 2){
-				if(args[1].equalsIgnoreCase("random") || args[1].equalsIgnoreCase("inward") /*|| args[1].equalsIgnoreCase("circle")*/){
+				if(args[1].equalsIgnoreCase("random") || args[1].equalsIgnoreCase("inward") || args[1].equalsIgnoreCase("circle")){
 					minigame.setDegenType(args[1].toLowerCase());
 					if(args.length > 2 && args[2].matches("[0-9]+")){
 						minigame.setDegenRandomChance(Integer.parseInt(args[2]));

@@ -60,8 +60,8 @@ public class MinigameData {
 			Random rand = new Random();
 			int rrad = rand.nextInt(maxradius);
 			double randCir = 2 * Math.PI * rand.nextInt(360) / 360;
-			rx = Math.round(tcpos.getX() + rrad * Math.cos(randCir));
-			rz = Math.round(tcpos.getZ() + rrad * Math.sin(randCir));
+			rx = tcpos.getX() - 0.5 + Math.round(rrad * Math.cos(randCir));
+			rz = tcpos.getZ() - 0.5 + Math.round(rrad * Math.sin(randCir));
 			
 			ry = tcpos.getY() + rand.nextInt(maxheight);
 			

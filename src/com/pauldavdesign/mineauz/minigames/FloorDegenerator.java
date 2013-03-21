@@ -179,12 +179,12 @@ public class FloorDegenerator{
 		centerBlock.setZ(centerBlock.getZ() + middledist);
 		Location curBlock = centerBlock.clone();
 		
-		int size = (int) Math.pow(radius, 3);
+		int size = (int) Math.pow(radius, 3) + 8;
 		
-		for(int i = 1; i <= size; i++){
+		for(int i = 0; i < size; i++){
 			double cirPoint = 2 * Math.PI * i / size;
-			double cx = Math.floor(centerBlock.getX() + radius * Math.cos(cirPoint));
-			double cz = Math.floor(centerBlock.getZ() + radius * Math.sin(cirPoint));
+			double cx = centerBlock.getX() - 0.5 + Math.round(radius * Math.cos(cirPoint));
+			double cz = centerBlock.getZ() - 0.5 + Math.round(radius * Math.sin(cirPoint));
 			curBlock.setX(cx);
 			curBlock.setZ(cz);
 			for(int k = lowest.getBlockY(); k <= highest.getBlockY(); k++){
