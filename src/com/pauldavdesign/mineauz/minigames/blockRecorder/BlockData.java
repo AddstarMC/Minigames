@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 public class BlockData {
 	private Location location;
 	private BlockState state;
-	private Player player;
+	private Player player = null;
 	private ItemStack[] items = null;
 	private boolean hasRandomized = false;
 	

@@ -30,6 +30,7 @@ import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
@@ -47,7 +48,6 @@ import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Lever;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.Minigames;
@@ -314,11 +314,14 @@ public class RecorderData implements Listener{
 							dispenser.getInventory().setContents(bdata.getItems().clone());
 						}
 					}
-					else if(bdata.getLocation().getBlock().getType() == Material.LEVER){
-						Lever lever = (Lever) bdata.getBlockState().getData();
-						Lever curLever = (Lever) bdata.getLocation().getBlock().getState().getData();
-						curLever.setPowered(lever.isPowered());
-						bdata.getLocation().getBlock().getState().update();
+					else if(bdata.getBlockState().getType() == Material.SIGN || bdata.getBlockState().getType() == Material.WALL_SIGN){
+						Sign sign = (Sign) bdata.getLocation().getBlock().getState();
+						Sign signOld = (Sign) bdata.getBlockState();
+						sign.setLine(0, signOld.getLine(0));
+						sign.setLine(1, signOld.getLine(1));
+						sign.setLine(2, signOld.getLine(2));
+						sign.setLine(3, signOld.getLine(3));
+						sign.update();
 					}
 				}
 			});
@@ -967,6 +970,11 @@ public class RecorderData implements Listener{
 				}
 				else{
 					addBlock(bl, null);
+					Location extra = event.getBlocks().get(event.getBlocks().size() - 1).getLocation();
+					extra.setX(extra.getX() + event.getDirection().getModX());
+					extra.setY(extra.getY() + event.getDirection().getModY());
+					extra.setZ(extra.getZ() + event.getDirection().getModZ());
+					addBlock(extra.getBlock(), null);
 				}
 			}
 		}else if(hasRegenArea() && minigame.hasPlayers()){
@@ -983,7 +991,50 @@ public class RecorderData implements Listener{
 					}
 					else{
 						addBlock(bl, null);
+						Location extra = event.getBlocks().get(event.getBlocks().size() - 1).getLocation();
+						extra.setX(extra.getX() + event.getDirection().getModX());
+						extra.setY(extra.getY() + event.getDirection().getModY());
+						extra.setZ(extra.getZ() + event.getDirection().getModZ());
+						addBlock(extra.getBlock(), null);
 					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	private void pistonPull(BlockPistonRetractEvent event){
+		if(hasBlock(event.getBlock())){
+			if((whitelistMode && !getWBBlocks().contains(event.getRetractLocation().getBlock().getType())) || 
+					!whitelistMode && getWBBlocks().contains(event.getRetractLocation().getBlock().getType())){
+				event.setCancelled(true);
+			}
+			else{
+				addBlock(event.getRetractLocation().getBlock(), null);
+				Location extra = event.getRetractLocation();
+				extra.setX(extra.getX() + event.getDirection().getModX());
+				extra.setY(extra.getY() + event.getDirection().getModY());
+				extra.setZ(extra.getZ() + event.getDirection().getModZ());
+				addBlock(extra.getBlock(), null);
+			}
+		}else if(hasRegenArea() && minigame.hasPlayers()){
+			Location block = event.getBlock().getLocation();
+			if(block.getWorld() == minigame.getRegenArea1().getWorld() && 
+					block.getBlockX() >= getRegenMinX() && block.getBlockX() <= getRegenMaxX() &&
+					block.getBlockY() >= getRegenMinY() && block.getBlockY() <= getRegenMaxY() &&
+					block.getBlockZ() >= getRegenMinZ() && block.getBlockZ() <= getRegenMaxZ()){
+				addBlock(event.getBlock(), null);
+				if((whitelistMode && !getWBBlocks().contains(event.getRetractLocation().getBlock().getType())) || 
+						!whitelistMode && getWBBlocks().contains(event.getRetractLocation().getBlock().getType())){
+					event.setCancelled(true);
+				}
+				else{
+					addBlock(event.getRetractLocation().getBlock(), null);
+					Location extra = event.getRetractLocation();
+					extra.setX(extra.getX() + event.getDirection().getModX());
+					extra.setY(extra.getY() + event.getDirection().getModY());
+					extra.setZ(extra.getZ() + event.getDirection().getModZ());
+					addBlock(extra.getBlock(), null);
 				}
 			}
 		}
