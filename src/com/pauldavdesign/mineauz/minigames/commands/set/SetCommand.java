@@ -64,6 +64,7 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetSpectateCommand());
 		registerSetCommand(new SetRandomizeChestsCommand());
 		registerSetCommand(new SetRegenAreaCommand());
+		registerSetCommand(new SetLivesCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {

@@ -17,7 +17,6 @@ import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameSave;
 import com.pauldavdesign.mineauz.minigames.StoredPlayerCheckpoints;
 import com.pauldavdesign.mineauz.minigames.gametypes.DMMinigame;
-import com.pauldavdesign.mineauz.minigames.gametypes.LMSMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.RaceMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.SPMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
@@ -79,7 +78,7 @@ public class ReloadCommand implements ICommand{
 		
 		plugin.mdata.addMinigameType(new SPMinigame());
 		plugin.mdata.addMinigameType(new RaceMinigame());
-		plugin.mdata.addMinigameType(new LMSMinigame());
+//		plugin.mdata.addMinigameType(new LMSMinigame());
 		plugin.mdata.addMinigameType(new DMMinigame());
 		try{
 			Class.forName("net.minecraft.server.v1_4_R1.EntityPlayer");

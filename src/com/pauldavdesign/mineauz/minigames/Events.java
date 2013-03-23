@@ -45,7 +45,7 @@ public class Events implements Listener{
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event){
 		if(pdata.playerInMinigame(event.getEntity().getPlayer())){
-			Player ply = event.getEntity().getPlayer();
+			final Player ply = event.getEntity().getPlayer();
 			if(!mdata.getMinigame(pdata.getPlayersMinigame(ply)).hasDeathDrops()){
 				event.getDrops().clear();
 			}
@@ -62,6 +62,21 @@ public class Events implements Listener{
 			String minigame = pdata.getPlayersMinigame(ply);
 			if(mdata.getMinigame(minigame).hasPlayers()){
 				mdata.sendMinigameMessage(mdata.getMinigame(minigame), msg, "error", null);
+			}
+			Minigame mgm = mdata.getMinigame(minigame);
+			if(mgm.getLives() > 0 && mgm.getLives() <= pdata.getPlayerDeath(ply)){
+				ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Bad Luck! Leaving the minigame.");
+				ply.setHealth(2);
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					@Override
+					public void run() {
+						ply.setFireTicks(0);
+						pdata.quitMinigame(ply, false);
+					}
+				});
+			}
+			else if(mgm.getLives() > 0){
+				ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + (mgm.getLives() - pdata.getPlayerDeath(ply)));
 			}
 		}
 	}

@@ -81,6 +81,13 @@ public class InfoCommand implements ICommand{
 						lines.add(ChatColor.GRAY + "Use Permissions: " + ChatColor.RED + "false");
 					}
 					
+					if(mgm.getLives() == 0){
+						lines.add(ChatColor.GRAY + "Lives: " + ChatColor.GREEN + "Unlimited");
+					}
+					else{
+						lines.add(ChatColor.GRAY + "Lives: " + ChatColor.GREEN + mgm.getLives());
+					}
+					
 					if(mgm.getStartLocations().size() > 0){
 						lines.add(ChatColor.GRAY + "Starting Positions: " + ChatColor.GREEN + mgm.getStartLocations().size());
 					}
@@ -137,6 +144,20 @@ public class InfoCommand implements ICommand{
 						else{
 							lines.add(ChatColor.GRAY + "Floor Degenerator Position 2: " + ChatColor.RED + "false");
 						}
+					}
+					
+					if(mgm.getRegenArea1() != null){
+						lines.add(ChatColor.GRAY + "Regen Area Position 1: " + ChatColor.GREEN + "true");
+					}
+					else{
+						lines.add(ChatColor.GRAY + "Regen Area Position 1: " + ChatColor.RED + "false");
+					}
+					
+					if(mgm.getRegenArea2() != null){
+						lines.add(ChatColor.GRAY + "Regen Area Position 2: " + ChatColor.GREEN + "true");
+					}
+					else{
+						lines.add(ChatColor.GRAY + "Regen Area Position 2: " + ChatColor.RED + "false");
 					}
 					
 					lines.add(ChatColor.GRAY + "Player Gamemode: " + ChatColor.GREEN + mgm.getDefaultGamemode().name().toLowerCase());

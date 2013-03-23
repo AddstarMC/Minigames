@@ -22,7 +22,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.pauldavdesign.mineauz.minigames.commands.CommandDispatcher;
 import com.pauldavdesign.mineauz.minigames.gametypes.DMMinigame;
-import com.pauldavdesign.mineauz.minigames.gametypes.LMSMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.RaceMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.SPMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
@@ -51,7 +50,7 @@ public class Minigames extends JavaPlugin{
 		
 		mdata.addMinigameType(new SPMinigame());
 		mdata.addMinigameType(new RaceMinigame());
-		mdata.addMinigameType(new LMSMinigame());
+//		mdata.addMinigameType(new LMSMinigame());
 		mdata.addMinigameType(new DMMinigame());
 		try{
 			Class.forName("net.minecraft.server.v1_4_R1.EntityPlayer");

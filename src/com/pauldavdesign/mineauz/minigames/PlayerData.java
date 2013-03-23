@@ -92,6 +92,10 @@ public class PlayerData {
 						}
 					}
 					
+					if(minigame.getLives() > 0){
+						player.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + minigame.getLives());
+					}
+					
 					for(Player pl : minigame.getSpectators()){
 						player.hidePlayer(pl);
 					}

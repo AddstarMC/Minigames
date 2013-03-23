@@ -18,7 +18,7 @@ import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.SQLCompletionSaver;
 import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
-
+@Deprecated
 public class LMSMinigame extends MinigameType {
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
@@ -34,7 +34,7 @@ public class LMSMinigame extends MinigameType {
 	}
 	
 	@Override
-	@SuppressWarnings("deprecation")
+//	@SuppressWarnings("deprecation")
 	public void quitMinigame(Player player, Minigame mgm, boolean forced){
 		if(!mgm.getPlayers().isEmpty()){
 			mgm.removePlayer(player);
@@ -107,7 +107,7 @@ public class LMSMinigame extends MinigameType {
 	}
 	
 	@Override
-	@SuppressWarnings("deprecation")
+//	@SuppressWarnings("deprecation")
 	public void endMinigame(Player player, Minigame mgm){
 		String minigame = pdata.getPlayersMinigame(player);
 		

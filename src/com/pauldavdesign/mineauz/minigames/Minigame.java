@@ -64,6 +64,7 @@ public class Minigame {
 	private boolean unlimitedAmmo = false;
 	private boolean saveCheckpoint = false;
 	private boolean lateJoin = false;
+	private int lives = 0;
 	
 	private Location regenArea1 = null;
 	private Location regenArea2 = null;
@@ -852,6 +853,14 @@ public class Minigame {
 		this.regenArea2 = regenArea2;
 	}
 
+	public int getLives() {
+		return lives;
+	}
+
+	public void setLives(int lives) {
+		this.lives = lives;
+	}
+
 	public void saveMinigame(){
 		MinigameSave minigame = new MinigameSave(name, "config");
 		
@@ -1189,6 +1198,13 @@ public class Minigame {
 			minigame.getConfig().set(name + ".regenarea", null);
 		}
 		
+		if(getLives() != 0){
+			minigame.getConfig().set(name + ".lives", getLives());
+		}
+		else{
+			minigame.getConfig().set(name + ".lives", null);
+		}
+		
 		minigame.saveConfig();
 	}
 	
@@ -1244,6 +1260,10 @@ public class Minigame {
 			setMaxTreasure(minigame.getConfig().getInt(name + ".maxtreasure"));
 		}
 		setType(minigame.getConfig().getString(name + ".type"));
+		if(getType().equals("lms")){ //TODO: Remove me after release
+			setType("dm");
+			setLives(1);
+		}
 		setMinPlayers(minigame.getConfig().getInt(name + ".minplayers"));
 		setMaxPlayers(minigame.getConfig().getInt(name + ".maxplayers"));
 		setEnabled(minigame.getConfig().getBoolean(name + ".enabled"));
@@ -1396,6 +1416,10 @@ public class Minigame {
 		
 		if(minigame.getConfig().contains(name + ".regenarea.2")){
 			setRegenArea2(Minigames.plugin.mdata.minigameLocations(name, "regenarea.2", minigame.getConfig()));
+		}
+		
+		if(minigame.getConfig().contains(name + ".lives")){
+			setLives(minigame.getConfig().getInt(name + ".lives"));
 		}
 		
 		saveMinigame();
