@@ -29,11 +29,15 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -43,9 +47,9 @@ import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Lever;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
-import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
 
@@ -310,6 +314,12 @@ public class RecorderData implements Listener{
 							dispenser.getInventory().setContents(bdata.getItems().clone());
 						}
 					}
+					else if(bdata.getLocation().getBlock().getType() == Material.LEVER){
+						Lever lever = (Lever) bdata.getBlockState().getData();
+						Lever curLever = (Lever) bdata.getLocation().getBlock().getState().getData();
+						curLever.setPowered(lever.isPowered());
+						bdata.getLocation().getBlock().getState().update();
+					}
 				}
 			});
 		}
@@ -323,7 +333,7 @@ public class RecorderData implements Listener{
 					entdata.get(entID).getEntity().remove();
 				}
 			}
-			else{
+			else if(!entdata.get(entID).wasCreated()){
 				entdata.get(entID).getEntityLocation().getWorld().spawnEntity(entdata.get(entID).getEntityLocation(), 
 							entdata.get(entID).getEntityType());
 			}
@@ -481,6 +491,50 @@ public class RecorderData implements Listener{
 		return false;
 	}
 	
+	public boolean hasRegenArea(){
+		if(minigame.getRegenArea1() != null && minigame.getRegenArea2() != null){
+			return true;
+		}
+		return false;
+	}
+	
+	public double getRegenMinX(){
+		if(minigame.getRegenArea1().getX() > minigame.getRegenArea2().getX()){
+			return minigame.getRegenArea2().getX();
+		}
+		return minigame.getRegenArea1().getX();
+	}
+	public double getRegenMaxX(){
+		if(minigame.getRegenArea1().getX() < minigame.getRegenArea2().getX()){
+			return minigame.getRegenArea2().getX();
+		}
+		return minigame.getRegenArea1().getX();
+	}
+	public double getRegenMinY(){
+		if(minigame.getRegenArea1().getY() > minigame.getRegenArea2().getY()){
+			return minigame.getRegenArea2().getY();
+		}
+		return minigame.getRegenArea1().getY();
+	}
+	public double getRegenMaxY(){
+		if(minigame.getRegenArea1().getY() < minigame.getRegenArea2().getY()){
+			return minigame.getRegenArea2().getY();
+		}
+		return minigame.getRegenArea1().getY();
+	}
+	public double getRegenMinZ(){
+		if(minigame.getRegenArea1().getZ() > minigame.getRegenArea2().getZ()){
+			return minigame.getRegenArea2().getZ();
+		}
+		return minigame.getRegenArea1().getZ();
+	}
+	public double getRegenMaxZ(){
+		if(minigame.getRegenArea1().getZ() < minigame.getRegenArea2().getZ()){
+			return minigame.getRegenArea2().getZ();
+		}
+		return minigame.getRegenArea1().getZ();
+	}
+	
 	@EventHandler(priority = EventPriority.HIGH)
 	private void blockBreak(BlockBreakEvent event){
 		Player ply = event.getPlayer();
@@ -553,7 +607,6 @@ public class RecorderData implements Listener{
 					if(!isLeft && event.getClickedBlock().getData() == 0x2){
 						loc.setX(loc.getX() + 1);
 						if(loc.getBlock().getType() == Material.CHEST){
-							Bukkit.getLogger().info(MinigameUtils.createLocationID(loc));
 							isLeft = true;
 						}
 						else{
@@ -563,7 +616,6 @@ public class RecorderData implements Listener{
 					else if(!isLeft && event.getClickedBlock().getData() == 0x3){
 						loc.setX(loc.getX() - 1);
 						if(loc.getBlock().getType() == Material.CHEST){
-							Bukkit.getLogger().info(MinigameUtils.createLocationID(loc));
 							isLeft = true;
 						}
 						else{
@@ -573,7 +625,6 @@ public class RecorderData implements Listener{
 					else if(!isLeft && event.getClickedBlock().getData() == 0x4){
 						loc.setZ(loc.getZ() - 1);
 						if(loc.getBlock().getType() == Material.CHEST){
-							Bukkit.getLogger().info(MinigameUtils.createLocationID(loc));
 							isLeft = true;
 						}
 						else{
@@ -583,7 +634,6 @@ public class RecorderData implements Listener{
 					else if(!isLeft && event.getClickedBlock().getData() == 0x5){
 						loc.setZ(loc.getZ() + 1);
 						if(loc.getBlock().getType() == Material.CHEST){
-							Bukkit.getLogger().info(MinigameUtils.createLocationID(loc));
 							isLeft = true;
 						}
 						else{
@@ -627,8 +677,14 @@ public class RecorderData implements Listener{
 	
 	@EventHandler
 	private void leafDecay(LeavesDecayEvent event){
-		if(checkBlockSides(event.getBlock().getLocation())){
-			addBlock(event.getBlock(), null);
+		if(hasRegenArea() && minigame.hasPlayers()){
+			Location block = event.getBlock().getLocation();
+			if(block.getWorld() == minigame.getRegenArea1().getWorld() && 
+					block.getBlockX() >= getRegenMinX() && block.getBlockX() <= getRegenMaxX() &&
+					block.getBlockY() >= getRegenMinY() && block.getBlockY() <= getRegenMaxY() &&
+					block.getBlockZ() >= getRegenMinZ() && block.getBlockZ() <= getRegenMaxZ()){
+				addBlock(event.getBlock(), null);
+			}
 		}
 	}
 	
@@ -675,21 +731,45 @@ public class RecorderData implements Listener{
 	
 	@EventHandler
 	public void blockFromTo(BlockFromToEvent event){
-		if(checkBlockSides(event.getBlock().getLocation())){
-			addBlock(event.getToBlock(), null);
+		if(hasRegenArea() && minigame.hasPlayers()){
+			Location block = event.getBlock().getLocation();
+			if(block.getWorld() == minigame.getRegenArea1().getWorld() && 
+					block.getBlockX() >= getRegenMinX() && block.getBlockX() <= getRegenMaxX() &&
+					block.getBlockY() >= getRegenMinY() && block.getBlockY() <= getRegenMaxY() &&
+					block.getBlockZ() >= getRegenMinZ() && block.getBlockZ() <= getRegenMaxZ()){
+				addBlock(event.getBlock(), null);
+			}
 		}
 	}
 	
 	@EventHandler
 	public void blockBurn(BlockBurnEvent event){
-		if(checkBlockSides(event.getBlock().getLocation())){
+		if(hasRegenArea() && minigame.hasPlayers()){
+			Location block = event.getBlock().getLocation();
+			if(block.getWorld() == minigame.getRegenArea1().getWorld() && 
+					block.getBlockX() >= getRegenMinX() && block.getBlockX() <= getRegenMaxX() &&
+					block.getBlockY() >= getRegenMinY() && block.getBlockY() <= getRegenMaxY() &&
+					block.getBlockZ() >= getRegenMinZ() && block.getBlockZ() <= getRegenMaxZ()){
+				addBlock(event.getBlock(), null);
+			}
+		}
+		else if(checkBlockSides(event.getBlock().getLocation())){
 			addBlock(event.getBlock(), null);
 		}
 	}
 	
 	@EventHandler
 	public void fireSpread(BlockSpreadEvent event){
-		if(hasBlock(event.getSource())){
+		if(hasRegenArea() && minigame.hasPlayers()){
+			Location block = event.getBlock().getLocation();
+			if(block.getWorld() == minigame.getRegenArea1().getWorld() && 
+					block.getBlockX() >= getRegenMinX() && block.getBlockX() <= getRegenMaxX() &&
+					block.getBlockY() >= getRegenMinY() && block.getBlockY() <= getRegenMaxY() &&
+					block.getBlockZ() >= getRegenMinZ() && block.getBlockZ() <= getRegenMaxZ()){
+				addBlock(event.getBlock(), null);
+			}
+		}
+		else if(hasBlock(event.getSource())){
 			addBlock(event.getBlock(), null);
 		}
 	}
@@ -706,6 +786,15 @@ public class RecorderData implements Listener{
 			}
 			else{
 				event.setCancelled(true);
+			}
+		}
+		else if(hasRegenArea() && minigame.hasPlayers()){
+			Location block = event.getBlock().getLocation();
+			if(block.getWorld() == minigame.getRegenArea1().getWorld() && 
+					block.getBlockX() >= getRegenMinX() && block.getBlockX() <= getRegenMaxX() &&
+					block.getBlockY() >= getRegenMinY() && block.getBlockY() <= getRegenMaxY() &&
+					block.getBlockZ() >= getRegenMinZ() && block.getBlockZ() <= getRegenMaxZ()){
+				addBlock(event.getBlock(), null);
 			}
 		}
 	}
@@ -773,6 +862,17 @@ public class RecorderData implements Listener{
 					}
 				}
 			}
+			else if(hasRegenArea() && minigame.hasPlayers()){
+				Location ent = event.getEntity().getLocation();
+				if(ent.getWorld() == minigame.getRegenArea1().getWorld() && 
+						ent.getBlockX() >= getRegenMinX() && ent.getBlockX() <= getRegenMaxX() &&
+						ent.getBlockY() >= getRegenMinY() && ent.getBlockY() <= getRegenMaxY() &&
+						ent.getBlockZ() >= getRegenMinZ() && ent.getBlockZ() <= getRegenMaxZ()){
+					if(animal.getHealth() <= event.getDamage()){
+						addEntity(event.getEntity(), null, true);
+					}
+				}
+			}
 		}
 	}
 	
@@ -810,22 +910,82 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-//	@EventHandler
-//	private void blockForm(EntityBlockFormEvent event){
-//		String idloc = MinigameUtils.createLocationID(event.getBlock().getLocation());
-//		int y = event.getBlock().getY();
-//		int x = event.getBlock().getX();
-//		int z = event.getBlock().getZ();
-//		String world = event.getBlock().getWorld().getName();
-//		
-//		while(y < 256){
-//			y++;
-//			idloc = x + ":" + y + ":" + z + ":" + world;
-//			Bukkit.getLogger().info(idloc);
-//			if(blockdata.containsKey(idloc)){
-//				addBlock(event.getBlock().getLocation().getBlock(), null);
-//				return;
-//			}
-//		}
-//	}
+	@EventHandler
+	private void entityExplode(EntityExplodeEvent event){
+		if(hasRegenArea() && minigame.hasPlayers()){
+			Location block = event.getLocation().getBlock().getLocation();
+			if(block.getWorld() == minigame.getRegenArea1().getWorld() && 
+					block.getBlockX() >= getRegenMinX() && block.getBlockX() <= getRegenMaxX() &&
+					block.getBlockY() >= getRegenMinY() && block.getBlockY() <= getRegenMaxY() &&
+					block.getBlockZ() >= getRegenMinZ() && block.getBlockZ() <= getRegenMaxZ()){
+				List<Block> blocks = new ArrayList<Block>();
+				blocks.addAll(event.blockList());
+				
+				for(Block bl : blocks){
+					if((whitelistMode && getWBBlocks().contains(bl.getType())) ||
+							(!whitelistMode && !getWBBlocks().contains(bl.getType()))){
+						addBlock(bl, null);
+					}
+					else{
+						event.blockList().remove(bl);
+					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	private void itemDrop(ItemSpawnEvent event){
+		if(hasRegenArea() && minigame.hasPlayers()){
+			Location ent = event.getLocation();
+			if(ent.getWorld() == minigame.getRegenArea1().getWorld() && 
+					ent.getBlockX() >= getRegenMinX() && ent.getBlockX() <= getRegenMaxX() &&
+					ent.getBlockY() >= getRegenMinY() && ent.getBlockY() <= getRegenMaxY() &&
+					ent.getBlockZ() >= getRegenMinZ() && ent.getBlockZ() <= getRegenMaxZ()){
+				addEntity(event.getEntity(), null, true);
+			}
+		}
+	}
+	
+	@EventHandler
+	private void arrowShoot(EntityShootBowEvent event){
+		if(event.getEntity() instanceof Player){
+			Player ply = (Player) event.getEntity();
+			if(pdata.playerInMinigame(ply)){
+				addEntity(event.getProjectile(), ply, true);
+			}
+		}
+	}
+	
+	@EventHandler
+	private void pistonPush(BlockPistonExtendEvent event){
+		if(hasBlock(event.getBlock())){
+			for(Block bl : event.getBlocks()){
+				if((whitelistMode && !getWBBlocks().contains(bl.getType())) || 
+						!whitelistMode && getWBBlocks().contains(bl.getType())){
+					event.setCancelled(true);
+				}
+				else{
+					addBlock(bl, null);
+				}
+			}
+		}else if(hasRegenArea() && minigame.hasPlayers()){
+			Location block = event.getBlock().getLocation();
+			if(block.getWorld() == minigame.getRegenArea1().getWorld() && 
+					block.getBlockX() >= getRegenMinX() && block.getBlockX() <= getRegenMaxX() &&
+					block.getBlockY() >= getRegenMinY() && block.getBlockY() <= getRegenMaxY() &&
+					block.getBlockZ() >= getRegenMinZ() && block.getBlockZ() <= getRegenMaxZ()){
+				addBlock(event.getBlock(), null);
+				for(Block bl : event.getBlocks()){
+					if((whitelistMode && !getWBBlocks().contains(bl.getType())) || 
+							!whitelistMode && getWBBlocks().contains(bl.getType())){
+						event.setCancelled(true);
+					}
+					else{
+						addBlock(bl, null);
+					}
+				}
+			}
+		}
+	}
 }
