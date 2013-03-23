@@ -65,6 +65,9 @@ public class Minigame {
 	private boolean saveCheckpoint = false;
 	private boolean lateJoin = false;
 	
+	private Location regenArea1 = null;
+	private Location regenArea2 = null;
+	
 	//Teams
 	private List<Player> redTeam = new ArrayList<Player>();
 	private List<Player> blueTeam = new ArrayList<Player>();
@@ -833,6 +836,22 @@ public class Minigame {
 		this.maxChestRandom = maxChestRandom;
 	}
 
+	public Location getRegenArea1() {
+		return regenArea1;
+	}
+
+	public void setRegenArea1(Location regenArea1) {
+		this.regenArea1 = regenArea1;
+	}
+
+	public Location getRegenArea2() {
+		return regenArea2;
+	}
+
+	public void setRegenArea2(Location regenArea2) {
+		this.regenArea2 = regenArea2;
+	}
+
 	public void saveMinigame(){
 		MinigameSave minigame = new MinigameSave(name, "config");
 		
@@ -1157,6 +1176,19 @@ public class Minigame {
 			minigame.getConfig().set(name + ".maxchestrandom", null);
 		}
 		
+		if(getRegenArea1() != null){
+			Minigames.plugin.mdata.minigameSetLocations(name, getRegenArea1(), "regenarea.1", minigame.getConfig());
+		}
+		else{
+			minigame.getConfig().set(name + ".regenarea", null);
+		}
+		if(getRegenArea2() != null){
+			Minigames.plugin.mdata.minigameSetLocations(name, getRegenArea2(), "regenarea.2", minigame.getConfig());
+		}
+		else{
+			minigame.getConfig().set(name + ".regenarea", null);
+		}
+		
 		minigame.saveConfig();
 	}
 	
@@ -1356,6 +1388,14 @@ public class Minigame {
 		}
 		if(minigame.getConfig().contains(name + ".maxchestrandom")){
 			setMaxChestRandom(minigame.getConfig().getInt(name + ".maxchestrandom"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".regenarea.1")){
+			setRegenArea1(Minigames.plugin.mdata.minigameLocations(name, "regenarea.1", minigame.getConfig()));
+		}
+		
+		if(minigame.getConfig().contains(name + ".regenarea.2")){
+			setRegenArea2(Minigames.plugin.mdata.minigameLocations(name, "regenarea.2", minigame.getConfig()));
 		}
 		
 		saveMinigame();
