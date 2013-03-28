@@ -73,10 +73,6 @@ public class PlayerData {
 					setAllowTP(player, false);
 					setAllowGMChange(player, false);
 					
-					for(PotionEffect potion : player.getActivePotionEffects()){
-						player.removePotionEffect(potion.getType());
-					}
-					
 					if(hasStoredPlayerCheckpoint(player)){
 						if(getPlayersStoredCheckpoints(player).hasCheckpoint(minigame.getName())){
 							playerCheckpoints.put(player.getName(), getPlayersStoredCheckpoints(player).getCheckpoint(minigame.getName()));
@@ -90,10 +86,6 @@ public class PlayerData {
 							}
 							revertToCheckpoint(player);
 						}
-					}
-					
-					if(minigame.getLives() > 0){
-						player.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + minigame.getLives());
 					}
 					
 					for(Player pl : minigame.getSpectators()){
@@ -291,6 +283,10 @@ public class PlayerData {
 			
 			if(!mgm.getPlayersLoadout(players.get(i)).getItems().isEmpty()){
 				mgm.getPlayersLoadout(players.get(i)).equiptLoadout(players.get(i));
+			}
+			
+			if(mgm.getLives() > 0){
+				players.get(i).sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + mgm.getLives());
 			}
 		}
 

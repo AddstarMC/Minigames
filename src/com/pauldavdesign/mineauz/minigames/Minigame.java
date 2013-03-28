@@ -57,6 +57,7 @@ public class Minigame {
 	private boolean blockPlace = false;
 	private int defaultGamemode = 2;
 	private boolean blocksdrop = true;
+	private boolean autoEquipPotion = false;
 	
 	private String scoreType = "none";
 	private boolean paintBallMode = false;
@@ -861,6 +862,14 @@ public class Minigame {
 		this.lives = lives;
 	}
 
+	public boolean isAutoEquipPotion() {
+		return autoEquipPotion;
+	}
+
+	public void setAutoEquipPotion(boolean autoEquipPotion) {
+		this.autoEquipPotion = autoEquipPotion;
+	}
+
 	public void saveMinigame(){
 		MinigameSave minigame = new MinigameSave(name, "config");
 		
@@ -1205,6 +1214,13 @@ public class Minigame {
 			minigame.getConfig().set(name + ".lives", null);
 		}
 		
+		if(isAutoEquipPotion()){
+			minigame.getConfig().set(name + ".autoequippotion", true);
+		}
+		else{
+			minigame.getConfig().set(name + ".autoequippotion", null);
+		}
+		
 		minigame.saveConfig();
 	}
 	
@@ -1420,6 +1436,10 @@ public class Minigame {
 		
 		if(minigame.getConfig().contains(name + ".lives")){
 			setLives(minigame.getConfig().getInt(name + ".lives"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".autoequippotion")){
+			setAutoEquipPotion(minigame.getConfig().getBoolean(name + ".autoequippotion"));
 		}
 		
 		saveMinigame();

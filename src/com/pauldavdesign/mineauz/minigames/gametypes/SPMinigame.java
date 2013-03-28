@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.potion.PotionEffectType;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
@@ -35,7 +34,6 @@ public class SPMinigame extends MinigameType{
 			pdata.setAllowTP(player, true);
 			pdata.storePlayerData(player, mgm.getDefaultGamemode());
 			pdata.addPlayerMinigame(player, mgm.getName());
-			player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
 			player.setAllowFlight(false);
 			mgm.addPlayer(player);
 			plugin.getLogger().info(player.getName() + " started " + mgm.getName());
@@ -52,6 +50,10 @@ public class SPMinigame extends MinigameType{
 				for(RestoreBlock block : mgm.getRestoreBlocks().values()){
 					mgm.getBlockRecorder().addBlock(block.getLocation().getBlock(), null);
 				}
+			}
+			
+			if(mgm.getLives() > 0){
+				player.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + mgm.getLives());
 			}
 			
 			mgm.getPlayersLoadout(player).equiptLoadout(player);

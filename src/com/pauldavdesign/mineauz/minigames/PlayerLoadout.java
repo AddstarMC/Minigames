@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 
 public class PlayerLoadout {
@@ -47,6 +48,9 @@ public class PlayerLoadout {
 	
 	public void equiptLoadout(Player player){
 		player.getInventory().clear();
+		for(PotionEffect potion : player.getActivePotionEffects()){
+			player.removePotionEffect(potion.getType());
+		}
 		player.getInventory().setHelmet(new ItemStack(0));
 		player.getInventory().setChestplate(new ItemStack(0));
 		player.getInventory().setLeggings(new ItemStack(0));
@@ -83,14 +87,15 @@ public class PlayerLoadout {
 						player.getInventory().setBoots(item);
 					}
 				}
+				else if(item.getTypeId() == 373){
+					Potion potion = Potion.fromItemStack(item);
+					potion.setHasExtendedDuration(true);
+					player.addPotionEffects(potion.getEffects());
+				}
 				else{
 					player.getInventory().addItem(item);
 				}
 			}
-		}
-		
-		for(PotionEffect potion : player.getActivePotionEffects()){
-			player.removePotionEffect(potion.getType());
 		}
 	}
 	

@@ -60,7 +60,7 @@ public class LoadoutSign implements MinigameSign {
 					}
 					mgm.setPlayersLoadout(player, mgm.getLoadout(sign.getLine(2)));
 					player.updateInventory();
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been equip with the " + sign.getLine(2) + " loadout.");
+					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been equipped with the " + sign.getLine(2) + " loadout.");
 					return true;
 				}
 				else{
@@ -74,7 +74,7 @@ public class LoadoutSign implements MinigameSign {
 					}
 					mgm.setPlayersLoadout(player, plugin.mdata.getLoadout(sign.getLine(2)));
 					player.updateInventory();
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been equip with the " + sign.getLine(2) + " loadout.");
+					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been equipped with the " + sign.getLine(2) + " loadout.");
 					return true;
 				}
 				else{
