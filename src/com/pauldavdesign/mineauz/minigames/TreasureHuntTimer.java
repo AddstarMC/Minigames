@@ -25,6 +25,8 @@ public class TreasureHuntTimer{
 	private Location block = mdata.getTreasureHuntLocation(minigame);
 	private int hintTime1, hintTime2, hintTime3, hintTime4;
 	private int taskID = -1;
+	private boolean paused = false;
+	
 	
 	public TreasureHuntTimer(String minigame){
 		this.minigame = minigame;
@@ -44,7 +46,7 @@ public class TreasureHuntTimer{
 			
 			@Override
 			public void run() {
-				if(inworld){
+				if(inworld && !paused){
 					time -= 1;
 					if(time <= 0){
 						inworld = false;
@@ -126,7 +128,7 @@ public class TreasureHuntTimer{
 					}
 					
 				}
-				else{
+				else if(!paused){
 					time -= 1;
 					if(time <= 0){
 						inworld = true;
@@ -224,5 +226,9 @@ public class TreasureHuntTimer{
 		if(taskID != -1){
 			Bukkit.getScheduler().cancelTask(taskID);
 		}
+	}
+	
+	public void pauseTimer(boolean pause){
+		paused = pause;
 	}
 }

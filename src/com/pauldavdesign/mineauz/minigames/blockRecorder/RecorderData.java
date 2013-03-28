@@ -20,6 +20,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -27,14 +28,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
@@ -538,6 +543,16 @@ public class RecorderData implements Listener{
 		return minigame.getRegenArea1().getZ();
 	}
 	
+	public boolean blockInRegenArea(Location location){
+		if(location.getWorld() == minigame.getRegenArea1().getWorld() && 
+				location.getBlockX() >= getRegenMinX() && location.getBlockX() <= getRegenMaxX() &&
+				location.getBlockY() >= getRegenMinY() && location.getBlockY() <= getRegenMaxY() &&
+				location.getBlockZ() >= getRegenMinZ() && location.getBlockZ() <= getRegenMaxZ()){
+			return true;
+		}
+		return false;
+	}
+	
 	@EventHandler(priority = EventPriority.HIGH)
 	private void blockBreak(BlockBreakEvent event){
 		Player ply = event.getPlayer();
@@ -563,12 +578,6 @@ public class RecorderData implements Listener{
 					above.setY(above.getY() + 1);
 					addBlock(event.getBlock(), ply);
 					
-					if(above.getBlock().getType() == Material.GRAVEL || 
-							above.getBlock().getType() == Material.SAND || 
-							above.getBlock().getType() == Material.ANVIL || 
-							above.getBlock().getType() == Material.DRAGON_EGG){
-						addBlock(above.getBlock(), ply);
-					}
 					if(!minigame.canBlocksdrop()){
 						event.setCancelled(true);
 						event.getBlock().setType(Material.AIR);
@@ -666,17 +675,6 @@ public class RecorderData implements Listener{
 			}
 		}
 	}
-	
-//	@EventHandler
-//	private void blockPhysics(BlockPhysicsEvent event){
-//		if((event.getBlock().getType() == Material.GRAVEL || 
-//				event.getBlock().getType() == Material.SAND ||
-//				event.getBlock().getType() == Material.ANVIL ||
-//				event.getBlock().getType() == Material.DRAGON_EGG) &&
-//				checkBlockSides(event.getBlock().getLocation())){
-//			addBlock(event.getBlock(), null);
-//		}
-//	}
 	
 	@EventHandler
 	private void leafDecay(LeavesDecayEvent event){
@@ -804,35 +802,14 @@ public class RecorderData implements Listener{
 	
 	@EventHandler
 	private void vehicleCreate(VehicleCreateEvent event){
-		List<Entity> ents = event.getVehicle().getNearbyEntities(8, 8, 8);
-		for(Entity ent : ents){
-			if(ent instanceof Player){
-				Player ply = (Player) ent;
-				if(plugin.pdata.playerInMinigame(ply) && plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(ply)).equals(minigame)){
-					addEntity(event.getVehicle(), ply, true);
-					break;
-				}
-			}
+		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getVehicle().getLocation())){
+			addEntity(event.getVehicle(), null, true);
 		}
 	}
 	
 	@EventHandler
 	private void vehicleDestroy(VehicleDestroyEvent event){
-		List<Entity> ents = event.getVehicle().getNearbyEntities(15, 15, 15);
-		if(event.getAttacker() == null){
-			for(Entity ent : ents){
-				if(ent instanceof Player){
-					Player ply = (Player) ent;
-					if(plugin.pdata.playerInMinigame(ply) && plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(ply)).equals(minigame)){
-						if(!hasEntity(event.getVehicle())){
-							addEntity(event.getVehicle(), ply, false);
-						}
-						break;
-					}
-				}
-			}
-		}
-		else{
+		if(event.getAttacker() != null){
 			if(event.getAttacker() instanceof Player){
 				Player ply = (Player) event.getAttacker();
 				if(plugin.pdata.playerInMinigame(ply) && plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(ply)).equals(minigame)){
@@ -840,6 +817,11 @@ public class RecorderData implements Listener{
 						addEntity(event.getVehicle(), ply, false);
 					}
 				}
+			}
+		}
+		else{
+			if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getVehicle().getLocation())){
+				addEntity(event.getVehicle(), null, false);
 			}
 		}
 	}
@@ -867,15 +849,19 @@ public class RecorderData implements Listener{
 			}
 			else if(hasRegenArea() && minigame.hasPlayers()){
 				Location ent = event.getEntity().getLocation();
-				if(ent.getWorld() == minigame.getRegenArea1().getWorld() && 
-						ent.getBlockX() >= getRegenMinX() && ent.getBlockX() <= getRegenMaxX() &&
-						ent.getBlockY() >= getRegenMinY() && ent.getBlockY() <= getRegenMaxY() &&
-						ent.getBlockZ() >= getRegenMinZ() && ent.getBlockZ() <= getRegenMaxZ()){
+				if(blockInRegenArea(ent)){
 					if(animal.getHealth() <= event.getDamage()){
 						addEntity(event.getEntity(), null, true);
 					}
 				}
 			}
+		}
+	}
+	
+	@EventHandler
+	private void mobSpawnEvent(CreatureSpawnEvent event){
+		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getLocation())){
+			addEntity(event.getEntity(), null, true);
 		}
 	}
 	
@@ -917,10 +903,7 @@ public class RecorderData implements Listener{
 	private void entityExplode(EntityExplodeEvent event){
 		if(hasRegenArea() && minigame.hasPlayers()){
 			Location block = event.getLocation().getBlock().getLocation();
-			if(block.getWorld() == minigame.getRegenArea1().getWorld() && 
-					block.getBlockX() >= getRegenMinX() && block.getBlockX() <= getRegenMaxX() &&
-					block.getBlockY() >= getRegenMinY() && block.getBlockY() <= getRegenMaxY() &&
-					block.getBlockZ() >= getRegenMinZ() && block.getBlockZ() <= getRegenMaxZ()){
+			if(blockInRegenArea(block)){
 				List<Block> blocks = new ArrayList<Block>();
 				blocks.addAll(event.blockList());
 				
@@ -941,10 +924,7 @@ public class RecorderData implements Listener{
 	private void itemDrop(ItemSpawnEvent event){
 		if(hasRegenArea() && minigame.hasPlayers()){
 			Location ent = event.getLocation();
-			if(ent.getWorld() == minigame.getRegenArea1().getWorld() && 
-					ent.getBlockX() >= getRegenMinX() && ent.getBlockX() <= getRegenMaxX() &&
-					ent.getBlockY() >= getRegenMinY() && ent.getBlockY() <= getRegenMaxY() &&
-					ent.getBlockZ() >= getRegenMinZ() && ent.getBlockZ() <= getRegenMaxZ()){
+			if(blockInRegenArea(ent)){
 				addEntity(event.getEntity(), null, true);
 			}
 		}
@@ -979,10 +959,7 @@ public class RecorderData implements Listener{
 			}
 		}else if(hasRegenArea() && minigame.hasPlayers()){
 			Location block = event.getBlock().getLocation();
-			if(block.getWorld() == minigame.getRegenArea1().getWorld() && 
-					block.getBlockX() >= getRegenMinX() && block.getBlockX() <= getRegenMaxX() &&
-					block.getBlockY() >= getRegenMinY() && block.getBlockY() <= getRegenMaxY() &&
-					block.getBlockZ() >= getRegenMinZ() && block.getBlockZ() <= getRegenMaxZ()){
+			if(blockInRegenArea(block)){
 				addBlock(event.getBlock(), null);
 				for(Block bl : event.getBlocks()){
 					if((whitelistMode && !getWBBlocks().contains(bl.getType())) || 
@@ -1019,10 +996,7 @@ public class RecorderData implements Listener{
 			}
 		}else if(hasRegenArea() && minigame.hasPlayers()){
 			Location block = event.getBlock().getLocation();
-			if(block.getWorld() == minigame.getRegenArea1().getWorld() && 
-					block.getBlockX() >= getRegenMinX() && block.getBlockX() <= getRegenMaxX() &&
-					block.getBlockY() >= getRegenMinY() && block.getBlockY() <= getRegenMaxY() &&
-					block.getBlockZ() >= getRegenMinZ() && block.getBlockZ() <= getRegenMaxZ()){
+			if(blockInRegenArea(block)){
 				addBlock(event.getBlock(), null);
 				if((whitelistMode && !getWBBlocks().contains(event.getRetractLocation().getBlock().getType())) || 
 						!whitelistMode && getWBBlocks().contains(event.getRetractLocation().getBlock().getType())){
@@ -1036,6 +1010,37 @@ public class RecorderData implements Listener{
 					extra.setZ(extra.getZ() + event.getDirection().getModZ());
 					addBlock(extra.getBlock(), null);
 				}
+			}
+		}
+	}
+	
+	@EventHandler
+	private void physicalBlock(EntityChangeBlockEvent event){
+		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getBlock().getLocation())){
+			if(event.getBlock().getType() == Material.SAND ||
+					event.getBlock().getType() == Material.GRAVEL ||
+					event.getBlock().getType() == Material.DRAGON_EGG ||
+					event.getBlock().getType() == Material.ANVIL){
+				addBlock(event.getBlock(), null);
+			}
+			else if(event.getEntityType() == EntityType.FALLING_BLOCK){
+				addBlock(event.getBlock(), null);
+			}
+		}
+	}
+	
+	@EventHandler
+	private void dispenser(BlockDispenseEvent event){
+		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getBlock().getLocation())){
+			addBlock(event.getBlock().getState(), null);
+		}
+	}
+	
+	@EventHandler
+	private void physicsBreak(BlockPhysicsEvent event){
+		if(event.getBlock().getType() == Material.TORCH){
+			if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getBlock().getLocation())){
+				addBlock(event.getBlock(), null);
 			}
 		}
 	}

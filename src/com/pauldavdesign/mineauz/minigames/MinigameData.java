@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.presets.BasePreset;
 import com.pauldavdesign.mineauz.minigames.presets.CTFPreset;
+import com.pauldavdesign.mineauz.minigames.presets.LMSPreset;
 import com.pauldavdesign.mineauz.minigames.presets.SpleefPreset;
 
 public class MinigameData {
@@ -37,6 +38,7 @@ public class MinigameData {
 	public MinigameData(){
 		addPreset(new SpleefPreset());
 		addPreset(new CTFPreset());
+		addPreset(new LMSPreset());
 	}
 	
 	public void startGlobalMinigame(final String minigame){
@@ -230,12 +232,12 @@ public class MinigameData {
 	
 	public void removeTreasure(final String minigame){
 		if(getTreasureHuntLocation(minigame) != null){
-			final Location old = getTreasureHuntLocation(minigame);
+			final Location old = getTreasureHuntLocation(minigame).clone();
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				
 				@Override
 				public void run() {
-					if(getTreasureHuntLocation(minigame).getBlock().getState() instanceof Chest){
+					if(old.getBlock().getState() instanceof Chest){
 						Chest chest = (Chest) getTreasureHuntLocation(minigame).getBlock().getState();
 						chest.getInventory().clear();
 					}
