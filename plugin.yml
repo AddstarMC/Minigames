@@ -1,6 +1,6 @@
 name: Minigames
 main: com.pauldavdesign.mineauz.minigames.Minigames
-version: 1.5 Dev 2
+version: 1.5 Dev 3
 author: _Razz_
 softdepend: [SQLibrary]
 
@@ -112,6 +112,7 @@ permissions:
             minigame.set.spectatefly: true
             minigame.set.regenarea: true
             minigame.set.randomizechests: true
+            minigame.set.autopotion: true
     minigame.set.start:
         description: Gives access to setting a minigames starting position
         default: op
@@ -222,6 +223,9 @@ permissions:
         default: op
     minigame.set.regenarea:
         description: Allows the setting of a regeneration area of a Minigame.
+        default: op
+    minigame.set.autopotion:
+        description: Allows the setting of automated unlimited potion equipping in a Minigames loadout.
         default: op
     minigame.info:
         description: Allows check to see if a minigames variables have been set
