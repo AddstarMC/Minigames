@@ -26,7 +26,7 @@ public class FloorDegenerator{
 	private int radiusModifier = 0;
 	
 	public FloorDegenerator(Location point1, Location point2, Minigame mgm){
-		timeDelay = plugin.getConfig().getInt("multiplayer.floordegenerator.time");
+		timeDelay = mgm.getFloorDegenTime();
 		this.mgm = mgm;
 		double minX;
 		double maxX;

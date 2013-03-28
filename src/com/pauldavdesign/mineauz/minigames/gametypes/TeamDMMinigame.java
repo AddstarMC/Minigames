@@ -595,7 +595,7 @@ public class TeamDMMinigame extends MinigameType{
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				@Override
 				public void run() {
-					ply.setNoDamageTicks(100);
+					ply.setNoDamageTicks(60);
 				}
 			});
 			

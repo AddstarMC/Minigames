@@ -27,6 +27,7 @@ public class Minigame {
 	private String degenType = "inward";
 	private int degenRandomChance = 15;
 	private FloorDegenerator sfloordegen;
+	private int floorDegenTime = Minigames.plugin.getConfig().getInt("multiplayer.floordegenerator.time");
 	
 	private List<Location> startLocations = new ArrayList<Location>();
 	private Location endPosition = null;
@@ -870,6 +871,14 @@ public class Minigame {
 		this.autoEquipPotion = autoEquipPotion;
 	}
 
+	public int getFloorDegenTime() {
+		return floorDegenTime;
+	}
+
+	public void setFloorDegenTime(int floorDegenTime) {
+		this.floorDegenTime = floorDegenTime;
+	}
+
 	public void saveMinigame(){
 		MinigameSave minigame = new MinigameSave(name, "config");
 		
@@ -1221,6 +1230,13 @@ public class Minigame {
 			minigame.getConfig().set(name + ".autoequippotion", null);
 		}
 		
+		if(getFloorDegenTime() != Minigames.plugin.getConfig().getInt("multiplayer.floordegenerator.time")){
+			minigame.getConfig().set(name + ".floordegentime", getFloorDegenTime());
+		}
+		else{
+			minigame.getConfig().set(name + ".floordegentime", null);
+		}
+		
 		minigame.saveConfig();
 	}
 	
@@ -1440,6 +1456,10 @@ public class Minigame {
 		
 		if(minigame.getConfig().contains(name + ".autoequippotion")){
 			setAutoEquipPotion(minigame.getConfig().getBoolean(name + ".autoequippotion"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".floordegentime")){
+			setFloorDegenTime(minigame.getConfig().getInt(name + ".floordegentime"));
 		}
 		
 		saveMinigame();

@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 
 public class SetFloorDegeneratorCommand implements ICommand{
@@ -26,12 +27,13 @@ public class SetFloorDegeneratorCommand implements ICommand{
 	@Override
 	public String getDescription() {
 		return "Sets the two corners of a floor to degenerate or clears both of them (if set).\n" +
-				"The types of degeneration are: \"inward\"(default), \"random [%chance]\"(Default chance: 15)";
+				"The types of degeneration are: \"inward\"(default), \"random [%chance]\"(Default chance: 15).\n" +
+				"Optionally, a degeneration time can be set, this defaults to the value set in the main config.";
 	}
 
 	@Override
 	public String[] getParameters() {
-		return new String[] {"1", "2", "clear", "type"};
+		return new String[] {"1", "2", "clear", "type", "time"};
 	}
 
 	@Override
@@ -74,6 +76,13 @@ public class SetFloorDegeneratorCommand implements ICommand{
 						minigame.setDegenRandomChance(Integer.parseInt(args[2]));
 					}
 					sender.sendMessage(ChatColor.GRAY + "Floor degenerator type has been set to " + args[1] + " in " + minigame);
+				}
+			}
+			else if(args[0].equalsIgnoreCase("time") && args.length >= 2){
+				if(args[1].matches("[0-9]+")){
+					int time = Integer.parseInt(args[1]);
+					minigame.setFloorDegenTime(time);
+					sender.sendMessage(ChatColor.GRAY + "Floor degeneration time has been set to " + MinigameUtils.convertTime(time));
 				}
 			}
 			else{
