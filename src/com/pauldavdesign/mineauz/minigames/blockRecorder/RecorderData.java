@@ -69,6 +69,8 @@ public class RecorderData implements Listener{
 	private Map<String, BlockData> blockdata;
 	private Map<Integer, EntityData> entdata;
 	
+	private boolean regenerating = false;
+	
 	public RecorderData(Minigame minigame){
 		plugin = Minigames.plugin;
 		pdata = plugin.pdata;
@@ -254,6 +256,7 @@ public class RecorderData implements Listener{
 	}
 	
 	public void restoreBlocks(){
+		regenerating = true;
 		for(String id : blockdata.keySet()){
 			final BlockData bdata = blockdata.get(id);
 			
@@ -332,6 +335,7 @@ public class RecorderData implements Listener{
 			});
 		}
 		blockdata.clear();
+		regenerating = false;
 	}
 	
 	public void restoreEntities(){
@@ -350,6 +354,7 @@ public class RecorderData implements Listener{
 	}
 	
 	public void restoreBlocks(Player modifier){
+		regenerating = true;
 		List<String> changes = new ArrayList<String>();
 		for(String id : blockdata.keySet()){
 			BlockData bdata = blockdata.get(id);
@@ -420,6 +425,7 @@ public class RecorderData implements Listener{
 		for(String id : changes){
 			blockdata.remove(id);
 		}
+		regenerating = false;
 	}
 	
 	public void restoreEntities(Player player){
@@ -1022,9 +1028,11 @@ public class RecorderData implements Listener{
 					event.getBlock().getType() == Material.DRAGON_EGG ||
 					event.getBlock().getType() == Material.ANVIL){
 				addBlock(event.getBlock(), null);
+				addEntity(event.getEntity(), null, true);
 			}
 			else if(event.getEntityType() == EntityType.FALLING_BLOCK){
 				addBlock(event.getBlock(), null);
+				addEntity(event.getEntity(), null, true);
 			}
 		}
 	}
@@ -1038,9 +1046,32 @@ public class RecorderData implements Listener{
 	
 	@EventHandler
 	private void physicsBreak(BlockPhysicsEvent event){
-		if(event.getBlock().getType() == Material.TORCH){
+		if(event.getBlock().getType() == Material.TORCH ||
+				event.getBlock().getType() == Material.REDSTONE_WIRE ||
+				event.getBlock().getType() == Material.REDSTONE_TORCH_ON ||
+				event.getBlock().getType() == Material.REDSTONE_TORCH_OFF ||
+				event.getBlock().getType() == Material.SIGN ||
+				event.getBlock().getType() == Material.RAILS ||
+				event.getBlock().getType() == Material.POWERED_RAIL ||
+				event.getBlock().getType() == Material.DETECTOR_RAIL){
 			if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getBlock().getLocation())){
 				addBlock(event.getBlock(), null);
+			}
+		}
+		else if(regenerating && hasRegenArea() && blockInRegenArea(event.getBlock().getLocation())){
+			if(event.getBlock().getType() == Material.SAND ||
+					event.getBlock().getType() == Material.GRAVEL ||
+					event.getBlock().getType() == Material.DRAGON_EGG ||
+					event.getBlock().getType() == Material.ANVIL||
+					event.getBlock().getType() == Material.TORCH ||
+					event.getBlock().getType() == Material.REDSTONE_WIRE ||
+					event.getBlock().getType() == Material.REDSTONE_TORCH_ON ||
+					event.getBlock().getType() == Material.REDSTONE_TORCH_OFF ||
+					event.getBlock().getType() == Material.SIGN ||
+					event.getBlock().getType() == Material.RAILS ||
+					event.getBlock().getType() == Material.POWERED_RAIL ||
+					event.getBlock().getType() == Material.DETECTOR_RAIL){
+				event.setCancelled(true);
 			}
 		}
 	}
