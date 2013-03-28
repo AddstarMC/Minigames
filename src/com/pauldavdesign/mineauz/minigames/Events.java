@@ -107,6 +107,16 @@ public class Events implements Listener{
 			pdata.addDCPlayer(event.getPlayer(), mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).getQuitPosition());
 			pdata.quitMinigame(event.getPlayer(), false);
 		}
+		
+		if(Bukkit.getServer().getOnlinePlayers().length == 1){
+			for(String mgm : mdata.getAllMinigames().keySet()){
+				if(mdata.getMinigame(mgm).getType().equals("th")){
+					if(mdata.getMinigame(mgm).getThTimer() != null){
+						mdata.getMinigame(mgm).getThTimer().pauseTimer(true);
+					}
+				}
+			}
+		}
 	}
 	
 	@EventHandler
@@ -133,6 +143,16 @@ public class Events implements Listener{
 		
 		if(pdata.playerHasStoredItems(event.getPlayer())){
 			pdata.restorePlayerData(event.getPlayer());
+		}
+		
+		if(Bukkit.getServer().getOnlinePlayers().length == 1){
+			for(String mgm : mdata.getAllMinigames().keySet()){
+				if(mdata.getMinigame(mgm).getType().equals("th")){
+					if(mdata.getMinigame(mgm).getThTimer() != null){
+						mdata.getMinigame(mgm).getThTimer().pauseTimer(false);
+					}
+				}
+			}
 		}
 	}
 	
