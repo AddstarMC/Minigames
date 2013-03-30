@@ -46,7 +46,7 @@ public class Events implements Listener{
 	public void onPlayerDeath(PlayerDeathEvent event){
 		if(pdata.playerInMinigame(event.getEntity().getPlayer())){
 			final Player ply = event.getEntity().getPlayer();
-			if(!mdata.getMinigame(pdata.getPlayersMinigame(ply)).hasDeathDrops()){
+			if(!pdata.getPlayersMinigame(ply).hasDeathDrops()){
 				event.getDrops().clear();
 			}
 			String msg = "";
@@ -59,12 +59,11 @@ public class Events implements Listener{
 			
 			pdata.partyMode(ply);
 			
-			String minigame = pdata.getPlayersMinigame(ply);
-			if(mdata.getMinigame(minigame).hasPlayers()){
-				mdata.sendMinigameMessage(mdata.getMinigame(minigame), msg, "error", null);
+			Minigame minigame = pdata.getPlayersMinigame(ply);
+			if(minigame.hasPlayers()){
+				mdata.sendMinigameMessage(minigame, msg, "error", null);
 			}
-			Minigame mgm = mdata.getMinigame(minigame);
-			if(mgm.getLives() > 0 && mgm.getLives() <= pdata.getPlayerDeath(ply)){
+			if(minigame.getLives() > 0 && minigame.getLives() <= pdata.getPlayerDeath(ply)){
 				ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Bad Luck! Leaving the minigame.");
 				ply.setHealth(2);
 				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -75,8 +74,8 @@ public class Events implements Listener{
 					}
 				});
 			}
-			else if(mgm.getLives() > 0){
-				ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + (mgm.getLives() - pdata.getPlayerDeath(ply)));
+			else if(minigame.getLives() > 0){
+				ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + (minigame.getLives() - pdata.getPlayerDeath(ply)));
 			}
 		}
 	}
@@ -84,8 +83,8 @@ public class Events implements Listener{
 	@EventHandler
 	public void playerDropItem(PlayerDropItemEvent event){
 		if(pdata.playerInMinigame(event.getPlayer())){
-			if(!mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).hasItemDrops() || 
-					mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).isSpectator(event.getPlayer())){
+			if(!pdata.getPlayersMinigame(event.getPlayer()).hasItemDrops() || 
+					pdata.getPlayersMinigame(event.getPlayer()).isSpectator(event.getPlayer())){
 				event.setCancelled(true);
 			}
 		}
@@ -94,8 +93,8 @@ public class Events implements Listener{
 	@EventHandler
 	public void itemPickup(PlayerPickupItemEvent event){
 		if(pdata.playerInMinigame(event.getPlayer())){
-			if(!mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).hasItemPickup() || 
-					mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).isSpectator(event.getPlayer())){
+			if(!pdata.getPlayersMinigame(event.getPlayer()).hasItemPickup() || 
+					pdata.getPlayersMinigame(event.getPlayer()).isSpectator(event.getPlayer())){
 				event.setCancelled(true);
 			}
 		}
@@ -104,7 +103,7 @@ public class Events implements Listener{
 	@EventHandler
 	public void onPlayerDisconnect(PlayerQuitEvent event){
 		if(pdata.playerInMinigame(event.getPlayer())){
-			pdata.addDCPlayer(event.getPlayer(), mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).getQuitPosition());
+			pdata.addDCPlayer(event.getPlayer(), pdata.getPlayersMinigame(event.getPlayer()).getQuitPosition());
 			pdata.quitMinigame(event.getPlayer(), false);
 		}
 		
@@ -265,7 +264,7 @@ public class Events implements Listener{
 		}
 		
 		//Spectator disables:
-		if(pdata.playerInMinigame(event.getPlayer()) && mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).isSpectator(event.getPlayer())){
+		if(pdata.playerInMinigame(event.getPlayer()) && pdata.getPlayersMinigame(event.getPlayer()).isSpectator(event.getPlayer())){
 			event.setCancelled(true);
 		}
 	}
@@ -294,7 +293,7 @@ public class Events implements Listener{
 	
 	@EventHandler
 	public void onFlyToggle(PlayerToggleFlightEvent event){
-		if(pdata.playerInMinigame(event.getPlayer()) && (!mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).isSpectator(event.getPlayer()) || !mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).canSpectateFly())){
+		if(pdata.playerInMinigame(event.getPlayer()) && (!pdata.getPlayersMinigame(event.getPlayer()).isSpectator(event.getPlayer()) || !pdata.getPlayersMinigame(event.getPlayer()).canSpectateFly())){
 			event.setCancelled(true);
 			pdata.quitMinigame(event.getPlayer(), true);
 			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Error: You cannot fly while in a Minigame!");
@@ -303,9 +302,9 @@ public class Events implements Listener{
 	
 	@EventHandler
 	public void playerRevert(RevertCheckpointEvent event){
-		if(pdata.playerInMinigame(event.getPlayer()) && (mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).getType().equals("lms") || mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).getType().equals("dm") || mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).getType().equals("teamdm"))){
+		if(pdata.playerInMinigame(event.getPlayer()) && (pdata.getPlayersMinigame(event.getPlayer()).getType().equals("lms") || pdata.getPlayersMinigame(event.getPlayer()).getType().equals("dm") || pdata.getPlayersMinigame(event.getPlayer()).getType().equals("teamdm"))){
 			event.setCancelled(true);
-			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You can't revert while playing " + mdata.getMinigame(pdata.getPlayersMinigame(event.getPlayer())).getType());
+			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You can't revert while playing " + pdata.getPlayersMinigame(event.getPlayer()).getType());
 		}
 	}
 	
@@ -326,10 +325,10 @@ public class Events implements Listener{
 		if(event.getEntity() instanceof Player && event.getDamager() instanceof Snowball){
 			Player ply = (Player) event.getEntity();
 			Snowball sb = (Snowball) event.getDamager();
-			if(pdata.playerInMinigame(ply) && mdata.getMinigame(pdata.getPlayersMinigame(ply)).hasPaintBallMode()){
+			if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).hasPaintBallMode()){
 				if(sb.getShooter() instanceof Player){
 					Player shooter = (Player) sb.getShooter();
-					Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
+					Minigame mgm = pdata.getPlayersMinigame(ply);
 					if(pdata.playerInMinigame(shooter) && pdata.getPlayersMinigame(shooter).equals(pdata.getPlayersMinigame(ply))){
 						int plyTeam = -1;
 						int atcTeam = -2;
@@ -344,7 +343,7 @@ public class Events implements Listener{
 							}
 						}
 						if(plyTeam != atcTeam){
-							int damage = mdata.getMinigame(pdata.getPlayersMinigame(ply)).getPaintBallDamage();
+							int damage = mgm.getPaintBallDamage();
 							event.setDamage(damage);
 						}
 					}
@@ -359,7 +358,7 @@ public class Events implements Listener{
 			Snowball snowball = (Snowball) event.getEntity();
 			if(snowball.getShooter() != null && snowball.getShooter() instanceof Player){
 				Player ply = (Player) snowball.getShooter();
-				if(pdata.playerInMinigame(ply) && mdata.getMinigame(pdata.getPlayersMinigame(ply)).hasUnlimitedAmmo()){
+				if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).hasUnlimitedAmmo()){
 					ply.getInventory().addItem(new ItemStack(Material.SNOW_BALL));
 				}
 			}
@@ -368,7 +367,7 @@ public class Events implements Listener{
 			Egg egg = (Egg) event.getEntity();
 			if(egg.getShooter() != null && egg.getShooter() instanceof Player){
 				Player ply = (Player) egg.getShooter();
-				if(pdata.playerInMinigame(ply) && mdata.getMinigame(pdata.getPlayersMinigame(ply)).hasUnlimitedAmmo()){
+				if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).hasUnlimitedAmmo()){
 					ply.getInventory().addItem(new ItemStack(Material.EGG));
 				}
 			}
@@ -380,7 +379,7 @@ public class Events implements Listener{
 		if(event.getEntity() instanceof Player){
 			Player ply = (Player) event.getEntity();
 			if(pdata.playerInMinigame(ply)){
-				Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
+				Minigame mgm = pdata.getPlayersMinigame(ply);
 				if(mgm.isSpectator(ply)){
 					event.setCancelled(true);
 				}
@@ -392,7 +391,7 @@ public class Events implements Listener{
 	private void spectatorAttack(EntityDamageByEntityEvent event){
 		if(event.getDamager() instanceof Player){
 			Player ply = (Player) event.getDamager();
-			if(pdata.playerInMinigame(ply) && mdata.getMinigame(pdata.getPlayersMinigame(ply)).isSpectator(ply)){
+			if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).isSpectator(ply)){
 				event.setCancelled(true);
 			}
 		}

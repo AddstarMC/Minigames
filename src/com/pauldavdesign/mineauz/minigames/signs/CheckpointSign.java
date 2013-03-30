@@ -52,7 +52,7 @@ public class CheckpointSign implements MinigameSign {
 	public boolean signUse(Sign sign, Player player) {
 		if((plugin.pdata.playerInMinigame(player) || (!plugin.pdata.playerInMinigame(player) && sign.getLine(2).equals(ChatColor.BLUE + "Global"))) 
 				&& player.getItemInHand().getType() == Material.AIR){
-			if(plugin.pdata.playerInMinigame(player) && plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(player)).isSpectator(player)){
+			if(plugin.pdata.playerInMinigame(player) && plugin.pdata.getPlayersMinigame(player).isSpectator(player)){
 				return false;
 			}
 			Location loc = player.getLocation();

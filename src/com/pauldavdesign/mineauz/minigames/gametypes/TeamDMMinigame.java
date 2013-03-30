@@ -137,7 +137,7 @@ public class TeamDMMinigame extends MinigameType{
 							}
 						}, 100);
 					}
-					pdata.addPlayerMinigame(player, mgm.getName());
+					pdata.addPlayerMinigame(player, mgm);
 					player.sendMessage(ChatColor.GREEN + "You have started a " + gametype + " minigame, type /minigame quit to exit.");
 				
 					if(mgm.getMpTimer() == null && mgm.getPlayers().size() >= mgm.getMinPlayers()){
@@ -201,7 +201,7 @@ public class TeamDMMinigame extends MinigameType{
 				pdata.storePlayerData(player, mgm.getDefaultGamemode());
 				
 				player.teleport(lobby);
-				pdata.addPlayerMinigame(player, mgm.getName());
+				pdata.addPlayerMinigame(player, mgm);
 				player.sendMessage(ChatColor.GREEN + "You have started a " + gametype + " minigame, type /minigame quit to exit.");
 				
 				int neededPlayers = mgm.getMinPlayers() - 1;
@@ -233,9 +233,9 @@ public class TeamDMMinigame extends MinigameType{
 	@Override
 	public void quitMinigame(Player player, Minigame mgm, boolean forced){
 
-		String minigame = pdata.getPlayersMinigame(player);
-		if(!mdata.getMinigame(minigame).getPlayers().isEmpty()){
-			mdata.getMinigame(minigame).removePlayer(player);
+		Minigame minigame = pdata.getPlayersMinigame(player);
+		if(!minigame.getPlayers().isEmpty()){
+			minigame.removePlayer(player);
 			if(mgm.getRedTeam().contains(player)){
 				mgm.getRedTeam().remove(player);
 			}
@@ -243,47 +243,47 @@ public class TeamDMMinigame extends MinigameType{
 				mgm.getBlueTeam().remove(player);
 			}
 			
-			if(mdata.getMinigame(minigame).getPlayers().size() == 0 && !forced){
-				if(mdata.getMinigame(minigame).getMpTimer() != null){
+			if(minigame.getPlayers().size() == 0 && !forced){
+				if(minigame.getMpTimer() != null){
 					mgm.getMpTimer().pauseTimer();
 					mgm.getMpTimer().removeTimer();
-					mdata.getMinigame(minigame).setMpTimer(null);
+					minigame.setMpTimer(null);
 				}
 				
-				if(mdata.getMinigame(minigame).getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
+				if(minigame.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
 					if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
 						plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
 					}
 				}
-				mdata.getMinigame(minigame).setMpBets(null);
+				minigame.setMpBets(null);
 			}
-			else if(mdata.getMinigame(minigame).getPlayers().size() >= 1 && 
-					(mdata.getMinigame(minigame).getRedTeam().size() == 0 ||
-					mdata.getMinigame(minigame).getBlueTeam().size() == 0) &&
-					mdata.getMinigame(minigame).getMpTimer() != null && 
-					mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() == 0
+			else if(minigame.getPlayers().size() >= 1 && 
+					(minigame.getRedTeam().size() == 0 ||
+					minigame.getBlueTeam().size() == 0) &&
+					minigame.getMpTimer() != null && 
+					minigame.getMpTimer().getStartWaitTimeLeft() == 0
 					&& !forced){
 				
-				if(mdata.getMinigame(minigame).getRedTeam().size() == 0){
+				if(minigame.getRedTeam().size() == 0){
 					pdata.endTeamMinigame(1, mgm);
 				}
 				else{
 					pdata.endTeamMinigame(0, mgm);
 				}
 				
-				if(mdata.getMinigame(minigame).getMpBets() != null){
-					mdata.getMinigame(minigame).setMpBets(null);
+				if(minigame.getMpBets() != null){
+					minigame.setMpBets(null);
 				}
 			}
-			else if(mdata.getMinigame(minigame).getPlayers().size() < mgm.getMinPlayers() && 
-					mdata.getMinigame(minigame).getMpTimer() != null && 
-					mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() != 0
+			else if(minigame.getPlayers().size() < mgm.getMinPlayers() && 
+					minigame.getMpTimer() != null && 
+					minigame.getMpTimer().getStartWaitTimeLeft() != 0
 					&& !forced){
-				mdata.getMinigame(minigame).getMpTimer().setPlayerWaitTime(10);
-				mdata.getMinigame(minigame).getMpTimer().pauseTimer();
-				mdata.getMinigame(minigame).getMpTimer().removeTimer();
-				mdata.getMinigame(minigame).setMpTimer(null);
-				for(Player pl : mdata.getMinigame(minigame).getPlayers()){
+				minigame.getMpTimer().setPlayerWaitTime(10);
+				minigame.getMpTimer().pauseTimer();
+				minigame.getMpTimer().removeTimer();
+				minigame.setMpTimer(null);
+				for(Player pl : minigame.getPlayers()){
 					pl.sendMessage(ChatColor.BLUE + "Waiting for 1 more player.");
 				}
 			}
@@ -320,7 +320,7 @@ public class TeamDMMinigame extends MinigameType{
 	@Override
 	//@SuppressWarnings("deprecation")
 	public void endMinigame(Player player, Minigame mgm){
-		String minigame = pdata.getPlayersMinigame(player);
+		Minigame minigame = pdata.getPlayersMinigame(player);
 		
 		boolean hascompleted = false;
 		Configuration completion = null;
@@ -331,7 +331,7 @@ public class TeamDMMinigame extends MinigameType{
 			player.teleport(mgm.getEndPosition());
 		}
 
-		mdata.getMinigame(minigame).removePlayer(player);
+		minigame.removePlayer(player);
 		if(mgm.getRedTeam().contains(player)){
 			mgm.getRedTeam().remove(player);
 		}
@@ -352,15 +352,15 @@ public class TeamDMMinigame extends MinigameType{
 		
 		if(plugin.getSQL() == null){
 			completion = mdata.getConfigurationFile("completion");
-			hascompleted = completion.getStringList(minigame).contains(player.getName());
+			hascompleted = completion.getStringList(minigame.getName()).contains(player.getName());
 			
 			if(plugin.getSQL() == null){
-				if(!completion.getStringList(minigame).contains(player.getName())){
-					List<String> completionlist = completion.getStringList(minigame);
+				if(!completion.getStringList(minigame.getName()).contains(player.getName())){
+					List<String> completionlist = completion.getStringList(minigame.getName());
 					completionlist.add(player.getName());
-					completion.set(minigame, completionlist);
+					completion.set(minigame.getName(), completionlist);
 					MinigameSave completionsave = new MinigameSave("completion");
-					completionsave.getConfig().set(minigame, completionlist);
+					completionsave.getConfig().set(minigame.getName(), completionlist);
 					completionsave.saveConfig();
 				}
 			}
@@ -497,12 +497,12 @@ public class TeamDMMinigame extends MinigameType{
 	@EventHandler
 	public void playerDeath(PlayerDeathEvent event){
 		Player ply = (Player) event.getEntity();
-		if(pdata.getPlayersMinigame(ply) != null && mdata.getMinigame(pdata.getPlayersMinigame(ply)).getType().equals("teamdm") && ply.getKiller() != null && ply.getKiller() instanceof Player){
+		if(pdata.getPlayersMinigame(ply) != null && pdata.getPlayersMinigame(ply).getType().equals("teamdm") && ply.getKiller() != null && ply.getKiller() instanceof Player){
 			int pteam = 0;
-			if(mdata.getMinigame(pdata.getPlayersMinigame(ply)).getBlueTeam().contains(ply)){
+			if(pdata.getPlayersMinigame(ply).getBlueTeam().contains(ply)){
 				pteam = 1;
 			}
-			final Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
+			final Minigame mgm = pdata.getPlayersMinigame(ply);
 			
 			if(pteam == 1){
 				if(mgm.getRedTeam().size() < mgm.getBlueTeam().size() - 1){
@@ -532,9 +532,9 @@ public class TeamDMMinigame extends MinigameType{
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void playerRespawn(PlayerRespawnEvent event){
 		final Player ply = event.getPlayer();
-		if(pdata.getPlayersMinigame(ply) != null && mdata.getMinigame(pdata.getPlayersMinigame(ply)).getType().equals("teamdm")){
+		if(pdata.getPlayersMinigame(ply) != null && pdata.getPlayersMinigame(ply).getType().equals("teamdm")){
 			int team = 0;
-			Minigame mg = mdata.getMinigame(pdata.getPlayersMinigame(ply));
+			Minigame mg = pdata.getPlayersMinigame(ply);
 			if(mg.getBlueTeam().contains(ply)){
 				team = 1;
 			}
@@ -631,11 +631,11 @@ public class TeamDMMinigame extends MinigameType{
 	public void friendlyPvP(EntityDamageByEntityEvent event){
 		if(event.getEntity() instanceof Player){
 			Player ply = (Player) event.getEntity();
-			if(pdata.getPlayersMinigame(ply) != null && mdata.getMinigame(pdata.getPlayersMinigame(ply)).getType().equals("teamdm")){
+			if(pdata.getPlayersMinigame(ply) != null && pdata.getPlayersMinigame(ply).getType().equals("teamdm")){
 				if(event.getDamager() instanceof Player){
 					Player attacker = (Player) event.getDamager();
-					if(pdata.getPlayersMinigame(attacker) != null && mdata.getMinigame(pdata.getPlayersMinigame(attacker)).getType().equals("teamdm")){
-						Minigame mg = mdata.getMinigame(pdata.getPlayersMinigame(ply));
+					if(pdata.getPlayersMinigame(attacker) != null && pdata.getPlayersMinigame(attacker).getType().equals("teamdm")){
+						Minigame mg = pdata.getPlayersMinigame(ply);
 						int team = 0;
 						int ateam = 0;
 						if(mg.getBlueTeam().contains(ply)){
@@ -658,8 +658,8 @@ public class TeamDMMinigame extends MinigameType{
 					Arrow arrow = (Arrow) event.getDamager();
 					if(arrow.getShooter() instanceof Player){
 						Player attacker = (Player) arrow.getShooter();
-						if(pdata.getPlayersMinigame(attacker) != null && mdata.getMinigame(pdata.getPlayersMinigame(attacker)).getType().equals("teamdm")){
-							Minigame mg = mdata.getMinigame(pdata.getPlayersMinigame(ply));
+						if(pdata.getPlayersMinigame(attacker) != null && pdata.getPlayersMinigame(attacker).getType().equals("teamdm")){
+							Minigame mg = pdata.getPlayersMinigame(ply);
 							int team = 0;
 							int ateam = 0;
 							if(mg.getBlueTeam().contains(ply)){

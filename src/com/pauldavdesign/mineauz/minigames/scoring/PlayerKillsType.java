@@ -25,7 +25,7 @@ public class PlayerKillsType extends ScoreType{
 			Player ply = (Player) event.getEntity();
 			Minigame mgm = null;
 			if(pdata.getPlayersMinigame(ply) != null){
-				mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
+				mgm = pdata.getPlayersMinigame(ply);
 			}
 			if(mgm != null){
 				if(mgm.getBlueTeam().isEmpty() && mgm.getRedTeam().isEmpty()){
@@ -136,7 +136,7 @@ public class PlayerKillsType extends ScoreType{
 	private void playerSuicide(PlayerDeathEvent event){
 		Player ply = event.getEntity();
 		if(pdata.playerInMinigame(ply) && (ply.getKiller() == null || ply.getKiller() == ply)){
-			Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
+			Minigame mgm = pdata.getPlayersMinigame(ply);
 			if(mgm.getScoreType().equals("kills")){
 				if(mgm.getRedTeam().isEmpty() && mgm.getBlueTeam().isEmpty()){
 					pdata.takePlayerScore(ply);

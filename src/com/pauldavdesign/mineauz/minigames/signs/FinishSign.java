@@ -50,7 +50,7 @@ public class FinishSign implements MinigameSign {
 	@Override
 	public boolean signUse(Sign sign, Player player) {
 		if(plugin.pdata.playerInMinigame(player) && player.getItemInHand().getType() == Material.AIR){
-			Minigame minigame = plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(player));
+			Minigame minigame = plugin.pdata.getPlayersMinigame(player);
 
 			if(minigame.isSpectator(player)){
 				return false;

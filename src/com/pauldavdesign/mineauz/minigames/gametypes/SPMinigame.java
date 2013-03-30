@@ -33,7 +33,7 @@ public class SPMinigame extends MinigameType{
 		if(mgm.getQuitPosition() != null && mgm.isEnabled()){
 			pdata.setAllowTP(player, true);
 			pdata.storePlayerData(player, mgm.getDefaultGamemode());
-			pdata.addPlayerMinigame(player, mgm.getName());
+			pdata.addPlayerMinigame(player, mgm);
 			player.setAllowFlight(false);
 			mgm.addPlayer(player);
 			plugin.getLogger().info(player.getName() + " started " + mgm.getName());
@@ -70,7 +70,7 @@ public class SPMinigame extends MinigameType{
 	
 	@Override
 	public void endMinigame(Player player, Minigame mgm){
-		String minigame = pdata.getPlayersMinigame(player);
+		String minigame = pdata.getPlayersMinigame(player).getName();
 		
 		boolean hascompleted = false;
 		Configuration completion = null;
@@ -166,8 +166,7 @@ public class SPMinigame extends MinigameType{
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event){
 		if(pdata.playerInMinigame(event.getPlayer())){
-			String minigame = pdata.getPlayersMinigame(event.getPlayer());
-			Minigame mgm = mdata.getMinigame(minigame);
+			Minigame mgm = pdata.getPlayersMinigame(event.getPlayer());
 			if(mgm.getType().equalsIgnoreCase("sp")){
 				event.setRespawnLocation(pdata.getPlayerCheckpoint(event.getPlayer()));
 				event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Bad Luck! Returning to checkpoint.");

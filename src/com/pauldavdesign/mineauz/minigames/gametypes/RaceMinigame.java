@@ -35,10 +35,10 @@ public class RaceMinigame extends MinigameType{
 	@SuppressWarnings("deprecation")
 	@Override
 	public void quitMinigame(Player player, Minigame mgm, boolean forced) {
-		String minigame = pdata.getPlayersMinigame(player);
-		if(!mdata.getMinigame(minigame).getPlayers().isEmpty()){
-			mdata.getMinigame(minigame).removePlayer(player);
-			if(mdata.getMinigame(minigame).getPlayers().size() == 0){
+		Minigame minigame = pdata.getPlayersMinigame(player);
+		if(!minigame.getPlayers().isEmpty()){
+			minigame.removePlayer(player);
+			if(minigame.getPlayers().size() == 0){
 				if(mgm.getMpTimer() != null){
 					mgm.getMpTimer().pauseTimer();
 					mgm.getMpTimer().removeTimer();
@@ -55,18 +55,18 @@ public class RaceMinigame extends MinigameType{
 				}
 				mgm.setMpBets(null);
 			}
-			else if(mdata.getMinigame(minigame).getPlayers().size() == 1 && mdata.getMinigame(minigame).getMpTimer() != null && mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() == 0 && !forced){
-				pdata.endMinigame(mdata.getMinigame(minigame).getPlayers().get(0));
+			else if(minigame.getPlayers().size() == 1 && minigame.getMpTimer() != null && minigame.getMpTimer().getStartWaitTimeLeft() == 0 && !forced){
+				pdata.endMinigame(minigame.getPlayers().get(0));
 				
-				if(mdata.getMinigame(minigame).getMpBets() != null){
-					mdata.getMinigame(minigame).setMpBets(null);
+				if(minigame.getMpBets() != null){
+					minigame.setMpBets(null);
 				}
 			}
-			else if(mdata.getMinigame(minigame).getPlayers().size() < mgm.getMinPlayers() && mdata.getMinigame(minigame).getMpTimer() != null && mdata.getMinigame(minigame).getMpTimer().getStartWaitTimeLeft() != 0){
-				mdata.getMinigame(minigame).getMpTimer().pauseTimer();
+			else if(minigame.getPlayers().size() < mgm.getMinPlayers() && minigame.getMpTimer() != null && minigame.getMpTimer().getStartWaitTimeLeft() != 0){
+				minigame.getMpTimer().pauseTimer();
 				mgm.getMpTimer().removeTimer();
-				mdata.getMinigame(minigame).setMpTimer(null);
-				for(Player pl : mdata.getMinigame(minigame).getPlayers()){
+				minigame.setMpTimer(null);
+				for(Player pl : minigame.getPlayers()){
 					pl.sendMessage(ChatColor.BLUE + "Waiting for 1 more player.");
 				}
 			}
@@ -89,12 +89,12 @@ public class RaceMinigame extends MinigameType{
 	@SuppressWarnings("deprecation")
 	@Override
 	public void endMinigame(Player player, Minigame mgm) {
-		String minigame = pdata.getPlayersMinigame(player);
+		Minigame minigame = pdata.getPlayersMinigame(player);
 		
-		if(mdata.getMinigame(minigame).getMpBets() != null){
+		if(minigame.getMpBets() != null){
 			if(mgm.getMpBets().hasBets()){
-				player.getInventory().addItem(mdata.getMinigame(minigame).getMpBets().claimBets());
-				mdata.getMinigame(minigame).setMpBets(null);
+				player.getInventory().addItem(minigame.getMpBets().claimBets());
+				minigame.setMpBets(null);
 				player.updateInventory();
 			}
 			else{
@@ -118,20 +118,20 @@ public class RaceMinigame extends MinigameType{
 			player.teleport(mgm.getEndPosition());
 		}
 
-		mdata.getMinigame(minigame).removePlayer(player);
+		minigame.removePlayer(player);
 		
 		if(mgm.getPlayers().isEmpty()){
-			mdata.getMinigame(minigame).getMpTimer().setStartWaitTime(0);
+			minigame.getMpTimer().setStartWaitTime(0);
 			
-			mdata.getMinigame(minigame).setMpTimer(null);
-			for(Player pl : mdata.getMinigame(minigame).getPlayers()){
-				mdata.getMinigame(minigame).getPlayers().remove(pl);
+			minigame.setMpTimer(null);
+			for(Player pl : minigame.getPlayers()){
+				minigame.getPlayers().remove(pl);
 			}
 		}
 		else{
-			mdata.getMinigame(minigame).getMpTimer().setStartWaitTime(0);
+			minigame.getMpTimer().setStartWaitTime(0);
 			List<Player> players = new ArrayList<Player>();
-			players.addAll(mdata.getMinigame(minigame).getPlayers());
+			players.addAll(minigame.getPlayers());
 			for(int i = 0; i < players.size(); i++){
 				if(players.get(i) instanceof Player){
 					Player p = players.get(i);
@@ -144,9 +144,9 @@ public class RaceMinigame extends MinigameType{
 					players.remove(i);
 				}
 			}
-			mdata.getMinigame(minigame).setMpTimer(null);
+			minigame.setMpTimer(null);
 			for(Player pl : players){
-				mdata.getMinigame(minigame).getPlayers().remove(pl);
+				minigame.getPlayers().remove(pl);
 			}
 		}
 
@@ -157,15 +157,15 @@ public class RaceMinigame extends MinigameType{
 		
 		if(plugin.getSQL() == null){
 			completion = mdata.getConfigurationFile("completion");
-			hascompleted = completion.getStringList(minigame).contains(player.getName());
+			hascompleted = completion.getStringList(minigame.getName()).contains(player.getName());
 			
 			if(plugin.getSQL() == null){
-				if(!completion.getStringList(minigame).contains(player.getName())){
-					List<String> completionlist = completion.getStringList(minigame);
+				if(!completion.getStringList(minigame.getName()).contains(player.getName())){
+					List<String> completionlist = completion.getStringList(minigame.getName());
 					completionlist.add(player.getName());
-					completion.set(minigame, completionlist);
+					completion.set(minigame.getName(), completionlist);
 					MinigameSave completionsave = new MinigameSave("completion");
-					completionsave.getConfig().set(minigame, completionlist);
+					completionsave.getConfig().set(minigame.getName(), completionlist);
 					completionsave.saveConfig();
 				}
 			}
@@ -173,7 +173,7 @@ public class RaceMinigame extends MinigameType{
 			issuePlayerRewards(player, mgm, hascompleted);
 		}
 		else{
-			new SQLCompletionSaver(minigame, player, this);
+			new SQLCompletionSaver(minigame.getName(), player, this);
 		}
 	}
 	/*----------------*/
@@ -183,9 +183,8 @@ public class RaceMinigame extends MinigameType{
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event){
 		if(pdata.playerInMinigame(event.getPlayer())){
-			String minigame = pdata.getPlayersMinigame(event.getPlayer());
-			Minigame mgm = mdata.getMinigame(minigame);
-			if(mdata.getMinigame(minigame).hasPlayers()){
+			Minigame mgm = pdata.getPlayersMinigame(event.getPlayer());
+			if(mgm.hasPlayers()){
 				String mgtype = mgm.getType();
 				if(mgtype.equals("race")){
 					event.setRespawnLocation(pdata.getPlayerCheckpoint(event.getPlayer()));

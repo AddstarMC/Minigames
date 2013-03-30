@@ -818,7 +818,7 @@ public class RecorderData implements Listener{
 		if(event.getAttacker() != null){
 			if(event.getAttacker() instanceof Player){
 				Player ply = (Player) event.getAttacker();
-				if(plugin.pdata.playerInMinigame(ply) && plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(ply)).equals(minigame)){
+				if(plugin.pdata.playerInMinigame(ply) && plugin.pdata.getPlayersMinigame(ply).equals(minigame)){
 					if(!hasEntity(event.getVehicle())){
 						addEntity(event.getVehicle(), ply, false);
 					}
@@ -848,7 +848,7 @@ public class RecorderData implements Listener{
 					}
 				}
 				if(ply != null){
-					if(plugin.pdata.playerInMinigame(ply) && plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(ply)).equals(minigame)){
+					if(plugin.pdata.playerInMinigame(ply) && plugin.pdata.getPlayersMinigame(ply).equals(minigame)){
 						addEntity(animal, ply, false);
 					}
 				}
@@ -874,7 +874,7 @@ public class RecorderData implements Listener{
 	@EventHandler
 	private void paintingPlace(HangingPlaceEvent event){
 		Player ply = event.getPlayer();
-		if(plugin.pdata.playerInMinigame(ply) && plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(ply)).equals(minigame)){
+		if(plugin.pdata.playerInMinigame(ply) && plugin.pdata.getPlayersMinigame(ply).equals(minigame)){
 			if(((whitelistMode && getWBBlocks().contains(Material.PAINTING)) || 
 					(!whitelistMode && !getWBBlocks().contains(Material.PAINTING))) ||
 					((whitelistMode && getWBBlocks().contains(Material.ITEM_FRAME)) || 
@@ -899,7 +899,7 @@ public class RecorderData implements Listener{
 			}
 		}
 		if(ply != null){
-			if(plugin.pdata.playerInMinigame(ply) && plugin.mdata.getMinigame(plugin.pdata.getPlayersMinigame(ply)).equals(minigame)){
+			if(plugin.pdata.playerInMinigame(ply) && plugin.pdata.getPlayersMinigame(ply).equals(minigame)){
 				event.setCancelled(true);
 			}
 		}

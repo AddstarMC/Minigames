@@ -28,7 +28,7 @@ public class CTFType extends ScoreType{
 		Player ply = event.getPlayer();
 		if(pdata.playerInMinigame(ply) && !ply.isDead()){
 			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && (event.getClickedBlock().getType() == Material.SIGN_POST || event.getClickedBlock().getType() == Material.WALL_SIGN) && ply.getItemInHand().getType() == Material.AIR){
-				Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
+				Minigame mgm = pdata.getPlayersMinigame(ply);
 				Sign sign = (Sign) event.getClickedBlock().getState();
 				if(mgm.getScoreType().equals("ctf")){
 					if(!mgm.getBlueTeam().isEmpty() || !mgm.getRedTeam().isEmpty() || !mgm.getType().equals("teamdm")){
@@ -190,7 +190,7 @@ public class CTFType extends ScoreType{
 	private void dropFlag(PlayerDeathEvent event){
 		Player ply = (Player) event.getEntity();
 		if(pdata.playerInMinigame(ply)){
-			Minigame mgm = mdata.getMinigame(pdata.getPlayersMinigame(ply));
+			Minigame mgm = pdata.getPlayersMinigame(ply);
 			if(mgm.isFlagCarrier(ply)){
 				CTFFlag flag = mgm.getFlagCarrier(ply);
 				Location loc = flag.spawnFlag(ply.getLocation());

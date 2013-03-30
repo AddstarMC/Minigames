@@ -31,7 +31,7 @@ import com.pauldavdesign.mineauz.minigames.events.RevertCheckpointEvent;
 import com.pauldavdesign.mineauz.minigames.events.SpectateMinigameEvent;
 
 public class PlayerData {
-	private Map<String, String> minigamePlayers = new HashMap<String, String>();
+	private Map<String, Minigame> minigamePlayers = new HashMap<String, Minigame>();
 	private Map<String, Location> playerCheckpoints = new HashMap<String, Location>();
 	private Map<String, StoredPlayerCheckpoints> storedPlayerCheckpoints = new HashMap<String, StoredPlayerCheckpoints>();
 	private Map<String, ItemStack[]> itemStore = new HashMap<String, ItemStack[]>();
@@ -69,7 +69,7 @@ public class PlayerData {
 		if(!event.isCancelled()){
 			if(mdata.getMinigameTypes().contains(gametype)){
 				if(mdata.minigameType(gametype).joinMinigame(player, minigame)){
-					addPlayerMinigame(player, minigame.getName());
+					addPlayerMinigame(player, minigame);
 					setAllowTP(player, false);
 					setAllowGMChange(player, false);
 					
@@ -104,7 +104,7 @@ public class PlayerData {
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
 		if(!event.isCancelled()){
-			addPlayerMinigame(player, minigame.getName());
+			addPlayerMinigame(player, minigame);
 			setAllowTP(player, true);
 			setAllowGMChange(player, true);
 			
@@ -326,8 +326,7 @@ public class PlayerData {
 	}
 	
 	public void quitMinigame(Player player, boolean forced){
-		String minigame = getPlayersMinigame(player);
-		final Minigame mgm = mdata.getMinigame(minigame);
+		Minigame mgm = getPlayersMinigame(player);
 
 		QuitMinigameEvent event = new QuitMinigameEvent(player, mgm, forced);
 		Bukkit.getServer().getPluginManager().callEvent(event);
@@ -343,10 +342,10 @@ public class PlayerData {
 				player.closeInventory();
 				
 				if(!forced){
-					mdata.sendMinigameMessage(mgm, player.getName() + " has left " + minigame, "error", player);
+					mdata.sendMinigameMessage(mgm, player.getName() + " has left " + mgm, "error", player);
 				}
 				else{
-					mdata.sendMinigameMessage(mgm, player.getName() + " was removed from " + minigame, "error", player);
+					mdata.sendMinigameMessage(mgm, player.getName() + " was removed from " + mgm, "error", player);
 				}
 	
 				mgm.removePlayersLoadout(player);
@@ -440,15 +439,14 @@ public class PlayerData {
 				removeAllowTP(player);
 				removeAllowGMChange(player);
 				
-				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You quit spectator mode in " + minigame);
-				mdata.sendMinigameMessage(mgm, player.getName() + " is no longer spectating " + minigame, "error", player);
+				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You quit spectator mode in " + mgm);
+				mdata.sendMinigameMessage(mgm, player.getName() + " is no longer spectating " + mgm, "error", player);
 			}
 		}
 	}
 	
 	public void endMinigame(final Player player){
-		String minigame = getPlayersMinigame(player);
-		final Minigame mgm = mdata.getMinigame(minigame);
+		Minigame mgm = getPlayersMinigame(player);
 		
 		EndMinigameEvent event = new EndMinigameEvent(player, mgm);
 		Bukkit.getServer().getPluginManager().callEvent(event);
@@ -630,7 +628,7 @@ public class PlayerData {
 		return players;
 	}
 	
-	public void addPlayerMinigame(Player player, String minigame){
+	public void addPlayerMinigame(Player player, Minigame minigame){
 		minigamePlayers.put(player.getName(), minigame);
 	}
 	
@@ -640,7 +638,7 @@ public class PlayerData {
 		}
 	}
 	
-	public String getPlayersMinigame(Player player){
+	public Minigame getPlayersMinigame(Player player){
 		return minigamePlayers.get(player.getName());
 	}
 	

@@ -108,12 +108,12 @@ public class DMMinigame extends MinigameType{
 	@SuppressWarnings("deprecation")
 	@Override
 	public void endMinigame(Player player, Minigame mgm) {
-		String minigame = pdata.getPlayersMinigame(player);
+		Minigame minigame = pdata.getPlayersMinigame(player);
 		
-		if(mdata.getMinigame(minigame).getMpBets() != null){
+		if(minigame.getMpBets() != null){
 			if(mgm.getMpBets().hasBets()){
-				player.getInventory().addItem(mdata.getMinigame(minigame).getMpBets().claimBets());
-				mdata.getMinigame(minigame).setMpBets(null);
+				player.getInventory().addItem(minigame.getMpBets().claimBets());
+				minigame.setMpBets(null);
 				player.updateInventory();
 			}
 			else{
@@ -137,20 +137,20 @@ public class DMMinigame extends MinigameType{
 			player.teleport(mgm.getEndPosition());
 		}
 
-		mdata.getMinigame(minigame).removePlayer(player);
+		minigame.removePlayer(player);
 		
 		if(mgm.getPlayers().isEmpty()){
-			mdata.getMinigame(minigame).getMpTimer().setStartWaitTime(0);
+			minigame.getMpTimer().setStartWaitTime(0);
 			
-			mdata.getMinigame(minigame).setMpTimer(null);
-			for(Player pl : mdata.getMinigame(minigame).getPlayers()){
-				mdata.getMinigame(minigame).getPlayers().remove(pl);
+			minigame.setMpTimer(null);
+			for(Player pl : minigame.getPlayers()){
+				minigame.getPlayers().remove(pl);
 			}
 		}
 		else{
-			mdata.getMinigame(minigame).getMpTimer().setStartWaitTime(0);
+			minigame.getMpTimer().setStartWaitTime(0);
 			List<Player> players = new ArrayList<Player>();
-			players.addAll(mdata.getMinigame(minigame).getPlayers());
+			players.addAll(minigame.getPlayers());
 			for(int i = 0; i < players.size(); i++){
 				if(players.get(i) instanceof Player){
 					Player p = players.get(i);
@@ -163,9 +163,9 @@ public class DMMinigame extends MinigameType{
 					players.remove(i);
 				}
 			}
-			mdata.getMinigame(minigame).setMpTimer(null);
+			minigame.setMpTimer(null);
 			for(Player pl : players){
-				mdata.getMinigame(minigame).getPlayers().remove(pl);
+				minigame.getPlayers().remove(pl);
 			}
 		}
 
@@ -176,15 +176,15 @@ public class DMMinigame extends MinigameType{
 		
 		if(plugin.getSQL() == null){
 			completion = mdata.getConfigurationFile("completion");
-			hascompleted = completion.getStringList(minigame).contains(player.getName());
+			hascompleted = completion.getStringList(minigame.getName()).contains(player.getName());
 			
 			if(plugin.getSQL() == null){
-				if(!completion.getStringList(minigame).contains(player.getName())){
-					List<String> completionlist = completion.getStringList(minigame);
+				if(!completion.getStringList(minigame.getName()).contains(player.getName())){
+					List<String> completionlist = completion.getStringList(minigame.getName());
 					completionlist.add(player.getName());
-					completion.set(minigame, completionlist);
+					completion.set(minigame.getName(), completionlist);
 					MinigameSave completionsave = new MinigameSave("completion");
-					completionsave.getConfig().set(minigame, completionlist);
+					completionsave.getConfig().set(minigame.getName(), completionlist);
 					completionsave.saveConfig();
 				}
 			}
@@ -192,7 +192,7 @@ public class DMMinigame extends MinigameType{
 			issuePlayerRewards(player, mgm, hascompleted);
 		}
 		else{
-			new SQLCompletionSaver(minigame, player, this);
+			new SQLCompletionSaver(minigame.getName(), player, this);
 		}
 	}
 	
@@ -203,8 +203,8 @@ public class DMMinigame extends MinigameType{
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void playerRespawn(PlayerRespawnEvent event){
 		final Player ply = event.getPlayer();
-		if(pdata.getPlayersMinigame(ply) != null && mdata.getMinigame(pdata.getPlayersMinigame(ply)).getType().equals("dm")){
-			Minigame mg = mdata.getMinigame(pdata.getPlayersMinigame(ply));
+		if(pdata.getPlayersMinigame(ply) != null && pdata.getPlayersMinigame(ply).getType().equals("dm")){
+			Minigame mg = pdata.getPlayersMinigame(ply);
 			List<Location> starts = new ArrayList<Location>();
 			
 			starts.addAll(mg.getStartLocations());
