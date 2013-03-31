@@ -411,6 +411,15 @@ public class PlayerData {
 				}
 				
 				player.closeInventory();
+				final Player fplayer = player;
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					
+					@Override
+					public void run() {
+						fplayer.setFireTicks(0);
+						fplayer.setNoDamageTicks(60);
+					}
+				});
 				
 				player.getInventory().clear();
 				final Player ply = player;
