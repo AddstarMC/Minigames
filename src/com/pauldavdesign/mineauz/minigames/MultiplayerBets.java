@@ -38,7 +38,7 @@ public class MultiplayerBets {
 			return false;
 		}
 		
-		if(betValue(item.getType()) < highestBet()){
+		if(!bet.isEmpty() && betValue(item.getType()) != highestBet()){
 			return false;
 		}
 		return true;
@@ -49,7 +49,7 @@ public class MultiplayerBets {
 			return false;
 		}
 		
-		if(money < greatestBet){
+		if(greatestBet != 0 && money != greatestBet){
 			return false;
 		}
 		return true;

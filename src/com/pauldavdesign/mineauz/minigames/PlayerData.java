@@ -167,16 +167,16 @@ public class PlayerData {
 					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You can not bet nothing!");
 				}
 				else if(money != 0 && !pbet.canBet(player, money)){
-					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You haven't placed a high enough bet!");
-					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You must bet $" + minigame.getMpBets().getHighestMoneyBet() + " or better.");
+					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You haven't placed the correct bet amount for this round!");
+					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You must bet $" + minigame.getMpBets().getHighestMoneyBet() + ".");
 				}
 				else if(money != 0 && plugin.getEconomy().getBalance(player.getName()) < money){
 					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You haven't got enough money!");
 					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You must have $" + minigame.getMpBets().getHighestMoneyBet() + ".");
 				}
 				else{
-					player.sendMessage(ChatColor.RED + "You haven't placed a high enough bet.");
-					player.sendMessage(ChatColor.RED + "You must bet a " + minigame.getMpBets().highestBetName() + " or better.");
+					player.sendMessage(ChatColor.RED + "You haven't bet the correct item for this round!");
+					player.sendMessage(ChatColor.RED + "You must bet a " + minigame.getMpBets().highestBetName() + ".");
 				}
 			}
 			else if(minigame != null && minigame.getMpTimer() != null && minigame.getMpTimer().getPlayerWaitTimeLeft() == 0){
