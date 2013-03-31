@@ -179,7 +179,7 @@ public class PlayerData {
 					player.sendMessage(ChatColor.RED + "You must bet a " + minigame.getMpBets().highestBetName() + " or better.");
 				}
 			}
-			else if(minigame.getMpTimer() != null && minigame.getMpTimer().getPlayerWaitTimeLeft() == 0){
+			else if(minigame != null && minigame.getMpTimer() != null && minigame.getMpTimer().getPlayerWaitTimeLeft() == 0){
 				player.sendMessage(ChatColor.RED + "The game has already started. Please try again later.");
 			}
 		}

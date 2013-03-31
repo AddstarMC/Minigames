@@ -55,31 +55,34 @@ public class BetSign implements MinigameSign{
 	@Override
 	public boolean signUse(Sign sign, Player player) {
 		Minigame mgm = plugin.mdata.getMinigame(sign.getLine(2));
-		if(mgm.isSpectator(player)){
-			return false;
-		}
-		if(mgm != null && mgm.isEnabled() && (!mgm.getUsePermissions() || player.hasPermission("minigame.join." + mgm.getName().toLowerCase())) && player.getItemInHand().getType() != Material.AIR){
-			if(!sign.getLine(3).startsWith("$")){
-				plugin.pdata.joinWithBet(player, plugin.mdata.getMinigame(sign.getLine(2)), 0d);
-			}
-			else{
-				if(plugin.hasEconomy()){
-					Double bet = Double.parseDouble(sign.getLine(3).replace("$", ""));
-					plugin.pdata.joinWithBet(player, plugin.mdata.getMinigame(sign.getLine(2)), bet);
-					return true;
+		if(mgm != null && player.getItemInHand().getType() != Material.AIR){
+			if(mgm.isEnabled() && (!mgm.getUsePermissions() || player.hasPermission("minigame.join." + mgm.getName().toLowerCase()))){
+				if(mgm.isSpectator(player)){
+					return false;
+				}
+				
+				if(!sign.getLine(3).startsWith("$")){
+					plugin.pdata.joinWithBet(player, plugin.mdata.getMinigame(sign.getLine(2)), 0d);
 				}
 				else{
-					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "This server does not have Vault! Money bets are not enabled.");
+					if(plugin.hasEconomy()){
+						Double bet = Double.parseDouble(sign.getLine(3).replace("$", ""));
+						plugin.pdata.joinWithBet(player, plugin.mdata.getMinigame(sign.getLine(2)), bet);
+						return true;
+					}
+					else{
+						player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "This server does not have Vault! Money bets are not enabled.");
+					}
 				}
 			}
+			else if(!mgm.isEnabled()){
+				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "This minigame is currently not enabled.");
+			}
+			else if(mgm.getUsePermissions()){
+				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You do not have the permission \"minigame.join." + mgm.getName().toLowerCase() + "\"");
+			}
 		}
-		else if(!mgm.isEnabled()){
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "This minigame is currently not enabled.");
-		}
-		else if(mgm.getUsePermissions()){
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You do not have the permission \"minigame.join." + mgm.getName().toLowerCase() + "\"");
-		}
-		else if(player.getItemInHand().getType() == Material.AIR){
+		else if(mgm != null && player.getItemInHand().getType() == Material.AIR){
 			player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You cannot bet nothing!");
 		}
 		else{

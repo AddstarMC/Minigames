@@ -40,7 +40,7 @@ public class PlayerKillsType extends ScoreType{
 						return;
 					}
 					
-					if(!mgm.getName().equals(pdata.getPlayersMinigame(attacker))){
+					if(!mgm.equals(pdata.getPlayersMinigame(attacker))){
 						return;
 					}
 
@@ -74,7 +74,7 @@ public class PlayerKillsType extends ScoreType{
 						return;
 					}
 					
-					if(!mgm.getName().equals(pdata.getPlayersMinigame(attacker))){
+					if(!mgm.equals(pdata.getPlayersMinigame(attacker))){
 						return;
 					}
 					

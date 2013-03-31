@@ -148,7 +148,7 @@ public class MinigameUtils {
 			msg = weeks + " weeks";
 		}
 		if(days != 0){
-			if(msg != ""){
+			if(!msg.equals("")){
 				if(seconds != 0 || hours != 0 || minutes != 0){
 					msg += ", ";
 				}
@@ -159,7 +159,7 @@ public class MinigameUtils {
 			msg += days + " days";
 		}
 		if(hours != 0){
-			if(msg != ""){
+			if(!msg.equals("")){
 				if(seconds != 0 || minutes != 0){
 					msg += ", ";
 				}
@@ -170,7 +170,7 @@ public class MinigameUtils {
 			msg += hours + " hours";
 		}
 		if(minutes != 0){
-			if(msg != ""){
+			if(!msg.equals("")){
 				if(seconds != 0){
 					msg += ", ";
 				}
@@ -181,7 +181,7 @@ public class MinigameUtils {
 			msg += minutes + " minutes";
 		}
 		if(seconds != 0){
-			if(msg != ""){
+			if(!msg.equals("")){
 				msg += " and ";
 			}
 			msg += seconds + " seconds";

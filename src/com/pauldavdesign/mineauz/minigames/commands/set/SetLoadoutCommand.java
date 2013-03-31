@@ -137,15 +137,11 @@ public class SetLoadoutCommand implements ICommand {
 						
 						if(item.getType() != Material.AIR){
 							if(loadout.equals("default")){
-								if(item != null){
-									minigame.getDefaultPlayerLoadout().addItemToLoadout(item);
-								}
+								minigame.getDefaultPlayerLoadout().addItemToLoadout(item);
 							}
 							else{
 								if(minigame.hasLoadout(loadout)){
-									if(item != null){
-										minigame.getLoadout(loadout).addItemToLoadout(item);
-									}
+									minigame.getLoadout(loadout).addItemToLoadout(item);
 								}
 								else{
 									sender.sendMessage(ChatColor.RED + "There is no loadout by the name of \"" + loadout + "\" in " + minigame);
@@ -177,7 +173,7 @@ public class SetLoadoutCommand implements ICommand {
 					}
 					
 					ItemStack item = MinigameUtils.stringToItemStack(args[1], quantity);
-					if(item.getType() != Material.AIR && item != null){
+					if(item.getType() != Material.AIR){
 						if(loadout.equals("default")){
 							minigame.getDefaultPlayerLoadout().addItemToLoadout(item);
 							sender.sendMessage(ChatColor.GRAY + "Added " + quantity + " of item " + MinigameUtils.getItemStackName(item) + " to " + minigame);

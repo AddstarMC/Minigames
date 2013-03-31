@@ -562,7 +562,7 @@ public class RecorderData implements Listener{
 	@EventHandler(priority = EventPriority.HIGH)
 	private void blockBreak(BlockBreakEvent event){
 		Player ply = event.getPlayer();
-		if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).equals(minigame.getName())){
+		if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).equals(minigame)){
 			if(((whitelistMode && getWBBlocks().contains(event.getBlock().getType())) || 
 					(!whitelistMode && !getWBBlocks().contains(event.getBlock().getType()))) && 
 					minigame.canBlockBreak()){
@@ -599,7 +599,7 @@ public class RecorderData implements Listener{
 	@EventHandler(priority = EventPriority.HIGH)
 	private void blockPlace(BlockPlaceEvent event){
 		Player ply = event.getPlayer();
-		if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).equals(minigame.getName()) && !event.isCancelled()){
+		if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).equals(minigame) && !event.isCancelled()){
 			if(((whitelistMode && getWBBlocks().contains(event.getBlock().getType())) || 
 					(!whitelistMode && !getWBBlocks().contains(event.getBlock().getType()))) &&
 					 minigame.canBlockPlace()){
@@ -614,7 +614,7 @@ public class RecorderData implements Listener{
 	@EventHandler
 	private void takeItem(PlayerInteractEvent event){
 		Player ply = (Player) event.getPlayer();
-		if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).equals(minigame.getName()) && event.getAction() == Action.RIGHT_CLICK_BLOCK
+		if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).equals(minigame) && event.getAction() == Action.RIGHT_CLICK_BLOCK
 				&& !minigame.isSpectator(ply)){
 			if(event.getClickedBlock().getType() == Material.CHEST){
 				Chest chest = (Chest) event.getClickedBlock().getState();
@@ -706,7 +706,7 @@ public class RecorderData implements Listener{
 	
 	@EventHandler
 	private void bucketFill(PlayerBucketFillEvent event){
-		if(pdata.playerInMinigame(event.getPlayer()) && pdata.getPlayersMinigame(event.getPlayer()).equals(minigame.getName())){
+		if(pdata.playerInMinigame(event.getPlayer()) && pdata.getPlayersMinigame(event.getPlayer()).equals(minigame)){
 			if(((whitelistMode && getWBBlocks().contains(event.getBlockClicked().getType())) || 
 					(!whitelistMode && !getWBBlocks().contains(event.getBlockClicked().getType()))) && 
 					minigame.canBlockBreak()){
@@ -720,7 +720,7 @@ public class RecorderData implements Listener{
 	
 	@EventHandler
 	private void bucketEmpty(PlayerBucketEmptyEvent event){
-		if(pdata.playerInMinigame(event.getPlayer()) && pdata.getPlayersMinigame(event.getPlayer()).equals(minigame.getName())){
+		if(pdata.playerInMinigame(event.getPlayer()) && pdata.getPlayersMinigame(event.getPlayer()).equals(minigame)){
 			if(((whitelistMode && getWBBlocks().contains(event.getBlockClicked().getType())) || 
 					(!whitelistMode && !getWBBlocks().contains(event.getBlockClicked().getType()))) && 
 					minigame.canBlockPlace()){
@@ -784,7 +784,7 @@ public class RecorderData implements Listener{
 	@EventHandler
 	public void igniteblock(BlockIgniteEvent event){
 		if(event.getPlayer() != null && pdata.playerInMinigame(event.getPlayer()) && 
-				pdata.getPlayersMinigame(event.getPlayer()).equals(minigame.getName()) && 
+				pdata.getPlayersMinigame(event.getPlayer()).equals(minigame) && 
 				(event.getCause() == IgniteCause.FIREBALL || event.getCause() == IgniteCause.FLINT_AND_STEEL)){
 			if(((whitelistMode && getWBBlocks().contains(Material.FIRE)) || 
 					(!whitelistMode && !getWBBlocks().contains(Material.FIRE))) && 

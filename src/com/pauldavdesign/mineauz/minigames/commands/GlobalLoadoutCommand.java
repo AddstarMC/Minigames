@@ -117,9 +117,7 @@ public class GlobalLoadoutCommand implements ICommand {
 						
 						if(item.getType() != Material.AIR){
 							if(mdata.hasLoadout(loadout)){
-								if(item != null){
-									mdata.getLoadout(loadout).addItemToLoadout(item);
-								}
+								mdata.getLoadout(loadout).addItemToLoadout(item);
 							}
 							else{
 								sender.sendMessage(ChatColor.RED + "There is no loadout by the name of \"" + loadout + "\" in global loadouts!");
@@ -150,7 +148,7 @@ public class GlobalLoadoutCommand implements ICommand {
 					}
 					
 					ItemStack item = MinigameUtils.stringToItemStack(args[1], quantity);
-					if(item.getType() != Material.AIR && item != null){
+					if(item.getType() != Material.AIR){
 						if(mdata.hasLoadout(loadout)){
 							mdata.getLoadout(loadout).addItemToLoadout(item);
 							sender.sendMessage(ChatColor.GRAY + "Added " + quantity + " of item " + MinigameUtils.getItemStackName(item) + " to the " + loadout + " loadout in global loadouts");

@@ -147,10 +147,13 @@ public class RewardSign implements MinigameSign {
 						}
 					}
 				}
-				player.getInventory().addItem(item);
-				player.sendMessage("You have been rewarded with " + item.getAmount() + " " + MinigameUtils.getItemStackName(item));
-				player.updateInventory();
-				return true;
+				
+				if(item != null){
+					player.getInventory().addItem(item);
+					player.sendMessage("You have been rewarded with " + item.getAmount() + " " + MinigameUtils.getItemStackName(item));
+					player.updateInventory();
+					return true;
+				}
 			}
 		}
 		else{

@@ -63,14 +63,7 @@ public class RestoreInvCommand implements ICommand{
 				players.add(pl);
 			}
 			
-			Player reqpl = null;
-			
-			for(Player pl : players){
-				if(pl.getName().toLowerCase().contains(args[0].toLowerCase())){
-					reqpl = pl;
-					break;
-				}
-			}
+			Player reqpl = plugin.getServer().matchPlayer(args[0]).get(0);
 			
 			if(!plugin.pdata.playerInMinigame(reqpl) && set.contains(reqpl.getName())){
 				plugin.pdata.restorePlayerData(reqpl);
