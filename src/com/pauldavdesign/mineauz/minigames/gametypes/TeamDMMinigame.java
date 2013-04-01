@@ -21,7 +21,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.potion.PotionEffect;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
@@ -47,19 +46,12 @@ public class TeamDMMinigame extends MinigameType{
 			int redSize = mgm.getRedTeam().size();
 			int blueSize = mgm.getBlueTeam().size();
 			
-			for(PotionEffect potion : player.getActivePotionEffects()){
-				player.removePotionEffect(potion.getType());
-			}
-			player.setAllowFlight(false);
-			plugin.getLogger().info(player.getName() + " started " + mgm.getName());
-			
 			Location lobby = mgm.getLobbyPosition();
 			
 			String gametype = mgm.getType();
 			
 			if(!mgm.getPlayers().isEmpty() && mgm.getPlayers().size() < mgm.getMaxPlayers()){
 				if(mgm.canLateJoin() || mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
-					mgm.addPlayer(player);
 					int team;
 					
 					if(redSize <= blueSize){
@@ -101,8 +93,6 @@ public class TeamDMMinigame extends MinigameType{
 						}, 20L);
 					}
 					
-					pdata.storePlayerData(player, mgm.getDefaultGamemode());
-					
 					if(mgm.getMpTimer() == null || mgm.getMpTimer().getStartWaitTimeLeft() != 0){
 						player.teleport(lobby);
 					}
@@ -137,8 +127,7 @@ public class TeamDMMinigame extends MinigameType{
 							}
 						}, 100);
 					}
-					pdata.addPlayerMinigame(player, mgm);
-					player.sendMessage(ChatColor.GREEN + "You have started a " + gametype + " minigame, type /minigame quit to exit.");
+					player.sendMessage(ChatColor.GREEN + "You have started a team deathmatch minigame, type /minigame quit to exit.");
 				
 					if(mgm.getMpTimer() == null && mgm.getPlayers().size() >= mgm.getMinPlayers()){
 						mgm.setMpTimer(new MultiplayerTimer(mgm.getName()));
@@ -175,7 +164,6 @@ public class TeamDMMinigame extends MinigameType{
 			else if(mgm.getPlayers().isEmpty()){
 				EntityPlayer changeingName = ((CraftPlayer) player).getHandle();
 				String oldName = player.getName();
-				mgm.addPlayer(player);
 				
 				if(redSize <= blueSize){
 					mgm.addRedTeamPlayer(player);
@@ -198,10 +186,7 @@ public class TeamDMMinigame extends MinigameType{
 				
 				changeingName.name = oldName;
 				
-				pdata.storePlayerData(player, mgm.getDefaultGamemode());
-				
 				player.teleport(lobby);
-				pdata.addPlayerMinigame(player, mgm);
 				player.sendMessage(ChatColor.GREEN + "You have started a " + gametype + " minigame, type /minigame quit to exit.");
 				
 				int neededPlayers = mgm.getMinPlayers() - 1;
@@ -232,75 +217,70 @@ public class TeamDMMinigame extends MinigameType{
 	
 	@Override
 	public void quitMinigame(Player player, Minigame mgm, boolean forced){
-
-		Minigame minigame = pdata.getPlayersMinigame(player);
-		if(!minigame.getPlayers().isEmpty()){
-			minigame.removePlayer(player);
-			if(mgm.getRedTeam().contains(player)){
-				mgm.getRedTeam().remove(player);
-			}
-			else{
-				mgm.getBlueTeam().remove(player);
+		if(mgm.getRedTeam().contains(player)){
+			mgm.getRedTeam().remove(player);
+		}
+		else{
+			mgm.getBlueTeam().remove(player);
+		}
+		
+		if(mgm.getPlayers().size() == 0 && !forced){
+			if(mgm.getMpTimer() != null){
+				mgm.getMpTimer().pauseTimer();
+				mgm.getMpTimer().removeTimer();
+				mgm.setMpTimer(null);
 			}
 			
-			if(minigame.getPlayers().size() == 0 && !forced){
-				if(minigame.getMpTimer() != null){
-					mgm.getMpTimer().pauseTimer();
-					mgm.getMpTimer().removeTimer();
-					minigame.setMpTimer(null);
-				}
-				
-				if(minigame.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
-					if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
-						plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
-					}
-				}
-				minigame.setMpBets(null);
-			}
-			else if(minigame.getPlayers().size() >= 1 && 
-					(minigame.getRedTeam().size() == 0 ||
-					minigame.getBlueTeam().size() == 0) &&
-					minigame.getMpTimer() != null && 
-					minigame.getMpTimer().getStartWaitTimeLeft() == 0
-					&& !forced){
-				
-				if(minigame.getRedTeam().size() == 0){
-					pdata.endTeamMinigame(1, mgm);
-				}
-				else{
-					pdata.endTeamMinigame(0, mgm);
-				}
-				
-				if(minigame.getMpBets() != null){
-					minigame.setMpBets(null);
+			if(mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
+				if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
+					plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
 				}
 			}
-			else if(minigame.getPlayers().size() < mgm.getMinPlayers() && 
-					minigame.getMpTimer() != null && 
-					minigame.getMpTimer().getStartWaitTimeLeft() != 0
-					&& !forced){
-				minigame.getMpTimer().setPlayerWaitTime(10);
-				minigame.getMpTimer().pauseTimer();
-				minigame.getMpTimer().removeTimer();
-				minigame.setMpTimer(null);
-				for(Player pl : minigame.getPlayers()){
-					pl.sendMessage(ChatColor.BLUE + "Waiting for 1 more player.");
-				}
+			mgm.setMpBets(null);
+		}
+		else if(mgm.getPlayers().size() >= 1 && 
+				(mgm.getRedTeam().size() == 0 ||
+				mgm.getBlueTeam().size() == 0) &&
+				mgm.getMpTimer() != null && 
+				mgm.getMpTimer().getStartWaitTimeLeft() == 0
+				&& !forced){
+			
+			if(mgm.getRedTeam().size() == 0){
+				pdata.endTeamMinigame(1, mgm);
 			}
-			else if(mgm.getBlueTeam().size() > mgm.getRedTeam().size() + 1 || mgm.getRedTeam().size() > mgm.getBlueTeam().size() + 1){
-				if(mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() != 0){
-					mgm.getMpTimer().pauseTimer("Teams unbalanced!");
-				}
-				else if(mgm.getMpTimer() != null){
-					for(Player pl : mgm.getPlayers()){
-						pl.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + 
-								"Teams unbalanced! Teams will rebalance when a player dies on the unbalanced team.");
-					}
+			else{
+				pdata.endTeamMinigame(0, mgm);
+			}
+			
+			if(mgm.getMpBets() != null){
+				mgm.setMpBets(null);
+			}
+		}
+		else if(mgm.getPlayers().size() < mgm.getMinPlayers() && 
+				mgm.getMpTimer() != null && 
+				mgm.getMpTimer().getStartWaitTimeLeft() != 0
+				&& !forced){
+			mgm.getMpTimer().setPlayerWaitTime(10);
+			mgm.getMpTimer().pauseTimer();
+			mgm.getMpTimer().removeTimer();
+			mgm.setMpTimer(null);
+			for(Player pl : mgm.getPlayers()){
+				pl.sendMessage(ChatColor.BLUE + "Waiting for 1 more player.");
+			}
+		}
+		else if(mgm.getBlueTeam().size() > mgm.getRedTeam().size() + 1 || mgm.getRedTeam().size() > mgm.getBlueTeam().size() + 1){
+			if(mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() != 0){
+				mgm.getMpTimer().pauseTimer("Teams unbalanced!");
+			}
+			else if(mgm.getMpTimer() != null){
+				for(Player pl : mgm.getPlayers()){
+					pl.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + 
+							"Teams unbalanced! Teams will rebalance when a player dies on the unbalanced team.");
 				}
 			}
 		}
 		
-		callGeneralQuit(player);
+		callGeneralQuit(player, mgm);
 		
 		EntityPlayer changeingName = ((CraftPlayer) player).getHandle();
 		for(Player ply : plugin.getServer().getOnlinePlayers()){
@@ -320,18 +300,15 @@ public class TeamDMMinigame extends MinigameType{
 	@Override
 	//@SuppressWarnings("deprecation")
 	public void endMinigame(Player player, Minigame mgm){
-		Minigame minigame = pdata.getPlayersMinigame(player);
-		
 		boolean hascompleted = false;
 		Configuration completion = null;
 		
-		player.sendMessage(ChatColor.GREEN + "You've finished the " + minigame + " minigame. Congratulations!");
+		player.sendMessage(ChatColor.GREEN + "You've finished the " + mgm + " minigame. Congratulations!");
 		
 		if(mgm.getEndPosition() != null){
 			player.teleport(mgm.getEndPosition());
 		}
-
-		minigame.removePlayer(player);
+		
 		if(mgm.getRedTeam().contains(player)){
 			mgm.getRedTeam().remove(player);
 		}
@@ -348,19 +325,17 @@ public class TeamDMMinigame extends MinigameType{
 			}
 		}
 		
-		plugin.getLogger().info(player.getName() + " completed " + minigame);
-		
 		if(plugin.getSQL() == null){
 			completion = mdata.getConfigurationFile("completion");
-			hascompleted = completion.getStringList(minigame.getName()).contains(player.getName());
+			hascompleted = completion.getStringList(mgm.getName()).contains(player.getName());
 			
 			if(plugin.getSQL() == null){
-				if(!completion.getStringList(minigame.getName()).contains(player.getName())){
-					List<String> completionlist = completion.getStringList(minigame.getName());
+				if(!completion.getStringList(mgm.getName()).contains(player.getName())){
+					List<String> completionlist = completion.getStringList(mgm.getName());
 					completionlist.add(player.getName());
-					completion.set(minigame.getName(), completionlist);
+					completion.set(mgm.getName(), completionlist);
 					MinigameSave completionsave = new MinigameSave("completion");
-					completionsave.getConfig().set(minigame.getName(), completionlist);
+					completionsave.getConfig().set(mgm.getName(), completionlist);
 					completionsave.saveConfig();
 				}
 			}

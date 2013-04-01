@@ -31,20 +31,13 @@ public class SPMinigame extends MinigameType{
 	@Override
 	public boolean joinMinigame(Player player, Minigame mgm){
 		if(mgm.getQuitPosition() != null && mgm.isEnabled()){
-			pdata.setAllowTP(player, true);
-			pdata.storePlayerData(player, mgm.getDefaultGamemode());
-			pdata.addPlayerMinigame(player, mgm);
-			player.setAllowFlight(false);
-			mgm.addPlayer(player);
-			plugin.getLogger().info(player.getName() + " started " + mgm.getName());
-			
 			Location startpos = mdata.getMinigame(mgm.getName()).getStartLocations().get(0);
 			player.teleport(startpos);
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + 
-					"You have started a singleplayer minigame, type /minigame quit to exit.");
-			pdata.setPlayerCheckpoints(player, startpos);
 			
-			mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + mgm.getName(), null, player);
+			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + 
+					"You have started a single player minigame, type /minigame quit to exit.");
+			
+			pdata.setPlayerCheckpoints(player, startpos);
 			
 			if(mgm.hasRestoreBlocks() && !mgm.hasPlayers()){
 				for(RestoreBlock block : mgm.getRestoreBlocks().values()){
@@ -70,12 +63,10 @@ public class SPMinigame extends MinigameType{
 	
 	@Override
 	public void endMinigame(Player player, Minigame mgm){
-		String minigame = pdata.getPlayersMinigame(player).getName();
-		
 		boolean hascompleted = false;
 		Configuration completion = null;
 		
-		player.sendMessage(ChatColor.GREEN + "You've finished the " + minigame + " minigame. Congratulations!");
+		player.sendMessage(ChatColor.GREEN + "You've finished the " + mgm + " minigame. Congratulations!");
 		
 		if(plugin.getConfig().getBoolean("singleplayer.broadcastcompletion")){
 			plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + player.getName() + " completed " + mgm.getName());
@@ -84,10 +75,6 @@ public class SPMinigame extends MinigameType{
 		if(mgm.getEndPosition() != null){
 			player.teleport(mgm.getEndPosition());
 		}
-
-		player.setFireTicks(0);
-		
-		plugin.getLogger().info(player.getName() + " completed " + minigame);
 		
 		if(mgm.getBlockRecorder().hasData()){
 			if(mgm.getPlayers().isEmpty()){
@@ -100,25 +87,23 @@ public class SPMinigame extends MinigameType{
 			}
 		}
 		
-		mgm.removePlayer(player);
-		
 		if(plugin.getSQL() == null){
 			completion = mdata.getConfigurationFile("completion");
-			hascompleted = completion.getStringList(minigame).contains(player.getName());
+			hascompleted = completion.getStringList(mgm.getName()).contains(player.getName());
 			
-			if(!completion.getStringList(minigame).contains(player.getName())){
-				List<String> completionlist = completion.getStringList(minigame);
+			if(!completion.getStringList(mgm.getName()).contains(player.getName())){
+				List<String> completionlist = completion.getStringList(mgm.getName());
 				completionlist.add(player.getName());
-				completion.set(minigame, completionlist);
+				completion.set(mgm.getName(), completionlist);
 				MinigameSave completionsave = new MinigameSave("completion");
-				completionsave.getConfig().set(minigame, completionlist);
+				completionsave.getConfig().set(mgm.getName(), completionlist);
 				completionsave.saveConfig();
 			}
 			
 			issuePlayerRewards(player, mgm, hascompleted);
 		}
 		else{
-			new SQLCompletionSaver(minigame, player, this);
+			new SQLCompletionSaver(mgm.getName(), player, this);
 		}
 	}
 
@@ -143,7 +128,7 @@ public class SPMinigame extends MinigameType{
 			}
 		}
 
-		callGeneralQuit(player);
+		callGeneralQuit(player, mgm);
 
 		mgm.removePlayer(player);
 		

@@ -6,12 +6,9 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
-//import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.potion.PotionEffect;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
@@ -47,8 +44,7 @@ public abstract class MinigameType implements Listener{
 	
 	public abstract void endMinigame(Player player, Minigame mgm);
 	
-	public void callGeneralQuit(final Player player){
-		final Minigame minigame = pdata.getPlayersMinigame(player);
+	public void callGeneralQuit(final Player player, final Minigame minigame){
 		
 		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			
@@ -57,36 +53,19 @@ public abstract class MinigameType implements Listener{
 				player.teleport(minigame.getQuitPosition());
 			}
 		});
-		
-		pdata.removePlayerCheckpoints(player);
-		pdata.removeAllPlayerFlags(player);
-		
-		pdata.removePlayerDeath(player);
-		pdata.removePlayerKills(player);
-		
-		player.sendMessage(ChatColor.RED + "You've left the " + minigame + " minigame.");
-		
-		player.setFireTicks(0);
-		
-		plugin.getLogger().info(player.getName() + " quit " + minigame);
 	}
 	
-	public boolean callLMSJoin(Player player, Minigame mgm, GameMode gm){ //TODO: Remove gamemode later as its defined in the Minigame
+	public boolean callLMSJoin(Player player, Minigame mgm){
 		if(mgm.getQuitPosition() != null && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
-			
-			for(PotionEffect potion : player.getActivePotionEffects()){
-				player.removePotionEffect(potion.getType());
-			}
-			player.setAllowFlight(false);
-			plugin.getLogger().info(player.getName() + " started " + mgm.getName());
-
 			String gametype = mgm.getType();
+			if(gametype.equals("dm"))
+				gametype = "deathmatch";
+			if(mgm.getScoreType().equals("ctf"))
+				gametype += " CTF";
 			
 			Location lobby = mgm.getLobbyPosition();
 			if(!mgm.getPlayers().isEmpty() && mdata.getMinigame(mgm.getName()).getPlayers().size() < mgm.getMaxPlayers()){
 				if(mgm.canLateJoin() || mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
-					pdata.storePlayerData(player, gm);
-					
 					if(mgm.getMpTimer() == null || mgm.getMpTimer().getStartWaitTimeLeft() != 0){
 						player.teleport(lobby);
 					}
@@ -109,7 +88,6 @@ public abstract class MinigameType implements Listener{
 							}
 						}, 100);
 					}
-					mgm.addPlayer(player);
 					player.sendMessage(ChatColor.GREEN + "You have started a " + mgm.getType() + " minigame, type /minigame quit to exit.");
 				
 					if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMinPlayers()){
@@ -125,8 +103,6 @@ public abstract class MinigameType implements Listener{
 							player.sendMessage(ChatColor.BLUE + "Waiting for " + neededPlayers + " more players.");
 						}
 					}
-					
-					mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + mgm.getName(), null, player);
 					return true;
 				}
 				else if(mgm.getMpTimer().getPlayerWaitTimeLeft() == 0){
@@ -135,10 +111,7 @@ public abstract class MinigameType implements Listener{
 				}
 			}
 			else if(mgm.getPlayers().isEmpty()){
-				pdata.storePlayerData(player, gm);
-				
 				player.teleport(lobby);
-				mgm.addPlayer(player);
 				player.sendMessage(ChatColor.GREEN + "You have started a " + gametype + " minigame, type /minigame quit to exit.");
 				
 				int neededPlayers = mgm.getMinPlayers() - 1;
@@ -151,8 +124,6 @@ public abstract class MinigameType implements Listener{
 					mgm.setMpTimer(new MultiplayerTimer(mgm.getName()));
 					mgm.getMpTimer().startTimer();
 				}
-
-				mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + mgm.getName(), null, player);
 				return true;
 			}
 			else if(mgm.getPlayers().size() == mgm.getMaxPlayers()){

@@ -33,57 +33,54 @@ public class DMMinigame extends MinigameType{
 
 	@Override
 	public boolean joinMinigame(Player player, Minigame mgm) {
-		return callLMSJoin(player, mgm, mgm.getDefaultGamemode());
+		return callLMSJoin(player, mgm);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public void quitMinigame(Player player, Minigame mgm, boolean forced) {
-		if(!mgm.getPlayers().isEmpty()){
-			mgm.removePlayer(player);
-			if(mgm.getPlayers().size() == 0){
-				if(mgm.getMpTimer() != null){
-					mgm.getMpTimer().pauseTimer();
-					mgm.getMpTimer().removeTimer();
-					mgm.setMpTimer(null);
-				}
-				
-				if(mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
-					if(mgm.getMpBets().getPlayersBet(player) != null){
-						final ItemStack item = mgm.getMpBets().getPlayersBet(player).clone();
-						final Player ply = player;
-						Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-							
-							@Override
-							public void run() {
-								ply.getInventory().addItem(item);
-							}
-						});
-					}
-					else if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
-						plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
-					}
-				}
-				mgm.setMpBets(null);
-			}
-			else if(mgm.getPlayers().size() == 1 && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0 && !forced){
-				pdata.endMinigame(mgm.getPlayers().get(0));
-				
-				if(mgm.getMpBets() != null){
-					mgm.setMpBets(null);
-				}
-			}
-			else if(mgm.getPlayers().size() < mgm.getMinPlayers() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() != 0){
+		if(mgm.getPlayers().size() == 0){
+			if(mgm.getMpTimer() != null){
 				mgm.getMpTimer().pauseTimer();
 				mgm.getMpTimer().removeTimer();
 				mgm.setMpTimer(null);
-				for(Player pl : mgm.getPlayers()){
-					pl.sendMessage(ChatColor.BLUE + "Waiting for 1 more player.");
+			}
+			
+			if(mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
+				if(mgm.getMpBets().getPlayersBet(player) != null){
+					final ItemStack item = mgm.getMpBets().getPlayersBet(player).clone();
+					final Player ply = player;
+					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+						
+						@Override
+						public void run() {
+							ply.getInventory().addItem(item);
+						}
+					});
 				}
+				else if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
+					plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
+				}
+			}
+			mgm.setMpBets(null);
+		}
+		else if(mgm.getPlayers().size() == 1 && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0 && !forced){
+			pdata.endMinigame(mgm.getPlayers().get(0));
+			
+			if(mgm.getMpBets() != null){
+				mgm.setMpBets(null);
+			}
+		}
+		else if(mgm.getPlayers().size() < mgm.getMinPlayers() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() != 0){
+			mgm.getMpTimer().pauseTimer();
+			mgm.getMpTimer().removeTimer();
+			mgm.setMpTimer(null);
+			for(Player pl : mgm.getPlayers()){
+				pl.sendMessage(ChatColor.BLUE + "Waiting for 1 more player.");
 			}
 		}
 		
-		callGeneralQuit(player);
+		callGeneralQuit(player, mgm);
 
 		if(mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
 			if(mgm.getMpBets().getPlayersBet(player) != null){
@@ -108,12 +105,10 @@ public class DMMinigame extends MinigameType{
 	@SuppressWarnings("deprecation")
 	@Override
 	public void endMinigame(Player player, Minigame mgm) {
-		Minigame minigame = pdata.getPlayersMinigame(player);
-		
-		if(minigame.getMpBets() != null){
+		if(mgm.getMpBets() != null){
 			if(mgm.getMpBets().hasBets()){
-				player.getInventory().addItem(minigame.getMpBets().claimBets());
-				minigame.setMpBets(null);
+				player.getInventory().addItem(mgm.getMpBets().claimBets());
+				mgm.setMpBets(null);
 				player.updateInventory();
 			}
 			else{
@@ -128,29 +123,30 @@ public class DMMinigame extends MinigameType{
 		boolean hascompleted = false;
 		Configuration completion = null;
 		
-		player.sendMessage(ChatColor.GREEN + "You've won the " + minigame + " minigame. Congratulations!");
+		player.sendMessage(ChatColor.GREEN + "You've won the " + mgm + " minigame. Congratulations!");
 		if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
-			plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + player.getName() + " won " + mgm.getName() + ". Score: " + pdata.getPlayerScore(player));
+			String score = "";
+			if(pdata.getPlayerScore(player) != 0)
+				score = "Score: " + pdata.getPlayerScore(player);
+			plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + player.getName() + " won " + mgm.getName() + ". " + score);
 		}
 		
 		if(mgm.getEndPosition() != null){
 			player.teleport(mgm.getEndPosition());
 		}
-
-		minigame.removePlayer(player);
 		
 		if(mgm.getPlayers().isEmpty()){
-			minigame.getMpTimer().setStartWaitTime(0);
+			mgm.getMpTimer().setStartWaitTime(0);
 			
-			minigame.setMpTimer(null);
-			for(Player pl : minigame.getPlayers()){
-				minigame.getPlayers().remove(pl);
+			mgm.setMpTimer(null);
+			for(Player pl : mgm.getPlayers()){
+				mgm.getPlayers().remove(pl);
 			}
 		}
 		else{
-			minigame.getMpTimer().setStartWaitTime(0);
+			mgm.getMpTimer().setStartWaitTime(0);
 			List<Player> players = new ArrayList<Player>();
-			players.addAll(minigame.getPlayers());
+			players.addAll(mgm.getPlayers());
 			for(int i = 0; i < players.size(); i++){
 				if(players.get(i) instanceof Player){
 					Player p = players.get(i);
@@ -163,28 +159,23 @@ public class DMMinigame extends MinigameType{
 					players.remove(i);
 				}
 			}
-			minigame.setMpTimer(null);
+			mgm.setMpTimer(null);
 			for(Player pl : players){
-				minigame.getPlayers().remove(pl);
+				mgm.getPlayers().remove(pl);
 			}
 		}
-
-		player.setFireTicks(0);
-		
-		
-		plugin.getLogger().info(player.getName() + " completed " + minigame);
 		
 		if(plugin.getSQL() == null){
 			completion = mdata.getConfigurationFile("completion");
-			hascompleted = completion.getStringList(minigame.getName()).contains(player.getName());
+			hascompleted = completion.getStringList(mgm.getName()).contains(player.getName());
 			
 			if(plugin.getSQL() == null){
-				if(!completion.getStringList(minigame.getName()).contains(player.getName())){
-					List<String> completionlist = completion.getStringList(minigame.getName());
+				if(!completion.getStringList(mgm.getName()).contains(player.getName())){
+					List<String> completionlist = completion.getStringList(mgm.getName());
 					completionlist.add(player.getName());
-					completion.set(minigame.getName(), completionlist);
+					completion.set(mgm.getName(), completionlist);
 					MinigameSave completionsave = new MinigameSave("completion");
-					completionsave.getConfig().set(minigame.getName(), completionlist);
+					completionsave.getConfig().set(mgm.getName(), completionlist);
 					completionsave.saveConfig();
 				}
 			}
@@ -192,7 +183,7 @@ public class DMMinigame extends MinigameType{
 			issuePlayerRewards(player, mgm, hascompleted);
 		}
 		else{
-			new SQLCompletionSaver(minigame.getName(), player, this);
+			new SQLCompletionSaver(mgm.getName(), player, this);
 		}
 	}
 	

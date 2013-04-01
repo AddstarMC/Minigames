@@ -68,10 +68,20 @@ public class PlayerData {
 		
 		if(!event.isCancelled()){
 			if(mdata.getMinigameTypes().contains(gametype)){
+				setAllowTP(player, true);
 				if(mdata.minigameType(gametype).joinMinigame(player, minigame)){
+					
+					plugin.getLogger().info(player.getName() + " started " + minigame.getName());
+					mdata.sendMinigameMessage(minigame, player.getName() + " has joined " + minigame.getName(), null, player);
+
+					storePlayerData(player, minigame.getDefaultGamemode());
+					
 					addPlayerMinigame(player, minigame);
-					setAllowTP(player, false);
+					minigame.addPlayer(player);
 					setAllowGMChange(player, false);
+					player.setAllowFlight(false);
+					setAllowTP(player, false);
+
 					
 					if(hasStoredPlayerCheckpoint(player)){
 						if(getPlayersStoredCheckpoints(player).hasCheckpoint(minigame.getName())){
@@ -90,6 +100,10 @@ public class PlayerData {
 					
 					for(Player pl : minigame.getSpectators()){
 						player.hidePlayer(pl);
+					}
+
+					for(PotionEffect potion : player.getActivePotionEffects()){
+						player.removePotionEffect(potion.getType());
 					}
 				}
 			}
@@ -360,9 +374,10 @@ public class PlayerData {
 						}
 					}
 				});
-				
-				mdata.minigameType(mgm.getType()).quitMinigame(player, mgm, forced);
+
 				removePlayerMinigame(player);
+				mgm.removePlayer(player);
+				mdata.minigameType(mgm.getType()).quitMinigame(player, mgm, forced);
 				
 				for(PotionEffect potion : player.getActivePotionEffects()){
 					player.removePotionEffect(potion.getType());
@@ -375,6 +390,10 @@ public class PlayerData {
 				removePlayerDeath(player);
 				removePlayerKills(player);
 				removePlayerScore(player);
+				
+				removePlayerCheckpoints(player);
+				
+				plugin.getLogger().info(player.getName() + " quit " + mgm);
 				
 				if(mgm.getMinigameTimer() != null && mgm.getPlayers().size() == 0){
 					mgm.getMinigameTimer().stopTimer();
@@ -471,10 +490,10 @@ public class PlayerData {
 			player.closeInventory();
 			restorePlayerData(player);
 			
-			mdata.minigameType(mgm.getType()).endMinigame(player, mgm);
-			
 			removePlayerMinigame(player);
+			mgm.removePlayer(player);
 			mgm.removePlayersLoadout(player);
+			mdata.minigameType(mgm.getType()).endMinigame(player, mgm);
 			
 			for(PotionEffect potion : player.getActivePotionEffects()){
 				player.removePotionEffect(potion.getType());
@@ -520,6 +539,8 @@ public class PlayerData {
 			
 			removeAllowTP(player);
 			removeAllowGMChange(player);
+
+			plugin.getLogger().info(player.getName() + " completed " + mgm);
 		}
 	}
 	
