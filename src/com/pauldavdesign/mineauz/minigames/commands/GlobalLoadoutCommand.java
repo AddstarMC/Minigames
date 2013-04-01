@@ -97,7 +97,13 @@ public class GlobalLoadoutCommand implements ICommand {
 						
 						for(ItemStack item : player.getInventory().getArmorContents()){
 							if(mdata.hasLoadout(loadout)){
-								mdata.getLoadout(loadout).addItemToLoadout(item);
+								if(item.getType() != Material.AIR){
+									ItemStack newItem = new ItemStack(item);
+									if(newItem.getAmount() == 0){
+										newItem.setAmount(1);
+									}
+									mdata.getLoadout(loadout).addItemToLoadout(newItem);
+								}
 							}
 							else{
 								sender.sendMessage(ChatColor.RED + "There is no loadout by the name of \"" + loadout + "\" in global loadouts!");

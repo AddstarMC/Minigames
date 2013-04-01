@@ -120,7 +120,9 @@ public class SetLoadoutCommand implements ICommand {
 							}
 							else{
 								if(minigame.hasLoadout(loadout)){
-									minigame.getLoadout(loadout).addItemToLoadout(item);
+									if(item.getType() != Material.AIR){
+										minigame.getLoadout(loadout).addItemToLoadout(item);
+									}
 								}
 								else{
 									sender.sendMessage(ChatColor.RED + "There is no loadout by the name of \"" + loadout + "\" in " + minigame);

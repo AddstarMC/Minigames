@@ -74,6 +74,7 @@ public class PlayerData {
 					plugin.getLogger().info(player.getName() + " started " + minigame.getName());
 					mdata.sendMinigameMessage(minigame, player.getName() + " has joined " + minigame.getName(), null, player);
 
+					setAllowGMChange(player, true);
 					storePlayerData(player, minigame.getDefaultGamemode());
 					
 					setAllowGMChange(player, false);
