@@ -285,7 +285,7 @@ public class Events implements Listener{
 	
 	@EventHandler
 	public void onGMChange(PlayerGameModeChangeEvent event){
-		if(pdata.playerInMinigame(event.getPlayer()) && !pdata.getAllowGMChange(event.getPlayer())){
+		if(pdata.playerInMinigame(event.getPlayer()) && pdata.getAllowGMChange(event.getPlayer()) != null && !pdata.getAllowGMChange(event.getPlayer())){
 			event.setCancelled(true);
 			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You cannot change gamemode while playing a Minigame!");
 		}

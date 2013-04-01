@@ -76,8 +76,6 @@ public class PlayerData {
 
 					storePlayerData(player, minigame.getDefaultGamemode());
 					
-					addPlayerMinigame(player, minigame);
-					minigame.addPlayer(player);
 					setAllowGMChange(player, false);
 					player.setAllowFlight(false);
 					setAllowTP(player, false);

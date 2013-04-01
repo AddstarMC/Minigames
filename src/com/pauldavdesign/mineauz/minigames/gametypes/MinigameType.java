@@ -57,6 +57,9 @@ public abstract class MinigameType implements Listener{
 	
 	public boolean callLMSJoin(Player player, Minigame mgm){
 		if(mgm.getQuitPosition() != null && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
+			pdata.addPlayerMinigame(player, mgm);
+			mgm.addPlayer(player);
+			
 			String gametype = mgm.getType();
 			if(gametype.equals("dm"))
 				gametype = "deathmatch";

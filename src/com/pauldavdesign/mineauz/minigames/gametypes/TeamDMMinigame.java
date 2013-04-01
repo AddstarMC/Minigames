@@ -42,6 +42,9 @@ public class TeamDMMinigame extends MinigameType{
 	@Override
 	public boolean joinMinigame(final Player player, Minigame mgm){
 		if(mgm.getQuitPosition() != null && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
+
+			pdata.addPlayerMinigame(player, mgm);
+			mgm.addPlayer(player);
 			
 			int redSize = mgm.getRedTeam().size();
 			int blueSize = mgm.getBlueTeam().size();

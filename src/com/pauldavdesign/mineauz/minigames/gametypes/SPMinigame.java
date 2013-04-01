@@ -33,6 +33,9 @@ public class SPMinigame extends MinigameType{
 		if(mgm.getQuitPosition() != null && mgm.isEnabled()){
 			Location startpos = mdata.getMinigame(mgm.getName()).getStartLocations().get(0);
 			player.teleport(startpos);
+
+			pdata.addPlayerMinigame(player, mgm);
+			mgm.addPlayer(player);
 			
 			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + 
 					"You have started a single player minigame, type /minigame quit to exit.");
