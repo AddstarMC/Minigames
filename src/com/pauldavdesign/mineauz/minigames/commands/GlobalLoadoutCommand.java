@@ -82,7 +82,11 @@ public class GlobalLoadoutCommand implements ICommand {
 						for(ItemStack item : player.getInventory().getContents()){
 							if(mdata.hasLoadout(loadout)){
 								if(item != null){
-									mdata.getLoadout(loadout).addItemToLoadout(item);
+									ItemStack newItem = new ItemStack(item);
+									if(newItem.getAmount() == 0){
+										newItem.setAmount(1);
+									}
+									mdata.getLoadout(loadout).addItemToLoadout(newItem);
 								}
 							}
 							else{
@@ -117,7 +121,11 @@ public class GlobalLoadoutCommand implements ICommand {
 						
 						if(item.getType() != Material.AIR){
 							if(mdata.hasLoadout(loadout)){
-								mdata.getLoadout(loadout).addItemToLoadout(item);
+								ItemStack newItem = new ItemStack(item);
+								if(newItem.getAmount() == 0){
+									newItem.setAmount(1);
+								}
+								mdata.getLoadout(loadout).addItemToLoadout(newItem);
 							}
 							else{
 								sender.sendMessage(ChatColor.RED + "There is no loadout by the name of \"" + loadout + "\" in global loadouts!");
@@ -139,10 +147,15 @@ public class GlobalLoadoutCommand implements ICommand {
 				}
 				else{
 					if(args.length == 4){
-						if(args[3].matches("[0-9]+")){
+						if(args[2].matches("[0-9]+")){
 							quantity = Integer.parseInt(args[2]);
+							if(quantity == 0){
+								sender.sendMessage(ChatColor.RED + "The amount cannot be 0!");
+								return false;
+							}
 						}
 						else{
+							sender.sendMessage(ChatColor.RED + "\"" + args[2] + "\" is not a valid number!");
 							return false;
 						}
 					}

@@ -88,13 +88,21 @@ public class SetLoadoutCommand implements ICommand {
 						for(ItemStack item : player.getInventory().getContents()){
 							if(loadout.equals("default")){
 								if(item != null){
-									minigame.getDefaultPlayerLoadout().addItemToLoadout(item);
+									ItemStack newItem = new ItemStack(item);
+									if(newItem.getAmount() == 0){
+										newItem.setAmount(1);
+									}
+									minigame.getDefaultPlayerLoadout().addItemToLoadout(newItem);
 								}
 							}
 							else{
 								if(minigame.hasLoadout(loadout)){
 									if(item != null){
-										minigame.getLoadout(loadout).addItemToLoadout(item);
+										ItemStack newItem = new ItemStack(item);
+										if(newItem.getAmount() == 0){
+											newItem.setAmount(1);
+										}
+										minigame.getLoadout(loadout).addItemToLoadout(newItem);
 									}
 								}
 								else{
@@ -137,11 +145,19 @@ public class SetLoadoutCommand implements ICommand {
 						
 						if(item.getType() != Material.AIR){
 							if(loadout.equals("default")){
-								minigame.getDefaultPlayerLoadout().addItemToLoadout(item);
+								ItemStack newItem = new ItemStack(item);
+								if(newItem.getAmount() == 0){
+									newItem.setAmount(1);
+								}
+								minigame.getDefaultPlayerLoadout().addItemToLoadout(newItem);
 							}
 							else{
 								if(minigame.hasLoadout(loadout)){
-									minigame.getLoadout(loadout).addItemToLoadout(item);
+									ItemStack newItem = new ItemStack(item);
+									if(newItem.getAmount() == 0){
+										newItem.setAmount(1);
+									}
+									minigame.getLoadout(loadout).addItemToLoadout(newItem);
 								}
 								else{
 									sender.sendMessage(ChatColor.RED + "There is no loadout by the name of \"" + loadout + "\" in " + minigame);
@@ -166,8 +182,13 @@ public class SetLoadoutCommand implements ICommand {
 					if(args.length == 5 || args.length == 3){
 						if(args[2].matches("[0-9]+")){
 							quantity = Integer.parseInt(args[2]);
+							if(quantity == 0){
+								sender.sendMessage(ChatColor.RED + "The amount cannot be 0!");
+								return false;
+							}
 						}
 						else{
+							sender.sendMessage(ChatColor.RED + "\"" + args[2] + "\" is not a valid number!");
 							return false;
 						}
 					}
