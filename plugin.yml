@@ -113,6 +113,7 @@ permissions:
             minigame.set.regenarea: true
             minigame.set.randomizechests: true
             minigame.set.autopotion: true
+            minigame.set.defaultwinner: true
     minigame.set.start:
         description: Gives access to setting a minigames starting position
         default: op
@@ -226,6 +227,9 @@ permissions:
         default: op
     minigame.set.autopotion:
         description: Allows the setting of automated unlimited potion equipping in a Minigames loadout.
+        default: op
+    minigame.set.defaultwinner:
+        description: Allows the setting of the default Minigame winner.
         default: op
     minigame.info:
         description: Allows check to see if a minigames variables have been set

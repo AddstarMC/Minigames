@@ -664,7 +664,15 @@ public class TeamDMMinigame extends MinigameType{
 	@EventHandler
 	public void timerExpire(TimerExpireEvent event){
 		if(event.getMinigame().getType().equals(getLabel())){
-			if(event.getMinigame().getBlueTeamScore() > event.getMinigame().getRedTeamScore()){
+			if(!event.getMinigame().getDefaultWinner().equals("none")){
+				if(event.getMinigame().getDefaultWinner().equals("blue")){
+					pdata.endTeamMinigame(1, event.getMinigame());
+				}
+				else{
+					pdata.endTeamMinigame(0, event.getMinigame());
+				}
+			}
+			else if(event.getMinigame().getBlueTeamScore() > event.getMinigame().getRedTeamScore()){
 				pdata.endTeamMinigame(1, event.getMinigame());
 			}
 			else if(event.getMinigame().getBlueTeamScore() < event.getMinigame().getRedTeamScore()){

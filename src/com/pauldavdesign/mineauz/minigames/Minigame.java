@@ -83,6 +83,7 @@ public class Minigame {
 
 	private List<Location> startLocationsBlue = new ArrayList<Location>();
 	private List<Location> startLocationsRed = new ArrayList<Location>();
+	private String defaultWinner = "none";
 	
 	private boolean canSpectateFly = false;
 	
@@ -879,6 +880,14 @@ public class Minigame {
 		this.floorDegenTime = floorDegenTime;
 	}
 
+	public String getDefaultWinner() {
+		return defaultWinner;
+	}
+
+	public void setDefaultWinner(String defaultWinner) {
+		this.defaultWinner = defaultWinner;
+	}
+
 	public void saveMinigame(){
 		MinigameSave minigame = new MinigameSave(name, "config");
 		
@@ -1237,6 +1246,13 @@ public class Minigame {
 			minigame.getConfig().set(name + ".floordegentime", null);
 		}
 		
+		if(!getDefaultWinner().equals("none")){
+			minigame.getConfig().set(name + ".defaultwinner", getDefaultWinner());
+		}
+		else{
+			minigame.getConfig().set(name + ".defaultwinner", null);
+		}
+		
 		minigame.saveConfig();
 	}
 	
@@ -1460,6 +1476,10 @@ public class Minigame {
 		
 		if(minigame.getConfig().contains(name + ".floordegentime")){
 			setFloorDegenTime(minigame.getConfig().getInt(name + ".floordegentime"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".defaultwinner")){
+			setDefaultWinner(minigame.getConfig().getString(name + ".defaultwinner"));
 		}
 		
 		saveMinigame();
