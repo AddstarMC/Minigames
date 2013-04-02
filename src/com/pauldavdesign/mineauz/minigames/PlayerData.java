@@ -212,7 +212,7 @@ public class PlayerData {
 		Minigame mgm = mdata.getMinigame(minigame);
 		
 		for(int i = 0; i < players.size(); i++){
-			if(!mgm.getType().equals("teamdm") || (mgm.getStartLocationsRed().isEmpty() || mgm.getStartLocationsBlue().isEmpty())){
+			if(!mgm.getType().equals("teamdm")){
 				pos += 1;
 				if(pos <= mgm.getStartLocations().size()){
 					start = mgm.getStartLocations().get(i);
@@ -282,28 +282,49 @@ public class PlayerData {
 				TeamDMMinigame.applyTeam(players.get(i), team);
 				
 				pos += 1;
-				//if(pos <= mgm.getStartLocations().size()){
-				if(team == 0 && redpos < mgm.getStartLocationsRed().size()){
-					start = mgm.getStartLocationsRed().get(redpos);
-					redpos++;
+				if(!mgm.getStartLocationsRed().isEmpty() && !mgm.getStartLocationsBlue().isEmpty()){
+					if(team == 0 && redpos < mgm.getStartLocationsRed().size()){
+						start = mgm.getStartLocationsRed().get(redpos);
+						redpos++;
+					}
+					else if(team == 1 && bluepos < mgm.getStartLocationsBlue().size()){
+						start = mgm.getStartLocationsBlue().get(bluepos);
+						bluepos++;
+					}
+					else if(team == 0 && !mgm.getStartLocationsRed().isEmpty()){
+						redpos = 0;
+						start = mgm.getStartLocationsRed().get(redpos);
+						redpos++;
+					}
+					else if(team == 1 && !mgm.getStartLocationsBlue().isEmpty()){
+						bluepos = 0;
+						start = mgm.getStartLocationsBlue().get(bluepos);
+						bluepos++;
+					}
+					else if(mgm.getStartLocationsBlue().isEmpty() || mgm.getStartLocationsRed().isEmpty()){
+						players.get(i).sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Starting positions are incorrectly configured!");
+						quitMinigame(players.get(i), false);
+					}
 				}
-				else if(team == 1 && bluepos < mgm.getStartLocationsBlue().size()){
-					start = mgm.getStartLocationsBlue().get(bluepos);
-					bluepos++;
-				}
-				else if(team == 0 && !mgm.getStartLocationsRed().isEmpty()){
-					redpos = 0;
-					start = mgm.getStartLocationsRed().get(redpos);
-					redpos++;
-				}
-				else if(team == 1 && !mgm.getStartLocationsBlue().isEmpty()){
-					bluepos = 0;
-					start = mgm.getStartLocationsBlue().get(bluepos);
-					bluepos++;
-				}
-				else if(mgm.getStartLocationsBlue().isEmpty() || mgm.getStartLocationsRed().isEmpty()){
-					players.get(i).sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Starting positions are incorrectly configured!");
-					quitMinigame(players.get(i), false);
+				else{
+					pos += 1;
+					if(pos <= mgm.getStartLocations().size()){
+						start = mgm.getStartLocations().get(i);
+						players.get(i).teleport(start);
+						setPlayerCheckpoints(players.get(pos - 1), start);
+					} 
+					else{
+						pos = 1;
+						if(!mgm.getStartLocations().isEmpty()){
+							start = mgm.getStartLocations().get(0);
+							players.get(i).teleport(start);
+							setPlayerCheckpoints(players.get(pos - 1), start);
+						}
+						else {
+							players.get(i).sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Starting positions are incorrectly configured!");
+							quitMinigame(players.get(i), false);
+						}
+					}
 				}
 				
 				if(start != null){
