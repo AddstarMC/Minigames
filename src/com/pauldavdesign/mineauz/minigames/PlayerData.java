@@ -29,6 +29,7 @@ import com.pauldavdesign.mineauz.minigames.events.JoinMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.RevertCheckpointEvent;
 import com.pauldavdesign.mineauz.minigames.events.SpectateMinigameEvent;
+import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 
 public class PlayerData {
 	private Map<String, Minigame> minigamePlayers = new HashMap<String, Minigame>();
@@ -211,7 +212,7 @@ public class PlayerData {
 		Minigame mgm = mdata.getMinigame(minigame);
 		
 		for(int i = 0; i < players.size(); i++){
-			if((!mgm.getBlueTeam().contains(players.get(i)) && !mgm.getRedTeam().contains(players.get(i))) || (mgm.getStartLocationsRed().isEmpty() || mgm.getStartLocationsBlue().isEmpty())){
+			if(!mgm.getType().equals("teamdm") || (mgm.getStartLocationsRed().isEmpty() || mgm.getStartLocationsBlue().isEmpty())){
 				pos += 1;
 				if(pos <= mgm.getStartLocations().size()){
 					start = mgm.getStartLocations().get(i);
@@ -238,9 +239,12 @@ public class PlayerData {
 				}
 			}
 			else{
-				int team = 0;
+				int team = -1;
 				if(mgm.getBlueTeam().contains(players.get(i))){
 					team = 1;
+				}
+				else if(mgm.getRedTeam().contains(players.get(i))){
+					team = 0;
 				}
 				
 				if(team == 1){
@@ -249,16 +253,33 @@ public class PlayerData {
 						mgm.addRedTeamPlayer(players.get(i));
 						team = 0;
 						players.get(i).sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been auto balanced to " + ChatColor.RED + "Red Team");
+						mdata.sendMinigameMessage(mgm, players.get(i).getName() + " has been auto balanced to " + ChatColor.RED + "Red Team", null, players.get(i));
 					}
 				}
-				else{
+				else if(team == 0){
 					if(mgm.getBlueTeam().size() < mgm.getRedTeam().size() - 1){
 						mgm.getRedTeam().remove(players.get(i));
 						mgm.addBlueTeamPlayer(players.get(i));
 						team = 1;
 						players.get(i).sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been auto balanced to " + ChatColor.BLUE + "Blue Team");
+						mdata.sendMinigameMessage(mgm, players.get(i).getName() + " has been auto balanced to " + ChatColor.BLUE + "Blue Team", null, players.get(i));
 					}
 				}
+				else{
+					if(mgm.getRedTeam().size() <= mgm.getBlueTeam().size()){
+						mgm.addRedTeamPlayer(players.get(i));
+						team = 0;
+						players.get(i).sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been auto balanced to " + ChatColor.RED + "Red Team");
+						mdata.sendMinigameMessage(mgm, players.get(i).getName() + " has been auto balanced to " + ChatColor.RED + "Red Team", null, players.get(i));
+					}
+					else if(mgm.getBlueTeam().size() <= mgm.getRedTeam().size()){
+						mgm.addBlueTeamPlayer(players.get(i));
+						team = 1;
+						players.get(i).sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been auto balanced to " + ChatColor.BLUE + "Blue Team");
+						mdata.sendMinigameMessage(mgm, players.get(i).getName() + " has been auto balanced to " + ChatColor.BLUE + "Blue Team", null, players.get(i));
+					}
+				}
+				TeamDMMinigame.applyTeam(players.get(i), team);
 				
 				pos += 1;
 				//if(pos <= mgm.getStartLocations().size()){

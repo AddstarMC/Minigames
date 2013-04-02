@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 
 public class PlayerKillsType extends ScoreType{
 
@@ -152,6 +153,43 @@ public class PlayerKillsType extends ScoreType{
 						mgm.setBlueTeamScore(mgm.getBlueTeamScore() - 1);
 					}
 					mdata.sendMinigameMessage(mgm, "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore(), null, null);
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void playerAutoBalance(PlayerDeathEvent event){
+		Player ply = (Player) event.getEntity();
+		if(pdata.getPlayersMinigame(ply) != null && pdata.getPlayersMinigame(ply).getType().equals("teamdm")){
+			int pteam = 0;
+			if(pdata.getPlayersMinigame(ply).getBlueTeam().contains(ply)){
+				pteam = 1;
+			}
+			final Minigame mgm = pdata.getPlayersMinigame(ply);
+			
+			if(mgm.getScoreType().equals("kills")){
+				if(pteam == 1){
+					if(mgm.getRedTeam().size() < mgm.getBlueTeam().size() - 1){
+						TeamDMMinigame.switchTeam(mgm, ply);
+						ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been switched to " + ChatColor.RED + "Red Team");
+						for(Player pl : mgm.getPlayers()){
+							if(pl != ply){
+								pl.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + ply.getName() + " has been switched to " + ChatColor.RED + "Red Team");
+							}
+						}
+					}
+				}
+				else{
+					if(mgm.getBlueTeam().size() < mgm.getRedTeam().size()  - 1){
+						TeamDMMinigame.switchTeam(mgm, ply);
+						ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been switched to " + ChatColor.BLUE + "Blue Team");
+						for(Player pl : mgm.getPlayers()){
+							if(pl != ply){
+								pl.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + ply.getName() + " has been switched to " + ChatColor.BLUE + "Blue Team");
+							}
+						}
+					}
 				}
 			}
 		}

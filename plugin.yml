@@ -270,6 +270,9 @@ permissions:
     minigame.sign.create.reward:
         description: Allows the creation of a Minigame reward sign
         default: op
+    minigame.sign.create.team:
+        description: Allows the creation of a Minigame team sign
+        default: op
     minigame.sign.create.*:
         description: Allows a player to create all Minigame signs
         children:
@@ -282,6 +285,7 @@ permissions:
             minigame.sign.create.loadout: true
             minigame.sign.create.spectate: true
             minigame.sign.create.reward: true
+            minigame.sign.create.team: true
     minigame.sign.use.details:
         description: Allows the usage of a minigame sign to show the details
         default: true
@@ -303,6 +307,9 @@ permissions:
     minigame.sign.use.reward:
         description: Allows the usage of a Minigame reward sign.
         default: true
+    minigame.sign.use.team:
+        description: Allows the usage of a Minigame team sign.
+        default: true
     minigame.sign.use.*:
         description: Allows a player to use all the Minigame sign uses
         children:
@@ -313,6 +320,7 @@ permissions:
             minigame.sign.use.loadout: true
             minigame.sign.use.spectate: true
             minigame.sign.use.reward: true
+            minigame.sign.use.team: true
     minigame.reload:
         description: Allows player to reload the currently loaded configuration files
         default: op

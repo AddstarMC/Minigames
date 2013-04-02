@@ -19,7 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
@@ -55,51 +54,92 @@ public class TeamDMMinigame extends MinigameType{
 			
 			if(!mgm.getPlayers().isEmpty() && mgm.getPlayers().size() < mgm.getMaxPlayers()){
 				if(mgm.canLateJoin() || mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
-					int team;
-					
-					if(redSize <= blueSize){
-						mgm.addRedTeamPlayer(player);
-						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.RED + "Red Team");
-						
-						applyTeam(player, 0);
-						team = 0;
-					}
-					else{
-						mgm.addBlueTeamPlayer(player);
-						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.BLUE + "Blue Team");
-						
-						applyTeam(player, 1);
-						team = 1;
-					}
-					
-					for(final Player play : mgm.getBlueTeam()){
-						Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-							final Player ply = play;
-							@Override
-							public void run() {
-								if(ply != player){
-									applyTeam(ply, player, 1);
-								}
-							}
-						}, 20L);
-					}
-					
-					for(final Player play : mgm.getRedTeam()){
-						Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-							final Player ply = play;
-							@Override
-							public void run() {
-								if(ply != player){
-									applyTeam(ply, player, 0);
-								}
-							}
-						}, 20L);
-					}
+//					int team;
+//					
+//					if(redSize <= blueSize){
+//						mgm.addRedTeamPlayer(player);
+//						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.RED + "Red Team");
+//						
+//						applyTeam(player, 0);
+//						team = 0;
+//					}
+//					else{
+//						mgm.addBlueTeamPlayer(player);
+//						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.BLUE + "Blue Team");
+//						
+//						applyTeam(player, 1);
+//						team = 1;
+//					}
+//					
+//					for(final Player play : mgm.getBlueTeam()){
+//						Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+//							final Player ply = play;
+//							@Override
+//							public void run() {
+//								if(ply != player){
+//									applyTeam(ply, player, 1);
+//								}
+//							}
+//						}, 20L);
+//					}
+//					
+//					for(final Player play : mgm.getRedTeam()){
+//						Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+//							final Player ply = play;
+//							@Override
+//							public void run() {
+//								if(ply != player){
+//									applyTeam(ply, player, 0);
+//								}
+//							}
+//						}, 20L);
+//					}
 					
 					if(mgm.getMpTimer() == null || mgm.getMpTimer().getStartWaitTimeLeft() != 0){
 						player.teleport(lobby);
 					}
 					else{
+						int team;
+						
+						if(redSize <= blueSize){
+							mgm.addRedTeamPlayer(player);
+							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.RED + "Red Team");
+							
+							applyTeam(player, 0);
+							team = 0;
+						}
+						else{
+							mgm.addBlueTeamPlayer(player);
+							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.BLUE + "Blue Team");
+							
+							applyTeam(player, 1);
+							team = 1;
+						}
+						
+						for(final Player play : mgm.getBlueTeam()){
+							Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+								final Player ply = play;
+								@Override
+								public void run() {
+									if(ply != player){
+										applyTeam(ply, player, 1);
+									}
+								}
+							}, 20L);
+						}
+						
+						for(final Player play : mgm.getRedTeam()){
+							Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+								final Player ply = play;
+								@Override
+								public void run() {
+									if(ply != player){
+										applyTeam(ply, player, 0);
+									}
+								}
+							}, 20L);
+						}
+						
 						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You will join in 5 seconds...");
 						player.teleport(lobby);
 						
@@ -152,11 +192,11 @@ public class TeamDMMinigame extends MinigameType{
 						}
 					}
 
-					String teamColour = ChatColor.RED + "Red";
-					if(mgm.getBlueTeam().contains(player)){
-						teamColour = ChatColor.BLUE + "Blue";
-					}
-					mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + teamColour + ChatColor.WHITE + " team!", null, player);
+//					String teamColour = ChatColor.RED + "Red";
+//					if(mgm.getBlueTeam().contains(player)){
+//						teamColour = ChatColor.BLUE + "Blue";
+//					}
+					mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + mgm, null, player);
 					return true;
 				}
 				else if(mgm.getMpTimer().getPlayerWaitTimeLeft() == 0){
@@ -347,7 +387,16 @@ public class TeamDMMinigame extends MinigameType{
 		}
 	}
 	
-	public void applyTeam(Player player, int team){
+	public static void removeTeam(Player player){
+		EntityPlayer changeingName = ((CraftPlayer) player).getHandle();
+		for(Player ply : plugin.getServer().getOnlinePlayers()){
+			if(ply != player){
+				((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet20NamedEntitySpawn(changeingName));
+			}
+		}
+	}
+	
+	public static void applyTeam(Player player, int team){
 		EntityPlayer changeingName = ((CraftPlayer) player).getHandle();
 		String oldName = player.getName();
 		
@@ -404,7 +453,7 @@ public class TeamDMMinigame extends MinigameType{
 		changeingName.name = oldName;
 	}
 	
-	public void applyTeam(Player player, Player toPlayer, int team){
+	public static void applyTeam(Player player, Player toPlayer, int team){
 		EntityPlayer changeingName = ((CraftPlayer) player).getHandle();
 		String oldName = player.getName();
 		
@@ -457,7 +506,7 @@ public class TeamDMMinigame extends MinigameType{
 		changeingName.name = oldName;
 	}
 	
-	public void switchTeam(Minigame mgm, Player player){
+	public static void switchTeam(Minigame mgm, Player player){
 		if(mgm.getBlueTeam().contains(player)){
 			mgm.getBlueTeam().remove(player);
 			mgm.addRedTeamPlayer(player);
@@ -472,40 +521,40 @@ public class TeamDMMinigame extends MinigameType{
 	/*-----EVENTS-----*/
 	/*----------------*/
 	
-	@EventHandler
-	public void playerDeath(PlayerDeathEvent event){
-		Player ply = (Player) event.getEntity();
-		if(pdata.getPlayersMinigame(ply) != null && pdata.getPlayersMinigame(ply).getType().equals("teamdm") && ply.getKiller() != null && ply.getKiller() instanceof Player){
-			int pteam = 0;
-			if(pdata.getPlayersMinigame(ply).getBlueTeam().contains(ply)){
-				pteam = 1;
-			}
-			final Minigame mgm = pdata.getPlayersMinigame(ply);
-			
-			if(pteam == 1){
-				if(mgm.getRedTeam().size() < mgm.getBlueTeam().size() - 1){
-					switchTeam(mgm, ply);
-					ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been switched to " + ChatColor.RED + "Red Team");
-					for(Player pl : mgm.getPlayers()){
-						if(pl != ply){
-							pl.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + ply.getName() + " has been switched to " + ChatColor.RED + "Red Team");
-						}
-					}
-				}
-			}
-			else{
-				if(mgm.getBlueTeam().size() < mgm.getRedTeam().size()  - 1){
-					switchTeam(mgm, ply);
-					ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been switched to " + ChatColor.BLUE + "Blue Team");
-					for(Player pl : mgm.getPlayers()){
-						if(pl != ply){
-							pl.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + ply.getName() + " has been switched to " + ChatColor.BLUE + "Blue Team");
-						}
-					}
-				}
-			}
-		}
-	}
+//	@EventHandler
+//	public void playerDeath(PlayerDeathEvent event){
+//		Player ply = (Player) event.getEntity();
+//		if(pdata.getPlayersMinigame(ply) != null && pdata.getPlayersMinigame(ply).getType().equals("teamdm") && ply.getKiller() != null && ply.getKiller() instanceof Player){
+//			int pteam = 0;
+//			if(pdata.getPlayersMinigame(ply).getBlueTeam().contains(ply)){
+//				pteam = 1;
+//			}
+//			final Minigame mgm = pdata.getPlayersMinigame(ply);
+//			
+//			if(pteam == 1){
+//				if(mgm.getRedTeam().size() < mgm.getBlueTeam().size() - 1){
+//					switchTeam(mgm, ply);
+//					ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been switched to " + ChatColor.RED + "Red Team");
+//					for(Player pl : mgm.getPlayers()){
+//						if(pl != ply){
+//							pl.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + ply.getName() + " has been switched to " + ChatColor.RED + "Red Team");
+//						}
+//					}
+//				}
+//			}
+//			else{
+//				if(mgm.getBlueTeam().size() < mgm.getRedTeam().size()  - 1){
+//					switchTeam(mgm, ply);
+//					ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been switched to " + ChatColor.BLUE + "Blue Team");
+//					for(Player pl : mgm.getPlayers()){
+//						if(pl != ply){
+//							pl.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + ply.getName() + " has been switched to " + ChatColor.BLUE + "Blue Team");
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void playerRespawn(PlayerRespawnEvent event){

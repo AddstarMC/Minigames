@@ -439,6 +439,13 @@ public class Minigame {
 		this.mpTimer = mpTimer;
 	}
 	
+	public boolean hasStarted(){
+		if(mpTimer != null && mpTimer.getStartWaitTimeLeft() == 0){
+			return true;
+		}
+		return false;
+	}
+	
 	public MinigameTimer getMinigameTimer() {
 		return miniTimer;
 	}

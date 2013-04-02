@@ -15,6 +15,7 @@ import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
+import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 
 public class CTFType extends ScoreType{
 
@@ -30,7 +31,7 @@ public class CTFType extends ScoreType{
 			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && (event.getClickedBlock().getType() == Material.SIGN_POST || event.getClickedBlock().getType() == Material.WALL_SIGN) && ply.getItemInHand().getType() == Material.AIR){
 				Minigame mgm = pdata.getPlayersMinigame(ply);
 				Sign sign = (Sign) event.getClickedBlock().getState();
-				if(mgm.getScoreType().equals("ctf")){
+				if(mgm.getScoreType().equals("ctf") && sign.getLine(1).equals(ChatColor.GREEN + "Flag")){
 					if(!mgm.getBlueTeam().isEmpty() || !mgm.getRedTeam().isEmpty() || !mgm.getType().equals("teamdm")){
 						int team = 0;
 						if(mgm.getBlueTeam().contains(event.getPlayer())){
@@ -236,6 +237,43 @@ public class CTFType extends ScoreType{
 			if(event.getMinigame().isFlagCarrier(event.getPlayer())){
 				event.getMinigame().getFlagCarrier(event.getPlayer()).respawnFlag();
 				event.getMinigame().removeFlagCarrier(event.getPlayer());
+			}
+		}
+	}
+	
+	@EventHandler
+	public void playerAutoBalance(PlayerDeathEvent event){
+		Player ply = (Player) event.getEntity();
+		if(pdata.getPlayersMinigame(ply) != null && pdata.getPlayersMinigame(ply).getType().equals("teamdm")){
+			int pteam = 0;
+			if(pdata.getPlayersMinigame(ply).getBlueTeam().contains(ply)){
+				pteam = 1;
+			}
+			final Minigame mgm = pdata.getPlayersMinigame(ply);
+			
+			if(mgm.getScoreType().equals("ctf")){
+				if(pteam == 1){
+					if(mgm.getRedTeam().size() < mgm.getBlueTeam().size() - 1){
+						TeamDMMinigame.switchTeam(mgm, ply);
+						ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been switched to " + ChatColor.RED + "Red Team");
+						for(Player pl : mgm.getPlayers()){
+							if(pl != ply){
+								pl.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + ply.getName() + " has been switched to " + ChatColor.RED + "Red Team");
+							}
+						}
+					}
+				}
+				else{
+					if(mgm.getBlueTeam().size() < mgm.getRedTeam().size()  - 1){
+						TeamDMMinigame.switchTeam(mgm, ply);
+						ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been switched to " + ChatColor.BLUE + "Blue Team");
+						for(Player pl : mgm.getPlayers()){
+							if(pl != ply){
+								pl.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + ply.getName() + " has been switched to " + ChatColor.BLUE + "Blue Team");
+							}
+						}
+					}
+				}
 			}
 		}
 	}
