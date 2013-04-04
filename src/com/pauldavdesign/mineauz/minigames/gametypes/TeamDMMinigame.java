@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.server.v1_4_R1.EntityPlayer;
-import net.minecraft.server.v1_4_R1.Packet20NamedEntitySpawn;
-import net.minecraft.server.v1_4_R1.Packet5EntityEquipment;
+import net.minecraft.server.v1_5_R2.EntityPlayer;
+import net.minecraft.server.v1_5_R2.Packet20NamedEntitySpawn;
+import net.minecraft.server.v1_5_R2.Packet5EntityEquipment;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.craftbukkit.v1_4_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_5_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,6 +42,7 @@ public class TeamDMMinigame extends MinigameType{
 	public boolean joinMinigame(final Player player, Minigame mgm){
 		if(mgm.getQuitPosition() != null && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
 
+			pdata.storePlayerData(player, mgm.getDefaultGamemode());
 			pdata.addPlayerMinigame(player, mgm);
 			mgm.addPlayer(player);
 			

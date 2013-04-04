@@ -78,10 +78,9 @@ public class ReloadCommand implements ICommand{
 		
 		plugin.mdata.addMinigameType(new SPMinigame());
 		plugin.mdata.addMinigameType(new RaceMinigame());
-//		plugin.mdata.addMinigameType(new LMSMinigame());
 		plugin.mdata.addMinigameType(new DMMinigame());
 		try{
-			Class.forName("net.minecraft.server.v1_4_R1.EntityPlayer");
+			Class.forName("net.minecraft.server.v1_5_R2.EntityPlayer");
 			plugin.mdata.addMinigameType(new TeamDMMinigame());
 		}catch(ClassNotFoundException e){
 			plugin.getLogger().info("Note: Team Deathmatch cannot be run on this server version, please check for updates!");

@@ -57,6 +57,7 @@ public abstract class MinigameType implements Listener{
 	
 	public boolean callLMSJoin(Player player, Minigame mgm){
 		if(mgm.getQuitPosition() != null && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
+			pdata.storePlayerData(player, mgm.getDefaultGamemode());
 			pdata.addPlayerMinigame(player, mgm);
 			mgm.addPlayer(player);
 			

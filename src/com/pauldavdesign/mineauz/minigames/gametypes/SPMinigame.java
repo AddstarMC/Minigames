@@ -2,7 +2,6 @@ package com.pauldavdesign.mineauz.minigames.gametypes;
 
 import java.util.List;
 
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
@@ -31,6 +30,7 @@ public class SPMinigame extends MinigameType{
 	@Override
 	public boolean joinMinigame(Player player, Minigame mgm){
 		if(mgm.getQuitPosition() != null && mgm.isEnabled()){
+			pdata.storePlayerData(player, mgm.getDefaultGamemode());
 			Location startpos = mdata.getMinigame(mgm.getName()).getStartLocations().get(0);
 			player.teleport(startpos);
 
@@ -132,8 +132,6 @@ public class SPMinigame extends MinigameType{
 		}
 
 		callGeneralQuit(player, mgm);
-
-		mgm.removePlayer(player);
 		
 		if(mgm.getBlockRecorder().hasData()){
 			if(mgm.getPlayers().isEmpty()){

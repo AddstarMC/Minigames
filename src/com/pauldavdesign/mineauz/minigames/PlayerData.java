@@ -71,12 +71,10 @@ public class PlayerData {
 			if(mdata.getMinigameTypes().contains(gametype)){
 				setAllowTP(player, true);
 				if(mdata.minigameType(gametype).joinMinigame(player, minigame)){
-					
 					plugin.getLogger().info(player.getName() + " started " + minigame.getName());
 					mdata.sendMinigameMessage(minigame, player.getName() + " has joined " + minigame.getName(), null, player);
 
 					setAllowGMChange(player, true);
-					storePlayerData(player, minigame.getDefaultGamemode());
 					
 					setAllowGMChange(player, false);
 					player.setAllowFlight(false);
@@ -118,12 +116,12 @@ public class PlayerData {
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
 		if(!event.isCancelled()){
+			storePlayerData(player, GameMode.ADVENTURE);
 			addPlayerMinigame(player, minigame);
 			setAllowTP(player, true);
 			setAllowGMChange(player, true);
 			
 			minigame.addSpectator(player);
-			storePlayerData(player, GameMode.ADVENTURE);
 			player.getInventory().clear();
 			player.teleport(minigame.getStartLocations().get(0));
 			
@@ -404,7 +402,6 @@ public class PlayerData {
 				}
 	
 				mgm.removePlayersLoadout(player);
-				player.getInventory().clear();
 				final Player ply = player;
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 					
@@ -481,7 +478,6 @@ public class PlayerData {
 					}
 				});
 				
-				player.getInventory().clear();
 				final Player ply = player;
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 					
