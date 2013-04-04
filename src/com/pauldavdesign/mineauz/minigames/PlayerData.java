@@ -574,8 +574,8 @@ public class PlayerData {
 				}
 			}
 			
-			for(Player pl : mgm.getPlayers()){
-				pl.showPlayer(player);
+			for(Player pl : mgm.getSpectators()){
+				player.showPlayer(pl);
 			}
 			
 			removeAllowTP(player);
