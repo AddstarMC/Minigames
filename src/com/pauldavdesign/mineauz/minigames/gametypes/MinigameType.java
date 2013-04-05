@@ -57,9 +57,6 @@ public abstract class MinigameType implements Listener{
 	
 	public boolean callLMSJoin(Player player, Minigame mgm){
 		if(mgm.getQuitPosition() != null && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
-			pdata.storePlayerData(player, mgm.getDefaultGamemode());
-			pdata.addPlayerMinigame(player, mgm);
-			mgm.addPlayer(player);
 			
 			String gametype = mgm.getType();
 			if(gametype.equals("dm"))
@@ -68,8 +65,11 @@ public abstract class MinigameType implements Listener{
 				gametype += " CTF";
 			
 			Location lobby = mgm.getLobbyPosition();
-			if(!mgm.getPlayers().isEmpty() && mdata.getMinigame(mgm.getName()).getPlayers().size() < mgm.getMaxPlayers()){
+			if(/*!mgm.getPlayers().isEmpty() && */mdata.getMinigame(mgm.getName()).getPlayers().size() < mgm.getMaxPlayers()){
 				if(mgm.canLateJoin() || mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
+					pdata.storePlayerData(player, mgm.getDefaultGamemode());
+					pdata.addPlayerMinigame(player, mgm);
+					mgm.addPlayer(player);
 					if(mgm.getMpTimer() == null || mgm.getMpTimer().getStartWaitTimeLeft() != 0){
 						player.teleport(lobby);
 					}
@@ -114,22 +114,22 @@ public abstract class MinigameType implements Listener{
 					return false;
 				}
 			}
-			else if(mgm.getPlayers().isEmpty()){
-				player.teleport(lobby);
-				player.sendMessage(ChatColor.GREEN + "You have started a " + gametype + " minigame, type /minigame quit to exit.");
-				
-				int neededPlayers = mgm.getMinPlayers() - 1;
-				
-				if(neededPlayers > 0){
-					player.sendMessage(ChatColor.BLUE + "Waiting for " + neededPlayers + " more players.");
-				}
-				else
-				{
-					mgm.setMpTimer(new MultiplayerTimer(mgm.getName()));
-					mgm.getMpTimer().startTimer();
-				}
-				return true;
-			}
+//			else if(mgm.getPlayers().isEmpty()){
+//				player.teleport(lobby);
+//				player.sendMessage(ChatColor.GREEN + "You have started a " + gametype + " minigame, type /minigame quit to exit.");
+//				
+//				int neededPlayers = mgm.getMinPlayers() - 1;
+//				
+//				if(neededPlayers > 0){
+//					player.sendMessage(ChatColor.BLUE + "Waiting for " + neededPlayers + " more players.");
+//				}
+//				else
+//				{
+//					mgm.setMpTimer(new MultiplayerTimer(mgm.getName()));
+//					mgm.getMpTimer().startTimer();
+//				}
+//				return true;
+//			}
 			else if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
 				player.sendMessage(ChatColor.RED + "Sorry, this minigame is full.");
 			}

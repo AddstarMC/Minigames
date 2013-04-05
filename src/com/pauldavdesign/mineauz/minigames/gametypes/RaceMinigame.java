@@ -3,12 +3,14 @@ package com.pauldavdesign.mineauz.minigames.gametypes;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
@@ -44,7 +46,15 @@ public class RaceMinigame extends MinigameType{
 			
 			if(mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
 				if(mgm.getMpBets().getPlayersBet(player) != null){
-					player.getInventory().addItem(mgm.getMpBets().getPlayersBet(player));
+					final ItemStack item = mgm.getMpBets().getPlayersBet(player).clone();
+					final Player ply = player;
+					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+						
+						@Override
+						public void run() {
+							ply.getInventory().addItem(item);
+						}
+					});
 				}
 				else if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
 					plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));

@@ -41,20 +41,19 @@ public class TeamDMMinigame extends MinigameType{
 	@Override
 	public boolean joinMinigame(final Player player, Minigame mgm){
 		if(mgm.getQuitPosition() != null && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
-
-			pdata.storePlayerData(player, mgm.getDefaultGamemode());
-			pdata.addPlayerMinigame(player, mgm);
-			mgm.addPlayer(player);
 			
 			int redSize = mgm.getRedTeam().size();
 			int blueSize = mgm.getBlueTeam().size();
 			
 			Location lobby = mgm.getLobbyPosition();
 			
-			String gametype = mgm.getType();
+//			String gametype = mgm.getType();
 			
-			if(!mgm.getPlayers().isEmpty() && mgm.getPlayers().size() < mgm.getMaxPlayers()){
+			if(/*!mgm.getPlayers().isEmpty() && */mgm.getPlayers().size() < mgm.getMaxPlayers()){
 				if(mgm.canLateJoin() || mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
+					pdata.storePlayerData(player, mgm.getDefaultGamemode());
+					pdata.addPlayerMinigame(player, mgm);
+					mgm.addPlayer(player);
 //					int team;
 //					
 //					if(redSize <= blueSize){
@@ -205,52 +204,52 @@ public class TeamDMMinigame extends MinigameType{
 					return false;
 				}
 			}
-			else if(mgm.getPlayers().isEmpty()){
-				EntityPlayer changeingName = ((CraftPlayer) player).getHandle();
-				String oldName = player.getName();
-				
-				if(redSize <= blueSize){
-					mgm.addRedTeamPlayer(player);
-					player.sendMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.RED + "Red Team");
-					
-					changeingName.name = ChatColor.RED.toString() + player.getName();
-				}
-				else{
-					mgm.addBlueTeamPlayer(player);
-					player.sendMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.BLUE + "Blue Team");
-					
-					changeingName.name = ChatColor.BLUE.toString() + player.getName();
-				}
-				
-				for(Player ply : plugin.getServer().getOnlinePlayers()){
-					if(ply != player){
-						((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet20NamedEntitySpawn(changeingName));
-					}
-				}
-				
-				changeingName.name = oldName;
-				
-				player.teleport(lobby);
-				player.sendMessage(ChatColor.GREEN + "You have started a " + gametype + " minigame, type /minigame quit to exit.");
-				
-				int neededPlayers = mgm.getMinPlayers() - 1;
-				
-				if(neededPlayers > 0){
-					player.sendMessage(ChatColor.BLUE + "Waiting for " + neededPlayers + " more players.");
-				}
-				else
-				{
-					mgm.setMpTimer(new MultiplayerTimer(mgm.getName()));
-					mgm.getMpTimer().startTimer();
-				}
-
-				String teamColour = ChatColor.RED + "Red";
-				if(mgm.getBlueTeam().contains(player)){
-					teamColour = ChatColor.BLUE + "Blue";
-				}
-				mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + teamColour + ChatColor.WHITE + " team!", null, player);
-				return true;
-			}
+//			else if(mgm.getPlayers().isEmpty()){
+//				EntityPlayer changeingName = ((CraftPlayer) player).getHandle();
+//				String oldName = player.getName();
+//				
+//				if(redSize <= blueSize){
+//					mgm.addRedTeamPlayer(player);
+//					player.sendMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.RED + "Red Team");
+//					
+//					changeingName.name = ChatColor.RED.toString() + player.getName();
+//				}
+//				else{
+//					mgm.addBlueTeamPlayer(player);
+//					player.sendMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.BLUE + "Blue Team");
+//					
+//					changeingName.name = ChatColor.BLUE.toString() + player.getName();
+//				}
+//				
+//				for(Player ply : plugin.getServer().getOnlinePlayers()){
+//					if(ply != player){
+//						((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet20NamedEntitySpawn(changeingName));
+//					}
+//				}
+//				
+//				changeingName.name = oldName;
+//				
+//				player.teleport(lobby);
+//				player.sendMessage(ChatColor.GREEN + "You have started a " + gametype + " minigame, type /minigame quit to exit.");
+//				
+//				int neededPlayers = mgm.getMinPlayers() - 1;
+//				
+//				if(neededPlayers > 0){
+//					player.sendMessage(ChatColor.BLUE + "Waiting for " + neededPlayers + " more players.");
+//				}
+//				else
+//				{
+//					mgm.setMpTimer(new MultiplayerTimer(mgm.getName()));
+//					mgm.getMpTimer().startTimer();
+//				}
+//
+//				String teamColour = ChatColor.RED + "Red";
+//				if(mgm.getBlueTeam().contains(player)){
+//					teamColour = ChatColor.BLUE + "Blue";
+//				}
+//				mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + teamColour + ChatColor.WHITE + " team!", null, player);
+//				return true;
+//			}
 			else if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
 				player.sendMessage(ChatColor.RED + "Sorry, this minigame is full.");
 				return false;

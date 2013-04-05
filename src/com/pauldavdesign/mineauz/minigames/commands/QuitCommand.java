@@ -76,7 +76,7 @@ public class QuitCommand implements ICommand{
 					}
 				}
 				if(ply != null){
-					plugin.pdata.quitMinigame(ply, true);
+					plugin.pdata.quitMinigame(ply, false);
 					sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to quit the minigame.");
 				}
 				else{

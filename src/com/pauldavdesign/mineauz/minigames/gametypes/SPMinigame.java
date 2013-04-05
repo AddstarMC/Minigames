@@ -30,10 +30,10 @@ public class SPMinigame extends MinigameType{
 	@Override
 	public boolean joinMinigame(Player player, Minigame mgm){
 		if(mgm.getQuitPosition() != null && mgm.isEnabled()){
-			pdata.storePlayerData(player, mgm.getDefaultGamemode());
 			Location startpos = mdata.getMinigame(mgm.getName()).getStartLocations().get(0);
 			player.teleport(startpos);
-
+			
+			pdata.storePlayerData(player, mgm.getDefaultGamemode());
 			pdata.addPlayerMinigame(player, mgm);
 			mgm.addPlayer(player);
 			
