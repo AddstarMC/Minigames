@@ -3,6 +3,7 @@ package com.pauldavdesign.mineauz.minigames;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
@@ -46,6 +47,7 @@ public class PlayerLoadout {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void equiptLoadout(Player player){
 		player.getInventory().clear();
 		for(PotionEffect potion : player.getActivePotionEffects()){
@@ -88,15 +90,24 @@ public class PlayerLoadout {
 					}
 				}
 				else if(item.getTypeId() == 373){
-					Potion potion = Potion.fromItemStack(item);
-					potion.setHasExtendedDuration(true);
-					player.addPotionEffects(potion.getEffects());
+					final ItemStack fitem = item;
+					final Player ply = player;
+					Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+						
+						@Override
+						public void run() {
+							Potion potion = Potion.fromItemStack(fitem);
+							potion.setHasExtendedDuration(true);
+							ply.addPotionEffects(potion.getEffects());
+						}
+					});
 				}
 				else{
 					player.getInventory().addItem(item);
 				}
 			}
 		}
+		player.updateInventory();
 	}
 	
 	public List<ItemStack> getItems(){

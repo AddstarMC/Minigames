@@ -510,10 +510,12 @@ public class TeamDMMinigame extends MinigameType{
 		if(mgm.getBlueTeam().contains(player)){
 			mgm.getBlueTeam().remove(player);
 			mgm.addRedTeamPlayer(player);
+			mgm.removePlayersLoadout(player);
 		}
 		else{
 			mgm.getRedTeam().remove(player);
 			mgm.addBlueTeamPlayer(player);
+			mgm.removePlayersLoadout(player);
 		}
 	}
 	
@@ -591,6 +593,7 @@ public class TeamDMMinigame extends MinigameType{
 						}
 					}, 40L);
 				}
+				mg.getPlayersLoadout(event.getPlayer()).equiptLoadout(event.getPlayer());
 			}
 			else{
 				starts.addAll(mg.getStartLocations());

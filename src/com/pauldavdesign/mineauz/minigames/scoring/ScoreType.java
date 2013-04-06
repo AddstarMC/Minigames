@@ -1,7 +1,11 @@
 package com.pauldavdesign.mineauz.minigames.scoring;
 
+import java.util.List;
+
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
+import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
@@ -19,4 +23,6 @@ public abstract class ScoreType implements Listener{
 	}
 	
 	public abstract String getType();
+	
+	public abstract void startMinigame(List<Player> players, Minigame minigame);
 }

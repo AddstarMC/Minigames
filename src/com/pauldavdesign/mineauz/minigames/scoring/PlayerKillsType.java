@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 //import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,6 +19,149 @@ public class PlayerKillsType extends ScoreType{
 	@Override
 	public String getType() {
 		return "kills";
+	}
+
+	@Override
+	public void startMinigame(List<Player> players, Minigame minigame) {
+		Location start = null;
+		int pos = 0;
+		int bluepos = 0;
+		int redpos = 0;
+		
+		for(int i = 0; i < players.size(); i++){
+			if(!minigame.getType().equals("teamdm")){
+				pos += 1;
+				if(pos <= minigame.getStartLocations().size()){
+					start = minigame.getStartLocations().get(i);
+					players.get(i).teleport(start);
+					pdata.setPlayerCheckpoints(players.get(pos - 1), start);
+					if(minigame.getMaxScore() != 0 && minigame.getType().equals("dm") && !minigame.getScoreType().equals("none")){
+						players.get(i).sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + minigame.getMaxScorePerPlayer(minigame.getPlayers().size()));
+					}
+				} 
+				else{
+					pos = 1;
+					if(!minigame.getStartLocations().isEmpty()){
+						start = minigame.getStartLocations().get(0);
+						players.get(i).teleport(start);
+						pdata.setPlayerCheckpoints(players.get(pos - 1), start);
+						if(minigame.getMaxScore() != 0 && minigame.getType().equals("dm") && !minigame.getScoreType().equals("none")){
+							players.get(i).sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + minigame.getMaxScorePerPlayer(minigame.getPlayers().size()));
+						}
+					}
+					else {
+						players.get(i).sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Starting positions are incorrectly configured!");
+						pdata.quitMinigame(players.get(i), false);
+					}
+				}
+			}
+			else{
+				int team = -1;
+				if(minigame.getBlueTeam().contains(players.get(i))){
+					team = 1;
+				}
+				else if(minigame.getRedTeam().contains(players.get(i))){
+					team = 0;
+				}
+				
+				if(team == 1){
+					if(minigame.getRedTeam().size() < minigame.getBlueTeam().size() - 1){
+						minigame.getBlueTeam().remove(players.get(i));
+						minigame.addRedTeamPlayer(players.get(i));
+						team = 0;
+						players.get(i).sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been auto balanced to " + ChatColor.RED + "Red Team");
+						mdata.sendMinigameMessage(minigame, players.get(i).getName() + " has been auto balanced to " + ChatColor.RED + "Red Team", null, players.get(i));
+					}
+				}
+				else if(team == 0){
+					if(minigame.getBlueTeam().size() < minigame.getRedTeam().size() - 1){
+						minigame.getRedTeam().remove(players.get(i));
+						minigame.addBlueTeamPlayer(players.get(i));
+						team = 1;
+						players.get(i).sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been auto balanced to " + ChatColor.BLUE + "Blue Team");
+						mdata.sendMinigameMessage(minigame, players.get(i).getName() + " has been auto balanced to " + ChatColor.BLUE + "Blue Team", null, players.get(i));
+					}
+				}
+				else{
+					if(minigame.getRedTeam().size() <= minigame.getBlueTeam().size()){
+						minigame.addRedTeamPlayer(players.get(i));
+						team = 0;
+						players.get(i).sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been auto balanced to " + ChatColor.RED + "Red Team");
+						mdata.sendMinigameMessage(minigame, players.get(i).getName() + " has been auto balanced to " + ChatColor.RED + "Red Team", null, players.get(i));
+					}
+					else if(minigame.getBlueTeam().size() <= minigame.getRedTeam().size()){
+						minigame.addBlueTeamPlayer(players.get(i));
+						team = 1;
+						players.get(i).sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been auto balanced to " + ChatColor.BLUE + "Blue Team");
+						mdata.sendMinigameMessage(minigame, players.get(i).getName() + " has been auto balanced to " + ChatColor.BLUE + "Blue Team", null, players.get(i));
+					}
+				}
+				TeamDMMinigame.applyTeam(players.get(i), team);
+				
+				pos += 1;
+				if(!minigame.getStartLocationsRed().isEmpty() && !minigame.getStartLocationsBlue().isEmpty()){
+					if(team == 0 && redpos < minigame.getStartLocationsRed().size()){
+						start = minigame.getStartLocationsRed().get(redpos);
+						redpos++;
+					}
+					else if(team == 1 && bluepos < minigame.getStartLocationsBlue().size()){
+						start = minigame.getStartLocationsBlue().get(bluepos);
+						bluepos++;
+					}
+					else if(team == 0 && !minigame.getStartLocationsRed().isEmpty()){
+						redpos = 0;
+						start = minigame.getStartLocationsRed().get(redpos);
+						redpos++;
+					}
+					else if(team == 1 && !minigame.getStartLocationsBlue().isEmpty()){
+						bluepos = 0;
+						start = minigame.getStartLocationsBlue().get(bluepos);
+						bluepos++;
+					}
+					else if(minigame.getStartLocationsBlue().isEmpty() || minigame.getStartLocationsRed().isEmpty()){
+						players.get(i).sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Starting positions are incorrectly configured!");
+						pdata.quitMinigame(players.get(i), false);
+					}
+				}
+				else{
+					pos += 1;
+					if(pos <= minigame.getStartLocations().size()){
+						start = minigame.getStartLocations().get(i);
+						players.get(i).teleport(start);
+						pdata.setPlayerCheckpoints(players.get(pos - 1), start);
+					} 
+					else{
+						pos = 1;
+						if(!minigame.getStartLocations().isEmpty()){
+							start = minigame.getStartLocations().get(0);
+							players.get(i).teleport(start);
+							pdata.setPlayerCheckpoints(players.get(pos - 1), start);
+						}
+						else {
+							players.get(i).sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Starting positions are incorrectly configured!");
+							pdata.quitMinigame(players.get(i), false);
+						}
+					}
+				}
+				
+				if(start != null){
+					players.get(i).teleport(start);
+					pdata.setPlayerCheckpoints(players.get(pos - 1), start);
+					if(minigame.getMaxScore() != 0 && !minigame.getScoreType().equals("none")){
+						players.get(i).sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + minigame.getMaxScorePerPlayer(minigame.getPlayers().size()));
+					}
+				}
+			}
+			
+			if(!minigame.getPlayersLoadout(players.get(i)).getItems().isEmpty()){
+				minigame.getPlayersLoadout(players.get(i)).equiptLoadout(players.get(i));
+			}
+			
+			if(minigame.getLives() > 0){
+				players.get(i).sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + minigame.getLives());
+			}
+		}
+		
 	}
 	
 	@EventHandler

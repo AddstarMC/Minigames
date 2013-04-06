@@ -9,10 +9,18 @@ public class ScoreTypes {
 	static{
 		addScoreType(new PlayerKillsType());
 		addScoreType(new CTFType());
+		addScoreType(new InfectionType());
 	}
 	
 	public static void addScoreType(ScoreType type){
 		scoreTypes.put(type.getType(), type);
+	}
+	
+	public static ScoreType getScoreType(String type){
+		if(scoreTypes.containsKey(type)){
+			return scoreTypes.get(type);
+		}
+		return null;
 	}
 	
 	public Map<String, ScoreType> getScoreTypes(){
