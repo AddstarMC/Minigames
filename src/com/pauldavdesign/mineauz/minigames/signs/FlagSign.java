@@ -1,9 +1,9 @@
 package com.pauldavdesign.mineauz.minigames.signs;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
@@ -80,9 +80,7 @@ public class FlagSign implements MinigameSign {
 			if(mgm.isSpectator(player)){
 				return false;
 			}
-			Location loc = player.getLocation();
-			loc.setY(loc.getY() - 1);
-			if(!sign.getLine(2).isEmpty() && loc.getBlock().getType() != Material.AIR && 
+			if(!sign.getLine(2).isEmpty() && ((LivingEntity)player).isOnGround() && 
 					!mgm.getScoreType().equals("ctf") &&
 					!plugin.pdata.playerHasFlag(player, sign.getLine(2).replaceAll(ChatColor.RED.toString(), "").replaceAll(ChatColor.BLUE.toString(), ""))){
 				plugin.pdata.addPlayerFlags(player, sign.getLine(2).replaceAll(ChatColor.RED.toString(), "").replaceAll(ChatColor.BLUE.toString(), ""));

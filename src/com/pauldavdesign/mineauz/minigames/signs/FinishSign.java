@@ -3,9 +3,9 @@ package com.pauldavdesign.mineauz.minigames.signs;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
@@ -57,9 +57,7 @@ public class FinishSign implements MinigameSign {
 			}
 			
 			if(!minigame.getFlags().isEmpty()){
-				Location loc = player.getLocation();
-				loc.setY(loc.getY() - 1);
-				if(loc.getBlock().getType() != Material.AIR){
+				if(((LivingEntity)player).isOnGround()){
 					
 					if(plugin.pdata.checkRequiredFlags(player, minigame.getName()).isEmpty()){
 						plugin.pdata.endMinigame(player);
@@ -83,9 +81,7 @@ public class FinishSign implements MinigameSign {
 				return true;
 			}
 			else{
-				Location loc = player.getLocation();
-				loc.setY(loc.getY() - 1);
-				if(loc.getBlock().getType() != Material.AIR){
+				if(((LivingEntity)player).isOnGround()){
 					plugin.pdata.endMinigame(player);
 					plugin.pdata.partyMode(player);
 					return true;

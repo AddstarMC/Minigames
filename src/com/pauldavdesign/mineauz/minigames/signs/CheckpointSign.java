@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
@@ -55,9 +56,7 @@ public class CheckpointSign implements MinigameSign {
 			if(plugin.pdata.playerInMinigame(player) && plugin.pdata.getPlayersMinigame(player).isSpectator(player)){
 				return false;
 			}
-			Location loc = player.getLocation();
-			loc.setY(loc.getY() - 0.5);
-			if(loc.getBlock().getType() != Material.AIR){
+			if(((LivingEntity)player).isOnGround()){
 				Location newloc = player.getLocation();
 				if(!sign.getLine(2).equals(ChatColor.BLUE + "Global")){
 					plugin.pdata.setPlayerCheckpoints(player, newloc);
