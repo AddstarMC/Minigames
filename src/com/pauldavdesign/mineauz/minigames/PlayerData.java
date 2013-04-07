@@ -26,6 +26,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 
 import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
+import com.pauldavdesign.mineauz.minigames.events.EndTeamMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.JoinMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.RevertCheckpointEvent;
@@ -459,95 +460,102 @@ public class PlayerData {
 			//Blue team
 			losers = mgm.getRedTeam();
 			winners = mgm.getBlueTeam();
-			if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
-				plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " won " + mgm.getName() + ", " + ChatColor.BLUE + mgm.getBlueTeamScore() + ChatColor.WHITE + " to " + ChatColor.RED + mgm.getRedTeamScore());
-			}
 		}
 		else{
 			//Red team
 			losers = mgm.getBlueTeam();
 			winners = mgm.getRedTeam();
-			if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
-				plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " won " + mgm.getName() + ", " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore());
-			}
 		}
 		
-		mgm.setRedTeamScore(0);
-		mgm.setBlueTeamScore(0);
-		
-		mgm.getMpTimer().setStartWaitTime(0);
-		
-		List<Player> winplayers = new ArrayList<Player>();
-		winplayers.addAll(winners);
 
-		if(plugin.getSQL() != null){
-			new SQLCompletionSaver(mgm.getName(), winplayers, mdata.minigameType(mgm.getType()));
-		}
+		EndTeamMinigameEvent event = new EndTeamMinigameEvent(losers, winners, mgm, teamnum);
+		Bukkit.getServer().getPluginManager().callEvent(event);
 		
-		if(mgm.getMpBets() != null){
-			if(mgm.getMpBets().hasMoneyBets()){
-				List<Player> plys = null;
-				if(teamnum == 0){
-					plys = mgm.getRedTeam();
-				}
-				else{
-					plys = mgm.getBlueTeam();
-				}
-				double bets = mgm.getMpBets().claimMoneyBets() / (double) plys.size();
-				BigDecimal roundBets = new BigDecimal(bets);
-				roundBets = roundBets.setScale(2, BigDecimal.ROUND_HALF_UP);
-				bets = roundBets.doubleValue();
-				for(Player ply : plys){
-					plugin.getEconomy().depositPlayer(ply.getName(), bets);
-					ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You won $" + bets);
+		if(!event.isCancelled()){
+			if(event.getWinningTeamInt() == 1){
+				if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
+					plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " won " + mgm.getName() + ", " + ChatColor.BLUE + mgm.getBlueTeamScore() + ChatColor.WHITE + " to " + ChatColor.RED + mgm.getRedTeamScore());
 				}
 			}
-			mgm.setMpBets(null);
-		}
-		
-		if(!losers.isEmpty()){
-			List<Player> loseplayers = new ArrayList<Player>();
-			loseplayers.addAll(losers);
-			for(int i = 0; i < loseplayers.size(); i++){
-				if(loseplayers.get(i) instanceof Player){
-					final Player p = loseplayers.get(i);
+			else{
+				if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
+					plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " won " + mgm.getName() + ", " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore());
+				}
+			}
+			
+			mgm.setRedTeamScore(0);
+			mgm.setBlueTeamScore(0);
+			
+			mgm.getMpTimer().setStartWaitTime(0);
+			
+			List<Player> winplayers = new ArrayList<Player>();
+			winplayers.addAll(event.getWinnningPlayers());
+	
+			if(plugin.getSQL() != null){
+				new SQLCompletionSaver(mgm.getName(), winplayers, mdata.minigameType(mgm.getType()));
+			}
+			
+			if(mgm.getMpBets() != null){
+				if(mgm.getMpBets().hasMoneyBets()){
+					List<Player> plys = new ArrayList<Player>();
+					plys.addAll(event.getWinnningPlayers());
 					
+					double bets = mgm.getMpBets().claimMoneyBets() / (double) plys.size();
+					BigDecimal roundBets = new BigDecimal(bets);
+					roundBets = roundBets.setScale(2, BigDecimal.ROUND_HALF_UP);
+					bets = roundBets.doubleValue();
+					for(Player ply : plys){
+						plugin.getEconomy().depositPlayer(ply.getName(), bets);
+						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You won $" + bets);
+					}
+				}
+				mgm.setMpBets(null);
+			}
+			
+			if(!event.getLosingPlayers().isEmpty()){
+				List<Player> loseplayers = new ArrayList<Player>();
+				loseplayers.addAll(event.getLosingPlayers());
+				for(int i = 0; i < loseplayers.size(); i++){
+					if(loseplayers.get(i) instanceof Player){
+						final Player p = loseplayers.get(i);
+						
+						Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+	
+							@Override
+							public void run() {
+								p.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You have been beaten! Bad luck!");
+								quitMinigame(p, true);
+							}
+						});
+					}
+					else{
+						loseplayers.remove(i);
+					}
+				}
+				mgm.setMpTimer(null);
+				for(Player pl : loseplayers){
+					mgm.getPlayers().remove(pl);
+				}
+			}
+			
+			for(int i = 0; i < winplayers.size(); i++){
+				if(winplayers.get(i) instanceof Player){
+					final Player p = winplayers.get(i);
 					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-
+						
 						@Override
 						public void run() {
-							p.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You have been beaten! Bad luck!");
-							quitMinigame(p, true);
+							endMinigame(p);
 						}
 					});
 				}
 				else{
-					loseplayers.remove(i);
+					winplayers.remove(i);
 				}
 			}
+			
 			mgm.setMpTimer(null);
-			for(Player pl : loseplayers){
-				mgm.getPlayers().remove(pl);
-			}
 		}
-		
-		for(int i = 0; i < winplayers.size(); i++){
-			if(winplayers.get(i) instanceof Player){
-				final Player p = winplayers.get(i);
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						endMinigame(p);
-					}
-				});
-			}
-			else{
-				winplayers.remove(i);
-			}
-		}
-		
-		mgm.setMpTimer(null);
 	}
 	
 	public boolean playerInMinigame(Player player){
