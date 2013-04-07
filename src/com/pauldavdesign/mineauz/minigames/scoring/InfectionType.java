@@ -10,7 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
-import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
+import com.pauldavdesign.mineauz.minigames.events.EndTeamMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 
@@ -139,16 +139,15 @@ public class InfectionType extends ScoreType{
 			Minigame mgm = pdata.getPlayersMinigame(event.getEntity());
 			if(mgm.getType().equals("teamdm") && mgm.getScoreType().equals("infection")){
 				if(mgm.getBlueTeam().contains(event.getEntity())){
-					if(mgm.getBlueTeam().isEmpty()){
-						event.getEntity().setHealth(2);
-						pdata.endTeamMinigame(0, mgm);
-						return;
-					}
 					TeamDMMinigame.switchTeam(mgm, event.getEntity());
 					TeamDMMinigame.applyTeam(event.getEntity(), 0);
 					infected.add(event.getEntity());
 					if(mgm.getLives() != pdata.getPlayerDeath(event.getEntity())){
 						mdata.sendMinigameMessage(mgm, event.getEntity().getName() + " has become " + ChatColor.RED + "Infected!", "error", null);
+					}
+					if(mgm.getBlueTeam().isEmpty()){
+						event.getEntity().setHealth(2);
+						pdata.endTeamMinigame(0, mgm);
 					}
 				}
 			}
@@ -156,11 +155,17 @@ public class InfectionType extends ScoreType{
 	}
 	
 	@EventHandler
-	private void endMinigame(EndMinigameEvent event){
-		if(infected.contains(event.getPlayer())){
-			event.setCancelled(true);
-			pdata.quitMinigame(event.getPlayer(), true);
-			infected.remove(event.getPlayer());
+	private void endTeamMinigame(EndTeamMinigameEvent event){
+		if(event.getMinigame().getScoreType().equals("infection")){
+			List<Player> infect = new ArrayList<Player>();
+			infect.addAll(infected);
+			for(Player inf : infect){
+				if(event.getWinnningPlayers().contains(inf)){
+					event.getWinnningPlayers().remove(inf);
+					event.getLosingPlayers().add(inf);
+					infected.remove(inf);
+				}
+			}
 		}
 	}
 	
