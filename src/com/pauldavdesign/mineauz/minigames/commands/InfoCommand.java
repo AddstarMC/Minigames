@@ -68,6 +68,17 @@ public class InfoCommand implements ICommand{
 						lines.add(ChatColor.GRAY + "Minimum Score: " + ChatColor.GREEN + mgm.getMinScore());
 						lines.add(ChatColor.GRAY + "Maximum Score: " + ChatColor.GREEN + mgm.getMaxScore());
 					}
+					if(mgm.getType().equals("teamdm")){
+						if(mgm.getDefaultWinner().equals("red")){
+							lines.add(ChatColor.GRAY + "Default Winning Team: " + ChatColor.RED + mgm.getDefaultWinner());
+						}
+						else if(mgm.getDefaultWinner().equals("blue")){
+							lines.add(ChatColor.GRAY + "Default Winning Team: " + ChatColor.BLUE + mgm.getDefaultWinner());
+						}
+						else{
+							lines.add(ChatColor.GRAY + "Default Winning Team: " + ChatColor.GRAY + mgm.getDefaultWinner());
+						}
+					}
 					
 					if(mgm.isEnabled()){
 						lines.add(ChatColor.GRAY + "Enabled: " + ChatColor.GREEN + "true");
@@ -293,6 +304,20 @@ public class InfoCommand implements ICommand{
 						else{
 							lines.add(ChatColor.GRAY + "Late Join: " + ChatColor.RED + "false");
 						}
+					}
+					
+					if(mgm.isRandomizeChests()){
+						lines.add(ChatColor.GRAY + "Randomize Chests: " + ChatColor.GREEN + "true");
+					}
+					else{
+						lines.add(ChatColor.GRAY + "Randomize Chests: " + ChatColor.RED + "false");
+					}
+					
+					if(mgm.isAutoEquipPotion()){
+						lines.add(ChatColor.GRAY + "Auto Equip Potions: " + ChatColor.GREEN + "true");
+					}
+					else{
+						lines.add(ChatColor.GRAY + "Auto Equip Potions: " + ChatColor.RED + "false");
 					}
 				}
 				else{
