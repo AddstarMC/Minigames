@@ -216,13 +216,16 @@ public class CTFType extends ScoreType{
 								if(team == 0 && mgm.getFlagCarrier(ply).getTeam() == 1){
 									String message = ply.getName() + " stole " + ChatColor.BLUE + "Blue Team's" + ChatColor.WHITE + " flag!";
 									mdata.sendMinigameMessage(mgm, message, null, null);
+									mgm.getFlagCarrier(ply).startCarrierParticleEffect(ply);
 								}else if(team == 1 && mgm.getFlagCarrier(ply).getTeam() == 0){
 									String message = ply.getName() + " stole " + ChatColor.RED + "Red Team's" + ChatColor.WHITE + " flag!";
 									mdata.sendMinigameMessage(mgm, message, null, null);
+									mgm.getFlagCarrier(ply).startCarrierParticleEffect(ply);
 								}
 								else{
 									String message = ply.getName() + " stole the " + ChatColor.GRAY + "neutral" + ChatColor.WHITE + " flag!";
 									mdata.sendMinigameMessage(mgm, message, null, null);
+									mgm.getFlagCarrier(ply).startCarrierParticleEffect(ply);
 								}
 							}
 							
@@ -267,6 +270,7 @@ public class CTFType extends ScoreType{
 										String message = ply.getName() + " captured a flag for " + ChatColor.BLUE + "Blue Team";
 										mdata.sendMinigameMessage(mgm, message, null, null);
 									}
+									flag.stopCarrierParticleEffect();
 									mdata.sendMinigameMessage(mgm, "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore(), null, null);
 									
 									if(end){
@@ -294,6 +298,7 @@ public class CTFType extends ScoreType{
 									
 									mdata.sendMinigameMessage(mgm, ply.getName() + " captured a flag", null, null);
 									mdata.sendMinigameMessage(mgm, ply.getName() + "'s Score: " + pdata.getPlayerScore(ply), null, null);
+									flag.stopCarrierParticleEffect();
 									
 									if(end){
 										mdata.sendMinigameMessage(mgm, ChatColor.WHITE + ply.getName() + " captured the final flag", null, null);
@@ -319,6 +324,7 @@ public class CTFType extends ScoreType{
 								}
 								else{
 									mdata.sendMinigameMessage(mgm, ply.getName() + " stole the " + ChatColor.GRAY + "neutral" + ChatColor.WHITE + " flag!", null, null);
+									mgm.getFlagCarrier(ply).startCarrierParticleEffect(ply);
 								}
 							}
 							else if(mgm.getFlagCarrier(ply) != null && mgm.hasDroppedFlag(clickID) && !mgm.getDroppedFlag(clickID).isAtHome()){
@@ -352,10 +358,13 @@ public class CTFType extends ScoreType{
 					else{
 						mdata.sendMinigameMessage(mgm, ply.getName() + " dropped the " + ChatColor.GRAY + "neutral" + ChatColor.WHITE + " flag!", null, null);
 					}
+					flag.stopCarrierParticleEffect();
+					flag.startReturnTimer();
 				}
 				else{
 					flag.respawnFlag();
 					mgm.removeFlagCarrier(ply);
+					flag.stopCarrierParticleEffect();
 				}
 			}
 		}
@@ -365,10 +374,14 @@ public class CTFType extends ScoreType{
 	private void playerQuitMinigame(QuitMinigameEvent event){
 		if(event.getMinigame().getScoreType().equals("ctf")){
 			if(!event.isForced() && event.getMinigame().getPlayers().size() == 1){
+				if(event.getMinigame().isFlagCarrier(event.getPlayer())){
+					event.getMinigame().getFlagCarrier(event.getPlayer()).stopCarrierParticleEffect();
+					event.getMinigame().removeFlagCarrier(event.getPlayer());
+				}
 				event.getMinigame().resetFlags();
-				event.getMinigame().removeFlagCarrier(event.getPlayer());
 			}
 			else if(event.getMinigame().isFlagCarrier(event.getPlayer())){
+				event.getMinigame().getFlagCarrier(event.getPlayer()).stopCarrierParticleEffect();
 				event.getMinigame().getFlagCarrier(event.getPlayer()).respawnFlag();
 				event.getMinigame().removeFlagCarrier(event.getPlayer());
 			}
@@ -380,6 +393,7 @@ public class CTFType extends ScoreType{
 		if(event.getMinigame().getScoreType().equals("ctf")){
 			if(event.getMinigame().isFlagCarrier(event.getPlayer())){
 				event.getMinigame().getFlagCarrier(event.getPlayer()).respawnFlag();
+				event.getMinigame().getFlagCarrier(event.getPlayer()).stopCarrierParticleEffect();
 				event.getMinigame().removeFlagCarrier(event.getPlayer());
 			}
 		}

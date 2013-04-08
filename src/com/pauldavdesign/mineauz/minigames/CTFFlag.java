@@ -2,6 +2,7 @@ package com.pauldavdesign.mineauz.minigames;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -21,6 +22,7 @@ public class CTFFlag{
 	private int respawnTime = 60;
 	private int taskID = -1;
 	private Minigame minigame = null;
+	private int cParticleID = -1;
 	
 	public CTFFlag(Location spawn, int team, Player carrier, Minigame minigame){
 		spawnLocation = spawn;
@@ -29,7 +31,7 @@ public class CTFFlag{
 		this.team = team;
 		this.setMinigame(minigame);
 		respawnTime = Minigames.plugin.getConfig().getInt("multiplayer.ctf.flagrespawntime");
-		startReturnTimer();
+//		startReturnTimer();
 	}
 	
 	public Location getSpawnLocation() {
@@ -172,7 +174,7 @@ public class CTFFlag{
 	
 	public void startReturnTimer(){
 		final CTFFlag self = this;
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+		taskID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
 			
 			@Override
 			public void run() {
@@ -196,5 +198,22 @@ public class CTFFlag{
 				taskID = -1;
 			}
 		}, respawnTime * 20);
+	}
+	
+	public void startCarrierParticleEffect(final Player player){
+		cParticleID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, new Runnable() {
+			
+			@Override
+			public void run() {
+				player.getWorld().playEffect(player.getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
+			}
+		}, 15L, 15L);
+	}
+	
+	public void stopCarrierParticleEffect(){
+		if(cParticleID != -1){
+			Bukkit.getScheduler().cancelTask(cParticleID);
+			cParticleID = -1;
+		}
 	}
 }
