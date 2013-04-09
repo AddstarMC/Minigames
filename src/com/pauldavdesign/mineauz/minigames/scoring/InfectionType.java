@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -24,12 +23,7 @@ public class InfectionType extends ScoreType{
 	}
 
 	@Override
-	public void startMinigame(List<Player> players, Minigame minigame) {
-		Location start = null;
-		int pos = 0;
-		int bluepos = 0;
-		int redpos = 0;
-		
+	public void balanceTeam(List<Player> players, Minigame minigame) {
 		for(int i = 0; i < players.size(); i++){
 			Player ply = players.get(i);
 			if(!minigame.getType().equals("teamdm")){
@@ -68,67 +62,6 @@ public class InfectionType extends ScoreType{
 					}
 				}
 				TeamDMMinigame.applyTeam(players.get(i), team);
-				
-				pos += 1;
-				if(!minigame.getStartLocationsRed().isEmpty() && !minigame.getStartLocationsBlue().isEmpty()){
-					if(team == 0 && redpos < minigame.getStartLocationsRed().size()){
-						start = minigame.getStartLocationsRed().get(redpos);
-						redpos++;
-					}
-					else if(team == 1 && bluepos < minigame.getStartLocationsBlue().size()){
-						start = minigame.getStartLocationsBlue().get(bluepos);
-						bluepos++;
-					}
-					else if(team == 0 && !minigame.getStartLocationsRed().isEmpty()){
-						redpos = 0;
-						start = minigame.getStartLocationsRed().get(redpos);
-						redpos++;
-					}
-					else if(team == 1 && !minigame.getStartLocationsBlue().isEmpty()){
-						bluepos = 0;
-						start = minigame.getStartLocationsBlue().get(bluepos);
-						bluepos++;
-					}
-					else if(minigame.getStartLocationsBlue().isEmpty() || minigame.getStartLocationsRed().isEmpty()){
-						ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Starting positions are incorrectly configured!");
-						pdata.quitMinigame(players.get(i), false);
-					}
-				}
-				else{
-					pos += 1;
-					if(pos <= minigame.getStartLocations().size()){
-						start = minigame.getStartLocations().get(i);
-					} 
-					else{
-						pos = 1;
-						if(!minigame.getStartLocations().isEmpty()){
-							start = minigame.getStartLocations().get(0);
-						}
-						else {
-							ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Starting positions are incorrectly configured!");
-							pdata.quitMinigame(ply, false);
-						}
-					}
-				}
-				
-				if(start != null){
-					ply.teleport(start);
-					pdata.setPlayerCheckpoints(ply, start);
-					if(team == 0){
-						players.get(i).sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Infect all the survivors to win!");
-					}
-					else{
-						players.get(i).sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Survive the infection to win!");
-					}
-				}
-			}
-			
-			if(!minigame.getPlayersLoadout(ply).getItems().isEmpty()){
-				minigame.getPlayersLoadout(ply).equiptLoadout(players.get(i));
-			}
-			
-			if(minigame.getLives() > 0){
-				ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + minigame.getLives());
 			}
 		}
 	}
@@ -161,8 +94,10 @@ public class InfectionType extends ScoreType{
 			infect.addAll(infected);
 			for(Player inf : infect){
 				if(event.getWinnningPlayers().contains(inf)){
-					event.getWinnningPlayers().remove(inf);
-					event.getLosingPlayers().add(inf);
+					if(event.getWinningTeamInt() == 0){
+						event.getWinnningPlayers().remove(inf);
+						event.getLosingPlayers().add(inf);
+					}
 					infected.remove(inf);
 				}
 			}

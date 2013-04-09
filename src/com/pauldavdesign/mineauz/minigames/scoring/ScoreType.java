@@ -24,5 +24,5 @@ public abstract class ScoreType implements Listener{
 	
 	public abstract String getType();
 	
-	public abstract void startMinigame(List<Player> players, Minigame minigame);
+	public abstract void balanceTeam(List<Player> players, Minigame minigame);
 }

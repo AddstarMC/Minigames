@@ -207,10 +207,115 @@ public class PlayerData {
 			setAllowTP(pl, true);
 		}
 		
+		Collections.shuffle(players);
+		
 		Minigame mgm = mdata.getMinigame(minigame);
-		if(ScoreTypes.getScoreType(mgm.getScoreType()) != null){
-			Collections.shuffle(players);
-			ScoreTypes.getScoreType(mgm.getScoreType()).startMinigame(players, mgm);
+		if(mgm.getType().equals("teamdm") && ScoreTypes.getScoreType(mgm.getScoreType()) != null){
+			ScoreTypes.getScoreType(mgm.getScoreType()).balanceTeam(players, mgm);
+		}
+		
+		Location start = null;
+		int pos = 0;
+		int bluepos = 0;
+		int redpos = 0;
+		
+		for(Player ply : players){
+			if(!mgm.getType().equals("teamdm")){
+			if(pos <= mgm.getStartLocations().size()){
+				start = mgm.getStartLocations().get(pos);
+				ply.teleport(start);
+				setPlayerCheckpoints(ply, start);
+				if(mgm.getMaxScore() != 0 && mgm.getType().equals("dm") && !mgm.getScoreType().equals("none")){
+					ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
+				}
+			} 
+			else{
+				pos = 1;
+				if(!mgm.getStartLocations().isEmpty()){
+					start = mgm.getStartLocations().get(0);
+					ply.teleport(start);
+					setPlayerCheckpoints(ply, start);
+					if(mgm.getMaxScore() != 0 && mgm.getType().equals("dm") && !mgm.getScoreType().equals("none")){
+						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
+					}
+				}
+				else {
+					ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Starting positions are incorrectly configured!");
+					quitMinigame(ply, false);
+				}
+			}
+			}
+			else{
+				int team = -1;
+				if(mgm.getBlueTeam().contains(ply)){
+					team = 1;
+				}
+				else if(mgm.getRedTeam().contains(ply)){
+					team = 0;
+				}
+				pos += 1;
+				if(!mgm.getStartLocationsRed().isEmpty() && !mgm.getStartLocationsBlue().isEmpty()){
+					if(team == 0 && redpos < mgm.getStartLocationsRed().size()){
+						start = mgm.getStartLocationsRed().get(redpos);
+						redpos++;
+					}
+					else if(team == 1 && bluepos < mgm.getStartLocationsBlue().size()){
+						start = mgm.getStartLocationsBlue().get(bluepos);
+						bluepos++;
+					}
+					else if(team == 0 && !mgm.getStartLocationsRed().isEmpty()){
+						redpos = 0;
+						start = mgm.getStartLocationsRed().get(redpos);
+						redpos++;
+					}
+					else if(team == 1 && !mgm.getStartLocationsBlue().isEmpty()){
+						bluepos = 0;
+						start = mgm.getStartLocationsBlue().get(bluepos);
+						bluepos++;
+					}
+					else if(mgm.getStartLocationsBlue().isEmpty() || mgm.getStartLocationsRed().isEmpty()){
+						ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Starting positions are incorrectly configured!");
+						quitMinigame(ply, false);
+					}
+				}
+				else{
+					pos += 1;
+					if(pos <= mgm.getStartLocations().size()){
+						start = mgm.getStartLocations().get(pos);
+						ply.teleport(start);
+						setPlayerCheckpoints(ply, start);
+					} 
+					else{
+						pos = 1;
+						if(!mgm.getStartLocations().isEmpty()){
+							start = mgm.getStartLocations().get(0);
+							ply.teleport(start);
+							setPlayerCheckpoints(ply, start);
+						}
+						else {
+							ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Starting positions are incorrectly configured!");
+							quitMinigame(ply, false);
+						}
+					}
+				}
+				
+				if(start != null){
+					ply.teleport(start);
+					setPlayerCheckpoints(ply, start);
+					if(mgm.getMaxScore() != 0 && !mgm.getScoreType().equals("none")){
+						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
+					}
+				}
+				
+				if(!mgm.getPlayersLoadout(ply).getItems().isEmpty()){
+					mgm.getPlayersLoadout(ply).equiptLoadout(ply);
+				}
+				
+				if(mgm.getLives() > 0){
+					ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + mgm.getLives());
+				}
+			}
+			pos += 1;
 		}
 
 		if(mgm.getSpleefFloor1() != null && mgm.getSpleefFloor2() != null){
