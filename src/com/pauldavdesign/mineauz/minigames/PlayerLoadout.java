@@ -92,7 +92,8 @@ public class PlayerLoadout {
 							item.getTypeId() == 302 ||
 							item.getTypeId() == 306 ||
 							item.getTypeId() == 310 ||
-							item.getTypeId() == 314){
+							item.getTypeId() == 314 ||
+							item.getTypeId() == 397){
 						player.getInventory().setHelmet(item);
 					}
 					else if(item.getTypeId() == 299 ||
