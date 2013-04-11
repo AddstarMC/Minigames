@@ -579,12 +579,20 @@ public class PlayerData {
 		if(!event.isCancelled()){
 			if(event.getWinningTeamInt() == 1){
 				if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
-					plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " won " + mgm.getName() + ", " + ChatColor.BLUE + mgm.getBlueTeamScore() + ChatColor.WHITE + " to " + ChatColor.RED + mgm.getRedTeamScore());
+					String score = "";
+					if(mgm.getRedTeamScore() != 0 && mgm.getBlueTeamScore() != 0){
+						score = ", " + ChatColor.BLUE + mgm.getBlueTeamScore() + ChatColor.WHITE + " to " + ChatColor.RED + mgm.getRedTeamScore();
+					}
+					plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " won " + mgm.getName() + score);
 				}
 			}
 			else{
 				if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
-					plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " won " + mgm.getName() + ", " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore());
+					String score = "";
+					if(mgm.getRedTeamScore() != 0 && mgm.getBlueTeamScore() != 0){
+						score = ", " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore();
+					}
+					plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " won " + mgm.getName() + score);
 				}
 			}
 			
