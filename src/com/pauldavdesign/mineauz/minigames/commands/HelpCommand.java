@@ -81,10 +81,6 @@ public class HelpCommand implements ICommand{
 			sender.sendMessage(ChatColor.BLUE + "/minigame delete <Minigame>");
 			sender.sendMessage("Deletes a Minigame permanently");
 		}
-		if(player == null || player.hasPermission("minigame.sregen")){
-			sender.sendMessage(ChatColor.BLUE + "/minigame sregen <Minigame>");
-			sender.sendMessage("Regenerates a Minigames spleef floor");
-		}
 		if(player == null || player.hasPermission("minigame.restoreinv")){
 			sender.sendMessage(ChatColor.BLUE + "/minigame restoreinv <Player>");
 			sender.sendMessage("Restores a players inventory if lost in the Minigame due to a crash (or bug)");
