@@ -65,7 +65,6 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetRandomizeChestsCommand());
 		registerSetCommand(new SetRegenAreaCommand());
 		registerSetCommand(new SetLivesCommand());
-		registerSetCommand(new SetAutoPotionCommand());
 		registerSetCommand(new SetDefaultWinnerCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){

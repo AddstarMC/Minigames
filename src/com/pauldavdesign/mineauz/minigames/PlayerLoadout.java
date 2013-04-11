@@ -6,11 +6,11 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 
 public class PlayerLoadout {
 	private List<ItemStack> items = new ArrayList<ItemStack>();
+	private List<PotionEffect> potions = new ArrayList<PotionEffect>();
 	private String loadoutName = "default";
 	private boolean usePermission = false;
 	
@@ -45,6 +45,34 @@ public class PlayerLoadout {
 				break;
 			}
 		}
+	}
+	
+	public void addPotionEffect(PotionEffect effect){
+		for(PotionEffect pot : potions){
+			if(effect.getType().getName().equals(pot.getType().getName())){
+				potions.remove(pot);
+				break;
+			}
+		}
+		potions.add(effect);
+	}
+	
+	public void removePotionEffect(PotionEffect effect){
+		if(potions.contains(effect)){
+			potions.remove(effect);
+		}
+		else{
+			for(PotionEffect pot : potions){
+				if(pot.getType().getName().equals(effect.getType().getName())){
+					potions.remove(pot);
+					break;
+				}
+			}
+		}
+	}
+	
+	public List<PotionEffect> getAllPotionEffects(){
+		return potions;
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -89,22 +117,18 @@ public class PlayerLoadout {
 						player.getInventory().setBoots(item);
 					}
 				}
-				else if(item.getTypeId() == 373){
-					final ItemStack fitem = item;
-					final Player ply = player;
-					Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-						
-						@Override
-						public void run() {
-							Potion potion = Potion.fromItemStack(fitem);
-							potion.setHasExtendedDuration(true);
-							ply.addPotionEffects(potion.getEffects());
-						}
-					});
-				}
 				else{
 					player.getInventory().addItem(item);
 				}
+				
+				final Player fplayer = player;
+				Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+					
+					@Override
+					public void run() {
+						fplayer.addPotionEffects(potions);
+					}
+				});
 			}
 		}
 		player.updateInventory();

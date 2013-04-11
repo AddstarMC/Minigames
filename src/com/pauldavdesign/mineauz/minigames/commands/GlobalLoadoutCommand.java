@@ -5,11 +5,14 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
 
 public class GlobalLoadoutCommand implements ICommand {
 	private MinigameData mdata = Minigames.plugin.mdata;
@@ -39,7 +42,7 @@ public class GlobalLoadoutCommand implements ICommand {
 
 	@Override
 	public String[] getParameters() {
-		return new String[] {"create", "delete", "add", "remove", "clear", "list"};
+		return new String[] {"create", "delete", "add", "remove", "clear", "list", "addpotion", "removepotion"};
 	}
 
 	@Override
@@ -52,7 +55,9 @@ public class GlobalLoadoutCommand implements ICommand {
 				"/minigame globalloadout <loadoutName> create",
 				"/minigame globalloadout <loadoutName> delete",
 				"/minigame globalloadout <loadoutName> usepermissions <true/false>",
-				"/minigame globalloadout list"
+				"/minigame globalloadout list",
+				"/minigame globalloadout <loadoutName> addpotion <PotionName/ID> <duration> <amplifier>",
+				"/minigame globalloadout <loadoutName> removepotion <PotionName/ID>"
 		};
 	}
 
@@ -70,10 +75,18 @@ public class GlobalLoadoutCommand implements ICommand {
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
+			String loadout = args[0];
+			PlayerLoadout load = null;
+			if(mdata.hasLoadout(loadout)){
+				load = mdata.getLoadout(loadout);
+			}
+			else if(!args[0].equalsIgnoreCase("list")){
+				sender.sendMessage(ChatColor.RED + "There is no loadout by the name of \"" + loadout + "\" in global loadouts!");
+				return true;
+			}
+			
 			if(args.length >= 3 && args[1].equalsIgnoreCase("add")){
-				String loadout = args[0];
 				int quantity = 1;
-				
 				
 				if(args[2].equals("ME")){
 					if(sender instanceof Player){
@@ -185,7 +198,6 @@ public class GlobalLoadoutCommand implements ICommand {
 					
 			}
 			else if(args.length >= 3 && args[1].equalsIgnoreCase("remove")){
-				String loadout = args[0];
 				
 				if(mdata.hasLoadout(loadout)){
 					mdata.getLoadout(loadout).removeItemFromLoadout(MinigameUtils.stringToItemStack(args[2], 1));
@@ -197,8 +209,6 @@ public class GlobalLoadoutCommand implements ICommand {
 				return true;
 			}
 			else if(args.length >= 2 && args[1].equalsIgnoreCase("clear")){
-				String loadout = args[0];
-				
 				if(mdata.hasLoadout(loadout)){
 					mdata.getLoadout(loadout).clearLoadout();
 					sender.sendMessage(ChatColor.GRAY + "Cleared all items in the " + loadout + " loadout from global loadouts");
@@ -231,8 +241,8 @@ public class GlobalLoadoutCommand implements ICommand {
 			else if(args[0].equalsIgnoreCase("list")){
 				String list = "";
 				int count = 0;
-				for(String loadout : mdata.getLoadouts()){
-					list += loadout;
+				for(String lo : mdata.getLoadouts()){
+					list += lo;
 					count++;
 					if(count != mdata.getLoadouts().size()){
 						list += ", ";
@@ -255,6 +265,65 @@ public class GlobalLoadoutCommand implements ICommand {
 				}
 				else{
 					sender.sendMessage(ChatColor.RED + "There is no global loadout by the name " + args[0]);
+				}
+				return true;
+			}
+			else if(args[1].equalsIgnoreCase("addpotion") && args.length >= 5){
+				PotionEffectType potion = PotionEffectType.getByName(args[2]);
+				if(args[1].matches("[0-9]+")){
+					potion = PotionEffectType.getById(Integer.parseInt(args[2]));
+				}
+				int duration;
+				int amplifier;
+				
+				if(args[3].matches("[0-9]+")){
+					duration = Integer.parseInt(args[3]);
+					duration = duration * 20;
+					if(duration > 1000000){
+						duration = 1000000;
+					}
+				}
+				else{
+					return false;
+				}
+				
+				if(args[3].matches("[0-9]+")){
+					amplifier = Integer.parseInt(args[4]);
+					amplifier -= 1;
+					if(amplifier > 1000000){
+						amplifier = 1000000;
+					}
+					else if(amplifier < 0){
+						amplifier = 0;
+					}
+				}
+				else{
+					return false;
+				}
+				
+				if(potion != null){
+					PotionEffect eff = new PotionEffect(potion, duration, amplifier);
+					load.addPotionEffect(eff);
+					sender.sendMessage(ChatColor.GRAY + "Added potion effect \"" + potion.getName().toLowerCase() + "\" to the " + loadout + " loadout");
+				}
+				else{
+					sender.sendMessage(ChatColor.RED + "Invalid potion effect!");
+				}
+				return true;
+			}
+			else if(args[1].equalsIgnoreCase("removepotion") && args.length >= 3){
+				PotionEffectType potion = PotionEffectType.getByName(args[2]);
+				if(args[1].matches("[0-9]+")){
+					potion = PotionEffectType.getById(Integer.parseInt(args[2]));
+				}
+				
+				if(potion != null){
+					PotionEffect eff = new PotionEffect(potion, 0, 0);
+					load.removePotionEffect(eff);
+					sender.sendMessage(ChatColor.GRAY + "Removed potion effect \"" + potion.getName().toLowerCase() + "\" from the " + loadout + " loadout");
+				}
+				else{
+					sender.sendMessage(ChatColor.RED + "Invalid potion effect!");
 				}
 				return true;
 			}

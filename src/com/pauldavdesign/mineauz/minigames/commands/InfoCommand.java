@@ -312,13 +312,6 @@ public class InfoCommand implements ICommand{
 					else{
 						lines.add(ChatColor.GRAY + "Randomize Chests: " + ChatColor.RED + "false");
 					}
-					
-					if(mgm.isAutoEquipPotion()){
-						lines.add(ChatColor.GRAY + "Auto Equip Potions: " + ChatColor.GREEN + "true");
-					}
-					else{
-						lines.add(ChatColor.GRAY + "Auto Equip Potions: " + ChatColor.RED + "false");
-					}
 				}
 				else{
 					if(mgm.getStartLocations().size() > 0){

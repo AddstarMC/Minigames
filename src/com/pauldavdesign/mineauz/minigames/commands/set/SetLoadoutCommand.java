@@ -5,9 +5,12 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
+import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 
 public class SetLoadoutCommand implements ICommand {
@@ -37,7 +40,7 @@ public class SetLoadoutCommand implements ICommand {
 
 	@Override
 	public String[] getParameters() {
-		return new String[] {"create", "delete", "usepermissions", "add", "remove", "clear", "list"};
+		return new String[] {"create", "delete", "usepermissions", "add", "remove", "clear", "list", "addpotion", "removepotion"};
 	}
 
 	@Override
@@ -50,7 +53,9 @@ public class SetLoadoutCommand implements ICommand {
 				"/minigame set <Minigame> loadout create <loadoutName>",
 				"/minigame set <Minigame> loadout delete <loadoutName>",
 				"/minigame set <Minigame> loadout usepermissions <loadoutName> <true/false>",
-				"/minigame set <Minigame> loadout list"
+				"/minigame set <Minigame> loadout list",
+				"/minigame set <Minigame> loadout addpotion <PotionName/ID> <duration> <amplifier>",
+				"/minigame set <Minigame> loadout removepotion <PotionName/ID>"
 		};
 	}
 
@@ -316,6 +321,113 @@ public class SetLoadoutCommand implements ICommand {
 				}
 				else{
 					sender.sendMessage(ChatColor.RED + "There is no loadout by the name " + args[1]);
+				}
+				return true;
+			}
+			else if(args[0].equalsIgnoreCase("addpotion") && args.length >= 4){
+				PotionEffectType potion = PotionEffectType.getByName(args[1]);
+				if(args[1].matches("[0-9]+")){
+					potion = PotionEffectType.getById(Integer.parseInt(args[1]));
+				}
+				int duration;
+				int amplifier;
+				
+				if(args[2].matches("[0-9]+")){
+					duration = Integer.parseInt(args[2]);
+					duration = duration * 20;
+					if(duration > 1000000){
+						duration = 1000000;
+					}
+				}
+				else{
+					return false;
+				}
+				
+				if(args[3].matches("[0-9]+")){
+					amplifier = Integer.parseInt(args[3]);
+					amplifier -= 1;
+					if(amplifier > 1000000){
+						amplifier = 1000000;
+					}
+					else if(amplifier < 0){
+						amplifier = 0;
+					}
+				}
+				else{
+					return false;
+				}
+				
+				String loadout = "default";
+				PlayerLoadout load;
+				int argloadout = 0;
+				for(String arg : args){
+					if(arg.equalsIgnoreCase("-l")){
+						argloadout++;
+						loadout = args[argloadout];
+						break;
+					}
+					argloadout++;
+				}
+				if(loadout.equals("default")){
+					load = minigame.getDefaultPlayerLoadout();
+				}
+				else{
+					if(minigame.hasLoadout(loadout)){
+						load = minigame.getLoadout(loadout);
+					}
+					else{
+						sender.sendMessage(ChatColor.RED + "There is no loadout called " + loadout);
+						return true;
+					}
+				}
+				
+				if(potion != null){
+					PotionEffect eff = new PotionEffect(potion, duration, amplifier);
+					load.addPotionEffect(eff);
+					sender.sendMessage(ChatColor.GRAY + "Added potion effect \"" + potion.getName().toLowerCase() + "\" to the " + loadout + " loadout");
+				}
+				else{
+					sender.sendMessage(ChatColor.RED + "Invalid potion effect!");
+				}
+				return true;
+			}
+			else if(args[0].equalsIgnoreCase("removepotion") && args.length >= 2){
+				PotionEffectType potion = PotionEffectType.getByName(args[1]);
+				if(args[1].matches("[0-9]+")){
+					potion = PotionEffectType.getById(Integer.parseInt(args[1]));
+				}
+				
+				String loadout = "default";
+				PlayerLoadout load;
+				int argloadout = 0;
+				for(String arg : args){
+					if(arg.equalsIgnoreCase("-l")){
+						argloadout++;
+						loadout = args[argloadout];
+						break;
+					}
+					argloadout++;
+				}
+				if(loadout.equals("default")){
+					load = minigame.getDefaultPlayerLoadout();
+				}
+				else{
+					if(minigame.hasLoadout(loadout)){
+						load = minigame.getLoadout(loadout);
+					}
+					else{
+						sender.sendMessage(ChatColor.RED + "There is no loadout called " + loadout);
+						return true;
+					}
+				}
+				
+				if(potion != null){
+					PotionEffect eff = new PotionEffect(potion, 0, 0);
+					load.removePotionEffect(eff);
+					sender.sendMessage(ChatColor.GRAY + "Removed potion effect \"" + potion.getName().toLowerCase() + "\" from the " + loadout + " loadout");
+				}
+				else{
+					sender.sendMessage(ChatColor.RED + "Invalid potion effect!");
 				}
 				return true;
 			}

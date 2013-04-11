@@ -19,6 +19,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import com.pauldavdesign.mineauz.minigames.commands.CommandDispatcher;
 import com.pauldavdesign.mineauz.minigames.gametypes.DMMinigame;
@@ -173,7 +175,19 @@ public class Minigames extends JavaPlugin{
 			mdata.addLoadout(loadout);
 			Set<String> items = globalLoadouts.getConfig().getConfigurationSection(loadout).getKeys(false);
 			for(int i = 0; i < items.size(); i++){
-				mdata.getLoadout(loadout).addItemToLoadout(globalLoadouts.getConfig().getItemStack(loadout + "." + i));
+				if(globalLoadouts.getConfig().contains(loadout + "." + i))
+					mdata.getLoadout(loadout).addItemToLoadout(globalLoadouts.getConfig().getItemStack(loadout + "." + i));
+			}
+			if(globalLoadouts.getConfig().contains(loadout + ".potions")){
+				Set<String> pots = globalLoadouts.getConfig().getConfigurationSection(loadout + ".potions").getKeys(false);
+				for(String eff : pots){
+					if(PotionEffectType.getByName(eff) != null){
+						PotionEffect effect = new PotionEffect(PotionEffectType.getByName(eff),
+								globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".dur"),
+								globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".amp"));
+						mdata.getLoadout(loadout).addPotionEffect(effect);
+					}
+				}
 			}
 			if(globalLoadouts.getConfig().contains(loadout + ".usepermissions")){
 				mdata.getLoadout(loadout).setUsePermissions(globalLoadouts.getConfig().getBoolean(loadout + ".usepermissions"));
@@ -214,6 +228,15 @@ public class Minigames extends JavaPlugin{
 			for(String loadout : mdata.getLoadouts()){
 				for(int i = 0; i < mdata.getLoadout(loadout).getItems().size(); i++){
 					globalLoadouts.getConfig().set(loadout + "." + i, mdata.getLoadout(loadout).getItems().get(i));
+				}
+				if(!mdata.getLoadout(loadout).getAllPotionEffects().isEmpty()){
+					for(PotionEffect eff : mdata.getLoadout(loadout).getAllPotionEffects()){
+						globalLoadouts.getConfig().set(loadout + ".potions." + eff.getType().getName() + ".amp", eff.getAmplifier());
+						globalLoadouts.getConfig().set(loadout + ".potions." + eff.getType().getName() + ".dur", eff.getDuration());
+					}
+				}
+				else{
+					globalLoadouts.getConfig().set(loadout + ".potions", null);
 				}
 				if(mdata.getLoadout(loadout).getUsePermissions()){
 					globalLoadouts.getConfig().set(loadout + ".usepermissions", true);

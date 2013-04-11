@@ -11,6 +11,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import com.pauldavdesign.mineauz.minigames.blockRecorder.RecorderData;
 
@@ -58,7 +60,6 @@ public class Minigame {
 	private boolean blockPlace = false;
 	private int defaultGamemode = 2;
 	private boolean blocksdrop = true;
-	private boolean autoEquipPotion = false;
 	
 	private String scoreType = "none";
 	private boolean paintBallMode = false;
@@ -239,22 +240,6 @@ public class Minigame {
 		}
 		return false;
 	}
-	
-//	public void addLoadoutItem(ItemStack item){
-//		loadout.add(item);
-//	}
-//	
-//	public List<ItemStack> getLoadout(){
-//		return loadout;
-//	}
-//	
-//	public boolean removeLoadoutItem(ItemStack item){
-//		if(loadout.contains(item)){
-//			loadout.remove(item);
-//			return true;
-//		}
-//		return false;
-//	}
 	
 	public PlayerLoadout getDefaultPlayerLoadout(){
 		return defaultLoadout;
@@ -871,14 +856,6 @@ public class Minigame {
 		this.lives = lives;
 	}
 
-	public boolean isAutoEquipPotion() {
-		return autoEquipPotion;
-	}
-
-	public void setAutoEquipPotion(boolean autoEquipPotion) {
-		this.autoEquipPotion = autoEquipPotion;
-	}
-
 	public int getFloorDegenTime() {
 		return floorDegenTime;
 	}
@@ -1021,6 +998,16 @@ public class Minigame {
 			for(int i = 0; i < getDefaultPlayerLoadout().getItems().size(); i++){
 				minigame.getConfig().set(name + ".loadout." + i, getDefaultPlayerLoadout().getItems().get(i));
 			}
+			
+			if(!getDefaultPlayerLoadout().getAllPotionEffects().isEmpty()){
+				for(PotionEffect eff : getDefaultPlayerLoadout().getAllPotionEffects()){
+					minigame.getConfig().set(name + ".loadout.potions." + eff.getType().getName() + ".amp", eff.getAmplifier());
+					minigame.getConfig().set(name + ".loadout.potions." + eff.getType().getName() + ".dur", eff.getDuration());
+				}
+			}
+			else{
+				minigame.getConfig().set(name + ".loadout.potions", null);
+			}
 			if(getDefaultPlayerLoadout().getUsePermissions()){
 				minigame.getConfig().set(name + ".loadout.usepermissions", true);
 			}
@@ -1037,6 +1024,16 @@ public class Minigame {
 				for(int i = 0; i < getLoadout(loadout).getItems().size(); i++){
 					minigame.getConfig().set(name + ".extraloadouts." + loadout + "." + i, getLoadout(loadout).getItems().get(i));
 				}
+				if(!getLoadout(loadout).getAllPotionEffects().isEmpty()){
+					for(PotionEffect eff : getLoadout(loadout).getAllPotionEffects()){
+						minigame.getConfig().set(name + ".extraloadouts." + loadout + ".potions." + eff.getType().getName() + ".amp", eff.getAmplifier());
+						minigame.getConfig().set(name + ".extraloadouts." + loadout + ".potions." + eff.getType().getName() + ".dur", eff.getDuration());
+					}
+				}
+				else{
+					minigame.getConfig().set(name + ".extraloadouts." + loadout + ".potions", null);
+				}
+				
 				if(getLoadout(loadout).getUsePermissions()){
 					minigame.getConfig().set(name + ".extraloadouts." + loadout + ".usepermissions", true);
 				}
@@ -1239,13 +1236,6 @@ public class Minigame {
 			minigame.getConfig().set(name + ".lives", null);
 		}
 		
-		if(isAutoEquipPotion()){
-			minigame.getConfig().set(name + ".autoequippotion", true);
-		}
-		else{
-			minigame.getConfig().set(name + ".autoequippotion", null);
-		}
-		
 		if(getFloorDegenTime() != Minigames.plugin.getConfig().getInt("multiplayer.floordegenerator.time")){
 			minigame.getConfig().set(name + ".floordegentime", getFloorDegenTime());
 		}
@@ -1347,8 +1337,23 @@ public class Minigame {
 		if(minigame.getConfig().contains(name + ".loadout")){
 			Set<String> keys = minigame.getConfig().getConfigurationSection(name + ".loadout").getKeys(false);
 			for(int i = 0; i < keys.size(); i++){
-				getDefaultPlayerLoadout().addItemToLoadout(minigame.getConfig().getItemStack(name + ".loadout." + i));
+				if(minigame.getConfig().contains(name + ".loadout." + i)){
+					getDefaultPlayerLoadout().addItemToLoadout(minigame.getConfig().getItemStack(name + ".loadout." + i));
+				}
 			}
+			
+			if(minigame.getConfig().contains(name + ".loadout.potions")){
+				keys = minigame.getConfig().getConfigurationSection(name + ".loadout.potions").getKeys(false);
+				for(String eff : keys){
+					if(PotionEffectType.getByName(eff) != null){
+						PotionEffect effect = new PotionEffect(PotionEffectType.getByName(eff),
+								minigame.getConfig().getInt(name + ".loadout.potions." + eff + ".dur"),
+								minigame.getConfig().getInt(name + ".loadout.potions." + eff + ".amp"));
+						getDefaultPlayerLoadout().addPotionEffect(effect);
+					}
+				}
+			}
+			
 			if(minigame.getConfig().contains(name + ".loadout.usepermissions")){
 				getDefaultPlayerLoadout().setUsePermissions(minigame.getConfig().getBoolean(name + ".loadout.usepermissions"));
 			}
@@ -1359,8 +1364,22 @@ public class Minigame {
 				addLoadout(loadout);
 				Set<String> items = minigame.getConfig().getConfigurationSection(name + ".extraloadouts." + loadout).getKeys(false);
 				for(int i = 0; i < items.size(); i++){
-					getLoadout(loadout).addItemToLoadout(minigame.getConfig().getItemStack(name + ".extraloadouts." + loadout + "." + i));
+					if(minigame.getConfig().contains(name + ".loadout." + i)){
+						getLoadout(loadout).addItemToLoadout(minigame.getConfig().getItemStack(name + ".extraloadouts." + loadout + "." + i));
+					}
 				}
+				if(minigame.getConfig().contains(name + ".extraloadouts." + loadout + ".potions")){
+					Set<String> pots = minigame.getConfig().getConfigurationSection(name + ".extraloadouts." + loadout + ".potions").getKeys(false);
+					for(String eff : pots){
+						if(PotionEffectType.getByName(eff) != null){
+							PotionEffect effect = new PotionEffect(PotionEffectType.getByName(eff),
+									minigame.getConfig().getInt(name + ".extraloadouts." + loadout + ".potions." + eff + ".dur"),
+									minigame.getConfig().getInt(name + ".extraloadouts." + loadout + ".potions." + eff + ".amp"));
+							getDefaultPlayerLoadout().addPotionEffect(effect);
+						}
+					}
+				}
+				
 				if(minigame.getConfig().contains(name + ".extraloadouts." + loadout + ".usepermissions")){
 					getLoadout(loadout).setUsePermissions(minigame.getConfig().getBoolean(name + ".extraloadouts." + loadout + ".usepermissions"));
 				}
@@ -1475,10 +1494,6 @@ public class Minigame {
 		
 		if(minigame.getConfig().contains(name + ".lives")){
 			setLives(minigame.getConfig().getInt(name + ".lives"));
-		}
-		
-		if(minigame.getConfig().contains(name + ".autoequippotion")){
-			setAutoEquipPotion(minigame.getConfig().getBoolean(name + ".autoequippotion"));
 		}
 		
 		if(minigame.getConfig().contains(name + ".floordegentime")){
