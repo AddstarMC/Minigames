@@ -218,17 +218,17 @@ public class TeamDMMinigame extends MinigameType{
 				pl.sendMessage(ChatColor.BLUE + "Waiting for 1 more player.");
 			}
 		}
-		else if(mgm.getBlueTeam().size() > mgm.getRedTeam().size() + 1 || mgm.getRedTeam().size() > mgm.getBlueTeam().size() + 1){
-			if(mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() != 0){
-				mgm.getMpTimer().pauseTimer("Teams unbalanced!");
-			}
-			else if(mgm.getMpTimer() != null){
-				for(Player pl : mgm.getPlayers()){
-					pl.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + 
-							"Teams unbalanced! Teams will rebalance when a player dies on the unbalanced team.");
-				}
-			}
-		}
+//		else if(mgm.getBlueTeam().size() > mgm.getRedTeam().size() + 1 || mgm.getRedTeam().size() > mgm.getBlueTeam().size() + 1){
+//			if(mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() != 0){
+//				mgm.getMpTimer().pauseTimer("Teams unbalanced!");
+//			}
+//			else if(mgm.getMpTimer() != null){
+//				for(Player pl : mgm.getPlayers()){
+//					pl.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + 
+//							"Teams unbalanced! Teams will rebalance when a player dies on the unbalanced team.");
+//				}
+//			}
+//		}
 		
 		callGeneralQuit(player, mgm);
 		
