@@ -1364,7 +1364,7 @@ public class Minigame {
 				addLoadout(loadout);
 				Set<String> items = minigame.getConfig().getConfigurationSection(name + ".extraloadouts." + loadout).getKeys(false);
 				for(int i = 0; i < items.size(); i++){
-					if(minigame.getConfig().contains(name + ".loadout." + i)){
+					if(minigame.getConfig().contains(name + ".extraloadouts." + loadout + "." + i)){
 						getLoadout(loadout).addItemToLoadout(minigame.getConfig().getItemStack(name + ".extraloadouts." + loadout + "." + i));
 					}
 				}
@@ -1375,7 +1375,7 @@ public class Minigame {
 							PotionEffect effect = new PotionEffect(PotionEffectType.getByName(eff),
 									minigame.getConfig().getInt(name + ".extraloadouts." + loadout + ".potions." + eff + ".dur"),
 									minigame.getConfig().getInt(name + ".extraloadouts." + loadout + ".potions." + eff + ".amp"));
-							getDefaultPlayerLoadout().addPotionEffect(effect);
+							getLoadout(loadout).addPotionEffect(effect);
 						}
 					}
 				}

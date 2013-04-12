@@ -221,29 +221,29 @@ public class PlayerData {
 		
 		for(Player ply : players){
 			if(!mgm.getType().equals("teamdm")){
-			if(pos <= mgm.getStartLocations().size()){
-				start = mgm.getStartLocations().get(pos);
-				ply.teleport(start);
-				setPlayerCheckpoints(ply, start);
-				if(mgm.getMaxScore() != 0 && mgm.getType().equals("dm") && !mgm.getScoreType().equals("none")){
-					ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
-				}
-			} 
-			else{
-				pos = 1;
-				if(!mgm.getStartLocations().isEmpty()){
-					start = mgm.getStartLocations().get(0);
+				if(pos < mgm.getStartLocations().size()){
+					start = mgm.getStartLocations().get(pos);
 					ply.teleport(start);
 					setPlayerCheckpoints(ply, start);
 					if(mgm.getMaxScore() != 0 && mgm.getType().equals("dm") && !mgm.getScoreType().equals("none")){
 						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
 					}
+				} 
+				else{
+					pos = 0;
+					if(!mgm.getStartLocations().isEmpty()){
+						start = mgm.getStartLocations().get(0);
+						ply.teleport(start);
+						setPlayerCheckpoints(ply, start);
+						if(mgm.getMaxScore() != 0 && mgm.getType().equals("dm") && !mgm.getScoreType().equals("none")){
+							ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
+						}
+					}
+					else {
+						ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Starting positions are incorrectly configured!");
+						quitMinigame(ply, false);
+					}
 				}
-				else {
-					ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Starting positions are incorrectly configured!");
-					quitMinigame(ply, false);
-				}
-			}
 			}
 			else{
 				int team = -1;
@@ -253,7 +253,6 @@ public class PlayerData {
 				else if(mgm.getRedTeam().contains(ply)){
 					team = 0;
 				}
-				pos += 1;
 				if(!mgm.getStartLocationsRed().isEmpty() && !mgm.getStartLocationsBlue().isEmpty()){
 					if(team == 0 && redpos < mgm.getStartLocationsRed().size()){
 						start = mgm.getStartLocationsRed().get(redpos);
@@ -279,7 +278,6 @@ public class PlayerData {
 					}
 				}
 				else{
-					pos += 1;
 					if(pos <= mgm.getStartLocations().size()){
 						start = mgm.getStartLocations().get(pos);
 						ply.teleport(start);
@@ -307,35 +305,36 @@ public class PlayerData {
 					}
 				}
 				
-				if(!mgm.getPlayersLoadout(ply).getItems().isEmpty()){
-					mgm.getPlayersLoadout(ply).equiptLoadout(ply);
-				}
-				
 				if(mgm.getLives() > 0){
 					ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + mgm.getLives());
 				}
 			}
-			pos += 1;
-		}
-
-		if(mgm.getSpleefFloor1() != null && mgm.getSpleefFloor2() != null){
-			mgm.addFloorDegenerator();
-			mgm.getFloorDegenerator().startDegeneration();
-		}
-
-		if(mgm.hasRestoreBlocks()){
-			for(RestoreBlock block : mgm.getRestoreBlocks().values()){
-				mgm.getBlockRecorder().addBlock(block.getLocation().getBlock(), null);
+			pos++;
+			if(!mgm.getPlayersLoadout(ply).getItems().isEmpty()){
+				mgm.getPlayersLoadout(ply).equiptLoadout(ply);
 			}
 		}
 		
-		for(Player pl : players){
-			setAllowTP(pl, false);
-		}
-		
-		if(mgm.getTimer() > 0){
-			mgm.setMinigameTimer(new MinigameTimer(mgm, mgm.getTimer()));
-			mdata.sendMinigameMessage(mgm, MinigameUtils.convertTime(mgm.getTimer()) + " left.", null, null);
+		if(mgm.hasPlayers()){
+			if(mgm.getSpleefFloor1() != null && mgm.getSpleefFloor2() != null){
+				mgm.addFloorDegenerator();
+				mgm.getFloorDegenerator().startDegeneration();
+			}
+	
+			if(mgm.hasRestoreBlocks()){
+				for(RestoreBlock block : mgm.getRestoreBlocks().values()){
+					mgm.getBlockRecorder().addBlock(block.getLocation().getBlock(), null);
+				}
+			}
+			
+			for(Player pl : players){
+				setAllowTP(pl, false);
+			}
+			
+			if(mgm.getTimer() > 0){
+				mgm.setMinigameTimer(new MinigameTimer(mgm, mgm.getTimer()));
+				mdata.sendMinigameMessage(mgm, MinigameUtils.convertTime(mgm.getTimer()) + " left.", null, null);
+			}
 		}
 	}
 	
