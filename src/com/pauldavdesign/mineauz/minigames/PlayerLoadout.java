@@ -121,18 +121,18 @@ public class PlayerLoadout {
 				else{
 					player.getInventory().addItem(item);
 				}
-				
-				final Player fplayer = player;
-				Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						fplayer.addPotionEffects(potions);
-					}
-				});
 			}
+			player.updateInventory();
 		}
-		player.updateInventory();
+		
+		final Player fplayer = player;
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+			
+			@Override
+			public void run() {
+				fplayer.addPotionEffects(potions);
+			}
+		});
 	}
 	
 	public List<ItemStack> getItems(){
