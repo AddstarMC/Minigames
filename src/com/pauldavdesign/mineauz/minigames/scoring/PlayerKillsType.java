@@ -97,7 +97,7 @@ public class PlayerKillsType extends ScoreType{
 					mgm.setScore(attacker, pdata.getPlayerScore(attacker));
 					
 					if(mgm.getScoreType().equals("kills")){
-						mdata.sendMinigameMessage(mgm, ply.getKiller().getName() + "'s Score: " + pdata.getPlayerScore(ply.getKiller()), null, null);
+//						mdata.sendMinigameMessage(mgm, ply.getKiller().getName() + "'s Score: " + pdata.getPlayerScore(ply.getKiller()), null, null);
 					
 						if(mgm.getMaxScore() != 0 && pdata.getPlayerScore(attacker) >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
 							List<Player> conPlayers = new ArrayList<Player>();
@@ -160,7 +160,7 @@ public class PlayerKillsType extends ScoreType{
 								}
 							}
 							
-							mdata.sendMinigameMessage(mgm, "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore(), null, null);
+//							mdata.sendMinigameMessage(mgm, "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore(), null, null);
 							
 							if(end){
 								mdata.sendMinigameMessage(mgm, attacker.getName() + " took the final kill against " + ply.getName(), null, null);
@@ -192,7 +192,7 @@ public class PlayerKillsType extends ScoreType{
 					pdata.takePlayerScore(ply);
 					mgm.setScore(ply, pdata.getPlayerScore(ply));
 					
-					mdata.sendMinigameMessage(mgm, ply.getName() + "'s Score: " + pdata.getPlayerScore(ply), null, null);
+//					mdata.sendMinigameMessage(mgm, ply.getName() + "'s Score: " + pdata.getPlayerScore(ply), null, null);
 				}
 				else{
 					pdata.takePlayerScore(ply);
@@ -202,7 +202,7 @@ public class PlayerKillsType extends ScoreType{
 					else{
 						mgm.setBlueTeamScore(mgm.getBlueTeamScore() - 1);
 					}
-					mdata.sendMinigameMessage(mgm, "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore(), null, null);
+//					mdata.sendMinigameMessage(mgm, "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore(), null, null);
 				}
 			}
 		}
