@@ -15,6 +15,7 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.EntityType;
@@ -313,6 +314,9 @@ public class PlayerData {
 			if(!mgm.getPlayersLoadout(ply).getItems().isEmpty()){
 				mgm.getPlayersLoadout(ply).equiptLoadout(ply);
 			}
+			ply.setScoreboard(mgm.getScoreboardManager());
+			mgm.setScore(ply, 1);
+			mgm.setScore(ply, 0);
 		}
 		
 		if(mgm.hasPlayers()){
@@ -406,24 +410,26 @@ public class PlayerData {
 				removePlayerCheckpoints(player);
 				
 				plugin.getLogger().info(player.getName() + " quit " + mgm);
-				
-				if(mgm.getMinigameTimer() != null && mgm.getPlayers().size() == 0){
-					mgm.getMinigameTimer().stopTimer();
-					mgm.setMinigameTimer(null);
+				if(mgm.getPlayers().size() == 0){
+					if(mgm.getMinigameTimer() != null){
+						mgm.getMinigameTimer().stopTimer();
+						mgm.setMinigameTimer(null);
+					}
+					
+					if(mgm.getFloorDegenerator() != null){
+						mgm.getFloorDegenerator().stopDegenerator();
+					}
+					
+					if(mgm.getBlockRecorder().hasData()){
+						mgm.getBlockRecorder().restoreBlocks();
+						mgm.getBlockRecorder().restoreEntities();
+					}
+					
+					if(mgm.getMpBets() != null){
+						mgm.setMpBets(null);
+					}
 				}
-				
-				if(mgm.getFloorDegenerator() != null && mgm.getPlayers().size() == 0){
-					mgm.getFloorDegenerator().stopDegenerator();
-				}
-				
-				if(mgm.getPlayers().size() == 0 && mgm.getBlockRecorder().hasData()){
-					mgm.getBlockRecorder().restoreBlocks();
-					mgm.getBlockRecorder().restoreEntities();
-				}
-				
-				if(mgm.getMpBets() != null && mgm.getPlayers().size() == 0){
-					mgm.setMpBets(null);
-				}
+				mgm.getScoreboardManager().resetScores(player);
 				
 				removeAllowTP(player);
 				removeAllowGMChange(player);
@@ -431,6 +437,7 @@ public class PlayerData {
 				for(Player pl : mgm.getSpectators()){
 					player.showPlayer(pl);
 				}
+				player.setScoreboard(plugin.getServer().getScoreboardManager().getMainScoreboard());
 			}
 			else{
 				setAllowTP(player, true);
@@ -552,23 +559,33 @@ public class PlayerData {
 			removeAllowGMChange(player);
 
 			plugin.getLogger().info(player.getName() + " completed " + mgm);
+			player.setScoreboard(plugin.getServer().getScoreboardManager().getMainScoreboard());
+			mgm.getScoreboardManager().resetScores(player);
 		}
 	}
 	
 	public void endTeamMinigame(int teamnum, Minigame mgm){
 		
-		List<Player> losers = null;
-		List<Player> winners = null;
+		List<Player> losers = new ArrayList<Player>();
+		List<Player> winners = new ArrayList<Player>();
 		
 		if(teamnum == 1){
 			//Blue team
-			losers = mgm.getRedTeam();
-			winners = mgm.getBlueTeam();
+			for(OfflinePlayer ply : mgm.getRedTeam()){
+				losers.add(ply.getPlayer());
+			}
+			for(OfflinePlayer ply : mgm.getBlueTeam()){
+				winners.add(ply.getPlayer());
+			}
 		}
 		else{
 			//Red team
-			losers = mgm.getBlueTeam();
-			winners = mgm.getRedTeam();
+			for(OfflinePlayer ply : mgm.getRedTeam()){
+				winners.add(ply.getPlayer());
+			}
+			for(OfflinePlayer ply : mgm.getBlueTeam()){
+				losers.add(ply.getPlayer());
+			}
 		}
 		
 
@@ -902,6 +919,13 @@ public class PlayerData {
 			plyScore.put(ply.getName(), 0);
 		}
 		plyScore.put(ply.getName(), plyScore.get(ply.getName()) + 1);
+	}
+	
+	public void setPlayerScore(Player ply, int amount){
+		if(!plyScore.containsKey(ply.getName())){
+			plyScore.put(ply.getName(), 0);
+		}
+		plyScore.put(ply.getName(), amount);
 	}
 	
 	public void takePlayerScore(Player ply){

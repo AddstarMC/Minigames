@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.server.v1_5_R2.EntityPlayer;
-import net.minecraft.server.v1_5_R2.Packet20NamedEntitySpawn;
-import net.minecraft.server.v1_5_R2.Packet5EntityEquipment;
+//import net.minecraft.server.v1_5_R2.EntityPlayer;
+//import net.minecraft.server.v1_5_R2.Packet20NamedEntitySpawn;
+//import net.minecraft.server.v1_5_R2.Packet5EntityEquipment;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.craftbukkit.v1_5_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
+//import org.bukkit.craftbukkit.v1_5_R2.entity.CraftPlayer;
+//import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -63,39 +63,13 @@ public class TeamDMMinigame extends MinigameType{
 							mgm.addRedTeamPlayer(player);
 							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.RED + "Red Team");
 							
-							applyTeam(player, 0);
 							team = 0;
 						}
 						else{
 							mgm.addBlueTeamPlayer(player);
 							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.BLUE + "Blue Team");
 							
-							applyTeam(player, 1);
 							team = 1;
-						}
-						
-						for(final Player play : mgm.getBlueTeam()){
-							Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-								final Player ply = play;
-								@Override
-								public void run() {
-									if(ply != player){
-										applyTeam(ply, player, 1);
-									}
-								}
-							}, 20L);
-						}
-						
-						for(final Player play : mgm.getRedTeam()){
-							Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-								final Player ply = play;
-								@Override
-								public void run() {
-									if(ply != player){
-										applyTeam(ply, player, 0);
-									}
-								}
-							}, 20L);
 						}
 						
 						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You will join in 5 seconds...");
@@ -168,10 +142,10 @@ public class TeamDMMinigame extends MinigameType{
 	@Override
 	public void quitMinigame(Player player, Minigame mgm, boolean forced){
 		if(mgm.getRedTeam().contains(player)){
-			mgm.getRedTeam().remove(player);
+			mgm.removeRedTeamPlayer(player);
 		}
 		else{
-			mgm.getBlueTeam().remove(player);
+			mgm.removeBlueTeamPlayer(player);
 		}
 		
 		if(mgm.getPlayers().size() == 0 && !forced){
@@ -218,26 +192,11 @@ public class TeamDMMinigame extends MinigameType{
 				pl.sendMessage(ChatColor.BLUE + "Waiting for 1 more player.");
 			}
 		}
-//		else if(mgm.getBlueTeam().size() > mgm.getRedTeam().size() + 1 || mgm.getRedTeam().size() > mgm.getBlueTeam().size() + 1){
-//			if(mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() != 0){
-//				mgm.getMpTimer().pauseTimer("Teams unbalanced!");
-//			}
-//			else if(mgm.getMpTimer() != null){
-//				for(Player pl : mgm.getPlayers()){
-//					pl.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + 
-//							"Teams unbalanced! Teams will rebalance when a player dies on the unbalanced team.");
-//				}
-//			}
-//		}
 		
-		callGeneralQuit(player, mgm);
-		
-		EntityPlayer changeingName = ((CraftPlayer) player).getHandle();
-		for(Player ply : plugin.getServer().getOnlinePlayers()){
-			if(ply != player && !player.isDead() && player.isOnline()){
-				((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet20NamedEntitySpawn(changeingName));
-			}
+		if(player.isDead()){
+			player.setHealth(2);
 		}
+		callGeneralQuit(player, mgm);
 		
 		if(mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0) && !forced){
 			if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
@@ -248,7 +207,6 @@ public class TeamDMMinigame extends MinigameType{
 	}
 	
 	@Override
-	//@SuppressWarnings("deprecation")
 	public void endMinigame(Player player, Minigame mgm){
 		boolean hascompleted = false;
 		Configuration completion = null;
@@ -260,20 +218,13 @@ public class TeamDMMinigame extends MinigameType{
 		}
 		
 		if(mgm.getRedTeam().contains(player)){
-			mgm.getRedTeam().remove(player);
+			mgm.removeRedTeamPlayer(player);
 		}
 		else{
-			mgm.getBlueTeam().remove(player);
+			mgm.removeBlueTeamPlayer(player);
 		}
 
 		player.setFireTicks(0);
-		
-		EntityPlayer changeingName = ((CraftPlayer) player).getHandle();
-		for(Player ply : plugin.getServer().getOnlinePlayers()){
-			if(ply != player){
-				((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet20NamedEntitySpawn(changeingName));
-			}
-		}
 		
 		if(plugin.getSQL() == null){
 			completion = mdata.getConfigurationFile("completion");
@@ -294,133 +245,14 @@ public class TeamDMMinigame extends MinigameType{
 		}
 	}
 	
-	public static void removeTeam(Player player){
-		EntityPlayer changeingName = ((CraftPlayer) player).getHandle();
-		for(Player ply : plugin.getServer().getOnlinePlayers()){
-			if(ply != player){
-				((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet20NamedEntitySpawn(changeingName));
-			}
-		}
-	}
-	
-	public static void applyTeam(Player player, int team){
-		EntityPlayer changeingName = ((CraftPlayer) player).getHandle();
-		String oldName = player.getName();
-		
-		if(team == 1){
-			changeingName.name = ChatColor.BLUE.toString() + player.getName();
-		}
-		else{
-			changeingName.name = ChatColor.RED.toString() + player.getName();
-		}
-		
-		for(Player ply : plugin.getServer().getOnlinePlayers()){
-			if(ply != player){
-				CraftItemStack hand = null;
-				CraftItemStack boots = null;
-				CraftItemStack leggings = null;
-				CraftItemStack chest = null;
-				CraftItemStack helmet = null;
-				if(player.getItemInHand() instanceof CraftItemStack){
-					hand = (CraftItemStack) player.getItemInHand();
-				}
-				if(player.getInventory().getBoots() instanceof CraftItemStack){
-					boots = (CraftItemStack) player.getInventory().getBoots();
-				}
-				if(player.getInventory().getLeggings() instanceof CraftItemStack){
-					leggings = (CraftItemStack) player.getInventory().getLeggings();
-				}
-				if(player.getInventory().getChestplate() instanceof CraftItemStack){
-					chest = (CraftItemStack) player.getInventory().getChestplate();
-				}
-				if(player.getInventory().getHelmet() instanceof CraftItemStack){
-					helmet = (CraftItemStack) player.getInventory().getHelmet();
-				}
-				
-				((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet20NamedEntitySpawn(changeingName));
-				
-				if(hand != null){
-					((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 0, CraftItemStack.asNMSCopy(hand)));
-				}
-				if(boots != null){
-					((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 1, CraftItemStack.asNMSCopy(boots)));
-				}
-				if(leggings != null){
-					((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 2, CraftItemStack.asNMSCopy(leggings)));
-				}
-				if(chest != null){
-					((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 3, CraftItemStack.asNMSCopy(chest)));
-				}
-				if(helmet != null){
-					((CraftPlayer) ply).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 4, CraftItemStack.asNMSCopy(helmet)));
-				}
-			}
-		}
-		
-		changeingName.name = oldName;
-	}
-	
-	public static void applyTeam(Player player, Player toPlayer, int team){
-		EntityPlayer changeingName = ((CraftPlayer) player).getHandle();
-		String oldName = player.getName();
-		
-		if(team == 1){
-			changeingName.name = ChatColor.BLUE.toString() + player.getName();
-		}
-		else{
-			changeingName.name = ChatColor.RED.toString() + player.getName();
-		}
-		
-		CraftItemStack hand = null;
-		CraftItemStack boots = null;
-		CraftItemStack leggings = null;
-		CraftItemStack chest = null;
-		CraftItemStack helmet = null;
-		if(player.getItemInHand() instanceof CraftItemStack){
-			hand = (CraftItemStack) player.getItemInHand();
-		}
-		if(player.getInventory().getBoots() instanceof CraftItemStack){
-			boots = (CraftItemStack) player.getInventory().getBoots();
-		}
-		if(player.getInventory().getLeggings() instanceof CraftItemStack){
-			leggings = (CraftItemStack) player.getInventory().getLeggings();
-		}
-		if(player.getInventory().getChestplate() instanceof CraftItemStack){
-			chest = (CraftItemStack) player.getInventory().getChestplate();
-		}
-		if(player.getInventory().getHelmet() instanceof CraftItemStack){
-			helmet = (CraftItemStack) player.getInventory().getHelmet();
-		}
-		
-		((CraftPlayer) toPlayer).getHandle().playerConnection.sendPacket(new Packet20NamedEntitySpawn(changeingName));
-		
-		if(hand != null){
-			((CraftPlayer) toPlayer).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 0, CraftItemStack.asNMSCopy(hand)));
-		}
-		if(boots != null){
-			((CraftPlayer) toPlayer).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 1, CraftItemStack.asNMSCopy(boots)));
-		}
-		if(leggings != null){
-			((CraftPlayer) toPlayer).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 2, CraftItemStack.asNMSCopy(leggings)));
-		}
-		if(chest != null){
-			((CraftPlayer) toPlayer).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 3, CraftItemStack.asNMSCopy(chest)));
-		}
-		if(helmet != null){
-			((CraftPlayer) toPlayer).getHandle().playerConnection.sendPacket(new Packet5EntityEquipment(player.getEntityId(), 4, CraftItemStack.asNMSCopy(helmet)));
-		}
-		
-		changeingName.name = oldName;
-	}
-	
 	public static void switchTeam(Minigame mgm, Player player){
 		if(mgm.getBlueTeam().contains(player)){
-			mgm.getBlueTeam().remove(player);
+			mgm.removeBlueTeamPlayer(player);
 			mgm.addRedTeamPlayer(player);
 			mgm.removePlayersLoadout(player);
 		}
 		else{
-			mgm.getRedTeam().remove(player);
+			mgm.removeRedTeamPlayer(player);
 			mgm.addBlueTeamPlayer(player);
 			mgm.removePlayersLoadout(player);
 		}
@@ -430,102 +262,27 @@ public class TeamDMMinigame extends MinigameType{
 	/*-----EVENTS-----*/
 	/*----------------*/
 	
-//	@EventHandler
-//	public void playerDeath(PlayerDeathEvent event){
-//		Player ply = (Player) event.getEntity();
-//		if(pdata.getPlayersMinigame(ply) != null && pdata.getPlayersMinigame(ply).getType().equals("teamdm") && ply.getKiller() != null && ply.getKiller() instanceof Player){
-//			int pteam = 0;
-//			if(pdata.getPlayersMinigame(ply).getBlueTeam().contains(ply)){
-//				pteam = 1;
-//			}
-//			final Minigame mgm = pdata.getPlayersMinigame(ply);
-//			
-//			if(pteam == 1){
-//				if(mgm.getRedTeam().size() < mgm.getBlueTeam().size() - 1){
-//					switchTeam(mgm, ply);
-//					ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been switched to " + ChatColor.RED + "Red Team");
-//					for(Player pl : mgm.getPlayers()){
-//						if(pl != ply){
-//							pl.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + ply.getName() + " has been switched to " + ChatColor.RED + "Red Team");
-//						}
-//					}
-//				}
-//			}
-//			else{
-//				if(mgm.getBlueTeam().size() < mgm.getRedTeam().size()  - 1){
-//					switchTeam(mgm, ply);
-//					ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been switched to " + ChatColor.BLUE + "Blue Team");
-//					for(Player pl : mgm.getPlayers()){
-//						if(pl != ply){
-//							pl.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + ply.getName() + " has been switched to " + ChatColor.BLUE + "Blue Team");
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
-	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void playerRespawn(PlayerRespawnEvent event){
 		final Player ply = event.getPlayer();
 		if(pdata.getPlayersMinigame(ply) != null && pdata.getPlayersMinigame(ply).getType().equals("teamdm")){
 			int team = 0;
 			Minigame mg = pdata.getPlayersMinigame(ply);
-			if(mg.getBlueTeam().contains(ply)){
+			if(mg.getBlueTeam().contains(plugin.getServer().getOfflinePlayer(ply.getName()))){
 				team = 1;
 			}
 			List<Location> starts = new ArrayList<Location>();
 			if(!mg.getStartLocationsBlue().isEmpty() && !mg.getStartLocationsRed().isEmpty()){
 				if(team == 1){
 					starts.addAll(mg.getStartLocationsBlue());
-					Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-						final Player player = ply;
-						@Override
-						public void run() {
-							if(pdata.getPlayersMinigame(ply) != null){
-								applyTeam(player, 1);
-							}
-						}
-					}, 40L);
 				}
 				else{
 					starts.addAll(mg.getStartLocationsRed());
-					Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-						final Player player = ply;
-						@Override
-						public void run() {
-							if(pdata.getPlayersMinigame(ply) != null){
-								applyTeam(player, 0);
-							}
-						}
-					}, 40L);
 				}
 				mg.getPlayersLoadout(event.getPlayer()).equiptLoadout(event.getPlayer());
 			}
 			else{
 				starts.addAll(mg.getStartLocations());
-				if(team == 1){
-					Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-						final Player player = ply;
-						@Override
-						public void run() {
-							if(pdata.getPlayersMinigame(ply) != null){
-								applyTeam(player, 1);
-							}
-						}
-					}, 40L);
-				}
-				else{
-					Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-						final Player player = ply;
-						@Override
-						public void run() {
-							if(pdata.getPlayersMinigame(ply) != null){
-								applyTeam(player, 0);
-							}
-						}
-					}, 40L);
-				}
 			}
 			Collections.shuffle(starts);
 			event.setRespawnLocation(starts.get(0));
@@ -538,29 +295,6 @@ public class TeamDMMinigame extends MinigameType{
 			
 			mg.getPlayersLoadout(event.getPlayer()).equiptLoadout(event.getPlayer());
 			
-			for(final Player play : mg.getBlueTeam()){
-				Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-					final Player player = play;
-					@Override
-					public void run() {
-						if(player != ply && pdata.getPlayersMinigame(player) != null){
-							applyTeam(player, ply, 1);
-						}
-					}
-				}, 100L);
-			}
-			
-			for(final Player play : mg.getRedTeam()){
-				Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-					final Player player = play;
-					@Override
-					public void run() {
-						if(player != ply && pdata.getPlayersMinigame(player) != null){
-							applyTeam(player, ply, 0);
-						}
-					}
-				}, 100L);
-			}
 		}
 	}
 	

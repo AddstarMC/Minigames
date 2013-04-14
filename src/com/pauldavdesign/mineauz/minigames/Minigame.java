@@ -6,13 +6,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Scoreboard;
 
 import com.pauldavdesign.mineauz.minigames.blockRecorder.RecorderData;
 
@@ -73,11 +77,12 @@ public class Minigame {
 	private Location regenArea2 = null;
 	
 	//Teams
-	private List<Player> redTeam = new ArrayList<Player>();
-	private List<Player> blueTeam = new ArrayList<Player>();
+	//private List<Player> redTeam = new ArrayList<Player>();
+	//private List<Player> blueTeam = new ArrayList<Player>();
 	
 	private int redTeamScore = 0;
 	private int blueTeamScore = 0;
+	private Scoreboard sbManager = Minigames.plugin.getServer().getScoreboardManager().getNewScoreboard();
 	
 	private int minScore = 5;
 	private int maxScore = 10;
@@ -107,10 +112,33 @@ public class Minigame {
 		this.name = name;
 		this.type = type;
 		startLocations.add(start);
+		
+		sbManager.registerNewTeam("Red");
+		sbManager.getTeam("Red").setPrefix(ChatColor.RED.toString());
+		sbManager.getTeam("Red").setAllowFriendlyFire(false);
+		sbManager.getTeam("Red").setCanSeeFriendlyInvisibles(true);
+		sbManager.registerNewTeam("Blue");
+		sbManager.getTeam("Blue").setPrefix(ChatColor.BLUE.toString());
+		sbManager.getTeam("Blue").setAllowFriendlyFire(false);
+		sbManager.getTeam("Blue").setCanSeeFriendlyInvisibles(true);
+		sbManager.registerNewObjective(this.name, "dummy");
+		sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
+		
 	}
 	
 	public Minigame(String name){
 		this.name = name;
+		
+		sbManager.registerNewTeam("Red");
+		sbManager.getTeam("Red").setPrefix(ChatColor.RED.toString());
+		sbManager.getTeam("Red").setAllowFriendlyFire(false);
+		sbManager.getTeam("Red").setCanSeeFriendlyInvisibles(true);
+		sbManager.registerNewTeam("Blue");
+		sbManager.getTeam("Blue").setPrefix(ChatColor.BLUE.toString());
+		sbManager.getTeam("Blue").setAllowFriendlyFire(false);
+		sbManager.getTeam("Blue").setCanSeeFriendlyInvisibles(true);
+		sbManager.registerNewObjective(this.name, "dummy");
+		sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
 	}
 	
 	public void setSecondaryRewardItem(ItemStack secondaryRewardItem){
@@ -503,20 +531,44 @@ public class Minigame {
 		return spectators.contains(player);
 	}
 
-	public List<Player> getRedTeam() {
-		return redTeam;
+	public List<OfflinePlayer> getRedTeam() {
+		List<OfflinePlayer> players = new ArrayList<OfflinePlayer>();
+		for(OfflinePlayer offply : sbManager.getTeam("Red").getPlayers()){
+			players.add(offply);
+		}
+		return players;
 	}
 
 	public void addRedTeamPlayer(Player player) {
-		redTeam.add(player);
+		sbManager.getTeam("Red").addPlayer(player);
+		player.setScoreboard(sbManager);
+	}
+	
+	public void removeRedTeamPlayer(Player player){
+		sbManager.getTeam("Red").removePlayer(player);
+		player.setScoreboard(Minigames.plugin.getServer().getScoreboardManager().getMainScoreboard());
 	}
 
-	public List<Player> getBlueTeam() {
-		return blueTeam;
+	public List<OfflinePlayer> getBlueTeam() {
+		List<OfflinePlayer> players = new ArrayList<OfflinePlayer>();
+		for(OfflinePlayer offply : sbManager.getTeam("Blue").getPlayers()){
+			players.add(offply);
+		}
+		return players;
 	}
 
 	public void addBlueTeamPlayer(Player player) {
-		blueTeam.add(player);
+		sbManager.getTeam("Blue").addPlayer(player);
+		player.setScoreboard(sbManager);
+	}
+	
+	public void removeBlueTeamPlayer(Player player){
+		sbManager.getTeam("Blue").removePlayer(player);
+		player.setScoreboard(Minigames.plugin.getServer().getScoreboardManager().getMainScoreboard());
+	}
+	
+	public void setScore(Player ply, int amount){
+		sbManager.getObjective(name).getScore(ply).setScore(amount);
 	}
 
 	public int getRedTeamScore() {
@@ -870,6 +922,10 @@ public class Minigame {
 
 	public void setDefaultWinner(String defaultWinner) {
 		this.defaultWinner = defaultWinner;
+	}
+	
+	public Scoreboard getScoreboardManager(){
+		return sbManager;
 	}
 
 	public void saveMinigame(){

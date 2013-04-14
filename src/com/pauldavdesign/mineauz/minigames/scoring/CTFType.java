@@ -41,7 +41,8 @@ public class CTFType extends ScoreType{
 				
 				if(team == 1){
 					if(minigame.getRedTeam().size() < minigame.getBlueTeam().size() - 1){
-						minigame.getBlueTeam().remove(players.get(i));
+//						minigame.getBlueTeam().remove(players.get(i));
+						minigame.removeBlueTeamPlayer(players.get(i));
 						minigame.addRedTeamPlayer(players.get(i));
 						team = 0;
 						players.get(i).sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been auto balanced to " + ChatColor.RED + "Red Team");
@@ -50,7 +51,8 @@ public class CTFType extends ScoreType{
 				}
 				else if(team == 0){
 					if(minigame.getBlueTeam().size() < minigame.getRedTeam().size() - 1){
-						minigame.getRedTeam().remove(players.get(i));
+//						minigame.getRedTeam().remove(players.get(i));
+						minigame.removeRedTeamPlayer(players.get(i));
 						minigame.addBlueTeamPlayer(players.get(i));
 						team = 1;
 						players.get(i).sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been auto balanced to " + ChatColor.BLUE + "Blue Team");
@@ -71,7 +73,7 @@ public class CTFType extends ScoreType{
 						mdata.sendMinigameMessage(minigame, players.get(i).getName() + " has been auto balanced to " + ChatColor.BLUE + "Blue Team", null, players.get(i));
 					}
 				}
-				TeamDMMinigame.applyTeam(players.get(i), team);
+//				TeamDMMinigame.applyTeam(players.get(i), team);
 			}
 		}
 	}
@@ -179,6 +181,8 @@ public class CTFType extends ScoreType{
 										mdata.sendMinigameMessage(mgm, message, null, null);
 									}
 									flag.stopCarrierParticleEffect();
+									pdata.addPlayerScore(ply);
+									mgm.setScore(ply, pdata.getPlayerScore(ply));
 									mdata.sendMinigameMessage(mgm, "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore(), null, null);
 									
 									if(end){
@@ -200,6 +204,7 @@ public class CTFType extends ScoreType{
 								}
 								else{
 									pdata.addPlayerScore(ply);
+									mgm.setScore(ply, pdata.getPlayerScore(ply));
 									if(mgm.getMaxScore() != 0 && pdata.getPlayerScore(ply) >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
 										end = true;
 									}

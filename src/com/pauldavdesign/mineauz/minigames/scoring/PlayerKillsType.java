@@ -62,7 +62,6 @@ public class PlayerKillsType extends ScoreType{
 						mdata.sendMinigameMessage(minigame, players.get(i).getName() + " has been auto balanced to " + ChatColor.BLUE + "Blue Team", null, players.get(i));
 					}
 				}
-				TeamDMMinigame.applyTeam(players.get(i), team);
 			}
 		}
 		
@@ -95,6 +94,7 @@ public class PlayerKillsType extends ScoreType{
 
 					pdata.addPlayerKill(attacker);
 					pdata.addPlayerScore(attacker);
+					mgm.setScore(attacker, pdata.getPlayerScore(attacker));
 					
 					if(mgm.getScoreType().equals("kills")){
 						mdata.sendMinigameMessage(mgm, ply.getKiller().getName() + "'s Score: " + pdata.getPlayerScore(ply.getKiller()), null, null);
@@ -140,6 +140,7 @@ public class PlayerKillsType extends ScoreType{
 					if(team != ateam){
 						pdata.addPlayerKill(attacker);
 						pdata.addPlayerScore(attacker);
+						mgm.setScore(attacker, pdata.getPlayerScore(attacker));
 						
 						if(mgm.getScoreType().equals("kills")){
 							boolean end = false;
@@ -189,6 +190,7 @@ public class PlayerKillsType extends ScoreType{
 			if(mgm.getScoreType().equals("kills")){
 				if(mgm.getRedTeam().isEmpty() && mgm.getBlueTeam().isEmpty()){
 					pdata.takePlayerScore(ply);
+					mgm.setScore(ply, pdata.getPlayerScore(ply));
 					
 					mdata.sendMinigameMessage(mgm, ply.getName() + "'s Score: " + pdata.getPlayerScore(ply), null, null);
 				}

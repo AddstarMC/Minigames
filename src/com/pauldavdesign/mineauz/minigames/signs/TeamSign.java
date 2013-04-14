@@ -72,7 +72,7 @@ public class TeamSign implements MinigameSign {
 				if(mgm.getBlueTeam().contains(player)){
 					if(sign.getLine(2).equals(ChatColor.RED + "Red")){
 						if(mgm.getRedTeam().size() <= mgm.getBlueTeam().size()){
-							TeamDMMinigame.applyTeam(player, 0);
+//							TeamDMMinigame.applyTeam(player, 0);
 							TeamDMMinigame.switchTeam(mgm, player);
 							plugin.mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + ChatColor.RED + "Red Team.", null, player);
 							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.RED + "Red Team.");
@@ -82,9 +82,11 @@ public class TeamSign implements MinigameSign {
 						}
 					}
 					else if(sign.getLine(2).equals(ChatColor.GRAY + "Neutral") && !mgm.hasStarted()){
-						TeamDMMinigame.removeTeam(player);
-						mgm.getRedTeam().remove(player);
-						mgm.getBlueTeam().remove(player);
+//						TeamDMMinigame.removeTeam(player);
+//						mgm.getRedTeam().remove(player);
+//						mgm.getBlueTeam().remove(player);
+						mgm.removeRedTeamPlayer(player);
+						mgm.removeBlueTeamPlayer(player);
 						plugin.mdata.sendMinigameMessage(mgm, player.getName() + " will be automatically assigned to a team.", null, player);
 						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You will be automatically assigned to a team.");
 					}
@@ -93,7 +95,7 @@ public class TeamSign implements MinigameSign {
 				else if(mgm.getRedTeam().contains(player)){
 					if(sign.getLine(2).equals(ChatColor.BLUE + "Blue")){
 						if(mgm.getRedTeam().size() >= mgm.getBlueTeam().size()){
-							TeamDMMinigame.applyTeam(player, 1);
+//							TeamDMMinigame.applyTeam(player, 1);
 							TeamDMMinigame.switchTeam(mgm, player);
 							plugin.mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + ChatColor.BLUE + "Blue Team.", null, player);
 							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.BLUE + "Blue Team.");
@@ -103,9 +105,11 @@ public class TeamSign implements MinigameSign {
 						}
 					}
 					else if(sign.getLine(2).equals(ChatColor.GRAY + "Neutral") && !mgm.hasStarted()){
-						TeamDMMinigame.removeTeam(player);
-						mgm.getRedTeam().remove(player);
-						mgm.getBlueTeam().remove(player);
+//						TeamDMMinigame.removeTeam(player);
+//						mgm.getRedTeam().remove(player);
+						mgm.removeRedTeamPlayer(player);
+//						mgm.getBlueTeam().remove(player);
+						mgm.removeBlueTeamPlayer(player);
 						plugin.mdata.sendMinigameMessage(mgm, player.getName() + " will be automatically assigned to a team.", null, player);
 						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You will be automatically assigned to a team.");
 					}
@@ -115,8 +119,9 @@ public class TeamSign implements MinigameSign {
 					if(!mgm.hasStarted()){
 						if(sign.getLine(2).equals(ChatColor.RED + "Red")){
 							if(mgm.getRedTeam().size() <= mgm.getBlueTeam().size()){
-								TeamDMMinigame.applyTeam(player, 0);
+//								TeamDMMinigame.applyTeam(player, 0);
 								mgm.addRedTeamPlayer(player);
+								mgm.removeBlueTeamPlayer(player);
 								plugin.mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + ChatColor.RED + "Red Team.", null, player);
 								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.RED + "Red Team.");
 							}
@@ -126,8 +131,9 @@ public class TeamSign implements MinigameSign {
 						}
 						else if(sign.getLine(2).equals(ChatColor.BLUE + "Blue")){
 							if(mgm.getRedTeam().size() >= mgm.getBlueTeam().size()){
-								TeamDMMinigame.applyTeam(player, 1);
+//								TeamDMMinigame.applyTeam(player, 1);
 								mgm.addBlueTeamPlayer(player);
+								mgm.removeRedTeamPlayer(player);
 								plugin.mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + ChatColor.BLUE + "Blue Team.", null, player);
 								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.BLUE + "Blue Team.");
 							}

@@ -61,7 +61,6 @@ public class InfectionType extends ScoreType{
 						mdata.sendMinigameMessage(minigame, players.get(i).getName() + " is a " + ChatColor.BLUE + "Survivor", null, players.get(i));
 					}
 				}
-				TeamDMMinigame.applyTeam(players.get(i), team);
 			}
 		}
 	}
@@ -73,8 +72,17 @@ public class InfectionType extends ScoreType{
 			if(mgm.getType().equals("teamdm") && mgm.getScoreType().equals("infection")){
 				if(mgm.getBlueTeam().contains(event.getEntity())){
 					TeamDMMinigame.switchTeam(mgm, event.getEntity());
-					TeamDMMinigame.applyTeam(event.getEntity(), 0);
 					infected.add(event.getEntity());
+					if(event.getEntity().getKiller() instanceof Player){
+						Player killer = (Player)event.getEntity().getKiller();
+						pdata.addPlayerKill(killer);
+						pdata.addPlayerScore(killer);
+						mgm.setScore(killer, pdata.getPlayerScore(killer));
+					}
+					pdata.setPlayerScore(event.getEntity(), 0);
+					mgm.setScore(event.getEntity(), pdata.getPlayerScore(event.getEntity()));
+					pdata.addPlayerDeath(event.getEntity());
+					
 					if(mgm.getLives() != pdata.getPlayerDeath(event.getEntity())){
 						mdata.sendMinigameMessage(mgm, event.getEntity().getName() + " has become " + ChatColor.RED + "Infected!", "error", null);
 					}
