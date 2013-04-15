@@ -1418,7 +1418,7 @@ public class Minigame {
 					if(PotionEffectType.getByName(eff) != null){
 						PotionEffect effect = new PotionEffect(PotionEffectType.getByName(eff),
 								minigame.getConfig().getInt(name + ".loadout.potions." + eff + ".dur"),
-								minigame.getConfig().getInt(name + ".loadout.potions." + eff + ".amp"));
+								minigame.getConfig().getInt(name + ".loadout.potions." + eff + ".amp"), true);
 						getDefaultPlayerLoadout().addPotionEffect(effect);
 					}
 				}

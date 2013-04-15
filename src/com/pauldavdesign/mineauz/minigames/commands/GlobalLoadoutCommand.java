@@ -302,7 +302,7 @@ public class GlobalLoadoutCommand implements ICommand {
 				}
 				
 				if(potion != null){
-					PotionEffect eff = new PotionEffect(potion, duration, amplifier);
+					PotionEffect eff = new PotionEffect(potion, duration, amplifier, true);
 					load.addPotionEffect(eff);
 					sender.sendMessage(ChatColor.GRAY + "Added potion effect \"" + potion.getName().toLowerCase() + "\" to the " + loadout + " loadout");
 				}
