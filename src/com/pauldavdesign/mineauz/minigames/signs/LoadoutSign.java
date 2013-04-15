@@ -44,22 +44,21 @@ public class LoadoutSign implements MinigameSign {
 		return true;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean signUse(Sign sign, Player player) {
 		if(player.getItemInHand().getType() == Material.AIR && plugin.pdata.playerInMinigame(player)){
 			Minigame mgm = plugin.pdata.getPlayersMinigame(player);
-			if(mgm.isSpectator(player)){
+			if(mgm == null || mgm.isSpectator(player)){
 				return false;
 			}
 			
 			if(mgm.hasLoadout(sign.getLine(2))){
 				if(!mgm.getLoadout(sign.getLine(2)).getUsePermissions() || player.hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
 					if(mgm.getType().equals("sp") || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
-						mgm.getLoadout(sign.getLine(2)).equiptLoadout(player);
+						//mgm.getLoadout(sign.getLine(2)).equiptLoadout(player);
+						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "This loadout will be equipped the next time you respawn.");
 					}
 					mgm.setPlayersLoadout(player, mgm.getLoadout(sign.getLine(2)));
-					player.updateInventory();
 					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been equipped with the " + sign.getLine(2) + " loadout.");
 					return true;
 				}
@@ -70,10 +69,10 @@ public class LoadoutSign implements MinigameSign {
 			else if(plugin.mdata.hasLoadout(sign.getLine(2))){
 				if(!plugin.mdata.getLoadout(sign.getLine(2)).getUsePermissions() || player.hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
 					if(mgm.getType().equals("sp") || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
-						plugin.mdata.getLoadout(sign.getLine(2)).equiptLoadout(player);
+						//plugin.mdata.getLoadout(sign.getLine(2)).equiptLoadout(player);
+						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "This loadout will be equipped the next time you respawn.");
 					}
 					mgm.setPlayersLoadout(player, plugin.mdata.getLoadout(sign.getLine(2)));
-					player.updateInventory();
 					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been equipped with the " + sign.getLine(2) + " loadout.");
 					return true;
 				}
