@@ -59,6 +59,11 @@ public class Events implements Listener{
 			
 			pdata.partyMode(ply);
 			
+			if(ply.getKiller() != null){
+				Player killer = ply.getKiller();
+				pdata.addPlayerKill(killer);
+			}
+			
 			Minigame minigame = pdata.getPlayersMinigame(ply);
 			if(minigame.hasPlayers()){
 				mdata.sendMinigameMessage(minigame, msg, "error", null);

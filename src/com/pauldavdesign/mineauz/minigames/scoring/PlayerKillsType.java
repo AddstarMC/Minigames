@@ -75,7 +75,7 @@ public class PlayerKillsType extends ScoreType{
 			if(pdata.getPlayersMinigame(ply) != null){
 				mgm = pdata.getPlayersMinigame(ply);
 			}
-			if(mgm != null){
+			if(mgm != null && mgm.getScoreType().equals("kills")){
 				if(mgm.getBlueTeam().isEmpty() && mgm.getRedTeam().isEmpty()){
 					Player attacker = null;
 					if(ply.getKiller() != null){
@@ -92,21 +92,16 @@ public class PlayerKillsType extends ScoreType{
 						return;
 					}
 
-					pdata.addPlayerKill(attacker);
 					pdata.addPlayerScore(attacker);
 					mgm.setScore(attacker, pdata.getPlayerScore(attacker));
-					
-					if(mgm.getScoreType().equals("kills")){
-//						mdata.sendMinigameMessage(mgm, ply.getKiller().getName() + "'s Score: " + pdata.getPlayerScore(ply.getKiller()), null, null);
-					
-						if(mgm.getMaxScore() != 0 && pdata.getPlayerScore(attacker) >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
-							List<Player> conPlayers = new ArrayList<Player>();
-							conPlayers.addAll(mgm.getPlayers());
-							conPlayers.remove(attacker);
-							for(Player pl : conPlayers){
-								if(pl != attacker){
-									pdata.quitMinigame(pl, false);
-								}
+				
+					if(mgm.getMaxScore() != 0 && pdata.getPlayerScore(attacker) >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+						List<Player> conPlayers = new ArrayList<Player>();
+						conPlayers.addAll(mgm.getPlayers());
+						conPlayers.remove(attacker);
+						for(Player pl : conPlayers){
+							if(pl != attacker){
+								pdata.quitMinigame(pl, false);
 							}
 						}
 					}
@@ -138,44 +133,40 @@ public class PlayerKillsType extends ScoreType{
 					}
 					
 					if(team != ateam){
-						pdata.addPlayerKill(attacker);
 						pdata.addPlayerScore(attacker);
 						mgm.setScore(attacker, pdata.getPlayerScore(attacker));
 						
-						if(mgm.getScoreType().equals("kills")){
-							boolean end = false;
+						boolean end = false;
+						
+						if(ateam == 0){
+							mgm.incrementRedTeamScore();
 							
-							if(ateam == 0){
-								mgm.incrementRedTeamScore();
-								
-								if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
-									end = true;
+							if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+								end = true;
+							}
+						}
+						else{
+							mgm.incrementBlueTeamScore();
+							
+							if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+								end = true;
+							}
+						}
+						
+						if(end){
+							mdata.sendMinigameMessage(mgm, attacker.getName() + " took the final kill against " + ply.getName(), null, null);
+							if(ateam == 1){
+								if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+									pdata.endTeamMinigame(1, mgm);
 								}
 							}
 							else{
-								mgm.incrementBlueTeamScore();
-								
-								if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
-									end = true;
-								}
-							}
-							
-//							mdata.sendMinigameMessage(mgm, "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore(), null, null);
-							
-							if(end){
-								mdata.sendMinigameMessage(mgm, attacker.getName() + " took the final kill against " + ply.getName(), null, null);
-								if(ateam == 1){
-									if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
-										pdata.endTeamMinigame(1, mgm);
-									}
-								}
-								else{
-									if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
-										pdata.endTeamMinigame(0, mgm);
-									}
+								if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+									pdata.endTeamMinigame(0, mgm);
 								}
 							}
 						}
+						
 					}
 				}
 			}
