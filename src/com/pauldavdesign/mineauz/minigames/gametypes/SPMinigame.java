@@ -32,6 +32,12 @@ public class SPMinigame extends MinigameType{
 		if(mgm.getQuitPosition() != null && mgm.isEnabled()){
 			Location startpos = mdata.getMinigame(mgm.getName()).getStartLocations().get(0);
 			player.teleport(startpos);
+
+			if(mgm.hasRestoreBlocks() && !mgm.hasPlayers()){
+				for(RestoreBlock block : mgm.getRestoreBlocks().values()){
+					mgm.getBlockRecorder().addBlock(block.getLocation().getBlock(), null);
+				}
+			}
 			
 			pdata.storePlayerData(player, mgm.getDefaultGamemode());
 			pdata.addPlayerMinigame(player, mgm);
@@ -41,12 +47,6 @@ public class SPMinigame extends MinigameType{
 					"You have started a single player minigame, type /minigame quit to exit.");
 			
 			pdata.setPlayerCheckpoints(player, startpos);
-			
-			if(mgm.hasRestoreBlocks() && !mgm.hasPlayers()){
-				for(RestoreBlock block : mgm.getRestoreBlocks().values()){
-					mgm.getBlockRecorder().addBlock(block.getLocation().getBlock(), null);
-				}
-			}
 			
 			if(mgm.getLives() > 0){
 				player.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + mgm.getLives());
