@@ -15,7 +15,9 @@ import org.bukkit.block.BrewingStand;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.block.Dropper;
 import org.bukkit.block.Furnace;
+import org.bukkit.block.Hopper;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Arrow;
@@ -68,8 +70,6 @@ public class RecorderData implements Listener{
 	
 	private Map<String, BlockData> blockdata;
 	private Map<Integer, EntityData> entdata;
-	
-	private boolean regenerating = false;
 	
 	public RecorderData(Minigame minigame){
 		plugin = Minigames.plugin;
@@ -162,6 +162,24 @@ public class RecorderData implements Listener{
 					}
 				}
 			}
+			else if(block.getType() == Material.DROPPER){
+				Dropper dropper = (Dropper) block.getState();
+				items = new ItemStack[dropper.getInventory().getContents().length];
+				for(int i = 0; i < items.length; i++){
+					if(dropper.getInventory().getItem(i) != null){
+						items[i] = dropper.getInventory().getItem(i).clone();
+					}
+				}
+			}
+			else if(block.getType() == Material.HOPPER){
+				Hopper hopper = (Hopper) block.getState();
+				items = new ItemStack[hopper.getInventory().getContents().length];
+				for(int i = 0; i < items.length; i++){
+					if(hopper.getInventory().getItem(i) != null){
+						items[i] = hopper.getInventory().getItem(i).clone();
+					}
+				}
+			}
 			bdata.setItems(items);
 			
 			blockdata.put(sloc, bdata);
@@ -226,6 +244,24 @@ public class RecorderData implements Listener{
 					}
 				}
 			}
+			else if(block.getType() == Material.DROPPER){
+				Dropper dropper = (Dropper) block;
+				items = new ItemStack[dropper.getInventory().getContents().length];
+				for(int i = 0; i < items.length; i++){
+					if(dropper.getInventory().getItem(i) != null){
+						items[i] = dropper.getInventory().getItem(i).clone();
+					}
+				}
+			}
+			else if(block.getType() == Material.HOPPER){
+				Hopper hopper = (Hopper) block;
+				items = new ItemStack[hopper.getInventory().getContents().length];
+				for(int i = 0; i < items.length; i++){
+					if(hopper.getInventory().getItem(i) != null){
+						items[i] = hopper.getInventory().getItem(i).clone();
+					}
+				}
+			}
 			bdata.setItems(items);
 			
 			blockdata.put(sloc, bdata);
@@ -256,7 +292,6 @@ public class RecorderData implements Listener{
 	}
 	
 	public void restoreBlocks(){
-		regenerating = true;
 		for(String id : blockdata.keySet()){
 			final BlockData bdata = blockdata.get(id);
 			
@@ -322,6 +357,18 @@ public class RecorderData implements Listener{
 							dispenser.getInventory().setContents(bdata.getItems().clone());
 						}
 					}
+					else if(bdata.getLocation().getBlock().getType() == Material.DROPPER){
+						Dropper dropper = (Dropper) bdata.getLocation().getBlock().getState();
+						if(bdata.getItems() != null){
+							dropper.getInventory().setContents(bdata.getItems().clone());
+						}
+					}
+					else if(bdata.getLocation().getBlock().getType() == Material.HOPPER){
+						Hopper hopper = (Hopper) bdata.getLocation().getBlock().getState();
+						if(bdata.getItems() != null){
+							hopper.getInventory().setContents(bdata.getItems().clone());
+						}
+					}
 					else if(bdata.getBlockState().getType() == Material.SIGN || bdata.getBlockState().getType() == Material.WALL_SIGN){
 						Sign sign = (Sign) bdata.getLocation().getBlock().getState();
 						Sign signOld = (Sign) bdata.getBlockState();
@@ -335,7 +382,6 @@ public class RecorderData implements Listener{
 			});
 		}
 		blockdata.clear();
-		regenerating = false;
 	}
 	
 	public void restoreEntities(){
@@ -354,7 +400,6 @@ public class RecorderData implements Listener{
 	}
 	
 	public void restoreBlocks(Player modifier){
-		regenerating = true;
 		List<String> changes = new ArrayList<String>();
 		for(String id : blockdata.keySet()){
 			BlockData bdata = blockdata.get(id);
@@ -420,12 +465,32 @@ public class RecorderData implements Listener{
 						dispenser.getInventory().setContents(bdata.getItems().clone());
 					}
 				}
+				else if(bdata.getLocation().getBlock().getType() == Material.DROPPER){
+					Dropper dropper = (Dropper) bdata.getLocation().getBlock().getState();
+					if(bdata.getItems() != null){
+						dropper.getInventory().setContents(bdata.getItems().clone());
+					}
+				}
+				else if(bdata.getLocation().getBlock().getType() == Material.HOPPER){
+					Hopper hopper = (Hopper) bdata.getLocation().getBlock().getState();
+					if(bdata.getItems() != null){
+						hopper.getInventory().setContents(bdata.getItems().clone());
+					}
+				}
+				else if(bdata.getBlockState().getType() == Material.SIGN || bdata.getBlockState().getType() == Material.WALL_SIGN){
+					Sign sign = (Sign) bdata.getLocation().getBlock().getState();
+					Sign signOld = (Sign) bdata.getBlockState();
+					sign.setLine(0, signOld.getLine(0));
+					sign.setLine(1, signOld.getLine(1));
+					sign.setLine(2, signOld.getLine(2));
+					sign.setLine(3, signOld.getLine(3));
+					sign.update();
+				}
 			}
 		}
 		for(String id : changes){
 			blockdata.remove(id);
 		}
-		regenerating = false;
 	}
 	
 	public void restoreEntities(Player player){
@@ -1040,7 +1105,7 @@ public class RecorderData implements Listener{
 	@EventHandler
 	private void dispenser(BlockDispenseEvent event){
 		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getBlock().getLocation())){
-			addBlock(event.getBlock().getState(), null);
+			addBlock(event.getBlock(), null);
 		}
 	}
 	
@@ -1050,28 +1115,13 @@ public class RecorderData implements Listener{
 				event.getBlock().getType() == Material.REDSTONE_WIRE ||
 				event.getBlock().getType() == Material.REDSTONE_TORCH_ON ||
 				event.getBlock().getType() == Material.REDSTONE_TORCH_OFF ||
-				event.getBlock().getType() == Material.SIGN ||
+				event.getBlock().getType() == Material.SIGN_POST ||
+				event.getBlock().getType() == Material.WALL_SIGN ||
 				event.getBlock().getType() == Material.RAILS ||
 				event.getBlock().getType() == Material.POWERED_RAIL ||
 				event.getBlock().getType() == Material.DETECTOR_RAIL){
 			if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getBlock().getLocation())){
 				addBlock(event.getBlock(), null);
-			}
-		}
-		else if(regenerating && hasRegenArea() && blockInRegenArea(event.getBlock().getLocation())){
-			if(event.getBlock().getType() == Material.SAND ||
-					event.getBlock().getType() == Material.GRAVEL ||
-					event.getBlock().getType() == Material.DRAGON_EGG ||
-					event.getBlock().getType() == Material.ANVIL||
-					event.getBlock().getType() == Material.TORCH ||
-					event.getBlock().getType() == Material.REDSTONE_WIRE ||
-					event.getBlock().getType() == Material.REDSTONE_TORCH_ON ||
-					event.getBlock().getType() == Material.REDSTONE_TORCH_OFF ||
-					event.getBlock().getType() == Material.SIGN ||
-					event.getBlock().getType() == Material.RAILS ||
-					event.getBlock().getType() == Material.POWERED_RAIL ||
-					event.getBlock().getType() == Material.DETECTOR_RAIL){
-				event.setCancelled(true);
 			}
 		}
 	}

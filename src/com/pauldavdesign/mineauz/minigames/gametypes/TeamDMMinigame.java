@@ -4,21 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-//import net.minecraft.server.v1_5_R2.EntityPlayer;
-//import net.minecraft.server.v1_5_R2.Packet20NamedEntitySpawn;
-//import net.minecraft.server.v1_5_R2.Packet5EntityEquipment;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
-//import org.bukkit.craftbukkit.v1_5_R2.entity.CraftPlayer;
-//import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
@@ -298,61 +290,61 @@ public class TeamDMMinigame extends MinigameType{
 		}
 	}
 	
-	@EventHandler
-	public void friendlyPvP(EntityDamageByEntityEvent event){
-		if(event.getEntity() instanceof Player){
-			Player ply = (Player) event.getEntity();
-			if(pdata.getPlayersMinigame(ply) != null && pdata.getPlayersMinigame(ply).getType().equals("teamdm")){
-				if(event.getDamager() instanceof Player){
-					Player attacker = (Player) event.getDamager();
-					if(pdata.getPlayersMinigame(attacker) != null && pdata.getPlayersMinigame(attacker).getType().equals("teamdm")){
-						Minigame mg = pdata.getPlayersMinigame(ply);
-						int team = 0;
-						int ateam = 0;
-						if(mg.getBlueTeam().contains(ply)){
-							team = 1;
-						}
-						
-						if(mg.getBlueTeam().contains(attacker)){
-							ateam = 1;
-						}
-						
-						if(team == ateam){
-							event.setCancelled(true);
-						}
-					}
-					else{
-						event.setCancelled(true);
-					}
-				}
-				else if(event.getDamager() instanceof Arrow){
-					Arrow arrow = (Arrow) event.getDamager();
-					if(arrow.getShooter() instanceof Player){
-						Player attacker = (Player) arrow.getShooter();
-						if(pdata.getPlayersMinigame(attacker) != null && pdata.getPlayersMinigame(attacker).getType().equals("teamdm")){
-							Minigame mg = pdata.getPlayersMinigame(ply);
-							int team = 0;
-							int ateam = 0;
-							if(mg.getBlueTeam().contains(ply)){
-								team = 1;
-							}
-							
-							if(mg.getBlueTeam().contains(attacker)){
-								ateam = 1;
-							}
-							
-							if(team == ateam){
-								event.setCancelled(true);
-							}
-						}
-						else{
-							event.setCancelled(true);
-						}
-					}
-				}
-			}
-		}
-	}
+//	@EventHandler
+//	public void friendlyPvP(EntityDamageByEntityEvent event){
+//		if(event.getEntity() instanceof Player){
+//			Player ply = (Player) event.getEntity();
+//			if(pdata.getPlayersMinigame(ply) != null && pdata.getPlayersMinigame(ply).getType().equals("teamdm")){
+//				if(event.getDamager() instanceof Player){
+//					Player attacker = (Player) event.getDamager();
+//					if(pdata.getPlayersMinigame(attacker) != null && pdata.getPlayersMinigame(attacker).getType().equals("teamdm")){
+//						Minigame mg = pdata.getPlayersMinigame(ply);
+//						int team = 0;
+//						int ateam = 0;
+//						if(mg.getBlueTeam().contains(ply)){
+//							team = 1;
+//						}
+//						
+//						if(mg.getBlueTeam().contains(attacker)){
+//							ateam = 1;
+//						}
+//						
+//						if(team == ateam){
+//							event.setCancelled(true);
+//						}
+//					}
+//					else{
+//						event.setCancelled(true);
+//					}
+//				}
+//				else if(event.getDamager() instanceof Arrow){
+//					Arrow arrow = (Arrow) event.getDamager();
+//					if(arrow.getShooter() instanceof Player){
+//						Player attacker = (Player) arrow.getShooter();
+//						if(pdata.getPlayersMinigame(attacker) != null && pdata.getPlayersMinigame(attacker).getType().equals("teamdm")){
+//							Minigame mg = pdata.getPlayersMinigame(ply);
+//							int team = 0;
+//							int ateam = 0;
+//							if(mg.getBlueTeam().contains(ply)){
+//								team = 1;
+//							}
+//							
+//							if(mg.getBlueTeam().contains(attacker)){
+//								ateam = 1;
+//							}
+//							
+//							if(team == ateam){
+//								event.setCancelled(true);
+//							}
+//						}
+//						else{
+//							event.setCancelled(true);
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
 	
 	@EventHandler
 	public void timerExpire(TimerExpireEvent event){

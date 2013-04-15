@@ -183,7 +183,6 @@ public class CTFType extends ScoreType{
 									flag.stopCarrierParticleEffect();
 									pdata.addPlayerScore(ply);
 									mgm.setScore(ply, pdata.getPlayerScore(ply));
-//									mdata.sendMinigameMessage(mgm, "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore(), null, null);
 									
 									if(end){
 										if(team == 0){
@@ -210,7 +209,6 @@ public class CTFType extends ScoreType{
 									}
 									
 									mdata.sendMinigameMessage(mgm, ply.getName() + " captured a flag", null, null);
-//									mdata.sendMinigameMessage(mgm, ply.getName() + "'s Score: " + pdata.getPlayerScore(ply), null, null);
 									flag.stopCarrierParticleEffect();
 									
 									if(end){
