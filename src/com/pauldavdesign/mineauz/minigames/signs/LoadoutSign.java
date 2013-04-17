@@ -54,12 +54,17 @@ public class LoadoutSign implements MinigameSign {
 			
 			if(mgm.hasLoadout(sign.getLine(2))){
 				if(!mgm.getLoadout(sign.getLine(2)).getUsePermissions() || player.hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
-					if(mgm.getType().equals("sp") || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
-						//mgm.getLoadout(sign.getLine(2)).equiptLoadout(player);
-						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "This loadout will be equipped the next time you respawn.");
-					}
 					mgm.setPlayersLoadout(player, mgm.getLoadout(sign.getLine(2)));
 					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been equipped with the " + sign.getLine(2) + " loadout.");
+					
+					if(mgm.getType().equals("sp") || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
+						if(sign.getLine(3).equalsIgnoreCase("respawn")){
+							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "This loadout will be equipped the next time you respawn.");
+						}
+						else{
+							mgm.getLoadout(sign.getLine(2)).equiptLoadout(player);
+						}
+					}
 					return true;
 				}
 				else{
@@ -68,12 +73,17 @@ public class LoadoutSign implements MinigameSign {
 			}
 			else if(plugin.mdata.hasLoadout(sign.getLine(2))){
 				if(!plugin.mdata.getLoadout(sign.getLine(2)).getUsePermissions() || player.hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
-					if(mgm.getType().equals("sp") || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
-						//plugin.mdata.getLoadout(sign.getLine(2)).equiptLoadout(player);
-						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "This loadout will be equipped the next time you respawn.");
-					}
 					mgm.setPlayersLoadout(player, plugin.mdata.getLoadout(sign.getLine(2)));
 					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been equipped with the " + sign.getLine(2) + " loadout.");
+
+					if(mgm.getType().equals("sp") || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
+						if(sign.getLine(3).equalsIgnoreCase("respawn")){
+							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "This loadout will be equipped the next time you respawn.");
+						}
+						else{
+							plugin.mdata.getLoadout(sign.getLine(2)).equiptLoadout(player);
+						}
+					}
 					return true;
 				}
 				else{

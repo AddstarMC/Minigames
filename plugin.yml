@@ -269,6 +269,9 @@ permissions:
     minigame.sign.create.team:
         description: Allows the creation of a Minigame team sign
         default: op
+    minigame.sign.create.teleport:
+        description: Allows the creation of a Minigame teleport sign
+        default: op
     minigame.sign.create.*:
         description: Allows a player to create all Minigame signs
         children:
@@ -282,6 +285,7 @@ permissions:
             minigame.sign.create.spectate: true
             minigame.sign.create.reward: true
             minigame.sign.create.team: true
+            minigame.sign.create.teleport: true
     minigame.sign.use.details:
         description: Allows the usage of a minigame sign to show the details
         default: true
@@ -306,6 +310,9 @@ permissions:
     minigame.sign.use.team:
         description: Allows the usage of a Minigame team sign.
         default: true
+    minigame.sign.use.teleport:
+        description: Allows the usage of a Minigame teleport sign.
+        default: true
     minigame.sign.use.*:
         description: Allows a player to use all the Minigame sign uses
         children:
@@ -317,6 +324,7 @@ permissions:
             minigame.sign.use.spectate: true
             minigame.sign.use.reward: true
             minigame.sign.use.team: true
+            minigame.sign.use.teleport: true
     minigame.reload:
         description: Allows player to reload the currently loaded configuration files
         default: op
