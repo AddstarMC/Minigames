@@ -16,6 +16,11 @@ multiplayer:
     - 60
     - 30
     - 10
+    - 5
+    - 4
+    - 3
+    - 2
+    - 1
   floordegenerator:
     time: 30
   ctf:

@@ -28,15 +28,21 @@ public class MultiplayerTimer{
 				if(playerWaitTime != 0 && !paused){
 					if(playerWaitTime == plugin.getConfig().getInt("multiplayer.waitforplayers")){
 						sendPlayersMessage(minigame, ChatColor.GRAY + "Waiting for players:");
+						sendPlayersMessage(minigame, ChatColor.GRAY + "" + playerWaitTime + "sec.");
 					}
-					sendPlayersMessage(minigame, ChatColor.GRAY + "" + playerWaitTime + "sec.");
+					else if(plugin.getConfig().getIntegerList("multiplayer.timerMessageInterval").contains(playerWaitTime)){
+						sendPlayersMessage(minigame, ChatColor.GRAY + "" + playerWaitTime + "sec.");
+					}
 					playerWaitTime -= 1;
 				}
 				else if(playerWaitTime == 0 && startWaitTime !=0 && !paused){
 					if(startWaitTime == plugin.getConfig().getInt("multiplayer.startcountdown")){
 						sendPlayersMessage(minigame, ChatColor.GRAY + "Minigame starts in:");
+						sendPlayersMessage(minigame, ChatColor.GRAY + "" + startWaitTime + "sec.");
 					}
-					sendPlayersMessage(minigame, ChatColor.GRAY + "" + startWaitTime + "sec.");
+					else if(plugin.getConfig().getIntegerList("multiplayer.timerMessageInterval").contains(startWaitTime)){
+						sendPlayersMessage(minigame, ChatColor.GRAY + "" + startWaitTime + "sec.");
+					}
 					startWaitTime -= 1;
 				}
 				else if(playerWaitTime == 0 && startWaitTime == 0){
