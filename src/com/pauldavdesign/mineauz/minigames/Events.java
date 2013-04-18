@@ -64,6 +64,8 @@ public class Events implements Listener{
 				pdata.addPlayerKill(killer);
 			}
 			
+			MinigameUtils.removePlayerArrows(ply);
+			
 			Minigame minigame = pdata.getPlayersMinigame(ply);
 			if(minigame.hasPlayers()){
 				mdata.sendMinigameMessage(minigame, msg, "error", null);

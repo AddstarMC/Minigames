@@ -372,6 +372,8 @@ public class PlayerData {
 				
 				player.closeInventory();
 				
+				MinigameUtils.removePlayerArrows(player);
+				
 				if(!forced){
 					mdata.sendMinigameMessage(mgm, player.getName() + " has left " + mgm, "error", player);
 				}
@@ -507,6 +509,8 @@ public class PlayerData {
 			
 			player.closeInventory();
 			restorePlayerData(player);
+			
+			MinigameUtils.removePlayerArrows(player);
 			
 			removePlayerMinigame(player);
 			mgm.removePlayer(player);
