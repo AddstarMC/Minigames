@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.BrewingStand;
 import org.bukkit.block.Chest;
@@ -31,9 +32,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
+import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -70,6 +71,28 @@ public class RecorderData implements Listener{
 	
 	private Map<String, BlockData> blockdata;
 	private Map<Integer, EntityData> entdata;
+	
+	private static List<Material> physBlocks = new ArrayList<Material>();
+	
+	static{
+		physBlocks.add(Material.TORCH);
+		physBlocks.add(Material.SIGN_POST);
+		physBlocks.add(Material.WALL_SIGN);
+		physBlocks.add(Material.STRING);
+		physBlocks.add(Material.RAILS);
+		physBlocks.add(Material.POWERED_RAIL);
+		physBlocks.add(Material.ACTIVATOR_RAIL);
+		physBlocks.add(Material.REDSTONE_WIRE);
+		physBlocks.add(Material.REDSTONE_TORCH_OFF);
+		physBlocks.add(Material.REDSTONE_TORCH_ON);
+		physBlocks.add(Material.SAPLING);
+		physBlocks.add(Material.RED_ROSE);
+		physBlocks.add(Material.YELLOW_FLOWER);
+		physBlocks.add(Material.WOOD_PLATE);
+		physBlocks.add(Material.STONE_PLATE);
+		physBlocks.add(Material.GOLD_PLATE);
+		physBlocks.add(Material.IRON_PLATE);
+	}
 	
 	public RecorderData(Minigame minigame){
 		plugin = Minigames.plugin;
@@ -226,6 +249,7 @@ public class RecorderData implements Listener{
 	
 	public void restoreBlocks(Player modifier){
 		List<String> changes = new ArrayList<String>();
+		List<BlockData> addBlocks = new ArrayList<BlockData>();
 		for(String id : blockdata.keySet()){
 			final BlockData bdata = blockdata.get(id);
 			if(bdata.getModifier() == modifier || modifier == null){
@@ -253,71 +277,88 @@ public class RecorderData implements Listener{
 				}
 				changes.add(id);
 				
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						bdata.getLocation().getBlock().setType(bdata.getBlockState().getType());
-						bdata.getLocation().getBlock().setData(bdata.getBlockState().getRawData());
+				if(physBlocks.contains(bdata.getBlockState().getType())){
+					addBlocks.add(bdata);
+				}
+				else{
+					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 						
-						if(bdata.getLocation().getBlock().getType() == Material.CHEST){
-							if(bdata.getLocation().getBlock().getState() instanceof DoubleChest){
-								DoubleChest dchest = (DoubleChest) bdata.getLocation().getBlock().getState();
-								if(bdata.getItems() != null){
-									dchest.getInventory().setContents(bdata.getItems().clone());
+						@Override
+						public void run() {
+							bdata.getLocation().getBlock().setType(bdata.getBlockState().getType());
+							bdata.getLocation().getBlock().setData(bdata.getBlockState().getRawData());
+							
+							if(bdata.getLocation().getBlock().getType() == Material.CHEST){
+								if(bdata.getLocation().getBlock().getState() instanceof DoubleChest){
+									DoubleChest dchest = (DoubleChest) bdata.getLocation().getBlock().getState();
+									if(bdata.getItems() != null){
+										dchest.getInventory().setContents(bdata.getItems().clone());
+									}
+								}
+								else{
+									Chest chest = (Chest) bdata.getLocation().getBlock().getState();
+									if(bdata.getItems() != null){
+										chest.getInventory().setContents(bdata.getItems().clone());
+									}
 								}
 							}
-							else{
-								Chest chest = (Chest) bdata.getLocation().getBlock().getState();
+							else if(bdata.getLocation().getBlock().getType() == Material.FURNACE){
+								Furnace furnace = (Furnace) bdata.getLocation().getBlock().getState();
 								if(bdata.getItems() != null){
-									chest.getInventory().setContents(bdata.getItems().clone());
+									furnace.getInventory().setContents(bdata.getItems().clone());
+								}
+							}
+							else if(bdata.getLocation().getBlock().getType() == Material.BREWING_STAND){
+								BrewingStand bstand = (BrewingStand) bdata.getLocation().getBlock().getState();
+								if(bdata.getItems() != null){
+									bstand.getInventory().setContents(bdata.getItems().clone());
+								}
+							}
+							else if(bdata.getLocation().getBlock().getType() == Material.DISPENSER){
+								Dispenser dispenser = (Dispenser) bdata.getLocation().getBlock().getState();
+								if(bdata.getItems() != null){
+									dispenser.getInventory().setContents(bdata.getItems().clone());
+								}
+							}
+							else if(bdata.getLocation().getBlock().getType() == Material.DROPPER){
+								Dropper dropper = (Dropper) bdata.getLocation().getBlock().getState();
+								if(bdata.getItems() != null){
+									dropper.getInventory().setContents(bdata.getItems().clone());
+								}
+							}
+							else if(bdata.getLocation().getBlock().getType() == Material.HOPPER){
+								Hopper hopper = (Hopper) bdata.getLocation().getBlock().getState();
+								if(bdata.getItems() != null){
+									hopper.getInventory().setContents(bdata.getItems().clone());
 								}
 							}
 						}
-						else if(bdata.getLocation().getBlock().getType() == Material.FURNACE){
-							Furnace furnace = (Furnace) bdata.getLocation().getBlock().getState();
-							if(bdata.getItems() != null){
-								furnace.getInventory().setContents(bdata.getItems().clone());
-							}
-						}
-						else if(bdata.getLocation().getBlock().getType() == Material.BREWING_STAND){
-							BrewingStand bstand = (BrewingStand) bdata.getLocation().getBlock().getState();
-							if(bdata.getItems() != null){
-								bstand.getInventory().setContents(bdata.getItems().clone());
-							}
-						}
-						else if(bdata.getLocation().getBlock().getType() == Material.DISPENSER){
-							Dispenser dispenser = (Dispenser) bdata.getLocation().getBlock().getState();
-							if(bdata.getItems() != null){
-								dispenser.getInventory().setContents(bdata.getItems().clone());
-							}
-						}
-						else if(bdata.getLocation().getBlock().getType() == Material.DROPPER){
-							Dropper dropper = (Dropper) bdata.getLocation().getBlock().getState();
-							if(bdata.getItems() != null){
-								dropper.getInventory().setContents(bdata.getItems().clone());
-							}
-						}
-						else if(bdata.getLocation().getBlock().getType() == Material.HOPPER){
-							Hopper hopper = (Hopper) bdata.getLocation().getBlock().getState();
-							if(bdata.getItems() != null){
-								hopper.getInventory().setContents(bdata.getItems().clone());
-							}
-						}
-						else if(bdata.getBlockState().getType() == Material.SIGN_POST || bdata.getBlockState().getType() == Material.WALL_SIGN){
-							Sign sign = (Sign) bdata.getLocation().getBlock().getState();
-							Sign signOld = (Sign) bdata.getBlockState();
-							sign.setLine(0, signOld.getLine(0));
-							sign.setLine(1, signOld.getLine(1));
-							sign.setLine(2, signOld.getLine(2));
-							sign.setLine(3, signOld.getLine(3));
-							sign.update();
-						}
-					}
-				});
-				
+					});
+				}
 			}
 		}
+		
+		for(final BlockData bdata : addBlocks){
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				
+				@Override
+				public void run() {
+					bdata.getLocation().getBlock().setType(bdata.getBlockState().getType());
+					bdata.getLocation().getBlock().setData(bdata.getBlockState().getRawData());
+					
+					if(bdata.getBlockState().getType() == Material.SIGN_POST || bdata.getBlockState().getType() == Material.WALL_SIGN){
+						Sign sign = (Sign) bdata.getLocation().getBlock().getState();
+						Sign signOld = (Sign) bdata.getBlockState();
+						sign.setLine(0, signOld.getLine(0));
+						sign.setLine(1, signOld.getLine(1));
+						sign.setLine(2, signOld.getLine(2));
+						sign.setLine(3, signOld.getLine(3));
+						sign.update();
+					}
+				}
+			}, 5);
+		}
+		addBlocks = null;
 		
 		if(modifier == null){
 			blockdata.clear();
@@ -471,6 +512,22 @@ public class RecorderData implements Listener{
 						event.getBlock().setType(Material.AIR);
 					}
 				}
+				
+				if(physBlocks.contains(event.getBlock().getRelative(BlockFace.UP).getType())){
+					addBlock(event.getBlock().getRelative(BlockFace.UP), ply);
+				}
+				if(physBlocks.contains(event.getBlock().getRelative(BlockFace.NORTH).getType())){
+					addBlock(event.getBlock().getRelative(BlockFace.NORTH), ply);
+				}
+				if(physBlocks.contains(event.getBlock().getRelative(BlockFace.EAST).getType())){
+					addBlock(event.getBlock().getRelative(BlockFace.EAST), ply);
+				}
+				if(physBlocks.contains(event.getBlock().getRelative(BlockFace.SOUTH).getType())){
+					addBlock(event.getBlock().getRelative(BlockFace.SOUTH), ply);
+				}
+				if(physBlocks.contains(event.getBlock().getRelative(BlockFace.WEST).getType())){
+					addBlock(event.getBlock().getRelative(BlockFace.WEST), ply);
+				}
 			}
 			else{
 				event.setCancelled(true);
@@ -622,12 +679,9 @@ public class RecorderData implements Listener{
 	@EventHandler
 	public void blockFromTo(BlockFromToEvent event){
 		if(hasRegenArea() && minigame.hasPlayers()){
-			Location block = event.getBlock().getLocation();
-			if(block.getWorld() == minigame.getRegenArea1().getWorld() && 
-					block.getBlockX() >= getRegenMinX() && block.getBlockX() <= getRegenMaxX() &&
-					block.getBlockY() >= getRegenMinY() && block.getBlockY() <= getRegenMaxY() &&
-					block.getBlockZ() >= getRegenMinZ() && block.getBlockZ() <= getRegenMaxZ()){
+			if(blockInRegenArea(event.getBlock().getLocation())){
 				addBlock(event.getBlock(), null);
+				addBlock(event.getToBlock(), null);
 			}
 		}
 	}
@@ -928,19 +982,9 @@ public class RecorderData implements Listener{
 	}
 	
 	@EventHandler
-	private void physicsBreak(BlockPhysicsEvent event){
-		if(event.getBlock().getType() == Material.TORCH ||
-				event.getBlock().getType() == Material.REDSTONE_WIRE ||
-				event.getBlock().getType() == Material.REDSTONE_TORCH_ON ||
-				event.getBlock().getType() == Material.REDSTONE_TORCH_OFF ||
-				event.getBlock().getType() == Material.SIGN_POST ||
-				event.getBlock().getType() == Material.WALL_SIGN ||
-				event.getBlock().getType() == Material.RAILS ||
-				event.getBlock().getType() == Material.POWERED_RAIL ||
-				event.getBlock().getType() == Material.DETECTOR_RAIL){
-			if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getBlock().getLocation())){
-				addBlock(event.getBlock(), null);
-			}
+	private void blockForm(BlockFormEvent event){
+		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getBlock().getLocation())){
+			addBlock(event.getBlock(), null);
 		}
 	}
 }
