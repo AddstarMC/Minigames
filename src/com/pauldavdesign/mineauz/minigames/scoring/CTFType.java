@@ -284,17 +284,13 @@ public class CTFType extends ScoreType{
 	@EventHandler
 	private void playerQuitMinigame(QuitMinigameEvent event){
 		if(event.getMinigame().getScoreType().equals("ctf")){
-			if(!event.isForced() && event.getMinigame().getPlayers().size() == 1){
-				if(event.getMinigame().isFlagCarrier(event.getPlayer())){
-					event.getMinigame().getFlagCarrier(event.getPlayer()).stopCarrierParticleEffect();
-					event.getMinigame().removeFlagCarrier(event.getPlayer());
-				}
-				event.getMinigame().resetFlags();
-			}
-			else if(event.getMinigame().isFlagCarrier(event.getPlayer())){
+			if(event.getMinigame().isFlagCarrier(event.getPlayer())){
 				event.getMinigame().getFlagCarrier(event.getPlayer()).stopCarrierParticleEffect();
-				event.getMinigame().getFlagCarrier(event.getPlayer()).respawnFlag();
 				event.getMinigame().removeFlagCarrier(event.getPlayer());
+				event.getMinigame().getFlagCarrier(event.getPlayer()).respawnFlag();
+			}
+			if(event.getMinigame().getPlayers().size() == 1){
+				event.getMinigame().resetFlags();
 			}
 		}
 	}
@@ -306,6 +302,9 @@ public class CTFType extends ScoreType{
 				event.getMinigame().getFlagCarrier(event.getPlayer()).respawnFlag();
 				event.getMinigame().getFlagCarrier(event.getPlayer()).stopCarrierParticleEffect();
 				event.getMinigame().removeFlagCarrier(event.getPlayer());
+			}
+			if(event.getMinigame().getPlayers().size() == 1){
+				event.getMinigame().resetFlags();
 			}
 		}
 	}

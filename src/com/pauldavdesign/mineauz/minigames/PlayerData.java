@@ -525,7 +525,7 @@ public class PlayerData {
 			
 			removeAllPlayerFlags(player);
 			
-			if(plugin.getSQL() == null || !plugin.getSQL().getSql().isOpen()){
+			if(plugin.getSQL() == null || plugin.getSQL().getSql() == null){
 				removePlayerDeath(player);
 				removePlayerKills(player);
 				removePlayerScore(player);

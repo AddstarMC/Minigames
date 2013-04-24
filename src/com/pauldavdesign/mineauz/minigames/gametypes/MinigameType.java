@@ -91,6 +91,10 @@ public abstract class MinigameType implements Listener{
 								}
 							}
 						}, 100);
+
+						player.setScoreboard(mgm.getScoreboardManager());
+						mgm.setScore(player, 1);
+						mgm.setScore(player, 0);
 					}
 					player.sendMessage(ChatColor.GREEN + "You have started a " + mgm.getType() + " minigame, type /minigame quit to exit.");
 				

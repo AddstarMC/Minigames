@@ -1,5 +1,8 @@
 package com.pauldavdesign.mineauz.minigames;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -13,10 +16,12 @@ public class MultiplayerTimer{
 	private MinigameData mdata = plugin.mdata;
 	private boolean paused = false;
 	private int taskID = -1;
+	private List<Integer> timeMsg = new ArrayList<Integer>();
 	
 	public MultiplayerTimer(String mg){
 		playerWaitTime = plugin.getConfig().getInt("multiplayer.waitforplayers");
 		startWaitTime = plugin.getConfig().getInt("multiplayer.startcountdown");
+		timeMsg.addAll(plugin.getConfig().getIntegerList("multiplayer.timerMessageInterval"));
 		minigame = mg;
 	}
 	
@@ -30,7 +35,7 @@ public class MultiplayerTimer{
 						sendPlayersMessage(minigame, ChatColor.GRAY + "Waiting for players:");
 						sendPlayersMessage(minigame, ChatColor.GRAY + "" + playerWaitTime + "sec.");
 					}
-					else if(plugin.getConfig().getIntegerList("multiplayer.timerMessageInterval").contains(playerWaitTime)){
+					else if(timeMsg.contains(playerWaitTime)){
 						sendPlayersMessage(minigame, ChatColor.GRAY + "" + playerWaitTime + "sec.");
 					}
 					playerWaitTime -= 1;
@@ -40,7 +45,7 @@ public class MultiplayerTimer{
 						sendPlayersMessage(minigame, ChatColor.GRAY + "Minigame starts in:");
 						sendPlayersMessage(minigame, ChatColor.GRAY + "" + startWaitTime + "sec.");
 					}
-					else if(plugin.getConfig().getIntegerList("multiplayer.timerMessageInterval").contains(startWaitTime)){
+					else if(timeMsg.contains(startWaitTime)){
 						sendPlayersMessage(minigame, ChatColor.GRAY + "" + startWaitTime + "sec.");
 					}
 					startWaitTime -= 1;

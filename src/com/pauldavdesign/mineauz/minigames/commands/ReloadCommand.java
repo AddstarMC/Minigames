@@ -3,9 +3,7 @@ package com.pauldavdesign.mineauz.minigames.commands;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -14,12 +12,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
-import com.pauldavdesign.mineauz.minigames.MinigameSave;
-import com.pauldavdesign.mineauz.minigames.StoredPlayerCheckpoints;
-import com.pauldavdesign.mineauz.minigames.gametypes.DMMinigame;
-import com.pauldavdesign.mineauz.minigames.gametypes.RaceMinigame;
-import com.pauldavdesign.mineauz.minigames.gametypes.SPMinigame;
-import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 
 public class ReloadCommand implements ICommand{
 
@@ -73,17 +65,9 @@ public class ReloadCommand implements ICommand{
 			}
 		}
 		
-		plugin.newMinigameData();
-		plugin.newPlayerData();
-		
-		plugin.mdata.addMinigameType(new SPMinigame());
-		plugin.mdata.addMinigameType(new RaceMinigame());
-		plugin.mdata.addMinigameType(new DMMinigame());
-		plugin.mdata.addMinigameType(new TeamDMMinigame());
-		
-		MinigameSave completion = new MinigameSave("completion");
-		plugin.mdata.removeConfigurationFile("completion");
-		plugin.mdata.addConfigurationFile("completion", completion.getConfig());
+		for(Minigame mgm : plugin.getMinigameData().getAllMinigames().values()){
+			mgm.loadMinigame();
+		}
 		
 		try{
 			plugin.getConfig().load(plugin.getDataFolder() + "/config.yml");
@@ -121,39 +105,6 @@ public class ReloadCommand implements ICommand{
 		catch(Exception e){
 			plugin.getLogger().log(Level.SEVERE, "Failed to load config!");
 			e.printStackTrace();
-		}
-		
-		plugin.loadSQL();
-		
-		Calendar cal = Calendar.getInstance();
-		if(cal.get(Calendar.DAY_OF_MONTH) == 21 && cal.get(Calendar.MONTH) == 8 ||
-				cal.get(Calendar.DAY_OF_MONTH) == 25 && cal.get(Calendar.MONTH) == 11 ||
-				cal.get(Calendar.DAY_OF_MONTH) == 1 && cal.get(Calendar.MONTH) == 0){
-			plugin.getLogger().info(ChatColor.GREEN.name() + "Party Mode enabled!");
-			plugin.pdata.setPartyMode(true);
-		}
-		
-		plugin.pdata.loadDCPlayers();
-		plugin.pdata.loadDeniedCommands();
-		
-		MinigameSave save = new MinigameSave("storedCheckpoints");
-		for(String player : save.getConfig().getKeys(false)){
-			StoredPlayerCheckpoints spc = new StoredPlayerCheckpoints(player);
-			spc.loadCheckpoints();
-			plugin.pdata.addStoredPlayerCheckpoints(player, spc);
-		}
-		
-		MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
-		Set<String> keys = globalLoadouts.getConfig().getKeys(false);
-		for(String loadout : keys){
-			plugin.mdata.addLoadout(loadout);
-			Set<String> items = globalLoadouts.getConfig().getConfigurationSection(loadout).getKeys(false);
-			for(int i = 0; i < items.size(); i++){
-				plugin.mdata.getLoadout(loadout).addItemToLoadout(globalLoadouts.getConfig().getItemStack(loadout + "." + i));
-			}
-			if(globalLoadouts.getConfig().contains(loadout + ".usepermissions")){
-				plugin.mdata.getLoadout(loadout).setUsePermissions(globalLoadouts.getConfig().getBoolean(loadout + ".usepermissions"));
-			}
 		}
 		
 		sender.sendMessage(ChatColor.GREEN + "Reloaded Minigame configs");

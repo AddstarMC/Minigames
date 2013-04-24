@@ -92,6 +92,9 @@ public class RecorderData implements Listener{
 		physBlocks.add(Material.STONE_PLATE);
 		physBlocks.add(Material.GOLD_PLATE);
 		physBlocks.add(Material.IRON_PLATE);
+		physBlocks.add(Material.STONE_BUTTON);
+		physBlocks.add(Material.WOOD_BUTTON);
+		physBlocks.add(Material.LEVER);
 	}
 	
 	public RecorderData(Minigame minigame){

@@ -97,7 +97,6 @@ public class Minigames extends JavaPlugin{
 		
 		try{
 			this.getConfig().load(this.getDataFolder() + "/config.yml");
-			//Set<String> minigames = getConfig().getConfigurationSection("minigames").getKeys(false);
 			List<String> mgs = new ArrayList<String>();
 			if(getConfig().contains("minigames")){
 				mgs = getConfig().getStringList("minigames");

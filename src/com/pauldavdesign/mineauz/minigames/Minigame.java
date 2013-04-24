@@ -799,6 +799,7 @@ public class Minigame {
 	public void resetFlags(){
 		for(Player ply : flagCarriers.keySet()){
 			getFlagCarrier(ply).respawnFlag();
+			getFlagCarrier(ply).stopCarrierParticleEffect();
 		}
 		flagCarriers.clear();
 		for(String id : droppedFlag.keySet()){

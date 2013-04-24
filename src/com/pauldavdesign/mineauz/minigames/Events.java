@@ -42,7 +42,7 @@ public class Events implements Listener{
 	private PlayerData pdata = plugin.pdata;
 	private MinigameData mdata = plugin.mdata;
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerDeath(PlayerDeathEvent event){
 		if(pdata.playerInMinigame(event.getEntity().getPlayer())){
 			final Player ply = event.getEntity().getPlayer();
@@ -64,10 +64,15 @@ public class Events implements Listener{
 				pdata.addPlayerKill(killer);
 			}
 			
-			MinigameUtils.removePlayerArrows(ply);
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				@Override
+				public void run() {
+					MinigameUtils.removePlayerArrows(ply);
+				}
+			});
 			
 			Minigame minigame = pdata.getPlayersMinigame(ply);
-			if(minigame.hasPlayers()){
+			if(!msg.equals("")){
 				mdata.sendMinigameMessage(minigame, msg, "error", null);
 			}
 			if(minigame.getLives() > 0 && minigame.getLives() <= pdata.getPlayerDeath(ply)){
