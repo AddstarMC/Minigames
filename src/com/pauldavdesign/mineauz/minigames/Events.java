@@ -30,6 +30,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -89,6 +90,15 @@ public class Events implements Listener{
 			else if(minigame.getLives() > 0){
 				ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + (minigame.getLives() - pdata.getPlayerDeath(ply)));
 			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	private void playerRespawn(PlayerRespawnEvent event){
+		if(pdata.hasDCPlayer(event.getPlayer())){
+			event.setRespawnLocation(pdata.getDCPlayer(event.getPlayer()));
+			pdata.removeDCPlayer(event.getPlayer());
+			pdata.restorePlayerData(event.getPlayer());
 		}
 	}
 	

@@ -50,7 +50,12 @@ public abstract class MinigameType implements Listener{
 			
 			@Override
 			public void run() {
-				player.teleport(minigame.getQuitPosition());
+				if(!player.isDead()){
+					player.teleport(minigame.getQuitPosition());
+				}
+				else{
+					pdata.addDCPlayer(player, minigame.getQuitPosition());
+				}
 			}
 		});
 	}

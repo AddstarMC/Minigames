@@ -210,7 +210,12 @@ public class TeamDMMinigame extends MinigameType{
 		player.sendMessage(ChatColor.GREEN + "You've finished the " + mgm + " minigame. Congratulations!");
 		
 		if(mgm.getEndPosition() != null){
-			player.teleport(mgm.getEndPosition());
+			if(!player.isDead()){
+				player.teleport(mgm.getEndPosition());
+			}
+			else{
+				pdata.addDCPlayer(player, mgm.getEndPosition());
+			}
 		}
 		
 		if(mgm.getRedTeam().contains(player)){

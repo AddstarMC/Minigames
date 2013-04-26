@@ -387,7 +387,7 @@ public class PlayerData {
 					
 					@Override
 					public void run() {
-						if(ply.isOnline()){
+						if(ply.isOnline() && !ply.isDead()){
 							restorePlayerData(ply);
 						}
 					}
@@ -508,7 +508,9 @@ public class PlayerData {
 			}
 			
 			player.closeInventory();
-			restorePlayerData(player);
+			if(!player.isDead()){
+				restorePlayerData(player);
+			}
 			
 			MinigameUtils.removePlayerArrows(player);
 			

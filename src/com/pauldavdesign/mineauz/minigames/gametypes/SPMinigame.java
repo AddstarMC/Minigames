@@ -76,7 +76,12 @@ public class SPMinigame extends MinigameType{
 		}
 		
 		if(mgm.getEndPosition() != null){
-			player.teleport(mgm.getEndPosition());
+			if(!player.isDead()){
+				player.teleport(mgm.getEndPosition());
+			}
+			else{
+				pdata.addDCPlayer(player, mgm.getEndPosition());
+			}
 		}
 		
 		if(mgm.getBlockRecorder().hasData()){
