@@ -400,8 +400,15 @@ public class PlayerData {
 				for(PotionEffect potion : player.getActivePotionEffects()){
 					player.removePotionEffect(potion.getType());
 				}
-				player.setFireTicks(0);
-				player.setNoDamageTicks(60);
+				final Player fplayer = player;
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					
+					@Override
+					public void run() {
+						fplayer.setFireTicks(0);
+						fplayer.setNoDamageTicks(60);
+					}
+				});
 				
 				removeAllPlayerFlags(player);
 				
