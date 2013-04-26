@@ -23,6 +23,7 @@ permissions:
         description: Gives access to all Minigame Commands
         children:
             minigame.join: true
+            minigame.spectate: true
             minigame.quit: true
             minigame.quit.other: true
             minigame.end: true
@@ -48,16 +49,19 @@ permissions:
             minigame.regen: true
             minigame.globalloadout: true
     minigame.join:
-        description: Allows access to start a minigame
+        description: Allows a player to join a Minigame, bypassing betting.
+        default: op
+    minigame.spectate:
+        description: Allows a player to spectate a Minigame without using a sign
         default: op
     minigame.start:
-        description: Allows access to starting global minigames
+        description: Allows access to starting global Minigames
         default: op
     minigame.stop:
-        description: Allows player to stop a global minigame
+        description: Allows player to stop a global Minigame
         default: op
     minigame.quit:
-        description: Gives access to quitting a minigame
+        description: Gives access to quitting a Minigame
         default: true
     minigame.quit.other:
         description: Gives access to force another player to quit a minigame

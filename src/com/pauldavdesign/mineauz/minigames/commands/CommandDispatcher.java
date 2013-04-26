@@ -48,6 +48,7 @@ public class CommandDispatcher implements CommandExecutor{
 		registerCommand(new PartyModeCommand());
 		registerCommand(new DeniedCommandCommand());
 		registerCommand(new GlobalLoadoutCommand());
+		registerCommand(new SpectateCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {
