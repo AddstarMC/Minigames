@@ -25,6 +25,7 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scoreboard.Scoreboard;
 
 import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.EndTeamMinigameEvent;
@@ -47,6 +48,7 @@ public class PlayerData {
 	private Map<String, Boolean> allowTP = new HashMap<String, Boolean>();
 	private Map<String, Boolean> allowGMChange = new HashMap<String, Boolean>();
 	private Map<String, GameMode> lastGM = new HashMap<String, GameMode>();
+	private Map<String, Scoreboard> lastScoreboard = new HashMap<String, Scoreboard>();
 	
 	private boolean partyMode = false;
 	
@@ -446,7 +448,6 @@ public class PlayerData {
 				for(Player pl : mgm.getSpectators()){
 					player.showPlayer(pl);
 				}
-				player.setScoreboard(plugin.getServer().getScoreboardManager().getMainScoreboard());
 			}
 			else{
 				setAllowTP(player, true);
@@ -572,7 +573,6 @@ public class PlayerData {
 			removeAllowGMChange(player);
 
 			plugin.getLogger().info(player.getName() + " completed " + mgm);
-			player.setScoreboard(plugin.getServer().getScoreboardManager().getMainScoreboard());
 			mgm.getScoreboardManager().resetScores(player);
 		}
 	}
@@ -737,6 +737,7 @@ public class PlayerData {
 		playerFood.put(player.getName(), player.getFoodLevel());
 		playerHealth.put(player.getName(), player.getHealth());
 		playerSaturation.put(player.getName(), player.getSaturation());
+		lastScoreboard.put(player.getName(), player.getScoreboard());
 		
 		//lastGM.put(player, player.getGameMode());
 		setPlayersLastGameMode(player, player.getGameMode());
@@ -773,6 +774,7 @@ public class PlayerData {
 		player.setFoodLevel(playerFood.get(player.getName()));
 		player.setHealth(playerHealth.get(player.getName()));
 		player.setSaturation(playerSaturation.get(player.getName()));
+		player.setScoreboard(lastScoreboard.get(player.getName()));
 		setAllowGMChange(player, true);
 		player.setGameMode(getPlayersLastGameMode(player));
 		removePlayersLastGameMode(player);
@@ -785,6 +787,7 @@ public class PlayerData {
 		playerFood.remove(player.getName());
 		playerHealth.remove(player.getName());
 		playerSaturation.remove(player.getName());
+		lastScoreboard.remove(player.getName());
 		
 		player.updateInventory();
 	}
