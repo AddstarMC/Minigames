@@ -1062,6 +1062,11 @@ public class PlayerData {
 	
 	public void addDCPlayer(Player player, Location location){
 		if(location == null){
+			plugin.getLogger().info("---------------------------------------------");
+			plugin.getLogger().info("---------------------------------------------");
+			plugin.getLogger().info("DEBUG! If you see this, please send to _Razz_");
+			plugin.getLogger().info("---------------------------------------------");
+			plugin.getLogger().info("---------------------------------------------");
 			Thread.dumpStack(); //TODO: REMOVE DEBUG LINE!
 		}
 		dcPlayers.put(player.getName(), location);
@@ -1069,6 +1074,11 @@ public class PlayerData {
 	
 	public void addDCPlayer(String player, Location location){
 		if(location == null){
+			plugin.getLogger().info("---------------------------------------------");
+			plugin.getLogger().info("---------------------------------------------");
+			plugin.getLogger().info("DEBUG! If you see this, please send to _Razz_");
+			plugin.getLogger().info("---------------------------------------------");
+			plugin.getLogger().info("---------------------------------------------");
 			Thread.dumpStack(); //TODO: REMOVE DEBUG LINE!
 		}
 		dcPlayers.put(player, location);
