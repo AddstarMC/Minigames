@@ -98,8 +98,8 @@ public class SetStartCommand implements ICommand{
 			return true;
 		}
 		else if(args[0].equalsIgnoreCase("clear")){
-			if(args.length >= 2 && (args[0].matches("b|blue") || args[0].matches("r|red"))){
-				if(args[0].matches("b|blue")){
+			if(args.length >= 2 && (args[1].matches("b|blue") || args[1].matches("r|red"))){
+				if(args[1].matches("b|blue")){
 					minigame.getStartLocationsBlue().clear();
 					sender.sendMessage(ChatColor.GRAY + "Starting positions for " + ChatColor.BLUE + "blue team" + ChatColor.GRAY + " have been cleared in " + minigame);
 				}
