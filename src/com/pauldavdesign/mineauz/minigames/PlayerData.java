@@ -1061,10 +1061,16 @@ public class PlayerData {
 	}
 	
 	public void addDCPlayer(Player player, Location location){
+		if(location == null){
+			Thread.dumpStack(); //TODO: REMOVE DEBUG LINE!
+		}
 		dcPlayers.put(player.getName(), location);
 	}
 	
 	public void addDCPlayer(String player, Location location){
+		if(location == null){
+			Thread.dumpStack(); //TODO: REMOVE DEBUG LINE!
+		}
 		dcPlayers.put(player, location);
 	}
 	

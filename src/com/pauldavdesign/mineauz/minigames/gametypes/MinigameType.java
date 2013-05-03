@@ -54,7 +54,7 @@ public abstract class MinigameType implements Listener{
 					player.teleport(minigame.getQuitPosition());
 				}
 				else{
-					pdata.addDCPlayer(player, minigame.getQuitPosition());
+					pdata.addDCPlayer(player.getName(), minigame.getQuitPosition());
 				}
 			}
 		});
