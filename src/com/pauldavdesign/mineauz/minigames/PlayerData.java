@@ -774,7 +774,10 @@ public class PlayerData {
 		player.setFoodLevel(playerFood.get(player.getName()));
 		player.setHealth(playerHealth.get(player.getName()));
 		player.setSaturation(playerSaturation.get(player.getName()));
-		player.setScoreboard(lastScoreboard.get(player.getName()));
+		if(lastScoreboard.containsKey(player.getName()))
+			player.setScoreboard(lastScoreboard.get(player.getName()));
+		else
+			player.setScoreboard(plugin.getServer().getScoreboardManager().getMainScoreboard());
 		setAllowGMChange(player, true);
 		player.setGameMode(getPlayersLastGameMode(player));
 		removePlayersLastGameMode(player);
