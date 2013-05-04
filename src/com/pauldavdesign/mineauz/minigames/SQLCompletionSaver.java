@@ -134,6 +134,7 @@ public class SQLCompletionSaver extends Thread{
 					int deaths = pdata.getPlayerDeath(player);
 					pdata.removePlayerDeath(player);
 					pdata.removePlayerKills(player);
+					pdata.removePlayerScore(player);
 					int okills = 0;
 					int odeaths = -1;
 					try {
