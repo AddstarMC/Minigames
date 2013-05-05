@@ -140,6 +140,8 @@ public class PlayerData {
 				pl.hidePlayer(player);
 			}
 			
+			player.setScoreboard(minigame.getScoreboardManager());
+			
 			for(PotionEffect potion : player.getActivePotionEffects()){
 				player.removePotionEffect(potion.getType());
 			}
