@@ -79,13 +79,7 @@ public class Events implements Listener{
 			if(minigame.getLives() > 0 && minigame.getLives() <= pdata.getPlayerDeath(ply)){
 				ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Bad Luck! Leaving the minigame.");
 				ply.setHealth(2);
-				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					@Override
-					public void run() {
-						ply.setFireTicks(0);
-						pdata.quitMinigame(ply, false);
-					}
-				});
+				pdata.quitMinigame(ply, false);
 			}
 			else if(minigame.getLives() > 0){
 				ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + (minigame.getLives() - pdata.getPlayerDeath(ply)));
@@ -152,12 +146,27 @@ public class Events implements Listener{
 		}
 		if(pdata.hasDCPlayer(event.getPlayer())){
 			final Player ply = event.getPlayer();
+			Location loc = pdata.getDCPlayer(event.getPlayer());
+			pdata.removeDCPlayer(event.getPlayer());
+			plugin.getLogger().info("--------------------------DEBUG--------------------------");
+			if(ply != null){
+				plugin.getLogger().info("Player: " + ply.getName());
+				if(loc == null){
+					plugin.getLogger().info("Location: NO WHERE TO TELEPORT, ITS NULL! (Teleported them to spawn for safety!)");
+					loc = plugin.getServer().getWorld("world").getSpawnLocation();
+				}
+				else
+					plugin.getLogger().info("Location: X:" + loc.getBlockX() + ", Y:" + loc.getBlockY() + ", Z:" + loc.getBlockZ() + ", world:" + loc.getWorld().getName());
+			}
+			else
+				plugin.getLogger().info("Player: OMG ITS NULL!!! D:");
+			
+			final Location floc = loc;
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				
 				@Override
 				public void run() {
-					ply.teleport(pdata.getDCPlayer(ply));
-					pdata.removeDCPlayer(ply);
+					ply.teleport(floc);
 				}
 			});
 		}
