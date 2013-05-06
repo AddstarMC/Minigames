@@ -174,15 +174,13 @@ public class DMMinigame extends MinigameType{
 			completion = mdata.getConfigurationFile("completion");
 			hascompleted = completion.getStringList(mgm.getName()).contains(player.getName());
 			
-			if(plugin.getSQL() == null){
-				if(!completion.getStringList(mgm.getName()).contains(player.getName())){
-					List<String> completionlist = completion.getStringList(mgm.getName());
-					completionlist.add(player.getName());
-					completion.set(mgm.getName(), completionlist);
-					MinigameSave completionsave = new MinigameSave("completion");
-					completionsave.getConfig().set(mgm.getName(), completionlist);
-					completionsave.saveConfig();
-				}
+			if(!completion.getStringList(mgm.getName()).contains(player.getName())){
+				List<String> completionlist = completion.getStringList(mgm.getName());
+				completionlist.add(player.getName());
+				completion.set(mgm.getName(), completionlist);
+				MinigameSave completionsave = new MinigameSave("completion");
+				completionsave.getConfig().set(mgm.getName(), completionlist);
+				completionsave.saveConfig();
 			}
 			
 			issuePlayerRewards(player, mgm, hascompleted);
