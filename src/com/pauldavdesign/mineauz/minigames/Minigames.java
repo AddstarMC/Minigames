@@ -140,7 +140,8 @@ public class Minigames extends JavaPlugin{
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 		
-		loadSQL();
+		if(getConfig().getBoolean("use-sql"))
+			loadSQL();
 		
 		Calendar cal = Calendar.getInstance();
 		if(cal.get(Calendar.DAY_OF_MONTH) == 21 && cal.get(Calendar.MONTH) == 8 ||
