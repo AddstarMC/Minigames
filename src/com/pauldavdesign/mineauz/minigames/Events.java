@@ -148,7 +148,7 @@ public class Events implements Listener{
 			final Player ply = event.getPlayer();
 			Location loc = pdata.getDCPlayer(event.getPlayer());
 			pdata.removeDCPlayer(event.getPlayer());
-			plugin.getLogger().info("--------------------------DEBUG--------------------------");
+			/*plugin.getLogger().info("--------------------------DEBUG--------------------------");
 			if(ply != null){
 				plugin.getLogger().info("Player: " + ply.getName());
 				if(loc == null){
@@ -159,7 +159,7 @@ public class Events implements Listener{
 					plugin.getLogger().info("Location: X:" + loc.getBlockX() + ", Y:" + loc.getBlockY() + ", Z:" + loc.getBlockZ() + ", world:" + loc.getWorld().getName());
 			}
 			else
-				plugin.getLogger().info("Player: OMG ITS NULL!!! D:");
+				plugin.getLogger().info("Player: OMG ITS NULL!!! D:");*/
 			
 			final Location floc = loc;
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -171,9 +171,16 @@ public class Events implements Listener{
 			});
 		}
 		
-		if(pdata.playerHasStoredItems(event.getPlayer())){
-			pdata.restorePlayerData(event.getPlayer());
-		}
+		final Player fply = event.getPlayer();
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			
+			@Override
+			public void run() {
+				if(pdata.playerHasStoredItems(fply) && fply.isOnline()){
+					pdata.restorePlayerData(fply);
+				}
+			}
+		});
 		
 		if(Bukkit.getServer().getOnlinePlayers().length == 1){
 			for(String mgm : mdata.getAllMinigames().keySet()){
