@@ -1,8 +1,8 @@
 name: Minigames
 main: com.pauldavdesign.mineauz.minigames.Minigames
-version: 1.5
+version: 1.5.0
 author: _Razz_
-softdepend: [SQLibrary]
+softdepend: ['SQLibrary', 'Multiverse-Core']
 
 commands:
     minigame:
