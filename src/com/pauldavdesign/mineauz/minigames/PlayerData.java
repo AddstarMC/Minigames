@@ -518,15 +518,9 @@ public class PlayerData {
 			}
 			
 			player.closeInventory();
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					if(player.isOnline() && !player.isDead()){
-						restorePlayerData(player);
-					}
-				}
-			});
+			if(player.isOnline() && !player.isDead()){
+				restorePlayerData(player);
+			}
 			
 			MinigameUtils.removePlayerArrows(player);
 			
