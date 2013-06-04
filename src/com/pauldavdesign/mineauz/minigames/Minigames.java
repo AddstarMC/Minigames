@@ -199,7 +199,7 @@ public class Minigames extends JavaPlugin{
 		
 		for(Player p : getServer().getOnlinePlayers()){
 			if(pdata.playerInMinigame(p)){
-				pdata.quitMinigame(p, false);
+				pdata.quitMinigame(p, true);
 			}
 		}
 		Set<String> mgtreasure = mdata.getAllTreasureHuntLocation();
