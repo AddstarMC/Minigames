@@ -80,7 +80,7 @@ public class GlobalLoadoutCommand implements ICommand {
 			if(mdata.hasLoadout(loadout)){
 				load = mdata.getLoadout(loadout);
 			}
-			else if(!args[0].equalsIgnoreCase("list")){
+			else if(!args[0].equalsIgnoreCase("list") && (args.length >= 2 && !args[1].equalsIgnoreCase("create"))){
 				sender.sendMessage(ChatColor.RED + "There is no loadout by the name of \"" + loadout + "\" in global loadouts!");
 				return true;
 			}
