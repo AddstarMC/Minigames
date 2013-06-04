@@ -167,8 +167,9 @@ public class Events implements Listener{
 				@Override
 				public void run() {
 					ply.teleport(floc);
+					ply.setFireTicks(0);
 				}
-			});
+			}, 5L);
 		}
 		
 		final Player fply = event.getPlayer();
