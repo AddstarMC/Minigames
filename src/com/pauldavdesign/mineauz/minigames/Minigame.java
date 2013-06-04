@@ -1376,10 +1376,6 @@ public class Minigame {
 			setMaxTreasure(minigame.getConfig().getInt(name + ".maxtreasure"));
 		}
 		setType(minigame.getConfig().getString(name + ".type"));
-		if(getType().equals("lms")){ //TODO: Remove me after release
-			setType("dm");
-			setLives(1);
-		}
 		setMinPlayers(minigame.getConfig().getInt(name + ".minplayers"));
 		setMaxPlayers(minigame.getConfig().getInt(name + ".maxplayers"));
 		setEnabled(minigame.getConfig().getBoolean(name + ".enabled"));
