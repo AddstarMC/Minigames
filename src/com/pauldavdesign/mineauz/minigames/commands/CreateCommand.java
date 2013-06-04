@@ -54,7 +54,7 @@ public class CreateCommand implements ICommand{
 
 	@Override
 	public boolean onCommand(CommandSender sender, Minigame minigame, String label, String[] args) {
-		if(args.length >= 1){
+		if(args != null){
 			Player player = (Player)sender;
 			if(!plugin.mdata.hasMinigame(args[0])){
 				String mgmName = args[0];
