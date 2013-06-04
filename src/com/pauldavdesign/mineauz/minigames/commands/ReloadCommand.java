@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.Minigames;
 
 public class ReloadCommand implements ICommand{
 
@@ -65,32 +65,10 @@ public class ReloadCommand implements ICommand{
 			}
 		}
 		
-		for(Minigame mgm : plugin.getMinigameData().getAllMinigames().values()){
-			mgm.loadMinigame();
-		}
+		Minigames.plugin.mdata.getAllMinigames().clear();
 		
 		try{
 			plugin.getConfig().load(plugin.getDataFolder() + "/config.yml");
-			List<String> mgs = new ArrayList<String>();
-			if(plugin.getConfig().contains("minigames")){
-				mgs = plugin.getConfig().getStringList("minigames");
-			}
-			final List<String> allMGS = new ArrayList<String>();
-			allMGS.addAll(mgs);
-			
-			if(!mgs.isEmpty()){
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						for(String minigame : allMGS){
-							Minigame game = new Minigame(minigame);
-							game.loadMinigame();
-							plugin.mdata.addMinigame(game);
-						}
-					}
-				}, 1L);
-			}
 		}
 		catch(FileNotFoundException ex){
 			plugin.getLogger().info("Failed to load config, creating one.");
@@ -105,6 +83,21 @@ public class ReloadCommand implements ICommand{
 		catch(Exception e){
 			plugin.getLogger().log(Level.SEVERE, "Failed to load config!");
 			e.printStackTrace();
+		}
+		
+		List<String> mgs = new ArrayList<String>();
+		if(Minigames.plugin.getConfig().contains("minigames")){
+			mgs = Minigames.plugin.getConfig().getStringList("minigames");
+		}
+		final List<String> allMGS = new ArrayList<String>();
+		allMGS.addAll(mgs);
+		
+		if(!mgs.isEmpty()){
+			for(String mgm : allMGS){
+				Minigame game = new Minigame(mgm);
+				game.loadMinigame();
+				Minigames.plugin.mdata.addMinigame(game);
+			}
 		}
 		
 		sender.sendMessage(ChatColor.GREEN + "Reloaded Minigame configs");
