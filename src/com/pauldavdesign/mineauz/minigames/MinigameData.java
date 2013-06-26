@@ -347,7 +347,7 @@ public class MinigameData {
 	}
 	
 	public void addPreset(BasePreset preset){
-		presets.put(preset.getName(), preset);
+		presets.put(preset.getName().toLowerCase(), preset);
 	}
 	
 	public BasePreset getPreset(String presetName){
