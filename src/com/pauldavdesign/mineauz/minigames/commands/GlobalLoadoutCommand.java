@@ -179,7 +179,7 @@ public class GlobalLoadoutCommand implements ICommand {
 						}
 					}
 					
-					ItemStack item = MinigameUtils.stringToItemStack(args[1], quantity);
+					ItemStack item = MinigameUtils.stringToItemStack(args[2], quantity);
 					if(item.getType() != Material.AIR){
 						if(mdata.hasLoadout(loadout)){
 							mdata.getLoadout(loadout).addItemToLoadout(item);
@@ -191,7 +191,7 @@ public class GlobalLoadoutCommand implements ICommand {
 						return true;
 					}
 					else{
-						sender.sendMessage(ChatColor.RED + args[1] + " is an invalid item!");
+						sender.sendMessage(ChatColor.RED + args[2] + " is an invalid item!");
 						return true;
 					}
 				}
