@@ -1479,7 +1479,7 @@ public class Minigame {
 		}
 		
 		if(minigame.getConfig().contains(name + ".deathdrops")){
-			setItemDrops(minigame.getConfig().getBoolean(name + ".deathdrops"));
+			setDeathDrops(minigame.getConfig().getBoolean(name + ".deathdrops"));
 		}
 		
 		if(minigame.getConfig().contains(name + ".itempickup")){
