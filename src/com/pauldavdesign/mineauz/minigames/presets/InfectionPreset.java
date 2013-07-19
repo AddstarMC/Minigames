@@ -37,10 +37,10 @@ public class InfectionPreset implements BasePreset {
 		ItemStack sbow = new ItemStack(Material.BOW);
 		ItemStack sarrows = new ItemStack(Material.ARROW, 24);
 		
-		zsword.addEnchantment(Enchantment.DAMAGE_ALL, 3);
+		zsword.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 3);
 		zhead.setDurability((short)2);
-		ssword.addEnchantment(Enchantment.KNOCKBACK, 2);
-		sbow.addEnchantment(Enchantment.ARROW_DAMAGE, 10);
+		ssword.addUnsafeEnchantment(Enchantment.KNOCKBACK, 2);
+		sbow.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 10);
 		
 		red.addItemToLoadout(zsword);
 		red.addItemToLoadout(zhead);
