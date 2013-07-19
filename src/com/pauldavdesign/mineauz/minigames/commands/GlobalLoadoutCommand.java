@@ -166,15 +166,15 @@ public class GlobalLoadoutCommand implements ICommand {
 				}
 				else{
 					if(args.length == 4){
-						if(args[2].matches("[0-9]+")){
-							quantity = Integer.parseInt(args[2]);
+						if(args[3].matches("[0-9]+")){
+							quantity = Integer.parseInt(args[3]);
 							if(quantity == 0){
 								sender.sendMessage(ChatColor.RED + "The amount cannot be 0!");
 								return false;
 							}
 						}
 						else{
-							sender.sendMessage(ChatColor.RED + "\"" + args[2] + "\" is not a valid number!");
+							sender.sendMessage(ChatColor.RED + "\"" + args[3] + "\" is not a valid number!");
 							return false;
 						}
 					}
