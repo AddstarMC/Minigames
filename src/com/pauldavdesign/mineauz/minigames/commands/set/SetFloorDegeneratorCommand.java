@@ -27,7 +27,7 @@ public class SetFloorDegeneratorCommand implements ICommand{
 	@Override
 	public String getDescription() {
 		return "Sets the two corners of a floor to degenerate or clears both of them (if set).\n" +
-				"The types of degeneration are: \"inward\"(default), \"random [%chance]\"(Default chance: 15).\n" +
+				"The types of degeneration are: \"inward\"(default), \"circle\" and \"random [%chance]\"(Default chance: 15).\n" +
 				"Optionally, a degeneration time can be set, this defaults to the value set in the main config.";
 	}
 
@@ -76,6 +76,10 @@ public class SetFloorDegeneratorCommand implements ICommand{
 						minigame.setDegenRandomChance(Integer.parseInt(args[2]));
 					}
 					sender.sendMessage(ChatColor.GRAY + "Floor degenerator type has been set to " + args[1] + " in " + minigame);
+				}
+				else{
+					sender.sendMessage(ChatColor.RED + "Invalid floor degenerator type!");
+					sender.sendMessage(ChatColor.GRAY + "Possible types: \"inward\", \"circle\" and \"random\".");
 				}
 			}
 			else if(args[0].equalsIgnoreCase("time") && args.length >= 2){
