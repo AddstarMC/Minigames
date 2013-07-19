@@ -3,6 +3,8 @@ package com.pauldavdesign.mineauz.minigames.presets;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
@@ -18,7 +20,7 @@ public class InfectionPreset implements BasePreset {
 	public String getInfo() {
 		return "Creates balanced settings for an Infection game. This is based off the \"Introducing Infection\" video on the Minigames 1.5 release. " +
 				"It gives survivors a stone knockback 2 sword and power 10 bow with 24 arrows (insta kill) and give the Infected a sharpness 3 sword (2 hit kill), jump boost 2 " +
-				"and speed 1 for unlimited time (also a zombie head). The games timer is 5 minutes.";
+				"and speed 2 for unlimited time (also a zombie head). The games timer is 5 minutes.";
 	}
 
 	@Override
@@ -45,6 +47,9 @@ public class InfectionPreset implements BasePreset {
 		blue.addItemToLoadout(ssword);
 		blue.addItemToLoadout(sbow);
 		blue.addItemToLoadout(sarrows);
+		
+		red.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200000, 2, true));
+		red.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 200000, 2, true));
 		
 		//Settings
 		minigame.setScoreType("infection");
