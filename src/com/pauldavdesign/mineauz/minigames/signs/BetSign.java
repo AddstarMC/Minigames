@@ -3,10 +3,10 @@ package com.pauldavdesign.mineauz.minigames.signs;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 
 public class BetSign implements MinigameSign{
@@ -53,10 +53,10 @@ public class BetSign implements MinigameSign{
 	}
 
 	@Override
-	public boolean signUse(Sign sign, Player player) {
+	public boolean signUse(Sign sign, MinigamePlayer player) {
 		Minigame mgm = plugin.mdata.getMinigame(sign.getLine(2));
-		if(mgm != null && (player.getItemInHand().getType() != Material.AIR || (sign.getLine(3).startsWith("$") && player.getItemInHand().getType() == Material.AIR))){
-			if(mgm.isEnabled() && (!mgm.getUsePermissions() || player.hasPermission("minigame.join." + mgm.getName().toLowerCase()))){
+		if(mgm != null && (player.getPlayer().getItemInHand().getType() != Material.AIR || (sign.getLine(3).startsWith("$") && player.getPlayer().getItemInHand().getType() == Material.AIR))){
+			if(mgm.isEnabled() && (!mgm.getUsePermissions() || player.getPlayer().hasPermission("minigame.join." + mgm.getName().toLowerCase()))){
 				if(mgm.isSpectator(player)){
 					return false;
 				}
@@ -82,10 +82,10 @@ public class BetSign implements MinigameSign{
 				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You do not have the permission \"minigame.join." + mgm.getName().toLowerCase() + "\"");
 			}
 		}
-		else if(mgm != null && player.getItemInHand().getType() == Material.AIR && !sign.getLine(3).startsWith("$")){
+		else if(mgm != null && player.getPlayer().getItemInHand().getType() == Material.AIR && !sign.getLine(3).startsWith("$")){
 			player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You cannot bet nothing!");
 		}
-		else if(mgm != null && player.getItemInHand().getType() != Material.AIR && sign.getLine(3).startsWith("$")){
+		else if(mgm != null && player.getPlayer().getItemInHand().getType() != Material.AIR && sign.getLine(3).startsWith("$")){
 			player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Your hand must be empty to use this sign.");
 		}
 		else{

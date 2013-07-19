@@ -3,10 +3,10 @@ package com.pauldavdesign.mineauz.minigames.signs;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 
 public class LoadoutSign implements MinigameSign {
@@ -45,15 +45,15 @@ public class LoadoutSign implements MinigameSign {
 	}
 
 	@Override
-	public boolean signUse(Sign sign, Player player) {
-		if(player.getItemInHand().getType() == Material.AIR && plugin.pdata.playerInMinigame(player)){
-			Minigame mgm = plugin.pdata.getPlayersMinigame(player);
+	public boolean signUse(Sign sign, MinigamePlayer player) {
+		if(player.getPlayer().getItemInHand().getType() == Material.AIR && player.isInMinigame()){
+			Minigame mgm = player.getMinigame();
 			if(mgm == null || mgm.isSpectator(player)){
 				return false;
 			}
 			
 			if(mgm.hasLoadout(sign.getLine(2))){
-				if(!mgm.getLoadout(sign.getLine(2)).getUsePermissions() || player.hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
+				if(!mgm.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
 					mgm.setPlayersLoadout(player, mgm.getLoadout(sign.getLine(2)));
 					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been equipped with the " + sign.getLine(2) + " loadout.");
 					
@@ -72,7 +72,7 @@ public class LoadoutSign implements MinigameSign {
 				}
 			}
 			else if(plugin.mdata.hasLoadout(sign.getLine(2))){
-				if(!plugin.mdata.getLoadout(sign.getLine(2)).getUsePermissions() || player.hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
+				if(!plugin.mdata.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
 					mgm.setPlayersLoadout(player, plugin.mdata.getLoadout(sign.getLine(2)));
 					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been equipped with the " + sign.getLine(2) + " loadout.");
 
@@ -94,7 +94,7 @@ public class LoadoutSign implements MinigameSign {
 				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "This loadout does not exist!");
 			}
 		}
-		else if(player.getItemInHand().getType() != Material.AIR)
+		else if(player.getPlayer().getItemInHand().getType() != Material.AIR)
 			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Your hand must be empty to use this sign!");
 		return false;
 	}

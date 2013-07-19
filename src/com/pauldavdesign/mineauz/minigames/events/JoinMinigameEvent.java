@@ -1,30 +1,30 @@
 package com.pauldavdesign.mineauz.minigames.events;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 
 public class JoinMinigameEvent extends Event{
 	private static final HandlerList handlers = new HandlerList();
-	private Player player = null;
+	private MinigamePlayer player = null;
 	private Minigame mgm = null;
 	private boolean betting = false;
 	private boolean cancelled = false;
 	
-	public JoinMinigameEvent(Player player, Minigame minigame){
+	public JoinMinigameEvent(MinigamePlayer player, Minigame minigame){
 		this.player = player;
 		mgm = minigame;
 	}
 	
-	public JoinMinigameEvent(Player player, Minigame minigame, boolean betting){
+	public JoinMinigameEvent(MinigamePlayer player, Minigame minigame, boolean betting){
 		this.player = player;
 		mgm = minigame;
 		this.betting = betting;
 	}
 	
-    public Player getPlayer() {
+    public MinigamePlayer getPlayer() {
 		return player;
 	}
 

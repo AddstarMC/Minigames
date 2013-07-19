@@ -3,16 +3,17 @@ package com.pauldavdesign.mineauz.minigames.blockRecorder;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 
 public class EntityData {
 	private Entity ent;
 	private EntityType entType;
 	private Location entLocation;
-	private Player player;
+	private MinigamePlayer player;
 	private boolean created;
 	
-	public EntityData(Entity ent, Player modifier, boolean created){
+	public EntityData(Entity ent, MinigamePlayer modifier, boolean created){
 		this.ent = ent;
 		entType = ent.getType();
 		entLocation = ent.getLocation();
@@ -24,7 +25,7 @@ public class EntityData {
 		return ent;
 	}
 	
-	public Player getModifier(){
+	public MinigamePlayer getModifier(){
 		return player;
 	}
 	

@@ -25,7 +25,6 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.scoreboard.Scoreboard;
 
 import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.EndTeamMinigameEvent;
@@ -36,29 +35,32 @@ import com.pauldavdesign.mineauz.minigames.events.SpectateMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.scoring.ScoreTypes;
 
 public class PlayerData {
-	private Map<String, Minigame> minigamePlayers = new HashMap<String, Minigame>();
-	private Map<String, Location> playerCheckpoints = new HashMap<String, Location>();
+	private Map<String, MinigamePlayer> minigamePlayers = new HashMap<String, MinigamePlayer>();
+	private Map<String, OfflineMinigamePlayer> offlineMinigamePlayers = new HashMap<String, OfflineMinigamePlayer>();
+	
+	//private Map<String, Minigame> minigamePlayers = new HashMap<String, Minigame>();
+//	private Map<String, Location> playerCheckpoints = new HashMap<String, Location>();
 	private Map<String, StoredPlayerCheckpoints> storedPlayerCheckpoints = new HashMap<String, StoredPlayerCheckpoints>();
-	private Map<String, ItemStack[]> itemStore = new HashMap<String, ItemStack[]>();
-	private Map<String, ItemStack[]> armourStore = new HashMap<String, ItemStack[]>();
-	private Map<String, List<String>> playerFlags = new HashMap<String, List<String>>();
-	private Map<String, Integer> playerFood = new HashMap<String, Integer>();
-	private Map<String, Integer> playerHealth = new HashMap<String, Integer>();
-	private Map<String, Float> playerSaturation = new HashMap<String, Float>();
-	private Map<String, Boolean> allowTP = new HashMap<String, Boolean>();
-	private Map<String, Boolean> allowGMChange = new HashMap<String, Boolean>();
-	private Map<String, GameMode> lastGM = new HashMap<String, GameMode>();
-	private Map<String, Scoreboard> lastScoreboard = new HashMap<String, Scoreboard>();
+//	private Map<String, ItemStack[]> itemStore = new HashMap<String, ItemStack[]>();
+//	private Map<String, ItemStack[]> armourStore = new HashMap<String, ItemStack[]>();
+//	private Map<String, List<String>> playerFlags = new HashMap<String, List<String>>();
+//	private Map<String, Integer> playerFood = new HashMap<String, Integer>();
+//	private Map<String, Integer> playerHealth = new HashMap<String, Integer>();
+//	private Map<String, Float> playerSaturation = new HashMap<String, Float>();
+//	private Map<String, Boolean> allowTP = new HashMap<String, Boolean>();
+//	private Map<String, Boolean> allowGMChange = new HashMap<String, Boolean>();
+//	private Map<String, GameMode> lastGM = new HashMap<String, GameMode>();
+//	private Map<String, Scoreboard> lastScoreboard = new HashMap<String, Scoreboard>();
 	
 	private boolean partyMode = false;
 	
-	private Map<String, Location> dcPlayers = new HashMap<String, Location>();
+	private Map<String, Location> resPos = new HashMap<String, Location>();
 	private List<String> deniedCommands = new ArrayList<String>();
 	
 	//Stats
-	private Map<String, Integer> plyDeaths = new HashMap<String, Integer>();
-	private Map<String, Integer> plyKills = new HashMap<String, Integer>();
-	private Map<String, Integer> plyScore = new HashMap<String, Integer>();
+//	private Map<String, Integer> plyDeaths = new HashMap<String, Integer>();
+//	private Map<String, Integer> plyKills = new HashMap<String, Integer>();
+//	private Map<String, Integer> plyScore = new HashMap<String, Integer>();
 	
 	private static Minigames plugin = Minigames.plugin;
 	private MinigameData mdata = plugin.mdata;
@@ -66,7 +68,7 @@ public class PlayerData {
 	
 	public PlayerData(){}
 	
-	public void joinMinigame(Player player, Minigame minigame) {
+	public void joinMinigame(MinigamePlayer player, Minigame minigame) {
 		String gametype = minigame.getType();
 		
 		JoinMinigameEvent event = new JoinMinigameEvent(player, minigame);
@@ -74,23 +76,25 @@ public class PlayerData {
 		
 		if(!event.isCancelled()){
 			if(mdata.getMinigameTypes().contains(gametype)){
-				setAllowTP(player, true);
+				//setAllowTP(player, true);
+				player.setAllowTeleport(true);
 				if(mdata.minigameType(gametype).joinMinigame(player, minigame)){
 					plugin.getLogger().info(player.getName() + " started " + minigame.getName());
 					mdata.sendMinigameMessage(minigame, player.getName() + " has joined " + minigame.getName(), null, player);
-
-					setAllowGMChange(player, true);
 					
-					setAllowGMChange(player, false);
-					player.setAllowFlight(false);
-					setAllowTP(player, false);
+					player.getPlayer().setGameMode(minigame.getDefaultGamemode());
+					player.setAllowGamemodeChange(false);
+					player.getPlayer().setAllowFlight(false);
+					player.setAllowTeleport(false);
 
 					
 					if(hasStoredPlayerCheckpoint(player)){
 						if(getPlayersStoredCheckpoints(player).hasCheckpoint(minigame.getName())){
-							playerCheckpoints.put(player.getName(), getPlayersStoredCheckpoints(player).getCheckpoint(minigame.getName()));
+//							playerCheckpoints.put(player.getName(), getPlayersStoredCheckpoints(player).getCheckpoint(minigame.getName()));
+							player.setCheckpoint(getPlayersStoredCheckpoints(player).getCheckpoint(minigame.getName()));
 							if(getPlayersStoredCheckpoints(player).hasFlags(minigame.getName())){
-								playerFlags.put(player.getName(), getPlayersStoredCheckpoints(player).getFlags(minigame.getName()));
+								//playerFlags.put(player.getName(), getPlayersStoredCheckpoints(player).getFlags(minigame.getName()));
+								player.setFlags(getPlayersStoredCheckpoints(player).getFlags(minigame.getName()));
 							}
 							getPlayersStoredCheckpoints(player).removeCheckpoint(minigame.getName());
 							getPlayersStoredCheckpoints(player).removeFlags(minigame.getName());
@@ -101,12 +105,12 @@ public class PlayerData {
 						}
 					}
 					
-					for(Player pl : minigame.getSpectators()){
-						player.hidePlayer(pl);
+					for(MinigamePlayer pl : minigame.getSpectators()){
+						player.getPlayer().hidePlayer(pl.getPlayer());
 					}
 
-					for(PotionEffect potion : player.getActivePotionEffects()){
-						player.removePotionEffect(potion.getType());
+					for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
+						player.getPlayer().removePotionEffect(potion.getType());
 					}
 				}
 			}
@@ -116,34 +120,28 @@ public class PlayerData {
 		}
 	}
 	
-	public void spectateMinigame(Player player, Minigame minigame) {
+	public void spectateMinigame(MinigamePlayer player, Minigame minigame) {
 		SpectateMinigameEvent event = new SpectateMinigameEvent(player, minigame);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
 		if(!event.isCancelled()){
-			storePlayerData(player, GameMode.ADVENTURE);
-			addPlayerMinigame(player, minigame);
-			setAllowTP(player, true);
-			setAllowGMChange(player, true);
+			player.storePlayerData();
+			player.setMinigame(minigame);
 			
 			minigame.addSpectator(player);
-			player.getInventory().clear();
-			player.teleport(minigame.getStartLocations().get(0));
-			
-			setAllowTP(player, false);
-			setAllowGMChange(player, false);
+			minigameTeleport(player, minigame.getStartLocations().get(0));
 			
 			if(minigame.canSpectateFly()){
-				player.setAllowFlight(true);
+				player.getPlayer().setAllowFlight(true);
 			}
-			for(Player pl : minigame.getPlayers()){
-				pl.hidePlayer(player);
+			for(MinigamePlayer pl : minigame.getPlayers()){
+				pl.getPlayer().hidePlayer(player.getPlayer());
 			}
 			
-			player.setScoreboard(minigame.getScoreboardManager());
+			player.getPlayer().setScoreboard(minigame.getScoreboardManager());
 			
-			for(PotionEffect potion : player.getActivePotionEffects()){
-				player.removePotionEffect(potion.getType());
+			for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
+				player.getPlayer().removePotionEffect(potion.getType());
 			}
 			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have started spectating " + minigame + ".\n" +
 					"Type \"/minigame quit\" to leave spectator mode.");
@@ -151,18 +149,18 @@ public class PlayerData {
 		}
 	}
 	
-	public void joinWithBet(Player player, Minigame minigame, Double money){
+	public void joinWithBet(MinigamePlayer player, Minigame minigame, Double money){
 		
 		JoinMinigameEvent event = new JoinMinigameEvent(player, minigame, true);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
 		if(!event.isCancelled()){
 			if(minigame != null && minigame.isEnabled() && (minigame.getMpTimer() == null || minigame.getMpTimer().getPlayerWaitTimeLeft() != 0)){
-				if(minigame.getMpBets() == null && (player.getItemInHand().getType() != Material.AIR || money != 0)){
+				if(minigame.getMpBets() == null && (player.getPlayer().getItemInHand().getType() != Material.AIR || money != 0)){
 					minigame.setMpBets(new MultiplayerBets());
 				}
 				MultiplayerBets pbet = minigame.getMpBets(); 
-				ItemStack item = player.getItemInHand().clone();
+				ItemStack item = player.getPlayer().getItemInHand().clone();
 				if(pbet != null && 
 						((money != 0 && pbet.canBet(player, money) && plugin.getEconomy().getBalance(player.getName()) >= money) || 
 								(pbet.canBet(player, item) && item.getType() != Material.AIR && pbet.betValue(item.getType()) > 0))){
@@ -175,7 +173,7 @@ public class PlayerData {
 							pbet.addBet(player, money);
 							plugin.getEconomy().withdrawPlayer(player.getName(), money);
 						}
-						player.getInventory().removeItem(new ItemStack(item.getType(), 1));
+						player.getPlayer().getInventory().removeItem(new ItemStack(item.getType(), 1));
 						joinMinigame(player, minigame);
 					}
 					else{
@@ -205,12 +203,8 @@ public class PlayerData {
 	}
 	
 	public void startMPMinigame(String minigame){
-		List<Player> players = new ArrayList<Player>();
+		List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 		players.addAll(mdata.getMinigame(minigame).getPlayers());
-		
-		for(Player pl : players){
-			setAllowTP(pl, true);
-		}
 		
 		Collections.shuffle(players);
 		
@@ -224,12 +218,14 @@ public class PlayerData {
 		int bluepos = 0;
 		int redpos = 0;
 		
-		for(Player ply : players){
+		for(MinigamePlayer ply : players){
 			if(!mgm.getType().equals("teamdm")){
 				if(pos < mgm.getStartLocations().size()){
 					start = mgm.getStartLocations().get(pos);
-					ply.teleport(start);
-					setPlayerCheckpoints(ply, start);
+					//ply.teleport(start);
+					minigameTeleport(ply, start);
+					ply.setCheckpoint(start);
+					//setPlayerCheckpoints(ply, start);
 					if(mgm.getMaxScore() != 0 && mgm.getType().equals("dm") && !mgm.getScoreType().equals("none")){
 						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
 					}
@@ -238,8 +234,10 @@ public class PlayerData {
 					pos = 0;
 					if(!mgm.getStartLocations().isEmpty()){
 						start = mgm.getStartLocations().get(0);
-						ply.teleport(start);
-						setPlayerCheckpoints(ply, start);
+						//ply.teleport(start);
+						minigameTeleport(ply, start);
+						ply.setCheckpoint(start);
+						//setPlayerCheckpoints(ply, start);
 						if(mgm.getMaxScore() != 0 && mgm.getType().equals("dm") && !mgm.getScoreType().equals("none")){
 							ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
 						}
@@ -252,10 +250,10 @@ public class PlayerData {
 			}
 			else{
 				int team = -1;
-				if(mgm.getBlueTeam().contains(ply)){
+				if(mgm.getBlueTeam().contains(ply.getPlayer())){
 					team = 1;
 				}
-				else if(mgm.getRedTeam().contains(ply)){
+				else if(mgm.getRedTeam().contains(ply.getPlayer())){
 					team = 0;
 				}
 				if(!mgm.getStartLocationsRed().isEmpty() && !mgm.getStartLocationsBlue().isEmpty()){
@@ -285,15 +283,19 @@ public class PlayerData {
 				else{
 					if(pos <= mgm.getStartLocations().size()){
 						start = mgm.getStartLocations().get(pos);
-						ply.teleport(start);
-						setPlayerCheckpoints(ply, start);
+						//ply.teleport(start);
+						minigameTeleport(ply, start);
+						ply.setCheckpoint(start);
+						//setPlayerCheckpoints(ply, start);
 					} 
 					else{
 						pos = 1;
 						if(!mgm.getStartLocations().isEmpty()){
 							start = mgm.getStartLocations().get(0);
-							ply.teleport(start);
-							setPlayerCheckpoints(ply, start);
+							//ply.teleport(start);
+							minigameTeleport(ply, start);
+							ply.setCheckpoint(start);
+							//setPlayerCheckpoints(ply, start);
 						}
 						else {
 							ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Starting positions are incorrectly configured!");
@@ -303,8 +305,10 @@ public class PlayerData {
 				}
 				
 				if(start != null){
-					ply.teleport(start);
-					setPlayerCheckpoints(ply, start);
+					//ply.teleport(start);
+					minigameTeleport(ply, start);
+					ply.setCheckpoint(start);
+					//setPlayerCheckpoints(ply, start);
 					if(mgm.getMaxScore() != 0 && !mgm.getScoreType().equals("none")){
 						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
 					}
@@ -318,7 +322,7 @@ public class PlayerData {
 			if(!mgm.getPlayersLoadout(ply).getItems().isEmpty()){
 				mgm.getPlayersLoadout(ply).equiptLoadout(ply);
 			}
-			ply.setScoreboard(mgm.getScoreboardManager());
+			ply.getPlayer().setScoreboard(mgm.getScoreboardManager());
 			mgm.setScore(ply, 1);
 			mgm.setScore(ply, 0);
 		}
@@ -335,10 +339,6 @@ public class PlayerData {
 				}
 			}
 			
-			for(Player pl : players){
-				setAllowTP(pl, false);
-			}
-			
 			if(mgm.getTimer() > 0){
 				mgm.setMinigameTimer(new MinigameTimer(mgm, mgm.getTimer()));
 				mdata.sendMinigameMessage(mgm, MinigameUtils.convertTime(mgm.getTimer()) + " left.", null, null);
@@ -346,35 +346,34 @@ public class PlayerData {
 		}
 	}
 	
-	public void revertToCheckpoint(Player player) {
+	public void revertToCheckpoint(MinigamePlayer player) {
 		
 		RevertCheckpointEvent event = new RevertCheckpointEvent(player);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
 		if(!event.isCancelled()){
-			setAllowTP(player, true);
-			Location loc = getPlayerCheckpoint(player);
-			player.teleport(loc);
+			minigameTeleport(player, player.getCheckpoint());
 			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been reverted to the checkpoint.");
-			setAllowTP(player, false);
 		}
 	}
 	
-	public void quitMinigame(Player player, boolean forced){
-		Minigame mgm = getPlayersMinigame(player);
+	public void quitMinigame(MinigamePlayer player, boolean forced){
+		//Minigame mgm = getPlayersMinigame(player);
+		Minigame mgm = player.getMinigame();
 
 		QuitMinigameEvent event = new QuitMinigameEvent(player, mgm, forced);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		if(!event.isCancelled()){
 			if(!mgm.isSpectator(player)){
-				setAllowTP(player, true);
+				//setAllowTP(player, true);
+				player.setAllowTeleport(true);
 				
-				if(player.getVehicle() != null){
-					Vehicle vehicle = (Vehicle) player.getVehicle();
+				if(player.getPlayer().getVehicle() != null){
+					Vehicle vehicle = (Vehicle) player.getPlayer().getVehicle();
 					vehicle.eject();
 				}
 				
-				player.closeInventory();
+				player.getPlayer().closeInventory();
 				
 				MinigameUtils.removePlayerArrows(player);
 				
@@ -386,41 +385,41 @@ public class PlayerData {
 				}
 	
 				mgm.removePlayersLoadout(player);
-				final Player ply = player;
+				final MinigamePlayer ply = player;
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 					
 					@Override
 					public void run() {
-						if(ply.isOnline() && !ply.isDead()){
-							restorePlayerData(ply);
+						if(ply.getPlayer().isOnline() && !ply.getPlayer().isDead()){
+							//restorePlayerData(ply);
+							ply.restorePlayerData();
 						}
 					}
 				});
 
-				removePlayerMinigame(player);
+//				removePlayerMinigame(player);
+				player.removeMinigame();
 				mgm.removePlayer(player);
 				mdata.minigameType(mgm.getType()).quitMinigame(player, mgm, forced);
 				
-				for(PotionEffect potion : player.getActivePotionEffects()){
-					player.removePotionEffect(potion.getType());
+				for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
+					player.getPlayer().removePotionEffect(potion.getType());
 				}
-				final Player fplayer = player;
+				final MinigamePlayer fplayer = player;
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 					
 					@Override
 					public void run() {
-						fplayer.setFireTicks(0);
-						fplayer.setNoDamageTicks(60);
+						fplayer.getPlayer().setFireTicks(0);
+						fplayer.getPlayer().setNoDamageTicks(60);
 					}
 				});
 				
-				removeAllPlayerFlags(player);
-				
-				removePlayerDeath(player);
-				removePlayerKills(player);
-				removePlayerScore(player);
-				
-				removePlayerCheckpoints(player);
+				player.clearFlags();
+				player.resetDeaths();
+				player.resetKills();
+				player.resetScore();
+				player.removeCheckpoint();
 				
 				plugin.getLogger().info(player.getName() + " quit " + mgm);
 				if(mgm.getPlayers().size() == 0){
@@ -442,26 +441,23 @@ public class PlayerData {
 						mgm.setMpBets(null);
 					}
 				}
-				mgm.getScoreboardManager().resetScores(player);
+				mgm.getScoreboardManager().resetScores(player.getPlayer());
 				
-				removeAllowTP(player);
-				removeAllowGMChange(player);
-				
-				for(Player pl : mgm.getSpectators()){
-					player.showPlayer(pl);
+				for(MinigamePlayer pl : mgm.getSpectators()){
+					player.getPlayer().showPlayer(pl.getPlayer());
 				}
+				
+				ply.setAllowTeleport(true);
+				ply.setAllowGamemodeChange(true);
 			}
 			else{
-				setAllowTP(player, true);
-				setAllowGMChange(player, true);
-				
-				if(player.getVehicle() != null){
-					Vehicle vehicle = (Vehicle) player.getVehicle();
+				if(player.getPlayer().getVehicle() != null){
+					Vehicle vehicle = (Vehicle) player.getPlayer().getVehicle();
 					vehicle.eject();
 				}
 				
-				player.closeInventory();
-				final Player fplayer = player;
+				player.getPlayer().closeInventory();
+				final Player fplayer = player.getPlayer();
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 					
 					@Override
@@ -471,31 +467,33 @@ public class PlayerData {
 					}
 				});
 				
-				final Player ply = player;
+				final MinigamePlayer ply = player;
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 					
 					@Override
 					public void run() {
-						if(ply.isOnline()){
-							restorePlayerData(ply);
+						if(ply.getPlayer().isOnline()){
+//							restorePlayerData(ply);
+							ply.restorePlayerData();
 						}
 					}
 				});
 				
-				player.teleport(mgm.getQuitPosition());
-				removePlayerMinigame(player);
+				//player.teleport(mgm.getQuitPosition());
+				minigameTeleport(player, mgm.getQuitPosition());
+				player.removeMinigame();
 				mgm.removeSpectator(player);
 				
-				for(PotionEffect potion : player.getActivePotionEffects()){
-					player.removePotionEffect(potion.getType());
+				for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
+					player.getPlayer().removePotionEffect(potion.getType());
 				}
 				
-				for(Player pl : mgm.getPlayers()){
-					pl.showPlayer(player);
+				for(MinigamePlayer pl : mgm.getPlayers()){
+					pl.getPlayer().showPlayer(player.getPlayer());
 				}
 				
-				removeAllowTP(player);
-				removeAllowGMChange(player);
+				ply.setAllowTeleport(true);
+				ply.setAllowGamemodeChange(true);
 				
 				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You quit spectator mode in " + mgm);
 				mdata.sendMinigameMessage(mgm, player.getName() + " is no longer spectating " + mgm, "error", player);
@@ -503,44 +501,47 @@ public class PlayerData {
 		}
 	}
 	
-	public void endMinigame(final Player player){
-		Minigame mgm = getPlayersMinigame(player);
+	public void endMinigame(final MinigamePlayer player){
+		Minigame mgm = player.getMinigame();
 		
 		EndMinigameEvent event = new EndMinigameEvent(player, mgm);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
 		if(!event.isCancelled()){
-			setAllowTP(player, true);
-			
-			if(player.getVehicle() != null){
-				Vehicle vehicle = (Vehicle) player.getVehicle();
+			if(player.getPlayer().getVehicle() != null){
+				Vehicle vehicle = (Vehicle) player.getPlayer().getVehicle();
 				vehicle.eject();
 			}
 			
-			player.closeInventory();
-			if(player.isOnline() && !player.isDead()){
-				restorePlayerData(player);
+			player.getPlayer().closeInventory();
+			if(player.getPlayer().isOnline() && !player.getPlayer().isDead()){
+				player.restorePlayerData();
 			}
 			
 			MinigameUtils.removePlayerArrows(player);
 			
-			removePlayerMinigame(player);
+//			removePlayerMinigame(player);
+			player.removeMinigame();
 			mgm.removePlayer(player);
 			mgm.removePlayersLoadout(player);
 			mdata.minigameType(mgm.getType()).endMinigame(player, mgm);
 			
-			for(PotionEffect potion : player.getActivePotionEffects()){
-				player.removePotionEffect(potion.getType());
+			for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
+				player.getPlayer().removePotionEffect(potion.getType());
 			}
-			player.setFireTicks(0);
-			player.setNoDamageTicks(60);
+			player.getPlayer().setFireTicks(0);
+			player.getPlayer().setNoDamageTicks(60);
 			
-			removeAllPlayerFlags(player);
+//			removeAllPlayerFlags(player);
+			player.clearFlags();
 			
 			if(plugin.getSQL() == null || plugin.getSQL().getSql() == null){
-				removePlayerDeath(player);
-				removePlayerKills(player);
-				removePlayerScore(player);
+//				removePlayerDeath(player);
+//				removePlayerKills(player);
+//				removePlayerScore(player);
+				player.resetDeaths();
+				player.resetKills();
+				player.resetScore();
 			}
 			
 			if(mgm.getMinigameTimer() != null){
@@ -567,39 +568,41 @@ public class PlayerData {
 				}
 			}
 			
-			for(Player pl : mgm.getSpectators()){
-				player.showPlayer(pl);
+			for(MinigamePlayer pl : mgm.getSpectators()){
+				player.getPlayer().showPlayer(pl.getPlayer());
 			}
 			
-			removeAllowTP(player);
-			removeAllowGMChange(player);
+//			removeAllowTP(player);
+//			removeAllowGMChange(player);
+			player.setAllowTeleport(true);
+			player.setAllowGamemodeChange(true);
 
 			plugin.getLogger().info(player.getName() + " completed " + mgm);
-			mgm.getScoreboardManager().resetScores(player);
+			mgm.getScoreboardManager().resetScores(player.getPlayer());
 		}
 	}
 	
 	public void endTeamMinigame(int teamnum, Minigame mgm){
 		
-		List<Player> losers = new ArrayList<Player>();
-		List<Player> winners = new ArrayList<Player>();
+		List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>();
+		List<MinigamePlayer> winners = new ArrayList<MinigamePlayer>();
 		
 		if(teamnum == 1){
 			//Blue team
 			for(OfflinePlayer ply : mgm.getRedTeam()){
-				losers.add(ply.getPlayer());
+				losers.add(getMinigamePlayer(ply.getPlayer()));
 			}
 			for(OfflinePlayer ply : mgm.getBlueTeam()){
-				winners.add(ply.getPlayer());
+				winners.add(getMinigamePlayer(ply.getPlayer()));
 			}
 		}
 		else{
 			//Red team
 			for(OfflinePlayer ply : mgm.getRedTeam()){
-				winners.add(ply.getPlayer());
+				winners.add(getMinigamePlayer(ply.getPlayer()));
 			}
 			for(OfflinePlayer ply : mgm.getBlueTeam()){
-				losers.add(ply.getPlayer());
+				losers.add(getMinigamePlayer(ply.getPlayer()));
 			}
 		}
 		
@@ -632,7 +635,7 @@ public class PlayerData {
 			
 			mgm.getMpTimer().setStartWaitTime(0);
 			
-			List<Player> winplayers = new ArrayList<Player>();
+			List<MinigamePlayer> winplayers = new ArrayList<MinigamePlayer>();
 			winplayers.addAll(event.getWinnningPlayers());
 	
 			if(plugin.getSQL() != null){
@@ -641,14 +644,14 @@ public class PlayerData {
 			
 			if(mgm.getMpBets() != null){
 				if(mgm.getMpBets().hasMoneyBets()){
-					List<Player> plys = new ArrayList<Player>();
+					List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>();
 					plys.addAll(event.getWinnningPlayers());
 					
 					double bets = mgm.getMpBets().claimMoneyBets() / (double) plys.size();
 					BigDecimal roundBets = new BigDecimal(bets);
 					roundBets = roundBets.setScale(2, BigDecimal.ROUND_HALF_UP);
 					bets = roundBets.doubleValue();
-					for(Player ply : plys){
+					for(MinigamePlayer ply : plys){
 						plugin.getEconomy().depositPlayer(ply.getName(), bets);
 						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You won $" + bets);
 					}
@@ -657,11 +660,11 @@ public class PlayerData {
 			}
 			
 			if(!event.getLosingPlayers().isEmpty()){
-				List<Player> loseplayers = new ArrayList<Player>();
+				List<MinigamePlayer> loseplayers = new ArrayList<MinigamePlayer>();
 				loseplayers.addAll(event.getLosingPlayers());
 				for(int i = 0; i < loseplayers.size(); i++){
 					if(loseplayers.get(i) instanceof Player){
-						final Player p = loseplayers.get(i);
+						final MinigamePlayer p = loseplayers.get(i);
 						
 						Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 	
@@ -677,14 +680,14 @@ public class PlayerData {
 					}
 				}
 				mgm.setMpTimer(null);
-				for(Player pl : loseplayers){
+				for(MinigamePlayer pl : loseplayers){
 					mgm.getPlayers().remove(pl);
 				}
 			}
 			
 			for(int i = 0; i < winplayers.size(); i++){
 				if(winplayers.get(i) instanceof Player){
-					final Player p = winplayers.get(i);
+					final MinigamePlayer p = winplayers.get(i);
 					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 						
 						@Override
@@ -702,10 +705,12 @@ public class PlayerData {
 		}
 	}
 	
+	@Deprecated
 	public boolean playerInMinigame(Player player){
-		return minigamePlayers.containsKey(player.getName());
+		return minigamePlayers.get(player.getName()).isInMinigame();
 	}
 	
+	@Deprecated
 	public List<Player> playersInMinigame(){
 		List<Player> players = new ArrayList<Player>();
 		for(Player player : plugin.getServer().getOnlinePlayers()){
@@ -716,317 +721,376 @@ public class PlayerData {
 		return players;
 	}
 	
-	public void addPlayerMinigame(Player player, Minigame minigame){
-		minigamePlayers.put(player.getName(), minigame);
+	public void addMinigamePlayer(Player player){
+		minigamePlayers.put(player.getName(), new MinigamePlayer(player));
 	}
 	
-	public void removePlayerMinigame(Player player){
+	public void removeMinigamePlayer(Player player){
 		if(minigamePlayers.containsKey(player.getName())){
 			minigamePlayers.remove(player.getName());
 		}
 	}
 	
-	public Minigame getPlayersMinigame(Player player){
+	public MinigamePlayer getMinigamePlayer(Player player){
 		return minigamePlayers.get(player.getName());
 	}
 	
-	@SuppressWarnings("deprecation")
-	public void storePlayerData(Player player, GameMode gm){
-		ItemStack[] items = player.getInventory().getContents();
-		ItemStack[] armour = player.getInventory().getArmorContents();
-		itemStore.put(player.getName(), items);
-		armourStore.put(player.getName(), armour);
-		playerFood.put(player.getName(), player.getFoodLevel());
-		playerHealth.put(player.getName(), player.getHealth());
-		playerSaturation.put(player.getName(), player.getSaturation());
-		lastScoreboard.put(player.getName(), player.getScoreboard());
-		
-		//lastGM.put(player, player.getGameMode());
-		setPlayersLastGameMode(player, player.getGameMode());
-		player.setGameMode(gm);
-		
-		player.setSaturation(15);
-		player.setFoodLevel(20);
-		player.setHealth(player.getMaxHealth());
-		player.getInventory().clear();
-		player.getInventory().setArmorContents(null);
-		
-		saveItems(player);
-		player.updateInventory();
+	public MinigamePlayer getMinigamePlayer(String player){
+		return minigamePlayers.get(player);
 	}
+	
+	public boolean hasMinigamePlayer(String name){
+		return minigamePlayers.containsKey(name);
+	}
+	
+	public void addOfflineMinigamePlayer(MinigamePlayer player){
+		offlineMinigamePlayers.put(player.getName(), new OfflineMinigamePlayer(player.getName(), player.getStoredItems(), player.getStoredArmour(), player.getFood(), player.getHealth(), player.getSaturation(), player.getLastGamemode(), player.getMinigame().getQuitPosition()));
+	}
+	
+	public void addOfflineMinigamePlayer(OfflineMinigamePlayer player){
+		offlineMinigamePlayers.put(player.getPlayer(), player);
+	}
+	
+	public OfflineMinigamePlayer getOfflineMinigamePlayer(String name){
+		return offlineMinigamePlayers.get(name);
+	}
+	
+	public boolean hasOfflineMinigamePlayer(String name){
+		return offlineMinigamePlayers.containsKey(name);
+	}
+	
+	public void removeOfflineMinigamePlayer(String name){
+		offlineMinigamePlayers.remove(name);
+	}
+	
+//	@Deprecated
+//	public void storePlayerData(Player player, GameMode gm){
+//		ItemStack[] items = player.getInventory().getContents();
+//		ItemStack[] armour = player.getInventory().getArmorContents();
+//		itemStore.put(player.getName(), items);
+//		armourStore.put(player.getName(), armour);
+//		playerFood.put(player.getName(), player.getFoodLevel());
+//		playerHealth.put(player.getName(), player.getHealth());
+//		playerSaturation.put(player.getName(), player.getSaturation());
+//		lastScoreboard.put(player.getName(), player.getScoreboard());
+//		
+//		//lastGM.put(player, player.getGameMode());
+//		setPlayersLastGameMode(player, player.getGameMode());
+//		player.setGameMode(gm);
+//		
+//		player.setSaturation(15);
+//		player.setFoodLevel(20);
+//		player.setHealth(player.getMaxHealth());
+//		player.getInventory().clear();
+//		player.getInventory().setArmorContents(null);
+//		
+//		saveItems(player);
+//		player.updateInventory();
+//	}
 	
 	public void storePlayerInventory(String player, ItemStack[] items, ItemStack[] armour, Integer health, Integer food, Float saturation){
-		itemStore.put(player, items);
-		armourStore.put(player, armour);
-		playerHealth.put(player, health);
-		playerFood.put(player, food);
-		playerSaturation.put(player, saturation);
+//		itemStore.put(player, items);
+//		armourStore.put(player, armour);
+//		playerHealth.put(player, health);
+//		playerFood.put(player, food);
+//		playerSaturation.put(player, saturation);
+		OfflineMinigamePlayer oply = new OfflineMinigamePlayer(player, items, armour, food, health, saturation, GameMode.SURVIVAL, resPos.get(player));
+		offlineMinigamePlayers.put(player, oply);
 	}
 	
-	@SuppressWarnings("deprecation")
-	public void restorePlayerData(final Player player){
-		player.getInventory().clear();
-		player.getInventory().setArmorContents(null);
-		
-		ItemStack[] items = itemStore.get(player.getName());
-		ItemStack[] armour = armourStore.get(player.getName());
-		
-		player.getInventory().setContents(items);
-		player.getInventory().setArmorContents(armour);
-		player.setFoodLevel(playerFood.get(player.getName()));
-		player.setHealth(playerHealth.get(player.getName()));
-		player.setSaturation(playerSaturation.get(player.getName()));
-		if(lastScoreboard.containsKey(player.getName()))
-			player.setScoreboard(lastScoreboard.get(player.getName()));
-		else
-			player.setScoreboard(plugin.getServer().getScoreboardManager().getMainScoreboard());
-		setAllowGMChange(player, true);
-		player.setGameMode(getPlayersLastGameMode(player));
-		removePlayersLastGameMode(player);
-		setAllowGMChange(player, false);
-		
-		invsave.getConfig().set("inventories." + player.getName(), null);
-		invsave.saveConfig();
-		itemStore.remove(player.getName());
-		armourStore.remove(player.getName());
-		playerFood.remove(player.getName());
-		playerHealth.remove(player.getName());
-		playerSaturation.remove(player.getName());
-		lastScoreboard.remove(player.getName());
-		
-		player.updateInventory();
-	}
+//	@Deprecated
+//	public void restorePlayerData(final Player player){
+//		player.getInventory().clear();
+//		player.getInventory().setArmorContents(null);
+//		
+//		ItemStack[] items = itemStore.get(player.getName());
+//		ItemStack[] armour = armourStore.get(player.getName());
+//		
+//		player.getInventory().setContents(items);
+//		player.getInventory().setArmorContents(armour);
+//		player.setFoodLevel(playerFood.get(player.getName()));
+//		player.setHealth(playerHealth.get(player.getName()));
+//		player.setSaturation(playerSaturation.get(player.getName()));
+//		if(lastScoreboard.containsKey(player.getName()))
+//			player.setScoreboard(lastScoreboard.get(player.getName()));
+//		else
+//			player.setScoreboard(plugin.getServer().getScoreboardManager().getMainScoreboard());
+//		setAllowGMChange(player, true);
+//		player.setGameMode(getPlayersLastGameMode(player));
+//		removePlayersLastGameMode(player);
+//		setAllowGMChange(player, false);
+//		
+//		invsave.getConfig().set("inventories." + player.getName(), null);
+//		invsave.saveConfig();
+//		itemStore.remove(player.getName());
+//		armourStore.remove(player.getName());
+//		playerFood.remove(player.getName());
+//		playerHealth.remove(player.getName());
+//		playerSaturation.remove(player.getName());
+//		lastScoreboard.remove(player.getName());
+//		
+//		player.updateInventory();
+//	}
 	
-	public boolean playerHasStoredItems(Player player){
-		return itemStore.containsKey(player.getName());
-	}
+//	@Deprecated
+//	public boolean playerHasStoredItems(Player player){
+//		return itemStore.containsKey(player.getName());
+//	}
 	
-	public Boolean getAllowTP(Player player){
-		return allowTP.get(player.getName());
-	}
+//	@Deprecated
+//	public Boolean getAllowTP(Player player){
+//		return allowTP.get(player.getName());
+//	}
+//	
+//	@Deprecated
+//	public void setAllowTP(Player player, Boolean var){
+//		allowTP.put(player.getName(), var);
+//	}
+//	
+//	@Deprecated
+//	public void removeAllowTP(Player player){
+//		allowTP.remove(player.getName());
+//	}
+//	
+//	@Deprecated
+//	public Boolean getAllowGMChange(Player player){
+//		return allowGMChange.get(player.getName());
+//	}
+//	
+//	@Deprecated
+//	public void setAllowGMChange(Player player, Boolean var){
+//		allowGMChange.put(player.getName(), var);
+//	}
+//	
+//	@Deprecated
+//	public void removeAllowGMChange(Player player){
+//		allowGMChange.remove(player.getName());
+//	}
+//	
+//	@Deprecated
+//	public void setPlayerCheckpoints(Player player, Location checkpoint){
+//		playerCheckpoints.put(player.getName(), checkpoint);
+//	}
+//	
+//	@Deprecated
+//	public void removePlayerCheckpoints(Player player){
+//		if(playerCheckpoints.containsKey(player.getName())){
+//			playerCheckpoints.remove(player.getName());
+//		}
+//	}
+//	
+//	@Deprecated
+//	public Location getPlayerCheckpoint(Player player){
+//		if(playerCheckpoints.containsKey(player.getName())){
+//			return playerCheckpoints.get(player.getName());
+//		}
+//		return null;
+//	}
+//	
+//	@Deprecated
+//	public void addPlayerFlags(Player player, String flag){
+//		List<String> list;
+//		
+//		if(playerFlags.containsKey(player.getName())){
+//			list = playerFlags.get(player.getName());
+//		}
+//		else{
+//			list = new ArrayList<String>();
+//		}
+//		
+//		list.add(flag);
+//		playerFlags.put(player.getName(), list);
+//	}
 	
-	public void setAllowTP(Player player, Boolean var){
-		allowTP.put(player.getName(), var);
-	}
-	
-	public void removeAllowTP(Player player){
-		allowTP.remove(player.getName());
-	}
-	
-	public Boolean getAllowGMChange(Player player){
-		return allowGMChange.get(player.getName());
-	}
-	
-	public void setAllowGMChange(Player player, Boolean var){
-		allowGMChange.put(player.getName(), var);
-	}
-	
-	public void removeAllowGMChange(Player player){
-		allowGMChange.remove(player.getName());
-	}
-	
-	public void setPlayerCheckpoints(Player player, Location checkpoint){
-		playerCheckpoints.put(player.getName(), checkpoint);
-	}
-	
-	public void removePlayerCheckpoints(Player player){
-		if(playerCheckpoints.containsKey(player.getName())){
-			playerCheckpoints.remove(player.getName());
-		}
-	}
-	
-	public Location getPlayerCheckpoint(Player player){
-		if(playerCheckpoints.containsKey(player.getName())){
-			return playerCheckpoints.get(player.getName());
-		}
-		return null;
-	}
-	
-	public void addPlayerFlags(Player player, String flag){
-		List<String> list;
-		
-		if(playerFlags.containsKey(player.getName())){
-			list = playerFlags.get(player.getName());
-		}
-		else{
-			list = new ArrayList<String>();
-		}
-		
-		list.add(flag);
-		playerFlags.put(player.getName(), list);
-	}
-	
-	public List<String> checkRequiredFlags(Player player, String minigame){
+	public List<String> checkRequiredFlags(MinigamePlayer player, String minigame){
 		List<String> checkpoints = new ArrayList<String>();
 		checkpoints.addAll(mdata.getMinigame(minigame).getFlags());
-		List<String> pchecks = playerFlags.get(player.getName());
+		List<String> pchecks = player.getFlags();
 		
-		if(playerFlags.containsKey(player.getName()) && !pchecks.isEmpty()){
+		if(!pchecks.isEmpty()){
 			checkpoints.removeAll(pchecks);
 		}
 		
 		return checkpoints;
 	}
 	
-	public boolean playerHasFlag(Player player, String flag){
-		if(playerFlags.containsKey(player.getName())){
-			List<String> flags = playerFlags.get(player.getName());
-			if(flags.contains("flag")){
-				return true;
-			}
-		}
-		return false;
-	}
+//	@Deprecated
+//	public boolean playerHasFlag(Player player, String flag){
+//		if(playerFlags.containsKey(player.getName())){
+//			List<String> flags = playerFlags.get(player.getName());
+//			if(flags.contains("flag")){
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
+//	
+//	@Deprecated
+//	public void removeAllPlayerFlags(Player player){
+//		if(playerFlags.containsKey(player.getName())){
+//			playerFlags.remove(player.getName());
+//		}
+//	}
+//	
+//	@Deprecated
+//	public boolean playerHasFlags(Player player){
+//		if(playerFlags.containsKey(player.getName())){
+//			return true;
+//		}
+//		return false;
+//	}
+//	
+//	@Deprecated
+//	public List<String> getPlayerFlags(Player player){
+//		return playerFlags.get(player.getName());
+//	}
+//	
+//	@Deprecated
+//	public void addPlayerKill(Player ply){
+//		if(!plyKills.containsKey(ply.getName())){
+//			plyKills.put(ply.getName(), 0);
+//		}
+//		plyKills.put(ply.getName(), plyKills.get(ply.getName()) + 1);
+//	}
+//	
+//	@Deprecated
+//	public Integer getPlayerKills(Player ply){
+//		if(!plyKills.containsKey(ply.getName())){
+//			return 0;
+//		}
+//		return plyKills.get(ply.getName());
+//	}
+//	
+//	@Deprecated
+//	public void removePlayerKills(Player ply){
+//		if(plyKills.containsKey(ply.getName())){
+//			plyKills.remove(ply.getName());
+//		}
+//	}
+//	
+//	@Deprecated
+//	public void addPlayerDeath(Player ply){
+//		if(!plyDeaths.containsKey(ply.getName())){
+//			plyDeaths.put(ply.getName(), 0);
+//		}
+//		plyDeaths.put(ply.getName(), plyDeaths.get(ply.getName()) + 1);
+//	}
+//	
+//	@Deprecated
+//	public Integer getPlayerDeath(Player ply){
+//		if(!plyDeaths.containsKey(ply.getName())){
+//			return 0;
+//		}
+//		return plyDeaths.get(ply.getName());
+//	}
+//	
+//	@Deprecated
+//	public void removePlayerDeath(Player ply){
+//		if(plyDeaths.containsKey(ply.getName())){
+//			plyDeaths.remove(ply.getName());
+//		}
+//	}
+//	
+//	@Deprecated
+//	public void addPlayerScore(Player ply){
+//		if(!plyScore.containsKey(ply.getName())){
+//			plyScore.put(ply.getName(), 0);
+//		}
+//		plyScore.put(ply.getName(), plyScore.get(ply.getName()) + 1);
+//	}
+//	
+//	@Deprecated
+//	public void setPlayerScore(Player ply, int amount){
+//		if(!plyScore.containsKey(ply.getName())){
+//			plyScore.put(ply.getName(), 0);
+//		}
+//		plyScore.put(ply.getName(), amount);
+//	}
+//	
+//	@Deprecated
+//	public void takePlayerScore(Player ply){
+//		if(!plyScore.containsKey(ply.getName())){
+//			plyScore.put(ply.getName(), 0);
+//		}
+//		plyScore.put(ply.getName(), plyScore.get(ply.getName()) - 1);
+//	}
+//	
+//	@Deprecated
+//	public Integer getPlayerScore(Player ply){
+//		if(plyScore.containsKey(ply.getName())){
+//			return plyScore.get(ply.getName());
+//		}
+//		return 0;
+//	}
+//	
+//	@Deprecated
+//	public void removePlayerScore(Player ply){
+//		if(plyScore.containsKey(ply.getName())){
+//			plyScore.remove(ply.getName());
+//		}
+//	}
+//	
+//	@Deprecated
+//	public GameMode getPlayersLastGameMode(Player player){
+//		if(lastGM.containsKey(player.getName())){
+//			return lastGM.get(player.getName());
+//		}
+//		else{
+//			return player.getGameMode();
+//		}
+//	}
+//	
+//	@Deprecated
+//	public void setPlayersLastGameMode(Player player, GameMode gm){
+//		lastGM.put(player.getName(), gm);
+//	}
+//	
+//	@Deprecated
+//	public boolean removePlayersLastGameMode(Player player){
+//		if(lastGM.containsKey(player.getName())){
+//			lastGM.remove(player.getName());
+//			return true;
+//		}
+//		return false;
+//	}
 	
-	public void removeAllPlayerFlags(Player player){
-		if(playerFlags.containsKey(player.getName())){
-			playerFlags.remove(player.getName());
-		}
-	}
-	
-	public boolean playerHasFlags(Player player){
-		if(playerFlags.containsKey(player.getName())){
-			return true;
-		}
-		return false;
-	}
-	
-	public List<String> getPlayerFlags(Player player){
-		return playerFlags.get(player.getName());
-	}
-	
-	public void addPlayerKill(Player ply){
-		if(!plyKills.containsKey(ply.getName())){
-			plyKills.put(ply.getName(), 0);
-		}
-		plyKills.put(ply.getName(), plyKills.get(ply.getName()) + 1);
-	}
-	
-	public Integer getPlayerKills(Player ply){
-		if(!plyKills.containsKey(ply.getName())){
-			return 0;
-		}
-		return plyKills.get(ply.getName());
-	}
-	
-	public void removePlayerKills(Player ply){
-		if(plyKills.containsKey(ply.getName())){
-			plyKills.remove(ply.getName());
-		}
-	}
-	
-	public void addPlayerDeath(Player ply){
-		if(!plyDeaths.containsKey(ply.getName())){
-			plyDeaths.put(ply.getName(), 0);
-		}
-		plyDeaths.put(ply.getName(), plyDeaths.get(ply.getName()) + 1);
-	}
-	
-	public Integer getPlayerDeath(Player ply){
-		if(!plyDeaths.containsKey(ply.getName())){
-			return 0;
-		}
-		return plyDeaths.get(ply.getName());
-	}
-	
-	public void removePlayerDeath(Player ply){
-		if(plyDeaths.containsKey(ply.getName())){
-			plyDeaths.remove(ply.getName());
-		}
-	}
-	
-	public void addPlayerScore(Player ply){
-		if(!plyScore.containsKey(ply.getName())){
-			plyScore.put(ply.getName(), 0);
-		}
-		plyScore.put(ply.getName(), plyScore.get(ply.getName()) + 1);
-	}
-	
-	public void setPlayerScore(Player ply, int amount){
-		if(!plyScore.containsKey(ply.getName())){
-			plyScore.put(ply.getName(), 0);
-		}
-		plyScore.put(ply.getName(), amount);
-	}
-	
-	public void takePlayerScore(Player ply){
-		if(!plyScore.containsKey(ply.getName())){
-			plyScore.put(ply.getName(), 0);
-		}
-		plyScore.put(ply.getName(), plyScore.get(ply.getName()) - 1);
-	}
-	
-	public Integer getPlayerScore(Player ply){
-		if(plyScore.containsKey(ply.getName())){
-			return plyScore.get(ply.getName());
-		}
-		return 0;
-	}
-	
-	public void removePlayerScore(Player ply){
-		if(plyScore.containsKey(ply.getName())){
-			plyScore.remove(ply.getName());
-		}
-	}
-	
-	public GameMode getPlayersLastGameMode(Player player){
-		if(lastGM.containsKey(player.getName())){
-			return lastGM.get(player.getName());
-		}
-		else{
-			return player.getGameMode();
-		}
-	}
-	
-	public void setPlayersLastGameMode(Player player, GameMode gm){
-		lastGM.put(player.getName(), gm);
-	}
-	
-	public boolean removePlayersLastGameMode(Player player){
-		if(lastGM.containsKey(player.getName())){
-			lastGM.remove(player.getName());
-			return true;
-		}
-		return false;
-	}
-	
-	public void saveItems(Player player){
-		if(itemStore.get(player.getName()) != null){
-			int num = 0;
-			for(ItemStack item : itemStore.get(player.getName())){
-				if(item != null){
-					invsave.getConfig().set("inventories." + player.getName() + "." + num, item);
-				}
-				num++;
-			}
-		}
-		else{
-			invsave.getConfig().set("inventories." + player.getName(), null);
-		}
-		
-		if(armourStore.get(player.getName()) != null){
-			int num = 0;
-			for(ItemStack item : armourStore.get(player.getName())){
-				if(item != null){
-					invsave.getConfig().set("inventories." + player.getName() + ".armour." + num, item);
-				}
-				num++;
-			}
-		}
-		
-		if(playerFood.containsKey(player.getName())){
-			invsave.getConfig().set("inventories." + player.getName() + ".food", playerFood.get(player.getName()));
-		}
-		
-		if(playerSaturation.containsKey(player.getName())){
-			invsave.getConfig().set("inventories." + player.getName() + ".saturation", playerSaturation.get(player.getName()));
-		}
-		
-		if(playerHealth.containsKey(player.getName())){
-			invsave.getConfig().set("inventories." + player.getName() + ".health", playerHealth.get(player.getName()));
-		}
-		invsave.saveConfig();
-	}
+//	public void saveItems(Player player){
+//		if(itemStore.get(player.getName()) != null){
+//			int num = 0;
+//			for(ItemStack item : itemStore.get(player.getName())){
+//				if(item != null){
+//					invsave.getConfig().set("inventories." + player.getName() + "." + num, item);
+//				}
+//				num++;
+//			}
+//		}
+//		else{
+//			invsave.getConfig().set("inventories." + player.getName(), null);
+//		}
+//		
+//		if(armourStore.get(player.getName()) != null){
+//			int num = 0;
+//			for(ItemStack item : armourStore.get(player.getName())){
+//				if(item != null){
+//					invsave.getConfig().set("inventories." + player.getName() + ".armour." + num, item);
+//				}
+//				num++;
+//			}
+//		}
+//		
+//		if(playerFood.containsKey(player.getName())){
+//			invsave.getConfig().set("inventories." + player.getName() + ".food", playerFood.get(player.getName()));
+//		}
+//		
+//		if(playerSaturation.containsKey(player.getName())){
+//			invsave.getConfig().set("inventories." + player.getName() + ".saturation", playerSaturation.get(player.getName()));
+//		}
+//		
+//		if(playerHealth.containsKey(player.getName())){
+//			invsave.getConfig().set("inventories." + player.getName() + ".health", playerHealth.get(player.getName()));
+//		}
+//		invsave.saveConfig();
+//	}
 	
 	public Configuration getInventorySaveConfig(){
 		return invsave.getConfig();
@@ -1044,10 +1108,10 @@ public class PlayerData {
 		partyMode = mode;
 	}
 	
-	public void partyMode(Player player){
+	public void partyMode(MinigamePlayer player){
 		if(onPartyMode()){
-			Location loc = player.getLocation();
-			Firework firework = (Firework) player.getWorld().spawnEntity(loc, EntityType.FIREWORK);
+			Location loc = player.getPlayer().getLocation();
+			Firework firework = (Firework) player.getPlayer().getWorld().spawnEntity(loc, EntityType.FIREWORK);
 			FireworkMeta fwm = firework.getFireworkMeta();
 			
 			Random chance = new Random();
@@ -1065,30 +1129,30 @@ public class PlayerData {
 		}
 	}
 	
-	public void addDCPlayer(Player player, Location location){
-		dcPlayers.put(player.getName(), location);
+	public void addRespawnPosition(Player player, Location location){
+		resPos.put(player.getName(), location);
 	}
 	
-	public void addDCPlayer(String player, Location location){
-		dcPlayers.put(player, location);
+	public void addRespawnPosition(String player, Location location){
+		resPos.put(player, location);
 	}
 	
-	public Location getDCPlayer(Player player){
-		return dcPlayers.get(player.getName());
+	public Location getRespawnPosition(Player player){
+		return resPos.get(player.getName());
 	}
 	
-	public boolean hasDCPlayer(Player player){
-		return dcPlayers.containsKey(player.getName());
+	public boolean hasRespawnPosition(Player player){
+		return resPos.containsKey(player.getName());
 	}
 	
-	public void removeDCPlayer(Player player){
-		dcPlayers.remove(player.getName());
+	public void removeRespawnPosition(Player player){
+		resPos.remove(player.getName());
 	}
 	
 	public void saveDCPlayers(){
 		MinigameSave save = new MinigameSave("dcPlayers");
-		for(String player : dcPlayers.keySet()){
-			mdata.minigameSetLocations(player, dcPlayers.get(player), "rejoin", save.getConfig());
+		for(String player : resPos.keySet()){
+			mdata.minigameSetLocations(player, resPos.get(player), "rejoin", save.getConfig());
 		}
 		save.saveConfig();
 	}
@@ -1096,7 +1160,7 @@ public class PlayerData {
 	public void loadDCPlayers(){
 		MinigameSave save = new MinigameSave("dcPlayers");
 		for(String player : save.getConfig().getKeys(false)){
-			addDCPlayer(player, mdata.minigameLocations(player, "rejoin", save.getConfig()));
+			addRespawnPosition(player, mdata.minigameLocations(player, "rejoin", save.getConfig()));
 			save.getConfig().set(player, null);
 		}
 		save.saveConfig();
@@ -1128,18 +1192,18 @@ public class PlayerData {
 		setDeniedCommands(plugin.getConfig().getStringList("disabledCommands"));
 	}
 	
-	public boolean hasStoredPlayerCheckpoint(Player player){
+	public boolean hasStoredPlayerCheckpoint(MinigamePlayer player){
 		if(storedPlayerCheckpoints.containsKey(player.getName())){
 			return true;
 		}
 		return false;
 	}
 	
-	public StoredPlayerCheckpoints getPlayersStoredCheckpoints(Player player){
+	public StoredPlayerCheckpoints getPlayersStoredCheckpoints(MinigamePlayer player){
 		return storedPlayerCheckpoints.get(player.getName());
 	}
 	
-	public void addStoredPlayerCheckpoint(Player player, String minigame, Location checkpoint){
+	public void addStoredPlayerCheckpoint(MinigamePlayer player, String minigame, Location checkpoint){
 		StoredPlayerCheckpoints spc = new StoredPlayerCheckpoints(player.getName(), minigame, checkpoint);
 		storedPlayerCheckpoints.put(player.getName(), spc);
 	}
@@ -1148,11 +1212,14 @@ public class PlayerData {
 		storedPlayerCheckpoints.put(name, spc);
 	}
 	
-	public void minigameTeleport(Player player, Location location){
-		if(playerInMinigame(player)){
-			setAllowTP(player, true);
-			player.teleport(location);
-			setAllowTP(player, false);
+	public void minigameTeleport(MinigamePlayer player, Location location){
+		if(player.isInMinigame()){
+			player.setAllowTeleport(true);
+			player.getPlayer().teleport(location);
+			player.setAllowTeleport(false);
+		}
+		else{
+			player.getPlayer().teleport(location);
 		}
 	}
 }

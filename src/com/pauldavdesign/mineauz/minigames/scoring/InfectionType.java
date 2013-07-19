@@ -4,18 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.events.EndTeamMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 
 public class InfectionType extends ScoreType{
 	
-	private List<Player> infected = new ArrayList<Player>();
+	private List<MinigamePlayer> infected = new ArrayList<MinigamePlayer>();
 
 	@Override
 	public String getType() {
@@ -23,9 +23,9 @@ public class InfectionType extends ScoreType{
 	}
 
 	@Override
-	public void balanceTeam(List<Player> players, Minigame minigame) {
+	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
 		for(int i = 0; i < players.size(); i++){
-			Player ply = players.get(i);
+			MinigamePlayer ply = players.get(i);
 			if(!minigame.getType().equals("teamdm")){
 				pdata.quitMinigame(ply, true);
 				ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Infection must be run on a team deathmatch Minigame!");
@@ -67,21 +67,24 @@ public class InfectionType extends ScoreType{
 	
 	@EventHandler
 	private void playerDeath(PlayerDeathEvent event){
-		if(pdata.playerInMinigame(event.getEntity())){
-			Minigame mgm = pdata.getPlayersMinigame(event.getEntity());
+		MinigamePlayer player = pdata.getMinigamePlayer(event.getEntity());
+		if(player.isInMinigame()){
+			Minigame mgm = player.getMinigame();
 			if(mgm.getType().equals("teamdm") && mgm.getScoreType().equals("infection")){
 				if(mgm.getBlueTeam().contains(event.getEntity())){
-					TeamDMMinigame.switchTeam(mgm, event.getEntity());
-					infected.add(event.getEntity());
+					TeamDMMinigame.switchTeam(mgm, player);
+					infected.add(player);
 					if(event.getEntity().getKiller() != null){
-						Player killer = event.getEntity().getKiller();
-						pdata.addPlayerScore(killer);
-						mgm.setScore(killer, pdata.getPlayerScore(killer));
+						MinigamePlayer killer = pdata.getMinigamePlayer(event.getEntity().getKiller());
+//						pdata.addPlayerScore(killer);
+						killer.addScore();
+						mgm.setScore(killer, killer.getScore());
 					}
-					pdata.setPlayerScore(event.getEntity(), 0);
-					mgm.setScore(event.getEntity(), pdata.getPlayerScore(event.getEntity()));
+//					pdata.setPlayerScore(event.getEntity(), 0);
+					player.resetScore();
+					mgm.setScore(player, player.getScore());
 					
-					if(mgm.getLives() != pdata.getPlayerDeath(event.getEntity())){
+					if(mgm.getLives() != player.getDeaths()){
 						mdata.sendMinigameMessage(mgm, event.getEntity().getName() + " has become " + ChatColor.RED + "Infected!", "error", null);
 					}
 					if(mgm.getBlueTeam().isEmpty()){
@@ -91,9 +94,10 @@ public class InfectionType extends ScoreType{
 				}
 				else{
 					if(event.getEntity().getKiller() != null){
-						Player killer = event.getEntity().getKiller();
-						pdata.addPlayerScore(killer);
-						mgm.setScore(killer, pdata.getPlayerScore(killer));
+						MinigamePlayer killer = pdata.getMinigamePlayer(event.getEntity().getKiller());
+//						pdata.addPlayerScore(killer);
+						killer.addScore();
+						mgm.setScore(killer, killer.getScore());
 					}
 				}
 			}
@@ -103,9 +107,9 @@ public class InfectionType extends ScoreType{
 	@EventHandler
 	private void endTeamMinigame(EndTeamMinigameEvent event){
 		if(event.getMinigame().getScoreType().equals("infection")){
-			List<Player> infect = new ArrayList<Player>();
+			List<MinigamePlayer> infect = new ArrayList<MinigamePlayer>();
 			infect.addAll(infected);
-			for(Player inf : infect){
+			for(MinigamePlayer inf : infect){
 				if(event.getWinnningPlayers().contains(inf)){
 					if(event.getWinningTeamInt() == 0){
 						event.getWinnningPlayers().remove(inf);

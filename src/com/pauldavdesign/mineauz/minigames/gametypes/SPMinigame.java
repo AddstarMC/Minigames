@@ -5,13 +5,13 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameSave;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
@@ -28,10 +28,10 @@ public class SPMinigame extends MinigameType{
 	}
 	
 	@Override
-	public boolean joinMinigame(Player player, Minigame mgm){
+	public boolean joinMinigame(MinigamePlayer player, Minigame mgm){
 		if(mgm.getQuitPosition() != null && mgm.isEnabled()){
 			Location startpos = mdata.getMinigame(mgm.getName()).getStartLocations().get(0);
-			player.teleport(startpos);
+			pdata.minigameTeleport(player, startpos);
 
 			if(mgm.hasRestoreBlocks() && !mgm.hasPlayers()){
 				for(RestoreBlock block : mgm.getRestoreBlocks().values()){
@@ -39,14 +39,17 @@ public class SPMinigame extends MinigameType{
 				}
 			}
 			
-			pdata.storePlayerData(player, mgm.getDefaultGamemode());
-			pdata.addPlayerMinigame(player, mgm);
+//			pdata.storePlayerData(player, mgm.getDefaultGamemode());
+			player.storePlayerData();
+//			pdata.addPlayerMinigame(player, mgm);
+			player.setMinigame(mgm);
 			mgm.addPlayer(player);
 			
 			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + 
 					"You have started a single player minigame, type /minigame quit to exit.");
 			
-			pdata.setPlayerCheckpoints(player, startpos);
+			//pdata.setPlayerCheckpoints(player, startpos);
+			player.setCheckpoint(startpos);
 			
 			if(mgm.getLives() > 0){
 				player.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + mgm.getLives());
@@ -65,7 +68,7 @@ public class SPMinigame extends MinigameType{
 	}
 	
 	@Override
-	public void endMinigame(Player player, Minigame mgm){
+	public void endMinigame(MinigamePlayer player, Minigame mgm){
 		boolean hascompleted = false;
 		Configuration completion = null;
 		
@@ -76,11 +79,11 @@ public class SPMinigame extends MinigameType{
 		}
 		
 		if(mgm.getEndPosition() != null){
-			if(!player.isDead()){
-				player.teleport(mgm.getEndPosition());
+			if(!player.getPlayer().isDead()){
+				player.getPlayer().teleport(mgm.getEndPosition());
 			}
 			else{
-				pdata.addDCPlayer(player, mgm.getEndPosition());
+				pdata.addRespawnPosition(player.getPlayer(), mgm.getEndPosition());
 			}
 		}
 		
@@ -116,21 +119,22 @@ public class SPMinigame extends MinigameType{
 	}
 
 	@Override
-	public void quitMinigame(final Player player, final Minigame mgm, boolean forced) {
+	public void quitMinigame(final MinigamePlayer player, final Minigame mgm, boolean forced) {
 		if(mgm.canSaveCheckpoint()){
-			Location pcp = pdata.getPlayerCheckpoint(player);
+			Location pcp = player.getCheckpoint(); //pdata.getPlayerCheckpoint(player);
 			Location start = mgm.getStartLocations().get(0);
 			if(pcp.getBlockX() != start.getBlockX() || pcp.getBlockY() != start.getBlockY() || pcp.getBlockZ() != start.getBlockZ()){
 				if(pdata.hasStoredPlayerCheckpoint(player)){
-					pdata.getPlayersStoredCheckpoints(player).addCheckpoint(mgm.getName(), pdata.getPlayerCheckpoint(player));
-					if(pdata.playerHasFlags(player)){
-						pdata.getPlayersStoredCheckpoints(player).addFlags(mgm.getName(), pdata.getPlayerFlags(player));
+					pdata.getPlayersStoredCheckpoints(player).addCheckpoint(mgm.getName(), player.getCheckpoint());
+					//if(pdata.playerHasFlags(player)){
+					if(!player.getFlags().isEmpty()){
+						pdata.getPlayersStoredCheckpoints(player).addFlags(mgm.getName(), player.getFlags());
 					}
 				}
 				else{
-					pdata.addStoredPlayerCheckpoint(player, mgm.getName(), pdata.getPlayerCheckpoint(player));
-					if(pdata.playerHasFlags(player)){
-						pdata.getPlayersStoredCheckpoints(player).addFlags(mgm.getName(), pdata.getPlayerFlags(player));
+					pdata.addStoredPlayerCheckpoint(player, mgm.getName(), player.getCheckpoint());
+					if(!player.getFlags().isEmpty()){
+						pdata.getPlayersStoredCheckpoints(player).addFlags(mgm.getName(), player.getFlags());
 					}
 				}
 			}
@@ -156,13 +160,14 @@ public class SPMinigame extends MinigameType{
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event){
-		if(pdata.playerInMinigame(event.getPlayer())){
-			Minigame mgm = pdata.getPlayersMinigame(event.getPlayer());
+		if(pdata.getMinigamePlayer(event.getPlayer()).isInMinigame()){
+			MinigamePlayer player = pdata.getMinigamePlayer(event.getPlayer());
+			Minigame mgm = player.getMinigame();
 			if(mgm.getType().equalsIgnoreCase("sp")){
-				event.setRespawnLocation(pdata.getPlayerCheckpoint(event.getPlayer()));
+				event.setRespawnLocation(player.getCheckpoint());
 				event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Bad Luck! Returning to checkpoint.");
 				
-				mgm.getPlayersLoadout(event.getPlayer()).equiptLoadout(event.getPlayer());
+				mgm.getPlayersLoadout(player).equiptLoadout(player);
 			}
 		}
 	}

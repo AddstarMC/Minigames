@@ -7,11 +7,11 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.MultiplayerTimer;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
@@ -38,29 +38,30 @@ public abstract class MinigameType implements Listener{
 		return typeLabel;
 	}
 	
-	public abstract boolean joinMinigame(Player player, Minigame mgm);
+	public abstract boolean joinMinigame(MinigamePlayer player, Minigame mgm);
 	
-	public abstract void quitMinigame(Player player, Minigame mgm, boolean forced);
+	public abstract void quitMinigame(MinigamePlayer player, Minigame mgm, boolean forced);
 	
-	public abstract void endMinigame(Player player, Minigame mgm);
+	public abstract void endMinigame(MinigamePlayer player, Minigame mgm);
 	
-	public void callGeneralQuit(final Player player, final Minigame minigame){
+	public void callGeneralQuit(final MinigamePlayer player, final Minigame minigame){
 		
 		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			
 			@Override
 			public void run() {
-				if(!player.isDead()){
-					player.teleport(minigame.getQuitPosition());
+				if(!player.getPlayer().isDead()){
+					//player.teleport(minigame.getQuitPosition());
+					pdata.minigameTeleport(player, minigame.getQuitPosition());
 				}
 				else{
-					pdata.addDCPlayer(player.getName(), minigame.getQuitPosition());
+					pdata.addRespawnPosition(player.getName(), minigame.getQuitPosition());
 				}
 			}
 		});
 	}
 	
-	public boolean callLMSJoin(Player player, Minigame mgm){
+	public boolean callLMSJoin(MinigamePlayer player, Minigame mgm){
 		if(mgm.getQuitPosition() != null && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
 			
 			String gametype = mgm.getType();
@@ -72,22 +73,27 @@ public abstract class MinigameType implements Listener{
 			Location lobby = mgm.getLobbyPosition();
 			if(/*!mgm.getPlayers().isEmpty() && */mdata.getMinigame(mgm.getName()).getPlayers().size() < mgm.getMaxPlayers()){
 				if(mgm.canLateJoin() || mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
-					pdata.storePlayerData(player, mgm.getDefaultGamemode());
-					pdata.addPlayerMinigame(player, mgm);
+					//pdata.storePlayerData(player, mgm.getDefaultGamemode());
+					player.storePlayerData();
+					//pdata.addPlayerMinigame(player, mgm);
+					player.setMinigame(mgm);
+					
 					mgm.addPlayer(player);
 					if(mgm.getMpTimer() == null || mgm.getMpTimer().getStartWaitTimeLeft() != 0){
-						player.teleport(lobby);
+//						player.teleport(lobby);
+						pdata.minigameTeleport(player, lobby);
 					}
 					else{
 						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You will join in 5 seconds...");
-						player.teleport(lobby);
-						final Player fply = player;
+						//player.teleport(lobby);
+						pdata.minigameTeleport(player, lobby);
+						final MinigamePlayer fply = player;
 						final Minigame fmgm = mgm;
 						Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 							
 							@Override
 							public void run() {
-								if(pdata.playerInMinigame(fply)){
+								if(fply.isInMinigame()){
 									List<Location> locs = new ArrayList<Location>();
 									locs.addAll(fmgm.getStartLocations());
 									Collections.shuffle(locs);
@@ -97,7 +103,7 @@ public abstract class MinigameType implements Listener{
 							}
 						}, 100);
 
-						player.setScoreboard(mgm.getScoreboardManager());
+						player.getPlayer().setScoreboard(mgm.getScoreboardManager());
 						mgm.setScore(player, 1);
 						mgm.setScore(player, 0);
 					}
@@ -156,14 +162,14 @@ public abstract class MinigameType implements Listener{
 	}
 	
 	@SuppressWarnings("deprecation")
-	public void issuePlayerRewards(Player player, Minigame save, boolean hascompleted){
+	public void issuePlayerRewards(MinigamePlayer player, Minigame save, boolean hascompleted){
 		if(save.getRewardItem() != null && !hascompleted){
-			player.getInventory().addItem(save.getRewardItem());
+			player.getPlayer().getInventory().addItem(save.getRewardItem());
 		}
 		else if(save.getSecondaryRewardItem() != null && hascompleted){
-			player.getInventory().addItem(save.getSecondaryRewardItem());
+			player.getPlayer().getInventory().addItem(save.getSecondaryRewardItem());
 		}
-		player.updateInventory();
+		player.getPlayer().updateInventory();
 		
 		if(Minigames.plugin.hasEconomy()){
 			if(save.getRewardPrice() != 0 && !hascompleted){

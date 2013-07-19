@@ -1,6 +1,6 @@
 package com.pauldavdesign.mineauz.minigames.commands;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -9,7 +9,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 
+@Deprecated
 public class RestoreInvCommand implements ICommand{
 
 	@Override
@@ -57,27 +59,30 @@ public class RestoreInvCommand implements ICommand{
 			String label, String[] args) {
 		if(args != null){
 			Set<String> set = plugin.pdata.getInventorySaveConfig().getConfigurationSection("inventories").getKeys(false);
-			List<Player> players = new ArrayList<Player>();
 			
-			for(Player pl : plugin.getServer().getOnlinePlayers()){
-				players.add(pl);
+			List<Player> players = plugin.getServer().matchPlayer(args[0]);
+			MinigamePlayer reqpl = null;
+			if(!players.isEmpty()){
+				reqpl = plugin.pdata.getMinigamePlayer(players.get(0));
+			}
+			else{
+				sender.sendMessage(ChatColor.RED + "No player found by the name " + args[0]);
+				//return truel
 			}
 			
-			Player reqpl = plugin.getServer().matchPlayer(args[0]).get(0);
-			
-			if(!plugin.pdata.playerInMinigame(reqpl) && set.contains(reqpl.getName())){
-				plugin.pdata.restorePlayerData(reqpl);
+			if(!reqpl.isInMinigame() && set.contains(reqpl.getName())){
+				//plugin.pdata.restorePlayerData(reqpl);
 				
 				sender.sendMessage(ChatColor.GRAY + "The inventory for " + reqpl.getName() + " has been restored.");
 				reqpl.sendMessage(ChatColor.GRAY + "Your inventory has been restored.");
-				plugin.pdata.saveItems(reqpl);
+				//plugin.pdata.saveItems(reqpl);
 			}
 			else if(!set.contains(reqpl.getName())){
 				sender.sendMessage(ChatColor.RED + "This players inventory is not stored!");
 			}
-			else if(plugin.pdata.playerInMinigame(reqpl)){
-				sender.sendMessage(ChatColor.RED + "This player is currently in a minigame, old inventory cannot be restored!");
-			}
+//			else if(plugin.pdata.playerInMinigame(reqpl)){
+//				sender.sendMessage(ChatColor.RED + "This player is currently in a minigame, old inventory cannot be restored!");
+//			}
 			return true;
 		}
 		return false;

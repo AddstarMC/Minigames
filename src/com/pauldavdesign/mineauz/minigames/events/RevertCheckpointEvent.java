@@ -1,19 +1,20 @@
 package com.pauldavdesign.mineauz.minigames.events;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+
 public class RevertCheckpointEvent extends Event{
 	private static final HandlerList handlers = new HandlerList();
-	private Player player = null;
+	private MinigamePlayer player = null;
 	private boolean cancelled = false;
 	
-	public RevertCheckpointEvent(Player player){
+	public RevertCheckpointEvent(MinigamePlayer player){
 		this.player = player;
 	}
 	
-	public Player getPlayer(){
+	public MinigamePlayer getPlayer(){
 		return player;
 	}
 	

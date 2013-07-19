@@ -6,10 +6,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 
 public class FinishSign implements MinigameSign {
@@ -48,16 +48,16 @@ public class FinishSign implements MinigameSign {
 	}
 
 	@Override
-	public boolean signUse(Sign sign, Player player) {
-		if(plugin.pdata.playerInMinigame(player) && player.getItemInHand().getType() == Material.AIR){
-			Minigame minigame = plugin.pdata.getPlayersMinigame(player);
+	public boolean signUse(Sign sign, MinigamePlayer player) {
+		if(player.isInMinigame() && player.getPlayer().getItemInHand().getType() == Material.AIR){
+			Minigame minigame = player.getMinigame();
 
 			if(minigame.isSpectator(player)){
 				return false;
 			}
 			
 			if(!minigame.getFlags().isEmpty()){
-				if(((LivingEntity)player).isOnGround()){
+				if(((LivingEntity)player.getPlayer()).isOnGround()){
 					
 					if(plugin.pdata.checkRequiredFlags(player, minigame.getName()).isEmpty()){
 						plugin.pdata.endMinigame(player);
@@ -81,14 +81,14 @@ public class FinishSign implements MinigameSign {
 				return true;
 			}
 			else{
-				if(((LivingEntity)player).isOnGround()){
+				if(((LivingEntity)player.getPlayer()).isOnGround()){
 					plugin.pdata.endMinigame(player);
 					plugin.pdata.partyMode(player);
 					return true;
 				}
 			}
 		}
-		else if(player.getItemInHand().getType() != Material.AIR){
+		else if(player.getPlayer().getItemInHand().getType() != Material.AIR){
 			player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Your hand must be empty to use this sign!");
 		}
 		return false;

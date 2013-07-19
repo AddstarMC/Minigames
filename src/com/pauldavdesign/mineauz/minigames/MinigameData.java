@@ -16,7 +16,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
@@ -369,7 +368,7 @@ public class MinigameData {
 		return list;
 	}
 	
-	public void sendMinigameMessage(Minigame minigame, String message, String type, Player exclude){
+	public void sendMinigameMessage(Minigame minigame, String message, String type, MinigamePlayer exclude){
 		String finalMessage = "";
 		if(type == null){
 			type = "info";
@@ -382,11 +381,11 @@ public class MinigameData {
 		}
 		
 		finalMessage += message;
-		for(Player pl : minigame.getPlayers()){
+		for(MinigamePlayer pl : minigame.getPlayers()){
 			if(exclude == null || exclude != pl)
 				pl.sendMessage(finalMessage);
 		}
-		for(Player pl : minigame.getSpectators()){
+		for(MinigamePlayer pl : minigame.getSpectators()){
 			if(exclude == null || exclude != pl)
 				pl.sendMessage(finalMessage);
 		}

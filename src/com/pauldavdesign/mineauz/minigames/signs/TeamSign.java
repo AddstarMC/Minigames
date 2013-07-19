@@ -2,10 +2,10 @@ package com.pauldavdesign.mineauz.minigames.signs;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 
@@ -60,16 +60,16 @@ public class TeamSign implements MinigameSign {
 	}
 
 	@Override
-	public boolean signUse(Sign sign, Player player) {
-		if(plugin.pdata.playerInMinigame(player)){
-			Minigame mgm = plugin.pdata.getPlayersMinigame(player);
+	public boolean signUse(Sign sign, MinigamePlayer player) {
+		if(player.isInMinigame()){
+			Minigame mgm = player.getMinigame();
 			if(mgm.getType().equals("teamdm")){
 				if(mgm.hasStarted() && !sign.getLine(2).equals(ChatColor.GRAY + "Neutral") &&
-						((mgm.getRedTeam().contains(player) && sign.getLine(2).equals(ChatColor.BLUE + "Blue") || 
-								(mgm.getBlueTeam().contains(player) && sign.getLine(2).equals(ChatColor.RED + "Red"))))){
-					player.damage(player.getHealth());
+						((mgm.getRedTeam().contains(player.getPlayer()) && sign.getLine(2).equals(ChatColor.BLUE + "Blue") || 
+								(mgm.getBlueTeam().contains(player.getPlayer()) && sign.getLine(2).equals(ChatColor.RED + "Red"))))){
+					player.getPlayer().damage(player.getHealth());
 				}
-				if(mgm.getBlueTeam().contains(player)){
+				if(mgm.getBlueTeam().contains(player.getPlayer())){
 					if(sign.getLine(2).equals(ChatColor.RED + "Red")){
 						if(mgm.getRedTeam().size() <= mgm.getBlueTeam().size()){
 							TeamDMMinigame.switchTeam(mgm, player);
@@ -88,7 +88,7 @@ public class TeamSign implements MinigameSign {
 					}
 					return true;
 				}
-				else if(mgm.getRedTeam().contains(player)){
+				else if(mgm.getRedTeam().contains(player.getPlayer())){
 					if(sign.getLine(2).equals(ChatColor.BLUE + "Blue")){
 						if(mgm.getRedTeam().size() >= mgm.getBlueTeam().size()){
 							TeamDMMinigame.switchTeam(mgm, player);

@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 
 public class SpectateCommand implements ICommand {
 
@@ -53,7 +54,7 @@ public class SpectateCommand implements ICommand {
 			String label, String[] args) {
 		if(args != null){
 			if(plugin.mdata.hasMinigame(args[0])){
-				Player ply = (Player) sender;
+				MinigamePlayer ply = plugin.pdata.getMinigamePlayer((Player) sender);
 				Minigame mgm = plugin.mdata.getMinigame(args[0]);
 				plugin.pdata.spectateMinigame(ply, mgm);
 			}

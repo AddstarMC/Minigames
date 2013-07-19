@@ -3,10 +3,10 @@ package com.pauldavdesign.mineauz.minigames.signs;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 
 public class SpectateSign implements MinigameSign {
@@ -50,8 +50,8 @@ public class SpectateSign implements MinigameSign {
 	}
 
 	@Override
-	public boolean signUse(Sign sign, Player player) {
-		if(player.getItemInHand().getType() == Material.AIR && !plugin.pdata.playerInMinigame(player)){
+	public boolean signUse(Sign sign, MinigamePlayer player) {
+		if(player.getPlayer().getItemInHand().getType() == Material.AIR && !player.isInMinigame()){
 			Minigame mgm = plugin.mdata.getMinigame(sign.getLine(2));
 			if(mgm != null){
 				if(mgm.isEnabled()){
@@ -66,7 +66,7 @@ public class SpectateSign implements MinigameSign {
 				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "This minigame doesn't exist!");
 			}
 		}
-		else if(!plugin.pdata.playerInMinigame(player))
+		else if(!player.isInMinigame())
 			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Your hand must be empty to use this sign!");
 		return false;
 	}

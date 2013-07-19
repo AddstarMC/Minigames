@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
@@ -76,15 +75,15 @@ public class PlayerLoadout {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public void equiptLoadout(Player player){
-		player.getInventory().clear();
-		for(PotionEffect potion : player.getActivePotionEffects()){
-			player.removePotionEffect(potion.getType());
+	public void equiptLoadout(MinigamePlayer player){
+		player.getPlayer().getInventory().clear();
+		for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
+			player.getPlayer().removePotionEffect(potion.getType());
 		}
-		player.getInventory().setHelmet(new ItemStack(0));
-		player.getInventory().setChestplate(new ItemStack(0));
-		player.getInventory().setLeggings(new ItemStack(0));
-		player.getInventory().setBoots(new ItemStack(0));
+		player.getPlayer().getInventory().setHelmet(new ItemStack(0));
+		player.getPlayer().getInventory().setChestplate(new ItemStack(0));
+		player.getPlayer().getInventory().setLeggings(new ItemStack(0));
+		player.getPlayer().getInventory().setBoots(new ItemStack(0));
 		if(!items.isEmpty()){
 			for(ItemStack item : items){
 				if(item.getTypeId() == 298 ||
@@ -93,42 +92,42 @@ public class PlayerLoadout {
 						item.getTypeId() == 310 ||
 						item.getTypeId() == 314 ||
 						item.getTypeId() == 397){
-					player.getInventory().setHelmet(item);
+					player.getPlayer().getInventory().setHelmet(item);
 				}
 				else if(item.getTypeId() == 299 ||
 						item.getTypeId() == 303 ||
 						item.getTypeId() == 307 ||
 						item.getTypeId() == 311 ||
 						item.getTypeId() == 315){
-					player.getInventory().setChestplate(item);
+					player.getPlayer().getInventory().setChestplate(item);
 				}
 				else if(item.getTypeId() == 300 ||
 						item.getTypeId() == 304 ||
 						item.getTypeId() == 308 ||
 						item.getTypeId() == 312 ||
 						item.getTypeId() == 316){
-					player.getInventory().setLeggings(item);
+					player.getPlayer().getInventory().setLeggings(item);
 				}
 				else if(item.getTypeId() == 301 ||
 						item.getTypeId() == 305 ||
 						item.getTypeId() == 309 ||
 						item.getTypeId() == 313 ||
 						item.getTypeId() == 317){
-					player.getInventory().setBoots(item);
+					player.getPlayer().getInventory().setBoots(item);
 				}
 				else{
-					player.getInventory().addItem(item);
+					player.getPlayer().getInventory().addItem(item);
 				}
 			}
-			player.updateInventory();
+			player.getPlayer().updateInventory();
 		}
 		
-		final Player fplayer = player;
+		final MinigamePlayer fplayer = player;
 		Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
 			
 			@Override
 			public void run() {
-				fplayer.addPotionEffects(potions);
+				fplayer.getPlayer().addPotionEffects(potions);
 			}
 		});
 	}

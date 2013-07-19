@@ -39,7 +39,7 @@ public class CommandDispatcher implements CommandExecutor{
 		registerCommand(new InfoCommand());
 		registerCommand(new EndCommand());
 		//registerCommand(new RegenCommand());
-		registerCommand(new RestoreInvCommand());
+//		registerCommand(new RestoreInvCommand());
 		registerCommand(new HelpCommand());
 		registerCommand(new ReloadCommand());
 		registerCommand(new ListCommand());

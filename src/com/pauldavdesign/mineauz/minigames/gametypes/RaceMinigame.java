@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameSave;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
@@ -30,13 +31,13 @@ public class RaceMinigame extends MinigameType{
 	}
 
 	@Override
-	public boolean joinMinigame(Player player, Minigame mgm) {
+	public boolean joinMinigame(MinigamePlayer player, Minigame mgm) {
 		return callLMSJoin(player, mgm);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void quitMinigame(Player player, Minigame mgm, boolean forced) {
+	public void quitMinigame(MinigamePlayer player, Minigame mgm, boolean forced) {
 		if(mgm.getPlayers().size() == 0){
 			if(mgm.getMpTimer() != null){
 				mgm.getMpTimer().pauseTimer();
@@ -47,12 +48,12 @@ public class RaceMinigame extends MinigameType{
 			if(mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
 				if(mgm.getMpBets().getPlayersBet(player) != null){
 					final ItemStack item = mgm.getMpBets().getPlayersBet(player).clone();
-					final Player ply = player;
+					final MinigamePlayer ply = player;
 					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 						
 						@Override
 						public void run() {
-							ply.getInventory().addItem(item);
+							ply.getPlayer().getInventory().addItem(item);
 						}
 					});
 				}
@@ -73,7 +74,7 @@ public class RaceMinigame extends MinigameType{
 			mgm.getMpTimer().pauseTimer();
 			mgm.getMpTimer().removeTimer();
 			mgm.setMpTimer(null);
-			for(Player pl : mgm.getPlayers()){
+			for(MinigamePlayer pl : mgm.getPlayers()){
 				pl.sendMessage(ChatColor.BLUE + "Waiting for 1 more player.");
 			}
 		}
@@ -82,24 +83,24 @@ public class RaceMinigame extends MinigameType{
 
 		if(mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
 			if(mgm.getMpBets().getPlayersBet(player) != null){
-				player.getInventory().addItem(mgm.getMpBets().getPlayersBet(player));
+				player.getPlayer().getInventory().addItem(mgm.getMpBets().getPlayersBet(player));
 			}
 			else if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
 				plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
 			}
 			mgm.getMpBets().removePlayersBet(player);
 		}
-		player.updateInventory();
+		player.getPlayer().updateInventory();
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void endMinigame(Player player, Minigame mgm) {
+	public void endMinigame(MinigamePlayer player, Minigame mgm) {
 		if(mgm.getMpBets() != null){
 			if(mgm.getMpBets().hasBets()){
-				player.getInventory().addItem(mgm.getMpBets().claimBets());
+				player.getPlayer().getInventory().addItem(mgm.getMpBets().claimBets());
 				mgm.setMpBets(null);
-				player.updateInventory();
+				player.getPlayer().updateInventory();
 			}
 			else{
 				plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().claimMoneyBets());
@@ -119,11 +120,11 @@ public class RaceMinigame extends MinigameType{
 		}
 		
 		if(mgm.getEndPosition() != null){
-			if(!player.isDead()){
-				player.teleport(mgm.getEndPosition());
+			if(!player.getPlayer().isDead()){
+				pdata.minigameTeleport(player, mgm.getEndPosition());
 			}
 			else{
-				pdata.addDCPlayer(player, mgm.getEndPosition());
+				pdata.addRespawnPosition(player.getPlayer(), mgm.getEndPosition());
 			}
 		}
 		
@@ -131,17 +132,17 @@ public class RaceMinigame extends MinigameType{
 			mgm.getMpTimer().setStartWaitTime(0);
 			
 			mgm.setMpTimer(null);
-			for(Player pl : mgm.getPlayers()){
+			for(MinigamePlayer pl : mgm.getPlayers()){
 				mgm.getPlayers().remove(pl);
 			}
 		}
 		else{
 			mgm.getMpTimer().setStartWaitTime(0);
-			List<Player> players = new ArrayList<Player>();
+			List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 			players.addAll(mgm.getPlayers());
 			for(int i = 0; i < players.size(); i++){
 				if(players.get(i) instanceof Player){
-					Player p = players.get(i);
+					MinigamePlayer p = players.get(i);
 					if(!p.getName().equals(player.getName())){
 						p.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You have been beaten! Bad luck!");
 						pdata.quitMinigame(p, true);
@@ -152,7 +153,7 @@ public class RaceMinigame extends MinigameType{
 				}
 			}
 			mgm.setMpTimer(null);
-			for(Player pl : players){
+			for(MinigamePlayer pl : players){
 				mgm.getPlayers().remove(pl);
 			}
 		}
@@ -184,15 +185,16 @@ public class RaceMinigame extends MinigameType{
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event){
-		if(pdata.playerInMinigame(event.getPlayer())){
-			Minigame mgm = pdata.getPlayersMinigame(event.getPlayer());
+		MinigamePlayer player = pdata.getMinigamePlayer(event.getPlayer());
+		if(player.isInMinigame()){
+			Minigame mgm = player.getMinigame();
 			if(mgm.hasPlayers()){
 				String mgtype = mgm.getType();
 				if(mgtype.equals("race")){
-					event.setRespawnLocation(pdata.getPlayerCheckpoint(event.getPlayer()));
+					event.setRespawnLocation(player.getCheckpoint());
 					event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Bad Luck! Returning to checkpoint.");
 					
-					mgm.getPlayersLoadout(event.getPlayer()).equiptLoadout(event.getPlayer());
+					mgm.getPlayersLoadout(player).equiptLoadout(player);
 				}
 			}
 		}
@@ -201,9 +203,9 @@ public class RaceMinigame extends MinigameType{
 	@EventHandler
 	public void timerExpire(TimerExpireEvent event){
 		if(event.getMinigame().getType().equals(getLabel())){
-			List<Player> players = new ArrayList<Player>();
+			List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 			players.addAll(event.getMinigame().getPlayers());
-			for(Player ply : players){
+			for(MinigamePlayer ply : players){
 				ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "The timer has expired!");
 				pdata.quitMinigame(ply, true);
 			}

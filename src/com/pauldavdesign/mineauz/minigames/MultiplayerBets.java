@@ -4,18 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class MultiplayerBets {
-	private Map<Player, ItemStack> bet = new HashMap<Player, ItemStack>();
+	private Map<MinigamePlayer, ItemStack> bet = new HashMap<MinigamePlayer, ItemStack>();
 	private double greatestBet = 0;
-	private Map<Player, Double> moneyBet = new HashMap<Player, Double>();
+	private Map<MinigamePlayer, Double> moneyBet = new HashMap<MinigamePlayer, Double>();
 	
 	public MultiplayerBets(){
 	}
 	
-	public void addBet(Player player, ItemStack item){
+	public void addBet(MinigamePlayer player, ItemStack item){
 		if(!bet.containsKey(player)){
 			if(betValue(item.getType()) >= highestBet()){
 				item.setAmount(1);
@@ -24,7 +23,7 @@ public class MultiplayerBets {
 		}
 	}
 	
-	public void addBet(Player player, Double money){
+	public void addBet(MinigamePlayer player, Double money){
 		if(!moneyBet.containsKey(player)){
 			if(money >= greatestBet){
 				greatestBet = money;
@@ -33,7 +32,7 @@ public class MultiplayerBets {
 		}
 	}
 	
-	public boolean canBet(Player player, ItemStack item){
+	public boolean canBet(MinigamePlayer player, ItemStack item){
 		if(bet.containsKey(player)){
 			return false;
 		}
@@ -44,7 +43,7 @@ public class MultiplayerBets {
 		return true;
 	}
 	
-	public boolean canBet(Player player, Double money){
+	public boolean canBet(MinigamePlayer player, Double money){
 		if(moneyBet.containsKey(player)){
 			return false;
 		}
@@ -108,21 +107,21 @@ public class MultiplayerBets {
 		return 0;
 	}
 	
-	public ItemStack getPlayersBet(Player player){
+	public ItemStack getPlayersBet(MinigamePlayer player){
 		if(bet.containsKey(player)){
 			return bet.get(player);
 		}
 		return null;
 	}
 	
-	public Double getPlayersMoneyBet(Player player){
+	public Double getPlayersMoneyBet(MinigamePlayer player){
 		if(moneyBet.containsKey(player)){
 			return moneyBet.get(player);
 		}
 		return null;
 	}
 	
-	public void removePlayersBet(Player player){
+	public void removePlayersBet(MinigamePlayer player){
 		bet.remove(player);
 		moneyBet.remove(player);
 	}

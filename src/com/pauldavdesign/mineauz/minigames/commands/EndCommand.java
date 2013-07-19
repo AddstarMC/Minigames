@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 
 public class EndCommand implements ICommand{
 
@@ -54,8 +55,9 @@ public class EndCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args == null && sender instanceof Player){
-			if(plugin.pdata.playerInMinigame((Player)sender)){
-				plugin.pdata.endMinigame((Player)sender);
+			MinigamePlayer ply = plugin.pdata.getMinigamePlayer((Player)sender);
+			if(ply.isInMinigame()){
+				plugin.pdata.endMinigame(ply);
 			}
 			else {
 				sender.sendMessage(ChatColor.RED + "Error: You are not in a minigame!");
@@ -68,15 +70,17 @@ public class EndCommand implements ICommand{
 				player = (Player)sender;
 			}
 			if(player == null || player.hasPermission("minigame.end.other")){
-				List<Player> plist = plugin.pdata.playersInMinigame();
-				Player ply = null;
-				for(Player p : plist){
-					if(p.getName().toLowerCase().contains(args[0].toLowerCase())){
-						ply = p;
-					}
+				List<Player> players = plugin.getServer().matchPlayer(args[0]);
+				MinigamePlayer ply = null;
+				if(players.isEmpty()){
+					sender.sendMessage(ChatColor.RED + "No player found by the name " + args[0]);
+					return true;
+				}
+				else{
+					ply = plugin.pdata.getMinigamePlayer(players.get(0));
 				}
 				
-				if(ply != null){
+				if(ply != null && ply.isInMinigame()){
 					plugin.pdata.endMinigame(ply);
 					sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to end the minigame.");
 				}

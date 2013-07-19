@@ -7,26 +7,24 @@ import java.util.List;
 
 import lib.PatPeter.SQLibrary.Database;
 
-import org.bukkit.entity.Player;
-
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 
 public class SQLCompletionSaver extends Thread{
 	private boolean hascompleted = false;
 	private String minigame = null;
-	private Player player = null;
-	private List<Player> players = new ArrayList<Player>();
+	private MinigamePlayer player = null;
+	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 	public MinigameType mgtype = null;
 	public PlayerData pdata = Minigames.plugin.pdata;
 	
-	public SQLCompletionSaver(String minigame, Player player, MinigameType mgtype){
+	public SQLCompletionSaver(String minigame, MinigamePlayer player, MinigameType mgtype){
 		this.minigame = minigame;
 		this.player = player;
 		this.mgtype = mgtype;
 		this.start();
 	}
 	
-	public SQLCompletionSaver(String minigame, List<Player> players, MinigameType mgtype){
+	public SQLCompletionSaver(String minigame, List<MinigamePlayer> players, MinigameType mgtype){
 		this.minigame = minigame;
 		this.players = players;
 		this.mgtype = mgtype;
@@ -71,11 +69,12 @@ public class SQLCompletionSaver extends Thread{
 				
 				String name = null;
 				int completed = 0;
-				int kills = pdata.getPlayerKills(player);
-				int deaths = pdata.getPlayerDeath(player);
-				pdata.removePlayerDeath(player);
-				pdata.removePlayerKills(player);
-				pdata.removePlayerScore(player);
+				int kills = player.getKills();
+				int deaths = player.getDeaths();
+				player.resetKills();
+				player.resetDeaths();
+				player.resetScore();
+				
 				int okills = 0;
 				int odeaths = -1;
 				try {
@@ -119,7 +118,7 @@ public class SQLCompletionSaver extends Thread{
 				mgtype.issuePlayerRewards(player, Minigames.plugin.mdata.getMinigame(minigame), hascompleted);
 			}
 			else{
-				for(Player player : players){
+				for(MinigamePlayer player : players){
 					ResultSet set = null;
 					try {
 						set = sql.query("SELECT * FROM mgm_" + minigame + "_comp WHERE Player='" + player.getName() + "'");
@@ -130,11 +129,12 @@ public class SQLCompletionSaver extends Thread{
 					
 					String name = null;
 					int completed = 0;
-					int kills = pdata.getPlayerKills(player);
-					int deaths = pdata.getPlayerDeath(player);
-					pdata.removePlayerDeath(player);
-					pdata.removePlayerKills(player);
-					pdata.removePlayerScore(player);
+					int kills = player.getKills();
+					int deaths = player.getDeaths();
+					player.resetKills();
+					player.resetDeaths();
+					player.resetScore();
+					
 					int okills = 0;
 					int odeaths = -1;
 					try {

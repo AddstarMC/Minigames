@@ -84,7 +84,7 @@ public class SignBase implements Listener{
 						return;
 					}
 					
-					if(mgSign.signUse(sign, event.getPlayer())){
+					if(mgSign.signUse(sign, Minigames.plugin.pdata.getMinigamePlayer(event.getPlayer()))){
 						event.setCancelled(true);
 					}
 				}

@@ -8,13 +8,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameSave;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.MultiplayerTimer;
@@ -31,7 +31,7 @@ public class TeamDMMinigame extends MinigameType{
 	}
 	
 	@Override
-	public boolean joinMinigame(final Player player, Minigame mgm){
+	public boolean joinMinigame(final MinigamePlayer player, Minigame mgm){
 		if(mgm.getQuitPosition() != null && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
 			
 			int redSize = mgm.getRedTeam().size();
@@ -41,12 +41,15 @@ public class TeamDMMinigame extends MinigameType{
 			
 			if(mgm.getPlayers().size() < mgm.getMaxPlayers()){
 				if(mgm.canLateJoin() || mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
-					pdata.storePlayerData(player, mgm.getDefaultGamemode());
-					pdata.addPlayerMinigame(player, mgm);
+//					pdata.storePlayerData(player, mgm.getDefaultGamemode());
+					player.storePlayerData();
+//					pdata.addPlayerMinigame(player, mgm);
+					player.setMinigame(mgm);
 					mgm.addPlayer(player);
 					
 					if(mgm.getMpTimer() == null || mgm.getMpTimer().getStartWaitTimeLeft() != 0){
-						player.teleport(lobby);
+//						player.teleport(lobby);
+						pdata.minigameTeleport(player, lobby);
 					}
 					else{
 						int team;
@@ -65,16 +68,17 @@ public class TeamDMMinigame extends MinigameType{
 						}
 						
 						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You will join in 5 seconds...");
-						player.teleport(lobby);
+//						player.teleport(lobby);
+						pdata.minigameTeleport(player, lobby);
 						
-						final Player fply = player;
+						final MinigamePlayer fply = player;
 						final Minigame fmgm = mgm;
 						final int fteam = team;
 						Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 							
 							@Override
 							public void run() {
-								if(pdata.playerInMinigame(fply)){
+								if(fply.isInMinigame()){
 									List<Location> locs = new ArrayList<Location>();
 									if(!fmgm.getStartLocationsRed().isEmpty()){
 										if(fteam == 0){
@@ -94,7 +98,7 @@ public class TeamDMMinigame extends MinigameType{
 							}
 						}, 100);
 
-						player.setScoreboard(mgm.getScoreboardManager());
+						player.getPlayer().setScoreboard(mgm.getScoreboardManager());
 						mgm.setScore(player, 1);
 						mgm.setScore(player, 0);
 					}
@@ -136,8 +140,8 @@ public class TeamDMMinigame extends MinigameType{
 	}
 	
 	@Override
-	public void quitMinigame(Player player, Minigame mgm, boolean forced){
-		if(mgm.getRedTeam().contains(player)){
+	public void quitMinigame(MinigamePlayer player, Minigame mgm, boolean forced){
+		if(mgm.getRedTeam().contains(player.getPlayer())){
 			mgm.removeRedTeamPlayer(player);
 		}
 		else{
@@ -184,13 +188,13 @@ public class TeamDMMinigame extends MinigameType{
 			mgm.getMpTimer().pauseTimer();
 			mgm.getMpTimer().removeTimer();
 			mgm.setMpTimer(null);
-			for(Player pl : mgm.getPlayers()){
+			for(MinigamePlayer pl : mgm.getPlayers()){
 				pl.sendMessage(ChatColor.BLUE + "Waiting for 1 more player.");
 			}
 		}
 		
-		if(player.isDead()){
-			player.setHealth(2);
+		if(player.getPlayer().isDead()){
+			player.getPlayer().setHealth(2);
 		}
 		callGeneralQuit(player, mgm);
 		
@@ -203,29 +207,30 @@ public class TeamDMMinigame extends MinigameType{
 	}
 	
 	@Override
-	public void endMinigame(Player player, Minigame mgm){
+	public void endMinigame(MinigamePlayer player, Minigame mgm){
 		boolean hascompleted = false;
 		Configuration completion = null;
 		
 		player.sendMessage(ChatColor.GREEN + "You've finished the " + mgm + " minigame. Congratulations!");
 		
 		if(mgm.getEndPosition() != null){
-			if(!player.isDead()){
-				player.teleport(mgm.getEndPosition());
+			if(!player.getPlayer().isDead()){
+//				player.teleport(mgm.getEndPosition());
+				pdata.minigameTeleport(player, mgm.getEndPosition());
 			}
 			else{
-				pdata.addDCPlayer(player, mgm.getEndPosition());
+				pdata.addRespawnPosition(player.getPlayer(), mgm.getEndPosition());
 			}
 		}
 		
-		if(mgm.getRedTeam().contains(player)){
+		if(mgm.getRedTeam().contains(player.getPlayer())){
 			mgm.removeRedTeamPlayer(player);
 		}
 		else{
 			mgm.removeBlueTeamPlayer(player);
 		}
 
-		player.setFireTicks(0);
+		player.getPlayer().setFireTicks(0);
 		
 		if(plugin.getSQL() == null){
 			completion = mdata.getConfigurationFile("completion");
@@ -246,8 +251,8 @@ public class TeamDMMinigame extends MinigameType{
 		}
 	}
 	
-	public static void switchTeam(Minigame mgm, Player player){
-		if(mgm.getBlueTeam().contains(player)){
+	public static void switchTeam(Minigame mgm, MinigamePlayer player){
+		if(mgm.getBlueTeam().contains(player.getPlayer())){
 			mgm.removeBlueTeamPlayer(player);
 			mgm.addRedTeamPlayer(player);
 			mgm.removePlayersLoadout(player);
@@ -265,10 +270,10 @@ public class TeamDMMinigame extends MinigameType{
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void playerRespawn(PlayerRespawnEvent event){
-		final Player ply = event.getPlayer();
-		if(pdata.getPlayersMinigame(ply) != null && pdata.getPlayersMinigame(ply).getType().equals("teamdm")){
+		final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply.isInMinigame() && ply.getMinigame().getType().equals("teamdm")){
 			int team = 0;
-			Minigame mg = pdata.getPlayersMinigame(ply);
+			Minigame mg = ply.getMinigame();
 			if(mg.getBlueTeam().contains(plugin.getServer().getOfflinePlayer(ply.getName()))){
 				team = 1;
 			}
@@ -280,7 +285,7 @@ public class TeamDMMinigame extends MinigameType{
 				else{
 					starts.addAll(mg.getStartLocationsRed());
 				}
-				mg.getPlayersLoadout(event.getPlayer()).equiptLoadout(event.getPlayer());
+				mg.getPlayersLoadout(ply).equiptLoadout(ply);
 			}
 			else{
 				starts.addAll(mg.getStartLocations());
@@ -290,11 +295,11 @@ public class TeamDMMinigame extends MinigameType{
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				@Override
 				public void run() {
-					ply.setNoDamageTicks(60);
+					ply.getPlayer().setNoDamageTicks(60);
 				}
 			});
 			
-			mg.getPlayersLoadout(event.getPlayer()).equiptLoadout(event.getPlayer());
+			mg.getPlayersLoadout(ply).equiptLoadout(ply);
 			
 		}
 	}
@@ -318,7 +323,7 @@ public class TeamDMMinigame extends MinigameType{
 				pdata.endTeamMinigame(0, event.getMinigame());
 			}
 			else{
-				List<Player> players = new ArrayList<Player>();
+				List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 				players.addAll(event.getMinigame().getPlayers());
 				
 				mgm.setRedTeamScore(0);
@@ -345,7 +350,7 @@ public class TeamDMMinigame extends MinigameType{
 					mgm.setMpBets(null);
 				}
 				
-				for(Player ply : players){
+				for(MinigamePlayer ply : players){
 					pdata.quitMinigame(ply, true);
 					if(!plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
 						ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " tied against " + 

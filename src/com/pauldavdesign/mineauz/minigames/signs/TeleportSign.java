@@ -3,14 +3,12 @@ package com.pauldavdesign.mineauz.minigames.signs;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 
 public class TeleportSign implements MinigameSign {
-	
-	private static Minigames plugin = Minigames.plugin;
 
 	@Override
 	public String getName() {
@@ -52,7 +50,7 @@ public class TeleportSign implements MinigameSign {
 	}
 
 	@Override
-	public boolean signUse(Sign sign, Player player) {
+	public boolean signUse(Sign sign, MinigamePlayer player) {
 		if(!sign.getLine(2).isEmpty() && sign.getLine(2).matches("-?[0-9]+,[0-9]+,-?[0-9]+")){
 			int x;
 			int y;
@@ -62,27 +60,16 @@ public class TeleportSign implements MinigameSign {
 			y = Integer.parseInt(split[1]);
 			z = Integer.parseInt(split[2]);
 			
-			if(plugin.pdata.playerInMinigame(player)){
-				plugin.pdata.setAllowTP(player, true);
-			}
-			
 			if(!sign.getLine(3).isEmpty() && sign.getLine(3).matches("-?[0-9]+,-?[0-9]+")){
 				float yaw;
 				float pitch;
 				String[] split2 = sign.getLine(3).split(",");
 				yaw = Float.parseFloat(split2[0]);
 				pitch = Float.parseFloat(split2[1]);
-				player.teleport(new Location(player.getWorld(), x + 0.5, y, z + 0.5, yaw, pitch));
-
-				if(plugin.pdata.playerInMinigame(player)){
-					plugin.pdata.setAllowTP(player, false);
-				}
+				Minigames.plugin.pdata.minigameTeleport(player, new Location(player.getPlayer().getWorld(), x + 0.5, y, z + 0.5, yaw, pitch));
 				return true;
 			}
-			player.teleport(new Location(player.getWorld(), x + 0.5, y, z + 0.5));
-			if(plugin.pdata.playerInMinigame(player)){
-				plugin.pdata.setAllowTP(player, false);
-			}
+			Minigames.plugin.pdata.minigameTeleport(player, new Location(player.getPlayer().getWorld(), x + 0.5, y, z + 0.5));
 			return true;
 		}
 		player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Invalid teleport sign!");

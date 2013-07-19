@@ -6,7 +6,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -14,6 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.pauldavdesign.mineauz.minigames.CTFFlag;
 import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
@@ -27,7 +27,7 @@ public class CTFType extends ScoreType{
 	}
 
 	@Override
-	public void balanceTeam(List<Player> players, Minigame minigame) {
+	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
 		
 		for(int i = 0; i < players.size(); i++){
 			if(minigame.getType().equals("teamdm")){
@@ -80,10 +80,10 @@ public class CTFType extends ScoreType{
 	
 	@EventHandler
 	private void takeFlag(PlayerInteractEvent event){
-		Player ply = event.getPlayer();
-		if(pdata.playerInMinigame(ply) && !ply.isDead()){
-			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && (event.getClickedBlock().getType() == Material.SIGN_POST || event.getClickedBlock().getType() == Material.WALL_SIGN) && ply.getItemInHand().getType() == Material.AIR){
-				Minigame mgm = pdata.getPlayersMinigame(ply);
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply.isInMinigame() && !ply.getPlayer().isDead()){
+			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && (event.getClickedBlock().getType() == Material.SIGN_POST || event.getClickedBlock().getType() == Material.WALL_SIGN) && ply.getPlayer().getItemInHand().getType() == Material.AIR){
+				Minigame mgm = ply.getMinigame();
 				Sign sign = (Sign) event.getClickedBlock().getState();
 				if(mgm.getScoreType().equals("ctf") && sign.getLine(1).equals(ChatColor.GREEN + "Flag")){
 					if(!mgm.getBlueTeam().isEmpty() || !mgm.getRedTeam().isEmpty() || !mgm.getType().equals("teamdm")){
@@ -126,16 +126,16 @@ public class CTFType extends ScoreType{
 								if(team == 0 && mgm.getFlagCarrier(ply).getTeam() == 1){
 									String message = ply.getName() + " stole " + ChatColor.BLUE + "Blue Team's" + ChatColor.WHITE + " flag!";
 									mdata.sendMinigameMessage(mgm, message, null, null);
-									mgm.getFlagCarrier(ply).startCarrierParticleEffect(ply);
+									mgm.getFlagCarrier(ply).startCarrierParticleEffect(ply.getPlayer());
 								}else if(team == 1 && mgm.getFlagCarrier(ply).getTeam() == 0){
 									String message = ply.getName() + " stole " + ChatColor.RED + "Red Team's" + ChatColor.WHITE + " flag!";
 									mdata.sendMinigameMessage(mgm, message, null, null);
-									mgm.getFlagCarrier(ply).startCarrierParticleEffect(ply);
+									mgm.getFlagCarrier(ply).startCarrierParticleEffect(ply.getPlayer());
 								}
 								else{
 									String message = ply.getName() + " stole the " + ChatColor.GRAY + "neutral" + ChatColor.WHITE + " flag!";
 									mdata.sendMinigameMessage(mgm, message, null, null);
-									mgm.getFlagCarrier(ply).startCarrierParticleEffect(ply);
+									mgm.getFlagCarrier(ply).startCarrierParticleEffect(ply.getPlayer());
 								}
 							}
 							
@@ -181,8 +181,9 @@ public class CTFType extends ScoreType{
 										mdata.sendMinigameMessage(mgm, message, null, null);
 									}
 									flag.stopCarrierParticleEffect();
-									pdata.addPlayerScore(ply);
-									mgm.setScore(ply, pdata.getPlayerScore(ply));
+//									pdata.addPlayerScore(ply);
+									ply.addScore();
+									mgm.setScore(ply, ply.getScore());
 									
 									if(end){
 										if(team == 0){
@@ -202,9 +203,10 @@ public class CTFType extends ScoreType{
 									}
 								}
 								else{
-									pdata.addPlayerScore(ply);
-									mgm.setScore(ply, pdata.getPlayerScore(ply));
-									if(mgm.getMaxScore() != 0 && pdata.getPlayerScore(ply) >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+//									pdata.addPlayerScore(ply);
+									ply.addScore();
+									mgm.setScore(ply, ply.getScore());
+									if(mgm.getMaxScore() != 0 && ply.getScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
 										end = true;
 									}
 									
@@ -235,7 +237,7 @@ public class CTFType extends ScoreType{
 								}
 								else{
 									mdata.sendMinigameMessage(mgm, ply.getName() + " stole the " + ChatColor.GRAY + "neutral" + ChatColor.WHITE + " flag!", null, null);
-									mgm.getFlagCarrier(ply).startCarrierParticleEffect(ply);
+									mgm.getFlagCarrier(ply).startCarrierParticleEffect(ply.getPlayer());
 								}
 							}
 							else if(mgm.getFlagCarrier(ply) != null && mgm.hasDroppedFlag(clickID) && !mgm.getDroppedFlag(clickID).isAtHome()){
@@ -250,12 +252,12 @@ public class CTFType extends ScoreType{
 	
 	@EventHandler
 	private void dropFlag(PlayerDeathEvent event){
-		Player ply = (Player) event.getEntity();
-		if(pdata.playerInMinigame(ply)){
-			Minigame mgm = pdata.getPlayersMinigame(ply);
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
+		if(ply.isInMinigame()){
+			Minigame mgm = ply.getMinigame();
 			if(mgm.isFlagCarrier(ply)){
 				CTFFlag flag = mgm.getFlagCarrier(ply);
-				Location loc = flag.spawnFlag(ply.getLocation());
+				Location loc = flag.spawnFlag(ply.getPlayer().getLocation());
 				if(loc != null){
 					String id = MinigameUtils.createLocationID(loc);
 					mgm.addDroppedFlag(id, flag);
@@ -311,20 +313,20 @@ public class CTFType extends ScoreType{
 	
 	@EventHandler
 	public void playerAutoBalance(PlayerDeathEvent event){
-		Player ply = (Player) event.getEntity();
-		if(pdata.getPlayersMinigame(ply) != null && pdata.getPlayersMinigame(ply).getType().equals("teamdm")){
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
+		if(ply.isInMinigame() && ply.getMinigame().getType().equals("teamdm")){
 			int pteam = 0;
-			if(pdata.getPlayersMinigame(ply).getBlueTeam().contains(ply)){
+			if(ply.getMinigame().getBlueTeam().contains(ply.getPlayer())){
 				pteam = 1;
 			}
-			final Minigame mgm = pdata.getPlayersMinigame(ply);
+			final Minigame mgm = ply.getMinigame();
 			
 			if(mgm.getScoreType().equals("ctf")){
 				if(pteam == 1){
 					if(mgm.getRedTeam().size() < mgm.getBlueTeam().size() - 1){
 						TeamDMMinigame.switchTeam(mgm, ply);
 						ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been switched to " + ChatColor.RED + "Red Team");
-						for(Player pl : mgm.getPlayers()){
+						for(MinigamePlayer pl : mgm.getPlayers()){
 							if(pl != ply){
 								pl.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + ply.getName() + " has been switched to " + ChatColor.RED + "Red Team");
 							}
@@ -335,7 +337,7 @@ public class CTFType extends ScoreType{
 					if(mgm.getBlueTeam().size() < mgm.getRedTeam().size()  - 1){
 						TeamDMMinigame.switchTeam(mgm, ply);
 						ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been switched to " + ChatColor.BLUE + "Blue Team");
-						for(Player pl : mgm.getPlayers()){
+						for(MinigamePlayer pl : mgm.getPlayers()){
 							if(pl != ply){
 								pl.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + ply.getName() + " has been switched to " + ChatColor.BLUE + "Blue Team");
 							}

@@ -4,15 +4,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
-import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 
 public class FlagSign implements MinigameSign {
-	
-	private static Minigames plugin = Minigames.plugin;
 
 	@Override
 	public String getName() {
@@ -73,23 +70,23 @@ public class FlagSign implements MinigameSign {
 	}
 
 	@Override
-	public boolean signUse(Sign sign, Player player) {
-		if(player.getItemInHand().getType() == Material.AIR && plugin.pdata.playerInMinigame(player)){
-			Minigame mgm = plugin.pdata.getPlayersMinigame(player);
+	public boolean signUse(Sign sign, MinigamePlayer player) {
+		if(player.getPlayer().getItemInHand().getType() == Material.AIR && player.isInMinigame()){
+			Minigame mgm = player.getMinigame();
 
 			if(mgm.isSpectator(player)){
 				return false;
 			}
-			if(!sign.getLine(2).isEmpty() && ((LivingEntity)player).isOnGround() && 
+			if(!sign.getLine(2).isEmpty() && ((LivingEntity)player.getPlayer()).isOnGround() && 
 					!mgm.getScoreType().equals("ctf") &&
-					!plugin.pdata.playerHasFlag(player, sign.getLine(2).replaceAll(ChatColor.RED.toString(), "").replaceAll(ChatColor.BLUE.toString(), ""))){
-				plugin.pdata.addPlayerFlags(player, sign.getLine(2).replaceAll(ChatColor.RED.toString(), "").replaceAll(ChatColor.BLUE.toString(), ""));
+					!player.hasFlag(sign.getLine(2).replaceAll(ChatColor.RED.toString(), "").replaceAll(ChatColor.BLUE.toString(), ""))){
+				player.addFlag(sign.getLine(2).replaceAll(ChatColor.RED.toString(), "").replaceAll(ChatColor.BLUE.toString(), ""));
 				player.sendMessage(ChatColor.AQUA + "[Minigames] " + 
 						ChatColor.WHITE + sign.getLine(2).replaceAll(ChatColor.RED.toString(), "").replaceAll(ChatColor.BLUE.toString(), "") + " flag taken!");
 				return true;
 			}
 		}
-		else if(player.getItemInHand().getType() != Material.AIR)
+		else if(player.getPlayer().getItemInHand().getType() != Material.AIR)
 			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Your hand must be empty to use this sign!");
 		return false;
 	}

@@ -8,23 +8,24 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 
 public class BlockData {
 	private Location location;
 	private BlockState state;
-	private Player player = null;
+	private MinigamePlayer player = null;
 	private ItemStack[] items = null;
 	private boolean hasRandomized = false;
 	
-	public BlockData(Block original, Player modifier){
+	public BlockData(Block original, MinigamePlayer modifier){
 		location = original.getLocation();
 		state = original.getState();
 		player = modifier;
 	}
 	
-	public BlockData(BlockState original, Player modifier){
+	public BlockData(BlockState original, MinigamePlayer modifier){
 		location = original.getLocation();
 		state = original;
 		player = modifier;
@@ -38,11 +39,11 @@ public class BlockData {
 		return state;
 	}
 	
-	public Player getModifier(){
+	public MinigamePlayer getModifier(){
 		return player;
 	}
 	
-	public void setModifier(Player modifier){
+	public void setModifier(MinigamePlayer modifier){
 		player = modifier;
 	}
 	

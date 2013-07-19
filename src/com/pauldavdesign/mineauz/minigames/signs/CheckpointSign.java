@@ -5,9 +5,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.StoredPlayerCheckpoints;
 
@@ -50,16 +50,16 @@ public class CheckpointSign implements MinigameSign {
 	}
 
 	@Override
-	public boolean signUse(Sign sign, Player player) {
-		if((plugin.pdata.playerInMinigame(player) || (!plugin.pdata.playerInMinigame(player) && sign.getLine(2).equals(ChatColor.BLUE + "Global"))) 
-				&& player.getItemInHand().getType() == Material.AIR){
-			if(plugin.pdata.playerInMinigame(player) && plugin.pdata.getPlayersMinigame(player).isSpectator(player)){
+	public boolean signUse(Sign sign, MinigamePlayer player) {
+		if((player.isInMinigame() || (!player.isInMinigame() && sign.getLine(2).equals(ChatColor.BLUE + "Global"))) 
+				&& player.getPlayer().getItemInHand().getType() == Material.AIR){
+			if(player.isInMinigame() && player.getMinigame().isSpectator(player)){
 				return false;
 			}
-			if(((LivingEntity)player).isOnGround()){
-				Location newloc = player.getLocation();
+			if(((LivingEntity)player.getPlayer()).isOnGround()){
+				Location newloc = player.getPlayer().getLocation();
 				if(!sign.getLine(2).equals(ChatColor.BLUE + "Global")){
-					plugin.pdata.setPlayerCheckpoints(player, newloc);
+					player.setCheckpoint(newloc);
 				}
 				else{
 					if(!plugin.pdata.hasStoredPlayerCheckpoint(player)){

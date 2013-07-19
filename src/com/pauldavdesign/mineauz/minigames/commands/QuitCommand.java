@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 
 public class QuitCommand implements ICommand{
 
@@ -54,8 +55,9 @@ public class QuitCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args == null && sender instanceof Player){
-			if(plugin.pdata.playerInMinigame((Player)sender)){
-				plugin.pdata.quitMinigame((Player)sender, false);
+			MinigamePlayer player = plugin.pdata.getMinigamePlayer((Player)sender);
+			if(player.isInMinigame()){
+				plugin.pdata.quitMinigame(player, false);
 			}
 			else {
 				sender.sendMessage(ChatColor.RED + "Error: You are not in a minigame!");
@@ -68,14 +70,17 @@ public class QuitCommand implements ICommand{
 				player = (Player)sender;
 			}
 			if(player == null || player.hasPermission("minigame.quit.other")){
-				List<Player> plist = plugin.pdata.playersInMinigame();
-				Player ply = null;
-				for(Player p : plist){
-					if(p.getName().toLowerCase().contains(args[0].toLowerCase())){
-						ply = p;
-					}
+				List<Player> players = plugin.getServer().matchPlayer(args[0]);
+				MinigamePlayer ply = null;
+				if(players.isEmpty()){
+					sender.sendMessage(ChatColor.RED + "No player found by the name " + args[0]);
+					return true;
 				}
-				if(ply != null){
+				else{
+					ply = plugin.pdata.getMinigamePlayer(players.get(0));
+				}
+				
+				if(ply != null && ply.isInMinigame()){
 					plugin.pdata.quitMinigame(ply, false);
 					sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to quit the minigame.");
 				}

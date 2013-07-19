@@ -13,6 +13,9 @@ import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
@@ -65,12 +68,32 @@ public class Minigames extends JavaPlugin{
 			int health;
 			int food;
 			float saturation;
+			GameMode lastGM;
+			Location loginLocation;
 			
 			for(String player : set){
 				health = pdata.invsave.getConfig().getInt("inventories." + player + ".health");
 				food = pdata.invsave.getConfig().getInt("inventories." + player + ".food");
 				saturation = Float.parseFloat(pdata.invsave.getConfig().getString("inventories." + player + ".saturation"));
-				log.info("Restoring " + player + "'s Items");
+				if(pdata.invsave.getConfig().contains("inventories." + player + ".lastGM")){ //TODO remove this next release version, for old compatibility.
+					lastGM = GameMode.getByValue(pdata.invsave.getConfig().getInt("inventories." + player + ".lastGM"));
+				}
+				else{
+					lastGM = GameMode.SURVIVAL;
+				}
+				if(pdata.invsave.getConfig().contains("inventories." + player + ".location")){ //TODO remove this next release version, for old compatibility.
+					int x = pdata.invsave.getConfig().getInt("inventories." + player + ".location.x");
+					int y = pdata.invsave.getConfig().getInt("inventories." + player + ".location.y");
+					int z = pdata.invsave.getConfig().getInt("inventories." + player + ".location.z");
+					float yaw = new Float(pdata.invsave.getConfig().getString("inventories." + player + ".location.yaw"));
+					float pitch = new Float(pdata.invsave.getConfig().getString("inventories." + player + ".location.pitch"));
+					World world = getServer().getWorld(pdata.invsave.getConfig().getString("inventories." + player + ".location.world"));
+					loginLocation = new Location(world, x, y, z, yaw, pitch);
+				}
+				else{
+					loginLocation = getServer().getWorlds().get(0).getSpawnLocation();
+				}
+				//log.info("Restoring " + player + "'s Items"); DEBUG
 				for(int i = 0; i < items.length; i++){
 					if(pdata.invsave.getConfig().contains("inventories." + player + "." + i)){
 						items[i] = pdata.invsave.getConfig().getItemStack("inventories." + player + "." + i);
@@ -80,7 +103,8 @@ public class Minigames extends JavaPlugin{
 					armour[i] = pdata.invsave.getConfig().getItemStack("inventories." + player + ".armour." + i);
 				}
 				
-				pdata.storePlayerInventory(player, items, armour, health, food, saturation);
+//				pdata.storePlayerInventory(player, items, armour, health, food, saturation);
+				pdata.addOfflineMinigamePlayer(new OfflineMinigamePlayer(player, items, armour, food, health, saturation, lastGM, loginLocation));
 				items = getServer().createInventory(null, InventoryType.PLAYER).getContents();
 			}
 		}
@@ -151,7 +175,7 @@ public class Minigames extends JavaPlugin{
 			pdata.setPartyMode(true);
 		}
 		
-		pdata.loadDCPlayers();
+//		pdata.loadDCPlayers();
 		pdata.loadDeniedCommands();
 		
 		scoretypes = new ScoreTypes();
@@ -191,6 +215,10 @@ public class Minigames extends JavaPlugin{
 		minigameSigns = new SignBase();
 		
 		getCommand("minigame").setExecutor(new CommandDispatcher());
+		
+		for(Player player : getServer().getOnlinePlayers()){
+			pdata.addMinigamePlayer(player);
+		}
 	}
 
 	public void onDisable(){
@@ -198,8 +226,8 @@ public class Minigames extends JavaPlugin{
 		log.info(desc.getName() + " successfully disabled.");
 		
 		for(Player p : getServer().getOnlinePlayers()){
-			if(pdata.playerInMinigame(p)){
-				pdata.quitMinigame(p, true);
+			if(pdata.getMinigamePlayer(p).isInMinigame()){
+				pdata.quitMinigame(pdata.getMinigamePlayer(p), true);
 			}
 		}
 		Set<String> mgtreasure = mdata.getAllTreasureHuntLocation();
@@ -214,7 +242,7 @@ public class Minigames extends JavaPlugin{
 			getSQL().getSql().close();
 		}
 		
-		pdata.saveDCPlayers();
+//		pdata.saveDCPlayers();
 		pdata.saveDeniedCommands();
 		
 		MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");

@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 public class MultiplayerTimer{
 	private int playerWaitTime;
@@ -63,14 +62,14 @@ public class MultiplayerTimer{
 	}
 	
 	public void sendPlayersMessage(String minigame, String message){
-		for(Player ply : mdata.getMinigame(minigame).getPlayers()){
+		for(MinigamePlayer ply : mdata.getMinigame(minigame).getPlayers()){
 			ply.sendMessage(message);
 		}
 	}
 	
 	public void reclearInventories(String minigame){
-		for(Player ply : mdata.getMinigame(minigame).getPlayers()){
-			ply.getInventory().clear();
+		for(MinigamePlayer ply : mdata.getMinigame(minigame).getPlayers()){
+			ply.getPlayer().getInventory().clear();
 		}
 	}
 	
@@ -92,14 +91,14 @@ public class MultiplayerTimer{
 	
 	public void pauseTimer(){
 		paused = true;
-		for(Player ply : mdata.getMinigame(minigame).getPlayers()){
+		for(MinigamePlayer ply : mdata.getMinigame(minigame).getPlayers()){
 			ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Start timer paused.");
 		}
 	}
 	
 	public void pauseTimer(String reason){
 		paused = true;
-		for(Player ply : mdata.getMinigame(minigame).getPlayers()){
+		for(MinigamePlayer ply : mdata.getMinigame(minigame).getPlayers()){
 			ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Start timer paused: " + reason);
 		}
 	}
@@ -112,7 +111,7 @@ public class MultiplayerTimer{
 	
 	public void resumeTimer(){
 		paused = false;
-		for(Player ply : mdata.getMinigame(minigame).getPlayers()){
+		for(MinigamePlayer ply : mdata.getMinigame(minigame).getPlayers()){
 			ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Start timer resumed.");
 		}
 	}

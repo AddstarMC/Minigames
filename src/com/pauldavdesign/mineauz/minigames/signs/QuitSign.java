@@ -3,9 +3,9 @@ package com.pauldavdesign.mineauz.minigames.signs;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 
 public class QuitSign implements MinigameSign {
@@ -44,12 +44,12 @@ public class QuitSign implements MinigameSign {
 	}
 
 	@Override
-	public boolean signUse(Sign sign, Player player) {
-		if(plugin.pdata.playerInMinigame(player) && player.getItemInHand().getType() == Material.AIR){
+	public boolean signUse(Sign sign, MinigamePlayer player) {
+		if(player.isInMinigame() && player.getPlayer().getItemInHand().getType() == Material.AIR){
 			plugin.pdata.quitMinigame(player, false);
 			return true;
 		}
-		else if(player.getItemInHand().getType() != Material.AIR)
+		else if(player.getPlayer().getItemInHand().getType() != Material.AIR)
 			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Your hand must be empty to use this sign!");
 		return false;
 	}

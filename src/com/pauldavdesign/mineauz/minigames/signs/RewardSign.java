@@ -10,9 +10,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameSave;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
@@ -91,7 +91,7 @@ public class RewardSign implements MinigameSign {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean signUse(Sign sign, Player player) {
+	public boolean signUse(Sign sign, MinigamePlayer player) {
 		if(!sign.getLine(3).isEmpty()){
 			ItemStack item = null;
 			
@@ -149,17 +149,17 @@ public class RewardSign implements MinigameSign {
 				}
 				
 				if(item != null){
-					player.getInventory().addItem(item);
+					player.getPlayer().getInventory().addItem(item);
 					player.sendMessage("You have been rewarded with " + item.getAmount() + " " + MinigameUtils.getItemStackName(item));
-					player.updateInventory();
+					player.getPlayer().updateInventory();
 					return true;
 				}
 			}
 		}
 		else{
-			if(player.getItemInHand().getType() != Material.AIR){
+			if(player.getPlayer().getItemInHand().getType() != Material.AIR){
 				String id = "";
-				ItemStack item = player.getItemInHand();
+				ItemStack item = player.getPlayer().getItemInHand();
 				id += item.getTypeId();
 				if(item.getDurability() != 0 || !item.getEnchantments().isEmpty()){
 					id += ":" + item.getDurability();

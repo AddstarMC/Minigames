@@ -185,7 +185,7 @@ public class CTFFlag{
 					minigame.addDroppedFlag(newID, self);
 				}
 				respawnFlag();
-				for(Player pl : minigame.getPlayers()){
+				for(MinigamePlayer pl : minigame.getPlayers()){
 					if(getTeam() == 0){
 						pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.RED + "Red Team's" + ChatColor.WHITE + " flag has been returned home!");
 					}else if(getTeam() == 1){

@@ -11,7 +11,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -41,7 +40,7 @@ public class Minigame {
 	private Location lobbyPosisiton = null;
 	private PlayerLoadout defaultLoadout = new PlayerLoadout("default");
 	private Map<String, PlayerLoadout> extraLoadouts = new HashMap<String, PlayerLoadout>();
-	private Map<Player, PlayerLoadout> playerLoadouts = new HashMap<Player, PlayerLoadout>();
+	private Map<MinigamePlayer, PlayerLoadout> playerLoadouts = new HashMap<MinigamePlayer, PlayerLoadout>();
 	private Map<String, RestoreBlock> restoreBlocks = new HashMap<String, RestoreBlock>();
 	private String location = null;
 	private int maxRadius = 1000;
@@ -54,7 +53,7 @@ public class Minigame {
 	private double secondaryRewardPrice = 0;
 	private boolean usePermissions = false;
 	private int timer = 0;
-	private Map<Player, CTFFlag> flagCarriers = new HashMap<Player, CTFFlag>();
+	private Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<MinigamePlayer, CTFFlag>();
 	private Map<String, CTFFlag> droppedFlag = new HashMap<String, CTFFlag>();
 	
 	private boolean itemDrops = false;
@@ -98,8 +97,8 @@ public class Minigame {
 	private int maxChestRandom = 10;
 	
 	//Unsaved data
-	private List<Player> players = new ArrayList<Player>();
-	private List<Player> spectators = new ArrayList<Player>();
+	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
+	private List<MinigamePlayer> spectators = new ArrayList<MinigamePlayer>();
 	private RecorderData blockRecorder = new RecorderData(this);
 	//Multiplayer
 	private MultiplayerTimer mpTimer = null;
@@ -323,24 +322,24 @@ public class Minigame {
 		}
 	}
 	
-	public PlayerLoadout getPlayersLoadout(Player player){
+	public PlayerLoadout getPlayersLoadout(MinigamePlayer player){
 		if(playerLoadouts.containsKey(player)){
 			return playerLoadouts.get(player);
 		}
-		else if(getRedTeam().contains(player) && extraLoadouts.containsKey("red")){
+		else if(getRedTeam().contains(player.getPlayer()) && extraLoadouts.containsKey("red")){
 			return extraLoadouts.get("red");
 		}
-		else if(getBlueTeam().contains(player) && extraLoadouts.containsKey("blue")){
+		else if(getBlueTeam().contains(player.getPlayer()) && extraLoadouts.containsKey("blue")){
 			return extraLoadouts.get("blue");
 		}
 		return getDefaultPlayerLoadout();
 	}
 	
-	public void setPlayersLoadout(Player player, PlayerLoadout loadout){
+	public void setPlayersLoadout(MinigamePlayer player, PlayerLoadout loadout){
 		playerLoadouts.put(player, loadout);
 	}
 	
-	public void removePlayersLoadout(Player player){
+	public void removePlayersLoadout(MinigamePlayer player){
 		playerLoadouts.remove(player);
 	}
 	
@@ -491,15 +490,15 @@ public class Minigame {
 		this.thTimer = thTimer;
 	}
 
-	public List<Player> getPlayers() {
+	public List<MinigamePlayer> getPlayers() {
 		return players;
 	}
 	
-	public void addPlayer(Player player){
+	public void addPlayer(MinigamePlayer player){
 		players.add(player);
 	}
 	
-	public void removePlayer(Player player){
+	public void removePlayer(MinigamePlayer player){
 		if(players.contains(player)){
 			players.remove(player);
 		}
@@ -513,21 +512,21 @@ public class Minigame {
 		return !spectators.isEmpty();
 	}
 	
-	public List<Player> getSpectators() {
+	public List<MinigamePlayer> getSpectators() {
 		return spectators;
 	}
 	
-	public void addSpectator(Player player){
+	public void addSpectator(MinigamePlayer player){
 		spectators.add(player);
 	}
 	
-	public void removeSpectator(Player player){
+	public void removeSpectator(MinigamePlayer player){
 		if(spectators.contains(player)){
 			spectators.remove(player);
 		}
 	}
 	
-	public boolean isSpectator(Player player){
+	public boolean isSpectator(MinigamePlayer player){
 		return spectators.contains(player);
 	}
 
@@ -539,14 +538,14 @@ public class Minigame {
 		return players;
 	}
 
-	public void addRedTeamPlayer(Player player) {
-		sbManager.getTeam("Red").addPlayer(player);
-		player.setScoreboard(sbManager);
+	public void addRedTeamPlayer(MinigamePlayer player) {
+		sbManager.getTeam("Red").addPlayer(player.getPlayer());
+		player.getPlayer().setScoreboard(sbManager);
 	}
 	
-	public void removeRedTeamPlayer(Player player){
-		sbManager.getTeam("Red").removePlayer(player);
-		player.setScoreboard(Minigames.plugin.getServer().getScoreboardManager().getMainScoreboard());
+	public void removeRedTeamPlayer(MinigamePlayer player){
+		sbManager.getTeam("Red").removePlayer(player.getPlayer());
+		player.getPlayer().setScoreboard(Minigames.plugin.getServer().getScoreboardManager().getMainScoreboard());
 	}
 
 	public List<OfflinePlayer> getBlueTeam() {
@@ -557,18 +556,18 @@ public class Minigame {
 		return players;
 	}
 
-	public void addBlueTeamPlayer(Player player) {
-		sbManager.getTeam("Blue").addPlayer(player);
-		player.setScoreboard(sbManager);
+	public void addBlueTeamPlayer(MinigamePlayer player) {
+		sbManager.getTeam("Blue").addPlayer(player.getPlayer());
+		player.getPlayer().setScoreboard(sbManager);
 	}
 	
-	public void removeBlueTeamPlayer(Player player){
-		sbManager.getTeam("Blue").removePlayer(player);
-		player.setScoreboard(Minigames.plugin.getServer().getScoreboardManager().getMainScoreboard());
+	public void removeBlueTeamPlayer(MinigamePlayer player){
+		sbManager.getTeam("Blue").removePlayer(player.getPlayer());
+		player.getPlayer().setScoreboard(Minigames.plugin.getServer().getScoreboardManager().getMainScoreboard());
 	}
 	
-	public void setScore(Player ply, int amount){
-		sbManager.getObjective(name).getScore(ply).setScore(amount);
+	public void setScore(MinigamePlayer ply, int amount){
+		sbManager.getObjective(name).getScore(ply.getPlayer()).setScore(amount);
 	}
 
 	public int getRedTeamScore() {
@@ -780,24 +779,24 @@ public class Minigame {
 		this.scoreType = scoreType;
 	}
 	
-	public boolean isFlagCarrier(Player ply){
+	public boolean isFlagCarrier(MinigamePlayer ply){
 		return flagCarriers.containsKey(ply);
 	}
 	
-	public void addFlagCarrier(Player ply, CTFFlag flag){
+	public void addFlagCarrier(MinigamePlayer ply, CTFFlag flag){
 		flagCarriers.put(ply, flag);
 	}
 	
-	public void removeFlagCarrier(Player ply){
+	public void removeFlagCarrier(MinigamePlayer ply){
 		flagCarriers.remove(ply);
 	}
 	
-	public CTFFlag getFlagCarrier(Player ply){
+	public CTFFlag getFlagCarrier(MinigamePlayer ply){
 		return flagCarriers.get(ply);
 	}
 	
 	public void resetFlags(){
-		for(Player ply : flagCarriers.keySet()){
+		for(MinigamePlayer ply : flagCarriers.keySet()){
 			getFlagCarrier(ply).respawnFlag();
 			getFlagCarrier(ply).stopCarrierParticleEffect();
 		}

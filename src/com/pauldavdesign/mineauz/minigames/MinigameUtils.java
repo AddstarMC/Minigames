@@ -9,7 +9,6 @@ import java.util.List;
 import net.minecraft.server.v1_5_R3.EntityPlayer;
 
 import org.bukkit.craftbukkit.v1_5_R3.entity.CraftPlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -225,10 +224,10 @@ public class MinigameUtils {
 		return slist;
 	}
 	
-	public static void removePlayerArrows(Player player){
+	public static void removePlayerArrows(MinigamePlayer player){
 		try{
 			Class.forName("net.minecraft.server.v1_5_R3.EntityPlayer");
-			EntityPlayer eply = ((CraftPlayer) player).getHandle();
+			EntityPlayer eply = ((CraftPlayer) player.getPlayer()).getHandle();
 			eply.r(0);
 		}catch(ClassNotFoundException e){}
 	}

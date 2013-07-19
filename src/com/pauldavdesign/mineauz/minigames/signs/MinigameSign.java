@@ -1,8 +1,9 @@
 package com.pauldavdesign.mineauz.minigames.signs;
 
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
+
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 
 public interface MinigameSign {
 	
@@ -18,5 +19,5 @@ public interface MinigameSign {
 	
 	public boolean signCreate(SignChangeEvent event);
 	
-	public boolean signUse(Sign sign, Player player);
+	public boolean signUse(Sign sign, MinigamePlayer player);
 }

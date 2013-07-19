@@ -58,6 +58,7 @@ import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
 
@@ -136,11 +137,11 @@ public class RecorderData implements Listener{
 		return minigame;
 	}
 	
-	public BlockData addBlock(Block block, Player modifier){
+	public BlockData addBlock(Block block, MinigamePlayer modifier){
 		return addBlock(block.getState(), modifier);
 	}
 	
-	public BlockData addBlock(BlockState block, Player modifier){
+	public BlockData addBlock(BlockState block, MinigamePlayer modifier){
 		BlockData bdata = new BlockData(block, modifier);
 		String sloc = String.valueOf(bdata.getLocation().getBlockX()) + ":" + bdata.getLocation().getBlockY() + ":" + bdata.getLocation().getBlockZ();
 		if(!blockdata.containsKey(sloc)){
@@ -221,7 +222,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	public void addEntity(Entity ent, Player player, boolean created){
+	public void addEntity(Entity ent, MinigamePlayer player, boolean created){
 		EntityData edata = new EntityData(ent, player, created);
 		entdata.put(ent.getEntityId(), edata);
 	}
@@ -250,7 +251,7 @@ public class RecorderData implements Listener{
 		entdata.clear();
 	}
 	
-	public void restoreBlocks(Player modifier){
+	public void restoreBlocks(MinigamePlayer modifier){
 		List<String> changes = new ArrayList<String>();
 		List<BlockData> addBlocks = new ArrayList<BlockData>();
 		for(String id : blockdata.keySet()){
@@ -373,7 +374,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	public void restoreEntities(Player player){
+	public void restoreEntities(MinigamePlayer player){
 		List<Integer> removal = new ArrayList<Integer>();
 		for(Integer entID : entdata.keySet()){
 			if(entdata.get(entID).getEntity().isValid() && (entdata.get(entID).getModifier() == player || player == null)){
@@ -487,8 +488,8 @@ public class RecorderData implements Listener{
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	private void blockBreak(BlockBreakEvent event){
-		Player ply = event.getPlayer();
-		if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).equals(minigame)){
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply.isInMinigame() && ply.getMinigame().equals(minigame)){
 			if(((whitelistMode && getWBBlocks().contains(event.getBlock().getType())) || 
 					(!whitelistMode && !getWBBlocks().contains(event.getBlock().getType()))) && 
 					minigame.canBlockBreak()){
@@ -540,8 +541,8 @@ public class RecorderData implements Listener{
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	private void blockPlace(BlockPlaceEvent event){
-		Player ply = event.getPlayer();
-		if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).equals(minigame) && !event.isCancelled()){
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply.isInMinigame() && ply.getMinigame().equals(minigame) && !event.isCancelled()){
 			if(((whitelistMode && getWBBlocks().contains(event.getBlock().getType())) || 
 					(!whitelistMode && !getWBBlocks().contains(event.getBlock().getType()))) &&
 					 minigame.canBlockPlace()){
@@ -556,8 +557,8 @@ public class RecorderData implements Listener{
 	
 	@EventHandler
 	private void takeItem(PlayerInteractEvent event){
-		Player ply = (Player) event.getPlayer();
-		if(pdata.playerInMinigame(ply) && pdata.getPlayersMinigame(ply).equals(minigame) && event.getAction() == Action.RIGHT_CLICK_BLOCK
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply.isInMinigame() && ply.getMinigame().equals(minigame) && event.getAction() == Action.RIGHT_CLICK_BLOCK
 				&& !minigame.isSpectator(ply)){
 			if(event.getClickedBlock().getType() == Material.CHEST){
 				Chest chest = (Chest) event.getClickedBlock().getState();
@@ -642,18 +643,19 @@ public class RecorderData implements Listener{
 	private void treeGrow(StructureGrowEvent event){
 		if(hasBlock(event.getLocation().getBlock())){
 			for(BlockState block : event.getBlocks()){
-				addBlock(block.getLocation().getBlock(), event.getPlayer());
+				addBlock(block.getLocation().getBlock(), pdata.getMinigamePlayer(event.getPlayer()));
 			}
 		}
 	}
 	
 	@EventHandler
 	private void bucketFill(PlayerBucketFillEvent event){
-		if(pdata.playerInMinigame(event.getPlayer()) && pdata.getPlayersMinigame(event.getPlayer()).equals(minigame)){
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply.isInMinigame() && ply.getMinigame().equals(minigame)){
 			if(((whitelistMode && getWBBlocks().contains(event.getBlockClicked().getType())) || 
 					(!whitelistMode && !getWBBlocks().contains(event.getBlockClicked().getType()))) && 
 					minigame.canBlockBreak()){
-				addBlock(event.getBlockClicked(), event.getPlayer());
+				addBlock(event.getBlockClicked(), pdata.getMinigamePlayer(event.getPlayer()));
 			}
 			else{
 				event.setCancelled(true);
@@ -663,7 +665,8 @@ public class RecorderData implements Listener{
 	
 	@EventHandler
 	private void bucketEmpty(PlayerBucketEmptyEvent event){
-		if(pdata.playerInMinigame(event.getPlayer()) && pdata.getPlayersMinigame(event.getPlayer()).equals(minigame)){
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply.isInMinigame() && ply.getMinigame().equals(minigame)){
 			if(((whitelistMode && getWBBlocks().contains(event.getBlockClicked().getType())) || 
 					(!whitelistMode && !getWBBlocks().contains(event.getBlockClicked().getType()))) && 
 					minigame.canBlockPlace()){
@@ -671,7 +674,7 @@ public class RecorderData implements Listener{
 						event.getBlockFace().getModX() + event.getBlockClicked().getX(), 
 						event.getBlockFace().getModY() + event.getBlockClicked().getY(), 
 						event.getBlockFace().getModZ() + event.getBlockClicked().getZ());
-				addBlock(loc.getBlock(), event.getPlayer());
+				addBlock(loc.getBlock(), pdata.getMinigamePlayer(event.getPlayer()));
 			}
 			else{
 				event.setCancelled(true);
@@ -723,13 +726,13 @@ public class RecorderData implements Listener{
 	
 	@EventHandler
 	public void igniteblock(BlockIgniteEvent event){
-		if(event.getPlayer() != null && pdata.playerInMinigame(event.getPlayer()) && 
-				pdata.getPlayersMinigame(event.getPlayer()).equals(minigame) && 
+		if(event.getPlayer() != null && pdata.getMinigamePlayer(event.getPlayer()).isInMinigame() && 
+				pdata.getMinigamePlayer(event.getPlayer()).getMinigame().equals(minigame) && 
 				(event.getCause() == IgniteCause.FIREBALL || event.getCause() == IgniteCause.FLINT_AND_STEEL)){
 			if(((whitelistMode && getWBBlocks().contains(Material.FIRE)) || 
 					(!whitelistMode && !getWBBlocks().contains(Material.FIRE))) && 
 					minigame.canBlockPlace()){
-				addBlock(event.getBlock(), event.getPlayer());
+				addBlock(event.getBlock(), pdata.getMinigamePlayer(event.getPlayer()));
 			}
 			else{
 				event.setCancelled(true);
@@ -758,9 +761,9 @@ public class RecorderData implements Listener{
 		if(event.getAttacker() != null){
 			if(event.getAttacker() instanceof Player){
 				Player ply = (Player) event.getAttacker();
-				if(plugin.pdata.playerInMinigame(ply) && plugin.pdata.getPlayersMinigame(ply).equals(minigame)){
+				if(pdata.getMinigamePlayer(ply).isInMinigame() && pdata.getMinigamePlayer(ply).getMinigame().equals(minigame)){
 					if(!hasEntity(event.getVehicle())){
-						addEntity(event.getVehicle(), ply, false);
+						addEntity(event.getVehicle(), pdata.getMinigamePlayer(ply), false);
 					}
 				}
 			}
@@ -788,8 +791,8 @@ public class RecorderData implements Listener{
 					}
 				}
 				if(ply != null){
-					if(plugin.pdata.playerInMinigame(ply) && plugin.pdata.getPlayersMinigame(ply).equals(minigame)){
-						addEntity(animal, ply, false);
+					if(pdata.getMinigamePlayer(ply).isInMinigame() && pdata.getMinigamePlayer(ply).getMinigame().equals(minigame)){
+						addEntity(animal, pdata.getMinigamePlayer(ply), false);
 					}
 				}
 			}
@@ -813,8 +816,8 @@ public class RecorderData implements Listener{
 	
 	@EventHandler
 	private void paintingPlace(HangingPlaceEvent event){
-		Player ply = event.getPlayer();
-		if(plugin.pdata.playerInMinigame(ply) && plugin.pdata.getPlayersMinigame(ply).equals(minigame)){
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply.isInMinigame() && ply.getMinigame().equals(minigame)){
 			if(((whitelistMode && getWBBlocks().contains(Material.PAINTING)) || 
 					(!whitelistMode && !getWBBlocks().contains(Material.PAINTING))) ||
 					((whitelistMode && getWBBlocks().contains(Material.ITEM_FRAME)) || 
@@ -839,7 +842,7 @@ public class RecorderData implements Listener{
 			}
 		}
 		if(ply != null){
-			if(plugin.pdata.playerInMinigame(ply) && plugin.pdata.getPlayersMinigame(ply).equals(minigame)){
+			if(pdata.getMinigamePlayer(ply).isInMinigame() && pdata.getMinigamePlayer(ply).getMinigame().equals(minigame)){
 				event.setCancelled(true);
 			}
 		}
@@ -880,8 +883,8 @@ public class RecorderData implements Listener{
 	private void arrowShoot(EntityShootBowEvent event){
 		if(event.getEntity() instanceof Player){
 			Player ply = (Player) event.getEntity();
-			if(pdata.playerInMinigame(ply)){
-				addEntity(event.getProjectile(), ply, true);
+			if(pdata.getMinigamePlayer(ply).isInMinigame()){
+				addEntity(event.getProjectile(), pdata.getMinigamePlayer(ply), true);
 			}
 		}
 	}
