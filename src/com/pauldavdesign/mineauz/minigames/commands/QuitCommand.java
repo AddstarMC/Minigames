@@ -72,7 +72,16 @@ public class QuitCommand implements ICommand{
 			if(player == null || player.hasPermission("minigame.quit.other")){
 				List<Player> players = plugin.getServer().matchPlayer(args[0]);
 				MinigamePlayer ply = null;
-				if(players.isEmpty()){
+				if(args[0].equals("ALL")){
+					for(MinigamePlayer pl : plugin.getPlayerData().getAllMinigamePlayers()){
+						if(pl.isInMinigame()){
+							plugin.pdata.quitMinigame(pl, true);
+						}
+					}
+					sender.sendMessage(ChatColor.GRAY + "All players have been quit from Minigames");
+					return true;
+				}
+				else if(players.isEmpty()){
 					sender.sendMessage(ChatColor.RED + "No player found by the name " + args[0]);
 					return true;
 				}

@@ -2,6 +2,7 @@ package com.pauldavdesign.mineauz.minigames;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -737,6 +738,10 @@ public class PlayerData {
 	
 	public MinigamePlayer getMinigamePlayer(String player){
 		return minigamePlayers.get(player);
+	}
+	
+	public Collection<MinigamePlayer> getAllMinigamePlayers(){
+		return minigamePlayers.values();
 	}
 	
 	public boolean hasMinigamePlayer(String name){
