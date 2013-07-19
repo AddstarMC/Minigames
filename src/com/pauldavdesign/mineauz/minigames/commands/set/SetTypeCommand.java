@@ -25,7 +25,7 @@ public class SetTypeCommand implements ICommand{
 
 	@Override
 	public String getDescription() {
-		return "Sets a Minigames game type. All types can be seen in the parameter section.";
+		return "Sets a Minigames game type. All types can be seen in the parameter section. (also can be used as an alias of preset).";
 	}
 
 	@Override
@@ -62,6 +62,10 @@ public class SetTypeCommand implements ICommand{
 			if(plugin.mdata.getMinigameTypes().contains(args[0].toLowerCase()) || args[0].equalsIgnoreCase("th")){
 				minigame.setType(args[0].toLowerCase());
 				sender.sendMessage(ChatColor.GRAY + "Minigame type has been set to " + args[0]);
+			}
+			else if(plugin.mdata.hasPreset(args[0].toLowerCase())){
+				plugin.mdata.getPreset(args[0].toLowerCase()).execute(minigame);
+				sender.sendMessage(ChatColor.GRAY + "Applied the Minigame preset \"" + args[0] + "\" to " + minigame);
 			}
 			else{
 				sender.sendMessage(ChatColor.RED + "Error: Invalid minigame type!");
