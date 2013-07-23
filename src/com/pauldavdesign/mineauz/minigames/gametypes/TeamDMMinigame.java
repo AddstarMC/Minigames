@@ -50,6 +50,10 @@ public class TeamDMMinigame extends MinigameType{
 					if(mgm.getMpTimer() == null || mgm.getMpTimer().getStartWaitTimeLeft() != 0){
 //						player.teleport(lobby);
 						pdata.minigameTeleport(player, lobby);
+						if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMaxPlayers()){
+							mgm.getMpTimer().setPlayerWaitTime(0);
+							mdata.sendMinigameMessage(mgm, "Minigame full, skipping player wait time.", "info", null);
+						}
 					}
 					else{
 						int team;
@@ -107,6 +111,10 @@ public class TeamDMMinigame extends MinigameType{
 					if(mgm.getMpTimer() == null && mgm.getPlayers().size() >= mgm.getMinPlayers()){
 						mgm.setMpTimer(new MultiplayerTimer(mgm.getName()));
 						mgm.getMpTimer().startTimer();
+						if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
+							mgm.getMpTimer().setPlayerWaitTime(0);
+							mdata.sendMinigameMessage(mgm, "Minigame full, skipping player wait time.", "info", null);
+						}
 					}
 					else if(mgm.getMpTimer() != null && mgm.getMpTimer().isPaused() && 
 							(mgm.getBlueTeam().size() == mgm.getRedTeam().size() || 

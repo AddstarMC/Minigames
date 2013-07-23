@@ -82,6 +82,10 @@ public abstract class MinigameType implements Listener{
 					if(mgm.getMpTimer() == null || mgm.getMpTimer().getStartWaitTimeLeft() != 0){
 //						player.teleport(lobby);
 						pdata.minigameTeleport(player, lobby);
+						if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMaxPlayers()){
+							mgm.getMpTimer().setPlayerWaitTime(0);
+							mdata.sendMinigameMessage(mgm, "Minigame full, skipping player wait time.", "info", null);
+						}
 					}
 					else{
 						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You will join in 5 seconds...");
@@ -112,6 +116,10 @@ public abstract class MinigameType implements Listener{
 					if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMinPlayers()){
 						mgm.setMpTimer(new MultiplayerTimer(mgm.getName()));
 						mgm.getMpTimer().startTimer();
+						if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
+							mgm.getMpTimer().setPlayerWaitTime(0);
+							mdata.sendMinigameMessage(mgm, "Minigame full, skipping player wait time.", "info", null);
+						}
 					}
 					else{
 						int neededPlayers = mgm.getMinPlayers() - mgm.getPlayers().size();
