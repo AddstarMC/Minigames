@@ -286,10 +286,10 @@ public class CTFType extends ScoreType{
 	@EventHandler
 	private void playerQuitMinigame(QuitMinigameEvent event){
 		if(event.getMinigame().getScoreType().equals("ctf")){
-			if(event.getMinigame().isFlagCarrier(event.getPlayer())){
-				event.getMinigame().getFlagCarrier(event.getPlayer()).stopCarrierParticleEffect();
-				event.getMinigame().getFlagCarrier(event.getPlayer()).respawnFlag();
-				event.getMinigame().removeFlagCarrier(event.getPlayer());
+			if(event.getMinigame().isFlagCarrier(event.getMinigamePlayer())){
+				event.getMinigame().getFlagCarrier(event.getMinigamePlayer()).stopCarrierParticleEffect();
+				event.getMinigame().getFlagCarrier(event.getMinigamePlayer()).respawnFlag();
+				event.getMinigame().removeFlagCarrier(event.getMinigamePlayer());
 			}
 			if(event.getMinigame().getPlayers().size() == 1){
 				event.getMinigame().resetFlags();
@@ -300,10 +300,10 @@ public class CTFType extends ScoreType{
 	@EventHandler
 	private void playerEndMinigame(EndMinigameEvent event){
 		if(event.getMinigame().getScoreType().equals("ctf")){
-			if(event.getMinigame().isFlagCarrier(event.getPlayer())){
-				event.getMinigame().getFlagCarrier(event.getPlayer()).respawnFlag();
-				event.getMinigame().getFlagCarrier(event.getPlayer()).stopCarrierParticleEffect();
-				event.getMinigame().removeFlagCarrier(event.getPlayer());
+			if(event.getMinigame().isFlagCarrier(event.getMinigamePlayer())){
+				event.getMinigame().getFlagCarrier(event.getMinigamePlayer()).respawnFlag();
+				event.getMinigame().getFlagCarrier(event.getMinigamePlayer()).stopCarrierParticleEffect();
+				event.getMinigame().removeFlagCarrier(event.getMinigamePlayer());
 			}
 			if(event.getMinigame().getPlayers().size() == 1){
 				event.getMinigame().resetFlags();

@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames.events;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -25,8 +26,12 @@ public class EndMinigameEvent extends Event{
 		this.cancelled = cancelled;
 	}
 
-	public MinigamePlayer getPlayer() {
+	public MinigamePlayer getMinigamePlayer() {
 		return player;
+	}
+	
+	public Player getPlayer(){
+		return player.getPlayer();
 	}
 
 	public Minigame getMinigame() {

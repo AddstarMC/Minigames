@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames.events;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -24,9 +25,13 @@ public class JoinMinigameEvent extends Event{
 		this.betting = betting;
 	}
 	
-    public MinigamePlayer getPlayer() {
+    public MinigamePlayer getMinigamePlayer() {
 		return player;
 	}
+    
+    public Player getPlayer(){
+    	return player.getPlayer();
+    }
 
 	public Minigame getMinigame() {
 		return mgm;

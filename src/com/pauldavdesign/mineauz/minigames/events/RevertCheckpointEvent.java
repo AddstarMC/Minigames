@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames.events;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -14,8 +15,12 @@ public class RevertCheckpointEvent extends Event{
 		this.player = player;
 	}
 	
-	public MinigamePlayer getPlayer(){
+	public MinigamePlayer getMinigamePlayer(){
 		return player;
+	}
+	
+	public Player getPlayer(){
+		return player.getPlayer();
 	}
 	
 	public boolean isCancelled(){
