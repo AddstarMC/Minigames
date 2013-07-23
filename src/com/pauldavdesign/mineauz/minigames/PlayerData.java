@@ -648,13 +648,15 @@ public class PlayerData {
 					List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>();
 					plys.addAll(event.getWinnningPlayers());
 					
-					double bets = mgm.getMpBets().claimMoneyBets() / (double) plys.size();
-					BigDecimal roundBets = new BigDecimal(bets);
-					roundBets = roundBets.setScale(2, BigDecimal.ROUND_HALF_UP);
-					bets = roundBets.doubleValue();
-					for(MinigamePlayer ply : plys){
-						plugin.getEconomy().depositPlayer(ply.getName(), bets);
-						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You won $" + bets);
+					if(!plys.isEmpty()){
+						double bets = mgm.getMpBets().claimMoneyBets() / (double) plys.size();
+						BigDecimal roundBets = new BigDecimal(bets);
+						roundBets = roundBets.setScale(2, BigDecimal.ROUND_HALF_UP);
+						bets = roundBets.doubleValue();
+						for(MinigamePlayer ply : plys){
+							plugin.getEconomy().depositPlayer(ply.getName(), bets);
+							ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You won $" + bets);
+						}
 					}
 				}
 				mgm.setMpBets(null);
