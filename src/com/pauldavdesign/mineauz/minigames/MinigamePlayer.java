@@ -14,7 +14,7 @@ public class MinigamePlayer {
 	private ItemStack[] storedItems = null;
 	private ItemStack[] storedArmour = null;
 	private int food = 20;
-	private int health = 20;
+	private double health = 20;
 	private float saturation = 15;
 	private boolean allowTP = true;
 	private boolean allowGMChange = true;
@@ -58,7 +58,7 @@ public class MinigamePlayer {
 		return food;
 	}
 	
-	public int getHealth(){
+	public double getHealth(){
 		return health;
 	}
 	
@@ -123,7 +123,7 @@ public class MinigamePlayer {
 		pdata.invsave.saveConfig();
 	}
 	
-	public void setPlayerData(ItemStack[] items, ItemStack[] armour, int food, int health, float saturation, GameMode lastGM){
+	public void setPlayerData(ItemStack[] items, ItemStack[] armour, int food, double health, float saturation, GameMode lastGM){
 		storedItems = items;
 		storedArmour = armour;
 		this.food = food;

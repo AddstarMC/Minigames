@@ -67,12 +67,12 @@ public class Events implements Listener{
 				killer.addKill();
 			}
 			
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				@Override
-				public void run() {
-					MinigameUtils.removePlayerArrows(ply);
-				}
-			});
+//			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+//				@Override
+//				public void run() {
+//					MinigameUtils.removePlayerArrows(ply);
+//				}
+//			});
 			
 			if(!msg.equals("")){
 				mdata.sendMinigameMessage(mgm, msg, "error", null);

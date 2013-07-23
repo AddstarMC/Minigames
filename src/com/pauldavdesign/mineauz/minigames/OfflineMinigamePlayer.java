@@ -10,12 +10,12 @@ public class OfflineMinigamePlayer {
 	private ItemStack[] storedItems = null;
 	private ItemStack[] storedArmour = null;
 	private int food = 20;
-	private int health = 20;
+	private double health = 20;
 	private float saturation = 15;
 	private GameMode lastGM = GameMode.SURVIVAL;
 	private Location loginLocation;
 	
-	public OfflineMinigamePlayer(String player, ItemStack[] items, ItemStack[] armour, int food, int health, float saturation, GameMode lastGM, Location loginLocation){
+	public OfflineMinigamePlayer(String player, ItemStack[] items, ItemStack[] armour, int food, double health, float saturation, GameMode lastGM, Location loginLocation){
 		this.player = player;
 		storedItems = items;
 		storedArmour = armour;
@@ -57,7 +57,7 @@ public class OfflineMinigamePlayer {
 		return food;
 	}
 	
-	public int getHealth(){
+	public double getHealth(){
 		return health;
 	}
 	
