@@ -372,9 +372,9 @@ public class Events implements Listener{
 	
 	@EventHandler
 	public void playerRevert(RevertCheckpointEvent event){
-		if(event.getPlayer().isInMinigame() && (event.getPlayer().getMinigame().getType().equals("lms") || event.getPlayer().getMinigame().getType().equals("dm") || event.getPlayer().getMinigame().getType().equals("teamdm"))){
+		if(event.getMinigamePlayer().isInMinigame() && (event.getMinigamePlayer().getMinigame().getType().equals("lms") || event.getMinigamePlayer().getMinigame().getType().equals("dm") || event.getMinigamePlayer().getMinigame().getType().equals("teamdm"))){
 			event.setCancelled(true);
-			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You can't revert while playing " + event.getPlayer().getMinigame().getType());
+			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You can't revert while playing " + event.getMinigamePlayer().getMinigame().getType());
 		}
 	}
 	
