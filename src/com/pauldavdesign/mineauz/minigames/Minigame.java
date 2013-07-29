@@ -539,7 +539,7 @@ public class Minigame {
 	}
 
 	public void addRedTeamPlayer(MinigamePlayer player) {
-		sbManager.getTeam("Red").addPlayer(player.getPlayer());
+		sbManager.getTeam("Red").addPlayer(player.getPlayer().getPlayer());
 		player.getPlayer().setScoreboard(sbManager);
 	}
 	
@@ -557,7 +557,7 @@ public class Minigame {
 	}
 
 	public void addBlueTeamPlayer(MinigamePlayer player) {
-		sbManager.getTeam("Blue").addPlayer(player.getPlayer());
+		sbManager.getTeam("Blue").addPlayer(player.getPlayer().getPlayer());
 		player.getPlayer().setScoreboard(sbManager);
 	}
 	
