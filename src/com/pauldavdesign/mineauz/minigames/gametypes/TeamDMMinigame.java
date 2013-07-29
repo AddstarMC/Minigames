@@ -51,6 +51,8 @@ public class TeamDMMinigame extends MinigameType{
 //						player.teleport(lobby);
 						pdata.minigameTeleport(player, lobby);
 						if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMaxPlayers()){
+							mgm.setMpTimer(new MultiplayerTimer(mgm.getName()));
+							mgm.getMpTimer().startTimer();
 							mgm.getMpTimer().setPlayerWaitTime(0);
 							mdata.sendMinigameMessage(mgm, "Minigame full, skipping player wait time.", "info", null);
 						}
