@@ -80,7 +80,13 @@ public class Events implements Listener{
 			if(mgm.getLives() > 0 && mgm.getLives() <= ply.getDeaths()){
 				ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Bad Luck! Leaving the minigame.");
 				ply.getPlayer().setHealth(2);
-				pdata.quitMinigame(ply, false);
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					
+					@Override
+					public void run() {
+						pdata.quitMinigame(ply, false);
+					}
+				});
 			}
 			else if(mgm.getLives() > 0){
 				ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + (mgm.getLives() - ply.getDeaths()));
