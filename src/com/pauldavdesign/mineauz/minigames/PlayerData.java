@@ -591,19 +591,19 @@ public class PlayerData {
 		if(teamnum == 1){
 			//Blue team
 			for(OfflinePlayer ply : mgm.getRedTeam()){
-				losers.add(getMinigamePlayer(ply.getPlayer()));
+				losers.add(getMinigamePlayer(ply.getName()));
 			}
 			for(OfflinePlayer ply : mgm.getBlueTeam()){
-				winners.add(getMinigamePlayer(ply.getPlayer()));
+				winners.add(getMinigamePlayer(ply.getName()));
 			}
 		}
 		else{
 			//Red team
 			for(OfflinePlayer ply : mgm.getRedTeam()){
-				winners.add(getMinigamePlayer(ply.getPlayer()));
+				winners.add(getMinigamePlayer(ply.getName()));
 			}
 			for(OfflinePlayer ply : mgm.getBlueTeam()){
-				losers.add(getMinigamePlayer(ply.getPlayer()));
+				losers.add(getMinigamePlayer(ply.getName()));
 			}
 		}
 		
@@ -666,7 +666,7 @@ public class PlayerData {
 				List<MinigamePlayer> loseplayers = new ArrayList<MinigamePlayer>();
 				loseplayers.addAll(event.getLosingPlayers());
 				for(int i = 0; i < loseplayers.size(); i++){
-					if(loseplayers.get(i) instanceof Player){
+					if(loseplayers.get(i) instanceof MinigamePlayer){
 						final MinigamePlayer p = loseplayers.get(i);
 						
 						Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -689,7 +689,7 @@ public class PlayerData {
 			}
 			
 			for(int i = 0; i < winplayers.size(); i++){
-				if(winplayers.get(i) instanceof Player){
+				if(winplayers.get(i) instanceof MinigamePlayer){
 					final MinigamePlayer p = winplayers.get(i);
 					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 						
