@@ -60,6 +60,7 @@ public class StopCommand implements ICommand{
 				mgm.getThTimer().stopTimer();
 				plugin.mdata.removeTreasure(mgm.getName());
 				mgm.setThTimer(null);
+				mgm.setEnabled(false);
 			}
 			else if(mgm == null || !mgm.getType().equals("th")){
 				sender.sendMessage(ChatColor.RED + "There is no TreasureHunt Minigame by the name \"" + args[0] + "\"");

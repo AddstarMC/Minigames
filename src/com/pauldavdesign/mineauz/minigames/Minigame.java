@@ -1570,6 +1570,10 @@ public class Minigame {
 			setDefaultWinner(minigame.getConfig().getString(name + ".defaultwinner"));
 		}
 		
+		if(getType().equals("th") && isEnabled()){
+			Minigames.plugin.mdata.startGlobalMinigame(getName());
+		}
+		
 		saveMinigame();
 	}
 	
