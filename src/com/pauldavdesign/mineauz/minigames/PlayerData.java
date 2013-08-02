@@ -39,29 +39,12 @@ public class PlayerData {
 	private Map<String, MinigamePlayer> minigamePlayers = new HashMap<String, MinigamePlayer>();
 	private Map<String, OfflineMinigamePlayer> offlineMinigamePlayers = new HashMap<String, OfflineMinigamePlayer>();
 	
-	//private Map<String, Minigame> minigamePlayers = new HashMap<String, Minigame>();
-//	private Map<String, Location> playerCheckpoints = new HashMap<String, Location>();
 	private Map<String, StoredPlayerCheckpoints> storedPlayerCheckpoints = new HashMap<String, StoredPlayerCheckpoints>();
-//	private Map<String, ItemStack[]> itemStore = new HashMap<String, ItemStack[]>();
-//	private Map<String, ItemStack[]> armourStore = new HashMap<String, ItemStack[]>();
-//	private Map<String, List<String>> playerFlags = new HashMap<String, List<String>>();
-//	private Map<String, Integer> playerFood = new HashMap<String, Integer>();
-//	private Map<String, Integer> playerHealth = new HashMap<String, Integer>();
-//	private Map<String, Float> playerSaturation = new HashMap<String, Float>();
-//	private Map<String, Boolean> allowTP = new HashMap<String, Boolean>();
-//	private Map<String, Boolean> allowGMChange = new HashMap<String, Boolean>();
-//	private Map<String, GameMode> lastGM = new HashMap<String, GameMode>();
-//	private Map<String, Scoreboard> lastScoreboard = new HashMap<String, Scoreboard>();
 	
 	private boolean partyMode = false;
 	
 	private Map<String, Location> resPos = new HashMap<String, Location>();
 	private List<String> deniedCommands = new ArrayList<String>();
-	
-	//Stats
-//	private Map<String, Integer> plyDeaths = new HashMap<String, Integer>();
-//	private Map<String, Integer> plyKills = new HashMap<String, Integer>();
-//	private Map<String, Integer> plyScore = new HashMap<String, Integer>();
 	
 	private static Minigames plugin = Minigames.plugin;
 	private MinigameData mdata = plugin.mdata;
@@ -77,7 +60,6 @@ public class PlayerData {
 		
 		if(!event.isCancelled()){
 			if(mdata.getMinigameTypes().contains(gametype)){
-				//setAllowTP(player, true);
 				player.setAllowTeleport(true);
 				if(mdata.minigameType(gametype).joinMinigame(player, minigame)){
 					plugin.getLogger().info(player.getName() + " started " + minigame.getName());
@@ -91,10 +73,8 @@ public class PlayerData {
 					
 					if(hasStoredPlayerCheckpoint(player)){
 						if(getPlayersStoredCheckpoints(player).hasCheckpoint(minigame.getName())){
-//							playerCheckpoints.put(player.getName(), getPlayersStoredCheckpoints(player).getCheckpoint(minigame.getName()));
 							player.setCheckpoint(getPlayersStoredCheckpoints(player).getCheckpoint(minigame.getName()));
 							if(getPlayersStoredCheckpoints(player).hasFlags(minigame.getName())){
-								//playerFlags.put(player.getName(), getPlayersStoredCheckpoints(player).getFlags(minigame.getName()));
 								player.setFlags(getPlayersStoredCheckpoints(player).getFlags(minigame.getName()));
 							}
 							getPlayersStoredCheckpoints(player).removeCheckpoint(minigame.getName());
@@ -223,10 +203,8 @@ public class PlayerData {
 			if(!mgm.getType().equals("teamdm")){
 				if(pos < mgm.getStartLocations().size()){
 					start = mgm.getStartLocations().get(pos);
-					//ply.teleport(start);
 					minigameTeleport(ply, start);
 					ply.setCheckpoint(start);
-					//setPlayerCheckpoints(ply, start);
 					if(mgm.getMaxScore() != 0 && mgm.getType().equals("dm") && !mgm.getScoreType().equals("none")){
 						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
 					}
@@ -235,10 +213,8 @@ public class PlayerData {
 					pos = 0;
 					if(!mgm.getStartLocations().isEmpty()){
 						start = mgm.getStartLocations().get(0);
-						//ply.teleport(start);
 						minigameTeleport(ply, start);
 						ply.setCheckpoint(start);
-						//setPlayerCheckpoints(ply, start);
 						if(mgm.getMaxScore() != 0 && mgm.getType().equals("dm") && !mgm.getScoreType().equals("none")){
 							ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
 						}
@@ -284,19 +260,15 @@ public class PlayerData {
 				else{
 					if(pos <= mgm.getStartLocations().size()){
 						start = mgm.getStartLocations().get(pos);
-						//ply.teleport(start);
 						minigameTeleport(ply, start);
 						ply.setCheckpoint(start);
-						//setPlayerCheckpoints(ply, start);
 					} 
 					else{
 						pos = 1;
 						if(!mgm.getStartLocations().isEmpty()){
 							start = mgm.getStartLocations().get(0);
-							//ply.teleport(start);
 							minigameTeleport(ply, start);
 							ply.setCheckpoint(start);
-							//setPlayerCheckpoints(ply, start);
 						}
 						else {
 							ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Starting positions are incorrectly configured!");
@@ -306,10 +278,8 @@ public class PlayerData {
 				}
 				
 				if(start != null){
-					//ply.teleport(start);
 					minigameTeleport(ply, start);
 					ply.setCheckpoint(start);
-					//setPlayerCheckpoints(ply, start);
 					if(mgm.getMaxScore() != 0 && !mgm.getScoreType().equals("none")){
 						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
 					}
@@ -359,14 +329,12 @@ public class PlayerData {
 	}
 	
 	public void quitMinigame(MinigamePlayer player, boolean forced){
-		//Minigame mgm = getPlayersMinigame(player);
 		Minigame mgm = player.getMinigame();
 
 		QuitMinigameEvent event = new QuitMinigameEvent(player, mgm, forced);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		if(!event.isCancelled()){
 			if(!mgm.isSpectator(player)){
-				//setAllowTP(player, true);
 				player.setAllowTeleport(true);
 				
 				if(player.getPlayer().getVehicle() != null){
@@ -375,8 +343,6 @@ public class PlayerData {
 				}
 				
 				player.getPlayer().closeInventory();
-				
-//				MinigameUtils.removePlayerArrows(player);
 				
 				if(!forced){
 					mdata.sendMinigameMessage(mgm, player.getName() + " has left " + mgm, "error", player);
@@ -392,13 +358,11 @@ public class PlayerData {
 					@Override
 					public void run() {
 						if(ply.getPlayer().isOnline() && !ply.getPlayer().isDead()){
-							//restorePlayerData(ply);
 							ply.restorePlayerData();
 						}
 					}
 				});
 
-//				removePlayerMinigame(player);
 				player.removeMinigame();
 				mgm.removePlayer(player);
 				mdata.minigameType(mgm.getType()).quitMinigame(player, mgm, forced);
@@ -406,6 +370,8 @@ public class PlayerData {
 				for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
 					player.getPlayer().removePotionEffect(potion.getType());
 				}
+				player.getPlayer().setFallDistance(0);
+				
 				final MinigamePlayer fplayer = player;
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 					
@@ -456,6 +422,7 @@ public class PlayerData {
 					Vehicle vehicle = (Vehicle) player.getPlayer().getVehicle();
 					vehicle.eject();
 				}
+				player.getPlayer().setFallDistance(0);
 				
 				player.getPlayer().closeInventory();
 				final Player fplayer = player.getPlayer();
@@ -474,13 +441,11 @@ public class PlayerData {
 					@Override
 					public void run() {
 						if(ply.getPlayer().isOnline()){
-//							restorePlayerData(ply);
 							ply.restorePlayerData();
 						}
 					}
 				});
 				
-				//player.teleport(mgm.getQuitPosition());
 				minigameTeleport(player, mgm.getQuitPosition());
 				player.removeMinigame();
 				mgm.removeSpectator(player);
@@ -519,9 +484,6 @@ public class PlayerData {
 				player.restorePlayerData();
 			}
 			
-//			MinigameUtils.removePlayerArrows(player);
-			
-//			removePlayerMinigame(player);
 			player.removeMinigame();
 			mgm.removePlayer(player);
 			mgm.removePlayersLoadout(player);
@@ -530,16 +492,13 @@ public class PlayerData {
 			for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
 				player.getPlayer().removePotionEffect(potion.getType());
 			}
+			player.getPlayer().setFallDistance(0);
 			player.getPlayer().setFireTicks(0);
 			player.getPlayer().setNoDamageTicks(60);
 			
-//			removeAllPlayerFlags(player);
 			player.clearFlags();
 			
 			if(plugin.getSQL() == null || plugin.getSQL().getSql() == null){
-//				removePlayerDeath(player);
-//				removePlayerKills(player);
-//				removePlayerScore(player);
 				player.resetDeaths();
 				player.resetKills();
 				player.resetScore();
@@ -573,8 +532,6 @@ public class PlayerData {
 				player.getPlayer().showPlayer(pl.getPlayer());
 			}
 			
-//			removeAllowTP(player);
-//			removeAllowGMChange(player);
 			player.setAllowTeleport(true);
 			player.setAllowGamemodeChange(true);
 
@@ -770,144 +727,10 @@ public class PlayerData {
 		offlineMinigamePlayers.remove(name);
 	}
 	
-//	@Deprecated
-//	public void storePlayerData(Player player, GameMode gm){
-//		ItemStack[] items = player.getInventory().getContents();
-//		ItemStack[] armour = player.getInventory().getArmorContents();
-//		itemStore.put(player.getName(), items);
-//		armourStore.put(player.getName(), armour);
-//		playerFood.put(player.getName(), player.getFoodLevel());
-//		playerHealth.put(player.getName(), player.getHealth());
-//		playerSaturation.put(player.getName(), player.getSaturation());
-//		lastScoreboard.put(player.getName(), player.getScoreboard());
-//		
-//		//lastGM.put(player, player.getGameMode());
-//		setPlayersLastGameMode(player, player.getGameMode());
-//		player.setGameMode(gm);
-//		
-//		player.setSaturation(15);
-//		player.setFoodLevel(20);
-//		player.setHealth(player.getMaxHealth());
-//		player.getInventory().clear();
-//		player.getInventory().setArmorContents(null);
-//		
-//		saveItems(player);
-//		player.updateInventory();
-//	}
-	
 	public void storePlayerInventory(String player, ItemStack[] items, ItemStack[] armour, Integer health, Integer food, Float saturation){
-//		itemStore.put(player, items);
-//		armourStore.put(player, armour);
-//		playerHealth.put(player, health);
-//		playerFood.put(player, food);
-//		playerSaturation.put(player, saturation);
 		OfflineMinigamePlayer oply = new OfflineMinigamePlayer(player, items, armour, food, health, saturation, GameMode.SURVIVAL, resPos.get(player));
 		offlineMinigamePlayers.put(player, oply);
 	}
-	
-//	@Deprecated
-//	public void restorePlayerData(final Player player){
-//		player.getInventory().clear();
-//		player.getInventory().setArmorContents(null);
-//		
-//		ItemStack[] items = itemStore.get(player.getName());
-//		ItemStack[] armour = armourStore.get(player.getName());
-//		
-//		player.getInventory().setContents(items);
-//		player.getInventory().setArmorContents(armour);
-//		player.setFoodLevel(playerFood.get(player.getName()));
-//		player.setHealth(playerHealth.get(player.getName()));
-//		player.setSaturation(playerSaturation.get(player.getName()));
-//		if(lastScoreboard.containsKey(player.getName()))
-//			player.setScoreboard(lastScoreboard.get(player.getName()));
-//		else
-//			player.setScoreboard(plugin.getServer().getScoreboardManager().getMainScoreboard());
-//		setAllowGMChange(player, true);
-//		player.setGameMode(getPlayersLastGameMode(player));
-//		removePlayersLastGameMode(player);
-//		setAllowGMChange(player, false);
-//		
-//		invsave.getConfig().set("inventories." + player.getName(), null);
-//		invsave.saveConfig();
-//		itemStore.remove(player.getName());
-//		armourStore.remove(player.getName());
-//		playerFood.remove(player.getName());
-//		playerHealth.remove(player.getName());
-//		playerSaturation.remove(player.getName());
-//		lastScoreboard.remove(player.getName());
-//		
-//		player.updateInventory();
-//	}
-	
-//	@Deprecated
-//	public boolean playerHasStoredItems(Player player){
-//		return itemStore.containsKey(player.getName());
-//	}
-	
-//	@Deprecated
-//	public Boolean getAllowTP(Player player){
-//		return allowTP.get(player.getName());
-//	}
-//	
-//	@Deprecated
-//	public void setAllowTP(Player player, Boolean var){
-//		allowTP.put(player.getName(), var);
-//	}
-//	
-//	@Deprecated
-//	public void removeAllowTP(Player player){
-//		allowTP.remove(player.getName());
-//	}
-//	
-//	@Deprecated
-//	public Boolean getAllowGMChange(Player player){
-//		return allowGMChange.get(player.getName());
-//	}
-//	
-//	@Deprecated
-//	public void setAllowGMChange(Player player, Boolean var){
-//		allowGMChange.put(player.getName(), var);
-//	}
-//	
-//	@Deprecated
-//	public void removeAllowGMChange(Player player){
-//		allowGMChange.remove(player.getName());
-//	}
-//	
-//	@Deprecated
-//	public void setPlayerCheckpoints(Player player, Location checkpoint){
-//		playerCheckpoints.put(player.getName(), checkpoint);
-//	}
-//	
-//	@Deprecated
-//	public void removePlayerCheckpoints(Player player){
-//		if(playerCheckpoints.containsKey(player.getName())){
-//			playerCheckpoints.remove(player.getName());
-//		}
-//	}
-//	
-//	@Deprecated
-//	public Location getPlayerCheckpoint(Player player){
-//		if(playerCheckpoints.containsKey(player.getName())){
-//			return playerCheckpoints.get(player.getName());
-//		}
-//		return null;
-//	}
-//	
-//	@Deprecated
-//	public void addPlayerFlags(Player player, String flag){
-//		List<String> list;
-//		
-//		if(playerFlags.containsKey(player.getName())){
-//			list = playerFlags.get(player.getName());
-//		}
-//		else{
-//			list = new ArrayList<String>();
-//		}
-//		
-//		list.add(flag);
-//		playerFlags.put(player.getName(), list);
-//	}
 	
 	public List<String> checkRequiredFlags(MinigamePlayer player, String minigame){
 		List<String> checkpoints = new ArrayList<String>();
@@ -920,184 +743,6 @@ public class PlayerData {
 		
 		return checkpoints;
 	}
-	
-//	@Deprecated
-//	public boolean playerHasFlag(Player player, String flag){
-//		if(playerFlags.containsKey(player.getName())){
-//			List<String> flags = playerFlags.get(player.getName());
-//			if(flags.contains("flag")){
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
-//	
-//	@Deprecated
-//	public void removeAllPlayerFlags(Player player){
-//		if(playerFlags.containsKey(player.getName())){
-//			playerFlags.remove(player.getName());
-//		}
-//	}
-//	
-//	@Deprecated
-//	public boolean playerHasFlags(Player player){
-//		if(playerFlags.containsKey(player.getName())){
-//			return true;
-//		}
-//		return false;
-//	}
-//	
-//	@Deprecated
-//	public List<String> getPlayerFlags(Player player){
-//		return playerFlags.get(player.getName());
-//	}
-//	
-//	@Deprecated
-//	public void addPlayerKill(Player ply){
-//		if(!plyKills.containsKey(ply.getName())){
-//			plyKills.put(ply.getName(), 0);
-//		}
-//		plyKills.put(ply.getName(), plyKills.get(ply.getName()) + 1);
-//	}
-//	
-//	@Deprecated
-//	public Integer getPlayerKills(Player ply){
-//		if(!plyKills.containsKey(ply.getName())){
-//			return 0;
-//		}
-//		return plyKills.get(ply.getName());
-//	}
-//	
-//	@Deprecated
-//	public void removePlayerKills(Player ply){
-//		if(plyKills.containsKey(ply.getName())){
-//			plyKills.remove(ply.getName());
-//		}
-//	}
-//	
-//	@Deprecated
-//	public void addPlayerDeath(Player ply){
-//		if(!plyDeaths.containsKey(ply.getName())){
-//			plyDeaths.put(ply.getName(), 0);
-//		}
-//		plyDeaths.put(ply.getName(), plyDeaths.get(ply.getName()) + 1);
-//	}
-//	
-//	@Deprecated
-//	public Integer getPlayerDeath(Player ply){
-//		if(!plyDeaths.containsKey(ply.getName())){
-//			return 0;
-//		}
-//		return plyDeaths.get(ply.getName());
-//	}
-//	
-//	@Deprecated
-//	public void removePlayerDeath(Player ply){
-//		if(plyDeaths.containsKey(ply.getName())){
-//			plyDeaths.remove(ply.getName());
-//		}
-//	}
-//	
-//	@Deprecated
-//	public void addPlayerScore(Player ply){
-//		if(!plyScore.containsKey(ply.getName())){
-//			plyScore.put(ply.getName(), 0);
-//		}
-//		plyScore.put(ply.getName(), plyScore.get(ply.getName()) + 1);
-//	}
-//	
-//	@Deprecated
-//	public void setPlayerScore(Player ply, int amount){
-//		if(!plyScore.containsKey(ply.getName())){
-//			plyScore.put(ply.getName(), 0);
-//		}
-//		plyScore.put(ply.getName(), amount);
-//	}
-//	
-//	@Deprecated
-//	public void takePlayerScore(Player ply){
-//		if(!plyScore.containsKey(ply.getName())){
-//			plyScore.put(ply.getName(), 0);
-//		}
-//		plyScore.put(ply.getName(), plyScore.get(ply.getName()) - 1);
-//	}
-//	
-//	@Deprecated
-//	public Integer getPlayerScore(Player ply){
-//		if(plyScore.containsKey(ply.getName())){
-//			return plyScore.get(ply.getName());
-//		}
-//		return 0;
-//	}
-//	
-//	@Deprecated
-//	public void removePlayerScore(Player ply){
-//		if(plyScore.containsKey(ply.getName())){
-//			plyScore.remove(ply.getName());
-//		}
-//	}
-//	
-//	@Deprecated
-//	public GameMode getPlayersLastGameMode(Player player){
-//		if(lastGM.containsKey(player.getName())){
-//			return lastGM.get(player.getName());
-//		}
-//		else{
-//			return player.getGameMode();
-//		}
-//	}
-//	
-//	@Deprecated
-//	public void setPlayersLastGameMode(Player player, GameMode gm){
-//		lastGM.put(player.getName(), gm);
-//	}
-//	
-//	@Deprecated
-//	public boolean removePlayersLastGameMode(Player player){
-//		if(lastGM.containsKey(player.getName())){
-//			lastGM.remove(player.getName());
-//			return true;
-//		}
-//		return false;
-//	}
-	
-//	public void saveItems(Player player){
-//		if(itemStore.get(player.getName()) != null){
-//			int num = 0;
-//			for(ItemStack item : itemStore.get(player.getName())){
-//				if(item != null){
-//					invsave.getConfig().set("inventories." + player.getName() + "." + num, item);
-//				}
-//				num++;
-//			}
-//		}
-//		else{
-//			invsave.getConfig().set("inventories." + player.getName(), null);
-//		}
-//		
-//		if(armourStore.get(player.getName()) != null){
-//			int num = 0;
-//			for(ItemStack item : armourStore.get(player.getName())){
-//				if(item != null){
-//					invsave.getConfig().set("inventories." + player.getName() + ".armour." + num, item);
-//				}
-//				num++;
-//			}
-//		}
-//		
-//		if(playerFood.containsKey(player.getName())){
-//			invsave.getConfig().set("inventories." + player.getName() + ".food", playerFood.get(player.getName()));
-//		}
-//		
-//		if(playerSaturation.containsKey(player.getName())){
-//			invsave.getConfig().set("inventories." + player.getName() + ".saturation", playerSaturation.get(player.getName()));
-//		}
-//		
-//		if(playerHealth.containsKey(player.getName())){
-//			invsave.getConfig().set("inventories." + player.getName() + ".health", playerHealth.get(player.getName()));
-//		}
-//		invsave.saveConfig();
-//	}
 	
 	public Configuration getInventorySaveConfig(){
 		return invsave.getConfig();
