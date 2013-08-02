@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -1569,9 +1570,21 @@ public class Minigame {
 		if(minigame.getConfig().contains(name + ".defaultwinner")){
 			setDefaultWinner(minigame.getConfig().getString(name + ".defaultwinner"));
 		}
+
+//		Bukkit.getLogger().info("------- Minigame Load -------");
+//		Bukkit.getLogger().info("Name: " + getName());
+//		Bukkit.getLogger().info("Type: " + getType());
+//		Bukkit.getLogger().info("Enabled: " + isEnabled());
+//		Bukkit.getLogger().info("-----------------------------");
 		
 		if(getType().equals("th") && isEnabled()){
-			Minigames.plugin.mdata.startGlobalMinigame(getName());
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+				
+				@Override
+				public void run() {
+					Minigames.plugin.mdata.startGlobalMinigame(getName());
+				}
+			});
 		}
 		
 		saveMinigame();

@@ -56,6 +56,7 @@ public class StartCommand implements ICommand{
 			if(mgm != null && mgm.getThTimer() == null && mgm.getType().equals("th")){
 				plugin.mdata.startGlobalMinigame(mgm.getName());
 				mgm.setEnabled(true);
+				mgm.saveMinigame();
 			}
 			else if(mgm == null || !mgm.getType().equals("th")){
 				sender.sendMessage(ChatColor.RED + "There is no TreasureHunt Minigame by the name \"" + args[0] + "\"");
