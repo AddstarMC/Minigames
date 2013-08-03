@@ -457,7 +457,7 @@ public class PlayerData {
 				for(MinigamePlayer pl : mgm.getPlayers()){
 					pl.getPlayer().showPlayer(player.getPlayer());
 				}
-				
+				ply.getPlayer().setFlying(false);
 				ply.setAllowTeleport(true);
 				ply.setAllowGamemodeChange(true);
 				
