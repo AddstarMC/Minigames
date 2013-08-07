@@ -69,7 +69,7 @@ public class FinishSign implements MinigameSign {
 					if(plugin.pdata.checkRequiredFlags(player, minigame.getName()).isEmpty()){
 						if(sign.getLine(2).isEmpty() || sign.getLine(2).equals(player.getMinigame().getName())){
 							plugin.pdata.endMinigame(player);
-							plugin.pdata.partyMode(player);
+							plugin.pdata.partyMode(player, 3, 10L);
 						}
 					}
 					else{

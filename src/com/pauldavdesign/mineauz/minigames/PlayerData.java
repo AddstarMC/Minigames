@@ -777,9 +777,26 @@ public class PlayerData {
 			
 			FireworkEffect effect = FireworkEffect.builder().with(type).withColor(col).flicker(chance.nextBoolean()).trail(chance.nextBoolean()).build();
 			fwm.addEffect(effect);
-			fwm.setPower(0);
+			fwm.setPower(1);
 			firework.setFireworkMeta(fwm);
 		}
+	}
+	
+	public void partyMode(MinigamePlayer player, int amount, long delay){
+		final int fcount = amount;
+		final MinigamePlayer fplayer = player;
+		final long fdelay = delay;
+		partyMode(fplayer);
+		if(amount == 1) return;
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				if(fplayer != null){
+					partyMode(fplayer, fcount - 1, fdelay);
+				}
+				
+			}
+		}, delay);
 	}
 	
 	public void addRespawnPosition(Player player, Location location){

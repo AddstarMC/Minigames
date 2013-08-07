@@ -47,5 +47,7 @@ sql-password: root
 
 outputCMDToFile: false
 
+RazzJoinAlert: true
+
 minigames:
   {}
