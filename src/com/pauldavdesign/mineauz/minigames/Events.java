@@ -420,6 +420,7 @@ public class Events implements Listener{
 				if(sb.getShooter() instanceof Player){
 					MinigamePlayer shooter = pdata.getMinigamePlayer((Player) sb.getShooter());
 					Minigame mgm = ply.getMinigame();
+					if(shooter == null) return;
 					if(shooter.isInMinigame() && shooter.getMinigame().equals(ply.getMinigame())){
 						int plyTeam = -1;
 						int atcTeam = -2;
@@ -485,6 +486,7 @@ public class Events implements Listener{
 	private void spectatorAttack(EntityDamageByEntityEvent event){
 		if(event.getDamager() instanceof Player){
 			MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getDamager());
+			if(ply == null) return;
 			if(ply.isInMinigame() && ply.getMinigame().isSpectator(ply)){
 				event.setCancelled(true);
 			}
