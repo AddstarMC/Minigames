@@ -6,7 +6,6 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -141,7 +140,7 @@ public class RaceMinigame extends MinigameType{
 			List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 			players.addAll(mgm.getPlayers());
 			for(int i = 0; i < players.size(); i++){
-				if(players.get(i) instanceof Player){
+				if(players.get(i) instanceof MinigamePlayer){
 					MinigamePlayer p = players.get(i);
 					if(!p.getName().equals(player.getName())){
 						p.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You have been beaten! Bad luck!");
