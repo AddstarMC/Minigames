@@ -2,6 +2,7 @@ package com.pauldavdesign.mineauz.minigames.commands.set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
@@ -82,6 +83,13 @@ public class SetSecondaryRewardCommand implements ICommand{
 					sender.sendMessage(ChatColor.GRAY + "Secondary reward for \"" + minigame.getName() + "\" has been set to " + 
 							MinigameUtils.getItemStackName(item) + " with a quantity of " + quantity);
 				}
+				return true;
+			}
+			else if(sender instanceof Player && args[0].equals("SLOT")){
+				item = ((Player)sender).getItemInHand();
+				minigame.setSecondaryRewardItem(item);
+				sender.sendMessage(ChatColor.GRAY + "Primary reward for \"" + minigame.getName() + "\" has been set to " + 
+						MinigameUtils.getItemStackName(item));
 				return true;
 			}
 			else if(item != null && item.getTypeId() == 0){
