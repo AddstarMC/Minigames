@@ -21,6 +21,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -72,6 +73,9 @@ public class Events implements Listener{
 			if(mgm.getLives() > 0 && mgm.getLives() <= ply.getDeaths()){
 				ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Bad Luck! Leaving the minigame.");
 				ply.getPlayer().setHealth(2);
+				if(event.getEntity().getLastDamageCause().getCause() == DamageCause.FALLING_BLOCK){
+					ply.getMinigame().getBlockRecorder().addBlock(ply.getPlayer().getLocation().getBlock(), null);
+				}
 				pdata.quitMinigame(ply, false);
 			}
 			else if(mgm.getLives() > 0){
