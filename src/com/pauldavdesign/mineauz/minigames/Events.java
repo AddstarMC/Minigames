@@ -30,7 +30,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -64,16 +63,8 @@ public class Events implements Listener{
 			
 			if(ply.getPlayer().getKiller() != null){
 				MinigamePlayer killer = pdata.getMinigamePlayer(ply.getPlayer().getKiller());
-//				pdata.addPlayerKill(killer);
 				killer.addKill();
 			}
-			
-//			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-//				@Override
-//				public void run() {
-//					MinigameUtils.removePlayerArrows(ply);
-//				}
-//			});
 			
 			if(!msg.equals("")){
 				mdata.sendMinigameMessage(mgm, msg, "error", null);
@@ -81,28 +72,12 @@ public class Events implements Listener{
 			if(mgm.getLives() > 0 && mgm.getLives() <= ply.getDeaths()){
 				ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Bad Luck! Leaving the minigame.");
 				ply.getPlayer().setHealth(2);
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						pdata.quitMinigame(ply, false);
-					}
-				});
+				pdata.quitMinigame(ply, false);
 			}
 			else if(mgm.getLives() > 0){
 				ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + (mgm.getLives() - ply.getDeaths()));
 			}
 		}
-	}
-	
-	@EventHandler(priority = EventPriority.HIGHEST)
-	private void playerRespawn(PlayerRespawnEvent event){
-//		if(pdata.hasRespawnPosition(event.getPlayer())){
-//			event.setRespawnLocation(pdata.getRespawnPosition(event.getPlayer()));
-//			pdata.removeRespawnPosition(event.getPlayer());
-//			pdata.getMinigamePlayer(event.getPlayer()).restorePlayerData();
-//			//pdata.restorePlayerData(event.getPlayer());
-//		}
 	}
 	
 	@EventHandler
@@ -133,7 +108,6 @@ public class Events implements Listener{
 	public void onPlayerDisconnect(PlayerQuitEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply.isInMinigame()){
-			//pdata.addDCPlayer(event.getPlayer(), mgm.getQuitPosition());
 			pdata.addOfflineMinigamePlayer(pdata.getMinigamePlayer(event.getPlayer()));
 			pdata.quitMinigame(pdata.getMinigamePlayer(event.getPlayer()), false);
 		}
@@ -166,7 +140,6 @@ public class Events implements Listener{
 				plugin.setLastUpdateCheck(Calendar.getInstance().getTimeInMillis());
 			}
 		}
-		//if(pdata.hasDCPlayer(event.getPlayer())){
 		if(pdata.hasOfflineMinigamePlayer(event.getPlayer().getName())){
 			final Player ply = event.getPlayer();
 			OfflineMinigamePlayer oply = pdata.getOfflineMinigamePlayer(event.getPlayer().getName());
@@ -209,17 +182,6 @@ public class Events implements Listener{
 			});
 			
 		}
-		
-//		final Player fply = event.getPlayer();
-//		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-//			
-//			@Override
-//			public void run() {
-//				if(pdata.playerHasStoredItems(fply) && fply.isOnline()){
-//					pdata.restorePlayerData(fply);
-//				}
-//			}
-//		});
 		
 		if(Bukkit.getServer().getOnlinePlayers().length == 1){
 			for(String mgm : mdata.getAllMinigames().keySet()){
