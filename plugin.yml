@@ -119,6 +119,7 @@ permissions:
             minigame.set.defaultwinner: true
             minigame.set.scoretype: true
             minigame.set.lives: true
+            minigame.set.allowenderpearls: true
     minigame.set.start:
         description: Gives access to setting a minigames starting position
         default: op
@@ -238,6 +239,9 @@ permissions:
         default: op
     minigame.set.lives:
         description: Allows the setting of the amount of lives per player.
+        default: op
+    minigame.set.allowenderpearls:
+        description: Allows players to change the use of enderpearls in a Minigame.
         default: op
     minigame.info:
         description: Allows check to see if a minigames variables have been set

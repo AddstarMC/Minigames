@@ -64,6 +64,7 @@ public class Minigame {
 	private boolean blockPlace = false;
 	private int defaultGamemode = 2;
 	private boolean blocksdrop = true;
+	private boolean allowEnderpearls = false;
 	
 	private String scoreType = "none";
 	private boolean paintBallMode = false;
@@ -939,6 +940,14 @@ public class Minigame {
 		this.defaultWinner = defaultWinner;
 	}
 	
+	public boolean isAllowedEnderpearls() {
+		return allowEnderpearls;
+	}
+
+	public void setAllowEnderpearls(boolean allowEnderpearls) {
+		this.allowEnderpearls = allowEnderpearls;
+	}
+
 	public Scoreboard getScoreboardManager(){
 		return sbManager;
 	}
@@ -1321,6 +1330,13 @@ public class Minigame {
 			minigame.getConfig().set(name + ".defaultwinner", null);
 		}
 		
+		if(isAllowedEnderpearls()){
+			minigame.getConfig().set(name + ".allowEnderpearls", isAllowedEnderpearls());
+		}
+		else{
+			minigame.getConfig().set(name + ".allowEnderpearls", null);
+		}
+		
 		minigame.saveConfig();
 	}
 	
@@ -1569,6 +1585,10 @@ public class Minigame {
 		
 		if(minigame.getConfig().contains(name + ".defaultwinner")){
 			setDefaultWinner(minigame.getConfig().getString(name + ".defaultwinner"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".allowEnderpearls")){
+			setAllowEnderpearls(minigame.getConfig().getBoolean(name + ".allowEnderpearls"));
 		}
 
 //		Bukkit.getLogger().info("------- Minigame Load -------");

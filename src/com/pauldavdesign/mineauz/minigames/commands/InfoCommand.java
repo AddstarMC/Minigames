@@ -289,6 +289,13 @@ public class InfoCommand implements ICommand{
 						lines.add(ChatColor.GRAY + "Unlimited Ammo: " + ChatColor.RED + "false");
 					}
 					
+					if(mgm.isAllowedEnderpearls()){
+						lines.add(ChatColor.GRAY + "Allow Enderpearls: " + ChatColor.GREEN + "true");
+					}
+					else{
+						lines.add(ChatColor.GRAY + "Allow Enderpearls: " + ChatColor.RED + "false");
+					}
+					
 					if(mgm.getType().equals("sp")){
 						if(mgm.canSaveCheckpoint()){
 							lines.add(ChatColor.GRAY + "Save Checkpoints: " + ChatColor.GREEN + "true");

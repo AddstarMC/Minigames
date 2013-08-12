@@ -66,6 +66,7 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetRegenAreaCommand());
 		registerSetCommand(new SetLivesCommand());
 		registerSetCommand(new SetDefaultWinnerCommand());
+		registerSetCommand(new SetAllowEnderpearls());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {
