@@ -489,6 +489,7 @@ public class RecorderData implements Listener{
 	@EventHandler(priority = EventPriority.HIGH)
 	private void blockBreak(BlockBreakEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply == null) return;
 		if(ply.isInMinigame() && ply.getMinigame().equals(minigame)){
 			if(((whitelistMode && getWBBlocks().contains(event.getBlock().getType())) || 
 					(!whitelistMode && !getWBBlocks().contains(event.getBlock().getType()))) && 
@@ -542,6 +543,7 @@ public class RecorderData implements Listener{
 	@EventHandler(priority = EventPriority.HIGH)
 	private void blockPlace(BlockPlaceEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply == null) return;
 		if(ply.isInMinigame() && ply.getMinigame().equals(minigame) && !event.isCancelled()){
 			if(((whitelistMode && getWBBlocks().contains(event.getBlock().getType())) || 
 					(!whitelistMode && !getWBBlocks().contains(event.getBlock().getType()))) &&
@@ -558,6 +560,7 @@ public class RecorderData implements Listener{
 	@EventHandler
 	private void takeItem(PlayerInteractEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply == null) return;
 		if(ply.isInMinigame() && ply.getMinigame().equals(minigame) && event.getAction() == Action.RIGHT_CLICK_BLOCK
 				&& !minigame.isSpectator(ply)){
 			if(event.getClickedBlock().getType() == Material.CHEST){
@@ -651,6 +654,7 @@ public class RecorderData implements Listener{
 	@EventHandler
 	private void bucketFill(PlayerBucketFillEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply == null) return;
 		if(ply.isInMinigame() && ply.getMinigame().equals(minigame)){
 			if(((whitelistMode && getWBBlocks().contains(event.getBlockClicked().getType())) || 
 					(!whitelistMode && !getWBBlocks().contains(event.getBlockClicked().getType()))) && 
@@ -666,6 +670,7 @@ public class RecorderData implements Listener{
 	@EventHandler
 	private void bucketEmpty(PlayerBucketEmptyEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply == null) return;
 		if(ply.isInMinigame() && ply.getMinigame().equals(minigame)){
 			if(((whitelistMode && getWBBlocks().contains(event.getBlockClicked().getType())) || 
 					(!whitelistMode && !getWBBlocks().contains(event.getBlockClicked().getType()))) && 
