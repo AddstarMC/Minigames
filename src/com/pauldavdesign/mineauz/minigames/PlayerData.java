@@ -109,6 +109,7 @@ public class PlayerData {
 		if(!event.isCancelled()){
 			player.storePlayerData();
 			player.setMinigame(minigame);
+			player.getPlayer().setGameMode(GameMode.ADVENTURE);
 			
 			minigame.addSpectator(player);
 			minigameTeleport(player, minigame.getStartLocations().get(0));
