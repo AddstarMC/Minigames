@@ -74,7 +74,7 @@ public class SignBase implements Listener{
 			Block cblock = event.getClickedBlock();
 			if(cblock.getState() instanceof Sign){
 				Sign sign = (Sign) cblock.getState();
-				if(sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]") && 
+				if(sign.getLine(0).equals(ChatColor.DARK_BLUE + "[Minigame]") && 
 						minigameSigns.containsKey(ChatColor.stripColor(sign.getLine(1).toLowerCase()))){
 					MinigameSign mgSign = minigameSigns.get(ChatColor.stripColor(sign.getLine(1).toLowerCase()));
 					
@@ -84,9 +84,9 @@ public class SignBase implements Listener{
 						return;
 					}
 					
-					if(mgSign.signUse(sign, Minigames.plugin.pdata.getMinigamePlayer(event.getPlayer()))){
-						event.setCancelled(true);
-					}
+					event.setCancelled(true);
+					
+					mgSign.signUse(sign, Minigames.plugin.pdata.getMinigamePlayer(event.getPlayer()));
 				}
 			}
 		}
