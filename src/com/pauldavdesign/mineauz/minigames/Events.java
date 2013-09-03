@@ -84,7 +84,7 @@ public class Events implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void playerDropItem(PlayerDropItemEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply.isInMinigame()){
@@ -96,7 +96,7 @@ public class Events implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void itemPickup(PlayerPickupItemEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply.isInMinigame()){
@@ -204,7 +204,7 @@ public class Events implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void playerInterract(PlayerInteractEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
@@ -320,7 +320,7 @@ public class Events implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onTeleportAway(PlayerTeleportEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
@@ -336,7 +336,7 @@ public class Events implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onGMChange(PlayerGameModeChangeEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply.isInMinigame() && !ply.getAllowGamemodeChange()){
@@ -345,7 +345,7 @@ public class Events implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onFlyToggle(PlayerToggleFlightEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply.isInMinigame() && (!ply.getMinigame().isSpectator(ply) || !ply.getMinigame().canSpectateFly())){
@@ -355,7 +355,7 @@ public class Events implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void playerRevert(RevertCheckpointEvent event){
 		if(event.getMinigamePlayer().isInMinigame() && (event.getMinigamePlayer().getMinigame().getType().equals("lms") || event.getMinigamePlayer().getMinigame().getType().equals("dm") || event.getMinigamePlayer().getMinigame().getType().equals("teamdm"))){
 			event.setCancelled(true);
@@ -363,7 +363,7 @@ public class Events implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void commandExecute(PlayerCommandPreprocessEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply.isInMinigame()){
@@ -410,7 +410,7 @@ public class Events implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void playerShoot(ProjectileLaunchEvent event){
 		if(event.getEntityType() == EntityType.SNOWBALL){
 			Snowball snowball = (Snowball) event.getEntity();
@@ -434,7 +434,7 @@ public class Events implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void playerHurt(EntityDamageEvent event){
 		if(event.getEntity() instanceof Player){
 			MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getEntity());
@@ -448,7 +448,7 @@ public class Events implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void spectatorAttack(EntityDamageByEntityEvent event){
 		if(event.getDamager() instanceof Player){
 			MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getDamager());

@@ -557,7 +557,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void takeItem(PlayerInteractEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
@@ -629,7 +629,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void leafDecay(LeavesDecayEvent event){
 		if(hasRegenArea() && minigame.hasPlayers()){
 			Location block = event.getBlock().getLocation();
@@ -642,7 +642,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void treeGrow(StructureGrowEvent event){
 		if(hasBlock(event.getLocation().getBlock())){
 			for(BlockState block : event.getBlocks()){
@@ -651,7 +651,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void bucketFill(PlayerBucketFillEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
@@ -667,7 +667,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void bucketEmpty(PlayerBucketEmptyEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
@@ -687,7 +687,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void blockFromTo(BlockFromToEvent event){
 		if(hasRegenArea() && minigame.hasPlayers()){
 			if(blockInRegenArea(event.getBlock().getLocation())){
@@ -697,7 +697,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void blockBurn(BlockBurnEvent event){
 		if(hasRegenArea() && minigame.hasPlayers()){
 			Location block = event.getBlock().getLocation();
@@ -713,7 +713,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void fireSpread(BlockSpreadEvent event){
 		if(hasRegenArea() && minigame.hasPlayers()){
 			Location block = event.getBlock().getLocation();
@@ -729,7 +729,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void igniteblock(BlockIgniteEvent event){
 		if(event.getPlayer() != null && pdata.getMinigamePlayer(event.getPlayer()).isInMinigame() && 
 				pdata.getMinigamePlayer(event.getPlayer()).getMinigame().equals(minigame) && 
@@ -754,14 +754,14 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void vehicleCreate(VehicleCreateEvent event){
 		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getVehicle().getLocation())){
 			addEntity(event.getVehicle(), null, true);
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void vehicleDestroy(VehicleDestroyEvent event){
 		if(event.getAttacker() != null){
 			if(event.getAttacker() instanceof Player){
@@ -780,7 +780,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void animalDeath(EntityDamageByEntityEvent event){
 		if(event.getEntity() instanceof Animals){
 			Animals animal = (Animals) event.getEntity();
@@ -812,14 +812,14 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void mobSpawnEvent(CreatureSpawnEvent event){
 		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getLocation())){
 			addEntity(event.getEntity(), null, true);
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void paintingPlace(HangingPlaceEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply.isInMinigame() && ply.getMinigame().equals(minigame)){
@@ -835,7 +835,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void paintingBreak(HangingBreakByEntityEvent event){
 		Player ply = null;
 		if(event.getRemover() instanceof Player){
@@ -853,7 +853,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void entityExplode(EntityExplodeEvent event){
 		if(hasRegenArea() && minigame.hasPlayers()){
 			Location block = event.getLocation().getBlock().getLocation();
@@ -874,7 +874,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void itemDrop(ItemSpawnEvent event){
 		if(hasRegenArea() && minigame.hasPlayers()){
 			Location ent = event.getLocation();
@@ -884,7 +884,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void arrowShoot(EntityShootBowEvent event){
 		if(event.getEntity() instanceof Player){
 			Player ply = (Player) event.getEntity();
@@ -894,7 +894,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void pistonPush(BlockPistonExtendEvent event){
 		if(hasBlock(event.getBlock())){
 			for(Block bl : event.getBlocks()){
@@ -933,7 +933,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void pistonPull(BlockPistonRetractEvent event){
 		if(hasBlock(event.getBlock())){
 			if((whitelistMode && !getWBBlocks().contains(event.getRetractLocation().getBlock().getType())) || 
@@ -968,7 +968,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void physicalBlock(EntityChangeBlockEvent event){
 		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getBlock().getLocation())){
 			if(event.getBlock().getType() == Material.SAND ||
@@ -985,14 +985,14 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void dispenser(BlockDispenseEvent event){
 		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getBlock().getLocation())){
 			addBlock(event.getBlock(), null);
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void blockForm(BlockFormEvent event){
 		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getBlock().getLocation())){
 			addBlock(event.getBlock(), null);
