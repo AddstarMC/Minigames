@@ -690,7 +690,7 @@ public class RecorderData implements Listener{
 	@EventHandler(ignoreCancelled = true)
 	public void blockFromTo(BlockFromToEvent event){
 		if(hasRegenArea() && minigame.hasPlayers()){
-			if(blockInRegenArea(event.getBlock().getLocation())){
+			if(blockInRegenArea(event.getBlock().getLocation()) && event.getToBlock().getType() != Material.BEDROCK){
 				addBlock(event.getBlock(), null);
 				addBlock(event.getToBlock(), null);
 			}
