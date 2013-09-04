@@ -96,7 +96,9 @@ public class CTFFlag{
 		if(blockBelow.getBlock().getType() == Material.FURNACE ||
 				blockBelow.getBlock().getType() == Material.DISPENSER ||
 				blockBelow.getBlock().getType() == Material.CHEST ||
-				blockBelow.getBlock().getType() == Material.BREWING_STAND){
+				blockBelow.getBlock().getType() == Material.BREWING_STAND || 
+				blockBelow.getBlock().getType() == Material.SIGN_POST || 
+				blockBelow.getBlock().getType() == Material.WALL_SIGN){
 			blockBelow.setY(blockBelow.getY() + 1);
 		}
 
