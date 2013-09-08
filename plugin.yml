@@ -48,6 +48,7 @@ permissions:
             minigame.list: true
             minigame.regen: true
             minigame.globalloadout: true
+            minigame.player: true
     minigame.join:
         description: Allows a player to join a Minigame, bypassing betting.
         default: op
@@ -120,6 +121,7 @@ permissions:
             minigame.set.scoretype: true
             minigame.set.lives: true
             minigame.set.allowenderpearls: true
+            minigame.set.starttime: true
     minigame.set.start:
         description: Gives access to setting a minigames starting position
         default: op
@@ -243,6 +245,9 @@ permissions:
     minigame.set.allowenderpearls:
         description: Allows players to change the use of enderpearls in a Minigame.
         default: op
+    minigame.set.starttime:
+        description: Allows a player to change the start timer of a Minigame.
+        default: op
     minigame.info:
         description: Allows check to see if a minigames variables have been set
         default: op
@@ -364,4 +369,7 @@ permissions:
         default: op
     minigame.globalloadout:
         description: Allows a player to modify global loadouts.
+        default: op
+    minigame.player:
+        description: Allows a player to use the Minigame player command.
         default: op

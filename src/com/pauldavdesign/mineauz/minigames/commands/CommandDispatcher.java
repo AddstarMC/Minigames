@@ -53,6 +53,7 @@ public class CommandDispatcher implements CommandExecutor{
 		registerCommand(new DeniedCommandCommand());
 		registerCommand(new GlobalLoadoutCommand());
 		registerCommand(new SpectateCommand());
+		registerCommand(new PlayerCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {
