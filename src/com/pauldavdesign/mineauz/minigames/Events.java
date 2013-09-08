@@ -127,10 +127,6 @@ public class Events implements Listener{
 				}
 			}
 		}
-		
-		if(event.getPlayer().getName().equals("_Razz_") && plugin.getConfig().getBoolean("RazzJoinAlert")){
-			pdata.setPartyMode(false);
-		}
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -195,12 +191,6 @@ public class Events implements Listener{
 					}
 				}
 			}
-		}
-
-		if(event.getPlayer().getName().equals("_Razz_") && plugin.getConfig().getBoolean("RazzJoinAlert")){
-			event.setJoinMessage(ChatColor.AQUA + "[Minigames Developer]" + ChatColor.YELLOW + " _Razz_ joined the game.");
-			pdata.partyMode(pdata.getMinigamePlayer(event.getPlayer()), 5, 20L);
-			pdata.setPartyMode(true);
 		}
 	}
 	
