@@ -33,6 +33,12 @@
       <url>http://repo1.maven.org/maven2/</url>
     </repository>
     
+    <!-- Addstar repo -->
+    <repository>
+      <id>addstar-repo</id>
+      <url>http://maven.addstar.com.au/artifactory/ext-release-local</url>
+    </repository>
+
     <!-- mcstats repo -->
     <repository>
       <id>Plugin Metrics</id>
@@ -45,14 +51,14 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.6.2-R0.1-SNAPSHOT</version>
+      <version>1.6.2-R0.2-SNAPSHOT</version>
     </dependency>
     
     <!-- CraftBukkit Dependency for experimental features
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>craftbukkit</artifactId>
-      <version>1.6.2-R0.1-SNAPSHOT</version>
+      <version>1.6.2-R0.2-SNAPSHOT</version>
     </dependency>-->        
     
     <!-- Used for economy stuff -->
@@ -64,7 +70,7 @@
 
     <!-- SQLibrary -->
     <dependency>
-      <groupId>lib.PatPeter</groupId>
+      <groupId>lib.patpeter</groupId>
       <artifactId>sqlibrary</artifactId>
       <version>6.0</version>
     </dependency>
