@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 
-public class SetAllowEnderpearls implements ICommand {
+public class SetAllowEnderpearlsCommand implements ICommand {
 
 	@Override
 	public String getName() {

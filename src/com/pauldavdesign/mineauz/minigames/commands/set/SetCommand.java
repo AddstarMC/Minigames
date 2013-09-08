@@ -21,6 +21,10 @@ public class SetCommand implements ICommand{
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {
 				cmdFile = new BufferedWriter(new FileWriter(plugin.getDataFolder() + "/setcmds.txt"));
+				cmdFile.write("|=Command|");
+				cmdFile.write("=Description|");
+				cmdFile.write("=Permission|");
+				cmdFile.newLine();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -66,7 +70,8 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetRegenAreaCommand());
 		registerSetCommand(new SetLivesCommand());
 		registerSetCommand(new SetDefaultWinnerCommand());
-		registerSetCommand(new SetAllowEnderpearls());
+		registerSetCommand(new SetAllowEnderpearlsCommand());
+		registerSetCommand(new SetStartTimeCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {
@@ -82,43 +87,27 @@ public class SetCommand implements ICommand{
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {
-				cmdFile.write("Command: " + command.getName());
-				cmdFile.newLine();
-				if(command.getDescription() != null){
-					cmdFile.write("Description:");
-					cmdFile.newLine();
-					cmdFile.write(command.getDescription());
-					cmdFile.newLine();
-				}
-				if(command.getParameters() != null){
-					cmdFile.write("Parameters:");
-					cmdFile.newLine();
-					for(String par : command.getParameters()){
-						cmdFile.write(par + ", ");
-					}
-					cmdFile.newLine();
-				}
+				cmdFile.write("|**" + command.getName() + "**\\\\");
 				if(command.getUsage() != null){
-					cmdFile.write("Usage:");
-					cmdFile.newLine();
 					for(String use : command.getUsage()){
-						cmdFile.write(use);
-						cmdFile.newLine();
+						cmdFile.write(use.replace("|", "/") + "\\\\");
 					}
+					cmdFile.write("|");
 				}
-				if(command.getAliases() != null){
-					cmdFile.write("Aliases:");
-					cmdFile.newLine();
-					for(String alias : command.getAliases()){
-						cmdFile.write(alias + ", ");
-					}
-					cmdFile.newLine();
+				else{
+					cmdFile.write("N/A|");
+				}
+				if(command.getDescription() != null){
+					cmdFile.write(command.getDescription().replace("\n", "\\\\") + "|");
+				}
+				else{
+					cmdFile.write("N/A|");
 				}
 				if(command.getPermission() != null){
-					cmdFile.write("Permission:");
-					cmdFile.newLine();
-					cmdFile.write(command.getPermission());
-					cmdFile.newLine();
+					cmdFile.write(command.getPermission() + "|");
+				}
+				else{
+					cmdFile.write("N/A|");
 				}
 				cmdFile.newLine();
 			} catch (IOException e) {

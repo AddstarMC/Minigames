@@ -54,6 +54,7 @@ public class Minigame {
 	private double secondaryRewardPrice = 0;
 	private boolean usePermissions = false;
 	private int timer = 0;
+	private int startWaitTime = 0;
 	private Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<MinigamePlayer, CTFFlag>();
 	private Map<String, CTFFlag> droppedFlag = new HashMap<String, CTFFlag>();
 	
@@ -707,6 +708,14 @@ public class Minigame {
 	
 	public int getTimer(){
 		return timer;
+	}
+
+	public int getStartWaitTime() {
+		return startWaitTime;
+	}
+
+	public void setStartWaitTime(int startWaitTime) {
+		this.startWaitTime = startWaitTime;
 	}
 
 	public boolean hasItemDrops() {

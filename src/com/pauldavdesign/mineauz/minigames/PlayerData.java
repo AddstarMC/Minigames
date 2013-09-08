@@ -185,15 +185,14 @@ public class PlayerData {
 		}
 	}
 	
-	public void startMPMinigame(String minigame){
+	public void startMPMinigame(Minigame minigame){
 		List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
-		players.addAll(mdata.getMinigame(minigame).getPlayers());
+		players.addAll(minigame.getPlayers());
 		
 		Collections.shuffle(players);
 		
-		Minigame mgm = mdata.getMinigame(minigame);
-		if(mgm.getType().equals("teamdm") && ScoreTypes.getScoreType(mgm.getScoreType()) != null){
-			ScoreTypes.getScoreType(mgm.getScoreType()).balanceTeam(players, mgm);
+		if(minigame.getType().equals("teamdm") && ScoreTypes.getScoreType(minigame.getScoreType()) != null){
+			ScoreTypes.getScoreType(minigame.getScoreType()).balanceTeam(players, minigame);
 		}
 		
 		Location start = null;
@@ -202,23 +201,23 @@ public class PlayerData {
 		int redpos = 0;
 		
 		for(MinigamePlayer ply : players){
-			if(!mgm.getType().equals("teamdm")){
-				if(pos < mgm.getStartLocations().size()){
-					start = mgm.getStartLocations().get(pos);
+			if(!minigame.getType().equals("teamdm")){
+				if(pos < minigame.getStartLocations().size()){
+					start = minigame.getStartLocations().get(pos);
 					minigameTeleport(ply, start);
 					ply.setCheckpoint(start);
-					if(mgm.getMaxScore() != 0 && mgm.getType().equals("dm") && !mgm.getScoreType().equals("none")){
-						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
+					if(minigame.getMaxScore() != 0 && minigame.getType().equals("dm") && !minigame.getScoreType().equals("none")){
+						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + minigame.getMaxScorePerPlayer(minigame.getPlayers().size()));
 					}
 				} 
 				else{
 					pos = 0;
-					if(!mgm.getStartLocations().isEmpty()){
-						start = mgm.getStartLocations().get(0);
+					if(!minigame.getStartLocations().isEmpty()){
+						start = minigame.getStartLocations().get(0);
 						minigameTeleport(ply, start);
 						ply.setCheckpoint(start);
-						if(mgm.getMaxScore() != 0 && mgm.getType().equals("dm") && !mgm.getScoreType().equals("none")){
-							ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
+						if(minigame.getMaxScore() != 0 && minigame.getType().equals("dm") && !minigame.getScoreType().equals("none")){
+							ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + minigame.getMaxScorePerPlayer(minigame.getPlayers().size()));
 						}
 					}
 					else {
@@ -229,46 +228,46 @@ public class PlayerData {
 			}
 			else{
 				int team = -1;
-				if(mgm.getBlueTeam().contains(ply.getPlayer())){
+				if(minigame.getBlueTeam().contains(ply.getPlayer())){
 					team = 1;
 				}
-				else if(mgm.getRedTeam().contains(ply.getPlayer())){
+				else if(minigame.getRedTeam().contains(ply.getPlayer())){
 					team = 0;
 				}
-				if(!mgm.getStartLocationsRed().isEmpty() && !mgm.getStartLocationsBlue().isEmpty()){
-					if(team == 0 && redpos < mgm.getStartLocationsRed().size()){
-						start = mgm.getStartLocationsRed().get(redpos);
+				if(!minigame.getStartLocationsRed().isEmpty() && !minigame.getStartLocationsBlue().isEmpty()){
+					if(team == 0 && redpos < minigame.getStartLocationsRed().size()){
+						start = minigame.getStartLocationsRed().get(redpos);
 						redpos++;
 					}
-					else if(team == 1 && bluepos < mgm.getStartLocationsBlue().size()){
-						start = mgm.getStartLocationsBlue().get(bluepos);
+					else if(team == 1 && bluepos < minigame.getStartLocationsBlue().size()){
+						start = minigame.getStartLocationsBlue().get(bluepos);
 						bluepos++;
 					}
-					else if(team == 0 && !mgm.getStartLocationsRed().isEmpty()){
+					else if(team == 0 && !minigame.getStartLocationsRed().isEmpty()){
 						redpos = 0;
-						start = mgm.getStartLocationsRed().get(redpos);
+						start = minigame.getStartLocationsRed().get(redpos);
 						redpos++;
 					}
-					else if(team == 1 && !mgm.getStartLocationsBlue().isEmpty()){
+					else if(team == 1 && !minigame.getStartLocationsBlue().isEmpty()){
 						bluepos = 0;
-						start = mgm.getStartLocationsBlue().get(bluepos);
+						start = minigame.getStartLocationsBlue().get(bluepos);
 						bluepos++;
 					}
-					else if(mgm.getStartLocationsBlue().isEmpty() || mgm.getStartLocationsRed().isEmpty()){
+					else if(minigame.getStartLocationsBlue().isEmpty() || minigame.getStartLocationsRed().isEmpty()){
 						ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Starting positions are incorrectly configured!");
 						quitMinigame(ply, false);
 					}
 				}
 				else{
-					if(pos <= mgm.getStartLocations().size()){
-						start = mgm.getStartLocations().get(pos);
+					if(pos <= minigame.getStartLocations().size()){
+						start = minigame.getStartLocations().get(pos);
 						minigameTeleport(ply, start);
 						ply.setCheckpoint(start);
 					} 
 					else{
 						pos = 1;
-						if(!mgm.getStartLocations().isEmpty()){
-							start = mgm.getStartLocations().get(0);
+						if(!minigame.getStartLocations().isEmpty()){
+							start = minigame.getStartLocations().get(0);
 							minigameTeleport(ply, start);
 							ply.setCheckpoint(start);
 						}
@@ -282,39 +281,39 @@ public class PlayerData {
 				if(start != null){
 					minigameTeleport(ply, start);
 					ply.setCheckpoint(start);
-					if(mgm.getMaxScore() != 0 && !mgm.getScoreType().equals("none")){
-						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + mgm.getMaxScorePerPlayer(mgm.getPlayers().size()));
+					if(minigame.getMaxScore() != 0 && !minigame.getScoreType().equals("none")){
+						ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Score to win: " + minigame.getMaxScorePerPlayer(minigame.getPlayers().size()));
 					}
 				}
 				
-				if(mgm.getLives() > 0){
-					ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + mgm.getLives());
+				if(minigame.getLives() > 0){
+					ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + minigame.getLives());
 				}
 			}
 			pos++;
-			if(!mgm.getPlayersLoadout(ply).getItems().isEmpty()){
-				mgm.getPlayersLoadout(ply).equiptLoadout(ply);
+			if(!minigame.getPlayersLoadout(ply).getItems().isEmpty()){
+				minigame.getPlayersLoadout(ply).equiptLoadout(ply);
 			}
-			ply.getPlayer().setScoreboard(mgm.getScoreboardManager());
-			mgm.setScore(ply, 1);
-			mgm.setScore(ply, 0);
+			ply.getPlayer().setScoreboard(minigame.getScoreboardManager());
+			minigame.setScore(ply, 1);
+			minigame.setScore(ply, 0);
 		}
 		
-		if(mgm.hasPlayers()){
-			if(mgm.getSpleefFloor1() != null && mgm.getSpleefFloor2() != null){
-				mgm.addFloorDegenerator();
-				mgm.getFloorDegenerator().startDegeneration();
+		if(minigame.hasPlayers()){
+			if(minigame.getSpleefFloor1() != null && minigame.getSpleefFloor2() != null){
+				minigame.addFloorDegenerator();
+				minigame.getFloorDegenerator().startDegeneration();
 			}
 	
-			if(mgm.hasRestoreBlocks()){
-				for(RestoreBlock block : mgm.getRestoreBlocks().values()){
-					mgm.getBlockRecorder().addBlock(block.getLocation().getBlock(), null);
+			if(minigame.hasRestoreBlocks()){
+				for(RestoreBlock block : minigame.getRestoreBlocks().values()){
+					minigame.getBlockRecorder().addBlock(block.getLocation().getBlock(), null);
 				}
 			}
 			
-			if(mgm.getTimer() > 0){
-				mgm.setMinigameTimer(new MinigameTimer(mgm, mgm.getTimer()));
-				mdata.sendMinigameMessage(mgm, MinigameUtils.convertTime(mgm.getTimer()) + " left.", null, null);
+			if(minigame.getTimer() > 0){
+				minigame.setMinigameTimer(new MinigameTimer(minigame, minigame.getTimer()));
+				mdata.sendMinigameMessage(minigame, MinigameUtils.convertTime(minigame.getTimer()) + " left.", null, null);
 			}
 		}
 	}

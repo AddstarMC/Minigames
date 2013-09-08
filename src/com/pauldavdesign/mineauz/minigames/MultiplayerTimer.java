@@ -9,19 +9,21 @@ import org.bukkit.ChatColor;
 public class MultiplayerTimer{
 	private int playerWaitTime;
 	private int startWaitTime;
-	private String minigame;
+	private Minigame minigame;
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
-	private MinigameData mdata = plugin.mdata;
 	private boolean paused = false;
 	private int taskID = -1;
 	private List<Integer> timeMsg = new ArrayList<Integer>();
 	
-	public MultiplayerTimer(String mg){
-		playerWaitTime = plugin.getConfig().getInt("multiplayer.waitforplayers");
-		startWaitTime = plugin.getConfig().getInt("multiplayer.startcountdown");
-		timeMsg.addAll(plugin.getConfig().getIntegerList("multiplayer.timerMessageInterval"));
+	public MultiplayerTimer(Minigame mg){
 		minigame = mg;
+		playerWaitTime = plugin.getConfig().getInt("multiplayer.waitforplayers");
+		if(minigame.getStartWaitTime() == 0	)
+			startWaitTime = plugin.getConfig().getInt("multiplayer.startcountdown");
+		else
+			startWaitTime = minigame.getStartWaitTime();
+		timeMsg.addAll(plugin.getConfig().getIntegerList("multiplayer.timerMessageInterval"));
 	}
 	
 	public void startTimer(){
@@ -31,27 +33,27 @@ public class MultiplayerTimer{
 			public void run() {
 				if(playerWaitTime != 0 && !paused){
 					if(playerWaitTime == plugin.getConfig().getInt("multiplayer.waitforplayers")){
-						sendPlayersMessage(minigame, ChatColor.GRAY + "Waiting for players:");
-						sendPlayersMessage(minigame, ChatColor.GRAY + "" + playerWaitTime + "sec.");
+						sendPlayersMessage(ChatColor.GRAY + "Waiting for players:");
+						sendPlayersMessage(ChatColor.GRAY + "" + playerWaitTime + "sec.");
 					}
 					else if(timeMsg.contains(playerWaitTime)){
-						sendPlayersMessage(minigame, ChatColor.GRAY + "" + playerWaitTime + "sec.");
+						sendPlayersMessage(ChatColor.GRAY + "" + playerWaitTime + "sec.");
 					}
 					playerWaitTime -= 1;
 				}
 				else if(playerWaitTime == 0 && startWaitTime !=0 && !paused){
 					if(startWaitTime == plugin.getConfig().getInt("multiplayer.startcountdown")){
-						sendPlayersMessage(minigame, ChatColor.GRAY + "Minigame starts in:");
-						sendPlayersMessage(minigame, ChatColor.GRAY + "" + startWaitTime + "sec.");
+						sendPlayersMessage(ChatColor.GRAY + "Minigame starts in:");
+						sendPlayersMessage(ChatColor.GRAY + "" + startWaitTime + "sec.");
 					}
 					else if(timeMsg.contains(startWaitTime)){
-						sendPlayersMessage(minigame, ChatColor.GRAY + "" + startWaitTime + "sec.");
+						sendPlayersMessage(ChatColor.GRAY + "" + startWaitTime + "sec.");
 					}
 					startWaitTime -= 1;
 				}
 				else if(playerWaitTime == 0 && startWaitTime == 0){
 					if(startWaitTime == 0 && playerWaitTime == 0){
-						sendPlayersMessage(minigame, ChatColor.GREEN + "Go!");
+						sendPlayersMessage(ChatColor.GREEN + "Go!");
 						reclearInventories(minigame);
 						pdata.startMPMinigame(minigame);
 					}
@@ -61,14 +63,14 @@ public class MultiplayerTimer{
 		}, 0, 20);
 	}
 	
-	public void sendPlayersMessage(String minigame, String message){
-		for(MinigamePlayer ply : mdata.getMinigame(minigame).getPlayers()){
+	public void sendPlayersMessage(String message){
+		for(MinigamePlayer ply : minigame.getPlayers()){
 			ply.sendMessage(message);
 		}
 	}
 	
-	public void reclearInventories(String minigame){
-		for(MinigamePlayer ply : mdata.getMinigame(minigame).getPlayers()){
+	public void reclearInventories(Minigame minigame){
+		for(MinigamePlayer ply : minigame.getPlayers()){
 			ply.getPlayer().getInventory().clear();
 		}
 	}
@@ -91,14 +93,14 @@ public class MultiplayerTimer{
 	
 	public void pauseTimer(){
 		paused = true;
-		for(MinigamePlayer ply : mdata.getMinigame(minigame).getPlayers()){
+		for(MinigamePlayer ply : minigame.getPlayers()){
 			ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Start timer paused.");
 		}
 	}
 	
 	public void pauseTimer(String reason){
 		paused = true;
-		for(MinigamePlayer ply : mdata.getMinigame(minigame).getPlayers()){
+		for(MinigamePlayer ply : minigame.getPlayers()){
 			ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Start timer paused: " + reason);
 		}
 	}
@@ -111,7 +113,7 @@ public class MultiplayerTimer{
 	
 	public void resumeTimer(){
 		paused = false;
-		for(MinigamePlayer ply : mdata.getMinigame(minigame).getPlayers()){
+		for(MinigamePlayer ply : minigame.getPlayers()){
 			ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Start timer resumed.");
 		}
 	}

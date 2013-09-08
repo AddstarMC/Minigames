@@ -51,7 +51,7 @@ public class TeamDMMinigame extends MinigameType{
 //						player.teleport(lobby);
 						pdata.minigameTeleport(player, lobby);
 						if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMaxPlayers()){
-							mgm.setMpTimer(new MultiplayerTimer(mgm.getName()));
+							mgm.setMpTimer(new MultiplayerTimer(mgm));
 							mgm.getMpTimer().startTimer();
 							mgm.getMpTimer().setPlayerWaitTime(0);
 							mdata.sendMinigameMessage(mgm, "Minigame full, skipping player wait time.", "info", null);
@@ -111,7 +111,7 @@ public class TeamDMMinigame extends MinigameType{
 					player.sendMessage(ChatColor.GREEN + "You have started a team deathmatch minigame, type /minigame quit to exit.");
 				
 					if(mgm.getMpTimer() == null && mgm.getPlayers().size() >= mgm.getMinPlayers()){
-						mgm.setMpTimer(new MultiplayerTimer(mgm.getName()));
+						mgm.setMpTimer(new MultiplayerTimer(mgm));
 						mgm.getMpTimer().startTimer();
 						if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
 							mgm.getMpTimer().setPlayerWaitTime(0);
