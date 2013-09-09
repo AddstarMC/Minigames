@@ -72,7 +72,7 @@ public abstract class MinigameType implements Listener{
 			
 			Location lobby = mgm.getLobbyPosition();
 			if(/*!mgm.getPlayers().isEmpty() && */mdata.getMinigame(mgm.getName()).getPlayers().size() < mgm.getMaxPlayers()){
-				if(mgm.canLateJoin() || mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
+				if((mgm.canLateJoin() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0) || mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
 					//pdata.storePlayerData(player, mgm.getDefaultGamemode());
 					player.storePlayerData();
 					//pdata.addPlayerMinigame(player, mgm);
@@ -133,6 +133,10 @@ public abstract class MinigameType implements Listener{
 						}
 					}
 					return true;
+				}
+				else if((mgm.canLateJoin() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() != 0)){
+					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Please wait " + mgm.getMpTimer().getStartWaitTimeLeft() + " seconds and try again.");
+					return false;
 				}
 				else if(mgm.getMpTimer().getPlayerWaitTimeLeft() == 0){
 					player.sendMessage(ChatColor.RED + "The minigame has already started. Try again soon.");
