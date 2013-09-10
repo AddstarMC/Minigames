@@ -138,7 +138,9 @@ public class DMMinigame extends MinigameType{
 				pdata.minigameTeleport(player, mgm.getEndPosition());
 			}
 			else{
-				pdata.addRespawnPosition(player.getPlayer(), mgm.getEndPosition());
+//				pdata.addRespawnPosition(player.getPlayer(), mgm.getEndPosition());
+				player.setRequiredQuit(true);
+				player.setQuitPos(mgm.getEndPosition());
 			}
 		}
 		

@@ -22,6 +22,8 @@ public class MinigamePlayer {
 	private Scoreboard lastScoreboard = null;
 	
 	private Minigame minigame = null;
+	private boolean requiredQuit = false;
+	private Location quitPos = null;
 	private List<String> flags = new ArrayList<String>();
 	private Location checkpoint = null;
 	private int kills = 0;
@@ -196,6 +198,22 @@ public class MinigamePlayer {
 		return false;
 	}
 	
+	public boolean isRequiredQuit() {
+		return requiredQuit;
+	}
+
+	public void setRequiredQuit(boolean requiredQuit) {
+		this.requiredQuit = requiredQuit;
+	}
+
+	public Location getQuitPos() {
+		return quitPos;
+	}
+
+	public void setQuitPos(Location quitPos) {
+		this.quitPos = quitPos;
+	}
+
 	public List<String> getFlags(){
 		return flags;
 	}

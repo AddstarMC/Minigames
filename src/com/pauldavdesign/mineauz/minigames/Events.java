@@ -31,6 +31,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -84,6 +85,19 @@ public class Events implements Listener{
 		}
 	}
 	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	private void playerSpawn(PlayerRespawnEvent event){
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply == null) return;
+		if(ply.isRequiredQuit()){
+			ply.restorePlayerData();
+			event.setRespawnLocation(ply.getQuitPos());
+			
+			ply.setRequiredQuit(false);
+			ply.setQuitPos(null);
+		}
+	}
+	
 	@EventHandler(ignoreCancelled = true)
 	public void playerDropItem(PlayerDropItemEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
@@ -114,6 +128,9 @@ public class Events implements Listener{
 		if(ply.isInMinigame()){
 			pdata.addOfflineMinigamePlayer(pdata.getMinigamePlayer(event.getPlayer()));
 			pdata.quitMinigame(pdata.getMinigamePlayer(event.getPlayer()), false);
+		}
+		if(ply.isRequiredQuit()){
+			pdata.addOfflineMinigamePlayer(pdata.getMinigamePlayer(event.getPlayer()));
 		}
 		
 		pdata.removeMinigamePlayer(event.getPlayer());
@@ -172,14 +189,16 @@ public class Events implements Listener{
 				}
 			}, 5L);
 			
-			final MinigamePlayer fply = pdata.getMinigamePlayer(event.getPlayer());
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					fply.restorePlayerData();
-				}
-			});
+			if(!ply.isDead()){
+				final MinigamePlayer fply = pdata.getMinigamePlayer(event.getPlayer());
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					
+					@Override
+					public void run() {
+						fply.restorePlayerData();
+					}
+				});
+			}
 			
 		}
 		

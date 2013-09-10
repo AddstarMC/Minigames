@@ -83,7 +83,9 @@ public class SPMinigame extends MinigameType{
 				player.getPlayer().teleport(mgm.getEndPosition());
 			}
 			else{
-				pdata.addRespawnPosition(player.getPlayer(), mgm.getEndPosition());
+//				pdata.addRespawnPosition(player.getPlayer(), mgm.getEndPosition());
+				player.setRequiredQuit(true);
+				player.setQuitPos(mgm.getEndPosition());
 			}
 		}
 		
