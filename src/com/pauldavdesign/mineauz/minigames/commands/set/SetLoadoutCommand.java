@@ -54,8 +54,8 @@ public class SetLoadoutCommand implements ICommand {
 				"/minigame set <Minigame> loadout delete <loadoutName>",
 				"/minigame set <Minigame> loadout usepermissions <loadoutName> <true/false>",
 				"/minigame set <Minigame> loadout list",
-				"/minigame set <Minigame> loadout addpotion <PotionName/ID> <duration> <amplifier>",
-				"/minigame set <Minigame> loadout removepotion <PotionName/ID>"
+				"/minigame set <Minigame> loadout addpotion <PotionName> <duration> <amplifier>",
+				"/minigame set <Minigame> loadout removepotion <PotionName>"
 		};
 	}
 
@@ -326,9 +326,6 @@ public class SetLoadoutCommand implements ICommand {
 			}
 			else if(args[0].equalsIgnoreCase("addpotion") && args.length >= 4){
 				PotionEffectType potion = PotionEffectType.getByName(args[1]);
-				if(args[1].matches("[0-9]+")){
-					potion = PotionEffectType.getById(Integer.parseInt(args[1]));
-				}
 				int duration;
 				int amplifier;
 				
@@ -393,9 +390,6 @@ public class SetLoadoutCommand implements ICommand {
 			}
 			else if(args[0].equalsIgnoreCase("removepotion") && args.length >= 2){
 				PotionEffectType potion = PotionEffectType.getByName(args[1]);
-				if(args[1].matches("[0-9]+")){
-					potion = PotionEffectType.getById(Integer.parseInt(args[1]));
-				}
 				
 				String loadout = "default";
 				PlayerLoadout load;

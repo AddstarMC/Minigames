@@ -1,6 +1,7 @@
 package com.pauldavdesign.mineauz.minigames.commands.set;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -74,7 +75,7 @@ public class SetRewardCommand implements ICommand{
 				item = MinigameUtils.stringToItemStack(args[0], quantity);
 			}
 			
-			if(item != null && item.getTypeId() != 0){
+			if(item != null && item.getType() != Material.AIR){
 				minigame.setRewardItem(item);
 				if(item.getAmount() == 1){
 					sender.sendMessage(ChatColor.GRAY + "Primary reward for \"" + minigame.getName() + "\" has been set to " + 
@@ -93,7 +94,7 @@ public class SetRewardCommand implements ICommand{
 						MinigameUtils.getItemStackName(item));
 				return true;
 			}
-			else if(item != null && item.getTypeId() == 0){
+			else if(item != null && item.getType() == Material.AIR){
 				minigame.setRewardItem(null);
 				sender.sendMessage(ChatColor.GRAY + "Primary reward for \"" + minigame.getName() + "\" has been removed.");
 				return true;

@@ -56,8 +56,8 @@ public class GlobalLoadoutCommand implements ICommand {
 				"/minigame globalloadout <loadoutName> delete",
 				"/minigame globalloadout <loadoutName> usepermissions <true/false>",
 				"/minigame globalloadout list",
-				"/minigame globalloadout <loadoutName> addpotion <PotionName/ID> <duration> <amplifier>",
-				"/minigame globalloadout <loadoutName> removepotion <PotionName/ID>"
+				"/minigame globalloadout <loadoutName> addpotion <PotionName> <duration> <amplifier>",
+				"/minigame globalloadout <loadoutName> removepotion <PotionName>"
 		};
 	}
 
@@ -270,9 +270,6 @@ public class GlobalLoadoutCommand implements ICommand {
 			}
 			else if(args[1].equalsIgnoreCase("addpotion") && args.length >= 5){
 				PotionEffectType potion = PotionEffectType.getByName(args[2]);
-				if(args[1].matches("[0-9]+")){
-					potion = PotionEffectType.getById(Integer.parseInt(args[2]));
-				}
 				int duration;
 				int amplifier;
 				
@@ -313,9 +310,6 @@ public class GlobalLoadoutCommand implements ICommand {
 			}
 			else if(args[1].equalsIgnoreCase("removepotion") && args.length >= 3){
 				PotionEffectType potion = PotionEffectType.getByName(args[2]);
-				if(args[1].matches("[0-9]+")){
-					potion = PotionEffectType.getById(Integer.parseInt(args[2]));
-				}
 				
 				if(potion != null){
 					PotionEffect eff = new PotionEffect(potion, 0, 0);
