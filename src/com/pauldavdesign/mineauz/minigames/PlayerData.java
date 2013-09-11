@@ -711,7 +711,14 @@ public class PlayerData {
 	}
 	
 	public void addOfflineMinigamePlayer(MinigamePlayer player){
-		offlineMinigamePlayers.put(player.getName(), new OfflineMinigamePlayer(player.getName(), player.getStoredItems(), player.getStoredArmour(), player.getFood(), player.getHealth(), player.getSaturation(), player.getLastGamemode(), player.getQuitPos()));
+		Location loc = null;
+		if(player.getQuitPos() != null){
+			loc = player.getQuitPos();
+		}
+		else{
+			loc = player.getMinigame().getQuitPosition();
+		}
+		offlineMinigamePlayers.put(player.getName(), new OfflineMinigamePlayer(player.getName(), player.getStoredItems(), player.getStoredArmour(), player.getFood(), player.getHealth(), player.getSaturation(), player.getLastGamemode(), loc));
 	}
 	
 	public void addOfflineMinigamePlayer(OfflineMinigamePlayer player){
