@@ -24,7 +24,9 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+//import org.mcstats.Metrics;
 
+import com.pauldavdesign.mineauz.minigames.Metrics.Graph;
 import com.pauldavdesign.mineauz.minigames.commands.CommandDispatcher;
 import com.pauldavdesign.mineauz.minigames.gametypes.DMMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.RaceMinigame;
@@ -219,6 +221,8 @@ public class Minigames extends JavaPlugin{
 		for(Player player : getServer().getOnlinePlayers()){
 			pdata.addMinigamePlayer(player);
 		}
+		
+		initMetrics();
 	}
 
 	public void onDisable(){
@@ -343,5 +347,58 @@ public class Minigames extends JavaPlugin{
 	
 	public SignBase getMinigameSigns(){
 		return minigameSigns;
+	}
+	
+	private void initMetrics(){
+		try {
+		    Metrics metrics = new Metrics(this);
+		    
+		    Graph playerGraph = metrics.createGraph("Players Playing Minigames");
+		    playerGraph.addPlotter(new Metrics.Plotter("Singleplayer") {
+				
+				@Override
+				public int getValue() {
+					int count = 0;
+					for(MinigamePlayer pl : pdata.getAllMinigamePlayers()){
+						if(pl.isInMinigame() && pl.getMinigame().getType() == "sp"){
+							count++;
+						}
+					}
+					return count;
+				}
+			});
+		    
+		    playerGraph.addPlotter(new Metrics.Plotter("Free For All") {
+				
+				@Override
+				public int getValue() {
+					int count = 0;
+					for(MinigamePlayer pl : pdata.getAllMinigamePlayers()){
+						if(pl.isInMinigame() && pl.getMinigame().getType() == "dm"){
+							count++;
+						}
+					}
+					return count;
+				}
+			});
+		    
+		    playerGraph.addPlotter(new Metrics.Plotter("Teams") {
+				
+				@Override
+				public int getValue() {
+					int count = 0;
+					for(MinigamePlayer pl : pdata.getAllMinigamePlayers()){
+						if(pl.isInMinigame() && pl.getMinigame().getType() == "teamdm"){
+							count++;
+						}
+					}
+					return count;
+				}
+			});
+		    
+		    metrics.start();
+		} catch (IOException e) {
+		    // Failed to submit the stats :-(
+		}
 	}
 }
