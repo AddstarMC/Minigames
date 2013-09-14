@@ -37,6 +37,9 @@ disabledCommands:
   
 updateChecker: true
 # Whether the plugin should check for updates
+
+lang: 'en_US'
+# Select language
   
 use-sql: false
 sql-host: localhost

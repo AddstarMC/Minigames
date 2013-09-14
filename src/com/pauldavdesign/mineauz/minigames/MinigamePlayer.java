@@ -3,6 +3,7 @@ package com.pauldavdesign.mineauz.minigames;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -46,6 +47,22 @@ public class MinigamePlayer {
 	
 	public void sendMessage(String msg){
 		player.sendMessage(msg);
+	}
+	
+	public void sendMessage(String msg, String type){
+		String init = "";
+		if(type != null){
+			if(type.equals("error")){
+				init = ChatColor.RED + "[Minigames] " + ChatColor.WHITE;
+			}
+			else{
+				init = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
+			}
+		}
+		else{
+			init = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
+		}
+		player.sendMessage(init + msg);
 	}
 	
 	public ItemStack[] getStoredItems(){

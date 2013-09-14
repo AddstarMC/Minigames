@@ -1,7 +1,10 @@
 package com.pauldavdesign.mineauz.minigames;
 
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -16,6 +19,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
@@ -44,13 +48,48 @@ public class Minigames extends JavaPlugin{
 	private SQLDatabase sql = null;
 	private static ScoreTypes scoretypes;
 	private static SignBase minigameSigns;
+	private FileConfiguration lang = null;
 	
 	private long lastUpdateCheck = 0;
 
 	public void onEnable(){
 		plugin = this;
 		PluginDescriptionFile desc = this.getDescription();
-		log.info(desc.getName() + " successfully enabled.");
+		
+		MinigameSave sv = new MinigameSave("lang/" + getConfig().getString("lang"));
+		if(sv.getConfig().contains("lang.info")){
+			lang = sv.getConfig();
+		}
+		else{
+			MinigameSave svb = new MinigameSave("lang/en_AU");
+			if(sv.getConfig().contains("lang.info")){
+				lang = svb.getConfig();
+			}
+			else{
+				InputStream is = getClassLoader().getResourceAsStream("lang/en_AU.yml");
+				OutputStream os = null;
+				try {
+					os = new FileOutputStream(getDataFolder() + "/lang/en_AU.yml");
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+				byte[] buffer = new byte[4096];
+				int length;
+				try {
+					while ((length = is.read(buffer)) > 0) {
+					    os.write(buffer, 0, length);
+					}
+					
+					os.close();
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				svb = new MinigameSave("lang/en_AU");
+				lang = svb.getConfig();
+			}
+		}
 		
 		mdata = new MinigameData();
 		pdata = new PlayerData();
@@ -223,6 +262,8 @@ public class Minigames extends JavaPlugin{
 		}
 		
 		initMetrics();
+
+		log.info(desc.getName() + " successfully enabled.");
 	}
 
 	public void onDisable(){
@@ -400,5 +441,9 @@ public class Minigames extends JavaPlugin{
 		} catch (IOException e) {
 		    // Failed to submit the stats :-(
 		}
+	}
+	
+	public FileConfiguration getLang(){
+		return lang;
 	}
 }

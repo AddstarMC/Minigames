@@ -1,0 +1,48 @@
+lang:
+  info: "Minigames default language (Australian English)"
+  version: 1
+  
+player:
+  join:
+    consMsg: "%s joined %s"
+    plyMsg: "%s has joined %s"
+  spectate:
+    join:
+      plyMsg: "You have started spectating %s."
+      plyHelp: "Type %s to leave spectator mode."
+      minigameMsg: "%s is now spectating %s"
+    quit:
+      plyMsg: "You stopped spectating %s"
+      minigameMsg: "%s is no longer spectating %s"
+  bet:
+    plyMsg: "You have placed your bet, good luck!"
+    plyNoBet: "You can not bet nothing!"
+    incorrectAmount: "You haven't placed the correct bet amount for this round!"
+    incorrectAmountInfo: "You must bet $%d"
+    incorrectItem: "You haven't bet the correct item for this round!"
+    incorrectItemInfo: "You must bet %d %s"
+    notEnoughMoney: "You haven't got enough money!"
+    notEnoughMoneyInfo: "You must have $%d"
+    winMoney: "You won $%d"
+  checkpoint:
+    revert: "You have been reverted to your checkpoint."
+  quit:
+    consMsg: "%s quit %s"
+    plyMsg: "%s has left %s"
+    plyForcedMsg: "%s was removed from %s"
+    plyBeatenMsg: "You have been beaten, bad luck!"
+  end:
+    consMsg: "%s completed %s"
+    team:
+      win: "%s team won %s"
+      score: "%s to %s"
+    
+minigame:
+  full: "Sorry, this Minigame is full."
+  started: "The game has already started. Please try again later."
+  scoreToWin: "Score to win: %d"
+  livesLeft: "Lives left: %d"
+  timeLeft: "%s left."
+  error:
+    noGametype: "That gametype does not exist!"
+    incorrectStart: "Starting positions are incorrectly configured!"
