@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -43,6 +44,7 @@ public class Events implements Listener{
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
 	private MinigameData mdata = plugin.mdata;
+	private FileConfiguration lang = plugin.getLang();
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerDeath(PlayerDeathEvent event){
@@ -72,7 +74,7 @@ public class Events implements Listener{
 				mdata.sendMinigameMessage(mgm, msg, "error", null);
 			}
 			if(mgm.getLives() > 0 && mgm.getLives() <= ply.getDeaths()){
-				ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Bad Luck! Leaving the minigame.");
+				ply.sendMessage(lang.getString("player.quit.plyOutOfLives"), "error");
 				ply.getPlayer().setHealth(2);
 				if(event.getEntity().getLastDamageCause().getCause() == DamageCause.FALLING_BLOCK){
 					ply.getMinigame().getBlockRecorder().addBlock(ply.getPlayer().getLocation().getBlock(), null);
@@ -80,7 +82,7 @@ public class Events implements Listener{
 				pdata.quitMinigame(ply, false);
 			}
 			else if(mgm.getLives() > 0){
-				ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "Lives left: " + (mgm.getLives() - ply.getDeaths()));
+				ply.sendMessage(String.format(lang.getString("minigame.livesLeft"), mgm.getLives() - ply.getDeaths()), null);
 			}
 		}
 	}
@@ -199,7 +201,6 @@ public class Events implements Listener{
 					}
 				});
 			}
-			
 		}
 		
 		if(Bukkit.getServer().getOnlinePlayers().length == 1){
@@ -253,38 +254,39 @@ public class Events implements Listener{
 						Minigame mgm = mdata.getMinigame(sign.getLine(2));
 						if(mgm != null && (!mgm.getUsePermissions() || event.getPlayer().hasPermission("minigame.join." + mgm.getName().toLowerCase()))){
 							if(!mgm.isEnabled()){
-								event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "This minigame is currently not enabled.");
+								event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("minigame.error.notEnabled"));
 							}
 							else{
-								event.getPlayer().sendMessage(ChatColor.GREEN + "------------------Minigame Info------------------");
-								String status = ChatColor.AQUA + "Status: ";
+								event.getPlayer().sendMessage(ChatColor.GREEN + lang.getString("minigame.info.description"));
+								String status = ChatColor.AQUA + lang.getString("minigame.info.status.title");
 								if(!mgm.hasPlayers()){
-									status += ChatColor.GREEN + "Empty";
+									status += ChatColor.GREEN + lang.getString("minigame.info.status.empty");
 								}
 								else if(mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() > 0){
-									status += ChatColor.GREEN + "Waiting for Players";
+									status += ChatColor.GREEN + lang.getString("minigame.info.status.WaitingForPlayers");
 								}
 								else{
-									status += ChatColor.RED + "Started";
+									status += ChatColor.RED + lang.getString("minigame.info.status.started");
 								}
 								
-								if(!mgm.getType().equals("sp"))
+								if(!mgm.getType().equals("sp")){
 									event.getPlayer().sendMessage(status);
-								
-
-								if(mgm.canLateJoin())
-									event.getPlayer().sendMessage(ChatColor.AQUA + "Late join: " + ChatColor.WHITE + "enabled");
+									if(mgm.canLateJoin())
+										event.getPlayer().sendMessage(ChatColor.AQUA + lang.getString("minigame.info.lateJoin.msg") + " " + ChatColor.GREEN + lang.getString("minigame.info.lateJoin.enabled"));
+									else
+										event.getPlayer().sendMessage(ChatColor.AQUA + lang.getString("minigame.info.lateJoin.msg") + " " + ChatColor.RED + lang.getString("minigame.info.lateJoin.disabled"));
+								}
 								
 								if(mgm.getMinigameTimer() != null){
 									event.getPlayer().sendMessage(ChatColor.AQUA + "Time left: " + MinigameUtils.convertTime(mgm.getMinigameTimer().getTimeLeft()));
 								}
 								
 								if(mgm.getType().equals("teamdm")){
-									event.getPlayer().sendMessage(ChatColor.AQUA + "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore());
+									event.getPlayer().sendMessage(ChatColor.AQUA + lang.getString("minigame.info.score") + String.format(lang.getString("player.end.team.score"), ChatColor.RED.toString() + mgm.getRedTeamScore() + ChatColor.WHITE, ChatColor.BLUE.toString() + mgm.getBlueTeamScore()));
 								}
 								
-								String playerCount = ChatColor.AQUA + "Player Count: " + ChatColor.GRAY;
-								String players = ChatColor.AQUA + "Players: ";
+								String playerCount = ChatColor.AQUA + lang.getString("minigame.info.playerCount") + " " + ChatColor.GRAY;
+								String players = ChatColor.AQUA + lang.getString("minigame.info.players.msg") + " ";
 								
 								if(mgm.hasPlayers()){
 									playerCount += mgm.getPlayers().size() ;
@@ -305,7 +307,7 @@ public class Events implements Listener{
 										playerCount += "/" + mgm.getMaxPlayers();
 									}
 									
-									players += ChatColor.GRAY + "None";
+									players += ChatColor.GRAY + lang.getString("minigame.info.players.none");
 								}
 								
 								event.getPlayer().sendMessage(playerCount);
@@ -313,10 +315,10 @@ public class Events implements Listener{
 							}
 						}
 						else if(mgm == null){
-							event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "This minigame doesn't exist!");
+							event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + lang.getString("minigame.error.noMinigame"));
 						}
 						else if(mgm.getUsePermissions()){
-							event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You do not have permission minigame.join." + mgm.getName().toLowerCase());
+							event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + String.format(lang.getString("minigame.error.noPermission"), "minigame.join." + mgm.getName().toLowerCase()));
 						}
 					}
 				}	
@@ -339,7 +341,7 @@ public class Events implements Listener{
 				Location to = event.getTo();
 				if(from.getWorld() != to.getWorld() || from.distance(to) > 2){
 					event.setCancelled(true);
-					event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You cannot teleport while in a Minigame!");
+					event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + lang.getString("minigame.error.noTeleport"));
 				}
 			}
 		}
@@ -350,7 +352,7 @@ public class Events implements Listener{
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply.isInMinigame() && !ply.getAllowGamemodeChange()){
 			event.setCancelled(true);
-			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You cannot change gamemode while playing a Minigame!");
+			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + lang.getString("minigame.error.noGamemode"));
 		}
 	}
 	
@@ -360,7 +362,7 @@ public class Events implements Listener{
 		if(ply.isInMinigame() && (!ply.getMinigame().isSpectator(ply) || !ply.getMinigame().canSpectateFly())){
 			event.setCancelled(true);
 			pdata.quitMinigame(ply, true);
-			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Error: You cannot fly while in a Minigame!");
+			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + lang.getString("minigame.error.noFly"));
 		}
 	}
 	
@@ -368,7 +370,7 @@ public class Events implements Listener{
 	public void playerRevert(RevertCheckpointEvent event){
 		if(event.getMinigamePlayer().isInMinigame() && (event.getMinigamePlayer().getMinigame().getType().equals("lms") || event.getMinigamePlayer().getMinigame().getType().equals("dm") || event.getMinigamePlayer().getMinigame().getType().equals("teamdm"))){
 			event.setCancelled(true);
-			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You can't revert while playing " + event.getMinigamePlayer().getMinigame().getType());
+			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + String.format(lang.getString("minigame.error.noRevert"), event.getMinigamePlayer().getMinigame().getType()));
 		}
 	}
 	
@@ -379,7 +381,7 @@ public class Events implements Listener{
 			for(String comd : pdata.getDeniedCommands()){
 				if(event.getMessage().contains(comd)){
 					event.setCancelled(true);
-					event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You are not allowed to use that command while playing a Minigame!");
+					event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("minigame.error.noCommand"));
 				}
 			}
 		}

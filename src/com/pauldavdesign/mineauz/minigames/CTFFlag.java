@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
@@ -23,6 +24,7 @@ public class CTFFlag{
 	private int taskID = -1;
 	private Minigame minigame = null;
 	private int cParticleID = -1;
+	private FileConfiguration lang = Minigames.plugin.getLang();
 	
 	public CTFFlag(Location spawn, int team, Player carrier, Minigame minigame){
 		spawnLocation = spawn;
@@ -189,12 +191,12 @@ public class CTFFlag{
 				respawnFlag();
 				for(MinigamePlayer pl : minigame.getPlayers()){
 					if(getTeam() == 0){
-						pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.RED + "Red Team's" + ChatColor.WHITE + " flag has been returned home!");
+						pl.sendMessage(String.format(lang.getString("minigame.flag.returnedTeam"), ChatColor.RED.toString() + "Red Team's" + ChatColor.WHITE), null);
 					}else if(getTeam() == 1){
-						pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.BLUE + "Blue Team's" + ChatColor.WHITE + " flag has been returned home!");
+						pl.sendMessage(String.format(lang.getString("minigame.flag.returnedTeam"), ChatColor.BLUE.toString() + "Blue Team's" + ChatColor.WHITE), null);
 					}
 					else{
-						pl.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "The " + ChatColor.GRAY + "Neutral" + ChatColor.WHITE + " flag has been returned home!");
+						pl.sendMessage(lang.getString("minigame.flag.returnedNeutral"), null);
 					}
 				}
 				taskID = -1;

@@ -31,6 +31,7 @@ player:
     plyMsg: "%s has left %s"
     plyForcedMsg: "%s was removed from %s"
     plyBeatenMsg: "You have been beaten, bad luck!"
+    plyOutOfLives: "Bad luck! Leaving the Minigame."
   end:
     consMsg: "%s completed %s"
     team:
@@ -46,3 +47,49 @@ minigame:
   error:
     noGametype: "That gametype does not exist!"
     incorrectStart: "Starting positions are incorrectly configured!"
+    notEnabled: "This Minigame is currently not enabled."
+    noMinigame: "This Minigame does not exist!"
+    noPermission: "You do not have permission: %s"
+    noTeleport: "You cannot teleport while in a Minigame!"
+    noGamemode: "You cannot change gamemode while playing a Minigame!"
+    noFly: "You cannot fly while playing a Minigame!"
+    noRevert: "You cannot revert while playing %s"
+    noCommand: "You cannot use that command while playing a Minigame!"
+  flag:
+    returnedTeam: "%s flag has been returned home."
+    returnedNeutral: "The Neutral flag has been returned home."
+  info:
+    description: "------------------Minigame Info------------------"
+    status: 
+      title: "Status:"
+      empty: "Empty"
+      waitingForPlayers: "Waiting for Players"
+      started: "Started"
+    lateJoin:
+      msg: "Late Join:"
+      enabled: "enabled"
+      disabled: "disabled"
+    score: "Score:"
+    playerCount: "Player Count:"
+    players: 
+      msg: "Players:"
+      none: "None"
+  update:
+    msg: "There is an update available! Version: %s"
+    changes: "Changes:"
+
+time:
+  weeks: "%d weeks"
+  days: "%d days"
+  hours: "%d hours"
+  minutes: "%d minutes"
+  seconds: "%d seconds"
+  and: "and"
+  startup:
+    time: "%dsec."
+    waitingForPlayers: "Waiting for players:"
+    minigameStarts: "Minigame starts in:"
+    timerPaused: "Start timer paused."
+    timerPausedReason: "Start timer paused: %s"
+    timerResumed: "Start timer resumed."
+    go: "Go!"

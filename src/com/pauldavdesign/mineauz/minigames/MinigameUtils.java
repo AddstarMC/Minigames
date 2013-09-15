@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.configuration.file.FileConfiguration;
 //import net.minecraft.server.v1_6_R2.EntityPlayer;
 //
 //import org.bukkit.craftbukkit.v1_6_R2.entity.CraftPlayer;
@@ -15,6 +16,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 public class MinigameUtils {
+	private static FileConfiguration lang = Minigames.plugin.getLang();
+	
 	/**
 	 * Returns the item stack from a number or name.
 	 * @param item - The items name or ID.
@@ -148,7 +151,7 @@ public class MinigameUtils {
 		}
 		
 		if(weeks != 0){
-			msg = weeks + " weeks";
+			msg = String.format(lang.getString("time.weeks"), weeks);
 		}
 		if(days != 0){
 			if(!msg.equals("")){
@@ -156,10 +159,10 @@ public class MinigameUtils {
 					msg += ", ";
 				}
 				else{
-					msg += " and ";
+					msg += " " + lang.getString("time.and") + " ";
 				}
 			}
-			msg += days + " days";
+			msg += String.format(lang.getString("time.days"), days);
 		}
 		if(hours != 0){
 			if(!msg.equals("")){
@@ -167,10 +170,10 @@ public class MinigameUtils {
 					msg += ", ";
 				}
 				else{
-					msg += " and ";
+					msg += " " + lang.getString("time.and") + " ";
 				}
 			}
-			msg += hours + " hours";
+			msg += String.format(lang.getString("time.hours"), hours);
 		}
 		if(minutes != 0){
 			if(!msg.equals("")){
@@ -178,16 +181,16 @@ public class MinigameUtils {
 					msg += ", ";
 				}
 				else{
-					msg += " and ";
+					msg += " " + lang.getString("time.and") + " ";
 				}
 			}
-			msg += minutes + " minutes";
+			msg += String.format(lang.getString("time.minutes"), minutes);
 		}
 		if(seconds != 0){
 			if(!msg.equals("")){
-				msg += " and ";
+				msg += " " + lang.getString("time.and") + " ";
 			}
-			msg += seconds + " seconds";
+			msg += String.format(lang.getString("time.seconds"), seconds);
 		}
 		
 		return msg;

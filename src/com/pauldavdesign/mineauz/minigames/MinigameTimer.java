@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
 
@@ -13,6 +14,7 @@ public class MinigameTimer{
 	private List<Integer> timeMsg = new ArrayList<Integer>();
 	private static Minigames plugin = Minigames.plugin;
 	private int taskID = -1;
+	private FileConfiguration lang = plugin.getLang();
 	
 	public MinigameTimer(Minigame minigame, int time){
 		this.time = time;
@@ -28,7 +30,7 @@ public class MinigameTimer{
 			public void run() {
 				time -= 1;
 				if(timeMsg.contains(time)){
-					plugin.mdata.sendMinigameMessage(minigame, MinigameUtils.convertTime(time) + " left.", null, null);
+					plugin.mdata.sendMinigameMessage(minigame, String.format(lang.getString("minigame.timeLeft"), MinigameUtils.convertTime(time)), null, null);
 				}
 				else if(time == 0){
 					Bukkit.getServer().getPluginManager().callEvent(new TimerExpireEvent(minigame));
