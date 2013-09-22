@@ -64,8 +64,8 @@ public class PlayerData {
 				player.setAllowTeleport(true);
 				player.getPlayer().setFallDistance(0);
 				if(mdata.minigameType(gametype).joinMinigame(player, minigame)){
-					plugin.getLogger().info(String.format(lang.getString("player.join.consMsg"), player.getName(), minigame.getName()));
-					mdata.sendMinigameMessage(minigame, String.format(lang.getString("player.join.plyMsg"), player.getName(), minigame.getName()), null, player);
+					plugin.getLogger().info(MinigameUtils.formStr("player.join.consMsg", player.getName(), minigame.getName()));
+					mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.join.plyMsg", player.getName(), minigame.getName()), null, player);
 					
 					player.getPlayer().setGameMode(minigame.getDefaultGamemode());
 					player.setAllowGamemodeChange(false);
@@ -127,9 +127,9 @@ public class PlayerData {
 			for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
 				player.getPlayer().removePotionEffect(potion.getType());
 			}
-			player.sendMessage(String.format(lang.getString("player.spectate.join.plyMsg"), minigame.getName()) + "\n" +
-					String.format(lang.getString("player.spectate.join.plyHelp"), "\"/minigame quit\""), null);
-			mdata.sendMinigameMessage(minigame, String.format(lang.getString("player.spectate.join.minigameMsg"), player.getName(), minigame.getName()), null, player);
+			player.sendMessage(MinigameUtils.formStr("player.spectate.join.plyMsg", minigame.getName()) + "\n" +
+					MinigameUtils.formStr("player.spectate.join.plyHelp", "\"/minigame quit\""), null);
+			mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.spectate.join.minigameMsg", player.getName(), minigame.getName()), null, player);
 		}
 	}
 	
@@ -169,15 +169,15 @@ public class PlayerData {
 				}
 				else if(money != 0 && !pbet.canBet(player, money)){
 					player.sendMessage(lang.getString("player.bet.incorrectAmount"), "error");
-					player.sendMessage(String.format(lang.getString("player.bet.incorrectAmountInfo"), minigame.getMpBets().getHighestMoneyBet()), "error");
+					player.sendMessage(MinigameUtils.formStr("player.bet.incorrectAmountInfo", minigame.getMpBets().getHighestMoneyBet()), "error");
 				}
 				else if(money != 0 && plugin.getEconomy().getBalance(player.getName()) < money){
 					player.sendMessage(lang.getString("player.bet.notEnoughMoney"), "error");
-					player.sendMessage(String.format(lang.getString("player.bet.notEnoughMoneyInfo"), minigame.getMpBets().getHighestMoneyBet()), "error");
+					player.sendMessage(MinigameUtils.formStr("player.bet.notEnoughMoneyInfo", minigame.getMpBets().getHighestMoneyBet()), "error");
 				}
 				else{
 					player.sendMessage(lang.getString("player.bet.incorrectItem"), "error");
-					player.sendMessage(String.format(lang.getString("player.bet.incorrectItemInfo"), 1, minigame.getMpBets().highestBetName()), "error");
+					player.sendMessage(MinigameUtils.formStr("player.bet.incorrectItemInfo", 1, minigame.getMpBets().highestBetName()), "error");
 				}
 			}
 			else if(minigame != null && minigame.getMpTimer() != null && minigame.getMpTimer().getPlayerWaitTimeLeft() == 0){
@@ -208,7 +208,7 @@ public class PlayerData {
 					minigameTeleport(ply, start);
 					ply.setCheckpoint(start);
 					if(minigame.getMaxScore() != 0 && minigame.getType().equals("dm") && !minigame.getScoreType().equals("none")){
-						ply.sendMessage(String.format(lang.getString("minigame.scoreToWin"), minigame.getMaxScorePerPlayer(minigame.getPlayers().size())), null);
+						ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer(minigame.getPlayers().size())), null);
 					}
 				} 
 				else{
@@ -218,7 +218,7 @@ public class PlayerData {
 						minigameTeleport(ply, start);
 						ply.setCheckpoint(start);
 						if(minigame.getMaxScore() != 0 && minigame.getType().equals("dm") && !minigame.getScoreType().equals("none")){
-							ply.sendMessage(String.format(lang.getString("minigame.scoreToWin"), minigame.getMaxScorePerPlayer(minigame.getPlayers().size())), null);
+							ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer(minigame.getPlayers().size())), null);
 						}
 					}
 					else {
@@ -283,12 +283,12 @@ public class PlayerData {
 					minigameTeleport(ply, start);
 					ply.setCheckpoint(start);
 					if(minigame.getMaxScore() != 0 && !minigame.getScoreType().equals("none")){
-						ply.sendMessage(String.format(lang.getString("minigame.scoreToWin"), minigame.getMaxScorePerPlayer(minigame.getPlayers().size())), null);
+						ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer(minigame.getPlayers().size())), null);
 					}
 				}
 				
 				if(minigame.getLives() > 0){
-					ply.sendMessage(String.format(lang.getString("minigame.livesLeft"), minigame.getLives()), null);
+					ply.sendMessage(MinigameUtils.formStr("minigame.livesLeft", minigame.getLives()), null);
 				}
 			}
 			pos++;
@@ -314,7 +314,7 @@ public class PlayerData {
 			
 			if(minigame.getTimer() > 0){
 				minigame.setMinigameTimer(new MinigameTimer(minigame, minigame.getTimer()));
-				mdata.sendMinigameMessage(minigame, String.format(lang.getString("minigame.timeLeft"), MinigameUtils.convertTime(minigame.getTimer())), null, null);
+				mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(minigame.getTimer())), null, null);
 			}
 		}
 	}
@@ -347,10 +347,10 @@ public class PlayerData {
 				player.getPlayer().closeInventory();
 				
 				if(!forced){
-					mdata.sendMinigameMessage(mgm, String.format(lang.getString("player.quit.plyMsg"), player.getName(), mgm.getName()), "error", player);
+					mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.quit.plyMsg", player.getName(), mgm.getName()), "error", player);
 				}
 				else{
-					mdata.sendMinigameMessage(mgm, String.format(lang.getString("player.quit.plyForcedMsg"), player.getName(), mgm.getName()), "error", player);
+					mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.quit.plyForcedMsg", player.getName(), mgm.getName()), "error", player);
 				}
 	
 				mgm.removePlayersLoadout(player);
@@ -466,8 +466,8 @@ public class PlayerData {
 				ply.setAllowTeleport(true);
 				ply.setAllowGamemodeChange(true);
 				
-				player.sendMessage(String.format(lang.getString("player.specate.quit.plyMsg"), mgm.getName()), "error");
-				mdata.sendMinigameMessage(mgm, String.format(lang.getString("player.spectate.quit.minigameMsg"), player.getName(), mgm.getName()), "error", player);
+				player.sendMessage(MinigameUtils.formStr("player.specate.quit.plyMsg", mgm.getName()), "error");
+				mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.spectate.quit.minigameMsg", player.getName(), mgm.getName()), "error", player);
 			}
 		}
 	}
@@ -540,7 +540,7 @@ public class PlayerData {
 			player.setAllowTeleport(true);
 			player.setAllowGamemodeChange(true);
 
-			plugin.getLogger().info(String.format(lang.getString("player.end.consMsg"), player.getName(), mgm.getName()));
+			plugin.getLogger().info(MinigameUtils.formStr("player.end.consMsg", player.getName(), mgm.getName()));
 			mgm.getScoreboardManager().resetScores(player.getPlayer());
 		}
 	}
@@ -578,18 +578,18 @@ public class PlayerData {
 				if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
 					String score = "";
 					if(mgm.getRedTeamScore() != 0 && mgm.getBlueTeamScore() != 0){
-						score = ", " + String.format(lang.getString("player.end.team.score"), ChatColor.BLUE.toString() + mgm.getBlueTeamScore() + ChatColor.WHITE, ChatColor.RED.toString() + mgm.getRedTeamScore());
+						score = ", " + MinigameUtils.formStr("player.end.team.score", ChatColor.BLUE.toString() + mgm.getBlueTeamScore() + ChatColor.WHITE, ChatColor.RED.toString() + mgm.getRedTeamScore());
 					}
-					plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + String.format(lang.getString("player.end.team.win"), ChatColor.BLUE.toString() + "Blue Team" + ChatColor.WHITE, mgm.getName()) + score);
+					plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + MinigameUtils.formStr("player.end.team.win", ChatColor.BLUE.toString() + "Blue Team" + ChatColor.WHITE, mgm.getName()) + score);
 				}
 			}
 			else{
 				if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
 					String score = "";
 					if(mgm.getRedTeamScore() != 0 && mgm.getBlueTeamScore() != 0){
-						score = ", " + String.format(lang.getString("player.end.team.score"), ChatColor.RED.toString() + mgm.getBlueTeamScore() + ChatColor.WHITE, ChatColor.BLUE.toString() + mgm.getRedTeamScore());
+						score = ", " + MinigameUtils.formStr("player.end.team.score", ChatColor.RED.toString() + mgm.getBlueTeamScore() + ChatColor.WHITE, ChatColor.BLUE.toString() + mgm.getRedTeamScore());
 					}
-					plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + String.format(lang.getString("player.end.team.win"), ChatColor.RED + "Red Team" + ChatColor.WHITE, mgm.getName()) + score);
+					plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + MinigameUtils.formStr("player.end.team.win", ChatColor.RED + "Red Team" + ChatColor.WHITE, mgm.getName()) + score);
 				}
 			}
 			
@@ -617,7 +617,7 @@ public class PlayerData {
 						bets = roundBets.doubleValue();
 						for(MinigamePlayer ply : plys){
 							plugin.getEconomy().depositPlayer(ply.getName(), bets);
-							ply.sendMessage(String.format(lang.getString("player.bet.winMoney"), bets), null);
+							ply.sendMessage(MinigameUtils.formStr("player.bet.winMoney", bets), null);
 						}
 					}
 				}

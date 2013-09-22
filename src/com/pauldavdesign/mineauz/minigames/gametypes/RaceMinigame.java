@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -15,6 +16,7 @@ import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameSave;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.SQLCompletionSaver;
@@ -24,6 +26,7 @@ public class RaceMinigame extends MinigameType{
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
 	private MinigameData mdata = plugin.mdata;
+	private FileConfiguration lang = Minigames.plugin.getLang();
 	
 	public RaceMinigame() {
 		setLabel("race");
@@ -74,7 +77,7 @@ public class RaceMinigame extends MinigameType{
 			mgm.getMpTimer().removeTimer();
 			mgm.setMpTimer(null);
 			for(MinigamePlayer pl : mgm.getPlayers()){
-				pl.sendMessage(ChatColor.BLUE + "Waiting for 1 more player.");
+				pl.sendMessage(MinigameUtils.formStr("minigame.waitingForPlayers", 1), null);
 			}
 		}
 		
@@ -103,7 +106,7 @@ public class RaceMinigame extends MinigameType{
 			}
 			else{
 				plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().claimMoneyBets());
-				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You won $" + mgm.getMpBets().claimMoneyBets());
+				player.sendMessage(MinigameUtils.formStr("player.bet.winMoney", mgm.getMpBets().claimMoneyBets()), null);
 				mgm.setMpBets(null);
 			}
 		}
@@ -112,10 +115,10 @@ public class RaceMinigame extends MinigameType{
 		
 		boolean hascompleted = false;
 		Configuration completion = null;
-		
-		player.sendMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + "You've finished the " + mgm + " minigame. Congratulations!");
+
+		player.sendMessage(MinigameUtils.formStr("player.end.plyMsg", mgm), "win");
 		if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
-			plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + player.getName() + " won " + mgm.getName());
+			plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + MinigameUtils.formStr("player.end.broadcastMsg", ChatColor.WHITE + player.getName(), mgm.getName()));
 		}
 		
 		if(mgm.getEndPosition() != null){
@@ -145,7 +148,7 @@ public class RaceMinigame extends MinigameType{
 				if(players.get(i) instanceof MinigamePlayer){
 					MinigamePlayer p = players.get(i);
 					if(!p.getName().equals(player.getName())){
-						p.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You have been beaten! Bad luck!");
+						p.sendMessage(lang.getString("player.quit.plyBeatenMsg"), "error");
 						pdata.quitMinigame(p, true);
 					}
 				}
@@ -193,7 +196,7 @@ public class RaceMinigame extends MinigameType{
 				String mgtype = mgm.getType();
 				if(mgtype.equals("race")){
 					event.setRespawnLocation(player.getCheckpoint());
-					event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Bad Luck! Returning to checkpoint.");
+					player.sendMessage(lang.getString("player.checkpoint.deathRevert"), "error");
 					
 					mgm.getPlayersLoadout(player).equiptLoadout(player);
 				}
@@ -207,7 +210,7 @@ public class RaceMinigame extends MinigameType{
 			List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 			players.addAll(event.getMinigame().getPlayers());
 			for(MinigamePlayer ply : players){
-				ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "The timer has expired!");
+				ply.sendMessage(lang.getString("minigame.timer.expired"), "error");
 				pdata.quitMinigame(ply, true);
 			}
 		}

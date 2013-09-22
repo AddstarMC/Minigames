@@ -1,11 +1,12 @@
 lang:
   info: "Minigames default language (Australian English)"
-  version: 1
+  version: ${project.version}
   
 player:
   join:
     consMsg: "%s joined %s"
     plyMsg: "%s has joined %s"
+    plyInfo: "You have started a %s minigame, type /minigame quit to exit."
   spectate:
     join:
       plyMsg: "You have started spectating %s."
@@ -26,6 +27,7 @@ player:
     winMoney: "You won $%d"
   checkpoint:
     revert: "You have been reverted to your checkpoint."
+    deathRevert: "Bad luck! Returning to checkpoint."
   quit:
     consMsg: "%s quit %s"
     plyMsg: "%s has left %s"
@@ -33,10 +35,37 @@ player:
     plyBeatenMsg: "You have been beaten, bad luck!"
     plyOutOfLives: "Bad luck! Leaving the Minigame."
   end:
+    plyMsg: "You've won the %s Minigame! Congratulations!"
+    broadcastMsg: "%s won %s"
+    broadcastScore: "Score: %s"
     consMsg: "%s completed %s"
+    awardMoney: "You have been awarded $%s"
     team:
       win: "%s team won %s"
       score: "%s to %s"
+  team:
+    autobalance:
+      plyMsg: "You have been auto-balanced to %s"
+      minigameMsg: "%s has been auto-balanced to %s"
+    assign:
+      infected: "Infected!"
+      infectedAssign: "You are %s"
+      infectedAnnounce: "%s has become %s"
+      survivor: "Survivor"
+      survivorAssign: "You are a %s"
+      survivorAnnounce: "%s is a %s"
+  ctf:
+    capture: "%s captured a flag for %s"
+    captureFinal: "%s captured the final flag for %s"
+    captureNeutral: "%s captured a flag"
+    captureNeutralFinal: "%s captured the final flag"
+    returned: "%s returned %s's flag"
+    stoleNeutral: "%s stole the Neutral flag"
+    returnFail: "You must not be carrying a flag to return your flag!"
+    dropped: "%s dropped %s's flag"
+    droppedNeutral: "%s dropped the Neutral flag"
+  kills:
+    finalKill: "%s took the final kill from %s"
     
 minigame:
   full: "Sorry, this Minigame is full."
@@ -44,8 +73,15 @@ minigame:
   scoreToWin: "Score to win: %d"
   livesLeft: "Lives left: %d"
   timeLeft: "%s left."
+  waitingForPlayers: "Waiting for %d more players."
+  skipWaitTime: "Minigame is full, skipping player wait time."
+  lateJoin: "You will join in %d seconds..."
+  lateJoinWait: "Please wait %d seconds and try again."
   error:
     noGametype: "That gametype does not exist!"
+    noQuit: "This Minigame has no quit position!"
+    noEnd: "This Minigame has no end position!"
+    noLobby: "This Minigame has no lobby position!"
     incorrectStart: "Starting positions are incorrectly configured!"
     notEnabled: "This Minigame is currently not enabled."
     noMinigame: "This Minigame does not exist!"
@@ -55,9 +91,12 @@ minigame:
     noFly: "You cannot fly while playing a Minigame!"
     noRevert: "You cannot revert while playing %s"
     noCommand: "You cannot use that command while playing a Minigame!"
+    noInfection: "Infection must be run on a team deathmatch Minigame!"
   flag:
     returnedTeam: "%s flag has been returned home."
     returnedNeutral: "The Neutral flag has been returned home."
+  timer:
+    expired: "Game over! The timer has expired."
   info:
     description: "------------------Minigame Info------------------"
     status: 
@@ -74,6 +113,9 @@ minigame:
     players: 
       msg: "Players:"
       none: "None"
+  treasurehunt:
+    consSpawn: "%s treasure chest spawned at: %s"
+    plySpawn: "A treasure chest has appeared within %sm of %s!"
   update:
     msg: "There is an update available! Version: %s"
     changes: "Changes:"

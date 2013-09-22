@@ -191,9 +191,9 @@ public class CTFFlag{
 				respawnFlag();
 				for(MinigamePlayer pl : minigame.getPlayers()){
 					if(getTeam() == 0){
-						pl.sendMessage(String.format(lang.getString("minigame.flag.returnedTeam"), ChatColor.RED.toString() + "Red Team's" + ChatColor.WHITE), null);
+						pl.sendMessage(MinigameUtils.formStr("minigame.flag.returnedTeam", ChatColor.RED.toString() + "Red Team's" + ChatColor.WHITE), null);
 					}else if(getTeam() == 1){
-						pl.sendMessage(String.format(lang.getString("minigame.flag.returnedTeam"), ChatColor.BLUE.toString() + "Blue Team's" + ChatColor.WHITE), null);
+						pl.sendMessage(MinigameUtils.formStr("minigame.flag.returnedTeam", ChatColor.BLUE.toString() + "Blue Team's" + ChatColor.WHITE), null);
 					}
 					else{
 						pl.sendMessage(lang.getString("minigame.flag.returnedNeutral"), null);

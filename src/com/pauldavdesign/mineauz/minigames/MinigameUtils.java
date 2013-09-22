@@ -227,6 +227,17 @@ public class MinigameUtils {
 		return slist;
 	}
 	
+	/**
+	 * Formats a string from the language file.
+	 * @param format - The location in the YAML of the string to format.
+	 * @param text - What to replace the formatted variables with.
+	 * @return The formatted string
+	 */
+	public static String formStr(String format, Object... text){
+		FileConfiguration lang = Minigames.plugin.getLang();
+		return String.format(lang.getString(format), text);
+	}
+	
 //	public static void removePlayerArrows(MinigamePlayer player){
 //		try{
 //			Class.forName("net.minecraft.server.v1_5_R3.EntityPlayer");

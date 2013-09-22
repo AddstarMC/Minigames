@@ -130,8 +130,8 @@ public class MinigameData {
 			});
 			
 			setTreasureHuntLocation(minigame, rpos.getBlock().getLocation());
-			plugin.getLogger().info(mgm.getName() + " treasure chest spawned at: " + rpos.getBlockX() + ", " + rpos.getBlockY() + ", " + rpos.getBlockZ());
-			plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "A treasure chest has appeared within " + maxradius + "m of " + getMinigame(minigame).getLocation() + "!", "minigame.treasure.announce");
+			plugin.getLogger().info(MinigameUtils.formStr("minigame.treasurehunt.consSpawn", mgm.getName(), rpos.getBlockX() + ", " + rpos.getBlockY() + ", " + rpos.getBlockZ()));
+			plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.treasurehunt.plySpawn", maxradius, mgm.getLocation()), "minigame.treasure.announce");
 			if(getMinigame(minigame).getThTimer() == null){
 				getMinigame(minigame).setThTimer(new TreasureHuntTimer(minigame));
 				getMinigame(minigame).getThTimer().startTimer();

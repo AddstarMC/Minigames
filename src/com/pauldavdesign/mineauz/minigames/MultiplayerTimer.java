@@ -36,20 +36,20 @@ public class MultiplayerTimer{
 				if(playerWaitTime != 0 && !paused){
 					if(playerWaitTime == plugin.getConfig().getInt("multiplayer.waitforplayers")){
 						sendPlayersMessage(ChatColor.GRAY + lang.getString("time.startup.waitingForPlayers"));
-						sendPlayersMessage(ChatColor.GRAY + String.format(lang.getString("time.startup.time"), playerWaitTime));
+						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", playerWaitTime));
 					}
 					else if(timeMsg.contains(playerWaitTime)){
-						sendPlayersMessage(ChatColor.GRAY + String.format(lang.getString("time.startup.time"), playerWaitTime));
+						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", playerWaitTime));
 					}
 					playerWaitTime -= 1;
 				}
 				else if(playerWaitTime == 0 && startWaitTime !=0 && !paused){
 					if(startWaitTime == plugin.getConfig().getInt("multiplayer.startcountdown")){
 						sendPlayersMessage(ChatColor.GRAY + lang.getString("time.startup.minigameStarts"));
-						sendPlayersMessage(ChatColor.GRAY + String.format(lang.getString("time.startup.time"), playerWaitTime));
+						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", playerWaitTime));
 					}
 					else if(timeMsg.contains(startWaitTime)){
-						sendPlayersMessage(ChatColor.GRAY + String.format(lang.getString("time.startup.time"), playerWaitTime));
+						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", playerWaitTime));
 					}
 					startWaitTime -= 1;
 				}
@@ -103,7 +103,7 @@ public class MultiplayerTimer{
 	public void pauseTimer(String reason){
 		paused = true;
 		for(MinigamePlayer ply : minigame.getPlayers()){
-			ply.sendMessage(String.format(lang.getString("time.startup.timerPaused"), reason), null);
+			ply.sendMessage(MinigameUtils.formStr("time.startup.timerPaused", reason), null);
 		}
 	}
 	

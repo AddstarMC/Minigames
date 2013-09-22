@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -16,11 +17,13 @@ import com.pauldavdesign.mineauz.minigames.CTFFlag;
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
+import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 
 public class CTFType extends ScoreType{
+	private FileConfiguration lang = Minigames.plugin.getLang();
 
 	@Override
 	public String getType() {
@@ -46,8 +49,8 @@ public class CTFType extends ScoreType{
 						minigame.removeBlueTeamPlayer(players.get(i));
 						minigame.addRedTeamPlayer(players.get(i));
 						team = 0;
-						players.get(i).sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been auto balanced to " + ChatColor.RED + "Red Team");
-						mdata.sendMinigameMessage(minigame, players.get(i).getName() + " has been auto balanced to " + ChatColor.RED + "Red Team", null, players.get(i));
+						players.get(i).sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", ChatColor.RED + "Red Team"), null);
+						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.autobalance.plyMsg", players.get(i).getName(), ChatColor.RED + "Red Team"), null, players.get(i));
 					}
 				}
 				else if(team == 0){
@@ -56,22 +59,22 @@ public class CTFType extends ScoreType{
 						minigame.removeRedTeamPlayer(players.get(i));
 						minigame.addBlueTeamPlayer(players.get(i));
 						team = 1;
-						players.get(i).sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been auto balanced to " + ChatColor.BLUE + "Blue Team");
-						mdata.sendMinigameMessage(minigame, players.get(i).getName() + " has been auto balanced to " + ChatColor.BLUE + "Blue Team", null, players.get(i));
+						players.get(i).sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", ChatColor.BLUE + "Blue Team"), null);
+						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.autobalance.plyMsg", players.get(i).getName(), ChatColor.BLUE + "Blue Team"), null, players.get(i));
 					}
 				}
 				else{
 					if(minigame.getRedTeam().size() <= minigame.getBlueTeam().size()){
 						minigame.addRedTeamPlayer(players.get(i));
 						team = 0;
-						players.get(i).sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been auto balanced to " + ChatColor.RED + "Red Team");
-						mdata.sendMinigameMessage(minigame, players.get(i).getName() + " has been auto balanced to " + ChatColor.RED + "Red Team", null, players.get(i));
+						players.get(i).sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", ChatColor.RED + "Red Team"), null);
+						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.autobalance.plyMsg", players.get(i).getName(), ChatColor.RED + "Red Team"), null, players.get(i));
 					}
 					else if(minigame.getBlueTeam().size() <= minigame.getRedTeam().size()){
 						minigame.addBlueTeamPlayer(players.get(i));
 						team = 1;
-						players.get(i).sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been auto balanced to " + ChatColor.BLUE + "Blue Team");
-						mdata.sendMinigameMessage(minigame, players.get(i).getName() + " has been auto balanced to " + ChatColor.BLUE + "Blue Team", null, players.get(i));
+						players.get(i).sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", ChatColor.BLUE + "Blue Team"), null);
+						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.autobalance.plyMsg", players.get(i).getName(), ChatColor.BLUE + "Blue Team"), null, players.get(i));
 					}
 				}
 //				TeamDMMinigame.applyTeam(players.get(i), team);
@@ -175,10 +178,10 @@ public class CTFType extends ScoreType{
 									}
 									
 									if(team == 0){
-										String message = ply.getName() + " captured a flag for " + ChatColor.RED + "Red Team";
+										String message = MinigameUtils.formStr("player.ctf.capture", ply.getName(), ChatColor.RED + "Red Team");
 										mdata.sendMinigameMessage(mgm, message, null, null);
 									}else{
-										String message = ply.getName() + " captured a flag for " + ChatColor.BLUE + "Blue Team";
+										String message = MinigameUtils.formStr("player.ctf.capture", ply.getName(), ChatColor.BLUE + "Blue Team");
 										mdata.sendMinigameMessage(mgm, message, null, null);
 									}
 									flag.stopCarrierParticleEffect();
@@ -188,10 +191,10 @@ public class CTFType extends ScoreType{
 									
 									if(end){
 										if(team == 0){
-											mdata.sendMinigameMessage(mgm, ply.getName() + " captured the final flag for " + ChatColor.RED + "Red Team", null, null);
+											mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.captureFinal", ply.getName(), ChatColor.RED + "Red Team"), null, null);
 										}
 										else{
-											mdata.sendMinigameMessage(mgm, ply.getName() + " captured the final flag for " + ChatColor.BLUE + "Blue Team", null, null);
+											mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.captureFinal", ply.getName(), ChatColor.BLUE + "Blue Team"), null, null);
 										}
 										if(team == 1){
 											pdata.endTeamMinigame(1, mgm);
@@ -211,11 +214,11 @@ public class CTFType extends ScoreType{
 										end = true;
 									}
 									
-									mdata.sendMinigameMessage(mgm, ply.getName() + " captured a flag", null, null);
+									mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.captureNeutral", ply.getName()), null, null);
 									flag.stopCarrierParticleEffect();
 									
 									if(end){
-										mdata.sendMinigameMessage(mgm, ChatColor.WHITE + ply.getName() + " captured the final flag", null, null);
+										mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.captureNeutralFinal", ply.getName()), null, null);
 										
 										pdata.endMinigame(ply);
 										mgm.resetFlags();
@@ -232,17 +235,17 @@ public class CTFType extends ScoreType{
 								flag.respawnFlag();
 								
 								if(flag.getTeam() == 1){
-									mdata.sendMinigameMessage(mgm, ply.getName() + " returned " + ChatColor.BLUE + "Blue Team's" + ChatColor.WHITE + " flag!", null, null);
+									mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.returned", ply.getName(), ChatColor.BLUE + "Blue Team" + ChatColor.WHITE), null, null);
 								}else if(flag.getTeam() == 0){
-									mdata.sendMinigameMessage(mgm, ply.getName() + " returned " + ChatColor.RED + "Red Team's" + ChatColor.WHITE + " flag!", null, null);
+									mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.returned", ply.getName(), ChatColor.RED + "Red Team" + ChatColor.WHITE), null, null);
 								}
 								else{
-									mdata.sendMinigameMessage(mgm, ply.getName() + " stole the " + ChatColor.GRAY + "neutral" + ChatColor.WHITE + " flag!", null, null);
+									mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.stoleNeutral", ply.getName()), null, null);
 									mgm.getFlagCarrier(ply).startCarrierParticleEffect(ply.getPlayer());
 								}
 							}
 							else if(mgm.getFlagCarrier(ply) != null && mgm.hasDroppedFlag(clickID) && !mgm.getDroppedFlag(clickID).isAtHome()){
-								ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You must not be carrying a flag to return your flag!");
+								ply.sendMessage(lang.getString("player.ctf.returnFail"), null);
 							}
 						}
 					}
@@ -265,12 +268,12 @@ public class CTFType extends ScoreType{
 					mgm.removeFlagCarrier(ply);
 
 					if(flag.getTeam() == 0){
-						mdata.sendMinigameMessage(mgm, ply.getName() + " dropped " + ChatColor.RED + "Red Team's" + ChatColor.WHITE + " flag!", null, null);
+						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.dropped", ply.getName(), ChatColor.RED + "Red Team" + ChatColor.WHITE), null, null);
 					}else if(flag.getTeam() == 1){
-						mdata.sendMinigameMessage(mgm, ply.getName() + " dropped " + ChatColor.BLUE + "Blue Team's" + ChatColor.WHITE + " flag!", null, null);
+						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.dropped", ply.getName(), ChatColor.BLUE + "Blue Team" + ChatColor.WHITE), null, null);
 					}
 					else{
-						mdata.sendMinigameMessage(mgm, ply.getName() + " dropped the " + ChatColor.GRAY + "neutral" + ChatColor.WHITE + " flag!", null, null);
+						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.droppedNeutral", ply.getName()), null, null);
 					}
 					flag.stopCarrierParticleEffect();
 					flag.startReturnTimer();
@@ -330,23 +333,15 @@ public class CTFType extends ScoreType{
 				if(pteam == 1){
 					if(mgm.getRedTeam().size() < mgm.getBlueTeam().size() - 1){
 						TeamDMMinigame.switchTeam(mgm, ply);
-						ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been switched to " + ChatColor.RED + "Red Team");
-						for(MinigamePlayer pl : mgm.getPlayers()){
-							if(pl != ply){
-								pl.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + ply.getName() + " has been switched to " + ChatColor.RED + "Red Team");
-							}
-						}
+						ply.sendMessage(MinigameUtils.formStr("player.autobalance.plyMsg", ChatColor.RED + "Red Team"), null);
+						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.autobalance.minigameMsg", ply.getName(), ChatColor.RED + "Red Team"), null, ply);
 					}
 				}
 				else{
 					if(mgm.getBlueTeam().size() < mgm.getRedTeam().size()  - 1){
 						TeamDMMinigame.switchTeam(mgm, ply);
-						ply.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + "You have been switched to " + ChatColor.BLUE + "Blue Team");
-						for(MinigamePlayer pl : mgm.getPlayers()){
-							if(pl != ply){
-								pl.sendMessage(ChatColor.AQUA + "[Minigame] " + ChatColor.WHITE + ply.getName() + " has been switched to " + ChatColor.BLUE + "Blue Team");
-							}
-						}
+						ply.sendMessage(String.format(lang.getString("player.autobalance.plyMsg"), ChatColor.BLUE + "Blue Team"), null);
+						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.autobalance.minigameMsg", ply.getName(), ChatColor.BLUE + "Blue Team"), null, ply);
 					}
 				}
 			}

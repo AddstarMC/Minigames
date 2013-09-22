@@ -7,11 +7,13 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.MultiplayerTimer;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
@@ -20,12 +22,14 @@ public abstract class MinigameType implements Listener{
 	private static Minigames plugin;
 	private PlayerData pdata;
 	private MinigameData mdata;
+	private FileConfiguration lang;
 	
 	protected MinigameType(){
 		plugin = Minigames.plugin;
 		pdata = plugin.pdata;
 		mdata = plugin.mdata;
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
+		lang = plugin.getLang();
 	}
 	
 	public String typeLabel;
@@ -88,11 +92,11 @@ public abstract class MinigameType implements Listener{
 							mgm.setMpTimer(new MultiplayerTimer(mgm));
 							mgm.getMpTimer().startTimer();
 							mgm.getMpTimer().setPlayerWaitTime(0);
-							mdata.sendMinigameMessage(mgm, "Minigame full, skipping player wait time.", "info", null);
+							mdata.sendMinigameMessage(mgm, lang.getString("minigame.skipWaitTime"), "info", null);
 						}
 					}
 					else{
-						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You will join in 5 seconds...");
+						player.sendMessage(MinigameUtils.formStr("minigame.lateJoin", 5));
 						//player.teleport(lobby);
 						pdata.minigameTeleport(player, lobby);
 						final MinigamePlayer fply = player;
@@ -115,33 +119,33 @@ public abstract class MinigameType implements Listener{
 						mgm.setScore(player, 1);
 						mgm.setScore(player, 0);
 					}
-					player.sendMessage(ChatColor.GREEN + "You have started a " + mgm.getType() + " minigame, type /minigame quit to exit.");
+					player.sendMessage(MinigameUtils.formStr("player.join.plyInfo", mgm.getType()), "win");
 				
 					if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMinPlayers()){
 						mgm.setMpTimer(new MultiplayerTimer(mgm));
 						mgm.getMpTimer().startTimer();
 						if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
 							mgm.getMpTimer().setPlayerWaitTime(0);
-							mdata.sendMinigameMessage(mgm, "Minigame full, skipping player wait time.", "info", null);
+							mdata.sendMinigameMessage(mgm, lang.getString("minigame.skipWaitTime"), "info", null);
 						}
 					}
 					else{
 						int neededPlayers = mgm.getMinPlayers() - mgm.getPlayers().size();
 						if(neededPlayers == 1){
-							player.sendMessage(ChatColor.BLUE + "Waiting for 1 more player.");
+							player.sendMessage(MinigameUtils.formStr("minigame.waitingForPlayers", 1), null);
 						}
 						else if(neededPlayers > 1){
-							player.sendMessage(ChatColor.BLUE + "Waiting for " + neededPlayers + " more players.");
+							player.sendMessage(MinigameUtils.formStr("minigame.waitingForPlayers", neededPlayers), null);
 						}
 					}
 					return true;
 				}
 				else if((mgm.canLateJoin() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() != 0)){
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Please wait " + mgm.getMpTimer().getStartWaitTimeLeft() + " seconds and try again.");
+					player.sendMessage(MinigameUtils.formStr("minigame.lateJoinWait", mgm.getMpTimer().getStartWaitTimeLeft()), null);
 					return false;
 				}
 				else if(mgm.getMpTimer().getPlayerWaitTimeLeft() == 0){
-					player.sendMessage(ChatColor.RED + "The minigame has already started. Try again soon.");
+					player.sendMessage(lang.getString("minigame.started"), "error");
 					return false;
 				}
 			}
@@ -162,17 +166,17 @@ public abstract class MinigameType implements Listener{
 //				return true;
 //			}
 			else if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
-				player.sendMessage(ChatColor.RED + "Sorry, this minigame is full.");
+				player.sendMessage(lang.getString("minigame.full"), "error");
 			}
 		}
 		else if(mgm.getQuitPosition() == null){
-			player.sendMessage(ChatColor.RED + "This minigame has no quit position!");
+			player.sendMessage(lang.getString("minigame.error.noQuit"), "error");
 		}
 		else if(mgm.getEndPosition() == null){
-			player.sendMessage(ChatColor.RED + "This minigame has no end position!");
+			player.sendMessage(lang.getString("minigame.error.noEnd"), "error");
 		}
 		else if(mgm.getLobbyPosition() == null){
-			player.sendMessage(ChatColor.RED + "This minigame has no lobby!");
+			player.sendMessage(lang.getString("minigame.error.noLobby"), "error");
 		}
 		return false;
 	}
@@ -190,11 +194,11 @@ public abstract class MinigameType implements Listener{
 		if(Minigames.plugin.hasEconomy()){
 			if(save.getRewardPrice() != 0 && !hascompleted){
 				Minigames.plugin.getEconomy().depositPlayer(player.getName(), save.getRewardPrice());
-				player.sendMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + String.format("You have been awarded $%s.", save.getRewardPrice()));
+				player.sendMessage(MinigameUtils.formStr("player.end.awardMoney", save.getRewardPrice()), "win");
 			}
 			else if(save.getSecondaryRewardPrice() != 0 && hascompleted){
 				Minigames.plugin.getEconomy().depositPlayer(player.getName(), save.getSecondaryRewardPrice());
-				player.sendMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + String.format("You have been awarded $%s.", save.getSecondaryRewardPrice()));
+				player.sendMessage(MinigameUtils.formStr("player.end.awardMoney", save.getSecondaryRewardPrice()), "win");
 			}
 		}
 	}

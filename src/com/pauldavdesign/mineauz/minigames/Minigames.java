@@ -57,37 +57,21 @@ public class Minigames extends JavaPlugin{
 		PluginDescriptionFile desc = this.getDescription();
 		
 		MinigameSave sv = new MinigameSave("lang/" + getConfig().getString("lang"));
-		if(sv.getConfig().contains("lang.info")){
+		if(sv.getConfig().contains("lang.info") && sv.getConfig().getString("lang.version").equals(getDescription().getVersion())){
 			lang = sv.getConfig();
 		}
 		else{
 			MinigameSave svb = new MinigameSave("lang/en_AU");
-			if(sv.getConfig().contains("lang.info")){
-				lang = svb.getConfig();
+			if(svb.getConfig().contains("lang.info")){
+				if(svb.getConfig().getString("lang.version").equals(getDescription().getVersion())){
+					lang = svb.getConfig();
+				}
+				else{
+					loadLang(svb);
+				}
 			}
 			else{
-				InputStream is = getClassLoader().getResourceAsStream("lang/en_AU.yml");
-				OutputStream os = null;
-				try {
-					os = new FileOutputStream(getDataFolder() + "/lang/en_AU.yml");
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				}
-				byte[] buffer = new byte[4096];
-				int length;
-				try {
-					while ((length = is.read(buffer)) > 0) {
-					    os.write(buffer, 0, length);
-					}
-					
-					os.close();
-					is.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				
-				svb = new MinigameSave("lang/en_AU");
-				lang = svb.getConfig();
+				loadLang(svb);
 			}
 		}
 		
@@ -445,5 +429,30 @@ public class Minigames extends JavaPlugin{
 	
 	public FileConfiguration getLang(){
 		return lang;
+	}
+	
+	private void loadLang(MinigameSave svb){
+		InputStream is = getClassLoader().getResourceAsStream("lang/en_AU.yml");
+		OutputStream os = null;
+		try {
+			os = new FileOutputStream(getDataFolder() + "/lang/en_AU.yml");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		byte[] buffer = new byte[4096];
+		int length;
+		try {
+			while ((length = is.read(buffer)) > 0) {
+			    os.write(buffer, 0, length);
+			}
+			
+			os.close();
+			is.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		svb = new MinigameSave("lang/en_AU");
+		lang = svb.getConfig();
 	}
 }

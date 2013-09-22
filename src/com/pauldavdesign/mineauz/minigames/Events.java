@@ -82,7 +82,7 @@ public class Events implements Listener{
 				pdata.quitMinigame(ply, false);
 			}
 			else if(mgm.getLives() > 0){
-				ply.sendMessage(String.format(lang.getString("minigame.livesLeft"), mgm.getLives() - ply.getDeaths()), null);
+				ply.sendMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives() - ply.getDeaths()), null);
 			}
 		}
 	}
@@ -103,6 +103,7 @@ public class Events implements Listener{
 	@EventHandler(ignoreCancelled = true)
 	public void playerDropItem(PlayerDropItemEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply == null) return;
 		if(ply.isInMinigame()){
 			Minigame mgm = pdata.getMinigamePlayer(event.getPlayer()).getMinigame();
 			if(!mgm.hasItemDrops() || 
@@ -282,7 +283,7 @@ public class Events implements Listener{
 								}
 								
 								if(mgm.getType().equals("teamdm")){
-									event.getPlayer().sendMessage(ChatColor.AQUA + lang.getString("minigame.info.score") + String.format(lang.getString("player.end.team.score"), ChatColor.RED.toString() + mgm.getRedTeamScore() + ChatColor.WHITE, ChatColor.BLUE.toString() + mgm.getBlueTeamScore()));
+									event.getPlayer().sendMessage(ChatColor.AQUA + lang.getString("minigame.info.score") + MinigameUtils.formStr("player.end.team.score", ChatColor.RED.toString() + mgm.getRedTeamScore() + ChatColor.WHITE, ChatColor.BLUE.toString() + mgm.getBlueTeamScore()));
 								}
 								
 								String playerCount = ChatColor.AQUA + lang.getString("minigame.info.playerCount") + " " + ChatColor.GRAY;
@@ -318,7 +319,7 @@ public class Events implements Listener{
 							event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + lang.getString("minigame.error.noMinigame"));
 						}
 						else if(mgm.getUsePermissions()){
-							event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + String.format(lang.getString("minigame.error.noPermission"), "minigame.join." + mgm.getName().toLowerCase()));
+							event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName().toLowerCase()));
 						}
 					}
 				}	
@@ -370,7 +371,7 @@ public class Events implements Listener{
 	public void playerRevert(RevertCheckpointEvent event){
 		if(event.getMinigamePlayer().isInMinigame() && (event.getMinigamePlayer().getMinigame().getType().equals("lms") || event.getMinigamePlayer().getMinigame().getType().equals("dm") || event.getMinigamePlayer().getMinigame().getType().equals("teamdm"))){
 			event.setCancelled(true);
-			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + String.format(lang.getString("minigame.error.noRevert"), event.getMinigamePlayer().getMinigame().getType()));
+			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noRevert", event.getMinigamePlayer().getMinigame().getType()));
 		}
 	}
 	

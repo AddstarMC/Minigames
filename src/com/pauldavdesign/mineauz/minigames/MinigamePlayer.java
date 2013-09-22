@@ -55,6 +55,9 @@ public class MinigamePlayer {
 			if(type.equals("error")){
 				init = ChatColor.RED + "[Minigames] " + ChatColor.WHITE;
 			}
+			else if(type.equals("win")){
+				init = ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE;
+			}
 			else{
 				init = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
 			}
