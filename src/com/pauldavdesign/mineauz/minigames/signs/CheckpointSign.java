@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.SignChangeEvent;
 
@@ -14,6 +15,7 @@ import com.pauldavdesign.mineauz.minigames.StoredPlayerCheckpoints;
 public class CheckpointSign implements MinigameSign {
 	
 	private static Minigames plugin = Minigames.plugin;
+	private FileConfiguration lang = plugin.getLang();
 
 	@Override
 	public String getName() {
@@ -27,7 +29,7 @@ public class CheckpointSign implements MinigameSign {
 
 	@Override
 	public String getCreatePermissionMessage() {
-		return "You do not have permission to create a Minigame checkpoint sign!";
+		return lang.getString("sign.checkpoint.createPermission");
 	}
 
 	@Override
@@ -37,7 +39,7 @@ public class CheckpointSign implements MinigameSign {
 
 	@Override
 	public String getUsePermissionMessage() {
-		return "You do not have permission to use a Minigame checkpoint sign!";
+		return lang.getString("sign.checkpoint.usePermission");
 	}
 
 	@Override
@@ -72,15 +74,15 @@ public class CheckpointSign implements MinigameSign {
 					}
 				}
 				
-				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Checkpoint set!");
+				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.checkpoint.set"));
 				return true;
 			}
 			else{
-				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You can not set a checkpoint here!");
+				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.checkpoint.fail"));
 			}
 		}
 		else
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Your hand must be empty to use this sign!");
+			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.emptyHand"));
 		return false;
 	}
 

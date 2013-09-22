@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -16,6 +17,7 @@ import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameSave;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.MultiplayerTimer;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
@@ -25,6 +27,7 @@ public class TeamDMMinigame extends MinigameType{
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
 	private MinigameData mdata = plugin.mdata;
+	private FileConfiguration lang = plugin.getLang();
 	
 	public TeamDMMinigame() {
 		setLabel("teamdm");
@@ -54,7 +57,7 @@ public class TeamDMMinigame extends MinigameType{
 							mgm.setMpTimer(new MultiplayerTimer(mgm));
 							mgm.getMpTimer().startTimer();
 							mgm.getMpTimer().setPlayerWaitTime(0);
-							mdata.sendMinigameMessage(mgm, "Minigame full, skipping player wait time.", "info", null);
+							mdata.sendMinigameMessage(mgm, lang.getString("minigame.skipWaitTime"), "info", null);
 						}
 					}
 					else{
@@ -62,18 +65,18 @@ public class TeamDMMinigame extends MinigameType{
 						
 						if(redSize <= blueSize){
 							mgm.addRedTeamPlayer(player);
-							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.RED + "Red Team");
+							player.sendMessage(MinigameUtils.formStr("player.team.assign.joinTeam", ChatColor.RED + "Red Team"), null);
 							
 							team = 0;
 						}
 						else{
 							mgm.addBlueTeamPlayer(player);
-							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.BLUE + "Blue Team");
+							player.sendMessage(MinigameUtils.formStr("player.team.assign.joinTeam", ChatColor.BLUE + "Blue Team"), null);
 							
 							team = 1;
 						}
 						
-						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You will join in 5 seconds...");
+						player.sendMessage(MinigameUtils.formStr("minigame.lateJoin", 5), null);
 //						player.teleport(lobby);
 						pdata.minigameTeleport(player, lobby);
 						
@@ -108,14 +111,14 @@ public class TeamDMMinigame extends MinigameType{
 						mgm.setScore(player, 1);
 						mgm.setScore(player, 0);
 					}
-					player.sendMessage(ChatColor.GREEN + "You have started a team deathmatch minigame, type /minigame quit to exit.");
+					player.sendMessage(MinigameUtils.formStr("player.join.plyInfo", "team deathmatch"), "win");
 				
 					if(mgm.getMpTimer() == null && mgm.getPlayers().size() >= mgm.getMinPlayers()){
 						mgm.setMpTimer(new MultiplayerTimer(mgm));
 						mgm.getMpTimer().startTimer();
 						if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
 							mgm.getMpTimer().setPlayerWaitTime(0);
-							mdata.sendMinigameMessage(mgm, "Minigame full, skipping player wait time.", "info", null);
+							mdata.sendMinigameMessage(mgm, lang.getString("minigame.skipWaitTime"), "info", null);
 						}
 					}
 					else if(mgm.getMpTimer() != null && mgm.getMpTimer().isPaused() && 
@@ -126,27 +129,22 @@ public class TeamDMMinigame extends MinigameType{
 					}
 					else{
 						int neededPlayers = mgm.getMinPlayers() - mgm.getPlayers().size();
-						if(neededPlayers == 1){
-							player.sendMessage(ChatColor.BLUE + "Waiting for 1 more player.");
-						}
-						else if(neededPlayers > 1){
-							player.sendMessage(ChatColor.BLUE + "Waiting for " + neededPlayers + " more players.");
-						}
+						player.sendMessage(MinigameUtils.formStr("minigame.waitingForPlayers", neededPlayers), null);
 					}
 					
 					return true;
 				}
 				else if((mgm.canLateJoin() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() != 0)){
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Please wait " + mgm.getMpTimer().getStartWaitTimeLeft() + " seconds and try again.");
+					player.sendMessage(MinigameUtils.formStr("minigame.lateJoinWait", mgm.getMpTimer().getStartWaitTimeLeft()), "error");
 					return false;
 				}
 				else if(mgm.getMpTimer().getPlayerWaitTimeLeft() == 0){
-					player.sendMessage(ChatColor.RED + "The minigame has already started. Try again soon.");
+					player.sendMessage(lang.getString("minigame.started"), "error");
 					return false;
 				}
 			}
 			else if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
-				player.sendMessage(ChatColor.RED + "Sorry, this minigame is full.");
+				player.sendMessage(lang.getString("minigame.full"), "error");
 				return false;
 			}
 		}
@@ -203,7 +201,7 @@ public class TeamDMMinigame extends MinigameType{
 			mgm.getMpTimer().removeTimer();
 			mgm.setMpTimer(null);
 			for(MinigamePlayer pl : mgm.getPlayers()){
-				pl.sendMessage(ChatColor.BLUE + "Waiting for 1 more player.");
+				pl.sendMessage(MinigameUtils.formStr("minigame.waitingForPlayers", 1));
 			}
 		}
 		
@@ -225,7 +223,7 @@ public class TeamDMMinigame extends MinigameType{
 		boolean hascompleted = false;
 		Configuration completion = null;
 		
-		player.sendMessage(ChatColor.GREEN + "You've finished the " + mgm + " minigame. Congratulations!");
+		player.sendMessage(MinigameUtils.formStr("player.end.plyMsg", mgm.getName()), "win");
 		
 		if(mgm.getEndPosition() != null){
 			if(!player.getPlayer().isDead()){
@@ -369,17 +367,19 @@ public class TeamDMMinigame extends MinigameType{
 				for(MinigamePlayer ply : players){
 					pdata.quitMinigame(ply, true);
 					if(!plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
-						ply.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " tied against " + 
-								ChatColor.RED + "Red Team" + ChatColor.WHITE + " in " + event.getMinigame().getName() + ", ");
-						ply.sendMessage("Score: " + ChatColor.BLUE + String.valueOf(event.getMinigame().getBlueTeamScore()) + ChatColor.WHITE + " to " + 
-								ChatColor.RED + event.getMinigame().getRedTeamScore());
+						ply.sendMessage(MinigameUtils.formStr("player.end.team.tie", ChatColor.BLUE + "Blue Team" + ChatColor.WHITE, 
+								ChatColor.RED + "Red Team" + ChatColor.WHITE, 
+								event.getMinigame().getName()), "error");
+						ply.sendMessage(lang.getString("minigame.info.score") + " " + MinigameUtils.formStr("player.end.team.score", ChatColor.BLUE + String.valueOf(event.getMinigame().getBlueTeamScore()) + ChatColor.WHITE,
+								ChatColor.RED.toString() + event.getMinigame().getRedTeamScore()));
 					}
 				}
 				if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
-					plugin.getServer().broadcastMessage(ChatColor.RED + "[Minigames] " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " tied against " + 
-							ChatColor.RED + "Red Team" + ChatColor.WHITE + " in " + event.getMinigame().getName() + ", ");
-					plugin.getServer().broadcastMessage("Score: " + ChatColor.BLUE + String.valueOf(event.getMinigame().getBlueTeamScore()) + ChatColor.WHITE + " to " + 
-							ChatColor.RED + event.getMinigame().getRedTeamScore());
+					plugin.getServer().broadcastMessage(ChatColor.RED + "[Minigames] " + MinigameUtils.formStr("player.end.team.tie", ChatColor.BLUE + "Blue Team" + ChatColor.WHITE, 
+							ChatColor.RED + "Red Team" + ChatColor.WHITE, 
+							event.getMinigame().getName()));
+					plugin.getServer().broadcastMessage(lang.getString("minigame.info.score") + " " + MinigameUtils.formStr("player.end.team.score", ChatColor.BLUE + String.valueOf(event.getMinigame().getBlueTeamScore()) + ChatColor.WHITE,
+							ChatColor.RED.toString() + event.getMinigame().getRedTeamScore()));
 				}
 			}
 		}

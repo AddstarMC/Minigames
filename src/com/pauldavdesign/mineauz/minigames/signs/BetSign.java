@@ -3,15 +3,18 @@ package com.pauldavdesign.mineauz.minigames.signs;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 
 public class BetSign implements MinigameSign{
 	
 	private static Minigames plugin = Minigames.plugin;
+	private FileConfiguration lang = plugin.getLang();
 
 	@Override
 	public String getName() {
@@ -25,7 +28,7 @@ public class BetSign implements MinigameSign{
 
 	@Override
 	public String getCreatePermissionMessage() {
-		return "You do not have permission to create a Minigame bet sign!";
+		return lang.getString("sign.bet.createPermission");
 	}
 
 	@Override
@@ -35,7 +38,7 @@ public class BetSign implements MinigameSign{
 
 	@Override
 	public String getUsePermissionMessage() {
-		return "You do not have permission to use a Minigame bet sign!";
+		return lang.getString("sign.bet.usePermission");
 	}
 
 	@Override
@@ -48,7 +51,7 @@ public class BetSign implements MinigameSign{
 			}
 			return true;
 		}
-		event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "There is no minigame by the name \"" + event.getLine(2) + "\"");
+		event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noMinigameName", event.getLine(2)));
 		return false;
 	}
 
@@ -71,25 +74,25 @@ public class BetSign implements MinigameSign{
 						return true;
 					}
 					else{
-						player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "This server does not have Vault! Money bets are not enabled.");
+						player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + lang.getString("minigame.error.noVault"));
 					}
 				}
 			}
 			else if(!mgm.isEnabled()){
-				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "This minigame is currently not enabled.");
+				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("minigame.error.notEnabled"));
 			}
 			else if(mgm.getUsePermissions()){
-				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You do not have the permission \"minigame.join." + mgm.getName().toLowerCase() + "\"");
+				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName().toLowerCase()));
 			}
 		}
 		else if(mgm != null && player.getPlayer().getItemInHand().getType() == Material.AIR && !sign.getLine(3).startsWith("$")){
-			player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You cannot bet nothing!");
+			player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.bet.noBet"));
 		}
 		else if(mgm != null && player.getPlayer().getItemInHand().getType() != Material.AIR && sign.getLine(3).startsWith("$")){
-			player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Your hand must be empty to use this sign.");
+			player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.emptyHand"));
 		}
 		else{
-			player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "This minigame doesn't exist!");
+			player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + lang.getString("minigame.error.noMinigame"));
 		}
 		return false;
 	}
