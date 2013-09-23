@@ -74,7 +74,7 @@ public class SPMinigame extends MinigameType{
 		boolean hascompleted = false;
 		Configuration completion = null;
 		
-		player.sendMessage(MinigameUtils.formStr("player.end.plyMsg", player.getName(), mgm.getName()), "win");
+		player.sendMessage(MinigameUtils.formStr("player.end.plyMsg", mgm.getName()), "win");
 		
 		if(plugin.getConfig().getBoolean("singleplayer.broadcastcompletion")){
 			plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.end.broadcastMsg", player.getName(), mgm.getName()));

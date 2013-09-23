@@ -46,10 +46,10 @@ public class MultiplayerTimer{
 				else if(playerWaitTime == 0 && startWaitTime !=0 && !paused){
 					if(startWaitTime == plugin.getConfig().getInt("multiplayer.startcountdown")){
 						sendPlayersMessage(ChatColor.GRAY + lang.getString("time.startup.minigameStarts"));
-						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", playerWaitTime));
+						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
 					}
 					else if(timeMsg.contains(startWaitTime)){
-						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", playerWaitTime));
+						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
 					}
 					startWaitTime -= 1;
 				}
