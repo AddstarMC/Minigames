@@ -3,15 +3,18 @@ package com.pauldavdesign.mineauz.minigames.signs;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 
 public class JoinSign implements MinigameSign {
 	
 	private static Minigames plugin = Minigames.plugin;
+	private FileConfiguration lang = plugin.getLang();
 
 	@Override
 	public String getName() {
@@ -25,7 +28,7 @@ public class JoinSign implements MinigameSign {
 
 	@Override
 	public String getCreatePermissionMessage() {
-		return "You do not have permission to create a Minigame join sign!";
+		return lang.getString("sign.join.createPermission");
 	}
 
 	@Override
@@ -35,7 +38,7 @@ public class JoinSign implements MinigameSign {
 
 	@Override
 	public String getUsePermissionMessage() {
-		return "You do not have permission to use a Minigame join sign!";
+		return lang.getString("sign.join.usePermission");
 	}
 
 	@Override
@@ -45,7 +48,7 @@ public class JoinSign implements MinigameSign {
 			event.setLine(2, plugin.mdata.getMinigame(event.getLine(2)).getName());
 			if(Minigames.plugin.hasEconomy()){
 				if(!event.getLine(3).isEmpty() && !event.getLine(3).matches("\\$?[0-9]+(.[0-9]{2})?")){
-					event.getPlayer().sendMessage(ChatColor.RED + "Invalid money amount!");
+					event.getPlayer().sendMessage(ChatColor.RED + lang.getString("sign.join.invalidMoney"));
 					return false;
 				}
 				else if(event.getLine(3).matches("[0-9]+(.[0-9]{2})?")){
@@ -54,11 +57,11 @@ public class JoinSign implements MinigameSign {
 			}
 			else{
 				event.setLine(3, "");
-				event.getPlayer().sendMessage(ChatColor.RED + "Vault is required for money use!");
+				event.getPlayer().sendMessage(ChatColor.RED + lang.getString("minigame.error.noVault"));
 			}
 			return true;
 		}
-		event.getPlayer().sendMessage(ChatColor.RED + "There is no minigame by the name \"" + event.getLine(2) + "\"");
+		event.getPlayer().sendMessage(ChatColor.RED + MinigameUtils.formStr("minigame.error.noMinigameName", event.getLine(2)));
 		return false;
 	}
 
@@ -74,7 +77,7 @@ public class JoinSign implements MinigameSign {
 							Minigames.plugin.getEconomy().withdrawPlayer(player.getName(), amount);
 						}
 						else{
-							player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You don't have enough money to join this Minigame.");
+							player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.join.notEnoughMoney"));
 							return false;
 						}
 					}
@@ -82,18 +85,18 @@ public class JoinSign implements MinigameSign {
 					return true;
 				}
 				else if(!mgm.isEnabled()){
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "This minigame is currently not enabled.");
+					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("minigame.error.notEnabled"));
 				}
 			}
 			else if(mgm == null){
-				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "This minigame doesn't exist!");
+				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + lang.getString("minigame.error.noMinigame"));
 			}
 			else if(mgm.getUsePermissions()){
-				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You do not have permission minigame.join." + mgm.getName().toLowerCase());
+				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName().toLowerCase()));
 			}
 		}
 		else if(!player.isInMinigame())
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Your hand must be empty to use this sign!");
+			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.emptyHand"));
 		return false;
 	}
 

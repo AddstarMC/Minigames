@@ -56,6 +56,7 @@ player:
       survivorAssign: "You are a %s"
       survivorAnnounce: "%s is a %s"
       joinTeam: "You have joined %s"
+      joinAnnounce: "%s has joined %s"
   ctf:
     capture: "%s captured a flag for %s"
     captureFinal: "%s captured the final flag for %s"
@@ -142,6 +143,42 @@ sign:
     createPermission: "You do not have permission to create a Minigame flag sign!"
     invalidSyntax: "Invalid sign syntax! Acceptable arguments for capture signs are:"
     taken: "%s flag taken!"
+  join:
+    createPermission: "You do not have permission to create a Minigame join sign!"
+    usePermission: "You do not have permission to use a Minigame join sign!"
+    invalidMoney: "Invalid money amount!"
+    notEnoughMoney: "You don't have enough money to join this Minigame."
+  loadout:
+    createPermission: "You do not have permission to create a Minigames loadout sign!"
+    usePermission: "You do not have permission to use a Minigames loadout sign!"
+    equipped: "You have been equipped with the %s loadout."
+    nextRespawn: "This loadout will be equipped the next time you respawn."
+    noPermission: "You don't have permission to use the %s loadout."
+    noLoadout: "This loadout does not exist!"
+  quit:
+    createPermission: "You do not have permission to create a Minigames quit sign."
+  reward:
+    createPermission: "You do not have permission to create a Minigames reward sign!"
+    usePermission: "You do not have permission to use a Minigames reward sign!"
+    noName: "You need to define a name for the reward on line 3!"
+    invalidItem: "There is no material by the name '%s!"
+    noId: "There is no item using the ID '%s'!"
+    clickSign: "Right click this sign with the item you'd like to set the reward to. (10s left)"
+    rewarded: "You have been awarded with %d %s"
+  spectate:
+    createPermission: "You do not have permission to create a Minigame specate sign!"
+    usePermission: "You do not have permission to use a Minigame spectate sign!"
+  team:
+    createPermission: "You do not have permission to create a Minigame team sign!"
+    usePermission: "You do not have permission to use a Minigame team sign!"
+    invalidFormat: "Line 3 must be %s!"
+    noUnbalance: "You cannot unbalance the teams!"
+    autoAssign: "You will be automatically assigned a team"
+    autoAssignAnnounce: "%s will automatically be assigned a team"
+  teleport:
+    createPermission: "You do not have permission to create a Minigames teleport sign!"
+    usePermission: "You do not have permission to use a Minigames teleport sign!"
+    invalid: "Invalid teleport sign!"
 
 time:
   weeks: "%d weeks"

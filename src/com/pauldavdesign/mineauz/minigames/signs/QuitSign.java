@@ -3,6 +3,7 @@ package com.pauldavdesign.mineauz.minigames.signs;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
@@ -11,6 +12,7 @@ import com.pauldavdesign.mineauz.minigames.Minigames;
 public class QuitSign implements MinigameSign {
 	
 	private static Minigames plugin = Minigames.plugin;
+	private FileConfiguration lang = plugin.getLang();
 
 	@Override
 	public String getName() {
@@ -24,7 +26,7 @@ public class QuitSign implements MinigameSign {
 
 	@Override
 	public String getCreatePermissionMessage() {
-		return "You do not have permission to create a Minigames quit sign.";
+		return lang.getString("sign.quit.createPermission");
 	}
 
 	@Override
@@ -50,7 +52,7 @@ public class QuitSign implements MinigameSign {
 			return true;
 		}
 		else if(player.getPlayer().getItemInHand().getType() != Material.AIR)
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Your hand must be empty to use this sign!");
+			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.emptyHand"));
 		return false;
 	}
 

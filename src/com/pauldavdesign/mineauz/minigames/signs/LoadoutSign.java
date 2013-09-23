@@ -3,15 +3,18 @@ package com.pauldavdesign.mineauz.minigames.signs;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 
 public class LoadoutSign implements MinigameSign {
 	
 	private static Minigames plugin = Minigames.plugin;
+	private FileConfiguration lang = plugin.getLang();
 
 	@Override
 	public String getName() {
@@ -25,7 +28,7 @@ public class LoadoutSign implements MinigameSign {
 
 	@Override
 	public String getCreatePermissionMessage() {
-		return "You do not have permission to create a Minigames loadout sign!";
+		return lang.getString("sign.loadout.createPermission");
 	}
 
 	@Override
@@ -35,7 +38,7 @@ public class LoadoutSign implements MinigameSign {
 
 	@Override
 	public String getUsePermissionMessage() {
-		return "You do not have permission to use a Minigames loadout sign!";
+		return lang.getString("sign.loadout.usePermission");
 	}
 
 	@Override
@@ -55,11 +58,11 @@ public class LoadoutSign implements MinigameSign {
 			if(mgm.hasLoadout(sign.getLine(2))){
 				if(!mgm.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
 					mgm.setPlayersLoadout(player, mgm.getLoadout(sign.getLine(2)));
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been equipped with the " + sign.getLine(2) + " loadout.");
+					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)));
 					
 					if(mgm.getType().equals("sp") || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
 						if(sign.getLine(3).equalsIgnoreCase("respawn")){
-							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "This loadout will be equipped the next time you respawn.");
+							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.loadout.nextRespawn"));
 						}
 						else{
 							mgm.getLoadout(sign.getLine(2)).equiptLoadout(player);
@@ -68,17 +71,17 @@ public class LoadoutSign implements MinigameSign {
 					return true;
 				}
 				else{
-					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You don't have permission to use the " + sign.getLine(2) + " loadout.");
+					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("sign.loadout.noPermisson", sign.getLine(2)));
 				}
 			}
 			else if(plugin.mdata.hasLoadout(sign.getLine(2))){
 				if(!plugin.mdata.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
 					mgm.setPlayersLoadout(player, plugin.mdata.getLoadout(sign.getLine(2)));
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have been equipped with the " + sign.getLine(2) + " loadout.");
+					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)));
 
 					if(mgm.getType().equals("sp") || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
 						if(sign.getLine(3).equalsIgnoreCase("respawn")){
-							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "This loadout will be equipped the next time you respawn.");
+							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.loadout.nextRespawn"));
 						}
 						else{
 							plugin.mdata.getLoadout(sign.getLine(2)).equiptLoadout(player);
@@ -87,15 +90,15 @@ public class LoadoutSign implements MinigameSign {
 					return true;
 				}
 				else{
-					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "You don't have permission to use the " + sign.getLine(2) + " loadout.");
+					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("sign.loadout.noPermisson", sign.getLine(2)));
 				}
 			}
 			else{
-				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "This loadout does not exist!");
+				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.loadout.noLoadout"));
 			}
 		}
 		else if(player.getPlayer().getItemInHand().getType() != Material.AIR)
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Your hand must be empty to use this sign!");
+			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.emptyHand"));
 		return false;
 	}
 

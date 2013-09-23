@@ -2,16 +2,19 @@ package com.pauldavdesign.mineauz.minigames.signs;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 
 public class TeamSign implements MinigameSign {
 	
 	private Minigames plugin = Minigames.plugin;
+	private FileConfiguration lang = plugin.getLang();
 	
 	@Override
 	public String getName() {
@@ -25,7 +28,7 @@ public class TeamSign implements MinigameSign {
 
 	@Override
 	public String getCreatePermissionMessage() {
-		return "You do not have permission to create a Minigame team sign!";
+		return lang.getString("sign.team.createPermission");
 	}
 
 	@Override
@@ -35,7 +38,7 @@ public class TeamSign implements MinigameSign {
 
 	@Override
 	public String getUsePermissionMessage() {
-		return "You do not have permission to use a Minigame team sign!";
+		return lang.getString("sign.team.usePermission");
 	}
 
 	@Override
@@ -55,7 +58,7 @@ public class TeamSign implements MinigameSign {
 			}
 			return true;
 		}
-		event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Line 3 must be \"red\", \"blue\" or \"neutral\"!");
+		event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("sign.team.invalidFormat", "\"red\", \"blue\" or \"neutral\""));
 		return false;
 	}
 
@@ -73,18 +76,18 @@ public class TeamSign implements MinigameSign {
 					if(sign.getLine(2).equals(ChatColor.RED + "Red")){
 						if(mgm.getRedTeam().size() <= mgm.getBlueTeam().size()){
 							TeamDMMinigame.switchTeam(mgm, player);
-							plugin.mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + ChatColor.RED + "Red Team.", null, player);
-							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.RED + "Red Team.");
+							plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.joinAnnounce", player.getName(), ChatColor.RED + "Red Team."), null, player);
+							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", ChatColor.RED + "Red Team."));
 						}
 						else{
-							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You cannot unbalance the teams!");
+							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.team.noUnbalance"));
 						}
 					}
 					else if(sign.getLine(2).equals(ChatColor.GRAY + "Neutral") && !mgm.hasStarted()){
 						mgm.removeRedTeamPlayer(player);
 						mgm.removeBlueTeamPlayer(player);
-						plugin.mdata.sendMinigameMessage(mgm, player.getName() + " will be automatically assigned to a team.", null, player);
-						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You will be automatically assigned to a team.");
+						plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("sign.team.autoAssignAnnounce", player.getName()), null, player);
+						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.team.autoAssign"));
 					}
 					return true;
 				}
@@ -92,18 +95,18 @@ public class TeamSign implements MinigameSign {
 					if(sign.getLine(2).equals(ChatColor.BLUE + "Blue")){
 						if(mgm.getRedTeam().size() >= mgm.getBlueTeam().size()){
 							TeamDMMinigame.switchTeam(mgm, player);
-							plugin.mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + ChatColor.BLUE + "Blue Team.", null, player);
-							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.BLUE + "Blue Team.");
+							plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.joinAnnounce", player.getName(), ChatColor.BLUE + "Blue Team."), null, player);
+							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", ChatColor.BLUE + "Blue Team."));
 						}
 						else{
-							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You cannot unbalance the teams!");
+							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.team.noUnbalance"));
 						}
 					}
 					else if(sign.getLine(2).equals(ChatColor.GRAY + "Neutral") && !mgm.hasStarted()){
 						mgm.removeRedTeamPlayer(player);
 						mgm.removeBlueTeamPlayer(player);
-						plugin.mdata.sendMinigameMessage(mgm, player.getName() + " will be automatically assigned to a team.", null, player);
-						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You will be automatically assigned to a team.");
+						plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("sign.team.autoAssignAnnounce", player.getName()), null, player);
+						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.team.autoAssign"));
 					}
 					return true;
 				}
@@ -113,22 +116,22 @@ public class TeamSign implements MinigameSign {
 							if(mgm.getRedTeam().size() <= mgm.getBlueTeam().size()){
 								mgm.addRedTeamPlayer(player);
 								mgm.removeBlueTeamPlayer(player);
-								plugin.mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + ChatColor.RED + "Red Team.", null, player);
-								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.RED + "Red Team.");
+								plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.joinAnnounce", player.getName(), ChatColor.RED + "Red Team."), null, player);
+								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", ChatColor.RED + "Red Team."));
 							}
 							else{
-								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You cannot unbalance the teams!");
+								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.team.noUnbalance"));
 							}
 						}
 						else if(sign.getLine(2).equals(ChatColor.BLUE + "Blue")){
 							if(mgm.getRedTeam().size() >= mgm.getBlueTeam().size()){
 								mgm.addBlueTeamPlayer(player);
 								mgm.removeRedTeamPlayer(player);
-								plugin.mdata.sendMinigameMessage(mgm, player.getName() + " has joined " + ChatColor.BLUE + "Blue Team.", null, player);
-								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You have joined " + ChatColor.BLUE + "Blue Team.");
+								plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.joinAnnounce", player.getName(), ChatColor.BLUE + "Blue Team."), null, player);
+								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", ChatColor.BLUE + "Blue Team."));
 							}
 							else{
-								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "You cannot unbalance the teams!");
+								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.team.noUnbalance"));
 							}
 						}
 						return true;

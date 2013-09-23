@@ -3,15 +3,18 @@ package com.pauldavdesign.mineauz.minigames.signs;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 
 public class SpectateSign implements MinigameSign {
 	
 	private Minigames plugin = Minigames.plugin;
+	private FileConfiguration lang = plugin.getLang();
 
 	@Override
 	public String getName() {
@@ -25,7 +28,7 @@ public class SpectateSign implements MinigameSign {
 
 	@Override
 	public String getCreatePermissionMessage() {
-		return "You do not have permission to create a Minigame specate sign!";
+		return lang.getString("sign.spectate.createPermission");
 	}
 
 	@Override
@@ -35,7 +38,7 @@ public class SpectateSign implements MinigameSign {
 
 	@Override
 	public String getUsePermissionMessage() {
-		return "You do not have permission to use a Minigame spectate sign!";
+		return lang.getString("sign.spectate.usePermission");
 	}
 
 	@Override
@@ -45,7 +48,7 @@ public class SpectateSign implements MinigameSign {
 			event.setLine(2, plugin.mdata.getMinigame(event.getLine(2)).getName());
 			return true;
 		}
-		event.getPlayer().sendMessage(ChatColor.RED + "There is no minigame by the name \"" + event.getLine(2) + "\"");
+		event.getPlayer().sendMessage(ChatColor.RED + MinigameUtils.formStr("minigame.error.noMinigameName", event.getLine(2)));
 		return false;
 	}
 
@@ -59,15 +62,15 @@ public class SpectateSign implements MinigameSign {
 					return true;
 				}
 				else if(!mgm.isEnabled()){
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "This minigame is currently not enabled.");
+					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("minigame.error.notEnabled"));
 				}
 			}
 			else if(mgm == null){
-				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "This minigame doesn't exist!");
+				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + lang.getString("minigame.error.noMinigame"));
 			}
 		}
 		else if(!player.isInMinigame())
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "Your hand must be empty to use this sign!");
+			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.emptyHand"));
 		return false;
 	}
 
