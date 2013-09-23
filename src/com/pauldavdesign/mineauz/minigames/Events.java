@@ -202,6 +202,11 @@ public class Events implements Listener{
 					}
 				});
 			}
+			
+			plugin.getLogger().info("--------------------------DEBUG--------------------------");
+			plugin.getLogger().info("Player: " + ply.getName());
+			plugin.getLogger().info("This player has had Minigame data restored. Please verify if they were in a Minigame before they quit.");
+			
 		}
 		
 		if(Bukkit.getServer().getOnlinePlayers().length == 1){
