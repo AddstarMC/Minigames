@@ -25,7 +25,7 @@ public class JoinCommand implements ICommand{
 
 	@Override
 	public String getDescription() {
-		return "Forces you to join a Minigame. Warning: This bypasses betting, even if betting is enabled.";
+		return "Forces you to join a Minigame. Warning: This bypasses betting.";
 	}
 
 	@Override
