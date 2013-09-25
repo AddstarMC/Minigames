@@ -7,7 +7,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -17,13 +16,11 @@ import com.pauldavdesign.mineauz.minigames.CTFFlag;
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
-import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 
 public class CTFType extends ScoreType{
-	private FileConfiguration lang = Minigames.plugin.getLang();
 
 	@Override
 	public String getType() {
@@ -245,7 +242,7 @@ public class CTFType extends ScoreType{
 								}
 							}
 							else if(mgm.getFlagCarrier(ply) != null && mgm.hasDroppedFlag(clickID) && !mgm.getDroppedFlag(clickID).isAtHome()){
-								ply.sendMessage(lang.getString("player.ctf.returnFail"), null);
+								ply.sendMessage(MinigameUtils.getLang("player.ctf.returnFail"), null);
 							}
 						}
 					}
@@ -340,7 +337,7 @@ public class CTFType extends ScoreType{
 				else{
 					if(mgm.getBlueTeam().size() < mgm.getRedTeam().size()  - 1){
 						TeamDMMinigame.switchTeam(mgm, ply);
-						ply.sendMessage(String.format(lang.getString("player.autobalance.plyMsg"), ChatColor.BLUE + "Blue Team"), null);
+						ply.sendMessage(String.format(MinigameUtils.getLang("player.autobalance.plyMsg"), ChatColor.BLUE + "Blue Team"), null);
 						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.autobalance.minigameMsg", ply.getName(), ChatColor.BLUE + "Blue Team"), null, ply);
 					}
 				}

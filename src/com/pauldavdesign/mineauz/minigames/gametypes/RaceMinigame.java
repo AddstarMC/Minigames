@@ -6,7 +6,6 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -26,7 +25,6 @@ public class RaceMinigame extends MinigameType{
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
 	private MinigameData mdata = plugin.mdata;
-	private FileConfiguration lang = Minigames.plugin.getLang();
 	
 	public RaceMinigame() {
 		setLabel("race");
@@ -148,7 +146,7 @@ public class RaceMinigame extends MinigameType{
 				if(players.get(i) instanceof MinigamePlayer){
 					MinigamePlayer p = players.get(i);
 					if(!p.getName().equals(player.getName())){
-						p.sendMessage(lang.getString("player.quit.plyBeatenMsg"), "error");
+						p.sendMessage(MinigameUtils.getLang("player.quit.plyBeatenMsg"), "error");
 						pdata.quitMinigame(p, true);
 					}
 				}
@@ -196,7 +194,7 @@ public class RaceMinigame extends MinigameType{
 				String mgtype = mgm.getType();
 				if(mgtype.equals("race")){
 					event.setRespawnLocation(player.getCheckpoint());
-					player.sendMessage(lang.getString("player.checkpoint.deathRevert"), "error");
+					player.sendMessage(MinigameUtils.getLang("player.checkpoint.deathRevert"), "error");
 					
 					mgm.getPlayersLoadout(player).equiptLoadout(player);
 				}
@@ -210,7 +208,7 @@ public class RaceMinigame extends MinigameType{
 			List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 			players.addAll(event.getMinigame().getPlayers());
 			for(MinigamePlayer ply : players){
-				ply.sendMessage(lang.getString("minigame.timer.expired"), "error");
+				ply.sendMessage(MinigameUtils.getLang("minigame.timer.expired"), "error");
 				pdata.quitMinigame(ply, true);
 			}
 		}

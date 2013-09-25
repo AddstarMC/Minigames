@@ -4,18 +4,17 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.StoredPlayerCheckpoints;
 
 public class CheckpointSign implements MinigameSign {
 	
 	private static Minigames plugin = Minigames.plugin;
-	private FileConfiguration lang = plugin.getLang();
 
 	@Override
 	public String getName() {
@@ -29,7 +28,7 @@ public class CheckpointSign implements MinigameSign {
 
 	@Override
 	public String getCreatePermissionMessage() {
-		return lang.getString("sign.checkpoint.createPermission");
+		return MinigameUtils.getLang("sign.checkpoint.createPermission");
 	}
 
 	@Override
@@ -39,7 +38,7 @@ public class CheckpointSign implements MinigameSign {
 
 	@Override
 	public String getUsePermissionMessage() {
-		return lang.getString("sign.checkpoint.usePermission");
+		return MinigameUtils.getLang("sign.checkpoint.usePermission");
 	}
 
 	@Override
@@ -74,15 +73,15 @@ public class CheckpointSign implements MinigameSign {
 					}
 				}
 				
-				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.checkpoint.set"));
+				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.checkpoint.set"));
 				return true;
 			}
 			else{
-				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.checkpoint.fail"));
+				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.checkpoint.fail"));
 			}
 		}
 		else
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.emptyHand"));
+			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
 		return false;
 	}
 

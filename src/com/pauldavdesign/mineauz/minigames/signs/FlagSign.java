@@ -3,18 +3,14 @@ package com.pauldavdesign.mineauz.minigames.signs;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
-import com.pauldavdesign.mineauz.minigames.Minigames;
 
 public class FlagSign implements MinigameSign {
-	
-	private FileConfiguration lang = Minigames.plugin.getLang();
 
 	@Override
 	public String getName() {
@@ -28,7 +24,7 @@ public class FlagSign implements MinigameSign {
 
 	@Override
 	public String getCreatePermissionMessage() {
-		return lang.getString("sign.flag.createPermission");
+		return MinigameUtils.getLang("sign.flag.createPermission");
 	}
 
 	@Override
@@ -66,7 +62,7 @@ public class FlagSign implements MinigameSign {
 			}
 			else{
 				event.getBlock().breakNaturally();
-				event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.flag.invalidSyntax") + " red, blue and neutral.");
+				event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.flag.invalidSyntax") + " red, blue and neutral.");
 				return false;
 			}
 		}
@@ -91,7 +87,7 @@ public class FlagSign implements MinigameSign {
 			}
 		}
 		else if(player.getPlayer().getItemInHand().getType() != Material.AIR)
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.emptyHand"));
+			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
 		return false;
 	}
 

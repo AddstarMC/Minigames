@@ -3,7 +3,6 @@ package com.pauldavdesign.mineauz.minigames.signs;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
@@ -14,7 +13,6 @@ import com.pauldavdesign.mineauz.minigames.Minigames;
 public class LoadoutSign implements MinigameSign {
 	
 	private static Minigames plugin = Minigames.plugin;
-	private FileConfiguration lang = plugin.getLang();
 
 	@Override
 	public String getName() {
@@ -28,7 +26,7 @@ public class LoadoutSign implements MinigameSign {
 
 	@Override
 	public String getCreatePermissionMessage() {
-		return lang.getString("sign.loadout.createPermission");
+		return MinigameUtils.getLang("sign.loadout.createPermission");
 	}
 
 	@Override
@@ -38,7 +36,7 @@ public class LoadoutSign implements MinigameSign {
 
 	@Override
 	public String getUsePermissionMessage() {
-		return lang.getString("sign.loadout.usePermission");
+		return MinigameUtils.getLang("sign.loadout.usePermission");
 	}
 
 	@Override
@@ -62,7 +60,7 @@ public class LoadoutSign implements MinigameSign {
 					
 					if(mgm.getType().equals("sp") || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
 						if(sign.getLine(3).equalsIgnoreCase("respawn")){
-							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.loadout.nextRespawn"));
+							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.loadout.nextRespawn"));
 						}
 						else{
 							mgm.getLoadout(sign.getLine(2)).equiptLoadout(player);
@@ -81,7 +79,7 @@ public class LoadoutSign implements MinigameSign {
 
 					if(mgm.getType().equals("sp") || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
 						if(sign.getLine(3).equalsIgnoreCase("respawn")){
-							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.loadout.nextRespawn"));
+							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.loadout.nextRespawn"));
 						}
 						else{
 							plugin.mdata.getLoadout(sign.getLine(2)).equiptLoadout(player);
@@ -94,11 +92,11 @@ public class LoadoutSign implements MinigameSign {
 				}
 			}
 			else{
-				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.loadout.noLoadout"));
+				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.loadout.noLoadout"));
 			}
 		}
 		else if(player.getPlayer().getItemInHand().getType() != Material.AIR)
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.emptyHand"));
+			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
 		return false;
 	}
 

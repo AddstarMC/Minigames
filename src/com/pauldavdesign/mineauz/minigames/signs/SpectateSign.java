@@ -3,7 +3,6 @@ package com.pauldavdesign.mineauz.minigames.signs;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
@@ -14,7 +13,6 @@ import com.pauldavdesign.mineauz.minigames.Minigames;
 public class SpectateSign implements MinigameSign {
 	
 	private Minigames plugin = Minigames.plugin;
-	private FileConfiguration lang = plugin.getLang();
 
 	@Override
 	public String getName() {
@@ -28,7 +26,7 @@ public class SpectateSign implements MinigameSign {
 
 	@Override
 	public String getCreatePermissionMessage() {
-		return lang.getString("sign.spectate.createPermission");
+		return MinigameUtils.getLang("sign.spectate.createPermission");
 	}
 
 	@Override
@@ -38,7 +36,7 @@ public class SpectateSign implements MinigameSign {
 
 	@Override
 	public String getUsePermissionMessage() {
-		return lang.getString("sign.spectate.usePermission");
+		return MinigameUtils.getLang("sign.spectate.usePermission");
 	}
 
 	@Override
@@ -62,15 +60,15 @@ public class SpectateSign implements MinigameSign {
 					return true;
 				}
 				else if(!mgm.isEnabled()){
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("minigame.error.notEnabled"));
+					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.notEnabled"));
 				}
 			}
 			else if(mgm == null){
-				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + lang.getString("minigame.error.noMinigame"));
+				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noMinigame"));
 			}
 		}
 		else if(!player.isInMinigame())
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.emptyHand"));
+			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
 		return false;
 	}
 

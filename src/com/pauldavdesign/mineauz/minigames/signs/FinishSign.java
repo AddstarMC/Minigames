@@ -5,18 +5,17 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 
 public class FinishSign implements MinigameSign {
 	
 	private static Minigames plugin = Minigames.plugin;
-	private FileConfiguration lang = plugin.getLang();
 
 	@Override
 	public String getName() {
@@ -30,7 +29,7 @@ public class FinishSign implements MinigameSign {
 
 	@Override
 	public String getCreatePermissionMessage() {
-		return lang.getString("sign.finish.createPermission");
+		return MinigameUtils.getLang("sign.finish.createPermission");
 	}
 
 	@Override
@@ -50,7 +49,7 @@ public class FinishSign implements MinigameSign {
 			event.setLine(2, plugin.mdata.getMinigame(event.getLine(2)).getName());
 		}
 		else if(!event.getLine(2).isEmpty()){
-			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + lang.getString("minigame.error.noMinigame"));
+			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noMinigame"));
 			return false;
 		}
 		return true;
@@ -85,7 +84,7 @@ public class FinishSign implements MinigameSign {
 								flags += ", ";
 							}
 						}
-						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.finish.requireFlags"));
+						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.finish.requireFlags"));
 						player.sendMessage(ChatColor.GRAY + flags);
 					}
 				}
@@ -100,7 +99,7 @@ public class FinishSign implements MinigameSign {
 			}
 		}
 		else if(player.getPlayer().getItemInHand().getType() != Material.AIR){
-			player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.emptyHand"));
+			player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
 		}
 		return false;
 	}

@@ -3,16 +3,15 @@ package com.pauldavdesign.mineauz.minigames.signs;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 
 public class QuitSign implements MinigameSign {
 	
 	private static Minigames plugin = Minigames.plugin;
-	private FileConfiguration lang = plugin.getLang();
 
 	@Override
 	public String getName() {
@@ -26,7 +25,7 @@ public class QuitSign implements MinigameSign {
 
 	@Override
 	public String getCreatePermissionMessage() {
-		return lang.getString("sign.quit.createPermission");
+		return MinigameUtils.getLang("sign.quit.createPermission");
 	}
 
 	@Override
@@ -52,7 +51,7 @@ public class QuitSign implements MinigameSign {
 			return true;
 		}
 		else if(player.getPlayer().getItemInHand().getType() != Material.AIR)
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.emptyHand"));
+			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
 		return false;
 	}
 

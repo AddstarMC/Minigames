@@ -19,7 +19,6 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -49,7 +48,6 @@ public class PlayerData {
 	private static Minigames plugin = Minigames.plugin;
 	private MinigameData mdata = plugin.mdata;
 	MinigameSave invsave = new MinigameSave("playerinv");
-	private FileConfiguration lang = plugin.getLang();
 	
 	public PlayerData(){}
 	
@@ -98,7 +96,7 @@ public class PlayerData {
 				}
 			}
 			else{
-				player.sendMessage(lang.getString("minigame.error.noGametype"), "error");
+				player.sendMessage(MinigameUtils.getLang("minigame.error.noGametype"), "error");
 			}
 		}
 	}
@@ -149,7 +147,7 @@ public class PlayerData {
 						((money != 0 && pbet.canBet(player, money) && plugin.getEconomy().getBalance(player.getName()) >= money) || 
 								(pbet.canBet(player, item) && item.getType() != Material.AIR && pbet.betValue(item.getType()) > 0))){
 					if(minigame.getPlayers().isEmpty() || minigame.getPlayers().size() != minigame.getMaxPlayers()){
-						player.sendMessage(lang.getString("player.bet.plyMsg"), null);
+						player.sendMessage(MinigameUtils.getLang("player.bet.plyMsg"), null);
 						if(money == 0){
 							pbet.addBet(player, item);
 						}
@@ -161,27 +159,27 @@ public class PlayerData {
 						joinMinigame(player, minigame);
 					}
 					else{
-						player.sendMessage(lang.getString("minigame.full"), "error");
+						player.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
 					}
 				}
 				else if(item.getType() == Material.AIR && money == 0){
-					player.sendMessage(lang.getString("player.bet.plyNoBet"), "error");
+					player.sendMessage(MinigameUtils.getLang("player.bet.plyNoBet"), "error");
 				}
 				else if(money != 0 && !pbet.canBet(player, money)){
-					player.sendMessage(lang.getString("player.bet.incorrectAmount"), "error");
+					player.sendMessage(MinigameUtils.getLang("player.bet.incorrectAmount"), "error");
 					player.sendMessage(MinigameUtils.formStr("player.bet.incorrectAmountInfo", minigame.getMpBets().getHighestMoneyBet()), "error");
 				}
 				else if(money != 0 && plugin.getEconomy().getBalance(player.getName()) < money){
-					player.sendMessage(lang.getString("player.bet.notEnoughMoney"), "error");
+					player.sendMessage(MinigameUtils.getLang("player.bet.notEnoughMoney"), "error");
 					player.sendMessage(MinigameUtils.formStr("player.bet.notEnoughMoneyInfo", minigame.getMpBets().getHighestMoneyBet()), "error");
 				}
 				else{
-					player.sendMessage(lang.getString("player.bet.incorrectItem"), "error");
+					player.sendMessage(MinigameUtils.getLang("player.bet.incorrectItem"), "error");
 					player.sendMessage(MinigameUtils.formStr("player.bet.incorrectItemInfo", 1, minigame.getMpBets().highestBetName()), "error");
 				}
 			}
 			else if(minigame != null && minigame.getMpTimer() != null && minigame.getMpTimer().getPlayerWaitTimeLeft() == 0){
-				player.sendMessage(lang.getString("minigame.started"), "error");
+				player.sendMessage(MinigameUtils.getLang("minigame.started"), "error");
 			}
 		}
 	}
@@ -222,7 +220,7 @@ public class PlayerData {
 						}
 					}
 					else {
-						ply.sendMessage(lang.getString("minigame.error.incorrectStart"), "error");
+						ply.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), "error");
 						quitMinigame(ply, false);
 					}
 				}
@@ -255,7 +253,7 @@ public class PlayerData {
 						bluepos++;
 					}
 					else if(minigame.getStartLocationsBlue().isEmpty() || minigame.getStartLocationsRed().isEmpty()){
-						ply.sendMessage(lang.getString("minigame.error.incorrectStart"), "error");
+						ply.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), "error");
 						quitMinigame(ply, false);
 					}
 				}
@@ -273,7 +271,7 @@ public class PlayerData {
 							ply.setCheckpoint(start);
 						}
 						else {
-							ply.sendMessage(lang.getString("minigame.error.incorrectStart"), "error");
+							ply.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), "error");
 							quitMinigame(ply, false);
 						}
 					}
@@ -326,7 +324,7 @@ public class PlayerData {
 		
 		if(!event.isCancelled()){
 			minigameTeleport(player, player.getCheckpoint());
-			player.sendMessage(lang.getString("player.checkpoint.revert"), null);
+			player.sendMessage(MinigameUtils.getLang("player.checkpoint.revert"), null);
 		}
 	}
 	
@@ -635,7 +633,7 @@ public class PlayerData {
 	
 							@Override
 							public void run() {
-								p.sendMessage(lang.getString("player.quit.plyBeatenMsg"), "error");
+								p.sendMessage(MinigameUtils.getLang("player.quit.plyBeatenMsg"), "error");
 								quitMinigame(p, true);
 							}
 						});

@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.block.SignChangeEvent;
 
@@ -21,7 +20,6 @@ import com.pauldavdesign.mineauz.minigames.Minigames;
 public class RewardSign implements MinigameSign {
 	
 	private static Minigames plugin = Minigames.plugin;
-	private FileConfiguration lang = plugin.getLang();
 
 	@Override
 	public String getName() {
@@ -35,7 +33,7 @@ public class RewardSign implements MinigameSign {
 
 	@Override
 	public String getCreatePermissionMessage() {
-		return lang.getString("sign.reward.createPermission");
+		return MinigameUtils.getLang("sign.reward.createPermission");
 	}
 
 	@Override
@@ -45,14 +43,14 @@ public class RewardSign implements MinigameSign {
 
 	@Override
 	public String getUsePermissionMessage() {
-		return lang.getString("sign.reward.usePermission");
+		return MinigameUtils.getLang("sign.reward.usePermission");
 	}
 
 	@Override
 	public boolean signCreate(SignChangeEvent event) {
 		event.setLine(1, ChatColor.GREEN + "Reward");
 		if(event.getLine(2).isEmpty()){
-			event.getPlayer().sendMessage(ChatColor.RED + lang.getString("sign.reward.noName"));
+			event.getPlayer().sendMessage(ChatColor.RED + MinigameUtils.getLang("sign.reward.noName"));
 			return false;
 		}
 		String[] split = event.getLine(3).split(" ");
@@ -71,7 +69,7 @@ public class RewardSign implements MinigameSign {
 			}
 		}
 		else{
-			event.getPlayer().sendMessage(ChatColor.BLUE + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.reward.clickSign"));
+			event.getPlayer().sendMessage(ChatColor.BLUE + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.reward.clickSign"));
 			final Location loc = event.getBlock().getLocation();
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				

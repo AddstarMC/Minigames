@@ -231,11 +231,28 @@ public class MinigameUtils {
 	 * Formats a string from the language file.
 	 * @param format - The location in the YAML of the string to format.
 	 * @param text - What to replace the formatted variables with.
-	 * @return The formatted string
+	 * @return The formatted string. If not found, will return the format
 	 */
 	public static String formStr(String format, Object... text){
-		FileConfiguration lang = Minigames.plugin.getLang();
-		return String.format(lang.getString(format), text);
+		String lang = Minigames.plugin.getLang().getString(format);
+		if(lang != null)
+			return String.format(lang, text);
+		lang = "No path found for: " + format;
+		return lang;
+	}
+	
+	/**
+	 * Gets the language string from the localization file.
+	 * @param arg1 - The path of the language string
+	 * @return The translation. If not found, will return the argument.
+	 */
+	public static String getLang(String arg1){
+		String lang = Minigames.plugin.getLang().getString(arg1);
+		if(lang != null){
+			return lang;
+		}
+		lang = "No path found for: " + arg1;
+		return lang;
 	}
 	
 //	public static void removePlayerArrows(MinigamePlayer player){

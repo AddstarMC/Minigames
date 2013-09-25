@@ -5,7 +5,6 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -24,7 +23,6 @@ public class SPMinigame extends MinigameType{
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
 	private MinigameData mdata = plugin.mdata;
-	private FileConfiguration lang = plugin.getLang();
 	
 	public SPMinigame() {
 		setLabel("sp");
@@ -61,10 +59,10 @@ public class SPMinigame extends MinigameType{
 			return true;
 		}
 		else if(mgm.getQuitPosition() == null){
-			player.sendMessage(lang.getString("minigame.error.noQuit"), "error");
+			player.sendMessage(MinigameUtils.getLang("minigame.error.noQuit"), "error");
 		}
 		else if(!mgm.isEnabled()){
-			player.sendMessage(lang.getString("minigame.error.notEnabled"), "error");
+			player.sendMessage(MinigameUtils.getLang("minigame.error.notEnabled"), "error");
 		}
 		return false;
 	}
@@ -169,7 +167,7 @@ public class SPMinigame extends MinigameType{
 			Minigame mgm = player.getMinigame();
 			if(mgm.getType().equalsIgnoreCase("sp")){
 				event.setRespawnLocation(player.getCheckpoint());
-				player.sendMessage(lang.getString("player.checkpoint.deathRevert"), "error");
+				player.sendMessage(MinigameUtils.getLang("player.checkpoint.deathRevert"), "error");
 				
 				mgm.getPlayersLoadout(player).equiptLoadout(player);
 			}

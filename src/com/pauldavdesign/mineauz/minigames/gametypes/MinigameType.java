@@ -5,9 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
@@ -22,14 +20,12 @@ public abstract class MinigameType implements Listener{
 	private static Minigames plugin;
 	private PlayerData pdata;
 	private MinigameData mdata;
-	private FileConfiguration lang;
 	
 	protected MinigameType(){
 		plugin = Minigames.plugin;
 		pdata = plugin.pdata;
 		mdata = plugin.mdata;
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
-		lang = plugin.getLang();
 	}
 	
 	public String typeLabel;
@@ -92,7 +88,7 @@ public abstract class MinigameType implements Listener{
 							mgm.setMpTimer(new MultiplayerTimer(mgm));
 							mgm.getMpTimer().startTimer();
 							mgm.getMpTimer().setPlayerWaitTime(0);
-							mdata.sendMinigameMessage(mgm, lang.getString("minigame.skipWaitTime"), "info", null);
+							mdata.sendMinigameMessage(mgm, MinigameUtils.getLang("minigame.skipWaitTime"), "info", null);
 						}
 					}
 					else{
@@ -126,7 +122,7 @@ public abstract class MinigameType implements Listener{
 						mgm.getMpTimer().startTimer();
 						if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
 							mgm.getMpTimer().setPlayerWaitTime(0);
-							mdata.sendMinigameMessage(mgm, lang.getString("minigame.skipWaitTime"), "info", null);
+							mdata.sendMinigameMessage(mgm, MinigameUtils.getLang("minigame.skipWaitTime"), "info", null);
 						}
 					}
 					else{
@@ -145,7 +141,7 @@ public abstract class MinigameType implements Listener{
 					return false;
 				}
 				else if(mgm.getMpTimer().getPlayerWaitTimeLeft() == 0){
-					player.sendMessage(lang.getString("minigame.started"), "error");
+					player.sendMessage(MinigameUtils.getLang("minigame.started"), "error");
 					return false;
 				}
 			}
@@ -166,17 +162,17 @@ public abstract class MinigameType implements Listener{
 //				return true;
 //			}
 			else if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
-				player.sendMessage(lang.getString("minigame.full"), "error");
+				player.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
 			}
 		}
 		else if(mgm.getQuitPosition() == null){
-			player.sendMessage(lang.getString("minigame.error.noQuit"), "error");
+			player.sendMessage(MinigameUtils.getLang("minigame.error.noQuit"), "error");
 		}
 		else if(mgm.getEndPosition() == null){
-			player.sendMessage(lang.getString("minigame.error.noEnd"), "error");
+			player.sendMessage(MinigameUtils.getLang("minigame.error.noEnd"), "error");
 		}
 		else if(mgm.getLobbyPosition() == null){
-			player.sendMessage(lang.getString("minigame.error.noLobby"), "error");
+			player.sendMessage(MinigameUtils.getLang("minigame.error.noLobby"), "error");
 		}
 		return false;
 	}

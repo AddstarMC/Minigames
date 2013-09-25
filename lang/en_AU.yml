@@ -121,6 +121,36 @@ minigame:
   treasurehunt:
     consSpawn: "%s treasure chest spawned at: %s"
     plySpawn: "A treasure chest has appeared within %sm of %s!"
+    plyDespawn: "Times up! The %s treasure was not found and has been removed from the world."
+    plyDespawnCoords: "Coordinates: X:%d, Y:%d, Z%d"
+    hint1:
+      north: "North"
+      east: "East"
+      south: "South"
+      west: "West"
+      hint: "The %s treasure lies to the %s of %s."
+    hint2: "The %s treasure rests upon %s."
+    hint3: 
+      above: "above"
+      below: "below"
+      hint: "The %s treasure is %dm %s sea level."
+    hint4: "The %s treasure resides in the %s biome."
+    playerSpecificHint:
+      distance1: "Oh my, you're so close! I can smell its riches!"
+      distance2: "You're so close that you could probably see it!"
+      distance3: "You are really close now!"
+      distance4: "You are close, but no cigar!"
+      distance5: "You are still a fair way off"
+      distance6: "You are not even close to finding the treasure!"
+      timeLeft: "Time Left: %d minutes"
+      noUse: "You currently cannot get a hint for the %s treasure hunt!"
+      nextUse: "Next Use: %s"
+      treasureTimeLeft: "Treasure Time Left: %d minutes"
+      globalHints: "Global Hints:"
+      noHint: "Sorry, there are no public hints to be displayed right now"
+      wrongWorld:
+        overworld: "Overworld"
+        msg: "You must be in the %s to get a hint for the %s treasure hunt!"
   update:
     msg: "There is an update available! Version: %s"
     changes: "Changes:"

@@ -7,7 +7,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
@@ -24,7 +23,6 @@ public class CTFFlag{
 	private int taskID = -1;
 	private Minigame minigame = null;
 	private int cParticleID = -1;
-	private FileConfiguration lang = Minigames.plugin.getLang();
 	
 	public CTFFlag(Location spawn, int team, Player carrier, Minigame minigame){
 		spawnLocation = spawn;
@@ -196,7 +194,7 @@ public class CTFFlag{
 						pl.sendMessage(MinigameUtils.formStr("minigame.flag.returnedTeam", ChatColor.BLUE.toString() + "Blue Team's" + ChatColor.WHITE), null);
 					}
 					else{
-						pl.sendMessage(lang.getString("minigame.flag.returnedNeutral"), null);
+						pl.sendMessage(MinigameUtils.getLang("minigame.flag.returnedNeutral"), null);
 					}
 				}
 				taskID = -1;

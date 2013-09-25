@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -29,7 +28,6 @@ public class DMMinigame extends MinigameType{
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
 	private MinigameData mdata = plugin.mdata;
-	private FileConfiguration lang = Minigames.plugin.getLang();
 	
 	public DMMinigame() {
 		setLabel("dm");
@@ -163,7 +161,7 @@ public class DMMinigame extends MinigameType{
 				if(players.get(i) instanceof Player){
 					MinigamePlayer p = players.get(i);
 					if(!p.getName().equals(player.getName())){
-						p.sendMessage(lang.getString("player.quit.plyBeatenMsg"), "error");
+						p.sendMessage(MinigameUtils.getLang("player.quit.plyBeatenMsg"), "error");
 						pdata.quitMinigame(p, false);
 					}
 				}

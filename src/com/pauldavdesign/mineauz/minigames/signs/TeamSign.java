@@ -2,7 +2,6 @@ package com.pauldavdesign.mineauz.minigames.signs;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.Minigame;
@@ -14,7 +13,6 @@ import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 public class TeamSign implements MinigameSign {
 	
 	private Minigames plugin = Minigames.plugin;
-	private FileConfiguration lang = plugin.getLang();
 	
 	@Override
 	public String getName() {
@@ -28,7 +26,7 @@ public class TeamSign implements MinigameSign {
 
 	@Override
 	public String getCreatePermissionMessage() {
-		return lang.getString("sign.team.createPermission");
+		return MinigameUtils.getLang("sign.team.createPermission");
 	}
 
 	@Override
@@ -38,7 +36,7 @@ public class TeamSign implements MinigameSign {
 
 	@Override
 	public String getUsePermissionMessage() {
-		return lang.getString("sign.team.usePermission");
+		return MinigameUtils.getLang("sign.team.usePermission");
 	}
 
 	@Override
@@ -80,14 +78,14 @@ public class TeamSign implements MinigameSign {
 							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", ChatColor.RED + "Red Team."));
 						}
 						else{
-							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.team.noUnbalance"));
+							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
 						}
 					}
 					else if(sign.getLine(2).equals(ChatColor.GRAY + "Neutral") && !mgm.hasStarted()){
 						mgm.removeRedTeamPlayer(player);
 						mgm.removeBlueTeamPlayer(player);
 						plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("sign.team.autoAssignAnnounce", player.getName()), null, player);
-						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.team.autoAssign"));
+						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.autoAssign"));
 					}
 					return true;
 				}
@@ -99,14 +97,14 @@ public class TeamSign implements MinigameSign {
 							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", ChatColor.BLUE + "Blue Team."));
 						}
 						else{
-							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.team.noUnbalance"));
+							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
 						}
 					}
 					else if(sign.getLine(2).equals(ChatColor.GRAY + "Neutral") && !mgm.hasStarted()){
 						mgm.removeRedTeamPlayer(player);
 						mgm.removeBlueTeamPlayer(player);
 						plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("sign.team.autoAssignAnnounce", player.getName()), null, player);
-						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.team.autoAssign"));
+						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.autoAssign"));
 					}
 					return true;
 				}
@@ -120,7 +118,7 @@ public class TeamSign implements MinigameSign {
 								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", ChatColor.RED + "Red Team."));
 							}
 							else{
-								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.team.noUnbalance"));
+								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
 							}
 						}
 						else if(sign.getLine(2).equals(ChatColor.BLUE + "Blue")){
@@ -131,7 +129,7 @@ public class TeamSign implements MinigameSign {
 								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", ChatColor.BLUE + "Blue Team."));
 							}
 							else{
-								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("sign.team.noUnbalance"));
+								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
 							}
 						}
 						return true;
