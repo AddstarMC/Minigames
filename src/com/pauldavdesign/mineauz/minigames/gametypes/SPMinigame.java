@@ -134,7 +134,7 @@ public class SPMinigame extends MinigameType{
 					}
 				}
 				else{
-					pdata.addStoredPlayerCheckpoint(player, mgm.getName(), player.getCheckpoint());
+					pdata.addStoredPlayerCheckpoint(player);
 					if(!player.getFlags().isEmpty()){
 						pdata.getPlayersStoredCheckpoints(player).addFlags(mgm.getName(), player.getFlags());
 					}

@@ -30,6 +30,10 @@ public class MinigamePlayer {
 	private int kills = 0;
 	private int deaths = 0;
 	private int score = 0;
+	private long startTime = 0;
+	private long endTime = 0;
+	private long storedTime = 0;
+	private int reverts = 0;
 	
 	private PlayerData pdata = Minigames.plugin.pdata;
 	
@@ -311,5 +315,51 @@ public class MinigamePlayer {
 	
 	public void takeScore(){
 		score--;
+	}
+	
+	public void setStartTime(long ms){
+		startTime = ms;
+	}
+	
+	public void setEndTime(long ms){
+		endTime = ms;
+	}
+	
+	public long getStartTime(){
+		return startTime;
+	}
+	
+	public long getEndTime(){
+		return endTime;
+	}
+	
+	public void resetTime(){
+		startTime = 0;
+		endTime = 0;
+		storedTime = 0;
+	}
+	
+	public void setStoredTime(long ms){
+		storedTime = ms;
+	}
+	
+	public long getStoredTime(){
+		return storedTime;
+	}
+	
+	public void setReverts(int count){
+		reverts = count;
+	}
+	
+	public void addRevert(){
+		reverts++;
+	}
+	
+	public int getReverts(){
+		return reverts;
+	}
+	
+	public void resetReverts(){
+		reverts = 0;
 	}
 }

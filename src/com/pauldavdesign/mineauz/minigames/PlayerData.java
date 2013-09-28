@@ -2,6 +2,7 @@ package com.pauldavdesign.mineauz.minigames;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -69,13 +70,16 @@ public class PlayerData {
 					player.setAllowGamemodeChange(false);
 					player.getPlayer().setAllowFlight(false);
 					player.setAllowTeleport(false);
-
+					player.setStartTime(Calendar.getInstance().getTimeInMillis());
 					
 					if(hasStoredPlayerCheckpoint(player)){
 						if(getPlayersStoredCheckpoints(player).hasCheckpoint(minigame.getName())){
 							player.setCheckpoint(getPlayersStoredCheckpoints(player).getCheckpoint(minigame.getName()));
 							if(getPlayersStoredCheckpoints(player).hasFlags(minigame.getName())){
 								player.setFlags(getPlayersStoredCheckpoints(player).getFlags(minigame.getName()));
+							}
+							if(getPlayersStoredCheckpoints(player).hasTime(minigame.getName())){
+								player.setStoredTime(getPlayersStoredCheckpoints(player).getTime(minigame.getName()));
 							}
 							getPlayersStoredCheckpoints(player).removeCheckpoint(minigame.getName());
 							getPlayersStoredCheckpoints(player).removeFlags(minigame.getName());
@@ -324,6 +328,7 @@ public class PlayerData {
 		
 		if(!event.isCancelled()){
 			minigameTeleport(player, player.getCheckpoint());
+			player.addRevert();
 			player.sendMessage(MinigameUtils.getLang("player.checkpoint.revert"), null);
 		}
 	}
@@ -389,6 +394,8 @@ public class PlayerData {
 				player.resetDeaths();
 				player.resetKills();
 				player.resetScore();
+				player.resetTime();
+				player.resetReverts();
 				player.removeCheckpoint();
 				
 				plugin.getLogger().info(player.getName() + " quit " + mgm);
@@ -501,10 +508,13 @@ public class PlayerData {
 			
 			player.clearFlags();
 			
+			player.setEndTime(Calendar.getInstance().getTimeInMillis());
 			if(plugin.getSQL() == null || plugin.getSQL().getSql() == null){
 				player.resetDeaths();
 				player.resetKills();
 				player.resetScore();
+				player.resetTime();
+				player.resetReverts();
 			}
 			
 			if(mgm.getMinigameTimer() != null){
@@ -844,8 +854,13 @@ public class PlayerData {
 		return storedPlayerCheckpoints.get(player.getName());
 	}
 	
-	public void addStoredPlayerCheckpoint(MinigamePlayer player, String minigame, Location checkpoint){
-		StoredPlayerCheckpoints spc = new StoredPlayerCheckpoints(player.getName(), minigame, checkpoint);
+	public void addStoredPlayerCheckpoint(MinigamePlayer player){
+		StoredPlayerCheckpoints spc = new StoredPlayerCheckpoints(player.getName(), 
+				player.getMinigame().getName(), 
+				player.getCheckpoint(), 
+				player.getEndTime() - player.getStartTime(), 
+				player.getDeaths(), 
+				player.getReverts());
 		storedPlayerCheckpoints.put(player.getName(), spc);
 	}
 	

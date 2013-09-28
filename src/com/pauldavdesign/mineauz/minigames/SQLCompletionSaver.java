@@ -71,9 +71,14 @@ public class SQLCompletionSaver extends Thread{
 				int completed = 0;
 				int kills = player.getKills();
 				int deaths = player.getDeaths();
+//				int score = player.getScore();
+//				int reverts = player.getReverts();
+//				long time = player.getEndTime() - player.getStartTime() + player.getStoredTime();
 				player.resetKills();
 				player.resetDeaths();
 				player.resetScore();
+				player.resetReverts();
+				player.resetTime();
 				
 				int okills = 0;
 				int odeaths = -1;

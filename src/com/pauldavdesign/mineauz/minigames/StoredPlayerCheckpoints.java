@@ -11,19 +11,31 @@ public class StoredPlayerCheckpoints {
 	private String playerName;
 	private Map<String, Location> checkpoints;
 	private Map<String, List<String>> flags;
+	private Map<String, Long> storedTime;
+	private Map<String, Integer> storedDeaths;
+	private Map<String, Integer> storedReverts;
 	private Location globalCheckpoint;
 	
 	public StoredPlayerCheckpoints(String name){
 		playerName = name;
 		checkpoints = new HashMap<String, Location>();
 		flags = new HashMap<String, List<String>>();
+		storedTime = new HashMap<String, Long>();
+		storedDeaths = new HashMap<String, Integer>();
+		storedReverts = new HashMap<String, Integer>();
 	}
 	
-	public StoredPlayerCheckpoints(String name, String minigame, Location checkpoint){
+	public StoredPlayerCheckpoints(String name, String minigame, Location checkpoint, Long time, Integer deaths, Integer reverts){
 		playerName = name;
 		checkpoints = new HashMap<String, Location>();
 		checkpoints.put(minigame, checkpoint);
 		flags = new HashMap<String, List<String>>();
+		storedTime = new HashMap<String, Long>();
+		storedTime.put(minigame, time);
+		storedDeaths = new HashMap<String, Integer>();
+		storedDeaths.put(minigame, deaths);
+		storedReverts = new HashMap<String, Integer>();
+		storedReverts.put(minigame, reverts);
 		saveCheckpoints();
 	}
 	
@@ -32,6 +44,9 @@ public class StoredPlayerCheckpoints {
 		globalCheckpoint = checkpoint;
 		checkpoints = new HashMap<String, Location>();
 		flags = new HashMap<String, List<String>>();
+		storedTime = new HashMap<String, Long>();
+		storedDeaths = new HashMap<String, Integer>();
+		storedReverts = new HashMap<String, Integer>();
 		saveCheckpoints();
 	}
 	
@@ -98,6 +113,66 @@ public class StoredPlayerCheckpoints {
 		saveCheckpoints();
 	}
 	
+	public void addTime(String minigame, long time){
+		storedTime.put(minigame, time);
+		saveCheckpoints();
+	}
+	
+	public Long getTime(String minigame){
+		return storedTime.get(minigame);
+	}
+	
+	public boolean hasTime(String minigame){
+		if(storedTime.containsKey(minigame)){
+			return true;
+		}
+		return false;
+	}
+	
+	public void removeTime(String minigame){
+		storedTime.remove(minigame);
+	}
+	
+	public void addDeaths(String minigame, int deaths){
+		storedDeaths.put(minigame, deaths);
+		saveCheckpoints();
+	}
+	
+	public Integer getDeaths(String minigame){
+		return storedDeaths.get(minigame);
+	}
+	
+	public boolean hasDeaths(String minigame){
+		if(storedDeaths.containsKey(minigame)){
+			return true;
+		}
+		return false;
+	}
+	
+	public void removeDeaths(String minigame){
+		storedDeaths.remove(minigame);
+	}
+	
+	public void addReverts(String minigame, int reverts){
+		storedReverts.put(minigame, reverts);
+		saveCheckpoints();
+	}
+	
+	public Integer getReverts(String minigame){
+		return storedReverts.get(minigame);
+	}
+	
+	public boolean hasReverts(String minigame){
+		if(storedReverts.containsKey(minigame)){
+			return true;
+		}
+		return false;
+	}
+	
+	public void removeReverts(String minigame){
+		storedReverts.remove(minigame);
+	}
+	
 	public void saveCheckpoints(){
 		MinigameSave save = new MinigameSave("storedCheckpoints");
 		save.getConfig().set(playerName, null);
@@ -111,6 +186,18 @@ public class StoredPlayerCheckpoints {
 		}
 		for(String mgm : flags.keySet()){
 			save.getConfig().set(playerName + "." + mgm + ".flags", getFlags(mgm));
+		}
+		
+		for(String mgm : storedTime.keySet()){
+			save.getConfig().set(playerName + "." + mgm + ".time", getTime(mgm));
+		}
+		
+		for(String mgm : storedDeaths.keySet()){
+			save.getConfig().set(playerName + "." + mgm + ".deaths", getDeaths(mgm));
+		}
+		
+		for(String mgm : storedReverts.keySet()){
+			save.getConfig().set(playerName + "." + mgm + ".reverts", getReverts(mgm));
 		}
 		
 		if(hasGlobalCheckpoint()){
@@ -139,6 +226,18 @@ public class StoredPlayerCheckpoints {
 			checkpoints.put(mgm, loc);
 			if(save.getConfig().contains(playerName + "." + mgm + ".flags")){
 				flags.put(mgm, save.getConfig().getStringList(playerName + "." + mgm + ".flags"));
+			}
+			
+			if(save.getConfig().contains(playerName + "." + mgm + ".time")){
+				storedTime.put(mgm, save.getConfig().getLong(playerName + "." + mgm + ".time"));
+			}
+			
+			if(save.getConfig().contains(playerName + "." + mgm + ".deaths")){
+				storedDeaths.put(mgm, save.getConfig().getInt(playerName + "." + mgm + ".deaths"));
+			}
+			
+			if(save.getConfig().contains(playerName + "." + mgm + ".reverts")){
+				storedReverts.put(mgm, save.getConfig().getInt(playerName + "." + mgm + ".reverts"));
 			}
 		}
 		
