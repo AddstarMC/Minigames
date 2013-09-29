@@ -166,6 +166,9 @@ public class MinigamePlayer {
 		player.getInventory().setContents(storedItems);
 		player.getInventory().setArmorContents(storedArmour);
 		player.setFoodLevel(food);
+		if(health > 20){
+			health = 20;
+		}
 		player.setHealth(health);
 		player.setSaturation(saturation);
 		if(lastScoreboard != null){
