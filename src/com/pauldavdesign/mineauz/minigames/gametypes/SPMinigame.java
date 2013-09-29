@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames.gametypes;
 
+import java.util.Calendar;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -18,6 +19,7 @@ import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.RestoreBlock;
 import com.pauldavdesign.mineauz.minigames.SQLCompletionSaver;
+import com.pauldavdesign.mineauz.minigames.StoredPlayerCheckpoints;
 
 public class SPMinigame extends MinigameType{
 	private static Minigames plugin = Minigames.plugin;
@@ -123,18 +125,21 @@ public class SPMinigame extends MinigameType{
 	@Override
 	public void quitMinigame(final MinigamePlayer player, final Minigame mgm, boolean forced) {
 		if(mgm.canSaveCheckpoint()){
-			Location pcp = player.getCheckpoint(); //pdata.getPlayerCheckpoint(player);
+			Location pcp = player.getCheckpoint();
 			Location start = mgm.getStartLocations().get(0);
 			if(pcp.getBlockX() != start.getBlockX() || pcp.getBlockY() != start.getBlockY() || pcp.getBlockZ() != start.getBlockZ()){
 				if(pdata.hasStoredPlayerCheckpoint(player)){
-					pdata.getPlayersStoredCheckpoints(player).addCheckpoint(mgm.getName(), player.getCheckpoint());
-					//if(pdata.playerHasFlags(player)){
+					StoredPlayerCheckpoints spc = pdata.getPlayersStoredCheckpoints(player);
+					spc.addCheckpoint(mgm.getName(), player.getCheckpoint());
 					if(!player.getFlags().isEmpty()){
 						pdata.getPlayersStoredCheckpoints(player).addFlags(mgm.getName(), player.getFlags());
 					}
+					spc.addDeaths(mgm.getName(), player.getDeaths());
+					spc.addReverts(mgm.getName(), player.getReverts());
+					spc.addTime(mgm.getName(), Calendar.getInstance().getTimeInMillis() - player.getStartTime() + player.getStoredTime());
 				}
 				else{
-					pdata.addStoredPlayerCheckpoint(player);
+					pdata.addStoredPlayerCheckpoint(player, mgm.getName());
 					if(!player.getFlags().isEmpty()){
 						pdata.getPlayersStoredCheckpoints(player).addFlags(mgm.getName(), player.getFlags());
 					}

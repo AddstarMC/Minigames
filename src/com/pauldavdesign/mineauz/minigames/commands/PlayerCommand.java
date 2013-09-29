@@ -92,7 +92,7 @@ public class PlayerCommand implements ICommand {
 						sender.sendMessage(ChatColor.GREEN + "Deaths: " + ChatColor.GRAY + pl.getDeaths());
 						sender.sendMessage(ChatColor.GREEN + "Reverts: " + ChatColor.GRAY + pl.getReverts());
 						sender.sendMessage(ChatColor.GREEN + "Play Time: " + ChatColor.GRAY + 
-								MinigameUtils.convertTime((int)((Calendar.getInstance().getTimeInMillis() - pl.getStartTime()) / 1000)));
+								MinigameUtils.convertTime((int)((Calendar.getInstance().getTimeInMillis() - pl.getStartTime() + pl.getStoredTime()) / 1000)));
 					}
 					else{
 						sender.sendMessage(ChatColor.GREEN + "Minigame: " + ChatColor.RED + "Not in Minigame");

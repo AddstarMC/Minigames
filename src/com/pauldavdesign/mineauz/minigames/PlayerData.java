@@ -75,14 +75,24 @@ public class PlayerData {
 					if(hasStoredPlayerCheckpoint(player)){
 						if(getPlayersStoredCheckpoints(player).hasCheckpoint(minigame.getName())){
 							player.setCheckpoint(getPlayersStoredCheckpoints(player).getCheckpoint(minigame.getName()));
-							if(getPlayersStoredCheckpoints(player).hasFlags(minigame.getName())){
-								player.setFlags(getPlayersStoredCheckpoints(player).getFlags(minigame.getName()));
+							StoredPlayerCheckpoints spc = getPlayersStoredCheckpoints(player);
+							if(spc.hasFlags(minigame.getName())){
+								player.setFlags(spc.getFlags(minigame.getName()));
 							}
-							if(getPlayersStoredCheckpoints(player).hasTime(minigame.getName())){
+							if(spc.hasTime(minigame.getName())){
 								player.setStoredTime(getPlayersStoredCheckpoints(player).getTime(minigame.getName()));
+							}
+							if(spc.hasDeaths(minigame.getName())){
+								player.setDeaths(spc.getDeaths(minigame.getName()));
+							}
+							if(spc.hasReverts(minigame.getName())){
+								player.setReverts(spc.getReverts(minigame.getName()));
 							}
 							getPlayersStoredCheckpoints(player).removeCheckpoint(minigame.getName());
 							getPlayersStoredCheckpoints(player).removeFlags(minigame.getName());
+							spc.removeDeaths(minigame.getName());
+							spc.removeTime(minigame.getName());
+							spc.removeReverts(minigame.getName());
 							if(getPlayersStoredCheckpoints(player).hasNoCheckpoints() && !getPlayersStoredCheckpoints(player).hasGlobalCheckpoint()){
 								storedPlayerCheckpoints.remove(player.getName());
 							}
@@ -482,7 +492,8 @@ public class PlayerData {
 		
 		EndMinigameEvent event = new EndMinigameEvent(player, mgm);
 		Bukkit.getServer().getPluginManager().callEvent(event);
-		
+
+		player.setEndTime(Calendar.getInstance().getTimeInMillis());
 		if(!event.isCancelled()){
 			if(player.getPlayer().getVehicle() != null){
 				Vehicle vehicle = (Vehicle) player.getPlayer().getVehicle();
@@ -508,7 +519,6 @@ public class PlayerData {
 			
 			player.clearFlags();
 			
-			player.setEndTime(Calendar.getInstance().getTimeInMillis());
 			if(plugin.getSQL() == null || plugin.getSQL().getSql() == null){
 				player.resetDeaths();
 				player.resetKills();
@@ -854,11 +864,11 @@ public class PlayerData {
 		return storedPlayerCheckpoints.get(player.getName());
 	}
 	
-	public void addStoredPlayerCheckpoint(MinigamePlayer player){
+	public void addStoredPlayerCheckpoint(MinigamePlayer player, String minigame){
 		StoredPlayerCheckpoints spc = new StoredPlayerCheckpoints(player.getName(), 
-				player.getMinigame().getName(), 
+				minigame, 
 				player.getCheckpoint(), 
-				player.getEndTime() - player.getStartTime(), 
+				Calendar.getInstance().getTimeInMillis() - player.getStartTime(), 
 				player.getDeaths(), 
 				player.getReverts());
 		storedPlayerCheckpoints.put(player.getName(), spc);

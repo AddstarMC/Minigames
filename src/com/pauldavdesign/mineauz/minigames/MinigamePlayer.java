@@ -304,6 +304,10 @@ public class MinigamePlayer {
 		deaths = 0;
 	}
 	
+	public void setDeaths(int deaths){
+		this.deaths = deaths;
+	}
+	
 	public int getScore(){
 		return score;
 	}

@@ -131,6 +131,7 @@ public class StoredPlayerCheckpoints {
 	
 	public void removeTime(String minigame){
 		storedTime.remove(minigame);
+		saveCheckpoints();
 	}
 	
 	public void addDeaths(String minigame, int deaths){
@@ -151,6 +152,7 @@ public class StoredPlayerCheckpoints {
 	
 	public void removeDeaths(String minigame){
 		storedDeaths.remove(minigame);
+		saveCheckpoints();
 	}
 	
 	public void addReverts(String minigame, int reverts){
@@ -171,6 +173,7 @@ public class StoredPlayerCheckpoints {
 	
 	public void removeReverts(String minigame){
 		storedReverts.remove(minigame);
+		saveCheckpoints();
 	}
 	
 	public void saveCheckpoints(){
