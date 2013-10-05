@@ -217,6 +217,7 @@ public class PlayerData {
 			if(!minigame.getType().equals("teamdm")){
 				if(pos < minigame.getStartLocations().size()){
 					start = minigame.getStartLocations().get(pos);
+					ply.setStartTime(Calendar.getInstance().getTimeInMillis());
 					minigameTeleport(ply, start);
 					ply.setCheckpoint(start);
 					if(minigame.getMaxScore() != 0 && minigame.getType().equals("dm") && !minigame.getScoreType().equals("none")){

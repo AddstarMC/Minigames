@@ -63,14 +63,14 @@ public class SQLCompletionSaver extends Thread{
 					sql.query("SELECT Score FROM mgm_" + minigame + "_comp");
 				} catch (SQLException e) {
 					try {
-						sql.query("ALTER TABLE mgm_" + minigame + "_comp ADD Score int, " +
-								"Time long, " +
-								"Reverts int, " +
-								"TotalKills int, " +
-								"TotalDeaths int, " +
-								"TotalScore int, " +
-								"TotalReverts int, " +
-								"TotalTime long");
+						sql.query("ALTER TABLE mgm_" + minigame + "_comp ADD Score int DEFAULT -1, " +
+								"ADD Time long NOT NULL, " +
+								"ADD Reverts int DEFAULT -1, " +
+								"ADD TotalKills int DEFAULT 0, " +
+								"ADD TotalDeaths int DEFAULT 0, " +
+								"ADD TotalScore int DEFAULT 0, " +
+								"ADD TotalReverts int DEFAULT 0, " +
+								"ADD TotalTime long NOT NULL");
 					} catch (SQLException e1) {
 						e1.printStackTrace();
 						return;
@@ -104,7 +104,7 @@ public class SQLCompletionSaver extends Thread{
 				int odeaths = -1;
 				int oscore = 0;
 				int oreverts = -1;
-				long otime = -1;
+				long otime = 0;
 				int otkills = 0;
 				int otdeaths = 0;
 				int otscore = 0;
@@ -152,7 +152,7 @@ public class SQLCompletionSaver extends Thread{
 					reverts = oreverts;
 				}
 				
-				if(otime < time && otime != -1){
+				if(otime < time && otime != 0){
 					time = otime;
 				}
 				
@@ -228,7 +228,7 @@ public class SQLCompletionSaver extends Thread{
 					int odeaths = -1;
 					int oscore = 0;
 					int oreverts = -1;
-					long otime = -1;
+					long otime = 0;
 					int otkills = 0;
 					int otdeaths = 0;
 					int otscore = 0;
@@ -277,7 +277,7 @@ public class SQLCompletionSaver extends Thread{
 						reverts = oreverts;
 					}
 					
-					if(otime < time && otime != -1){
+					if(otime < time && otime != 0){
 						time = otime;
 					}
 					
