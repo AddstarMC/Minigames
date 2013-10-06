@@ -10,6 +10,7 @@ public class ScoreTypes {
 		addScoreType(new PlayerKillsType());
 		addScoreType(new CTFType());
 		addScoreType(new InfectionType());
+		addScoreType(new CustomType());
 	}
 	
 	public static void addScoreType(ScoreType type){
