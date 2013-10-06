@@ -77,7 +77,7 @@ public class CustomType extends ScoreType{
 			}
 			final Minigame mgm = ply.getMinigame();
 			
-			if(mgm.getScoreType().equals("ctf")){
+			if(mgm.getScoreType().equals("custom")){
 				if(pteam == 1){
 					if(mgm.getRedTeam().size() < mgm.getBlueTeam().size() - 1){
 						TeamDMMinigame.switchTeam(mgm, ply);
