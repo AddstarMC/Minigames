@@ -3,6 +3,7 @@ package com.pauldavdesign.mineauz.minigames.commands;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -72,20 +73,49 @@ public class EndCommand implements ICommand{
 			if(player == null || player.hasPermission("minigame.end.other")){
 				List<Player> players = plugin.getServer().matchPlayer(args[0]);
 				MinigamePlayer ply = null;
-				if(players.isEmpty()){
+				int teamnum = -1;
+				if(players.isEmpty() && !args[0].equalsIgnoreCase("red") && !args[0].equalsIgnoreCase("blue")){
 					sender.sendMessage(ChatColor.RED + "No player found by the name " + args[0]);
 					return true;
+				}
+				else if(args[0].equalsIgnoreCase("red")){
+					teamnum = 0;
+				}
+				else if(args[0].equalsIgnoreCase("blue")){
+					teamnum = 1;
 				}
 				else{
 					ply = plugin.pdata.getMinigamePlayer(players.get(0));
 				}
 				
 				if(ply != null && ply.isInMinigame()){
-					plugin.pdata.endMinigame(ply);
-					sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to end the minigame.");
+					if(ply.getMinigame().getType().equals("teamdm")){
+						int team = 0;
+						for(OfflinePlayer pl : ply.getMinigame().getBlueTeam()){
+							if(pl.getName().equals(ply.getName())){
+								team = 1;
+								break;
+							}
+						}
+						plugin.pdata.endTeamMinigame(team, ply.getMinigame());
+						sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " and their team to win the Minigame.");
+					}
+					else{
+						plugin.pdata.endMinigame(ply);
+						sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to win the Minigame.");
+					}
+				}
+				else if(args.length >= 2 && teamnum != -1 && plugin.mdata.hasMinigame(args[1])){
+					plugin.pdata.endTeamMinigame(teamnum, plugin.mdata.getMinigame(args[1]));
+					if(teamnum == 1){
+						sender.sendMessage(ChatColor.GRAY + "You forced " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " to win the Minigame.");
+					}
+					else{
+						sender.sendMessage(ChatColor.GRAY + "You forced " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " to win the Minigame.");
+					}
 				}
 				else{
-					sender.sendMessage(ChatColor.RED + "This player is not playing a minigame.");
+					sender.sendMessage(ChatColor.RED + "This player is not playing a Minigame.");
 				}
 			}
 			else if(player != null){
