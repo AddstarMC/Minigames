@@ -127,7 +127,8 @@ public class TeamDMMinigame extends MinigameType{
 					}
 					else{
 						int neededPlayers = mgm.getMinPlayers() - mgm.getPlayers().size();
-						player.sendMessage(MinigameUtils.formStr("minigame.waitingForPlayers", neededPlayers), null);
+						if(neededPlayers >= 1)
+							player.sendMessage(MinigameUtils.formStr("minigame.waitingForPlayers", neededPlayers), null);
 					}
 					
 					return true;

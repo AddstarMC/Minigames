@@ -47,7 +47,7 @@ public class CTFType extends ScoreType{
 						minigame.addRedTeamPlayer(players.get(i));
 						team = 0;
 						players.get(i).sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", ChatColor.RED + "Red Team"), null);
-						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.autobalance.plyMsg", players.get(i).getName(), ChatColor.RED + "Red Team"), null, players.get(i));
+						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.autobalance.minigameMsg", players.get(i).getName(), ChatColor.RED + "Red Team"), null, players.get(i));
 					}
 				}
 				else if(team == 0){
@@ -57,7 +57,7 @@ public class CTFType extends ScoreType{
 						minigame.addBlueTeamPlayer(players.get(i));
 						team = 1;
 						players.get(i).sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", ChatColor.BLUE + "Blue Team"), null);
-						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.autobalance.plyMsg", players.get(i).getName(), ChatColor.BLUE + "Blue Team"), null, players.get(i));
+						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.autobalance.minigameMsg", players.get(i).getName(), ChatColor.BLUE + "Blue Team"), null, players.get(i));
 					}
 				}
 				else{
@@ -65,13 +65,13 @@ public class CTFType extends ScoreType{
 						minigame.addRedTeamPlayer(players.get(i));
 						team = 0;
 						players.get(i).sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", ChatColor.RED + "Red Team"), null);
-						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.autobalance.plyMsg", players.get(i).getName(), ChatColor.RED + "Red Team"), null, players.get(i));
+						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.autobalance.minigameMsg", players.get(i).getName(), ChatColor.RED + "Red Team"), null, players.get(i));
 					}
 					else if(minigame.getBlueTeam().size() <= minigame.getRedTeam().size()){
 						minigame.addBlueTeamPlayer(players.get(i));
 						team = 1;
 						players.get(i).sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", ChatColor.BLUE + "Blue Team"), null);
-						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.autobalance.plyMsg", players.get(i).getName(), ChatColor.BLUE + "Blue Team"), null, players.get(i));
+						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.autobalance.minigameMsg", players.get(i).getName(), ChatColor.BLUE + "Blue Team"), null, players.get(i));
 					}
 				}
 //				TeamDMMinigame.applyTeam(players.get(i), team);
