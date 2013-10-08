@@ -482,7 +482,7 @@ public class PlayerData {
 				ply.setAllowTeleport(true);
 				ply.setAllowGamemodeChange(true);
 				
-				player.sendMessage(MinigameUtils.formStr("player.specate.quit.plyMsg", mgm.getName()), "error");
+				player.sendMessage(MinigameUtils.formStr("player.spectate.quit.plyMsg", mgm.getName()), "error");
 				mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.spectate.quit.minigameMsg", player.getName(), mgm.getName()), "error", player);
 			}
 		}
