@@ -75,7 +75,7 @@ public class Events implements Listener{
 			if(mgm.getLives() > 0 && mgm.getLives() <= ply.getDeaths()){
 				ply.sendMessage(MinigameUtils.getLang("player.quit.plyOutOfLives"), "error");
 				ply.getPlayer().setHealth(2);
-				if(event.getEntity().getLastDamageCause().getCause() == DamageCause.FALLING_BLOCK){
+				if(ply.getPlayer().getLastDamageCause() != null && ply.getPlayer().getLastDamageCause().getCause() == DamageCause.FALLING_BLOCK){
 					ply.getMinigame().getBlockRecorder().addBlock(ply.getPlayer().getLocation().getBlock(), null);
 				}
 				pdata.quitMinigame(ply, false);
