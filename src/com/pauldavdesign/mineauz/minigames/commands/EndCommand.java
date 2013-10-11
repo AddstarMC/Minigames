@@ -29,7 +29,8 @@ public class EndCommand implements ICommand{
 
 	@Override
 	public String getDescription() {
-		return "Ends a players Minigame.";
+		return "Ends the game a player is currently playing. If the game is a team game, the whole team will win. " +
+				"This can also be used to end a specific team from a game, an example is shown in the usage section.";
 	}
 
 	@Override
@@ -39,7 +40,8 @@ public class EndCommand implements ICommand{
 
 	@Override
 	public String[] getUsage() {
-		return new String[] {"/minigame end [Player]"};
+		return new String[] {"/minigame end [Player]",
+				"/minigame end <TeamName> <Minigame>"};
 	}
 
 	@Override
