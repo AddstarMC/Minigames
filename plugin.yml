@@ -257,7 +257,7 @@ permissions:
         default: op
     minigame.list:
         description: Allows access to the Minigame List command
-        default: true
+        default: op
     minigame.restoreinv:
         description: Allows access to inventory restore command
         default: op
