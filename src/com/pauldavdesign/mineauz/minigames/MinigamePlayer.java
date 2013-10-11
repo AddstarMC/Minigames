@@ -316,12 +316,20 @@ public class MinigamePlayer {
 		score++;
 	}
 	
+	public void addScore(int amount){
+		score += amount;
+	}
+	
 	public void resetScore(){
 		score = 0;
 	}
 	
 	public void takeScore(){
 		score--;
+	}
+	
+	public void setScore(int score){
+		this.score = score;
 	}
 	
 	public void setStartTime(long ms){

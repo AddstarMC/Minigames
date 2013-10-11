@@ -591,6 +591,11 @@ public class Minigame {
 		redTeamScore++;
 		getScoreboardManager().getObjective(name).getScore(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.RED + "Red Team: ")).setScore(redTeamScore);
 	}
+	
+	public void incrementRedTeamScore(int amount){
+		redTeamScore += amount;
+		getScoreboardManager().getObjective(name).getScore(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.RED + "Red Team: ")).setScore(redTeamScore);
+	}
 
 	public int getBlueTeamScore() {
 		return blueTeamScore;
@@ -608,6 +613,11 @@ public class Minigame {
 	
 	public void incrementBlueTeamScore(){
 		blueTeamScore++;
+		getScoreboardManager().getObjective(name).getScore(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.BLUE + "Blue Team: ")).setScore(blueTeamScore);
+	}
+	
+	public void incrementBlueTeamScore(int amount){
+		blueTeamScore += amount;
 		getScoreboardManager().getObjective(name).getScore(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.BLUE + "Blue Team: ")).setScore(blueTeamScore);
 	}
 
@@ -669,9 +679,9 @@ public class Minigame {
 		return false;
 	}
 	
-	public int getMaxScorePerPlayer(int playerCount){
+	public int getMaxScorePerPlayer(){
 		float scorePerPlayer = getMaxScore() / getMaxPlayers();
-		int score = (int) Math.round(scorePerPlayer * playerCount);
+		int score = (int) Math.round(scorePerPlayer * getPlayers().size());
 		if(score < minScore){
 			score = minScore;
 		}

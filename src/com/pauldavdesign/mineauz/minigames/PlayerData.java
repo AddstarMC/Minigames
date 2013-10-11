@@ -221,7 +221,7 @@ public class PlayerData {
 					minigameTeleport(ply, start);
 					ply.setCheckpoint(start);
 					if(minigame.getMaxScore() != 0 && minigame.getType().equals("dm") && !minigame.getScoreType().equals("none")){
-						ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer(minigame.getPlayers().size())), null);
+						ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), null);
 					}
 				} 
 				else{
@@ -231,7 +231,7 @@ public class PlayerData {
 						minigameTeleport(ply, start);
 						ply.setCheckpoint(start);
 						if(minigame.getMaxScore() != 0 && minigame.getType().equals("dm") && !minigame.getScoreType().equals("none")){
-							ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer(minigame.getPlayers().size())), null);
+							ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), null);
 						}
 					}
 					else {
@@ -296,7 +296,7 @@ public class PlayerData {
 					minigameTeleport(ply, start);
 					ply.setCheckpoint(start);
 					if(minigame.getMaxScore() != 0 && !minigame.getScoreType().equals("none")){
-						ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer(minigame.getPlayers().size())), null);
+						ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), null);
 					}
 				}
 				

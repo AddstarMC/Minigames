@@ -162,14 +162,14 @@ public class CTFType extends ScoreType{
 									if(team == 1){
 										mgm.incrementBlueTeamScore();
 										
-										if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+										if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer()){
 											end = true;
 										}
 									}
 									else{
 										mgm.incrementRedTeamScore();
 										
-										if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+										if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer()){
 											end = true;
 										}
 									}
@@ -207,7 +207,7 @@ public class CTFType extends ScoreType{
 //									pdata.addPlayerScore(ply);
 									ply.addScore();
 									mgm.setScore(ply, ply.getScore());
-									if(mgm.getMaxScore() != 0 && ply.getScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+									if(mgm.getMaxScore() != 0 && ply.getScore() >= mgm.getMaxScorePerPlayer()){
 										end = true;
 									}
 									

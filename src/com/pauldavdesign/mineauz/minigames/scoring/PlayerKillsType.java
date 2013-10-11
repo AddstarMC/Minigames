@@ -93,7 +93,7 @@ public class PlayerKillsType extends ScoreType{
 				attacker.addScore();
 				mgm.setScore(attacker, attacker.getScore());
 			
-				if(mgm.getMaxScore() != 0 && attacker.getScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+				if(mgm.getMaxScore() != 0 && attacker.getScore() >= mgm.getMaxScorePerPlayer()){
 					List<MinigamePlayer> conPlayers = new ArrayList<MinigamePlayer>();
 					conPlayers.addAll(mgm.getPlayers());
 					conPlayers.remove(attacker);
@@ -124,14 +124,14 @@ public class PlayerKillsType extends ScoreType{
 					if(ateam == 0){
 						mgm.incrementRedTeamScore();
 						
-						if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+						if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer()){
 							end = true;
 						}
 					}
 					else{
 						mgm.incrementBlueTeamScore();
 						
-						if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+						if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer()){
 							end = true;
 						}
 					}
@@ -139,12 +139,12 @@ public class PlayerKillsType extends ScoreType{
 					if(end){
 						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.kills.finalKill", attacker.getName(), ply.getName()), null, null);
 						if(ateam == 1){
-							if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+							if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer()){
 								pdata.endTeamMinigame(1, mgm);
 							}
 						}
 						else{
-							if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer(mgm.getPlayers().size())){
+							if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer()){
 								pdata.endTeamMinigame(0, mgm);
 							}
 						}
