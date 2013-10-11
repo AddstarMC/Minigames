@@ -106,12 +106,17 @@ public class EndCommand implements ICommand{
 					}
 				}
 				else if(args.length >= 2 && teamnum != -1 && plugin.mdata.hasMinigame(args[1])){
-					plugin.pdata.endTeamMinigame(teamnum, plugin.mdata.getMinigame(args[1]));
-					if(teamnum == 1){
-						sender.sendMessage(ChatColor.GRAY + "You forced " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " to win the Minigame.");
+					if(plugin.mdata.getMinigame(args[1]).hasPlayers()){
+						plugin.pdata.endTeamMinigame(teamnum, plugin.mdata.getMinigame(args[1]));
+						if(teamnum == 1){
+							sender.sendMessage(ChatColor.GRAY + "You forced " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " to win the Minigame.");
+						}
+						else{
+							sender.sendMessage(ChatColor.GRAY + "You forced " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " to win the Minigame.");
+						}
 					}
 					else{
-						sender.sendMessage(ChatColor.GRAY + "You forced " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " to win the Minigame.");
+						sender.sendMessage(ChatColor.RED + "This Minigame has no players!");
 					}
 				}
 				else{
