@@ -125,7 +125,7 @@ public class ScoreCommand implements ICommand {
 				
 				int score = 0;
 				
-				if(args[2].matches("[0-9]+")){
+				if(args[2].matches("-?[0-9]+")){
 					score = Integer.parseInt(args[2]);
 				}
 				else{
@@ -136,6 +136,7 @@ public class ScoreCommand implements ICommand {
 				if(ply != null){
 					if(ply.isInMinigame()){
 						ply.setScore(score);
+						ply.getMinigame().setScore(ply, ply.getScore());
 						sender.sendMessage(ChatColor.GRAY + ply.getName() + "'s score has been set to " + score);
 						
 						if(ply.getMinigame().getMaxScore() != 0 && score >= ply.getMinigame().getMaxScorePerPlayer()){
@@ -157,19 +158,22 @@ public class ScoreCommand implements ICommand {
 							return true;
 						}
 						
-						if(mg.getType().equals("teamdm")){
+						if(mg.getType().equals("teamdm") && mg.hasPlayers()){
 							if(team == 0){
 								mg.setRedTeamScore(score);
-								sender.sendMessage(ChatColor.RED + "Red Team's " + ChatColor.GRAY + " score has been set to " + score);
+								sender.sendMessage(ChatColor.RED + "Red Team's" + ChatColor.GRAY + " score has been set to " + score);
 							}
 							else{
 								mg.setBlueTeamScore(score);
-								sender.sendMessage(ChatColor.BLUE + "Blue Team's " + ChatColor.GRAY + " score has been set to " + score);
+								sender.sendMessage(ChatColor.BLUE + "Blue Team's" + ChatColor.GRAY + " score has been set to " + score);
 							}
 							
 							if(mg.getMaxScore() != 0 && score >= mg.getMaxScorePerPlayer()){
 								plugin.pdata.endTeamMinigame(team, mg);
 							}
+						}
+						else if(!mg.hasPlayers()){
+							sender.sendMessage(ChatColor.RED + mg.getName() + " has no players playing!");
 						}
 						else{
 							sender.sendMessage(ChatColor.RED + mg.getName() + " is not a team Minigame!");
@@ -178,13 +182,13 @@ public class ScoreCommand implements ICommand {
 					else{
 						sender.sendMessage(ChatColor.RED + "This command requires a Minigame name as the last argument!");
 					}
-					return true;
 				}
+				return true;
 			}
 			else if(args[0].equalsIgnoreCase("add") && args.length >= 3){
 				int score = 0;
 				
-				if(args[2].matches("[0-9]+")){
+				if(args[2].matches("-?[0-9]+")){
 					score = Integer.parseInt(args[2]);
 				}
 				else{
@@ -194,6 +198,7 @@ public class ScoreCommand implements ICommand {
 				if(ply != null){
 					if(ply.isInMinigame()){
 						ply.addScore(score);
+						ply.getMinigame().setScore(ply, ply.getScore());
 						sender.sendMessage(ChatColor.GRAY + "Added " + score + " to " + ply.getName() + "'s score, new score: " + ply.getScore());
 						
 						if(ply.getMinigame().getMaxScore() != 0 && ply.getScore() >= ply.getMinigame().getMaxScorePerPlayer()){
@@ -223,7 +228,7 @@ public class ScoreCommand implements ICommand {
 						return true;
 					}
 					
-					if(mg.getType().equals("teamdm")){
+					if(mg.getType().equals("teamdm") && mg.hasPlayers()){
 						int totalscore = 0;
 						if(team == 0){
 							mg.incrementRedTeamScore(score);
@@ -240,11 +245,14 @@ public class ScoreCommand implements ICommand {
 							plugin.pdata.endTeamMinigame(team, mg);
 						}
 					}
+					else if(!mg.hasPlayers()){
+						sender.sendMessage(ChatColor.RED + mg.getName() + " has no players playing!");
+					}
 					else{
 						sender.sendMessage(ChatColor.RED + mg.getName() + " is not a team Minigame!");
 					}
-					return true;
 				}
+				return true;
 			}
 		}
 		return false;
