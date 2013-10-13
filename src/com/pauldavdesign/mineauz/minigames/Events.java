@@ -265,13 +265,13 @@ public class Events implements Listener{
 								event.getPlayer().sendMessage(ChatColor.GREEN + MinigameUtils.getLang("minigame.info.description"));
 								String status = ChatColor.AQUA + MinigameUtils.getLang("minigame.info.status.title");
 								if(!mgm.hasPlayers()){
-									status += ChatColor.GREEN + MinigameUtils.getLang("minigame.info.status.empty");
+									status += " " + ChatColor.GREEN + MinigameUtils.getLang("minigame.info.status.empty");
 								}
 								else if(mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() > 0){
-									status += ChatColor.GREEN + MinigameUtils.getLang("minigame.info.status.WaitingForPlayers");
+									status += " " + ChatColor.GREEN + MinigameUtils.getLang("minigame.info.status.WaitingForPlayers");
 								}
 								else{
-									status += ChatColor.RED + MinigameUtils.getLang("minigame.info.status.started");
+									status += " " + ChatColor.RED + MinigameUtils.getLang("minigame.info.status.started");
 								}
 								
 								if(!mgm.getType().equals("sp")){
