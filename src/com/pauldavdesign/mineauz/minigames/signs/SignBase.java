@@ -42,7 +42,10 @@ public class SignBase implements Listener{
 	
 	@EventHandler
 	private void signPlace(SignChangeEvent event){
-		String[] signinfo = event.getLines();
+		String[] signinfo = new String[4];
+		for(int i = 0; i < 4; i++){
+			signinfo[i] = ChatColor.stripColor(event.getLine(i));
+		}
 		if(signinfo[0].equalsIgnoreCase("[minigame]") || signinfo[0].equalsIgnoreCase("[mgm]") || signinfo[0].equalsIgnoreCase("[mg]")){
 			if(minigameSigns.containsKey(signinfo[1].toLowerCase())){
 				event.setLine(0, ChatColor.DARK_BLUE + "[Minigame]");
