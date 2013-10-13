@@ -50,6 +50,7 @@ permissions:
             minigame.globalloadout: true
             minigame.player: true
             minigame.score: true
+            minigame.teleport: true
     minigame.join:
         description: Allows a player to join a Minigame, bypassing betting.
         default: op
@@ -376,4 +377,7 @@ permissions:
         default: op
     minigame.score:
         description: Allows a player to use the Minigame score command.
+        default: op
+    minigame.teleport:
+        description: Allows a player to use the Minigame Teleport command.
         default: op
