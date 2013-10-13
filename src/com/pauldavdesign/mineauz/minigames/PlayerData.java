@@ -421,8 +421,15 @@ public class PlayerData {
 					}
 					
 					if(mgm.getBlockRecorder().hasData()){
-						mgm.getBlockRecorder().restoreBlocks();
-						mgm.getBlockRecorder().restoreEntities();
+						final Minigame fmgm = mgm;
+						Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+							
+							@Override
+							public void run() {
+								fmgm.getBlockRecorder().restoreBlocks();
+								fmgm.getBlockRecorder().restoreEntities();
+							}
+						}, 20L);
 					}
 					
 					if(mgm.getMpBets() != null){
@@ -543,8 +550,15 @@ public class PlayerData {
 			
 			if(mgm.getBlockRecorder().hasData()){
 				if(!mgm.getType().equalsIgnoreCase("sp") || mgm.getPlayers().isEmpty()){
-					mgm.getBlockRecorder().restoreBlocks();
-					mgm.getBlockRecorder().restoreEntities();
+					final Minigame fmgm = mgm;
+					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+						
+						@Override
+						public void run() {
+							fmgm.getBlockRecorder().restoreBlocks();
+							fmgm.getBlockRecorder().restoreEntities();
+						}
+					}, 20L);
 				}
 				else if(mgm.getPlayers().isEmpty()){
 					mgm.getBlockRecorder().restoreBlocks(player);

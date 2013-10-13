@@ -25,6 +25,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.minecart.HopperMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -49,6 +50,8 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -996,6 +999,68 @@ public class RecorderData implements Listener{
 	private void blockForm(BlockFormEvent event){
 		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getBlock().getLocation())){
 			addBlock(event.getBlock(), null);
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	private void hopperPickup(InventoryPickupItemEvent event){
+		Location loc = null;
+		boolean isCart = false;
+		if(event.getInventory().getHolder() instanceof Hopper){
+			loc = ((Hopper)event.getInventory().getHolder()).getLocation();
+		}
+		else if(event.getInventory().getHolder() instanceof HopperMinecart){
+			loc = ((HopperMinecart)event.getInventory().getHolder()).getLocation();
+			isCart = true;
+		}
+		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(loc)){
+			if(!isCart){
+				addBlock((Hopper)event.getInventory().getHolder(), null);
+			}
+			else{
+				addEntity((HopperMinecart)event.getInventory().getHolder(), null, false);
+			}
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	private void blockMoveItem(InventoryMoveItemEvent event){
+		Location loc = null;
+		boolean isCart = false;
+		if(event.getInitiator().getHolder() instanceof BlockState){
+			loc = ((BlockState)event.getInitiator().getHolder()).getLocation();
+		}
+		else if(event.getInitiator().getHolder() instanceof HopperMinecart){
+			loc = ((HopperMinecart)event.getInitiator().getHolder()).getLocation();
+			isCart = true;
+		}
+		
+		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(loc)){
+			if(!isCart){
+				addBlock((BlockState)event.getInitiator().getHolder(), null);
+			}
+			else{
+				addEntity((Entity)event.getInitiator().getHolder(), null, false);
+			}
+		}
+		
+		loc = null;
+		isCart = false;
+		if(event.getDestination().getHolder() instanceof BlockState){
+			loc = ((BlockState)event.getDestination().getHolder()).getLocation();
+		}
+		else if(event.getDestination().getHolder() instanceof HopperMinecart){
+			loc = ((HopperMinecart)event.getDestination().getHolder()).getLocation();
+			isCart = true;
+		}
+		
+		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(loc)){
+			if(!isCart){
+				addBlock((BlockState)event.getDestination().getHolder(), null);
+			}
+			else{
+				addEntity((Entity)event.getDestination().getHolder(), null, false);
+			}
 		}
 	}
 }
