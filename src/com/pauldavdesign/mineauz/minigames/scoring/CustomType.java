@@ -11,7 +11,7 @@ import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 
-public class CustomType extends ScoreType{
+public class CustomType extends ScoreTypeBase{
 
 	@Override
 	public String getType() {
@@ -21,7 +21,7 @@ public class CustomType extends ScoreType{
 	@Override
 	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
 		for(int i = 0; i < players.size(); i++){
-			if(minigame.getType().equals("teamdm")){
+			if(minigame.getType().equals("teamdm") && minigame.getScoreType().equals("custom")){
 				int team = -1;
 				if(minigame.getBlueTeam().contains(players.get(i))){
 					team = 1;

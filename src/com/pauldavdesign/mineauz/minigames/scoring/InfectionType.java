@@ -14,7 +14,7 @@ import com.pauldavdesign.mineauz.minigames.events.EndTeamMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 
-public class InfectionType extends ScoreType{
+public class InfectionType extends ScoreTypeBase{
 	
 	private List<MinigamePlayer> infected = new ArrayList<MinigamePlayer>();
 

@@ -1,28 +1,30 @@
 package com.pauldavdesign.mineauz.minigames.scoring;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.bukkit.event.Listener;
-
-import com.pauldavdesign.mineauz.minigames.Minigame;
-import com.pauldavdesign.mineauz.minigames.MinigameData;
-import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
-import com.pauldavdesign.mineauz.minigames.Minigames;
-import com.pauldavdesign.mineauz.minigames.PlayerData;
-
-public abstract class ScoreType implements Listener{
-	public static Minigames plugin;
-	public PlayerData pdata;
-	public MinigameData mdata;
+public class ScoreType {
+	private static Map<String, ScoreTypeBase> scoreTypes = new HashMap<String, ScoreTypeBase>();
 	
-	public ScoreType(){
-		plugin = Minigames.plugin;
-		pdata = plugin.pdata;
-		mdata = plugin.mdata;
-		plugin.getServer().getPluginManager().registerEvents(this, plugin);
+	static{
+		addScoreType(new PlayerKillsType());
+		addScoreType(new CTFType());
+		addScoreType(new InfectionType());
+		addScoreType(new CustomType());
 	}
 	
-	public abstract String getType();
+	public static void addScoreType(ScoreTypeBase type){
+		scoreTypes.put(type.getType(), type);
+	}
 	
-	public abstract void balanceTeam(List<MinigamePlayer> players, Minigame minigame);
+	public static ScoreTypeBase getScoreType(String type){
+		if(scoreTypes.containsKey(type)){
+			return scoreTypes.get(type);
+		}
+		return null;
+	}
+	
+	public Map<String, ScoreTypeBase> getScoreTypes(){
+		return scoreTypes;
+	}
 }

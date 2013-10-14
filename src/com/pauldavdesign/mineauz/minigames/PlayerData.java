@@ -34,7 +34,7 @@ import com.pauldavdesign.mineauz.minigames.events.JoinMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.RevertCheckpointEvent;
 import com.pauldavdesign.mineauz.minigames.events.SpectateMinigameEvent;
-import com.pauldavdesign.mineauz.minigames.scoring.ScoreTypes;
+import com.pauldavdesign.mineauz.minigames.scoring.ScoreType;
 
 public class PlayerData {
 	private Map<String, MinigamePlayer> minigamePlayers = new HashMap<String, MinigamePlayer>();
@@ -204,8 +204,8 @@ public class PlayerData {
 		
 		Collections.shuffle(players);
 		
-		if(minigame.getType().equals("teamdm") && ScoreTypes.getScoreType(minigame.getScoreType()) != null){
-			ScoreTypes.getScoreType(minigame.getScoreType()).balanceTeam(players, minigame);
+		if(minigame.getType().equals("teamdm") && ScoreType.getScoreType(minigame.getScoreType()) != null){
+			ScoreType.getScoreType(minigame.getScoreType()).balanceTeam(players, minigame);
 		}
 		
 		Location start = null;

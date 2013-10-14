@@ -36,7 +36,7 @@ import com.pauldavdesign.mineauz.minigames.gametypes.DMMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.RaceMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.SPMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
-import com.pauldavdesign.mineauz.minigames.scoring.ScoreTypes;
+import com.pauldavdesign.mineauz.minigames.scoring.ScoreType;
 import com.pauldavdesign.mineauz.minigames.signs.SignBase;
 
 public class Minigames extends JavaPlugin{
@@ -46,7 +46,7 @@ public class Minigames extends JavaPlugin{
 	public static Minigames plugin;
     private static Economy econ = null;
 	private SQLDatabase sql = null;
-	private static ScoreTypes scoretypes;
+	private static ScoreType scoretypes;
 	private static SignBase minigameSigns;
 	private FileConfiguration lang = null;
 	
@@ -192,7 +192,7 @@ public class Minigames extends JavaPlugin{
 //		pdata.loadDCPlayers();
 		pdata.loadDeniedCommands();
 		
-		scoretypes = new ScoreTypes();
+		scoretypes = new ScoreType();
 		
 		MinigameSave save = new MinigameSave("storedCheckpoints");
 		for(String player : save.getConfig().getKeys(false)){
@@ -347,7 +347,7 @@ public class Minigames extends JavaPlugin{
 		}
 	}
 	
-	public ScoreTypes getScoreTypes(){
+	public ScoreType getScoreTypes(){
 		return scoretypes;
 	}
 	

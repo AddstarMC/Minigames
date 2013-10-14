@@ -20,7 +20,7 @@ import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 
-public class CTFType extends ScoreType{
+public class CTFType extends ScoreTypeBase{
 
 	@Override
 	public String getType() {

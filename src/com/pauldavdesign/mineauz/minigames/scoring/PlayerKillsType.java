@@ -12,7 +12,7 @@ import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 
-public class PlayerKillsType extends ScoreType{
+public class PlayerKillsType extends ScoreTypeBase{
 
 	@Override
 	public String getType() {
