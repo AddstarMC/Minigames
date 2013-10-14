@@ -67,7 +67,7 @@ public class Minigame {
 	private boolean blocksdrop = true;
 	private boolean allowEnderpearls = false;
 	
-	private String scoreType = "none";
+	private String scoreType = "custom";
 	private boolean paintBallMode = false;
 	private int paintBallDamage = 2;
 	private boolean unlimitedAmmo = false;
@@ -1248,7 +1248,7 @@ public class Minigame {
 			minigame.getConfig().set(name + ".blocksdrop", null);
 		}
 		
-		if(!getScoreType().equals("none")){
+		if(!getScoreType().equals("custom")){
 			minigame.getConfig().set(name + ".scoretype", getScoreType());
 		}else{
 			minigame.getConfig().set(name + ".scoretype", null);
