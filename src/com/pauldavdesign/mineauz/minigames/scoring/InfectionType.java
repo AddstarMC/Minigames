@@ -66,9 +66,10 @@ public class InfectionType extends ScoreType{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void playerDeath(PlayerDeathEvent event){
 		MinigamePlayer player = pdata.getMinigamePlayer(event.getEntity());
+		if(player == null) return;
 		if(player.isInMinigame()){
 			Minigame mgm = player.getMinigame();
 			if(mgm.getType().equals("teamdm") && mgm.getScoreType().equals("infection")){

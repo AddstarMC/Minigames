@@ -79,9 +79,10 @@ public class CTFType extends ScoreType{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void takeFlag(PlayerInteractEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply == null) return;
 		if(ply.isInMinigame() && !ply.getPlayer().isDead()){
 			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && (event.getClickedBlock().getType() == Material.SIGN_POST || event.getClickedBlock().getType() == Material.WALL_SIGN) && ply.getPlayer().getItemInHand().getType() == Material.AIR){
 				Minigame mgm = ply.getMinigame();
@@ -254,6 +255,7 @@ public class CTFType extends ScoreType{
 	@EventHandler
 	private void dropFlag(PlayerDeathEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
+		if(ply == null) return;
 		if(ply.isInMinigame()){
 			Minigame mgm = ply.getMinigame();
 			if(mgm.isFlagCarrier(ply)){
@@ -319,6 +321,7 @@ public class CTFType extends ScoreType{
 	@EventHandler
 	public void playerAutoBalance(PlayerDeathEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
+		if(ply == null) return;
 		if(ply.isInMinigame() && ply.getMinigame().getType().equals("teamdm")){
 			int pteam = 0;
 			if(ply.getMinigame().getBlueTeam().contains(ply.getPlayer())){

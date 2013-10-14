@@ -70,6 +70,7 @@ public class CustomType extends ScoreType{
 	@EventHandler
 	public void playerAutoBalance(PlayerDeathEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
+		if(ply == null) return;
 		if(ply.isInMinigame() && ply.getMinigame().getType().equals("teamdm")){
 			int pteam = 0;
 			if(ply.getMinigame().getBlueTeam().contains(ply.getPlayer())){

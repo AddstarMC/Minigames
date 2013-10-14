@@ -71,6 +71,7 @@ public class PlayerKillsType extends ScoreType{
 	@EventHandler
 	private void playerAttackPlayer(PlayerDeathEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
+		if(ply == null) return;
 		Minigame mgm = ply.getMinigame();
 		if(ply.isInMinigame() && mgm.getScoreType().equals("kills")){
 			MinigamePlayer attacker = null;
@@ -158,6 +159,7 @@ public class PlayerKillsType extends ScoreType{
 	@EventHandler
 	private void playerSuicide(PlayerDeathEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
+		if(ply == null) return;
 		if(ply.isInMinigame() && (ply.getPlayer().getKiller() == null || ply.getPlayer().getKiller() == ply.getPlayer())){
 			Minigame mgm = ply.getMinigame();
 			if(mgm.getScoreType().equals("kills")){
@@ -184,6 +186,7 @@ public class PlayerKillsType extends ScoreType{
 	@EventHandler
 	public void playerAutoBalance(PlayerDeathEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
+		if(ply == null) return;
 		if(ply.isInMinigame() && ply.getMinigame().getType().equals("teamdm")){
 			int pteam = 0;
 			if(ply.getMinigame().getBlueTeam().contains(ply.getPlayer())){
