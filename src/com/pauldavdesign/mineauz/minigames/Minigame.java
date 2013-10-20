@@ -19,6 +19,12 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
 import com.pauldavdesign.mineauz.minigames.blockRecorder.RecorderData;
+import com.pauldavdesign.mineauz.minigames.menu.Callback;
+import com.pauldavdesign.mineauz.minigames.menu.Menu;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemBoolean;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemInteger;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
 
 public class Minigame {
 	private String name = "GenericName";
@@ -969,6 +975,176 @@ public class Minigame {
 
 	public Scoreboard getScoreboardManager(){
 		return sbManager;
+	}
+	
+	public void displayMenu(MinigamePlayer player){
+		int inc = 0;
+		
+		Menu main = new Menu(6, getName(), player);
+		Menu playerMenu = new Menu(6, getName(), player);
+		
+		List<MenuItem> itemsMain = new ArrayList<MenuItem>();
+		itemsMain.add(new MenuItemBoolean("Enabled", Material.PAPER, new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				enabled = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return enabled;
+			}
+		}));
+		itemsMain.add(new MenuItemPage("Player Settings", Material.SKULL_ITEM, playerMenu));
+		
+		for(MenuItem item : itemsMain){
+			main.addItem(item, inc);
+			inc++;
+		}
+		
+		List<MenuItem> itemsPlayer = new ArrayList<MenuItem>();
+		itemsPlayer.add(new MenuItemBoolean("Allow Enderpearls", Material.ENDER_PEARL, new Callback<Boolean>() {
+			
+			@Override
+			public void setValue(Boolean value) {
+				allowEnderpearls = value;
+			}
+			
+			@Override
+			public Boolean getValue() {
+				return allowEnderpearls;
+			}
+		}));
+		itemsPlayer.add(new MenuItemBoolean("Allow Item Drops", Material.DIAMOND_SWORD, new Callback<Boolean>() {
+			
+			@Override
+			public void setValue(Boolean value) {
+				itemDrops = value;
+			}
+			
+			@Override
+			public Boolean getValue() {
+				return itemDrops;
+			}
+		}));
+		itemsPlayer.add(new MenuItemBoolean("Allow Death Drops", Material.SKULL_ITEM, new Callback<Boolean>() {
+			
+			@Override
+			public void setValue(Boolean value) {
+				deathDrops = value;
+			}
+			
+			@Override
+			public Boolean getValue() {
+				return deathDrops;
+			}
+		}));
+		itemsPlayer.add(new MenuItemBoolean("Allow Item Pickup", Material.DIAMOND, new Callback<Boolean>() {
+			
+			@Override
+			public void setValue(Boolean value) {
+				itemPickup = value;
+			}
+			
+			@Override
+			public Boolean getValue() {
+				return itemPickup;
+			}
+		}));
+		itemsPlayer.add(new MenuItemBoolean("Allow Block Break", Material.DIAMOND_PICKAXE, new Callback<Boolean>() {
+			
+			@Override
+			public void setValue(Boolean value) {
+				blockBreak = value;
+			}
+			
+			@Override
+			public Boolean getValue() {
+				return blockBreak;
+			}
+		}));
+		itemsPlayer.add(new MenuItemBoolean("Allow Block Place", Material.STONE, new Callback<Boolean>() {
+			
+			@Override
+			public void setValue(Boolean value) {
+				blockPlace = value;
+			}
+			
+			@Override
+			public Boolean getValue() {
+				return blockPlace;
+			}
+		}));
+		itemsPlayer.add(new MenuItemBoolean("Allow Block Drops", Material.COBBLESTONE, new Callback<Boolean>() {
+			
+			@Override
+			public void setValue(Boolean value) {
+				blocksdrop = value;
+			}
+			
+			@Override
+			public Boolean getValue() {
+				return blocksdrop;
+			}
+		}));
+		itemsPlayer.add(new MenuItemInteger("Lives", Material.APPLE, new Callback<Integer>() {
+			@Override
+			public void setValue(Integer value){
+				lives = value;
+			}
+			
+			@Override
+			public Integer getValue(){
+				return lives;
+			}
+		}, 0, null));
+		itemsPlayer.add(new MenuItemBoolean("Painball Mode", Material.SNOW_BALL, new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				paintBallMode = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return paintBallMode;
+			}
+		}));
+		itemsPlayer.add(new MenuItemInteger("Paintball Damage", Material.ARROW, new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				paintBallDamage = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return paintBallDamage;
+			}
+		}, 1, null));
+		itemsPlayer.add(new MenuItemBoolean("Unlimited Ammo", Material.SNOW_BLOCK, new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				unlimitedAmmo = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return unlimitedAmmo;
+			}
+		}));
+		
+		inc = 0;
+		for(MenuItem item : itemsPlayer){
+			playerMenu.addItem(item, inc);
+			inc++;
+		}
+		playerMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
+		
+		main.displayMenu(player);
+		
 	}
 
 	public void saveMinigame(){

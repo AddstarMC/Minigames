@@ -101,7 +101,7 @@ public class Minigames extends JavaPlugin{
 				food = pdata.invsave.getConfig().getInt("inventories." + player + ".food");
 				saturation = Float.parseFloat(pdata.invsave.getConfig().getString("inventories." + player + ".saturation"));
 				lastGM = GameMode.getByValue(pdata.invsave.getConfig().getInt("inventories." + player + ".lastGM"));int x = pdata.invsave.getConfig().getInt("inventories." + player + ".location.x");
-				int y = pdata.invsave.getConfig().getInt("inventories." + player + ".location.y");
+				int y = pdata.invsave.getConfig().getInt("inventories." + player + ".location.y"); //TODO: Check location is valid
 				int z = pdata.invsave.getConfig().getInt("inventories." + player + ".location.z");
 				float yaw = new Float(pdata.invsave.getConfig().getString("inventories." + player + ".location.yaw"));
 				float pitch = new Float(pdata.invsave.getConfig().getString("inventories." + player + ".location.pitch"));

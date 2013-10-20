@@ -24,6 +24,12 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
@@ -38,6 +44,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.events.RevertCheckpointEvent;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 
 public class Events implements Listener{
 	private static Minigames plugin = Minigames.plugin;
@@ -473,5 +480,63 @@ public class Events implements Listener{
 				event.setCancelled(true);
 			}
 		}
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	private void clickMenu(InventoryClickEvent event){
+		MinigamePlayer ply = pdata.getMinigamePlayer((Player)event.getWhoClicked());
+		if(ply.isInMenu() && !ply.getMenu().getAllowModify() && event.getRawSlot() < ply.getMenu().getSize()){
+			event.setCancelled(true);
+			MenuItem item = ply.getMenu().getClicked(event.getRawSlot());
+			if(item != null){
+				ItemStack disItem = null;
+				if(event.getClick() == ClickType.LEFT)
+					disItem = item.onClick();
+				else if(event.getClick() == ClickType.RIGHT)
+					disItem = item.onRightClick();
+				else if(event.getClick() == ClickType.SHIFT_LEFT)
+					disItem = item.onShiftClick();
+				else if(event.getClick() == ClickType.SHIFT_RIGHT)
+					disItem = item.onShiftRightClick();
+				else if(event.getClick() == ClickType.DOUBLE_CLICK)
+					disItem = item.onDoubleClick();
+				
+				if(item != null)
+					event.setCurrentItem(disItem);
+			}
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	private void dragMenu(InventoryDragEvent event){
+		MinigamePlayer ply = pdata.getMinigamePlayer((Player)event.getWhoClicked());
+		if(ply.isInMenu() && !ply.getMenu().getAllowModify()){
+			for(int slot : event.getRawSlots()){
+				if(slot < ply.getMenu().getSize()){
+					event.setCancelled(true);
+					break;
+				}
+			}
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	private void closeMenu(InventoryCloseEvent event){
+		MinigamePlayer ply = pdata.getMinigamePlayer((Player)event.getPlayer());
+		if(ply.isInMenu() && !ply.getNoClose()){
+			ply.setMenu(null);
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	private void manualItemEntry(AsyncPlayerChatEvent event){
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply.isInMenu() && ply.getNoClose() && ply.getManualEntry() != null){
+			event.setCancelled(true);
+			ply.setNoClose(false);
+			ply.getManualEntry().checkValidEntry(event.getMessage());
+			ply.setManualEntry(null);
+		}
+		
 	}
 }

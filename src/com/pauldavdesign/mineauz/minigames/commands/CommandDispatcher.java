@@ -56,6 +56,7 @@ public class CommandDispatcher implements CommandExecutor{
 		registerCommand(new PlayerCommand());
 		registerCommand(new ScoreCommand());
 		registerCommand(new TeleportCommand());
+		registerCommand(new EditCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {

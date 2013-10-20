@@ -10,6 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 
+import com.pauldavdesign.mineauz.minigames.menu.Menu;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
+
 public class MinigamePlayer {
 	private Player player;
 	private ItemStack[] storedItems = null;
@@ -34,6 +37,10 @@ public class MinigamePlayer {
 	private long endTime = 0;
 	private long storedTime = 0;
 	private int reverts = 0;
+	
+	private Menu menu = null;
+	private boolean noClose = false;
+	private MenuItem manualEntry = null;
 	
 	private PlayerData pdata = Minigames.plugin.pdata;
 	
@@ -376,5 +383,36 @@ public class MinigamePlayer {
 	
 	public void resetReverts(){
 		reverts = 0;
+	}
+	
+	public Menu getMenu(){
+		return menu;
+	}
+	
+	public void setMenu(Menu menu){
+		this.menu = menu;
+	}
+	
+	public boolean isInMenu(){
+		if(menu != null){
+			return true;
+		}
+		return false;
+	}
+	
+	public void setNoClose(boolean value){
+		noClose = value;
+	}
+	
+	public boolean getNoClose(){
+		return noClose;
+	}
+	
+	public void setManualEntry(MenuItem item){
+		manualEntry = item;
+	}
+	
+	public MenuItem getManualEntry(){
+		return manualEntry;
 	}
 }

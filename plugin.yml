@@ -381,3 +381,6 @@ permissions:
     minigame.teleport:
         description: Allows a player to use the Minigame Teleport command.
         default: op
+    minigame.edit:
+        description: Allows a player to open the Minigame edit menu.
+        default: op
