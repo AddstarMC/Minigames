@@ -100,13 +100,31 @@ public class Minigames extends JavaPlugin{
 				health = pdata.invsave.getConfig().getInt("inventories." + player + ".health");
 				food = pdata.invsave.getConfig().getInt("inventories." + player + ".food");
 				saturation = Float.parseFloat(pdata.invsave.getConfig().getString("inventories." + player + ".saturation"));
-				lastGM = GameMode.getByValue(pdata.invsave.getConfig().getInt("inventories." + player + ".lastGM"));int x = pdata.invsave.getConfig().getInt("inventories." + player + ".location.x");
-				int y = pdata.invsave.getConfig().getInt("inventories." + player + ".location.y"); //TODO: Check location is valid
-				int z = pdata.invsave.getConfig().getInt("inventories." + player + ".location.z");
-				float yaw = new Float(pdata.invsave.getConfig().getString("inventories." + player + ".location.yaw"));
-				float pitch = new Float(pdata.invsave.getConfig().getString("inventories." + player + ".location.pitch"));
-				World world = getServer().getWorld(pdata.invsave.getConfig().getString("inventories." + player + ".location.world"));
-				loginLocation = new Location(world, x, y, z, yaw, pitch);
+				if(pdata.invsave.getConfig().getString("inventories." + player + ".lastGM").matches("[0-2]"))
+					lastGM = GameMode.getByValue(pdata.invsave.getConfig().getInt("inventories." + player + ".lastGM")); //TODO: Remove me after 1.6.0 Release
+				else{
+					String gamemode = pdata.invsave.getConfig().getString("inventories." + player + ".lastGM");
+					if(gamemode.equals("CREATIVE")){
+						lastGM = GameMode.CREATIVE;
+					}
+					else if(gamemode.equals("ADVENTURE")){
+						lastGM = GameMode.ADVENTURE;
+					}
+					else
+						lastGM = GameMode.SURVIVAL;
+				}
+				if(pdata.invsave.getConfig().contains("inventories." + player + ".location.x")){
+					int x = pdata.invsave.getConfig().getInt("inventories." + player + ".location.x");
+					int y = pdata.invsave.getConfig().getInt("inventories." + player + ".location.y");
+					int z = pdata.invsave.getConfig().getInt("inventories." + player + ".location.z");
+					float yaw = new Float(pdata.invsave.getConfig().getString("inventories." + player + ".location.yaw"));
+					float pitch = new Float(pdata.invsave.getConfig().getString("inventories." + player + ".location.pitch"));
+					World world = getServer().getWorld(pdata.invsave.getConfig().getString("inventories." + player + ".location.world"));
+					loginLocation = new Location(world, x, y, z, yaw, pitch);
+				}
+				else{
+					loginLocation = getServer().getWorlds().get(0).getSpawnLocation();
+				}
 				//log.info("Restoring " + player + "'s Items"); DEBUG
 				for(int i = 0; i < items.length; i++){
 					if(pdata.invsave.getConfig().contains("inventories." + player + "." + i)){
@@ -117,7 +135,6 @@ public class Minigames extends JavaPlugin{
 					armour[i] = pdata.invsave.getConfig().getItemStack("inventories." + player + ".armour." + i);
 				}
 				
-//				pdata.storePlayerInventory(player, items, armour, health, food, saturation);
 				pdata.addOfflineMinigamePlayer(new OfflineMinigamePlayer(player, items, armour, food, health, saturation, lastGM, loginLocation));
 				items = getServer().createInventory(null, InventoryType.PLAYER).getContents();
 			}
