@@ -24,6 +24,7 @@ import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemBoolean;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemInteger;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemList;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
 
 public class Minigame {
@@ -977,11 +978,12 @@ public class Minigame {
 		return sbManager;
 	}
 	
-	public void displayMenu(MinigamePlayer player){
+	public void displayMenu(MinigamePlayer player){ //TODO: Only create this once, or destroy on close
 		int inc = 0;
 		
 		Menu main = new Menu(6, getName(), player);
 		Menu playerMenu = new Menu(6, getName(), player);
+		Menu treasureHunt = new Menu(6, getName(), player);
 		
 		List<MenuItem> itemsMain = new ArrayList<MenuItem>();
 		itemsMain.add(new MenuItemBoolean("Enabled", Material.PAPER, new Callback<Boolean>() {
@@ -996,12 +998,102 @@ public class Minigame {
 				return enabled;
 			}
 		}));
+		itemsMain.add(new MenuItemList("Game Type", Material.PAPER, new Callback<String>() {
+			@Override
+			public void setValue(String value) {
+				type = value;
+			}
+
+			@Override
+			public String getValue() {
+				return type;
+			}
+		}, Minigames.plugin.mdata.getMinigameTypesList()));
+		itemsMain.add(new MenuItemInteger("Min. Players", Material.STEP, new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				minPlayers = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return minPlayers;
+			}
+		}, 0, null));
+		itemsMain.add(new MenuItemInteger("Max. Players", Material.DOUBLE_STEP, new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				maxPlayers = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return maxPlayers;
+			}
+		}, 0, null));
 		itemsMain.add(new MenuItemPage("Player Settings", Material.SKULL_ITEM, playerMenu));
+		List<String> thDes = new ArrayList<String>();
+		thDes.add("Treasure hunt related");
+		thDes.add("settings.");
+		itemsMain.add(new MenuItemPage("Treasure Hunt Settings", thDes, Material.CHEST, treasureHunt));
 		
 		for(MenuItem item : itemsMain){
 			main.addItem(item, inc);
 			inc++;
 		}
+		
+		List<MenuItem> itemsTreasureHunt = new ArrayList<MenuItem>();
+		itemsTreasureHunt.add(new MenuItemInteger("Max. Radius", Material.ENDER_PEARL, new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				maxRadius = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return maxRadius;
+			}
+		}, 10, null));
+		List<String> minDes = new ArrayList<String>();
+		minDes.add("Minimum items to");
+		minDes.add("spawn in chest.");
+		itemsTreasureHunt.add(new MenuItemInteger("Min. Items", minDes, Material.STONE, new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				minTreasure = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return minTreasure;
+			}
+		}, 0, null));
+		List<String> maxDes = new ArrayList<String>();
+		maxDes.add("Maximum items to");
+		maxDes.add("spawn in chest.");
+		itemsTreasureHunt.add(new MenuItemInteger("Max. Items", maxDes, Material.DIAMOND, new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				maxTreasure = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return maxTreasure;
+			}
+		}, 0, null));
+		
+		inc = 0;
+		for(MenuItem item : itemsTreasureHunt){
+			treasureHunt.addItem(item, inc);
+			inc++;
+		}
+		playerMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
 		
 		List<MenuItem> itemsPlayer = new ArrayList<MenuItem>();
 		itemsPlayer.add(new MenuItemBoolean("Allow Enderpearls", Material.ENDER_PEARL, new Callback<Boolean>() {

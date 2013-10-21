@@ -105,7 +105,7 @@ public class MenuItemInteger extends MenuItem{
 			max = this.max.toString();
 		}
 		ply.setManualEntry(this);
-		ply.sendMessage("Min: " + min + ", Max: " + max, null);
+		ply.sendMessage("Min: " + min + ", Max: " + max);
 		getContainer().startReopenTimer(10);
 		
 		return null;

@@ -314,6 +314,12 @@ public class MinigameData {
 		return minigameTypes.keySet();
 	}
 	
+	public List<String> getMinigameTypesList(){
+		List<String> list = new ArrayList<String>();
+		list.addAll(minigameTypes.keySet());
+		return list;
+	}
+	
 	public void addLoadout(String name){
 		globalLoadouts.put(name, new PlayerLoadout(name));
 	}
