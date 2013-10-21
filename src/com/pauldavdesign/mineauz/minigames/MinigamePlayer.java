@@ -151,7 +151,12 @@ public class MinigamePlayer {
 		pdata.invsave.getConfig().set("inventories." + player.getName() + ".food", food);
 		pdata.invsave.getConfig().set("inventories." + player.getName() + ".saturation", saturation);
 		pdata.invsave.getConfig().set("inventories." + player.getName() + ".health", health);
-		pdata.invsave.getConfig().set("inventories." + player.getName() + ".lastGM", lastGM.getValue());
+		String gamemode = "SURVIVAL";
+		if(lastGM.equals(GameMode.ADVENTURE))
+			gamemode = "ADVENTURE";
+		else if(lastGM.equals(GameMode.CREATIVE))
+			gamemode = "CREATIVE";
+		pdata.invsave.getConfig().set("inventories." + player.getName() + ".lastGM", gamemode);
 		
 		pdata.invsave.saveConfig();
 	}
