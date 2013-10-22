@@ -978,7 +978,7 @@ public class Minigame {
 		return sbManager;
 	}
 	
-	public void displayMenu(MinigamePlayer player){ //TODO: Only create this once, or destroy on close
+	public void displayMenu(MinigamePlayer player){
 		int inc = 0;
 		
 		Menu main = new Menu(6, getName(), player);
@@ -996,6 +996,18 @@ public class Minigame {
 			@Override
 			public Boolean getValue() {
 				return enabled;
+			}
+		}));
+		itemsMain.add(new MenuItemBoolean("Use Permissions", Material.PAPER, new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				usePermissions = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return usePermissions;
 			}
 		}));
 		itemsMain.add(new MenuItemList("Game Type", Material.PAPER, new Callback<String>() {
@@ -1033,6 +1045,55 @@ public class Minigame {
 				return maxPlayers;
 			}
 		}, 0, null));
+		List<String> floorDegenDes = new ArrayList<String>();
+		floorDegenDes.add("Mainly used to prevent");
+		floorDegenDes.add("islanding in spleef Minigames.");
+		List<String> floorDegenOpt = new ArrayList<String>();
+		floorDegenOpt.add("inward");
+		floorDegenOpt.add("circle");
+		floorDegenOpt.add("random");
+		itemsMain.add(new MenuItemList("Floor Degenerator Type", floorDegenDes, Material.SNOW_BLOCK, new Callback<String>() {
+
+			@Override
+			public void setValue(String value) {
+				degenType = value;
+			}
+
+			@Override
+			public String getValue() {
+				return degenType;
+			}
+		}, floorDegenOpt));
+		List<String> degenRandDes = new ArrayList<String>();
+		degenRandDes.add("Chance of block being");
+		degenRandDes.add("removed on random");
+		degenRandDes.add("degeneration.");
+		itemsMain.add(new MenuItemInteger("Random Floor Degen Chance", degenRandDes, Material.SNOW, new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				degenRandomChance = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return degenRandomChance;
+			}
+		}, 1, 100));
+		List<String> degenDelayDes = new ArrayList<String>();
+		degenDelayDes.add(ChatColor.GREEN + "seconds.");
+		itemsMain.add(new MenuItemInteger("Floor Degenerator Delay", degenDelayDes, Material.WATCH, new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				floorDegenTime = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return floorDegenTime;
+			}
+		}, 1, null));
 		itemsMain.add(new MenuItemPage("Player Settings", Material.SKULL_ITEM, playerMenu));
 		List<String> thDes = new ArrayList<String>();
 		thDes.add("Treasure hunt related");
@@ -1057,6 +1118,23 @@ public class Minigame {
 				return maxRadius;
 			}
 		}, 10, null));
+		List<String> maxHeightDes = new ArrayList<String>();
+		maxHeightDes.add("Max. height of where a");
+		maxHeightDes.add("chest can generate.");
+		maxHeightDes.add("Can still move above to");
+		maxHeightDes.add("avoid terrain");
+		itemsTreasureHunt.add(new MenuItemInteger("Max. Height", Material.BEACON, new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				maxHeight = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return maxHeight;
+			}
+		}, 1, 256));
 		List<String> minDes = new ArrayList<String>();
 		minDes.add("Minimum items to");
 		minDes.add("spawn in chest.");
@@ -1093,7 +1171,7 @@ public class Minigame {
 			treasureHunt.addItem(item, inc);
 			inc++;
 		}
-		playerMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
+		treasureHunt.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
 		
 		List<MenuItem> itemsPlayer = new ArrayList<MenuItem>();
 		itemsPlayer.add(new MenuItemBoolean("Allow Enderpearls", Material.ENDER_PEARL, new Callback<Boolean>() {

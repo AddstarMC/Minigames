@@ -31,19 +31,41 @@ public class MenuItemList extends MenuItem{
 	
 	public void updateDescription(){
 		List<String> description = null;
+		int pos = options.indexOf(value.getValue());
+		int before = pos - 1;
+		int after = pos + 1;
+		if(before == -1)
+			before = options.size() - 1;
+		if(after == options.size())
+			after = 0;
+		
 		if(getDescription() != null){
 			description = getDescription();
-			String desc = ChatColor.stripColor(getDescription().get(0));
-			
-			if(options.contains(desc)){
-				description.set(0, ChatColor.GREEN.toString() + value.getValue());
+			if(getDescription().size() >= 3){
+				String desc = ChatColor.stripColor(getDescription().get(1));
+				
+				if(options.contains(desc)){
+					description.set(0, ChatColor.GRAY.toString() + options.get(before));
+					description.set(1, ChatColor.GREEN.toString() + value.getValue());
+					description.set(2, ChatColor.GRAY.toString() + options.get(after));
+				}
+				else{
+					description.add(0, ChatColor.GRAY.toString() + options.get(before));
+					description.add(1, ChatColor.GREEN.toString() + value.getValue());
+					description.add(2, ChatColor.GRAY.toString() + options.get(after));
+				}
 			}
-			else
-				description.add(0, ChatColor.GREEN.toString() + value.getValue());
+			else{
+				description.add(0, ChatColor.GRAY.toString() + options.get(before));
+				description.add(1, ChatColor.GREEN.toString() + value.getValue());
+				description.add(2, ChatColor.GRAY.toString() + options.get(after));
+			}
 		}
 		else{
 			description = new ArrayList<String>();
+			description.add(ChatColor.GRAY.toString() + options.get(before));
 			description.add(ChatColor.GREEN.toString() + value.getValue());
+			description.add(ChatColor.GRAY.toString() + options.get(after));
 		}
 		
 		setDescription(description);
