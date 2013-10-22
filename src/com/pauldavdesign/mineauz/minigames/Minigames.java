@@ -166,8 +166,14 @@ public class Minigames extends JavaPlugin{
 					public void run() {
 						for(String minigame : allMGS){
 							Minigame game = new Minigame(minigame);
-							game.loadMinigame();
-							mdata.addMinigame(game);
+							try{
+								game.loadMinigame();
+								mdata.addMinigame(game);
+							}
+							catch(Exception e){
+								getLogger().severe(ChatColor.RED.toString() + "Failed to load \"" + minigame +"\"! The configuration file may be corrupt or missing!");
+								e.printStackTrace();
+							}
 						}
 					}
 				}, 1L);
