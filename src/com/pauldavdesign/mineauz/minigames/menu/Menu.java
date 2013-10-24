@@ -20,6 +20,7 @@ public class Menu {
 	private Menu nextPage = null;
 	private MinigamePlayer viewer = null;
 	private int reopenTimerID = -1;
+	private Inventory inv = null;
 	
 	public Menu(int rows, String name, MinigamePlayer viewer){
 		this.rows = rows;
@@ -31,10 +32,22 @@ public class Menu {
 	public boolean addItem(MenuItem item, int slot){
 		if(!pageMap.containsKey(slot) && slot < pageView.length){
 			item.setContainer(this);
+			item.setSlot(slot);
 			pageMap.put(slot, item);
 			return true;
 		}
 		return false;
+	}
+	
+	public void removeItem(int slot){
+		if(pageMap.containsKey(slot)){
+			pageMap.remove(slot);
+			pageView[slot] = null;
+		}
+	}
+	
+	public void addItemStack(ItemStack item, int slot){
+		inv.setItem(slot, item);
 	}
 	
 	private void populateMenu(){
@@ -46,7 +59,7 @@ public class Menu {
 	public void displayMenu(MinigamePlayer ply){
 		populateMenu();
 		
-		Inventory inv = Bukkit.createInventory(ply.getPlayer(), rows*9, name);
+		inv = Bukkit.createInventory(ply.getPlayer(), rows*9, name);
 		inv.setContents(pageView);
 		ply.getPlayer().openInventory(inv);
 		ply.setMenu(this);
@@ -56,8 +69,19 @@ public class Menu {
 		return allowModify;
 	}
 	
+	public void setAllowModify(boolean canModify){
+		allowModify = canModify;
+	}
+	
 	public MenuItem getClicked(int slot){
 		return pageMap.get(slot);
+	}
+	
+	public boolean hasMenuItem(int slot){
+		if(pageMap.containsKey(slot)){
+			return true;
+		}
+		return false;
 	}
 	
 	public int getSize(){
@@ -114,5 +138,17 @@ public class Menu {
 			viewer.setManualEntry(null);
 			Bukkit.getScheduler().cancelTask(reopenTimerID);
 		}
+	}
+	
+	public ItemStack[] getInventory(){
+		ItemStack[] inv = new ItemStack[getSize()];
+		
+		for(int i = 0; i < this.inv.getContents().length; i++){
+			if(!pageMap.containsKey(i)){
+				inv[i] = this.inv.getContents()[i];
+			}
+		}
+		
+		return inv;
 	}
 }

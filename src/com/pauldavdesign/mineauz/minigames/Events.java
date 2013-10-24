@@ -3,6 +3,7 @@ package com.pauldavdesign.mineauz.minigames;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -485,24 +486,28 @@ public class Events implements Listener{
 	@EventHandler(ignoreCancelled = true)
 	private void clickMenu(InventoryClickEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer((Player)event.getWhoClicked());
-		if(ply.isInMenu() && !ply.getMenu().getAllowModify() && event.getRawSlot() < ply.getMenu().getSize()){
-			event.setCancelled(true);
-			MenuItem item = ply.getMenu().getClicked(event.getRawSlot());
-			if(item != null){
-				ItemStack disItem = null;
-				if(event.getClick() == ClickType.LEFT)
-					disItem = item.onClick();
-				else if(event.getClick() == ClickType.RIGHT)
-					disItem = item.onRightClick();
-				else if(event.getClick() == ClickType.SHIFT_LEFT)
-					disItem = item.onShiftClick();
-				else if(event.getClick() == ClickType.SHIFT_RIGHT)
-					disItem = item.onShiftRightClick();
-				else if(event.getClick() == ClickType.DOUBLE_CLICK)
-					disItem = item.onDoubleClick();
+		if(ply.isInMenu()){
+			if(event.getRawSlot() < ply.getMenu().getSize()){
+				if(!ply.getMenu().getAllowModify() || ply.getMenu().hasMenuItem(event.getRawSlot()))
+					event.setCancelled(true);
 				
-				if(item != null)
-					event.setCurrentItem(disItem);
+				MenuItem item = ply.getMenu().getClicked(event.getRawSlot());
+				if(item != null){
+					ItemStack disItem = null;
+					if(event.getClick() == ClickType.LEFT)
+						disItem = item.onClick();
+					else if(event.getClick() == ClickType.RIGHT)
+						disItem = item.onRightClick();
+					else if(event.getClick() == ClickType.SHIFT_LEFT)
+						disItem = item.onShiftClick();
+					else if(event.getClick() == ClickType.SHIFT_RIGHT)
+						disItem = item.onShiftRightClick();
+					else if(event.getClick() == ClickType.DOUBLE_CLICK)
+						disItem = item.onDoubleClick();
+					
+					if(item != null)
+						event.setCurrentItem(disItem);
+				}
 			}
 		}
 	}
@@ -510,11 +515,21 @@ public class Events implements Listener{
 	@EventHandler(ignoreCancelled = true)
 	private void dragMenu(InventoryDragEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer((Player)event.getWhoClicked());
-		if(ply.isInMenu() && !ply.getMenu().getAllowModify()){
-			for(int slot : event.getRawSlots()){
-				if(slot < ply.getMenu().getSize()){
-					event.setCancelled(true);
-					break;
+		if(ply.isInMenu()){
+			if(!ply.getMenu().getAllowModify()){
+				for(int slot : event.getRawSlots()){
+					if(slot < ply.getMenu().getSize()){
+						event.setCancelled(true);
+						break;
+					}
+				}
+			}
+			else{
+				Set<Integer> slots = event.getRawSlots();
+				for(int slot : slots){
+					if(ply.getMenu().hasMenuItem(slot)){
+						event.getRawSlots().remove(slot);
+					}
 				}
 			}
 		}

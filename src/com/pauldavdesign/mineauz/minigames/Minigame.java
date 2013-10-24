@@ -23,9 +23,11 @@ import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemBoolean;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemDisplayLoadout;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemInteger;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemList;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemSaveMinigame;
 
 public class Minigame {
 	private String name = "GenericName";
@@ -984,6 +986,7 @@ public class Minigame {
 		Menu main = new Menu(6, getName(), player);
 		Menu playerMenu = new Menu(6, getName(), player);
 		Menu treasureHunt = new Menu(6, getName(), player);
+		Menu loadouts = new Menu(6, getName(), player);
 		
 		List<MenuItem> itemsMain = new ArrayList<MenuItem>();
 		itemsMain.add(new MenuItemBoolean("Enabled", Material.PAPER, new Callback<Boolean>() {
@@ -1099,11 +1102,28 @@ public class Minigame {
 		thDes.add("Treasure hunt related");
 		thDes.add("settings.");
 		itemsMain.add(new MenuItemPage("Treasure Hunt Settings", thDes, Material.CHEST, treasureHunt));
+		MenuItemDisplayLoadout defLoad = new MenuItemDisplayLoadout("Default Loadout", Material.DIAMOND_SWORD, defaultLoadout, this);
+		defLoad.setAllowDelete(false);
+		itemsMain.add(defLoad);
+		itemsMain.add(new MenuItemPage("Additional Loadouts", Material.CHEST, loadouts));
 		
+		
+		for(String ld : getLoadouts()){
+			Material item = Material.PISTON_EXTENSION;
+			if(getLoadout(ld).getItems().size() != 0){
+				item = getLoadout(ld).getItems().get(0).getType();
+			}
+			loadouts.addItem(new MenuItemDisplayLoadout(ld, item, getLoadout(ld), this), inc);
+			inc++;
+		}
+		loadouts.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), loadouts.getSize() - 9);
+		
+		inc = 0;
 		for(MenuItem item : itemsMain){
 			main.addItem(item, inc);
 			inc++;
 		}
+		main.addItem(new MenuItemSaveMinigame("Save " + getName(), Material.REDSTONE_TORCH_ON, this), main.getSize() - 1);
 		
 		List<MenuItem> itemsTreasureHunt = new ArrayList<MenuItem>();
 		itemsTreasureHunt.add(new MenuItemInteger("Max. Radius", Material.ENDER_PEARL, new Callback<Integer>() {
