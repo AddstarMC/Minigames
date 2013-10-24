@@ -26,6 +26,7 @@ public class MinigamePlayer {
 	private Scoreboard lastScoreboard = null;
 	
 	private Minigame minigame = null;
+	private PlayerLoadout loadout = null;
 	private boolean requiredQuit = false;
 	private Location quitPos = null;
 	private List<String> flags = new ArrayList<String>();
@@ -251,6 +252,14 @@ public class MinigamePlayer {
 
 	public void setQuitPos(Location quitPos) {
 		this.quitPos = quitPos;
+	}
+
+	public PlayerLoadout getLoadout() {
+		return loadout;
+	}
+
+	public void setLoadout(PlayerLoadout loadout) {
+		this.loadout = loadout;
 	}
 
 	public List<String> getFlags(){
