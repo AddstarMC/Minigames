@@ -229,9 +229,13 @@ public class Minigames extends JavaPlugin{
 		for(String loadout : keys){
 			mdata.addLoadout(loadout);
 			Set<String> items = globalLoadouts.getConfig().getConfigurationSection(loadout).getKeys(false);
-			for(int i = 0; i < items.size(); i++){
-				if(globalLoadouts.getConfig().contains(loadout + "." + i))
-					mdata.getLoadout(loadout).addItemToLoadout(globalLoadouts.getConfig().getItemStack(loadout + "." + i));
+//			for(int i = 0; i < items.size(); i++){
+//				if(globalLoadouts.getConfig().contains(loadout + "." + i))
+//					mdata.getLoadout(loadout).addItemToLoadout(globalLoadouts.getConfig().getItemStack(loadout + "." + i));
+//			}
+			for(String slot : items){
+				if(!slot.equals("potions"))
+					mdata.getLoadout(loadout).addItem(globalLoadouts.getConfig().getItemStack(loadout + "." + slot), Integer.parseInt(slot));
 			}
 			if(globalLoadouts.getConfig().contains(loadout + ".potions")){
 				Set<String> pots = globalLoadouts.getConfig().getConfigurationSection(loadout + ".potions").getKeys(false);
@@ -291,8 +295,11 @@ public class Minigames extends JavaPlugin{
 		MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
 		if(mdata.hasLoadouts()){
 			for(String loadout : mdata.getLoadouts()){
-				for(int i = 0; i < mdata.getLoadout(loadout).getItems().size(); i++){
-					globalLoadouts.getConfig().set(loadout + "." + i, mdata.getLoadout(loadout).getItems().get(i));
+//				for(int i = 0; i < mdata.getLoadout(loadout).getItems().size(); i++){
+//					globalLoadouts.getConfig().set(loadout + "." + i, mdata.getLoadout(loadout).getItems().get(i));
+//				}
+				for(Integer slot : mdata.getLoadout(loadout).getItems()){
+					globalLoadouts.getConfig().set(loadout + "." + slot, mdata.getLoadout(loadout).getItem(slot));
 				}
 				if(!mdata.getLoadout(loadout).getAllPotionEffects().isEmpty()){
 					for(PotionEffect eff : mdata.getLoadout(loadout).getAllPotionEffects()){

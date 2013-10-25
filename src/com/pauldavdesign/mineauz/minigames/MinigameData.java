@@ -116,10 +116,10 @@ public class MinigameData {
 							if(numitems > mgm.getDefaultPlayerLoadout().getItems().size()){
 								numitems = mgm.getDefaultPlayerLoadout().getItems().size();
 							}
-							Collections.shuffle(getMinigame(minigame).getDefaultPlayerLoadout().getItems());
+							Collections.shuffle(getMinigame(minigame).getDefaultPlayerLoadout().getItemsOld());
 							final ItemStack[] items = new ItemStack[27];
 							for(int i = 0; i < numitems; i++){
-								items[i] = mgm.getDefaultPlayerLoadout().getItems().get(i);
+								items[i] = mgm.getDefaultPlayerLoadout().getItemsOld().get(i);
 							}
 							Collections.shuffle(Arrays.asList(items));
 							chest.getInventory().setContents(items);

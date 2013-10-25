@@ -25,9 +25,25 @@ public class MenuItemSaveLoadout extends MenuItem{
 	public ItemStack onClick(){
 		ItemStack[] items = getContainer().getInventory();
 		loadout.clearLoadout();
-		for(ItemStack item : items){
-			if(item != null)
-				loadout.addItemToLoadout(item);
+//		for(ItemStack item : items){
+//			if(item != null)
+//				loadout.addItemToLoadout(item);
+//		}
+		for(int i = 0; i < 36; i++){
+			if(items[i] != null)
+				loadout.addItem(items[i], i);
+		}
+		for(int i = 36; i < 40; i++){
+			if(items[i] != null){
+				if(i == 36)
+					loadout.addItem(items[i], 103);
+				else if(i == 37)
+					loadout.addItem(items[i], 102);
+				else if(i == 38)
+					loadout.addItem(items[i], 101);
+				else if(i == 39)
+					loadout.addItem(items[i], 100);
+			}
 		}
 		getContainer().getViewer().sendMessage("Saved the '" + loadout.getName() + "' loadout.", null);
 		getContainer().getPreviousPage().displayMenu(getContainer().getViewer());

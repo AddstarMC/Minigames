@@ -42,11 +42,11 @@ public class InfectionPreset implements BasePreset {
 		ssword.addUnsafeEnchantment(Enchantment.KNOCKBACK, 2);
 		sbow.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 10);
 		
-		red.addItemToLoadout(zsword);
-		red.addItemToLoadout(zhead);
-		blue.addItemToLoadout(ssword);
-		blue.addItemToLoadout(sbow);
-		blue.addItemToLoadout(sarrows);
+		red.addItem(zsword, 0);
+		red.addItem(zhead, 103);
+		blue.addItem(ssword, 0);
+		blue.addItem(sbow, 1);
+		blue.addItem(sarrows, 8);
 		
 		red.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200000, 2, true));
 		red.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 200000, 2, true));

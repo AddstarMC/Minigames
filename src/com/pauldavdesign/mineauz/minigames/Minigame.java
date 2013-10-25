@@ -1085,7 +1085,7 @@ public class Minigame {
 		for(String ld : getLoadouts()){
 			Material item = Material.PISTON_EXTENSION;
 			if(getLoadout(ld).getItems().size() != 0){
-				item = getLoadout(ld).getItems().get(0).getType();
+				item = getLoadout(ld).getItem((Integer)getLoadout(ld).getItems().toArray()[0]).getType();
 			}
 			loadouts.addItem(new MenuItemDisplayLoadout(ld, item, getLoadout(ld), this), inc);
 			inc++;
@@ -1434,8 +1434,11 @@ public class Minigame {
 		
 		if(hasDefaultLoadout()){
 			minigame.getConfig().set(name + ".loadout", null);
-			for(int i = 0; i < getDefaultPlayerLoadout().getItems().size(); i++){
-				minigame.getConfig().set(name + ".loadout." + i, getDefaultPlayerLoadout().getItems().get(i));
+//			for(int i = 0; i < getDefaultPlayerLoadout().getItems().size(); i++){
+//				minigame.getConfig().set(name + ".loadout." + i, getDefaultPlayerLoadout().getItems().get(i));
+//			}
+			for(Integer slot : getDefaultPlayerLoadout().getItems()){
+				minigame.getConfig().set(name + ".loadout." + slot, getDefaultPlayerLoadout().getItem(slot));
 			}
 			
 			if(!getDefaultPlayerLoadout().getAllPotionEffects().isEmpty()){
@@ -1460,8 +1463,11 @@ public class Minigame {
 		
 		if(hasLoadouts()){
 			for(String loadout : getLoadouts()){
-				for(int i = 0; i < getLoadout(loadout).getItems().size(); i++){
-					minigame.getConfig().set(name + ".extraloadouts." + loadout + "." + i, getLoadout(loadout).getItems().get(i));
+//				for(int i = 0; i < getLoadout(loadout).getItems().size(); i++){
+//					minigame.getConfig().set(name + ".extraloadouts." + loadout + "." + i, getLoadout(loadout).getItems().get(i));
+//				}
+				for(Integer slot : getLoadout(loadout).getItems()){
+					minigame.getConfig().set(name + ".extraloadouts." + loadout + "." + slot, getLoadout(loadout).getItem(slot));
 				}
 				if(!getLoadout(loadout).getAllPotionEffects().isEmpty()){
 					for(PotionEffect eff : getLoadout(loadout).getAllPotionEffects()){
@@ -1778,10 +1784,14 @@ public class Minigame {
 		}
 		if(minigame.getConfig().contains(name + ".loadout")){
 			Set<String> keys = minigame.getConfig().getConfigurationSection(name + ".loadout").getKeys(false);
-			for(int i = 0; i < keys.size(); i++){
-				if(minigame.getConfig().contains(name + ".loadout." + i)){
-					getDefaultPlayerLoadout().addItemToLoadout(minigame.getConfig().getItemStack(name + ".loadout." + i));
-				}
+//			for(int i = 0; i < keys.size(); i++){
+//				if(minigame.getConfig().contains(name + ".loadout." + i)){
+//					getDefaultPlayerLoadout().addItemToLoadout(minigame.getConfig().getItemStack(name + ".loadout." + i));
+//				}
+//			}
+			for(String key : keys){
+				if(!key.equals("potions"))
+					getDefaultPlayerLoadout().addItem(minigame.getConfig().getItemStack(name + ".loadout." + key), Integer.parseInt(key));
 			}
 			
 			if(minigame.getConfig().contains(name + ".loadout.potions")){
@@ -1805,10 +1815,14 @@ public class Minigame {
 			for(String loadout : keys){
 				addLoadout(loadout);
 				Set<String> items = minigame.getConfig().getConfigurationSection(name + ".extraloadouts." + loadout).getKeys(false);
-				for(int i = 0; i < items.size(); i++){
-					if(minigame.getConfig().contains(name + ".extraloadouts." + loadout + "." + i)){
-						getLoadout(loadout).addItemToLoadout(minigame.getConfig().getItemStack(name + ".extraloadouts." + loadout + "." + i));
-					}
+//				for(int i = 0; i < items.size(); i++){
+//					if(minigame.getConfig().contains(name + ".extraloadouts." + loadout + "." + i)){
+//						getLoadout(loadout).addItemToLoadout(minigame.getConfig().getItemStack(name + ".extraloadouts." + loadout + "." + i));
+//					}
+//				}
+				for(String key : items){
+					if(!key.equals("potions"))
+						getLoadout(loadout).addItem(minigame.getConfig().getItemStack(name + ".extraloadouts." + loadout + "." + key), Integer.parseInt(key));
 				}
 				if(minigame.getConfig().contains(name + ".extraloadouts." + loadout + ".potions")){
 					Set<String> pots = minigame.getConfig().getConfigurationSection(name + ".extraloadouts." + loadout + ".potions").getKeys(false);

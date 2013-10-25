@@ -2,6 +2,7 @@ package com.pauldavdesign.mineauz.minigames;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -525,7 +526,9 @@ public class Events implements Listener{
 				}
 			}
 			else{
-				Set<Integer> slots = event.getRawSlots();
+				Set<Integer> slots = new HashSet<Integer>();
+				slots.addAll(event.getRawSlots());
+				
 				for(int slot : slots){
 					if(ply.getMenu().hasMenuItem(slot)){
 						event.getRawSlots().remove(slot);

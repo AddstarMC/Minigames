@@ -31,7 +31,7 @@ public class SpleefPreset implements BasePreset {
 		minigame.setLives(1);
 		
 		minigame.getDefaultPlayerLoadout().clearLoadout();
-		minigame.getDefaultPlayerLoadout().addItemToLoadout(new ItemStack(Material.DIAMOND_SPADE));
+		minigame.getDefaultPlayerLoadout().addItem(new ItemStack(Material.DIAMOND_SPADE), 0);
 		
 		minigame.setEnabled(true);
 	}

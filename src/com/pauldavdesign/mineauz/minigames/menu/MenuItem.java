@@ -13,26 +13,25 @@ public class MenuItem {
 	private int slot = 0;
 	
 	public MenuItem(String name, Material displayItem){
-		if(displayItem != null){
-			this.displayItem = new ItemStack(displayItem);
-			ItemMeta meta = this.displayItem.getItemMeta();
-			meta.setDisplayName(ChatColor.RESET + name);
-			this.displayItem.setItemMeta(meta);
-		}
+		if(displayItem == null)
+			displayItem = Material.PISTON_EXTENSION;
+		this.displayItem = new ItemStack(displayItem);
+		ItemMeta meta = this.displayItem.getItemMeta();
+		meta.setDisplayName(ChatColor.RESET + name);
+		this.displayItem.setItemMeta(meta);
 	}
 	
 	public MenuItem(String name, List<String> description, Material displayItem){
-		if(displayItem != null){
-			this.displayItem = new ItemStack(displayItem);
-			ItemMeta meta = this.displayItem.getItemMeta();
-			meta.setDisplayName(ChatColor.RESET + name);
-			meta.setLore(description);
-			this.displayItem.setItemMeta(meta);
-		}
+		if(displayItem == null)
+			displayItem = Material.PISTON_EXTENSION;
+		this.displayItem = new ItemStack(displayItem);
+		ItemMeta meta = this.displayItem.getItemMeta();
+		meta.setDisplayName(ChatColor.RESET + name);
+		meta.setLore(description);
+		this.displayItem.setItemMeta(meta);
 	}
 	
 	public void setDescription(List<String> description){
-		if(displayItem == null) return;
 		ItemMeta meta = displayItem.getItemMeta();
 		
 		meta.setLore(description);

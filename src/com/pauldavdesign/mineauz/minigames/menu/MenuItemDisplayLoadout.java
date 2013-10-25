@@ -37,15 +37,25 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		loadoutMenu.addItem(new MenuItem("Edit Potion Effects", Material.POTION), 43); //TODO: Potion effect button
 		loadoutMenu.addItem(new MenuItemSaveLoadout("Save Loadout", Material.REDSTONE_TORCH_ON, loadout), 44);
 		
-		for(int i = 36; i < 43; i++){
-			loadoutMenu.addItem(new MenuItem("blank", null), i);
+		for(int i = 40; i < 43; i++){
+			loadoutMenu.addItem(new MenuItem("", null), i);
 		}
 		loadoutMenu.displayMenu(getContainer().getViewer());
 		
 		int count = 0;
-		for(ItemStack item : loadout.getItems()){
+		for(Integer item : loadout.getItems()){
 			if(count == 36) break;
-			loadoutMenu.addItemStack(item, count);
+//			loadoutMenu.addItemStack(item, count);
+			if(item < 100)
+				loadoutMenu.addItemStack(loadout.getItem(item), item);
+			else if(item == 100)
+				loadoutMenu.addItemStack(loadout.getItem(item), 39);
+			else if(item == 101)
+				loadoutMenu.addItemStack(loadout.getItem(item), 38);
+			else if(item == 102)
+				loadoutMenu.addItemStack(loadout.getItem(item), 37);
+			else if(item == 103)
+				loadoutMenu.addItemStack(loadout.getItem(item), 36);
 			count++;
 		}
 		
