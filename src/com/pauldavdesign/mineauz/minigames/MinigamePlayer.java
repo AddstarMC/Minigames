@@ -255,7 +255,16 @@ public class MinigamePlayer {
 	}
 
 	public PlayerLoadout getLoadout() {
-		return loadout;
+		if(loadout != null){
+			return loadout;
+		}
+		else if(getMinigame().getRedTeam().contains(player.getPlayer()) && minigame.hasLoadout("red")){
+			return minigame.getLoadout("red");
+		}
+		else if(getMinigame().getBlueTeam().contains(player.getPlayer()) && minigame.hasLoadout("blue")){
+			return minigame.getLoadout("blue");
+		}
+		return minigame.getDefaultPlayerLoadout();
 	}
 
 	public void setLoadout(PlayerLoadout loadout) {

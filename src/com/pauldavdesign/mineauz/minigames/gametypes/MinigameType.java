@@ -51,11 +51,9 @@ public abstract class MinigameType implements Listener{
 			@Override
 			public void run() {
 				if(!player.getPlayer().isDead()){
-					//player.teleport(minigame.getQuitPosition());
 					pdata.minigameTeleport(player, minigame.getQuitPosition());
 				}
 				else{
-//					pdata.addRespawnPosition(player.getName(), minigame.getQuitPosition());
 					player.setQuitPos(minigame.getQuitPosition());
 					player.setRequiredQuit(true);
 				}
@@ -73,16 +71,14 @@ public abstract class MinigameType implements Listener{
 				gametype += " CTF";
 			
 			Location lobby = mgm.getLobbyPosition();
-			if(/*!mgm.getPlayers().isEmpty() && */mdata.getMinigame(mgm.getName()).getPlayers().size() < mgm.getMaxPlayers()){
-				if((mgm.canLateJoin() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0) || mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
-					//pdata.storePlayerData(player, mgm.getDefaultGamemode());
+			if(mdata.getMinigame(mgm.getName()).getPlayers().size() < mgm.getMaxPlayers()){
+				if((mgm.canLateJoin() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0) 
+						|| mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
 					player.storePlayerData();
-					//pdata.addPlayerMinigame(player, mgm);
 					player.setMinigame(mgm);
 					
 					mgm.addPlayer(player);
 					if(mgm.getMpTimer() == null || mgm.getMpTimer().getStartWaitTimeLeft() != 0){
-//						player.teleport(lobby);
 						pdata.minigameTeleport(player, lobby);
 						if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMaxPlayers()){
 							mgm.setMpTimer(new MultiplayerTimer(mgm));
@@ -93,7 +89,6 @@ public abstract class MinigameType implements Listener{
 					}
 					else{
 						player.sendMessage(MinigameUtils.formStr("minigame.lateJoin", 5));
-						//player.teleport(lobby);
 						pdata.minigameTeleport(player, lobby);
 						final MinigamePlayer fply = player;
 						final Minigame fmgm = mgm;
@@ -106,7 +101,7 @@ public abstract class MinigameType implements Listener{
 									locs.addAll(fmgm.getStartLocations());
 									Collections.shuffle(locs);
 									pdata.minigameTeleport(fply, locs.get(0));
-									fmgm.getPlayersLoadout(fply).equiptLoadout(fply);
+									fply.getLoadout().equiptLoadout(fply);
 								}
 							}
 						}, 100);
@@ -145,22 +140,6 @@ public abstract class MinigameType implements Listener{
 					return false;
 				}
 			}
-//			else if(mgm.getPlayers().isEmpty()){
-//				player.teleport(lobby);
-//				player.sendMessage(ChatColor.GREEN + "You have started a " + gametype + " minigame, type /minigame quit to exit.");
-//				
-//				int neededPlayers = mgm.getMinPlayers() - 1;
-//				
-//				if(neededPlayers > 0){
-//					player.sendMessage(ChatColor.BLUE + "Waiting for " + neededPlayers + " more players.");
-//				}
-//				else
-//				{
-//					mgm.setMpTimer(new MultiplayerTimer(mgm.getName()));
-//					mgm.getMpTimer().startTimer();
-//				}
-//				return true;
-//			}
 			else if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
 				player.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
 			}

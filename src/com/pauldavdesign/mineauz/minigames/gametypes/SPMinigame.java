@@ -42,22 +42,19 @@ public class SPMinigame extends MinigameType{
 				}
 			}
 			
-//			pdata.storePlayerData(player, mgm.getDefaultGamemode());
 			player.storePlayerData();
-//			pdata.addPlayerMinigame(player, mgm);
 			player.setMinigame(mgm);
 			mgm.addPlayer(player);
 			
 			player.sendMessage(MinigameUtils.formStr("player.join.plyInfo", mgm.getType()), null);
 			
-			//pdata.setPlayerCheckpoints(player, startpos);
 			player.setCheckpoint(startpos);
 			
 			if(mgm.getLives() > 0){
 				player.sendMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives()), null);
 			}
 			
-			mgm.getPlayersLoadout(player).equiptLoadout(player);
+			player.getLoadout().equiptLoadout(player);
 			return true;
 		}
 		else if(mgm.getQuitPosition() == null){
@@ -85,7 +82,6 @@ public class SPMinigame extends MinigameType{
 				player.getPlayer().teleport(mgm.getEndPosition());
 			}
 			else{
-//				pdata.addRespawnPosition(player.getPlayer(), mgm.getEndPosition());
 				player.setRequiredQuit(true);
 				player.setQuitPos(mgm.getEndPosition());
 			}
@@ -174,7 +170,7 @@ public class SPMinigame extends MinigameType{
 				event.setRespawnLocation(player.getCheckpoint());
 				player.sendMessage(MinigameUtils.getLang("player.checkpoint.deathRevert"), "error");
 				
-				mgm.getPlayersLoadout(player).equiptLoadout(player);
+				player.getLoadout().equiptLoadout(player);
 			}
 		}
 	}

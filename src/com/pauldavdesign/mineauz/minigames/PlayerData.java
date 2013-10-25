@@ -305,8 +305,8 @@ public class PlayerData {
 				}
 			}
 			pos++;
-			if(!minigame.getPlayersLoadout(ply).getItems().isEmpty()){
-				minigame.getPlayersLoadout(ply).equiptLoadout(ply);
+			if(!ply.getLoadout().getItems().isEmpty()){
+				ply.getLoadout().equiptLoadout(ply);
 			}
 			ply.getPlayer().setScoreboard(minigame.getScoreboardManager());
 			minigame.setScore(ply, 1);
@@ -367,7 +367,8 @@ public class PlayerData {
 					mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.quit.plyForcedMsg", player.getName(), mgm.getName()), "error", player);
 				}
 	
-				mgm.removePlayersLoadout(player);
+//				mgm.removePlayersLoadout(player);
+				player.setLoadout(null);
 
 				final MinigamePlayer ply = player;
 				if(!player.getPlayer().isDead()){
@@ -515,7 +516,8 @@ public class PlayerData {
 			
 			player.removeMinigame();
 			mgm.removePlayer(player);
-			mgm.removePlayersLoadout(player);
+//			mgm.removePlayersLoadout(player);
+			player.setLoadout(null);
 			player.getPlayer().setFallDistance(0);
 			mdata.minigameType(mgm.getType()).endMinigame(player, mgm);
 			

@@ -119,7 +119,6 @@ public class DMMinigame extends MinigameType{
 				mgm.setMpBets(null);
 			}
 		}
-		//pdata.saveItems(player);
 		pdata.saveInventoryConfig();
 		
 		boolean hascompleted = false;
@@ -135,11 +134,9 @@ public class DMMinigame extends MinigameType{
 		
 		if(mgm.getEndPosition() != null){
 			if(!player.getPlayer().isDead()){
-//				player.teleport(mgm.getEndPosition());
 				pdata.minigameTeleport(player, mgm.getEndPosition());
 			}
 			else{
-//				pdata.addRespawnPosition(player.getPlayer(), mgm.getEndPosition());
 				player.setRequiredQuit(true);
 				player.setQuitPos(mgm.getEndPosition());
 			}
@@ -216,7 +213,7 @@ public class DMMinigame extends MinigameType{
 				}
 			});
 			
-			mg.getPlayersLoadout(ply).equiptLoadout(ply);
+			ply.getLoadout().equiptLoadout(ply);
 		}
 	}
 	

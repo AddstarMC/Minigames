@@ -124,7 +124,6 @@ public class RaceMinigame extends MinigameType{
 				pdata.minigameTeleport(player, mgm.getEndPosition());
 			}
 			else{
-//				pdata.addRespawnPosition(player.getPlayer(), mgm.getEndPosition());
 				player.setRequiredQuit(true);
 				player.setQuitPos(mgm.getEndPosition());
 			}
@@ -196,7 +195,7 @@ public class RaceMinigame extends MinigameType{
 					event.setRespawnLocation(player.getCheckpoint());
 					player.sendMessage(MinigameUtils.getLang("player.checkpoint.deathRevert"), "error");
 					
-					mgm.getPlayersLoadout(player).equiptLoadout(player);
+					player.getLoadout().equiptLoadout(player);
 				}
 			}
 		}

@@ -41,15 +41,13 @@ public class TeamDMMinigame extends MinigameType{
 			Location lobby = mgm.getLobbyPosition();
 			
 			if(mgm.getPlayers().size() < mgm.getMaxPlayers()){
-				if((mgm.canLateJoin() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0) || mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
-//					pdata.storePlayerData(player, mgm.getDefaultGamemode());
+				if((mgm.canLateJoin() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0) || 
+						mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
 					player.storePlayerData();
-//					pdata.addPlayerMinigame(player, mgm);
 					player.setMinigame(mgm);
 					mgm.addPlayer(player);
 					
 					if(mgm.getMpTimer() == null || mgm.getMpTimer().getStartWaitTimeLeft() != 0){
-//						player.teleport(lobby);
 						pdata.minigameTeleport(player, lobby);
 						if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMaxPlayers()){
 							mgm.setMpTimer(new MultiplayerTimer(mgm));
@@ -75,7 +73,6 @@ public class TeamDMMinigame extends MinigameType{
 						}
 						
 						player.sendMessage(MinigameUtils.formStr("minigame.lateJoin", 5), null);
-//						player.teleport(lobby);
 						pdata.minigameTeleport(player, lobby);
 						
 						final MinigamePlayer fply = player;
@@ -100,7 +97,7 @@ public class TeamDMMinigame extends MinigameType{
 									}
 									Collections.shuffle(locs);
 									pdata.minigameTeleport(fply, locs.get(0));
-									fmgm.getPlayersLoadout(fply).equiptLoadout(fply);
+									fply.getLoadout().equiptLoadout(fply);
 								}
 							}
 						}, 100);
@@ -226,11 +223,9 @@ public class TeamDMMinigame extends MinigameType{
 		
 		if(mgm.getEndPosition() != null){
 			if(!player.getPlayer().isDead()){
-//				player.teleport(mgm.getEndPosition());
 				pdata.minigameTeleport(player, mgm.getEndPosition());
 			}
 			else{
-//				pdata.addRespawnPosition(player.getPlayer(), mgm.getEndPosition());
 				player.setRequiredQuit(true);
 				player.setQuitPos(mgm.getEndPosition());
 			}
@@ -268,12 +263,12 @@ public class TeamDMMinigame extends MinigameType{
 		if(mgm.getBlueTeam().contains(player.getPlayer())){
 			mgm.removeBlueTeamPlayer(player);
 			mgm.addRedTeamPlayer(player);
-			mgm.removePlayersLoadout(player);
+			player.setLoadout(null);
 		}
 		else{
 			mgm.removeRedTeamPlayer(player);
 			mgm.addBlueTeamPlayer(player);
-			mgm.removePlayersLoadout(player);
+			player.setLoadout(null);
 		}
 	}
 	
@@ -298,7 +293,7 @@ public class TeamDMMinigame extends MinigameType{
 				else{
 					starts.addAll(mg.getStartLocationsRed());
 				}
-				mg.getPlayersLoadout(ply).equiptLoadout(ply);
+				ply.getLoadout().equiptLoadout(ply);
 			}
 			else{
 				starts.addAll(mg.getStartLocations());
@@ -312,7 +307,7 @@ public class TeamDMMinigame extends MinigameType{
 				}
 			});
 			
-			mg.getPlayersLoadout(ply).equiptLoadout(ply);
+			ply.getLoadout().equiptLoadout(ply);
 			
 		}
 	}

@@ -50,7 +50,6 @@ public class Minigame {
 	private Location lobbyPosisiton = null;
 	private PlayerLoadout defaultLoadout = new PlayerLoadout("default");
 	private Map<String, PlayerLoadout> extraLoadouts = new HashMap<String, PlayerLoadout>();
-	private Map<MinigamePlayer, PlayerLoadout> playerLoadouts = new HashMap<MinigamePlayer, PlayerLoadout>();
 	private Map<String, RestoreBlock> restoreBlocks = new HashMap<String, RestoreBlock>();
 	private String location = null;
 	private int maxRadius = 1000;
@@ -332,31 +331,6 @@ public class Minigame {
 		else{
 			return true;
 		}
-	}
-	
-	public PlayerLoadout getPlayersLoadout(MinigamePlayer player){
-		if(playerLoadouts.containsKey(player)){
-			return playerLoadouts.get(player);
-		}
-		else if(getRedTeam().contains(player.getPlayer()) && extraLoadouts.containsKey("red")){
-			return extraLoadouts.get("red");
-		}
-		else if(getBlueTeam().contains(player.getPlayer()) && extraLoadouts.containsKey("blue")){
-			return extraLoadouts.get("blue");
-		}
-		return getDefaultPlayerLoadout();
-	}
-	
-	public void setPlayersLoadout(MinigamePlayer player, PlayerLoadout loadout){
-		playerLoadouts.put(player, loadout);
-	}
-	
-	public void removePlayersLoadout(MinigamePlayer player){
-		playerLoadouts.remove(player);
-	}
-	
-	public void removeAllPlayerLoadouts(){
-		playerLoadouts.clear();
 	}
 	
 	public boolean isEnabled(){
