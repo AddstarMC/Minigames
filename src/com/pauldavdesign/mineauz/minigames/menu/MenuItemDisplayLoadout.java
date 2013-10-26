@@ -42,10 +42,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		}
 		loadoutMenu.displayMenu(getContainer().getViewer());
 		
-		int count = 0;
 		for(Integer item : loadout.getItems()){
-			if(count == 36) break;
-//			loadoutMenu.addItemStack(item, count);
 			if(item < 100)
 				loadoutMenu.addItemStack(loadout.getItem(item), item);
 			else if(item == 100)
@@ -56,7 +53,6 @@ public class MenuItemDisplayLoadout extends MenuItem{
 				loadoutMenu.addItemStack(loadout.getItem(item), 37);
 			else if(item == 103)
 				loadoutMenu.addItemStack(loadout.getItem(item), 36);
-			count++;
 		}
 		
 		return null;

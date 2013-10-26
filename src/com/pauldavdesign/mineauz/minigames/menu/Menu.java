@@ -34,6 +34,9 @@ public class Menu {
 			item.setContainer(this);
 			item.setSlot(slot);
 			pageMap.put(slot, item);
+			if(inv != null){
+				inv.setItem(slot, item.getItem());
+			}
 			return true;
 		}
 		return false;

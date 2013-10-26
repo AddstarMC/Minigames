@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardRarity;
 
 public class SetSecondaryRewardCommand implements ICommand{
 	
@@ -39,8 +40,8 @@ public class SetSecondaryRewardCommand implements ICommand{
 
 	@Override
 	public String[] getUsage() {
-		return new String[] {"/minigame set <Minigame> reward2 <Item ID / Item Name> [Quantity]",
-				"/minigame set <Minigame> reward2 $<Money Amount>"
+		return new String[] {"/minigame set <Minigame> reward2 <Item Name> [Quantity] [Rarity]",
+				"/minigame set <Minigame> reward2 $<Money Amount> [Rarity]"
 		};
 	}
 
@@ -75,33 +76,39 @@ public class SetSecondaryRewardCommand implements ICommand{
 			}
 			
 			if(item != null && item.getType() != Material.AIR){
-				minigame.setSecondaryRewardItem(item);
-				if(item.getAmount() == 1){
-					sender.sendMessage(ChatColor.GRAY + "Secondary reward for \"" + minigame.getName() + "\" has been set to " + 
-							MinigameUtils.getItemStackName(item));
+				RewardRarity rarity = RewardRarity.NORMAL;
+				if(args.length == 3){
+					rarity = RewardRarity.valueOf(args[2].toUpperCase());
 				}
-				else{
-					sender.sendMessage(ChatColor.GRAY + "Secondary reward for \"" + minigame.getName() + "\" has been set to " + 
-							MinigameUtils.getItemStackName(item) + " with a quantity of " + quantity);
-				}
+				minigame.getSecondaryRewardItems().addItem(item, rarity);
+				
+				sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to secondary rewards of \"" + minigame.getName() + "\" "
+						+ "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
 				return true;
 			}
 			else if(sender instanceof Player && args[0].equals("SLOT")){
 				item = ((Player)sender).getItemInHand();
-				minigame.setSecondaryRewardItem(item);
-				sender.sendMessage(ChatColor.GRAY + "Primary reward for \"" + minigame.getName() + "\" has been set to " + 
-						MinigameUtils.getItemStackName(item));
+				RewardRarity rarity = RewardRarity.NORMAL;
+				if(args.length == 2){
+					rarity = RewardRarity.valueOf(args[1].toUpperCase());
+				}
+				minigame.getSecondaryRewardItems().addItem(item, rarity);
+				sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to secondary rewards of \"" + minigame.getName() + "\" "
+						+ "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
 				return true;
 			}
 			else if(item != null && item.getType() == Material.AIR){
-				minigame.setSecondaryRewardItem(null);
-				sender.sendMessage(ChatColor.GRAY + "Secondary reward for \"" + minigame.getName() + "\" has been removed.");
+				sender.sendMessage(ChatColor.RED + "Secondary reward for \"" + minigame.getName() + "\" cannot be Air!");
 				return true;
 			}
 			else if(money != -1 && plugin.hasEconomy()){
-				minigame.setSecondaryRewardPrice(money);
-				sender.sendMessage(ChatColor.GRAY + "Secondary reward for \"" + minigame.getName() + "\" has been set to " + 
-						args[0]);
+				RewardRarity rarity = RewardRarity.NORMAL;
+				if(args.length == 2){
+					rarity = RewardRarity.valueOf(args[1].toUpperCase());
+				}
+				minigame.getSecondaryRewardItems().addMoney(money, rarity);
+				sender.sendMessage(ChatColor.GRAY + "Added $" + money + " to secondary rewards of \"" + minigame.getName() + "\" "
+						+ "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
 				return true;
 			}
 			else if(!plugin.hasEconomy()){

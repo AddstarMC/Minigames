@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardRarity;
 
 public class SetRewardCommand implements ICommand{
 
@@ -29,7 +30,8 @@ public class SetRewardCommand implements ICommand{
 
 	@Override
 	public String getDescription() {
-		return "Sets the players reward for completing the Minigame for the first time.";
+		return "Sets the players reward for completing the Minigame for the first time. " +
+				"This can be one item or a randomly selected item added to the rewards, depending on its defined rarity.";
 	}
 
 	@Override
@@ -39,8 +41,8 @@ public class SetRewardCommand implements ICommand{
 
 	@Override
 	public String[] getUsage() {
-		return new String[] {"/minigame set <Minigame> reward <Item ID / Item Name> [Quantity]", 
-							"/minigame set <Minigame> reward $<Money Amount>"
+		return new String[] {"/minigame set <Minigame> reward <Item Name> [Quantity] [Rarity]", 
+							"/minigame set <Minigame> reward $<Money Amount> [Rarity]"
 		};
 	}
 
@@ -76,33 +78,39 @@ public class SetRewardCommand implements ICommand{
 			}
 			
 			if(item != null && item.getType() != Material.AIR){
-				minigame.setRewardItem(item);
-				if(item.getAmount() == 1){
-					sender.sendMessage(ChatColor.GRAY + "Primary reward for \"" + minigame.getName() + "\" has been set to " + 
-							MinigameUtils.getItemStackName(item));
+				RewardRarity rarity = RewardRarity.NORMAL;
+				if(args.length == 3){
+					rarity = RewardRarity.valueOf(args[2].toUpperCase());
 				}
-				else{
-					sender.sendMessage(ChatColor.GRAY + "Primary reward for \"" + minigame.getName() + "\" has been set to " + 
-							MinigameUtils.getItemStackName(item) + " with a quantity of " + quantity);
-				}
+				minigame.getRewardItems().addItem(item, rarity);
+				
+				sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to primary rewards of \"" + minigame.getName() + "\" "
+						+ "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
 				return true;
 			}
 			else if(sender instanceof Player && args[0].equals("SLOT")){
 				item = ((Player)sender).getItemInHand();
-				minigame.setRewardItem(item);
-				sender.sendMessage(ChatColor.GRAY + "Primary reward for \"" + minigame.getName() + "\" has been set to " + 
-						MinigameUtils.getItemStackName(item));
+				RewardRarity rarity = RewardRarity.NORMAL;
+				if(args.length == 2){
+					rarity = RewardRarity.valueOf(args[1].toUpperCase());
+				}
+				minigame.getRewardItems().addItem(item, rarity);
+				sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to primary rewards of \"" + minigame.getName() + "\" "
+						+ "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
 				return true;
 			}
 			else if(item != null && item.getType() == Material.AIR){
-				minigame.setRewardItem(null);
-				sender.sendMessage(ChatColor.GRAY + "Primary reward for \"" + minigame.getName() + "\" has been removed.");
+				sender.sendMessage(ChatColor.RED + "Primary rewards for \"" + minigame.getName() + "\" cannot be Air!");
 				return true;
 			}
 			else if(money != -1 && plugin.hasEconomy()){
-				minigame.setRewardPrice(money);
-				sender.sendMessage(ChatColor.GRAY + "Primary reward money for \"" + minigame.getName() + "\" has been set to " + 
-						args[0]);
+				RewardRarity rarity = RewardRarity.NORMAL;
+				if(args.length == 2){
+					rarity = RewardRarity.valueOf(args[1].toUpperCase());
+				}
+				minigame.getRewardItems().addMoney(money, rarity);
+				sender.sendMessage(ChatColor.GRAY + "Added $" + money + " to primary rewards of \"" + minigame.getName() + "\" "
+						+ "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
 				return true;
 			}
 			else if(!plugin.hasEconomy()){

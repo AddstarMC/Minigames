@@ -496,8 +496,12 @@ public class Events implements Listener{
 				MenuItem item = ply.getMenu().getClicked(event.getRawSlot());
 				if(item != null){
 					ItemStack disItem = null;
-					if(event.getClick() == ClickType.LEFT)
-						disItem = item.onClick();
+					if(event.getClick() == ClickType.LEFT){
+						if(event.getCursor().getType() != Material.AIR)
+							disItem = item.onClickWithItem(event.getCursor());
+						else
+							disItem = item.onClick();
+					}
 					else if(event.getClick() == ClickType.RIGHT)
 						disItem = item.onRightClick();
 					else if(event.getClick() == ClickType.SHIFT_LEFT)

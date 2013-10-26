@@ -7,6 +7,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.MinigameData;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
@@ -15,6 +16,7 @@ import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.MultiplayerTimer;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardItem;
 
 public abstract class MinigameType implements Listener{
 	private static Minigames plugin;
@@ -158,23 +160,36 @@ public abstract class MinigameType implements Listener{
 	
 	@SuppressWarnings("deprecation")
 	public void issuePlayerRewards(MinigamePlayer player, Minigame save, boolean hascompleted){
-		if(save.getRewardItem() != null && !hascompleted){
-			player.getPlayer().getInventory().addItem(save.getRewardItem());
+		RewardItem reward = save.getRewardItem();
+		RewardItem sreward = save.getSecondaryRewardItem();
+		if(!hascompleted){
+			if(reward != null){
+				if(reward.getItem() != null){
+					player.getPlayer().getInventory().addItem(reward.getItem());
+					player.sendMessage(MinigameUtils.formStr("player.end.awardItem", reward.getItem().getAmount(), MinigameUtils.getItemStackName(reward.getItem())), "win");
+				}
+				else{
+					if(Minigames.plugin.hasEconomy() && reward.getMoney() != 0){
+						Minigames.plugin.getEconomy().depositPlayer(player.getName(), reward.getMoney());
+						player.sendMessage(MinigameUtils.formStr("player.end.awardMoney", reward.getMoney()), "win");
+					}
+				}
+			}
 		}
-		else if(save.getSecondaryRewardItem() != null && hascompleted){
-			player.getPlayer().getInventory().addItem(save.getSecondaryRewardItem());
+		else if(hascompleted){
+			if(sreward != null){
+				if(sreward.getItem() != null){
+					player.getPlayer().getInventory().addItem(sreward.getItem());
+					player.sendMessage(MinigameUtils.formStr("player.end.awardItem", sreward.getItem().getAmount(), MinigameUtils.getItemStackName(sreward.getItem())), "win");
+				}
+				else{
+					if(Minigames.plugin.hasEconomy() && sreward.getMoney() != 0){
+						Minigames.plugin.getEconomy().depositPlayer(player.getName(), sreward.getMoney());
+						player.sendMessage(MinigameUtils.formStr("player.end.awardMoney", sreward.getMoney()), "win");
+					}
+				}
+			}
 		}
 		player.getPlayer().updateInventory();
-		
-		if(Minigames.plugin.hasEconomy()){
-			if(save.getRewardPrice() != 0 && !hascompleted){
-				Minigames.plugin.getEconomy().depositPlayer(player.getName(), save.getRewardPrice());
-				player.sendMessage(MinigameUtils.formStr("player.end.awardMoney", save.getRewardPrice()), "win");
-			}
-			else if(save.getSecondaryRewardPrice() != 0 && hascompleted){
-				Minigames.plugin.getEconomy().depositPlayer(player.getName(), save.getSecondaryRewardPrice());
-				player.sendMessage(MinigameUtils.formStr("player.end.awardMoney", save.getSecondaryRewardPrice()), "win");
-			}
-		}
 	}
 }

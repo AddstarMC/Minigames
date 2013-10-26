@@ -240,29 +240,15 @@ public class InfoCommand implements ICommand{
 					}
 					
 					if(mgm.getRewardItem() != null){
-						lines.add(ChatColor.GRAY + "Reward Item: " + ChatColor.GREEN + MinigameUtils.getItemStackName(mgm.getRewardItem()) + "(x" + mgm.getRewardItem().getAmount() + ")");
+						lines.add(ChatColor.GRAY + "Reward Items: " + ChatColor.GREEN + mgm.getRewardItems().getRewards().size() + " items");
 					}else{
-						lines.add(ChatColor.GRAY + "Reward Item: " + ChatColor.RED + "Not Set");
-					}
-					
-					if(mgm.getRewardPrice() != 0){
-						lines.add(ChatColor.GRAY + "Reward Money: " + ChatColor.GREEN + "$" + mgm.getRewardPrice());
-					}
-					else{
-						lines.add(ChatColor.GRAY + "Reward Money: " + ChatColor.RED + "Not Set");
+						lines.add(ChatColor.GRAY + "Reward Items: " + ChatColor.RED + "Not Set");
 					}
 					
 					if(mgm.getSecondaryRewardItem() != null){
-						lines.add(ChatColor.GRAY + "Secondary Reward Item: " + ChatColor.GREEN + MinigameUtils.getItemStackName(mgm.getSecondaryRewardItem()) + "(x" + mgm.getSecondaryRewardItem().getAmount() + ")");
+						lines.add(ChatColor.GRAY + "Secondary Reward Item: " + ChatColor.GREEN + mgm.getSecondaryRewardItems().getRewards().size() + " items");
 					}else{
 						lines.add(ChatColor.GRAY + "Secondary Reward Item: " + ChatColor.RED + "Not Set");
-					}
-					
-					if(mgm.getSecondaryRewardPrice() != 0){
-						lines.add(ChatColor.GRAY + "Secondary Reward Money: " + ChatColor.GREEN + "$" + mgm.getSecondaryRewardPrice());
-					}
-					else{
-						lines.add(ChatColor.GRAY + "Secondary Reward Money: " + ChatColor.RED + "Not Set");
 					}
 					
 					if(!mgm.getType().equals("sp")){

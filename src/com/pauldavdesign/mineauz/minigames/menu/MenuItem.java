@@ -50,7 +50,16 @@ public class MenuItem {
 		return displayItem;
 	}
 	
+	public void setItem(ItemStack item){
+		displayItem = item.clone();
+	}
+	
 	public ItemStack onClick(){
+		//Do stuff
+		return getItem();
+	}
+
+	public ItemStack onClickWithItem(ItemStack item){
 		//Do stuff
 		return getItem();
 	}
