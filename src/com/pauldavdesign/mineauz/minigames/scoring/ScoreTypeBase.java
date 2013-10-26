@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.bukkit.event.Listener;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public abstract class ScoreTypeBase implements Listener{
 	public static Minigames plugin;

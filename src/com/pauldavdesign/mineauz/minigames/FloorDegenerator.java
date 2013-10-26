@@ -6,6 +6,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+
 public class FloorDegenerator{
 	private Location topCorner;
 	private Location bottomCorner;

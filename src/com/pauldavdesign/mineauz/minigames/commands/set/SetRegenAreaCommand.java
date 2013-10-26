@@ -5,8 +5,8 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class SetRegenAreaCommand implements ICommand {
 

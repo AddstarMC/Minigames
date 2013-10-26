@@ -1,4 +1,4 @@
-package com.pauldavdesign.mineauz.minigames;
+package com.pauldavdesign.mineauz.minigames.minigame;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,16 +18,31 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
+import com.pauldavdesign.mineauz.minigames.CTFFlag;
+import com.pauldavdesign.mineauz.minigames.FloorDegenerator;
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.MinigameSave;
+import com.pauldavdesign.mineauz.minigames.MinigameTimer;
+import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.MultiplayerBets;
+import com.pauldavdesign.mineauz.minigames.MultiplayerTimer;
+import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
+import com.pauldavdesign.mineauz.minigames.RestoreBlock;
+import com.pauldavdesign.mineauz.minigames.TreasureHuntTimer;
 import com.pauldavdesign.mineauz.minigames.blockRecorder.RecorderData;
 import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemBoolean;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemDisplayLoadout;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemDisplayRewards;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemInteger;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemList;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemSaveMinigame;
+import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardItem;
+import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardRarity;
+import com.pauldavdesign.mineauz.minigames.minigame.reward.Rewards;
 
 public class Minigame {
 	private String name = "GenericName";
@@ -56,10 +71,8 @@ public class Minigame {
 	private int maxHeight = 20;
 	private int minTreasure = 0;
 	private int maxTreasure = 8;
-	private ItemStack rewardItem = null;
-	private double rewardPrice = 0;
-	private ItemStack secondaryRewardItem = null;
-	private double secondaryRewardPrice = 0;
+	private Rewards rewardItem = new Rewards();
+	private Rewards secondaryRewardItem = new Rewards();
 	private boolean usePermissions = false;
 	private int timer = 0;
 	private int startWaitTime = 0;
@@ -151,37 +164,45 @@ public class Minigame {
 		sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
 	}
 	
-	public void setSecondaryRewardItem(ItemStack secondaryRewardItem){
-		this.secondaryRewardItem = secondaryRewardItem;
-	}
+//	public void setSecondaryRewardItem(ItemStack secondaryRewardItem){
+//		this.secondaryRewardItem = secondaryRewardItem;
+//	}
 
-	public ItemStack getSecondaryRewardItem(){
+	public RewardItem getSecondaryRewardItem(){
+		return secondaryRewardItem.getReward();
+	}
+	
+	public Rewards getSecondaryRewardItems(){
 		return secondaryRewardItem;
 	}
 
-	public void setSecondaryRewardPrice(double secondaryRewardPrice) {
-		this.secondaryRewardPrice = secondaryRewardPrice;
-	}
+//	public void setSecondaryRewardPrice(double secondaryRewardPrice) {
+//		this.secondaryRewardPrice = secondaryRewardPrice;
+//	}
+//
+//	public double getSecondaryRewardPrice() {
+//		return secondaryRewardPrice;
+//	}
 
-	public double getSecondaryRewardPrice() {
-		return secondaryRewardPrice;
-	}
+//	public void setRewardItem(ItemStack rewardItem){
+//		this.rewardItem = rewardItem;
+//	}
 
-	public void setRewardItem(ItemStack rewardItem){
-		this.rewardItem = rewardItem;
+	public RewardItem getRewardItem(){
+		return rewardItem.getReward();
 	}
-
-	public ItemStack getRewardItem(){
+	
+	public Rewards getRewardItems(){
 		return rewardItem;
 	}
 
-	public void setRewardPrice(double rewardPrice) {
-		this.rewardPrice = rewardPrice;
-	}
-
-	public double getRewardPrice() {
-		return rewardPrice;
-	}
+//	public void setRewardPrice(double rewardPrice) {
+//		this.rewardPrice = rewardPrice;
+//	}
+//
+//	public double getRewardPrice() {
+//		return rewardPrice;
+//	}
 
 	public void setMaxRadius(int maxRadius){
 		this.maxRadius = maxRadius;
@@ -1022,6 +1043,8 @@ public class Minigame {
 				return maxPlayers;
 			}
 		}, 0, null));
+		itemsMain.add(new MenuItemDisplayRewards("Primary Rewards", Material.CHEST, rewardItem));
+		itemsMain.add(new MenuItemDisplayRewards("Secondary Rewards", Material.CHEST, secondaryRewardItem));
 		List<String> floorDegenDes = new ArrayList<String>();
 		floorDegenDes.add("Mainly used to prevent");
 		floorDegenDes.add("islanding in spleef Minigames.");
@@ -1397,33 +1420,63 @@ public class Minigame {
 			minigame.getConfig().set(name + ".maxheight", null);
 		}
 		minigame.getConfig().set(name + ".usepermissions", usePermissions);
-		if(getRewardItem() != null){
-			minigame.getConfig().set(name + ".reward", getRewardItem());
+		minigame.getConfig().set(name + ".reward", null);
+		if(!getRewardItems().getRewards().isEmpty()){
+			int count = 0;
+			for(RewardItem item : getRewardItems().getRewards()){
+				if(item.getItem() != null){
+					minigame.getConfig().set(name + ".reward." + count + ".item", item.getItem());
+					minigame.getConfig().set(name + ".reward." + count + ".rarity", item.getRarity().toString());
+				}
+				else if(item.getMoney() != 0){
+					minigame.getConfig().set(name + ".reward." + count + ".money", item.getMoney());
+					minigame.getConfig().set(name + ".reward." + count + ".rarity", item.getRarity().toString());
+				}
+				count++;
+			}
 		}
-		else{
-			minigame.getConfig().set(name + ".reward", null);
+		minigame.getConfig().set(name + ".reward2", null);
+		if(!getSecondaryRewardItems().getRewards().isEmpty()){
+			int count = 0;
+			for(RewardItem item : getSecondaryRewardItems().getRewards()){
+				if(item.getItem() != null){
+					minigame.getConfig().set(name + ".reward2." + count + ".item", item.getItem());
+					minigame.getConfig().set(name + ".reward2." + count + ".rarity", item.getRarity().toString());
+				}
+				else if(item.getMoney() != 0){
+					minigame.getConfig().set(name + ".reward2." + count + ".money", item.getMoney());
+					minigame.getConfig().set(name + ".reward2." + count + ".rarity", item.getRarity().toString());
+				}
+				count++;
+			}
 		}
+//		if(getRewardItem() != null){
+//			minigame.getConfig().set(name + ".reward", getRewardItem());
+//		}
+//		else{
+//			minigame.getConfig().set(name + ".reward", null);
+//		}
 		
-		if(getSecondaryRewardItem() != null){
-			minigame.getConfig().set(name + ".reward2", getSecondaryRewardItem());
-		}
-		else{
-			minigame.getConfig().set(name + ".reward2", null);
-		}
+//		if(getSecondaryRewardItem() != null){
+//			minigame.getConfig().set(name + ".reward2", getSecondaryRewardItem());
+//		}
+//		else{
+//			minigame.getConfig().set(name + ".reward2", null);
+//		}
 				
-		if(getRewardPrice() != 0){
-			minigame.getConfig().set(name + ".rewardprice", getRewardPrice());
-		}
-		else{
-			minigame.getConfig().set(name + ".rewardprice", null);
-		}
-		
-		if(getSecondaryRewardPrice() != 0){
-			minigame.getConfig().set(name + ".rewardprice2", getSecondaryRewardPrice());
-		}
-		else{
-			minigame.getConfig().set(name + ".rewardprice2", null);
-		}
+//		if(getRewardPrice() != 0){
+//			minigame.getConfig().set(name + ".rewardprice", getRewardPrice());
+//		}
+//		else{
+//			minigame.getConfig().set(name + ".rewardprice", null);
+//		}
+//		
+//		if(getSecondaryRewardPrice() != 0){
+//			minigame.getConfig().set(name + ".rewardprice2", getSecondaryRewardPrice());
+//		}
+//		else{
+//			minigame.getConfig().set(name + ".rewardprice2", null);
+//		}
 		
 		if(!getFlags().isEmpty()){
 			minigame.getConfig().set(name + ".flags", getFlags());
@@ -1768,27 +1821,44 @@ public class Minigame {
 		}
 		setUsePermissions(minigame.getConfig().getBoolean(name + ".usepermissions"));
 		if(minigame.getConfig().contains(name + ".reward")){
-			setRewardItem(minigame.getConfig().getItemStack(name + ".reward"));
+			if(!minigame.getConfig().contains(name + ".reward.0")){ //TODO: Remove this check after 1.6.0 release
+				getRewardItems().addItem(minigame.getConfig().getItemStack(name + ".reward"), RewardRarity.NORMAL);
+			}
+			else{
+				Set<String> keys = minigame.getConfig().getConfigurationSection(name + ".reward").getKeys(false);
+				for(String key : keys){
+					ItemStack item = minigame.getConfig().getItemStack(name + ".reward." + key + ".item");
+					double money = minigame.getConfig().getDouble(name + ".reward." + key + ".money");
+					RewardRarity rarity = RewardRarity.valueOf(minigame.getConfig().getString(name + ".reward." + key + ".rarity"));
+					if(item != null)
+						getRewardItems().addItem(item, rarity);
+					else
+						getRewardItems().addMoney(money, rarity);
+				}
+			}
 		}
 		if(minigame.getConfig().contains(name + ".reward2")){
-			setSecondaryRewardItem(minigame.getConfig().getItemStack(name + ".reward2"));
-		}
-		if(minigame.getConfig().contains(name + ".rewardprice")){
-			setRewardPrice(minigame.getConfig().getDouble(name + ".rewardprice"));
-		}
-		if(minigame.getConfig().contains(name + ".rewardprice2")){
-			setSecondaryRewardPrice(minigame.getConfig().getDouble(name + ".rewardprice2"));
+			if(!minigame.getConfig().contains(name + ".reward2.0")){ //TODO: Remove this check after 1.6.0 release
+				getSecondaryRewardItems().addItem(minigame.getConfig().getItemStack(name + ".reward2"), RewardRarity.NORMAL);
+			}
+			else{
+				Set<String> keys = minigame.getConfig().getConfigurationSection(name + ".reward2").getKeys(false);
+				for(String key : keys){
+					ItemStack item = minigame.getConfig().getItemStack(name + ".reward2." + key + ".item");
+					double money = minigame.getConfig().getDouble(name + ".reward2." + key + ".money");
+					RewardRarity rarity = RewardRarity.valueOf(minigame.getConfig().getString(name + ".reward2." + key + ".rarity"));
+					if(item != null)
+						getSecondaryRewardItems().addItem(item, rarity);
+					else
+						getSecondaryRewardItems().addMoney(money, rarity);
+				}
+			}
 		}
 		if(!minigame.getConfig().getStringList(name + ".flags").isEmpty()){
 			setFlags(minigame.getConfig().getStringList(name + ".flags"));
 		}
 		if(minigame.getConfig().contains(name + ".loadout")){
 			Set<String> keys = minigame.getConfig().getConfigurationSection(name + ".loadout").getKeys(false);
-//			for(int i = 0; i < keys.size(); i++){
-//				if(minigame.getConfig().contains(name + ".loadout." + i)){
-//					getDefaultPlayerLoadout().addItemToLoadout(minigame.getConfig().getItemStack(name + ".loadout." + i));
-//				}
-//			}
 			for(String key : keys){
 				if(!key.equals("potions"))
 					getDefaultPlayerLoadout().addItem(minigame.getConfig().getItemStack(name + ".loadout." + key), Integer.parseInt(key));
@@ -1815,11 +1885,6 @@ public class Minigame {
 			for(String loadout : keys){
 				addLoadout(loadout);
 				Set<String> items = minigame.getConfig().getConfigurationSection(name + ".extraloadouts." + loadout).getKeys(false);
-//				for(int i = 0; i < items.size(); i++){
-//					if(minigame.getConfig().contains(name + ".extraloadouts." + loadout + "." + i)){
-//						getLoadout(loadout).addItemToLoadout(minigame.getConfig().getItemStack(name + ".extraloadouts." + loadout + "." + i));
-//					}
-//				}
 				for(String key : items){
 					if(!key.equals("potions"))
 						getLoadout(loadout).addItem(minigame.getConfig().getItemStack(name + ".extraloadouts." + loadout + "." + key), Integer.parseInt(key));

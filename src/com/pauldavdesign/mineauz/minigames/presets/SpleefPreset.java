@@ -3,7 +3,7 @@ package com.pauldavdesign.mineauz.minigames.presets;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class SpleefPreset implements BasePreset {
 

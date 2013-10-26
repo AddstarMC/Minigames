@@ -11,7 +11,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameSave;
@@ -20,6 +19,7 @@ import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.SQLCompletionSaver;
 import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class RaceMinigame extends MinigameType{
 	private static Minigames plugin = Minigames.plugin;

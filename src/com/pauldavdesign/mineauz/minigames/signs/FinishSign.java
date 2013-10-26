@@ -8,10 +8,10 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.SignChangeEvent;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class FinishSign implements MinigameSign {
 	

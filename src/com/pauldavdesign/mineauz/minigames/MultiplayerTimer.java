@@ -6,6 +6,8 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+
 public class MultiplayerTimer{
 	private int playerWaitTime;
 	private int startWaitTime;

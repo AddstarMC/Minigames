@@ -6,9 +6,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class SetSecondaryRewardCommand implements ICommand{
 	

@@ -6,8 +6,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class InfectionPreset implements BasePreset {
 

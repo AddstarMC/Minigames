@@ -10,6 +10,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+
 public class TreasureHuntTimer{
 	private String minigame = null;
 	private static Minigames plugin = Minigames.plugin;

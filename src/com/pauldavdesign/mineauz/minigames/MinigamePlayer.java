@@ -12,6 +12,7 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class MinigamePlayer {
 	private Player player;

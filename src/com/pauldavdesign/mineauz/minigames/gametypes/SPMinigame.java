@@ -10,7 +10,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameSave;
@@ -20,6 +19,7 @@ import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.RestoreBlock;
 import com.pauldavdesign.mineauz.minigames.SQLCompletionSaver;
 import com.pauldavdesign.mineauz.minigames.StoredPlayerCheckpoints;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class SPMinigame extends MinigameType{
 	private static Minigames plugin = Minigames.plugin;

@@ -7,8 +7,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class EndCommand implements ICommand{
 

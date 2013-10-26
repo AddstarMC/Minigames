@@ -10,6 +10,8 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+
 public class CTFFlag{
 	
 	private Location spawnLocation = null;

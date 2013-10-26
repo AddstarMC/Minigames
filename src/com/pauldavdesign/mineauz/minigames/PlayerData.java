@@ -34,6 +34,7 @@ import com.pauldavdesign.mineauz.minigames.events.JoinMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.RevertCheckpointEvent;
 import com.pauldavdesign.mineauz.minigames.events.SpectateMinigameEvent;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.scoring.ScoreType;
 
 public class PlayerData {

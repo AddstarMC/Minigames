@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 
 import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class MinigameTimer{
 	private int time = 0;

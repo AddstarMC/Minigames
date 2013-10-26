@@ -47,6 +47,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.events.RevertCheckpointEvent;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class Events implements Listener{
 	private static Minigames plugin = Minigames.plugin;

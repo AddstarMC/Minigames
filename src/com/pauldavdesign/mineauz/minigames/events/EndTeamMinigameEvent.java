@@ -6,8 +6,8 @@ import java.util.List;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class EndTeamMinigameEvent extends Event{
 	private static final HandlerList handlers = new HandlerList();

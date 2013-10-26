@@ -2,8 +2,8 @@ package com.pauldavdesign.mineauz.minigames.commands.set;
 
 import org.bukkit.command.CommandSender;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class SetPlayersGamemodeCommand implements ICommand {
 

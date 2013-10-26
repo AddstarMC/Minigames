@@ -13,12 +13,12 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.pauldavdesign.mineauz.minigames.CTFFlag;
-import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class CTFType extends ScoreTypeBase{
 

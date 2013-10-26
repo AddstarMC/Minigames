@@ -8,10 +8,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class SetLoadoutCommand implements ICommand {
 

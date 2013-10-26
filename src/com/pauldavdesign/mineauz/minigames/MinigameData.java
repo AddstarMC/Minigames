@@ -19,6 +19,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.presets.BasePreset;
 import com.pauldavdesign.mineauz.minigames.presets.CTFPreset;
 import com.pauldavdesign.mineauz.minigames.presets.InfectionPreset;

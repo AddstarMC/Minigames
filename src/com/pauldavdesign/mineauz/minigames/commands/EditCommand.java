@@ -4,7 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class EditCommand implements ICommand {
 

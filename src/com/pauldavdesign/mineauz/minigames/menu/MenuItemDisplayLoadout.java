@@ -5,9 +5,9 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class MenuItemDisplayLoadout extends MenuItem{
 	

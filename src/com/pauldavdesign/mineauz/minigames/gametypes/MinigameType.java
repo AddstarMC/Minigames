@@ -8,13 +8,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.Listener;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.MultiplayerTimer;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public abstract class MinigameType implements Listener{
 	private static Minigames plugin;

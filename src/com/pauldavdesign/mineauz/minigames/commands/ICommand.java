@@ -2,8 +2,8 @@ package com.pauldavdesign.mineauz.minigames.commands;
 
 import org.bukkit.command.CommandSender;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public interface ICommand {
 //	public PlayerData pdata = Minigames.plugin.getPlayerData();

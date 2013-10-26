@@ -1,6 +1,6 @@
 package com.pauldavdesign.mineauz.minigames.presets;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public interface BasePreset {
 	public String getName();

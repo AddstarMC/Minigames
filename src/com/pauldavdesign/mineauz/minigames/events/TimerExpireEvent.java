@@ -3,7 +3,7 @@ package com.pauldavdesign.mineauz.minigames.events;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class TimerExpireEvent extends Event{
 	private static final HandlerList handlers = new HandlerList();

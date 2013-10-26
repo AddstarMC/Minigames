@@ -5,8 +5,8 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class SetFlagCommand implements ICommand{
 

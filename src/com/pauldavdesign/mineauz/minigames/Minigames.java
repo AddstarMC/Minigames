@@ -36,6 +36,7 @@ import com.pauldavdesign.mineauz.minigames.gametypes.DMMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.RaceMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.SPMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.scoring.ScoreType;
 import com.pauldavdesign.mineauz.minigames.signs.SignBase;
 

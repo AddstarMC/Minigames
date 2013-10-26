@@ -8,11 +8,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.pauldavdesign.mineauz.minigames.Minigame;
 import com.pauldavdesign.mineauz.minigames.MinigameData;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class GlobalLoadoutCommand implements ICommand {
 	private MinigameData mdata = Minigames.plugin.mdata;
