@@ -105,14 +105,7 @@ public class Minigames extends JavaPlugin{
 					lastGM = GameMode.getByValue(pdata.invsave.getConfig().getInt("inventories." + player + ".lastGM")); //TODO: Remove me after 1.6.0 Release
 				else{
 					String gamemode = pdata.invsave.getConfig().getString("inventories." + player + ".lastGM");
-					if(gamemode.equals("CREATIVE")){
-						lastGM = GameMode.CREATIVE;
-					}
-					else if(gamemode.equals("ADVENTURE")){
-						lastGM = GameMode.ADVENTURE;
-					}
-					else
-						lastGM = GameMode.SURVIVAL;
+					lastGM = GameMode.valueOf(gamemode);
 				}
 				if(pdata.invsave.getConfig().contains("inventories." + player + ".location.x")){
 					int x = pdata.invsave.getConfig().getInt("inventories." + player + ".location.x");

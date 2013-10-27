@@ -2,6 +2,7 @@ package com.pauldavdesign.mineauz.minigames.menu;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
@@ -29,6 +30,10 @@ public class Menu {
 		this.viewer = viewer;
 	}
 	
+	public String getName(){
+		return name;
+	}
+	
 	public boolean addItem(MenuItem item, int slot){
 		if(!pageMap.containsKey(slot) && slot < pageView.length){
 			item.setContainer(this);
@@ -46,6 +51,9 @@ public class Menu {
 		if(pageMap.containsKey(slot)){
 			pageMap.remove(slot);
 			pageView[slot] = null;
+			if(inv != null){
+				inv.setItem(slot, null);
+			}
 		}
 	}
 	
@@ -153,5 +161,9 @@ public class Menu {
 		}
 		
 		return inv;
+	}
+	
+	public Set<Integer> getSlotMap(){
+		return pageMap.keySet();
 	}
 }

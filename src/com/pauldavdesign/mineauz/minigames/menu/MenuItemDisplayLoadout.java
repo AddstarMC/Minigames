@@ -34,7 +34,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		loadoutMenu.setAllowModify(true);
 		loadoutMenu.setPreviousPage(getContainer());
 
-		loadoutMenu.addItem(new MenuItem("Edit Potion Effects", Material.POTION), 43); //TODO: Potion effect button
+		loadoutMenu.addItem(new MenuItemDisplayPotions("Edit Potion Effects", Material.POTION, loadout), 43);
 		loadoutMenu.addItem(new MenuItemSaveLoadout("Save Loadout", Material.REDSTONE_TORCH_ON, loadout), 44);
 		
 		for(int i = 40; i < 43; i++){
