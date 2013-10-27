@@ -87,6 +87,10 @@ public class PlayerLoadout {
 	@SuppressWarnings("deprecation")
 	public void equiptLoadout(MinigamePlayer player){
 		player.getPlayer().getInventory().clear();
+		player.getPlayer().getInventory().setHelmet(null);
+		player.getPlayer().getInventory().setChestplate(null);
+		player.getPlayer().getInventory().setLeggings(null);
+		player.getPlayer().getInventory().setBoots(null);
 		for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
 			player.getPlayer().removePotionEffect(potion.getType());
 		}

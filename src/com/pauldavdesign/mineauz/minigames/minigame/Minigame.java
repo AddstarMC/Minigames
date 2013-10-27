@@ -38,6 +38,7 @@ import com.pauldavdesign.mineauz.minigames.menu.MenuItemDisplayLoadout;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemDisplayRewards;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemInteger;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemList;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemLoadoutAdd;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemSaveMinigame;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardItem;
@@ -1104,15 +1105,18 @@ public class Minigame {
 		itemsMain.add(defLoad);
 		itemsMain.add(new MenuItemPage("Additional Loadouts", Material.CHEST, loadouts));
 		
-		
+
+		List<String> des = new ArrayList<String>();
+		des.add("Shift + Right Click to Delete");
 		for(String ld : getLoadouts()){
 			Material item = Material.PISTON_EXTENSION;
 			if(getLoadout(ld).getItems().size() != 0){
 				item = getLoadout(ld).getItem((Integer)getLoadout(ld).getItems().toArray()[0]).getType();
 			}
-			loadouts.addItem(new MenuItemDisplayLoadout(ld, item, getLoadout(ld), this), inc);
+			loadouts.addItem(new MenuItemDisplayLoadout(ld, des, item, getLoadout(ld), this), inc);
 			inc++;
 		}
+		loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.PORTAL, extraLoadouts, this), 53);
 		loadouts.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), loadouts.getSize() - 9);
 		
 		inc = 0;

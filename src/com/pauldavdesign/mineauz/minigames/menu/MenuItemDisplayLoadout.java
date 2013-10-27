@@ -59,7 +59,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onRightClick(){
+	public ItemStack onShiftRightClick(){
 		if(allowDelete){
 			MinigamePlayer ply = getContainer().getViewer();
 			ply.setNoClose(true);
