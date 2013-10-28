@@ -276,7 +276,7 @@ public class Events implements Listener{
 									status += " " + ChatColor.GREEN + MinigameUtils.getLang("minigame.info.status.empty");
 								}
 								else if(mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() > 0){
-									status += " " + ChatColor.GREEN + MinigameUtils.getLang("minigame.info.status.WaitingForPlayers");
+									status += " " + ChatColor.GREEN + MinigameUtils.getLang("minigame.info.status.waitingForPlayers");
 								}
 								else{
 									status += " " + ChatColor.RED + MinigameUtils.getLang("minigame.info.status.started");
