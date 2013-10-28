@@ -201,16 +201,14 @@ public class Events implements Listener{
 				}
 			}, 5L);
 			
-			if(!ply.isDead()){
-				final MinigamePlayer fply = pdata.getMinigamePlayer(event.getPlayer());
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						fply.restorePlayerData();
-					}
-				});
-			}
+			final MinigamePlayer fply = pdata.getMinigamePlayer(event.getPlayer());
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				
+				@Override
+				public void run() {
+					fply.restorePlayerData();
+				}
+			});
 			
 			plugin.getLogger().info("--------------------------DEBUG--------------------------");
 			plugin.getLogger().info("Player: " + ply.getName());
