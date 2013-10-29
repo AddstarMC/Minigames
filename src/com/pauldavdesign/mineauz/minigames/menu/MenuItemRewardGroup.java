@@ -14,46 +14,38 @@ import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardItem;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardRarity;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.Rewards;
 
-public class MenuItemReward extends MenuItem{
+public class MenuItemRewardGroup extends MenuItem{
 	
-	private RewardItem item;
-	private Rewards rewards;
 	private RewardGroup group;
-	private List<String> options;
+	private Rewards rewards;
 
-	public MenuItemReward(String name, Material displayItem, RewardItem value, Rewards rewards, List<String> options) {
+	public MenuItemRewardGroup(String name, Material displayItem, RewardGroup group, Rewards rewards) {
 		super(name, displayItem);
-		item = value;
-		this.options = options;
+		this.group = group;
 		this.rewards = rewards;
 		updateDescription();
 	}
 
-	public MenuItemReward(String name, List<String> description, Material displayItem, RewardItem value, Rewards rewards, List<String> options) {
+	public MenuItemRewardGroup(String name, List<String> description, Material displayItem, RewardGroup group, Rewards rewards) {
 		super(name, description, displayItem);
-		item = value;
-		this.options = options;
+		this.group = group;
 		this.rewards = rewards;
 		updateDescription();
 	}
-
-	public MenuItemReward(String name, Material displayItem, RewardItem value, RewardGroup group, List<String> options) {
-		super(name, displayItem);
-		item = value;
-		this.options = options;
-		this.group = group;
-	}
-
-	public MenuItemReward(String name, List<String> description, Material displayItem, RewardItem value, RewardGroup group, List<String> options) {
-		super(name, description, displayItem);
-		item = value;
-		this.options = options;
-		this.group = group;
+	
+	public List<String> getOptions(){
+		List<String> options = new ArrayList<String>();
+		for(RewardRarity r : RewardRarity.values()){
+			options.add(r.toString());
+		}
+		return options;
 	}
 	
 	public void updateDescription(){
 		List<String> description = null;
-		int pos = options.indexOf(item.getRarity().toString());
+		List<String> options = getOptions();
+		
+		int pos = options.indexOf(group.getRarity().toString());
 		int before = pos - 1;
 		int after = pos + 1;
 		if(before == -1)
@@ -68,41 +60,41 @@ public class MenuItemReward extends MenuItem{
 				
 				if(options.contains(desc)){
 					description.set(0, ChatColor.GRAY.toString() + options.get(before));
-					description.set(1, ChatColor.GREEN.toString() + item.getRarity().toString());
+					description.set(1, ChatColor.GREEN.toString() + group.getRarity().toString());
 					description.set(2, ChatColor.GRAY.toString() + options.get(after));
 				}
 				else{
 					description.add(0, ChatColor.GRAY.toString() + options.get(before));
-					description.add(1, ChatColor.GREEN.toString() + item.getRarity().toString());
+					description.add(1, ChatColor.GREEN.toString() + group.getRarity().toString());
 					description.add(2, ChatColor.GRAY.toString() + options.get(after));
 				}
 			}
 			else{
 				description.add(0, ChatColor.GRAY.toString() + options.get(before));
-				description.add(1, ChatColor.GREEN.toString() + item.getRarity().toString());
+				description.add(1, ChatColor.GREEN.toString() + group.getRarity().toString());
 				description.add(2, ChatColor.GRAY.toString() + options.get(after));
 			}
 		}
 		else{
 			description = new ArrayList<String>();
 			description.add(ChatColor.GRAY.toString() + options.get(before));
-			description.add(ChatColor.GREEN.toString() + item.getRarity().toString());
+			description.add(ChatColor.GREEN.toString() + group.getRarity().toString());
 			description.add(ChatColor.GRAY.toString() + options.get(after));
 		}
 		
 		setDescription(description);
 	}
+
 	
 	@Override
 	public ItemStack onClick(){
-		if(rewards == null) return getItem();
-		
-		int ind = options.lastIndexOf(item.getRarity().toString());
+		List<String> options = getOptions();
+		int ind = options.lastIndexOf(group.getRarity().toString());
 		ind++;
 		if(ind == options.size())
 			ind = 0;
 		
-		item.setRarity(RewardRarity.valueOf(options.get(ind)));
+		group.setRarity(RewardRarity.valueOf(options.get(ind)));
 		updateDescription();
 		
 		return getItem();
@@ -110,14 +102,13 @@ public class MenuItemReward extends MenuItem{
 	
 	@Override
 	public ItemStack onRightClick(){
-		if(rewards == null) return getItem();
-		
-		int ind = options.lastIndexOf(item.getRarity().toString());
+		List<String> options = getOptions();
+		int ind = options.lastIndexOf(group.getRarity().toString());
 		ind--;
 		if(ind == -1)
 			ind = options.size() - 1;
 		
-		item.setRarity(RewardRarity.valueOf(options.get(ind)));
+		group.setRarity(RewardRarity.valueOf(options.get(ind)));
 		updateDescription();
 		
 		return getItem();
@@ -126,10 +117,7 @@ public class MenuItemReward extends MenuItem{
 	@Override
 	public void checkValidEntry(String entry){
 		if(entry.equalsIgnoreCase("yes")){
-			if(rewards != null)
-				rewards.removeReward(item);
-			else
-				group.removeItem(item);
+			rewards.removeGroup(group);
 			getContainer().removeItem(this.getSlot());
 
 			getContainer().cancelReopenTimer();
@@ -139,7 +127,7 @@ public class MenuItemReward extends MenuItem{
 		getContainer().cancelReopenTimer();
 		getContainer().displayMenu(getContainer().getViewer());
 		
-		getContainer().getViewer().sendMessage("The selected item will not be removed from the rewards.", "error");
+		getContainer().getViewer().sendMessage("The selected group will not be removed from the rewards.", "error");
 	}
 	
 	@Override
@@ -147,16 +135,47 @@ public class MenuItemReward extends MenuItem{
 		MinigamePlayer ply = getContainer().getViewer();
 		ply.setNoClose(true);
 		ply.getPlayer().closeInventory();
-		String itemName = "";
-		if(item.getItem() != null)
-			itemName = MinigameUtils.getItemStackName(item.getItem());
-		else
-			itemName = "$" + item.getMoney();
-		ply.sendMessage("Delete the reward item \"" + itemName + "\"? Type \"Yes\" to confirm.", null);
+		String itemName = group.getName();
+		
+		ply.sendMessage("Delete the reward group \"" + itemName + "\"? Type \"Yes\" to confirm.", null);
 		ply.sendMessage("The menu will automatically reopen in 10s if nothing is entered.");
 		ply.setManualEntry(this);
 
 		getContainer().startReopenTimer(10);
+		return null;
+	}
+	
+	@Override
+	public ItemStack onDoubleClick(){
+		Menu rewardMenu = new Menu(5, getName(), getContainer().getViewer());
+		rewardMenu.setPreviousPage(getContainer());
+
+		List<String> des = new ArrayList<String>();
+		des.add("Click this with an item");
+		des.add("to add it to rewards.");
+		des.add("Click without an item");
+		des.add("to add a money reward.");
+		
+		rewardMenu.addItem(new MenuItemRewardAdd("Add Item", des, Material.PORTAL, group), 43);
+		rewardMenu.addItem(new MenuItemPage("Save " + getName(), Material.REDSTONE_TORCH_ON, rewardMenu.getPreviousPage()), 44);
+		List<String> list = new ArrayList<String>();
+		for(RewardRarity r : RewardRarity.values()){
+			list.add(r.toString());
+		}
+		int inc = 0;
+		for(RewardItem item : group.getItems()){
+			if(item.getItem() != null){
+				MenuItemReward rew = new MenuItemReward(MinigameUtils.getItemStackName(item.getItem()), item.getItem().getType(), item, group, list);
+				rew.setItem(item.getItem());
+				rewardMenu.addItem(rew, inc);
+			}
+			else{
+				MenuItemReward rew = new MenuItemReward("$" + item.getMoney(), Material.PAPER, item, group, list);
+				rewardMenu.addItem(rew, inc);
+			}
+			inc++;
+		}
+		rewardMenu.displayMenu(getContainer().getViewer());
 		return null;
 	}
 }

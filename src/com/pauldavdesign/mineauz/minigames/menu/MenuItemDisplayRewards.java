@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
+import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardGroup;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardItem;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardRarity;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.Rewards;
@@ -36,6 +37,7 @@ public class MenuItemDisplayRewards extends MenuItem{
 		des.add("to add it to rewards.");
 		des.add("Click without an item");
 		des.add("to add a money reward.");
+		rewardMenu.addItem(new MenuItemRewardGroupAdd("Add Group", Material.PORTAL, rewards), 42);
 		rewardMenu.addItem(new MenuItemRewardAdd("Add Item", des, Material.PORTAL, rewards), 43);
 		rewardMenu.addItem(new MenuItemPage("Save " + getName(), Material.REDSTONE_TORCH_ON, rewardMenu.getPreviousPage()), 44);
 		List<String> list = new ArrayList<String>();
@@ -54,6 +56,13 @@ public class MenuItemDisplayRewards extends MenuItem{
 				MenuItemReward rew = new MenuItemReward("$" + item.getMoney(), Material.PAPER, item, rewards, list);
 				rewardMenu.addItem(rew, inc);
 			}
+			inc++;
+		}
+		des = new ArrayList<String>();
+		des.add("Double Click to edit");
+		for(RewardGroup group : rewards.getGroups()){
+			MenuItemRewardGroup rwg = new MenuItemRewardGroup(group.getName() + " Group", des, Material.CHEST, group, rewards);
+			rewardMenu.addItem(rwg, inc);
 			inc++;
 		}
 		rewardMenu.displayMenu(getContainer().getViewer());

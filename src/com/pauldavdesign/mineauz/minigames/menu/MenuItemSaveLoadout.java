@@ -25,10 +25,7 @@ public class MenuItemSaveLoadout extends MenuItem{
 	public ItemStack onClick(){
 		ItemStack[] items = getContainer().getInventory();
 		loadout.clearLoadout();
-//		for(ItemStack item : items){
-//			if(item != null)
-//				loadout.addItemToLoadout(item);
-//		}
+		
 		for(int i = 0; i < 36; i++){
 			if(items[i] != null)
 				loadout.addItem(items[i], i);

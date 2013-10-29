@@ -9,12 +9,14 @@ import org.bukkit.inventory.ItemStack;
 public class Rewards {
 	
 	private List<RewardItem> items = new ArrayList<RewardItem>();
+	private List<RewardGroup> groups = new ArrayList<RewardGroup>();
 	
-	public RewardItem getReward(){
+	public List<RewardItem> getReward(){
 		double rand = Math.random();
 		RewardRarity rarity = null;
-		List<RewardItem> itemsCopy = new ArrayList<RewardItem>();
+		List<Object> itemsCopy = new ArrayList<Object>();
 		itemsCopy.addAll(items);
+		itemsCopy.addAll(groups);
 		Collections.shuffle(itemsCopy);
 		
 		if(rand > RewardRarity.VERY_COMMON.getRarity())
@@ -31,14 +33,25 @@ public class Rewards {
 		
 		if(!itemsCopy.isEmpty()){
 			RewardItem item = null;
+			RewardGroup group = null;
 			RewardRarity orarity = rarity;
 			boolean up = true;
 			
-			while(item == null){
-				for(RewardItem ritem : itemsCopy){
-					if(ritem.getRarity() == rarity){
-						item = ritem;
-						break;
+			while(item == null && group == null){
+				for(Object ritem : itemsCopy){
+					if(ritem instanceof RewardItem){
+						RewardItem ri = (RewardItem)ritem;
+						if(ri.getRarity() == rarity){
+							item = ri;
+							break;
+						}
+					}
+					else{
+						RewardGroup rg = (RewardGroup)ritem;
+						if(rg.getRarity() == rarity){
+							group = rg;
+							break;
+						}
 					}
 				}
 				
@@ -53,7 +66,14 @@ public class Rewards {
 					rarity = rarity.getPreviousRarity();
 				}
 			}
-			return item;
+			if(item != null){
+				List<RewardItem> items = new ArrayList<RewardItem>();
+				items.add(item);
+				return items;
+			}
+			else if(group != null){
+				return group.getItems();
+			}
 		}
 		
 		return null;
@@ -77,5 +97,19 @@ public class Rewards {
 	
 	public List<RewardItem> getRewards(){
 		return items;
+	}
+	
+	public RewardGroup addGroup(String groupName, RewardRarity rarity){
+		RewardGroup group = new RewardGroup(groupName, rarity);
+		groups.add(group);
+		return group;
+	}
+	
+	public void removeGroup(RewardGroup group){
+		groups.remove(group);
+	}
+	
+	public List<RewardGroup> getGroups(){
+		return groups;
 	}
 }

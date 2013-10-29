@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardGroup;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardItem;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardRarity;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.Rewards;
@@ -16,7 +17,8 @@ import com.pauldavdesign.mineauz.minigames.minigame.reward.Rewards;
 public class MenuItemRewardAdd extends MenuItem{
 	
 	private Rewards rewards;
-
+	private RewardGroup group = null;
+	
 	public MenuItemRewardAdd(String name, Material displayItem, Rewards rewards) {
 		super(name, displayItem);
 		this.rewards = rewards;
@@ -25,6 +27,16 @@ public class MenuItemRewardAdd extends MenuItem{
 	public MenuItemRewardAdd(String name, List<String> description, Material displayItem, Rewards rewards) {
 		super(name, description, displayItem);
 		this.rewards = rewards;
+	}
+	
+	public MenuItemRewardAdd(String name, Material displayItem, RewardGroup group) {
+		super(name, displayItem);
+		this.group = group;
+	}
+
+	public MenuItemRewardAdd(String name, List<String> description, Material displayItem, RewardGroup group) {
+		super(name, description, displayItem);
+		this.group = group;
 	}
 	
 	@Override
@@ -47,9 +59,15 @@ public class MenuItemRewardAdd extends MenuItem{
 	@Override
 	public void checkValidEntry(String entry){
 		if(entry.matches("\\$?[0-9]+(\\.[0-9]{2})?")){
-			if(rewards.getRewards().size() < 45){
+			if((rewards != null && rewards.getRewards().size() < 45) || group.getItems().size() < 45){
 				double money = Double.parseDouble(entry.replace("$", ""));
-				RewardItem it = rewards.addMoney(money, RewardRarity.NORMAL);
+				RewardItem it;
+				if(group == null)
+					it = rewards.addMoney(money, RewardRarity.NORMAL);
+				else{
+					it = new RewardItem(money, RewardRarity.NORMAL);
+					group.addItem(it);
+				}
 	
 				List<String> list = new ArrayList<String>();
 				for(RewardRarity r : RewardRarity.values()){
@@ -84,8 +102,14 @@ public class MenuItemRewardAdd extends MenuItem{
 	@Override
 	public ItemStack onClickWithItem(ItemStack item){
 		item = item.clone();
-		if(rewards.getRewards().size() < 45){
-			RewardItem it = rewards.addItem(item, RewardRarity.NORMAL);
+		if((rewards != null && rewards.getRewards().size() < 45) || group.getItems().size() < 45){
+			RewardItem it;
+			if(group == null)
+				it = rewards.addItem(item, RewardRarity.NORMAL);
+			else{
+				it = new RewardItem(item, RewardRarity.NORMAL);
+				group.addItem(it);
+			}
 			
 			List<String> list = new ArrayList<String>();
 			for(RewardRarity r : RewardRarity.values()){
