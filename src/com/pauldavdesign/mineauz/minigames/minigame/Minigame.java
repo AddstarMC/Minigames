@@ -1927,6 +1927,12 @@ public class Minigame {
 				}
 			}
 		}
+		if(!minigame.getConfig().contains(name + ".rewardprice")){ //TODO: Remove this check after 1.6.0 release
+			getRewardItems().addMoney(minigame.getConfig().getDouble(name + ".rewardprice"), RewardRarity.NORMAL);
+		}
+		if(!minigame.getConfig().contains(name + ".rewardprice2")){ //TODO: Remove this check after 1.6.0 release
+			getSecondaryRewardItems().addMoney(minigame.getConfig().getDouble(name + ".rewardprice2"), RewardRarity.NORMAL);
+		}
 		if(!minigame.getConfig().getStringList(name + ".flags").isEmpty()){
 			setFlags(minigame.getConfig().getStringList(name + ".flags"));
 		}
