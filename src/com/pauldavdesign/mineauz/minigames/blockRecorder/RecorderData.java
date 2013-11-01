@@ -1054,6 +1054,8 @@ public class RecorderData implements Listener{
 			isCart = true;
 		}
 		
+		if(loc == null) return;
+		
 		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(loc)){
 			if(!isCart){
 				addBlock((BlockState)event.getDestination().getHolder(), null);
