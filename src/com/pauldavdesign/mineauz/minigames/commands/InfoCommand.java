@@ -239,16 +239,16 @@ public class InfoCommand implements ICommand{
 						lines.add(ChatColor.GRAY + "Minimum Players: " + ChatColor.GREEN + mgm.getMinPlayers());
 					}
 					
-					if(mgm.getRewardItem() != null){
-						lines.add(ChatColor.GRAY + "Reward Items: " + ChatColor.GREEN + mgm.getRewardItems().getRewards().size() + " items");
+					if(!mgm.getRewardItems().getRewards().isEmpty() || !mgm.getRewardItems().getGroups().isEmpty()){
+						lines.add(ChatColor.GRAY + "Reward Items: " + ChatColor.GREEN + (mgm.getRewardItems().getRewards().size() + mgm.getRewardItems().getGroups().size()) + " items");
 					}else{
-						lines.add(ChatColor.GRAY + "Reward Items: " + ChatColor.RED + "Not Set");
+						lines.add(ChatColor.GRAY + "Reward Items: " + ChatColor.RED + "No Rewards Set");
 					}
 					
-					if(mgm.getSecondaryRewardItem() != null){
-						lines.add(ChatColor.GRAY + "Secondary Reward Item: " + ChatColor.GREEN + mgm.getSecondaryRewardItems().getRewards().size() + " items");
+					if(!mgm.getSecondaryRewardItems().getRewards().isEmpty() || !mgm.getSecondaryRewardItems().getGroups().isEmpty()){
+						lines.add(ChatColor.GRAY + "Secondary Reward Item: " + ChatColor.GREEN + (mgm.getSecondaryRewardItems().getRewards().size() + mgm.getSecondaryRewardItems().getGroups().size()) + " items");
 					}else{
-						lines.add(ChatColor.GRAY + "Secondary Reward Item: " + ChatColor.RED + "Not Set");
+						lines.add(ChatColor.GRAY + "Secondary Reward Item: " + ChatColor.RED + "No Rewards Set");
 					}
 					
 					if(!mgm.getType().equals("sp")){
