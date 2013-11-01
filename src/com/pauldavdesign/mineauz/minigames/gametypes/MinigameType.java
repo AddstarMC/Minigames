@@ -162,7 +162,7 @@ public abstract class MinigameType implements Listener{
 		List<RewardItem> rewardL = save.getRewardItem();
 		List<RewardItem> srewardL = save.getSecondaryRewardItem();
 		double totalMoney = 0;
-		if(!hascompleted){
+		if(!hascompleted && rewardL != null){
 			for(RewardItem reward : rewardL){
 				if(reward != null){
 					if(reward.getItem() != null){
@@ -181,7 +181,7 @@ public abstract class MinigameType implements Listener{
 				player.sendMessage(MinigameUtils.formStr("player.end.awardMoney", totalMoney), "win");
 			}
 		}
-		else if(hascompleted){
+		else if(hascompleted && srewardL != null){
 			for(RewardItem sreward : srewardL){
 				if(sreward != null){
 					if(sreward.getItem() != null){
