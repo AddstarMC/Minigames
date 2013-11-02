@@ -543,6 +543,8 @@ public class Events implements Listener{
 	@EventHandler(ignoreCancelled = true)
 	private void closeMenu(InventoryCloseEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer((Player)event.getPlayer());
+		if(ply == null) return;
+		
 		if(ply.isInMenu() && !ply.getNoClose()){
 			ply.setMenu(null);
 		}
