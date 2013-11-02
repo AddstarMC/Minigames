@@ -30,7 +30,9 @@ public class SetSecondaryRewardCommand implements ICommand{
 
 	@Override
 	public String getDescription() {
-		return "Sets the players secondary reward for completing the Minigame after the first time.";
+		return "Sets the players secondary reward for completing the Minigame after the first time." +
+				"This can be one item or a randomly selected item added to the rewards, depending on its defined rarity. \n" +
+				"Possible rarities are: very_common, common, normal, rare and very_rare";
 	}
 
 	@Override

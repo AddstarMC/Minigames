@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
@@ -20,11 +21,21 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		this.loadout = loadout;
 		mgm = minigame;
 	}
+	
+	public MenuItemDisplayLoadout(String name, Material displayItem, PlayerLoadout loadout) {
+		super(name, displayItem);
+		this.loadout = loadout;
+	}
 
 	public MenuItemDisplayLoadout(String name, List<String> description, Material displayItem, PlayerLoadout loadout, Minigame minigame) {
 		super(name, description, displayItem);
 		this.loadout = loadout;
 		mgm = minigame;
+	}
+
+	public MenuItemDisplayLoadout(String name, List<String> description, Material displayItem, PlayerLoadout loadout) {
+		super(name, description, displayItem);
+		this.loadout = loadout;
 	}
 	
 	@Override
@@ -68,20 +79,24 @@ public class MenuItemDisplayLoadout extends MenuItem{
 			ply.sendMessage("The menu will automatically reopen in 10s if nothing is entered.");
 			ply.setManualEntry(this);
 			getContainer().startReopenTimer(10);
+			return null;
 		}
 		
-		return null;
+		return getItem();
 	}
 	
 	@Override
 	public void checkValidEntry(String entry){
 		if(entry.equalsIgnoreCase("yes")){
 			String loadoutName = loadout.getName();
-			mgm.deleteLoadout(loadoutName);
+			if(mgm != null)
+				mgm.deleteLoadout(loadoutName);
+			else
+				Minigames.plugin.mdata.deleteLoadout(loadoutName);
 			getContainer().removeItem(getSlot());
 			getContainer().cancelReopenTimer();
 			getContainer().displayMenu(getContainer().getViewer());
-			getContainer().getViewer().sendMessage(loadoutName + " has been deleted from " + mgm.getName(), null);
+			getContainer().getViewer().sendMessage(loadoutName + " has been deleted.", null);
 			return;
 		}
 		getContainer().getViewer().sendMessage(loadout.getName() + " was not deleted.", "error");

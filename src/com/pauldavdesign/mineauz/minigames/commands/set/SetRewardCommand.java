@@ -31,7 +31,8 @@ public class SetRewardCommand implements ICommand{
 	@Override
 	public String getDescription() {
 		return "Sets the players reward for completing the Minigame for the first time. " +
-				"This can be one item or a randomly selected item added to the rewards, depending on its defined rarity.";
+				"This can be one item or a randomly selected item added to the rewards, depending on its defined rarity. \n" +
+				"Possible rarities are: very_common, common, normal, rare and very_rare";
 	}
 
 	@Override
@@ -85,7 +86,7 @@ public class SetRewardCommand implements ICommand{
 				minigame.getRewardItems().addItem(item, rarity);
 				
 				sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to primary rewards of \"" + minigame.getName() + "\" "
-						+ "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
+						+ "with a rarity of \"" + rarity.toString().toLowerCase().replace("_", " ") + "\"");
 				return true;
 			}
 			else if(sender instanceof Player && args[0].equals("SLOT")){

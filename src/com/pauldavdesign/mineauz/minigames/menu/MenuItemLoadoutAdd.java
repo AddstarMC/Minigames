@@ -27,6 +27,16 @@ public class MenuItemLoadoutAdd extends MenuItem{
 		this.loadouts = loadouts;
 		this.minigame = mgm;
 	}
+
+	public MenuItemLoadoutAdd(String name, Material displayItem, Map<String, PlayerLoadout> loadouts) {
+		super(name, displayItem);
+		this.loadouts = loadouts;
+	}
+
+	public MenuItemLoadoutAdd(String name, List<String> description, Material displayItem, Map<String, PlayerLoadout> loadouts) {
+		super(name, description, displayItem);
+		this.loadouts = loadouts;
+	}
 	
 	@Override
 	public ItemStack onClick(){
@@ -50,7 +60,10 @@ public class MenuItemLoadoutAdd extends MenuItem{
 					loadouts.put(entry, loadout);
 					List<String> des = new ArrayList<String>();
 					des.add("Shift + Right Click to Delete");
-					getContainer().addItem(new MenuItemDisplayLoadout(entry, des, Material.DIAMOND_SWORD, loadout, minigame), i);
+					if(minigame != null)
+						getContainer().addItem(new MenuItemDisplayLoadout(entry, des, Material.DIAMOND_SWORD, loadout, minigame), i);
+					else
+						getContainer().addItem(new MenuItemDisplayLoadout(entry, des, Material.DIAMOND_SWORD, loadout), i);
 					break;
 				}
 			}

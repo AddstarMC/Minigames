@@ -117,10 +117,10 @@ public class MinigameData {
 							if(numitems > mgm.getDefaultPlayerLoadout().getItems().size()){
 								numitems = mgm.getDefaultPlayerLoadout().getItems().size();
 							}
-							Collections.shuffle(getMinigame(minigame).getDefaultPlayerLoadout().getItemsOld());
+//							Collections.shuffle(getMinigame(minigame).getDefaultPlayerLoadout().getItemsOld());
 							final ItemStack[] items = new ItemStack[27];
 							for(int i = 0; i < numitems; i++){
-								items[i] = mgm.getDefaultPlayerLoadout().getItemsOld().get(i);
+//								items[i] = mgm.getDefaultPlayerLoadout().getItemsOld().get(i); //TODO: Implement rewards here instead of loadouts.
 							}
 							Collections.shuffle(Arrays.asList(items));
 							chest.getInventory().setContents(items);
@@ -333,6 +333,10 @@ public class MinigameData {
 	
 	public Set<String> getLoadouts(){
 		return globalLoadouts.keySet();
+	}
+	
+	public Map<String, PlayerLoadout> getLoadoutMap(){
+		return globalLoadouts;
 	}
 	
 	public PlayerLoadout getLoadout(String name){

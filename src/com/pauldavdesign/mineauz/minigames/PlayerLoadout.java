@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
 public class PlayerLoadout {
-	private List<ItemStack> items = new ArrayList<ItemStack>();
 	private Map<Integer, ItemStack> itemSlot = new HashMap<Integer, ItemStack>();
 	private List<PotionEffect> potions = new ArrayList<PotionEffect>();
 	private String loadoutName = "default";
@@ -37,23 +36,8 @@ public class PlayerLoadout {
 		return loadoutName;
 	}
 	
-	@Deprecated
-	public void addItemToLoadout(ItemStack item){
-		items.add(item);
-	}
-	
 	public void addItem(ItemStack item, int slot){
 		itemSlot.put(slot, item);
-	}
-	
-	@Deprecated
-	public void removeItemFromLoadout(ItemStack item){
-		for(ItemStack listitem : items){
-			if(listitem.getType() == item.getType()){
-				items.remove(listitem);
-				break;
-			}
-		}
 	}
 	
 	public void addPotionEffect(PotionEffect effect){
@@ -120,11 +104,6 @@ public class PlayerLoadout {
 		});
 	}
 	
-	@Deprecated
-	public List<ItemStack> getItemsOld(){
-		return items;
-	}
-	
 	public Set<Integer> getItems(){
 		return itemSlot.keySet();
 	}
@@ -134,7 +113,6 @@ public class PlayerLoadout {
 	}
 	
 	public void clearLoadout(){
-		items.clear();
 		itemSlot.clear();
 	}
 }

@@ -327,6 +327,10 @@ public class Minigame {
 		return extraLoadouts.keySet();
 	}
 	
+	public Map<String, PlayerLoadout> getLoadoutMap(){
+		return extraLoadouts;
+	}
+	
 	public PlayerLoadout getLoadout(String name){
 		PlayerLoadout pl = null;
 		if(name.equalsIgnoreCase("default")){
