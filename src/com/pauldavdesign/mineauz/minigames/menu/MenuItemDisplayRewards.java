@@ -37,8 +37,8 @@ public class MenuItemDisplayRewards extends MenuItem{
 		des.add("to add it to rewards.");
 		des.add("Click without an item");
 		des.add("to add a money reward.");
-		rewardMenu.addItem(new MenuItemRewardGroupAdd("Add Group", Material.PORTAL, rewards), 42);
-		rewardMenu.addItem(new MenuItemRewardAdd("Add Item", des, Material.PORTAL, rewards), 43);
+		rewardMenu.addItem(new MenuItemRewardGroupAdd("Add Group", Material.ITEM_FRAME, rewards), 42);
+		rewardMenu.addItem(new MenuItemRewardAdd("Add Item", des, Material.ITEM_FRAME, rewards), 43);
 		rewardMenu.addItem(new MenuItemPage("Save " + getName(), Material.REDSTONE_TORCH_ON, rewardMenu.getPreviousPage()), 44);
 		List<String> list = new ArrayList<String>();
 		for(RewardRarity r : RewardRarity.values()){

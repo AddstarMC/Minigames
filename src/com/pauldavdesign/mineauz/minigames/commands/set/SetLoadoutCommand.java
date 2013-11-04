@@ -69,7 +69,7 @@ public class SetLoadoutCommand implements ICommand {
 		List<String> des = new ArrayList<String>();
 		des.add("Shift + Right Click to Delete");
 		
-		Material item = Material.PISTON_EXTENSION;
+		Material item = Material.THIN_GLASS;
 		if(minigame.getDefaultPlayerLoadout().getItems().size() != 0){
 			item = minigame.getDefaultPlayerLoadout().getItem((Integer)minigame.getDefaultPlayerLoadout().getItems().toArray()[0]).getType();
 		}
@@ -79,14 +79,14 @@ public class SetLoadoutCommand implements ICommand {
 		
 		int inc = 1;
 		for(String ld : minigame.getLoadouts()){
-			item = Material.PISTON_EXTENSION;
+			item = Material.THIN_GLASS;
 			if(minigame.getLoadout(ld).getItems().size() != 0){
 				item = minigame.getLoadout(ld).getItem((Integer)minigame.getLoadout(ld).getItems().toArray()[0]).getType();
 			}
 			loadouts.addItem(new MenuItemDisplayLoadout(ld, des, item, minigame.getLoadout(ld), minigame), inc);
 			inc++;
 		}
-		loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.PORTAL, minigame.getLoadoutMap(), minigame), 53);
+		loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, minigame.getLoadoutMap(), minigame), 53);
 		
 		loadouts.displayMenu(player);
 		return true;

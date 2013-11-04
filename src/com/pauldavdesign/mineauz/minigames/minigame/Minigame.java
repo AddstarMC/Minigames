@@ -1114,14 +1114,14 @@ public class Minigame {
 		List<String> des = new ArrayList<String>();
 		des.add("Shift + Right Click to Delete");
 		for(String ld : getLoadouts()){
-			Material item = Material.PISTON_EXTENSION;
+			Material item = Material.THIN_GLASS;
 			if(getLoadout(ld).getItems().size() != 0){
 				item = getLoadout(ld).getItem((Integer)getLoadout(ld).getItems().toArray()[0]).getType();
 			}
 			loadouts.addItem(new MenuItemDisplayLoadout(ld, des, item, getLoadout(ld), this), inc);
 			inc++;
 		}
-		loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.PORTAL, extraLoadouts, this), 53);
+		loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, extraLoadouts, this), 53);
 		loadouts.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), loadouts.getSize() - 9);
 		
 		inc = 0;

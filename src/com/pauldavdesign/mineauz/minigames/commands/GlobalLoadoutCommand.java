@@ -70,14 +70,14 @@ public class GlobalLoadoutCommand implements ICommand {
 		des.add("Shift + Right Click to Delete");
 		int inc = 0;
 		for(String ld : mdata.getLoadouts()){
-			Material item = Material.PISTON_EXTENSION;
+			Material item = Material.THIN_GLASS;
 			if(mdata.getLoadout(ld).getItems().size() != 0){
 				item = mdata.getLoadout(ld).getItem((Integer)mdata.getLoadout(ld).getItems().toArray()[0]).getType();
 			}
 			loadouts.addItem(new MenuItemDisplayLoadout(ld, des, item, mdata.getLoadout(ld)), inc);
 			inc++;
 		}
-		loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.PORTAL, mdata.getLoadoutMap()), 53);
+		loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, mdata.getLoadoutMap()), 53);
 		
 		loadouts.displayMenu(player);
 		return true;

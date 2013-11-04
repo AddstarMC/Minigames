@@ -14,7 +14,7 @@ public class MenuItem {
 	
 	public MenuItem(String name, Material displayItem){
 		if(displayItem == null)
-			displayItem = Material.PISTON_EXTENSION;
+			displayItem = Material.THIN_GLASS;
 		this.displayItem = new ItemStack(displayItem);
 		ItemMeta meta = this.displayItem.getItemMeta();
 		meta.setDisplayName(ChatColor.RESET + name);
@@ -23,7 +23,7 @@ public class MenuItem {
 	
 	public MenuItem(String name, List<String> description, Material displayItem){
 		if(displayItem == null)
-			displayItem = Material.PISTON_EXTENSION;
+			displayItem = Material.THIN_GLASS;
 		this.displayItem = new ItemStack(displayItem);
 		ItemMeta meta = this.displayItem.getItemMeta();
 		meta.setDisplayName(ChatColor.RESET + name);

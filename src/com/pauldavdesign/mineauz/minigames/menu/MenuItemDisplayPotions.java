@@ -30,7 +30,7 @@ public class MenuItemDisplayPotions extends MenuItem{
 		
 		potionMenu.setAllowModify(true);
 		potionMenu.setPreviousPage(getContainer());
-		potionMenu.addItem(new MenuItemPotionAdd("Add Potion", Material.PORTAL, loadout), 43);
+		potionMenu.addItem(new MenuItemPotionAdd("Add Potion", Material.ITEM_FRAME, loadout), 43);
 		potionMenu.addItem(new MenuItemPage("Save Potions", Material.REDSTONE_TORCH_ON, getContainer().getPreviousPage()), 44);
 		
 		List<String> des = new ArrayList<String>();
