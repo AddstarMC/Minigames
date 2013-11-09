@@ -294,7 +294,8 @@ public class RecorderData implements Listener{
 						@Override
 						public void run() {
 							bdata.getLocation().getBlock().setType(bdata.getBlockState().getType());
-							bdata.getLocation().getBlock().setData(bdata.getBlockState().getRawData());
+//							bdata.getLocation().getBlock().setData(bdata.getBlockState().getRawData());
+							bdata.getBlockState().update();
 							
 							if(bdata.getLocation().getBlock().getType() == Material.CHEST){
 								if(bdata.getLocation().getBlock().getState() instanceof DoubleChest){
@@ -352,7 +353,8 @@ public class RecorderData implements Listener{
 				@Override
 				public void run() {
 					bdata.getLocation().getBlock().setType(bdata.getBlockState().getType());
-					bdata.getLocation().getBlock().setData(bdata.getBlockState().getRawData());
+//					bdata.getLocation().getBlock().setData(bdata.getBlockState().getRawData());
+					bdata.getBlockState().update();
 					
 					if(bdata.getBlockState().getType() == Material.SIGN_POST || bdata.getBlockState().getType() == Material.WALL_SIGN){
 						Sign sign = (Sign) bdata.getLocation().getBlock().getState();
@@ -572,8 +574,9 @@ public class RecorderData implements Listener{
 				if(chest.getInventory().getSize() > 27){
 					Location loc = event.getClickedBlock().getLocation().clone();
 					boolean isLeft = false;
+					BlockFace dir = ((org.bukkit.material.Chest)chest.getData()).getFacing();
 					//West = -z; East = +z; North = +x; South = -x;
-					if(!isLeft && event.getClickedBlock().getData() == 0x2){
+					if(!isLeft && dir == BlockFace.NORTH){
 						loc.setX(loc.getX() + 1);
 						if(loc.getBlock().getType() == Material.CHEST){
 							isLeft = true;
@@ -582,7 +585,7 @@ public class RecorderData implements Listener{
 							loc = event.getClickedBlock().getLocation().clone();
 						}
 					}
-					else if(!isLeft && event.getClickedBlock().getData() == 0x3){
+					else if(!isLeft && dir == BlockFace.SOUTH){
 						loc.setX(loc.getX() - 1);
 						if(loc.getBlock().getType() == Material.CHEST){
 							isLeft = true;
@@ -591,7 +594,7 @@ public class RecorderData implements Listener{
 							loc = event.getClickedBlock().getLocation().clone();
 						}
 					}
-					else if(!isLeft && event.getClickedBlock().getData() == 0x4){
+					else if(!isLeft && dir == BlockFace.WEST){
 						loc.setZ(loc.getZ() - 1);
 						if(loc.getBlock().getType() == Material.CHEST){
 							isLeft = true;
@@ -600,7 +603,7 @@ public class RecorderData implements Listener{
 							loc = event.getClickedBlock().getLocation().clone();
 						}
 					}
-					else if(!isLeft && event.getClickedBlock().getData() == 0x5){
+					else if(!isLeft && dir == BlockFace.EAST){
 						loc.setZ(loc.getZ() + 1);
 						if(loc.getBlock().getType() == Material.CHEST){
 							isLeft = true;

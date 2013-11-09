@@ -17,6 +17,7 @@ public class CTFFlag{
 	private Location spawnLocation = null;
 	private Location currentLocation = null;
 	private MaterialData data = null;
+	private BlockState spawnData = null;
 	private BlockState originalBlock = null;
 	private String[] signText = null;
 	private boolean atHome = true;
@@ -29,11 +30,11 @@ public class CTFFlag{
 	public CTFFlag(Location spawn, int team, Player carrier, Minigame minigame){
 		spawnLocation = spawn;
 		data = ((Sign)spawnLocation.getBlock().getState()).getData();
+		spawnData = spawnLocation.getBlock().getState();
 		signText = ((Sign)spawnLocation.getBlock().getState()).getLines();
 		this.team = team;
 		this.setMinigame(minigame);
 		respawnTime = Minigames.plugin.getConfig().getInt("multiplayer.ctf.flagrespawntime");
-//		startReturnTimer();
 	}
 	
 	public Location getSpawnLocation() {
@@ -136,7 +137,7 @@ public class CTFFlag{
 				
 				blockBelow.setY(blockBelow.getY() - 1);
 				blockBelow.getBlock().setType(originalBlock.getType());
-				blockBelow.getBlock().setData(originalBlock.getRawData());
+				originalBlock.update();
 				
 				currentLocation = null;
 				stopTimer();
@@ -149,8 +150,8 @@ public class CTFFlag{
 	
 	public void respawnFlag(){
 		removeFlag();
-		spawnLocation.getBlock().setType(Material.SIGN_POST);
-		spawnLocation.getBlock().setData(data.getData());
+		spawnLocation.getBlock().setType(spawnData.getType());
+		spawnData.update();
 		currentLocation = null;
 		atHome = true;
 
