@@ -1,10 +1,12 @@
 package com.pauldavdesign.mineauz.minigames.menu;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -12,7 +14,7 @@ import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 
 public class Menu {
-	private int rows = 1;
+	private int rows = 2;
 	private ItemStack[] pageView;
 	private Map<Integer, MenuItem> pageMap = new HashMap<Integer, MenuItem>();
 	private String name = "Menu";
@@ -24,6 +26,10 @@ public class Menu {
 	private Inventory inv = null;
 	
 	public Menu(int rows, String name, MinigamePlayer viewer){
+		if(rows > 6)
+			rows = 6;
+		else if(rows < 2)
+			rows = 2;
 		this.rows = rows;
 		this.name = name;
 		pageView = new ItemStack[rows*9];
@@ -45,6 +51,61 @@ public class Menu {
 			return true;
 		}
 		return false;
+	}
+	
+	public void addItem(MenuItem item){
+		int inc = 0;
+		Menu m = this;
+		int maxItems = 9 * (rows - 1);
+		while(true){
+			if(inc == maxItems){
+				if(m.getNextPage() == null)
+					m.addPage();
+				
+				m = m.getNextPage();
+				inc = 0;
+			}
+			
+			if(m.getClicked(inc) == null){
+				m.addItem(item, inc);
+				break;
+			}
+			inc++;
+		}
+	}
+	
+	public void addItems(List<MenuItem> items){
+		double pages = Math.ceil((double)items.size() / ((rows - 1) * 9.0));
+		if(pages > 1){
+			Menu nextMenu = this;
+			for(int i = 2; i <= pages; i++){
+				nextMenu.addPage();
+				nextMenu = nextMenu.getNextPage();
+			}
+		}
+		
+		Menu curPage = this;
+		int inc = 0;
+		for(MenuItem it : items){
+			curPage.addItem(it, inc);
+			inc++;
+			if(inc >= (9 * (rows - 1))){
+				inc = 0;
+				curPage = curPage.getNextPage();
+			}
+		}
+	}
+	
+	public void addPage(){
+		Menu nextPage = new Menu(rows, name, viewer);
+		addItem(new MenuItemPage("Next Page", Material.REDSTONE_TORCH_ON, nextPage), 9 * (rows - 1) + 5);
+		setNextPage(nextPage);
+		nextPage.setPreviousPage(this);
+		nextPage.addItem(new MenuItemPage("Previous Page", Material.REDSTONE_TORCH_ON, this), 9 * (rows - 1) + 3);
+		for(int j = 9 * (rows - 1) + 6; j < 9 * rows; j++){
+			if(getClicked(j) != null)
+				nextPage.addItem(getClicked(j), j);
+		}
 	}
 	
 	public void removeItem(int slot){

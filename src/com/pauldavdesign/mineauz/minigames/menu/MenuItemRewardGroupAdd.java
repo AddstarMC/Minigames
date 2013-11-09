@@ -51,13 +51,7 @@ public class MenuItemRewardGroupAdd extends MenuItem{
 		RewardGroup group = rewards.addGroup(entry, RewardRarity.NORMAL);
 		
 		MenuItemRewardGroup mrg = new MenuItemRewardGroup(entry + " Group", Material.CHEST, group, rewards);
-		
-		for(int i = 0; i < 45; i++){
-			if(!getContainer().hasMenuItem(i)){
-				getContainer().addItem(mrg, i);
-				break;
-			}
-		}
+		getContainer().addItem(mrg);
 		
 		getContainer().cancelReopenTimer();
 		getContainer().displayMenu(getContainer().getViewer());

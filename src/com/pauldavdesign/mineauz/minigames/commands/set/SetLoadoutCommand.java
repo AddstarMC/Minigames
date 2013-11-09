@@ -11,6 +11,7 @@ import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemDisplayLoadout;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemLoadoutAdd;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
@@ -65,6 +66,7 @@ public class SetLoadoutCommand implements ICommand {
 
 		MinigamePlayer player = Minigames.plugin.pdata.getMinigamePlayer((Player)sender);
 		Menu loadouts = new Menu(6, getName(), player);
+		List<MenuItem> mi = new ArrayList<MenuItem>();
 		
 		List<String> des = new ArrayList<String>();
 		des.add("Shift + Right Click to Delete");
@@ -75,18 +77,17 @@ public class SetLoadoutCommand implements ICommand {
 		}
 		MenuItemDisplayLoadout defLoad = new MenuItemDisplayLoadout("Default Loadout", item, minigame.getDefaultPlayerLoadout(), minigame);
 		defLoad.setAllowDelete(false);
-		loadouts.addItem(defLoad, 0);
+		mi.add(defLoad);
 		
-		int inc = 1;
 		for(String ld : minigame.getLoadouts()){
 			item = Material.THIN_GLASS;
 			if(minigame.getLoadout(ld).getItems().size() != 0){
 				item = minigame.getLoadout(ld).getItem((Integer)minigame.getLoadout(ld).getItems().toArray()[0]).getType();
 			}
-			loadouts.addItem(new MenuItemDisplayLoadout(ld, des, item, minigame.getLoadout(ld), minigame), inc);
-			inc++;
+			mi.add(new MenuItemDisplayLoadout(ld, des, item, minigame.getLoadout(ld), minigame));
 		}
 		loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, minigame.getLoadoutMap(), minigame), 53);
+		loadouts.addItems(mi);
 		
 		loadouts.displayMenu(player);
 		return true;

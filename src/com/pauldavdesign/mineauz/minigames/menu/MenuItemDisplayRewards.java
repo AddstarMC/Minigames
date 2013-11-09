@@ -44,27 +44,27 @@ public class MenuItemDisplayRewards extends MenuItem{
 		for(RewardRarity r : RewardRarity.values()){
 			list.add(r.toString());
 		}
-		int inc = 0;
+		
+		List<MenuItem> mi = new ArrayList<MenuItem>();
 		for(RewardItem item : rewards.getRewards()){
 			if(item.getItem() != null){
 				MenuItemReward rew = new MenuItemReward(MinigameUtils.getItemStackName(item.getItem()), item.getItem().getType(), item, rewards, list);
 				rew.setItem(item.getItem());
 				rew.updateDescription();
-				rewardMenu.addItem(rew, inc);
+				mi.add(rew);
 			}
 			else{
 				MenuItemReward rew = new MenuItemReward("$" + item.getMoney(), Material.PAPER, item, rewards, list);
-				rewardMenu.addItem(rew, inc);
+				mi.add(rew);
 			}
-			inc++;
 		}
 		des = new ArrayList<String>();
 		des.add("Double Click to edit");
 		for(RewardGroup group : rewards.getGroups()){
 			MenuItemRewardGroup rwg = new MenuItemRewardGroup(group.getName() + " Group", des, Material.CHEST, group, rewards);
-			rewardMenu.addItem(rwg, inc);
-			inc++;
+			mi.add(rwg);
 		}
+		rewardMenu.addItems(mi);
 		rewardMenu.displayMenu(getContainer().getViewer());
 		return null;
 	}

@@ -59,38 +59,25 @@ public class MenuItemRewardAdd extends MenuItem{
 	@Override
 	public void checkValidEntry(String entry){
 		if(entry.matches("\\$?[0-9]+(\\.[0-9]{2})?")){
-			if((rewards != null && rewards.getRewards().size() < 45) || group.getItems().size() < 45){
-				double money = Double.parseDouble(entry.replace("$", ""));
-				RewardItem it;
-				if(group == null)
-					it = rewards.addMoney(money, RewardRarity.NORMAL);
-				else{
-					it = new RewardItem(money, RewardRarity.NORMAL);
-					group.addItem(it);
-				}
-	
-				List<String> list = new ArrayList<String>();
-				for(RewardRarity r : RewardRarity.values()){
-					list.add(r.toString());
-				}
-				
-				MenuItemReward rew = new MenuItemReward("$" + money, Material.PAPER, it, rewards, list);
-				for(int i = 0; i < 45; i++){
-					if(!getContainer().hasMenuItem(i)){
-						getContainer().addItem(rew, i);
-						break;
-					}
-				}
-				
-				getContainer().cancelReopenTimer();
-				getContainer().displayMenu(getContainer().getViewer());
-			}
+			double money = Double.parseDouble(entry.replace("$", ""));
+			RewardItem it;
+			if(group == null)
+				it = rewards.addMoney(money, RewardRarity.NORMAL);
 			else{
-				getContainer().cancelReopenTimer();
-				getContainer().displayMenu(getContainer().getViewer());
-				
-				getContainer().getViewer().sendMessage("Too many reward items!", "error");
+				it = new RewardItem(money, RewardRarity.NORMAL);
+				group.addItem(it);
 			}
+
+			List<String> list = new ArrayList<String>();
+			for(RewardRarity r : RewardRarity.values()){
+				list.add(r.toString());
+			}
+			
+			MenuItemReward rew = new MenuItemReward("$" + money, Material.PAPER, it, rewards, list);
+			getContainer().addItem(rew);
+			
+			getContainer().cancelReopenTimer();
+			getContainer().displayMenu(getContainer().getViewer());
 			return;
 		}
 		getContainer().cancelReopenTimer();
@@ -102,32 +89,23 @@ public class MenuItemRewardAdd extends MenuItem{
 	@Override
 	public ItemStack onClickWithItem(ItemStack item){
 		item = item.clone();
-		if((rewards != null && rewards.getRewards().size() < 45) || group.getItems().size() < 45){
-			RewardItem it;
-			if(group == null)
-				it = rewards.addItem(item, RewardRarity.NORMAL);
-			else{
-				it = new RewardItem(item, RewardRarity.NORMAL);
-				group.addItem(it);
-			}
-			
-			List<String> list = new ArrayList<String>();
-			for(RewardRarity r : RewardRarity.values()){
-				list.add(r.toString());
-			}
-			
-			MenuItemReward rew = new MenuItemReward(MinigameUtils.getItemStackName(item), item.getType(), it, rewards, list);
-			rew.setItem(item);
-			rew.updateDescription();
-			for(int i = 0; i < 45; i++){
-				if(!getContainer().hasMenuItem(i)){
-					getContainer().addItem(rew, i);
-					break;
-				}
-			}
+		RewardItem it;
+		if(group == null)
+			it = rewards.addItem(item, RewardRarity.NORMAL);
+		else{
+			it = new RewardItem(item, RewardRarity.NORMAL);
+			group.addItem(it);
 		}
-		else
-			getContainer().getViewer().sendMessage("Too many reward items!", "error");
+		
+		List<String> list = new ArrayList<String>();
+		for(RewardRarity r : RewardRarity.values()){
+			list.add(r.toString());
+		}
+		
+		MenuItemReward rew = new MenuItemReward(MinigameUtils.getItemStackName(item), item.getType(), it, rewards, list);
+		rew.setItem(item);
+		rew.updateDescription();
+		getContainer().addItem(rew);
 		return getItem();
 	}
 }

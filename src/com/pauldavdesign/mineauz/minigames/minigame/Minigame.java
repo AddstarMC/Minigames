@@ -982,8 +982,6 @@ public class Minigame {
 	}
 	
 	public void displayMenu(MinigamePlayer player){
-		int inc = 0;
-		
 		Menu main = new Menu(6, getName(), player);
 		Menu playerMenu = new Menu(6, getName(), player);
 		Menu treasureHunt = new Menu(6, getName(), player);
@@ -1110,7 +1108,7 @@ public class Minigame {
 		itemsMain.add(defLoad);
 		itemsMain.add(new MenuItemPage("Additional Loadouts", Material.CHEST, loadouts));
 		
-
+		List<MenuItem> mi = new ArrayList<MenuItem>();
 		List<String> des = new ArrayList<String>();
 		des.add("Shift + Right Click to Delete");
 		for(String ld : getLoadouts()){
@@ -1118,17 +1116,13 @@ public class Minigame {
 			if(getLoadout(ld).getItems().size() != 0){
 				item = getLoadout(ld).getItem((Integer)getLoadout(ld).getItems().toArray()[0]).getType();
 			}
-			loadouts.addItem(new MenuItemDisplayLoadout(ld, des, item, getLoadout(ld), this), inc);
-			inc++;
+			mi.add(new MenuItemDisplayLoadout(ld, des, item, getLoadout(ld), this));
 		}
 		loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, extraLoadouts, this), 53);
 		loadouts.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), loadouts.getSize() - 9);
+		loadouts.addItems(mi);
 		
-		inc = 0;
-		for(MenuItem item : itemsMain){
-			main.addItem(item, inc);
-			inc++;
-		}
+		main.addItems(itemsMain);
 		main.addItem(new MenuItemSaveMinigame("Save " + getName(), Material.REDSTONE_TORCH_ON, this), main.getSize() - 1);
 		
 		List<MenuItem> itemsTreasureHunt = new ArrayList<MenuItem>();
@@ -1191,12 +1185,7 @@ public class Minigame {
 				return maxTreasure;
 			}
 		}, 0, null));
-		
-		inc = 0;
-		for(MenuItem item : itemsTreasureHunt){
-			treasureHunt.addItem(item, inc);
-			inc++;
-		}
+		treasureHunt.addItems(itemsTreasureHunt);
 		treasureHunt.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
 		
 		List<MenuItem> itemsPlayer = new ArrayList<MenuItem>();
@@ -1331,12 +1320,7 @@ public class Minigame {
 				return unlimitedAmmo;
 			}
 		}));
-		
-		inc = 0;
-		for(MenuItem item : itemsPlayer){
-			playerMenu.addItem(item, inc);
-			inc++;
-		}
+		playerMenu.addItems(itemsPlayer);
 		playerMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
 		
 		main.displayMenu(player);

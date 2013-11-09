@@ -162,19 +162,21 @@ public class MenuItemRewardGroup extends MenuItem{
 		for(RewardRarity r : RewardRarity.values()){
 			list.add(r.toString());
 		}
-		int inc = 0;
+		
+		List<MenuItem> mi = new ArrayList<MenuItem>();
 		for(RewardItem item : group.getItems()){
 			if(item.getItem() != null){
 				MenuItemReward rew = new MenuItemReward(MinigameUtils.getItemStackName(item.getItem()), item.getItem().getType(), item, group, list);
 				rew.setItem(item.getItem());
-				rewardMenu.addItem(rew, inc);
+				mi.add(rew);
 			}
 			else{
 				MenuItemReward rew = new MenuItemReward("$" + item.getMoney(), Material.PAPER, item, group, list);
-				rewardMenu.addItem(rew, inc);
+				mi.add(rew);
 			}
-			inc++;
 		}
+		
+		rewardMenu.addItems(mi);
 		rewardMenu.displayMenu(getContainer().getViewer());
 		return null;
 	}
