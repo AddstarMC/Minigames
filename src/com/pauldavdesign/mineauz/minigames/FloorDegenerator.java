@@ -153,13 +153,13 @@ public class FloorDegenerator{
 		int x = curblock.getBlockX();
 		int z = curblock.getBlockZ();
 		int y = curblock.getBlockY();
+		Random random = new Random();
 		do{
 			curblock.setZ(z);
 			curblock.setX(x);
 			curblock.setY(y);
 			for(int i = lowest.getBlockX(); i <= highest.getBlockX() + 1; i++){
 				for(int k = lowest.getBlockZ(); k <= highest.getBlockZ() + 1; k++){
-					Random random = new Random();
 					if(curblock.getBlock().getType() != Material.AIR && random.nextInt(100) < chance){
 						mgm.getBlockRecorder().addBlock(curblock.getBlock(), null);
 						curblock.getBlock().setType(Material.AIR);
