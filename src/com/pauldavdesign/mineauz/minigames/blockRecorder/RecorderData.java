@@ -59,6 +59,7 @@ import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
@@ -972,16 +973,25 @@ public class RecorderData implements Listener{
 	}
 	
 	@EventHandler(ignoreCancelled = true)
-	private void physicalBlock(EntityChangeBlockEvent event){
-		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getBlock().getLocation())){
-			if(event.getBlock().getType() == Material.SAND ||
-					event.getBlock().getType() == Material.GRAVEL ||
-					event.getBlock().getType() == Material.DRAGON_EGG ||
-					event.getBlock().getType() == Material.ANVIL){
-				addBlock(event.getBlock(), null);
-				addEntity(event.getEntity(), null, true);
+	private void physicalBlock(EntityChangeBlockEvent event)
+	{
+		if(hasRegenArea() && blockInRegenArea(event.getBlock().getLocation()))
+		{
+			if(event.getTo() == Material.SAND ||
+				event.getTo() == Material.GRAVEL ||
+				event.getTo() == Material.DRAGON_EGG ||
+				event.getTo() == Material.ANVIL)
+			{
+				
+				if(minigame.hasPlayers() || event.getEntity().hasMetadata("FellInMinigame"))
+				{
+					addBlock(event.getBlock(), null);
+					addEntity(event.getEntity(), null, true);
+				}
 			}
-			else if(event.getEntityType() == EntityType.FALLING_BLOCK){
+			else if(event.getEntityType() == EntityType.FALLING_BLOCK && minigame.hasPlayers())
+			{
+				event.getEntity().setMetadata("FellInMinigame", new FixedMetadataValue(Minigames.plugin, true));
 				addBlock(event.getBlock(), null);
 				addEntity(event.getEntity(), null, true);
 			}
