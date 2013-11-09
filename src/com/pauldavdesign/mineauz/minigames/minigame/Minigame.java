@@ -86,7 +86,7 @@ public class Minigame {
 	private boolean itemPickup = true;
 	private boolean blockBreak = false;
 	private boolean blockPlace = false;
-	private int defaultGamemode = 2;
+	private GameMode defaultGamemode = GameMode.ADVENTURE;
 	private boolean blocksdrop = true;
 	private boolean allowEnderpearls = false;
 	
@@ -100,10 +100,6 @@ public class Minigame {
 	
 	private Location regenArea1 = null;
 	private Location regenArea2 = null;
-	
-	//Teams
-	//private List<Player> redTeam = new ArrayList<Player>();
-	//private List<Player> blueTeam = new ArrayList<Player>();
 	
 	private int redTeamScore = 0;
 	private int blueTeamScore = 0;
@@ -165,10 +161,6 @@ public class Minigame {
 		sbManager.registerNewObjective(this.name, "dummy");
 		sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
 	}
-	
-//	public void setSecondaryRewardItem(ItemStack secondaryRewardItem){
-//		this.secondaryRewardItem = secondaryRewardItem;
-//	}
 
 	public List<RewardItem> getSecondaryRewardItem(){
 		return secondaryRewardItem.getReward();
@@ -178,18 +170,6 @@ public class Minigame {
 		return secondaryRewardItem;
 	}
 
-//	public void setSecondaryRewardPrice(double secondaryRewardPrice) {
-//		this.secondaryRewardPrice = secondaryRewardPrice;
-//	}
-//
-//	public double getSecondaryRewardPrice() {
-//		return secondaryRewardPrice;
-//	}
-
-//	public void setRewardItem(ItemStack rewardItem){
-//		this.rewardItem = rewardItem;
-//	}
-
 	public List<RewardItem> getRewardItem(){
 		return rewardItem.getReward();
 	}
@@ -197,14 +177,6 @@ public class Minigame {
 	public Rewards getRewardItems(){
 		return rewardItem;
 	}
-
-//	public void setRewardPrice(double rewardPrice) {
-//		this.rewardPrice = rewardPrice;
-//	}
-//
-//	public double getRewardPrice() {
-//		return rewardPrice;
-//	}
 
 	public void setMaxRadius(int maxRadius){
 		this.maxRadius = maxRadius;
@@ -781,16 +753,12 @@ public class Minigame {
 	public void setCanBlockBreak(boolean blockBreak) {
 		this.blockBreak = blockBreak;
 	}
-
-	public int getDefaultGamemodeInt() {
-		return defaultGamemode;
-	}
 	
 	public GameMode getDefaultGamemode() {
-		return GameMode.getByValue(defaultGamemode);
+		return defaultGamemode;
 	}
 
-	public void setDefaultGamemode(int defaultGamemode) {
+	public void setDefaultGamemode(GameMode defaultGamemode) {
 		this.defaultGamemode = defaultGamemode;
 	}
 
@@ -1469,34 +1437,6 @@ public class Minigame {
 				minigame.getConfig().set(name + ".reward2." + group.getName() + ".rarity", group.getRarity().toString());
 			}
 		}
-//		if(getRewardItem() != null){
-//			minigame.getConfig().set(name + ".reward", getRewardItem());
-//		}
-//		else{
-//			minigame.getConfig().set(name + ".reward", null);
-//		}
-		
-//		if(getSecondaryRewardItem() != null){
-//			minigame.getConfig().set(name + ".reward2", getSecondaryRewardItem());
-//		}
-//		else{
-//			minigame.getConfig().set(name + ".reward2", null);
-//		}
-				
-//		if(getRewardPrice() != 0){
-//			minigame.getConfig().set(name + ".rewardprice", getRewardPrice());
-//		}
-//		else{
-//			minigame.getConfig().set(name + ".rewardprice", null);
-//		}
-//		
-//		if(getSecondaryRewardPrice() != 0){
-//			minigame.getConfig().set(name + ".rewardprice2", getSecondaryRewardPrice());
-//		}
-//		else{
-//			minigame.getConfig().set(name + ".rewardprice2", null);
-//		}
-		
 		if(!getFlags().isEmpty()){
 			minigame.getConfig().set(name + ".flags", getFlags());
 		}
@@ -1506,9 +1446,6 @@ public class Minigame {
 		
 		if(hasDefaultLoadout()){
 			minigame.getConfig().set(name + ".loadout", null);
-//			for(int i = 0; i < getDefaultPlayerLoadout().getItems().size(); i++){
-//				minigame.getConfig().set(name + ".loadout." + i, getDefaultPlayerLoadout().getItems().get(i));
-//			}
 			for(Integer slot : getDefaultPlayerLoadout().getItems()){
 				minigame.getConfig().set(name + ".loadout." + slot, getDefaultPlayerLoadout().getItem(slot));
 			}
@@ -1535,9 +1472,6 @@ public class Minigame {
 		
 		if(hasLoadouts()){
 			for(String loadout : getLoadouts()){
-//				for(int i = 0; i < getLoadout(loadout).getItems().size(); i++){
-//					minigame.getConfig().set(name + ".extraloadouts." + loadout + "." + i, getLoadout(loadout).getItems().get(i));
-//				}
 				for(Integer slot : getLoadout(loadout).getItems()){
 					minigame.getConfig().set(name + ".extraloadouts." + loadout + "." + slot, getLoadout(loadout).getItem(slot));
 				}
@@ -1634,8 +1568,8 @@ public class Minigame {
 			minigame.getConfig().set(name + ".blockplace", null);
 		}
 		
-		if(getDefaultGamemodeInt() != 2){
-			minigame.getConfig().set(name + ".gamemode", getDefaultGamemodeInt());
+		if(getDefaultGamemode() != GameMode.ADVENTURE){
+			minigame.getConfig().set(name + ".gamemode", getDefaultGamemode().toString());
 		}
 		else{
 			minigame.getConfig().set(name + ".gamemode", null);
@@ -2018,7 +1952,10 @@ public class Minigame {
 		}
 		
 		if(minigame.getConfig().contains(name + ".gamemode")){
-			setDefaultGamemode(minigame.getConfig().getInt(name + ".gamemode"));
+			if(minigame.getConfig().getString(name + ".gamemode").matches("[0-2]"))
+				setDefaultGamemode(GameMode.getByValue(minigame.getConfig().getInt(name + ".gamemode"))); //TODO: Remove after 1.6.0 Release
+			else
+				setDefaultGamemode(GameMode.valueOf(minigame.getConfig().getString(name + ".gamemode")));
 		}
 		
 		if(minigame.getConfig().contains(name + ".whitelistmode")){

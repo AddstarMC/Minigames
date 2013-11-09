@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames.presets;
 
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -36,7 +37,7 @@ public class CTFPreset implements BasePreset {
 		minigame.setCanBlockPlace(false);
 		minigame.setMinScore(5);
 		minigame.setMaxScore(5);
-		minigame.setDefaultGamemode(2);
+		minigame.setDefaultGamemode(GameMode.ADVENTURE);
 //		minigame.getDefaultPlayerLoadout().addItemToLoadout(new ItemStack(Material.STONE_SWORD));
 //		minigame.getDefaultPlayerLoadout().addItemToLoadout(new ItemStack(Material.LEATHER_HELMET));
 //		minigame.getDefaultPlayerLoadout().addItemToLoadout(new ItemStack(Material.LEATHER_CHESTPLATE));
