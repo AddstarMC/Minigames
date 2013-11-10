@@ -48,7 +48,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		mItems.add(new MenuItemBoolean("Allow Fall Damage", Material.LEATHER_BOOTS, loadout.getFallDamageCallback()));
 		mItems.add(new MenuItemBoolean("Allow Hunger", Material.APPLE, loadout.getHungerCallback()));
 		loadoutSettings.addItems(mItems);
-		loadoutSettings.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, loadoutMenu), getContainer().getSize() - 9);
+		loadoutSettings.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, getContainer()), getContainer().getSize() - 9);
 		
 		loadoutMenu.setAllowModify(true);
 		loadoutMenu.setPreviousPage(getContainer());

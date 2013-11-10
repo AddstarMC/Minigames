@@ -185,9 +185,39 @@ public class Minigame {
 	public int getMaxRadius(){
 		return maxRadius;
 	}
+	
+	private Callback<Integer> getMaxRadiusCallback(){
+		return new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				maxRadius = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return maxRadius;
+			}
+		};
+	}
 
 	public int getMaxHeight() {
 		return maxHeight;
+	}
+	
+	private Callback<Integer> getMaxHeightCallback(){
+		return new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				maxHeight = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return maxHeight;
+			}
+		};
 	}
 
 	public void setMaxHeight(int maxHeight) {
@@ -335,6 +365,21 @@ public class Minigame {
 	public boolean isEnabled(){
 		return enabled;
 	}
+	
+	private Callback<Boolean> getEnabledCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				enabled = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return enabled;
+			}
+		};
+	}
 
 	public void setEnabled(boolean enabled){
 		this.enabled = enabled;
@@ -343,6 +388,21 @@ public class Minigame {
 	public int getMinPlayers(){
 		return minPlayers;
 	}
+	
+	private Callback<Integer> getMinPlayersCallback(){
+		return new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				minPlayers = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return minPlayers;
+			}
+		};
+	}
 
 	public void setMinPlayers(int minPlayers){
 		this.minPlayers = minPlayers;
@@ -350,6 +410,21 @@ public class Minigame {
 
 	public int getMaxPlayers(){
 		return maxPlayers;
+	}
+	
+	private Callback<Integer> getMaxPlayersCallback(){
+		return new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				maxPlayers = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return maxPlayers;
+			}
+		};
 	}
 
 	public void setMaxPlayers(int maxPlayers){
@@ -373,7 +448,22 @@ public class Minigame {
 	}
 
 	public String getDegenType() {
-		return degenType;
+		return degenType; //TODO: Create Enum
+	}
+	
+	private Callback<String> getDegenTypeCallback(){
+		return new Callback<String>() {
+
+			@Override
+			public void setValue(String value) {
+				degenType = value;
+			}
+
+			@Override
+			public String getValue() {
+				return degenType;
+			}
+		};
 	}
 
 	public void setDegenType(String degenType) {
@@ -382,6 +472,21 @@ public class Minigame {
 
 	public int getDegenRandomChance() {
 		return degenRandomChance;
+	}
+	
+	private Callback<Integer> getDegenRandomChanceCallback(){
+		return new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				degenRandomChance = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return degenRandomChance;
+			}
+		};
 	}
 
 	public void setDegenRandomChance(int degenRandomChance) {
@@ -421,7 +526,22 @@ public class Minigame {
 	}
 	
 	public String getType(){
-		return type;
+		return type; //TODO: Create Type Enum
+	}
+	
+	private Callback<String> getTypeCallback(){
+		return new Callback<String>() {
+
+			@Override
+			public void setValue(String value) {
+				type = value;
+			}
+
+			@Override
+			public String getValue() {
+				return type;
+			}
+		};
 	}
 	
 	public void setType(String type){
@@ -465,6 +585,21 @@ public class Minigame {
 
 	public boolean getUsePermissions() {
 		return usePermissions;
+	}
+	
+	private Callback<Boolean> getUsePermissionsCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				usePermissions = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return usePermissions;
+			}
+		};
 	}
 
 	public TreasureHuntTimer getThTimer() {
@@ -606,6 +741,21 @@ public class Minigame {
 	public int getMinScore() {
 		return minScore;
 	}
+	
+	private Callback<Integer> getMinScoreCallback(){
+		return new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				minScore = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return minScore;
+			}
+		};
+	}
 
 	public void setMinScore(int minScore) {
 		this.minScore = minScore;
@@ -613,6 +763,21 @@ public class Minigame {
 
 	public int getMaxScore() {
 		return maxScore;
+	}
+	
+	private Callback<Integer> getMaxScoreCallback(){
+		return new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				maxScore = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return maxScore;
+			}
+		};
 	}
 
 	public void setMaxScore(int maxScore) {
@@ -673,6 +838,21 @@ public class Minigame {
 	public int getMinTreasure() {
 		return minTreasure;
 	}
+	
+	private Callback<Integer> getMinTreasureCallback(){
+		return new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				minTreasure = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return minTreasure;
+			}
+		};
+	}
 
 	public void setMinTreasure(int minTreasure) {
 		this.minTreasure = minTreasure;
@@ -680,6 +860,21 @@ public class Minigame {
 
 	public int getMaxTreasure() {
 		return maxTreasure;
+	}
+	
+	private Callback<Integer> getMaxTreasureCallback(){
+		return new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				maxTreasure = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return maxTreasure;
+			}
+		};
 	}
 
 	public void setMaxTreasure(int maxTreasure) {
@@ -701,9 +896,39 @@ public class Minigame {
 	public int getTimer(){
 		return timer;
 	}
+	
+	private Callback<Integer> getTimerCallback(){
+		return new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				timer = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return timer;
+			}
+		};
+	}
 
 	public int getStartWaitTime() {
 		return startWaitTime;
+	}
+	
+	private Callback<Integer> getStartWaitTimeCallback(){
+		return new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				startWaitTime = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return startWaitTime;
+			}
+		};
 	}
 
 	public void setStartWaitTime(int startWaitTime) {
@@ -713,6 +938,21 @@ public class Minigame {
 	public boolean hasItemDrops() {
 		return itemDrops;
 	}
+	
+	private Callback<Boolean> getItemDropsCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				itemDrops = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return itemDrops;
+			}
+		};
+	}
 
 	public void setItemDrops(boolean itemDrops) {
 		this.itemDrops = itemDrops;
@@ -721,6 +961,21 @@ public class Minigame {
 	public boolean hasDeathDrops() {
 		return deathDrops;
 	}
+	
+	private Callback<Boolean> getDeathDropsCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				deathDrops = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return deathDrops;
+			}
+		};
+	}
 
 	public void setDeathDrops(boolean deathDrops) {
 		this.deathDrops = deathDrops;
@@ -728,6 +983,21 @@ public class Minigame {
 
 	public boolean hasItemPickup() {
 		return itemPickup;
+	}
+	
+	private Callback<Boolean> getItemPickupCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				itemPickup = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return itemPickup;
+			}
+		};
 	}
 
 	public void setItemPickup(boolean itemPickup) {
@@ -741,9 +1011,39 @@ public class Minigame {
 	public boolean canBlockBreak() {
 		return blockBreak;
 	}
+	
+	private Callback<Boolean> getBlockBreakCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				blockBreak = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return blockBreak;
+			}
+		};
+	}
 
 	public boolean canBlockPlace() {
 		return blockPlace;
+	}
+	
+	private Callback<Boolean> getBlockPlaceCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				blockPlace = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return blockPlace;
+			}
+		};
 	}
 
 	public void setCanBlockPlace(boolean blockPlace) {
@@ -765,13 +1065,43 @@ public class Minigame {
 	public boolean canBlocksdrop() {
 		return blocksdrop;
 	}
+	
+	private Callback<Boolean> getBlocksDropCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				blocksdrop = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return blocksdrop;
+			}
+		};
+	}
 
 	public void setBlocksdrop(boolean blocksdrop) {
 		this.blocksdrop = blocksdrop;
 	}
 
 	public String getScoreType() {
-		return scoreType;
+		return scoreType; //TODO: Score Type Enum
+	}
+	
+	private Callback<String> getScoreTypeCallback(){
+		return new Callback<String>() {
+
+			@Override
+			public void setValue(String value) {
+				scoreType = value;
+			}
+
+			@Override
+			public String getValue() {
+				return scoreType;
+			}
+		};
 	}
 
 	public void setScoreType(String scoreType) {
@@ -828,6 +1158,21 @@ public class Minigame {
 	public boolean hasPaintBallMode() {
 		return paintBallMode;
 	}
+	
+	private Callback<Boolean> getPaintballModeCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				paintBallMode = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return paintBallMode;
+			}
+		};
+	}
 
 	public void setPaintBallMode(boolean paintBallMode) {
 		this.paintBallMode = paintBallMode;
@@ -835,6 +1180,21 @@ public class Minigame {
 
 	public int getPaintBallDamage() {
 		return paintBallDamage;
+	}
+	
+	private Callback<Integer> getPaintballDamageCallback(){
+		return new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				paintBallDamage = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return paintBallDamage;
+			}
+		};
 	}
 
 	public void setPaintBallDamage(int paintBallDamage) {
@@ -844,6 +1204,21 @@ public class Minigame {
 	public boolean hasUnlimitedAmmo() {
 		return unlimitedAmmo;
 	}
+	
+	private Callback<Boolean> getUnlimitedAmmoCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				unlimitedAmmo = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return unlimitedAmmo;
+			}
+		};
+	}
 
 	public void setUnlimitedAmmo(boolean unlimitedAmmo) {
 		this.unlimitedAmmo = unlimitedAmmo;
@@ -851,6 +1226,21 @@ public class Minigame {
 
 	public boolean canSaveCheckpoint() {
 		return saveCheckpoint;
+	}
+	
+	private Callback<Boolean> getSaveCheckpointCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				saveCheckpoint = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return saveCheckpoint;
+			}
+		};
 	}
 
 	public void setSaveCheckpoint(boolean saveCheckpoint) {
@@ -860,6 +1250,21 @@ public class Minigame {
 	public boolean canLateJoin() {
 		return lateJoin;
 	}
+	
+	private Callback<Boolean> getLateJoinCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				lateJoin = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return lateJoin;
+			}
+		};
+	}
 
 	public void setLateJoin(boolean lateJoin) {
 		this.lateJoin = lateJoin;
@@ -867,6 +1272,21 @@ public class Minigame {
 
 	public boolean canSpectateFly() {
 		return canSpectateFly;
+	}
+	
+	private Callback<Boolean> getSpectatorFlyCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				canSpectateFly = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return canSpectateFly;
+			}
+		};
 	}
 
 	public void setCanSpectateFly(boolean canSpectateFly) {
@@ -876,6 +1296,21 @@ public class Minigame {
 	public boolean isRandomizeChests() {
 		return randomizeChests;
 	}
+	
+	private Callback<Boolean> getRandomizeChestsCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				randomizeChests = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return randomizeChests;
+			}
+		};
+	}
 
 	public void setRandomizeChests(boolean randomizeChests) {
 		this.randomizeChests = randomizeChests;
@@ -884,6 +1319,21 @@ public class Minigame {
 	public int getMinChestRandom() {
 		return minChestRandom;
 	}
+	
+	private Callback<Integer> getMinChestRandomCallback(){
+		return new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				minChestRandom = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return minChestRandom;
+			}
+		};
+	}
 
 	public void setMinChestRandom(int minChestRandom) {
 		this.minChestRandom = minChestRandom;
@@ -891,6 +1341,21 @@ public class Minigame {
 
 	public int getMaxChestRandom() {
 		return maxChestRandom;
+	}
+	
+	private Callback<Integer> getMaxChestRandomCallback(){
+		return new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				maxChestRandom = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return maxChestRandom;
+			}
+		};
 	}
 
 	public void setMaxChestRandom(int maxChestRandom) {
@@ -916,6 +1381,21 @@ public class Minigame {
 	public int getLives() {
 		return lives;
 	}
+	
+	private Callback<Integer> getLivesCallback(){
+		return new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				lives = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return lives;
+			}
+		};
+	}
 
 	public void setLives(int lives) {
 		this.lives = lives;
@@ -923,6 +1403,21 @@ public class Minigame {
 
 	public int getFloorDegenTime() {
 		return floorDegenTime;
+	}
+	
+	private Callback<Integer> getFloorDegenTimeCallback(){
+		return new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				floorDegenTime = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return floorDegenTime;
+			}
+		};
 	}
 
 	public void setFloorDegenTime(int floorDegenTime) {
@@ -940,6 +1435,21 @@ public class Minigame {
 	public boolean isAllowedEnderpearls() {
 		return allowEnderpearls;
 	}
+	
+	private Callback<Boolean> getAllowedEnderpearlsCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				allowEnderpearls = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return allowEnderpearls;
+			}
+		};
+	}
 
 	public void setAllowEnderpearls(boolean allowEnderpearls) {
 		this.allowEnderpearls = allowEnderpearls;
@@ -956,65 +1466,19 @@ public class Minigame {
 		Menu loadouts = new Menu(6, getName(), player);
 		
 		List<MenuItem> itemsMain = new ArrayList<MenuItem>();
-		itemsMain.add(new MenuItemBoolean("Enabled", Material.PAPER, new Callback<Boolean>() {
-
-			@Override
-			public void setValue(Boolean value) {
-				enabled = value;
-			}
-
-			@Override
-			public Boolean getValue() {
-				return enabled;
-			}
-		}));
-		itemsMain.add(new MenuItemBoolean("Use Permissions", Material.PAPER, new Callback<Boolean>() {
-
-			@Override
-			public void setValue(Boolean value) {
-				usePermissions = value;
-			}
-
-			@Override
-			public Boolean getValue() {
-				return usePermissions;
-			}
-		}));
-		itemsMain.add(new MenuItemList("Game Type", Material.PAPER, new Callback<String>() {
-			@Override
-			public void setValue(String value) {
-				type = value;
-			}
-
-			@Override
-			public String getValue() {
-				return type;
-			}
-		}, Minigames.plugin.mdata.getMinigameTypesList()));
-		itemsMain.add(new MenuItemInteger("Min. Players", Material.STEP, new Callback<Integer>() {
-
-			@Override
-			public void setValue(Integer value) {
-				minPlayers = value;
-			}
-
-			@Override
-			public Integer getValue() {
-				return minPlayers;
-			}
-		}, 0, null));
-		itemsMain.add(new MenuItemInteger("Max. Players", Material.DOUBLE_STEP, new Callback<Integer>() {
-
-			@Override
-			public void setValue(Integer value) {
-				maxPlayers = value;
-			}
-
-			@Override
-			public Integer getValue() {
-				return maxPlayers;
-			}
-		}, 0, null));
+		itemsMain.add(new MenuItemBoolean("Enabled", Material.PAPER, getEnabledCallback()));
+		itemsMain.add(new MenuItemBoolean("Use Permissions", Material.PAPER, getUsePermissionsCallback()));
+		itemsMain.add(new MenuItemList("Game Type", Material.PAPER, getTypeCallback(), Minigames.plugin.mdata.getMinigameTypesList()));
+		List<String> scoreTypes = new ArrayList<String>();
+		scoreTypes.addAll(Minigames.plugin.getScoreTypes().getScoreTypes().keySet());
+		itemsMain.add(new MenuItemList("Score Type", Material.ROTTEN_FLESH, getScoreTypeCallback(), scoreTypes));
+		itemsMain.add(new MenuItemInteger("Min. Score", Material.STEP, getMinScoreCallback(), 0, null));
+		itemsMain.add(new MenuItemInteger("Max. Score", Material.DOUBLE_STEP, getMaxScoreCallback(), 0, null));
+		itemsMain.add(new MenuItemInteger("Min. Players", Material.STEP, getMinPlayersCallback(), 0, null));
+		itemsMain.add(new MenuItemInteger("Max. Players", Material.DOUBLE_STEP, getMaxPlayersCallback(), 0, null));
+		itemsMain.add(new MenuItemInteger("Time Length", Material.WATCH, getTimerCallback(), 0, null)); //TODO: Time menu item
+		itemsMain.add(new MenuItemInteger("Start Wait Time", Material.WATCH, getStartWaitTimeCallback(), 3, null));
+		itemsMain.add(new MenuItemBoolean("Allow Late Join", Material.DEAD_BUSH, getLateJoinCallback()));
 		itemsMain.add(new MenuItemDisplayRewards("Primary Rewards", Material.CHEST, rewardItem));
 		itemsMain.add(new MenuItemDisplayRewards("Secondary Rewards", Material.CHEST, secondaryRewardItem));
 		List<String> floorDegenDes = new ArrayList<String>();
@@ -1024,48 +1488,15 @@ public class Minigame {
 		floorDegenOpt.add("inward");
 		floorDegenOpt.add("circle");
 		floorDegenOpt.add("random");
-		itemsMain.add(new MenuItemList("Floor Degenerator Type", floorDegenDes, Material.SNOW_BLOCK, new Callback<String>() {
-
-			@Override
-			public void setValue(String value) {
-				degenType = value;
-			}
-
-			@Override
-			public String getValue() {
-				return degenType;
-			}
-		}, floorDegenOpt));
+		itemsMain.add(new MenuItemList("Floor Degenerator Type", floorDegenDes, Material.SNOW_BLOCK, getDegenTypeCallback(), floorDegenOpt));
 		List<String> degenRandDes = new ArrayList<String>();
 		degenRandDes.add("Chance of block being");
 		degenRandDes.add("removed on random");
 		degenRandDes.add("degeneration.");
-		itemsMain.add(new MenuItemInteger("Random Floor Degen Chance", degenRandDes, Material.SNOW, new Callback<Integer>() {
-
-			@Override
-			public void setValue(Integer value) {
-				degenRandomChance = value;
-			}
-
-			@Override
-			public Integer getValue() {
-				return degenRandomChance;
-			}
-		}, 1, 100));
+		itemsMain.add(new MenuItemInteger("Random Floor Degen Chance", degenRandDes, Material.SNOW, getDegenRandomChanceCallback(), 1, 100));
 		List<String> degenDelayDes = new ArrayList<String>();
 		degenDelayDes.add(ChatColor.GREEN + "seconds.");
-		itemsMain.add(new MenuItemInteger("Floor Degenerator Delay", degenDelayDes, Material.WATCH, new Callback<Integer>() {
-
-			@Override
-			public void setValue(Integer value) {
-				floorDegenTime = value;
-			}
-
-			@Override
-			public Integer getValue() {
-				return floorDegenTime;
-			}
-		}, 1, null));
+		itemsMain.add(new MenuItemInteger("Floor Degenerator Delay", degenDelayDes, Material.WATCH, getFloorDegenTimeCallback(), 1, null));
 		itemsMain.add(new MenuItemPage("Player Settings", Material.SKULL_ITEM, playerMenu));
 		List<String> thDes = new ArrayList<String>();
 		thDes.add("Treasure hunt related");
@@ -1075,7 +1506,21 @@ public class Minigame {
 		defLoad.setAllowDelete(false);
 		itemsMain.add(defLoad);
 		itemsMain.add(new MenuItemPage("Additional Loadouts", Material.CHEST, loadouts));
-		
+		itemsMain.add(new MenuItemBoolean("Allow Spectator Fly", Material.FEATHER, getSpectatorFlyCallback()));
+		List<String> rndChstDes = new ArrayList<String>();
+		rndChstDes.add("Randomize items in");
+		rndChstDes.add("chest upon first opening");
+		itemsMain.add(new MenuItemBoolean("Randomize Chests", rndChstDes, Material.CHEST, getRandomizeChestsCallback()));
+		rndChstDes.clear();
+		rndChstDes.add("Min. item randomization");
+		itemsMain.add(new MenuItemInteger("Min. Chest Random", rndChstDes, Material.STEP, getMinChestRandomCallback(), 0, null));
+		rndChstDes.clear();
+		rndChstDes.add("Max. item randomization");
+		itemsMain.add(new MenuItemInteger("Max. Chest Random", rndChstDes, Material.DOUBLE_STEP, getMaxChestRandomCallback(), 0, null));
+
+		//--------------//
+		//Loadout Settings
+		//--------------//
 		List<MenuItem> mi = new ArrayList<MenuItem>();
 		List<String> des = new ArrayList<String>();
 		des.add("Shift + Right Click to Delete");
@@ -1092,202 +1537,45 @@ public class Minigame {
 		
 		main.addItems(itemsMain);
 		main.addItem(new MenuItemSaveMinigame("Save " + getName(), Material.REDSTONE_TORCH_ON, this), main.getSize() - 1);
-		
+
+		//--------------------//
+		//Treasure Hunt Settings
+		//--------------------//
 		List<MenuItem> itemsTreasureHunt = new ArrayList<MenuItem>();
-		itemsTreasureHunt.add(new MenuItemInteger("Max. Radius", Material.ENDER_PEARL, new Callback<Integer>() {
-
-			@Override
-			public void setValue(Integer value) {
-				maxRadius = value;
-			}
-
-			@Override
-			public Integer getValue() {
-				return maxRadius;
-			}
-		}, 10, null));
+		itemsTreasureHunt.add(new MenuItemInteger("Max. Radius", Material.ENDER_PEARL, getMaxRadiusCallback(), 10, null));
 		List<String> maxHeightDes = new ArrayList<String>();
 		maxHeightDes.add("Max. height of where a");
 		maxHeightDes.add("chest can generate.");
 		maxHeightDes.add("Can still move above to");
 		maxHeightDes.add("avoid terrain");
-		itemsTreasureHunt.add(new MenuItemInteger("Max. Height", Material.BEACON, new Callback<Integer>() {
-
-			@Override
-			public void setValue(Integer value) {
-				maxHeight = value;
-			}
-
-			@Override
-			public Integer getValue() {
-				return maxHeight;
-			}
-		}, 1, 256));
+		itemsTreasureHunt.add(new MenuItemInteger("Max. Height", Material.BEACON, getMaxHeightCallback(), 1, 256));
 		List<String> minDes = new ArrayList<String>();
 		minDes.add("Minimum items to");
 		minDes.add("spawn in chest.");
-		itemsTreasureHunt.add(new MenuItemInteger("Min. Items", minDes, Material.STONE, new Callback<Integer>() {
-
-			@Override
-			public void setValue(Integer value) {
-				minTreasure = value;
-			}
-
-			@Override
-			public Integer getValue() {
-				return minTreasure;
-			}
-		}, 0, null));
+		itemsTreasureHunt.add(new MenuItemInteger("Min. Items", minDes, Material.STONE, getMinTreasureCallback(), 0, null));
 		List<String> maxDes = new ArrayList<String>();
 		maxDes.add("Maximum items to");
 		maxDes.add("spawn in chest.");
-		itemsTreasureHunt.add(new MenuItemInteger("Max. Items", maxDes, Material.DIAMOND, new Callback<Integer>() {
-
-			@Override
-			public void setValue(Integer value) {
-				maxTreasure = value;
-			}
-
-			@Override
-			public Integer getValue() {
-				return maxTreasure;
-			}
-		}, 0, null));
+		itemsTreasureHunt.add(new MenuItemInteger("Max. Items", maxDes, Material.DIAMOND, getMaxTreasureCallback(), 0, null));
 		treasureHunt.addItems(itemsTreasureHunt);
 		treasureHunt.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
-		
+
+		//----------------------//
+		//Minigame Player Settings
+		//----------------------//
 		List<MenuItem> itemsPlayer = new ArrayList<MenuItem>();
-		itemsPlayer.add(new MenuItemBoolean("Allow Enderpearls", Material.ENDER_PEARL, new Callback<Boolean>() {
-			
-			@Override
-			public void setValue(Boolean value) {
-				allowEnderpearls = value;
-			}
-			
-			@Override
-			public Boolean getValue() {
-				return allowEnderpearls;
-			}
-		}));
-		itemsPlayer.add(new MenuItemBoolean("Allow Item Drops", Material.DIAMOND_SWORD, new Callback<Boolean>() {
-			
-			@Override
-			public void setValue(Boolean value) {
-				itemDrops = value;
-			}
-			
-			@Override
-			public Boolean getValue() {
-				return itemDrops;
-			}
-		}));
-		itemsPlayer.add(new MenuItemBoolean("Allow Death Drops", Material.SKULL_ITEM, new Callback<Boolean>() {
-			
-			@Override
-			public void setValue(Boolean value) {
-				deathDrops = value;
-			}
-			
-			@Override
-			public Boolean getValue() {
-				return deathDrops;
-			}
-		}));
-		itemsPlayer.add(new MenuItemBoolean("Allow Item Pickup", Material.DIAMOND, new Callback<Boolean>() {
-			
-			@Override
-			public void setValue(Boolean value) {
-				itemPickup = value;
-			}
-			
-			@Override
-			public Boolean getValue() {
-				return itemPickup;
-			}
-		}));
-		itemsPlayer.add(new MenuItemBoolean("Allow Block Break", Material.DIAMOND_PICKAXE, new Callback<Boolean>() {
-			
-			@Override
-			public void setValue(Boolean value) {
-				blockBreak = value;
-			}
-			
-			@Override
-			public Boolean getValue() {
-				return blockBreak;
-			}
-		}));
-		itemsPlayer.add(new MenuItemBoolean("Allow Block Place", Material.STONE, new Callback<Boolean>() {
-			
-			@Override
-			public void setValue(Boolean value) {
-				blockPlace = value;
-			}
-			
-			@Override
-			public Boolean getValue() {
-				return blockPlace;
-			}
-		}));
-		itemsPlayer.add(new MenuItemBoolean("Allow Block Drops", Material.COBBLESTONE, new Callback<Boolean>() {
-			
-			@Override
-			public void setValue(Boolean value) {
-				blocksdrop = value;
-			}
-			
-			@Override
-			public Boolean getValue() {
-				return blocksdrop;
-			}
-		}));
-		itemsPlayer.add(new MenuItemInteger("Lives", Material.APPLE, new Callback<Integer>() {
-			@Override
-			public void setValue(Integer value){
-				lives = value;
-			}
-			
-			@Override
-			public Integer getValue(){
-				return lives;
-			}
-		}, 0, null));
-		itemsPlayer.add(new MenuItemBoolean("Painball Mode", Material.SNOW_BALL, new Callback<Boolean>() {
-
-			@Override
-			public void setValue(Boolean value) {
-				paintBallMode = value;
-			}
-
-			@Override
-			public Boolean getValue() {
-				return paintBallMode;
-			}
-		}));
-		itemsPlayer.add(new MenuItemInteger("Paintball Damage", Material.ARROW, new Callback<Integer>() {
-
-			@Override
-			public void setValue(Integer value) {
-				paintBallDamage = value;
-			}
-
-			@Override
-			public Integer getValue() {
-				return paintBallDamage;
-			}
-		}, 1, null));
-		itemsPlayer.add(new MenuItemBoolean("Unlimited Ammo", Material.SNOW_BLOCK, new Callback<Boolean>() {
-
-			@Override
-			public void setValue(Boolean value) {
-				unlimitedAmmo = value;
-			}
-
-			@Override
-			public Boolean getValue() {
-				return unlimitedAmmo;
-			}
-		}));
+		itemsPlayer.add(new MenuItemBoolean("Allow Enderpearls", Material.ENDER_PEARL, getAllowedEnderpearlsCallback()));
+		itemsPlayer.add(new MenuItemBoolean("Allow Item Drops", Material.DIAMOND_SWORD, getItemDropsCallback()));
+		itemsPlayer.add(new MenuItemBoolean("Allow Death Drops", Material.SKULL_ITEM, getDeathDropsCallback()));
+		itemsPlayer.add(new MenuItemBoolean("Allow Item Pickup", Material.DIAMOND, getItemPickupCallback()));
+		itemsPlayer.add(new MenuItemBoolean("Allow Block Break", Material.DIAMOND_PICKAXE, getBlockBreakCallback()));
+		itemsPlayer.add(new MenuItemBoolean("Allow Block Place", Material.STONE, getBlockPlaceCallback()));
+		itemsPlayer.add(new MenuItemBoolean("Allow Block Drops", Material.COBBLESTONE, getBlocksDropCallback()));
+		itemsPlayer.add(new MenuItemInteger("Lives", Material.APPLE, getLivesCallback(), 0, null));
+		itemsPlayer.add(new MenuItemBoolean("Painball Mode", Material.SNOW_BALL, getPaintballModeCallback()));
+		itemsPlayer.add(new MenuItemInteger("Paintball Damage", Material.ARROW, getPaintballDamageCallback(), 1, null));
+		itemsPlayer.add(new MenuItemBoolean("Unlimited Ammo", Material.SNOW_BLOCK, getUnlimitedAmmoCallback()));
+		itemsPlayer.add(new MenuItemBoolean("Save Checkpoints", Material.SIGN_POST, getSaveCheckpointCallback()));
 		playerMenu.addItems(itemsPlayer);
 		playerMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
 		
