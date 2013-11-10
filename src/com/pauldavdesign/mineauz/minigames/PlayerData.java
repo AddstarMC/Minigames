@@ -63,6 +63,7 @@ public class PlayerData {
 			if(mdata.getMinigameTypes().contains(gametype)){
 				player.setAllowTeleport(true);
 				player.getPlayer().setFallDistance(0);
+				player.getPlayer().setWalkSpeed(0.2f);
 				if(mdata.minigameType(gametype).joinMinigame(player, minigame)){
 					plugin.getLogger().info(MinigameUtils.formStr("player.join.consMsg", player.getName(), minigame.getName()));
 					mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.join.plyMsg", player.getName(), minigame.getName()), null, player);

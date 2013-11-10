@@ -10,11 +10,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
+import com.pauldavdesign.mineauz.minigames.menu.Callback;
+
 public class PlayerLoadout {
 	private Map<Integer, ItemStack> itemSlot = new HashMap<Integer, ItemStack>();
 	private List<PotionEffect> potions = new ArrayList<PotionEffect>();
 	private String loadoutName = "default";
 	private boolean usePermission = false;
+	private boolean fallDamage = true;
+	private boolean hunger = false;
 	
 	public PlayerLoadout(String name){
 		loadoutName = name;
@@ -114,5 +118,43 @@ public class PlayerLoadout {
 	
 	public void clearLoadout(){
 		itemSlot.clear();
+	}
+	
+	public boolean hasFallDamage(){
+		return fallDamage;
+	}
+	
+	public Callback<Boolean> getFallDamageCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				fallDamage = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return fallDamage;
+			}
+		};
+	}
+	
+	public boolean hasHunger(){
+		return hunger;
+	}
+	
+	public Callback<Boolean> getHungerCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				hunger = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return hunger;
+			}
+		};
 	}
 }

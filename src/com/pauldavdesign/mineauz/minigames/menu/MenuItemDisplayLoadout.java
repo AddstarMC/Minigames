@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames.menu;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
@@ -41,14 +42,22 @@ public class MenuItemDisplayLoadout extends MenuItem{
 	@Override
 	public ItemStack onClick(){
 		Menu loadoutMenu = new Menu(5, loadout.getName(), getContainer().getViewer());
+		Menu loadoutSettings = new Menu(6, loadout.getName(), getContainer().getViewer());
+		
+		List<MenuItem> mItems = new ArrayList<MenuItem>();
+		mItems.add(new MenuItemBoolean("Allow Fall Damage", Material.LEATHER_BOOTS, loadout.getFallDamageCallback()));
+		mItems.add(new MenuItemBoolean("Allow Hunger", Material.APPLE, loadout.getHungerCallback()));
+		loadoutSettings.addItems(mItems);
+		loadoutSettings.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, loadoutMenu), getContainer().getSize() - 9);
 		
 		loadoutMenu.setAllowModify(true);
 		loadoutMenu.setPreviousPage(getContainer());
-
+		
+		loadoutMenu.addItem(new MenuItemPage("Loadout Settings", Material.CHEST, loadoutSettings), 42);
 		loadoutMenu.addItem(new MenuItemDisplayPotions("Edit Potion Effects", Material.POTION, loadout), 43);
 		loadoutMenu.addItem(new MenuItemSaveLoadout("Save Loadout", Material.REDSTONE_TORCH_ON, loadout), 44);
 		
-		for(int i = 40; i < 43; i++){
+		for(int i = 40; i < 42; i++){
 			loadoutMenu.addItem(new MenuItem("", null), i);
 		}
 		loadoutMenu.displayMenu(getContainer().getViewer());

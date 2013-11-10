@@ -23,6 +23,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -467,6 +468,10 @@ public class Events implements Listener{
 				if(mgm.isSpectator(ply)){
 					event.setCancelled(true);
 				}
+				else if(event.getCause() == DamageCause.FALL && 
+						ply.getLoadout() != null && !ply.getLoadout().hasFallDamage()){
+					event.setCancelled(true);
+				}
 			}
 		}
 	}
@@ -560,5 +565,15 @@ public class Events implements Listener{
 			ply.setManualEntry(null);
 		}
 		
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	private void playerHungry(FoodLevelChangeEvent event){
+		MinigamePlayer ply = pdata.getMinigamePlayer((Player)event.getEntity());
+		if(ply == null) return;
+		if(ply.isInMinigame() && ply.getLoadout() != null && 
+				!ply.getLoadout().hasHunger()){
+			event.setCancelled(true);
+		}
 	}
 }

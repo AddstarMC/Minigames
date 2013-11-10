@@ -294,7 +294,6 @@ public class RecorderData implements Listener{
 						@Override
 						public void run() {
 							bdata.getLocation().getBlock().setType(bdata.getBlockState().getType());
-//							bdata.getLocation().getBlock().setData(bdata.getBlockState().getRawData());
 							bdata.getBlockState().update();
 							
 							if(bdata.getLocation().getBlock().getType() == Material.CHEST){
