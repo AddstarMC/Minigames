@@ -1572,7 +1572,7 @@ public class Minigame {
 		itemsPlayer.add(new MenuItemBoolean("Allow Block Place", Material.STONE, getBlockPlaceCallback()));
 		itemsPlayer.add(new MenuItemBoolean("Allow Block Drops", Material.COBBLESTONE, getBlocksDropCallback()));
 		itemsPlayer.add(new MenuItemInteger("Lives", Material.APPLE, getLivesCallback(), 0, null));
-		itemsPlayer.add(new MenuItemBoolean("Painball Mode", Material.SNOW_BALL, getPaintballModeCallback()));
+		itemsPlayer.add(new MenuItemBoolean("Paintball Mode", Material.SNOW_BALL, getPaintballModeCallback()));
 		itemsPlayer.add(new MenuItemInteger("Paintball Damage", Material.ARROW, getPaintballDamageCallback(), 1, null));
 		itemsPlayer.add(new MenuItemBoolean("Unlimited Ammo", Material.SNOW_BLOCK, getUnlimitedAmmoCallback()));
 		itemsPlayer.add(new MenuItemBoolean("Save Checkpoints", Material.SIGN_POST, getSaveCheckpointCallback()));
