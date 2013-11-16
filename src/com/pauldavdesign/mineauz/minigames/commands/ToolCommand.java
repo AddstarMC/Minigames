@@ -3,6 +3,7 @@ package com.pauldavdesign.mineauz.minigames.commands;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -11,6 +12,7 @@ import com.pauldavdesign.mineauz.minigames.MinigameTool;
 import com.pauldavdesign.mineauz.minigames.MinigameToolMode;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.RestoreBlock;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class ToolCommand implements ICommand {
@@ -51,7 +53,8 @@ public class ToolCommand implements ICommand {
 			"/minigame tool degenarea",
 			"/minigame tool restoreblock",
 			"/minigame tool regenarea",
-			"/minigame tool select"
+			"/minigame tool select",
+			"/minigame tool deselect"
 		};
 	}
 
@@ -233,8 +236,69 @@ public class ToolCommand implements ICommand {
 					else if(tool.getMode() == MinigameToolMode.QUIT && tool.getMinigame().getLobbyPosition() != null){
 						player.getPlayer().sendBlockChange(tool.getMinigame().getLobbyPosition(), Material.SKULL, (byte)1); //TODO: Use alternate Method!
 					}
+					else if(tool.getMode() == MinigameToolMode.RESTORE_BLOCK && !tool.getMinigame().getRestoreBlocks().isEmpty()){
+						for(RestoreBlock bl : tool.getMinigame().getRestoreBlocks().values()){
+							player.getPlayer().sendBlockChange(bl.getLocation(), Material.REDSTONE_BLOCK, (byte)0);
+						}
+					}
 					else
 						sender.sendMessage(ChatColor.RED + "Nothing to select.");
+				}
+				else
+					sender.sendMessage(ChatColor.RED + "You must have a valid Minigame selected to use this tool!");
+			}
+			else if(args[0].equalsIgnoreCase("deselect")){
+				MinigameTool tool;
+				if(!MinigameUtils.hasMinigameTool(player))
+					tool = MinigameUtils.giveMinigameTool(player);
+				else
+					tool = MinigameUtils.getMinigameTool(player);
+				
+				if(tool.getMinigame() != null){
+					if((tool.getMode() == MinigameToolMode.REGEN_AREA || tool.getMode() == MinigameToolMode.DEGEN_AREA) && player.hasSelection()){
+						player.showSelection(true);
+					}
+					else if(tool.getMode() == MinigameToolMode.START){
+						if(tool.getTeam() != null){
+							if(tool.getTeam().equals("Red")){
+								for(Location loc : tool.getMinigame().getStartLocationsRed()){
+									Location nloc = loc.clone();
+									player.getPlayer().sendBlockChange(nloc, nloc.getBlock().getType(), nloc.getBlock().getData()); //TODO: Use alternate Method!
+								}
+							}
+							else{
+								for(Location loc : tool.getMinigame().getStartLocationsBlue()){
+									Location nloc = loc.clone();
+									player.getPlayer().sendBlockChange(nloc, nloc.getBlock().getType(), nloc.getBlock().getData()); //TODO: Use alternate Method!
+								}
+							}
+						}
+						else{
+							for(Location loc : tool.getMinigame().getStartLocations()){
+								Location nloc = loc.clone();
+								player.getPlayer().sendBlockChange(nloc, nloc.getBlock().getType(), nloc.getBlock().getData()); //TODO: Use alternate Method!
+							}
+						}
+					}
+					else if(tool.getMode() == MinigameToolMode.QUIT && tool.getMinigame().getQuitPosition() != null){
+						Block bl = tool.getMinigame().getQuitPosition().getBlock();
+						player.getPlayer().sendBlockChange(bl.getLocation(), bl.getType(), bl.getData()); //TODO: Use alternate Method!
+					}
+					else if(tool.getMode() == MinigameToolMode.QUIT && tool.getMinigame().getEndPosition() != null){
+						Block bl = tool.getMinigame().getEndPosition().getBlock();
+						player.getPlayer().sendBlockChange(bl.getLocation(), bl.getType(), bl.getData()); //TODO: Use alternate Method!
+					}
+					else if(tool.getMode() == MinigameToolMode.QUIT && tool.getMinigame().getLobbyPosition() != null){
+						Block bl = tool.getMinigame().getLobbyPosition().getBlock();
+						player.getPlayer().sendBlockChange(bl.getLocation(), bl.getType(), bl.getData()); //TODO: Use alternate Method!
+					}
+					else if(tool.getMode() == MinigameToolMode.RESTORE_BLOCK && !tool.getMinigame().getRestoreBlocks().isEmpty()){
+						for(RestoreBlock bl : tool.getMinigame().getRestoreBlocks().values()){
+							player.getPlayer().sendBlockChange(bl.getLocation(), bl.getLocation().getBlock().getType(), bl.getLocation().getBlock().getData());
+						}
+					}
+					else
+						sender.sendMessage(ChatColor.RED + "Nothing to deselect.");
 				}
 				else
 					sender.sendMessage(ChatColor.RED + "You must have a valid Minigame selected to use this tool!");
