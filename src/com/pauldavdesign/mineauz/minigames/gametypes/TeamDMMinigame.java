@@ -346,14 +346,13 @@ public class TeamDMMinigame extends MinigameTypeBase{
 				mgm.setRedTeamScore(0);
 				mgm.setBlueTeamScore(0);
 				
-				mgm.getMpTimer().setStartWaitTime(0);
-				
 				if(mgm.getMinigameTimer() != null){
 					mgm.getMinigameTimer().stopTimer();
 					mgm.setMinigameTimer(null);
 				}
 				
 				if(mgm.getMpTimer() != null){
+					mgm.getMpTimer().setStartWaitTime(0);
 					mgm.getMpTimer().pauseTimer();
 					mgm.getMpTimer().removeTimer();
 					mgm.setMpTimer(null);
