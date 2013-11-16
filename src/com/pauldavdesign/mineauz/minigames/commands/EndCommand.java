@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class EndCommand implements ICommand{
@@ -91,7 +92,7 @@ public class EndCommand implements ICommand{
 				}
 				
 				if(ply != null && ply.isInMinigame()){
-					if(ply.getMinigame().getType().equals("teamdm")){
+					if(ply.getMinigame().getType() == MinigameType.TEAMS){
 						int team = 0;
 						for(OfflinePlayer pl : ply.getMinigame().getBlueTeam()){
 							if(pl.getName().equals(ply.getName())){

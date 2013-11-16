@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames.presets;
 
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class LMSPreset implements BasePreset {
@@ -18,7 +19,7 @@ public class LMSPreset implements BasePreset {
 	@Override
 	public void execute(Minigame minigame) {
 		minigame.setLives(1);
-		minigame.setType("dm");
+		minigame.setType(MinigameType.FREE_FOR_ALL);
 		minigame.setScoreType("none");
 	}
 

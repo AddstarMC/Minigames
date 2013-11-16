@@ -17,6 +17,7 @@ import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
@@ -31,7 +32,7 @@ public class CTFType extends ScoreTypeBase{
 	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
 		
 		for(int i = 0; i < players.size(); i++){
-			if(minigame.getType().equals("teamdm")){
+			if(minigame.getType() == MinigameType.TEAMS){
 				int team = -1;
 				if(minigame.getBlueTeam().contains(players.get(i))){
 					team = 1;
@@ -88,13 +89,13 @@ public class CTFType extends ScoreTypeBase{
 				Minigame mgm = ply.getMinigame();
 				Sign sign = (Sign) event.getClickedBlock().getState();
 				if(mgm.getScoreType().equals("ctf") && sign.getLine(1).equals(ChatColor.GREEN + "Flag")){
-					if(!mgm.getBlueTeam().isEmpty() || !mgm.getRedTeam().isEmpty() || !mgm.getType().equals("teamdm")){
+					if(!mgm.getBlueTeam().isEmpty() || !mgm.getRedTeam().isEmpty() || mgm.getType() != MinigameType.TEAMS){
 						int team = 0;
 						if(mgm.getBlueTeam().contains(event.getPlayer())){
 							team = 1;
 						}
 						
-						if(!mgm.getType().equals("teamdm")){
+						if(mgm.getType() != MinigameType.TEAMS){
 							team = -1;
 						}
 						
@@ -159,7 +160,7 @@ public class CTFType extends ScoreTypeBase{
 								
 								boolean end = false;
 								
-								if(mgm.getType().equals("teamdm")){
+								if(mgm.getType() == MinigameType.TEAMS){
 									if(team == 1){
 										mgm.incrementBlueTeamScore();
 										
@@ -322,7 +323,7 @@ public class CTFType extends ScoreTypeBase{
 	public void playerAutoBalance(PlayerDeathEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
 		if(ply == null) return;
-		if(ply.isInMinigame() && ply.getMinigame().getType().equals("teamdm")){
+		if(ply.isInMinigame() && ply.getMinigame().getType() == MinigameType.TEAMS){
 			int pteam = 0;
 			if(ply.getMinigame().getBlueTeam().contains(ply.getPlayer())){
 				pteam = 1;

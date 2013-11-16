@@ -46,6 +46,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.events.RevertCheckpointEvent;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
@@ -149,7 +150,7 @@ public class Events implements Listener{
 		
 		if(Bukkit.getServer().getOnlinePlayers().length == 1){
 			for(String mgm : mdata.getAllMinigames().keySet()){
-				if(mdata.getMinigame(mgm).getType().equals("th")){
+				if(mdata.getMinigame(mgm).getType() == MinigameType.TREASURE_HUNT){
 					if(mdata.getMinigame(mgm).getThTimer() != null){
 						mdata.getMinigame(mgm).getThTimer().pauseTimer(true);
 					}
@@ -218,7 +219,7 @@ public class Events implements Listener{
 		
 		if(Bukkit.getServer().getOnlinePlayers().length == 1){
 			for(String mgm : mdata.getAllMinigames().keySet()){
-				if(mdata.getMinigame(mgm).getType().equals("th")){
+				if(mdata.getMinigame(mgm).getType() == MinigameType.TREASURE_HUNT){
 					if(mdata.getMinigame(mgm).getThTimer() != null){
 						mdata.getMinigame(mgm).getThTimer().pauseTimer(false);
 					}
@@ -282,7 +283,7 @@ public class Events implements Listener{
 									status += " " + ChatColor.RED + MinigameUtils.getLang("minigame.info.status.started");
 								}
 								
-								if(!mgm.getType().equals("sp")){
+								if(mgm.getType() != MinigameType.SINGLEPLAYER){
 									event.getPlayer().sendMessage(status);
 									if(mgm.canLateJoin())
 										event.getPlayer().sendMessage(ChatColor.AQUA + MinigameUtils.getLang("minigame.info.lateJoin.msg") + " " + ChatColor.GREEN + MinigameUtils.getLang("minigame.info.lateJoin.enabled"));
@@ -294,7 +295,7 @@ public class Events implements Listener{
 									event.getPlayer().sendMessage(ChatColor.AQUA + "Time left: " + MinigameUtils.convertTime(mgm.getMinigameTimer().getTimeLeft()));
 								}
 								
-								if(mgm.getType().equals("teamdm")){
+								if(mgm.getType() == MinigameType.TEAMS){
 									event.getPlayer().sendMessage(ChatColor.AQUA + MinigameUtils.getLang("minigame.info.score") + MinigameUtils.formStr("player.end.team.score", ChatColor.RED.toString() + mgm.getRedTeamScore() + ChatColor.WHITE, ChatColor.BLUE.toString() + mgm.getBlueTeamScore()));
 								}
 								
@@ -303,7 +304,7 @@ public class Events implements Listener{
 								
 								if(mgm.hasPlayers()){
 									playerCount += mgm.getPlayers().size() ;
-									if(!mgm.getType().equals("sp")){
+									if(mgm.getType() != MinigameType.SINGLEPLAYER){
 										playerCount += "/" + mgm.getMaxPlayers();
 									}
 									
@@ -316,7 +317,7 @@ public class Events implements Listener{
 								else{
 									playerCount += "0";
 									
-									if(!mgm.getType().equals("sp")){
+									if(mgm.getType() != MinigameType.SINGLEPLAYER){
 										playerCount += "/" + mgm.getMaxPlayers();
 									}
 									
@@ -381,7 +382,7 @@ public class Events implements Listener{
 	
 	@EventHandler(ignoreCancelled = true)
 	public void playerRevert(RevertCheckpointEvent event){
-		if(event.getMinigamePlayer().isInMinigame() && (event.getMinigamePlayer().getMinigame().getType().equals("lms") || event.getMinigamePlayer().getMinigame().getType().equals("dm") || event.getMinigamePlayer().getMinigame().getType().equals("teamdm"))){
+		if(event.getMinigamePlayer().isInMinigame() && (event.getMinigamePlayer().getMinigame().getType() == MinigameType.FREE_FOR_ALL || event.getMinigamePlayer().getMinigame().getType() == MinigameType.TEAMS)){
 			event.setCancelled(true);
 			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noRevert", event.getMinigamePlayer().getMinigame().getType()));
 		}
@@ -414,7 +415,7 @@ public class Events implements Listener{
 					if(shooter.isInMinigame() && shooter.getMinigame().equals(ply.getMinigame())){
 						int plyTeam = -1;
 						int atcTeam = -2;
-						if(mgm.getType().equals("teamdm")){
+						if(mgm.getType() == MinigameType.TEAMS){
 							plyTeam = 0;
 							if(mgm.getBlueTeam().contains(ply.getPlayer())){
 								plyTeam = 1;

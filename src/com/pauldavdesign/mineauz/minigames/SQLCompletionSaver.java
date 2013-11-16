@@ -7,24 +7,24 @@ import java.util.List;
 
 import lib.PatPeter.SQLibrary.Database;
 
-import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameTypeBase;
 
 public class SQLCompletionSaver extends Thread{
 	private boolean hascompleted = false;
 	private String minigame = null;
 	private MinigamePlayer player = null;
 	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
-	public MinigameType mgtype = null;
+	public MinigameTypeBase mgtype = null;
 	public PlayerData pdata = Minigames.plugin.pdata;
 	
-	public SQLCompletionSaver(String minigame, MinigamePlayer player, MinigameType mgtype){
+	public SQLCompletionSaver(String minigame, MinigamePlayer player, MinigameTypeBase mgtype){
 		this.minigame = minigame;
 		this.player = player;
 		this.mgtype = mgtype;
 		this.start();
 	}
 	
-	public SQLCompletionSaver(String minigame, List<MinigamePlayer> players, MinigameType mgtype){
+	public SQLCompletionSaver(String minigame, List<MinigamePlayer> players, MinigameTypeBase mgtype){
 		this.minigame = minigame;
 		this.players = players;
 		this.mgtype = mgtype;

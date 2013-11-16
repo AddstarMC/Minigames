@@ -11,6 +11,7 @@ import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.events.EndTeamMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
@@ -27,7 +28,7 @@ public class InfectionType extends ScoreTypeBase{
 	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
 		for(int i = 0; i < players.size(); i++){
 			MinigamePlayer ply = players.get(i);
-			if(!minigame.getType().equals("teamdm")){
+			if(minigame.getType() != MinigameType.TEAMS){
 				pdata.quitMinigame(ply, true);
 				ply.sendMessage(MinigameUtils.getLang("minigame.error.noInfection"), "error");
 			}
@@ -72,7 +73,7 @@ public class InfectionType extends ScoreTypeBase{
 		if(player == null) return;
 		if(player.isInMinigame()){
 			Minigame mgm = player.getMinigame();
-			if(mgm.getType().equals("teamdm") && mgm.getScoreType().equals("infection")){
+			if(mgm.getType() == MinigameType.TEAMS && mgm.getScoreType().equals("infection")){
 				if(mgm.getBlueTeam().contains(event.getEntity())){
 					TeamDMMinigame.switchTeam(mgm, player);
 					infected.add(player);

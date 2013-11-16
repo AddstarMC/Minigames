@@ -3,6 +3,7 @@ package com.pauldavdesign.mineauz.minigames.presets;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class SpleefPreset implements BasePreset {
@@ -27,7 +28,7 @@ public class SpleefPreset implements BasePreset {
 		minigame.getBlockRecorder().addWBBlock(Material.SNOW_BLOCK);
 		minigame.getBlockRecorder().setWhitelistMode(true);
 		
-		minigame.setType("dm");
+		minigame.setType(MinigameType.FREE_FOR_ALL);
 		minigame.setLives(1);
 		
 		minigame.getDefaultPlayerLoadout().clearLoadout();

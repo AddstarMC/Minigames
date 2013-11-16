@@ -33,6 +33,7 @@ import org.bukkit.potion.PotionEffectType;
 import com.pauldavdesign.mineauz.minigames.Metrics.Graph;
 import com.pauldavdesign.mineauz.minigames.commands.CommandDispatcher;
 import com.pauldavdesign.mineauz.minigames.gametypes.DMMinigame;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.RaceMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.SPMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
@@ -80,7 +81,7 @@ public class Minigames extends JavaPlugin{
 		pdata = new PlayerData();
 		
 		mdata.addMinigameType(new SPMinigame());
-		mdata.addMinigameType(new RaceMinigame());
+//		mdata.addMinigameType(new RaceMinigame());
 		mdata.addMinigameType(new DMMinigame());
 		mdata.addMinigameType(new TeamDMMinigame());
 		
@@ -398,7 +399,7 @@ public class Minigames extends JavaPlugin{
 				public int getValue() {
 					int count = 0;
 					for(MinigamePlayer pl : pdata.getAllMinigamePlayers()){
-						if(pl.isInMinigame() && pl.getMinigame().getType() == "sp"){
+						if(pl.isInMinigame() && pl.getMinigame().getType() == MinigameType.SINGLEPLAYER){
 							count++;
 						}
 					}
@@ -412,7 +413,7 @@ public class Minigames extends JavaPlugin{
 				public int getValue() {
 					int count = 0;
 					for(MinigamePlayer pl : pdata.getAllMinigamePlayers()){
-						if(pl.isInMinigame() && pl.getMinigame().getType() == "dm"){
+						if(pl.isInMinigame() && pl.getMinigame().getType() == MinigameType.FREE_FOR_ALL){
 							count++;
 						}
 					}
@@ -426,7 +427,7 @@ public class Minigames extends JavaPlugin{
 				public int getValue() {
 					int count = 0;
 					for(MinigamePlayer pl : pdata.getAllMinigamePlayers()){
-						if(pl.isInMinigame() && pl.getMinigame().getType() == "teamdm"){
+						if(pl.isInMinigame() && pl.getMinigame().getType() == MinigameType.TEAMS){
 							count++;
 						}
 					}

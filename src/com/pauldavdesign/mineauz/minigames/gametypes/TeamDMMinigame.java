@@ -22,13 +22,13 @@ import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
-public class TeamDMMinigame extends MinigameType{
+public class TeamDMMinigame extends MinigameTypeBase{
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
 	private MinigameData mdata = plugin.mdata;
 	
 	public TeamDMMinigame() {
-		setLabel("teamdm");
+		setType(MinigameType.TEAMS);
 	}
 	
 	@Override
@@ -279,7 +279,7 @@ public class TeamDMMinigame extends MinigameType{
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void playerRespawn(PlayerRespawnEvent event){
 		final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-		if(ply.isInMinigame() && ply.getMinigame().getType().equals("teamdm")){
+		if(ply.isInMinigame() && ply.getMinigame().getType() == MinigameType.TEAMS){
 			int team = 0;
 			Minigame mg = ply.getMinigame();
 			if(mg.getBlueTeam().contains(plugin.getServer().getOfflinePlayer(ply.getName()))){
@@ -314,7 +314,7 @@ public class TeamDMMinigame extends MinigameType{
 	
 	@EventHandler
 	public void timerExpire(TimerExpireEvent event){
-		if(event.getMinigame().getType().equals(getLabel())){
+		if(event.getMinigame().getType() == MinigameType.TEAMS){
 			Minigame mgm = event.getMinigame();
 			if(!event.getMinigame().getDefaultWinner().equals("none")){
 				if(event.getMinigame().getDefaultWinner().equals("blue")){

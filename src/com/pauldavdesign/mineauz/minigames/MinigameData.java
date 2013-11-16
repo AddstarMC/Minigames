@@ -19,6 +19,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameTypeBase;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.presets.BasePreset;
 import com.pauldavdesign.mineauz.minigames.presets.CTFPreset;
@@ -29,7 +30,7 @@ import com.pauldavdesign.mineauz.minigames.presets.SpleefPreset;
 public class MinigameData {
 	private Map<String, Minigame> minigames = new HashMap<String, Minigame>();
 	private Map<String, Configuration> configs = new HashMap<String, Configuration>();
-	private Map<String, MinigameType> minigameTypes = new HashMap<String, MinigameType>();
+	private Map<MinigameType, MinigameTypeBase> minigameTypes = new HashMap<MinigameType, MinigameTypeBase>();
 	private Map<String, Location> treasureLoc = new HashMap<String, Location>();
 	private Map<String, PlayerLoadout> globalLoadouts = new HashMap<String, PlayerLoadout>();
 	private static Minigames plugin = Minigames.plugin;
@@ -45,8 +46,8 @@ public class MinigameData {
 	
 	public void startGlobalMinigame(final String minigame){
 		final Minigame mgm = getMinigame(minigame);
-		String gametype = mgm.getType();
-		if(gametype.equals("th") && mgm.getLocation() != null){
+		MinigameType gametype = mgm.getType();
+		if(gametype == MinigameType.TREASURE_HUNT && mgm.getLocation() != null){
 			Location tcpos = mgm.getStartLocations().get(0).clone();
 			final Location rpos = tcpos;
 			double rx = 0;
@@ -299,25 +300,27 @@ public class MinigameData {
 		save.set(minigame + "." + type + "." + ".world", loc.getWorld().getName());
 	}
 	
-	public void addMinigameType(MinigameType minigameType){
-		minigameTypes.put(minigameType.getLabel(), minigameType);
-		Minigames.log.info("Loaded " + minigameType.getLabel() + " minigame type.");
+	void addMinigameType(MinigameTypeBase minigameType){
+		minigameTypes.put(minigameType.getType(), minigameType);
+		Minigames.log.info("Loaded " + minigameType.getType().getName() + " minigame type.");
 	}
 	
-	public MinigameType minigameType(String name){
+	public MinigameTypeBase minigameType(MinigameType name){
 		if(minigameTypes.containsKey(name)){
 			return minigameTypes.get(name);
 		}
 		return null;
 	}
 	
-	public Set<String> getMinigameTypes(){
+	public Set<MinigameType> getMinigameTypes(){
 		return minigameTypes.keySet();
 	}
 	
 	public List<String> getMinigameTypesList(){
 		List<String> list = new ArrayList<String>();
-		list.addAll(minigameTypes.keySet());
+		for(MinigameType type : getMinigameTypes()){
+			list.add(type.getName());
+		}
 		return list;
 	}
 	

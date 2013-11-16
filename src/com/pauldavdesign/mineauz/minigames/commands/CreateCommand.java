@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class CreateCommand implements ICommand{
@@ -29,7 +30,7 @@ public class CreateCommand implements ICommand{
 	@Override
 	public String getDescription() {
 		return "Creates a Minigame using the specified name. Optionally, adding the type at the end will " +
-				"set the type of minigame straight up. (Type defaults to SP)";
+				"set the type of minigame straight up. (Type defaults to SINGLEPLAYER)";
 	}
 
 	@Override
@@ -58,10 +59,10 @@ public class CreateCommand implements ICommand{
 			Player player = (Player)sender;
 			if(!plugin.mdata.hasMinigame(args[0])){
 				String mgmName = args[0];
-				String type = "sp";
+				MinigameType type = MinigameType.SINGLEPLAYER;
 				if(args.length >= 2){
 					if(plugin.mdata.getMinigameTypes().contains(args[1].toLowerCase())){
-						type = args[1];
+						type = MinigameType.valueOf(args[1].toUpperCase());
 					}
 					else{
 						player.sendMessage(ChatColor.RED + "There is no Minigame type by the name \"" + args[1] + "\"!");

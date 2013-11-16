@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class SetTypeCommand implements ICommand{
@@ -32,8 +33,8 @@ public class SetTypeCommand implements ICommand{
 	public String[] getParameters() {
 		String[] mgtypes = new String[plugin.mdata.getMinigameTypes().size() + 1];
 		int inc = 0;
-		for(String type : plugin.mdata.getMinigameTypes()){
-			mgtypes[inc] = type;
+		for(MinigameType type : plugin.mdata.getMinigameTypes()){
+			mgtypes[inc] = type.toString();
 			inc++;
 		}
 		mgtypes[mgtypes.length - 1] = "th";
@@ -59,8 +60,8 @@ public class SetTypeCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-			if(plugin.mdata.getMinigameTypes().contains(args[0].toLowerCase()) || args[0].equalsIgnoreCase("th")){
-				minigame.setType(args[0].toLowerCase());
+			if(plugin.mdata.getMinigameTypes().contains(MinigameType.valueOf(args[0].toUpperCase()))){
+				minigame.setType(MinigameType.valueOf(args[0].toUpperCase()));
 				sender.sendMessage(ChatColor.GRAY + "Minigame type has been set to " + args[0]);
 			}
 			else if(plugin.mdata.hasPreset(args[0].toLowerCase())){

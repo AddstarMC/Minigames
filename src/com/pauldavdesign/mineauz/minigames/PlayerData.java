@@ -34,6 +34,7 @@ import com.pauldavdesign.mineauz.minigames.events.JoinMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.RevertCheckpointEvent;
 import com.pauldavdesign.mineauz.minigames.events.SpectateMinigameEvent;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.scoring.ScoreType;
 
@@ -54,7 +55,7 @@ public class PlayerData {
 	public PlayerData(){}
 	
 	public void joinMinigame(MinigamePlayer player, Minigame minigame) {
-		String gametype = minigame.getType();
+		MinigameType gametype = minigame.getType();
 		
 		JoinMinigameEvent event = new JoinMinigameEvent(player, minigame);
 		Bukkit.getServer().getPluginManager().callEvent(event);
@@ -206,7 +207,7 @@ public class PlayerData {
 		
 		Collections.shuffle(players);
 		
-		if(minigame.getType().equals("teamdm") && ScoreType.getScoreType(minigame.getScoreType()) != null){
+		if(minigame.getType() == MinigameType.TEAMS && ScoreType.getScoreType(minigame.getScoreType()) != null){
 			ScoreType.getScoreType(minigame.getScoreType()).balanceTeam(players, minigame);
 		}
 		
@@ -216,13 +217,13 @@ public class PlayerData {
 		int redpos = 0;
 		
 		for(MinigamePlayer ply : players){
-			if(!minigame.getType().equals("teamdm")){
+			if(minigame.getType() != MinigameType.TEAMS){
 				if(pos < minigame.getStartLocations().size()){
 					start = minigame.getStartLocations().get(pos);
 					ply.setStartTime(Calendar.getInstance().getTimeInMillis());
 					minigameTeleport(ply, start);
 					ply.setCheckpoint(start);
-					if(minigame.getMaxScore() != 0 && minigame.getType().equals("dm") && !minigame.getScoreType().equals("none")){
+					if(minigame.getMaxScore() != 0 && minigame.getType() == MinigameType.FREE_FOR_ALL && !minigame.getScoreType().equals("none")){
 						ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), null);
 					}
 				} 
@@ -232,7 +233,7 @@ public class PlayerData {
 						start = minigame.getStartLocations().get(0);
 						minigameTeleport(ply, start);
 						ply.setCheckpoint(start);
-						if(minigame.getMaxScore() != 0 && minigame.getType().equals("dm") && !minigame.getScoreType().equals("none")){
+						if(minigame.getMaxScore() != 0 && minigame.getType() == MinigameType.FREE_FOR_ALL && !minigame.getScoreType().equals("none")){
 							ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), null);
 						}
 					}
@@ -553,7 +554,7 @@ public class PlayerData {
 			}
 			
 			if(mgm.getBlockRecorder().hasData()){
-				if(!mgm.getType().equalsIgnoreCase("sp") || mgm.getPlayers().isEmpty()){
+				if(mgm.getType() != MinigameType.SINGLEPLAYER || mgm.getPlayers().isEmpty()){
 					final Minigame fmgm = mgm;
 					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 						

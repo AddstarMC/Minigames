@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class ScoreCommand implements ICommand {
@@ -100,7 +101,7 @@ public class ScoreCommand implements ICommand {
 							return true;
 						}
 						
-						if(mg.getType().equals("teamdm")){
+						if(mg.getType() == MinigameType.TEAMS){
 							if(team == 0){
 								sender.sendMessage(ChatColor.RED + "Red Teams " + ChatColor.GRAY + "score in " + mg.getName() + ": " 
 										+ ChatColor.GREEN + mg.getRedTeamScore());
@@ -158,7 +159,7 @@ public class ScoreCommand implements ICommand {
 							return true;
 						}
 						
-						if(mg.getType().equals("teamdm") && mg.hasPlayers()){
+						if(mg.getType() == MinigameType.TEAMS && mg.hasPlayers()){
 							if(team == 0){
 								mg.setRedTeamScore(score);
 								sender.sendMessage(ChatColor.RED + "Red Team's" + ChatColor.GRAY + " score has been set to " + score);
@@ -228,7 +229,7 @@ public class ScoreCommand implements ICommand {
 						return true;
 					}
 					
-					if(mg.getType().equals("teamdm") && mg.hasPlayers()){
+					if(mg.getType() == MinigameType.TEAMS && mg.hasPlayers()){
 						int totalscore = 0;
 						if(team == 0){
 							mg.incrementRedTeamScore(score);

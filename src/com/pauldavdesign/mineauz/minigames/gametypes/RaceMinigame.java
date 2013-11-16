@@ -21,13 +21,13 @@ import com.pauldavdesign.mineauz.minigames.SQLCompletionSaver;
 import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
-public class RaceMinigame extends MinigameType{
+public class RaceMinigame extends MinigameTypeBase{
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
 	private MinigameData mdata = plugin.mdata;
 	
 	public RaceMinigame() {
-		setLabel("race");
+		setType(MinigameType.SINGLEPLAYER);
 	}
 
 	@Override
@@ -190,7 +190,7 @@ public class RaceMinigame extends MinigameType{
 		if(player.isInMinigame()){
 			Minigame mgm = player.getMinigame();
 			if(mgm.hasPlayers()){
-				String mgtype = mgm.getType();
+				MinigameType mgtype = mgm.getType();
 				if(mgtype.equals("race")){
 					event.setRespawnLocation(player.getCheckpoint());
 					player.sendMessage(MinigameUtils.getLang("player.checkpoint.deathRevert"), "error");
@@ -203,7 +203,7 @@ public class RaceMinigame extends MinigameType{
 	
 	@EventHandler
 	public void timerExpire(TimerExpireEvent event){
-		if(event.getMinigame().getType().equals(getLabel())){
+		if(event.getMinigame().getType().equals(getType())){
 			List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 			players.addAll(event.getMinigame().getPlayers());
 			for(MinigamePlayer ply : players){

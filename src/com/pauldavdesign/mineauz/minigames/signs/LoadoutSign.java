@@ -8,6 +8,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class LoadoutSign implements MinigameSign {
@@ -58,7 +59,7 @@ public class LoadoutSign implements MinigameSign {
 					player.setLoadout(mgm.getLoadout(sign.getLine(2)));
 					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)));
 					
-					if(mgm.getType().equals("sp") || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
+					if(mgm.getType() == MinigameType.SINGLEPLAYER || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
 						if(sign.getLine(3).equalsIgnoreCase("respawn")){
 							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.loadout.nextRespawn"));
 						}
@@ -77,7 +78,7 @@ public class LoadoutSign implements MinigameSign {
 					player.setLoadout(mgm.getLoadout(sign.getLine(2)));
 					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)));
 
-					if(mgm.getType().equals("sp") || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
+					if(mgm.getType() == MinigameType.SINGLEPLAYER || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
 						if(sign.getLine(3).equalsIgnoreCase("respawn")){
 							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.loadout.nextRespawn"));
 						}

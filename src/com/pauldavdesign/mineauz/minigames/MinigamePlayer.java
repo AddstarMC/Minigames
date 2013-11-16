@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
@@ -43,6 +44,9 @@ public class MinigamePlayer {
 	private Menu menu = null;
 	private boolean noClose = false;
 	private MenuItem manualEntry = null;
+	
+	private Location selection1 = null;
+	private Location selection2 = null;
 	
 	private PlayerData pdata = Minigames.plugin.pdata;
 	
@@ -438,5 +442,92 @@ public class MinigamePlayer {
 	
 	public MenuItem getManualEntry(){
 		return manualEntry;
+	}
+	
+	public void addSelectionPoint(Location loc){
+		if(selection1 == null){
+			selection1 = loc;
+			showSelection(false);
+			sendMessage("Position 1 set", null);
+		}
+		else if(selection2 == null){
+			selection2 = loc;
+			showSelection(false);
+			sendMessage("Position 2 set", null);
+		}
+		else if(selection2 != null){
+			showSelection(true);
+			selection1 = loc;
+			sendMessage("Selection restarted", null);
+			sendMessage("Position 1 set", null);
+			selection2 = null;
+			showSelection(false);
+		}
+	}
+	
+	public boolean hasSelection(){
+		if(selection1 != null && selection2 != null)
+			return true;
+		return false;
+	}
+	
+	public Location[] getSelectionPoints(){
+		Location[] loc = new Location[2];
+		if(hasSelection()){
+			loc[0] = selection1;
+			loc[1] = selection2;
+			return loc;
+		}
+		return null;
+	}
+	
+	public void clearSelection(){
+		selection1 = null;
+		selection2 = null;
+	}
+	
+	public void setSelection(Location point1, Location point2){
+		selection1 = point1;
+		selection2 = point2;
+		
+		showSelection(false);
+	}
+	
+	@SuppressWarnings("deprecation") //TODO: Use alternative once available
+	public void showSelection(boolean clear){
+		if(selection2 == null){
+			getPlayer().sendBlockChange(selection1, Material.DIAMOND_BLOCK, (byte)0);
+		}
+		else{
+			Location[] locs = MinigameUtils.getMinMaxSelection(selection1, selection2);
+
+			int minx = locs[0].getBlockX();
+			int miny = locs[0].getBlockY();
+			int minz = locs[0].getBlockZ();
+			int maxx = locs[1].getBlockX();
+			int maxy = locs[1].getBlockY();
+			int maxz = locs[1].getBlockZ();
+			
+			Location cur = new Location(selection1.getWorld(), minx, miny, minz);
+			
+			for(int x = minx; x <= maxx; x++){
+				cur.setX(x);
+				for(int y = miny; y <= maxy; y++){
+					cur.setY(y);
+					for(int z = minz; z <= maxz; z++){
+						cur.setZ(z);
+						if(((z == minz || z == maxz) && (x == minx || x == maxx) && (y == miny || y == maxy)) ||
+								((x == minx || x == maxx) && (y == miny || y == maxy)) ||
+								((z == minz || z == maxz) && (y == miny || y == maxy)) || 
+								((z == minz || z == maxz) && (x == minx || x == maxx))){
+							if(!clear)
+								getPlayer().sendBlockChange(cur, Material.DIAMOND_BLOCK, (byte)0);
+							else
+								getPlayer().sendBlockChange(cur, cur.getBlock().getType(), cur.getBlock().getData());
+						}
+					}
+				}
+			}
+		}
 	}
 }

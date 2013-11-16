@@ -3,6 +3,7 @@ package com.pauldavdesign.mineauz.minigames.commands;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class StopCommand implements ICommand{
@@ -53,7 +54,7 @@ public class StopCommand implements ICommand{
 		if(args != null){
 			Minigame mgm = plugin.mdata.getMinigame(args[0]);
 			
-			if(mgm != null && mgm.getThTimer() != null && mgm.getType().equals("th")){
+			if(mgm != null && mgm.getThTimer() != null && mgm.getType() == MinigameType.TREASURE_HUNT){
 				if(mgm.getThTimer().getChestInWorld()){
 					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "The " + mgm.getName() + " treasure has been removed from the world", "minigame.treasure.announce");
 				}
@@ -63,7 +64,7 @@ public class StopCommand implements ICommand{
 				mgm.setEnabled(false);
 				mgm.saveMinigame();
 			}
-			else if(mgm == null || !mgm.getType().equals("th")){
+			else if(mgm == null || mgm.getType() != MinigameType.TREASURE_HUNT){
 				sender.sendMessage(ChatColor.RED + "There is no TreasureHunt Minigame by the name \"" + args[0] + "\"");
 			}
 			else{

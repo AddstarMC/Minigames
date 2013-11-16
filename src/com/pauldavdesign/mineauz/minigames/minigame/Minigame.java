@@ -23,6 +23,7 @@ import com.pauldavdesign.mineauz.minigames.FloorDegenerator;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameSave;
 import com.pauldavdesign.mineauz.minigames.MinigameTimer;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.MultiplayerBets;
 import com.pauldavdesign.mineauz.minigames.MultiplayerTimer;
@@ -30,6 +31,7 @@ import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
 import com.pauldavdesign.mineauz.minigames.RestoreBlock;
 import com.pauldavdesign.mineauz.minigames.TreasureHuntTimer;
 import com.pauldavdesign.mineauz.minigames.blockRecorder.RecorderData;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
@@ -48,7 +50,7 @@ import com.pauldavdesign.mineauz.minigames.minigame.reward.Rewards;
 
 public class Minigame {
 	private String name = "GenericName";
-	private String type = null;
+	private MinigameType type = null;
 	private boolean enabled = false;
 	private int minPlayers = 2;
 	private int maxPlayers = 4;
@@ -129,7 +131,7 @@ public class Minigame {
 	//TreasureHunt
 	private TreasureHuntTimer thTimer = null;
 
-	public Minigame(String name, String type, Location start){
+	public Minigame(String name, MinigameType type, Location start){
 		this.name = name;
 		this.type = type;
 		startLocations.add(start);
@@ -281,6 +283,10 @@ public class Minigame {
 	
 	public void setStartLocation(Location loc){
 		startLocations.set(0, loc);
+	}
+	
+	public void addStartLocation(Location loc){
+		startLocations.add(loc);
 	}
 	
 	public void addStartLocation(Location loc, int number){
@@ -525,8 +531,8 @@ public class Minigame {
 		this.name = name;
 	}
 	
-	public String getType(){
-		return type; //TODO: Create Type Enum
+	public MinigameType getType(){
+		return type;
 	}
 	
 	private Callback<String> getTypeCallback(){
@@ -534,17 +540,17 @@ public class Minigame {
 
 			@Override
 			public void setValue(String value) {
-				type = value;
+				type = MinigameType.valueOf(value);
 			}
 
 			@Override
 			public String getValue() {
-				return type;
+				return type.toString();
 			}
 		};
 	}
 	
-	public void setType(String type){
+	public void setType(MinigameType type){
 		this.type = type;
 	}
 	
@@ -783,6 +789,10 @@ public class Minigame {
 	public void setMaxScore(int maxScore) {
 		this.maxScore = maxScore;
 	}
+
+	public void addStartLocationBlue(Location loc){
+		startLocationsBlue.add(loc);
+	}
 	
 	public void addStartLocationBlue(Location loc, int number){
 		if(startLocationsBlue.size() >= number){
@@ -803,6 +813,10 @@ public class Minigame {
 			return true;
 		}
 		return false;
+	}
+
+	public void addStartLocationRed(Location loc){
+		startLocationsRed.add(loc);
 	}
 	
 	public void addStartLocationRed(Location loc, int number){
@@ -1086,7 +1100,7 @@ public class Minigame {
 	}
 
 	public String getScoreType() {
-		return scoreType; //TODO: Score Type Enum
+		return scoreType;
 	}
 	
 	private Callback<String> getScoreTypeCallback(){
@@ -1575,7 +1589,7 @@ public class Minigame {
 		itemsPlayer.add(new MenuItemBoolean("Paintball Mode", Material.SNOW_BALL, getPaintballModeCallback()));
 		itemsPlayer.add(new MenuItemInteger("Paintball Damage", Material.ARROW, getPaintballDamageCallback(), 1, null));
 		itemsPlayer.add(new MenuItemBoolean("Unlimited Ammo", Material.SNOW_BLOCK, getUnlimitedAmmoCallback()));
-		itemsPlayer.add(new MenuItemBoolean("Save Checkpoints", Material.SIGN_POST, getSaveCheckpointCallback()));
+		itemsPlayer.add(new MenuItemBoolean("Save Checkpoints", MinigameUtils.stringToList("Single Player;Only"), Material.SIGN_POST, getSaveCheckpointCallback()));
 		playerMenu.addItems(itemsPlayer);
 		playerMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
 		
@@ -1651,7 +1665,7 @@ public class Minigame {
 			minigame.getConfig().set(name + ".maxtreasure", null);
 		}
 		
-		minigame.getConfig().set(name + ".type", getType());
+		minigame.getConfig().set(name + ".type", getType().toString());
 		minigame.getConfig().set(name + ".minplayers", getMinPlayers());
 		minigame.getConfig().set(name + ".maxplayers", getMaxPlayers());
 		minigame.getConfig().set(name + ".bets", null);
@@ -2050,7 +2064,19 @@ public class Minigame {
 		if(minigame.getConfig().contains(name + ".maxtreasure")){
 			setMaxTreasure(minigame.getConfig().getInt(name + ".maxtreasure"));
 		}
-		setType(minigame.getConfig().getString(name + ".type"));
+		String typeString = minigame.getConfig().getString(name + ".type");
+		if(typeString.equals("sp")) //TODO: Remove check after 1.6.0 release
+			setType(MinigameType.SINGLEPLAYER);
+		else if(typeString.equals("th"))
+			setType(MinigameType.TREASURE_HUNT);
+		else if(typeString.equals("dm"))
+			setType(MinigameType.FREE_FOR_ALL);
+		else if(typeString.equals("teamdm"))
+			setType(MinigameType.TEAMS);
+		else if(typeString.equals("race"))
+			setType(MinigameType.FREE_FOR_ALL);
+		else
+			setType(MinigameType.valueOf(minigame.getConfig().getString(name + ".type")));
 		setMinPlayers(minigame.getConfig().getInt(name + ".minplayers"));
 		setMaxPlayers(minigame.getConfig().getInt(name + ".maxplayers"));
 		setEnabled(minigame.getConfig().getBoolean(name + ".enabled"));
@@ -2331,7 +2357,7 @@ public class Minigame {
 //		Bukkit.getLogger().info("Enabled: " + isEnabled());
 //		Bukkit.getLogger().info("-----------------------------");
 		
-		if(getType().equals("th") && isEnabled()){
+		if(getType() == MinigameType.TREASURE_HUNT && isEnabled()){
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
 				
 				@Override

@@ -24,13 +24,13 @@ import com.pauldavdesign.mineauz.minigames.SQLCompletionSaver;
 import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
-public class DMMinigame extends MinigameType{
+public class DMMinigame extends MinigameTypeBase{
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
 	private MinigameData mdata = plugin.mdata;
 	
 	public DMMinigame() {
-		setLabel("dm");
+		setType(MinigameType.FREE_FOR_ALL);
 	}
 
 	@Override
@@ -199,7 +199,7 @@ public class DMMinigame extends MinigameType{
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void playerRespawn(PlayerRespawnEvent event){
 		final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-		if(ply.isInMinigame() && ply.getMinigame().getType().equals("dm")){
+		if(ply.isInMinigame() && ply.getMinigame().getType() == MinigameType.FREE_FOR_ALL){
 			Minigame mg = ply.getMinigame();
 			List<Location> starts = new ArrayList<Location>();
 			
@@ -219,7 +219,7 @@ public class DMMinigame extends MinigameType{
 	
 	@EventHandler
 	public void timerExpire(TimerExpireEvent event){
-		if(event.getMinigame().getType().equals(getLabel())){
+		if(event.getMinigame().getType() == MinigameType.FREE_FOR_ALL){
 			MinigamePlayer player = null;
 			int score = 0;
 			for(MinigamePlayer ply : event.getMinigame().getPlayers()){

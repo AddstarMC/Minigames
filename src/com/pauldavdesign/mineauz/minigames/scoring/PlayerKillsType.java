@@ -9,6 +9,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
@@ -22,7 +23,7 @@ public class PlayerKillsType extends ScoreTypeBase{
 	@Override
 	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
 		for(int i = 0; i < players.size(); i++){
-			if(minigame.getType().equals("teamdm")){
+			if(minigame.getType() == MinigameType.TEAMS){
 				int team = -1;
 				if(minigame.getBlueTeam().contains(players.get(i))){
 					team = 1;
@@ -187,7 +188,7 @@ public class PlayerKillsType extends ScoreTypeBase{
 	public void playerAutoBalance(PlayerDeathEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
 		if(ply == null) return;
-		if(ply.isInMinigame() && ply.getMinigame().getType().equals("teamdm")){
+		if(ply.isInMinigame() && ply.getMinigame().getType() == MinigameType.TEAMS){
 			int pteam = 0;
 			if(ply.getMinigame().getBlueTeam().contains(ply.getPlayer())){
 				pteam = 1;

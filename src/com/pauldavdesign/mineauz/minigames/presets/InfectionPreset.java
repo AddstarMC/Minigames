@@ -7,6 +7,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class InfectionPreset implements BasePreset {
@@ -54,7 +55,7 @@ public class InfectionPreset implements BasePreset {
 		//Settings
 		minigame.setScoreType("infection");
 		minigame.setDefaultWinner("blue");
-		minigame.setType("teamdm");
+		minigame.setType(MinigameType.TEAMS);
 		minigame.setMinPlayers(4);
 		minigame.setMaxPlayers(16);
 		minigame.setTimer(300);

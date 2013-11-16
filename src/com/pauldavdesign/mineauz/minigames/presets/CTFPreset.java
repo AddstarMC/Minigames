@@ -4,7 +4,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class CTFPreset implements BasePreset {
@@ -27,24 +27,13 @@ public class CTFPreset implements BasePreset {
 		minigame.setScoreType("ctf");
 		minigame.setMinPlayers(4);
 		minigame.setMaxPlayers(16);
-		if(Minigames.plugin.mdata.getMinigameTypes().contains("teamdm")){
-			minigame.setType("teamdm");
-		}
-		else{
-			minigame.setType("dm");
-		}
+		minigame.setType(MinigameType.TEAMS);
+		
 		minigame.setCanBlockBreak(false);
 		minigame.setCanBlockPlace(false);
 		minigame.setMinScore(5);
 		minigame.setMaxScore(5);
 		minigame.setDefaultGamemode(GameMode.ADVENTURE);
-//		minigame.getDefaultPlayerLoadout().addItemToLoadout(new ItemStack(Material.STONE_SWORD));
-//		minigame.getDefaultPlayerLoadout().addItemToLoadout(new ItemStack(Material.LEATHER_HELMET));
-//		minigame.getDefaultPlayerLoadout().addItemToLoadout(new ItemStack(Material.LEATHER_CHESTPLATE));
-//		minigame.getDefaultPlayerLoadout().addItemToLoadout(new ItemStack(Material.LEATHER_LEGGINGS));
-//		minigame.getDefaultPlayerLoadout().addItemToLoadout(new ItemStack(Material.LEATHER_BOOTS));
-//		minigame.getDefaultPlayerLoadout().addItemToLoadout(new ItemStack(Material.ARROW, 16));
-//		minigame.getDefaultPlayerLoadout().addItemToLoadout(new ItemStack(Material.BOW));
 
 		minigame.getDefaultPlayerLoadout().addItem(new ItemStack(Material.STONE_SWORD), 0);
 		minigame.getDefaultPlayerLoadout().addItem(new ItemStack(Material.LEATHER_HELMET), 103);

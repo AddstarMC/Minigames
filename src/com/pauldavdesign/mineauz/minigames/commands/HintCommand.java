@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.TreasureHuntTimer;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class HintCommand implements ICommand{
@@ -59,7 +60,7 @@ public class HintCommand implements ICommand{
 		if(args != null){
 			Minigame mgm = plugin.mdata.getMinigame(args[0]);
 			
-			if(mgm != null && mgm.getThTimer() != null && mgm.getType().equals("th")){
+			if(mgm != null && mgm.getThTimer() != null && mgm.getType() == MinigameType.TREASURE_HUNT){
 				TreasureHuntTimer treasure = mgm.getThTimer();
 				if(treasure.getChestInWorld() && treasure.getTreasureFound() == false){
 					treasure.hints(player);
@@ -68,14 +69,14 @@ public class HintCommand implements ICommand{
 					player.sendMessage(ChatColor.GRAY + mgm.getName() + " is currently not running.");
 				}
 			}
-			else if(mgm == null || !mgm.getType().equals("th")){
+			else if(mgm == null || mgm.getType() != MinigameType.TREASURE_HUNT){
 				player.sendMessage(ChatColor.RED + "There is no treasure hunt running by the name \"" + args[0] + "\"");
 			}
 		}
 		else{
 			List<Minigame> mgs = new ArrayList<Minigame>();
 			for(Minigame mg : plugin.mdata.getAllMinigames().values()){
-				if(mg.getType() != null && mg.getType().equals("th")){
+				if(mg.getType() != null && mg.getType() == MinigameType.TREASURE_HUNT){
 					mgs.add(mg);
 				}
 			}

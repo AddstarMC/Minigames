@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class InfoCommand implements ICommand{
@@ -62,13 +63,13 @@ public class InfoCommand implements ICommand{
 				List<String> lines = new ArrayList<String>();
 				
 				lines.add(ChatColor.GRAY + "Game Type: " + ChatColor.GREEN + mgm.getType());
-				if(!mgm.getType().equals("th")){
+				if(mgm.getType() != MinigameType.TREASURE_HUNT){
 					lines.add(ChatColor.GRAY + "Score Type: " + ChatColor.GREEN + mgm.getScoreType());
-					if(!mgm.getType().equals("sp")){
+					if(mgm.getType() != MinigameType.SINGLEPLAYER){
 						lines.add(ChatColor.GRAY + "Minimum Score: " + ChatColor.GREEN + mgm.getMinScore());
 						lines.add(ChatColor.GRAY + "Maximum Score: " + ChatColor.GREEN + mgm.getMaxScore());
 					}
-					if(mgm.getType().equals("teamdm")){
+					if(mgm.getType() == MinigameType.TEAMS){
 						if(mgm.getDefaultWinner().equals("red")){
 							lines.add(ChatColor.GRAY + "Default Winning Team: " + ChatColor.RED + mgm.getDefaultWinner());
 						}
@@ -105,7 +106,7 @@ public class InfoCommand implements ICommand{
 					else{
 						lines.add(ChatColor.GRAY + "Starting Positions: " + ChatColor.RED + "0");
 					}
-					if(mgm.getType().equals("teamdm")){
+					if(mgm.getType() == MinigameType.TEAMS){
 						if(mgm.getStartLocationsRed().size() > 0){
 							lines.add(ChatColor.GRAY + "Red Team Starting Positions: " + ChatColor.GREEN + mgm.getStartLocationsRed().size());
 						}
@@ -134,7 +135,7 @@ public class InfoCommand implements ICommand{
 						lines.add(ChatColor.GRAY + "Quit Position: " + ChatColor.RED + "Not Set");
 					}
 					
-					if(!mgm.getType().equals("sp")){
+					if(mgm.getType() != MinigameType.SINGLEPLAYER){
 						if(mgm.getLobbyPosition() != null){
 							lines.add(ChatColor.GRAY + "Lobby Position: " + ChatColor.GREEN + "Set");
 						}
@@ -234,7 +235,7 @@ public class InfoCommand implements ICommand{
 						lines.add(ChatColor.GRAY + "Additional Loadouts: " + ChatColor.RED + "0");
 					}
 					
-					if(!mgm.getType().equals("sp")){
+					if(mgm.getType() != MinigameType.SINGLEPLAYER){
 						lines.add(ChatColor.GRAY + "Maximum Players: " + ChatColor.GREEN + mgm.getMaxPlayers());
 						lines.add(ChatColor.GRAY + "Minimum Players: " + ChatColor.GREEN + mgm.getMinPlayers());
 					}
@@ -251,7 +252,7 @@ public class InfoCommand implements ICommand{
 						lines.add(ChatColor.GRAY + "Secondary Reward Item: " + ChatColor.RED + "No Rewards Set");
 					}
 					
-					if(!mgm.getType().equals("sp")){
+					if(mgm.getType() != MinigameType.SINGLEPLAYER){
 						if(mgm.getTimer() != 0){
 							lines.add(ChatColor.GRAY + "Game Timer: " + ChatColor.GREEN + MinigameUtils.convertTime(mgm.getTimer()));
 						}
@@ -282,7 +283,7 @@ public class InfoCommand implements ICommand{
 						lines.add(ChatColor.GRAY + "Allow Enderpearls: " + ChatColor.RED + "false");
 					}
 					
-					if(mgm.getType().equals("sp")){
+					if(mgm.getType() == MinigameType.SINGLEPLAYER){
 						if(mgm.canSaveCheckpoint()){
 							lines.add(ChatColor.GRAY + "Save Checkpoints: " + ChatColor.GREEN + "true");
 						}

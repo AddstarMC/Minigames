@@ -21,13 +21,13 @@ import com.pauldavdesign.mineauz.minigames.SQLCompletionSaver;
 import com.pauldavdesign.mineauz.minigames.StoredPlayerCheckpoints;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
-public class SPMinigame extends MinigameType{
+public class SPMinigame extends MinigameTypeBase{
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
 	private MinigameData mdata = plugin.mdata;
 	
 	public SPMinigame() {
-		setLabel("sp");
+		setType(MinigameType.SINGLEPLAYER);
 	}
 	
 	@Override
@@ -166,7 +166,7 @@ public class SPMinigame extends MinigameType{
 		if(pdata.getMinigamePlayer(event.getPlayer()).isInMinigame()){
 			MinigamePlayer player = pdata.getMinigamePlayer(event.getPlayer());
 			Minigame mgm = player.getMinigame();
-			if(mgm.getType().equalsIgnoreCase("sp")){
+			if(mgm.getType() == MinigameType.SINGLEPLAYER){
 				event.setRespawnLocation(player.getCheckpoint());
 				player.sendMessage(MinigameUtils.getLang("player.checkpoint.deathRevert"), "error");
 				
