@@ -105,7 +105,7 @@ public abstract class MinigameTypeBase implements Listener{
 						mgm.setScore(player, 1);
 						mgm.setScore(player, 0);
 					}
-					player.sendMessage(MinigameUtils.formStr("player.join.plyInfo", mgm.getType()), "win");
+					player.sendMessage(MinigameUtils.formStr("player.join.plyInfo", mgm.getType().getName()), "win");
 				
 					if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMinPlayers()){
 						mgm.setMpTimer(new MultiplayerTimer(mgm));

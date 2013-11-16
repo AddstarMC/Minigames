@@ -46,7 +46,7 @@ public class SPMinigame extends MinigameTypeBase{
 			player.setMinigame(mgm);
 			mgm.addPlayer(player);
 			
-			player.sendMessage(MinigameUtils.formStr("player.join.plyInfo", mgm.getType()), null);
+			player.sendMessage(MinigameUtils.formStr("player.join.plyInfo", mgm.getType().getName()), null);
 			
 			player.setCheckpoint(startpos);
 			

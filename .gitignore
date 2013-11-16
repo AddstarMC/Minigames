@@ -4,4 +4,4 @@
 bin
 .settings
 target
-dist
+.dist
