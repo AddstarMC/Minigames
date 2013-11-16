@@ -52,6 +52,7 @@ permissions:
             minigame.score: true
             minigame.teleport: true
             minigame.edit: true
+            minigame.tool: true
     minigame.join:
         description: Allows a player to join a Minigame, bypassing betting.
         default: op
@@ -384,4 +385,7 @@ permissions:
         default: op
     minigame.edit:
         description: Allows a player to open the Minigame edit menu.
+        default: op
+    minigame.tool:
+        description: Allows a player to spawn and use the Minigame Tool.
         default: op

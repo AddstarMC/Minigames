@@ -339,6 +339,141 @@ public class Events implements Listener{
 			}
 		}
 		
+		ItemStack item = event.getItem();
+		if(item != null && MinigameUtils.isMinigameTool(item) && ply.getPlayer().hasPermission("minigame.tool")){
+			MinigameTool tool = new MinigameTool(item);
+			if(tool.getMode() != null && tool.getMinigame() != null){
+				Minigame mg = tool.getMinigame();
+				if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK){
+					if(tool.getMode() == MinigameToolMode.START && ply.getPlayer().hasPermission("minigame.set.start")){
+						if(tool.getTeam() != null){
+							if(tool.getTeam().equals("Red")){
+								mg.addStartLocationRed(ply.getPlayer().getLocation());
+								ply.sendMessage("Added " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " start location to " + mg.getName(), null);
+							}
+							else{
+								mg.addStartLocationRed(ply.getPlayer().getLocation());
+								ply.sendMessage("Added " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " start location to " + mg.getName(), null);
+							}
+						}
+						else{
+							mg.addStartLocation(ply.getPlayer().getLocation());
+							ply.sendMessage("Added start location to " + mg.getName(), null);
+						}
+					}
+					else if(tool.getMode() == MinigameToolMode.QUIT && ply.getPlayer().hasPermission("minigame.set.quit")){
+						mg.setQuitPosition(ply.getPlayer().getLocation());
+						ply.sendMessage("Set quit location for " + mg.getName(), null);
+					}
+					else if(tool.getMode() == MinigameToolMode.END && ply.getPlayer().hasPermission("minigame.set.end")){
+						mg.setEndPosition(ply.getPlayer().getLocation());
+						ply.sendMessage("Set end location for " + mg.getName(), null);
+					}
+					else if(tool.getMode() == MinigameToolMode.LOBBY && ply.getPlayer().hasPermission("minigame.set.lobby")){
+						mg.setLobbyPosition(ply.getPlayer().getLocation());
+						ply.sendMessage("Set lobby location for " + mg.getName(), null);
+					}
+					else if(event.getAction() == Action.RIGHT_CLICK_BLOCK && tool.getMode() != null){
+						ply.addSelectionPoint(event.getClickedBlock().getLocation());
+					}
+					event.setCancelled(true);
+				}
+				else if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK){
+					if(tool.getMode() == MinigameToolMode.DEGEN_AREA && ply.getPlayer().hasPermission("minigame.set.floordegenerator")){
+						if(ply.hasSelection()){
+							mg.setSpleefFloor1(ply.getSelectionPoints()[0]);
+							mg.setSpleefFloor2(ply.getSelectionPoints()[1]);
+							ply.sendMessage("Set floor degenerator area for " + mg.getName(), null);
+							ply.showSelection(true);
+							ply.clearSelection();
+						}
+					}
+					else if(tool.getMode() == MinigameToolMode.REGEN_AREA && ply.getPlayer().hasPermission("minigame.set.regenarea")){
+						if(ply.hasSelection()){
+							mg.setRegenArea1(ply.getSelectionPoints()[0]);
+							mg.setRegenArea2(ply.getSelectionPoints()[1]);
+							ply.sendMessage("Set regeneration area for " + mg.getName(), null);
+							ply.showSelection(true);
+							ply.clearSelection();
+						}
+					}
+					else if(event.getAction() == Action.LEFT_CLICK_BLOCK && 
+							tool.getMode() == MinigameToolMode.START && ply.getPlayer().hasPermission("minigame.set.start")){
+						int x = event.getClickedBlock().getLocation().getBlockX();
+						int y = event.getClickedBlock().getLocation().getBlockY();
+						int z = event.getClickedBlock().getLocation().getBlockZ();
+						String world = event.getClickedBlock().getLocation().getWorld().getName();
+						
+						int nx;
+						int ny;
+						int nz;
+						String nworld;
+						Location delLoc = null;
+						if(tool.getTeam() != null){
+							if(tool.getTeam().equals("Red")){
+								for(Location loc : mg.getStartLocationsRed()){
+									nx = loc.getBlockX();
+									ny = loc.getBlockY();
+									nz = loc.getBlockZ();
+									nworld = loc.getWorld().getName();
+									
+									if(x == nx && y == ny && z == nz && world.equals(nworld)){
+										delLoc = loc;
+										break;
+									}
+								}
+								if(delLoc != null){
+									mg.getStartLocationsRed().remove(delLoc);
+									ply.sendMessage("Removed selected " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " start location.", null);
+								}
+								else
+									ply.sendMessage("Could not find a " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " start location at that point.", "error");
+							}
+							else if(tool.getTeam().equals("Blue")){
+								for(Location loc : mg.getStartLocationsBlue()){
+									nx = loc.getBlockX();
+									ny = loc.getBlockY();
+									nz = loc.getBlockZ();
+									nworld = loc.getWorld().getName();
+									
+									if(x == nx && y == ny && z == nz && world.equals(nworld)){
+										delLoc = loc;
+										break;
+									}
+								}
+								if(delLoc != null){
+									mg.getStartLocationsBlue().remove(delLoc);
+									ply.sendMessage("Removed selected " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " start location.", null);
+								}
+								else
+									ply.sendMessage("Could not find a " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " start location at that point.", "error");
+							}
+						}
+						else{
+							for(Location loc : mg.getStartLocations()){
+								nx = loc.getBlockX();
+								ny = loc.getBlockY();
+								nz = loc.getBlockZ();
+								nworld = loc.getWorld().getName();
+								
+								if(x == nx && y == ny && z == nz && world.equals(nworld)){
+									delLoc = loc;
+									break;
+								}
+							}
+							if(delLoc != null){
+								mg.getStartLocations().remove(delLoc);
+								ply.sendMessage("Removed selected start location.", null);
+							}
+							else
+								ply.sendMessage("Could not find a start location at that point.", "error");
+						}
+					}
+					event.setCancelled(true);
+				}
+			}
+		}
+		
 		//Spectator disables:
 		if(ply.isInMinigame() && pdata.getMinigamePlayer(event.getPlayer()).getMinigame().isSpectator(pdata.getMinigamePlayer(event.getPlayer()))){
 			event.setCancelled(true);

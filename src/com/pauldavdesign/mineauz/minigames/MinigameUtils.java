@@ -269,6 +269,90 @@ public class MinigameUtils {
 		return lang;
 	}
 	
+	/**
+	 * Gives the defined player a Minigame tool.
+	 * @param player - The player to give the tool to.
+	 * @return The Minigame Tool
+	 */
+	public static MinigameTool giveMinigameTool(MinigamePlayer player){
+		Material toolMat = Material.getMaterial(Minigames.plugin.getConfig().getString("tool"));
+		if(toolMat == null){
+			toolMat = Material.BLAZE_ROD;
+			player.sendMessage("Invalid material type! Please check the configuration to see if it has been typed correctly! Default type given instead.", "error");
+		}
+		
+		ItemStack tool = new ItemStack(toolMat);
+		MinigameTool mgTool = new MinigameTool(tool);
+		
+		player.getPlayer().getInventory().addItem(mgTool.getTool());
+		
+		return mgTool;
+	}
+	
+	public static boolean hasMinigameTool(MinigamePlayer player){
+		for(ItemStack i : player.getPlayer().getInventory().getContents()){
+			if(i.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean isMinigameTool(ItemStack item){
+		if(item.getItemMeta().getDisplayName() != null && item.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")){
+			return true;
+		}
+		return false;
+	}
+	
+	public static MinigameTool getMinigameTool(MinigamePlayer player){
+		for(ItemStack i : player.getPlayer().getInventory().getContents()){
+			if(i.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")){
+				return new MinigameTool(i);
+			}
+		}
+		return null;
+	}
+	
+	public static Location[] getMinMaxSelection(Location selection1, Location selection2){
+		int minx;
+		int maxx;
+		int miny;
+		int maxy;
+		int minz;
+		int maxz;
+		
+		if(selection1.getBlockX() > selection2.getBlockX()){
+			minx = (int)selection2.getBlockX();
+			maxx = (int)selection1.getBlockX();
+		}
+		else{
+			minx = (int)selection1.getBlockX();
+			maxx = (int)selection2.getBlockX();
+		}
+		if(selection1.getBlockY() > selection2.getBlockY()){
+			miny = (int)selection2.getBlockY();
+			maxy = (int)selection1.getBlockY();
+		}
+		else{
+			miny = (int)selection1.getBlockY();
+			maxy = (int)selection2.getBlockY();
+		}
+		if(selection1.getBlockZ() > selection2.getBlockZ()){
+			minz = (int)selection2.getBlockZ();
+			maxz = (int)selection1.getBlockZ();
+		}
+		else{
+			minz = (int)selection1.getBlockZ();
+			maxz = (int)selection2.getBlockZ();
+		}
+		
+		Location[] arr = new Location[2];
+		arr[0] = new Location(selection1.getWorld(), minx, miny, minz);
+		arr[1] = new Location(selection1.getWorld(), maxx, maxy, maxz);
+		return arr;
+	}
+	
 //	public static void removePlayerArrows(MinigamePlayer player){
 //		try{
 //			Class.forName("net.minecraft.server.v1_5_R3.EntityPlayer");

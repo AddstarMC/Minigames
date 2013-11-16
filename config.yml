@@ -48,6 +48,8 @@ sql-database: database
 sql-username: root
 sql-password: root
 
+tool: "BLAZE_ROD"
+
 outputCMDToFile: false
 
 minigames:
