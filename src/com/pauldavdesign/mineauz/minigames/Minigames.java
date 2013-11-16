@@ -34,7 +34,6 @@ import com.pauldavdesign.mineauz.minigames.Metrics.Graph;
 import com.pauldavdesign.mineauz.minigames.commands.CommandDispatcher;
 import com.pauldavdesign.mineauz.minigames.gametypes.DMMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
-import com.pauldavdesign.mineauz.minigames.gametypes.RaceMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.SPMinigame;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
@@ -81,7 +80,6 @@ public class Minigames extends JavaPlugin{
 		pdata = new PlayerData();
 		
 		mdata.addMinigameType(new SPMinigame());
-//		mdata.addMinigameType(new RaceMinigame());
 		mdata.addMinigameType(new DMMinigame());
 		mdata.addMinigameType(new TeamDMMinigame());
 		

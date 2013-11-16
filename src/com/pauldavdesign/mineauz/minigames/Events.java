@@ -529,9 +529,16 @@ public class Events implements Listener{
 	
 	@EventHandler(ignoreCancelled = true)
 	public void playerRevert(RevertCheckpointEvent event){
-		if(event.getMinigamePlayer().isInMinigame() && (event.getMinigamePlayer().getMinigame().getType() == MinigameType.FREE_FOR_ALL || event.getMinigamePlayer().getMinigame().getType() == MinigameType.TEAMS)){
+		if(event.getMinigamePlayer().isInMinigame() && 
+				(event.getMinigamePlayer().getMinigame().getType() == MinigameType.FREE_FOR_ALL || 
+				event.getMinigamePlayer().getMinigame().getType() == MinigameType.TEAMS) && 
+				!event.getMinigamePlayer().getMinigame().isAllowedMPCheckpoints()){
 			event.setCancelled(true);
-			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noRevert", event.getMinigamePlayer().getMinigame().getType()));
+			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noRevert", event.getMinigamePlayer().getMinigame().getType().getName()));
+		}
+		else if(event.getMinigamePlayer().getMinigame().getMpTimer() != null && 
+				event.getMinigamePlayer().getMinigame().getMpTimer().getStartWaitTimeLeft() != 0){
+			event.setCancelled(true);
 		}
 	}
 	

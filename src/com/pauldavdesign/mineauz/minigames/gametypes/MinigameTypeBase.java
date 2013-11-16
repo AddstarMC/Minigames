@@ -97,6 +97,8 @@ public abstract class MinigameTypeBase implements Listener{
 									Collections.shuffle(locs);
 									pdata.minigameTeleport(fply, locs.get(0));
 									fply.getLoadout().equiptLoadout(fply);
+									if(fmgm.isAllowedMPCheckpoints())
+										fply.setCheckpoint(locs.get(0));
 								}
 							}
 						}, 100);

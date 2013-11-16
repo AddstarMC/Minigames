@@ -11,6 +11,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class FinishSign implements MinigameSign {
@@ -69,7 +70,15 @@ public class FinishSign implements MinigameSign {
 					
 					if(plugin.pdata.checkRequiredFlags(player, minigame.getName()).isEmpty()){
 						if(sign.getLine(2).isEmpty() || sign.getLine(2).equals(player.getMinigame().getName())){
-							plugin.pdata.endMinigame(player);
+							if(player.getMinigame().getType() == MinigameType.TEAMS){
+								if(player.getMinigame().getRedTeam().contains(player.getPlayer().getPlayer()))
+									plugin.pdata.endTeamMinigame(0, minigame);
+								else
+									plugin.pdata.endTeamMinigame(1, minigame);
+							}
+							else
+								plugin.pdata.endMinigame(player);
+							
 							plugin.pdata.partyMode(player, 3, 10L);
 						}
 					}
@@ -92,7 +101,14 @@ public class FinishSign implements MinigameSign {
 			}
 			else{
 				if(((LivingEntity)player.getPlayer()).isOnGround()){
-					plugin.pdata.endMinigame(player);
+					if(player.getMinigame().getType() == MinigameType.TEAMS){
+						if(player.getMinigame().getRedTeam().contains(player.getPlayer().getPlayer()))
+							plugin.pdata.endTeamMinigame(0, minigame);
+						else
+							plugin.pdata.endTeamMinigame(1, minigame);
+					}
+					else
+						plugin.pdata.endMinigame(player);
 					plugin.pdata.partyMode(player);
 					return true;
 				}

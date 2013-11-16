@@ -201,11 +201,18 @@ public class DMMinigame extends MinigameTypeBase{
 		final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply.isInMinigame() && ply.getMinigame().getType() == MinigameType.FREE_FOR_ALL){
 			Minigame mg = ply.getMinigame();
-			List<Location> starts = new ArrayList<Location>();
-			
-			starts.addAll(mg.getStartLocations());
-			Collections.shuffle(starts);
-			event.setRespawnLocation(starts.get(0));
+			Location respawnPos;
+			if(mg.isAllowedMPCheckpoints() && ply.hasCheckpoint()){
+				respawnPos = ply.getCheckpoint();
+			}
+			else{
+				List<Location> starts = new ArrayList<Location>();
+				
+				starts.addAll(mg.getStartLocations());
+				Collections.shuffle(starts);
+				respawnPos = starts.get(0);
+			}
+			event.setRespawnLocation(respawnPos);
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				@Override
 				public void run() {

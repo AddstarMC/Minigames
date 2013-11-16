@@ -307,6 +307,12 @@ public class MinigamePlayer {
 		return checkpoint;
 	}
 	
+	public boolean hasCheckpoint(){
+		if(checkpoint != null)
+			return true;
+		return false;
+	}
+	
 	public void setCheckpoint(Location checkpoint){
 		this.checkpoint = checkpoint;
 	}

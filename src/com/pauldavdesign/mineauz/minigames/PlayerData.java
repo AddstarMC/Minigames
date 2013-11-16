@@ -222,7 +222,6 @@ public class PlayerData {
 					start = minigame.getStartLocations().get(pos);
 					ply.setStartTime(Calendar.getInstance().getTimeInMillis());
 					minigameTeleport(ply, start);
-					ply.setCheckpoint(start);
 					if(minigame.getMaxScore() != 0 && minigame.getType() == MinigameType.FREE_FOR_ALL && !minigame.getScoreType().equals("none")){
 						ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), null);
 					}
@@ -232,7 +231,6 @@ public class PlayerData {
 					if(!minigame.getStartLocations().isEmpty()){
 						start = minigame.getStartLocations().get(0);
 						minigameTeleport(ply, start);
-						ply.setCheckpoint(start);
 						if(minigame.getMaxScore() != 0 && minigame.getType() == MinigameType.FREE_FOR_ALL && !minigame.getScoreType().equals("none")){
 							ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), null);
 						}
@@ -242,6 +240,7 @@ public class PlayerData {
 						quitMinigame(ply, false);
 					}
 				}
+				ply.setCheckpoint(start);
 			}
 			else{
 				int team = -1;
@@ -279,14 +278,12 @@ public class PlayerData {
 					if(pos <= minigame.getStartLocations().size()){
 						start = minigame.getStartLocations().get(pos);
 						minigameTeleport(ply, start);
-						ply.setCheckpoint(start);
 					} 
 					else{
 						pos = 1;
 						if(!minigame.getStartLocations().isEmpty()){
 							start = minigame.getStartLocations().get(0);
 							minigameTeleport(ply, start);
-							ply.setCheckpoint(start);
 						}
 						else {
 							ply.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), "error");
@@ -539,6 +536,7 @@ public class PlayerData {
 				player.resetTime();
 				player.resetReverts();
 			}
+			player.removeCheckpoint();
 			
 			if(mgm.getMinigameTimer() != null){
 				mgm.getMinigameTimer().stopTimer();
@@ -832,6 +830,7 @@ public class PlayerData {
 	}
 	
 	public void partyMode(MinigamePlayer player, int amount, long delay){
+		if(!onPartyMode()) return;
 		final int fcount = amount;
 		final MinigamePlayer fplayer = player;
 		final long fdelay = delay;

@@ -91,6 +91,7 @@ public class Minigame {
 	private GameMode defaultGamemode = GameMode.ADVENTURE;
 	private boolean blocksdrop = true;
 	private boolean allowEnderpearls = false;
+	private boolean allowMPCheckpoints = false;
 	
 	private String scoreType = "custom";
 	private boolean paintBallMode = false;
@@ -1469,6 +1470,29 @@ public class Minigame {
 		this.allowEnderpearls = allowEnderpearls;
 	}
 
+	public boolean isAllowedMPCheckpoints() {
+		return allowMPCheckpoints;
+	}
+
+	public void setAllowMPCheckpoints(boolean allowMPCheckpoints) {
+		this.allowMPCheckpoints = allowMPCheckpoints;
+	}
+	
+	public Callback<Boolean> getAllowMPCheckpointsCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				allowMPCheckpoints = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return allowMPCheckpoints;
+			}
+		};
+	}
+
 	public Scoreboard getScoreboardManager(){
 		return sbManager;
 	}
@@ -1482,7 +1506,11 @@ public class Minigame {
 		List<MenuItem> itemsMain = new ArrayList<MenuItem>();
 		itemsMain.add(new MenuItemBoolean("Enabled", Material.PAPER, getEnabledCallback()));
 		itemsMain.add(new MenuItemBoolean("Use Permissions", Material.PAPER, getUsePermissionsCallback()));
-		itemsMain.add(new MenuItemList("Game Type", Material.PAPER, getTypeCallback(), Minigames.plugin.mdata.getMinigameTypesList()));
+		List<String> mgTypes = new ArrayList<String>();
+		for(MinigameType val : MinigameType.values()){
+			mgTypes.add(val.toString());
+		}
+		itemsMain.add(new MenuItemList("Game Type", Material.PAPER, getTypeCallback(), mgTypes));
 		List<String> scoreTypes = new ArrayList<String>();
 		scoreTypes.addAll(Minigames.plugin.getScoreTypes().getScoreTypes().keySet());
 		itemsMain.add(new MenuItemList("Score Type", Material.ROTTEN_FLESH, getScoreTypeCallback(), scoreTypes));
@@ -1589,6 +1617,7 @@ public class Minigame {
 		itemsPlayer.add(new MenuItemBoolean("Paintball Mode", Material.SNOW_BALL, getPaintballModeCallback()));
 		itemsPlayer.add(new MenuItemInteger("Paintball Damage", Material.ARROW, getPaintballDamageCallback(), 1, null));
 		itemsPlayer.add(new MenuItemBoolean("Unlimited Ammo", Material.SNOW_BLOCK, getUnlimitedAmmoCallback()));
+		itemsPlayer.add(new MenuItemBoolean("Multiplayer Checkpoints", Material.SIGN, getAllowMPCheckpointsCallback()));
 		itemsPlayer.add(new MenuItemBoolean("Save Checkpoints", MinigameUtils.stringToList("Single Player;Only"), Material.SIGN_POST, getSaveCheckpointCallback()));
 		playerMenu.addItems(itemsPlayer);
 		playerMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
@@ -1739,6 +1768,11 @@ public class Minigame {
 				minigame.getConfig().set(name + ".reward2." + group.getName() + ".rarity", group.getRarity().toString());
 			}
 		}
+		if(minigame.getConfig().contains(name + ".rewardprice")) //TODO: Remove after 1.6.0 release
+			minigame.getConfig().set(name + ".rewardprice", null);
+		if(minigame.getConfig().contains(name + ".rewardprice2")) //TODO: Remove after 1.6.0 release
+			minigame.getConfig().set(name + ".rewardprice2", null);
+		
 		if(!getFlags().isEmpty()){
 			minigame.getConfig().set(name + ".flags", getFlags());
 		}
@@ -2009,6 +2043,10 @@ public class Minigame {
 		else{
 			minigame.getConfig().set(name + ".allowEnderpearls", null);
 		}
+		if(isAllowedMPCheckpoints())
+			minigame.getConfig().set(name + ".allowMPCheckpoints", isAllowedMPCheckpoints());
+		else
+			minigame.getConfig().set(name + ".allowMPCheckpoints", null);
 		
 		minigame.saveConfig();
 	}
@@ -2073,8 +2111,10 @@ public class Minigame {
 			setType(MinigameType.FREE_FOR_ALL);
 		else if(typeString.equals("teamdm"))
 			setType(MinigameType.TEAMS);
-		else if(typeString.equals("race"))
+		else if(typeString.equals("race")){
 			setType(MinigameType.FREE_FOR_ALL);
+			setAllowMPCheckpoints(true);
+		}
 		else
 			setType(MinigameType.valueOf(minigame.getConfig().getString(name + ".type")));
 		setMinPlayers(minigame.getConfig().getInt(name + ".minplayers"));
@@ -2165,13 +2205,9 @@ public class Minigame {
 		}
 		if(minigame.getConfig().contains(name + ".rewardprice")){ //TODO: Remove this check after 1.6.0 release
 			getRewardItems().addMoney(minigame.getConfig().getDouble(name + ".rewardprice"), RewardRarity.NORMAL);
-			minigame.getConfig().set(name + ".rewardprice", null);
-			minigame.saveConfig();
 		}
 		if(minigame.getConfig().contains(name + ".rewardprice2")){ //TODO: Remove this check after 1.6.0 release
 			getSecondaryRewardItems().addMoney(minigame.getConfig().getDouble(name + ".rewardprice2"), RewardRarity.NORMAL);
-			minigame.getConfig().set(name + ".rewardprice2", null);
-			minigame.saveConfig();
 		}
 		if(!minigame.getConfig().getStringList(name + ".flags").isEmpty()){
 			setFlags(minigame.getConfig().getStringList(name + ".flags"));
@@ -2350,6 +2386,9 @@ public class Minigame {
 		if(minigame.getConfig().contains(name + ".allowEnderpearls")){
 			setAllowEnderpearls(minigame.getConfig().getBoolean(name + ".allowEnderpearls"));
 		}
+		
+		if(minigame.getConfig().contains(name + ".allowMPCheckpoints"))
+			setAllowMPCheckpoints(minigame.getConfig().getBoolean(name + ".allowMPCheckpoints"));
 
 //		Bukkit.getLogger().info("------- Minigame Load -------");
 //		Bukkit.getLogger().info("Name: " + getName());

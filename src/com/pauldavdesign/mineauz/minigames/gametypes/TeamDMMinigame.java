@@ -285,21 +285,30 @@ public class TeamDMMinigame extends MinigameTypeBase{
 			if(mg.getBlueTeam().contains(plugin.getServer().getOfflinePlayer(ply.getName()))){
 				team = 1;
 			}
-			List<Location> starts = new ArrayList<Location>();
-			if(!mg.getStartLocationsBlue().isEmpty() && !mg.getStartLocationsRed().isEmpty()){
-				if(team == 1){
-					starts.addAll(mg.getStartLocationsBlue());
-				}
-				else{
-					starts.addAll(mg.getStartLocationsRed());
-				}
-				ply.getLoadout().equiptLoadout(ply);
+			
+			Location respawnPos;
+			if(mg.isAllowedMPCheckpoints() && ply.hasCheckpoint()){
+				respawnPos = ply.getCheckpoint();
 			}
 			else{
-				starts.addAll(mg.getStartLocations());
+				List<Location> starts = new ArrayList<Location>();
+				if(!mg.getStartLocationsBlue().isEmpty() && !mg.getStartLocationsRed().isEmpty()){
+					if(team == 1){
+						starts.addAll(mg.getStartLocationsBlue());
+					}
+					else{
+						starts.addAll(mg.getStartLocationsRed());
+					}
+					ply.getLoadout().equiptLoadout(ply);
+				}
+				else{
+					starts.addAll(mg.getStartLocations());
+				}
+				Collections.shuffle(starts);
+				respawnPos = starts.get(0);
 			}
-			Collections.shuffle(starts);
-			event.setRespawnLocation(starts.get(0));
+			event.setRespawnLocation(respawnPos);
+			
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				@Override
 				public void run() {
