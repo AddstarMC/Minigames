@@ -60,8 +60,8 @@ public class Minigame {
 	private int maxPlayers = 4;
 	private List<String> flags = new ArrayList<String>();
 	
-	private Location spleefFloor1 = null;
-	private Location spleefFloor2 = null;
+	private Location floorDegen1 = null;
+	private Location floorDegen2 = null;
 	private String degenType = "inward";
 	private int degenRandomChance = 15;
 	private FloorDegenerator sfloordegen;
@@ -457,20 +457,20 @@ public class Minigame {
 		this.maxPlayers = maxPlayers;
 	}
 
-	public Location getSpleefFloor1(){
-		return spleefFloor1;
+	public Location getFloorDegen1(){
+		return floorDegen1;
 	}
 
-	public void setSpleefFloor1(Location spleefFloor1){
-		this.spleefFloor1 = spleefFloor1;
+	public void setFloorDegen1(Location loc){
+		this.floorDegen1 = loc;
 	}
 
-	public Location getSpleefFloor2(){
-		return spleefFloor2;
+	public Location getFloorDegen2(){
+		return floorDegen2;
 	}
 
-	public void setSpleefFloor2(Location spleefFloor2){
-		this.spleefFloor2 = spleefFloor2;
+	public void setFloorDegen2(Location loc){
+		this.floorDegen2 = loc;
 	}
 
 	public String getDegenType() {
@@ -920,7 +920,7 @@ public class Minigame {
 	}
 
 	public void addFloorDegenerator() {
-		sfloordegen = new FloorDegenerator(getSpleefFloor1(), getSpleefFloor2(), this);
+		sfloordegen = new FloorDegenerator(getFloorDegen1(), getFloorDegen2(), this);
 	}
 	
 	public void setTimer(int time){
@@ -1689,14 +1689,14 @@ public class Minigame {
 		if(getQuitPosition() != null){
 			Minigames.plugin.mdata.minigameSetLocations(name, getQuitPosition(), "quitpos", minigame.getConfig());
 		}
-		if(getSpleefFloor1() != null){
-			Minigames.plugin.mdata.minigameSetLocations(name, getSpleefFloor1(), "sfloorpos.1", minigame.getConfig());
+		if(getFloorDegen1() != null){
+			Minigames.plugin.mdata.minigameSetLocations(name, getFloorDegen1(), "sfloorpos.1", minigame.getConfig());
 		}
 		else{
 			minigame.getConfig().set(name + ".sfloorpos", null);
 		}
-		if(getSpleefFloor2() != null){
-			Minigames.plugin.mdata.minigameSetLocations(name, getSpleefFloor2(), "sfloorpos.2", minigame.getConfig());
+		if(getFloorDegen2() != null){
+			Minigames.plugin.mdata.minigameSetLocations(name, getFloorDegen2(), "sfloorpos.2", minigame.getConfig());
 		}
 		else{
 			minigame.getConfig().set(name + ".sfloorpos", null);
@@ -2121,10 +2121,10 @@ public class Minigame {
 			setQuitPosition(Minigames.plugin.mdata.minigameLocations(name, "quitpos", minigame.getConfig()));
 		}
 		if(minigame.getConfig().contains(name + ".sfloorpos.1")){
-			setSpleefFloor1(Minigames.plugin.mdata.minigameLocations(name, "sfloorpos.1", minigame.getConfig()));
+			setFloorDegen1(Minigames.plugin.mdata.minigameLocations(name, "sfloorpos.1", minigame.getConfig()));
 		}
 		if(minigame.getConfig().contains(name + ".sfloorpos.2")){
-			setSpleefFloor2(Minigames.plugin.mdata.minigameLocations(name, "sfloorpos.2", minigame.getConfig()));
+			setFloorDegen2(Minigames.plugin.mdata.minigameLocations(name, "sfloorpos.2", minigame.getConfig()));
 		}
 		if(minigame.getConfig().contains(name + ".degentype")){
 			setDegenType(minigame.getConfig().getString(name + ".degentype"));

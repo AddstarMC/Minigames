@@ -57,16 +57,16 @@ public class SetFloorDegeneratorCommand implements ICommand{
 		if(args != null){
 			Player player = (Player)sender;
 			if(args[0].equals("1")){
-				minigame.setSpleefFloor1(player.getLocation());
+				minigame.setFloorDegen1(player.getLocation());
 				sender.sendMessage(ChatColor.GRAY + "Floor degenerator corner 1 has been set for " + minigame);
 			}
 			else if(args[0].equals("2")){
-				minigame.setSpleefFloor2(player.getLocation());
+				minigame.setFloorDegen2(player.getLocation());
 				sender.sendMessage(ChatColor.GRAY + "Floor degenerator corner 2 has been set for " + minigame);
 			}
 			else if(args[0].equalsIgnoreCase("clear")){
-				minigame.setSpleefFloor1(null);
-				minigame.setSpleefFloor2(null);
+				minigame.setFloorDegen1(null);
+				minigame.setFloorDegen2(null);
 				sender.sendMessage(ChatColor.GRAY + "Floor degenerator corners have been removed for " + minigame);
 			}
 			else if(args[0].equalsIgnoreCase("type") && args.length >= 2){

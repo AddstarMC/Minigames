@@ -202,8 +202,8 @@ public class ToolCommand implements ICommand {
 						player.setSelection(tool.getMinigame().getRegenArea1(), tool.getMinigame().getRegenArea2());
 					}
 					else if(tool.getMode() == MinigameToolMode.DEGEN_AREA && 
-							tool.getMinigame().getSpleefFloor1() != null && tool.getMinigame().getSpleefFloor2() != null){
-						player.setSelection(tool.getMinigame().getSpleefFloor1(), tool.getMinigame().getSpleefFloor2());
+							tool.getMinigame().getFloorDegen1() != null && tool.getMinigame().getFloorDegen2() != null){
+						player.setSelection(tool.getMinigame().getFloorDegen1(), tool.getMinigame().getFloorDegen2());
 					}
 					else if(tool.getMode() == MinigameToolMode.START){
 						if(tool.getTeam() != null){

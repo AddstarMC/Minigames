@@ -392,8 +392,8 @@ public class Events implements Listener{
 				else if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK){
 					if(tool.getMode() == MinigameToolMode.DEGEN_AREA && ply.getPlayer().hasPermission("minigame.set.floordegenerator")){
 						if(ply.hasSelection()){
-							mg.setSpleefFloor1(ply.getSelectionPoints()[0]);
-							mg.setSpleefFloor2(ply.getSelectionPoints()[1]);
+							mg.setFloorDegen1(ply.getSelectionPoints()[0]);
+							mg.setFloorDegen2(ply.getSelectionPoints()[1]);
 							ply.sendMessage("Set floor degenerator area for " + mg.getName(), null);
 							ply.showSelection(true);
 							ply.clearSelection();

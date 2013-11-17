@@ -314,7 +314,7 @@ public class PlayerData {
 		}
 		
 		if(minigame.hasPlayers()){
-			if(minigame.getSpleefFloor1() != null && minigame.getSpleefFloor2() != null){
+			if(minigame.getFloorDegen1() != null && minigame.getFloorDegen2() != null){
 				minigame.addFloorDegenerator();
 				minigame.getFloorDegenerator().startDegeneration();
 			}
