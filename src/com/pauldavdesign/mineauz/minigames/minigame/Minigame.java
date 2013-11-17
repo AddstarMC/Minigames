@@ -1530,15 +1530,15 @@ public class Minigame {
 		itemsMain.add(new MenuItemList("Game Type", Material.PAPER, getTypeCallback(), mgTypes));
 		List<String> scoreTypes = new ArrayList<String>();
 		scoreTypes.addAll(Minigames.plugin.getScoreTypes().getScoreTypes().keySet());
-		itemsMain.add(new MenuItemList("Score Type", Material.ROTTEN_FLESH, getScoreTypeCallback(), scoreTypes));
-		itemsMain.add(new MenuItemInteger("Min. Score", Material.STEP, getMinScoreCallback(), 0, null));
-		itemsMain.add(new MenuItemInteger("Max. Score", Material.DOUBLE_STEP, getMaxScoreCallback(), 0, null));
-		itemsMain.add(new MenuItemInteger("Min. Players", Material.STEP, getMinPlayersCallback(), 0, null));
-		itemsMain.add(new MenuItemInteger("Max. Players", Material.DOUBLE_STEP, getMaxPlayersCallback(), 0, null));
+		itemsMain.add(new MenuItemList("Score Type", MinigameUtils.stringToList("Multiplayer Only"), Material.ROTTEN_FLESH, getScoreTypeCallback(), scoreTypes));
+		itemsMain.add(new MenuItemInteger("Min. Score", MinigameUtils.stringToList("Multiplayer Only"), Material.STEP, getMinScoreCallback(), 0, null));
+		itemsMain.add(new MenuItemInteger("Max. Score", MinigameUtils.stringToList("Multiplayer Only"), Material.DOUBLE_STEP, getMaxScoreCallback(), 0, null));
+		itemsMain.add(new MenuItemInteger("Min. Players", MinigameUtils.stringToList("Multiplayer Only"), Material.STEP, getMinPlayersCallback(), 0, null));
+		itemsMain.add(new MenuItemInteger("Max. Players", MinigameUtils.stringToList("Multiplayer Only"), Material.DOUBLE_STEP, getMaxPlayersCallback(), 0, null));
 		itemsMain.add(new MenuItemNewLine());
-		itemsMain.add(new MenuItemInteger("Time Length", Material.WATCH, getTimerCallback(), 0, null)); //TODO: Time menu item
-		itemsMain.add(new MenuItemInteger("Start Wait Time", Material.WATCH, getStartWaitTimeCallback(), 3, null));
-		itemsMain.add(new MenuItemBoolean("Allow Late Join", Material.DEAD_BUSH, getLateJoinCallback()));
+		itemsMain.add(new MenuItemInteger("Time Length", MinigameUtils.stringToList("Multiplayer Only"), Material.WATCH, getTimerCallback(), 0, null)); //TODO: Time menu item
+		itemsMain.add(new MenuItemInteger("Start Wait Time", MinigameUtils.stringToList("Multiplayer Only"), Material.WATCH, getStartWaitTimeCallback(), 3, null));
+		itemsMain.add(new MenuItemBoolean("Allow Late Join", MinigameUtils.stringToList("Multiplayer Only"), Material.DEAD_BUSH, getLateJoinCallback()));
 		itemsMain.add(new MenuItemDisplayRewards("Primary Rewards", Material.CHEST, rewardItem));
 		itemsMain.add(new MenuItemDisplayRewards("Secondary Rewards", Material.CHEST, secondaryRewardItem));
 		itemsMain.add(new MenuItemNewLine());
@@ -1638,8 +1638,8 @@ public class Minigame {
 		itemsPlayer.add(new MenuItemBoolean("Paintball Mode", Material.SNOW_BALL, getPaintballModeCallback()));
 		itemsPlayer.add(new MenuItemInteger("Paintball Damage", Material.ARROW, getPaintballDamageCallback(), 1, null));
 		itemsPlayer.add(new MenuItemBoolean("Unlimited Ammo", Material.SNOW_BLOCK, getUnlimitedAmmoCallback()));
-		itemsPlayer.add(new MenuItemBoolean("Multiplayer Checkpoints", Material.SIGN, getAllowMPCheckpointsCallback()));
-		itemsPlayer.add(new MenuItemBoolean("Save Checkpoints", MinigameUtils.stringToList("Single Player;Only"), Material.SIGN_POST, getSaveCheckpointCallback()));
+		itemsPlayer.add(new MenuItemBoolean("Enable Multiplayer Checkpoints", Material.SIGN, getAllowMPCheckpointsCallback()));
+		itemsPlayer.add(new MenuItemBoolean("Save Checkpoints", MinigameUtils.stringToList("Singleplayer Only"), Material.SIGN_POST, getSaveCheckpointCallback()));
 		playerMenu.addItems(itemsPlayer);
 		playerMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
 		
