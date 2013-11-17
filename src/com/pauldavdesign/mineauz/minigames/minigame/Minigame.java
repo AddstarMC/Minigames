@@ -43,6 +43,7 @@ import com.pauldavdesign.mineauz.minigames.menu.MenuItemList;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemLoadoutAdd;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemSaveMinigame;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemString;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardGroup;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardItem;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardRarity;
@@ -229,6 +230,21 @@ public class Minigame {
 
 	public String getLocation(){
 		return location;
+	}
+	
+	public Callback<String> getLocationCallback(){
+		return new Callback<String>() {
+
+			@Override
+			public void setValue(String value) {
+				location = value;
+			}
+
+			@Override
+			public String getValue() {
+				return location;
+			}
+		};
 	}
 
 	public void setLocation(String location){
@@ -1584,6 +1600,7 @@ public class Minigame {
 		//Treasure Hunt Settings
 		//--------------------//
 		List<MenuItem> itemsTreasureHunt = new ArrayList<MenuItem>();
+		itemsTreasureHunt.add(new MenuItemString("Location Name", MinigameUtils.stringToList("Name to appear when;treasure spawns"), Material.BED, getLocationCallback()));
 		itemsTreasureHunt.add(new MenuItemInteger("Max. Radius", Material.ENDER_PEARL, getMaxRadiusCallback(), 10, null));
 		List<String> maxHeightDes = new ArrayList<String>();
 		maxHeightDes.add("Max. height of where a");
