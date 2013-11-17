@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -58,7 +59,7 @@ public class Menu {
 		Menu m = this;
 		int maxItems = 9 * (rows - 1);
 		while(true){
-			if(inc == maxItems){
+			if(inc >= maxItems){
 				if(m.getNextPage() == null)
 					m.addPage();
 				
@@ -70,27 +71,40 @@ public class Menu {
 				m.addItem(item, inc);
 				break;
 			}
+			else if(m.getClicked(inc).getName().equals("NL")){
+				for(int i = 1; i < 10; i++){
+					if((inc + i) % 9 == 0){
+						inc += i;
+						break;
+					}
+				}
+			}
 			inc++;
 		}
 	}
 	
 	public void addItems(List<MenuItem> items){
-		double pages = Math.ceil((double)items.size() / ((rows - 1) * 9.0));
-		if(pages > 1){
-			Menu nextMenu = this;
-			for(int i = 2; i <= pages; i++){
-				nextMenu.addPage();
-				nextMenu = nextMenu.getNextPage();
-			}
-		}
-		
 		Menu curPage = this;
 		int inc = 0;
 		for(MenuItem it : items){
-			curPage.addItem(it, inc);
-			inc++;
+			if(ChatColor.stripColor(it.getName()).equals("NL")){
+				curPage.addItem(it, inc);
+				for(int i = 1; i < 10; i++){
+					if((inc + i) % 9 == 0){
+						inc += i;
+						break;
+					}
+				}
+			}
+			else{
+				curPage.addItem(it, inc);
+				inc++;
+			}
 			if(inc >= (9 * (rows - 1))){
 				inc = 0;
+				if(curPage.getNextPage() == null && items.indexOf(it) < items.size()){
+					curPage.addPage();
+				}
 				curPage = curPage.getNextPage();
 			}
 		}
@@ -124,7 +138,8 @@ public class Menu {
 	
 	private void populateMenu(){
 		for(Integer key : pageMap.keySet()){
-			pageView[key] = pageMap.get(key).getItem();
+			if(!(pageMap.get(key) instanceof MenuItemNewLine))
+				pageView[key] = pageMap.get(key).getItem();
 		}
 	}
 	

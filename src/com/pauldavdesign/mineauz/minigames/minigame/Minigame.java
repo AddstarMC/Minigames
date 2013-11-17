@@ -41,6 +41,7 @@ import com.pauldavdesign.mineauz.minigames.menu.MenuItemDisplayRewards;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemInteger;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemList;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemLoadoutAdd;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemNewLine;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemSaveMinigame;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemString;
@@ -1534,11 +1535,13 @@ public class Minigame {
 		itemsMain.add(new MenuItemInteger("Max. Score", Material.DOUBLE_STEP, getMaxScoreCallback(), 0, null));
 		itemsMain.add(new MenuItemInteger("Min. Players", Material.STEP, getMinPlayersCallback(), 0, null));
 		itemsMain.add(new MenuItemInteger("Max. Players", Material.DOUBLE_STEP, getMaxPlayersCallback(), 0, null));
+		itemsMain.add(new MenuItemNewLine());
 		itemsMain.add(new MenuItemInteger("Time Length", Material.WATCH, getTimerCallback(), 0, null)); //TODO: Time menu item
 		itemsMain.add(new MenuItemInteger("Start Wait Time", Material.WATCH, getStartWaitTimeCallback(), 3, null));
 		itemsMain.add(new MenuItemBoolean("Allow Late Join", Material.DEAD_BUSH, getLateJoinCallback()));
 		itemsMain.add(new MenuItemDisplayRewards("Primary Rewards", Material.CHEST, rewardItem));
 		itemsMain.add(new MenuItemDisplayRewards("Secondary Rewards", Material.CHEST, secondaryRewardItem));
+		itemsMain.add(new MenuItemNewLine());
 		List<String> floorDegenDes = new ArrayList<String>();
 		floorDegenDes.add("Mainly used to prevent");
 		floorDegenDes.add("islanding in spleef Minigames.");
@@ -1555,6 +1558,7 @@ public class Minigame {
 		List<String> degenDelayDes = new ArrayList<String>();
 		degenDelayDes.add(ChatColor.GREEN + "seconds.");
 		itemsMain.add(new MenuItemInteger("Floor Degenerator Delay", degenDelayDes, Material.WATCH, getFloorDegenTimeCallback(), 1, null));
+		itemsMain.add(new MenuItemNewLine());
 		itemsMain.add(new MenuItemPage("Player Settings", Material.SKULL_ITEM, playerMenu));
 		List<String> thDes = new ArrayList<String>();
 		thDes.add("Treasure hunt related");
