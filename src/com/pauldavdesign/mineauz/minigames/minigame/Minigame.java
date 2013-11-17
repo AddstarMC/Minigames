@@ -35,9 +35,11 @@ import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemAddFlag;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemBoolean;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemDisplayLoadout;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemDisplayRewards;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemFlag;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemInteger;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemList;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemLoadoutAdd;
@@ -1519,6 +1521,7 @@ public class Minigame {
 		Menu playerMenu = new Menu(6, getName(), player);
 		Menu treasureHunt = new Menu(6, getName(), player);
 		Menu loadouts = new Menu(6, getName(), player);
+		Menu flags = new Menu(6, getName(), player);
 		
 		List<MenuItem> itemsMain = new ArrayList<MenuItem>();
 		itemsMain.add(new MenuItemBoolean("Enabled", Material.PAPER, getEnabledCallback()));
@@ -1640,8 +1643,20 @@ public class Minigame {
 		itemsPlayer.add(new MenuItemBoolean("Unlimited Ammo", Material.SNOW_BLOCK, getUnlimitedAmmoCallback()));
 		itemsPlayer.add(new MenuItemBoolean("Enable Multiplayer Checkpoints", Material.SIGN, getAllowMPCheckpointsCallback()));
 		itemsPlayer.add(new MenuItemBoolean("Save Checkpoints", MinigameUtils.stringToList("Singleplayer Only"), Material.SIGN_POST, getSaveCheckpointCallback()));
+		itemsPlayer.add(new MenuItemPage("Flags", MinigameUtils.stringToList("Singleplayer flags"), Material.SIGN, flags));
 		playerMenu.addItems(itemsPlayer);
 		playerMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
+		
+		//--------------//
+		//Minigame Flags//
+		//--------------//
+		List<MenuItem> itemsFlags = new ArrayList<MenuItem>();
+		for(String flag : getFlags()){
+			itemsFlags.add(new MenuItemFlag(Material.SIGN, flag, getFlags()));
+		}
+		flags.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, playerMenu), flags.getSize() - 9);
+		flags.addItem(new MenuItemAddFlag("Add Flag", Material.ITEM_FRAME, this), flags.getSize() - 1);
+		flags.addItems(itemsFlags);
 		
 		main.displayMenu(player);
 		

@@ -67,5 +67,8 @@ public class MenuItemString extends MenuItem{
 		getContainer().cancelReopenTimer();
 		getContainer().displayMenu(getContainer().getViewer());
 	}
-
+	
+	Callback<String> getString(){
+		return str;
+	}
 }
