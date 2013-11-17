@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.pauldavdesign.mineauz.minigames.menu.Menu;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemToolMode;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class MinigameTool {
@@ -98,5 +102,19 @@ public class MinigameTool {
 	
 	public String getTeam(){
 		return team;
+	}
+	
+	public void openMenu(MinigamePlayer player){
+		Menu men = new Menu(2, "Set Tool Mode", player);
+		List<MenuItem> items = new ArrayList<MenuItem>();
+		items.add(new MenuItemToolMode("Set Start Points", Material.SKULL_ITEM, MinigameToolMode.START));
+		items.add(new MenuItemToolMode("Set Quit Point", Material.ENDER_PEARL, MinigameToolMode.QUIT));
+		items.add(new MenuItemToolMode("Set End Point", Material.EYE_OF_ENDER, MinigameToolMode.END));
+		items.add(new MenuItemToolMode("Set Lobby Point", Material.WOOD_DOOR, MinigameToolMode.LOBBY));
+		items.add(new MenuItemToolMode("Set Regeneration Area", Material.GRASS, MinigameToolMode.REGEN_AREA));
+		items.add(new MenuItemToolMode("Set Degeneration Area", Material.SAND, MinigameToolMode.DEGEN_AREA));
+		items.add(new MenuItemToolMode("Set Restore Block", Material.TNT, MinigameToolMode.RESTORE_BLOCK));
+		men.addItems(items);
+		men.displayMenu(player);
 	}
 }

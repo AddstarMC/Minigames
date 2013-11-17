@@ -345,7 +345,12 @@ public class Events implements Listener{
 			MinigameTool tool = new MinigameTool(item);
 			if(tool.getMode() != null && tool.getMinigame() != null){
 				Minigame mg = tool.getMinigame();
-				if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK){
+				
+				if(event.getPlayer().isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)){
+					tool.openMenu(ply);
+					event.setCancelled(true);
+				}
+				else if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK){
 					if(tool.getMode() == MinigameToolMode.START && ply.getPlayer().hasPermission("minigame.set.start")){
 						if(tool.getTeam() != null){
 							if(tool.getTeam().equals("Red")){
