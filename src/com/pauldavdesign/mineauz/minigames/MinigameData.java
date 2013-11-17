@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameTypeBase;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardItem;
 import com.pauldavdesign.mineauz.minigames.presets.BasePreset;
 import com.pauldavdesign.mineauz.minigames.presets.CTFPreset;
 import com.pauldavdesign.mineauz.minigames.presets.InfectionPreset;
@@ -113,15 +114,14 @@ public class MinigameData {
 					if(rpos.getBlock().getState() instanceof Chest){
 						final Chest chest = (Chest) rpos.getBlock().getState();
 						
-						if(!getMinigame(minigame).getDefaultPlayerLoadout().getItems().isEmpty()){
+						if(!mgm.getRewardItems().getRewards().isEmpty()){
 							int numitems = (int) Math.round(Math.random() * (mgm.getMaxTreasure() - mgm.getMinTreasure())) + mgm.getMinTreasure();
-							if(numitems > mgm.getDefaultPlayerLoadout().getItems().size()){
-								numitems = mgm.getDefaultPlayerLoadout().getItems().size();
-							}
-//							Collections.shuffle(getMinigame(minigame).getDefaultPlayerLoadout().getItemsOld());
+							
 							final ItemStack[] items = new ItemStack[27];
 							for(int i = 0; i < numitems; i++){
-//								items[i] = mgm.getDefaultPlayerLoadout().getItemsOld().get(i); //TODO: Implement rewards here instead of loadouts.
+								RewardItem rew = mgm.getRewardItems().getReward().get(0);
+								if(rew.getItem() != null)
+									items[i] = rew.getItem();
 							}
 							Collections.shuffle(Arrays.asList(items));
 							chest.getInventory().setContents(items);

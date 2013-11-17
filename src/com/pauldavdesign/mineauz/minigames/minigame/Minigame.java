@@ -1618,11 +1618,11 @@ public class Minigame {
 		List<String> minDes = new ArrayList<String>();
 		minDes.add("Minimum items to");
 		minDes.add("spawn in chest.");
-		itemsTreasureHunt.add(new MenuItemInteger("Min. Items", minDes, Material.STONE, getMinTreasureCallback(), 0, null));
+		itemsTreasureHunt.add(new MenuItemInteger("Min. Items", minDes, Material.STONE, getMinTreasureCallback(), 0, 27));
 		List<String> maxDes = new ArrayList<String>();
 		maxDes.add("Maximum items to");
 		maxDes.add("spawn in chest.");
-		itemsTreasureHunt.add(new MenuItemInteger("Max. Items", maxDes, Material.DIAMOND, getMaxTreasureCallback(), 0, null));
+		itemsTreasureHunt.add(new MenuItemInteger("Max. Items", maxDes, Material.DIAMOND, getMaxTreasureCallback(), 0, 27));
 		treasureHunt.addItems(itemsTreasureHunt);
 		treasureHunt.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
 
