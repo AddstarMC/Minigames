@@ -71,7 +71,7 @@ public class Menu {
 				m.addItem(item, inc);
 				break;
 			}
-			else if(m.getClicked(inc).getName().equals("NL")){
+			else if(m.getClicked(inc).getName() != null && m.getClicked(inc).getName().equals("NL")){
 				for(int i = 1; i < 10; i++){
 					if((inc + i) % 9 == 0){
 						inc += i;
@@ -87,7 +87,7 @@ public class Menu {
 		Menu curPage = this;
 		int inc = 0;
 		for(MenuItem it : items){
-			if(ChatColor.stripColor(it.getName()).equals("NL")){
+			if(it.getName() != null && ChatColor.stripColor(it.getName()).equals("NL")){
 				curPage.addItem(it, inc);
 				for(int i = 1; i < 10; i++){
 					if((inc + i) % 9 == 0){
