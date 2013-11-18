@@ -114,7 +114,7 @@ public class SPMinigame extends MinigameTypeBase{
 			issuePlayerRewards(player, mgm, hascompleted);
 		}
 		else{
-			new SQLCompletionSaver(mgm.getName(), player, this);
+			new SQLCompletionSaver(mgm.getName(), player, this, true);
 		}
 	}
 
@@ -154,6 +154,10 @@ public class SPMinigame extends MinigameTypeBase{
 				mgm.getBlockRecorder().restoreBlocks(player);
 				mgm.getBlockRecorder().restoreEntities(player);
 			}
+		}
+
+		if(plugin.getSQL() != null){
+			new SQLCompletionSaver(mgm.getName(), player, this, false);
 		}
 	}
 	

@@ -349,6 +349,7 @@ public class PlayerData {
 
 		QuitMinigameEvent event = new QuitMinigameEvent(player, mgm, forced);
 		Bukkit.getServer().getPluginManager().callEvent(event);
+		player.setEndTime(Calendar.getInstance().getTimeInMillis());
 		if(!event.isCancelled()){
 			if(!mgm.isSpectator(player)){
 				player.setAllowTeleport(true);
@@ -403,11 +404,13 @@ public class PlayerData {
 				});
 				
 				player.clearFlags();
-				player.resetDeaths();
-				player.resetKills();
-				player.resetScore();
-				player.resetTime();
-				player.resetReverts();
+				if(plugin.getSQL() == null || plugin.getSQL().getSql() == null){
+					player.resetDeaths();
+					player.resetKills();
+					player.resetScore();
+					player.resetTime();
+					player.resetReverts();
+				}
 				player.removeCheckpoint();
 				
 				plugin.getLogger().info(player.getName() + " quit " + mgm);
@@ -638,7 +641,7 @@ public class PlayerData {
 			winplayers.addAll(event.getWinnningPlayers());
 	
 			if(plugin.getSQL() != null){
-				new SQLCompletionSaver(mgm.getName(), winplayers, mdata.minigameType(mgm.getType()));
+				new SQLCompletionSaver(mgm.getName(), winplayers, mdata.minigameType(mgm.getType()), true);
 			}
 			
 			if(mgm.getMpBets() != null){
@@ -663,6 +666,11 @@ public class PlayerData {
 			if(!event.getLosingPlayers().isEmpty()){
 				List<MinigamePlayer> loseplayers = new ArrayList<MinigamePlayer>();
 				loseplayers.addAll(event.getLosingPlayers());
+				
+				if(plugin.getSQL() != null){
+					new SQLCompletionSaver(mgm.getName(), loseplayers, mdata.minigameType(mgm.getType()), false);
+				}
+				
 				for(int i = 0; i < loseplayers.size(); i++){
 					if(loseplayers.get(i) instanceof MinigamePlayer){
 						final MinigamePlayer p = loseplayers.get(i);

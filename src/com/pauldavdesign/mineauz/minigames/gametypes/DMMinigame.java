@@ -102,6 +102,10 @@ public class DMMinigame extends MinigameTypeBase{
 			mgm.getMpBets().removePlayersBet(player);
 		}
 		player.getPlayer().updateInventory();
+		
+		if(plugin.getSQL() != null){
+			new SQLCompletionSaver(mgm.getName(), player, this, false);
+		}
 	}
 
 	@SuppressWarnings("deprecation")
@@ -188,7 +192,7 @@ public class DMMinigame extends MinigameTypeBase{
 			issuePlayerRewards(player, mgm, hascompleted);
 		}
 		else{
-			new SQLCompletionSaver(mgm.getName(), player, this);
+			new SQLCompletionSaver(mgm.getName(), player, this, true);
 		}
 	}
 	
