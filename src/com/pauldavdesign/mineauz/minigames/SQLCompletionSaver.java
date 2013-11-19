@@ -8,6 +8,8 @@ import java.util.List;
 import lib.PatPeter.SQLibrary.Database;
 
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameTypeBase;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.ScoreboardPlayer;
 
 public class SQLCompletionSaver extends Thread{
 	private boolean hascompleted = false;
@@ -225,7 +227,7 @@ public class SQLCompletionSaver extends Thread{
 			try {
 				sql.query("INSERT INTO mgm_" + minigame + "_comp VALUES " +
 						"( '" + name + "', " + 
-						completed + ", " + 
+						ocompleted + ", " + 
 						kills + ", " + 
 						deaths + ", " +
 						score + ", " +
@@ -242,6 +244,28 @@ public class SQLCompletionSaver extends Thread{
 				e.printStackTrace();
 				return;
 			}
+		}
+		
+		Minigame mgm = Minigames.plugin.mdata.getMinigame(minigame);
+		if(mgm.getScoreboardData().hasPlayer(player.getName())){
+			ScoreboardPlayer ply = mgm.getScoreboardData().getPlayer(player.getName());
+			ply.setCompletions(ocompleted);
+			ply.setBestKills(okills);
+			ply.setLeastDeaths(odeaths);
+			ply.setBestScore(oscore);
+			ply.setBestTime(otime);
+			ply.setLeastReverts(oreverts);
+			ply.setTotalKills(otkills);
+			ply.setTotalDeaths(otdeaths);
+			ply.setTotalScore(otscore);
+			ply.setTotalReverts(otreverts);
+			ply.setTotalTime(ottime);
+			ply.setFailures(ofailures);
+		}
+		else{
+			mgm.getScoreboardData().addPlayer(new 
+					ScoreboardPlayer(player.getName(), ocompleted, ofailures, otkills, odeaths, 
+							oscore, otime, oreverts, otkills, otdeaths, otscore, otreverts, ottime));
 		}
 		
 		if(completed)

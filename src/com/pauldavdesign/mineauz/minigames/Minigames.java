@@ -168,6 +168,10 @@ public class Minigames extends JavaPlugin{
 								e.printStackTrace();
 							}
 						}
+						if(getSQL() != null && getSQL().getSql() != null){
+							SQLDataLoader loader = new SQLDataLoader(mdata.getAllMinigames().values());
+							loader.start();
+						}
 					}
 				}, 1L);
 			}

@@ -125,6 +125,8 @@ public class Minigame {
 	private int minChestRandom = 5;
 	private int maxChestRandom = 10;
 	
+	private ScoreboardData sbData = new ScoreboardData();
+	
 	//Unsaved data
 	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 	private List<MinigamePlayer> spectators = new ArrayList<MinigamePlayer>();
@@ -1660,6 +1662,10 @@ public class Minigame {
 		
 		main.displayMenu(player);
 		
+	}
+
+	public ScoreboardData getScoreboardData() {
+		return sbData;
 	}
 
 	public void saveMinigame(){

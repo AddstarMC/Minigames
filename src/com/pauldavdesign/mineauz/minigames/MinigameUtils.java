@@ -105,9 +105,10 @@ public class MinigameUtils {
 	 * Converts seconds into weeks, days, hours, minutes and seconds to be neatly
 	 * displayed. Only shows the values that aren't 0.
 	 * @param time - The time in seconds to be converted
+	 * @param small - If the time should be shortened to: hh:mm:ss
 	 * @return A message with a neat time
 	 */
-	public static String convertTime(int time){
+	public static String convertTime(int time, boolean small){
 		int weeks = 0;
 		int days = 0;
 		int hours = 0;
@@ -151,49 +152,91 @@ public class MinigameUtils {
 		}
 		
 		if(weeks != 0){
-			msg = String.format(lang.getString("time.weeks"), weeks);
+			if(!small)
+				msg = String.format(lang.getString("time.weeks"), weeks);
+			else{
+				msg = String.valueOf(weeks) + "w";
+			}
 		}
 		if(days != 0){
 			if(!msg.equals("")){
-				if(seconds != 0 || hours != 0 || minutes != 0){
-					msg += ", ";
+				if(!small){
+					if(seconds != 0 || hours != 0 || minutes != 0){
+						msg += ", ";
+					}
+					else{
+						msg += " " + lang.getString("time.and") + " ";
+					}
 				}
 				else{
-					msg += " " + lang.getString("time.and") + " ";
+					msg += ":";
 				}
 			}
-			msg += String.format(lang.getString("time.days"), days);
+			if(!small)
+				msg += String.format(lang.getString("time.days"), days);
+			else
+				msg += String.valueOf(days) + "d";
 		}
 		if(hours != 0){
 			if(!msg.equals("")){
-				if(seconds != 0 || minutes != 0){
-					msg += ", ";
+				if(!small){
+					if(seconds != 0 || minutes != 0){
+						msg += ", ";
+					}
+					else{
+						msg += " " + lang.getString("time.and") + " ";
+					}
 				}
-				else{
-					msg += " " + lang.getString("time.and") + " ";
-				}
+				else
+					msg += ":";
 			}
-			msg += String.format(lang.getString("time.hours"), hours);
+			if(!small)
+				msg += String.format(lang.getString("time.hours"), hours);
+			else
+				msg += String.valueOf(hours) + "h";
 		}
 		if(minutes != 0){
 			if(!msg.equals("")){
-				if(seconds != 0){
-					msg += ", ";
+				if(!small){
+					if(seconds != 0){
+						msg += ", ";
+					}
+					else{
+						msg += " " + lang.getString("time.and") + " ";
+					}
 				}
-				else{
-					msg += " " + lang.getString("time.and") + " ";
-				}
+				else
+					msg += ":";
 			}
-			msg += String.format(lang.getString("time.minutes"), minutes);
+			if(!small)
+				msg += String.format(lang.getString("time.minutes"), minutes);
+			else
+				msg += String.valueOf(minutes) + "m";
 		}
 		if(seconds != 0){
 			if(!msg.equals("")){
-				msg += " " + lang.getString("time.and") + " ";
+				if(!small)
+					msg += " " + lang.getString("time.and") + " ";
+				else
+					msg += ":";
 			}
-			msg += String.format(lang.getString("time.seconds"), seconds);
+			if(!small)
+				msg += String.format(lang.getString("time.seconds"), seconds);
+			else
+				msg += String.valueOf(seconds) + "s";
 		}
 		
 		return msg;
+	}
+	
+	/**
+	 * Converts seconds into weeks, days, hours, minutes and seconds to be neatly
+	 * displayed. Only shows the values that aren't 0.
+	 * @param time - The time in seconds to be converted
+	 * @return A message with a neat time
+	 */
+	public static String convertTime(int time){
+		return convertTime(time, false);
 	}
 	
 	/**
