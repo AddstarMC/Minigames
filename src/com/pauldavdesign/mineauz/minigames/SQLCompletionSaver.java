@@ -55,7 +55,8 @@ public class SQLCompletionSaver extends Thread{
 							"TotalDeaths int, " +
 							"TotalScore int, " +
 							"TotalReverts int, " +
-							"TotalTime long " +
+							"TotalTime long, " +
+							"Failures int " +
 							")");
 				} catch (SQLException e) {
 					e.printStackTrace();
