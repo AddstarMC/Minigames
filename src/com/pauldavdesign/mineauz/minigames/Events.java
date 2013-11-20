@@ -21,6 +21,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -735,6 +736,21 @@ public class Events implements Listener{
 		if(ply.isInMinigame() && ply.getLoadout() != null && 
 				!ply.getLoadout().hasHunger()){
 			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	private void blockBreak(BlockBreakEvent event){
+		if(event.getBlock().hasMetadata("MGScoreboardSign")){
+			if(event.getPlayer().hasPermission("minigame.sign.scoreboard.create")){
+				Minigame mg = mdata.getMinigame(event.getBlock().getMetadata("Minigame").get(0).asString());
+				if(mg != null){
+					mg.getScoreboardData().removeDisplay(MinigameUtils.createLocationID(event.getBlock().getLocation()));
+				}
+			}
+			else{
+				event.setCancelled(true);
+			}
 		}
 	}
 }

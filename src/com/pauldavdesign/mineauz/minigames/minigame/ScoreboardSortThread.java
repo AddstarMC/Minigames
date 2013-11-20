@@ -17,6 +17,7 @@ public class ScoreboardSortThread extends Thread{
 	private ScoreboardType type;
 	private ScoreboardOrder order;
 	private CommandSender requested = null;
+	private ScoreboardDisplay display = null;
 	private int limit = 8;
 	
 	public ScoreboardSortThread(List<ScoreboardPlayer> players, ScoreboardType type, 
@@ -36,6 +37,14 @@ public class ScoreboardSortThread extends Thread{
 		this.requested = requested;
 		this.minigame = minigame;
 		limit = resultLimit;
+	}
+	
+	public ScoreboardSortThread(List<ScoreboardPlayer> players, ScoreboardType type, 
+			ScoreboardOrder order, ScoreboardDisplay display){
+		this.players = players;
+		this.type = type;
+		this.order = order;
+		this.display = display;
 	}
 	
 	public void run(){
@@ -88,19 +97,23 @@ public class ScoreboardSortThread extends Thread{
 			}
 		}
 		
-		if(requested == null || (requested instanceof Player && !((Player)requested).isOnline())) return;
-		requested.sendMessage(ChatColor.GREEN + minigame + " Scoreboard: " + type.toString().toLowerCase().replace("_", " ") + " " + order.toString().toLowerCase());
-		for(int i = 0; i < limit; i++){
-			if(i >= result.size()) break;
-			String msg = ChatColor.AQUA + result.get(i).getPlayerName() + ": " + ChatColor.WHITE;
-			if(type == ScoreboardType.LEAST_TIME || type == ScoreboardType.TOTAL_TIME){
-				int time = (int)((Long)result.get(i).getByType(type) / 1000);
-				msg += MinigameUtils.convertTime(time, true);
+		if(requested != null || (requested instanceof Player && ((Player)requested).isOnline())){
+			requested.sendMessage(ChatColor.GREEN + minigame + " Scoreboard: " + type.toString().toLowerCase().replace("_", " ") + " " + order.toString().toLowerCase());
+			for(int i = 0; i < limit; i++){
+				if(i >= result.size()) break;
+				String msg = ChatColor.AQUA + result.get(i).getPlayerName() + ": " + ChatColor.WHITE;
+				if(type == ScoreboardType.LEAST_TIME || type == ScoreboardType.TOTAL_TIME){
+					int time = (int)((Long)result.get(i).getByType(type) / 1000);
+					msg += MinigameUtils.convertTime(time, true);
+				}
+				else{ 
+					msg += (Integer)result.get(i).getByType(type);
+				}
+				requested.sendMessage(msg);
 			}
-			else{ 
-				msg += (Integer)result.get(i).getByType(type);
-			}
-			requested.sendMessage(msg);
+		}
+		else if(display != null){
+			display.displayStats(result);
 		}
 	}
 }

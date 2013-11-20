@@ -157,7 +157,8 @@ public class SPMinigame extends MinigameTypeBase{
 		}
 
 		if(plugin.getSQL() != null){
-			new SQLCompletionSaver(mgm.getName(), player, this, false);
+			if(mgm.canSaveCheckpoint() == false)
+				new SQLCompletionSaver(mgm.getName(), player, this, false);
 		}
 	}
 	

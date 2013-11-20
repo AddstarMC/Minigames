@@ -267,6 +267,7 @@ public class SQLCompletionSaver extends Thread{
 					ScoreboardPlayer(player.getName(), ocompleted, ofailures, otkills, odeaths, 
 							oscore, otime, oreverts, otkills, otdeaths, otscore, otreverts, ottime));
 		}
+		mgm.getScoreboardData().updateDisplays();
 		
 		if(completed)
 			mgtype.issuePlayerRewards(player, Minigames.plugin.mdata.getMinigame(minigame), hascompleted);

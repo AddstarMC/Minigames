@@ -396,6 +396,21 @@ public class MinigameUtils {
 		return arr;
 	}
 	
+	public static String capitalize(String toCapitalize){
+		String val = toCapitalize.toLowerCase();
+		String[] spl = val.split(" ");
+		val = "";
+		for(String s : spl){
+			String c = Character.toString(s.charAt(0));
+			s = s.substring(1);
+			c = c.toUpperCase();
+			s = c + s;
+			val += s + " ";
+		}
+		val = val.trim();
+		return val;
+	}
+	
 //	public static void removePlayerArrows(MinigamePlayer player){
 //		try{
 //			Class.forName("net.minecraft.server.v1_5_R3.EntityPlayer");

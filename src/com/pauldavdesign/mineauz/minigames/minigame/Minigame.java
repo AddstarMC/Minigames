@@ -2090,6 +2090,8 @@ public class Minigame {
 		else
 			minigame.getConfig().set(name + ".allowMPCheckpoints", null);
 		
+		getScoreboardData().saveDisplays(minigame, name);
+		
 		minigame.saveConfig();
 	}
 	
@@ -2447,6 +2449,8 @@ public class Minigame {
 				}
 			});
 		}
+		
+		getScoreboardData().loadDisplays(minigame, this);
 		
 		saveMinigame();
 	}

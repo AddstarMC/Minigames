@@ -411,6 +411,15 @@ public class PlayerData {
 					player.resetTime();
 					player.resetReverts();
 				}
+				else{
+					if(mgm.getType() == MinigameType.SINGLEPLAYER && mgm.canSaveCheckpoint() == true){
+						player.resetDeaths();
+						player.resetKills();
+						player.resetScore();
+						player.resetTime();
+						player.resetReverts();
+					}
+				}
 				player.removeCheckpoint();
 				
 				plugin.getLogger().info(player.getName() + " quit " + mgm);
