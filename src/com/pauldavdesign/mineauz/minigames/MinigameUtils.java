@@ -26,40 +26,24 @@ public class MinigameUtils {
 	 */
 	public static ItemStack stringToItemStack(String item, int quantity){
 		String itemName = "";
-		int itemInt = 0;
 		short itemData = 0;
 		String[] split = null;
 		
-		if(item.matches("[0-9]+(:[0-9]+)?")){
-			if(item.contains(":")){
-				split = item.split(":");
-				itemInt = Integer.parseInt(split[0]);
+		if(item.contains(":")){
+			split = item.split(":");
+			itemName = split[0].toUpperCase();
+			if(split[1].matches("[0-9]+")){
 				itemData = Short.parseShort(split[1]);
-			}
-			else{
-				itemInt = Integer.parseInt(item);
 			}
 		}
 		else{
-			if(item.contains(":")){
-				split = item.split(":");
-				itemName = split[0].toUpperCase();
-				if(split[1].matches("[0-9]+")){
-					itemData = Short.parseShort(split[1]);
-				}
-			}
-			else{
-				itemName = item.toUpperCase();
-			}
+			itemName = item.toUpperCase();
 		}
 		
 		ItemStack it = null;
 		
 		if(Material.getMaterial(itemName) != null){
 			it = new ItemStack(Material.getMaterial(itemName), quantity, itemData);
-		}
-		else if(Material.getMaterial(itemInt) != null){
-			it = new ItemStack(Material.getMaterial(itemInt), quantity, itemData);
 		}
 		return it;
 	}
