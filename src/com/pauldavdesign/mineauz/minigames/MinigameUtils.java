@@ -326,7 +326,7 @@ public class MinigameUtils {
 	}
 	
 	public static boolean isMinigameTool(ItemStack item){
-		if(item.getItemMeta().getDisplayName() != null && item.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")){
+		if(item != null && item.getItemMeta().getDisplayName() != null && item.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")){
 			return true;
 		}
 		return false;
