@@ -1849,6 +1849,7 @@ public class Minigame {
 		}
 		
 		if(hasLoadouts()){
+			minigame.getConfig().set(name + ".extraloadouts", null);
 			for(String loadout : getLoadouts()){
 				for(Integer slot : getLoadout(loadout).getItems()){
 					minigame.getConfig().set(name + ".extraloadouts." + loadout + "." + slot, getLoadout(loadout).getItem(slot));
