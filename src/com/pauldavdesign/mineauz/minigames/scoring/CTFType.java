@@ -80,7 +80,7 @@ public class CTFType extends ScoreTypeBase{
 		}
 	}
 	
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler
 	private void takeFlag(PlayerInteractEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
