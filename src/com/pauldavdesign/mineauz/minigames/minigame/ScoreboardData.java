@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import com.pauldavdesign.mineauz.minigames.MinigameSave;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
@@ -88,6 +89,7 @@ public class ScoreboardData {
 			dis.setOrd(ScoreboardOrder.valueOf(con.getString(loc + "order")));
 			dis.setType(ScoreboardType.valueOf(con.getString(loc + "type")));
 			addDisplay(dis);
+			dis.getLocation().getBlock().setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.plugin, true));
 		}
 	}
 }
