@@ -37,6 +37,7 @@ import com.pauldavdesign.mineauz.minigames.events.SpectateMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.scoring.ScoreType;
+import com.pauldavdesign.mineauz.minigames.sql.SQLPlayer;
 
 public class PlayerData {
 	private Map<String, MinigamePlayer> minigamePlayers = new HashMap<String, MinigamePlayer>();
@@ -404,22 +405,11 @@ public class PlayerData {
 				});
 				
 				player.clearFlags();
-				if(plugin.getSQL() == null || plugin.getSQL().getSql() == null){
-					player.resetDeaths();
-					player.resetKills();
-					player.resetScore();
-					player.resetTime();
-					player.resetReverts();
-				}
-				else{
-					if(mgm.getType() == MinigameType.SINGLEPLAYER && mgm.canSaveCheckpoint() == true){
-						player.resetDeaths();
-						player.resetKills();
-						player.resetScore();
-						player.resetTime();
-						player.resetReverts();
-					}
-				}
+				player.resetDeaths();
+				player.resetKills();
+				player.resetScore();
+				player.resetTime();
+				player.resetReverts();
 				player.removeCheckpoint();
 				
 				plugin.getLogger().info(player.getName() + " quit " + mgm);
@@ -540,14 +530,11 @@ public class PlayerData {
 			player.getPlayer().setNoDamageTicks(60);
 			
 			player.clearFlags();
-			
-			if(plugin.getSQL() == null || plugin.getSQL().getSql() == null){
-				player.resetDeaths();
-				player.resetKills();
-				player.resetScore();
-				player.resetTime();
-				player.resetReverts();
-			}
+			player.resetDeaths();
+			player.resetKills();
+			player.resetScore();
+			player.resetTime();
+			player.resetReverts();
 			player.removeCheckpoint();
 			
 			if(mgm.getMinigameTimer() != null){
@@ -650,7 +637,14 @@ public class PlayerData {
 			winplayers.addAll(event.getWinnningPlayers());
 	
 			if(plugin.getSQL() != null){
-				new SQLCompletionSaver(mgm.getName(), winplayers, mdata.minigameType(mgm.getType()), true);
+//				new SQLCompletionSaver(mgm.getName(), winplayers, mdata.minigameType(mgm.getType()), true);
+				List<SQLPlayer> sqlplayers = new ArrayList<SQLPlayer>();
+				for(MinigamePlayer ply : winplayers){
+					ply.setEndTime(Calendar.getInstance().getTimeInMillis());
+					sqlplayers.add(new SQLPlayer(mgm.getName(), ply.getName(), 1, 0, ply.getKills(), ply.getDeaths(), ply.getScore(), ply.getReverts(), ply.getEndTime() - ply.getStartTime()));
+				}
+				plugin.addSQLToStore(sqlplayers);
+				plugin.startSQLCompletionSaver();
 			}
 			
 			if(mgm.getMpBets() != null){
@@ -677,7 +671,14 @@ public class PlayerData {
 				loseplayers.addAll(event.getLosingPlayers());
 				
 				if(plugin.getSQL() != null){
-					new SQLCompletionSaver(mgm.getName(), loseplayers, mdata.minigameType(mgm.getType()), false);
+//					new SQLCompletionSaver(mgm.getName(), loseplayers, mdata.minigameType(mgm.getType()), false);
+					List<SQLPlayer> sqlplayers = new ArrayList<SQLPlayer>();
+					for(MinigamePlayer ply : loseplayers){
+						ply.setEndTime(Calendar.getInstance().getTimeInMillis());
+						sqlplayers.add(new SQLPlayer(mgm.getName(), ply.getName(), 0, 1, ply.getKills(), ply.getDeaths(), ply.getScore(), ply.getReverts(), ply.getEndTime() - ply.getStartTime()));
+					}
+					plugin.addSQLToStore(sqlplayers);
+					plugin.startSQLCompletionSaver();
 				}
 				
 				for(int i = 0; i < loseplayers.size(); i++){

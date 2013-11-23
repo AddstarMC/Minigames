@@ -39,6 +39,10 @@ import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.scoring.ScoreType;
 import com.pauldavdesign.mineauz.minigames.signs.SignBase;
+import com.pauldavdesign.mineauz.minigames.sql.SQLCompletionSaver;
+import com.pauldavdesign.mineauz.minigames.sql.SQLDataLoader;
+import com.pauldavdesign.mineauz.minigames.sql.SQLDatabase;
+import com.pauldavdesign.mineauz.minigames.sql.SQLPlayer;
 
 public class Minigames extends JavaPlugin{
 	static Logger log = Logger.getLogger("Minecraft");
@@ -50,6 +54,8 @@ public class Minigames extends JavaPlugin{
 	private static ScoreType scoretypes;
 	private static SignBase minigameSigns;
 	private FileConfiguration lang = null;
+	private List<SQLPlayer> sqlToStore = new ArrayList<SQLPlayer>();
+	private SQLCompletionSaver completionSaver = null;
 	
 	private long lastUpdateCheck = 0;
 
@@ -470,5 +476,35 @@ public class Minigames extends JavaPlugin{
 		
 		svb = new MinigameSave("lang/en_AU");
 		lang = svb.getConfig();
+	}
+	
+	public List<SQLPlayer> getSQLToStore(){
+		return new ArrayList<SQLPlayer>(sqlToStore);
+	}
+	
+	public void clearSQLToStore(){
+		sqlToStore.clear();
+	}
+	
+	public boolean hasSQLToStore(){
+		return !sqlToStore.isEmpty();
+	}
+	
+	public void addSQLToStore(SQLPlayer player){
+		sqlToStore.add(player);
+	}
+	
+	public void addSQLToStore(List<SQLPlayer> players){
+		sqlToStore.addAll(players);
+	}
+	
+	public void startSQLCompletionSaver(){
+		if(completionSaver == null){
+			completionSaver = new SQLCompletionSaver();
+		}
+	}
+	
+	public void removeSQLCompletionSaver(){
+		completionSaver = null;
 	}
 }

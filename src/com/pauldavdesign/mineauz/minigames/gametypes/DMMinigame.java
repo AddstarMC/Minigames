@@ -20,9 +20,9 @@ import com.pauldavdesign.mineauz.minigames.MinigameSave;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
-import com.pauldavdesign.mineauz.minigames.SQLCompletionSaver;
 import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.sql.SQLPlayer;
 
 public class DMMinigame extends MinigameTypeBase{
 	private static Minigames plugin = Minigames.plugin;
@@ -104,7 +104,9 @@ public class DMMinigame extends MinigameTypeBase{
 		player.getPlayer().updateInventory();
 		
 		if(plugin.getSQL() != null){
-			new SQLCompletionSaver(mgm.getName(), player, this, false);
+//			new SQLCompletionSaver(mgm.getName(), player, this, false);
+			plugin.addSQLToStore(new SQLPlayer(mgm.getName(), player.getName(), 0, 1, player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), player.getEndTime() - player.getStartTime()));
+			plugin.startSQLCompletionSaver();
 		}
 	}
 
@@ -192,7 +194,9 @@ public class DMMinigame extends MinigameTypeBase{
 			issuePlayerRewards(player, mgm, hascompleted);
 		}
 		else{
-			new SQLCompletionSaver(mgm.getName(), player, this, true);
+//			new SQLCompletionSaver(mgm.getName(), player, this, true);
+			plugin.addSQLToStore(new SQLPlayer(mgm.getName(), player.getName(), 1, 0, player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), player.getEndTime() - player.getStartTime()));
+			plugin.startSQLCompletionSaver();
 		}
 	}
 	

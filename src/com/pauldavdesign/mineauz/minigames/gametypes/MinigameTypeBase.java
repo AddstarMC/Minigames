@@ -154,7 +154,7 @@ public abstract class MinigameTypeBase implements Listener{
 	}
 	
 	@SuppressWarnings("deprecation")
-	public void issuePlayerRewards(MinigamePlayer player, Minigame save, boolean hascompleted){
+	public static void issuePlayerRewards(MinigamePlayer player, Minigame save, boolean hascompleted){
 		List<RewardItem> rewardL = save.getRewardItem();
 		List<RewardItem> srewardL = save.getSecondaryRewardItem();
 		double totalMoney = 0;

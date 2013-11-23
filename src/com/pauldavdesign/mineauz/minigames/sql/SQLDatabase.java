@@ -1,4 +1,6 @@
-package com.pauldavdesign.mineauz.minigames;
+package com.pauldavdesign.mineauz.minigames.sql;
+
+import com.pauldavdesign.mineauz.minigames.Minigames;
 
 import lib.PatPeter.SQLibrary.Database;
 import lib.PatPeter.SQLibrary.MySQL;
