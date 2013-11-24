@@ -10,6 +10,7 @@ import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
 public class MenuItemSaveLoadout extends MenuItem{
 	
 	private PlayerLoadout loadout = null;
+	private Menu altMenu = null;
 	
 	public MenuItemSaveLoadout(String name, Material displayItem, PlayerLoadout loadout) {
 		super(name, displayItem);
@@ -19,6 +20,18 @@ public class MenuItemSaveLoadout extends MenuItem{
 	public MenuItemSaveLoadout(String name, List<String> description, Material displayItem, PlayerLoadout loadout) {
 		super(name, description, displayItem);
 		this.loadout = loadout;
+	}
+	
+	public MenuItemSaveLoadout(String name, Material displayItem, PlayerLoadout loadout, Menu altMenu) {
+		super(name, displayItem);
+		this.loadout = loadout;
+		this.altMenu = altMenu;
+	}
+	
+	public MenuItemSaveLoadout(String name, List<String> description, Material displayItem, PlayerLoadout loadout, Menu altMenu) {
+		super(name, description, displayItem);
+		this.loadout = loadout;
+		this.altMenu = altMenu;
 	}
 	
 	@Override
@@ -43,7 +56,10 @@ public class MenuItemSaveLoadout extends MenuItem{
 			}
 		}
 		getContainer().getViewer().sendMessage("Saved the '" + loadout.getName() + "' loadout.", null);
-		getContainer().getPreviousPage().displayMenu(getContainer().getViewer());
+		if(altMenu == null)
+			getContainer().getPreviousPage().displayMenu(getContainer().getViewer());
+		else
+			altMenu.displayMenu(getContainer().getViewer());
 		return null;
 	}
 }

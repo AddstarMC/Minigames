@@ -318,7 +318,8 @@ public class MinigameUtils {
 	
 	public static boolean hasMinigameTool(MinigamePlayer player){
 		for(ItemStack i : player.getPlayer().getInventory().getContents()){
-			if(i.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")){
+			if(i.getItemMeta() != null && i.getItemMeta().getDisplayName() != null && 
+					i.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")){
 				return true;
 			}
 		}
@@ -326,7 +327,7 @@ public class MinigameUtils {
 	}
 	
 	public static boolean isMinigameTool(ItemStack item){
-		if(item != null && item.getItemMeta().getDisplayName() != null && item.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")){
+		if(item.getItemMeta() != null && item.getItemMeta().getDisplayName() != null && item.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")){
 			return true;
 		}
 		return false;
@@ -334,7 +335,8 @@ public class MinigameUtils {
 	
 	public static MinigameTool getMinigameTool(MinigamePlayer player){
 		for(ItemStack i : player.getPlayer().getInventory().getContents()){
-			if(i.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")){
+			if(i.getItemMeta() != null && i.getItemMeta().getDisplayName() != null && 
+					i.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")){
 				return new MinigameTool(i);
 			}
 		}

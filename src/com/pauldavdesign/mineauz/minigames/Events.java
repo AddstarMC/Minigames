@@ -344,14 +344,16 @@ public class Events implements Listener{
 		ItemStack item = event.getItem();
 		if(item != null && MinigameUtils.isMinigameTool(item) && ply.getPlayer().hasPermission("minigame.tool")){
 			MinigameTool tool = new MinigameTool(item);
-			if(tool.getMode() != null && tool.getMinigame() != null){
+			event.setCancelled(true);
+			
+			if(event.getPlayer().isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)){
+				tool.openMenu(ply);
+				event.setCancelled(true);
+			}
+			else if(tool.getMode() != null && tool.getMinigame() != null){
 				Minigame mg = tool.getMinigame();
 				
-				if(event.getPlayer().isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)){
-					tool.openMenu(ply);
-					event.setCancelled(true);
-				}
-				else if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK){
+				if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK){
 					if(tool.getMode() == MinigameToolMode.START && ply.getPlayer().hasPermission("minigame.set.start")){
 						if(tool.getTeam() != null){
 							if(tool.getTeam().equals("Red")){
@@ -388,7 +390,6 @@ public class Events implements Listener{
 					else if(event.getAction() == Action.RIGHT_CLICK_BLOCK && tool.getMode() != null){
 						ply.addSelectionPoint(event.getClickedBlock().getLocation());
 					}
-					event.setCancelled(true);
 				}
 				else if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK){
 					if(tool.getMode() == MinigameToolMode.DEGEN_AREA && ply.getPlayer().hasPermission("minigame.set.floordegenerator")){
@@ -488,7 +489,6 @@ public class Events implements Listener{
 							ply.sendMessage("Removed selected restore block from " + mg.getName(), null);
 						}
 					}
-					event.setCancelled(true);
 				}
 			}
 		}

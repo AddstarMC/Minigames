@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
@@ -16,6 +18,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 	private PlayerLoadout loadout = null;
 	private Minigame mgm = null;
 	private boolean allowDelete = true;
+	private Menu altMenu = null;
 	
 	public MenuItemDisplayLoadout(String name, Material displayItem, PlayerLoadout loadout, Minigame minigame) {
 		super(name, displayItem);
@@ -39,22 +42,64 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		this.loadout = loadout;
 	}
 	
+	public void setAltMenu(Menu altMenu){
+		this.altMenu = altMenu;
+	}
+	
 	@Override
 	public ItemStack onClick(){
 		Menu loadoutMenu = new Menu(5, loadout.getName(), getContainer().getViewer());
 		Menu loadoutSettings = new Menu(6, loadout.getName(), getContainer().getViewer());
+		loadoutSettings.setPreviousPage(loadoutMenu);
 		
 		List<MenuItem> mItems = new ArrayList<MenuItem>();
 		mItems.add(new MenuItemBoolean("Allow Fall Damage", Material.LEATHER_BOOTS, loadout.getFallDamageCallback()));
 		mItems.add(new MenuItemBoolean("Allow Hunger", Material.APPLE, loadout.getHungerCallback()));
 		loadoutSettings.addItems(mItems);
-		loadoutSettings.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, getContainer()), getContainer().getSize() - 9);
+		if(mgm == null){
+			MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back", Material.REDSTONE_TORCH_ON, loadout);
+			dl.setAltMenu(getContainer());
+			loadoutSettings.addItem(dl, getContainer().getSize() - 9);
+		}
+		else{
+			MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back", Material.REDSTONE_TORCH_ON, loadout, mgm);
+			dl.setAltMenu(getContainer());
+			loadoutSettings.addItem(dl, getContainer().getSize() - 9);
+		}
+		
+		Menu potionMenu = new Menu(5, getContainer().getName(), getContainer().getViewer());
+		
+		potionMenu.setPreviousPage(loadoutMenu);
+		potionMenu.addItem(new MenuItemPotionAdd("Add Potion", Material.ITEM_FRAME, loadout), 44);
+		if(mgm == null){
+			MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back", Material.REDSTONE_TORCH_ON, loadout);
+			dl.setAltMenu(getContainer());
+			potionMenu.addItem(dl, 45 - 9);
+		}
+		else{
+			MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back", Material.REDSTONE_TORCH_ON, loadout, mgm);
+			dl.setAltMenu(getContainer());
+			potionMenu.addItem(dl, 45 - 9);
+		}
+		
+		List<String> des = new ArrayList<String>();
+		des.add("Shift + Right Click to Delete");
+		List<MenuItem> potions = new ArrayList<MenuItem>();
+		
+		for(PotionEffect eff : loadout.getAllPotionEffects()){
+			potions.add(new MenuItemPotion(MinigameUtils.capitalize(eff.getType().getName().replace("_", " ")), des, Material.POTION, eff, loadout));
+		}
+		potionMenu.addItems(potions);
 		
 		loadoutMenu.setAllowModify(true);
-		loadoutMenu.setPreviousPage(getContainer());
+		if(altMenu == null)
+			loadoutMenu.setPreviousPage(getContainer());
+		else
+			loadoutMenu.setPreviousPage(altMenu);
 		
-		loadoutMenu.addItem(new MenuItemPage("Loadout Settings", Material.CHEST, loadoutSettings), 42);
-		loadoutMenu.addItem(new MenuItemDisplayPotions("Edit Potion Effects", Material.POTION, loadout), 43);
+		loadoutMenu.addItem(new MenuItemSaveLoadout("Loadout Settings", Material.CHEST, loadout, loadoutSettings), 42);
+//		loadoutMenu.addItem(new MenuItemDisplayPotions("Edit Potion Effects", Material.POTION, loadout), 43);
+		loadoutMenu.addItem(new MenuItemSaveLoadout("Edit Potion Effects", Material.POTION, loadout, potionMenu), 43);
 		loadoutMenu.addItem(new MenuItemSaveLoadout("Save Loadout", Material.REDSTONE_TORCH_ON, loadout), 44);
 		
 		for(int i = 40; i < 42; i++){

@@ -230,10 +230,10 @@ public class ToolCommand implements ICommand {
 					else if(tool.getMode() == MinigameToolMode.QUIT && tool.getMinigame().getQuitPosition() != null){
 						player.getPlayer().sendBlockChange(tool.getMinigame().getQuitPosition(), Material.SKULL, (byte)1); //TODO: Use alternate Method!
 					}
-					else if(tool.getMode() == MinigameToolMode.QUIT && tool.getMinigame().getEndPosition() != null){
+					else if(tool.getMode() == MinigameToolMode.END && tool.getMinigame().getEndPosition() != null){
 						player.getPlayer().sendBlockChange(tool.getMinigame().getEndPosition(), Material.SKULL, (byte)1); //TODO: Use alternate Method!
 					}
-					else if(tool.getMode() == MinigameToolMode.QUIT && tool.getMinigame().getLobbyPosition() != null){
+					else if(tool.getMode() == MinigameToolMode.LOBBY && tool.getMinigame().getLobbyPosition() != null){
 						player.getPlayer().sendBlockChange(tool.getMinigame().getLobbyPosition(), Material.SKULL, (byte)1); //TODO: Use alternate Method!
 					}
 					else if(tool.getMode() == MinigameToolMode.RESTORE_BLOCK && !tool.getMinigame().getRestoreBlocks().isEmpty()){
