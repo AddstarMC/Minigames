@@ -48,6 +48,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
@@ -896,6 +897,16 @@ public class RecorderData implements Listener{
 			Player ply = (Player) event.getEntity();
 			if(pdata.getMinigamePlayer(ply).isInMinigame()){
 				addEntity(event.getProjectile(), pdata.getMinigamePlayer(ply), true);
+			}
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	private void throwEnderpearl(ProjectileLaunchEvent event){
+		if(event.getEntity().getShooter() instanceof Player){
+			Player ply = (Player)event.getEntity().getShooter();
+			if(pdata.getMinigamePlayer(ply).isInMinigame()){
+				addEntity(event.getEntity(), pdata.getMinigamePlayer(ply), true);
 			}
 		}
 	}
