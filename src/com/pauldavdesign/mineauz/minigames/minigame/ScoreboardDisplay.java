@@ -90,32 +90,40 @@ public class ScoreboardDisplay {
 		}
 		
 		int place = 1;
-mainLoop:for(int y = height - 1; y >= 0; y--){
+		mainLoop:
+		for(int y = height - 1; y >= 0; y--){
 			cur.setY(ory + y);
-			for(int i = 0; i < width; i++){
-				if(dir == BlockFace.EAST || dir == BlockFace.WEST){
-					cur.setZ(ord + i);
+			if(dir == BlockFace.WEST || dir == BlockFace.SOUTH){
+				for(int i = 0; i < width; i++){
+					if(dir == BlockFace.WEST){
+						cur.setZ(ord + i);
+					}
+					else{
+						cur.setX(ord + i);
+					}
+					if(cur.getBlock().getType() != Material.AIR){
+						if(cur.getBlock().getState() instanceof Sign){
+							if(place >= results.size()) break mainLoop;
+							updateSign(cur, place, results);
+							place += 2;
+						}
+					}
 				}
-				else{
-					cur.setX(ord + i);
-				}
-				if(cur.getBlock().getType() != Material.AIR){
-					if(cur.getBlock().getState() instanceof Sign){
-						if(place >= results.size()) break mainLoop;
-						Sign nsign = (Sign)cur.getBlock().getState();
-						nsign.setLine(0, ChatColor.GREEN.toString() + place + ". " + ChatColor.BLACK + results.get(place - 1).getPlayerName());
-						if(type != ScoreboardType.TOTAL_TIME && type != ScoreboardType.LEAST_TIME)
-							nsign.setLine(1, ChatColor.BLUE + ((Integer)results.get(place - 1).getByType(type)).toString() + " " + type.getTypeName());
-						else
-							nsign.setLine(1, ChatColor.BLUE + MinigameUtils.convertTime((int)((Long)results.get(place - 1).getByType(type) / 1000), true));
-						place++;
-						nsign.setLine(2, ChatColor.GREEN.toString() + place + ". " + ChatColor.BLACK + results.get(place - 1).getPlayerName());
-						if(type != ScoreboardType.TOTAL_TIME && type != ScoreboardType.LEAST_TIME)
-							nsign.setLine(3, ChatColor.BLUE + ((Integer)results.get(place - 1).getByType(type)).toString() + " " + type.getTypeName());
-						else
-							nsign.setLine(3, ChatColor.BLUE + MinigameUtils.convertTime((int)((Long)results.get(place - 1).getByType(type) / 1000), true));
-						place++;
-						nsign.update();
+			}
+			else{
+				for(int i = width - 1; i >= 0; i--){
+					if(dir == BlockFace.EAST){
+						cur.setZ(ord + i);
+					}
+					else{
+						cur.setX(ord + i);
+					}
+					if(cur.getBlock().getType() != Material.AIR){
+						if(cur.getBlock().getState() instanceof Sign){
+							if(place >= results.size()) break mainLoop;
+							updateSign(cur, place, results);
+							place += 2;
+						}
 					}
 				}
 			}
@@ -160,5 +168,22 @@ mainLoop:for(int y = height - 1; y >= 0; y--){
 		setupMenu.addItems(items);
 		setupMenu.addItem(new MenuItemScoreboardSave("Create Scoreboard", Material.REDSTONE_TORCH_ON, this), setupMenu.getSize() - 1);
 		setupMenu.displayMenu(player);
+	}
+	
+	private void updateSign(Location cur, int place, List<ScoreboardPlayer> results){
+		Sign nsign = (Sign)cur.getBlock().getState();
+		nsign.setLine(0, ChatColor.GREEN.toString() + place + ". " + ChatColor.BLACK + results.get(place - 1).getPlayerName());
+		if(type != ScoreboardType.TOTAL_TIME && type != ScoreboardType.LEAST_TIME)
+			nsign.setLine(1, ChatColor.BLUE + ((Integer)results.get(place - 1).getByType(type)).toString() + " " + type.getTypeName());
+		else
+			nsign.setLine(1, ChatColor.BLUE + MinigameUtils.convertTime((int)((Long)results.get(place - 1).getByType(type) / 1000), true));
+		place++;
+		nsign.setLine(2, ChatColor.GREEN.toString() + place + ". " + ChatColor.BLACK + results.get(place - 1).getPlayerName());
+		if(type != ScoreboardType.TOTAL_TIME && type != ScoreboardType.LEAST_TIME)
+			nsign.setLine(3, ChatColor.BLUE + ((Integer)results.get(place - 1).getByType(type)).toString() + " " + type.getTypeName());
+		else
+			nsign.setLine(3, ChatColor.BLUE + MinigameUtils.convertTime((int)((Long)results.get(place - 1).getByType(type) / 1000), true));
+		place++;
+		nsign.update();
 	}
 }
