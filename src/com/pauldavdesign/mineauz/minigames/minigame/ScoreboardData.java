@@ -90,6 +90,7 @@ public class ScoreboardData {
 			dis.setType(ScoreboardType.valueOf(con.getString(loc + "type")));
 			addDisplay(dis);
 			dis.getLocation().getBlock().setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.plugin, true));
+			dis.getLocation().getBlock().setMetadata("Minigame", new FixedMetadataValue(Minigames.plugin, mgm.getName()));
 		}
 	}
 }
