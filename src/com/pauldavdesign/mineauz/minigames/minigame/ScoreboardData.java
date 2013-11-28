@@ -46,7 +46,10 @@ public class ScoreboardData {
 	}
 	
 	public void removeDisplay(String locID){
-		displays.remove(locID);
+		if(displays.containsKey(locID)){
+			displays.get(locID).deleteSigns();
+			displays.remove(locID);
+		}
 	}
 	
 	public void updateDisplays(){

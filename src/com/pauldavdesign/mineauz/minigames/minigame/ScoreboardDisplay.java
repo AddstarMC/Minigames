@@ -186,4 +186,36 @@ public class ScoreboardDisplay {
 		place++;
 		nsign.update();
 	}
+	
+	public void deleteSigns(){
+		Location cur = loc.clone();
+		cur.setY(cur.getY() - height);
+		int ord;
+		int ory = cur.getBlockY();
+		if(dir == BlockFace.EAST || dir == BlockFace.WEST){
+			cur.setZ(cur.getZ() - Math.floor(width / 2));
+			ord = cur.getBlockZ();
+		}
+		else{
+			cur.setX(cur.getX() - Math.floor(width / 2));
+			ord = cur.getBlockX();
+		}
+		
+		for(int y = height - 1; y >= 0; y--){
+			cur.setY(ory + y);
+			for(int i = 0; i < width; i++){
+				if(dir == BlockFace.WEST){
+					cur.setZ(ord + i);
+				}
+				else{
+					cur.setX(ord + i);
+				}
+				if(cur.getBlock().getType() != Material.AIR){
+					if(cur.getBlock().getState() instanceof Sign){
+						cur.getBlock().setType(Material.AIR);
+					}
+				}
+			}
+		}
+	}
 }
