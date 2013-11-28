@@ -42,7 +42,7 @@ player:
     awardMoney: "You have been awarded $%s"
     awardItem: "You have been awarded with %d %s"
     team:
-      win: "%s team won %s"
+      win: "%s won %s"
       tie: "%s tied against %s in %s"
       score: "%s to %s"
   team:
