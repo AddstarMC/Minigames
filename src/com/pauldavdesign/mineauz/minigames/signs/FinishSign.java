@@ -67,7 +67,6 @@ public class FinishSign implements MinigameSign {
 			
 			if(!minigame.getFlags().isEmpty()){
 				if(((LivingEntity)player.getPlayer()).isOnGround()){
-					
 					if(plugin.pdata.checkRequiredFlags(player, minigame.getName()).isEmpty()){
 						if(sign.getLine(2).isEmpty() || sign.getLine(2).equals(player.getMinigame().getName())){
 							if(player.getMinigame().getType() == MinigameType.TEAMS){
