@@ -32,6 +32,21 @@ public class PlayerLoadout {
 		return usePermission;
 	}
 	
+	public Callback<Boolean> getUsePermissionsCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				usePermission = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return usePermission;
+			}
+		};
+	}
+	
 	public void setName(String name){
 		loadoutName = name;
 	}

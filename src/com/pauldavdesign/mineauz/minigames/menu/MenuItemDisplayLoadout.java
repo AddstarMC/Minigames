@@ -53,6 +53,9 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		loadoutSettings.setPreviousPage(loadoutMenu);
 		
 		List<MenuItem> mItems = new ArrayList<MenuItem>();
+		if(!loadout.getName().equals("default"))
+			mItems.add(new MenuItemBoolean("Use Permissions", MinigameUtils.stringToList("Permission:;minigame.loadout." + loadout.getName().toLowerCase()), 
+					Material.GOLD_INGOT, loadout.getUsePermissionsCallback()));
 		mItems.add(new MenuItemBoolean("Allow Fall Damage", Material.LEATHER_BOOTS, loadout.getFallDamageCallback()));
 		mItems.add(new MenuItemBoolean("Allow Hunger", Material.APPLE, loadout.getHungerCallback()));
 		loadoutSettings.addItems(mItems);
