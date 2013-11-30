@@ -65,6 +65,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
+import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class RecorderData implements Listener{
@@ -120,6 +121,21 @@ public class RecorderData implements Listener{
 	
 	public boolean getWhitelistMode(){
 		return whitelistMode;
+	}
+	
+	public Callback<Boolean> getWhitelistModeCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				whitelistMode = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return whitelistMode;
+			}
+		};
 	}
 	
 	public void addWBBlock(Material mat){

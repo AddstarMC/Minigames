@@ -39,6 +39,7 @@ import com.pauldavdesign.mineauz.minigames.menu.MenuItemAddFlag;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemBoolean;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemDisplayLoadout;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemDisplayRewards;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemDisplayWhitelist;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemFlag;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemInteger;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemList;
@@ -1546,6 +1547,8 @@ public class Minigame {
 		itemsMain.add(new MenuItemBoolean("Allow Late Join", MinigameUtils.stringToList("Multiplayer Only"), Material.DEAD_BUSH, getLateJoinCallback()));
 		itemsMain.add(new MenuItemDisplayRewards("Primary Rewards", Material.CHEST, rewardItem));
 		itemsMain.add(new MenuItemDisplayRewards("Secondary Rewards", Material.CHEST, secondaryRewardItem));
+		itemsMain.add(new MenuItemDisplayWhitelist("Block Whitelist/Blacklist", MinigameUtils.stringToList("Blocks that can/can't;be broken"), 
+				Material.CHEST, getBlockRecorder().getWBBlocks(), getBlockRecorder().getWhitelistModeCallback()));
 		itemsMain.add(new MenuItemNewLine());
 		List<String> floorDegenDes = new ArrayList<String>();
 		floorDegenDes.add("Mainly used to prevent");
