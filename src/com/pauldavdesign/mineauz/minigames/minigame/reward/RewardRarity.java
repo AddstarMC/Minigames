@@ -2,7 +2,7 @@ package com.pauldavdesign.mineauz.minigames.minigame.reward;
 
 public enum RewardRarity {
 	VERY_COMMON(0.5),
-	COMMON(0.3),
+	COMMON(0.25),
 	NORMAL(0.1),
 	RARE(0.02),
 	VERY_RARE(0);
