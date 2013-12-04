@@ -36,7 +36,6 @@ public class SetScoreTypeCommand implements ICommand {
 			types[inc] = type;
 			inc++;
 		}
-		types[inc] = "none";
 		return types;
 	}
 
