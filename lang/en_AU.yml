@@ -7,6 +7,7 @@ player:
     consMsg: "%s joined %s"
     plyMsg: "%s has joined %s"
     plyInfo: "You have started a %s Minigame, type /minigame quit to exit."
+    objective: "Objective: %s"
   spectate:
     join:
       plyMsg: "You have started spectating %s."

@@ -6,20 +6,18 @@ import org.bukkit.command.CommandSender;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
-public class SetMPCheckpointsCommand implements ICommand {
+public class SetAllowMultiplayerCheckpointsCommand implements ICommand {
 
 	@Override
 	public String getName() {
-		return "allowmpcheckpoints";
+		return "multiplayercheckpoints";
 	}
 
 	@Override
 	public String[] getAliases() {
 		return new String[] {
-				"mpcheckpoints",
-				"mpcp",
-				"checkpoints",
-				"cp"
+				"mgcheckpoints",
+				"mgcp"
 		};
 	}
 
@@ -30,7 +28,7 @@ public class SetMPCheckpointsCommand implements ICommand {
 
 	@Override
 	public String getDescription() {
-		return "Sets whether checkpoints should be enabled or not in a multiplayer game. Mainly used for race gametypes";
+		return "Allows a Minigame to enable Checkpoint usage for multiplayer games (such as Free for All and Teams).";
 	}
 
 	@Override
@@ -40,19 +38,17 @@ public class SetMPCheckpointsCommand implements ICommand {
 
 	@Override
 	public String[] getUsage() {
-		return new String[] {
-				"/minigame set <Minigame> allowmpcheckpoints <true / false>"
-		};
+		return new String[] { "/minigame set <Minigame> multiplayercheckpoints <true/false>" };
 	}
 
 	@Override
 	public String getPermissionMessage() {
-		return "You do not have permission to allow checkpoints in a multiplayer game!";
+		return "You do not have permission to toggle multiplayer checkpoints";
 	}
 
 	@Override
 	public String getPermission() {
-		return "minigame.set.mpcheckpoints";
+		return "minigame.set.multiplayercheckpoints";
 	}
 
 	@Override
@@ -62,9 +58,11 @@ public class SetMPCheckpointsCommand implements ICommand {
 			boolean bool = Boolean.parseBoolean(args[0]);
 			minigame.setAllowMPCheckpoints(bool);
 			if(bool)
-				sender.sendMessage(ChatColor.GRAY + "Enabled multiplayer checkpoints in " + minigame);
+				sender.sendMessage(ChatColor.GRAY + "Multiplayer checkpoints have been enabled for " + minigame);
 			else
-				sender.sendMessage(ChatColor.RED + "Disabled multiplayer checkpoints in " + minigame);
+				sender.sendMessage(ChatColor.RED + "Multiplayer checkpoints have been disabled for " + minigame);
+			
+			return true;
 		}
 		return false;
 	}

@@ -72,6 +72,9 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetDefaultWinnerCommand());
 		registerSetCommand(new SetAllowEnderpearlsCommand());
 		registerSetCommand(new SetStartTimeCommand());
+		registerSetCommand(new SetAllowMultiplayerCheckpointsCommand());
+		registerSetCommand(new SetObjectiveCommand());
+		registerSetCommand(new SetGametypeNameCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {

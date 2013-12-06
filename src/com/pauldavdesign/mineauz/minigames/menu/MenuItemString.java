@@ -12,6 +12,7 @@ import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 public class MenuItemString extends MenuItem{
 	
 	private Callback<String> str;
+	private boolean allowNull = false;
 
 	public MenuItemString(String name, Material displayItem, Callback<String> str) {
 		super(name, displayItem);
@@ -25,11 +26,18 @@ public class MenuItemString extends MenuItem{
 		updateDescription();
 	}
 	
+	public void setAllowNull(boolean allow){
+		allowNull = allow;
+	}
+	
 	public void updateDescription(){
 		List<String> description = null;
 		String setting = str.getValue();
 		if(setting == null)
 			setting = "Not Set";
+		if(setting.length() > 20){
+			setting = setting.substring(0, 17) + "...";
+		}
 		
 		if(getDescription() != null){
 			description = getDescription();
@@ -54,6 +62,9 @@ public class MenuItemString extends MenuItem{
 		ply.setNoClose(true);
 		ply.getPlayer().closeInventory();
 		ply.sendMessage("Enter string value into chat for " + getName() + ", the menu will automatically reopen in 20s if nothing is entered.", null);
+		if(allowNull){
+			ply.sendMessage("Enter \"null\" to remove the string value");
+		}
 		ply.setManualEntry(this);
 		getContainer().startReopenTimer(20);
 		
@@ -62,7 +73,11 @@ public class MenuItemString extends MenuItem{
 	
 	@Override
 	public void checkValidEntry(String entry){
-		str.setValue(entry);
+		if(entry.equals("null"))
+			str.setValue(null);
+		else
+			str.setValue(entry);
+		
 		updateDescription();
 		getContainer().cancelReopenTimer();
 		getContainer().displayMenu(getContainer().getViewer());

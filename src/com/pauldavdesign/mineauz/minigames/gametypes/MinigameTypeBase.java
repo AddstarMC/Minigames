@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.event.Listener;
 
@@ -107,7 +108,18 @@ public abstract class MinigameTypeBase implements Listener{
 						mgm.setScore(player, 1);
 						mgm.setScore(player, 0);
 					}
-					player.sendMessage(MinigameUtils.formStr("player.join.plyInfo", mgm.getType().getName()), "win");
+					
+					if(mgm.getGametypeName() == null)
+						player.sendMessage(MinigameUtils.formStr("player.join.plyInfo", mgm.getType().getName()), "win");
+					else
+						player.sendMessage(MinigameUtils.formStr("player.join.plyInfo", mgm.getGametypeName()), "win");
+					
+					if(mgm.getObjective() != null){
+						player.sendMessage(ChatColor.GREEN + "----------------------------------------------------");
+						player.sendMessage(ChatColor.AQUA.toString() + ChatColor.BOLD + MinigameUtils.formStr("player.join.objective", 
+								ChatColor.RESET.toString() + ChatColor.WHITE + mgm.getObjective()));
+						player.sendMessage(ChatColor.GREEN + "----------------------------------------------------");
+					}
 				
 					if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMinPlayers()){
 						mgm.setMpTimer(new MultiplayerTimer(mgm));

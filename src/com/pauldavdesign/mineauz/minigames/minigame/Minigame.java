@@ -55,6 +55,8 @@ import com.pauldavdesign.mineauz.minigames.minigame.reward.Rewards;
 
 public class Minigame {
 	private String name = "GenericName";
+	private String objective = null;
+	private String gametypeName = null;
 	private MinigameType type = null;
 	private boolean enabled = false;
 	private int minPlayers = 2;
@@ -1519,6 +1521,53 @@ public class Minigame {
 		return sbManager;
 	}
 	
+	public String getObjective() {
+		return objective;
+	}
+	
+	private Callback<String> getObjectiveCallback(){
+		return new Callback<String>() {
+
+			@Override
+			public void setValue(String value) {
+				objective = value;
+			}
+
+			@Override
+			public String getValue() {
+				return objective;
+			}
+		};
+	}
+
+	public void setObjective(String objective) {
+		this.objective = objective;
+	}
+
+	public String getGametypeName() {
+		return gametypeName;
+	}
+	
+	private Callback<String> getGametypeNameCallback(){
+		return new Callback<String>(){
+
+			@Override
+			public void setValue(String value) {
+				gametypeName = value;
+			}
+
+			@Override
+			public String getValue() {
+				return gametypeName;
+			}
+			
+		};
+	}
+
+	public void setGametypeName(String gametypeName) {
+		this.gametypeName = gametypeName;
+	}
+
 	public void displayMenu(MinigamePlayer player){
 		Menu main = new Menu(6, getName(), player);
 		Menu playerMenu = new Menu(6, getName(), player);
@@ -1539,6 +1588,15 @@ public class Minigame {
 			scoreTypes.add(MinigameUtils.capitalize(val));
 		}
 		itemsMain.add(new MenuItemList("Score Type", MinigameUtils.stringToList("Multiplayer Only"), Material.ROTTEN_FLESH, getScoreTypeCallback(), scoreTypes));
+		MenuItemString obj = new MenuItemString("Objective Description", MinigameUtils.stringToList("Objective for the player;to see when they;join the game"),
+				Material.DIAMOND, getObjectiveCallback());
+		obj.setAllowNull(true);
+		itemsMain.add(obj);
+		obj = new MenuItemString("Gametype Description", MinigameUtils.stringToList("Gametype name to replace;\"Singleplayer\" or \"Free For All\""), 
+				Material.SIGN, getGametypeNameCallback());
+		obj.setAllowNull(true);
+		itemsMain.add(obj);
+		itemsMain.add(new MenuItemNewLine());
 		itemsMain.add(new MenuItemInteger("Min. Score", MinigameUtils.stringToList("Multiplayer Only"), Material.STEP, getMinScoreCallback(), 0, null));
 		itemsMain.add(new MenuItemInteger("Max. Score", MinigameUtils.stringToList("Multiplayer Only"), Material.DOUBLE_STEP, getMaxScoreCallback(), 0, null));
 		itemsMain.add(new MenuItemInteger("Min. Players", MinigameUtils.stringToList("Multiplayer Only"), Material.STEP, getMinPlayersCallback(), 0, null));
@@ -2096,6 +2154,16 @@ public class Minigame {
 		else
 			minigame.getConfig().set(name + ".allowMPCheckpoints", null);
 		
+		if(getObjective() != null)
+			minigame.getConfig().set(name + ".objective", getObjective());
+		else
+			minigame.getConfig().set(name + ".objective", null);
+		
+		if(getGametypeName() != null)
+			minigame.getConfig().set(name + ".gametypeName", getGametypeName());
+		else
+			minigame.getConfig().set(name + "gametypeName", null);
+		
 		getScoreboardData().saveDisplays(minigame, name);
 		
 		minigame.saveConfig();
@@ -2439,6 +2507,12 @@ public class Minigame {
 		
 		if(minigame.getConfig().contains(name + ".allowMPCheckpoints"))
 			setAllowMPCheckpoints(minigame.getConfig().getBoolean(name + ".allowMPCheckpoints"));
+		
+		if(minigame.getConfig().contains(name + ".objective"))
+			setObjective(minigame.getConfig().getString(name + ".objective"));
+		
+		if(minigame.getConfig().contains(name + ".gametypeName"))
+			setGametypeName(minigame.getConfig().getString(name + ".gametypeName"));
 
 //		Bukkit.getLogger().info("------- Minigame Load -------");
 //		Bukkit.getLogger().info("Name: " + getName());

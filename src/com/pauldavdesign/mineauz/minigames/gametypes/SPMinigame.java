@@ -46,7 +46,17 @@ public class SPMinigame extends MinigameTypeBase{
 			player.setMinigame(mgm);
 			mgm.addPlayer(player);
 			
-			player.sendMessage(MinigameUtils.formStr("player.join.plyInfo", mgm.getType().getName()), null);
+			if(mgm.getGametypeName() == null)
+				player.sendMessage(MinigameUtils.formStr("player.join.plyInfo", mgm.getType().getName()), "win");
+			else
+				player.sendMessage(MinigameUtils.formStr("player.join.plyInfo", mgm.getGametypeName()), "win");
+			
+			if(mgm.getObjective() != null){
+				player.sendMessage(ChatColor.GREEN + "----------------------------------------------------");
+				player.sendMessage(ChatColor.AQUA.toString() + ChatColor.BOLD + MinigameUtils.formStr("player.join.objective", 
+						ChatColor.RESET.toString() + ChatColor.WHITE + mgm.getObjective()));
+				player.sendMessage(ChatColor.GREEN + "----------------------------------------------------");
+			}
 			
 			player.setCheckpoint(startpos);
 			
