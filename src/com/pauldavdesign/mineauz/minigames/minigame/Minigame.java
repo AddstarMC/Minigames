@@ -485,12 +485,12 @@ public class Minigame {
 
 			@Override
 			public void setValue(String value) {
-				degenType = value;
+				degenType = value.toLowerCase();
 			}
 
 			@Override
 			public String getValue() {
-				return degenType;
+				return MinigameUtils.capitalize(degenType);
 			}
 		};
 	}
@@ -563,12 +563,12 @@ public class Minigame {
 
 			@Override
 			public void setValue(String value) {
-				type = MinigameType.valueOf(value);
+				type = MinigameType.valueOf(value.toUpperCase().replace(" ", "_"));
 			}
 
 			@Override
 			public String getValue() {
-				return type.toString();
+				return MinigameUtils.capitalize(type.toString().replace("_", " "));
 			}
 		};
 	}
@@ -1131,12 +1131,12 @@ public class Minigame {
 
 			@Override
 			public void setValue(String value) {
-				scoreType = value;
+				scoreType = value.toLowerCase();
 			}
 
 			@Override
 			public String getValue() {
-				return scoreType;
+				return MinigameUtils.capitalize(scoreType);
 			}
 		};
 	}
@@ -1531,11 +1531,13 @@ public class Minigame {
 		itemsMain.add(new MenuItemBoolean("Use Permissions", Material.PAPER, getUsePermissionsCallback()));
 		List<String> mgTypes = new ArrayList<String>();
 		for(MinigameType val : MinigameType.values()){
-			mgTypes.add(val.toString());
+			mgTypes.add(MinigameUtils.capitalize(val.toString().replace("_", " ")));
 		}
 		itemsMain.add(new MenuItemList("Game Type", Material.PAPER, getTypeCallback(), mgTypes));
 		List<String> scoreTypes = new ArrayList<String>();
-		scoreTypes.addAll(Minigames.plugin.getScoreTypes().getScoreTypes().keySet());
+		for(String val : Minigames.plugin.getScoreTypes().getScoreTypes().keySet()){
+			scoreTypes.add(MinigameUtils.capitalize(val));
+		}
 		itemsMain.add(new MenuItemList("Score Type", MinigameUtils.stringToList("Multiplayer Only"), Material.ROTTEN_FLESH, getScoreTypeCallback(), scoreTypes));
 		itemsMain.add(new MenuItemInteger("Min. Score", MinigameUtils.stringToList("Multiplayer Only"), Material.STEP, getMinScoreCallback(), 0, null));
 		itemsMain.add(new MenuItemInteger("Max. Score", MinigameUtils.stringToList("Multiplayer Only"), Material.DOUBLE_STEP, getMaxScoreCallback(), 0, null));
@@ -1554,9 +1556,9 @@ public class Minigame {
 		floorDegenDes.add("Mainly used to prevent");
 		floorDegenDes.add("islanding in spleef Minigames.");
 		List<String> floorDegenOpt = new ArrayList<String>();
-		floorDegenOpt.add("inward");
-		floorDegenOpt.add("circle");
-		floorDegenOpt.add("random");
+		floorDegenOpt.add("Inward");
+		floorDegenOpt.add("Circle");
+		floorDegenOpt.add("Random");
 		itemsMain.add(new MenuItemList("Floor Degenerator Type", floorDegenDes, Material.SNOW_BLOCK, getDegenTypeCallback(), floorDegenOpt));
 		List<String> degenRandDes = new ArrayList<String>();
 		degenRandDes.add("Chance of block being");
