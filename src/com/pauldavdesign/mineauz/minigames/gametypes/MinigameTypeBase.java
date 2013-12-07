@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.MinigameData;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
@@ -174,7 +175,18 @@ public abstract class MinigameTypeBase implements Listener{
 			for(RewardItem reward : rewardL){
 				if(reward != null){
 					if(reward.getItem() != null){
-						player.getPlayer().getInventory().addItem(reward.getItem());
+						if(!player.getPlayer().isDead())
+							player.getPlayer().getInventory().addItem(reward.getItem());
+						else{
+							int c = 0;
+							for(ItemStack i : player.getStoredItems()){
+								if(i == null){
+									player.getStoredItems()[c] = reward.getItem();
+									break;
+								}
+								c++;
+							}
+						}
 						player.sendMessage(MinigameUtils.formStr("player.end.awardItem", reward.getItem().getAmount(), MinigameUtils.getItemStackName(reward.getItem())), "win");
 					}
 					else{
@@ -193,7 +205,18 @@ public abstract class MinigameTypeBase implements Listener{
 			for(RewardItem sreward : srewardL){
 				if(sreward != null){
 					if(sreward.getItem() != null){
-						player.getPlayer().getInventory().addItem(sreward.getItem());
+						if(!player.getPlayer().isDead())
+							player.getPlayer().getInventory().addItem(sreward.getItem());
+						else{
+							int c = 0;
+							for(ItemStack i : player.getStoredItems()){
+								if(i == null){
+									player.getStoredItems()[c] = sreward.getItem();
+									break;
+								}
+								c++;
+							}
+						}
 						player.sendMessage(MinigameUtils.formStr("player.end.awardItem", sreward.getItem().getAmount(), MinigameUtils.getItemStackName(sreward.getItem())), "win");
 					}
 					else{
