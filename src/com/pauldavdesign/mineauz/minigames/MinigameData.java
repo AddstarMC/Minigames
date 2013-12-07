@@ -302,7 +302,7 @@ public class MinigameData {
 	
 	void addMinigameType(MinigameTypeBase minigameType){
 		minigameTypes.put(minigameType.getType(), minigameType);
-		Minigames.log.info("Loaded " + minigameType.getType().getName() + " minigame type.");
+//		Minigames.log.info("Loaded " + minigameType.getType().getName() + " minigame type."); //DEBUG
 	}
 	
 	public MinigameTypeBase minigameType(MinigameType name){

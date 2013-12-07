@@ -141,7 +141,12 @@ public class Events implements Listener{
 	public void onPlayerDisconnect(PlayerQuitEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply.isInMinigame()){
-			pdata.addOfflineMinigamePlayer(pdata.getMinigamePlayer(event.getPlayer()));
+			if(ply.getPlayer().isDead())
+				pdata.addOfflineMinigamePlayer(pdata.getMinigamePlayer(event.getPlayer()));
+			else{
+				ply.restorePlayerData();
+				pdata.minigameTeleport(ply, ply.getMinigame().getQuitPosition());
+			}
 			pdata.quitMinigame(pdata.getMinigamePlayer(event.getPlayer()), false);
 		}
 		if(ply.isRequiredQuit()){
@@ -175,24 +180,9 @@ public class Events implements Listener{
 		if(pdata.hasOfflineMinigamePlayer(event.getPlayer().getName())){
 			final Player ply = event.getPlayer();
 			OfflineMinigamePlayer oply = pdata.getOfflineMinigamePlayer(event.getPlayer().getName());
-			//Location loc = pdata.getDCPlayer(event.getPlayer());
 			Location loc = oply.getLoginLocation();
 			oply.restoreOfflineMinigamePlayer();
 			pdata.removeOfflineMinigamePlayer(event.getPlayer().getName());
-			
-			//pdata.removeDCPlayer(event.getPlayer());
-			/*plugin.getLogger().info("--------------------------DEBUG--------------------------");
-			if(ply != null){
-				plugin.getLogger().info("Player: " + ply.getName());
-				if(loc == null){
-					plugin.getLogger().info("Location: NO WHERE TO TELEPORT, ITS NULL! (Teleported them to spawn for safety!)");
-					loc = plugin.getServer().getWorld("world").getSpawnLocation();
-				}
-				else
-					plugin.getLogger().info("Location: X:" + loc.getBlockX() + ", Y:" + loc.getBlockY() + ", Z:" + loc.getBlockZ() + ", world:" + loc.getWorld().getName());
-			}
-			else
-				plugin.getLogger().info("Player: OMG ITS NULL!!! D:");*/
 			
 			final Location floc = loc;
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -213,9 +203,7 @@ public class Events implements Listener{
 				}
 			});
 			
-			plugin.getLogger().info("--------------------------DEBUG--------------------------");
-			plugin.getLogger().info("Player: " + ply.getName());
-			plugin.getLogger().info("This player has had Minigame data restored. Please verify if they were in a Minigame before they quit.");
+			plugin.getLogger().info(ply.getName() + "'s data has been restored from file.");
 			
 		}
 		

@@ -368,12 +368,11 @@ public class PlayerData {
 				else{
 					mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.quit.plyForcedMsg", player.getName(), mgm.getName()), "error", player);
 				}
-	
-//				mgm.removePlayersLoadout(player);
+				
 				player.setLoadout(null);
 
 				final MinigamePlayer ply = player;
-				if(!player.getPlayer().isDead()){
+				if(!player.getPlayer().isDead() && ply.getPlayer().isOnline()){
 					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 						
 						@Override
@@ -393,6 +392,7 @@ public class PlayerData {
 					player.getPlayer().removePotionEffect(potion.getType());
 				}
 				player.getPlayer().setFallDistance(0);
+				player.getPlayer().setNoDamageTicks(60);
 				
 				final MinigamePlayer fplayer = player;
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -400,7 +400,6 @@ public class PlayerData {
 					@Override
 					public void run() {
 						fplayer.getPlayer().setFireTicks(0);
-						fplayer.getPlayer().setNoDamageTicks(60);
 					}
 				});
 				
