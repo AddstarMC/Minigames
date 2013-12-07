@@ -32,10 +32,10 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.pauldavdesign.mineauz.minigames.Metrics.Graph;
 import com.pauldavdesign.mineauz.minigames.commands.CommandDispatcher;
-import com.pauldavdesign.mineauz.minigames.gametypes.DMMinigame;
+import com.pauldavdesign.mineauz.minigames.gametypes.FreeForAllType;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
-import com.pauldavdesign.mineauz.minigames.gametypes.SPMinigame;
-import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
+import com.pauldavdesign.mineauz.minigames.gametypes.SingleplayerType;
+import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.scoring.ScoreType;
 import com.pauldavdesign.mineauz.minigames.signs.SignBase;
@@ -85,9 +85,9 @@ public class Minigames extends JavaPlugin{
 		mdata = new MinigameData();
 		pdata = new PlayerData();
 		
-		mdata.addMinigameType(new SPMinigame());
-		mdata.addMinigameType(new DMMinigame());
-		mdata.addMinigameType(new TeamDMMinigame());
+		mdata.addMinigameType(new SingleplayerType());
+		mdata.addMinigameType(new FreeForAllType());
+		mdata.addMinigameType(new TeamsType());
 		
 		if(!pdata.invsave.getConfig().contains("inventories")){
 			pdata.invsave.getConfig().createSection("inventories");

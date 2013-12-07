@@ -23,12 +23,12 @@ import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.sql.SQLPlayer;
 
-public class DMMinigame extends MinigameTypeBase{
+public class FreeForAllType extends MinigameTypeBase{
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
 	private MinigameData mdata = plugin.mdata;
 	
-	public DMMinigame() {
+	public FreeForAllType() {
 		setType(MinigameType.FREE_FOR_ALL);
 	}
 

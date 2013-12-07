@@ -22,12 +22,12 @@ import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
-public class TeamDMMinigame extends MinigameTypeBase{
+public class TeamsType extends MinigameTypeBase{
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
 	private MinigameData mdata = plugin.mdata;
 	
-	public TeamDMMinigame() {
+	public TeamsType() {
 		setType(MinigameType.TEAMS);
 	}
 	

@@ -8,7 +8,7 @@ import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
-import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
+import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class TeamSign implements MinigameSign {
@@ -74,7 +74,7 @@ public class TeamSign implements MinigameSign {
 				if(mgm.getBlueTeam().contains(player.getPlayer())){
 					if(sign.getLine(2).equals(ChatColor.RED + "Red")){
 						if(mgm.getRedTeam().size() <= mgm.getBlueTeam().size()){
-							TeamDMMinigame.switchTeam(mgm, player);
+							TeamsType.switchTeam(mgm, player);
 							plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.joinAnnounce", player.getName(), ChatColor.RED + "Red Team."), null, player);
 							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", ChatColor.RED + "Red Team."));
 						}
@@ -93,7 +93,7 @@ public class TeamSign implements MinigameSign {
 				else if(mgm.getRedTeam().contains(player.getPlayer())){
 					if(sign.getLine(2).equals(ChatColor.BLUE + "Blue")){
 						if(mgm.getRedTeam().size() >= mgm.getBlueTeam().size()){
-							TeamDMMinigame.switchTeam(mgm, player);
+							TeamsType.switchTeam(mgm, player);
 							plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.joinAnnounce", player.getName(), ChatColor.BLUE + "Blue Team."), null, player);
 							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", ChatColor.BLUE + "Blue Team."));
 						}

@@ -9,7 +9,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
-import com.pauldavdesign.mineauz.minigames.gametypes.TeamDMMinigame;
+import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class CustomType extends ScoreTypeBase{
@@ -82,14 +82,14 @@ public class CustomType extends ScoreTypeBase{
 			if(mgm.getScoreType().equals("custom")){
 				if(pteam == 1){
 					if(mgm.getRedTeam().size() < mgm.getBlueTeam().size() - 1){
-						TeamDMMinigame.switchTeam(mgm, ply);
+						TeamsType.switchTeam(mgm, ply);
 						ply.sendMessage(MinigameUtils.formStr("player.autobalance.plyMsg", ChatColor.RED + "Red Team"), null);
 						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.autobalance.minigameMsg", ply.getName(), ChatColor.RED + "Red Team"), null, ply);
 					}
 				}
 				else{
 					if(mgm.getBlueTeam().size() < mgm.getRedTeam().size()  - 1){
-						TeamDMMinigame.switchTeam(mgm, ply);
+						TeamsType.switchTeam(mgm, ply);
 						ply.sendMessage(String.format(MinigameUtils.getLang("player.autobalance.plyMsg"), ChatColor.BLUE + "Blue Team"), null);
 						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.autobalance.minigameMsg", ply.getName(), ChatColor.BLUE + "Blue Team"), null, ply);
 					}
