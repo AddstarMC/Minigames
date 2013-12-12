@@ -333,18 +333,17 @@ public class Events implements Listener{
 		if(item != null && MinigameUtils.isMinigameTool(item) && ply.getPlayer().hasPermission("minigame.tool")){
 			MinigameTool tool = new MinigameTool(item);
 			event.setCancelled(true);
-			
+
 			if(event.getPlayer().isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)){
 				tool.openMenu(ply);
 				event.setCancelled(true);
 			}
 			else if(tool.getMode() != null && tool.getMinigame() != null){
 				Minigame mg = tool.getMinigame();
-				
 				if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK){
 					if(tool.getMode() == MinigameToolMode.START && ply.getPlayer().hasPermission("minigame.set.start")){
-						if(tool.getTeam() != null){
-							if(tool.getTeam().equals("Red")){
+						if(!tool.getTeam().equals("none")){
+							if(tool.getTeam().equals("red")){
 								mg.addStartLocationRed(ply.getPlayer().getLocation());
 								ply.sendMessage("Added " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " start location to " + mg.getName(), null);
 							}
@@ -410,8 +409,8 @@ public class Events implements Listener{
 						int nz;
 						String nworld;
 						Location delLoc = null;
-						if(tool.getTeam() != null){
-							if(tool.getTeam().equals("Red")){
+						if(!tool.getTeam().equals("none")){
+							if(tool.getTeam().equals("red")){
 								for(Location loc : mg.getStartLocationsRed()){
 									nx = loc.getBlockX();
 									ny = loc.getBlockY();
@@ -430,7 +429,7 @@ public class Events implements Listener{
 								else
 									ply.sendMessage("Could not find a " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " start location at that point.", "error");
 							}
-							else if(tool.getTeam().equals("Blue")){
+							else if(tool.getTeam().equals("blue")){
 								for(Location loc : mg.getStartLocationsBlue()){
 									nx = loc.getBlockX();
 									ny = loc.getBlockY();

@@ -105,7 +105,7 @@ public class ToolCommand implements ICommand {
 						tool.setTeam(args[1]);
 					}
 					else{
-						tool.setTeam(null);
+						tool.setTeam("none");
 					}
 				}
 				else
@@ -206,8 +206,8 @@ public class ToolCommand implements ICommand {
 						player.setSelection(tool.getMinigame().getFloorDegen1(), tool.getMinigame().getFloorDegen2());
 					}
 					else if(tool.getMode() == MinigameToolMode.START){
-						if(tool.getTeam() != null){
-							if(tool.getTeam().equals("Red")){
+						if(!tool.getTeam().equals("none")){
+							if(tool.getTeam().equals("red")){
 								for(Location loc : tool.getMinigame().getStartLocationsRed()){
 									Location nloc = loc.clone();
 									player.getPlayer().sendBlockChange(nloc, Material.SKULL, (byte)1); //TODO: Use alternate Method!

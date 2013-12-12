@@ -8,16 +8,18 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemToolMode;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemToolTeam;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class MinigameTool {
 	private ItemStack tool;
 	private Minigame minigame = null;
 	private MinigameToolMode mode = null;
-	private String team = null;
+	private String team = "none";
 	
 	public MinigameTool(ItemStack tool){
 		this.tool = tool;
@@ -32,7 +34,7 @@ public class MinigameTool {
 				mode = MinigameToolMode.getByName(md);
 			
 			if(mode == MinigameToolMode.START && meta.getLore().size() == 3){
-				team = ChatColor.stripColor(meta.getLore().get(2).replace("Team: ", ""));
+				team = ChatColor.stripColor(meta.getLore().get(2).replace("Team: ", "")).toLowerCase();
 			}
 		}
 		else{
@@ -115,6 +117,18 @@ public class MinigameTool {
 		items.add(new MenuItemToolMode("Set Degeneration Area", Material.SAND, MinigameToolMode.DEGEN_AREA));
 		items.add(new MenuItemToolMode("Set Restore Block", Material.TNT, MinigameToolMode.RESTORE_BLOCK));
 		men.addItems(items);
+		men.addItem(new MenuItemToolTeam("Team", Material.PAPER, new Callback<String>() {
+			
+			@Override
+			public void setValue(String value) {
+				setTeam(value);
+			}
+			
+			@Override
+			public String getValue() {
+				return getTeam();
+			}
+		}, MinigameUtils.stringToList("none;red;blue")), 9);
 		men.displayMenu(player);
 	}
 }
