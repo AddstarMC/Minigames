@@ -2,7 +2,6 @@ package com.pauldavdesign.mineauz.minigames.scoring;
 
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -289,7 +288,7 @@ public class CTFType extends ScoreTypeBase{
 	
 	@EventHandler
 	private void playerQuitMinigame(QuitMinigameEvent event){
-		if(event.getMinigame() != null && event.getMinigame().getScoreType().equals("ctf")){ //TODO: Temporary Fix.
+		if(event.getMinigame().getScoreType().equals("ctf")){
 			if(event.getMinigame().isFlagCarrier(event.getMinigamePlayer())){
 				event.getMinigame().getFlagCarrier(event.getMinigamePlayer()).stopCarrierParticleEffect();
 				event.getMinigame().getFlagCarrier(event.getMinigamePlayer()).respawnFlag();
@@ -298,10 +297,6 @@ public class CTFType extends ScoreTypeBase{
 			if(event.getMinigame().getPlayers().size() == 1){
 				event.getMinigame().resetFlags();
 			}
-		}
-		else if(event.getMinigame() == null){
-			Bukkit.getLogger().severe("----------------Problem Detected!----------------\n NULL Minigame! \n Player responsible: " + event.getPlayer() + 
-					"\n Please report the info leading up to this message from the logs!"); //TODO: Debug message
 		}
 	}
 	
