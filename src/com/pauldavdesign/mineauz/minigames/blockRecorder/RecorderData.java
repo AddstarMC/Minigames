@@ -2,8 +2,10 @@ package com.pauldavdesign.mineauz.minigames.blockRecorder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -398,7 +400,8 @@ public class RecorderData implements Listener{
 	
 	public void restoreEntities(MinigamePlayer player){
 		List<Integer> removal = new ArrayList<Integer>();
-		for(Integer entID : entdata.keySet()){
+		Set<Integer> set = new HashSet<Integer>(entdata.keySet());
+		for(Integer entID : set){
 			if(entdata.get(entID).getEntity().isValid() && (entdata.get(entID).getModifier() == player || player == null)){
 				if(entdata.get(entID).wasCreated()){
 					entdata.get(entID).getEntity().remove();
