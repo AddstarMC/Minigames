@@ -58,6 +58,7 @@ public class ScoreboardSortThread extends Thread{
 					if(type == ScoreboardType.LEAST_TIME || type == ScoreboardType.TOTAL_TIME){
 						long plyTime = (Long) ply.getByType(type);
 						long ply2Time = (Long) ply2.getByType(type);
+						if(type == ScoreboardType.LEAST_TIME && (plyTime <= 0)){added = true; break;}
 						if(order == ScoreboardOrder.DESCENDING){
 							if(plyTime > ply2Time){
 								result.add(resultCopy.indexOf(ply2), ply);
@@ -76,6 +77,7 @@ public class ScoreboardSortThread extends Thread{
 					else{
 						int val = (Integer) ply.getByType(type);
 						int val2 = (Integer) ply2.getByType(type);
+						if((type == ScoreboardType.LEAST_DEATHS || type == ScoreboardType.LEAST_REVERTS) && val <= -1){added = true; break;}
 						if(order == ScoreboardOrder.DESCENDING){
 							if(val > val2){
 								result.add(resultCopy.indexOf(ply2), ply);
