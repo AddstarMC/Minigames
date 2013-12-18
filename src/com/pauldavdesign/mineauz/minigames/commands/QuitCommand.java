@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class QuitCommand implements ICommand{
@@ -28,7 +29,7 @@ public class QuitCommand implements ICommand{
 
 	@Override
 	public String getDescription() {
-		return "Quits the player that issues the command or if a player name is inserted, the named player.";
+		return MinigameUtils.getLang("command.quit.description");
 	}
 
 	@Override
@@ -43,7 +44,7 @@ public class QuitCommand implements ICommand{
 
 	@Override
 	public String getPermissionMessage() {
-		return "You do not have permission to use this command to quit a Minigame!";
+		return MinigameUtils.getLang("command.quit.noPermission");
 	}
 
 	@Override
@@ -60,7 +61,7 @@ public class QuitCommand implements ICommand{
 				plugin.pdata.quitMinigame(player, false);
 			}
 			else {
-				sender.sendMessage(ChatColor.RED + "Error: You are not in a minigame!");
+				sender.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.quit.notPlaying"));
 			}
 			return true;
 		}
@@ -78,11 +79,11 @@ public class QuitCommand implements ICommand{
 							plugin.pdata.quitMinigame(pl, true);
 						}
 					}
-					sender.sendMessage(ChatColor.GRAY + "All players have been quit from Minigames");
+					sender.sendMessage(ChatColor.GRAY + MinigameUtils.getLang("command.quit.quitAll"));
 					return true;
 				}
 				else if(players.isEmpty()){
-					sender.sendMessage(ChatColor.RED + "No player found by the name " + args[0]);
+					sender.sendMessage(ChatColor.RED + MinigameUtils.formStr("command.quit.invalidPlayer", args[0]));
 					return true;
 				}
 				else{
@@ -91,14 +92,14 @@ public class QuitCommand implements ICommand{
 				
 				if(ply != null && ply.isInMinigame()){
 					plugin.pdata.quitMinigame(ply, false);
-					sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to quit the minigame.");
+					sender.sendMessage(ChatColor.GRAY + MinigameUtils.formStr("command.quit.quitOther", ply.getName()));
 				}
 				else{
-					sender.sendMessage(ChatColor.RED + "Error: There is no player by that name!");
+					sender.sendMessage(ChatColor.RED + MinigameUtils.formStr("command.quit.invalidPlayer", args[0]));
 				}
 			}
 			else if(player != null){
-				sender.sendMessage(ChatColor.RED + "You don't have permission to quit another player!");
+				sender.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.quit.noPermissionOther"));
 				sender.sendMessage(ChatColor.RED + "minigame.quit.other");
 			}
 			return true;

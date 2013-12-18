@@ -227,3 +227,24 @@ time:
     timerPausedReason: "Start timer paused: %s"
     timerResumed: "Start timer resumed."
     go: "Go!"
+    
+command:
+  join:
+    description: "Forces you to join a Minigame. Warning: This bypasses betting."
+    noPermission: "You do not have permission to use the command to join a Minigame."
+    joining: "Joining %s"
+    alreadyPlaying: "You are already playing a minigame! Quit this one before joining another."
+    noMinigamePermission: "You require the permission %s to join this Minigame."
+  quit:
+    description: "Quits the player that issues the command or if a player name is inserted, the named player."
+    noPermission: "You do not have permission to use this command to quit a Minigame!"
+    notPlaying: "You are not playing a Minigame!"
+    quitAll: "You have quit all players playing Minigames"
+    invalidPlayer: "No player found by the name '%s'"
+    quitOther: "You forced %s to quit the Minigame"
+    noPermissionOther: "You don't have permission to quit another player!"
+  revert:
+    description: "Reverts the player that issues the command to their last checkpoint or to the start position if none is set."
+    noPermission: "You do not have permission to revert to your checkpoint!"
+    noGlobal: "You currently don't have any global checkpoints!"
+  help:
