@@ -77,7 +77,8 @@ public class ScoreboardSortThread extends Thread{
 					else{
 						int val = (Integer) ply.getByType(type);
 						int val2 = (Integer) ply2.getByType(type);
-						if((type == ScoreboardType.LEAST_DEATHS || type == ScoreboardType.LEAST_REVERTS) && val <= -1){added = true; break;}
+						if(((type == ScoreboardType.LEAST_DEATHS || type == ScoreboardType.LEAST_REVERTS) && val <= -1) || 
+								(type != ScoreboardType.LEAST_DEATHS && type != ScoreboardType.LEAST_REVERTS && type != ScoreboardType.FAILURES && val == 0)){added = true; break;}
 						if(order == ScoreboardOrder.DESCENDING){
 							if(val > val2){
 								result.add(resultCopy.indexOf(ply2), ply);
