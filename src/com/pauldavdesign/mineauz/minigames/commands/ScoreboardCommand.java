@@ -45,7 +45,7 @@ public class ScoreboardCommand implements ICommand{
 
 	@Override
 	public String[] getUsage() {
-		return new String[] {"/minigame scoreboard <Minigame> <Result Type> <asc/desc> [limit]"};
+		return new String[] {"/minigame scoreboard <Minigame> <Result Type> <asc/desc> [limit] [-p <PlayerName>]"};
 	}
 
 	@Override
@@ -73,7 +73,35 @@ public class ScoreboardCommand implements ICommand{
 				}
 				
 				if(type != null){
-					if(args[2].matches("(asc)|(desc)")){
+					String ply = null;
+					int c = 0;
+					for(String arg : args){
+						if(arg.equals("-p") && args.length - 1 > c){
+							ply = args[c + 1];
+							break;
+						}
+						c++;
+					}
+					if(ply != null){
+						if(mg.getScoreboardData().hasPlayer(ply)){
+							if(args[2].matches("(asc)|(desc)")){
+								ScoreboardOrder ord = ScoreboardOrder.DESCENDING;
+								if(args[2].equals("asc")){
+									ord = ScoreboardOrder.ASCENDING;
+								}
+								ScoreboardSortThread sorter = new ScoreboardSortThread(mg.getScoreboardData().getPlayers(), type, ord, 
+										mg.getName(), sender);
+								sorter.setSpecificPlayer(ply);
+								sorter.start();
+							}
+							else
+								sender.sendMessage(ChatColor.RED + "Order must be asc (ascending) or desc (descending)");
+						}
+						else
+							sender.sendMessage(ChatColor.RED + ply + " does not have any data stored in " + mg.getName());
+						return true;
+					}
+					else if(args[2].matches("(asc)|(desc)")){
 						ScoreboardOrder ord = ScoreboardOrder.DESCENDING;
 						if(args[2].equals("asc")){
 							ord = ScoreboardOrder.ASCENDING;

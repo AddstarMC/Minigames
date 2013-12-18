@@ -19,6 +19,7 @@ public class ScoreboardSortThread extends Thread{
 	private CommandSender requested = null;
 	private ScoreboardDisplay display = null;
 	private int limit = 8;
+	private String specificPlayer = null;
 	
 	public ScoreboardSortThread(List<ScoreboardPlayer> players, ScoreboardType type, 
 			ScoreboardOrder order, String minigame, CommandSender requested){
@@ -45,6 +46,10 @@ public class ScoreboardSortThread extends Thread{
 		this.type = type;
 		this.order = order;
 		this.display = display;
+	}
+	
+	public void setSpecificPlayer(String player){
+		specificPlayer = player;
 	}
 	
 	public void run(){
@@ -101,18 +106,45 @@ public class ScoreboardSortThread extends Thread{
 		}
 		
 		if(requested != null || (requested instanceof Player && ((Player)requested).isOnline())){
-			requested.sendMessage(ChatColor.GREEN + minigame + " Scoreboard: " + type.toString().toLowerCase().replace("_", " ") + " " + order.toString().toLowerCase());
-			for(int i = 0; i < limit; i++){
-				if(i >= result.size()) break;
-				String msg = ChatColor.AQUA + result.get(i).getPlayerName() + ": " + ChatColor.WHITE;
-				if(type == ScoreboardType.LEAST_TIME || type == ScoreboardType.TOTAL_TIME){
-					int time = (int)((Long)result.get(i).getByType(type) / 1000);
-					msg += MinigameUtils.convertTime(time, true);
+			if(specificPlayer == null){
+				requested.sendMessage(ChatColor.GREEN + minigame + " Scoreboard: " + type.toString().toLowerCase().replace("_", " ") + " " + order.toString().toLowerCase());
+				for(int i = 0; i < limit; i++){
+					if(i >= result.size()) break;
+					String msg = ChatColor.AQUA + result.get(i).getPlayerName() + ": " + ChatColor.WHITE;
+					if(type == ScoreboardType.LEAST_TIME || type == ScoreboardType.TOTAL_TIME){
+						int time = (int)((Long)result.get(i).getByType(type) / 1000);
+						msg += MinigameUtils.convertTime(time, true);
+					}
+					else{ 
+						msg += (Integer)result.get(i).getByType(type);
+					}
+					requested.sendMessage(msg);
 				}
-				else{ 
-					msg += (Integer)result.get(i).getByType(type);
+			}
+			else{
+				requested.sendMessage(ChatColor.GREEN + minigame + " Scoreboard for " + specificPlayer + ": " + type.toString().toLowerCase().replace("_", " ") + " " + order.toString().toLowerCase());
+				int c = -1;
+				for(ScoreboardPlayer pl : result){
+					if(pl.getPlayerName().equals(specificPlayer)){
+						c = result.indexOf(pl);
+						break;
+					}
 				}
-				requested.sendMessage(msg);
+				if(c != -1){
+					ScoreboardPlayer pl = result.get(c);
+					if(type == ScoreboardType.LEAST_TIME || type == ScoreboardType.TOTAL_TIME){
+						int time = (int)((Long)pl.getByType(type) / 1000);
+						requested.sendMessage(ChatColor.AQUA + type.getTypeName() + ": " + ChatColor.WHITE + MinigameUtils.convertTime(time, true));
+						requested.sendMessage(ChatColor.AQUA + "Place: " + ChatColor.WHITE + (c + 1));
+					}
+					else{ 
+						requested.sendMessage(ChatColor.AQUA + type.getTypeName() + ": " + ChatColor.WHITE + ((Integer)pl.getByType(type)).toString());
+						requested.sendMessage(ChatColor.AQUA + "Place: " + ChatColor.WHITE + (c + 1));
+					}
+				}
+				else{
+					requested.sendMessage(ChatColor.RED + specificPlayer + " is currently not in the leaderboards for " + type.getTypeName());
+				}
 			}
 		}
 		else if(display != null){
