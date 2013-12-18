@@ -44,12 +44,14 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.events.RevertCheckpointEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.ScoreboardDisplay;
 
 public class Events implements Listener{
 	private static Minigames plugin = Minigames.plugin;
@@ -737,6 +739,20 @@ public class Events implements Listener{
 			}
 			else{
 				event.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler
+	private void chunkLoad(ChunkLoadEvent event){
+		if(event.isNewChunk()) return;
+		for(Minigame mg : mdata.getAllMinigames().values()){
+			if(!mg.getScoreboardData().displays.isEmpty()){
+				for(ScoreboardDisplay dis : mg.getScoreboardData().displays.values()){
+					if(dis.getLocation().getWorld() == event.getWorld() && dis.getLocation().getChunk() == event.getChunk()){
+						dis.updateStats();
+					}
+				}
 			}
 		}
 	}
