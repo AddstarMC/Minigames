@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.StoredPlayerCheckpoints;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
@@ -27,7 +28,7 @@ public class RevertCommand implements ICommand{
 
 	@Override
 	public String getDescription() {
-		return "Reverts the player that issues the command to their last checkpoint or to the start position if none is set.";
+		return MinigameUtils.getLang("command.revert.description");
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public class RevertCommand implements ICommand{
 
 	@Override
 	public String getPermissionMessage() {
-		return "You do not have permission to revert to your checkpoint!";
+		return MinigameUtils.getLang("command.revert.noPermission");
 	}
 
 	@Override
@@ -65,7 +66,7 @@ public class RevertCommand implements ICommand{
 			}
 		}
 		else {
-			player.sendMessage(ChatColor.RED + "Error: You do not have any global checkpoints!");
+			player.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.revert.noGlobal"));
 		}
 		return true;
 	}
