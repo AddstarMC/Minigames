@@ -3,6 +3,7 @@ package com.pauldavdesign.mineauz.minigames.commands;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import com.pauldavdesign.mineauz.minigames.MultiplayerTimer;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
@@ -25,7 +26,7 @@ public class StartCommand implements ICommand{
 
 	@Override
 	public String getDescription() {
-		return "Starts a Treasure Hunt Minigame.";
+		return "Starts a Treasure Hunt Minigame. If the game isn't treasure hunt, it will force start a game begin countdown without waiting for players.";
 	}
 
 	@Override
@@ -40,7 +41,7 @@ public class StartCommand implements ICommand{
 
 	@Override
 	public String getPermissionMessage() {
-		return "You do not have permission to start a Treasure Hunt Minigame";
+		return "You do not have permission to start a Minigame";
 	}
 
 	@Override
@@ -59,11 +60,16 @@ public class StartCommand implements ICommand{
 				mgm.setEnabled(true);
 				mgm.saveMinigame();
 			}
-			else if(mgm == null || mgm.getType() != MinigameType.TREASURE_HUNT){
-				sender.sendMessage(ChatColor.RED + "There is no TreasureHunt Minigame by the name \"" + args[0] + "\"");
+			else if(mgm.getType() != MinigameType.TREASURE_HUNT && mgm.getType() != MinigameType.SINGLEPLAYER){
+				mgm.setMpTimer(new MultiplayerTimer(mgm));
+				mgm.getMpTimer().setPlayerWaitTime(0);
+				mgm.getMpTimer().startTimer();
 			}
 			else if(mgm.getThTimer() != null){
 				sender.sendMessage(ChatColor.RED + mgm.getName() + " is already running!");
+			}
+			else{
+				sender.sendMessage(ChatColor.RED + "No Treasure Hunt or Multiplayer Minigame found by the name " + args[0]);
 			}
 			return true;
 		}
