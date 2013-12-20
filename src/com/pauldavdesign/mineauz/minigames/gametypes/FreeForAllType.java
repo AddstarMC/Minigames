@@ -18,6 +18,7 @@ import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameSave;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.MultiplayerTimer;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
@@ -34,7 +35,104 @@ public class FreeForAllType extends MinigameTypeBase{
 
 	@Override
 	public boolean joinMinigame(MinigamePlayer player, Minigame mgm) {
-		return callLMSJoin(player, mgm);
+		if(mgm.getQuitPosition() != null && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
+			Location lobby = mgm.getLobbyPosition();
+			if(mdata.getMinigame(mgm.getName()).getPlayers().size() < mgm.getMaxPlayers()){
+				if((mgm.canLateJoin() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0) 
+						|| mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
+					player.storePlayerData();
+					player.setMinigame(mgm);
+					
+					mgm.addPlayer(player);
+					if(mgm.getMpTimer() == null || mgm.getMpTimer().getStartWaitTimeLeft() != 0){
+						pdata.minigameTeleport(player, lobby);
+						if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMaxPlayers()){
+							mgm.setMpTimer(new MultiplayerTimer(mgm));
+							mgm.getMpTimer().startTimer();
+							mgm.getMpTimer().setPlayerWaitTime(0);
+							mdata.sendMinigameMessage(mgm, MinigameUtils.getLang("minigame.skipWaitTime"), "info", null);
+						}
+					}
+					else{
+						player.sendMessage(MinigameUtils.formStr("minigame.lateJoin", 5));
+						pdata.minigameTeleport(player, lobby);
+						final MinigamePlayer fply = player;
+						final Minigame fmgm = mgm;
+						Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+							
+							@Override
+							public void run() {
+								if(fply.isInMinigame()){
+									List<Location> locs = new ArrayList<Location>();
+									locs.addAll(fmgm.getStartLocations());
+									Collections.shuffle(locs);
+									pdata.minigameTeleport(fply, locs.get(0));
+									fply.getLoadout().equiptLoadout(fply);
+									if(fmgm.isAllowedMPCheckpoints())
+										fply.setCheckpoint(locs.get(0));
+								}
+							}
+						}, 100);
+
+						player.getPlayer().setScoreboard(mgm.getScoreboardManager());
+						mgm.setScore(player, 1);
+						mgm.setScore(player, 0);
+					}
+					
+					if(mgm.getGametypeName() == null)
+						player.sendMessage(MinigameUtils.formStr("player.join.plyInfo", mgm.getType().getName()), "win");
+					else
+						player.sendMessage(MinigameUtils.formStr("player.join.plyInfo", mgm.getGametypeName()), "win");
+					
+					if(mgm.getObjective() != null){
+						player.sendMessage(ChatColor.GREEN + "----------------------------------------------------");
+						player.sendMessage(ChatColor.AQUA.toString() + ChatColor.BOLD + MinigameUtils.formStr("player.join.objective", 
+								ChatColor.RESET.toString() + ChatColor.WHITE + mgm.getObjective()));
+						player.sendMessage(ChatColor.GREEN + "----------------------------------------------------");
+					}
+				
+					if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMinPlayers()){
+						mgm.setMpTimer(new MultiplayerTimer(mgm));
+						mgm.getMpTimer().startTimer();
+						if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
+							mgm.getMpTimer().setPlayerWaitTime(0);
+							mdata.sendMinigameMessage(mgm, MinigameUtils.getLang("minigame.skipWaitTime"), "info", null);
+						}
+					}
+					else{
+						int neededPlayers = mgm.getMinPlayers() - mgm.getPlayers().size();
+						if(neededPlayers == 1){
+							player.sendMessage(MinigameUtils.formStr("minigame.waitingForPlayers", 1), null);
+						}
+						else if(neededPlayers > 1){
+							player.sendMessage(MinigameUtils.formStr("minigame.waitingForPlayers", neededPlayers), null);
+						}
+					}
+					return true;
+				}
+				else if((mgm.canLateJoin() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() != 0)){
+					player.sendMessage(MinigameUtils.formStr("minigame.lateJoinWait", mgm.getMpTimer().getStartWaitTimeLeft()), null);
+					return false;
+				}
+				else if(mgm.getMpTimer().getPlayerWaitTimeLeft() == 0){
+					player.sendMessage(MinigameUtils.getLang("minigame.started"), "error");
+					return false;
+				}
+			}
+			else if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
+				player.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
+			}
+		}
+		else if(mgm.getQuitPosition() == null){
+			player.sendMessage(MinigameUtils.getLang("minigame.error.noQuit"), "error");
+		}
+		else if(mgm.getEndPosition() == null){
+			player.sendMessage(MinigameUtils.getLang("minigame.error.noEnd"), "error");
+		}
+		else if(mgm.getLobbyPosition() == null){
+			player.sendMessage(MinigameUtils.getLang("minigame.error.noLobby"), "error");
+		}
+		return false;
 	}
 
 	@SuppressWarnings("deprecation")
