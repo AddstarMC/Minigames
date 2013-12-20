@@ -1906,6 +1906,16 @@ public class Minigame {
 			else{
 				minigame.getConfig().set(name + ".loadout.usepermissions", null);
 			}
+			
+			if(!getDefaultPlayerLoadout().hasFallDamage())
+				minigame.getConfig().set(name + ".loadout.falldamage", getDefaultPlayerLoadout().hasFallDamage());
+			else
+				minigame.getConfig().set(name + ".loadout.falldamage", null);
+			
+			if(getDefaultPlayerLoadout().hasHunger())
+				minigame.getConfig().set(name + ".loadout.hunger", getDefaultPlayerLoadout().hasHunger());
+			else
+				minigame.getConfig().set(name + ".loadout.hunger", null);
 		}
 		else{
 			minigame.getConfig().set(name + ".loadout", null);
@@ -1933,6 +1943,16 @@ public class Minigame {
 				else{
 					minigame.getConfig().set(name + ".extraloadouts." + loadout + ".usepermissions", null);
 				}
+				
+				if(!getLoadout(loadout).hasFallDamage())
+					minigame.getConfig().set(name + ".extraloadouts." + loadout + ".falldamage", getLoadout(loadout).hasFallDamage());
+				else
+					minigame.getConfig().set(name + ".extraloadouts." + loadout + ".falldamage", null);
+				
+				if(getLoadout(loadout).hasHunger())
+					minigame.getConfig().set(name + ".extraloadouts." + loadout + ".hunger", getLoadout(loadout).hasHunger());
+				else
+					minigame.getConfig().set(name + ".extraloadouts." + loadout + ".hunger", null);
 			}
 		}
 		else{
@@ -2352,6 +2372,13 @@ public class Minigame {
 			if(minigame.getConfig().contains(name + ".loadout.usepermissions")){
 				getDefaultPlayerLoadout().setUsePermissions(minigame.getConfig().getBoolean(name + ".loadout.usepermissions"));
 			}
+			
+			if(minigame.getConfig().contains(name + ".loadout.falldamage")){
+				getDefaultPlayerLoadout().setHasFallDamage(minigame.getConfig().getBoolean(name + ".loadout.falldamage"));
+			}
+			if(minigame.getConfig().contains(name + ".loadout.hunger")){
+				getDefaultPlayerLoadout().setHasHunger(minigame.getConfig().getBoolean(name + ".loadout.hunger"));
+			}
 		}
 		if(minigame.getConfig().contains(name + ".extraloadouts")){
 			Set<String> keys = minigame.getConfig().getConfigurationSection(name + ".extraloadouts").getKeys(false);
@@ -2377,6 +2404,12 @@ public class Minigame {
 				if(minigame.getConfig().contains(name + ".extraloadouts." + loadout + ".usepermissions")){
 					getLoadout(loadout).setUsePermissions(minigame.getConfig().getBoolean(name + ".extraloadouts." + loadout + ".usepermissions"));
 				}
+				
+				if(minigame.getConfig().contains(name + ".extraloadouts." + loadout + ".falldamage"))
+					getLoadout(loadout).setHasFallDamage(minigame.getConfig().getBoolean(name + ".extraloadouts." + loadout + ".falldamage"));
+				
+				if(minigame.getConfig().contains(name + ".extraloadouts." + loadout + ".hunger"))
+					getLoadout(loadout).setHasHunger(minigame.getConfig().getBoolean(name + ".extraloadouts." + loadout + ".hunger"));
 			}
 		}
 		if(minigame.getConfig().contains(name + ".maxscore")){

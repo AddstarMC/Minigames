@@ -139,6 +139,10 @@ public class PlayerLoadout {
 		return fallDamage;
 	}
 	
+	public void setHasFallDamage(boolean bool){
+		fallDamage = bool;
+	}
+	
 	public Callback<Boolean> getFallDamageCallback(){
 		return new Callback<Boolean>() {
 
@@ -156,6 +160,10 @@ public class PlayerLoadout {
 	
 	public boolean hasHunger(){
 		return hunger;
+	}
+	
+	public void setHasHunger(boolean bool){
+		hunger = bool;
 	}
 	
 	public Callback<Boolean> getHungerCallback(){
