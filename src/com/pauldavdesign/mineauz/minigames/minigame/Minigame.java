@@ -340,7 +340,8 @@ public class Minigame {
 	}
 	
 	public boolean hasDefaultLoadout(){
-		if(defaultLoadout.getItems().isEmpty()){
+		if(defaultLoadout.getItems().isEmpty() && defaultLoadout.getAllPotionEffects().isEmpty() && 
+				defaultLoadout.hasFallDamage() && !defaultLoadout.hasHunger()){
 			return false;
 		}
 		return true;
