@@ -2353,7 +2353,7 @@ public class Minigame {
 		if(minigame.getConfig().contains(name + ".loadout")){
 			Set<String> keys = minigame.getConfig().getConfigurationSection(name + ".loadout").getKeys(false);
 			for(String key : keys){
-				if(!key.equals("potions"))
+				if(key.matches("[0-9]+"))
 					getDefaultPlayerLoadout().addItem(minigame.getConfig().getItemStack(name + ".loadout." + key), Integer.parseInt(key));
 			}
 			
@@ -2386,7 +2386,7 @@ public class Minigame {
 				addLoadout(loadout);
 				Set<String> items = minigame.getConfig().getConfigurationSection(name + ".extraloadouts." + loadout).getKeys(false);
 				for(String key : items){
-					if(!key.equals("potions"))
+					if(key.matches("[0-9]+"))
 						getLoadout(loadout).addItem(minigame.getConfig().getItemStack(name + ".extraloadouts." + loadout + "." + key), Integer.parseInt(key));
 				}
 				if(minigame.getConfig().contains(name + ".extraloadouts." + loadout + ".potions")){
