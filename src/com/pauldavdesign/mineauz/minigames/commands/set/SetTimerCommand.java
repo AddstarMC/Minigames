@@ -27,8 +27,8 @@ public class SetTimerCommand implements ICommand{
 	@Override
 	public String getDescription() {
 		return "Sets the maximum time length (in seconds) for a Minigame. Adding 'm' or 'h' to the end of the time will use " +
-				"minutes or hours instead. For Team Deathmatch and Deathmatch, the highest score " +
-				"at the end of this time wins. For LMS and Spleef, if there are still players in the Minigame, no one wins.";
+				"minutes or hours instead. For Teams and Free for All, the highest score " +
+				"at the end of this time wins.";
 	}
 
 	@Override
