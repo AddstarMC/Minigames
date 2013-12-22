@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +101,7 @@ public class StoredPlayerCheckpoints {
 	}
 	
 	public void addFlags(String minigame, List<String> flagList){
-		flags.put(minigame, flagList);
+		flags.put(minigame, new ArrayList<String>(flagList));
 		saveCheckpoints();
 	}
 	

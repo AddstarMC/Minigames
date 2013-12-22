@@ -296,7 +296,7 @@ public class MinigamePlayer {
 	}
 	
 	public void setFlags(List<String> flags){
-		this.flags = flags;
+		this.flags.addAll(flags);
 	}
 	
 	public void clearFlags(){
