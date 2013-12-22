@@ -67,8 +67,8 @@ public class EnableAllCommand implements ICommand {
 		}
 		for(Minigame mg : minigames){
 			mg.setEnabled(true);
-			sender.sendMessage(ChatColor.GRAY + String.valueOf(minigames.size()) + " Minigames enabled!");
 		}
+		sender.sendMessage(ChatColor.GRAY + String.valueOf(minigames.size()) + " Minigames enabled!");
 		return true;
 	}
 
