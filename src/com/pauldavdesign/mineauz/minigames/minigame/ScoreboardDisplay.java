@@ -124,7 +124,7 @@ public class ScoreboardDisplay {
 					}
 					if(cur.getBlock().getType() != Material.AIR){
 						if(cur.getBlock().getState() instanceof Sign){
-							if(place >= results.size()) break mainLoop;
+							if(place > results.size()) break mainLoop;
 							updateSign(cur, place, results);
 							place += 2;
 						}
@@ -141,7 +141,7 @@ public class ScoreboardDisplay {
 					}
 					if(cur.getBlock().getType() != Material.AIR){
 						if(cur.getBlock().getState() instanceof Sign){
-							if(place >= results.size()) break mainLoop;
+							if(place > results.size()) break mainLoop;
 							updateSign(cur, place, results);
 							place += 2;
 						}
@@ -203,12 +203,13 @@ public class ScoreboardDisplay {
 		else
 			nsign.setLine(1, ChatColor.BLUE + MinigameUtils.convertTime((int)((Long)results.get(place - 1).getByType(type) / 1000), true));
 		place++;
-		nsign.setLine(2, ChatColor.GREEN.toString() + place + ". " + ChatColor.BLACK + results.get(place - 1).getPlayerName());
-		if(type != ScoreboardType.TOTAL_TIME && type != ScoreboardType.LEAST_TIME)
-			nsign.setLine(3, ChatColor.BLUE + ((Integer)results.get(place - 1).getByType(type)).toString() + " " + type.getTypeName());
-		else
-			nsign.setLine(3, ChatColor.BLUE + MinigameUtils.convertTime((int)((Long)results.get(place - 1).getByType(type) / 1000), true));
-		place++;
+		if(place <= results.size()){
+			nsign.setLine(2, ChatColor.GREEN.toString() + place + ". " + ChatColor.BLACK + results.get(place - 1).getPlayerName());
+			if(type != ScoreboardType.TOTAL_TIME && type != ScoreboardType.LEAST_TIME)
+				nsign.setLine(3, ChatColor.BLUE + ((Integer)results.get(place - 1).getByType(type)).toString() + " " + type.getTypeName());
+			else
+				nsign.setLine(3, ChatColor.BLUE + MinigameUtils.convertTime((int)((Long)results.get(place - 1).getByType(type) / 1000), true));
+		}
 		nsign.update();
 	}
 	
