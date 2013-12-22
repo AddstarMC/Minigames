@@ -48,6 +48,7 @@ import com.pauldavdesign.mineauz.minigames.menu.MenuItemNewLine;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemSaveMinigame;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemString;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemTime;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardGroup;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardItem;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardRarity;
@@ -1603,8 +1604,8 @@ public class Minigame {
 		itemsMain.add(new MenuItemInteger("Min. Players", MinigameUtils.stringToList("Multiplayer Only"), Material.STEP, getMinPlayersCallback(), 0, null));
 		itemsMain.add(new MenuItemInteger("Max. Players", MinigameUtils.stringToList("Multiplayer Only"), Material.DOUBLE_STEP, getMaxPlayersCallback(), 0, null));
 		itemsMain.add(new MenuItemNewLine());
-		itemsMain.add(new MenuItemInteger("Time Length", MinigameUtils.stringToList("Multiplayer Only"), Material.WATCH, getTimerCallback(), 0, null)); //TODO: Time menu item
-		itemsMain.add(new MenuItemInteger("Start Wait Time", MinigameUtils.stringToList("Multiplayer Only"), Material.WATCH, getStartWaitTimeCallback(), 3, null));
+		itemsMain.add(new MenuItemTime("Time Length", MinigameUtils.stringToList("Multiplayer Only"), Material.WATCH, getTimerCallback(), 0, null));
+		itemsMain.add(new MenuItemTime("Start Wait Time", MinigameUtils.stringToList("Multiplayer Only"), Material.WATCH, getStartWaitTimeCallback(), 3, null));
 		itemsMain.add(new MenuItemBoolean("Allow Late Join", MinigameUtils.stringToList("Multiplayer Only"), Material.DEAD_BUSH, getLateJoinCallback()));
 		itemsMain.add(new MenuItemDisplayRewards("Primary Rewards", Material.CHEST, rewardItem));
 		itemsMain.add(new MenuItemDisplayRewards("Secondary Rewards", Material.CHEST, secondaryRewardItem));
@@ -1624,9 +1625,7 @@ public class Minigame {
 		degenRandDes.add("removed on random");
 		degenRandDes.add("degeneration.");
 		itemsMain.add(new MenuItemInteger("Random Floor Degen Chance", degenRandDes, Material.SNOW, getDegenRandomChanceCallback(), 1, 100));
-		List<String> degenDelayDes = new ArrayList<String>();
-		degenDelayDes.add(ChatColor.GREEN + "seconds.");
-		itemsMain.add(new MenuItemInteger("Floor Degenerator Delay", degenDelayDes, Material.WATCH, getFloorDegenTimeCallback(), 1, null));
+		itemsMain.add(new MenuItemTime("Floor Degenerator Delay", Material.WATCH, getFloorDegenTimeCallback(), 1, null));
 		itemsMain.add(new MenuItemNewLine());
 		itemsMain.add(new MenuItemPage("Player Settings", Material.SKULL_ITEM, playerMenu));
 		List<String> thDes = new ArrayList<String>();

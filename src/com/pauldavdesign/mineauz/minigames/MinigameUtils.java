@@ -87,7 +87,7 @@ public class MinigameUtils {
 	
 	/**
 	 * Converts seconds into weeks, days, hours, minutes and seconds to be neatly
-	 * displayed. Only shows the values that aren't 0.
+	 * displayed.
 	 * @param time - The time in seconds to be converted
 	 * @param small - If the time should be shortened to: hh:mm:ss
 	 * @return A message with a neat time
@@ -197,7 +197,7 @@ public class MinigameUtils {
 			else
 				msg += String.valueOf(minutes) + "m";
 		}
-		if(seconds != 0){
+		if(seconds != 0 || msg.equals("")){
 			if(!msg.equals("")){
 				if(!small)
 					msg += " " + lang.getString("time.and") + " ";
@@ -215,7 +215,7 @@ public class MinigameUtils {
 	
 	/**
 	 * Converts seconds into weeks, days, hours, minutes and seconds to be neatly
-	 * displayed. Only shows the values that aren't 0.
+	 * displayed.
 	 * @param time - The time in seconds to be converted
 	 * @return A message with a neat time
 	 */

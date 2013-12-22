@@ -129,4 +129,16 @@ public class MenuItemInteger extends MenuItem{
 		
 		getContainer().getViewer().sendMessage("Invalid value entry!", "error");
 	}
+	
+	Callback<Integer> getValue(){
+		return value;
+	}
+	
+	Integer getMin(){
+		return min;
+	}
+	
+	Integer getMax(){
+		return max;
+	}
 }
