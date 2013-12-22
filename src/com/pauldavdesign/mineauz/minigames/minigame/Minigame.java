@@ -1707,7 +1707,7 @@ public class Minigame {
 		itemsPlayer.add(new MenuItemInteger("Paintball Damage", Material.ARROW, getPaintballDamageCallback(), 1, null));
 		itemsPlayer.add(new MenuItemBoolean("Unlimited Ammo", Material.SNOW_BLOCK, getUnlimitedAmmoCallback()));
 		itemsPlayer.add(new MenuItemBoolean("Enable Multiplayer Checkpoints", Material.SIGN, getAllowMPCheckpointsCallback()));
-		itemsPlayer.add(new MenuItemBoolean("Save Checkpoints", MinigameUtils.stringToList("Singleplayer Only"), Material.SIGN_POST, getSaveCheckpointCallback()));
+		itemsPlayer.add(new MenuItemBoolean("Save Checkpoints", MinigameUtils.stringToList("Singleplayer Only"), Material.SIGN, getSaveCheckpointCallback()));
 		itemsPlayer.add(new MenuItemPage("Flags", MinigameUtils.stringToList("Singleplayer flags"), Material.SIGN, flags));
 		playerMenu.addItems(itemsPlayer);
 		playerMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
