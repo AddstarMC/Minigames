@@ -60,7 +60,7 @@ public class StartCommand implements ICommand{
 				mgm.setEnabled(true);
 				mgm.saveMinigame();
 			}
-			else if(mgm.getType() != MinigameType.TREASURE_HUNT && mgm.getType() != MinigameType.SINGLEPLAYER){
+			else if(mgm.getType() != MinigameType.TREASURE_HUNT && mgm.getType() != MinigameType.SINGLEPLAYER && mgm.hasPlayers()){
 				mgm.setMpTimer(new MultiplayerTimer(mgm));
 				mgm.getMpTimer().setPlayerWaitTime(0);
 				mgm.getMpTimer().startTimer();
