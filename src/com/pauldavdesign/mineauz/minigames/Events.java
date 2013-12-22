@@ -742,18 +742,4 @@ public class Events implements Listener{
 			}
 		}
 	}
-	
-	@EventHandler
-	private void chunkLoad(ChunkLoadEvent event){ //TODO: Change me!
-		if(event.isNewChunk()) return;
-		for(Minigame mg : mdata.getAllMinigames().values()){
-			if(!mg.getScoreboardData().displays.isEmpty()){
-				for(ScoreboardDisplay dis : mg.getScoreboardData().displays.values()){
-					if(dis.getLocation().getWorld() == event.getWorld() && dis.getLocation().getChunk() == event.getChunk()){
-						dis.updateStats();
-					}
-				}
-			}
-		}
-	}
 }

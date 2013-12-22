@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -78,6 +79,26 @@ public class ScoreboardDisplay {
 	public void displayStats(List<ScoreboardPlayer> results){
 		Location cur = loc.clone();
 		cur.setY(cur.getY() - height);
+		List<Chunk> chunksLoaded = new ArrayList<Chunk>();
+		if(!cur.getChunk().isLoaded()){
+			chunksLoaded.add(cur.getChunk());
+			cur.getChunk().load();
+		}
+		
+		int cx = cur.getChunk().getX();
+		int cz = cur.getChunk().getZ();
+		cx--;
+		cz--;
+		for(int x = 0; x <= 2; x++){
+			for(int z = 0; z <= 2; z++){
+				Chunk c = cur.getWorld().getChunkAt(x + cx, z + cz);
+				if(!c.isLoaded()){
+					c.load();
+					chunksLoaded.add(c);
+				}
+			}
+		}
+		
 		int ord;
 		int ory = cur.getBlockY();
 		if(dir == BlockFace.EAST || dir == BlockFace.WEST){
@@ -127,6 +148,10 @@ public class ScoreboardDisplay {
 					}
 				}
 			}
+		}
+		
+		for(Chunk c : chunksLoaded){
+			c.unload();
 		}
 	}
 	
