@@ -24,9 +24,17 @@ public class CommandDispatcher implements CommandExecutor{
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {
 				cmdFile = new BufferedWriter(new FileWriter(plugin.getDataFolder() + "/cmds.txt"));
-				cmdFile.write("|=Command|");
-				cmdFile.write("=Description|");
-				cmdFile.write("=Permission|");
+				cmdFile.write("{| class=\"wikitable\"");
+				cmdFile.newLine();
+				cmdFile.write("! Command");
+				cmdFile.newLine();
+				cmdFile.write("! Syntax");
+				cmdFile.newLine();
+				cmdFile.write("! Description");
+				cmdFile.newLine();
+				cmdFile.write("! Permission");
+				cmdFile.newLine();
+				cmdFile.write("! Alias");
 				cmdFile.newLine();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -64,6 +72,7 @@ public class CommandDispatcher implements CommandExecutor{
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {
+				cmdFile.write("|}");
 				cmdFile.close();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -76,28 +85,47 @@ public class CommandDispatcher implements CommandExecutor{
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {
-				cmdFile.write("|**" + command.getName() + "**\\\\");
+				cmdFile.write("|-");
+				cmdFile.newLine();
+				cmdFile.write("| '''" + command.getName() + "'''");
+				cmdFile.newLine();
 				if(command.getUsage() != null){
+					int count = 0;
+					cmdFile.write("| ");
 					for(String use : command.getUsage()){
-						cmdFile.write(use + "\\\\");
+						cmdFile.write(use);
+						count++;
+						if(count != command.getUsage().length){
+							cmdFile.write("\n\n");
+						}
 					}
-					cmdFile.write("|");
 				}
-				else{
-					cmdFile.write("N/A|");
+				else
+					cmdFile.write("| N/A");
+				cmdFile.newLine();
+				if(command.getDescription() != null)
+					cmdFile.write("| " + command.getDescription());
+				else
+					cmdFile.write("| N/A");
+				cmdFile.newLine();
+				if(command.getPermission() != null)
+					cmdFile.write("| " + command.getPermission());
+				else
+					cmdFile.write("| N/A");
+				cmdFile.newLine();
+				if(command.getAliases() != null){
+					int count = 0;
+					cmdFile.write("| ");
+					for(String alias : command.getAliases()){
+						cmdFile.write(alias);
+						count++;
+						if(count != command.getAliases().length){
+							cmdFile.write("\n\n");
+						}
+					}
 				}
-				if(command.getDescription() != null){
-					cmdFile.write(command.getDescription().replace("\n", "\\\\") + "|");
-				}
-				else{
-					cmdFile.write("N/A|");
-				}
-				if(command.getPermission() != null){
-					cmdFile.write(command.getPermission() + "|");
-				}
-				else{
-					cmdFile.write("N/A|");
-				}
+				else
+					cmdFile.write("| N/A");
 				cmdFile.newLine();
 			} catch (IOException e) {
 				e.printStackTrace();
