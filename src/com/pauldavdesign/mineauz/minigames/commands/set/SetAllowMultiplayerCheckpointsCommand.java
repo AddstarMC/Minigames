@@ -16,8 +16,8 @@ public class SetAllowMultiplayerCheckpointsCommand implements ICommand {
 	@Override
 	public String[] getAliases() {
 		return new String[] {
-				"mgcheckpoints",
-				"mgcp"
+				"mpcheckpoints",
+				"mpcp"
 		};
 	}
 
