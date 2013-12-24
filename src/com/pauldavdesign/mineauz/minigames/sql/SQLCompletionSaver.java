@@ -238,11 +238,11 @@ public class SQLCompletionSaver extends Thread{
 		if(mgm.getScoreboardData().hasPlayer(player.getPlayerName())){
 			ScoreboardPlayer ply = mgm.getScoreboardData().getPlayer(player.getPlayerName());
 			ply.setCompletions(ocompleted);
-			ply.setBestKills(okills);
-			ply.setLeastDeaths(odeaths);
-			ply.setBestScore(oscore);
-			ply.setBestTime(otime);
-			ply.setLeastReverts(oreverts);
+			ply.setBestKills(kills);
+			ply.setLeastDeaths(deaths);
+			ply.setBestScore(score);
+			ply.setBestTime(time);
+			ply.setLeastReverts(reverts);
 			ply.setTotalKills(otkills);
 			ply.setTotalDeaths(otdeaths);
 			ply.setTotalScore(otscore);
@@ -252,8 +252,8 @@ public class SQLCompletionSaver extends Thread{
 		}
 		else{
 			mgm.getScoreboardData().addPlayer(new 
-					ScoreboardPlayer(player.getPlayerName(), ocompleted, ofailures, otkills, odeaths, 
-							oscore, otime, oreverts, otkills, otdeaths, otscore, otreverts, ottime));
+					ScoreboardPlayer(player.getPlayerName(), ocompleted, ofailures, kills, deaths, 
+							score, time, reverts, otkills, otdeaths, otscore, otreverts, ottime));
 		}
 		mgm.getScoreboardData().updateDisplays();
 		
