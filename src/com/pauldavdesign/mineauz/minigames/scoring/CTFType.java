@@ -288,7 +288,7 @@ public class CTFType extends ScoreTypeBase{
 	
 	@EventHandler
 	private void playerQuitMinigame(QuitMinigameEvent event){
-		if(event.getMinigame().getScoreType().equals("ctf")){
+		if(event.getMinigame() != null && event.getMinigame().getScoreType().equals("ctf")){
 			if(event.getMinigame().isFlagCarrier(event.getMinigamePlayer())){
 				event.getMinigame().getFlagCarrier(event.getMinigamePlayer()).stopCarrierParticleEffect();
 				event.getMinigame().getFlagCarrier(event.getMinigamePlayer()).respawnFlag();
