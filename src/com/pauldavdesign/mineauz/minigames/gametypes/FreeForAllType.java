@@ -262,7 +262,7 @@ public class FreeForAllType extends MinigameTypeBase{
 					MinigamePlayer p = players.get(i);
 					if(!p.getName().equals(player.getName())){
 						p.sendMessage(MinigameUtils.getLang("player.quit.plyBeatenMsg"), "error");
-						pdata.quitMinigame(p, false);
+						pdata.quitMinigame(p, true);
 					}
 				}
 				else{
