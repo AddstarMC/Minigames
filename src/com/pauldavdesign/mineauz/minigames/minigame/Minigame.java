@@ -698,7 +698,8 @@ public class Minigame {
 	
 	public void removeRedTeamPlayer(MinigamePlayer player){
 		sbManager.getTeam("Red").removePlayer(player.getPlayer());
-		player.getPlayer().setScoreboard(Minigames.plugin.getServer().getScoreboardManager().getMainScoreboard());
+		if(player.getPlayer().isOnline())
+			player.getPlayer().setScoreboard(Minigames.plugin.getServer().getScoreboardManager().getMainScoreboard());
 	}
 
 	public List<OfflinePlayer> getBlueTeam() {
@@ -716,7 +717,8 @@ public class Minigame {
 	
 	public void removeBlueTeamPlayer(MinigamePlayer player){
 		sbManager.getTeam("Blue").removePlayer(player.getPlayer());
-		player.getPlayer().setScoreboard(Minigames.plugin.getServer().getScoreboardManager().getMainScoreboard());
+		if(player.getPlayer().isOnline())
+			player.getPlayer().setScoreboard(Minigames.plugin.getServer().getScoreboardManager().getMainScoreboard());
 	}
 	
 	public void setScore(MinigamePlayer ply, int amount){
