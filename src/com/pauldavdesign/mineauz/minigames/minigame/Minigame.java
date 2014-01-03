@@ -2270,6 +2270,7 @@ public class Minigame {
 		else if(typeString.equals("race")){
 			setType(MinigameType.FREE_FOR_ALL);
 			setAllowMPCheckpoints(true);
+			setMaxScore(0);
 		}
 		else
 			setType(MinigameType.valueOf(minigame.getConfig().getString(name + ".type")));
