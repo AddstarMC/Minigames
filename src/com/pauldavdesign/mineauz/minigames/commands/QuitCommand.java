@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -74,12 +75,27 @@ public class QuitCommand implements ICommand{
 				List<Player> players = plugin.getServer().matchPlayer(args[0]);
 				MinigamePlayer ply = null;
 				if(args[0].equals("ALL")){
-					for(MinigamePlayer pl : plugin.getPlayerData().getAllMinigamePlayers()){
-						if(pl.isInMinigame()){
-							plugin.pdata.quitMinigame(pl, true);
+					if(args.length > 1){
+						if(plugin.mdata.hasMinigame(args[1])){
+							Minigame mg = plugin.mdata.getMinigame(args[1]);
+							List<MinigamePlayer> pls = new ArrayList<MinigamePlayer>(mg.getPlayers());
+							for(MinigamePlayer pl : pls){
+								plugin.pdata.quitMinigame(pl, true);
+							}
+							sender.sendMessage(ChatColor.GRAY + MinigameUtils.formStr("command.quit.quitAllMinigame", mg.getName()));
+						}
+						else{
+							sender.sendMessage(ChatColor.RED + MinigameUtils.formStr("minigame.error.noMinigameName", args[1]));
 						}
 					}
-					sender.sendMessage(ChatColor.GRAY + MinigameUtils.getLang("command.quit.quitAll"));
+					else{
+						for(MinigamePlayer pl : plugin.getPlayerData().getAllMinigamePlayers()){
+							if(pl.isInMinigame()){
+								plugin.pdata.quitMinigame(pl, true);
+							}
+						}
+						sender.sendMessage(ChatColor.GRAY + MinigameUtils.getLang("command.quit.quitAll"));
+					}
 					return true;
 				}
 				else if(players.isEmpty()){

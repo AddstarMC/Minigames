@@ -240,6 +240,7 @@ command:
     noPermission: "You do not have permission to use this command to quit a Minigame!"
     notPlaying: "You are not playing a Minigame!"
     quitAll: "You have quit all players playing Minigames"
+    quitAllMinigame: "You have quit all players from %s"
     invalidPlayer: "No player found by the name '%s'"
     quitOther: "You forced %s to quit the Minigame"
     noPermissionOther: "You don't have permission to quit another player!"
