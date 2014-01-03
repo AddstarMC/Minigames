@@ -64,12 +64,6 @@ public class SQLCompletionSaver extends Thread{
 		else{ //TODO: Remove after 1.6.0 release
 			try {
 				sql.query("SELECT Score FROM mgm_" + player.getMinigame() + "_comp");
-				try { //Remove before 1.6.0 release
-					sql.query("SELECT Failures FROM mgm_" + player.getMinigame() + "_comp");
-				}
-				catch (SQLException e){
-					sql.query("ALTER TABLE mgm_" + player.getMinigame() + "_comp ADD Failures int DEFAULT 0");
-				}
 			} catch (SQLException e) {
 				try {
 					sql.query("ALTER TABLE mgm_" + player.getMinigame() + "_comp ADD Score int DEFAULT -1, " +
@@ -101,7 +95,6 @@ public class SQLCompletionSaver extends Thread{
 		int deaths = player.getDeaths();
 		int score = player.getScore();
 		int reverts = player.getReverts();
-		//long time = player.getEndTime() - player.getStartTime() + player.getStoredTime();
 		long time = player.getTime();
 		int completedNum = player.getCompletionChange();
 		int failureNum = player.getFailureChange();
@@ -259,6 +252,5 @@ public class SQLCompletionSaver extends Thread{
 		
 		if(completed)
 			MinigameTypeBase.issuePlayerRewards(pdata.getMinigamePlayer(player.getPlayerName()), mgm, hasAlreadyCompleted);
-//			mgtype.issuePlayerRewards(pdata.getMinigamePlayer(player.getPlayerName()), Minigames.plugin.mdata.getMinigame(player.getMinigame()), hasAlreadyCompleted);
 	}
 }
