@@ -134,7 +134,7 @@ public class ScoreboardSortThread extends Thread{
 					ScoreboardPlayer pl = result.get(c);
 					if(type == ScoreboardType.LEAST_TIME || type == ScoreboardType.TOTAL_TIME){
 						int time = (int)((Long)pl.getByType(type) / 1000);
-						requested.sendMessage(ChatColor.AQUA + type.getTypeName() + ": " + ChatColor.WHITE + MinigameUtils.convertTime(time, true));
+						requested.sendMessage(ChatColor.AQUA + "Time: " + ChatColor.WHITE + MinigameUtils.convertTime(time, true));
 						requested.sendMessage(ChatColor.AQUA + "Place: " + ChatColor.WHITE + (c + 1));
 					}
 					else{ 
