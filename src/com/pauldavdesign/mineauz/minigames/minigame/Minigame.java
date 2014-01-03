@@ -1470,6 +1470,21 @@ public class Minigame {
 	public String getDefaultWinner() {
 		return defaultWinner;
 	}
+	
+	private Callback<String> getDefaultWinnerCallback(){
+		return new Callback<String>() {
+
+			@Override
+			public void setValue(String value) {
+				defaultWinner = value;
+			}
+
+			@Override
+			public String getValue() {
+				return defaultWinner;
+			}
+		};
+	}
 
 	public void setDefaultWinner(String defaultWinner) {
 		this.defaultWinner = defaultWinner;
@@ -1600,6 +1615,7 @@ public class Minigame {
 				Material.SIGN, getGametypeNameCallback());
 		obj.setAllowNull(true);
 		itemsMain.add(obj);
+		itemsMain.add(new MenuItemList("Default Winning Team", Material.PAPER, getDefaultWinnerCallback(), MinigameUtils.stringToList("none;red;blue")));
 		itemsMain.add(new MenuItemNewLine());
 		itemsMain.add(new MenuItemInteger("Min. Score", MinigameUtils.stringToList("Multiplayer Only"), Material.STEP, getMinScoreCallback(), 0, null));
 		itemsMain.add(new MenuItemInteger("Max. Score", MinigameUtils.stringToList("Multiplayer Only"), Material.DOUBLE_STEP, getMaxScoreCallback(), 0, null));
@@ -1685,11 +1701,11 @@ public class Minigame {
 		List<String> minDes = new ArrayList<String>();
 		minDes.add("Minimum items to");
 		minDes.add("spawn in chest.");
-		itemsTreasureHunt.add(new MenuItemInteger("Min. Items", minDes, Material.STONE, getMinTreasureCallback(), 0, 27));
+		itemsTreasureHunt.add(new MenuItemInteger("Min. Items", minDes, Material.STEP, getMinTreasureCallback(), 0, 27));
 		List<String> maxDes = new ArrayList<String>();
 		maxDes.add("Maximum items to");
 		maxDes.add("spawn in chest.");
-		itemsTreasureHunt.add(new MenuItemInteger("Max. Items", maxDes, Material.DIAMOND, getMaxTreasureCallback(), 0, 27));
+		itemsTreasureHunt.add(new MenuItemInteger("Max. Items", maxDes, Material.DOUBLE_STEP, getMaxTreasureCallback(), 0, 27));
 		treasureHunt.addItems(itemsTreasureHunt);
 		treasureHunt.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
 
