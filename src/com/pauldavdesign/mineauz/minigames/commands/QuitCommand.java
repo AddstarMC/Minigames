@@ -40,7 +40,10 @@ public class QuitCommand implements ICommand{
 
 	@Override
 	public String[] getUsage() {
-		return new String[] {"/minigame quit [Player]"};
+		return new String[] {
+				"/minigame quit [Player]",
+				"/minigame quit ALL [MinigameName]"	
+		};
 	}
 
 	@Override
