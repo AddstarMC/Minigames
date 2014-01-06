@@ -1,8 +1,5 @@
 package com.pauldavdesign.mineauz.minigames;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,34 +52,6 @@ public class MinigameUtils {
 	 */
 	public static String getItemStackName(ItemStack item){
 		return item.getType().toString().toLowerCase().replace("_", " ");
-	}
-	
-	/**
-	 * Checks for an update at a web address where the version and changelog is stored.
-	 * @param webAddress - The address where the update info is stored.
-	 * @param version - The version the plugin is currently on.
-	 * @return A list containing the version and changes if there is an update available, null if not.
-	 */
-	public static List<String> checkForUpdate(String webAddress, String version){
-		URL update;
-		try {
-			update = new URL(webAddress);
-			BufferedReader read = new BufferedReader(new InputStreamReader(update.openStream()));
-			
-			List<String> list = new ArrayList<String>();
-			while(read.ready()){
-				list.add(read.readLine());
-			}
-			
-			if(!list.isEmpty()){
-				if(!version.equals(list.get(0))){
-					return list;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 	
 	/**

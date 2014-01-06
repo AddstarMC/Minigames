@@ -1,15 +1,18 @@
 package com.pauldavdesign.mineauz.minigames;
 
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 public class UpdateChecker extends Thread{
 	
 	private Player ply;
-	private FileConfiguration lang = Minigames.plugin.getLang();
 	
 	public UpdateChecker(Player player){
 		ply = player;
@@ -17,15 +20,31 @@ public class UpdateChecker extends Thread{
 	
 	@Override
 	public void run(){
-		List<String> update = MinigameUtils.checkForUpdate("http://mineauz.pauldavdesign.com/mgmversion.txt", Minigames.plugin.getDescription().getVersion());
-		if(update != null){
-			ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + String.format(lang.getString("minigame.update.msg"), update.get(0)));
-			if(update.size() > 1){
-				ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + lang.getString("minigame.update.changes"));
-				for(int i = 1; i < update.size(); i++){
-					ply.sendMessage("- " + update.get(i));
+		URL update;
+		
+		try {
+			update = new URL("https://api.curseforge.com/servermods/files?projectIds=42036");
+			BufferedReader read = new BufferedReader(new InputStreamReader(update.openStream()));
+			
+			String res = read.readLine();
+			
+			JSONArray arr = (JSONArray) JSONValue.parse(res);
+			
+			if(!arr.isEmpty()){
+				JSONObject latest = (JSONObject) arr.get(arr.size() - 1);
+				String version = (String) latest.get("name");
+				version = version.replaceAll("[a-zA-Z-]", "");
+				if(Minigames.plugin.getDescription().getVersion() != version){
+					String gameV = (String) latest.get("gameVersion");
+					String type = (String) latest.get("releaseType");
+					String url = (String) latest.get("downloadUrl");
+					
+					ply.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.update.msg", type, version, gameV));
+					ply.sendMessage(url);
 				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }

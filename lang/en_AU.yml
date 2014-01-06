@@ -154,8 +154,7 @@ minigame:
         overworld: "Overworld"
         msg: "You must be in the %s to get a hint for the %s treasure hunt!"
   update:
-    msg: "There is an update available! Version: %s"
-    changes: "Changes:"
+    msg: "A new %s of Minigames, version %s for %s and above, is available for download. To update, go to:"
     
 sign:
   emptyHand: "Your hand must be empty to use this sign."
