@@ -1,0 +1,264 @@
+lang:
+  info: Ceska verze (AyACZE pro CoolCraft.eu)
+  version: 1.6.0
+player:
+  join:
+    consMsg: '%s se prihlasil do %s'
+    plyMsg: '%s se prihlasil do %s'
+    plyInfo: Prihlasil ses do minihry %s , pro jeji opusteni pouzij /minigame quit
+    objective: 'Ukol: %s'
+  spectate:
+    join:
+      plyMsg: Prihlasil ses jako divak do minihry %s.
+      plyHelp: Pouzij %s pro opusteni hlediste.
+      minigameMsg: '%s je nyni v hledisti minihry %s'
+    quit:
+      plyMsg: Opustil jsi hlediste minihry %s
+      minigameMsg: '%s opustil hlediste minihry %s'
+  bet:
+    plyMsg: Vlozil jsi svoji sazku, hodne stesti!
+    plyNoBet: Nemuzes vsadit vzduch!
+    incorrectAmount: Nevsadil jsi potrebnou castku!
+    incorrectAmountInfo: Musis vsadit $%d
+    incorrectItem: Nevsadil jsi spravne itemy!
+    incorrectItemInfo: Musis vsadit %d ks %s
+    notEnoughMoney: Nemas dostatek penez!
+    notEnoughMoneyInfo: Musis mit minimalne $%d
+    winMoney: Vyhral jsi $%d
+  checkpoint:
+    revert: Byl jsi navracen na checkpoint.
+    deathRevert: Smula! Vracim te na checkpoint.
+  quit:
+    consMsg: '%s opustil %s'
+    plyMsg: '%s odesel z %s'
+    plyForcedMsg: '%s byl vahozen z %s'
+    plyBeatenMsg: Nezvladl jsi to, zkus to znovu!
+    plyOutOfLives: Smula! Zkus to priste.
+  end:
+    plyMsg: Dokoncil jsi minihru %s Gratulujeme!
+    broadcastMsg: '%s dokoncil %s'
+    broadcastScore: 'Skore: %s'
+    consMsg: '%s dokoncil %s'
+    awardMoney: Jako odmenu dostavas castku $%s
+    awardItem: Jako odmenu dostavas %d ks %s
+    team:
+      win: '%s vyhral %s'
+      tie: '%s tied against %s in %s'
+      score: '%s do %s'
+  team:
+    autobalance:
+      plyMsg: Byl jsi automaticky prirazen do %s
+      minigameMsg: '%s byl automaticky prirazen do %s'
+    assign:
+      infected: Infikovan!
+      infectedAssign: Jsi %s
+      infectedAnnounce: '%s je %s'
+      survivor: Prezivajici
+      survivorAssign: Jsi %s
+      survivorAnnounce: '%s je %s'
+      joinTeam: Prihlasil ses do %s
+      joinAnnounce: '%s se prihlasil do %s'
+  ctf:
+    capture: '%s ukoristil vlajku pro %s'
+    captureFinal: '%s ukoristil finalni vlajku pro %s'
+    captureNeutral: '%s ukoristil vlajku'
+    captureNeutralFinal: '%s ukoristil finalni vlajku'
+    returned: '%s ziskal zpet %s vljaku'
+    stoleNeutral: '%s ukradl neutralni vlajku'
+    returnFail: Nesmis nest vlajku kdyz chces vratit vlastni!
+    dropped: '%s upustil %s vlajku'
+    droppedNeutral: '%s upustil neutralni vlajku'
+  kills:
+    finalKill: '%s dostal smrtici delovku od %s'
+minigame:
+  full: Sorry, tato minihra je jiz plne obsazena.
+  started: Tato hra jiz byla odstartovana. Zkus to pozdeji.
+  scoreToWin: 'Potrebne skore pro vitezstvi: %d'
+  livesLeft: 'Zbyvy zivotu: %d'
+  timeLeft: '%s zbyva.'
+  waitingForPlayers: Cekam na dalsi %d hrace.
+  skipWaitTime: Minihra je plna. Preskakuji odpocet.
+  lateJoin: Budes pripojen za %d sekund...
+  lateJoinWait: Prosim pockej %d sekund a zkus to znova.
+  error:
+    noGametype: Tento typ minihry neexistuje!
+    noQuit: Tato minihra nema nastavenu quit pozici!
+    noEnd: Tato minihra nema nastavenu end pozici!
+    noLobby: Tato minihra nema nastavenu lobby pozici!
+    incorrectStart: Start pozice nejsou korektne nastaveny!
+    notEnabled: Tato minihra neni zapnuta.
+    noMinigame: Tato minihra neexistuje!
+    noMinigameName: Minihra '%s' neexistuje!
+    noPermission: 'Nemas opravneni: %s'
+    noTeleport: V minihre neni mozno pouzivat teleport!
+    noGamemode: V minihre neni mozno menit herni mod!
+    noFly: V minigame neni povoleno letani!
+    noRevert: V minihre %s neni revert umozneno
+    noCommand: V minihre neni povoleno pouzivat tento prikaz!
+    noInfection: Infection musi byt spusteno jako team deathmatch minihra!
+    noVault: Na serveru nebyl nalezen plugin Vault! Minigames nemuze pracovat s penezi!
+  flag:
+    returnedTeam: '%s vlajka byla vracena na zakladnu.'
+    returnedNeutral: Neutralni vlajka byla vracena na zakladnu.
+  timer:
+    expired: Konec hry! Cas vyprsel.
+  info:
+    description: '------------------Informace o minihre------------------'
+    status:
+      title: 'Stav:'
+      empty: Prazdna
+      waitingForPlayers: Ceka na hrace
+      started: Bezi
+    lateJoin:
+      msg: 'Zpozdene pripojeni:'
+      enabled: zapnuto
+      disabled: vypnuto
+    score: 'Skore:'
+    playerCount: 'Pocet hracu:'
+    players:
+      msg: 'Hraci:'
+      none: Nikdo
+  treasurehunt:
+    consSpawn: '%s poklad zakopan v: %s'
+    plySpawn: Truhla s pokladem byla spatrena v %sm z %s!
+    plyDespawn: Cas vyprsel! %s poklad nebyl nalezen a propadne ve prospech serveru.
+    plyDespawnCoords: 'Souradnice: X:%d, Y:%d, Z%d'
+    hint1:
+      north: Severne
+      east: Vychodne
+      south: Jizne
+      west: Zapadne
+      hint: '%s poklad lezi %s od %s'
+    hint2: '%s poklad je %s'
+    hint3:
+      above: nad
+      below: pod
+      hint: '%s poklad je %dm bloku %s hladinou more'
+    hint4: '%s poklad je v biomu %s'
+    playerSpecificHint:
+      distance1: Ses slepej? Nejspis stojis primo na truhle s pokladem!
+      distance2: Ses tak blizko ze uz bys ten poklad mohl videt!
+      distance3: Ses uz fakt blizko k nalezeni pokladu!
+      distance4: Ses pobliz ale jeste nemas vyhrano!
+      distance5: Ses poradne daleko, asi umres chudej
+      distance6: Voda, voda, sama voda!
+      timeLeft: 'Zbyvajici cast: %d minut'
+      noUse: Nyni neni mozne ziskat zadnou napovedu k nalezeni pokladu!
+      nextUse: 'Dalsi napoveda za: %s'
+      treasureTimeLeft: 'Na hledani pokladu zbyva: %d minut'
+      globalHints: 'Globalni napoveda:'
+      noHint: Sorry, neni k dispozici zadna globalni napoveda
+      wrongWorld:
+        overworld: Overworld
+        msg: Pro vyuziti napovedy k nalezeni pokladu musis byt ve svete %s !
+  update:
+    msg: 'A new %s of Minigames, version %s for %s and above, is available for download.
+      To update, go to:'
+sign:
+  emptyHand: Pro pouziti teto cedulky musis mit prazne ruce.
+  bet:
+    createPermission: Nemas opravneni pro vytvareni bet cedulek!
+    usePermission: emas opravneni pro pouzivani bet cedulek!
+    noBet: Nemuzes vsadit vzduch!
+  checkpoint:
+    createPermission: Nemas opravneni pro vytvareni checkpoint cedulek!
+    usePermission: Nemas opravneni pro pouzivani checkpoint cedulek!
+    set: Checkpoint ulozen!
+    fail: Zde neni mozno ulozit checkpoint!
+  finish:
+    createPermission: Nemas opravneni pro vytvareni finish cedulek!
+    requireFlags: 'Potrebne vlajky:'
+  flag:
+    createPermission: Nemas opravneni pro vytvareni flag cedulek!
+    invalidSyntax: 'Neplatny zapis cedulky! Akceptovane argumenty pro capture cedulky
+      jsou:'
+    taken: '%s vlajka odebrana!'
+  join:
+    createPermission: Nemas opravneni pro vytvareni join cedulek!
+    usePermission: Nemas opravneni pro pouzivani join cedulek!
+    invalidMoney: Neplatna castka!
+    notEnoughMoney: Nemas dostatek hotovosti pro prihlaseni do teto minihry.
+  loadout:
+    createPermission: Nemas opravneni pro vytvareni loadout cedulek!
+    usePermission: Nemas opravneni pro pouzivani loadout cedulek!
+    equipped: Obdrzel jsi vybavu %s
+    nextRespawn: Tuto vybavu obdrzis pri svem dalsim respawnu.
+    noPermission: NEmas opravneni pouzivat vybavu %s
+    noLoadout: Tato vybava neexistuje!
+  quit:
+    createPermission: Nemas opravneni pro vytvareni quit cedulek!
+  reward:
+    createPermission: Nemas opravneni pro vytvareni reward cedulek!
+    usePermission: Nemas opravneni pro pouzivani reward cedulek!
+    noName: Musis definovat jmeno odmeny na radku 3!
+    invalidItem: Zadny material'%s' neexistuje!
+    noId: Zadny item '%s' neexistuje!
+    clickSign: Pravym klikem si vyber svoji odmenu. (zbyva 10s)
+    rewarded: Jako odmenu jsi dostal %d ks %s
+  spectate:
+    createPermission: Nemas opravneni pro vytvareni spectate cedulek!
+    usePermission: Nemas opravneni pro pouzivani spectate cedulek!
+  team:
+    createPermission: Nemas opravneni pro vytvareni team cedulek!
+    usePermission: Nemas opravneni pro pouzivani team cedulek!
+    invalidFormat: Radek 3 musi byt %s!
+    noUnbalance: Tymy musi byt vyrovnane!
+    autoAssign: Automaticky jsi byl prirazen do tymu
+    autoAssignAnnounce: Hraci %s byl automaticky prirazen tym
+  teleport:
+    createPermission: Nemas opravneni pro vytvareni teleport cedulek!
+    usePermission: Nemas opravneni pro pouzivani teleport cedulek!
+    invalid: Neplatna teleport cedulka!
+time:
+  weeks: '%d tydnu'
+  days: '%d dnu'
+  hours: '%d hodin'
+  minutes: '%d minut'
+  seconds: '%d sekund'
+  and: a
+  startup:
+    time: '%d sek.'
+    waitingForPlayers: 'Cekam na hrace:'
+    minigameStarts: 'Minihra zacne za:'
+    timerPaused: Odpocet byl pozastaven.
+    timerPausedReason: 'Odpocet pozastavil: %s'
+    timerResumed: Odpocet obnoven.
+    go: Jdi na to!
+command:
+  join:
+    description: Pripoji te do minihry. Pozor:System sazek bude obejit.
+    noPermission: K tomuto prikazu nemas opravneni.
+    joining: Pripojuji do %s
+    alreadyPlaying: Jiz hrajes nekterou minihru. Nejdriv ji opust nez zacnec hrat jinou.
+    noMinigamePermission: Pro prihlaseni do minihra je vyzadovano opravneni %s
+  quit:
+    description: Hrac zadavajici prikaz opusti minihru, pripadne hrac jehoz nick je zadan.
+    noPermission: Nemas opravneni na pouziti prikazu pro opusteni minihry!
+    notPlaying: Nejsi v zadne minihre, kterou bys mohl opustit!
+    quitAll: Vsichni hraci opusti vsechny minihry
+    quitAllMinigame: Vsichnoo hraci opusti minihru %s
+    invalidPlayer: Hrac s nickem '%s' nebyl nalezen!
+    quitOther: Hrac %s opusti minihru
+    noPermissionOther: Nemas opravneni pro ukonceni minihry ostatnich hracu!
+  revert:
+    description: Vrati hrace zadavajiciho prikaz na posledne ulozeny checkpoint nebo na globalni checkpoint pokud nema zadny ulozen.
+    noPermission: Nemas opravneni pro navrat na checkpoint!
+    noGlobal: Nebyl nalezen zadny globalni checkpoint!
+  help:
+    description: Prikaz obecne napovedy.
+    noPermission: Nemas opravneni pro prikaz napovedy!
+    info:
+      header: 'Vypis prikazu pluginu Minigames:'
+      mgm: 'Zakladni prikaz pluginu minigames (zkracene: /mgm)'
+      join: Prihlasi do minihry
+      quit: Odhlasi z aktualni minihry
+      quitOther: Pridanim nicku na konec prikazu odhlasi tohoto hrace z minihry, mozno pouzit i ALL pro vsechny hrace
+      revert: 'Navrat na posledni ulozeny checkpoint v aktualni minihre (zkracene:
+        /mgm r)'
+      end: Vitezny konec minihry pro tebe nebo zadaneho hrace.
+      delete: Trvale odstraneni zadane minihry
+      hint: Zobrazi napovedu pro nalezeni pokladu
+      timer: Prepinac odpoctu minihry (Pozastaveno nebo pokracovani odpoctu)
+      list: Zobrazi vypis vsech miniher k dispozici
+      reload: Reloadne vsechny soubory pluginu Minigames. NEDOPORUCEJEME, pouzij restart serveru nebo nektery pluginmanager!
+      set: Pro nastaveni minihry pouzij prikaz "/minigame set" zobrazi se ti vypis pouzitelnych parametru
