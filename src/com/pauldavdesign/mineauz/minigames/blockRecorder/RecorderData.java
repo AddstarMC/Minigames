@@ -1067,6 +1067,8 @@ public class RecorderData implements Listener{
 	
 	@EventHandler(ignoreCancelled = true)
 	private void blockMoveItem(InventoryMoveItemEvent event){
+		if(!hasRegenArea() && !minigame.hasPlayers()) return;
+		
 		Location loc = null;
 		boolean isCart = false;
 		if(event.getInitiator().getHolder() instanceof BlockState){
@@ -1077,7 +1079,9 @@ public class RecorderData implements Listener{
 			isCart = true;
 		}
 		
-		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(loc)){
+		if(loc == null) return;
+		
+		if(blockInRegenArea(loc)){
 			if(!isCart){
 				addBlock((BlockState)event.getInitiator().getHolder(), null);
 			}
@@ -1098,7 +1102,7 @@ public class RecorderData implements Listener{
 		
 		if(loc == null) return;
 		
-		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(loc)){
+		if(blockInRegenArea(loc)){
 			if(!isCart){
 				addBlock((BlockState)event.getDestination().getHolder(), null);
 			}
