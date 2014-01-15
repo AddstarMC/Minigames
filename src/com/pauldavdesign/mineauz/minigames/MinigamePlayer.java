@@ -209,6 +209,12 @@ public class MinigamePlayer {
 		player.updateInventory();
 	}
 	
+	public boolean hasStoredData(){
+		if(storedItems != null && storedArmour != null)
+			return true;
+		return false;
+	}
+	
 	public boolean getAllowTeleport(){
 		return allowTP;
 	}
