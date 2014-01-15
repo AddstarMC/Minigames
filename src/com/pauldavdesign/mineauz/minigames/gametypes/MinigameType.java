@@ -15,4 +15,12 @@ public enum MinigameType {
 	public String getName(){
 		return name;
 	}
+	
+	public static boolean hasValue(String value){
+		for(MinigameType type : values()){
+			if(type.toString().equalsIgnoreCase(value))
+				return true;
+		}
+		return false;
+	}
 }

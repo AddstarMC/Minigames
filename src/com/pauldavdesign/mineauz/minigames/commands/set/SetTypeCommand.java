@@ -60,7 +60,7 @@ public class SetTypeCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-			if(plugin.mdata.getMinigameTypes().contains(MinigameType.valueOf(args[0].toUpperCase()))){
+			if(MinigameType.hasValue(args[0])){
 				minigame.setType(MinigameType.valueOf(args[0].toUpperCase()));
 				sender.sendMessage(ChatColor.GRAY + "Minigame type has been set to " + args[0]);
 			}
