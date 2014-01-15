@@ -30,7 +30,7 @@ public class SetScoreTypeCommand implements ICommand {
 
 	@Override
 	public String[] getParameters() {
-		String[] types = new String[plugin.getScoreTypes().getScoreTypes().keySet().size() + 1];
+		String[] types = new String[plugin.getScoreTypes().getScoreTypes().keySet().size()];
 		int inc = 0;
 		for(String type : plugin.getScoreTypes().getScoreTypes().keySet()){
 			types[inc] = type;
