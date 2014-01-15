@@ -21,8 +21,13 @@ public class MultiplayerTimer{
 	public MultiplayerTimer(Minigame mg){
 		minigame = mg;
 		playerWaitTime = plugin.getConfig().getInt("multiplayer.waitforplayers");
-		if(minigame.getStartWaitTime() == 0	)
+		if(playerWaitTime <= 0)
+			playerWaitTime = 10;
+		if(minigame.getStartWaitTime() == 0	){
 			startWaitTime = plugin.getConfig().getInt("multiplayer.startcountdown");
+			if(startWaitTime <= 0)
+				startWaitTime = 5;
+		}
 		else
 			startWaitTime = minigame.getStartWaitTime();
 		timeMsg.addAll(plugin.getConfig().getIntegerList("multiplayer.timerMessageInterval"));
