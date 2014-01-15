@@ -76,7 +76,7 @@ public class ToolCommand implements ICommand {
 		if(args == null){
 			MinigameUtils.giveMinigameTool(player);
 		}
-		else{
+		else if(MinigameUtils.hasMinigameTool(player)){
 			if(args[0].equalsIgnoreCase("minigame") && args.length == 2){
 				if(Minigames.plugin.mdata.hasMinigame(args[1])){
 					MinigameTool tool;
@@ -306,6 +306,9 @@ public class ToolCommand implements ICommand {
 			else{
 				return false;
 			}
+		}
+		else{
+			sender.sendMessage(ChatColor.RED + "You must have a Minigame Tool! Type \"/minigame tool\" to recieve one.");
 		}
 		return true;
 	}
