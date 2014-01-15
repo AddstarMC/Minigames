@@ -2,6 +2,7 @@ package com.pauldavdesign.mineauz.minigames.gametypes;
 
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
@@ -45,6 +46,9 @@ public abstract class MinigameTypeBase implements Listener{
 			@Override
 			public void run() {
 				if(!player.getPlayer().isDead()){
+					if(player.getPlayer().getWorld() != minigame.getQuitPosition().getWorld() && player.getPlayer().hasPermission("minigame.set.quit") && plugin.getConfig().getBoolean("warnings")){
+						player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Quit location is across worlds! This may cause some server performance issues!", "error");
+					}
 					pdata.minigameTeleport(player, minigame.getQuitPosition());
 				}
 				else{

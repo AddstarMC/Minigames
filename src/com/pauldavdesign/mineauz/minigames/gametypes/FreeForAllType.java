@@ -37,6 +37,13 @@ public class FreeForAllType extends MinigameTypeBase{
 	public boolean joinMinigame(MinigamePlayer player, Minigame mgm) {
 		if(mgm.getQuitPosition() != null && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
 			Location lobby = mgm.getLobbyPosition();
+			if(player.getPlayer().getWorld() != lobby.getWorld() && player.getPlayer().hasPermission("minigame.set.lobby") && plugin.getConfig().getBoolean("warnings")){
+				player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Lobby location is across worlds! This may cause some server performance issues!", "error");
+			}
+			if(player.getPlayer().getWorld() != mgm.getStartLocations().get(0).getWorld() && player.getPlayer().hasPermission("minigame.set.start") && 
+					plugin.getConfig().getBoolean("warnings")){
+				player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Start location is across worlds! This may cause some server performance issues!", "error");
+			}
 			if(mdata.getMinigame(mgm.getName()).getPlayers().size() < mgm.getMaxPlayers()){
 				if((mgm.canLateJoin() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0) 
 						|| mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
@@ -233,6 +240,10 @@ public class FreeForAllType extends MinigameTypeBase{
 			if(player.getScore() != 0)
 				score = MinigameUtils.formStr("player.end.broadcastScore", player.getScore());
 			plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + MinigameUtils.formStr("player.end.broadcastMsg", ChatColor.WHITE + player.getName(), mgm.getName()) + ". " + score);
+		}
+		
+		if(player.getPlayer().getWorld() != mgm.getEndPosition().getWorld() && player.getPlayer().hasPermission("minigame.set.end") && plugin.getConfig().getBoolean("warnings")){
+			player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Lobby location is across worlds! This may cause some server performance issues!", "error");
 		}
 		
 		if(mgm.getEndPosition() != null){

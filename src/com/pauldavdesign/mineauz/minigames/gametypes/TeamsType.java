@@ -39,6 +39,9 @@ public class TeamsType extends MinigameTypeBase{
 			int blueSize = mgm.getBlueTeam().size();
 			
 			Location lobby = mgm.getLobbyPosition();
+			if(player.getPlayer().getWorld() != lobby.getWorld() && player.getPlayer().hasPermission("minigame.set.lobby") && plugin.getConfig().getBoolean("warnings")){
+				player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Lobby location is across worlds! This may cause some server performance issues!", "error");
+			}
 			
 			if(mgm.getPlayers().size() < mgm.getMaxPlayers()){
 				if((mgm.canLateJoin() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0) || 
@@ -230,6 +233,9 @@ public class TeamsType extends MinigameTypeBase{
 		Configuration completion = null;
 		
 		player.sendMessage(MinigameUtils.formStr("player.end.plyMsg", mgm.getName()), "win");
+		if(player.getPlayer().getWorld() != mgm.getEndPosition().getWorld() && player.getPlayer().hasPermission("minigame.set.end") && plugin.getConfig().getBoolean("warnings")){
+			player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "End location is across worlds! This may cause some server performance issues!", "error");
+		}
 		
 		if(mgm.getEndPosition() != null){
 			if(!player.getPlayer().isDead()){

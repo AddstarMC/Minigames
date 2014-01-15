@@ -50,6 +50,8 @@ sql-password: root
 
 tool: "BLAZE_ROD"
 
+warnings: true
+
 outputCMDToFile: false
 
 minigames:

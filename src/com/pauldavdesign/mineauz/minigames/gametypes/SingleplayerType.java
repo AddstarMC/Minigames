@@ -34,6 +34,9 @@ public class SingleplayerType extends MinigameTypeBase{
 	public boolean joinMinigame(MinigamePlayer player, Minigame mgm){
 		if(mgm.getQuitPosition() != null && mgm.isEnabled()){
 			Location startpos = mdata.getMinigame(mgm.getName()).getStartLocations().get(0);
+			if(player.getPlayer().getWorld() != mgm.getStartLocations().get(0).getWorld() && player.getPlayer().hasPermission("minigame.set.start") && plugin.getConfig().getBoolean("warnings")){
+				player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Join location is across worlds! This may cause some server performance issues!", "error");
+			}
 			pdata.minigameTeleport(player, startpos);
 
 			if(mgm.hasRestoreBlocks() && !mgm.hasPlayers()){
@@ -88,6 +91,9 @@ public class SingleplayerType extends MinigameTypeBase{
 		}
 		
 		if(mgm.getEndPosition() != null){
+			if(player.getPlayer().getWorld() != mgm.getEndPosition().getWorld() && player.getPlayer().hasPermission("minigame.set.end") && plugin.getConfig().getBoolean("warnings")){
+				player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "End location is across worlds! This may cause some server performance issues!", "error");
+			}
 			if(!player.getPlayer().isDead()){
 				player.getPlayer().teleport(mgm.getEndPosition());
 			}
