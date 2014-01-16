@@ -639,7 +639,7 @@ public class Events implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void clickMenu(InventoryClickEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer((Player)event.getWhoClicked());
 		if(ply.isInMenu()){
