@@ -502,6 +502,21 @@ public class RecorderData implements Listener{
 	}
 	
 	public boolean blockInRegenArea(Location location){
+		if(location.getWorld() == null || minigame.getRegenArea1().getWorld() == null || minigame == null){
+			if(plugin.thrownError == false){
+				plugin.thrownError = true;
+				plugin.getLogger().severe("MINIGAMES ERROR (Razzonator):");
+				plugin.getLogger().severe("Location World Object: " + location.getWorld());
+				plugin.getLogger().severe("Regen Area World Object: " + minigame.getRegenArea1().getWorld());
+				plugin.getLogger().info("Minigame: " + minigame.getName());
+				plugin.getLogger().info("Has Regen Area: " + hasRegenArea());
+				plugin.getLogger().info("Location pos: " + location.getBlockX() + ", " + location.getBlockY() + ", " + 
+						location.getBlockZ() + ", W: " + location.getWorld());
+				plugin.getLogger().info("RegenArea1 pos: " + minigame.getRegenArea1().getBlockX() + ", " + 
+						minigame.getRegenArea1().getBlockY() + ", " + minigame.getRegenArea1().getBlockZ() + ", W: " + minigame.getRegenArea1().getWorld());
+			}//TODO: Kill this debug!
+			return false;
+		}
 		if(location.getWorld() == minigame.getRegenArea1().getWorld() && 
 				location.getBlockX() >= getRegenMinX() && location.getBlockX() <= getRegenMaxX() &&
 				location.getBlockY() >= getRegenMinY() && location.getBlockY() <= getRegenMaxY() &&
@@ -1072,10 +1087,10 @@ public class RecorderData implements Listener{
 		Location loc = null;
 		boolean isCart = false;
 		if(event.getInitiator().getHolder() instanceof BlockState){
-			loc = ((BlockState)event.getInitiator().getHolder()).getLocation();
+			loc = ((BlockState)event.getInitiator().getHolder()).getLocation().clone();
 		}
 		else if(event.getInitiator().getHolder() instanceof HopperMinecart){
-			loc = ((HopperMinecart)event.getInitiator().getHolder()).getLocation();
+			loc = ((HopperMinecart)event.getInitiator().getHolder()).getLocation().clone();
 			isCart = true;
 		}
 		
@@ -1093,10 +1108,10 @@ public class RecorderData implements Listener{
 		loc = null;
 		isCart = false;
 		if(event.getDestination().getHolder() instanceof BlockState){
-			loc = ((BlockState)event.getDestination().getHolder()).getLocation();
+			loc = ((BlockState)event.getDestination().getHolder()).getLocation().clone();
 		}
 		else if(event.getDestination().getHolder() instanceof HopperMinecart){
-			loc = ((HopperMinecart)event.getDestination().getHolder()).getLocation();
+			loc = ((HopperMinecart)event.getDestination().getHolder()).getLocation().clone();
 			isCart = true;
 		}
 		

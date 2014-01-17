@@ -56,6 +56,7 @@ public class Minigames extends JavaPlugin{
 	private FileConfiguration lang = null;
 	private List<SQLPlayer> sqlToStore = new ArrayList<SQLPlayer>();
 	private SQLCompletionSaver completionSaver = null;
+	public boolean thrownError = false;
 	
 	private long lastUpdateCheck = 0;
 
