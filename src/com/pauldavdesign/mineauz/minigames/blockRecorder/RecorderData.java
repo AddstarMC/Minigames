@@ -1082,7 +1082,7 @@ public class RecorderData implements Listener{
 	
 	@EventHandler(ignoreCancelled = true)
 	private void blockMoveItem(InventoryMoveItemEvent event){
-		if(!hasRegenArea() && !minigame.hasPlayers()) return;
+		if(!hasRegenArea() || !minigame.hasPlayers()) return;
 		
 		Location loc = null;
 		boolean isCart = false;
