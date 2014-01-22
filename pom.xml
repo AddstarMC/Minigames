@@ -68,13 +68,6 @@
       <version>1.2.26</version>
     </dependency>
 
-    <!-- SQLibrary -->
-    <dependency>
-      <groupId>lib.patpeter</groupId>
-      <artifactId>sqlibrary</artifactId>
-      <version>6.0</version>
-    </dependency>
-
     <!-- MCStats.org -->
     <dependency>
         <groupId>org.mcstats.bukkit</groupId>

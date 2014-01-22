@@ -1,10 +1,10 @@
 package com.pauldavdesign.mineauz.minigames.sql;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
-
-import lib.PatPeter.SQLibrary.Database;
 
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
@@ -21,35 +21,38 @@ public class SQLCompletionSaver extends Thread{
 	}
 	
 	public void run(){
-		Database sql = plugin.getSQL().getSql();
-		if(!sql.isOpen()){
-		    sql.open();
-		}
-		if(sql.isOpen()){
-			while(plugin.hasSQLToStore()){
-				List<SQLPlayer> players = plugin.getSQLToStore();
-				plugin.clearSQLToStore();
-				for(SQLPlayer player : players){
-					addSQLData(player, sql);
-				}
+		SQLDatabase sql = plugin.getSQL();
+		
+		while(plugin.hasSQLToStore()){
+			List<SQLPlayer> players = plugin.getSQLToStore();
+			plugin.clearSQLToStore();
+			for(SQLPlayer player : players){
+				addSQLData(player, sql);
 			}
 		}
+
 		plugin.removeSQLCompletionSaver();
-		sql.close();
 	}
 	
-	private void addSQLData(SQLPlayer player, Database sql){
-		boolean hasTable = false;
-		try{
-			sql.query("SELECT 1 FROM mgm_" + player.getMinigame() + "_comp LIMIT 0");
-			hasTable = true;
+	private void addSQLData(SQLPlayer player, SQLDatabase database){
+		
+		String table = "mgm_" + player.getMinigame() + "_comp";
+		
+		if(!database.isOpen())
+		{
+			if(!database.loadSQL())
+			{
+				plugin.getLogger().warning("Database Connection was closed and could not be re-established!");
+				return;
+			}
 		}
-		catch(SQLException e){
-			//Doesn't have a table? :(
-		}
-		if(!hasTable){
+		
+		Connection sql = database.getSql();
+		
+		if(!database.isTable(table)){
 			try {
-				sql.query("CREATE TABLE mgm_" + player.getMinigame() + "_comp " +
+				Statement createTable = sql.createStatement();
+				createTable.execute("CREATE TABLE " + table + 
 						"( " +
 						"Player varchar(32) NOT NULL PRIMARY KEY, " +
 						"Completion int, " +
@@ -65,16 +68,18 @@ public class SQLCompletionSaver extends Thread{
 						"TotalTime long, " +
 						"Failures int " +
 						")");
+				createTable.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
 		else{ //TODO: Remove after 1.6.0 release
-			try {
-				sql.query("SELECT Score FROM mgm_" + player.getMinigame() + "_comp LIMIT 0");
-			} catch (SQLException e) {
+			if(!database.columnExists("Score", table))
+			{
 				try {
-					sql.query("ALTER TABLE mgm_" + player.getMinigame() + "_comp ADD Score int DEFAULT -1, " +
+					Statement alterTable = sql.createStatement();
+					
+					alterTable.execute("ALTER TABLE " + table + " ADD Score int DEFAULT -1, " +
 							"ADD Time long NOT NULL, " +
 							"ADD Reverts int DEFAULT -1, " +
 							"ADD TotalKills int DEFAULT 0, " +
@@ -83,6 +88,7 @@ public class SQLCompletionSaver extends Thread{
 							"ADD TotalReverts int DEFAULT 0, " +
 							"ADD TotalTime long NOT NULL, " + 
 							"ADD Failures int DEFAULT 0");
+					alterTable.close();
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 					return;
@@ -90,110 +96,111 @@ public class SQLCompletionSaver extends Thread{
 			}
 		}
 		
-		ResultSet set = null;
-		try {
-			set = sql.query("SELECT * FROM mgm_" + player.getMinigame() + "_comp WHERE Player='" + player.getPlayerName() + "'");
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-			return;
-		}
-		
-		String name = null;
-		int kills = player.getKills();
-		int deaths = player.getDeaths();
-		int score = player.getScore();
-		int reverts = player.getReverts();
-		long time = player.getTime();
-		int completedNum = player.getCompletionChange();
-		int failureNum = player.getFailureChange();
-		boolean completed = false;
-		if(player.getCompletionChange() >= 1){
-			completed = true;
-		}
-
-		int ocompleted = 0;
-		int okills = 0;
-		int odeaths = -1;
-		int oscore = 0;
-		int oreverts = -1;
-		long otime = 0;
-		int otkills = 0;
-		int otdeaths = 0;
-		int otscore = 0;
-		int otreverts = 0;
-		long ottime = 0;
-		int ofailures = 0;
-		try {
-			set.absolute(1);
-			name = set.getString(1);
-			ocompleted = set.getInt(2);
+		try
+		{
+			ResultSet set = null;
+			Statement getStats = sql.createStatement();
+			set = getStats.executeQuery(String.format("SELECT * FROM %s WHERE Player='%s'", table, player.getPlayerName()));
 			
-			okills = set.getInt(3);
-			odeaths = set.getInt(4);
-			oscore = set.getInt(5);
-			otime = set.getLong(6);
-			oreverts = set.getInt(7);
-			otkills = set.getInt(8);
-			otdeaths = set.getInt(9);
-			otscore = set.getInt(10);
-			otreverts = set.getInt(11);
-			ottime = set.getLong(12);
-			ofailures = set.getInt(13);
-		} catch (SQLException e) {
-			//e.printStackTrace();
-		}
-		
-		otkills += kills;
-		otdeaths += deaths;
-		otscore += score;
-		otreverts += reverts;
-		ottime += time;
-		
-		if(completed){
-			ocompleted += completedNum;
-			
-			if(odeaths < deaths && odeaths != -1){
-				deaths = odeaths;
+			String name = null;
+			int kills = player.getKills();
+			int deaths = player.getDeaths();
+			int score = player.getScore();
+			int reverts = player.getReverts();
+			long time = player.getTime();
+			int completedNum = player.getCompletionChange();
+			int failureNum = player.getFailureChange();
+			boolean completed = false;
+			if(player.getCompletionChange() >= 1){
+				completed = true;
 			}
-			
-			if(oreverts < reverts && oreverts != -1){
-				reverts = oreverts;
-			}
-			
-			if(otime < time && otime != 0){
-				time = otime;
-			}
-		}
-		else{
-			ofailures += failureNum;
-			if(odeaths != -1)
-				deaths = odeaths;
-			else
-				deaths = -1;
-			if(oreverts != -1)
-				reverts = oreverts;
-			else
-				reverts = -1;
-			if(otime != 0)
-				time = otime;
-			else
-				time = 0;
-		}
-		
-		if(okills > kills){
-			kills = okills;
-		}
-		
-		if(oscore > score){
-			score = oscore;
-		}
-		
-		boolean hasAlreadyCompleted = false;
-		
-		if(name != null){
-			hasAlreadyCompleted = true;
+	
+			int ocompleted = 0;
+			int okills = 0;
+			int odeaths = -1;
+			int oscore = 0;
+			int oreverts = -1;
+			long otime = 0;
+			int otkills = 0;
+			int otdeaths = 0;
+			int otscore = 0;
+			int otreverts = 0;
+			long ottime = 0;
+			int ofailures = 0;
 			try {
-				sql.query("UPDATE mgm_" + player.getMinigame() + "_comp SET Completion='" + ocompleted + "', " +
+				set.absolute(1);
+				name = set.getString(1);
+				ocompleted = set.getInt(2);
+				
+				okills = set.getInt(3);
+				odeaths = set.getInt(4);
+				oscore = set.getInt(5);
+				otime = set.getLong(6);
+				oreverts = set.getInt(7);
+				otkills = set.getInt(8);
+				otdeaths = set.getInt(9);
+				otscore = set.getInt(10);
+				otreverts = set.getInt(11);
+				ottime = set.getLong(12);
+				ofailures = set.getInt(13);
+			} catch (SQLException e) {
+				//e.printStackTrace();
+			}
+			
+			set.close();
+			getStats.close();
+			
+			otkills += kills;
+			otdeaths += deaths;
+			otscore += score;
+			otreverts += reverts;
+			ottime += time;
+			
+			if(completed){
+				ocompleted += completedNum;
+				
+				if(odeaths < deaths && odeaths != -1){
+					deaths = odeaths;
+				}
+				
+				if(oreverts < reverts && oreverts != -1){
+					reverts = oreverts;
+				}
+				
+				if(otime < time && otime != 0){
+					time = otime;
+				}
+			}
+			else{
+				ofailures += failureNum;
+				if(odeaths != -1)
+					deaths = odeaths;
+				else
+					deaths = -1;
+				if(oreverts != -1)
+					reverts = oreverts;
+				else
+					reverts = -1;
+				if(otime != 0)
+					time = otime;
+				else
+					time = 0;
+			}
+			
+			if(okills > kills){
+				kills = okills;
+			}
+			
+			if(oscore > score){
+				score = oscore;
+			}
+			
+			boolean hasAlreadyCompleted = false;
+			
+			if(name != null){
+				hasAlreadyCompleted = true;
+				Statement updateStats = sql.createStatement();
+				updateStats.executeUpdate("UPDATE " + table + " SET Completion='" + ocompleted + "', " +
 						"Kills=" + kills + ", " +
 						"Deaths=" + deaths + ", " +
 						"Score=" + score + ", " +
@@ -206,15 +213,12 @@ public class SQLCompletionSaver extends Thread{
 						"TotalTime=" + ottime + ", " +
 						"Failures=" + ofailures +
 						" WHERE Player='" + name + "'");
-			} catch (SQLException e) {
-				e.printStackTrace();
-				return;
+				updateStats.close();
 			}
-		}
-		else{
-			name = player.getPlayerName();
-			try {
-				sql.query("INSERT INTO mgm_" + player.getMinigame() + "_comp VALUES " +
+			else{
+				name = player.getPlayerName();
+				Statement insertStats = sql.createStatement();
+				insertStats.executeUpdate("INSERT INTO " + table + " VALUES " +
 						"( '" + name + "', " + 
 						ocompleted + ", " + 
 						kills + ", " + 
@@ -229,36 +233,38 @@ public class SQLCompletionSaver extends Thread{
 						ottime + ", " +
 						ofailures +
 						" )");
-			} catch (SQLException e) {
-				e.printStackTrace();
-				return;
+				insertStats.close();
 			}
-		}
 		
-		Minigame mgm = Minigames.plugin.mdata.getMinigame(player.getMinigame());
-		if(mgm.getScoreboardData().hasPlayer(player.getPlayerName())){
-			ScoreboardPlayer ply = mgm.getScoreboardData().getPlayer(player.getPlayerName());
-			ply.setCompletions(ocompleted);
-			ply.setBestKills(kills);
-			ply.setLeastDeaths(deaths);
-			ply.setBestScore(score);
-			ply.setBestTime(time);
-			ply.setLeastReverts(reverts);
-			ply.setTotalKills(otkills);
-			ply.setTotalDeaths(otdeaths);
-			ply.setTotalScore(otscore);
-			ply.setTotalReverts(otreverts);
-			ply.setTotalTime(ottime);
-			ply.setFailures(ofailures);
+			Minigame mgm = Minigames.plugin.mdata.getMinigame(player.getMinigame());
+			if(mgm.getScoreboardData().hasPlayer(player.getPlayerName())){
+				ScoreboardPlayer ply = mgm.getScoreboardData().getPlayer(player.getPlayerName());
+				ply.setCompletions(ocompleted);
+				ply.setBestKills(kills);
+				ply.setLeastDeaths(deaths);
+				ply.setBestScore(score);
+				ply.setBestTime(time);
+				ply.setLeastReverts(reverts);
+				ply.setTotalKills(otkills);
+				ply.setTotalDeaths(otdeaths);
+				ply.setTotalScore(otscore);
+				ply.setTotalReverts(otreverts);
+				ply.setTotalTime(ottime);
+				ply.setFailures(ofailures);
+			}
+			else{
+				mgm.getScoreboardData().addPlayer(new 
+						ScoreboardPlayer(player.getPlayerName(), ocompleted, ofailures, kills, deaths, 
+								score, time, reverts, otkills, otdeaths, otscore, otreverts, ottime));
+			}
+			mgm.getScoreboardData().updateDisplays();
+			
+			if(completed)
+				MinigameTypeBase.issuePlayerRewards(pdata.getMinigamePlayer(player.getPlayerName()), mgm, hasAlreadyCompleted);
+			
 		}
-		else{
-			mgm.getScoreboardData().addPlayer(new 
-					ScoreboardPlayer(player.getPlayerName(), ocompleted, ofailures, kills, deaths, 
-							score, time, reverts, otkills, otdeaths, otscore, otreverts, ottime));
+		catch(SQLException e){
+			e.printStackTrace();
 		}
-		mgm.getScoreboardData().updateDisplays();
-		
-		if(completed)
-			MinigameTypeBase.issuePlayerRewards(pdata.getMinigamePlayer(player.getPlayerName()), mgm, hasAlreadyCompleted);
 	}
 }
