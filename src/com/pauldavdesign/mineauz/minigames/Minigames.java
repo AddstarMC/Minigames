@@ -83,6 +83,8 @@ public class Minigames extends JavaPlugin{
 			}
 		}
 		
+		//TODO: saveResource()
+		
 		mdata = new MinigameData();
 		pdata = new PlayerData();
 		
@@ -461,6 +463,7 @@ public class Minigames extends JavaPlugin{
 			os = new FileOutputStream(getDataFolder() + "/lang/en_AU.yml");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			return;
 		}
 		byte[] buffer = new byte[4096];
 		int length;
