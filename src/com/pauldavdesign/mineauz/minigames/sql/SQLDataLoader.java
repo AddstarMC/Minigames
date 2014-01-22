@@ -30,13 +30,7 @@ public class SQLDataLoader extends Thread{
 				String minigame = mg.getName();
 				if(sql.isTable("mgm_" + minigame + "_comp")){
 					try {
-						sql.query("SELECT Score FROM mgm_" + minigame + "_comp");
-						try { //Remove before 1.6.0 release
-							sql.query("SELECT Failures FROM mgm_" + minigame + "_comp");
-						}
-						catch (SQLException e){
-							sql.query("ALTER TABLE mgm_" + minigame + "_comp ADD Failures int DEFAULT 0");
-						}
+						sql.query("SELECT Score FROM mgm_" + minigame + "_comp LIMIT 0");
 					} catch (SQLException e) {
 						try {
 							sql.query("ALTER TABLE mgm_" + minigame + "_comp ADD Score int DEFAULT -1, " +

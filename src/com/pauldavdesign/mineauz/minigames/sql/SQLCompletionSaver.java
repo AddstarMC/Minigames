@@ -39,7 +39,15 @@ public class SQLCompletionSaver extends Thread{
 	}
 	
 	private void addSQLData(SQLPlayer player, Database sql){
-		if(!sql.isTable("mgm_" + player.getMinigame() + "_comp")){
+		boolean hasTable = false;
+		try{
+			sql.query("SELECT 1 FROM mgm_" + player.getMinigame() + "_comp LIMIT 0");
+			hasTable = true;
+		}
+		catch(SQLException e){
+			//Doesn't have a table? :(
+		}
+		if(!hasTable){
 			try {
 				sql.query("CREATE TABLE mgm_" + player.getMinigame() + "_comp " +
 						"( " +
@@ -63,7 +71,7 @@ public class SQLCompletionSaver extends Thread{
 		}
 		else{ //TODO: Remove after 1.6.0 release
 			try {
-				sql.query("SELECT Score FROM mgm_" + player.getMinigame() + "_comp");
+				sql.query("SELECT Score FROM mgm_" + player.getMinigame() + "_comp LIMIT 0");
 			} catch (SQLException e) {
 				try {
 					sql.query("ALTER TABLE mgm_" + player.getMinigame() + "_comp ADD Score int DEFAULT -1, " +
