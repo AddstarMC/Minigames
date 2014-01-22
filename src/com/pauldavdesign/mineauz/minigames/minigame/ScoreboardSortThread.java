@@ -105,7 +105,7 @@ public class ScoreboardSortThread extends Thread{
 			}
 		}
 		
-		if(requested != null && (requested instanceof Player && ((Player)requested).isOnline())){
+		if(requested != null && ((requested instanceof Player && ((Player)requested).isOnline()) || !(requested instanceof Player))){
 			if(specificPlayer == null){
 				requested.sendMessage(ChatColor.GREEN + minigame + " Scoreboard: " + type.toString().toLowerCase().replace("_", " ") + " " + order.toString().toLowerCase());
 				for(int i = 0; i < limit; i++){
