@@ -126,8 +126,8 @@ public class InfectionType extends ScoreTypeBase{
 	
 	@EventHandler
 	private void quitMinigame(QuitMinigameEvent event){
-		if(infected.contains(event.getPlayer())){
-			infected.remove(event.getPlayer());
+		if(infected.contains(pdata.getMinigamePlayer(event.getPlayer()))){
+			infected.remove(pdata.getMinigamePlayer(event.getPlayer()));
 		}
 	}
 }
