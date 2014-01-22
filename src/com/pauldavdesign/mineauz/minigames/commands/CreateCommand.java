@@ -61,7 +61,7 @@ public class CreateCommand implements ICommand{
 				String mgmName = args[0];
 				MinigameType type = MinigameType.SINGLEPLAYER;
 				if(args.length >= 2){
-					if(plugin.mdata.getMinigameTypes().contains(args[1].toLowerCase())){
+					if(MinigameType.hasValue(args[1].toUpperCase())){
 						type = MinigameType.valueOf(args[1].toUpperCase());
 					}
 					else{
