@@ -55,22 +55,24 @@ public class StartCommand implements ICommand{
 		if(args != null){
 			Minigame mgm = plugin.mdata.getMinigame(args[0]);
 			
-			if(mgm != null && mgm.getThTimer() == null && mgm.getType() == MinigameType.TREASURE_HUNT){
-				plugin.mdata.startGlobalMinigame(mgm.getName());
-				mgm.setEnabled(true);
-				mgm.saveMinigame();
-			}
-			else if(mgm.getType() != MinigameType.TREASURE_HUNT && mgm.getType() != MinigameType.SINGLEPLAYER && mgm.hasPlayers()){
-				if(mgm.getMpTimer() == null){
-					mgm.setMpTimer(new MultiplayerTimer(mgm));
-					mgm.getMpTimer().setPlayerWaitTime(0);
-					mgm.getMpTimer().startTimer();
+			if(mgm != null){
+				if(mgm.getThTimer() == null && mgm.getType() == MinigameType.TREASURE_HUNT){
+					plugin.mdata.startGlobalMinigame(mgm.getName());
+					mgm.setEnabled(true);
+					mgm.saveMinigame();
 				}
-				else
-					sender.sendMessage(ChatColor.RED + mgm.getName() + " has already started.");
-			}
-			else if(mgm.getThTimer() != null){
-				sender.sendMessage(ChatColor.RED + mgm.getName() + " is already running!");
+				else if(mgm.getType() != MinigameType.TREASURE_HUNT && mgm.getType() != MinigameType.SINGLEPLAYER && mgm.hasPlayers()){
+					if(mgm.getMpTimer() == null){
+						mgm.setMpTimer(new MultiplayerTimer(mgm));
+						mgm.getMpTimer().setPlayerWaitTime(0);
+						mgm.getMpTimer().startTimer();
+					}
+					else
+						sender.sendMessage(ChatColor.RED + mgm.getName() + " has already started.");
+				}
+				else if(mgm.getThTimer() != null){
+					sender.sendMessage(ChatColor.RED + mgm.getName() + " is already running!");
+				}
 			}
 			else{
 				sender.sendMessage(ChatColor.RED + "No Treasure Hunt or Multiplayer Minigame found by the name " + args[0]);
