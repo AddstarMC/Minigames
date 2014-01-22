@@ -34,7 +34,7 @@ public class UpdateChecker extends Thread{
 				JSONObject latest = (JSONObject) arr.get(arr.size() - 1);
 				String version = (String) latest.get("name");
 				version = version.replaceAll("[a-zA-Z-]", "");
-				if(Minigames.plugin.getDescription().getVersion() != version){
+				if(!Minigames.plugin.getDescription().getVersion().equals(version)){
 					String gameV = (String) latest.get("gameVersion");
 					String type = (String) latest.get("releaseType");
 					String url = (String) latest.get("downloadUrl");
