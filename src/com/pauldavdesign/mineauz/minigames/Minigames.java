@@ -240,7 +240,7 @@ public class Minigames extends JavaPlugin{
 //					mdata.getLoadout(loadout).addItemToLoadout(globalLoadouts.getConfig().getItemStack(loadout + "." + i));
 //			}
 			for(String slot : items){
-				if(!slot.equals("potions"))
+				if(slot.matches("[0-9]+"))
 					mdata.getLoadout(loadout).addItem(globalLoadouts.getConfig().getItemStack(loadout + "." + slot), Integer.parseInt(slot));
 			}
 			if(globalLoadouts.getConfig().contains(loadout + ".potions")){
