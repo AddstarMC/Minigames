@@ -69,6 +69,7 @@ public class CommandDispatcher implements CommandExecutor{
 		registerCommand(new ScoreboardCommand());
 		registerCommand(new EnableAllCommand());
 		registerCommand(new DisableAllCommand());
+		registerCommand(new SaveCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {
