@@ -1836,7 +1836,7 @@ public class Minigame {
 		}
 		minigame.getConfig().set(name + ".usepermissions", usePermissions);
 		minigame.getConfig().set(name + ".reward", null);
-		if(!getRewardItems().getRewards().isEmpty()){
+		if(!getRewardItems().getRewards().isEmpty() || !getRewardItems().getGroups().isEmpty()){
 			int count = 0;
 			for(RewardItem item : getRewardItems().getRewards()){
 				if(item.getItem() != null){
@@ -1864,7 +1864,7 @@ public class Minigame {
 			}
 		}
 		minigame.getConfig().set(name + ".reward2", null);
-		if(!getSecondaryRewardItems().getRewards().isEmpty()){
+		if(!getSecondaryRewardItems().getRewards().isEmpty() || !getSecondaryRewardItems().getGroups().isEmpty()){
 			int count = 0;
 			for(RewardItem item : getSecondaryRewardItems().getRewards()){
 				if(item.getItem() != null){
@@ -2285,7 +2285,7 @@ public class Minigame {
 		}
 		setUsePermissions(minigame.getConfig().getBoolean(name + ".usepermissions"));
 		if(minigame.getConfig().contains(name + ".reward")){
-			if(!minigame.getConfig().contains(name + ".reward.0")){ //TODO: Remove this check after 1.6.0 release
+			if(minigame.getConfig().contains(name + ".reward.==")){ //TODO: Remove this check after 1.6.0 release
 				getRewardItems().addItem(minigame.getConfig().getItemStack(name + ".reward"), RewardRarity.NORMAL);
 			}
 			else{
@@ -2323,7 +2323,7 @@ public class Minigame {
 			}
 		}
 		if(minigame.getConfig().contains(name + ".reward2")){
-			if(!minigame.getConfig().contains(name + ".reward2.0")){ //TODO: Remove this check after 1.6.0 release
+			if(minigame.getConfig().contains(name + ".reward2.==")){ //TODO: Remove this check after 1.6.0 release
 				getSecondaryRewardItems().addItem(minigame.getConfig().getItemStack(name + ".reward2"), RewardRarity.NORMAL);
 			}
 			else{
