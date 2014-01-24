@@ -508,9 +508,11 @@ public class Events implements Listener{
 	@EventHandler(ignoreCancelled = true)
 	public void onGMChange(PlayerGameModeChangeEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-		if(ply.isInMinigame() && !ply.getAllowGamemodeChange()){
-			event.setCancelled(true);
-			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noGamemode"));
+		if(ply != null){
+			if(ply.isInMinigame() && !ply.getAllowGamemodeChange()){
+				event.setCancelled(true);
+				event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noGamemode"));
+			}
 		}
 	}
 	
