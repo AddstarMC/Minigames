@@ -292,7 +292,7 @@ public class Minigames extends JavaPlugin{
 			mg.saveMinigame();
 		}
 		if(sql != null){
-			getSQL().getSql().close();
+			getSQL().close();
 		}
 		
 //		pdata.saveDCPlayers();
@@ -374,13 +374,9 @@ public class Minigames extends JavaPlugin{
 	}
 	
 	public void loadSQL(){
-		if(getServer().getPluginManager().getPlugin("SQLibrary") != null){
-			sql = new SQLDatabase();
-			sql.loadSQL();
-		}
-		else{
-			getLogger().info("SQLibrary not found! You cannot use SQL to save data!");
-		}
+		sql = new SQLDatabase();
+		if(!sql.loadSQL())
+			sql = null;
 	}
 	
 	public ScoreType getScoreTypes(){

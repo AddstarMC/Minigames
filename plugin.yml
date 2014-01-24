@@ -2,7 +2,7 @@ name: Minigames
 main: com.pauldavdesign.mineauz.minigames.Minigames
 version: ${project.version}
 author: _Razz_
-softdepend: ['SQLibrary', 'Multiverse-Core']
+softdepend: ['Multiverse-Core']
 
 commands:
     minigame:
