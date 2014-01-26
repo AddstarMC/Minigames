@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>Minigames</groupId>
   <artifactId>Minigames</artifactId>
-  <version>1.6.1-b${env.BUILD_NUMBER}</version>
+  <version>1.6.1</version> <!-- ${env.BUILD_NUMBER} -->
   <name>Minigames</name>
   <url>http://dev.bukkit.org/server-mods/minigames/</url>
 
