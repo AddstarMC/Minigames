@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -24,6 +25,8 @@ public class OfflineMinigamePlayer {
 		this.health = health;
 		this.saturation = saturation;
 		this.lastGM = lastGM;
+		if(loginLocation.getWorld() == null)
+			loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
 		this.loginLocation = loginLocation;
 		savePlayerData();
 	}
@@ -42,6 +45,8 @@ public class OfflineMinigamePlayer {
 				con.getDouble("location.z"), 
 				new Float(con.getString("location.yaw")), 
 				new Float(con.getString("location.pitch")));
+		if(loginLocation.getWorld() == null)
+			loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
 		ItemStack[] items = Minigames.plugin.getServer().createInventory(null, InventoryType.PLAYER).getContents();
 		ItemStack[] armour = new ItemStack[4];
 		for(int i = 0; i < items.length; i++){
