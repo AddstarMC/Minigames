@@ -72,9 +72,9 @@ public abstract class MinigameTypeBase implements Listener{
 							player.getPlayer().getInventory().addItem(reward.getItem());
 						else{
 							int c = 0;
-							for(ItemStack i : player.getStoredItems()){
+							for(ItemStack i : player.getOfflineMinigamePlayer().getStoredItems()){
 								if(i == null){
-									player.getStoredItems()[c] = reward.getItem();
+									player.getOfflineMinigamePlayer().getStoredItems()[c] = reward.getItem();
 									break;
 								}
 								c++;
@@ -102,9 +102,9 @@ public abstract class MinigameTypeBase implements Listener{
 							player.getPlayer().getInventory().addItem(sreward.getItem());
 						else{
 							int c = 0;
-							for(ItemStack i : player.getStoredItems()){
+							for(ItemStack i : player.getOfflineMinigamePlayer().getStoredItems()){
 								if(i == null){
-									player.getStoredItems()[c] = sreward.getItem();
+									player.getOfflineMinigamePlayer().getStoredItems()[c] = sreward.getItem();
 									break;
 								}
 								c++;

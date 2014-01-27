@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -141,19 +142,15 @@ public class Events implements Listener{
 	public void onPlayerDisconnect(PlayerQuitEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply.isInMinigame()){
-			if(ply.getPlayer().isDead())
-				pdata.addOfflineMinigamePlayer(pdata.getMinigamePlayer(event.getPlayer()));
-			else{
+			if(!ply.getPlayer().isDead()){
 				ply.restorePlayerData();
 				pdata.minigameTeleport(ply, ply.getMinigame().getQuitPosition());
 			}
+			else{
+				ply.getOfflineMinigamePlayer().setLoginLocation(ply.getMinigame().getQuitPosition());
+				ply.getOfflineMinigamePlayer().savePlayerData();
+			}
 			pdata.quitMinigame(pdata.getMinigamePlayer(event.getPlayer()), false);
-		}
-		else if(ply.hasStoredData()){
-			pdata.addOfflineMinigamePlayer(pdata.getMinigamePlayer(event.getPlayer()));
-		}
-		if(ply.isRequiredQuit()){
-			pdata.addOfflineMinigamePlayer(pdata.getMinigamePlayer(event.getPlayer()));
 		}
 		
 		pdata.removeMinigamePlayer(event.getPlayer());
@@ -180,34 +177,23 @@ public class Events implements Listener{
 				plugin.setLastUpdateCheck(Calendar.getInstance().getTimeInMillis());
 			}
 		}
-		if(pdata.hasOfflineMinigamePlayer(event.getPlayer().getName())){
-			final Player ply = event.getPlayer();
-			OfflineMinigamePlayer oply = pdata.getOfflineMinigamePlayer(event.getPlayer().getName());
-			Location loc = oply.getLoginLocation();
-			oply.restoreOfflineMinigamePlayer();
-			pdata.removeOfflineMinigamePlayer(event.getPlayer().getName());
-			
-			final Location floc = loc;
+		
+		File pldata = new File(plugin.getDataFolder() + "/playerdata/inventories/" + event.getPlayer().getName().toLowerCase() + ".yml");
+		if(pldata.exists()){
+			final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+			ply.setOfflineMinigamePlayer(new OfflineMinigamePlayer(event.getPlayer().getName()));
+			final Location floc = ply.getOfflineMinigamePlayer().getLoginLocation();
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				
 				@Override
 				public void run() {
-					ply.teleport(floc);
-					ply.setFireTicks(0);
+					ply.getPlayer().teleport(floc);
+					ply.getPlayer().setFireTicks(0);
 				}
 			}, 5L);
 			
-			final MinigamePlayer fply = pdata.getMinigamePlayer(event.getPlayer());
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					fply.restorePlayerData();
-				}
-			});
-			
+			ply.restorePlayerData();
 			plugin.getLogger().info(ply.getName() + "'s data has been restored from file.");
-			
 		}
 		
 		if(Bukkit.getServer().getOnlinePlayers().length == 1){

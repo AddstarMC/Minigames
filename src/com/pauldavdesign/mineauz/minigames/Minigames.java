@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -92,58 +93,68 @@ public class Minigames extends JavaPlugin{
 		mdata.addMinigameType(new FreeForAllType());
 		mdata.addMinigameType(new TeamsType());
 		
-		if(!pdata.invsave.getConfig().contains("inventories")){
-			pdata.invsave.getConfig().createSection("inventories");
-		}
-		try{
-			Set<String> set = pdata.invsave.getConfig().getConfigurationSection("inventories").getKeys(false);
-			ItemStack[] items = getServer().createInventory(null, InventoryType.PLAYER).getContents();
-			ItemStack[] armour = new ItemStack[4];
-			int health;
-			int food;
-			float saturation;
-			GameMode lastGM;
-			Location loginLocation;
+		File invs = new File(getDataFolder() + "/playerinv.yml");
+		if(invs.exists()){ //TODO: Remove me after 1.6.0
+			MinigameSave invsave = new MinigameSave("playerinv");
 			
-			for(String player : set){
-				health = pdata.invsave.getConfig().getInt("inventories." + player + ".health");
-				food = pdata.invsave.getConfig().getInt("inventories." + player + ".food");
-				saturation = Float.parseFloat(pdata.invsave.getConfig().getString("inventories." + player + ".saturation"));
-				if(pdata.invsave.getConfig().getString("inventories." + player + ".lastGM").matches("[0-2]"))
-					lastGM = GameMode.getByValue(pdata.invsave.getConfig().getInt("inventories." + player + ".lastGM")); //TODO: Remove me after 1.6.0 Release
-				else{
-					String gamemode = pdata.invsave.getConfig().getString("inventories." + player + ".lastGM");
-					lastGM = GameMode.valueOf(gamemode);
-				}
-				if(pdata.invsave.getConfig().contains("inventories." + player + ".location.x")){
-					int x = pdata.invsave.getConfig().getInt("inventories." + player + ".location.x");
-					int y = pdata.invsave.getConfig().getInt("inventories." + player + ".location.y");
-					int z = pdata.invsave.getConfig().getInt("inventories." + player + ".location.z");
-					float yaw = new Float(pdata.invsave.getConfig().getString("inventories." + player + ".location.yaw"));
-					float pitch = new Float(pdata.invsave.getConfig().getString("inventories." + player + ".location.pitch"));
-					World world = getServer().getWorld(pdata.invsave.getConfig().getString("inventories." + player + ".location.world"));
-					loginLocation = new Location(world, x, y, z, yaw, pitch);
-				}
-				else{
-					loginLocation = getServer().getWorlds().get(0).getSpawnLocation();
-				}
-				//log.info("Restoring " + player + "'s Items"); DEBUG
-				for(int i = 0; i < items.length; i++){
-					if(pdata.invsave.getConfig().contains("inventories." + player + "." + i)){
-						items[i] = pdata.invsave.getConfig().getItemStack("inventories." + player + "." + i);
-					}
-				}
-				for(int i = 0; i < 4; i++){
-					armour[i] = pdata.invsave.getConfig().getItemStack("inventories." + player + ".armour." + i);
-				}
-				
-				pdata.addOfflineMinigamePlayer(new OfflineMinigamePlayer(player, items, armour, food, health, saturation, lastGM, loginLocation));
-				items = getServer().createInventory(null, InventoryType.PLAYER).getContents();
+			if(!invsave.getConfig().contains("inventories")){
+				invsave.getConfig().createSection("inventories");
 			}
-		}
-		catch(Exception e){
-			log.log(Level.SEVERE, "Failed to load saved inventories!");
-			e.printStackTrace();
+			
+			try{ 
+				Set<String> set = invsave.getConfig().getConfigurationSection("inventories").getKeys(false);
+				ItemStack[] items = getServer().createInventory(null, InventoryType.PLAYER).getContents();
+				ItemStack[] armour = new ItemStack[4];
+				int health;
+				int food;
+				float saturation;
+				GameMode lastGM;
+				Location loginLocation;
+				
+				for(String player : set){
+					health = invsave.getConfig().getInt("inventories." + player + ".health");
+					food = invsave.getConfig().getInt("inventories." + player + ".food");
+					saturation = Float.parseFloat(invsave.getConfig().getString("inventories." + player + ".saturation"));
+					if(invsave.getConfig().getString("inventories." + player + ".lastGM").matches("[0-2]"))
+						lastGM = GameMode.getByValue(invsave.getConfig().getInt("inventories." + player + ".lastGM")); 
+					else{
+						String gamemode = invsave.getConfig().getString("inventories." + player + ".lastGM");
+						lastGM = GameMode.valueOf(gamemode);
+					}
+					if(invsave.getConfig().contains("inventories." + player + ".location.x")){
+						int x = invsave.getConfig().getInt("inventories." + player + ".location.x");
+						int y = invsave.getConfig().getInt("inventories." + player + ".location.y");
+						int z = invsave.getConfig().getInt("inventories." + player + ".location.z");
+						float yaw = new Float(invsave.getConfig().getString("inventories." + player + ".location.yaw"));
+						float pitch = new Float(invsave.getConfig().getString("inventories." + player + ".location.pitch"));
+						World world = getServer().getWorld(invsave.getConfig().getString("inventories." + player + ".location.world"));
+						loginLocation = new Location(world, x, y, z, yaw, pitch);
+					}
+					else{
+						loginLocation = getServer().getWorlds().get(0).getSpawnLocation();
+					}
+					
+					for(int i = 0; i < items.length; i++){
+						if(invsave.getConfig().contains("inventories." + player + "." + i)){
+							items[i] = invsave.getConfig().getItemStack("inventories." + player + "." + i);
+						}
+					}
+					for(int i = 0; i < 4; i++){
+						armour[i] = invsave.getConfig().getItemStack("inventories." + player + ".armour." + i);
+					}
+					
+	//				pdata.addOfflineMinigamePlayer(new OfflineMinigamePlayer(player, items, armour, food, health, saturation, lastGM, loginLocation));
+					new OfflineMinigamePlayer(player, items, armour, food, health, saturation, lastGM, loginLocation);
+					items = getServer().createInventory(null, InventoryType.PLAYER).getContents();
+					armour = new ItemStack[4];
+				}
+			}
+			catch(Exception e){
+				log.log(Level.SEVERE, "Failed to update saved inventories!");
+				e.printStackTrace();
+			}
+			
+			invsave.deleteFile();
 		}
 		
 		MinigameSave completion = new MinigameSave("completion");

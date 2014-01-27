@@ -17,14 +17,8 @@ import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class MinigamePlayer {
 	private Player player;
-	private ItemStack[] storedItems = null;
-	private ItemStack[] storedArmour = null;
-	private int food = 20;
-	private double health = 20;
-	private float saturation = 15;
 	private boolean allowTP = true;
 	private boolean allowGMChange = true;
-	private GameMode lastGM = GameMode.SURVIVAL;
 	private Scoreboard lastScoreboard = null;
 	
 	private Minigame minigame = null;
@@ -48,7 +42,7 @@ public class MinigamePlayer {
 	private Location selection1 = null;
 	private Location selection2 = null;
 	
-	private PlayerData pdata = Minigames.plugin.pdata;
+	private OfflineMinigamePlayer oply = null;
 	
 	public MinigamePlayer(Player player){
 		this.player = player;
@@ -85,39 +79,15 @@ public class MinigamePlayer {
 		player.sendMessage(init + msg);
 	}
 	
-	public ItemStack[] getStoredItems(){
-		return storedItems;
-	}
-	
-	public ItemStack[] getStoredArmour(){
-		return storedArmour;
-	}
-	
-	public int getFood(){
-		return food;
-	}
-	
-	public double getHealth(){
-		return health;
-	}
-	
-	public float getSaturation(){
-		return saturation;
-	}
-	
-	public GameMode getLastGamemode(){
-		return lastGM;
-	}
-	
 	@SuppressWarnings("deprecation")
 	public void storePlayerData(){
-		storedItems = player.getInventory().getContents();
-		storedArmour = player.getInventory().getArmorContents();
-		food = player.getFoodLevel();
-		health = player.getHealth();
-		saturation = player.getSaturation();
+		ItemStack[] storedItems = player.getInventory().getContents();
+		ItemStack[] storedArmour = player.getInventory().getArmorContents();
+		int food = player.getFoodLevel();
+		double health = player.getHealth();
+		float saturation = player.getSaturation();
 		lastScoreboard = player.getScoreboard();
-		lastGM = player.getGameMode();
+		GameMode lastGM = player.getGameMode();
 		
 		player.setSaturation(15);
 		player.setFoodLevel(20);
@@ -125,55 +95,8 @@ public class MinigamePlayer {
 		player.getInventory().clear();
 		player.getInventory().setArmorContents(null);
 		
-		savePlayerData();
+		oply = new OfflineMinigamePlayer(getPlayer().getName(), storedItems, storedArmour, food, health, saturation, lastGM, null);
 		player.updateInventory();
-	}
-	
-	public void savePlayerData(){
-		if(storedItems != null){
-			int num = 0;
-			for(ItemStack item : storedItems){
-				if(item != null){
-					pdata.invsave.getConfig().set("inventories." + player.getName() + "." + num, item);
-				}
-				num++;
-			}
-		}
-		else{
-			pdata.invsave.getConfig().set("inventories." + player.getName(), null);
-			return;
-		}
-		
-		if(storedArmour != null){
-			int num = 0;
-			for(ItemStack item : storedArmour){
-				if(item != null){
-					pdata.invsave.getConfig().set("inventories." + player.getName() + ".armour." + num, item);
-				}
-				num++;
-			}
-		}
-		
-		pdata.invsave.getConfig().set("inventories." + player.getName() + ".food", food);
-		pdata.invsave.getConfig().set("inventories." + player.getName() + ".saturation", saturation);
-		pdata.invsave.getConfig().set("inventories." + player.getName() + ".health", health);
-		String gamemode = "SURVIVAL";
-		if(lastGM.equals(GameMode.ADVENTURE))
-			gamemode = "ADVENTURE";
-		else if(lastGM.equals(GameMode.CREATIVE))
-			gamemode = "CREATIVE";
-		pdata.invsave.getConfig().set("inventories." + player.getName() + ".lastGM", gamemode);
-		
-		pdata.invsave.saveConfig();
-	}
-	
-	public void setPlayerData(ItemStack[] items, ItemStack[] armour, int food, double health, float saturation, GameMode lastGM){
-		storedItems = items;
-		storedArmour = armour;
-		this.food = food;
-		this.health = health;
-		this.saturation = saturation;
-		this.lastGM = lastGM;
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -181,14 +104,14 @@ public class MinigamePlayer {
 		player.getInventory().clear();
 		player.getInventory().setArmorContents(null);
 		
-		player.getInventory().setContents(storedItems);
-		player.getInventory().setArmorContents(storedArmour);
-		player.setFoodLevel(food);
-		if(health > 20){
-			health = 20;
-		}
-		player.setHealth(health);
-		player.setSaturation(saturation);
+		player.getInventory().setContents(oply.getStoredItems());
+		player.getInventory().setArmorContents(oply.getStoredArmour());
+		player.setFoodLevel(oply.getFood());
+		if(oply.getHealth() > 20)
+			player.setHealth(20);
+		else
+			player.setHealth(oply.getHealth());
+		player.setSaturation(oply.getSaturation());
 		if(lastScoreboard != null){
 			player.setScoreboard(lastScoreboard);
 		}
@@ -198,19 +121,16 @@ public class MinigamePlayer {
 		
 		allowGMChange = true;
 		allowTP = true;
-		player.setGameMode(lastGM);
+		player.setGameMode(oply.getLastGamemode());
 		
-		storedItems = null;
-		storedArmour = null;
-		
-		pdata.invsave.getConfig().set("inventories." + player.getName(), null);
-		pdata.invsave.saveConfig();
+		oply.deletePlayerData();
+		oply = null;
 		
 		player.updateInventory();
 	}
 	
 	public boolean hasStoredData(){
-		if(storedItems != null && storedArmour != null)
+		if(oply != null)
 			return true;
 		return false;
 	}
@@ -541,5 +461,13 @@ public class MinigamePlayer {
 				}
 			}
 		}
+	}
+	
+	public OfflineMinigamePlayer getOfflineMinigamePlayer(){
+		return oply;
+	}
+	
+	public void setOfflineMinigamePlayer(OfflineMinigamePlayer oply){
+		this.oply = oply;
 	}
 }

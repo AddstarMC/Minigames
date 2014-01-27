@@ -229,7 +229,6 @@ public class FreeForAllType extends MinigameTypeBase{
 				mgm.setMpBets(null);
 			}
 		}
-		pdata.saveInventoryConfig();
 		
 		boolean hascompleted = false;
 		Configuration completion = null;

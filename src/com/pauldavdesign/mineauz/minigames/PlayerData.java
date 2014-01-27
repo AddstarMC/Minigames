@@ -19,7 +19,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.FireworkEffect.Type;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -41,7 +40,6 @@ import com.pauldavdesign.mineauz.minigames.sql.SQLPlayer;
 
 public class PlayerData {
 	private Map<String, MinigamePlayer> minigamePlayers = new HashMap<String, MinigamePlayer>();
-	private Map<String, OfflineMinigamePlayer> offlineMinigamePlayers = new HashMap<String, OfflineMinigamePlayer>();
 	
 	private Map<String, StoredPlayerCheckpoints> storedPlayerCheckpoints = new HashMap<String, StoredPlayerCheckpoints>();
 	
@@ -51,7 +49,6 @@ public class PlayerData {
 	
 	private static Minigames plugin = Minigames.plugin;
 	private MinigameData mdata = plugin.mdata;
-	MinigameSave invsave = new MinigameSave("playerinv");
 	
 	public PlayerData(){}
 	
@@ -765,38 +762,6 @@ public class PlayerData {
 		return minigamePlayers.containsKey(name);
 	}
 	
-	public void addOfflineMinigamePlayer(MinigamePlayer player){
-		Location loc = null;
-		if(player.getQuitPos() != null){
-			loc = player.getQuitPos();
-		}
-		else{
-			loc = player.getMinigame().getQuitPosition();
-		}
-		offlineMinigamePlayers.put(player.getName(), new OfflineMinigamePlayer(player.getName(), player.getStoredItems(), player.getStoredArmour(), player.getFood(), player.getHealth(), player.getSaturation(), player.getLastGamemode(), loc));
-	}
-	
-	public void addOfflineMinigamePlayer(OfflineMinigamePlayer player){
-		offlineMinigamePlayers.put(player.getPlayer(), player);
-	}
-	
-	public OfflineMinigamePlayer getOfflineMinigamePlayer(String name){
-		return offlineMinigamePlayers.get(name);
-	}
-	
-	public boolean hasOfflineMinigamePlayer(String name){
-		return offlineMinigamePlayers.containsKey(name);
-	}
-	
-	public void removeOfflineMinigamePlayer(String name){
-		offlineMinigamePlayers.remove(name);
-	}
-	
-//	public void storePlayerInventory(String player, ItemStack[] items, ItemStack[] armour, Integer health, Integer food, Float saturation){
-//		OfflineMinigamePlayer oply = new OfflineMinigamePlayer(player, items, armour, food, health, saturation, GameMode.SURVIVAL, resPos.get(player));
-//		offlineMinigamePlayers.put(player, oply);
-//	}
-	
 	public List<String> checkRequiredFlags(MinigamePlayer player, String minigame){
 		List<String> checkpoints = new ArrayList<String>();
 		checkpoints.addAll(mdata.getMinigame(minigame).getFlags());
@@ -807,14 +772,6 @@ public class PlayerData {
 		}
 		
 		return checkpoints;
-	}
-	
-	public Configuration getInventorySaveConfig(){
-		return invsave.getConfig();
-	}
-	
-	public void saveInventoryConfig(){
-		invsave.saveConfig();
 	}
 	
 	public boolean onPartyMode(){

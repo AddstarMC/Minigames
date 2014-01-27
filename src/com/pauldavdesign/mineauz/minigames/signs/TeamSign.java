@@ -69,7 +69,7 @@ public class TeamSign implements MinigameSign {
 				if(mgm.hasStarted() && !sign.getLine(2).equals(ChatColor.GRAY + "Neutral") &&
 						((mgm.getRedTeam().contains(player.getPlayer()) && sign.getLine(2).equals(ChatColor.BLUE + "Blue") || 
 								(mgm.getBlueTeam().contains(player.getPlayer()) && sign.getLine(2).equals(ChatColor.RED + "Red"))))){
-					player.getPlayer().damage(player.getHealth());
+					player.getPlayer().damage(player.getPlayer().getHealth());
 				}
 				if(mgm.getBlueTeam().contains(player.getPlayer())){
 					if(sign.getLine(2).equals(ChatColor.RED + "Red")){
