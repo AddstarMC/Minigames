@@ -33,11 +33,10 @@ public class SetTypeCommand implements ICommand{
 	public String[] getParameters() {
 		String[] mgtypes = new String[plugin.mdata.getMinigameTypes().size() + 1];
 		int inc = 0;
-		for(MinigameType type : plugin.mdata.getMinigameTypes()){
+		for(MinigameType type : MinigameType.values()){
 			mgtypes[inc] = type.toString();
 			inc++;
 		}
-		mgtypes[mgtypes.length - 1] = "th";
 		return mgtypes;
 	}
 
