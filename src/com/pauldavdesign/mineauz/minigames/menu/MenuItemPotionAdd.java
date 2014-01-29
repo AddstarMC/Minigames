@@ -96,6 +96,6 @@ public class MenuItemPotionAdd extends MenuItem{
 		getContainer().cancelReopenTimer();
 		getContainer().displayMenu(getContainer().getViewer());
 		
-		getContainer().getViewer().sendMessage("Invalid syntax entry! Make sure there is an apostrophe and a space (\", \") between each item.", "error");
+		getContainer().getViewer().sendMessage("Invalid syntax entry! Make sure there is an comma and a space (\", \") between each item.", "error");
 	}
 }
