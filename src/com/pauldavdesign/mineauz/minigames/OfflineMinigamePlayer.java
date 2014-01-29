@@ -25,7 +25,7 @@ public class OfflineMinigamePlayer {
 		this.health = health;
 		this.saturation = saturation;
 		this.lastGM = lastGM;
-		if(loginLocation.getWorld() == null)
+		if(loginLocation != null && loginLocation.getWorld() == null)
 			loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
 		this.loginLocation = loginLocation;
 		savePlayerData();
