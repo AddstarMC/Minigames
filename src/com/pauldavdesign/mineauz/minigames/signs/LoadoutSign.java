@@ -75,7 +75,7 @@ public class LoadoutSign implements MinigameSign {
 			}
 			else if(plugin.mdata.hasLoadout(sign.getLine(2))){
 				if(!plugin.mdata.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
-					player.setLoadout(mgm.getLoadout(sign.getLine(2)));
+					player.setLoadout(plugin.mdata.getLoadout(sign.getLine(2)));
 					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)));
 
 					if(mgm.getType() == MinigameType.SINGLEPLAYER || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
