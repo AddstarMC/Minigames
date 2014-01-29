@@ -259,7 +259,7 @@ public class ToolCommand implements ICommand {
 						player.showSelection(true);
 					}
 					else if(tool.getMode() == MinigameToolMode.START){
-						if(tool.getTeam() != null){
+						if(!tool.getTeam().equals("none")){
 							if(tool.getTeam().equals("Red")){
 								for(Location loc : tool.getMinigame().getStartLocationsRed()){
 									Location nloc = loc.clone();
