@@ -337,7 +337,7 @@ public class Events implements Listener{
 								ply.sendMessage("Added " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " start location to " + mg.getName(), null);
 							}
 							else{
-								mg.addStartLocationRed(ply.getPlayer().getLocation());
+								mg.addStartLocationBlue(ply.getPlayer().getLocation());
 								ply.sendMessage("Added " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " start location to " + mg.getName(), null);
 							}
 						}
@@ -376,6 +376,11 @@ public class Events implements Listener{
 							ply.showSelection(true);
 							ply.clearSelection();
 						}
+						else{
+							mg.setFloorDegen1(null);
+							mg.setFloorDegen2(null);
+							ply.sendMessage("Removed degeneration area for " + mg.getName(), null);
+						}
 					}
 					else if(tool.getMode() == MinigameToolMode.REGEN_AREA && ply.getPlayer().hasPermission("minigame.set.regenarea")){
 						if(ply.hasSelection()){
@@ -384,6 +389,11 @@ public class Events implements Listener{
 							ply.sendMessage("Set regeneration area for " + mg.getName(), null);
 							ply.showSelection(true);
 							ply.clearSelection();
+						}
+						else{
+							mg.setRegenArea1(null);
+							mg.setRegenArea2(null);
+							ply.sendMessage("Removed regeneration area for " + mg.getName(), null);
 						}
 					}
 					else if(event.getAction() == Action.LEFT_CLICK_BLOCK && 
