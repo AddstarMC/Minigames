@@ -39,14 +39,19 @@ public class OfflineMinigamePlayer {
 		health = con.getDouble("health");
 		saturation = con.getInt("saturation");
 		lastGM = GameMode.valueOf(con.getString("gamemode"));
-		loginLocation = new Location(Minigames.plugin.getServer().getWorld(con.getString("location.world")), 
-				con.getDouble("location.x"), 
-				con.getDouble("location.y"), 
-				con.getDouble("location.z"), 
-				new Float(con.getString("location.yaw")), 
-				new Float(con.getString("location.pitch")));
-		if(loginLocation.getWorld() == null)
+		if(con.contains("location")){
+			loginLocation = new Location(Minigames.plugin.getServer().getWorld(con.getString("location.world")), 
+					con.getDouble("location.x"), 
+					con.getDouble("location.y"), 
+					con.getDouble("location.z"), 
+					new Float(con.getString("location.yaw")), 
+					new Float(con.getString("location.pitch")));
+			if(loginLocation.getWorld() == null)
+				loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
+		}
+		else
 			loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
+		
 		ItemStack[] items = Minigames.plugin.getServer().createInventory(null, InventoryType.PLAYER).getContents();
 		ItemStack[] armour = new ItemStack[4];
 		for(int i = 0; i < items.length; i++){
