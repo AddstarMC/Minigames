@@ -35,6 +35,9 @@ disabledCommands:
   - warp
   - spawn
   
+regeneration:
+  blocksPerTick: 5000
+  
 updateChecker: true
 # Whether the plugin should check for updates
 

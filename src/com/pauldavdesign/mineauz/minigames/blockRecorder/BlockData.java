@@ -56,7 +56,7 @@ public class BlockData {
 	}
 	
 	public void randomizeContents(int minContents, int maxContents){
-		if(hasRandomized)
+		if(hasRandomized || items == null)
 			return;
 		
 		List<ItemStack> itemRand = new ArrayList<ItemStack>();

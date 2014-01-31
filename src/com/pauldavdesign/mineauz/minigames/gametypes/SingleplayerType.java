@@ -107,6 +107,7 @@ public class SingleplayerType extends MinigameTypeBase{
 			if(mgm.getPlayers().isEmpty()){
 				mgm.getBlockRecorder().restoreBlocks();
 				mgm.getBlockRecorder().restoreEntities();
+				mgm.getBlockRecorder().setCreatedRegenBlocks(false);
 			}
 			else{
 				mgm.getBlockRecorder().restoreBlocks(player);
@@ -167,6 +168,7 @@ public class SingleplayerType extends MinigameTypeBase{
 			if(mgm.getPlayers().isEmpty()){
 				mgm.getBlockRecorder().restoreBlocks();
 				mgm.getBlockRecorder().restoreEntities();
+				mgm.getBlockRecorder().setCreatedRegenBlocks(false);
 			}
 			else{
 				mgm.getBlockRecorder().restoreBlocks(player);

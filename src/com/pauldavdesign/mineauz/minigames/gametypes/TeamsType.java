@@ -176,6 +176,9 @@ public class TeamsType extends MinigameTypeBase{
 				mgm.setMpTimer(null);
 			}
 			
+			if(mgm.getBlockRecorder().hasData())
+				mgm.getBlockRecorder().clearRestoreData();
+			
 			if(mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
 				if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
 					plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
@@ -209,6 +212,8 @@ public class TeamsType extends MinigameTypeBase{
 			mgm.getMpTimer().pauseTimer();
 			mgm.getMpTimer().removeTimer();
 			mgm.setMpTimer(null);
+			if(mgm.getBlockRecorder().hasData())
+				mgm.getBlockRecorder().clearRestoreData();
 			for(MinigamePlayer pl : mgm.getPlayers()){
 				pl.sendMessage(MinigameUtils.formStr("minigame.waitingForPlayers", 1));
 			}

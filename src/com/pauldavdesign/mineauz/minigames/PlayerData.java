@@ -27,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 
+import com.pauldavdesign.mineauz.minigames.blockRecorder.RecorderData;
 import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.EndTeamMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.JoinMinigameEvent;
@@ -65,6 +66,22 @@ public class PlayerData {
 				player.getPlayer().setWalkSpeed(0.2f);
 				if(mdata.minigameType(gametype).joinMinigame(player, minigame)){
 					plugin.getLogger().info(MinigameUtils.formStr("player.join.consMsg", player.getName(), minigame.getName()));
+					if(minigame.getBlockRecorder().hasRegenArea() && !minigame.getBlockRecorder().hasCreatedRegenBlocks()){
+						RecorderData d = minigame.getBlockRecorder();
+						d.setCreatedRegenBlocks(true);
+						
+						Location cur = new Location(minigame.getRegenArea1().getWorld(), 0, 0, 0);
+						for(double y = d.getRegenMinY(); y <= d.getRegenMaxY(); y++){
+							cur.setY(y);
+							for(double x = d.getRegenMinX(); x <= d.getRegenMaxX(); x++){
+								cur.setX(x);
+								for(double z = d.getRegenMinZ(); z <= d.getRegenMaxZ(); z++){
+									cur.setZ(z);
+									d.addBlock(cur.getBlock(), null);
+								}
+							}
+						}
+					}
 					mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.join.plyMsg", player.getName(), minigame.getName()), null, player);
 					
 					player.getPlayer().setGameMode(minigame.getDefaultGamemode());
@@ -427,6 +444,7 @@ public class PlayerData {
 							public void run() {
 								fmgm.getBlockRecorder().restoreBlocks();
 								fmgm.getBlockRecorder().restoreEntities();
+								fmgm.getBlockRecorder().setCreatedRegenBlocks(false);
 							}
 						}, 20L);
 					}
@@ -555,6 +573,7 @@ public class PlayerData {
 						public void run() {
 							fmgm.getBlockRecorder().restoreBlocks();
 							fmgm.getBlockRecorder().restoreEntities();
+							fmgm.getBlockRecorder().setCreatedRegenBlocks(false);
 						}
 					}, 20L);
 				}

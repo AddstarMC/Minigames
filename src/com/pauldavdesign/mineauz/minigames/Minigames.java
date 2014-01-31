@@ -32,6 +32,7 @@ import org.bukkit.potion.PotionEffectType;
 //import org.mcstats.Metrics;
 
 import com.pauldavdesign.mineauz.minigames.Metrics.Graph;
+import com.pauldavdesign.mineauz.minigames.blockRecorder.BasicRecorder;
 import com.pauldavdesign.mineauz.minigames.commands.CommandDispatcher;
 import com.pauldavdesign.mineauz.minigames.gametypes.FreeForAllType;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
@@ -161,6 +162,7 @@ public class Minigames extends JavaPlugin{
 		mdata.addConfigurationFile("completion", completion.getConfig());
 		
 		getServer().getPluginManager().registerEvents(new Events(), this);
+		getServer().getPluginManager().registerEvents(new BasicRecorder(), this);
 		
 		
 		try{
