@@ -437,16 +437,9 @@ public class PlayerData {
 					}
 					
 					if(mgm.getBlockRecorder().hasData()){
-						final Minigame fmgm = mgm;
-						Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-							
-							@Override
-							public void run() {
-								fmgm.getBlockRecorder().restoreBlocks();
-								fmgm.getBlockRecorder().restoreEntities();
-								fmgm.getBlockRecorder().setCreatedRegenBlocks(false);
-							}
-						}, 20L);
+						mgm.getBlockRecorder().restoreBlocks();
+						mgm.getBlockRecorder().restoreEntities();
+						mgm.getBlockRecorder().setCreatedRegenBlocks(false);
 					}
 					
 					if(mgm.getMpBets() != null){

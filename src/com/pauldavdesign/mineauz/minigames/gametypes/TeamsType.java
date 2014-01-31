@@ -170,14 +170,16 @@ public class TeamsType extends MinigameTypeBase{
 		}
 		
 		if(mgm.getPlayers().size() == 0 && !forced){
+			if(mgm.getBlockRecorder().hasData() && (mgm.getMpTimer() == null || mgm.getMpTimer().getStartWaitTimeLeft() != 0)){
+				mgm.getBlockRecorder().clearRestoreData();
+				mgm.getBlockRecorder().setCreatedRegenBlocks(false);
+			}
+			
 			if(mgm.getMpTimer() != null){
 				mgm.getMpTimer().pauseTimer();
 				mgm.getMpTimer().removeTimer();
 				mgm.setMpTimer(null);
 			}
-			
-			if(mgm.getBlockRecorder().hasData())
-				mgm.getBlockRecorder().clearRestoreData();
 			
 			if(mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)){
 				if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
@@ -212,8 +214,6 @@ public class TeamsType extends MinigameTypeBase{
 			mgm.getMpTimer().pauseTimer();
 			mgm.getMpTimer().removeTimer();
 			mgm.setMpTimer(null);
-			if(mgm.getBlockRecorder().hasData())
-				mgm.getBlockRecorder().clearRestoreData();
 			for(MinigamePlayer pl : mgm.getPlayers()){
 				pl.sendMessage(MinigameUtils.formStr("minigame.waitingForPlayers", 1));
 			}

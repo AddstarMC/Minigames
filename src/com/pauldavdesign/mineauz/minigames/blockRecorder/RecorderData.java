@@ -7,14 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -58,7 +56,7 @@ public class RecorderData implements Listener{
 		physBlocks.add(Material.TORCH);
 		physBlocks.add(Material.SIGN_POST);
 		physBlocks.add(Material.WALL_SIGN);
-		physBlocks.add(Material.STRING);
+		physBlocks.add(Material.TRIPWIRE);
 		physBlocks.add(Material.RAILS);
 		physBlocks.add(Material.POWERED_RAIL);
 		physBlocks.add(Material.ACTIVATOR_RAIL);
@@ -75,6 +73,23 @@ public class RecorderData implements Listener{
 		physBlocks.add(Material.STONE_BUTTON);
 		physBlocks.add(Material.WOOD_BUTTON);
 		physBlocks.add(Material.LEVER);
+		physBlocks.add(Material.LADDER);
+		physBlocks.add(Material.IRON_DOOR);
+		physBlocks.add(Material.WOODEN_DOOR);
+		physBlocks.add(Material.RED_MUSHROOM);
+		physBlocks.add(Material.BROWN_MUSHROOM);
+		physBlocks.add(Material.DOUBLE_PLANT);
+		physBlocks.add(Material.FLOWER_POT);
+		physBlocks.add(Material.WATER_LILY);
+		physBlocks.add(Material.TRIPWIRE_HOOK);
+		physBlocks.add(Material.TRAP_DOOR);
+		physBlocks.add(Material.CARPET);
+		physBlocks.add(Material.LONG_GRASS);
+		physBlocks.add(Material.DEAD_BUSH);
+		physBlocks.add(Material.REDSTONE_COMPARATOR_ON);
+		physBlocks.add(Material.REDSTONE_COMPARATOR_OFF);
+		physBlocks.add(Material.DIODE_BLOCK_OFF);
+		physBlocks.add(Material.DIODE_BLOCK_ON);
 	}
 	
 	public RecorderData(Minigame minigame){
@@ -264,60 +279,10 @@ public class RecorderData implements Listener{
 				}
 				else{
 					resBlocks.add(bdata);
-					if(resBlocks.size() >= plugin.getConfig().getInt("regeneration.blocksPerTick")){
-						final List<BlockData> fresBlocks = new ArrayList<BlockData>(resBlocks);
-						resBlocks.clear();
-						
-						Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-							
-							@Override
-							public void run() {
-								for(BlockData bdata : fresBlocks){
-									bdata.getLocation().getBlock().setType(bdata.getBlockState().getType());
-									bdata.getBlockState().update();
-								}
-							}
-						});
-					}
 				}
 			}
 		}
-		for(final BlockData bdata : resBlocks){
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					bdata.getLocation().getBlock().setType(bdata.getBlockState().getType());
-					bdata.getBlockState().update();
-				}
-			});
-		}
-		for(final BlockData bdata : addBlocks){
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					bdata.getLocation().getBlock().setType(bdata.getBlockState().getType());
-					bdata.getBlockState().update();
-					
-					if(bdata.getBlockState().getType() == Material.SIGN_POST || bdata.getBlockState().getType() == Material.WALL_SIGN){
-						Sign sign = (Sign) bdata.getLocation().getBlock().getState();
-						Sign signOld = (Sign) bdata.getBlockState();
-						sign.setLine(0, signOld.getLine(0));
-						sign.setLine(1, signOld.getLine(1));
-						sign.setLine(2, signOld.getLine(2));
-						sign.setLine(3, signOld.getLine(3));
-						sign.update();
-					}
-					else if(bdata.getLocation().getBlock().getState() instanceof InventoryHolder){
-						InventoryHolder block = (InventoryHolder) bdata.getLocation().getBlock().getState();
-						if(bdata.getItems() != null)
-							block.getInventory().setContents(bdata.getItems().clone());
-					}
-				}
-			}, 5);
-		}
-		addBlocks = null;
+		new RollbackScheduler(resBlocks, addBlocks);
 		
 		if(modifier == null){
 			blockdata.clear();
