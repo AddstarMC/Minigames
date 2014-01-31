@@ -79,6 +79,7 @@ public abstract class MinigameTypeBase implements Listener{
 								}
 								c++;
 							}
+							player.getOfflineMinigamePlayer().savePlayerData();
 						}
 						player.sendMessage(MinigameUtils.formStr("player.end.awardItem", reward.getItem().getAmount(), MinigameUtils.getItemStackName(reward.getItem())), "win");
 					}
@@ -109,6 +110,7 @@ public abstract class MinigameTypeBase implements Listener{
 								}
 								c++;
 							}
+							player.getOfflineMinigamePlayer().savePlayerData();
 						}
 						player.sendMessage(MinigameUtils.formStr("player.end.awardItem", sreward.getItem().getAmount(), MinigameUtils.getItemStackName(sreward.getItem())), "win");
 					}
