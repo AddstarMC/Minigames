@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -19,6 +20,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.HopperMinecart;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -96,8 +98,6 @@ public class RecorderData implements Listener{
 		physBlocks.add(Material.STATIONARY_WATER);
 		physBlocks.add(Material.STATIONARY_LAVA);
 		physBlocks.add(Material.ANVIL);
-		physBlocks.add(Material.SAND);
-		physBlocks.add(Material.GRAVEL);
 		physBlocks.add(Material.DRAGON_EGG);
 	}
 	
@@ -502,11 +502,15 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	private void physicalBlock(EntityChangeBlockEvent event)
 	{
 		if(hasRegenArea() && blockInRegenArea(event.getBlock().getLocation()))
 		{
+			if(minigame.isRegenerating()){
+				event.setCancelled(true);
+				return;
+			}
 			if(event.getTo() == Material.SAND ||
 				event.getTo() == Material.GRAVEL ||
 				event.getTo() == Material.DRAGON_EGG ||
@@ -568,7 +572,7 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	private void physEvent(BlockPhysicsEvent event){
 		if(hasRegenArea() && minigame.isRegenerating() && blockInRegenArea(event.getBlock().getLocation())){
 			event.setCancelled(true);
