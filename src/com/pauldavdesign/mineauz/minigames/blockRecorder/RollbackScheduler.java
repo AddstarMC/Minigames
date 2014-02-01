@@ -10,17 +10,20 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class RollbackScheduler implements Runnable {
 	
 	private Iterator<BlockData> iterator;
 	private Iterator<BlockData> physIterator;
 	private BukkitTask task;
+	private Minigame minigame;
 	
-	public RollbackScheduler(List<BlockData> blocks, List<BlockData> physblocks){
+	public RollbackScheduler(List<BlockData> blocks, List<BlockData> physblocks, Minigame minigame){
 		iterator = blocks.iterator();
 		physIterator = physblocks.iterator();
 		task = Bukkit.getScheduler().runTaskTimer(Minigames.plugin, this, 1, 1);
+		this.minigame = minigame;
 	}
 
 	@Override
@@ -53,6 +56,7 @@ public class RollbackScheduler implements Runnable {
 				return;
 		}
 		task.cancel();
+		minigame.setRegenerating(false);
 	}
 
 }

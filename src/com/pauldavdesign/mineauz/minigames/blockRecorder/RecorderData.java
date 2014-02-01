@@ -90,6 +90,8 @@ public class RecorderData implements Listener{
 		physBlocks.add(Material.REDSTONE_COMPARATOR_OFF);
 		physBlocks.add(Material.DIODE_BLOCK_OFF);
 		physBlocks.add(Material.DIODE_BLOCK_ON);
+		physBlocks.add(Material.WATER);
+		physBlocks.add(Material.LAVA);
 	}
 	
 	public RecorderData(Minigame minigame){
@@ -282,16 +284,18 @@ public class RecorderData implements Listener{
 				}
 			}
 		}
-		new RollbackScheduler(resBlocks, addBlocks);
 		
 		if(modifier == null){
 			blockdata.clear();
+			minigame.setRegenerating(true);
 		}
 		else{
 			for(String id : changes){
 				blockdata.remove(id);
 			}
 		}
+		
+		new RollbackScheduler(resBlocks, addBlocks, minigame);
 	}
 	
 	public void restoreEntities(MinigamePlayer player){

@@ -60,7 +60,7 @@ public class PlayerData {
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
 		if(!event.isCancelled()){
-			if(mdata.getMinigameTypes().contains(gametype)){
+			if(mdata.getMinigameTypes().contains(gametype) && !minigame.isRegenerating()){
 				player.setAllowTeleport(true);
 				player.getPlayer().setFallDistance(0);
 				player.getPlayer().setWalkSpeed(0.2f);
@@ -127,6 +127,8 @@ public class PlayerData {
 					}
 				}
 			}
+			else if(minigame.isRegenerating())
+				player.sendMessage(MinigameUtils.getLang("minigame.error.regenerating"), "error");
 			else{
 				player.sendMessage(MinigameUtils.getLang("minigame.error.noGametype"), "error");
 			}
@@ -169,7 +171,10 @@ public class PlayerData {
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
 		if(!event.isCancelled()){
-			if(minigame != null && minigame.isEnabled() && (minigame.getMpTimer() == null || minigame.getMpTimer().getPlayerWaitTimeLeft() != 0)){
+			if(minigame != null && 
+					minigame.isEnabled() && 
+					(minigame.getMpTimer() == null || minigame.getMpTimer().getPlayerWaitTimeLeft() != 0) && 
+					!minigame.isRegenerating()){
 				if(minigame.getMpBets() == null && (player.getPlayer().getItemInHand().getType() != Material.AIR || money != 0)){
 					minigame.setMpBets(new MultiplayerBets());
 				}
@@ -210,6 +215,8 @@ public class PlayerData {
 					player.sendMessage(MinigameUtils.formStr("player.bet.incorrectItemInfo", 1, minigame.getMpBets().highestBetName()), "error");
 				}
 			}
+			else if(minigame.isRegenerating())
+				player.sendMessage(MinigameUtils.getLang("minigame.error.regenerating"), "error");
 			else if(minigame != null && minigame.getMpTimer() != null && minigame.getMpTimer().getPlayerWaitTimeLeft() == 0){
 				player.sendMessage(MinigameUtils.getLang("minigame.started"), "error");
 			}

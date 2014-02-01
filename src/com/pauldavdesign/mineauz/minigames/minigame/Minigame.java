@@ -135,6 +135,7 @@ public class Minigame {
 	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 	private List<MinigamePlayer> spectators = new ArrayList<MinigamePlayer>();
 	private RecorderData blockRecorder = new RecorderData(this);
+	private boolean regenerating = false;
 	//Multiplayer
 	private MultiplayerTimer mpTimer = null;
 	private MinigameTimer miniTimer = null;
@@ -1049,6 +1050,14 @@ public class Minigame {
 
 	public RecorderData getBlockRecorder() {
 		return blockRecorder;
+	}
+
+	public boolean isRegenerating() {
+		return regenerating;
+	}
+
+	public void setRegenerating(boolean regenerating) {
+		this.regenerating = regenerating;
 	}
 
 	public boolean canBlockBreak() {
