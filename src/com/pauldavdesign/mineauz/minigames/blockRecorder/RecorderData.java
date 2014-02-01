@@ -92,6 +92,12 @@ public class RecorderData implements Listener{
 		physBlocks.add(Material.DIODE_BLOCK_ON);
 		physBlocks.add(Material.WATER);
 		physBlocks.add(Material.LAVA);
+		physBlocks.add(Material.STATIONARY_WATER);
+		physBlocks.add(Material.STATIONARY_LAVA);
+		physBlocks.add(Material.ANVIL);
+		physBlocks.add(Material.SAND);
+		physBlocks.add(Material.GRAVEL);
+		physBlocks.add(Material.DRAGON_EGG);
 	}
 	
 	public RecorderData(Minigame minigame){
