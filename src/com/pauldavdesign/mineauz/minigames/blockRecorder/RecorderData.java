@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.HopperMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -564,6 +565,13 @@ public class RecorderData implements Listener{
 		
 		if(blockInRegenArea(loc) && isCart){
 			addEntity((Entity)event.getDestination().getHolder(), null, false);
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	private void physEvent(BlockPhysicsEvent event){
+		if(hasRegenArea() && minigame.isRegenerating() && blockInRegenArea(event.getBlock().getLocation())){
+			event.setCancelled(true);
 		}
 	}
 }
