@@ -566,20 +566,9 @@ public class PlayerData {
 			
 			if(mgm.getBlockRecorder().hasData()){
 				if(mgm.getType() != MinigameType.SINGLEPLAYER || mgm.getPlayers().isEmpty()){
-					final Minigame fmgm = mgm;
-					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-						
-						@Override
-						public void run() {
-							fmgm.getBlockRecorder().restoreBlocks();
-							fmgm.getBlockRecorder().restoreEntities();
-							fmgm.getBlockRecorder().setCreatedRegenBlocks(false);
-						}
-					}, 20L);
-				}
-				else if(mgm.getPlayers().isEmpty()){
-					mgm.getBlockRecorder().restoreBlocks(player);
-					mgm.getBlockRecorder().restoreEntities(player);
+					mgm.getBlockRecorder().restoreBlocks();
+					mgm.getBlockRecorder().restoreEntities();
+					mgm.getBlockRecorder().setCreatedRegenBlocks(false);
 				}
 			}
 			
