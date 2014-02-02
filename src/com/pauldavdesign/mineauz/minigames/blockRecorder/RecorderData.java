@@ -1,6 +1,8 @@
 package com.pauldavdesign.mineauz.minigames.blockRecorder;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +23,7 @@ import org.bukkit.entity.minecart.HopperMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
@@ -294,6 +297,27 @@ public class RecorderData implements Listener{
 				}
 			}
 		}
+		
+		Collections.sort(resBlocks, new Comparator<BlockData>() {
+
+			@Override
+			public int compare(BlockData o1, BlockData o2) {
+				int comp = Integer.valueOf(o1.getBlockState().getChunk().getX()).compareTo(o2.getBlockState().getChunk().getX());
+				if(comp != 0)
+					return comp;
+				return Integer.valueOf(o1.getBlockState().getChunk().getZ()).compareTo(o2.getBlockState().getChunk().getZ());
+			}
+		});
+		Collections.sort(addBlocks, new Comparator<BlockData>() {
+
+			@Override
+			public int compare(BlockData o1, BlockData o2) {
+				int comp = Integer.valueOf(o1.getBlockState().getChunk().getX()).compareTo(o2.getBlockState().getChunk().getX());
+				if(comp != 0)
+					return comp;
+				return Integer.valueOf(o1.getBlockState().getChunk().getZ()).compareTo(o2.getBlockState().getChunk().getZ());
+			}
+		});
 		
 		if(modifier == null){
 			blockdata.clear();
@@ -577,7 +601,14 @@ public class RecorderData implements Listener{
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	private void physEvent(BlockPhysicsEvent event){
-		if(hasRegenArea() && minigame.isRegenerating() && blockInRegenArea(event.getBlock().getLocation())){
+		if(minigame.isRegenerating() && hasRegenArea() && blockInRegenArea(event.getBlock().getLocation())){
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+	private void waterFlow(BlockFromToEvent event){
+		if(minigame.isRegenerating() && hasRegenArea() && blockInRegenArea(event.getBlock().getLocation())){
 			event.setCancelled(true);
 		}
 	}
