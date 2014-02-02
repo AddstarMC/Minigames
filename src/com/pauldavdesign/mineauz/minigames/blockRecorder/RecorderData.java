@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -298,32 +299,8 @@ public class RecorderData implements Listener{
 			}
 		}
 		
-		Collections.sort(resBlocks, new Comparator<BlockData>() {
-
-			@Override
-			public int compare(BlockData o1, BlockData o2) {
-				int comp = Integer.valueOf(o1.getBlockState().getChunk().getX()).compareTo(o2.getBlockState().getChunk().getX());
-				if(comp != 0)
-					return comp;
-				comp = Integer.valueOf(o1.getBlockState().getChunk().getZ()).compareTo(o2.getBlockState().getChunk().getZ());
-				if(comp != 0)
-					return comp;
-				return Integer.valueOf(o1.getBlockState().getY()).compareTo(o2.getBlockState().getY());
-			}
-		});
-		Collections.sort(addBlocks, new Comparator<BlockData>() {
-
-			@Override
-			public int compare(BlockData o1, BlockData o2) {
-				int comp = Integer.valueOf(o1.getBlockState().getChunk().getX()).compareTo(o2.getBlockState().getChunk().getX());
-				if(comp != 0)
-					return comp;
-				comp = Integer.valueOf(o1.getBlockState().getChunk().getZ()).compareTo(o2.getBlockState().getChunk().getZ());
-				if(comp != 0)
-					return comp;
-				return Integer.valueOf(o1.getBlockState().getY()).compareTo(o2.getBlockState().getY());
-			}
-		});
+		final List<BlockData> fresBlocks = new ArrayList<BlockData>(resBlocks);
+		final List<BlockData> faddBlocks = new ArrayList<BlockData>(addBlocks);
 		
 		if(modifier == null){
 			blockdata.clear();
@@ -334,8 +311,41 @@ public class RecorderData implements Listener{
 				blockdata.remove(id);
 			}
 		}
+		
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+			
+			@Override
+			public void run() {
+				Collections.sort(fresBlocks, new Comparator<BlockData>() {
 
-		new RollbackScheduler(resBlocks, addBlocks, minigame);
+					@Override
+					public int compare(BlockData o1, BlockData o2) {
+						int comp = Integer.valueOf(o1.getBlockState().getChunk().getX()).compareTo(o2.getBlockState().getChunk().getX());
+						if(comp != 0)
+							return comp;
+						comp = Integer.valueOf(o1.getBlockState().getChunk().getZ()).compareTo(o2.getBlockState().getChunk().getZ());
+						if(comp != 0)
+							return comp;
+						return Integer.valueOf(o1.getBlockState().getY()).compareTo(o2.getBlockState().getY());
+					}
+				});
+				Collections.sort(faddBlocks, new Comparator<BlockData>() {
+
+					@Override
+					public int compare(BlockData o1, BlockData o2) {
+						int comp = Integer.valueOf(o1.getBlockState().getChunk().getX()).compareTo(o2.getBlockState().getChunk().getX());
+						if(comp != 0)
+							return comp;
+						comp = Integer.valueOf(o1.getBlockState().getChunk().getZ()).compareTo(o2.getBlockState().getChunk().getZ());
+						if(comp != 0)
+							return comp;
+						return Integer.valueOf(o1.getBlockState().getY()).compareTo(o2.getBlockState().getY());
+					}
+				});
+				
+				new RollbackScheduler(fresBlocks, faddBlocks, minigame);
+			}
+		});
 	}
 	
 	public void restoreEntities(MinigamePlayer player){
