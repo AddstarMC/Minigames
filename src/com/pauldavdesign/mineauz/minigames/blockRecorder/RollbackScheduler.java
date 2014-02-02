@@ -5,8 +5,12 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Jukebox;
 import org.bukkit.block.Sign;
+import org.bukkit.block.Skull;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.material.FlowerPot;
+import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.pauldavdesign.mineauz.minigames.Minigames;
@@ -52,6 +56,26 @@ public class RollbackScheduler implements Runnable {
 				if(bdata.getItems() != null)
 					block.getInventory().setContents(bdata.getItems().clone());
 			}
+			else if(bdata.getBlockState().getType() == Material.FLOWER_POT){
+				FlowerPot pot = (FlowerPot) bdata.getLocation().getBlock().getState().getData();
+				if((MaterialData)bdata.getSpecialData("contents") != null)
+					pot.setContents((MaterialData)bdata.getSpecialData("contents"));
+			}
+			else if(bdata.getBlockState().getType() == Material.JUKEBOX){
+				Jukebox jbox = (Jukebox) bdata.getLocation().getBlock().getState();
+				Jukebox orig = (Jukebox) bdata.getBlockState();
+				jbox.setPlaying(orig.getPlaying());
+				jbox.update();
+			}
+			else if(bdata.getBlockState().getType() == Material.SKULL){
+				Skull skull = (Skull) bdata.getBlockState().getBlock().getState();
+				Skull orig = (Skull) bdata.getBlockState();
+				skull.setOwner(orig.getOwner());
+				skull.setRotation(orig.getRotation());
+				skull.setSkullType(orig.getSkullType());
+				skull.update();
+			}
+			
 			if(System.nanoTime() - time > Minigames.plugin.getConfig().getDouble("regeneration.maxDelay") * 1000000)
 				return;
 		}

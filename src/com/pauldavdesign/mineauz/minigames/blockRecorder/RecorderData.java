@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -99,6 +98,7 @@ public class RecorderData implements Listener{
 		physBlocks.add(Material.STATIONARY_LAVA);
 		physBlocks.add(Material.ANVIL);
 		physBlocks.add(Material.DRAGON_EGG);
+		physBlocks.add(Material.SKULL);
 	}
 	
 	public RecorderData(Minigame minigame){
@@ -231,6 +231,9 @@ public class RecorderData implements Listener{
 				InventoryHolder inv = (InventoryHolder) block;
 				bdata.setItems(inv.getInventory().getContents().clone());
 			}
+			else if(block.getType() == Material.FLOWER_POT){
+				bdata.setSpecialData("contents", block.getData());
+			}
 			
 			blockdata.put(sloc, bdata);
 			return bdata;
@@ -301,7 +304,7 @@ public class RecorderData implements Listener{
 				blockdata.remove(id);
 			}
 		}
-		
+
 		new RollbackScheduler(resBlocks, addBlocks, minigame);
 	}
 	

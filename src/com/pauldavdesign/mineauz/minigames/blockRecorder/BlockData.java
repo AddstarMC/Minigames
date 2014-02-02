@@ -2,7 +2,9 @@ package com.pauldavdesign.mineauz.minigames.blockRecorder;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -17,6 +19,7 @@ public class BlockData {
 	private BlockState state;
 	private MinigamePlayer player = null;
 	private ItemStack[] items = null;
+	private Map<String, Object> specialData = new HashMap<String, Object>();
 	private boolean hasRandomized = false;
 	
 	public BlockData(Block original, MinigamePlayer modifier){
@@ -55,6 +58,14 @@ public class BlockData {
 		this.items = items;
 	}
 	
+	public void setSpecialData(String key, Object data){
+		specialData.put(key, data);
+	}
+	
+	public Object getSpecialData(String key){
+		return specialData.get(key);
+	}
+
 	public void randomizeContents(int minContents, int maxContents){
 		if(hasRandomized || items == null)
 			return;
