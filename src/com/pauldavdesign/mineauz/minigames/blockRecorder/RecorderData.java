@@ -305,7 +305,10 @@ public class RecorderData implements Listener{
 				int comp = Integer.valueOf(o1.getBlockState().getChunk().getX()).compareTo(o2.getBlockState().getChunk().getX());
 				if(comp != 0)
 					return comp;
-				return Integer.valueOf(o1.getBlockState().getChunk().getZ()).compareTo(o2.getBlockState().getChunk().getZ());
+				comp = Integer.valueOf(o1.getBlockState().getChunk().getZ()).compareTo(o2.getBlockState().getChunk().getZ());
+				if(comp != 0)
+					return comp;
+				return Integer.valueOf(o1.getBlockState().getY()).compareTo(o2.getBlockState().getY());
 			}
 		});
 		Collections.sort(addBlocks, new Comparator<BlockData>() {
@@ -315,7 +318,10 @@ public class RecorderData implements Listener{
 				int comp = Integer.valueOf(o1.getBlockState().getChunk().getX()).compareTo(o2.getBlockState().getChunk().getX());
 				if(comp != 0)
 					return comp;
-				return Integer.valueOf(o1.getBlockState().getChunk().getZ()).compareTo(o2.getBlockState().getChunk().getZ());
+				comp = Integer.valueOf(o1.getBlockState().getChunk().getZ()).compareTo(o2.getBlockState().getChunk().getZ());
+				if(comp != 0)
+					return comp;
+				return Integer.valueOf(o1.getBlockState().getY()).compareTo(o2.getBlockState().getY());
 			}
 		});
 		
