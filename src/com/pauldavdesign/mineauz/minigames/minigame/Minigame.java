@@ -62,6 +62,7 @@ public class Minigame {
 	private boolean enabled = false;
 	private int minPlayers = 2;
 	private int maxPlayers = 4;
+	private boolean spMaxPlayers = false;
 	private List<String> flags = new ArrayList<String>();
 	
 	private Location floorDegen1 = null;
@@ -463,6 +464,29 @@ public class Minigame {
 
 	public void setMaxPlayers(int maxPlayers){
 		this.maxPlayers = maxPlayers;
+	}
+
+	public boolean isSpMaxPlayers() {
+		return spMaxPlayers;
+	}
+
+	public void setSpMaxPlayers(boolean spMaxPlayers) {
+		this.spMaxPlayers = spMaxPlayers;
+	}
+	
+	private Callback<Boolean> getSPMaxPlayerCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				spMaxPlayers = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return spMaxPlayers;
+			}
+		};
 	}
 
 	public Location getFloorDegen1(){
@@ -1630,6 +1654,7 @@ public class Minigame {
 		itemsMain.add(new MenuItemInteger("Max. Score", MinigameUtils.stringToList("Multiplayer Only"), Material.DOUBLE_STEP, getMaxScoreCallback(), 0, null));
 		itemsMain.add(new MenuItemInteger("Min. Players", MinigameUtils.stringToList("Multiplayer Only"), Material.STEP, getMinPlayersCallback(), 0, null));
 		itemsMain.add(new MenuItemInteger("Max. Players", MinigameUtils.stringToList("Multiplayer Only"), Material.DOUBLE_STEP, getMaxPlayersCallback(), 0, null));
+		itemsMain.add(new MenuItemBoolean("Enable Singleplayer Max Players", Material.IRON_FENCE, getSPMaxPlayerCallback()));
 		itemsMain.add(new MenuItemNewLine());
 		itemsMain.add(new MenuItemTime("Time Length", MinigameUtils.stringToList("Multiplayer Only"), Material.WATCH, getTimerCallback(), 0, null));
 		itemsMain.add(new MenuItemTime("Start Wait Time", MinigameUtils.stringToList("Multiplayer Only"), Material.WATCH, getStartWaitTimeCallback(), 3, null));
@@ -1829,6 +1854,10 @@ public class Minigame {
 		minigame.getConfig().set(name + ".type", getType().toString());
 		minigame.getConfig().set(name + ".minplayers", getMinPlayers());
 		minigame.getConfig().set(name + ".maxplayers", getMaxPlayers());
+		if(isSpMaxPlayers())
+			minigame.getConfig().set(name + ".spMaxPlayers", isSpMaxPlayers());
+		else
+			minigame.getConfig().set(name + ".spMaxPlayers", null);
 		minigame.getConfig().set(name + ".bets", null);
 		minigame.getConfig().set(name + ".enabled", isEnabled());
 		if(getMaxRadius() != 1000){
@@ -2285,6 +2314,8 @@ public class Minigame {
 			setType(MinigameType.valueOf(minigame.getConfig().getString(name + ".type")));
 		setMinPlayers(minigame.getConfig().getInt(name + ".minplayers"));
 		setMaxPlayers(minigame.getConfig().getInt(name + ".maxplayers"));
+		if(minigame.getConfig().contains(name + ".spMaxPlayers"))
+			setSpMaxPlayers(minigame.getConfig().getBoolean(name + ".spMaxPlayers"));
 		setEnabled(minigame.getConfig().getBoolean(name + ".enabled"));
 		if(minigame.getConfig().contains(name + ".maxradius")){
 			setMaxRadius(minigame.getConfig().getInt(name + ".maxradius"));

@@ -32,7 +32,7 @@ public class SingleplayerType extends MinigameTypeBase{
 	
 	@Override
 	public boolean joinMinigame(MinigamePlayer player, Minigame mgm){
-		if(mgm.getQuitPosition() != null && mgm.isEnabled()){
+		if(mgm.getQuitPosition() != null && mgm.isEnabled() && (!mgm.isSpMaxPlayers() || mgm.getPlayers().size() < mgm.getMaxPlayers())){
 			Location startpos = mdata.getMinigame(mgm.getName()).getStartLocations().get(0);
 			if(player.getPlayer().getWorld() != mgm.getStartLocations().get(0).getWorld() && player.getPlayer().hasPermission("minigame.set.start") && plugin.getConfig().getBoolean("warnings")){
 				player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Join location is across worlds! This may cause some server performance issues!", "error");
@@ -75,6 +75,9 @@ public class SingleplayerType extends MinigameTypeBase{
 		}
 		else if(!mgm.isEnabled()){
 			player.sendMessage(MinigameUtils.getLang("minigame.error.notEnabled"), "error");
+		}
+		else if(mgm.isSpMaxPlayers()){
+			player.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
 		}
 		return false;
 	}

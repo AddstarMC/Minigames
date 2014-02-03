@@ -132,6 +132,7 @@ permissions:
             minigame.set.multiplayercheckpoints: true
             minigame.set.objective: true
             minigame.set.gametypename: true
+            minigame.set.spmaxplayers: true
     minigame.set.start:
         description: Gives access to setting a minigames starting position
         default: op
@@ -266,6 +267,9 @@ permissions:
         default: op
     minigame.set.gametypename:
         description: Allows a player to set the gametype name.
+        default: op
+    minigame.set.spmaxplayers:
+        description: Allows a player to toggle singleplayer max players.
         default: op
     minigame.info:
         description: Allows check to see if a minigames variables have been set

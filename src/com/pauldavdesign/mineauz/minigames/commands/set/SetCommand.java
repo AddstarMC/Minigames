@@ -83,6 +83,7 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetAllowMultiplayerCheckpointsCommand());
 		registerSetCommand(new SetObjectiveCommand());
 		registerSetCommand(new SetGametypeNameCommand());
+		registerSetCommand(new SetSPMaxPlayersCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {
