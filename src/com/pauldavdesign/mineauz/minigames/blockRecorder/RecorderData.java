@@ -243,7 +243,8 @@ public class RecorderData implements Listener{
 			return bdata;
 		}
 		else{
-			blockdata.get(sloc).setModifier(modifier);
+			if(block.getType() != Material.CHEST || !blockdata.get(sloc).hasRandomized())
+				blockdata.get(sloc).setModifier(modifier);
 			return blockdata.get(sloc);
 		}
 	}

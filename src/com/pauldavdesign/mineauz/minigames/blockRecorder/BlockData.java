@@ -115,4 +115,8 @@ public class BlockData {
 		
 		hasRandomized = true;
 	}
+	
+	public boolean hasRandomized(){
+		return hasRandomized;
+	}
 }
