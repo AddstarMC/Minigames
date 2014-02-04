@@ -538,6 +538,7 @@ public class Events implements Listener{
 	@EventHandler(ignoreCancelled = true)
 	private void commandExecute(PlayerCommandPreprocessEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply == null) return;
 		if(ply.isInMinigame()){
 			for(String comd : pdata.getDeniedCommands()){
 				if(event.getMessage().contains(comd)){
