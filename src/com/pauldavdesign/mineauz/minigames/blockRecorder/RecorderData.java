@@ -576,14 +576,11 @@ public class RecorderData implements Listener{
 	
 	@EventHandler(ignoreCancelled = true)
 	private void cartHopperPickup(InventoryPickupItemEvent event){
-		Location loc = null;
-		boolean isCart = false;
-		if(event.getInventory().getHolder() instanceof HopperMinecart){
-			loc = ((HopperMinecart)event.getInventory().getHolder()).getLocation();
-			isCart = true;
-		}
-		if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(loc) && isCart){
-			addEntity((HopperMinecart)event.getInventory().getHolder(), null, false);
+		if(hasRegenArea() && minigame.hasPlayers() && event.getInventory().getHolder() instanceof HopperMinecart){
+			Location loc = ((HopperMinecart)event.getInventory().getHolder()).getLocation();
+			if(blockInRegenArea(loc)){
+				addEntity((HopperMinecart)event.getInventory().getHolder(), null, false);
+			}
 		}
 	}
 	
@@ -592,27 +589,17 @@ public class RecorderData implements Listener{
 		if(!hasRegenArea() || !minigame.hasPlayers()) return;
 		
 		Location loc = null;
-		boolean isCart = false;
 		if(event.getInitiator().getHolder() instanceof HopperMinecart){
 			loc = ((HopperMinecart)event.getInitiator().getHolder()).getLocation().clone();
-			isCart = true;
-		}
-		
-		if(loc != null && blockInRegenArea(loc) && isCart){
-			addEntity((Entity)event.getInitiator().getHolder(), null, false);
+			if(blockInRegenArea(loc))
+				addEntity((Entity)event.getInitiator().getHolder(), null, false);
 		}
 		
 		loc = null;
-		isCart = false;
 		if(event.getDestination().getHolder() instanceof HopperMinecart){
 			loc = ((HopperMinecart)event.getDestination().getHolder()).getLocation().clone();
-			isCart = true;
-		}
-		
-		if(loc == null) return;
-		
-		if(blockInRegenArea(loc) && isCart){
-			addEntity((Entity)event.getDestination().getHolder(), null, false);
+			if(blockInRegenArea(loc))
+				addEntity((Entity)event.getInitiator().getHolder(), null, false);
 		}
 	}
 	
