@@ -23,6 +23,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
+import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
@@ -118,6 +119,10 @@ public class PlayerData {
 
 					for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
 						player.getPlayer().removePotionEffect(potion.getType());
+					}
+					
+					if(minigame.getPlayers().size() == 1 && minigame.getBlockRecorder().hasRegenArea()){
+						Bukkit.getServer().getPluginManager().registerEvents(minigame.getBlockRecorder(), plugin);
 					}
 				}
 			}
@@ -455,6 +460,11 @@ public class PlayerData {
 				
 				ply.setAllowTeleport(true);
 				ply.setAllowGamemodeChange(true);
+				
+				if(mgm.getPlayers().size() == 0){
+					HandlerList.unregisterAll(mgm.getBlockRecorder());
+					HandlerList.bakeAll();
+				}
 			}
 			else{
 				if(player.getPlayer().getVehicle() != null){
@@ -575,6 +585,11 @@ public class PlayerData {
 
 			plugin.getLogger().info(MinigameUtils.formStr("player.end.consMsg", player.getName(), mgm.getName()));
 			mgm.getScoreboardManager().resetScores(player.getPlayer());
+			
+			if(mgm.getPlayers().size() == 0){
+				HandlerList.unregisterAll(mgm.getBlockRecorder());
+				HandlerList.bakeAll();
+			}
 		}
 	}
 	

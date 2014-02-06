@@ -40,13 +40,11 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
-import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class RecorderData implements Listener{
 	private static Minigames plugin;
-	private PlayerData pdata;
 	
 	private Minigame minigame;
 	private boolean whitelistMode = false;
@@ -107,13 +105,12 @@ public class RecorderData implements Listener{
 	
 	public RecorderData(Minigame minigame){
 		plugin = Minigames.plugin;
-		pdata = plugin.pdata;
 		
 		this.minigame = minigame;
 		blockdata = new HashMap<String, BlockData>();
 		entdata = new HashMap<Integer, EntityData>();
 		
-		plugin.getServer().getPluginManager().registerEvents(this, plugin);
+//		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 	
 	public void setWhitelistMode(boolean bool){
@@ -476,17 +473,7 @@ public class RecorderData implements Listener{
 	
 	@EventHandler(ignoreCancelled = true)
 	private void vehicleDestroy(VehicleDestroyEvent event){
-		if(event.getAttacker() != null){
-			if(event.getAttacker() instanceof Player){
-				Player ply = (Player) event.getAttacker();
-				if(pdata.getMinigamePlayer(ply).isInMinigame() && pdata.getMinigamePlayer(ply).getMinigame().equals(minigame)){
-					if(!hasEntity(event.getVehicle())){
-						addEntity(event.getVehicle(), pdata.getMinigamePlayer(ply), false);
-					}
-				}
-			}
-		}
-		else{
+		if(event.getAttacker() == null){
 			if(hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getVehicle().getLocation())){
 				addEntity(event.getVehicle(), null, false);
 			}
