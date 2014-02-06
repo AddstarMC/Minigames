@@ -42,8 +42,6 @@ import com.pauldavdesign.mineauz.minigames.sql.SQLPlayer;
 public class PlayerData {
 	private Map<String, MinigamePlayer> minigamePlayers = new HashMap<String, MinigamePlayer>();
 	
-	private Map<String, StoredPlayerCheckpoints> storedPlayerCheckpoints = new HashMap<String, StoredPlayerCheckpoints>();
-	
 	private boolean partyMode = false;
 	
 	private List<String> deniedCommands = new ArrayList<String>();
@@ -90,32 +88,28 @@ public class PlayerData {
 					player.setAllowTeleport(false);
 					player.setStartTime(Calendar.getInstance().getTimeInMillis());
 					
-					if(hasStoredPlayerCheckpoint(player)){
-						if(getPlayersStoredCheckpoints(player).hasCheckpoint(minigame.getName())){
-							player.setCheckpoint(getPlayersStoredCheckpoints(player).getCheckpoint(minigame.getName()));
-							StoredPlayerCheckpoints spc = getPlayersStoredCheckpoints(player);
-							if(spc.hasFlags(minigame.getName())){
-								player.setFlags(spc.getFlags(minigame.getName()));
-							}
-							if(spc.hasTime(minigame.getName())){
-								player.setStoredTime(getPlayersStoredCheckpoints(player).getTime(minigame.getName()));
-							}
-							if(spc.hasDeaths(minigame.getName())){
-								player.setDeaths(spc.getDeaths(minigame.getName()));
-							}
-							if(spc.hasReverts(minigame.getName())){
-								player.setReverts(spc.getReverts(minigame.getName()));
-							}
-							getPlayersStoredCheckpoints(player).removeCheckpoint(minigame.getName());
-							getPlayersStoredCheckpoints(player).removeFlags(minigame.getName());
-							spc.removeDeaths(minigame.getName());
-							spc.removeTime(minigame.getName());
-							spc.removeReverts(minigame.getName());
-							if(getPlayersStoredCheckpoints(player).hasNoCheckpoints() && !getPlayersStoredCheckpoints(player).hasGlobalCheckpoint()){
-								storedPlayerCheckpoints.remove(player.getName());
-							}
-							revertToCheckpoint(player);
+					if(player.getStoredPlayerCheckpoints().hasCheckpoint(minigame.getName())){
+						player.setCheckpoint(player.getStoredPlayerCheckpoints().getCheckpoint(minigame.getName()));
+						StoredPlayerCheckpoints spc = player.getStoredPlayerCheckpoints();
+						if(spc.hasFlags(minigame.getName())){
+							player.setFlags(spc.getFlags(minigame.getName()));
 						}
+						if(spc.hasTime(minigame.getName())){
+							player.setStoredTime(spc.getTime(minigame.getName()));
+						}
+						if(spc.hasDeaths(minigame.getName())){
+							player.setDeaths(spc.getDeaths(minigame.getName()));
+						}
+						if(spc.hasReverts(minigame.getName())){
+							player.setReverts(spc.getReverts(minigame.getName()));
+						}
+						spc.removeCheckpoint(minigame.getName());
+						spc.removeFlags(minigame.getName());
+						spc.removeDeaths(minigame.getName());
+						spc.removeTime(minigame.getName());
+						spc.removeReverts(minigame.getName());
+						revertToCheckpoint(player);
+						spc.saveCheckpoints();
 					}
 					
 					for(MinigamePlayer pl : minigame.getSpectators()){
@@ -852,31 +846,6 @@ public class PlayerData {
 	
 	public void loadDeniedCommands(){
 		setDeniedCommands(plugin.getConfig().getStringList("disabledCommands"));
-	}
-	
-	public boolean hasStoredPlayerCheckpoint(MinigamePlayer player){
-		if(storedPlayerCheckpoints.containsKey(player.getName())){
-			return true;
-		}
-		return false;
-	}
-	
-	public StoredPlayerCheckpoints getPlayersStoredCheckpoints(MinigamePlayer player){
-		return storedPlayerCheckpoints.get(player.getName());
-	}
-	
-	public void addStoredPlayerCheckpoint(MinigamePlayer player, String minigame){
-		StoredPlayerCheckpoints spc = new StoredPlayerCheckpoints(player.getName(), 
-				minigame, 
-				player.getCheckpoint(), 
-				Calendar.getInstance().getTimeInMillis() - player.getStartTime(), 
-				player.getDeaths(), 
-				player.getReverts());
-		storedPlayerCheckpoints.put(player.getName(), spc);
-	}
-	
-	public void addStoredPlayerCheckpoints(String name, StoredPlayerCheckpoints spc){
-		storedPlayerCheckpoints.put(name, spc);
 	}
 	
 	public void minigameTeleport(MinigamePlayer player, Location location){

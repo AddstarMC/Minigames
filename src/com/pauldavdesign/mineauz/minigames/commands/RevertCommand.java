@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
-import com.pauldavdesign.mineauz.minigames.StoredPlayerCheckpoints;
+//import com.pauldavdesign.mineauz.minigames.StoredPlayerCheckpoints;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class RevertCommand implements ICommand{
@@ -59,12 +59,12 @@ public class RevertCommand implements ICommand{
 		if(player.isInMinigame()){
 			plugin.pdata.revertToCheckpoint(player);
 		}
-		else if(plugin.pdata.hasStoredPlayerCheckpoint(player)){
-			StoredPlayerCheckpoints spc = plugin.pdata.getPlayersStoredCheckpoints(player);
-			if(spc.hasGlobalCheckpoint()){
-				player.getPlayer().teleport(spc.getGlobalCheckpoint());
-			}
-		}
+//		else if(plugin.pdata.hasStoredPlayerCheckpoint(player)){
+//			StoredPlayerCheckpoints spc = plugin.pdata.getPlayersStoredCheckpoints(player);
+//			if(spc.hasGlobalCheckpoint()){
+//				player.getPlayer().teleport(spc.getGlobalCheckpoint());
+//			}
+//		}
 		else {
 			player.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.revert.noGlobal"));
 		}

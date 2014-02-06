@@ -9,12 +9,8 @@ import org.bukkit.event.block.SignChangeEvent;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
-import com.pauldavdesign.mineauz.minigames.Minigames;
-import com.pauldavdesign.mineauz.minigames.StoredPlayerCheckpoints;
 
 public class CheckpointSign implements MinigameSign {
-	
-	private static Minigames plugin = Minigames.plugin;
 
 	@Override
 	public String getName() {
@@ -63,14 +59,7 @@ public class CheckpointSign implements MinigameSign {
 					player.setCheckpoint(newloc);
 				}
 				else{
-					if(!plugin.pdata.hasStoredPlayerCheckpoint(player)){
-						StoredPlayerCheckpoints spc = new StoredPlayerCheckpoints(player.getName(), newloc);
-						plugin.pdata.addStoredPlayerCheckpoints(player.getName(), spc);
-					}
-					else{
-						StoredPlayerCheckpoints spc = plugin.pdata.getPlayersStoredCheckpoints(player);
-						spc.setGlobalCheckpoint(newloc);
-					}
+					player.getStoredPlayerCheckpoints().setGlobalCheckpoint(newloc);
 				}
 				
 				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.checkpoint.set"));

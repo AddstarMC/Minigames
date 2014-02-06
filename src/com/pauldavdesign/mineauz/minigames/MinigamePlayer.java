@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,9 +44,16 @@ public class MinigamePlayer {
 	private Location selection2 = null;
 	
 	private OfflineMinigamePlayer oply = null;
+	private StoredPlayerCheckpoints spc = null;
 	
 	public MinigamePlayer(Player player){
 		this.player = player;
+		spc = new StoredPlayerCheckpoints(getName());
+		
+		File plcp = new File(Minigames.plugin.getDataFolder() + "/playerdata/checkpoints/" + getName().toLowerCase() + ".yml");
+		if(plcp.exists()){
+			getStoredPlayerCheckpoints().loadCheckpoints();
+		}
 	}
 	
 	public Player getPlayer(){
@@ -469,5 +477,9 @@ public class MinigamePlayer {
 	
 	public void setOfflineMinigamePlayer(OfflineMinigamePlayer oply){
 		this.oply = oply;
+	}
+
+	public StoredPlayerCheckpoints getStoredPlayerCheckpoints() {
+		return spc;
 	}
 }

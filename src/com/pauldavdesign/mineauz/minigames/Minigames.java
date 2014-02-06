@@ -236,11 +236,17 @@ public class Minigames extends JavaPlugin{
 		
 		scoretypes = new ScoreType();
 		
-		MinigameSave save = new MinigameSave("storedCheckpoints");
-		for(String player : save.getConfig().getKeys(false)){
-			StoredPlayerCheckpoints spc = new StoredPlayerCheckpoints(player);
-			spc.loadCheckpoints();
-			pdata.addStoredPlayerCheckpoints(player, spc);
+		File cps = new File(getDataFolder() + "/storedCheckpoints.yml"); //TODO: Remove after 1.6
+		if(cps.exists()){
+			MinigameSave save = new MinigameSave("storedCheckpoints");
+			for(String player : save.getConfig().getKeys(false)){
+				MinigameSave plSave = new MinigameSave("playerdata/checkpoints/" + player.toLowerCase());
+				for(String sec : save.getConfig().getConfigurationSection(player).getKeys(true)){
+					plSave.getConfig().set(sec, save.getConfig().get(player + "." + sec));
+				}
+				plSave.saveConfig();
+			}
+			save.deleteFile();
 		}
 		
 		MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
