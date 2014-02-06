@@ -461,7 +461,7 @@ public class PlayerData {
 				ply.setAllowTeleport(true);
 				ply.setAllowGamemodeChange(true);
 				
-				if(mgm.getPlayers().size() == 0){
+				if(mgm.getPlayers().size() == 0 && !mgm.isRegenerating()){
 					HandlerList.unregisterAll(mgm.getBlockRecorder());
 					HandlerList.bakeAll();
 				}
@@ -586,7 +586,7 @@ public class PlayerData {
 			plugin.getLogger().info(MinigameUtils.formStr("player.end.consMsg", player.getName(), mgm.getName()));
 			mgm.getScoreboardManager().resetScores(player.getPlayer());
 			
-			if(mgm.getPlayers().size() == 0){
+			if(mgm.getPlayers().size() == 0 && !mgm.isRegenerating()){
 				HandlerList.unregisterAll(mgm.getBlockRecorder());
 				HandlerList.bakeAll();
 			}

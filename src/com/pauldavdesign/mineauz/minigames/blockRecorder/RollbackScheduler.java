@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Jukebox;
 import org.bukkit.block.Sign;
 import org.bukkit.block.Skull;
+import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.material.FlowerPot;
 import org.bukkit.material.MaterialData;
@@ -80,6 +81,10 @@ public class RollbackScheduler implements Runnable {
 				return;
 		}
 		task.cancel();
+		
+		HandlerList.unregisterAll(minigame.getBlockRecorder());
+		HandlerList.bakeAll();
+		
 		minigame.setRegenerating(false);
 	}
 

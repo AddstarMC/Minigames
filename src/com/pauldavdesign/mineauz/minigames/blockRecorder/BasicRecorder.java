@@ -23,6 +23,7 @@ import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.InventoryHolder;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
@@ -243,6 +244,21 @@ public class BasicRecorder implements Listener{
 			}
 			else{
 				event.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	private void vehicleDestroy(VehicleDestroyEvent event){
+		if(event.getAttacker() != null){
+			if(event.getAttacker() instanceof Player){
+				Player ply = (Player) event.getAttacker();
+				Minigame mg = pdata.getMinigamePlayer(ply).getMinigame();
+				if(pdata.getMinigamePlayer(ply).isInMinigame()){
+					if(!mg.getBlockRecorder().hasEntity(event.getVehicle())){
+						mg.getBlockRecorder().addEntity(event.getVehicle(), pdata.getMinigamePlayer(ply), false);
+					}
+				}
 			}
 		}
 	}
