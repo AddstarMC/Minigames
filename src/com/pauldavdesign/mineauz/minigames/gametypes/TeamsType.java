@@ -309,25 +309,30 @@ public class TeamsType extends MinigameTypeBase{
 			}
 			
 			Location respawnPos;
-			if(mg.isAllowedMPCheckpoints() && ply.hasCheckpoint()){
-				respawnPos = ply.getCheckpoint();
-			}
-			else{
-				List<Location> starts = new ArrayList<Location>();
-				if(!mg.getStartLocationsBlue().isEmpty() && !mg.getStartLocationsRed().isEmpty()){
-					if(team == 1){
-						starts.addAll(mg.getStartLocationsBlue());
-					}
-					else{
-						starts.addAll(mg.getStartLocationsRed());
-					}
-					ply.getLoadout().equiptLoadout(ply);
+			if(mg.hasStarted()){
+				if(mg.isAllowedMPCheckpoints() && ply.hasCheckpoint()){
+					respawnPos = ply.getCheckpoint();
 				}
 				else{
-					starts.addAll(mg.getStartLocations());
+					List<Location> starts = new ArrayList<Location>();
+					if(!mg.getStartLocationsBlue().isEmpty() && !mg.getStartLocationsRed().isEmpty()){
+						if(team == 1){
+							starts.addAll(mg.getStartLocationsBlue());
+						}
+						else{
+							starts.addAll(mg.getStartLocationsRed());
+						}
+						ply.getLoadout().equiptLoadout(ply);
+					}
+					else{
+						starts.addAll(mg.getStartLocations());
+					}
+					Collections.shuffle(starts);
+					respawnPos = starts.get(0);
 				}
-				Collections.shuffle(starts);
-				respawnPos = starts.get(0);
+			}
+			else{
+				respawnPos = mg.getLobbyPosition();
 			}
 			event.setRespawnLocation(respawnPos);
 			
