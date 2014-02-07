@@ -65,14 +65,8 @@ public class SetBlockWhitelistCommand implements ICommand {
 			String label, String[] args) {
 		if(args != null){
 			if(args[0].equalsIgnoreCase("add") && args.length >= 2){
-				if(Material.matchMaterial(args[1].toUpperCase()) != null || (args[1].matches("[0-9]+") && Material.getMaterial(Integer.parseInt(args[1])) != null)){
-					Material mat = null;
-					if(!args[1].matches("[0-9]+")){
-						mat = Material.matchMaterial(args[1].toUpperCase());
-					}
-					else{
-						mat = Material.getMaterial(Integer.parseInt(args[1]));
-					}
+				if(Material.matchMaterial(args[1].toUpperCase()) != null){
+					Material mat = Material.matchMaterial(args[1].toUpperCase());
 					
 					minigame.getBlockRecorder().addWBBlock(mat);
 					
@@ -88,14 +82,8 @@ public class SetBlockWhitelistCommand implements ICommand {
 				}
 			}
 			else if(args[0].equalsIgnoreCase("remove") && args.length >= 2){
-				if(Material.matchMaterial(args[1].toUpperCase()) != null || (args[1].matches("[0-9]+") && Material.getMaterial(Integer.parseInt(args[1])) != null)){
-					Material mat = null;
-					if(!args[1].matches("[0-9]+")){
-						mat = Material.matchMaterial(args[1].toUpperCase());
-					}
-					else{
-						mat = Material.getMaterial(Integer.parseInt(args[1]));
-					}
+				if(Material.matchMaterial(args[1].toUpperCase()) != null){
+					Material mat = Material.matchMaterial(args[1].toUpperCase());
 					
 					minigame.getBlockRecorder().removeWBBlock(mat);
 					
