@@ -33,7 +33,8 @@ public class TeamsType extends MinigameTypeBase{
 	
 	@Override
 	public boolean joinMinigame(final MinigamePlayer player, Minigame mgm){
-		if(mgm.getQuitPosition() != null && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
+		if(mgm.getQuitPosition() != null && (mgm.isEnabled() || player.getPlayer().hasPermission("minigame.join.disabled")) && 
+				mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
 			
 			int redSize = mgm.getRedTeam().size();
 			int blueSize = mgm.getBlueTeam().size();
@@ -261,7 +262,7 @@ public class TeamsType extends MinigameTypeBase{
 
 		player.getPlayer().setFireTicks(0);
 		
-		if(plugin.getSQL() == null){
+		if(plugin.getSQL() == null && mgm.isEnabled()){
 			completion = mdata.getConfigurationFile("completion");
 			hascompleted = completion.getStringList(mgm.getName()).contains(player.getName());
 			

@@ -23,6 +23,7 @@ permissions:
         description: Gives access to all Minigame Commands
         children:
             minigame.join: true
+            minigame.join.disabled: true
             minigame.spectate: true
             minigame.quit: true
             minigame.quit.other: true
@@ -58,6 +59,9 @@ permissions:
             minigame.save: true
     minigame.join:
         description: Allows a player to join a Minigame, bypassing betting.
+        default: op
+    minigame.join.disabled:
+        description: Allows a player to join a disabled Minigame.
         default: op
     minigame.spectate:
         description: Allows a player to spectate a Minigame without using a sign

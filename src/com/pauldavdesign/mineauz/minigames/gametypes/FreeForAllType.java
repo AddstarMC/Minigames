@@ -35,7 +35,8 @@ public class FreeForAllType extends MinigameTypeBase{
 
 	@Override
 	public boolean joinMinigame(MinigamePlayer player, Minigame mgm) {
-		if(mgm.getQuitPosition() != null && mgm.isEnabled() && mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
+		if(mgm.getQuitPosition() != null && (mgm.isEnabled() || player.getPlayer().hasPermission("minigame.join.disabled")) && 
+				mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
 			Location lobby = mgm.getLobbyPosition();
 			if(player.getPlayer().getWorld() != lobby.getWorld() && player.getPlayer().hasPermission("minigame.set.lobby") && plugin.getConfig().getBoolean("warnings")){
 				player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Lobby location is across worlds! This may cause some server performance issues!", "error");
@@ -212,7 +213,7 @@ public class FreeForAllType extends MinigameTypeBase{
 		}
 		player.getPlayer().updateInventory();
 		
-		if(plugin.getSQL() != null){
+		if(plugin.getSQL() != null && mgm.isEnabled()){
 //			new SQLCompletionSaver(mgm.getName(), player, this, false);
 			plugin.addSQLToStore(new SQLPlayer(mgm.getName(), player.getName(), 0, 1, player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), player.getEndTime() - player.getStartTime()));
 			plugin.startSQLCompletionSaver();
@@ -239,7 +240,7 @@ public class FreeForAllType extends MinigameTypeBase{
 		Configuration completion = null;
 		
 		player.sendMessage(MinigameUtils.formStr("player.end.plyMsg", mgm), "win");
-		if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
+		if(plugin.getConfig().getBoolean("multiplayer.broadcastwin") && mgm.isEnabled()){
 			String score = "";
 			if(player.getScore() != 0)
 				score = MinigameUtils.formStr("player.end.broadcastScore", player.getScore());
@@ -290,7 +291,7 @@ public class FreeForAllType extends MinigameTypeBase{
 			}
 		}
 		
-		if(plugin.getSQL() == null){
+		if(plugin.getSQL() == null && mgm.isEnabled()){
 			completion = mdata.getConfigurationFile("completion");
 			hascompleted = completion.getStringList(mgm.getName()).contains(player.getName());
 			
@@ -305,7 +306,7 @@ public class FreeForAllType extends MinigameTypeBase{
 			
 			issuePlayerRewards(player, mgm, hascompleted);
 		}
-		else{
+		else if(mgm.isEnabled()){
 //			new SQLCompletionSaver(mgm.getName(), player, this, true);
 			plugin.addSQLToStore(new SQLPlayer(mgm.getName(), player.getName(), 1, 0, player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), player.getEndTime() - player.getStartTime()));
 			plugin.startSQLCompletionSaver();

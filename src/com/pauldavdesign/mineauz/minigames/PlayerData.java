@@ -623,7 +623,7 @@ public class PlayerData {
 		
 		if(!event.isCancelled()){
 			if(event.getWinningTeamInt() == 1){
-				if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
+				if(plugin.getConfig().getBoolean("multiplayer.broadcastwin") && mgm.isEnabled()){
 					String score = "";
 					if(mgm.getRedTeamScore() != 0 && mgm.getBlueTeamScore() != 0){
 						score = ", " + MinigameUtils.formStr("player.end.team.score", ChatColor.BLUE.toString() + mgm.getBlueTeamScore() + ChatColor.WHITE, ChatColor.RED.toString() + mgm.getRedTeamScore());
@@ -632,7 +632,7 @@ public class PlayerData {
 				}
 			}
 			else{
-				if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
+				if(plugin.getConfig().getBoolean("multiplayer.broadcastwin") && mgm.isEnabled()){
 					String score = "";
 					if(mgm.getRedTeamScore() != 0 && mgm.getBlueTeamScore() != 0){
 						score = ", " + MinigameUtils.formStr("player.end.team.score", ChatColor.RED.toString() + mgm.getBlueTeamScore() + ChatColor.WHITE, ChatColor.BLUE.toString() + mgm.getRedTeamScore());
@@ -649,7 +649,7 @@ public class PlayerData {
 			List<MinigamePlayer> winplayers = new ArrayList<MinigamePlayer>();
 			winplayers.addAll(event.getWinnningPlayers());
 	
-			if(plugin.getSQL() != null){
+			if(plugin.getSQL() != null && mgm.isEnabled()){
 //				new SQLCompletionSaver(mgm.getName(), winplayers, mdata.minigameType(mgm.getType()), true);
 				List<SQLPlayer> sqlplayers = new ArrayList<SQLPlayer>();
 				for(MinigamePlayer ply : winplayers){
@@ -683,7 +683,7 @@ public class PlayerData {
 				List<MinigamePlayer> loseplayers = new ArrayList<MinigamePlayer>();
 				loseplayers.addAll(event.getLosingPlayers());
 				
-				if(plugin.getSQL() != null){
+				if(plugin.getSQL() != null && mgm.isEnabled()){
 //					new SQLCompletionSaver(mgm.getName(), loseplayers, mdata.minigameType(mgm.getType()), false);
 					List<SQLPlayer> sqlplayers = new ArrayList<SQLPlayer>();
 					for(MinigamePlayer ply : loseplayers){

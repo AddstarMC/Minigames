@@ -32,7 +32,8 @@ public class SingleplayerType extends MinigameTypeBase{
 	
 	@Override
 	public boolean joinMinigame(MinigamePlayer player, Minigame mgm){
-		if(mgm.getQuitPosition() != null && mgm.isEnabled() && (!mgm.isSpMaxPlayers() || mgm.getPlayers().size() < mgm.getMaxPlayers())){
+		if(mgm.getQuitPosition() != null && (mgm.isEnabled() || player.getPlayer().hasPermission("minigame.join.disabled")) && 
+				(!mgm.isSpMaxPlayers() || mgm.getPlayers().size() < mgm.getMaxPlayers())){
 			Location startpos = mdata.getMinigame(mgm.getName()).getStartLocations().get(0);
 			if(player.getPlayer().getWorld() != mgm.getStartLocations().get(0).getWorld() && player.getPlayer().hasPermission("minigame.set.start") && plugin.getConfig().getBoolean("warnings")){
 				player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Join location is across worlds! This may cause some server performance issues!", "error");
@@ -89,7 +90,7 @@ public class SingleplayerType extends MinigameTypeBase{
 		
 		player.sendMessage(MinigameUtils.formStr("player.end.plyMsg", mgm.getName()), "win");
 		
-		if(plugin.getConfig().getBoolean("singleplayer.broadcastcompletion")){
+		if(plugin.getConfig().getBoolean("singleplayer.broadcastcompletion") && mgm.isEnabled()){
 			plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.end.broadcastMsg", player.getName(), mgm.getName()));
 		}
 		
@@ -118,7 +119,7 @@ public class SingleplayerType extends MinigameTypeBase{
 			}
 		}
 		
-		if(plugin.getSQL() == null){
+		if(plugin.getSQL() == null && mgm.isEnabled()){
 			completion = mdata.getConfigurationFile("completion");
 			hascompleted = completion.getStringList(mgm.getName()).contains(player.getName());
 			
@@ -133,7 +134,7 @@ public class SingleplayerType extends MinigameTypeBase{
 			
 			issuePlayerRewards(player, mgm, hascompleted);
 		}
-		else{
+		else if(mgm.isEnabled()){
 //			new SQLCompletionSaver(mgm.getName(), player, this, true);
 			plugin.addSQLToStore(new SQLPlayer(mgm.getName(), player.getName(), 1, 0, player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), player.getEndTime() - player.getStartTime()));
 			plugin.startSQLCompletionSaver();
