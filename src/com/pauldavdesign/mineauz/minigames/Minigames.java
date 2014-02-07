@@ -279,8 +279,9 @@ public class Minigames extends JavaPlugin{
 		}
 		
 		minigameSigns = new SignBase();
-		
-		getCommand("minigame").setExecutor(new CommandDispatcher());
+		CommandDispatcher disp = new CommandDispatcher();
+		getCommand("minigame").setExecutor(disp);
+		getCommand("minigame").setTabCompleter(disp);
 		
 		for(Player player : getServer().getOnlinePlayers()){
 			pdata.addMinigamePlayer(player);

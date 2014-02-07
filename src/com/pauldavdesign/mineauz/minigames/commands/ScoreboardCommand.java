@@ -1,8 +1,13 @@
 package com.pauldavdesign.mineauz.minigames.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.ScoreboardOrder;
@@ -127,6 +132,33 @@ public class ScoreboardCommand implements ICommand{
 				sender.sendMessage(ChatColor.RED + "No Minigame found by the name " + args[0]);
 		}
 		return false;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		if(args.length == 1){
+			List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+			return MinigameUtils.tabCompleteMatch(mgs, args[0]);
+		}
+		else if(args.length == 2){
+			List<String> ts = new ArrayList<String>(ScoreboardType.values().length);
+			for(ScoreboardType t : ScoreboardType.values()){
+				ts.add(t.toString());
+			}
+			return MinigameUtils.tabCompleteMatch(ts, args[1]);
+		}
+		else if(args.length == 3){
+			return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("asc;desc"), args[2]);
+		}
+		else if(args.length >= 5 && args[args.length - 2].equals("-p")){
+			List<String> pl = new ArrayList<String>();
+			for(Player p : plugin.getServer().getOnlinePlayers()){
+				pl.add(p.getName());
+			}
+			return MinigameUtils.tabCompleteMatch(pl, args[5]);
+		}
+		return null;
 	}
 
 }

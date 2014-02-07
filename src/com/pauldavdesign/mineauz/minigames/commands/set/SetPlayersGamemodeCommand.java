@@ -1,8 +1,11 @@
 package com.pauldavdesign.mineauz.minigames.commands.set;
 
+import java.util.List;
+
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
@@ -69,6 +72,14 @@ public class SetPlayersGamemodeCommand implements ICommand {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		if(args.length == 1)
+			return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("survival;adventure;creative"), args[0]);
+		return null;
 	}
 
 }

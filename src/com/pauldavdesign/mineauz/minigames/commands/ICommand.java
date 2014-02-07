@@ -1,5 +1,7 @@
 package com.pauldavdesign.mineauz.minigames.commands;
 
+import java.util.List;
+
 import org.bukkit.command.CommandSender;
 
 import com.pauldavdesign.mineauz.minigames.Minigames;
@@ -27,4 +29,6 @@ public interface ICommand {
 	public String getPermission();
 	
 	public boolean onCommand(CommandSender sender, Minigame minigame, String label, String[] args);
+	
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame, String alias, String[] args);
 }

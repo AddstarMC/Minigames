@@ -3,19 +3,23 @@ package com.pauldavdesign.mineauz.minigames.commands;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.commands.set.SetCommand;
 
-public class CommandDispatcher implements CommandExecutor{
+public class CommandDispatcher implements CommandExecutor, TabCompleter{
 	private static Map<String, ICommand> commands = new HashMap<String, ICommand>();
 	private static Minigames plugin = Minigames.plugin;
 	private static BufferedWriter cmdFile;
@@ -241,5 +245,45 @@ AliasCheck:		for(ICommand com : commands.values()){
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+		if(args != null && args.length > 0){
+			Player ply = null;
+			if(sender instanceof Player){
+				ply = (Player)sender;
+			}
+			ICommand comd = null;
+			String[] shortArgs = null;
+			
+			if(commands.containsKey(args[0].toLowerCase())){
+				comd = commands.get(args[0].toLowerCase());
+			}
+			
+			if(args != null && args.length > 1){
+				shortArgs = new String[args.length - 1];
+				for(int i = 1; i < args.length; i++){
+					shortArgs[i - 1] = args[i];
+				}
+			}
+			
+			if(comd != null){
+				if(ply != null){
+					if(args.length > 1){
+						List<String> l = comd.onTabComplete(sender, null, alias, shortArgs);
+						if(l != null)
+							return l;
+						else
+							return MinigameUtils.stringToList("");
+					}
+				}
+			}
+			else{
+				List<String> ls = new ArrayList<String>(commands.keySet());
+				return MinigameUtils.tabCompleteMatch(ls, args[0]);
+			}
+		}
+		return null;
 	}
 }

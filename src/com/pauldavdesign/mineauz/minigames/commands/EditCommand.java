@@ -1,9 +1,13 @@
 package com.pauldavdesign.mineauz.minigames.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class EditCommand implements ICommand {
@@ -70,6 +74,16 @@ public class EditCommand implements ICommand {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		if(args != null && args.length == 1){
+			List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+			return MinigameUtils.tabCompleteMatch(mgs, args[0]);
+		}
+		return null;
 	}
 
 }

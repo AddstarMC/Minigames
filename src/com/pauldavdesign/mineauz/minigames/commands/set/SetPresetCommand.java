@@ -1,9 +1,12 @@
 package com.pauldavdesign.mineauz.minigames.commands.set;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import com.pauldavdesign.mineauz.minigames.MinigameData;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
@@ -79,6 +82,16 @@ public class SetPresetCommand implements ICommand {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		if(args.length == 1)
+			return MinigameUtils.tabCompleteMatch(plugin.mdata.getAllPresets(), args[0]);
+		else if(args.length == 2)
+			return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("info"), args[1]);
+		return null;
 	}
 
 }

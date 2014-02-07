@@ -1,10 +1,13 @@
 package com.pauldavdesign.mineauz.minigames.commands.set;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
@@ -91,6 +94,14 @@ public class SetRegenAreaCommand implements ICommand {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		if(args.length == 1)
+			return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("1;2;clear"), args[0]);
+		return null;
 	}
 
 }

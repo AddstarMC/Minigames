@@ -1,5 +1,7 @@
 package com.pauldavdesign.mineauz.minigames.commands.set;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -61,6 +63,12 @@ public class SetLivesCommand implements ICommand {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		return null;
 	}
 
 }

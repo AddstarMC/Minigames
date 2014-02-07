@@ -1,5 +1,7 @@
 package com.pauldavdesign.mineauz.minigames.commands.set;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -55,5 +57,11 @@ public class SetLobbyCommand implements ICommand{
 		minigame.setLobbyPosition(((Player)sender).getLocation());
 		sender.sendMessage(ChatColor.GRAY + "Lobby position has been set for " + minigame);
 		return true;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		return null;
 	}
 }

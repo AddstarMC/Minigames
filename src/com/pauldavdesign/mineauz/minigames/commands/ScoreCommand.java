@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -7,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
@@ -257,6 +259,27 @@ public class ScoreCommand implements ICommand {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		if(args.length == 1){
+			return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("get;set;add"), args[0]);
+		}
+		else if(args.length == 2){
+
+			List<String> pt = new ArrayList<String>(plugin.getServer().getOnlinePlayers().length + 2);
+			for(Player pl : plugin.getServer().getOnlinePlayers()){
+				pt.add(pl.getName());
+			}
+			pt.add("red");
+			pt.add("blue");
+			
+			return MinigameUtils.tabCompleteMatch(pt, args[1]);
+		}
+		List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+		return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
 	}
 
 }

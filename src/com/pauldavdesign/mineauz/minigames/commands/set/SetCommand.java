@@ -3,13 +3,16 @@ package com.pauldavdesign.mineauz.minigames.commands.set;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
@@ -305,6 +308,53 @@ AliasCheck:				for(ICommand com : parameterList.values()){
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame, String alias, String[] args) {
+		if(args != null && args.length > 0){
+			Player ply = null;
+			if(sender instanceof Player){
+				ply = (Player)sender;
+			}
+			ICommand comd = null;
+			String[] shortArgs = null;
+			Minigame mgm = null;
+			
+			if(plugin.mdata.hasMinigame(args[0])){
+				mgm = plugin.mdata.getMinigame(args[0]);
+			}
+			
+			if(args.length > 1 && mgm != null){
+				if(parameterList.containsKey(args[1].toLowerCase())){
+					comd = parameterList.get(args[1].toLowerCase());
+				}
+				
+				shortArgs = new String[args.length - 2];
+				for(int i = 2; i < args.length; i++){
+					shortArgs[i - 2] = args[i];
+				}
+				
+				if(comd != null){
+					if(ply != null){
+						List<String> l = comd.onTabComplete(sender, mgm, alias, shortArgs);
+						if(l != null)
+							return l;
+						else
+							return MinigameUtils.stringToList("");
+					}
+				}
+				else{
+					List<String> ls = new ArrayList<String>(parameterList.keySet());
+					return MinigameUtils.tabCompleteMatch(ls, args[1]);
+				}
+			}
+			else if(args.length == 1){
+				List<String> ls = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+				return MinigameUtils.tabCompleteMatch(ls, args[0]);
+			}
+		}
+		return null;
 	}
 	
 }

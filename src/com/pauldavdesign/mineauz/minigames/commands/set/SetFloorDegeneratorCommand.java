@@ -1,5 +1,7 @@
 package com.pauldavdesign.mineauz.minigames.commands.set;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -95,6 +97,14 @@ public class SetFloorDegeneratorCommand implements ICommand{
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		if(args.length == 1)
+			return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("1;2;clear;type;time"), args[0]);
+		return null;
 	}
 
 }

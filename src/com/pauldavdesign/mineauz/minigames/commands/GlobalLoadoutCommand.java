@@ -84,4 +84,10 @@ public class GlobalLoadoutCommand implements ICommand {
 		return true;
 	}
 
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		return null;
+	}
+
 }

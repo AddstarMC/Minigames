@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
@@ -91,5 +92,18 @@ public class CreateCommand implements ICommand{
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		if(args.length == 2){
+			List<String> types = new ArrayList<String>(MinigameType.values().length);
+			for(MinigameType type : MinigameType.values()){
+				types.add(type.toString().toLowerCase());
+			}
+			return MinigameUtils.tabCompleteMatch(types, args[1]);
+		}
+		return null;
 	}
 }

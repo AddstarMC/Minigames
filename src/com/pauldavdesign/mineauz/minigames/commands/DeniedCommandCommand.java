@@ -1,8 +1,12 @@
 package com.pauldavdesign.mineauz.minigames.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class DeniedCommandCommand implements ICommand {
@@ -85,6 +89,22 @@ public class DeniedCommandCommand implements ICommand {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		if(args.length == 1){
+			List<String> ls = new ArrayList<String>();
+			for(String par : getParameters()){
+				ls.add(par);
+			}
+			return MinigameUtils.tabCompleteMatch(ls, args[0]);
+		}
+		else if(args.length == 2 && args[0].equalsIgnoreCase("remove")){
+			return MinigameUtils.tabCompleteMatch(plugin.pdata.getDeniedCommands(), args[1]);
+		}
+		return null;
 	}
 
 }

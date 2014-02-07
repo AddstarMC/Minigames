@@ -1,8 +1,12 @@
 package com.pauldavdesign.mineauz.minigames.commands.set;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
@@ -73,6 +77,19 @@ public class SetTypeCommand implements ICommand{
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		if(args.length == 1){
+			List<String> types = new ArrayList<String>();
+			for(MinigameType t : MinigameType.values()){
+				types.add(t.toString());
+			}
+			return MinigameUtils.tabCompleteMatch(types, args[0]);
+		}
+		return null;
 	}
 
 }

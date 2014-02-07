@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.TreasureHuntTimer;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
@@ -107,6 +108,20 @@ public class HintCommand implements ICommand{
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		if(args.length == 1){
+			List<String> mgs = new ArrayList<String>();
+			for(Minigame mg : plugin.mdata.getAllMinigames().values()){
+				if(mg.getType() == MinigameType.TREASURE_HUNT)
+					mgs.add(mg.getName());
+			}
+			return MinigameUtils.tabCompleteMatch(mgs, args[0]);
+		}
+		return null;
 	}
 
 }

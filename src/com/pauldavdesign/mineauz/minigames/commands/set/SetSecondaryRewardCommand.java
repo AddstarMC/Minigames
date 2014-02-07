@@ -1,5 +1,8 @@
 package com.pauldavdesign.mineauz.minigames.commands.set;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -119,5 +122,18 @@ public class SetSecondaryRewardCommand implements ICommand{
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		if(args.length == 3 || (args.length == 2 && args[0].startsWith("$"))){
+			List<String> ls = new ArrayList<String>();
+			for(RewardRarity r : RewardRarity.values()){
+				ls.add(r.toString());
+			}
+			return MinigameUtils.tabCompleteMatch(ls, args[args.length - 1]);
+		}
+		return null;
 	}
 }

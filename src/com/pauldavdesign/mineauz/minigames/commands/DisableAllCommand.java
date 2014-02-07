@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import com.pauldavdesign.mineauz.minigames.MinigameData;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
@@ -70,6 +71,13 @@ public class DisableAllCommand implements ICommand {
 		}
 		sender.sendMessage(ChatColor.GRAY + String.valueOf(minigames.size()) + " Minigames disabled!");
 		return true;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+		return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
 	}
 
 }

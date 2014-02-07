@@ -1,5 +1,7 @@
 package com.pauldavdesign.mineauz.minigames.commands;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -69,6 +71,12 @@ public class RevertCommand implements ICommand{
 			player.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.revert.noGlobal"));
 		}
 		return true;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		return null;
 	}
 
 }

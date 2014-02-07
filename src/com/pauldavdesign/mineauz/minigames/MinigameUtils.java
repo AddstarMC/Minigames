@@ -366,6 +366,18 @@ public class MinigameUtils {
 		return val;
 	}
 	
+	public static List<String> tabCompleteMatch(List<String> orig, String match){
+		if(match.equals(""))
+			return orig;
+		else{
+			List<String> ret = new ArrayList<String>(orig.size());
+			for(String m : orig){
+				if(m.toLowerCase().startsWith(match.toLowerCase()))
+					ret.add(m);
+			}
+			return ret;
+		}
+	}
 //	public static void removePlayerArrows(MinigamePlayer player){
 //		try{
 //			Class.forName("net.minecraft.server.v1_5_R3.EntityPlayer");

@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -8,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class TeleportCommand implements ICommand {
@@ -182,6 +184,28 @@ public class TeleportCommand implements ICommand {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		if(args.length == 1){
+			List<String> pl = new ArrayList<String>();
+			for(Player p : plugin.getServer().getOnlinePlayers()){
+				pl.add(p.getName());
+			}
+			return MinigameUtils.tabCompleteMatch(pl, args[0]);
+		}
+		else if(args.length == 2){
+			List<String> pl = new ArrayList<String>(plugin.getServer().getOnlinePlayers().length + 2);
+			for(Player ply : plugin.getServer().getOnlinePlayers()){
+				pl.add(ply.getName());
+			}
+			pl.add("Start");
+			pl.add("Checkpoint");
+			return MinigameUtils.tabCompleteMatch(pl, args[1]);
+		}
+		return null;
 	}
 
 }

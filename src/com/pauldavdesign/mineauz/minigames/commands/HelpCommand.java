@@ -1,5 +1,7 @@
 package com.pauldavdesign.mineauz.minigames.commands;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -102,6 +104,12 @@ public class HelpCommand implements ICommand{
 		sender.sendMessage(ChatColor.BLUE + "/minigame set <Minigame> <parameter>...");
 		sender.sendMessage(MinigameUtils.getLang("command.help.info.set"));
 		return true;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		return null;
 	}
 
 }

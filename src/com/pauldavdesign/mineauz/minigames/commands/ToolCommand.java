@@ -1,5 +1,8 @@
 package com.pauldavdesign.mineauz.minigames.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -39,7 +42,8 @@ public class ToolCommand implements ICommand {
 
 	@Override
 	public String[] getParameters() {
-		return null;
+		return new String[] {"minigame", "start", "quit", "end", "lobby", 
+				"degenarea", "restoreblock", "regenarea", "select", "deselect"};
 	}
 
 	@Override
@@ -311,6 +315,23 @@ public class ToolCommand implements ICommand {
 			sender.sendMessage(ChatColor.RED + "You must have a Minigame Tool! Type \"/minigame tool\" to recieve one.");
 		}
 		return true;
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+			String alias, String[] args) {
+		if(args.length == 1){
+			List<String> par = new ArrayList<String>();
+			for(String p : getParameters()){
+				par.add(p);
+			}
+			return MinigameUtils.tabCompleteMatch(par, args[0]);
+		}
+		else if(args.length == 2 && args[0].equalsIgnoreCase("start")){
+			return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("red;blue"), args[1]);
+		}
+		List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+		return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
 	}
 	
 }
