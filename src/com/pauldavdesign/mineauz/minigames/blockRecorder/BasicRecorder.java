@@ -29,6 +29,7 @@ import org.bukkit.inventory.InventoryHolder;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class BasicRecorder implements Listener{
@@ -40,6 +41,10 @@ public class BasicRecorder implements Listener{
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
 		if(ply.isInMinigame()){
+			if(ply.getMinigame().getType() != MinigameType.SINGLEPLAYER && !ply.getMinigame().hasStarted()){
+				event.setCancelled(true);
+				return;
+			}
 			Minigame mgm = ply.getMinigame();
 			RecorderData d = mgm.getBlockRecorder();
 			if(((d.getWhitelistMode() && d.getWBBlocks().contains(event.getBlock().getType())) || 
@@ -80,6 +85,10 @@ public class BasicRecorder implements Listener{
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
 		if(ply.isInMinigame() && !event.isCancelled()){
+			if(ply.getMinigame().getType() != MinigameType.SINGLEPLAYER && !ply.getMinigame().hasStarted()){
+				event.setCancelled(true);
+				return;
+			}
 			Minigame mgm = ply.getMinigame();
 			RecorderData d = mgm.getBlockRecorder();
 			if(((d.getWhitelistMode() && d.getWBBlocks().contains(event.getBlock().getType())) || 
