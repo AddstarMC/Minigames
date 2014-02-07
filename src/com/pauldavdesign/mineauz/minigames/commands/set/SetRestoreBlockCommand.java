@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -34,7 +33,7 @@ public class SetRestoreBlockCommand implements ICommand {
 	@Override
 	public String getDescription() {
 		return "Adds, removes, lists or clears all restore blocks in a Minigame. Note: Only needed for blocks a player won't interact with (ie: Dispensers). " +
-				"You must be standing on the block to assign it, or type \"-l\" to assign it to what you are looking at.";
+				"You must be standing on the block to assign it.";
 	}
 
 	@Override
@@ -67,22 +66,10 @@ public class SetRestoreBlockCommand implements ICommand {
 			String label, String[] args) {
 		if(args != null){
 			Player player = (Player)sender;
-			boolean looking = false;
-			for(String arg : args){
-				if(arg.equalsIgnoreCase("-l")){
-					looking = true;
-				}
-			}
 			if(args.length >= 2 && args[0].equalsIgnoreCase("add")){
 				Location loc;
-				if(!looking){
-					loc = player.getLocation().getBlock().getLocation().clone();
-					loc.setY(loc.getY() - 0.1);
-				}
-				else{
-					List<Block> blocks = player.getLineOfSight(null, 20);
-					loc = blocks.get(blocks.size() - 1).getLocation();
-				}
+				loc = player.getLocation().getBlock().getLocation().clone();
+				loc.setY(loc.getY() - 0.1);
 				
 				RestoreBlock rb = new RestoreBlock(args[1], loc.getBlock().getType(), loc);
 				minigame.addRestoreBlock(rb);
