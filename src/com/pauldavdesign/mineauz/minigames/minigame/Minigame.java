@@ -1786,6 +1786,9 @@ public class Minigame {
 	public void saveMinigame(){
 		MinigameSave minigame = new MinigameSave(name, "config");
 		
+		minigame.getConfig().set(name + ".startpos", null);
+		minigame.getConfig().set(name + ".startposred", null);
+		minigame.getConfig().set(name + ".startposblue", null);
 		if(!getStartLocations().isEmpty()){
 			for(int i = 0; i < getStartLocations().size(); i++){
 				Minigames.plugin.mdata.minigameSetLocations(name, getStartLocations().get(i), "startpos." + String.valueOf(i), minigame.getConfig());
