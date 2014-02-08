@@ -16,6 +16,7 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
@@ -268,6 +269,16 @@ public class BasicRecorder implements Listener{
 						mg.getBlockRecorder().addEntity(event.getVehicle(), pdata.getMinigamePlayer(ply), false);
 					}
 				}
+			}
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	private void entityExplode(EntityExplodeEvent event){
+		for(Minigame mg : Minigames.plugin.mdata.getAllMinigames().values()){
+			if(!mg.hasPlayers() && !mg.hasStarted() && mg.getBlockRecorder().hasRegenArea() && mg.getBlockRecorder().blockInRegenArea(event.getLocation())){
+				event.setCancelled(true);
+				break;
 			}
 		}
 	}
