@@ -189,10 +189,10 @@ public class Events implements Listener{
 				public void run() {
 					ply.getPlayer().teleport(floc);
 					ply.getPlayer().setFireTicks(0);
+					ply.restorePlayerData();
 				}
 			}, 5L);
 			
-			ply.restorePlayerData();
 			plugin.getLogger().info(ply.getName() + "'s data has been restored from file.");
 		}
 		
