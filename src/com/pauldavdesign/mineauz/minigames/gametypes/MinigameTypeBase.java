@@ -39,24 +39,17 @@ public abstract class MinigameTypeBase implements Listener{
 	
 	public abstract void endMinigame(MinigamePlayer player, Minigame mgm);
 	
-	public void callGeneralQuit(final MinigamePlayer player, final Minigame minigame){
-		
-		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-			
-			@Override
-			public void run() {
-				if(!player.getPlayer().isDead()){
-					if(player.getPlayer().getWorld() != minigame.getQuitPosition().getWorld() && player.getPlayer().hasPermission("minigame.set.quit") && plugin.getConfig().getBoolean("warnings")){
-						player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Quit location is across worlds! This may cause some server performance issues!", "error");
-					}
-					pdata.minigameTeleport(player, minigame.getQuitPosition());
+	public void callGeneralQuit(MinigamePlayer player, Minigame minigame){
+			if(!player.getPlayer().isDead()){
+				if(player.getPlayer().getWorld() != minigame.getQuitPosition().getWorld() && player.getPlayer().hasPermission("minigame.set.quit") && plugin.getConfig().getBoolean("warnings")){
+					player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Quit location is across worlds! This may cause some server performance issues!", "error");
 				}
-				else{
-					player.setQuitPos(minigame.getQuitPosition());
-					player.setRequiredQuit(true);
-				}
+				pdata.minigameTeleport(player, minigame.getQuitPosition());
 			}
-		});
+			else{
+				player.setQuitPos(minigame.getQuitPosition());
+				player.setRequiredQuit(true);
+			}
 	}
 	
 	@SuppressWarnings("deprecation")

@@ -391,17 +391,8 @@ public class PlayerData {
 				
 				player.setLoadout(null);
 
-				final MinigamePlayer ply = player;
-				if(!player.getPlayer().isDead() && ply.getPlayer().isOnline()){
-					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-						
-						@Override
-						public void run() {
-							if(ply.getPlayer().isOnline() && !ply.getPlayer().isDead()){
-								ply.restorePlayerData();
-							}
-						}
-					});
+				if(player.getPlayer().isOnline() && !player.getPlayer().isDead()){
+					player.restorePlayerData();
 				}
 
 				player.removeMinigame();
@@ -458,8 +449,8 @@ public class PlayerData {
 					player.getPlayer().showPlayer(pl.getPlayer());
 				}
 				
-				ply.setAllowTeleport(true);
-				ply.setAllowGamemodeChange(true);
+				player.setAllowTeleport(true);
+				player.setAllowGamemodeChange(true);
 				
 				if(mgm.getPlayers().size() == 0 && !mgm.isRegenerating()){
 					HandlerList.unregisterAll(mgm.getBlockRecorder());
@@ -489,7 +480,7 @@ public class PlayerData {
 					
 					@Override
 					public void run() {
-						if(ply.getPlayer().isOnline()){
+						if(ply.getPlayer().isOnline() && !ply.getPlayer().isDead()){
 							ply.restorePlayerData();
 						}
 					}
@@ -536,7 +527,6 @@ public class PlayerData {
 			
 			player.removeMinigame();
 			mgm.removePlayer(player);
-//			mgm.removePlayersLoadout(player);
 			player.setLoadout(null);
 			player.getPlayer().setFallDistance(0);
 			mdata.minigameType(mgm.getType()).endMinigame(player, mgm);

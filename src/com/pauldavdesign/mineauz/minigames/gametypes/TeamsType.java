@@ -231,9 +231,6 @@ public class TeamsType extends MinigameTypeBase{
 			}
 		}
 		
-		if(player.getPlayer().isDead()){
-			player.getPlayer().setHealth(2);
-		}
 		callGeneralQuit(player, mgm);
 		
 		if(mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0) && !forced){
