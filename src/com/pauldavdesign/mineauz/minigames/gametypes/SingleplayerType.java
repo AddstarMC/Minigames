@@ -80,6 +80,8 @@ public class SingleplayerType extends MinigameTypeBase{
 		else if(mgm.isSpMaxPlayers()){
 			player.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
 		}
+		else if(mgm.getStartLocations().size() == 0)
+			player.sendMessage(MinigameUtils.getLang("minigame.error.noStart"), "error");
 		return false;
 	}
 	

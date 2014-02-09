@@ -36,7 +36,7 @@ public class FreeForAllType extends MinigameTypeBase{
 	@Override
 	public boolean joinMinigame(MinigamePlayer player, Minigame mgm) {
 		if(mgm.getQuitPosition() != null && (mgm.isEnabled() || player.getPlayer().hasPermission("minigame.join.disabled")) && 
-				mgm.getEndPosition() != null && mgm.getLobbyPosition() != null){
+				mgm.getEndPosition() != null && mgm.getLobbyPosition() != null && mgm.getStartLocations().size() > 0){
 			Location lobby = mgm.getLobbyPosition();
 			if(player.getPlayer().getWorld() != lobby.getWorld() && player.getPlayer().hasPermission("minigame.set.lobby") && plugin.getConfig().getBoolean("warnings")){
 				player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Lobby location is across worlds! This may cause some server performance issues!", "error");
@@ -140,6 +140,8 @@ public class FreeForAllType extends MinigameTypeBase{
 		else if(mgm.getLobbyPosition() == null){
 			player.sendMessage(MinigameUtils.getLang("minigame.error.noLobby"), "error");
 		}
+		else if(mgm.getStartLocations().size() == 0)
+			player.sendMessage(MinigameUtils.getLang("minigame.error.noStart"), "error");
 		return false;
 	}
 

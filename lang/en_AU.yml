@@ -84,6 +84,7 @@ minigame:
   lateJoinWait: "Please wait %d seconds and try again."
   error:
     noGametype: "That gametype does not exist!"
+    noStart: "This Minigame has no start position!"
     noQuit: "This Minigame has no quit position!"
     noEnd: "This Minigame has no end position!"
     noLobby: "This Minigame has no lobby position!"
