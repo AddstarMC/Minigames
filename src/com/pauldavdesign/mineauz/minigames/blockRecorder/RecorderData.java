@@ -37,6 +37,7 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
@@ -211,27 +212,47 @@ public class RecorderData implements Listener{
 					}
 					
 					if(!isRight){
-						bdata.setItems(chest.getInventory().getContents().clone());
+						ItemStack[] items = new ItemStack[chest.getInventory().getContents().length];
+						for(int i = 0; i < items.length; i++){
+							if(chest.getInventory().getContents()[i] != null)
+								items[i] = chest.getInventory().getContents()[i].clone();
+						}
+						bdata.setItems(items);
 						if(minigame.isRandomizeChests())
 							bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
 					}
 					else{
 						if(secondChest.getItems() == null){
-							secondChest.setItems(chest.getInventory().getContents().clone());
+							ItemStack[] items = new ItemStack[chest.getInventory().getContents().length];
+							for(int i = 0; i < items.length; i++){
+								if(chest.getInventory().getContents()[i] != null)
+									items[i] = chest.getInventory().getContents()[i].clone();
+							}
+							secondChest.setItems(items);
 							if(minigame.isRandomizeChests())
 								secondChest.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
 						}
 					}
 				}
 				else{
-					bdata.setItems(chest.getInventory().getContents().clone());
+					ItemStack[] items = new ItemStack[chest.getInventory().getContents().length];
+					for(int i = 0; i < items.length; i++){
+						if(chest.getInventory().getContents()[i] != null)
+							items[i] = chest.getInventory().getContents()[i].clone();
+					}
+					bdata.setItems(items);
 					if(minigame.isRandomizeChests())
 						bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
 				}
 			}
 			else if(block instanceof InventoryHolder){
 				InventoryHolder inv = (InventoryHolder) block;
-				bdata.setItems(inv.getInventory().getContents().clone());
+				ItemStack[] items = new ItemStack[inv.getInventory().getContents().length];
+				for(int i = 0; i < items.length; i++){
+					if(inv.getInventory().getContents()[i] != null)
+						items[i] = inv.getInventory().getContents()[i].clone();
+				}
+				bdata.setItems(items);
 			}
 			else if(block.getType() == Material.FLOWER_POT){
 				bdata.setSpecialData("contents", block.getData());
