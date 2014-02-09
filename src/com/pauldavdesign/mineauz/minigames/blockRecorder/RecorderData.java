@@ -26,6 +26,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -599,8 +600,13 @@ public class RecorderData implements Listener{
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	private void waterFlow(BlockFromToEvent event){
-		if(minigame.isRegenerating() && hasRegenArea() && blockInRegenArea(event.getBlock().getLocation())){
+		if(minigame.isRegenerating() && hasRegenArea() && blockInRegenArea(event.getBlock().getLocation()))
 			event.setCancelled(true);
-		}
+	}
+	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+	private void fireSpread(BlockSpreadEvent event){
+		if(minigame.isRegenerating() && hasRegenArea() && blockInRegenArea(event.getBlock().getLocation()))
+			event.setCancelled(true);
 	}
 }
