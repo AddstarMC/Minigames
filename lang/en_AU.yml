@@ -20,12 +20,12 @@ player:
     plyMsg: "You have placed your bet, good luck!"
     plyNoBet: "You can not bet nothing!"
     incorrectAmount: "You haven't placed the correct bet amount for this round!"
-    incorrectAmountInfo: "You must bet $%d"
+    incorrectAmountInfo: "You must bet $%s"
     incorrectItem: "You haven't bet the correct item for this round!"
-    incorrectItemInfo: "You must bet %d %s"
+    incorrectItemInfo: "You must bet %s %s"
     notEnoughMoney: "You haven't got enough money!"
-    notEnoughMoneyInfo: "You must have $%d"
-    winMoney: "You won $%d"
+    notEnoughMoneyInfo: "You must have $%s"
+    winMoney: 'You won $%s'
   checkpoint:
     revert: "You have been reverted to your checkpoint."
     deathRevert: "Bad luck! Returning to checkpoint."
@@ -41,7 +41,7 @@ player:
     broadcastScore: "Score: %s"
     consMsg: "%s completed %s"
     awardMoney: "You have been awarded $%s"
-    awardItem: "You have been awarded with %d %s"
+    awardItem: "You have been awarded with %s %s"
     team:
       win: "%s won %s"
       tie: "%s tied against %s in %s"
@@ -75,13 +75,13 @@ player:
 minigame:
   full: "Sorry, this Minigame is full."
   started: "The game has already started. Please try again later."
-  scoreToWin: "Score to win: %d"
-  livesLeft: "Lives left: %d"
+  scoreToWin: "Score to win: %s"
+  livesLeft: "Lives left: %s"
   timeLeft: "%s left."
-  waitingForPlayers: "Waiting for %d more players."
+  waitingForPlayers: "Waiting for %s more players."
   skipWaitTime: "Minigame is full, skipping player wait time."
-  lateJoin: "You will join in %d seconds..."
-  lateJoinWait: "Please wait %d seconds and try again."
+  lateJoin: "You will join in %s seconds..."
+  lateJoinWait: "Please wait %s seconds and try again."
   error:
     noGametype: "That gametype does not exist!"
     noStart: "This Minigame has no start position!"
@@ -126,7 +126,7 @@ minigame:
     consSpawn: "%s treasure chest spawned at: %s"
     plySpawn: "A treasure chest has appeared within %sm of %s!"
     plyDespawn: "Times up! The %s treasure was not found and has been removed from the world."
-    plyDespawnCoords: "Coordinates: X:%d, Y:%d, Z%d"
+    plyDespawnCoords: "Coordinates: X:%s, Y:%s, Z%s"
     hint1:
       north: "North"
       east: "East"
@@ -137,7 +137,7 @@ minigame:
     hint3: 
       above: "above"
       below: "below"
-      hint: "The %s treasure is %dm %s sea level."
+      hint: "The %s treasure is %sm %s sea level."
     hint4: "The %s treasure resides in the %s biome."
     playerSpecificHint:
       distance1: "Oh my, you're so close! I can smell its riches!"
@@ -146,10 +146,10 @@ minigame:
       distance4: "You are close, but no cigar!"
       distance5: "You are still a fair way off"
       distance6: "You are not even close to finding the treasure!"
-      timeLeft: "Time Left: %d minutes"
+      timeLeft: "Time Left: %s minutes"
       noUse: "You currently cannot get a hint for the %s treasure hunt!"
       nextUse: "Next Use: %s"
-      treasureTimeLeft: "Treasure Time Left: %d minutes"
+      treasureTimeLeft: "Treasure Time Left: %s minutes"
       globalHints: "Global Hints:"
       noHint: "Sorry, there are no public hints to be displayed right now"
       wrongWorld:
@@ -197,7 +197,7 @@ sign:
     invalidItem: "There is no material by the name '%s!"
     noId: "There is no item using the ID '%s'!"
     clickSign: "Right click this sign with the item you'd like to set the reward to. (10s left)"
-    rewarded: "You have been awarded with %d %s"
+    rewarded: "You have been awarded with %s %s"
   spectate:
     createPermission: "You do not have permission to create a Minigame specate sign!"
     usePermission: "You do not have permission to use a Minigame spectate sign!"
@@ -214,14 +214,14 @@ sign:
     invalid: "Invalid teleport sign!"
 
 time:
-  weeks: "%d weeks"
-  days: "%d days"
-  hours: "%d hours"
-  minutes: "%d minutes"
-  seconds: "%d seconds"
+  weeks: "%s weeks"
+  days: "%s days"
+  hours: "%s hours"
+  minutes: "%s minutes"
+  seconds: "%s seconds"
   and: "and"
   startup:
-    time: "%dsec."
+    time: "%ssec."
     waitingForPlayers: "Waiting for players:"
     minigameStarts: "Minigame starts in:"
     timerPaused: "Start timer paused."

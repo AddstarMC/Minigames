@@ -25,15 +25,13 @@ multiplayer:
     time: 30
   ctf:
     flagrespawntime: 60
-  broadcastwin: true
-  
-singleplayer:
-  broadcastcompletion: true
 
 disabledCommands:
   - home
   - warp
   - spawn
+  
+broadcastCompletion: true
   
 regeneration:
   maxDelay: 10

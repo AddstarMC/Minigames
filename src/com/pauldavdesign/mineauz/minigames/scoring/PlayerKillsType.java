@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
@@ -91,19 +92,18 @@ public class PlayerKillsType extends ScoreTypeBase{
 			}
 			
 			if(mgm.getBlueTeam().isEmpty() && mgm.getRedTeam().isEmpty()){
-//				pdata.addPlayerScore(attacker);
 				attacker.addScore();
 				mgm.setScore(attacker, attacker.getScore());
 			
 				if(mgm.getMaxScore() != 0 && attacker.getScore() >= mgm.getMaxScorePerPlayer()){
-					List<MinigamePlayer> conPlayers = new ArrayList<MinigamePlayer>();
-					conPlayers.addAll(mgm.getPlayers());
-					conPlayers.remove(attacker);
-					for(MinigamePlayer pl : conPlayers){
-						if(pl != attacker){
-							pdata.quitMinigame(pl, false);
-						}
+					List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - 1);
+					List<MinigamePlayer> winner = new ArrayList<MinigamePlayer>(1);
+					winner.add(attacker);
+					for(MinigamePlayer player : mgm.getPlayers()){
+						if(player != attacker)
+							losers.add(player);
 					}
+					pdata.endMinigame(mgm, winner, losers);
 				}
 			}
 			else{
@@ -142,12 +142,32 @@ public class PlayerKillsType extends ScoreTypeBase{
 						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.kills.finalKill", attacker.getName(), ply.getName()), null, null);
 						if(ateam == 1){
 							if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer()){
-								pdata.endTeamMinigame(1, mgm);
+								List<MinigamePlayer> w;
+								List<MinigamePlayer> l;
+								l = new ArrayList<MinigamePlayer>(mgm.getRedTeam().size());
+								w = new ArrayList<MinigamePlayer>(mgm.getBlueTeam().size());
+								for(OfflinePlayer pl : mgm.getRedTeam()){
+									l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+								}
+								for(OfflinePlayer pl : mgm.getBlueTeam()){
+									w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+								}
+								plugin.pdata.endMinigame(mgm, w, l);
 							}
 						}
 						else{
 							if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer()){
-								pdata.endTeamMinigame(0, mgm);
+								List<MinigamePlayer> w;
+								List<MinigamePlayer> l;
+								w = new ArrayList<MinigamePlayer>(mgm.getRedTeam().size());
+								l = new ArrayList<MinigamePlayer>(mgm.getBlueTeam().size());
+								for(OfflinePlayer pl : mgm.getRedTeam()){
+									w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+								}
+								for(OfflinePlayer pl : mgm.getBlueTeam()){
+									l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+								}
+								plugin.pdata.endMinigame(mgm, w, l);
 							}
 						}
 					}

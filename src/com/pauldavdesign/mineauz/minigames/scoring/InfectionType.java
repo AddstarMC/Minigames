@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
-import com.pauldavdesign.mineauz.minigames.events.EndTeamMinigameEvent;
+import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
@@ -92,7 +93,17 @@ public class InfectionType extends ScoreTypeBase{
 					}
 					if(mgm.getBlueTeam().isEmpty()){
 						event.getEntity().setHealth(2);
-						pdata.endTeamMinigame(0, mgm);
+						List<MinigamePlayer> w;
+						List<MinigamePlayer> l;
+						w = new ArrayList<MinigamePlayer>(mgm.getRedTeam().size());
+						l = new ArrayList<MinigamePlayer>(mgm.getBlueTeam().size());
+						for(OfflinePlayer pl : mgm.getRedTeam()){
+							w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+						}
+						for(OfflinePlayer pl : mgm.getBlueTeam()){
+							l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+						}
+						pdata.endMinigame(mgm, w, l);
 					}
 				}
 				else{
@@ -108,16 +119,14 @@ public class InfectionType extends ScoreTypeBase{
 	}
 	
 	@EventHandler
-	private void endTeamMinigame(EndTeamMinigameEvent event){
+	private void endTeamMinigame(EndMinigameEvent event){
 		if(event.getMinigame().getScoreType().equals("infection")){
 			List<MinigamePlayer> infect = new ArrayList<MinigamePlayer>();
 			infect.addAll(infected);
 			for(MinigamePlayer inf : infect){
-				if(event.getWinnningPlayers().contains(inf)){
-					if(event.getWinningTeamInt() == 0){
-						event.getWinnningPlayers().remove(inf);
-						event.getLosingPlayers().add(inf);
-					}
+				if(event.getWinners().contains(inf)){
+					event.getWinners().remove(inf);
+					event.getLosers().add(inf);
 					infected.remove(inf);
 				}
 			}

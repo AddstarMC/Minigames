@@ -142,15 +142,15 @@ public class Events implements Listener{
 	public void onPlayerDisconnect(PlayerQuitEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply.isInMinigame()){
-			if(!ply.getPlayer().isDead()){
-				ply.restorePlayerData();
-				pdata.minigameTeleport(ply, ply.getMinigame().getQuitPosition());
-			}
-			else{
+			if(ply.getPlayer().isDead()){
 				ply.getOfflineMinigamePlayer().setLoginLocation(ply.getMinigame().getQuitPosition());
 				ply.getOfflineMinigamePlayer().savePlayerData();
 			}
 			pdata.quitMinigame(pdata.getMinigamePlayer(event.getPlayer()), false);
+		}
+		else if(ply.isRequiredQuit()){
+			ply.getOfflineMinigamePlayer().setLoginLocation(ply.getQuitPos());
+			ply.getOfflineMinigamePlayer().savePlayerData();
 		}
 		
 		pdata.removeMinigamePlayer(event.getPlayer());
@@ -180,18 +180,11 @@ public class Events implements Listener{
 		
 		File pldata = new File(plugin.getDataFolder() + "/playerdata/inventories/" + event.getPlayer().getName().toLowerCase() + ".yml");
 		if(pldata.exists()){
-			final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+			MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 			ply.setOfflineMinigamePlayer(new OfflineMinigamePlayer(event.getPlayer().getName()));
-			final Location floc = ply.getOfflineMinigamePlayer().getLoginLocation();
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					ply.getPlayer().teleport(floc);
-					ply.getPlayer().setFireTicks(0);
-					ply.restorePlayerData();
-				}
-			}, 5L);
+			Location floc = ply.getOfflineMinigamePlayer().getLoginLocation();
+			ply.setRequiredQuit(true);
+			ply.setQuitPos(floc);
 			
 			plugin.getLogger().info(ply.getName() + "'s data has been restored from file.");
 		}

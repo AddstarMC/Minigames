@@ -1,6 +1,7 @@
 package com.pauldavdesign.mineauz.minigames.events;
 
-import org.bukkit.entity.Player;
+import java.util.List;
+
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -9,12 +10,14 @@ import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class EndMinigameEvent extends Event{
 	private static final HandlerList handlers = new HandlerList();
-	private MinigamePlayer player = null;
+	private List<MinigamePlayer> winners = null;
+	private List<MinigamePlayer> losers = null;
 	private Minigame mgm = null;
 	private boolean cancelled = false;
 	
-	public EndMinigameEvent(MinigamePlayer player, Minigame minigame){
-		this.player = player;
+	public EndMinigameEvent(List<MinigamePlayer> winners, List<MinigamePlayer> losers, Minigame minigame){
+		this.winners = winners;
+		this.losers = losers;
 		mgm = minigame;
 	}
 
@@ -25,13 +28,13 @@ public class EndMinigameEvent extends Event{
 	public void setCancelled(boolean cancelled) {
 		this.cancelled = cancelled;
 	}
-
-	public MinigamePlayer getMinigamePlayer() {
-		return player;
+	
+	public List<MinigamePlayer> getWinners(){
+		return winners;
 	}
 	
-	public Player getPlayer(){
-		return player.getPlayer();
+	public List<MinigamePlayer> getLosers(){
+		return losers;
 	}
 
 	public Minigame getMinigame() {

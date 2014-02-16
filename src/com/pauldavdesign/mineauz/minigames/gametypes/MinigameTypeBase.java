@@ -9,17 +9,14 @@ import org.bukkit.inventory.ItemStack;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
-import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardItem;
 
 public abstract class MinigameTypeBase implements Listener{
 	private static Minigames plugin;
-	private PlayerData pdata;
 	
 	protected MinigameTypeBase(){
 		plugin = Minigames.plugin;
-		pdata = plugin.pdata;
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 	
@@ -37,14 +34,14 @@ public abstract class MinigameTypeBase implements Listener{
 	
 	public abstract void quitMinigame(MinigamePlayer player, Minigame mgm, boolean forced);
 	
-	public abstract void endMinigame(MinigamePlayer player, Minigame mgm);
+	public abstract void endMinigame(List<MinigamePlayer> winners, List<MinigamePlayer> losers, Minigame mgm);
 	
 	public void callGeneralQuit(MinigamePlayer player, Minigame minigame){
 			if(!player.getPlayer().isDead()){
 				if(player.getPlayer().getWorld() != minigame.getQuitPosition().getWorld() && player.getPlayer().hasPermission("minigame.set.quit") && plugin.getConfig().getBoolean("warnings")){
 					player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Quit location is across worlds! This may cause some server performance issues!", "error");
 				}
-				pdata.minigameTeleport(player, minigame.getQuitPosition());
+				player.teleport(minigame.getQuitPosition());
 			}
 			else{
 				player.setQuitPos(minigame.getQuitPosition());

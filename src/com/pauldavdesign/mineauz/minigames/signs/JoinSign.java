@@ -80,7 +80,7 @@ public class JoinSign implements MinigameSign {
 							return false;
 						}
 					}
-					plugin.pdata.joinMinigame(player, mgm);
+					plugin.pdata.joinMinigame(player, mgm, false, 0.0);
 					return true;
 				}
 				else if(!mgm.isEnabled()){

@@ -1,10 +1,12 @@
 package com.pauldavdesign.mineauz.minigames.scoring;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -195,11 +197,31 @@ public class CTFType extends ScoreTypeBase{
 											mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.captureFinal", ply.getName(), ChatColor.BLUE + "Blue Team"), null, null);
 										}
 										if(team == 1){
-											pdata.endTeamMinigame(1, mgm);
+											List<MinigamePlayer> w;
+											List<MinigamePlayer> l;
+											l = new ArrayList<MinigamePlayer>(mgm.getRedTeam().size());
+											w = new ArrayList<MinigamePlayer>(mgm.getBlueTeam().size());
+											for(OfflinePlayer pl : mgm.getRedTeam()){
+												l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+											}
+											for(OfflinePlayer pl : mgm.getBlueTeam()){
+												w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+											}
+											plugin.pdata.endMinigame(mgm, w, l);
 											mgm.resetFlags();
 										}
 										else{
-											pdata.endTeamMinigame(0, mgm);
+											List<MinigamePlayer> w;
+											List<MinigamePlayer> l;
+											w = new ArrayList<MinigamePlayer>(mgm.getRedTeam().size());
+											l = new ArrayList<MinigamePlayer>(mgm.getBlueTeam().size());
+											for(OfflinePlayer pl : mgm.getRedTeam()){
+												w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+											}
+											for(OfflinePlayer pl : mgm.getBlueTeam()){
+												l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+											}
+											plugin.pdata.endMinigame(mgm, w, l);
 											mgm.resetFlags();
 										}
 									}
@@ -303,10 +325,12 @@ public class CTFType extends ScoreTypeBase{
 	@EventHandler
 	private void playerEndMinigame(EndMinigameEvent event){
 		if(event.getMinigame().getScoreType().equals("ctf")){
-			if(event.getMinigame().isFlagCarrier(event.getMinigamePlayer())){
-				event.getMinigame().getFlagCarrier(event.getMinigamePlayer()).respawnFlag();
-				event.getMinigame().getFlagCarrier(event.getMinigamePlayer()).stopCarrierParticleEffect();
-				event.getMinigame().removeFlagCarrier(event.getMinigamePlayer());
+			for(MinigamePlayer pl : event.getWinners()){
+				if(event.getMinigame().isFlagCarrier(pl)){
+					event.getMinigame().getFlagCarrier(pl).respawnFlag();
+					event.getMinigame().getFlagCarrier(pl).startCarrierParticleEffect(pl.getPlayer());
+					event.getMinigame().removeFlagCarrier(pl);
+				}
 			}
 			if(event.getMinigame().getPlayers().size() == 1){
 				event.getMinigame().resetFlags();

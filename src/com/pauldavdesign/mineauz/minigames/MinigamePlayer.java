@@ -18,8 +18,8 @@ import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class MinigamePlayer {
 	private Player player;
-	private boolean allowTP = true;
-	private boolean allowGMChange = true;
+	private boolean allowTP = false;
+	private boolean allowGMChange = false;
 	private Scoreboard lastScoreboard = null;
 	
 	private Minigame minigame = null;
@@ -481,5 +481,26 @@ public class MinigamePlayer {
 
 	public StoredPlayerCheckpoints getStoredPlayerCheckpoints() {
 		return spc;
+	}
+	
+	public void setGamemode(GameMode gamemode){
+		setAllowGamemodeChange(true);
+		player.setGameMode(gamemode);
+		setAllowGamemodeChange(false);
+	}
+
+	public boolean teleport(Location location){
+		boolean bool = false;
+		
+		setAllowTeleport(true);
+		bool = getPlayer().teleport(location);
+		setAllowTeleport(false);
+		
+		return bool;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void updateInventory(){
+		getPlayer().updateInventory();
 	}
 }

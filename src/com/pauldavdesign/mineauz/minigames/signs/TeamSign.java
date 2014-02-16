@@ -66,7 +66,7 @@ public class TeamSign implements MinigameSign {
 		if(player.isInMinigame()){
 			Minigame mgm = player.getMinigame();
 			if(mgm.getType() == MinigameType.TEAMS){
-				if(mgm.hasStarted() && !sign.getLine(2).equals(ChatColor.GRAY + "Neutral") &&
+				if(mgm.isNotWaitingForPlayers() && !sign.getLine(2).equals(ChatColor.GRAY + "Neutral") &&
 						((mgm.getRedTeam().contains(player.getPlayer()) && sign.getLine(2).equals(ChatColor.BLUE + "Blue") || 
 								(mgm.getBlueTeam().contains(player.getPlayer()) && sign.getLine(2).equals(ChatColor.RED + "Red"))))){
 					player.getPlayer().damage(player.getPlayer().getHealth());
@@ -82,7 +82,7 @@ public class TeamSign implements MinigameSign {
 							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
 						}
 					}
-					else if(sign.getLine(2).equals(ChatColor.GRAY + "Neutral") && !mgm.hasStarted()){
+					else if(sign.getLine(2).equals(ChatColor.GRAY + "Neutral") && !mgm.isNotWaitingForPlayers()){
 						mgm.removeRedTeamPlayer(player);
 						mgm.removeBlueTeamPlayer(player);
 						plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("sign.team.autoAssignAnnounce", player.getName()), null, player);
@@ -101,7 +101,7 @@ public class TeamSign implements MinigameSign {
 							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
 						}
 					}
-					else if(sign.getLine(2).equals(ChatColor.GRAY + "Neutral") && !mgm.hasStarted()){
+					else if(sign.getLine(2).equals(ChatColor.GRAY + "Neutral") && !mgm.isNotWaitingForPlayers()){
 						mgm.removeRedTeamPlayer(player);
 						mgm.removeBlueTeamPlayer(player);
 						plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("sign.team.autoAssignAnnounce", player.getName()), null, player);
@@ -110,7 +110,7 @@ public class TeamSign implements MinigameSign {
 					return true;
 				}
 				else{
-					if(!mgm.hasStarted()){
+					if(!mgm.isNotWaitingForPlayers()){
 						if(sign.getLine(2).equals(ChatColor.RED + "Red")){
 							if(mgm.getRedTeam().size() <= mgm.getBlueTeam().size()){
 								mgm.addRedTeamPlayer(player);

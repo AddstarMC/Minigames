@@ -63,7 +63,20 @@ public class EndCommand implements ICommand{
 		if(args == null && sender instanceof Player){
 			MinigamePlayer ply = plugin.pdata.getMinigamePlayer((Player)sender);
 			if(ply.isInMinigame()){
-				plugin.pdata.endMinigame(ply);
+				if(ply.getMinigame().getType() != MinigameType.SINGLEPLAYER){
+					List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(1);
+					List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(ply.getMinigame().getPlayers().size());
+					w.add(ply);
+					l.addAll(ply.getMinigame().getPlayers());
+					l.remove(ply);
+					
+					plugin.pdata.endMinigame(ply.getMinigame(), w, l);
+					sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to win the Minigame.");
+				}
+				else{
+					plugin.pdata.endMinigame(ply);
+					sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to win the Minigame.");
+				}
 			}
 			else {
 				sender.sendMessage(ChatColor.RED + "Error: You are not in a minigame!");
@@ -94,16 +107,15 @@ public class EndCommand implements ICommand{
 				}
 				
 				if(ply != null && ply.isInMinigame()){
-					if(ply.getMinigame().getType() == MinigameType.TEAMS){
-						int team = 0;
-						for(OfflinePlayer pl : ply.getMinigame().getBlueTeam()){
-							if(pl.getName().equals(ply.getName())){
-								team = 1;
-								break;
-							}
-						}
-						plugin.pdata.endTeamMinigame(team, ply.getMinigame());
-						sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " and their team to win the Minigame.");
+					if(ply.getMinigame().getType() != MinigameType.SINGLEPLAYER){
+						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(1);
+						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(ply.getMinigame().getPlayers().size());
+						w.add(ply);
+						l.addAll(ply.getMinigame().getPlayers());
+						l.remove(ply);
+						
+						plugin.pdata.endMinigame(ply.getMinigame(), w, l);
+						sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to win the Minigame.");
 					}
 					else{
 						plugin.pdata.endMinigame(ply);
@@ -112,7 +124,29 @@ public class EndCommand implements ICommand{
 				}
 				else if(args.length >= 2 && teamnum != -1 && plugin.mdata.hasMinigame(args[1])){
 					if(plugin.mdata.getMinigame(args[1]).hasPlayers()){
-						plugin.pdata.endTeamMinigame(teamnum, plugin.mdata.getMinigame(args[1]));
+						List<MinigamePlayer> w;
+						List<MinigamePlayer> l;
+						if(teamnum == 0){
+							w = new ArrayList<MinigamePlayer>(minigame.getRedTeam().size());
+							l = new ArrayList<MinigamePlayer>(minigame.getBlueTeam().size());
+							for(OfflinePlayer pl : minigame.getRedTeam()){
+								w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+							}
+							for(OfflinePlayer pl : ply.getMinigame().getBlueTeam()){
+								l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+							}
+						}
+						else{
+							l = new ArrayList<MinigamePlayer>(minigame.getRedTeam().size());
+							w = new ArrayList<MinigamePlayer>(minigame.getBlueTeam().size());
+							for(OfflinePlayer pl : minigame.getRedTeam()){
+								l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+							}
+							for(OfflinePlayer pl : minigame.getBlueTeam()){
+								w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+							}
+						}
+						plugin.pdata.endMinigame(minigame, w, l);
 						if(teamnum == 1){
 							sender.sendMessage(ChatColor.GRAY + "You forced " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " to win the Minigame.");
 						}

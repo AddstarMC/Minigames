@@ -3,28 +3,21 @@ package com.pauldavdesign.mineauz.minigames.gametypes;
 import java.util.Calendar;
 import java.util.List;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import com.pauldavdesign.mineauz.minigames.MinigameData;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
-import com.pauldavdesign.mineauz.minigames.MinigameSave;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
-import com.pauldavdesign.mineauz.minigames.RestoreBlock;
 import com.pauldavdesign.mineauz.minigames.StoredPlayerCheckpoints;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
-import com.pauldavdesign.mineauz.minigames.sql.SQLPlayer;
 
 public class SingleplayerType extends MinigameTypeBase{
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
-	private MinigameData mdata = plugin.mdata;
 	
 	public SingleplayerType() {
 		setType(MinigameType.SINGLEPLAYER);
@@ -32,114 +25,48 @@ public class SingleplayerType extends MinigameTypeBase{
 	
 	@Override
 	public boolean joinMinigame(MinigamePlayer player, Minigame mgm){
-		if(mgm.getQuitPosition() != null && (mgm.isEnabled() || player.getPlayer().hasPermission("minigame.join.disabled")) && 
-				(!mgm.isSpMaxPlayers() || mgm.getPlayers().size() < mgm.getMaxPlayers())){
-			Location startpos = mdata.getMinigame(mgm.getName()).getStartLocations().get(0);
-			if(player.getPlayer().getWorld() != mgm.getStartLocations().get(0).getWorld() && player.getPlayer().hasPermission("minigame.set.start") && plugin.getConfig().getBoolean("warnings")){
-				player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Join location is across worlds! This may cause some server performance issues!", "error");
-			}
-			pdata.minigameTeleport(player, startpos);
-
-			if(mgm.hasRestoreBlocks() && !mgm.hasPlayers()){
-				for(RestoreBlock block : mgm.getRestoreBlocks().values()){
-					mgm.getBlockRecorder().addBlock(block.getLocation().getBlock(), null);
-				}
-			}
-			
-			player.storePlayerData();
-			player.setMinigame(mgm);
-			mgm.addPlayer(player);
-			
-			if(mgm.getGametypeName() == null)
-				player.sendMessage(MinigameUtils.formStr("player.join.plyInfo", mgm.getType().getName()), "win");
-			else
-				player.sendMessage(MinigameUtils.formStr("player.join.plyInfo", mgm.getGametypeName()), "win");
-			
-			if(mgm.getObjective() != null){
-				player.sendMessage(ChatColor.GREEN + "----------------------------------------------------");
-				player.sendMessage(ChatColor.AQUA.toString() + ChatColor.BOLD + MinigameUtils.formStr("player.join.objective", 
-						ChatColor.RESET.toString() + ChatColor.WHITE + mgm.getObjective()));
-				player.sendMessage(ChatColor.GREEN + "----------------------------------------------------");
-			}
-			
-			player.setCheckpoint(startpos);
-			
-			if(mgm.getLives() > 0){
-				player.sendMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives()), null);
-			}
-			
-			player.getLoadout().equiptLoadout(player);
-			return true;
+		
+		if(mgm.getLives() > 0){
+			player.sendMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives()), null);
 		}
-		else if(mgm.getQuitPosition() == null){
-			player.sendMessage(MinigameUtils.getLang("minigame.error.noQuit"), "error");
+		
+		if(mgm.getType() == MinigameType.SINGLEPLAYER && player.getStoredPlayerCheckpoints().hasCheckpoint(mgm.getName())){
+			player.setCheckpoint(player.getStoredPlayerCheckpoints().getCheckpoint(mgm.getName()));
+			StoredPlayerCheckpoints spc = player.getStoredPlayerCheckpoints();
+			if(spc.hasFlags(mgm.getName())){
+				player.setFlags(spc.getFlags(mgm.getName()));
+			}
+			if(spc.hasTime(mgm.getName())){
+				player.setStoredTime(spc.getTime(mgm.getName()));
+			}
+			if(spc.hasDeaths(mgm.getName())){
+				player.setDeaths(spc.getDeaths(mgm.getName()));
+			}
+			if(spc.hasReverts(mgm.getName())){
+				player.setReverts(spc.getReverts(mgm.getName()));
+			}
+			spc.removeCheckpoint(mgm.getName());
+			spc.removeFlags(mgm.getName());
+			spc.removeDeaths(mgm.getName());
+			spc.removeTime(mgm.getName());
+			spc.removeReverts(mgm.getName());
+			pdata.revertToCheckpoint(player);
+			spc.saveCheckpoints();
 		}
-		else if(!mgm.isEnabled()){
-			player.sendMessage(MinigameUtils.getLang("minigame.error.notEnabled"), "error");
-		}
-		else if(mgm.isSpMaxPlayers()){
-			player.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
-		}
-		else if(mgm.getStartLocations().size() == 0)
-			player.sendMessage(MinigameUtils.getLang("minigame.error.noStart"), "error");
-		return false;
+		
+		player.getLoadout().equiptLoadout(player);
+		return true;
 	}
 	
 	@Override
-	public void endMinigame(MinigamePlayer player, Minigame mgm){
-		boolean hascompleted = false;
-		Configuration completion = null;
-		
-		player.sendMessage(MinigameUtils.formStr("player.end.plyMsg", mgm.getName()), "win");
-		
-		if(plugin.getConfig().getBoolean("singleplayer.broadcastcompletion") && mgm.isEnabled()){
-			plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.end.broadcastMsg", player.getName(), mgm.getName()));
-		}
-		
-		if(mgm.getEndPosition() != null){
-			if(player.getPlayer().getWorld() != mgm.getEndPosition().getWorld() && player.getPlayer().hasPermission("minigame.set.end") && plugin.getConfig().getBoolean("warnings")){
-				player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "End location is across worlds! This may cause some server performance issues!", "error");
-			}
-			if(!player.getPlayer().isDead()){
-				player.getPlayer().teleport(mgm.getEndPosition());
-			}
-			else{
-				player.setRequiredQuit(true);
-				player.setQuitPos(mgm.getEndPosition());
-			}
-		}
-		
+	public void endMinigame(List<MinigamePlayer> winners, List<MinigamePlayer> losers, Minigame mgm){
 		if(mgm.getBlockRecorder().hasData()){
-			if(mgm.getPlayers().isEmpty()){
-				mgm.getBlockRecorder().restoreBlocks();
-				mgm.getBlockRecorder().restoreEntities();
-				mgm.getBlockRecorder().setCreatedRegenBlocks(false);
+			if(!mgm.getPlayers().isEmpty()){
+				for(MinigamePlayer player : winners){
+					mgm.getBlockRecorder().restoreBlocks(player);
+					mgm.getBlockRecorder().restoreEntities(player);
+				}
 			}
-			else{
-				mgm.getBlockRecorder().restoreBlocks(player);
-				mgm.getBlockRecorder().restoreEntities(player);
-			}
-		}
-		
-		if(plugin.getSQL() == null && mgm.isEnabled()){
-			completion = mdata.getConfigurationFile("completion");
-			hascompleted = completion.getStringList(mgm.getName()).contains(player.getName());
-			
-			if(!completion.getStringList(mgm.getName()).contains(player.getName())){
-				List<String> completionlist = completion.getStringList(mgm.getName());
-				completionlist.add(player.getName());
-				completion.set(mgm.getName(), completionlist);
-				MinigameSave completionsave = new MinigameSave("completion");
-				completionsave.getConfig().set(mgm.getName(), completionlist);
-				completionsave.saveConfig();
-			}
-			
-			issuePlayerRewards(player, mgm, hascompleted);
-		}
-		else if(mgm.isEnabled()){
-//			new SQLCompletionSaver(mgm.getName(), player, this, true);
-			plugin.addSQLToStore(new SQLPlayer(mgm.getName(), player.getName(), 1, 0, player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), player.getEndTime() - player.getStartTime()));
-			plugin.startSQLCompletionSaver();
 		}
 	}
 
@@ -161,26 +88,11 @@ public class SingleplayerType extends MinigameTypeBase{
 				spc.saveCheckpoints();
 			}
 		}
-
-		callGeneralQuit(player, mgm);
 		
 		if(mgm.getBlockRecorder().hasData()){
-			if(mgm.getPlayers().isEmpty()){
-				mgm.getBlockRecorder().restoreBlocks();
-				mgm.getBlockRecorder().restoreEntities();
-				mgm.getBlockRecorder().setCreatedRegenBlocks(false);
-			}
-			else{
+			if(!mgm.getPlayers().isEmpty()){
 				mgm.getBlockRecorder().restoreBlocks(player);
 				mgm.getBlockRecorder().restoreEntities(player);
-			}
-		}
-
-		if(plugin.getSQL() != null){
-			if(mgm.canSaveCheckpoint() == false){
-//				new SQLCompletionSaver(mgm.getName(), player, this, false);
-				plugin.addSQLToStore(new SQLPlayer(mgm.getName(), player.getName(), 0, 1, player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), player.getEndTime() - player.getStartTime() + player.getStoredTime()));
-				plugin.startSQLCompletionSaver();
 			}
 		}
 	}

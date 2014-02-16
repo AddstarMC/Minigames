@@ -89,7 +89,7 @@ public class LoadoutSign implements MinigameSign {
 					return true;
 				}
 				else{
-					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("sign.loadout.noPermisson", sign.getLine(2)));
+					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("sign.loadout.noPermission", sign.getLine(2)));
 				}
 			}
 			else{

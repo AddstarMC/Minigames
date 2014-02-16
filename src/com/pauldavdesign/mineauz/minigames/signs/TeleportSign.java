@@ -67,10 +67,10 @@ public class TeleportSign implements MinigameSign {
 				String[] split2 = sign.getLine(3).split(",");
 				yaw = Float.parseFloat(split2[0]);
 				pitch = Float.parseFloat(split2[1]);
-				Minigames.plugin.pdata.minigameTeleport(player, new Location(player.getPlayer().getWorld(), x + 0.5, y, z + 0.5, yaw, pitch));
+				player.teleport(new Location(player.getPlayer().getWorld(), x + 0.5, y, z + 0.5, yaw, pitch));
 				return true;
 			}
-			Minigames.plugin.pdata.minigameTeleport(player, new Location(player.getPlayer().getWorld(), x + 0.5, y, z + 0.5));
+			player.teleport(new Location(player.getPlayer().getWorld(), x + 0.5, y, z + 0.5));
 			return true;
 		}
 		player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.teleport.invalid"));

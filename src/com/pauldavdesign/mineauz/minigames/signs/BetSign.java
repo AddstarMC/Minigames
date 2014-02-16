@@ -63,12 +63,12 @@ public class BetSign implements MinigameSign{
 				}
 				
 				if(!sign.getLine(3).startsWith("$")){
-					plugin.pdata.joinWithBet(player, plugin.mdata.getMinigame(sign.getLine(2)), 0d);
+					plugin.pdata.joinMinigame(player, plugin.mdata.getMinigame(sign.getLine(2)), true, 0.0);
 				}
 				else{
 					if(plugin.hasEconomy()){
 						Double bet = Double.parseDouble(sign.getLine(3).replace("$", ""));
-						plugin.pdata.joinWithBet(player, plugin.mdata.getMinigame(sign.getLine(2)), bet);
+						plugin.pdata.joinMinigame(player, plugin.mdata.getMinigame(sign.getLine(2)), true, bet);
 						return true;
 					}
 					else{

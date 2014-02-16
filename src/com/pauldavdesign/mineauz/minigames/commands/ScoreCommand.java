@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -172,7 +173,30 @@ public class ScoreCommand implements ICommand {
 							}
 							
 							if(mg.getMaxScore() != 0 && score >= mg.getMaxScorePerPlayer()){
-								plugin.pdata.endTeamMinigame(team, mg);
+//								plugin.pdata.endTeamMinigame(team, mg);
+								List<MinigamePlayer> w;
+								List<MinigamePlayer> l;
+								if(team == 0){
+									w = new ArrayList<MinigamePlayer>(mg.getRedTeam().size());
+									l = new ArrayList<MinigamePlayer>(mg.getBlueTeam().size());
+									for(OfflinePlayer pl : mg.getRedTeam()){
+										w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+									}
+									for(OfflinePlayer pl : mg.getBlueTeam()){
+										l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+									}
+								}
+								else{
+									l = new ArrayList<MinigamePlayer>(mg.getRedTeam().size());
+									w = new ArrayList<MinigamePlayer>(mg.getBlueTeam().size());
+									for(OfflinePlayer pl : mg.getRedTeam()){
+										l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+									}
+									for(OfflinePlayer pl : mg.getBlueTeam()){
+										w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+									}
+								}
+								plugin.pdata.endMinigame(mg, w, l);
 							}
 						}
 						else if(!mg.hasPlayers()){
@@ -245,7 +269,29 @@ public class ScoreCommand implements ICommand {
 						}
 						
 						if(mg.getMaxScore() != 0 && totalscore >= mg.getMaxScorePerPlayer()){
-							plugin.pdata.endTeamMinigame(team, mg);
+							List<MinigamePlayer> w;
+							List<MinigamePlayer> l;
+							if(team == 0){
+								w = new ArrayList<MinigamePlayer>(mg.getRedTeam().size());
+								l = new ArrayList<MinigamePlayer>(mg.getBlueTeam().size());
+								for(OfflinePlayer pl : mg.getRedTeam()){
+									w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+								}
+								for(OfflinePlayer pl : mg.getBlueTeam()){
+									l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+								}
+							}
+							else{
+								l = new ArrayList<MinigamePlayer>(mg.getRedTeam().size());
+								w = new ArrayList<MinigamePlayer>(mg.getBlueTeam().size());
+								for(OfflinePlayer pl : mg.getRedTeam()){
+									l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+								}
+								for(OfflinePlayer pl : mg.getBlueTeam()){
+									w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+								}
+							}
+							plugin.pdata.endMinigame(mg, w, l);
 						}
 					}
 					else if(!mg.hasPlayers()){

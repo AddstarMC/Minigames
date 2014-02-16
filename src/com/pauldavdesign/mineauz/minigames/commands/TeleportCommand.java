@@ -111,7 +111,7 @@ public class TeleportCommand implements ICommand {
 				}
 				
 				sender.sendMessage(ChatColor.GRAY + "Teleported " + ply.getName() + " to assigned coordinates.");
-				plugin.pdata.minigameTeleport(ply, new Location(ply.getPlayer().getWorld(), x, y, z, ply.getPlayer().getLocation().getYaw(), ply.getPlayer().getLocation().getPitch()));
+				ply.teleport(new Location(ply.getPlayer().getWorld(), x, y, z, ply.getPlayer().getLocation().getYaw(), ply.getPlayer().getLocation().getPitch()));
 				return true;
 			}
 			else if(args.length >= 2 && args[1].equalsIgnoreCase("start")){
@@ -138,16 +138,16 @@ public class TeleportCommand implements ICommand {
 					
 					if(!team.equals("none")){
 						if(team.equals("red")){
-							plugin.pdata.minigameTeleport(ply, ply.getMinigame().getStartLocationsRed().get(pos));
+							ply.teleport(ply.getMinigame().getStartLocationsRed().get(pos));
 							sender.sendMessage(ChatColor.GRAY + "Teleported " + ply.getName() + " to red start position " + (pos + 1) + ".");
 						}
 						else{
-							plugin.pdata.minigameTeleport(ply, ply.getMinigame().getStartLocationsBlue().get(pos));
+							ply.teleport(ply.getMinigame().getStartLocationsBlue().get(pos));
 							sender.sendMessage(ChatColor.GRAY + "Teleported " + ply.getName() + " to blue start position " + (pos + 1) + ".");
 						}
 					}
 					else{
-						plugin.pdata.minigameTeleport(ply, ply.getMinigame().getStartLocations().get(pos));
+						ply.teleport(ply.getMinigame().getStartLocations().get(pos));
 						sender.sendMessage(ChatColor.GRAY + "Teleported " + ply.getName() + " to start position " + (pos + 1) + ".");
 					}
 				}
@@ -158,7 +158,7 @@ public class TeleportCommand implements ICommand {
 			}
 			else if(args.length == 2 && args[1].equalsIgnoreCase("checkpoint")){
 				if(ply.isInMinigame()){
-					plugin.pdata.minigameTeleport(ply, ply.getCheckpoint());
+					ply.teleport(ply.getCheckpoint());
 					sender.sendMessage(ChatColor.GRAY + "Teleported " + ply.getName() + " to their checkpoint.");
 				}
 				else{
@@ -178,7 +178,7 @@ public class TeleportCommand implements ICommand {
 					return true;
 				}
 				
-				plugin.pdata.minigameTeleport(ply, ply2.getPlayer().getLocation());
+				ply.teleport(ply2.getPlayer().getLocation());
 				sender.sendMessage(ChatColor.GRAY + "Teleported " + ply.getName() + " to " + ply2.getName() + ".");
 				return true;
 			}
