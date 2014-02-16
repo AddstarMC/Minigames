@@ -610,6 +610,9 @@ public class Events implements Listener{
 				if(mgm.isSpectator(ply)){
 					event.setCancelled(true);
 				}
+				else if(!ply.getMinigame().hasStarted()){
+					event.setCancelled(true);
+				}
 				else if(event.getCause() == DamageCause.FALL && 
 						ply.getLoadout() != null && !ply.getLoadout().hasFallDamage()){
 					event.setCancelled(true);
