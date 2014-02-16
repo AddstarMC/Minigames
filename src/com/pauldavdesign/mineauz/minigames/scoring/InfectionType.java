@@ -92,7 +92,6 @@ public class InfectionType extends ScoreTypeBase{
 						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.infectedAnnounce", player.getName(), ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), "error", null);
 					}
 					if(mgm.getBlueTeam().isEmpty()){
-						event.getEntity().setHealth(2);
 						List<MinigamePlayer> w;
 						List<MinigamePlayer> l;
 						w = new ArrayList<MinigamePlayer>(mgm.getRedTeam().size());
