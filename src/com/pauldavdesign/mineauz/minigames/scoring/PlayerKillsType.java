@@ -185,20 +185,15 @@ public class PlayerKillsType extends ScoreTypeBase{
 			Minigame mgm = ply.getMinigame();
 			if(mgm.getScoreType().equals("kills")){
 				ply.takeScore();
-				if(mgm.getRedTeam().isEmpty() && mgm.getBlueTeam().isEmpty()){
-//					pdata.takePlayerScore(ply);
-					mgm.setScore(ply, ply.getScore());
-					
-//					mdata.sendMinigameMessage(mgm, ply.getName() + "'s Score: " + pdata.getPlayerScore(ply), null, null);
-				}
-				else{
+				mgm.setScore(ply, ply.getScore());
+				if(!mgm.getRedTeam().isEmpty() && !mgm.getBlueTeam().isEmpty()){
 					if(mgm.getRedTeam().contains(ply.getPlayer())){
 						mgm.setRedTeamScore(mgm.getRedTeamScore() - 1);
 					}
 					else{
 						mgm.setBlueTeamScore(mgm.getBlueTeamScore() - 1);
 					}
-//					mdata.sendMinigameMessage(mgm, "Score: " + ChatColor.RED + mgm.getRedTeamScore() + ChatColor.WHITE + " to " + ChatColor.BLUE + mgm.getBlueTeamScore(), null, null);
+					mgm.setScore(ply, ply.getScore());
 				}
 			}
 		}
