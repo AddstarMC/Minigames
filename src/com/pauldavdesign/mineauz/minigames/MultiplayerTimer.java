@@ -34,10 +34,19 @@ public class MultiplayerTimer{
 	}
 	
 	public void startTimer(){
+		playerWaitTime += 1;
+		startWaitTime += 1;
 		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 			
 			@Override
 			public void run() {
+				if(!paused){
+					if(playerWaitTime != 0)
+						playerWaitTime -= 1;
+					else
+						startWaitTime -= 1;
+				}
+				
 				if(playerWaitTime != 0 && !paused){
 					if(playerWaitTime == plugin.getConfig().getInt("multiplayer.waitforplayers")){
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.waitingForPlayers"));
@@ -46,9 +55,8 @@ public class MultiplayerTimer{
 					else if(timeMsg.contains(playerWaitTime)){
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", playerWaitTime));
 					}
-					playerWaitTime -= 1;
 				}
-				else if(playerWaitTime == 0 && startWaitTime !=0 && !paused){
+				else if(playerWaitTime == 0 && startWaitTime != 0 && !paused){
 					if(startWaitTime == plugin.getConfig().getInt("multiplayer.startcountdown")){
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.minigameStarts"));
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
@@ -56,7 +64,6 @@ public class MultiplayerTimer{
 					else if(timeMsg.contains(startWaitTime)){
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
 					}
-					startWaitTime -= 1;
 				}
 				else if(playerWaitTime == 0 && startWaitTime == 0){
 					if(startWaitTime == 0 && playerWaitTime == 0){
