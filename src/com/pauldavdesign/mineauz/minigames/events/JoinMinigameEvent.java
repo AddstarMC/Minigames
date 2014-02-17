@@ -1,13 +1,14 @@
 package com.pauldavdesign.mineauz.minigames.events;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
-public class JoinMinigameEvent extends Event{
+public class JoinMinigameEvent extends Event implements Cancellable{
 	private static final HandlerList handlers = new HandlerList();
 	private MinigamePlayer player = null;
 	private Minigame mgm = null;

@@ -2,13 +2,14 @@ package com.pauldavdesign.mineauz.minigames.events;
 
 import java.util.List;
 
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
-public class EndMinigameEvent extends Event{
+public class EndMinigameEvent extends Event implements Cancellable{
 	private static final HandlerList handlers = new HandlerList();
 	private List<MinigamePlayer> winners = null;
 	private List<MinigamePlayer> losers = null;
