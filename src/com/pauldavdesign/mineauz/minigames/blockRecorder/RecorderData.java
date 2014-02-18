@@ -34,6 +34,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.InventoryHolder;
@@ -629,5 +630,12 @@ public class RecorderData implements Listener{
 	private void fireSpread(BlockSpreadEvent event){
 		if(minigame.isRegenerating() && hasRegenArea() && blockInRegenArea(event.getBlock().getLocation()))
 			event.setCancelled(true);
+	}
+	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+	private void interact(PlayerInteractEvent event){
+		if(minigame.isRegenerating() && hasRegenArea() && blockInRegenArea(event.getClickedBlock().getLocation())){
+			event.setCancelled(true);
+		}
 	}
 }
