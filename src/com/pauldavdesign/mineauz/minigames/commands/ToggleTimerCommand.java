@@ -60,11 +60,11 @@ public class ToggleTimerCommand implements ICommand{
 				if(mgm.getMpTimer() != null){
 					if(mgm.getMpTimer().isPaused()){
 						mgm.getMpTimer().resumeTimer();
-						sender.sendMessage(ChatColor.GRAY + "Resumed " + mgm.getName() + "'s countdown timer.");
+						sender.sendMessage(ChatColor.GRAY + "Resumed " + mgm.getName(false) + "'s countdown timer.");
 					}
 					else{
 						mgm.getMpTimer().pauseTimer(sender.getName() + " forced countdown pause.");
-						sender.sendMessage(ChatColor.GRAY + "Paused " + mgm.getName() + "'s countdown timer. (" + mgm.getMpTimer().getPlayerWaitTimeLeft() + "s)");
+						sender.sendMessage(ChatColor.GRAY + "Paused " + mgm.getName(false) + "'s countdown timer. (" + mgm.getMpTimer().getPlayerWaitTimeLeft() + "s)");
 					}
 				}
 				else{

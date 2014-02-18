@@ -87,7 +87,7 @@ public class SetSecondaryRewardCommand implements ICommand{
 				}
 				minigame.getSecondaryRewardItems().addItem(item, rarity);
 				
-				sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to secondary rewards of \"" + minigame.getName() + "\" "
+				sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to secondary rewards of \"" + minigame.getName(false) + "\" "
 						+ "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
 				return true;
 			}
@@ -98,12 +98,12 @@ public class SetSecondaryRewardCommand implements ICommand{
 					rarity = RewardRarity.valueOf(args[1].toUpperCase());
 				}
 				minigame.getSecondaryRewardItems().addItem(item, rarity);
-				sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to secondary rewards of \"" + minigame.getName() + "\" "
+				sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to secondary rewards of \"" + minigame.getName(false) + "\" "
 						+ "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
 				return true;
 			}
 			else if(item != null && item.getType() == Material.AIR){
-				sender.sendMessage(ChatColor.RED + "Secondary reward for \"" + minigame.getName() + "\" cannot be Air!");
+				sender.sendMessage(ChatColor.RED + "Secondary reward for \"" + minigame.getName(false) + "\" cannot be Air!");
 				return true;
 			}
 			else if(money != -1 && plugin.hasEconomy()){
@@ -112,7 +112,7 @@ public class SetSecondaryRewardCommand implements ICommand{
 					rarity = RewardRarity.valueOf(args[1].toUpperCase());
 				}
 				minigame.getSecondaryRewardItems().addMoney(money, rarity);
-				sender.sendMessage(ChatColor.GRAY + "Added $" + money + " to secondary rewards of \"" + minigame.getName() + "\" "
+				sender.sendMessage(ChatColor.GRAY + "Added $" + money + " to secondary rewards of \"" + minigame.getName(false) + "\" "
 						+ "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
 				return true;
 			}

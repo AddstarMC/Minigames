@@ -237,7 +237,7 @@ public class Events implements Listener{
 				if(sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]")){
 					if((sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Join") || sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Bet")) && !ply.isInMinigame()){
 						Minigame mgm = mdata.getMinigame(sign.getLine(2));
-						if(mgm != null && (!mgm.getUsePermissions() || event.getPlayer().hasPermission("minigame.join." + mgm.getName().toLowerCase()))){
+						if(mgm != null && (!mgm.getUsePermissions() || event.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))){
 							if(!mgm.isEnabled()){
 								event.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.notEnabled"));
 							}
@@ -303,7 +303,7 @@ public class Events implements Listener{
 							event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noMinigame"));
 						}
 						else if(mgm.getUsePermissions()){
-							event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName().toLowerCase()));
+							event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()));
 						}
 					}
 				}	
@@ -326,34 +326,34 @@ public class Events implements Listener{
 						if(!tool.getTeam().equals("none")){
 							if(tool.getTeam().equals("red")){
 								mg.addStartLocationRed(ply.getPlayer().getLocation());
-								ply.sendMessage("Added " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " start location to " + mg.getName(), null);
+								ply.sendMessage("Added " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " start location to " + mg.getName(false), null);
 							}
 							else{
 								mg.addStartLocationBlue(ply.getPlayer().getLocation());
-								ply.sendMessage("Added " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " start location to " + mg.getName(), null);
+								ply.sendMessage("Added " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " start location to " + mg.getName(false), null);
 							}
 						}
 						else{
 							mg.addStartLocation(ply.getPlayer().getLocation());
-							ply.sendMessage("Added start location to " + mg.getName(), null);
+							ply.sendMessage("Added start location to " + mg.getName(false), null);
 						}
 					}
 					else if(tool.getMode() == MinigameToolMode.QUIT && ply.getPlayer().hasPermission("minigame.set.quit")){
 						mg.setQuitPosition(ply.getPlayer().getLocation());
-						ply.sendMessage("Set quit location for " + mg.getName(), null);
+						ply.sendMessage("Set quit location for " + mg.getName(false), null);
 					}
 					else if(tool.getMode() == MinigameToolMode.END && ply.getPlayer().hasPermission("minigame.set.end")){
 						mg.setEndPosition(ply.getPlayer().getLocation());
-						ply.sendMessage("Set end location for " + mg.getName(), null);
+						ply.sendMessage("Set end location for " + mg.getName(false), null);
 					}
 					else if(tool.getMode() == MinigameToolMode.LOBBY && ply.getPlayer().hasPermission("minigame.set.lobby")){
 						mg.setLobbyPosition(ply.getPlayer().getLocation());
-						ply.sendMessage("Set lobby location for " + mg.getName(), null);
+						ply.sendMessage("Set lobby location for " + mg.getName(false), null);
 					}
 					else if(tool.getMode() == MinigameToolMode.RESTORE_BLOCK && ply.getPlayer().hasPermission("minigame.set.restoreblock")){
 						RestoreBlock resblock = new RestoreBlock(MinigameUtils.createLocationID(event.getClickedBlock().getLocation()), event.getMaterial(), event.getClickedBlock().getLocation());
 						mg.addRestoreBlock(resblock);
-						ply.sendMessage("Added restore block to " + mg.getName(), null);
+						ply.sendMessage("Added restore block to " + mg.getName(false), null);
 					}
 					else if(event.getAction() == Action.RIGHT_CLICK_BLOCK && tool.getMode() != null){
 						ply.addSelectionPoint(event.getClickedBlock().getLocation());
@@ -364,28 +364,28 @@ public class Events implements Listener{
 						if(ply.hasSelection()){
 							mg.setFloorDegen1(ply.getSelectionPoints()[0]);
 							mg.setFloorDegen2(ply.getSelectionPoints()[1]);
-							ply.sendMessage("Set floor degenerator area for " + mg.getName(), null);
+							ply.sendMessage("Set floor degenerator area for " + mg.getName(false), null);
 							ply.showSelection(true);
 							ply.clearSelection();
 						}
 						else{
 							mg.setFloorDegen1(null);
 							mg.setFloorDegen2(null);
-							ply.sendMessage("Removed degeneration area for " + mg.getName(), null);
+							ply.sendMessage("Removed degeneration area for " + mg.getName(false), null);
 						}
 					}
 					else if(tool.getMode() == MinigameToolMode.REGEN_AREA && ply.getPlayer().hasPermission("minigame.set.regenarea")){
 						if(ply.hasSelection()){
 							mg.setRegenArea1(ply.getSelectionPoints()[0]);
 							mg.setRegenArea2(ply.getSelectionPoints()[1]);
-							ply.sendMessage("Set regeneration area for " + mg.getName(), null);
+							ply.sendMessage("Set regeneration area for " + mg.getName(false), null);
 							ply.showSelection(true);
 							ply.clearSelection();
 						}
 						else{
 							mg.setRegenArea1(null);
 							mg.setRegenArea2(null);
-							ply.sendMessage("Removed regeneration area for " + mg.getName(), null);
+							ply.sendMessage("Removed regeneration area for " + mg.getName(false), null);
 						}
 					}
 					else if(event.getAction() == Action.LEFT_CLICK_BLOCK && 
@@ -464,7 +464,7 @@ public class Events implements Listener{
 							tool.getMode() == MinigameToolMode.RESTORE_BLOCK && ply.getPlayer().hasPermission("minigame.set.restoreblock")){
 						if(mg.getRestoreBlocks().containsKey(MinigameUtils.createLocationID(event.getClickedBlock().getLocation()))){
 							mg.removeRestoreBlock(MinigameUtils.createLocationID(event.getClickedBlock().getLocation()));
-							ply.sendMessage("Removed selected restore block from " + mg.getName(), null);
+							ply.sendMessage("Removed selected restore block from " + mg.getName(false), null);
 						}
 					}
 				}

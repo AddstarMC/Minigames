@@ -57,17 +57,17 @@ public class SetPlayersGamemodeCommand implements ICommand {
 		if(args != null){
 			if(args[0].equalsIgnoreCase("survival") || args[0].equalsIgnoreCase("0")){
 				minigame.setDefaultGamemode(GameMode.SURVIVAL);
-				sender.sendMessage(minigame.getName() + "'s gamemode has been set to Survival.");
+				sender.sendMessage(minigame.getName(false) + "'s gamemode has been set to Survival.");
 				return true;
 			}
 			else if(args[0].equalsIgnoreCase("adventure") || args[0].equalsIgnoreCase("2")){
 				minigame.setDefaultGamemode(GameMode.ADVENTURE);
-				sender.sendMessage(minigame.getName() + "'s gamemode has been set to Adventure.");
+				sender.sendMessage(minigame.getName(false) + "'s gamemode has been set to Adventure.");
 				return true;
 			}
 			else if(args[0].equalsIgnoreCase("creative") || args[0].equalsIgnoreCase("1")){
 				minigame.setDefaultGamemode(GameMode.CREATIVE);
-				sender.sendMessage(minigame.getName() + "'s gamemode has been set to Creative.");
+				sender.sendMessage(minigame.getName(false) + "'s gamemode has been set to Creative.");
 				return true;
 			}
 		}

@@ -49,7 +49,7 @@ public class FinishSign implements MinigameSign {
 	public boolean signCreate(SignChangeEvent event) {
 		event.setLine(1, ChatColor.GREEN + "Finish");
 		if(!event.getLine(2).isEmpty() && plugin.mdata.hasMinigame(event.getLine(2))){
-			event.setLine(2, plugin.mdata.getMinigame(event.getLine(2)).getName());
+			event.setLine(2, plugin.mdata.getMinigame(event.getLine(2)).getName(false));
 		}
 		else if(!event.getLine(2).isEmpty()){
 			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noMinigame"));
@@ -69,8 +69,8 @@ public class FinishSign implements MinigameSign {
 			
 			if(!minigame.getFlags().isEmpty()){
 				if(((LivingEntity)player.getPlayer()).isOnGround()){
-					if(plugin.pdata.checkRequiredFlags(player, minigame.getName()).isEmpty()){
-						if(sign.getLine(2).isEmpty() || sign.getLine(2).equals(player.getMinigame().getName())){
+					if(plugin.pdata.checkRequiredFlags(player, minigame.getName(false)).isEmpty()){
+						if(sign.getLine(2).isEmpty() || sign.getLine(2).equals(player.getMinigame().getName(false))){
 							if(player.getMinigame().getType() == MinigameType.TEAMS){
 								if(player.getMinigame().getRedTeam().contains(player.getPlayer().getPlayer())){
 									List<MinigamePlayer> w;
@@ -106,7 +106,7 @@ public class FinishSign implements MinigameSign {
 						}
 					}
 					else{
-						List<String> requiredFlags = plugin.pdata.checkRequiredFlags(player, minigame.getName());
+						List<String> requiredFlags = plugin.pdata.checkRequiredFlags(player, minigame.getName(false));
 						String flags = "";
 						int num = requiredFlags.size();
 						

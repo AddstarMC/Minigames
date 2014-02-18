@@ -56,6 +56,7 @@ import com.pauldavdesign.mineauz.minigames.minigame.reward.Rewards;
 
 public class Minigame {
 	private String name = "GenericName";
+	private String displayName = null;
 	private String objective = null;
 	private String gametypeName = null;
 	private MinigameType type = null;
@@ -575,14 +576,35 @@ public class Minigame {
 		this.lobbyPosisiton = lobbyPosisiton;
 	}
 	
-	public String getName(){
+	public String getName(boolean useDisplay){
+		if(useDisplay && displayName != null)
+			return displayName;
 		return name;
 	}
 	
 	public void setName(String name){
 		this.name = name;
 	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
 	
+	public Callback<String> getDisplayNameCallback(){
+		return new Callback<String>() {
+
+			@Override
+			public void setValue(String value) {
+				displayName = value;
+			}
+
+			@Override
+			public String getValue() {
+				return displayName;
+			}
+		};
+	}
+
 	public MinigameType getType(){
 		return type;
 	}
@@ -1628,11 +1650,11 @@ public class Minigame {
 	}
 
 	public void displayMenu(MinigamePlayer player){
-		Menu main = new Menu(6, getName(), player);
-		Menu playerMenu = new Menu(6, getName(), player);
-		Menu treasureHunt = new Menu(6, getName(), player);
-		Menu loadouts = new Menu(6, getName(), player);
-		Menu flags = new Menu(6, getName(), player);
+		Menu main = new Menu(6, getName(false), player);
+		Menu playerMenu = new Menu(6, getName(false), player);
+		Menu treasureHunt = new Menu(6, getName(false), player);
+		Menu loadouts = new Menu(6, getName(false), player);
+		Menu flags = new Menu(6, getName(false), player);
 		
 		List<MenuItem> itemsMain = new ArrayList<MenuItem>();
 		itemsMain.add(new MenuItemBoolean("Enabled", Material.PAPER, getEnabledCallback()));
@@ -1653,6 +1675,9 @@ public class Minigame {
 		itemsMain.add(obj);
 		obj = new MenuItemString("Gametype Description", MinigameUtils.stringToList("Gametype name to replace;\"Singleplayer\" or \"Free For All\""), 
 				Material.SIGN, getGametypeNameCallback());
+		obj.setAllowNull(true);
+		itemsMain.add(obj);
+		obj = new MenuItemString("Display Name", MinigameUtils.stringToList("Public announced name; that will display in chat."), Material.SIGN, getDisplayNameCallback());
 		obj.setAllowNull(true);
 		itemsMain.add(obj);
 		itemsMain.add(new MenuItemList("Default Winning Team", Material.PAPER, getDefaultWinnerCallback(), MinigameUtils.stringToList("none;red;blue")));
@@ -1725,7 +1750,7 @@ public class Minigame {
 		loadouts.addItems(mi);
 		
 		main.addItems(itemsMain);
-		main.addItem(new MenuItemSaveMinigame("Save " + getName(), Material.REDSTONE_TORCH_ON, this), main.getSize() - 1);
+		main.addItem(new MenuItemSaveMinigame("Save " + getName(false), Material.REDSTONE_TORCH_ON, this), main.getSize() - 1);
 
 		//--------------------//
 		//Treasure Hunt Settings
@@ -1793,6 +1818,7 @@ public class Minigame {
 	public void saveMinigame(){
 		MinigameSave minigame = new MinigameSave(name, "config");
 		
+		minigame.getConfig().set(name + ".displayName", displayName);
 		minigame.getConfig().set(name + ".startpos", null);
 		minigame.getConfig().set(name + ".startposred", null);
 		minigame.getConfig().set(name + ".startposblue", null);
@@ -2258,6 +2284,9 @@ public class Minigame {
 	public void loadMinigame(){
 		MinigameSave minigame = new MinigameSave(name, "config");
 		
+		if(minigame.getConfig().contains(name + ".displayName")){
+			displayName = minigame.getConfig().getString(name + ".displayName");
+		}
 		if(minigame.getConfig().contains(name + ".startpos")){
 			Set<String> locs = minigame.getConfig().getConfigurationSection(name + ".startpos").getKeys(false);
 			
@@ -2627,7 +2656,7 @@ public class Minigame {
 				
 				@Override
 				public void run() {
-					Minigames.plugin.mdata.startGlobalMinigame(getName());
+					Minigames.plugin.mdata.startGlobalMinigame(getName(false));
 				}
 			});
 		}
@@ -2639,6 +2668,6 @@ public class Minigame {
 	
 	@Override
 	public String toString(){
-		return getName();
+		return getName(false);
 	}
 }

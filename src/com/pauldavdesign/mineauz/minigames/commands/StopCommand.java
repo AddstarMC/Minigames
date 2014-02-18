@@ -60,10 +60,10 @@ public class StopCommand implements ICommand{
 			
 			if(mgm != null && mgm.getThTimer() != null && mgm.getType() == MinigameType.TREASURE_HUNT){
 				if(mgm.getThTimer().getChestInWorld()){
-					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "The " + mgm.getName() + " treasure has been removed from the world", "minigame.treasure.announce");
+					plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + "The " + mgm.getName(false) + " treasure has been removed from the world", "minigame.treasure.announce");
 				}
 				mgm.getThTimer().stopTimer();
-				plugin.mdata.removeTreasure(mgm.getName());
+				plugin.mdata.removeTreasure(mgm.getName(false));
 				mgm.setThTimer(null);
 				mgm.setEnabled(false);
 				mgm.saveMinigame();
@@ -72,7 +72,7 @@ public class StopCommand implements ICommand{
 				sender.sendMessage(ChatColor.RED + "There is no TreasureHunt Minigame by the name \"" + args[0] + "\"");
 			}
 			else{
-				sender.sendMessage(ChatColor.RED + mgm.getName() + " is not running!");
+				sender.sendMessage(ChatColor.RED + mgm.getName(false) + " is not running!");
 			}
 			return true;
 		}
@@ -85,7 +85,7 @@ public class StopCommand implements ICommand{
 		List<String> mgs = new ArrayList<String>();
 		for(Minigame mg : plugin.mdata.getAllMinigames().values()){
 			if(mg.getType() == MinigameType.TREASURE_HUNT)
-				mgs.add(mg.getName());
+				mgs.add(mg.getName(false));
 		}
 		return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
 	}

@@ -58,7 +58,7 @@ public class SetUsePermissionsCommand implements ICommand {
 		if(args != null){
 			boolean bool = Boolean.parseBoolean(args[0]);
 			minigame.setUsePermissions(bool);
-			sender.sendMessage(ChatColor.GRAY + "Use permissions has been set to " + bool + " for " + minigame.getName());
+			sender.sendMessage(ChatColor.GRAY + "Use permissions has been set to " + bool + " for " + minigame.getName(false));
 			return true;
 		}
 		return false;

@@ -67,7 +67,7 @@ public class HintCommand implements ICommand{
 					treasure.hints(player);
 				}
 				else{
-					player.sendMessage(ChatColor.GRAY + mgm.getName() + " is currently not running.");
+					player.sendMessage(ChatColor.GRAY + mgm.getName(false) + " is currently not running.");
 				}
 			}
 			else if(mgm == null || mgm.getType() != MinigameType.TREASURE_HUNT){
@@ -86,7 +86,7 @@ public class HintCommand implements ICommand{
 					player.sendMessage(ChatColor.LIGHT_PURPLE + "Currently running Treasure Hunts:");
 					String treasures = "";
 					for(int i = 0; i < mgs.size(); i++){
-						treasures += mgs.get(i).getName();
+						treasures += mgs.get(i).getName(false);
 						if(i != mgs.size() - 1){
 							treasures += ", ";
 						}
@@ -99,7 +99,7 @@ public class HintCommand implements ICommand{
 						treasure.hints(player);
 					}
 					else{
-						player.sendMessage(ChatColor.GRAY + mgs.get(0).getName() + " is currently not running.");
+						player.sendMessage(ChatColor.GRAY + mgs.get(0).getName(false) + " is currently not running.");
 					}
 				}
 			}
@@ -117,7 +117,7 @@ public class HintCommand implements ICommand{
 			List<String> mgs = new ArrayList<String>();
 			for(Minigame mg : plugin.mdata.getAllMinigames().values()){
 				if(mg.getType() == MinigameType.TREASURE_HUNT)
-					mgs.add(mg.getName());
+					mgs.add(mg.getName(false));
 			}
 			return MinigameUtils.tabCompleteMatch(mgs, args[0]);
 		}

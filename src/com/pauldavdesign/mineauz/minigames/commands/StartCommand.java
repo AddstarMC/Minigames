@@ -61,7 +61,7 @@ public class StartCommand implements ICommand{
 			
 			if(mgm != null){
 				if(mgm.getThTimer() == null && mgm.getType() == MinigameType.TREASURE_HUNT){
-					plugin.mdata.startGlobalMinigame(mgm.getName());
+					plugin.mdata.startGlobalMinigame(mgm.getName(false));
 					mgm.setEnabled(true);
 					mgm.saveMinigame();
 				}
@@ -72,10 +72,10 @@ public class StartCommand implements ICommand{
 						mgm.getMpTimer().startTimer();
 					}
 					else
-						sender.sendMessage(ChatColor.RED + mgm.getName() + " has already started.");
+						sender.sendMessage(ChatColor.RED + mgm.getName(false) + " has already started.");
 				}
 				else if(mgm.getThTimer() != null){
-					sender.sendMessage(ChatColor.RED + mgm.getName() + " is already running!");
+					sender.sendMessage(ChatColor.RED + mgm.getName(false) + " is already running!");
 				}
 			}
 			else{

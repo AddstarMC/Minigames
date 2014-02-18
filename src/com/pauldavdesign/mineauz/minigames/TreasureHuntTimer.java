@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class TreasureHuntTimer{
-	private String minigame = null;
 	private static Minigames plugin = Minigames.plugin;
 	private Minigame mgm = null;
 	private MinigameData mdata = plugin.mdata;
@@ -24,16 +23,15 @@ public class TreasureHuntTimer{
 	private boolean chestfound = false;
 	private ArrayList<String> curHints = new ArrayList<String>();
 	private Map<String, Long> lastCommand = new HashMap<String, Long>();
-	private Location block = mdata.getTreasureHuntLocation(minigame);
+	private Location block;
 	private int hintTime1, hintTime2, hintTime3, hintTime4;
 	private int taskID = -1;
 	private boolean paused = false;
 	
 	
-	public TreasureHuntTimer(String minigame){
-		this.minigame = minigame;
-		mgm = mdata.getMinigame(minigame);
-		block = mdata.getTreasureHuntLocation(minigame);
+	public TreasureHuntTimer(Minigame mgm){
+		this.mgm = mgm;
+		block = mdata.getTreasureHuntLocation(mgm.getName(false));
 		findtime = plugin.getConfig().getInt("treasurehunt.findtime");
 		waittime = plugin.getConfig().getInt("treasurehunt.waittime");
 		time = findtime;
@@ -53,23 +51,23 @@ public class TreasureHuntTimer{
 					if(time <= 0){
 						inworld = false;
 						time = waittime;
-						Location old = mdata.getTreasureHuntLocation(minigame);
-						mdata.removeTreasure(minigame);
+						Location old = mdata.getTreasureHuntLocation(mgm.getName(false));
+						mdata.removeTreasure(mgm.getName(false));
 						curHints = new ArrayList<String>();
 						if(chestfound == false){
-							plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.treasurehunt.plyDespawn", minigame), "minigame.treasure.announce");
+							plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.treasurehunt.plyDespawn", mgm.getName(true)), "minigame.treasure.announce");
 							plugin.getServer().broadcast(ChatColor.GRAY + MinigameUtils.formStr("minigame.treasurehunt.plyDespawnCoords", old.getBlockX(), old.getBlockY(), old.getBlockZ()), "minigame.treasure.announce");
 						}
 					}
 					else if(time == hintTime2 && chestfound == false){
 						block.setY(block.getY() - 1);
-						String hint = MinigameUtils.formStr("minigame.treasurehunt.hint2", minigame, block.getBlock().getType().toString().toLowerCase().replace("_", " "));
+						String hint = MinigameUtils.formStr("minigame.treasurehunt.hint2", mgm.getName(true), block.getBlock().getType().toString().toLowerCase().replace("_", " "));
 						plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + hint, "minigame.treasure.announce");
 						curHints.add(ChatColor.GRAY + hint);
 						block.setY(block.getY() + 1);
 					}
 					else if(time == hintTime1 && chestfound == false){
-						block = mdata.getTreasureHuntLocation(minigame);
+						block = mdata.getTreasureHuntLocation(mgm.getName(false));
 						
 						double dfcx = 0.0;
 						double dfcz = 0.0;
@@ -110,7 +108,7 @@ public class TreasureHuntTimer{
 								dir = xdir;
 							}
 						}
-						String hint = MinigameUtils.formStr("minigame.treasurehunt.hint1.hint", minigame, dir, mdata.getMinigame(minigame).getLocation());
+						String hint = MinigameUtils.formStr("minigame.treasurehunt.hint1.hint", mgm.getName(true), dir, mgm.getLocation());
 						plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + hint, "minigame.treasure.hint");
 						curHints.add(ChatColor.GRAY + hint);
 					}
@@ -126,12 +124,12 @@ public class TreasureHuntTimer{
 							dist = 62 - height;
 							dir = MinigameUtils.getLang("minigame.treasurehunt.hint3.below");
 						}
-						String hint = MinigameUtils.formStr("minigame.treasurehunt.hint3.hint", minigame, dist, dir);
+						String hint = MinigameUtils.formStr("minigame.treasurehunt.hint3.hint", mgm.getName(true), dist, dir);
 						plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + hint, "minigame.treasure.hint");
 						curHints.add(ChatColor.GRAY + hint);
 					}
 					else if(time == hintTime4 && chestfound == false){
-						String hint = MinigameUtils.formStr("minigame.treasurehunt.hint4", minigame, block.getBlock().getBiome().toString().toLowerCase().replace("_", " "));
+						String hint = MinigameUtils.formStr("minigame.treasurehunt.hint4", mgm.getName(true), block.getBlock().getBiome().toString().toLowerCase().replace("_", " "));
 						plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + hint, "minigame.treasure.hint");
 						curHints.add(ChatColor.GRAY + hint);
 					}
@@ -142,7 +140,7 @@ public class TreasureHuntTimer{
 					if(time <= 0){
 						inworld = true;
 						chestfound = false;
-						mdata.startGlobalMinigame(minigame);
+						mdata.startGlobalMinigame(mgm.getName(false));
 						
 						findtime = plugin.getConfig().getInt("treasurehunt.findtime");
 						waittime = plugin.getConfig().getInt("treasurehunt.waittime");
@@ -200,7 +198,7 @@ public class TreasureHuntTimer{
 				lastCommand.put(player.getName(), Calendar.getInstance().getTimeInMillis());
 			}
 			else{
-				player.sendMessage(ChatColor.RED + MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.noUse", minigame));
+				player.sendMessage(ChatColor.RED + MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.noUse", mgm.getName(true)));
 				int nextuse = (300000 - (int) (Calendar.getInstance().getTimeInMillis() - lastCommand.get(player.getName()))) / 1000;
 				player.sendMessage(ChatColor.GRAY + MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.nextUse",MinigameUtils.convertTime(nextuse)));
 				player.sendMessage(ChatColor.GRAY + MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.treasureTimeLeft", time));

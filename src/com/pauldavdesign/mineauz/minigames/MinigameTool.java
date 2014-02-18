@@ -54,7 +54,7 @@ public class MinigameTool {
 	public void setMinigame(Minigame minigame){
 		ItemMeta meta = tool.getItemMeta();
 		List<String> lore = meta.getLore();
-		lore.set(0, ChatColor.AQUA + "Minigame: " + ChatColor.WHITE + minigame.getName());
+		lore.set(0, ChatColor.AQUA + "Minigame: " + ChatColor.WHITE + minigame.getName(false));
 		meta.setLore(lore);
 		tool.setItemMeta(meta);
 		this.minigame = minigame;

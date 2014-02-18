@@ -73,7 +73,7 @@ public class PlayerCommand implements ICommand {
 				sender.sendMessage(ChatColor.AQUA + "-----------List of Players Playing Minigames-----------");
 				if(!pls.isEmpty()){
 					for(MinigamePlayer pl : pls){
-						sender.sendMessage(ChatColor.GREEN + pl.getName() + ChatColor.GRAY + " (Playing \"" + pl.getMinigame().getName() + "\")");
+						sender.sendMessage(ChatColor.GREEN + pl.getName() + ChatColor.GRAY + " (Playing \"" + pl.getMinigame().getName(false) + "\")");
 					}
 				}
 				else{
@@ -86,7 +86,7 @@ public class PlayerCommand implements ICommand {
 					MinigamePlayer pl = Minigames.plugin.getPlayerData().getMinigamePlayer(plmatch.get(0));
 					sender.sendMessage(ChatColor.AQUA + "--------Player info on " + pl.getName() + "--------");
 					if(pl.isInMinigame()){
-						sender.sendMessage(ChatColor.GREEN + "Minigame: " + ChatColor.GRAY + pl.getMinigame().getName());
+						sender.sendMessage(ChatColor.GREEN + "Minigame: " + ChatColor.GRAY + pl.getMinigame().getName(false));
 						sender.sendMessage(ChatColor.GREEN + "Score: " + ChatColor.GRAY + pl.getScore());
 						sender.sendMessage(ChatColor.GREEN + "Kills: "  + ChatColor.GRAY + pl.getKills());
 						sender.sendMessage(ChatColor.GREEN + "Deaths: " + ChatColor.GRAY + pl.getDeaths());

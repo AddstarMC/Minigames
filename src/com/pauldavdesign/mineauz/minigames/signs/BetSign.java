@@ -43,7 +43,7 @@ public class BetSign implements MinigameSign{
 	public boolean signCreate(SignChangeEvent event) {
 		if(plugin.mdata.hasMinigame(event.getLine(2))){
 			event.setLine(1, ChatColor.GREEN + "Bet");
-			event.setLine(2, plugin.mdata.getMinigame(event.getLine(2)).getName());
+			event.setLine(2, plugin.mdata.getMinigame(event.getLine(2)).getName(false));
 			if(event.getLine(3).matches("[0-9]+")){
 				event.setLine(3, "$" + event.getLine(3));
 			}
@@ -57,7 +57,7 @@ public class BetSign implements MinigameSign{
 	public boolean signUse(Sign sign, MinigamePlayer player) {
 		Minigame mgm = plugin.mdata.getMinigame(sign.getLine(2));
 		if(mgm != null && (player.getPlayer().getItemInHand().getType() != Material.AIR || (sign.getLine(3).startsWith("$") && player.getPlayer().getItemInHand().getType() == Material.AIR))){
-			if(mgm.isEnabled() && (!mgm.getUsePermissions() || player.getPlayer().hasPermission("minigame.join." + mgm.getName().toLowerCase()))){
+			if(mgm.isEnabled() && (!mgm.getUsePermissions() || player.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))){
 				if(mgm.isSpectator(player)){
 					return false;
 				}
@@ -80,7 +80,7 @@ public class BetSign implements MinigameSign{
 				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.notEnabled"));
 			}
 			else if(mgm.getUsePermissions()){
-				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName().toLowerCase()));
+				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()));
 			}
 		}
 		else if(mgm != null && player.getPlayer().getItemInHand().getType() == Material.AIR && !sign.getLine(3).startsWith("$")){

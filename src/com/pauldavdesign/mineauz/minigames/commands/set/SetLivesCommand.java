@@ -58,7 +58,7 @@ public class SetLivesCommand implements ICommand {
 				int lives = Integer.parseInt(args[0]);
 				minigame.setLives(lives);
 				
-				sender.sendMessage(ChatColor.GRAY + minigame.getName() + "'s lives has been set to " + lives);
+				sender.sendMessage(ChatColor.GRAY + minigame.getName(false) + "'s lives has been set to " + lives);
 				return true;
 			}
 		}

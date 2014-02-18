@@ -85,7 +85,7 @@ public class QuitCommand implements ICommand{
 							for(MinigamePlayer pl : pls){
 								plugin.pdata.quitMinigame(pl, true);
 							}
-							sender.sendMessage(ChatColor.GRAY + MinigameUtils.formStr("command.quit.quitAllMinigame", mg.getName()));
+							sender.sendMessage(ChatColor.GRAY + MinigameUtils.formStr("command.quit.quitAllMinigame", mg.getName(false)));
 						}
 						else{
 							sender.sendMessage(ChatColor.RED + MinigameUtils.formStr("minigame.error.noMinigameName", args[1]));

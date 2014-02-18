@@ -58,7 +58,7 @@ public class SaveCommand implements ICommand {
 			if(plugin.mdata.hasMinigame(args[0])){
 				Minigame mg = plugin.mdata.getMinigame(args[0]);
 				mg.saveMinigame();
-				sender.sendMessage(ChatColor.GRAY + mg.getName() + " has been saved.");
+				sender.sendMessage(ChatColor.GRAY + mg.getName(false) + " has been saved.");
 			}
 			else{
 				sender.sendMessage(ChatColor.RED + "There is no Minigame by the name: " + args[0]);

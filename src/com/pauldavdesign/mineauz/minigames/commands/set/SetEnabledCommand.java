@@ -58,10 +58,10 @@ public class SetEnabledCommand implements ICommand {
 			boolean enabled = Boolean.parseBoolean(args[0]);
 			minigame.setEnabled(enabled);
 			if(enabled){
-				sender.sendMessage(ChatColor.GRAY + minigame.getName() + " is now enabled.");
+				sender.sendMessage(ChatColor.GRAY + minigame.getName(false) + " is now enabled.");
 			}
 			else{
-				sender.sendMessage(ChatColor.GRAY + minigame.getName() + " is now disabled.");
+				sender.sendMessage(ChatColor.GRAY + minigame.getName(false) + " is now disabled.");
 			}
 			minigame.saveMinigame();
 			return true;

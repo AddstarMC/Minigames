@@ -57,7 +57,7 @@ public class SetMinScoreCommand implements ICommand {
 			if(args[0].matches("[0-9]+")){
 				int minscore = Integer.parseInt(args[0]);
 				minigame.setMinScore(minscore);
-				sender.sendMessage(ChatColor.GRAY + "Minimum score has been set to " + minscore + " for " + minigame.getName());
+				sender.sendMessage(ChatColor.GRAY + "Minimum score has been set to " + minscore + " for " + minigame.getName(false));
 				return true;
 			}
 		}

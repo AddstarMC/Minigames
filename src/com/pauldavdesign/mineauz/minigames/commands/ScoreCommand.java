@@ -106,16 +106,16 @@ public class ScoreCommand implements ICommand {
 						
 						if(mg.getType() == MinigameType.TEAMS){
 							if(team == 0){
-								sender.sendMessage(ChatColor.RED + "Red Teams " + ChatColor.GRAY + "score in " + mg.getName() + ": " 
+								sender.sendMessage(ChatColor.RED + "Red Teams " + ChatColor.GRAY + "score in " + mg.getName(false) + ": " 
 										+ ChatColor.GREEN + mg.getRedTeamScore());
 							}
 							else{
-								sender.sendMessage(ChatColor.BLUE + "Blue Teams " + ChatColor.GRAY + "score in " + mg.getName() + ": " 
+								sender.sendMessage(ChatColor.BLUE + "Blue Teams " + ChatColor.GRAY + "score in " + mg.getName(false) + ": " 
 										+ ChatColor.GREEN + mg.getBlueTeamScore());
 							}
 						}
 						else{
-							sender.sendMessage(ChatColor.RED + mg.getName() + " is not a team Minigame!");
+							sender.sendMessage(ChatColor.RED + mg.getName(false) + " is not a team Minigame!");
 							return true;
 						}
 					}
@@ -200,10 +200,10 @@ public class ScoreCommand implements ICommand {
 							}
 						}
 						else if(!mg.hasPlayers()){
-							sender.sendMessage(ChatColor.RED + mg.getName() + " has no players playing!");
+							sender.sendMessage(ChatColor.RED + mg.getName(false) + " has no players playing!");
 						}
 						else{
-							sender.sendMessage(ChatColor.RED + mg.getName() + " is not a team Minigame!");
+							sender.sendMessage(ChatColor.RED + mg.getName(false) + " is not a team Minigame!");
 						}
 					}
 					else{
@@ -295,10 +295,10 @@ public class ScoreCommand implements ICommand {
 						}
 					}
 					else if(!mg.hasPlayers()){
-						sender.sendMessage(ChatColor.RED + mg.getName() + " has no players playing!");
+						sender.sendMessage(ChatColor.RED + mg.getName(false) + " has no players playing!");
 					}
 					else{
-						sender.sendMessage(ChatColor.RED + mg.getName() + " is not a team Minigame!");
+						sender.sendMessage(ChatColor.RED + mg.getName(false) + " is not a team Minigame!");
 					}
 				}
 				return true;

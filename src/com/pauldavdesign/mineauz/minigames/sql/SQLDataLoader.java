@@ -35,7 +35,7 @@ public class SQLDataLoader extends Thread{
 		Connection sql = database.getSql();
 
 		for(Minigame mg : mgs){
-			String minigame = mg.getName();
+			String minigame = mg.getName(false);
 			String table = "mgm_" + minigame + "_comp";
 			if(database.isTable(table)){
 				try{

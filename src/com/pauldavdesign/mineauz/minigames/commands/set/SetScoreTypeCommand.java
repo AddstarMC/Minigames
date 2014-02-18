@@ -72,7 +72,7 @@ public class SetScoreTypeCommand implements ICommand {
 			
 			if(bool){
 				minigame.setScoreType(args[0].toLowerCase());
-				sender.sendMessage(ChatColor.GRAY + minigame.getName() + " score type has been set to " + args[0]);
+				sender.sendMessage(ChatColor.GRAY + minigame.getName(false) + " score type has been set to " + args[0]);
 				return true;
 			}
 		}

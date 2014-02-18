@@ -43,7 +43,7 @@ public class SpectateSign implements MinigameSign {
 	public boolean signCreate(SignChangeEvent event) {
 		if(plugin.mdata.hasMinigame(event.getLine(2))){
 			event.setLine(1, ChatColor.GREEN + "Spectate");
-			event.setLine(2, plugin.mdata.getMinigame(event.getLine(2)).getName());
+			event.setLine(2, plugin.mdata.getMinigame(event.getLine(2)).getName(false));
 			return true;
 		}
 		event.getPlayer().sendMessage(ChatColor.RED + MinigameUtils.formStr("minigame.error.noMinigameName", event.getLine(2)));

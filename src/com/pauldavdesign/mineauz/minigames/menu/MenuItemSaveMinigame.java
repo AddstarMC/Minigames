@@ -23,7 +23,7 @@ public class MenuItemSaveMinigame extends MenuItem{
 	@Override
 	public ItemStack onClick(){
 		mgm.saveMinigame();
-		getContainer().getViewer().sendMessage("Saved the '" + mgm.getName() + "' Minigame.", null);
+		getContainer().getViewer().sendMessage("Saved the '" + mgm.getName(false) + "' Minigame.", null);
 		return getItem();
 	}
 

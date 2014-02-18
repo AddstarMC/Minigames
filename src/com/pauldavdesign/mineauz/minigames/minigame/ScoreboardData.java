@@ -65,35 +65,35 @@ public class ScoreboardData {
 		FileConfiguration con = save.getConfig();
 		con.set(name + ".scoreboards", null);
 		for(ScoreboardDisplay dis : displays.values()){
-			String loc = dis.getMinigame().getName() + ".scoreboards." + inc + ".";
+			String loc = dis.getMinigame().getName(false) + ".scoreboards." + inc + ".";
 			con.set(loc + "height", dis.getHeight());
 			con.set(loc + "width", dis.getWidth());
 			con.set(loc + "dir", dis.getDirection().toString());
 			con.set(loc + "type", dis.getType().toString());
 			con.set(loc + "order", dis.getOrder().toString());
-			Minigames.plugin.mdata.minigameSetLocationsShort(dis.getMinigame().getName(), dis.getLocation(), "scoreboards." + inc + ".location", save.getConfig());
+			Minigames.plugin.mdata.minigameSetLocationsShort(dis.getMinigame().getName(false), dis.getLocation(), "scoreboards." + inc + ".location", save.getConfig());
 			inc++;
 		}
 	}
 	
 	public void loadDisplays(MinigameSave save, Minigame mgm){
 		FileConfiguration con = save.getConfig();
-		if(!save.getConfig().contains(mgm.getName() + ".scoreboards")) return;
+		if(!save.getConfig().contains(mgm.getName(false) + ".scoreboards")) return;
 		
-		Set<String> keys = save.getConfig().getConfigurationSection(mgm.getName() + ".scoreboards").getKeys(false);
+		Set<String> keys = save.getConfig().getConfigurationSection(mgm.getName(false) + ".scoreboards").getKeys(false);
 		for(String key : keys){
-			String loc = mgm.getName() + ".scoreboards." + key + ".";
+			String loc = mgm.getName(false) + ".scoreboards." + key + ".";
 			ScoreboardDisplay dis = 
 					new ScoreboardDisplay(mgm, 
 							con.getInt(loc + "width"), 
 							con.getInt(loc + "height"), 
-							Minigames.plugin.mdata.minigameLocationsShort(mgm.getName(), "scoreboards." + key + ".location", save.getConfig()), 
+							Minigames.plugin.mdata.minigameLocationsShort(mgm.getName(false), "scoreboards." + key + ".location", save.getConfig()), 
 							BlockFace.valueOf(con.getString(loc + "dir")));
 			dis.setOrd(ScoreboardOrder.valueOf(con.getString(loc + "order")));
 			dis.setType(ScoreboardType.valueOf(con.getString(loc + "type")));
 			addDisplay(dis);
 			dis.getLocation().getBlock().setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.plugin, true));
-			dis.getLocation().getBlock().setMetadata("Minigame", new FixedMetadataValue(Minigames.plugin, mgm.getName()));
+			dis.getLocation().getBlock().setMetadata("Minigame", new FixedMetadataValue(Minigames.plugin, mgm.getName(false)));
 		}
 	}
 }

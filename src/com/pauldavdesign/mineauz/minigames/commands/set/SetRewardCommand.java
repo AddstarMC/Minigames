@@ -88,7 +88,7 @@ public class SetRewardCommand implements ICommand{
 				}
 				minigame.getRewardItems().addItem(item, rarity);
 				
-				sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to primary rewards of \"" + minigame.getName() + "\" "
+				sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to primary rewards of \"" + minigame.getName(false) + "\" "
 						+ "with a rarity of \"" + rarity.toString().toLowerCase().replace("_", " ") + "\"");
 				return true;
 			}
@@ -99,12 +99,12 @@ public class SetRewardCommand implements ICommand{
 					rarity = RewardRarity.valueOf(args[1].toUpperCase());
 				}
 				minigame.getRewardItems().addItem(item, rarity);
-				sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to primary rewards of \"" + minigame.getName() + "\" "
+				sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to primary rewards of \"" + minigame.getName(false) + "\" "
 						+ "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
 				return true;
 			}
 			else if(item != null && item.getType() == Material.AIR){
-				sender.sendMessage(ChatColor.RED + "Primary rewards for \"" + minigame.getName() + "\" cannot be Air!");
+				sender.sendMessage(ChatColor.RED + "Primary rewards for \"" + minigame.getName(false) + "\" cannot be Air!");
 				return true;
 			}
 			else if(money != -1 && plugin.hasEconomy()){
@@ -113,7 +113,7 @@ public class SetRewardCommand implements ICommand{
 					rarity = RewardRarity.valueOf(args[1].toUpperCase());
 				}
 				minigame.getRewardItems().addMoney(money, rarity);
-				sender.sendMessage(ChatColor.GRAY + "Added $" + money + " to primary rewards of \"" + minigame.getName() + "\" "
+				sender.sendMessage(ChatColor.GRAY + "Added $" + money + " to primary rewards of \"" + minigame.getName(false) + "\" "
 						+ "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
 				return true;
 			}

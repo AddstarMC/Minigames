@@ -58,9 +58,9 @@ public class JoinCommand implements ICommand{
 		Player player = (Player)sender;
 		if(args != null){
 			Minigame mgm = plugin.mdata.getMinigame(args[0]);
-			if(mgm != null && (!mgm.getUsePermissions() || player.hasPermission("minigame.join." + mgm.getName().toLowerCase()))){
+			if(mgm != null && (!mgm.getUsePermissions() || player.hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))){
 				if(!plugin.pdata.getMinigamePlayer(player).isInMinigame()){
-					sender.sendMessage(ChatColor.GREEN + MinigameUtils.formStr("command.join.joining", mgm.getName()));
+					sender.sendMessage(ChatColor.GREEN + MinigameUtils.formStr("command.join.joining", mgm.getName(false)));
 					plugin.pdata.joinMinigame(plugin.pdata.getMinigamePlayer(player), mgm, false, 0.0);
 				}
 				else {
@@ -68,7 +68,7 @@ public class JoinCommand implements ICommand{
 				}
 			}
 			else if(mgm != null && mgm.getUsePermissions()){
-				player.sendMessage(ChatColor.RED + MinigameUtils.formStr("command.join.noMinigamePermission", "minigame.join." + mgm.getName().toLowerCase()));
+				player.sendMessage(ChatColor.RED + MinigameUtils.formStr("command.join.noMinigamePermission", "minigame.join." + mgm.getName(false).toLowerCase()));
 			}
 			else{
 				player.sendMessage(ChatColor.RED + MinigameUtils.getLang("minigame.error.noMinigame"));

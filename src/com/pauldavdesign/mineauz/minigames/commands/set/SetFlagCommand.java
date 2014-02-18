@@ -84,21 +84,21 @@ public class SetFlagCommand implements ICommand{
 							flags += ", ";
 						}
 					}
-					sender.sendMessage(ChatColor.BLUE + "All " + minigame.getName() + " flags:");
+					sender.sendMessage(ChatColor.BLUE + "All " + minigame.getName(false) + " flags:");
 					sender.sendMessage(ChatColor.GRAY + flags);
 				}
 				else{
-					sender.sendMessage(ChatColor.RED + "There are no flags in " + minigame.getName() + "!");
+					sender.sendMessage(ChatColor.RED + "There are no flags in " + minigame.getName(false) + "!");
 				}
 				return true;
 			}
 			else if(args[0].equalsIgnoreCase("clear")){
 				if(minigame.hasFlags()){
 					minigame.getFlags().clear();
-					sender.sendMessage(ChatColor.GRAY + "Cleared all flags from " + minigame.getName());
+					sender.sendMessage(ChatColor.GRAY + "Cleared all flags from " + minigame.getName(false));
 				}
 				else{
-					sender.sendMessage(ChatColor.RED + "There are no flags in " + minigame.getName() + "!");
+					sender.sendMessage(ChatColor.RED + "There are no flags in " + minigame.getName(false) + "!");
 				}
 				return true;
 			}

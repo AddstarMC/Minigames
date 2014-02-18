@@ -108,7 +108,7 @@ public class ScoreboardSign implements MinigameSign{
 					}
 				}
 				event.setLine(1, ChatColor.GREEN + "Scoreboard");
-				event.setLine(2, plugin.mdata.getMinigame(event.getLine(2)).getName());
+				event.setLine(2, plugin.mdata.getMinigame(event.getLine(2)).getName(false));
 				return true;
 			}
 		}

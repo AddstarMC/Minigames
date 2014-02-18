@@ -60,7 +60,7 @@ public class SetStartCommand implements ICommand{
 		
 		if(args == null){
 			minigame.setStartLocation(player.getLocation());
-			sender.sendMessage(ChatColor.GRAY + "Starting position has been set for " + minigame.getName());
+			sender.sendMessage(ChatColor.GRAY + "Starting position has been set for " + minigame.getName(false));
 			return true;
 		}
 		else if(args.length == 1 && args[0].matches("[0-9]+")){

@@ -364,7 +364,7 @@ public class TeamsType extends MinigameTypeBase{
 					if(!plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
 						ply.sendMessage(MinigameUtils.formStr("player.end.team.tie", ChatColor.BLUE + "Blue Team" + ChatColor.WHITE, 
 								ChatColor.RED + "Red Team" + ChatColor.WHITE, 
-								event.getMinigame().getName()), "error");
+								event.getMinigame().getName(false)), "error");
 						ply.sendMessage(MinigameUtils.getLang("minigame.info.score") + " " + MinigameUtils.formStr("player.end.team.score", ChatColor.BLUE + String.valueOf(event.getMinigame().getBlueTeamScore()) + ChatColor.WHITE,
 								ChatColor.RED.toString() + event.getMinigame().getRedTeamScore()));
 					}
@@ -372,7 +372,7 @@ public class TeamsType extends MinigameTypeBase{
 				if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
 					plugin.getServer().broadcastMessage(ChatColor.RED + "[Minigames] " + MinigameUtils.formStr("player.end.team.tie", ChatColor.BLUE + "Blue Team" + ChatColor.WHITE, 
 							ChatColor.RED + "Red Team" + ChatColor.WHITE, 
-							event.getMinigame().getName()));
+							event.getMinigame().getName(true)));
 					plugin.getServer().broadcastMessage(MinigameUtils.getLang("minigame.info.score") + " " + MinigameUtils.formStr("player.end.team.score", ChatColor.BLUE + String.valueOf(event.getMinigame().getBlueTeamScore()) + ChatColor.WHITE,
 							ChatColor.RED.toString() + event.getMinigame().getRedTeamScore()));
 				}

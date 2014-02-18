@@ -198,7 +198,7 @@ public class PlayerData {
 				mdata.minigameType(type).joinMinigame(player, minigame);
 
 				//Send other players the join message.
-				mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.join.plyMsg", player.getName(), minigame.getName()), null, player);
+				mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.join.plyMsg", player.getName(), minigame.getName(true)), null, player);
 				player.updateInventory();
 			}
 			else if(!minigame.isEnabled()){
@@ -256,9 +256,9 @@ public class PlayerData {
 			for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
 				player.getPlayer().removePotionEffect(potion.getType());
 			}
-			player.sendMessage(MinigameUtils.formStr("player.spectate.join.plyMsg", minigame.getName()) + "\n" +
+			player.sendMessage(MinigameUtils.formStr("player.spectate.join.plyMsg", minigame.getName(false)) + "\n" +
 					MinigameUtils.formStr("player.spectate.join.plyHelp", "\"/minigame quit\""), null);
-			mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.spectate.join.minigameMsg", player.getName(), minigame.getName()), null, player);
+			mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.spectate.join.minigameMsg", player.getName(), minigame.getName(false)), null, player);
 		}
 	}
 	
@@ -416,7 +416,7 @@ public class PlayerData {
 				//SQL stuff
 				if(plugin.getSQL() != null){
 					if(minigame.canSaveCheckpoint() == false){
-						plugin.addSQLToStore(new SQLPlayer(minigame.getName(), player.getName(), 0, 1, 
+						plugin.addSQLToStore(new SQLPlayer(minigame.getName(false), player.getName(), 0, 1, 
 								player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), 
 								player.getEndTime() - player.getStartTime() + player.getStoredTime()));
 						plugin.startSQLCompletionSaver();
@@ -512,10 +512,10 @@ public class PlayerData {
 				
 				//Send out messages
 				if(!forced){
-					mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.quit.plyMsg", player.getName(), minigame.getName()), "error", player);
+					mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.quit.plyMsg", player.getName(), minigame.getName(true)), "error", player);
 				}
 				else{
-					mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.quit.plyForcedMsg", player.getName(), minigame.getName()), "error", player);
+					mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.quit.plyForcedMsg", player.getName(), minigame.getName(true)), "error", player);
 				}
 				plugin.getLogger().info(player.getName() + " quit " + minigame);
 				player.updateInventory();
@@ -554,8 +554,8 @@ public class PlayerData {
 					pl.getPlayer().showPlayer(player.getPlayer());
 				}
 				
-				player.sendMessage(MinigameUtils.formStr("player.spectate.quit.plyMsg", minigame.getName()), "error");
-				mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.spectate.quit.minigameMsg", player.getName(), minigame.getName()), "error", player);
+				player.sendMessage(MinigameUtils.formStr("player.spectate.quit.plyMsg", minigame.getName(true)), "error");
+				mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.spectate.quit.minigameMsg", player.getName(), minigame.getName(true)), "error", player);
 			}
 		}
 	}
@@ -608,14 +608,14 @@ public class PlayerData {
 						if(mgm.getRedTeamScore() != 0 && mgm.getBlueTeamScore() != 0){
 							score = ", " + MinigameUtils.formStr("player.end.team.score", ChatColor.BLUE.toString() + mgm.getBlueTeamScore() + ChatColor.WHITE, ChatColor.RED.toString() + mgm.getRedTeamScore());
 						}
-						plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + MinigameUtils.formStr("player.end.team.win", ChatColor.BLUE.toString() + "Blue Team" + ChatColor.WHITE, mgm.getName()) + score);
+						plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + MinigameUtils.formStr("player.end.team.win", ChatColor.BLUE.toString() + "Blue Team" + ChatColor.WHITE, mgm.getName(true)) + score);
 					}
 					else{
 						String score = "";
 						if(mgm.getRedTeamScore() != 0 && mgm.getBlueTeamScore() != 0){
 							score = ", " + MinigameUtils.formStr("player.end.team.score", ChatColor.RED.toString() + mgm.getRedTeamScore() + ChatColor.WHITE, ChatColor.BLUE.toString() + mgm.getBlueTeamScore());
 						}
-						plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + MinigameUtils.formStr("player.end.team.win", ChatColor.RED + "Red Team" + ChatColor.WHITE, mgm.getName()) + score);
+						plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + MinigameUtils.formStr("player.end.team.win", ChatColor.RED + "Red Team" + ChatColor.WHITE, mgm.getName(true)) + score);
 					}
 				}
 				else{
@@ -624,7 +624,7 @@ public class PlayerData {
 						if(winners.get(0).getScore() != 0)
 							score = MinigameUtils.formStr("player.end.broadcastScore", winners.get(0).getScore());
 						plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + 
-								MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getName(), mgm.getName()) + ". " + score);
+								MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getName(), mgm.getName(true)) + ". " + score);
 					}
 					else{
 						String win = "";
@@ -651,7 +651,7 @@ public class PlayerData {
 							}
 						}
 						plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + 
-								MinigameUtils.formStr("player.end.broadcastMsg", win, mgm.getName()) + ". ");
+								MinigameUtils.formStr("player.end.broadcastMsg", win, mgm.getName(true)) + ". ");
 					}
 				}
 			}
@@ -667,21 +667,21 @@ public class PlayerData {
 				Configuration completion = null;
 				if(plugin.getSQL() == null && mgm.isEnabled()){
 					completion = mdata.getConfigurationFile("completion");
-					hascompleted = completion.getStringList(mgm.getName()).contains(player.getName());
+					hascompleted = completion.getStringList(mgm.getName(false)).contains(player.getName());
 					
-					if(!completion.getStringList(mgm.getName()).contains(player.getName())){
-						List<String> completionlist = completion.getStringList(mgm.getName());
+					if(!completion.getStringList(mgm.getName(false)).contains(player.getName())){
+						List<String> completionlist = completion.getStringList(mgm.getName(false));
 						completionlist.add(player.getName());
-						completion.set(mgm.getName(), completionlist);
+						completion.set(mgm.getName(false), completionlist);
 						MinigameSave completionsave = new MinigameSave("completion");
-						completionsave.getConfig().set(mgm.getName(), completionlist);
+						completionsave.getConfig().set(mgm.getName(false), completionlist);
 						completionsave.saveConfig();
 					}
 					
 					MinigameTypeBase.issuePlayerRewards(player, mgm, hascompleted);
 				}
 				else if(mgm.isEnabled()){
-					plugin.addSQLToStore(new SQLPlayer(mgm.getName(), player.getName(), 1, 0, player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), player.getEndTime() - player.getStartTime()));
+					plugin.addSQLToStore(new SQLPlayer(mgm.getName(false), player.getName(), 1, 0, player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), player.getEndTime() - player.getStartTime()));
 					plugin.startSQLCompletionSaver();
 				}
 				
@@ -758,8 +758,8 @@ public class PlayerData {
 					}
 				}
 	
-				plugin.getLogger().info(MinigameUtils.formStr("player.end.consMsg", player.getName(), mgm.getName()));
-				player.sendMessage(MinigameUtils.formStr("player.end.plyMsg", mgm.getName()), "win");
+				plugin.getLogger().info(MinigameUtils.formStr("player.end.consMsg", player.getName(), mgm.getName(false)));
+				player.sendMessage(MinigameUtils.formStr("player.end.plyMsg", mgm.getName(true)), "win");
 				
 				if(mgm.getPlayers().size() == 0 && !mgm.isRegenerating()){
 					HandlerList.unregisterAll(mgm.getBlockRecorder());

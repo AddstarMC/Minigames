@@ -95,7 +95,7 @@ public class ScoreboardCommand implements ICommand{
 									ord = ScoreboardOrder.ASCENDING;
 								}
 								ScoreboardSortThread sorter = new ScoreboardSortThread(mg.getScoreboardData().getPlayers(), type, ord, 
-										mg.getName(), sender);
+										mg.getName(false), sender);
 								sorter.setSpecificPlayer(ply);
 								sorter.start();
 							}
@@ -103,7 +103,7 @@ public class ScoreboardCommand implements ICommand{
 								sender.sendMessage(ChatColor.RED + "Order must be asc (ascending) or desc (descending)");
 						}
 						else
-							sender.sendMessage(ChatColor.RED + ply + " does not have any data stored in " + mg.getName());
+							sender.sendMessage(ChatColor.RED + ply + " does not have any data stored in " + mg.getName(false));
 						return true;
 					}
 					else if(args[2].matches("(asc)|(desc)")){
@@ -114,9 +114,9 @@ public class ScoreboardCommand implements ICommand{
 						
 						ScoreboardSortThread sorter;
 						if(args.length == 4 && args[3].matches("[0-9]+"))
-							sorter = new ScoreboardSortThread(mg.getScoreboardData().getPlayers(), type, ord, mg.getName(), sender, Integer.parseInt(args[3]));
+							sorter = new ScoreboardSortThread(mg.getScoreboardData().getPlayers(), type, ord, mg.getName(false), sender, Integer.parseInt(args[3]));
 						else
-							sorter = new ScoreboardSortThread(mg.getScoreboardData().getPlayers(), type, ord, mg.getName(), sender);
+							sorter = new ScoreboardSortThread(mg.getScoreboardData().getPlayers(), type, ord, mg.getName(false), sender);
 						
 						sorter.start();
 						sender.sendMessage(ChatColor.GRAY + "Preparing scoreboard...");

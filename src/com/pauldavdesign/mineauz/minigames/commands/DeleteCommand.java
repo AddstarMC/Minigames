@@ -60,16 +60,16 @@ public class DeleteCommand implements ICommand{
 			Minigame mgm = plugin.mdata.getMinigame(args[0]);
 			
 			if(mgm != null){
-				MinigameSave save = new MinigameSave(mgm.getName(), "config");
+				MinigameSave save = new MinigameSave(mgm.getName(false), "config");
 				
-				if(save.getConfig().get(mgm.getName()) != null){
+				if(save.getConfig().get(mgm.getName(false)) != null){
 					save.deleteFile();
 					List<String> ls = plugin.getConfig().getStringList("minigames");
-					ls.remove(mgm.getName());
+					ls.remove(mgm.getName(false));
 					plugin.getConfig().set("minigames", ls);
-					plugin.mdata.removeMinigame(mgm.getName());
+					plugin.mdata.removeMinigame(mgm.getName(false));
 					plugin.saveConfig();
-					sender.sendMessage(ChatColor.RED + "The minigame " + mgm.getName() + " has been removed");
+					sender.sendMessage(ChatColor.RED + "The minigame " + mgm.getName(false) + " has been removed");
 				}
 				else {
 					sender.sendMessage(ChatColor.RED + "That minigame does not exist!");

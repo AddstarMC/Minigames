@@ -30,13 +30,13 @@ public class MenuItemScoreboardSave extends MenuItem{
 	public ItemStack onClick() {
 		if(disp.getLocation().getBlock().getState() instanceof Sign){
 			Sign sign = (Sign)disp.getLocation().getBlock().getState();
-			sign.setLine(0, ChatColor.BLUE + disp.getMinigame().getName());
+			sign.setLine(0, ChatColor.BLUE + disp.getMinigame().getName(false));
 			sign.setLine(1, ChatColor.GREEN + MinigameUtils.capitalize(disp.getType().toString().replace("_", " ")));
 			sign.setLine(2, "(" + MinigameUtils.capitalize(disp.getOrder().toString()) + ")");
 			sign.setLine(3, "");
 			sign.update();
 			sign.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.plugin, true));
-			sign.setMetadata("Minigame", new FixedMetadataValue(Minigames.plugin, disp.getMinigame().getName()));
+			sign.setMetadata("Minigame", new FixedMetadataValue(Minigames.plugin, disp.getMinigame().getName(false)));
 			disp.updateStats();
 			disp.getMinigame().getScoreboardData().addDisplay(disp);
 		}

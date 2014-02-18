@@ -57,7 +57,7 @@ public class SetMaxRadiusCommand implements ICommand{
 			if(args[0].matches("[0-9]+")){
 				int max = Integer.parseInt(args[0]);
 				minigame.setMaxRadius(max);
-				sender.sendMessage(ChatColor.GRAY + "Maximum treasure spawn radius has been set to " + max + " for " + minigame.getName());
+				sender.sendMessage(ChatColor.GRAY + "Maximum treasure spawn radius has been set to " + max + " for " + minigame.getName(false));
 				return true;
 			}
 		}

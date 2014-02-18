@@ -132,17 +132,17 @@ public class MinigameData {
 			});
 			
 			setTreasureHuntLocation(minigame, rpos.getBlock().getLocation());
-			plugin.getLogger().info(MinigameUtils.formStr("minigame.treasurehunt.consSpawn", mgm.getName(), rpos.getBlockX() + ", " + rpos.getBlockY() + ", " + rpos.getBlockZ()));
+			plugin.getLogger().info(MinigameUtils.formStr("minigame.treasurehunt.consSpawn", mgm.getName(false), rpos.getBlockX() + ", " + rpos.getBlockY() + ", " + rpos.getBlockZ()));
 			plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.treasurehunt.plySpawn", maxradius, mgm.getLocation()), "minigame.treasure.announce");
 			if(getMinigame(minigame).getThTimer() == null){
-				getMinigame(minigame).setThTimer(new TreasureHuntTimer(minigame));
+				getMinigame(minigame).setThTimer(new TreasureHuntTimer(mgm));
 				getMinigame(minigame).getThTimer().startTimer();
 			}
 		}
 	}
 	
 	public void addMinigame(Minigame game){
-		minigames.put(game.getName(), game);
+		minigames.put(game.getName(false), game);
 	}
 	
 	public Minigame getMinigame(String minigame){

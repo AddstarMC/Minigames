@@ -73,7 +73,7 @@ public class SetRestoreBlockCommand implements ICommand {
 				
 				RestoreBlock rb = new RestoreBlock(args[1], loc.getBlock().getType(), loc);
 				minigame.addRestoreBlock(rb);
-				player.sendMessage(ChatColor.GRAY + "Saved block \"" + loc.getBlock().getType().toString() + "\" for " + minigame.getName() + " under the name " + args[1]);
+				player.sendMessage(ChatColor.GRAY + "Saved block \"" + loc.getBlock().getType().toString() + "\" for " + minigame.getName(false) + " under the name " + args[1]);
 				return true;
 			}
 			else if(args.length == 2 && args[0].equalsIgnoreCase("remove")){
@@ -89,10 +89,10 @@ public class SetRestoreBlockCommand implements ICommand {
 			else if(args[0].equalsIgnoreCase("clear")){
 				if(minigame.hasRestoreBlocks()){
 					minigame.getRestoreBlocks().clear();
-					player.sendMessage(ChatColor.GRAY + "Removed all restore blocks from " + minigame.getName());
+					player.sendMessage(ChatColor.GRAY + "Removed all restore blocks from " + minigame.getName(false));
 				}
 				else{
-					player.sendMessage(ChatColor.RED + "There are no restore blocks in the Minigame \"" + minigame.getName() + "\"");
+					player.sendMessage(ChatColor.RED + "There are no restore blocks in the Minigame \"" + minigame.getName(false) + "\"");
 				}
 				return true;
 			}
@@ -107,7 +107,7 @@ public class SetRestoreBlockCommand implements ICommand {
 					player.sendMessage(ChatColor.GRAY + list);
 				}
 				else{
-					player.sendMessage(ChatColor.RED + "There are no restore blocks in the Minigame \"" + minigame.getName() + "\"");
+					player.sendMessage(ChatColor.RED + "There are no restore blocks in the Minigame \"" + minigame.getName(false) + "\"");
 				}
 				return true;
 			}

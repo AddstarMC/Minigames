@@ -44,7 +44,7 @@ public class JoinSign implements MinigameSign {
 	public boolean signCreate(SignChangeEvent event) {
 		if(plugin.mdata.hasMinigame(event.getLine(2))){
 			event.setLine(1, ChatColor.GREEN + "Join");
-			event.setLine(2, plugin.mdata.getMinigame(event.getLine(2)).getName());
+			event.setLine(2, plugin.mdata.getMinigame(event.getLine(2)).getName(false));
 			if(Minigames.plugin.hasEconomy()){
 				if(!event.getLine(3).isEmpty() && !event.getLine(3).matches("\\$?[0-9]+(.[0-9]{2})?")){
 					event.getPlayer().sendMessage(ChatColor.RED + MinigameUtils.getLang("sign.join.invalidMoney"));
@@ -68,7 +68,7 @@ public class JoinSign implements MinigameSign {
 	public boolean signUse(Sign sign, MinigamePlayer player) {
 		if(player.getPlayer().getItemInHand().getType() == Material.AIR && !player.isInMinigame()){
 			Minigame mgm = plugin.mdata.getMinigame(sign.getLine(2));
-			if(mgm != null && (!mgm.getUsePermissions() || player.getPlayer().hasPermission("minigame.join." + mgm.getName().toLowerCase()))){
+			if(mgm != null && (!mgm.getUsePermissions() || player.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))){
 				if(mgm.isEnabled()){
 					if(!sign.getLine(3).isEmpty() && Minigames.plugin.hasEconomy()){
 						double amount = Double.parseDouble(sign.getLine(3).replace("$", ""));
@@ -91,7 +91,7 @@ public class JoinSign implements MinigameSign {
 				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noMinigame"));
 			}
 			else if(mgm.getUsePermissions()){
-				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName().toLowerCase()));
+				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()));
 			}
 		}
 		else if(MinigameUtils.isMinigameTool(player.getPlayer().getItemInHand())){
