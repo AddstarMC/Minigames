@@ -67,6 +67,7 @@ public class TeamsType extends MinigameTypeBase{
 			}
 
 			final int fteam = team;
+			player.setLatejoining(true);
 			player.sendMessage(MinigameUtils.formStr("minigame.lateJoin", 5)); //TODO: Late join delay variable
 			final MinigamePlayer fply = player;
 			final Minigame fmgm = mgm;
@@ -90,6 +91,7 @@ public class TeamsType extends MinigameTypeBase{
 						Collections.shuffle(locs);
 						fply.teleport(locs.get(0));
 						fply.getLoadout().equiptLoadout(fply);
+						fply.setLatejoining(false);
 					}
 				}
 			}, 5 * 20); //TODO: Latejoin variable
@@ -233,7 +235,7 @@ public class TeamsType extends MinigameTypeBase{
 			}
 			
 			Location respawnPos;
-			if(mg.isNotWaitingForPlayers()){
+			if(mg.hasStarted() && !ply.isLatejoining()){
 				if(mg.isAllowedMPCheckpoints() && ply.hasCheckpoint()){
 					respawnPos = ply.getCheckpoint();
 				}

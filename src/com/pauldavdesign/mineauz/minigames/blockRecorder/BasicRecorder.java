@@ -42,7 +42,7 @@ public class BasicRecorder implements Listener{
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
 		if(ply.isInMinigame()){
-			if(ply.getMinigame().getType() != MinigameType.SINGLEPLAYER && !ply.getMinigame().hasStarted()){
+			if(ply.getMinigame().getType() != MinigameType.SINGLEPLAYER && (!ply.getMinigame().hasStarted() || ply.isLatejoining())){
 				event.setCancelled(true);
 				return;
 			}
@@ -86,7 +86,7 @@ public class BasicRecorder implements Listener{
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
 		if(ply.isInMinigame() && !event.isCancelled()){
-			if(ply.getMinigame().getType() != MinigameType.SINGLEPLAYER && !ply.getMinigame().isNotWaitingForPlayers()){
+			if(ply.getMinigame().getType() != MinigameType.SINGLEPLAYER && (!ply.getMinigame().hasStarted() || ply.isLatejoining())){
 				event.setCancelled(true);
 				return;
 			}

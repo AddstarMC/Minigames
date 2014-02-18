@@ -35,6 +35,7 @@ public class MinigamePlayer {
 	private long endTime = 0;
 	private long storedTime = 0;
 	private int reverts = 0;
+	private boolean isLatejoining = false;
 	
 	private Menu menu = null;
 	private boolean noClose = false;
@@ -353,6 +354,14 @@ public class MinigamePlayer {
 		reverts = 0;
 	}
 	
+	public boolean isLatejoining() {
+		return isLatejoining;
+	}
+
+	public void setLatejoining(boolean isLatejoining) {
+		this.isLatejoining = isLatejoining;
+	}
+
 	public Menu getMenu(){
 		return menu;
 	}

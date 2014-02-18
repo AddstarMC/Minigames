@@ -199,13 +199,13 @@ public class Events implements Listener{
 		}
 	}
 	
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler
 	public void playerInterract(PlayerInteractEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
 		if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
 			Block cblock = event.getClickedBlock();
-			if(cblock.getState() instanceof Chest){
+			if(cblock.getState() instanceof Chest && !event.isCancelled()){
 				if(mdata.hasTreasureHuntLocations()){
 					for(String minigame : mdata.getAllTreasureHuntLocation()){
 						if(mdata.getMinigame(minigame).getThTimer() != null){
@@ -232,7 +232,7 @@ public class Events implements Listener{
 		}
 		else if(event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("minigame.sign.use.details")){
 			Block cblock = event.getClickedBlock();
-			if(cblock.getState() instanceof Sign){
+			if(cblock.getState() instanceof Sign && !event.isCancelled()){
 				Sign sign = (Sign) cblock.getState();
 				if(sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]")){
 					if((sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Join") || sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Bet")) && !ply.isInMinigame()){
@@ -517,7 +517,8 @@ public class Events implements Listener{
 		if(event.getMinigamePlayer().isInMinigame() && 
 				(event.getMinigamePlayer().getMinigame().getType() == MinigameType.FREE_FOR_ALL || 
 				event.getMinigamePlayer().getMinigame().getType() == MinigameType.TEAMS) && 
-				!event.getMinigamePlayer().getMinigame().isAllowedMPCheckpoints()){
+				!event.getMinigamePlayer().getMinigame().isAllowedMPCheckpoints() && 
+				!event.getMinigamePlayer().isLatejoining()){
 			event.setCancelled(true);
 			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noRevert", event.getMinigamePlayer().getMinigame().getType().getName()));
 		}
@@ -609,7 +610,7 @@ public class Events implements Listener{
 				if(mgm.isSpectator(ply)){
 					event.setCancelled(true);
 				}
-				else if(!ply.getMinigame().hasStarted() && ply.getMinigame().getType() != MinigameType.SINGLEPLAYER){
+				else if((!ply.getMinigame().hasStarted() || ply.isLatejoining()) && ply.getMinigame().getType() != MinigameType.SINGLEPLAYER){
 					event.setCancelled(true);
 				}
 				else if(event.getCause() == DamageCause.FALL && 
