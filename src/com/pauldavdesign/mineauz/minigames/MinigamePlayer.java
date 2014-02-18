@@ -36,6 +36,9 @@ public class MinigamePlayer {
 	private long storedTime = 0;
 	private int reverts = 0;
 	private boolean isLatejoining = false;
+	private boolean isFrozen = false;
+	private boolean canPvP = true;
+	private boolean isInvincible = false;
 	
 	private Menu menu = null;
 	private boolean noClose = false;
@@ -352,6 +355,45 @@ public class MinigamePlayer {
 	
 	public void resetReverts(){
 		reverts = 0;
+	}
+	
+	public boolean isFrozen() {
+		return isFrozen;
+	}
+
+	public void setFrozen(boolean isFrozen) {
+		this.isFrozen = isFrozen;
+	}
+
+	public boolean canPvP() {
+		return canPvP;
+	}
+
+	public void setCanPvP(boolean canPvP) {
+		this.canPvP = canPvP;
+	}
+
+	public boolean isInvincible() {
+		return isInvincible;
+	}
+
+	public void setInvincible(boolean isInvincible) {
+		this.isInvincible = isInvincible;
+	}
+
+	public void resetAllStats(){
+		setLoadout(null);
+		resetReverts();
+		resetDeaths();
+		resetKills();
+		resetScore();
+		resetTime();
+		clearFlags();
+		removeCheckpoint();
+		setFrozen(false);
+		setCanPvP(true);
+		setInvincible(false);
+		setLatejoining(false);
 	}
 	
 	public boolean isLatejoining() {

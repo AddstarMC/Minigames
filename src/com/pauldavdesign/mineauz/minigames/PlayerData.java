@@ -67,7 +67,6 @@ public class PlayerData {
 					minigame.getEndPosition() != null && minigame.getQuitPosition() != null && 
 					(minigame.getType() == MinigameType.SINGLEPLAYER || minigame.getLobbyPosition() != null) &&
 					((type == MinigameType.SINGLEPLAYER && !minigame.isSpMaxPlayers()) || minigame.getPlayers().size() < minigame.getMaxPlayers())){
-				
 				//Do betting stuff
 				if(isBetting){
 					if(minigame.getMpBets() == null && (player.getPlayer().getItemInHand().getType() != Material.AIR || betAmount != 0)){
@@ -432,7 +431,6 @@ public class PlayerData {
 					vehicle.eject();
 				}
 				player.getPlayer().closeInventory();
-				player.setLoadout(null);
 				player.removeMinigame();
 				minigame.removePlayer(player);
 				for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
@@ -448,13 +446,7 @@ public class PlayerData {
 						fplayer.getPlayer().setFireTicks(0);
 					}
 				});
-				player.clearFlags();
-				player.resetDeaths();
-				player.resetKills();
-				player.resetScore();
-				player.resetTime();
-				player.resetReverts();
-				player.removeCheckpoint();
+				player.resetAllStats();
 				
 				if(!player.getPlayer().isDead()){
 					player.restorePlayerData();
@@ -704,16 +696,9 @@ public class PlayerData {
 					Vehicle vehicle = (Vehicle) player.getPlayer().getVehicle();
 					vehicle.eject();
 				}
-				player.setLoadout(null);
 				player.getPlayer().setFireTicks(0);
 				player.getPlayer().setNoDamageTicks(60);
-				player.clearFlags();
-				player.resetDeaths();
-				player.resetKills();
-				player.resetScore();
-				player.resetTime();
-				player.resetReverts();
-				player.removeCheckpoint();
+				player.resetAllStats();
 				for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
 					player.getPlayer().removePotionEffect(potion.getType());
 				}

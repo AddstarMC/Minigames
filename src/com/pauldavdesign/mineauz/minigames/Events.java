@@ -14,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -39,6 +40,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -554,6 +556,10 @@ public class Events implements Listener{
 					Minigame mgm = ply.getMinigame();
 					if(shooter == null) return;
 					if(shooter.isInMinigame() && shooter.getMinigame().equals(ply.getMinigame())){
+						if(!shooter.canPvP()){
+							event.setCancelled(true);
+							return;
+						}
 						int plyTeam = -1;
 						int atcTeam = -2;
 						if(mgm.getType() == MinigameType.TEAMS){
@@ -572,6 +578,22 @@ public class Events implements Listener{
 						}
 					}
 				}
+			}
+		}
+		else if(event.getEntity() instanceof Player && event.getDamager() instanceof Player){
+			MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getDamager());
+			if(ply == null) return;
+			if(ply.isInMinigame() && !ply.canPvP())
+				event.setCancelled(true);
+		}
+		else if(event.getEntity() instanceof Player && event.getDamager() instanceof Arrow){
+			Arrow arrow = (Arrow) event.getDamager();
+			if(arrow.getShooter() instanceof Player){
+				Player ply = (Player) arrow.getShooter();
+				MinigamePlayer mgpl = pdata.getMinigamePlayer(ply);
+				if(mgpl == null) return;
+				if(mgpl.isInMinigame() && !mgpl.canPvP())
+					event.setCancelled(true);
 			}
 		}
 	}
@@ -613,6 +635,8 @@ public class Events implements Listener{
 				else if((!ply.getMinigame().hasStarted() || ply.isLatejoining()) && ply.getMinigame().getType() != MinigameType.SINGLEPLAYER){
 					event.setCancelled(true);
 				}
+				else if(ply.isInvincible())
+					event.setCancelled(true);
 				else if(event.getCause() == DamageCause.FALL && 
 						ply.getLoadout() != null && !ply.getLoadout().hasFallDamage()){
 					event.setCancelled(true);
@@ -733,6 +757,22 @@ public class Events implements Listener{
 			}
 			else{
 				event.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	private void playerMove(PlayerMoveEvent event){
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply == null) return;
+		if(ply.isInMinigame()){
+			if(ply.isFrozen()){
+				if(event.getFrom().getBlockX() != event.getTo().getBlockX() || 
+						event.getFrom().getBlockZ() != event.getTo().getBlockZ()){
+					ply.teleport(new Location(event.getFrom().getWorld(), event.getFrom().getBlockX() + 0.5, 
+							event.getTo().getBlockY(), event.getFrom().getBlockZ() + 0.5, 
+							event.getPlayer().getLocation().getYaw(), event.getPlayer().getLocation().getPitch()));
+				}
 			}
 		}
 	}
