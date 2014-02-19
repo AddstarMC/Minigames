@@ -99,8 +99,18 @@ public class FinishSign implements MinigameSign {
 									plugin.pdata.endMinigame(minigame, w, l);
 								}
 							}
-							else
-								plugin.pdata.endMinigame(player);
+							else{
+								if(minigame.getType() == MinigameType.FREE_FOR_ALL){
+									List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(1);
+									w.add(player);
+									List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(minigame.getPlayers().size());
+									l.addAll(minigame.getPlayers());
+									l.remove(player);
+									plugin.pdata.endMinigame(minigame, w, l);
+								}
+								else
+									plugin.pdata.endMinigame(player);
+							}
 							
 							plugin.pdata.partyMode(player, 3, 10L);
 						}
@@ -152,8 +162,18 @@ public class FinishSign implements MinigameSign {
 							plugin.pdata.endMinigame(minigame, w, l);
 						}
 					}
-					else
-						plugin.pdata.endMinigame(player);
+					else{
+						if(minigame.getType() == MinigameType.FREE_FOR_ALL){
+							List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(1);
+							w.add(player);
+							List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(minigame.getPlayers().size());
+							l.addAll(minigame.getPlayers());
+							l.remove(player);
+							plugin.pdata.endMinigame(minigame, w, l);
+						}
+						else
+							plugin.pdata.endMinigame(player);
+					}
 					plugin.pdata.partyMode(player);
 					return true;
 				}
