@@ -239,6 +239,7 @@ public class PlayerData {
 			boolean tpd = player.teleport(minigame.getStartLocations().get(0));
 			if(!tpd){
 				player.sendMessage(MinigameUtils.getLang("minigame.error.noTeleport"), "error");
+				return;
 			}
 			player.storePlayerData();
 			player.setMinigame(minigame);
