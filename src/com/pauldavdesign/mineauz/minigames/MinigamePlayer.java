@@ -40,6 +40,7 @@ public class MinigamePlayer {
 	private boolean canPvP = true;
 	private boolean isInvincible = false;
 	private boolean canInteract = true;
+	private boolean isDead = false;
 	
 	private Menu menu = null;
 	private boolean noClose = false;
@@ -563,5 +564,13 @@ public class MinigamePlayer {
 	@SuppressWarnings("deprecation")
 	public void updateInventory(){
 		getPlayer().updateInventory();
+	}
+
+	public boolean isDead() {
+		return isDead; //Temporary Fix for silly bukkits set health function not changing Player.isDead() to true.
+	}
+
+	public void setDead(boolean isDead) {
+		this.isDead = isDead;
 	}
 }

@@ -452,7 +452,7 @@ public class PlayerData {
 				});
 				player.resetAllStats();
 				
-				if(!player.getPlayer().isDead()){
+				if(!player.isDead()){
 					player.restorePlayerData();
 					player.teleport(minigame.getQuitPosition());
 				}
@@ -538,7 +538,7 @@ public class PlayerData {
 				
 				player.getPlayer().closeInventory();
 				
-				if(!player.getPlayer().isDead()){
+				if(!player.isDead()){
 					player.restorePlayerData();
 				}
 				
@@ -712,7 +712,7 @@ public class PlayerData {
 					player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "End location is across worlds! This may cause some server performance issues!", "error");
 				}
 				
-				if(!player.getPlayer().isDead()){
+				if(!player.isDead()){
 					player.restorePlayerData();
 					player.getPlayer().teleport(mgm.getEndPosition());
 				}
