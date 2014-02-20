@@ -198,7 +198,8 @@ public class SQLCompletionSaver extends Thread{
 			boolean hasAlreadyCompleted = false;
 			
 			if(name != null){
-				hasAlreadyCompleted = true;
+				if(ocompleted - 1 >= 1)
+					hasAlreadyCompleted = true;
 				Statement updateStats = sql.createStatement();
 				updateStats.executeUpdate("UPDATE " + table + " SET Completion='" + ocompleted + "', " +
 						"Kills=" + kills + ", " +
