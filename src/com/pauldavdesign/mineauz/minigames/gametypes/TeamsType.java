@@ -32,6 +32,11 @@ public class TeamsType extends MinigameTypeBase{
 	
 	@Override
 	public boolean joinMinigame(final MinigamePlayer player, Minigame mgm){
+		if(!mgm.canInteractPlayerWait())
+			player.setCanInteract(false);
+		if(!mgm.canMovePlayerWait())
+			player.setFrozen(true);
+		
 		if(!mgm.isNotWaitingForPlayers()){
 			if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMinPlayers()){
 				mgm.setMpTimer(new MultiplayerTimer(mgm));
@@ -92,6 +97,8 @@ public class TeamsType extends MinigameTypeBase{
 						fply.teleport(locs.get(0));
 						fply.getLoadout().equiptLoadout(fply);
 						fply.setLatejoining(false);
+						fply.setFrozen(false);
+						fply.setCanInteract(true);
 					}
 				}
 			}, 5 * 20); //TODO: Latejoin variable

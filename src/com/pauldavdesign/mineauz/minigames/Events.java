@@ -205,6 +205,12 @@ public class Events implements Listener{
 	public void playerInterract(PlayerInteractEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
+		
+		if(ply.isInMinigame() && !ply.canInteract()){
+			event.setCancelled(true);
+			return;
+		}
+		
 		if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
 			Block cblock = event.getClickedBlock();
 			if(cblock.getState() instanceof Chest && !event.isCancelled()){

@@ -93,6 +93,12 @@ public class Minigame {
 	private Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<MinigamePlayer, CTFFlag>();
 	private Map<String, CTFFlag> droppedFlag = new HashMap<String, CTFFlag>();
 	
+	//Lobby settings
+	private boolean canMovePlayerWait = true;
+	private boolean canMoveStartWait = true;
+	private boolean canInteractPlayerWait = true;
+	private boolean canInteractStartWait = true;
+	
 	private boolean itemDrops = false;
 	private boolean deathDrops = false;
 	private boolean itemPickup = true;
@@ -1655,6 +1661,7 @@ public class Minigame {
 		Menu treasureHunt = new Menu(6, getName(false), player);
 		Menu loadouts = new Menu(6, getName(false), player);
 		Menu flags = new Menu(6, getName(false), player);
+		Menu lobby = new Menu(6, getName(false), player);
 		
 		List<MenuItem> itemsMain = new ArrayList<MenuItem>();
 		itemsMain.add(new MenuItemBoolean("Enabled", Material.PAPER, getEnabledCallback()));
@@ -1687,6 +1694,7 @@ public class Minigame {
 		itemsMain.add(new MenuItemInteger("Min. Players", MinigameUtils.stringToList("Multiplayer Only"), Material.STEP, getMinPlayersCallback(), 0, null));
 		itemsMain.add(new MenuItemInteger("Max. Players", MinigameUtils.stringToList("Multiplayer Only"), Material.DOUBLE_STEP, getMaxPlayersCallback(), 0, null));
 		itemsMain.add(new MenuItemBoolean("Enable Singleplayer Max Players", Material.IRON_FENCE, getSPMaxPlayerCallback()));
+		itemsMain.add(new MenuItemPage("Lobby Settings", MinigameUtils.stringToList("Multiplayer Only"), Material.WOOD_DOOR, lobby));
 		itemsMain.add(new MenuItemNewLine());
 		itemsMain.add(new MenuItemTime("Time Length", MinigameUtils.stringToList("Multiplayer Only"), Material.WATCH, getTimerCallback(), 0, null));
 		itemsMain.add(new MenuItemTime("Start Wait Time", MinigameUtils.stringToList("Multiplayer Only"), Material.WATCH, getStartWaitTimeCallback(), 3, null));
@@ -1755,7 +1763,7 @@ public class Minigame {
 		//--------------------//
 		//Treasure Hunt Settings
 		//--------------------//
-		List<MenuItem> itemsTreasureHunt = new ArrayList<MenuItem>();
+		List<MenuItem> itemsTreasureHunt = new ArrayList<MenuItem>(5);
 		itemsTreasureHunt.add(new MenuItemString("Location Name", MinigameUtils.stringToList("Name to appear when;treasure spawns"), Material.BED, getLocationCallback()));
 		itemsTreasureHunt.add(new MenuItemInteger("Max. Radius", Material.ENDER_PEARL, getMaxRadiusCallback(), 10, null));
 		List<String> maxHeightDes = new ArrayList<String>();
@@ -1778,7 +1786,7 @@ public class Minigame {
 		//----------------------//
 		//Minigame Player Settings
 		//----------------------//
-		List<MenuItem> itemsPlayer = new ArrayList<MenuItem>();
+		List<MenuItem> itemsPlayer = new ArrayList<MenuItem>(14);
 		itemsPlayer.add(new MenuItemBoolean("Allow Enderpearls", Material.ENDER_PEARL, getAllowedEnderpearlsCallback()));
 		itemsPlayer.add(new MenuItemBoolean("Allow Item Drops", Material.DIAMOND_SWORD, getItemDropsCallback()));
 		itemsPlayer.add(new MenuItemBoolean("Allow Death Drops", Material.SKULL_ITEM, getDeathDropsCallback()));
@@ -1799,7 +1807,7 @@ public class Minigame {
 		//--------------//
 		//Minigame Flags//
 		//--------------//
-		List<MenuItem> itemsFlags = new ArrayList<MenuItem>();
+		List<MenuItem> itemsFlags = new ArrayList<MenuItem>(getFlags().size());
 		for(String flag : getFlags()){
 			itemsFlags.add(new MenuItemFlag(Material.SIGN, flag, getFlags()));
 		}
@@ -1807,12 +1815,107 @@ public class Minigame {
 		flags.addItem(new MenuItemAddFlag("Add Flag", Material.ITEM_FRAME, this), flags.getSize() - 1);
 		flags.addItems(itemsFlags);
 		
+		//--------------//
+		//Lobby Settings//
+		//--------------//
+		List<MenuItem> itemsLobby = new ArrayList<MenuItem>(4);
+		itemsLobby.add(new MenuItemBoolean("Can Interact on Player Wait", Material.STONE_BUTTON, getCanInteractPlayerWaitCallback()));
+		itemsLobby.add(new MenuItemBoolean("Can Interact on Start Wait", Material.STONE_BUTTON, getCanInteractStartWaitCallback()));
+		itemsLobby.add(new MenuItemBoolean("Can Move on Player Wait", Material.ICE, getCanMovePlayerWaitCallback()));
+		itemsLobby.add(new MenuItemBoolean("Can Move on Start Wait", Material.ICE, getCanMoveStartWaitCallback()));
+		lobby.addItems(itemsLobby);
+		lobby.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), lobby.getSize() - 9);
+		
 		main.displayMenu(player);
 		
 	}
 
 	public ScoreboardData getScoreboardData() {
 		return sbData;
+	}
+
+	public boolean canMovePlayerWait() {
+		return canMovePlayerWait;
+	}
+
+	public void setCanMovePlayerWait(boolean canMovePlayerWait) {
+		this.canMovePlayerWait = canMovePlayerWait;
+	}
+	
+	private Callback<Boolean> getCanMovePlayerWaitCallback(){
+		return new Callback<Boolean>() {
+			@Override
+			public void setValue(Boolean value){
+				canMovePlayerWait = value;
+			}
+			@Override
+			public Boolean getValue(){
+				return canMovePlayerWait;
+			}
+		};
+	}
+
+	public boolean canMoveStartWait() {
+		return canMoveStartWait;
+	}
+
+	public void setCanMoveStartWait(boolean canMoveStartWait) {
+		this.canMoveStartWait = canMoveStartWait;
+	}
+	
+	private Callback<Boolean> getCanMoveStartWaitCallback(){
+		return new Callback<Boolean>() {
+			@Override
+			public void setValue(Boolean value){
+				canMoveStartWait = value;
+			}
+			@Override
+			public Boolean getValue(){
+				return canMoveStartWait;
+			}
+		};
+	}
+
+	public boolean canInteractPlayerWait() {
+		return canInteractPlayerWait;
+	}
+
+	public void setCanInteractPlayerWait(boolean canInteractPlayerWait) {
+		this.canInteractPlayerWait = canInteractPlayerWait;
+	}
+	
+	private Callback<Boolean> getCanInteractPlayerWaitCallback(){
+		return new Callback<Boolean>() {
+			@Override
+			public void setValue(Boolean value){
+				canInteractPlayerWait = value;
+			}
+			@Override
+			public Boolean getValue(){
+				return canInteractPlayerWait;
+			}
+		};
+	}
+
+	public boolean canInteractStartWait() {
+		return canInteractStartWait;
+	}
+
+	public void setCanInteractStartWait(boolean canInteractStartWait) {
+		this.canInteractStartWait = canInteractStartWait;
+	}
+	
+	private Callback<Boolean> getCanInteractStartWaitCallback(){
+		return new Callback<Boolean>() {
+			@Override
+			public void setValue(Boolean value){
+				canInteractStartWait = value;
+			}
+			@Override
+			public Boolean getValue(){
+				return canInteractStartWait;
+			}
+		};
 	}
 
 	public void saveMinigame(){
@@ -2276,6 +2379,23 @@ public class Minigame {
 		else
 			minigame.getConfig().set(name + "gametypeName", null);
 		
+		if(canInteractPlayerWait)
+			minigame.getConfig().set(name + ".canInteractPlayerWait", canInteractPlayerWait);
+		else
+			minigame.getConfig().set(name + ".canInteractPlayerWait", null);
+		if(canInteractStartWait)
+			minigame.getConfig().set(name + ".canInteractStartWait", canInteractStartWait);
+		else
+			minigame.getConfig().set(name + ".canInteractStartWait", null);
+		if(canMovePlayerWait)
+			minigame.getConfig().set(name + ".canMovePlayerWait", canMovePlayerWait);
+		else
+			minigame.getConfig().set(name + ".canMovePlayerWait", null);
+		if(canMoveStartWait)
+			minigame.getConfig().set(name + ".canMoveStartWait", canMoveStartWait);
+		else
+			minigame.getConfig().set(name + ".canMoveStartWait", null);
+		
 		getScoreboardData().saveDisplays(minigame, name);
 		
 		minigame.saveConfig();
@@ -2644,6 +2764,15 @@ public class Minigame {
 		
 		if(minigame.getConfig().contains(name + ".gametypeName"))
 			setGametypeName(minigame.getConfig().getString(name + ".gametypeName"));
+		
+		if(minigame.getConfig().contains(name + ".canInteractPlayerWait"))
+			canInteractPlayerWait = minigame.getConfig().getBoolean(name + ".canInteractPlayerWait");
+		if(minigame.getConfig().contains(name + ".canInteractStartWait"))
+			canInteractStartWait = minigame.getConfig().getBoolean(name + ".canInteractStartWait");
+		if(minigame.getConfig().contains(name + ".canMovePlayerWait"))
+			canMovePlayerWait = minigame.getConfig().getBoolean(name + ".canMovePlayerWait");
+		if(minigame.getConfig().contains(name + ".canMoveStartWait"))
+			canMoveStartWait = minigame.getConfig().getBoolean(name + ".canMoveStartWait");
 
 //		Bukkit.getLogger().info("------- Minigame Load -------");
 //		Bukkit.getLogger().info("Name: " + getName());

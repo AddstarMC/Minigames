@@ -35,7 +35,7 @@ public class MultiplayerTimer{
 	
 	public void startTimer(){
 		playerWaitTime += 1;
-		startWaitTime += 1;
+//		startWaitTime += 1;
 		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 			
 			@Override
@@ -60,6 +60,8 @@ public class MultiplayerTimer{
 					if(startWaitTime == plugin.getConfig().getInt("multiplayer.startcountdown")){
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.minigameStarts"));
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
+						freezePlayers(!minigame.canMoveStartWait());
+						allowInteraction(minigame.canInteractStartWait());
 					}
 					else if(timeMsg.contains(startWaitTime)){
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
@@ -70,6 +72,8 @@ public class MultiplayerTimer{
 						sendPlayersMessage(ChatColor.GREEN + MinigameUtils.getLang("time.startup.go"));
 						reclearInventories(minigame);
 						pdata.startMPMinigame(minigame);
+						freezePlayers(false);
+						allowInteraction(true);
 					}
 					Bukkit.getScheduler().cancelTask(taskID);
 				}
@@ -77,15 +81,27 @@ public class MultiplayerTimer{
 		}, 0, 20);
 	}
 	
-	public void sendPlayersMessage(String message){
+	private void sendPlayersMessage(String message){
 		for(MinigamePlayer ply : minigame.getPlayers()){
 			ply.sendMessage(message);
 		}
 	}
 	
-	public void reclearInventories(Minigame minigame){
+	private void reclearInventories(Minigame minigame){
 		for(MinigamePlayer ply : minigame.getPlayers()){
 			ply.getPlayer().getInventory().clear();
+		}
+	}
+	
+	private void freezePlayers(boolean freeze){
+		for(MinigamePlayer ply : minigame.getPlayers()){
+			ply.setFrozen(freeze);
+		}
+	}
+	
+	private void allowInteraction(boolean allow){
+		for(MinigamePlayer ply : minigame.getPlayers()){
+			ply.setCanInteract(allow);
 		}
 	}
 	

@@ -39,6 +39,7 @@ public class MinigamePlayer {
 	private boolean isFrozen = false;
 	private boolean canPvP = true;
 	private boolean isInvincible = false;
+	private boolean canInteract = true;
 	
 	private Menu menu = null;
 	private boolean noClose = false;
@@ -381,6 +382,14 @@ public class MinigamePlayer {
 		this.isInvincible = isInvincible;
 	}
 
+	public boolean canInteract() {
+		return canInteract;
+	}
+
+	public void setCanInteract(boolean canInteract) {
+		this.canInteract = canInteract;
+	}
+
 	public void resetAllStats(){
 		setLoadout(null);
 		resetReverts();
@@ -393,6 +402,7 @@ public class MinigamePlayer {
 		setFrozen(false);
 		setCanPvP(true);
 		setInvincible(false);
+		setCanInteract(true);
 		setLatejoining(false);
 	}
 	
