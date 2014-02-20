@@ -127,7 +127,7 @@ public class PlayerData {
 					}
 				}
 				if(!tpd){
-					//TODO: Failed to teleport message here
+					player.sendMessage(MinigameUtils.getLang("minigame.error.noTeleport"), "error");
 					return;
 				}
 				
@@ -236,12 +236,15 @@ public class PlayerData {
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
 		if(!event.isCancelled()){
+			boolean tpd = player.teleport(minigame.getStartLocations().get(0));
+			if(!tpd){
+				player.sendMessage(MinigameUtils.getLang("minigame.error.noTeleport"), "error");
+			}
 			player.storePlayerData();
 			player.setMinigame(minigame);
 			player.getPlayer().setGameMode(GameMode.ADVENTURE);
 			
 			minigame.addSpectator(player);
-			player.teleport(minigame.getStartLocations().get(0));
 			
 			if(minigame.canSpectateFly()){
 				player.getPlayer().setAllowFlight(true);

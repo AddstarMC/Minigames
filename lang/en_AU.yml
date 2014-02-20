@@ -101,6 +101,7 @@ minigame:
     noInfection: "Infection must be run on a team deathmatch Minigame!"
     noVault: "This server does not have Vault! Money cannot be used!"
     regenerating: "This Minigame is currently being reset, please wait..."
+    noTeleport: "Failed to teleport. This could be related to world permissions."
   flag:
     returnedTeam: "%s flag has been returned home."
     returnedNeutral: "The Neutral flag has been returned home."
