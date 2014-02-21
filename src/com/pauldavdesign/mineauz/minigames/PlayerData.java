@@ -369,9 +369,7 @@ public class PlayerData {
 				}
 			}
 			pos++;
-			if(!ply.getLoadout().getItems().isEmpty()){
-				ply.getLoadout().equiptLoadout(ply);
-			}
+			ply.getLoadout().equiptLoadout(ply);
 			ply.getPlayer().setScoreboard(minigame.getScoreboardManager());
 			minigame.setScore(ply, 1);
 			minigame.setScore(ply, 0);
