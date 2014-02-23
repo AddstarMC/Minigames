@@ -265,7 +265,7 @@ public class PlayerData {
 		}
 	}
 	
-	public void startMPMinigame(Minigame minigame){
+	public void startMPMinigame(Minigame minigame, boolean teleport){
 		List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 		players.addAll(minigame.getPlayers());
 		
@@ -283,20 +283,16 @@ public class PlayerData {
 		for(MinigamePlayer ply : players){
 			if(minigame.getType() != MinigameType.TEAMS){
 				if(pos < minigame.getStartLocations().size()){
-					start = minigame.getStartLocations().get(pos);
 					ply.setStartTime(Calendar.getInstance().getTimeInMillis());
-					ply.teleport(start);
-					if(minigame.getMaxScore() != 0 && minigame.getType() == MinigameType.FREE_FOR_ALL && !minigame.getScoreType().equals("none")){
-						ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), null);
+					if(teleport){
+						start = minigame.getStartLocations().get(pos);
 					}
 				} 
 				else{
 					pos = 0;
 					if(!minigame.getStartLocations().isEmpty()){
-						start = minigame.getStartLocations().get(0);
-						ply.teleport(start);
-						if(minigame.getMaxScore() != 0 && minigame.getType() == MinigameType.FREE_FOR_ALL && !minigame.getScoreType().equals("none")){
-							ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), null);
+						if(teleport){
+							start = minigame.getStartLocations().get(0);
 						}
 					}
 					else {
@@ -340,14 +336,16 @@ public class PlayerData {
 				}
 				else{
 					if(pos < minigame.getStartLocations().size()){
-						start = minigame.getStartLocations().get(pos);
-						ply.teleport(start);
+						if(teleport){
+							start = minigame.getStartLocations().get(pos);
+						}
 					} 
 					else{
 						pos = 0;
 						if(!minigame.getStartLocations().isEmpty()){
-							start = minigame.getStartLocations().get(0);
-							ply.teleport(start);
+							if(teleport){
+								start = minigame.getStartLocations().get(0);
+							}
 						}
 						else {
 							ply.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), "error");
@@ -355,42 +353,26 @@ public class PlayerData {
 						}
 					}
 				}
-				
-				if(start != null){
-					ply.teleport(start);
-					ply.setCheckpoint(start);
-					if(minigame.getMaxScore() != 0 && !minigame.getScoreType().equals("none")){
-						ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), null);
-					}
-				}
-				
 				if(minigame.getLives() > 0){
 					ply.sendMessage(MinigameUtils.formStr("minigame.livesLeft", minigame.getLives()), null);
 				}
 			}
+			
+			if(start != null){
+				if(teleport){
+					ply.teleport(start);
+					ply.setCheckpoint(start);
+				}
+				if(minigame.getMaxScore() != 0){
+					ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), null);
+				}
+			}
+			
 			pos++;
 			ply.getLoadout().equiptLoadout(ply);
 			ply.getPlayer().setScoreboard(minigame.getScoreboardManager());
 			minigame.setScore(ply, 1);
 			minigame.setScore(ply, 0);
-		}
-		
-		if(minigame.hasPlayers()){
-			if(minigame.getFloorDegen1() != null && minigame.getFloorDegen2() != null){
-				minigame.addFloorDegenerator();
-				minigame.getFloorDegenerator().startDegeneration();
-			}
-	
-			if(minigame.hasRestoreBlocks()){
-				for(RestoreBlock block : minigame.getRestoreBlocks().values()){
-					minigame.getBlockRecorder().addBlock(block.getLocation().getBlock(), null);
-				}
-			}
-			
-			if(minigame.getTimer() > 0){
-				minigame.setMinigameTimer(new MinigameTimer(minigame, minigame.getTimer()));
-				mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(minigame.getTimer())), null, null);
-			}
 		}
 	}
 	

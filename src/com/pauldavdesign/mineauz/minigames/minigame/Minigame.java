@@ -98,6 +98,8 @@ public class Minigame {
 	private boolean canMoveStartWait = true;
 	private boolean canInteractPlayerWait = true;
 	private boolean canInteractStartWait = true;
+	private boolean teleportOnPlayerWait = false;
+	private boolean teleportOnStart = true;
 	
 	private boolean itemDrops = false;
 	private boolean deathDrops = false;
@@ -1823,6 +1825,10 @@ public class Minigame {
 		itemsLobby.add(new MenuItemBoolean("Can Interact on Start Wait", Material.STONE_BUTTON, getCanInteractStartWaitCallback()));
 		itemsLobby.add(new MenuItemBoolean("Can Move on Player Wait", Material.ICE, getCanMovePlayerWaitCallback()));
 		itemsLobby.add(new MenuItemBoolean("Can Move on Start Wait", Material.ICE, getCanMoveStartWaitCallback()));
+		itemsLobby.add(new MenuItemBoolean("Teleport After Player Wait", MinigameUtils.stringToList("Should players be teleported;after player wait time?"), 
+				Material.ENDER_PEARL, getTeleportOnPlayerWaitCallback()));
+		itemsLobby.add(new MenuItemBoolean("Teleport on Start", MinigameUtils.stringToList("Should players teleport;to the start position;after lobby?"),
+				Material.ENDER_PEARL, getTeleportOnStartCallback()));
 		lobby.addItems(itemsLobby);
 		lobby.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), lobby.getSize() - 9);
 		
@@ -1914,6 +1920,48 @@ public class Minigame {
 			@Override
 			public Boolean getValue(){
 				return canInteractStartWait;
+			}
+		};
+	}
+
+	public boolean isTeleportOnStart() {
+		return teleportOnStart;
+	}
+
+	public void setTeleportOnStart(boolean teleportOnStart) {
+		this.teleportOnStart = teleportOnStart;
+	}
+	
+	private Callback<Boolean> getTeleportOnStartCallback(){
+		return new Callback<Boolean>() {
+			@Override
+			public void setValue(Boolean value){
+				teleportOnStart = value;
+			}
+			@Override
+			public Boolean getValue(){
+				return teleportOnStart;
+			}
+		};
+	}
+
+	public boolean isTeleportOnPlayerWait() {
+		return teleportOnPlayerWait;
+	}
+
+	public void setTeleportOnPlayerWait(boolean teleportOnPlayerWait) {
+		this.teleportOnPlayerWait = teleportOnPlayerWait;
+	}
+	
+	private Callback<Boolean> getTeleportOnPlayerWaitCallback(){
+		return new Callback<Boolean>() {
+			@Override
+			public void setValue(Boolean value){
+				teleportOnPlayerWait = value;
+			}
+			@Override
+			public Boolean getValue(){
+				return teleportOnPlayerWait;
 			}
 		};
 	}
@@ -2379,22 +2427,30 @@ public class Minigame {
 		else
 			minigame.getConfig().set(name + "gametypeName", null);
 		
-		if(canInteractPlayerWait)
+		if(!canInteractPlayerWait)
 			minigame.getConfig().set(name + ".canInteractPlayerWait", canInteractPlayerWait);
 		else
 			minigame.getConfig().set(name + ".canInteractPlayerWait", null);
-		if(canInteractStartWait)
+		if(!canInteractStartWait)
 			minigame.getConfig().set(name + ".canInteractStartWait", canInteractStartWait);
 		else
 			minigame.getConfig().set(name + ".canInteractStartWait", null);
-		if(canMovePlayerWait)
+		if(!canMovePlayerWait)
 			minigame.getConfig().set(name + ".canMovePlayerWait", canMovePlayerWait);
 		else
 			minigame.getConfig().set(name + ".canMovePlayerWait", null);
-		if(canMoveStartWait)
+		if(!canMoveStartWait)
 			minigame.getConfig().set(name + ".canMoveStartWait", canMoveStartWait);
 		else
 			minigame.getConfig().set(name + ".canMoveStartWait", null);
+		if(!teleportOnStart)
+			minigame.getConfig().set(name + ".teleportOnStart", teleportOnStart);
+		else
+			minigame.getConfig().set(name + ".teleportOnStart", null);
+		if(teleportOnPlayerWait)
+			minigame.getConfig().set(name + ".teleportOnPlayerWait", teleportOnPlayerWait);
+		else
+			minigame.getConfig().set(name + ".teleportOnPlayerWait", null);
 		
 		getScoreboardData().saveDisplays(minigame, name);
 		
@@ -2674,7 +2730,7 @@ public class Minigame {
 		
 		if(minigame.getConfig().contains(name + ".gamemode")){
 			if(minigame.getConfig().getString(name + ".gamemode").matches("[0-2]"))
-				setDefaultGamemode(GameMode.getByValue(minigame.getConfig().getInt(name + ".gamemode"))); //TODO: Remove after 1.6.0 Release
+				setDefaultGamemode(GameMode.getByValue(minigame.getConfig().getInt(name + ".gamemode"))); //TODO: Remove after 1.6
 			else
 				setDefaultGamemode(GameMode.valueOf(minigame.getConfig().getString(name + ".gamemode")));
 		}
@@ -2773,6 +2829,10 @@ public class Minigame {
 			canMovePlayerWait = minigame.getConfig().getBoolean(name + ".canMovePlayerWait");
 		if(minigame.getConfig().contains(name + ".canMoveStartWait"))
 			canMoveStartWait = minigame.getConfig().getBoolean(name + ".canMoveStartWait");
+		if(minigame.getConfig().contains(name + ".teleportOnStart"))
+			teleportOnStart = minigame.getConfig().getBoolean(name + ".teleportOnStart");
+		if(minigame.getConfig().contains(name + ".teleportOnPlayerWait"))
+			teleportOnPlayerWait = minigame.getConfig().getBoolean(name + ".teleportOnPlayerWait");
 
 //		Bukkit.getLogger().info("------- Minigame Load -------");
 //		Bukkit.getLogger().info("Name: " + getName());

@@ -62,19 +62,42 @@ public class MultiplayerTimer{
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
 						freezePlayers(!minigame.canMoveStartWait());
 						allowInteraction(minigame.canInteractStartWait());
+						if(minigame.isTeleportOnPlayerWait()){
+							reclearInventories(minigame);
+							pdata.startMPMinigame(minigame, true);
+						}
 					}
 					else if(timeMsg.contains(startWaitTime)){
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
 					}
 				}
 				else if(playerWaitTime == 0 && startWaitTime == 0){
-					if(startWaitTime == 0 && playerWaitTime == 0){
-						sendPlayersMessage(ChatColor.GREEN + MinigameUtils.getLang("time.startup.go"));
-						reclearInventories(minigame);
-						pdata.startMPMinigame(minigame);
-						freezePlayers(false);
-						allowInteraction(true);
+					sendPlayersMessage(ChatColor.GREEN + MinigameUtils.getLang("time.startup.go"));
+					reclearInventories(minigame);
+					if(minigame.isTeleportOnStart())
+						pdata.startMPMinigame(minigame, true);
+					else
+						pdata.startMPMinigame(minigame, false);
+					freezePlayers(false);
+					allowInteraction(true);
+					
+					if(minigame.getFloorDegen1() != null && minigame.getFloorDegen2() != null){
+						minigame.addFloorDegenerator();
+						minigame.getFloorDegenerator().startDegeneration();
 					}
+			
+					if(minigame.hasRestoreBlocks()){
+						for(RestoreBlock block : minigame.getRestoreBlocks().values()){
+							minigame.getBlockRecorder().addBlock(block.getLocation().getBlock(), null);
+						}
+					}
+					
+					if(minigame.getTimer() > 0){
+						minigame.setMinigameTimer(new MinigameTimer(minigame, minigame.getTimer()));
+						plugin.mdata.sendMinigameMessage(minigame, 
+								MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(minigame.getTimer())), null, null);
+					}
+					
 					Bukkit.getScheduler().cancelTask(taskID);
 				}
 			}
