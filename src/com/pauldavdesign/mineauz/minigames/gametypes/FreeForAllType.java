@@ -116,7 +116,7 @@ public class FreeForAllType extends MinigameTypeBase{
 			
 			mgm.setMpBets(null);
 		}
-		else if(mgm.getPlayers().size() < mgm.getMinPlayers() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() != 0){
+		else if(mgm.getPlayers().size() - 1 < mgm.getMinPlayers() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() != 0){
 			mgm.getMpTimer().pauseTimer();
 			mgm.getMpTimer().removeTimer();
 			mgm.setMpTimer(null);

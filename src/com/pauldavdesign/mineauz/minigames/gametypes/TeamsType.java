@@ -174,7 +174,7 @@ public class TeamsType extends MinigameTypeBase{
 				mgm.setMpBets(null);
 			}
 		}
-		else if(mgm.getPlayers().size() < mgm.getMinPlayers() && 
+		else if(mgm.getPlayers().size() - 1 < mgm.getMinPlayers() && 
 				mgm.getMpTimer() != null && 
 				mgm.getMpTimer().getStartWaitTimeLeft() != 0
 				&& !forced){
