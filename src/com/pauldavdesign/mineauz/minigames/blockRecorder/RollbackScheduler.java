@@ -27,8 +27,9 @@ public class RollbackScheduler implements Runnable {
 	public RollbackScheduler(List<BlockData> blocks, List<BlockData> physblocks, Minigame minigame){
 		iterator = blocks.iterator();
 		physIterator = physblocks.iterator();
-		task = Bukkit.getScheduler().runTaskTimer(Minigames.plugin, this, 1, 1);
 		this.minigame = minigame;
+		int delay = minigame.getRegenDelay() * 20 + 1;
+		task = Bukkit.getScheduler().runTaskTimer(Minigames.plugin, this, delay, 1);
 	}
 
 	@Override

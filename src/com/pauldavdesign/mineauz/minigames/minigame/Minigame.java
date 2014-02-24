@@ -121,6 +121,7 @@ public class Minigame {
 	
 	private Location regenArea1 = null;
 	private Location regenArea2 = null;
+	private int regenDelay = 0;
 	
 	private int redTeamScore = 0;
 	private int blueTeamScore = 0;
@@ -1491,6 +1492,29 @@ public class Minigame {
 		this.regenArea2 = regenArea2;
 	}
 
+	public int getRegenDelay() {
+		return regenDelay;
+	}
+
+	public void setRegenDelay(int regenDelay) {
+		if(regenDelay < 0)
+			regenDelay = 0;
+		this.regenDelay = regenDelay;
+	}
+	
+	private Callback<Integer> getRegenDelayCallback(){
+		return new Callback<Integer>() {
+			@Override
+			public void setValue(Integer value) {
+				regenDelay = value;
+			}
+			@Override
+			public Integer getValue() {
+				return regenDelay;
+			}
+		};
+	}
+
 	public int getLives() {
 		return lives;
 	}
@@ -1720,6 +1744,7 @@ public class Minigame {
 		degenRandDes.add("degeneration.");
 		itemsMain.add(new MenuItemInteger("Random Floor Degen Chance", degenRandDes, Material.SNOW, getDegenRandomChanceCallback(), 1, 100));
 		itemsMain.add(new MenuItemTime("Floor Degenerator Delay", Material.WATCH, getFloorDegenTimeCallback(), 1, null));
+		itemsMain.add(new MenuItemTime("Regeneration Delay", MinigameUtils.stringToList("Time in seconds before;Minigame regeneration starts"), Material.WATCH, getRegenDelayCallback(), 0, null));
 		itemsMain.add(new MenuItemNewLine());
 		itemsMain.add(new MenuItemPage("Player Settings", Material.SKULL_ITEM, playerMenu));
 		List<String> thDes = new ArrayList<String>();
@@ -2451,6 +2476,10 @@ public class Minigame {
 			minigame.getConfig().set(name + ".teleportOnPlayerWait", teleportOnPlayerWait);
 		else
 			minigame.getConfig().set(name + ".teleportOnPlayerWait", null);
+		if(regenDelay != 0)
+			minigame.getConfig().set(name + ".regenDelay", regenDelay);
+		else
+			minigame.getConfig().set(name + ".regenDelay", null);
 		
 		getScoreboardData().saveDisplays(minigame, name);
 		
@@ -2833,6 +2862,8 @@ public class Minigame {
 			teleportOnStart = minigame.getConfig().getBoolean(name + ".teleportOnStart");
 		if(minigame.getConfig().contains(name + ".teleportOnPlayerWait"))
 			teleportOnPlayerWait = minigame.getConfig().getBoolean(name + ".teleportOnPlayerWait");
+		if(minigame.getConfig().contains(name + ".regenDelay"))
+			regenDelay = minigame.getConfig().getInt(name + ".regenDelay");
 
 //		Bukkit.getLogger().info("------- Minigame Load -------");
 //		Bukkit.getLogger().info("Name: " + getName());

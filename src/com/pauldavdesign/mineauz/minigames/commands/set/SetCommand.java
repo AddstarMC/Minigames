@@ -88,6 +88,7 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetGametypeNameCommand());
 		registerSetCommand(new SetSPMaxPlayersCommand());
 		registerSetCommand(new SetDisplayNameCommand());
+		registerSetCommand(new SetRegenDelayCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {
