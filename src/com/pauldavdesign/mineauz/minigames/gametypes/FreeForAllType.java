@@ -175,28 +175,30 @@ public class FreeForAllType extends MinigameTypeBase{
 			MinigamePlayer player = null;
 			int score = 0;
 			for(MinigamePlayer ply : event.getMinigame().getPlayers()){
-				if(ply.getKills() > score){
-					player = ply;
-					score = ply.getKills();
-				}
-				else if(ply.getKills() == score){
-					if(player != null && ply.getDeaths() < player.getDeaths()){
+				if(ply.getScore() > 0){
+					if(ply.getScore() > score){
 						player = ply;
+						score = ply.getScore();
 					}
-					else if(player == null){
-						player = ply;
+					else if(ply.getScore() == score){
+						if(player != null && ply.getDeaths() < player.getDeaths()){
+							player = ply;
+						}
+						else if(player == null){
+							player = ply;
+						}
 					}
 				}
 			}
-			List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
-			players.addAll(event.getMinigame().getPlayers());
+			List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>();
+			losers.addAll(event.getMinigame().getPlayers());
+			List<MinigamePlayer> winners = new ArrayList<MinigamePlayer>();
+			if(player != null){
+				losers.remove(player);
+				winners.add(player);
+			}
 			
-			for(MinigamePlayer ply : players){
-				if(ply != player){
-					pdata.quitMinigame(ply, true);
-				}
-			}
-			pdata.endMinigame(player);
+			pdata.endMinigame(event.getMinigame(), winners, losers);
 		}
 	}
 }

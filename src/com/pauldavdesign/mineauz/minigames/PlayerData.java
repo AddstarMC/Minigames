@@ -602,7 +602,7 @@ public class PlayerData {
 						plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + 
 								MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getName(), mgm.getName(true)) + ". " + score);
 					}
-					else{
+					else if(winners.size() > 1){
 						String win = "";
 						Collections.sort(winners, new Comparator<MinigamePlayer>() {
 							@Override
@@ -628,6 +628,10 @@ public class PlayerData {
 						}
 						plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + 
 								MinigameUtils.formStr("player.end.broadcastMsg", win, mgm.getName(true)) + ". ");
+					}
+					else{
+						plugin.getServer().broadcastMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + 
+								MinigameUtils.formStr("player.end.broadcastNobodyWon", mgm.getName(true)));
 					}
 				}
 			}
