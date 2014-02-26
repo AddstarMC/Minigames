@@ -128,7 +128,7 @@ minigame:
     consSpawn: "%s treasure chest spawned at: %s"
     plySpawn: "A treasure chest has appeared within %sm of %s!"
     plyDespawn: "Times up! The %s treasure was not found and has been removed from the world."
-    plyDespawnCoords: "Coordinates: X:%s, Y:%s, Z%s"
+    plyDespawnCoords: "Coordinates: X:%s, Y:%s, Z:%s"
     hint1:
       north: "North"
       east: "East"
