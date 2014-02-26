@@ -138,6 +138,7 @@ permissions:
             minigame.set.gametypename: true
             minigame.set.spmaxplayers: true
             minigame.set.displayname: true
+            minigame.set.regendelay: true
     minigame.set.start:
         description: Gives access to setting a minigames starting position
         default: op
@@ -278,6 +279,9 @@ permissions:
         default: op
     minigame.set.displayname:
         description: Allows a player to set the display name of a Minigame.
+        default: op
+    minigame.set.regendelay:
+        description: Allows a player to set the regeneration delay of a Minigame.
         default: op
     minigame.info:
         description: Allows check to see if a minigames variables have been set
