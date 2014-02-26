@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
@@ -236,18 +237,23 @@ public class MinigameData {
 	public void removeTreasure(final String minigame){
 		if(getTreasureHuntLocation(minigame) != null){
 			final Location old = getTreasureHuntLocation(minigame).clone();
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					if(old.getBlock().getState() instanceof Chest){
-						Chest chest = (Chest) getTreasureHuntLocation(minigame).getBlock().getState();
-						chest.getInventory().clear();
-					}
-					
-					old.getBlock().setType(Material.AIR);
-				}
-			});
+			boolean loaded = false;
+			Chunk c = null;
+			if(!old.getWorld().isChunkLoaded(old.getBlockX() >> 4, old.getBlockZ() >> 4) && !old.getWorld().isChunkInUse(old.getBlockX() >> 4, old.getBlockZ() >> 4)){
+				old.getChunk().load();
+				loaded = true;
+				c = old.getChunk();
+			}
+			
+			if(old.getBlock().getState() instanceof Chest){
+				Chest chest = (Chest) getTreasureHuntLocation(minigame).getBlock().getState();
+				chest.getInventory().clear();
+			}
+			
+			old.getBlock().setType(Material.AIR);
+			if(loaded && c.getWorld().isChunkLoaded(c) && !c.getWorld().isChunkInUse(c.getX(), c.getZ())){
+				c.unload();
+			}
 		}
 	}
 	public void removeTreasureNoDelay(String minigame){
