@@ -94,7 +94,7 @@ public class ScoreboardDisplay {
 			for(int z = 0; z <= 2; z++){
 				Chunk c = cur.getWorld().getChunkAt(x + cx, z + cz);
 //				if(!c.isLoaded()){
-				if(!cur.getWorld().isChunkLoaded(x + cx >> 4, z + cz >> 4) && !cur.getWorld().isChunkInUse(x + cx >> 4, z + cz >> 4)){
+				if(!cur.getWorld().isChunkLoaded(x + cx, z + cz) && !cur.getWorld().isChunkInUse(x + cx, z + cz)){
 					c.load();
 					chunksLoaded.add(c);
 				}
