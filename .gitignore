@@ -4,5 +4,5 @@
 bin
 .settings
 target
-.dist
+test/
 openDist.command
