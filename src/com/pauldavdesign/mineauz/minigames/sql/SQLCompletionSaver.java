@@ -73,28 +73,6 @@ public class SQLCompletionSaver extends Thread{
 				e.printStackTrace();
 			}
 		}
-		else{ //TODO: Remove after 1.6.0 release
-			if(!database.columnExists("Score", table))
-			{
-				try {
-					Statement alterTable = sql.createStatement();
-					
-					alterTable.execute("ALTER TABLE " + table + " ADD Score int DEFAULT -1, " +
-							"ADD Time long NOT NULL, " +
-							"ADD Reverts int DEFAULT -1, " +
-							"ADD TotalKills int DEFAULT 0, " +
-							"ADD TotalDeaths int DEFAULT 0, " +
-							"ADD TotalScore int DEFAULT 0, " +
-							"ADD TotalReverts int DEFAULT 0, " +
-							"ADD TotalTime long NOT NULL, " + 
-							"ADD Failures int DEFAULT 0");
-					alterTable.close();
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-					return;
-				}
-			}
-		}
 		
 		try
 		{

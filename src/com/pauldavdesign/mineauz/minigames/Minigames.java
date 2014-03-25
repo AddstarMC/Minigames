@@ -1,6 +1,5 @@
 package com.pauldavdesign.mineauz.minigames;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -166,19 +165,6 @@ public class Minigames extends JavaPlugin{
 		pdata.loadDeniedCommands();
 		
 		scoretypes = new ScoreType();
-		
-		File cps = new File(getDataFolder() + "/storedCheckpoints.yml"); //TODO: Remove after 1.6
-		if(cps.exists()){
-			MinigameSave save = new MinigameSave("storedCheckpoints");
-			for(String player : save.getConfig().getKeys(false)){
-				MinigameSave plSave = new MinigameSave("playerdata/checkpoints/" + player.toLowerCase());
-				for(String sec : save.getConfig().getConfigurationSection(player).getKeys(true)){
-					plSave.getConfig().set(sec, save.getConfig().get(player + "." + sec));
-				}
-				plSave.saveConfig();
-			}
-			save.deleteFile();
-		}
 		
 		MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
 		Set<String> keys = globalLoadouts.getConfig().getKeys(false);

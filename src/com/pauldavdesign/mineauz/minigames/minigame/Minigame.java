@@ -2141,11 +2141,6 @@ public class Minigame {
 				minigame.getConfig().set(name + ".reward2." + group.getName() + ".rarity", group.getRarity().toString());
 			}
 		}
-		if(minigame.getConfig().contains(name + ".rewardprice")) //TODO: Remove after 1.6.0 release
-			minigame.getConfig().set(name + ".rewardprice", null);
-		if(minigame.getConfig().contains(name + ".rewardprice2")) //TODO: Remove after 1.6.0 release
-			minigame.getConfig().set(name + ".rewardprice2", null);
-		
 		if(!getFlags().isEmpty()){
 			minigame.getConfig().set(name + ".flags", getFlags());
 		}
@@ -2540,22 +2535,7 @@ public class Minigame {
 		if(minigame.getConfig().contains(name + ".maxtreasure")){
 			setMaxTreasure(minigame.getConfig().getInt(name + ".maxtreasure"));
 		}
-		String typeString = minigame.getConfig().getString(name + ".type");
-		if(typeString.equals("sp")) //TODO: Remove check after 1.6.0 release
-			setType(MinigameType.SINGLEPLAYER);
-		else if(typeString.equals("th"))
-			setType(MinigameType.TREASURE_HUNT);
-		else if(typeString.equals("dm"))
-			setType(MinigameType.FREE_FOR_ALL);
-		else if(typeString.equals("teamdm"))
-			setType(MinigameType.TEAMS);
-		else if(typeString.equals("race")){
-			setType(MinigameType.FREE_FOR_ALL);
-			setAllowMPCheckpoints(true);
-			setMaxScore(0);
-		}
-		else
-			setType(MinigameType.valueOf(minigame.getConfig().getString(name + ".type")));
+		setType(MinigameType.valueOf(minigame.getConfig().getString(name + ".type")));
 		setMinPlayers(minigame.getConfig().getInt(name + ".minplayers"));
 		setMaxPlayers(minigame.getConfig().getInt(name + ".maxplayers"));
 		if(minigame.getConfig().contains(name + ".spMaxPlayers"))
@@ -2569,37 +2549,32 @@ public class Minigame {
 		}
 		setUsePermissions(minigame.getConfig().getBoolean(name + ".usepermissions"));
 		if(minigame.getConfig().contains(name + ".reward")){
-			if(minigame.getConfig().contains(name + ".reward.==")){ //TODO: Remove this check after 1.6.0 release
-				getRewardItems().addItem(minigame.getConfig().getItemStack(name + ".reward"), RewardRarity.NORMAL);
-			}
-			else{
-				Set<String> keys = minigame.getConfig().getConfigurationSection(name + ".reward").getKeys(false);
-				for(String key : keys){
-					if(minigame.getConfig().contains(name + ".reward." + key + ".item") || minigame.getConfig().contains(name + ".reward." + key + ".money")){
-						ItemStack item = minigame.getConfig().getItemStack(name + ".reward." + key + ".item");
-						double money = minigame.getConfig().getDouble(name + ".reward." + key + ".money");
-						RewardRarity rarity = RewardRarity.valueOf(minigame.getConfig().getString(name + ".reward." + key + ".rarity"));
-						if(item != null)
-							getRewardItems().addItem(item, rarity);
-						else
-							getRewardItems().addMoney(money, rarity);
-					}
-					else{
-						Set<String> keys2 = minigame.getConfig().getConfigurationSection(name + ".reward." + key).getKeys(false);
-						RewardGroup group = getRewardItems().addGroup(key, RewardRarity.valueOf(minigame.getConfig().getString(name + ".reward." + key + ".rarity")));
-						for(String key2 : keys2){
-							if(!key2.equals("rarity")){
-								ItemStack item = minigame.getConfig().getItemStack(name + ".reward." + key + "." + key2 + ".item");
-								double money = minigame.getConfig().getDouble(name + ".reward." + key + "." + key2 + ".money");
-								RewardRarity rarity = RewardRarity.NORMAL;
-								if(item != null){
-									RewardItem it = new RewardItem(item, rarity);
-									group.addItem(it);
-								}
-								else{
-									RewardItem it = new RewardItem(money, rarity);
-									group.addItem(it);
-								}
+			Set<String> keys = minigame.getConfig().getConfigurationSection(name + ".reward").getKeys(false);
+			for(String key : keys){
+				if(minigame.getConfig().contains(name + ".reward." + key + ".item") || minigame.getConfig().contains(name + ".reward." + key + ".money")){
+					ItemStack item = minigame.getConfig().getItemStack(name + ".reward." + key + ".item");
+					double money = minigame.getConfig().getDouble(name + ".reward." + key + ".money");
+					RewardRarity rarity = RewardRarity.valueOf(minigame.getConfig().getString(name + ".reward." + key + ".rarity"));
+					if(item != null)
+						getRewardItems().addItem(item, rarity);
+					else
+						getRewardItems().addMoney(money, rarity);
+				}
+				else{
+					Set<String> keys2 = minigame.getConfig().getConfigurationSection(name + ".reward." + key).getKeys(false);
+					RewardGroup group = getRewardItems().addGroup(key, RewardRarity.valueOf(minigame.getConfig().getString(name + ".reward." + key + ".rarity")));
+					for(String key2 : keys2){
+						if(!key2.equals("rarity")){
+							ItemStack item = minigame.getConfig().getItemStack(name + ".reward." + key + "." + key2 + ".item");
+							double money = minigame.getConfig().getDouble(name + ".reward." + key + "." + key2 + ".money");
+							RewardRarity rarity = RewardRarity.NORMAL;
+							if(item != null){
+								RewardItem it = new RewardItem(item, rarity);
+								group.addItem(it);
+							}
+							else{
+								RewardItem it = new RewardItem(money, rarity);
+								group.addItem(it);
 							}
 						}
 					}
@@ -2607,48 +2582,37 @@ public class Minigame {
 			}
 		}
 		if(minigame.getConfig().contains(name + ".reward2")){
-			if(minigame.getConfig().contains(name + ".reward2.==")){ //TODO: Remove this check after 1.6.0 release
-				getSecondaryRewardItems().addItem(minigame.getConfig().getItemStack(name + ".reward2"), RewardRarity.NORMAL);
-			}
-			else{
-				Set<String> keys = minigame.getConfig().getConfigurationSection(name + ".reward2").getKeys(false);
-				for(String key : keys){
-					if(minigame.getConfig().contains(name + ".reward2." + key + ".item") || minigame.getConfig().contains(name + ".reward2." + key + ".money")){
-						ItemStack item = minigame.getConfig().getItemStack(name + ".reward2." + key + ".item");
-						double money = minigame.getConfig().getDouble(name + ".reward2." + key + ".money");
-						RewardRarity rarity = RewardRarity.valueOf(minigame.getConfig().getString(name + ".reward2." + key + ".rarity"));
-						if(item != null)
-							getSecondaryRewardItems().addItem(item, rarity);
-						else
-							getSecondaryRewardItems().addMoney(money, rarity);
-					}
-					else{
-						Set<String> keys2 = minigame.getConfig().getConfigurationSection(name + ".reward2." + key).getKeys(false);
-						RewardGroup group = getSecondaryRewardItems().addGroup(key, RewardRarity.valueOf(minigame.getConfig().getString(name + ".reward2." + key + ".rarity")));
-						for(String key2 : keys2){
-							if(!key2.equals("rarity")){
-								ItemStack item = minigame.getConfig().getItemStack(name + ".reward2." + key + "." + key2 + ".item");
-								double money = minigame.getConfig().getDouble(name + ".reward2." + key + "." + key2 + ".money");
-								RewardRarity rarity = RewardRarity.NORMAL;
-								if(item != null){
-									RewardItem it = new RewardItem(item, rarity);
-									group.addItem(it);
-								}
-								else{
-									RewardItem it = new RewardItem(money, rarity);
-									group.addItem(it);
-								}
+			Set<String> keys = minigame.getConfig().getConfigurationSection(name + ".reward2").getKeys(false);
+			for(String key : keys){
+				if(minigame.getConfig().contains(name + ".reward2." + key + ".item") || minigame.getConfig().contains(name + ".reward2." + key + ".money")){
+					ItemStack item = minigame.getConfig().getItemStack(name + ".reward2." + key + ".item");
+					double money = minigame.getConfig().getDouble(name + ".reward2." + key + ".money");
+					RewardRarity rarity = RewardRarity.valueOf(minigame.getConfig().getString(name + ".reward2." + key + ".rarity"));
+					if(item != null)
+						getSecondaryRewardItems().addItem(item, rarity);
+					else
+						getSecondaryRewardItems().addMoney(money, rarity);
+				}
+				else{
+					Set<String> keys2 = minigame.getConfig().getConfigurationSection(name + ".reward2." + key).getKeys(false);
+					RewardGroup group = getSecondaryRewardItems().addGroup(key, RewardRarity.valueOf(minigame.getConfig().getString(name + ".reward2." + key + ".rarity")));
+					for(String key2 : keys2){
+						if(!key2.equals("rarity")){
+							ItemStack item = minigame.getConfig().getItemStack(name + ".reward2." + key + "." + key2 + ".item");
+							double money = minigame.getConfig().getDouble(name + ".reward2." + key + "." + key2 + ".money");
+							RewardRarity rarity = RewardRarity.NORMAL;
+							if(item != null){
+								RewardItem it = new RewardItem(item, rarity);
+								group.addItem(it);
+							}
+							else{
+								RewardItem it = new RewardItem(money, rarity);
+								group.addItem(it);
 							}
 						}
 					}
 				}
 			}
-		}
-		if(minigame.getConfig().contains(name + ".rewardprice")){ //TODO: Remove this check after 1.6.0 release
-			getRewardItems().addMoney(minigame.getConfig().getDouble(name + ".rewardprice"), RewardRarity.NORMAL);
-		}
-		if(minigame.getConfig().contains(name + ".rewardprice2")){ //TODO: Remove this check after 1.6.0 release
-			getSecondaryRewardItems().addMoney(minigame.getConfig().getDouble(name + ".rewardprice2"), RewardRarity.NORMAL);
 		}
 		if(!minigame.getConfig().getStringList(name + ".flags").isEmpty()){
 			setFlags(minigame.getConfig().getStringList(name + ".flags"));
@@ -2758,10 +2722,7 @@ public class Minigame {
 		}
 		
 		if(minigame.getConfig().contains(name + ".gamemode")){
-			if(minigame.getConfig().getString(name + ".gamemode").matches("[0-2]"))
-				setDefaultGamemode(GameMode.getByValue(minigame.getConfig().getInt(name + ".gamemode"))); //TODO: Remove after 1.6
-			else
-				setDefaultGamemode(GameMode.valueOf(minigame.getConfig().getString(name + ".gamemode")));
+			setDefaultGamemode(GameMode.valueOf(minigame.getConfig().getString(name + ".gamemode")));
 		}
 		
 		if(minigame.getConfig().contains(name + ".whitelistmode")){
