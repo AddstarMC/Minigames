@@ -642,41 +642,11 @@ public class PlayerData {
 			
 			for(MinigamePlayer player : winners){
 				player.setEndTime(Calendar.getInstance().getTimeInMillis());
-				//Update scoreboards
-				boolean hascompleted = false;
-				Configuration completion = null;
-				if(plugin.getSQL() == null && mgm.isEnabled()){
-					completion = mdata.getConfigurationFile("completion");
-					hascompleted = completion.getStringList(mgm.getName(false)).contains(player.getName());
-					
-					if(!completion.getStringList(mgm.getName(false)).contains(player.getName())){
-						List<String> completionlist = completion.getStringList(mgm.getName(false));
-						completionlist.add(player.getName());
-						completion.set(mgm.getName(false), completionlist);
-						MinigameSave completionsave = new MinigameSave("completion");
-						completionsave.getConfig().set(mgm.getName(false), completionlist);
-						completionsave.saveConfig();
-					}
-					
-					MinigameTypeBase.issuePlayerRewards(player, mgm, hascompleted);
-				}
-				else if(mgm.isEnabled()){
-					plugin.addSQLToStore(new SQLPlayer(mgm.getName(false), player.getName(), 1, 0, player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), player.getEndTime() - player.getStartTime()));
-					plugin.startSQLCompletionSaver();
-				}
 				
 				//Group money bets
 				if(bets != 0){
 					plugin.getEconomy().depositPlayer(player.getName(), bets);
 					player.sendMessage(MinigameUtils.formStr("player.bet.winMoney", bets), null);
-				}
-				
-				//Item Bets (for non groups)
-				if(mgm.getMpBets() != null){
-					if(mgm.getMpBets().hasBets()){
-						player.getPlayer().getInventory().addItem(mgm.getMpBets().claimBets());
-						mgm.setMpBets(null);
-					}
 				}
 				
 				//Restore Player
@@ -705,6 +675,38 @@ public class PlayerData {
 					player.setRequiredQuit(true);
 					player.setQuitPos(mgm.getEndPosition());
 				}
+				
+				//Reward Player
+				boolean hascompleted = false;
+				Configuration completion = null;
+				if(plugin.getSQL() == null && mgm.isEnabled()){
+					completion = mdata.getConfigurationFile("completion");
+					hascompleted = completion.getStringList(mgm.getName(false)).contains(player.getName());
+					
+					if(!completion.getStringList(mgm.getName(false)).contains(player.getName())){
+						List<String> completionlist = completion.getStringList(mgm.getName(false));
+						completionlist.add(player.getName());
+						completion.set(mgm.getName(false), completionlist);
+						MinigameSave completionsave = new MinigameSave("completion");
+						completionsave.getConfig().set(mgm.getName(false), completionlist);
+						completionsave.saveConfig();
+					}
+					
+					MinigameTypeBase.issuePlayerRewards(player, mgm, hascompleted);
+				}
+				else if(mgm.isEnabled()){
+					plugin.addSQLToStore(new SQLPlayer(mgm.getName(false), player.getName(), 1, 0, player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), player.getEndTime() - player.getStartTime()));
+					plugin.startSQLCompletionSaver();
+				}
+				
+				//Item Bets (for non groups)
+				if(mgm.getMpBets() != null){
+					if(mgm.getMpBets().hasBets()){
+						player.getPlayer().getInventory().addItem(mgm.getMpBets().claimBets());
+						mgm.setMpBets(null);
+					}
+				}
+				
 				for(MinigamePlayer pl : mgm.getSpectators()){
 					player.getPlayer().showPlayer(pl.getPlayer());
 				}
