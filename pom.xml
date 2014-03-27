@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>Minigames</groupId>
   <artifactId>Minigames</artifactId>
-  <version>1.6.2</version> <!-- ${env.BUILD_NUMBER} -->
+  <version>1.6.3</version> <!-- ${env.BUILD_NUMBER} -->
   <name>Minigames</name>
   <url>http://dev.bukkit.org/server-mods/minigames/</url>
 
@@ -51,7 +51,7 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.7.2-R0.1-SNAPSHOT</version>
+      <version>1.7.2-R0.3-SNAPSHOT</version>
     </dependency>
     
     <!-- CraftBukkit Dependency for experimental features

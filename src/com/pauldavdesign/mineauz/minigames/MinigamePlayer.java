@@ -56,6 +56,7 @@ public class MinigamePlayer {
 	private List<String> claimedRewards = new ArrayList<String>();
 	private List<String> tempClaimedRewards = new ArrayList<String>();
 	private List<ItemStack> tempRewardItems = new ArrayList<ItemStack>();
+	private List<String> claimedScoreSigns = new ArrayList<String>();
 	
 	public MinigamePlayer(Player player){
 		this.player = player;
@@ -412,6 +413,7 @@ public class MinigamePlayer {
 		setLatejoining(false);
 		tempClaimedRewards.clear();
 		tempRewardItems.clear();
+		claimedScoreSigns.clear();
 	}
 	
 	public boolean isLatejoining() {
@@ -624,5 +626,17 @@ public class MinigamePlayer {
 	
 	public List<ItemStack> getTempRewardItems(){
 		return tempRewardItems;
+	}
+	
+	public boolean hasClaimedScore(Location loc){
+		String id = MinigameUtils.createLocationID(loc);
+		if(claimedScoreSigns.contains(id))
+			return true;
+		return false;
+	}
+	
+	public void addClaimedScore(Location loc){
+		String id = MinigameUtils.createLocationID(loc);
+		claimedScoreSigns.add(id);
 	}
 }

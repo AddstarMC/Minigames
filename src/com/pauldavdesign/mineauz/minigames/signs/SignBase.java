@@ -34,6 +34,7 @@ public class SignBase implements Listener{
 		registerMinigameSign(new RewardSign());
 		registerMinigameSign(new TeamSign());
 		registerMinigameSign(new ScoreboardSign());
+		registerMinigameSign(new ScoreSign());
 	}
 	
 	public SignBase(){

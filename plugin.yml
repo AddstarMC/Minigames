@@ -331,6 +331,9 @@ permissions:
     minigame.sign.create.scoreboard:
         description: Allows the creation of a scoreboard sign.
         default: op
+    minigame.sign.create.score:
+        description: Allows the creation of a scoreboard sign.
+        default: op
     minigame.sign.create.*:
         description: Allows a player to create all Minigame signs
         children:
@@ -346,6 +349,7 @@ permissions:
             minigame.sign.create.team: true
             minigame.sign.create.teleport: true
             minigame.sign.create.scoreboard: true
+            minigame.sign.create.score: true
     minigame.sign.use.details:
         description: Allows the usage of a minigame sign to show the details
         default: true
@@ -376,6 +380,9 @@ permissions:
     minigame.sign.use.scoreboard:
         description: Allows a player to set up a scoreboard.
         default: op
+    minigame.sign.use.score:
+        description: Allows a player to set up a Score sign.
+        default: true
     minigame.sign.use.*:
         description: Allows a player to use all the Minigame sign uses
         children:
@@ -389,6 +396,7 @@ permissions:
             minigame.sign.use.team: true
             minigame.sign.use.teleport: true
             minigame.sign.use.scoreboard: true
+            minigame.sign.use.score: true
     minigame.reload:
         description: Allows player to reload the currently loaded configuration files
         default: op

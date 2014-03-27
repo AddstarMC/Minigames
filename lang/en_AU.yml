@@ -210,9 +210,14 @@ sign:
     autoAssign: "You will be automatically assigned a team"
     autoAssignAnnounce: "%s will automatically be assigned a team"
   teleport:
-    createPermission: "You do not have permission to create a Minigames teleport sign!"
+    createPermission: "You do not have permission to create a Minigame teleport sign!"
     usePermission: "You do not have permission to use a Minigames teleport sign!"
     invalid: "Invalid teleport sign!"
+  score:
+    createPermission: "You don't have permission to create a Minigame score sign!"
+    usePermission: "You don't have permission to use a Minigame score sign!"
+    alreadyUsed: "You have already used this score sign!"
+    alreadyUsedTeam: "Your team has already used this score sign!"
 
 time:
   weeks: "%s weeks"

@@ -474,6 +474,8 @@ public class PlayerData {
 					if(minigame.getMpBets() != null){
 						minigame.setMpBets(null);
 					}
+					
+					mdata.clearClaimedScore(minigame);
 				}
 				
 				minigame.getScoreboardManager().resetScores(player.getPlayer());
@@ -753,6 +755,8 @@ public class PlayerData {
 				}
 				player.updateInventory();
 			}
+			
+			mdata.clearClaimedScore(mgm);
 			
 			//Call Types End.
 			mdata.minigameType(mgm.getType()).endMinigame(winners, losers, mgm);

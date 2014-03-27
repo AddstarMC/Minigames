@@ -41,6 +41,8 @@ public class MinigameData {
 	private Map<String, Rewards> rewardSigns = new HashMap<String, Rewards>();
 	private static Minigames plugin = Minigames.plugin;
 	private MinigameSave rewardSignsSave = null;
+	private Map<Minigame, List<String>> claimedScoreSignsRed = new HashMap<Minigame, List<String>>();
+	private Map<Minigame, List<String>> claimedScoreSignsBlue = new HashMap<Minigame, List<String>>();
 	
 	private Map<String, BasePreset> presets = new HashMap<String, BasePreset>();
 	
@@ -526,5 +528,39 @@ public class MinigameData {
 			}
 			rewardSigns.put(id, rew);
 		}
+	}
+	
+	public boolean hasClaimedScore(Minigame mg, Location loc, int team){
+		String id = MinigameUtils.createLocationID(loc);
+		if(team == 0){
+			if(claimedScoreSignsRed.containsKey(mg) && claimedScoreSignsRed.get(mg).contains(id))
+				return true;
+		}
+		else{
+			if(claimedScoreSignsBlue.containsKey(mg) && claimedScoreSignsBlue.get(mg).contains(id))
+				return true;
+		}
+		return false;
+	}
+	
+	public void addClaimedScore(Minigame mg, Location loc, int team){
+		String id = MinigameUtils.createLocationID(loc);
+		if(team == 0){
+			if(!claimedScoreSignsRed.containsKey(mg))
+				claimedScoreSignsRed.put(mg, new ArrayList<String>());
+			claimedScoreSignsRed.get(mg).add(id);
+		}
+		else{
+			if(!claimedScoreSignsBlue.containsKey(mg))
+				claimedScoreSignsBlue.put(mg, new ArrayList<String>());
+			claimedScoreSignsBlue.get(mg).add(id);
+		}
+	}
+	
+	public void clearClaimedScore(Minigame mg){
+		if(claimedScoreSignsRed.containsKey(mg))
+			claimedScoreSignsRed.remove(mg);
+		if(claimedScoreSignsBlue.containsKey(mg))
+			claimedScoreSignsBlue.remove(mg);
 	}
 }
