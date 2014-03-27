@@ -196,10 +196,9 @@ sign:
     createPermission: "You do not have permission to create a Minigames reward sign!"
     usePermission: "You do not have permission to use a Minigames reward sign!"
     noName: "You need to define a name for the reward on line 3!"
-    invalidItem: "There is no material by the name '%s!"
-    noId: "There is no item using the ID '%s'!"
-    clickSign: "Right click this sign with the item you'd like to set the reward to. (10s left)"
     rewarded: "You have been awarded with %s %s"
+    rewardedMoney: "You have been awarded with $%s"
+    preRewarded: "Added %s %s to your Minigame completion rewards."
   spectate:
     createPermission: "You do not have permission to create a Minigame specate sign!"
     usePermission: "You do not have permission to use a Minigame spectate sign!"

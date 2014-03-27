@@ -4,12 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -97,5 +99,21 @@ public class SignBase implements Listener{
 			}
 		}
 	}
-
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	private void signBreak(BlockBreakEvent event){
+		if(event.getBlock().getType() == Material.SIGN_POST || event.getBlock().getType() == Material.WALL_SIGN){
+			Sign sign = (Sign) event.getBlock().getState();
+			if(sign.getLine(0).equals(ChatColor.DARK_BLUE + "[Minigame]") && 
+					minigameSigns.containsKey(ChatColor.stripColor(sign.getLine(1).toLowerCase()))){
+				MinigameSign mgSign = minigameSigns.get(ChatColor.stripColor(sign.getLine(1).toLowerCase()));
+				
+				if(mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())){
+					event.setCancelled(true);
+					return;
+				}
+				mgSign.signBreak(sign, Minigames.plugin.pdata.getMinigamePlayer(event.getPlayer()));
+			}
+		}
+	}
 }

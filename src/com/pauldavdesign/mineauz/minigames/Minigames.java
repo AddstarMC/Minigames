@@ -196,6 +196,8 @@ public class Minigames extends JavaPlugin{
 		}
 		
 		minigameSigns = new SignBase();
+		mdata.loadRewardSigns();
+		
 		CommandDispatcher disp = new CommandDispatcher();
 		getCommand("minigame").setExecutor(disp);
 		getCommand("minigame").setTabCompleter(disp);
@@ -265,6 +267,7 @@ public class Minigames extends JavaPlugin{
 			globalLoadouts.getConfig().set("globalloadouts", null);
 		}
 		globalLoadouts.saveConfig();
+		mdata.saveRewardSigns();
 	}
 	
 	private boolean setupEconomy(){

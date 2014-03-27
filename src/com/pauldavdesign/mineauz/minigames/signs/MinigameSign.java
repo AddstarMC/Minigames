@@ -20,4 +20,6 @@ public interface MinigameSign {
 	public boolean signCreate(SignChangeEvent event);
 	
 	public boolean signUse(Sign sign, MinigamePlayer player);
+	
+	public void signBreak(Sign sign, MinigamePlayer player);
 }

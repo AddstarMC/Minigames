@@ -76,4 +76,9 @@ public class TeleportSign implements MinigameSign {
 		return false;
 	}
 
+	@Override
+	public void signBreak(Sign sign, MinigamePlayer player) {
+		
+	}
+
 }

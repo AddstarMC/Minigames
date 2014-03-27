@@ -9,6 +9,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.material.Directional;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.ScoreboardDisplay;
@@ -132,6 +133,14 @@ public class ScoreboardSign implements MinigameSign{
 			disp.displayMenu(player);
 		}
 		return false;
+	}
+
+	@Override
+	public void signBreak(Sign sign, MinigamePlayer player) {
+		Minigame mg = plugin.mdata.getMinigame(sign.getBlock().getMetadata("Minigame").get(0).asString());
+		if(mg != null){
+			mg.getScoreboardData().removeDisplay(MinigameUtils.createLocationID(sign.getBlock().getLocation()));
+		}
 	}
 
 }

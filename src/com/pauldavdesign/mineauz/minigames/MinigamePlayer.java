@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
@@ -51,6 +52,10 @@ public class MinigamePlayer {
 	
 	private OfflineMinigamePlayer oply = null;
 	private StoredPlayerCheckpoints spc = null;
+	
+	private List<String> claimedRewards = new ArrayList<String>();
+	private List<String> tempClaimedRewards = new ArrayList<String>();
+	private List<ItemStack> tempRewardItems = new ArrayList<ItemStack>();
 	
 	public MinigamePlayer(Player player){
 		this.player = player;
@@ -405,6 +410,8 @@ public class MinigamePlayer {
 		setInvincible(false);
 		setCanInteract(true);
 		setLatejoining(false);
+		tempClaimedRewards.clear();
+		tempRewardItems.clear();
 	}
 	
 	public boolean isLatejoining() {
@@ -572,5 +579,50 @@ public class MinigamePlayer {
 
 	public void setDead(boolean isDead) {
 		this.isDead = isDead;
+	}
+	
+	public boolean hasClaimedReward(String reward){
+		if(claimedRewards.contains(reward))
+			return true;
+		return false;
+	}
+	
+	public boolean hasTempClaimedReward(String reward){
+		if(tempClaimedRewards.contains(reward))
+			return true;
+		return false;
+	}
+	
+	public void addTempClaimedReward(String reward){
+		tempClaimedRewards.add(reward);
+	}
+	
+	public void addClaimedReward(String reward){
+		claimedRewards.add(reward);
+	}
+	
+	public void saveClaimedRewards(){
+		if(!claimedRewards.isEmpty()){
+			MinigameSave save = new MinigameSave("playerdata/data/" + getName().toLowerCase());
+			FileConfiguration cfg = save.getConfig();
+			cfg.set("claims", claimedRewards);
+			save.saveConfig();
+		}
+	}
+	
+	public void loadClaimedRewards(){
+		File f = new File(Minigames.plugin.getDataFolder() + "/playerdata/data/" + getName().toLowerCase() + ".yml");
+		if(f.exists()){
+			MinigameSave s = new MinigameSave("playerdata/data/" + getName().toLowerCase());
+			claimedRewards = s.getConfig().getStringList("claims");
+		}
+	}
+	
+	public void addTempRewardItem(ItemStack item){
+		tempRewardItems.add(item);
+	}
+	
+	public List<ItemStack> getTempRewardItems(){
+		return tempRewardItems;
 	}
 }

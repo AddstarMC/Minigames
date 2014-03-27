@@ -22,7 +22,10 @@ import org.bukkit.inventory.ItemStack;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameTypeBase;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardGroup;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardItem;
+import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardRarity;
+import com.pauldavdesign.mineauz.minigames.minigame.reward.Rewards;
 import com.pauldavdesign.mineauz.minigames.presets.BasePreset;
 import com.pauldavdesign.mineauz.minigames.presets.CTFPreset;
 import com.pauldavdesign.mineauz.minigames.presets.InfectionPreset;
@@ -35,7 +38,9 @@ public class MinigameData {
 	private Map<MinigameType, MinigameTypeBase> minigameTypes = new HashMap<MinigameType, MinigameTypeBase>();
 	private Map<String, Location> treasureLoc = new HashMap<String, Location>();
 	private Map<String, PlayerLoadout> globalLoadouts = new HashMap<String, PlayerLoadout>();
+	private Map<String, Rewards> rewardSigns = new HashMap<String, Rewards>();
 	private static Minigames plugin = Minigames.plugin;
+	private MinigameSave rewardSignsSave = null;
 	
 	private Map<String, BasePreset> presets = new HashMap<String, BasePreset>();
 	
@@ -408,6 +413,118 @@ public class MinigameData {
 		for(MinigamePlayer pl : minigame.getSpectators()){
 			if(exclude == null || exclude != pl)
 				pl.sendMessage(finalMessage);
+		}
+	}
+	
+	public void addRewardSign(Location loc){
+		rewardSigns.put(MinigameUtils.createLocationID(loc), new Rewards());
+	}
+	
+	public Rewards getRewardSign(Location loc){
+		return rewardSigns.get(MinigameUtils.createLocationID(loc));
+	}
+	
+	public boolean hasRewardSign(Location loc){
+		if(rewardSigns.containsKey(MinigameUtils.createLocationID(loc)))
+			return true;
+		return false;
+	}
+	
+	public void removeRewardSign(Location loc){
+		String locid = MinigameUtils.createLocationID(loc);
+		if(rewardSigns.containsKey(locid)){
+			rewardSigns.remove(locid);
+			if(rewardSignsSave == null)
+				loadRewardSignsFile();
+			rewardSignsSave.getConfig().set(locid, null);
+			rewardSignsSave.saveConfig();
+			rewardSignsSave = null;
+		}
+	}
+	
+	public void saveRewardSigns(){
+		for(String rew : rewardSigns.keySet()){
+			saveRewardSign(rew, false);
+		}
+		if(rewardSignsSave != null){
+			rewardSignsSave.saveConfig();
+			rewardSignsSave = null;
+		}
+	}
+	
+	public void saveRewardSign(String id, boolean save){
+		Rewards reward = rewardSigns.get(id);
+		if(rewardSignsSave == null)
+			loadRewardSignsFile();
+		FileConfiguration cfg = rewardSignsSave.getConfig();
+		int count = 0;
+		cfg.set(id, null);
+		for(RewardItem item : reward.getRewards()){
+			if(item.getItem() != null){
+				cfg.set(id + "." + count + ".item", item.getItem());
+				cfg.set(id + "." + count + ".rarity", item.getRarity().toString());
+			}
+			else if(item.getMoney() != 0){
+				cfg.set(id + "." + count + ".money", item.getMoney());
+				cfg.set(id + "." + count + ".rarity", item.getRarity().toString());
+			}
+			count++;
+		}
+		for(RewardGroup group : reward.getGroups()){
+			count = 0;
+			for(RewardItem item : group.getItems()){
+				if(item.getItem() != null){
+					cfg.set(id + "." + group.getName() + "." + count + ".item", item.getItem());
+				}
+				else if(item.getMoney() != 0){
+					cfg.set(id + "." + group.getName() + "." + count + ".money", item.getMoney());
+				}
+				count++;
+			}
+			cfg.set(id + "." + group.getName() + ".rarity", group.getRarity().toString());
+		}
+		if(save){
+			rewardSignsSave.saveConfig();
+			rewardSignsSave = null;
+		}
+	}
+	
+	public void loadRewardSignsFile(){
+		rewardSignsSave = new MinigameSave("rewardSigns");
+	}
+	
+	public void loadRewardSigns(){
+		if(rewardSignsSave == null)
+			loadRewardSignsFile();
+		
+		FileConfiguration cfg = rewardSignsSave.getConfig();
+		Set<String> keys = cfg.getKeys(false);
+		for(String id : keys){
+			Rewards rew = new Rewards();
+			Set<String> items = cfg.getConfigurationSection(id).getKeys(false);
+			for(String item : items){
+				if(item.matches("[0-9]+")){
+					RewardRarity rar = RewardRarity.valueOf(cfg.getString(id + "." + item + ".rarity"));
+					if(cfg.contains(id + "." + item + ".item"))
+						rew.addItem(cfg.getItemStack(id + "." + item + ".item") , rar);
+					else
+						rew.addMoney(cfg.getDouble(id + "." + item + ".money"), rar);
+				}
+				else{
+					RewardGroup gr = rew.addGroup(item, RewardRarity.valueOf(cfg.getString(id + "." + item + ".rarity")));
+					Set<String> gItems = cfg.getConfigurationSection(id + "." + item).getKeys(false);
+					for(String gItem : gItems){
+						if(gItem.matches("[0-9]+")){
+							RewardRarity rar = RewardRarity.NORMAL;
+							if(cfg.contains(id + "." + item + "." + gItem + ".item"))
+								gr.addItem(new RewardItem(cfg.getItemStack(id + "." + item + "." + gItem + ".item") , rar));
+							else
+								gr.addItem(new RewardItem(cfg.getDouble(id + "." + item + "." + gItem + ".money"), rar));
+						}
+					}
+				}
+			}
+			rewardSigns.put(id, rew);
 		}
 	}
 }

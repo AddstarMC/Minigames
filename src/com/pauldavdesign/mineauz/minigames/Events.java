@@ -23,7 +23,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -167,6 +166,7 @@ public class Events implements Listener{
 				}
 			}
 		}
+		ply.saveClaimedRewards();
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -182,8 +182,8 @@ public class Events implements Listener{
 		}
 		
 		File pldata = new File(plugin.getDataFolder() + "/playerdata/inventories/" + event.getPlayer().getName().toLowerCase() + ".yml");
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(pldata.exists()){
-			MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 			ply.setOfflineMinigamePlayer(new OfflineMinigamePlayer(event.getPlayer().getName()));
 			Location floc = ply.getOfflineMinigamePlayer().getLoginLocation();
 			ply.setRequiredQuit(true);
@@ -191,6 +191,8 @@ public class Events implements Listener{
 			
 			plugin.getLogger().info(ply.getName() + "'s data has been restored from file.");
 		}
+		
+		ply.loadClaimedRewards();
 		
 		if(Bukkit.getServer().getOnlinePlayers().length == 1){
 			for(String mgm : mdata.getAllMinigames().keySet()){
@@ -751,21 +753,6 @@ public class Events implements Listener{
 		if(ply.isInMinigame() && ply.getLoadout() != null && 
 				!ply.getLoadout().hasHunger()){
 			event.setCancelled(true);
-		}
-	}
-	
-	@EventHandler(ignoreCancelled = true)
-	private void blockBreak(BlockBreakEvent event){
-		if(event.getBlock().hasMetadata("MGScoreboardSign")){
-			if(event.getPlayer().hasPermission("minigame.sign.scoreboard.create")){
-				Minigame mg = mdata.getMinigame(event.getBlock().getMetadata("Minigame").get(0).asString());
-				if(mg != null){
-					mg.getScoreboardData().removeDisplay(MinigameUtils.createLocationID(event.getBlock().getLocation()));
-				}
-			}
-			else{
-				event.setCancelled(true);
-			}
 		}
 	}
 	

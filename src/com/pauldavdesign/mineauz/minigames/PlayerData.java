@@ -686,6 +686,7 @@ public class PlayerData {
 				}
 				player.getPlayer().setFireTicks(0);
 				player.getPlayer().setNoDamageTicks(60);
+				List<ItemStack> tempItems = new ArrayList<ItemStack>(player.getTempRewardItems());
 				player.resetAllStats();
 				for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
 					player.getPlayer().removePotionEffect(potion.getType());
@@ -707,6 +708,17 @@ public class PlayerData {
 				for(MinigamePlayer pl : mgm.getSpectators()){
 					player.getPlayer().showPlayer(pl.getPlayer());
 				}
+				
+				if(!tempItems.isEmpty()){
+					for(ItemStack item : tempItems){
+						Map<Integer, ItemStack> m = player.getPlayer().getInventory().addItem(item);
+						if(!m.isEmpty()){
+							for(ItemStack i : m.values()){
+								player.getPlayer().getWorld().dropItemNaturally(player.getPlayer().getLocation(), i);
+							}
+						}
+					}
+				}		
 				
 				//Restore Minigame
 				player.removeMinigame();

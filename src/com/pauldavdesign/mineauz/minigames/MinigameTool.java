@@ -61,12 +61,25 @@ public class MinigameTool {
 	}
 	
 	public void setMode(MinigameToolMode mode){
-		ItemMeta meta = tool.getItemMeta();
-		List<String> lore = meta.getLore();
-		lore.set(1, ChatColor.AQUA + "Mode: " + ChatColor.WHITE + mode.getMode());
-		meta.setLore(lore);
-		tool.setItemMeta(meta);
-		this.mode = mode;
+		if(mode != MinigameToolMode.RESET){
+			ItemMeta meta = tool.getItemMeta();
+			List<String> lore = meta.getLore();
+			lore.set(1, ChatColor.AQUA + "Mode: " + ChatColor.WHITE + mode.getMode());
+			meta.setLore(lore);
+			tool.setItemMeta(meta);
+			this.mode = mode;
+		}
+		else{
+			ItemMeta meta = tool.getItemMeta();
+			List<String> lore = new ArrayList<String>();
+			lore.add(ChatColor.AQUA + "Minigame: " + ChatColor.WHITE + "None");
+			lore.add(ChatColor.AQUA + "Mode: " + ChatColor.WHITE + "None");
+			meta.setLore(lore);
+			tool.setItemMeta(meta);
+			this.mode = null;
+			this.minigame = null;
+			this.team = "none";
+		}
 	}
 	
 	public MinigameToolMode getMode(){
@@ -116,6 +129,7 @@ public class MinigameTool {
 		items.add(new MenuItemToolMode("Set Regeneration Area", Material.GRASS, MinigameToolMode.REGEN_AREA));
 		items.add(new MenuItemToolMode("Set Degeneration Area", Material.SAND, MinigameToolMode.DEGEN_AREA));
 		items.add(new MenuItemToolMode("Set Restore Block", Material.TNT, MinigameToolMode.RESTORE_BLOCK));
+		items.add(new MenuItemToolMode("Reset", null, MinigameToolMode.RESET));
 		men.addItems(items);
 		men.addItem(new MenuItemToolTeam("Team", Material.PAPER, new Callback<String>() {
 			

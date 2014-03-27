@@ -1,25 +1,37 @@
 package com.pauldavdesign.mineauz.minigames.signs;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.inventory.ItemStack;
 
+import com.pauldavdesign.mineauz.minigames.MinigameData;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
-import com.pauldavdesign.mineauz.minigames.MinigameSave;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.menu.InteractionInterface;
+import com.pauldavdesign.mineauz.minigames.menu.Menu;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemCustom;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemReward;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemRewardAdd;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemRewardGroup;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemRewardGroupAdd;
+import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardGroup;
+import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardItem;
+import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardRarity;
+import com.pauldavdesign.mineauz.minigames.minigame.reward.Rewards;
 
 public class RewardSign implements MinigameSign {
 	
 	private static Minigames plugin = Minigames.plugin;
+	private MinigameData mdata = plugin.mdata;
 
 	@Override
 	public String getName() {
@@ -48,139 +60,128 @@ public class RewardSign implements MinigameSign {
 
 	@Override
 	public boolean signCreate(SignChangeEvent event) {
-		event.setLine(1, ChatColor.GREEN + "Reward");
-		if(event.getLine(2).isEmpty()){
-			event.getPlayer().sendMessage(ChatColor.RED + MinigameUtils.getLang("sign.reward.noName"));
-			return false;
-		}
-		String[] split = event.getLine(3).split(" ");
-		if(!event.getLine(3).isEmpty()){
-			if(!split[0].matches("[0-9]+(:[0-9]+)?(:[0-9]+(,[0-9]+)?)+?")){
-				if(Material.getMaterial(split[0].toUpperCase()) != null){
-					return true;
-				}
-				event.getPlayer().sendMessage(ChatColor.RED + MinigameUtils.formStr("sign.reward.invalidItem", split[0]));
-			}
-			else{
-				if(Material.getMaterial(Integer.parseInt(split[0].split(":")[0])) != null)
-					return true;
-				else
-					event.getPlayer().sendMessage(ChatColor.RED + MinigameUtils.formStr("sign.reward.noId", split[0]));
-			}
-		}
-		else{
-			event.getPlayer().sendMessage(ChatColor.BLUE + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.reward.clickSign"));
-			final Location loc = event.getBlock().getLocation();
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					if(loc.getBlock().getState() instanceof Sign){
-						Sign sign = (Sign) loc.getBlock().getState();
-						if(sign.getLine(3).isEmpty()){
-							loc.getBlock().breakNaturally();
-						}
-					}
-				}
-			}, 200);
+		if(!event.getLine(2).equals("")){
+			event.setLine(1, ChatColor.GREEN + getName());
 			return true;
 		}
+		plugin.pdata.getMinigamePlayer(event.getPlayer()).sendMessage(MinigameUtils.getLang("sign.reward.noName"), "error");
 		return false;
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean signUse(Sign sign, MinigamePlayer player) {
-		if(!sign.getLine(3).isEmpty()){
-			ItemStack item = null;
-			
-			Configuration completion = plugin.mdata.getConfigurationFile("completion");
-			boolean hascompleted = completion.getStringList(sign.getLine(2)).contains(player.getName());
-			
-			if(!hascompleted){
-				List<String> completionlist = completion.getStringList(sign.getLine(2));
-				completionlist.add(player.getName());
-				completion.set(sign.getLine(2), completionlist);
-				MinigameSave completionsave = new MinigameSave("completion");
-				completionsave.getConfig().set(sign.getLine(2), completionlist);
-				completionsave.saveConfig();
-				
-				String[] split = sign.getLine(3).split(" ");
-				if(!split[0].matches("[0-9]+(:[0-9]+)?(:[0-9]+(,[0-9]+)?)+?")){
-					if(Material.getMaterial(split[0].toUpperCase()) != null){
-						int amount = 1;
-						if(split.length == 2 && split[1].matches("[0-9]+")){
-							amount = Integer.parseInt(split[1]);
-						}
-						item = new ItemStack(Material.getMaterial(split[0].toUpperCase()), amount);
-					}
-				}
-				else{
-					if(Material.getMaterial(Integer.parseInt(split[0].split(":")[0])) != null){
-						String[] split2 = split[0].split(":");
-						short damage = 0;
-						if(split2.length >= 2 && split2[1].matches("[0-9]+")){
-							damage = Short.parseShort(split2[1]);
-						}
-	
-						int amount = 1;
-						if(split.length == 2 && split[1].matches("[0-9]+")){
-							amount = Integer.parseInt(split[1]);
-						}
-						
-						item = new ItemStack(Integer.parseInt(split2[0]), amount);
-						
-						item.setDurability(damage);
-
-						if(split2.length > 2){
-							for(int i = 2; i < split2.length; i++){
-								String[] enchants = split2[i].split(",");
-								if(enchants[0].matches("[0-9]+")){
-									int level = 1;
-									if(enchants.length == 2 && enchants[1].matches("[0-9]+")){
-										level = Integer.parseInt(enchants[1]);
-									}
-									item.addEnchantment(Enchantment.getById(Integer.parseInt(enchants[0])), level);
-								}
+		Location loc = sign.getLocation();
+		if(!MinigameUtils.isMinigameTool(player.getPlayer().getItemInHand())){
+			String label = sign.getLine(2).toLowerCase();
+			if(player.isInMinigame()){
+				if(!player.hasTempClaimedReward(label)){
+					if(mdata.hasRewardSign(loc)){
+						Rewards rew = mdata.getRewardSign(loc);
+						for(RewardItem r : rew.getReward()){
+							if(r.getMoney() != 0){
+								plugin.getEconomy().depositPlayer(player.getName(), r.getMoney());
+								player.sendMessage(MinigameUtils.formStr("sign.reward.rewardedMoney", r.getMoney()), null);
+							}
+							else{
+								player.addTempRewardItem(r.getItem().clone());
+								player.sendMessage(MinigameUtils.formStr("sign.reward.preRewarded", r.getItem().getAmount(), MinigameUtils.getItemStackName(r.getItem())), null);
 							}
 						}
 					}
-				}
-				
-				if(item != null){
-					player.getPlayer().getInventory().addItem(item);
-					player.sendMessage(MinigameUtils.formStr("sign.reward.rewarded", item.getAmount(), MinigameUtils.getItemStackName(item)));
-					player.getPlayer().updateInventory();
-					return true;
+					player.addTempClaimedReward(label);
 				}
 			}
-		}
-		else{
-			if(player.getPlayer().getItemInHand().getType() != Material.AIR){
-				String id = "";
-				ItemStack item = player.getPlayer().getItemInHand();
-				id += item.getTypeId();
-				if(item.getDurability() != 0 || !item.getEnchantments().isEmpty()){
-					id += ":" + item.getDurability();
-				}
-				if(!item.getEnchantments().isEmpty()){
-					for(Enchantment en : item.getEnchantments().keySet()){
-						id += ":" + en.getId();
-						if(item.getEnchantments().get(en) != 1){
-							id += "," + item.getEnchantments().get(en);
+			else{
+				if(!player.hasClaimedReward(label)){
+					if(mdata.hasRewardSign(loc)){
+						Rewards rew = mdata.getRewardSign(loc);
+						for(RewardItem r : rew.getReward()){
+							if(r.getMoney() != 0){
+								plugin.getEconomy().depositPlayer(player.getName(), r.getMoney());
+								player.sendMessage(MinigameUtils.formStr("sign.reward.rewardedMoney", r.getMoney()), null);
+							}
+							else{
+								Map<Integer, ItemStack> m = player.getPlayer().getInventory().addItem(r.getItem());
+								player.sendMessage(MinigameUtils.formStr("sign.reward.rewarded", r.getItem().getAmount(), MinigameUtils.getItemStackName(r.getItem())), null);
+								if(!m.isEmpty()){
+									for(ItemStack i : m.values()){
+										player.getPlayer().getWorld().dropItemNaturally(sign.getLocation(), i);
+									}
+								}
+							}
 						}
+						
+						player.getPlayer().updateInventory();
 					}
+					player.addClaimedReward(label);
 				}
-				
-				if(item.getAmount() > 1){
-					id += " " + item.getAmount();
-				}
-				sign.setLine(3, id);
-				sign.update();
-				return true;
 			}
 		}
-		return false;
+		else if(player.getPlayer().hasPermission("minigame.tool")){
+			Rewards rew = null;
+			if(!mdata.hasRewardSign(loc)){
+				mdata.addRewardSign(loc);
+			}
+			rew = mdata.getRewardSign(loc);
+			
+			Menu rewardMenu = new Menu(5, getName(), player);
+			
+			List<String> des = new ArrayList<String>();
+			des.add("Click this with an item");
+			des.add("to add it to rewards.");
+			des.add("Click without an item");
+			des.add("to add a money reward.");
+			rewardMenu.addItem(new MenuItemRewardGroupAdd("Add Group", Material.ITEM_FRAME, rew), 42);
+			rewardMenu.addItem(new MenuItemRewardAdd("Add Item", des, Material.ITEM_FRAME, rew), 43);
+			final MenuItemCustom mic = new MenuItemCustom("Save Rewards", Material.REDSTONE_TORCH_ON);
+			final Location floc = loc;
+			mic.setClick(new InteractionInterface() {
+				
+				@Override
+				public Object interact() {
+					mdata.saveRewardSign(MinigameUtils.createLocationID(floc), true);
+					mic.getContainer().getViewer().sendMessage("Saved rewards for this sign.", null);
+					mic.getContainer().getViewer().getPlayer().closeInventory();
+					return null;
+				}
+			});
+			rewardMenu.addItem(mic, 44);
+			List<String> list = new ArrayList<String>();
+			for(RewardRarity r : RewardRarity.values()){
+				list.add(r.toString());
+			}
+			
+			List<MenuItem> mi = new ArrayList<MenuItem>();
+			for(RewardItem item : rew.getRewards()){
+				if(item.getItem() != null){
+					MenuItemReward mrew = new MenuItemReward(MinigameUtils.getItemStackName(item.getItem()), item.getItem().getType(), item, rew, list);
+					mrew.setItem(item.getItem());
+					mrew.updateDescription();
+					mi.add(mrew);
+				}
+				else{
+					MenuItemReward mrew = new MenuItemReward("$" + item.getMoney(), Material.PAPER, item, rew, list);
+					mi.add(mrew);
+				}
+			}
+			des = new ArrayList<String>();
+			des.add("Double Click to edit");
+			for(RewardGroup group : rew.getGroups()){
+				MenuItemRewardGroup rwg = new MenuItemRewardGroup(group.getName() + " Group", des, Material.CHEST, group, rew);
+				mi.add(rwg);
+			}
+			rewardMenu.addItems(mi);
+			rewardMenu.displayMenu(player);
+		}
+		return true;
+	}
+
+	@Override
+	public void signBreak(Sign sign, MinigamePlayer player) {
+		if(plugin.mdata.hasRewardSign(sign.getLocation())){
+			plugin.mdata.removeRewardSign(sign.getLocation());
+		}
 	}
 
 }
