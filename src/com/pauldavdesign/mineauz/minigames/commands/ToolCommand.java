@@ -17,6 +17,8 @@ import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.RestoreBlock;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Team;
+import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
 
 public class ToolCommand implements ICommand {
 
@@ -211,22 +213,22 @@ public class ToolCommand implements ICommand {
 					}
 					else if(tool.getMode() == MinigameToolMode.START){
 						if(!tool.getTeam().equals("none")){
-							if(tool.getTeam().equals("red")){
-								for(Location loc : tool.getMinigame().getStartLocationsRed()){
-									Location nloc = loc.clone();
+							if(tool.getMinigame().hasTeam(TeamColor.matchColor(tool.getTeam()))){
+								Team team = tool.getMinigame().getTeam(TeamColor.matchColor(tool.getTeam()));
+								Location nloc = null;
+								for(Location loc : team.getStartLocations()){
+									nloc = loc.clone();
 									player.getPlayer().sendBlockChange(nloc, Material.SKULL, (byte)1); //TODO: Use alternate Method!
 								}
 							}
 							else{
-								for(Location loc : tool.getMinigame().getStartLocationsBlue()){
-									Location nloc = loc.clone();
-									player.getPlayer().sendBlockChange(nloc, Material.SKULL, (byte)1); //TODO: Use alternate Method!
-								}
+								player.sendMessage(ChatColor.RED + tool.getMinigame().getName(false) + " has no " + tool.getTeam() + " team");
 							}
 						}
 						else{
+							Location nloc = null;
 							for(Location loc : tool.getMinigame().getStartLocations()){
-								Location nloc = loc.clone();
+								nloc = loc.clone();
 								player.getPlayer().sendBlockChange(nloc, Material.SKULL, (byte)1); //TODO: Use alternate Method!
 							}
 						}
@@ -264,22 +266,22 @@ public class ToolCommand implements ICommand {
 					}
 					else if(tool.getMode() == MinigameToolMode.START){
 						if(!tool.getTeam().equals("none")){
-							if(tool.getTeam().equals("Red")){
-								for(Location loc : tool.getMinigame().getStartLocationsRed()){
-									Location nloc = loc.clone();
+							if(tool.getMinigame().hasTeam(TeamColor.matchColor(tool.getTeam()))){
+								Team team = tool.getMinigame().getTeam(TeamColor.matchColor(tool.getTeam()));
+								Location nloc = null;
+								for(Location loc : team.getStartLocations()){
+									nloc = loc.clone();
 									player.getPlayer().sendBlockChange(nloc, nloc.getBlock().getType(), nloc.getBlock().getData()); //TODO: Use alternate Method!
 								}
 							}
 							else{
-								for(Location loc : tool.getMinigame().getStartLocationsBlue()){
-									Location nloc = loc.clone();
-									player.getPlayer().sendBlockChange(nloc, nloc.getBlock().getType(), nloc.getBlock().getData()); //TODO: Use alternate Method!
-								}
+								player.sendMessage(ChatColor.RED + tool.getMinigame().getName(false) + " has no " + tool.getTeam() + " team");
 							}
 						}
 						else{
+							Location nloc = null;
 							for(Location loc : tool.getMinigame().getStartLocations()){
-								Location nloc = loc.clone();
+								nloc = loc.clone();
 								player.getPlayer().sendBlockChange(nloc, nloc.getBlock().getType(), nloc.getBlock().getData()); //TODO: Use alternate Method!
 							}
 						}

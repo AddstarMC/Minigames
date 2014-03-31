@@ -9,6 +9,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
 
 public class FlagSign implements MinigameSign {
 
@@ -40,22 +41,18 @@ public class FlagSign implements MinigameSign {
 	@Override
 	public boolean signCreate(SignChangeEvent event) {
 		event.setLine(1, ChatColor.GREEN + "Flag");
-		if(event.getLine(2).equalsIgnoreCase("red")){
-			event.setLine(2, ChatColor.RED + "Red");
-		}
-		else if(event.getLine(2).equalsIgnoreCase("blue")){
-			event.setLine(2, ChatColor.BLUE + "Blue");
+		if(TeamColor.matchColor(event.getLine(2)) != null){
+			TeamColor col = TeamColor.matchColor(event.getLine(2));
+			event.setLine(2, col.getColor() + MinigameUtils.capitalize(col.toString()));
 		}
 		else if(event.getLine(2).equalsIgnoreCase("neutral")){
 			event.setLine(2, ChatColor.GRAY + "Neutral");
 		}
 		else if(event.getLine(2).equalsIgnoreCase("capture") && !event.getLine(3).isEmpty()){
 			event.setLine(2, ChatColor.GREEN + "Capture");
-			if(event.getLine(3).equalsIgnoreCase("red")){
-				event.setLine(3, ChatColor.RED + "Red");
-			}
-			else if(event.getLine(3).equalsIgnoreCase("blue")){
-				event.setLine(3, ChatColor.BLUE + "Blue");
+			if(TeamColor.matchColor(event.getLine(3)) != null){
+				TeamColor col = TeamColor.matchColor(event.getLine(3));
+				event.setLine(3, col.getColor() + MinigameUtils.capitalize(col.toString()));
 			}
 			else if(event.getLine(3).equalsIgnoreCase("neutral")){
 				event.setLine(3, ChatColor.GRAY + "Neutral");
@@ -65,6 +62,11 @@ public class FlagSign implements MinigameSign {
 				event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.flag.invalidSyntax") + " red, blue and neutral.");
 				return false;
 			}
+		}
+		else{
+			event.getBlock().breakNaturally();
+			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.flag.invalidSyntax") + " red, blue and neutral.");
+			return false;
 		}
 		return true;
 	}

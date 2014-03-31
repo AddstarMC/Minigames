@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 
@@ -13,6 +12,8 @@ import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Team;
+import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
 
 public class ScoreSign implements MinigameSign{
 
@@ -45,11 +46,9 @@ public class ScoreSign implements MinigameSign{
 	public boolean signCreate(SignChangeEvent event) {
 		if(event.getLine(2).matches("[0-9]+")){
 			event.setLine(1, ChatColor.GREEN + "Score");
-			if(event.getLine(3).matches("(red)|(blue)")){
-				if(event.getLine(3).equalsIgnoreCase("red"))
-					event.setLine(3, ChatColor.RED + "Red");
-				else
-					event.setLine(3, ChatColor.BLUE + "Blue");
+			if(TeamColor.matchColor(event.getLine(3)) != null){
+				TeamColor col = TeamColor.matchColor(event.getLine(3));
+				event.setLine(3, col.getColor() + MinigameUtils.capitalize(col.toString()));
 			}
 			else
 				event.setLine(3, "");
@@ -76,48 +75,25 @@ public class ScoreSign implements MinigameSign{
 				player.addClaimedScore(sign.getLocation());
 			}
 			else{
-				String steam = ChatColor.stripColor(sign.getLine(3)).toLowerCase();
-				String pteam = "red";
-				if(mg.getBlueTeam().contains(player.getPlayer().getPlayer()))
-					pteam = "blue";
-				if(steam.equals("") || pteam.equals(steam)){
+				TeamColor steam = TeamColor.matchColor(ChatColor.stripColor(sign.getLine(3)));
+				Team pteam = player.getTeam();
+				if(steam == null || !mg.hasTeam(steam) || pteam.getColor() == steam){
+					if(Minigames.plugin.mdata.hasClaimedScore(mg, sign.getLocation(), 0)){
+						player.sendMessage(MinigameUtils.getLang("sign.score.alreadyUsedTeam"), "error");
+						return true;
+					}
 					player.addScore(score);
 					mg.setScore(player, player.getScore());
-					List<MinigamePlayer> winners = new ArrayList<MinigamePlayer>();
-					List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>();
-					if(pteam.equals("red")){
-						if(Minigames.plugin.mdata.hasClaimedScore(mg, sign.getLocation(), 0)){
-							player.sendMessage(MinigameUtils.getLang("sign.score.alreadyUsedTeam"), "error");
-							return true;
+					
+					pteam.addScore(score);
+					Minigames.plugin.mdata.addClaimedScore(mg, sign.getLocation(), 0);
+					if(mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= pteam.getScore()){
+						List<MinigamePlayer> winners = new ArrayList<MinigamePlayer>(pteam.getPlayers());
+						List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>(mg.getPlayers().size() - pteam.getPlayers().size());
+						for(Team t : mg.getTeams()){
+							if(t != pteam)
+								losers.addAll(t.getPlayers());
 						}
-						mg.setRedTeamScore(mg.getRedTeamScore() + score);
-						Minigames.plugin.mdata.addClaimedScore(mg, sign.getLocation(), 0);
-						if(mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= mg.getRedTeamScore()){
-							for(OfflinePlayer pl : mg.getRedTeam()){
-								winners.add(Minigames.plugin.pdata.getMinigamePlayer(pl.getName()));
-							}
-							for(OfflinePlayer pl : mg.getBlueTeam()){
-								losers.add(Minigames.plugin.pdata.getMinigamePlayer(pl.getName()));
-							}
-						}
-					}
-					else{
-						if(Minigames.plugin.mdata.hasClaimedScore(mg, sign.getLocation(), 1)){
-							player.sendMessage(MinigameUtils.getLang("sign.score.alreadyUsedTeam"), "error");
-							return true;
-						}
-						mg.setBlueTeamScore(mg.getBlueTeamScore() + score);
-						Minigames.plugin.mdata.addClaimedScore(mg, sign.getLocation(), 1);
-						if(mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= mg.getBlueTeamScore()){
-							for(OfflinePlayer pl : mg.getRedTeam()){
-								losers.add(Minigames.plugin.pdata.getMinigamePlayer(pl.getName()));
-							}
-							for(OfflinePlayer pl : mg.getBlueTeam()){
-								winners.add(Minigames.plugin.pdata.getMinigamePlayer(pl.getName()));
-							}
-						}
-					}
-					if(!winners.isEmpty()){
 						Minigames.plugin.pdata.endMinigame(mg, winners, losers);
 					}
 				}

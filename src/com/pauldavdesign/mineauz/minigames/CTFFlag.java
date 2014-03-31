@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Team;
 
 public class CTFFlag{
 	
@@ -21,13 +22,13 @@ public class CTFFlag{
 	private BlockState originalBlock = null;
 	private String[] signText = null;
 	private boolean atHome = true;
-	private int team = -1;
+	private Team team = null;
 	private int respawnTime = 60;
 	private int taskID = -1;
 	private Minigame minigame = null;
 	private int cParticleID = -1;
 	
-	public CTFFlag(Location spawn, int team, Player carrier, Minigame minigame){
+	public CTFFlag(Location spawn, Team team, Player carrier, Minigame minigame){
 		spawnLocation = spawn;
 		data = ((Sign)spawnLocation.getBlock().getState()).getData();
 		spawnData = spawnLocation.getBlock().getState();
@@ -61,11 +62,11 @@ public class CTFFlag{
 		this.atHome = atHome;
 	}
 
-	public int getTeam() {
+	public Team getTeam() {
 		return team;
 	}
 
-	public void setTeam(int team) {
+	public void setTeam(Team team) {
 		this.team = team;
 	}
 	
@@ -191,14 +192,10 @@ public class CTFFlag{
 				}
 				respawnFlag();
 				for(MinigamePlayer pl : minigame.getPlayers()){
-					if(getTeam() == 0){
-						pl.sendMessage(MinigameUtils.formStr("minigame.flag.returnedTeam", ChatColor.RED.toString() + "Red Team's" + ChatColor.WHITE), null);
-					}else if(getTeam() == 1){
-						pl.sendMessage(MinigameUtils.formStr("minigame.flag.returnedTeam", ChatColor.BLUE.toString() + "Blue Team's" + ChatColor.WHITE), null);
-					}
-					else{
+					if(getTeam() != null)
+						pl.sendMessage(MinigameUtils.formStr("minigame.flag.returnedTeam", getTeam().getChatColor() + getTeam().getDisplayName() + ChatColor.WHITE), null);
+					else
 						pl.sendMessage(MinigameUtils.getLang("minigame.flag.returnedNeutral"), null);
-					}
 				}
 				taskID = -1;
 			}

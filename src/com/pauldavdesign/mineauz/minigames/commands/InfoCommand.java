@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Team;
 
 public class InfoCommand implements ICommand{
 
@@ -107,17 +108,8 @@ public class InfoCommand implements ICommand{
 						lines.add(ChatColor.GRAY + "Starting Positions: " + ChatColor.RED + "0");
 					}
 					if(mgm.getType() == MinigameType.TEAMS){
-						if(mgm.getStartLocationsRed().size() > 0){
-							lines.add(ChatColor.GRAY + "Red Team Starting Positions: " + ChatColor.GREEN + mgm.getStartLocationsRed().size());
-						}
-						else{
-							lines.add(ChatColor.GRAY + "Red Team Starting Positions: " + ChatColor.RED + "0");
-						}
-						if(mgm.getStartLocationsBlue().size() > 0){
-							lines.add(ChatColor.GRAY + "Blue Team Starting Positions: " + ChatColor.GREEN + mgm.getStartLocationsBlue().size());
-						}
-						else{
-							lines.add(ChatColor.GRAY + "Blue Team Starting Positions:" + ChatColor.RED + "0");
+						for(Team t : mgm.getTeams()){
+							lines.add(ChatColor.GRAY + t.getDisplayName() + " Starting Positions: " + ChatColor.GREEN + t.getStartLocations().size());
 						}
 					}
 					

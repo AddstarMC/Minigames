@@ -52,6 +52,8 @@ import com.pauldavdesign.mineauz.minigames.events.RevertCheckpointEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Team;
+import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
 
 public class Events implements Listener{
 	private static Minigames plugin = Minigames.plugin;
@@ -279,7 +281,16 @@ public class Events implements Listener{
 								}
 								
 								if(mgm.getType() == MinigameType.TEAMS){
-									event.getPlayer().sendMessage(ChatColor.AQUA + MinigameUtils.getLang("minigame.info.score") + MinigameUtils.formStr("player.end.team.score", ChatColor.RED.toString() + mgm.getRedTeamScore() + ChatColor.WHITE, ChatColor.BLUE.toString() + mgm.getBlueTeamScore()));
+									String sc = "";
+									int c = 0;
+									for(Team t : mgm.getTeams()){
+										c++;
+										sc += t.getColor().getColor().toString() + " " + t.getScore() + ChatColor.WHITE;
+										if(c != mgm.getTeams().size()){
+											sc += " : ";
+										}
+									}
+									event.getPlayer().sendMessage(ChatColor.AQUA + MinigameUtils.getLang("minigame.info.score") + sc);
 								}
 								
 								String playerCount = ChatColor.AQUA + MinigameUtils.getLang("minigame.info.playerCount") + " " + ChatColor.GRAY;
@@ -336,14 +347,10 @@ public class Events implements Listener{
 				if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK){
 					if(tool.getMode() == MinigameToolMode.START && ply.getPlayer().hasPermission("minigame.set.start")){
 						if(!tool.getTeam().equals("none")){
-							if(tool.getTeam().equals("red")){
-								mg.addStartLocationRed(ply.getPlayer().getLocation());
-								ply.sendMessage("Added " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " start location to " + mg.getName(false), null);
-							}
-							else{
-								mg.addStartLocationBlue(ply.getPlayer().getLocation());
-								ply.sendMessage("Added " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " start location to " + mg.getName(false), null);
-							}
+							Team t = mg.getTeam(TeamColor.valueOf(tool.getTeam().toUpperCase()));
+							t.addStartLocation(ply.getPlayer().getLocation());
+							ply.sendMessage("Added " + t.getColor().getColor() + t.getDisplayName() + ChatColor.WHITE + 
+									" start location to " + mg.getName(false), null);
 						}
 						else{
 							mg.addStartLocation(ply.getPlayer().getLocation());
@@ -413,8 +420,9 @@ public class Events implements Listener{
 						String nworld;
 						Location delLoc = null;
 						if(!tool.getTeam().equals("none")){
-							if(tool.getTeam().equals("red")){
-								for(Location loc : mg.getStartLocationsRed()){
+							Team t = mg.getTeam(TeamColor.valueOf(tool.getTeam().toUpperCase()));
+							if(t.hasStartLocations()){
+								for(Location loc : mg.getStartLocations()){
 									nx = loc.getBlockX();
 									ny = loc.getBlockY();
 									nz = loc.getBlockZ();
@@ -425,31 +433,11 @@ public class Events implements Listener{
 										break;
 									}
 								}
-								if(delLoc != null){
-									mg.getStartLocationsRed().remove(delLoc);
-									ply.sendMessage("Removed selected " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " start location.", null);
-								}
-								else
-									ply.sendMessage("Could not find a " + ChatColor.RED + "Red Team" + ChatColor.WHITE + " start location at that point.", "error");
 							}
-							else if(tool.getTeam().equals("blue")){
-								for(Location loc : mg.getStartLocationsBlue()){
-									nx = loc.getBlockX();
-									ny = loc.getBlockY();
-									nz = loc.getBlockZ();
-									nworld = loc.getWorld().getName();
-									
-									if(x == nx && y == ny && z == nz && world.equals(nworld)){
-										delLoc = loc;
-										break;
-									}
-								}
-								if(delLoc != null){
-									mg.getStartLocationsBlue().remove(delLoc);
-									ply.sendMessage("Removed selected " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " start location.", null);
-								}
-								else
-									ply.sendMessage("Could not find a " + ChatColor.BLUE + "Blue Team" + ChatColor.WHITE + " start location at that point.", "error");
+							if(delLoc != null){
+								t.getStartLocations().remove(delLoc);
+								ply.sendMessage("Removed selected " + t.getColor().getColor() + t.getDisplayName() + ChatColor.WHITE + 
+										" start location.", null);
 							}
 						}
 						else{
@@ -570,18 +558,8 @@ public class Events implements Listener{
 							event.setCancelled(true);
 							return;
 						}
-						int plyTeam = -1;
-						int atcTeam = -2;
-						if(mgm.getType() == MinigameType.TEAMS){
-							plyTeam = 0;
-							if(mgm.getBlueTeam().contains(ply.getPlayer())){
-								plyTeam = 1;
-							}
-							atcTeam = 0;
-							if(mgm.getBlueTeam().contains(shooter.getPlayer())){
-								atcTeam = 1;
-							}
-						}
+						Team plyTeam = ply.getTeam();
+						Team atcTeam = shooter.getTeam();
 						if(plyTeam != atcTeam){
 							int damage = mgm.getPaintBallDamage();
 							event.setDamage(damage);

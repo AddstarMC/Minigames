@@ -46,7 +46,8 @@ player:
     team:
       win: "%s won %s"
       tie: "%s tied against %s in %s"
-      score: "%s to %s"
+      tieCount: "%s teams were tied in %s"
+      score: "Score: %s"
   team:
     autobalance:
       plyMsg: "You have been auto-balanced to %s"
@@ -99,7 +100,7 @@ minigame:
     noFly: "You cannot fly while playing a Minigame!"
     noRevert: "You cannot revert while playing %s"
     noCommand: "You cannot use that command while playing a Minigame!"
-    noInfection: "Infection must be run on a team deathmatch Minigame!"
+    noInfection: "Infection must be run on a teams Minigame with a red and blue team!"
     noVault: "This server does not have Vault! Money cannot be used!"
     regenerating: "This Minigame is currently being reset, please wait..."
     noTeleport: "Failed to teleport. This could be related to world permissions."

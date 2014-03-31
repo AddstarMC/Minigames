@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -12,6 +11,8 @@ import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Team;
+import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
 
 public class ScoreCommand implements ICommand {
 
@@ -62,29 +63,21 @@ public class ScoreCommand implements ICommand {
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null && args.length >= 2){
-			int team = -1;
 			MinigamePlayer ply = null;
+			TeamColor color = TeamColor.matchColor(args[1]);
 			
-			if(args[1].equalsIgnoreCase("red")){
-				team = 0;
-			}
-			else if(args[1].equalsIgnoreCase("blue")){
-				team = 1;
-			}
-			else{
+			if(color == null){
 				List<Player> plys = plugin.getServer().matchPlayer(args[1]);
 				if(!plys.isEmpty()){
 					ply = plugin.pdata.getMinigamePlayer(plys.get(0));
 				}
 				else{
-					sender.sendMessage(ChatColor.RED + "No player found by the name " + args[1]);
+					sender.sendMessage(ChatColor.RED + "No player or team found by the name " + args[1]);
 					return true;
 				}
 			}
 			
-			
 			if(args[0].equalsIgnoreCase("get") && args.length >= 2){
-				
 				if(ply != null){
 					if(ply.isInMinigame()){
 						sender.sendMessage(ChatColor.GRAY + ply.getName() + "'s Score: " + ChatColor.GREEN + ply.getScore());
@@ -93,7 +86,7 @@ public class ScoreCommand implements ICommand {
 						sender.sendMessage(ChatColor.RED + ply.getName() + " is not playing a Minigame!");
 					}
 				}
-				else if(team != -1){
+				else if(color != null){
 					if(args.length >= 3){
 						Minigame mg = null;
 						if(plugin.mdata.hasMinigame(args[2])){
@@ -105,13 +98,13 @@ public class ScoreCommand implements ICommand {
 						}
 						
 						if(mg.getType() == MinigameType.TEAMS){
-							if(team == 0){
-								sender.sendMessage(ChatColor.RED + "Red Teams " + ChatColor.GRAY + "score in " + mg.getName(false) + ": " 
-										+ ChatColor.GREEN + mg.getRedTeamScore());
+							if(mg.hasTeam(color)){
+								Team t = mg.getTeam(color);
+								sender.sendMessage(color.getColor() + t.getDisplayName() + ChatColor.GRAY + " score in " + mg.getName(false) + ": " 
+										+ ChatColor.GREEN + t.getScore());
 							}
 							else{
-								sender.sendMessage(ChatColor.BLUE + "Blue Teams " + ChatColor.GRAY + "score in " + mg.getName(false) + ": " 
-										+ ChatColor.GREEN + mg.getBlueTeamScore());
+								sender.sendMessage(ChatColor.RED + mg.getName(false) + " does not have a " + color.toString().toLowerCase() + " team.");
 							}
 						}
 						else{
@@ -151,7 +144,7 @@ public class ScoreCommand implements ICommand {
 						sender.sendMessage(ChatColor.RED + ply.getName() + " is not playing a Minigame!");
 					}
 				}
-				else if(team != -1){
+				else if(color != null){
 					if(args.length >= 4){
 						Minigame mg = null;
 						if(plugin.mdata.hasMinigame(args[3])){
@@ -163,37 +156,23 @@ public class ScoreCommand implements ICommand {
 						}
 						
 						if(mg.getType() == MinigameType.TEAMS && mg.hasPlayers()){
-							if(team == 0){
-								mg.setRedTeamScore(score);
-								sender.sendMessage(ChatColor.RED + "Red Team's" + ChatColor.GRAY + " score has been set to " + score);
+							Team t = null;
+							if(mg.hasTeam(color)){
+								t = mg.getTeam(color);
+								t.setScore(score);
+								sender.sendMessage(t.getChatColor() + t.getDisplayName() + ChatColor.GRAY + " score has been set to " + score);
 							}
 							else{
-								mg.setBlueTeamScore(score);
-								sender.sendMessage(ChatColor.BLUE + "Blue Team's" + ChatColor.GRAY + " score has been set to " + score);
+								sender.sendMessage(ChatColor.RED + mg.getName(false) + " does not have a " + color.toString().toLowerCase() + " team.");
+								return true;
 							}
 							
 							if(mg.getMaxScore() != 0 && score >= mg.getMaxScorePerPlayer()){
-//								plugin.pdata.endTeamMinigame(team, mg);
-								List<MinigamePlayer> w;
-								List<MinigamePlayer> l;
-								if(team == 0){
-									w = new ArrayList<MinigamePlayer>(mg.getRedTeam().size());
-									l = new ArrayList<MinigamePlayer>(mg.getBlueTeam().size());
-									for(OfflinePlayer pl : mg.getRedTeam()){
-										w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-									}
-									for(OfflinePlayer pl : mg.getBlueTeam()){
-										l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-									}
-								}
-								else{
-									l = new ArrayList<MinigamePlayer>(mg.getRedTeam().size());
-									w = new ArrayList<MinigamePlayer>(mg.getBlueTeam().size());
-									for(OfflinePlayer pl : mg.getRedTeam()){
-										l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-									}
-									for(OfflinePlayer pl : mg.getBlueTeam()){
-										w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+								List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(t.getPlayers());
+								List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mg.getPlayers().size() - t.getPlayers().size());
+								for(Team te : mg.getTeams()){
+									if(te != t){
+										l.addAll(te.getPlayers());
 									}
 								}
 								plugin.pdata.endMinigame(mg, w, l);
@@ -236,7 +215,7 @@ public class ScoreCommand implements ICommand {
 						sender.sendMessage(ChatColor.RED + ply.getName() + " is not playing a Minigame!");
 					}
 				}
-				else if(team != -1){
+				else if(color != null){
 					Minigame mg = null;
 					String mgName = null;
 					
@@ -256,39 +235,24 @@ public class ScoreCommand implements ICommand {
 					}
 					
 					if(mg.getType() == MinigameType.TEAMS && mg.hasPlayers()){
-						int totalscore = 0;
-						if(team == 0){
-							mg.incrementRedTeamScore(score);
-							sender.sendMessage(ChatColor.GRAY + "Added " + score + " to " + ChatColor.RED + "Red Team's " + ChatColor.GRAY + " score, new score: " + mg.getRedTeamScore());
-							totalscore = mg.getRedTeamScore();
+						Team team = null;
+						if(mg.hasTeam(color)){
+							team = mg.getTeam(color);
+							team.addScore(score);
+							sender.sendMessage(ChatColor.GRAY + "Added " + score + " to " + team.getChatColor() + team.getDisplayName() + 
+									ChatColor.GRAY + " score, new score: " + team.getScore());
 						}
 						else{
-							mg.incrementBlueTeamScore(score);
-							sender.sendMessage(ChatColor.GRAY + "Added " + score + " to " + ChatColor.BLUE + "Blue Team's " + ChatColor.GRAY + " score, new score: " + mg.getBlueTeamScore());
-							totalscore = mg.getBlueTeamScore();
+							sender.sendMessage(ChatColor.RED + mg.getName(false) + " does not have a " + color.toString().toLowerCase() + " team.");
+							return true;
 						}
 						
-						if(mg.getMaxScore() != 0 && totalscore >= mg.getMaxScorePerPlayer()){
-							List<MinigamePlayer> w;
-							List<MinigamePlayer> l;
-							if(team == 0){
-								w = new ArrayList<MinigamePlayer>(mg.getRedTeam().size());
-								l = new ArrayList<MinigamePlayer>(mg.getBlueTeam().size());
-								for(OfflinePlayer pl : mg.getRedTeam()){
-									w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-								}
-								for(OfflinePlayer pl : mg.getBlueTeam()){
-									l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-								}
-							}
-							else{
-								l = new ArrayList<MinigamePlayer>(mg.getRedTeam().size());
-								w = new ArrayList<MinigamePlayer>(mg.getBlueTeam().size());
-								for(OfflinePlayer pl : mg.getRedTeam()){
-									l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-								}
-								for(OfflinePlayer pl : mg.getBlueTeam()){
-									w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
+						if(mg.getMaxScore() != 0 && team.getScore() >= mg.getMaxScorePerPlayer()){
+							List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(team.getPlayers());
+							List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mg.getPlayers().size() - team.getPlayers().size());
+							for(Team te : mg.getTeams()){
+								if(te != team){
+									l.addAll(te.getPlayers());
 								}
 							}
 							plugin.pdata.endMinigame(mg, w, l);

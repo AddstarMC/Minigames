@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Team;
+import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
 
 public class SetStartCommand implements ICommand{
 
@@ -34,7 +36,7 @@ public class SetStartCommand implements ICommand{
 
 	@Override
 	public String[] getParameters() {
-		return new String[] {"red", "blue", "clear"};
+		return null;
 	}
 
 	@Override
@@ -76,23 +78,17 @@ public class SetStartCommand implements ICommand{
 			}
 			return true;
 		}
-		else if(args.length == 2 && (args[0].matches("b|blue") || args[0].matches("r|red")) && args[1].matches("[0-9]+")){
-			int position = Integer.parseInt(args[1]);
-			int team = 0;
-			
-			if(args[0].matches("b|blue")){
-				team = 1;
+		else if(args.length == 2 && TeamColor.matchColor(args[0]) != null && args[1].matches("[0-9]+")){
+			int position = Integer.parseInt(args[1]) + 1;
+			Team team = minigame.getTeam(TeamColor.matchColor(args[0]));
+			if(team == null){
+				sender.sendMessage(ChatColor.RED + "No team color found by the name: " + args[0]);
+				return true;
 			}
 			
 			if(position >= 1){
-				if(team == 0){
-					minigame.addStartLocationRed(player.getLocation(), position);
-					sender.sendMessage(ChatColor.GRAY + "Starting position for " + ChatColor.RED + "red team" + ChatColor.GRAY + " has been set for player " + position);
-				}
-				else{
-					minigame.addStartLocationBlue(player.getLocation(), position);
-					sender.sendMessage(ChatColor.GRAY + "Starting position for " + ChatColor.BLUE + "blue team" + ChatColor.GRAY + " has been set for player " + position);
-				}
+				team.addStartLocation(player.getLocation(), position);
+				sender.sendMessage(ChatColor.GRAY + "Starting position for " + team.getChatColor() + team.getDisplayName() + ChatColor.GRAY + " has been set for position " + position);
 			}
 			else{
 				sender.sendMessage(ChatColor.RED + "Error: Invalid starting position: " + args[1]);
@@ -101,15 +97,17 @@ public class SetStartCommand implements ICommand{
 			return true;
 		}
 		else if(args[0].equalsIgnoreCase("clear")){
-			if(args.length >= 2 && (args[1].matches("b|blue") || args[1].matches("r|red"))){
-				if(args[1].matches("b|blue")){
-					minigame.getStartLocationsBlue().clear();
-					sender.sendMessage(ChatColor.GRAY + "Starting positions for " + ChatColor.BLUE + "blue team" + ChatColor.GRAY + " have been cleared in " + minigame);
+			if(args.length >= 2 && TeamColor.matchColor(args[1]) != null){
+				Team team = minigame.getTeam(TeamColor.matchColor(args[1]));
+				if(team == null){
+					sender.sendMessage(ChatColor.RED + "No team color found by the name: " + args[1]);
+					return true;
 				}
-				else{
-					minigame.getStartLocationsRed().clear();
-					sender.sendMessage(ChatColor.GRAY + "Starting positions for " + ChatColor.RED + "red team" + ChatColor.GRAY + " have been cleared in " + minigame);
-				}
+				
+				team.getStartLocations().clear();
+				sender.sendMessage(ChatColor.GRAY + "Starting positions for " + team.getChatColor() + team.getDisplayName() + ChatColor.GRAY + 
+						" have been cleared in " + minigame);
+				
 			}
 			else{
 				minigame.getStartLocations().clear();

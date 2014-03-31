@@ -3,8 +3,6 @@ package com.pauldavdesign.mineauz.minigames.scoring;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
@@ -13,6 +11,7 @@ import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Team;
 
 public class PlayerKillsType extends ScoreTypeBase{
 
@@ -23,51 +22,45 @@ public class PlayerKillsType extends ScoreTypeBase{
 
 	@Override
 	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
-		for(int i = 0; i < players.size(); i++){
-			if(minigame.getType() == MinigameType.TEAMS){
-				int team = -1;
-				if(minigame.getBlueTeam().contains(players.get(i))){
-					team = 1;
-				}
-				else if(minigame.getRedTeam().contains(players.get(i))){
-					team = 0;
-				}
-				
-				if(team == 1){
-					if(minigame.getRedTeam().size() < minigame.getBlueTeam().size() - 1){
-						minigame.getBlueTeam().remove(players.get(i));
-						minigame.addRedTeamPlayer(players.get(i));
-						team = 0;
-						players.get(i).sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", ChatColor.RED + "Red Team"), null);
-						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.autobalance.minigameMsg", players.get(i).getName(), ChatColor.RED + "Red Team"), null, players.get(i));
+		if(minigame.getType() == MinigameType.TEAMS){
+			boolean sorted = false;
+			for(MinigamePlayer ply : players){
+				if(ply.getTeam() == null){
+					Team smt = null;
+					for(Team t : minigame.getTeams()){
+						if(smt == null || t.getPlayers().size() < smt.getPlayers().size())
+							smt = t;
 					}
+					smt.addPlayer(ply);
+					ply.sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", smt.getChatColor() + smt.getDisplayName()), null);
+					mdata.sendMinigameMessage(minigame, 
+							MinigameUtils.formStr("player.team.autobalance.minigameMsg", 
+									ply.getName(), smt.getChatColor() + smt.getDisplayName()), null, ply);
 				}
-				else if(team == 0){
-					if(minigame.getBlueTeam().size() < minigame.getRedTeam().size() - 1){
-						minigame.getRedTeam().remove(players.get(i));
-						minigame.addBlueTeamPlayer(players.get(i));
-						team = 1;
-						players.get(i).sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", ChatColor.BLUE + "Blue Team"), null);
-						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.autobalance.minigameMsg", players.get(i).getName(), ChatColor.BLUE + "Blue Team"), null, players.get(i));
-					}
+			}
+			
+			while(!sorted){
+				Team smt = null;
+				Team lgt = null;
+				for(Team t : minigame.getTeams()){
+					if(smt == null || t.getPlayers().size() < smt.getPlayers().size() - 1)
+						smt = t;
+					if((lgt == null || t.getPlayers().size() > lgt.getPlayers().size()) && t != smt)
+						lgt = t;
+				}
+				if(lgt.getPlayers().size() - smt.getPlayers().size() > 1){
+					MinigamePlayer pl = lgt.getPlayers().get(0);
+					TeamsType.switchTeam(minigame, pl, smt);
+					pl.sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", smt.getChatColor() + smt.getDisplayName()), null);
+					mdata.sendMinigameMessage(minigame, 
+							MinigameUtils.formStr("player.team.autobalance.minigameMsg", 
+									pl.getName(), smt.getChatColor() + smt.getDisplayName()), null, pl);
 				}
 				else{
-					if(minigame.getRedTeam().size() <= minigame.getBlueTeam().size()){
-						minigame.addRedTeamPlayer(players.get(i));
-						team = 0;
-						players.get(i).sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", ChatColor.RED + "Red Team"), null);
-						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.autobalance.minigameMsg", players.get(i).getName(), ChatColor.RED + "Red Team"), null, players.get(i));
-					}
-					else if(minigame.getBlueTeam().size() <= minigame.getRedTeam().size()){
-						minigame.addBlueTeamPlayer(players.get(i));
-						team = 1;
-						players.get(i).sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", ChatColor.BLUE + "Blue Team"), null);
-						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.autobalance.minigameMsg", players.get(i).getName(), ChatColor.BLUE + "Blue Team"), null, players.get(i));
-					}
+					sorted = true;
 				}
 			}
 		}
-		
 	}
 	
 	@EventHandler
@@ -91,7 +84,7 @@ public class PlayerKillsType extends ScoreTypeBase{
 				return;
 			}
 			
-			if(mgm.getBlueTeam().isEmpty() && mgm.getRedTeam().isEmpty()){
+			if(ply.getTeam() == null){
 				attacker.addScore();
 				mgm.setScore(attacker, attacker.getScore());
 			
@@ -107,71 +100,25 @@ public class PlayerKillsType extends ScoreTypeBase{
 				}
 			}
 			else{
-				int team = 0;
-				int ateam = 0;
-				if(mgm.getBlueTeam().contains(ply.getPlayer())){
-					team = 1;
-				}
-				
-				if(mgm.getBlueTeam().contains(attacker.getPlayer())){
-					ateam = 1;
-				}
+				Team team = ply.getTeam();
+				Team ateam = attacker.getTeam();
 				
 				if(team != ateam){
 					attacker.addScore();
 					mgm.setScore(attacker, attacker.getScore());
 					
-					boolean end = false;
-					
-					if(ateam == 0){
-						mgm.incrementRedTeamScore();
-						
-						if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer()){
-							end = true;
-						}
-					}
-					else{
-						mgm.incrementBlueTeamScore();
-						
-						if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer()){
-							end = true;
-						}
-					}
-					
-					if(end){
+					ateam.addScore();
+					if(mgm.getMaxScore() != 0 && mgm.getMaxScorePerPlayer() <= ateam.getScore()){
 						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.kills.finalKill", attacker.getName(), ply.getName()), null, null);
-						if(ateam == 1){
-							if(mgm.getMaxScore() != 0 && mgm.getBlueTeamScore() >= mgm.getMaxScorePerPlayer()){
-								List<MinigamePlayer> w;
-								List<MinigamePlayer> l;
-								l = new ArrayList<MinigamePlayer>(mgm.getRedTeam().size());
-								w = new ArrayList<MinigamePlayer>(mgm.getBlueTeam().size());
-								for(OfflinePlayer pl : mgm.getRedTeam()){
-									l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-								}
-								for(OfflinePlayer pl : mgm.getBlueTeam()){
-									w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-								}
-								plugin.pdata.endMinigame(mgm, w, l);
-							}
+						
+						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(ateam.getPlayers());
+						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - ateam.getPlayers().size());
+						for(Team t : mgm.getTeams()){
+							if(t != ateam)
+								l.addAll(t.getPlayers());
 						}
-						else{
-							if(mgm.getMaxScore() != 0 && mgm.getRedTeamScore() >= mgm.getMaxScorePerPlayer()){
-								List<MinigamePlayer> w;
-								List<MinigamePlayer> l;
-								w = new ArrayList<MinigamePlayer>(mgm.getRedTeam().size());
-								l = new ArrayList<MinigamePlayer>(mgm.getBlueTeam().size());
-								for(OfflinePlayer pl : mgm.getRedTeam()){
-									w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-								}
-								for(OfflinePlayer pl : mgm.getBlueTeam()){
-									l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-								}
-								plugin.pdata.endMinigame(mgm, w, l);
-							}
-						}
+						plugin.pdata.endMinigame(mgm, w, l);
 					}
-					
 				}
 			}
 		}
@@ -186,15 +133,7 @@ public class PlayerKillsType extends ScoreTypeBase{
 			if(mgm.getScoreType().equals("kills")){
 				ply.takeScore();
 				mgm.setScore(ply, ply.getScore());
-				if(!mgm.getRedTeam().isEmpty() && !mgm.getBlueTeam().isEmpty()){
-					if(mgm.getRedTeam().contains(ply.getPlayer())){
-						mgm.setRedTeamScore(mgm.getRedTeamScore() - 1);
-					}
-					else{
-						mgm.setBlueTeamScore(mgm.getBlueTeamScore() - 1);
-					}
-					mgm.setScore(ply, ply.getScore());
-				}
+				ply.getTeam().setScore(ply.getTeam().getScore() - 1);
 			}
 		}
 	}
@@ -204,26 +143,21 @@ public class PlayerKillsType extends ScoreTypeBase{
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
 		if(ply == null) return;
 		if(ply.isInMinigame() && ply.getMinigame().getType() == MinigameType.TEAMS){
-			int pteam = 0;
-			if(ply.getMinigame().getBlueTeam().contains(ply.getPlayer())){
-				pteam = 1;
-			}
-			final Minigame mgm = ply.getMinigame();
+			Minigame mgm = ply.getMinigame();
 			
-			if(mgm.getScoreType().equals("kills")){
-				if(pteam == 1){
-					if(mgm.getRedTeam().size() < mgm.getBlueTeam().size() - 1){
-						TeamsType.switchTeam(mgm, ply);
-						ply.sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", ChatColor.RED + "Red Team"), null);
-						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.autobalance.minigameMsg", ply.getName(), ChatColor.RED + "Red Team"), null, ply);
-					}
+			if(mgm.getScoreType().equals("custom")){
+				Team smt = null;
+				Team lgt = ply.getTeam();
+				for(Team t : mgm.getTeams()){
+					if(smt == null || t.getPlayers().size() < smt.getPlayers().size() - 1)
+						smt = t;
 				}
-				else{
-					if(mgm.getBlueTeam().size() < mgm.getRedTeam().size()  - 1){
-						TeamsType.switchTeam(mgm, ply);
-						ply.sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", ChatColor.BLUE + "Blue Team"), null);
-						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.autobalance.minigameMsg", ply.getName(), ChatColor.BLUE + "Blue Team"), null, ply);
-					}
+				if(lgt.getPlayers().size() - smt.getPlayers().size() > 1){
+					TeamsType.switchTeam(mgm, ply, smt);
+					ply.sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", smt.getChatColor() + smt.getDisplayName()), null);
+					mdata.sendMinigameMessage(mgm, 
+							MinigameUtils.formStr("player.team.autobalance.minigameMsg", 
+									ply.getName(), smt.getChatColor() + smt.getDisplayName()), null, ply);
 				}
 			}
 		}

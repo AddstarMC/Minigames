@@ -10,6 +10,8 @@ import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Team;
+import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
 
 public class TeamSign implements MinigameSign {
 	
@@ -43,17 +45,14 @@ public class TeamSign implements MinigameSign {
 	@Override
 	public boolean signCreate(SignChangeEvent event) {
 		event.setLine(1, ChatColor.GREEN + "Team");
-		if(event.getLine(2).equalsIgnoreCase("red") || event.getLine(2).equalsIgnoreCase("r") ||
-				event.getLine(2).equalsIgnoreCase("blue") || event.getLine(2).equalsIgnoreCase("b") ||
+		if(TeamColor.matchColor(event.getLine(2)) != null ||
 				event.getLine(2).equalsIgnoreCase("neutral")){
-			if(event.getLine(2).equalsIgnoreCase("red") || event.getLine(2).equalsIgnoreCase("r")){
-				event.setLine(2, ChatColor.RED + "Red");
-			}
-			else if(event.getLine(2).equalsIgnoreCase("blue") || event.getLine(2).equalsIgnoreCase("b")){
-				event.setLine(2, ChatColor.BLUE + "Blue");
-			}
-			else if(event.getLine(2).equalsIgnoreCase("neutral")){
+			if(event.getLine(2).equalsIgnoreCase("neutral")){
 				event.setLine(2, ChatColor.GRAY + "Neutral");
+			}
+			else{
+				TeamColor col = TeamColor.matchColor(event.getLine(2));
+				event.setLine(2, col.getColor() + MinigameUtils.capitalize(col.toString().replace("_", " ")));
 			}
 			return true;
 		}
@@ -66,74 +65,43 @@ public class TeamSign implements MinigameSign {
 		if(player.isInMinigame()){
 			Minigame mgm = player.getMinigame();
 			if(mgm.getType() == MinigameType.TEAMS){
-				if(mgm.isNotWaitingForPlayers() && !sign.getLine(2).equals(ChatColor.GRAY + "Neutral") &&
-						((mgm.getRedTeam().contains(player.getPlayer()) && sign.getLine(2).equals(ChatColor.BLUE + "Blue") || 
-								(mgm.getBlueTeam().contains(player.getPlayer()) && sign.getLine(2).equals(ChatColor.RED + "Red"))))){
-					player.getPlayer().damage(player.getPlayer().getHealth());
-				}
-				if(mgm.getBlueTeam().contains(player.getPlayer())){
-					if(sign.getLine(2).equals(ChatColor.RED + "Red")){
-						if(mgm.getRedTeam().size() <= mgm.getBlueTeam().size()){
-							TeamsType.switchTeam(mgm, player);
-							plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.joinAnnounce", player.getName(), ChatColor.RED + "Red Team."), null, player);
-							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", ChatColor.RED + "Red Team."));
+				if(player.getTeam() != matchTeam(mgm, sign.getLine(2))){
+					if(mgm.isNotWaitingForPlayers() && !sign.getLine(2).equals(ChatColor.GRAY + "Neutral")){
+						Team sm = null;
+						Team nt = matchTeam(mgm, sign.getLine(2));
+						for(Team t : mgm.getTeams()){
+							if(sm == null || t.getPlayers().size() < sm.getPlayers().size())
+								sm = t;
+						}
+						if(nt.getPlayers().size() - sm.getPlayers().size() < 2){
+							TeamsType.switchTeam(mgm, player, nt);
+							plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.joinAnnounce", player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
+							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", nt.getChatColor() + nt.getDisplayName()));
 						}
 						else{
 							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
 						}
+						
+						player.getPlayer().damage(player.getPlayer().getHealth());
 					}
-					else if(sign.getLine(2).equals(ChatColor.GRAY + "Neutral") && !mgm.isNotWaitingForPlayers()){
-						mgm.removeRedTeamPlayer(player);
-						mgm.removeBlueTeamPlayer(player);
-						plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("sign.team.autoAssignAnnounce", player.getName()), null, player);
-						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.autoAssign"));
-					}
-					return true;
-				}
-				else if(mgm.getRedTeam().contains(player.getPlayer())){
-					if(sign.getLine(2).equals(ChatColor.BLUE + "Blue")){
-						if(mgm.getRedTeam().size() >= mgm.getBlueTeam().size()){
-							TeamsType.switchTeam(mgm, player);
-							plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.joinAnnounce", player.getName(), ChatColor.BLUE + "Blue Team."), null, player);
-							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", ChatColor.BLUE + "Blue Team."));
-						}
-						else{
-							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
-						}
-					}
-					else if(sign.getLine(2).equals(ChatColor.GRAY + "Neutral") && !mgm.isNotWaitingForPlayers()){
-						mgm.removeRedTeamPlayer(player);
-						mgm.removeBlueTeamPlayer(player);
-						plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("sign.team.autoAssignAnnounce", player.getName()), null, player);
-						player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.autoAssign"));
-					}
-					return true;
-				}
-				else{
-					if(!mgm.isNotWaitingForPlayers()){
-						if(sign.getLine(2).equals(ChatColor.RED + "Red")){
-							if(mgm.getRedTeam().size() <= mgm.getBlueTeam().size()){
-								mgm.addRedTeamPlayer(player);
-								mgm.removeBlueTeamPlayer(player);
-								plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.joinAnnounce", player.getName(), ChatColor.RED + "Red Team."), null, player);
-								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", ChatColor.RED + "Red Team."));
+					else if(sign.getLine(2).equals(ChatColor.GRAY + "Neutral") || matchTeam(mgm, sign.getLine(2)) != player.getTeam()){
+						Team cur = player.getTeam();
+						Team nt = matchTeam(mgm, sign.getLine(2));
+						if(nt != null){
+							if(nt.getPlayers().size() - cur.getPlayers().size() < 2){
+								TeamsType.switchTeam(mgm, player, nt);
+								plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.joinAnnounce", player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
+								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", nt.getChatColor() + nt.getDisplayName()));
 							}
 							else{
 								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
 							}
 						}
-						else if(sign.getLine(2).equals(ChatColor.BLUE + "Blue")){
-							if(mgm.getRedTeam().size() >= mgm.getBlueTeam().size()){
-								mgm.addBlueTeamPlayer(player);
-								mgm.removeRedTeamPlayer(player);
-								plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.joinAnnounce", player.getName(), ChatColor.BLUE + "Blue Team."), null, player);
-								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", ChatColor.BLUE + "Blue Team."));
-							}
-							else{
-								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
+						else{
+							if(player.getTeam() != null){
+								player.removeTeam();
 							}
 						}
-						return true;
 					}
 				}
 			}
@@ -144,6 +112,13 @@ public class TeamSign implements MinigameSign {
 	@Override
 	public void signBreak(Sign sign, MinigamePlayer player) {
 		
+	}
+	
+	private Team matchTeam(Minigame mgm, String text){
+		TeamColor col = TeamColor.matchColor(ChatColor.stripColor(text).replace(" ", "_"));
+		if(mgm.hasTeam(col))
+			return mgm.getTeam(col);
+		return null;
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames.commands.set;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -8,6 +9,8 @@ import org.bukkit.command.CommandSender;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Team;
+import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
 
 public class SetDefaultWinnerCommand implements ICommand {
 
@@ -33,12 +36,12 @@ public class SetDefaultWinnerCommand implements ICommand {
 
 	@Override
 	public String[] getParameters() {
-		return new String[] {"red", "r", "blue", "b", "none"};
+		return null;
 	}
 
 	@Override
 	public String[] getUsage() {
-		return new String[] {"/minigame set <Minigame> defaultwinner <Parameter>"};
+		return new String[] {"/minigame set <Minigame> defaultwinner <TeamColor>"};
 	}
 
 	@Override
@@ -55,21 +58,17 @@ public class SetDefaultWinnerCommand implements ICommand {
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-			if(args[0].equalsIgnoreCase("r") || args[0].equalsIgnoreCase("red")){
-				minigame.setDefaultWinner("red");
-				sender.sendMessage(ChatColor.GRAY + "The default winner of " + minigame + " has been set to red.");
-				return true;
-			}
-			else if(args[0].equalsIgnoreCase("b") || args[0].equalsIgnoreCase("blue")){
-				minigame.setDefaultWinner("blue");
-				sender.sendMessage(ChatColor.GRAY + "The default winner of " + minigame + " has been set to blue.");
-				return true;
-			}
-			else if(args[0].equalsIgnoreCase("none")){
-				minigame.setDefaultWinner("none");
+			if(args[0].equalsIgnoreCase("none")){
+				minigame.setDefaultWinner(null);
 				sender.sendMessage(ChatColor.GRAY + "The default winner of " + minigame + " has been set to none.");
-				return true;
 			}
+			else{
+				if(minigame.hasTeam(TeamColor.matchColor(args[0]))){
+					minigame.setDefaultWinner(minigame.getTeam(TeamColor.matchColor(args[0])));
+					sender.sendMessage(ChatColor.GRAY + "The default winner of " + minigame + " has been set to " + args[0] + ".");
+				}
+			}
+			return true;
 		}
 		return false;
 	}
@@ -77,8 +76,13 @@ public class SetDefaultWinnerCommand implements ICommand {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
-		if(args.length == 1)
-			return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("red;blue;none"), args[0]);
+		if(args.length == 1){
+			List<String> teams = new ArrayList<String>();
+			for(Team t : minigame.getTeams()){
+				teams.add(t.getColor().toString().toLowerCase());
+			}
+			return MinigameUtils.tabCompleteMatch(teams, args[0]);
+		}
 		return null;
 	}
 

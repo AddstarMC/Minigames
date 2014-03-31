@@ -16,6 +16,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Team;
 
 public class MinigamePlayer {
 	private Player player;
@@ -42,6 +43,7 @@ public class MinigamePlayer {
 	private boolean isInvincible = false;
 	private boolean canInteract = true;
 	private boolean isDead = false;
+	private Team team = null;
 	
 	private Menu menu = null;
 	private boolean noClose = false;
@@ -209,11 +211,8 @@ public class MinigamePlayer {
 		if(loadout != null){
 			return loadout;
 		}
-		else if(getMinigame().getRedTeam().contains(player.getPlayer()) && minigame.hasLoadout("red")){
-			return minigame.getLoadout("red");
-		}
-		else if(getMinigame().getBlueTeam().contains(player.getPlayer()) && minigame.hasLoadout("blue")){
-			return minigame.getLoadout("blue");
+		else if(team != null && minigame.hasLoadout(team.getColor().toString().toLowerCase())){
+			return minigame.getLoadout(team.getColor().toString().toLowerCase());
 		}
 		return minigame.getDefaultPlayerLoadout();
 	}
@@ -581,6 +580,19 @@ public class MinigamePlayer {
 
 	public void setDead(boolean isDead) {
 		this.isDead = isDead;
+	}
+	
+	public void setTeam(Team team){
+		this.team = team;
+	}
+	
+	public Team getTeam(){
+		return team;
+	}
+	
+	public void removeTeam(){
+		team.removePlayer(this);
+		team = null;
 	}
 	
 	public boolean hasClaimedReward(String reward){

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
@@ -15,6 +14,8 @@ import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Team;
+import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
 
 public class InfectionType extends ScoreTypeBase{
 	
@@ -29,38 +30,31 @@ public class InfectionType extends ScoreTypeBase{
 	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
 		for(int i = 0; i < players.size(); i++){
 			MinigamePlayer ply = players.get(i);
-			if(minigame.getType() != MinigameType.TEAMS){
+			if(minigame.getType() != MinigameType.TEAMS || minigame.getTeams().size() != 2 || !minigame.hasTeam(TeamColor.RED) || !minigame.hasTeam(TeamColor.BLUE)){
 				pdata.quitMinigame(ply, true);
 				ply.sendMessage(MinigameUtils.getLang("minigame.error.noInfection"), "error");
 			}
 			else{
-				int team = -1;
-				if(minigame.getBlueTeam().contains(players.get(i))){
-					team = 1;
-				}
-				else if(minigame.getRedTeam().contains(players.get(i))){
-					team = 0;
-				}
+				Team red = minigame.getTeam(TeamColor.RED);
+				Team blue = minigame.getTeam(TeamColor.BLUE);
+				Team team = ply.getTeam();
 				
-				if(team == 1){
-					if(minigame.getRedTeam().size() < Math.ceil(players.size() * 0.18)){
-						minigame.addRedTeamPlayer(players.get(i));
-						team = 0;
+				if(team == blue){
+					if(red.getPlayers().size() < Math.ceil(players.size() * 0.18)){
+						TeamsType.switchTeam(minigame, ply, red);
 						players.get(i).sendMessage(MinigameUtils.formStr("player.team.assign.infectedAssign", ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null);
 						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.assign.infectedAnnounce", players.get(i).getName(), ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null, players.get(i));
 					}
 				}
-				else if(team == -1){
-					if(minigame.getRedTeam().size() < Math.ceil(players.size() * 0.18)){
-						minigame.addRedTeamPlayer(players.get(i));
-						team = 0;
+				else if(team == null){
+					if(red.getPlayers().size() < Math.ceil(players.size() * 0.18)){
+						red.addPlayer(ply);
 						players.get(i).sendMessage(MinigameUtils.formStr("player.team.assign.infectedAssign", ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null);
 						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.assign.infectedAnnounce", players.get(i).getName(), ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null, players.get(i));
 					}
 					else{
-						minigame.addBlueTeamPlayer(players.get(i));
-						team = 1;
-						players.get(i).sendMessage(MinigameUtils.formStr("player.team.assign.survivor", ChatColor.BLUE + MinigameUtils.getLang("player.team.assign.survivor")), null);
+						blue.addPlayer(ply);
+						ply.sendMessage(MinigameUtils.formStr("player.team.assign.survivor", ChatColor.BLUE + MinigameUtils.getLang("player.team.assign.survivor")), null);
 						mdata.sendMinigameMessage(minigame,MinigameUtils.formStr("player.team.assign.survivorAnnounce", players.get(i).getName(), ChatColor.BLUE + MinigameUtils.getLang("player.team.assign.survivor")), null, players.get(i));
 					}
 				}
@@ -75,40 +69,33 @@ public class InfectionType extends ScoreTypeBase{
 		if(player.isInMinigame()){
 			Minigame mgm = player.getMinigame();
 			if(mgm.getType() == MinigameType.TEAMS && mgm.getScoreType().equals("infection")){
-				if(mgm.getBlueTeam().contains(event.getEntity())){
-					TeamsType.switchTeam(mgm, player);
+				Team blue = mgm.getTeam(TeamColor.BLUE);
+				Team red = mgm.getTeam(TeamColor.RED);
+				if(blue.getPlayers().contains(player)){
+					TeamsType.switchTeam(mgm, player, red);
 					infected.add(player);
 					if(event.getEntity().getKiller() != null){
 						MinigamePlayer killer = pdata.getMinigamePlayer(event.getEntity().getKiller());
-//						pdata.addPlayerScore(killer);
 						killer.addScore();
 						mgm.setScore(killer, killer.getScore());
 					}
-//					pdata.setPlayerScore(event.getEntity(), 0);
 					player.resetScore();
 					mgm.setScore(player, player.getScore());
 					
 					if(mgm.getLives() != player.getDeaths()){
 						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.infectedAnnounce", player.getName(), ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), "error", null);
 					}
-					if(mgm.getBlueTeam().isEmpty()){
+					if(blue.getPlayers().isEmpty()){
 						List<MinigamePlayer> w;
 						List<MinigamePlayer> l;
-						w = new ArrayList<MinigamePlayer>(mgm.getRedTeam().size());
-						l = new ArrayList<MinigamePlayer>(mgm.getBlueTeam().size());
-						for(OfflinePlayer pl : mgm.getRedTeam()){
-							w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-						}
-						for(OfflinePlayer pl : mgm.getBlueTeam()){
-							l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-						}
+						w = new ArrayList<MinigamePlayer>(red.getPlayers());
+						l = new ArrayList<MinigamePlayer>();
 						pdata.endMinigame(mgm, w, l);
 					}
 				}
 				else{
 					if(event.getEntity().getKiller() != null){
 						MinigamePlayer killer = pdata.getMinigamePlayer(event.getEntity().getKiller());
-//						pdata.addPlayerScore(killer);
 						killer.addScore();
 						mgm.setScore(killer, killer.getScore());
 					}

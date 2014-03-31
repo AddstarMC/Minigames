@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.SignChangeEvent;
@@ -15,6 +14,7 @@ import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Team;
 
 public class FinishSign implements MinigameSign {
 	
@@ -72,32 +72,13 @@ public class FinishSign implements MinigameSign {
 					if(plugin.pdata.checkRequiredFlags(player, minigame.getName(false)).isEmpty()){
 						if(sign.getLine(2).isEmpty() || sign.getLine(2).equals(player.getMinigame().getName(false))){
 							if(player.getMinigame().getType() == MinigameType.TEAMS){
-								if(player.getMinigame().getRedTeam().contains(player.getPlayer().getPlayer())){
-									List<MinigamePlayer> w;
-									List<MinigamePlayer> l;
-									w = new ArrayList<MinigamePlayer>(minigame.getRedTeam().size());
-									l = new ArrayList<MinigamePlayer>(minigame.getBlueTeam().size());
-									for(OfflinePlayer pl : minigame.getRedTeam()){
-										w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-									}
-									for(OfflinePlayer pl : minigame.getBlueTeam()){
-										l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-									}
-									plugin.pdata.endMinigame(minigame, w, l);
+								List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(player.getTeam().getPlayers());
+								List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(minigame.getPlayers().size() - player.getTeam().getPlayers().size());
+								for(Team t : minigame.getTeams()){
+									if(t != player.getTeam())
+										l.addAll(t.getPlayers());
 								}
-								else{
-									List<MinigamePlayer> w;
-									List<MinigamePlayer> l;
-									l = new ArrayList<MinigamePlayer>(minigame.getRedTeam().size());
-									w = new ArrayList<MinigamePlayer>(minigame.getBlueTeam().size());
-									for(OfflinePlayer pl : minigame.getRedTeam()){
-										l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-									}
-									for(OfflinePlayer pl : minigame.getBlueTeam()){
-										w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-									}
-									plugin.pdata.endMinigame(minigame, w, l);
-								}
+								plugin.pdata.endMinigame(minigame, w, l);
 							}
 							else{
 								if(minigame.getType() == MinigameType.FREE_FOR_ALL){
@@ -135,32 +116,13 @@ public class FinishSign implements MinigameSign {
 			else{
 				if(((LivingEntity)player.getPlayer()).isOnGround()){
 					if(player.getMinigame().getType() == MinigameType.TEAMS){
-						if(player.getMinigame().getRedTeam().contains(player.getPlayer().getPlayer())){
-							List<MinigamePlayer> w;
-							List<MinigamePlayer> l;
-							w = new ArrayList<MinigamePlayer>(minigame.getRedTeam().size());
-							l = new ArrayList<MinigamePlayer>(minigame.getBlueTeam().size());
-							for(OfflinePlayer pl : minigame.getRedTeam()){
-								w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-							}
-							for(OfflinePlayer pl : minigame.getBlueTeam()){
-								l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-							}
-							plugin.pdata.endMinigame(minigame, w, l);
+						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(player.getTeam().getPlayers());
+						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(minigame.getPlayers().size() - player.getTeam().getPlayers().size());
+						for(Team t : minigame.getTeams()){
+							if(t != player.getTeam())
+								l.addAll(t.getPlayers());
 						}
-						else{
-							List<MinigamePlayer> w;
-							List<MinigamePlayer> l;
-							l = new ArrayList<MinigamePlayer>(minigame.getRedTeam().size());
-							w = new ArrayList<MinigamePlayer>(minigame.getBlueTeam().size());
-							for(OfflinePlayer pl : minigame.getRedTeam()){
-								l.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-							}
-							for(OfflinePlayer pl : minigame.getBlueTeam()){
-								w.add(plugin.pdata.getMinigamePlayer(pl.getName()));
-							}
-							plugin.pdata.endMinigame(minigame, w, l);
-						}
+						plugin.pdata.endMinigame(minigame, w, l);
 					}
 					else{
 						if(minigame.getType() == MinigameType.FREE_FOR_ALL){

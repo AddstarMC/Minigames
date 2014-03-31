@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Team;
+import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
 
 public class TeleportCommand implements ICommand {
 
@@ -117,34 +119,21 @@ public class TeleportCommand implements ICommand {
 			else if(args.length >= 2 && args[1].equalsIgnoreCase("start")){
 				if(ply.isInMinigame()){
 					int pos = 0;
-					String team = "none";
+					Team team = ply.getMinigame().getTeam(TeamColor.matchColor(args[3]));
 					if(args.length >= 3 && args[2].matches("[0-9]+") && !args[2].equals("0")){
 						pos = Integer.parseInt(args[2]) - 1;
 					}
 					
-					if(args.length == 4 && args[3].matches("red|blue") && !ply.getMinigame().getStartLocationsBlue().isEmpty() && !ply.getMinigame().getStartLocationsRed().isEmpty()){
-						team = args[3];
-					}
-					
-					if(pos > ply.getMinigame().getStartLocations().size() && team.equals("none")){
+					if(team == null && pos >= ply.getMinigame().getStartLocations().size()){
 						pos = 0;
 					}
-					else if(team.equals("red") && pos > ply.getMinigame().getStartLocationsRed().size()){
-						pos = 0;
-					}
-					else if(team.equals("blue") && pos > ply.getMinigame().getStartLocationsBlue().size()){
+					else if(team != null && pos >= team.getStartLocations().size()){
 						pos = 0;
 					}
 					
-					if(!team.equals("none")){
-						if(team.equals("red")){
-							ply.teleport(ply.getMinigame().getStartLocationsRed().get(pos));
-							sender.sendMessage(ChatColor.GRAY + "Teleported " + ply.getName() + " to red start position " + (pos + 1) + ".");
-						}
-						else{
-							ply.teleport(ply.getMinigame().getStartLocationsBlue().get(pos));
-							sender.sendMessage(ChatColor.GRAY + "Teleported " + ply.getName() + " to blue start position " + (pos + 1) + ".");
-						}
+					if(team != null){
+						ply.teleport(team.getStartLocations().get(pos));
+						sender.sendMessage(ChatColor.GRAY + "Teleported " + ply.getName() + " to " + team.getDisplayName() + " start position " + (pos + 1) + ".");
 					}
 					else{
 						ply.teleport(ply.getMinigame().getStartLocations().get(pos));

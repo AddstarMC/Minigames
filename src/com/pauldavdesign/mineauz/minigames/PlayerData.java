@@ -18,7 +18,6 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.EntityType;
@@ -39,6 +38,7 @@ import com.pauldavdesign.mineauz.minigames.events.SpectateMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameTypeBase;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.scoring.ScoreType;
 import com.pauldavdesign.mineauz.minigames.sql.SQLPlayer;
 
@@ -63,7 +63,7 @@ public class PlayerData {
 			if((minigame.isEnabled() || player.getPlayer().hasPermission("minigame.join.disabled")) && 
 					!minigame.isRegenerating() && (!minigame.isNotWaitingForPlayers() || (minigame.canLateJoin() && minigame.getMpTimer().getPlayerWaitTimeLeft() == 0)) && 
 					(minigame.getStartLocations().size() > 0 || 
-							(type == MinigameType.TEAMS && minigame.getStartLocationsBlue().size() > 0 && minigame.getStartLocationsRed().size() > 0)) &&
+							(type == MinigameType.TEAMS && minigame.hasTeamStartLocations())) &&
 					minigame.getEndPosition() != null && minigame.getQuitPosition() != null && 
 					(minigame.getType() == MinigameType.SINGLEPLAYER || minigame.getLobbyPosition() != null) &&
 					((type == MinigameType.SINGLEPLAYER && !minigame.isSpMaxPlayers()) || minigame.getPlayers().size() < minigame.getMaxPlayers())){
@@ -213,7 +213,7 @@ public class PlayerData {
 				player.sendMessage(MinigameUtils.formStr("minigame.lateJoinWait", minigame.getMpTimer().getStartWaitTimeLeft()), null);
 			}
 			else if(minigame.getStartLocations().size() == 0 || 
-							(type == MinigameType.TEAMS && minigame.getStartLocationsBlue().size() == 0 && minigame.getStartLocationsRed().size() == 0)){
+							(type == MinigameType.TEAMS && !minigame.hasTeamStartLocations())){
 				player.sendMessage(MinigameUtils.getLang("minigame.error.noStart"), "error");
 			}
 			else if(minigame.getEndPosition() == null){
@@ -277,8 +277,10 @@ public class PlayerData {
 		
 		Location start = null;
 		int pos = 0;
-		int bluepos = 0;
-		int redpos = 0;
+		Map<Team, Integer> tpos = new HashMap<Team, Integer>();
+		for(Team t : minigame.getTeams()){
+			tpos.put(t, 0);
+		}
 		
 		for(MinigamePlayer ply : players){
 			if(minigame.getType() != MinigameType.TEAMS){
@@ -303,36 +305,13 @@ public class PlayerData {
 				ply.setCheckpoint(start);
 			}
 			else{
-				int team = -1;
-				if(minigame.getBlueTeam().contains(ply.getPlayer())){
-					team = 1;
-				}
-				else if(minigame.getRedTeam().contains(ply.getPlayer())){
-					team = 0;
-				}
-				if(!minigame.getStartLocationsRed().isEmpty() && !minigame.getStartLocationsBlue().isEmpty()){
-					if(team == 0 && redpos < minigame.getStartLocationsRed().size()){
-						start = minigame.getStartLocationsRed().get(redpos);
-						redpos++;
+				Team team = ply.getTeam();
+				if(minigame.hasTeamStartLocations()){
+					if(tpos.get(team) <= team.getStartLocations().size()){
+						tpos.put(team, 0);
 					}
-					else if(team == 1 && bluepos < minigame.getStartLocationsBlue().size()){
-						start = minigame.getStartLocationsBlue().get(bluepos);
-						bluepos++;
-					}
-					else if(team == 0 && !minigame.getStartLocationsRed().isEmpty()){
-						redpos = 0;
-						start = minigame.getStartLocationsRed().get(redpos);
-						redpos++;
-					}
-					else if(team == 1 && !minigame.getStartLocationsBlue().isEmpty()){
-						bluepos = 0;
-						start = minigame.getStartLocationsBlue().get(bluepos);
-						bluepos++;
-					}
-					else if(minigame.getStartLocationsBlue().isEmpty() || minigame.getStartLocationsRed().isEmpty()){
-						ply.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), "error");
-						quitMinigame(ply, false);
-					}
+					start = team.getStartLocations().get(tpos.get(team));
+					tpos.put(team, tpos.get(team) + 1);
 				}
 				else{
 					if(pos < minigame.getStartLocations().size()){
@@ -574,27 +553,18 @@ public class PlayerData {
 			//Broadcast Message
 			if(plugin.getConfig().getBoolean("broadcastCompletion") && mgm.isEnabled() && mgm.isEnabled()){
 				if(mgm.getType() == MinigameType.TEAMS){
-					int team = 0;
-					for(OfflinePlayer p : mgm.getBlueTeam()){
-						if(winners.get(0).getName().equals(p.getName())){
-							team = 1;
-							break;
+					Team team = winners.get(0).getTeam();
+					String score = "";
+					List<Team> teams = mgm.getTeams();
+					for(Team t : teams){
+						score += t.getColor().getColor().toString() + t.getScore();
+						if(t != teams.get(teams.size() - 1)){
+							score += ChatColor.WHITE + " : ";
 						}
 					}
-					if(team == 1){
-						String score = "";
-						if(mgm.getRedTeamScore() != 0 && mgm.getBlueTeamScore() != 0){
-							score = ", " + MinigameUtils.formStr("player.end.team.score", ChatColor.BLUE.toString() + mgm.getBlueTeamScore() + ChatColor.WHITE, ChatColor.RED.toString() + mgm.getRedTeamScore());
-						}
-						plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + MinigameUtils.formStr("player.end.team.win", ChatColor.BLUE.toString() + "Blue Team" + ChatColor.WHITE, mgm.getName(true)) + score);
-					}
-					else{
-						String score = "";
-						if(mgm.getRedTeamScore() != 0 && mgm.getBlueTeamScore() != 0){
-							score = ", " + MinigameUtils.formStr("player.end.team.score", ChatColor.RED.toString() + mgm.getRedTeamScore() + ChatColor.WHITE, ChatColor.BLUE.toString() + mgm.getBlueTeamScore());
-						}
-						plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + MinigameUtils.formStr("player.end.team.win", ChatColor.RED + "Red Team" + ChatColor.WHITE, mgm.getName(true)) + score);
-					}
+					String nscore = ", " + MinigameUtils.formStr("player.end.team.score", score);
+					plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + MinigameUtils.formStr("player.end.team.win", 
+							team.getChatColor() + team.getDisplayName() + ChatColor.WHITE, mgm.getName(true)) + nscore);
 				}
 				else{
 					if(winners.size() == 1){

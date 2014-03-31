@@ -54,7 +54,7 @@ public class InfectionPreset implements BasePreset {
 		
 		//Settings
 		minigame.setScoreType("infection");
-		minigame.setDefaultWinner("blue");
+//		minigame.setDefaultWinner("blue"); //TODO: Fix me!
 		minigame.setType(MinigameType.TEAMS);
 		minigame.setMinPlayers(4);
 		minigame.setMaxPlayers(16);
