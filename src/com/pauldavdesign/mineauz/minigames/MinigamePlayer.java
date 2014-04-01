@@ -591,8 +591,10 @@ public class MinigamePlayer {
 	}
 	
 	public void removeTeam(){
-		team.removePlayer(this);
-		team = null;
+		if(team != null){
+			team.removePlayer(this);
+			team = null;
+		}
 	}
 	
 	public boolean hasClaimedReward(String reward){

@@ -1630,12 +1630,17 @@ public class Minigame {
 
 			@Override
 			public void setValue(String value) {
-				defaultWinner = getTeam(TeamColor.matchColor(value.replace(" ", "_")));
+				if(!value.equals("None"))
+					defaultWinner = getTeam(TeamColor.matchColor(value.replace(" ", "_")));
+				else
+					defaultWinner = null;
 			}
 
 			@Override
 			public String getValue() {
-				return MinigameUtils.capitalize(defaultWinner.getColor().toString().replace("_", " "));
+				if(defaultWinner != null)
+					return MinigameUtils.capitalize(defaultWinner.getColor().toString().replace("_", " "));
+				return "None";
 			}
 		};
 	}
@@ -1773,10 +1778,11 @@ public class Minigame {
 		obj = new MenuItemString("Display Name", MinigameUtils.stringToList("Public announced name; that will display in chat."), Material.SIGN, getDisplayNameCallback());
 		obj.setAllowNull(true);
 		itemsMain.add(obj);
-		List<String> teams = new ArrayList<String>(this.teams.size());
+		List<String> teams = new ArrayList<String>(this.teams.size() + 1);
 		for(TeamColor t : this.teams.keySet()){
-			teams.add(MinigameUtils.capitalize(t.getColor().toString().replace("_", " ")));
+			teams.add(MinigameUtils.capitalize(t.toString().replace("_", " ")));
 		}
+		teams.add("None");
 		itemsMain.add(new MenuItemList("Default Winning Team", Material.PAPER, getDefaultWinnerCallback(), teams));
 		itemsMain.add(new MenuItemNewLine());
 		itemsMain.add(new MenuItemInteger("Min. Score", MinigameUtils.stringToList("Multiplayer Only"), Material.STEP, getMinScoreCallback(), 0, null));
@@ -2099,42 +2105,24 @@ public class Minigame {
 		if(getFloorDegen1() != null){
 			Minigames.plugin.mdata.minigameSetLocations(name, getFloorDegen1(), "sfloorpos.1", minigame.getConfig());
 		}
-		else{
-			minigame.getConfig().set(name + ".sfloorpos", null);
-		}//TODO: remove all these set null checks
 		if(getFloorDegen2() != null){
 			Minigames.plugin.mdata.minigameSetLocations(name, getFloorDegen2(), "sfloorpos.2", minigame.getConfig());
-		}
-		else{
-			minigame.getConfig().set(name + ".sfloorpos", null);
 		}
 		
 		if(getDegenType() != "inward"){
 			minigame.getConfig().set(name + ".degentype", getDegenType());
 		}
-		else{
-			minigame.getConfig().set(name + ".degentype", null);
-		}
 		
 		if(getDegenRandomChance() != 15){
 			minigame.getConfig().set(name + ".degenrandom", getDegenRandomChance());
-		}
-		else{
-			minigame.getConfig().set(name + ".degenrandom", null);
 		}
 		
 		if(getMinTreasure() != 0){
 			minigame.getConfig().set(name + ".mintreasure", getMinTreasure());
 		}
-		else{
-			minigame.getConfig().set(name + ".mintreasure", null);
-		}
 		
 		if(getMaxTreasure() != 8){
 			minigame.getConfig().set(name + ".maxtreasure", getMaxTreasure());
-		}
-		else{
-			minigame.getConfig().set(name + ".maxtreasure", null);
 		}
 		
 		minigame.getConfig().set(name + ".type", getType().toString());
@@ -2142,24 +2130,15 @@ public class Minigame {
 		minigame.getConfig().set(name + ".maxplayers", getMaxPlayers());
 		if(isSpMaxPlayers())
 			minigame.getConfig().set(name + ".spMaxPlayers", isSpMaxPlayers());
-		else
-			minigame.getConfig().set(name + ".spMaxPlayers", null);
 		minigame.getConfig().set(name + ".bets", null);
 		minigame.getConfig().set(name + ".enabled", isEnabled());
 		if(getMaxRadius() != 1000){
 			minigame.getConfig().set(name + ".maxradius", getMaxRadius());
 		}
-		else{
-			minigame.getConfig().set(name + ".maxradius", null);
-		}
 		if(getMaxHeight() != 20){
 			minigame.getConfig().set(name + ".maxheight", getMaxHeight());
 		}
-		else{
-			minigame.getConfig().set(name + ".maxheight", null);
-		}
 		minigame.getConfig().set(name + ".usepermissions", usePermissions);
-		minigame.getConfig().set(name + ".reward", null);
 		if(!getRewardItems().getRewards().isEmpty() || !getRewardItems().getGroups().isEmpty()){
 			int count = 0;
 			for(RewardItem item : getRewardItems().getRewards()){
@@ -2187,7 +2166,6 @@ public class Minigame {
 				minigame.getConfig().set(name + ".reward." + group.getName() + ".rarity", group.getRarity().toString());
 			}
 		}
-		minigame.getConfig().set(name + ".reward2", null);
 		if(!getSecondaryRewardItems().getRewards().isEmpty() || !getSecondaryRewardItems().getGroups().isEmpty()){
 			int count = 0;
 			for(RewardItem item : getSecondaryRewardItems().getRewards()){
@@ -2218,12 +2196,8 @@ public class Minigame {
 		if(!getFlags().isEmpty()){
 			minigame.getConfig().set(name + ".flags", getFlags());
 		}
-		else{
-			minigame.getConfig().set(name + ".flags", null);
-		}
 		
 		if(hasDefaultLoadout()){
-			minigame.getConfig().set(name + ".loadout", null);
 			for(Integer slot : getDefaultPlayerLoadout().getItems()){
 				minigame.getConfig().set(name + ".loadout." + slot, getDefaultPlayerLoadout().getItem(slot));
 			}
@@ -2254,12 +2228,8 @@ public class Minigame {
 			else
 				minigame.getConfig().set(name + ".loadout.hunger", null);
 		}
-		else{
-			minigame.getConfig().set(name + ".loadout", null);
-		}
 		
 		if(hasLoadouts()){
-			minigame.getConfig().set(name + ".extraloadouts", null);
 			for(String loadout : getLoadouts()){
 				for(Integer slot : getLoadout(loadout).getItems()){
 					minigame.getConfig().set(name + ".extraloadouts." + loadout + "." + slot, getLoadout(loadout).getItem(slot));
@@ -2292,22 +2262,13 @@ public class Minigame {
 					minigame.getConfig().set(name + ".extraloadouts." + loadout + ".hunger", null);
 			}
 		}
-		else{
-			minigame.getConfig().set(name + ".extraloadouts", null);
-		}
 		
 		if(getMaxScore() != 10){
 			minigame.getConfig().set(name + ".maxscore", getMaxScore());
 		}
-		else{
-			minigame.getConfig().set(name + ".maxscore", null);
-		}
 		
 		if(getMinScore() != 5){
 			minigame.getConfig().set(name + ".minscore", getMinScore());
-		}
-		else{
-			minigame.getConfig().set(name + ".minscore", null);
 		}
 		
 		if(!restoreBlocks.isEmpty()){
@@ -2317,9 +2278,6 @@ public class Minigame {
 				Minigames.plugin.mdata.minigameSetLocationsShort(name, restoreBlocks.get(block).getLocation(), "resblocks." + block + ".location", minigame.getConfig());
 			}
 		}
-		else{
-			minigame.getConfig().set(name + ".resblocks", null);
-		}
 		
 		if(getLocation() != null){
 			minigame.getConfig().set(name + ".location", getLocation());
@@ -2328,50 +2286,29 @@ public class Minigame {
 		if(getTimer() > 0){
 			minigame.getConfig().set(name + ".timer", getTimer());
 		}
-		else{
-			minigame.getConfig().set(name + ".timer", null);
-		}
 		
 		if(hasItemDrops()){
 			minigame.getConfig().set(name + ".itemdrops", hasItemDrops());
-		}
-		else{
-			minigame.getConfig().set(name + ".itemdrops", null);
 		}
 		
 		if(hasDeathDrops()){
 			minigame.getConfig().set(name + ".deathdrops", hasDeathDrops());
 		}
-		else{
-			minigame.getConfig().set(name + ".deathdrops", null);
-		}
 		
 		if(hasItemPickup()){
 			minigame.getConfig().set(name + ".itempickup", hasItemPickup());
-		}
-		else{
-			minigame.getConfig().set(name + ".itempickup", null);
 		}
 		
 		if(canBlockBreak()){
 			minigame.getConfig().set(name + ".blockbreak", canBlockBreak());
 		}
-		else{
-			minigame.getConfig().set(name + ".blockbreak", null);
-		}
 		
 		if(canBlockPlace()){
 			minigame.getConfig().set(name + ".blockplace", canBlockPlace());
 		}
-		else{
-			minigame.getConfig().set(name + ".blockplace", null);
-		}
 		
 		if(getDefaultGamemode() != GameMode.ADVENTURE){
 			minigame.getConfig().set(name + ".gamemode", getDefaultGamemode().toString());
-		}
-		else{
-			minigame.getConfig().set(name + ".gamemode", null);
 		}
 		
 		if(!getBlockRecorder().getWBBlocks().isEmpty()){
@@ -2381,174 +2318,97 @@ public class Minigame {
 			}
 			minigame.getConfig().set(name + ".whitelistblocks", blocklist);
 		}
-		else{
-			minigame.getConfig().set(name + ".whitelistblocks", null);
-		}
 		
 		if(getBlockRecorder().getWhitelistMode()){
 			minigame.getConfig().set(name + ".whitelistmode", getBlockRecorder().getWhitelistMode());
-		}
-		else{
-			minigame.getConfig().set(name + ".whitelistmode", null);
 		}
 		
 		if(!canBlocksdrop()){
 			minigame.getConfig().set(name + ".blocksdrop", canBlocksdrop());
 		}
-		else{
-			minigame.getConfig().set(name + ".blocksdrop", null);
-		}
 		
 		if(!getScoreType().equals("custom")){
 			minigame.getConfig().set(name + ".scoretype", getScoreType());
-		}else{
-			minigame.getConfig().set(name + ".scoretype", null);
 		}
 		
 		if(hasPaintBallMode()){
 			minigame.getConfig().set(name + ".paintball", hasPaintBallMode());
 		}
-		else{
-			minigame.getConfig().set(name + ".paintball", null);
-		}
-		
 		if(getPaintBallDamage() != 2){
 			minigame.getConfig().set(name + ".paintballdmg", getPaintBallDamage());
-		}
-		else{
-			minigame.getConfig().set(name + ".paintballdmg", null);
 		}
 		
 		if(hasUnlimitedAmmo()){
 			minigame.getConfig().set(name + ".unlimitedammo", hasUnlimitedAmmo());
 		}
-		else{
-			minigame.getConfig().set(name + ".unlimitedammo", null);
-		}
 		
 		if(canSaveCheckpoint()){
 			minigame.getConfig().set(name + ".savecheckpoint", canSaveCheckpoint());
-		}
-		else{
-			minigame.getConfig().set(name + ".savecheckpoint", null);
 		}
 		
 		if(canLateJoin()){
 			minigame.getConfig().set(name + ".latejoin", canLateJoin());
 		}
-		else{
-			minigame.getConfig().set(name + ".latejoin", null);
-		}
 		
 		if(canSpectateFly()){
 			minigame.getConfig().set(name + ".canspectatefly", canSpectateFly());
-		}
-		else{
-			minigame.getConfig().set(name + ".canspectatefly", null);
 		}
 		
 		if(isRandomizeChests()){
 			minigame.getConfig().set(name + ".randomizechests", isRandomizeChests());
 		}
-		else{
-			minigame.getConfig().set(name + ".randomizechests", null);
-		}
 		if(getMinChestRandom() != 5){
 			minigame.getConfig().set(name + ".minchestrandom", getMinChestRandom());
 		}
-		else{
-			minigame.getConfig().set(name + ".minchestrandom", null);
-		}
 		if(getMaxChestRandom() != 10){
 			minigame.getConfig().set(name + ".maxchestrandom", getMaxChestRandom());
-		}
-		else{
-			minigame.getConfig().set(name + ".maxchestrandom", null);
 		}
 		
 		if(getRegenArea1() != null){
 			Minigames.plugin.mdata.minigameSetLocations(name, getRegenArea1(), "regenarea.1", minigame.getConfig());
 		}
-		else{
-			minigame.getConfig().set(name + ".regenarea", null);
-		}
 		if(getRegenArea2() != null){
 			Minigames.plugin.mdata.minigameSetLocations(name, getRegenArea2(), "regenarea.2", minigame.getConfig());
-		}
-		else{
-			minigame.getConfig().set(name + ".regenarea", null);
 		}
 		
 		if(getLives() != 0){
 			minigame.getConfig().set(name + ".lives", getLives());
 		}
-		else{
-			minigame.getConfig().set(name + ".lives", null);
-		}
 		
 		if(getFloorDegenTime() != Minigames.plugin.getConfig().getInt("multiplayer.floordegenerator.time")){
 			minigame.getConfig().set(name + ".floordegentime", getFloorDegenTime());
 		}
-		else{
-			minigame.getConfig().set(name + ".floordegentime", null);
-		}
 		
 		if(getDefaultWinner() != null){
-			minigame.getConfig().set(name + ".defaultwinner", getDefaultWinner());
-		}
-		else{
-			minigame.getConfig().set(name + ".defaultwinner", null);
+			minigame.getConfig().set(name + ".defaultwinner", getDefaultWinner().getColor().toString());
 		}
 		
 		if(isAllowedEnderpearls()){
 			minigame.getConfig().set(name + ".allowEnderpearls", isAllowedEnderpearls());
 		}
-		else{
-			minigame.getConfig().set(name + ".allowEnderpearls", null);
-		}
 		if(isAllowedMPCheckpoints())
 			minigame.getConfig().set(name + ".allowMPCheckpoints", isAllowedMPCheckpoints());
-		else
-			minigame.getConfig().set(name + ".allowMPCheckpoints", null);
 		
 		if(getObjective() != null)
 			minigame.getConfig().set(name + ".objective", getObjective());
-		else
-			minigame.getConfig().set(name + ".objective", null);
 		
 		if(getGametypeName() != null)
 			minigame.getConfig().set(name + ".gametypeName", getGametypeName());
-		else
-			minigame.getConfig().set(name + "gametypeName", null);
 		
 		if(!canInteractPlayerWait)
 			minigame.getConfig().set(name + ".canInteractPlayerWait", canInteractPlayerWait);
-		else
-			minigame.getConfig().set(name + ".canInteractPlayerWait", null);
 		if(!canInteractStartWait)
 			minigame.getConfig().set(name + ".canInteractStartWait", canInteractStartWait);
-		else
-			minigame.getConfig().set(name + ".canInteractStartWait", null);
 		if(!canMovePlayerWait)
 			minigame.getConfig().set(name + ".canMovePlayerWait", canMovePlayerWait);
-		else
-			minigame.getConfig().set(name + ".canMovePlayerWait", null);
 		if(!canMoveStartWait)
 			minigame.getConfig().set(name + ".canMoveStartWait", canMoveStartWait);
-		else
-			minigame.getConfig().set(name + ".canMoveStartWait", null);
 		if(!teleportOnStart)
 			minigame.getConfig().set(name + ".teleportOnStart", teleportOnStart);
-		else
-			minigame.getConfig().set(name + ".teleportOnStart", null);
 		if(teleportOnPlayerWait)
 			minigame.getConfig().set(name + ".teleportOnPlayerWait", teleportOnPlayerWait);
-		else
-			minigame.getConfig().set(name + ".teleportOnPlayerWait", null);
 		if(regenDelay != 0)
 			minigame.getConfig().set(name + ".regenDelay", regenDelay);
-		else
-			minigame.getConfig().set(name + ".regenDelay", null);
 		
 		getScoreboardData().saveDisplays(minigame, name);
 		
@@ -2882,9 +2742,9 @@ public class Minigame {
 			setFloorDegenTime(minigame.getConfig().getInt(name + ".floordegentime"));
 		}
 		
-//		if(minigame.getConfig().contains(name + ".defaultwinner")){
-//			setDefaultWinner(minigame.getConfig().getString(name + ".defaultwinner"));
-//		} TODO: Fix me!
+		if(minigame.getConfig().contains(name + ".defaultwinner")){
+			setDefaultWinner(getTeam(TeamColor.matchColor(minigame.getConfig().getString(name + ".defaultwinner"))));
+		}
 		
 		if(minigame.getConfig().contains(name + ".allowEnderpearls")){
 			setAllowEnderpearls(minigame.getConfig().getBoolean(name + ".allowEnderpearls"));
