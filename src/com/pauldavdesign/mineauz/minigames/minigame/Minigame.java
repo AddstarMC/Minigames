@@ -160,8 +160,6 @@ public class Minigame {
 		this.type = type;
 		startLocations.add(start);
 		
-		addTeam(TeamColor.RED);
-		addTeam(TeamColor.BLUE);
 		sbManager.registerNewObjective(this.name, "dummy");
 		sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
 		
@@ -169,9 +167,7 @@ public class Minigame {
 	
 	public Minigame(String name){
 		this.name = name;
-
-		addTeam(TeamColor.RED);
-		addTeam(TeamColor.BLUE);
+		
 		sbManager.registerNewObjective(this.name, "dummy");
 		sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
 	}
@@ -2079,7 +2075,7 @@ public class Minigame {
 			cfg.set(name + ".teams." + team.getColor().toString() + ".displayName", team.getDisplayName());
 			if(!team.getStartLocations().isEmpty()){
 				for(int i = 0; i < team.getStartLocations().size(); i++){
-					Minigames.plugin.mdata.minigameSetLocations(name, team.getStartLocations().get(i), "teams." + team.getColor().toString().toLowerCase() + ".startpos." + i, cfg);
+					Minigames.plugin.mdata.minigameSetLocations(name, team.getStartLocations().get(i), "teams." + team.getColor().toString() + ".startpos." + i, cfg);
 				}
 			}
 		}
@@ -2442,20 +2438,24 @@ public class Minigame {
 				}
 			}
 		}
-//		if(minigame.getConfig().contains(name + ".startposred")){
-//			Set<String> locs = minigame.getConfig().getConfigurationSection(name + ".startposred").getKeys(false);
-//			
-//			for(int i = 0; i < locs.size(); i++){
-//				addStartLocationRed(Minigames.plugin.mdata.minigameLocations(name, "startposred." + String.valueOf(i), minigame.getConfig()), i + 1);
-//			}
-//		}
-//		if(minigame.getConfig().contains(name + ".startposblue")){
-//			Set<String> locs = minigame.getConfig().getConfigurationSection(name + ".startposblue").getKeys(false);
-//			
-//			for(int i = 0; i < locs.size(); i++){
-//				addStartLocationBlue(Minigames.plugin.mdata.minigameLocations(name, "startposblue." + String.valueOf(i), minigame.getConfig()), i + 1);
-//			}
-//		} TODO: Reassign ME!
+		if(minigame.getConfig().contains(name + ".startposred")){ //TODO: Remove after 1.7
+			if(!hasTeam(TeamColor.RED))
+				addTeam(TeamColor.RED);
+			Set<String> locs = minigame.getConfig().getConfigurationSection(name + ".startposred").getKeys(false);
+			
+			for(int i = 0; i < locs.size(); i++){
+				getTeam(TeamColor.RED).addStartLocation(Minigames.plugin.mdata.minigameLocations(name, "startposred." + String.valueOf(i), cfg));
+			}
+		}
+		if(minigame.getConfig().contains(name + ".startposblue")){ //TODO: Remove after 1.7
+			if(!hasTeam(TeamColor.BLUE))
+				addTeam(TeamColor.BLUE);
+			Set<String> locs = minigame.getConfig().getConfigurationSection(name + ".startposblue").getKeys(false);
+			
+			for(int i = 0; i < locs.size(); i++){
+				getTeam(TeamColor.BLUE).addStartLocation(Minigames.plugin.mdata.minigameLocations(name, "startposblue." + String.valueOf(i), cfg));
+			}
+		}
 		if(minigame.getConfig().contains(name + ".endpos")){
 			setEndPosition(Minigames.plugin.mdata.minigameLocations(name, "endpos", minigame.getConfig()));
 		}
