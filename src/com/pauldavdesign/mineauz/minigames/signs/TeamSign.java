@@ -69,20 +69,22 @@ public class TeamSign implements MinigameSign {
 					if(mgm.isNotWaitingForPlayers() && !sign.getLine(2).equals(ChatColor.GRAY + "Neutral")){
 						Team sm = null;
 						Team nt = matchTeam(mgm, sign.getLine(2));
-						for(Team t : mgm.getTeams()){
-							if(sm == null || t.getPlayers().size() < sm.getPlayers().size())
-								sm = t;
+						if(nt != null){
+							for(Team t : mgm.getTeams()){
+								if(sm == null || t.getPlayers().size() < sm.getPlayers().size())
+									sm = t;
+							}
+							if(nt.getPlayers().size() - sm.getPlayers().size() < 2){
+								TeamsType.switchTeam(mgm, player, nt);
+								plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.joinAnnounce", player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
+								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", nt.getChatColor() + nt.getDisplayName()));
+							}
+							else{
+								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
+							}
+							
+							player.getPlayer().damage(player.getPlayer().getHealth());
 						}
-						if(nt.getPlayers().size() - sm.getPlayers().size() < 2){
-							TeamsType.switchTeam(mgm, player, nt);
-							plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.joinAnnounce", player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
-							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", nt.getChatColor() + nt.getDisplayName()));
-						}
-						else{
-							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
-						}
-						
-						player.getPlayer().damage(player.getPlayer().getHealth());
 					}
 					else if(sign.getLine(2).equals(ChatColor.GRAY + "Neutral") || matchTeam(mgm, sign.getLine(2)) != player.getTeam()){
 						Team cur = player.getTeam();
