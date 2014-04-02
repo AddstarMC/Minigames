@@ -69,7 +69,7 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetPlayersGamemodeCommand());
 		registerSetCommand(new SetBlockWhitelistCommand());
 		registerSetCommand(new SetBlocksDropCommand());
-		registerSetCommand(new SetScoreTypeCommand());
+		registerSetCommand(new SetGameMechanicCommand());
 		registerSetCommand(new SetPaintballCommand());
 		registerSetCommand(new SetStoreCheckpointsCommand());
 		registerSetCommand(new SetMaxHeightCommand());

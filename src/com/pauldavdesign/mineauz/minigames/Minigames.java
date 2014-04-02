@@ -25,6 +25,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 //import org.mcstats.Metrics;
 
+
 import com.pauldavdesign.mineauz.minigames.Metrics.Graph;
 import com.pauldavdesign.mineauz.minigames.blockRecorder.BasicRecorder;
 import com.pauldavdesign.mineauz.minigames.commands.CommandDispatcher;
@@ -32,8 +33,8 @@ import com.pauldavdesign.mineauz.minigames.gametypes.FreeForAllType;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.SingleplayerType;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
+import com.pauldavdesign.mineauz.minigames.mechanics.GameMechanics;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
-import com.pauldavdesign.mineauz.minigames.scoring.ScoreType;
 import com.pauldavdesign.mineauz.minigames.signs.SignBase;
 import com.pauldavdesign.mineauz.minigames.sql.SQLCompletionSaver;
 import com.pauldavdesign.mineauz.minigames.sql.SQLDataLoader;
@@ -47,7 +48,7 @@ public class Minigames extends JavaPlugin{
 	public static Minigames plugin;
     private static Economy econ = null;
 	private SQLDatabase sql = null;
-	private static ScoreType scoretypes;
+	private static GameMechanics scoretypes;
 	private static SignBase minigameSigns;
 	private FileConfiguration lang = null;
 	private List<SQLPlayer> sqlToStore = new ArrayList<SQLPlayer>();
@@ -164,7 +165,7 @@ public class Minigames extends JavaPlugin{
 //		pdata.loadDCPlayers();
 		pdata.loadDeniedCommands();
 		
-		scoretypes = new ScoreType();
+		scoretypes = new GameMechanics();
 		
 		MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
 		Set<String> keys = globalLoadouts.getConfig().getKeys(false);
@@ -319,7 +320,7 @@ public class Minigames extends JavaPlugin{
 			sql = null;
 	}
 	
-	public ScoreType getScoreTypes(){
+	public GameMechanics getScoreTypes(){
 		return scoretypes;
 	}
 	

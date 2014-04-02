@@ -1,4 +1,4 @@
-package com.pauldavdesign.mineauz.minigames.scoring;
+package com.pauldavdesign.mineauz.minigames.mechanics;
 
 import java.util.List;
 
@@ -10,19 +10,19 @@ import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
-public abstract class ScoreTypeBase implements Listener{
+public abstract class GameMechanicBase implements Listener{
 	public static Minigames plugin;
 	public PlayerData pdata;
 	public MinigameData mdata;
 	
-	public ScoreTypeBase(){
+	public GameMechanicBase(){
 		plugin = Minigames.plugin;
 		pdata = plugin.pdata;
 		mdata = plugin.mdata;
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 	
-	public abstract String getType();
+	public abstract String getMechanic();
 	
 	public abstract void balanceTeam(List<MinigamePlayer> players, Minigame minigame);
 }

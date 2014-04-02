@@ -37,9 +37,9 @@ import com.pauldavdesign.mineauz.minigames.events.RevertCheckpointEvent;
 import com.pauldavdesign.mineauz.minigames.events.SpectateMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameTypeBase;
+import com.pauldavdesign.mineauz.minigames.mechanics.GameMechanics;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
-import com.pauldavdesign.mineauz.minigames.scoring.ScoreType;
 import com.pauldavdesign.mineauz.minigames.sql.SQLPlayer;
 
 public class PlayerData {
@@ -271,8 +271,8 @@ public class PlayerData {
 		
 		Collections.shuffle(players);
 		
-		if(minigame.getType() == MinigameType.TEAMS && ScoreType.getScoreType(minigame.getScoreType()) != null){
-			ScoreType.getScoreType(minigame.getScoreType()).balanceTeam(players, minigame);
+		if(minigame.getType() == MinigameType.TEAMS && GameMechanics.getGameMechanic(minigame.getScoreType()) != null){
+			GameMechanics.getGameMechanic(minigame.getScoreType()).balanceTeam(players, minigame);
 		}
 		
 		Location start = null;

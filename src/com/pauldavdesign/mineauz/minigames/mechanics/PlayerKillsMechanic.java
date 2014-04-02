@@ -1,5 +1,6 @@
-package com.pauldavdesign.mineauz.minigames.scoring;
+package com.pauldavdesign.mineauz.minigames.mechanics;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.event.EventHandler;
@@ -12,11 +13,11 @@ import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 
-public class CustomType extends ScoreTypeBase{
+public class PlayerKillsMechanic extends GameMechanicBase{
 
 	@Override
-	public String getType() {
-		return "custom";
+	public String getMechanic() {
+		return "kills";
 	}
 
 	@Override
@@ -62,6 +63,80 @@ public class CustomType extends ScoreTypeBase{
 		}
 	}
 	
+	@EventHandler
+	private void playerAttackPlayer(PlayerDeathEvent event){
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
+		if(ply == null) return;
+		Minigame mgm = ply.getMinigame();
+		if(ply.isInMinigame() && mgm.getScoreType().equals("kills")){
+			MinigamePlayer attacker = null;
+			if(ply.getPlayer().getKiller() != null){
+				attacker = pdata.getMinigamePlayer(ply.getPlayer().getKiller());
+				if(attacker == ply){
+					return;
+				}
+			}
+			else{
+				return;
+			}
+			
+			if(!mgm.equals(attacker.getMinigame())){
+				return;
+			}
+			
+			if(ply.getTeam() == null){
+				attacker.addScore();
+				mgm.setScore(attacker, attacker.getScore());
+			
+				if(mgm.getMaxScore() != 0 && attacker.getScore() >= mgm.getMaxScorePerPlayer()){
+					List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - 1);
+					List<MinigamePlayer> winner = new ArrayList<MinigamePlayer>(1);
+					winner.add(attacker);
+					for(MinigamePlayer player : mgm.getPlayers()){
+						if(player != attacker)
+							losers.add(player);
+					}
+					pdata.endMinigame(mgm, winner, losers);
+				}
+			}
+			else{
+				Team team = ply.getTeam();
+				Team ateam = attacker.getTeam();
+				
+				if(team != ateam){
+					attacker.addScore();
+					mgm.setScore(attacker, attacker.getScore());
+					
+					ateam.addScore();
+					if(mgm.getMaxScore() != 0 && mgm.getMaxScorePerPlayer() <= ateam.getScore()){
+						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.kills.finalKill", attacker.getName(), ply.getName()), null, null);
+						
+						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(ateam.getPlayers());
+						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - ateam.getPlayers().size());
+						for(Team t : mgm.getTeams()){
+							if(t != ateam)
+								l.addAll(t.getPlayers());
+						}
+						plugin.pdata.endMinigame(mgm, w, l);
+					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	private void playerSuicide(PlayerDeathEvent event){
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
+		if(ply == null) return;
+		if(ply.isInMinigame() && (ply.getPlayer().getKiller() == null || ply.getPlayer().getKiller() == ply.getPlayer())){
+			Minigame mgm = ply.getMinigame();
+			if(mgm.getScoreType().equals("kills")){
+				ply.takeScore();
+				mgm.setScore(ply, ply.getScore());
+				ply.getTeam().setScore(ply.getTeam().getScore() - 1);
+			}
+		}
+	}
 	
 	@EventHandler
 	public void playerAutoBalance(PlayerDeathEvent event){

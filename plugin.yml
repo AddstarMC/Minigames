@@ -129,7 +129,7 @@ permissions:
             minigame.set.regenarea: true
             minigame.set.randomizechests: true
             minigame.set.defaultwinner: true
-            minigame.set.scoretype: true
+            minigame.set.gamemechanic: true
             minigame.set.lives: true
             minigame.set.allowenderpearls: true
             minigame.set.starttime: true
@@ -254,8 +254,8 @@ permissions:
     minigame.set.defaultwinner:
         description: Allows the setting of the default Minigame winner.
         default: op
-    minigame.set.scoretype:
-        description: Allows the setting of the scoretype in a Minigame.
+    minigame.set.gamemechanic:
+        description: Allows the setting of the game mechanic in a Minigame.
         default: op
     minigame.set.lives:
         description: Allows the setting of the amount of lives per player.

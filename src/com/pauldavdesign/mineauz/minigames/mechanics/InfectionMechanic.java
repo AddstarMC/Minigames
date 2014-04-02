@@ -1,4 +1,4 @@
-package com.pauldavdesign.mineauz.minigames.scoring;
+package com.pauldavdesign.mineauz.minigames.mechanics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +17,12 @@ import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
 
-public class InfectionType extends ScoreTypeBase{
+public class InfectionMechanic extends GameMechanicBase{
 	
 	private List<MinigamePlayer> infected = new ArrayList<MinigamePlayer>();
 
 	@Override
-	public String getType() {
+	public String getMechanic() {
 		return "infection";
 	}
 

@@ -1,4 +1,4 @@
-package com.pauldavdesign.mineauz.minigames.scoring;
+package com.pauldavdesign.mineauz.minigames.mechanics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +23,10 @@ import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
 
-public class CTFType extends ScoreTypeBase{
+public class CTFMechanic extends GameMechanicBase{
 
 	@Override
-	public String getType() {
+	public String getMechanic() {
 		return "ctf";
 	}
 

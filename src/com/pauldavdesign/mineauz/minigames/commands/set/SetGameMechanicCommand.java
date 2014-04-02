@@ -10,16 +10,16 @@ import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
-public class SetScoreTypeCommand implements ICommand {
+public class SetGameMechanicCommand implements ICommand {
 
 	@Override
 	public String getName() {
-		return "scoretype";
+		return "gamemechanic";
 	}
 
 	@Override
 	public String[] getAliases() {
-		return null;
+		return new String[] {"scoretype", "mech", "gamemech", "mechanic"};
 	}
 
 	@Override
@@ -29,14 +29,14 @@ public class SetScoreTypeCommand implements ICommand {
 
 	@Override
 	public String getDescription() {
-		return "Sets the scoring type for a multiplayer Minigame.";
+		return "Sets the game mechanic for a multiplayer Minigame.";
 	}
 
 	@Override
 	public String[] getParameters() {
-		String[] types = new String[plugin.getScoreTypes().getScoreTypes().keySet().size()];
+		String[] types = new String[plugin.getScoreTypes().getGameMechanics().keySet().size()];
 		int inc = 0;
-		for(String type : plugin.getScoreTypes().getScoreTypes().keySet()){
+		for(String type : plugin.getScoreTypes().getGameMechanics().keySet()){
 			types[inc] = type;
 			inc++;
 		}
@@ -45,17 +45,17 @@ public class SetScoreTypeCommand implements ICommand {
 
 	@Override
 	public String[] getUsage() {
-		return new String[] {"/minigame set <Minigame> scoretype <Parameter>"};
+		return new String[] {"/minigame set <Minigame> gamemechanic <Parameter>"};
 	}
 
 	@Override
 	public String getPermissionMessage() {
-		return "You do not have permission to set the score type!";
+		return "You do not have permission to set the game mechanic!";
 	}
 
 	@Override
 	public String getPermission() {
-		return "minigame.set.scoretype";
+		return "minigame.set.gamemechanic";
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class SetScoreTypeCommand implements ICommand {
 			
 			if(bool){
 				minigame.setScoreType(args[0].toLowerCase());
-				sender.sendMessage(ChatColor.GRAY + minigame.getName(false) + " score type has been set to " + args[0]);
+				sender.sendMessage(ChatColor.GRAY + minigame.getName(false) + " game mechanic has been set to " + args[0]);
 				return true;
 			}
 		}
@@ -83,8 +83,8 @@ public class SetScoreTypeCommand implements ICommand {
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> types = new ArrayList<String>(plugin.getScoreTypes().getScoreTypes().keySet().size());
-			for(String type : plugin.getScoreTypes().getScoreTypes().keySet()){
+			List<String> types = new ArrayList<String>(plugin.getScoreTypes().getGameMechanics().keySet().size());
+			for(String type : plugin.getScoreTypes().getGameMechanics().keySet()){
 				types.add(type);
 			}
 			return MinigameUtils.tabCompleteMatch(types, args[0]);
