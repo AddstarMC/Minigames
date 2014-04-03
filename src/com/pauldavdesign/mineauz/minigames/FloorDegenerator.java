@@ -71,8 +71,8 @@ public class FloorDegenerator{
 			maxZ = z1;
 		}
 		
-		minY--;
-		maxY--;
+//		minY--;
+//		maxY--;
 		
 		topCorner = new Location(point1.getWorld(), maxX, maxY, maxZ);
 		bottomCorner = new Location(point1.getWorld(), minX, minY, minZ);

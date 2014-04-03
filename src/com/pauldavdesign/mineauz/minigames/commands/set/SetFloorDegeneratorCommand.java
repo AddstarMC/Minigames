@@ -3,6 +3,7 @@ package com.pauldavdesign.mineauz.minigames.commands.set;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -59,11 +60,15 @@ public class SetFloorDegeneratorCommand implements ICommand{
 		if(args != null){
 			Player player = (Player)sender;
 			if(args[0].equals("1")){
-				minigame.setFloorDegen1(player.getLocation());
+				Location loc = player.getLocation().clone();
+				loc.setY(loc.getY() - 1);
+				minigame.setFloorDegen1(loc);
 				sender.sendMessage(ChatColor.GRAY + "Floor degenerator corner 1 has been set for " + minigame);
 			}
 			else if(args[0].equals("2")){
-				minigame.setFloorDegen2(player.getLocation());
+				Location loc = player.getLocation().clone();
+				loc.setY(loc.getY() - 1);
+				minigame.setFloorDegen2(loc);
 				sender.sendMessage(ChatColor.GRAY + "Floor degenerator corner 2 has been set for " + minigame);
 			}
 			else if(args[0].equalsIgnoreCase("clear")){
