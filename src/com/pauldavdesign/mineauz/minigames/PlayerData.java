@@ -209,7 +209,8 @@ public class PlayerData {
 			else if(minigame.isNotWaitingForPlayers() && !minigame.canLateJoin()){
 				player.sendMessage(MinigameUtils.getLang("minigame.started"), "error");
 			}
-			else if(minigame.isNotWaitingForPlayers() && minigame.canLateJoin() && minigame.getMpTimer().getPlayerWaitTimeLeft() == 0){
+			else if(minigame.isNotWaitingForPlayers() && minigame.canLateJoin() && 
+					minigame.getMpTimer().getPlayerWaitTimeLeft() == 0 && minigame.getPlayers().size() != minigame.getMaxPlayers()){
 				player.sendMessage(MinigameUtils.formStr("minigame.lateJoinWait", minigame.getMpTimer().getStartWaitTimeLeft()), null);
 			}
 			else if(minigame.getStartLocations().size() == 0 || 
