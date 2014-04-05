@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -400,7 +401,7 @@ public class PlayerData {
 				//SQL stuff
 				if(plugin.getSQL() != null){
 					if(minigame.canSaveCheckpoint() == false){
-						plugin.addSQLToStore(new SQLPlayer(minigame.getName(false), player.getName(), 0, 1, 
+						plugin.addSQLToStore(new SQLPlayer(minigame.getName(false), player.getName(), player.getUUID().toString(), 0, 1, 
 								player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), 
 								player.getEndTime() - player.getStartTime() + player.getStoredTime()));
 						plugin.startSQLCompletionSaver();
@@ -681,11 +682,11 @@ public class PlayerData {
 				Configuration completion = null;
 				if(plugin.getSQL() == null && mgm.isEnabled()){
 					completion = mdata.getConfigurationFile("completion");
-					hascompleted = completion.getStringList(mgm.getName(false)).contains(player.getName());
+					hascompleted = completion.getStringList(mgm.getName(false)).contains(player.getUUID().toString().replace("-", "_"));
 					
-					if(!completion.getStringList(mgm.getName(false)).contains(player.getName())){
+					if(!hascompleted){
 						List<String> completionlist = completion.getStringList(mgm.getName(false));
-						completionlist.add(player.getName());
+						completionlist.add(player.getUUID().toString().replace("-", "_"));
 						completion.set(mgm.getName(false), completionlist);
 						MinigameSave completionsave = new MinigameSave("completion");
 						completionsave.getConfig().set(mgm.getName(false), completionlist);
@@ -695,7 +696,7 @@ public class PlayerData {
 					MinigameTypeBase.issuePlayerRewards(player, mgm, hascompleted);
 				}
 				else if(mgm.isEnabled()){
-					plugin.addSQLToStore(new SQLPlayer(mgm.getName(false), player.getName(), 1, 0, player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), player.getEndTime() - player.getStartTime()));
+					plugin.addSQLToStore(new SQLPlayer(mgm.getName(false), player.getName(), player.getUUID().toString(), 1, 0, player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), player.getEndTime() - player.getStartTime()));
 					plugin.startSQLCompletionSaver();
 				}
 				
@@ -922,6 +923,14 @@ public class PlayerData {
 		return minigamePlayers.get(player.getName());
 	}
 	
+	public MinigamePlayer getMinigamePlayer(UUID uuid){
+		for(MinigamePlayer p : minigamePlayers.values()){
+			if(p.getUUID() == uuid)
+				return p;
+		}
+		return null;
+	}
+	
 	public MinigamePlayer getMinigamePlayer(String player){
 		return minigamePlayers.get(player);
 	}
@@ -932,6 +941,14 @@ public class PlayerData {
 	
 	public boolean hasMinigamePlayer(String name){
 		return minigamePlayers.containsKey(name);
+	}
+	
+	public boolean hasMinigamePlayer(UUID uuid){
+		for(MinigamePlayer p : minigamePlayers.values()){
+			if(p.getUUID() == uuid)
+				return true;
+		}
+		return false;
 	}
 	
 	public List<String> checkRequiredFlags(MinigamePlayer player, String minigame){

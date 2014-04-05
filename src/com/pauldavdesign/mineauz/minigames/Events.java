@@ -181,10 +181,10 @@ public class Events implements Listener{
 			}
 		}
 		
-		File pldata = new File(plugin.getDataFolder() + "/playerdata/inventories/" + event.getPlayer().getName().toLowerCase() + ".yml");
+		File pldata = new File(plugin.getDataFolder() + "/playerdata/inventories/" + event.getPlayer().getUniqueId().toString() + ".yml");
 		if(pldata.exists()){
 			MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-			ply.setOfflineMinigamePlayer(new OfflineMinigamePlayer(event.getPlayer().getName()));
+			ply.setOfflineMinigamePlayer(new OfflineMinigamePlayer(event.getPlayer().getUniqueId().toString()));
 			Location floc = ply.getOfflineMinigamePlayer().getLoginLocation();
 			ply.setRequiredQuit(true);
 			ply.setQuitPos(floc);

@@ -9,7 +9,7 @@ import java.util.Set;
 import org.bukkit.Location;
 
 public class StoredPlayerCheckpoints {
-	private String playerName;
+	private String uuid;
 	private Map<String, Location> checkpoints;
 	private Map<String, List<String>> flags;
 	private Map<String, Long> storedTime;
@@ -17,31 +17,8 @@ public class StoredPlayerCheckpoints {
 	private Map<String, Integer> storedReverts;
 	private Location globalCheckpoint;
 	
-	public StoredPlayerCheckpoints(String name){
-		playerName = name;
-		checkpoints = new HashMap<String, Location>();
-		flags = new HashMap<String, List<String>>();
-		storedTime = new HashMap<String, Long>();
-		storedDeaths = new HashMap<String, Integer>();
-		storedReverts = new HashMap<String, Integer>();
-	}
-	
-	public StoredPlayerCheckpoints(String name, String minigame, Location checkpoint, Long time, Integer deaths, Integer reverts){
-		playerName = name;
-		checkpoints = new HashMap<String, Location>();
-		checkpoints.put(minigame, checkpoint);
-		flags = new HashMap<String, List<String>>();
-		storedTime = new HashMap<String, Long>();
-		storedTime.put(minigame, time);
-		storedDeaths = new HashMap<String, Integer>();
-		storedDeaths.put(minigame, deaths);
-		storedReverts = new HashMap<String, Integer>();
-		storedReverts.put(minigame, reverts);
-	}
-	
-	public StoredPlayerCheckpoints(String name, Location checkpoint){
-		playerName = name;
-		globalCheckpoint = checkpoint;
+	public StoredPlayerCheckpoints(String uuid){
+		this.uuid = uuid;
 		checkpoints = new HashMap<String, Location>();
 		flags = new HashMap<String, List<String>>();
 		storedTime = new HashMap<String, Long>();
@@ -166,11 +143,11 @@ public class StoredPlayerCheckpoints {
 	}
 	
 	public void saveCheckpoints(){
-		MinigameSave save = new MinigameSave("playerdata/checkpoints/" + playerName.toLowerCase());
+		MinigameSave save = new MinigameSave("playerdata/checkpoints/" + uuid);
 		save.deleteFile();
 		if(hasNoCheckpoints()) return;
 		
-		save = new MinigameSave("playerdata/checkpoints/" + playerName.toLowerCase());
+		save = new MinigameSave("playerdata/checkpoints/" + uuid);
 		for(String mgm : checkpoints.keySet()){
 			save.getConfig().set(mgm, null);
 			save.getConfig().set(mgm + ".x", checkpoints.get(mgm).getX());
@@ -208,7 +185,7 @@ public class StoredPlayerCheckpoints {
 	}
 	
 	public void loadCheckpoints(){
-		MinigameSave save = new MinigameSave("playerdata/checkpoints/" + playerName.toLowerCase());
+		MinigameSave save = new MinigameSave("playerdata/checkpoints/" + uuid);
 		Set<String> mgms = save.getConfig().getKeys(false);
 		for(String mgm : mgms){
 			if(!mgm.equals("globalcheckpoint")){
@@ -226,7 +203,7 @@ public class StoredPlayerCheckpoints {
 				}
 				
 				if(save.getConfig().contains(mgm + ".time")){
-					storedTime.put(mgm, save.getConfig().getLong(playerName + "." + mgm + ".time"));
+					storedTime.put(mgm, save.getConfig().getLong(mgm + ".time"));
 				}
 				
 				if(save.getConfig().contains(mgm + ".deaths")){
@@ -234,7 +211,7 @@ public class StoredPlayerCheckpoints {
 				}
 				
 				if(save.getConfig().contains(mgm + ".reverts")){
-					storedReverts.put(mgm, save.getConfig().getInt(playerName + "." + mgm + ".reverts"));
+					storedReverts.put(mgm, save.getConfig().getInt(mgm + ".reverts"));
 				}
 			}
 		}

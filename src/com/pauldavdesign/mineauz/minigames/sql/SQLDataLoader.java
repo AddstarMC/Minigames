@@ -57,7 +57,7 @@ public class SQLDataLoader extends Thread{
 					ResultSet set = getAllStats.executeQuery("SELECT * FROM " + table);
 					
 					while(set.next()){
-						String name = set.getString(1);
+						String uuid = set.getString(1);
 						int completed = set.getInt(2);
 						
 						int kills = set.getInt(3);
@@ -71,9 +71,10 @@ public class SQLDataLoader extends Thread{
 						int treverts = set.getInt(11);
 						long ttime = set.getLong(12);
 						int failures = set.getInt(13);
+						String name = set.getString(14);
 						
 						mg.getScoreboardData().addPlayer(new 
-								ScoreboardPlayer(name, completed, failures, kills, deaths, score, time, 
+								ScoreboardPlayer(name, uuid, completed, failures, kills, deaths, score, time, 
 										reverts, tkills, tdeaths, tscore, treverts, ttime));
 					}
 					

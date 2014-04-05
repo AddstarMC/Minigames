@@ -31,6 +31,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 //import org.mcstats.Metrics;
 
+
 import com.pauldavdesign.mineauz.minigames.Metrics.Graph;
 import com.pauldavdesign.mineauz.minigames.blockRecorder.BasicRecorder;
 import com.pauldavdesign.mineauz.minigames.commands.CommandDispatcher;
@@ -61,7 +62,7 @@ public class Minigames extends JavaPlugin{
 	public boolean thrownError = false;
 	
 	private long lastUpdateCheck = 0;
-
+	
 	public void onEnable(){
 		plugin = this;
 		PluginDescriptionFile desc = this.getDescription();
@@ -145,7 +146,7 @@ public class Minigames extends JavaPlugin{
 					}
 					
 	//				pdata.addOfflineMinigamePlayer(new OfflineMinigamePlayer(player, items, armour, food, health, saturation, lastGM, loginLocation));
-					new OfflineMinigamePlayer(player, items, armour, food, health, saturation, lastGM, loginLocation);
+					new OfflineMinigamePlayer(getServer().getOfflinePlayer(player).getUniqueId().toString(), items, armour, food, health, saturation, lastGM, loginLocation);
 					items = getServer().createInventory(null, InventoryType.PLAYER).getContents();
 					armour = new ItemStack[4];
 				}

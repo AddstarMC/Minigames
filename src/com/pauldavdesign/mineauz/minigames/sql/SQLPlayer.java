@@ -2,6 +2,7 @@ package com.pauldavdesign.mineauz.minigames.sql;
 
 public class SQLPlayer {
 	private String playerName;
+	private String uuid;
 	private int completionChange;
 	private int failureChange;
 	private int kills;
@@ -11,8 +12,9 @@ public class SQLPlayer {
 	private long time;
 	private String minigame;
 	
-	public SQLPlayer(String minigame, String name, int completionChange, int failureChange, int kills, int deaths, int score, int reverts, long time){
+	public SQLPlayer(String minigame, String name, String uuid, int completionChange, int failureChange, int kills, int deaths, int score, int reverts, long time){
 		this.minigame = minigame;
+		this.uuid = uuid;
 		playerName = name;
 		this.completionChange = completionChange;
 		this.failureChange = failureChange;
@@ -30,7 +32,10 @@ public class SQLPlayer {
 	public String getPlayerName() {
 		return playerName;
 	}
-
+	
+	public String getUUID(){
+		return uuid;
+	}
 
 	public int getCompletionChange() {
 		return completionChange;

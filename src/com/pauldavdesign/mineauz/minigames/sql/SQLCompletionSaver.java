@@ -100,9 +100,10 @@ public class SQLCompletionSaver extends Thread{
 		{
 			ResultSet set = null;
 			Statement getStats = sql.createStatement();
-			set = getStats.executeQuery(String.format("SELECT * FROM %s WHERE Player='%s'", table, player.getPlayerName()));
+			set = getStats.executeQuery(String.format("SELECT * FROM %s WHERE UUID='%s'", table, player.getUUID()));
 			
-			String name = null;
+			String name = player.getPlayerName();
+			String uuid = player.getUUID();
 			int kills = player.getKills();
 			int deaths = player.getDeaths();
 			int score = player.getScore();
@@ -129,7 +130,7 @@ public class SQLCompletionSaver extends Thread{
 			int ofailures = 0;
 			try {
 				set.absolute(1);
-				name = set.getString(1);
+//				name = set.getString(1);
 				ocompleted = set.getInt(2);
 				
 				okills = set.getInt(3);
@@ -202,6 +203,7 @@ public class SQLCompletionSaver extends Thread{
 					hasAlreadyCompleted = true;
 				Statement updateStats = sql.createStatement();
 				updateStats.executeUpdate("UPDATE " + table + " SET Completion='" + ocompleted + "', " +
+						"Player='" + name + "', " + 
 						"Kills=" + kills + ", " +
 						"Deaths=" + deaths + ", " +
 						"Score=" + score + ", " +
@@ -213,14 +215,14 @@ public class SQLCompletionSaver extends Thread{
 						"TotalReverts=" + otreverts + ", " +
 						"TotalTime=" + ottime + ", " +
 						"Failures=" + ofailures +
-						" WHERE Player='" + name + "'");
+						" WHERE UUID='" + uuid + "'");
 				updateStats.close();
 			}
 			else{
 				name = player.getPlayerName();
 				Statement insertStats = sql.createStatement();
 				insertStats.executeUpdate("INSERT INTO " + table + " VALUES " +
-						"( '" + name + "', " + 
+						"( '" + uuid + "', " + 
 						ocompleted + ", " + 
 						kills + ", " + 
 						deaths + ", " +
@@ -232,14 +234,15 @@ public class SQLCompletionSaver extends Thread{
 						otscore + ", " +
 						otreverts + ", " +
 						ottime + ", " +
-						ofailures +
+						ofailures + ", " +
+						name +
 						" )");
 				insertStats.close();
 			}
 		
 			Minigame mgm = Minigames.plugin.mdata.getMinigame(player.getMinigame());
-			if(mgm.getScoreboardData().hasPlayer(player.getPlayerName())){
-				ScoreboardPlayer ply = mgm.getScoreboardData().getPlayer(player.getPlayerName());
+			if(mgm.getScoreboardData().hasPlayer(uuid)){
+				ScoreboardPlayer ply = mgm.getScoreboardData().getPlayer(uuid);
 				ply.setCompletions(ocompleted);
 				ply.setBestKills(kills);
 				ply.setLeastDeaths(deaths);
@@ -255,7 +258,7 @@ public class SQLCompletionSaver extends Thread{
 			}
 			else{
 				mgm.getScoreboardData().addPlayer(new 
-						ScoreboardPlayer(player.getPlayerName(), ocompleted, ofailures, kills, deaths, 
+						ScoreboardPlayer(player.getPlayerName(), uuid, ocompleted, ofailures, kills, deaths, 
 								score, time, reverts, otkills, otdeaths, otscore, otreverts, ottime));
 			}
 			mgm.getScoreboardData().updateDisplays();
