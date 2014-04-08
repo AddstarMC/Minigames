@@ -2,6 +2,7 @@ package com.pauldavdesign.mineauz.minigames.minigame;
 
 public class ScoreboardPlayer {
 	private String playerName;
+	private String uuid;
 	private int completions;
 	private int failures;
 	private int bestKills;
@@ -15,9 +16,10 @@ public class ScoreboardPlayer {
 	private int totalReverts;
 	private long totalTime;
 	
-	public ScoreboardPlayer(String playerName, int completions, int failures, int bestKills, 
+	public ScoreboardPlayer(String playerName, String uuid, int completions, int failures, int bestKills, 
 			int leastDeaths, int bestScore, long bestTime, int leastReverts, int totalKills, int totalDeaths, int totalScore, int totalReverts, long totalTime){
 		this.playerName = playerName;
+		this.uuid = uuid;
 		this.completions = completions;
 		this.failures = failures;
 		this.bestKills = bestKills;
@@ -130,6 +132,10 @@ public class ScoreboardPlayer {
 
 	public String getPlayerName() {
 		return playerName;
+	}
+	
+	public String getUUID(){
+		return uuid;
 	}
 	
 	public Object getByType(ScoreboardType type){

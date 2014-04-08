@@ -56,7 +56,7 @@ public class Minigames extends JavaPlugin{
 	public boolean thrownError = false;
 	
 	private long lastUpdateCheck = 0;
-
+	
 	public void onEnable(){
 		plugin = this;
 		PluginDescriptionFile desc = this.getDescription();

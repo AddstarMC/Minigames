@@ -3,6 +3,7 @@ package com.pauldavdesign.mineauz.minigames;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -62,9 +63,9 @@ public class MinigamePlayer {
 	
 	public MinigamePlayer(Player player){
 		this.player = player;
-		spc = new StoredPlayerCheckpoints(getName());
+		spc = new StoredPlayerCheckpoints(getUUID().toString());
 		
-		File plcp = new File(Minigames.plugin.getDataFolder() + "/playerdata/checkpoints/" + getName().toLowerCase() + ".yml");
+		File plcp = new File(Minigames.plugin.getDataFolder() + "/playerdata/checkpoints/" + getUUID().toString() + ".yml");
 		if(plcp.exists()){
 			getStoredPlayerCheckpoints().loadCheckpoints();
 		}
@@ -76,6 +77,10 @@ public class MinigamePlayer {
 	
 	public String getName(){
 		return player.getName();
+	}
+	
+	public UUID getUUID(){
+		return player.getUniqueId();
 	}
 	
 	public void sendMessage(String msg){
@@ -117,7 +122,7 @@ public class MinigamePlayer {
 		player.getInventory().clear();
 		player.getInventory().setArmorContents(null);
 		
-		oply = new OfflineMinigamePlayer(getPlayer().getName(), storedItems, storedArmour, food, health, saturation, lastGM, null);
+		oply = new OfflineMinigamePlayer(getPlayer().getUniqueId().toString(), storedItems, storedArmour, food, health, saturation, lastGM, null);
 		player.updateInventory();
 	}
 	

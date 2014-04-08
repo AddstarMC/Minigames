@@ -8,7 +8,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
 public class OfflineMinigamePlayer {
-	private String player;
+	private String uuid;
 	private ItemStack[] storedItems = null;
 	private ItemStack[] storedArmour = null;
 	private int food = 20;
@@ -17,8 +17,8 @@ public class OfflineMinigamePlayer {
 	private GameMode lastGM = GameMode.SURVIVAL;
 	private Location loginLocation;
 	
-	public OfflineMinigamePlayer(String player, ItemStack[] items, ItemStack[] armour, int food, double health, float saturation, GameMode lastGM, Location loginLocation){
-		this.player = player;
+	public OfflineMinigamePlayer(String uuid, ItemStack[] items, ItemStack[] armour, int food, double health, float saturation, GameMode lastGM, Location loginLocation){
+		this.uuid = uuid;
 		storedItems = items;
 		storedArmour = armour;
 		this.food = food;
@@ -31,10 +31,10 @@ public class OfflineMinigamePlayer {
 		savePlayerData();
 	}
 	
-	public OfflineMinigamePlayer(String player){
-		MinigameSave save = new MinigameSave("playerdata/inventories/" + player.toLowerCase());
+	public OfflineMinigamePlayer(String uuid){
+		MinigameSave save = new MinigameSave("playerdata/inventories/" + uuid);
 		FileConfiguration con = save.getConfig();
-		this.player = player;
+		this.uuid = uuid;
 		food = con.getInt("food");
 		health = con.getDouble("health");
 		saturation = con.getInt("saturation");
@@ -66,15 +66,8 @@ public class OfflineMinigamePlayer {
 		storedArmour = armour;
 	}
 	
-	public String getPlayer(){
-		return player;
-	}
-	
-	public MinigamePlayer getMinigamePlayer(){
-		if(Minigames.plugin.pdata.hasMinigamePlayer(player)){
-			return Minigames.plugin.pdata.getMinigamePlayer(player);
-		}
-		return null;
+	public String getUUID(){
+		return uuid;
 	}
 	
 	public ItemStack[] getStoredItems(){
@@ -110,7 +103,7 @@ public class OfflineMinigamePlayer {
 	}
 	
 	public void savePlayerData(){
-		MinigameSave save = new MinigameSave("playerdata/inventories/" + player.toLowerCase());
+		MinigameSave save = new MinigameSave("playerdata/inventories/" + uuid.toString());
 		FileConfiguration con = save.getConfig();
 		if(storedItems != null){
 			int num = 0;
@@ -148,7 +141,7 @@ public class OfflineMinigamePlayer {
 	}
 	
 	public void deletePlayerData(){
-		MinigameSave save = new MinigameSave("playerdata/inventories/" + player.toLowerCase());
+		MinigameSave save = new MinigameSave("playerdata/inventories/" + uuid);
 		save.deleteFile();
 	}
 }

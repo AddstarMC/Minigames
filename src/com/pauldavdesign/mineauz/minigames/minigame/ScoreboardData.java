@@ -22,12 +22,12 @@ public class ScoreboardData {
 		scoreboards.put(player.getPlayerName(), player);
 	}
 	
-	public ScoreboardPlayer getPlayer(String name){
-		return scoreboards.get(name);
+	public ScoreboardPlayer getPlayer(String uuid){
+		return scoreboards.get(uuid);
 	}
 	
-	public boolean hasPlayer(String name){
-		return scoreboards.containsKey(name);
+	public boolean hasPlayer(String uuid){
+		return scoreboards.containsKey(uuid);
 	}
 	
 	public List<ScoreboardPlayer> getPlayers(){
