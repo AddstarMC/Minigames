@@ -542,6 +542,8 @@ public class PlayerData {
 		List<MinigamePlayer> w = new ArrayList<MinigamePlayer>();
 		List<MinigamePlayer> l = new ArrayList<MinigamePlayer>();
 		w.add(player);
+		l.addAll(player.getMinigame().getPlayers());
+		l.remove(player);
 		endMinigame(player.getMinigame(), w, l);
 	}
 	
