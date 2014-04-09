@@ -54,7 +54,8 @@ public class SQLCompletionSaver extends Thread{
 				Statement createTable = sql.createStatement();
 				createTable.execute("CREATE TABLE " + table + 
 						"( " +
-						"Player varchar(32) NOT NULL PRIMARY KEY, " +
+						"UUID varchar(32) NOT NULL PRIMARY KEY, " +
+						"Player varchar(32), " +
 						"Completion int, " +
 						"Kills int, " +
 						"Deaths int, " +
@@ -130,20 +131,19 @@ public class SQLCompletionSaver extends Thread{
 			int ofailures = 0;
 			try {
 				set.absolute(1);
-//				name = set.getString(1);
-				ocompleted = set.getInt(2);
+				ocompleted = set.getInt(3);
 				
-				okills = set.getInt(3);
-				odeaths = set.getInt(4);
-				oscore = set.getInt(5);
-				otime = set.getLong(6);
-				oreverts = set.getInt(7);
-				otkills = set.getInt(8);
-				otdeaths = set.getInt(9);
-				otscore = set.getInt(10);
-				otreverts = set.getInt(11);
-				ottime = set.getLong(12);
-				ofailures = set.getInt(13);
+				okills = set.getInt(4);
+				odeaths = set.getInt(5);
+				oscore = set.getInt(6);
+				otime = set.getLong(7);
+				oreverts = set.getInt(8);
+				otkills = set.getInt(9);
+				otdeaths = set.getInt(10);
+				otscore = set.getInt(11);
+				otreverts = set.getInt(12);
+				ottime = set.getLong(13);
+				ofailures = set.getInt(14);
 			} catch (SQLException e) {
 				//e.printStackTrace();
 			}
@@ -222,7 +222,8 @@ public class SQLCompletionSaver extends Thread{
 				name = player.getPlayerName();
 				Statement insertStats = sql.createStatement();
 				insertStats.executeUpdate("INSERT INTO " + table + " VALUES " +
-						"( '" + uuid + "', " + 
+						"( '" + uuid + "', '" + 
+						name + "', " +
 						ocompleted + ", " + 
 						kills + ", " + 
 						deaths + ", " +
@@ -234,8 +235,7 @@ public class SQLCompletionSaver extends Thread{
 						otscore + ", " +
 						otreverts + ", " +
 						ottime + ", " +
-						ofailures + ", " +
-						name +
+						ofailures +
 						" )");
 				insertStats.close();
 			}
