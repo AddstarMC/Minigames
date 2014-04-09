@@ -5,6 +5,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.LoadoutModule;
 
 public class SpleefPreset implements BasePreset {
 
@@ -31,8 +32,9 @@ public class SpleefPreset implements BasePreset {
 		minigame.setType(MinigameType.FREE_FOR_ALL);
 		minigame.setLives(1);
 		
-		minigame.getDefaultPlayerLoadout().clearLoadout();
-		minigame.getDefaultPlayerLoadout().addItem(new ItemStack(Material.DIAMOND_SPADE), 0);
+		LoadoutModule mod = LoadoutModule.getMinigameModule(minigame);
+		mod.getDefaultPlayerLoadout().clearLoadout();
+		mod.getDefaultPlayerLoadout().addItem(new ItemStack(Material.DIAMOND_SPADE), 0);
 		
 		minigame.setEnabled(true);
 	}

@@ -10,6 +10,7 @@ import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.LoadoutModule;
 
 public class LoadoutSign implements MinigameSign {
 	
@@ -50,13 +51,14 @@ public class LoadoutSign implements MinigameSign {
 	public boolean signUse(Sign sign, MinigamePlayer player) {
 		if(player.getPlayer().getItemInHand().getType() == Material.AIR && player.isInMinigame()){
 			Minigame mgm = player.getMinigame();
+			LoadoutModule loadout = LoadoutModule.getMinigameModule(mgm);
 			if(mgm == null || mgm.isSpectator(player)){
 				return false;
 			}
 			
-			if(mgm.hasLoadout(sign.getLine(2))){
-				if(!mgm.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
-					player.setLoadout(mgm.getLoadout(sign.getLine(2)));
+			if(loadout.hasLoadout(sign.getLine(2))){
+				if(!loadout.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
+					player.setLoadout(loadout.getLoadout(sign.getLine(2)));
 					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)));
 					
 					if(mgm.getType() == MinigameType.SINGLEPLAYER || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
@@ -64,7 +66,7 @@ public class LoadoutSign implements MinigameSign {
 							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.loadout.nextRespawn"));
 						}
 						else{
-							mgm.getLoadout(sign.getLine(2)).equiptLoadout(player);
+							loadout.getLoadout(sign.getLine(2)).equiptLoadout(player);
 						}
 					}
 					return true;

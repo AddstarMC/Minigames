@@ -22,6 +22,10 @@ import org.bukkit.inventory.ItemStack;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameTypeBase;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.LoadoutModule;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.LobbySettingsModule;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.RegionModule;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardGroup;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardItem;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardRarity;
@@ -44,6 +48,8 @@ public class MinigameData {
 	private Map<Minigame, List<String>> claimedScoreSignsRed = new HashMap<Minigame, List<String>>();
 	private Map<Minigame, List<String>> claimedScoreSignsBlue = new HashMap<Minigame, List<String>>();
 	
+	private List<Class<? extends MinigameModule>> modules = new ArrayList<Class<? extends MinigameModule>>();
+	
 	private Map<String, BasePreset> presets = new HashMap<String, BasePreset>();
 	
 	public MinigameData(){
@@ -51,6 +57,14 @@ public class MinigameData {
 		addPreset(new CTFPreset());
 		addPreset(new LMSPreset());
 		addPreset(new InfectionPreset());
+		
+		modules.add(LoadoutModule.class);
+		modules.add(LobbySettingsModule.class);
+		modules.add(RegionModule.class); //TODO: Remove me later!
+	}
+	
+	public List<Class<? extends MinigameModule>> getModules(){
+		return modules;
 	}
 	
 	public void startGlobalMinigame(final String minigame){

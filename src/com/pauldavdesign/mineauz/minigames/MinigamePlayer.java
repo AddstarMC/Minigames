@@ -18,6 +18,7 @@ import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.LoadoutModule;
 
 public class MinigamePlayer {
 	private Player player;
@@ -81,6 +82,10 @@ public class MinigamePlayer {
 	
 	public UUID getUUID(){
 		return player.getUniqueId();
+	}
+	
+	public Location getLocation(){
+		return player.getLocation();
 	}
 	
 	public void sendMessage(String msg){
@@ -216,10 +221,10 @@ public class MinigamePlayer {
 		if(loadout != null){
 			return loadout;
 		}
-		else if(team != null && minigame.hasLoadout(team.getColor().toString().toLowerCase())){
-			return minigame.getLoadout(team.getColor().toString().toLowerCase());
+		else if(team != null && LoadoutModule.getMinigameModule(minigame).hasLoadout(team.getColor().toString().toLowerCase())){
+			return LoadoutModule.getMinigameModule(minigame).getLoadout(team.getColor().toString().toLowerCase());
 		}
-		return minigame.getDefaultPlayerLoadout();
+		return LoadoutModule.getMinigameModule(minigame).getDefaultPlayerLoadout();
 	}
 
 	public void setLoadout(PlayerLoadout loadout) {

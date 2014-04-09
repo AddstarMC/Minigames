@@ -10,6 +10,7 @@ import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.LoadoutModule;
 
 public class InfoCommand implements ICommand{
 
@@ -215,14 +216,14 @@ public class InfoCommand implements ICommand{
 						lines.add(ChatColor.GRAY + "Flags: " + ChatColor.RED + "0");
 					}
 					
-					if(mgm.hasDefaultLoadout()){
-						lines.add(ChatColor.GRAY + "Default Loadout: " + ChatColor.GREEN + mgm.getDefaultPlayerLoadout().getItems().size() + " items");
+					if(LoadoutModule.getMinigameModule(mgm).hasDefaultLoadout()){
+						lines.add(ChatColor.GRAY + "Default Loadout: " + ChatColor.GREEN + LoadoutModule.getMinigameModule(mgm).getDefaultPlayerLoadout().getItems().size() + " items");
 					}else{
 						lines.add(ChatColor.GRAY + "Default Loadout: " + ChatColor.RED + "0 items");
 					}
 					
-					if(!mgm.getLoadouts().isEmpty()){
-						lines.add(ChatColor.GRAY + "Additional Loadouts: " + ChatColor.GREEN + mgm.getLoadouts().size());
+					if(!LoadoutModule.getMinigameModule(mgm).getLoadouts().isEmpty()){
+						lines.add(ChatColor.GRAY + "Additional Loadouts: " + ChatColor.GREEN + LoadoutModule.getMinigameModule(mgm).getLoadouts().size());
 					}else{
 						lines.add(ChatColor.GRAY + "Additional Loadouts: " + ChatColor.RED + "0");
 					}
@@ -320,8 +321,8 @@ public class InfoCommand implements ICommand{
 					lines.add(ChatColor.GRAY + "Minimum Treasure: " + ChatColor.GREEN + mgm.getMinTreasure());
 					lines.add(ChatColor.GRAY + "Maximum Treasure: " + ChatColor.GREEN + mgm.getMaxTreasure());
 					
-					if(mgm.hasDefaultLoadout()){
-						lines.add(ChatColor.GRAY + "Default Loadout: " + ChatColor.GREEN + mgm.getDefaultPlayerLoadout().getItems().size() + " items");
+					if(LoadoutModule.getMinigameModule(mgm).hasDefaultLoadout()){
+						lines.add(ChatColor.GRAY + "Default Loadout: " + ChatColor.GREEN + LoadoutModule.getMinigameModule(mgm).getDefaultPlayerLoadout().getItems().size() + " items");
 					}else{
 						lines.add(ChatColor.GRAY + "Default Loadout: " + ChatColor.RED + "0 items");
 					}

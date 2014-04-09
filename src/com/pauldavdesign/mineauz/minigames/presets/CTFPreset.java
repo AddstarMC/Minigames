@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.LoadoutModule;
 
 public class CTFPreset implements BasePreset {
 
@@ -34,14 +35,15 @@ public class CTFPreset implements BasePreset {
 		minigame.setMinScore(5);
 		minigame.setMaxScore(5);
 		minigame.setDefaultGamemode(GameMode.ADVENTURE);
-
-		minigame.getDefaultPlayerLoadout().addItem(new ItemStack(Material.STONE_SWORD), 0);
-		minigame.getDefaultPlayerLoadout().addItem(new ItemStack(Material.LEATHER_HELMET), 103);
-		minigame.getDefaultPlayerLoadout().addItem(new ItemStack(Material.LEATHER_CHESTPLATE), 102);
-		minigame.getDefaultPlayerLoadout().addItem(new ItemStack(Material.LEATHER_LEGGINGS), 101);
-		minigame.getDefaultPlayerLoadout().addItem(new ItemStack(Material.LEATHER_BOOTS), 100);
-		minigame.getDefaultPlayerLoadout().addItem(new ItemStack(Material.ARROW, 16), 16);
-		minigame.getDefaultPlayerLoadout().addItem(new ItemStack(Material.BOW), 1);
+		
+		LoadoutModule mod = LoadoutModule.getMinigameModule(minigame);
+		mod.getDefaultPlayerLoadout().addItem(new ItemStack(Material.STONE_SWORD), 0);
+		mod.getDefaultPlayerLoadout().addItem(new ItemStack(Material.LEATHER_HELMET), 103);
+		mod.getDefaultPlayerLoadout().addItem(new ItemStack(Material.LEATHER_CHESTPLATE), 102);
+		mod.getDefaultPlayerLoadout().addItem(new ItemStack(Material.LEATHER_LEGGINGS), 101);
+		mod.getDefaultPlayerLoadout().addItem(new ItemStack(Material.LEATHER_BOOTS), 100);
+		mod.getDefaultPlayerLoadout().addItem(new ItemStack(Material.ARROW, 16), 16);
+		mod.getDefaultPlayerLoadout().addItem(new ItemStack(Material.BOW), 1);
 	}
 
 }

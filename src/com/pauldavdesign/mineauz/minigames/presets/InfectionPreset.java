@@ -9,6 +9,7 @@ import org.bukkit.potion.PotionEffectType;
 import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.LoadoutModule;
 
 public class InfectionPreset implements BasePreset {
 
@@ -27,10 +28,11 @@ public class InfectionPreset implements BasePreset {
 	@Override
 	public void execute(Minigame minigame) {
 		//Loadouts
-		minigame.addLoadout("red");
-		minigame.addLoadout("blue");
-		PlayerLoadout red = minigame.getLoadout("red");
-		PlayerLoadout blue = minigame.getLoadout("blue");
+		LoadoutModule mod = LoadoutModule.getMinigameModule(minigame);
+		mod.addLoadout("red");
+		mod.addLoadout("blue");
+		PlayerLoadout red = mod.getLoadout("red");
+		PlayerLoadout blue = mod.getLoadout("blue");
 		
 		ItemStack zsword = new ItemStack(Material.DIAMOND_SWORD);
 		ItemStack zhead = new ItemStack(Material.SKULL_ITEM);

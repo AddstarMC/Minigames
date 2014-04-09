@@ -12,6 +12,7 @@ import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.LoadoutModule;
 
 public class MenuItemDisplayLoadout extends MenuItem{
 	
@@ -147,7 +148,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		if(entry.equalsIgnoreCase("yes")){
 			String loadoutName = loadout.getName();
 			if(mgm != null)
-				mgm.deleteLoadout(loadoutName);
+				LoadoutModule.getMinigameModule(mgm).deleteLoadout(loadoutName);
 			else
 				Minigames.plugin.mdata.deleteLoadout(loadoutName);
 			getContainer().removeItem(getSlot());

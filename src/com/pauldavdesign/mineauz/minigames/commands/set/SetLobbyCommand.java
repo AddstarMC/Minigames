@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.LobbySettingsModule;
 
 public class SetLobbyCommand implements ICommand{
 
@@ -62,19 +63,20 @@ public class SetLobbyCommand implements ICommand{
 			return true;
 		}
 		else{
+			LobbySettingsModule lobby = LobbySettingsModule.getMinigameModule(minigame);
 			if(args.length == 3){
 				if(args[0].equalsIgnoreCase("canmove")){
 					boolean v = true;
 					v = Boolean.getBoolean(args[2]);
 					if(args[1].equalsIgnoreCase("playerwait")){
-						minigame.setCanMovePlayerWait(v);
+						lobby.setCanMovePlayerWait(v);
 						if(v)
 							sender.sendMessage(ChatColor.GRAY + "Allowed players to move in lobby on player wait.");
 						else
 							sender.sendMessage(ChatColor.GRAY + "Disallowed players to move in lobby on player wait.");
 					}
 					else if(args[1].equalsIgnoreCase("startwait")){
-						minigame.setCanMoveStartWait(v);
+						lobby.setCanMoveStartWait(v);
 						if(v)
 							sender.sendMessage(ChatColor.GRAY + "Allowed players to move in lobby on start wait.");
 						else
@@ -89,14 +91,14 @@ public class SetLobbyCommand implements ICommand{
 					boolean v = true;
 					v = Boolean.getBoolean(args[2]);
 					if(args[1].equalsIgnoreCase("playerwait")){
-						minigame.setCanInteractPlayerWait(v);
+						lobby.setCanInteractPlayerWait(v);
 						if(v)
 							sender.sendMessage(ChatColor.GRAY + "Allowed players to interact in lobby on player wait.");
 						else
 							sender.sendMessage(ChatColor.GRAY + "Disallowed players to interact in lobby on player wait.");
 					}
 					else if(args[1].equalsIgnoreCase("startwait")){
-						minigame.setCanInteractStartWait(v);
+						lobby.setCanInteractStartWait(v);
 						if(v)
 							sender.sendMessage(ChatColor.GRAY + "Allowed players to interact in lobby on start wait.");
 						else
@@ -110,14 +112,14 @@ public class SetLobbyCommand implements ICommand{
 				else if(args[0].equalsIgnoreCase("teleport")){
 					boolean v = Boolean.parseBoolean(args[2]);
 					if(args[1].equalsIgnoreCase("playerwait")){
-						minigame.setTeleportOnPlayerWait(v);
+						lobby.setTeleportOnPlayerWait(v);
 						if(v)
 							sender.sendMessage(ChatColor.GRAY + "Allowed players to teleport out of lobby on player wait.");
 						else
 							sender.sendMessage(ChatColor.GRAY + "Disallowed players to teleport out of lobby on player wait.");
 					}
 					else if(args[1].equalsIgnoreCase("startwait")){
-						minigame.setTeleportOnStart(v);
+						lobby.setTeleportOnStart(v);
 						if(v)
 							sender.sendMessage(ChatColor.GRAY + "Allowed players to teleport out of lobby on start.");
 						else

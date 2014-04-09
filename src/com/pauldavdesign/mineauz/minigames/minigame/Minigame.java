@@ -12,8 +12,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -26,7 +24,6 @@ import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.MultiplayerBets;
 import com.pauldavdesign.mineauz.minigames.MultiplayerTimer;
-import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
 import com.pauldavdesign.mineauz.minigames.RestoreBlock;
 import com.pauldavdesign.mineauz.minigames.TreasureHuntTimer;
 import com.pauldavdesign.mineauz.minigames.blockRecorder.RecorderData;
@@ -48,6 +45,8 @@ import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemSaveMinigame;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemString;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemTime;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.LoadoutModule;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardGroup;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardItem;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardRarity;
@@ -76,8 +75,7 @@ public class Minigame {
 	private Location endPosition = null;
 	private Location quitPosition = null;
 	private Location lobbyPosisiton = null;
-	private PlayerLoadout defaultLoadout = new PlayerLoadout("default");
-	private Map<String, PlayerLoadout> extraLoadouts = new HashMap<String, PlayerLoadout>();
+	
 	private Map<String, RestoreBlock> restoreBlocks = new HashMap<String, RestoreBlock>();
 	private String location = null;
 	private int maxRadius = 1000;
@@ -91,14 +89,6 @@ public class Minigame {
 	private int startWaitTime = 0;
 	private Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<MinigamePlayer, CTFFlag>();
 	private Map<String, CTFFlag> droppedFlag = new HashMap<String, CTFFlag>();
-	
-	//Lobby settings
-	private boolean canMovePlayerWait = true;
-	private boolean canMoveStartWait = true;
-	private boolean canInteractPlayerWait = true;
-	private boolean canInteractStartWait = true;
-	private boolean teleportOnPlayerWait = false;
-	private boolean teleportOnStart = true;
 	
 	private boolean itemDrops = false;
 	private boolean deathDrops = false;
@@ -121,6 +111,8 @@ public class Minigame {
 	private Location regenArea1 = null;
 	private Location regenArea2 = null;
 	private int regenDelay = 0;
+	
+	private Map<String, MinigameModule> modules = new HashMap<String, MinigameModule>();
 	
 //	private int redTeamScore = 0; //TODO: Remove
 //	private int blueTeamScore = 0; //TODO: Remove
@@ -156,6 +148,14 @@ public class Minigame {
 	private TreasureHuntTimer thTimer = null;
 
 	public Minigame(String name, MinigameType type, Location start){
+		setup(name, type, start);
+	}
+	
+	public Minigame(String name){
+		setup(name, MinigameType.SINGLEPLAYER, null);
+	}
+	
+	private void setup(String name, MinigameType type, Location start){
 		this.name = name;
 		this.type = type;
 		startLocations.add(start);
@@ -163,13 +163,29 @@ public class Minigame {
 		sbManager.registerNewObjective(this.name, "dummy");
 		sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
 		
+		for(Class<? extends MinigameModule> mod : Minigames.plugin.mdata.getModules()){
+			try {
+				addModule(mod.newInstance());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
-	public Minigame(String name){
-		this.name = name;
-		
-		sbManager.registerNewObjective(this.name, "dummy");
-		sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
+	public boolean addModule(MinigameModule module){
+		if(!modules.containsKey(module.getName())){
+			modules.put(module.getName(), module);
+			return true;
+		}
+		return false;
+	}
+	
+	public List<MinigameModule> getModules(){
+		return new ArrayList<MinigameModule>(modules.values());
+	}
+	
+	public MinigameModule getModule(String name){
+		return modules.get(name);
 	}
 
 	public List<RewardItem> getSecondaryRewardItem(){
@@ -331,65 +347,6 @@ public class Minigame {
 			return true;
 		}
 		return false;
-	}
-	
-	public PlayerLoadout getDefaultPlayerLoadout(){
-		return defaultLoadout;
-	}
-	
-	public boolean hasDefaultLoadout(){
-		if(defaultLoadout.getItems().isEmpty() && defaultLoadout.getAllPotionEffects().isEmpty() && 
-				defaultLoadout.hasFallDamage() && !defaultLoadout.hasHunger()){
-			return false;
-		}
-		return true;
-	}
-	
-	public void addLoadout(String name){
-		extraLoadouts.put(name, new PlayerLoadout(name));
-	}
-	
-	public void deleteLoadout(String name){
-		if(extraLoadouts.containsKey(name)){
-			extraLoadouts.remove(name);
-		}
-	}
-	
-	public Set<String> getLoadouts(){
-		return extraLoadouts.keySet();
-	}
-	
-	public Map<String, PlayerLoadout> getLoadoutMap(){
-		return extraLoadouts;
-	}
-	
-	public PlayerLoadout getLoadout(String name){
-		PlayerLoadout pl = null;
-		if(name.equalsIgnoreCase("default")){
-			pl = getDefaultPlayerLoadout();
-		}
-		else{
-			if(extraLoadouts.containsKey(name)){
-				pl = extraLoadouts.get(name);
-			}
-		}
-		return pl;
-	}
-	
-	public boolean hasLoadouts(){
-		if(extraLoadouts.isEmpty()){
-			return false;
-		}
-		return true;
-	}
-	
-	public boolean hasLoadout(String name){
-		if(!name.equalsIgnoreCase("default")){
-			return extraLoadouts.containsKey(name);
-		}
-		else{
-			return true;
-		}
 	}
 	
 	public boolean isEnabled(){
@@ -1817,7 +1774,7 @@ public class Minigame {
 		thDes.add("Treasure hunt related");
 		thDes.add("settings.");
 		itemsMain.add(new MenuItemPage("Treasure Hunt Settings", thDes, Material.CHEST, treasureHunt));
-		MenuItemDisplayLoadout defLoad = new MenuItemDisplayLoadout("Default Loadout", Material.DIAMOND_SWORD, defaultLoadout, this);
+		MenuItemDisplayLoadout defLoad = new MenuItemDisplayLoadout("Default Loadout", Material.DIAMOND_SWORD, LoadoutModule.getMinigameModule(this).getDefaultPlayerLoadout(), this);
 		defLoad.setAllowDelete(false);
 		itemsMain.add(defLoad);
 		itemsMain.add(new MenuItemPage("Additional Loadouts", Material.CHEST, loadouts));
@@ -1839,14 +1796,14 @@ public class Minigame {
 		List<MenuItem> mi = new ArrayList<MenuItem>();
 		List<String> des = new ArrayList<String>();
 		des.add("Shift + Right Click to Delete");
-		for(String ld : getLoadouts()){
+		for(String ld : LoadoutModule.getMinigameModule(this).getLoadouts()){
 			Material item = Material.THIN_GLASS;
-			if(getLoadout(ld).getItems().size() != 0){
-				item = getLoadout(ld).getItem((Integer)getLoadout(ld).getItems().toArray()[0]).getType();
+			if(LoadoutModule.getMinigameModule(this).getLoadout(ld).getItems().size() != 0){
+				item = LoadoutModule.getMinigameModule(this).getLoadout(ld).getItem((Integer)LoadoutModule.getMinigameModule(this).getLoadout(ld).getItems().toArray()[0]).getType();
 			}
-			mi.add(new MenuItemDisplayLoadout(ld, des, item, getLoadout(ld), this));
+			mi.add(new MenuItemDisplayLoadout(ld, des, item, LoadoutModule.getMinigameModule(this).getLoadout(ld), this));
 		}
-		loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, extraLoadouts, this), 53);
+		loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, LoadoutModule.getMinigameModule(this).getLoadoutMap(), this), 53);
 		loadouts.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), loadouts.getSize() - 9);
 		loadouts.addItems(mi);
 		
@@ -1912,14 +1869,14 @@ public class Minigame {
 		//Lobby Settings//
 		//--------------//
 		List<MenuItem> itemsLobby = new ArrayList<MenuItem>(4);
-		itemsLobby.add(new MenuItemBoolean("Can Interact on Player Wait", Material.STONE_BUTTON, getCanInteractPlayerWaitCallback()));
-		itemsLobby.add(new MenuItemBoolean("Can Interact on Start Wait", Material.STONE_BUTTON, getCanInteractStartWaitCallback()));
-		itemsLobby.add(new MenuItemBoolean("Can Move on Player Wait", Material.ICE, getCanMovePlayerWaitCallback()));
-		itemsLobby.add(new MenuItemBoolean("Can Move on Start Wait", Material.ICE, getCanMoveStartWaitCallback()));
+		itemsLobby.add(new MenuItemBoolean("Can Interact on Player Wait", Material.STONE_BUTTON, LobbySettingsModule.getMinigameModule(this).getCanInteractPlayerWaitCallback()));
+		itemsLobby.add(new MenuItemBoolean("Can Interact on Start Wait", Material.STONE_BUTTON, LobbySettingsModule.getMinigameModule(this).getCanInteractStartWaitCallback()));
+		itemsLobby.add(new MenuItemBoolean("Can Move on Player Wait", Material.ICE, LobbySettingsModule.getMinigameModule(this).getCanMovePlayerWaitCallback()));
+		itemsLobby.add(new MenuItemBoolean("Can Move on Start Wait", Material.ICE, LobbySettingsModule.getMinigameModule(this).getCanMoveStartWaitCallback()));
 		itemsLobby.add(new MenuItemBoolean("Teleport After Player Wait", MinigameUtils.stringToList("Should players be teleported;after player wait time?"), 
-				Material.ENDER_PEARL, getTeleportOnPlayerWaitCallback()));
+				Material.ENDER_PEARL, LobbySettingsModule.getMinigameModule(this).getTeleportOnPlayerWaitCallback()));
 		itemsLobby.add(new MenuItemBoolean("Teleport on Start", MinigameUtils.stringToList("Should players teleport;to the start position;after lobby?"),
-				Material.ENDER_PEARL, getTeleportOnStartCallback()));
+				Material.ENDER_PEARL, LobbySettingsModule.getMinigameModule(this).getTeleportOnStartCallback()));
 		lobby.addItems(itemsLobby);
 		lobby.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), lobby.getSize() - 9);
 		
@@ -1931,136 +1888,14 @@ public class Minigame {
 		return sbData;
 	}
 
-	public boolean canMovePlayerWait() {
-		return canMovePlayerWait;
-	}
-
-	public void setCanMovePlayerWait(boolean canMovePlayerWait) {
-		this.canMovePlayerWait = canMovePlayerWait;
-	}
-	
-	private Callback<Boolean> getCanMovePlayerWaitCallback(){
-		return new Callback<Boolean>() {
-			@Override
-			public void setValue(Boolean value){
-				canMovePlayerWait = value;
-			}
-			@Override
-			public Boolean getValue(){
-				return canMovePlayerWait;
-			}
-		};
-	}
-
-	public boolean canMoveStartWait() {
-		return canMoveStartWait;
-	}
-
-	public void setCanMoveStartWait(boolean canMoveStartWait) {
-		this.canMoveStartWait = canMoveStartWait;
-	}
-	
-	private Callback<Boolean> getCanMoveStartWaitCallback(){
-		return new Callback<Boolean>() {
-			@Override
-			public void setValue(Boolean value){
-				canMoveStartWait = value;
-			}
-			@Override
-			public Boolean getValue(){
-				return canMoveStartWait;
-			}
-		};
-	}
-
-	public boolean canInteractPlayerWait() {
-		return canInteractPlayerWait;
-	}
-
-	public void setCanInteractPlayerWait(boolean canInteractPlayerWait) {
-		this.canInteractPlayerWait = canInteractPlayerWait;
-	}
-	
-	private Callback<Boolean> getCanInteractPlayerWaitCallback(){
-		return new Callback<Boolean>() {
-			@Override
-			public void setValue(Boolean value){
-				canInteractPlayerWait = value;
-			}
-			@Override
-			public Boolean getValue(){
-				return canInteractPlayerWait;
-			}
-		};
-	}
-
-	public boolean canInteractStartWait() {
-		return canInteractStartWait;
-	}
-
-	public void setCanInteractStartWait(boolean canInteractStartWait) {
-		this.canInteractStartWait = canInteractStartWait;
-	}
-	
-	private Callback<Boolean> getCanInteractStartWaitCallback(){
-		return new Callback<Boolean>() {
-			@Override
-			public void setValue(Boolean value){
-				canInteractStartWait = value;
-			}
-			@Override
-			public Boolean getValue(){
-				return canInteractStartWait;
-			}
-		};
-	}
-
-	public boolean isTeleportOnStart() {
-		return teleportOnStart;
-	}
-
-	public void setTeleportOnStart(boolean teleportOnStart) {
-		this.teleportOnStart = teleportOnStart;
-	}
-	
-	private Callback<Boolean> getTeleportOnStartCallback(){
-		return new Callback<Boolean>() {
-			@Override
-			public void setValue(Boolean value){
-				teleportOnStart = value;
-			}
-			@Override
-			public Boolean getValue(){
-				return teleportOnStart;
-			}
-		};
-	}
-
-	public boolean isTeleportOnPlayerWait() {
-		return teleportOnPlayerWait;
-	}
-
-	public void setTeleportOnPlayerWait(boolean teleportOnPlayerWait) {
-		this.teleportOnPlayerWait = teleportOnPlayerWait;
-	}
-	
-	private Callback<Boolean> getTeleportOnPlayerWaitCallback(){
-		return new Callback<Boolean>() {
-			@Override
-			public void setValue(Boolean value){
-				teleportOnPlayerWait = value;
-			}
-			@Override
-			public Boolean getValue(){
-				return teleportOnPlayerWait;
-			}
-		};
-	}
-
 	public void saveMinigame(){
 		MinigameSave minigame = new MinigameSave(name, "config");
 		FileConfiguration cfg = minigame.getConfig();
 		cfg.set(name, null);
+		
+		for(MinigameModule module : getModules()){
+			module.save(name, cfg);
+		}
 		
 		minigame.getConfig().set(name + ".displayName", displayName);
 		minigame.getConfig().set(name + ".startpos", null);
@@ -2193,71 +2028,7 @@ public class Minigame {
 			minigame.getConfig().set(name + ".flags", getFlags());
 		}
 		
-		if(hasDefaultLoadout()){
-			for(Integer slot : getDefaultPlayerLoadout().getItems()){
-				minigame.getConfig().set(name + ".loadout." + slot, getDefaultPlayerLoadout().getItem(slot));
-			}
-			
-			if(!getDefaultPlayerLoadout().getAllPotionEffects().isEmpty()){
-				for(PotionEffect eff : getDefaultPlayerLoadout().getAllPotionEffects()){
-					minigame.getConfig().set(name + ".loadout.potions." + eff.getType().getName() + ".amp", eff.getAmplifier());
-					minigame.getConfig().set(name + ".loadout.potions." + eff.getType().getName() + ".dur", eff.getDuration());
-				}
-			}
-			else{
-				minigame.getConfig().set(name + ".loadout.potions", null);
-			}
-			if(getDefaultPlayerLoadout().getUsePermissions()){
-				minigame.getConfig().set(name + ".loadout.usepermissions", true);
-			}
-			else{
-				minigame.getConfig().set(name + ".loadout.usepermissions", null);
-			}
-			
-			if(!getDefaultPlayerLoadout().hasFallDamage())
-				minigame.getConfig().set(name + ".loadout.falldamage", getDefaultPlayerLoadout().hasFallDamage());
-			else
-				minigame.getConfig().set(name + ".loadout.falldamage", null);
-			
-			if(getDefaultPlayerLoadout().hasHunger())
-				minigame.getConfig().set(name + ".loadout.hunger", getDefaultPlayerLoadout().hasHunger());
-			else
-				minigame.getConfig().set(name + ".loadout.hunger", null);
-		}
 		
-		if(hasLoadouts()){
-			for(String loadout : getLoadouts()){
-				for(Integer slot : getLoadout(loadout).getItems()){
-					minigame.getConfig().set(name + ".extraloadouts." + loadout + "." + slot, getLoadout(loadout).getItem(slot));
-				}
-				if(!getLoadout(loadout).getAllPotionEffects().isEmpty()){
-					for(PotionEffect eff : getLoadout(loadout).getAllPotionEffects()){
-						minigame.getConfig().set(name + ".extraloadouts." + loadout + ".potions." + eff.getType().getName() + ".amp", eff.getAmplifier());
-						minigame.getConfig().set(name + ".extraloadouts." + loadout + ".potions." + eff.getType().getName() + ".dur", eff.getDuration());
-					}
-				}
-				else{
-					minigame.getConfig().set(name + ".extraloadouts." + loadout + ".potions", null);
-				}
-				
-				if(getLoadout(loadout).getUsePermissions()){
-					minigame.getConfig().set(name + ".extraloadouts." + loadout + ".usepermissions", true);
-				}
-				else{
-					minigame.getConfig().set(name + ".extraloadouts." + loadout + ".usepermissions", null);
-				}
-				
-				if(!getLoadout(loadout).hasFallDamage())
-					minigame.getConfig().set(name + ".extraloadouts." + loadout + ".falldamage", getLoadout(loadout).hasFallDamage());
-				else
-					minigame.getConfig().set(name + ".extraloadouts." + loadout + ".falldamage", null);
-				
-				if(getLoadout(loadout).hasHunger())
-					minigame.getConfig().set(name + ".extraloadouts." + loadout + ".hunger", getLoadout(loadout).hasHunger());
-				else
-					minigame.getConfig().set(name + ".extraloadouts." + loadout + ".hunger", null);
-			}
-		}
 		
 		if(getMaxScore() != 10){
 			minigame.getConfig().set(name + ".maxscore", getMaxScore());
@@ -2391,18 +2162,6 @@ public class Minigame {
 		if(getGametypeName() != null)
 			minigame.getConfig().set(name + ".gametypeName", getGametypeName());
 		
-		if(!canInteractPlayerWait)
-			minigame.getConfig().set(name + ".canInteractPlayerWait", canInteractPlayerWait);
-		if(!canInteractStartWait)
-			minigame.getConfig().set(name + ".canInteractStartWait", canInteractStartWait);
-		if(!canMovePlayerWait)
-			minigame.getConfig().set(name + ".canMovePlayerWait", canMovePlayerWait);
-		if(!canMoveStartWait)
-			minigame.getConfig().set(name + ".canMoveStartWait", canMoveStartWait);
-		if(!teleportOnStart)
-			minigame.getConfig().set(name + ".teleportOnStart", teleportOnStart);
-		if(teleportOnPlayerWait)
-			minigame.getConfig().set(name + ".teleportOnPlayerWait", teleportOnPlayerWait);
 		if(regenDelay != 0)
 			minigame.getConfig().set(name + ".regenDelay", regenDelay);
 		
@@ -2414,6 +2173,10 @@ public class Minigame {
 	public void loadMinigame(){
 		MinigameSave minigame = new MinigameSave(name, "config");
 		FileConfiguration cfg = minigame.getConfig();
+		
+		for(MinigameModule module : getModules()){
+			module.load(name, cfg);
+		}
 		
 		if(minigame.getConfig().contains(name + ".displayName")){
 			displayName = minigame.getConfig().getString(name + ".displayName");
@@ -2565,68 +2328,7 @@ public class Minigame {
 		if(!minigame.getConfig().getStringList(name + ".flags").isEmpty()){
 			setFlags(minigame.getConfig().getStringList(name + ".flags"));
 		}
-		if(minigame.getConfig().contains(name + ".loadout")){
-			Set<String> keys = minigame.getConfig().getConfigurationSection(name + ".loadout").getKeys(false);
-			for(String key : keys){
-				if(key.matches("[0-9]+"))
-					getDefaultPlayerLoadout().addItem(minigame.getConfig().getItemStack(name + ".loadout." + key), Integer.parseInt(key));
-			}
-			
-			if(minigame.getConfig().contains(name + ".loadout.potions")){
-				keys = minigame.getConfig().getConfigurationSection(name + ".loadout.potions").getKeys(false);
-				for(String eff : keys){
-					if(PotionEffectType.getByName(eff) != null){
-						PotionEffect effect = new PotionEffect(PotionEffectType.getByName(eff),
-								minigame.getConfig().getInt(name + ".loadout.potions." + eff + ".dur"),
-								minigame.getConfig().getInt(name + ".loadout.potions." + eff + ".amp"), true);
-						getDefaultPlayerLoadout().addPotionEffect(effect);
-					}
-				}
-			}
-			
-			if(minigame.getConfig().contains(name + ".loadout.usepermissions")){
-				getDefaultPlayerLoadout().setUsePermissions(minigame.getConfig().getBoolean(name + ".loadout.usepermissions"));
-			}
-			
-			if(minigame.getConfig().contains(name + ".loadout.falldamage")){
-				getDefaultPlayerLoadout().setHasFallDamage(minigame.getConfig().getBoolean(name + ".loadout.falldamage"));
-			}
-			if(minigame.getConfig().contains(name + ".loadout.hunger")){
-				getDefaultPlayerLoadout().setHasHunger(minigame.getConfig().getBoolean(name + ".loadout.hunger"));
-			}
-		}
-		if(minigame.getConfig().contains(name + ".extraloadouts")){
-			Set<String> keys = minigame.getConfig().getConfigurationSection(name + ".extraloadouts").getKeys(false);
-			for(String loadout : keys){
-				addLoadout(loadout);
-				Set<String> items = minigame.getConfig().getConfigurationSection(name + ".extraloadouts." + loadout).getKeys(false);
-				for(String key : items){
-					if(key.matches("[0-9]+"))
-						getLoadout(loadout).addItem(minigame.getConfig().getItemStack(name + ".extraloadouts." + loadout + "." + key), Integer.parseInt(key));
-				}
-				if(minigame.getConfig().contains(name + ".extraloadouts." + loadout + ".potions")){
-					Set<String> pots = minigame.getConfig().getConfigurationSection(name + ".extraloadouts." + loadout + ".potions").getKeys(false);
-					for(String eff : pots){
-						if(PotionEffectType.getByName(eff) != null){
-							PotionEffect effect = new PotionEffect(PotionEffectType.getByName(eff),
-									minigame.getConfig().getInt(name + ".extraloadouts." + loadout + ".potions." + eff + ".dur"),
-									minigame.getConfig().getInt(name + ".extraloadouts." + loadout + ".potions." + eff + ".amp"));
-							getLoadout(loadout).addPotionEffect(effect);
-						}
-					}
-				}
-				
-				if(minigame.getConfig().contains(name + ".extraloadouts." + loadout + ".usepermissions")){
-					getLoadout(loadout).setUsePermissions(minigame.getConfig().getBoolean(name + ".extraloadouts." + loadout + ".usepermissions"));
-				}
-				
-				if(minigame.getConfig().contains(name + ".extraloadouts." + loadout + ".falldamage"))
-					getLoadout(loadout).setHasFallDamage(minigame.getConfig().getBoolean(name + ".extraloadouts." + loadout + ".falldamage"));
-				
-				if(minigame.getConfig().contains(name + ".extraloadouts." + loadout + ".hunger"))
-					getLoadout(loadout).setHasHunger(minigame.getConfig().getBoolean(name + ".extraloadouts." + loadout + ".hunger"));
-			}
-		}
+		
 		if(minigame.getConfig().contains(name + ".maxscore")){
 			setMaxScore(minigame.getConfig().getInt(name + ".maxscore"));
 		}
@@ -2759,18 +2461,6 @@ public class Minigame {
 		if(minigame.getConfig().contains(name + ".gametypeName"))
 			setGametypeName(minigame.getConfig().getString(name + ".gametypeName"));
 		
-		if(minigame.getConfig().contains(name + ".canInteractPlayerWait"))
-			canInteractPlayerWait = minigame.getConfig().getBoolean(name + ".canInteractPlayerWait");
-		if(minigame.getConfig().contains(name + ".canInteractStartWait"))
-			canInteractStartWait = minigame.getConfig().getBoolean(name + ".canInteractStartWait");
-		if(minigame.getConfig().contains(name + ".canMovePlayerWait"))
-			canMovePlayerWait = minigame.getConfig().getBoolean(name + ".canMovePlayerWait");
-		if(minigame.getConfig().contains(name + ".canMoveStartWait"))
-			canMoveStartWait = minigame.getConfig().getBoolean(name + ".canMoveStartWait");
-		if(minigame.getConfig().contains(name + ".teleportOnStart"))
-			teleportOnStart = minigame.getConfig().getBoolean(name + ".teleportOnStart");
-		if(minigame.getConfig().contains(name + ".teleportOnPlayerWait"))
-			teleportOnPlayerWait = minigame.getConfig().getBoolean(name + ".teleportOnPlayerWait");
 		if(minigame.getConfig().contains(name + ".regenDelay"))
 			regenDelay = minigame.getConfig().getInt(name + ".regenDelay");
 

@@ -20,6 +20,7 @@ import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.LobbySettingsModule;
 
 public class TeamsType extends MinigameTypeBase{
 	private static Minigames plugin = Minigames.plugin;
@@ -32,9 +33,9 @@ public class TeamsType extends MinigameTypeBase{
 	
 	@Override
 	public boolean joinMinigame(final MinigamePlayer player, Minigame mgm){
-		if(!mgm.canInteractPlayerWait())
+		if(!LobbySettingsModule.getMinigameModule(mgm).canInteractPlayerWait())
 			player.setCanInteract(false);
-		if(!mgm.canMovePlayerWait())
+		if(!LobbySettingsModule.getMinigameModule(mgm).canMovePlayerWait())
 			player.setFrozen(true);
 		
 		if(!mgm.isNotWaitingForPlayers()){

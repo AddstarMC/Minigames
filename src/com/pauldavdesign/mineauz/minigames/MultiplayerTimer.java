@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.LobbySettingsModule;
 
 public class MultiplayerTimer{
 	private int playerWaitTime;
@@ -60,9 +61,9 @@ public class MultiplayerTimer{
 					if(startWaitTime == plugin.getConfig().getInt("multiplayer.startcountdown")){
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.minigameStarts"));
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
-						freezePlayers(!minigame.canMoveStartWait());
-						allowInteraction(minigame.canInteractStartWait());
-						if(minigame.isTeleportOnPlayerWait()){
+						freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMoveStartWait());
+						allowInteraction(LobbySettingsModule.getMinigameModule(minigame).canInteractStartWait());
+						if(LobbySettingsModule.getMinigameModule(minigame).isTeleportOnPlayerWait()){
 							reclearInventories(minigame);
 							pdata.startMPMinigame(minigame, true);
 						}
@@ -74,7 +75,7 @@ public class MultiplayerTimer{
 				else if(playerWaitTime == 0 && startWaitTime == 0){
 					sendPlayersMessage(ChatColor.GREEN + MinigameUtils.getLang("time.startup.go"));
 					reclearInventories(minigame);
-					if(minigame.isTeleportOnStart())
+					if(LobbySettingsModule.getMinigameModule(minigame).isTeleportOnStart())
 						pdata.startMPMinigame(minigame, true);
 					else
 						pdata.startMPMinigame(minigame, false);
