@@ -493,15 +493,13 @@ public class MinigamePlayer {
 	
 	public Location[] getSelectionPoints(){
 		Location[] loc = new Location[2];
-		if(hasSelection()){
-			loc[0] = selection1;
-			loc[1] = selection2;
-			return loc;
-		}
-		return null;
+		loc[0] = selection1;
+		loc[1] = selection2;
+		return loc;
 	}
 	
 	public void clearSelection(){
+		showSelection(true);
 		selection1 = null;
 		selection2 = null;
 	}
@@ -515,10 +513,7 @@ public class MinigamePlayer {
 	
 	@SuppressWarnings("deprecation") //TODO: Use alternative once available
 	public void showSelection(boolean clear){
-		if(selection2 == null){
-			getPlayer().sendBlockChange(selection1, Material.DIAMOND_BLOCK, (byte)0);
-		}
-		else{
+		if(selection2 != null && selection1 != null){
 			Location[] locs = MinigameUtils.getMinMaxSelection(selection1, selection2);
 
 			int minx = locs[0].getBlockX();
@@ -548,6 +543,12 @@ public class MinigamePlayer {
 					}
 				}
 			}
+		}
+		else if(selection1 != null){
+			getPlayer().sendBlockChange(selection1, Material.DIAMOND_BLOCK, (byte)0);
+		}
+		else if(selection2 != null){
+			getPlayer().sendBlockChange(selection2, Material.DIAMOND_BLOCK, (byte)0);
 		}
 	}
 	

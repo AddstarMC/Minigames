@@ -19,7 +19,7 @@ public class MenuItemCustom extends MenuItem{
 	}
 	
 	public MenuItemCustom(String name, List<String> description, Material displayItem) {
-		super(name, displayItem);
+		super(name, description, displayItem);
 	}
 	
 	@Override

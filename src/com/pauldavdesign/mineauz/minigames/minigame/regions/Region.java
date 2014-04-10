@@ -12,15 +12,17 @@ import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 
 public class Region {
+	private String name;
 	private Location point1;
 	private Location point2;
 	private List<RegionExecutor> executors = new ArrayList<RegionExecutor>();
 	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 	
-	public Region(Location point1, Location point2){
+	public Region(String name, Location point1, Location point2){
 		Location[] locs = MinigameUtils.getMinMaxSelection(point1, point2);
 		this.point1 = locs[0].clone();
 		this.point2 = locs[1].clone();
+		this.name = name;
 	}
 	
 	public boolean playerInRegion(MinigamePlayer player){
@@ -47,6 +49,10 @@ public class Region {
 			}
 		}
 		return false;
+	}
+	
+	public String getName(){
+		return name;
 	}
 	
 	public Location getFirstPoint(){
@@ -93,11 +99,17 @@ public class Region {
 		}
 	}
 	
+	public void removeExecutor(RegionExecutor executor){
+		if(executors.contains(executor)){
+			executors.remove(executor);
+		}
+	}
+	
 	public void execute(RegionTrigger trigger, MinigamePlayer player){
 		for(RegionExecutor exec : executors){
-			if(exec.getTrigger() == trigger){
+			if(exec.getTrigger() == trigger && !player.isDead()){
 				RegionAction act = exec.getAction();
-				if(act == RegionAction.KILL && !player.isDead())
+				if(act == RegionAction.KILL)
 					player.getPlayer().damage(player.getPlayer().getHealth());
 				else if(act == RegionAction.REVERT)
 					Minigames.plugin.pdata.revertToCheckpoint(player);
