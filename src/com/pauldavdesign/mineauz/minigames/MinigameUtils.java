@@ -1,7 +1,9 @@
 package com.pauldavdesign.mineauz.minigames;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.configuration.file.FileConfiguration;
 //import net.minecraft.server.v1_6_R2.EntityPlayer;
@@ -377,6 +379,23 @@ public class MinigameUtils {
 			}
 			return ret;
 		}
+	}
+	
+	/**
+	 * Serializes a location to be stored in a config file.
+	 * @param loc The location to be stored
+	 * @return A map of values to store
+	 */
+	public static Map<String, Object> serializeLocation(Location loc){
+		Map<String, Object> sloc = new HashMap<String, Object>();
+		sloc.put("x", loc.getX());
+		sloc.put("y", loc.getY());
+		sloc.put("z", loc.getZ());
+		sloc.put("yaw", loc.getYaw());
+		sloc.put("pitch", loc.getPitch());
+		sloc.put("world", loc.getWorld().getName());
+		
+		return sloc;
 	}
 //	public static void removePlayerArrows(MinigamePlayer player){
 //		try{

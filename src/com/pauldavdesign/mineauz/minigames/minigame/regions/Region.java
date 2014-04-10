@@ -19,8 +19,8 @@ public class Region {
 	
 	public Region(Location point1, Location point2){
 		Location[] locs = MinigameUtils.getMinMaxSelection(point1, point2);
-		point1 = locs[0].clone();
-		point2 = locs[1].clone();
+		this.point1 = locs[0].clone();
+		this.point2 = locs[1].clone();
 	}
 	
 	public boolean playerInRegion(MinigamePlayer player){
@@ -49,6 +49,18 @@ public class Region {
 		return false;
 	}
 	
+	public Location getFirstPoint(){
+		return point1.clone();
+	}
+	
+	public Location getSecondPoint(){
+		return point2.clone();
+	}
+	
+	public boolean hasPlayer(MinigamePlayer player){
+		return players.contains(player);
+	}
+	
 	public void addPlayer(MinigamePlayer player){
 		players.add(player);
 	}
@@ -71,6 +83,10 @@ public class Region {
 		return executors.size();
 	}
 	
+	public List<RegionExecutor> getExecutors(){
+		return executors;
+	}
+	
 	public void removeExecutor(int id){
 		if(executors.size() <= id){
 			executors.remove(id - 1);
@@ -81,7 +97,7 @@ public class Region {
 		for(RegionExecutor exec : executors){
 			if(exec.getTrigger() == trigger){
 				RegionAction act = exec.getAction();
-				if(act == RegionAction.KILL)
+				if(act == RegionAction.KILL && !player.isDead())
 					player.getPlayer().damage(player.getPlayer().getHealth());
 				else if(act == RegionAction.REVERT)
 					Minigames.plugin.pdata.revertToCheckpoint(player);

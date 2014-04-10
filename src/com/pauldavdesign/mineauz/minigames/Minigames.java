@@ -26,6 +26,7 @@ import org.bukkit.potion.PotionEffectType;
 //import org.mcstats.Metrics;
 
 
+
 import com.pauldavdesign.mineauz.minigames.Metrics.Graph;
 import com.pauldavdesign.mineauz.minigames.blockRecorder.BasicRecorder;
 import com.pauldavdesign.mineauz.minigames.commands.CommandDispatcher;
@@ -35,6 +36,7 @@ import com.pauldavdesign.mineauz.minigames.gametypes.SingleplayerType;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
 import com.pauldavdesign.mineauz.minigames.mechanics.GameMechanics;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.RegionEvents;
 import com.pauldavdesign.mineauz.minigames.signs.SignBase;
 import com.pauldavdesign.mineauz.minigames.sql.SQLCompletionSaver;
 import com.pauldavdesign.mineauz.minigames.sql.SQLDataLoader;
@@ -94,7 +96,7 @@ public class Minigames extends JavaPlugin{
 		
 		getServer().getPluginManager().registerEvents(new Events(), this);
 		getServer().getPluginManager().registerEvents(new BasicRecorder(), this);
-		
+		getServer().getPluginManager().registerEvents(new RegionEvents(), this); //TODO Remove me!
 		
 		try{
 			this.getConfig().load(this.getDataFolder() + "/config.yml");
