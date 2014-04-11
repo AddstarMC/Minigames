@@ -12,6 +12,8 @@ import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.menu.InteractionInterface;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemCustom;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.RegionActionInterface;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.RegionActions;
 
 public class MenuItemExecutor extends MenuItem{
 	
@@ -38,9 +40,9 @@ public class MenuItemExecutor extends MenuItem{
 		for(RegionTrigger t : RegionTrigger.values()){
 			triggers.add(MinigameUtils.capitalize(t.toString()));
 		}
-		List<String> actions = new ArrayList<String>(RegionAction.values().length);
-		for(RegionAction a : RegionAction.values()){
-			actions.add(MinigameUtils.capitalize(a.toString()));
+		List<String> actions = new ArrayList<String>(RegionActions.getAllActionNames().size());
+		for(String a : RegionActions.getAllActionNames()){
+			actions.add(MinigameUtils.capitalize(a));
 		}
 		ply.sendMessage("Triggers: " + MinigameUtils.listToString(triggers));
 		ply.sendMessage("Actions: " + MinigameUtils.listToString(actions));
@@ -56,17 +58,20 @@ public class MenuItemExecutor extends MenuItem{
 		String[] split = entry.split(", ");
 		if(split.length == 2){
 			RegionTrigger trig = RegionTrigger.getByName(split[0]);
-			RegionAction act = RegionAction.getByName(split[1]);
+			RegionActionInterface act = RegionActions.getActionByName(split[1]);
 			
 			if(trig != null && act != null){
 				final RegionExecutor ex = new RegionExecutor(trig, act);
 				region.addExecutor(ex);
+				List<String> des = MinigameUtils.stringToList(ChatColor.GREEN + "Trigger: " + ChatColor.GRAY + 
+						MinigameUtils.capitalize(ex.getTrigger().toString()) + ";" +
+						ChatColor.GREEN + "Action: " + ChatColor.GRAY + 
+						MinigameUtils.capitalize(ex.getAction().getName()) + ";" + 
+						ChatColor.DARK_PURPLE + "(Right click to delete)");
+				if(!ex.getArguments().isEmpty())
+					des.add(ChatColor.DARK_PURPLE + "(Left click to edit)");
 				MenuItemCustom cmi = new MenuItemCustom("Executor ID: " + region.getExecutors().size(), 
-						MinigameUtils.stringToList(ChatColor.GREEN + "Trigger: " + ChatColor.GRAY + 
-								MinigameUtils.capitalize(trig.toString()) + ";" +
-								ChatColor.GREEN + "Action: " + ChatColor.GRAY + 
-								MinigameUtils.capitalize(act.toString()) + ";" + 
-								ChatColor.DARK_PURPLE + "(Right click to delete)"), Material.ENDER_PEARL);
+						des, Material.ENDER_PEARL);
 
 				cmi.setRightClick(new InteractionInterface() {
 					
@@ -75,6 +80,16 @@ public class MenuItemExecutor extends MenuItem{
 						region.removeExecutor(ex);
 						getContainer().removeItem(getSlot());
 						return null;
+					}
+				});
+				final MenuItem fcmi = cmi;
+				cmi.setClick(new InteractionInterface() {
+					
+					@Override
+					public Object interact() {
+						if(ex.getAction().displayMenu(getContainer().getViewer(), ex.getArguments(), getContainer()))
+							return null;
+						return fcmi.getItem();
 					}
 				});
 				getContainer().addItem(cmi);

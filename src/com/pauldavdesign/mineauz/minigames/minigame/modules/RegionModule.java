@@ -20,7 +20,7 @@ import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.MenuItemRegion;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.Region;
-import com.pauldavdesign.mineauz.minigames.minigame.regions.RegionAction;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.RegionActions;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.RegionExecutor;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.RegionTrigger;
 
@@ -52,7 +52,10 @@ public class RegionModule implements MinigameModule {
 			int c = 0;
 			for(RegionExecutor ex : r.getExecutors()){
 				config.set(minigame + ".regions." + name + ".executors." + c + ".trigger", ex.getTrigger().toString());
-				config.set(minigame + ".regions." + name + ".executors." + c + ".action", ex.getAction().toString());
+				config.set(minigame + ".regions." + name + ".executors." + c + ".action", ex.getAction().getName());
+				if(!ex.getArguments().isEmpty()){
+					ex.getAction().saveArguments(ex.getArguments(), config, minigame + ".regions." + name + ".executors." + c + ".arguments");
+				}
 				c++;
 			}
 		}
@@ -81,8 +84,11 @@ public class RegionModule implements MinigameModule {
 				if(config.contains(minigame + ".regions." + name + ".executors")){
 					Set<String> ex = config.getConfigurationSection(minigame + ".regions." + name + ".executors").getKeys(false);
 					for(String i : ex){
-						r.addExecutor(RegionTrigger.valueOf(config.getString(minigame + ".regions." + name + ".executors." + i + ".trigger")), 
-								RegionAction.valueOf(config.getString(minigame + ".regions." + name + ".executors." + i + ".action")));
+						RegionExecutor rex = new RegionExecutor(RegionTrigger.valueOf(config.getString(minigame + ".regions." + name + ".executors." + i + ".trigger")), 
+								RegionActions.getActionByName(config.getString(minigame + ".regions." + name + ".executors." + i + ".action")));
+						if(config.contains(minigame + ".regions." + name + ".executors." + i + ".arguments"))
+							rex.setArguments(rex.getAction().loadArguments(config, minigame + ".regions." + name + ".executors." + i + ".arguments"));
+						r.addExecutor(rex);
 					}
 				}
 			}

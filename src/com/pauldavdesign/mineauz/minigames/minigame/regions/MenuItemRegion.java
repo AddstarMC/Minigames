@@ -53,14 +53,19 @@ public class MenuItemRegion extends MenuItem{
 		int c = 1;
 		final Region fregion = region;
 		for(RegionExecutor ex : region.getExecutors()){
+			List<String> des = MinigameUtils.stringToList(ChatColor.GREEN + "Trigger: " + ChatColor.GRAY + 
+					MinigameUtils.capitalize(ex.getTrigger().toString()) + ";" +
+					ChatColor.GREEN + "Action: " + ChatColor.GRAY + 
+					MinigameUtils.capitalize(ex.getAction().getName()) + ";" + 
+					ChatColor.DARK_PURPLE + "(Right click to delete)");
+			if(!ex.getArguments().isEmpty())
+				des.add(ChatColor.DARK_PURPLE + "(Left click to edit)");
 			MenuItemCustom cmi = new MenuItemCustom("Executor ID: " + c, 
-					MinigameUtils.stringToList(ChatColor.GREEN + "Trigger: " + ChatColor.GRAY + 
-							MinigameUtils.capitalize(ex.getTrigger().toString()) + ";" +
-							ChatColor.GREEN + "Action: " + ChatColor.GRAY + 
-							MinigameUtils.capitalize(ex.getAction().toString()) + ";" + 
-							ChatColor.DARK_PURPLE + "(Right click to delete)"), Material.ENDER_PEARL);
+					des, Material.ENDER_PEARL);
 			final RegionExecutor cex = ex;
 			final MenuItem fcmi = cmi;
+			final MinigamePlayer fviewer = viewer;
+			final Menu fm = m;
 			cmi.setRightClick(new InteractionInterface() {
 				
 				@Override
@@ -68,6 +73,15 @@ public class MenuItemRegion extends MenuItem{
 					fregion.removeExecutor(cex);
 					fcmi.getContainer().removeItem(fcmi.getSlot());
 					return null;
+				}
+			});
+			cmi.setClick(new InteractionInterface() {
+				
+				@Override
+				public Object interact() {
+					if(cex.getAction().displayMenu(fviewer, cex.getArguments(), fm))
+						return null;
+					return fcmi.getItem();
 				}
 			});
 			items.add(cmi);

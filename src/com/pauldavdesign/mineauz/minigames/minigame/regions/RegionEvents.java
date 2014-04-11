@@ -44,13 +44,13 @@ public class RegionEvents implements Listener{
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
 		if(ply == null) return;
 		if(ply.isInMinigame()){
-			Minigame mg = ply.getMinigame();
-			for(Region r : RegionModule.getMinigameModule(mg).getRegions()){
-				if(r.hasPlayer(ply)){
-					r.removePlayer(ply);
-					r.execute(RegionTrigger.LEAVE, ply);
-				}
-			}
+//			Minigame mg = ply.getMinigame();
+//			for(Region r : RegionModule.getMinigameModule(mg).getRegions()){
+//				if(r.hasPlayer(ply)){
+//					r.removePlayer(ply);
+//					r.execute(RegionTrigger.LEAVE, ply);
+//				}
+//			}
 		}
 	}
 }

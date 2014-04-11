@@ -7,9 +7,7 @@ import org.bukkit.Location;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
-import com.pauldavdesign.mineauz.minigames.Minigames;
-import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
-import com.pauldavdesign.mineauz.minigames.minigame.Team;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.RegionActionInterface;
 
 public class Region {
 	private String name;
@@ -79,7 +77,7 @@ public class Region {
 		return players;
 	}
 	
-	public int addExecutor(RegionTrigger trigger, RegionAction action){
+	public int addExecutor(RegionTrigger trigger, RegionActionInterface action){
 		executors.add(new RegionExecutor(trigger, action));
 		return executors.size();
 	}
@@ -107,39 +105,10 @@ public class Region {
 	
 	public void execute(RegionTrigger trigger, MinigamePlayer player){
 		for(RegionExecutor exec : executors){
-			if(exec.getTrigger() == trigger && !player.isDead()){
-				RegionAction act = exec.getAction();
-				if(act == RegionAction.KILL)
-					player.getPlayer().damage(player.getPlayer().getHealth());
-				else if(act == RegionAction.REVERT)
-					Minigames.plugin.pdata.revertToCheckpoint(player);
-				else if(act == RegionAction.QUIT)
-					Minigames.plugin.pdata.quitMinigame(player, false);
-				else if(act == RegionAction.END){
-					if(player.getMinigame().getType() != MinigameType.SINGLEPLAYER){
-						List<MinigamePlayer> w = null;
-						List<MinigamePlayer> l = null;
-						if(player.getMinigame().getType() == MinigameType.TEAMS){
-							w = new ArrayList<MinigamePlayer>(player.getTeam().getPlayers());
-							l = new ArrayList<MinigamePlayer>(player.getMinigame().getPlayers().size() - player.getTeam().getPlayers().size());
-							for(Team t : player.getMinigame().getTeams()){
-								if(t != player.getTeam())
-									l.addAll(t.getPlayers());
-							}
-						}
-						else{
-							w = new ArrayList<MinigamePlayer>(1);
-							l = new ArrayList<MinigamePlayer>(player.getMinigame().getPlayers().size());
-							w.add(player);
-							l.addAll(player.getMinigame().getPlayers());
-							l.remove(player);
-						}
-						Minigames.plugin.pdata.endMinigame(player.getMinigame(), w, l);
-					}
-					else{
-						Minigames.plugin.pdata.endMinigame(player);
-					}
-				}
+			if(exec.getTrigger() == trigger){
+				RegionActionInterface act = exec.getAction();
+				
+				act.executeAction(player, exec.getArguments());
 			}
 		}
 	}
