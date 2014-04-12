@@ -82,7 +82,7 @@ public class FlagSign implements MinigameSign {
 			if(!sign.getLine(2).isEmpty() && ((LivingEntity)player.getPlayer()).isOnGround() && 
 					!mgm.getScoreType().equals("ctf") &&
 					!player.hasFlag(ChatColor.stripColor(sign.getLine(2)))){
-				TakeFlagEvent ev = new TakeFlagEvent(mgm, ChatColor.stripColor(sign.getLine(2)));
+				TakeFlagEvent ev = new TakeFlagEvent(mgm, player, ChatColor.stripColor(sign.getLine(2)));
 				Bukkit.getPluginManager().callEvent(ev);
 				if(!ev.isCancelled()){
 					player.addFlag(ChatColor.stripColor(sign.getLine(2)));
