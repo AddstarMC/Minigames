@@ -54,7 +54,7 @@ public class SQLCompletionSaver extends Thread{
 				Statement createTable = sql.createStatement();
 				createTable.execute("CREATE TABLE " + table + 
 						"( " +
-						"UUID varchar(32) NOT NULL PRIMARY KEY, " +
+						"UUID varchar(40) NOT NULL PRIMARY KEY, " +
 						"Player varchar(32), " +
 						"Completion int, " +
 						"Kills int, " +
@@ -72,28 +72,6 @@ public class SQLCompletionSaver extends Thread{
 				createTable.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
-			}
-		}
-		else{ //TODO: Remove after 1.6.0 release
-			if(!database.columnExists("Score", table))
-			{
-				try {
-					Statement alterTable = sql.createStatement();
-					
-					alterTable.execute("ALTER TABLE " + table + " ADD Score int DEFAULT -1, " +
-							"ADD Time long NOT NULL, " +
-							"ADD Reverts int DEFAULT -1, " +
-							"ADD TotalKills int DEFAULT 0, " +
-							"ADD TotalDeaths int DEFAULT 0, " +
-							"ADD TotalScore int DEFAULT 0, " +
-							"ADD TotalReverts int DEFAULT 0, " +
-							"ADD TotalTime long NOT NULL, " + 
-							"ADD Failures int DEFAULT 0");
-					alterTable.close();
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-					return;
-				}
 			}
 		}
 		
@@ -129,6 +107,7 @@ public class SQLCompletionSaver extends Thread{
 			int otreverts = 0;
 			long ottime = 0;
 			int ofailures = 0;
+			boolean fetchedResults = false;
 			try {
 				set.absolute(1);
 				ocompleted = set.getInt(3);
@@ -144,6 +123,7 @@ public class SQLCompletionSaver extends Thread{
 				otreverts = set.getInt(12);
 				ottime = set.getLong(13);
 				ofailures = set.getInt(14);
+				fetchedResults = true;
 			} catch (SQLException e) {
 				//e.printStackTrace();
 			}
@@ -198,7 +178,7 @@ public class SQLCompletionSaver extends Thread{
 			
 			boolean hasAlreadyCompleted = false;
 			
-			if(name != null){
+			if(fetchedResults){
 				if(ocompleted - 1 >= 1)
 					hasAlreadyCompleted = true;
 				Statement updateStats = sql.createStatement();
