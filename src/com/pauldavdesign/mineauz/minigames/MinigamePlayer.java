@@ -234,7 +234,7 @@ public class MinigamePlayer {
 	}
 	
 	public boolean hasFlag(String flagName){
-		if(flags.contains("flag")){
+		if(flags.contains(flagName)){
 			return true;
 		}
 		return false;
