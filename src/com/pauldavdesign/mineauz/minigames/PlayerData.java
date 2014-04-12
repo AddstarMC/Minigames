@@ -37,6 +37,7 @@ import com.pauldavdesign.mineauz.minigames.events.JoinMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.RevertCheckpointEvent;
 import com.pauldavdesign.mineauz.minigames.events.SpectateMinigameEvent;
+import com.pauldavdesign.mineauz.minigames.events.StartMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameTypeBase;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
@@ -281,6 +282,8 @@ public class PlayerData {
 		int pos = 0;
 		int bluepos = 0;
 		int redpos = 0;
+		
+		Bukkit.getServer().getPluginManager().callEvent(new StartMinigameEvent(players, minigame, teleport));
 		
 		for(MinigamePlayer ply : players){
 			if(minigame.getType() != MinigameType.TEAMS){

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 
+import com.pauldavdesign.mineauz.minigames.events.MinigameTimerTickEvent;
 import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
@@ -35,6 +36,7 @@ public class MinigameTimer{
 					Bukkit.getServer().getPluginManager().callEvent(new TimerExpireEvent(minigame));
 					stopTimer();
 				}
+				Bukkit.getPluginManager().callEvent(new MinigameTimerTickEvent(minigame, minigame.getMinigameTimer()));
 			}
 		}, 0, 20);
 	}
@@ -47,5 +49,9 @@ public class MinigameTimer{
 	
 	public int getTimeLeft(){
 		return time;
+	}
+	
+	public void setTimeLeft(int time){
+		this.time = time;
 	}
 }
