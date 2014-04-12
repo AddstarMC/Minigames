@@ -96,8 +96,8 @@ public class Team {
 	/**
 	 * Adds 1 point to the team.
 	 */
-	public void addScore(){
-		score += 1;
+	public int addScore(){
+		return addScore(1);
 	}
 	
 	/**
@@ -107,6 +107,7 @@ public class Team {
 	 */
 	public int addScore(int amount){
 		score += amount;
+		mgm.getScoreboardManager().getObjective(mgm.getName(false)).getScore(Minigames.plugin.getServer().getOfflinePlayer(getChatColor() + getDisplayName())).setScore(score);
 		return score;
 	}
 	
@@ -116,6 +117,7 @@ public class Team {
 	 */
 	public void setScore(int amount){
 		score = amount;
+		mgm.getScoreboardManager().getObjective(mgm.getName(false)).getScore(Minigames.plugin.getServer().getOfflinePlayer(getChatColor() + getDisplayName())).setScore(score);
 	}
 	
 	/**
@@ -123,6 +125,7 @@ public class Team {
 	 */
 	public void resetScore(){
 		score = 0;
+		mgm.getScoreboardManager().resetScores(Minigames.plugin.getServer().getOfflinePlayer(getChatColor() + getDisplayName()));
 	}
 	
 	/**
