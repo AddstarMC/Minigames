@@ -60,7 +60,7 @@ public class RegionEvents implements Listener{
 	private void playerJoin(JoinMinigameEvent event){
 		MinigamePlayer ply = event.getMinigamePlayer();
 		if(ply == null) return;
-		Minigame mg = ply.getMinigame();
+		Minigame mg = event.getMinigame();
 		executeRegionChanges(mg, ply);
 	}
 	
