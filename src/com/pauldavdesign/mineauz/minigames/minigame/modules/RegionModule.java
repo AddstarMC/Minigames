@@ -34,7 +34,7 @@ public class RegionModule implements MinigameModule {
 	}
 
 	@Override
-	public void save(String minigame, FileConfiguration config) {
+	public void save(Minigame minigame, FileConfiguration config) {
 		Set<String> rs = regions.keySet();
 		for(String name : rs){
 			Region r = regions.get(name);
@@ -62,7 +62,7 @@ public class RegionModule implements MinigameModule {
 	}
 
 	@Override
-	public void load(String minigame, FileConfiguration config) {
+	public void load(Minigame minigame, FileConfiguration config) {
 		if(config.contains(minigame + ".regions")){
 			Set<String> rs = config.getConfigurationSection(minigame + ".regions").getKeys(false);
 			for(String name : rs){
@@ -152,5 +152,11 @@ public class RegionModule implements MinigameModule {
 		}
 		rm.addItems(items);
 		rm.displayMenu(viewer);
+	}
+
+	@Override
+	public void addMenuOptions(Menu menu) {
+		// TODO Auto-generated method stub
+		
 	}
 }

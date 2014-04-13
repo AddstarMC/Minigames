@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class Team {
 	private String displayName = null;
@@ -42,12 +43,12 @@ public class Team {
 	 * @return true if the Minigame doesn't have the team color already available, fails if it already has that team.
 	 */
 	public boolean setColor(TeamColor color){
-		if(!mgm.hasTeam(color)){
-			mgm.removeTeam(this.color);
+		if(!TeamsModule.getMinigameModule(mgm).hasTeam(color)){
+			TeamsModule.getMinigameModule(mgm).removeTeam(mgm, this.color);
 			if(displayName.equals(this.color.toString().toLowerCase() + " team"))
 				displayName = MinigameUtils.capitalize(color.toString()) + " Team";
 			this.color = color;
-			mgm.addTeam(color, this);
+			TeamsModule.getMinigameModule(mgm).addTeam(mgm, color, this);
 			return true;
 		}
 		return false;

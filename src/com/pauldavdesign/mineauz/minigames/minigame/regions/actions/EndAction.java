@@ -11,6 +11,7 @@ import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class EndAction implements RegionActionInterface {
 
@@ -28,7 +29,7 @@ public class EndAction implements RegionActionInterface {
 			if(player.getMinigame().getType() == MinigameType.TEAMS){
 				w = new ArrayList<MinigamePlayer>(player.getTeam().getPlayers());
 				l = new ArrayList<MinigamePlayer>(player.getMinigame().getPlayers().size() - player.getTeam().getPlayers().size());
-				for(Team t : player.getMinigame().getTeams()){
+				for(Team t : TeamsModule.getMinigameModule(player.getMinigame()).getTeams()){
 					if(t != player.getTeam())
 						l.addAll(t.getPlayers());
 				}

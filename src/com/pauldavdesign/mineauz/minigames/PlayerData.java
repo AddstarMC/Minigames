@@ -41,6 +41,7 @@ import com.pauldavdesign.mineauz.minigames.gametypes.MinigameTypeBase;
 import com.pauldavdesign.mineauz.minigames.mechanics.GameMechanics;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 import com.pauldavdesign.mineauz.minigames.sql.SQLPlayer;
 
 public class PlayerData {
@@ -64,7 +65,7 @@ public class PlayerData {
 			if((minigame.isEnabled() || player.getPlayer().hasPermission("minigame.join.disabled")) && 
 					!minigame.isRegenerating() && (!minigame.isNotWaitingForPlayers() || (minigame.canLateJoin() && minigame.getMpTimer().getPlayerWaitTimeLeft() == 0)) && 
 					(minigame.getStartLocations().size() > 0 || 
-							(type == MinigameType.TEAMS && minigame.hasTeamStartLocations())) &&
+							(type == MinigameType.TEAMS && TeamsModule.getMinigameModule(minigame).hasTeamStartLocations())) &&
 					minigame.getEndPosition() != null && minigame.getQuitPosition() != null && 
 					(minigame.getType() == MinigameType.SINGLEPLAYER || minigame.getLobbyPosition() != null) &&
 					((type == MinigameType.SINGLEPLAYER && !minigame.isSpMaxPlayers()) || minigame.getPlayers().size() < minigame.getMaxPlayers())){
@@ -215,7 +216,7 @@ public class PlayerData {
 				player.sendMessage(MinigameUtils.formStr("minigame.lateJoinWait", minigame.getMpTimer().getStartWaitTimeLeft()), null);
 			}
 			else if(minigame.getStartLocations().size() == 0 || 
-							(type == MinigameType.TEAMS && !minigame.hasTeamStartLocations())){
+							(type == MinigameType.TEAMS && !TeamsModule.getMinigameModule(minigame).hasTeamStartLocations())){
 				player.sendMessage(MinigameUtils.getLang("minigame.error.noStart"), "error");
 			}
 			else if(minigame.getEndPosition() == null){
@@ -280,7 +281,7 @@ public class PlayerData {
 		Location start = null;
 		int pos = 0;
 		Map<Team, Integer> tpos = new HashMap<Team, Integer>();
-		for(Team t : minigame.getTeams()){
+		for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
 			tpos.put(t, 0);
 		}
 		
@@ -308,7 +309,7 @@ public class PlayerData {
 			}
 			else{
 				Team team = ply.getTeam();
-				if(minigame.hasTeamStartLocations()){
+				if(TeamsModule.getMinigameModule(minigame).hasTeamStartLocations()){
 					if(tpos.get(team) <= team.getStartLocations().size()){
 						tpos.put(team, 0);
 					}
@@ -557,7 +558,7 @@ public class PlayerData {
 				if(mgm.getType() == MinigameType.TEAMS){
 					Team team = winners.get(0).getTeam();
 					String score = "";
-					List<Team> teams = mgm.getTeams();
+					List<Team> teams = TeamsModule.getMinigameModule(mgm).getTeams();
 					for(Team t : teams){
 						score += t.getColor().getColor().toString() + t.getScore();
 						if(t != teams.get(teams.size() - 1)){

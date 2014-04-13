@@ -3,6 +3,7 @@ package com.pauldavdesign.mineauz.minigames.minigame.modules;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import com.pauldavdesign.mineauz.minigames.menu.Callback;
+import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
 
@@ -21,7 +22,7 @@ public class LobbySettingsModule implements MinigameModule {
 	}
 
 	@Override
-	public void save(String minigame, FileConfiguration config) {
+	public void save(Minigame minigame, FileConfiguration config) {
 		if(!canInteractPlayerWait)
 			config.set(minigame + ".canInteractPlayerWait", canInteractPlayerWait);
 		if(!canInteractStartWait)
@@ -37,7 +38,7 @@ public class LobbySettingsModule implements MinigameModule {
 	}
 
 	@Override
-	public void load(String minigame, FileConfiguration config) {
+	public void load(Minigame minigame, FileConfiguration config) {
 		if(config.contains(minigame + ".canInteractPlayerWait"))
 			canInteractPlayerWait = config.getBoolean(minigame + ".canInteractPlayerWait");
 		if(config.contains(minigame + ".canInteractStartWait"))
@@ -180,6 +181,12 @@ public class LobbySettingsModule implements MinigameModule {
 				return teleportOnPlayerWait;
 			}
 		};
+	}
+
+	@Override
+	public void addMenuOptions(Menu menu) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

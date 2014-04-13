@@ -9,6 +9,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
+import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
 
@@ -23,7 +24,7 @@ public class LoadoutModule implements MinigameModule {
 	}
 
 	@Override
-	public void save(String minigame, FileConfiguration config) {
+	public void save(Minigame minigame, FileConfiguration config) {
 		if(hasDefaultLoadout()){
 			for(Integer slot : getDefaultPlayerLoadout().getItems()){
 				config.set(minigame + ".loadout." + slot, getDefaultPlayerLoadout().getItem(slot));
@@ -92,7 +93,7 @@ public class LoadoutModule implements MinigameModule {
 	}
 
 	@Override
-	public void load(String minigame, FileConfiguration config) {
+	public void load(Minigame minigame, FileConfiguration config) {
 		if(config.contains(minigame + ".loadout")){
 			Set<String> keys = config.getConfigurationSection(minigame + ".loadout").getKeys(false);
 			for(String key : keys){
@@ -218,6 +219,12 @@ public class LoadoutModule implements MinigameModule {
 		else{
 			return true;
 		}
+	}
+
+	@Override
+	public void addMenuOptions(Menu menu) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

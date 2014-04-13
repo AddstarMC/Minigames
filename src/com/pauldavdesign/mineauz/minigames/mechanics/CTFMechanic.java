@@ -22,6 +22,7 @@ import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class CTFMechanic extends GameMechanicBase{
 
@@ -37,7 +38,7 @@ public class CTFMechanic extends GameMechanicBase{
 			for(MinigamePlayer ply : players){
 				if(ply.getTeam() == null){
 					Team smt = null;
-					for(Team t : minigame.getTeams()){
+					for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
 						if(smt == null || t.getPlayers().size() < smt.getPlayers().size())
 							smt = t;
 					}
@@ -52,7 +53,7 @@ public class CTFMechanic extends GameMechanicBase{
 			while(!sorted){
 				Team smt = null;
 				Team lgt = null;
-				for(Team t : minigame.getTeams()){
+				for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
 					if(smt == null || t.getPlayers().size() < smt.getPlayers().size() - 1)
 						smt = t;
 					if((lgt == null || t.getPlayers().size() > lgt.getPlayers().size()) && t != smt)
@@ -90,9 +91,9 @@ public class CTFMechanic extends GameMechanicBase{
 							sign.getLine(2).equalsIgnoreCase(ChatColor.GRAY + "Neutral")){
 						if(mgm.getFlagCarrier(ply) == null){
 							if(!mgm.hasDroppedFlag(sloc) && 
-									(mgm.hasTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2)))) || 
+									(TeamsModule.getMinigameModule(mgm).hasTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2)))) || 
 											sign.getLine(2).equalsIgnoreCase(ChatColor.GRAY + "Neutral"))){
-								Team oTeam = mgm.getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2))));
+								Team oTeam = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2))));
 								CTFFlag flag = new CTFFlag(event.getClickedBlock().getLocation(), oTeam, event.getPlayer(), mgm);
 								mgm.addFlagCarrier(ply, flag);
 								flag.removeFlag();
@@ -122,8 +123,8 @@ public class CTFMechanic extends GameMechanicBase{
 						}
 						
 					}
-					else if(team == mgm.getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2)))) || 
-							(team == mgm.getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(3)))) && sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture")) ||
+					else if(team == TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2)))) || 
+							(team == TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(3)))) && sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture")) ||
 							(sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture") && sign.getLine(3).equalsIgnoreCase(ChatColor.GRAY + "Neutral"))){
 						
 						String clickID = MinigameUtils.createLocationID(event.getClickedBlock().getLocation());
@@ -156,7 +157,7 @@ public class CTFMechanic extends GameMechanicBase{
 											ply.getTeam().getChatColor() + ply.getTeam().getDisplayName()), null, null);
 									List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(ply.getTeam().getPlayers());
 									List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - ply.getTeam().getPlayers().size());
-									for(Team t : mgm.getTeams()){
+									for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 										if(t != ply.getTeam())
 											l.addAll(t.getPlayers());
 									}
@@ -274,7 +275,7 @@ public class CTFMechanic extends GameMechanicBase{
 			if(mgm.getScoreType().equals("ctf")){
 				Team smt = null;
 				Team lgt = ply.getTeam();
-				for(Team t : mgm.getTeams()){
+				for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 					if(smt == null || t.getPlayers().size() < smt.getPlayers().size() - 1)
 						smt = t;
 				}

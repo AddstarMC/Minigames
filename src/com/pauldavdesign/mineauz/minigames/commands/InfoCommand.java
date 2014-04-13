@@ -11,6 +11,7 @@ import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.LoadoutModule;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class InfoCommand implements ICommand{
 
@@ -72,14 +73,13 @@ public class InfoCommand implements ICommand{
 						lines.add(ChatColor.GRAY + "Maximum Score: " + ChatColor.GREEN + mgm.getMaxScore());
 					}
 					if(mgm.getType() == MinigameType.TEAMS){
-						if(mgm.getDefaultWinner().equals("red")){
-							lines.add(ChatColor.GRAY + "Default Winning Team: " + ChatColor.RED + mgm.getDefaultWinner());
-						}
-						else if(mgm.getDefaultWinner().equals("blue")){
-							lines.add(ChatColor.GRAY + "Default Winning Team: " + ChatColor.BLUE + mgm.getDefaultWinner());
+						if(TeamsModule.getMinigameModule(mgm).getDefaultWinner() != null){
+							lines.add(ChatColor.GRAY + "Default Winning Team: " + 
+									TeamsModule.getMinigameModule(mgm).getDefaultWinner().getChatColor() + 
+									TeamsModule.getMinigameModule(mgm).getDefaultWinner().getColor().toString().toLowerCase());
 						}
 						else{
-							lines.add(ChatColor.GRAY + "Default Winning Team: " + ChatColor.GRAY + mgm.getDefaultWinner());
+							lines.add(ChatColor.GRAY + "Default Winning Team: " + ChatColor.GRAY + "None");
 						}
 					}
 					
@@ -109,7 +109,7 @@ public class InfoCommand implements ICommand{
 						lines.add(ChatColor.GRAY + "Starting Positions: " + ChatColor.RED + "0");
 					}
 					if(mgm.getType() == MinigameType.TEAMS){
-						for(Team t : mgm.getTeams()){
+						for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 							lines.add(ChatColor.GRAY + t.getDisplayName() + " Starting Positions: " + ChatColor.GREEN + t.getStartLocations().size());
 						}
 					}

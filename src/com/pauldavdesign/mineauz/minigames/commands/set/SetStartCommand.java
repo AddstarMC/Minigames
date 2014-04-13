@@ -11,6 +11,7 @@ import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class SetStartCommand implements ICommand{
 
@@ -80,7 +81,7 @@ public class SetStartCommand implements ICommand{
 		}
 		else if(args.length == 2 && TeamColor.matchColor(args[0]) != null && args[1].matches("[0-9]+")){
 			int position = Integer.parseInt(args[1]) + 1;
-			Team team = minigame.getTeam(TeamColor.matchColor(args[0]));
+			Team team = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.matchColor(args[0]));
 			if(team == null){
 				sender.sendMessage(ChatColor.RED + "No team color found by the name: " + args[0]);
 				return true;
@@ -98,7 +99,7 @@ public class SetStartCommand implements ICommand{
 		}
 		else if(args[0].equalsIgnoreCase("clear")){
 			if(args.length >= 2 && TeamColor.matchColor(args[1]) != null){
-				Team team = minigame.getTeam(TeamColor.matchColor(args[1]));
+				Team team = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.matchColor(args[1]));
 				if(team == null){
 					sender.sendMessage(ChatColor.RED + "No team color found by the name: " + args[1]);
 					return true;

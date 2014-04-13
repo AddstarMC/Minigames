@@ -13,6 +13,7 @@ import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class ScoreCommand implements ICommand {
 
@@ -96,10 +97,12 @@ public class ScoreCommand implements ICommand {
 							sender.sendMessage(ChatColor.RED + "No Minigame found by the name " + args[2]);
 							return true;
 						}
+
+						TeamsModule tmod = TeamsModule.getMinigameModule(mg);
 						
 						if(mg.getType() == MinigameType.TEAMS){
-							if(mg.hasTeam(color)){
-								Team t = mg.getTeam(color);
+							if(tmod.hasTeam(color)){
+								Team t = tmod.getTeam(color);
 								sender.sendMessage(color.getColor() + t.getDisplayName() + ChatColor.GRAY + " score in " + mg.getName(false) + ": " 
 										+ ChatColor.GREEN + t.getScore());
 							}
@@ -154,11 +157,13 @@ public class ScoreCommand implements ICommand {
 							sender.sendMessage(ChatColor.RED + "No Minigame found by the name " + args[2]);
 							return true;
 						}
+
+						TeamsModule tmod = TeamsModule.getMinigameModule(mg);
 						
 						if(mg.getType() == MinigameType.TEAMS && mg.hasPlayers()){
 							Team t = null;
-							if(mg.hasTeam(color)){
-								t = mg.getTeam(color);
+							if(tmod.hasTeam(color)){
+								t = tmod.getTeam(color);
 								t.setScore(score);
 								sender.sendMessage(t.getChatColor() + t.getDisplayName() + ChatColor.GRAY + " score has been set to " + score);
 							}
@@ -170,7 +175,7 @@ public class ScoreCommand implements ICommand {
 							if(mg.getMaxScore() != 0 && score >= mg.getMaxScorePerPlayer()){
 								List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(t.getPlayers());
 								List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mg.getPlayers().size() - t.getPlayers().size());
-								for(Team te : mg.getTeams()){
+								for(Team te : tmod.getTeams()){
 									if(te != t){
 										l.addAll(te.getPlayers());
 									}
@@ -226,6 +231,8 @@ public class ScoreCommand implements ICommand {
 						mgName = args[2];
 					}
 
+					TeamsModule tmod = TeamsModule.getMinigameModule(mg);
+
 					if(plugin.mdata.hasMinigame(mgName)){
 						mg = plugin.mdata.getMinigame(mgName);
 					}
@@ -236,8 +243,8 @@ public class ScoreCommand implements ICommand {
 					
 					if(mg.getType() == MinigameType.TEAMS && mg.hasPlayers()){
 						Team team = null;
-						if(mg.hasTeam(color)){
-							team = mg.getTeam(color);
+						if(tmod.hasTeam(color)){
+							team = tmod.getTeam(color);
 							team.addScore(score);
 							sender.sendMessage(ChatColor.GRAY + "Added " + score + " to " + team.getChatColor() + team.getDisplayName() + 
 									ChatColor.GRAY + " score, new score: " + team.getScore());
@@ -250,7 +257,7 @@ public class ScoreCommand implements ICommand {
 						if(mg.getMaxScore() != 0 && team.getScore() >= mg.getMaxScorePerPlayer()){
 							List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(team.getPlayers());
 							List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mg.getPlayers().size() - team.getPlayers().size());
-							for(Team te : mg.getTeams()){
+							for(Team te : tmod.getTeams()){
 								if(te != team){
 									l.addAll(te.getPlayers());
 								}

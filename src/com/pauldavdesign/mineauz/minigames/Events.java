@@ -54,6 +54,7 @@ import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class Events implements Listener{
 	private static Minigames plugin = Minigames.plugin;
@@ -283,10 +284,10 @@ public class Events implements Listener{
 								if(mgm.getType() == MinigameType.TEAMS){
 									String sc = "";
 									int c = 0;
-									for(Team t : mgm.getTeams()){
+									for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 										c++;
 										sc += t.getColor().getColor().toString() + " " + t.getScore() + ChatColor.WHITE;
-										if(c != mgm.getTeams().size()){
+										if(c != TeamsModule.getMinigameModule(mgm).getTeams().size()){
 											sc += " : ";
 										}
 									}
@@ -347,7 +348,7 @@ public class Events implements Listener{
 				if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK){
 					if(tool.getMode() == MinigameToolMode.START && ply.getPlayer().hasPermission("minigame.set.start")){
 						if(!tool.getTeam().equals("none")){
-							Team t = mg.getTeam(TeamColor.valueOf(tool.getTeam().toUpperCase()));
+							Team t = TeamsModule.getMinigameModule(mg).getTeam(TeamColor.valueOf(tool.getTeam().toUpperCase()));
 							t.addStartLocation(ply.getPlayer().getLocation());
 							ply.sendMessage("Added " + t.getColor().getColor() + t.getDisplayName() + ChatColor.WHITE + 
 									" start location to " + mg.getName(false), null);
@@ -420,7 +421,7 @@ public class Events implements Listener{
 						String nworld;
 						Location delLoc = null;
 						if(!tool.getTeam().equals("none")){
-							Team t = mg.getTeam(TeamColor.valueOf(tool.getTeam().toUpperCase()));
+							Team t = TeamsModule.getMinigameModule(mg).getTeam(TeamColor.valueOf(tool.getTeam().toUpperCase()));
 							if(t.hasStartLocations()){
 								for(Location loc : mg.getStartLocations()){
 									nx = loc.getBlockX();

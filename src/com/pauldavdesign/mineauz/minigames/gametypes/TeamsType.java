@@ -21,6 +21,7 @@ import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.LobbySettingsModule;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class TeamsType extends MinigameTypeBase{
 	private static Minigames plugin = Minigames.plugin;
@@ -58,7 +59,7 @@ public class TeamsType extends MinigameTypeBase{
 		}
 		else{
 			Team smTeam = null;
-			for(Team team : mgm.getTeams()){
+			for(Team team : TeamsModule.getMinigameModule(mgm).getTeams()){
 				if(smTeam == null || team.getPlayers().size() < smTeam.getPlayers().size()){
 					smTeam = team;
 				}
@@ -78,7 +79,7 @@ public class TeamsType extends MinigameTypeBase{
 				public void run() {
 					if(fply.isInMinigame()){
 						List<Location> locs = new ArrayList<Location>();
-						if(fmgm.hasTeamStartLocations()){
+						if(TeamsModule.getMinigameModule(fmgm).hasTeamStartLocations()){
 							locs.addAll(fteam.getStartLocations());
 						}
 						else{
@@ -105,7 +106,7 @@ public class TeamsType extends MinigameTypeBase{
 	public void quitMinigame(MinigamePlayer player, Minigame mgm, boolean forced){
 		player.removeTeam();
 		int teamsWithPlayers = 0;
-		for(Team t : mgm.getTeams()){
+		for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 			if(t.getPlayers().size() > 0)
 				teamsWithPlayers ++;
 		}
@@ -133,7 +134,7 @@ public class TeamsType extends MinigameTypeBase{
 		else if(mgm.getPlayers().size() >= 1 && 
 				teamsWithPlayers == 1 && mgm.isNotWaitingForPlayers() && !forced){
 			Team winner = null;
-			for(Team t : mgm.getTeams()){
+			for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 				if(t.getPlayers().size() > 0){
 					winner = t;
 					break;
@@ -169,7 +170,7 @@ public class TeamsType extends MinigameTypeBase{
 		for(MinigamePlayer player : losers){
 			player.removeTeam();
 		}
-		for(Team t : mgm.getTeams()){
+		for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 			t.resetScore();
 		}
 
@@ -202,7 +203,7 @@ public class TeamsType extends MinigameTypeBase{
 				}
 				else{
 					List<Location> starts = new ArrayList<Location>();
-					if(mg.hasTeamStartLocations()){
+					if(TeamsModule.getMinigameModule(mg).hasTeamStartLocations()){
 						starts.addAll(team.getStartLocations());
 						ply.getLoadout().equiptLoadout(ply);
 					}
@@ -234,11 +235,11 @@ public class TeamsType extends MinigameTypeBase{
 	public void timerExpire(TimerExpireEvent event){
 		if(event.getMinigame().getType() == MinigameType.TEAMS){
 			Minigame mgm = event.getMinigame();
-			if(mgm.getDefaultWinner() != null){
-				List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(mgm.getDefaultWinner().getPlayers());
-				List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - mgm.getDefaultWinner().getPlayers().size());
-				for(Team t : mgm.getTeams()){
-					if(t != mgm.getDefaultWinner())
+			if(TeamsModule.getMinigameModule(mgm).getDefaultWinner() != null){
+				List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(TeamsModule.getMinigameModule(mgm).getDefaultWinner().getPlayers());
+				List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - TeamsModule.getMinigameModule(mgm).getDefaultWinner().getPlayers().size());
+				for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+					if(t != TeamsModule.getMinigameModule(mgm).getDefaultWinner())
 						l.addAll(t.getPlayers());
 				}
 				plugin.pdata.endMinigame(mgm, w, l);
@@ -246,7 +247,7 @@ public class TeamsType extends MinigameTypeBase{
 			else{
 				List<Team> drawTeams = new ArrayList<Team>();
 				Team winner = null;
-				for(Team t : mgm.getTeams()){
+				for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 					if(winner == null || (t.getScore() > winner.getScore() && 
 							(drawTeams.isEmpty() || t.getScore() > drawTeams.get(0).getScore()))){
 						winner = t;
@@ -267,7 +268,7 @@ public class TeamsType extends MinigameTypeBase{
 				if(winner != null){
 					List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(winner.getPlayers());
 					List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - winner.getPlayers().size());
-					for(Team t : mgm.getTeams()){
+					for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 						if(t != winner)
 							l.addAll(t.getPlayers());
 					}
@@ -275,7 +276,7 @@ public class TeamsType extends MinigameTypeBase{
 				}
 				else{
 					List<MinigamePlayer> players = new ArrayList<MinigamePlayer>(mgm.getPlayers());
-					for(Team t : mgm.getTeams()){
+					for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 						t.resetScore();
 					}
 					
@@ -309,10 +310,10 @@ public class TeamsType extends MinigameTypeBase{
 										event.getMinigame().getName(true)), "error");
 								String scores = "";
 								int c = 1;
-								for(Team t : mgm.getTeams()){
+								for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 									scores += t.getChatColor().toString() + t.getScore();
 									c++;
-									if(c != mgm.getTeams().size())
+									if(c != TeamsModule.getMinigameModule(mgm).getTeams().size())
 										scores += ChatColor.WHITE + " : ";
 								}
 								ply.sendMessage(MinigameUtils.getLang("minigame.info.score") + " " + scores);
@@ -323,10 +324,10 @@ public class TeamsType extends MinigameTypeBase{
 										event.getMinigame().getName(true)), "error");
 								String scores = "";
 								int c = 1;
-								for(Team t : mgm.getTeams()){
+								for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 									scores += t.getChatColor().toString() + t.getScore();
 									c++;
-									if(c != mgm.getTeams().size())
+									if(c != TeamsModule.getMinigameModule(mgm).getTeams().size())
 										scores += ChatColor.WHITE + " : ";
 								}
 								ply.sendMessage(MinigameUtils.getLang("minigame.info.score") + " " + scores);
@@ -341,10 +342,10 @@ public class TeamsType extends MinigameTypeBase{
 									event.getMinigame().getName(true)));
 							String scores = "";
 							int c = 1;
-							for(Team t : mgm.getTeams()){
+							for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 								scores += t.getChatColor().toString() + t.getScore();
 								c++;
-								if(c != mgm.getTeams().size())
+								if(c != TeamsModule.getMinigameModule(mgm).getTeams().size())
 									scores += ChatColor.WHITE + " : ";
 							}
 							plugin.getServer().broadcastMessage(MinigameUtils.getLang("minigame.info.score") + " " + scores);
@@ -355,10 +356,10 @@ public class TeamsType extends MinigameTypeBase{
 									event.getMinigame().getName(true)));
 							String scores = "";
 							int c = 1;
-							for(Team t : mgm.getTeams()){
+							for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 								scores += t.getChatColor().toString() + t.getScore();
 								c++;
-								if(c != mgm.getTeams().size())
+								if(c != TeamsModule.getMinigameModule(mgm).getTeams().size())
 									scores += ChatColor.WHITE + " : ";
 							}
 							plugin.getServer().broadcastMessage(MinigameUtils.getLang("minigame.info.score") + " " + scores);

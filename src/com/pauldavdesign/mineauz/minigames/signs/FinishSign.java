@@ -15,6 +15,7 @@ import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class FinishSign implements MinigameSign {
 	
@@ -74,7 +75,7 @@ public class FinishSign implements MinigameSign {
 							if(player.getMinigame().getType() == MinigameType.TEAMS){
 								List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(player.getTeam().getPlayers());
 								List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(minigame.getPlayers().size() - player.getTeam().getPlayers().size());
-								for(Team t : minigame.getTeams()){
+								for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
 									if(t != player.getTeam())
 										l.addAll(t.getPlayers());
 								}
@@ -118,7 +119,7 @@ public class FinishSign implements MinigameSign {
 					if(player.getMinigame().getType() == MinigameType.TEAMS){
 						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(player.getTeam().getPlayers());
 						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(minigame.getPlayers().size() - player.getTeam().getPlayers().size());
-						for(Team t : minigame.getTeams()){
+						for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
 							if(t != player.getTeam())
 								l.addAll(t.getPlayers());
 						}

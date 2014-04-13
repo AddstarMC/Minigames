@@ -11,6 +11,7 @@ import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class SetDefaultWinnerCommand implements ICommand {
 
@@ -59,12 +60,12 @@ public class SetDefaultWinnerCommand implements ICommand {
 			String label, String[] args) {
 		if(args != null){
 			if(args[0].equalsIgnoreCase("none")){
-				minigame.setDefaultWinner(null);
+				TeamsModule.getMinigameModule(minigame).setDefaultWinner(null);
 				sender.sendMessage(ChatColor.GRAY + "The default winner of " + minigame + " has been set to none.");
 			}
 			else{
-				if(minigame.hasTeam(TeamColor.matchColor(args[0]))){
-					minigame.setDefaultWinner(minigame.getTeam(TeamColor.matchColor(args[0])));
+				if(TeamsModule.getMinigameModule(minigame).hasTeam(TeamColor.matchColor(args[0]))){
+					TeamsModule.getMinigameModule(minigame).setDefaultWinner(TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.matchColor(args[0])));
 					sender.sendMessage(ChatColor.GRAY + "The default winner of " + minigame + " has been set to " + args[0] + ".");
 				}
 			}
@@ -78,7 +79,7 @@ public class SetDefaultWinnerCommand implements ICommand {
 			String alias, String[] args) {
 		if(args.length == 1){
 			List<String> teams = new ArrayList<String>();
-			for(Team t : minigame.getTeams()){
+			for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
 				teams.add(t.getColor().toString().toLowerCase());
 			}
 			return MinigameUtils.tabCompleteMatch(teams, args[0]);

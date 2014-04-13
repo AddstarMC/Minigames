@@ -16,6 +16,7 @@ import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class InfectionMechanic extends GameMechanicBase{
 	
@@ -30,13 +31,16 @@ public class InfectionMechanic extends GameMechanicBase{
 	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
 		for(int i = 0; i < players.size(); i++){
 			MinigamePlayer ply = players.get(i);
-			if(minigame.getType() != MinigameType.TEAMS || minigame.getTeams().size() != 2 || !minigame.hasTeam(TeamColor.RED) || !minigame.hasTeam(TeamColor.BLUE)){
+			if(minigame.getType() != MinigameType.TEAMS || 
+					TeamsModule.getMinigameModule(minigame).getTeams().size() != 2 || 
+					!TeamsModule.getMinigameModule(minigame).hasTeam(TeamColor.RED) || 
+					!TeamsModule.getMinigameModule(minigame).hasTeam(TeamColor.BLUE)){
 				pdata.quitMinigame(ply, true);
 				ply.sendMessage(MinigameUtils.getLang("minigame.error.noInfection"), "error");
 			}
 			else{
-				Team red = minigame.getTeam(TeamColor.RED);
-				Team blue = minigame.getTeam(TeamColor.BLUE);
+				Team red = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.RED);
+				Team blue = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.BLUE);
 				Team team = ply.getTeam();
 				
 				if(team == blue){
@@ -69,8 +73,8 @@ public class InfectionMechanic extends GameMechanicBase{
 		if(player.isInMinigame()){
 			Minigame mgm = player.getMinigame();
 			if(mgm.getType() == MinigameType.TEAMS && mgm.getScoreType().equals("infection")){
-				Team blue = mgm.getTeam(TeamColor.BLUE);
-				Team red = mgm.getTeam(TeamColor.RED);
+				Team blue = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.BLUE);
+				Team red = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.RED);
 				if(blue.getPlayers().contains(player)){
 					TeamsType.switchTeam(mgm, player, red);
 					infected.add(player);

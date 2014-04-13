@@ -19,6 +19,7 @@ import com.pauldavdesign.mineauz.minigames.RestoreBlock;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class ToolCommand implements ICommand {
 
@@ -213,8 +214,8 @@ public class ToolCommand implements ICommand {
 					}
 					else if(tool.getMode() == MinigameToolMode.START){
 						if(!tool.getTeam().equals("none")){
-							if(tool.getMinigame().hasTeam(TeamColor.matchColor(tool.getTeam()))){
-								Team team = tool.getMinigame().getTeam(TeamColor.matchColor(tool.getTeam()));
+							if(TeamsModule.getMinigameModule(tool.getMinigame()).hasTeam(TeamColor.matchColor(tool.getTeam()))){
+								Team team = TeamsModule.getMinigameModule(tool.getMinigame()).getTeam(TeamColor.matchColor(tool.getTeam()));
 								Location nloc = null;
 								for(Location loc : team.getStartLocations()){
 									nloc = loc.clone();
@@ -266,8 +267,8 @@ public class ToolCommand implements ICommand {
 					}
 					else if(tool.getMode() == MinigameToolMode.START){
 						if(!tool.getTeam().equals("none")){
-							if(tool.getMinigame().hasTeam(TeamColor.matchColor(tool.getTeam()))){
-								Team team = tool.getMinigame().getTeam(TeamColor.matchColor(tool.getTeam()));
+							if(TeamsModule.getMinigameModule(tool.getMinigame()).hasTeam(TeamColor.matchColor(tool.getTeam()))){
+								Team team = TeamsModule.getMinigameModule(tool.getMinigame()).getTeam(TeamColor.matchColor(tool.getTeam()));
 								Location nloc = null;
 								for(Location loc : team.getStartLocations()){
 									nloc = loc.clone();

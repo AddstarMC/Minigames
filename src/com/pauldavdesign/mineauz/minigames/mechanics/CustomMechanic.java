@@ -11,6 +11,7 @@ import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class CustomMechanic extends GameMechanicBase{
 
@@ -26,7 +27,7 @@ public class CustomMechanic extends GameMechanicBase{
 			for(MinigamePlayer ply : players){
 				if(ply.getTeam() == null){
 					Team smt = null;
-					for(Team t : minigame.getTeams()){
+					for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
 						if(smt == null || t.getPlayers().size() < smt.getPlayers().size())
 							smt = t;
 					}
@@ -41,7 +42,7 @@ public class CustomMechanic extends GameMechanicBase{
 			while(!sorted){
 				Team smt = null;
 				Team lgt = null;
-				for(Team t : minigame.getTeams()){
+				for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
 					if(smt == null || t.getPlayers().size() < smt.getPlayers().size() - 1)
 						smt = t;
 					if((lgt == null || t.getPlayers().size() > lgt.getPlayers().size()) && t != smt)
@@ -73,7 +74,7 @@ public class CustomMechanic extends GameMechanicBase{
 			if(mgm.getScoreType().equals("custom")){
 				Team smt = null;
 				Team lgt = ply.getTeam();
-				for(Team t : mgm.getTeams()){
+				for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 					if(smt == null || t.getPlayers().size() < smt.getPlayers().size() - 1)
 						smt = t;
 				}

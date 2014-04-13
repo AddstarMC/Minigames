@@ -13,6 +13,7 @@ import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class EndCommand implements ICommand{
 
@@ -97,8 +98,8 @@ public class EndCommand implements ICommand{
 				Minigame mgm = null;
 				if(color != null && args.length == 2 && plugin.mdata.hasMinigame(args[1])){
 					mgm = plugin.mdata.getMinigame(args[1]);
-					if(mgm.hasTeam(color)){
-						team = mgm.getTeam(color);
+					if(TeamsModule.getMinigameModule(minigame).hasTeam(color)){
+						team = TeamsModule.getMinigameModule(minigame).getTeam(color);
 					}
 					else{
 						sender.sendMessage(ChatColor.RED + "No team found by the name " + args[0] + " in " + mgm.getName(false));
@@ -137,13 +138,13 @@ public class EndCommand implements ICommand{
 					if(mgm.hasPlayers()){
 						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(team.getPlayers());
 						int lcount = 0;
-						for(Team t : mgm.getTeams()){
+						for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
 							if(t != team){
 								lcount += t.getPlayers().size();
 							}
 						}
 						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(lcount);
-						for(Team t : mgm.getTeams()){
+						for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
 							if(t != team){
 								l.addAll(t.getPlayers());
 							}

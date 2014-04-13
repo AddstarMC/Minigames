@@ -12,6 +12,7 @@ import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class TeamSign implements MinigameSign {
 	
@@ -70,7 +71,7 @@ public class TeamSign implements MinigameSign {
 						Team sm = null;
 						Team nt = matchTeam(mgm, sign.getLine(2));
 						if(nt != null){
-							for(Team t : mgm.getTeams()){
+							for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 								if(sm == null || t.getPlayers().size() < sm.getPlayers().size())
 									sm = t;
 							}
@@ -118,8 +119,8 @@ public class TeamSign implements MinigameSign {
 	
 	private Team matchTeam(Minigame mgm, String text){
 		TeamColor col = TeamColor.matchColor(ChatColor.stripColor(text).replace(" ", "_"));
-		if(mgm.hasTeam(col))
-			return mgm.getTeam(col);
+		if(TeamsModule.getMinigameModule(mgm).hasTeam(col))
+			return TeamsModule.getMinigameModule(mgm).getTeam(col);
 		return null;
 	}
 

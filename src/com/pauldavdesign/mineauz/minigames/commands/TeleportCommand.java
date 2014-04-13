@@ -13,6 +13,7 @@ import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class TeleportCommand implements ICommand {
 
@@ -119,7 +120,7 @@ public class TeleportCommand implements ICommand {
 			else if(args.length >= 2 && args[1].equalsIgnoreCase("start")){
 				if(ply.isInMinigame()){
 					int pos = 0;
-					Team team = ply.getMinigame().getTeam(TeamColor.matchColor(args[3]));
+					Team team = TeamsModule.getMinigameModule(ply.getMinigame()).getTeam(TeamColor.matchColor(args[3]));
 					if(args.length >= 3 && args[2].matches("[0-9]+") && !args[2].equals("0")){
 						pos = Integer.parseInt(args[2]) - 1;
 					}

@@ -11,6 +11,7 @@ import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class SetTeamCommand implements ICommand {
 
@@ -61,6 +62,7 @@ public class SetTeamCommand implements ICommand {
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
+			TeamsModule tmod = TeamsModule.getMinigameModule(minigame);
 			if(args[0].equalsIgnoreCase("add")){
 				if(args.length >= 2){
 					TeamColor col = TeamColor.matchColor(args[1]);
@@ -75,12 +77,12 @@ public class SetTeamCommand implements ICommand {
 							}
 						}
 						if(name != null){
-							minigame.addTeam(col, name);
+							tmod.addTeam(minigame, col, name);
 							sender.sendMessage(ChatColor.GRAY + "Added " + MinigameUtils.capitalize(col.toString()) + 
 									" team to " + minigame.getName(false) + " with the display name " + name);
 						}
 						else{
-							minigame.addTeam(col);
+							tmod.addTeam(minigame, col);
 							sender.sendMessage(ChatColor.GRAY + "Added " + MinigameUtils.capitalize(col.toString()) + 
 									" team to " + minigame.getName(false));
 						}
@@ -105,8 +107,8 @@ public class SetTeamCommand implements ICommand {
 				return true;
 			}
 			else if(args[0].equalsIgnoreCase("list")){
-				List<String> teams = new ArrayList<String>(minigame.getTeams().size());
-				for(Team t : minigame.getTeams()){
+				List<String> teams = new ArrayList<String>(tmod.getTeams().size());
+				for(Team t : tmod.getTeams()){
 					teams.add(t.getChatColor() + t.getColor().toString() + ChatColor.GRAY + 
 							"(" + t.getChatColor() + t.getDisplayName() + ChatColor.GRAY + ")");
 				}
@@ -124,8 +126,8 @@ public class SetTeamCommand implements ICommand {
 				if(args.length >= 2){
 					TeamColor col = TeamColor.matchColor(args[1]);
 					if(col != null){
-						if(minigame.hasTeam(col)){
-							minigame.removeTeam(col);
+						if(tmod.hasTeam(col)){
+							tmod.removeTeam(minigame, col);
 							sender.sendMessage(ChatColor.GRAY + "Removed " + MinigameUtils.capitalize(col.toString()) + " from " + minigame.getName(false));
 						}
 						else{
@@ -135,7 +137,7 @@ public class SetTeamCommand implements ICommand {
 					else{
 						sender.sendMessage(ChatColor.RED + "Invalid team color! Valid options:");
 						List<String> cols = new ArrayList<String>(TeamColor.values().length);
-						for(Team c : minigame.getTeams()){
+						for(Team c : tmod.getTeams()){
 							cols.add(c.getColor().toString());
 						}
 						sender.sendMessage(MinigameUtils.listToString(cols));
@@ -144,7 +146,7 @@ public class SetTeamCommand implements ICommand {
 				else{
 					sender.sendMessage(ChatColor.RED + "Valid teams:");
 					List<String> cols = new ArrayList<String>(TeamColor.values().length);
-					for(Team c : minigame.getTeams()){
+					for(Team c : tmod.getTeams()){
 						cols.add(c.getColor().toString());
 					}
 					sender.sendMessage(MinigameUtils.listToString(cols));
@@ -161,8 +163,8 @@ public class SetTeamCommand implements ICommand {
 							name += " ";
 					}
 					if(col != null){
-						if(minigame.hasTeam(col)){
-							minigame.getTeam(col).setDisplayName(name);
+						if(tmod.hasTeam(col)){
+							tmod.getTeam(col).setDisplayName(name);
 							sender.sendMessage(ChatColor.GRAY + "Set " + MinigameUtils.capitalize(col.toString()) + " display name to " + name + " for " + minigame.getName(false));
 						}
 						else{
@@ -172,7 +174,7 @@ public class SetTeamCommand implements ICommand {
 					else{
 						sender.sendMessage(ChatColor.RED + "Invalid team color! Valid options:");
 						List<String> cols = new ArrayList<String>(TeamColor.values().length);
-						for(Team c : minigame.getTeams()){
+						for(Team c : tmod.getTeams()){
 							cols.add(c.getColor().toString());
 						}
 						sender.sendMessage(MinigameUtils.listToString(cols));
@@ -181,7 +183,7 @@ public class SetTeamCommand implements ICommand {
 				else{
 					sender.sendMessage(ChatColor.RED + "Valid teams:");
 					List<String> cols = new ArrayList<String>(TeamColor.values().length);
-					for(Team c : minigame.getTeams()){
+					for(Team c : tmod.getTeams()){
 						cols.add(c.getColor().toString());
 					}
 					sender.sendMessage(MinigameUtils.listToString(cols));
@@ -207,7 +209,7 @@ public class SetTeamCommand implements ICommand {
 			}
 			else if(args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("rename")){
 				List<String> cols = new ArrayList<String>(TeamColor.values().length);
-				for(Team c : minigame.getTeams()){
+				for(Team c : TeamsModule.getMinigameModule(minigame).getTeams()){
 					cols.add(c.getColor().toString());
 				}
 				return MinigameUtils.tabCompleteMatch(cols, args[1]);
