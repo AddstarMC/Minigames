@@ -26,6 +26,7 @@ import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.LoadoutModule;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.RegionModule;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardGroup;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardItem;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardRarity;
@@ -60,6 +61,7 @@ public class MinigameData {
 		
 		modules.add(LoadoutModule.class);
 		modules.add(LobbySettingsModule.class);
+		modules.add(TeamsModule.class);
 		modules.add(RegionModule.class); //TODO: Remove me later!
 	}
 	

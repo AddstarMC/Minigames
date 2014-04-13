@@ -10,10 +10,13 @@ import org.bukkit.inventory.ItemStack;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.menu.InteractionInterface;
+import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemCustom;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.RegionActionInterface;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.RegionActions;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.conditions.RegionConditions;
 
 public class MenuItemExecutor extends MenuItem{
 	
@@ -67,9 +70,8 @@ public class MenuItemExecutor extends MenuItem{
 						MinigameUtils.capitalize(ex.getTrigger().toString()) + ";" +
 						ChatColor.GREEN + "Action: " + ChatColor.GRAY + 
 						MinigameUtils.capitalize(ex.getAction().getName()) + ";" + 
-						ChatColor.DARK_PURPLE + "(Right click to delete)");
-				if(!ex.getArguments().isEmpty())
-					des.add(ChatColor.DARK_PURPLE + "(Left click to edit)");
+						ChatColor.DARK_PURPLE + "(Right click to delete);" + 
+						"(Left click to edit)");
 				MenuItemCustom cmi = new MenuItemCustom("Executor ID: " + region.getExecutors().size(), 
 						des, Material.ENDER_PEARL);
 
@@ -82,14 +84,39 @@ public class MenuItemExecutor extends MenuItem{
 						return null;
 					}
 				});
-				final MenuItem fcmi = cmi;
+				final MinigamePlayer fviewer = getContainer().getViewer();
+				final Menu fm = getContainer();
 				cmi.setClick(new InteractionInterface() {
 					
 					@Override
 					public Object interact() {
-						if(ex.getAction().displayMenu(getContainer().getViewer(), ex.getArguments(), getContainer()))
-							return null;
-						return fcmi.getItem();
+						Menu m = new Menu(3, "Executor", fviewer);
+						final Menu ffm = m;
+						if(ex.getAction().getRequiredArguments() != null){
+							MenuItemCustom c1 = new MenuItemCustom("Action Settings", Material.PAPER);
+							c1.setClick(new InteractionInterface() {
+								
+								@Override
+								public Object interact() {
+									ex.getAction().displayMenu(fviewer, ex.getArguments(), ffm);
+									return null;
+								}
+							});
+							m.addItem(c1);
+						}
+						MenuItemCustom c2 = new MenuItemCustom("Conditions", Material.CHEST);
+						c2.setClick(new InteractionInterface() {
+							
+							@Override
+							public Object interact() {
+								RegionConditions.displayMenu(fviewer, ex, ffm);
+								return null;
+							}
+						});
+						m.addItem(c2);
+						m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, fm), m.getSize() - 9);
+						m.displayMenu(fviewer);
+						return null;
 					}
 				});
 				getContainer().addItem(cmi);

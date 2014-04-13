@@ -21,6 +21,8 @@ import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.MenuItemRegion;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.Region;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.RegionActions;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.conditions.RegionConditionInterface;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.conditions.RegionConditions;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.RegionExecutor;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.RegionTrigger;
 
@@ -51,10 +53,21 @@ public class RegionModule implements MinigameModule {
 			
 			int c = 0;
 			for(RegionExecutor ex : r.getExecutors()){
-				config.set(minigame + ".regions." + name + ".executors." + c + ".trigger", ex.getTrigger().toString());
-				config.set(minigame + ".regions." + name + ".executors." + c + ".action", ex.getAction().getName());
+				String path = minigame + ".regions." + name + ".executors." + c;
+				config.set(path + ".trigger", ex.getTrigger().toString());
+				config.set(path + ".action", ex.getAction().getName());
+				if(!ex.getConditions().isEmpty()){
+					List<String> conditions = new ArrayList<String>(ex.getConditions().size());
+					for(RegionConditionInterface con : ex.getConditions()){
+						conditions.add(con.getName());
+					}
+					config.set(path + ".conditions", conditions);
+				}
 				if(!ex.getArguments().isEmpty()){
-					ex.getAction().saveArguments(ex.getArguments(), config, minigame + ".regions." + name + ".executors." + c + ".arguments");
+					ex.getAction().saveArguments(ex.getArguments(), config, path + ".arguments");
+					for(RegionConditionInterface con : ex.getConditions()){
+						con.saveArguments(ex.getArguments(), config, path + ".arguments");
+					}
 				}
 				c++;
 			}
@@ -84,10 +97,20 @@ public class RegionModule implements MinigameModule {
 				if(config.contains(minigame + ".regions." + name + ".executors")){
 					Set<String> ex = config.getConfigurationSection(minigame + ".regions." + name + ".executors").getKeys(false);
 					for(String i : ex){
-						RegionExecutor rex = new RegionExecutor(RegionTrigger.valueOf(config.getString(minigame + ".regions." + name + ".executors." + i + ".trigger")), 
-								RegionActions.getActionByName(config.getString(minigame + ".regions." + name + ".executors." + i + ".action")));
-						if(config.contains(minigame + ".regions." + name + ".executors." + i + ".arguments"))
-							rex.setArguments(rex.getAction().loadArguments(config, minigame + ".regions." + name + ".executors." + i + ".arguments"));
+						String path = minigame + ".regions." + name + ".executors." + i;
+						RegionExecutor rex = new RegionExecutor(RegionTrigger.valueOf(config.getString(path + ".trigger")), 
+								RegionActions.getActionByName(config.getString(path + ".action")));
+						if(config.contains(path + ".conditions")){
+							for(String con : config.getStringList(path + ".conditions")){
+								rex.addCondition(RegionConditions.getConditionByName(con));
+							}
+						}
+						if(config.contains(path + ".arguments")){
+							rex.addArguments(rex.getAction().loadArguments(config, path + ".arguments"));
+							for(RegionConditionInterface con : rex.getConditions()){
+								rex.addArguments(con.loadArguments(config, path + ".arguments"));
+							}
+						}
 						r.addExecutor(rex);
 					}
 				}
