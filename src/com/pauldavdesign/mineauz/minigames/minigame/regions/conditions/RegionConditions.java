@@ -20,6 +20,8 @@ public class RegionConditions {
 	
 	static{
 		addCondition(new PlayerHealthRangeCondition());
+		addCondition(new HasRequiredFlagsCondition());
+		addCondition(new PlayerScoreRangeCondition());
 	}
 	
 	public static void addCondition(RegionConditionInterface condition){

@@ -51,6 +51,10 @@ public class RegionModule implements MinigameModule {
 					config.set(minigame + ".regions." + name + ".point2." + i, sloc.get(i));
 			}
 			
+			if(r.getTickDelay() != 20){
+				config.set(minigame + ".regions." + name + ".tickDelay", r.getTickDelay());
+			}
+			
 			int c = 0;
 			for(RegionExecutor ex : r.getExecutors()){
 				String path = minigame + ".regions." + name + ".executors." + c;
@@ -94,6 +98,9 @@ public class RegionModule implements MinigameModule {
 				
 				regions.put(name, new Region(name, loc1, loc2));
 				Region r = regions.get(name);
+				if(config.contains(minigame + ".regions." + name + ".tickDelay")){
+					r.changeTickDelay(config.getLong(minigame + ".regions." + name + ".tickDelay"));
+				}
 				if(config.contains(minigame + ".regions." + name + ".executors")){
 					Set<String> ex = config.getConfigurationSection(minigame + ".regions." + name + ".executors").getKeys(false);
 					for(String i : ex){
@@ -154,11 +161,14 @@ public class RegionModule implements MinigameModule {
 	}
 	
 	public void removeRegion(String name){
-		if(hasRegion(name))
+		if(hasRegion(name)){
+			regions.get(name).removeTickTask();
 			regions.remove(name);
+		}
 		else{
 			for(String n : regions.keySet()){
 				if(n.equalsIgnoreCase(name)){
+					regions.get(n).removeTickTask();
 					regions.remove(n);
 					break;
 				}
@@ -176,7 +186,9 @@ public class RegionModule implements MinigameModule {
 		rm.addItems(items);
 		rm.displayMenu(viewer);
 	}
-
+	
+	
+	
 	@Override
 	public void addMenuOptions(Menu menu) {
 		// TODO Auto-generated method stub

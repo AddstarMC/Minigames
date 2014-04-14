@@ -3,10 +3,12 @@ package com.pauldavdesign.mineauz.minigames.minigame.regions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
+import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.RegionActionInterface;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.conditions.RegionConditionInterface;
 
@@ -16,12 +18,24 @@ public class Region {
 	private Location point2;
 	private List<RegionExecutor> executors = new ArrayList<RegionExecutor>();
 	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
+	private long taskDelay = 20;
+	private int taskID;
 	
 	public Region(String name, Location point1, Location point2){
 		Location[] locs = MinigameUtils.getMinMaxSelection(point1, point2);
 		this.point1 = locs[0].clone();
 		this.point2 = locs[1].clone();
 		this.name = name;
+		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, new Runnable() {
+			
+			@Override
+			public void run() {
+				List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>(players);
+				for(MinigamePlayer player : plys){
+					execute(RegionTrigger.TICK, player);
+				}
+			}
+		}, 0, taskDelay);
 	}
 	
 	public boolean playerInRegion(MinigamePlayer player){
@@ -102,6 +116,29 @@ public class Region {
 		if(executors.contains(executor)){
 			executors.remove(executor);
 		}
+	}
+	
+	public void changeTickDelay(long delay){
+		removeTickTask();
+		taskDelay = delay;
+		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, new Runnable() {
+			
+			@Override
+			public void run() {
+				List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>(players);
+				for(MinigamePlayer player : plys){
+					execute(RegionTrigger.TICK, player);
+				}
+			}
+		}, 0, delay);
+	}
+	
+	public long getTickDelay(){
+		return taskDelay;
+	}
+	
+	public void removeTickTask(){
+		Bukkit.getScheduler().cancelTask(taskID);
 	}
 	
 	public void execute(RegionTrigger trigger, MinigamePlayer player){

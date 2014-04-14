@@ -4,8 +4,7 @@ public enum RegionTrigger {
 	
 	ENTER("Enter"),
 	LEAVE("Leave"),
-	TIMER_ENTER("Timer_Enter"),
-	TIMER_LEAVE("Timer_Leave");
+	TICK("Tick");
 	
 	private String name;
 	

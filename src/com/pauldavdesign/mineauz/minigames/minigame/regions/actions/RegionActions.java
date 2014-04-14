@@ -14,6 +14,7 @@ public class RegionActions {
 		addAction(new QuitAction());
 		addAction(new EndAction());
 		addAction(new MessageAction());
+		addAction(new AddScoreAction());
 	}
 	
 	public static void addAction(RegionActionInterface action){
