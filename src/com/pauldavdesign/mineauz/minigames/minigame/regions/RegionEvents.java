@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames.minigame.regions;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -48,20 +49,32 @@ public class RegionEvents implements Listener{
 	
 	@EventHandler
 	private void playerSpawn(PlayerRespawnEvent event){
-		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
 		if(ply.isInMinigame()){
-			Minigame mg = ply.getMinigame();
-			executeRegionChanges(mg, ply);
+			final Minigame mg = ply.getMinigame();
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				
+				@Override
+				public void run() {
+					executeRegionChanges(mg, ply);
+				}
+			});
 		}
 	}
 	
 	@EventHandler(ignoreCancelled = true)
 	private void playerJoin(JoinMinigameEvent event){
-		MinigamePlayer ply = event.getMinigamePlayer();
+		final MinigamePlayer ply = event.getMinigamePlayer();
 		if(ply == null) return;
-		Minigame mg = event.getMinigame();
-		executeRegionChanges(mg, ply);
+		final Minigame mg = event.getMinigame();
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			
+			@Override
+			public void run() {
+				executeRegionChanges(mg, ply);
+			}
+		});
 	}
 	
 	@EventHandler

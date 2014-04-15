@@ -15,6 +15,9 @@ public class RegionActions {
 		addAction(new EndAction());
 		addAction(new MessageAction());
 		addAction(new AddScoreAction());
+		addAction(new ReequipLoadoutAction());
+		addAction(new EquipLoadoutAction());
+		addAction(new HealAction());
 	}
 	
 	public static void addAction(RegionActionInterface action){

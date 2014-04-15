@@ -28,7 +28,7 @@ public class MessageAction implements RegionActionInterface {
 	@Override
 	public Map<String, Object> getRequiredArguments() {
 		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("message", "");
+		args.put("message", "Hello World!");
 		return args;
 	}
 
