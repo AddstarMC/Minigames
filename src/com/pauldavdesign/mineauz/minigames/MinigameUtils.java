@@ -390,8 +390,8 @@ public class MinigameUtils {
 	 * @param permission - The permission required to see this broadcast message.
 	 */
 	public static void broadcast(String message, Minigame minigame, String permission){
-		MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(message, minigame);
-		Bukkit.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + ev.getMessage(), permission);
+		MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(ChatColor.AQUA + "[Minigames]" + ChatColor.WHITE, message, minigame);
+		Bukkit.getServer().broadcast(ev.getMessageWithPrefix(), permission);
 	}
 	
 	/**
@@ -401,8 +401,8 @@ public class MinigameUtils {
 	 * @param prefixColor - The color to be used in the prefix.
 	 */
 	public static void broadcast(String message, Minigame minigame, ChatColor prefixColor){
-		MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(message, minigame);
-		Bukkit.getServer().broadcastMessage(prefixColor + "[Minigames] " + ChatColor.WHITE + ev.getMessage());
+		MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(prefixColor + "[Minigames]" + ChatColor.WHITE, message, minigame);
+		Bukkit.getServer().broadcastMessage(ev.getMessageWithPrefix());
 	}
 	
 //	public static void removePlayerArrows(MinigamePlayer player){
