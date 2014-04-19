@@ -129,6 +129,8 @@ minigame:
     plySpawn: "A treasure chest has appeared within %sm of %s!"
     plyDespawn: "Times up! The %s treasure was not found and has been removed from the world."
     plyDespawnCoords: "Coordinates: X:%s, Y:%s, Z:%s"
+    plyFound: "%s found the %s treasure!"
+    plyRemoved: "The %s treasure has been removed from the world."
     hint1:
       north: "North"
       east: "East"

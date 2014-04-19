@@ -589,14 +589,14 @@ public class PlayerData {
 						if(mgm.getRedTeamScore() != 0 && mgm.getBlueTeamScore() != 0){
 							score = ", " + MinigameUtils.formStr("player.end.team.score", ChatColor.BLUE.toString() + mgm.getBlueTeamScore() + ChatColor.WHITE, ChatColor.RED.toString() + mgm.getRedTeamScore());
 						}
-						plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + MinigameUtils.formStr("player.end.team.win", ChatColor.BLUE.toString() + "Blue Team" + ChatColor.WHITE, mgm.getName(true)) + score);
+						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.team.win", ChatColor.BLUE.toString() + "Blue Team" + ChatColor.WHITE, mgm.getName(true)) + score, mgm, ChatColor.GREEN);
 					}
 					else{
 						String score = "";
 						if(mgm.getRedTeamScore() != 0 && mgm.getBlueTeamScore() != 0){
 							score = ", " + MinigameUtils.formStr("player.end.team.score", ChatColor.RED.toString() + mgm.getRedTeamScore() + ChatColor.WHITE, ChatColor.BLUE.toString() + mgm.getBlueTeamScore());
 						}
-						plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + MinigameUtils.formStr("player.end.team.win", ChatColor.RED + "Red Team" + ChatColor.WHITE, mgm.getName(true)) + score);
+						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.team.win", ChatColor.RED + "Red Team" + ChatColor.WHITE, mgm.getName(true)) + score, mgm, ChatColor.GREEN);
 					}
 				}
 				else{
@@ -604,8 +604,7 @@ public class PlayerData {
 						String score = "";
 						if(winners.get(0).getScore() != 0)
 							score = MinigameUtils.formStr("player.end.broadcastScore", winners.get(0).getScore());
-						plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + 
-								MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getName(), mgm.getName(true)) + ". " + score);
+						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getDisplayName(), mgm.getName(true)) + ". " + score, mgm, ChatColor.GREEN);
 					}
 					else if(winners.size() > 1){
 						String win = "";
@@ -619,7 +618,7 @@ public class PlayerData {
 						
 						for(MinigamePlayer pl : winners){
 							if(winners.indexOf(pl) < 2){
-								win += pl.getName();
+								win += pl.getDisplayName();
 								if(winners.indexOf(pl) + 2 >= winners.size()){
 									win += " and ";
 								}
@@ -631,12 +630,10 @@ public class PlayerData {
 								win += String.valueOf(winners.size() - 3) + " others";
 							}
 						}
-						plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + 
-								MinigameUtils.formStr("player.end.broadcastMsg", win, mgm.getName(true)) + ". ");
+						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", win, mgm.getName(true)) + ". ", mgm, ChatColor.GREEN);
 					}
 					else{
-						plugin.getServer().broadcastMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + 
-								MinigameUtils.formStr("player.end.broadcastNobodyWon", mgm.getName(true)));
+						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastNobodyWon", mgm.getName(true)), mgm, ChatColor.RED);
 					}
 				}
 			}

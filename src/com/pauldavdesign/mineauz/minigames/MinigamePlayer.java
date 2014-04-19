@@ -71,6 +71,10 @@ public class MinigamePlayer {
 		return player.getName();
 	}
 	
+	public String getDisplayName(){
+		return player.getDisplayName();
+	}
+	
 	public UUID getUUID(){
 		return player.getUniqueId();
 	}

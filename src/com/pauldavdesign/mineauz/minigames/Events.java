@@ -227,7 +227,7 @@ public class Events implements Listener{
 								int z1 = mdata.getTreasureHuntLocation(minigame).getBlockZ();
 								int z2 = cblock.getLocation().getBlockZ();
 								if(x2 == x1 && y2 == y1 && z2 == z1){
-									plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + event.getPlayer().getName() + " found the " + minigame + " treasure!", "minigame.treasure.announce");
+									MinigameUtils.broadcast(MinigameUtils.formStr("minigame.treasurehunt.plyfound", event.getPlayer().getDisplayName(), mdata.getMinigame(minigame).getName(true)), mdata.getMinigame(minigame), "minigame.treasure.announce");
 									event.setCancelled(true);
 									Chest chest = (Chest) cblock.getState();
 									event.getPlayer().openInventory(chest.getInventory());
