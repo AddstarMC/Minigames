@@ -139,9 +139,8 @@ public class TeamsType extends MinigameTypeBase{
 			}
 			mgm.setMpBets(null);
 		}
-		else if(mgm.getPlayers().size() >= 1 && 
-				(mgm.getRedTeam().size() == 0 || mgm.getBlueTeam().size() == 0) &&
-				mgm.isNotWaitingForPlayers() && !forced){
+		else if(mgm.getPlayers().size() >= 1 && mgm.hasStarted() &&
+				(mgm.getRedTeam().size() == 0 || mgm.getBlueTeam().size() == 0) && !forced){
 			
 			if(mgm.getRedTeam().size() == 0){
 				List<MinigamePlayer> w;
@@ -178,7 +177,7 @@ public class TeamsType extends MinigameTypeBase{
 				mgm.getMpTimer() != null && 
 				mgm.getMpTimer().getStartWaitTimeLeft() != 0
 				&& !forced){
-			mgm.getMpTimer().setPlayerWaitTime(10);
+			mgm.getMpTimer().setPlayerWaitTime(Minigames.plugin.getConfig().getInt("multiplayer.waitforplayers"));
 			mgm.getMpTimer().pauseTimer();
 			mgm.getMpTimer().removeTimer();
 			mgm.setMpTimer(null);
