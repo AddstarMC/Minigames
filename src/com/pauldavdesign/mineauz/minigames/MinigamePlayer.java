@@ -72,7 +72,7 @@ public class MinigamePlayer {
 	}
 	
 	public String getDisplayName(){
-		return player.getDisplayName();
+		return ChatColor.stripColor(player.getDisplayName());
 	}
 	
 	public UUID getUUID(){
