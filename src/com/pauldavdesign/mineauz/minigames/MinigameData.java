@@ -157,7 +157,7 @@ public class MinigameData {
 			
 			setTreasureHuntLocation(minigame, rpos.getBlock().getLocation());
 			plugin.getLogger().info(MinigameUtils.formStr("minigame.treasurehunt.consSpawn", mgm.getName(false), rpos.getBlockX() + ", " + rpos.getBlockY() + ", " + rpos.getBlockZ()));
-			plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.treasurehunt.plySpawn", maxradius, mgm.getLocation()), "minigame.treasure.announce");
+			MinigameUtils.broadcast(MinigameUtils.formStr("minigame.treasurehunt.plySpawn", maxradius, mgm.getLocation()), getMinigame(minigame), "minigame.treasure.announce");
 			if(getMinigame(minigame).getThTimer() == null){
 				getMinigame(minigame).setThTimer(new TreasureHuntTimer(mgm));
 				getMinigame(minigame).getThTimer().startTimer();

@@ -80,6 +80,10 @@ public class MinigamePlayer {
 		return player.getName();
 	}
 	
+	public String getDisplayName(){
+		return ChatColor.stripColor(player.getDisplayName());
+	}
+	
 	public UUID getUUID(){
 		return player.getUniqueId();
 	}

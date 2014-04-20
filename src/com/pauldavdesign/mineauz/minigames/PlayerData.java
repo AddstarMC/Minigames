@@ -36,6 +36,7 @@ import com.pauldavdesign.mineauz.minigames.events.JoinMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.RevertCheckpointEvent;
 import com.pauldavdesign.mineauz.minigames.events.SpectateMinigameEvent;
+import com.pauldavdesign.mineauz.minigames.events.StartMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameTypeBase;
 import com.pauldavdesign.mineauz.minigames.mechanics.GameMechanics;
@@ -284,6 +285,8 @@ public class PlayerData {
 		for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
 			tpos.put(t, 0);
 		}
+		
+		Bukkit.getServer().getPluginManager().callEvent(new StartMinigameEvent(players, minigame, teleport));
 		
 		for(MinigamePlayer ply : players){
 			if(minigame.getType() != MinigameType.TEAMS){
@@ -566,16 +569,15 @@ public class PlayerData {
 						}
 					}
 					String nscore = ", " + MinigameUtils.formStr("player.end.team.score", score);
-					plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + MinigameUtils.formStr("player.end.team.win", 
-							team.getChatColor() + team.getDisplayName() + ChatColor.WHITE, mgm.getName(true)) + nscore);
+					MinigameUtils.broadcast(MinigameUtils.formStr("player.end.team.win", 
+							team.getChatColor() + team.getDisplayName() + ChatColor.WHITE, mgm.getName(true)) + nscore, mgm, ChatColor.GREEN);
 				}
 				else{
 					if(winners.size() == 1){
 						String score = "";
 						if(winners.get(0).getScore() != 0)
 							score = MinigameUtils.formStr("player.end.broadcastScore", winners.get(0).getScore());
-						plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + 
-								MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getName(), mgm.getName(true)) + ". " + score);
+						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getDisplayName(), mgm.getName(true)) + ". " + score, mgm, ChatColor.GREEN);
 					}
 					else if(winners.size() > 1){
 						String win = "";
@@ -589,7 +591,7 @@ public class PlayerData {
 						
 						for(MinigamePlayer pl : winners){
 							if(winners.indexOf(pl) < 2){
-								win += pl.getName();
+								win += pl.getDisplayName();
 								if(winners.indexOf(pl) + 2 >= winners.size()){
 									win += " and ";
 								}
@@ -601,12 +603,10 @@ public class PlayerData {
 								win += String.valueOf(winners.size() - 3) + " others";
 							}
 						}
-						plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE + 
-								MinigameUtils.formStr("player.end.broadcastMsg", win, mgm.getName(true)) + ". ");
+						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", win, mgm.getName(true)) + ". ", mgm, ChatColor.GREEN);
 					}
 					else{
-						plugin.getServer().broadcastMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + 
-								MinigameUtils.formStr("player.end.broadcastNobodyWon", mgm.getName(true)));
+						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastNobodyWon", mgm.getName(true)), mgm, ChatColor.RED);
 					}
 				}
 			}

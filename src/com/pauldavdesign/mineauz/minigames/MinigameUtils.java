@@ -10,9 +10,13 @@ import org.bukkit.configuration.file.FileConfiguration;
 //
 //import org.bukkit.craftbukkit.v1_6_R2.entity.CraftPlayer;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+
+import com.pauldavdesign.mineauz.minigames.events.MinigamesBroadcastEvent;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class MinigameUtils {
 	private static FileConfiguration lang = Minigames.plugin.getLang();
@@ -397,6 +401,29 @@ public class MinigameUtils {
 		
 		return sloc;
 	}
+
+	/**
+	 * Broadcasts a message with a defined permission.
+	 * @param message - The message to be broadcasted (Can be manipulated with MinigamesBroadcastEvent)
+	 * @param minigame - The Minigame this broadcast is related to.
+	 * @param permission - The permission required to see this broadcast message.
+	 */
+	public static void broadcast(String message, Minigame minigame, String permission){
+		MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(ChatColor.AQUA + "[Minigames]" + ChatColor.WHITE, message, minigame);
+		Bukkit.getServer().broadcast(ev.getMessageWithPrefix(), permission);
+	}
+	
+	/**
+	 * Broadcasts a server message without a permission.
+	 * @param message - The message to be broadcasted (Can be manipulated with MinigamesBroadcastEvent)
+	 * @param minigame - The Minigame this broadcast is related to.
+	 * @param prefixColor - The color to be used in the prefix.
+	 */
+	public static void broadcast(String message, Minigame minigame, ChatColor prefixColor){
+		MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(prefixColor + "[Minigames]" + ChatColor.WHITE, message, minigame);
+		Bukkit.getServer().broadcastMessage(ev.getMessageWithPrefix());
+	}
+	
 //	public static void removePlayerArrows(MinigamePlayer player){
 //		try{
 //			Class.forName("net.minecraft.server.v1_5_R3.EntityPlayer");

@@ -41,7 +41,7 @@ public class MenuItemInteger extends MenuItem{
 			description = getDescription();
 			String desc = ChatColor.stripColor(getDescription().get(0));
 			
-			if(desc.matches("[0-9]+"))
+			if(desc.matches("-?[0-9]+"))
 				description.set(0, ChatColor.GREEN.toString() + value.getValue());
 			else
 				description.add(0, ChatColor.GREEN.toString() + value.getValue());

@@ -3,6 +3,7 @@ package com.pauldavdesign.mineauz.minigames.mechanics;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,7 +17,9 @@ import com.pauldavdesign.mineauz.minigames.CTFFlag;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
+import com.pauldavdesign.mineauz.minigames.events.FlagCaptureEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
+import com.pauldavdesign.mineauz.minigames.events.TakeFlagEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
@@ -90,24 +93,34 @@ public class CTFMechanic extends GameMechanicBase{
 					if((!sign.getLine(2).equalsIgnoreCase(team.getChatColor() + team.getColor().toString()) && !sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture")) || 
 							sign.getLine(2).equalsIgnoreCase(ChatColor.GRAY + "Neutral")){
 						if(mgm.getFlagCarrier(ply) == null){
+							TakeFlagEvent ev = null;
 							if(!mgm.hasDroppedFlag(sloc) && 
 									(TeamsModule.getMinigameModule(mgm).hasTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2)))) || 
 											sign.getLine(2).equalsIgnoreCase(ChatColor.GRAY + "Neutral"))){
 								Team oTeam = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2))));
 								CTFFlag flag = new CTFFlag(event.getClickedBlock().getLocation(), oTeam, event.getPlayer(), mgm);
-								mgm.addFlagCarrier(ply, flag);
-								flag.removeFlag();
+								ev = new TakeFlagEvent(mgm, ply, flag);
+								Bukkit.getPluginManager().callEvent(ev);
+								if(!ev.isCancelled()){
+									mgm.addFlagCarrier(ply, flag);
+									flag.removeFlag();
+								}
 							}
 							else if(mgm.hasDroppedFlag(sloc)){
 								CTFFlag flag = mgm.getDroppedFlag(sloc);
-								mgm.addFlagCarrier(ply, flag);
-								if(!flag.isAtHome()){
-									flag.stopTimer();
+								ev = new TakeFlagEvent(mgm, ply, flag);
+								Bukkit.getPluginManager().callEvent(ev);
+								if(!ev.isCancelled()){
+									mgm.addFlagCarrier(ply, flag);
+									if(!flag.isAtHome()){
+										flag.stopTimer();
+									}
+									flag.removeFlag();
 								}
-								flag.removeFlag();
 							}
 							
-							if(mgm.getFlagCarrier(ply) != null){
+							
+							if(mgm.getFlagCarrier(ply) != null && !ev.isCancelled()){
 								if(mgm.getFlagCarrier(ply).getTeam() != null){
 									Team fteam = mgm.getFlagCarrier(ply).getTeam();
 									String message = ply.getName() + " stole " + fteam.getChatColor() + fteam.getDisplayName() + ChatColor.WHITE + "'s flag!";
@@ -131,55 +144,59 @@ public class CTFMechanic extends GameMechanicBase{
 						
 						if(mgm.getFlagCarrier(ply) != null && ((mgm.hasDroppedFlag(clickID) && mgm.getDroppedFlag(clickID).isAtHome()) || !mgm.hasDroppedFlag(clickID))){
 							CTFFlag flag = mgm.getFlagCarrier(ply);
-							flag.respawnFlag();
-							String id = MinigameUtils.createLocationID(flag.getSpawnLocation());
-							mgm.addDroppedFlag(id, flag);
-							mgm.removeFlagCarrier(ply);
-							
-							boolean end = false;
-							
-							if(mgm.getType() == MinigameType.TEAMS){
-								ply.getTeam().addScore();
-								if(mgm.getMaxScore() != 0 && ply.getTeam().getScore() >= mgm.getMaxScorePerPlayer())
-									end = true;
+							FlagCaptureEvent ev = new FlagCaptureEvent(mgm, ply, flag);
+							Bukkit.getPluginManager().callEvent(ev);
+							if(!ev.isCancelled()){
+								flag.respawnFlag();
+								String id = MinigameUtils.createLocationID(flag.getSpawnLocation());
+								mgm.addDroppedFlag(id, flag);
+								mgm.removeFlagCarrier(ply);
 								
-								if(!end){
-									String message = MinigameUtils.formStr("player.ctf.capture", 
-											ply.getName(), ply.getTeam().getChatColor() + ply.getTeam().getDisplayName());
-									mdata.sendMinigameMessage(mgm, message, null, null);
-								}
-								flag.stopCarrierParticleEffect();
-								ply.addScore();
-								mgm.setScore(ply, ply.getScore());
+								boolean end = false;
 								
-								if(end){
-									mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.captureFinal", ply.getName(), 
-											ply.getTeam().getChatColor() + ply.getTeam().getDisplayName()), null, null);
-									List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(ply.getTeam().getPlayers());
-									List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - ply.getTeam().getPlayers().size());
-									for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
-										if(t != ply.getTeam())
-											l.addAll(t.getPlayers());
-									}
-									plugin.pdata.endMinigame(mgm, w, l);
-									mgm.resetFlags();
-								}
-							}
-							else{
-								ply.addScore();
-								mgm.setScore(ply, ply.getScore());
-								if(mgm.getMaxScore() != 0 && ply.getScore() >= mgm.getMaxScorePerPlayer()){
-									end = true;
-								}
-								
-								mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.captureNeutral", ply.getName()), null, null);
-								flag.stopCarrierParticleEffect();
-								
-								if(end){
-									mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.captureNeutralFinal", ply.getName()), null, null);
+								if(mgm.getType() == MinigameType.TEAMS){
+									ply.getTeam().addScore();
+									if(mgm.getMaxScore() != 0 && ply.getTeam().getScore() >= mgm.getMaxScorePerPlayer())
+										end = true;
 									
-									pdata.endMinigame(ply);
-									mgm.resetFlags();
+									if(!end){
+										String message = MinigameUtils.formStr("player.ctf.capture", 
+												ply.getName(), ply.getTeam().getChatColor() + ply.getTeam().getDisplayName());
+										mdata.sendMinigameMessage(mgm, message, null, null);
+									}
+									flag.stopCarrierParticleEffect();
+									ply.addScore();
+									mgm.setScore(ply, ply.getScore());
+									
+									if(end){
+										mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.captureFinal", ply.getName(), 
+												ply.getTeam().getChatColor() + ply.getTeam().getDisplayName()), null, null);
+										List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(ply.getTeam().getPlayers());
+										List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - ply.getTeam().getPlayers().size());
+										for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+											if(t != ply.getTeam())
+												l.addAll(t.getPlayers());
+										}
+										plugin.pdata.endMinigame(mgm, w, l);
+										mgm.resetFlags();
+									}
+								}
+								else{
+									ply.addScore();
+									mgm.setScore(ply, ply.getScore());
+									if(mgm.getMaxScore() != 0 && ply.getScore() >= mgm.getMaxScorePerPlayer()){
+										end = true;
+									}
+									
+									mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.captureNeutral", ply.getName()), null, null);
+									flag.stopCarrierParticleEffect();
+									
+									if(end){
+										mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.captureNeutralFinal", ply.getName()), null, null);
+										
+										pdata.endMinigame(ply);
+										mgm.resetFlags();
+									}
 								}
 							}
 						}

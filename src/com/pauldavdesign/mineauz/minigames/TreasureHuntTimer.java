@@ -55,14 +55,15 @@ public class TreasureHuntTimer{
 						mdata.removeTreasure(mgm.getName(false));
 						curHints = new ArrayList<String>();
 						if(chestfound == false){
-							plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.treasurehunt.plyDespawn", mgm.getName(true)), "minigame.treasure.announce");
-							plugin.getServer().broadcast(ChatColor.GRAY + MinigameUtils.formStr("minigame.treasurehunt.plyDespawnCoords", old.getBlockX(), old.getBlockY(), old.getBlockZ()), "minigame.treasure.announce");
+							MinigameUtils.broadcast(MinigameUtils.formStr("minigame.treasurehunt.plyDespawn", mgm.getName(true)) + "\n" + 
+									ChatColor.GRAY + MinigameUtils.formStr("minigame.treasurehunt.plyDespawnCoords", 
+											old.getBlockX(), old.getBlockY(), old.getBlockZ()), mgm, "minigame.treasure.announce");
 						}
 					}
 					else if(time == hintTime2 && chestfound == false){
 						block.setY(block.getY() - 1);
 						String hint = MinigameUtils.formStr("minigame.treasurehunt.hint2", mgm.getName(true), block.getBlock().getType().toString().toLowerCase().replace("_", " "));
-						plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + hint, "minigame.treasure.announce");
+						MinigameUtils.broadcast(hint, mgm, "minigames.treasure.announce");
 						curHints.add(ChatColor.GRAY + hint);
 						block.setY(block.getY() + 1);
 					}
@@ -109,7 +110,7 @@ public class TreasureHuntTimer{
 							}
 						}
 						String hint = MinigameUtils.formStr("minigame.treasurehunt.hint1.hint", mgm.getName(true), dir, mgm.getLocation());
-						plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + hint, "minigame.treasure.hint");
+						MinigameUtils.broadcast(hint, mgm, "minigames.treasure.announce");
 						curHints.add(ChatColor.GRAY + hint);
 					}
 					else if(time == hintTime3 && chestfound == false){
@@ -125,12 +126,12 @@ public class TreasureHuntTimer{
 							dir = MinigameUtils.getLang("minigame.treasurehunt.hint3.below");
 						}
 						String hint = MinigameUtils.formStr("minigame.treasurehunt.hint3.hint", mgm.getName(true), dist, dir);
-						plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + hint, "minigame.treasure.hint");
+						MinigameUtils.broadcast(hint, mgm, "minigames.treasure.announce");
 						curHints.add(ChatColor.GRAY + hint);
 					}
 					else if(time == hintTime4 && chestfound == false){
 						String hint = MinigameUtils.formStr("minigame.treasurehunt.hint4", mgm.getName(true), block.getBlock().getBiome().toString().toLowerCase().replace("_", " "));
-						plugin.getServer().broadcast(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + hint, "minigame.treasure.hint");
+						MinigameUtils.broadcast(hint, mgm, "minigames.treasure.announce");
 						curHints.add(ChatColor.GRAY + hint);
 					}
 					
