@@ -15,6 +15,7 @@ public class MinigamesBroadcastEvent extends Event{
 	public MinigamesBroadcastEvent(String prefix, String message, Minigame minigame){
 		this.message = message;
 		this.minigame = minigame;
+		this.prefix = prefix;
 	}
 	
 	public String getMessage(){
