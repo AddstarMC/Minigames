@@ -42,6 +42,7 @@ import com.pauldavdesign.mineauz.minigames.gametypes.MinigameTypeBase;
 import com.pauldavdesign.mineauz.minigames.mechanics.GameMechanics;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.WeatherTimeModule;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 import com.pauldavdesign.mineauz.minigames.sql.SQLPlayer;
 
@@ -176,6 +177,8 @@ public class PlayerData {
 				player.storePlayerData();
 				player.setMinigame(minigame);
 				minigame.addPlayer(player);
+				WeatherTimeModule.getMinigameModule(minigame).applyCustomTime(player);
+				WeatherTimeModule.getMinigameModule(minigame).applyCustomWeather(player);
 				player.setCheckpoint(player.getPlayer().getLocation());
 				player.getPlayer().setFallDistance(0);
 				player.getPlayer().setWalkSpeed(0.2f);
@@ -191,9 +194,11 @@ public class PlayerData {
 					player.getPlayer().hidePlayer(pl.getPlayer());
 				}
 				
-				//Register regen recorder events
-				if(minigame.getPlayers().size() == 1 && minigame.getBlockRecorder().hasRegenArea()){
-					Bukkit.getServer().getPluginManager().registerEvents(minigame.getBlockRecorder(), plugin);
+				if(minigame.getPlayers().size() == 1){
+					//Register regen recorder events
+					if(minigame.getBlockRecorder().hasRegenArea())
+						Bukkit.getServer().getPluginManager().registerEvents(minigame.getBlockRecorder(), plugin);
+					WeatherTimeModule.getMinigameModule(minigame).startTimeLoop(minigame);
 				}
 				
 				//Call Type specific join
@@ -461,6 +466,7 @@ public class PlayerData {
 					}
 					
 					mdata.clearClaimedScore(minigame);
+					WeatherTimeModule.getMinigameModule(minigame).stopTimeLoop();
 				}
 				
 				minigame.getScoreboardManager().resetScores(player.getPlayer());
@@ -630,6 +636,7 @@ public class PlayerData {
 					vehicle.eject();
 				}
 				player.getPlayer().setFireTicks(0);
+				player.getPlayer().resetPlayerTime();
 				player.getPlayer().setNoDamageTicks(60);
 				List<ItemStack> tempItems = new ArrayList<ItemStack>(player.getTempRewardItems());
 				player.resetAllStats();
@@ -701,6 +708,7 @@ public class PlayerData {
 				player.removeMinigame();
 				mgm.removePlayer(player);
 				player.getPlayer().setFallDistance(0);
+				WeatherTimeModule.getMinigameModule(mgm).stopTimeLoop();
 				mgm.getScoreboardManager().resetScores(player.getPlayer());
 				
 				if(mgm.getMinigameTimer() != null){

@@ -155,6 +155,8 @@ public class MinigamePlayer {
 			player.setScoreboard(player.getServer().getScoreboardManager().getMainScoreboard());
 		}
 		
+		player.resetPlayerWeather();
+		player.resetPlayerTime();
 		allowGMChange = true;
 		allowTP = true;
 		player.setGameMode(oply.getLastGamemode());

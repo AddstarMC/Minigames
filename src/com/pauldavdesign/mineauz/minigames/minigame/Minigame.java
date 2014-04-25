@@ -1783,9 +1783,6 @@ public class Minigame {
 		rndChstDes.clear();
 		rndChstDes.add("Max. item randomization");
 		itemsMain.add(new MenuItemInteger("Max. Chest Random", rndChstDes, Material.DOUBLE_STEP, getMaxChestRandomCallback(), 0, null));
-		for(MinigameModule mod : getModules()){
-			mod.addMenuOptions(main);
-		}
 
 		//--------------//
 		//Loadout Settings
@@ -1876,7 +1873,10 @@ public class Minigame {
 				Material.ENDER_PEARL, LobbySettingsModule.getMinigameModule(this).getTeleportOnStartCallback()));
 		lobby.addItems(itemsLobby);
 		lobby.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), lobby.getSize() - 9);
-		
+
+		for(MinigameModule mod : getModules()){
+			mod.addMenuOptions(main);
+		}
 		main.displayMenu(player);
 		
 	}
