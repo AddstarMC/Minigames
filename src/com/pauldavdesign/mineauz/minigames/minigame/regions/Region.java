@@ -92,8 +92,8 @@ public class Region {
 		return players;
 	}
 	
-	public int addExecutor(RegionTrigger trigger, RegionActionInterface action){
-		executors.add(new RegionExecutor(trigger, action));
+	public int addExecutor(RegionTrigger trigger){
+		executors.add(new RegionExecutor(trigger));
 		return executors.size();
 	}
 	
@@ -157,6 +157,7 @@ public class Region {
 			}
 		}
 		for(RegionExecutor exec : toExecute)
-			exec.getAction().executeAction(player, exec.getArguments());
+			for(RegionActionInterface act : exec.getActions())
+				act.executeAction(player, exec.getArguments());
 	}
 }

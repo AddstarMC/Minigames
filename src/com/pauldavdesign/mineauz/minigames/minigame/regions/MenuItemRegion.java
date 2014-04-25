@@ -15,6 +15,7 @@ import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemCustom;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.RegionModule;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.RegionActions;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.conditions.RegionConditions;
 
 public class MenuItemRegion extends MenuItem{
@@ -56,8 +57,8 @@ public class MenuItemRegion extends MenuItem{
 		for(RegionExecutor ex : region.getExecutors()){
 			List<String> des = MinigameUtils.stringToList(ChatColor.GREEN + "Trigger: " + ChatColor.GRAY + 
 					MinigameUtils.capitalize(ex.getTrigger().toString()) + ";" +
-					ChatColor.GREEN + "Action: " + ChatColor.GRAY + 
-					MinigameUtils.capitalize(ex.getAction().getName()) + ";" + 
+					ChatColor.GREEN + "Actions: " + ChatColor.GRAY + 
+					ex.getActions().size() + ";" + 
 					ChatColor.DARK_PURPLE + "(Right click to delete);(Left clict to edit)");
 			MenuItemCustom cmi = new MenuItemCustom("Executor ID: " + c, 
 					des, Material.ENDER_PEARL);
@@ -80,18 +81,28 @@ public class MenuItemRegion extends MenuItem{
 				public Object interact() {
 					Menu m = new Menu(3, "Executor", fviewer);
 					final Menu ffm = m;
-					if(cex.getAction().getRequiredArguments() != null){
-						MenuItemCustom c1 = new MenuItemCustom("Action Settings", Material.PAPER);
-						c1.setClick(new InteractionInterface() {
-							
-							@Override
-							public Object interact() {
-								cex.getAction().displayMenu(fviewer, cex.getArguments(), ffm);
-								return null;
-							}
-						});
-						m.addItem(c1);
-					}
+//					if(cex.getAction().getRequiredArguments() != null){
+//						MenuItemCustom c1 = new MenuItemCustom("Action Settings", Material.PAPER);
+//						c1.setClick(new InteractionInterface() {
+//							
+//							@Override
+//							public Object interact() {
+//								cex.getAction().displayMenu(fviewer, cex.getArguments(), ffm);
+//								return null;
+//							}
+//						});
+//						m.addItem(c1);
+//					}
+					MenuItemCustom ca = new MenuItemCustom("Actions", Material.CHEST);
+					ca.setClick(new InteractionInterface() {
+						
+						@Override
+						public Object interact() {
+							RegionActions.displayMenu(fviewer, cex, ffm);
+							return null;
+						}
+					});
+					m.addItem(ca);
 					MenuItemCustom c2 = new MenuItemCustom("Conditions", Material.CHEST);
 					c2.setClick(new InteractionInterface() {
 						

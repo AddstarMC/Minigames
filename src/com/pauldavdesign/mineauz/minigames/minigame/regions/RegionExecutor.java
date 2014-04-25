@@ -11,24 +11,11 @@ import com.pauldavdesign.mineauz.minigames.minigame.regions.conditions.RegionCon
 public class RegionExecutor {
 	private RegionTrigger trigger;
 	private List<RegionConditionInterface> conditions = new ArrayList<RegionConditionInterface>();
-	private RegionActionInterface action;
+	private List<RegionActionInterface> actions = new ArrayList<RegionActionInterface>();
 	private Map<String, Object> arguments = new HashMap<String, Object>();
 	
-	public RegionExecutor(RegionTrigger trigger, RegionActionInterface action){
+	public RegionExecutor(RegionTrigger trigger){
 		this.trigger = trigger;
-		this.action = action;
-		if(action.getRequiredArguments() != null)
-			arguments.putAll(action.getRequiredArguments());
-	}
-	
-	public RegionExecutor(RegionTrigger trigger, RegionConditionInterface condition, RegionActionInterface action){
-		this.trigger = trigger;
-		this.action = action;
-		conditions.add(condition);
-		if(action.getRequiredArguments() != null)
-			arguments.putAll(action.getRequiredArguments());
-		if(condition.getRequiredArguments() != null)
-			arguments.putAll(condition.getRequiredArguments());
 	}
 	
 	public RegionTrigger getTrigger(){
@@ -55,8 +42,21 @@ public class RegionExecutor {
 		}
 	}
 	
-	public RegionActionInterface getAction(){
-		return action;
+	public List<RegionActionInterface> getActions(){
+		return actions;
+	}
+	
+	public void addAction(RegionActionInterface action){
+		actions.add(action);
+		if(action.getRequiredArguments() != null)
+			arguments.putAll(action.getRequiredArguments());
+	}
+	
+	public void removeAction(RegionActionInterface action){
+		actions.remove(action);
+		if(action.getRequiredArguments() != null)
+			for(String key : action.getRequiredArguments().keySet())
+				arguments.remove(key);
 	}
 	
 	public Map<String, Object> getArguments(){

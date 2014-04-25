@@ -9,30 +9,31 @@ import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemCustom;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.RegionActions;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.conditions.RegionConditions;
 
-public class MenuItemConditionAdd extends MenuItem{
+public class MenuItemActionAdd extends MenuItem{
 	
 	private RegionExecutor exec;
 
-	public MenuItemConditionAdd(String name, Material displayItem, RegionExecutor exec) {
+	public MenuItemActionAdd(String name, Material displayItem, RegionExecutor exec) {
 		super(name, displayItem);
 		this.exec = exec;
 	}
 	
 	@Override
 	public ItemStack onClick(){
-		Menu m = new Menu(6, "Conditions", getContainer().getViewer());
+		Menu m = new Menu(6, "Actions", getContainer().getViewer());
 		m.setPreviousPage(getContainer());
-		for(String con : RegionConditions.getAllConditionNames()){
-			MenuItemCustom c = new MenuItemCustom(MinigameUtils.capitalize(con), Material.PAPER);
-			final String fcon = con;
+		for(String act : RegionActions.getAllActionNames()){
+			MenuItemCustom c = new MenuItemCustom(MinigameUtils.capitalize(act), Material.PAPER);
+			final String fact = act;
 			c.setClick(new InteractionInterface() {
 				
 				@Override
 				public Object interact() {
-					exec.addCondition(RegionConditions.getConditionByName(fcon));
-					getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, exec, RegionConditions.getConditionByName(fcon)));
+					exec.addCondition(RegionConditions.getConditionByName(fact));
+					getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, exec, RegionActions.getActionByName(fact)));
 					getContainer().displayMenu(getContainer().getViewer());
 					return null;
 				}
@@ -43,5 +44,4 @@ public class MenuItemConditionAdd extends MenuItem{
 		m.displayMenu(getContainer().getViewer());
 		return null;
 	}
-
 }
