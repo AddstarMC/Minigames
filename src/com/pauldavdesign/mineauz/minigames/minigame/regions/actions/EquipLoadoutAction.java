@@ -12,6 +12,7 @@ import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemString;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.LoadoutModule;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.Region;
 
 public class EquipLoadoutAction implements RegionActionInterface {
 
@@ -21,7 +22,7 @@ public class EquipLoadoutAction implements RegionActionInterface {
 	}
 
 	@Override
-	public void executeAction(MinigamePlayer player, Map<String, Object> args) {
+	public void executeAction(MinigamePlayer player, Map<String, Object> args, Region region) {
 		if(player.isInMinigame()){
 			LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
 			if(lmod.hasLoadout((String)args.get("a_equiploadout"))){

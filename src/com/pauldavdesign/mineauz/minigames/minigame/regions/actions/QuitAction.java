@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.Region;
 
 public class QuitAction implements RegionActionInterface {
 
@@ -16,7 +17,7 @@ public class QuitAction implements RegionActionInterface {
 	}
 
 	@Override
-	public void executeAction(MinigamePlayer player, Map<String, Object> args) {
+	public void executeAction(MinigamePlayer player, Map<String, Object> args, Region region) {
 		if(player.isInMinigame())
 			Minigames.plugin.pdata.quitMinigame(player, false);
 	}

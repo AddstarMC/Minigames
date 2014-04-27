@@ -11,6 +11,7 @@ import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemInteger;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.Region;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.RegionExecutor;
 
 public class PlayerHealthRangeCondition implements RegionConditionInterface {
@@ -22,7 +23,7 @@ public class PlayerHealthRangeCondition implements RegionConditionInterface {
 
 	@Override
 	public boolean checkCondition(MinigamePlayer player,
-			Map<String, Object> args) {
+			Map<String, Object> args, Region region) {
 		if(player.getPlayer().getHealth() >= (Double)args.get("c_phealthmin") &&
 				player.getPlayer().getHealth() <= (Double)args.get("c_phealthmax"))
 			return true;

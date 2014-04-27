@@ -64,6 +64,32 @@ public class Region {
 		return false;
 	}
 	
+	public boolean locationInRegion(Location loc){
+		if(loc.getWorld() == point1.getWorld()){
+			int minx = point1.getBlockX();
+			int maxx = point2.getBlockX();
+			int plyx = loc.getBlockX();
+			
+			if(plyx >= minx && plyx <= maxx){
+				int miny = point1.getBlockY();
+				int maxy = point2.getBlockY();
+				int plyy = loc.getBlockY();
+				
+				if(plyy >= miny && plyy <= maxy){
+					int minz = point1.getBlockZ();
+					int maxz = point2.getBlockZ();
+					int plyz = loc.getBlockZ();
+					
+					if(plyz >= minz && plyz <= maxz){
+						return true;
+					}
+				}
+				
+			}
+		}
+		return false;
+	}
+	
 	public String getName(){
 		return name;
 	}
@@ -147,7 +173,7 @@ public class Region {
 			if(exec.getTrigger() == trigger){
 				boolean cont = true;
 				for(RegionConditionInterface con : exec.getConditions()){
-					if(!con.checkCondition(player, exec.getArguments())){
+					if(!con.checkCondition(player, exec.getArguments(), this)){
 						cont = false;
 						break;
 					}
@@ -158,6 +184,6 @@ public class Region {
 		}
 		for(RegionExecutor exec : toExecute)
 			for(RegionActionInterface act : exec.getActions())
-				act.executeAction(player, exec.getArguments());
+				act.executeAction(player, exec.getArguments(), this);
 	}
 }

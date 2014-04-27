@@ -11,6 +11,7 @@ import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemInteger;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.Region;
 
 public class AddScoreAction implements RegionActionInterface {
 
@@ -20,7 +21,7 @@ public class AddScoreAction implements RegionActionInterface {
 	}
 
 	@Override
-	public void executeAction(MinigamePlayer player, Map<String, Object> args) {
+	public void executeAction(MinigamePlayer player, Map<String, Object> args, Region region) {
 		if(!player.isInMinigame()) return;
 		player.addScore((Integer)args.get("a_addscoreamount"));
 		player.getMinigame().setScore(player, player.getScore());

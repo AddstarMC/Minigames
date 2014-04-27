@@ -10,7 +10,6 @@ import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemCustom;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.RegionActions;
-import com.pauldavdesign.mineauz.minigames.minigame.regions.conditions.RegionConditions;
 
 public class MenuItemActionAdd extends MenuItem{
 	
@@ -32,7 +31,7 @@ public class MenuItemActionAdd extends MenuItem{
 				
 				@Override
 				public Object interact() {
-					exec.addCondition(RegionConditions.getConditionByName(fact));
+					exec.addAction(RegionActions.getActionByName(fact));
 					getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, exec, RegionActions.getActionByName(fact)));
 					getContainer().displayMenu(getContainer().getViewer());
 					return null;

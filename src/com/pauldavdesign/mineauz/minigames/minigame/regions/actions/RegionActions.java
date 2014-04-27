@@ -28,6 +28,7 @@ public class RegionActions {
 		addAction(new ReequipLoadoutAction());
 		addAction(new EquipLoadoutAction());
 		addAction(new HealAction());
+		addAction(new BarrierAction());
 	}
 	
 	public static void addAction(RegionActionInterface action){

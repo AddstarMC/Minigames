@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.Region;
 
 public class ReequipLoadoutAction implements RegionActionInterface {
 
@@ -15,7 +16,7 @@ public class ReequipLoadoutAction implements RegionActionInterface {
 	}
 
 	@Override
-	public void executeAction(MinigamePlayer player, Map<String, Object> args) {
+	public void executeAction(MinigamePlayer player, Map<String, Object> args, Region region) {
 		if(player.isInMinigame())
 			player.getLoadout().equiptLoadout(player);
 	}

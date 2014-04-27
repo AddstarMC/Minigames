@@ -22,6 +22,8 @@ public class RegionConditions {
 		addCondition(new PlayerHealthRangeCondition());
 		addCondition(new HasRequiredFlagsCondition());
 		addCondition(new PlayerScoreRangeCondition());
+		addCondition(new MatchTeamCondition());
+		addCondition(new ContainsOneTeamCondition());
 	}
 	
 	public static void addCondition(RegionConditionInterface condition){
