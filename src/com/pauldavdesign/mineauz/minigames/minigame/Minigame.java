@@ -135,6 +135,7 @@ public class Minigame {
 	private String defaultWinner = "none";
 	
 	private boolean canSpectateFly = false;
+	private boolean canTP = false;
 	
 	private boolean randomizeChests = false;
 	private int minChestRandom = 5;
@@ -1388,6 +1389,10 @@ public class Minigame {
 		return canSpectateFly;
 	}
 	
+	public boolean canTP() {
+		return canTP;
+	}
+	
 	private Callback<Boolean> getSpectatorFlyCallback(){
 		return new Callback<Boolean>() {
 
@@ -1402,11 +1407,30 @@ public class Minigame {
 			}
 		};
 	}
+	
+	private Callback<Boolean> getTPCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				canTP = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return canTP;
+			}
+		};
+	}
 
 	public void setCanSpectateFly(boolean canSpectateFly) {
 		this.canSpectateFly = canSpectateFly;
 	}
 
+	public void setCanTP(boolean canSpectateFly) {
+		this.canTP = canTP;
+	}
+	
 	public boolean isRandomizeChests() {
 		return randomizeChests;
 	}
@@ -1756,6 +1780,7 @@ public class Minigame {
 		itemsMain.add(defLoad);
 		itemsMain.add(new MenuItemPage("Additional Loadouts", Material.CHEST, loadouts));
 		itemsMain.add(new MenuItemBoolean("Allow Spectator Fly", Material.FEATHER, getSpectatorFlyCallback()));
+		itemsMain.add(new MenuItemBoolean("Allow TP", Material.COMMAND, getTPCallback()));
 		List<String> rndChstDes = new ArrayList<String>();
 		rndChstDes.add("Randomize items in");
 		rndChstDes.add("chest upon first opening");
@@ -2378,6 +2403,13 @@ public class Minigame {
 			minigame.getConfig().set(name + ".canspectatefly", null);
 		}
 		
+		if(canTP()){
+			minigame.getConfig().set(name + ".canspectatefly", canTP());
+		}
+		else{
+			minigame.getConfig().set(name + ".canspectatefly", null);
+		}
+		
 		if(isRandomizeChests()){
 			minigame.getConfig().set(name + ".randomizechests", isRandomizeChests());
 		}
@@ -2805,6 +2837,10 @@ public class Minigame {
 		
 		if(minigame.getConfig().contains(name + ".canspectatefly")){
 			setCanSpectateFly(minigame.getConfig().getBoolean(name + ".canspectatefly"));
+		}
+		
+		if(minigame.getConfig().contains(name + ".cantp")){
+			setCanTP(minigame.getConfig().getBoolean(name + ".cantp"));
 		}
 		
 		if(minigame.getConfig().contains(name + ".randomizechests")){

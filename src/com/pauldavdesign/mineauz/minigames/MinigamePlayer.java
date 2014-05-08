@@ -159,7 +159,7 @@ public class MinigamePlayer {
 	}
 	
 	public boolean getAllowTeleport(){
-		return allowTP;
+		return allowTP || getMinigame().canTP();
 	}
 	
 	public void setAllowTeleport(boolean allowTP){
