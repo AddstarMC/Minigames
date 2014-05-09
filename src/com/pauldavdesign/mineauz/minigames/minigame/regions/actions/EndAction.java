@@ -29,17 +29,21 @@ public class EndAction implements ActionInterface {
 
 	@Override
 	public boolean useInNodes() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Map<String, Object> args, Node node) {
-		
+		execute(player, args);
 	}
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region) {
+		execute(player, args);
+	}
+	
+	private void execute(MinigamePlayer player, Map<String, Object> args){
 		if(!player.isInMinigame()) return;
 		if(player.getMinigame().getType() != MinigameType.SINGLEPLAYER){
 			List<MinigamePlayer> w = null;

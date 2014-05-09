@@ -28,12 +28,15 @@ public class PlayerHealthRangeCondition implements ConditionInterface {
 
 	@Override
 	public boolean useInNodes() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean checkNodeCondition(MinigamePlayer player,
 			Map<String, Object> args, Node node) {
+		if(player.getPlayer().getHealth() >= (Double)args.get("c_phealthmin") &&
+				player.getPlayer().getHealth() <= (Double)args.get("c_phealthmax"))
+			return true;
 		return false;
 	}
 

@@ -28,12 +28,14 @@ public class PlayerScoreRangeCondition implements ConditionInterface {
 
 	@Override
 	public boolean useInNodes() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean checkNodeCondition(MinigamePlayer player,
 			Map<String, Object> args, Node node) {
+		if(player.getScore() >= (Integer)args.get("c_playerscoremin") && player.getScore() <= (Integer)args.get("c_playerscoremax"))
+			return true;
 		return false;
 	}
 

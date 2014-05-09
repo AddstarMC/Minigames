@@ -23,13 +23,14 @@ public class KillAction implements ActionInterface {
 
 	@Override
 	public boolean useInNodes() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Map<String, Object> args, Node node) {
-		
+		if(!player.isDead())
+			player.getPlayer().damage(player.getPlayer().getHealth());
 	}
 
 	@Override

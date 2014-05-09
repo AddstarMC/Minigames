@@ -28,17 +28,21 @@ public class HealAction implements ActionInterface{
 
 	@Override
 	public boolean useInNodes() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Map<String, Object> args, Node node) {
-		
+		execute(player, args);
 	}
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region) {
+		execute(player, args);
+	}
+	
+	private void execute(MinigamePlayer player, Map<String, Object> args){
 		if((Integer)args.get("a_healamount") > 0){
 			if(player.getPlayer().getHealth() != 20){
 				double health = (Integer)args.get("a_healamount") + player.getPlayer().getHealth();

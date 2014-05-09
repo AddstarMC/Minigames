@@ -86,18 +86,6 @@ public class MenuItemExecutor extends MenuItem{
 				public Object interact() {
 					Menu m = new Menu(3, "Executor", fviewer);
 					final Menu ffm = m;
-//					if(ex.getAction().getRequiredArguments() != null){
-//						MenuItemCustom c1 = new MenuItemCustom("Action Settings", Material.PAPER);
-//						c1.setClick(new InteractionInterface() {
-//							
-//							@Override
-//							public Object interact() {
-//								ex.getAction().displayMenu(fviewer, ex.getArguments(), ffm);
-//								return null;
-//							}
-//						});
-//						m.addItem(c1);
-//					}
 					MenuItemCustom ca = new MenuItemCustom("Actions", Material.CHEST);
 					ca.setClick(new InteractionInterface() {
 						

@@ -29,13 +29,18 @@ public class EquipLoadoutAction implements ActionInterface {
 
 	@Override
 	public boolean useInNodes() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Map<String, Object> args, Node node) {
-		
+		if(player.isInMinigame()){
+			LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
+			if(lmod.hasLoadout((String)args.get("a_equiploadout"))){
+				player.setLoadout(lmod.getLoadout((String)args.get("a_equiploadout")));
+			}
+		}
 	}
 
 	@Override

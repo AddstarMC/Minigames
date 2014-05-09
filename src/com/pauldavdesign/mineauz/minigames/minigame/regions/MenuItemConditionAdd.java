@@ -32,25 +32,28 @@ public class MenuItemConditionAdd extends MenuItem{
 		Menu m = new Menu(6, "Conditions", getContainer().getViewer());
 		m.setPreviousPage(getContainer());
 		for(String con : Conditions.getAllConditionNames()){
-			MenuItemCustom c = new MenuItemCustom(MinigameUtils.capitalize(con), Material.PAPER);
-			final String fcon = con;
-			c.setClick(new InteractionInterface() {
-				
-				@Override
-				public Object interact() {
-					if(rexec != null){
-						rexec.addCondition(Conditions.getConditionByName(fcon));
-						getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, rexec, Conditions.getConditionByName(fcon)));
+			if((Conditions.getConditionByName(con).useInNodes() && nexec != null) || 
+					(Conditions.getConditionByName(con).useInRegions() && rexec != null)){
+				MenuItemCustom c = new MenuItemCustom(MinigameUtils.capitalize(con), Material.PAPER);
+				final String fcon = con;
+				c.setClick(new InteractionInterface() {
+					
+					@Override
+					public Object interact() {
+						if(rexec != null){
+							rexec.addCondition(Conditions.getConditionByName(fcon));
+							getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, rexec, Conditions.getConditionByName(fcon)));
+						}
+						else{
+							nexec.addCondition(Conditions.getConditionByName(fcon));
+							getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, nexec, Conditions.getConditionByName(fcon)));
+						}
+						getContainer().displayMenu(getContainer().getViewer());
+						return null;
 					}
-					else{
-						nexec.addCondition(Conditions.getConditionByName(fcon));
-						getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, nexec, Conditions.getConditionByName(fcon)));
-					}
-					getContainer().displayMenu(getContainer().getViewer());
-					return null;
-				}
-			});
-			m.addItem(c);
+				});
+				m.addItem(c);
+			}
 		}
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, getContainer()), m.getSize() - 9);
 		m.displayMenu(getContainer().getViewer());

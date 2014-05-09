@@ -33,12 +33,15 @@ public class MatchTeamCondition implements ConditionInterface {
 
 	@Override
 	public boolean useInNodes() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean checkNodeCondition(MinigamePlayer player,
 			Map<String, Object> args, Node node) {
+		if(player.getTeam() != null && player.getTeam().getColor().toString().equals(args.get("c_matchteam")))
+			if(!(Boolean)args.get("c_matchteaminvert"))
+				return true;
 		return false;
 	}
 

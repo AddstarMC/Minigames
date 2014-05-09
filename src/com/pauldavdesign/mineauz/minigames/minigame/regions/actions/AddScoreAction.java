@@ -28,13 +28,14 @@ public class AddScoreAction implements ActionInterface {
 
 	@Override
 	public boolean useInNodes() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Map<String, Object> args, Node node) {
-		
+		player.addScore((Integer)args.get("a_addscoreamount"));
+		player.getMinigame().setScore(player, player.getScore());
 	}
 
 	@Override

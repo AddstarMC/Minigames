@@ -28,14 +28,14 @@ public class MessageAction implements ActionInterface {
 
 	@Override
 	public boolean useInNodes() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Map<String, Object> args, Node node) {
-		
-		
+		if(args == null || !args.containsKey("message")) return;
+		player.sendMessage((String)args.get("message"), null);
 	}
 
 	@Override

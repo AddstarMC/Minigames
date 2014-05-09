@@ -26,7 +26,7 @@ public class TriggerNodeAction implements ActionInterface {
 
 	@Override
 	public boolean useInRegions() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -37,6 +37,12 @@ public class TriggerNodeAction implements ActionInterface {
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
 			Map<String, Object> args, Region region) {
+		Minigame mg = player.getMinigame();
+		if(mg != null){
+			RegionModule rmod = RegionModule.getMinigameModule(mg);
+			if(rmod.hasNode((String)args.get("a_triggernode")))
+				rmod.getNode((String)args.get("a_triggernode")).execute(NodeTrigger.REMOTE, player);
+		}
 	}
 
 	@Override

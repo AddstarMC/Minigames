@@ -29,12 +29,19 @@ public class HasRequiredFlagsCondition implements ConditionInterface {
 
 	@Override
 	public boolean useInNodes() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean checkNodeCondition(MinigamePlayer player,
 			Map<String, Object> args, Node node) {
+		if(Minigames.plugin.pdata.checkRequiredFlags(player, player.getMinigame().getName(false)).isEmpty()){
+			if(!(Boolean)args.get("c_requiredflagsinvert"))
+				return true;
+		}
+		else
+			if((Boolean)args.get("c_requiredflagsinvert"))
+				return true;
 		return false;
 	}
 

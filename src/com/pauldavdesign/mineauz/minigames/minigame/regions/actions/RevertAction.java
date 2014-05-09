@@ -24,13 +24,14 @@ public class RevertAction implements ActionInterface {
 
 	@Override
 	public boolean useInNodes() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Map<String, Object> args, Node node) {
-		
+		if(!player.isDead())
+			Minigames.plugin.pdata.revertToCheckpoint(player);
 	}
 
 	@Override

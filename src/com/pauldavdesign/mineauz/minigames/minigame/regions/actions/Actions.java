@@ -30,6 +30,8 @@ public class Actions {
 		addAction(new EquipLoadoutAction());
 		addAction(new HealAction());
 		addAction(new BarrierAction());
+		addAction(new SpawnEntityAction());
+		addAction(new TriggerNodeAction());
 	}
 	
 	public static void addAction(ActionInterface action){

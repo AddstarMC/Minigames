@@ -24,14 +24,14 @@ public class QuitAction implements ActionInterface {
 
 	@Override
 	public boolean useInNodes() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Map<String, Object> args, Node node) {
-		// TODO Auto-generated method stub
-		
+		if(player.isInMinigame())
+			Minigames.plugin.pdata.quitMinigame(player, false);
 	}
 
 	@Override
