@@ -32,6 +32,7 @@ public class Actions {
 		addAction(new BarrierAction());
 		addAction(new SpawnEntityAction());
 		addAction(new TriggerNodeAction());
+		addAction(new PulseRedstoneAction());
 	}
 	
 	public static void addAction(ActionInterface action){
