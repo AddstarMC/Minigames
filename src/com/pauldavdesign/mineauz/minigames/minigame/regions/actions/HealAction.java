@@ -11,9 +11,10 @@ import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemInteger;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
+import com.pauldavdesign.mineauz.minigames.minigame.nodes.Node;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.Region;
 
-public class HealAction implements RegionActionInterface{
+public class HealAction implements ActionInterface{
 
 	@Override
 	public String getName() {
@@ -21,7 +22,23 @@ public class HealAction implements RegionActionInterface{
 	}
 
 	@Override
-	public void executeAction(MinigamePlayer player, Map<String, Object> args, Region region) {
+	public boolean useInRegions() {
+		return true;
+	}
+
+	@Override
+	public boolean useInNodes() {
+		return false;
+	}
+
+	@Override
+	public void executeNodeAction(MinigamePlayer player,
+			Map<String, Object> args, Node node) {
+		
+	}
+
+	@Override
+	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region) {
 		if((Integer)args.get("a_healamount") > 0){
 			if(player.getPlayer().getHealth() != 20){
 				double health = (Integer)args.get("a_healamount") + player.getPlayer().getHealth();

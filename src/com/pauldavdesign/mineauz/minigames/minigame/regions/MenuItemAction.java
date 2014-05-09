@@ -4,29 +4,46 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
-import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.RegionActionInterface;
+import com.pauldavdesign.mineauz.minigames.minigame.nodes.NodeExecutor;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.ActionInterface;
 
 public class MenuItemAction extends MenuItem{
 	
-	private RegionExecutor exec;
-	private RegionActionInterface act;
+	private RegionExecutor rexec;
+	private NodeExecutor nexec;
+	private ActionInterface act;
 
-	public MenuItemAction(String name, Material displayItem, RegionExecutor exec, RegionActionInterface act) {
+	public MenuItemAction(String name, Material displayItem, RegionExecutor exec, ActionInterface act) {
 		super(name, displayItem);
-		this.exec = exec;
+		this.rexec = exec;
+		this.act = act;
+	}
+	
+	public MenuItemAction(String name, Material displayItem, NodeExecutor exec, ActionInterface act) {
+		super(name, displayItem);
+		this.nexec = exec;
 		this.act = act;
 	}
 	
 	@Override
 	public ItemStack onClick(){
-		if(act.displayMenu(getContainer().getViewer(), exec.getArguments(), getContainer()))
-			return null;
+		if(rexec != null){
+			if(act.displayMenu(getContainer().getViewer(), rexec.getArguments(), getContainer()))
+				return null;
+		}
+		else{
+			if(act.displayMenu(getContainer().getViewer(), nexec.getArguments(), getContainer()))
+				return null;
+		}
 		return getItem();
 	}
 	
 	@Override
 	public ItemStack onRightClick(){
-		exec.removeAction(act);;
+		if(rexec != null)
+			rexec.removeAction(act);
+		else
+			nexec.removeAction(act);
 		getContainer().removeItem(getSlot());
 		return null;
 	}

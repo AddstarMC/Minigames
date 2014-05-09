@@ -11,80 +11,82 @@ import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemString;
-import com.pauldavdesign.mineauz.minigames.minigame.modules.LoadoutModule;
+import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.RegionModule;
 import com.pauldavdesign.mineauz.minigames.minigame.nodes.Node;
+import com.pauldavdesign.mineauz.minigames.minigame.nodes.NodeTrigger;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.Region;
 
-public class EquipLoadoutAction implements ActionInterface {
+public class TriggerNodeAction implements ActionInterface {
 
 	@Override
 	public String getName() {
-		return "EQUIP_LOADOUT";
+		return "TRIGGER_NODE";
 	}
 
 	@Override
 	public boolean useInRegions() {
-		return true;
-	}
-
-	@Override
-	public boolean useInNodes() {
 		return false;
 	}
 
 	@Override
-	public void executeNodeAction(MinigamePlayer player,
-			Map<String, Object> args, Node node) {
-		
+	public boolean useInNodes() {
+		return true;
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region) {
-		if(player.isInMinigame()){
-			LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
-			if(lmod.hasLoadout((String)args.get("a_equiploadout"))){
-				player.setLoadout(lmod.getLoadout((String)args.get("a_equiploadout")));
-			}
+	public void executeRegionAction(MinigamePlayer player,
+			Map<String, Object> args, Region region) {
+	}
+
+	@Override
+	public void executeNodeAction(MinigamePlayer player, Map<String, Object> args,
+			Node node) {
+		Minigame mg = player.getMinigame();
+		if(mg != null){
+			RegionModule rmod = RegionModule.getMinigameModule(mg);
+			if(rmod.hasNode((String)args.get("a_triggernode")))
+				rmod.getNode((String)args.get("a_triggernode")).execute(NodeTrigger.REMOTE, player);
 		}
 	}
 
 	@Override
 	public Map<String, Object> getRequiredArguments() {
 		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_equiploadout", "default");
+		args.put("a_triggernode", "none");
 		return args;
 	}
 
 	@Override
 	public void saveArguments(Map<String, Object> args,
 			FileConfiguration config, String path) {
-		config.set(path + ".a_equiploadout", (String)args.get("a_equiploadout"));
+		config.set(path + ".a_triggernode", args.get("a_triggernode"));
 	}
 
 	@Override
 	public Map<String, Object> loadArguments(FileConfiguration config,
 			String path) {
 		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_equiploadout", config.getString(path + ".a_equiploadout"));
+		args.put("a_triggernode", config.getString(path + ".a_triggernode"));
 		return args;
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Map<String, Object> args,
 			Menu previous) {
-		Menu m = new Menu(3, "Equip Loadout", player);
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
+		Menu m = new Menu(3, "Trigger Node", player);
 		final Map<String, Object> fargs = args;
-		m.addItem(new MenuItemString("Loadout Name", Material.DIAMOND_SWORD, new Callback<String>() {
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
+		m.addItem(new MenuItemString("Node Name", Material.EYE_OF_ENDER, new Callback<String>() {
 			
 			@Override
 			public void setValue(String value) {
-				fargs.put("a_equiploadout", value);
+				fargs.put("a_triggernode", value);
 			}
 			
 			@Override
 			public String getValue() {
-				return (String)fargs.get("a_equiploadout");
+				return (String)fargs.get("a_triggernode");
 			}
 		}));
 		m.displayMenu(player);

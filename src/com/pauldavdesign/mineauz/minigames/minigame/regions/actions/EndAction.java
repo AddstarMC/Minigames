@@ -12,9 +12,10 @@ import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
+import com.pauldavdesign.mineauz.minigames.minigame.nodes.Node;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.Region;
 
-public class EndAction implements RegionActionInterface {
+public class EndAction implements ActionInterface {
 
 	@Override
 	public String getName() {
@@ -22,7 +23,23 @@ public class EndAction implements RegionActionInterface {
 	}
 
 	@Override
-	public void executeAction(MinigamePlayer player, Map<String, Object> args, Region region) {
+	public boolean useInRegions() {
+		return true;
+	}
+
+	@Override
+	public boolean useInNodes() {
+		return false;
+	}
+
+	@Override
+	public void executeNodeAction(MinigamePlayer player,
+			Map<String, Object> args, Node node) {
+		
+	}
+
+	@Override
+	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region) {
 		if(!player.isInMinigame()) return;
 		if(player.getMinigame().getType() != MinigameType.SINGLEPLAYER){
 			List<MinigamePlayer> w = null;

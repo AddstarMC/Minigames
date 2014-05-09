@@ -12,10 +12,10 @@ import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemBoolean;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
+import com.pauldavdesign.mineauz.minigames.minigame.nodes.Node;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.Region;
-import com.pauldavdesign.mineauz.minigames.minigame.regions.RegionExecutor;
 
-public class HasRequiredFlagsCondition implements RegionConditionInterface {
+public class HasRequiredFlagsCondition implements ConditionInterface {
 
 	@Override
 	public String getName() {
@@ -23,7 +23,23 @@ public class HasRequiredFlagsCondition implements RegionConditionInterface {
 	}
 
 	@Override
-	public boolean checkCondition(MinigamePlayer player,
+	public boolean useInRegions() {
+		return true;
+	}
+
+	@Override
+	public boolean useInNodes() {
+		return false;
+	}
+
+	@Override
+	public boolean checkNodeCondition(MinigamePlayer player,
+			Map<String, Object> args, Node node) {
+		return false;
+	}
+
+	@Override
+	public boolean checkRegionCondition(MinigamePlayer player,
 			Map<String, Object> args, Region region) {
 		if(Minigames.plugin.pdata.checkRequiredFlags(player, player.getMinigame().getName(false)).isEmpty()){
 			if(!(Boolean)args.get("c_requiredflagsinvert"))
@@ -58,19 +74,19 @@ public class HasRequiredFlagsCondition implements RegionConditionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev,
-			RegionExecutor exec) {
+			Map<String, Object> args) {
 		Menu m = new Menu(3, "Required Flags", player);
-		final RegionExecutor fexec = exec;
+		final Map<String, Object> fargs = args;
 		m.addItem(new MenuItemBoolean("Invert Require Flags?", Material.ENDER_PEARL, new Callback<Boolean>() {
 			
 			@Override
 			public void setValue(Boolean value) {
-				fexec.getArguments().put("c_requiredflagsinvert", value);
+				fargs.put("c_requiredflagsinvert", value);
 			}
 			
 			@Override
 			public Boolean getValue() {
-				return (Boolean) fexec.getArguments().get("c_requiredflagsinvert");
+				return (Boolean) fargs.get("c_requiredflagsinvert");
 			}
 		}));
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);

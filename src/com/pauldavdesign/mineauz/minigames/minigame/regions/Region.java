@@ -9,8 +9,8 @@ import org.bukkit.Location;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
-import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.RegionActionInterface;
-import com.pauldavdesign.mineauz.minigames.minigame.regions.conditions.RegionConditionInterface;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.ActionInterface;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.conditions.ConditionInterface;
 
 public class Region {
 	private String name;
@@ -172,8 +172,8 @@ public class Region {
 		for(RegionExecutor exec : executors){
 			if(exec.getTrigger() == trigger){
 				boolean cont = true;
-				for(RegionConditionInterface con : exec.getConditions()){
-					if(!con.checkCondition(player, exec.getArguments(), this)){
+				for(ConditionInterface con : exec.getConditions()){
+					if(!con.checkRegionCondition(player, exec.getArguments(), this)){
 						cont = false;
 						break;
 					}
@@ -183,7 +183,7 @@ public class Region {
 			}
 		}
 		for(RegionExecutor exec : toExecute)
-			for(RegionActionInterface act : exec.getActions())
-				act.executeAction(player, exec.getArguments(), this);
+			for(ActionInterface act : exec.getActions())
+				act.executeRegionAction(player, exec.getArguments(), this);
 	}
 }

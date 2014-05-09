@@ -14,8 +14,8 @@ import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemCustom;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
-import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.RegionActions;
-import com.pauldavdesign.mineauz.minigames.minigame.regions.conditions.RegionConditions;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.Actions;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.conditions.Conditions;
 
 public class MenuItemExecutor extends MenuItem{
 	
@@ -42,8 +42,8 @@ public class MenuItemExecutor extends MenuItem{
 		for(RegionTrigger t : RegionTrigger.values()){
 			triggers.add(MinigameUtils.capitalize(t.toString()));
 		}
-		List<String> actions = new ArrayList<String>(RegionActions.getAllActionNames().size());
-		for(String a : RegionActions.getAllActionNames()){
+		List<String> actions = new ArrayList<String>(Actions.getAllActionNames().size());
+		for(String a : Actions.getAllActionNames()){
 			actions.add(MinigameUtils.capitalize(a));
 		}
 		ply.sendMessage("Triggers: " + MinigameUtils.listToString(triggers));
@@ -103,7 +103,7 @@ public class MenuItemExecutor extends MenuItem{
 						
 						@Override
 						public Object interact() {
-							RegionActions.displayMenu(fviewer, ex, ffm);
+							Actions.displayMenu(fviewer, ex, ffm);
 							return null;
 						}
 					});
@@ -113,7 +113,7 @@ public class MenuItemExecutor extends MenuItem{
 						
 						@Override
 						public Object interact() {
-							RegionConditions.displayMenu(fviewer, ex, ffm);
+							Conditions.displayMenu(fviewer, ex, ffm);
 							return null;
 						}
 					});

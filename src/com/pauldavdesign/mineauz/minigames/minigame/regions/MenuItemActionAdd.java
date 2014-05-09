@@ -9,31 +9,45 @@ import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemCustom;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
-import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.RegionActions;
+import com.pauldavdesign.mineauz.minigames.minigame.nodes.NodeExecutor;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.Actions;
 
 public class MenuItemActionAdd extends MenuItem{
 	
-	private RegionExecutor exec;
+	private RegionExecutor rexec;
+	private NodeExecutor nexec;
 
 	public MenuItemActionAdd(String name, Material displayItem, RegionExecutor exec) {
 		super(name, displayItem);
-		this.exec = exec;
+		this.rexec = exec;
+	}
+	
+	public MenuItemActionAdd(String name, Material displayItem, NodeExecutor exec) {
+		super(name, displayItem);
+		this.nexec = exec;
 	}
 	
 	@Override
 	public ItemStack onClick(){
 		Menu m = new Menu(6, "Actions", getContainer().getViewer());
 		m.setPreviousPage(getContainer());
-		for(String act : RegionActions.getAllActionNames()){
+		for(String act : Actions.getAllActionNames()){
 			MenuItemCustom c = new MenuItemCustom(MinigameUtils.capitalize(act), Material.PAPER);
 			final String fact = act;
 			c.setClick(new InteractionInterface() {
 				
 				@Override
 				public Object interact() {
-					exec.addAction(RegionActions.getActionByName(fact));
-					getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, exec, RegionActions.getActionByName(fact)));
-					getContainer().displayMenu(getContainer().getViewer());
+					if(nexec == null){
+						rexec.addAction(Actions.getActionByName(fact));
+						getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, rexec, Actions.getActionByName(fact)));
+						getContainer().displayMenu(getContainer().getViewer());
+					}
+					else{
+						nexec.addAction(Actions.getActionByName(fact));
+						getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, nexec, Actions.getActionByName(fact)));
+						getContainer().displayMenu(getContainer().getViewer());
+					}
 					return null;
 				}
 			});

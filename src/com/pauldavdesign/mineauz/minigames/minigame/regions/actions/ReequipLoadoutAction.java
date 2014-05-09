@@ -6,9 +6,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
+import com.pauldavdesign.mineauz.minigames.minigame.nodes.Node;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.Region;
 
-public class ReequipLoadoutAction implements RegionActionInterface {
+public class ReequipLoadoutAction implements ActionInterface {
 
 	@Override
 	public String getName() {
@@ -16,7 +17,23 @@ public class ReequipLoadoutAction implements RegionActionInterface {
 	}
 
 	@Override
-	public void executeAction(MinigamePlayer player, Map<String, Object> args, Region region) {
+	public boolean useInRegions() {
+		return true;
+	}
+
+	@Override
+	public boolean useInNodes() {
+		return false;
+	}
+
+	@Override
+	public void executeNodeAction(MinigamePlayer player,
+			Map<String, Object> args, Node node) {
+		
+	}
+
+	@Override
+	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region) {
 		if(player.isInMinigame())
 			player.getLoadout().equiptLoadout(player);
 	}

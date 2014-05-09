@@ -16,10 +16,10 @@ import com.pauldavdesign.mineauz.minigames.menu.MenuItemBoolean;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemList;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
+import com.pauldavdesign.mineauz.minigames.minigame.nodes.Node;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.Region;
-import com.pauldavdesign.mineauz.minigames.minigame.regions.RegionExecutor;
 
-public class MatchTeamCondition implements RegionConditionInterface {
+public class MatchTeamCondition implements ConditionInterface {
 
 	@Override
 	public String getName() {
@@ -27,7 +27,23 @@ public class MatchTeamCondition implements RegionConditionInterface {
 	}
 
 	@Override
-	public boolean checkCondition(MinigamePlayer player,
+	public boolean useInRegions() {
+		return true;
+	}
+
+	@Override
+	public boolean useInNodes() {
+		return false;
+	}
+
+	@Override
+	public boolean checkNodeCondition(MinigamePlayer player,
+			Map<String, Object> args, Node node) {
+		return false;
+	}
+
+	@Override
+	public boolean checkRegionCondition(MinigamePlayer player,
 			Map<String, Object> args, Region region) {
 		if(player.getTeam() != null && player.getTeam().getColor().toString().equals(args.get("c_matchteam")))
 			if(!(Boolean)args.get("c_matchteaminvert"))
@@ -61,10 +77,10 @@ public class MatchTeamCondition implements RegionConditionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev,
-			RegionExecutor exec) {
+			Map<String, Object> args) {
 		Menu m = new Menu(3, "Match Team", player);
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
-		final RegionExecutor fexec = exec;
+		final Map<String, Object> fargs = args;
 		List<String> teams = new ArrayList<String>();
 		for(TeamColor t : TeamColor.values())
 			teams.add(MinigameUtils.capitalize(t.toString().replace("_", " ")));
@@ -72,24 +88,24 @@ public class MatchTeamCondition implements RegionConditionInterface {
 			
 			@Override
 			public void setValue(String value) {
-				fexec.getArguments().put("c_matchteam", value.toUpperCase().replace(" ", "_"));
+				fargs.put("c_matchteam", value.toUpperCase().replace(" ", "_"));
 			}
 			
 			@Override
 			public String getValue() {
-				return (String)fexec.getArguments().get("c_matchteam");
+				return (String)fargs.get("c_matchteam");
 			}
 		}, teams));
 		m.addItem(new MenuItemBoolean("Invert Match", Material.ENDER_PEARL, new Callback<Boolean>() {
 
 			@Override
 			public void setValue(Boolean value) {
-				fexec.getArguments().put("c_matchteaminvert", value);
+				fargs.put("c_matchteaminvert", value);
 			}
 
 			@Override
 			public Boolean getValue() {
-				return (Boolean)fexec.getArguments().get("c_matchteaminvert");
+				return (Boolean)fargs.get("c_matchteaminvert");
 			}
 		}));
 		m.displayMenu(player);

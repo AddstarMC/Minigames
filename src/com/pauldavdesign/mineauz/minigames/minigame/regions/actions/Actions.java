@@ -11,12 +11,13 @@ import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
+import com.pauldavdesign.mineauz.minigames.minigame.nodes.NodeExecutor;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.MenuItemAction;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.MenuItemActionAdd;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.RegionExecutor;
 
-public class RegionActions {
-	private static Map<String, RegionActionInterface> actions = new HashMap<String, RegionActionInterface>();
+public class Actions {
+	private static Map<String, ActionInterface> actions = new HashMap<String, ActionInterface>();
 	
 	static{
 		addAction(new KillAction());
@@ -31,17 +32,17 @@ public class RegionActions {
 		addAction(new BarrierAction());
 	}
 	
-	public static void addAction(RegionActionInterface action){
+	public static void addAction(ActionInterface action){
 		actions.put(action.getName().toUpperCase(), action);
 	}
 	
-	public static RegionActionInterface getActionByName(String name){
+	public static ActionInterface getActionByName(String name){
 		if(actions.containsKey(name.toUpperCase()))
 			return actions.get(name.toUpperCase());
 		return null;
 	}
 	
-	public static Collection<RegionActionInterface> getAllActions(){
+	public static Collection<ActionInterface> getAllActions(){
 		return actions.values();
 	}
 	
@@ -56,7 +57,18 @@ public class RegionActions {
 	public static void displayMenu(MinigamePlayer player, RegionExecutor exec, Menu prev){
 		Menu m = new Menu(3, "Actions", player);
 		m.setPreviousPage(prev);
-		for(RegionActionInterface act : exec.getActions()){
+		for(ActionInterface act : exec.getActions()){
+			m.addItem(new MenuItemAction(MinigameUtils.capitalize(act.getName()), Material.PAPER, exec, act));
+		}
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
+		m.addItem(new MenuItemActionAdd("Add Action", Material.ITEM_FRAME, exec), m.getSize() - 1);
+		m.displayMenu(player);
+	}
+	
+	public static void displayMenu(MinigamePlayer player, NodeExecutor exec, Menu prev){
+		Menu m = new Menu(3, "Actions", player);
+		m.setPreviousPage(prev);
+		for(ActionInterface act : exec.getActions()){
 			m.addItem(new MenuItemAction(MinigameUtils.capitalize(act.getName()), Material.PAPER, exec, act));
 		}
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);

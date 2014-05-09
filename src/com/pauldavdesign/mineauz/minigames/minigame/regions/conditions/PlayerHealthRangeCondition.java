@@ -11,10 +11,10 @@ import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemInteger;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
+import com.pauldavdesign.mineauz.minigames.minigame.nodes.Node;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.Region;
-import com.pauldavdesign.mineauz.minigames.minigame.regions.RegionExecutor;
 
-public class PlayerHealthRangeCondition implements RegionConditionInterface {
+public class PlayerHealthRangeCondition implements ConditionInterface {
 
 	@Override
 	public String getName() {
@@ -22,7 +22,23 @@ public class PlayerHealthRangeCondition implements RegionConditionInterface {
 	}
 
 	@Override
-	public boolean checkCondition(MinigamePlayer player,
+	public boolean useInRegions() {
+		return true;
+	}
+
+	@Override
+	public boolean useInNodes() {
+		return false;
+	}
+
+	@Override
+	public boolean checkNodeCondition(MinigamePlayer player,
+			Map<String, Object> args, Node node) {
+		return false;
+	}
+
+	@Override
+	public boolean checkRegionCondition(MinigamePlayer player,
 			Map<String, Object> args, Region region) {
 		if(player.getPlayer().getHealth() >= (Double)args.get("c_phealthmin") &&
 				player.getPlayer().getHealth() <= (Double)args.get("c_phealthmax"))
@@ -56,19 +72,19 @@ public class PlayerHealthRangeCondition implements RegionConditionInterface {
 	}
 
 	@Override
-	public boolean displayMenu(MinigamePlayer player, Menu prev, RegionExecutor exec) {
+	public boolean displayMenu(MinigamePlayer player, Menu prev, Map<String, Object> args) {
 		Menu m = new Menu(3, "Health Range", player);
-		final RegionExecutor fexec = exec;
+		final Map<String, Object> fargs = args;
 		MenuItemInteger min = new MenuItemInteger("Min Health", Material.STEP, new Callback<Integer>() {
 			
 			@Override
 			public void setValue(Integer value) {
-				fexec.getArguments().put("c_phealthmin", (double)value);
+				fargs.put("c_phealthmin", (double)value);
 			}
 			
 			@Override
 			public Integer getValue() {
-				Double d = (Double)fexec.getArguments().get("c_phealthmin");
+				Double d = (Double)fargs.get("c_phealthmin");
 				return d.intValue();
 			}
 		}, 0, 20);
@@ -77,12 +93,12 @@ public class PlayerHealthRangeCondition implements RegionConditionInterface {
 			
 			@Override
 			public void setValue(Integer value) {
-				fexec.getArguments().put("c_phealthmax", (double)value);
+				fargs.put("c_phealthmax", (double)value);
 			}
 			
 			@Override
 			public Integer getValue() {
-				Double d = (Double)fexec.getArguments().get("c_phealthmax");
+				Double d = (Double)fargs.get("c_phealthmax");
 				return d.intValue();
 			}
 		}, 0, 20);

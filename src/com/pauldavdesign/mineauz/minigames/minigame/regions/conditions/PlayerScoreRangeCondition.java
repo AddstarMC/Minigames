@@ -11,10 +11,10 @@ import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemInteger;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
+import com.pauldavdesign.mineauz.minigames.minigame.nodes.Node;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.Region;
-import com.pauldavdesign.mineauz.minigames.minigame.regions.RegionExecutor;
 
-public class PlayerScoreRangeCondition implements RegionConditionInterface {
+public class PlayerScoreRangeCondition implements ConditionInterface {
 
 	@Override
 	public String getName() {
@@ -22,7 +22,23 @@ public class PlayerScoreRangeCondition implements RegionConditionInterface {
 	}
 
 	@Override
-	public boolean checkCondition(MinigamePlayer player,
+	public boolean useInRegions() {
+		return true;
+	}
+
+	@Override
+	public boolean useInNodes() {
+		return false;
+	}
+
+	@Override
+	public boolean checkNodeCondition(MinigamePlayer player,
+			Map<String, Object> args, Node node) {
+		return false;
+	}
+
+	@Override
+	public boolean checkRegionCondition(MinigamePlayer player,
 			Map<String, Object> args, Region region) {
 		if(player.getScore() >= (Integer)args.get("c_playerscoremin") && player.getScore() <= (Integer)args.get("c_playerscoremax"))
 			return true;
@@ -55,31 +71,31 @@ public class PlayerScoreRangeCondition implements RegionConditionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev,
-			RegionExecutor exec) {
+			Map<String, Object> args) {
 		Menu m = new Menu(3, "Score Range", player);
-		final RegionExecutor fexec = exec;
+		final Map<String, Object> fargs = args;
 		m.addItem(new MenuItemInteger("Min Score", Material.STEP, new Callback<Integer>() {
 			
 			@Override
 			public void setValue(Integer value) {
-				fexec.getArguments().put("c_playerscoremin", value);
+				fargs.put("c_playerscoremin", value);
 			}
 			
 			@Override
 			public Integer getValue() {
-				return (Integer)fexec.getArguments().get("c_playerscoremin");
+				return (Integer)fargs.get("c_playerscoremin");
 			}
 		}, null, null));
 		m.addItem(new MenuItemInteger("Max Score", Material.DOUBLE_STEP, new Callback<Integer>() {
 			
 			@Override
 			public void setValue(Integer value) {
-				fexec.getArguments().put("c_playerscoremax", value);
+				fargs.put("c_playerscoremax", value);
 			}
 			
 			@Override
 			public Integer getValue() {
-				return (Integer)fexec.getArguments().get("c_playerscoremax");
+				return (Integer)fargs.get("c_playerscoremax");
 			}
 		}, null, null));
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);

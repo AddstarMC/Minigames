@@ -11,9 +11,10 @@ import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemString;
+import com.pauldavdesign.mineauz.minigames.minigame.nodes.Node;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.Region;
 
-public class MessageAction implements RegionActionInterface {
+public class MessageAction implements ActionInterface {
 
 	@Override
 	public String getName() {
@@ -21,7 +22,24 @@ public class MessageAction implements RegionActionInterface {
 	}
 
 	@Override
-	public void executeAction(MinigamePlayer player, Map<String, Object> args, Region region) {
+	public boolean useInRegions() {
+		return true;
+	}
+
+	@Override
+	public boolean useInNodes() {
+		return false;
+	}
+
+	@Override
+	public void executeNodeAction(MinigamePlayer player,
+			Map<String, Object> args, Node node) {
+		
+		
+	}
+
+	@Override
+	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region) {
 		if(args == null || !args.containsKey("message")) return;
 		player.sendMessage((String)args.get("message"), null);
 	}

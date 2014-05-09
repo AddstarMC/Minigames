@@ -91,6 +91,7 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetRegenDelayCommand());
 		registerSetCommand(new SetTeamCommand());
 		registerSetCommand(new SetRegionCommand());
+		registerSetCommand(new SetNodeCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {

@@ -1,4 +1,4 @@
-package com.pauldavdesign.mineauz.minigames.minigame.regions;
+package com.pauldavdesign.mineauz.minigames.minigame.nodes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,67 +14,72 @@ import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemCustom;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
-import com.pauldavdesign.mineauz.minigames.minigame.modules.RegionModule;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.Actions;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.conditions.Conditions;
 
-public class MenuItemRegion extends MenuItem{
+public class MenuItemExecutor extends MenuItem{
 	
-	private Region region;
-	private RegionModule rmod;
+	private Node node;
 
-	public MenuItemRegion(String name, Material displayItem, Region region, RegionModule rmod) {
+	public MenuItemExecutor(String name, Material displayItem, Node node) {
 		super(name, displayItem);
-		this.region = region;
-		this.rmod = rmod;
+		this.node = node;
 	}
 
-	public MenuItemRegion(String name, List<String> description, Material displayItem, Region region, RegionModule rmod) {
+	public MenuItemExecutor(String name, List<String> description, Material displayItem, Node node) {
 		super(name, description, displayItem);
-		this.region = region;
-		this.rmod = rmod;
+		this.node = node;
 	}
 	
 	@Override
 	public ItemStack onClick(){
-		createMenu(getContainer().getViewer(), getContainer(), region);
+		MinigamePlayer ply = getContainer().getViewer();
+		ply.setNoClose(true);
+		ply.getPlayer().closeInventory();
+		ply.sendMessage("Enter the name of a trigger to create a new executor. "
+				+ "Window will reopen in 60s if nothing is entered.", null);
+		List<String> triggers = new ArrayList<String>(NodeTrigger.values().length);
+		for(NodeTrigger t : NodeTrigger.values()){
+			triggers.add(MinigameUtils.capitalize(t.toString()));
+		}
+		List<String> actions = new ArrayList<String>(Actions.getAllActionNames().size());
+		for(String a : Actions.getAllActionNames()){
+			actions.add(MinigameUtils.capitalize(a));
+		}
+		ply.sendMessage("Triggers: " + MinigameUtils.listToString(triggers));
+		ply.setManualEntry(this);
+
+		getContainer().startReopenTimer(60);
 		return null;
 	}
 	
 	@Override
-	public ItemStack onRightClick(){
-		rmod.removeRegion(region.getName());
-		getContainer().removeItem(getSlot());
-		return null;
-	}
-	
-	public static void createMenu(MinigamePlayer viewer, Menu previousPage, Region region){
-		Menu m = new Menu(3, "Regions", viewer);
-		m.setPreviousPage(previousPage);
-		List<MenuItem> items = new ArrayList<MenuItem>();
-		int c = 1;
-		final Region fregion = region;
-		for(RegionExecutor ex : region.getExecutors()){
+	public void checkValidEntry(String entry){
+		if(NodeTrigger.getByName(entry) != null){
+			NodeTrigger trig = NodeTrigger.getByName(entry);
+			
+			final NodeExecutor ex = new NodeExecutor(trig);
+			node.addExecutor(ex);
 			List<String> des = MinigameUtils.stringToList(ChatColor.GREEN + "Trigger: " + ChatColor.GRAY + 
 					MinigameUtils.capitalize(ex.getTrigger().toString()) + ";" +
 					ChatColor.GREEN + "Actions: " + ChatColor.GRAY + 
 					ex.getActions().size() + ";" + 
-					ChatColor.DARK_PURPLE + "(Right click to delete);(Left clict to edit)");
-			MenuItemCustom cmi = new MenuItemCustom("Executor ID: " + c, 
+					ChatColor.DARK_PURPLE + "(Right click to delete);" + 
+					"(Left click to edit)");
+			MenuItemCustom cmi = new MenuItemCustom("Executor ID: " + node.getExecutors().size(), 
 					des, Material.ENDER_PEARL);
-			final RegionExecutor cex = ex;
-			final MenuItem fcmi = cmi;
-			final MinigamePlayer fviewer = viewer;
-			final Menu fm = m;
+
 			cmi.setRightClick(new InteractionInterface() {
 				
 				@Override
 				public Object interact() {
-					fregion.removeExecutor(cex);
-					fcmi.getContainer().removeItem(fcmi.getSlot());
+					node.removeExecutor(ex);
+					getContainer().removeItem(getSlot());
 					return null;
 				}
 			});
+			final MinigamePlayer fviewer = getContainer().getViewer();
+			final Menu fm = getContainer();
 			cmi.setClick(new InteractionInterface() {
 				
 				@Override
@@ -86,7 +91,7 @@ public class MenuItemRegion extends MenuItem{
 						
 						@Override
 						public Object interact() {
-							Actions.displayMenu(fviewer, cex, ffm);
+							Actions.displayMenu(fviewer, ex, ffm);
 							return null;
 						}
 					});
@@ -96,7 +101,7 @@ public class MenuItemRegion extends MenuItem{
 						
 						@Override
 						public Object interact() {
-							Conditions.displayMenu(fviewer, cex, ffm);
+							Conditions.displayMenu(fviewer, ex, ffm);
 							return null;
 						}
 					});
@@ -106,15 +111,14 @@ public class MenuItemRegion extends MenuItem{
 					return null;
 				}
 			});
-			items.add(cmi);
-			c++;
+			getContainer().addItem(cmi);
+			getContainer().cancelReopenTimer();
+			getContainer().displayMenu(getContainer().getViewer());
+			return;
 		}
-		if(previousPage != null){
-			m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previousPage), m.getSize() - 9);
-		}
-		m.addItem(new MenuItemExecutor("Add Executor", Material.ITEM_FRAME, region), m.getSize() - 1);
-		m.addItems(items);
-		m.displayMenu(viewer);
+		getContainer().cancelReopenTimer();
+		getContainer().displayMenu(getContainer().getViewer());
+		
+		getContainer().getViewer().sendMessage("Invalid trigger type!", "error");
 	}
-
 }

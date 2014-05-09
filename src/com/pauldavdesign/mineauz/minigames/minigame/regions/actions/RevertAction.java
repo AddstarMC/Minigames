@@ -7,9 +7,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
+import com.pauldavdesign.mineauz.minigames.minigame.nodes.Node;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.Region;
 
-public class RevertAction implements RegionActionInterface {
+public class RevertAction implements ActionInterface {
 
 	@Override
 	public String getName() {
@@ -17,7 +18,23 @@ public class RevertAction implements RegionActionInterface {
 	}
 
 	@Override
-	public void executeAction(MinigamePlayer player, Map<String, Object> args, Region region) {
+	public boolean useInRegions() {
+		return true;
+	}
+
+	@Override
+	public boolean useInNodes() {
+		return false;
+	}
+
+	@Override
+	public void executeNodeAction(MinigamePlayer player,
+			Map<String, Object> args, Node node) {
+		
+	}
+
+	@Override
+	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region) {
 		if(!player.isDead())
 			Minigames.plugin.pdata.revertToCheckpoint(player);
 	}

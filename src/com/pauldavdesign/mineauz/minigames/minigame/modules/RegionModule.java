@@ -16,20 +16,26 @@ import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemNewLine;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
+import com.pauldavdesign.mineauz.minigames.minigame.nodes.MenuItemNode;
+import com.pauldavdesign.mineauz.minigames.minigame.nodes.Node;
+import com.pauldavdesign.mineauz.minigames.minigame.nodes.NodeExecutor;
+import com.pauldavdesign.mineauz.minigames.minigame.nodes.NodeTrigger;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.MenuItemRegion;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.Region;
-import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.RegionActionInterface;
-import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.RegionActions;
-import com.pauldavdesign.mineauz.minigames.minigame.regions.conditions.RegionConditionInterface;
-import com.pauldavdesign.mineauz.minigames.minigame.regions.conditions.RegionConditions;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.ActionInterface;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.Actions;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.conditions.ConditionInterface;
+import com.pauldavdesign.mineauz.minigames.minigame.regions.conditions.Conditions;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.RegionExecutor;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.RegionTrigger;
 
 public class RegionModule implements MinigameModule {
 	
 	private Map<String, Region> regions = new HashMap<String, Region>();
+	private Map<String, Node> nodes = new HashMap<String, Node>();
 	
 	@Override
 	public String getName(){
@@ -61,22 +67,59 @@ public class RegionModule implements MinigameModule {
 				String path = minigame + ".regions." + name + ".executors." + c;
 				config.set(path + ".trigger", ex.getTrigger().toString());
 				List<String> acts = new ArrayList<String>();
-				for(RegionActionInterface act : ex.getActions()){
+				for(ActionInterface act : ex.getActions()){
 					acts.add(act.getName());
 				}
 				config.set(path + ".actions", acts);
 				if(!ex.getConditions().isEmpty()){
 					List<String> conditions = new ArrayList<String>(ex.getConditions().size());
-					for(RegionConditionInterface con : ex.getConditions()){
+					for(ConditionInterface con : ex.getConditions()){
 						conditions.add(con.getName());
 					}
 					config.set(path + ".conditions", conditions);
 				}
 				if(!ex.getArguments().isEmpty()){
-					for(RegionActionInterface act : ex.getActions()){
+					for(ActionInterface act : ex.getActions()){
 						act.saveArguments(ex.getArguments(), config, path + ".arguments");
 					}
-					for(RegionConditionInterface con : ex.getConditions()){
+					for(ConditionInterface con : ex.getConditions()){
+						con.saveArguments(ex.getArguments(), config, path + ".arguments");
+					}
+				}
+				c++;
+			}
+		}
+		
+		Set<String> ns = nodes.keySet();
+		for(String name : ns){
+			Node n = nodes.get(name);
+			Map<String, Object> sloc = MinigameUtils.serializeLocation(n.getLocation());
+			for(String i : sloc.keySet()){
+				if(!i.equals("yaw") && !i.equals("pitch"))
+					config.set(minigame + ".nodes." + name + ".point." + i, sloc.get(i));
+			}
+			
+			int c = 0;
+			for(NodeExecutor ex : n.getExecutors()){
+				String path = minigame + ".nodes." + name + ".executors." + c;
+				config.set(path + ".trigger", ex.getTrigger().toString());
+				List<String> acts = new ArrayList<String>();
+				for(ActionInterface act : ex.getActions()){
+					acts.add(act.getName());
+				}
+				config.set(path + ".actions", acts);
+				if(!ex.getConditions().isEmpty()){
+					List<String> conditions = new ArrayList<String>(ex.getConditions().size());
+					for(ConditionInterface con : ex.getConditions()){
+						conditions.add(con.getName());
+					}
+					config.set(path + ".conditions", conditions);
+				}
+				if(!ex.getArguments().isEmpty()){
+					for(ActionInterface act : ex.getActions()){
+						act.saveArguments(ex.getArguments(), config, path + ".arguments");
+					}
+					for(ConditionInterface con : ex.getConditions()){
 						con.saveArguments(ex.getArguments(), config, path + ".arguments");
 					}
 				}
@@ -115,23 +158,64 @@ public class RegionModule implements MinigameModule {
 						RegionExecutor rex = new RegionExecutor(RegionTrigger.valueOf(config.getString(path + ".trigger")));
 						if(config.contains(path + ".actions")){
 							for(String action : config.getStringList(path + ".actions")){
-								rex.addAction(RegionActions.getActionByName(action));
+								rex.addAction(Actions.getActionByName(action));
 							}
 						}
 						if(config.contains(path + ".conditions")){
 							for(String con : config.getStringList(path + ".conditions")){
-								rex.addCondition(RegionConditions.getConditionByName(con));
+								rex.addCondition(Conditions.getConditionByName(con));
 							}
 						}
 						if(config.contains(path + ".arguments")){
-							for(RegionActionInterface act : rex.getActions()){
+							for(ActionInterface act : rex.getActions()){
 								rex.addArguments(act.loadArguments(config, path + ".arguments"));
 							}
-							for(RegionConditionInterface con : rex.getConditions()){
+							for(ConditionInterface con : rex.getConditions()){
 								rex.addArguments(con.loadArguments(config, path + ".arguments"));
 							}
 						}
 						r.addExecutor(rex);
+					}
+				}
+			}
+		}
+		
+		if(config.contains(minigame + ".nodes")){
+			Set<String> rs = config.getConfigurationSection(minigame + ".nodes").getKeys(false);
+			for(String name : rs){
+				String cloc1 = minigame + ".nodes." + name + ".point.";
+				World w1 = Minigames.plugin.getServer().getWorld(config.getString(cloc1 + "world"));
+				double x1 = config.getDouble(cloc1 + "x");
+				double y1 = config.getDouble(cloc1 + "y");
+				double z1 = config.getDouble(cloc1 + "z");
+				Location loc1 = new Location(w1, x1, y1, z1);
+				
+				nodes.put(name, new Node(name, loc1));
+				Node n = nodes.get(name);
+				if(config.contains(minigame + ".nodes." + name + ".executors")){
+					Set<String> ex = config.getConfigurationSection(minigame + ".nodes." + name + ".executors").getKeys(false);
+					for(String i : ex){
+						String path = minigame + ".nodes." + name + ".executors." + i;
+						NodeExecutor rex = new NodeExecutor(NodeTrigger.valueOf(config.getString(path + ".trigger")));
+						if(config.contains(path + ".actions")){
+							for(String action : config.getStringList(path + ".actions")){
+								rex.addAction(Actions.getActionByName(action));
+							}
+						}
+						if(config.contains(path + ".conditions")){
+							for(String con : config.getStringList(path + ".conditions")){
+								rex.addCondition(Conditions.getConditionByName(con));
+							}
+						}
+						if(config.contains(path + ".arguments")){
+							for(ActionInterface act : rex.getActions()){
+								rex.addArguments(act.loadArguments(config, path + ".arguments"));
+							}
+							for(ConditionInterface con : rex.getConditions()){
+								rex.addArguments(con.loadArguments(config, path + ".arguments"));
+							}
+						}
+						n.addExecutor(rex);
 					}
 				}
 			}
@@ -189,12 +273,62 @@ public class RegionModule implements MinigameModule {
 		}
 	}
 	
+	public boolean hasNode(String name){
+		if(!nodes.containsKey(name)){
+			for(String n : nodes.keySet()){
+				if(n.equalsIgnoreCase(name))
+					return true;
+			}
+			return false;
+		}
+		return true;
+	}
+	
+	public void addNode(String name, Node node){
+		if(!hasNode(name))
+			nodes.put(name, node);
+	}
+	
+	public Node getNode(String name){
+		if(!hasNode(name)){
+			for(String n : nodes.keySet()){
+				if(n.equalsIgnoreCase(name))
+					return nodes.get(n);
+			}
+			return null;
+		}
+		return nodes.get(name);
+	}
+	
+	public List<Node> getNodes(){
+		return new ArrayList<Node>(nodes.values());
+	}
+	
+	public void removeNode(String name){
+		if(hasNode(name)){
+			nodes.remove(name);
+		}
+		else{
+			for(String n : nodes.keySet()){
+				if(n.equalsIgnoreCase(name)){
+					nodes.remove(n);
+					break;
+				}
+			}
+		}
+	}
+	
 	public void displayMenu(MinigamePlayer viewer){
 		Menu rm = new Menu(6, "Regions", viewer);
 		List<MenuItem> items = new ArrayList<MenuItem>(regions.size());
 		for(String name : regions.keySet()){
 			MenuItemRegion mir = new MenuItemRegion(name, Material.CHEST, regions.get(name), this);
 			items.add(mir);
+		}
+		items.add(new MenuItemNewLine());
+		for(String name : nodes.keySet()){
+			MenuItemNode min = new MenuItemNode(name, Material.CHEST, nodes.get(name), this);
+			items.add(min);
 		}
 		rm.addItems(items);
 		rm.displayMenu(viewer);

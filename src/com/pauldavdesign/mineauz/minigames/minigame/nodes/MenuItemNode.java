@@ -1,4 +1,4 @@
-package com.pauldavdesign.mineauz.minigames.minigame.regions;
+package com.pauldavdesign.mineauz.minigames.minigame.nodes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,43 +18,43 @@ import com.pauldavdesign.mineauz.minigames.minigame.modules.RegionModule;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.Actions;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.conditions.Conditions;
 
-public class MenuItemRegion extends MenuItem{
+public class MenuItemNode extends MenuItem{
 	
-	private Region region;
+	private Node node;
 	private RegionModule rmod;
 
-	public MenuItemRegion(String name, Material displayItem, Region region, RegionModule rmod) {
+	public MenuItemNode(String name, Material displayItem, Node node, RegionModule rmod) {
 		super(name, displayItem);
-		this.region = region;
+		this.node = node;
 		this.rmod = rmod;
 	}
 
-	public MenuItemRegion(String name, List<String> description, Material displayItem, Region region, RegionModule rmod) {
+	public MenuItemNode(String name, List<String> description, Material displayItem, Node node, RegionModule rmod) {
 		super(name, description, displayItem);
-		this.region = region;
+		this.node = node;
 		this.rmod = rmod;
 	}
 	
 	@Override
 	public ItemStack onClick(){
-		createMenu(getContainer().getViewer(), getContainer(), region);
+		createMenu(getContainer().getViewer(), getContainer(), node);
 		return null;
 	}
 	
 	@Override
 	public ItemStack onRightClick(){
-		rmod.removeRegion(region.getName());
+		rmod.removeNode(node.getName());
 		getContainer().removeItem(getSlot());
 		return null;
 	}
 	
-	public static void createMenu(MinigamePlayer viewer, Menu previousPage, Region region){
-		Menu m = new Menu(3, "Regions", viewer);
+	public static void createMenu(MinigamePlayer viewer, Menu previousPage, Node node){
+		Menu m = new Menu(3, "Nodes", viewer);
 		m.setPreviousPage(previousPage);
 		List<MenuItem> items = new ArrayList<MenuItem>();
 		int c = 1;
-		final Region fregion = region;
-		for(RegionExecutor ex : region.getExecutors()){
+		final Node fnode = node;
+		for(NodeExecutor ex : node.getExecutors()){
 			List<String> des = MinigameUtils.stringToList(ChatColor.GREEN + "Trigger: " + ChatColor.GRAY + 
 					MinigameUtils.capitalize(ex.getTrigger().toString()) + ";" +
 					ChatColor.GREEN + "Actions: " + ChatColor.GRAY + 
@@ -62,7 +62,7 @@ public class MenuItemRegion extends MenuItem{
 					ChatColor.DARK_PURPLE + "(Right click to delete);(Left clict to edit)");
 			MenuItemCustom cmi = new MenuItemCustom("Executor ID: " + c, 
 					des, Material.ENDER_PEARL);
-			final RegionExecutor cex = ex;
+			final NodeExecutor cex = ex;
 			final MenuItem fcmi = cmi;
 			final MinigamePlayer fviewer = viewer;
 			final Menu fm = m;
@@ -70,7 +70,7 @@ public class MenuItemRegion extends MenuItem{
 				
 				@Override
 				public Object interact() {
-					fregion.removeExecutor(cex);
+					fnode.removeExecutor(cex);
 					fcmi.getContainer().removeItem(fcmi.getSlot());
 					return null;
 				}
@@ -112,7 +112,7 @@ public class MenuItemRegion extends MenuItem{
 		if(previousPage != null){
 			m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previousPage), m.getSize() - 9);
 		}
-		m.addItem(new MenuItemExecutor("Add Executor", Material.ITEM_FRAME, region), m.getSize() - 1);
+		m.addItem(new MenuItemExecutor("Add Executor", Material.ITEM_FRAME, node), m.getSize() - 1);
 		m.addItems(items);
 		m.displayMenu(viewer);
 	}

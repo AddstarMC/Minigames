@@ -1,4 +1,4 @@
-package com.pauldavdesign.mineauz.minigames.minigame.regions;
+package com.pauldavdesign.mineauz.minigames.minigame.nodes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,17 +8,18 @@ import java.util.Map;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.actions.ActionInterface;
 import com.pauldavdesign.mineauz.minigames.minigame.regions.conditions.ConditionInterface;
 
-public class RegionExecutor {
-	private RegionTrigger trigger;
+public class NodeExecutor {
+	
+	private NodeTrigger trigger;
 	private List<ConditionInterface> conditions = new ArrayList<ConditionInterface>();
 	private List<ActionInterface> actions = new ArrayList<ActionInterface>();
 	private Map<String, Object> arguments = new HashMap<String, Object>();
 	
-	public RegionExecutor(RegionTrigger trigger){
+	public NodeExecutor(NodeTrigger trigger){
 		this.trigger = trigger;
 	}
 	
-	public RegionTrigger getTrigger(){
+	public NodeTrigger getTrigger(){
 		return trigger;
 	}
 	
