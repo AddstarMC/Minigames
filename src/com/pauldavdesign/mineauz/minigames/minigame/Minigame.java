@@ -1783,6 +1783,7 @@ public class Minigame {
 		rndChstDes.clear();
 		rndChstDes.add("Max. item randomization");
 		itemsMain.add(new MenuItemInteger("Max. Chest Random", rndChstDes, Material.DOUBLE_STEP, getMaxChestRandomCallback(), 0, null));
+		itemsMain.add(new MenuItemNewLine());
 
 		//--------------//
 		//Loadout Settings
