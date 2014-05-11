@@ -29,6 +29,11 @@ public class WeatherTimeModule implements MinigameModule {
 	public String getName() {
 		return "WeatherTime";
 	}
+	
+	@Override
+	public boolean useSeparateConfig(){
+		return false;
+	}
 
 	@Override
 	public void save(Minigame minigame, FileConfiguration config) {

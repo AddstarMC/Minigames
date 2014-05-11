@@ -41,6 +41,11 @@ public class RegionModule implements MinigameModule {
 	public String getName(){
 		return "Regions";
 	}
+	
+	@Override
+	public boolean useSeparateConfig(){
+		return true;
+	}
 
 	@Override
 	public void save(Minigame minigame, FileConfiguration config) {

@@ -1891,7 +1891,14 @@ public class Minigame {
 		cfg.set(name, null);
 		
 		for(MinigameModule module : getModules()){
-			module.save(this, cfg);
+			if(!module.useSeparateConfig())
+				module.save(this, cfg);
+			else{
+				MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
+				modsave.getConfig().set(name, null);
+				module.save(this, modsave.getConfig());
+				modsave.saveConfig();
+			}
 		}
 		
 		minigame.getConfig().set(name + ".displayName", displayName);
@@ -2172,7 +2179,12 @@ public class Minigame {
 		FileConfiguration cfg = minigame.getConfig();
 		
 		for(MinigameModule module : getModules()){
-			module.load(this, cfg);
+			if(!module.useSeparateConfig())
+				module.load(this, cfg);
+			else{
+				MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
+				module.load(this, modsave.getConfig());
+			}
 		}
 		
 		if(minigame.getConfig().contains(name + ".displayName")){

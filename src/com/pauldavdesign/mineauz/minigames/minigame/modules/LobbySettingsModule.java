@@ -20,6 +20,11 @@ public class LobbySettingsModule implements MinigameModule {
 	public String getName() {
 		return "LobbySettings";
 	}
+	
+	@Override
+	public boolean useSeparateConfig(){
+		return false;
+	}
 
 	@Override
 	public void save(Minigame minigame, FileConfiguration config) {

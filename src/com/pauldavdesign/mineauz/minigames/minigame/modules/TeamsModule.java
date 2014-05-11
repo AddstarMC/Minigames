@@ -28,6 +28,11 @@ public class TeamsModule implements MinigameModule {
 	public String getName() {
 		return "Teams";
 	}
+	
+	@Override
+	public boolean useSeparateConfig(){
+		return false;
+	}
 
 	@Override
 	public void save(Minigame minigame, FileConfiguration config) {

@@ -22,6 +22,11 @@ public class LoadoutModule implements MinigameModule {
 	public String getName() {
 		return "Loadouts";
 	}
+	
+	@Override
+	public boolean useSeparateConfig(){
+		return false;
+	}
 
 	@Override
 	public void save(Minigame minigame, FileConfiguration config) {
