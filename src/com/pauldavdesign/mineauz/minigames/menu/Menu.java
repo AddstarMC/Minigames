@@ -71,7 +71,7 @@ public class Menu {
 				m.addItem(item, inc);
 				break;
 			}
-			else if(m.getClicked(inc).getName() != null && m.getClicked(inc).getName().equals("NL")){
+			else if(m.getClicked(inc).getName() != null && ChatColor.stripColor(m.getClicked(inc).getName()).equals("NL")){
 				for(int i = 1; i < 10; i++){
 					if((inc + i) % 9 == 0){
 						inc += i;
