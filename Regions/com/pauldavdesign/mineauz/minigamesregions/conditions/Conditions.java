@@ -25,6 +25,7 @@ public class Conditions {
 		addCondition(new PlayerScoreRangeCondition());
 		addCondition(new MatchTeamCondition());
 		addCondition(new ContainsOneTeamCondition());
+		addCondition(new RandomChanceCondition());
 	}
 	
 	public static void addCondition(ConditionInterface condition){
