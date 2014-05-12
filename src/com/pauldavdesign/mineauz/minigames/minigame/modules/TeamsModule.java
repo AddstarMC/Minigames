@@ -13,8 +13,12 @@ import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemAddTeam;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemList;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemNewLine;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemTeam;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
@@ -153,7 +157,7 @@ public class TeamsModule implements MinigameModule {
 		return true;
 	}
 	
-	private Callback<String> getDefaultWinnerCallback(){
+	public Callback<String> getDefaultWinnerCallback(){
 		return new Callback<String>() {
 
 			@Override
@@ -182,15 +186,26 @@ public class TeamsModule implements MinigameModule {
 	}
 
 	@Override
-	public void addMenuOptions(Menu menu) {
+	public void addMenuOptions(Menu menu, Minigame minigame) {
 		Menu m = new Menu(6, "Teams", menu.getViewer());
 		m.setPreviousPage(menu);
+		List<MenuItem> items = new ArrayList<MenuItem>();
 		List<String> teams = new ArrayList<String>(this.teams.size() + 1);
 		for(TeamColor t : this.teams.keySet()){
 			teams.add(MinigameUtils.capitalize(t.toString().replace("_", " ")));
 		}
 		teams.add("None");
-		m.addItem(new MenuItemList("Default Winning Team", Material.PAPER, getDefaultWinnerCallback(), teams));
+		items.add(new MenuItemList("Default Winning Team", Material.PAPER, getDefaultWinnerCallback(), teams));
+		items.add(new MenuItemNewLine());
+		for(Team t : this.teams.values()){
+			items.add(new MenuItemTeam(t.getChatColor() + t.getDisplayName(), t));
+		}
+		
+		m.addItem(new MenuItemAddTeam("Add Team", minigame), m.getSize() - 1);
+		
+		m.addItems(items);
+		
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, menu), m.getSize() - 9);
 		
 		MenuItemPage p = new MenuItemPage("Team Options", Material.CHEST, m);
 		menu.addItem(p);

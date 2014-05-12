@@ -1876,7 +1876,7 @@ public class Minigame {
 		lobby.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), lobby.getSize() - 9);
 
 		for(MinigameModule mod : getModules()){
-			mod.addMenuOptions(main);
+			mod.addMenuOptions(main, this);
 		}
 		main.displayMenu(player);
 		

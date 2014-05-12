@@ -227,7 +227,7 @@ public class LoadoutModule implements MinigameModule {
 	}
 
 	@Override
-	public void addMenuOptions(Menu menu) {
+	public void addMenuOptions(Menu menu, Minigame minigame) {
 		// TODO Auto-generated method stub
 		
 	}

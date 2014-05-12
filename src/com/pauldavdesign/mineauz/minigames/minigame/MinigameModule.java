@@ -9,5 +9,5 @@ public interface MinigameModule {
 	public boolean useSeparateConfig();
 	public void save(Minigame minigame, FileConfiguration config);
 	public void load(Minigame minigame, FileConfiguration config);
-	public void addMenuOptions(Menu menu);
+	public void addMenuOptions(Menu menu, Minigame minigame);
 }
