@@ -37,14 +37,15 @@ public class SetTeamCommand implements ICommand {
 
 	@Override
 	public String[] getParameters() {
-		return new String[] {"add", "rename", "remove", "list"};
+		return new String[] {"add", "rename", "remove", "list", "maxplayers"};
 	}
 
 	@Override
 	public String[] getUsage() {
 		return new String[] {"/minigame set <Minigame> team add <TeamColor> [Display Name]",
 				"/minigame set <Minigame> team rename <TeamColor> <Display Name>",
-				"/minigame set <Minigame> team remove <TeamColor>"
+				"/minigame set <Minigame> team remove <TeamColor>",
+				"/minigame set <Minigame> team maxplayers <TeamColor> <number>"
 		};
 	}
 
@@ -190,6 +191,28 @@ public class SetTeamCommand implements ICommand {
 				}
 				return true;
 			}
+			else if(args[0].equalsIgnoreCase("maxplayers") && args.length == 3){
+				if(TeamColor.matchColor(args[1]) != null){
+					TeamColor col = TeamColor.matchColor(args[1]);
+					if(tmod.hasTeam(col)){
+						if(args[2].matches("[0-9]+")){
+							int val = Integer.valueOf(args[2]);
+							tmod.getTeam(col).setMaxPlayers(Integer.valueOf(args[2]));
+							sender.sendMessage(ChatColor.GRAY + "Maximum players for the team " + tmod.getTeam(col).getDisplayName() + " has been set to " + val);
+						}
+						else{
+							sender.sendMessage(ChatColor.RED + args[2] + " is not a valid number!");
+						}
+					}
+					else{
+						sender.sendMessage(ChatColor.RED + "There is no " + MinigameUtils.capitalize(col.toString()) + " Team in " + minigame);
+					}
+				}
+				else{
+					sender.sendMessage(ChatColor.RED + args[1] + " is not a valid team color!");
+				}
+				return true;
+			}
 		}
 		return false;
 	}
@@ -198,7 +221,7 @@ public class SetTeamCommand implements ICommand {
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1)
-			return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("add;rename;remove;list"), args[0]);
+			return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("add;rename;remove;list;maxplayers"), args[0]);
 		else if(args.length == 2){
 			if(args[0].equalsIgnoreCase("add")){
 				List<String> cols = new ArrayList<String>(TeamColor.values().length);
@@ -212,6 +235,12 @@ public class SetTeamCommand implements ICommand {
 				for(Team c : TeamsModule.getMinigameModule(minigame).getTeams()){
 					cols.add(c.getColor().toString());
 				}
+				return MinigameUtils.tabCompleteMatch(cols, args[1]);
+			}
+			else if(args[0].equalsIgnoreCase("maxplayers")){
+				List<String> cols = new ArrayList<String>();
+				for(Team t : TeamsModule.getMinigameModule(minigame).getTeams())
+					cols.add(t.getColor().toString());
 				return MinigameUtils.tabCompleteMatch(cols, args[1]);
 			}
 		}

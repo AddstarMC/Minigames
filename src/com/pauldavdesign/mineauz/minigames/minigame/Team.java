@@ -14,6 +14,8 @@ import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 public class Team {
 	private String displayName = null;
 	private TeamColor color;
+	private int maxPlayers = 0;
+	
 	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 	private int score = 0;
 	private Minigame mgm;
@@ -85,6 +87,21 @@ public class Team {
 	public String getDisplayName(){
 		return displayName;
 	}
+	
+	public int getMaxPlayers() {
+		return maxPlayers;
+	}
+	
+	public void setMaxPlayers(int maxPlayers) {
+		this.maxPlayers = maxPlayers;
+	}
+	
+	public boolean isFull(){
+		if(maxPlayers != 0 && players.size() >= maxPlayers)
+			return true;
+		return false;
+	}
+	
 	
 	/**
 	 * Gets the teams current score

@@ -77,6 +77,18 @@ public class MenuItemTeam extends MenuItem{
 				return team.getDisplayName();
 			}
 		}));
+		m.addItem(new MenuItemInteger("Max Players", Material.DOUBLE_STEP, new Callback<Integer>() {
+			
+			@Override
+			public void setValue(Integer value) {
+				team.setMaxPlayers(value);
+			}
+			
+			@Override
+			public Integer getValue() {
+				return team.getMaxPlayers();
+			}
+		}, 0, null));
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, getContainer()), m.getSize() - 9);
 		m.displayMenu(getContainer().getViewer());
 		return null;

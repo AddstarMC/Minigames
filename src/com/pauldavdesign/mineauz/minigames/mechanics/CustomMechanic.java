@@ -28,8 +28,12 @@ public class CustomMechanic extends GameMechanicBase{
 				if(ply.getTeam() == null){
 					Team smt = null;
 					for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
-						if(smt == null || t.getPlayers().size() < smt.getPlayers().size())
+						if(smt == null || (t.getPlayers().size() < smt.getPlayers().size() && t.getPlayers().size() != t.getMaxPlayers()))
 							smt = t;
+					}
+					if(smt == null){
+						pdata.quitMinigame(ply, false);
+						ply.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
 					}
 					smt.addPlayer(ply);
 					ply.sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", smt.getChatColor() + smt.getDisplayName()), null);
@@ -43,12 +47,12 @@ public class CustomMechanic extends GameMechanicBase{
 				Team smt = null;
 				Team lgt = null;
 				for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
-					if(smt == null || t.getPlayers().size() < smt.getPlayers().size() - 1)
+					if(smt == null || (t.getPlayers().size() < smt.getPlayers().size() - 1 && !t.isFull()))
 						smt = t;
-					if((lgt == null || t.getPlayers().size() > lgt.getPlayers().size()) && t != smt)
+					if((lgt == null || (t.getPlayers().size() > lgt.getPlayers().size() && !t.isFull())) && t != smt)
 						lgt = t;
 				}
-				if(lgt.getPlayers().size() - smt.getPlayers().size() > 1){
+				if(smt != null && lgt != null && lgt.getPlayers().size() - smt.getPlayers().size() > 1){
 					MinigamePlayer pl = lgt.getPlayers().get(0);
 					TeamsType.switchTeam(minigame, pl, smt);
 					pl.sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", smt.getChatColor() + smt.getDisplayName()), null);
