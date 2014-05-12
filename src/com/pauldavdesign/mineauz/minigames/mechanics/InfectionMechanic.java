@@ -44,22 +44,26 @@ public class InfectionMechanic extends GameMechanicBase{
 				Team team = ply.getTeam();
 				
 				if(team == blue){
-					if(red.getPlayers().size() < Math.ceil(players.size() * 0.18)){
+					if(red.getPlayers().size() < Math.ceil(players.size() * 0.18) && !red.isFull()){
 						TeamsType.switchTeam(minigame, ply, red);
 						players.get(i).sendMessage(MinigameUtils.formStr("player.team.assign.infectedAssign", ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null);
 						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.assign.infectedAnnounce", players.get(i).getName(), ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null, players.get(i));
 					}
 				}
 				else if(team == null){
-					if(red.getPlayers().size() < Math.ceil(players.size() * 0.18)){
+					if(red.getPlayers().size() < Math.ceil(players.size() * 0.18) && !red.isFull()){
 						red.addPlayer(ply);
 						players.get(i).sendMessage(MinigameUtils.formStr("player.team.assign.infectedAssign", ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null);
 						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.assign.infectedAnnounce", players.get(i).getName(), ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null, players.get(i));
 					}
-					else{
+					else if(!blue.isFull()){
 						blue.addPlayer(ply);
 						ply.sendMessage(MinigameUtils.formStr("player.team.assign.survivor", ChatColor.BLUE + MinigameUtils.getLang("player.team.assign.survivor")), null);
 						mdata.sendMinigameMessage(minigame,MinigameUtils.formStr("player.team.assign.survivorAnnounce", players.get(i).getName(), ChatColor.BLUE + MinigameUtils.getLang("player.team.assign.survivor")), null, players.get(i));
+					}
+					else{
+						pdata.quitMinigame(ply, false);
+						ply.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
 					}
 				}
 			}
@@ -76,25 +80,30 @@ public class InfectionMechanic extends GameMechanicBase{
 				Team blue = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.BLUE);
 				Team red = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.RED);
 				if(blue.getPlayers().contains(player)){
-					TeamsType.switchTeam(mgm, player, red);
-					infected.add(player);
-					if(event.getEntity().getKiller() != null){
-						MinigamePlayer killer = pdata.getMinigamePlayer(event.getEntity().getKiller());
-						killer.addScore();
-						mgm.setScore(killer, killer.getScore());
+					if(!red.isFull()){
+						TeamsType.switchTeam(mgm, player, red);
+						infected.add(player);
+						if(event.getEntity().getKiller() != null){
+							MinigamePlayer killer = pdata.getMinigamePlayer(event.getEntity().getKiller());
+							killer.addScore();
+							mgm.setScore(killer, killer.getScore());
+						}
+						player.resetScore();
+						mgm.setScore(player, player.getScore());
+						
+						if(mgm.getLives() != player.getDeaths()){
+							mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.infectedAnnounce", player.getName(), ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), "error", null);
+						}
+						if(blue.getPlayers().isEmpty()){
+							List<MinigamePlayer> w;
+							List<MinigamePlayer> l;
+							w = new ArrayList<MinigamePlayer>(red.getPlayers());
+							l = new ArrayList<MinigamePlayer>();
+							pdata.endMinigame(mgm, w, l);
+						}
 					}
-					player.resetScore();
-					mgm.setScore(player, player.getScore());
-					
-					if(mgm.getLives() != player.getDeaths()){
-						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.infectedAnnounce", player.getName(), ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), "error", null);
-					}
-					if(blue.getPlayers().isEmpty()){
-						List<MinigamePlayer> w;
-						List<MinigamePlayer> l;
-						w = new ArrayList<MinigamePlayer>(red.getPlayers());
-						l = new ArrayList<MinigamePlayer>();
-						pdata.endMinigame(mgm, w, l);
+					else{
+						pdata.quitMinigame(player, false);
 					}
 				}
 				else{
