@@ -61,6 +61,7 @@ player:
       survivorAnnounce: "%s is a %s"
       joinTeam: "You have joined %s"
       joinAnnounce: "%s has joined %s"
+    full: "Sorry, this team is full!"
   ctf:
     capture: "%s captured a flag for %s"
     captureFinal: "%s captured the final flag for %s"

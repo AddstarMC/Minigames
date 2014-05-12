@@ -70,12 +70,12 @@ public class TeamSign implements MinigameSign {
 					if(mgm.isNotWaitingForPlayers() && !sign.getLine(2).equals(ChatColor.GRAY + "Neutral")){
 						Team sm = null;
 						Team nt = matchTeam(mgm, sign.getLine(2));
-						if(nt != null){
+						if(nt != null && !nt.isFull()){
 							for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 								if(sm == null || t.getPlayers().size() < sm.getPlayers().size())
 									sm = t;
 							}
-							if(nt.getPlayers().size() - sm.getPlayers().size() < 2){
+							if(nt.getPlayers().size() - sm.getPlayers().size() < 1){
 								TeamsType.switchTeam(mgm, player, nt);
 								plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.joinAnnounce", player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
 								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", nt.getChatColor() + nt.getDisplayName()));
@@ -85,6 +85,9 @@ public class TeamSign implements MinigameSign {
 							}
 							
 							player.getPlayer().damage(player.getPlayer().getHealth());
+						}
+						else if(nt.isFull()){
+							player.sendMessage(MinigameUtils.getLang("player.team.full"), "error");
 						}
 					}
 					else if(sign.getLine(2).equals(ChatColor.GRAY + "Neutral") || matchTeam(mgm, sign.getLine(2)) != player.getTeam()){
