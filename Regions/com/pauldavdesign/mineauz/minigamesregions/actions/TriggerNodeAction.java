@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.Event;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.menu.Callback;
@@ -36,23 +37,23 @@ public class TriggerNodeAction implements ActionInterface {
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
-			Map<String, Object> args, Region region) {
+			Map<String, Object> args, Region region, Event event) {
 		Minigame mg = player.getMinigame();
 		if(mg != null){
 			RegionModule rmod = RegionModule.getMinigameModule(mg);
 			if(rmod.hasNode((String)args.get("a_triggernode")))
-				rmod.getNode((String)args.get("a_triggernode")).execute(NodeTrigger.REMOTE, player);
+				rmod.getNode((String)args.get("a_triggernode")).execute(NodeTrigger.REMOTE, player, null);
 		}
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player, Map<String, Object> args,
-			Node node) {
+			Node node, Event event) {
 		Minigame mg = player.getMinigame();
 		if(mg != null){
 			RegionModule rmod = RegionModule.getMinigameModule(mg);
 			if(rmod.hasNode((String)args.get("a_triggernode")))
-				rmod.getNode((String)args.get("a_triggernode")).execute(NodeTrigger.REMOTE, player);
+				rmod.getNode((String)args.get("a_triggernode")).execute(NodeTrigger.REMOTE, player, null);
 		}
 	}
 

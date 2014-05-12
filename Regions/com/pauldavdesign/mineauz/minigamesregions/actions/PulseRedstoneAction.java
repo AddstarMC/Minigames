@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.Event;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
@@ -37,12 +38,12 @@ public class PulseRedstoneAction implements ActionInterface {
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
-			Map<String, Object> args, Region region) {
+			Map<String, Object> args, Region region, Event event) {
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Map<String, Object> args, Node node) {
+			Map<String, Object> args, Node node, Event event) {
 		Material block = Material.REDSTONE_BLOCK;
 		if((Boolean) args.get("a_redstonepulsetorch"))
 			block = Material.REDSTONE_TORCH_ON;

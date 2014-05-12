@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.event.Event;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
@@ -44,12 +45,12 @@ public class SpawnEntityAction implements ActionInterface {
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
-			Map<String, Object> args, Region region) {
+			Map<String, Object> args, Region region, Event event) {
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player, Map<String, Object> args,
-			Node node) {
+			Node node, Event event) {
 		Entity ent = node.getLocation().getWorld().spawnEntity(node.getLocation(), EntityType.valueOf((String)args.get("a_spawnentitytype")));
 		ent.setMetadata("MinigameEntity", new FixedMetadataValue(Minigames.plugin, true));
 		player.getMinigame().getBlockRecorder().addEntity(ent, player, true);

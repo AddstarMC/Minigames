@@ -9,6 +9,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.Event;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
@@ -23,18 +24,18 @@ public class RegionEvents implements Listener{
 	private Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
 	
-	private void executeRegionChanges(Minigame mg, MinigamePlayer ply){
+	private void executeRegionChanges(Minigame mg, MinigamePlayer ply, Event event){
 		for(Region r : RegionModule.getMinigameModule(mg).getRegions()){
 			if(r.playerInRegion(ply)){
 				if(!r.hasPlayer(ply)){
 					r.addPlayer(ply);
-					r.execute(RegionTrigger.ENTER, ply);
+					r.execute(RegionTrigger.ENTER, ply, null);
 				}
 			}
 			else{
 				if(r.hasPlayer(ply)){
 					r.removePlayer(ply);
-					r.execute(RegionTrigger.LEAVE, ply);
+					r.execute(RegionTrigger.LEAVE, ply, null);
 				}
 			}
 		}
@@ -46,7 +47,7 @@ public class RegionEvents implements Listener{
 		if(ply == null) return;
 		if(ply.isInMinigame()){
 			Minigame mg = ply.getMinigame();
-			executeRegionChanges(mg, ply);
+			executeRegionChanges(mg, ply, event);
 		}
 	}
 	
@@ -56,11 +57,12 @@ public class RegionEvents implements Listener{
 		if(ply == null) return;
 		if(ply.isInMinigame()){
 			final Minigame mg = ply.getMinigame();
+			final Event fevent = event;
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				
 				@Override
 				public void run() {
-					executeRegionChanges(mg, ply);
+					executeRegionChanges(mg, ply, fevent);
 				}
 			});
 		}
@@ -71,11 +73,12 @@ public class RegionEvents implements Listener{
 		final MinigamePlayer ply = event.getMinigamePlayer();
 		if(ply == null) return;
 		final Minigame mg = event.getMinigame();
+		final Event fevent = event;
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			
 			@Override
 			public void run() {
-				executeRegionChanges(mg, ply);
+				executeRegionChanges(mg, ply, fevent);
 			}
 		});
 	}
@@ -122,7 +125,7 @@ public class RegionEvents implements Listener{
 					if(loc1.getBlockX() == loc2.getBlockX() &&
 							loc1.getBlockY() == loc2.getBlockY() &&
 							loc1.getBlockZ() == loc2.getBlockZ()){
-						node.execute(NodeTrigger.INTERACT, ply);
+						node.execute(NodeTrigger.INTERACT, ply, event);
 					}
 				}
 			}

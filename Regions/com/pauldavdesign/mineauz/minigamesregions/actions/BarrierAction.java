@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.Event;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
@@ -29,13 +30,13 @@ public class BarrierAction implements ActionInterface{
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Map<String, Object> args, Node node) {
+			Map<String, Object> args, Node node, Event event) {
 		
 	}
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args,
-			Region region) {
+			Region region, Event event) {
 		Location o = player.getLocation().clone();
 		Location[] locs = {region.getFirstPoint(), region.getSecondPoint()};
 		double xdis1 = Math.abs(o.getX() - locs[0].getX());

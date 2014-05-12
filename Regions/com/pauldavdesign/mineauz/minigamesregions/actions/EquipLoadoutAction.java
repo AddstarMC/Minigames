@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.Event;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.menu.Callback;
@@ -34,7 +35,7 @@ public class EquipLoadoutAction implements ActionInterface {
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Map<String, Object> args, Node node) {
+			Map<String, Object> args, Node node, Event event) {
 		if(player.isInMinigame()){
 			LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
 			if(lmod.hasLoadout((String)args.get("a_equiploadout"))){
@@ -44,7 +45,7 @@ public class EquipLoadoutAction implements ActionInterface {
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region) {
+	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region, Event event) {
 		if(player.isInMinigame()){
 			LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
 			if(lmod.hasLoadout((String)args.get("a_equiploadout"))){

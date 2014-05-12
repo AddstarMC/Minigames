@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.Event;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.menu.Callback;
@@ -33,13 +34,13 @@ public class AddScoreAction implements ActionInterface {
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Map<String, Object> args, Node node) {
+			Map<String, Object> args, Node node, Event event) {
 		player.addScore((Integer)args.get("a_addscoreamount"));
 		player.getMinigame().setScore(player, player.getScore());
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region) {
+	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region, Event event) {
 		if(!player.isInMinigame()) return;
 		player.addScore((Integer)args.get("a_addscoreamount"));
 		player.getMinigame().setScore(player, player.getScore());

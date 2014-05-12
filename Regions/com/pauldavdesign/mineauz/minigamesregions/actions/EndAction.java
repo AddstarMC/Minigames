@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.Event;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
@@ -34,12 +35,12 @@ public class EndAction implements ActionInterface {
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Map<String, Object> args, Node node) {
+			Map<String, Object> args, Node node, Event event) {
 		execute(player, args);
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region) {
+	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region, Event event) {
 		execute(player, args);
 	}
 	
