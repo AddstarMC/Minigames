@@ -32,7 +32,11 @@ public class Actions {
 		addAction(new BarrierAction());
 		addAction(new SpawnEntityAction());
 		addAction(new TriggerNodeAction());
+		addAction(new TriggerRegionAction());
 		addAction(new PulseRedstoneAction());
+		addAction(new TimerAction());
+		addAction(new CancelTimerAction());
+		addAction(new ExecuteCommandAction());
 	}
 	
 	public static void addAction(ActionInterface action){

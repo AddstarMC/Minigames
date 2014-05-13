@@ -2,23 +2,20 @@ package com.pauldavdesign.mineauz.minigamesregions;
 
 public enum NodeTrigger {
 	
-	NONE("None"),
-	INTERACT("Interact"),
-	REMOTE("Remote");
-	
-	private String name;
-	
-	private NodeTrigger(String name){
-		this.name = name;
-	}
-	
-	public String getName(){
-		return name;
-	}
+	NONE,
+	INTERACT,
+	REMOTE,
+	GAME_START,
+	GAME_QUIT,
+	GAME_END,
+	GAME_JOIN,
+	TIMER,
+	BLOCK_BROKEN,
+	BLOCK_PLACED;
 	
 	public static NodeTrigger getByName(String name){
 		for(NodeTrigger t : NodeTrigger.values()){
-			if(name.equalsIgnoreCase(t.getName())){
+			if(name.equalsIgnoreCase(t.toString())){
 				return t;
 			}
 		}

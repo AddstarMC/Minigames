@@ -2,23 +2,19 @@ package com.pauldavdesign.mineauz.minigamesregions;
 
 public enum RegionTrigger {
 	
-	ENTER("Enter"),
-	LEAVE("Leave"),
-	TICK("Tick");
-	
-	private String name;
-	
-	private RegionTrigger(String name){
-		this.name = name;
-	}
-	
-	public String getName(){
-		return name;
-	}
+	ENTER,
+	LEAVE,
+	TICK,
+	REMOTE,
+	GAME_START,
+	GAME_QUIT,
+	GAME_END,
+	GAME_JOIN,
+	TIMER;
 	
 	public static RegionTrigger getByName(String name){
 		for(RegionTrigger t : RegionTrigger.values()){
-			if(name.equalsIgnoreCase(t.getName())){
+			if(name.equalsIgnoreCase(t.toString())){
 				return t;
 			}
 		}

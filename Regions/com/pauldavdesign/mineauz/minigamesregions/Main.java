@@ -9,10 +9,12 @@ import com.pauldavdesign.mineauz.minigamesregions.commands.SetRegionCommand;
 
 public class Main extends JavaPlugin{
 	
-	private Minigames minigames;
+	private static Minigames minigames;
+	private static Main plugin;
 	
 	@Override
 	public void onEnable(){
+		plugin = this;
 		if(getServer().getPluginManager().getPlugin("Minigames") != null){
 			minigames = Minigames.plugin;
 		}
@@ -36,7 +38,11 @@ public class Main extends JavaPlugin{
 		getLogger().info("Minigames Regions disabled");
 	}
 	
-	public Minigames getMinigames(){
+	public static Minigames getMinigames(){
 		return minigames;
+	}
+	
+	public static Main getPlugin(){
+		return plugin;
 	}
 }

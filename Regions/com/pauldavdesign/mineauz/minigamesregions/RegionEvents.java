@@ -6,6 +6,8 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -126,6 +128,76 @@ public class RegionEvents implements Listener{
 							loc1.getBlockY() == loc2.getBlockY() &&
 							loc1.getBlockZ() == loc2.getBlockZ()){
 						node.execute(NodeTrigger.INTERACT, ply, event);
+					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	private void minigameJoin(JoinMinigameEvent event){
+		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
+			node.execute(NodeTrigger.GAME_JOIN, event.getMinigamePlayer(), event);
+		}
+		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
+			region.execute(RegionTrigger.GAME_JOIN, event.getMinigamePlayer(), event);
+		}
+	}
+	
+	@EventHandler
+	private void minigameQuit(QuitMinigameEvent event){
+		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
+			node.execute(NodeTrigger.GAME_QUIT, event.getMinigamePlayer(), event);
+		}
+		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
+			region.execute(RegionTrigger.GAME_QUIT, event.getMinigamePlayer(), event);
+		}
+	}
+	
+	@EventHandler
+	private void minigameEnd(EndMinigameEvent event){
+		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
+			node.execute(NodeTrigger.GAME_END, null, event);
+		}
+		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
+			region.execute(RegionTrigger.GAME_END, null, event);
+		}
+	}
+	
+	@EventHandler
+	private void blockBreak(BlockBreakEvent event){
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply == null)return;
+		
+		if(ply.isInMinigame()){
+			for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
+				if(node.getLocation().getWorld() == event.getBlock().getWorld()){
+					Location loc1 = node.getLocation();
+					Location loc2 = event.getBlock().getLocation();
+					if(loc1.getBlockX() == loc2.getBlockX() &&
+							loc1.getBlockY() == loc2.getBlockY() &&
+							loc1.getBlockZ() == loc2.getBlockZ()){
+						node.execute(NodeTrigger.BLOCK_BROKEN, ply, event);
+					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	private void blockPlace(BlockPlaceEvent event){
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply == null)return;
+		
+		if(ply.isInMinigame()){
+			for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
+				if(node.getLocation().getWorld() == event.getBlock().getWorld()){
+					Location loc1 = node.getLocation();
+					Location loc2 = event.getBlock().getLocation();
+					if(loc1.getBlockX() == loc2.getBlockX() &&
+							loc1.getBlockY() == loc2.getBlockY() &&
+							loc1.getBlockZ() == loc2.getBlockZ()){
+						node.execute(NodeTrigger.BLOCK_PLACED, ply, event);
 					}
 				}
 			}
