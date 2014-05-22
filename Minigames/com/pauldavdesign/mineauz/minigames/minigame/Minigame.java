@@ -656,6 +656,8 @@ public class Minigame {
 		if(mpTimer != null && mpTimer.getStartWaitTimeLeft() == 0){
 			return true;
 		}
+		else if(type == MinigameType.SINGLEPLAYER && hasPlayers())
+			return true;
 		return false;
 	}
 	

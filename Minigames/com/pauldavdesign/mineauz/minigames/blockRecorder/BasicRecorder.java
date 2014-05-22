@@ -42,7 +42,7 @@ public class BasicRecorder implements Listener{
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
 		if(ply.isInMinigame()){
-			if(ply.getMinigame().getType() != MinigameType.SINGLEPLAYER && (!ply.getMinigame().hasStarted() || ply.isLatejoining())){
+			if(!ply.getMinigame().hasStarted() || ply.isLatejoining()){
 				event.setCancelled(true);
 				return;
 			}
@@ -86,7 +86,7 @@ public class BasicRecorder implements Listener{
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
 		if(ply.isInMinigame() && !event.isCancelled()){
-			if(ply.getMinigame().getType() != MinigameType.SINGLEPLAYER && (!ply.getMinigame().hasStarted() || ply.isLatejoining())){
+			if(!ply.getMinigame().hasStarted() || ply.isLatejoining()){
 				event.setCancelled(true);
 				return;
 			}
@@ -276,7 +276,7 @@ public class BasicRecorder implements Listener{
 	@EventHandler(ignoreCancelled = true)
 	private void entityExplode(EntityExplodeEvent event){
 		for(Minigame mg : Minigames.plugin.mdata.getAllMinigames().values()){
-			if(!mg.hasPlayers() && !mg.isNotWaitingForPlayers() && mg.getBlockRecorder().hasRegenArea() && mg.getBlockRecorder().blockInRegenArea(event.getLocation())){
+			if(!mg.hasPlayers() && !mg.hasStarted() && mg.getBlockRecorder().hasRegenArea() && mg.getBlockRecorder().blockInRegenArea(event.getLocation())){
 				event.setCancelled(true);
 				break;
 			}
