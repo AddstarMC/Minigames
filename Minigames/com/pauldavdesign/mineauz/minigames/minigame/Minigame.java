@@ -787,7 +787,7 @@ public class Minigame {
 	}
 	
 	public void setScore(MinigamePlayer ply, int amount){
-		sbManager.getObjective(name).getScore(ply.getPlayer()).setScore(amount);
+		sbManager.getObjective(name).getScore(ply.getName()).setScore(amount);
 	}
 
 	public int getRedTeamScore() {
@@ -797,21 +797,21 @@ public class Minigame {
 	public void setRedTeamScore(int redTeamScore) {
 		this.redTeamScore = redTeamScore;
 		if(redTeamScore != 0){
-			getScoreboardManager().getObjective(name).getScore(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.RED + "Red Team: ")).setScore(redTeamScore);
+			getScoreboardManager().getObjective(name).getScore(ChatColor.RED + "Red Team: ").setScore(redTeamScore);
 		}
 		else{
-			getScoreboardManager().resetScores(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.RED + "Red Team: "));
+			getScoreboardManager().resetScores(ChatColor.RED + "Red Team: ");
 		}
 	}
 	
 	public void incrementRedTeamScore(){
 		redTeamScore++;
-		getScoreboardManager().getObjective(name).getScore(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.RED + "Red Team: ")).setScore(redTeamScore);
+		getScoreboardManager().getObjective(name).getScore(ChatColor.RED + "Red Team: ").setScore(redTeamScore);
 	}
 	
 	public void incrementRedTeamScore(int amount){
 		redTeamScore += amount;
-		getScoreboardManager().getObjective(name).getScore(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.RED + "Red Team: ")).setScore(redTeamScore);
+		getScoreboardManager().getObjective(name).getScore(ChatColor.RED + "Red Team: ").setScore(redTeamScore);
 	}
 
 	public int getBlueTeamScore() {
@@ -821,21 +821,21 @@ public class Minigame {
 	public void setBlueTeamScore(int blueTeamScore) {
 		this.blueTeamScore = blueTeamScore;
 		if(blueTeamScore != 0){
-			getScoreboardManager().getObjective(name).getScore(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.BLUE + "Blue Team: ")).setScore(blueTeamScore);
+			getScoreboardManager().getObjective(name).getScore(ChatColor.BLUE + "Blue Team: ").setScore(blueTeamScore);
 		}
 		else{
-			getScoreboardManager().resetScores(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.BLUE + "Blue Team: "));
+			getScoreboardManager().resetScores(ChatColor.BLUE + "Blue Team: ");
 		}
 	}
 	
 	public void incrementBlueTeamScore(){
 		blueTeamScore++;
-		getScoreboardManager().getObjective(name).getScore(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.BLUE + "Blue Team: ")).setScore(blueTeamScore);
+		getScoreboardManager().getObjective(name).getScore(ChatColor.BLUE + "Blue Team: ").setScore(blueTeamScore);
 	}
 	
 	public void incrementBlueTeamScore(int amount){
 		blueTeamScore += amount;
-		getScoreboardManager().getObjective(name).getScore(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.BLUE + "Blue Team: ")).setScore(blueTeamScore);
+		getScoreboardManager().getObjective(name).getScore(ChatColor.BLUE + "Blue Team: ").setScore(blueTeamScore);
 	}
 
 	public int getMinScore() {
