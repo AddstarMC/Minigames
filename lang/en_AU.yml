@@ -1,6 +1,6 @@
 lang:
   info: "Minigames default language (Australian English)"
-  version: ${project.version}
+  version: 1.6.4
   
 player:
   join:
