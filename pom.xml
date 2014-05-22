@@ -91,7 +91,7 @@
       </resource>
     </resources>
 
-    <sourceDirectory>src</sourceDirectory>
+    <sourceDirectory>Minigames</sourceDirectory>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
