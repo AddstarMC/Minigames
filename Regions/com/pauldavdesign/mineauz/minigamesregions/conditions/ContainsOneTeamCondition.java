@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.Event;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.menu.Callback;
@@ -34,13 +35,13 @@ public class ContainsOneTeamCondition implements ConditionInterface {
 
 	@Override
 	public boolean checkNodeCondition(MinigamePlayer player,
-			Map<String, Object> args, Node node) {
+			Map<String, Object> args, Node node, Event event) {
 		return false;
 	}
 
 	@Override
 	public boolean checkRegionCondition(MinigamePlayer player,
-			Map<String, Object> args, Region region) {
+			Map<String, Object> args, Region region, Event event) {
 		boolean ret = true;
 		Team last = player.getTeam();
 		if(last == null) return true;

@@ -25,7 +25,7 @@ public class MenuItemCustom extends MenuItem{
 	@Override
 	public ItemStack onClick(){
 		if(click != null)
-			return (ItemStack)click.interact();
+			return (ItemStack)click.interact(null);
 		return getItem();
 	}
 	
@@ -36,7 +36,7 @@ public class MenuItemCustom extends MenuItem{
 	@Override
 	public ItemStack onClickWithItem(ItemStack item){
 		if(clickItem != null)
-			return (ItemStack)clickItem.interact();
+			return (ItemStack)clickItem.interact(item);
 		return getItem();
 	}
 	
@@ -47,7 +47,7 @@ public class MenuItemCustom extends MenuItem{
 	@Override
 	public ItemStack onRightClick(){
 		if(rightClick != null)
-			return (ItemStack)rightClick.interact();
+			return (ItemStack)rightClick.interact(null);
 		return getItem();
 	}
 	
@@ -58,7 +58,7 @@ public class MenuItemCustom extends MenuItem{
 	@Override
 	public ItemStack onShiftClick(){
 		if(shiftClick != null)
-			return (ItemStack)shiftClick.interact();
+			return (ItemStack)shiftClick.interact(null);
 		return getItem();
 	}
 	
@@ -69,7 +69,7 @@ public class MenuItemCustom extends MenuItem{
 	@Override
 	public ItemStack onShiftRightClick(){
 		if(shiftRightClick != null)
-			return (ItemStack)shiftRightClick.interact();
+			return (ItemStack)shiftRightClick.interact(null);
 		return getItem();
 	}
 	
@@ -80,7 +80,7 @@ public class MenuItemCustom extends MenuItem{
 	@Override
 	public ItemStack onDoubleClick(){
 		if(doubleClick != null)
-			return (ItemStack)doubleClick.interact();
+			return (ItemStack)doubleClick.interact(null);
 		return getItem();
 	}
 	

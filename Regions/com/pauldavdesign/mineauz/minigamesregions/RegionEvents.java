@@ -43,7 +43,7 @@ public class RegionEvents implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void playerMove(PlayerMoveEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
@@ -85,7 +85,7 @@ public class RegionEvents implements Listener{
 		});
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void playerQuit(QuitMinigameEvent event){
 		MinigamePlayer ply = event.getMinigamePlayer();
 		if(ply == null) return;
@@ -96,7 +96,7 @@ public class RegionEvents implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void playersEnd(EndMinigameEvent event){
 		for(MinigamePlayer ply : event.getWinners()){
 			Minigame mg = ply.getMinigame();
@@ -107,7 +107,7 @@ public class RegionEvents implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void interactNode(PlayerInteractEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return; 
@@ -134,7 +134,7 @@ public class RegionEvents implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void minigameJoin(JoinMinigameEvent event){
 		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
 			node.execute(NodeTrigger.GAME_JOIN, event.getMinigamePlayer(), event);
@@ -144,7 +144,7 @@ public class RegionEvents implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void minigameQuit(QuitMinigameEvent event){
 		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
 			node.execute(NodeTrigger.GAME_QUIT, event.getMinigamePlayer(), event);
@@ -154,7 +154,7 @@ public class RegionEvents implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void minigameEnd(EndMinigameEvent event){
 		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
 			node.execute(NodeTrigger.GAME_END, null, event);
@@ -164,7 +164,7 @@ public class RegionEvents implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void blockBreak(BlockBreakEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null)return;
@@ -184,7 +184,7 @@ public class RegionEvents implements Listener{
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	private void blockPlace(BlockPlaceEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null)return;

@@ -109,7 +109,7 @@ public class SpawnEntityAction implements ActionInterface {
 		cus.setClick(new InteractionInterface() {
 			
 			@Override
-			public Object interact() {
+			public Object interact(Object object) {
 				if(EntityType.valueOf((String)fargs.get("a_spawnentitytype")) == EntityType.ZOMBIE){
 					menuMonster(fplayer, fargs, fm);
 					return null;

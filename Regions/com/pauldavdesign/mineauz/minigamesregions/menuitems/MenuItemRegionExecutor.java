@@ -75,7 +75,7 @@ public class MenuItemRegionExecutor extends MenuItem{
 			cmi.setRightClick(new InteractionInterface() {
 				
 				@Override
-				public Object interact() {
+				public Object interact(Object object) {
 					region.removeExecutor(ex);
 					getContainer().removeItem(getSlot());
 					return null;
@@ -86,14 +86,14 @@ public class MenuItemRegionExecutor extends MenuItem{
 			cmi.setClick(new InteractionInterface() {
 				
 				@Override
-				public Object interact() {
+				public Object interact(Object object) {
 					Menu m = new Menu(3, "Executor", fviewer);
 					final Menu ffm = m;
 					MenuItemCustom ca = new MenuItemCustom("Actions", Material.CHEST);
 					ca.setClick(new InteractionInterface() {
 						
 						@Override
-						public Object interact() {
+						public Object interact(Object object) {
 							Actions.displayMenu(fviewer, ex, ffm);
 							return null;
 						}
@@ -103,7 +103,7 @@ public class MenuItemRegionExecutor extends MenuItem{
 					c2.setClick(new InteractionInterface() {
 						
 						@Override
-						public Object interact() {
+						public Object interact(Object object) {
 							Conditions.displayMenu(fviewer, ex, ffm);
 							return null;
 						}

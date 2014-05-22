@@ -139,7 +139,7 @@ public class RewardSign implements MinigameSign {
 			mic.setClick(new InteractionInterface() {
 				
 				@Override
-				public Object interact() {
+				public Object interact(Object object) {
 					mdata.saveRewardSign(MinigameUtils.createLocationID(floc), true);
 					mic.getContainer().getViewer().sendMessage("Saved rewards for this sign.", null);
 					mic.getContainer().getViewer().getPlayer().closeInventory();

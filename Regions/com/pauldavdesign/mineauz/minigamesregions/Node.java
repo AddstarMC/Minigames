@@ -61,7 +61,7 @@ public class Node {
 			if(exec.getTrigger() == trigger){
 				boolean cont = true;
 				for(ConditionInterface con : exec.getConditions()){
-					if(!con.checkNodeCondition(player, exec.getArguments(), this)){
+					if(!con.checkNodeCondition(player, exec.getArguments(), this, event)){
 						cont = false;
 						break;
 					}

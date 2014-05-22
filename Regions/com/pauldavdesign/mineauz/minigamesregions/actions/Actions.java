@@ -37,6 +37,8 @@ public class Actions {
 		addAction(new TimerAction());
 		addAction(new CancelTimerAction());
 		addAction(new ExecuteCommandAction());
+		addAction(new SetBlockAction());
+		addAction(new ExplodeAction());
 	}
 	
 	public static void addAction(ActionInterface action){

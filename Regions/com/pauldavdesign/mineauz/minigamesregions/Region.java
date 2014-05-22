@@ -174,7 +174,7 @@ public class Region {
 			if(exec.getTrigger() == trigger){
 				boolean cont = true;
 				for(ConditionInterface con : exec.getConditions()){
-					if(!con.checkRegionCondition(player, exec.getArguments(), this)){
+					if(!con.checkRegionCondition(player, exec.getArguments(), this, event)){
 						cont = false;
 						break;
 					}

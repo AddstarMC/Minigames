@@ -39,7 +39,7 @@ public class MenuItemActionAdd extends MenuItem{
 				c.setClick(new InteractionInterface() {
 					
 					@Override
-					public Object interact() {
+					public Object interact(Object object) {
 						if(nexec == null){
 							rexec.addAction(Actions.getActionByName(fact));
 							getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, rexec, Actions.getActionByName(fact)));

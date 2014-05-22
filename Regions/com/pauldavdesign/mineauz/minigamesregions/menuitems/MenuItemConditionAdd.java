@@ -40,7 +40,7 @@ public class MenuItemConditionAdd extends MenuItem{
 				c.setClick(new InteractionInterface() {
 					
 					@Override
-					public Object interact() {
+					public Object interact(Object object) {
 						if(rexec != null){
 							rexec.addCondition(Conditions.getConditionByName(fcon));
 							getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, rexec, Conditions.getConditionByName(fcon)));
