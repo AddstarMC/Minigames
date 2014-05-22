@@ -3,6 +3,7 @@ package com.pauldavdesign.mineauz.minigames.scoring;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -119,6 +120,7 @@ public class CTFType extends ScoreTypeBase{
 									}
 									CTFFlag flag = new CTFFlag(event.getClickedBlock().getLocation(), oTeam, event.getPlayer(), mgm);
 									ev = new TakeFlagEvent(mgm, ply, flag);
+									Bukkit.getPluginManager().callEvent(ev);
 									if(!ev.isCancelled()){
 										mgm.addFlagCarrier(ply, flag);
 										flag.removeFlag();
@@ -127,6 +129,7 @@ public class CTFType extends ScoreTypeBase{
 								else{
 									CTFFlag flag = mgm.getDroppedFlag(sloc);
 									ev = new TakeFlagEvent(mgm, ply, flag);
+									Bukkit.getPluginManager().callEvent(ev);
 									if(!ev.isCancelled()){
 										mgm.addFlagCarrier(ply, flag);
 										if(!flag.isAtHome()){
@@ -169,6 +172,7 @@ public class CTFType extends ScoreTypeBase{
 							if(mgm.getFlagCarrier(ply) != null && ((mgm.hasDroppedFlag(clickID) && mgm.getDroppedFlag(clickID).isAtHome()) || !mgm.hasDroppedFlag(clickID))){
 								CTFFlag flag = mgm.getFlagCarrier(ply);
 								FlagCaptureEvent ev = new FlagCaptureEvent(mgm, ply, flag);
+								Bukkit.getPluginManager().callEvent(ev);
 								if(!ev.isCancelled()){
 									flag.respawnFlag();
 									String id = MinigameUtils.createLocationID(flag.getSpawnLocation());

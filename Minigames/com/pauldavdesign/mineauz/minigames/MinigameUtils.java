@@ -391,6 +391,7 @@ public class MinigameUtils {
 	 */
 	public static void broadcast(String message, Minigame minigame, String permission){
 		MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(ChatColor.AQUA + "[Minigames]" + ChatColor.WHITE, message, minigame);
+		Bukkit.getPluginManager().callEvent(ev);
 		Bukkit.getServer().broadcast(ev.getMessageWithPrefix(), permission);
 	}
 	
@@ -402,6 +403,7 @@ public class MinigameUtils {
 	 */
 	public static void broadcast(String message, Minigame minigame, ChatColor prefixColor){
 		MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(prefixColor + "[Minigames]" + ChatColor.WHITE, message, minigame);
+		Bukkit.getPluginManager().callEvent(ev);
 		Bukkit.getServer().broadcastMessage(ev.getMessageWithPrefix());
 	}
 	
