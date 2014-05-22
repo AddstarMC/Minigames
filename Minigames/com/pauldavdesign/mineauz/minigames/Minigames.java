@@ -32,9 +32,11 @@ import org.bukkit.potion.PotionEffectType;
 //import org.mcstats.Metrics;
 
 
+
 import com.pauldavdesign.mineauz.minigames.Metrics.Graph;
 import com.pauldavdesign.mineauz.minigames.blockRecorder.BasicRecorder;
 import com.pauldavdesign.mineauz.minigames.commands.CommandDispatcher;
+import com.pauldavdesign.mineauz.minigames.converter.Converter;
 import com.pauldavdesign.mineauz.minigames.gametypes.FreeForAllType;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.SingleplayerType;
@@ -87,6 +89,9 @@ public class Minigames extends JavaPlugin{
 		}
 		
 		//TODO: saveResource()
+		
+		//Convert UUIDs
+		new Converter();
 		
 		mdata = new MinigameData();
 		pdata = new PlayerData();
