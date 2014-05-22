@@ -90,9 +90,6 @@ public class Minigames extends JavaPlugin{
 		
 		//TODO: saveResource()
 		
-		//Convert UUIDs
-		new Converter();
-		
 		mdata = new MinigameData();
 		pdata = new PlayerData();
 		
@@ -163,6 +160,9 @@ public class Minigames extends JavaPlugin{
 			
 			invsave.deleteFile();
 		}
+		
+		//Convert UUIDs
+		new Converter();
 		
 		MinigameSave completion = new MinigameSave("completion");
 		mdata.addConfigurationFile("completion", completion.getConfig());
