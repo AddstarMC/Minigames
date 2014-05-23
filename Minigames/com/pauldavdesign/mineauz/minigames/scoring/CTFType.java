@@ -359,9 +359,7 @@ public class CTFType extends ScoreTypeBase{
 					event.getMinigame().removeFlagCarrier(pl);
 				}
 			}
-			if(event.getMinigame().getPlayers().size() == 1){
-				event.getMinigame().resetFlags();
-			}
+			event.getMinigame().resetFlags();
 		}
 	}
 	
