@@ -80,11 +80,9 @@ public class InfectionType extends ScoreTypeBase{
 					infected.add(player);
 					if(event.getEntity().getKiller() != null){
 						MinigamePlayer killer = pdata.getMinigamePlayer(event.getEntity().getKiller());
-//						pdata.addPlayerScore(killer);
 						killer.addScore();
 						mgm.setScore(killer, killer.getScore());
 					}
-//					pdata.setPlayerScore(event.getEntity(), 0);
 					player.resetScore();
 					mgm.setScore(player, player.getScore());
 					
@@ -108,7 +106,6 @@ public class InfectionType extends ScoreTypeBase{
 				else{
 					if(event.getEntity().getKiller() != null){
 						MinigamePlayer killer = pdata.getMinigamePlayer(event.getEntity().getKiller());
-//						pdata.addPlayerScore(killer);
 						killer.addScore();
 						mgm.setScore(killer, killer.getScore());
 					}

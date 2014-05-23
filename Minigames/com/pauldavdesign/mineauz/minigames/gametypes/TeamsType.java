@@ -140,7 +140,7 @@ public class TeamsType extends MinigameTypeBase{
 			mgm.setMpBets(null);
 		}
 		else if(mgm.getPlayers().size() >= 1 && mgm.hasStarted() &&
-				(mgm.getRedTeam().size() == 0 || mgm.getBlueTeam().size() == 0)){
+				(mgm.getRedTeam().size() == 0 || mgm.getBlueTeam().size() == 0) && !forced){
 			
 			if(mgm.getRedTeam().size() == 0){
 				List<MinigamePlayer> w;
