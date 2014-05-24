@@ -469,7 +469,7 @@ public class PlayerData {
 					WeatherTimeModule.getMinigameModule(minigame).stopTimeLoop();
 				}
 				
-				minigame.getScoreboardManager().resetScores(player.getPlayer());
+				minigame.getScoreboardManager().resetScores(player.getName());
 				
 				for(MinigamePlayer pl : minigame.getSpectators()){
 					player.getPlayer().showPlayer(pl.getPlayer());
@@ -709,7 +709,7 @@ public class PlayerData {
 				mgm.removePlayer(player);
 				player.getPlayer().setFallDistance(0);
 				WeatherTimeModule.getMinigameModule(mgm).stopTimeLoop();
-				mgm.getScoreboardManager().resetScores(player.getPlayer());
+				mgm.getScoreboardManager().resetScores(player.getName());
 				
 				if(mgm.getMinigameTimer() != null){
 					mgm.getMinigameTimer().stopTimer();

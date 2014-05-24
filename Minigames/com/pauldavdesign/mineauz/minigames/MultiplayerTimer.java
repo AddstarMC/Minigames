@@ -12,6 +12,7 @@ import com.pauldavdesign.mineauz.minigames.minigame.modules.LobbySettingsModule;
 public class MultiplayerTimer{
 	private int playerWaitTime;
 	private int startWaitTime;
+	private int oStartWaitTime;
 	private Minigame minigame;
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
@@ -31,6 +32,7 @@ public class MultiplayerTimer{
 		}
 		else
 			startWaitTime = minigame.getStartWaitTime();
+		oStartWaitTime = startWaitTime;
 		timeMsg.addAll(plugin.getConfig().getIntegerList("multiplayer.timerMessageInterval"));
 	}
 	
@@ -58,7 +60,7 @@ public class MultiplayerTimer{
 					}
 				}
 				else if(playerWaitTime == 0 && startWaitTime != 0 && !paused){
-					if(startWaitTime == plugin.getConfig().getInt("multiplayer.startcountdown")){
+					if(startWaitTime == oStartWaitTime){
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.minigameStarts"));
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
 						freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMoveStartWait());

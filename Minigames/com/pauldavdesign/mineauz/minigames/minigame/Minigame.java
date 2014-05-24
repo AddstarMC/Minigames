@@ -598,6 +598,8 @@ public class Minigame {
 		if(mpTimer != null && mpTimer.getStartWaitTimeLeft() == 0){
 			return true;
 		}
+		else if(type == MinigameType.SINGLEPLAYER && hasPlayers())
+			return true;
 		return false;
 	}
 	
@@ -783,7 +785,7 @@ public class Minigame {
 //	}
 	
 	public void setScore(MinigamePlayer ply, int amount){
-		sbManager.getObjective(name).getScore(ply.getPlayer()).setScore(amount);
+		sbManager.getObjective(name).getScore(ply.getName()).setScore(amount);
 	}
 //
 //	public int getRedTeamScore() {

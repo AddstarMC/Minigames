@@ -207,6 +207,11 @@ public class MinigameUtils {
 		return location.getBlockX() + ":" + location.getBlockY() + ":" + location.getBlockZ() + ":" + location.getWorld().getName();
 	}
 	
+	/**
+	 * Turns a list to a string.
+	 * @param list
+	 * @return A string representation of the list
+	 */
 	public static String listToString(List<String> list){
 		String slist = "";
 		boolean switchColour = false;
@@ -291,6 +296,11 @@ public class MinigameUtils {
 		return mgTool;
 	}
 	
+	/**
+	 * Checks if a player has a Minigame tool.
+	 * @param player The player to check
+	 * @return false if the player doesn't have one.
+	 */
 	public static boolean hasMinigameTool(MinigamePlayer player){
 		for(ItemStack i : player.getPlayer().getInventory().getContents()){
 			if(i != null && i.getItemMeta() != null && i.getItemMeta().getDisplayName() != null && 
@@ -301,6 +311,11 @@ public class MinigameUtils {
 		return false;
 	}
 	
+	/**
+	 * Checks if a specific item is a Minigame tool
+	 * @param item The item to check
+	 * @return false if the item was not a Minigame tool
+	 */
 	public static boolean isMinigameTool(ItemStack item){
 		if(item.getItemMeta() != null && item.getItemMeta().getDisplayName() != null && item.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")){
 			return true;
@@ -308,6 +323,11 @@ public class MinigameUtils {
 		return false;
 	}
 	
+	/**
+	 * Gets the item Minigames considers a Miniame tool from the players inventory
+	 * @param player The player to get the tool from
+	 * @return null if no tool was found
+	 */
 	public static MinigameTool getMinigameTool(MinigamePlayer player){
 		for(ItemStack i : player.getPlayer().getInventory().getContents()){
 			if(i.getItemMeta() != null && i.getItemMeta().getDisplayName() != null && 
@@ -318,6 +338,12 @@ public class MinigameUtils {
 		return null;
 	}
 	
+	/**
+	 * Creates an array containing the smallest and largest points in a selection.
+	 * @param selection1 First point of the selection
+	 * @param selection2 Second point of the selection
+	 * @return an array containing 2 locations, first being the smallest point, second being the largest
+	 */
 	public static Location[] getMinMaxSelection(Location selection1, Location selection2){
 		int minx;
 		int maxx;
@@ -357,6 +383,11 @@ public class MinigameUtils {
 		return arr;
 	}
 	
+	/**
+	 * Capitalizes the first letter of every word in a sentence.
+	 * @param toCapitalize The string to capitalize
+	 * @return The capitalized string
+	 */
 	public static String capitalize(String toCapitalize){
 		String val = toCapitalize.toLowerCase();
 		String[] spl = val.split(" ");
@@ -372,6 +403,12 @@ public class MinigameUtils {
 		return val;
 	}
 	
+	/**
+	 * Automatically assembles a tab complete array for the use in commands, matching a given string.
+	 * @param orig The full list to match the string to
+	 * @param match The string used to match
+	 * @return A list of possible tab completions
+	 */
 	public static List<String> tabCompleteMatch(List<String> orig, String match){
 		if(match.equals(""))
 			return orig;
@@ -410,6 +447,7 @@ public class MinigameUtils {
 	 */
 	public static void broadcast(String message, Minigame minigame, String permission){
 		MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(ChatColor.AQUA + "[Minigames]" + ChatColor.WHITE, message, minigame);
+		Bukkit.getPluginManager().callEvent(ev);
 		Bukkit.getServer().broadcast(ev.getMessageWithPrefix(), permission);
 	}
 	
@@ -421,6 +459,7 @@ public class MinigameUtils {
 	 */
 	public static void broadcast(String message, Minigame minigame, ChatColor prefixColor){
 		MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(prefixColor + "[Minigames]" + ChatColor.WHITE, message, minigame);
+		Bukkit.getPluginManager().callEvent(ev);
 		Bukkit.getServer().broadcastMessage(ev.getMessageWithPrefix());
 	}
 	

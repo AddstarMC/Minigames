@@ -118,7 +118,7 @@ public class TeamsType extends MinigameTypeBase{
 			mgm.getMpBets().removePlayersBet(player);
 		}
 		
-		if(mgm.getPlayers().size() == 1 && !forced){
+		if(mgm.getPlayers().size() == 1){
 			if(mgm.getBlockRecorder().hasData() && !mgm.isNotWaitingForPlayers()){
 				mgm.getBlockRecorder().clearRestoreData();
 				mgm.getBlockRecorder().setCreatedRegenBlocks(false);
@@ -150,8 +150,7 @@ public class TeamsType extends MinigameTypeBase{
 		}
 		else if(mgm.getPlayers().size() - 1 < mgm.getMinPlayers() && 
 				mgm.getMpTimer() != null && 
-				mgm.getMpTimer().getStartWaitTimeLeft() != 0
-				&& !forced){
+				mgm.getMpTimer().getStartWaitTimeLeft() != 0){
 			mgm.getMpTimer().setPlayerWaitTime(Minigames.plugin.getConfig().getInt("multiplayer.waitforplayers"));
 			mgm.getMpTimer().pauseTimer();
 			mgm.getMpTimer().removeTimer();
