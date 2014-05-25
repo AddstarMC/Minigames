@@ -7,7 +7,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
-import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
+import com.pauldavdesign.mineauz.minigames.gametypes.MultiplayerType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
@@ -75,7 +75,7 @@ public class TeamSign implements MinigameSign {
 									sm = t;
 							}
 							if(nt.getPlayers().size() - sm.getPlayers().size() < 1){
-								TeamsType.switchTeam(mgm, player, nt);
+								MultiplayerType.switchTeam(mgm, player, nt);
 								plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.joinAnnounce", player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
 								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", nt.getChatColor() + nt.getDisplayName()));
 							}
@@ -94,7 +94,7 @@ public class TeamSign implements MinigameSign {
 						Team nt = matchTeam(mgm, sign.getLine(2));
 						if(nt != null){
 							if(nt.getPlayers().size() - cur.getPlayers().size() < 2){
-								TeamsType.switchTeam(mgm, player, nt);
+								MultiplayerType.switchTeam(mgm, player, nt);
 								plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.joinAnnounce", player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
 								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", nt.getChatColor() + nt.getDisplayName()));
 							}
