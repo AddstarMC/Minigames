@@ -72,7 +72,7 @@ public class FinishSign implements MinigameSign {
 				if(((LivingEntity)player.getPlayer()).isOnGround()){
 					if(plugin.pdata.checkRequiredFlags(player, minigame.getName(false)).isEmpty()){
 						if(sign.getLine(2).isEmpty() || sign.getLine(2).equals(player.getMinigame().getName(false))){
-							if(player.getMinigame().getType() == MinigameType.TEAMS){
+							if(player.getMinigame().isTeamGame()){
 								List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(player.getTeam().getPlayers());
 								List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(minigame.getPlayers().size() - player.getTeam().getPlayers().size());
 								for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
@@ -82,7 +82,7 @@ public class FinishSign implements MinigameSign {
 								plugin.pdata.endMinigame(minigame, w, l);
 							}
 							else{
-								if(minigame.getType() == MinigameType.FREE_FOR_ALL){
+								if(minigame.getType() == MinigameType.MULTIPLAYER){
 									List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(1);
 									w.add(player);
 									List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(minigame.getPlayers().size());
@@ -116,7 +116,7 @@ public class FinishSign implements MinigameSign {
 			}
 			else{
 				if(((LivingEntity)player.getPlayer()).isOnGround()){
-					if(player.getMinigame().getType() == MinigameType.TEAMS){
+					if(player.getMinigame().isTeamGame()){
 						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(player.getTeam().getPlayers());
 						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(minigame.getPlayers().size() - player.getTeam().getPlayers().size());
 						for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
@@ -126,7 +126,7 @@ public class FinishSign implements MinigameSign {
 						plugin.pdata.endMinigame(minigame, w, l);
 					}
 					else{
-						if(minigame.getType() == MinigameType.FREE_FOR_ALL){
+						if(minigame.getType() == MinigameType.MULTIPLAYER){
 							List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(1);
 							w.add(player);
 							List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(minigame.getPlayers().size());

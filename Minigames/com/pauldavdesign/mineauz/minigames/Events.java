@@ -281,7 +281,7 @@ public class Events implements Listener{
 									event.getPlayer().sendMessage(ChatColor.AQUA + "Time left: " + MinigameUtils.convertTime(mgm.getMinigameTimer().getTimeLeft()));
 								}
 								
-								if(mgm.getType() == MinigameType.TEAMS){
+								if(mgm.isTeamGame()){
 									String sc = "";
 									int c = 0;
 									for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
@@ -516,8 +516,7 @@ public class Events implements Listener{
 	@EventHandler(ignoreCancelled = true)
 	public void playerRevert(RevertCheckpointEvent event){
 		if(event.getMinigamePlayer().isInMinigame() && 
-				(event.getMinigamePlayer().getMinigame().getType() == MinigameType.FREE_FOR_ALL || 
-				event.getMinigamePlayer().getMinigame().getType() == MinigameType.TEAMS) && 
+				event.getMinigamePlayer().getMinigame().getType() == MinigameType.MULTIPLAYER && 
 				!event.getMinigamePlayer().getMinigame().isAllowedMPCheckpoints() && 
 				!event.getMinigamePlayer().isLatejoining()){
 			event.setCancelled(true);

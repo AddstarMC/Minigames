@@ -10,7 +10,6 @@ import org.bukkit.event.block.SignChangeEvent;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
-import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
@@ -63,7 +62,7 @@ public class ScoreSign implements MinigameSign{
 		if(player.isInMinigame()){
 			Minigame mg = player.getMinigame();
 			int score = Integer.parseInt(sign.getLine(2));
-			if(mg.getType() != MinigameType.TEAMS){
+			if(!mg.isTeamGame()){
 				if(player.hasClaimedScore(sign.getLocation())){
 					player.sendMessage(MinigameUtils.getLang("sign.score.alreadyUsed"), "error");
 					return true;

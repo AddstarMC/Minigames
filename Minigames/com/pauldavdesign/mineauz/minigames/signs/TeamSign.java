@@ -7,7 +7,6 @@ import org.bukkit.event.block.SignChangeEvent;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
-import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
@@ -65,7 +64,7 @@ public class TeamSign implements MinigameSign {
 	public boolean signUse(Sign sign, MinigamePlayer player) {
 		if(player.isInMinigame()){
 			Minigame mgm = player.getMinigame();
-			if(mgm.getType() == MinigameType.TEAMS){
+			if(mgm.isTeamGame()){
 				if(player.getTeam() != matchTeam(mgm, sign.getLine(2))){
 					if(mgm.isNotWaitingForPlayers() && !sign.getLine(2).equals(ChatColor.GRAY + "Neutral")){
 						Team sm = null;

@@ -49,7 +49,7 @@ public class EndAction implements ActionInterface {
 		if(player.getMinigame().getType() != MinigameType.SINGLEPLAYER){
 			List<MinigamePlayer> w = null;
 			List<MinigamePlayer> l = null;
-			if(player.getMinigame().getType() == MinigameType.TEAMS){
+			if(player.getMinigame().isTeamGame()){
 				w = new ArrayList<MinigamePlayer>(player.getTeam().getPlayers());
 				l = new ArrayList<MinigamePlayer>(player.getMinigame().getPlayers().size() - player.getTeam().getPlayers().size());
 				for(Team t : TeamsModule.getMinigameModule(player.getMinigame()).getTeams()){

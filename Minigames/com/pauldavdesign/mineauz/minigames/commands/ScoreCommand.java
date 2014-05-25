@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
-import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
@@ -100,7 +99,7 @@ public class ScoreCommand implements ICommand {
 
 						TeamsModule tmod = TeamsModule.getMinigameModule(mg);
 						
-						if(mg.getType() == MinigameType.TEAMS){
+						if(mg.isTeamGame()){
 							if(tmod.hasTeam(color)){
 								Team t = tmod.getTeam(color);
 								sender.sendMessage(color.getColor() + t.getDisplayName() + ChatColor.GRAY + " score in " + mg.getName(false) + ": " 
@@ -160,7 +159,7 @@ public class ScoreCommand implements ICommand {
 
 						TeamsModule tmod = TeamsModule.getMinigameModule(mg);
 						
-						if(mg.getType() == MinigameType.TEAMS && mg.hasPlayers()){
+						if(mg.isTeamGame() && mg.hasPlayers()){
 							Team t = null;
 							if(tmod.hasTeam(color)){
 								t = tmod.getTeam(color);
@@ -241,7 +240,7 @@ public class ScoreCommand implements ICommand {
 						return true;
 					}
 					
-					if(mg.getType() == MinigameType.TEAMS && mg.hasPlayers()){
+					if(mg.isTeamGame() && mg.hasPlayers()){
 						Team team = null;
 						if(tmod.hasTeam(color)){
 							team = tmod.getTeam(color);

@@ -21,7 +21,7 @@ import com.pauldavdesign.mineauz.minigames.events.FlagCaptureEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.TakeFlagEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
-import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
+import com.pauldavdesign.mineauz.minigames.gametypes.MultiplayerType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
@@ -36,7 +36,7 @@ public class CTFMechanic extends GameMechanicBase{
 
 	@Override
 	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
-		if(minigame.getType() == MinigameType.TEAMS){
+		if(minigame.isTeamGame()){
 			boolean sorted = false;
 			for(MinigamePlayer ply : players){
 				if(ply.getTeam() == null){
@@ -68,7 +68,7 @@ public class CTFMechanic extends GameMechanicBase{
 				}
 				if(smt != null && lgt != null && lgt.getPlayers().size() - smt.getPlayers().size() > 1){
 					MinigamePlayer pl = lgt.getPlayers().get(0);
-					TeamsType.switchTeam(minigame, pl, smt);
+					MultiplayerType.switchTeam(minigame, pl, smt);
 					pl.sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", smt.getChatColor() + smt.getDisplayName()), null);
 					mdata.sendMinigameMessage(minigame, 
 							MinigameUtils.formStr("player.team.autobalance.minigameMsg", 
@@ -158,7 +158,7 @@ public class CTFMechanic extends GameMechanicBase{
 								
 								boolean end = false;
 								
-								if(mgm.getType() == MinigameType.TEAMS){
+								if(mgm.isTeamGame()){
 									ply.getTeam().addScore();
 									if(mgm.getMaxScore() != 0 && ply.getTeam().getScore() >= mgm.getMaxScorePerPlayer())
 										end = true;
@@ -290,7 +290,7 @@ public class CTFMechanic extends GameMechanicBase{
 	public void playerAutoBalance(PlayerDeathEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
 		if(ply == null) return;
-		if(ply.isInMinigame() && ply.getMinigame().getType() == MinigameType.TEAMS){
+		if(ply.isInMinigame() && ply.getMinigame().getType() == MinigameType.MULTIPLAYER && ply.getMinigame().isTeamGame()){
 			Minigame mgm = ply.getMinigame();
 			
 			if(mgm.getScoreType().equals("ctf")){
@@ -301,7 +301,7 @@ public class CTFMechanic extends GameMechanicBase{
 						smt = t;
 				}
 				if(lgt.getPlayers().size() - smt.getPlayers().size() > 1){
-					TeamsType.switchTeam(mgm, ply, smt);
+					MultiplayerType.switchTeam(mgm, ply, smt);
 					ply.sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", smt.getChatColor() + smt.getDisplayName()), null);
 					mdata.sendMinigameMessage(mgm, 
 							MinigameUtils.formStr("player.team.autobalance.minigameMsg", 

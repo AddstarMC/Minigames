@@ -67,7 +67,7 @@ public class PlayerData {
 			if((minigame.isEnabled() || player.getPlayer().hasPermission("minigame.join.disabled")) && 
 					!minigame.isRegenerating() && (!minigame.isNotWaitingForPlayers() || (minigame.canLateJoin() && minigame.getMpTimer().getPlayerWaitTimeLeft() == 0)) && 
 					(minigame.getStartLocations().size() > 0 || 
-							(type == MinigameType.TEAMS && TeamsModule.getMinigameModule(minigame).hasTeamStartLocations())) &&
+							(minigame.isTeamGame() && TeamsModule.getMinigameModule(minigame).hasTeamStartLocations())) &&
 					minigame.getEndPosition() != null && minigame.getQuitPosition() != null && 
 					(minigame.getType() == MinigameType.SINGLEPLAYER || minigame.getLobbyPosition() != null) &&
 					((type == MinigameType.SINGLEPLAYER && !minigame.isSpMaxPlayers()) || minigame.getPlayers().size() < minigame.getMaxPlayers())){
@@ -222,7 +222,7 @@ public class PlayerData {
 				player.sendMessage(MinigameUtils.formStr("minigame.lateJoinWait", minigame.getMpTimer().getStartWaitTimeLeft()), null);
 			}
 			else if(minigame.getStartLocations().size() == 0 || 
-							(type == MinigameType.TEAMS && !TeamsModule.getMinigameModule(minigame).hasTeamStartLocations())){
+							(minigame.isTeamGame() && !TeamsModule.getMinigameModule(minigame).hasTeamStartLocations())){
 				player.sendMessage(MinigameUtils.getLang("minigame.error.noStart"), "error");
 			}
 			else if(minigame.getEndPosition() == null){
@@ -280,7 +280,7 @@ public class PlayerData {
 		
 		Collections.shuffle(players);
 		
-		if(minigame.getType() == MinigameType.TEAMS && GameMechanics.getGameMechanic(minigame.getScoreType()) != null){
+		if(minigame.isTeamGame() && GameMechanics.getGameMechanic(minigame.getScoreType()) != null){
 			GameMechanics.getGameMechanic(minigame.getScoreType()).balanceTeam(players, minigame);
 		}
 		
@@ -294,7 +294,7 @@ public class PlayerData {
 		Bukkit.getServer().getPluginManager().callEvent(new StartMinigameEvent(players, minigame, teleport));
 		
 		for(MinigamePlayer ply : players){
-			if(minigame.getType() != MinigameType.TEAMS){
+			if(!minigame.isTeamGame()){
 				if(pos < minigame.getStartLocations().size()){
 					ply.setStartTime(Calendar.getInstance().getTimeInMillis());
 					if(teleport){
@@ -564,7 +564,7 @@ public class PlayerData {
 			
 			//Broadcast Message
 			if(plugin.getConfig().getBoolean("broadcastCompletion") && mgm.isEnabled() && mgm.isEnabled()){
-				if(mgm.getType() == MinigameType.TEAMS){
+				if(mgm.isTeamGame()){
 					Team team = winners.get(0).getTeam();
 					String score = "";
 					List<Team> teams = TeamsModule.getMinigameModule(mgm).getTeams();

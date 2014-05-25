@@ -47,6 +47,7 @@ import com.pauldavdesign.mineauz.minigames.menu.MenuItemString;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemTime;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.LoadoutModule;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.LobbySettingsModule;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardGroup;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardItem;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardRarity;
@@ -186,6 +187,12 @@ public class Minigame {
 	
 	public MinigameModule getModule(String name){
 		return modules.get(name);
+	}
+	
+	public boolean isTeamGame(){
+		if(getType() == MinigameType.MULTIPLAYER && TeamsModule.getMinigameModule(this).getTeams().size() > 0)
+			return true;
+		return false;
 	}
 
 	public List<RewardItem> getSecondaryRewardItem(){
@@ -2258,6 +2265,11 @@ public class Minigame {
 		if(minigame.getConfig().contains(name + ".maxtreasure")){
 			setMaxTreasure(minigame.getConfig().getInt(name + ".maxtreasure"));
 		}
+		//-----------------------------------------------
+		//TODO: Remove me after 1.7
+		if(cfg.getString(name + ".type").equals("TEAMS") || cfg.getString(name + ".type").equals("FREE_FOR_ALL"))
+			cfg.set(name + ".type", "MULTIPLAYER");
+		//-----------------------------------------------
 		setType(MinigameType.valueOf(minigame.getConfig().getString(name + ".type")));
 		setMinPlayers(minigame.getConfig().getInt(name + ".minplayers"));
 		setMaxPlayers(minigame.getConfig().getInt(name + ".maxplayers"));

@@ -29,7 +29,7 @@ public class SpleefPreset implements BasePreset {
 		minigame.getBlockRecorder().addWBBlock(Material.SNOW_BLOCK);
 		minigame.getBlockRecorder().setWhitelistMode(true);
 		
-		minigame.setType(MinigameType.FREE_FOR_ALL);
+		minigame.setType(MinigameType.MULTIPLAYER);
 		minigame.setLives(1);
 		
 		LoadoutModule mod = LoadoutModule.getMinigameModule(minigame);

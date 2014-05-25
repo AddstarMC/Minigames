@@ -11,8 +11,7 @@ import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
-import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
-import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
+import com.pauldavdesign.mineauz.minigames.gametypes.MultiplayerType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
@@ -31,7 +30,7 @@ public class InfectionMechanic extends GameMechanicBase{
 	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
 		for(int i = 0; i < players.size(); i++){
 			MinigamePlayer ply = players.get(i);
-			if(minigame.getType() != MinigameType.TEAMS || 
+			if(!minigame.isTeamGame() || 
 					TeamsModule.getMinigameModule(minigame).getTeams().size() != 2 || 
 					!TeamsModule.getMinigameModule(minigame).hasTeam(TeamColor.RED) || 
 					!TeamsModule.getMinigameModule(minigame).hasTeam(TeamColor.BLUE)){
@@ -45,7 +44,7 @@ public class InfectionMechanic extends GameMechanicBase{
 				
 				if(team == blue){
 					if(red.getPlayers().size() < Math.ceil(players.size() * 0.18) && !red.isFull()){
-						TeamsType.switchTeam(minigame, ply, red);
+						MultiplayerType.switchTeam(minigame, ply, red);
 						players.get(i).sendMessage(MinigameUtils.formStr("player.team.assign.infectedAssign", ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null);
 						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.assign.infectedAnnounce", players.get(i).getName(), ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null, players.get(i));
 					}
@@ -76,12 +75,12 @@ public class InfectionMechanic extends GameMechanicBase{
 		if(player == null) return;
 		if(player.isInMinigame()){
 			Minigame mgm = player.getMinigame();
-			if(mgm.getType() == MinigameType.TEAMS && mgm.getScoreType().equals("infection")){
+			if(mgm.isTeamGame() && mgm.getScoreType().equals("infection")){
 				Team blue = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.BLUE);
 				Team red = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.RED);
 				if(blue.getPlayers().contains(player)){
 					if(!red.isFull()){
-						TeamsType.switchTeam(mgm, player, red);
+						MultiplayerType.switchTeam(mgm, player, red);
 						infected.add(player);
 						if(event.getEntity().getKiller() != null){
 							MinigamePlayer killer = pdata.getMinigamePlayer(event.getEntity().getKiller());

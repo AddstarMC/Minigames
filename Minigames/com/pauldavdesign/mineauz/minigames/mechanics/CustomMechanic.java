@@ -7,8 +7,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
-import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
-import com.pauldavdesign.mineauz.minigames.gametypes.TeamsType;
+import com.pauldavdesign.mineauz.minigames.gametypes.MultiplayerType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
@@ -22,7 +21,7 @@ public class CustomMechanic extends GameMechanicBase{
 
 	@Override
 	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
-		if(minigame.getType() == MinigameType.TEAMS){
+		if(minigame.isTeamGame()){
 			boolean sorted = false;
 			for(MinigamePlayer ply : players){
 				if(ply.getTeam() == null){
@@ -54,7 +53,7 @@ public class CustomMechanic extends GameMechanicBase{
 				}
 				if(smt != null && lgt != null && lgt.getPlayers().size() - smt.getPlayers().size() > 1){
 					MinigamePlayer pl = lgt.getPlayers().get(0);
-					TeamsType.switchTeam(minigame, pl, smt);
+					MultiplayerType.switchTeam(minigame, pl, smt);
 					pl.sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", smt.getChatColor() + smt.getDisplayName()), null);
 					mdata.sendMinigameMessage(minigame, 
 							MinigameUtils.formStr("player.team.autobalance.minigameMsg", 
@@ -72,7 +71,7 @@ public class CustomMechanic extends GameMechanicBase{
 	public void playerAutoBalance(PlayerDeathEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
 		if(ply == null) return;
-		if(ply.isInMinigame() && ply.getMinigame().getType() == MinigameType.TEAMS){
+		if(ply.isInMinigame() && ply.getMinigame().isTeamGame()){
 			Minigame mgm = ply.getMinigame();
 			
 			if(mgm.getScoreType().equals("custom")){
@@ -83,7 +82,7 @@ public class CustomMechanic extends GameMechanicBase{
 						smt = t;
 				}
 				if(lgt.getPlayers().size() - smt.getPlayers().size() > 1){
-					TeamsType.switchTeam(mgm, ply, smt);
+					MultiplayerType.switchTeam(mgm, ply, smt);
 					ply.sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", smt.getChatColor() + smt.getDisplayName()), null);
 					mdata.sendMinigameMessage(mgm, 
 							MinigameUtils.formStr("player.team.autobalance.minigameMsg", 

@@ -9,7 +9,9 @@ import org.bukkit.potion.PotionEffectType;
 import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.LoadoutModule;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class InfectionPreset implements BasePreset {
 
@@ -56,8 +58,11 @@ public class InfectionPreset implements BasePreset {
 		
 		//Settings
 		minigame.setScoreType("infection");
-//		minigame.setDefaultWinner("blue"); //TODO: Fix me!
-		minigame.setType(MinigameType.TEAMS);
+		minigame.setType(MinigameType.MULTIPLAYER);
+		TeamsModule.getMinigameModule(minigame).clearTeams();
+		TeamsModule.getMinigameModule(minigame).addTeam(minigame, TeamColor.BLUE);
+		TeamsModule.getMinigameModule(minigame).addTeam(minigame, TeamColor.RED);
+		TeamsModule.getMinigameModule(minigame).setDefaultWinner(TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.BLUE));
 		minigame.setMinPlayers(4);
 		minigame.setMaxPlayers(16);
 		minigame.setTimer(300);

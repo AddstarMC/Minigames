@@ -19,8 +19,8 @@ public class LMSPreset implements BasePreset {
 	@Override
 	public void execute(Minigame minigame) {
 		minigame.setLives(1);
-		minigame.setType(MinigameType.FREE_FOR_ALL);
-		minigame.setScoreType("none");
+		minigame.setType(MinigameType.MULTIPLAYER);
+		minigame.setScoreType("custom");
 	}
 
 }

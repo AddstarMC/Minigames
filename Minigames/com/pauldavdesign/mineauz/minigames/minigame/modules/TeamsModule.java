@@ -184,6 +184,11 @@ public class TeamsModule implements MinigameModule {
 	public Team getDefaultWinner() {
 		return defaultWinner;
 	}
+	
+	public void clearTeams(){
+		teams.clear();
+		defaultWinner = null;
+	}
 
 	@Override
 	public void addMenuOptions(Menu menu, Minigame minigame) {

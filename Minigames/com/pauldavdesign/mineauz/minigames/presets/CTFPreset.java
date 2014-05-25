@@ -6,7 +6,9 @@ import org.bukkit.inventory.ItemStack;
 
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.LoadoutModule;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class CTFPreset implements BasePreset {
 
@@ -28,7 +30,10 @@ public class CTFPreset implements BasePreset {
 		minigame.setScoreType("ctf");
 		minigame.setMinPlayers(4);
 		minigame.setMaxPlayers(16);
-		minigame.setType(MinigameType.TEAMS);
+		minigame.setType(MinigameType.MULTIPLAYER);
+		TeamsModule.getMinigameModule(minigame).clearTeams();
+		TeamsModule.getMinigameModule(minigame).addTeam(minigame, TeamColor.RED);
+		TeamsModule.getMinigameModule(minigame).addTeam(minigame, TeamColor.BLUE);
 		
 		minigame.setCanBlockBreak(false);
 		minigame.setCanBlockPlace(false);
