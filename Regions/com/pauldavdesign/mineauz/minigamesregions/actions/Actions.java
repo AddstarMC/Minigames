@@ -39,6 +39,7 @@ public class Actions {
 		addAction(new ExecuteCommandAction());
 		addAction(new SetBlockAction());
 		addAction(new ExplodeAction());
+		addAction(new PlaySoundAction());
 	}
 	
 	public static void addAction(ActionInterface action){
