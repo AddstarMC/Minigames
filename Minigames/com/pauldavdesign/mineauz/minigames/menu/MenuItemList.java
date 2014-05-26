@@ -112,19 +112,19 @@ public class MenuItemList extends MenuItem{
 	
 	@Override
 	public void checkValidEntry(String entry){
-		entry = entry.toLowerCase();
-		
-		if(options.contains(entry)){
-			value.setValue(entry);
-			updateDescription();
-			
-			getContainer().cancelReopenTimer();
-			getContainer().displayMenu(getContainer().getViewer());
-			return;
+		for(String opt : options){
+			if(opt.equalsIgnoreCase(entry)){
+				value.setValue(opt);
+				updateDescription();
+				
+				getContainer().cancelReopenTimer();
+				getContainer().displayMenu(getContainer().getViewer());
+				return;
+			}
 		}
 		getContainer().cancelReopenTimer();
 		getContainer().displayMenu(getContainer().getViewer());
 		
-		getContainer().getViewer().sendMessage("Invalid value entry!", "error");
+		getContainer().getViewer().sendMessage("Could not find matching value!", "error");
 	}
 }
