@@ -20,6 +20,8 @@ import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.JoinMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigamesregions.events.EnterRegionEvent;
+import com.pauldavdesign.mineauz.minigamesregions.events.LeaveRegionEvent;
 
 public class RegionEvents implements Listener{
 	
@@ -32,12 +34,16 @@ public class RegionEvents implements Listener{
 				if(!r.hasPlayer(ply)){
 					r.addPlayer(ply);
 					r.execute(RegionTrigger.ENTER, ply, null);
+					EnterRegionEvent ev = new EnterRegionEvent(ply, r);
+					Bukkit.getPluginManager().callEvent(ev);
 				}
 			}
 			else{
 				if(r.hasPlayer(ply)){
 					r.removePlayer(ply);
 					r.execute(RegionTrigger.LEAVE, ply, null);
+					LeaveRegionEvent ev = new LeaveRegionEvent(ply, r);
+					Bukkit.getPluginManager().callEvent(ev);
 				}
 			}
 		}
