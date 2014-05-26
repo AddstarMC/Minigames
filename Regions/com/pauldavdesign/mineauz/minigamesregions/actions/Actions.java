@@ -40,6 +40,8 @@ public class Actions {
 		addAction(new SetBlockAction());
 		addAction(new ExplodeAction());
 		addAction(new PlaySoundAction());
+		addAction(new CheckpointAction());
+		addAction(new SwapBlockAction());
 	}
 	
 	public static void addAction(ActionInterface action){
