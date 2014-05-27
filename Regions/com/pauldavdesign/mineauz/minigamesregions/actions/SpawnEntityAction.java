@@ -34,6 +34,11 @@ public class SpawnEntityAction implements ActionInterface {
 	}
 
 	@Override
+	public String getCategory() {
+		return "World Actions";
+	}
+
+	@Override
 	public boolean useInRegions() {
 		return false;
 	}

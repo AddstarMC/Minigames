@@ -25,6 +25,11 @@ public class ExecuteCommandAction implements ActionInterface {
 	}
 
 	@Override
+	public String getCategory() {
+		return "Server Actions";
+	}
+
+	@Override
 	public boolean useInRegions() {
 		return true;
 	}

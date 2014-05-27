@@ -28,6 +28,11 @@ public class SwapBlockAction implements ActionInterface {
 	}
 
 	@Override
+	public String getCategory() {
+		return "Block Actions";
+	}
+
+	@Override
 	public boolean useInRegions() {
 		return true;
 	}

@@ -19,6 +19,11 @@ public class QuitAction implements ActionInterface {
 	}
 
 	@Override
+	public String getCategory() {
+		return "Minigame Actions";
+	}
+
+	@Override
 	public boolean useInRegions() {
 		return true;
 	}
@@ -60,5 +65,4 @@ public class QuitAction implements ActionInterface {
 	public boolean displayMenu(MinigamePlayer player, Map<String, Object> args, Menu previous) {
 		return false;
 	}
-
 }

@@ -24,6 +24,11 @@ public class EndAction implements ActionInterface {
 	}
 
 	@Override
+	public String getCategory() {
+		return "Minigame Actions";
+	}
+
+	@Override
 	public boolean useInRegions() {
 		return true;
 	}

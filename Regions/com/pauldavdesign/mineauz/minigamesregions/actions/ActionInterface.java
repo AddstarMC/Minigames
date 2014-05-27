@@ -13,6 +13,7 @@ import com.pauldavdesign.mineauz.minigamesregions.Region;
 public interface ActionInterface {
 	
 	public String getName();
+	public String getCategory();
 	public boolean useInRegions();
 	public boolean useInNodes();
 	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region, Event event);

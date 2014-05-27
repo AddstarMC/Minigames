@@ -30,6 +30,11 @@ public class PlaySoundAction implements ActionInterface {
 	}
 
 	@Override
+	public String getCategory() {
+		return "World Actions";
+	}
+
+	@Override
 	public boolean useInRegions() {
 		return true;
 	}

@@ -1,5 +1,11 @@
 package com.pauldavdesign.mineauz.minigamesregions.menuitems;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -32,8 +38,24 @@ public class MenuItemActionAdd extends MenuItem{
 	public ItemStack onClick(){
 		Menu m = new Menu(6, "Actions", getContainer().getViewer());
 		m.setPreviousPage(getContainer());
-		for(String act : Actions.getAllActionNames()){
+		Map<String, Menu> cats = new HashMap<String, Menu>();
+		List<String> acts = new ArrayList<String>(Actions.getAllActionNames());
+		Collections.sort(acts);
+		for(String act : acts){
 			if((Actions.getActionByName(act).useInNodes() && nexec != null) || (Actions.getActionByName(act).useInRegions() && rexec != null)){
+				String catname = Actions.getActionByName(act).getCategory();
+				if(catname == null)
+					catname = "misc";
+				catname.toLowerCase();
+				Menu cat = null;
+				if(!cats.containsKey(catname)){
+					cat = new Menu(6, MinigameUtils.capitalize(catname), getContainer().getViewer());
+					cats.put(catname, cat);
+					m.addItem(new MenuItemPage(MinigameUtils.capitalize(catname), Material.CHEST, cat));
+					cat.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, m), cat.getSize() - 9);
+				}
+				else
+					cat = cats.get(catname);
 				MenuItemCustom c = new MenuItemCustom(MinigameUtils.capitalize(act), Material.PAPER);
 				final String fact = act;
 				c.setClick(new InteractionInterface() {
@@ -53,7 +75,7 @@ public class MenuItemActionAdd extends MenuItem{
 						return null;
 					}
 				});
-				m.addItem(c);
+				cat.addItem(c);
 			}
 		}
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, getContainer()), m.getSize() - 9);

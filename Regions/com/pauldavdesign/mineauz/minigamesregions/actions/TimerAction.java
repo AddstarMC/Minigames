@@ -27,6 +27,11 @@ public class TimerAction implements ActionInterface {
 	}
 
 	@Override
+	public String getCategory() {
+		return "Remote Trigger Actions";
+	}
+
+	@Override
 	public boolean useInRegions() {
 		return true;
 	}

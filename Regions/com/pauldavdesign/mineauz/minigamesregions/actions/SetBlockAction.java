@@ -22,6 +22,11 @@ public class SetBlockAction implements ActionInterface {
 	}
 
 	@Override
+	public String getCategory() {
+		return "Block Actions";
+	}
+
+	@Override
 	public boolean useInRegions() {
 		return true;
 	}

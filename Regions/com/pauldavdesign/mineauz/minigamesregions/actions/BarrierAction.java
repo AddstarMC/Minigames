@@ -19,6 +19,11 @@ public class BarrierAction implements ActionInterface{
 	}
 
 	@Override
+	public String getCategory() {
+		return "World Actions";
+	}
+
+	@Override
 	public boolean useInRegions() {
 		return true;
 	}
@@ -140,5 +145,4 @@ public class BarrierAction implements ActionInterface{
 			Menu previous) {
 		return false;
 	}
-
 }
