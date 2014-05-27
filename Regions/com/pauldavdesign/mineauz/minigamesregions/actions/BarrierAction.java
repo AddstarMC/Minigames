@@ -70,24 +70,52 @@ public class BarrierAction implements ActionInterface{
 		else
 			zval = zdis2;
 		if(xval < yval && xval < zval){
-			if(isMinX)
-				o.setX(o.getX() - 0.5);
-			else
-				o.setX(o.getX() + 0.5);
+			if(region.getPlayers().contains(player)){
+				if(isMinX)
+					o.setX(o.getX() - 0.5);
+				else
+					o.setX(o.getX() + 0.5);
+			}
+			else{
+				if(isMinX)
+					o.setX(o.getX() + 0.5);
+				else
+					o.setX(o.getX() - 0.5);
+			}
 		}
 		else if(yval < xval && yval < zval){
-			if(isMinY)
-				o.setY(o.getY() - 0.5);
-			else
-				o.setY(o.getY() + 0.5);
+			if(region.getPlayers().contains(player)){
+				if(isMinY)
+					o.setY(o.getY() - 0.5);
+				else
+					o.setY(o.getY() + 0.5);
+			}
+			else{
+				if(isMinY)
+					o.setY(o.getY() + 0.5);
+				else
+					o.setY(o.getY() - 0.5);
+			}
 		}
 		else if(zval < xval && zval < yval){
-			if(isMinZ)
-				o.setZ(o.getZ() - 0.5);
-			else
-				o.setZ(o.getZ() + 0.5);
+			if(region.getPlayers().contains(player)){
+				if(isMinZ)
+					o.setZ(o.getZ() - 0.5);
+				else
+					o.setZ(o.getZ() + 0.5);
+			}
+			else{
+				if(isMinZ)
+					o.setZ(o.getZ() + 0.5);
+				else
+					o.setZ(o.getZ() - 0.5);
+			}
 		}
 		player.teleport(o);
+		if(region.getPlayers().contains(player))
+			region.removePlayer(player);
+		else
+			region.addPlayer(player);
 	}
 
 	@Override

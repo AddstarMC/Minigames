@@ -3,6 +3,7 @@ package com.pauldavdesign.mineauz.minigamesregions.actions;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -30,10 +31,27 @@ public class SetBlockAction implements ActionInterface {
 		return true;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
 			Map<String, Object> args, Region region, Event event) {
-		//TODO Region set block
+		Location temp = region.getFirstPoint();
+		for(int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++){
+			temp.setY(y);
+			for(int x = region.getFirstPoint().getBlockX(); x <= region.getSecondPoint().getBlockX(); x++){
+				temp.setX(x);
+				for(int z = region.getFirstPoint().getBlockZ(); z <= region.getSecondPoint().getBlockZ(); z++){
+					temp.setZ(z);
+					
+					BlockState bs = temp.getBlock().getState();
+					bs.setType(Material.getMaterial((String)args.get("a_setblocktype")));
+					if((Boolean)args.get("a_setblockusedur")){
+						bs.getData().setData((Byte)args.get("a_setblockdur"));
+					}
+					bs.update(true);
+				}
+			}
+		}
 	}
 
 	@SuppressWarnings("deprecation")

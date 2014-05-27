@@ -2,7 +2,9 @@ package com.pauldavdesign.mineauz.minigamesregions.actions;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
@@ -36,7 +38,22 @@ public class ExplodeAction implements ActionInterface {
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
 			Map<String, Object> args, Region region, Event event) {
-		//TODO Region Explode
+		Random rand = new Random();
+		double xrand = rand.nextDouble() *
+				(region.getSecondPoint().getBlockX() - region.getFirstPoint().getBlockX()) +
+				region.getFirstPoint().getBlockX();
+		double yrand = rand.nextDouble() *
+				(region.getSecondPoint().getBlockY() - region.getFirstPoint().getBlockY()) +
+				region.getFirstPoint().getBlockY();
+		double zrand = rand.nextDouble() *
+				(region.getSecondPoint().getBlockZ() - region.getFirstPoint().getBlockZ()) +
+				region.getFirstPoint().getBlockZ();
+		
+		Location loc = region.getFirstPoint();
+		loc.setX(xrand);
+		loc.setY(yrand);
+		loc.setZ(zrand);
+		loc.getWorld().createExplosion(loc, (Float)args.get("a_explodepower"), (Boolean)args.get("a_explodefire"));
 	}
 
 	@Override
