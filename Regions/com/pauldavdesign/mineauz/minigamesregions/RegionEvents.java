@@ -19,6 +19,7 @@ import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.JoinMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
+import com.pauldavdesign.mineauz.minigames.events.StartMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigamesregions.events.EnterRegionEvent;
 import com.pauldavdesign.mineauz.minigamesregions.events.LeaveRegionEvent;
@@ -89,6 +90,22 @@ public class RegionEvents implements Listener{
 				executeRegionChanges(mg, ply, fevent);
 			}
 		});
+		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
+			node.execute(NodeTrigger.GAME_JOIN, event.getMinigamePlayer(), event);
+		}
+		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
+			region.execute(RegionTrigger.GAME_JOIN, event.getMinigamePlayer(), event);
+		}
+	}
+	
+	@EventHandler
+	private void minigameStart(StartMinigameEvent event){
+		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
+			node.execute(NodeTrigger.GAME_START, null, event);
+		}
+		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
+			region.execute(RegionTrigger.GAME_START, null, event);
+		}
 	}
 	
 	@EventHandler(ignoreCancelled = true)
@@ -100,6 +117,12 @@ public class RegionEvents implements Listener{
 			if(r.hasPlayer(ply))
 				r.removePlayer(ply);
 		}
+		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
+			node.execute(NodeTrigger.GAME_QUIT, event.getMinigamePlayer(), event);
+		}
+		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
+			region.execute(RegionTrigger.GAME_QUIT, event.getMinigamePlayer(), event);
+		}
 	}
 	
 	@EventHandler(ignoreCancelled = true)
@@ -110,6 +133,12 @@ public class RegionEvents implements Listener{
 				if(r.hasPlayer(ply))
 					r.removePlayer(ply);
 			}
+		}
+		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
+			node.execute(NodeTrigger.GAME_END, null, event);
+		}
+		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
+			region.execute(RegionTrigger.GAME_END, null, event);
 		}
 	}
 	
@@ -137,36 +166,6 @@ public class RegionEvents implements Listener{
 					}
 				}
 			}
-		}
-	}
-	
-	@EventHandler(ignoreCancelled = true)
-	private void minigameJoin(JoinMinigameEvent event){
-		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
-			node.execute(NodeTrigger.GAME_JOIN, event.getMinigamePlayer(), event);
-		}
-		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
-			region.execute(RegionTrigger.GAME_JOIN, event.getMinigamePlayer(), event);
-		}
-	}
-	
-	@EventHandler(ignoreCancelled = true)
-	private void minigameQuit(QuitMinigameEvent event){
-		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
-			node.execute(NodeTrigger.GAME_QUIT, event.getMinigamePlayer(), event);
-		}
-		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
-			region.execute(RegionTrigger.GAME_QUIT, event.getMinigamePlayer(), event);
-		}
-	}
-	
-	@EventHandler(ignoreCancelled = true)
-	private void minigameEnd(EndMinigameEvent event){
-		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
-			node.execute(NodeTrigger.GAME_END, null, event);
-		}
-		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
-			region.execute(RegionTrigger.GAME_END, null, event);
 		}
 	}
 	
