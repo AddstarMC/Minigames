@@ -26,6 +26,11 @@ public class MatchTeamCondition implements ConditionInterface {
 	public String getName() {
 		return "MATCH_TEAM";
 	}
+	
+	@Override
+	public String getCategory(){
+		return "Team Conditions";
+	}
 
 	@Override
 	public boolean useInRegions() {
@@ -49,6 +54,7 @@ public class MatchTeamCondition implements ConditionInterface {
 	@Override
 	public boolean checkRegionCondition(MinigamePlayer player,
 			Map<String, Object> args, Region region, Event event) {
+		if(player == null || !player.isInMinigame()) return false;
 		if(player.getTeam() != null && player.getTeam().getColor().toString().equals(args.get("c_matchteam")))
 			if(!(Boolean)args.get("c_matchteaminvert"))
 				return true;

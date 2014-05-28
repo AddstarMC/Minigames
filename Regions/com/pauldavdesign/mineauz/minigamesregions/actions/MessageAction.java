@@ -40,12 +40,14 @@ public class MessageAction implements ActionInterface {
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Map<String, Object> args, Node node, Event event) {
+		if(player == null || !player.isInMinigame()) return;
 		if(args == null || !args.containsKey("message")) return;
 		player.sendMessage((String)args.get("message"), null);
 	}
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region, Event event) {
+		if(player == null || !player.isInMinigame()) return;
 		if(args == null || !args.containsKey("message")) return;
 		player.sendMessage((String)args.get("message"), null);
 	}

@@ -45,6 +45,7 @@ public class CheckpointAction implements ActionInterface {
 	}
 	
 	private void execute(MinigamePlayer player){
+		if(player == null || !player.isInMinigame()) return;
 		player.setCheckpoint(player.getLocation());
 	}
 

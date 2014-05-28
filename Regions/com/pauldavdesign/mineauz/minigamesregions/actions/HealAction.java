@@ -49,6 +49,7 @@ public class HealAction implements ActionInterface{
 	}
 	
 	private void execute(MinigamePlayer player, Map<String, Object> args){
+		if(player == null || !player.isInMinigame()) return;
 		if((Integer)args.get("a_healamount") > 0){
 			if(player.getPlayer().getHealth() != 20){
 				double health = (Integer)args.get("a_healamount") + player.getPlayer().getHealth();

@@ -22,6 +22,11 @@ public class HasRequiredFlagsCondition implements ConditionInterface {
 	public String getName() {
 		return "HAS_REQUIRED_FLAGS";
 	}
+	
+	@Override
+	public String getCategory(){
+		return "Player Conditions";
+	}
 
 	@Override
 	public boolean useInRegions() {
@@ -36,6 +41,7 @@ public class HasRequiredFlagsCondition implements ConditionInterface {
 	@Override
 	public boolean checkNodeCondition(MinigamePlayer player,
 			Map<String, Object> args, Node node, Event event) {
+		if(player == null || !player.isInMinigame()) return false;
 		if(Minigames.plugin.pdata.checkRequiredFlags(player, player.getMinigame().getName(false)).isEmpty()){
 			if(!(Boolean)args.get("c_requiredflagsinvert"))
 				return true;
@@ -49,6 +55,7 @@ public class HasRequiredFlagsCondition implements ConditionInterface {
 	@Override
 	public boolean checkRegionCondition(MinigamePlayer player,
 			Map<String, Object> args, Region region, Event event) {
+		if(player == null || !player.isInMinigame()) return false;
 		if(Minigames.plugin.pdata.checkRequiredFlags(player, player.getMinigame().getName(false)).isEmpty()){
 			if(!(Boolean)args.get("c_requiredflagsinvert"))
 				return true;

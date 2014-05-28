@@ -28,6 +28,11 @@ public class MatchBlockCondition implements ConditionInterface {
 	public String getName() {
 		return "MATCH_BLOCK";
 	}
+	
+	@Override
+	public String getCategory(){
+		return "World Conditions";
+	}
 
 	@Override
 	public boolean useInRegions() {

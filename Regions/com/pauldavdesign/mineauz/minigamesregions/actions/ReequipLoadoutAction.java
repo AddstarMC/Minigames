@@ -35,14 +35,14 @@ public class ReequipLoadoutAction implements ActionInterface {
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Map<String, Object> args, Node node, Event event) {
-		if(player.isInMinigame())
-			player.getLoadout().equiptLoadout(player);
+		if(player == null || !player.isInMinigame()) return;
+		player.getLoadout().equiptLoadout(player);
 	}
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region, Event event) {
-		if(player.isInMinigame())
-			player.getLoadout().equiptLoadout(player);
+		if(player == null || !player.isInMinigame()) return;
+		player.getLoadout().equiptLoadout(player);
 	}
 
 	@Override

@@ -45,7 +45,7 @@ public class MenuItemActionAdd extends MenuItem{
 			if((Actions.getActionByName(act).useInNodes() && nexec != null) || (Actions.getActionByName(act).useInRegions() && rexec != null)){
 				String catname = Actions.getActionByName(act).getCategory();
 				if(catname == null)
-					catname = "misc";
+					catname = "misc actions";
 				catname.toLowerCase();
 				Menu cat = null;
 				if(!cats.containsKey(catname)){

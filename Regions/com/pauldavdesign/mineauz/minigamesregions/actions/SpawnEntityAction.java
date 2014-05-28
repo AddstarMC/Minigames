@@ -56,6 +56,7 @@ public class SpawnEntityAction implements ActionInterface {
 	@Override
 	public void executeNodeAction(MinigamePlayer player, Map<String, Object> args,
 			Node node, Event event) {
+		if(player == null || !player.isInMinigame()) return;
 		Entity ent = node.getLocation().getWorld().spawnEntity(node.getLocation(), EntityType.valueOf((String)args.get("a_spawnentitytype")));
 		ent.setMetadata("MinigameEntity", new FixedMetadataValue(Minigames.plugin, true));
 		player.getMinigame().getBlockRecorder().addEntity(ent, player, true);

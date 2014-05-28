@@ -57,6 +57,7 @@ public class PlaySoundAction implements ActionInterface {
 	}
 	
 	private void execute(MinigamePlayer player, Location loc, Map<String, Object> args){
+		if(player == null || !player.isInMinigame()) return;
 		if((Boolean)args.get("a_playsoundprivate"))
 			player.getPlayer().playSound(loc, 
 					Sound.valueOf((String)args.get("a_playsound")), 

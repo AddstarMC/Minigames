@@ -36,14 +36,14 @@ public class QuitAction implements ActionInterface {
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Map<String, Object> args, Node node, Event event) {
-		if(player.isInMinigame())
-			Minigames.plugin.pdata.quitMinigame(player, false);
+		if(player == null || !player.isInMinigame()) return;
+		Minigames.plugin.pdata.quitMinigame(player, false);
 	}
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region, Event event) {
-		if(player.isInMinigame())
-			Minigames.plugin.pdata.quitMinigame(player, false);
+		if(player == null || !player.isInMinigame()) return;
+		Minigames.plugin.pdata.quitMinigame(player, false);
 	}
 
 	@Override

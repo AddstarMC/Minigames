@@ -43,6 +43,7 @@ public class TriggerNodeAction implements ActionInterface {
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
 			Map<String, Object> args, Region region, Event event) {
+		if(player == null || !player.isInMinigame()) return;
 		Minigame mg = player.getMinigame();
 		if(mg != null){
 			RegionModule rmod = RegionModule.getMinigameModule(mg);
@@ -54,6 +55,7 @@ public class TriggerNodeAction implements ActionInterface {
 	@Override
 	public void executeNodeAction(MinigamePlayer player, Map<String, Object> args,
 			Node node, Event event) {
+		if(player == null || !player.isInMinigame()) return;
 		Minigame mg = player.getMinigame();
 		if(mg != null){
 			RegionModule rmod = RegionModule.getMinigameModule(mg);

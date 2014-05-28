@@ -22,6 +22,11 @@ public class ContainsOneTeamCondition implements ConditionInterface {
 	public String getName() {
 		return "CONTAINS_ONE_TEAM";
 	}
+	
+	@Override
+	public String getCategory(){
+		return "Team Conditions";
+	}
 
 	@Override
 	public boolean useInRegions() {

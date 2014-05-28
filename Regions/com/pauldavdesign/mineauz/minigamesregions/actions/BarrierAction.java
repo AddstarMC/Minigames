@@ -42,6 +42,7 @@ public class BarrierAction implements ActionInterface{
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args,
 			Region region, Event event) {
+		if(player == null || !player.isInMinigame()) return;
 		Location o = player.getLocation().clone();
 		Location[] locs = {region.getFirstPoint(), region.getSecondPoint()};
 		double xdis1 = Math.abs(o.getX() - locs[0].getX());

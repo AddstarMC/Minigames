@@ -21,6 +21,11 @@ public class PlayerScoreRangeCondition implements ConditionInterface {
 	public String getName() {
 		return "PLAYER_SCORE_RANGE";
 	}
+	
+	@Override
+	public String getCategory(){
+		return "Player Conditions";
+	}
 
 	@Override
 	public boolean useInRegions() {
@@ -35,6 +40,7 @@ public class PlayerScoreRangeCondition implements ConditionInterface {
 	@Override
 	public boolean checkNodeCondition(MinigamePlayer player,
 			Map<String, Object> args, Node node, Event event) {
+		if(player == null || !player.isInMinigame()) return false;
 		if(player.getScore() >= (Integer)args.get("c_playerscoremin") && player.getScore() <= (Integer)args.get("c_playerscoremax"))
 			return true;
 		return false;
@@ -43,6 +49,7 @@ public class PlayerScoreRangeCondition implements ConditionInterface {
 	@Override
 	public boolean checkRegionCondition(MinigamePlayer player,
 			Map<String, Object> args, Region region, Event event) {
+		if(player == null || !player.isInMinigame()) return false;
 		if(player.getScore() >= (Integer)args.get("c_playerscoremin") && player.getScore() <= (Integer)args.get("c_playerscoremax"))
 			return true;
 		return false;

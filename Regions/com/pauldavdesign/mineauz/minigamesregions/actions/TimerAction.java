@@ -44,6 +44,7 @@ public class TimerAction implements ActionInterface {
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
 			Map<String, Object> args, Region region, Event event) {
+		if(player == null || !player.isInMinigame()) return;
 		final Region fregion = region;
 		final MinigamePlayer fply = player;
 		final Map<String, Object> fargs = args;
@@ -65,6 +66,7 @@ public class TimerAction implements ActionInterface {
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Map<String, Object> args, Node node, Event event) {
+		if(player == null || !player.isInMinigame()) return;
 		final Node fnode = node;
 		final MinigamePlayer fply = player;
 		final Map<String, Object> fargs = args;

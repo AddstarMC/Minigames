@@ -50,7 +50,7 @@ public class EndAction implements ActionInterface {
 	}
 	
 	private void execute(MinigamePlayer player, Map<String, Object> args){
-		if(!player.isInMinigame()) return;
+		if(player == null || !player.isInMinigame()) return;
 		if(player.getMinigame().getType() != MinigameType.SINGLEPLAYER){
 			List<MinigamePlayer> w = null;
 			List<MinigamePlayer> l = null;

@@ -13,6 +13,7 @@ import com.pauldavdesign.mineauz.minigamesregions.Region;
 public interface ConditionInterface {
 	
 	public String getName();
+	public String getCategory();
 	public boolean useInRegions();
 	public boolean useInNodes();
 	public boolean checkRegionCondition(MinigamePlayer player, Map<String, Object> args, Region region, Event event);

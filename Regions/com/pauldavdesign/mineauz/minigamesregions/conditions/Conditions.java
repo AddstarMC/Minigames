@@ -28,6 +28,8 @@ public class Conditions {
 		addCondition(new RandomChanceCondition());
 		addCondition(new MatchBlockCondition());
 		addCondition(new ContainsEntireTeamCondition());
+		addCondition(new PlayerCountCondition());
+		addCondition(new PlayerHasItemCondition());
 	}
 	
 	public static void addCondition(ConditionInterface condition){

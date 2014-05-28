@@ -41,21 +41,19 @@ public class EquipLoadoutAction implements ActionInterface {
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Map<String, Object> args, Node node, Event event) {
-		if(player.isInMinigame()){
-			LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
-			if(lmod.hasLoadout((String)args.get("a_equiploadout"))){
-				player.setLoadout(lmod.getLoadout((String)args.get("a_equiploadout")));
-			}
+		if(player == null || !player.isInMinigame()) return;
+		LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
+		if(lmod.hasLoadout((String)args.get("a_equiploadout"))){
+			player.setLoadout(lmod.getLoadout((String)args.get("a_equiploadout")));
 		}
 	}
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region, Event event) {
-		if(player.isInMinigame()){
-			LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
-			if(lmod.hasLoadout((String)args.get("a_equiploadout"))){
-				player.setLoadout(lmod.getLoadout((String)args.get("a_equiploadout")));
-			}
+		if(player == null || !player.isInMinigame()) return;
+		LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
+		if(lmod.hasLoadout((String)args.get("a_equiploadout"))){
+			player.setLoadout(lmod.getLoadout((String)args.get("a_equiploadout")));
 		}
 	}
 

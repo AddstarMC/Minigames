@@ -22,6 +22,11 @@ public class RandomChanceCondition implements ConditionInterface {
 	public String getName() {
 		return "RANDOM_CHANCE";
 	}
+	
+	@Override
+	public String getCategory(){
+		return "Misc Conditions";
+	}
 
 	@Override
 	public boolean useInRegions() {

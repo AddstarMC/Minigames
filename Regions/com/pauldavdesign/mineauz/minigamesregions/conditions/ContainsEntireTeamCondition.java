@@ -25,6 +25,11 @@ public class ContainsEntireTeamCondition implements ConditionInterface {
 	public String getName() {
 		return "CONTAINS_ENTIRE_TEAM";
 	}
+	
+	@Override
+	public String getCategory(){
+		return "Team Conditions";
+	}
 
 	@Override
 	public boolean useInRegions() {

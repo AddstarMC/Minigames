@@ -36,12 +36,14 @@ public class RevertAction implements ActionInterface {
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Map<String, Object> args, Node node, Event event) {
+		if(player == null || !player.isInMinigame()) return;
 		if(!player.isDead())
 			Minigames.plugin.pdata.revertToCheckpoint(player);
 	}
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region, Event event) {
+		if(player == null || !player.isInMinigame()) return;
 		if(!player.isDead())
 			Minigames.plugin.pdata.revertToCheckpoint(player);
 	}
