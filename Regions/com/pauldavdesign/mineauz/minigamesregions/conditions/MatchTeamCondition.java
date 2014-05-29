@@ -45,9 +45,15 @@ public class MatchTeamCondition implements ConditionInterface {
 	@Override
 	public boolean checkNodeCondition(MinigamePlayer player,
 			Map<String, Object> args, Node node, Event event) {
-		if(player.getTeam() != null && player.getTeam().getColor().toString().equals(args.get("c_matchteam")))
-			if(!(Boolean)args.get("c_matchteaminvert"))
+		boolean inv = (Boolean)args.get("c_matchteaminvert");
+		if(player.getTeam() != null && player.getTeam().getColor().toString().equals(args.get("c_matchteam"))){
+			if(!inv)
 				return true;
+			else
+				return false;
+		}
+		if(inv)
+			return true;
 		return false;
 	}
 
@@ -55,9 +61,15 @@ public class MatchTeamCondition implements ConditionInterface {
 	public boolean checkRegionCondition(MinigamePlayer player,
 			Map<String, Object> args, Region region, Event event) {
 		if(player == null || !player.isInMinigame()) return false;
-		if(player.getTeam() != null && player.getTeam().getColor().toString().equals(args.get("c_matchteam")))
-			if(!(Boolean)args.get("c_matchteaminvert"))
+		boolean inv = (Boolean)args.get("c_matchteaminvert");
+		if(player.getTeam() != null && player.getTeam().getColor().toString().equals(args.get("c_matchteam"))){
+			if(!inv)
 				return true;
+			else
+				return false;
+		}
+		if(inv)
+			return true;
 		return false;
 	}
 
@@ -103,7 +115,7 @@ public class MatchTeamCondition implements ConditionInterface {
 			
 			@Override
 			public String getValue() {
-				return (String)fargs.get("c_matchteam");
+				return MinigameUtils.capitalize(((String)fargs.get("c_matchteam")).replace("_", " "));
 			}
 		}, teams));
 		m.addItem(new MenuItemBoolean("Invert Match", Material.ENDER_PEARL, new Callback<Boolean>() {
