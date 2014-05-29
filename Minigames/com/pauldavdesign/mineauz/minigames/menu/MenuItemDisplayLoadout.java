@@ -59,6 +59,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 					Material.GOLD_INGOT, loadout.getUsePermissionsCallback()));
 		mItems.add(new MenuItemBoolean("Allow Fall Damage", Material.LEATHER_BOOTS, loadout.getFallDamageCallback()));
 		mItems.add(new MenuItemBoolean("Allow Hunger", Material.APPLE, loadout.getHungerCallback()));
+		mItems.add(new MenuItemInteger("XP Level", MinigameUtils.stringToList("Use -1 to not;use loadout levels"), Material.EXP_BOTTLE, loadout.getLevelCallback(), -1, null));
 		loadoutSettings.addItems(mItems);
 		if(mgm == null){
 			MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back", Material.REDSTONE_TORCH_ON, loadout);

@@ -124,14 +124,19 @@ public class MinigamePlayer {
 		float saturation = player.getSaturation();
 		lastScoreboard = player.getScoreboard();
 		GameMode lastGM = player.getGameMode();
+		float exp = player.getExp();
+		int level = player.getLevel();
 		
 		player.setSaturation(15);
 		player.setFoodLevel(20);
 		player.setHealth(player.getMaxHealth());
 		player.getInventory().clear();
 		player.getInventory().setArmorContents(null);
+		player.setLevel(0);
+		player.setExp(0);
 		
-		oply = new OfflineMinigamePlayer(getPlayer().getUniqueId().toString(), storedItems, storedArmour, food, health, saturation, lastGM, null);
+		oply = new OfflineMinigamePlayer(getPlayer().getUniqueId().toString(), 
+				storedItems, storedArmour, food, health, saturation, lastGM, exp, level, null);
 		player.updateInventory();
 	}
 	
@@ -153,6 +158,11 @@ public class MinigamePlayer {
 		}
 		else{
 			player.setScoreboard(player.getServer().getScoreboardManager().getMainScoreboard());
+		}
+		
+		if(oply.getExp() != -1){ //TODO: Remove check after 1.7
+			player.setExp(oply.getExp());
+			player.setLevel(oply.getLevel());
 		}
 		
 		player.resetPlayerWeather();

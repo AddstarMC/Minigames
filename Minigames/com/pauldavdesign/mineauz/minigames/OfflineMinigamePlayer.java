@@ -14,10 +14,15 @@ public class OfflineMinigamePlayer {
 	private int food = 20;
 	private double health = 20;
 	private float saturation = 15;
+	private float exp = -1; //TODO: Set to default value after 1.7
+	private int level = -1; //Set To default value after 1.7
 	private GameMode lastGM = GameMode.SURVIVAL;
 	private Location loginLocation;
 	
-	public OfflineMinigamePlayer(String uuid, ItemStack[] items, ItemStack[] armour, int food, double health, float saturation, GameMode lastGM, Location loginLocation){
+	public OfflineMinigamePlayer(String uuid, ItemStack[] items, 
+			ItemStack[] armour, int food, double health, 
+			float saturation, GameMode lastGM, float exp, int level,
+			Location loginLocation){
 		this.uuid = uuid;
 		storedItems = items;
 		storedArmour = armour;
@@ -25,6 +30,8 @@ public class OfflineMinigamePlayer {
 		this.health = health;
 		this.saturation = saturation;
 		this.lastGM = lastGM;
+		this.exp = exp;
+		this.level = level;
 		if(loginLocation != null && loginLocation.getWorld() == null)
 			loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
 		this.loginLocation = loginLocation;
@@ -39,6 +46,9 @@ public class OfflineMinigamePlayer {
 		health = con.getDouble("health");
 		saturation = con.getInt("saturation");
 		lastGM = GameMode.valueOf(con.getString("gamemode"));
+		if(con.contains("exp")){
+			exp = ((Double)con.getDouble("exp")).floatValue();
+		}
 		if(con.contains("location")){
 			loginLocation = new Location(Minigames.plugin.getServer().getWorld(con.getString("location.world")), 
 					con.getDouble("location.x"), 
@@ -98,6 +108,14 @@ public class OfflineMinigamePlayer {
 		return loginLocation;
 	}
 	
+	public float getExp(){
+		return exp;
+	}
+	
+	public int getLevel(){
+		return level;
+	}
+	
 	public void setLoginLocation(Location loc){
 		loginLocation = loc;
 	}
@@ -129,6 +147,8 @@ public class OfflineMinigamePlayer {
 		con.set("saturation", saturation);
 		con.set("health", health);
 		con.set("gamemode", lastGM.toString());
+		con.set("exp", exp);
+		con.set("level", level);
 		if(loginLocation != null){
 			con.set("location.x", loginLocation.getBlockX());
 			con.set("location.y", loginLocation.getBlockY());

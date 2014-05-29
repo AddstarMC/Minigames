@@ -19,6 +19,7 @@ public class PlayerLoadout {
 	private boolean usePermission = false;
 	private boolean fallDamage = true;
 	private boolean hunger = false;
+	private int level = -1;
 	
 	public PlayerLoadout(String name){
 		loadoutName = name;
@@ -121,6 +122,9 @@ public class PlayerLoadout {
 				fplayer.getPlayer().addPotionEffects(potions);
 			}
 		});
+		
+		if(level != -1)
+			player.getPlayer().setLevel(level);
 	}
 	
 	public Set<Integer> getItems(){
@@ -177,6 +181,30 @@ public class PlayerLoadout {
 			@Override
 			public Boolean getValue() {
 				return hunger;
+			}
+		};
+	}
+	
+	public int getLevel(){
+		return level;
+	}
+	
+	public void setLevel(int level){
+		this.level = level;
+	}
+	
+	public Callback<Integer> getLevelCallback(){
+		return new Callback<Integer>() {
+
+			@Override
+			public void setValue(Integer value) {
+				if(level >= 0)
+					level = value;
+			}
+
+			@Override
+			public Integer getValue() {
+				return level;
 			}
 		};
 	}

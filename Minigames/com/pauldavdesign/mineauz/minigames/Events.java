@@ -74,7 +74,6 @@ public class Events implements Listener{
 			String msg = "";
 			msg = event.getDeathMessage();
 			event.setDeathMessage(null);
-			event.setKeepLevel(true);
 			event.setDroppedExp(0);
 			
 			ply.addDeath();
