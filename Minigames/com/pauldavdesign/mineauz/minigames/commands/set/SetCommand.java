@@ -90,6 +90,7 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetDisplayNameCommand());
 		registerSetCommand(new SetRegenDelayCommand());
 		registerSetCommand(new SetTeamCommand());
+		registerSetCommand(new SetFlightCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {

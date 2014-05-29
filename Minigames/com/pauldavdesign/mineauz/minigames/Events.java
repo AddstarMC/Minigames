@@ -505,7 +505,8 @@ public class Events implements Listener{
 	@EventHandler(ignoreCancelled = true)
 	public void onFlyToggle(PlayerToggleFlightEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-		if(ply.isInMinigame() && (!ply.getMinigame().isSpectator(ply) || !ply.getMinigame().canSpectateFly())){
+		if(ply.isInMinigame() && (!ply.getMinigame().isSpectator(ply) || !ply.getMinigame().canSpectateFly()) && 
+				!ply.getMinigame().isAllowedFlight()){
 			event.setCancelled(true);
 			pdata.quitMinigame(ply, true);
 			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noFly"));

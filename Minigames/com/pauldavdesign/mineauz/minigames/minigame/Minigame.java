@@ -100,6 +100,8 @@ public class Minigame {
 	private boolean blocksdrop = true;
 	private boolean allowEnderpearls = false;
 	private boolean allowMPCheckpoints = false;
+	private boolean allowFlight = false;
+	private boolean enableFlight = false;
 	
 	private String scoreType = "custom";
 	private boolean paintBallMode = false;
@@ -1228,7 +1230,7 @@ public class Minigame {
 	public void setScoreType(String scoreType) {
 		this.scoreType = scoreType;
 	}
-	
+
 	public boolean isFlagCarrier(MinigamePlayer ply){
 		return flagCarriers.containsKey(ply);
 	}
@@ -1656,6 +1658,52 @@ public class Minigame {
 			}
 		};
 	}
+	
+	public boolean isAllowedFlight() {
+		return allowFlight;
+	}
+
+	public void setAllowedFlight(boolean allowFlight) {
+		this.allowFlight = allowFlight;
+	}
+	
+	public Callback<Boolean> getAllowedFlightCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				allowFlight = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return allowFlight;
+			}
+		};
+	}
+
+	public boolean isFlightEnabled() {
+		return enableFlight;
+	}
+
+	public void setFlightEnabled(boolean enableFlight) {
+		this.enableFlight = enableFlight;
+	}
+	
+	public Callback<Boolean> getFlightEnabledCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				enableFlight = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return enableFlight;
+			}
+		};
+	}
 
 	public Scoreboard getScoreboardManager(){
 		return sbManager;
@@ -1855,6 +1903,8 @@ public class Minigame {
 		itemsPlayer.add(new MenuItemBoolean("Enable Multiplayer Checkpoints", Material.SIGN, getAllowMPCheckpointsCallback()));
 		itemsPlayer.add(new MenuItemBoolean("Save Checkpoints", MinigameUtils.stringToList("Singleplayer Only"), Material.SIGN, getSaveCheckpointCallback()));
 		itemsPlayer.add(new MenuItemPage("Flags", MinigameUtils.stringToList("Singleplayer flags"), Material.SIGN, flags));
+		itemsPlayer.add(new MenuItemBoolean("Allow Flight", MinigameUtils.stringToList("Allow flight to;be toggled"), Material.FEATHER, getAllowedFlightCallback()));
+		itemsPlayer.add(new MenuItemBoolean("Enable Flight", MinigameUtils.stringToList("Start players;in flight;(Must have Allow;Flight)"), Material.FEATHER, getFlightEnabledCallback()));
 		playerMenu.addItems(itemsPlayer);
 		playerMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
 		

@@ -140,6 +140,7 @@ permissions:
             minigame.set.displayname: true
             minigame.set.regendelay: true
             minigame.set.team: true
+            minigame.set.flight: true
     minigame.set.start:
         description: Gives access to setting a minigames starting position
         default: op
@@ -286,6 +287,9 @@ permissions:
         default: op
     minigame.set.team:
         description: Allows a player to use the set team command.
+        default: op
+    minigame.set.flight:
+        description: Allows a player to modify the flight settings in a game.
         default: op
     minigame.info:
         description: Allows check to see if a minigames variables have been set

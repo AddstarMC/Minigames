@@ -121,6 +121,8 @@ public class PlayerData {
 						player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + 
 								"Join location is across worlds! This may cause some server performance issues!", "error");
 					}
+					if(tpd && minigame.isFlightEnabled())
+						player.getPlayer().setFlying(true);
 				}
 				else{
 					tpd = player.teleport(minigame.getLobbyPosition());
@@ -363,6 +365,8 @@ public class PlayerData {
 			ply.getPlayer().setScoreboard(minigame.getScoreboardManager());
 			minigame.setScore(ply, 1);
 			minigame.setScore(ply, 0);
+			if(minigame.isFlightEnabled())
+				ply.getPlayer().setFlying(true);
 		}
 	}
 	
