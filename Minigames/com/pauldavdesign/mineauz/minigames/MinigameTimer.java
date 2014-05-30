@@ -11,6 +11,7 @@ import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class MinigameTimer{
 	private int time = 0;
+	private int otime = 0;
 	private Minigame minigame;
 	private List<Integer> timeMsg = new ArrayList<Integer>();
 	private static Minigames plugin = Minigames.plugin;
@@ -18,6 +19,7 @@ public class MinigameTimer{
 	
 	public MinigameTimer(Minigame minigame, int time){
 		this.time = time;
+		otime = time;
 		this.minigame = minigame;
 		timeMsg.addAll(plugin.getConfig().getIntegerList("multiplayer.timerMessageInterval"));
 		startTimer();
@@ -29,6 +31,19 @@ public class MinigameTimer{
 			@Override
 			public void run() {
 				time -= 1;
+				if(minigame.isUsingXPBarTimer()){
+					float timeper = ((Integer)time).floatValue() / ((Integer)otime).floatValue();
+					int level = 0;
+					if(time / 60 > 0)
+						level = time / 60;
+					else
+						level = time;
+					
+					for(MinigamePlayer ply : minigame.getPlayers()){
+						ply.getPlayer().setExp(timeper);
+						ply.getPlayer().setLevel(level);
+					}
+				}
 				if(timeMsg.contains(time)){
 					plugin.mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(time)), null, null);
 				}

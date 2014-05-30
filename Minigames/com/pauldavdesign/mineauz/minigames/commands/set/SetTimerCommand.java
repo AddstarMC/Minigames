@@ -29,8 +29,7 @@ public class SetTimerCommand implements ICommand{
 	@Override
 	public String getDescription() {
 		return "Sets the maximum time length (in seconds) for a Minigame. Adding 'm' or 'h' to the end of the time will use " +
-				"minutes or hours instead. For Teams and Free for All, the highest score " +
-				"at the end of this time wins.";
+				"minutes or hours instead. The highest score at the end of this time wins.";
 	}
 
 	@Override
@@ -40,7 +39,7 @@ public class SetTimerCommand implements ICommand{
 
 	@Override
 	public String[] getUsage() {
-		return new String[] {"/minigame set <Minigame> timer <Number>[m|h]"};
+		return new String[] {"/minigame set <Minigame> timer <Number>[m|h]", "/minigame set <Minigame> timer useXPBar <true/false>"};
 	}
 
 	@Override
@@ -80,6 +79,15 @@ public class SetTimerCommand implements ICommand{
 				else{
 					sender.sendMessage(ChatColor.GRAY + "The timer for \"" + minigame + "\" has been removed.");
 				}
+				return true;
+			}
+			else if(args[0].equalsIgnoreCase("usexpbar") && args.length == 2){
+				boolean bool = Boolean.parseBoolean(args[1]);
+				minigame.setUseXPBarTimer(bool);
+				if(bool)
+					sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will now show the timer in the XP bar.");
+				else
+					sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will no longer show the timer in the XP bar.");
 				return true;
 			}
 		}

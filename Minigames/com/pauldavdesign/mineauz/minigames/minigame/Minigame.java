@@ -87,6 +87,7 @@ public class Minigame {
 	private Rewards secondaryRewardItem = new Rewards();
 	private boolean usePermissions = false;
 	private int timer = 0;
+	private boolean useXPBarTimer = true;
 	private int startWaitTime = 0;
 	private Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<MinigamePlayer, CTFFlag>();
 	private Map<String, CTFFlag> droppedFlag = new HashMap<String, CTFFlag>();
@@ -1027,6 +1028,29 @@ public class Minigame {
 		};
 	}
 
+	public boolean isUsingXPBarTimer() {
+		return useXPBarTimer;
+	}
+
+	public void setUseXPBarTimer(boolean useXPBarTimer) {
+		this.useXPBarTimer = useXPBarTimer;
+	}
+	
+	private Callback<Boolean> getUseXPBarTimerCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				useXPBarTimer = value;
+			}
+
+			@Override
+			public Boolean getValue() {
+				return useXPBarTimer;
+			}
+		};
+	}
+
 	public int getStartWaitTime() {
 		return startWaitTime;
 	}
@@ -1797,6 +1821,7 @@ public class Minigame {
 		itemsMain.add(new MenuItemPage("Lobby Settings", MinigameUtils.stringToList("Multiplayer Only"), Material.WOOD_DOOR, lobby));
 		itemsMain.add(new MenuItemNewLine());
 		itemsMain.add(new MenuItemTime("Time Length", MinigameUtils.stringToList("Multiplayer Only"), Material.WATCH, getTimerCallback(), 0, null));
+		itemsMain.add(new MenuItemBoolean("Use XP bar as Timer", Material.ENDER_PEARL, getUseXPBarTimerCallback()));
 		itemsMain.add(new MenuItemTime("Start Wait Time", MinigameUtils.stringToList("Multiplayer Only"), Material.WATCH, getStartWaitTimeCallback(), 3, null));
 		itemsMain.add(new MenuItemBoolean("Allow Late Join", MinigameUtils.stringToList("Multiplayer Only"), Material.DEAD_BUSH, getLateJoinCallback()));
 		itemsMain.add(new MenuItemDisplayRewards("Primary Rewards", Material.CHEST, rewardItem));
