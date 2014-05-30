@@ -44,6 +44,8 @@ public class LoadoutSign implements MinigameSign {
 	@Override
 	public boolean signCreate(SignChangeEvent event) {
 		event.setLine(1, ChatColor.GREEN + "Loadout");
+		if(event.getLine(2).equalsIgnoreCase("menu"))
+			event.setLine(2, ChatColor.GREEN + "Menu");
 		return true;
 	}
 
@@ -56,7 +58,13 @@ public class LoadoutSign implements MinigameSign {
 				return false;
 			}
 			
-			if(loadout.hasLoadout(sign.getLine(2))){
+			if(sign.getLine(2).equals(ChatColor.GREEN + "Menu")){
+				boolean nores = true;
+				if(sign.getLine(3).equalsIgnoreCase("respawn"))
+					nores = false;
+				LoadoutModule.getMinigameModule(mgm).displaySelectionMenu(player, nores);
+			}
+			else if(loadout.hasLoadout(sign.getLine(2))){
 				if(!loadout.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
 					player.setLoadout(loadout.getLoadout(sign.getLine(2)));
 					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)));

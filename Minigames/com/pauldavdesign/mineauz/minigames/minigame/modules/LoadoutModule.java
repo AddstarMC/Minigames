@@ -1,15 +1,21 @@
 package com.pauldavdesign.mineauz.minigames.minigame.modules;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
+import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
+import com.pauldavdesign.mineauz.minigames.menu.InteractionInterface;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemCustom;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
 
@@ -224,6 +230,57 @@ public class LoadoutModule implements MinigameModule {
 		else{
 			return true;
 		}
+	}
+	
+	public void displaySelectionMenu(MinigamePlayer player, final boolean equip){
+		Menu m = new Menu(6, "Select Loadout", player);
+		MenuItemCustom d = new MenuItemCustom(getDefaultPlayerLoadout().getName(), Material.GLASS);
+		if(!getDefaultPlayerLoadout().getItems().isEmpty())
+			d.setItem(getDefaultPlayerLoadout().getItem(new ArrayList<Integer>(getDefaultPlayerLoadout().getItems()).get(0)));
+		final MinigamePlayer fply = player;
+		final PlayerLoadout floadout = getDefaultPlayerLoadout();
+		d.setClick(new InteractionInterface() {
+			
+			@Override
+			public Object interact(Object object) {
+				fply.setLoadout(floadout);
+				fply.getPlayer().closeInventory();
+				if(!equip)
+					fply.sendMessage(MinigameUtils.getLang("player.loadout.nextSpawn"), null);
+				else{
+					fply.sendMessage(MinigameUtils.formStr("player.loadout.equipped", floadout.getName()), null);
+					floadout.equiptLoadout(fply);
+				}
+				return null;
+			}
+		});
+		m.addItem(d);
+		
+		for(PlayerLoadout loadout : extraLoadouts.values()){
+			if(!loadout.getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + loadout.getName().toLowerCase())){
+				MenuItemCustom c = new MenuItemCustom(loadout.getName(), Material.GLASS);
+				if(!loadout.getItems().isEmpty())
+					c.setItem(loadout.getItem(new ArrayList<Integer>(loadout.getItems()).get(0)));
+				final PlayerLoadout floadout2 = loadout;
+				c.setClick(new InteractionInterface() {
+					
+					@Override
+					public Object interact(Object object) {
+						fply.setLoadout(floadout2);
+						fply.getPlayer().closeInventory();
+						if(!equip)
+							fply.sendMessage(MinigameUtils.getLang("player.loadout.nextSpawn"), null);
+						else{
+							fply.sendMessage(MinigameUtils.formStr("player.loadout.equipped", floadout2.getName()), null);
+							floadout2.equiptLoadout(fply);
+						}
+						return null;
+					}
+				});
+				m.addItem(c);
+			}
+		}
+		m.displayMenu(player);
 	}
 
 	@Override

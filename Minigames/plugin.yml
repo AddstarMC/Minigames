@@ -450,3 +450,6 @@ permissions:
     minigame.save:
         description: Allows a player to use the save command.
         default: op
+    minigame.loadout.menu:
+        description: Allows a player to use the Loadout selection menu command.
+        default: true

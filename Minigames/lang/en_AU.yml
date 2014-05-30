@@ -74,6 +74,9 @@ player:
     droppedNeutral: "%s dropped the Neutral flag"
   kills:
     finalKill: "%s took the final kill from %s"
+  loadout:
+    nextSpawn: The loadout will be equipped the next time you spawn
+    equipped: "You have been equipped with the %s loadout."
     
 minigame:
   full: "Sorry, this Minigame is full."
@@ -276,3 +279,7 @@ command:
       list: "Gives you a list of all Minigames"
       reload: "Reloads all Minigame files. NOT RECOMMENDED! Please use a complete server reload instead!"
       set: "Modifies a Minigame, type \"/minigame set\" to view a list of parameters"
+  loadout:
+    description: "Opens the loadout selection menu, loadouts will only equip on respawn or when the game starts.\n Alternatively, if the name of the loadout is known, it can be selected directly by its name."
+    noPermission: "You do not have permission to use the loadout command!"
+    noMinigame: "You must be in a Minigame to use this command!"

@@ -73,6 +73,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter{
 		registerCommand(new EnableAllCommand());
 		registerCommand(new DisableAllCommand());
 		registerCommand(new SaveCommand());
+		registerCommand(new LoadoutCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {
