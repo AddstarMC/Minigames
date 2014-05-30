@@ -132,12 +132,15 @@ public class PlayerKillsMechanic extends GameMechanicBase{
 	private void playerSuicide(PlayerDeathEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
 		if(ply == null) return;
-		if(ply.isInMinigame() && (ply.getPlayer().getKiller() == null || ply.getPlayer().getKiller() == ply.getPlayer())){
+		if(ply.isInMinigame() && 
+				(ply.getPlayer().getKiller() == null || ply.getPlayer().getKiller() == ply.getPlayer()) &&
+				ply.getMinigame().hasStarted()){
 			Minigame mgm = ply.getMinigame();
 			if(mgm.getScoreType().equals("kills")){
 				ply.takeScore();
 				mgm.setScore(ply, ply.getScore());
-				ply.getTeam().setScore(ply.getTeam().getScore() - 1);
+				if(mgm.isTeamGame())
+					ply.getTeam().setScore(ply.getTeam().getScore() - 1);
 			}
 		}
 	}
