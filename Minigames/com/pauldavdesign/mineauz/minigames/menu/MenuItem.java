@@ -57,7 +57,12 @@ public class MenuItem {
 	}
 	
 	public void setItem(ItemStack item){
+		ItemMeta ometa = displayItem.getItemMeta();
 		displayItem = item.clone();
+		ItemMeta nmeta = displayItem.getItemMeta();
+		nmeta.setDisplayName(ometa.getDisplayName());
+		nmeta.setLore(nmeta.getLore());
+		displayItem.setItemMeta(nmeta);
 	}
 	
 	public ItemStack onClick(){
