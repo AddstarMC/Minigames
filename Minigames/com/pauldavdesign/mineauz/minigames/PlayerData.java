@@ -500,7 +500,6 @@ public class PlayerData {
 				}
 				player.getPlayer().setFallDistance(0);
 				player.getPlayer().setNoDamageTicks(60);
-				player.getPlayer().setFlying(false);
 				final Player fplayer = player.getPlayer();
 				for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
 					player.getPlayer().removePotionEffect(potion.getType());
