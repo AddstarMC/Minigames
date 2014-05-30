@@ -42,6 +42,7 @@ public class Actions {
 		addAction(new PlaySoundAction());
 		addAction(new CheckpointAction());
 		addAction(new SwapBlockAction());
+		addAction(new ApplyPotionAction());
 	}
 	
 	public static void addAction(ActionInterface action){
