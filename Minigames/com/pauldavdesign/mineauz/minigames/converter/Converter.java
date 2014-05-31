@@ -145,6 +145,8 @@ public class Converter{
 				mg.getConfig().set("convert.sql", true);
 			mg.saveConfig();
 		}
+		cache.clear();
+		cache = null;
 		return true;
 	}
 	
