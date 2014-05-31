@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,6 +20,7 @@ import com.pauldavdesign.mineauz.minigames.sql.SQLDatabase;
 public class Converter{
 	
 	private Minigames mg = Minigames.plugin;
+	private Map<String, String> cache = new HashMap<String, String>();
 	
 	private boolean sqlfailed = false;
 	
@@ -44,8 +47,13 @@ public class Converter{
 				mg.getLogger().info(g);
 				for(String p : compcfg.getStringList(g)){
 					if(mg.getServer().getOfflinePlayer(p) != null){
-						if(mg.getServer().getOfflinePlayer(p).getUniqueId() != null){
+						if(cache.containsKey(p)){
+							String id = cache.get(p);
+							list.add(id);
+						}
+						else if(mg.getServer().getOfflinePlayer(p).getUniqueId() != null){
 							String id = mg.getServer().getOfflinePlayer(p).getUniqueId().toString().replace("-", "_");
+							cache.put(p, id);
 							list.add(id);
 						}
 					}
@@ -68,8 +76,14 @@ public class Converter{
 			for(File f : invfol.listFiles()){
 				String name = f.getName().replace(".yml", "");
 				if(mg.getServer().getOfflinePlayer(name) != null){
-					if(mg.getServer().getOfflinePlayer(name).getUniqueId() != null){
+					if(cache.containsKey(name)){
+						String id = cache.get(name);
+						File n = new File(path + "/" + id + ".yml"); 
+						f.renameTo(n);
+					}
+					else if(mg.getServer().getOfflinePlayer(name).getUniqueId() != null){
 						String id = mg.getServer().getOfflinePlayer(name).getUniqueId().toString();
+						cache.put(name, id);
 						File n = new File(path + "/" + id + ".yml"); 
 						f.renameTo(n);
 					}
@@ -94,15 +108,16 @@ public class Converter{
 			
 			for(File f : invfol.listFiles()){
 				String name = f.getName().replace(".yml", "");
-				if(mg.getServer().getOfflinePlayer(name) != null){
-					if(mg.getServer().getOfflinePlayer(name).getUniqueId() != null){
-						String id = mg.getServer().getOfflinePlayer(name).getUniqueId().toString();
-						File n = new File(path + "/" + id + ".yml"); 
-						f.renameTo(n);
-					}
-					else{
-						f.delete();
-					}
+				if(cache.containsKey(name)){
+					String id = cache.get(name);
+					File n = new File(path + "/" + id + ".yml"); 
+					f.renameTo(n);
+				}
+				else if(mg.getServer().getOfflinePlayer(name).getUniqueId() != null){
+					String id = mg.getServer().getOfflinePlayer(name).getUniqueId().toString();
+					cache.put(name, id);
+					File n = new File(path + "/" + id + ".yml"); 
+					f.renameTo(n);
 				}
 				else{
 					f.delete();
@@ -173,9 +188,14 @@ public class Converter{
 					String name = set.getString(1);
 					Statement updatePlayer = sql.createStatement();
 					if(mg.getServer().getOfflinePlayer(name) != null){
-						if(mg.getServer().getOfflinePlayer(name).getUniqueId() != null){
+						if(cache.containsKey(name)){
+							String id = cache.get(name);
+							updatePlayer.executeUpdate("UPDATE `" + table + "` SET UUID='" + id + "', Player='" + name + "' WHERE UUID='" + name + "'");
+						}
+						else if(mg.getServer().getOfflinePlayer(name).getUniqueId() != null){
 							String id = mg.getServer().getOfflinePlayer(name).getUniqueId().toString();
 							updatePlayer.executeUpdate("UPDATE `" + table + "` SET UUID='" + id + "', Player='" + name + "' WHERE UUID='" + name + "'");
+							cache.put(name, id);
 						}
 						else{
 							updatePlayer.execute("DELETE FROM `" + table + "` WHERE UUID='" + name + "'");
