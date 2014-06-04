@@ -506,6 +506,7 @@ public class Events implements Listener{
 	@EventHandler(ignoreCancelled = true)
 	public void onGMChange(PlayerGameModeChangeEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply == null) return;
 		if(ply.isInMinigame() && !ply.getAllowGamemodeChange()){
 			event.setCancelled(true);
 			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noGamemode"));
@@ -515,6 +516,7 @@ public class Events implements Listener{
 	@EventHandler(ignoreCancelled = true)
 	public void onFlyToggle(PlayerToggleFlightEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply == null) return;
 		if(ply.isInMinigame() && (!ply.getMinigame().isSpectator(ply) || !ply.getMinigame().canSpectateFly())){
 			event.setCancelled(true);
 			pdata.quitMinigame(ply, true);
