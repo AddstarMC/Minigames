@@ -43,6 +43,7 @@ public class Converter{
 		if(!mg.getConfig().getBoolean("convert.completion")){
 			List<String> list = new ArrayList<String>();
 			mg.getLogger().info("Converting: completion.yml");
+			
 			for(String g : compList){
 				mg.getLogger().info(g);
 				for(String p : compcfg.getStringList(g)){
@@ -73,9 +74,44 @@ public class Converter{
 			String path = mg.getDataFolder().getPath() + "/playerdata/inventories";
 			File invfol = new File(path);
 			
-			for(File f : invfol.listFiles()){
-				String name = f.getName().replace(".yml", "");
-				if(mg.getServer().getOfflinePlayer(name) != null){
+			if(invfol.exists()){
+				for(File f : invfol.listFiles()){
+					String name = f.getName().replace(".yml", "");
+					if(mg.getServer().getOfflinePlayer(name) != null){
+						if(cache.containsKey(name)){
+							String id = cache.get(name);
+							File n = new File(path + "/" + id + ".yml"); 
+							f.renameTo(n);
+						}
+						else if(mg.getServer().getOfflinePlayer(name).getUniqueId() != null){
+							String id = mg.getServer().getOfflinePlayer(name).getUniqueId().toString();
+							cache.put(name, id);
+							File n = new File(path + "/" + id + ".yml"); 
+							f.renameTo(n);
+						}
+						else{
+							f.delete();
+						}
+					}
+					else{
+						f.delete();
+					}
+				}
+			}
+			
+			mg.getConfig().set("convert.inventories", true);
+			mg.saveConfig();
+		}
+
+		//Convert Checkpoints
+		if(!mg.getConfig().getBoolean("convert.checkpoints")){
+			mg.getLogger().info("Converting: checkpoints");
+			String path = mg.getDataFolder().getPath() + "/playerdata/checkpoints";
+			File invfol = new File(path);
+			
+			if(invfol.exists()){
+				for(File f : invfol.listFiles()){
+					String name = f.getName().replace(".yml", "");
 					if(cache.containsKey(name)){
 						String id = cache.get(name);
 						File n = new File(path + "/" + id + ".yml"); 
@@ -90,37 +126,6 @@ public class Converter{
 					else{
 						f.delete();
 					}
-				}
-				else{
-					f.delete();
-				}
-			}
-			
-			mg.getConfig().set("convert.inventories", true);
-			mg.saveConfig();
-		}
-
-		//Convert Checkpoints
-		if(!mg.getConfig().getBoolean("convert.checkpoints")){
-			mg.getLogger().info("Converting: checkpoints");
-			String path = mg.getDataFolder().getPath() + "/playerdata/checkpoints";
-			File invfol = new File(path);
-			
-			for(File f : invfol.listFiles()){
-				String name = f.getName().replace(".yml", "");
-				if(cache.containsKey(name)){
-					String id = cache.get(name);
-					File n = new File(path + "/" + id + ".yml"); 
-					f.renameTo(n);
-				}
-				else if(mg.getServer().getOfflinePlayer(name).getUniqueId() != null){
-					String id = mg.getServer().getOfflinePlayer(name).getUniqueId().toString();
-					cache.put(name, id);
-					File n = new File(path + "/" + id + ".yml"); 
-					f.renameTo(n);
-				}
-				else{
-					f.delete();
 				}
 			}
 			
