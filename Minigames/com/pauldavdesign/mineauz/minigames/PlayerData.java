@@ -475,6 +475,13 @@ public class PlayerData {
 						minigame.getBlockRecorder().restoreEntities();
 						minigame.getBlockRecorder().setCreatedRegenBlocks(false);
 					}
+					minigame.getBlockRecorder().clearRestoreData();
+					
+					if(minigame.getMpTimer() != null){
+						minigame.getMpTimer().pauseTimer();
+						minigame.getMpTimer().removeTimer();
+						minigame.setMpTimer(null);
+					}
 					
 					if(minigame.getMpBets() != null){
 						minigame.setMpBets(null);

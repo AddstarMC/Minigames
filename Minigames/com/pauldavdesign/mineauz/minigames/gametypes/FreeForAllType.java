@@ -102,21 +102,7 @@ public class FreeForAllType extends MinigameTypeBase{
 			mgm.getMpBets().removePlayersBet(player);
 		}
 		
-		if(mgm.getPlayers().size() == 1){
-			if(mgm.getBlockRecorder().hasData() && (mgm.getMpTimer() == null || mgm.getMpTimer().getStartWaitTimeLeft() != 0)){
-				mgm.getBlockRecorder().clearRestoreData();
-				mgm.getBlockRecorder().setCreatedRegenBlocks(false);
-			}
-			
-			if(mgm.getMpTimer() != null){
-				mgm.getMpTimer().pauseTimer();
-				mgm.getMpTimer().removeTimer();
-				mgm.setMpTimer(null);
-			}
-			
-			mgm.setMpBets(null);
-		}
-		else if(mgm.getPlayers().size() - 1 < mgm.getMinPlayers() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() != 0){
+		if(mgm.getPlayers().size() - 1 < mgm.getMinPlayers() && mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() != 0){
 			mgm.getMpTimer().pauseTimer();
 			mgm.getMpTimer().removeTimer();
 			mgm.setMpTimer(null);

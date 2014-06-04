@@ -126,20 +126,7 @@ public class TeamsType extends MinigameTypeBase{
 			mgm.getMpBets().removePlayersBet(player);
 		}
 		
-		if(mgm.getPlayers().size() == 1){
-			if(mgm.getBlockRecorder().hasData() && !mgm.isNotWaitingForPlayers()){
-				mgm.getBlockRecorder().clearRestoreData();
-				mgm.getBlockRecorder().setCreatedRegenBlocks(false);
-			}
-			
-			if(mgm.getMpTimer() != null){
-				mgm.getMpTimer().pauseTimer();
-				mgm.getMpTimer().removeTimer();
-				mgm.setMpTimer(null);
-			}
-			mgm.setMpBets(null);
-		}
-		else if(mgm.getPlayers().size() >= 1 && mgm.hasStarted() &&
+		if(mgm.getPlayers().size() >= 1 && mgm.hasStarted() &&
 				(mgm.getRedTeam().size() == 0 || mgm.getBlueTeam().size() == 0) && !forced){
 			
 			if(mgm.getRedTeam().size() == 0){
