@@ -665,7 +665,6 @@ public class PlayerData {
 				}
 				player.getPlayer().setFireTicks(0);
 				player.getPlayer().setNoDamageTicks(60);
-				player.resetAllStats();
 				for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
 					player.getPlayer().removePotionEffect(potion.getType());
 				}
@@ -706,6 +705,7 @@ public class PlayerData {
 					plugin.addSQLToStore(new SQLPlayer(mgm.getName(false), player.getName(), player.getUUID().toString(), 1, 0, player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), player.getEndTime() - player.getStartTime()));
 					plugin.startSQLCompletionSaver();
 				}
+				player.resetAllStats();
 				
 				//Item Bets (for non groups)
 				if(mgm.getMpBets() != null){
