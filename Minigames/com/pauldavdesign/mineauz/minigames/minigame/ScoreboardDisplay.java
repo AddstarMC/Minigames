@@ -80,8 +80,7 @@ public class ScoreboardDisplay {
 		Location cur = loc.clone();
 		cur.setY(cur.getY() - height);
 		List<Chunk> chunksLoaded = new ArrayList<Chunk>();
-//		if(!cur.getChunk().isLoaded()){
-		if(!cur.getWorld().isChunkLoaded(cur.getBlockX() >> 4, cur.getBlockZ() >> 4) && !cur.getWorld().isChunkInUse(cur.getBlockX() >> 4, cur.getBlockZ() >> 4)){
+		if(!cur.getChunk().isLoaded()){
 			chunksLoaded.add(cur.getChunk());
 			cur.getChunk().load();
 		}
@@ -93,8 +92,7 @@ public class ScoreboardDisplay {
 		for(int x = 0; x <= 2; x++){
 			for(int z = 0; z <= 2; z++){
 				Chunk c = cur.getWorld().getChunkAt(x + cx, z + cz);
-//				if(!c.isLoaded()){
-				if(!cur.getWorld().isChunkLoaded(x + cx, z + cz) && !cur.getWorld().isChunkInUse(x + cx, z + cz)){
+				if(!c.isLoaded()){
 					c.load();
 					chunksLoaded.add(c);
 				}

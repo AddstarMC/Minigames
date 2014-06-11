@@ -3,11 +3,13 @@ package com.pauldavdesign.mineauz.minigames.minigame;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
+import com.pauldavdesign.mineauz.minigames.Minigames;
 
 public class ScoreboardSortThread extends Thread{
 	
@@ -148,7 +150,13 @@ public class ScoreboardSortThread extends Thread{
 			}
 		}
 		else if(display != null){
-			display.displayStats(result);
+			Bukkit.getScheduler().runTask(Minigames.plugin, new Runnable() {
+				
+				@Override
+				public void run() {
+					display.displayStats(result);
+				}
+			});
 		}
 	}
 }
