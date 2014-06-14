@@ -464,6 +464,13 @@ public class PlayerData {
 						minigame.getBlockRecorder().restoreEntities();
 						minigame.getBlockRecorder().setCreatedRegenBlocks(false);
 					}
+					minigame.getBlockRecorder().clearRestoreData();
+					
+					if(minigame.getMpTimer() != null){
+						minigame.getMpTimer().pauseTimer();
+						minigame.getMpTimer().removeTimer();
+						minigame.setMpTimer(null);
+					}
 					
 					if(minigame.getMpBets() != null){
 						minigame.setMpBets(null);
@@ -641,8 +648,9 @@ public class PlayerData {
 				player.getPlayer().setFireTicks(0);
 				player.getPlayer().resetPlayerTime();
 				player.getPlayer().setNoDamageTicks(60);
+				
 				List<ItemStack> tempItems = new ArrayList<ItemStack>(player.getTempRewardItems());
-				player.resetAllStats();
+				
 				for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
 					player.getPlayer().removePotionEffect(potion.getType());
 				}
@@ -683,6 +691,7 @@ public class PlayerData {
 					plugin.addSQLToStore(new SQLPlayer(mgm.getName(false), player.getName(), player.getUUID().toString(), 1, 0, player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), player.getEndTime() - player.getStartTime()));
 					plugin.startSQLCompletionSaver();
 				}
+				player.resetAllStats();
 				
 				//Item Bets (for non groups)
 				if(mgm.getMpBets() != null){

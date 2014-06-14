@@ -159,20 +159,7 @@ public class MultiplayerType extends MinigameTypeBase{
 			}
 		}
 		
-		if(mgm.getPlayers().size() == 1){
-			if(mgm.getBlockRecorder().hasData() && !mgm.isNotWaitingForPlayers()){
-				mgm.getBlockRecorder().clearRestoreData();
-				mgm.getBlockRecorder().setCreatedRegenBlocks(false);
-			}
-			
-			if(mgm.getMpTimer() != null){
-				mgm.getMpTimer().pauseTimer();
-				mgm.getMpTimer().removeTimer();
-				mgm.setMpTimer(null);
-			}
-			mgm.setMpBets(null);
-		}
-		else if(mgm.isTeamGame() && mgm.getPlayers().size() >= 1 && 
+		if(mgm.isTeamGame() && mgm.getPlayers().size() >= 1 && 
 				teamsWithPlayers == 1 && mgm.hasStarted() && !forced){
 			Team winner = null;
 			for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){

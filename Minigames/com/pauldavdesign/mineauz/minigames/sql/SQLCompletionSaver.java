@@ -140,40 +140,28 @@ public class SQLCompletionSaver extends Thread{
 			if(completed){
 				ocompleted += completedNum;
 				
-				if(odeaths < deaths && odeaths != -1){
-					deaths = odeaths;
+				if(odeaths > deaths || odeaths == -1){
+					odeaths = deaths;
 				}
 				
-				if(oreverts < reverts && oreverts != -1){
-					reverts = oreverts;
+				if(oreverts > reverts || oreverts == -1){
+					oreverts = reverts;
 				}
 				
-				if(otime < time && otime != 0){
-					time = otime;
+				if(otime > time || otime == 0){
+					otime = time;
 				}
 			}
 			else{
 				ofailures += failureNum;
-				if(odeaths != -1)
-					deaths = odeaths;
-				else
-					deaths = -1;
-				if(oreverts != -1)
-					reverts = oreverts;
-				else
-					reverts = -1;
-				if(otime != 0)
-					time = otime;
-				else
-					time = 0;
 			}
 			
-			if(okills > kills){
-				kills = okills;
+			if(okills < kills){
+				okills = kills;
 			}
 			
-			if(oscore > score){
-				score = oscore;
+			if(oscore < score){
+				oscore = score;
 			}
 			
 			boolean hasAlreadyCompleted = false;
@@ -184,11 +172,11 @@ public class SQLCompletionSaver extends Thread{
 				Statement updateStats = sql.createStatement();
 				updateStats.executeUpdate("UPDATE " + table + " SET Completion='" + ocompleted + "', " +
 						"Player='" + name + "', " + 
-						"Kills=" + kills + ", " +
-						"Deaths=" + deaths + ", " +
-						"Score=" + score + ", " +
-						"Time=" + time + ", " +
-						"Reverts=" + reverts + ", " +
+						"Kills=" + okills + ", " +
+						"Deaths=" + odeaths + ", " +
+						"Score=" + oscore + ", " +
+						"Time=" + otime + ", " +
+						"Reverts=" + oreverts + ", " +
 						"TotalKills=" + otkills + ", " +
 						"TotalDeaths=" + otdeaths + ", " +
 						"TotalScore=" + otscore + ", " +
@@ -205,11 +193,11 @@ public class SQLCompletionSaver extends Thread{
 						"( '" + uuid + "', '" + 
 						name + "', " +
 						ocompleted + ", " + 
-						kills + ", " + 
-						deaths + ", " +
-						score + ", " +
-						time + ", " +
-						reverts + ", " +
+						okills + ", " + 
+						odeaths + ", " +
+						oscore + ", " +
+						otime + ", " +
+						oreverts + ", " +
 						otkills + ", " +
 						otdeaths + ", " +
 						otscore + ", " +
@@ -224,11 +212,11 @@ public class SQLCompletionSaver extends Thread{
 			if(mgm.getScoreboardData().hasPlayer(uuid)){
 				ScoreboardPlayer ply = mgm.getScoreboardData().getPlayer(uuid);
 				ply.setCompletions(ocompleted);
-				ply.setBestKills(kills);
-				ply.setLeastDeaths(deaths);
-				ply.setBestScore(score);
-				ply.setBestTime(time);
-				ply.setLeastReverts(reverts);
+				ply.setBestKills(okills);
+				ply.setLeastDeaths(odeaths);
+				ply.setBestScore(oscore);
+				ply.setBestTime(otime);
+				ply.setLeastReverts(oreverts);
 				ply.setTotalKills(otkills);
 				ply.setTotalDeaths(otdeaths);
 				ply.setTotalScore(otscore);
@@ -238,8 +226,8 @@ public class SQLCompletionSaver extends Thread{
 			}
 			else{
 				mgm.getScoreboardData().addPlayer(new 
-						ScoreboardPlayer(player.getPlayerName(), uuid, ocompleted, ofailures, kills, deaths, 
-								score, time, reverts, otkills, otdeaths, otscore, otreverts, ottime));
+						ScoreboardPlayer(player.getPlayerName(), uuid, ocompleted, ofailures, okills, odeaths, 
+								oscore, otime, oreverts, otkills, otdeaths, otscore, otreverts, ottime));
 			}
 			mgm.getScoreboardData().updateDisplays();
 			
