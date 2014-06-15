@@ -8,6 +8,7 @@ import com.pauldavdesign.mineauz.minigames.MinigameData;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
+import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public abstract class GameMechanicBase implements Listener{
@@ -25,4 +26,6 @@ public abstract class GameMechanicBase implements Listener{
 	public abstract String getMechanic();
 	
 	public abstract void balanceTeam(List<MinigamePlayer> players, Minigame minigame);
+	
+	public abstract boolean displaySettings(Menu menu);
 }
