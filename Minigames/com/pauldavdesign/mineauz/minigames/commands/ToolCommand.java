@@ -15,7 +15,6 @@ import com.pauldavdesign.mineauz.minigames.MinigameTool;
 import com.pauldavdesign.mineauz.minigames.MinigameToolMode;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
-import com.pauldavdesign.mineauz.minigames.RestoreBlock;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
@@ -46,7 +45,7 @@ public class ToolCommand implements ICommand {
 	@Override
 	public String[] getParameters() {
 		return new String[] {"minigame", "start", "quit", "end", "lobby", 
-				"degenarea", "restoreblock", "regenarea", "select", "deselect"};
+				"degenarea", "regenarea", "select", "deselect"};
 	}
 
 	@Override
@@ -58,7 +57,6 @@ public class ToolCommand implements ICommand {
 			"/minigame tool end",
 			"/minigame tool lobby",
 			"/minigame tool degenarea",
-			"/minigame tool restoreblock",
 			"/minigame tool regenarea",
 			"/minigame tool select",
 			"/minigame tool deselect"
@@ -170,19 +168,6 @@ public class ToolCommand implements ICommand {
 				else
 					sender.sendMessage(ChatColor.RED + "You must have a valid Minigame selected to use this tool!");
 			}
-			else if(args[0].equalsIgnoreCase("restoreblock")){
-				MinigameTool tool;
-				if(!MinigameUtils.hasMinigameTool(player))
-					tool = MinigameUtils.giveMinigameTool(player);
-				else
-					tool = MinigameUtils.getMinigameTool(player);
-				
-				if(tool.getMinigame() != null){
-					tool.setMode(MinigameToolMode.RESTORE_BLOCK);
-				}
-				else
-					sender.sendMessage(ChatColor.RED + "You must have a valid Minigame selected to use this tool!");
-			}
 			else if(args[0].equalsIgnoreCase("regenarea")){
 				MinigameTool tool;
 				if(!MinigameUtils.hasMinigameTool(player))
@@ -243,11 +228,6 @@ public class ToolCommand implements ICommand {
 					else if(tool.getMode() == MinigameToolMode.LOBBY && tool.getMinigame().getLobbyPosition() != null){
 						player.getPlayer().sendBlockChange(tool.getMinigame().getLobbyPosition(), Material.SKULL, (byte)1); //TODO: Use alternate Method!
 					}
-					else if(tool.getMode() == MinigameToolMode.RESTORE_BLOCK && !tool.getMinigame().getRestoreBlocks().isEmpty()){
-						for(RestoreBlock bl : tool.getMinigame().getRestoreBlocks().values()){
-							player.getPlayer().sendBlockChange(bl.getLocation(), Material.REDSTONE_BLOCK, (byte)0);
-						}
-					}
 					else
 						sender.sendMessage(ChatColor.RED + "Nothing to select.");
 				}
@@ -298,11 +278,6 @@ public class ToolCommand implements ICommand {
 					else if(tool.getMode() == MinigameToolMode.QUIT && tool.getMinigame().getLobbyPosition() != null){
 						Block bl = tool.getMinigame().getLobbyPosition().getBlock();
 						player.getPlayer().sendBlockChange(bl.getLocation(), bl.getType(), bl.getData()); //TODO: Use alternate Method!
-					}
-					else if(tool.getMode() == MinigameToolMode.RESTORE_BLOCK && !tool.getMinigame().getRestoreBlocks().isEmpty()){
-						for(RestoreBlock bl : tool.getMinigame().getRestoreBlocks().values()){
-							player.getPlayer().sendBlockChange(bl.getLocation(), bl.getLocation().getBlock().getType(), bl.getLocation().getBlock().getData());
-						}
 					}
 					else
 						sender.sendMessage(ChatColor.RED + "Nothing to deselect.");

@@ -57,7 +57,6 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetMaxTreasureCommand());
 		registerSetCommand(new SetFlagCommand());
 		registerSetCommand(new SetLocationCommand());
-		registerSetCommand(new SetRestoreBlockCommand());
 		registerSetCommand(new SetUsePermissionsCommand());
 		registerSetCommand(new SetMinScoreCommand());
 		registerSetCommand(new SetMaxScoreCommand());

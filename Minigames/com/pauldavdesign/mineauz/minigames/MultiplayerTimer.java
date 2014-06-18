@@ -88,12 +88,6 @@ public class MultiplayerTimer{
 						minigame.addFloorDegenerator();
 						minigame.getFloorDegenerator().startDegeneration();
 					}
-			
-					if(minigame.hasRestoreBlocks()){
-						for(RestoreBlock block : minigame.getRestoreBlocks().values()){
-							minigame.getBlockRecorder().addBlock(block.getLocation().getBlock(), null);
-						}
-					}
 					
 					if(minigame.getTimer() > 0){
 						minigame.setMinigameTimer(new MinigameTimer(minigame, minigame.getTimer()));

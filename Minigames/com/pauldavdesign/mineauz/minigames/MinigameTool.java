@@ -128,7 +128,6 @@ public class MinigameTool {
 		items.add(new MenuItemToolMode("Set Lobby Point", Material.WOOD_DOOR, MinigameToolMode.LOBBY));
 		items.add(new MenuItemToolMode("Set Regeneration Area", Material.GRASS, MinigameToolMode.REGEN_AREA));
 		items.add(new MenuItemToolMode("Set Degeneration Area", Material.SAND, MinigameToolMode.DEGEN_AREA));
-		items.add(new MenuItemToolMode("Set Restore Block", Material.TNT, MinigameToolMode.RESTORE_BLOCK));
 		items.add(new MenuItemToolMode("Reset", null, MinigameToolMode.RESET));
 		men.addItems(items);
 		men.addItem(new MenuItemToolTeam("Team", Material.PAPER, new Callback<String>() {

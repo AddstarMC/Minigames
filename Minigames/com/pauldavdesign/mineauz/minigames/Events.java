@@ -369,11 +369,6 @@ public class Events implements Listener{
 						mg.setLobbyPosition(ply.getPlayer().getLocation());
 						ply.sendMessage("Set lobby location for " + mg.getName(false), null);
 					}
-					else if(tool.getMode() == MinigameToolMode.RESTORE_BLOCK && ply.getPlayer().hasPermission("minigame.set.restoreblock")){
-						RestoreBlock resblock = new RestoreBlock(MinigameUtils.createLocationID(event.getClickedBlock().getLocation()), event.getMaterial(), event.getClickedBlock().getLocation());
-						mg.addRestoreBlock(resblock);
-						ply.sendMessage("Added restore block to " + mg.getName(false), null);
-					}
 					else if(event.getAction() == Action.RIGHT_CLICK_BLOCK && tool.getMode() != null){
 						ply.addSelectionPoint(event.getClickedBlock().getLocation());
 					}
@@ -458,13 +453,6 @@ public class Events implements Listener{
 							}
 							else
 								ply.sendMessage("Could not find a start location at that point.", "error");
-						}
-					}
-					else if(event.getAction() == Action.LEFT_CLICK_BLOCK && 
-							tool.getMode() == MinigameToolMode.RESTORE_BLOCK && ply.getPlayer().hasPermission("minigame.set.restoreblock")){
-						if(mg.getRestoreBlocks().containsKey(MinigameUtils.createLocationID(event.getClickedBlock().getLocation()))){
-							mg.removeRestoreBlock(MinigameUtils.createLocationID(event.getClickedBlock().getLocation()));
-							ply.sendMessage("Removed selected restore block from " + mg.getName(false), null);
 						}
 					}
 				}

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -23,7 +22,6 @@ import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.MultiplayerBets;
 import com.pauldavdesign.mineauz.minigames.MultiplayerTimer;
-import com.pauldavdesign.mineauz.minigames.RestoreBlock;
 import com.pauldavdesign.mineauz.minigames.TreasureHuntTimer;
 import com.pauldavdesign.mineauz.minigames.blockRecorder.RecorderData;
 import com.pauldavdesign.mineauz.minigames.config.BooleanFlag;
@@ -85,7 +83,6 @@ public class Minigame {
 	private LocationFlag quitPosition = new LocationFlag(null, "quitpos");
 	private LocationFlag lobbyPosisiton = new LocationFlag(null, "lobbypos");
 	
-	private Map<String, RestoreBlock> restoreBlocks = new HashMap<String, RestoreBlock>(); //TODO
 	private StringFlag location = new StringFlag(null, "location");
 	private IntegerFlag maxRadius = new IntegerFlag(1000, "maxradius");
 	private IntegerFlag maxHeight = new IntegerFlag(20, "maxheight");
@@ -314,29 +311,6 @@ public class Minigame {
 
 	public void setLocation(String location){
 		this.location.setFlag(location);
-	}
-	
-	public boolean hasRestoreBlocks(){
-		if(restoreBlocks.isEmpty()){
-			return false;
-		}
-		return true;
-	}
-	
-	public void addRestoreBlock(RestoreBlock block){
-		restoreBlocks.put(block.getName(), block);
-	}
-	
-	public boolean removeRestoreBlock(String name){
-		if(restoreBlocks.containsKey(name)){
-			restoreBlocks.remove(name);
-			return true;
-		}
-		return false;
-	}
-	
-	public Map<String, RestoreBlock> getRestoreBlocks(){
-		return restoreBlocks;
 	}
 	
 	public boolean hasFlags(){
@@ -1493,14 +1467,6 @@ public class Minigame {
 //			}
 //		} //TODO: Remove Me!
 		
-		if(!restoreBlocks.isEmpty()){
-			Set<String> blocks = restoreBlocks.keySet();
-			for(String block : blocks){
-				minigame.getConfig().set(name + ".resblocks." + block + ".type", restoreBlocks.get(block).getBlock().toString());
-				Minigames.plugin.mdata.minigameSetLocationsShort(name, restoreBlocks.get(block).getLocation(), "resblocks." + block + ".location", minigame.getConfig());
-			}
-		}
-		
 		if(getDefaultGamemode() != GameMode.ADVENTURE){
 			minigame.getConfig().set(name + ".gamemode", getDefaultGamemode().toString());
 		}
@@ -1585,14 +1551,6 @@ public class Minigame {
 //				getTeam(TeamColor.BLUE).addStartLocation(Minigames.plugin.mdata.minigameLocations(name, "startposblue." + String.valueOf(i), cfg));
 //			}
 //		}
-		if(minigame.getConfig().contains(name + ".resblocks") && minigame.getConfig().getString(name + ".resblocks") != "true" && minigame.getConfig().getString(name + ".resblocks") != "false"){
-			Set<String> blocks = minigame.getConfig().getConfigurationSection(name + ".resblocks").getKeys(false);
-			for(String block : blocks){
-				RestoreBlock res = new RestoreBlock(block, Material.getMaterial(minigame.getConfig().getString(name + ".resblocks." + block + ".type")), Minigames.plugin.mdata.minigameLocationsShort(name, ".resblocks." + block + ".location", minigame.getConfig()));
-				
-				addRestoreBlock(res);
-			}
-		}
 		
 		if(minigame.getConfig().contains(name + ".gamemode")){
 			setDefaultGamemode(GameMode.valueOf(minigame.getConfig().getString(name + ".gamemode")));

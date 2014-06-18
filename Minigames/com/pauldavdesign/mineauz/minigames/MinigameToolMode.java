@@ -7,7 +7,6 @@ public enum MinigameToolMode {
 	LOBBY("Lobby"),
 	REGEN_AREA("Regen Area"),
 	DEGEN_AREA("Degen Area"),
-	RESTORE_BLOCK("Restore Block"),
 	RESET("Reset");
 	
 	private String mode;
@@ -33,8 +32,6 @@ public enum MinigameToolMode {
 			return REGEN_AREA;
 		else if(name.equals(DEGEN_AREA.getMode()))
 			return DEGEN_AREA;
-		else if(name.equals(RESTORE_BLOCK.getMode()))
-			return RESTORE_BLOCK;
 		else if(name.equals(RESET.getMode()))
 			return RESET;
 		return null;

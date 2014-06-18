@@ -168,12 +168,6 @@ public class PlayerData {
 						}
 					}
 				}
-				else if(minigame.hasRestoreBlocks() && !minigame.getBlockRecorder().hasCreatedRegenBlocks()){
-					minigame.getBlockRecorder().setCreatedRegenBlocks(true);
-					for(RestoreBlock block : minigame.getRestoreBlocks().values()){
-						minigame.getBlockRecorder().addBlock(block.getLocation().getBlock(), null);
-					}
-				}
 				
 				//Standardize player
 				player.storePlayerData();
