@@ -31,11 +31,6 @@ import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardGroup;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardItem;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardRarity;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.Rewards;
-import com.pauldavdesign.mineauz.minigames.presets.BasePreset;
-import com.pauldavdesign.mineauz.minigames.presets.CTFPreset;
-import com.pauldavdesign.mineauz.minigames.presets.InfectionPreset;
-import com.pauldavdesign.mineauz.minigames.presets.LMSPreset;
-import com.pauldavdesign.mineauz.minigames.presets.SpleefPreset;
 
 public class MinigameData {
 	private Map<String, Minigame> minigames = new HashMap<String, Minigame>();
@@ -51,13 +46,7 @@ public class MinigameData {
 	
 	private List<Class<? extends MinigameModule>> modules = new ArrayList<Class<? extends MinigameModule>>();
 	
-	private Map<String, BasePreset> presets = new HashMap<String, BasePreset>();
-	
 	public MinigameData(){
-		addPreset(new SpleefPreset());
-		addPreset(new CTFPreset());
-		addPreset(new LMSPreset());
-		addPreset(new InfectionPreset());
 		
 		modules.add(LoadoutModule.class);
 		modules.add(LobbySettingsModule.class);
@@ -392,27 +381,6 @@ public class MinigameData {
 	
 	public boolean hasLoadout(String name){
 		return globalLoadouts.containsKey(name);
-	}
-	
-	public void addPreset(BasePreset preset){
-		presets.put(preset.getName().toLowerCase(), preset);
-	}
-	
-	public BasePreset getPreset(String presetName){
-		if(presets.containsKey(presetName)){
-			return presets.get(presetName);
-		}
-		return null;
-	}
-	
-	public boolean hasPreset(String presetName){
-		return presets.containsKey(presetName);
-	}
-	
-	public List<String> getAllPresets(){
-		List<String> list = new ArrayList<String>();
-		list.addAll(presets.keySet());
-		return list;
 	}
 	
 	public void sendMinigameMessage(Minigame minigame, String message, String type, MinigamePlayer exclude){

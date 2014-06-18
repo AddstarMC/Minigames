@@ -14,6 +14,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.config.Flag;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemNewLine;
@@ -34,6 +35,11 @@ public class RegionModule implements MinigameModule {
 	@Override
 	public String getName(){
 		return "Regions";
+	}
+
+	@Override
+	public Map<String, Flag<?>> getFlags() {
+		return null;
 	}
 	
 	@Override

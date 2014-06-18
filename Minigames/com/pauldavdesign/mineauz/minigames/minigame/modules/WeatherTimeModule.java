@@ -1,5 +1,8 @@
 package com.pauldavdesign.mineauz.minigames.minigame.modules;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.WeatherType;
@@ -8,6 +11,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.config.BooleanFlag;
+import com.pauldavdesign.mineauz.minigames.config.EnumFlag;
+import com.pauldavdesign.mineauz.minigames.config.Flag;
+import com.pauldavdesign.mineauz.minigames.config.LongFlag;
 import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemBoolean;
@@ -19,15 +26,25 @@ import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
 
 public class WeatherTimeModule implements MinigameModule {
 	
-	private long time = 0;
-	private boolean useCustomTime = false;
-	private boolean useCustomWeather = false;
-	private WeatherType weather = WeatherType.CLEAR;
+	private LongFlag time = new LongFlag(0L, "customTime.value");
+	private BooleanFlag useCustomTime = new BooleanFlag(false, "customTime.enabled");
+	private BooleanFlag useCustomWeather = new BooleanFlag(false, "customWeather.enabled");
+	private EnumFlag<WeatherType> weather = new EnumFlag<WeatherType>(WeatherType.CLEAR, "customWeather.type");
 	private int task = -1;
 
 	@Override
 	public String getName() {
 		return "WeatherTime";
+	}
+	
+	@Override
+	public Map<String, Flag<?>> getFlags(){
+		Map<String, Flag<?>> map = new HashMap<String, Flag<?>>();
+		map.put(time.getName(), time);
+		map.put(useCustomTime.getName(), useCustomTime);
+		map.put(useCustomWeather.getName(), useCustomWeather);
+		map.put(weather.getName(), weather);
+		return map;
 	}
 	
 	@Override
@@ -37,30 +54,10 @@ public class WeatherTimeModule implements MinigameModule {
 
 	@Override
 	public void save(Minigame minigame, FileConfiguration config) {
-		if(useCustomTime){
-			config.set(minigame + ".customTime.enabled", true);
-			if(time != 0)
-				config.set(minigame + ".customTime.value", time);
-		}
-		if(useCustomWeather){
-			config.set(minigame + ".customWeather.enabled", true);
-			if(weather != WeatherType.CLEAR)
-				config.set(minigame + ".customWeather.type", weather.toString());
-		}
 	}
 
 	@Override
 	public void load(Minigame minigame, FileConfiguration config) {
-		if(config.contains(minigame + ".customTime.enabled")){
-			useCustomTime = config.getBoolean(minigame + ".customTime.enabled");
-			if(config.contains(minigame + ".customTime.value"))
-				time = config.getLong(minigame + ".customTime.value");
-		}
-		if(config.contains(minigame + ".customWeather.enabled")){
-			useCustomWeather = config.getBoolean(minigame + ".customWeather.enabled");
-			if(config.contains(minigame + ".customWeather.type"))
-				weather = WeatherType.valueOf(config.getString(minigame + ".customWeather.type"));
-		}
 	}
 
 	@Override
@@ -70,43 +67,43 @@ public class WeatherTimeModule implements MinigameModule {
 
 			@Override
 			public void setValue(Boolean value) {
-				useCustomTime = value;
+				useCustomTime.setFlag(value);
 			}
 
 			@Override
 			public Boolean getValue() {
-				return useCustomTime;
+				return useCustomTime.getFlag();
 			}
 		}));
 		m.addItem(new MenuItemInteger("Time of Day", Material.WATCH, new Callback<Integer>() {
 			
 			@Override
 			public void setValue(Integer value) {
-				time = value;
+				time.setFlag(value.longValue());
 			}
 			
 			@Override
 			public Integer getValue() {
-				return (int)time;
+				return time.getFlag().intValue();
 			}
 		}, 0, 24000));
 		m.addItem(new MenuItemBoolean("Use Custom Weather", Material.WATER_BUCKET, new Callback<Boolean>() {
 
 			@Override
 			public void setValue(Boolean value) {
-				useCustomWeather = value;
+				useCustomWeather.setFlag(value);
 			}
 
 			@Override
 			public Boolean getValue() {
-				return useCustomWeather;
+				return useCustomWeather.getFlag();
 			}
 		}));
 		m.addItem(new MenuItemList("Weather Type", Material.WATER_BUCKET, new Callback<String>() {
 
 			@Override
 			public void setValue(String value) {
-				weather = WeatherType.valueOf(value.toUpperCase());
+				weather.setFlag(WeatherType.valueOf(value.toUpperCase()));
 			}
 
 			@Override
@@ -125,46 +122,46 @@ public class WeatherTimeModule implements MinigameModule {
 	}
 	
 	public long getTime(){
-		return time;
+		return time.getFlag();
 	}
 	
 	public void setTime(long time){
-		this.time = time;
+		this.time.setFlag(time);
 	}
 	
 	public boolean isUsingCustomTime(){
-		return useCustomTime;
+		return useCustomTime.getFlag();
 	}
 	
 	public void setUseCustomTime(boolean bool){
-		useCustomTime = bool;
+		useCustomTime.setFlag(bool);
 	}
 	
 	public void applyCustomTime(MinigamePlayer player){
 		if(isUsingCustomTime()){
-			player.getPlayer().setPlayerTime(time, false);
+			player.getPlayer().setPlayerTime(time.getFlag(), false);
 		}
 	}
 	
 	public boolean isUsingCustomWeather(){
-		return useCustomWeather;
+		return useCustomWeather.getFlag();
 	}
 	
 	public void setUsingCustomWeather(boolean bool){
-		useCustomWeather = bool;
+		useCustomWeather.setFlag(bool);
 	}
 	
 	public WeatherType getCustomWeather(){
-		return weather;
+		return weather.getFlag();
 	}
 	
 	public void setCustomWeather(WeatherType type){
-		weather = type;
+		weather.setFlag(type);
 	}
 	
 	public void applyCustomWeather(MinigamePlayer player){
 		if(isUsingCustomWeather())
-			player.getPlayer().setPlayerWeather(weather);
+			player.getPlayer().setPlayerWeather(weather.getFlag());
 	}
 	
 	public void startTimeLoop(Minigame mgm){
@@ -175,7 +172,7 @@ public class WeatherTimeModule implements MinigameModule {
 				@Override
 				public void run() {
 					for(MinigamePlayer player : fmgm.getPlayers()){
-						player.getPlayer().setPlayerTime(time, false);
+						player.getPlayer().setPlayerTime(time.getFlag(), false);
 					}
 				}
 			}, 20 * 5, 20 * 5);

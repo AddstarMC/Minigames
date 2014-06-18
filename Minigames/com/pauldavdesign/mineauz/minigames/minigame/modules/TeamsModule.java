@@ -11,6 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.config.Flag;
 import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
@@ -31,6 +32,11 @@ public class TeamsModule implements MinigameModule {
 	@Override
 	public String getName() {
 		return "Teams";
+	}
+	
+	@Override
+	public Map<String, Flag<?>> getFlags(){
+		return null;
 	}
 	
 	@Override

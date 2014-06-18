@@ -1,7 +1,12 @@
 package com.pauldavdesign.mineauz.minigames.minigame.modules;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.configuration.file.FileConfiguration;
 
+import com.pauldavdesign.mineauz.minigames.config.BooleanFlag;
+import com.pauldavdesign.mineauz.minigames.config.Flag;
 import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
@@ -9,16 +14,32 @@ import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
 
 public class LobbySettingsModule implements MinigameModule {
 	
-	private boolean canMovePlayerWait = true;
-	private boolean canMoveStartWait = true;
-	private boolean canInteractPlayerWait = true;
-	private boolean canInteractStartWait = true;
-	private boolean teleportOnPlayerWait = false;
-	private boolean teleportOnStart = true;
+	private BooleanFlag canMovePlayerWait = new BooleanFlag(true, "canMovePlayerWait");
+	private BooleanFlag canMoveStartWait = new BooleanFlag(true, "canMoveStartWait");
+	private BooleanFlag canInteractPlayerWait = new BooleanFlag(true, "canInteractPlayerWait");
+	private BooleanFlag canInteractStartWait = new BooleanFlag(true, "canInteractStartWait");
+	private BooleanFlag teleportOnPlayerWait = new BooleanFlag(false, "teleportOnPlayerWait");
+	private BooleanFlag teleportOnStart = new BooleanFlag(true, "teleportOnStart");
 
 	@Override
 	public String getName() {
 		return "LobbySettings";
+	}
+	
+	@Override
+	public Map<String, Flag<?>> getFlags(){
+		Map<String, Flag<?>> map = new HashMap<String, Flag<?>>();
+		addConfigFlag(canInteractPlayerWait, map);
+		addConfigFlag(canInteractStartWait, map);
+		addConfigFlag(canMovePlayerWait, map);
+		addConfigFlag(canMoveStartWait, map);
+		addConfigFlag(teleportOnPlayerWait, map);
+		addConfigFlag(teleportOnStart, map);
+		return map;
+	}
+	
+	private void addConfigFlag(Flag<?> flag, Map<String, Flag<?>> flags){
+		flags.put(flag.getName(), flag);
 	}
 	
 	@Override
@@ -28,34 +49,10 @@ public class LobbySettingsModule implements MinigameModule {
 
 	@Override
 	public void save(Minigame minigame, FileConfiguration config) {
-		if(!canInteractPlayerWait)
-			config.set(minigame + ".canInteractPlayerWait", canInteractPlayerWait);
-		if(!canInteractStartWait)
-			config.set(minigame + ".canInteractStartWait", canInteractStartWait);
-		if(!canMovePlayerWait)
-			config.set(minigame + ".canMovePlayerWait", canMovePlayerWait);
-		if(!canMoveStartWait)
-			config.set(minigame + ".canMoveStartWait", canMoveStartWait);
-		if(!teleportOnStart)
-			config.set(minigame + ".teleportOnStart", teleportOnStart);
-		if(teleportOnPlayerWait)
-			config.set(minigame + ".teleportOnPlayerWait", teleportOnPlayerWait);
 	}
 
 	@Override
 	public void load(Minigame minigame, FileConfiguration config) {
-		if(config.contains(minigame + ".canInteractPlayerWait"))
-			canInteractPlayerWait = config.getBoolean(minigame + ".canInteractPlayerWait");
-		if(config.contains(minigame + ".canInteractStartWait"))
-			canInteractStartWait = config.getBoolean(minigame + ".canInteractStartWait");
-		if(config.contains(minigame + ".canMovePlayerWait"))
-			canMovePlayerWait = config.getBoolean(minigame + ".canMovePlayerWait");
-		if(config.contains(minigame + ".canMoveStartWait"))
-			canMoveStartWait = config.getBoolean(minigame + ".canMoveStartWait");
-		if(config.contains(minigame + ".teleportOnStart"))
-			teleportOnStart = config.getBoolean(minigame + ".teleportOnStart");
-		if(config.contains(minigame + ".teleportOnPlayerWait"))
-			teleportOnPlayerWait = config.getBoolean(minigame + ".teleportOnPlayerWait");
 	}
 	
 	public static LobbySettingsModule getMinigameModule(Minigame minigame) {
@@ -63,127 +60,127 @@ public class LobbySettingsModule implements MinigameModule {
 	}
 	
 	public boolean canMovePlayerWait() {
-		return canMovePlayerWait;
+		return canMovePlayerWait.getFlag();
 	}
 
 	public void setCanMovePlayerWait(boolean canMovePlayerWait) {
-		this.canMovePlayerWait = canMovePlayerWait;
+		this.canMovePlayerWait.setFlag(canMovePlayerWait);
 	}
 	
 	public Callback<Boolean> getCanMovePlayerWaitCallback(){
 		return new Callback<Boolean>() {
 			@Override
 			public void setValue(Boolean value){
-				canMovePlayerWait = value;
+				canMovePlayerWait.setFlag(value);
 			}
 			@Override
 			public Boolean getValue(){
-				return canMovePlayerWait;
+				return canMovePlayerWait.getFlag();
 			}
 		};
 	}
 
 	public boolean canMoveStartWait() {
-		return canMoveStartWait;
+		return canMoveStartWait.getFlag();
 	}
 
 	public void setCanMoveStartWait(boolean canMoveStartWait) {
-		this.canMoveStartWait = canMoveStartWait;
+		this.canMoveStartWait.setFlag(canMoveStartWait);
 	}
 	
 	public Callback<Boolean> getCanMoveStartWaitCallback(){
 		return new Callback<Boolean>() {
 			@Override
 			public void setValue(Boolean value){
-				canMoveStartWait = value;
+				canMoveStartWait.setFlag(value);
 			}
 			@Override
 			public Boolean getValue(){
-				return canMoveStartWait;
+				return canMoveStartWait.getFlag();
 			}
 		};
 	}
 
 	public boolean canInteractPlayerWait() {
-		return canInteractPlayerWait;
+		return canInteractPlayerWait.getFlag();
 	}
 
 	public void setCanInteractPlayerWait(boolean canInteractPlayerWait) {
-		this.canInteractPlayerWait = canInteractPlayerWait;
+		this.canInteractPlayerWait.setFlag(canInteractPlayerWait);
 	}
 	
 	public Callback<Boolean> getCanInteractPlayerWaitCallback(){
 		return new Callback<Boolean>() {
 			@Override
 			public void setValue(Boolean value){
-				canInteractPlayerWait = value;
+				canInteractPlayerWait.setFlag(value);
 			}
 			@Override
 			public Boolean getValue(){
-				return canInteractPlayerWait;
+				return canInteractPlayerWait.getFlag();
 			}
 		};
 	}
 
 	public boolean canInteractStartWait() {
-		return canInteractStartWait;
+		return canInteractStartWait.getFlag();
 	}
 
 	public void setCanInteractStartWait(boolean canInteractStartWait) {
-		this.canInteractStartWait = canInteractStartWait;
+		this.canInteractStartWait.setFlag(canInteractStartWait);
 	}
 	
 	public Callback<Boolean> getCanInteractStartWaitCallback(){
 		return new Callback<Boolean>() {
 			@Override
 			public void setValue(Boolean value){
-				canInteractStartWait = value;
+				canInteractStartWait.setFlag(value);
 			}
 			@Override
 			public Boolean getValue(){
-				return canInteractStartWait;
+				return canInteractStartWait.getFlag();
 			}
 		};
 	}
 
 	public boolean isTeleportOnStart() {
-		return teleportOnStart;
+		return teleportOnStart.getFlag();
 	}
 
 	public void setTeleportOnStart(boolean teleportOnStart) {
-		this.teleportOnStart = teleportOnStart;
+		this.teleportOnStart.setFlag(teleportOnStart);
 	}
 	
 	public Callback<Boolean> getTeleportOnStartCallback(){
 		return new Callback<Boolean>() {
 			@Override
 			public void setValue(Boolean value){
-				teleportOnStart = value;
+				teleportOnStart.setFlag(value);
 			}
 			@Override
 			public Boolean getValue(){
-				return teleportOnStart;
+				return teleportOnStart.getFlag();
 			}
 		};
 	}
 
 	public boolean isTeleportOnPlayerWait() {
-		return teleportOnPlayerWait;
+		return teleportOnPlayerWait.getFlag();
 	}
 
 	public void setTeleportOnPlayerWait(boolean teleportOnPlayerWait) {
-		this.teleportOnPlayerWait = teleportOnPlayerWait;
+		this.teleportOnPlayerWait.setFlag(teleportOnPlayerWait);
 	}
 	
 	public Callback<Boolean> getTeleportOnPlayerWaitCallback(){
 		return new Callback<Boolean>() {
 			@Override
 			public void setValue(Boolean value){
-				teleportOnPlayerWait = value;
+				teleportOnPlayerWait.setFlag(value);
 			}
 			@Override
 			public Boolean getValue(){
-				return teleportOnPlayerWait;
+				return teleportOnPlayerWait.getFlag();
 			}
 		};
 	}

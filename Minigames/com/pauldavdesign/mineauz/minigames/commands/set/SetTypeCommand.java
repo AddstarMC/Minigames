@@ -67,10 +67,6 @@ public class SetTypeCommand implements ICommand{
 				minigame.setType(MinigameType.valueOf(args[0].toUpperCase()));
 				sender.sendMessage(ChatColor.GRAY + "Minigame type has been set to " + args[0]);
 			}
-			else if(plugin.mdata.hasPreset(args[0].toLowerCase())){
-				plugin.mdata.getPreset(args[0].toLowerCase()).execute(minigame);
-				sender.sendMessage(ChatColor.GRAY + "Applied the Minigame preset \"" + args[0] + "\" to " + minigame);
-			}
 			else{
 				sender.sendMessage(ChatColor.RED + "Error: Invalid minigame type!");
 			}

@@ -11,7 +11,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -28,9 +27,13 @@ import com.pauldavdesign.mineauz.minigames.RestoreBlock;
 import com.pauldavdesign.mineauz.minigames.TreasureHuntTimer;
 import com.pauldavdesign.mineauz.minigames.blockRecorder.RecorderData;
 import com.pauldavdesign.mineauz.minigames.config.BooleanFlag;
+import com.pauldavdesign.mineauz.minigames.config.EnumFlag;
 import com.pauldavdesign.mineauz.minigames.config.Flag;
 import com.pauldavdesign.mineauz.minigames.config.IntegerFlag;
+import com.pauldavdesign.mineauz.minigames.config.ListFlag;
 import com.pauldavdesign.mineauz.minigames.config.LocationFlag;
+import com.pauldavdesign.mineauz.minigames.config.LocationListFlag;
+import com.pauldavdesign.mineauz.minigames.config.RewardsFlag;
 import com.pauldavdesign.mineauz.minigames.config.SimpleLocationFlag;
 import com.pauldavdesign.mineauz.minigames.config.StringFlag;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
@@ -53,24 +56,22 @@ import com.pauldavdesign.mineauz.minigames.menu.MenuItemTime;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.LoadoutModule;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
-import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardGroup;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardItem;
-import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardRarity;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.Rewards;
 
 public class Minigame {
 	private Map<String, Flag<?>> configFlags = new HashMap<String, Flag<?>>();
 	
-	private String name = "GenericName";
+	private final String name;
 	private StringFlag displayName = new StringFlag(null, "displayName");
 	private StringFlag objective = new StringFlag(null, "objective");
 	private StringFlag gametypeName = new StringFlag(null, "gametypeName");
-	private MinigameType type = null; //TODO
+	private EnumFlag<MinigameType> type = new EnumFlag<MinigameType>(MinigameType.SINGLEPLAYER, "type");
 	private BooleanFlag enabled = new BooleanFlag(false, "enabled");
 	private IntegerFlag minPlayers = new IntegerFlag(2, "minplayers");
 	private IntegerFlag maxPlayers = new IntegerFlag(4, "maxplayers");
 	private BooleanFlag spMaxPlayers = new BooleanFlag(false, "spMaxPlayers");
-	private List<String> flags = new ArrayList<String>(); //TODO
+	private ListFlag flags = new ListFlag(new ArrayList<String>(), "flags");
 	
 	private SimpleLocationFlag floorDegen1 = new SimpleLocationFlag(null, "sfloorpos.1");
 	private SimpleLocationFlag floorDegen2 = new SimpleLocationFlag(null, "sfloorpos.2");
@@ -79,7 +80,7 @@ public class Minigame {
 	private FloorDegenerator sfloordegen;
 	private IntegerFlag floorDegenTime = new IntegerFlag(Minigames.plugin.getConfig().getInt("multiplayer.floordegenerator.time"), "floordegentime");
 	
-	private List<Location> startLocations = new ArrayList<Location>(); //TODO
+	private LocationListFlag startLocations = new LocationListFlag(new ArrayList<Location>(), "startpos");
 	private LocationFlag endPosition = new LocationFlag(null, "endpos");
 	private LocationFlag quitPosition = new LocationFlag(null, "quitpos");
 	private LocationFlag lobbyPosisiton = new LocationFlag(null, "lobbypos");
@@ -90,21 +91,21 @@ public class Minigame {
 	private IntegerFlag maxHeight = new IntegerFlag(20, "maxheight");
 	private IntegerFlag minTreasure = new IntegerFlag(0, "mintreasure");
 	private IntegerFlag maxTreasure = new IntegerFlag(8, "maxtreasure");
-	private Rewards rewardItem = new Rewards(); //TODO
-	private Rewards secondaryRewardItem = new Rewards(); //TODO
+	private Rewards rewardItem = new Rewards();
+	private RewardsFlag rewardItemFlag = new RewardsFlag(rewardItem, "reward");
+	private Rewards secondaryRewardItem = new Rewards();
+	private RewardsFlag secondaryRewardItemFlag = new RewardsFlag(secondaryRewardItem, "reward2");
 	private BooleanFlag usePermissions = new BooleanFlag(false, "usepermissions");
 	private IntegerFlag timer = new IntegerFlag(0, "timer");
 	private BooleanFlag useXPBarTimer = new BooleanFlag(true, "useXPBarTimer");
 	private IntegerFlag startWaitTime = new IntegerFlag(0, "startWaitTime");
-	private Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<MinigamePlayer, CTFFlag>();
-	private Map<String, CTFFlag> droppedFlag = new HashMap<String, CTFFlag>();
 	
 	private BooleanFlag itemDrops = new BooleanFlag(false, "itemdrops");
 	private BooleanFlag deathDrops = new BooleanFlag(false, "deathdrops");
 	private BooleanFlag itemPickup = new BooleanFlag(true, "itempickup");
 	private BooleanFlag blockBreak = new BooleanFlag(false, "blockbreak");
 	private BooleanFlag blockPlace = new BooleanFlag(false, "blockplace");
-	private GameMode defaultGamemode = GameMode.ADVENTURE; //TODO
+	private EnumFlag<GameMode> defaultGamemode = new EnumFlag<GameMode>(GameMode.ADVENTURE, "gamemode");
 	private BooleanFlag blocksdrop = new BooleanFlag(true, "blocksdrop");
 	private BooleanFlag allowEnderpearls = new BooleanFlag(false, "allowEnderpearls");
 	private BooleanFlag allowMPCheckpoints = new BooleanFlag(false, "allowMPCheckpoints");
@@ -155,21 +156,25 @@ public class Minigame {
 	private MultiplayerTimer mpTimer = null;
 	private MinigameTimer miniTimer = null;
 	private MultiplayerBets mpBets = null;
+	//CTF
+	private Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<MinigamePlayer, CTFFlag>();
+	private Map<String, CTFFlag> droppedFlag = new HashMap<String, CTFFlag>();
 	//TreasureHunt
 	private TreasureHuntTimer thTimer = null;
 
 	public Minigame(String name, MinigameType type, Location start){
-		setup(name, type, start);
+		this.name = name;
+		setup(type, start);
 	}
 	
 	public Minigame(String name){
-		setup(name, MinigameType.SINGLEPLAYER, null);
+		this.name = name;
+		setup(MinigameType.SINGLEPLAYER, null);
 	}
 	
-	private void setup(String name, MinigameType type, Location start){
-		this.name = name;
-		this.type = type;
-		startLocations.add(start);
+	private void setup(MinigameType type, Location start){
+		this.type.setFlag(type);
+		startLocations.getFlag().add(start);
 		
 		sbManager.registerNewObjective(this.name, "dummy");
 		sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -182,6 +187,11 @@ public class Minigame {
 			}
 		}
 		
+		for(MinigameModule mod : getModules()){
+			if(mod.getFlags() != null)
+				configFlags.putAll(mod.getFlags());
+		}
+		
 		addConfigFlag(allowEnderpearls);
 		addConfigFlag(allowFlight);
 		addConfigFlag(allowMPCheckpoints);
@@ -190,17 +200,21 @@ public class Minigame {
 		addConfigFlag(blocksdrop);
 		addConfigFlag(canSpectateFly);
 		addConfigFlag(deathDrops);
+		addConfigFlag(defaultGamemode);
 		addConfigFlag(degenRandomChance);
 		addConfigFlag(degenType);
 		addConfigFlag(displayName);
 		addConfigFlag(enableFlight);
 		addConfigFlag(enabled);
+		addConfigFlag(endPosition);
+		addConfigFlag(flags);
 		addConfigFlag(floorDegenTime);
 		addConfigFlag(gametypeName);
 		addConfigFlag(itemDrops);
 		addConfigFlag(itemPickup);
 		addConfigFlag(lateJoin);
 		addConfigFlag(lives);
+		addConfigFlag(lobbyPosisiton);
 		addConfigFlag(location);
 		addConfigFlag(maxChestRandom);
 		addConfigFlag(maxHeight);
@@ -215,13 +229,18 @@ public class Minigame {
 		addConfigFlag(objective);
 		addConfigFlag(paintBallDamage);
 		addConfigFlag(paintBallMode);
+		addConfigFlag(quitPosition);
 		addConfigFlag(randomizeChests);
 		addConfigFlag(regenDelay);
+		addConfigFlag(rewardItemFlag);
 		addConfigFlag(saveCheckpoints);
 		addConfigFlag(scoreType);
+		addConfigFlag(secondaryRewardItemFlag);
 		addConfigFlag(spMaxPlayers);
+		addConfigFlag(startLocations);
 		addConfigFlag(startWaitTime);
 		addConfigFlag(timer);
+		addConfigFlag(this.type);
 		addConfigFlag(unlimitedAmmo);
 		addConfigFlag(usePermissions);
 		addConfigFlag(useXPBarTimer);
@@ -229,6 +248,10 @@ public class Minigame {
 	
 	private void addConfigFlag(Flag<?> flag){
 		configFlags.put(flag.getName(), flag);
+	}
+	
+	public Flag<?> getConfigFlag(String name){
+		return configFlags.get(name);
 	}
 	
 	public boolean addModule(MinigameModule module){
@@ -317,53 +340,53 @@ public class Minigame {
 	}
 	
 	public boolean hasFlags(){
-		return !flags.isEmpty();
+		return !flags.getFlag().isEmpty();
 	}
 	
 	public void addFlag(String flag){
-		flags.add(flag);
+		flags.getFlag().add(flag);
 	}
 	
 	public void setFlags(List<String> flags){
-		this.flags = flags;
+		this.flags.setFlag(flags);
 	}
 	
 	public List<String> getFlags(){
-		return flags;
+		return flags.getFlag();
 	}
 	
 	public boolean removeFlag(String flag){
-		if(flags.contains(flag)){
-			flags.remove(flag);
+		if(flags.getFlag().contains(flag)){
+			flags.getFlag().remove(flag);
 			return true;
 		}
 		return false;
 	}
 	
 	public void setStartLocation(Location loc){
-		startLocations.set(0, loc);
+		startLocations.getFlag().set(0, loc);
 	}
 	
 	public void addStartLocation(Location loc){
-		startLocations.add(loc);
+		startLocations.getFlag().add(loc);
 	}
 	
 	public void addStartLocation(Location loc, int number){
-		if(startLocations.size() >= number){
-			startLocations.set(number - 1, loc);
+		if(startLocations.getFlag().size() >= number){
+			startLocations.getFlag().set(number - 1, loc);
 		}
 		else{
-			startLocations.add(loc);
+			startLocations.getFlag().add(loc);
 		}
 	}
 	
 	public List<Location> getStartLocations(){
-		return startLocations;
+		return startLocations.getFlag();
 	}
 	
 	public boolean removeStartLocation(int locNumber){
-		if(startLocations.size() < locNumber){
-			startLocations.remove(locNumber);
+		if(startLocations.getFlag().size() < locNumber){
+			startLocations.getFlag().remove(locNumber);
 			return true;
 		}
 		return false;
@@ -468,7 +491,7 @@ public class Minigame {
 	}
 
 	public MinigameType getType(){
-		return type;
+		return type.getFlag();
 	}
 	
 	private Callback<String> getTypeCallback(){
@@ -476,18 +499,18 @@ public class Minigame {
 
 			@Override
 			public void setValue(String value) {
-				type = MinigameType.valueOf(value.toUpperCase().replace(" ", "_"));
+				type.setFlag(MinigameType.valueOf(value.toUpperCase().replace(" ", "_")));
 			}
 
 			@Override
 			public String getValue() {
-				return MinigameUtils.capitalize(type.toString().replace("_", " "));
+				return MinigameUtils.capitalize(type.getFlag().toString().replace("_", " "));
 			}
 		};
 	}
 	
 	public void setType(MinigameType type){
-		this.type = type;
+		this.type.setFlag(type);
 	}
 	
 	public MultiplayerTimer getMpTimer() {
@@ -509,7 +532,7 @@ public class Minigame {
 		if(mpTimer != null && mpTimer.getStartWaitTimeLeft() == 0){
 			return true;
 		}
-		else if(type == MinigameType.SINGLEPLAYER && hasPlayers())
+		else if(type.getFlag() == MinigameType.SINGLEPLAYER && hasPlayers())
 			return true;
 		return false;
 	}
@@ -908,11 +931,11 @@ public class Minigame {
 	}
 	
 	public GameMode getDefaultGamemode() {
-		return defaultGamemode;
+		return defaultGamemode.getFlag();
 	}
 
 	public void setDefaultGamemode(GameMode defaultGamemode) {
-		this.defaultGamemode = defaultGamemode;
+		this.defaultGamemode.setFlag(defaultGamemode);
 	}
 
 	public boolean canBlocksdrop() {
@@ -1451,11 +1474,6 @@ public class Minigame {
 					!configFlags.get(configOpt).getDefaultFlag().equals(configFlags.get(configOpt).getFlag()))
 				configFlags.get(configOpt).saveValue(name, cfg);
 		}
-		if(!getStartLocations().isEmpty()){
-			for(int i = 0; i < getStartLocations().size(); i++){
-				Minigames.plugin.mdata.minigameSetLocations(name, getStartLocations().get(i), "startpos." + String.valueOf(i), minigame.getConfig());
-			}
-		}
 //		for(Team team : teams.values()){
 //			cfg.set(name + ".teams." + team.getColor().toString() + ".displayName", team.getDisplayName());
 //			if(!team.getStartLocations().isEmpty()){
@@ -1474,63 +1492,6 @@ public class Minigame {
 //				Minigames.plugin.mdata.minigameSetLocations(name, getStartLocationsRed().get(i), "startposred." + String.valueOf(i), minigame.getConfig());
 //			}
 //		} //TODO: Remove Me!
-		if(!getRewardItems().getRewards().isEmpty() || !getRewardItems().getGroups().isEmpty()){
-			int count = 0;
-			for(RewardItem item : getRewardItems().getRewards()){
-				if(item.getItem() != null){
-					minigame.getConfig().set(name + ".reward." + count + ".item", item.getItem());
-					minigame.getConfig().set(name + ".reward." + count + ".rarity", item.getRarity().toString());
-				}
-				else if(item.getMoney() != 0){
-					minigame.getConfig().set(name + ".reward." + count + ".money", item.getMoney());
-					minigame.getConfig().set(name + ".reward." + count + ".rarity", item.getRarity().toString());
-				}
-				count++;
-			}
-			for(RewardGroup group : getRewardItems().getGroups()){
-				count = 0;
-				for(RewardItem item : group.getItems()){
-					if(item.getItem() != null){
-						minigame.getConfig().set(name + ".reward." + group.getName() + "." + count + ".item", item.getItem());
-					}
-					else if(item.getMoney() != 0){
-						minigame.getConfig().set(name + ".reward." + group.getName() + "." + count + ".money", item.getMoney());
-					}
-					count++;
-				}
-				minigame.getConfig().set(name + ".reward." + group.getName() + ".rarity", group.getRarity().toString());
-			}
-		}
-		if(!getSecondaryRewardItems().getRewards().isEmpty() || !getSecondaryRewardItems().getGroups().isEmpty()){
-			int count = 0;
-			for(RewardItem item : getSecondaryRewardItems().getRewards()){
-				if(item.getItem() != null){
-					minigame.getConfig().set(name + ".reward2." + count + ".item", item.getItem());
-					minigame.getConfig().set(name + ".reward2." + count + ".rarity", item.getRarity().toString());
-				}
-				else if(item.getMoney() != 0){
-					minigame.getConfig().set(name + ".reward2." + count + ".money", item.getMoney());
-					minigame.getConfig().set(name + ".reward2." + count + ".rarity", item.getRarity().toString());
-				}
-				count++;
-			}
-			for(RewardGroup group : getSecondaryRewardItems().getGroups()){
-				count = 0;
-				for(RewardItem item : group.getItems()){
-					if(item.getItem() != null){
-						minigame.getConfig().set(name + ".reward2." + group.getName() + "." + count + ".item", item.getItem());
-					}
-					else if(item.getMoney() != 0){
-						minigame.getConfig().set(name + ".reward2." + group.getName() + "." + count + ".money", item.getMoney());
-					}
-					count++;
-				}
-				minigame.getConfig().set(name + ".reward2." + group.getName() + ".rarity", group.getRarity().toString());
-			}
-		}
-		if(!getFlags().isEmpty()){
-			minigame.getConfig().set(name + ".flags", getFlags());
-		}
 		
 		if(!restoreBlocks.isEmpty()){
 			Set<String> blocks = restoreBlocks.keySet();
@@ -1593,13 +1554,6 @@ public class Minigame {
 			if(cfg.contains(name + "." + flag))
 				configFlags.get(flag).loadValue(name, cfg);
 		}
-		if(minigame.getConfig().contains(name + ".startpos")){
-			Set<String> locs = minigame.getConfig().getConfigurationSection(name + ".startpos").getKeys(false);
-			
-			for(int i = 0; i < locs.size(); i++){
-				addStartLocation(Minigames.plugin.mdata.minigameLocations(name, "startpos." + String.valueOf(i), minigame.getConfig()), i + 1);
-			}
-		}
 //		
 //		if(cfg.contains(name + ".teams")){
 //			Set<String> teams = cfg.getConfigurationSection(name + ".teams").getKeys(false);
@@ -1631,75 +1585,6 @@ public class Minigame {
 //				getTeam(TeamColor.BLUE).addStartLocation(Minigames.plugin.mdata.minigameLocations(name, "startposblue." + String.valueOf(i), cfg));
 //			}
 //		}
-		if(minigame.getConfig().contains(name + ".reward")){
-			Set<String> keys = minigame.getConfig().getConfigurationSection(name + ".reward").getKeys(false);
-			for(String key : keys){
-				if(minigame.getConfig().contains(name + ".reward." + key + ".item") || minigame.getConfig().contains(name + ".reward." + key + ".money")){
-					ItemStack item = minigame.getConfig().getItemStack(name + ".reward." + key + ".item");
-					double money = minigame.getConfig().getDouble(name + ".reward." + key + ".money");
-					RewardRarity rarity = RewardRarity.valueOf(minigame.getConfig().getString(name + ".reward." + key + ".rarity"));
-					if(item != null)
-						getRewardItems().addItem(item, rarity);
-					else
-						getRewardItems().addMoney(money, rarity);
-				}
-				else{
-					Set<String> keys2 = minigame.getConfig().getConfigurationSection(name + ".reward." + key).getKeys(false);
-					RewardGroup group = getRewardItems().addGroup(key, RewardRarity.valueOf(minigame.getConfig().getString(name + ".reward." + key + ".rarity")));
-					for(String key2 : keys2){
-						if(!key2.equals("rarity")){
-							ItemStack item = minigame.getConfig().getItemStack(name + ".reward." + key + "." + key2 + ".item");
-							double money = minigame.getConfig().getDouble(name + ".reward." + key + "." + key2 + ".money");
-							RewardRarity rarity = RewardRarity.NORMAL;
-							if(item != null){
-								RewardItem it = new RewardItem(item, rarity);
-								group.addItem(it);
-							}
-							else{
-								RewardItem it = new RewardItem(money, rarity);
-								group.addItem(it);
-							}
-						}
-					}
-				}
-			}
-		}
-		if(minigame.getConfig().contains(name + ".reward2")){
-			Set<String> keys = minigame.getConfig().getConfigurationSection(name + ".reward2").getKeys(false);
-			for(String key : keys){
-				if(minigame.getConfig().contains(name + ".reward2." + key + ".item") || minigame.getConfig().contains(name + ".reward2." + key + ".money")){
-					ItemStack item = minigame.getConfig().getItemStack(name + ".reward2." + key + ".item");
-					double money = minigame.getConfig().getDouble(name + ".reward2." + key + ".money");
-					RewardRarity rarity = RewardRarity.valueOf(minigame.getConfig().getString(name + ".reward2." + key + ".rarity"));
-					if(item != null)
-						getSecondaryRewardItems().addItem(item, rarity);
-					else
-						getSecondaryRewardItems().addMoney(money, rarity);
-				}
-				else{
-					Set<String> keys2 = minigame.getConfig().getConfigurationSection(name + ".reward2." + key).getKeys(false);
-					RewardGroup group = getSecondaryRewardItems().addGroup(key, RewardRarity.valueOf(minigame.getConfig().getString(name + ".reward2." + key + ".rarity")));
-					for(String key2 : keys2){
-						if(!key2.equals("rarity")){
-							ItemStack item = minigame.getConfig().getItemStack(name + ".reward2." + key + "." + key2 + ".item");
-							double money = minigame.getConfig().getDouble(name + ".reward2." + key + "." + key2 + ".money");
-							RewardRarity rarity = RewardRarity.NORMAL;
-							if(item != null){
-								RewardItem it = new RewardItem(item, rarity);
-								group.addItem(it);
-							}
-							else{
-								RewardItem it = new RewardItem(money, rarity);
-								group.addItem(it);
-							}
-						}
-					}
-				}
-			}
-		}
-		if(!minigame.getConfig().getStringList(name + ".flags").isEmpty()){
-			setFlags(minigame.getConfig().getStringList(name + ".flags"));
-		}
 		if(minigame.getConfig().contains(name + ".resblocks") && minigame.getConfig().getString(name + ".resblocks") != "true" && minigame.getConfig().getString(name + ".resblocks") != "false"){
 			Set<String> blocks = minigame.getConfig().getConfigurationSection(name + ".resblocks").getKeys(false);
 			for(String block : blocks){

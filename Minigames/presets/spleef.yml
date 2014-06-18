@@ -1,0 +1,6 @@
+spleef:
+  blocksdrop: false
+  blockbreak: true
+  blockplace: false
+  type: MULTIPLAYER
+  lives: 1

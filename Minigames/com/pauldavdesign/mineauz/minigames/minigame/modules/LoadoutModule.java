@@ -13,6 +13,7 @@ import org.bukkit.potion.PotionEffectType;
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.PlayerLoadout;
+import com.pauldavdesign.mineauz.minigames.config.Flag;
 import com.pauldavdesign.mineauz.minigames.menu.InteractionInterface;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemCustom;
@@ -27,6 +28,11 @@ public class LoadoutModule implements MinigameModule {
 	@Override
 	public String getName() {
 		return "Loadouts";
+	}
+	
+	@Override
+	public Map<String, Flag<?>> getFlags(){
+		return null;
 	}
 	
 	@Override

@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,6 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 //import org.mcstats.Metrics;
+
 
 
 
@@ -81,7 +83,15 @@ public class Minigames extends JavaPlugin{
 			}
 		}
 		
-		//TODO: saveResource()
+		String prespath = getDataFolder() + "/presets/";
+		String[] presets = {"spleef", "lms"};
+		File pres;
+		for(String preset : presets){
+			pres = new File(prespath + preset + ".yml");
+			if(!pres.exists()){
+				saveResource("presets/" + preset + ".yml", false);
+			}
+		}
 		
 		mdata = new MinigameData();
 		pdata = new PlayerData();

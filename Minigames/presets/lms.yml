@@ -1,0 +1,4 @@
+lms:
+  lives: 1
+  type: MULTIPLAYER
+  scoretype: custom
