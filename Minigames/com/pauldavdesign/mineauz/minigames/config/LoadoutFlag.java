@@ -22,53 +22,53 @@ public class LoadoutFlag extends Flag<PlayerLoadout>{
 	@Override
 	public void saveValue(String path, FileConfiguration config) {
 		for(Integer slot : getFlag().getItems()){
-			config.set(path + "." + getFlag().getName() + ".items." + slot, getFlag().getItem(slot));
+			config.set(path + "." + getName() + ".items." + slot, getFlag().getItem(slot));
 		}
 		
 		for(PotionEffect eff : getFlag().getAllPotionEffects()){
-			config.set(path + "." + getFlag().getName() + ".potions." + eff.getType().getName() + ".amp", eff.getAmplifier());
-			config.set(path + "." + getFlag().getName() + ".potions." + eff.getType().getName() + ".dur", eff.getDuration());
+			config.set(path + "." + getName() + ".potions." + eff.getType().getName() + ".amp", eff.getAmplifier());
+			config.set(path + "." + getName() + ".potions." + eff.getType().getName() + ".dur", eff.getDuration());
 		}
 		
 		if(getFlag().getUsePermissions()){
-			config.set(path + "." + getFlag().getName() + ".usepermissions", true);
+			config.set(path + "." + getName() + ".usepermissions", true);
 		}
 		
 		if(!getFlag().hasFallDamage())
-			config.set(path + "." + getFlag().getName() + ".falldamage", getFlag().hasFallDamage());
+			config.set(path + "." + getName() + ".falldamage", getFlag().hasFallDamage());
 		
 		if(getFlag().hasHunger())
-			config.set(path + "." + getFlag().getName() + ".hunger", getFlag().hasHunger());
+			config.set(path + "." + getName() + ".hunger", getFlag().hasHunger());
 	}
 
 	@Override
 	public void loadValue(String path, FileConfiguration config) {
-		Set<String> items = config.getConfigurationSection(path + getFlag().getName() + ".items").getKeys(false);
+		Set<String> items = config.getConfigurationSection(path + "." + getName() + ".items").getKeys(false);
 		for(String key : items){
 			if(key.matches("[0-9]+"))
-				getFlag().addItem(config.getItemStack(path + getFlag().getName() + ".items." + key), Integer.parseInt(key));
+				getFlag().addItem(config.getItemStack(path + "." + getName() + ".items." + key), Integer.parseInt(key));
 		}
-		if(config.contains(path + getFlag().getName() + ".potions")){
-			Set<String> pots = config.getConfigurationSection(path + getFlag().getName() + ".potions").getKeys(false);
+		if(config.contains(path + "." + getName() + ".potions")){
+			Set<String> pots = config.getConfigurationSection(path + "." + getName() + ".potions").getKeys(false);
 			for(String eff : pots){
 				if(PotionEffectType.getByName(eff) != null){
 					PotionEffect effect = new PotionEffect(PotionEffectType.getByName(eff),
-							config.getInt(path + getFlag().getName() + ".potions." + eff + ".dur"),
-							config.getInt(path + getFlag().getName() + ".potions." + eff + ".amp"));
+							config.getInt(path + "." + getName() + ".potions." + eff + ".dur"),
+							config.getInt(path + "." + getName() + ".potions." + eff + ".amp"));
 					getFlag().addPotionEffect(effect);
 				}
 			}
 		}
 		
-		if(config.contains(path + getFlag().getName() + ".usepermissions")){
-			getFlag().setUsePermissions(config.getBoolean(path + getFlag().getName() + ".usepermissions"));
+		if(config.contains(path + "." + getName() + ".usepermissions")){
+			getFlag().setUsePermissions(config.getBoolean(path + "." + getName() + ".usepermissions"));
 		}
 		
-		if(config.contains(path + getFlag().getName() + ".falldamage"))
-			getFlag().setHasFallDamage(config.getBoolean(path + getFlag().getName() + ".falldamage"));
+		if(config.contains(path + "." + getName() + ".falldamage"))
+			getFlag().setHasFallDamage(config.getBoolean(path + "." + getName() + ".falldamage"));
 		
-		if(config.contains(path + getFlag().getName() + ".hunger"))
-			getFlag().setHasHunger(config.getBoolean(path + getFlag().getName() + ".hunger"));
+		if(config.contains(path + "." + getName() + ".hunger"))
+			getFlag().setHasHunger(config.getBoolean(path + "." + getName() + ".hunger"));
 	}
 
 	@Override
