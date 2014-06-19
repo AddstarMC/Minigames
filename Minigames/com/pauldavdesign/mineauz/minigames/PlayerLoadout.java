@@ -20,6 +20,7 @@ public class PlayerLoadout {
 	private boolean fallDamage = true;
 	private boolean hunger = false;
 	private int level = -1;
+	private boolean deleteable = true;
 	
 	public PlayerLoadout(String name){
 		loadoutName = name;
@@ -207,5 +208,13 @@ public class PlayerLoadout {
 				return level;
 			}
 		};
+	}
+	
+	public boolean isDeleteable(){
+		return deleteable;
+	}
+	
+	public void setDeleteable(boolean value){
+		deleteable = value;
 	}
 }

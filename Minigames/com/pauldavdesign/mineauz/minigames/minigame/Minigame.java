@@ -1307,9 +1307,9 @@ public class Minigame {
 		thDes.add("Treasure hunt related");
 		thDes.add("settings.");
 		itemsMain.add(new MenuItemPage("Treasure Hunt Settings", thDes, Material.CHEST, treasureHunt));
-		MenuItemDisplayLoadout defLoad = new MenuItemDisplayLoadout("Default Loadout", Material.DIAMOND_SWORD, LoadoutModule.getMinigameModule(this).getDefaultPlayerLoadout(), this);
-		defLoad.setAllowDelete(false);
-		itemsMain.add(defLoad);
+//		MenuItemDisplayLoadout defLoad = new MenuItemDisplayLoadout("Default Loadout", Material.DIAMOND_SWORD, LoadoutModule.getMinigameModule(this).getDefaultPlayerLoadout(), this);
+//		defLoad.setAllowDelete(false);
+//		itemsMain.add(defLoad);
 		itemsMain.add(new MenuItemPage("Additional Loadouts", Material.CHEST, loadouts));
 		itemsMain.add(canSpectateFly.getMenuItem("Allow Spectator Fly", Material.FEATHER));
 		List<String> rndChstDes = new ArrayList<String>();

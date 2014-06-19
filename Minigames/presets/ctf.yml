@@ -1,0 +1,39 @@
+ctf:
+  teams:
+    BLUE:
+      displayName: Blue Team
+    RED:
+      displayName: Red Team
+  scoretype: ctf
+  minplayers: 4
+  maxplayers: 16
+  type: MULTIPLAYER
+  blockbreak: false
+  blockplace: false
+  minscore: 5
+  maxscore: 5
+  gamemode: ADVENTURE
+  loadouts:
+    default:
+      '0':
+        ==: org.bukkit.inventory.ItemStack
+        type: STONE_SWORD
+      '1':
+        ==: org.bukkit.inventory.ItemStack
+        type: BOW
+      '8':
+        ==: org.bukkit.inventory.ItemStack
+        type: ARROW
+        amount: 16
+      '103':
+        ==: org.bukkit.inventory.ItemStack
+        type: LEATHER_HELMET
+      '102':
+        ==: org.bukkit.inventory.ItemStack
+        type: LEATHER_CHESTPLATE
+      '101':
+        ==: org.bukkit.inventory.ItemStack
+        type: LEATHER_LEGGINGS
+      '100':
+        ==: org.bukkit.inventory.ItemStack
+        type: LEATHER_BOOTS

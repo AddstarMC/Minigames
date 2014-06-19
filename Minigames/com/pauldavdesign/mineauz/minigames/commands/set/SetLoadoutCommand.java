@@ -74,19 +74,15 @@ public class SetLoadoutCommand implements ICommand {
 		des.add("Shift + Right Click to Delete");
 		
 		Material item = Material.THIN_GLASS;
-		if(mod.getDefaultPlayerLoadout().getItems().size() != 0){
-			item = mod.getDefaultPlayerLoadout().getItem((Integer)mod.getDefaultPlayerLoadout().getItems().toArray()[0]).getType();
-		}
-		MenuItemDisplayLoadout defLoad = new MenuItemDisplayLoadout("Default Loadout", item, mod.getDefaultPlayerLoadout(), minigame);
-		defLoad.setAllowDelete(false);
-		mi.add(defLoad);
 		
 		for(String ld : mod.getLoadouts()){
 			item = Material.THIN_GLASS;
 			if(mod.getLoadout(ld).getItems().size() != 0){
 				item = mod.getLoadout(ld).getItem((Integer)mod.getLoadout(ld).getItems().toArray()[0]).getType();
 			}
-			mi.add(new MenuItemDisplayLoadout(ld, des, item, mod.getLoadout(ld), minigame));
+			MenuItemDisplayLoadout mil = new MenuItemDisplayLoadout(ld, des, item, mod.getLoadout(ld), minigame);
+			mil.setAllowDelete(mod.getLoadout(ld).isDeleteable());
+			mi.add(mil);
 		}
 		loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, mod.getLoadoutMap(), minigame), 53);
 		loadouts.addItems(mi);

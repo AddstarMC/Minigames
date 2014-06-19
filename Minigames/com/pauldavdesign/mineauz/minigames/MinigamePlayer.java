@@ -241,7 +241,7 @@ public class MinigamePlayer {
 		else if(team != null && LoadoutModule.getMinigameModule(minigame).hasLoadout(team.getColor().toString().toLowerCase())){
 			return LoadoutModule.getMinigameModule(minigame).getLoadout(team.getColor().toString().toLowerCase());
 		}
-		return LoadoutModule.getMinigameModule(minigame).getDefaultPlayerLoadout();
+		return LoadoutModule.getMinigameModule(minigame).getLoadout("default");
 	}
 
 	public void setLoadout(PlayerLoadout loadout) {
