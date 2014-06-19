@@ -108,7 +108,7 @@ public class WeatherTimeModule implements MinigameModule {
 
 			@Override
 			public String getValue() {
-				return MinigameUtils.capitalize(weather.toString());
+				return MinigameUtils.capitalize(weather.getFlag().toString());
 			}
 		}, MinigameUtils.stringToList("Clear;Downfall")));
 		
