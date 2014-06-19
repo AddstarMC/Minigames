@@ -84,7 +84,7 @@ public class Minigames extends JavaPlugin{
 		}
 		
 		String prespath = getDataFolder() + "/presets/";
-		String[] presets = {"spleef", "lms"};
+		String[] presets = {"spleef", "lms", "ctf"};
 		File pres;
 		for(String preset : presets){
 			pres = new File(prespath + preset + ".yml");
