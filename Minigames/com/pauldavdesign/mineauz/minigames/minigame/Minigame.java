@@ -1444,8 +1444,9 @@ public class Minigame {
 		}
 		
 		for(String configOpt : configFlags.keySet()){
-			if(configFlags.get(configOpt).getDefaultFlag() == null || 
-					!configFlags.get(configOpt).getDefaultFlag().equals(configFlags.get(configOpt).getFlag()))
+			if(configFlags.get(configOpt).getFlag() != null && 
+					(configFlags.get(configOpt).getDefaultFlag() == null ||
+						!configFlags.get(configOpt).getDefaultFlag().equals(configFlags.get(configOpt).getFlag())))
 				configFlags.get(configOpt).saveValue(name, cfg);
 		}
 //		for(Team team : teams.values()){
@@ -1466,10 +1467,6 @@ public class Minigame {
 //				Minigames.plugin.mdata.minigameSetLocations(name, getStartLocationsRed().get(i), "startposred." + String.valueOf(i), minigame.getConfig());
 //			}
 //		} //TODO: Remove Me!
-		
-		if(getDefaultGamemode() != GameMode.ADVENTURE){
-			minigame.getConfig().set(name + ".gamemode", getDefaultGamemode().toString());
-		}
 		
 		if(!getBlockRecorder().getWBBlocks().isEmpty()){
 			List<String> blocklist = new ArrayList<String>();
@@ -1551,10 +1548,6 @@ public class Minigame {
 //				getTeam(TeamColor.BLUE).addStartLocation(Minigames.plugin.mdata.minigameLocations(name, "startposblue." + String.valueOf(i), cfg));
 //			}
 //		}
-		
-		if(minigame.getConfig().contains(name + ".gamemode")){
-			setDefaultGamemode(GameMode.valueOf(minigame.getConfig().getString(name + ".gamemode")));
-		}
 		
 		if(minigame.getConfig().contains(name + ".whitelistmode")){
 			getBlockRecorder().setWhitelistMode(minigame.getConfig().getBoolean(name + ".whitelistmode"));
