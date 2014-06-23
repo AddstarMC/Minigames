@@ -1,0 +1,58 @@
+infection:
+  loadouts:
+    red:
+      items:
+        '103':
+          ==: org.bukkit.inventory.ItemStack
+          type: SKULL_ITEM
+          damage: 2
+        '0':
+          ==: org.bukkit.inventory.ItemStack
+          type: DIAMOND_SWORD
+          meta:
+            ==: ItemMeta
+            meta-type: UNSPECIFIC
+            enchants:
+              DAMAGE_ALL: 3
+      potions:
+        SPEED:
+          amp: 1
+          dur: 2000000
+        JUMP:
+          amp: 1
+          dur: 2000000
+    blue:
+      items:
+        '0':
+          ==: org.bukkit.inventory.ItemStack
+          type: STONE_SWORD
+          meta:
+            ==: ItemMeta
+            meta-type: UNSPECIFIC
+            enchants:
+              KNOCKBACK: 2
+        '1':
+          ==: org.bukkit.inventory.ItemStack
+          type: BOW
+          meta:
+            ==: ItemMeta
+            meta-type: UNSPECIFIC
+            enchants:
+              ARROW_DAMAGE: 10
+        '8':
+          ==: org.bukkit.inventory.ItemStack
+          type: ARROW
+          amount: 24
+        
+  teams:
+    RED:
+      displayName: The Infected
+    BLUE:
+      displayName: The Survivors
+  defaultwinner: BLUE
+  scoretype: infection
+  type: MULTIPLAYER
+  minplayers: 4
+  maxplayers: 16
+  timer: 300
+  
