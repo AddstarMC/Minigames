@@ -205,6 +205,8 @@ public class Minigame {
 		addConfigFlag(enabled);
 		addConfigFlag(endPosition);
 		addConfigFlag(flags);
+		addConfigFlag(floorDegen1);
+		addConfigFlag(floorDegen2);
 		addConfigFlag(floorDegenTime);
 		addConfigFlag(gametypeName);
 		addConfigFlag(itemDrops);
@@ -228,6 +230,8 @@ public class Minigame {
 		addConfigFlag(paintBallMode);
 		addConfigFlag(quitPosition);
 		addConfigFlag(randomizeChests);
+		addConfigFlag(regenArea1);
+		addConfigFlag(regenArea2);
 		addConfigFlag(regenDelay);
 		addConfigFlag(rewardItemFlag);
 		addConfigFlag(saveCheckpoints);
