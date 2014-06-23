@@ -11,7 +11,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
+import com.pauldavdesign.mineauz.minigames.config.EnumFlag;
 import com.pauldavdesign.mineauz.minigames.config.Flag;
+import com.pauldavdesign.mineauz.minigames.config.TeamSetFlag;
 import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
@@ -25,9 +27,16 @@ import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
 
-public class TeamsModule implements MinigameModule {
+public class TeamsModule extends MinigameModule {
 	private Map<TeamColor, Team> teams = new HashMap<TeamColor, Team>();
-	private Team defaultWinner = null;
+	private TeamSetFlag teamsFlag;
+	private TeamColor defaultWinner = null;
+	private EnumFlag<TeamColor> defaultWinnerFlag = new EnumFlag<TeamColor>(defaultWinner, "defaultwinner");
+	
+	public TeamsModule(Minigame mgm){
+		super(mgm);
+		teamsFlag = new TeamSetFlag(teams, "teams", getMinigame());
+	}
 
 	@Override
 	public String getName() {
@@ -36,7 +45,10 @@ public class TeamsModule implements MinigameModule {
 	
 	@Override
 	public Map<String, Flag<?>> getFlags(){
-		return null;
+		Map<String, Flag<?>> flags = new HashMap<String, Flag<?>>();
+		flags.put(teamsFlag.getName(), teamsFlag);
+		flags.put(defaultWinnerFlag.getName(), defaultWinnerFlag);
+		return flags;
 	}
 	
 	@Override
@@ -45,61 +57,30 @@ public class TeamsModule implements MinigameModule {
 	}
 
 	@Override
-	public void save(Minigame minigame, FileConfiguration config) {
-		for(Team team : teams.values()){
-			config.set(minigame + ".teams." + team.getColor().toString() + ".displayName", team.getDisplayName());
-			if(!team.getStartLocations().isEmpty()){
-				for(int i = 0; i < team.getStartLocations().size(); i++){
-					Minigames.plugin.mdata.minigameSetLocations(minigame.getName(false), team.getStartLocations().get(i), 
-							"teams." + team.getColor().toString() + ".startpos." + i, config);
-				}
-			}
-		}
-		
-		if(getDefaultWinner() != null){
-			config.set(minigame + ".defaultwinner", getDefaultWinner().getColor().toString());
-		}
+	public void save(FileConfiguration config) {
 	}
 
 	@Override
-	public void load(Minigame minigame, FileConfiguration config) {
-
-		if(config.contains(minigame + ".teams")){
-			Set<String> teams = config.getConfigurationSection(minigame + ".teams").getKeys(false);
-			for(String team : teams){
-				Team t = addTeam(minigame, TeamColor.valueOf(team), config.getString(minigame + ".teams." + team + ".displayName"));
-				if(config.contains(minigame + ".teams." + team + ".startPos")){
-					Set<String> locations = config.getConfigurationSection(minigame + ".teams." + team + ".startPos").getKeys(false);
-					for(String loc : locations){
-						t.addStartLocation(Minigames.plugin.mdata.minigameLocations(minigame.getName(false), 
-								"teams." + team + ".startPos." + loc, config));
-					}
-				}
-			}
-		}
-		if(config.contains(minigame + ".startposred")){ //TODO: Remove after 1.7
+	public void load(FileConfiguration config) {
+		if(config.contains(getMinigame() + ".startposred")){ //TODO: Remove after 1.7
 			if(!hasTeam(TeamColor.RED))
-				addTeam(minigame, TeamColor.RED);
-			Set<String> locs = config.getConfigurationSection(minigame + ".startposred").getKeys(false);
+				addTeam(TeamColor.RED);
+			Set<String> locs = config.getConfigurationSection(getMinigame() + ".startposred").getKeys(false);
 			
 			for(int i = 0; i < locs.size(); i++){
-				getTeam(TeamColor.RED).addStartLocation(Minigames.plugin.mdata.minigameLocations(minigame.getName(false), 
+				getTeam(TeamColor.RED).addStartLocation(Minigames.plugin.mdata.minigameLocations(getMinigame().getName(false), 
 						"startposred." + String.valueOf(i), config));
 			}
 		}
-		if(config.contains(minigame + ".startposblue")){ //TODO: Remove after 1.7
+		if(config.contains(getMinigame() + ".startposblue")){ //TODO: Remove after 1.7
 			if(!hasTeam(TeamColor.BLUE))
-				addTeam(minigame, TeamColor.BLUE);
-			Set<String> locs = config.getConfigurationSection(minigame + ".startposblue").getKeys(false);
+				addTeam(TeamColor.BLUE);
+			Set<String> locs = config.getConfigurationSection(getMinigame() + ".startposblue").getKeys(false);
 			
 			for(int i = 0; i < locs.size(); i++){
-				getTeam(TeamColor.BLUE).addStartLocation(Minigames.plugin.mdata.minigameLocations(minigame.getName(false), 
+				getTeam(TeamColor.BLUE).addStartLocation(Minigames.plugin.mdata.minigameLocations(getMinigame().getName(false), 
 						"startposblue." + String.valueOf(i), config));
 			}
-		}
-		
-		if(config.contains(minigame + ".defaultwinner")){
-			setDefaultWinner(getTeam(TeamColor.matchColor(config.getString(minigame + ".defaultwinner"))));
 		}
 	}
 	
@@ -115,31 +96,31 @@ public class TeamsModule implements MinigameModule {
 		return new ArrayList<Team>(teams.values());
 	}
 	
-	public Team addTeam(Minigame mgm, TeamColor color){
-		return addTeam(mgm, color, "");
+	public Team addTeam(TeamColor color){
+		return addTeam(color, "");
 	}
 	
-	public Team addTeam(Minigame mgm, TeamColor color, String name){
+	public Team addTeam(TeamColor color, String name){
 		if(!teams.containsKey(color)){
-			teams.put(color, new Team(color, mgm));
+			teams.put(color, new Team(color, getMinigame()));
 			String sbTeam = color.toString().toLowerCase();
-			mgm.getScoreboardManager().registerNewTeam(sbTeam);
-			mgm.getScoreboardManager().getTeam(sbTeam).setPrefix(color.getColor().toString());
-			mgm.getScoreboardManager().getTeam(sbTeam).setAllowFriendlyFire(false);
-			mgm.getScoreboardManager().getTeam(sbTeam).setCanSeeFriendlyInvisibles(true);
+			getMinigame().getScoreboardManager().registerNewTeam(sbTeam);
+			getMinigame().getScoreboardManager().getTeam(sbTeam).setPrefix(color.getColor().toString());
+			getMinigame().getScoreboardManager().getTeam(sbTeam).setAllowFriendlyFire(false);
+			getMinigame().getScoreboardManager().getTeam(sbTeam).setCanSeeFriendlyInvisibles(true);
 		}
 		if(!name.equals(""))
 			teams.get(color).setDisplayName(name);
 		return teams.get(color);
 	}
 	
-	public void addTeam(Minigame mgm, TeamColor color, Team team){
+	public void addTeam(TeamColor color, Team team){
 		teams.put(color, team);
 		String sbTeam = color.toString().toLowerCase();
-		mgm.getScoreboardManager().registerNewTeam(sbTeam);
-		mgm.getScoreboardManager().getTeam(sbTeam).setPrefix(color.getColor().toString());
-		mgm.getScoreboardManager().getTeam(sbTeam).setAllowFriendlyFire(false);
-		mgm.getScoreboardManager().getTeam(sbTeam).setCanSeeFriendlyInvisibles(true);
+		getMinigame().getScoreboardManager().registerNewTeam(sbTeam);
+		getMinigame().getScoreboardManager().getTeam(sbTeam).setPrefix(color.getColor().toString());
+		getMinigame().getScoreboardManager().getTeam(sbTeam).setAllowFriendlyFire(false);
+		getMinigame().getScoreboardManager().getTeam(sbTeam).setCanSeeFriendlyInvisibles(true);
 	}
 	
 	public boolean hasTeam(TeamColor color){
@@ -148,10 +129,10 @@ public class TeamsModule implements MinigameModule {
 		return false;
 	}
 	
-	public void removeTeam(Minigame mgm, TeamColor color){
+	public void removeTeam(TeamColor color){
 		if(teams.containsKey(color)){
 			teams.remove(color);
-			mgm.getScoreboardManager().getTeam(color.toString().toLowerCase()).unregister();
+			getMinigame().getScoreboardManager().getTeam(color.toString().toLowerCase()).unregister();
 		}
 	}
 	
@@ -169,7 +150,7 @@ public class TeamsModule implements MinigameModule {
 			@Override
 			public void setValue(String value) {
 				if(!value.equals("None"))
-					defaultWinner = getTeam(TeamColor.matchColor(value.replace(" ", "_")));
+					defaultWinner = TeamColor.matchColor(value.replace(" ", "_"));
 				else
 					defaultWinner = null;
 			}
@@ -177,17 +158,17 @@ public class TeamsModule implements MinigameModule {
 			@Override
 			public String getValue() {
 				if(defaultWinner != null)
-					return MinigameUtils.capitalize(defaultWinner.getColor().toString().replace("_", " "));
+					return MinigameUtils.capitalize(defaultWinner.toString().replace("_", " "));
 				return "None";
 			}
 		};
 	}
 
-	public void setDefaultWinner(Team defaultWinner) {
+	public void setDefaultWinner(TeamColor defaultWinner) {
 		this.defaultWinner = defaultWinner;
 	}
 	
-	public Team getDefaultWinner() {
+	public TeamColor getDefaultWinner() {
 		return defaultWinner;
 	}
 	
@@ -197,7 +178,7 @@ public class TeamsModule implements MinigameModule {
 	}
 
 	@Override
-	public void addMenuOptions(Menu menu, Minigame minigame) {
+	public void addMenuOptions(Menu menu) {
 		Menu m = new Menu(6, "Teams", menu.getViewer());
 		m.setPreviousPage(menu);
 		List<MenuItem> items = new ArrayList<MenuItem>();
@@ -212,7 +193,7 @@ public class TeamsModule implements MinigameModule {
 			items.add(new MenuItemTeam(t.getChatColor() + t.getDisplayName(), t));
 		}
 		
-		m.addItem(new MenuItemAddTeam("Add Team", minigame), m.getSize() - 1);
+		m.addItem(new MenuItemAddTeam("Add Team", getMinigame()), m.getSize() - 1);
 		
 		m.addItems(items);
 		

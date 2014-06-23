@@ -60,9 +60,9 @@ public class InfectionPreset implements BasePreset {
 		minigame.setScoreType("infection");
 		minigame.setType(MinigameType.MULTIPLAYER);
 		TeamsModule.getMinigameModule(minigame).clearTeams();
-		TeamsModule.getMinigameModule(minigame).addTeam(minigame, TeamColor.BLUE);
-		TeamsModule.getMinigameModule(minigame).addTeam(minigame, TeamColor.RED);
-		TeamsModule.getMinigameModule(minigame).setDefaultWinner(TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.BLUE));
+		TeamsModule.getMinigameModule(minigame).addTeam(TeamColor.BLUE);
+		TeamsModule.getMinigameModule(minigame).addTeam(TeamColor.RED);
+		TeamsModule.getMinigameModule(minigame).setDefaultWinner(TeamColor.BLUE);
 		minigame.setMinPlayers(4);
 		minigame.setMaxPlayers(16);
 		minigame.setTimer(300);

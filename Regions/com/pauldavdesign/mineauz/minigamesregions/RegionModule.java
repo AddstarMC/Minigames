@@ -27,10 +27,14 @@ import com.pauldavdesign.mineauz.minigamesregions.conditions.Conditions;
 import com.pauldavdesign.mineauz.minigamesregions.menuitems.MenuItemNode;
 import com.pauldavdesign.mineauz.minigamesregions.menuitems.MenuItemRegion;
 
-public class RegionModule implements MinigameModule {
+public class RegionModule extends MinigameModule {
 	
 	private Map<String, Region> regions = new HashMap<String, Region>();
 	private Map<String, Node> nodes = new HashMap<String, Node>();
+	
+	public RegionModule(Minigame mgm){
+		super(mgm);
+	}
 	
 	@Override
 	public String getName(){
@@ -48,28 +52,28 @@ public class RegionModule implements MinigameModule {
 	}
 
 	@Override
-	public void save(Minigame minigame, FileConfiguration config) {
+	public void save(FileConfiguration config) {
 		Set<String> rs = regions.keySet();
 		for(String name : rs){
 			Region r = regions.get(name);
 			Map<String, Object> sloc = MinigameUtils.serializeLocation(r.getFirstPoint());
 			for(String i : sloc.keySet()){
 				if(!i.equals("yaw") && !i.equals("pitch"))
-					config.set(minigame + ".regions." + name + ".point1." + i, sloc.get(i));
+					config.set(getMinigame() + ".regions." + name + ".point1." + i, sloc.get(i));
 			}
 			sloc = MinigameUtils.serializeLocation(r.getSecondPoint());
 			for(String i : sloc.keySet()){
 				if(!i.equals("yaw") && !i.equals("pitch"))
-					config.set(minigame + ".regions." + name + ".point2." + i, sloc.get(i));
+					config.set(getMinigame() + ".regions." + name + ".point2." + i, sloc.get(i));
 			}
 			
 			if(r.getTickDelay() != 20){
-				config.set(minigame + ".regions." + name + ".tickDelay", r.getTickDelay());
+				config.set(getMinigame() + ".regions." + name + ".tickDelay", r.getTickDelay());
 			}
 			
 			int c = 0;
 			for(RegionExecutor ex : r.getExecutors()){
-				String path = minigame + ".regions." + name + ".executors." + c;
+				String path = getMinigame() + ".regions." + name + ".executors." + c;
 				config.set(path + ".trigger", ex.getTrigger().toString());
 				List<String> acts = new ArrayList<String>();
 				for(ActionInterface act : ex.getActions()){
@@ -101,12 +105,12 @@ public class RegionModule implements MinigameModule {
 			Map<String, Object> sloc = MinigameUtils.serializeLocation(n.getLocation());
 			for(String i : sloc.keySet()){
 				if(!i.equals("yaw") && !i.equals("pitch"))
-					config.set(minigame + ".nodes." + name + ".point." + i, sloc.get(i));
+					config.set(getMinigame() + ".nodes." + name + ".point." + i, sloc.get(i));
 			}
 			
 			int c = 0;
 			for(NodeExecutor ex : n.getExecutors()){
-				String path = minigame + ".nodes." + name + ".executors." + c;
+				String path = getMinigame() + ".nodes." + name + ".executors." + c;
 				config.set(path + ".trigger", ex.getTrigger().toString());
 				List<String> acts = new ArrayList<String>();
 				for(ActionInterface act : ex.getActions()){
@@ -134,12 +138,12 @@ public class RegionModule implements MinigameModule {
 	}
 
 	@Override
-	public void load(Minigame minigame, FileConfiguration config) {
-		if(config.contains(minigame + ".regions")){
-			Set<String> rs = config.getConfigurationSection(minigame + ".regions").getKeys(false);
+	public void load(FileConfiguration config) {
+		if(config.contains(getMinigame() + ".regions")){
+			Set<String> rs = config.getConfigurationSection(getMinigame() + ".regions").getKeys(false);
 			for(String name : rs){
-				String cloc1 = minigame + ".regions." + name + ".point1.";
-				String cloc2 = minigame + ".regions." + name + ".point2.";
+				String cloc1 = getMinigame() + ".regions." + name + ".point1.";
+				String cloc2 = getMinigame() + ".regions." + name + ".point2.";
 				World w1 = Minigames.plugin.getServer().getWorld(config.getString(cloc1 + "world"));
 				World w2 = Minigames.plugin.getServer().getWorld(config.getString(cloc2 + "world"));
 				double x1 = config.getDouble(cloc1 + "x");
@@ -153,13 +157,13 @@ public class RegionModule implements MinigameModule {
 				
 				regions.put(name, new Region(name, loc1, loc2));
 				Region r = regions.get(name);
-				if(config.contains(minigame + ".regions." + name + ".tickDelay")){
-					r.changeTickDelay(config.getLong(minigame + ".regions." + name + ".tickDelay"));
+				if(config.contains(getMinigame() + ".regions." + name + ".tickDelay")){
+					r.changeTickDelay(config.getLong(getMinigame() + ".regions." + name + ".tickDelay"));
 				}
-				if(config.contains(minigame + ".regions." + name + ".executors")){
-					Set<String> ex = config.getConfigurationSection(minigame + ".regions." + name + ".executors").getKeys(false);
+				if(config.contains(getMinigame() + ".regions." + name + ".executors")){
+					Set<String> ex = config.getConfigurationSection(getMinigame() + ".regions." + name + ".executors").getKeys(false);
 					for(String i : ex){
-						String path = minigame + ".regions." + name + ".executors." + i;
+						String path = getMinigame() + ".regions." + name + ".executors." + i;
 						RegionExecutor rex = new RegionExecutor(RegionTrigger.valueOf(config.getString(path + ".trigger")));
 						if(config.contains(path + ".actions")){
 							for(String action : config.getStringList(path + ".actions")){
@@ -185,10 +189,10 @@ public class RegionModule implements MinigameModule {
 			}
 		}
 		
-		if(config.contains(minigame + ".nodes")){
-			Set<String> rs = config.getConfigurationSection(minigame + ".nodes").getKeys(false);
+		if(config.contains(getMinigame() + ".nodes")){
+			Set<String> rs = config.getConfigurationSection(getMinigame() + ".nodes").getKeys(false);
 			for(String name : rs){
-				String cloc1 = minigame + ".nodes." + name + ".point.";
+				String cloc1 = getMinigame() + ".nodes." + name + ".point.";
 				World w1 = Minigames.plugin.getServer().getWorld(config.getString(cloc1 + "world"));
 				double x1 = config.getDouble(cloc1 + "x");
 				double y1 = config.getDouble(cloc1 + "y");
@@ -197,10 +201,10 @@ public class RegionModule implements MinigameModule {
 				
 				nodes.put(name, new Node(name, loc1));
 				Node n = nodes.get(name);
-				if(config.contains(minigame + ".nodes." + name + ".executors")){
-					Set<String> ex = config.getConfigurationSection(minigame + ".nodes." + name + ".executors").getKeys(false);
+				if(config.contains(getMinigame() + ".nodes." + name + ".executors")){
+					Set<String> ex = config.getConfigurationSection(getMinigame() + ".nodes." + name + ".executors").getKeys(false);
 					for(String i : ex){
-						String path = minigame + ".nodes." + name + ".executors." + i;
+						String path = getMinigame() + ".nodes." + name + ".executors." + i;
 						NodeExecutor rex = new NodeExecutor(NodeTrigger.valueOf(config.getString(path + ".trigger")));
 						if(config.contains(path + ".actions")){
 							for(String action : config.getStringList(path + ".actions")){
@@ -342,7 +346,7 @@ public class RegionModule implements MinigameModule {
 	
 	
 	@Override
-	public void addMenuOptions(Menu menu, Minigame minigame) {
+	public void addMenuOptions(Menu menu) {
 		// TODO Auto-generated method stub
 		
 	}

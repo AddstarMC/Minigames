@@ -178,7 +178,7 @@ public class Minigame {
 		
 		for(Class<? extends MinigameModule> mod : Minigames.plugin.mdata.getModules()){
 			try {
-				addModule(mod.newInstance());
+				addModule(mod.getConstructor(Minigame.class).newInstance(this));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -1417,7 +1417,7 @@ public class Minigame {
 		lobby.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), lobby.getSize() - 9);
 
 		for(MinigameModule mod : getModules()){
-			mod.addMenuOptions(main, this);
+			mod.addMenuOptions(main);
 		}
 		main.displayMenu(player);
 		
@@ -1434,11 +1434,11 @@ public class Minigame {
 		
 		for(MinigameModule module : getModules()){
 			if(!module.useSeparateConfig())
-				module.save(this, cfg);
+				module.save(cfg);
 			else{
 				MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
 				modsave.getConfig().set(name, null);
-				module.save(this, modsave.getConfig());
+				module.save(modsave.getConfig());
 				modsave.saveConfig();
 			}
 		}
@@ -1491,10 +1491,10 @@ public class Minigame {
 		
 		for(MinigameModule module : getModules()){
 			if(!module.useSeparateConfig())
-				module.load(this, cfg);
+				module.load(cfg);
 			else{
 				MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
-				module.load(this, modsave.getConfig());
+				module.load(modsave.getConfig());
 			}
 		}
 		
@@ -1503,8 +1503,8 @@ public class Minigame {
 		if(cfg.contains(name + ".type")){
 			if(cfg.getString(name + ".type").equals("TEAMS")) {
 				cfg.set(name + ".type", "MULTIPLAYER");
-				TeamsModule.getMinigameModule(this).addTeam(this, TeamColor.RED);
-				TeamsModule.getMinigameModule(this).addTeam(this, TeamColor.BLUE);
+				TeamsModule.getMinigameModule(this).addTeam(TeamColor.RED);
+				TeamsModule.getMinigameModule(this).addTeam(TeamColor.BLUE);
 				//TODO Convert old team spawn point loading into new teams
 			}
 			else if(cfg.getString(name + ".type").equals("FREE_FOR_ALL")){

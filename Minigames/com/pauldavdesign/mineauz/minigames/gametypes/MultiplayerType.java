@@ -283,10 +283,20 @@ public class MultiplayerType extends MinigameTypeBase{
 			if(event.getMinigame().isTeamGame()){
 				Minigame mgm = event.getMinigame();
 				if(TeamsModule.getMinigameModule(mgm).getDefaultWinner() != null){
-					List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(TeamsModule.getMinigameModule(mgm).getDefaultWinner().getPlayers());
-					List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - TeamsModule.getMinigameModule(mgm).getDefaultWinner().getPlayers().size());
+					TeamsModule tm = TeamsModule.getMinigameModule(mgm);
+					List<MinigamePlayer> w;
+					List<MinigamePlayer> l;
+					if(TeamsModule.getMinigameModule(mgm).hasTeam(TeamsModule.getMinigameModule(mgm).getDefaultWinner())){
+						w = new ArrayList<MinigamePlayer>(tm.getTeam(tm.getDefaultWinner()).getPlayers().size());
+						l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - tm.getTeam(tm.getDefaultWinner()).getPlayers().size());
+					}
+					else{
+						w = new ArrayList<MinigamePlayer>();
+						l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size());
+					}
+					
 					for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
-						if(t != TeamsModule.getMinigameModule(mgm).getDefaultWinner())
+						if(t.getColor() != TeamsModule.getMinigameModule(mgm).getDefaultWinner())
 							l.addAll(t.getPlayers());
 					}
 					plugin.pdata.endMinigame(mgm, w, l);

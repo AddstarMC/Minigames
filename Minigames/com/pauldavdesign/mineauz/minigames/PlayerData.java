@@ -194,7 +194,7 @@ public class PlayerData {
 					//Register regen recorder events
 					if(minigame.getBlockRecorder().hasRegenArea())
 						Bukkit.getServer().getPluginManager().registerEvents(minigame.getBlockRecorder(), plugin);
-					WeatherTimeModule.getMinigameModule(minigame).startTimeLoop(minigame);
+					WeatherTimeModule.getMinigameModule(minigame).startTimeLoop();
 				}
 				
 				//Call Type specific join
@@ -578,6 +578,7 @@ public class PlayerData {
 							score += ChatColor.WHITE + " : ";
 						}
 					}
+					//TODO: No team wins message.
 					String nscore = ", " + MinigameUtils.formStr("player.end.team.score", score);
 					MinigameUtils.broadcast(MinigameUtils.formStr("player.end.team.win", 
 							team.getChatColor() + team.getDisplayName() + ChatColor.WHITE, mgm.getName(true)) + nscore, mgm, ChatColor.GREEN);

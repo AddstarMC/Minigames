@@ -12,7 +12,7 @@ import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
 
-public class LobbySettingsModule implements MinigameModule {
+public class LobbySettingsModule extends MinigameModule {
 	
 	private BooleanFlag canMovePlayerWait = new BooleanFlag(true, "canMovePlayerWait");
 	private BooleanFlag canMoveStartWait = new BooleanFlag(true, "canMoveStartWait");
@@ -20,6 +20,10 @@ public class LobbySettingsModule implements MinigameModule {
 	private BooleanFlag canInteractStartWait = new BooleanFlag(true, "canInteractStartWait");
 	private BooleanFlag teleportOnPlayerWait = new BooleanFlag(false, "teleportOnPlayerWait");
 	private BooleanFlag teleportOnStart = new BooleanFlag(true, "teleportOnStart");
+	
+	public LobbySettingsModule(Minigame mgm){
+		super(mgm);
+	}
 
 	@Override
 	public String getName() {
@@ -48,11 +52,11 @@ public class LobbySettingsModule implements MinigameModule {
 	}
 
 	@Override
-	public void save(Minigame minigame, FileConfiguration config) {
+	public void save(FileConfiguration config) {
 	}
 
 	@Override
-	public void load(Minigame minigame, FileConfiguration config) {
+	public void load(FileConfiguration config) {
 	}
 	
 	public static LobbySettingsModule getMinigameModule(Minigame minigame) {
@@ -186,7 +190,7 @@ public class LobbySettingsModule implements MinigameModule {
 	}
 
 	@Override
-	public void addMenuOptions(Menu menu, Minigame minigame) {
+	public void addMenuOptions(Menu menu) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -78,12 +78,12 @@ public class SetTeamCommand implements ICommand {
 							}
 						}
 						if(name != null){
-							tmod.addTeam(minigame, col, name);
+							tmod.addTeam(col, name);
 							sender.sendMessage(ChatColor.GRAY + "Added " + MinigameUtils.capitalize(col.toString()) + 
 									" team to " + minigame.getName(false) + " with the display name " + name);
 						}
 						else{
-							tmod.addTeam(minigame, col);
+							tmod.addTeam(col);
 							sender.sendMessage(ChatColor.GRAY + "Added " + MinigameUtils.capitalize(col.toString()) + 
 									" team to " + minigame.getName(false));
 						}
@@ -128,7 +128,7 @@ public class SetTeamCommand implements ICommand {
 					TeamColor col = TeamColor.matchColor(args[1]);
 					if(col != null){
 						if(tmod.hasTeam(col)){
-							tmod.removeTeam(minigame, col);
+							tmod.removeTeam(col);
 							sender.sendMessage(ChatColor.GRAY + "Removed " + MinigameUtils.capitalize(col.toString()) + " from " + minigame.getName(false));
 						}
 						else{

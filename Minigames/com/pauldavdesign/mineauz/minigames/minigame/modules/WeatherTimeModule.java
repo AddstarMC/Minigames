@@ -24,13 +24,17 @@ import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
 
-public class WeatherTimeModule implements MinigameModule {
+public class WeatherTimeModule extends MinigameModule {
 	
 	private LongFlag time = new LongFlag(0L, "customTime.value");
 	private BooleanFlag useCustomTime = new BooleanFlag(false, "customTime.enabled");
 	private BooleanFlag useCustomWeather = new BooleanFlag(false, "customWeather.enabled");
 	private EnumFlag<WeatherType> weather = new EnumFlag<WeatherType>(WeatherType.CLEAR, "customWeather.type");
 	private int task = -1;
+	
+	public WeatherTimeModule(Minigame mgm){
+		super(mgm);
+	}
 
 	@Override
 	public String getName() {
@@ -53,15 +57,15 @@ public class WeatherTimeModule implements MinigameModule {
 	}
 
 	@Override
-	public void save(Minigame minigame, FileConfiguration config) {
+	public void save(FileConfiguration config) {
 	}
 
 	@Override
-	public void load(Minigame minigame, FileConfiguration config) {
+	public void load(FileConfiguration config) {
 	}
 
 	@Override
-	public void addMenuOptions(Menu menu, Minigame minigame) {
+	public void addMenuOptions(Menu menu) {
 		Menu m = new Menu(6, "Time and Weather", menu.getViewer());
 		m.addItem(new MenuItemBoolean("Use Custom Time", Material.WATCH, new Callback<Boolean>() {
 
@@ -164,8 +168,8 @@ public class WeatherTimeModule implements MinigameModule {
 			player.getPlayer().setPlayerWeather(weather.getFlag());
 	}
 	
-	public void startTimeLoop(Minigame mgm){
-		final Minigame fmgm = mgm;
+	public void startTimeLoop(){
+		final Minigame fmgm = getMinigame();
 		if(task == -1 && isUsingCustomTime()){
 			task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, new Runnable() {
 				

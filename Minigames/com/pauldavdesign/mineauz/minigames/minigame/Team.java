@@ -46,11 +46,11 @@ public class Team {
 	 */
 	public boolean setColor(TeamColor color){
 		if(!TeamsModule.getMinigameModule(mgm).hasTeam(color)){
-			TeamsModule.getMinigameModule(mgm).removeTeam(mgm, this.color);
+			TeamsModule.getMinigameModule(mgm).removeTeam(this.color);
 			if(displayName.equals(this.color.toString().toLowerCase() + " team"))
 				displayName = MinigameUtils.capitalize(color.toString()) + " Team";
 			this.color = color;
-			TeamsModule.getMinigameModule(mgm).addTeam(mgm, color, this);
+			TeamsModule.getMinigameModule(mgm).addTeam(color, this);
 			return true;
 		}
 		return false;

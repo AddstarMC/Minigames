@@ -65,8 +65,11 @@ public class SetDefaultWinnerCommand implements ICommand {
 			}
 			else{
 				if(TeamsModule.getMinigameModule(minigame).hasTeam(TeamColor.matchColor(args[0]))){
-					TeamsModule.getMinigameModule(minigame).setDefaultWinner(TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.matchColor(args[0])));
+					TeamsModule.getMinigameModule(minigame).setDefaultWinner(TeamColor.matchColor(args[0]));
 					sender.sendMessage(ChatColor.GRAY + "The default winner of " + minigame + " has been set to " + args[0] + ".");
+				}
+				else{
+					sender.sendMessage(ChatColor.RED + "There is no team for the color " + args[0]);
 				}
 			}
 			return true;

@@ -17,12 +17,10 @@ import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 public class MenuItemAddTeam extends MenuItem{
 	
 	private TeamsModule tm;
-	private Minigame minigame;
 
 	public MenuItemAddTeam(String name, Minigame minigame) {
 		super(name, Material.ITEM_FRAME);
 		tm = TeamsModule.getMinigameModule(minigame);
-		this.minigame = minigame;
 	}
 	
 	@Override
@@ -48,7 +46,7 @@ public class MenuItemAddTeam extends MenuItem{
 		if(TeamColor.matchColor(entry) != null){
 			TeamColor col = TeamColor.matchColor(entry);
 			if(!tm.hasTeam(col)){
-				tm.addTeam(minigame, col);
+				tm.addTeam(col);
 				Team t = tm.getTeam(col);
 				
 				getContainer().addItem(new MenuItemTeam(t.getChatColor() + t.getDisplayName(), t));
