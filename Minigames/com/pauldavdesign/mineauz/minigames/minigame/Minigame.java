@@ -178,7 +178,7 @@ public class Minigame {
 		
 		for(Class<? extends MinigameModule> mod : Minigames.plugin.mdata.getModules()){
 			try {
-				addModule(mod.getConstructor(Minigame.class).newInstance(this));
+				addModule(mod.getDeclaredConstructor(Minigame.class).newInstance(this));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
