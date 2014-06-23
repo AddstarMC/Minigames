@@ -11,8 +11,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
-import com.pauldavdesign.mineauz.minigames.config.EnumFlag;
 import com.pauldavdesign.mineauz.minigames.config.Flag;
+import com.pauldavdesign.mineauz.minigames.config.StringFlag;
 import com.pauldavdesign.mineauz.minigames.config.TeamSetFlag;
 import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
@@ -30,8 +30,7 @@ import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
 public class TeamsModule extends MinigameModule {
 	private Map<TeamColor, Team> teams = new HashMap<TeamColor, Team>();
 	private TeamSetFlag teamsFlag;
-	private TeamColor defaultWinner = null;
-	private EnumFlag<TeamColor> defaultWinnerFlag = new EnumFlag<TeamColor>(defaultWinner, "defaultwinner");
+	private StringFlag defaultWinner = new StringFlag(null, "defaultwinner");
 	
 	public TeamsModule(Minigame mgm){
 		super(mgm);
@@ -47,7 +46,7 @@ public class TeamsModule extends MinigameModule {
 	public Map<String, Flag<?>> getFlags(){
 		Map<String, Flag<?>> flags = new HashMap<String, Flag<?>>();
 		flags.put(teamsFlag.getName(), teamsFlag);
-		flags.put(defaultWinnerFlag.getName(), defaultWinnerFlag);
+		flags.put(defaultWinner.getName(), defaultWinner);
 		return flags;
 	}
 	
@@ -150,26 +149,26 @@ public class TeamsModule extends MinigameModule {
 			@Override
 			public void setValue(String value) {
 				if(!value.equals("None"))
-					defaultWinner = TeamColor.matchColor(value.replace(" ", "_"));
+					defaultWinner.setFlag(TeamColor.matchColor(value.replace(" ", "_")).toString());
 				else
-					defaultWinner = null;
+					defaultWinner.setFlag(null);
 			}
 
 			@Override
 			public String getValue() {
-				if(defaultWinner != null)
-					return MinigameUtils.capitalize(defaultWinner.toString().replace("_", " "));
+				if(defaultWinner.getFlag() != null)
+					return MinigameUtils.capitalize(defaultWinner.getFlag().replace("_", " "));
 				return "None";
 			}
 		};
 	}
 
 	public void setDefaultWinner(TeamColor defaultWinner) {
-		this.defaultWinner = defaultWinner;
+		this.defaultWinner.setFlag(defaultWinner.toString());
 	}
 	
 	public TeamColor getDefaultWinner() {
-		return defaultWinner;
+		return TeamColor.matchColor(defaultWinner.getFlag());
 	}
 	
 	public void clearTeams(){
