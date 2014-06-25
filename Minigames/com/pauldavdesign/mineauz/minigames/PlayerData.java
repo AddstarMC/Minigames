@@ -65,12 +65,14 @@ public class PlayerData {
 		
 		if(!event.isCancelled()){
 			if((minigame.isEnabled() || player.getPlayer().hasPermission("minigame.join.disabled")) && 
-					!minigame.isRegenerating() && (!minigame.isNotWaitingForPlayers() || (minigame.canLateJoin() && minigame.getMpTimer().getPlayerWaitTimeLeft() == 0)) && 
+					!minigame.isRegenerating() && 
+					(!minigame.isNotWaitingForPlayers() || (minigame.canLateJoin() && minigame.getMpTimer().getPlayerWaitTimeLeft() == 0)) && 
 					(minigame.getStartLocations().size() > 0 || 
 							(minigame.isTeamGame() && TeamsModule.getMinigameModule(minigame).hasTeamStartLocations())) &&
 					minigame.getEndPosition() != null && minigame.getQuitPosition() != null && 
 					(minigame.getType() == MinigameType.SINGLEPLAYER || minigame.getLobbyPosition() != null) &&
-					((type == MinigameType.SINGLEPLAYER && !minigame.isSpMaxPlayers()) || minigame.getPlayers().size() < minigame.getMaxPlayers())){
+					((type == MinigameType.SINGLEPLAYER && !minigame.isSpMaxPlayers()) || minigame.getPlayers().size() < minigame.getMaxPlayers()) &&
+					minigame.getMechanic().validTypes().contains(minigame.getType())){
 				//Do betting stuff
 				if(isBetting){
 					if(minigame.getMpBets() == null && (player.getPlayer().getItemInHand().getType() != Material.AIR || betAmount != 0)){
@@ -233,6 +235,9 @@ public class PlayerData {
 			else if(minigame.getPlayers().size() >= minigame.getMaxPlayers()){
 				player.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
 			}
+			else if(!minigame.getMechanic().validTypes().contains(minigame.getType())){
+				player.sendMessage(MinigameUtils.getLang("minigame.error.invalidMechanic"), "error");
+			}
 		}
 	}
 	
@@ -276,8 +281,8 @@ public class PlayerData {
 		
 		Collections.shuffle(players);
 		
-		if(minigame.isTeamGame() && GameMechanics.getGameMechanic(minigame.getScoreType()) != null){
-			GameMechanics.getGameMechanic(minigame.getScoreType()).balanceTeam(players, minigame);
+		if(minigame.isTeamGame() && GameMechanics.getGameMechanic(minigame.getMechanicName()) != null){
+			GameMechanics.getGameMechanic(minigame.getMechanicName()).balanceTeam(players, minigame);
 		}
 		
 		Location start = null;

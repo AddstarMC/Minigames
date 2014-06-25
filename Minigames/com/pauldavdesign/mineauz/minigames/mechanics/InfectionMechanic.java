@@ -1,6 +1,7 @@
 package com.pauldavdesign.mineauz.minigames.mechanics;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -11,6 +12,7 @@ import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.MultiplayerType;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
@@ -25,6 +27,11 @@ public class InfectionMechanic extends GameMechanicBase{
 	@Override
 	public String getMechanic() {
 		return "infection";
+	}
+
+	@Override
+	public EnumSet<MinigameType> validTypes() {
+		return EnumSet.of(MinigameType.MULTIPLAYER);
 	}
 
 	@Override
@@ -81,7 +88,7 @@ public class InfectionMechanic extends GameMechanicBase{
 		if(player == null) return;
 		if(player.isInMinigame()){
 			Minigame mgm = player.getMinigame();
-			if(mgm.isTeamGame() && mgm.getScoreType().equals("infection")){
+			if(mgm.isTeamGame() && mgm.getMechanicName().equals("infection")){
 				Team blue = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.BLUE);
 				Team red = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.RED);
 				if(blue.getPlayers().contains(player)){
@@ -124,7 +131,7 @@ public class InfectionMechanic extends GameMechanicBase{
 	
 	@EventHandler
 	private void endTeamMinigame(EndMinigameEvent event){
-		if(event.getMinigame().getScoreType().equals("infection")){
+		if(event.getMinigame().getMechanicName().equals("infection")){
 			List<MinigamePlayer> infect = new ArrayList<MinigamePlayer>();
 			infect.addAll(infected);
 			for(MinigamePlayer inf : infect){

@@ -1,6 +1,7 @@
 package com.pauldavdesign.mineauz.minigames.mechanics;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.bukkit.event.EventHandler;
@@ -8,6 +9,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.MultiplayerType;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
@@ -19,6 +21,11 @@ public class PlayerKillsMechanic extends GameMechanicBase{
 	@Override
 	public String getMechanic() {
 		return "kills";
+	}
+
+	@Override
+	public EnumSet<MinigameType> validTypes() {
+		return EnumSet.of(MinigameType.MULTIPLAYER);
 	}
 
 	@Override
@@ -78,7 +85,7 @@ public class PlayerKillsMechanic extends GameMechanicBase{
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
 		if(ply == null) return;
 		Minigame mgm = ply.getMinigame();
-		if(ply.isInMinigame() && mgm.getScoreType().equals("kills")){
+		if(ply.isInMinigame() && mgm.getMechanicName().equals("kills")){
 			MinigamePlayer attacker = null;
 			if(ply.getPlayer().getKiller() != null){
 				attacker = pdata.getMinigamePlayer(ply.getPlayer().getKiller());
@@ -142,7 +149,7 @@ public class PlayerKillsMechanic extends GameMechanicBase{
 				(ply.getPlayer().getKiller() == null || ply.getPlayer().getKiller() == ply.getPlayer()) &&
 				ply.getMinigame().hasStarted()){
 			Minigame mgm = ply.getMinigame();
-			if(mgm.getScoreType().equals("kills")){
+			if(mgm.getMechanicName().equals("kills")){
 				ply.takeScore();
 				mgm.setScore(ply, ply.getScore());
 				if(mgm.isTeamGame())
@@ -158,7 +165,7 @@ public class PlayerKillsMechanic extends GameMechanicBase{
 		if(ply.isInMinigame() && ply.getMinigame().isTeamGame()){
 			Minigame mgm = ply.getMinigame();
 			
-			if(mgm.getScoreType().equals("custom")){
+			if(mgm.getMechanicName().equals("custom")){
 				Team smt = null;
 				Team lgt = ply.getTeam();
 				for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){

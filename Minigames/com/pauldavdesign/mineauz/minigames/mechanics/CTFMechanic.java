@@ -1,6 +1,7 @@
 package com.pauldavdesign.mineauz.minigames.mechanics;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -33,6 +34,11 @@ public class CTFMechanic extends GameMechanicBase{
 	@Override
 	public String getMechanic() {
 		return "ctf";
+	}
+
+	@Override
+	public EnumSet<MinigameType> validTypes() {
+		return EnumSet.of(MinigameType.MULTIPLAYER);
 	}
 
 	@Override
@@ -95,7 +101,7 @@ public class CTFMechanic extends GameMechanicBase{
 			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && (event.getClickedBlock().getType() == Material.SIGN_POST || event.getClickedBlock().getType() == Material.WALL_SIGN) && ply.getPlayer().getItemInHand().getType() == Material.AIR){
 				Minigame mgm = ply.getMinigame();
 				Sign sign = (Sign) event.getClickedBlock().getState();
-				if(mgm.getScoreType().equals("ctf") && sign.getLine(1).equals(ChatColor.GREEN + "Flag")){
+				if(mgm.getMechanicName().equals("ctf") && sign.getLine(1).equals(ChatColor.GREEN + "Flag")){
 					Team team = ply.getTeam();
 					
 					String sloc = MinigameUtils.createLocationID(event.getClickedBlock().getLocation());
@@ -264,7 +270,7 @@ public class CTFMechanic extends GameMechanicBase{
 	
 	@EventHandler
 	private void playerQuitMinigame(QuitMinigameEvent event){
-		if(event.getMinigame().getScoreType().equals("ctf")){
+		if(event.getMinigame().getMechanicName().equals("ctf")){
 			if(event.getMinigame().isFlagCarrier(event.getMinigamePlayer())){
 				event.getMinigame().getFlagCarrier(event.getMinigamePlayer()).stopCarrierParticleEffect();
 				event.getMinigame().getFlagCarrier(event.getMinigamePlayer()).respawnFlag();
@@ -278,7 +284,7 @@ public class CTFMechanic extends GameMechanicBase{
 	
 	@EventHandler
 	private void playerEndMinigame(EndMinigameEvent event){
-		if(event.getMinigame().getScoreType().equals("ctf")){
+		if(event.getMinigame().getMechanicName().equals("ctf")){
 			for(MinigamePlayer pl : event.getWinners()){
 				if(event.getMinigame().isFlagCarrier(pl)){
 					event.getMinigame().getFlagCarrier(pl).stopCarrierParticleEffect();
@@ -299,7 +305,7 @@ public class CTFMechanic extends GameMechanicBase{
 		if(ply.isInMinigame() && ply.getMinigame().getType() == MinigameType.MULTIPLAYER && ply.getMinigame().isTeamGame()){
 			Minigame mgm = ply.getMinigame();
 			
-			if(mgm.getScoreType().equals("ctf")){
+			if(mgm.getMechanicName().equals("ctf")){
 				Team smt = null;
 				Team lgt = ply.getTeam();
 				for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){

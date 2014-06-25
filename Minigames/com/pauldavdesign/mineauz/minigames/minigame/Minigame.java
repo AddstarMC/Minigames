@@ -35,6 +35,8 @@ import com.pauldavdesign.mineauz.minigames.config.RewardsFlag;
 import com.pauldavdesign.mineauz.minigames.config.SimpleLocationFlag;
 import com.pauldavdesign.mineauz.minigames.config.StringFlag;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
+import com.pauldavdesign.mineauz.minigames.mechanics.GameMechanicBase;
+import com.pauldavdesign.mineauz.minigames.mechanics.GameMechanics;
 import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
@@ -109,7 +111,7 @@ public class Minigame {
 	private BooleanFlag allowFlight = new BooleanFlag(false, "allowFlight");
 	private BooleanFlag enableFlight = new BooleanFlag(false, "enableFlight");
 	
-	private StringFlag scoreType = new StringFlag("custom", "scoretype");
+	private StringFlag mechanic = new StringFlag("custom", "scoretype");
 	private BooleanFlag paintBallMode = new BooleanFlag(false, "paintball");
 	private IntegerFlag paintBallDamage = new IntegerFlag(2, "paintballdmg");
 	private BooleanFlag unlimitedAmmo = new BooleanFlag(false, "unlimitedammo");
@@ -235,7 +237,7 @@ public class Minigame {
 		addConfigFlag(regenDelay);
 		addConfigFlag(rewardItemFlag);
 		addConfigFlag(saveCheckpoints);
-		addConfigFlag(scoreType);
+		addConfigFlag(mechanic);
 		addConfigFlag(secondaryRewardItemFlag);
 		addConfigFlag(spMaxPlayers);
 		addConfigFlag(startLocations);
@@ -924,12 +926,16 @@ public class Minigame {
 		this.blocksdrop.setFlag(blocksdrop);
 	}
 
-	public String getScoreType() {
-		return scoreType.getFlag();
+	public String getMechanicName() {
+		return mechanic.getFlag();
+	}
+	
+	public GameMechanicBase getMechanic(){
+		return GameMechanics.getGameMechanic(mechanic.getFlag());
 	}
 
-	public void setScoreType(String scoreType) {
-		this.scoreType.setFlag(scoreType);
+	public void setMechanic(String scoreType) {
+		this.mechanic.setFlag(scoreType);
 	}
 
 	public boolean isFlagCarrier(MinigamePlayer ply){
@@ -1212,12 +1218,12 @@ public class Minigame {
 
 			@Override
 			public void setValue(String value) {
-				scoreType.setFlag(value.toLowerCase());
+				mechanic.setFlag(value.toLowerCase());
 			}
 
 			@Override
 			public String getValue() {
-				return MinigameUtils.capitalize(scoreType.getFlag());
+				return MinigameUtils.capitalize(mechanic.getFlag());
 			}
 		}, scoreTypes));
 		MenuItemString obj = (MenuItemString) objective.getMenuItem("Objective Description", Material.DIAMOND);

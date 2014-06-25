@@ -71,7 +71,7 @@ public class SetGameMechanicCommand implements ICommand {
 			}
 			
 			if(bool){
-				minigame.setScoreType(args[0].toLowerCase());
+				minigame.setMechanic(args[0].toLowerCase());
 				sender.sendMessage(ChatColor.GRAY + minigame.getName(false) + " game mechanic has been set to " + args[0]);
 				return true;
 			}

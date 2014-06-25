@@ -1,5 +1,6 @@
 package com.pauldavdesign.mineauz.minigames.mechanics;
 
+import java.util.EnumSet;
 import java.util.List;
 
 import org.bukkit.event.EventHandler;
@@ -7,6 +8,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
+import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.MultiplayerType;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
@@ -18,6 +20,11 @@ public class CustomMechanic extends GameMechanicBase{
 	@Override
 	public String getMechanic() {
 		return "custom";
+	}
+
+	@Override
+	public EnumSet<MinigameType> validTypes() {
+		return EnumSet.of(MinigameType.MULTIPLAYER, MinigameType.SINGLEPLAYER);
 	}
 
 	@Override
@@ -75,7 +82,7 @@ public class CustomMechanic extends GameMechanicBase{
 		if(ply.isInMinigame() && ply.getMinigame().isTeamGame()){
 			Minigame mgm = ply.getMinigame();
 			
-			if(mgm.getScoreType().equals("custom")){
+			if(mgm.getMechanicName().equals("custom")){
 				Team smt = null;
 				Team lgt = ply.getTeam();
 				for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
