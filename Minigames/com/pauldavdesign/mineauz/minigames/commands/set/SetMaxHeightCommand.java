@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TreasureHuntModule;
 
 public class SetMaxHeightCommand implements ICommand {
 
@@ -57,7 +58,8 @@ public class SetMaxHeightCommand implements ICommand {
 		if(args != null){
 			if(args[0].matches("[0-9]+")){
 				int num = Integer.parseInt(args[0]);
-				minigame.setMaxHeight(num);
+				TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
+				thm.setMaxHeight(num);
 				sender.sendMessage(ChatColor.GRAY + "Maximum height variance for " + minigame + " has been set to " + num);
 				return true;
 			}

@@ -1,30 +1,26 @@
 package com.pauldavdesign.mineauz.minigames;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Chest;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
 
+import com.pauldavdesign.mineauz.minigames.events.StartGlobalMinigameEvent;
+import com.pauldavdesign.mineauz.minigames.events.StopGlobalMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameTypeBase;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.LoadoutModule;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.LobbySettingsModule;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.WeatherTimeModule;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardGroup;
@@ -36,7 +32,6 @@ public class MinigameData {
 	private Map<String, Minigame> minigames = new HashMap<String, Minigame>();
 	private Map<String, Configuration> configs = new HashMap<String, Configuration>();
 	private Map<MinigameType, MinigameTypeBase> minigameTypes = new HashMap<MinigameType, MinigameTypeBase>();
-	private Map<String, Location> treasureLoc = new HashMap<String, Location>();
 	private Map<String, PlayerLoadout> globalLoadouts = new HashMap<String, PlayerLoadout>();
 	private Map<String, Rewards> rewardSigns = new HashMap<String, Rewards>();
 	private static Minigames plugin = Minigames.plugin;
@@ -52,6 +47,7 @@ public class MinigameData {
 		modules.add(LobbySettingsModule.class);
 		modules.add(TeamsModule.class);
 		modules.add(WeatherTimeModule.class);
+		modules.add(TreasureHuntModule.class);
 	}
 	
 	public List<Class<? extends MinigameModule>> getModules(){
@@ -62,99 +58,23 @@ public class MinigameData {
 		modules.add(module);
 	}
 	
-	public void startGlobalMinigame(final String minigame){
-		final Minigame mgm = getMinigame(minigame);
-		MinigameType gametype = mgm.getType();
-		if(gametype == MinigameType.TREASURE_HUNT && mgm.getLocation() != null){
-			Location tcpos = mgm.getStartLocations().get(0).clone();
-			final Location rpos = tcpos;
-			double rx = 0;
-			double ry = 0;
-			double rz = 0;
-			final int maxradius;
-			if(mgm.getMaxRadius() == 0){
-				maxradius = 1000;
-			}
-			else{
-				maxradius = mgm.getMaxRadius();
-			}
-			final int maxheight = mgm.getMaxHeight();
+	public void startGlobalMinigame(Minigame minigame){ //TODO: Caller Messages
+		if(minigame.getType() == MinigameType.GLOBAL && minigame.getMechanic().validTypes().contains(MinigameType.GLOBAL)){
+			StartGlobalMinigameEvent ev = new StartGlobalMinigameEvent(minigame);
+			Bukkit.getPluginManager().callEvent(ev);
 			
-			Random rand = new Random();
-			int rrad = rand.nextInt(maxradius);
-			double randCir = 2 * Math.PI * rand.nextInt(360) / 360;
-			rx = tcpos.getX() - 0.5 + Math.round(rrad * Math.cos(randCir));
-			rz = tcpos.getZ() - 0.5 + Math.round(rrad * Math.sin(randCir));
-			
-			ry = tcpos.getY() + rand.nextInt(maxheight);
-			
-			rpos.setX(rx);
-			rpos.setY(ry);
-			rpos.setZ(rz);
-			
-			//Add a new Chest
-			if(rpos.getBlock().getType() == Material.AIR){
-				while(rpos.getBlock().getType() == Material.AIR && rpos.getY() > 1){
-					rpos.setY(rpos.getY() - 1);
-				}
-				rpos.setY(rpos.getY() + 1);
-				
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						rpos.getBlock().setType(Material.CHEST);
-					}
+			minigame.setEnabled(true);
+			minigame.saveMinigame();
+		}
+	}
+	
+	public void stopGlobalMinigame(Minigame minigame){ //TODO: Caller Messages
+		if(minigame.getType() == MinigameType.GLOBAL){
+			StopGlobalMinigameEvent ev = new StopGlobalMinigameEvent(minigame);
+			Bukkit.getPluginManager().callEvent(ev);
 
-				});
-			}
-			else
-			{
-				while(rpos.getBlock().getType() != Material.AIR && rpos.getY() < 255){
-					rpos.setY(rpos.getY() + 1);
-				}
-				
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						rpos.getBlock().setType(Material.CHEST);
-					}
-
-				});
-			}
-			
-			//Fill new chest
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				@Override
-				public void run() {
-					if(rpos.getBlock().getState() instanceof Chest){
-						final Chest chest = (Chest) rpos.getBlock().getState();
-						
-						if(!mgm.getRewardItems().getRewards().isEmpty()){
-							int numitems = (int) Math.round(Math.random() * (mgm.getMaxTreasure() - mgm.getMinTreasure())) + mgm.getMinTreasure();
-							
-							final ItemStack[] items = new ItemStack[27];
-							for(int i = 0; i < numitems; i++){
-								RewardItem rew = mgm.getRewardItems().getReward().get(0);
-								if(rew.getItem() != null)
-									items[i] = rew.getItem();
-							}
-							Collections.shuffle(Arrays.asList(items));
-							chest.getInventory().setContents(items);
-						}
-					}
-				}
-
-			});
-			
-			setTreasureHuntLocation(minigame, rpos.getBlock().getLocation());
-			plugin.getLogger().info(MinigameUtils.formStr("minigame.treasurehunt.consSpawn", mgm.getName(false), rpos.getBlockX() + ", " + rpos.getBlockY() + ", " + rpos.getBlockZ()));
-			MinigameUtils.broadcast(MinigameUtils.formStr("minigame.treasurehunt.plySpawn", maxradius, mgm.getLocation()), getMinigame(minigame), "minigame.treasure.announce");
-			if(getMinigame(minigame).getThTimer() == null){
-				getMinigame(minigame).setThTimer(new TreasureHuntTimer(mgm));
-				getMinigame(minigame).getThTimer().startTimer();
-			}
+			minigame.setEnabled(false);
+			minigame.saveMinigame();
 		}
 	}
 	
@@ -217,70 +137,6 @@ public class MinigameData {
 	public void removeConfigurationFile(String filename){
 		if(configs.containsKey(filename)){
 			configs.remove(filename);
-		}
-	}
-	
-	public void setTreasureHuntLocation(String minigame, Location location){
-		treasureLoc.put(minigame, location);
-	}
-	
-	public boolean hasTreasureHuntLocation(String minigame){
-		return treasureLoc.containsKey(minigame);
-	}
-	
-	public Location getTreasureHuntLocation(String minigame){
-		if(treasureLoc.containsKey(minigame)){
-			return treasureLoc.get(minigame);
-		}
-		return null;
-	}
-	
-	public Set<String> getAllTreasureHuntLocation(){
-		return treasureLoc.keySet();
-	}
-	
-	public boolean hasTreasureHuntLocations(){
-		if(!treasureLoc.isEmpty()){
-			return true;
-		}
-		return false;
-	}
-	
-	public void removeTreasureHuntLocation(String minigame){
-		treasureLoc.remove(minigame);
-	}
-	
-	public void removeTreasure(final String minigame){
-		if(getTreasureHuntLocation(minigame) != null){
-			final Location old = getTreasureHuntLocation(minigame).clone();
-			boolean loaded = false;
-			Chunk c = null;
-			if(!old.getWorld().isChunkLoaded(old.getBlockX() >> 4, old.getBlockZ() >> 4) && !old.getWorld().isChunkInUse(old.getBlockX() >> 4, old.getBlockZ() >> 4)){
-				old.getChunk().load();
-				loaded = true;
-				c = old.getChunk();
-			}
-			
-			if(old.getBlock().getState() instanceof Chest){
-				Chest chest = (Chest) getTreasureHuntLocation(minigame).getBlock().getState();
-				chest.getInventory().clear();
-			}
-			
-			old.getBlock().setType(Material.AIR);
-			if(loaded && c.getWorld().isChunkLoaded(c) && !c.getWorld().isChunkInUse(c.getX(), c.getZ())){
-				c.unload();
-			}
-		}
-	}
-	public void removeTreasureNoDelay(String minigame){
-		if(getTreasureHuntLocation(minigame) != null){
-			Location old = getTreasureHuntLocation(minigame);
-			if(getTreasureHuntLocation(minigame).getBlock().getState() instanceof Chest){
-				Chest chest = (Chest) getTreasureHuntLocation(minigame).getBlock().getState();
-				chest.getInventory().clear();
-			}
-			
-			old.getBlock().setType(Material.AIR);
 		}
 	}
 	

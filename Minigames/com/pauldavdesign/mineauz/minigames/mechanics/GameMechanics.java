@@ -11,6 +11,7 @@ public class GameMechanics {
 		addGameMechanic(new CTFMechanic());
 		addGameMechanic(new InfectionMechanic());
 		addGameMechanic(new CustomMechanic());
+		addGameMechanic(new TreasureHuntMechanic());
 	}
 	
 	public static void addGameMechanic(GameMechanicBase type){

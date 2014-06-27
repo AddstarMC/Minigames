@@ -30,7 +30,7 @@ public class StartCommand implements ICommand{
 
 	@Override
 	public String getDescription() {
-		return "Starts a Treasure Hunt Minigame. If the game isn't treasure hunt, it will force start a game begin countdown without waiting for players.";
+		return "Starts a Global Minigame. If the game isn't Global, it will force start a game begin countdown without waiting for players.";
 	}
 
 	@Override
@@ -60,26 +60,24 @@ public class StartCommand implements ICommand{
 			Minigame mgm = plugin.mdata.getMinigame(args[0]);
 			
 			if(mgm != null){
-				if(mgm.getThTimer() == null && mgm.getType() == MinigameType.TREASURE_HUNT){
-					plugin.mdata.startGlobalMinigame(mgm.getName(false));
-					mgm.setEnabled(true);
-					mgm.saveMinigame();
+				if(!mgm.isEnabled() && mgm.getType() == MinigameType.GLOBAL){
+					plugin.mdata.startGlobalMinigame(mgm);
 				}
-				else if(mgm.getType() != MinigameType.TREASURE_HUNT && mgm.getType() != MinigameType.SINGLEPLAYER && mgm.hasPlayers()){
+				else if(mgm.getType() != MinigameType.GLOBAL && mgm.getType() != MinigameType.SINGLEPLAYER && mgm.hasPlayers()){
 					if(mgm.getMpTimer() == null){
 						mgm.setMpTimer(new MultiplayerTimer(mgm));
 						mgm.getMpTimer().setPlayerWaitTime(0);
 						mgm.getMpTimer().startTimer();
-					}
+					}//TODO Add else for timer started and to skip waiting for players
 					else
 						sender.sendMessage(ChatColor.RED + mgm.getName(false) + " has already started.");
 				}
-				else if(mgm.getThTimer() != null){
+				else if(mgm.isEnabled() && mgm.getType() == MinigameType.GLOBAL){
 					sender.sendMessage(ChatColor.RED + mgm.getName(false) + " is already running!");
 				}
 			}
 			else{
-				sender.sendMessage(ChatColor.RED + "No Treasure Hunt or Multiplayer Minigame found by the name " + args[0]);
+				sender.sendMessage(ChatColor.RED + "No Global or Multiplayer Minigame found by the name " + args[0]);
 			}
 			return true;
 		}

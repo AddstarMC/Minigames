@@ -26,6 +26,8 @@ public class MinigameTimer{
 	}
 	
 	public void startTimer(){
+		if(taskID != -1)
+			stopTimer();
 		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 			
 			@Override
@@ -51,7 +53,9 @@ public class MinigameTimer{
 					Bukkit.getServer().getPluginManager().callEvent(new TimerExpireEvent(minigame));
 					stopTimer();
 				}
-				Bukkit.getPluginManager().callEvent(new MinigameTimerTickEvent(minigame, minigame.getMinigameTimer()));
+				
+				if(time != 0)
+					Bukkit.getPluginManager().callEvent(new MinigameTimerTickEvent(minigame, minigame.getMinigameTimer()));
 			}
 		}, 0, 20);
 	}

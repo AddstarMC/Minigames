@@ -22,7 +22,6 @@ import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.MultiplayerBets;
 import com.pauldavdesign.mineauz.minigames.MultiplayerTimer;
-import com.pauldavdesign.mineauz.minigames.TreasureHuntTimer;
 import com.pauldavdesign.mineauz.minigames.blockRecorder.RecorderData;
 import com.pauldavdesign.mineauz.minigames.config.BooleanFlag;
 import com.pauldavdesign.mineauz.minigames.config.EnumFlag;
@@ -80,20 +79,15 @@ public class Minigame {
 	private FloorDegenerator sfloordegen;
 	private IntegerFlag floorDegenTime = new IntegerFlag(Minigames.plugin.getConfig().getInt("multiplayer.floordegenerator.time"), "floordegentime");
 	
-	private LocationListFlag startLocations = new LocationListFlag(new ArrayList<Location>(), "startpos");
+	private LocationListFlag startLocations = new LocationListFlag(null, "startpos");
 	private LocationFlag endPosition = new LocationFlag(null, "endpos");
 	private LocationFlag quitPosition = new LocationFlag(null, "quitpos");
 	private LocationFlag lobbyPosisiton = new LocationFlag(null, "lobbypos");
 	
-	private StringFlag location = new StringFlag(null, "location");
-	private IntegerFlag maxRadius = new IntegerFlag(1000, "maxradius");
-	private IntegerFlag maxHeight = new IntegerFlag(20, "maxheight");
-	private IntegerFlag minTreasure = new IntegerFlag(0, "mintreasure");
-	private IntegerFlag maxTreasure = new IntegerFlag(8, "maxtreasure");
 	private Rewards rewardItem = new Rewards();
-	private RewardsFlag rewardItemFlag = new RewardsFlag(rewardItem, "reward");
+	private RewardsFlag rewardItemFlag = new RewardsFlag(null, "reward");
 	private Rewards secondaryRewardItem = new Rewards();
-	private RewardsFlag secondaryRewardItemFlag = new RewardsFlag(secondaryRewardItem, "reward2");
+	private RewardsFlag secondaryRewardItemFlag = new RewardsFlag(null, "reward2");
 	private BooleanFlag usePermissions = new BooleanFlag(false, "usepermissions");
 	private IntegerFlag timer = new IntegerFlag(0, "timer");
 	private BooleanFlag useXPBarTimer = new BooleanFlag(true, "useXPBarTimer");
@@ -135,7 +129,7 @@ public class Minigame {
 
 //	private List<Location> startLocationsBlue = new ArrayList<Location>(); //TODO: Remove
 //	private List<Location> startLocationsRed = new ArrayList<Location>(); //TODO: Remove
-//	private String defaultWinner = "none"; //TODO: Use TeamColor object
+//	private String defaultWinner = "none";
 //	private Team defaultWinner = null;
 	
 	private BooleanFlag canSpectateFly = new BooleanFlag(false, "canspectatefly");
@@ -158,8 +152,6 @@ public class Minigame {
 	//CTF
 	private Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<MinigamePlayer, CTFFlag>();
 	private Map<String, CTFFlag> droppedFlag = new HashMap<String, CTFFlag>();
-	//TreasureHunt
-	private TreasureHuntTimer thTimer = null;
 
 	public Minigame(String name, MinigameType type, Location start){
 		this.name = name;
@@ -173,7 +165,12 @@ public class Minigame {
 	
 	private void setup(MinigameType type, Location start){
 		this.type.setFlag(type);
-		startLocations.getFlag().add(start);
+		startLocations.setFlag(new ArrayList<Location>());
+		rewardItemFlag.setFlag(rewardItem);
+		secondaryRewardItemFlag.setFlag(secondaryRewardItem);
+		
+		if(start != null)
+			startLocations.getFlag().add(start);
 		
 		sbManager.registerNewObjective(this.name, "dummy");
 		sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -216,17 +213,12 @@ public class Minigame {
 		addConfigFlag(lateJoin);
 		addConfigFlag(lives);
 		addConfigFlag(lobbyPosisiton);
-		addConfigFlag(location);
 		addConfigFlag(maxChestRandom);
-		addConfigFlag(maxHeight);
 		addConfigFlag(maxPlayers);
-		addConfigFlag(maxRadius);
 		addConfigFlag(maxScore);
-		addConfigFlag(maxTreasure);
 		addConfigFlag(minChestRandom);
 		addConfigFlag(minPlayers);
 		addConfigFlag(minScore);
-		addConfigFlag(minTreasure);
 		addConfigFlag(objective);
 		addConfigFlag(paintBallDamage);
 		addConfigFlag(paintBallMode);
@@ -293,30 +285,6 @@ public class Minigame {
 	
 	public Rewards getRewardItems(){
 		return rewardItem;
-	}
-
-	public void setMaxRadius(int maxRadius){
-		this.maxRadius.setFlag(maxRadius);
-	}
-
-	public int getMaxRadius(){
-		return maxRadius.getFlag();
-	}
-
-	public int getMaxHeight() {
-		return maxHeight.getFlag();
-	}
-
-	public void setMaxHeight(int maxHeight) {
-		this.maxHeight.setFlag(maxHeight);
-	}
-
-	public String getLocation(){
-		return location.getFlag();
-	}
-
-	public void setLocation(String location){
-		this.location.setFlag(location);
 	}
 	
 	public boolean hasFlags(){
@@ -541,14 +509,6 @@ public class Minigame {
 		return usePermissions.getFlag();
 	}
 	
-	public TreasureHuntTimer getThTimer() {
-		return thTimer;
-	}
-
-	public void setThTimer(TreasureHuntTimer thTimer) {
-		this.thTimer = thTimer;
-	}
-
 	public List<MinigamePlayer> getPlayers() {
 		return players;
 	}
@@ -808,22 +768,6 @@ public class Minigame {
 			score = minScore.getFlag();
 		}
 		return score;
-	}
-
-	public int getMinTreasure() {
-		return minTreasure.getFlag();
-	}
-
-	public void setMinTreasure(int minTreasure) {
-		this.minTreasure.setFlag(minTreasure);
-	}
-
-	public int getMaxTreasure() {
-		return maxTreasure.getFlag();
-	}
-
-	public void setMaxTreasure(int maxTreasure) {
-		this.maxTreasure.setFlag(maxTreasure);
 	}
 
 	public FloorDegenerator getFloorDegenerator() {
@@ -1197,7 +1141,6 @@ public class Minigame {
 	public void displayMenu(MinigamePlayer player){
 		Menu main = new Menu(6, getName(false), player);
 		Menu playerMenu = new Menu(6, getName(false), player);
-		Menu treasureHunt = new Menu(6, getName(false), player);
 		Menu loadouts = new Menu(6, getName(false), player);
 		Menu flags = new Menu(6, getName(false), player);
 		Menu lobby = new Menu(6, getName(false), player);
@@ -1316,11 +1259,11 @@ public class Minigame {
 		List<String> thDes = new ArrayList<String>();
 		thDes.add("Treasure hunt related");
 		thDes.add("settings.");
-		itemsMain.add(new MenuItemPage("Treasure Hunt Settings", thDes, Material.CHEST, treasureHunt));
+//		itemsMain.add(new MenuItemPage("Treasure Hunt Settings", thDes, Material.CHEST, treasureHunt));
 //		MenuItemDisplayLoadout defLoad = new MenuItemDisplayLoadout("Default Loadout", Material.DIAMOND_SWORD, LoadoutModule.getMinigameModule(this).getDefaultPlayerLoadout(), this);
 //		defLoad.setAllowDelete(false);
 //		itemsMain.add(defLoad);
-		itemsMain.add(new MenuItemPage("Additional Loadouts", Material.CHEST, loadouts));
+		itemsMain.add(new MenuItemPage("Loadouts", Material.CHEST, loadouts));
 		itemsMain.add(canSpectateFly.getMenuItem("Allow Spectator Fly", Material.FEATHER));
 		List<String> rndChstDes = new ArrayList<String>();
 		rndChstDes.add("Randomize items in");
@@ -1353,29 +1296,6 @@ public class Minigame {
 		
 		main.addItems(itemsMain);
 		main.addItem(new MenuItemSaveMinigame("Save " + getName(false), Material.REDSTONE_TORCH_ON, this), main.getSize() - 1);
-
-		//--------------------//
-		//Treasure Hunt Settings
-		//--------------------//
-		List<MenuItem> itemsTreasureHunt = new ArrayList<MenuItem>(5);
-		itemsTreasureHunt.add(location.getMenuItem("Location Name", Material.BED, MinigameUtils.stringToList("Name to appear when;treasure spawns")));
-		itemsTreasureHunt.add(maxRadius.getMenuItem("Max. Radius", Material.ENDER_PEARL, 10, null));
-		List<String> maxHeightDes = new ArrayList<String>();
-		maxHeightDes.add("Max. height of where a");
-		maxHeightDes.add("chest can generate.");
-		maxHeightDes.add("Can still move above to");
-		maxHeightDes.add("avoid terrain");
-		itemsTreasureHunt.add(maxHeight.getMenuItem("Max. Height", Material.BEACON, maxHeightDes, 1, 256));
-		List<String> minDes = new ArrayList<String>();
-		minDes.add("Minimum items to");
-		minDes.add("spawn in chest.");
-		itemsTreasureHunt.add(minTreasure.getMenuItem("Min. Items", Material.STEP, minDes, 0, 27));
-		List<String> maxDes = new ArrayList<String>();
-		maxDes.add("Maximum items to");
-		maxDes.add("spawn in chest.");
-		itemsTreasureHunt.add(maxTreasure.getMenuItem("Max. Items", Material.DOUBLE_STEP, maxDes, 0, 27));
-		treasureHunt.addItems(itemsTreasureHunt);
-		treasureHunt.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
 
 		//----------------------//
 		//Minigame Player Settings
@@ -1499,15 +1419,6 @@ public class Minigame {
 		MinigameSave minigame = new MinigameSave(name, "config");
 		FileConfiguration cfg = minigame.getConfig();
 		
-		for(MinigameModule module : getModules()){
-			if(!module.useSeparateConfig())
-				module.load(cfg);
-			else{
-				MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
-				module.load(modsave.getConfig());
-			}
-		}
-		
 		//-----------------------------------------------
 		//TODO: Remove me after 1.7
 		if(cfg.contains(name + ".type")){
@@ -1520,8 +1431,21 @@ public class Minigame {
 			else if(cfg.getString(name + ".type").equals("FREE_FOR_ALL")){
 				cfg.set(name + ".type", "MULTIPLAYER");
 			}
+			else if(cfg.getString(name + ".type").equals("TREASURE_HUNT")){
+				cfg.set(name + ".type", "GLOBAL");
+				cfg.set(name + ".scoretype", "treasure_hunt");
+			}
 		}
 		//-----------------------------------------------
+		
+		for(MinigameModule module : getModules()){
+			if(!module.useSeparateConfig())
+				module.load(cfg);
+			else{
+				MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
+				module.load(modsave.getConfig());
+			}
+		}
 		
 		for(String flag : configFlags.keySet()){
 			if(cfg.contains(name + "." + flag))
@@ -1576,12 +1500,14 @@ public class Minigame {
 //		Bukkit.getLogger().info("Enabled: " + isEnabled());
 //		Bukkit.getLogger().info("-----------------------------");
 		
-		if(getType() == MinigameType.TREASURE_HUNT && isEnabled()){
+		final Minigame mgm = this;
+		
+		if(getType() == MinigameType.GLOBAL && isEnabled()){
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
 				
 				@Override
 				public void run() {
-					Minigames.plugin.mdata.startGlobalMinigame(getName(false));
+					Minigames.plugin.mdata.startGlobalMinigame(mgm);
 				}
 			});
 		}

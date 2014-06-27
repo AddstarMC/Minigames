@@ -3,7 +3,8 @@ package com.pauldavdesign.mineauz.minigames.gametypes;
 public enum MinigameType {
 	SINGLEPLAYER("Singleplayer"),
 	MULTIPLAYER("Multiplayer"),
-	TREASURE_HUNT("Treasure Hunt");
+//	TREASURE_HUNT("Treasure Hunt");
+	GLOBAL("Global");
 	
 	private String name;
 	

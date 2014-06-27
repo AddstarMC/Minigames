@@ -159,7 +159,7 @@ minigame:
       timeLeft: "Time Left: %s minutes"
       noUse: "You currently cannot get a hint for the %s treasure hunt!"
       nextUse: "Next Use: %s"
-      treasureTimeLeft: "Treasure Time Left: %s minutes"
+      treasureTimeLeft: "Treasure Time Left: %s"
       globalHints: "Global Hints:"
       noHint: "Sorry, there are no public hints to be displayed right now"
       wrongWorld:

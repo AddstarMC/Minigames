@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TreasureHuntModule;
 
 public class SetLocationCommand implements ICommand{
 
@@ -61,7 +62,8 @@ public class SetLocationCommand implements ICommand{
 					location += " ";
 				}
 			}
-			minigame.setLocation(location);
+			TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
+			thm.setLocation(location);
 			sender.sendMessage(ChatColor.GRAY + "The location name for " + minigame + " has been set to " + location);
 			return true;
 		}

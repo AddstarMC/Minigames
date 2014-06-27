@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TreasureHuntModule;
 
 public class SetMaxRadiusCommand implements ICommand{
 
@@ -56,7 +57,8 @@ public class SetMaxRadiusCommand implements ICommand{
 		if(args != null){
 			if(args[0].matches("[0-9]+")){
 				int max = Integer.parseInt(args[0]);
-				minigame.setMaxRadius(max);
+				TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
+				thm.setMaxRadius(max);
 				sender.sendMessage(ChatColor.GRAY + "Maximum treasure spawn radius has been set to " + max + " for " + minigame.getName(false));
 				return true;
 			}

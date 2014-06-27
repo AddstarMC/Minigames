@@ -30,6 +30,7 @@ import org.bukkit.potion.PotionEffectType;
 
 
 
+
 import com.pauldavdesign.mineauz.minigames.Metrics.Graph;
 import com.pauldavdesign.mineauz.minigames.blockRecorder.BasicRecorder;
 import com.pauldavdesign.mineauz.minigames.commands.CommandDispatcher;
@@ -37,6 +38,7 @@ import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.MultiplayerType;
 import com.pauldavdesign.mineauz.minigames.gametypes.SingleplayerType;
 import com.pauldavdesign.mineauz.minigames.mechanics.GameMechanics;
+import com.pauldavdesign.mineauz.minigames.mechanics.TreasureHuntMechanic;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.signs.SignBase;
 import com.pauldavdesign.mineauz.minigames.sql.SQLCompletionSaver;
@@ -232,12 +234,14 @@ public class Minigames extends JavaPlugin{
 				pdata.quitMinigame(pdata.getMinigamePlayer(p), true);
 			}
 		}
-		Set<String> mgtreasure = mdata.getAllTreasureHuntLocation();
-		for(String minigame : mgtreasure){
-			if(mdata.getMinigame(minigame).getThTimer() != null){
-				mdata.getMinigame(minigame).getThTimer().stopTimer();
+		for(Minigame minigame : mdata.getAllMinigames().values()){
+			if(minigame.getType() == MinigameType.GLOBAL && 
+					minigame.getMechanicName().equals("treasure_hunt") && 
+					minigame.isEnabled()){
+				if(minigame.getMinigameTimer() != null)
+					minigame.getMinigameTimer().stopTimer();
+				TreasureHuntMechanic.removeTreasure(minigame);
 			}
-			mdata.removeTreasureNoDelay(minigame);
 		}
 		for(Minigame mg : mdata.getAllMinigames().values()){
 			mg.saveMinigame();

@@ -29,7 +29,7 @@ public class StopCommand implements ICommand{
 
 	@Override
 	public String getDescription() {
-		return "Stops a currently running Treasure Hunt Minigame.";
+		return "Stops a currently running Global Minigame.";
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class StopCommand implements ICommand{
 
 	@Override
 	public String getPermissionMessage() {
-		return "You do not have permission to stop Treasure Hunt Minigames!";
+		return "You do not have permission to stop Global Minigames!";
 	}
 
 	@Override
@@ -58,18 +58,11 @@ public class StopCommand implements ICommand{
 		if(args != null){
 			Minigame mgm = plugin.mdata.getMinigame(args[0]);
 			
-			if(mgm != null && mgm.getThTimer() != null && mgm.getType() == MinigameType.TREASURE_HUNT){
-				if(mgm.getThTimer().getChestInWorld()){
-					MinigameUtils.broadcast(MinigameUtils.formStr("minigame.treasurehunt.plyRemoved", mgm.getName(true)), mgm, "minigame.treasure.announce");
-				}
-				mgm.getThTimer().stopTimer();
-				plugin.mdata.removeTreasure(mgm.getName(false));
-				mgm.setThTimer(null);
-				mgm.setEnabled(false);
-				mgm.saveMinigame();
+			if(mgm != null && mgm.isEnabled() && mgm.getType() == MinigameType.GLOBAL){
+				plugin.mdata.stopGlobalMinigame(mgm);
 			}
-			else if(mgm == null || mgm.getType() != MinigameType.TREASURE_HUNT){
-				sender.sendMessage(ChatColor.RED + "There is no TreasureHunt Minigame by the name \"" + args[0] + "\"");
+			else if(mgm == null || mgm.getType() != MinigameType.GLOBAL){
+				sender.sendMessage(ChatColor.RED + "There is no Global Minigame by the name \"" + args[0] + "\"");
 			}
 			else{
 				sender.sendMessage(ChatColor.RED + mgm.getName(false) + " is not running!");
@@ -84,7 +77,7 @@ public class StopCommand implements ICommand{
 			String alias, String[] args) {
 		List<String> mgs = new ArrayList<String>();
 		for(Minigame mg : plugin.mdata.getAllMinigames().values()){
-			if(mg.getType() == MinigameType.TREASURE_HUNT)
+			if(mg.getType() == MinigameType.GLOBAL)
 				mgs.add(mg.getName(false));
 		}
 		return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);

@@ -12,7 +12,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Egg;
@@ -161,10 +160,12 @@ public class Events implements Listener{
 		
 		if(Bukkit.getServer().getOnlinePlayers().length == 1){
 			for(String mgm : mdata.getAllMinigames().keySet()){
-				if(mdata.getMinigame(mgm).getType() == MinigameType.TREASURE_HUNT){
-					if(mdata.getMinigame(mgm).getThTimer() != null){
-						mdata.getMinigame(mgm).getThTimer().pauseTimer(true);
-					}
+				if(mdata.getMinigame(mgm).getType() == MinigameType.GLOBAL){
+//					if(mdata.getMinigame(mgm).getThTimer() != null){
+//						mdata.getMinigame(mgm).getThTimer().pauseTimer(true);
+//					}
+					if(mdata.getMinigame(mgm).getMinigameTimer() != null)
+						mdata.getMinigame(mgm).getMinigameTimer().stopTimer();
 				}
 			}
 		}
@@ -198,10 +199,12 @@ public class Events implements Listener{
 		
 		if(Bukkit.getServer().getOnlinePlayers().length == 1){
 			for(String mgm : mdata.getAllMinigames().keySet()){
-				if(mdata.getMinigame(mgm).getType() == MinigameType.TREASURE_HUNT){
-					if(mdata.getMinigame(mgm).getThTimer() != null){
-						mdata.getMinigame(mgm).getThTimer().pauseTimer(false);
-					}
+				if(mdata.getMinigame(mgm).getType() == MinigameType.GLOBAL){
+//					if(mdata.getMinigame(mgm).getThTimer() != null){
+//						mdata.getMinigame(mgm).getThTimer().pauseTimer(false);
+//					}
+					if(mdata.getMinigame(mgm).getMinigameTimer() != null)
+						mdata.getMinigame(mgm).getMinigameTimer().startTimer();
 				}
 			}
 		}
@@ -217,34 +220,7 @@ public class Events implements Listener{
 			return;
 		}
 		
-		if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
-			Block cblock = event.getClickedBlock();
-			if(cblock.getState() instanceof Chest && !event.isCancelled()){
-				if(mdata.hasTreasureHuntLocations()){
-					for(String minigame : mdata.getAllTreasureHuntLocation()){
-						if(mdata.getMinigame(minigame).getThTimer() != null){
-							if(mdata.getMinigame(minigame).getThTimer().getTreasureFound() == false && mdata.getMinigame(minigame).getThTimer().getChestInWorld()){
-								int x1 = mdata.getTreasureHuntLocation(minigame).getBlockX();
-								int x2 = cblock.getLocation().getBlockX();
-								int y1 = mdata.getTreasureHuntLocation(minigame).getBlockY();
-								int y2 = cblock.getLocation().getBlockY();
-								int z1 = mdata.getTreasureHuntLocation(minigame).getBlockZ();
-								int z2 = cblock.getLocation().getBlockZ();
-								if(x2 == x1 && y2 == y1 && z2 == z1){
-									MinigameUtils.broadcast(MinigameUtils.formStr("minigame.treasurehunt.plyfound", event.getPlayer().getDisplayName(), mdata.getMinigame(minigame).getName(true)), mdata.getMinigame(minigame), "minigame.treasure.announce");
-									event.setCancelled(true);
-									Chest chest = (Chest) cblock.getState();
-									event.getPlayer().openInventory(chest.getInventory());
-									mdata.getMinigame(minigame).getThTimer().setTreasureFound(true);
-									mdata.getMinigame(minigame).getThTimer().setTimeLeft(5);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		else if(event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("minigame.sign.use.details")){
+		if(event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("minigame.sign.use.details")){
 			Block cblock = event.getClickedBlock();
 			if(cblock.getState() instanceof Sign && !event.isCancelled()){
 				Sign sign = (Sign) cblock.getState();

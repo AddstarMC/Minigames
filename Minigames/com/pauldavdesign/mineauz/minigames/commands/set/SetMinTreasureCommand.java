@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 
 import com.pauldavdesign.mineauz.minigames.commands.ICommand;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TreasureHuntModule;
 
 public class SetMinTreasureCommand implements ICommand {
 
@@ -56,7 +57,8 @@ public class SetMinTreasureCommand implements ICommand {
 		if(args != null){
 			if(args[0].matches("[0-9]+")){
 				int amount = Integer.parseInt(args[0]);
-				minigame.setMinTreasure(amount);
+				TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
+				thm.setMinTreasure(amount);
 				sender.sendMessage(ChatColor.GRAY + "Minimum items has been set to " + amount + " for " + minigame);
 				return true;
 			}

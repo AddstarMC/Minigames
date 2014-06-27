@@ -7,10 +7,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
-import com.pauldavdesign.mineauz.minigames.TreasureHuntTimer;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.modules.TreasureHuntModule;
 
 public class HintCommand implements ICommand{
 
@@ -57,27 +58,28 @@ public class HintCommand implements ICommand{
 	@Override
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
-		Player player = (Player)sender;
+		MinigamePlayer player = plugin.pdata.getMinigamePlayer((Player)sender);
 		if(args != null){
 			Minigame mgm = plugin.mdata.getMinigame(args[0]);
 			
-			if(mgm != null && mgm.getThTimer() != null && mgm.getType() == MinigameType.TREASURE_HUNT){
-				TreasureHuntTimer treasure = mgm.getThTimer();
-				if(treasure.getChestInWorld() && treasure.getTreasureFound() == false){
-					treasure.hints(player);
+			if(mgm != null && mgm.getMinigameTimer() != null && mgm.getType() == MinigameType.GLOBAL && 
+					mgm.getMechanicName().equals("treasure_hunt")){
+				TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
+				if(thm.hasTreasureLocation() && !thm.isTreasureFound()){
+					thm.getHints(player);
 				}
 				else{
 					player.sendMessage(ChatColor.GRAY + mgm.getName(false) + " is currently not running.");
 				}
 			}
-			else if(mgm == null || mgm.getType() != MinigameType.TREASURE_HUNT){
+			else if(mgm == null || mgm.getType() != MinigameType.GLOBAL){
 				player.sendMessage(ChatColor.RED + "There is no treasure hunt running by the name \"" + args[0] + "\"");
 			}
 		}
 		else{
 			List<Minigame> mgs = new ArrayList<Minigame>();
 			for(Minigame mg : plugin.mdata.getAllMinigames().values()){
-				if(mg.getType() != null && mg.getType() == MinigameType.TREASURE_HUNT){
+				if(mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals("treasure_hunt")){
 					mgs.add(mg);
 				}
 			}
@@ -94,9 +96,9 @@ public class HintCommand implements ICommand{
 					player.sendMessage(ChatColor.GRAY + treasures);
 				}
 				else{
-					TreasureHuntTimer treasure = mgs.get(0).getThTimer();
-					if(treasure.getChestInWorld() && treasure.getChestInWorld() && !treasure.getTreasureFound()){
-						treasure.hints(player);
+					TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgs.get(0));
+					if(thm.hasTreasureLocation() && !thm.isTreasureFound()){
+						thm.getHints(player);
 					}
 					else{
 						player.sendMessage(ChatColor.GRAY + mgs.get(0).getName(false) + " is currently not running.");
@@ -116,7 +118,7 @@ public class HintCommand implements ICommand{
 		if(args.length == 1){
 			List<String> mgs = new ArrayList<String>();
 			for(Minigame mg : plugin.mdata.getAllMinigames().values()){
-				if(mg.getType() == MinigameType.TREASURE_HUNT)
+				if(mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals("treasure_hunt"))
 					mgs.add(mg.getName(false));
 			}
 			return MinigameUtils.tabCompleteMatch(mgs, args[0]);

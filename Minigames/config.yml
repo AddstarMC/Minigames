@@ -1,8 +1,6 @@
 treasurehunt:
-  findtime: 60
-  # Time players have to find the treasure (minutes)
-  waittime: 60
-  # Time to wait before spawning a new treasure after the time was up (minutes)
+  waittime: 3600
+  # Time to wait before spawning a new treasure after the time was up (seconds)
 
 multiplayer:
   waitforplayers: 10
@@ -39,7 +37,7 @@ regeneration:
 updateChecker: true
 # Whether the plugin should check for updates
 
-lang: 'en_US'
+lang: 'en_AU'
 # Select language
   
 use-sql: false
