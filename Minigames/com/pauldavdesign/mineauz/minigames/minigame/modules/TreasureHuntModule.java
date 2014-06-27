@@ -20,6 +20,7 @@ import com.pauldavdesign.mineauz.minigames.config.StringFlag;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemPage;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemTime;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
 
@@ -31,6 +32,7 @@ public class TreasureHuntModule extends MinigameModule{
 	private IntegerFlag minTreasure = new IntegerFlag(0, "mintreasure");
 	private IntegerFlag maxTreasure = new IntegerFlag(8, "maxtreasure");
 	private IntegerFlag treasureWaitTime = new IntegerFlag(Minigames.plugin.getConfig().getInt("treasurehunt.waittime"), "treasurehuntwait");
+	private IntegerFlag hintWaitTime = new IntegerFlag(500, "hintWaitTime");
 	
 	//Unsaved Data
 	private Location treasureLocation = null;
@@ -56,6 +58,7 @@ public class TreasureHuntModule extends MinigameModule{
 		flags.put(minTreasure.getName(), minTreasure);
 		flags.put(maxTreasure.getName(), maxTreasure);
 		flags.put(treasureWaitTime.getName(), treasureWaitTime);
+		flags.put(hintWaitTime.getName(), hintWaitTime);
 		return flags;
 	}
 
@@ -93,6 +96,8 @@ public class TreasureHuntModule extends MinigameModule{
 		maxDes.add("Maximum items to");
 		maxDes.add("spawn in chest.");
 		itemsTreasureHunt.add(maxTreasure.getMenuItem("Max. Items", Material.DOUBLE_STEP, maxDes, 0, 27));
+		itemsTreasureHunt.add(new MenuItemTime("Restart Delay", Material.WATCH, treasureWaitTime.getCallback(), 0, null));
+		itemsTreasureHunt.add(new MenuItemTime("Hint Usage Delay", Material.WATCH, hintWaitTime.getCallback(), 0, null));
 		treasureHunt.addItems(itemsTreasureHunt);
 		treasureHunt.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, menu), treasureHunt.getSize() - 9);
 		menu.addItem(new MenuItemPage("Treasure Hunt Settings", Material.CHEST, treasureHunt));
@@ -192,7 +197,7 @@ public class TreasureHuntModule extends MinigameModule{
 		if(hintUse.containsKey(player.getUUID())){
 			long curtime = System.currentTimeMillis();
 			long lastuse = curtime - hintUse.get(player.getUUID());
-			if(lastuse >= 60000 * 5) //TODO: Custom wait time (replace 5)
+			if(lastuse >= getHintDelay() * 1000)
 				return true;
 			return false;
 		}
@@ -264,5 +269,13 @@ public class TreasureHuntModule extends MinigameModule{
 			}
 			player.sendMessage(ChatColor.RED + MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.wrongWorld", world));
 		}
+	}
+	
+	public void setHintDelay(int time){
+		hintWaitTime.setFlag(time);
+	}
+	
+	public int getHintDelay(){
+		return hintWaitTime.getFlag();
 	}
 }

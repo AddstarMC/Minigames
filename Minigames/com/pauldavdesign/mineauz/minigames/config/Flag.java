@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import com.pauldavdesign.mineauz.minigames.menu.Callback;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 
 public abstract class Flag<T> {
@@ -31,6 +32,21 @@ public abstract class Flag<T> {
 	
 	public T getDefaultFlag(){
 		return defaultVal;
+	}
+	
+	public Callback<T> getCallback(){
+		return new Callback<T>() {
+
+			@Override
+			public void setValue(T value) {
+				setFlag(value);
+			}
+
+			@Override
+			public T getValue() {
+				return getFlag();
+			}
+		};
 	}
 	
 	protected void setDefaultFlag(T value){
