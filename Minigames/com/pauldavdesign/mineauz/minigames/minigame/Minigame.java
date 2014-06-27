@@ -1434,6 +1434,7 @@ public class Minigame {
 			else if(cfg.getString(name + ".type").equals("TREASURE_HUNT")){
 				cfg.set(name + ".type", "GLOBAL");
 				cfg.set(name + ".scoretype", "treasure_hunt");
+				cfg.set(name + ".timer", Minigames.plugin.getConfig().getInt("treasurehunt.findtime") * 60);
 			}
 		}
 		//-----------------------------------------------
