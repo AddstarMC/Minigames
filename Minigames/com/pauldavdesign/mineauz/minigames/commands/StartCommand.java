@@ -64,11 +64,12 @@ public class StartCommand implements ICommand{
 					plugin.mdata.startGlobalMinigame(mgm);
 				}
 				else if(mgm.getType() != MinigameType.GLOBAL && mgm.getType() != MinigameType.SINGLEPLAYER && mgm.hasPlayers()){
-					if(mgm.getMpTimer() == null){
-						mgm.setMpTimer(new MultiplayerTimer(mgm));
+					if(mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
+						if(mgm.getMpTimer() == null)
+							mgm.setMpTimer(new MultiplayerTimer(mgm));
 						mgm.getMpTimer().setPlayerWaitTime(0);
 						mgm.getMpTimer().startTimer();
-					}//TODO Add else for timer started and to skip waiting for players
+					}
 					else
 						sender.sendMessage(ChatColor.RED + mgm.getName(false) + " has already started.");
 				}
