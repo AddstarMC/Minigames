@@ -180,13 +180,21 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 	@EventHandler
 	private void startGame(StartGlobalMinigameEvent event){
 		final TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(event.getMinigame());
-		if(event.getMechanic().equals(getMechanic()) && thm.getLocation() != null){
-			Minigame mgm = event.getMinigame();
-			
-			spawnTreasure(mgm);
-			
-			if(Bukkit.getOnlinePlayers().length == 0)
-				mgm.getMinigameTimer().stopTimer();
+		if(event.getMechanic().equals(getMechanic())){
+			if(thm.getLocation() != null){
+				Minigame mgm = event.getMinigame();
+				
+				spawnTreasure(mgm);
+				
+				if(Bukkit.getOnlinePlayers().length == 0)
+					mgm.getMinigameTimer().stopTimer();
+			}
+			else{
+				if(event.getCaller() == null)
+					Bukkit.getLogger().info("Treasure Hunt requires a location name to run!");
+				else
+					event.getCaller().sendMessage("Treasure Hunt requires a location name to run!", "error");
+			}
 		}
 	}
 	

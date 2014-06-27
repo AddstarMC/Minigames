@@ -1426,7 +1426,6 @@ public class Minigame {
 				cfg.set(name + ".type", "MULTIPLAYER");
 				TeamsModule.getMinigameModule(this).addTeam(TeamColor.RED);
 				TeamsModule.getMinigameModule(this).addTeam(TeamColor.BLUE);
-				//TODO Convert old team spawn point loading into new teams
 			}
 			else if(cfg.getString(name + ".type").equals("FREE_FOR_ALL")){
 				cfg.set(name + ".type", "MULTIPLAYER");
@@ -1508,7 +1507,7 @@ public class Minigame {
 				
 				@Override
 				public void run() {
-					Minigames.plugin.mdata.startGlobalMinigame(mgm);
+					Minigames.plugin.mdata.startGlobalMinigame(mgm, null);
 				}
 			});
 		}

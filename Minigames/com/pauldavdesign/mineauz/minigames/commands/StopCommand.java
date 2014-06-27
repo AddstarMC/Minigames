@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
@@ -59,7 +61,10 @@ public class StopCommand implements ICommand{
 			Minigame mgm = plugin.mdata.getMinigame(args[0]);
 			
 			if(mgm != null && mgm.isEnabled() && mgm.getType() == MinigameType.GLOBAL){
-				plugin.mdata.stopGlobalMinigame(mgm);
+				MinigamePlayer caller = null;
+				if(sender instanceof Player)
+					caller = plugin.pdata.getMinigamePlayer((Player)sender);
+				plugin.mdata.stopGlobalMinigame(mgm, caller);
 			}
 			else if(mgm == null || mgm.getType() != MinigameType.GLOBAL){
 				sender.sendMessage(ChatColor.RED + "There is no Global Minigame by the name \"" + args[0] + "\"");

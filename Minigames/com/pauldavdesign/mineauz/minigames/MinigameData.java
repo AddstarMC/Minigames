@@ -58,9 +58,9 @@ public class MinigameData {
 		modules.add(module);
 	}
 	
-	public void startGlobalMinigame(Minigame minigame){ //TODO: Caller Messages
+	public void startGlobalMinigame(Minigame minigame, MinigamePlayer caller){
 		if(minigame.getType() == MinigameType.GLOBAL && minigame.getMechanic().validTypes().contains(MinigameType.GLOBAL)){
-			StartGlobalMinigameEvent ev = new StartGlobalMinigameEvent(minigame);
+			StartGlobalMinigameEvent ev = new StartGlobalMinigameEvent(minigame, caller);
 			Bukkit.getPluginManager().callEvent(ev);
 			
 			minigame.setEnabled(true);
@@ -68,9 +68,9 @@ public class MinigameData {
 		}
 	}
 	
-	public void stopGlobalMinigame(Minigame minigame){ //TODO: Caller Messages
+	public void stopGlobalMinigame(Minigame minigame, MinigamePlayer caller){
 		if(minigame.getType() == MinigameType.GLOBAL){
-			StopGlobalMinigameEvent ev = new StopGlobalMinigameEvent(minigame);
+			StopGlobalMinigameEvent ev = new StopGlobalMinigameEvent(minigame, caller);
 			Bukkit.getPluginManager().callEvent(ev);
 
 			minigame.setEnabled(false);

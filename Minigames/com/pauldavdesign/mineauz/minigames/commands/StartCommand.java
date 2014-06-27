@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.MultiplayerTimer;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
@@ -61,7 +63,10 @@ public class StartCommand implements ICommand{
 			
 			if(mgm != null){
 				if(!mgm.isEnabled() && mgm.getType() == MinigameType.GLOBAL){
-					plugin.mdata.startGlobalMinigame(mgm);
+					MinigamePlayer caller = null;
+					if(sender instanceof Player)
+						caller = plugin.pdata.getMinigamePlayer((Player)sender);
+					plugin.mdata.startGlobalMinigame(mgm, caller);
 				}
 				else if(mgm.getType() != MinigameType.GLOBAL && mgm.getType() != MinigameType.SINGLEPLAYER && mgm.hasPlayers()){
 					if(mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){

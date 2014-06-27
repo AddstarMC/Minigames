@@ -3,16 +3,19 @@ package com.pauldavdesign.mineauz.minigames.events;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
 
 public class StopGlobalMinigameEvent extends Event{
 	private static final HandlerList handlers = new HandlerList();
 	private final Minigame mgm;
 	private final String mechanic;
+	private final MinigamePlayer caller;
 	
-	public StopGlobalMinigameEvent(Minigame mgm){
+	public StopGlobalMinigameEvent(Minigame mgm, MinigamePlayer caller){
 		this.mgm = mgm;
 		mechanic = mgm.getMechanicName();
+		this.caller = caller;
 	}
 	
 	public Minigame getMinigame(){
@@ -21,6 +24,10 @@ public class StopGlobalMinigameEvent extends Event{
 	
 	public String getMechanic(){
 		return mechanic;
+	}
+	
+	public MinigamePlayer getCaller(){
+		return caller;
 	}
 
 	@Override
