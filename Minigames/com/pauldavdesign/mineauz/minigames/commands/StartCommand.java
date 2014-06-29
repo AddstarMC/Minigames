@@ -70,8 +70,10 @@ public class StartCommand implements ICommand{
 				}
 				else if(mgm.getType() != MinigameType.GLOBAL && mgm.getType() != MinigameType.SINGLEPLAYER && mgm.hasPlayers()){
 					if(mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
-						if(mgm.getMpTimer() == null)
+						if(mgm.getMpTimer() == null){
 							mgm.setMpTimer(new MultiplayerTimer(mgm));
+							mgm.getMpTimer().startTimer();
+						}
 						mgm.getMpTimer().setPlayerWaitTime(0);
 					}
 					else

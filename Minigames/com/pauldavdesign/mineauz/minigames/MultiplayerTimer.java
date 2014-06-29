@@ -39,6 +39,8 @@ public class MultiplayerTimer{
 	public void startTimer(){
 		playerWaitTime += 1;
 //		startWaitTime += 1;
+		if(taskID != -1)
+			removeTimer();
 		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 			
 			@Override
