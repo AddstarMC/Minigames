@@ -429,7 +429,7 @@ public class Minigame {
 	}
 	
 	public String getName(boolean useDisplay){
-		if(useDisplay && displayName != null)
+		if(useDisplay && displayName.getFlag() != null)
 			return displayName.getFlag();
 		return name;
 	}
