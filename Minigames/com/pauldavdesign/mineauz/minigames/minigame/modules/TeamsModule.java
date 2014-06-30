@@ -34,7 +34,8 @@ public class TeamsModule extends MinigameModule {
 	
 	public TeamsModule(Minigame mgm){
 		super(mgm);
-		teamsFlag = new TeamSetFlag(teams, "teams", getMinigame());
+		teamsFlag = new TeamSetFlag(null, "teams", getMinigame());
+		teamsFlag.setFlag(teams);
 	}
 
 	@Override
