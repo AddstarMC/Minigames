@@ -72,9 +72,9 @@ public class StartCommand implements ICommand{
 					if(mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
 						if(mgm.getMpTimer() == null){
 							mgm.setMpTimer(new MultiplayerTimer(mgm));
-							mgm.getMpTimer().startTimer();
 						}
 						mgm.getMpTimer().setPlayerWaitTime(0);
+						mgm.getMpTimer().startTimer();
 					}
 					else
 						sender.sendMessage(ChatColor.RED + mgm.getName(false) + " has already started.");
