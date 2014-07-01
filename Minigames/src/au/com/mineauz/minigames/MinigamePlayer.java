@@ -647,7 +647,7 @@ public class MinigamePlayer {
 	
 	public void saveClaimedRewards(){
 		if(!claimedRewards.isEmpty()){
-			MinigameSave save = new MinigameSave("playerdata/data/" + getName().toLowerCase());
+			MinigameSave save = new MinigameSave("playerdata/data/" + getUUID().toString());
 			FileConfiguration cfg = save.getConfig();
 			cfg.set("claims", claimedRewards);
 			save.saveConfig();
@@ -655,9 +655,9 @@ public class MinigamePlayer {
 	}
 	
 	public void loadClaimedRewards(){
-		File f = new File(Minigames.plugin.getDataFolder() + "/playerdata/data/" + getName().toLowerCase() + ".yml");
+		File f = new File(Minigames.plugin.getDataFolder() + "/playerdata/data/" + getUUID().toString() + ".yml");
 		if(f.exists()){
-			MinigameSave s = new MinigameSave("playerdata/data/" + getName().toLowerCase());
+			MinigameSave s = new MinigameSave("playerdata/data/" + getUUID().toString());
 			claimedRewards = s.getConfig().getStringList("claims");
 		}
 	}
