@@ -59,12 +59,27 @@ public class MinigameData {
 	}
 	
 	public void startGlobalMinigame(Minigame minigame, MinigamePlayer caller){
-		if(minigame.getType() == MinigameType.GLOBAL && minigame.getMechanic().validTypes().contains(MinigameType.GLOBAL)){
+		boolean canStart = minigame.getMechanic().checkCanStart(minigame, caller);
+		if(minigame.getType() == MinigameType.GLOBAL && 
+				minigame.getMechanic().validTypes().contains(MinigameType.GLOBAL) &&
+				canStart){
 			StartGlobalMinigameEvent ev = new StartGlobalMinigameEvent(minigame, caller);
 			Bukkit.getPluginManager().callEvent(ev);
 			
 			minigame.setEnabled(true);
 			minigame.saveMinigame();
+		}
+		else if(!minigame.getMechanic().validTypes().contains(MinigameType.GLOBAL)){
+			if(caller == null)
+				Bukkit.getLogger().info(MinigameUtils.getLang("minigame.error.invalidMechanic"));
+			else
+				caller.sendMessage(MinigameUtils.getLang("minigame.error.invalidMechanic"), "error");
+		}
+		else if(!canStart){
+			if(caller == null)
+				Bukkit.getLogger().info(MinigameUtils.getLang("minigame.error.mechanicStartFail"));
+			else
+				caller.sendMessage(MinigameUtils.getLang("minigame.error.mechanicStartFail"), "error");
 		}
 	}
 	

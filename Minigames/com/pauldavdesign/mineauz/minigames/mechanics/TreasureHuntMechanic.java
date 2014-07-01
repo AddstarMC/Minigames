@@ -42,6 +42,11 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 	public EnumSet<MinigameType> validTypes() {
 		return EnumSet.of(MinigameType.GLOBAL);
 	}
+	
+	@Override
+	public boolean checkCanStart(Minigame minigame, MinigamePlayer caller){
+		return true;
+	}
 
 	@Override
 	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {

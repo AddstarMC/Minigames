@@ -40,6 +40,11 @@ public class CTFMechanic extends GameMechanicBase{
 	public EnumSet<MinigameType> validTypes() {
 		return EnumSet.of(MinigameType.MULTIPLAYER);
 	}
+	
+	@Override
+	public boolean checkCanStart(Minigame minigame, MinigamePlayer caller){
+		return true;
+	}
 
 	@Override
 	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {

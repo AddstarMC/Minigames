@@ -62,6 +62,7 @@ public class PlayerData {
 		MinigameType type = minigame.getType();
 		JoinMinigameEvent event = new JoinMinigameEvent(player, minigame);
 		Bukkit.getServer().getPluginManager().callEvent(event);
+		boolean canStart = minigame.getMechanic().checkCanStart(minigame, player);
 		
 		if(!event.isCancelled()){
 			if((minigame.isEnabled() || player.getPlayer().hasPermission("minigame.join.disabled")) && 
@@ -72,7 +73,8 @@ public class PlayerData {
 					minigame.getEndPosition() != null && minigame.getQuitPosition() != null && 
 					(minigame.getType() == MinigameType.SINGLEPLAYER || minigame.getLobbyPosition() != null) &&
 					((type == MinigameType.SINGLEPLAYER && !minigame.isSpMaxPlayers()) || minigame.getPlayers().size() < minigame.getMaxPlayers()) &&
-					minigame.getMechanic().validTypes().contains(minigame.getType())){
+					minigame.getMechanic().validTypes().contains(minigame.getType()) &&
+					canStart){
 				//Do betting stuff
 				if(isBetting){
 					if(minigame.getMpBets() == null && (player.getPlayer().getItemInHand().getType() != Material.AIR || betAmount != 0)){
@@ -237,6 +239,9 @@ public class PlayerData {
 			}
 			else if(!minigame.getMechanic().validTypes().contains(minigame.getType())){
 				player.sendMessage(MinigameUtils.getLang("minigame.error.invalidMechanic"), "error");
+			}
+			else if(!canStart){
+				player.sendMessage(MinigameUtils.getLang("minigame.error.mechanicStartFail"), "error");
 			}
 		}
 	}

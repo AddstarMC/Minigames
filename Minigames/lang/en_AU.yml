@@ -109,6 +109,7 @@ minigame:
     regenerating: "This Minigame is currently being reset, please wait..."
     noTeleport: "Failed to teleport. This could be related to world permissions."
     invalidMechanic: "This Minigame Type cannot use the selected Mechanic!"
+    mechanicStartFail: "The Game Mechanic has failed to initiate!"
   flag:
     returnedTeam: "%s flag has been returned home."
     returnedNeutral: "The Neutral flag has been returned home."

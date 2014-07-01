@@ -33,6 +33,19 @@ public class InfectionMechanic extends GameMechanicBase{
 	public EnumSet<MinigameType> validTypes() {
 		return EnumSet.of(MinigameType.MULTIPLAYER);
 	}
+	
+	@Override
+	public boolean checkCanStart(Minigame minigame, MinigamePlayer caller){
+		if(!minigame.isTeamGame() || 
+				TeamsModule.getMinigameModule(minigame).getTeams().size() != 2 || 
+				!TeamsModule.getMinigameModule(minigame).hasTeam(TeamColor.RED) || 
+				!TeamsModule.getMinigameModule(minigame).hasTeam(TeamColor.BLUE)){
+			if(caller != null)
+				caller.sendMessage(MinigameUtils.getLang("minigame.error.noInfection"), "error");
+			return false;
+		}
+		return true;
+	}
 
 	@Override
 	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
