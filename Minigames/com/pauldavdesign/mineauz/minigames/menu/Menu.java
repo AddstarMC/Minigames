@@ -58,7 +58,7 @@ public class Menu {
 		int inc = 0;
 		Menu m = this;
 		int maxItems = 9 * (rows - 1);
-loop:	while(true){
+		while(true){
 			if(inc >= maxItems){
 				if(m.getNextPage() == null)
 					m.addPage();
@@ -75,11 +75,12 @@ loop:	while(true){
 				for(int i = 1; i < 10; i++){
 					if((inc + i) % 9 == 0){
 						inc += i;
-						break loop;
+						break;
 					}
 				}
 			}
-			inc++;
+			else
+				inc++;
 		}
 	}
 	
