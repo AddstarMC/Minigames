@@ -195,4 +195,9 @@ public class LobbySettingsModule extends MinigameModule {
 		
 	}
 
+	@Override
+	public boolean getMenuOptions(Menu previous) {
+		return false;
+	}
+
 }

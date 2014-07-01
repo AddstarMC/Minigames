@@ -37,10 +37,12 @@ import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.mechanics.GameMechanicBase;
 import com.pauldavdesign.mineauz.minigames.mechanics.GameMechanics;
 import com.pauldavdesign.mineauz.minigames.menu.Callback;
+import com.pauldavdesign.mineauz.minigames.menu.InteractionInterface;
 import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItem;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemAddFlag;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemBoolean;
+import com.pauldavdesign.mineauz.minigames.menu.MenuItemCustom;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemDisplayLoadout;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemDisplayRewards;
 import com.pauldavdesign.mineauz.minigames.menu.MenuItemDisplayWhitelist;
@@ -1157,7 +1159,7 @@ public class Minigame {
 		for(String val : Minigames.plugin.getScoreTypes().getGameMechanics().keySet()){
 			scoreTypes.add(MinigameUtils.capitalize(val));
 		}
-		itemsMain.add(new MenuItemList("Score Type", MinigameUtils.stringToList("Multiplayer Only"), Material.ROTTEN_FLESH, new Callback<String>() {
+		itemsMain.add(new MenuItemList("Game Mechanic", MinigameUtils.stringToList("Multiplayer Only"), Material.ROTTEN_FLESH, new Callback<String>() {
 
 			@Override
 			public void setValue(String value) {
@@ -1169,6 +1171,20 @@ public class Minigame {
 				return MinigameUtils.capitalize(mechanic.getFlag());
 			}
 		}, scoreTypes));
+		final MenuItemCustom mechSettings = new MenuItemCustom("Game Mechanic Settings", Material.PAPER);
+		final Minigame mgm = this;
+		final Menu fmain = main;
+		mechSettings.setClick(new InteractionInterface() {
+			
+			@Override
+			public Object interact(Object object) {
+				if(getMechanic().displaySettings(mgm) != null && 
+						getMechanic().displaySettings(mgm).getMenuOptions(fmain))
+					return null;
+				return mechSettings.getItem();
+			}
+		});
+		itemsMain.add(mechSettings);
 		MenuItemString obj = (MenuItemString) objective.getMenuItem("Objective Description", Material.DIAMOND);
 		obj.setAllowNull(true);
 		itemsMain.add(obj);

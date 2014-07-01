@@ -10,8 +10,8 @@ import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.MinigameUtils;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.MultiplayerType;
-import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
 
@@ -106,7 +106,7 @@ public class CustomMechanic extends GameMechanicBase{
 	}
 	
 	@Override
-	public boolean displaySettings(Menu menu){
-		return false;
+	public MinigameModule displaySettings(Minigame minigame){
+		return null;
 	}
 }

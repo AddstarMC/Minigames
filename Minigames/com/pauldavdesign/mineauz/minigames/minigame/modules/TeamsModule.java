@@ -202,4 +202,9 @@ public class TeamsModule extends MinigameModule {
 		MenuItemPage p = new MenuItemPage("Team Options", Material.CHEST, m);
 		menu.addItem(p);
 	}
+
+	@Override
+	public boolean getMenuOptions(Menu previous) {
+		return false;
+	}
 }

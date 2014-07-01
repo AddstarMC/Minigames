@@ -10,8 +10,8 @@ import com.pauldavdesign.mineauz.minigames.MinigamePlayer;
 import com.pauldavdesign.mineauz.minigames.Minigames;
 import com.pauldavdesign.mineauz.minigames.PlayerData;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
-import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
 
 public abstract class GameMechanicBase implements Listener{
 	public static Minigames plugin;
@@ -56,5 +56,9 @@ public abstract class GameMechanicBase implements Listener{
 	 */
 	public abstract void balanceTeam(List<MinigamePlayer> players, Minigame minigame);
 	
-	public abstract boolean displaySettings(Menu menu);
+	/**
+	 * Returns the module that is assigned to this mechanic, or null if none is assigned.
+	 * @return The module that has been assigned
+	 */
+	public abstract MinigameModule displaySettings(Minigame minigame);
 }

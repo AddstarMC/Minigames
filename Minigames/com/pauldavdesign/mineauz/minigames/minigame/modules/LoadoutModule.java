@@ -206,4 +206,9 @@ public class LoadoutModule extends MinigameModule {
 		
 	}
 
+	@Override
+	public boolean getMenuOptions(Menu previous) {
+		return false;
+	}
+
 }

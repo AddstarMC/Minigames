@@ -350,4 +350,9 @@ public class RegionModule extends MinigameModule {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public boolean getMenuOptions(Menu previous) {
+		return false;
+	}
 }

@@ -14,8 +14,8 @@ import com.pauldavdesign.mineauz.minigames.events.EndMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.QuitMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
 import com.pauldavdesign.mineauz.minigames.gametypes.MultiplayerType;
-import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
 import com.pauldavdesign.mineauz.minigames.minigame.Team;
 import com.pauldavdesign.mineauz.minigames.minigame.TeamColor;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.TeamsModule;
@@ -51,48 +51,39 @@ public class InfectionMechanic extends GameMechanicBase{
 	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
 		for(int i = 0; i < players.size(); i++){
 			MinigamePlayer ply = players.get(i);
-			if(!minigame.isTeamGame() || 
-					TeamsModule.getMinigameModule(minigame).getTeams().size() != 2 || 
-					!TeamsModule.getMinigameModule(minigame).hasTeam(TeamColor.RED) || 
-					!TeamsModule.getMinigameModule(minigame).hasTeam(TeamColor.BLUE)){
-				pdata.quitMinigame(ply, true);
-				ply.sendMessage(MinigameUtils.getLang("minigame.error.noInfection"), "error");
-			}
-			else{
-				Team red = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.RED);
-				Team blue = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.BLUE);
-				Team team = ply.getTeam();
-				
-				if(team == blue){
-					if(red.getPlayers().size() < Math.ceil(players.size() * 0.18) && !red.isFull()){
-						MultiplayerType.switchTeam(minigame, ply, red);
-						players.get(i).sendMessage(MinigameUtils.formStr("player.team.assign.infectedAssign", ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null);
-						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.assign.infectedAnnounce", players.get(i).getName(), ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null, players.get(i));
-					}
+			Team red = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.RED);
+			Team blue = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.BLUE);
+			Team team = ply.getTeam();
+			
+			if(team == blue){
+				if(red.getPlayers().size() < Math.ceil(players.size() * 0.18) && !red.isFull()){
+					MultiplayerType.switchTeam(minigame, ply, red);
+					players.get(i).sendMessage(MinigameUtils.formStr("player.team.assign.infectedAssign", ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null);
+					mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.assign.infectedAnnounce", players.get(i).getName(), ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null, players.get(i));
 				}
-				else if(team == null){
-					if(red.getPlayers().size() < Math.ceil(players.size() * 0.18) && !red.isFull()){
-						red.addPlayer(ply);
-						players.get(i).sendMessage(MinigameUtils.formStr("player.team.assign.infectedAssign", ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null);
-						mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.assign.infectedAnnounce", players.get(i).getName(), ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null, players.get(i));
-					}
-					else if(!blue.isFull()){
-						blue.addPlayer(ply);
-						ply.sendMessage(MinigameUtils.formStr("player.team.assign.survivor", ChatColor.BLUE + MinigameUtils.getLang("player.team.assign.survivor")), null);
-						mdata.sendMinigameMessage(minigame,MinigameUtils.formStr("player.team.assign.survivorAnnounce", players.get(i).getName(), ChatColor.BLUE + MinigameUtils.getLang("player.team.assign.survivor")), null, players.get(i));
-					}
-					else{
-						pdata.quitMinigame(ply, false);
-						ply.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
-					}
+			}
+			else if(team == null){
+				if(red.getPlayers().size() < Math.ceil(players.size() * 0.18) && !red.isFull()){
+					red.addPlayer(ply);
+					players.get(i).sendMessage(MinigameUtils.formStr("player.team.assign.infectedAssign", ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null);
+					mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.assign.infectedAnnounce", players.get(i).getName(), ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null, players.get(i));
+				}
+				else if(!blue.isFull()){
+					blue.addPlayer(ply);
+					ply.sendMessage(MinigameUtils.formStr("player.team.assign.survivor", ChatColor.BLUE + MinigameUtils.getLang("player.team.assign.survivor")), null);
+					mdata.sendMinigameMessage(minigame,MinigameUtils.formStr("player.team.assign.survivorAnnounce", players.get(i).getName(), ChatColor.BLUE + MinigameUtils.getLang("player.team.assign.survivor")), null, players.get(i));
+				}
+				else{
+					pdata.quitMinigame(ply, false);
+					ply.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
 				}
 			}
 		}
 	}
 	
 	@Override
-	public boolean displaySettings(Menu menu){
-		return false;
+	public MinigameModule displaySettings(Minigame minigame){
+		return null;
 	}
 	
 	@EventHandler(ignoreCancelled = true)

@@ -120,6 +120,11 @@ public class WeatherTimeModule extends MinigameModule {
 		
 		menu.addItem(new MenuItemPage("Time and Weather Settings", Material.CHEST, m));
 	}
+
+	@Override
+	public boolean getMenuOptions(Menu previous) {
+		return false;
+	}
 	
 	public static WeatherTimeModule getMinigameModule(Minigame minigame){
 		return (WeatherTimeModule) minigame.getModule("WeatherTime");

@@ -26,8 +26,8 @@ import com.pauldavdesign.mineauz.minigames.events.StartGlobalMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.StopGlobalMinigameEvent;
 import com.pauldavdesign.mineauz.minigames.events.TimerExpireEvent;
 import com.pauldavdesign.mineauz.minigames.gametypes.MinigameType;
-import com.pauldavdesign.mineauz.minigames.menu.Menu;
 import com.pauldavdesign.mineauz.minigames.minigame.Minigame;
+import com.pauldavdesign.mineauz.minigames.minigame.MinigameModule;
 import com.pauldavdesign.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import com.pauldavdesign.mineauz.minigames.minigame.reward.RewardItem;
 
@@ -51,10 +51,10 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 	@Override
 	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
 	}
-
+	
 	@Override
-	public boolean displaySettings(Menu menu) {
-		return false;
+	public MinigameModule displaySettings(Minigame minigame){
+		return minigame.getModule("TreasureHunt");
 	}
 	
 	public static void removeTreasure(Minigame minigame){
