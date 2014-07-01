@@ -1,5 +1,5 @@
 name: Minigames
-main: com.pauldavdesign.mineauz.minigames.Minigames
+main: au.com.mineauz.minigames.Minigames
 version: ${project.version}
 author: _Razz_
 softdepend: ['Multiverse-Core']

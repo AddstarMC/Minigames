@@ -1,31 +1,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>Minigames</groupId>
-  <artifactId>Minigames</artifactId>
-  <version>1.7.0</version> <!-- ${env.BUILD_NUMBER} -->
-  <name>Minigames</name>
+  <groupId>au.com.mineauz</groupId>
+  <artifactId>MinigamesProject</artifactId>
+  <version>1.7.0-b${env.BUILD_NUMBER}</version> <!-- ${env.BUILD_NUMBER} -->
+  <packaging>pom</packaging>
+  <name>MinigamesProject</name>
   <url>http://dev.bukkit.org/server-mods/minigames/</url>
+  
+  <properties>
+    <version.build>1.7.0-b${env.BUILD_NUMBER}</version.build>
+  </properties>
+  
+  <modules>
+    <module>Minigames</module>
+	<module>Regions</module>
+  </modules>
 
   <repositories>
-    <!-- Repository for Bukkit -->
-    <repository>
-      <id>bukkit-repo</id>
-      <url>http://repo.bukkit.org/content/groups/public/</url>
-    </repository>
-
-    <!-- Repository for other dependencies of SK's -->
-    <repository>
-      <id>sk89q-mvn2</id>
-      <url>http://mvn2.sk89q.com/repo</url>
-    </repository>
-  
-    <repository>
-      <id>bukkit-maven</id>
-      <url>http://repo.bukkit.org/content/repositories/releases/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
     
     <!-- Other repositories -->
     <repository>
@@ -38,70 +29,22 @@
       <id>addstar-repo</id>
       <url>http://maven.addstar.com.au/artifactory/ext-release-local</url>
     </repository>
-
-    <!-- mcstats repo -->
-    <repository>
-      <id>Plugin Metrics</id>
-      <url>http://repo.mcstats.org/content/repositories/public</url>
-    </repository>
   </repositories>
 
-  <dependencies>
-    <!-- Bukkit -->
-    <dependency>
-      <groupId>org.bukkit</groupId>
-      <artifactId>bukkit</artifactId>
-      <version>1.7.9-R0.2-SNAPSHOT</version>
-    </dependency>
-    
-    <!-- CraftBukkit Dependency for experimental features
-    <dependency>
-      <groupId>org.bukkit</groupId>
-      <artifactId>craftbukkit</artifactId>
-      <version>1.6.2-R0.2-SNAPSHOT</version>
-    </dependency>-->        
-    
-    <!-- Used for economy stuff -->
-    <dependency>
-      <groupId>net.milkbowl</groupId>
-      <artifactId>vault</artifactId>
-      <version>1.2.26</version>
-    </dependency>
-
-    <!-- MCStats.org -->
-    <dependency>
-        <groupId>org.mcstats.bukkit</groupId>
-        <artifactId>metrics</artifactId>
-        <version>R6</version>
-        <scope>compile</scope>
-    </dependency>
-  </dependencies>
-
   <build>
-    <resources>
-      <resource>
-        <targetPath>.</targetPath>
-        <filtering>true</filtering>
-        <directory>${basedir}/</directory>
-        <includes>
-          <include>config.yml</include>
-          <include>plugin.yml</include>
-          <include>lang/en_AU.yml</include>
-        </includes>
-      </resource>
-    </resources>
-
-    <sourceDirectory>Minigames</sourceDirectory>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
-    </plugins>
+    <finalName>${artifactId}-${version.build}</finalName>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.3.2</version>
+          <configuration>
+            <source>1.6</source>
+            <target>1.6</target>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 </project>

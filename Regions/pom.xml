@@ -1,0 +1,69 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>au.com.mineauz</groupId>
+    <artifactId>MinigamesProject</artifactId>
+    <version>1.7.0-b${env.BUILD_NUMBER}</version>
+    <relativePath>..</relativePath>
+  </parent>
+  <artifactId>Minigames-Regions</artifactId>
+  <name>Minigames-Regions</name>
+
+  <repositories>
+    <!-- Repository for Bukkit -->
+    <repository>
+      <id>bukkit-repo</id>
+      <url>http://repo.bukkit.org/content/groups/public/</url>
+    </repository>
+  
+    <repository>
+      <id>bukkit-maven</id>
+      <url>http://repo.bukkit.org/content/repositories/releases/</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    
+    <!-- Other repositories -->
+    <repository>
+      <id>maven-central</id>
+      <url>http://repo1.maven.org/maven2/</url>
+    </repository>
+    
+    <!-- Addstar repo -->
+    <repository>
+      <id>addstar-repo</id>
+      <url>http://maven.addstar.com.au/artifactory/ext-release-local</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <!-- Bukkit -->
+    <dependency>
+      <groupId>org.bukkit</groupId>
+      <artifactId>bukkit</artifactId>
+      <version>1.7.9-R0.2-SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>au.com.mineauz</groupId>
+      <artifactId>Minigames</artifactId>
+      <version>1.7.0-b${env.BUILD_NUMBER}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <targetPath>.</targetPath>
+        <filtering>true</filtering>
+        <directory>${basedir}/.</directory>
+        <includes>
+          <include>plugin.yml</include>
+        </includes>
+      </resource>
+    </resources>
+
+    <sourceDirectory>src</sourceDirectory>
+  </build>
+</project>
