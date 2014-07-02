@@ -24,7 +24,7 @@ public class TeamFlag extends Flag<Team>{
 
 	@Override
 	public void saveValue(String path, FileConfiguration config) {
-		config.set(path + "." + getName() + "." + getFlag().getColor().toString() + ".displayName", getFlag().getDisplayName());
+		config.set(path + "." + getName() + ".displayName", getFlag().getDisplayName());
 		if(!getFlag().getStartLocations().isEmpty()){
 			for(int i = 0; i < getFlag().getStartLocations().size(); i++){
 				LocationFlag locf = new LocationFlag(null, "startpos." + i);
@@ -46,6 +46,7 @@ public class TeamFlag extends Flag<Team>{
 				t.addStartLocation(locf.getFlag());
 			}
 		}
+		setFlag(t);
 	}
 
 	@Override
