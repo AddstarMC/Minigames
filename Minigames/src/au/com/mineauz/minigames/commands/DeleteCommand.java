@@ -61,7 +61,7 @@ public class DeleteCommand implements ICommand{
 			
 			if(mgm != null){
 				MinigameSave save = new MinigameSave(mgm.getName(false), "config");
-				
+				//TODO improve me!
 				if(save.getConfig().get(mgm.getName(false)) != null){
 					save.deleteFile();
 					List<String> ls = plugin.getConfig().getStringList("minigames");
