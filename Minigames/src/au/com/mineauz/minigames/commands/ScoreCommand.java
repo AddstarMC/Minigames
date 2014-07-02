@@ -230,7 +230,6 @@ public class ScoreCommand implements ICommand {
 						mgName = args[2];
 					}
 
-					TeamsModule tmod = TeamsModule.getMinigameModule(mg);
 
 					if(plugin.mdata.hasMinigame(mgName)){
 						mg = plugin.mdata.getMinigame(mgName);
@@ -239,6 +238,8 @@ public class ScoreCommand implements ICommand {
 						sender.sendMessage(ChatColor.RED + "No Minigame found by the name " + mgName);
 						return true;
 					}
+					
+					TeamsModule tmod = TeamsModule.getMinigameModule(mg);
 					
 					if(mg.isTeamGame() && mg.hasPlayers()){
 						Team team = null;
