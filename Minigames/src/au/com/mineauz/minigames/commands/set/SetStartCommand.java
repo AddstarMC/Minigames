@@ -80,7 +80,7 @@ public class SetStartCommand implements ICommand{
 			return true;
 		}
 		else if(args.length == 2 && TeamColor.matchColor(args[0]) != null && args[1].matches("[0-9]+")){
-			int position = Integer.parseInt(args[1]) + 1;
+			int position = Integer.parseInt(args[1]);
 			Team team = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.matchColor(args[0]));
 			if(team == null){
 				sender.sendMessage(ChatColor.RED + "No team color found by the name: " + args[0]);
@@ -89,7 +89,8 @@ public class SetStartCommand implements ICommand{
 			
 			if(position >= 1){
 				team.addStartLocation(player.getLocation(), position);
-				sender.sendMessage(ChatColor.GRAY + "Starting position for " + team.getChatColor() + team.getDisplayName() + ChatColor.GRAY + " has been set for position " + position);
+				sender.sendMessage(ChatColor.GRAY + "Starting position for " + 
+						team.getChatColor() + team.getDisplayName() + ChatColor.GRAY + " has been set for position " + position);
 			}
 			else{
 				sender.sendMessage(ChatColor.RED + "Error: Invalid starting position: " + args[1]);
