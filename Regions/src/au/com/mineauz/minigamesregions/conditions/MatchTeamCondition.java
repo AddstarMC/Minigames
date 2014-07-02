@@ -93,7 +93,7 @@ public class MatchTeamCondition implements ConditionInterface {
 			String path) {
 		Map<String, Object> args = new HashMap<String, Object>();
 		args.put("c_matchteam", config.getString(path + ".c_matchteam"));
-		args.put("c_matchteaminvert", config.getBoolean(path + ".matchteaminvert"));
+		args.put("c_matchteaminvert", config.getBoolean(path + ".c_matchteaminvert"));
 		return args;
 	}
 
