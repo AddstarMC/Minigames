@@ -199,7 +199,7 @@ public class PlayerLoadout {
 
 			@Override
 			public void setValue(Integer value) {
-				if(level >= 0)
+				if(level >= -1)
 					level = value;
 			}
 
