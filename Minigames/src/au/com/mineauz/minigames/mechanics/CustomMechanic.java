@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.mechanics;
 
 import java.util.EnumSet;
-import java.util.List;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -31,54 +30,6 @@ public class CustomMechanic extends GameMechanicBase{
 	public boolean checkCanStart(Minigame minigame, MinigamePlayer caller){
 		return true;
 	}
-
-	@Override
-	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
-		if(minigame.isTeamGame()){
-			boolean sorted = false;
-			for(MinigamePlayer ply : players){
-				if(ply.getTeam() == null){
-					Team smt = null;
-					for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
-						if(smt == null || (t.getPlayers().size() < smt.getPlayers().size() && t.getPlayers().size() != t.getMaxPlayers()))
-							smt = t;
-					}
-					if(smt == null){
-						pdata.quitMinigame(ply, false);
-						ply.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
-					}
-					smt.addPlayer(ply);
-					ply.sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", smt.getChatColor() + smt.getDisplayName()), null);
-					mdata.sendMinigameMessage(minigame, 
-							MinigameUtils.formStr("player.team.autobalance.minigameMsg", 
-									ply.getName(), smt.getChatColor() + smt.getDisplayName()), null, ply);
-				}
-			}
-			
-			while(!sorted){
-				Team smt = null;
-				Team lgt = null;
-				for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
-					if(smt == null || (t.getPlayers().size() < smt.getPlayers().size() - 1 && !t.isFull()))
-						smt = t;
-					if((lgt == null || (t.getPlayers().size() > lgt.getPlayers().size() && !t.isFull())) && t != smt)
-						lgt = t;
-				}
-				if(smt != null && lgt != null && lgt.getPlayers().size() - smt.getPlayers().size() > 1){
-					MinigamePlayer pl = lgt.getPlayers().get(0);
-					MultiplayerType.switchTeam(minigame, pl, smt);
-					pl.sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", smt.getChatColor() + smt.getDisplayName()), null);
-					mdata.sendMinigameMessage(minigame, 
-							MinigameUtils.formStr("player.team.autobalance.minigameMsg", 
-									pl.getName(), smt.getChatColor() + smt.getDisplayName()), null, pl);
-				}
-				else{
-					sorted = true;
-				}
-			}
-		}
-	}
-	
 	
 	@EventHandler
 	public void playerAutoBalance(PlayerDeathEvent event){

@@ -7,11 +7,15 @@ import org.bukkit.event.Listener;
 
 import au.com.mineauz.minigames.MinigameData;
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.PlayerData;
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameModule;
+import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 
 public abstract class GameMechanicBase implements Listener{
 	public static Minigames plugin;
@@ -50,11 +54,57 @@ public abstract class GameMechanicBase implements Listener{
 	/**
 	 * In the case of a Minigame having teams, this should be used to balance players
 	 * to a specific team, usual games is evenly distributed, in the case of Infection,
-	 * only a specific percentage is assigned to one team by default.
+	 * only a specific percentage is assigned to one team by default. The default function
+	 * will assign teams automatically unless overridden.
 	 * @param players The players to be balanced to a team
 	 * @param minigame The minigame in which the balancing occours
 	 */
-	public abstract void balanceTeam(List<MinigamePlayer> players, Minigame minigame);
+	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame){
+		if(minigame.isTeamGame()){
+			boolean sorted = false;
+			for(MinigamePlayer ply : players){
+				if(ply.getTeam() == null){
+					Team smt = null;
+					for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
+						if(smt == null || (t.getPlayers().size() < smt.getPlayers().size() && 
+								(t.getMaxPlayers() == 0 || t.getPlayers().size() != t.getMaxPlayers())))
+							smt = t;
+					}
+					if(smt == null){
+						pdata.quitMinigame(ply, false);
+						ply.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
+					}
+					smt.addPlayer(ply);
+					ply.sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", smt.getChatColor() + smt.getDisplayName()), null);
+					mdata.sendMinigameMessage(minigame, 
+							MinigameUtils.formStr("player.team.autobalance.minigameMsg", 
+									ply.getName(), smt.getChatColor() + smt.getDisplayName()), null, ply);
+				}
+			}
+			
+			while(!sorted){
+				Team smt = null;
+				Team lgt = null;
+				for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
+					if(smt == null || (t.getPlayers().size() < smt.getPlayers().size() - 1 && !t.isFull()))
+						smt = t;
+					if((lgt == null || (t.getPlayers().size() > lgt.getPlayers().size() && !t.isFull())) && t != smt)
+						lgt = t;
+				}
+				if(smt != null && lgt != null && lgt.getPlayers().size() - smt.getPlayers().size() > 1){
+					MinigamePlayer pl = lgt.getPlayers().get(0);
+					MultiplayerType.switchTeam(minigame, pl, smt);
+					pl.sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", smt.getChatColor() + smt.getDisplayName()), null);
+					mdata.sendMinigameMessage(minigame, 
+							MinigameUtils.formStr("player.team.autobalance.minigameMsg", 
+									pl.getName(), smt.getChatColor() + smt.getDisplayName()), null, pl);
+				}
+				else{
+					sorted = true;
+				}
+			}
+		}
+	}
 	
 	/**
 	 * Returns the module that is assigned to this mechanic, or null if none is assigned.

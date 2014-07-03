@@ -3,7 +3,6 @@ package au.com.mineauz.minigames.mechanics;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -46,10 +45,6 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 	@Override
 	public boolean checkCanStart(Minigame minigame, MinigamePlayer caller){
 		return true;
-	}
-
-	@Override
-	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
 	}
 	
 	@Override
