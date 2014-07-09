@@ -169,7 +169,9 @@ public class TeamsModule extends MinigameModule {
 	}
 	
 	public TeamColor getDefaultWinner() {
-		return TeamColor.matchColor(defaultWinner.getFlag());
+		if(defaultWinner.getFlag() != null)
+			return TeamColor.matchColor(defaultWinner.getFlag());
+		return null;
 	}
 	
 	public void clearTeams(){

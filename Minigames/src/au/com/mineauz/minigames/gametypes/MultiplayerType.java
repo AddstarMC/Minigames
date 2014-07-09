@@ -365,30 +365,21 @@ public class MultiplayerType extends MinigameTypeBase{
 											drawTeams.get(0).getChatColor() + drawTeams.get(0).getDisplayName() + ChatColor.WHITE, 
 											drawTeams.get(1).getChatColor() + drawTeams.get(1).getDisplayName() + ChatColor.WHITE, 
 											event.getMinigame().getName(true)), "error");
-									String scores = "";
-									int c = 1;
-									for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
-										scores += t.getChatColor().toString() + t.getScore();
-										c++;
-										if(c != TeamsModule.getMinigameModule(mgm).getTeams().size())
-											scores += ChatColor.WHITE + " : ";
-									}
-									ply.sendMessage(MinigameUtils.getLang("minigame.info.score") + " " + scores);
 								}
 								else{
 									ply.sendMessage(MinigameUtils.formStr("player.end.team.tieCount", 
 											drawTeams.size(), 
 											event.getMinigame().getName(true)), "error");
-									String scores = "";
-									int c = 1;
-									for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
-										scores += t.getChatColor().toString() + t.getScore();
-										c++;
-										if(c != TeamsModule.getMinigameModule(mgm).getTeams().size())
-											scores += ChatColor.WHITE + " : ";
-									}
-									ply.sendMessage(MinigameUtils.getLang("minigame.info.score") + " " + scores);
 								}
+								String scores = "";
+								int c = 1;
+								for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+									scores += t.getChatColor().toString() + t.getScore();
+									if(c != TeamsModule.getMinigameModule(mgm).getTeams().size())
+										scores += ChatColor.WHITE + " : ";
+									c++;
+								}
+								ply.sendMessage(MinigameUtils.getLang("minigame.info.score") + " " + scores);
 							}
 						}
 						if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
@@ -397,30 +388,22 @@ public class MultiplayerType extends MinigameTypeBase{
 										drawTeams.get(0).getChatColor() + drawTeams.get(0).getDisplayName() + ChatColor.WHITE, 
 										drawTeams.get(1).getChatColor() + drawTeams.get(1).getDisplayName() + ChatColor.WHITE, 
 										event.getMinigame().getName(true)));
-								String scores = "";
-								int c = 1;
-								for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
-									scores += t.getChatColor().toString() + t.getScore();
-									c++;
-									if(c != TeamsModule.getMinigameModule(mgm).getTeams().size())
-										scores += ChatColor.WHITE + " : ";
-								}
-								plugin.getServer().broadcastMessage(MinigameUtils.getLang("minigame.info.score") + " " + scores);
 							}
 							else{
 								plugin.getServer().broadcastMessage(ChatColor.RED + "[Minigames] " + MinigameUtils.formStr("player.end.team.tieCount", 
 										drawTeams.size(), 
 										event.getMinigame().getName(true)));
-								String scores = "";
-								int c = 1;
-								for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
-									scores += t.getChatColor().toString() + t.getScore();
-									c++;
-									if(c != TeamsModule.getMinigameModule(mgm).getTeams().size())
-										scores += ChatColor.WHITE + " : ";
-								}
-								plugin.getServer().broadcastMessage(MinigameUtils.getLang("minigame.info.score") + " " + scores);
 							}
+							
+							String scores = "";
+							int c = 1;
+							for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+								scores += t.getChatColor().toString() + t.getScore();
+								if(c != TeamsModule.getMinigameModule(mgm).getTeams().size())
+									scores += ChatColor.WHITE + " : ";
+								c++;
+							}
+							plugin.getServer().broadcastMessage(MinigameUtils.getLang("minigame.info.score") + " " + scores);
 						}
 					}
 				}
