@@ -179,12 +179,18 @@ public class Region {
 						break;
 					}
 				}
-				if(cont)
+				if(cont && exec.canBeTriggered(player))
 					toExecute.add(exec);
 			}
 		}
-		for(RegionExecutor exec : toExecute)
-			for(ActionInterface act : exec.getActions())
+		for(RegionExecutor exec : toExecute){
+			for(ActionInterface act : exec.getActions()){
 				act.executeRegionAction(player, exec.getArguments(), this, event);
+				if(!exec.isTriggerPerPlayer())
+					exec.addPublicTrigger();
+				else
+					exec.addPlayerTrigger(player);
+			}
+		}
 	}
 }

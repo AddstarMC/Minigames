@@ -12,7 +12,10 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
+import au.com.mineauz.minigames.menu.MenuItemInteger;
+import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionExecutor;
@@ -103,6 +106,13 @@ public class MenuItemRegion extends MenuItem{
 						}
 					});
 					m.addItem(c2);
+					m.addItem(new MenuItemNewLine());
+					m.addItem(new MenuItemInteger("Trigger Count", 
+							MinigameUtils.stringToList("Number of times this;region can be;triggered"), 
+							Material.DOUBLE_STEP, cex.getTriggerCountCallback(), 0, null));
+					m.addItem(new MenuItemBoolean("Trigger Per Player", 
+							MinigameUtils.stringToList("Whether this region;is triggered per player;or just on count"), 
+							Material.ENDER_PEARL, cex.getIsTriggerPerPlayerCallback()));
 					m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, fm), m.getSize() - 9);
 					m.displayMenu(fviewer);
 					return null;

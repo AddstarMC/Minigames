@@ -119,9 +119,25 @@ public class RegionEvents implements Listener{
 		}
 		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
 			node.execute(NodeTrigger.GAME_QUIT, event.getMinigamePlayer(), event);
+			if(event.getMinigame().getPlayers().size() > 1){
+				for(NodeExecutor exec : node.getExecutors())
+					exec.removeTrigger(event.getMinigamePlayer());
+			}
+			else{
+				for(NodeExecutor exec : node.getExecutors())
+					exec.clearTriggers();
+			}
 		}
 		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
 			region.execute(RegionTrigger.GAME_QUIT, event.getMinigamePlayer(), event);
+			if(event.getMinigame().getPlayers().size() > 1){
+				for(RegionExecutor exec : region.getExecutors())
+					exec.removeTrigger(event.getMinigamePlayer());
+			}
+			else{
+				for(RegionExecutor exec : region.getExecutors())
+					exec.clearTriggers();
+			}
 		}
 	}
 	
@@ -136,9 +152,13 @@ public class RegionEvents implements Listener{
 		}
 		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
 			node.execute(NodeTrigger.GAME_END, null, event);
+			for(NodeExecutor exec : node.getExecutors())
+				exec.clearTriggers();
 		}
 		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
 			region.execute(RegionTrigger.GAME_END, null, event);
+			for(RegionExecutor exec : region.getExecutors())
+				exec.clearTriggers();
 		}
 	}
 	

@@ -66,12 +66,18 @@ public class Node {
 						break;
 					}
 				}
-				if(cont)
+				if(cont && exec.canBeTriggered(player))
 					toExecute.add(exec);
 			}
 		}
-		for(NodeExecutor exec : toExecute)
-			for(ActionInterface act : exec.getActions())
+		for(NodeExecutor exec : toExecute){
+			for(ActionInterface act : exec.getActions()){
 				act.executeNodeAction(player, exec.getArguments(), this, event);
+				if(!exec.isTriggerPerPlayer())
+					exec.addPublicTrigger();
+				else
+					exec.addPlayerTrigger(player);
+			}
+		}
 	}
 }

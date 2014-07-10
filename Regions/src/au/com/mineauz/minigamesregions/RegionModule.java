@@ -95,6 +95,10 @@ public class RegionModule extends MinigameModule {
 						con.saveArguments(ex.getArguments(), config, path + ".arguments");
 					}
 				}
+				if(ex.isTriggerPerPlayer())
+					config.set(path + ".isTriggeredPerPlayer", ex.isTriggerPerPlayer());
+				if(ex.getTriggerCount() != 0)
+					config.set(path + ".triggerCount", ex.getTriggerCount());
 				c++;
 			}
 		}
@@ -132,6 +136,10 @@ public class RegionModule extends MinigameModule {
 						con.saveArguments(ex.getArguments(), config, path + ".arguments");
 					}
 				}
+				if(ex.isTriggerPerPlayer())
+					config.set(path + ".isTriggeredPerPlayer", ex.isTriggerPerPlayer());
+				if(ex.getTriggerCount() != 0)
+					config.set(path + ".triggerCount", ex.getTriggerCount());
 				c++;
 			}
 		}
@@ -183,6 +191,10 @@ public class RegionModule extends MinigameModule {
 								rex.addArguments(con.loadArguments(config, path + ".arguments"));
 							}
 						}
+						if(config.contains(path + ".isTriggeredPerPlayer"))
+							rex.setTriggerPerPlayer(config.getBoolean(path + ".isTriggeredPerPlayer"));
+						if(config.contains(path + ".triggerCount"))
+							rex.setTriggerCount(config.getInt(path + ".triggerCount"));
 						r.addExecutor(rex);
 					}
 				}
@@ -224,6 +236,10 @@ public class RegionModule extends MinigameModule {
 								rex.addArguments(con.loadArguments(config, path + ".arguments"));
 							}
 						}
+						if(config.contains(path + ".isTriggeredPerPlayer"))
+							rex.setTriggerPerPlayer(config.getBoolean(path + ".isTriggeredPerPlayer"));
+						if(config.contains(path + ".triggerCount"))
+							rex.setTriggerCount(config.getInt(path + ".triggerCount"));
 						n.addExecutor(rex);
 					}
 				}
