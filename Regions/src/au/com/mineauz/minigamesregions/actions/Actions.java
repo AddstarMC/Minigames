@@ -43,6 +43,7 @@ public class Actions {
 		addAction(new CheckpointAction());
 		addAction(new SwapBlockAction());
 		addAction(new ApplyPotionAction());
+		addAction(new FallingBlockAction());
 	}
 	
 	public static void addAction(ActionInterface action){
