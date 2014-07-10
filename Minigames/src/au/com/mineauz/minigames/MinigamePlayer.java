@@ -170,7 +170,6 @@ public class MinigamePlayer {
 		allowGMChange = true;
 		allowTP = true;
 		player.setGameMode(oply.getLastGamemode());
-		player.setFlying(false);
 		
 		oply.deletePlayerData();
 		oply = null;

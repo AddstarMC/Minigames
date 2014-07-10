@@ -182,9 +182,12 @@ public class PlayerData {
 				player.setCheckpoint(player.getPlayer().getLocation());
 				player.getPlayer().setFallDistance(0);
 				player.getPlayer().setWalkSpeed(0.2f);
-				player.getPlayer().setAllowFlight(false);
 				player.setStartTime(Calendar.getInstance().getTimeInMillis());
 				player.setGamemode(minigame.getDefaultGamemode());
+				if(!minigame.isAllowedFlight())
+					player.getPlayer().setAllowFlight(false);
+				else
+					player.getPlayer().setAllowFlight(true);
 				for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
 					player.getPlayer().removePotionEffect(potion.getType());
 				}
