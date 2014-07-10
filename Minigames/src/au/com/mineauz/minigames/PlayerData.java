@@ -125,8 +125,6 @@ public class PlayerData {
 						player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + 
 								"Join location is across worlds! This may cause some server performance issues!", "error");
 					}
-					if(tpd && minigame.isFlightEnabled())
-						player.getPlayer().setFlying(true);
 				}
 				else{
 					tpd = player.teleport(minigame.getLobbyPosition());
@@ -184,10 +182,17 @@ public class PlayerData {
 				player.getPlayer().setWalkSpeed(0.2f);
 				player.setStartTime(Calendar.getInstance().getTimeInMillis());
 				player.setGamemode(minigame.getDefaultGamemode());
-				if(!minigame.isAllowedFlight())
+				if(minigame.getType() == MinigameType.SINGLEPLAYER){
+					if(!minigame.isAllowedFlight()){
+						player.getPlayer().setAllowFlight(false);
+						player.getPlayer().setFlying(true);
+					}
+					else
+						player.getPlayer().setAllowFlight(true);
+				}
+				else{
 					player.getPlayer().setAllowFlight(false);
-				else
-					player.getPlayer().setAllowFlight(true);
+				}
 				for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
 					player.getPlayer().removePotionEffect(potion.getType());
 				}
@@ -372,8 +377,11 @@ public class PlayerData {
 			ply.getPlayer().setScoreboard(minigame.getScoreboardManager());
 			minigame.setScore(ply, 1);
 			minigame.setScore(ply, 0);
-			if(minigame.isFlightEnabled())
-				ply.getPlayer().setFlying(true);
+			if(minigame.isAllowedFlight()){
+				ply.getPlayer().setAllowFlight(true);
+				if(minigame.isFlightEnabled())
+					ply.getPlayer().setFlying(true);
+			}
 		}
 	}
 	
