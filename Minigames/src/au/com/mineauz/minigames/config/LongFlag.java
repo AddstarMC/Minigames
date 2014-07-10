@@ -22,7 +22,7 @@ public class LongFlag extends Flag<Long>{
 
 	@Override
 	public void loadValue(String path, FileConfiguration config) {
-		setFlag((Long) config.get(path + "." + getName()));
+		setFlag(((Integer)config.getInt(path + "." + getName())).longValue());
 	}
 
 	@Override
