@@ -43,10 +43,12 @@ public class LoadoutFlag extends Flag<PlayerLoadout>{
 
 	@Override
 	public void loadValue(String path, FileConfiguration config) {
-		Set<String> items = config.getConfigurationSection(path + "." + getName() + ".items").getKeys(false);
-		for(String key : items){
-			if(key.matches("[0-9]+"))
-				getFlag().addItem(config.getItemStack(path + "." + getName() + ".items." + key), Integer.parseInt(key));
+		if(config.contains(path + "." + getName() + ".items")){
+			Set<String> items = config.getConfigurationSection(path + "." + getName() + ".items").getKeys(false);
+			for(String key : items){
+				if(key.matches("[0-9]+"))
+					getFlag().addItem(config.getItemStack(path + "." + getName() + ".items." + key), Integer.parseInt(key));
+			}
 		}
 		if(config.contains(path + "." + getName() + ".potions")){
 			Set<String> pots = config.getConfigurationSection(path + "." + getName() + ".potions").getKeys(false);
