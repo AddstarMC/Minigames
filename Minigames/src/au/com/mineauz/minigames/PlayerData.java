@@ -268,7 +268,7 @@ public class PlayerData {
 			}
 			player.storePlayerData();
 			player.setMinigame(minigame);
-			player.getPlayer().setGameMode(GameMode.ADVENTURE);
+			player.setGamemode(GameMode.ADVENTURE);
 			
 			minigame.addSpectator(player);
 			
