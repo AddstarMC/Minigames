@@ -590,21 +590,29 @@ public class PlayerData {
 			}
 			
 			//Broadcast Message
-			if(plugin.getConfig().getBoolean("broadcastCompletion") && mgm.isEnabled() && mgm.isEnabled()){
+			if(plugin.getConfig().getBoolean("broadcastCompletion") && mgm.isEnabled()){
 				if(mgm.isTeamGame()){
-					Team team = winners.get(0).getTeam();
-					String score = "";
-					List<Team> teams = TeamsModule.getMinigameModule(mgm).getTeams();
-					for(Team t : teams){
-						score += t.getColor().getColor().toString() + t.getScore();
-						if(t != teams.get(teams.size() - 1)){
-							score += ChatColor.WHITE + " : ";
+					if(winners.size() > 0 || ((TeamsModule)mgm.getModule("Teams")).getDefaultWinner() != null){
+						Team team;
+						if(winners.size() > 0)
+							team = winners.get(0).getTeam();
+						else
+							team = ((TeamsModule)mgm.getModule("Teams")).getTeam(((TeamsModule)mgm.getModule("Teams")).getDefaultWinner());
+						String score = "";
+						List<Team> teams = TeamsModule.getMinigameModule(mgm).getTeams();
+						for(Team t : teams){
+							score += t.getColor().getColor().toString() + t.getScore();
+							if(t != teams.get(teams.size() - 1)){
+								score += ChatColor.WHITE + " : ";
+							}
 						}
+						String nscore = ", " + MinigameUtils.formStr("player.end.team.score", score);
+						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.team.win", 
+								team.getChatColor() + team.getDisplayName() + ChatColor.WHITE, mgm.getName(true)) + nscore, mgm, ChatColor.GREEN);
 					}
-					//TODO: No team wins message.
-					String nscore = ", " + MinigameUtils.formStr("player.end.team.score", score);
-					MinigameUtils.broadcast(MinigameUtils.formStr("player.end.team.win", 
-							team.getChatColor() + team.getDisplayName() + ChatColor.WHITE, mgm.getName(true)) + nscore, mgm, ChatColor.GREEN);
+					else{
+						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastNobodyWon", mgm.getName(true)), mgm, ChatColor.RED);
+					}
 				}
 				else{
 					if(winners.size() == 1){

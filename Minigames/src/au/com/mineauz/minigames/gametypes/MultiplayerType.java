@@ -289,6 +289,7 @@ public class MultiplayerType extends MinigameTypeBase{
 					if(TeamsModule.getMinigameModule(mgm).hasTeam(TeamsModule.getMinigameModule(mgm).getDefaultWinner())){
 						w = new ArrayList<MinigamePlayer>(tm.getTeam(tm.getDefaultWinner()).getPlayers().size());
 						l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - tm.getTeam(tm.getDefaultWinner()).getPlayers().size());
+						w.addAll(tm.getTeam(tm.getDefaultWinner()).getPlayers());
 					}
 					else{
 						w = new ArrayList<MinigamePlayer>();
