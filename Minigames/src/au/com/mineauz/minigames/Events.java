@@ -108,7 +108,14 @@ public class Events implements Listener{
 		if(ply == null) return;
 		ply.setDead(false);
 		if(ply.isRequiredQuit()){
-			ply.restorePlayerData();
+			final MinigamePlayer fply = ply;
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				
+				@Override
+				public void run() {
+					fply.restorePlayerData();
+				}
+			});
 			event.setRespawnLocation(ply.getQuitPos());
 			
 			ply.setRequiredQuit(false);
