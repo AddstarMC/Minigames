@@ -185,10 +185,12 @@ public class PlayerData {
 				if(minigame.getType() == MinigameType.SINGLEPLAYER){
 					if(!minigame.isAllowedFlight()){
 						player.getPlayer().setAllowFlight(false);
-						player.getPlayer().setFlying(true);
 					}
-					else
+					else{
 						player.getPlayer().setAllowFlight(true);
+						if(minigame.isFlightEnabled())
+							player.getPlayer().setFlying(true);
+					}
 				}
 				else{
 					player.getPlayer().setAllowFlight(false);
