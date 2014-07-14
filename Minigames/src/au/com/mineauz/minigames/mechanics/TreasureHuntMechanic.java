@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.mechanics;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -21,8 +22,6 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameTimer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.events.MinigameTimerTickEvent;
-import au.com.mineauz.minigames.events.StartGlobalMinigameEvent;
-import au.com.mineauz.minigames.events.StopGlobalMinigameEvent;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -50,6 +49,54 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 	@Override
 	public MinigameModule displaySettings(Minigame minigame){
 		return minigame.getModule("TreasureHunt");
+	}
+
+	@Override
+	public void startMinigame(Minigame minigame, MinigamePlayer caller) {
+		final TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
+		if(thm.getLocation() != null){
+			spawnTreasure(minigame);
+			
+			if(Bukkit.getOnlinePlayers().length == 0)
+				minigame.getMinigameTimer().stopTimer();
+		}
+		else{
+			if(caller == null)
+				Bukkit.getLogger().info("Treasure Hunt requires a location name to run!");
+			else
+				caller.sendMessage("Treasure Hunt requires a location name to run!", "error");
+		}
+	}
+
+	@Override
+	public void stopMinigame(Minigame minigame, MinigamePlayer caller) {
+		TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
+		
+		minigame.getMinigameTimer().stopTimer();
+		minigame.setMinigameTimer(null);
+		thm.clearHints();
+		
+		if(thm.hasTreasureLocation()){
+			removeTreasure(minigame);
+			if(!thm.isTreasureFound()){
+				MinigameUtils.broadcast(MinigameUtils.formStr("minigame.treasurehunt.plyRemoved", minigame.getName(true))
+						, minigame, "minigame.treasure.announce");
+			}
+		}
+	}
+
+	@Override
+	public void joinMinigame(Minigame minigame, MinigamePlayer player) {
+	}
+
+	@Override
+	public void quitMinigame(Minigame minigame, MinigamePlayer player,
+			boolean forced) {
+	}
+
+	@Override
+	public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
+			List<MinigamePlayer> losers) {
 	}
 	
 	public static void removeTreasure(Minigame minigame){
@@ -178,27 +225,6 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 	}
 	
 	@EventHandler
-	private void startGame(StartGlobalMinigameEvent event){
-		final TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(event.getMinigame());
-		if(event.getMechanic().equals(getMechanic())){
-			if(thm.getLocation() != null){
-				Minigame mgm = event.getMinigame();
-				
-				spawnTreasure(mgm);
-				
-				if(Bukkit.getOnlinePlayers().length == 0)
-					mgm.getMinigameTimer().stopTimer();
-			}
-			else{
-				if(event.getCaller() == null)
-					Bukkit.getLogger().info("Treasure Hunt requires a location name to run!");
-				else
-					event.getCaller().sendMessage("Treasure Hunt requires a location name to run!", "error");
-			}
-		}
-	}
-	
-	@EventHandler
 	private void timerTick(MinigameTimerTickEvent event){
 		if(event.getMinigame().getType() != MinigameType.GLOBAL && 
 				!event.getMinigame().getMechanicName().equals(getMechanic())) return;
@@ -309,27 +335,6 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 		}
 		else{
 			spawnTreasure(mgm);
-		}
-	}
-	
-	@EventHandler
-	private void stopMinigame(StopGlobalMinigameEvent event){
-		if(event.getMinigame().getType() != MinigameType.GLOBAL && 
-				!event.getMinigame().getMechanicName().equals(getMechanic())) return;
-		
-		Minigame mgm = event.getMinigame();
-		TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
-		
-		mgm.getMinigameTimer().stopTimer();
-		mgm.setMinigameTimer(null);
-		thm.clearHints();
-		
-		if(thm.hasTreasureLocation()){
-			removeTreasure(mgm);
-			if(!thm.isTreasureFound()){
-				MinigameUtils.broadcast(MinigameUtils.formStr("minigame.treasurehunt.plyRemoved", mgm.getName(true))
-						, mgm, "minigame.treasure.announce");
-			}
 		}
 	}
 	

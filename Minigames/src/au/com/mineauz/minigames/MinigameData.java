@@ -74,6 +74,8 @@ public class MinigameData {
 			StartGlobalMinigameEvent ev = new StartGlobalMinigameEvent(minigame, caller);
 			Bukkit.getPluginManager().callEvent(ev);
 			
+			minigame.getMechanic().startMinigame(minigame, caller);
+			
 			minigame.setEnabled(true);
 			minigame.saveMinigame();
 		}
@@ -95,6 +97,8 @@ public class MinigameData {
 		if(minigame.getType() == MinigameType.GLOBAL){
 			StopGlobalMinigameEvent ev = new StopGlobalMinigameEvent(minigame, caller);
 			Bukkit.getPluginManager().callEvent(ev);
+			
+			minigame.getMechanic().stopMinigame(minigame, caller);
 
 			minigame.setEnabled(false);
 			minigame.saveMinigame();

@@ -37,6 +37,28 @@ public class PlayerKillsMechanic extends GameMechanicBase{
 	public MinigameModule displaySettings(Minigame minigame){
 		return null;
 	}
+
+	@Override
+	public void startMinigame(Minigame minigame, MinigamePlayer caller) {
+	}
+
+	@Override
+	public void stopMinigame(Minigame minigame, MinigamePlayer caller) {
+	}
+
+	@Override
+	public void joinMinigame(Minigame minigame, MinigamePlayer player) {
+	}
+
+	@Override
+	public void quitMinigame(Minigame minigame, MinigamePlayer player,
+			boolean forced) {
+	}
+
+	@Override
+	public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
+			List<MinigamePlayer> losers) {
+	}
 	
 	@EventHandler
 	private void playerAttackPlayer(PlayerDeathEvent event){

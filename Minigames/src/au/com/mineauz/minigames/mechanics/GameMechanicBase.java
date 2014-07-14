@@ -107,8 +107,47 @@ public abstract class GameMechanicBase implements Listener{
 	}
 	
 	/**
-	 * Returns the module that is assigned to this mechanic, or null if none is assigned.
+	 * Returns the module that is assigned to this mechanic, or null if none is assigned. This is to open the settings menu
+	 * for the GameMechanic if clicked in the edit menu.
 	 * @return The module that has been assigned
 	 */
 	public abstract MinigameModule displaySettings(Minigame minigame);
+	
+	/**
+	 * Called when a global Minigame has been started.
+	 * @param minigame
+	 * @param caller The player who initiated the global Minigame or null if not by a player.
+	 */
+	public abstract void startMinigame(Minigame minigame, MinigamePlayer caller);
+	
+	/**
+	 * Called when a global Minigame has been stopped.
+	 * @param minigame
+	 * @param caller The player who stopped the global Minigame or null if not by a player.
+	 */
+	public abstract void stopMinigame(Minigame minigame, MinigamePlayer caller);
+	
+	/**
+	 * Called when a player joins a Minigame. Called after the player has completely joined the game.
+	 * @param minigame
+	 * @param player
+	 */
+	public abstract void joinMinigame(Minigame minigame, MinigamePlayer player);
+	
+	/**
+	 * Called when a player quits a Minigame or is forced to quit by the Minigame. Called as the quit function has started.
+	 * @param minigame
+	 * @param player
+	 * @param forced
+	 */
+	public abstract void quitMinigame(Minigame minigame, MinigamePlayer player, boolean forced);
+	
+	/**
+	 * Called when a player (or group of players) wins a Minigame. Called as the end function has been started, so winners and
+	 * losers can still be modified.
+	 * @param minigame
+	 * @param winners
+	 * @param losers
+	 */
+	public abstract void endMinigame(Minigame minigame, List<MinigamePlayer> winners, List<MinigamePlayer> losers);
 }

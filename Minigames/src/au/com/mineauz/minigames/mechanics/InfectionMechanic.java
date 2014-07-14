@@ -10,8 +10,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.events.EndMinigameEvent;
-import au.com.mineauz.minigames.events.QuitMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -85,6 +83,40 @@ public class InfectionMechanic extends GameMechanicBase{
 	public MinigameModule displaySettings(Minigame minigame){
 		return null;
 	}
+
+	@Override
+	public void startMinigame(Minigame minigame, MinigamePlayer caller) {
+	}
+
+	@Override
+	public void stopMinigame(Minigame minigame, MinigamePlayer caller) {
+	}
+
+	@Override
+	public void joinMinigame(Minigame minigame, MinigamePlayer player) {
+	}
+
+	@Override
+	public void quitMinigame(Minigame minigame, MinigamePlayer player,
+			boolean forced) {
+		if(infected.contains(player)){
+			infected.remove(player);
+		}
+	}
+
+	@Override
+	public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
+			List<MinigamePlayer> losers) {
+		List<MinigamePlayer> infect = new ArrayList<MinigamePlayer>();
+		infect.addAll(infected);
+		for(MinigamePlayer inf : infect){
+			if(winners.contains(inf)){
+				winners.remove(inf);
+				losers.add(inf);
+				infected.remove(inf);
+			}
+		}
+	}
 	
 	@EventHandler(ignoreCancelled = true)
 	private void playerDeath(PlayerDeathEvent event){
@@ -130,28 +162,6 @@ public class InfectionMechanic extends GameMechanicBase{
 					}
 				}
 			}
-		}
-	}
-	
-	@EventHandler
-	private void endTeamMinigame(EndMinigameEvent event){
-		if(event.getMinigame().getMechanicName().equals("infection")){
-			List<MinigamePlayer> infect = new ArrayList<MinigamePlayer>();
-			infect.addAll(infected);
-			for(MinigamePlayer inf : infect){
-				if(event.getWinners().contains(inf)){
-					event.getWinners().remove(inf);
-					event.getLosers().add(inf);
-					infected.remove(inf);
-				}
-			}
-		}
-	}
-	
-	@EventHandler
-	private void quitMinigame(QuitMinigameEvent event){
-		if(infected.contains(pdata.getMinigamePlayer(event.getPlayer()))){
-			infected.remove(pdata.getMinigamePlayer(event.getPlayer()));
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.mechanics;
 
 import java.util.EnumSet;
+import java.util.List;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -29,6 +30,28 @@ public class CustomMechanic extends GameMechanicBase{
 	@Override
 	public boolean checkCanStart(Minigame minigame, MinigamePlayer caller){
 		return true;
+	}
+
+	@Override
+	public void startMinigame(Minigame minigame, MinigamePlayer caller) {
+	}
+
+	@Override
+	public void stopMinigame(Minigame minigame, MinigamePlayer caller) {
+	}
+
+	@Override
+	public void joinMinigame(Minigame minigame, MinigamePlayer player) {
+	}
+
+	@Override
+	public void quitMinigame(Minigame minigame, MinigamePlayer player,
+			boolean forced) {
+	}
+
+	@Override
+	public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
+			List<MinigamePlayer> losers) {
 	}
 	
 	@EventHandler

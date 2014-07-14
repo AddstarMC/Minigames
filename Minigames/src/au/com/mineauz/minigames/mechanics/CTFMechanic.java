@@ -17,9 +17,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import au.com.mineauz.minigames.CTFFlag;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.events.EndMinigameEvent;
 import au.com.mineauz.minigames.events.FlagCaptureEvent;
-import au.com.mineauz.minigames.events.QuitMinigameEvent;
 import au.com.mineauz.minigames.events.TakeFlagEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
@@ -49,6 +47,46 @@ public class CTFMechanic extends GameMechanicBase{
 	@Override
 	public MinigameModule displaySettings(Minigame minigame){
 		return null;
+	}
+
+	@Override
+	public void startMinigame(Minigame minigame, MinigamePlayer caller) {
+	}
+
+	@Override
+	public void stopMinigame(Minigame minigame, MinigamePlayer caller) {
+	}
+
+	@Override
+	public void joinMinigame(Minigame minigame, MinigamePlayer player) {
+	}
+
+	@Override
+	public void quitMinigame(Minigame minigame, MinigamePlayer player,
+			boolean forced) {
+		if(minigame.isFlagCarrier(player)){
+			minigame.getFlagCarrier(player).stopCarrierParticleEffect();
+			minigame.getFlagCarrier(player).respawnFlag();
+			minigame.removeFlagCarrier(player);
+		}
+		if(minigame.getPlayers().size() == 1){
+			minigame.resetFlags();
+		}
+	}
+
+	@Override
+	public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
+			List<MinigamePlayer> losers) {
+		for(MinigamePlayer pl : winners){
+			if(minigame.isFlagCarrier(pl)){
+				minigame.getFlagCarrier(pl).stopCarrierParticleEffect();
+				minigame.getFlagCarrier(pl).respawnFlag();
+				minigame.removeFlagCarrier(pl);
+			}
+		}
+		if(minigame.getPlayers().size() == 1){
+			minigame.resetFlags();
+		}
 	}
 	
 	@EventHandler
@@ -222,36 +260,6 @@ public class CTFMechanic extends GameMechanicBase{
 					mgm.removeFlagCarrier(ply);
 					flag.stopCarrierParticleEffect();
 				}
-			}
-		}
-	}
-	
-	@EventHandler
-	private void playerQuitMinigame(QuitMinigameEvent event){
-		if(event.getMinigame().getMechanicName().equals("ctf")){
-			if(event.getMinigame().isFlagCarrier(event.getMinigamePlayer())){
-				event.getMinigame().getFlagCarrier(event.getMinigamePlayer()).stopCarrierParticleEffect();
-				event.getMinigame().getFlagCarrier(event.getMinigamePlayer()).respawnFlag();
-				event.getMinigame().removeFlagCarrier(event.getMinigamePlayer());
-			}
-			if(event.getMinigame().getPlayers().size() == 1){
-				event.getMinigame().resetFlags();
-			}
-		}
-	}
-	
-	@EventHandler
-	private void playerEndMinigame(EndMinigameEvent event){
-		if(event.getMinigame().getMechanicName().equals("ctf")){
-			for(MinigamePlayer pl : event.getWinners()){
-				if(event.getMinigame().isFlagCarrier(pl)){
-					event.getMinigame().getFlagCarrier(pl).stopCarrierParticleEffect();
-					event.getMinigame().getFlagCarrier(pl).respawnFlag();
-					event.getMinigame().removeFlagCarrier(pl);
-				}
-			}
-			if(event.getMinigame().getPlayers().size() == 1){
-				event.getMinigame().resetFlags();
 			}
 		}
 	}
