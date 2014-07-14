@@ -49,6 +49,8 @@ public class OfflineMinigamePlayer {
 		if(con.contains("exp")){
 			exp = ((Double)con.getDouble("exp")).floatValue();
 		}
+		if(con.contains("level"))
+			level = con.getInt("level");
 		if(con.contains("location")){
 			loginLocation = new Location(Minigames.plugin.getServer().getWorld(con.getString("location.world")), 
 					con.getDouble("location.x"), 
