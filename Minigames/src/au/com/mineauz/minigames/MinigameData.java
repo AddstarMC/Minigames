@@ -58,6 +58,14 @@ public class MinigameData {
 		modules.add(module);
 	}
 	
+	public void removeModule(String moduleName, Class<? extends MinigameModule> module){
+		for(Minigame mg : getAllMinigames().values()){
+			mg.removeModule(moduleName);
+		}
+		
+		modules.remove(module);
+	}
+	
 	public void startGlobalMinigame(Minigame minigame, MinigamePlayer caller){
 		boolean canStart = minigame.getMechanic().checkCanStart(minigame, caller);
 		if(minigame.getType() == MinigameType.GLOBAL && 

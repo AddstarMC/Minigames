@@ -259,6 +259,11 @@ public class Minigame {
 		return false;
 	}
 	
+	public void removeModule(String moduleName){
+		saveMinigame();
+		modules.remove(moduleName);
+	}
+	
 	public List<MinigameModule> getModules(){
 		return new ArrayList<MinigameModule>(modules.values());
 	}
