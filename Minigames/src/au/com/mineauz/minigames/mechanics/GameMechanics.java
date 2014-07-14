@@ -3,6 +3,8 @@ package au.com.mineauz.minigames.mechanics;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.event.HandlerList;
+
 public class GameMechanics {
 	private static Map<String, GameMechanicBase> gameMechanics = new HashMap<String, GameMechanicBase>();
 	
@@ -14,13 +16,22 @@ public class GameMechanics {
 		addGameMechanic(new TreasureHuntMechanic());
 	}
 	
-	public static void addGameMechanic(GameMechanicBase type){
-		gameMechanics.put(type.getMechanic(), type);
+	public static void addGameMechanic(GameMechanicBase mechanic){
+		gameMechanics.put(mechanic.getMechanic(), mechanic);
 	}
 	
-	public static GameMechanicBase getGameMechanic(String type){
-		if(gameMechanics.containsKey(type)){
-			return gameMechanics.get(type);
+	public static void removeGameMechanic(String mechanic) throws NullPointerException{
+		if(gameMechanics.containsKey(mechanic)){
+			HandlerList.unregisterAll(gameMechanics.get(mechanic));
+			gameMechanics.remove(mechanic);
+		}
+		else
+			throw new NullPointerException("No GameMechanic of that name has been added!");
+	}
+	
+	public static GameMechanicBase getGameMechanic(String mechanic){
+		if(gameMechanics.containsKey(mechanic)){
+			return gameMechanics.get(mechanic);
 		}
 		return null;
 	}
