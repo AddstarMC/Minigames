@@ -8,6 +8,8 @@ import org.bukkit.command.CommandSender;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.mechanics.GameMechanicBase;
+import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
 
 public class SetGameMechanicCommand implements ICommand {
@@ -34,10 +36,10 @@ public class SetGameMechanicCommand implements ICommand {
 
 	@Override
 	public String[] getParameters() {
-		String[] types = new String[plugin.getScoreTypes().getGameMechanics().keySet().size()];
+		String[] types = new String[GameMechanics.getGameMechanics().size()];
 		int inc = 0;
-		for(String type : plugin.getScoreTypes().getGameMechanics().keySet()){
-			types[inc] = type;
+		for(GameMechanicBase type : GameMechanics.getGameMechanics()){
+			types[inc] = type.getMechanic();
 			inc++;
 		}
 		return types;
@@ -83,9 +85,9 @@ public class SetGameMechanicCommand implements ICommand {
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> types = new ArrayList<String>(plugin.getScoreTypes().getGameMechanics().keySet().size());
-			for(String type : plugin.getScoreTypes().getGameMechanics().keySet()){
-				types.add(type);
+			List<String> types = new ArrayList<String>(GameMechanics.getGameMechanics().size());
+			for(GameMechanicBase type : GameMechanics.getGameMechanics()){
+				types.add(type.getMechanic());
 			}
 			return MinigameUtils.tabCompleteMatch(types, args[0]);
 		}

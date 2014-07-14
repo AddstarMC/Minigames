@@ -1161,8 +1161,8 @@ public class Minigame {
 		}
 		itemsMain.add(new MenuItemList("Game Type", Material.PAPER, getTypeCallback(), mgTypes));
 		List<String> scoreTypes = new ArrayList<String>();
-		for(String val : Minigames.plugin.getScoreTypes().getGameMechanics().keySet()){
-			scoreTypes.add(MinigameUtils.capitalize(val));
+		for(GameMechanicBase val : GameMechanics.getGameMechanics()){
+			scoreTypes.add(MinigameUtils.capitalize(val.getMechanic()));
 		}
 		itemsMain.add(new MenuItemList("Game Mechanic", MinigameUtils.stringToList("Multiplayer Only"), Material.ROTTEN_FLESH, new Callback<String>() {
 
