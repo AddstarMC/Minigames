@@ -35,6 +35,7 @@ public class Main extends JavaPlugin{
 	
 	@Override
 	public void onDisable(){
+		minigames.mdata.removeModule("Regions", RegionModule.class);
 		getLogger().info("Minigames Regions disabled");
 	}
 	
