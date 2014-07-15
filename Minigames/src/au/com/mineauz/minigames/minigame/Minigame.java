@@ -260,7 +260,6 @@ public class Minigame {
 	}
 	
 	public void removeModule(String moduleName){
-		saveMinigame();
 		modules.remove(moduleName);
 	}
 	
