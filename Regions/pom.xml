@@ -3,7 +3,7 @@
   <parent>
     <groupId>au.com.mineauz</groupId>
     <artifactId>MinigamesProject</artifactId>
-    <version>1.7.0-b${env.BUILD_NUMBER}</version>
+    <version>1.7.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>Minigames-Regions</artifactId>
@@ -48,7 +48,7 @@
     <dependency>
       <groupId>au.com.mineauz</groupId>
       <artifactId>Minigames</artifactId>
-      <version>1.7.0-b${env.BUILD_NUMBER}</version>
+      <version>1.7.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
