@@ -26,18 +26,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 //import org.mcstats.Metrics;
 
-
-
-
-
-
 import au.com.mineauz.minigames.Metrics.Graph;
 import au.com.mineauz.minigames.blockRecorder.BasicRecorder;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.gametypes.SingleplayerType;
-import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.mechanics.TreasureHuntMechanic;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.signs.SignBase;
@@ -53,7 +47,6 @@ public class Minigames extends JavaPlugin{
 	public static Minigames plugin;
     private static Economy econ = null;
 	private SQLDatabase sql = null;
-	private static GameMechanics scoretypes;
 	private static SignBase minigameSigns;
 	private FileConfiguration lang = null;
 	private List<SQLPlayer> sqlToStore = new ArrayList<SQLPlayer>();
@@ -177,8 +170,6 @@ public class Minigames extends JavaPlugin{
 		
 //		pdata.loadDCPlayers();
 		pdata.loadDeniedCommands();
-		
-		scoretypes = new GameMechanics();
 		
 		MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
 		Set<String> keys = globalLoadouts.getConfig().getKeys(false);
@@ -333,10 +324,6 @@ public class Minigames extends JavaPlugin{
 		sql = new SQLDatabase();
 		if(!sql.loadSQL())
 			sql = null;
-	}
-	
-	public GameMechanics getScoreTypes(){
-		return scoretypes;
 	}
 	
 	public long getLastUpdateCheck(){
