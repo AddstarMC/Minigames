@@ -202,7 +202,7 @@ public class LoadoutModule extends MinigameModule {
 
 	@Override
 	public void addMenuOptions(Menu menu) {
-		// TODO Auto-generated method stub
+		// TODO Move loadout menu stuff here
 		
 	}
 
