@@ -185,11 +185,6 @@ public class Minigame {
 			}
 		}
 		
-		for(MinigameModule mod : getModules()){
-			if(mod.getFlags() != null)
-				configFlags.putAll(mod.getFlags());
-		}
-		
 		addConfigFlag(allowEnderpearls);
 		addConfigFlag(allowFlight);
 		addConfigFlag(allowMPCheckpoints);
@@ -1386,13 +1381,23 @@ public class Minigame {
 		cfg.set(name, null);
 		
 		for(MinigameModule module : getModules()){
-			if(!module.useSeparateConfig())
+			if(!module.useSeparateConfig()){
 				module.save(cfg);
-			else{
+				
+				for(Flag<?> flag : module.getFlags().values()){
+					flag.saveValue(name, cfg);
+				}
+			}else{
 				MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
 				modsave.getConfig().set(name, null);
 				module.save(modsave.getConfig());
 				modsave.saveConfig();
+				
+				if(module.getFlags() != null){
+					for(Flag<?> flag : module.getFlags().values()){
+						flag.saveValue(name, modsave.getConfig());
+					}
+				}
 			}
 		}
 		
@@ -1462,11 +1467,23 @@ public class Minigame {
 		//-----------------------------------------------
 		
 		for(MinigameModule module : getModules()){
-			if(!module.useSeparateConfig())
+			if(!module.useSeparateConfig()){
 				module.load(cfg);
-			else{
+				
+				for(String flag : module.getFlags().keySet()){
+					if(cfg.contains(name + "." + flag))
+						module.getFlags().get(flag).loadValue(name, cfg);
+				}
+			}else{
 				MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
 				module.load(modsave.getConfig());
+				
+				if(module.getFlags() != null){
+					for(String flag : module.getFlags().keySet()){
+						if(modsave.getConfig().contains(name + "." + flag))
+							module.getFlags().get(flag).loadValue(name, modsave.getConfig());
+					}
+				}
 			}
 		}
 		
