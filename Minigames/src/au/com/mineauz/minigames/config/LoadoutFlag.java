@@ -39,6 +39,9 @@ public class LoadoutFlag extends Flag<PlayerLoadout>{
 		
 		if(getFlag().hasHunger())
 			config.set(path + "." + getName() + ".hunger", getFlag().hasHunger());
+		
+		if(getFlag().getDisplayName() != null)
+			config.set(path + "." + getName() + ".displayName", getFlag().getDisplayName());
 	}
 
 	@Override
@@ -71,6 +74,9 @@ public class LoadoutFlag extends Flag<PlayerLoadout>{
 		
 		if(config.contains(path + "." + getName() + ".hunger"))
 			getFlag().setHasHunger(config.getBoolean(path + "." + getName() + ".hunger"));
+		
+		if(config.contains(path + "." + getName() + ".displayName"))
+			getFlag().setDisplayName(config.getString(path + "." + getName() + ".displayName"));
 	}
 
 	@Override

@@ -174,8 +174,8 @@ public class LoadoutModule extends MinigameModule {
 		final MinigamePlayer fply = player;
 		
 		for(PlayerLoadout loadout : extraLoadouts.values()){
-			if(!loadout.getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + loadout.getName().toLowerCase())){
-				MenuItemCustom c = new MenuItemCustom(loadout.getName(), Material.GLASS);
+			if(!loadout.getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + loadout.getName(false).toLowerCase())){
+				MenuItemCustom c = new MenuItemCustom(loadout.getName(true), Material.GLASS);
 				if(!loadout.getItems().isEmpty())
 					c.setItem(loadout.getItem(new ArrayList<Integer>(loadout.getItems()).get(0)));
 				final PlayerLoadout floadout2 = loadout;
@@ -188,7 +188,7 @@ public class LoadoutModule extends MinigameModule {
 						if(!equip)
 							fply.sendMessage(MinigameUtils.getLang("player.loadout.nextSpawn"), null);
 						else{
-							fply.sendMessage(MinigameUtils.formStr("player.loadout.equipped", floadout2.getName()), null);
+							fply.sendMessage(MinigameUtils.formStr("player.loadout.equipped", floadout2.getName(true)), null);
 							floadout2.equiptLoadout(fply);
 						}
 						return null;

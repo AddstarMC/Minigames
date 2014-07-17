@@ -57,14 +57,17 @@ public class MenuItemDisplayLoadout extends MenuItem{
 	
 	@Override
 	public ItemStack onClick(){
-		Menu loadoutMenu = new Menu(5, loadout.getName(), getContainer().getViewer());
-		Menu loadoutSettings = new Menu(6, loadout.getName(), getContainer().getViewer());
+		Menu loadoutMenu = new Menu(5, loadout.getName(false), getContainer().getViewer());
+		Menu loadoutSettings = new Menu(6, loadout.getName(false), getContainer().getViewer());
 		loadoutSettings.setPreviousPage(loadoutMenu);
 		
 		List<MenuItem> mItems = new ArrayList<MenuItem>();
-		if(!loadout.getName().equals("default"))
-			mItems.add(new MenuItemBoolean("Use Permissions", MinigameUtils.stringToList("Permission:;minigame.loadout." + loadout.getName().toLowerCase()), 
+		if(!loadout.getName(false).equals("default"))
+			mItems.add(new MenuItemBoolean("Use Permissions", MinigameUtils.stringToList("Permission:;minigame.loadout." + loadout.getName(false).toLowerCase()), 
 					Material.GOLD_INGOT, loadout.getUsePermissionsCallback()));
+		MenuItemString disName = new MenuItemString("Display Name", Material.PAPER, loadout.getDisplayNameCallback());
+		disName.setAllowNull(true);
+		mItems.add(disName);
 		mItems.add(new MenuItemBoolean("Allow Fall Damage", Material.LEATHER_BOOTS, loadout.getFallDamageCallback()));
 		mItems.add(new MenuItemBoolean("Allow Hunger", Material.APPLE, loadout.getHungerCallback()));
 		mItems.add(new MenuItemInteger("XP Level", MinigameUtils.stringToList("Use -1 to not;use loadout levels"), Material.EXP_BOTTLE, loadout.getLevelCallback(), -1, null));
@@ -111,7 +114,6 @@ public class MenuItemDisplayLoadout extends MenuItem{
 			loadoutMenu.setPreviousPage(altMenu);
 		
 		loadoutMenu.addItem(new MenuItemSaveLoadout("Loadout Settings", Material.CHEST, loadout, loadoutSettings), 42);
-//		loadoutMenu.addItem(new MenuItemDisplayPotions("Edit Potion Effects", Material.POTION, loadout), 43);
 		loadoutMenu.addItem(new MenuItemSaveLoadout("Edit Potion Effects", Material.POTION, loadout, potionMenu), 43);
 		loadoutMenu.addItem(new MenuItemSaveLoadout("Save Loadout", Material.REDSTONE_TORCH_ON, loadout), 44);
 		
@@ -142,7 +144,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 			MinigamePlayer ply = getContainer().getViewer();
 			ply.setNoClose(true);
 			ply.getPlayer().closeInventory();
-			ply.sendMessage("Delete the " + loadout.getName() + " loadout from " + getName() + "? Type \"Yes\" to confirm.", null);
+			ply.sendMessage("Delete the " + loadout.getName(false) + " loadout from " + getName() + "? Type \"Yes\" to confirm.", null);
 			ply.sendMessage("The menu will automatically reopen in 10s if nothing is entered.");
 			ply.setManualEntry(this);
 			getContainer().startReopenTimer(10);
@@ -155,7 +157,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 	@Override
 	public void checkValidEntry(String entry){
 		if(entry.equalsIgnoreCase("yes")){
-			String loadoutName = loadout.getName();
+			String loadoutName = loadout.getName(false);
 			if(mgm != null)
 				LoadoutModule.getMinigameModule(mgm).deleteLoadout(loadoutName);
 			else
@@ -166,7 +168,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 			getContainer().getViewer().sendMessage(loadoutName + " has been deleted.", null);
 			return;
 		}
-		getContainer().getViewer().sendMessage(loadout.getName() + " was not deleted.", "error");
+		getContainer().getViewer().sendMessage(loadout.getName(false) + " was not deleted.", "error");
 		getContainer().cancelReopenTimer();
 		getContainer().displayMenu(getContainer().getViewer());
 	}

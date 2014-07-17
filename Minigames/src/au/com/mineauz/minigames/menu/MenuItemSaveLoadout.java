@@ -55,7 +55,7 @@ public class MenuItemSaveLoadout extends MenuItem{
 					loadout.addItem(items[i], 100);
 			}
 		}
-		getContainer().getViewer().sendMessage("Saved the '" + loadout.getName() + "' loadout.", null);
+		getContainer().getViewer().sendMessage("Saved the '" + loadout.getName(false) + "' loadout.", null);
 		if(altMenu == null)
 			getContainer().getPreviousPage().displayMenu(getContainer().getViewer());
 		else

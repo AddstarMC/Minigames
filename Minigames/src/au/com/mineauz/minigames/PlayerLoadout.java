@@ -21,9 +21,33 @@ public class PlayerLoadout {
 	private boolean hunger = false;
 	private int level = -1;
 	private boolean deleteable = true;
+	private String displayname = null;
 	
 	public PlayerLoadout(String name){
 		loadoutName = name;
+	}
+	
+	public void setDisplayName(String name){
+		displayname = name;
+	}
+	
+	public Callback<String> getDisplayNameCallback(){
+		return new Callback<String>() {
+
+			@Override
+			public void setValue(String value) {
+				displayname = value;
+			}
+
+			@Override
+			public String getValue() {
+				return displayname;
+			}
+		};
+	}
+	
+	public String getDisplayName(){
+		return displayname;
 	}
 	
 	public void setUsePermissions(boolean bool){
@@ -49,12 +73,10 @@ public class PlayerLoadout {
 		};
 	}
 	
-	public void setName(String name){
-		loadoutName = name;
-	}
-	
-	public String getName(){
-		return loadoutName;
+	public String getName(boolean useDisplay){
+		if(!useDisplay || getDisplayName() == null)
+			return loadoutName;
+		return getDisplayName();
 	}
 	
 	public void addItem(ItemStack item, int slot){
