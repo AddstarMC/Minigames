@@ -121,18 +121,10 @@ public class Minigame {
 	
 	private Map<String, MinigameModule> modules = new HashMap<String, MinigameModule>();
 	
-//	private int redTeamScore = 0; //TODO: Remove
-//	private int blueTeamScore = 0; //TODO: Remove
-//	private Map<TeamColor, Team> teams = new HashMap<TeamColor, Team>();
 	private Scoreboard sbManager = Minigames.plugin.getServer().getScoreboardManager().getNewScoreboard();
 	
 	private IntegerFlag minScore = new IntegerFlag(5, "minscore");
 	private IntegerFlag maxScore = new IntegerFlag(10, "maxscore");
-
-//	private List<Location> startLocationsBlue = new ArrayList<Location>(); //TODO: Remove
-//	private List<Location> startLocationsRed = new ArrayList<Location>(); //TODO: Remove
-//	private String defaultWinner = "none";
-//	private Team defaultWinner = null;
 	
 	private BooleanFlag canSpectateFly = new BooleanFlag(false, "canspectatefly");
 	
@@ -550,151 +542,9 @@ public class Minigame {
 		return spectators.contains(player);
 	}
 	
-//	public Team getTeam(TeamColor color){
-//		return teams.get(color);
-//	}
-//	
-//	public List<Team> getTeams(){
-//		return new ArrayList<Team>(teams.values());
-//	}
-//	
-//	public Team addTeam(TeamColor color){
-//		return addTeam(color, "");
-//	}
-//	
-//	public Team addTeam(TeamColor color, String name){
-//		if(!teams.containsKey(color)){
-//			teams.put(color, new Team(color, this));
-//			String sbTeam = color.toString().toLowerCase();
-//			sbManager.registerNewTeam(sbTeam);
-//			sbManager.getTeam(sbTeam).setPrefix(color.getColor().toString());
-//			sbManager.getTeam(sbTeam).setAllowFriendlyFire(false);
-//			sbManager.getTeam(sbTeam).setCanSeeFriendlyInvisibles(true);
-//		}
-//		if(!name.equals(""))
-//			teams.get(color).setDisplayName(name);
-//		return teams.get(color);
-//	}
-//	
-//	public void addTeam(TeamColor color, Team team){
-//		teams.put(color, team);
-//		String sbTeam = color.toString().toLowerCase();
-//		sbManager.registerNewTeam(sbTeam);
-//		sbManager.getTeam(sbTeam).setPrefix(color.getColor().toString());
-//		sbManager.getTeam(sbTeam).setAllowFriendlyFire(false);
-//		sbManager.getTeam(sbTeam).setCanSeeFriendlyInvisibles(true);
-//	}
-//	
-//	public boolean hasTeam(TeamColor color){
-//		if(teams.containsKey(color))
-//			return true;
-//		return false;
-//	}
-//	
-//	public void removeTeam(TeamColor color){
-//		if(teams.containsKey(color)){
-//			teams.remove(color);
-//			sbManager.getTeam(color.toString().toLowerCase()).unregister();
-//		}
-//	}
-//	
-//	public boolean hasTeamStartLocations(){
-//		for(Team t : teams.values()){
-//			if(!t.hasStartLocations())
-//				return false;
-//		}
-//		return true;
-//	}
-
-//	public List<OfflinePlayer> getRedTeam() {
-//		List<OfflinePlayer> players = new ArrayList<OfflinePlayer>();
-//		for(OfflinePlayer offply : sbManager.getTeam("Red").getPlayers()){
-//			players.add(offply);
-//		}
-//		return players;
-//	}
-//
-//	public void addRedTeamPlayer(MinigamePlayer player) {
-//		sbManager.getTeam("Red").addPlayer(player.getPlayer().getPlayer());
-//		player.getPlayer().setScoreboard(sbManager);
-//	}
-//	
-//	public void removeRedTeamPlayer(MinigamePlayer player){
-//		sbManager.getTeam("Red").removePlayer(player.getPlayer());
-//		if(player.getPlayer().isOnline())
-//			player.getPlayer().setScoreboard(Minigames.plugin.getServer().getScoreboardManager().getMainScoreboard());
-//	}
-//
-//	public List<OfflinePlayer> getBlueTeam() {
-//		List<OfflinePlayer> players = new ArrayList<OfflinePlayer>();
-//		for(OfflinePlayer offply : sbManager.getTeam("Blue").getPlayers()){
-//			players.add(offply);
-//		}
-//		return players;
-//	}
-//
-//	public void addBlueTeamPlayer(MinigamePlayer player) {
-//		sbManager.getTeam("Blue").addPlayer(player.getPlayer().getPlayer());
-//		player.getPlayer().setScoreboard(sbManager);
-//	}
-//	
-//	public void removeBlueTeamPlayer(MinigamePlayer player){
-//		sbManager.getTeam("Blue").removePlayer(player.getPlayer());
-//		if(player.getPlayer().isOnline())
-//			player.getPlayer().setScoreboard(Minigames.plugin.getServer().getScoreboardManager().getMainScoreboard());
-//	}
-	
 	public void setScore(MinigamePlayer ply, int amount){
 		sbManager.getObjective(getName(false)).getScore(ply.getName()).setScore(amount);
 	}
-//
-//	public int getRedTeamScore() {
-//		return redTeamScore;
-//	}
-//
-//	public void setRedTeamScore(int redTeamScore) {
-//		this.redTeamScore = redTeamScore;
-//		if(redTeamScore != 0){
-//			getScoreboardManager().getObjective(name).getScore(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.RED + "Red Team: ")).setScore(redTeamScore);
-//		}
-//		else{
-//			getScoreboardManager().resetScores(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.RED + "Red Team: "));
-//		}
-//	}
-//	
-//	public void incrementRedTeamScore(){
-//		redTeamScore++;
-//		getScoreboardManager().getObjective(name).getScore(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.RED + "Red Team: ")).setScore(redTeamScore);
-//	}
-//	
-//	public void incrementRedTeamScore(int amount){
-//		redTeamScore += amount;
-//		getScoreboardManager().getObjective(name).getScore(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.RED + "Red Team: ")).setScore(redTeamScore);
-//	}
-//
-//	public int getBlueTeamScore() {
-//		return blueTeamScore;
-//	}
-//
-//	public void setBlueTeamScore(int blueTeamScore) {
-//		this.blueTeamScore = blueTeamScore;
-//		if(blueTeamScore != 0){
-//			getScoreboardManager().getObjective(name).getScore(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.BLUE + "Blue Team: ")).setScore(blueTeamScore);
-//		}
-//		else{
-//			getScoreboardManager().resetScores(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.BLUE + "Blue Team: "));
-//		}
-//	}
-//	
-//	public void incrementBlueTeamScore(){
-//		blueTeamScore++;
-//		getScoreboardManager().getObjective(name).getScore(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.BLUE + "Blue Team: ")).setScore(blueTeamScore);
-//	}
-//	
-//	public void incrementBlueTeamScore(int amount){
-//		blueTeamScore += amount;
-//		getScoreboardManager().getObjective(name).getScore(Minigames.plugin.getServer().getOfflinePlayer(ChatColor.BLUE + "Blue Team: ")).setScore(blueTeamScore);
-//	}
 
 	public int getMinScore() {
 		return minScore.getFlag();
@@ -711,56 +561,6 @@ public class Minigame {
 	public void setMaxScore(int maxScore) {
 		this.maxScore.setFlag(maxScore);
 	}
-
-//	public void addStartLocationBlue(Location loc){
-//		startLocationsBlue.add(loc);
-//	}
-//	
-//	public void addStartLocationBlue(Location loc, int number){
-//		if(startLocationsBlue.size() >= number){
-//			startLocationsBlue.set(number - 1, loc);
-//		}
-//		else{
-//			startLocationsBlue.add(loc);
-//		}
-//	}
-//	
-//	public List<Location> getStartLocationsBlue(){
-//		return startLocationsBlue;
-//	}
-//	
-//	public boolean removeStartLocationBlue(int locNumber){
-//		if(startLocationsBlue.size() < locNumber){
-//			startLocationsBlue.remove(locNumber);
-//			return true;
-//		}
-//		return false;
-//	}
-//
-//	public void addStartLocationRed(Location loc){
-//		startLocationsRed.add(loc);
-//	}
-//	
-//	public void addStartLocationRed(Location loc, int number){
-//		if(startLocationsRed.size() >= number){
-//			startLocationsRed.set(number - 1, loc);
-//		}
-//		else{
-//			startLocationsRed.add(loc);
-//		}
-//	}
-//	
-//	public List<Location> getStartLocationsRed(){
-//		return startLocationsRed;
-//	}
-//	
-//	public boolean removeStartLocationRed(int locNumber){
-//		if(startLocationsRed.size() < locNumber){
-//			startLocationsRed.remove(locNumber);
-//			return true;
-//		}
-//		return false;
-//	}
 	
 	public int getMaxScorePerPlayer(){
 		float scorePerPlayer = getMaxScore() / getMaxPlayers();
@@ -1043,49 +843,6 @@ public class Minigame {
 	public void setFloorDegenTime(int floorDegenTime) {
 		this.floorDegenTime.setFlag(floorDegenTime);
 	}
-
-//	public Team getDefaultWinner() {
-//		return defaultWinner;
-//	}
-	
-//	private Callback<String> getDefaultWinnerCallback(){
-//		return new Callback<String>() {
-//
-//			@Override
-//			public void setValue(String value) {
-//				defaultWinner = value;
-//			}
-//
-//			@Override
-//			public String getValue() {
-//				return defaultWinner;
-//			}
-//		};
-//	}
-//	
-//	private Callback<String> getDefaultWinnerCallback(){
-//		return new Callback<String>() {
-//
-//			@Override
-//			public void setValue(String value) {
-//				if(!value.equals("None"))
-//					defaultWinner = getTeam(TeamColor.matchColor(value.replace(" ", "_")));
-//				else
-//					defaultWinner = null;
-//			}
-//
-//			@Override
-//			public String getValue() {
-//				if(defaultWinner != null)
-//					return MinigameUtils.capitalize(defaultWinner.getColor().toString().replace("_", " "));
-//				return "None";
-//			}
-//		};
-//	}
-//
-//	public void setDefaultWinner(Team defaultWinner) {
-//		this.defaultWinner = defaultWinner;
-//	}
 	
 	public boolean isAllowedEnderpearls() {
 		return allowEnderpearls.getFlag();
@@ -1407,24 +1164,6 @@ public class Minigame {
 						!configFlags.get(configOpt).getDefaultFlag().equals(configFlags.get(configOpt).getFlag())))
 				configFlags.get(configOpt).saveValue(name, cfg);
 		}
-//		for(Team team : teams.values()){
-//			cfg.set(name + ".teams." + team.getColor().toString() + ".displayName", team.getDisplayName());
-//			if(!team.getStartLocations().isEmpty()){
-//				for(int i = 0; i < team.getStartLocations().size(); i++){
-//					Minigames.plugin.mdata.minigameSetLocations(name, team.getStartLocations().get(i), "teams." + team.getColor().toString() + ".startpos." + i, cfg);
-//				}
-//			}
-//		}
-//		if(!getStartLocationsBlue().isEmpty()){
-//			for(int i = 0; i < getStartLocationsBlue().size(); i++){
-//				Minigames.plugin.mdata.minigameSetLocations(name, getStartLocationsBlue().get(i), "startposblue." + String.valueOf(i), minigame.getConfig());
-//			}
-//		}
-//		if(!getStartLocationsRed().isEmpty()){
-//			for(int i = 0; i < getStartLocationsRed().size(); i++){
-//				Minigames.plugin.mdata.minigameSetLocations(name, getStartLocationsRed().get(i), "startposred." + String.valueOf(i), minigame.getConfig());
-//			}
-//		} //TODO: Remove Me!
 		
 		if(!getBlockRecorder().getWBBlocks().isEmpty()){
 			List<String> blocklist = new ArrayList<String>();
@@ -1491,37 +1230,6 @@ public class Minigame {
 			if(cfg.contains(name + "." + flag))
 				configFlags.get(flag).loadValue(name, cfg);
 		}
-//		
-//		if(cfg.contains(name + ".teams")){
-//			Set<String> teams = cfg.getConfigurationSection(name + ".teams").getKeys(false);
-//			for(String team : teams){
-//				Team t = addTeam(TeamColor.valueOf(team), cfg.getString(name + ".teams." + team + ".displayName"));
-//				if(cfg.contains(name + ".teams." + team + ".startPos")){
-//					Set<String> locations = cfg.getConfigurationSection(name + ".teams." + team + ".startPos").getKeys(false);
-//					for(String loc : locations){
-//						t.addStartLocation(Minigames.plugin.mdata.minigameLocations(name, "teams." + team + ".startPos." + loc, cfg));
-//					}
-//				}
-//			}
-//		}
-//		if(minigame.getConfig().contains(name + ".startposred")){ //TODO: Remove after 1.7
-//			if(!hasTeam(TeamColor.RED))
-//				addTeam(TeamColor.RED);
-//			Set<String> locs = minigame.getConfig().getConfigurationSection(name + ".startposred").getKeys(false);
-//			
-//			for(int i = 0; i < locs.size(); i++){
-//				getTeam(TeamColor.RED).addStartLocation(Minigames.plugin.mdata.minigameLocations(name, "startposred." + String.valueOf(i), cfg));
-//			}
-//		}
-//		if(minigame.getConfig().contains(name + ".startposblue")){ //TODO: Remove after 1.7
-//			if(!hasTeam(TeamColor.BLUE))
-//				addTeam(TeamColor.BLUE);
-//			Set<String> locs = minigame.getConfig().getConfigurationSection(name + ".startposblue").getKeys(false);
-//			
-//			for(int i = 0; i < locs.size(); i++){
-//				getTeam(TeamColor.BLUE).addStartLocation(Minigames.plugin.mdata.minigameLocations(name, "startposblue." + String.valueOf(i), cfg));
-//			}
-//		}
 		
 		if(minigame.getConfig().contains(name + ".whitelistmode")){
 			getBlockRecorder().setWhitelistMode(minigame.getConfig().getBoolean(name + ".whitelistmode"));
