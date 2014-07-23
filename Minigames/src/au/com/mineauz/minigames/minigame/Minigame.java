@@ -1148,13 +1148,14 @@ public class Minigame {
 				MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
 				modsave.getConfig().set(name, null);
 				module.save(modsave.getConfig());
-				modsave.saveConfig();
 				
 				if(module.getFlags() != null){
 					for(Flag<?> flag : module.getFlags().values()){
 						flag.saveValue(name, modsave.getConfig());
 					}
 				}
+				
+				modsave.saveConfig();
 			}
 		}
 		
