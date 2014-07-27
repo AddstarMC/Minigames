@@ -15,11 +15,11 @@ import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class AddScoreAction implements ActionInterface {
+public class SetScoreAction implements ActionInterface {
 
 	@Override
 	public String getName() {
-		return "ADD_SCORE";
+		return "SET_SCORE";
 	}
 
 	@Override
@@ -41,53 +41,53 @@ public class AddScoreAction implements ActionInterface {
 	public void executeNodeAction(MinigamePlayer player,
 			Map<String, Object> args, Node node, Event event) {
 		if(player == null || !player.isInMinigame()) return;
-		player.addScore((Integer)args.get("a_addscoreamount"));
+		player.setScore((Integer)args.get("a_setscoreamount"));
 		player.getMinigame().setScore(player, player.getScore());
 	}
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region, Event event) {
 		if(player == null || !player.isInMinigame()) return;
-		player.addScore((Integer)args.get("a_addscoreamount"));
+		player.setScore((Integer)args.get("a_setscoreamount"));
 		player.getMinigame().setScore(player, player.getScore());
 	}
 
 	@Override
 	public Map<String, Object> getRequiredArguments() {
 		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_addscoreamount", 1);
+		args.put("a_setscoreamount", 1);
 		return args;
 	}
 
 	@Override
 	public void saveArguments(Map<String, Object> args,
 			FileConfiguration config, String path) {
-		config.set(path + ".a_addscoreamount", args.get("a_addscoreamount"));
+		config.set(path + ".a_setscoreamount", args.get("a_setscoreamount"));
 	}
 
 	@Override
 	public Map<String, Object> loadArguments(FileConfiguration config,
 			String path) {
 		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_addscoreamount", config.getInt(path + ".a_addscoreamount"));
+		args.put("a_setscoreamount", config.getInt(path + ".a_setscoreamount"));
 		return args;
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Map<String, Object> args,
 			Menu previous) {
-		Menu m = new Menu(3, "Add Score", player);
+		Menu m = new Menu(3, "Set Score", player);
 		final Map<String, Object> fargs = args;
-		m.addItem(new MenuItemInteger("Add Score Amount", Material.ENDER_PEARL, new Callback<Integer>() {
+		m.addItem(new MenuItemInteger("Set Score Amount", Material.ENDER_PEARL, new Callback<Integer>() {
 			
 			@Override
 			public void setValue(Integer value) {
-				fargs.put("a_addscoreamount", value);
+				fargs.put("a_setscoreamount", value);
 			}
 			
 			@Override
 			public Integer getValue() {
-				return (Integer)fargs.get("a_addscoreamount");
+				return (Integer)fargs.get("a_setscoreamount");
 			}
 		}, null, null));
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);

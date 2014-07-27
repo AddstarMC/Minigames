@@ -26,6 +26,7 @@ public class Actions {
 		addAction(new EndAction());
 		addAction(new MessageAction());
 		addAction(new AddScoreAction());
+		addAction(new SetScoreAction());
 		addAction(new ReequipLoadoutAction());
 		addAction(new EquipLoadoutAction());
 		addAction(new HealAction());
@@ -44,6 +45,8 @@ public class Actions {
 		addAction(new SwapBlockAction());
 		addAction(new ApplyPotionAction());
 		addAction(new FallingBlockAction());
+		addAction(new AddTeamScoreAction());
+		addAction(new SetTeamScoreAction());
 	}
 	
 	public static void addAction(ActionInterface action){

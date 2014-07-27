@@ -30,6 +30,7 @@ public class Conditions {
 		addCondition(new ContainsEntireTeamCondition());
 		addCondition(new PlayerCountCondition());
 		addCondition(new PlayerHasItemCondition());
+		addCondition(new TeamScoreRangeCondition());
 	}
 	
 	public static void addCondition(ConditionInterface condition){
