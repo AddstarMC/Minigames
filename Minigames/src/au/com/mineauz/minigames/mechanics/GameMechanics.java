@@ -16,6 +16,7 @@ public class GameMechanics {
 		addGameMechanic(new InfectionMechanic());
 		addGameMechanic(new CustomMechanic());
 		addGameMechanic(new TreasureHuntMechanic());
+		addGameMechanic(new LivesMechanic());
 	}
 	
 	/**
