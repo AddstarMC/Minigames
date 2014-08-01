@@ -165,7 +165,7 @@ public class Events implements Listener{
 		
 		pdata.removeMinigamePlayer(event.getPlayer());
 		
-		if(Bukkit.getServer().getOnlinePlayers().length == 1){
+		if(Bukkit.getServer().getOnlinePlayers().size() == 1){
 			for(String mgm : mdata.getAllMinigames().keySet()){
 				if(mdata.getMinigame(mgm).getType() == MinigameType.GLOBAL){
 //					if(mdata.getMinigame(mgm).getThTimer() != null){
@@ -204,7 +204,7 @@ public class Events implements Listener{
 		
 		ply.loadClaimedRewards();
 		
-		if(Bukkit.getServer().getOnlinePlayers().length == 1){
+		if(Bukkit.getServer().getOnlinePlayers().size() == 1){
 			for(String mgm : mdata.getAllMinigames().keySet()){
 				if(mdata.getMinigame(mgm).getType() == MinigameType.GLOBAL){
 //					if(mdata.getMinigame(mgm).getThTimer() != null){

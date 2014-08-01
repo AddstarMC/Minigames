@@ -173,7 +173,7 @@ public class EndCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> plt = new ArrayList<String>(plugin.getServer().getOnlinePlayers().length + 2);
+			List<String> plt = new ArrayList<String>(plugin.getServer().getOnlinePlayers().size() + 2);
 			for(Player pl : plugin.getServer().getOnlinePlayers()){
 				plt.add(pl.getName());
 			}

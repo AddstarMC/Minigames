@@ -130,7 +130,7 @@ public class QuitCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> plys = new ArrayList<String>(plugin.getServer().getOnlinePlayers().length + 1);
+			List<String> plys = new ArrayList<String>(plugin.getServer().getOnlinePlayers().size() + 1);
 			for(Player ply : plugin.getServer().getOnlinePlayers()){
 				plys.add(ply.getName());
 			}

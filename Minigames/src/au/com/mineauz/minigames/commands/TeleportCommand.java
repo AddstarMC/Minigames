@@ -187,7 +187,7 @@ public class TeleportCommand implements ICommand {
 			return MinigameUtils.tabCompleteMatch(pl, args[0]);
 		}
 		else if(args.length == 2){
-			List<String> pl = new ArrayList<String>(plugin.getServer().getOnlinePlayers().length + 2);
+			List<String> pl = new ArrayList<String>(plugin.getServer().getOnlinePlayers().size() + 2);
 			for(Player ply : plugin.getServer().getOnlinePlayers()){
 				pl.add(ply.getName());
 			}

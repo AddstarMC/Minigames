@@ -286,7 +286,7 @@ public class ScoreCommand implements ICommand {
 		}
 		else if(args.length == 2){
 
-			List<String> pt = new ArrayList<String>(plugin.getServer().getOnlinePlayers().length + 2);
+			List<String> pt = new ArrayList<String>(plugin.getServer().getOnlinePlayers().size() + 2);
 			for(Player pl : plugin.getServer().getOnlinePlayers()){
 				pt.add(pl.getName());
 			}
