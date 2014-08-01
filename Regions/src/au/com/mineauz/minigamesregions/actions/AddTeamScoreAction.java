@@ -58,12 +58,12 @@ public class AddTeamScoreAction implements ActionInterface {
 	private void executeAction(MinigamePlayer player, Map<String, Object> args){
 		if(player == null || !player.isInMinigame()) return;
 		if(player.getTeam() != null && args.get("a_addteamscorename").equals("NONE")){
-			player.getTeam().addScore((int)args.get("a_addteamscore"));
+			player.getTeam().addScore((Integer)args.get("a_addteamscore"));
 		}
 		else if(!args.get("a_addteamscorename").equals("NONE")){
 			TeamsModule tm = TeamsModule.getMinigameModule(player.getMinigame());
 			if(tm.hasTeam(TeamColor.valueOf((String)args.get("a_addteamscorename")))){
-				tm.getTeam(TeamColor.valueOf((String)args.get("a_addteamscorename"))).addScore((int)args.get("a_addteamscore"));
+				tm.getTeam(TeamColor.valueOf((String)args.get("a_addteamscorename"))).addScore((Integer)args.get("a_addteamscore"));
 			}
 		}
 	}

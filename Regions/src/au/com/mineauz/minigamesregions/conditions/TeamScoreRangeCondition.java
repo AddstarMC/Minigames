@@ -53,8 +53,8 @@ public class TeamScoreRangeCondition implements ConditionInterface {
 	private boolean checkCondition(MinigamePlayer player, Map<String, Object> args){
 		if(player.getTeam() != null){
 			Team t = player.getTeam();
-			if(t.getScore() >= (int)args.get("c_teamscorerangelower") && 
-					t.getScore() <= (int)args.get("c_teamscorerangeupper")){
+			if(t.getScore() >= (Integer)args.get("c_teamscorerangelower") && 
+					t.getScore() <= (Integer)args.get("c_teamscorerangeupper")){
 				return true;
 			}
 		}
