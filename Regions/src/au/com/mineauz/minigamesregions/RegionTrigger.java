@@ -10,6 +10,8 @@ public enum RegionTrigger {
 	GAME_QUIT,
 	GAME_END,
 	GAME_JOIN,
+	DEATH,
+	RESPAWN,
 	TIMER;
 	
 	public static RegionTrigger getByName(String name){

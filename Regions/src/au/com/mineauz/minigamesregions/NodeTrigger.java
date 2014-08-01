@@ -11,6 +11,8 @@ public enum NodeTrigger {
 	GAME_JOIN,
 	TIMER,
 	BLOCK_BROKEN,
+	DEATH,
+	RESPAWN,
 	BLOCK_PLACED;
 	
 	public static NodeTrigger getByName(String name){

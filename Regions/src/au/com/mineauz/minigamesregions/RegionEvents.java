@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -74,6 +75,27 @@ public class RegionEvents implements Listener{
 					executeRegionChanges(mg, ply, fevent);
 				}
 			});
+			
+			for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
+				node.execute(NodeTrigger.RESPAWN, ply, event);
+			}
+			for(Region region : RegionModule.getMinigameModule(ply.getMinigame()).getRegions()){
+				region.execute(RegionTrigger.RESPAWN, ply, event);
+			}
+		}
+	}
+	
+	@EventHandler
+	private void playerDeath(PlayerDeathEvent event){
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
+		if(ply == null) return;
+		if(ply.isInMinigame()){
+			for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
+				node.execute(NodeTrigger.DEATH, ply, event);
+			}
+			for(Region region : RegionModule.getMinigameModule(ply.getMinigame()).getRegions()){
+				region.execute(RegionTrigger.DEATH, ply, event);
+			}
 		}
 	}
 	
