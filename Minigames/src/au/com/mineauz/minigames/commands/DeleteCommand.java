@@ -1,12 +1,12 @@
 package au.com.mineauz.minigames.commands;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import au.com.mineauz.minigames.MinigameSave;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -60,19 +60,24 @@ public class DeleteCommand implements ICommand{
 			Minigame mgm = plugin.mdata.getMinigame(args[0]);
 			
 			if(mgm != null){
-				MinigameSave save = new MinigameSave(mgm.getName(false), "config");
-				//TODO improve me!
-				if(save.getConfig().get(mgm.getName(false)) != null){
-					save.deleteFile();
+				File save = new File(plugin.getDataFolder() + "/minigames/" + mgm.getName(false));
+				if(save.exists() && save.isDirectory()){
+					if(save.list().length == 0){
+						save.delete();
+					}
+					else{
+						for(String file : save.list()){
+							File nfile = new File(save, file);
+							nfile.delete();
+						}
+						save.delete();
+					}
 					List<String> ls = plugin.getConfig().getStringList("minigames");
 					ls.remove(mgm.getName(false));
 					plugin.getConfig().set("minigames", ls);
 					plugin.mdata.removeMinigame(mgm.getName(false));
 					plugin.saveConfig();
 					sender.sendMessage(ChatColor.RED + "The minigame " + mgm.getName(false) + " has been removed");
-				}
-				else {
-					sender.sendMessage(ChatColor.RED + "That minigame does not exist!");
 				}
 			}
 			return true;
