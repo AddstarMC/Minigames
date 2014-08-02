@@ -72,8 +72,8 @@ public class JoinSign implements MinigameSign {
 				if(mgm.isEnabled()){
 					if(!sign.getLine(3).isEmpty() && Minigames.plugin.hasEconomy()){
 						double amount = Double.parseDouble(sign.getLine(3).replace("$", ""));
-						if(Minigames.plugin.getEconomy().getBalance(player.getName()) >= amount){
-							Minigames.plugin.getEconomy().withdrawPlayer(player.getName(), amount);
+						if(Minigames.plugin.getEconomy().getBalance(player.getPlayer().getPlayer()) >= amount){
+							Minigames.plugin.getEconomy().withdrawPlayer(player.getPlayer().getPlayer(), amount);
 						}
 						else{
 							player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.join.notEnoughMoney"));

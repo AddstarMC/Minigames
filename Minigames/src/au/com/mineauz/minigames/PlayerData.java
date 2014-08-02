@@ -83,7 +83,7 @@ public class PlayerData {
 					MultiplayerBets pbet = minigame.getMpBets(); 
 					ItemStack item = player.getPlayer().getItemInHand().clone();
 					if(pbet != null && 
-							((betAmount != 0 && pbet.canBet(player, betAmount) && plugin.getEconomy().getBalance(player.getName()) >= betAmount) || 
+							((betAmount != 0 && pbet.canBet(player, betAmount) && plugin.getEconomy().getBalance(player.getPlayer().getPlayer()) >= betAmount) || 
 									(pbet.canBet(player, item) && item.getType() != Material.AIR && pbet.betValue(item.getType()) > 0))){
 						player.sendMessage(MinigameUtils.getLang("player.bet.plyMsg"), null);
 						if(betAmount == 0){
@@ -91,7 +91,7 @@ public class PlayerData {
 						}
 						else{
 							pbet.addBet(player, betAmount);
-							plugin.getEconomy().withdrawPlayer(player.getName(), betAmount);
+							plugin.getEconomy().withdrawPlayer(player.getPlayer().getPlayer(), betAmount);
 						}
 						player.getPlayer().getInventory().removeItem(new ItemStack(item.getType(), 1));
 					}
@@ -104,7 +104,7 @@ public class PlayerData {
 						player.sendMessage(MinigameUtils.formStr("player.bet.incorrectAmountInfo", minigame.getMpBets().getHighestMoneyBet()), "error");
 						return;
 					}
-					else if(betAmount != 0 && plugin.getEconomy().getBalance(player.getName()) < betAmount){
+					else if(betAmount != 0 && plugin.getEconomy().getBalance(player.getPlayer().getPlayer()) < betAmount){
 						player.sendMessage(MinigameUtils.getLang("player.bet.notEnoughMoney"), "error");
 						player.sendMessage(MinigameUtils.formStr("player.bet.notEnoughMoneyInfo", minigame.getMpBets().getHighestMoneyBet()), "error");
 						return;
@@ -671,7 +671,7 @@ public class PlayerData {
 				
 				//Group money bets
 				if(bets != 0){
-					plugin.getEconomy().depositPlayer(player.getName(), bets);
+					plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), bets);
 					player.sendMessage(MinigameUtils.formStr("player.bet.winMoney", bets), null);
 				}
 				

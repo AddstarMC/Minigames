@@ -134,7 +134,7 @@ public class MultiplayerType extends MinigameTypeBase{
 			
 			if(mgm.getMpBets() != null && !mgm.isNotWaitingForPlayers() && !forced){
 				if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
-					plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
+					plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), mgm.getMpBets().getPlayersMoneyBet(player));
 				}
 				mgm.getMpBets().removePlayersBet(player);
 			}
@@ -153,7 +153,7 @@ public class MultiplayerType extends MinigameTypeBase{
 					});
 				}
 				else if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
-					plugin.getEconomy().depositPlayer(player.getName(), mgm.getMpBets().getPlayersMoneyBet(player));
+					plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), mgm.getMpBets().getPlayersMoneyBet(player));
 				}
 				mgm.getMpBets().removePlayersBet(player);
 			}
