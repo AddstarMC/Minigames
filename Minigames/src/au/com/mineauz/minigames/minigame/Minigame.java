@@ -658,6 +658,21 @@ public class Minigame {
 	public GameMode getDefaultGamemode() {
 		return defaultGamemode.getFlag();
 	}
+	
+	public Callback<String> getDefaultGamemodeCallback(){
+		return new Callback<String>() {
+
+			@Override
+			public void setValue(String value) {
+				defaultGamemode.setFlag(GameMode.valueOf(value.toUpperCase()));
+			}
+
+			@Override
+			public String getValue() {
+				return MinigameUtils.capitalize(defaultGamemode.getFlag().toString());
+			}
+		};
+	}
 
 	public void setDefaultGamemode(GameMode defaultGamemode) {
 		this.defaultGamemode.setFlag(defaultGamemode);
@@ -1076,6 +1091,11 @@ public class Minigame {
 		//Minigame Player Settings
 		//----------------------//
 		List<MenuItem> itemsPlayer = new ArrayList<MenuItem>(14);
+		List<String> gmopts = new ArrayList<String>();
+		for(GameMode gm : GameMode.values()){
+			gmopts.add(MinigameUtils.capitalize(gm.toString()));
+		}
+		itemsPlayer.add(new MenuItemList("Players Gamemode", Material.WORKBENCH, getDefaultGamemodeCallback(), gmopts));
 		itemsPlayer.add(allowEnderpearls.getMenuItem("Allow Enderpearls", Material.ENDER_PEARL));
 		itemsPlayer.add(itemDrops.getMenuItem("Allow Item Drops", Material.DIAMOND_SWORD));
 		itemsPlayer.add(deathDrops.getMenuItem("Allow Death Drops", Material.SKULL_ITEM));
