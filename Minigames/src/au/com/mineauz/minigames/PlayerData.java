@@ -119,8 +119,10 @@ public class PlayerData {
 				//Try teleport the player to their designated area.
 				boolean tpd = false;
 				if(type == MinigameType.SINGLEPLAYER){
-					tpd = player.teleport(minigame.getStartLocations().get(0));//TODO: Make random
-					if(plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != minigame.getStartLocations().get(0).getWorld() && 
+					List<Location> locs = new ArrayList<Location>(minigame.getStartLocations());
+					Collections.shuffle(locs);
+					tpd = player.teleport(locs.get(0));
+					if(plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != locs.get(0).getWorld() && 
 							player.getPlayer().hasPermission("minigame.set.start")){
 						player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + 
 								"Join location is across worlds! This may cause some server performance issues!", "error");
