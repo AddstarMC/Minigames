@@ -133,7 +133,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter{
 					cmdFile.write("| N/A");
 				cmdFile.newLine();
 			} catch (IOException e) {
-				e.printStackTrace();
+				//Failed to write
 			}
 		}
 	}

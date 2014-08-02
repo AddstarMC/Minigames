@@ -108,6 +108,7 @@ public class SetCommand implements ICommand{
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {
+				
 				cmdFile.write("|-");
 				cmdFile.newLine();
 				cmdFile.write("| '''" + command.getName() + "'''");
@@ -150,8 +151,9 @@ public class SetCommand implements ICommand{
 				else
 					cmdFile.write("| N/A");
 				cmdFile.newLine();
+				
 			} catch (IOException e) {
-				e.printStackTrace();
+				//Failed to write
 			}
 		}
 	}
