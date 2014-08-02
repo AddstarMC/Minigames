@@ -266,7 +266,13 @@ public class PlayerData {
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
 		if(!event.isCancelled()){
-			boolean tpd = player.teleport(minigame.getStartLocations().get(0));
+			boolean tpd = false;
+			if(minigame.getSpectatorLocation() != null)
+				tpd = player.teleport(minigame.getSpectatorLocation());
+			else{
+				player.sendMessage(MinigameUtils.getLang("minigame.error.noSpectatePos"), "error");
+				return;
+			}
 			if(!tpd){
 				player.sendMessage(MinigameUtils.getLang("minigame.error.noTeleport"), "error");
 				return;

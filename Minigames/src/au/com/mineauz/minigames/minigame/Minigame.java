@@ -85,6 +85,7 @@ public class Minigame {
 	private LocationFlag endPosition = new LocationFlag(null, "endpos");
 	private LocationFlag quitPosition = new LocationFlag(null, "quitpos");
 	private LocationFlag lobbyPosisiton = new LocationFlag(null, "lobbypos");
+	private LocationFlag spectatorPosition = new LocationFlag(null, "spectatorpos");
 	
 	private Rewards rewardItem = new Rewards();
 	private RewardsFlag rewardItemFlag = new RewardsFlag(null, "reward");
@@ -228,6 +229,7 @@ public class Minigame {
 		addConfigFlag(unlimitedAmmo);
 		addConfigFlag(usePermissions);
 		addConfigFlag(useXPBarTimer);
+		addConfigFlag(spectatorPosition);
 	}
 	
 	private void addConfigFlag(Flag<?> flag){
@@ -331,6 +333,14 @@ public class Minigame {
 			return true;
 		}
 		return false;
+	}
+	
+	public void setSpectatorLocation(Location loc){
+		spectatorPosition.setFlag(loc);
+	}
+	
+	public Location getSpectatorLocation(){
+		return spectatorPosition.getFlag();
 	}
 	
 	public boolean isEnabled(){
