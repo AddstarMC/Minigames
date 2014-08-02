@@ -15,8 +15,10 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameModule;
@@ -344,7 +346,7 @@ public class RegionModule extends MinigameModule {
 	}
 	
 	public void displayMenu(MinigamePlayer viewer){
-		Menu rm = new Menu(6, "Regions", viewer);
+		Menu rm = new Menu(6, "Regions and Nodes", viewer);
 		List<MenuItem> items = new ArrayList<MenuItem>(regions.size());
 		for(String name : regions.keySet()){
 			MenuItemRegion mir = new MenuItemRegion(name, Material.CHEST, regions.get(name), this);
@@ -363,8 +365,15 @@ public class RegionModule extends MinigameModule {
 	
 	@Override
 	public void addMenuOptions(Menu menu) {
-		// TODO Auto-generated method stub
-		
+		final MenuItemCustom c = new MenuItemCustom("Regions and Nodes", Material.DIAMOND_BLOCK);
+		c.setClick(new InteractionInterface() {
+			
+			@Override
+			public Object interact(Object object) {
+				displayMenu(c.getContainer().getViewer());
+				return null;
+			}
+		});
 	}
 
 	@Override
