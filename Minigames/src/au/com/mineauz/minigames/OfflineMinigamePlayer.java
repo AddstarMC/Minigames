@@ -18,6 +18,7 @@ public class OfflineMinigamePlayer {
 	private int level = -1; //Set To default value after 1.7
 	private GameMode lastGM = GameMode.SURVIVAL;
 	private Location loginLocation;
+	private boolean shouldSave = Minigames.plugin.getConfig().getBoolean("saveInventory");
 	
 	public OfflineMinigamePlayer(String uuid, ItemStack[] items, 
 			ItemStack[] armour, int food, double health, 
@@ -35,7 +36,8 @@ public class OfflineMinigamePlayer {
 		if(loginLocation != null && loginLocation.getWorld() == null)
 			loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
 		this.loginLocation = loginLocation;
-		savePlayerData();
+		if(shouldSave)
+			savePlayerData();
 	}
 	
 	public OfflineMinigamePlayer(String uuid){

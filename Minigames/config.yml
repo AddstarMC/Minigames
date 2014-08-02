@@ -1,3 +1,5 @@
+saveInventory: true
+
 treasurehunt:
   waittime: 3600
   # Time to wait before spawning a new treasure after the time was up (seconds)
