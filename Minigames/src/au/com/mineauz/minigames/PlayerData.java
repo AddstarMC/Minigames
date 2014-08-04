@@ -44,6 +44,8 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.sounds.MGSounds;
+import au.com.mineauz.minigames.sounds.PlayMGSound;
 import au.com.mineauz.minigames.sql.SQLPlayer;
 
 public class PlayerData {
@@ -395,6 +397,8 @@ public class PlayerData {
 				if(minigame.isFlightEnabled())
 					ply.getPlayer().setFlying(true);
 			}
+			
+			PlayMGSound.playSound(ply, MGSounds.getSound("gameStart"));
 		}
 	}
 	
@@ -672,9 +676,11 @@ public class PlayerData {
 			
 			for(MinigamePlayer player : losers){
 				quitMinigame(player, true);
+				PlayMGSound.playSound(player, MGSounds.getSound("lose"));
 			}
 			
 			for(MinigamePlayer player : winners){
+				
 				player.setEndTime(Calendar.getInstance().getTimeInMillis());
 				
 				//Group money bets
@@ -790,6 +796,7 @@ public class PlayerData {
 					HandlerList.unregisterAll(minigame.getBlockRecorder());
 				}
 				player.updateInventory();
+				PlayMGSound.playSound(player, MGSounds.getSound("win"));
 			}
 			
 			mdata.clearClaimedScore(minigame);

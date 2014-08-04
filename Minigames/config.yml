@@ -32,6 +32,7 @@ disabledCommands:
   - spawn
   
 broadcastCompletion: true
+playSounds: true
   
 regeneration:
   maxDelay: 10

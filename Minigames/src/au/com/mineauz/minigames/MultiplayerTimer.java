@@ -8,6 +8,8 @@ import org.bukkit.ChatColor;
 
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
+import au.com.mineauz.minigames.sounds.MGSounds;
+import au.com.mineauz.minigames.sounds.PlayMGSound;
 
 public class MultiplayerTimer{
 	private int playerWaitTime;
@@ -59,6 +61,7 @@ public class MultiplayerTimer{
 					}
 					else if(timeMsg.contains(playerWaitTime)){
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", playerWaitTime));
+						PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
 					}
 				}
 				else if(playerWaitTime == 0 && startWaitTime != 0 && !paused){
@@ -74,6 +77,7 @@ public class MultiplayerTimer{
 					}
 					else if(timeMsg.contains(startWaitTime)){
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
+						PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
 					}
 				}
 				else if(playerWaitTime == 0 && startWaitTime == 0){

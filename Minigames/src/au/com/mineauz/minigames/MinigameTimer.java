@@ -8,6 +8,8 @@ import org.bukkit.Bukkit;
 import au.com.mineauz.minigames.events.MinigameTimerTickEvent;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.sounds.MGSounds;
+import au.com.mineauz.minigames.sounds.PlayMGSound;
 
 public class MinigameTimer{
 	private int time = 0;
@@ -47,6 +49,7 @@ public class MinigameTimer{
 					}
 				}
 				if(timeMsg.contains(time)){
+					PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
 					plugin.mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(time)), null, null);
 				}
 				else if(time == 0){
