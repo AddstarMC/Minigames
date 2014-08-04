@@ -123,6 +123,7 @@ public class MinigameTool {
 		Menu men = new Menu(2, "Set Tool Mode", player);
 		List<MenuItem> items = new ArrayList<MenuItem>();
 		items.add(new MenuItemToolMode("Set Start Points", Material.SKULL_ITEM, MinigameToolMode.START));
+		items.add(new MenuItemToolMode("Set Spectator Start", Material.EYE_OF_ENDER, MinigameToolMode.SPECTATOR_START));
 		items.add(new MenuItemToolMode("Set Quit Point", Material.ENDER_PEARL, MinigameToolMode.QUIT));
 		items.add(new MenuItemToolMode("Set End Point", Material.EYE_OF_ENDER, MinigameToolMode.END));
 		items.add(new MenuItemToolMode("Set Lobby Point", Material.WOOD_DOOR, MinigameToolMode.LOBBY));

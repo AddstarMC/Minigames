@@ -142,6 +142,8 @@ permissions:
             minigame.set.team: true
             minigame.set.flight: true
             minigame.set.hintdelay: true
+            minigame.set.restartdelay: true
+            minigame.set.spectatorstart: true
     minigame.set.start:
         description: Gives access to setting a minigames starting position
         default: op
@@ -297,6 +299,9 @@ permissions:
         default: op
     minigame.set.restartdelay:
         description: Allows a player to set the restart delay for a Treasure Hunt Game.
+        default: op
+    minigame.set.spectatorstart:
+        description: Allows a player to use the spectator start point command.
         default: op
     minigame.info:
         description: Allows check to see if a minigames variables have been set

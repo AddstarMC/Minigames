@@ -2,6 +2,7 @@ package au.com.mineauz.minigames;
 
 public enum MinigameToolMode {
 	START("Start"),
+	SPECTATOR_START("Spectator Start"),
 	END("End"),
 	QUIT("Quit"),
 	LOBBY("Lobby"),
@@ -22,6 +23,8 @@ public enum MinigameToolMode {
 	public static MinigameToolMode getByName(String name){
 		if(name.equals(START.getMode()))
 			return START;
+		else if(name.equals(SPECTATOR_START.getMode()))
+			return SPECTATOR_START;
 		else if(name.equals(END.getMode()))
 			return END;
 		else if(name.equals(QUIT.getMode()))

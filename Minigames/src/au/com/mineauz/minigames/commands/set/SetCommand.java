@@ -92,6 +92,7 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetFlightCommand());
 		registerSetCommand(new SetHintDelayCommand());
 		registerSetCommand(new SetRestartDelayCommand());
+		registerSetCommand(new SetSpectatorSpawnCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {

@@ -340,6 +340,10 @@ public class Events implements Listener{
 							ply.sendMessage("Added start location to " + mg.getName(false), null);
 						}
 					}
+					else if(tool.getMode() == MinigameToolMode.SPECTATOR_START && ply.getPlayer().hasPermission("minigame.set.spectatorstart")){
+						mg.setSpectatorLocation(ply.getPlayer().getLocation());
+						ply.sendMessage("Set Spectator start position for " + mg.getName(false), null);
+					}
 					else if(tool.getMode() == MinigameToolMode.QUIT && ply.getPlayer().hasPermission("minigame.set.quit")){
 						mg.setQuitPosition(ply.getPlayer().getLocation());
 						ply.sendMessage("Set quit location for " + mg.getName(false), null);
