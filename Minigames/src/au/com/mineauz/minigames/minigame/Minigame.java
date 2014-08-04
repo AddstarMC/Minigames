@@ -1172,7 +1172,8 @@ public class Minigame {
 				module.save(cfg);
 				
 				for(Flag<?> flag : module.getFlags().values()){
-					flag.saveValue(name, cfg);
+					if(flag.getFlag() != null && (flag.getDefaultFlag() == null || !flag.getDefaultFlag().equals(flag.getFlag())))
+						flag.saveValue(name, cfg);
 				}
 			}else{
 				MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
@@ -1181,7 +1182,8 @@ public class Minigame {
 				
 				if(module.getFlags() != null){
 					for(Flag<?> flag : module.getFlags().values()){
-						flag.saveValue(name, modsave.getConfig());
+						if(flag.getFlag() != null && (flag.getDefaultFlag() == null || !flag.getDefaultFlag().equals(flag.getFlag())))
+							flag.saveValue(name, modsave.getConfig());
 					}
 				}
 				
