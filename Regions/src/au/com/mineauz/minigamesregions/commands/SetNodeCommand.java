@@ -74,7 +74,7 @@ public class SetNodeCommand implements ICommand {
 				return true;
 			}
 			else if(args[0].equalsIgnoreCase("modify")){
-				rmod.displayMenu(ply);
+				rmod.displayMenu(ply, null);
 				return true;
 			}
 			else if(args[0].equalsIgnoreCase("delete") && args.length >= 2){

@@ -20,6 +20,7 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
+import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameModule;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
@@ -345,7 +346,7 @@ public class RegionModule extends MinigameModule {
 		}
 	}
 	
-	public void displayMenu(MinigamePlayer viewer){
+	public void displayMenu(MinigamePlayer viewer, Menu previous){
 		Menu rm = new Menu(6, "Regions and Nodes", viewer);
 		List<MenuItem> items = new ArrayList<MenuItem>(regions.size());
 		for(String name : regions.keySet()){
@@ -358,6 +359,8 @@ public class RegionModule extends MinigameModule {
 			items.add(min);
 		}
 		rm.addItems(items);
+		if(previous != null)
+			rm.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), rm.getSize() - 9);
 		rm.displayMenu(viewer);
 	}
 	
@@ -366,14 +369,16 @@ public class RegionModule extends MinigameModule {
 	@Override
 	public void addMenuOptions(Menu menu) {
 		final MenuItemCustom c = new MenuItemCustom("Regions and Nodes", Material.DIAMOND_BLOCK);
+		final Menu fmenu = menu;
 		c.setClick(new InteractionInterface() {
 			
 			@Override
 			public Object interact(Object object) {
-				displayMenu(c.getContainer().getViewer());
+				displayMenu(c.getContainer().getViewer(), fmenu);
 				return null;
 			}
 		});
+		menu.addItem(c);
 	}
 
 	@Override

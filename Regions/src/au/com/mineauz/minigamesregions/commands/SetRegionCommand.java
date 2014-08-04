@@ -115,7 +115,7 @@ public class SetRegionCommand implements ICommand {
 			}
 			else if(args.length == 1){
 				if(args[0].equalsIgnoreCase("modify")){
-					rmod.displayMenu(ply);
+					rmod.displayMenu(ply, null);
 					return true;
 				}
 			}
