@@ -174,29 +174,31 @@ public class LoadoutModule extends MinigameModule {
 		final MinigamePlayer fply = player;
 		
 		for(PlayerLoadout loadout : extraLoadouts.values()){
-			if(!loadout.getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + loadout.getName(false).toLowerCase())){
-				if(!player.getMinigame().isTeamGame() || loadout.getTeamColor() == null || 
-						player.getTeam().getColor() == loadout.getTeamColor()){
-					MenuItemCustom c = new MenuItemCustom(loadout.getName(true), Material.GLASS);
-					if(!loadout.getItems().isEmpty())
-						c.setItem(loadout.getItem(new ArrayList<Integer>(loadout.getItems()).get(0)));
-					final PlayerLoadout floadout2 = loadout;
-					c.setClick(new InteractionInterface() {
-						
-						@Override
-						public Object interact(Object object) {
-							fply.setLoadout(floadout2);
-							fply.getPlayer().closeInventory();
-							if(!equip)
-								fply.sendMessage(MinigameUtils.getLang("player.loadout.nextSpawn"), null);
-							else{
-								fply.sendMessage(MinigameUtils.formStr("player.loadout.equipped", floadout2.getName(true)), null);
-								floadout2.equiptLoadout(fply);
+			if(loadout.isDisplayedInMenu()){
+				if(!loadout.getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + loadout.getName(false).toLowerCase())){
+					if(!player.getMinigame().isTeamGame() || loadout.getTeamColor() == null || 
+							player.getTeam().getColor() == loadout.getTeamColor()){
+						MenuItemCustom c = new MenuItemCustom(loadout.getName(true), Material.GLASS);
+						if(!loadout.getItems().isEmpty())
+							c.setItem(loadout.getItem(new ArrayList<Integer>(loadout.getItems()).get(0)));
+						final PlayerLoadout floadout2 = loadout;
+						c.setClick(new InteractionInterface() {
+							
+							@Override
+							public Object interact(Object object) {
+								fply.setLoadout(floadout2);
+								fply.getPlayer().closeInventory();
+								if(!equip)
+									fply.sendMessage(MinigameUtils.getLang("player.loadout.nextSpawn"), null);
+								else{
+									fply.sendMessage(MinigameUtils.formStr("player.loadout.equipped", floadout2.getName(true)), null);
+									floadout2.equiptLoadout(fply);
+								}
+								return null;
 							}
-							return null;
-						}
-					});
-					m.addItem(c);
+						});
+						m.addItem(c);
+					}
 				}
 			}
 		}

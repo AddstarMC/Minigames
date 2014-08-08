@@ -74,6 +74,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		mItems.add(new MenuItemInteger("XP Level", MinigameUtils.stringToList("Use -1 to not;use loadout levels"), Material.EXP_BOTTLE, loadout.getLevelCallback(), -1, null));
 		mItems.add(new MenuItemBoolean("Lock Inventory", Material.DIAMOND_SWORD, loadout.getInventoryLockedCallback()));
 		mItems.add(new MenuItemBoolean("Lock Armour", Material.DIAMOND_CHESTPLATE, loadout.getArmourLockedCallback()));
+		mItems.add(new MenuItemBoolean("Display in Loadout Menu", Material.THIN_GLASS, loadout.getDisplayInMenuCallback()));
 		List<String> teams = new ArrayList<String>();
 		teams.add("None");
 		for(TeamColor col : TeamColor.values())

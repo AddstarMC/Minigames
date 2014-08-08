@@ -52,6 +52,9 @@ public class LoadoutFlag extends Flag<PlayerLoadout>{
 		
 		if(getFlag().getTeamColor() != null)
 			config.set(path + "." + getName() + ".team", getFlag().getTeamColor().toString());
+		
+		if(!getFlag().isDisplayedInMenu())
+			config.set(path + "." + getName() + ".displayInMenu", getFlag().isDisplayedInMenu());
 	}
 
 	@Override
@@ -96,6 +99,9 @@ public class LoadoutFlag extends Flag<PlayerLoadout>{
 		
 		if(config.contains(path + "." + getName() + ".team"))
 			getFlag().setTeamColor(TeamColor.matchColor(config.getString(path + "." + getName() + ".team")));
+		
+		if(config.contains(path + "." + getName() + ".displayInMenu"))
+			getFlag().setDisplayInMenu(config.getBoolean(path + "." + getName() + ".displayInMenu"));
 	}
 
 	@Override

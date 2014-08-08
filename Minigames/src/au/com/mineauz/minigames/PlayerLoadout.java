@@ -26,6 +26,7 @@ public class PlayerLoadout {
 	private boolean lockInventory = false;
 	private boolean lockArmour = false;
 	private TeamColor team = null;
+	private boolean displayInMenu = true;
 	
 	public PlayerLoadout(String name){
 		loadoutName = name;
@@ -319,5 +320,28 @@ public class PlayerLoadout {
 	
 	public void setTeamColor(TeamColor color){
 		team = color;
+	}
+	
+	public boolean isDisplayedInMenu(){
+		return displayInMenu;
+	}
+	
+	public Callback<Boolean> getDisplayInMenuCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				setDisplayInMenu(value);
+			}
+
+			@Override
+			public Boolean getValue() {
+				return isDisplayedInMenu();
+			}
+		};
+	}
+	
+	public void setDisplayInMenu(boolean bool){
+		displayInMenu = bool;
 	}
 }
