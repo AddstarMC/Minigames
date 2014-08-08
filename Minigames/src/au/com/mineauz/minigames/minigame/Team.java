@@ -73,10 +73,13 @@ public class Team {
 	}
 	
 	/**
-	 * Sets the display name for this team.
+	 * Sets the display name for this team. If the name is longer than 32 characters, 
+	 * it'll be trimmed to that length (Minecraft limitation).
 	 * @param name - The name to change the team to.
 	 */
 	public void setDisplayName(String name){
+		if(name.length() > 32)
+			name = name.substring(0, 31);
 		displayName = name;
 	}
 	
