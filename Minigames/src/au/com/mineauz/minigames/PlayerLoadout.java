@@ -22,6 +22,8 @@ public class PlayerLoadout {
 	private int level = -1;
 	private boolean deleteable = true;
 	private String displayname = null;
+	private boolean lockInventory = false;
+	private boolean lockArmour = false;
 	
 	public PlayerLoadout(String name){
 		loadoutName = name;
@@ -238,5 +240,51 @@ public class PlayerLoadout {
 	
 	public void setDeleteable(boolean value){
 		deleteable = value;
+	}
+	
+	public boolean isInventoryLocked(){
+		return lockInventory;
+	}
+	
+	public Callback<Boolean> getInventoryLockedCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				setInventoryLocked(value);
+			}
+
+			@Override
+			public Boolean getValue() {
+				return isInventoryLocked();
+			}
+		};
+	}
+	
+	public void setInventoryLocked(boolean locked){
+		lockInventory = locked;
+	}
+	
+	public boolean isArmourLocked(){
+		return lockArmour;
+	}
+	
+	public Callback<Boolean> getArmourLockedCallback(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				setArmourLocked(value);
+			}
+
+			@Override
+			public Boolean getValue() {
+				return isArmourLocked();
+			}
+		};
+	}
+	
+	public void setArmourLocked(boolean locked){
+		lockArmour = locked;
 	}
 }

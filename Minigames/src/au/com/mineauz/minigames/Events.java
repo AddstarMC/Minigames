@@ -664,6 +664,11 @@ public class Events implements Listener{
 				}
 			}
 		}
+		else if(ply.isInMinigame()){
+			if((ply.getLoadout().isArmourLocked() && event.getSlot() >= 36 && event.getSlot() <= 39) || 
+					(ply.getLoadout().isInventoryLocked() && event.getSlot() >= 0 && event.getSlot() <= 35))
+				event.setCancelled(true);
+		}
 	}
 	
 	@EventHandler(ignoreCancelled = true)

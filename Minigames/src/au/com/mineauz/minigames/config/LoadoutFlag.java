@@ -42,6 +42,12 @@ public class LoadoutFlag extends Flag<PlayerLoadout>{
 		
 		if(getFlag().getDisplayName() != null)
 			config.set(path + "." + getName() + ".displayName", getFlag().getDisplayName());
+		
+		if(getFlag().isArmourLocked())
+			config.set(path + "." + getName() + ".armourLocked", getFlag().isArmourLocked());
+		
+		if(getFlag().isInventoryLocked())
+			config.set(path + "." + getName() + ".inventoryLocked", getFlag().isInventoryLocked());
 	}
 
 	@Override
@@ -77,6 +83,12 @@ public class LoadoutFlag extends Flag<PlayerLoadout>{
 		
 		if(config.contains(path + "." + getName() + ".displayName"))
 			getFlag().setDisplayName(config.getString(path + "." + getName() + ".displayName"));
+		
+		if(config.contains(path + "." + getName() + ".lockInventory"))
+			getFlag().setInventoryLocked(config.getBoolean(path + "." + getName() + ".lockInventory"));
+		
+		if(config.contains(path + "." + getName() + ".lockArmour"))
+			getFlag().setArmourLocked(config.getBoolean(path + "." + getName() + ".lockArmour"));
 	}
 
 	@Override
