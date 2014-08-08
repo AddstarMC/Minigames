@@ -110,7 +110,7 @@ public class MenuItemRegion extends MenuItem{
 					m.addItem(new MenuItemInteger("Trigger Count", 
 							MinigameUtils.stringToList("Number of times this;region can be;triggered"), 
 							Material.DOUBLE_STEP, cex.getTriggerCountCallback(), 0, null));
-					m.addItem(new MenuItemBoolean("Trigger Per Player", 
+					m.addItem(new MenuItemBoolean("Trigger Counts Per Player", 
 							MinigameUtils.stringToList("Whether this region;is triggered per player;or just on count"), 
 							Material.ENDER_PEARL, cex.getIsTriggerPerPlayerCallback()));
 					m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, fm), m.getSize() - 9);
