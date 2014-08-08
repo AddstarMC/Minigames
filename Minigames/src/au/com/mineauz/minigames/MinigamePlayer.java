@@ -243,8 +243,13 @@ public class MinigamePlayer {
 		return LoadoutModule.getMinigameModule(minigame).getLoadout("default");
 	}
 
-	public void setLoadout(PlayerLoadout loadout) {
-		this.loadout = loadout;
+	public boolean setLoadout(PlayerLoadout loadout) {
+		if(getMinigame() == null) return false;
+		if(!getMinigame().isTeamGame() || loadout.getTeamColor() == null || getTeam().getColor() == loadout.getTeamColor()){
+			this.loadout = loadout;
+			return true;
+		}
+		return false;
 	}
 
 	public List<String> getFlags(){

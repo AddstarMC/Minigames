@@ -12,6 +12,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 
 public class MenuItemDisplayLoadout extends MenuItem{
@@ -73,6 +74,11 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		mItems.add(new MenuItemInteger("XP Level", MinigameUtils.stringToList("Use -1 to not;use loadout levels"), Material.EXP_BOTTLE, loadout.getLevelCallback(), -1, null));
 		mItems.add(new MenuItemBoolean("Lock Inventory", Material.DIAMOND_SWORD, loadout.getInventoryLockedCallback()));
 		mItems.add(new MenuItemBoolean("Lock Armour", Material.DIAMOND_CHESTPLATE, loadout.getArmourLockedCallback()));
+		List<String> teams = new ArrayList<String>();
+		teams.add("None");
+		for(TeamColor col : TeamColor.values())
+			teams.add(MinigameUtils.capitalize(col.toString()));
+		mItems.add(new MenuItemList("Lock to Team", Material.LEATHER_CHESTPLATE, loadout.getTeamColorCallback(), teams));
 		loadoutSettings.addItems(mItems);
 		if(mgm == null){
 			MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back", Material.REDSTONE_TORCH_ON, loadout);

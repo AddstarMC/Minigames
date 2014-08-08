@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
 import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.minigame.TeamColor;
 
 public class PlayerLoadout {
 	private Map<Integer, ItemStack> itemSlot = new HashMap<Integer, ItemStack>();
@@ -24,9 +25,16 @@ public class PlayerLoadout {
 	private String displayname = null;
 	private boolean lockInventory = false;
 	private boolean lockArmour = false;
+	private TeamColor team = null;
 	
 	public PlayerLoadout(String name){
 		loadoutName = name;
+		for(TeamColor col : TeamColor.values()){
+			if(name.toUpperCase().equals(col.toString())){
+				team = col;
+				break;
+			}
+		}
 	}
 	
 	public void setDisplayName(String name){
@@ -286,5 +294,30 @@ public class PlayerLoadout {
 	
 	public void setArmourLocked(boolean locked){
 		lockArmour = locked;
+	}
+	
+	public TeamColor getTeamColor(){
+		return team;
+	}
+	
+	public Callback<String> getTeamColorCallback(){
+		return new Callback<String>() {
+
+			@Override
+			public void setValue(String value) {
+				setTeamColor(TeamColor.matchColor(value.toUpperCase()));
+			}
+
+			@Override
+			public String getValue() {
+				if(getTeamColor() == null)
+					return "None";
+				return MinigameUtils.capitalize(getTeamColor().toString());
+			}
+		};
+	}
+	
+	public void setTeamColor(TeamColor color){
+		team = color;
 	}
 }

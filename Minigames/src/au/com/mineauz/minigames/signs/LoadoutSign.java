@@ -66,48 +66,52 @@ public class LoadoutSign implements MinigameSign {
 			}
 			else if(loadout.hasLoadout(sign.getLine(2))){
 				if(!loadout.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
-					player.setLoadout(loadout.getLoadout(sign.getLine(2)));
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)));
-					
-					if(mgm.getType() == MinigameType.SINGLEPLAYER || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
-						if(sign.getLine(3).equalsIgnoreCase("respawn")){
-							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.loadout.nextRespawn"));
-						}
-						else{
-							loadout.getLoadout(sign.getLine(2)).equiptLoadout(player);
+					if(player.setLoadout(loadout.getLoadout(sign.getLine(2)))){
+						player.sendMessage(MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)), null);
+						
+						if(mgm.getType() == MinigameType.SINGLEPLAYER || 
+								(mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
+							if(sign.getLine(3).equalsIgnoreCase("respawn")){
+								player.sendMessage(MinigameUtils.getLang("sign.loadout.nextRespawn"), null);
+							}
+							else{
+								loadout.getLoadout(sign.getLine(2)).equiptLoadout(player);
+							}
 						}
 					}
 					return true;
 				}
 				else{
-					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("sign.loadout.noPermisson", sign.getLine(2)));
+					player.sendMessage(MinigameUtils.formStr("sign.loadout.noPermisson", sign.getLine(2)), "error");
 				}
 			}
 			else if(plugin.mdata.hasLoadout(sign.getLine(2))){
 				if(!plugin.mdata.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
-					player.setLoadout(plugin.mdata.getLoadout(sign.getLine(2)));
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)));
-
-					if(mgm.getType() == MinigameType.SINGLEPLAYER || (mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
-						if(sign.getLine(3).equalsIgnoreCase("respawn")){
-							player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.loadout.nextRespawn"));
-						}
-						else{
-							plugin.mdata.getLoadout(sign.getLine(2)).equiptLoadout(player);
+					if(player.setLoadout(plugin.mdata.getLoadout(sign.getLine(2)))){
+						player.sendMessage(MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)), null);
+	
+						if(mgm.getType() == MinigameType.SINGLEPLAYER || 
+								(mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
+							if(sign.getLine(3).equalsIgnoreCase("respawn")){
+								player.sendMessage(MinigameUtils.getLang("sign.loadout.nextRespawn"), null);
+							}
+							else{
+								plugin.mdata.getLoadout(sign.getLine(2)).equiptLoadout(player);
+							}
 						}
 					}
 					return true;
 				}
 				else{
-					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("sign.loadout.noPermission", sign.getLine(2)));
+					player.sendMessage(MinigameUtils.formStr("sign.loadout.noPermission", sign.getLine(2)), "error");
 				}
 			}
 			else{
-				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.loadout.noLoadout"));
+				player.sendMessage(MinigameUtils.getLang("sign.loadout.noLoadout"), "error");
 			}
 		}
 		else if(player.getPlayer().getItemInHand().getType() != Material.AIR)
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
+			player.sendMessage(MinigameUtils.getLang("sign.emptyHand"), "error");
 		return false;
 	}
 

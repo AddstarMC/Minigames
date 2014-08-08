@@ -10,6 +10,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.minigame.TeamColor;
 
 public class LoadoutFlag extends Flag<PlayerLoadout>{
 	
@@ -48,6 +49,9 @@ public class LoadoutFlag extends Flag<PlayerLoadout>{
 		
 		if(getFlag().isInventoryLocked())
 			config.set(path + "." + getName() + ".inventoryLocked", getFlag().isInventoryLocked());
+		
+		if(getFlag().getTeamColor() != null)
+			config.set(path + "." + getName() + ".team", getFlag().getTeamColor().toString());
 	}
 
 	@Override
@@ -89,6 +93,9 @@ public class LoadoutFlag extends Flag<PlayerLoadout>{
 		
 		if(config.contains(path + "." + getName() + ".lockArmour"))
 			getFlag().setArmourLocked(config.getBoolean(path + "." + getName() + ".lockArmour"));
+		
+		if(config.contains(path + "." + getName() + ".team"))
+			getFlag().setTeamColor(TeamColor.matchColor(config.getString(path + "." + getName() + ".team")));
 	}
 
 	@Override
