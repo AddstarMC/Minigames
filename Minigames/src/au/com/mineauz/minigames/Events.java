@@ -54,6 +54,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
 
 public class Events implements Listener{
 	private static Minigames plugin = Minigames.plugin;
@@ -104,16 +105,27 @@ public class Events implements Listener{
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	private void playerSpawn(PlayerRespawnEvent event){
-		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
 		ply.setDead(false);
+		if(ply.isInMinigame()){
+			final WeatherTimeModule mod = WeatherTimeModule.getMinigameModule(ply.getMinigame());
+			if(mod.isUsingCustomWeather()){
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					
+					@Override
+					public void run() {
+						ply.getPlayer().setPlayerWeather(mod.getCustomWeather());
+					}
+				});
+			}
+		}
 		if(ply.isRequiredQuit()){
-			final MinigamePlayer fply = ply;
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				
 				@Override
 				public void run() {
-					fply.restorePlayerData();
+					ply.restorePlayerData();
 				}
 			});
 			event.setRespawnLocation(ply.getQuitPos());
