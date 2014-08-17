@@ -10,7 +10,10 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
@@ -93,8 +96,28 @@ public class SetBlockAction extends ActionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
-		//TODO: Set Block menu
-		return false;
+		Menu m = new Menu(3, "Set Block", player);
+		final MinigamePlayer fply = player;
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
+		m.addItem(new MenuItemString("Type", Material.STONE, new Callback<String>() {
+			
+			@Override
+			public void setValue(String value) {
+				if(Material.matchMaterial(value.toUpperCase()) != null)
+					type.setFlag(value.toUpperCase());
+				else
+					fply.sendMessage("Invalid block type!", "error");
+			}
+			
+			@Override
+			public String getValue() {
+				return null;
+			}
+		}));
+		m.addItem(usedur.getMenuItem("Use Durability Value", Material.ENDER_PEARL));
+		m.addItem(dur.getMenuItem("Durability Value", Material.DOUBLE_STEP, 0, 15));
+		m.displayMenu(player);
+		return true;
 	}
 
 }
