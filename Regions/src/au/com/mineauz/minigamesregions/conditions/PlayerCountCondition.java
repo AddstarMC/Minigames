@@ -13,7 +13,8 @@ import au.com.mineauz.minigamesregions.Region;
 
 public class PlayerCountCondition extends ConditionInterface {
 	
-	private IntegerFlag count = new IntegerFlag(1, "count");
+	private IntegerFlag min = new IntegerFlag(1, "min");
+	private IntegerFlag max = new IntegerFlag(5, "max");
 
 	@Override
 	public String getName() {
@@ -37,7 +38,8 @@ public class PlayerCountCondition extends ConditionInterface {
 
 	@Override
 	public boolean checkRegionCondition(MinigamePlayer player, Region region, Event event) {
-		//TODO: Finish
+		if(region.getPlayers().size() >= min.getFlag() && region.getPlayers().size() <= max.getFlag())
+			return true;
 		return false;
 	}
 
@@ -48,19 +50,22 @@ public class PlayerCountCondition extends ConditionInterface {
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
-		count.saveValue(path, config);
+		min.saveValue(path, config);
+		max.saveValue(path, config);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
-		count.loadValue(path, config);
+		min.loadValue(path, config);
+		max.saveValue(path, config);
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Player Count", player);
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
-		m.addItem(count.getMenuItem("Player Count", Material.SKULL_ITEM, 1, null));
+		m.addItem(min.getMenuItem("Min Player Count", Material.STEP, 1, null));
+		m.addItem(max.getMenuItem("Max Player Count", Material.DOUBLE_STEP, 1, null));
 		m.displayMenu(player);
 		return true;
 	}
