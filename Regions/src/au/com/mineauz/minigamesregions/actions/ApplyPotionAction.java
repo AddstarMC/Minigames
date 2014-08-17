@@ -1,9 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -13,6 +11,8 @@ import org.bukkit.potion.PotionEffectType;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.config.IntegerFlag;
+import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
@@ -22,7 +22,11 @@ import au.com.mineauz.minigames.menu.MenuItemTime;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class ApplyPotionAction implements ActionInterface {
+public class ApplyPotionAction extends ActionInterface {
+	
+	private StringFlag type = new StringFlag("SPEED", "type");
+	private IntegerFlag dur = new IntegerFlag(60, "duration");
+	private IntegerFlag amp = new IntegerFlag(1, "amplifier");
 
 	@Override
 	public String getName() {
@@ -46,54 +50,42 @@ public class ApplyPotionAction implements ActionInterface {
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
-			Map<String, Object> args, Region region, Event event) {
-		execute(player, args);
+			Region region, Event event) {
+		execute(player);
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Map<String, Object> args, Node node, Event event) {
-		execute(player, args);
+			Node node, Event event) {
+		execute(player);
 	}
 	
-	private void execute(MinigamePlayer player, Map<String, Object> args){
-		PotionEffect effect = new PotionEffect(PotionEffectType.getByName((String)args.get("a_applypotiontype")), (Integer)args.get("a_applypotiondur") * 20, (Integer)args.get("a_applypotionamp") - 1);
+	private void execute(MinigamePlayer player){
+		PotionEffect effect = new PotionEffect(PotionEffectType.getByName(type.getFlag()), 
+				dur.getFlag() * 20, amp.getFlag() - 1);
 		player.getPlayer().addPotionEffect(effect);
 	}
 
 	@Override
-	public Map<String, Object> getRequiredArguments() {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_applypotiontype", "SPEED");
-		args.put("a_applypotiondur", 60);
-		args.put("a_applypotionamp", 1);
-		return args;
-	}
-
-	@Override
-	public void saveArguments(Map<String, Object> args,
-			FileConfiguration config, String path) {
-		config.set(path + ".a_applypotiontype", args.get("a_applypotiontype"));
-		config.set(path + ".a_applypotiondur", args.get("a_applypotiondur"));
-		config.set(path + ".a_applypotionamp", args.get("a_applypotionamp"));
-	}
-
-	@Override
-	public Map<String, Object> loadArguments(FileConfiguration config,
+	public void saveArguments(FileConfiguration config,
 			String path) {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_applypotiontype", config.getString(path + ".a_applypotiontype"));
-		args.put("a_applypotiondur", config.getInt(path + ".a_applypotiondur"));
-		args.put("a_applypotionamp", config.getInt(path + ".a_applypotionamp"));
-		return args;
+		type.saveValue(path, config);
+		dur.saveValue(path, config);
+		amp.saveValue(path, config);
 	}
 
 	@Override
-	public boolean displayMenu(MinigamePlayer player, Map<String, Object> args,
-			Menu previous) {
+	public void loadArguments(FileConfiguration config,
+			String path) {
+		type.loadValue(path, config);
+		dur.loadValue(path, config);
+		amp.loadValue(path, config);
+	}
+
+	@Override
+	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Apply Potion", player);
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
-		final Map<String, Object> fargs = args;
 		List<String> pots = new ArrayList<String>(PotionEffectType.values().length);
 		for(PotionEffectType type : PotionEffectType.values())
 			pots.add(MinigameUtils.capitalize(type.toString().replace("_", " ")));
@@ -101,36 +93,36 @@ public class ApplyPotionAction implements ActionInterface {
 			
 			@Override
 			public void setValue(String value) {
-				fargs.put("a_applypotiontype", value.toUpperCase().replace(" ", "_"));
+				type.setFlag(value.toUpperCase().replace(" ", "_"));
 			}
 			
 			@Override
 			public String getValue() {
-				return MinigameUtils.capitalize(((String)fargs.get("a_applypotiontype")).replace("_", " "));
+				return MinigameUtils.capitalize(type.getFlag().replace("_", " "));
 			}
 		}, pots));
 		m.addItem(new MenuItemTime("Duration", Material.WATCH, new Callback<Integer>() {
 
 			@Override
 			public void setValue(Integer value) {
-				fargs.put("a_applypotiondur", value);
+				dur.setFlag(value);
 			}
 
 			@Override
 			public Integer getValue() {
-				return (Integer)fargs.get("a_applypotiondur");
+				return dur.getFlag();
 			}
 		}, 0, 86400));
 		m.addItem(new MenuItemInteger("Level", Material.DOUBLE_STEP, new Callback<Integer>() {
 
 			@Override
 			public void setValue(Integer value) {
-				fargs.put("a_applypotionamp", value);
+				amp.setFlag(value);;
 			}
 
 			@Override
 			public Integer getValue() {
-				return (Integer)fargs.get("a_applypotionamp");
+				return amp.getFlag();
 			}
 		}, 0, 100));
 		m.displayMenu(player);

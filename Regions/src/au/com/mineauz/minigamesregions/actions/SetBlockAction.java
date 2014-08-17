@@ -1,8 +1,5 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -10,11 +7,18 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.config.IntegerFlag;
+import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class SetBlockAction implements ActionInterface {
+public class SetBlockAction extends ActionInterface {
+	
+	private StringFlag type = new StringFlag("STONE", "type");
+	private BooleanFlag usedur = new BooleanFlag(false, "usedur");
+	private IntegerFlag dur = new IntegerFlag(0, "dur");
 
 	@Override
 	public String getName() {
@@ -39,7 +43,7 @@ public class SetBlockAction implements ActionInterface {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
-			Map<String, Object> args, Region region, Event event) {
+			Region region, Event event) {
 		Location temp = region.getFirstPoint();
 		for(int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++){
 			temp.setY(y);
@@ -49,9 +53,9 @@ public class SetBlockAction implements ActionInterface {
 					temp.setZ(z);
 					
 					BlockState bs = temp.getBlock().getState();
-					bs.setType(Material.getMaterial((String)args.get("a_setblocktype")));
-					if((Boolean)args.get("a_setblockusedur")){
-						bs.getData().setData((Byte)args.get("a_setblockdur"));
+					bs.setType(Material.getMaterial(type.getFlag()));
+					if(usedur.getFlag()){
+						bs.getData().setData(dur.getFlag().byteValue());
 					}
 					bs.update(true);
 				}
@@ -62,45 +66,34 @@ public class SetBlockAction implements ActionInterface {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Map<String, Object> args, Node node, Event event) {
+			Node node, Event event) {
 		BlockState bs = node.getLocation().getBlock().getState();
-		bs.setType(Material.getMaterial((String)args.get("a_setblocktype")));
-		if((Boolean)args.get("a_setblockusedur")){
-			bs.getData().setData((Byte)args.get("a_setblockdur"));
+		bs.setType(Material.getMaterial(type.getFlag()));
+		if(usedur.getFlag()){
+			bs.getData().setData(dur.getFlag().byteValue());
 		}
 		bs.update(true);
 	}
 
 	@Override
-	public Map<String, Object> getRequiredArguments() {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_setblocktype", "AIR");
-		args.put("a_setblockusedur", false);
-		args.put("a_setblockdur", (byte)0);
-		return args;
-	}
-
-	@Override
-	public void saveArguments(Map<String, Object> args,
-			FileConfiguration config, String path) {
-		config.set(path + ".a_setblocktype", args.get("a_setblocktype"));
-		config.set(path + ".a_setblockusedur", args.get("a_setblockusedur"));
-		config.set(path + ".a_setblockdur", args.get("a_setblockdur"));
-	}
-
-	@Override
-	public Map<String, Object> loadArguments(FileConfiguration config,
+	public void saveArguments(FileConfiguration config,
 			String path) {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_setblocktype", config.getString(path + ".a_setblocktype"));
-		args.put("a_setblockusedur", config.getBoolean(path + ".a_setblockusedur"));
-		args.put("a_setblocktype", ((Integer)config.getInt(path + ".a_setblockdur")).byteValue());
-		return args;
+		type.saveValue(path, config);
+		usedur.saveValue(path, config);
+		dur.saveValue(path, config);
 	}
 
 	@Override
-	public boolean displayMenu(MinigamePlayer player, Map<String, Object> args,
-			Menu previous) {
+	public void loadArguments(FileConfiguration config,
+			String path) {
+		type.loadValue(path, config);
+		usedur.loadValue(path, config);
+		dur.loadValue(path, config);
+	}
+
+	@Override
+	public boolean displayMenu(MinigamePlayer player, Menu previous) {
+		//TODO: Set Block menu
 		return false;
 	}
 

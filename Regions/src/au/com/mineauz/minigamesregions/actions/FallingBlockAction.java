@@ -1,7 +1,5 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.Map;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,7 +10,7 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class FallingBlockAction implements ActionInterface {
+public class FallingBlockAction extends ActionInterface {
 
 	@Override
 	public String getName() {
@@ -37,7 +35,7 @@ public class FallingBlockAction implements ActionInterface {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
-			Map<String, Object> args, Region region, Event event) {
+			Region region, Event event) {
 		Location temp = region.getFirstPoint();
 		for(int y = region.getFirstPoint().getBlockY(); 
 				y <= region.getSecondPoint().getBlockY();
@@ -63,7 +61,7 @@ public class FallingBlockAction implements ActionInterface {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Map<String, Object> args, Node node, Event event) {
+			Node node, Event event) {
 		if(node.getLocation().getBlock().getType() != Material.AIR){
 			node.getLocation().getWorld().spawnFallingBlock(node.getLocation(), 
 					node.getLocation().getBlock().getType(), 
@@ -73,24 +71,17 @@ public class FallingBlockAction implements ActionInterface {
 	}
 
 	@Override
-	public Map<String, Object> getRequiredArguments() {
-		return null;
-	}
-
-	@Override
-	public void saveArguments(Map<String, Object> args,
-			FileConfiguration config, String path) {
-	}
-
-	@Override
-	public Map<String, Object> loadArguments(FileConfiguration config,
+	public void saveArguments(FileConfiguration config,
 			String path) {
-		return null;
 	}
 
 	@Override
-	public boolean displayMenu(MinigamePlayer player, Map<String, Object> args,
-			Menu previous) {
+	public void loadArguments(FileConfiguration config,
+			String path) {
+	}
+
+	@Override
+	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		return false;
 	}
 

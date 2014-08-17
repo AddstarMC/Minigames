@@ -78,26 +78,21 @@ public class RegionModule extends MinigameModule {
 			for(RegionExecutor ex : r.getExecutors()){
 				String path = getMinigame() + ".regions." + name + ".executors." + c;
 				config.set(path + ".trigger", ex.getTrigger().toString());
-				List<String> acts = new ArrayList<String>();
+				
+				int acc = 0;
 				for(ActionInterface act : ex.getActions()){
-					acts.add(act.getName());
+					config.set(path + ".actions." + acc + ".type", act.getName());
+					act.saveArguments(config, path + ".actions." + acc + ".arguments");
+					acc++;
 				}
-				config.set(path + ".actions", acts);
-				if(!ex.getConditions().isEmpty()){
-					List<String> conditions = new ArrayList<String>(ex.getConditions().size());
-					for(ConditionInterface con : ex.getConditions()){
-						conditions.add(con.getName());
-					}
-					config.set(path + ".conditions", conditions);
+				
+				acc = 0;
+				for(ConditionInterface con : ex.getConditions()){
+					config.set(path + ".conditions." + acc + ".type", con.getName());
+					con.saveArguments(config, path + ".conditions." + acc + ".arguments");
+					acc++;
 				}
-				if(!ex.getArguments().isEmpty()){
-					for(ActionInterface act : ex.getActions()){
-						act.saveArguments(ex.getArguments(), config, path + ".arguments");
-					}
-					for(ConditionInterface con : ex.getConditions()){
-						con.saveArguments(ex.getArguments(), config, path + ".arguments");
-					}
-				}
+				
 				if(ex.isTriggerPerPlayer())
 					config.set(path + ".isTriggeredPerPlayer", ex.isTriggerPerPlayer());
 				if(ex.getTriggerCount() != 0)
@@ -119,26 +114,21 @@ public class RegionModule extends MinigameModule {
 			for(NodeExecutor ex : n.getExecutors()){
 				String path = getMinigame() + ".nodes." + name + ".executors." + c;
 				config.set(path + ".trigger", ex.getTrigger().toString());
-				List<String> acts = new ArrayList<String>();
+				
+				int acc = 0;
 				for(ActionInterface act : ex.getActions()){
-					acts.add(act.getName());
+					config.set(path + ".actions." + acc + ".type", act.getName());
+					act.saveArguments(config, path + ".actions." + acc + ".arguments");
+					acc++;
 				}
-				config.set(path + ".actions", acts);
-				if(!ex.getConditions().isEmpty()){
-					List<String> conditions = new ArrayList<String>(ex.getConditions().size());
-					for(ConditionInterface con : ex.getConditions()){
-						conditions.add(con.getName());
-					}
-					config.set(path + ".conditions", conditions);
+				
+				acc = 0;
+				for(ConditionInterface con : ex.getConditions()){
+					config.set(path + ".conditions." + acc + ".type", con.getName());
+					con.saveArguments(config, path + ".conditions." + acc + ".arguments");
+					acc++;
 				}
-				if(!ex.getArguments().isEmpty()){
-					for(ActionInterface act : ex.getActions()){
-						act.saveArguments(ex.getArguments(), config, path + ".arguments");
-					}
-					for(ConditionInterface con : ex.getConditions()){
-						con.saveArguments(ex.getArguments(), config, path + ".arguments");
-					}
-				}
+				
 				if(ex.isTriggerPerPlayer())
 					config.set(path + ".isTriggeredPerPlayer", ex.isTriggerPerPlayer());
 				if(ex.getTriggerCount() != 0)
@@ -176,24 +166,22 @@ public class RegionModule extends MinigameModule {
 					for(String i : ex){
 						String path = getMinigame() + ".regions." + name + ".executors." + i;
 						RegionExecutor rex = new RegionExecutor(RegionTrigger.valueOf(config.getString(path + ".trigger")));
+						
 						if(config.contains(path + ".actions")){
-							for(String action : config.getStringList(path + ".actions")){
-								rex.addAction(Actions.getActionByName(action));
+							for(String a : config.getConfigurationSection(path + ".actions").getKeys(false)){
+								ActionInterface ai = Actions.getActionByName(config.getString(path + ".actions." + a + ".type"));
+								ai.loadArguments(config, path + ".actions." + a + ".arguments");
+								rex.addAction(ai);
 							}
 						}
 						if(config.contains(path + ".conditions")){
-							for(String con : config.getStringList(path + ".conditions")){
-								rex.addCondition(Conditions.getConditionByName(con));
+							for(String c : config.getConfigurationSection(path + ".conditions").getKeys(false)){
+								ConditionInterface ci = Conditions.getConditionByName(config.getString(path + ".conditions." + c + ".type"));
+								ci.loadArguments(config, path + ".conditions." + c + ".arguments");
+								rex.addCondition(ci);
 							}
 						}
-						if(config.contains(path + ".arguments")){
-							for(ActionInterface act : rex.getActions()){
-								rex.addArguments(act.loadArguments(config, path + ".arguments"));
-							}
-							for(ConditionInterface con : rex.getConditions()){
-								rex.addArguments(con.loadArguments(config, path + ".arguments"));
-							}
-						}
+						
 						if(config.contains(path + ".isTriggeredPerPlayer"))
 							rex.setTriggerPerPlayer(config.getBoolean(path + ".isTriggeredPerPlayer"));
 						if(config.contains(path + ".triggerCount"))
@@ -221,24 +209,22 @@ public class RegionModule extends MinigameModule {
 					for(String i : ex){
 						String path = getMinigame() + ".nodes." + name + ".executors." + i;
 						NodeExecutor rex = new NodeExecutor(NodeTrigger.valueOf(config.getString(path + ".trigger")));
+
 						if(config.contains(path + ".actions")){
-							for(String action : config.getStringList(path + ".actions")){
-								rex.addAction(Actions.getActionByName(action));
+							for(String a : config.getConfigurationSection(path + ".actions").getKeys(false)){
+								ActionInterface ai = Actions.getActionByName(config.getString(path + ".actions." + a + ".type"));
+								ai.loadArguments(config, path + ".actions." + a + ".arguments");
+								rex.addAction(ai);
 							}
 						}
 						if(config.contains(path + ".conditions")){
-							for(String con : config.getStringList(path + ".conditions")){
-								rex.addCondition(Conditions.getConditionByName(con));
+							for(String c : config.getConfigurationSection(path + ".conditions").getKeys(false)){
+								ConditionInterface ci = Conditions.getConditionByName(config.getString(path + ".conditions." + c + ".type"));
+								ci.loadArguments(config, path + ".conditions." + c + ".arguments");
+								rex.addCondition(ci);
 							}
 						}
-						if(config.contains(path + ".arguments")){
-							for(ActionInterface act : rex.getActions()){
-								rex.addArguments(act.loadArguments(config, path + ".arguments"));
-							}
-							for(ConditionInterface con : rex.getConditions()){
-								rex.addArguments(con.loadArguments(config, path + ".arguments"));
-							}
-						}
+						
 						if(config.contains(path + ".isTriggeredPerPlayer"))
 							rex.setTriggerPerPlayer(config.getBoolean(path + ".isTriggeredPerPlayer"));
 						if(config.contains(path + ".triggerCount"))

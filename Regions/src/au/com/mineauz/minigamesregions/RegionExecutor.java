@@ -14,7 +14,7 @@ public class RegionExecutor {
 	private RegionTrigger trigger;
 	private List<ConditionInterface> conditions = new ArrayList<ConditionInterface>();
 	private List<ActionInterface> actions = new ArrayList<ActionInterface>();
-	private Map<String, Object> arguments = new HashMap<String, Object>();
+//	private Map<String, Object> arguments = new HashMap<String, Object>();
 	private boolean triggerPerPlayer = false;
 	private int triggerCount = 0;
 	private Map<String, Integer> triggers = new HashMap<String, Integer>();
@@ -32,19 +32,19 @@ public class RegionExecutor {
 	}
 	
 	public void addCondition(ConditionInterface condition){
-		if(condition == null || conditions.contains(condition)) return;
+//		if(condition == null || conditions.contains(condition)) return;
 		conditions.add(condition);
-		if(condition.getRequiredArguments() != null)
-			arguments.putAll(condition.getRequiredArguments());
+//		if(condition.getRequiredArguments() != null)
+//			arguments.putAll(condition.getRequiredArguments());
 	}
 	
 	public void removeCondition(ConditionInterface condition){
 		conditions.remove(condition);
-		if(condition.getRequiredArguments() != null){
-			for(String arg : condition.getRequiredArguments().keySet()){
-				arguments.remove(arg);
-			}
-		}
+//		if(condition.getRequiredArguments() != null){
+//			for(String arg : condition.getRequiredArguments().keySet()){
+//				arguments.remove(arg);
+//			}
+//		}
 	}
 	
 	public List<ActionInterface> getActions(){
@@ -53,27 +53,27 @@ public class RegionExecutor {
 	
 	public void addAction(ActionInterface action){
 		actions.add(action);
-		if(action.getRequiredArguments() != null)
-			arguments.putAll(action.getRequiredArguments());
+//		if(action.getRequiredArguments() != null)
+//			arguments.putAll(action.getRequiredArguments());
 	}
 	
 	public void removeAction(ActionInterface action){
 		actions.remove(action);
-		if(action.getRequiredArguments() != null)
-			for(String key : action.getRequiredArguments().keySet())
-				arguments.remove(key);
+//		if(action.getRequiredArguments() != null)
+//			for(String key : action.getRequiredArguments().keySet())
+//				arguments.remove(key);
 	}
 	
-	public Map<String, Object> getArguments(){
-		return arguments;
-	}
-	
-	public void addArguments(Map<String, Object> args){
-		if(args == null) return;
-		for(String arg : args.keySet())
-			arguments.remove(arg);
-		arguments.putAll(args);
-	}
+//	public Map<String, Object> getArguments(){
+//		return arguments;
+//	}
+//	
+//	public void addArguments(Map<String, Object> args){
+//		if(args == null) return;
+//		for(String arg : args.keySet())
+//			arguments.remove(arg);
+//		arguments.putAll(args);
+//	}
 	
 	public int getTriggerCount(){
 		return triggerCount;

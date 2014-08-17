@@ -1,13 +1,11 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
@@ -16,7 +14,9 @@ import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class EquipLoadoutAction implements ActionInterface {
+public class EquipLoadoutAction extends ActionInterface {
+	
+	private StringFlag loadout = new StringFlag("default", "loadout");
 
 	@Override
 	public String getName() {
@@ -40,60 +40,49 @@ public class EquipLoadoutAction implements ActionInterface {
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Map<String, Object> args, Node node, Event event) {
+			Node node, Event event) {
 		if(player == null || !player.isInMinigame()) return;
 		LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
-		if(lmod.hasLoadout((String)args.get("a_equiploadout"))){
-			player.setLoadout(lmod.getLoadout((String)args.get("a_equiploadout")));
+		if(lmod.hasLoadout(loadout.getFlag())){
+			player.setLoadout(lmod.getLoadout(loadout.getFlag()));
 		}
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region, Event event) {
+	public void executeRegionAction(MinigamePlayer player, Region region, Event event) {
 		if(player == null || !player.isInMinigame()) return;
 		LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
-		if(lmod.hasLoadout((String)args.get("a_equiploadout"))){
-			player.setLoadout(lmod.getLoadout((String)args.get("a_equiploadout")));
+		if(lmod.hasLoadout(loadout.getFlag())){
+			player.setLoadout(lmod.getLoadout(loadout.getFlag()));
 		}
 	}
 
 	@Override
-	public Map<String, Object> getRequiredArguments() {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_equiploadout", "default");
-		return args;
-	}
-
-	@Override
-	public void saveArguments(Map<String, Object> args,
-			FileConfiguration config, String path) {
-		config.set(path + ".a_equiploadout", (String)args.get("a_equiploadout"));
-	}
-
-	@Override
-	public Map<String, Object> loadArguments(FileConfiguration config,
+	public void saveArguments(FileConfiguration config,
 			String path) {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_equiploadout", config.getString(path + ".a_equiploadout"));
-		return args;
+		loadout.saveValue(path, config);
 	}
 
 	@Override
-	public boolean displayMenu(MinigamePlayer player, Map<String, Object> args,
-			Menu previous) {
+	public void loadArguments(FileConfiguration config,
+			String path) {
+		loadout.loadValue(path, config);
+	}
+
+	@Override
+	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Equip Loadout", player);
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
-		final Map<String, Object> fargs = args;
 		m.addItem(new MenuItemString("Loadout Name", Material.DIAMOND_SWORD, new Callback<String>() {
 			
 			@Override
 			public void setValue(String value) {
-				fargs.put("a_equiploadout", value);
+				loadout.setFlag(value);
 			}
 			
 			@Override
 			public String getValue() {
-				return (String)fargs.get("a_equiploadout");
+				return loadout.getFlag();
 			}
 		}));
 		m.displayMenu(player);

@@ -1,7 +1,5 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.Map;
-
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 
@@ -10,7 +8,7 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class CheckpointAction implements ActionInterface {
+public class CheckpointAction extends ActionInterface {
 
 	@Override
 	public String getName() {
@@ -34,13 +32,13 @@ public class CheckpointAction implements ActionInterface {
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
-			Map<String, Object> args, Region region, Event event) {
+			Region region, Event event) {
 		execute(player);
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Map<String, Object> args, Node node, Event event) {
+			Node node, Event event) {
 		execute(player);
 	}
 	
@@ -50,24 +48,17 @@ public class CheckpointAction implements ActionInterface {
 	}
 
 	@Override
-	public Map<String, Object> getRequiredArguments() {
-		return null;
-	}
-
-	@Override
-	public void saveArguments(Map<String, Object> args,
-			FileConfiguration config, String path) {
-	}
-
-	@Override
-	public Map<String, Object> loadArguments(FileConfiguration config,
+	public void saveArguments(FileConfiguration config,
 			String path) {
-		return null;
 	}
 
 	@Override
-	public boolean displayMenu(MinigamePlayer player, Map<String, Object> args,
-			Menu previous) {
+	public void loadArguments(FileConfiguration config,
+			String path) {
+	}
+
+	@Override
+	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		return false;
 	}
 

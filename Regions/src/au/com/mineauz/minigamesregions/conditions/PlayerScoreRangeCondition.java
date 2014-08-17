@@ -1,21 +1,20 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class PlayerScoreRangeCondition implements ConditionInterface {
+public class PlayerScoreRangeCondition extends ConditionInterface {
+	
+	private IntegerFlag min = new IntegerFlag(5, "min");
+	private IntegerFlag max = new IntegerFlag(10, "max");
 
 	@Override
 	public String getName() {
@@ -38,76 +37,38 @@ public class PlayerScoreRangeCondition implements ConditionInterface {
 	}
 
 	@Override
-	public boolean checkNodeCondition(MinigamePlayer player,
-			Map<String, Object> args, Node node, Event event) {
+	public boolean checkNodeCondition(MinigamePlayer player, Node node, Event event) {
 		if(player == null || !player.isInMinigame()) return false;
-		if(player.getScore() >= (Integer)args.get("c_playerscoremin") && player.getScore() <= (Integer)args.get("c_playerscoremax"))
+		if(player.getScore() >= min.getFlag() && player.getScore() <= max.getFlag())
 			return true;
 		return false;
 	}
 
 	@Override
-	public boolean checkRegionCondition(MinigamePlayer player,
-			Map<String, Object> args, Region region, Event event) {
+	public boolean checkRegionCondition(MinigamePlayer player, Region region, Event event) {
 		if(player == null || !player.isInMinigame()) return false;
-		if(player.getScore() >= (Integer)args.get("c_playerscoremin") && player.getScore() <= (Integer)args.get("c_playerscoremax"))
+		if(player.getScore() >= min.getFlag() && player.getScore() <= max.getFlag())
 			return true;
 		return false;
 	}
 
 	@Override
-	public Map<String, Object> getRequiredArguments() {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("c_playerscoremin", 5);
-		args.put("c_playerscoremax", 10);
-		return args;
+	public void saveArguments(FileConfiguration config, String path) {
+		min.saveValue(path, config);
+		max.saveValue(path, config);
 	}
 
 	@Override
-	public void saveArguments(Map<String, Object> args,
-			FileConfiguration config, String path) {
-		config.set(path + ".c_playerscoremin", args.get("c_playerscoremin"));
-		config.set(path + ".c_playerscoremax", args.get("c_playerscoremax"));
+	public void loadArguments(FileConfiguration config, String path) {
+		min.loadValue(path, config);
+		max.loadValue(path, config);
 	}
 
 	@Override
-	public Map<String, Object> loadArguments(FileConfiguration config,
-			String path) {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("c_playerscoremin", config.getInt(path + ".c_playerscoremin"));
-		args.put("c_playerscoremax", config.getInt(path + ".c_playerscoremax"));
-		return args;
-	}
-
-	@Override
-	public boolean displayMenu(MinigamePlayer player, Menu prev,
-			Map<String, Object> args) {
+	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Score Range", player);
-		final Map<String, Object> fargs = args;
-		m.addItem(new MenuItemInteger("Min Score", Material.STEP, new Callback<Integer>() {
-			
-			@Override
-			public void setValue(Integer value) {
-				fargs.put("c_playerscoremin", value);
-			}
-			
-			@Override
-			public Integer getValue() {
-				return (Integer)fargs.get("c_playerscoremin");
-			}
-		}, null, null));
-		m.addItem(new MenuItemInteger("Max Score", Material.DOUBLE_STEP, new Callback<Integer>() {
-			
-			@Override
-			public void setValue(Integer value) {
-				fargs.put("c_playerscoremax", value);
-			}
-			
-			@Override
-			public Integer getValue() {
-				return (Integer)fargs.get("c_playerscoremax");
-			}
-		}, null, null));
+		m.addItem(min.getMenuItem("Min Score", Material.STEP));
+		m.addItem(max.getMenuItem("Max Score", Material.DOUBLE_STEP));
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
 		m.displayMenu(player);
 		return true;

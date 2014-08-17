@@ -1,24 +1,22 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionModule;
 import au.com.mineauz.minigamesregions.RegionTrigger;
 
-public class TriggerRegionAction implements ActionInterface {
+public class TriggerRegionAction extends ActionInterface {
+	
+	private StringFlag region = new StringFlag("None", "region");
 
 	@Override
 	public String getName() {
@@ -42,67 +40,45 @@ public class TriggerRegionAction implements ActionInterface {
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
-			Map<String, Object> args, Region region, Event event) {
+			Region region, Event event) {
 		if(player == null || !player.isInMinigame()) return;
 		Minigame mg = player.getMinigame();
 		if(mg != null){
 			RegionModule rmod = RegionModule.getMinigameModule(mg);
-			if(rmod.hasRegion((String)args.get("a_triggerregion")))
-				rmod.getRegion((String)args.get("a_triggerregion")).execute(RegionTrigger.REMOTE, player, null);
+			if(rmod.hasRegion(this.region.getFlag()))
+				rmod.getRegion(this.region.getFlag()).execute(RegionTrigger.REMOTE, player, null);
 		}
 	}
 
 	@Override
-	public void executeNodeAction(MinigamePlayer player, Map<String, Object> args,
-			Node node, Event event) {
+	public void executeNodeAction(MinigamePlayer player, Node node,
+			Event event) {
 		if(player == null || !player.isInMinigame()) return;
 		Minigame mg = player.getMinigame();
 		if(mg != null){
 			RegionModule rmod = RegionModule.getMinigameModule(mg);
-			if(rmod.hasRegion((String)args.get("a_triggerregion")))
-				rmod.getRegion((String)args.get("a_triggerregion")).execute(RegionTrigger.REMOTE, player, null);
+			if(rmod.hasRegion(region.getFlag()))
+				rmod.getRegion(region.getFlag()).execute(RegionTrigger.REMOTE, player, null);
 		}
 	}
 
 	@Override
-	public Map<String, Object> getRequiredArguments() {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_triggerregion", "none");
-		return args;
-	}
-
-	@Override
-	public void saveArguments(Map<String, Object> args,
-			FileConfiguration config, String path) {
-		config.set(path + ".a_triggerregion", args.get("a_triggerregion"));
-	}
-
-	@Override
-	public Map<String, Object> loadArguments(FileConfiguration config,
+	public void saveArguments(FileConfiguration config,
 			String path) {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_triggerregion", config.getString(path + ".a_triggerregion"));
-		return args;
+		region.saveValue(path, config);
 	}
 
 	@Override
-	public boolean displayMenu(MinigamePlayer player, Map<String, Object> args,
-			Menu previous) {
+	public void loadArguments(FileConfiguration config,
+			String path) {
+		region.loadValue(path, config);
+	}
+
+	@Override
+	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Trigger Node", player);
-		final Map<String, Object> fargs = args;
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
-		m.addItem(new MenuItemString("Region Name", Material.EYE_OF_ENDER, new Callback<String>() {
-			
-			@Override
-			public void setValue(String value) {
-				fargs.put("a_triggerregion", value);
-			}
-			
-			@Override
-			public String getValue() {
-				return (String)fargs.get("a_triggerregion");
-			}
-		}));
+		m.addItem(region.getMenuItem("Region Name", Material.EYE_OF_ENDER));
 		m.displayMenu(player);
 		return true;
 	}

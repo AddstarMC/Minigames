@@ -1,7 +1,5 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import java.util.Map;
-
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 
@@ -10,16 +8,15 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public interface ConditionInterface {
+public abstract class ConditionInterface {
 	
-	public String getName();
-	public String getCategory();
-	public boolean useInRegions();
-	public boolean useInNodes();
-	public boolean checkRegionCondition(MinigamePlayer player, Map<String, Object> args, Region region, Event event);
-	public boolean checkNodeCondition(MinigamePlayer player, Map<String, Object> args, Node node, Event event);
-	public Map<String, Object> getRequiredArguments();
-	public void saveArguments(Map<String, Object> args, FileConfiguration config, String path);
-	public Map<String, Object> loadArguments(FileConfiguration config, String path);
-	public boolean displayMenu(MinigamePlayer player, Menu prev, Map<String, Object> args);
+	public abstract String getName();
+	public abstract String getCategory();
+	public abstract boolean useInRegions();
+	public abstract boolean useInNodes();
+	public abstract boolean checkRegionCondition(MinigamePlayer player, Region region, Event event);
+	public abstract boolean checkNodeCondition(MinigamePlayer player, Node node, Event event);
+	public abstract void saveArguments(FileConfiguration config, String path);
+	public abstract void loadArguments(FileConfiguration config, String path);
+	public abstract boolean displayMenu(MinigamePlayer player, Menu prev);
 }

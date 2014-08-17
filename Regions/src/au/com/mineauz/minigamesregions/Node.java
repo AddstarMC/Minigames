@@ -61,7 +61,7 @@ public class Node {
 			if(exec.getTrigger() == trigger){
 				boolean cont = true;
 				for(ConditionInterface con : exec.getConditions()){
-					if(!con.checkNodeCondition(player, exec.getArguments(), this, event)){
+					if(!con.checkNodeCondition(player, this, event)){
 						cont = false;
 						break;
 					}
@@ -72,7 +72,7 @@ public class Node {
 		}
 		for(NodeExecutor exec : toExecute){
 			for(ActionInterface act : exec.getActions()){
-				act.executeNodeAction(player, exec.getArguments(), this, event);
+				act.executeNodeAction(player, this, event);
 				if(!exec.isTriggerPerPlayer())
 					exec.addPublicTrigger();
 				else

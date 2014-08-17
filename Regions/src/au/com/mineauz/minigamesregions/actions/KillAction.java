@@ -1,7 +1,5 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.Map;
-
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 
@@ -10,7 +8,7 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class KillAction implements ActionInterface {
+public class KillAction extends ActionInterface {
 
 	@Override
 	public String getName() {
@@ -34,35 +32,29 @@ public class KillAction implements ActionInterface {
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Map<String, Object> args, Node node, Event event) {
+			Node node, Event event) {
 		if(player == null || !player.isInMinigame()) return;
 		if(!player.isDead())
 			player.getPlayer().damage(player.getPlayer().getHealth());
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region, Event event) {
+	public void executeRegionAction(MinigamePlayer player, Region region, Event event) {
 		if(player == null || !player.isInMinigame()) return;
 		if(!player.isDead())
 			player.getPlayer().damage(player.getPlayer().getHealth());
 	}
 
 	@Override
-	public Map<String, Object> getRequiredArguments() {
-		return null;
+	public void saveArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
-	public void saveArguments(Map<String, Object> args, FileConfiguration config, String path) {
+	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
-	public Map<String, Object> loadArguments(FileConfiguration config, String path) {
-		return null;
-	}
-
-	@Override
-	public boolean displayMenu(MinigamePlayer player, Map<String, Object> args, Menu previous) {
+	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		return false;
 	}
 }

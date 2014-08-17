@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -17,24 +16,24 @@ import au.com.mineauz.minigamesregions.menuitems.MenuItemCondition;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemConditionAdd;
 
 public class Conditions {
-	private static Map<String, ConditionInterface> conditions = new HashMap<String, ConditionInterface>();
+	private static Map<String, Class<? extends ConditionInterface>> conditions = new HashMap<String, Class<? extends ConditionInterface>>();
 	
 	static{
-		addCondition(new PlayerHealthRangeCondition());
-		addCondition(new HasRequiredFlagsCondition());
-		addCondition(new PlayerScoreRangeCondition());
-		addCondition(new MatchTeamCondition());
-		addCondition(new ContainsOneTeamCondition());
-		addCondition(new RandomChanceCondition());
-		addCondition(new MatchBlockCondition());
-		addCondition(new ContainsEntireTeamCondition());
-		addCondition(new PlayerCountCondition());
-		addCondition(new PlayerHasItemCondition());
-		addCondition(new TeamScoreRangeCondition());
+		addCondition("PLAYER_HEALTH_RANGE", PlayerHealthRangeCondition.class);
+		addCondition("HAS_REQUIRED_FLAGS", HasRequiredFlagsCondition.class);
+		addCondition("PLAYER_SCORE_RANGE", PlayerScoreRangeCondition.class);
+		addCondition("MATCH_TEAM", MatchTeamCondition.class);
+		addCondition("CONTAINS_ONE_TEAM", ContainsOneTeamCondition.class);
+		addCondition("RANDOM_CHANCE", RandomChanceCondition.class);
+		addCondition("MATCH_BLOCK", MatchBlockCondition.class);
+		addCondition("CONTAINS_ENTIRE_TEAM", ContainsEntireTeamCondition.class);
+		addCondition("PLAYER_COUNT", PlayerCountCondition.class);
+		addCondition("PLAYER_HAS_ITEM", PlayerHasItemCondition.class);
+		addCondition("TEAM_SCORE_RANGE", TeamScoreRangeCondition.class);
 	}
 	
-	public static void addCondition(ConditionInterface condition){
-		conditions.put(condition.getName().toUpperCase(), condition);
+	public static void addCondition(String name, Class<? extends ConditionInterface> condition){
+		conditions.put(name, condition);
 	}
 	
 	public static boolean hasCondition(String condition){
@@ -42,17 +41,20 @@ public class Conditions {
 	}
 	
 	public static ConditionInterface getConditionByName(String name){
-		if(hasCondition(name.toUpperCase()))
-			return conditions.get(name.toUpperCase());
+		if(hasCondition(name.toUpperCase())){
+			try{
+				return conditions.get(name.toUpperCase()).newInstance();
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			};
+		}
 		return null;
 	}
 	
 	public static Set<String> getAllConditionNames(){
 		return conditions.keySet();
-	}
-	
-	public static Collection<ConditionInterface> getAllConditions(){
-		return conditions.values();
 	}
 	
 	public static void displayMenu(MinigamePlayer player, RegionExecutor exec, Menu prev){

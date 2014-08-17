@@ -1,9 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,18 +13,17 @@ import org.bukkit.metadata.FixedMetadataValue;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBoolean;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class SpawnEntityAction implements ActionInterface {
+public class SpawnEntityAction extends ActionInterface {
+	
+	private StringFlag type = new StringFlag("ZOMBIE", "type");
 
 	@Override
 	public String getName() {
@@ -50,45 +47,34 @@ public class SpawnEntityAction implements ActionInterface {
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
-			Map<String, Object> args, Region region, Event event) {
+			Region region, Event event) {
 	}
 
 	@Override
-	public void executeNodeAction(MinigamePlayer player, Map<String, Object> args,
-			Node node, Event event) {
+	public void executeNodeAction(MinigamePlayer player, Node node,
+			Event event) {
 		if(player == null || !player.isInMinigame()) return;
-		Entity ent = node.getLocation().getWorld().spawnEntity(node.getLocation(), EntityType.valueOf((String)args.get("a_spawnentitytype")));
+		Entity ent = node.getLocation().getWorld().spawnEntity(node.getLocation(), EntityType.valueOf(type.getFlag()));
 		ent.setMetadata("MinigameEntity", new FixedMetadataValue(Minigames.plugin, true));
 		player.getMinigame().getBlockRecorder().addEntity(ent, player, true);
 	}
 
 	@Override
-	public Map<String, Object> getRequiredArguments() {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_spawnentitytype", "ZOMBIE");
-		return args;
-	}
-
-	@Override
-	public void saveArguments(Map<String, Object> args,
-			FileConfiguration config, String path) {
-		config.set(path + ".a_spawnentitytype", args.get("a_spawnentitytype"));
-	}
-
-	@Override
-	public Map<String, Object> loadArguments(FileConfiguration config,
+	public void saveArguments(FileConfiguration config,
 			String path) {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_spawnentitytype", config.getString(path + ".a_spawnentitytype"));
-		return args;
+		type.saveValue(path, config);
 	}
 
 	@Override
-	public boolean displayMenu(MinigamePlayer player, Map<String, Object> args,
-			Menu previous) {
+	public void loadArguments(FileConfiguration config,
+			String path) {
+		type.loadValue(path, config);
+	}
+
+	@Override
+	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Spawn Entity", player);
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
-		final Map<String, Object> fargs = args;
 		List<String> options = new ArrayList<String>();
 		for(EntityType type : EntityType.values()){
 			if(type != EntityType.ITEM_FRAME && type != EntityType.LEASH_HITCH && type != EntityType.PLAYER && 
@@ -100,66 +86,15 @@ public class SpawnEntityAction implements ActionInterface {
 			
 			@Override
 			public void setValue(String value) {
-				fargs.put("a_spawnentitytype", value.toUpperCase().replace(" ", "_"));
+				type.setFlag(value.toUpperCase().replace(" ", "_"));
 			}
 			
 			@Override
 			public String getValue() {
-				return MinigameUtils.capitalize(((String) fargs.get("a_spawnentitytype")).replace("_", " "));
+				return MinigameUtils.capitalize(type.getFlag().replace("_", " "));
 			}
 		}, options));
-		MenuItemCustom cus = new MenuItemCustom("Entity Settings", Material.CHEST);
-		final Menu fm = m;
-		final MinigamePlayer fplayer = player;
-		final MenuItemCustom fcus = cus;
-		cus.setClick(new InteractionInterface() {
-			
-			@Override
-			public Object interact(Object object) {
-				if(EntityType.valueOf((String)fargs.get("a_spawnentitytype")) == EntityType.ZOMBIE){
-					menuMonster(fplayer, fargs, fm);
-					return null;
-				}
-				return fcus.getItem();
-			}
-		});
 		m.displayMenu(player);
 		return true;
-	}
-	
-	private void menuMonster(MinigamePlayer player, Map<String, Object> args,
-			Menu previous){
-		for(String arg : new ArrayList<String>(args.keySet())){
-			if(arg.startsWith("a_spawnentity") && !arg.equals("a_spawnentitytype"))
-				args.remove(arg);
-		}
-		args.put("a_spawnentitynamevisible", false);
-		Menu m = new Menu(3, "Monsters", player);
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous));
-		final Map<String, Object> fargs = args;
-		m.addItem(new MenuItemString("Custom Name", Material.NAME_TAG, new Callback<String>() {
-
-			@Override
-			public void setValue(String value) {
-				fargs.put("a_spawnentitycustomname", value);
-			}
-
-			@Override
-			public String getValue() {
-				return (String)fargs.get("a_spawnentitycustomname");
-			}
-		}));
-		m.addItem(new MenuItemBoolean("Name Always Visible", Material.NAME_TAG, new Callback<Boolean>() {
-
-			@Override
-			public void setValue(Boolean value) {
-				fargs.put("a_spawnentitynamevisible", value);
-			}
-
-			@Override
-			public Boolean getValue() {
-				return (Boolean)fargs.get("a_spawnentitynamevisible");
-			}
-		}));
 	}
 }

@@ -1,7 +1,5 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Location;
@@ -10,15 +8,17 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.config.FloatFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBoolean;
-import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class ExplodeAction implements ActionInterface {
+public class ExplodeAction extends ActionInterface {
+	
+	private FloatFlag power = new FloatFlag(4f, "power");
+	private BooleanFlag fire = new BooleanFlag(false, "fire");
 
 	@Override
 	public String getName() {
@@ -42,7 +42,7 @@ public class ExplodeAction implements ActionInterface {
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
-			Map<String, Object> args, Region region, Event event) {
+			Region region, Event event) {
 		Random rand = new Random();
 		double xrand = rand.nextDouble() *
 				(region.getSecondPoint().getBlockX() - region.getFirstPoint().getBlockX()) +
@@ -58,69 +58,35 @@ public class ExplodeAction implements ActionInterface {
 		loc.setX(xrand);
 		loc.setY(yrand);
 		loc.setZ(zrand);
-		loc.getWorld().createExplosion(loc, (Float)args.get("a_explodepower"), (Boolean)args.get("a_explodefire"));
+		loc.getWorld().createExplosion(loc, power.getFlag(), fire.getFlag());
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Map<String, Object> args, Node node, Event event) {
-		node.getLocation().getWorld().createExplosion(node.getLocation(), (Float)args.get("a_explodepower"), (Boolean)args.get("a_explodefire"));
+			Node node, Event event) {
+		node.getLocation().getWorld().createExplosion(node.getLocation(), power.getFlag(), fire.getFlag());
 	}
-
+	
 	@Override
-	public Map<String, Object> getRequiredArguments() {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_explodepower", 4F);
-		args.put("a_explodefire", false);
-		return args;
-	}
-
-	@Override
-	public void saveArguments(Map<String, Object> args,
-			FileConfiguration config, String path) {
-		config.set(path + ".a_explodepower", args.get("a_explodepower"));
-		config.set(path + ".a_explodefire", args.get("a_explodefire"));
-	}
-
-	@Override
-	public Map<String, Object> loadArguments(FileConfiguration config,
+	public void saveArguments(FileConfiguration config,
 			String path) {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_explodepower", ((Integer)config.getInt(path + ".a_explodepower")).floatValue());
-		args.put("a_explodefire", config.getBoolean(path + ".a_explodefire"));
-		return args;
+		power.saveValue(path, config);
+		fire.saveValue(path, config);
 	}
 
 	@Override
-	public boolean displayMenu(MinigamePlayer player, Map<String, Object> args,
-			Menu previous) {
+	public void loadArguments(FileConfiguration config,
+			String path) {
+		power.loadValue(path, config);
+		fire.loadValue(path, config);
+	}
+
+	@Override
+	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Explode", player);
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
-		final Map<String, Object> fargs = args;
-		m.addItem(new MenuItemInteger("Explosion Power", Material.TNT, new Callback<Integer>() {
-			
-			@Override
-			public void setValue(Integer value) {
-				fargs.put("a_explodepower", value.floatValue());
-			}
-			
-			@Override
-			public Integer getValue() {
-				return ((Float)fargs.get("a_explodepower")).intValue();
-			}
-		}, 0, 10));
-		m.addItem(new MenuItemBoolean("Cause Fire", Material.FLINT_AND_STEEL, new Callback<Boolean>() {
-
-			@Override
-			public void setValue(Boolean value) {
-				fargs.put("a_explodefire", value);
-			}
-
-			@Override
-			public Boolean getValue() {
-				return (Boolean)fargs.get("a_explodefire");
-			}
-		}));
+		m.addItem(power.getMenuItem("Explosion Power", Material.TNT));
+		m.addItem(fire.getMenuItem("Cause Fire", Material.FLINT_AND_STEEL));
 		m.displayMenu(player);
 		return true;
 	}

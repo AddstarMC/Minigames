@@ -1,24 +1,27 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.config.IntegerFlag;
+import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBoolean;
-import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class PlayerHasItemCondition implements ConditionInterface {
+public class PlayerHasItemCondition extends ConditionInterface {
+	
+	private StringFlag type = new StringFlag("STONE", "type");
+	private BooleanFlag useData = new BooleanFlag(false, "usedata");
+	private IntegerFlag data = new IntegerFlag(0, "data");
+	private BooleanFlag invert = new BooleanFlag(false, "invert");
 
 	@Override
 	public String getName() {
@@ -41,22 +44,20 @@ public class PlayerHasItemCondition implements ConditionInterface {
 	}
 
 	@Override
-	public boolean checkRegionCondition(MinigamePlayer player,
-			Map<String, Object> args, Region region, Event event) {
-		return check(player, args);
+	public boolean checkRegionCondition(MinigamePlayer player, Region region, Event event) {
+		return check(player);
 	}
 
 	@Override
-	public boolean checkNodeCondition(MinigamePlayer player,
-			Map<String, Object> args, Node node, Event event) {
-		return check(player, args);
+	public boolean checkNodeCondition(MinigamePlayer player, Node node, Event event) {
+		return check(player);
 	}
 	
-	private boolean check(MinigamePlayer player, Map<String, Object> args){
-		boolean inv = (Boolean)args.get("c_playerhasiteminvert");
-		if(player.getPlayer().getInventory().contains(Material.getMaterial((String)args.get("c_playerhasitem")))){
-			if((Boolean)args.get("c_playerhasitemusedata")){
-				short dam = (Short) args.get("c_playerhasitemdata");
+	private boolean check(MinigamePlayer player){
+		boolean inv = invert.getFlag();
+		if(player.getPlayer().getInventory().contains(Material.getMaterial(type.getFlag()))){
+			if(useData.getFlag()){
+				short dam = data.getFlag().shortValue();
 				for(ItemStack i : player.getPlayer().getInventory().getContents()){
 					if(i != null && i.getDurability() == dam){
 						if(!inv) return true;
@@ -74,93 +75,44 @@ public class PlayerHasItemCondition implements ConditionInterface {
 	}
 
 	@Override
-	public Map<String, Object> getRequiredArguments() {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("c_playerhasitem", "STONE");
-		args.put("c_playerhasitemusedata", false);
-		args.put("c_playerhasitemdata", 0);
-		args.put("c_playerhasiteminvert", false);
-		return args;
+	public void saveArguments(FileConfiguration config, String path) {
+		type.saveValue(path, config);
+		useData.saveValue(path, config);
+		data.saveValue(path, config);
+		invert.saveValue(path, config);
 	}
 
 	@Override
-	public void saveArguments(Map<String, Object> args,
-			FileConfiguration config, String path) {
-		config.set(path + ".c_playerhasitem", args.get("c_playerhasitem"));
-		config.set(path + ".c_playerhasitemusedata", args.get("c_playerhasitemusedata"));
-		config.set(path + ".c_playerhasitemdata", args.get("c_playerhasitemdata"));
-		config.set(path + ".c_playerhasiteminvert", args.get("c_playerhasiteminvert"));
+	public void loadArguments(FileConfiguration config, String path) {
+		type.loadValue(path, config);
+		useData.loadValue(path, config);
+		data.loadValue(path, config);
+		invert.loadValue(path, config);
 	}
 
 	@Override
-	public Map<String, Object> loadArguments(FileConfiguration config,
-			String path) {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("c_playerhasitem", config.getString(path + ".c_playerhasitem"));
-		args.put("c_playerhasitemusedata", config.getBoolean(path + ".c_playerhasitemusedata"));
-		args.put("c_playerhasitemdata", ((Integer)config.getInt(path + ".c_playerhasitemdata")).shortValue());
-		args.put("c_playerhasiteminvert", config.getBoolean(path + ".c_playerhasiteminvert"));
-		return args;
-	}
-
-	@Override
-	public boolean displayMenu(MinigamePlayer player, Menu prev,
-			Map<String, Object> args) {
+	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Player Has Item", player);
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
-		final Map<String, Object> fargs = args;
 		final MinigamePlayer fply = player;
 		m.addItem(new MenuItemString("Item", Material.STONE, new Callback<String>() {
 			
 			@Override
 			public void setValue(String value) {
 				if(Material.getMaterial(value.toUpperCase()) != null)
-					fargs.put("c_playerhasitem", value.toUpperCase());
+					type.setFlag(value.toUpperCase());
 				else
 					fply.sendMessage("Invalid Item!", "error");
 			}
 			
 			@Override
 			public String getValue() {
-				return (String)fargs.get("c_playerhasitem");
+				return type.getFlag();
 			}
 		}));
-		m.addItem(new MenuItemBoolean("Match Item Data", Material.ENDER_PEARL, new Callback<Boolean>() {
-
-			@Override
-			public void setValue(Boolean value) {
-				fargs.put("c_playerhasitemusedata", value);
-			}
-
-			@Override
-			public Boolean getValue() {
-				return (Boolean)fargs.get("c_playerhasitemusedata");
-			}
-		}));
-		m.addItem(new MenuItemInteger("Data Value", Material.EYE_OF_ENDER, new Callback<Integer>() {
-
-			@Override
-			public void setValue(Integer value) {
-				fargs.put("c_playerhasitemdata", value.shortValue());
-			}
-
-			@Override
-			public Integer getValue() {
-				return ((Short)fargs.get("c_playerhasitemdata")).intValue();
-			}
-		}, 0, null));
-		m.addItem(new MenuItemBoolean("Invert Result", Material.ENDER_PEARL, new Callback<Boolean>() {
-
-			@Override
-			public void setValue(Boolean value) {
-				fargs.put("c_playerhasiteminvert", value);
-			}
-
-			@Override
-			public Boolean getValue() {
-				return (Boolean)fargs.get("c_playerhasiteminvert");
-			}
-		}));
+		m.addItem(useData.getMenuItem("Match Item Data", Material.ENDER_PEARL));
+		m.addItem(data.getMenuItem("Data Value", Material.EYE_OF_ENDER, 0, null));
+		m.addItem(invert.getMenuItem("Invert Result", Material.ENDER_PEARL));
 		m.displayMenu(player);
 		return true;
 	}

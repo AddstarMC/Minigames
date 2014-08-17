@@ -17,6 +17,7 @@ import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.NodeExecutor;
 import au.com.mineauz.minigamesregions.RegionExecutor;
+import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.actions.Actions;
 
 public class MenuItemActionAdd extends MenuItem{
@@ -62,14 +63,15 @@ public class MenuItemActionAdd extends MenuItem{
 					
 					@Override
 					public Object interact(Object object) {
+						ActionInterface action = Actions.getActionByName(fact);
 						if(nexec == null){
-							rexec.addAction(Actions.getActionByName(fact));
-							getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, rexec, Actions.getActionByName(fact)));
+							rexec.addAction(action);
+							getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, rexec, action));
 							getContainer().displayMenu(getContainer().getViewer());
 						}
 						else{
-							nexec.addAction(Actions.getActionByName(fact));
-							getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, nexec, Actions.getActionByName(fact)));
+							nexec.addAction(action);
+							getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, nexec, action));
 							getContainer().displayMenu(getContainer().getViewer());
 						}
 						return null;

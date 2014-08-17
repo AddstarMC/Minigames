@@ -1,21 +1,20 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class PlayerHealthRangeCondition implements ConditionInterface {
+public class PlayerHealthRangeCondition extends ConditionInterface {
+	
+	private IntegerFlag minHealth = new IntegerFlag(20, "min");
+	private IntegerFlag maxHealth = new IntegerFlag(20, "max");
 
 	@Override
 	public String getName() {
@@ -38,82 +37,41 @@ public class PlayerHealthRangeCondition implements ConditionInterface {
 	}
 
 	@Override
-	public boolean checkNodeCondition(MinigamePlayer player,
-			Map<String, Object> args, Node node, Event event) {
+	public boolean checkNodeCondition(MinigamePlayer player, Node node, Event event) {
 		if(player == null || !player.isInMinigame()) return false;
-		if(player.getPlayer().getHealth() >= (Double)args.get("c_phealthmin") &&
-				player.getPlayer().getHealth() <= (Double)args.get("c_phealthmax"))
+		if(player.getPlayer().getHealth() >= minHealth.getFlag().doubleValue() &&
+				player.getPlayer().getHealth() <= maxHealth.getFlag().doubleValue())
 			return true;
 		return false;
 	}
 
 	@Override
-	public boolean checkRegionCondition(MinigamePlayer player,
-			Map<String, Object> args, Region region, Event event) {
+	public boolean checkRegionCondition(MinigamePlayer player, Region region, Event event) {
 		if(player == null || !player.isInMinigame()) return false;
-		if(player.getPlayer().getHealth() >= (Double)args.get("c_phealthmin") &&
-				player.getPlayer().getHealth() <= (Double)args.get("c_phealthmax"))
+		if(player.getPlayer().getHealth() >= minHealth.getFlag().doubleValue() &&
+				player.getPlayer().getHealth() <= maxHealth.getFlag().doubleValue())
 			return true;
 		return false;
 	}
-
+	
 	@Override
-	public Map<String, Object> getRequiredArguments() {
-		Map<String, Object> args = new HashMap<String, Object>();
-		
-		args.put("c_phealthmin", 20.0);
-		args.put("c_phealthmax", 20.0);
-		return args;
+	public void saveArguments(FileConfiguration config, String path) {
+		minHealth.saveValue(path, config);
+		maxHealth.saveValue(path, config);
 	}
 
 	@Override
-	public void saveArguments(Map<String, Object> args,
-			FileConfiguration config, String path) {
-		config.set(path + ".c_phealthmin", args.get("c_phealthmin"));
-		config.set(path + ".c_phealthmax", args.get("c_phealthmax"));
-	}
-
-	@Override
-	public Map<String, Object> loadArguments(FileConfiguration config,
+	public void loadArguments(FileConfiguration config,
 			String path) {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("c_phealthmin", config.getDouble(path + ".c_phealthmin"));
-		args.put("c_phealthmax", config.getDouble(path + ".c_phealthmax"));
-		return args;
+		minHealth.loadValue(path, config);
+		maxHealth.loadValue(path, config);
 	}
 
 	@Override
-	public boolean displayMenu(MinigamePlayer player, Menu prev, Map<String, Object> args) {
+	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Health Range", player);
-		final Map<String, Object> fargs = args;
-		MenuItemInteger min = new MenuItemInteger("Min Health", Material.STEP, new Callback<Integer>() {
-			
-			@Override
-			public void setValue(Integer value) {
-				fargs.put("c_phealthmin", (double)value);
-			}
-			
-			@Override
-			public Integer getValue() {
-				Double d = (Double)fargs.get("c_phealthmin");
-				return d.intValue();
-			}
-		}, 0, 20);
-		m.addItem(min);
-		MenuItemInteger max = new MenuItemInteger("Max Health", Material.DOUBLE_STEP, new Callback<Integer>() {
-			
-			@Override
-			public void setValue(Integer value) {
-				fargs.put("c_phealthmax", (double)value);
-			}
-			
-			@Override
-			public Integer getValue() {
-				Double d = (Double)fargs.get("c_phealthmax");
-				return d.intValue();
-			}
-		}, 0, 20);
-		m.addItem(max);
+		m.addItem(minHealth.getMenuItem("Min Health", Material.STEP, 0, 20));
+		m.addItem(maxHealth.getMenuItem("Max Health", Material.DOUBLE_STEP, 0, 20));
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
 		m.displayMenu(player);
 		return true;

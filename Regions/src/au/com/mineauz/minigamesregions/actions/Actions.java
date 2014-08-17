@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -17,50 +16,50 @@ import au.com.mineauz.minigamesregions.menuitems.MenuItemAction;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemActionAdd;
 
 public class Actions {
-	private static Map<String, ActionInterface> actions = new HashMap<String, ActionInterface>();
+	private static Map<String, Class<? extends ActionInterface>> actions = new HashMap<String, Class<? extends ActionInterface>>();
 	
 	static{
-		addAction(new KillAction());
-		addAction(new RevertAction());
-		addAction(new QuitAction());
-		addAction(new EndAction());
-		addAction(new MessageAction());
-		addAction(new AddScoreAction());
-		addAction(new SetScoreAction());
-		addAction(new ReequipLoadoutAction());
-		addAction(new EquipLoadoutAction());
-		addAction(new HealAction());
-		addAction(new BarrierAction());
-		addAction(new SpawnEntityAction());
-		addAction(new TriggerNodeAction());
-		addAction(new TriggerRegionAction());
-		addAction(new PulseRedstoneAction());
-		addAction(new TimerAction());
-		addAction(new CancelTimerAction());
-		addAction(new ExecuteCommandAction());
-		addAction(new SetBlockAction());
-		addAction(new ExplodeAction());
-		addAction(new PlaySoundAction());
-		addAction(new CheckpointAction());
-		addAction(new SwapBlockAction());
-		addAction(new ApplyPotionAction());
-		addAction(new FallingBlockAction());
-		addAction(new AddTeamScoreAction());
-		addAction(new SetTeamScoreAction());
+		addAction("KILL", KillAction.class);
+		addAction("REVERT", RevertAction.class);
+		addAction("QUIT", QuitAction.class);
+		addAction("END", EndAction.class);
+		addAction("MESSAGE", MessageAction.class);
+		addAction("ADD_SCORE", AddScoreAction.class);
+		addAction("SET_SCORE", SetScoreAction.class);
+		addAction("REEQUIP_LOADOUT", ReequipLoadoutAction.class);
+		addAction("EQUIP_LOADOUT", EquipLoadoutAction.class);
+		addAction("HEAL", HealAction.class);
+		addAction("BARRIER", BarrierAction.class);
+		addAction("SPAWN_ENTITY", SpawnEntityAction.class);
+		addAction("TRIGGER_NODE", TriggerNodeAction.class);
+		addAction("TRIGGER_REGION", TriggerRegionAction.class);
+		addAction("PULSE_REDSTONE", PulseRedstoneAction.class);
+		addAction("EXECUTE_COMMAND", ExecuteCommandAction.class);
+		addAction("SET_BLOCK", SetBlockAction.class);
+		addAction("EXPLODE", ExplodeAction.class);
+		addAction("PLAY_SOUND", PlaySoundAction.class);
+		addAction("CHECKPOINT", CheckpointAction.class);
+		addAction("SWAP_BLOCK", SwapBlockAction.class);
+		addAction("APPLY_POTION", ApplyPotionAction.class);
+		addAction("FALLING_BLOCK", FallingBlockAction.class);
+		addAction("ADD_TEAM_SCORE", AddTeamScoreAction.class);
+		addAction("SET_TEAM_SCORE", SetTeamScoreAction.class);
 	}
 	
-	public static void addAction(ActionInterface action){
-		actions.put(action.getName().toUpperCase(), action);
+	public static void addAction(String name, Class<? extends ActionInterface> action){
+		actions.put(name, action);
 	}
 	
 	public static ActionInterface getActionByName(String name){
 		if(actions.containsKey(name.toUpperCase()))
-			return actions.get(name.toUpperCase());
+			try {
+				return actions.get(name.toUpperCase()).newInstance();
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
 		return null;
-	}
-	
-	public static Collection<ActionInterface> getAllActions(){
-		return actions.values();
 	}
 	
 	public static Set<String> getAllActionNames(){

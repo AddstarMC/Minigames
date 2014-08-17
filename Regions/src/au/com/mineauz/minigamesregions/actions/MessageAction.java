@@ -1,21 +1,19 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class MessageAction implements ActionInterface {
+public class MessageAction extends ActionInterface {
+	
+	private StringFlag msg = new StringFlag("Hello World", "message");
 
 	@Override
 	public String getName() {
@@ -39,58 +37,32 @@ public class MessageAction implements ActionInterface {
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Map<String, Object> args, Node node, Event event) {
+			Node node, Event event) {
 		if(player == null || !player.isInMinigame()) return;
-		if(args == null || !args.containsKey("message")) return;
-		player.sendMessage((String)args.get("message"), null);
+		player.sendMessage(msg.getFlag(), null);
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region, Event event) {
+	public void executeRegionAction(MinigamePlayer player, Region region, Event event) {
 		if(player == null || !player.isInMinigame()) return;
-		if(args == null || !args.containsKey("message")) return;
-		player.sendMessage((String)args.get("message"), null);
+		player.sendMessage(msg.getFlag(), null);
 	}
 
 	@Override
-	public Map<String, Object> getRequiredArguments() {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("message", "Hello World!");
-		return args;
+	public void saveArguments(FileConfiguration config, String path) {
+		msg.saveValue(path, config);
 	}
 
 	@Override
-	public void saveArguments(Map<String, Object> args, FileConfiguration config, String path) {
-		config.set(path + ".message", args.get("message"));
+	public void loadArguments(FileConfiguration config, String path) {
+		msg.loadValue(path, config);
 	}
 
 	@Override
-	public Map<String, Object> loadArguments(FileConfiguration config, String path) {
-		Map<String, Object> args = new HashMap<String, Object>();
-		if(config.contains(path + ".message"))
-			args.put("message", config.getString(path + ".message"));
-		else
-			args.put("message", "");
-		return args;
-	}
-
-	@Override
-	public boolean displayMenu(MinigamePlayer player, Map<String, Object> args, Menu previous) {
+	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Options", player);
 		m.setPreviousPage(previous);
-		final Map<String, Object> fargs = args;
-		m.addItem(new MenuItemString("Message", Material.PAPER, new Callback<String>() {
-			
-			@Override
-			public void setValue(String value) {
-				fargs.put("message", value);
-			}
-			
-			@Override
-			public String getValue() {
-				return (String) fargs.get("message");
-			}
-		}));
+		m.addItem(msg.getMenuItem("Message", Material.PAPER));
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, m.getPreviousPage()), m.getSize() - 9);
 		m.displayMenu(player);
 		return true;

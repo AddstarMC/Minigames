@@ -29,11 +29,11 @@ public class MenuItemAction extends MenuItem{
 	@Override
 	public ItemStack onClick(){
 		if(rexec != null){
-			if(act.displayMenu(getContainer().getViewer(), rexec.getArguments(), getContainer()))
+			if(act.displayMenu(getContainer().getViewer(), getContainer()))
 				return null;
 		}
 		else{
-			if(act.displayMenu(getContainer().getViewer(), nexec.getArguments(), getContainer()))
+			if(act.displayMenu(getContainer().getViewer(), getContainer()))
 				return null;
 		}
 		return getItem();

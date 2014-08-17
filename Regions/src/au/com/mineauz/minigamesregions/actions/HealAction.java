@@ -1,21 +1,19 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class HealAction implements ActionInterface{
+public class HealAction extends ActionInterface{
+	
+	private IntegerFlag heal = new IntegerFlag(1, "amount");
 
 	@Override
 	public String getName() {
@@ -39,68 +37,46 @@ public class HealAction implements ActionInterface{
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Map<String, Object> args, Node node, Event event) {
-		execute(player, args);
+			Node node, Event event) {
+		execute(player);
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region, Event event) {
-		execute(player, args);
+	public void executeRegionAction(MinigamePlayer player, Region region, Event event) {
+		execute(player);
 	}
 	
-	private void execute(MinigamePlayer player, Map<String, Object> args){
+	private void execute(MinigamePlayer player){
 		if(player == null || !player.isInMinigame()) return;
-		if((Integer)args.get("a_healamount") > 0){
+		if(heal.getFlag() > 0){
 			if(player.getPlayer().getHealth() != 20){
-				double health = (Integer)args.get("a_healamount") + player.getPlayer().getHealth();
+				double health = heal.getFlag() + player.getPlayer().getHealth();
 				if(health > 20)
 					health = 20;
 				player.getPlayer().setHealth(health);
 			}
 		}
 		else
-			player.getPlayer().damage((Integer)args.get("a_healamount") * -1);
+			player.getPlayer().damage(heal.getFlag() * -1);
 	}
 
 	@Override
-	public Map<String, Object> getRequiredArguments() {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_healamount", 1);
-		return args;
-	}
-
-	@Override
-	public void saveArguments(Map<String, Object> args,
-			FileConfiguration config, String path) {
-		config.set(path + ".a_healamount", args.get("a_healamount"));
-	}
-
-	@Override
-	public Map<String, Object> loadArguments(FileConfiguration config,
+	public void saveArguments(FileConfiguration config,
 			String path) {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_healamount", config.getInt(path + ".a_healamount"));
-		return args;
+		heal.saveValue(path, config);
 	}
 
 	@Override
-	public boolean displayMenu(MinigamePlayer player, Map<String, Object> args,
-			Menu previous) {
+	public void loadArguments(FileConfiguration config,
+			String path) {
+		heal.loadValue(path, config);
+	}
+
+	@Override
+	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Heal", player);
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
-		final Map<String, Object> fargs = args;
-		m.addItem(new MenuItemInteger("Heal Amount", Material.GOLDEN_APPLE, new Callback<Integer>() {
-			
-			@Override
-			public void setValue(Integer value) {
-				fargs.put("a_healamount", value);
-			}
-			
-			@Override
-			public Integer getValue() {
-				return (Integer)fargs.get("a_healamount");
-			}
-		}, null, null));
+		m.addItem(heal.getMenuItem("Heal Amount", Material.GOLDEN_APPLE, null, null));
 		m.displayMenu(player);
 		return true;
 	}

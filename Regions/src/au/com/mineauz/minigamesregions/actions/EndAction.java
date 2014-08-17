@@ -2,7 +2,6 @@ package au.com.mineauz.minigamesregions.actions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
@@ -16,7 +15,7 @@ import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class EndAction implements ActionInterface {
+public class EndAction extends ActionInterface {
 
 	@Override
 	public String getName() {
@@ -40,16 +39,16 @@ public class EndAction implements ActionInterface {
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Map<String, Object> args, Node node, Event event) {
-		execute(player, args);
+			Node node, Event event) {
+		execute(player);
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region, Event event) {
-		execute(player, args);
+	public void executeRegionAction(MinigamePlayer player, Region region, Event event) {
+		execute(player);
 	}
 	
-	private void execute(MinigamePlayer player, Map<String, Object> args){
+	private void execute(MinigamePlayer player){
 		if(player == null || !player.isInMinigame()) return;
 		if(player.getMinigame().getType() != MinigameType.SINGLEPLAYER){
 			List<MinigamePlayer> w = null;
@@ -77,21 +76,15 @@ public class EndAction implements ActionInterface {
 	}
 
 	@Override
-	public Map<String, Object> getRequiredArguments() {
-		return null;
+	public void saveArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
-	public void saveArguments(Map<String, Object> args, FileConfiguration config, String path) {
+	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
-	public Map<String, Object> loadArguments(FileConfiguration config, String path) {
-		return null;
-	}
-
-	@Override
-	public boolean displayMenu(MinigamePlayer player, Map<String, Object> args, Menu previous) {
+	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		return false;
 	}
 

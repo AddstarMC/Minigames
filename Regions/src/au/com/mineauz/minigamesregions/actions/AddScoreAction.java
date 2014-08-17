@@ -1,13 +1,11 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
@@ -15,7 +13,9 @@ import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class AddScoreAction implements ActionInterface {
+public class AddScoreAction extends ActionInterface {
+	
+	private IntegerFlag amount = new IntegerFlag(1, "amount");
 
 	@Override
 	public String getName() {
@@ -39,55 +39,44 @@ public class AddScoreAction implements ActionInterface {
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Map<String, Object> args, Node node, Event event) {
+			Node node, Event event) {
 		if(player == null || !player.isInMinigame()) return;
-		player.addScore((Integer)args.get("a_addscoreamount"));
+		player.addScore(amount.getFlag());
 		player.getMinigame().setScore(player, player.getScore());
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Map<String, Object> args, Region region, Event event) {
+	public void executeRegionAction(MinigamePlayer player, Region region, Event event) {
 		if(player == null || !player.isInMinigame()) return;
-		player.addScore((Integer)args.get("a_addscoreamount"));
+		player.addScore(amount.getFlag());
 		player.getMinigame().setScore(player, player.getScore());
 	}
 
 	@Override
-	public Map<String, Object> getRequiredArguments() {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_addscoreamount", 1);
-		return args;
-	}
-
-	@Override
-	public void saveArguments(Map<String, Object> args,
-			FileConfiguration config, String path) {
-		config.set(path + ".a_addscoreamount", args.get("a_addscoreamount"));
-	}
-
-	@Override
-	public Map<String, Object> loadArguments(FileConfiguration config,
+	public void saveArguments(FileConfiguration config,
 			String path) {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_addscoreamount", config.getInt(path + ".a_addscoreamount"));
-		return args;
+		amount.saveValue(path, config);
 	}
 
 	@Override
-	public boolean displayMenu(MinigamePlayer player, Map<String, Object> args,
-			Menu previous) {
+	public void loadArguments(FileConfiguration config,
+			String path) {
+		amount.loadValue(path, config);
+	}
+
+	@Override
+	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Add Score", player);
-		final Map<String, Object> fargs = args;
 		m.addItem(new MenuItemInteger("Add Score Amount", Material.ENDER_PEARL, new Callback<Integer>() {
 			
 			@Override
 			public void setValue(Integer value) {
-				fargs.put("a_addscoreamount", value);
+				amount.setFlag(value);
 			}
 			
 			@Override
 			public Integer getValue() {
-				return (Integer)fargs.get("a_addscoreamount");
+				return amount.getFlag();
 			}
 		}, null, null));
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);

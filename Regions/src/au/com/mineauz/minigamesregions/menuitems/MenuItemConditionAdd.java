@@ -17,6 +17,7 @@ import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.NodeExecutor;
 import au.com.mineauz.minigamesregions.RegionExecutor;
+import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
 import au.com.mineauz.minigamesregions.conditions.Conditions;
 
 public class MenuItemConditionAdd extends MenuItem{
@@ -63,13 +64,14 @@ public class MenuItemConditionAdd extends MenuItem{
 					
 					@Override
 					public Object interact(Object object) {
+						ConditionInterface condition = Conditions.getConditionByName(fcon);
 						if(rexec != null){
-							rexec.addCondition(Conditions.getConditionByName(fcon));
-							getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, rexec, Conditions.getConditionByName(fcon)));
+							rexec.addCondition(condition);
+							getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, rexec, condition));
 						}
 						else{
-							nexec.addCondition(Conditions.getConditionByName(fcon));
-							getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, nexec, Conditions.getConditionByName(fcon)));
+							nexec.addCondition(condition);
+							getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, nexec, condition));
 						}
 						getContainer().displayMenu(getContainer().getViewer());
 						return null;

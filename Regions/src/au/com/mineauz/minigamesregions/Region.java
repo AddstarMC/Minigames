@@ -174,7 +174,7 @@ public class Region {
 			if(exec.getTrigger() == trigger){
 				boolean cont = true;
 				for(ConditionInterface con : exec.getConditions()){
-					if(!con.checkRegionCondition(player, exec.getArguments(), this, event)){
+					if(!con.checkRegionCondition(player, this, event)){
 						cont = false;
 						break;
 					}
@@ -185,7 +185,7 @@ public class Region {
 		}
 		for(RegionExecutor exec : toExecute){
 			for(ActionInterface act : exec.getActions()){
-				act.executeRegionAction(player, exec.getArguments(), this, event);
+				act.executeRegionAction(player, this, event);
 				if(!exec.isTriggerPerPlayer())
 					exec.addPublicTrigger();
 				else

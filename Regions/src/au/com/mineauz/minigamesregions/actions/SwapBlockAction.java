@@ -1,8 +1,5 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -10,17 +7,25 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.config.IntegerFlag;
+import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBoolean;
-import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class SwapBlockAction implements ActionInterface {
+public class SwapBlockAction extends ActionInterface {
+	
+	private StringFlag matchType = new StringFlag("STONE", "matchtype");
+	private BooleanFlag matchData = new BooleanFlag(false, "matchdata");
+	private IntegerFlag matchDataValue = new IntegerFlag(0, "matchdatavalue");
+	private StringFlag toType = new StringFlag("COBBLESTONE", "totype");
+	private BooleanFlag toData = new BooleanFlag(false, "todata");
+	private IntegerFlag toDataValue = new IntegerFlag(0, "todatavalue");
 
 	@Override
 	public String getName() {
@@ -45,7 +50,7 @@ public class SwapBlockAction implements ActionInterface {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
-			Map<String, Object> args, Region region, Event event) {
+			Region region, Event event) {
 		Location temp = region.getFirstPoint();
 		for(int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++){
 			temp.setY(y);
@@ -54,14 +59,14 @@ public class SwapBlockAction implements ActionInterface {
 				for(int z = region.getFirstPoint().getBlockZ(); z <= region.getSecondPoint().getBlockZ(); z++){
 					temp.setZ(z);
 					
-					if(temp.getBlock().getType() == Material.getMaterial((String)args.get("a_swapblockmatch")) &&
-							(!(Boolean)args.get("a_swapblockmatchdata") ||
-									temp.getBlock().getData() == (Byte)args.get("a_swapblockmatchdatavalue"))){
+					if(temp.getBlock().getType() == Material.getMaterial(matchType.getFlag()) &&
+							(!matchData.getFlag() ||
+									temp.getBlock().getData() == matchDataValue.getFlag().byteValue())){
 						byte b = 0;
-						if((Boolean)args.get("a_swapblocktodata"))
-							b = (Byte)args.get("a_swapblocktodatavalue");
+						if(toData.getFlag())
+							b = toDataValue.getFlag().byteValue();
 						BlockState bs = temp.getBlock().getState();
-						bs.setType(Material.getMaterial((String)args.get("a_swapblockto")));
+						bs.setType(Material.getMaterial(toType.getFlag()));
 						bs.getData().setData(b);
 						bs.update(true);
 					}
@@ -72,92 +77,54 @@ public class SwapBlockAction implements ActionInterface {
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Map<String, Object> args, Node node, Event event) {
+			Node node, Event event) {
 		
 	}
 
 	@Override
-	public Map<String, Object> getRequiredArguments() {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_swapblockmatch", "STONE");
-		args.put("a_swapblockmatchdata", false);
-		args.put("a_swapblockmatchdatavalue", (byte)0);
-		args.put("a_swapblockto", "STONE");
-		args.put("a_swapblocktodata", false);
-		args.put("a_swapblocktodatavalue", (byte)0);
-		return args;
-	}
-
-	@Override
-	public void saveArguments(Map<String, Object> args,
-			FileConfiguration config, String path) {
-		config.set(path + ".a_swapblockmatch", args.get("a_swapblockmatch"));
-		config.set(path + ".a_swapblockmatchdata", args.get("a_swapblockmatchdata"));
-		config.set(path + ".a_swapblockmatchdatavalue", args.get("a_swapblockmatchdatavalue"));
-		config.set(path + ".a_swapblockto", args.get("a_swapblockto"));
-		config.set(path + ".a_swapblocktodata", args.get("a_swapblocktodata"));
-		config.set(path + ".a_swapblocktodatavalue", args.get("a_swapblocktodatavalue"));
-	}
-
-	@Override
-	public Map<String, Object> loadArguments(FileConfiguration config,
+	public void saveArguments(FileConfiguration config,
 			String path) {
-		Map<String, Object> args = new HashMap<String, Object>();
-		args.put("a_swapblockmatch", config.getString(path + ".a_swapblockmatch"));
-		args.put("a_swapblockmatchdata", config.getBoolean(path + ".a_swapblockmatchdata"));
-		args.put("a_swapblockmatchdatavalue", Integer.valueOf(config.getInt(path + ".a_swapblockmatchdatavalue")).byteValue());
-		args.put("a_swapblockto", config.getString(path + ".a_swapblockto"));
-		args.put("a_swapblocktodata", config.getBoolean(path + ".a_swapblocktodata"));
-		args.put("a_swapblocktodatavalue", Integer.valueOf(config.getInt(path + ".a_swapblocktodatavalue")).byteValue());
-		return args;
+		matchType.saveValue(path, config);
+		matchData.saveValue(path, config);
+		matchDataValue.saveValue(path, config);
+		toType.saveValue(path, config);
+		toData.saveValue(path, config);
+		toDataValue.saveValue(path, config);
 	}
 
 	@Override
-	public boolean displayMenu(MinigamePlayer player, Map<String, Object> args,
-			Menu previous) {
+	public void loadArguments(FileConfiguration config,
+			String path) {
+		matchType.loadValue(path, config);
+		matchData.loadValue(path, config);
+		matchDataValue.loadValue(path, config);
+		toType.loadValue(path, config);
+		toData.loadValue(path, config);
+		toDataValue.loadValue(path, config);
+	}
+
+	@Override
+	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Swap Block", player);
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
-		final Map<String, Object> fargs = args;
 		final MinigamePlayer fply = player;
 		m.addItem(new MenuItemString("Match Block", Material.COBBLESTONE, new Callback<String>() {
 			
 			@Override
 			public void setValue(String value) {
 				if(Material.matchMaterial(value.toUpperCase()) != null)
-					fargs.put("a_swapblockmatch", value.toUpperCase());
+					matchType.setFlag(value.toUpperCase());
 				else
 					fply.sendMessage("Invalid block type!", "error");
 			}
 			
 			@Override
 			public String getValue() {
-				return (String)fargs.get("a_swapblockmatch");
+				return matchType.getFlag();
 			}
 		}));
-		m.addItem(new MenuItemBoolean("Match Block Use Data?", Material.ENDER_PEARL, new Callback<Boolean>() {
-
-			@Override
-			public void setValue(Boolean value) {
-				fargs.put("a_swapblockmatchdata", value);
-			}
-
-			@Override
-			public Boolean getValue() {
-				return (Boolean)fargs.get("a_swapblockmatchdata");
-			}
-		}));
-		m.addItem(new MenuItemInteger("Match Block Data Value", Material.EYE_OF_ENDER, new Callback<Integer>() {
-
-			@Override
-			public void setValue(Integer value) {
-				fargs.put("a_swapblockmatchdatavalue", value.byteValue());
-			}
-
-			@Override
-			public Integer getValue() {
-				return ((Byte) fargs.get("a_swapblockmatchdatavalue")).intValue();
-			}
-		}, 0, 15));
+		m.addItem(matchData.getMenuItem("Match Block Use Data?", Material.ENDER_PEARL));
+		m.addItem(matchDataValue.getMenuItem("Match Block Data Value", Material.EYE_OF_ENDER, 0, 15));
 		
 		m.addItem(new MenuItemNewLine());
 		
@@ -166,40 +133,18 @@ public class SwapBlockAction implements ActionInterface {
 			@Override
 			public void setValue(String value) {
 				if(Material.matchMaterial(value.toUpperCase()) != null)
-					fargs.put("a_swapblockto", value.toUpperCase());
+					toType.setFlag(value.toUpperCase());
 				else
 					fply.sendMessage("Invalid block type!", "error");
 			}
 			
 			@Override
 			public String getValue() {
-				return (String)fargs.get("a_swapblockto");
+				return toType.getFlag();
 			}
 		}));
-		m.addItem(new MenuItemBoolean("To Block Use Data?", Material.ENDER_PEARL, new Callback<Boolean>() {
-
-			@Override
-			public void setValue(Boolean value) {
-				fargs.put("a_swapblocktodata", value);
-			}
-
-			@Override
-			public Boolean getValue() {
-				return (Boolean)fargs.get("a_swapblocktodata");
-			}
-		}));
-		m.addItem(new MenuItemInteger("To Block Data Value", Material.EYE_OF_ENDER, new Callback<Integer>() {
-
-			@Override
-			public void setValue(Integer value) {
-				fargs.put("a_swapblocktodatavalue", value.byteValue());
-			}
-
-			@Override
-			public Integer getValue() {
-				return ((Byte) fargs.get("a_swapblocktodatavalue")).intValue();
-			}
-		}, 0, 15));
+		m.addItem(toData.getMenuItem("To Block Use Data?", Material.ENDER_PEARL));
+		m.addItem(toDataValue.getMenuItem("To Block Data Value", Material.EYE_OF_ENDER, 0, 15));
 		m.displayMenu(player);
 		return true;
 	}
