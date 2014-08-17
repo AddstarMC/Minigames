@@ -172,6 +172,7 @@ minigame:
     
 sign:
   emptyHand: "Your hand must be empty to use this sign."
+  onGround: "You must be standing on the ground to use this sign."
   bet:
     createPermission: "You do not have permission to create a Minigame bet sign!"
     usePermission: "You do not have permission to use a Minigame bet sign!"
@@ -228,6 +229,8 @@ sign:
     usePermission: "You don't have permission to use a Minigame score sign!"
     alreadyUsed: "You have already used this score sign!"
     alreadyUsedTeam: "Your team has already used this score sign!"
+    addScore: "Added %s to your score. New Score: %s"
+    addScoreTeam: "Added %s to your teams score. New Score: %s"
 
 time:
   weeks: "%s weeks"
