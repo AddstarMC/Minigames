@@ -3,7 +3,6 @@ package au.com.mineauz.minigames.mechanics;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
@@ -67,16 +66,10 @@ public class LivesMechanic extends GameMechanicBase{
 		if(event.getMinigame().getMechanicName().equals(getMechanic())){
 			final List<MinigamePlayer> players = event.getPlayers();
 			final Minigame minigame = event.getMinigame();
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					for(MinigamePlayer player : players){
-						player.setScore(minigame.getLives());
-						minigame.setScore(player, minigame.getLives());
-					}
-				}
-			});
+			for(MinigamePlayer player : players){
+				player.setScore(minigame.getLives());
+				minigame.setScore(player, minigame.getLives());
+			}
 		}
 	}
 	

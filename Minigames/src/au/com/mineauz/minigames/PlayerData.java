@@ -320,8 +320,6 @@ public class PlayerData {
 			tpos.put(t, 0);
 		}
 		
-		Bukkit.getServer().getPluginManager().callEvent(new StartMinigameEvent(players, minigame, teleport));
-		
 		for(MinigamePlayer ply : players){
 			if(!minigame.isTeamGame()){
 				if(pos < minigame.getStartLocations().size()){
@@ -397,6 +395,8 @@ public class PlayerData {
 				if(minigame.isFlightEnabled())
 					ply.getPlayer().setFlying(true);
 			}
+			
+			Bukkit.getServer().getPluginManager().callEvent(new StartMinigameEvent(players, minigame, teleport));
 			
 			PlayMGSound.playSound(ply, MGSounds.getSound("gameStart"));
 		}
