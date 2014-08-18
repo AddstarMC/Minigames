@@ -12,6 +12,8 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
+import au.com.mineauz.minigamesregions.triggers.Trigger;
+import au.com.mineauz.minigamesregions.triggers.Triggers;
 
 public class Region {
 	private String name;
@@ -33,7 +35,7 @@ public class Region {
 			public void run() {
 				List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>(players);
 				for(MinigamePlayer player : plys){
-					execute(RegionTrigger.TICK, player, null);
+					execute(Triggers.getTrigger("TICK"), player, null);
 				}
 			}
 		}, 0, taskDelay);
@@ -119,7 +121,7 @@ public class Region {
 		return players;
 	}
 	
-	public int addExecutor(RegionTrigger trigger){
+	public int addExecutor(Trigger trigger){
 		executors.add(new RegionExecutor(trigger));
 		return executors.size();
 	}
@@ -154,7 +156,7 @@ public class Region {
 			public void run() {
 				List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>(players);
 				for(MinigamePlayer player : plys){
-					execute(RegionTrigger.TICK, player, null);
+					execute(Triggers.getTrigger("TICK"), player, null);
 				}
 			}
 		}, 0, delay);
@@ -168,7 +170,7 @@ public class Region {
 		Bukkit.getScheduler().cancelTask(taskID);
 	}
 	
-	public void execute(RegionTrigger trigger, MinigamePlayer player, Event event){
+	public void execute(Trigger trigger, MinigamePlayer player, Event event){
 		List<RegionExecutor> toExecute = new ArrayList<RegionExecutor>();
 		for(RegionExecutor exec : executors){
 			if(exec.getTrigger() == trigger){

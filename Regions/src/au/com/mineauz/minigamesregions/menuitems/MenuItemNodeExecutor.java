@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions.menuitems;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -19,9 +18,10 @@ import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.NodeExecutor;
-import au.com.mineauz.minigamesregions.NodeTrigger;
 import au.com.mineauz.minigamesregions.actions.Actions;
 import au.com.mineauz.minigamesregions.conditions.Conditions;
+import au.com.mineauz.minigamesregions.triggers.Trigger;
+import au.com.mineauz.minigamesregions.triggers.Triggers;
 
 public class MenuItemNodeExecutor extends MenuItem{
 	
@@ -44,15 +44,7 @@ public class MenuItemNodeExecutor extends MenuItem{
 		ply.getPlayer().closeInventory();
 		ply.sendMessage("Enter the name of a trigger to create a new executor. "
 				+ "Window will reopen in 60s if nothing is entered.", null);
-		List<String> triggers = new ArrayList<String>(NodeTrigger.values().length);
-		for(NodeTrigger t : NodeTrigger.values()){
-			triggers.add(MinigameUtils.capitalize(t.toString()));
-		}
-		List<String> actions = new ArrayList<String>(Actions.getAllActionNames().size());
-		for(String a : Actions.getAllActionNames()){
-			actions.add(MinigameUtils.capitalize(a));
-		}
-		ply.sendMessage("Triggers: " + MinigameUtils.listToString(triggers));
+		ply.sendMessage("Triggers: " + MinigameUtils.listToString(Triggers.getAllNodeTriggers()));
 		ply.setManualEntry(this);
 
 		getContainer().startReopenTimer(60);
@@ -61,8 +53,8 @@ public class MenuItemNodeExecutor extends MenuItem{
 	
 	@Override
 	public void checkValidEntry(String entry){
-		if(NodeTrigger.getByName(entry) != null){
-			NodeTrigger trig = NodeTrigger.getByName(entry);
+		if(Triggers.getAllNodeTriggers().contains(entry.toUpperCase())){
+			Trigger trig = Triggers.getTrigger(entry.toUpperCase());
 			
 			final NodeExecutor ex = new NodeExecutor(trig);
 			node.addExecutor(ex);

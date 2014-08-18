@@ -12,7 +12,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionModule;
-import au.com.mineauz.minigamesregions.RegionTrigger;
+import au.com.mineauz.minigamesregions.triggers.Triggers;
 
 public class TriggerRegionAction extends ActionInterface {
 	
@@ -46,7 +46,7 @@ public class TriggerRegionAction extends ActionInterface {
 		if(mg != null){
 			RegionModule rmod = RegionModule.getMinigameModule(mg);
 			if(rmod.hasRegion(this.region.getFlag()))
-				rmod.getRegion(this.region.getFlag()).execute(RegionTrigger.REMOTE, player, null);
+				rmod.getRegion(this.region.getFlag()).execute(Triggers.getTrigger("REMOTE"), player, null);
 		}
 	}
 
@@ -58,7 +58,7 @@ public class TriggerRegionAction extends ActionInterface {
 		if(mg != null){
 			RegionModule rmod = RegionModule.getMinigameModule(mg);
 			if(rmod.hasRegion(region.getFlag()))
-				rmod.getRegion(region.getFlag()).execute(RegionTrigger.REMOTE, player, null);
+				rmod.getRegion(region.getFlag()).execute(Triggers.getTrigger("REMOTE"), player, null);
 		}
 	}
 

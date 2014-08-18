@@ -9,6 +9,7 @@ import org.bukkit.event.Event;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
+import au.com.mineauz.minigamesregions.triggers.Trigger;
 
 public class Node {
 	
@@ -29,7 +30,7 @@ public class Node {
 		return loc.clone();
 	}
 	
-	public int addExecutor(NodeTrigger trigger){
+	public int addExecutor(Trigger trigger){
 		executors.add(new NodeExecutor(trigger));
 		return executors.size();
 	}
@@ -55,7 +56,7 @@ public class Node {
 		}
 	}
 	
-	public void execute(NodeTrigger trigger, MinigamePlayer player, Event event){
+	public void execute(Trigger trigger, MinigamePlayer player, Event event){
 		List<NodeExecutor> toExecute = new ArrayList<NodeExecutor>();
 		for(NodeExecutor exec : executors){
 			if(exec.getTrigger() == trigger){

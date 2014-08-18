@@ -29,6 +29,7 @@ import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
 import au.com.mineauz.minigamesregions.conditions.Conditions;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemNode;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemRegion;
+import au.com.mineauz.minigamesregions.triggers.Triggers;
 
 public class RegionModule extends MinigameModule {
 	
@@ -77,7 +78,7 @@ public class RegionModule extends MinigameModule {
 			int c = 0;
 			for(RegionExecutor ex : r.getExecutors()){
 				String path = getMinigame() + ".regions." + name + ".executors." + c;
-				config.set(path + ".trigger", ex.getTrigger().toString());
+				config.set(path + ".trigger", ex.getTrigger().getName());
 				
 				int acc = 0;
 				for(ActionInterface act : ex.getActions()){
@@ -113,7 +114,7 @@ public class RegionModule extends MinigameModule {
 			int c = 0;
 			for(NodeExecutor ex : n.getExecutors()){
 				String path = getMinigame() + ".nodes." + name + ".executors." + c;
-				config.set(path + ".trigger", ex.getTrigger().toString());
+				config.set(path + ".trigger", ex.getTrigger().getName());
 				
 				int acc = 0;
 				for(ActionInterface act : ex.getActions()){
@@ -165,7 +166,7 @@ public class RegionModule extends MinigameModule {
 					Set<String> ex = config.getConfigurationSection(getMinigame() + ".regions." + name + ".executors").getKeys(false);
 					for(String i : ex){
 						String path = getMinigame() + ".regions." + name + ".executors." + i;
-						RegionExecutor rex = new RegionExecutor(RegionTrigger.valueOf(config.getString(path + ".trigger")));
+						RegionExecutor rex = new RegionExecutor(Triggers.getTrigger(config.getString(path + ".trigger")));
 						
 						if(config.contains(path + ".actions")){
 							for(String a : config.getConfigurationSection(path + ".actions").getKeys(false)){
@@ -208,7 +209,7 @@ public class RegionModule extends MinigameModule {
 					Set<String> ex = config.getConfigurationSection(getMinigame() + ".nodes." + name + ".executors").getKeys(false);
 					for(String i : ex){
 						String path = getMinigame() + ".nodes." + name + ".executors." + i;
-						NodeExecutor rex = new NodeExecutor(NodeTrigger.valueOf(config.getString(path + ".trigger")));
+						NodeExecutor rex = new NodeExecutor(Triggers.getTrigger(config.getString(path + ".trigger")));
 
 						if(config.contains(path + ".actions")){
 							for(String a : config.getConfigurationSection(path + ".actions").getKeys(false)){

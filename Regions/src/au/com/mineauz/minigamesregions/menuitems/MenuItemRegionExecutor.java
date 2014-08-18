@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions.menuitems;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -19,9 +18,10 @@ import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionExecutor;
-import au.com.mineauz.minigamesregions.RegionTrigger;
 import au.com.mineauz.minigamesregions.actions.Actions;
 import au.com.mineauz.minigamesregions.conditions.Conditions;
+import au.com.mineauz.minigamesregions.triggers.Trigger;
+import au.com.mineauz.minigamesregions.triggers.Triggers;
 
 public class MenuItemRegionExecutor extends MenuItem{
 	
@@ -44,15 +44,7 @@ public class MenuItemRegionExecutor extends MenuItem{
 		ply.getPlayer().closeInventory();
 		ply.sendMessage("Enter the name of a trigger to create a new executor. "
 				+ "Window will reopen in 60s if nothing is entered.", null);
-		List<String> triggers = new ArrayList<String>(RegionTrigger.values().length);
-		for(RegionTrigger t : RegionTrigger.values()){
-			triggers.add(MinigameUtils.capitalize(t.toString()));
-		}
-		List<String> actions = new ArrayList<String>(Actions.getAllActionNames().size());
-		for(String a : Actions.getAllActionNames()){
-			actions.add(MinigameUtils.capitalize(a));
-		}
-		ply.sendMessage("Triggers: " + MinigameUtils.listToString(triggers));
+		ply.sendMessage("Triggers: " + MinigameUtils.listToString(Triggers.getAllRegionTriggers()));
 		ply.setManualEntry(this);
 
 		getContainer().startReopenTimer(60);
@@ -61,8 +53,8 @@ public class MenuItemRegionExecutor extends MenuItem{
 	
 	@Override
 	public void checkValidEntry(String entry){
-		if(RegionTrigger.getByName(entry) != null){
-			RegionTrigger trig = RegionTrigger.getByName(entry);
+		if(Triggers.getAllRegionTriggers().contains(entry.toUpperCase())){
+			Trigger trig = Triggers.getTrigger(entry.toUpperCase());
 			
 			final RegionExecutor ex = new RegionExecutor(trig);
 			region.addExecutor(ex);

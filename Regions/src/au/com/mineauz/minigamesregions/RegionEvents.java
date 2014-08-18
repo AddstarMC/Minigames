@@ -24,6 +24,7 @@ import au.com.mineauz.minigames.events.StartMinigameEvent;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigamesregions.events.EnterRegionEvent;
 import au.com.mineauz.minigamesregions.events.LeaveRegionEvent;
+import au.com.mineauz.minigamesregions.triggers.Triggers;
 
 public class RegionEvents implements Listener{
 	
@@ -35,7 +36,7 @@ public class RegionEvents implements Listener{
 			if(r.playerInRegion(ply)){
 				if(!r.hasPlayer(ply)){
 					r.addPlayer(ply);
-					r.execute(RegionTrigger.ENTER, ply, null);
+					r.execute(Triggers.getTrigger("ENTER"), ply, null);
 					EnterRegionEvent ev = new EnterRegionEvent(ply, r);
 					Bukkit.getPluginManager().callEvent(ev);
 				}
@@ -43,7 +44,7 @@ public class RegionEvents implements Listener{
 			else{
 				if(r.hasPlayer(ply)){
 					r.removePlayer(ply);
-					r.execute(RegionTrigger.LEAVE, ply, null);
+					r.execute(Triggers.getTrigger("LEAVE"), ply, null);
 					LeaveRegionEvent ev = new LeaveRegionEvent(ply, r);
 					Bukkit.getPluginManager().callEvent(ev);
 				}
@@ -73,15 +74,16 @@ public class RegionEvents implements Listener{
 				@Override
 				public void run() {
 					executeRegionChanges(mg, ply, fevent);
+					
+					for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
+						node.execute(Triggers.getTrigger("RESPAWN"), ply, fevent);
+					}
+					for(Region region : RegionModule.getMinigameModule(ply.getMinigame()).getRegions()){
+						if(region.playerInRegion(ply))
+							region.execute(Triggers.getTrigger("RESPAWN"), ply, fevent);
+					}
 				}
 			});
-			
-			for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
-				node.execute(NodeTrigger.RESPAWN, ply, event);
-			}
-			for(Region region : RegionModule.getMinigameModule(ply.getMinigame()).getRegions()){
-				region.execute(RegionTrigger.RESPAWN, ply, event);
-			}
 		}
 	}
 	
@@ -91,10 +93,11 @@ public class RegionEvents implements Listener{
 		if(ply == null) return;
 		if(ply.isInMinigame()){
 			for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
-				node.execute(NodeTrigger.DEATH, ply, event);
+				node.execute(Triggers.getTrigger("DEATH"), ply, event);
 			}
 			for(Region region : RegionModule.getMinigameModule(ply.getMinigame()).getRegions()){
-				region.execute(RegionTrigger.DEATH, ply, event);
+				if(region.playerInRegion(ply))
+					region.execute(Triggers.getTrigger("DEATH"), ply, event);
 			}
 		}
 	}
@@ -110,23 +113,22 @@ public class RegionEvents implements Listener{
 			@Override
 			public void run() {
 				executeRegionChanges(mg, ply, fevent);
+				
+				for(Node node : RegionModule.getMinigameModule(mg).getNodes()){
+					node.execute(Triggers.getTrigger("GAME_JOIN"), ply, fevent);
+				}
+				for(Region region : RegionModule.getMinigameModule(mg).getRegions()){
+					if(region.playerInRegion(ply))
+						region.execute(Triggers.getTrigger("GAME_JOIN"), ply, fevent);
+				}
 			}
 		});
-		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
-			node.execute(NodeTrigger.GAME_JOIN, event.getMinigamePlayer(), event);
-		}
-		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
-			region.execute(RegionTrigger.GAME_JOIN, event.getMinigamePlayer(), event);
-		}
 	}
 	
 	@EventHandler
 	private void minigameStart(StartMinigameEvent event){
 		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
-			node.execute(NodeTrigger.GAME_START, null, event);
-		}
-		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
-			region.execute(RegionTrigger.GAME_START, null, event);
+			node.execute(Triggers.getTrigger("GAME_START"), null, event);
 		}
 	}
 	
@@ -140,7 +142,7 @@ public class RegionEvents implements Listener{
 				r.removePlayer(ply);
 		}
 		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
-			node.execute(NodeTrigger.GAME_QUIT, event.getMinigamePlayer(), event);
+			node.execute(Triggers.getTrigger("GAME_QUIT"), event.getMinigamePlayer(), event);
 			if(event.getMinigame().getPlayers().size() > 1){
 				for(NodeExecutor exec : node.getExecutors())
 					exec.removeTrigger(event.getMinigamePlayer());
@@ -151,7 +153,8 @@ public class RegionEvents implements Listener{
 			}
 		}
 		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
-			region.execute(RegionTrigger.GAME_QUIT, event.getMinigamePlayer(), event);
+			if(region.playerInRegion(ply))
+				region.execute(Triggers.getTrigger("GAME_QUIT"), event.getMinigamePlayer(), event);
 			if(event.getMinigame().getPlayers().size() > 1){
 				for(RegionExecutor exec : region.getExecutors())
 					exec.removeTrigger(event.getMinigamePlayer());
@@ -173,12 +176,11 @@ public class RegionEvents implements Listener{
 			}
 		}
 		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
-			node.execute(NodeTrigger.GAME_END, null, event);
+			node.execute(Triggers.getTrigger("GAME_END"), null, event);
 			for(NodeExecutor exec : node.getExecutors())
 				exec.clearTriggers();
 		}
 		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
-			region.execute(RegionTrigger.GAME_END, null, event);
 			for(RegionExecutor exec : region.getExecutors())
 				exec.clearTriggers();
 		}
@@ -204,7 +206,7 @@ public class RegionEvents implements Listener{
 					if(loc1.getBlockX() == loc2.getBlockX() &&
 							loc1.getBlockY() == loc2.getBlockY() &&
 							loc1.getBlockZ() == loc2.getBlockZ()){
-						node.execute(NodeTrigger.INTERACT, ply, event);
+						node.execute(Triggers.getTrigger("INTERACT"), ply, event);
 					}
 				}
 			}
@@ -224,7 +226,7 @@ public class RegionEvents implements Listener{
 					if(loc1.getBlockX() == loc2.getBlockX() &&
 							loc1.getBlockY() == loc2.getBlockY() &&
 							loc1.getBlockZ() == loc2.getBlockZ()){
-						node.execute(NodeTrigger.BLOCK_BROKEN, ply, event);
+						node.execute(Triggers.getTrigger("BLOCK_BREAK"), ply, event);
 					}
 				}
 			}
@@ -244,7 +246,7 @@ public class RegionEvents implements Listener{
 					if(loc1.getBlockX() == loc2.getBlockX() &&
 							loc1.getBlockY() == loc2.getBlockY() &&
 							loc1.getBlockZ() == loc2.getBlockZ()){
-						node.execute(NodeTrigger.BLOCK_PLACED, ply, event);
+						node.execute(Triggers.getTrigger("BLOCK_PLACE"), ply, event);
 					}
 				}
 			}
