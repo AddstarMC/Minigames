@@ -111,7 +111,7 @@ public class SetBlockAction extends ActionInterface {
 			
 			@Override
 			public String getValue() {
-				return null;
+				return type.getFlag();
 			}
 		}));
 		m.addItem(usedur.getMenuItem("Use Durability Value", Material.ENDER_PEARL));
