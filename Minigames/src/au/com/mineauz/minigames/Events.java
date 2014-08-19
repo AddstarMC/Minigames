@@ -706,7 +706,7 @@ public class Events implements Listener{
 		}
 	}
 	
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler
 	private void manualItemEntry(AsyncPlayerChatEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply.isInMenu() && ply.getNoClose() && ply.getManualEntry() != null){
