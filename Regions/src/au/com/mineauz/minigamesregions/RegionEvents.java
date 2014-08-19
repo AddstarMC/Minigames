@@ -79,7 +79,7 @@ public class RegionEvents implements Listener{
 						node.execute(Triggers.getTrigger("RESPAWN"), ply, fevent);
 					}
 					for(Region region : RegionModule.getMinigameModule(ply.getMinigame()).getRegions()){
-						if(region.playerInRegion(ply))
+						if(region.hasPlayer(ply))
 							region.execute(Triggers.getTrigger("RESPAWN"), ply, fevent);
 					}
 				}
@@ -96,7 +96,7 @@ public class RegionEvents implements Listener{
 				node.execute(Triggers.getTrigger("DEATH"), ply, event);
 			}
 			for(Region region : RegionModule.getMinigameModule(ply.getMinigame()).getRegions()){
-				if(region.playerInRegion(ply))
+				if(region.hasPlayer(ply))
 					region.execute(Triggers.getTrigger("DEATH"), ply, event);
 			}
 		}
@@ -118,7 +118,7 @@ public class RegionEvents implements Listener{
 					node.execute(Triggers.getTrigger("GAME_JOIN"), ply, fevent);
 				}
 				for(Region region : RegionModule.getMinigameModule(mg).getRegions()){
-					if(region.playerInRegion(ply))
+					if(region.hasPlayer(ply))
 						region.execute(Triggers.getTrigger("GAME_JOIN"), ply, fevent);
 				}
 			}
