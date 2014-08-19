@@ -13,8 +13,8 @@ import au.com.mineauz.minigames.PlayerData;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.MinigameModule;
 import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 
 public abstract class GameMechanicBase implements Listener{

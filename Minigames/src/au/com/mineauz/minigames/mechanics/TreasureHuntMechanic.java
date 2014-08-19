@@ -25,7 +25,7 @@ import au.com.mineauz.minigames.events.MinigameTimerTickEvent;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.MinigameModule;
+import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import au.com.mineauz.minigames.minigame.reward.RewardItem;
 

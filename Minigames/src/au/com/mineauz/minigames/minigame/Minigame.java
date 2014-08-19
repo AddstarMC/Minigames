@@ -56,6 +56,7 @@ import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.menu.MenuItemTime;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
+import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.minigame.reward.RewardItem;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
@@ -960,7 +961,7 @@ public class Minigame {
 			@Override
 			public Object interact(Object object) {
 				if(getMechanic().displaySettings(mgm) != null && 
-						getMechanic().displaySettings(mgm).getMenuOptions(fmain))
+						getMechanic().displaySettings(mgm).displayMechanicSettings(fmain))
 					return null;
 				return mechSettings.getItem();
 			}

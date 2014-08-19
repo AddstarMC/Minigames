@@ -22,7 +22,7 @@ import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.MinigameModule;
+import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.actions.Actions;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
@@ -369,7 +369,7 @@ public class RegionModule extends MinigameModule {
 	}
 
 	@Override
-	public boolean getMenuOptions(Menu previous) {
+	public boolean displayMechanicSettings(Menu previous) {
 		return false;
 	}
 }

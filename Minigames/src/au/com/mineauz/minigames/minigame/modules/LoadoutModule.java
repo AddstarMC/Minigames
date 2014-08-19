@@ -19,7 +19,6 @@ import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.MinigameModule;
 
 public class LoadoutModule extends MinigameModule {
 
@@ -212,7 +211,7 @@ public class LoadoutModule extends MinigameModule {
 	}
 
 	@Override
-	public boolean getMenuOptions(Menu previous) {
+	public boolean displayMechanicSettings(Menu previous) {
 		return false;
 	}
 

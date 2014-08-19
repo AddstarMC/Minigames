@@ -22,7 +22,6 @@ import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemTime;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.MinigameModule;
 
 public class TreasureHuntModule extends MinigameModule{
 	
@@ -81,7 +80,7 @@ public class TreasureHuntModule extends MinigameModule{
 	}
 	
 	@Override
-	public boolean getMenuOptions(Menu previous){
+	public boolean displayMechanicSettings(Menu previous){
 		Menu treasureHunt = new Menu(6, getMinigame().getName(false), previous.getViewer());
 		
 		List<MenuItem> itemsTreasureHunt = new ArrayList<MenuItem>(5);

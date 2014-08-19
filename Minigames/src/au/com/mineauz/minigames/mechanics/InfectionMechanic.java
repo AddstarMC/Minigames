@@ -13,14 +13,13 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.MinigameModule;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
+import au.com.mineauz.minigames.minigame.modules.InfectionModule;
+import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class InfectionMechanic extends GameMechanicBase{
-	
-	private List<MinigamePlayer> infected = new ArrayList<MinigamePlayer>();
 
 	@Override
 	public String getMechanic() {
@@ -54,7 +53,8 @@ public class InfectionMechanic extends GameMechanicBase{
 			Team team = ply.getTeam();
 			
 			if(team == blue){
-				if(red.getPlayers().size() < Math.ceil(players.size() * 0.18) && !red.isFull()){
+				if(red.getPlayers().size() < Math.ceil(players.size() * 
+						(((Integer)InfectionModule.getMinigameModule(minigame).getInfectedPercent()).doubleValue() / 100d)) && !red.isFull()){
 					MultiplayerType.switchTeam(minigame, ply, red);
 					players.get(i).sendMessage(MinigameUtils.formStr("player.team.assign.infectedAssign", ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null);
 					mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.assign.infectedAnnounce", players.get(i).getName(), ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null, players.get(i));
@@ -81,7 +81,7 @@ public class InfectionMechanic extends GameMechanicBase{
 	
 	@Override
 	public MinigameModule displaySettings(Minigame minigame){
-		return null;
+		return InfectionModule.getMinigameModule(minigame);
 	}
 
 	@Override
@@ -99,21 +99,19 @@ public class InfectionMechanic extends GameMechanicBase{
 	@Override
 	public void quitMinigame(Minigame minigame, MinigamePlayer player,
 			boolean forced) {
-		if(infected.contains(player)){
-			infected.remove(player);
+		if(InfectionModule.getMinigameModule(minigame).isInfectedPlayer(player)){
+			InfectionModule.getMinigameModule(minigame).removeInfectedPlayer(player);
 		}
 	}
 
 	@Override
 	public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
 			List<MinigamePlayer> losers) {
-		List<MinigamePlayer> infect = new ArrayList<MinigamePlayer>();
-		infect.addAll(infected);
-		for(MinigamePlayer inf : infect){
-			if(winners.contains(inf)){
-				winners.remove(inf);
-				losers.add(inf);
-				infected.remove(inf);
+		for(MinigamePlayer ply : winners){
+			if(InfectionModule.getMinigameModule(minigame).isInfectedPlayer(ply)){
+				winners.remove(ply);
+				losers.add(ply);
+				InfectionModule.getMinigameModule(minigame).removeInfectedPlayer(ply);
 			}
 		}
 	}
@@ -130,7 +128,7 @@ public class InfectionMechanic extends GameMechanicBase{
 				if(blue.getPlayers().contains(player)){
 					if(!red.isFull()){
 						MultiplayerType.switchTeam(mgm, player, red);
-						infected.add(player);
+						InfectionModule.getMinigameModule(mgm).addInfectedPlayer(player);
 						if(event.getEntity().getKiller() != null){
 							MinigamePlayer killer = pdata.getMinigamePlayer(event.getEntity().getKiller());
 							killer.addScore();

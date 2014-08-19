@@ -10,7 +10,6 @@ import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.MinigameModule;
 
 public class LobbySettingsModule extends MinigameModule {
 	
@@ -196,7 +195,7 @@ public class LobbySettingsModule extends MinigameModule {
 	}
 
 	@Override
-	public boolean getMenuOptions(Menu previous) {
+	public boolean displayMechanicSettings(Menu previous) {
 		return false;
 	}
 

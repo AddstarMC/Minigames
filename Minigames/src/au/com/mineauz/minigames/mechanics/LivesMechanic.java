@@ -11,7 +11,7 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.StartMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.MinigameModule;
+import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 
 public class LivesMechanic extends GameMechanicBase{
 

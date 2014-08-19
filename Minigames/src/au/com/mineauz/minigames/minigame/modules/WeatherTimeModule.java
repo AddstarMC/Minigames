@@ -22,7 +22,6 @@ import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.MinigameModule;
 
 public class WeatherTimeModule extends MinigameModule {
 	
@@ -122,7 +121,7 @@ public class WeatherTimeModule extends MinigameModule {
 	}
 
 	@Override
-	public boolean getMenuOptions(Menu previous) {
+	public boolean displayMechanicSettings(Menu previous) {
 		return false;
 	}
 	
