@@ -4,6 +4,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.set.SetCommand;
+import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigamesregions.commands.SetNodeCommand;
 import au.com.mineauz.minigamesregions.commands.SetRegionCommand;
 
@@ -35,6 +36,9 @@ public class Main extends JavaPlugin{
 	
 	@Override
 	public void onDisable(){
+		for(Minigame mg : minigames.mdata.getAllMinigames().values()){
+			mg.saveMinigame();
+		}
 		minigames.mdata.removeModule("Regions", RegionModule.class);
 		getLogger().info("Minigames Regions disabled");
 	}
