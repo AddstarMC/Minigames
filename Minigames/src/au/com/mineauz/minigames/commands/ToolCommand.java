@@ -4,21 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameTool;
-import au.com.mineauz.minigames.MinigameToolMode;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.tool.MinigameTool;
+import au.com.mineauz.minigames.tool.ToolModes;
 
 public class ToolCommand implements ICommand {
 
@@ -44,20 +40,22 @@ public class ToolCommand implements ICommand {
 
 	@Override
 	public String[] getParameters() {
-		return new String[] {"minigame", "start", "quit", "end", "lobby", 
-				"degenarea", "regenarea", "select", "deselect"};
+		String[] arr = new String[ToolModes.getToolModes().size() + 4];
+		for(int i = 0; i < arr.length - 4; i++)
+			arr[i] = ToolModes.getToolModes().get(i).getName().toLowerCase();
+		arr[arr.length - 4] = "team";
+		arr[arr.length - 3] = "minigame";
+		arr[arr.length - 2] = "select";
+		arr[arr.length - 1] = "deselect";
+		return arr;
 	}
 
 	@Override
 	public String[] getUsage() {
 		return new String[] {
+			"/minigame tool <mode>",
+			"/minigame tool team <team>",
 			"/minigame tool minigame <Minigame>",
-			"/minigame tool start [team]",
-			"/minigame tool quit",
-			"/minigame tool end",
-			"/minigame tool lobby",
-			"/minigame tool degenarea",
-			"/minigame tool regenarea",
 			"/minigame tool select",
 			"/minigame tool deselect"
 		};
@@ -72,8 +70,7 @@ public class ToolCommand implements ICommand {
 	public String getPermission() {
 		return "minigame.tool";
 	}
-
-	@SuppressWarnings("deprecation")
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
@@ -97,90 +94,6 @@ public class ToolCommand implements ICommand {
 					sender.sendMessage(ChatColor.RED + "No Minigame found by the name \"" + args[1] + "\"");
 				}
 			}
-			else if(args[0].equalsIgnoreCase("start")){
-				MinigameTool tool;
-				if(!MinigameUtils.hasMinigameTool(player))
-					tool = MinigameUtils.giveMinigameTool(player);
-				else
-					tool = MinigameUtils.getMinigameTool(player);
-				
-				if(tool.getMinigame() != null){
-					tool.setMode(MinigameToolMode.START);
-					if(args.length == 2 && args[1].matches("r(ed)?|b(lue)?")){
-						tool.setTeam(args[1]);
-					}
-					else{
-						tool.setTeam("none");
-					}
-				}
-				else
-					sender.sendMessage(ChatColor.RED + "You must have a valid Minigame selected to use this tool!");
-			}
-			else if(args[0].equalsIgnoreCase("quit")){
-				MinigameTool tool;
-				if(!MinigameUtils.hasMinigameTool(player))
-					tool = MinigameUtils.giveMinigameTool(player);
-				else
-					tool = MinigameUtils.getMinigameTool(player);
-				
-				if(tool.getMinigame() != null){
-					tool.setMode(MinigameToolMode.QUIT);
-				}
-				else
-					sender.sendMessage(ChatColor.RED + "You must have a valid Minigame selected to use this tool!");
-			}
-			else if(args[0].equalsIgnoreCase("end")){
-				MinigameTool tool;
-				if(!MinigameUtils.hasMinigameTool(player))
-					tool = MinigameUtils.giveMinigameTool(player);
-				else
-					tool = MinigameUtils.getMinigameTool(player);
-				
-				if(tool.getMinigame() != null){
-					tool.setMode(MinigameToolMode.END);
-				}
-				else
-					sender.sendMessage(ChatColor.RED + "You must have a valid Minigame selected to use this tool!");
-			}
-			else if(args[0].equalsIgnoreCase("lobby")){
-				MinigameTool tool;
-				if(!MinigameUtils.hasMinigameTool(player))
-					tool = MinigameUtils.giveMinigameTool(player);
-				else
-					tool = MinigameUtils.getMinigameTool(player);
-				
-				if(tool.getMinigame() != null){
-					tool.setMode(MinigameToolMode.LOBBY);
-				}
-				else
-					sender.sendMessage(ChatColor.RED + "You must have a valid Minigame selected to use this tool!");
-			}
-			else if(args[0].equalsIgnoreCase("degenarea")){
-				MinigameTool tool;
-				if(!MinigameUtils.hasMinigameTool(player))
-					tool = MinigameUtils.giveMinigameTool(player);
-				else
-					tool = MinigameUtils.getMinigameTool(player);
-				
-				if(tool.getMinigame() != null){
-					tool.setMode(MinigameToolMode.DEGEN_AREA);
-				}
-				else
-					sender.sendMessage(ChatColor.RED + "You must have a valid Minigame selected to use this tool!");
-			}
-			else if(args[0].equalsIgnoreCase("regenarea")){
-				MinigameTool tool;
-				if(!MinigameUtils.hasMinigameTool(player))
-					tool = MinigameUtils.giveMinigameTool(player);
-				else
-					tool = MinigameUtils.getMinigameTool(player);
-				
-				if(tool.getMinigame() != null){
-					tool.setMode(MinigameToolMode.REGEN_AREA);
-				}
-				else
-					sender.sendMessage(ChatColor.RED + "You must have a valid Minigame selected to use this tool!");
-			}
 			else if(args[0].equalsIgnoreCase("select")){
 				MinigameTool tool;
 				if(!MinigameUtils.hasMinigameTool(player))
@@ -188,49 +101,12 @@ public class ToolCommand implements ICommand {
 				else
 					tool = MinigameUtils.getMinigameTool(player);
 				
-				if(tool.getMinigame() != null){
-					if(tool.getMode() == MinigameToolMode.REGEN_AREA && 
-							tool.getMinigame().getRegenArea1() != null && tool.getMinigame().getRegenArea2() != null){
-						player.setSelection(tool.getMinigame().getRegenArea1(), tool.getMinigame().getRegenArea2());
-					}
-					else if(tool.getMode() == MinigameToolMode.DEGEN_AREA && 
-							tool.getMinigame().getFloorDegen1() != null && tool.getMinigame().getFloorDegen2() != null){
-						player.setSelection(tool.getMinigame().getFloorDegen1(), tool.getMinigame().getFloorDegen2());
-					}
-					else if(tool.getMode() == MinigameToolMode.START){
-						if(!tool.getTeam().equals("none")){
-							if(TeamsModule.getMinigameModule(tool.getMinigame()).hasTeam(TeamColor.matchColor(tool.getTeam()))){
-								Team team = TeamsModule.getMinigameModule(tool.getMinigame()).getTeam(TeamColor.matchColor(tool.getTeam()));
-								Location nloc = null;
-								for(Location loc : team.getStartLocations()){
-									nloc = loc.clone();
-									player.getPlayer().sendBlockChange(nloc, Material.SKULL, (byte)1); //TODO: Use alternate Method!
-								}
-							}
-							else{
-								player.sendMessage(ChatColor.RED + tool.getMinigame().getName(false) + " has no " + tool.getTeam() + " team");
-							}
-						}
-						else{
-							Location nloc = null;
-							for(Location loc : tool.getMinigame().getStartLocations()){
-								nloc = loc.clone();
-								player.getPlayer().sendBlockChange(nloc, Material.SKULL, (byte)1); //TODO: Use alternate Method!
-							}
-						}
-					}
-					else if(tool.getMode() == MinigameToolMode.QUIT && tool.getMinigame().getQuitPosition() != null){
-						player.getPlayer().sendBlockChange(tool.getMinigame().getQuitPosition(), Material.SKULL, (byte)1); //TODO: Use alternate Method!
-					}
-					else if(tool.getMode() == MinigameToolMode.END && tool.getMinigame().getEndPosition() != null){
-						player.getPlayer().sendBlockChange(tool.getMinigame().getEndPosition(), Material.SKULL, (byte)1); //TODO: Use alternate Method!
-					}
-					else if(tool.getMode() == MinigameToolMode.LOBBY && tool.getMinigame().getLobbyPosition() != null){
-						player.getPlayer().sendBlockChange(tool.getMinigame().getLobbyPosition(), Material.SKULL, (byte)1); //TODO: Use alternate Method!
-					}
-					else
-						sender.sendMessage(ChatColor.RED + "Nothing to select.");
+				if(tool.getMinigame() != null && tool.getMode() != null){
+					tool.getMode().select(player, tool.getMinigame(), 
+							TeamsModule.getMinigameModule(tool.getMinigame()).getTeam(tool.getTeam()));
 				}
+				else if(tool.getMode() == null)
+					sender.sendMessage(ChatColor.RED + "You must have a mode selected to select anything!");
 				else
 					sender.sendMessage(ChatColor.RED + "You must have a valid Minigame selected to use this tool!");
 			}
@@ -241,49 +117,42 @@ public class ToolCommand implements ICommand {
 				else
 					tool = MinigameUtils.getMinigameTool(player);
 				
-				if(tool.getMinigame() != null){
-					if((tool.getMode() == MinigameToolMode.REGEN_AREA || tool.getMode() == MinigameToolMode.DEGEN_AREA) && player.hasSelection()){
-						player.showSelection(true);
-					}
-					else if(tool.getMode() == MinigameToolMode.START){
-						if(!tool.getTeam().equals("none")){
-							if(TeamsModule.getMinigameModule(tool.getMinigame()).hasTeam(TeamColor.matchColor(tool.getTeam()))){
-								Team team = TeamsModule.getMinigameModule(tool.getMinigame()).getTeam(TeamColor.matchColor(tool.getTeam()));
-								Location nloc = null;
-								for(Location loc : team.getStartLocations()){
-									nloc = loc.clone();
-									player.getPlayer().sendBlockChange(nloc, nloc.getBlock().getType(), nloc.getBlock().getData()); //TODO: Use alternate Method!
-								}
-							}
-							else{
-								player.sendMessage(ChatColor.RED + tool.getMinigame().getName(false) + " has no " + tool.getTeam() + " team");
-							}
-						}
-						else{
-							Location nloc = null;
-							for(Location loc : tool.getMinigame().getStartLocations()){
-								nloc = loc.clone();
-								player.getPlayer().sendBlockChange(nloc, nloc.getBlock().getType(), nloc.getBlock().getData()); //TODO: Use alternate Method!
-							}
-						}
-					}
-					else if(tool.getMode() == MinigameToolMode.QUIT && tool.getMinigame().getQuitPosition() != null){
-						Block bl = tool.getMinigame().getQuitPosition().getBlock();
-						player.getPlayer().sendBlockChange(bl.getLocation(), bl.getType(), bl.getData()); //TODO: Use alternate Method!
-					}
-					else if(tool.getMode() == MinigameToolMode.QUIT && tool.getMinigame().getEndPosition() != null){
-						Block bl = tool.getMinigame().getEndPosition().getBlock();
-						player.getPlayer().sendBlockChange(bl.getLocation(), bl.getType(), bl.getData()); //TODO: Use alternate Method!
-					}
-					else if(tool.getMode() == MinigameToolMode.QUIT && tool.getMinigame().getLobbyPosition() != null){
-						Block bl = tool.getMinigame().getLobbyPosition().getBlock();
-						player.getPlayer().sendBlockChange(bl.getLocation(), bl.getType(), bl.getData()); //TODO: Use alternate Method!
-					}
-					else
-						sender.sendMessage(ChatColor.RED + "Nothing to deselect.");
+				if(tool.getMinigame() != null && tool.getMode() != null){
+					tool.getMode().deselect(player, tool.getMinigame(), 
+							TeamsModule.getMinigameModule(tool.getMinigame()).getTeam(tool.getTeam()));
 				}
+				else if(tool.getMode() == null)
+					sender.sendMessage(ChatColor.RED + "You must have a mode selected to deselect anything!");
 				else
 					sender.sendMessage(ChatColor.RED + "You must have a valid Minigame selected to use this tool!");
+			}
+			else if(args[0].equalsIgnoreCase("team") && args.length == 2){
+				if(TeamColor.matchColor(args[1]) != null || args[1].equalsIgnoreCase("none")){
+					MinigameTool tool;
+					if(!MinigameUtils.hasMinigameTool(player))
+						tool = MinigameUtils.giveMinigameTool(player);
+					else
+						tool = MinigameUtils.getMinigameTool(player);
+					
+					if(args[1].equalsIgnoreCase("none"))
+						tool.setTeam(null);
+					else
+						tool.setTeam(TeamColor.matchColor(args[1]));
+					sender.sendMessage(ChatColor.GRAY + "Set the tools team to " + args[1]);
+				}
+				else{
+					sender.sendMessage(ChatColor.RED + args[1] + " is not a valid team color!");
+				}
+			}
+			else if(ToolModes.getToolMode(args[0]) != null){
+				MinigameTool tool;
+				if(!MinigameUtils.hasMinigameTool(player))
+					tool = MinigameUtils.giveMinigameTool(player);
+				else
+					tool = MinigameUtils.getMinigameTool(player);
+				
+				tool.setMode(ToolModes.getToolMode(args[0]));
+				sender.sendMessage(ChatColor.GRAY + "Set the tools mode to '" + tool.getMode().getName().toLowerCase().replace("_", " ") + "'");
 			}
 			else{
 				return false;
@@ -298,18 +167,19 @@ public class ToolCommand implements ICommand {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
+		List<String> ret = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
 		if(args.length == 1){
-			List<String> par = new ArrayList<String>();
 			for(String p : getParameters()){
-				par.add(p);
+				ret.add(p);
 			}
-			return MinigameUtils.tabCompleteMatch(par, args[0]);
+			return MinigameUtils.tabCompleteMatch(ret, args[0]);
 		}
-		else if(args.length == 2 && args[0].equalsIgnoreCase("start")){
-			return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("red;blue"), args[1]);
+		else if(args.length == 2 && args[0].equalsIgnoreCase("team")){
+			for(TeamColor col : TeamColor.values())
+				ret.add(col.toString());
+			return MinigameUtils.tabCompleteMatch(ret, args[1]);
 		}
-		List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
-		return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
+		return MinigameUtils.tabCompleteMatch(ret, args[args.length - 1]);
 	}
 	
 }

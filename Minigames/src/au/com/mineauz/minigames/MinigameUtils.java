@@ -17,6 +17,7 @@ import org.bukkit.Material;
 
 import au.com.mineauz.minigames.events.MinigamesBroadcastEvent;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.tool.MinigameTool;
 
 public class MinigameUtils {
 	private static FileConfiguration lang = Minigames.plugin.getLang();

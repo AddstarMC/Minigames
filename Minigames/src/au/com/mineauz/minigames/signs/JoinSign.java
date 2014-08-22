@@ -6,7 +6,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameTool;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -94,13 +93,7 @@ public class JoinSign implements MinigameSign {
 				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()));
 			}
 		}
-		else if(MinigameUtils.isMinigameTool(player.getPlayer().getItemInHand())){
-			MinigameTool tool = MinigameUtils.getMinigameTool(player);
-			Minigame mgm = plugin.mdata.getMinigame(sign.getLine(2));
-			if(mgm != null)
-				tool.setMinigame(mgm);
-		}
-		else if(!player.isInMinigame())
+		else if(!player.isInMinigame() && !MinigameUtils.isMinigameTool(player.getPlayer().getItemInHand()))
 			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
 		return false;
 	}

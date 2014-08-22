@@ -52,9 +52,9 @@ import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
+import au.com.mineauz.minigames.tool.MinigameTool;
 
 public class Events implements Listener{
 	private static Minigames plugin = Minigames.plugin;
@@ -337,123 +337,22 @@ public class Events implements Listener{
 				tool.openMenu(ply);
 				event.setCancelled(true);
 			}
+			else if(event.getClickedBlock().getType() == Material.WALL_SIGN || event.getClickedBlock().getType() == Material.SIGN_POST){
+				Sign sign = (Sign) event.getClickedBlock().getState();
+				if(ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[Minigame]") && ChatColor.stripColor(sign.getLine(1)).equalsIgnoreCase("Join")){
+					Minigame minigame = mdata.getMinigame(sign.getLine(2));
+					tool.setMinigame(minigame);
+					ply.sendMessage("Tools Minigame has been set to " + minigame, null);
+					event.setCancelled(true);
+				}
+			}
 			else if(tool.getMode() != null && tool.getMinigame() != null){
 				Minigame mg = tool.getMinigame();
 				if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK){
-					if(tool.getMode() == MinigameToolMode.START && ply.getPlayer().hasPermission("minigame.set.start")){
-						if(!tool.getTeam().equals("none")){
-							Team t = TeamsModule.getMinigameModule(mg).getTeam(TeamColor.valueOf(tool.getTeam().toUpperCase()));
-							t.addStartLocation(ply.getPlayer().getLocation());
-							ply.sendMessage("Added " + t.getColor().getColor() + t.getDisplayName() + ChatColor.WHITE + 
-									" start location to " + mg.getName(false), null);
-						}
-						else{
-							mg.addStartLocation(ply.getPlayer().getLocation());
-							ply.sendMessage("Added start location to " + mg.getName(false), null);
-						}
-					}
-					else if(tool.getMode() == MinigameToolMode.SPECTATOR_START && ply.getPlayer().hasPermission("minigame.set.spectatorstart")){
-						mg.setSpectatorLocation(ply.getPlayer().getLocation());
-						ply.sendMessage("Set Spectator start position for " + mg.getName(false), null);
-					}
-					else if(tool.getMode() == MinigameToolMode.QUIT && ply.getPlayer().hasPermission("minigame.set.quit")){
-						mg.setQuitPosition(ply.getPlayer().getLocation());
-						ply.sendMessage("Set quit location for " + mg.getName(false), null);
-					}
-					else if(tool.getMode() == MinigameToolMode.END && ply.getPlayer().hasPermission("minigame.set.end")){
-						mg.setEndPosition(ply.getPlayer().getLocation());
-						ply.sendMessage("Set end location for " + mg.getName(false), null);
-					}
-					else if(tool.getMode() == MinigameToolMode.LOBBY && ply.getPlayer().hasPermission("minigame.set.lobby")){
-						mg.setLobbyPosition(ply.getPlayer().getLocation());
-						ply.sendMessage("Set lobby location for " + mg.getName(false), null);
-					}
-					else if(event.getAction() == Action.RIGHT_CLICK_BLOCK && tool.getMode() != null){
-						ply.addSelectionPoint(event.getClickedBlock().getLocation());
-					}
+					tool.getMode().onRightClick(ply, mg, TeamsModule.getMinigameModule(mg).getTeam(tool.getTeam()), event);
 				}
 				else if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK){
-					if(tool.getMode() == MinigameToolMode.DEGEN_AREA && ply.getPlayer().hasPermission("minigame.set.floordegenerator")){
-						if(ply.hasSelection()){
-							mg.setFloorDegen1(ply.getSelectionPoints()[0]);
-							mg.setFloorDegen2(ply.getSelectionPoints()[1]);
-							ply.sendMessage("Set floor degenerator area for " + mg.getName(false), null);
-							ply.showSelection(true);
-							ply.clearSelection();
-						}
-						else{
-							mg.setFloorDegen1(null);
-							mg.setFloorDegen2(null);
-							ply.sendMessage("Removed degeneration area for " + mg.getName(false), null);
-						}
-					}
-					else if(tool.getMode() == MinigameToolMode.REGEN_AREA && ply.getPlayer().hasPermission("minigame.set.regenarea")){
-						if(ply.hasSelection()){
-							mg.setRegenArea1(ply.getSelectionPoints()[0]);
-							mg.setRegenArea2(ply.getSelectionPoints()[1]);
-							ply.sendMessage("Set regeneration area for " + mg.getName(false), null);
-							ply.showSelection(true);
-							ply.clearSelection();
-						}
-						else{
-							mg.setRegenArea1(null);
-							mg.setRegenArea2(null);
-							ply.sendMessage("Removed regeneration area for " + mg.getName(false), null);
-						}
-					}
-					else if(event.getAction() == Action.LEFT_CLICK_BLOCK && 
-							tool.getMode() == MinigameToolMode.START && ply.getPlayer().hasPermission("minigame.set.start")){
-						int x = event.getClickedBlock().getLocation().getBlockX();
-						int y = event.getClickedBlock().getLocation().getBlockY();
-						int z = event.getClickedBlock().getLocation().getBlockZ();
-						String world = event.getClickedBlock().getLocation().getWorld().getName();
-						
-						int nx;
-						int ny;
-						int nz;
-						String nworld;
-						Location delLoc = null;
-						if(!tool.getTeam().equals("none")){
-							Team t = TeamsModule.getMinigameModule(mg).getTeam(TeamColor.valueOf(tool.getTeam().toUpperCase()));
-							if(t.hasStartLocations()){
-								for(Location loc : mg.getStartLocations()){
-									nx = loc.getBlockX();
-									ny = loc.getBlockY();
-									nz = loc.getBlockZ();
-									nworld = loc.getWorld().getName();
-									
-									if(x == nx && y == ny && z == nz && world.equals(nworld)){
-										delLoc = loc;
-										break;
-									}
-								}
-							}
-							if(delLoc != null){
-								t.getStartLocations().remove(delLoc);
-								ply.sendMessage("Removed selected " + t.getColor().getColor() + t.getDisplayName() + ChatColor.WHITE + 
-										" start location.", null);
-							}
-						}
-						else{
-							for(Location loc : mg.getStartLocations()){
-								nx = loc.getBlockX();
-								ny = loc.getBlockY();
-								nz = loc.getBlockZ();
-								nworld = loc.getWorld().getName();
-								
-								if(x == nx && y == ny && z == nz && world.equals(nworld)){
-									delLoc = loc;
-									break;
-								}
-							}
-							if(delLoc != null){
-								mg.getStartLocations().remove(delLoc);
-								ply.sendMessage("Removed selected start location.", null);
-							}
-							else
-								ply.sendMessage("Could not find a start location at that point.", "error");
-						}
-					}
+					tool.getMode().onLeftClick(ply, mg, TeamsModule.getMinigameModule(mg).getTeam(tool.getTeam()), event);
 				}
 			}
 		}

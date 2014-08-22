@@ -6,8 +6,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameTool;
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.minigame.TeamColor;
+import au.com.mineauz.minigames.tool.MinigameTool;
 
 public class MenuItemToolTeam extends MenuItemList{
 	
@@ -24,7 +25,7 @@ public class MenuItemToolTeam extends MenuItemList{
 		MinigamePlayer ply = getContainer().getViewer();
 		if(MinigameUtils.hasMinigameTool(ply)){
 			MinigameTool tool = MinigameUtils.getMinigameTool(ply);
-			tool.setTeam(value.getValue());
+			tool.setTeam(TeamColor.matchColor(value.getValue().replace(" ", "_")));
 		}
 		return getItem();
 	}
@@ -35,7 +36,7 @@ public class MenuItemToolTeam extends MenuItemList{
 		MinigamePlayer ply = getContainer().getViewer();
 		if(MinigameUtils.hasMinigameTool(ply)){
 			MinigameTool tool = MinigameUtils.getMinigameTool(ply);
-			tool.setTeam(value.getValue());
+			tool.setTeam(TeamColor.matchColor(value.getValue().replace(" ", "_")));
 		}
 		return getItem();
 	}
