@@ -5,6 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.set.SetCommand;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.tool.ToolModes;
 import au.com.mineauz.minigamesregions.commands.SetNodeCommand;
 import au.com.mineauz.minigamesregions.commands.SetRegionCommand;
 
@@ -31,6 +32,8 @@ public class Main extends JavaPlugin{
 		
 		getServer().getPluginManager().registerEvents(new RegionEvents(), this);
 		
+		ToolModes.addToolMode(new RegionToolMode());
+		
 		getLogger().info("Minigames Regions successfully enabled!");
 	}
 	
@@ -40,6 +43,9 @@ public class Main extends JavaPlugin{
 			mg.saveMinigame();
 		}
 		minigames.mdata.removeModule("Regions", RegionModule.class);
+		
+		ToolModes.removeToolMode("REGION");
+		
 		getLogger().info("Minigames Regions disabled");
 	}
 	
