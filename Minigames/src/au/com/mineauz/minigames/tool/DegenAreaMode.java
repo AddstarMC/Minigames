@@ -83,4 +83,12 @@ public class DegenAreaMode implements ToolMode {
 		}
 	}
 
+	@Override
+	public void onSetMode(MinigamePlayer player, MinigameTool tool) {
+	}
+
+	@Override
+	public void onUnsetMode(MinigamePlayer player, MinigameTool tool) {
+	}
+
 }

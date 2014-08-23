@@ -13,6 +13,8 @@ public interface ToolMode {
 	public String getDisplayName();
 	public String getDescription();
 	public Material getIcon();
+	public void onSetMode(MinigamePlayer player, MinigameTool tool);
+	public void onUnsetMode(MinigamePlayer player, MinigameTool tool);
 	public void onLeftClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEvent event);
 	public void onRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEvent event);
 	public void select(MinigamePlayer player, Minigame minigame, Team team);

@@ -101,6 +101,43 @@ public class MinigameTool {
 		return team;
 	}
 	
+	public void addSetting(String name, String setting){
+		ItemMeta meta = tool.getItemMeta();
+		List<String> lore = meta.getLore();
+		lore.add(ChatColor.AQUA + name + ": " + ChatColor.WHITE + setting);
+		meta.setLore(lore);
+		tool.setItemMeta(meta);
+	}
+	
+	public void changeSetting(String name, String setting){
+		removeSetting(name);
+		addSetting(name, setting);
+	}
+	
+	public String getSetting(String name){
+		ItemMeta meta = tool.getItemMeta();
+		List<String> lore = meta.getLore();
+		for(String l : lore){
+			if(ChatColor.stripColor(l).startsWith(name)){
+				return ChatColor.stripColor(l).replace(name + ": ", "");
+			}
+		}
+		return "None";
+	}
+	
+	public void removeSetting(String name){
+		ItemMeta meta = tool.getItemMeta();
+		List<String> lore = meta.getLore();
+		for(String l : new ArrayList<String>(lore)){
+			if(ChatColor.stripColor(l).startsWith(name)){
+				lore.remove(l);
+				break;
+			}
+		}
+		meta.setLore(lore);
+		tool.setItemMeta(meta);
+	}
+	
 	public void openMenu(MinigamePlayer player){
 		Menu men = new Menu(2, "Set Tool Mode", player);
 		

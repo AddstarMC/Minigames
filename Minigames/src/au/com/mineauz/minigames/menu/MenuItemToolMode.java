@@ -28,7 +28,10 @@ public class MenuItemToolMode extends MenuItem{
 		MinigamePlayer ply = getContainer().getViewer();
 		if(MinigameUtils.hasMinigameTool(ply)){
 			MinigameTool tool = MinigameUtils.getMinigameTool(ply);
+			if(tool.getMode() != null)
+				tool.getMode().onUnsetMode(ply, tool);
 			tool.setMode(mode);
+			tool.getMode().onSetMode(ply, tool);
 		}
 		return getItem();
 	}

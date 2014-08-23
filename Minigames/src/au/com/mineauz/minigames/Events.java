@@ -337,7 +337,7 @@ public class Events implements Listener{
 				tool.openMenu(ply);
 				event.setCancelled(true);
 			}
-			else if(event.getClickedBlock().getType() == Material.WALL_SIGN || event.getClickedBlock().getType() == Material.SIGN_POST){
+			else if(event.getClickedBlock() != null && (event.getClickedBlock().getType() == Material.WALL_SIGN || event.getClickedBlock().getType() == Material.SIGN_POST)){
 				Sign sign = (Sign) event.getClickedBlock().getState();
 				if(ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[Minigame]") && ChatColor.stripColor(sign.getLine(1)).equalsIgnoreCase("Join")){
 					Minigame minigame = mdata.getMinigame(sign.getLine(2));

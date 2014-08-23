@@ -33,6 +33,7 @@ public class Main extends JavaPlugin{
 		getServer().getPluginManager().registerEvents(new RegionEvents(), this);
 		
 		ToolModes.addToolMode(new RegionToolMode());
+		ToolModes.addToolMode(new NodeToolMode());
 		
 		getLogger().info("Minigames Regions successfully enabled!");
 	}
@@ -45,6 +46,7 @@ public class Main extends JavaPlugin{
 		minigames.mdata.removeModule("Regions", RegionModule.class);
 		
 		ToolModes.removeToolMode("REGION");
+		ToolModes.removeToolMode("NODE");
 		
 		getLogger().info("Minigames Regions disabled");
 	}

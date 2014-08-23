@@ -67,4 +67,12 @@ public class LobbyPositionMode implements ToolMode {
 			player.sendMessage("No lobby position set!", "error");
 		}
 	}
+
+	@Override
+	public void onSetMode(MinigamePlayer player, MinigameTool tool) {
+	}
+
+	@Override
+	public void onUnsetMode(MinigamePlayer player, MinigameTool tool) {
+	}
 }
