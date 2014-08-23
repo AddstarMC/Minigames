@@ -205,7 +205,7 @@ public class LoadoutModule extends MinigameModule {
 	}
 
 	@Override
-	public void addMenuOptions(Menu menu) {
+	public void addEditMenuOptions(Menu menu) {
 		// TODO Move loadout menu stuff here
 		
 	}

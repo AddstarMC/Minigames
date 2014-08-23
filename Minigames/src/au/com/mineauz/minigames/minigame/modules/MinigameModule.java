@@ -22,6 +22,6 @@ public abstract class MinigameModule {
 	public abstract boolean useSeparateConfig();
 	public abstract void save(FileConfiguration config);
 	public abstract void load(FileConfiguration config);
-	public abstract void addMenuOptions(Menu menu);
+	public abstract void addEditMenuOptions(Menu menu);
 	public abstract boolean displayMechanicSettings(Menu previous);
 }

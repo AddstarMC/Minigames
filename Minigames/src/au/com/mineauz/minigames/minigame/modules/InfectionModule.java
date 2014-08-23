@@ -53,7 +53,7 @@ public class InfectionModule extends MinigameModule{
 	}
 
 	@Override
-	public void addMenuOptions(Menu menu) {
+	public void addEditMenuOptions(Menu menu) {
 	}
 
 	@Override

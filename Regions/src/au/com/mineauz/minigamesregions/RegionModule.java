@@ -354,7 +354,7 @@ public class RegionModule extends MinigameModule {
 	
 	
 	@Override
-	public void addMenuOptions(Menu menu) {
+	public void addEditMenuOptions(Menu menu) {
 		final MenuItemCustom c = new MenuItemCustom("Regions and Nodes", Material.DIAMOND_BLOCK);
 		final Menu fmenu = menu;
 		c.setClick(new InteractionInterface() {

@@ -189,7 +189,7 @@ public class LobbySettingsModule extends MinigameModule {
 	}
 
 	@Override
-	public void addMenuOptions(Menu menu) {
+	public void addEditMenuOptions(Menu menu) {
 		// TODO Auto-generated method stub
 		
 	}

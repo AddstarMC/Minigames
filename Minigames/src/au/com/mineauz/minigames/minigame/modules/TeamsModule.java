@@ -179,7 +179,7 @@ public class TeamsModule extends MinigameModule {
 	}
 
 	@Override
-	public void addMenuOptions(Menu menu) {
+	public void addEditMenuOptions(Menu menu) {
 		Menu m = new Menu(6, "Teams", menu.getViewer());
 		m.setPreviousPage(menu);
 		List<MenuItem> items = new ArrayList<MenuItem>();
