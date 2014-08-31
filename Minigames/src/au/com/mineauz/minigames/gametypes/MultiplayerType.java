@@ -40,7 +40,7 @@ public class MultiplayerType extends MinigameTypeBase{
 		if(!LobbySettingsModule.getMinigameModule(mgm).canMovePlayerWait())
 			player.setFrozen(true);
 		
-		if(!mgm.isNotWaitingForPlayers()){
+		if(!mgm.isWaitingForPlayers()){
 			if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMinPlayers()){
 				mgm.setMpTimer(new MultiplayerTimer(mgm));
 				mgm.getMpTimer().startTimer();
@@ -132,7 +132,7 @@ public class MultiplayerType extends MinigameTypeBase{
 					teamsWithPlayers ++;
 			}
 			
-			if(mgm.getMpBets() != null && !mgm.isNotWaitingForPlayers() && !forced){
+			if(mgm.getMpBets() != null && mgm.isWaitingForPlayers() && !forced){
 				if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
 					plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), mgm.getMpBets().getPlayersMoneyBet(player));
 				}

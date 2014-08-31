@@ -45,6 +45,7 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.MinigameState;
 
 public class RecorderData implements Listener{
 	private static Minigames plugin;
@@ -326,6 +327,7 @@ public class RecorderData implements Listener{
 		if(modifier == null){
 			blockdata.clear();
 			minigame.setRegenerating(true);
+			minigame.setState(MinigameState.REGENERATING);
 		}
 		else{
 			for(String id : changes){

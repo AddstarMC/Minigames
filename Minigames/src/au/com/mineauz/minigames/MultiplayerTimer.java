@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.sounds.MGSounds;
 import au.com.mineauz.minigames.sounds.PlayMGSound;
@@ -39,7 +40,7 @@ public class MultiplayerTimer{
 	}
 	
 	public void startTimer(){
-		playerWaitTime += 1;
+//		playerWaitTime += 1;
 //		startWaitTime += 1;
 		if(taskID != -1)
 			removeTimer();
@@ -47,17 +48,12 @@ public class MultiplayerTimer{
 			
 			@Override
 			public void run() {
-				if(!paused){
-					if(playerWaitTime != 0)
-						playerWaitTime -= 1;
-					else
-						startWaitTime -= 1;
-				}
 				
 				if(playerWaitTime != 0 && !paused){
 					if(playerWaitTime == plugin.getConfig().getInt("multiplayer.waitforplayers")){
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.waitingForPlayers"));
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", playerWaitTime));
+						minigame.setState(MinigameState.WAITING);
 					}
 					else if(timeMsg.contains(playerWaitTime)){
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", playerWaitTime));
@@ -66,6 +62,7 @@ public class MultiplayerTimer{
 				}
 				else if(playerWaitTime == 0 && startWaitTime != 0 && !paused){
 					if(startWaitTime == oStartWaitTime){
+						minigame.setState(MinigameState.STARTING);
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.minigameStarts"));
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
 						freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMoveStartWait());
@@ -102,6 +99,13 @@ public class MultiplayerTimer{
 					}
 					
 					Bukkit.getScheduler().cancelTask(taskID);
+				}
+				
+				if(!paused){
+					if(playerWaitTime != 0)
+						playerWaitTime -= 1;
+					else
+						startWaitTime -= 1;
 				}
 			}
 		}, 0, 20);

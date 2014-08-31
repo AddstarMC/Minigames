@@ -16,6 +16,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.MinigameState;
 
 public class RollbackScheduler implements Runnable {
 	
@@ -87,6 +88,7 @@ public class RollbackScheduler implements Runnable {
 		HandlerList.bakeAll();
 		
 		minigame.setRegenerating(false);
+		minigame.setState(MinigameState.IDLE);
 	}
 
 }

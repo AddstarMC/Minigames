@@ -14,6 +14,7 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.PlayerData;
 import au.com.mineauz.minigames.StoredPlayerCheckpoints;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.MinigameState;
 
 public class SingleplayerType extends MinigameTypeBase{
 	private static Minigames plugin = Minigames.plugin;
@@ -53,6 +54,9 @@ public class SingleplayerType extends MinigameTypeBase{
 			pdata.revertToCheckpoint(player);
 			spc.saveCheckpoints();
 		}
+		
+		if(mgm.getState() != MinigameState.OCCUPIED)
+			mgm.setState(MinigameState.OCCUPIED);
 		
 		player.getLoadout().equiptLoadout(player);
 		return true;

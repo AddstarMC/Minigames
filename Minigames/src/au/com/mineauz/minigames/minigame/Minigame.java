@@ -74,6 +74,7 @@ public class Minigame {
 	private IntegerFlag maxPlayers = new IntegerFlag(4, "maxplayers");
 	private BooleanFlag spMaxPlayers = new BooleanFlag(false, "spMaxPlayers");
 	private ListFlag flags = new ListFlag(new ArrayList<String>(), "flags");
+	private MinigameState state = MinigameState.IDLE;
 	
 	private SimpleLocationFlag floorDegen1 = new SimpleLocationFlag(null, "sfloorpos.1");
 	private SimpleLocationFlag floorDegen2 = new SimpleLocationFlag(null, "sfloorpos.2");
@@ -231,6 +232,14 @@ public class Minigame {
 		addConfigFlag(usePermissions);
 		addConfigFlag(useXPBarTimer);
 		addConfigFlag(spectatorPosition);
+	}
+	
+	public MinigameState getState(){
+		return state;
+	}
+	
+	public void setState(MinigameState state){
+		this.state = state;
 	}
 	
 	private void addConfigFlag(Flag<?> flag){
@@ -473,18 +482,22 @@ public class Minigame {
 		this.mpTimer = mpTimer;
 	}
 	
+	@Deprecated
 	public boolean isNotWaitingForPlayers(){
-		if(mpTimer != null && mpTimer.getPlayerWaitTimeLeft() == 0){
+		if(getState() != MinigameState.WAITING){
 			return true;
 		}
 		return false;
 	}
 	
-	public boolean hasStarted(){
-		if(mpTimer != null && mpTimer.getStartWaitTimeLeft() == 0){
+	public boolean isWaitingForPlayers(){
+		if(getState() == MinigameState.WAITING)
 			return true;
-		}
-		else if(type.getFlag() == MinigameType.SINGLEPLAYER && hasPlayers())
+		return false;
+	}
+	
+	public boolean hasStarted(){
+		if(getState() == MinigameState.STARTED || getState() == MinigameState.OCCUPIED)
 			return true;
 		return false;
 	}

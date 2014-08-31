@@ -41,6 +41,7 @@ import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MinigameTypeBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
@@ -68,8 +69,12 @@ public class PlayerData {
 		
 		if(!event.isCancelled()){
 			if((minigame.isEnabled() || player.getPlayer().hasPermission("minigame.join.disabled")) && 
-					!minigame.isRegenerating() && 
-					(!minigame.isNotWaitingForPlayers() || (minigame.canLateJoin() && minigame.getMpTimer().getPlayerWaitTimeLeft() == 0)) && 
+					(minigame.getState() == MinigameState.IDLE || 
+						minigame.getState() == MinigameState.OCCUPIED ||
+						minigame.getState() == MinigameState.WAITING || 
+						(minigame.getState() == MinigameState.STARTED && minigame.canLateJoin())) &&
+					/*!minigame.isRegenerating() && 
+					(!minigame.isNotWaitingForPlayers() || (minigame.canLateJoin() && minigame.getMpTimer().getPlayerWaitTimeLeft() == 0)) &&*/ 
 					(minigame.getStartLocations().size() > 0 || 
 							(minigame.isTeamGame() && TeamsModule.getMinigameModule(minigame).hasTeamStartLocations())) &&
 					minigame.getEndPosition() != null && minigame.getQuitPosition() != null && 
@@ -228,14 +233,14 @@ public class PlayerData {
 			else if(!minigame.isEnabled()){
 				player.sendMessage(MinigameUtils.getLang("minigame.error.notEnabled"), "error");
 			}
-			else if(minigame.isRegenerating()){
+			else if(minigame.getState() == MinigameState.REGENERATING){
 				player.sendMessage(MinigameUtils.getLang("minigame.error.regenerating"), "error");
 			}
-			else if(minigame.isNotWaitingForPlayers() && !minigame.canLateJoin()){
+			else if(minigame.getState() == MinigameState.STARTED && !minigame.canLateJoin()){
 				player.sendMessage(MinigameUtils.getLang("minigame.started"), "error");
 			}
-			else if(minigame.isNotWaitingForPlayers() && minigame.canLateJoin() && 
-					minigame.getMpTimer().getPlayerWaitTimeLeft() == 0 && minigame.getPlayers().size() != minigame.getMaxPlayers()){
+			else if(minigame.getState() == MinigameState.STARTING && minigame.canLateJoin() && 
+						minigame.getPlayers().size() != minigame.getMaxPlayers()){
 				player.sendMessage(MinigameUtils.formStr("minigame.lateJoinWait", minigame.getMpTimer().getStartWaitTimeLeft()), null);
 			}
 			else if(minigame.getStartLocations().size() == 0 || 
@@ -400,6 +405,8 @@ public class PlayerData {
 			
 			PlayMGSound.playSound(ply, MGSounds.getSound("gameStart"));
 		}
+		
+		minigame.setState(MinigameState.STARTED);
 	}
 	
 	public void revertToCheckpoint(MinigamePlayer player) {
@@ -471,7 +478,7 @@ public class PlayerData {
 				}
 				
 				if(minigame.getType() != MinigameType.SINGLEPLAYER){
-					if(minigame.getPlayers().size() == 1 && minigame.isNotWaitingForPlayers() && !forced){
+					if(minigame.getPlayers().size() == 1 && !minigame.isWaitingForPlayers() && !forced){
 						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>();
 						w.add(minigame.getPlayers().get(0));
 						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>();
@@ -493,6 +500,8 @@ public class PlayerData {
 					if(minigame.getFloorDegenerator() != null){
 						minigame.getFloorDegenerator().stopDegenerator();
 					}
+					
+					minigame.setState(MinigameState.IDLE);
 					
 					if(minigame.getBlockRecorder().hasData()){
 						minigame.getBlockRecorder().restoreBlocks();
@@ -780,6 +789,8 @@ public class PlayerData {
 				if(minigame.getFloorDegenerator() != null && minigame.getPlayers().size() == 0){
 					minigame.getFloorDegenerator().stopDegenerator();
 				}
+				
+				minigame.setState(MinigameState.IDLE);
 				
 				if(minigame.getBlockRecorder().hasData()){
 					if(minigame.getType() != MinigameType.SINGLEPLAYER || minigame.getPlayers().isEmpty()){

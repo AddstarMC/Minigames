@@ -66,7 +66,7 @@ public class TeamSign implements MinigameSign {
 			Minigame mgm = player.getMinigame();
 			if(mgm.isTeamGame()){
 				if(player.getTeam() != matchTeam(mgm, sign.getLine(2))){
-					if(mgm.isNotWaitingForPlayers() && !sign.getLine(2).equals(ChatColor.GRAY + "Neutral")){
+					if(!mgm.isWaitingForPlayers() && !sign.getLine(2).equals(ChatColor.GRAY + "Neutral")){
 						Team sm = null;
 						Team nt = matchTeam(mgm, sign.getLine(2));
 						if(nt != null && !nt.isFull()){
