@@ -4,6 +4,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.MinigameState;
 
 public class TimerExpireEvent extends Event{
 	private static final HandlerList handlers = new HandlerList();
@@ -15,6 +16,10 @@ public class TimerExpireEvent extends Event{
 	
 	public Minigame getMinigame(){
 		return minigame;
+	}
+	
+	public MinigameState getMinigameState(){
+		return minigame.getState();
 	}
 	
 	@Override
