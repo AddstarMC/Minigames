@@ -18,6 +18,7 @@ public class MinigameTimer{
 	private List<Integer> timeMsg = new ArrayList<Integer>();
 	private static Minigames plugin = Minigames.plugin;
 	private int taskID = -1;
+	private boolean broadcastTime = true;
 	
 	public MinigameTimer(Minigame minigame, int time){
 		this.time = time;
@@ -25,6 +26,14 @@ public class MinigameTimer{
 		this.minigame = minigame;
 		timeMsg.addAll(plugin.getConfig().getIntegerList("multiplayer.timerMessageInterval"));
 		startTimer();
+	}
+	
+	public boolean isBroadcastingTime(){
+		return broadcastTime;
+	}
+	
+	public void setBroadcastTime(boolean bool){
+		broadcastTime = bool;
 	}
 	
 	public void startTimer(){
@@ -48,11 +57,12 @@ public class MinigameTimer{
 						ply.getPlayer().setLevel(level);
 					}
 				}
-				if(timeMsg.contains(time)){
+				if(timeMsg.contains(time) && broadcastTime){
 					PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
 					plugin.mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(time)), null, null);
 				}
-				else if(time == 0){
+
+				if(time == 0){
 					Bukkit.getServer().getPluginManager().callEvent(new TimerExpireEvent(minigame));
 					stopTimer();
 				}
