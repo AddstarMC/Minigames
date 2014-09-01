@@ -20,6 +20,7 @@ import au.com.mineauz.minigames.MultiplayerTimer;
 import au.com.mineauz.minigames.PlayerData;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
@@ -58,7 +59,7 @@ public class MultiplayerType extends MinigameTypeBase{
 				mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("minigame.waitingForPlayers", neededPlayers), null, null);
 			}
 		}
-		else{
+		else if(mgm.hasStarted()){
 			player.setLatejoining(true);
 			player.sendMessage(MinigameUtils.formStr("minigame.lateJoin", 5)); //TODO: Late join delay variable
 			final MinigamePlayer fply = player;
@@ -279,7 +280,7 @@ public class MultiplayerType extends MinigameTypeBase{
 	
 	@EventHandler
 	public void timerExpire(TimerExpireEvent event){
-		if(event.getMinigame().getType() == MinigameType.MULTIPLAYER){
+		if(event.getMinigame().getType() == MinigameType.MULTIPLAYER && event.getMinigameState() == MinigameState.STARTED){
 			if(event.getMinigame().isTeamGame()){
 				Minigame mgm = event.getMinigame();
 				if(TeamsModule.getMinigameModule(mgm).getDefaultWinner() != null){
