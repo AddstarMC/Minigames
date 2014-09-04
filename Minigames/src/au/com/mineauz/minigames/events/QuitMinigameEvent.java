@@ -14,11 +14,13 @@ public class QuitMinigameEvent extends Event implements Cancellable{
 	private Minigame mgm = null;
 	private boolean cancelled = false;
 	private boolean isForced = false;
+	private boolean isWinner = false;
 	
-	public QuitMinigameEvent(MinigamePlayer player, Minigame minigame, boolean forced){
+	public QuitMinigameEvent(MinigamePlayer player, Minigame minigame, boolean forced, boolean isWinner){
 		this.player = player;
 		mgm = minigame;
-		setForced(forced);
+		isForced = forced;
+		this.isWinner = isWinner;
 	}
 	
 	public MinigamePlayer getMinigamePlayer(){
@@ -36,9 +38,9 @@ public class QuitMinigameEvent extends Event implements Cancellable{
     public boolean isForced() {
 		return isForced;
 	}
-
-	public void setForced(boolean isForced) {
-		this.isForced = isForced;
+	
+	public boolean isWinner(){
+		return isWinner;
 	}
 
 	public void setCancelled(boolean cancelled) {

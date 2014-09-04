@@ -3,6 +3,7 @@ package au.com.mineauz.minigames;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
@@ -245,7 +246,7 @@ public class MinigamePlayer {
 
 	public boolean setLoadout(PlayerLoadout loadout) {
 		if(getMinigame() == null) return false;
-		if(!getMinigame().isTeamGame() || loadout.getTeamColor() == null || getTeam().getColor() == loadout.getTeamColor()){
+		if(loadout == null || !getMinigame().isTeamGame() || loadout.getTeamColor() == null || getTeam().getColor() == loadout.getTeamColor()){
 			this.loadout = loadout;
 			return true;
 		}
@@ -684,5 +685,22 @@ public class MinigamePlayer {
 	public void addClaimedScore(Location loc){
 		String id = MinigameUtils.createLocationID(loc);
 		claimedScoreSigns.add(id);
+	}
+	
+	public void claimTempRewardItems(){
+		if(!isDead){
+			List<ItemStack> tempItems = new ArrayList<ItemStack>(getTempRewardItems());
+			
+			if(!tempItems.isEmpty()){
+				for(ItemStack item : tempItems){
+					Map<Integer, ItemStack> m = player.getPlayer().getInventory().addItem(item);
+					if(!m.isEmpty()){
+						for(ItemStack i : m.values()){
+							player.getPlayer().getWorld().dropItemNaturally(player.getPlayer().getLocation(), i);
+						}
+					}
+				}
+			}
+		}
 	}
 }

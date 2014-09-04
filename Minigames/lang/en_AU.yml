@@ -88,6 +88,7 @@ minigame:
   skipWaitTime: "Minigame is full, skipping player wait time."
   lateJoin: "You will join in %s seconds..."
   lateJoinWait: "Please wait %s seconds and try again."
+  gameOverQuit: "You will automatically be quit in %s seconds..."
   error:
     noGametype: "That gametype does not exist!"
     noStart: "This Minigame has no start position!"

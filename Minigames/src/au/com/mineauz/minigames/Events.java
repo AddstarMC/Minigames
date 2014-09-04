@@ -51,7 +51,9 @@ import au.com.mineauz.minigames.events.RevertCheckpointEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.minigame.modules.GameOverModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
 import au.com.mineauz.minigames.tool.MinigameTool;
@@ -90,15 +92,20 @@ public class Events implements Listener{
 			if(!msg.equals("")){
 				mdata.sendMinigameMessage(mgm, msg, "error", null);
 			}
-			if(mgm.getLives() > 0 && mgm.getLives() <= ply.getDeaths()){
-				ply.sendMessage(MinigameUtils.getLang("player.quit.plyOutOfLives"), "error");
-				if(!event.getDrops().isEmpty() && mgm.getPlayers().size() == 1){
-					event.getDrops().clear();
+			if(mgm.getState() == MinigameState.STARTED){
+				if(mgm.getLives() > 0 && mgm.getLives() <= ply.getDeaths()){
+					ply.sendMessage(MinigameUtils.getLang("player.quit.plyOutOfLives"), "error");
+					if(!event.getDrops().isEmpty() && mgm.getPlayers().size() == 1){
+						event.getDrops().clear();
+					}
+					pdata.quitMinigame(ply, false);
 				}
-				pdata.quitMinigame(ply, false);
+				else if(mgm.getLives() > 0){
+					ply.sendMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives() - ply.getDeaths()), null);
+				}
 			}
-			else if(mgm.getLives() > 0){
-				ply.sendMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives() - ply.getDeaths()), null);
+			else if(mgm.getState() == MinigameState.ENDED){
+				plugin.pdata.quitMinigame(ply, true);
 			}
 		}
 	}
@@ -118,6 +125,10 @@ public class Events implements Listener{
 						ply.getPlayer().setPlayerWeather(mod.getCustomWeather());
 					}
 				});
+			}
+			
+			if(ply.getMinigame().getState() == MinigameState.ENDED){
+				plugin.pdata.quitMinigame(ply, true);
 			}
 		}
 		if(ply.isRequiredQuit()){
@@ -431,7 +442,7 @@ public class Events implements Listener{
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)
-	private void paintballHit(EntityDamageByEntityEvent event){
+	private void entityDamageEntity(EntityDamageByEntityEvent event){
 		if(event.getEntity() instanceof Player && event.getDamager() instanceof Snowball){
 			MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getEntity());
 			if(ply == null) return;
@@ -461,6 +472,11 @@ public class Events implements Listener{
 			if(ply == null) return;
 			if(ply.isInMinigame() && !ply.canPvP())
 				event.setCancelled(true);
+			else if(ply.isInMinigame() && ply.getMinigame().getState() == MinigameState.ENDED &&
+					GameOverModule.getMinigameModule(ply.getMinigame()).isHumiliationMode() && 
+					GameOverModule.getMinigameModule(ply.getMinigame()).getLosers().contains(ply)){
+				event.setCancelled(true);
+			}
 		}
 		else if(event.getEntity() instanceof Player && event.getDamager() instanceof Arrow){
 			Arrow arrow = (Arrow) event.getDamager();
@@ -508,7 +524,9 @@ public class Events implements Listener{
 				if(mgm.isSpectator(ply)){
 					event.setCancelled(true);
 				}
-				else if(!ply.getMinigame().hasStarted() || ply.isLatejoining()){
+				else if(!ply.getMinigame().hasStarted() || ply.isLatejoining() || 
+						(ply.getMinigame().getState() == MinigameState.ENDED && 
+							GameOverModule.getMinigameModule(ply.getMinigame()).isInvincible())){
 					event.setCancelled(true);
 				}
 				else if(ply.isInvincible())

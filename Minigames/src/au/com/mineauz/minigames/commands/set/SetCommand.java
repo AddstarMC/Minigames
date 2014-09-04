@@ -94,6 +94,7 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetRestartDelayCommand());
 		registerSetCommand(new SetSpectatorSpawnCommand());
 		registerSetCommand(new SetInfectedPercentCommand());
+		registerSetCommand(new SetGameOverCommand());
 		
 		if(plugin.getConfig().getBoolean("outputCMDToFile")){
 			try {

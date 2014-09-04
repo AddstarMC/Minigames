@@ -144,6 +144,7 @@ permissions:
             minigame.set.hintdelay: true
             minigame.set.restartdelay: true
             minigame.set.spectatorstart: true
+            minigame.set.gameover: true
     minigame.set.start:
         description: Gives access to setting a minigames starting position
         default: op
@@ -303,6 +304,9 @@ permissions:
     minigame.set.spectatorstart:
         description: Allows a player to use the spectator start point command.
         default: op
+    minigame.set.gameover:
+        default: op
+    
     minigame.info:
         description: Allows check to see if a minigames variables have been set
         default: op

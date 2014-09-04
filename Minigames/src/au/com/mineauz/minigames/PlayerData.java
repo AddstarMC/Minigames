@@ -43,6 +43,7 @@ import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.minigame.modules.GameOverModule;
 import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.sounds.MGSounds;
@@ -424,18 +425,32 @@ public class PlayerData {
 	public void quitMinigame(MinigamePlayer player, boolean forced){
 		Minigame minigame = player.getMinigame();
 		
-		QuitMinigameEvent event = new QuitMinigameEvent(player, minigame, forced);
+		boolean isWinner = false;
+		if(GameOverModule.getMinigameModule(minigame).getWinners().contains(player))
+			isWinner = true;
+		
+		QuitMinigameEvent event = new QuitMinigameEvent(player, minigame, forced, isWinner);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		if(!event.isCancelled()){
-			player.setEndTime(System.currentTimeMillis());
+			
 			if(!minigame.isSpectator(player)){
-				//SQL stuff
-				if(plugin.getSQL() != null){
-					if(minigame.canSaveCheckpoint() == false){
-						plugin.addSQLToStore(new SQLPlayer(minigame.getName(false), player.getName(), player.getUUID().toString(), 0, 1, 
-								player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), 
-								player.getEndTime() - player.getStartTime() + player.getStoredTime()));
-						plugin.startSQLCompletionSaver();
+				if(player.getEndTime() != 0)
+					player.setEndTime(System.currentTimeMillis());
+				
+				if(isWinner)
+					GameOverModule.getMinigameModule(minigame).getWinners().remove(player);
+				else
+					GameOverModule.getMinigameModule(minigame).getLosers().remove(player);
+				
+				if(!isWinner){
+					//SQL stuff
+					if(plugin.getSQL() != null){
+						if(minigame.canSaveCheckpoint() == false){
+							plugin.addSQLToStore(new SQLPlayer(minigame.getName(false), player.getName(), player.getUUID().toString(), 0, 1, 
+									player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), 
+									player.getEndTime() - player.getStartTime() + player.getStoredTime()));
+							plugin.startSQLCompletionSaver();
+						}
 					}
 				}
 				
@@ -470,10 +485,16 @@ public class PlayerData {
 				
 				if(!player.isDead()){
 					player.restorePlayerData();
-					player.teleport(minigame.getQuitPosition());
+					if(!isWinner)
+						player.teleport(minigame.getQuitPosition());
+					else
+						player.teleport(minigame.getEndPosition());
 				}
 				else{
-					player.setQuitPos(minigame.getQuitPosition());
+					if(!isWinner)
+						player.setQuitPos(minigame.getQuitPosition());
+					else
+						player.setQuitPos(minigame.getEndPosition());
 					player.setRequiredQuit(true);
 				}
 				
@@ -488,6 +509,11 @@ public class PlayerData {
 							minigame.setMpBets(null);
 						}
 					}
+				}
+				
+				//Reward Player
+				if(isWinner){
+					player.claimTempRewardItems();
 				}
 				
 				//Reset Minigame
@@ -683,48 +709,34 @@ public class PlayerData {
 				}
 			}
 			
+			GameOverModule gom = GameOverModule.getMinigameModule(minigame);
+			boolean usedTimer = false;
+			
+			if(gom.getTimer() > 0 && minigame.getType() == MinigameType.MULTIPLAYER){
+				gom.startEndGameTimer();
+				usedTimer = true;
+			}
+			gom.setWinners(winners);
+			gom.setLosers(losers);
+			
 			for(MinigamePlayer player : losers){
-				quitMinigame(player, true);
+				player.setEndTime(System.currentTimeMillis());
+				
+				if(!usedTimer)
+					quitMinigame(player, true);
 				PlayMGSound.playSound(player, MGSounds.getSound("lose"));
 			}
 			
 			for(MinigamePlayer player : winners){
 				
 				player.setEndTime(Calendar.getInstance().getTimeInMillis());
+				if(!usedTimer)
+					quitMinigame(player, true);
 				
 				//Group money bets
 				if(bets != 0){
 					plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), bets);
 					player.sendMessage(MinigameUtils.formStr("player.bet.winMoney", bets), null);
-				}
-				
-				//Restore Player
-				if(player.getPlayer().getVehicle() != null){
-					Vehicle vehicle = (Vehicle) player.getPlayer().getVehicle();
-					vehicle.eject();
-				}
-				player.getPlayer().setFireTicks(0);
-				player.getPlayer().resetPlayerTime();
-				player.getPlayer().setNoDamageTicks(60);
-				
-				List<ItemStack> tempItems = new ArrayList<ItemStack>(player.getTempRewardItems());
-				
-				for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
-					player.getPlayer().removePotionEffect(potion.getType());
-				}
-				player.getPlayer().closeInventory();
-				
-				if(player.getPlayer().getWorld() != minigame.getEndPosition().getWorld() && player.getPlayer().hasPermission("minigame.set.end") && plugin.getConfig().getBoolean("warnings")){
-					player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "End location is across worlds! This may cause some server performance issues!", "error");
-				}
-				
-				if(!player.isDead()){
-					player.restorePlayerData();
-					player.getPlayer().teleport(minigame.getEndPosition());
-				}
-				else{
-					player.setRequiredQuit(true);
-					player.setQuitPos(minigame.getEndPosition());
 				}
 				
 				//Reward Player
@@ -749,65 +761,27 @@ public class PlayerData {
 					plugin.addSQLToStore(new SQLPlayer(minigame.getName(false), player.getName(), player.getUUID().toString(), 1, 0, player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), player.getEndTime() - player.getStartTime()));
 					plugin.startSQLCompletionSaver();
 				}
-				player.resetAllStats();
 				
 				//Item Bets (for non groups)
 				if(minigame.getMpBets() != null){
 					if(minigame.getMpBets().hasBets()){
-						player.getPlayer().getInventory().addItem(minigame.getMpBets().claimBets());
+						if(!player.isInMinigame())
+							player.getPlayer().getInventory().addItem(minigame.getMpBets().claimBets());
+						else{
+							for(ItemStack i : minigame.getMpBets().claimBets()){
+								player.addTempRewardItem(i);
+							}
+						}
 						minigame.setMpBets(null);
 					}
 				}
 				
-				for(MinigamePlayer pl : minigame.getSpectators()){
-					player.getPlayer().showPlayer(pl.getPlayer());
-				}
-				
-				if(!tempItems.isEmpty()){
-					for(ItemStack item : tempItems){
-						Map<Integer, ItemStack> m = player.getPlayer().getInventory().addItem(item);
-						if(!m.isEmpty()){
-							for(ItemStack i : m.values()){
-								player.getPlayer().getWorld().dropItemNaturally(player.getPlayer().getLocation(), i);
-							}
-						}
-					}
-				}		
-				
-				//Restore Minigame
-				player.removeMinigame();
-				minigame.removePlayer(player);
-				player.getPlayer().setFallDistance(0);
-				WeatherTimeModule.getMinigameModule(minigame).stopTimeLoop();
-				minigame.getScoreboardManager().resetScores(player.getName());
-				
-				if(minigame.getMinigameTimer() != null){
-					minigame.getMinigameTimer().stopTimer();
-					minigame.setMinigameTimer(null);
-				}
-				
-				if(minigame.getFloorDegenerator() != null && minigame.getPlayers().size() == 0){
-					minigame.getFloorDegenerator().stopDegenerator();
-				}
-				
-				minigame.setState(MinigameState.IDLE);
-				
-				if(minigame.getBlockRecorder().hasData()){
-					if(minigame.getType() != MinigameType.SINGLEPLAYER || minigame.getPlayers().isEmpty()){
-						minigame.getBlockRecorder().restoreBlocks();
-						minigame.getBlockRecorder().restoreEntities();
-						minigame.getBlockRecorder().setCreatedRegenBlocks(false);
-					}
-				}
-	
-				plugin.getLogger().info(MinigameUtils.formStr("player.end.consMsg", player.getName(), minigame.getName(false)));
-				player.sendMessage(MinigameUtils.formStr("player.end.plyMsg", minigame.getName(true)), "win");
-				
-				if(minigame.getPlayers().size() == 0 && !minigame.isRegenerating()){
-					HandlerList.unregisterAll(minigame.getBlockRecorder());
-				}
-				player.updateInventory();
 				PlayMGSound.playSound(player, MGSounds.getSound("win"));
+			}
+			
+			if(!usedTimer){
+				gom.clearLosers();
+				gom.clearWinners();
 			}
 			
 			mdata.clearClaimedScore(minigame);
@@ -817,150 +791,6 @@ public class PlayerData {
 			
 		}
 	}
-	
-//	public void endTeamMinigame(int teamnum, Minigame mgm){
-//		
-//		List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>();
-//		List<MinigamePlayer> winners = new ArrayList<MinigamePlayer>();
-//		
-//		if(teamnum == 1){
-//			//Blue team
-//			for(OfflinePlayer ply : mgm.getRedTeam()){
-//				losers.add(getMinigamePlayer(ply.getName()));
-//			}
-//			for(OfflinePlayer ply : mgm.getBlueTeam()){
-//				winners.add(getMinigamePlayer(ply.getName()));
-//			}
-//		}
-//		else{
-//			//Red team
-//			for(OfflinePlayer ply : mgm.getRedTeam()){
-//				winners.add(getMinigamePlayer(ply.getName()));
-//			}
-//			for(OfflinePlayer ply : mgm.getBlueTeam()){
-//				losers.add(getMinigamePlayer(ply.getName()));
-//			}
-//		}
-//		
-//
-//		EndTeamMinigameEvent event = new EndTeamMinigameEvent(losers, winners, mgm, teamnum);
-//		Bukkit.getServer().getPluginManager().callEvent(event);
-//		
-//		if(!event.isCancelled()){
-//			if(event.getWinningTeamInt() == 1){
-//				if(plugin.getConfig().getBoolean("multiplayer.broadcastwin") && mgm.isEnabled()){
-//					String score = "";
-//					if(mgm.getRedTeamScore() != 0 && mgm.getBlueTeamScore() != 0){
-//						score = ", " + MinigameUtils.formStr("player.end.team.score", ChatColor.BLUE.toString() + mgm.getBlueTeamScore() + ChatColor.WHITE, ChatColor.RED.toString() + mgm.getRedTeamScore());
-//					}
-//					plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + MinigameUtils.formStr("player.end.team.win", ChatColor.BLUE.toString() + "Blue Team" + ChatColor.WHITE, mgm.getName()) + score);
-//				}
-//			}
-//			else{
-//				if(plugin.getConfig().getBoolean("multiplayer.broadcastwin") && mgm.isEnabled()){
-//					String score = "";
-//					if(mgm.getRedTeamScore() != 0 && mgm.getBlueTeamScore() != 0){
-//						score = ", " + MinigameUtils.formStr("player.end.team.score", ChatColor.RED.toString() + mgm.getBlueTeamScore() + ChatColor.WHITE, ChatColor.BLUE.toString() + mgm.getRedTeamScore());
-//					}
-//					plugin.getServer().broadcastMessage(ChatColor.GREEN + "[Minigames] " + MinigameUtils.formStr("player.end.team.win", ChatColor.RED + "Red Team" + ChatColor.WHITE, mgm.getName()) + score);
-//				}
-//			}
-//			
-//			mgm.setRedTeamScore(0);
-//			mgm.setBlueTeamScore(0);
-//			
-//			mgm.getMpTimer().setStartWaitTime(0);
-//			
-//			List<MinigamePlayer> winplayers = new ArrayList<MinigamePlayer>();
-//			winplayers.addAll(event.getWinnningPlayers());
-//	
-//			if(plugin.getSQL() != null && mgm.isEnabled()){
-////				new SQLCompletionSaver(mgm.getName(), winplayers, mdata.minigameType(mgm.getType()), true);
-//				List<SQLPlayer> sqlplayers = new ArrayList<SQLPlayer>();
-//				for(MinigamePlayer ply : winplayers){
-//					ply.setEndTime(Calendar.getInstance().getTimeInMillis());
-//					sqlplayers.add(new SQLPlayer(mgm.getName(), ply.getName(), 1, 0, ply.getKills(), ply.getDeaths(), ply.getScore(), ply.getReverts(), ply.getEndTime() - ply.getStartTime()));
-//				}
-//				plugin.addSQLToStore(sqlplayers);
-//				plugin.startSQLCompletionSaver();
-//			}
-//			
-//			if(mgm.getMpBets() != null){
-//				if(mgm.getMpBets().hasMoneyBets()){
-//					List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>();
-//					plys.addAll(event.getWinnningPlayers());
-//					
-//					if(!plys.isEmpty()){
-//						double bets = mgm.getMpBets().claimMoneyBets() / (double) plys.size();
-//						BigDecimal roundBets = new BigDecimal(bets);
-//						roundBets = roundBets.setScale(2, BigDecimal.ROUND_HALF_UP);
-//						bets = roundBets.doubleValue();
-//						for(MinigamePlayer ply : plys){
-//							plugin.getEconomy().depositPlayer(ply.getName(), bets);
-//							ply.sendMessage(MinigameUtils.formStr("player.bet.winMoney", bets), null);
-//						}
-//					}
-//				}
-//				mgm.setMpBets(null);
-//			}
-//			
-//			if(!event.getLosingPlayers().isEmpty()){
-//				List<MinigamePlayer> loseplayers = new ArrayList<MinigamePlayer>();
-//				loseplayers.addAll(event.getLosingPlayers());
-//				
-//				if(plugin.getSQL() != null && mgm.isEnabled()){
-////					new SQLCompletionSaver(mgm.getName(), loseplayers, mdata.minigameType(mgm.getType()), false);
-//					List<SQLPlayer> sqlplayers = new ArrayList<SQLPlayer>();
-//					for(MinigamePlayer ply : loseplayers){
-//						ply.setEndTime(Calendar.getInstance().getTimeInMillis());
-//						sqlplayers.add(new SQLPlayer(mgm.getName(), ply.getName(), 0, 1, ply.getKills(), ply.getDeaths(), ply.getScore(), ply.getReverts(), ply.getEndTime() - ply.getStartTime()));
-//					}
-//					plugin.addSQLToStore(sqlplayers);
-//					plugin.startSQLCompletionSaver();
-//				}
-//				
-//				for(int i = 0; i < loseplayers.size(); i++){
-//					if(loseplayers.get(i) instanceof MinigamePlayer){
-//						final MinigamePlayer p = loseplayers.get(i);
-//						
-////						Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-////	
-////							@Override
-////							public void run() {
-//								p.sendMessage(MinigameUtils.getLang("player.quit.plyBeatenMsg"), "error");
-//								quitMinigame(p, true);
-////							}
-////						});
-//					}
-//					else{
-//						loseplayers.remove(i);
-//					}
-//				}
-//				mgm.setMpTimer(null);
-//				for(MinigamePlayer pl : loseplayers){
-//					mgm.getPlayers().remove(pl);
-//				}
-//			}
-//			
-//			for(int i = 0; i < winplayers.size(); i++){
-//				if(winplayers.get(i) instanceof MinigamePlayer){
-//					final MinigamePlayer p = winplayers.get(i);
-//					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-//						
-//						@Override
-//						public void run() {
-//							endMinigame(p);
-//						}
-//					});
-//				}
-//				else{
-//					winplayers.remove(i);
-//				}
-//			}
-//			
-//			mgm.setMpTimer(null);
-//		}
-//	}
 	
 	@Deprecated
 	public boolean playerInMinigame(Player player){
