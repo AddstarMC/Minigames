@@ -47,7 +47,7 @@ public class TeleportCommand implements ICommand {
 	@Override
 	public String[] getUsage() {
 		return new String[] {
-				"/minigame teleport <Player> <x> <y> <z>",
+				"/minigame teleport <Player> <x> <y> <z> [yaw] [pitch]",
 				"/minigame teleport <Player> Start [id] [team]",
 				"/minigame teleport <Player> Checkpoint",
 				"/minigame teleport <Player> <Player>"
@@ -78,10 +78,14 @@ public class TeleportCommand implements ICommand {
 				return true;
 			}
 			
-			if(args.length == 4 && args[1].matches("~?(-?[0-9]+)|~") && args[2].matches("~?(-?[0-9]+)|~") && args[3].matches("~?(-?[0-9]+)|~")){
+			if(args.length >= 4 && args[1].matches("~?(-?[0-9]+(.[0-9]+)?)|~") && 
+					args[2].matches("~?(-?[0-9]+(.[0-9]+)?)|~") && 
+					args[3].matches("~?(-?[0-9]+(.[0-9]+)?)|~")){
 				double x = 0;
 				double y = 0;
 				double z = 0;
+				float yaw = ply.getLocation().getYaw();
+				float pitch = ply.getLocation().getPitch();
 				
 				if(args[1].contains("~")){
 					if(args[1].equals("~"))
@@ -113,8 +117,38 @@ public class TeleportCommand implements ICommand {
 					z = Double.parseDouble(args[3]);
 				}
 				
+				if(args.length == 6 && args[4].matches("~?(-?[0-9]+(.[0-9]+)?)|~") && args[5].matches("~?(-?[0-9]+(.[0-9]+)?)|~")){
+					if(args[4].contains("~")){
+						if(args[4].equals("~"))
+							yaw = ply.getPlayer().getLocation().getYaw();
+						else
+							yaw = ply.getPlayer().getLocation().getYaw() + Float.parseFloat(args[4].replace("~", ""));
+					}
+					else{
+						yaw = Float.parseFloat(args[4]);
+					}
+					
+					if(args[5].contains("~")){
+						if(args[5].equals("~"))
+							pitch = ply.getPlayer().getLocation().getPitch();
+						else{
+							pitch = ply.getPlayer().getLocation().getPitch() + Float.parseFloat(args[5].replace("~", ""));
+						}
+					}
+					else{
+						pitch = Float.parseFloat(args[5]);
+					}
+					
+					if(pitch > 90){
+						pitch = 90f;
+					}
+					else if(pitch < -90){
+						pitch = -90f;
+					}
+				}
+				
 				sender.sendMessage(ChatColor.GRAY + "Teleported " + ply.getName() + " to assigned coordinates.");
-				ply.teleport(new Location(ply.getPlayer().getWorld(), x, y, z, ply.getPlayer().getLocation().getYaw(), ply.getPlayer().getLocation().getPitch()));
+				ply.teleport(new Location(ply.getPlayer().getWorld(), x, y, z, yaw, pitch));
 				return true;
 			}
 			else if(args.length >= 2 && args[1].equalsIgnoreCase("start")){
