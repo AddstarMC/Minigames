@@ -712,12 +712,13 @@ public class PlayerData {
 			GameOverModule gom = GameOverModule.getMinigameModule(minigame);
 			boolean usedTimer = false;
 			
+			gom.setWinners(winners);
+			gom.setLosers(losers);
+			
 			if(gom.getTimer() > 0 && minigame.getType() == MinigameType.MULTIPLAYER){
 				gom.startEndGameTimer();
 				usedTimer = true;
 			}
-			gom.setWinners(winners);
-			gom.setLosers(losers);
 			
 			for(MinigamePlayer player : losers){
 				player.setEndTime(System.currentTimeMillis());

@@ -14,6 +14,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 
@@ -64,7 +65,7 @@ public class FinishSign implements MinigameSign {
 		if(player.isInMinigame() && player.getPlayer().getItemInHand().getType() == Material.AIR){
 			Minigame minigame = player.getMinigame();
 
-			if(minigame.isSpectator(player)){
+			if(minigame.isSpectator(player) || minigame.getState() == MinigameState.ENDED){
 				return false;
 			}
 			

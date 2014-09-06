@@ -93,7 +93,7 @@ public class CTFMechanic extends GameMechanicBase{
 	private void takeFlag(PlayerInteractEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
-		if(ply.isInMinigame() && !ply.getPlayer().isDead()){
+		if(ply.isInMinigame() && !ply.getPlayer().isDead() && ply.getMinigame().hasStarted()){
 			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && (event.getClickedBlock().getType() == Material.SIGN_POST || event.getClickedBlock().getType() == Material.WALL_SIGN) && ply.getPlayer().getItemInHand().getType() == Material.AIR){
 				Minigame mgm = ply.getMinigame();
 				Sign sign = (Sign) event.getClickedBlock().getState();

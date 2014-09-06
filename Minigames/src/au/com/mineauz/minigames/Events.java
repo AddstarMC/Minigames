@@ -524,7 +524,7 @@ public class Events implements Listener{
 				if(mgm.isSpectator(ply)){
 					event.setCancelled(true);
 				}
-				else if(!ply.getMinigame().hasStarted() || ply.isLatejoining() || 
+				else if((!ply.getMinigame().hasStarted() && ply.getMinigame().getState() != MinigameState.ENDED) || ply.isLatejoining() || 
 						(ply.getMinigame().getState() == MinigameState.ENDED && 
 							GameOverModule.getMinigameModule(ply.getMinigame()).isInvincible())){
 					event.setCancelled(true);
