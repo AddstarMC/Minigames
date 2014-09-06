@@ -43,7 +43,8 @@ public class SetGameOverCommand implements ICommand {
 	public String[] getUsage() {
 		return new String[] {
 				"/minigame set <Minigame> gameover timer <time>",
-				"/minigame set <Minigame> gameover invincible <true/false>"
+				"/minigame set <Minigame> gameover invincible <true/false>",
+				"/minigame set <Minigame> gameover humiliation <true/false>"
 				};
 	}
 
