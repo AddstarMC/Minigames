@@ -246,7 +246,7 @@ public class MinigamePlayer {
 
 	public boolean setLoadout(PlayerLoadout loadout) {
 		if(getMinigame() == null) return false;
-		if(loadout == null || !getMinigame().isTeamGame() || loadout.getTeamColor() == null || getTeam().getColor() == loadout.getTeamColor()){
+		if(!getMinigame().isTeamGame() || loadout.getTeamColor() == null || getTeam().getColor() == loadout.getTeamColor()){
 			this.loadout = loadout;
 			return true;
 		}
@@ -429,7 +429,8 @@ public class MinigamePlayer {
 	}
 
 	public void resetAllStats(){
-		setLoadout(null);
+//		setLoadout(null);
+		loadout = null;
 		resetReverts();
 		resetDeaths();
 		resetKills();
