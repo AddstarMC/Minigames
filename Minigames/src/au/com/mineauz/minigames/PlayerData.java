@@ -663,8 +663,14 @@ public class PlayerData {
 							}
 						}
 						String nscore = ", " + MinigameUtils.formStr("player.end.team.score", score);
-						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.team.win", 
+						if(team.getScore() > 0){
+							MinigameUtils.broadcast(MinigameUtils.formStr("player.end.team.win", 
 								team.getChatColor() + team.getDisplayName() + ChatColor.WHITE, minigame.getName(true)) + nscore, minigame, ChatColor.GREEN);
+						}
+						else{
+							MinigameUtils.broadcast(MinigameUtils.formStr("player.end.team.win", 
+									team.getChatColor() + team.getDisplayName() + ChatColor.WHITE, minigame.getName(true)), minigame, ChatColor.GREEN);
+						}
 					}
 					else{
 						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastNobodyWon", minigame.getName(true)), minigame, ChatColor.RED);
