@@ -160,7 +160,7 @@ public class MultiplayerType extends MinigameTypeBase{
 			}
 		}
 		
-		if(mgm.isTeamGame() && mgm.getPlayers().size() >= 1 && 
+		if(mgm.isTeamGame() && mgm.getPlayers().size() > 1 && 
 				teamsWithPlayers == 1 && mgm.hasStarted() && !forced){
 			Team winner = null;
 			for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
@@ -170,6 +170,16 @@ public class MultiplayerType extends MinigameTypeBase{
 				}
 			}
 			List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(winner.getPlayers());
+			List<MinigamePlayer> l = new ArrayList<MinigamePlayer>();
+			plugin.pdata.endMinigame(mgm, w, l);
+			
+			if(mgm.getMpBets() != null){
+				mgm.setMpBets(null);
+			}
+		}
+		else if(mgm.getPlayers().size() == 1 && mgm.hasStarted() && !forced){
+			List<MinigamePlayer> w = new ArrayList<MinigamePlayer>();
+			w.add(mgm.getPlayers().get(0));
 			List<MinigamePlayer> l = new ArrayList<MinigamePlayer>();
 			plugin.pdata.endMinigame(mgm, w, l);
 			

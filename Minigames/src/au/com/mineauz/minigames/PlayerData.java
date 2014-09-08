@@ -498,19 +498,6 @@ public class PlayerData {
 					player.setRequiredQuit(true);
 				}
 				
-				if(minigame.getType() != MinigameType.SINGLEPLAYER){
-					if(minigame.getPlayers().size() == 1 && !minigame.isWaitingForPlayers() && !forced){
-						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>();
-						w.add(minigame.getPlayers().get(0));
-						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>();
-						endMinigame(minigame.getPlayers().get(0).getMinigame(), w, l);
-						
-						if(minigame.getMpBets() != null){
-							minigame.setMpBets(null);
-						}
-					}
-				}
-				
 				//Reward Player
 				if(isWinner){
 					player.claimTempRewardItems();
