@@ -26,6 +26,7 @@ public class GameOverModule extends MinigameModule{
 	private IntegerFlag timer = new IntegerFlag(0, "gameOver.timer");
 	private BooleanFlag invincible = new BooleanFlag(false, "gameOver.invincible");
 	private BooleanFlag humiliation = new BooleanFlag(false, "gameOver.humiliation");
+	private BooleanFlag interact = new BooleanFlag(false, "gameOver.interact");
 	
 	private List<MinigamePlayer> winners = new ArrayList<MinigamePlayer>();
 	private List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>();
@@ -67,6 +68,8 @@ public class GameOverModule extends MinigameModule{
 		m.addItem(timer.getMenuItem("Time Length", Material.WATCH, 0, null));
 		m.addItem(invincible.getMenuItem("Invincibility", Material.ENDER_PEARL));
 		m.addItem(humiliation.getMenuItem("Humiliation Mode", Material.DIAMOND_SWORD, MinigameUtils.stringToList("Losers are stripped;of weapons and can't kill")));
+		m.addItem(interact.getMenuItem("Allow Interact", Material.STONE_PLATE));
+		
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, menu), m.getSize() - 9);
 		
 		menu.addItem(new MenuItemPage("Game Over Settings", Material.WOOD_DOOR, m));
@@ -84,14 +87,31 @@ public class GameOverModule extends MinigameModule{
 	public void startEndGameTimer(){
 		Minigames.plugin.mdata.sendMinigameMessage(getMinigame(), MinigameUtils.formStr("minigame.gameOverQuit", timer.getFlag()), null, null);
 		getMinigame().setState(MinigameState.ENDED);
-		if(isHumiliationMode()){
-			for(MinigamePlayer l : losers){
-				l.getPlayer().getInventory().clear();
-				for(PotionEffect potion : l.getPlayer().getActivePotionEffects()){
-					l.getPlayer().removePotionEffect(potion.getType());
+		
+		List<MinigamePlayer> allPlys = new ArrayList<MinigamePlayer>(winners.size() + losers.size());
+		allPlys.addAll(losers);
+		allPlys.addAll(winners);
+		
+		for(MinigamePlayer p : allPlys){
+			if(!isInteractAllowed()){
+				p.setCanInteract(false);
+			}
+			if(isHumiliationMode() && losers.contains(p)){
+				p.getPlayer().getInventory().clear();
+				p.getPlayer().getInventory().setHelmet(null);
+				p.getPlayer().getInventory().setChestplate(null);
+				p.getPlayer().getInventory().setLeggings(null);
+				p.getPlayer().getInventory().setBoots(null);
+				
+				for(PotionEffect potion : p.getPlayer().getActivePotionEffects()){
+					p.getPlayer().removePotionEffect(potion.getType());
 				}
 			}
+			if(isInvincible()){
+				p.setInvincible(true);
+			}
 		}
+		
 		if(timer.getFlag() > 0){
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
 				
@@ -159,6 +179,14 @@ public class GameOverModule extends MinigameModule{
 	
 	public void setHumiliationMode(boolean bool){
 		humiliation.setFlag(bool);
+	}
+	
+	public boolean isInteractAllowed(){
+		return interact.getFlag();
+	}
+	
+	public void setInteractAllowed(boolean bool){
+		interact.setFlag(bool);
 	}
 
 }
