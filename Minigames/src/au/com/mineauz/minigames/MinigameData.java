@@ -19,6 +19,7 @@ import au.com.mineauz.minigames.gametypes.MinigameTypeBase;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.GameOverModule;
 import au.com.mineauz.minigames.minigame.modules.InfectionModule;
+import au.com.mineauz.minigames.minigame.modules.JuggernautModule;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
@@ -52,6 +53,7 @@ public class MinigameData {
 		modules.add(TreasureHuntModule.class);
 		modules.add(InfectionModule.class);
 		modules.add(GameOverModule.class);
+		modules.add(JuggernautModule.class);
 	}
 	
 	public List<Class<? extends MinigameModule>> getModules(){
