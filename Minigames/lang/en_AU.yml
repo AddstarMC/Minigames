@@ -72,6 +72,9 @@ player:
     returnFail: "You must not be carrying a flag to return your flag!"
     dropped: "%s dropped %s's flag"
     droppedNeutral: "%s dropped the Neutral flag"
+  juggernaut:
+    plyMsg: "You became the Juggernaut!"
+    gameMsg: "%s became the Juggernaut!"
   kills:
     finalKill: "%s took the final kill from %s"
   loadout:

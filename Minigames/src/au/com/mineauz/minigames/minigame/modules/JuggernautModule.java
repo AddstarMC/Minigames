@@ -5,6 +5,7 @@ import java.util.Map;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Menu;
@@ -61,9 +62,9 @@ public class JuggernautModule extends MinigameModule{
 		juggernaut = player;
 		
 		if(juggernaut != null){
-			juggernaut.sendMessage("You are now the Juggernaut!", null); //TODO: Language file
+			juggernaut.sendMessage(MinigameUtils.getLang("player.juggernaut.plyMsg"), null);
 			Minigames.plugin.mdata.sendMinigameMessage(getMinigame(), 
-					juggernaut.getDisplayName() + " is the Juggernaut!", null, juggernaut); //TODO: Language file
+					MinigameUtils.formStr("player.juggernaut.gameMsg", juggernaut.getDisplayName()), null, juggernaut);
 			
 			LoadoutModule lm =LoadoutModule.getMinigameModule(getMinigame());
 			if(lm.hasLoadout("juggernaut")){
