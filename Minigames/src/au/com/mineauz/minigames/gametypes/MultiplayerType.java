@@ -177,9 +177,9 @@ public class MultiplayerType extends MinigameTypeBase{
 				mgm.setMpBets(null);
 			}
 		}
-		else if(mgm.getPlayers().size() == 1 && mgm.hasStarted() && !forced){
-			List<MinigamePlayer> w = new ArrayList<MinigamePlayer>();
-			w.add(mgm.getPlayers().get(0));
+		else if(mgm.getPlayers().size() == 2 && mgm.hasStarted() && !forced){
+			List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(mgm.getPlayers());
+			w.remove(player);
 			List<MinigamePlayer> l = new ArrayList<MinigamePlayer>();
 			plugin.pdata.endMinigame(mgm, w, l);
 			
