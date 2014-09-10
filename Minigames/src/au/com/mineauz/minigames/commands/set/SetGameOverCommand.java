@@ -31,12 +31,13 @@ public class SetGameOverCommand implements ICommand {
 	@Override
 	public String getDescription() {
 		return "Modifies game over settings. Players will remain in the game until the game over timer ends.\n"
-				+ "For the humiliation setting, losers will be stripped of items and can't attack.";
+				+ "For the humiliation setting, losers will be stripped of items and can't attack.\n"
+				+ "If interact is false, players will not be able to interact with buttons/pressure plates/doors etc.";
 	}
 
 	@Override
 	public String[] getParameters() {
-		return new String[]	{"timer", "invincible", "humiliation"};
+		return new String[]	{"timer", "invincible", "humiliation", "interact"};
 	}
 
 	@Override
@@ -44,7 +45,8 @@ public class SetGameOverCommand implements ICommand {
 		return new String[] {
 				"/minigame set <Minigame> gameover timer <time>",
 				"/minigame set <Minigame> gameover invincible <true/false>",
-				"/minigame set <Minigame> gameover humiliation <true/false>"
+				"/minigame set <Minigame> gameover humiliation <true/false>",
+				"/minigame set <Minigame> gameover interact <true/false>"
 				};
 	}
 
@@ -87,6 +89,11 @@ public class SetGameOverCommand implements ICommand {
 				sender.sendMessage(ChatColor.GRAY + "Set game over humiliation to " + bool.toString().toLowerCase() + " for " + minigame);
 				return true;
 			}
+			else if(args[0].equalsIgnoreCase("interact") && args.length == 2){
+				Boolean bool = Boolean.valueOf(args[1]);
+				gmo.setInteractAllowed(bool);
+				sender.sendMessage(ChatColor.GRAY + "Set game over interating to " + bool.toString().toLowerCase() + " for " + minigame);
+			}
 			
 		}
 		return false;
@@ -101,6 +108,13 @@ public class SetGameOverCommand implements ICommand {
 				opts.add(p);
 			}
 			return MinigameUtils.tabCompleteMatch(opts, args[0]);
+		}
+		else if(args.length == 2 && (args[0].equalsIgnoreCase("invincible") ||
+				args[0].equalsIgnoreCase("humiliation") ||
+				args[0].equalsIgnoreCase("interact"))){
+			opts.add("true");
+			opts.add("false");
+			return MinigameUtils.tabCompleteMatch(opts, args[1]);
 		}
 		return null;
 	}
