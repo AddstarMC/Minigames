@@ -35,7 +35,7 @@ public class TeamFlag extends Flag<Team>{
 		
 		for(Flag<?> flag : getFlag().getFlags()){
 			if(flag.getDefaultFlag() != flag.getFlag()){
-				flag.saveValue(path + "." + getName() + "." + flag.getName(), config);
+				flag.saveValue(path + "." + getName(), config);
 			}
 		}
 	}
@@ -55,7 +55,7 @@ public class TeamFlag extends Flag<Team>{
 		
 		for(Flag<?> flag : t.getFlags()){
 			if(config.contains(path + "." + getName() + "." + flag.getName())){
-				flag.loadValue(path + "." + getName() + "." + flag.getName(), config);
+				flag.loadValue(path + "." + getName(), config);
 			}
 		}
 		
