@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
@@ -56,20 +55,20 @@ public class InfectionMechanic extends GameMechanicBase{
 				if(red.getPlayers().size() < Math.ceil(players.size() * 
 						(((Integer)InfectionModule.getMinigameModule(minigame).getInfectedPercent()).doubleValue() / 100d)) && !red.isFull()){
 					MultiplayerType.switchTeam(minigame, ply, red);
-					players.get(i).sendMessage(MinigameUtils.formStr("player.team.assign.infectedAssign", ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null);
-					mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.assign.infectedAnnounce", players.get(i).getName(), ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null, players.get(i));
+					players.get(i).sendMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()), null);
+					mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), players.get(i).getName(), red.getChatColor() + red.getDisplayName()), null, players.get(i));
 				}
 			}
 			else if(team == null){
 				if(red.getPlayers().size() < Math.ceil(players.size() * 0.18) && !red.isFull()){
 					red.addPlayer(ply);
-					players.get(i).sendMessage(MinigameUtils.formStr("player.team.assign.infectedAssign", ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null);
-					mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.team.assign.infectedAnnounce", players.get(i).getName(), ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), null, players.get(i));
+					players.get(i).sendMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()), null);
+					mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), players.get(i).getName(), red.getChatColor() + red.getDisplayName()), null, players.get(i));
 				}
 				else if(!blue.isFull()){
 					blue.addPlayer(ply);
-					ply.sendMessage(MinigameUtils.formStr("player.team.assign.survivor", ChatColor.BLUE + MinigameUtils.getLang("player.team.assign.survivor")), null);
-					mdata.sendMinigameMessage(minigame,MinigameUtils.formStr("player.team.assign.survivorAnnounce", players.get(i).getName(), ChatColor.BLUE + MinigameUtils.getLang("player.team.assign.survivor")), null, players.get(i));
+					ply.sendMessage(String.format(blue.getAssignMessage(), blue.getChatColor() + blue.getDisplayName()), null);
+					mdata.sendMinigameMessage(minigame, String.format(blue.getGameAssignMessage(), players.get(i).getName(), blue.getChatColor() + blue.getDisplayName()), null, players.get(i));
 				}
 				else{
 					pdata.quitMinigame(ply, false);
@@ -138,7 +137,7 @@ public class InfectionMechanic extends GameMechanicBase{
 						mgm.setScore(player, player.getScore());
 						
 						if(mgm.getLives() != player.getDeaths()){
-							mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.infectedAnnounce", player.getName(), ChatColor.RED + MinigameUtils.getLang("player.team.assign.infected")), "error", null);
+							mdata.sendMinigameMessage(mgm, String.format(red.getGameAssignMessage(), player.getName(), red.getChatColor() + red.getDisplayName()), "error", null);
 						}
 						if(blue.getPlayers().isEmpty()){
 							List<MinigamePlayer> w;

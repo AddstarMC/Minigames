@@ -53,12 +53,6 @@ player:
       plyMsg: "You have been auto-balanced to %s"
       minigameMsg: "%s has been auto-balanced to %s"
     assign:
-      infected: "Infected!"
-      infectedAssign: "You are %s"
-      infectedAnnounce: "%s has become %s"
-      survivor: "Survivor"
-      survivorAssign: "You are a %s"
-      survivorAnnounce: "%s is a %s"
       joinTeam: "You have joined %s"
       joinAnnounce: "%s has joined %s"
     full: "Sorry, this team is full!"
