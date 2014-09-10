@@ -1,7 +1,9 @@
 package au.com.mineauz.minigames.minigame;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -9,17 +11,24 @@ import org.bukkit.Location;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.config.IntegerFlag;
+import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class Team {
 	private String displayName = null;
 	private TeamColor color;
-	private int maxPlayers = 0;
+	private IntegerFlag maxPlayers = new IntegerFlag(0, "maxPlayers");
+	private List<Location> startLocations = new ArrayList<Location>();
+	private StringFlag assignMsg = new StringFlag(MinigameUtils.getLang("player.team.assign.joinTeam"), "assignMsg");
+	private StringFlag gameAssignMsg = new StringFlag(MinigameUtils.getLang("player.team.assign.joinAnnounce"), "gameAssignMsg");
+	private StringFlag autobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.plyMsg"), "autobalanceMsg");
+	private StringFlag gameAutobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.minigameMsg"), "gameAutobalanceMsg");
 	
 	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 	private int score = 0;
 	private Minigame mgm;
-	private List<Location> startLocations = new ArrayList<Location>();
 	
 	/**
 	 * Creates a team for the use in a specific Minigame
@@ -91,16 +100,27 @@ public class Team {
 		return displayName;
 	}
 	
+	public Set<Flag<?>> getFlags(){
+		Set<Flag<?>> flags = new HashSet<Flag<?>>();
+		flags.add(maxPlayers);
+		flags.add(assignMsg);
+		flags.add(gameAssignMsg);
+		flags.add(gameAutobalanceMsg);
+		flags.add(autobalanceMsg);
+		
+		return flags;
+	}
+	
 	public int getMaxPlayers() {
-		return maxPlayers;
+		return maxPlayers.getFlag();
 	}
 	
 	public void setMaxPlayers(int maxPlayers) {
-		this.maxPlayers = maxPlayers;
+		this.maxPlayers.setFlag(maxPlayers);
 	}
 	
 	public boolean isFull(){
-		if(maxPlayers != 0 && players.size() >= maxPlayers)
+		if(maxPlayers.getFlag() != 0 && players.size() >= maxPlayers.getFlag())
 			return true;
 		return false;
 	}
@@ -227,5 +247,37 @@ public class Team {
 			return true;
 		}
 		return false;
+	}
+	
+	public String getAssignMessage(){
+		return assignMsg.getFlag();
+	}
+	
+	public void setAssignMessage(String msg){
+		assignMsg.setFlag(msg);
+	}
+	
+	public String getGameAssignMessage(){
+		return gameAssignMsg.getFlag();
+	}
+	
+	public void setGameAssignMessage(String msg){
+		gameAssignMsg.setFlag(msg);
+	}
+	
+	public String getAutobalanceMessage(){
+		return autobalanceMsg.getFlag();
+	}
+	
+	public void setAutobalanceMessage(String msg){
+		autobalanceMsg.setFlag(msg);
+	}
+	
+	public String getGameAutobalanceMessage(){
+		return gameAutobalanceMsg.getFlag();
+	}
+	
+	public void setGameAutobalanceMessage(String msg){
+		gameAutobalanceMsg.setFlag(msg);
 	}
 }

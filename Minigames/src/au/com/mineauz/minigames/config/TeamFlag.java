@@ -32,6 +32,12 @@ public class TeamFlag extends Flag<Team>{
 				locf.saveValue(path + "." + getName(), config);
 			}
 		}
+		
+		for(Flag<?> flag : getFlag().getFlags()){
+			if(flag.getDefaultFlag() != flag.getFlag()){
+				flag.saveValue(path + "." + getName() + "." + flag.getName(), config);
+			}
+		}
 	}
 
 	@Override
@@ -46,6 +52,13 @@ public class TeamFlag extends Flag<Team>{
 				t.addStartLocation(locf.getFlag());
 			}
 		}
+		
+		for(Flag<?> flag : t.getFlags()){
+			if(config.contains(path + "." + getName() + "." + flag.getName())){
+				flag.loadValue(path + "." + getName() + "." + flag.getName(), config);
+			}
+		}
+		
 		setFlag(t);
 	}
 

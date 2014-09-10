@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
@@ -89,6 +90,25 @@ public class MenuItemTeam extends MenuItem{
 				return team.getMaxPlayers();
 			}
 		}, 0, null));
+		for(Flag<?> flag : team.getFlags()){
+			if(flag.getName().equals("assignMsg")){
+				m.addItem(flag.getMenuItem("Join Team Message", Material.PAPER, 
+						MinigameUtils.stringToList("Message sent to player;when they join;the team.;Use %s for team name")));
+			}
+			else if(flag.getName().equals("gameAssignMsg")){
+				m.addItem(flag.getMenuItem("Join Team Broadcast Message", Material.PAPER, 
+						MinigameUtils.stringToList("Message sent to all players;when someone joins;a team.;Use %s for team/player name")));
+			}
+			else if(flag.getName().equals("autobalanceMsg")){
+				m.addItem(flag.getMenuItem("Autobalance Message", Material.PAPER, 
+						MinigameUtils.stringToList("Message sent to player;when they are;autobalanced.;Use %s for team name")));
+			}
+			else if(flag.getName().equals("gameAutobalanceMsg")){
+				m.addItem(flag.getMenuItem("Autobalance Broadcast Message", Material.PAPER, 
+						MinigameUtils.stringToList("Message sent to all players;when someone is;autobalanced.;Use %s for team/player name")));
+			}
+		}
+		
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, getContainer()), m.getSize() - 9);
 		m.displayMenu(getContainer().getViewer());
 		return null;

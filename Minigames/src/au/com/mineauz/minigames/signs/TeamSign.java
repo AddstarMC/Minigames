@@ -76,8 +76,8 @@ public class TeamSign implements MinigameSign {
 							}
 							if(nt.getPlayers().size() - sm.getPlayers().size() < 1){
 								MultiplayerType.switchTeam(mgm, player, nt);
-								plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.joinAnnounce", player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
-								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", nt.getChatColor() + nt.getDisplayName()));
+								plugin.mdata.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getDisplayName(), nt.getChatColor() + nt.getDisplayName()), null, player);
+								player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), null);
 							}
 							else{
 								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
@@ -95,8 +95,8 @@ public class TeamSign implements MinigameSign {
 						if(nt != null){
 							if(nt.getPlayers().size() - cur.getPlayers().size() < 2){
 								MultiplayerType.switchTeam(mgm, player, nt);
-								plugin.mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.team.assign.joinAnnounce", player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
-								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("player.team.assign.joinTeam", nt.getChatColor() + nt.getDisplayName()));
+								plugin.mdata.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
+								player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), null);
 							}
 							else{
 								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));

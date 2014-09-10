@@ -75,9 +75,9 @@ public abstract class GameMechanicBase implements Listener{
 						ply.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
 					}
 					smt.addPlayer(ply);
-					ply.sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", smt.getChatColor() + smt.getDisplayName()), null);
+					ply.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), null);
 					mdata.sendMinigameMessage(minigame, 
-							MinigameUtils.formStr("player.team.autobalance.minigameMsg", 
+							String.format(smt.getGameAutobalanceMessage(), 
 									ply.getName(), smt.getChatColor() + smt.getDisplayName()), null, ply);
 				}
 			}
@@ -94,9 +94,9 @@ public abstract class GameMechanicBase implements Listener{
 				if(smt != null && lgt != null && lgt.getPlayers().size() - smt.getPlayers().size() > 1){
 					MinigamePlayer pl = lgt.getPlayers().get(0);
 					MultiplayerType.switchTeam(minigame, pl, smt);
-					pl.sendMessage(MinigameUtils.formStr("player.team.autobalance.plyMsg", smt.getChatColor() + smt.getDisplayName()), null);
+					pl.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), null);
 					mdata.sendMinigameMessage(minigame, 
-							MinigameUtils.formStr("player.team.autobalance.minigameMsg", 
+							String.format(smt.getGameAutobalanceMessage(), 
 									pl.getName(), smt.getChatColor() + smt.getDisplayName()), null, pl);
 				}
 				else{
