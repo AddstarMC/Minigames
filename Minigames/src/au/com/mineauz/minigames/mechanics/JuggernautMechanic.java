@@ -29,7 +29,7 @@ public class JuggernautMechanic extends GameMechanicBase{
 
 	@Override
 	public boolean checkCanStart(Minigame minigame, MinigamePlayer caller) {
-		if(!minigame.isTeamGame()){
+		if(minigame.isTeamGame()){
 			caller.sendMessage("Juggernaut cannot be a team Minigame!", "error");
 			return false;
 		}
