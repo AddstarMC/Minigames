@@ -402,10 +402,10 @@ public class PlayerData {
 					ply.getPlayer().setFlying(true);
 			}
 			
-			Bukkit.getServer().getPluginManager().callEvent(new StartMinigameEvent(players, minigame, teleport));
-			
 			PlayMGSound.playSound(ply, MGSounds.getSound("gameStart"));
 		}
+		
+		Bukkit.getServer().getPluginManager().callEvent(new StartMinigameEvent(players, minigame, teleport));
 		
 		minigame.setState(MinigameState.STARTED);
 	}
