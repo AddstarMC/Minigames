@@ -19,6 +19,7 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.PlayerData;
 import au.com.mineauz.minigames.events.EndMinigameEvent;
 import au.com.mineauz.minigames.events.JoinMinigameEvent;
+import au.com.mineauz.minigames.events.MinigameTimerTickEvent;
 import au.com.mineauz.minigames.events.QuitMinigameEvent;
 import au.com.mineauz.minigames.events.StartMinigameEvent;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -250,6 +251,13 @@ public class RegionEvents implements Listener{
 					}
 				}
 			}
+		}
+	}
+	
+	@EventHandler
+	private void minigameTimerTick(MinigameTimerTickEvent event){
+		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
+			node.execute(Triggers.getTrigger("MINIGAME_TIMER"), null, event);
 		}
 	}
 }
