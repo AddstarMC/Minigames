@@ -68,7 +68,7 @@ public class FlightAction extends ActionInterface{
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
-		Menu m = new Menu(6, "Flight", player);
+		Menu m = new Menu(3, "Flight", player);
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
 		m.addItem(setFly.getMenuItem("Set Flight Mode", Material.FEATHER));
 		m.addItem(startFly.getMenuItem("Set Flying", Material.FEATHER, MinigameUtils.stringToList("Set Flight Mode must be;true to use this")));
