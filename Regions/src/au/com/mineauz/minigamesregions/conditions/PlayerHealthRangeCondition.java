@@ -58,6 +58,7 @@ public class PlayerHealthRangeCondition extends ConditionInterface {
 	public void saveArguments(FileConfiguration config, String path) {
 		minHealth.saveValue(path, config);
 		maxHealth.saveValue(path, config);
+		saveInvert(config, path);
 	}
 
 	@Override
@@ -65,6 +66,7 @@ public class PlayerHealthRangeCondition extends ConditionInterface {
 			String path) {
 		minHealth.loadValue(path, config);
 		maxHealth.loadValue(path, config);
+		loadInvert(config, path);
 	}
 
 	@Override
@@ -73,6 +75,7 @@ public class PlayerHealthRangeCondition extends ConditionInterface {
 		m.addItem(minHealth.getMenuItem("Min Health", Material.STEP, 0, 20));
 		m.addItem(maxHealth.getMenuItem("Max Health", Material.DOUBLE_STEP, 0, 20));
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
+		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;
 	}

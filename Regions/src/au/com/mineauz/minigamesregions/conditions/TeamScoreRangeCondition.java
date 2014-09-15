@@ -62,12 +62,14 @@ public class TeamScoreRangeCondition extends ConditionInterface {
 	public void saveArguments(FileConfiguration config, String path) {
 		min.saveValue(path, config);
 		max.saveValue(path, config);
+		saveInvert(config, path);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
 		min.loadValue(path, config);
 		max.loadValue(path, config);
+		loadInvert(config, path);
 	}
 
 	@Override
@@ -76,6 +78,7 @@ public class TeamScoreRangeCondition extends ConditionInterface {
 		m.addItem(min.getMenuItem("Minimum Score", Material.STEP, 0, null));
 		m.addItem(max.getMenuItem("Maximum Score", Material.DOUBLE_STEP, 0, null));
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
+		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;
 	}

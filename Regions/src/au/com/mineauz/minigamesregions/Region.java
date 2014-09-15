@@ -176,7 +176,10 @@ public class Region {
 			if(exec.getTrigger() == trigger){
 				boolean cont = true;
 				for(ConditionInterface con : exec.getConditions()){
-					if(!con.checkRegionCondition(player, this, event)){
+					boolean c = con.checkRegionCondition(player, this, event);
+					if(con.isInverted())
+						c = !c;
+					if(!c){
 						cont = false;
 						break;
 					}

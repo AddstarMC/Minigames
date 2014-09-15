@@ -6,15 +6,12 @@ import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class HasRequiredFlagsCondition extends ConditionInterface {
-	
-	private BooleanFlag invert = new BooleanFlag(false, "invert");
 
 	@Override
 	public String getName() {
@@ -40,12 +37,8 @@ public class HasRequiredFlagsCondition extends ConditionInterface {
 	public boolean checkNodeCondition(MinigamePlayer player, Node node, Event event) {
 		if(player == null || !player.isInMinigame()) return false;
 		if(Minigames.plugin.pdata.checkRequiredFlags(player, player.getMinigame().getName(false)).isEmpty()){
-			if(!invert.getFlag())
-				return true;
+			return true;
 		}
-		else
-			if(invert.getFlag())
-				return true;
 		return false;
 	}
 
@@ -53,29 +46,25 @@ public class HasRequiredFlagsCondition extends ConditionInterface {
 	public boolean checkRegionCondition(MinigamePlayer player, Region region, Event event) {
 		if(player == null || !player.isInMinigame()) return false;
 		if(Minigames.plugin.pdata.checkRequiredFlags(player, player.getMinigame().getName(false)).isEmpty()){
-			if(!invert.getFlag())
-				return true;
+			return true;
 		}
-		else
-			if(invert.getFlag())
-				return true;
 		return false;
 	}
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
-		invert.saveValue(path, config);
+		saveInvert(config, path);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
-		invert.loadValue(path, config);
+		loadInvert(config, path);
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Required Flags", player);
-		m.addItem(invert.getMenuItem("Invert Require Flags?", Material.ENDER_PEARL));
+		addInvertMenuItem(m);
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
 		m.displayMenu(player);
 		return true;

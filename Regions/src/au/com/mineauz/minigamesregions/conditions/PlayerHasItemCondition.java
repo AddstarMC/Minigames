@@ -21,7 +21,6 @@ public class PlayerHasItemCondition extends ConditionInterface {
 	private StringFlag type = new StringFlag("STONE", "type");
 	private BooleanFlag useData = new BooleanFlag(false, "usedata");
 	private IntegerFlag data = new IntegerFlag(0, "data");
-	private BooleanFlag invert = new BooleanFlag(false, "invert");
 
 	@Override
 	public String getName() {
@@ -54,24 +53,19 @@ public class PlayerHasItemCondition extends ConditionInterface {
 	}
 	
 	private boolean check(MinigamePlayer player){
-		boolean inv = invert.getFlag();
 		if(player.getPlayer().getInventory().contains(Material.getMaterial(type.getFlag()))){
 			if(useData.getFlag()){
 				short dam = data.getFlag().shortValue();
 				for(ItemStack i : player.getPlayer().getInventory().getContents()){
 					if(i != null && i.getDurability() == dam){
-						if(!inv) return true;
-						else return false;
+						return true;
 					}
 				}
-				if(!inv) return false;
-				else return true;
+				return false;
 			}
-			if(!inv) return true;
-			else return false;
+			return true;
 		}
-		if(!inv) return false;
-		else return true;
+		return false;
 	}
 
 	@Override
@@ -79,7 +73,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
 		type.saveValue(path, config);
 		useData.saveValue(path, config);
 		data.saveValue(path, config);
-		invert.saveValue(path, config);
+		saveInvert(config, path);
 	}
 
 	@Override
@@ -87,7 +81,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
 		type.loadValue(path, config);
 		useData.loadValue(path, config);
 		data.loadValue(path, config);
-		invert.loadValue(path, config);
+		loadInvert(config, path);
 	}
 
 	@Override
@@ -112,7 +106,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
 		}));
 		m.addItem(useData.getMenuItem("Match Item Data", Material.ENDER_PEARL));
 		m.addItem(data.getMenuItem("Data Value", Material.EYE_OF_ENDER, 0, null));
-		m.addItem(invert.getMenuItem("Invert Result", Material.ENDER_PEARL));
+		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;
 	}

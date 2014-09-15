@@ -62,7 +62,10 @@ public class Node {
 			if(exec.getTrigger() == trigger){
 				boolean cont = true;
 				for(ConditionInterface con : exec.getConditions()){
-					if(!con.checkNodeCondition(player, this, event)){
+					boolean c = con.checkNodeCondition(player, this, event);
+					if(con.isInverted())
+						c = !c;
+					if(!c){
 						cont = false;
 						break;
 					}

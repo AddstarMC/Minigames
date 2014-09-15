@@ -62,12 +62,14 @@ public class MinigameTimerCondition extends ConditionInterface{
 	public void saveArguments(FileConfiguration config, String path) {
 		minTime.saveValue(path, config);
 		maxTime.saveValue(path, config);
+		saveInvert(config, path);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
 		minTime.loadValue(path, config);
 		maxTime.loadValue(path, config);
+		loadInvert(config, path);
 	}
 
 	@Override
@@ -78,6 +80,7 @@ public class MinigameTimerCondition extends ConditionInterface{
 		m.addItem(new MenuItemTime("Max Time", Material.WATCH, maxTime.getCallback(), 0, null));
 		
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
+		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;
 	}

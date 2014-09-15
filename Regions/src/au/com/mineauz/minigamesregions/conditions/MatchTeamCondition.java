@@ -9,7 +9,6 @@ import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
@@ -22,7 +21,6 @@ import au.com.mineauz.minigamesregions.Region;
 public class MatchTeamCondition extends ConditionInterface {
 	
 	private StringFlag team = new StringFlag("RED", "team");
-	private BooleanFlag invert = new BooleanFlag(false, "invert");
 
 	@Override
 	public String getName() {
@@ -46,44 +44,32 @@ public class MatchTeamCondition extends ConditionInterface {
 
 	@Override
 	public boolean checkNodeCondition(MinigamePlayer player, Node node, Event event) {
-		boolean inv = invert.getFlag();
 		if(player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getFlag())){
-			if(!inv)
-				return true;
-			else
-				return false;
-		}
-		if(inv)
 			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public boolean checkRegionCondition(MinigamePlayer player, Region region, Event event) {
 		if(player == null || !player.isInMinigame()) return false;
-		boolean inv = invert.getFlag();
 		if(player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getFlag())){
-			if(!inv)
-				return true;
-			else
-				return false;
-		}
-		if(inv)
 			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
 		team.saveValue(path, config);
-		invert.saveValue(path, config);
+		saveInvert(config, path);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config,
 			String path) {
 		team.loadValue(path, config);
-		invert.loadValue(path, config);
+		loadInvert(config, path);
 	}
 
 	@Override
@@ -105,7 +91,7 @@ public class MatchTeamCondition extends ConditionInterface {
 				return MinigameUtils.capitalize(team.getFlag().replace("_", " "));
 			}
 		}, teams));
-		m.addItem(invert.getMenuItem("Invert Match", Material.ENDER_PEARL));
+		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;
 	}

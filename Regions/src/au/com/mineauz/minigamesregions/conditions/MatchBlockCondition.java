@@ -76,6 +76,7 @@ public class MatchBlockCondition extends ConditionInterface {
 		type.saveValue(path, config);
 		useDur.saveValue(path, config);
 		dur.saveValue(path, config);
+		saveInvert(config, path);
 	}
 
 	@Override
@@ -83,6 +84,7 @@ public class MatchBlockCondition extends ConditionInterface {
 		type.loadValue(path, config);
 		useDur.loadValue(path, config);
 		dur.loadValue(path, config);
+		loadInvert(config, path);
 	}
 
 	@Override
@@ -129,6 +131,7 @@ public class MatchBlockCondition extends ConditionInterface {
 				return c.getItem();
 			}
 		});
+		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;
 	}

@@ -56,12 +56,14 @@ public class PlayerScoreRangeCondition extends ConditionInterface {
 	public void saveArguments(FileConfiguration config, String path) {
 		min.saveValue(path, config);
 		max.saveValue(path, config);
+		saveInvert(config, path);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
 		min.loadValue(path, config);
 		max.loadValue(path, config);
+		loadInvert(config, path);
 	}
 
 	@Override
@@ -70,6 +72,7 @@ public class PlayerScoreRangeCondition extends ConditionInterface {
 		m.addItem(min.getMenuItem("Min Score", Material.STEP));
 		m.addItem(max.getMenuItem("Max Score", Material.DOUBLE_STEP));
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
+		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;
 	}

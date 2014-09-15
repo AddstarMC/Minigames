@@ -5,7 +5,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Team;
@@ -13,8 +12,6 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class ContainsOneTeamCondition extends ConditionInterface {
-	
-	private BooleanFlag invert = new BooleanFlag(false, "invert");
 
 	@Override
 	public String getName() {
@@ -52,26 +49,24 @@ public class ContainsOneTeamCondition extends ConditionInterface {
 				break;
 			}
 		}
-		if(ret && invert.getFlag())
-			return false;
 		return ret;
 	}
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
-		invert.saveValue(path, config);
+		saveInvert(config, path);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
-		invert.loadValue(path, config);
+		loadInvert(config, path);
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Contains One Team", player);
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
-		m.addItem(invert.getMenuItem("Invert", Material.ENDER_PEARL));
+		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;
 	}

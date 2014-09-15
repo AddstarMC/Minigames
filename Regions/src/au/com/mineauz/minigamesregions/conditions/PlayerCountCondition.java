@@ -52,12 +52,14 @@ public class PlayerCountCondition extends ConditionInterface {
 	public void saveArguments(FileConfiguration config, String path) {
 		min.saveValue(path, config);
 		max.saveValue(path, config);
+		saveInvert(config, path);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
 		min.loadValue(path, config);
 		max.saveValue(path, config);
+		loadInvert(config, path);
 	}
 
 	@Override
@@ -66,6 +68,7 @@ public class PlayerCountCondition extends ConditionInterface {
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
 		m.addItem(min.getMenuItem("Min Player Count", Material.STEP, 1, null));
 		m.addItem(max.getMenuItem("Max Player Count", Material.DOUBLE_STEP, 1, null));
+		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;
 	}
