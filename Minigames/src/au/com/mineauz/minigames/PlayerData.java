@@ -194,10 +194,10 @@ public class PlayerData {
 				player.setGamemode(minigame.getDefaultGamemode());
 				if(minigame.getType() == MinigameType.SINGLEPLAYER){
 					if(!minigame.isAllowedFlight()){
-						player.getPlayer().setAllowFlight(false);
+						player.setCanFly(false);
 					}
 					else{
-						player.getPlayer().setAllowFlight(true);
+						player.setCanFly(true);
 						if(minigame.isFlightEnabled())
 							player.getPlayer().setFlying(true);
 					}
@@ -397,7 +397,7 @@ public class PlayerData {
 			minigame.setScore(ply, 1);
 			minigame.setScore(ply, 0);
 			if(minigame.isAllowedFlight()){
-				ply.getPlayer().setAllowFlight(true);
+				ply.setCanFly(true);
 				if(minigame.isFlightEnabled())
 					ply.getPlayer().setFlying(true);
 			}

@@ -405,7 +405,7 @@ public class Events implements Listener{
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
 		if(ply.isInMinigame() && (!ply.getMinigame().isSpectator(ply) || !ply.getMinigame().canSpectateFly()) && 
-				!ply.getMinigame().isAllowedFlight()){
+				!ply.canFly()){
 			event.setCancelled(true);
 			pdata.quitMinigame(ply, true);
 			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noFly"));

@@ -25,6 +25,7 @@ public class MinigamePlayer {
 	private Player player;
 	private boolean allowTP = false;
 	private boolean allowGMChange = false;
+	private boolean canFly = false;
 	private Scoreboard lastScoreboard = null;
 	
 	private Minigame minigame = null;
@@ -427,6 +428,15 @@ public class MinigamePlayer {
 	public void setCanInteract(boolean canInteract) {
 		this.canInteract = canInteract;
 	}
+	
+	public boolean canFly(){
+		return canFly;
+	}
+	
+	public void setCanFly(boolean bool){
+		canFly = bool;
+		player.setAllowFlight(bool);
+	}
 
 	public void resetAllStats(){
 //		setLoadout(null);
@@ -443,6 +453,7 @@ public class MinigamePlayer {
 		setInvincible(false);
 		setCanInteract(true);
 		setLatejoining(false);
+		setCanFly(false);
 		tempClaimedRewards.clear();
 		tempRewardItems.clear();
 		claimedScoreSigns.clear();
