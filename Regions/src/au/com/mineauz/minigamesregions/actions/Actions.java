@@ -44,6 +44,7 @@ public class Actions {
 		addAction("FALLING_BLOCK", FallingBlockAction.class);
 		addAction("ADD_TEAM_SCORE", AddTeamScoreAction.class);
 		addAction("SET_TEAM_SCORE", SetTeamScoreAction.class);
+		addAction("FLIGHT", FlightAction.class);
 	}
 	
 	public static void addAction(String name, Class<? extends ActionInterface> action){
