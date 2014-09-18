@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,6 +131,13 @@ public class Menu {
 			if(inv != null){
 				inv.setItem(slot, null);
 			}
+		}
+	}
+	
+	public void clearMenu(){
+		for(Integer i : new ArrayList<Integer>(pageMap.keySet())){
+			pageMap.remove(i);
+			pageView[i] = null;
 		}
 	}
 	
