@@ -58,10 +58,13 @@ public class JuggernautModule extends MinigameModule{
 	public void setJuggernaut(MinigamePlayer player){
 		if(juggernaut != null){
 			juggernaut.setLoadout(null);
+			juggernaut.getMinigame().getScoreboardManager().getTeam("juggernaut").removePlayer(juggernaut.getPlayer().getPlayer());
 		}
 		juggernaut = player;
 		
 		if(juggernaut != null){
+			player.getMinigame().getScoreboardManager().getTeam("juggernaut").addPlayer(player.getPlayer().getPlayer());
+			
 			juggernaut.sendMessage(MinigameUtils.getLang("player.juggernaut.plyMsg"), null);
 			Minigames.plugin.mdata.sendMinigameMessage(getMinigame(), 
 					MinigameUtils.formStr("player.juggernaut.gameMsg", juggernaut.getDisplayName()), null, juggernaut);

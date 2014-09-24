@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
@@ -69,12 +70,19 @@ public class JuggernautMechanic extends GameMechanicBase{
 				}
 			}
 		}
+		
+		if(minigame.getPlayers().size() == 1){
+			if(minigame.getScoreboardManager().getTeams().contains("juggernaut"))
+				minigame.getScoreboardManager().getTeam("juggernaut").unregister();
+		}
 	}
 
 	@Override
 	public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
 			List<MinigamePlayer> losers) {
 		JuggernautModule.getMinigameModule(minigame).setJuggernaut(null);
+		
+		minigame.getScoreboardManager().getTeam("juggernaut").unregister();
 	}
 	
 	private MinigamePlayer assignNewJuggernaut(List<MinigamePlayer> players, MinigamePlayer exclude){
@@ -100,6 +108,11 @@ public class JuggernautMechanic extends GameMechanicBase{
 	@EventHandler
 	private void minigameStart(StartMinigameEvent event){
 		if(event.getMinigame().getMechanic() == this){
+			Minigame mgm = event.getMinigame();
+			
+			mgm.getScoreboardManager().registerNewTeam("juggernaut");
+			mgm.getScoreboardManager().getTeam("juggernaut").setPrefix(ChatColor.RED.toString());
+			
 			MinigamePlayer j = assignNewJuggernaut(event.getPlayers(), null);
 			JuggernautModule.getMinigameModule(event.getMinigame()).setJuggernaut(j);
 		}
