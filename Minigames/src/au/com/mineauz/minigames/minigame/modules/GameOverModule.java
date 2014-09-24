@@ -30,6 +30,7 @@ public class GameOverModule extends MinigameModule{
 	
 	private List<MinigamePlayer> winners = new ArrayList<MinigamePlayer>();
 	private List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>();
+	private int task = -1;
 
 	public GameOverModule(Minigame mgm) {
 		super(mgm);
@@ -113,7 +114,9 @@ public class GameOverModule extends MinigameModule{
 		}
 		
 		if(timer.getFlag() > 0){
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+			if(task != -1)
+				stopEndGameTimer();
+			task = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
 				
 				@Override
 				public void run() {
@@ -131,6 +134,11 @@ public class GameOverModule extends MinigameModule{
 				}
 			}, timer.getFlag() * 20);
 		}
+	}
+	
+	public void stopEndGameTimer(){
+		if(task != -1)
+			Bukkit.getScheduler().cancelTask(task);
 	}
 	
 	public void setWinners(List<MinigamePlayer> winners){
