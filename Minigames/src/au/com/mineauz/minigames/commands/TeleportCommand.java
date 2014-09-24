@@ -154,17 +154,19 @@ public class TeleportCommand implements ICommand {
 			else if(args.length >= 2 && args[1].equalsIgnoreCase("start")){
 				if(ply.isInMinigame()){
 					int pos = 0;
-					Team team = TeamsModule.getMinigameModule(ply.getMinigame()).getTeam(TeamColor.matchColor(args[3]));
-					if(args.length >= 3 && args[2].matches("[0-9]+") && !args[2].equals("0")){
-						pos = Integer.parseInt(args[2]) - 1;
-					}
+					Team team = null;
+					if(args.length == 3)
+						team = TeamsModule.getMinigameModule(ply.getMinigame()).getTeam(TeamColor.matchColor(args[3]));
+					else if(ply.getTeam() != null)
+						team = ply.getTeam();
 					
-					if(team == null && pos >= ply.getMinigame().getStartLocations().size()){
-						pos = 0;
-					}
-					else if(team != null && pos >= team.getStartLocations().size()){
-						pos = 0;
-					}
+					if(args.length >= 3 && args[2].matches("[0-9]+") && !args[2].equals("0"))
+						pos = Integer.parseInt(args[2]) - 1;
+					
+					if(team == null && pos >= ply.getMinigame().getStartLocations().size())
+						pos = ply.getMinigame().getStartLocations().size() - 1;
+					else if(team != null && pos >= team.getStartLocations().size())
+						pos = team.getStartLocations().size() - 1;
 					
 					if(team != null){
 						ply.teleport(team.getStartLocations().get(pos));
