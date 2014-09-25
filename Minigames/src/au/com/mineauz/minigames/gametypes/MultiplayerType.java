@@ -76,7 +76,7 @@ public class MultiplayerType extends MinigameTypeBase{
 				player.sendMessage(String.format(smTeam.getAssignMessage(), smTeam.getChatColor() + smTeam.getDisplayName()), null);
 				
 				final Team fteam = smTeam;
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				player.setLateJoinTimer(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 					
 					@Override
 					public void run() {
@@ -94,12 +94,13 @@ public class MultiplayerType extends MinigameTypeBase{
 							fply.setLatejoining(false);
 							fply.setFrozen(false);
 							fply.setCanInteract(true);
+							fply.setLateJoinTimer(-1);
 						}
 					}
-				}, 5 * 20); //TODO: Latejoin variable
+				}, 5 * 20)); //TODO: Latejoin variable
 			}
 			else{
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				player.setLateJoinTimer(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 					
 					@Override
 					public void run() {
@@ -111,9 +112,10 @@ public class MultiplayerType extends MinigameTypeBase{
 							fply.setLatejoining(false);
 							fply.setFrozen(false);
 							fply.setCanInteract(true);
+							fply.setLateJoinTimer(-1);
 						}
 					}
-				}, 5 * 20); //TODO: Latejoin variable
+				}, 5 * 20)); //TODO: Latejoin variable
 			}
 			player.getPlayer().setScoreboard(mgm.getScoreboardManager());
 			mgm.setScore(player, 1);

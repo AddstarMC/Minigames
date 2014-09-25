@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -63,6 +64,7 @@ public class MinigamePlayer {
 	private List<String> tempClaimedRewards = new ArrayList<String>();
 	private List<ItemStack> tempRewardItems = new ArrayList<ItemStack>();
 	private List<String> claimedScoreSigns = new ArrayList<String>();
+	private int lateJoinTimer = -1;
 	
 	public MinigamePlayer(Player player){
 		this.player = player;
@@ -457,6 +459,10 @@ public class MinigamePlayer {
 		tempClaimedRewards.clear();
 		tempRewardItems.clear();
 		claimedScoreSigns.clear();
+		if(lateJoinTimer != -1){
+			Bukkit.getScheduler().cancelTask(lateJoinTimer);
+			setLateJoinTimer(-1);
+		}
 	}
 	
 	public boolean isLatejoining() {
@@ -714,5 +720,9 @@ public class MinigamePlayer {
 				}
 			}
 		}
+	}
+	
+	public void setLateJoinTimer(int taskID){
+		lateJoinTimer = taskID;
 	}
 }
