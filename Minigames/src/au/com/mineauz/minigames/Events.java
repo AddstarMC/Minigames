@@ -421,8 +421,7 @@ public class Events implements Listener{
 			event.setCancelled(true);
 			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noRevert", event.getMinigamePlayer().getMinigame().getType().getName()));
 		}
-		else if(event.getMinigamePlayer().getMinigame().getMpTimer() != null && 
-				event.getMinigamePlayer().getMinigame().getMpTimer().getStartWaitTimeLeft() != 0){
+		else if(!event.getMinigamePlayer().getMinigame().hasStarted()){
 			event.setCancelled(true);
 		}
 	}
