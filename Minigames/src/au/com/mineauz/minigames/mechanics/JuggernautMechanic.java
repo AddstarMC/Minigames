@@ -59,7 +59,9 @@ public class JuggernautMechanic extends GameMechanicBase{
 			boolean forced) {
 		JuggernautModule jm = JuggernautModule.getMinigameModule(minigame);
 		if(jm.getJuggernaut() != null && jm.getJuggernaut() == player){
-			if(!forced){
+			jm.setJuggernaut(null);
+			
+			if(!forced && minigame.getPlayers().size() > 1){
 				MinigamePlayer j = assignNewJuggernaut(minigame.getPlayers(), player);
 				
 				if(j != null){
@@ -72,7 +74,7 @@ public class JuggernautMechanic extends GameMechanicBase{
 		}
 		
 		if(minigame.getPlayers().size() == 1){
-			if(minigame.getScoreboardManager().getTeams().contains("juggernaut"))
+			if(minigame.getScoreboardManager().getTeam("juggernaut") != null)
 				minigame.getScoreboardManager().getTeam("juggernaut").unregister();
 		}
 	}
