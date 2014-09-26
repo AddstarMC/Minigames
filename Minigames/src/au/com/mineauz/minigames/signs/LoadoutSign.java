@@ -70,7 +70,7 @@ public class LoadoutSign implements MinigameSign {
 						player.sendMessage(MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)), null);
 						
 						if(mgm.getType() == MinigameType.SINGLEPLAYER || 
-								(mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
+								mgm.hasStarted()){
 							if(sign.getLine(3).equalsIgnoreCase("respawn")){
 								player.sendMessage(MinigameUtils.getLang("sign.loadout.nextRespawn"), null);
 							}
@@ -91,7 +91,7 @@ public class LoadoutSign implements MinigameSign {
 						player.sendMessage(MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)), null);
 	
 						if(mgm.getType() == MinigameType.SINGLEPLAYER || 
-								(mgm.getMpTimer() != null && mgm.getMpTimer().getStartWaitTimeLeft() == 0)){
+								mgm.hasStarted()){
 							if(sign.getLine(3).equalsIgnoreCase("respawn")){
 								player.sendMessage(MinigameUtils.getLang("sign.loadout.nextRespawn"), null);
 							}
