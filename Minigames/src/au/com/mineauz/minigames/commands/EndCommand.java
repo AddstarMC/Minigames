@@ -94,12 +94,17 @@ public class EndCommand implements ICommand{
 				List<Player> players = plugin.getServer().matchPlayer(args[0]);
 				MinigamePlayer ply = null;
 				Team team = null;
-				TeamColor color = TeamColor.matchColor(args[0]);
 				Minigame mgm = null;
-				if(color != null && args.length == 2 && plugin.mdata.hasMinigame(args[1])){
+				if(args.length == 2 && plugin.mdata.hasMinigame(args[1])){
+					TeamColor color = TeamColor.matchColor(args[0]);
 					mgm = plugin.mdata.getMinigame(args[1]);
-					if(TeamsModule.getMinigameModule(minigame).hasTeam(color)){
-						team = TeamsModule.getMinigameModule(minigame).getTeam(color);
+					if(mgm == null){
+						sender.sendMessage(ChatColor.RED + "No minigme found by the name " + args[1]);
+						return true;
+					}
+					
+					if(TeamsModule.getMinigameModule(mgm).hasTeam(color)){
+						team = TeamsModule.getMinigameModule(mgm).getTeam(color);
 					}
 					else{
 						sender.sendMessage(ChatColor.RED + "No team found by the name " + args[0] + " in " + mgm.getName(false));
@@ -138,19 +143,19 @@ public class EndCommand implements ICommand{
 					if(mgm.hasPlayers()){
 						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(team.getPlayers());
 						int lcount = 0;
-						for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
+						for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 							if(t != team){
 								lcount += t.getPlayers().size();
 							}
 						}
 						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(lcount);
-						for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
+						for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 							if(t != team){
 								l.addAll(t.getPlayers());
 							}
 						}
-						plugin.pdata.endMinigame(minigame, w, l);
-						sender.sendMessage(ChatColor.GRAY + "You forced " + team.getColor() + team.getDisplayName() + ChatColor.WHITE + " to win the Minigame.");
+						plugin.pdata.endMinigame(mgm, w, l);
+						sender.sendMessage(ChatColor.GRAY + "You forced " + team.getChatColor() + team.getDisplayName() + ChatColor.GRAY + " to win the Minigame.");
 					}
 					else{
 						sender.sendMessage(ChatColor.RED + "This Minigame has no players!");
