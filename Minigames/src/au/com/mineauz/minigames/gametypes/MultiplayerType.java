@@ -192,11 +192,12 @@ public class MultiplayerType extends MinigameTypeBase{
 		else if(mgm.getPlayers().size() - 1 < mgm.getMinPlayers() && 
 				mgm.getMpTimer() != null && 
 				mgm.getMpTimer().getStartWaitTimeLeft() != 0 && 
-				!mgm.hasStarted()){
+				(mgm.getState() == MinigameState.STARTING || mgm.getState() == MinigameState.WAITING)){
 			mgm.getMpTimer().setPlayerWaitTime(Minigames.plugin.getConfig().getInt("multiplayer.waitforplayers"));
 			mgm.getMpTimer().pauseTimer();
 			mgm.getMpTimer().removeTimer();
 			mgm.setMpTimer(null);
+			mgm.setState(MinigameState.IDLE);
 			mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("minigame.waitingForPlayers", 1), null, null);
 		}
 	}
