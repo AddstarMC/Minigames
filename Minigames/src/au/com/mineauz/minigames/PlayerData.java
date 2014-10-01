@@ -552,9 +552,6 @@ public class PlayerData {
 				if(!forced){
 					mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.quit.plyMsg", player.getName(), minigame.getName(true)), "error", player);
 				}
-				else{
-					mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.quit.plyForcedMsg", player.getName(), minigame.getName(true)), "error", player);
-				}
 				plugin.getLogger().info(player.getName() + " quit " + minigame);
 				player.updateInventory();
 			}

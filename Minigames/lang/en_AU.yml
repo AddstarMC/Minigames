@@ -32,7 +32,6 @@ player:
   quit:
     consMsg: "%s quit %s"
     plyMsg: "%s has left %s"
-    plyForcedMsg: "%s was removed from %s"
     plyBeatenMsg: "You have been beaten, bad luck!"
     plyOutOfLives: "Bad luck! Leaving the Minigame."
   end:
