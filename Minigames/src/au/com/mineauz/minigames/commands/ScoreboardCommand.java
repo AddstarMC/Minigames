@@ -151,12 +151,15 @@ public class ScoreboardCommand implements ICommand{
 		else if(args.length == 3){
 			return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("asc;desc"), args[2]);
 		}
-		else if(args.length >= 5 && args[args.length - 2].equals("-p")){
+		else if(args.length == 4){
+			return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("-p"), args[3]);
+		}
+		else if(args.length == 5 && args[3].equals("-p")){
 			List<String> pl = new ArrayList<String>();
 			for(Player p : plugin.getServer().getOnlinePlayers()){
 				pl.add(p.getName());
 			}
-			return MinigameUtils.tabCompleteMatch(pl, args[5]);
+			return MinigameUtils.tabCompleteMatch(pl, args[4]);
 		}
 		return null;
 	}
