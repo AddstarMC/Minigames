@@ -1,5 +1,12 @@
 package au.com.mineauz.minigames.blockRecorder;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,10 +19,12 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -34,6 +43,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
@@ -42,6 +52,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -291,6 +302,7 @@ public class RecorderData implements Listener{
 	}
 	
 	public void restoreBlocks(){
+//		saveAllBlockData();
 		restoreBlocks(null);
 	}
 	
@@ -487,6 +499,147 @@ public class RecorderData implements Listener{
 			return true;
 		}
 		return false;
+	}
+	
+	public void saveAllBlockData(){
+		File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.dat");
+		
+		try {
+			BufferedWriter wr = new BufferedWriter(new FileWriter(f));
+			int c = 0;
+			for(BlockData bd : blockdata.values()){
+				wr.write(bd.toString());
+				c++;
+				if(c >= 10){
+					wr.newLine();
+					c = 0;
+				}
+			}
+			
+			wr.close();
+		} 
+		catch (FileNotFoundException e) {
+			Bukkit.getLogger().severe("File not found!!!");
+			e.printStackTrace();
+		} 
+		catch (IOException e) {
+			Bukkit.getLogger().severe("IO Error!");
+			e.printStackTrace();
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	public boolean restoreBlockData(){
+		File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.dat");
+		
+		if(!f.exists()){
+			Bukkit.getLogger().info("No backup file found for " + minigame.getName(false));
+			return false;
+		}
+		
+		try{
+			BufferedReader br = new BufferedReader(new FileReader(f));
+			
+			Map<String, String> args = new HashMap<String, String>();
+			String line;
+			String[] blocks;
+			String[] block;
+			World w;
+			BlockData bd;
+			BlockState state;
+			ItemStack[] items;
+			String[] sitems;
+			ItemStack item;
+			Map<String, String> iargs = new HashMap<String, String>();
+			
+			while(br.ready()){
+				line = br.readLine();
+				
+				blocks = line.split("\\}\\{");
+				
+				for(String bl : blocks){
+					args.clear();
+					
+					bl = bl.replace("{", "");
+					bl = bl.replace("}", "");
+					
+					block = bl.split(";");
+					for(String b : block){
+						String[] spl = b.split(":");
+						if(spl.length > 1){
+							args.put(spl[0], spl[1]);
+						}
+					}
+					
+					w = Bukkit.getWorld(args.get("world"));
+					state = w.getBlockAt(Integer.valueOf(args.get("x")), Integer.valueOf(args.get("y")), Integer.valueOf(args.get("z"))).getState();
+					state.setType(Material.getMaterial(args.get("mat")));
+					state.setRawData(Byte.valueOf(args.get("data")));
+					
+					bd = new BlockData(state, null);
+					
+					if(args.containsKey("items")){
+						if(state.getType() == Material.DISPENSER || state.getType() == Material.DROPPER){
+							items = new ItemStack[InventoryType.DISPENSER.getDefaultSize()];
+						}
+						else if(state.getType() == Material.HOPPER){
+							items = new ItemStack[InventoryType.HOPPER.getDefaultSize()];
+						}
+						else if(state.getType() == Material.FURNACE){
+							items = new ItemStack[InventoryType.FURNACE.getDefaultSize()];
+						}
+						else if(state.getType() == Material.BREWING_STAND){
+							items = new ItemStack[InventoryType.BREWING.getDefaultSize()];
+						}
+						else{
+							items = new ItemStack[InventoryType.CHEST.getDefaultSize()];
+						}
+						
+						sitems = args.get("items").split("\\)\\(");
+						
+						for(String i : sitems){
+							i = i.replace("(", "");
+							i = i.replace(")", "");
+							
+							for(String s : i.split("\\|")){
+								String[] spl = s.split("-");
+								if(spl.length > 1){
+									iargs.put(s.split("-")[0], s.split("-")[1]);
+								}
+							}
+							
+							item = new ItemStack(Material.getMaterial(iargs.get("item")), 
+									Integer.valueOf(iargs.get("c")), Short.valueOf(iargs.get("dur")));
+							
+							if(iargs.containsKey("enc")){
+								for(String s : iargs.get("enc").split("\\]\\[")){
+									item.addUnsafeEnchantment(Enchantment.getByName(s.split(",")[0].replace("[", "")), 
+											Integer.valueOf(s.split(",")[1].replace("]", "")));
+								}
+							}
+							
+							items[Integer.valueOf(iargs.get("slot"))] = item;
+							iargs.clear();
+						}
+						
+						bd.setItems(items);
+					}
+					
+					blockdata.put(MinigameUtils.createLocationID(bd.getLocation()), bd);
+				}
+			}
+			
+			br.close();
+		}
+		catch (FileNotFoundException e){
+			Bukkit.getLogger().severe("File not found!!!");
+			e.printStackTrace();
+		} catch (IOException e) {
+			Bukkit.getLogger().severe("IO Error!");
+			e.printStackTrace();
+		}
+		
+		return true;
 	}
 	
 	@EventHandler(ignoreCancelled = true)

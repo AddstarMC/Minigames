@@ -45,7 +45,8 @@ public class RollbackScheduler implements Runnable {
 		while(physIterator.hasNext()){
 			BlockData bdata = physIterator.next();
 			bdata.getBlockState().update(true);
-			if(bdata.getBlockState().getType() == Material.SIGN_POST || bdata.getBlockState().getType() == Material.WALL_SIGN){
+			if((bdata.getBlockState().getType() == Material.SIGN_POST || bdata.getBlockState().getType() == Material.WALL_SIGN) && 
+					bdata.getBlockState() instanceof Sign){
 				Sign sign = (Sign) bdata.getLocation().getBlock().getState();
 				Sign signOld = (Sign) bdata.getBlockState();
 				sign.setLine(0, signOld.getLine(0));

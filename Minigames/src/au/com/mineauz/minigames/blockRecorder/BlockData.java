@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -118,5 +119,46 @@ public class BlockData {
 	
 	public boolean hasRandomized(){
 		return hasRandomized;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public String toString(){
+		String ret = "{";
+		ret += "mat:" + state.getType().toString() + ";";
+		ret += "data:" + state.getData().getData() + ";";
+		ret += "x:" + state.getX() + ";";
+		ret += "y:" + state.getY() + ";";
+		ret += "z:" + state.getZ() + ";";
+		ret += "world:" + state.getWorld().getName();
+		if(items != null){
+			ret += ";";
+			
+			int c = 0;
+			ret += "items:";
+			for(ItemStack i : items){
+				if(i != null){
+					ret += "(";
+					ret += "item-" + i.getType().toString() + "|";
+					ret += "dur-" + i.getDurability() + "|";
+					ret += "c-" + i.getAmount() + "|";
+					if(!i.getEnchantments().isEmpty()){
+						ret += "enc-";
+						for(Enchantment e : i.getEnchantments().keySet()){
+							ret += "[";
+							ret += e.getName() + ",";
+							ret += i.getEnchantments().get(e);
+							ret += "]";
+						}
+						ret += "|";
+					}
+					ret += "slot-" + c;
+					ret += ")";
+				}
+				c++;
+			}
+		}
+		ret += "}";
+		return ret;
 	}
 }
