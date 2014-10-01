@@ -456,9 +456,10 @@ public class Events implements Listener{
 							event.setCancelled(true);
 							return;
 						}
+						
 						Team plyTeam = ply.getTeam();
 						Team atcTeam = shooter.getTeam();
-						if(plyTeam != atcTeam){
+						if(!mgm.isTeamGame() || plyTeam != atcTeam){
 							int damage = mgm.getPaintBallDamage();
 							event.setDamage(damage);
 						}
