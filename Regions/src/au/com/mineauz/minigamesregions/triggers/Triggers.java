@@ -23,6 +23,8 @@ public class Triggers {
 		addTrigger(new RemoteTrigger());
 		addTrigger(new RespawnTrigger());
 		addTrigger(new TickTrigger());
+		addTrigger(new ItemPickupTrigger());
+		addTrigger(new ItemDropTrigger());
 	}
 	
 	public static void addTrigger(Trigger trigger){

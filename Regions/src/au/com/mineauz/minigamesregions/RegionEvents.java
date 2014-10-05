@@ -9,8 +9,10 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.Event;
 
@@ -25,6 +27,7 @@ import au.com.mineauz.minigames.events.StartMinigameEvent;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigamesregions.events.EnterRegionEvent;
 import au.com.mineauz.minigamesregions.events.LeaveRegionEvent;
+import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
 
 public class RegionEvents implements Listener{
@@ -51,6 +54,10 @@ public class RegionEvents implements Listener{
 				}
 			}
 		}
+	}
+	
+	private RegionModule getRegionModule(Minigame minigame){
+		return RegionModule.getMinigameModule(minigame);
 	}
 	
 	@EventHandler(ignoreCancelled = true)
@@ -256,8 +263,46 @@ public class RegionEvents implements Listener{
 	
 	@EventHandler
 	private void minigameTimerTick(MinigameTimerTickEvent event){
-		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
+		for(Node node : getRegionModule(event.getMinigame()).getNodes()){
 			node.execute(Triggers.getTrigger("MINIGAME_TIMER"), null, event);
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	private void itemPickupEvent(PlayerPickupItemEvent event){
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply == null) return;
+		
+		if(ply.isInMinigame()){
+			Trigger trig = Triggers.getTrigger("ITEM_PICKUP");
+			for(Node node : getRegionModule(ply.getMinigame()).getNodes()){
+				node.execute(trig, ply, event);
+			}
+			
+			for(Region region : getRegionModule(ply.getMinigame()).getRegions()){
+				if(region.hasPlayer(ply)){
+					region.execute(trig, ply, event);
+				}
+			}
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	private void itemPickupEvent(PlayerDropItemEvent event){
+		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		if(ply == null) return;
+		
+		if(ply.isInMinigame()){
+			Trigger trig = Triggers.getTrigger("ITEM_DROP");
+			for(Node node : getRegionModule(ply.getMinigame()).getNodes()){
+				node.execute(trig, ply, event);
+			}
+			
+			for(Region region : getRegionModule(ply.getMinigame()).getRegions()){
+				if(region.hasPlayer(ply)){
+					region.execute(trig, ply, event);
+				}
+			}
 		}
 	}
 }
