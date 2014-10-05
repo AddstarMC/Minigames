@@ -49,6 +49,8 @@ public class Actions {
 		addAction("LIGHTNING", LightningAction.class);
 		addAction("TELEPORT", TeleportAction.class);
 		addAction("BROADCAST", BroadcastAction.class);
+		addAction("GIVE_ITEM", GiveItemAction.class);
+		addAction("TAKE_ITEM", TakeItemAction.class);
 	}
 	
 	public static void addAction(String name, Class<? extends ActionInterface> action){
