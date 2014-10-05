@@ -23,6 +23,7 @@ public class Triggers {
 		addTrigger(new RemoteTrigger());
 		addTrigger(new RespawnTrigger());
 		addTrigger(new TickTrigger());
+		addTrigger(new MinigameTimerTrigger());
 		addTrigger(new ItemPickupTrigger());
 		addTrigger(new ItemDropTrigger());
 	}
