@@ -7,7 +7,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -51,13 +50,13 @@ public class PlaySoundAction extends ActionInterface {
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
-			Region region, Event event) {
+			Region region) {
 		execute(player, player.getLocation());
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Node node, Event event) {
+			Node node) {
 		execute(player, node.getLocation());
 	}
 	

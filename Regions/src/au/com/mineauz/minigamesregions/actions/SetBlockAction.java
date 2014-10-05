@@ -4,7 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.BooleanFlag;
@@ -46,7 +45,7 @@ public class SetBlockAction extends ActionInterface {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
-			Region region, Event event) {
+			Region region) {
 		Location temp = region.getFirstPoint();
 		for(int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++){
 			temp.setY(y);
@@ -69,7 +68,7 @@ public class SetBlockAction extends ActionInterface {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Node node, Event event) {
+			Node node) {
 		BlockState bs = node.getLocation().getBlock().getState();
 		bs.setType(Material.getMaterial(type.getFlag()));
 		if(usedur.getFlag()){

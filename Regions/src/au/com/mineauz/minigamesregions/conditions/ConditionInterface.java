@@ -2,7 +2,6 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.BooleanFlag;
@@ -30,8 +29,8 @@ public abstract class ConditionInterface {
 	public abstract String getCategory();
 	public abstract boolean useInRegions();
 	public abstract boolean useInNodes();
-	public abstract boolean checkRegionCondition(MinigamePlayer player, Region region, Event event);
-	public abstract boolean checkNodeCondition(MinigamePlayer player, Node node, Event event);
+	public abstract boolean checkRegionCondition(MinigamePlayer player, Region region);
+	public abstract boolean checkNodeCondition(MinigamePlayer player, Node node);
 	public abstract void saveArguments(FileConfiguration config, String path);
 	public abstract void loadArguments(FileConfiguration config, String path);
 	public abstract boolean displayMenu(MinigamePlayer player, Menu prev);

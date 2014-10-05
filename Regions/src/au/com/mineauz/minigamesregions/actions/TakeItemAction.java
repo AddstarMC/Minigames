@@ -2,7 +2,6 @@ package au.com.mineauz.minigamesregions.actions;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -44,13 +43,12 @@ public class TakeItemAction extends ActionInterface{
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region,
-			Event event) {
+	public void executeRegionAction(MinigamePlayer player, Region region) {
 		execute(player);
 	}
 
 	@Override
-	public void executeNodeAction(MinigamePlayer player, Node node, Event event) {
+	public void executeNodeAction(MinigamePlayer player, Node node) {
 		execute(player);
 	}
 	

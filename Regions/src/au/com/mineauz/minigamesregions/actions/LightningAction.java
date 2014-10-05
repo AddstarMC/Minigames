@@ -5,7 +5,6 @@ import java.util.Random;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.BooleanFlag;
@@ -39,8 +38,7 @@ public class LightningAction extends ActionInterface{
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region,
-			Event event) {
+	public void executeRegionAction(MinigamePlayer player, Region region) {
 		Random rand = new Random();
 		double xrand = rand.nextDouble() *
 				(region.getSecondPoint().getBlockX() - region.getFirstPoint().getBlockX()) +
@@ -64,7 +62,7 @@ public class LightningAction extends ActionInterface{
 	}
 
 	@Override
-	public void executeNodeAction(MinigamePlayer player, Node node, Event event) {
+	public void executeNodeAction(MinigamePlayer player, Node node) {
 		if(effect.getFlag())
 			node.getLocation().getWorld().strikeLightningEffect(node.getLocation());
 		else

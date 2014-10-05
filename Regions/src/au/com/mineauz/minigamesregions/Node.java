@@ -62,7 +62,7 @@ public class Node {
 			if(exec.getTrigger() == trigger){
 				boolean cont = true;
 				for(ConditionInterface con : exec.getConditions()){
-					boolean c = con.checkNodeCondition(player, this, event);
+					boolean c = con.checkNodeCondition(player, this);
 					if(con.isInverted())
 						c = !c;
 					if(!c){
@@ -76,7 +76,7 @@ public class Node {
 		}
 		for(NodeExecutor exec : toExecute){
 			for(ActionInterface act : exec.getActions()){
-				act.executeNodeAction(player, this, event);
+				act.executeNodeAction(player, this);
 				if(!exec.isTriggerPerPlayer())
 					exec.addPublicTrigger();
 				else

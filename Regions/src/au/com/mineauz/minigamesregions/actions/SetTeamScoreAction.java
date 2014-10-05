@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -47,13 +46,13 @@ public class SetTeamScoreAction extends ActionInterface {
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
-			Region region, Event event) {
+			Region region) {
 		executeAction(player);
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Node node, Event event) {
+			Node node) {
 		executeAction(player);
 	}
 	

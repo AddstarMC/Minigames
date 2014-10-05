@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -43,7 +42,7 @@ public class MatchTeamCondition extends ConditionInterface {
 	}
 
 	@Override
-	public boolean checkNodeCondition(MinigamePlayer player, Node node, Event event) {
+	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
 		if(player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getFlag())){
 			return true;
 		}
@@ -51,7 +50,7 @@ public class MatchTeamCondition extends ConditionInterface {
 	}
 
 	@Override
-	public boolean checkRegionCondition(MinigamePlayer player, Region region, Event event) {
+	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
 		if(player == null || !player.isInMinigame()) return false;
 		if(player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getFlag())){
 			return true;

@@ -1,7 +1,6 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
@@ -31,12 +30,11 @@ public class TeleportAction extends ActionInterface{
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region,
-			Event event) {
+	public void executeRegionAction(MinigamePlayer player, Region region) {
 	}
 
 	@Override
-	public void executeNodeAction(MinigamePlayer player, Node node, Event event) {
+	public void executeNodeAction(MinigamePlayer player, Node node) {
 		player.teleport(node.getLocation());
 	}
 

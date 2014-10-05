@@ -11,7 +11,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.Event;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
@@ -70,12 +69,11 @@ public class SpawnEntityAction extends ActionInterface {
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
-			Region region, Event event) {
+			Region region) {
 	}
 
 	@Override
-	public void executeNodeAction(MinigamePlayer player, Node node,
-			Event event) {
+	public void executeNodeAction(MinigamePlayer player, Node node) {
 		if(player == null || !player.isInMinigame()) return;
 		final Entity ent = node.getLocation().getWorld().spawnEntity(node.getLocation(), EntityType.valueOf(type.getFlag()));
 		

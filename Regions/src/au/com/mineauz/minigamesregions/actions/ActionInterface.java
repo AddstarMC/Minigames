@@ -1,7 +1,6 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
@@ -13,8 +12,8 @@ public abstract class ActionInterface {
 	public abstract String getCategory();
 	public abstract boolean useInRegions();
 	public abstract boolean useInNodes();
-	public abstract void executeRegionAction(MinigamePlayer player, Region region, Event event);
-	public abstract void executeNodeAction(MinigamePlayer player, Node node, Event event);
+	public abstract void executeRegionAction(MinigamePlayer player, Region region);
+	public abstract void executeNodeAction(MinigamePlayer player, Node node);
 	public abstract void saveArguments(FileConfiguration config, String path);
 	public abstract void loadArguments(FileConfiguration config, String path);
 	public abstract boolean displayMenu(MinigamePlayer player, Menu previous);

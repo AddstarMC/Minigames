@@ -2,7 +2,6 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.IntegerFlag;
@@ -38,12 +37,12 @@ public class TeamScoreRangeCondition extends ConditionInterface {
 	}
 
 	@Override
-	public boolean checkRegionCondition(MinigamePlayer player, Region region, Event event) {
+	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
 		return checkCondition(player);
 	}
 
 	@Override
-	public boolean checkNodeCondition(MinigamePlayer player, Node node, Event event) {
+	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
 		return checkCondition(player);
 	}
 	

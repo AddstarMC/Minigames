@@ -3,7 +3,6 @@ package au.com.mineauz.minigamesregions.actions;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -41,13 +40,13 @@ public class ExecuteCommandAction extends ActionInterface {
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
-			Region region, Event event) {
+			Region region) {
 		execute();
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
-			Node node, Event event) {
+			Node node) {
 		execute();
 	}
 	

@@ -4,7 +4,6 @@ import java.util.Random;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.IntegerFlag;
@@ -38,12 +37,12 @@ public class RandomChanceCondition extends ConditionInterface {
 	}
 
 	@Override
-	public boolean checkRegionCondition(MinigamePlayer player, Region region, Event event) {
+	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
 		return check();
 	}
 
 	@Override
-	public boolean checkNodeCondition(MinigamePlayer player, Node node, Event event) {
+	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
 		return check();
 	}
 	

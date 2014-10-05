@@ -2,7 +2,6 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -43,12 +42,12 @@ public class PlayerHasItemCondition extends ConditionInterface {
 	}
 
 	@Override
-	public boolean checkRegionCondition(MinigamePlayer player, Region region, Event event) {
+	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
 		return check(player);
 	}
 
 	@Override
-	public boolean checkNodeCondition(MinigamePlayer player, Node node, Event event) {
+	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
 		return check(player);
 	}
 	
