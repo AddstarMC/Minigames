@@ -45,7 +45,7 @@ public class TriggerRegionAction extends ActionInterface {
 		if(mg != null){
 			RegionModule rmod = RegionModule.getMinigameModule(mg);
 			if(rmod.hasRegion(this.region.getFlag()))
-				rmod.getRegion(this.region.getFlag()).execute(Triggers.getTrigger("REMOTE"), player, null);
+				rmod.getRegion(this.region.getFlag()).execute(Triggers.getTrigger("REMOTE"), player);
 		}
 	}
 
@@ -56,7 +56,7 @@ public class TriggerRegionAction extends ActionInterface {
 		if(mg != null){
 			RegionModule rmod = RegionModule.getMinigameModule(mg);
 			if(rmod.hasRegion(region.getFlag()))
-				rmod.getRegion(region.getFlag()).execute(Triggers.getTrigger("REMOTE"), player, null);
+				rmod.getRegion(region.getFlag()).execute(Triggers.getTrigger("REMOTE"), player);
 		}
 	}
 

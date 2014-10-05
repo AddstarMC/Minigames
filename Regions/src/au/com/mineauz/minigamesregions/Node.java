@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
@@ -56,7 +55,7 @@ public class Node {
 		}
 	}
 	
-	public void execute(Trigger trigger, MinigamePlayer player, Event event){
+	public void execute(Trigger trigger, MinigamePlayer player){
 		List<NodeExecutor> toExecute = new ArrayList<NodeExecutor>();
 		for(NodeExecutor exec : executors){
 			if(exec.getTrigger() == trigger){

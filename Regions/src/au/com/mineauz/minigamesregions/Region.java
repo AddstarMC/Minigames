@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.event.Event;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -35,7 +34,7 @@ public class Region {
 			public void run() {
 				List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>(players);
 				for(MinigamePlayer player : plys){
-					execute(Triggers.getTrigger("TICK"), player, null);
+					execute(Triggers.getTrigger("TICK"), player);
 				}
 			}
 		}, 0, taskDelay);
@@ -156,7 +155,7 @@ public class Region {
 			public void run() {
 				List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>(players);
 				for(MinigamePlayer player : plys){
-					execute(Triggers.getTrigger("TICK"), player, null);
+					execute(Triggers.getTrigger("TICK"), player);
 				}
 			}
 		}, 0, delay);
@@ -170,7 +169,7 @@ public class Region {
 		Bukkit.getScheduler().cancelTask(taskID);
 	}
 	
-	public void execute(Trigger trigger, MinigamePlayer player, Event event){
+	public void execute(Trigger trigger, MinigamePlayer player){
 		List<RegionExecutor> toExecute = new ArrayList<RegionExecutor>();
 		for(RegionExecutor exec : executors){
 			if(exec.getTrigger() == trigger){
