@@ -48,6 +48,7 @@ public class Actions {
 		addAction("VELOCITY", VelocityAction.class);
 		addAction("LIGHTNING", LightningAction.class);
 		addAction("TELEPORT", TeleportAction.class);
+		addAction("BROADCAST", BroadcastAction.class);
 	}
 	
 	public static void addAction(String name, Class<? extends ActionInterface> action){
