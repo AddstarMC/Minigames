@@ -107,8 +107,7 @@ public class RegionModule extends MinigameModule {
 			Node n = nodes.get(name);
 			Map<String, Object> sloc = MinigameUtils.serializeLocation(n.getLocation());
 			for(String i : sloc.keySet()){
-				if(!i.equals("yaw") && !i.equals("pitch"))
-					config.set(getMinigame() + ".nodes." + name + ".point." + i, sloc.get(i));
+				config.set(getMinigame() + ".nodes." + name + ".point." + i, sloc.get(i));
 			}
 			
 			int c = 0;
@@ -201,7 +200,13 @@ public class RegionModule extends MinigameModule {
 				double x1 = config.getDouble(cloc1 + "x");
 				double y1 = config.getDouble(cloc1 + "y");
 				double z1 = config.getDouble(cloc1 + "z");
-				Location loc1 = new Location(w1, x1, y1, z1);
+				float yaw = 0f;
+				float pitch = 0f;
+				if(config.contains(cloc1 + "yaw")){ //TODO: Remove check after next dev build
+					yaw = ((Double) config.getDouble(cloc1 + "yaw")).floatValue();
+					pitch = ((Double) config.getDouble(cloc1 + "pitch")).floatValue();
+				}
+				Location loc1 = new Location(w1, x1, y1, z1, yaw, pitch);
 				
 				nodes.put(name, new Node(name, loc1));
 				Node n = nodes.get(name);
