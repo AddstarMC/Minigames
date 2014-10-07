@@ -1,16 +1,16 @@
 package au.com.mineauz.minigamesregions.menuitems;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.NodeExecutor;
-import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
 
 public class MenuItemNodeExecutorAdd extends MenuItem{
@@ -29,34 +29,19 @@ public class MenuItemNodeExecutorAdd extends MenuItem{
 	
 	@Override
 	public ItemStack onClick(){
-		MinigamePlayer ply = getContainer().getViewer();
-		ply.setNoClose(true);
-		ply.getPlayer().closeInventory();
-		ply.sendMessage("Enter the name of a trigger to create a new executor. "
-				+ "Window will reopen in 60s if nothing is entered.", null);
-		ply.sendMessage("Triggers: " + MinigameUtils.listToString(Triggers.getAllNodeTriggers()));
-		ply.setManualEntry(this);
-
-		getContainer().startReopenTimer(60);
-		return null;
-	}
-	
-	@Override
-	public void checkValidEntry(String entry){
-		if(Triggers.getAllNodeTriggers().contains(entry.toUpperCase())){
-			Trigger trig = Triggers.getTrigger(entry.toUpperCase());
-			
-			final NodeExecutor ex = new NodeExecutor(trig);
-			node.addExecutor(ex);
-			
-			getContainer().addItem(new MenuItemNodeExecutor(node, ex));
-			getContainer().cancelReopenTimer();
-			getContainer().displayMenu(getContainer().getViewer());
-			return;
-		}
-		getContainer().cancelReopenTimer();
-		getContainer().displayMenu(getContainer().getViewer());
+		Menu m = new Menu(6, "Select Trigger", getContainer().getViewer());
 		
-		getContainer().getViewer().sendMessage("Invalid trigger type!", "error");
+		List<String> triggers = new ArrayList<String>(Triggers.getAllNodeTriggers());
+		Collections.sort(triggers);
+		
+		for(String trig : triggers){
+			m.addItem(new MenuItemTrigger(Triggers.getTrigger(trig), node, getContainer()));
+		}
+		
+		m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
+		
+		m.displayMenu(getContainer().getViewer());
+		
+		return null;
 	}
 }

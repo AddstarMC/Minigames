@@ -1,16 +1,16 @@
 package au.com.mineauz.minigamesregions.menuitems;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigamesregions.Region;
-import au.com.mineauz.minigamesregions.RegionExecutor;
-import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
 
 public class MenuItemRegionExecutorAdd extends MenuItem{
@@ -29,34 +29,19 @@ public class MenuItemRegionExecutorAdd extends MenuItem{
 	
 	@Override
 	public ItemStack onClick(){
-		MinigamePlayer ply = getContainer().getViewer();
-		ply.setNoClose(true);
-		ply.getPlayer().closeInventory();
-		ply.sendMessage("Enter the name of a trigger to create a new executor. "
-				+ "Window will reopen in 60s if nothing is entered.", null);
-		ply.sendMessage("Triggers: " + MinigameUtils.listToString(Triggers.getAllRegionTriggers()));
-		ply.setManualEntry(this);
-
-		getContainer().startReopenTimer(60);
-		return null;
-	}
-	
-	@Override
-	public void checkValidEntry(String entry){
-		if(Triggers.getAllRegionTriggers().contains(entry.toUpperCase())){
-			Trigger trig = Triggers.getTrigger(entry.toUpperCase());
-			
-			final RegionExecutor ex = new RegionExecutor(trig);
-			region.addExecutor(ex);
-			
-			getContainer().addItem(new MenuItemRegionExecutor(region, ex));
-			getContainer().cancelReopenTimer();
-			getContainer().displayMenu(getContainer().getViewer());
-			return;
-		}
-		getContainer().cancelReopenTimer();
-		getContainer().displayMenu(getContainer().getViewer());
+		Menu m = new Menu(6, "Select Trigger", getContainer().getViewer());
 		
-		getContainer().getViewer().sendMessage("Invalid trigger type!", "error");
+		List<String> triggers = new ArrayList<String>(Triggers.getAllRegionTriggers());
+		Collections.sort(triggers);
+		
+		for(String trig : triggers){
+			m.addItem(new MenuItemTrigger(Triggers.getTrigger(trig), region, getContainer()));
+		}
+		
+		m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
+		
+		m.displayMenu(getContainer().getViewer());
+		
+		return null;
 	}
 }
