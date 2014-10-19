@@ -3,7 +3,6 @@ package au.com.mineauz.minigames.gametypes;
 import java.util.Calendar;
 import java.util.List;
 
-import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -31,7 +30,7 @@ public class SingleplayerType extends MinigameTypeBase{
 			player.sendMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives()), null);
 		}
 		
-		if(mgm.getType() == MinigameType.SINGLEPLAYER && player.getStoredPlayerCheckpoints().hasCheckpoint(mgm.getName(false))){
+		if(player.getStoredPlayerCheckpoints().hasCheckpoint(mgm.getName(false))){
 			player.setCheckpoint(player.getStoredPlayerCheckpoints().getCheckpoint(mgm.getName(false)));
 			StoredPlayerCheckpoints spc = player.getStoredPlayerCheckpoints();
 			if(spc.hasFlags(mgm.getName(false))){
@@ -51,7 +50,7 @@ public class SingleplayerType extends MinigameTypeBase{
 			spc.removeDeaths(mgm.getName(false));
 			spc.removeTime(mgm.getName(false));
 			spc.removeReverts(mgm.getName(false));
-			pdata.revertToCheckpoint(player);
+			player.teleport(player.getCheckpoint());
 			spc.saveCheckpoints();
 		}
 		
@@ -72,25 +71,31 @@ public class SingleplayerType extends MinigameTypeBase{
 				}
 			}
 		}
+		
+		for(MinigamePlayer player : winners){
+			if(player.getStoredPlayerCheckpoints().hasCheckpoint(mgm.getName(false))){
+				player.getStoredPlayerCheckpoints().removeCheckpoint(mgm.getName(false));
+				player.getStoredPlayerCheckpoints().removeDeaths(mgm.getName(false));
+				player.getStoredPlayerCheckpoints().removeFlags(mgm.getName(false));
+				player.getStoredPlayerCheckpoints().removeReverts(mgm.getName(false));
+				player.getStoredPlayerCheckpoints().removeTime(mgm.getName(false));
+				player.getStoredPlayerCheckpoints().saveCheckpoints();
+			}
+		}
 	}
 
 	@Override
 	public void quitMinigame(final MinigamePlayer player, final Minigame mgm, boolean forced) {
 		if(mgm.canSaveCheckpoint()){
-			Location pcp = player.getCheckpoint();
-			Location start = mgm.getStartLocations().get(0);
-			if(pcp.getBlockX() != start.getBlockX() || pcp.getBlockY() != start.getBlockY() || pcp.getBlockZ() != start.getBlockZ()){
-				
-				StoredPlayerCheckpoints spc = player.getStoredPlayerCheckpoints();
-				spc.addCheckpoint(mgm.getName(false), player.getCheckpoint());
-				if(!player.getFlags().isEmpty()){
-					spc.addFlags(mgm.getName(false), player.getFlags());
-				}
-				spc.addDeaths(mgm.getName(false), player.getDeaths());
-				spc.addReverts(mgm.getName(false), player.getReverts());
-				spc.addTime(mgm.getName(false), Calendar.getInstance().getTimeInMillis() - player.getStartTime() + player.getStoredTime());
-				spc.saveCheckpoints();
+			StoredPlayerCheckpoints spc = player.getStoredPlayerCheckpoints();
+			spc.addCheckpoint(mgm.getName(false), player.getCheckpoint());
+			if(!player.getFlags().isEmpty()){
+				spc.addFlags(mgm.getName(false), player.getFlags());
 			}
+			spc.addDeaths(mgm.getName(false), player.getDeaths());
+			spc.addReverts(mgm.getName(false), player.getReverts());
+			spc.addTime(mgm.getName(false), Calendar.getInstance().getTimeInMillis() - player.getStartTime() + player.getStoredTime());
+			spc.saveCheckpoints();
 		}
 		
 		if(mgm.getBlockRecorder().hasData()){
