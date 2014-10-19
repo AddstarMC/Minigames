@@ -351,7 +351,7 @@ public class PlayerData {
 			else{
 				Team team = ply.getTeam();
 				if(TeamsModule.getMinigameModule(minigame).hasTeamStartLocations()){
-					if(tpos.get(team) <= team.getStartLocations().size()){
+					if(tpos.get(team) >= team.getStartLocations().size()){
 						tpos.put(team, 0);
 					}
 					start = team.getStartLocations().get(tpos.get(team));
