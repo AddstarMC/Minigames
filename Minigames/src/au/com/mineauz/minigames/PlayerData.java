@@ -432,9 +432,8 @@ public class PlayerData {
 		QuitMinigameEvent event = new QuitMinigameEvent(player, minigame, forced, isWinner);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		if(!event.isCancelled()){
-			
 			if(!minigame.isSpectator(player)){
-				if(player.getEndTime() != 0)
+				if(player.getEndTime() == 0)
 					player.setEndTime(System.currentTimeMillis());
 				
 				if(isWinner)
@@ -713,15 +712,16 @@ public class PlayerData {
 			
 			for(MinigamePlayer player : losers){
 				player.setEndTime(System.currentTimeMillis());
-				
 				if(!usedTimer)
 					quitMinigame(player, true);
 				PlayMGSound.playSound(player, MGSounds.getSound("lose"));
 			}
 			
 			for(MinigamePlayer player : winners){
-				
-				player.setEndTime(Calendar.getInstance().getTimeInMillis());
+				player.setEndTime(System.currentTimeMillis());
+				SQLPlayer sply = new SQLPlayer(minigame.getName(false), player.getName(), player.getUUID().toString(), 1, 0, 
+						player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), 
+						player.getEndTime() - player.getStartTime());
 				if(!usedTimer)
 					quitMinigame(player, true);
 				
@@ -750,7 +750,7 @@ public class PlayerData {
 					MinigameTypeBase.issuePlayerRewards(player, minigame, hascompleted);
 				}
 				else if(minigame.isEnabled()){
-					plugin.addSQLToStore(new SQLPlayer(minigame.getName(false), player.getName(), player.getUUID().toString(), 1, 0, player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), player.getEndTime() - player.getStartTime()));
+					plugin.addSQLToStore(sply);
 					plugin.startSQLCompletionSaver();
 				}
 				
