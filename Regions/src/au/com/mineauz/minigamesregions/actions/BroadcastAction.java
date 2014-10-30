@@ -56,7 +56,7 @@ public class BroadcastAction extends ActionInterface{
 		if(excludeExecutor.getFlag())
 			exclude = player;
 		
-		Minigames.plugin.mdata.sendMinigameMessage(player.getMinigame(), message.getFlag(), type, exclude);
+		Minigames.plugin.mdata.sendMinigameMessage(player.getMinigame(), message.getFlag().replaceAll("%player%", player.getDisplayName()), type, exclude);
 	}
 
 	@Override
