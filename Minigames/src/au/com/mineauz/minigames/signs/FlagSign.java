@@ -65,11 +65,11 @@ public class FlagSign implements MinigameSign {
 				return false;
 			}
 		}
-		else{
-			event.getBlock().breakNaturally();
-			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.flag.invalidSyntax") + " red, blue and neutral.");
-			return false;
-		}
+//		else{
+//			event.getBlock().breakNaturally();
+//			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.flag.invalidSyntax") + " red, blue and neutral.");
+//			return false;
+//		}
 		return true;
 	}
 
