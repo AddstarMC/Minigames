@@ -225,8 +225,9 @@ public class SQLCompletionSaver extends Thread{
 				ply.setFailures(ofailures);
 			}
 			else{
+				String pname = new String(player.getPlayerName());
 				mgm.getScoreboardData().addPlayer(new 
-						ScoreboardPlayer(player.getPlayerName(), uuid, ocompleted, ofailures, okills, odeaths, 
+						ScoreboardPlayer(pname, uuid, ocompleted, ofailures, okills, odeaths, 
 								oscore, otime, oreverts, otkills, otdeaths, otscore, otreverts, ottime));
 			}
 			mgm.getScoreboardData().updateDisplays();
