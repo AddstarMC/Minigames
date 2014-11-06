@@ -338,14 +338,15 @@ public class RecorderData implements Listener{
 		
 		if(modifier == null){
 			blockdata.clear();
-			minigame.setRegenerating(true);
-			minigame.setState(MinigameState.REGENERATING);
 		}
 		else{
 			for(String id : changes){
 				blockdata.remove(id);
 			}
 		}
+		
+		minigame.setRegenerating(true);
+		minigame.setState(MinigameState.REGENERATING);
 		
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 			
