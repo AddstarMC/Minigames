@@ -73,7 +73,7 @@ public class Minigame {
 	private IntegerFlag minPlayers = new IntegerFlag(2, "minplayers");
 	private IntegerFlag maxPlayers = new IntegerFlag(4, "maxplayers");
 	private BooleanFlag spMaxPlayers = new BooleanFlag(false, "spMaxPlayers");
-	private ListFlag flags = new ListFlag(new ArrayList<String>(), "flags");
+	private ListFlag flags = new ListFlag(null, "flags");
 	private MinigameState state = MinigameState.IDLE;
 	
 	private SimpleLocationFlag floorDegen1 = new SimpleLocationFlag(null, "sfloorpos.1");
@@ -179,6 +179,8 @@ public class Minigame {
 				e.printStackTrace();
 			}
 		}
+		
+		flags.setFlag(new ArrayList<String>());
 		
 		addConfigFlag(allowEnderpearls);
 		addConfigFlag(allowFlight);
