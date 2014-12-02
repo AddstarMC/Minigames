@@ -6,7 +6,8 @@ import java.util.List;
 public class RewardGroup {
 	
 	private String groupName;
-	private List<RewardItem> items = new ArrayList<RewardItem>();
+//	private List<RewardItem> items = new ArrayList<RewardItem>();
+	private List<RewardType> items = new ArrayList<RewardType>();
 	private RewardRarity rarity;
 	
 	public RewardGroup(String groupName, RewardRarity rarity){
@@ -18,15 +19,15 @@ public class RewardGroup {
 		return groupName;
 	}
 	
-	public void addItem(RewardItem item){
+	public void addItem(RewardType item){
 		items.add(item);
 	}
 	
-	public void removeItem(RewardItem item){
+	public void removeItem(RewardType item){
 		items.remove(item);
 	}
 	
-	public List<RewardItem> getItems(){
+	public List<RewardType> getItems(){
 		return items;
 	}
 	

@@ -6,10 +6,9 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
-import au.com.mineauz.minigames.minigame.reward.RewardItem;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
+import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 
 public class MenuItemDisplayRewards extends MenuItem{
@@ -46,17 +45,8 @@ public class MenuItemDisplayRewards extends MenuItem{
 		}
 		
 		List<MenuItem> mi = new ArrayList<MenuItem>();
-		for(RewardItem item : rewards.getRewards()){
-			if(item.getItem() != null){
-				MenuItemReward rew = new MenuItemReward(MinigameUtils.getItemStackName(item.getItem()), item.getItem().getType(), item, rewards, list);
-				rew.setItem(item.getItem());
-				rew.updateDescription();
-				mi.add(rew);
-			}
-			else{
-				MenuItemReward rew = new MenuItemReward("$" + item.getMoney(), Material.PAPER, item, rewards, list);
-				mi.add(rew);
-			}
+		for(RewardType item : rewards.getRewards()){
+			mi.add(item.getMenuItem());
 		}
 		des = new ArrayList<String>();
 		des.add("Double Click to edit");

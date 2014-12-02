@@ -63,6 +63,7 @@ public class MinigamePlayer {
 	private List<String> claimedRewards = new ArrayList<String>();
 	private List<String> tempClaimedRewards = new ArrayList<String>();
 	private List<ItemStack> tempRewardItems = new ArrayList<ItemStack>();
+	private List<ItemStack> rewardItems = new ArrayList<ItemStack>();
 	private List<String> claimedScoreSigns = new ArrayList<String>();
 	private int lateJoinTimer = -1;
 	
@@ -693,6 +694,14 @@ public class MinigamePlayer {
 		return tempRewardItems;
 	}
 	
+	public void addRewardItem(ItemStack item){
+		rewardItems.add(item);
+	}
+	
+	public List<ItemStack> getRewardItems(){
+		return rewardItems;
+	}
+	
 	public boolean hasClaimedScore(Location loc){
 		String id = MinigameUtils.createLocationID(loc);
 		if(claimedScoreSigns.contains(id))
@@ -708,6 +717,23 @@ public class MinigamePlayer {
 	public void claimTempRewardItems(){
 		if(!isDead){
 			List<ItemStack> tempItems = new ArrayList<ItemStack>(getTempRewardItems());
+			
+			if(!tempItems.isEmpty()){
+				for(ItemStack item : tempItems){
+					Map<Integer, ItemStack> m = player.getPlayer().getInventory().addItem(item);
+					if(!m.isEmpty()){
+						for(ItemStack i : m.values()){
+							player.getPlayer().getWorld().dropItemNaturally(player.getPlayer().getLocation(), i);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public void claimRewards(){
+		if(!isDead){
+			List<ItemStack> tempItems = new ArrayList<ItemStack>(getRewardItems());
 			
 			if(!tempItems.isEmpty()){
 				for(ItemStack item : tempItems){

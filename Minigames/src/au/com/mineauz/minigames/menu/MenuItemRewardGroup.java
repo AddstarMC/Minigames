@@ -8,10 +8,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
-import au.com.mineauz.minigames.minigame.reward.RewardItem;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
+import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 
 public class MenuItemRewardGroup extends MenuItem{
@@ -164,16 +163,8 @@ public class MenuItemRewardGroup extends MenuItem{
 		}
 		
 		List<MenuItem> mi = new ArrayList<MenuItem>();
-		for(RewardItem item : group.getItems()){
-			if(item.getItem() != null){
-				MenuItemReward rew = new MenuItemReward(MinigameUtils.getItemStackName(item.getItem()), item.getItem().getType(), item, group, list);
-				rew.setItem(item.getItem());
-				mi.add(rew);
-			}
-			else{
-				MenuItemReward rew = new MenuItemReward("$" + item.getMoney(), Material.PAPER, item, group, list);
-				mi.add(rew);
-			}
+		for(RewardType item : group.getItems()){
+			mi.add(item.getMenuItem());
 		}
 		
 		rewardMenu.addItems(mi);

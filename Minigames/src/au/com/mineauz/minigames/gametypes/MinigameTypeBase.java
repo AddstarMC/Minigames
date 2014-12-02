@@ -4,13 +4,12 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.reward.RewardItem;
+import au.com.mineauz.minigames.minigame.reward.RewardType;
 
 public abstract class MinigameTypeBase implements Listener{
 	private static Minigames plugin;
@@ -51,21 +50,22 @@ public abstract class MinigameTypeBase implements Listener{
 	
 	@SuppressWarnings("deprecation")
 	public static void issuePlayerRewards(MinigamePlayer player, Minigame mgm, boolean hascompleted){
-		List<RewardItem> rewardL = mgm.getRewardItem();
-		List<RewardItem> srewardL = mgm.getSecondaryRewardItem();
+		List<RewardType> rewardL = mgm.getRewardItem();
+		List<RewardType> srewardL = mgm.getSecondaryRewardItem();
 		double totalMoney = 0;
 		if(!hascompleted && rewardL != null){
-			for(RewardItem reward : rewardL){
+			for(RewardType reward : rewardL){
 				if(reward != null){
-					if(reward.getItem() != null){
-						giveRewardItem(player, reward);
-					}
-					else{
-						if(Minigames.plugin.hasEconomy() && reward.getMoney() != 0){
-							Minigames.plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), reward.getMoney());
-							totalMoney += reward.getMoney();
-						}
-					}
+					reward.giveReward(player);
+//					if(reward.getItem() != null){
+//						giveRewardItem(player, reward);
+//					}
+//					else{
+//						if(Minigames.plugin.hasEconomy() && reward.getMoney() != 0){
+//							Minigames.plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), reward.getMoney());
+//							totalMoney += reward.getMoney();
+//						}
+//					}
 				}
 			}
 			if(totalMoney > 0){
@@ -73,17 +73,18 @@ public abstract class MinigameTypeBase implements Listener{
 			}
 		}
 		else if(hascompleted && srewardL != null){
-			for(RewardItem sreward : srewardL){
+			for(RewardType sreward : srewardL){
 				if(sreward != null){
-					if(sreward.getItem() != null){
-						giveRewardItem(player, sreward);
-					}
-					else{
-						if(Minigames.plugin.hasEconomy() && sreward.getMoney() != 0){
-							Minigames.plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), sreward.getMoney());
-							totalMoney += sreward.getMoney();
-						}
-					}
+					sreward.giveReward(player);
+//					if(sreward.getItem() != null){
+//						giveRewardItem(player, sreward);
+//					}
+//					else{
+//						if(Minigames.plugin.hasEconomy() && sreward.getMoney() != 0){
+//							Minigames.plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), sreward.getMoney());
+//							totalMoney += sreward.getMoney();
+//						}
+//					}
 				}
 			}
 			if(totalMoney > 0){
@@ -93,25 +94,25 @@ public abstract class MinigameTypeBase implements Listener{
 		player.getPlayer().updateInventory();
 	}
 	
-	private static void giveRewardItem(MinigamePlayer player, RewardItem reward){
-		if(!player.isInMinigame()){
-			if(!player.getPlayer().isDead())
-				player.getPlayer().getInventory().addItem(reward.getItem());
-			else{
-				int c = 0;
-				for(ItemStack i : player.getOfflineMinigamePlayer().getStoredItems()){
-					if(i == null){
-						player.getOfflineMinigamePlayer().getStoredItems()[c] = reward.getItem();
-						break;
-					}
-					c++; //TODO: Add temp reward item to player instead and give it to them on respawn
-				}
-				player.getOfflineMinigamePlayer().savePlayerData();
-			}
-		}
-		else{
-			player.addTempRewardItem(reward.getItem());
-		}
-		player.sendMessage(MinigameUtils.formStr("player.end.awardItem", reward.getItem().getAmount(), MinigameUtils.getItemStackName(reward.getItem())), "win");
-	}
+//	private static void giveRewardItem(MinigamePlayer player, RewardType reward){
+//		if(!player.isInMinigame()){
+//			if(!player.getPlayer().isDead())
+//				player.getPlayer().getInventory().addItem(reward.getItem());
+//			else{
+//				int c = 0;
+//				for(ItemStack i : player.getOfflineMinigamePlayer().getStoredItems()){
+//					if(i == null){
+//						player.getOfflineMinigamePlayer().getStoredItems()[c] = reward.getItem();
+//						break;
+//					}
+//					c++; //TODO: Add temp reward item to player instead and give it to them on respawn
+//				}
+//				player.getOfflineMinigamePlayer().savePlayerData();
+//			}
+//		}
+//		else{
+//			player.addTempRewardItem(reward.getItem());
+//		}
+//		player.sendMessage(MinigameUtils.formStr("player.end.awardItem", reward.getItem().getAmount(), MinigameUtils.getItemStackName(reward.getItem())), "win");
+//	}
 }

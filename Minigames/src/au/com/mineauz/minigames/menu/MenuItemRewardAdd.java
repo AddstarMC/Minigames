@@ -1,17 +1,15 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
-import au.com.mineauz.minigames.minigame.reward.RewardItem;
-import au.com.mineauz.minigames.minigame.reward.RewardRarity;
+import au.com.mineauz.minigames.minigame.reward.RewardType;
+import au.com.mineauz.minigames.minigame.reward.RewardTypes;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 
 public class MenuItemRewardAdd extends MenuItem{
@@ -41,71 +39,34 @@ public class MenuItemRewardAdd extends MenuItem{
 	
 	@Override
 	public ItemStack onClick(){
-		if(Minigames.plugin.hasEconomy()){
-			MinigamePlayer ply = getContainer().getViewer();
-			ply.setNoClose(true);
-			ply.getPlayer().closeInventory();
-			ply.sendMessage("Enter a money amount for the reward, the menu will automatically reopen in 10s if nothing is entered.", null);
-			ply.setManualEntry(this);
-
-			getContainer().startReopenTimer(10);
-			return null;
-		}
-		else
-			getContainer().getViewer().sendMessage("This server doesn't have Vault!", "error");
-		return getItem();
-	}
-	
-	@Override
-	public void checkValidEntry(String entry){
-		if(entry.matches("\\$?[0-9]+(\\.[0-9]{2})?")){
-			double money = Double.parseDouble(entry.replace("$", ""));
-			RewardItem it;
-			if(group == null)
-				it = rewards.addMoney(money, RewardRarity.NORMAL);
-			else{
-				it = new RewardItem(money, RewardRarity.NORMAL);
-				group.addItem(it);
+		Menu m = new Menu(6, "Select Reward Type", getContainer().getViewer());
+		final Menu orig = getContainer();
+		for(String type : RewardTypes.getAllRewardTypeNames()){
+			final MenuItemCustom custom = new MenuItemCustom("TYPE", Material.STONE);
+			final RewardType rewType = RewardTypes.getRewardType(type, rewards);
+			if(rewType.isUsable()){
+				ItemMeta meta = custom.getItem().getItemMeta();
+				meta.setDisplayName(ChatColor.RESET + type);
+				custom.getItem().setItemMeta(meta);
+				custom.setItem(rewType.getMenuItem().getItem());
+				custom.setClick(new InteractionInterface() {
+					
+					@Override
+					public Object interact(Object object) {
+						if(rewards != null)
+							rewards.addReward(rewType);
+						else
+							group.addItem(rewType);
+						orig.displayMenu(orig.getViewer());
+						orig.addItem(rewType.getMenuItem());
+						return null;
+					}
+				});
+				m.addItem(custom);
 			}
-
-			List<String> list = new ArrayList<String>();
-			for(RewardRarity r : RewardRarity.values()){
-				list.add(r.toString());
-			}
-			
-			MenuItemReward rew = new MenuItemReward("$" + money, Material.PAPER, it, rewards, list);
-			getContainer().addItem(rew);
-			
-			getContainer().cancelReopenTimer();
-			getContainer().displayMenu(getContainer().getViewer());
-			return;
 		}
-		getContainer().cancelReopenTimer();
-		getContainer().displayMenu(getContainer().getViewer());
-		
-		getContainer().getViewer().sendMessage("Invalid value entry!", "error");
-	}
-	
-	@Override
-	public ItemStack onClickWithItem(ItemStack item){
-		item = item.clone();
-		RewardItem it;
-		if(group == null)
-			it = rewards.addItem(item, RewardRarity.NORMAL);
-		else{
-			it = new RewardItem(item, RewardRarity.NORMAL);
-			group.addItem(it);
-		}
-		
-		List<String> list = new ArrayList<String>();
-		for(RewardRarity r : RewardRarity.values()){
-			list.add(r.toString());
-		}
-		
-		MenuItemReward rew = new MenuItemReward(MinigameUtils.getItemStackName(item), item.getType(), it, rewards, list);
-		rew.setItem(item);
-		rew.updateDescription();
-		getContainer().addItem(rew);
-		return getItem();
+		m.addItem(new MenuItemBack(orig), m.getSize() - 9);
+		m.displayMenu(m.getViewer());
+		return null;
 	}
 }

@@ -2,14 +2,12 @@ package au.com.mineauz.minigames.signs;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MinigameData;
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -19,13 +17,12 @@ import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
-import au.com.mineauz.minigames.menu.MenuItemReward;
 import au.com.mineauz.minigames.menu.MenuItemRewardAdd;
 import au.com.mineauz.minigames.menu.MenuItemRewardGroup;
 import au.com.mineauz.minigames.menu.MenuItemRewardGroupAdd;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
-import au.com.mineauz.minigames.minigame.reward.RewardItem;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
+import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 
 public class RewardSign implements MinigameSign {
@@ -78,15 +75,8 @@ public class RewardSign implements MinigameSign {
 				if(!player.hasTempClaimedReward(label)){
 					if(mdata.hasRewardSign(loc)){
 						Rewards rew = mdata.getRewardSign(loc);
-						for(RewardItem r : rew.getReward()){
-							if(r.getMoney() != 0){
-								plugin.getEconomy().depositPlayer(player.getName(), r.getMoney());
-								player.sendMessage(MinigameUtils.formStr("sign.reward.rewardedMoney", r.getMoney()), null);
-							}
-							else{
-								player.addTempRewardItem(r.getItem().clone());
-								player.sendMessage(MinigameUtils.formStr("sign.reward.preRewarded", r.getItem().getAmount(), MinigameUtils.getItemStackName(r.getItem())), null);
-							}
+						for(RewardType r : rew.getReward()){
+							r.giveReward(player);
 						}
 					}
 					player.addTempClaimedReward(label);
@@ -96,20 +86,8 @@ public class RewardSign implements MinigameSign {
 				if(!player.hasClaimedReward(label)){
 					if(mdata.hasRewardSign(loc)){
 						Rewards rew = mdata.getRewardSign(loc);
-						for(RewardItem r : rew.getReward()){
-							if(r.getMoney() != 0){
-								plugin.getEconomy().depositPlayer(player.getName(), r.getMoney());
-								player.sendMessage(MinigameUtils.formStr("sign.reward.rewardedMoney", r.getMoney()), null);
-							}
-							else{
-								Map<Integer, ItemStack> m = player.getPlayer().getInventory().addItem(r.getItem());
-								player.sendMessage(MinigameUtils.formStr("sign.reward.rewarded", r.getItem().getAmount(), MinigameUtils.getItemStackName(r.getItem())), null);
-								if(!m.isEmpty()){
-									for(ItemStack i : m.values()){
-										player.getPlayer().getWorld().dropItemNaturally(sign.getLocation(), i);
-									}
-								}
-							}
+						for(RewardType r : rew.getReward()){
+							r.giveReward(player);
 						}
 						
 						player.getPlayer().updateInventory();
@@ -153,17 +131,18 @@ public class RewardSign implements MinigameSign {
 			}
 			
 			List<MenuItem> mi = new ArrayList<MenuItem>();
-			for(RewardItem item : rew.getRewards()){
-				if(item.getItem() != null){
-					MenuItemReward mrew = new MenuItemReward(MinigameUtils.getItemStackName(item.getItem()), item.getItem().getType(), item, rew, list);
-					mrew.setItem(item.getItem());
-					mrew.updateDescription();
-					mi.add(mrew);
-				}
-				else{
-					MenuItemReward mrew = new MenuItemReward("$" + item.getMoney(), Material.PAPER, item, rew, list);
-					mi.add(mrew);
-				}
+			for(RewardType item : rew.getRewards()){
+				mi.add(item.getMenuItem());
+//				if(item.getRewardItem() != null){
+//					MenuItemReward mrew = new MenuItemReward(MinigameUtils.getItemStackName(item.getRewardItem()), item.getRewardItem().getType(), item, rew, list);
+//					mrew.setRewardItem(item.getRewardItem());
+//					mrew.updateDescription();
+//					mi.add(mrew);
+//				}
+//				else{
+//					MenuItemReward mrew = new MenuItemReward("$" + item.getMoney(), Material.PAPER, item, rew, list);
+//					mi.add(mrew);
+//				}
 			}
 			des = new ArrayList<String>();
 			des.add("Double Click to edit");

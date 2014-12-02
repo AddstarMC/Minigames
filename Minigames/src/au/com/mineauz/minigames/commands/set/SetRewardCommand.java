@@ -12,7 +12,10 @@ import org.bukkit.inventory.ItemStack;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.reward.ItemReward;
+import au.com.mineauz.minigames.minigame.reward.MoneyReward;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
+import au.com.mineauz.minigames.minigame.reward.RewardTypes;
 
 public class SetRewardCommand implements ICommand{
 
@@ -86,7 +89,10 @@ public class SetRewardCommand implements ICommand{
 				if(args.length == 3){
 					rarity = RewardRarity.valueOf(args[2].toUpperCase());
 				}
-				minigame.getRewardItems().addItem(item, rarity);
+				ItemReward ir = (ItemReward) RewardTypes.getRewardType("ITEM", minigame.getRewardItems());
+				ir.setRewardItem(item);
+				ir.setRarity(rarity);
+				minigame.getRewardItems().addReward(ir);
 				
 				sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to primary rewards of \"" + minigame.getName(false) + "\" "
 						+ "with a rarity of \"" + rarity.toString().toLowerCase().replace("_", " ") + "\"");
@@ -98,7 +104,10 @@ public class SetRewardCommand implements ICommand{
 				if(args.length == 2){
 					rarity = RewardRarity.valueOf(args[1].toUpperCase());
 				}
-				minigame.getRewardItems().addItem(item, rarity);
+				ItemReward ir = (ItemReward) RewardTypes.getRewardType("ITEM", minigame.getRewardItems());
+				ir.setRewardItem(item);
+				ir.setRarity(rarity);
+				minigame.getRewardItems().addReward(ir);
 				sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to primary rewards of \"" + minigame.getName(false) + "\" "
 						+ "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
 				return true;
@@ -112,7 +121,10 @@ public class SetRewardCommand implements ICommand{
 				if(args.length == 2){
 					rarity = RewardRarity.valueOf(args[1].toUpperCase());
 				}
-				minigame.getRewardItems().addMoney(money, rarity);
+				MoneyReward mr = (MoneyReward) RewardTypes.getRewardType("MONEY", minigame.getRewardItems());
+				mr.setRewardMoney(money);
+				mr.setRarity(rarity);
+				minigame.getRewardItems().addReward(mr);
 				sender.sendMessage(ChatColor.GRAY + "Added $" + money + " to primary rewards of \"" + minigame.getName(false) + "\" "
 						+ "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
 				return true;

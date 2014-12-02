@@ -12,12 +12,12 @@ import au.com.mineauz.minigames.MinigamePlayer;
 
 public class MenuItemDecimal extends MenuItem{
 	
-	private Callback<Double> value;
+	protected Callback<Double> value;
 	private double lowerInc;
 	private double upperInc;
 	private Double min;
 	private Double max;
-	private DecimalFormat form = new DecimalFormat("#.##");
+	protected DecimalFormat form = new DecimalFormat("#.##");
 
 	public MenuItemDecimal(String name, Material displayItem, Callback<Double> value,
 			double lowerInc, double upperInc, Double min, Double max) {

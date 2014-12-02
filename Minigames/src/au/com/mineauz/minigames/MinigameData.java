@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import au.com.mineauz.minigames.config.RewardsFlag;
 import au.com.mineauz.minigames.events.StartGlobalMinigameEvent;
 import au.com.mineauz.minigames.events.StopGlobalMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
@@ -26,9 +27,6 @@ import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
-import au.com.mineauz.minigames.minigame.reward.RewardGroup;
-import au.com.mineauz.minigames.minigame.reward.RewardItem;
-import au.com.mineauz.minigames.minigame.reward.RewardRarity;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 
 public class MinigameData {
@@ -36,7 +34,7 @@ public class MinigameData {
 	private Map<String, Configuration> configs = new HashMap<String, Configuration>();
 	private Map<MinigameType, MinigameTypeBase> minigameTypes = new HashMap<MinigameType, MinigameTypeBase>();
 	private Map<String, PlayerLoadout> globalLoadouts = new HashMap<String, PlayerLoadout>();
-	private Map<String, Rewards> rewardSigns = new HashMap<String, Rewards>();
+	private Map<String, RewardsFlag> rewardSigns = new HashMap<String, RewardsFlag>();
 	private static Minigames plugin = Minigames.plugin;
 	private MinigameSave rewardSignsSave = null;
 	private Map<Minigame, List<String>> claimedScoreSignsRed = new HashMap<Minigame, List<String>>();
@@ -296,11 +294,12 @@ public class MinigameData {
 	}
 	
 	public void addRewardSign(Location loc){
-		rewardSigns.put(MinigameUtils.createLocationID(loc), new Rewards());
+		RewardsFlag flag = new RewardsFlag(new Rewards(), MinigameUtils.createLocationID(loc));
+		rewardSigns.put(MinigameUtils.createLocationID(loc), flag);
 	}
 	
 	public Rewards getRewardSign(Location loc){
-		return rewardSigns.get(MinigameUtils.createLocationID(loc));
+		return rewardSigns.get(MinigameUtils.createLocationID(loc)).getFlag();
 	}
 	
 	public boolean hasRewardSign(Location loc){
@@ -332,36 +331,12 @@ public class MinigameData {
 	}
 	
 	public void saveRewardSign(String id, boolean save){
-		Rewards reward = rewardSigns.get(id);
+		RewardsFlag reward = rewardSigns.get(id);
 		if(rewardSignsSave == null)
 			loadRewardSignsFile();
 		FileConfiguration cfg = rewardSignsSave.getConfig();
-		int count = 0;
 		cfg.set(id, null);
-		for(RewardItem item : reward.getRewards()){
-			if(item.getItem() != null){
-				cfg.set(id + "." + count + ".item", item.getItem());
-				cfg.set(id + "." + count + ".rarity", item.getRarity().toString());
-			}
-			else if(item.getMoney() != 0){
-				cfg.set(id + "." + count + ".money", item.getMoney());
-				cfg.set(id + "." + count + ".rarity", item.getRarity().toString());
-			}
-			count++;
-		}
-		for(RewardGroup group : reward.getGroups()){
-			count = 0;
-			for(RewardItem item : group.getItems()){
-				if(item.getItem() != null){
-					cfg.set(id + "." + group.getName() + "." + count + ".item", item.getItem());
-				}
-				else if(item.getMoney() != 0){
-					cfg.set(id + "." + group.getName() + "." + count + ".money", item.getMoney());
-				}
-				count++;
-			}
-			cfg.set(id + "." + group.getName() + ".rarity", group.getRarity().toString());
-		}
+		reward.saveValue("", cfg);
 		if(save){
 			rewardSignsSave.saveConfig();
 			rewardSignsSave = null;
@@ -379,30 +354,9 @@ public class MinigameData {
 		FileConfiguration cfg = rewardSignsSave.getConfig();
 		Set<String> keys = cfg.getKeys(false);
 		for(String id : keys){
-			Rewards rew = new Rewards();
-			Set<String> items = cfg.getConfigurationSection(id).getKeys(false);
-			for(String item : items){
-				if(item.matches("[0-9]+")){
-					RewardRarity rar = RewardRarity.valueOf(cfg.getString(id + "." + item + ".rarity"));
-					if(cfg.contains(id + "." + item + ".item"))
-						rew.addItem(cfg.getItemStack(id + "." + item + ".item") , rar);
-					else
-						rew.addMoney(cfg.getDouble(id + "." + item + ".money"), rar);
-				}
-				else{
-					RewardGroup gr = rew.addGroup(item, RewardRarity.valueOf(cfg.getString(id + "." + item + ".rarity")));
-					Set<String> gItems = cfg.getConfigurationSection(id + "." + item).getKeys(false);
-					for(String gItem : gItems){
-						if(gItem.matches("[0-9]+")){
-							RewardRarity rar = RewardRarity.NORMAL;
-							if(cfg.contains(id + "." + item + "." + gItem + ".item"))
-								gr.addItem(new RewardItem(cfg.getItemStack(id + "." + item + "." + gItem + ".item") , rar));
-							else
-								gr.addItem(new RewardItem(cfg.getDouble(id + "." + item + "." + gItem + ".money"), rar));
-						}
-					}
-				}
-			}
+			RewardsFlag rew = new RewardsFlag(new Rewards(), id);
+			rew.loadValue("", cfg);
+			
 			rewardSigns.put(id, rew);
 		}
 	}

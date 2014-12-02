@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.bukkit.inventory.ItemStack;
-
 public class Rewards {
 	
-	private List<RewardItem> items = new ArrayList<RewardItem>();
+	private List<RewardType> items = new ArrayList<RewardType>();
 	private List<RewardGroup> groups = new ArrayList<RewardGroup>();
 	
-	public List<RewardItem> getReward(){
+	public List<RewardType> getReward(){
 		double rand = Math.random();
 		RewardRarity rarity = null;
 		List<Object> itemsCopy = new ArrayList<Object>();
@@ -32,15 +30,15 @@ public class Rewards {
 		
 		
 		if(!itemsCopy.isEmpty()){
-			RewardItem item = null;
+			RewardType item = null;
 			RewardGroup group = null;
 			RewardRarity orarity = rarity;
 			boolean up = true;
 			
 			while(item == null && group == null){
 				for(Object ritem : itemsCopy){
-					if(ritem instanceof RewardItem){
-						RewardItem ri = (RewardItem)ritem;
+					if(ritem instanceof RewardType){
+						RewardType ri = (RewardType)ritem;
 						if(ri.getRarity() == rarity){
 							item = ri;
 							break;
@@ -67,7 +65,7 @@ public class Rewards {
 				}
 			}
 			if(item != null){
-				List<RewardItem> items = new ArrayList<RewardItem>();
+				List<RewardType> items = new ArrayList<RewardType>();
 				items.add(item);
 				return items;
 			}
@@ -79,23 +77,27 @@ public class Rewards {
 		return null;
 	}
 	
-	public RewardItem addItem(ItemStack item, RewardRarity rarity){
-		RewardItem ritem = new RewardItem(item, rarity);
-		items.add(ritem);
-		return ritem;
+	public void addReward(RewardType reward){
+		items.add(reward);
 	}
 	
-	public RewardItem addMoney(double money, RewardRarity rarity){
-		RewardItem ritem = new RewardItem(money, rarity);
-		items.add(ritem);
-		return ritem;
-	}
+//	public RewardItem addItem(ItemStack item, RewardRarity rarity){
+//		RewardItem ritem = new RewardItem(item, rarity);
+//		items.add(ritem);
+//		return ritem;
+//	}
+//	
+//	public RewardItem addMoney(double money, RewardRarity rarity){
+//		RewardItem ritem = new RewardItem(money, rarity);
+//		items.add(ritem);
+//		return ritem;
+//	}
 	
-	public void removeReward(RewardItem item){
+	public void removeReward(RewardType item){
 		items.remove(item);
 	}
 	
-	public List<RewardItem> getRewards(){
+	public List<RewardType> getRewards(){
 		return items;
 	}
 	

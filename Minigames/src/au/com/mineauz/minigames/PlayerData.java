@@ -501,6 +501,7 @@ public class PlayerData {
 				if(isWinner){
 					player.claimTempRewardItems();
 				}
+				player.claimRewards();
 				
 				//Reset Minigame
 				if(minigame.getPlayers().size() == 0){

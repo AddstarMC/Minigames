@@ -58,7 +58,7 @@ import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
-import au.com.mineauz.minigames.minigame.reward.RewardItem;
+import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 
 public class Minigame {
@@ -276,7 +276,7 @@ public class Minigame {
 		return false;
 	}
 
-	public List<RewardItem> getSecondaryRewardItem(){
+	public List<RewardType> getSecondaryRewardItem(){
 		return secondaryRewardItem.getReward();
 	}
 	
@@ -284,7 +284,7 @@ public class Minigame {
 		return secondaryRewardItem;
 	}
 
-	public List<RewardItem> getRewardItem(){
+	public List<RewardType> getRewardItem(){
 		return rewardItem.getReward();
 	}
 	

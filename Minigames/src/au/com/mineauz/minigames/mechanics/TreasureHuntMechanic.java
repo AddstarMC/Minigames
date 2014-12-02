@@ -27,7 +27,8 @@ import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
-import au.com.mineauz.minigames.minigame.reward.RewardItem;
+import au.com.mineauz.minigames.minigame.reward.ItemReward;
+import au.com.mineauz.minigames.minigame.reward.RewardType;
 
 public class TreasureHuntMechanic extends GameMechanicBase{
 
@@ -205,9 +206,11 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 						
 						final ItemStack[] items = new ItemStack[27];
 						for(int i = 0; i < numitems; i++){
-							RewardItem rew = mgm.getRewardItems().getReward().get(0);
-							if(rew.getItem() != null)
-								items[i] = rew.getItem();
+							RewardType rew = mgm.getRewardItems().getReward().get(0);
+							if(rew instanceof ItemReward){
+								ItemReward irew = (ItemReward) rew;
+								items[i] = irew.getRewardItem();
+							}
 						}
 						Collections.shuffle(Arrays.asList(items));
 						chest.getInventory().setContents(items);
