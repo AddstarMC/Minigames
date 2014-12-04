@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.minigame.reward;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -10,67 +11,69 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemString;
 
-public class ItemReward extends RewardType{
-
-	private ItemStack item = new ItemStack(Material.DIAMOND);
+public class CommandReward extends RewardType{
 	
-	public ItemReward(Rewards rewards) {
+	private String command = "say Hello World!";
+
+	public CommandReward(Rewards rewards) {
 		super(rewards);
 	}
-	
+
 	@Override
-	public String getName(){
-		return "ITEM";
+	public String getName() {
+		return "COMMAND";
 	}
 
 	@Override
 	public boolean isUsable() {
 		return true;
 	}
-	
+
 	@Override
 	public void giveReward(MinigamePlayer player) {
-		if(player.isInMinigame())
-			player.addRewardItem(item);
-		else
-			player.getPlayer().getInventory().addItem(item);
-		player.sendMessage(MinigameUtils.formStr("sign.reward.rewarded", item.getAmount(), 
-				MinigameUtils.capitalize(item.getType().toString())), null);
+		String finalCommand = command.replace("%player%", player.getName());
+		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), finalCommand);
 	}
 
 	@Override
 	public MenuItem getMenuItem() {
-		return new MenuItemReward(this);
+		return new CommandRewardItem(this);
 	}
 
 	@Override
 	public void saveReward(String path, FileConfiguration config) {
-		config.set(path, item);
+		config.set(path, command);
 	}
 
 	@Override
 	public void loadReward(String path, FileConfiguration config) {
-		item = config.getItemStack(path);
+		command = config.getString(path);
 	}
 	
-	public ItemStack getRewardItem(){
-		return item;
-	}
-	
-	public void setRewardItem(ItemStack item){
-		this.item = item;
-	}
-	
-	private class MenuItemReward extends MenuItem{
-		private List<String> options = new ArrayList<String>();
-		private ItemReward reward;
+	private class CommandRewardItem extends MenuItemString{
 
-		public MenuItemReward(ItemReward reward) {
-			super("PLACEHOLDER", MinigameUtils.stringToList("Click with item;to change."), Material.DIAMOND);
-			setItem(reward.getRewardItem());
+		private List<String> options = new ArrayList<String>();
+		private CommandReward reward;
+
+		public CommandRewardItem(CommandReward reward) {
+			super("/" + command, Material.COMMAND, new Callback<String>() {
+
+				@Override
+				public void setValue(String value) {
+					if(value.startsWith("./"))
+						value = value.replace("./", "/");
+					command = value;
+				}
+
+				@Override
+				public String getValue() {
+					return command;
+				}
+			});
 			for(RewardRarity rarity : RewardRarity.values()){
 				options.add(rarity.toString());
 			}
@@ -78,22 +81,19 @@ public class ItemReward extends RewardType{
 			updateDescription();
 		}
 		
-		@Override
-		public void setItem(ItemStack item){
-			super.setItem(item);
+		public void updateName(String newName){
 			ItemMeta meta = getItem().getItemMeta();
-			meta.setDisplayName(ChatColor.RESET + MinigameUtils.capitalize(item.getType().toString().replace("_", " ")));
+			if(newName.length() > 16){
+				newName = newName.substring(0, 15);
+				newName += "...";
+			}
+			meta.setDisplayName(ChatColor.RESET + newName);
 			getItem().setItemMeta(meta);
+			getContainer().removeItem(getSlot());
+			getContainer().addItem(this, getSlot());
 		}
 		
 		@Override
-		public ItemStack onClickWithItem(ItemStack item){
-			setItem(item);
-			setRewardItem(item.clone());
-			updateDescription();
-			return getItem();
-		}
-		
 		public void updateDescription(){
 			List<String> description = null;
 			if(options == null){
@@ -124,14 +124,16 @@ public class ItemReward extends RewardType{
 						description.add(0, ChatColor.GRAY.toString() + options.get(before));
 						description.add(1, ChatColor.GREEN.toString() + getRarity().toString());
 						description.add(2, ChatColor.GRAY.toString() + options.get(after));
-						description.add(3, ChatColor.DARK_PURPLE.toString() + "Shift + Right Click to remove");
+						description.add(3, ChatColor.DARK_PURPLE.toString() + "Shift + Left Click to change");
+						description.add(4, ChatColor.DARK_PURPLE.toString() + "Shift + Right Click to remove");
 					}
 				}
 				else{
 					description.add(0, ChatColor.GRAY.toString() + options.get(before));
 					description.add(1, ChatColor.GREEN.toString() + getRarity().toString());
 					description.add(2, ChatColor.GRAY.toString() + options.get(after));
-					description.add(3, ChatColor.DARK_PURPLE.toString() + "Shift + Right Click to remove");
+					description.add(3, ChatColor.DARK_PURPLE.toString() + "Shift + Left Click to change");
+					description.add(4, ChatColor.DARK_PURPLE.toString() + "Shift + Right Click to remove");
 				}
 			}
 			else{
@@ -139,10 +141,16 @@ public class ItemReward extends RewardType{
 				description.add(ChatColor.GRAY.toString() + options.get(before));
 				description.add(ChatColor.GREEN.toString() + getRarity().toString());
 				description.add(ChatColor.GRAY.toString() + options.get(after));
-				description.add(3, ChatColor.DARK_PURPLE.toString() + "Shift + Right Click to remove");
+				description.add(3, ChatColor.DARK_PURPLE.toString() + "Shift + Left Click to change");
+				description.add(4, ChatColor.DARK_PURPLE.toString() + "Shift + Right Click to remove");
 			}
 			
 			setDescription(description);
+		}
+		
+		@Override
+		public ItemStack onDoubleClick(){
+			return getItem();
 		}
 		
 		@Override
@@ -177,5 +185,18 @@ public class ItemReward extends RewardType{
 			getContainer().removeItem(getSlot());
 			return null;
 		}
+		
+		@Override
+		public ItemStack onShiftClick(){
+			super.onDoubleClick();
+			return null;
+		}
+		
+		@Override
+		public void checkValidEntry(String entry){
+			super.checkValidEntry(entry);
+			updateName(entry);
+		}
 	}
+
 }

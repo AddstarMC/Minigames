@@ -12,6 +12,7 @@ public class RewardTypes {
 	static{
 		addRewardType("ITEM", ItemReward.class);
 		addRewardType("MONEY", MoneyReward.class);
+		addRewardType("COMMAND", CommandReward.class);
 	}
 	
 	public static void addRewardType(String name, Class<? extends RewardType> type){
