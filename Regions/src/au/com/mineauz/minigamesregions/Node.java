@@ -56,6 +56,7 @@ public class Node {
 	}
 	
 	public void execute(Trigger trigger, MinigamePlayer player){
+		if(player.getMinigame().isSpectator(player)) return;
 		List<NodeExecutor> toExecute = new ArrayList<NodeExecutor>();
 		for(NodeExecutor exec : executors){
 			if(exec.getTrigger() == trigger){
