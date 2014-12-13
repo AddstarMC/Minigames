@@ -536,6 +536,9 @@ public class PlayerData {
 					mdata.clearClaimedScore(minigame);
 					WeatherTimeModule.getMinigameModule(minigame).stopTimeLoop();
 					GameOverModule.getMinigameModule(minigame).stopEndGameTimer();
+					for(Team team : TeamsModule.getMinigameModule(minigame).getTeams()){
+						team.setScore(0);
+					}
 				}
 				
 				minigame.getScoreboardManager().resetScores(player.getName());
