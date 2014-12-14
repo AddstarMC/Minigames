@@ -135,7 +135,7 @@ public class MinigameData {
 		boolean hasmg = minigames.containsKey(minigame);
 		if(!hasmg){
 			for(String mg : minigames.keySet()){
-				if(mg.equalsIgnoreCase(minigame) || mg.startsWith(minigame)){
+				if(mg.equalsIgnoreCase(minigame) || mg.toLowerCase().startsWith(minigame.toLowerCase())){
 					hasmg = true;
 					break;
 				}
