@@ -26,6 +26,7 @@ public class Triggers {
 		addTrigger(new MinigameTimerTrigger());
 		addTrigger(new ItemPickupTrigger());
 		addTrigger(new ItemDropTrigger());
+		addTrigger(new RandomTrigger());
 	}
 	
 	public static void addTrigger(Trigger trigger){

@@ -53,6 +53,7 @@ public class Actions {
 		addAction("TAKE_ITEM", TakeItemAction.class);
 		addAction("SET_ENABLED", SetEnabledAction.class);
 		addAction("RESET_TRIGGER_COUNT", ResetTriggerCountAction.class);
+		addAction("TRIGGER_RANDOM", TriggerRandomAction.class);
 	}
 	
 	public static void addAction(String name, Class<? extends ActionInterface> action){

@@ -70,28 +70,53 @@ public class Node {
 		List<NodeExecutor> toExecute = new ArrayList<NodeExecutor>();
 		for(NodeExecutor exec : executors){
 			if(exec.getTrigger() == trigger){
-				boolean cont = true;
-				for(ConditionInterface con : exec.getConditions()){
-					boolean c = con.checkNodeCondition(player, this);
-					if(con.isInverted())
-						c = !c;
-					if(!c){
-						cont = false;
-						break;
-					}
-				}
-				if(cont && exec.canBeTriggered(player))
+//				boolean cont = true;
+//				for(ConditionInterface con : exec.getConditions()){
+//					boolean c = con.checkNodeCondition(player, this);
+//					if(con.isInverted())
+//						c = !c;
+//					if(!c){
+//						cont = false;
+//						break;
+//					}
+//				}
+//				if(cont && exec.canBeTriggered(player))
+//					toExecute.add(exec);
+				if(checkConditions(exec, player) && exec.canBeTriggered(player))
 					toExecute.add(exec);
 			}
 		}
 		for(NodeExecutor exec : toExecute){
-			for(ActionInterface act : exec.getActions()){
-				act.executeNodeAction(player, this);
-				if(!exec.isTriggerPerPlayer())
-					exec.addPublicTrigger();
-				else
-					exec.addPlayerTrigger(player);
+//			for(ActionInterface act : exec.getActions()){
+//				act.executeNodeAction(player, this);
+//				if(!exec.isTriggerPerPlayer())
+//					exec.addPublicTrigger();
+//				else
+//					exec.addPlayerTrigger(player);
+//			}
+			execute(exec, player);
+		}
+	}
+	
+	public boolean checkConditions(NodeExecutor exec, MinigamePlayer player){
+		for(ConditionInterface con : exec.getConditions()){
+			boolean c = con.checkNodeCondition(player, this);
+			if(con.isInverted())
+				c = !c;
+			if(!c){
+				return false;
 			}
+		}
+		return true;
+	}
+	
+	public void execute(NodeExecutor exec, MinigamePlayer player){
+		for(ActionInterface act : exec.getActions()){
+			act.executeNodeAction(player, this);
+			if(!exec.isTriggerPerPlayer())
+				exec.addPublicTrigger();
+			else
+				exec.addPlayerTrigger(player);
 		}
 	}
 }
