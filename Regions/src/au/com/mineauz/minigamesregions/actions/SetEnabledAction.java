@@ -21,7 +21,7 @@ public class SetEnabledAction extends ActionInterface{
 
 	@Override
 	public String getCategory() {
-		return "Node Actions";
+		return "Region/Node Actions";
 	}
 
 	@Override
