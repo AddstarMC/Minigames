@@ -185,7 +185,7 @@ public class Region {
 	}
 	
 	public void execute(Trigger trigger, MinigamePlayer player){
-		if(player.getMinigame() != null && player.getMinigame().isSpectator(player)) return;
+		if(player != null && player.getMinigame() != null && player.getMinigame().isSpectator(player)) return;
 		List<RegionExecutor> toExecute = new ArrayList<RegionExecutor>();
 		for(RegionExecutor exec : executors){
 			if(exec.getTrigger() == trigger){
