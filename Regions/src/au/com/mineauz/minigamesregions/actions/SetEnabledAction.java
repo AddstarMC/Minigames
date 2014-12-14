@@ -26,7 +26,7 @@ public class SetEnabledAction extends ActionInterface{
 
 	@Override
 	public boolean useInRegions() {
-		return false;
+		return true;
 	}
 
 	@Override
