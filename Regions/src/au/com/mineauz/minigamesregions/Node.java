@@ -15,6 +15,7 @@ public class Node {
 	private String name;
 	private Location loc;
 	private List<NodeExecutor> executors = new ArrayList<NodeExecutor>();
+	private boolean enabled = true;
 	
 	public Node(String name, Location loc){
 		this.name = name;
@@ -55,7 +56,16 @@ public class Node {
 		}
 	}
 	
+	public void setEnabled(boolean enabled){
+		this.enabled = enabled;
+	}
+	
+	public boolean getEnabled(){
+		return enabled;
+	}
+	
 	public void execute(Trigger trigger, MinigamePlayer player){
+		if(!enabled) return;
 		if(player.getMinigame().isSpectator(player)) return;
 		List<NodeExecutor> toExecute = new ArrayList<NodeExecutor>();
 		for(NodeExecutor exec : executors){

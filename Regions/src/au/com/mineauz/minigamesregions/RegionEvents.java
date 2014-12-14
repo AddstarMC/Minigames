@@ -128,6 +128,16 @@ public class RegionEvents implements Listener{
 				}
 			}
 		});
+		if(event.getMinigame().getPlayers().size() == 0){
+			for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
+				for(RegionExecutor ex : region.getExecutors()){
+					if(ex.getTrigger().getName().equalsIgnoreCase("TICK")){
+						region.startTickTask();
+						break;
+					}
+				}
+			}
+		}
 	}
 	
 	@EventHandler
@@ -155,6 +165,7 @@ public class RegionEvents implements Listener{
 			else{
 				for(NodeExecutor exec : node.getExecutors())
 					exec.clearTriggers();
+				node.setEnabled(true);
 			}
 		}
 		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
@@ -165,8 +176,11 @@ public class RegionEvents implements Listener{
 					exec.removeTrigger(event.getMinigamePlayer());
 			}
 			else{
-				for(RegionExecutor exec : region.getExecutors())
+				for(RegionExecutor exec : region.getExecutors()){
 					exec.clearTriggers();
+				}
+				region.removeTickTask();
+				region.setEnabled(true);
 			}
 		}
 	}

@@ -22,22 +22,13 @@ public class Region {
 	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 	private long taskDelay = 20;
 	private int taskID;
+	private boolean enabled = true;
 	
 	public Region(String name, Location point1, Location point2){
 		Location[] locs = MinigameUtils.getMinMaxSelection(point1, point2);
 		this.point1 = locs[0].clone();
 		this.point2 = locs[1].clone();
 		this.name = name;
-		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, new Runnable() {
-			
-			@Override
-			public void run() {
-				List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>(players);
-				for(MinigamePlayer player : plys){
-					execute(Triggers.getTrigger("TICK"), player);
-				}
-			}
-		}, 0, taskDelay);
 	}
 	
 	public boolean playerInRegion(MinigamePlayer player){
@@ -165,11 +156,36 @@ public class Region {
 		return taskDelay;
 	}
 	
+	public void startTickTask(){
+		if(taskID != -1)
+			removeTickTask();
+		
+		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, new Runnable() {
+			
+			@Override
+			public void run() {
+				List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>(players);
+				for(MinigamePlayer player : plys){
+					execute(Triggers.getTrigger("TICK"), player);
+				}
+			}
+		}, 0, taskDelay);
+	}
+	
 	public void removeTickTask(){
 		Bukkit.getScheduler().cancelTask(taskID);
 	}
 	
+	public void setEnabled(boolean enabled){
+		this.enabled = enabled;
+	}
+	
+	public boolean getEnabled(){
+		return enabled;
+	}
+	
 	public void execute(Trigger trigger, MinigamePlayer player){
+		if(!enabled) return;
 		if(player.getMinigame().isSpectator(player)) return;
 		List<RegionExecutor> toExecute = new ArrayList<RegionExecutor>();
 		for(RegionExecutor exec : executors){
