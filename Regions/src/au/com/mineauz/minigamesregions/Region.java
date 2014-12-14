@@ -189,30 +189,11 @@ public class Region {
 		List<RegionExecutor> toExecute = new ArrayList<RegionExecutor>();
 		for(RegionExecutor exec : executors){
 			if(exec.getTrigger() == trigger){
-//				boolean cont = true;
-//				for(ConditionInterface con : exec.getConditions()){
-//					boolean c = con.checkRegionCondition(player, this);
-//					if(con.isInverted())
-//						c = !c;
-//					if(!c){
-//						cont = false;
-//						break;
-//					}
-//				}
-//				if(cont && exec.canBeTriggered(player))
-//					toExecute.add(exec);
 				if(checkConditions(exec, player) && exec.canBeTriggered(player))
 					toExecute.add(exec);
 			}
 		}
 		for(RegionExecutor exec : toExecute){
-//			for(ActionInterface act : exec.getActions()){
-//				act.executeRegionAction(player, this);
-//				if(!exec.isTriggerPerPlayer())
-//					exec.addPublicTrigger();
-//				else
-//					exec.addPlayerTrigger(player);
-//			}
 			execute(exec, player);
 		}
 	}
