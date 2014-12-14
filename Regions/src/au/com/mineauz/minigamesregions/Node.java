@@ -65,7 +65,6 @@ public class Node {
 	}
 	
 	public void execute(Trigger trigger, MinigamePlayer player){
-		if(!enabled) return;
 		if(player.getMinigame().isSpectator(player)) return;
 		List<NodeExecutor> toExecute = new ArrayList<NodeExecutor>();
 		for(NodeExecutor exec : executors){
@@ -112,6 +111,7 @@ public class Node {
 	
 	public void execute(NodeExecutor exec, MinigamePlayer player){
 		for(ActionInterface act : exec.getActions()){
+			if(!enabled && !act.getName().equalsIgnoreCase("SET_ENABLED")) continue;
 			act.executeNodeAction(player, this);
 			if(!exec.isTriggerPerPlayer())
 				exec.addPublicTrigger();

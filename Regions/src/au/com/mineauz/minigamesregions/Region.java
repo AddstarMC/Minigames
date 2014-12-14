@@ -185,7 +185,6 @@ public class Region {
 	}
 	
 	public void execute(Trigger trigger, MinigamePlayer player){
-		if(!enabled) return;
 		if(player.getMinigame().isSpectator(player)) return;
 		List<RegionExecutor> toExecute = new ArrayList<RegionExecutor>();
 		for(RegionExecutor exec : executors){
@@ -232,6 +231,7 @@ public class Region {
 	
 	public void execute(RegionExecutor exec, MinigamePlayer player){
 		for(ActionInterface act : exec.getActions()){
+			if(!enabled && !act.getName().equalsIgnoreCase("SET_ENABLED")) continue;
 			act.executeRegionAction(player, this);
 			if(!exec.isTriggerPerPlayer())
 				exec.addPublicTrigger();
