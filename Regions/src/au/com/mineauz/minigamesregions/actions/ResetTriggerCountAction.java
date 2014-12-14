@@ -1,0 +1,59 @@
+package au.com.mineauz.minigamesregions.actions;
+
+import org.bukkit.configuration.file.FileConfiguration;
+
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigamesregions.Node;
+import au.com.mineauz.minigamesregions.NodeExecutor;
+import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionExecutor;
+
+public class ResetTriggerCountAction extends ActionInterface{
+
+	@Override
+	public String getName() {
+		return "RESET_TRIGGER_COUNT";
+	}
+
+	@Override
+	public String getCategory() {
+		return "Region/Node Actions";
+	}
+
+	@Override
+	public boolean useInRegions() {
+		return true;
+	}
+
+	@Override
+	public boolean useInNodes() {
+		return true;
+	}
+
+	@Override
+	public void executeRegionAction(MinigamePlayer player, Region region) {
+		for(RegionExecutor ex : region.getExecutors())
+			ex.setTriggerCount(0);
+	}
+
+	@Override
+	public void executeNodeAction(MinigamePlayer player, Node node) {
+		for(NodeExecutor ex : node.getExecutors())
+			ex.setTriggerCount(0);
+	}
+
+	@Override
+	public void saveArguments(FileConfiguration config, String path) {
+	}
+
+	@Override
+	public void loadArguments(FileConfiguration config, String path) {
+	}
+
+	@Override
+	public boolean displayMenu(MinigamePlayer player, Menu previous) {
+		return false;
+	}
+
+}
