@@ -164,19 +164,21 @@ public class MultiplayerType extends MinigameTypeBase{
 		
 		if(mgm.isTeamGame() && mgm.getPlayers().size() > 1 && 
 				teamsWithPlayers == 1 && mgm.hasStarted() && !forced){
-			Team winner = null;
-			for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
-				if(t.getPlayers().size() > 0){
-					winner = t;
-					break;
+			if(TeamsModule.getMinigameModule(mgm).getTeams().size() != 1){
+				Team winner = null;
+				for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+					if(t.getPlayers().size() > 0){
+						winner = t;
+						break;
+					}
 				}
-			}
-			List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(winner.getPlayers());
-			List<MinigamePlayer> l = new ArrayList<MinigamePlayer>();
-			plugin.pdata.endMinigame(mgm, w, l);
-			
-			if(mgm.getMpBets() != null){
-				mgm.setMpBets(null);
+				List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(winner.getPlayers());
+				List<MinigamePlayer> l = new ArrayList<MinigamePlayer>();
+				plugin.pdata.endMinigame(mgm, w, l);
+				
+				if(mgm.getMpBets() != null){
+					mgm.setMpBets(null);
+				}
 			}
 		}
 		else if(mgm.getPlayers().size() == 2 && mgm.hasStarted() && !forced){
