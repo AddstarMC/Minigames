@@ -5,8 +5,10 @@ import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
@@ -21,6 +23,8 @@ public class GiveItemAction extends ActionInterface{
 	private StringFlag type = new StringFlag("STONE", "type");
 	private IntegerFlag count = new IntegerFlag(1, "count");
 	private IntegerFlag damage = new IntegerFlag(0, "damage");
+	private StringFlag name = new StringFlag(null, "name");
+	private StringFlag lore = new StringFlag(null, "lore");
 
 	@Override
 	public String getName() {
@@ -53,8 +57,18 @@ public class GiveItemAction extends ActionInterface{
 	}
 	
 	private void execute(MinigamePlayer player){
+		ItemStack item = new ItemStack(Material.getMaterial(type.getFlag()), count.getFlag(), damage.getFlag().shortValue());
+		ItemMeta meta = item.getItemMeta();
+		if(name.getFlag() != null){
+			meta.setDisplayName(name.getFlag());
+		}
+		if(lore.getFlag() != null){
+			meta.setLore(MinigameUtils.stringToList(lore.getFlag()));
+		}
+		item.setItemMeta(meta);
+		
 		Map<Integer, ItemStack> unadded = player.getPlayer().getInventory().addItem(
-				new ItemStack(Material.getMaterial(type.getFlag()), count.getFlag(), damage.getFlag().shortValue()));
+				item);
 		
 		if(!unadded.isEmpty()){
 			for(ItemStack i : unadded.values()){
@@ -68,6 +82,10 @@ public class GiveItemAction extends ActionInterface{
 		type.saveValue(path, config);
 		count.saveValue(path, config);
 		damage.saveValue(path, config);
+		if(name.getFlag() != null)
+			name.saveValue(path, config);
+		if(lore.getFlag() != null)
+			lore.saveValue(path, config);
 	}
 
 	@Override
@@ -75,6 +93,10 @@ public class GiveItemAction extends ActionInterface{
 		type.loadValue(path, config);
 		count.loadValue(path, config);
 		damage.loadValue(path, config);
+		if(config.contains(path + ".name"))
+			name.loadValue(path, config);
+		if(config.contains(path + ".lore"))
+			lore.loadValue(path, config);
 	}
 
 	@Override
@@ -82,6 +104,15 @@ public class GiveItemAction extends ActionInterface{
 		Menu m = new Menu(3, "Give Item", player);
 		
 		m.addItem(new MenuItemBack(previous), m.getSize() - 9);
+		
+		MenuItemString n = (MenuItemString) name.getMenuItem("Name", Material.NAME_TAG);
+		n.setAllowNull(true);
+		m.addItem(n);
+		MenuItemString l = (MenuItemString) lore.getMenuItem("Lore", Material.PAPER, 
+				MinigameUtils.stringToList("Separate with semi-colons;for new lines"));
+		l.setAllowNull(true);
+		m.addItem(l);
+		
 		m.addItem(new MenuItemString("Type", Material.STONE, new Callback<String>() {
 			
 			@Override
