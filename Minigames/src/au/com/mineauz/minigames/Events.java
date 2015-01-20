@@ -67,7 +67,6 @@ public class Events implements Listener{
 	public void onPlayerDeath(PlayerDeathEvent event){
 		final MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity().getPlayer());
 		if(ply == null) return;
-		ply.setDead(true);
 		if(ply.isInMinigame()){
 			Minigame mgm = ply.getMinigame();
 			if(!mgm.hasDeathDrops()){
@@ -114,7 +113,6 @@ public class Events implements Listener{
 	private void playerSpawn(PlayerRespawnEvent event){
 		final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
-		ply.setDead(false);
 		if(ply.isInMinigame()){
 			final WeatherTimeModule mod = WeatherTimeModule.getMinigameModule(ply.getMinigame());
 			if(mod.isUsingCustomWeather()){

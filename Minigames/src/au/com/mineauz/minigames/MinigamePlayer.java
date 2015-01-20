@@ -627,11 +627,7 @@ public class MinigamePlayer {
 	}
 
 	public boolean isDead() {
-		return isDead; //Temporary Fix for silly bukkits set health function not changing Player.isDead() to true.
-	}
-
-	public void setDead(boolean isDead) {
-		this.isDead = isDead;
+		return player.isDead();
 	}
 	
 	public void setTeam(Team team){
