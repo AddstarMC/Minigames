@@ -215,12 +215,26 @@ public class Events implements Listener{
 		}
 		
 		File pldata = new File(plugin.getDataFolder() + "/playerdata/inventories/" + event.getPlayer().getUniqueId().toString() + ".yml");
-		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+		final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(pldata.exists()){
 			ply.setOfflineMinigamePlayer(new OfflineMinigamePlayer(event.getPlayer().getUniqueId().toString()));
 			Location floc = ply.getOfflineMinigamePlayer().getLoginLocation();
 			ply.setRequiredQuit(true);
 			ply.setQuitPos(floc);
+			
+			if(!ply.getPlayer().isDead() && ply.isRequiredQuit()){
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					
+					@Override
+					public void run() {
+						ply.restorePlayerData();
+					}
+				});
+				ply.teleport(ply.getQuitPos());
+				
+				ply.setRequiredQuit(false);
+				ply.setQuitPos(null);
+			}
 			
 			plugin.getLogger().info(ply.getName() + "'s data has been restored from file.");
 		}
