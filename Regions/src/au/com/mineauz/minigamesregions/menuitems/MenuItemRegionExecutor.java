@@ -68,7 +68,7 @@ public class MenuItemRegionExecutor extends MenuItem{
 		
 		m.addItem(new MenuItemInteger("Trigger Count", 
 				MinigameUtils.stringToList("Number of times this;node can be;triggered"), 
-				Material.DOUBLE_STEP, ex.getTriggerCountCallback(), 0, null));
+				Material.STONE, ex.getTriggerCountCallback(), 0, null));
 		
 		m.addItem(new MenuItemBoolean("Trigger Per Player", 
 				MinigameUtils.stringToList("Whether this node;is triggered per player;or just on count"), 

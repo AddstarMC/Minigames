@@ -78,7 +78,7 @@ public class MenuItemTeam extends MenuItem{
 				return team.getDisplayName();
 			}
 		}));
-		m.addItem(new MenuItemInteger("Max Players", Material.DOUBLE_STEP, new Callback<Integer>() {
+		m.addItem(new MenuItemInteger("Max Players", Material.STONE, new Callback<Integer>() {
 			
 			@Override
 			public void setValue(Integer value) {

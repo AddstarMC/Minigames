@@ -993,9 +993,9 @@ public class Minigame {
 		itemsMain.add(obj);
 		itemsMain.add(new MenuItemNewLine());
 		itemsMain.add(minScore.getMenuItem("Min. Score", Material.STEP, MinigameUtils.stringToList("Multiplayer Only")));
-		itemsMain.add(maxScore.getMenuItem("Max. Score", Material.DOUBLE_STEP, MinigameUtils.stringToList("Multiplayer Only")));
+		itemsMain.add(maxScore.getMenuItem("Max. Score", Material.STONE, MinigameUtils.stringToList("Multiplayer Only")));
 		itemsMain.add(minPlayers.getMenuItem("Min. Players", Material.STEP, MinigameUtils.stringToList("Multiplayer Only")));
-		itemsMain.add(maxPlayers.getMenuItem("Max. Players", Material.DOUBLE_STEP, MinigameUtils.stringToList("Multiplayer Only")));
+		itemsMain.add(maxPlayers.getMenuItem("Max. Players", Material.STONE, MinigameUtils.stringToList("Multiplayer Only")));
 		itemsMain.add(spMaxPlayers.getMenuItem("Enable Singleplayer Max Players", Material.IRON_FENCE));
 		itemsMain.add(new MenuItemPage("Lobby Settings", MinigameUtils.stringToList("Multiplayer Only"), Material.WOOD_DOOR, lobby));
 		itemsMain.add(new MenuItemNewLine());
@@ -1087,7 +1087,7 @@ public class Minigame {
 		itemsMain.add(minChestRandom.getMenuItem("Min. Chest Random", Material.STEP, rndChstDes, 0, null));
 		rndChstDes.clear();
 		rndChstDes.add("Max. item randomization");
-		itemsMain.add(maxChestRandom.getMenuItem("Max. Chest Random", Material.DOUBLE_STEP, rndChstDes, 0, null));
+		itemsMain.add(maxChestRandom.getMenuItem("Max. Chest Random", Material.STONE, rndChstDes, 0, null));
 		itemsMain.add(new MenuItemNewLine());
 
 		//--------------//

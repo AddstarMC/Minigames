@@ -69,7 +69,7 @@ public class PlayerScoreRangeCondition extends ConditionInterface {
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Score Range", player);
 		m.addItem(min.getMenuItem("Min Score", Material.STEP));
-		m.addItem(max.getMenuItem("Max Score", Material.DOUBLE_STEP));
+		m.addItem(max.getMenuItem("Max Score", Material.STONE));
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
 		addInvertMenuItem(m);
 		m.displayMenu(player);

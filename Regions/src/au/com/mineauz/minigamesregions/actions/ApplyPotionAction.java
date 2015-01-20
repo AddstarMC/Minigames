@@ -112,7 +112,7 @@ public class ApplyPotionAction extends ActionInterface {
 				return dur.getFlag();
 			}
 		}, 0, 86400));
-		m.addItem(new MenuItemInteger("Level", Material.DOUBLE_STEP, new Callback<Integer>() {
+		m.addItem(new MenuItemInteger("Level", Material.STONE, new Callback<Integer>() {
 
 			@Override
 			public void setValue(Integer value) {

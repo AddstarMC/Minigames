@@ -114,7 +114,7 @@ public class SetBlockAction extends ActionInterface {
 			}
 		}));
 		m.addItem(usedur.getMenuItem("Use Durability Value", Material.ENDER_PEARL));
-		m.addItem(dur.getMenuItem("Durability Value", Material.DOUBLE_STEP, 0, 15));
+		m.addItem(dur.getMenuItem("Durability Value", Material.STONE, 0, 15));
 		m.displayMenu(player);
 		return true;
 	}

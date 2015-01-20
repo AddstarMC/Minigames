@@ -99,7 +99,7 @@ public class TreasureHuntModule extends MinigameModule{
 		List<String> maxDes = new ArrayList<String>();
 		maxDes.add("Maximum items to");
 		maxDes.add("spawn in chest.");
-		itemsTreasureHunt.add(maxTreasure.getMenuItem("Max. Items", Material.DOUBLE_STEP, maxDes, 0, 27));
+		itemsTreasureHunt.add(maxTreasure.getMenuItem("Max. Items", Material.STONE, maxDes, 0, 27));
 		itemsTreasureHunt.add(new MenuItemTime("Restart Delay", Material.WATCH, treasureWaitTime.getCallback(), 0, null));
 		itemsTreasureHunt.add(new MenuItemTime("Hint Usage Delay", Material.WATCH, hintWaitTime.getCallback(), 0, null));
 		treasureHunt.addItems(itemsTreasureHunt);
