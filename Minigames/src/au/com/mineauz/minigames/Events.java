@@ -378,6 +378,12 @@ public class Events implements Listener{
 					tool.getMode().onLeftClick(ply, mg, TeamsModule.getMinigameModule(mg).getTeam(tool.getTeam()), event);
 				}
 			}
+			else if(tool.getMinigame() == null) {
+				ply.sendMessage("Please select a minigame. Click on the join sign, or /mg tool minigame <minigame>", null);
+			}
+			else if(tool.getMode() == null) {
+				ply.sendMessage("Please select a tool mode. Shift + Right click", null);
+			}
 		}
 		
 		//Spectator disables:
