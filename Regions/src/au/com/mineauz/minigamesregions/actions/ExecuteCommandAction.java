@@ -37,23 +37,43 @@ public class ExecuteCommandAction extends ActionInterface {
 	public boolean useInNodes() {
 		return true;
 	}
-
-	@Override
-	public void executeRegionAction(MinigamePlayer player,
-			Region region) {
-		execute();
+	
+	private String replacePlayerTags(MinigamePlayer player, String string) {
+		return string
+			.replace("{player}", player.getName())
+			.replace("{dispplayer}", player.getName())
+			.replace("{px}", String.valueOf(player.getLocation().getX()))
+			.replace("{py}", String.valueOf(player.getLocation().getY()))
+			.replace("{pz}", String.valueOf(player.getLocation().getZ()))
+			.replace("{yaw}", String.valueOf(player.getLocation().getYaw()))
+			.replace("{pitch}", String.valueOf(player.getLocation().getPitch()))
+			.replace("{minigame}", player.getMinigame().getName(false))
+			.replace("{dispminigame}", player.getMinigame().getName(true))
+			.replace("{deaths}", String.valueOf(player.getDeaths()))
+			.replace("{kills}", String.valueOf(player.getKills()))
+			.replace("{reverts}", String.valueOf(player.getReverts()))
+			.replace("{score}", String.valueOf(player.getScore()))
+			.replace("{team}", (player.getTeam() != null ? player.getTeam().getDisplayName() : ""));
 	}
 
 	@Override
-	public void executeNodeAction(MinigamePlayer player,
-			Node node) {
-		execute();
+	public void executeRegionAction(MinigamePlayer player, Region region) {
+		String command = replacePlayerTags(player, comd.getFlag());
+		command = command.replace("{region}", region.getName());
+		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
+	}
+
+	@Override
+	public void executeNodeAction(MinigamePlayer player, Node node) {
+		String command = replacePlayerTags(player, comd.getFlag());
+		command = command
+			.replace("{x}", String.valueOf(node.getLocation().getBlockX()))
+			.replace("{y}", String.valueOf(node.getLocation().getBlockY()))
+			.replace("{z}", String.valueOf(node.getLocation().getBlockZ()))
+			.replace("{node}", node.getName());
+		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
 	}
 	
-	private void execute(){
-		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), comd.getFlag());
-	}
-
 	@Override
 	public void saveArguments(FileConfiguration config,
 			String path) {
