@@ -48,6 +48,7 @@ public class Minigames extends JavaPlugin{
 	private SQLDatabase sql = null;
 	private static SignBase minigameSigns;
 	private FileConfiguration lang = null;
+	private FileConfiguration defLang = null;
 	private List<SQLPlayer> sqlToStore = new ArrayList<SQLPlayer>();
 	private SQLCompletionSaver completionSaver = null;
 	public boolean thrownError = false;
@@ -59,23 +60,11 @@ public class Minigames extends JavaPlugin{
 		PluginDescriptionFile desc = this.getDescription();
 		
 		MinigameSave sv = new MinigameSave("lang/" + getConfig().getString("lang"));
-		if(sv.getConfig().contains("lang.info") && sv.getConfig().getString("lang.version").equals(getDescription().getVersion())){
-			lang = sv.getConfig();
-		}
-		else{
-			MinigameSave svb = new MinigameSave("lang/en_AU");
-			if(svb.getConfig().contains("lang.info")){
-				if(svb.getConfig().getString("lang.version").equals(getDescription().getVersion())){
-					lang = svb.getConfig();
-				}
-				else{
-					loadLang(svb);
-				}
-			}
-			else{
-				loadLang(svb);
-			}
-		}
+		lang = sv.getConfig();
+		loadLang();
+		lang.setDefaults(defLang);
+		
+		getLogger().info("Using lang " + getConfig().getString("lang"));
 		
 		String prespath = getDataFolder() + "/presets/";
 		String[] presets = {"spleef", "lms", "ctf", "infection"};
@@ -394,7 +383,7 @@ public class Minigames extends JavaPlugin{
 		return lang;
 	}
 	
-	private void loadLang(MinigameSave svb){
+	private void loadLang(){
 		InputStream is = getClassLoader().getResourceAsStream("lang/en_AU.yml");
 		OutputStream os = null;
 		try {
@@ -416,8 +405,8 @@ public class Minigames extends JavaPlugin{
 			e.printStackTrace();
 		}
 		
-		svb = new MinigameSave("lang/en_AU");
-		lang = svb.getConfig();
+		MinigameSave svb = new MinigameSave("lang/en_AU");
+		defLang = svb.getConfig();
 	}
 	
 	public List<SQLPlayer> getSQLToStore(){
