@@ -185,6 +185,7 @@ public class Events implements Listener{
 		}
 		
 		pdata.removeMinigamePlayer(event.getPlayer());
+		plugin.display.removeAll(event.getPlayer());
 		
 		if(Bukkit.getServer().getOnlinePlayers().size() == 1){
 			for(String mgm : mdata.getAllMinigames().keySet()){

@@ -10,24 +10,16 @@
   <name>Minigames-Regions</name>
 
   <repositories>
-    <!-- Repository for Bukkit -->
-   <!--<repository>
-      <id>bukkit-repo</id>
-      <url>http://repo.bukkit.org/content/groups/public/</url>
-    </repository>
-  
-    <repository>
-      <id>bukkit-maven</id>
-      <url>http://repo.bukkit.org/content/repositories/releases/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>-->
-    
     <!-- Other repositories -->
     <repository>
       <id>maven-central</id>
       <url>http://repo1.maven.org/maven2/</url>
+    </repository>
+    
+    <!-- Spigot repo -->
+    <repository>
+      <id>spigot-repo</id>
+      <url>https://hub.spigotmc.org/nexus/content/groups/public</url>
     </repository>
     
     <!-- Addstar repos -->
@@ -53,8 +45,8 @@
   <dependencies>
     <!-- Bukkit -->
     <dependency>
-      <groupId>org.bukkit</groupId>
-      <artifactId>bukkit</artifactId>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot-api</artifactId>
       <version>1.8-R0.1-SNAPSHOT</version>
     </dependency>
     

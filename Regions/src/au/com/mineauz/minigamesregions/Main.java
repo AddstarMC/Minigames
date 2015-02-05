@@ -14,6 +14,8 @@ public class Main extends JavaPlugin{
 	private static Minigames minigames;
 	private static Main plugin;
 	
+	private RegionDisplayManager display;
+	
 	@Override
 	public void onEnable(){
 		plugin = this;
@@ -24,6 +26,8 @@ public class Main extends JavaPlugin{
 			getLogger().severe("Minigames plugin not found! You must have the plugin to use Regions!");
 			this.getPluginLoader().disablePlugin(this);
 		}
+		
+		display = new RegionDisplayManager();
 		
 		minigames.mdata.addModule(RegionModule.class);
 		
@@ -57,5 +61,9 @@ public class Main extends JavaPlugin{
 	
 	public static Main getPlugin(){
 		return plugin;
+	}
+	
+	public RegionDisplayManager getDisplayManager() {
+		return display;
 	}
 }

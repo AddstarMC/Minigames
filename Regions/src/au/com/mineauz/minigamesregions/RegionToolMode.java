@@ -101,7 +101,7 @@ public class RegionToolMode implements ToolMode {
 		RegionModule mod = RegionModule.getMinigameModule(minigame);
 		String name = MinigameUtils.getMinigameTool(player).getSetting("Region");
 		if(mod.hasRegion(name)){
-			player.setSelection(mod.getRegion(name).getFirstPoint(), mod.getRegion(name).getSecondPoint());
+			Main.getPlugin().getDisplayManager().show(mod.getRegion(name), player);
 			player.sendMessage("Selected the " + name + " region in " + minigame);
 		}
 		else{
@@ -111,8 +111,15 @@ public class RegionToolMode implements ToolMode {
 
 	@Override
 	public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
-		player.clearSelection();
-		player.sendMessage("Cleared selection.", null);
+		RegionModule mod = RegionModule.getMinigameModule(minigame);
+		String name = MinigameUtils.getMinigameTool(player).getSetting("Region");
+		if(mod.hasRegion(name)){
+			Main.getPlugin().getDisplayManager().hide(mod.getRegion(name), player);
+			player.sendMessage("Deselected the region");
+		}
+		else{
+			player.sendMessage("No region created by the name '" + name + "'", "error");
+		}
 	}
 
 }

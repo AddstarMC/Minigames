@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -13,6 +14,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -348,5 +350,10 @@ public class RegionEvents implements Listener{
 				}
 			});
 		}
+	}
+	
+	@EventHandler(priority=EventPriority.LOWEST)
+	private void playerDisconnect(PlayerQuitEvent event) {
+		Main.getPlugin().getDisplayManager().hideAll(event.getPlayer());
 	}
 }

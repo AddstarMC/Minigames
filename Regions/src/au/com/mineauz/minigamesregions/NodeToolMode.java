@@ -83,29 +83,25 @@ public class NodeToolMode implements ToolMode {
 		}
 	}
 
-	@SuppressWarnings("deprecation") //TODO: Better method once available
 	@Override
 	public void select(MinigamePlayer player, Minigame minigame, Team team) {
 		RegionModule mod = RegionModule.getMinigameModule(minigame);
 		String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
 		if(mod.hasNode(name)){
-			player.getPlayer().sendBlockChange(mod.getNode(name).getLocation(), Material.SKULL, (byte)1);
-			player.sendMessage("Selected node '" + name + "' visually with a skull.", null);
+			Main.getPlugin().getDisplayManager().show(mod.getNode(name), player);
+			player.sendMessage("Selected node '" + name + "' visually.", null);
 		}
 		else{
 			player.sendMessage("No node exists by the name '" + name + "'", "error");
 		}
 	}
 
-	@SuppressWarnings("deprecation") //TODO: Better method once available
 	@Override
 	public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
 		RegionModule mod = RegionModule.getMinigameModule(minigame);
 		String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
 		if(mod.hasNode(name)){
-			player.getPlayer().sendBlockChange(mod.getNode(name).getLocation(), 
-					mod.getNode(name).getLocation().getBlock().getType(), 
-					mod.getNode(name).getLocation().getBlock().getData());
+			Main.getPlugin().getDisplayManager().hide(mod.getNode(name), player);
 			player.sendMessage("Deselected node '" + name + "'", null);
 		}
 		else{

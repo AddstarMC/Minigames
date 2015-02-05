@@ -28,6 +28,7 @@ import org.bukkit.potion.PotionEffectType;
 import au.com.mineauz.minigames.Metrics.Graph;
 import au.com.mineauz.minigames.blockRecorder.BasicRecorder;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
+import au.com.mineauz.minigames.display.DisplayManager;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.gametypes.SingleplayerType;
@@ -43,6 +44,7 @@ public class Minigames extends JavaPlugin{
 	static Logger log = Logger.getLogger("Minecraft");
 	public PlayerData pdata;
 	public MinigameData mdata;
+	public DisplayManager display;
 	public static Minigames plugin;
     private static Economy econ = null;
 	private SQLDatabase sql = null;
@@ -78,6 +80,7 @@ public class Minigames extends JavaPlugin{
 		
 		mdata = new MinigameData();
 		pdata = new PlayerData();
+		display = new DisplayManager();
 		
 		mdata.addMinigameType(new SingleplayerType());
 //		mdata.addMinigameType(new FreeForAllType());

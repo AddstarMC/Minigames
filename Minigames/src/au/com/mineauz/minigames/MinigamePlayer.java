@@ -10,12 +10,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 
+import au.com.mineauz.minigames.display.IDisplayCubiod;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -56,6 +56,7 @@ public class MinigamePlayer {
 	
 	private Location selection1 = null;
 	private Location selection2 = null;
+	private IDisplayCubiod selectionDisplay = null;
 	
 	private OfflineMinigamePlayer oply = null;
 	private StoredPlayerCheckpoints spc = null;
@@ -552,44 +553,24 @@ public class MinigamePlayer {
 		showSelection(false);
 	}
 	
-	@SuppressWarnings("deprecation") //TODO: Use alternative once available
 	public void showSelection(boolean clear){
-		if(selection2 != null && selection1 != null){
-			Location[] locs = MinigameUtils.getMinMaxSelection(selection1, selection2);
-
-			int minx = locs[0].getBlockX();
-			int miny = locs[0].getBlockY();
-			int minz = locs[0].getBlockZ();
-			int maxx = locs[1].getBlockX();
-			int maxy = locs[1].getBlockY();
-			int maxz = locs[1].getBlockZ();
-			
-			Location cur = new Location(selection1.getWorld(), minx, miny, minz);
-			
-			for(int x = minx; x <= maxx; x++){
-				cur.setX(x);
-				for(int y = miny; y <= maxy; y++){
-					cur.setY(y);
-					for(int z = minz; z <= maxz; z++){
-						cur.setZ(z);
-						if(((z == minz || z == maxz) && (x == minx || x == maxx) && (y == miny || y == maxy)) ||
-								((x == minx || x == maxx) && (y == miny || y == maxy)) ||
-								((z == minz || z == maxz) && (y == miny || y == maxy)) || 
-								((z == minz || z == maxz) && (x == minx || x == maxx))){
-							if(!clear)
-								getPlayer().sendBlockChange(cur, Material.DIAMOND_BLOCK, (byte)0);
-							else
-								getPlayer().sendBlockChange(cur, cur.getBlock().getType(), cur.getBlock().getData());
-						}
-					}
-				}
+		if (selectionDisplay != null) {
+			selectionDisplay.remove();
+			selectionDisplay = null;
+		}
+		
+		if (!clear) {
+			if(selection2 != null && selection1 != null) {
+				Location[] locs = MinigameUtils.getMinMaxSelection(selection1, selection2);
+				selectionDisplay = Minigames.plugin.display.displayCuboid(getPlayer(), locs[0], locs[1].add(1, 1, 1));
+				selectionDisplay.show();
+			} else if (selection1 != null) {
+				selectionDisplay = Minigames.plugin.display.displayCuboid(getPlayer(), selection1, selection1.clone().add(1, 1, 1));
+				selectionDisplay.show();
+			} else if (selection2 != null) {
+				selectionDisplay = Minigames.plugin.display.displayCuboid(getPlayer(), selection2, selection2.clone().add(1, 1, 1));
+				selectionDisplay.show();
 			}
-		}
-		else if(selection1 != null){
-			getPlayer().sendBlockChange(selection1, Material.DIAMOND_BLOCK, (byte)0);
-		}
-		else if(selection2 != null){
-			getPlayer().sendBlockChange(selection2, Material.DIAMOND_BLOCK, (byte)0);
 		}
 	}
 	
