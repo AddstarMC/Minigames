@@ -36,7 +36,7 @@ public class RegionNodeEditToolMode implements ToolMode {
 
 	@Override
 	public String getDescription() {
-		return "Allows you to simply\nedit regions and nodes\nwith right click";
+		return "Allows you to simply;edit regions and nodes;with right click";
 	}
 
 	@Override
