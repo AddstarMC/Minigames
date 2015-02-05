@@ -52,6 +52,8 @@ public class Main extends JavaPlugin{
 		ToolModes.removeToolMode("REGION");
 		ToolModes.removeToolMode("NODE");
 		
+		display.shutdown();
+		
 		getLogger().info("Minigames Regions disabled");
 	}
 	
