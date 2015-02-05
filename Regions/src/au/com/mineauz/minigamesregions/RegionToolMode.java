@@ -1,5 +1,8 @@
 package au.com.mineauz.minigamesregions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -7,7 +10,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -38,9 +44,9 @@ public class RegionToolMode implements ToolMode {
 	}
 
 	@Override
-	public void onSetMode(MinigamePlayer player, MinigameTool tool) {
+	public void onSetMode(final MinigamePlayer player, MinigameTool tool) {
 		tool.addSetting("Region", "None");
-		Menu m = new Menu(2, "Region Selection", player);
+		final Menu m = new Menu(2, "Region Selection", player);
 		if(player.isInMenu()){
 			m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, player.getMenu()), m.getSize() - 9);
 		}
@@ -57,6 +63,37 @@ public class RegionToolMode implements ToolMode {
 				return ftool.getSetting("Region");
 			}
 		}));
+		
+		if (tool.getMinigame() != null) {
+			// Node selection menu
+			RegionModule module = RegionModule.getMinigameModule(tool.getMinigame());
+			
+			Menu regionMenu = new Menu(6, "Regions", player);
+			List<MenuItem> items = new ArrayList<MenuItem>();
+			
+			for(final Region region : module.getRegions()){
+				MenuItemCustom item = new MenuItemCustom(region.getName(), Material.CHEST);
+				
+				// Set the node and go back to the main menu
+				item.setClick(new InteractionInterface() {
+					@Override
+					public Object interact(Object object) {
+						ftool.changeSetting("Region", region.getName());
+						
+						m.displayMenu(player);
+						
+						return object;
+					}
+				});
+				
+				items.add(item);
+			}
+			
+			regionMenu.addItems(items);
+			regionMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, m), regionMenu.getSize() - 9);
+			
+			m.addItem(new MenuItemPage("Edit Region", Material.CHEST, regionMenu));
+		}
 		m.displayMenu(player);
 	}
 
@@ -70,14 +107,18 @@ public class RegionToolMode implements ToolMode {
 			Team team, PlayerInteractEvent event) {
 		if(player.hasSelection()){
 			String name = MinigameUtils.getMinigameTool(player).getSetting("Region");
-			if(!RegionModule.getMinigameModule(minigame).hasRegion(name)){
-				RegionModule.getMinigameModule(minigame).addRegion(name, 
-						new Region(name, player.getSelectionPoints()[0], player.getSelectionPoints()[1]));
+			RegionModule module = RegionModule.getMinigameModule(minigame);
+			Region region = module.getRegion(name);
+			
+			if(region == null) {
+				module.addRegion(name, new Region(name, player.getSelectionPoints()[0], player.getSelectionPoints()[1]));
 				player.sendMessage("Created a new region in " + minigame + " called " + name, null);
 				player.clearSelection();
 			}
 			else{
-				player.sendMessage("A region already exists by the name " + name + " in " + minigame, "error");
+				region.updateRegion(player.getSelectionPoints()[0], player.getSelectionPoints()[1]);
+				Main.getPlugin().getDisplayManager().update(region);
+				player.sendMessage("Updated region " + name + " in " + minigame, null);
 			}
 		}
 		else{
@@ -115,6 +156,7 @@ public class RegionToolMode implements ToolMode {
 		String name = MinigameUtils.getMinigameTool(player).getSetting("Region");
 		if(mod.hasRegion(name)){
 			Main.getPlugin().getDisplayManager().hide(mod.getRegion(name), player);
+			player.clearSelection();
 			player.sendMessage("Deselected the region");
 		}
 		else{

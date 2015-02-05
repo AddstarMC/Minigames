@@ -1,6 +1,7 @@
 package au.com.mineauz.minigamesregions;
 
 import java.util.Map;
+import java.util.Set;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.SetMultimap;
+import com.google.common.collect.Sets;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -22,7 +24,7 @@ public class RegionDisplayManager {
 	private Map<Player, Map<Region, IDisplayObject>> regionDisplays;
 	private Map<Player, Map<Node, IDisplayObject>> nodeDisplays;
 	
-	private SetMultimap<Object, Player> activeWatchers;
+	private SetMultimap<Object, MinigamePlayer> activeWatchers;
 	private Map<Object, ArmorStand> nameDisplay;
 	
 	public RegionDisplayManager() {
@@ -33,7 +35,7 @@ public class RegionDisplayManager {
 		nameDisplay = Maps.newIdentityHashMap();
 	}
 	
-	private void showInfo(Region region, Player player) {
+	private void showInfo(Region region, MinigamePlayer player) {
 		activeWatchers.put(region, player);
 		
 		ArmorStand stand = nameDisplay.get(region);
@@ -58,7 +60,7 @@ public class RegionDisplayManager {
 		stand.setCustomName(info.toString());
 	}
 	
-	private void showInfo(Node node, Player player) {
+	private void showInfo(Node node, MinigamePlayer player) {
 		activeWatchers.put(node, player);
 		
 		ArmorStand stand = nameDisplay.get(node);
@@ -82,11 +84,12 @@ public class RegionDisplayManager {
 		stand.setCustomName(info.toString());
 	}
 	
-	private void hideInfo(Object object, Player player) {
+	private void hideInfo(Object object, MinigamePlayer player) {
 		activeWatchers.remove(object, player);
 		if (activeWatchers.get(object).isEmpty()) {
 			ArmorStand stand = nameDisplay.remove(object);
-			stand.remove();
+			if (stand != null)
+				stand.remove();
 		}
 	}
 	
@@ -103,7 +106,7 @@ public class RegionDisplayManager {
 		display.show();
 		regions.put(region, display);
 		
-		showInfo(region, player.getPlayer());
+		showInfo(region, player);
 	}
 	
 	public void show(Node node, MinigamePlayer player) {
@@ -117,7 +120,7 @@ public class RegionDisplayManager {
 		display.show();
 		nodes.put(node, display);
 		
-		showInfo(node, player.getPlayer());
+		showInfo(node, player);
 	}
 	
 	public void hide(Region region, MinigamePlayer player) {
@@ -131,7 +134,7 @@ public class RegionDisplayManager {
 			display.remove();
 		}
 		
-		hideInfo(region, player.getPlayer());
+		hideInfo(region, player);
 	}
 	
 	public void hide(Node node, MinigamePlayer player) {
@@ -145,7 +148,7 @@ public class RegionDisplayManager {
 			display.remove();
 		}
 		
-		hideInfo(node, player.getPlayer());
+		hideInfo(node, player);
 	}
 	
 	public void showAll(Minigame minigame, MinigamePlayer player) {
@@ -171,6 +174,7 @@ public class RegionDisplayManager {
 	}
 	
 	public void hideAll(Player player) {
+		MinigamePlayer mplayer = Minigames.plugin.pdata.getMinigamePlayer(player);
 		Map<Region, IDisplayObject> regions = regionDisplays.remove(player);
 		if (regions != null) {
 			for (IDisplayObject display : regions.values()) {
@@ -178,7 +182,7 @@ public class RegionDisplayManager {
 			}
 			
 			for (Region region : regions.keySet()) {
-				hideInfo(region, player);
+				hideInfo(region, mplayer);
 			}
 		}
 		
@@ -189,7 +193,7 @@ public class RegionDisplayManager {
 			}
 			
 			for (Node node : nodes.keySet()) {
-				hideInfo(node, player);
+				hideInfo(node, mplayer);
 			}
 		}
 	}
@@ -197,6 +201,32 @@ public class RegionDisplayManager {
 	public void shutdown() {
 		for (ArmorStand stand : nameDisplay.values()) {
 			stand.remove();
+		}
+	}
+	
+	public void update(Node node) {
+		Set<MinigamePlayer> watchers = Sets.newHashSet(activeWatchers.get(node));
+		
+		ArmorStand stand = nameDisplay.remove(node);
+		if (stand != null)
+			stand.remove();
+		
+		for (MinigamePlayer player : watchers) {
+			hide(node, player);
+			show(node, player);
+		}
+	}
+	
+	public void update(Region region) {
+		Set<MinigamePlayer> watchers = Sets.newHashSet(activeWatchers.get(region));
+		
+		ArmorStand stand = nameDisplay.remove(region);
+		if (stand != null)
+			stand.remove();
+		
+		for (MinigamePlayer player : watchers) {
+			hide(region, player);
+			show(region, player);
 		}
 	}
 }

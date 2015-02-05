@@ -1,12 +1,20 @@
 package au.com.mineauz.minigamesregions;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemCustom;
+import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -37,9 +45,9 @@ public class NodeToolMode implements ToolMode {
 	}
 
 	@Override
-	public void onSetMode(MinigamePlayer player, MinigameTool tool) {
+	public void onSetMode(final MinigamePlayer player, MinigameTool tool) {
 		tool.addSetting("Node", "None");
-		Menu m = new Menu(2, "Node Selection", player);
+		final Menu m = new Menu(2, "Node Selection", player);
 		if(player.isInMenu()){
 			m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, player.getMenu()), m.getSize() - 9);
 		}
@@ -56,6 +64,36 @@ public class NodeToolMode implements ToolMode {
 				return ftool.getSetting("Node");
 			}
 		}));
+		
+		if (tool.getMinigame() != null) {
+			// Node selection menu
+			RegionModule module = RegionModule.getMinigameModule(tool.getMinigame());
+			
+			Menu nodeMenu = new Menu(6, "Nodes", player);
+			List<MenuItem> items = new ArrayList<MenuItem>();
+			
+			for(final Node node : module.getNodes()){
+				MenuItemCustom item = new MenuItemCustom(node.getName(), Material.STONE_BUTTON);
+				
+				// Set the node and go back to the main menu
+				item.setClick(new InteractionInterface() {
+					@Override
+					public Object interact(Object object) {
+						ftool.changeSetting("Node", node.getName());
+						m.displayMenu(player);
+						
+						return object;
+					}
+				});
+				
+				items.add(item);
+			}
+			
+			nodeMenu.addItems(items);
+			nodeMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, m), nodeMenu.getSize() - 9);
+			
+			m.addItem(new MenuItemPage("Edit Node", Material.STONE_BUTTON, nodeMenu));
+		}
 		m.displayMenu(player);
 	}
 
@@ -65,21 +103,39 @@ public class NodeToolMode implements ToolMode {
 	}
 
 	@Override
-	public void onLeftClick(MinigamePlayer player, Minigame minigame,
-			Team team, PlayerInteractEvent event) {
+	public void onLeftClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEvent event) {
+		if (event.getClickedBlock() != null) {
+			RegionModule mod = RegionModule.getMinigameModule(minigame);
+			String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
+			
+			Location loc = event.getClickedBlock().getLocation().add(0.5, 0.5, 0.5);
+			Node node = mod.getNode(name);
+			if (node == null) {
+				node = new Node(name, loc);
+				mod.addNode(name, node);
+				player.sendMessage("Added new node to " + minigame + " called " + name, null);
+			} else {
+				node.setLocation(loc);
+				player.sendMessage("Edited node " + name + " in " + minigame, null);
+				Main.getPlugin().getDisplayManager().update(node);
+			}
+		}
 	}
 
 	@Override
-	public void onRightClick(MinigamePlayer player, Minigame minigame,
-			Team team, PlayerInteractEvent event) {
+	public void onRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEvent event) {
 		RegionModule mod = RegionModule.getMinigameModule(minigame);
 		String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
-		if(!mod.hasNode(name)){
-			mod.addNode(name, new Node(name, player.getLocation()));
+		
+		Node node = mod.getNode(name);
+		if (node == null) {
+			node = new Node(name, player.getLocation());
+			mod.addNode(name, node);
 			player.sendMessage("Added new node to " + minigame + " called " + name, null);
-		}
-		else{
-			player.sendMessage("A node already exists by the name '" + name + "'", "error");
+		} else {
+			node.setLocation(player.getLocation());
+			player.sendMessage("Edited node " + name + " in " + minigame, null);
+			Main.getPlugin().getDisplayManager().update(node);
 		}
 	}
 

@@ -95,6 +95,12 @@ public class Region {
 		return point2.clone();
 	}
 	
+	public void updateRegion(Location point1, Location point2) {
+		Location[] locs = MinigameUtils.getMinMaxSelection(point1, point2);
+		this.point1 = locs[0];
+		this.point2 = locs[1];
+	}
+	
 	public boolean hasPlayer(MinigamePlayer player){
 		return players.contains(player);
 	}

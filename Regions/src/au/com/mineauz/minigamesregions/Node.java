@@ -30,6 +30,10 @@ public class Node {
 		return loc.clone();
 	}
 	
+	public void setLocation(Location loc) {
+		this.loc = loc.clone();
+	}
+	
 	public int addExecutor(Trigger trigger){
 		executors.add(new NodeExecutor(trigger));
 		return executors.size();
