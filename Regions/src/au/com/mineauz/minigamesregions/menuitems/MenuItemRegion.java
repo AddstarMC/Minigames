@@ -33,7 +33,8 @@ public class MenuItemRegion extends MenuItem{
 	
 	@Override
 	public ItemStack onClick(){
-		createMenu(getContainer().getViewer(), getContainer(), region);
+		Menu m = createMenu(getContainer().getViewer(), getContainer(), region);
+		m.displayMenu(getContainer().getViewer());
 		return null;
 	}
 	
@@ -44,8 +45,8 @@ public class MenuItemRegion extends MenuItem{
 		return null;
 	}
 	
-	public static void createMenu(MinigamePlayer viewer, Menu previousPage, Region region){
-		Menu m = new Menu(3, "Regions", viewer);
+	public static Menu createMenu(MinigamePlayer viewer, Menu previousPage, Region region){
+		Menu m = new Menu(3, "Region: " + region.getName(), viewer);
 		m.setPreviousPage(previousPage);
 		List<MenuItem> items = new ArrayList<MenuItem>();
 		for(RegionExecutor ex : region.getExecutors()){
@@ -56,7 +57,8 @@ public class MenuItemRegion extends MenuItem{
 		}
 		m.addItem(new MenuItemRegionExecutorAdd("Add Executor", Material.ITEM_FRAME, region), m.getSize() - 1);
 		m.addItems(items);
-		m.displayMenu(viewer);
+		
+		return m;
 	}
 
 }

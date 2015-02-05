@@ -33,7 +33,8 @@ public class MenuItemNode extends MenuItem{
 	
 	@Override
 	public ItemStack onClick(){
-		createMenu(getContainer().getViewer(), getContainer(), node);
+		Menu m = createMenu(getContainer().getViewer(), getContainer(), node);
+		m.displayMenu(getContainer().getViewer());
 		return null;
 	}
 	
@@ -44,8 +45,8 @@ public class MenuItemNode extends MenuItem{
 		return null;
 	}
 	
-	public static void createMenu(MinigamePlayer viewer, Menu previousPage, Node node){
-		Menu m = new Menu(3, "Nodes", viewer);
+	public static Menu createMenu(MinigamePlayer viewer, Menu previousPage, Node node){
+		Menu m = new Menu(3, "Node: " + node.getName(), viewer);
 		m.setPreviousPage(previousPage);
 		List<MenuItem> items = new ArrayList<MenuItem>();
 		for(NodeExecutor ex : node.getExecutors()){
@@ -56,7 +57,8 @@ public class MenuItemNode extends MenuItem{
 		}
 		m.addItem(new MenuItemNodeExecutorAdd("Add Executor", Material.ITEM_FRAME, node), m.getSize() - 1);
 		m.addItems(items);
-		m.displayMenu(viewer);
+		
+		return m;
 	}
 
 }
