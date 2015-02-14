@@ -230,6 +230,12 @@ public class PlayerData {
 				//Send other players the join message.
 				mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.join.plyMsg", player.getName(), minigame.getName(true)), null, player);
 				player.updateInventory();
+				
+				if(minigame.canDisplayScoreboard()){
+					player.getPlayer().setScoreboard(minigame.getScoreboardManager());
+					minigame.setScore(player, 1);
+					minigame.setScore(player, 0);
+				}
 			}
 			else if(!minigame.isEnabled()){
 				player.sendMessage(MinigameUtils.getLang("minigame.error.notEnabled"), "error");
@@ -393,9 +399,6 @@ public class PlayerData {
 			
 			pos++;
 			ply.getLoadout().equiptLoadout(ply);
-			ply.getPlayer().setScoreboard(minigame.getScoreboardManager());
-			minigame.setScore(ply, 1);
-			minigame.setScore(ply, 0);
 			if(minigame.isAllowedFlight()){
 				ply.setCanFly(true);
 				if(minigame.isFlightEnabled())

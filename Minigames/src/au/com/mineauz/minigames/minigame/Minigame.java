@@ -128,6 +128,7 @@ public class Minigame {
 	
 	private IntegerFlag minScore = new IntegerFlag(5, "minscore");
 	private IntegerFlag maxScore = new IntegerFlag(10, "maxscore");
+	private BooleanFlag displayScoreboard = new BooleanFlag(true, "displayScoreboard");
 	
 	private BooleanFlag canSpectateFly = new BooleanFlag(false, "canspectatefly");
 	
@@ -234,6 +235,7 @@ public class Minigame {
 		addConfigFlag(usePermissions);
 		addConfigFlag(useXPBarTimer);
 		addConfigFlag(spectatorPosition);
+		addConfigFlag(displayScoreboard);
 	}
 	
 	public MinigameState getState(){
@@ -936,6 +938,14 @@ public class Minigame {
 	public void setGametypeName(String gametypeName) {
 		this.gametypeName.setFlag(gametypeName);
 	}
+	
+	public boolean canDisplayScoreboard(){
+		return displayScoreboard.getFlag();
+	}
+	
+	public void setDisplayScoreboard(boolean bool){
+		displayScoreboard.setFlag(bool);
+	}
 
 	public void displayMenu(MinigamePlayer player){
 		Menu main = new Menu(6, getName(false), player);
@@ -997,6 +1007,7 @@ public class Minigame {
 		itemsMain.add(minPlayers.getMenuItem("Min. Players", Material.STEP, MinigameUtils.stringToList("Multiplayer Only")));
 		itemsMain.add(maxPlayers.getMenuItem("Max. Players", Material.STONE, MinigameUtils.stringToList("Multiplayer Only")));
 		itemsMain.add(spMaxPlayers.getMenuItem("Enable Singleplayer Max Players", Material.IRON_FENCE));
+		itemsMain.add(displayScoreboard.getMenuItem("Display Scoreboard", Material.SIGN));
 		itemsMain.add(new MenuItemPage("Lobby Settings", MinigameUtils.stringToList("Multiplayer Only"), Material.WOOD_DOOR, lobby));
 		itemsMain.add(new MenuItemNewLine());
 		itemsMain.add(new MenuItemTime("Time Length", MinigameUtils.stringToList("Multiplayer Only"), Material.WATCH, new Callback<Integer>() {
