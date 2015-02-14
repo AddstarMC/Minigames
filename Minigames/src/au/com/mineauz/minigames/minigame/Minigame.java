@@ -47,6 +47,7 @@ import au.com.mineauz.minigames.menu.MenuItemDisplayLoadout;
 import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;
 import au.com.mineauz.minigames.menu.MenuItemDisplayWhitelist;
 import au.com.mineauz.minigames.menu.MenuItemFlag;
+import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.menu.MenuItemLoadoutAdd;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
@@ -1175,6 +1176,8 @@ public class Minigame {
 				Material.ENDER_PEARL, LobbySettingsModule.getMinigameModule(this).getTeleportOnPlayerWaitCallback()));
 		itemsLobby.add(new MenuItemBoolean("Teleport on Start", MinigameUtils.stringToList("Should players teleport;to the start position;after lobby?"),
 				Material.ENDER_PEARL, LobbySettingsModule.getMinigameModule(this).getTeleportOnStartCallback()));
+		itemsLobby.add(new MenuItemInteger("Waiting for Players Time", MinigameUtils.stringToList("The time in seconds;the game will wait for;more players to join.;A value of 0 will use;the config setting"),
+				Material.WATCH, LobbySettingsModule.getMinigameModule(this).getPlayerWaitTimeCallback(), 0, Integer.MAX_VALUE));
 		lobby.addItems(itemsLobby);
 		lobby.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), lobby.getSize() - 9);
 

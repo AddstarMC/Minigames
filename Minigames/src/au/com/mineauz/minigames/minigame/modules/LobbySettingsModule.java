@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -19,6 +20,7 @@ public class LobbySettingsModule extends MinigameModule {
 	private BooleanFlag canInteractStartWait = new BooleanFlag(true, "canInteractStartWait");
 	private BooleanFlag teleportOnPlayerWait = new BooleanFlag(false, "teleportOnPlayerWait");
 	private BooleanFlag teleportOnStart = new BooleanFlag(true, "teleportOnStart");
+	private IntegerFlag playerWaitTime = new IntegerFlag(0, "playerWaitTime");
 	
 	public LobbySettingsModule(Minigame mgm){
 		super(mgm);
@@ -38,6 +40,7 @@ public class LobbySettingsModule extends MinigameModule {
 		addConfigFlag(canMoveStartWait, map);
 		addConfigFlag(teleportOnPlayerWait, map);
 		addConfigFlag(teleportOnStart, map);
+		addConfigFlag(playerWaitTime, map);
 		return map;
 	}
 	
@@ -184,6 +187,27 @@ public class LobbySettingsModule extends MinigameModule {
 			@Override
 			public Boolean getValue(){
 				return teleportOnPlayerWait.getFlag();
+			}
+		};
+	}
+	
+	public int getPlayerWaitTime() {
+		return playerWaitTime.getFlag();
+	}
+	
+	public void setPlayerWaitTime(int time) {
+		playerWaitTime.setFlag(time);
+	}
+	
+	public Callback<Integer> getPlayerWaitTimeCallback(){
+		return new Callback<Integer>() {
+			@Override
+			public void setValue(Integer value){
+				playerWaitTime.setFlag(value);
+			}
+			@Override
+			public Integer getValue(){
+				return playerWaitTime.getFlag();
 			}
 		};
 	}

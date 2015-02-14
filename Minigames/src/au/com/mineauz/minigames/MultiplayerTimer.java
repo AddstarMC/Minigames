@@ -25,9 +25,15 @@ public class MultiplayerTimer{
 	
 	public MultiplayerTimer(Minigame mg){
 		minigame = mg;
-		playerWaitTime = plugin.getConfig().getInt("multiplayer.waitforplayers");
-		if(playerWaitTime <= 0)
-			playerWaitTime = 10;
+		
+		playerWaitTime = LobbySettingsModule.getMinigameModule(mg).getPlayerWaitTime();
+		
+		if (playerWaitTime == 0) {
+			playerWaitTime = plugin.getConfig().getInt("multiplayer.waitforplayers");
+			if(playerWaitTime <= 0)
+				playerWaitTime = 10;
+		}
+		
 		if(minigame.getStartWaitTime() == 0	){
 			startWaitTime = plugin.getConfig().getInt("multiplayer.startcountdown");
 			if(startWaitTime <= 0)
