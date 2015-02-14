@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -65,7 +66,34 @@ public class JoinSign implements MinigameSign {
 
 	@Override
 	public boolean signUse(Sign sign, MinigamePlayer player) {
-		if(player.getPlayer().getItemInHand().getType() == Material.AIR && !player.isInMinigame()){
+		if (player.isInMinigame()) {
+			return false;
+		}
+		
+		boolean invOk = true;
+		boolean fullInv;
+		if (plugin.getConfig().getBoolean("requireEmptyInventory")) {
+			fullInv = true;
+			for (ItemStack item : player.getPlayer().getInventory().getContents()) {
+				if (item != null) {
+					System.out.println("Found: " + item);
+					invOk = false;
+					break;
+				}
+			}
+			
+			for (ItemStack item : player.getPlayer().getInventory().getArmorContents()) {
+				if (item != null && item.getType() != Material.AIR) {
+					System.out.println("Found armor: " + item);
+					invOk = false;
+					break;
+				}
+			}
+		} else {
+			fullInv = false;
+			invOk = player.getPlayer().getItemInHand().getType() == Material.AIR;
+		}
+		if(invOk){
 			Minigame mgm = plugin.mdata.getMinigame(sign.getLine(2));
 			if(mgm != null && (!mgm.getUsePermissions() || player.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))){
 				if(mgm.isEnabled()){
@@ -93,8 +121,14 @@ public class JoinSign implements MinigameSign {
 				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()));
 			}
 		}
-		else if(!player.isInMinigame() && !MinigameUtils.isMinigameTool(player.getPlayer().getItemInHand()))
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
+		else if(!MinigameUtils.isMinigameTool(player.getPlayer().getItemInHand())) {
+			if (fullInv) {
+				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyInv"));
+			} else {
+				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
+			}
+		}
+			
 		return false;
 	}
 

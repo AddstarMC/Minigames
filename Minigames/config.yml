@@ -1,4 +1,5 @@
 saveInventory: true
+requireEmptyInventory: false
 
 treasurehunt:
   waittime: 3600
