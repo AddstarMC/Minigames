@@ -81,6 +81,10 @@ public class RegionEvents implements Listener{
 				
 				@Override
 				public void run() {
+					if (!ply.isInMinigame()) {
+						return;
+					}
+					
 					executeRegionChanges(mg, ply);
 					
 					for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
@@ -225,6 +229,10 @@ public class RegionEvents implements Listener{
 				
 				@Override
 				public void run() {
+					if (!ply.isInMinigame()) {
+						return;
+					}
+					
 					for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
 						if(node.getLocation().getWorld() == loc2.getWorld()){
 							Location loc1 = node.getLocation();
@@ -251,6 +259,10 @@ public class RegionEvents implements Listener{
 				
 				@Override
 				public void run() {
+					if (!ply.isInMinigame()) {
+						return;
+					}
+					
 					for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
 						if(node.getLocation().getWorld() == loc2.getWorld()){
 							Location loc1 = node.getLocation();
@@ -277,6 +289,10 @@ public class RegionEvents implements Listener{
 				
 				@Override
 				public void run() {
+					if (!ply.isInMinigame()) {
+						return;
+					}
+					
 					for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
 						if(node.getLocation().getWorld() == loc2.getWorld()){
 							Location loc1 = node.getLocation();
@@ -311,6 +327,10 @@ public class RegionEvents implements Listener{
 				
 				@Override
 				public void run() {
+					if (!ply.isInMinigame()) {
+						return;
+					}
+					
 					for(Node node : getRegionModule(ply.getMinigame()).getNodes()){
 						node.execute(trig, ply);
 					}
@@ -337,6 +357,9 @@ public class RegionEvents implements Listener{
 				
 				@Override
 				public void run() {
+					if (!ply.isInMinigame()) {
+						return;
+					}
 
 					for(Node node : getRegionModule(ply.getMinigame()).getNodes()){
 						node.execute(trig, ply);
