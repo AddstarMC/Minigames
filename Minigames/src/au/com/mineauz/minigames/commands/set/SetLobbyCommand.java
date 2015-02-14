@@ -41,7 +41,8 @@ public class SetLobbyCommand implements ICommand{
 	@Override
 	public String[] getUsage() {
 		return new String[] {"/minigame set <Minigame> lobby", 
-				"/minigame set <Minigame> lobby <canMove/canInteract/teleport> <playerWait/startWait> <true/false>"};
+				"/minigame set <Minigame> lobby <canMove/canInteract/teleport> <playerWait/startWait> <true/false>",
+				"/minigame set <Minigame> lobby <playerWait> <time>"};
 	}
 
 	@Override
@@ -134,8 +135,28 @@ public class SetLobbyCommand implements ICommand{
 					sender.sendMessage(ChatColor.RED + "Invalid syntax!");
 					return false;
 				}
+			} else if (args.length == 2) {
+				if (args[0].equalsIgnoreCase("playerWait")) {
+					try {
+						int value = Integer.parseInt(args[1]);
+						if (value < 0) {
+							value = 0;
+						}
+						
+						lobby.setPlayerWaitTime(value);
+						
+						if (value == 0) {
+							sender.sendMessage(ChatColor.GRAY + "Using the default player wait time.");
+						} else {
+							sender.sendMessage(ChatColor.GRAY + "Using player wait time of " + value + " seconds.");
+						}
+					} catch (NumberFormatException e) {
+						sender.sendMessage(ChatColor.RED + "Invalid syntax!");
+						return false;
+					}
+				}
 			}
-			return false;
+			return true;
 		}
 	}
 
@@ -144,7 +165,7 @@ public class SetLobbyCommand implements ICommand{
 			String alias, String[] args) {
 		if(args != null){
 			if(args.length == 1){
-				return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("canmove;caninteract;teleport"), args[args.length - 1]);
+				return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("canmove;caninteract;teleport;playerWait"), args[args.length - 1]);
 			}
 			else if(args.length == 2){
 				return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("playerwait;startwait"), args[args.length - 1]);
