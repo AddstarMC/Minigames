@@ -168,6 +168,7 @@ minigame:
     
 sign:
   emptyHand: "Your hand must be empty to use this sign."
+  emptyInv: "Your inventory must be empty to use this sign."
   onGround: "You must be standing on the ground to use this sign."
   bet:
     createPermission: "You do not have permission to create a Minigame bet sign!"
