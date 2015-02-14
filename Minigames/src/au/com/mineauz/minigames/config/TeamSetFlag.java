@@ -44,6 +44,7 @@ public class TeamSetFlag extends Flag<Map<TeamColor, Team>>{
 			mgm.getScoreboardManager().getTeam(sbTeam).setPrefix(tf.getFlag().getColor().getColor().toString());
 			mgm.getScoreboardManager().getTeam(sbTeam).setAllowFriendlyFire(false);
 			mgm.getScoreboardManager().getTeam(sbTeam).setCanSeeFriendlyInvisibles(true);
+			mgm.getScoreboardManager().getTeam(sbTeam).setNameTagVisibility(tf.getFlag().getNameTagVisibility());
 		}
 	}
 

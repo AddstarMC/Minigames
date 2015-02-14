@@ -7,13 +7,16 @@ import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.scoreboard.NameTagVisibility;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class Team {
@@ -25,6 +28,7 @@ public class Team {
 	private StringFlag gameAssignMsg = new StringFlag(MinigameUtils.getLang("player.team.assign.joinAnnounce"), "gameAssignMsg");
 	private StringFlag autobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.plyMsg"), "autobalanceMsg");
 	private StringFlag gameAutobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.minigameMsg"), "gameAutobalanceMsg");
+	private EnumFlag<NameTagVisibility> nametagVisibility = new EnumFlag<NameTagVisibility>(NameTagVisibility.ALWAYS, "nametagVisibility");
 	
 	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 	private int score = 0;
@@ -107,6 +111,7 @@ public class Team {
 		flags.add(gameAssignMsg);
 		flags.add(gameAutobalanceMsg);
 		flags.add(autobalanceMsg);
+		flags.add(nametagVisibility);
 		
 		return flags;
 	}
@@ -279,5 +284,30 @@ public class Team {
 	
 	public void setGameAutobalanceMessage(String msg){
 		gameAutobalanceMsg.setFlag(msg);
+	}
+	
+	public NameTagVisibility getNameTagVisibility(){
+		return nametagVisibility.getFlag();
+	}
+	
+	public Callback<String> getNameTagVisibilityCallback(){
+		return new Callback<String>() {
+
+			@Override
+			public void setValue(String value) {
+				nametagVisibility.setFlag(NameTagVisibility.valueOf(value));
+				mgm.getScoreboardManager().getTeam(color.toString().toLowerCase()).setNameTagVisibility(nametagVisibility.getFlag());
+			}
+
+			@Override
+			public String getValue() {
+				return nametagVisibility.getFlag().toString();
+			}
+		};
+	}
+	
+	public void setNameTagVisibility(NameTagVisibility vis){
+		nametagVisibility.setFlag(vis);
+		mgm.getScoreboardManager().getTeam(color.toString().toLowerCase()).setNameTagVisibility(vis);
 	}
 }

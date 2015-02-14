@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -7,6 +8,7 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.scoreboard.NameTagVisibility;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.Flag;
@@ -108,6 +110,12 @@ public class MenuItemTeam extends MenuItem{
 						MinigameUtils.stringToList("Message sent to all players;when someone is;autobalanced.;Use %s for team/player name")));
 			}
 		}
+		List<String> ntvo = new ArrayList<String>();
+		for(NameTagVisibility v : NameTagVisibility.values()){
+			ntvo.add(v.toString());
+		}
+		m.addItem(new MenuItemList("NameTag Visibility", Material.NAME_TAG, team.getNameTagVisibilityCallback(), ntvo));
+		
 		
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, getContainer()), m.getSize() - 9);
 		m.displayMenu(getContainer().getViewer());
