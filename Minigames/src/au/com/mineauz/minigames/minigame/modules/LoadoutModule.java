@@ -149,6 +149,14 @@ public class LoadoutModule extends MinigameModule {
 		if(extraLoadouts.containsKey(name)){
 			pl = extraLoadouts.get(name);
 		}
+		else{
+			for(String loadout : extraLoadouts.keySet()){
+				if(loadout.equalsIgnoreCase(name)){
+					pl = extraLoadouts.get(loadout);
+					break;
+				}
+			}
+		}
 		return pl;
 	}
 	
@@ -161,7 +169,15 @@ public class LoadoutModule extends MinigameModule {
 	
 	public boolean hasLoadout(String name){
 		if(!name.equalsIgnoreCase("default")){
-			return extraLoadouts.containsKey(name);
+			if(extraLoadouts.containsKey(name))
+				return extraLoadouts.containsKey(name);
+			else{
+				for(String loadout : extraLoadouts.keySet()){
+					if(loadout.equalsIgnoreCase(name))
+						return true;
+				}
+				return false;
+			}
 		}
 		else{
 			return true;

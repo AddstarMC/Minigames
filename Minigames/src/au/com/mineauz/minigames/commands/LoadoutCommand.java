@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -59,10 +59,22 @@ public class LoadoutCommand implements ICommand {
 			String label, String[] args) {
 		MinigamePlayer ply = Minigames.plugin.pdata.getMinigamePlayer((Player)sender);
 		if(ply.isInMinigame()){
-			LoadoutModule.getMinigameModule(ply.getMinigame()).displaySelectionMenu(ply, false);
+			if(args == null){
+				LoadoutModule.getMinigameModule(ply.getMinigame()).displaySelectionMenu(ply, false);
+			}
+			else{
+				String ln = args[0];
+				if(LoadoutModule.getMinigameModule(ply.getMinigame()).hasLoadout(ln)){
+					ply.setLoadout(LoadoutModule.getMinigameModule(ply.getMinigame()).getLoadout(ln));
+					ply.sendMessage(MinigameUtils.formStr("player.loadout.nextSpawnName", ln), null);
+				}
+				else{
+					ply.sendMessage(MinigameUtils.formStr("player.loadout.noLoadout", ln), "error");
+				}
+			}
 		}
 		else{
-			sender.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.loadout.noMinigame"));
+			ply.sendMessage(MinigameUtils.getLang("command.loadout.noMinigame"), "error");
 		}
 		return true;
 	}
@@ -70,6 +82,16 @@ public class LoadoutCommand implements ICommand {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
+		if(args != null){
+			MinigamePlayer ply = Minigames.plugin.pdata.getMinigamePlayer((Player)sender);
+			if(ply.isInMinigame()){
+				if(args.length == 1){
+					return MinigameUtils.tabCompleteMatch(new ArrayList<String>(
+							LoadoutModule.getMinigameModule(ply.getMinigame()).getLoadoutMap().keySet()), 
+							args[0]);
+				}
+			}
+		}
 		return null;
 	}
 

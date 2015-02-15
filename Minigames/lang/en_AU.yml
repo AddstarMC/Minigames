@@ -71,7 +71,9 @@ player:
     finalKill: "%s took the final kill from %s"
   loadout:
     nextSpawn: The loadout will be equipped the next time you spawn
+    nextSpawnName: "The %s loadout will be equipped next time you respawn."
     equipped: "You have been equipped with the %s loadout."
+    noLoadout: "There is no loadout by the name %s!"
     
 minigame:
   full: "Sorry, this Minigame is full."
