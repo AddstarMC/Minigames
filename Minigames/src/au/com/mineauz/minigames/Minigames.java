@@ -58,156 +58,166 @@ public class Minigames extends JavaPlugin{
 	private long lastUpdateCheck = 0;
 	
 	public void onEnable(){
-		plugin = this;
-		PluginDescriptionFile desc = this.getDescription();
-		
-		MinigameSave sv = new MinigameSave("lang/" + getConfig().getString("lang"));
-		lang = sv.getConfig();
-		loadLang();
-		lang.setDefaults(defLang);
-		
-		getLogger().info("Using lang " + getConfig().getString("lang"));
-		
-		String prespath = getDataFolder() + "/presets/";
-		String[] presets = {"spleef", "lms", "ctf", "infection"};
-		File pres;
-		for(String preset : presets){
-			pres = new File(prespath + preset + ".yml");
-			if(!pres.exists()){
-				saveResource("presets/" + preset + ".yml", false);
-			}
-		}
-		
-		mdata = new MinigameData();
-		pdata = new PlayerData();
-		display = new DisplayManager();
-		
-		mdata.addMinigameType(new SingleplayerType());
-//		mdata.addMinigameType(new FreeForAllType());
-//		mdata.addMinigameType(new TeamsType());
-		mdata.addMinigameType(new MultiplayerType());
-		
-		MinigameSave completion = new MinigameSave("completion");
-		mdata.addConfigurationFile("completion", completion.getConfig());
-		
-		getServer().getPluginManager().registerEvents(new Events(), this);
-		getServer().getPluginManager().registerEvents(new BasicRecorder(), this);
-		
-		try{
-			this.getConfig().load(this.getDataFolder() + "/config.yml");
-			List<String> mgs = new ArrayList<String>();
-			if(getConfig().contains("minigames")){
-				mgs = getConfig().getStringList("minigames");
-			}
-			final List<String> allMGS = new ArrayList<String>();
-			allMGS.addAll(mgs);
+		try {
+			plugin = this;
+			PluginDescriptionFile desc = this.getDescription();
 			
-			if(!mgs.isEmpty()){
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						for(String minigame : allMGS){
-							Minigame game = new Minigame(minigame);
-							try{
-								game.loadMinigame();
-								mdata.addMinigame(game);
-							}
-							catch(Exception e){
-								getLogger().severe(ChatColor.RED.toString() + "Failed to load \"" + minigame +"\"! The configuration file may be corrupt or missing!");
-								e.printStackTrace();
-							}
-						}
-						if(getSQL() != null && getSQL().getSql() != null){
-							SQLDataLoader loader = new SQLDataLoader(mdata.getAllMinigames().values());
-							loader.start();
-						}
-					}
-				}, 1L);
-			}
-		}
-		catch(FileNotFoundException ex){
-			log.info("Failed to load config, creating one.");
-			try{
-				this.getConfig().save(this.getDataFolder() + "/config.yml");
-			} 
-			catch(IOException e){
-				log.log(Level.SEVERE, "Could not save config.yml!");
-				e.printStackTrace();
-			}
-		}
-		catch(Exception e){
-			log.log(Level.SEVERE, "Failed to load config!");
-			e.printStackTrace();
-		}
-		
-		if(!setupEconomy()){
-	        getLogger().info("No Vault plugin found! You may only reward items.");
-		 }
-		
-		getConfig().options().copyDefaults(true);
-		saveConfig();
-		
-		if(getConfig().getBoolean("use-sql"))
-			loadSQL();
-		
-		Calendar cal = Calendar.getInstance();
-		if(cal.get(Calendar.DAY_OF_MONTH) == 21 && cal.get(Calendar.MONTH) == 8 ||
-				cal.get(Calendar.DAY_OF_MONTH) == 25 && cal.get(Calendar.MONTH) == 11 ||
-				cal.get(Calendar.DAY_OF_MONTH) == 1 && cal.get(Calendar.MONTH) == 0){
-			getLogger().info(ChatColor.GREEN.name() + "Party Mode enabled!");
-			pdata.setPartyMode(true);
-		}
-		
-//		pdata.loadDCPlayers();
-		pdata.loadDeniedCommands();
-		
-		MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
-		Set<String> keys = globalLoadouts.getConfig().getKeys(false);
-		for(String loadout : keys){
-			mdata.addLoadout(loadout);
-			Set<String> items = globalLoadouts.getConfig().getConfigurationSection(loadout).getKeys(false);
-//			for(int i = 0; i < items.size(); i++){
-//				if(globalLoadouts.getConfig().contains(loadout + "." + i))
-//					mdata.getLoadout(loadout).addItemToLoadout(globalLoadouts.getConfig().getItemStack(loadout + "." + i));
-//			}
-			for(String slot : items){
-				if(slot.matches("[0-9]+"))
-					mdata.getLoadout(loadout).addItem(globalLoadouts.getConfig().getItemStack(loadout + "." + slot), Integer.parseInt(slot));
-			}
-			if(globalLoadouts.getConfig().contains(loadout + ".potions")){
-				Set<String> pots = globalLoadouts.getConfig().getConfigurationSection(loadout + ".potions").getKeys(false);
-				for(String eff : pots){
-					if(PotionEffectType.getByName(eff) != null){
-						PotionEffect effect = new PotionEffect(PotionEffectType.getByName(eff),
-								globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".dur"),
-								globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".amp"));
-						mdata.getLoadout(loadout).addPotionEffect(effect);
-					}
+			MinigameSave sv = new MinigameSave("lang/" + getConfig().getString("lang"));
+			lang = sv.getConfig();
+			loadLang();
+			lang.setDefaults(defLang);
+			
+			getLogger().info("Using lang " + getConfig().getString("lang"));
+			
+			String prespath = getDataFolder() + "/presets/";
+			String[] presets = {"spleef", "lms", "ctf", "infection"};
+			File pres;
+			for(String preset : presets){
+				pres = new File(prespath + preset + ".yml");
+				if(!pres.exists()){
+					saveResource("presets/" + preset + ".yml", false);
 				}
 			}
-			if(globalLoadouts.getConfig().contains(loadout + ".usepermissions")){
-				mdata.getLoadout(loadout).setUsePermissions(globalLoadouts.getConfig().getBoolean(loadout + ".usepermissions"));
+			
+			mdata = new MinigameData();
+			pdata = new PlayerData();
+			display = new DisplayManager();
+			
+			mdata.addMinigameType(new SingleplayerType());
+	//		mdata.addMinigameType(new FreeForAllType());
+	//		mdata.addMinigameType(new TeamsType());
+			mdata.addMinigameType(new MultiplayerType());
+			
+			MinigameSave completion = new MinigameSave("completion");
+			mdata.addConfigurationFile("completion", completion.getConfig());
+			
+			getServer().getPluginManager().registerEvents(new Events(), this);
+			getServer().getPluginManager().registerEvents(new BasicRecorder(), this);
+			
+			try{
+				this.getConfig().load(this.getDataFolder() + "/config.yml");
+				List<String> mgs = new ArrayList<String>();
+				if(getConfig().contains("minigames")){
+					mgs = getConfig().getStringList("minigames");
+				}
+				final List<String> allMGS = new ArrayList<String>();
+				allMGS.addAll(mgs);
+				
+				if(!mgs.isEmpty()){
+					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+						
+						@Override
+						public void run() {
+							for(String minigame : allMGS){
+								Minigame game = new Minigame(minigame);
+								try{
+									game.loadMinigame();
+									mdata.addMinigame(game);
+								}
+								catch(Exception e){
+									getLogger().severe(ChatColor.RED.toString() + "Failed to load \"" + minigame +"\"! The configuration file may be corrupt or missing!");
+									e.printStackTrace();
+								}
+							}
+							if(getSQL() != null && getSQL().getSql() != null){
+								SQLDataLoader loader = new SQLDataLoader(mdata.getAllMinigames().values());
+								loader.start();
+							}
+						}
+					}, 1L);
+				}
 			}
+			catch(FileNotFoundException ex){
+				log.info("Failed to load config, creating one.");
+				try{
+					this.getConfig().save(this.getDataFolder() + "/config.yml");
+				} 
+				catch(IOException e){
+					log.log(Level.SEVERE, "Could not save config.yml!");
+					e.printStackTrace();
+				}
+			}
+			catch(Exception e){
+				log.log(Level.SEVERE, "Failed to load config!");
+				e.printStackTrace();
+			}
+			
+			if(!setupEconomy()){
+		        getLogger().info("No Vault plugin found! You may only reward items.");
+			 }
+			
+			getConfig().options().copyDefaults(true);
+			saveConfig();
+			
+			if(getConfig().getBoolean("use-sql"))
+				loadSQL();
+			
+			Calendar cal = Calendar.getInstance();
+			if(cal.get(Calendar.DAY_OF_MONTH) == 21 && cal.get(Calendar.MONTH) == 8 ||
+					cal.get(Calendar.DAY_OF_MONTH) == 25 && cal.get(Calendar.MONTH) == 11 ||
+					cal.get(Calendar.DAY_OF_MONTH) == 1 && cal.get(Calendar.MONTH) == 0){
+				getLogger().info(ChatColor.GREEN.name() + "Party Mode enabled!");
+				pdata.setPartyMode(true);
+			}
+			
+	//		pdata.loadDCPlayers();
+			pdata.loadDeniedCommands();
+			
+			MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
+			Set<String> keys = globalLoadouts.getConfig().getKeys(false);
+			for(String loadout : keys){
+				mdata.addLoadout(loadout);
+				Set<String> items = globalLoadouts.getConfig().getConfigurationSection(loadout).getKeys(false);
+	//			for(int i = 0; i < items.size(); i++){
+	//				if(globalLoadouts.getConfig().contains(loadout + "." + i))
+	//					mdata.getLoadout(loadout).addItemToLoadout(globalLoadouts.getConfig().getItemStack(loadout + "." + i));
+	//			}
+				for(String slot : items){
+					if(slot.matches("[0-9]+"))
+						mdata.getLoadout(loadout).addItem(globalLoadouts.getConfig().getItemStack(loadout + "." + slot), Integer.parseInt(slot));
+				}
+				if(globalLoadouts.getConfig().contains(loadout + ".potions")){
+					Set<String> pots = globalLoadouts.getConfig().getConfigurationSection(loadout + ".potions").getKeys(false);
+					for(String eff : pots){
+						if(PotionEffectType.getByName(eff) != null){
+							PotionEffect effect = new PotionEffect(PotionEffectType.getByName(eff),
+									globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".dur"),
+									globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".amp"));
+							mdata.getLoadout(loadout).addPotionEffect(effect);
+						}
+					}
+				}
+				if(globalLoadouts.getConfig().contains(loadout + ".usepermissions")){
+					mdata.getLoadout(loadout).setUsePermissions(globalLoadouts.getConfig().getBoolean(loadout + ".usepermissions"));
+				}
+			}
+			
+			minigameSigns = new SignBase();
+			mdata.loadRewardSigns();
+			
+			CommandDispatcher disp = new CommandDispatcher();
+			getCommand("minigame").setExecutor(disp);
+			getCommand("minigame").setTabCompleter(disp);
+			
+			for(Player player : getServer().getOnlinePlayers()){
+				pdata.addMinigamePlayer(player);
+			}
+			
+			initMetrics();
+	
+			log.info(desc.getName() + " successfully enabled.");
+		} catch (Throwable e) {
+			plugin = null;
+			getLogger().log(Level.SEVERE, "Failed to enable Minigames " + getDescription().getVersion() + ": ", e);
+			getPluginLoader().disablePlugin(this);
 		}
-		
-		minigameSigns = new SignBase();
-		mdata.loadRewardSigns();
-		
-		CommandDispatcher disp = new CommandDispatcher();
-		getCommand("minigame").setExecutor(disp);
-		getCommand("minigame").setTabCompleter(disp);
-		
-		for(Player player : getServer().getOnlinePlayers()){
-			pdata.addMinigamePlayer(player);
-		}
-		
-		initMetrics();
-
-		log.info(desc.getName() + " successfully enabled.");
 	}
 
 	public void onDisable(){
+		if (plugin == null) {
+			return;
+		}
+		
 		PluginDescriptionFile desc = this.getDescription();
 		log.info(desc.getName() + " successfully disabled.");
 		
