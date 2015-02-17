@@ -85,7 +85,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
-		Menu m = new Menu(3, "Player Has Item", player);
+		Menu m = new Menu(3, "Player Has Item");
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
 		final MinigamePlayer fply = player;
 		m.addItem(new MenuItemString("Item", Material.STONE, new Callback<String>() {

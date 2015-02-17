@@ -101,7 +101,7 @@ public class GiveItemAction extends ActionInterface{
 
 	@Override
 	public boolean displayMenu(final MinigamePlayer player, Menu previous) {
-		Menu m = new Menu(3, "Give Item", player);
+		Menu m = new Menu(3, "Give Item");
 		
 		m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 		

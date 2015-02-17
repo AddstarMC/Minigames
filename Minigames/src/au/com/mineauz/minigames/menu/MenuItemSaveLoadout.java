@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.PlayerLoadout;
 
 public class MenuItemSaveLoadout extends MenuItem{
@@ -35,7 +36,7 @@ public class MenuItemSaveLoadout extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(){
+	public ItemStack onClick(MinigamePlayer player){
 		ItemStack[] items = getContainer().getInventory();
 		loadout.clearLoadout();
 		
@@ -55,11 +56,11 @@ public class MenuItemSaveLoadout extends MenuItem{
 					loadout.addItem(items[i], 100);
 			}
 		}
-		getContainer().getViewer().sendMessage("Saved the '" + loadout.getName(false) + "' loadout.", null);
+		player.sendMessage("Saved the '" + loadout.getName(false) + "' loadout.", null);
 		if(altMenu == null)
-			getContainer().getPreviousPage().displayMenu(getContainer().getViewer());
+			getContainer().getPreviousPage().displayMenu(player);
 		else
-			altMenu.displayMenu(getContainer().getViewer());
+			altMenu.displayMenu(player);
 		return null;
 	}
 }

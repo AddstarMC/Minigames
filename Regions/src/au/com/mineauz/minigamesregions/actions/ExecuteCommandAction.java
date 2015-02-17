@@ -88,7 +88,7 @@ public class ExecuteCommandAction extends ActionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
-		Menu m = new Menu(3, "Execute Command", player);
+		Menu m = new Menu(3, "Execute Command");
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
 		m.addItem(new MenuItemString("Command", MinigameUtils.stringToList("Do not include '/';If '//' command, start with './'"), 
 				Material.COMMAND, new Callback<String>() {

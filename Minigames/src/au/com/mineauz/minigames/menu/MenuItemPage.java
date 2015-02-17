@@ -5,6 +5,8 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import au.com.mineauz.minigames.MinigamePlayer;
+
 public class MenuItemPage extends MenuItem{
 	
 	private Menu menu = null;
@@ -20,9 +22,9 @@ public class MenuItemPage extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(){
+	public ItemStack onClick(MinigamePlayer player){
 		menu.setPreviousPage(getContainer());
-		menu.displayMenu(getContainer().getViewer());
+		menu.displayMenu(player);
 		return null;
 	}
 }

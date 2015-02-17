@@ -1,5 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.MinigamePlayer;
+
 public interface InteractionInterface {
-	Object interact(Object object);
+	Object interact(MinigamePlayer player, Object object);
 }

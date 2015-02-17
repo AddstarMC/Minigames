@@ -37,17 +37,16 @@ public class MenuItemRegionExecutor extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(){
-		final MinigamePlayer fviewer = getContainer().getViewer();
-		Menu m = new Menu(3, "Executor", fviewer);
+	public ItemStack onClick(MinigamePlayer player){
+		Menu m = new Menu(3, "Executor");
 		final Menu ffm = m;
 		
 		MenuItemCustom ca = new MenuItemCustom("Actions", Material.CHEST);
 		ca.setClick(new InteractionInterface() {
 			
 			@Override
-			public Object interact(Object object) {
-				Actions.displayMenu(fviewer, ex, ffm);
+			public Object interact(MinigamePlayer player, Object object) {
+				Actions.displayMenu(player, ex, ffm);
 				return null;
 			}
 		});
@@ -57,8 +56,8 @@ public class MenuItemRegionExecutor extends MenuItem{
 		c2.setClick(new InteractionInterface() {
 			
 			@Override
-			public Object interact(Object object) {
-				Conditions.displayMenu(fviewer, ex, ffm);
+			public Object interact(MinigamePlayer player, Object object) {
+				Conditions.displayMenu(player, ex, ffm);
 				return null;
 			}
 		});
@@ -74,12 +73,12 @@ public class MenuItemRegionExecutor extends MenuItem{
 				MinigameUtils.stringToList("Whether this node;is triggered per player;or just on count"), 
 				Material.ENDER_PEARL, ex.getIsTriggerPerPlayerCallback()));
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, getContainer()), m.getSize() - 9);
-		m.displayMenu(fviewer);
+		m.displayMenu(player);
 		return null;
 	}
 	
 	@Override
-	public ItemStack onRightClick(){
+	public ItemStack onRightClick(MinigamePlayer player){
 		region.removeExecutor(ex);
 		getContainer().removeItem(getSlot());
 		return null;

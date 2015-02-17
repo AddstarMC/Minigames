@@ -81,7 +81,7 @@ public class Actions {
 	}
 	
 	public static void displayMenu(MinigamePlayer player, RegionExecutor exec, Menu prev){
-		Menu m = new Menu(3, "Actions", player);
+		Menu m = new Menu(3, "Actions");
 		m.setPreviousPage(prev);
 		for(ActionInterface act : exec.getActions()){
 			m.addItem(new MenuItemAction(MinigameUtils.capitalize(act.getName()), Material.PAPER, exec, act));
@@ -92,7 +92,7 @@ public class Actions {
 	}
 	
 	public static void displayMenu(MinigamePlayer player, NodeExecutor exec, Menu prev){
-		Menu m = new Menu(3, "Actions", player);
+		Menu m = new Menu(3, "Actions");
 		m.setPreviousPage(prev);
 		for(ActionInterface act : exec.getActions()){
 			m.addItem(new MenuItemAction(MinigameUtils.capitalize(act.getName()), Material.PAPER, exec, act));

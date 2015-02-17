@@ -211,16 +211,4 @@ public class LobbySettingsModule extends MinigameModule {
 			}
 		};
 	}
-
-	@Override
-	public void addEditMenuOptions(Menu menu) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean displayMechanicSettings(Menu previous) {
-		return false;
-	}
-
 }

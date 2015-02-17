@@ -65,7 +65,7 @@ public class AddScoreAction extends ActionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
-		Menu m = new Menu(3, "Add Score", player);
+		Menu m = new Menu(3, "Add Score");
 		m.addItem(new MenuItemInteger("Add Score Amount", Material.ENDER_PEARL, new Callback<Integer>() {
 			
 			@Override

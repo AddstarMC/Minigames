@@ -20,9 +20,9 @@ public class MenuItemToolTeam extends MenuItemList{
 	}
 	
 	@Override
-	public ItemStack onClick() {
-		super.onClick();
-		MinigamePlayer ply = getContainer().getViewer();
+	public ItemStack onClick(MinigamePlayer ply) {
+		super.onClick(ply);
+		
 		if(MinigameUtils.hasMinigameTool(ply)){
 			MinigameTool tool = MinigameUtils.getMinigameTool(ply);
 			tool.setTeam(TeamColor.matchColor(value.getValue().replace(" ", "_")));
@@ -31,9 +31,8 @@ public class MenuItemToolTeam extends MenuItemList{
 	}
 	
 	@Override
-	public ItemStack onRightClick() {
-		super.onRightClick();
-		MinigamePlayer ply = getContainer().getViewer();
+	public ItemStack onRightClick(MinigamePlayer ply) {
+		super.onRightClick(ply);
 		if(MinigameUtils.hasMinigameTool(ply)){
 			MinigameTool tool = MinigameUtils.getMinigameTool(ply);
 			tool.setTeam(TeamColor.matchColor(value.getValue().replace(" ", "_")));

@@ -25,25 +25,17 @@ public class MenuItemRewardGroupAdd extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(){
-		MinigamePlayer ply = getContainer().getViewer();
-		ply.setNoClose(true);
-		ply.getPlayer().closeInventory();
-		ply.sendMessage("Enter reward group name into chat, the menu will automatically reopen in 30s if nothing is entered.", null);
-		ply.setManualEntry(this);
-
-		getContainer().startReopenTimer(30);
+	public ItemStack onClick(MinigamePlayer player){
+		beginManualEntry(player, "Enter reward group name into chat, the menu will automatically reopen in 30s if nothing is entered.", 30);
 		return null;
 	}
 	
 	@Override
-	public void checkValidEntry(String entry){
+	public void checkValidEntry(MinigamePlayer player, String entry){
 		entry = entry.replace(" ", "_");
 		for(RewardGroup group : rewards.getGroups()){
 			if(group.getName().equals(entry)){
-				getContainer().getViewer().sendMessage("A reward group already exists by the name \"" + entry + "\"!", "error");
-				getContainer().cancelReopenTimer();
-				getContainer().displayMenu(getContainer().getViewer());
+				player.sendMessage("A reward group already exists by the name \"" + entry + "\"!", "error");
 				return;
 			}
 		}
@@ -52,9 +44,6 @@ public class MenuItemRewardGroupAdd extends MenuItem{
 		
 		MenuItemRewardGroup mrg = new MenuItemRewardGroup(entry + " Group", Material.CHEST, group, rewards);
 		getContainer().addItem(mrg);
-		
-		getContainer().cancelReopenTimer();
-		getContainer().displayMenu(getContainer().getViewer());
 	}
 
 }

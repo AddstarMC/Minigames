@@ -5,6 +5,8 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import au.com.mineauz.minigames.MinigamePlayer;
+
 public class MenuItemCustom extends MenuItem{
 	
 	private InteractionInterface click = null;
@@ -23,9 +25,9 @@ public class MenuItemCustom extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(){
+	public ItemStack onClick(MinigamePlayer player){
 		if(click != null)
-			return (ItemStack)click.interact(null);
+			return (ItemStack)click.interact(player, null);
 		return getItem();
 	}
 	
@@ -34,9 +36,9 @@ public class MenuItemCustom extends MenuItem{
 	}
 
 	@Override
-	public ItemStack onClickWithItem(ItemStack item){
+	public ItemStack onClickWithItem(MinigamePlayer player, ItemStack item){
 		if(clickItem != null)
-			return (ItemStack)clickItem.interact(item);
+			return (ItemStack)clickItem.interact(player, item);
 		return getItem();
 	}
 	
@@ -45,9 +47,9 @@ public class MenuItemCustom extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onRightClick(){
+	public ItemStack onRightClick(MinigamePlayer player){
 		if(rightClick != null)
-			return (ItemStack)rightClick.interact(null);
+			return (ItemStack)rightClick.interact(player, null);
 		return getItem();
 	}
 	
@@ -56,9 +58,9 @@ public class MenuItemCustom extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onShiftClick(){
+	public ItemStack onShiftClick(MinigamePlayer player){
 		if(shiftClick != null)
-			return (ItemStack)shiftClick.interact(null);
+			return (ItemStack)shiftClick.interact(player, null);
 		return getItem();
 	}
 	
@@ -67,9 +69,9 @@ public class MenuItemCustom extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onShiftRightClick(){
+	public ItemStack onShiftRightClick(MinigamePlayer player){
 		if(shiftRightClick != null)
-			return (ItemStack)shiftRightClick.interact(null);
+			return (ItemStack)shiftRightClick.interact(player, null);
 		return getItem();
 	}
 	
@@ -78,9 +80,9 @@ public class MenuItemCustom extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onDoubleClick(){
+	public ItemStack onDoubleClick(MinigamePlayer player){
 		if(doubleClick != null)
-			return (ItemStack)doubleClick.interact(null);
+			return (ItemStack)doubleClick.interact(player, null);
 		return getItem();
 	}
 	

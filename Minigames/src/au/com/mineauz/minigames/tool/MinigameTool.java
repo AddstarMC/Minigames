@@ -139,17 +139,16 @@ public class MinigameTool {
 	}
 	
 	public void openMenu(MinigamePlayer player){
-		Menu men = new Menu(2, "Set Tool Mode", player);
+		Menu men = new Menu(2, "Set Tool Mode");
 		
 		final MenuItemCustom miselect = new MenuItemCustom("Select", MinigameUtils.stringToList("Selects and area;or points visually"), Material.DIAMOND_BLOCK);
 		final MenuItemCustom mideselect = new MenuItemCustom("Deselect", MinigameUtils.stringToList("Deselects an;area or points"), Material.GLASS);
-		final MinigamePlayer fply = player;
 		miselect.setClick(new InteractionInterface() {
 			
 			@Override
-			public Object interact(Object object) {
+			public Object interact(MinigamePlayer player, Object object) {
 				if(mode != null){
-					mode.select(fply, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
+					mode.select(player, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
 				}
 				return miselect.getItem();
 			}
@@ -157,9 +156,9 @@ public class MinigameTool {
 		mideselect.setClick(new InteractionInterface() {
 			
 			@Override
-			public Object interact(Object object) {
+			public Object interact(MinigamePlayer player, Object object) {
 				if(mode != null){
-					mode.deselect(fply, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
+					mode.deselect(player, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
 				}
 				return mideselect.getItem();
 			}

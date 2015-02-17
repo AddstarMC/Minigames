@@ -65,7 +65,7 @@ public class GlobalLoadoutCommand implements ICommand {
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		MinigamePlayer player = Minigames.plugin.pdata.getMinigamePlayer((Player)sender);
-		Menu loadouts = new Menu(6, getName(), player);
+		Menu loadouts = new Menu(6, getName());
 		
 		List<String> des = new ArrayList<String>();
 		des.add("Shift + Right Click to Delete");

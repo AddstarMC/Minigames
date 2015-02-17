@@ -70,7 +70,7 @@ public class PlayerHealthRangeCondition extends ConditionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
-		Menu m = new Menu(3, "Health Range", player);
+		Menu m = new Menu(3, "Health Range");
 		m.addItem(minHealth.getMenuItem("Min Health", Material.STEP, 0, 20));
 		m.addItem(maxHealth.getMenuItem("Max Health", Material.STONE, 0, 20));
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);

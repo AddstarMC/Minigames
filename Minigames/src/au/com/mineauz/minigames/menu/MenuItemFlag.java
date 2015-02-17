@@ -5,6 +5,8 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import au.com.mineauz.minigames.MinigamePlayer;
+
 public class MenuItemFlag extends MenuItem{
 	
 	private String flag;
@@ -23,8 +25,8 @@ public class MenuItemFlag extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onShiftRightClick(){
-		getContainer().getViewer().sendMessage("Removed " + flag + " flag.", "error");
+	public ItemStack onShiftRightClick(MinigamePlayer player){
+		player.sendMessage("Removed " + flag + " flag.", "error");
 		flags.remove(flag);
 
 		getContainer().removeItem(getSlot());

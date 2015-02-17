@@ -57,9 +57,9 @@ public class MenuItemDisplayLoadout extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(){
-		Menu loadoutMenu = new Menu(5, loadout.getName(false), getContainer().getViewer());
-		Menu loadoutSettings = new Menu(6, loadout.getName(false), getContainer().getViewer());
+	public ItemStack onClick(MinigamePlayer player){
+		Menu loadoutMenu = new Menu(5, loadout.getName(false));
+		Menu loadoutSettings = new Menu(6, loadout.getName(false));
 		loadoutSettings.setPreviousPage(loadoutMenu);
 		
 		List<MenuItem> mItems = new ArrayList<MenuItem>();
@@ -92,7 +92,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 			loadoutSettings.addItem(dl, getContainer().getSize() - 9);
 		}
 		
-		Menu potionMenu = new Menu(5, getContainer().getName(), getContainer().getViewer());
+		Menu potionMenu = new Menu(5, getContainer().getName());
 		
 		potionMenu.setPreviousPage(loadoutMenu);
 		potionMenu.addItem(new MenuItemPotionAdd("Add Potion", Material.ITEM_FRAME, loadout), 44);
@@ -129,7 +129,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		for(int i = 40; i < 42; i++){
 			loadoutMenu.addItem(new MenuItem("", null), i);
 		}
-		loadoutMenu.displayMenu(getContainer().getViewer());
+		loadoutMenu.displayMenu(player);
 		
 		for(Integer item : loadout.getItems()){
 			if(item < 100)
@@ -148,15 +148,10 @@ public class MenuItemDisplayLoadout extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onShiftRightClick(){
+	public ItemStack onShiftRightClick(MinigamePlayer player){
 		if(allowDelete){
-			MinigamePlayer ply = getContainer().getViewer();
-			ply.setNoClose(true);
-			ply.getPlayer().closeInventory();
-			ply.sendMessage("Delete the " + loadout.getName(false) + " loadout from " + getName() + "? Type \"Yes\" to confirm.", null);
-			ply.sendMessage("The menu will automatically reopen in 10s if nothing is entered.");
-			ply.setManualEntry(this);
-			getContainer().startReopenTimer(10);
+			beginManualEntry(player, "Delete the " + loadout.getName(false) + " loadout from " + getName() + "? Type \"Yes\" to confirm.", 10);;
+			player.sendMessage("The menu will automatically reopen in 10s if nothing is entered.");
 			return null;
 		}
 		
@@ -164,7 +159,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 	}
 	
 	@Override
-	public void checkValidEntry(String entry){
+	public void checkValidEntry(MinigamePlayer player, String entry){
 		if(entry.equalsIgnoreCase("yes")){
 			String loadoutName = loadout.getName(false);
 			if(mgm != null)
@@ -172,14 +167,11 @@ public class MenuItemDisplayLoadout extends MenuItem{
 			else
 				Minigames.plugin.mdata.deleteLoadout(loadoutName);
 			getContainer().removeItem(getSlot());
-			getContainer().cancelReopenTimer();
-			getContainer().displayMenu(getContainer().getViewer());
-			getContainer().getViewer().sendMessage(loadoutName + " has been deleted.", null);
+			
+			player.sendMessage(loadoutName + " has been deleted.", null);
 			return;
 		}
-		getContainer().getViewer().sendMessage(loadout.getName(false) + " was not deleted.", "error");
-		getContainer().cancelReopenTimer();
-		getContainer().displayMenu(getContainer().getViewer());
+		player.sendMessage(loadout.getName(false) + " was not deleted.", "error");
 	}
 	
 	public void setAllowDelete(boolean bool){

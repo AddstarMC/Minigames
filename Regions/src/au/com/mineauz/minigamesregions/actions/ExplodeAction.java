@@ -82,7 +82,7 @@ public class ExplodeAction extends ActionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
-		Menu m = new Menu(3, "Explode", player);
+		Menu m = new Menu(3, "Explode");
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
 		m.addItem(power.getMenuItem("Explosion Power", Material.TNT));
 		m.addItem(fire.getMenuItem("Cause Fire", Material.FLINT_AND_STEEL));

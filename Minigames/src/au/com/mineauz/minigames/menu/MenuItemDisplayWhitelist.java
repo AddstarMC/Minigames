@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 
 public class MenuItemDisplayWhitelist extends MenuItem{
@@ -26,8 +27,8 @@ public class MenuItemDisplayWhitelist extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick() {
-		Menu menu = new Menu(6, "Block Whitelist", getContainer().getViewer());
+	public ItemStack onClick(MinigamePlayer player) {
+		Menu menu = new Menu(6, "Block Whitelist");
 		List<MenuItem> items = new ArrayList<MenuItem>();
 		for(Material bl : whitelist){
 			items.add(new MenuItemWhitelistBlock(bl, whitelist));
@@ -37,7 +38,7 @@ public class MenuItemDisplayWhitelist extends MenuItem{
 		menu.addItem(new MenuItemBoolean("Whitelist Mode", MinigameUtils.stringToList("If whitelist mode only;added items can be;broken."), 
 				Material.ENDER_PEARL, whitelistMode), menu.getSize() - 2);
 		menu.addItems(items);
-		menu.displayMenu(getContainer().getViewer());
+		menu.displayMenu(player);
 		return null;
 	}
 }

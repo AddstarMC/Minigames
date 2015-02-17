@@ -75,13 +75,8 @@ public class TreasureHuntModule extends MinigameModule{
 	}
 
 	@Override
-	public void addEditMenuOptions(Menu menu) {
-		
-	}
-	
-	@Override
-	public boolean displayMechanicSettings(Menu previous){
-		Menu treasureHunt = new Menu(6, getMinigame().getName(false), previous.getViewer());
+	public boolean displayMechanicSettings(MinigamePlayer player, Menu previous){
+		Menu treasureHunt = new Menu(6, getMinigame().getName(false));
 		
 		List<MenuItem> itemsTreasureHunt = new ArrayList<MenuItem>(5);
 		itemsTreasureHunt.add(location.getMenuItem("Location Name", Material.BED, MinigameUtils.stringToList("Name to appear when;treasure spawns")));
@@ -104,7 +99,7 @@ public class TreasureHuntModule extends MinigameModule{
 		itemsTreasureHunt.add(new MenuItemTime("Hint Usage Delay", Material.WATCH, hintWaitTime.getCallback(), 0, null));
 		treasureHunt.addItems(itemsTreasureHunt);
 		treasureHunt.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), treasureHunt.getSize() - 9);
-		treasureHunt.displayMenu(treasureHunt.getViewer());
+		treasureHunt.displayMenu(player);
 		return true;
 	}
 	

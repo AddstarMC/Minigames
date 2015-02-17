@@ -63,7 +63,7 @@ public class SetScoreAction extends ActionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
-		Menu m = new Menu(3, "Set Score", player);
+		Menu m = new Menu(3, "Set Score");
 		m.addItem(amount.getMenuItem("Set Score Amount", Material.ENDER_PEARL, null, null));
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
 		m.displayMenu(player);

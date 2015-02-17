@@ -64,8 +64,8 @@ public class GameOverModule extends MinigameModule{
 	}
 
 	@Override
-	public void addEditMenuOptions(Menu menu) {
-		Menu m = new Menu(6, "Game Over Settings", menu.getViewer());
+	public void addEditMenuOptions(MinigamePlayer player, Menu menu) {
+		Menu m = new Menu(6, "Game Over Settings");
 		m.addItem(timer.getMenuItem("Time Length", Material.WATCH, 0, null));
 		m.addItem(invincible.getMenuItem("Invincibility", Material.ENDER_PEARL));
 		m.addItem(humiliation.getMenuItem("Humiliation Mode", Material.DIAMOND_SWORD, MinigameUtils.stringToList("Losers are stripped;of weapons and can't kill")));
@@ -76,11 +76,6 @@ public class GameOverModule extends MinigameModule{
 		menu.addItem(new MenuItemPage("Game Over Settings", Material.WOOD_DOOR, m));
 	}
 
-	@Override
-	public boolean displayMechanicSettings(Menu previous) {
-		return false;
-	}
-	
 	public static GameOverModule getMinigameModule(Minigame minigame){
 		return (GameOverModule) minigame.getModule("GameOver");
 	}

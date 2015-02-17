@@ -24,24 +24,18 @@ public class MenuItemAddTeam extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(){
-		MinigamePlayer ply = getContainer().getViewer();
-		ply.setNoClose(true);
-		ply.getPlayer().closeInventory();
-		ply.sendMessage("Enter the color of the team you wish to add. All colors available below:", null);
+	public ItemStack onClick(MinigamePlayer player){
+		beginManualEntry(player, "Enter the color of the team you wish to add. All colors available below:", 30);
 		List<String> teams = new ArrayList<String>();
 		for(TeamColor col : TeamColor.values())
 			teams.add(col.getColor() + MinigameUtils.capitalize(col.toString().replace("_", " ")));
-		ply.sendMessage(MinigameUtils.listToString(teams));
-		ply.setManualEntry(this);
+		player.sendMessage(MinigameUtils.listToString(teams));
 
-		getContainer().startReopenTimer(30);
 		return null;
 	}
 
-	
 	@Override
-	public void checkValidEntry(String entry) {
+	public void checkValidEntry(MinigamePlayer player, String entry) {
 		entry = entry.toUpperCase().replace(" ", "_");
 		if(TeamColor.matchColor(entry) != null){
 			TeamColor col = TeamColor.matchColor(entry);
@@ -52,7 +46,7 @@ public class MenuItemAddTeam extends MenuItem{
 				getContainer().addItem(new MenuItemTeam(t.getChatColor() + t.getDisplayName(), t));
 			}
 			else{
-				getContainer().getViewer().sendMessage(ChatColor.RED + "A team already exists using that color!");
+				player.sendMessage(ChatColor.RED + "A team already exists using that color!");
 			}
 			
 			List<String> teams = new ArrayList<String>(tm.getTeams().size() + 1);
@@ -62,16 +56,10 @@ public class MenuItemAddTeam extends MenuItem{
 			teams.add("None");
 			getContainer().removeItem(0);
 			getContainer().addItem(new MenuItemList("Default Winning Team", Material.PAPER, tm.getDefaultWinnerCallback(), teams), 0);
-			
-			getContainer().cancelReopenTimer();
-			getContainer().displayMenu(getContainer().getViewer());
 			return;
 		}
 		
-		getContainer().cancelReopenTimer();
-		getContainer().displayMenu(getContainer().getViewer());
-		
-		getContainer().getViewer().sendMessage("There is no team color by the name of " + entry.toLowerCase().replace("_", " "), "error");
+		player.sendMessage("There is no team color by the name of " + entry.toLowerCase().replace("_", " "), "error");
 	}
 
 }

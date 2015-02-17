@@ -95,7 +95,7 @@ public class SetBlockAction extends ActionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
-		Menu m = new Menu(3, "Set Block", player);
+		Menu m = new Menu(3, "Set Block");
 		final MinigamePlayer fply = player;
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
 		m.addItem(new MenuItemString("Type", Material.STONE, new Callback<String>() {

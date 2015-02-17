@@ -72,7 +72,7 @@ public class MenuItemList extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(){
+	public ItemStack onClick(MinigamePlayer player){
 		int ind = options.lastIndexOf(value.getValue());
 		ind++;
 		if(ind == options.size())
@@ -85,7 +85,7 @@ public class MenuItemList extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onRightClick(){
+	public ItemStack onRightClick(MinigamePlayer player){
 		int ind = options.lastIndexOf(value.getValue());
 		ind--;
 		if(ind == -1)
@@ -98,33 +98,21 @@ public class MenuItemList extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onDoubleClick(){
-		MinigamePlayer ply = getContainer().getViewer();
-		ply.setNoClose(true);
-		ply.getPlayer().closeInventory();
-		ply.sendMessage("Enter the name of the option into chat for " + getName() + ", the menu will automatically reopen in 10s if nothing is entered.", null);
-		ply.setManualEntry(this);
-		ply.sendMessage("Possible Options: " + MinigameUtils.listToString(options));
-
-		getContainer().startReopenTimer(10);
+	public ItemStack onDoubleClick(MinigamePlayer player){
+		beginManualEntry(player, "Enter the name of the option into chat for " + getName() + ", the menu will automatically reopen in 10s if nothing is entered.", 10);
+		player.sendMessage("Possible Options: " + MinigameUtils.listToString(options));
 		return null;
 	}
 	
 	@Override
-	public void checkValidEntry(String entry){
+	public void checkValidEntry(MinigamePlayer player, String entry){
 		for(String opt : options){
 			if(opt.equalsIgnoreCase(entry)){
 				value.setValue(opt);
 				updateDescription();
-				
-				getContainer().cancelReopenTimer();
-				getContainer().displayMenu(getContainer().getViewer());
 				return;
 			}
 		}
-		getContainer().cancelReopenTimer();
-		getContainer().displayMenu(getContainer().getViewer());
-		
-		getContainer().getViewer().sendMessage("Could not find matching value!", "error");
+		player.sendMessage("Could not find matching value!", "error");
 	}
 }

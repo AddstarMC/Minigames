@@ -73,7 +73,7 @@ public class HealAction extends ActionInterface{
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
-		Menu m = new Menu(3, "Heal", player);
+		Menu m = new Menu(3, "Heal");
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
 		m.addItem(heal.getMenuItem("Heal Amount", Material.GOLDEN_APPLE, null, null));
 		m.displayMenu(player);

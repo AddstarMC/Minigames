@@ -81,7 +81,7 @@ public class LightningAction extends ActionInterface{
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
-		Menu m = new Menu(3, "Lightning", player);
+		Menu m = new Menu(3, "Lightning");
 		m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 		m.addItem(effect.getMenuItem("Effect Only", Material.ENDER_PEARL));
 		m.displayMenu(player);

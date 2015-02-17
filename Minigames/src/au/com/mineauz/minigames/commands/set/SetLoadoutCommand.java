@@ -66,7 +66,7 @@ public class SetLoadoutCommand implements ICommand {
 			String label, String[] args) {
 
 		MinigamePlayer player = Minigames.plugin.pdata.getMinigamePlayer((Player)sender);
-		Menu loadouts = new Menu(6, getName(), player);
+		Menu loadouts = new Menu(6, getName());
 		List<MenuItem> mi = new ArrayList<MenuItem>();
 		LoadoutModule mod = LoadoutModule.getMinigameModule(minigame);
 		

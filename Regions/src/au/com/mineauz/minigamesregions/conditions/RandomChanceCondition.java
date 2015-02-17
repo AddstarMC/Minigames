@@ -68,7 +68,7 @@ public class RandomChanceCondition extends ConditionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
-		Menu m = new Menu(3, "Random Chance", player);
+		Menu m = new Menu(3, "Random Chance");
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
 		m.addItem(chance.getMenuItem("Percentage Chance", Material.EYE_OF_ENDER, 1, 99));
 		addInvertMenuItem(m);

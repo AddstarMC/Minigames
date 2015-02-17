@@ -158,7 +158,7 @@ public class ScoreboardDisplay {
 	}
 	
 	public void displayMenu(MinigamePlayer player){
-		Menu setupMenu = new Menu(3, "Setup Scoreboard", player);
+		Menu setupMenu = new Menu(3, "Setup Scoreboard");
 		List<MenuItem> items = new ArrayList<MenuItem>();
 		List<String> sbtypes = new ArrayList<String>();
 		for(ScoreboardType t : ScoreboardType.values()){

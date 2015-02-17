@@ -56,7 +56,7 @@ public class SetEnabledAction extends ActionInterface{
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
-		Menu m = new Menu(3, "Set Enabled", player);
+		Menu m = new Menu(3, "Set Enabled");
 		m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 		m.addItem(state.getMenuItem("Set Enabled", Material.ENDER_PEARL));
 		m.displayMenu(player);

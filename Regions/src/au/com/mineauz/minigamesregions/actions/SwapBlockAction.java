@@ -104,7 +104,7 @@ public class SwapBlockAction extends ActionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
-		Menu m = new Menu(3, "Swap Block", player);
+		Menu m = new Menu(3, "Swap Block");
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
 		final MinigamePlayer fply = player;
 		m.addItem(new MenuItemString("Match Block", Material.COBBLESTONE, new Callback<String>() {

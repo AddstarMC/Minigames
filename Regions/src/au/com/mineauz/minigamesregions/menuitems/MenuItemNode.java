@@ -32,21 +32,21 @@ public class MenuItemNode extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(){
-		Menu m = createMenu(getContainer().getViewer(), getContainer(), node);
-		m.displayMenu(getContainer().getViewer());
+	public ItemStack onClick(MinigamePlayer player){
+		Menu m = createMenu(player, getContainer(), node);
+		m.displayMenu(player);
 		return null;
 	}
 	
 	@Override
-	public ItemStack onRightClick(){
+	public ItemStack onRightClick(MinigamePlayer player){
 		rmod.removeNode(node.getName());
 		getContainer().removeItem(getSlot());
 		return null;
 	}
 	
 	public static Menu createMenu(MinigamePlayer viewer, Menu previousPage, Node node){
-		Menu m = new Menu(3, "Node: " + node.getName(), viewer);
+		Menu m = new Menu(3, "Node: " + node.getName());
 		m.setPreviousPage(previousPage);
 		List<MenuItem> items = new ArrayList<MenuItem>();
 		for(NodeExecutor ex : node.getExecutors()){

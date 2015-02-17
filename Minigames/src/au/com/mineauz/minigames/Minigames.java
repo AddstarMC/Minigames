@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
@@ -31,6 +32,7 @@ import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.gametypes.SingleplayerType;
 import au.com.mineauz.minigames.mechanics.TreasureHuntMechanic;
+import au.com.mineauz.minigames.menu.MenuListener;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.signs.SignBase;
 import au.com.mineauz.minigames.sql.SQLCompletionSaver;
@@ -89,6 +91,7 @@ public class Minigames extends JavaPlugin{
 			mdata.addConfigurationFile("completion", completion.getConfig());
 			
 			getServer().getPluginManager().registerEvents(new Events(), this);
+			getServer().getPluginManager().registerEvents(new MenuListener(), this);
 			getServer().getPluginManager().registerEvents(new BasicRecorder(), this);
 			
 			try{

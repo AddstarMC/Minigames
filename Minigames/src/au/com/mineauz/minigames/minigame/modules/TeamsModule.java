@@ -9,6 +9,7 @@ import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
@@ -179,8 +180,8 @@ public class TeamsModule extends MinigameModule {
 	}
 
 	@Override
-	public void addEditMenuOptions(Menu menu) {
-		Menu m = new Menu(6, "Teams", menu.getViewer());
+	public void addEditMenuOptions(MinigamePlayer player, Menu menu) {
+		Menu m = new Menu(6, "Teams");
 		m.setPreviousPage(menu);
 		List<MenuItem> items = new ArrayList<MenuItem>();
 		List<String> teams = new ArrayList<String>(this.teams.size() + 1);
@@ -202,10 +203,5 @@ public class TeamsModule extends MinigameModule {
 		
 		MenuItemPage p = new MenuItemPage("Team Options", Material.CHEST, m);
 		menu.addItem(p);
-	}
-
-	@Override
-	public boolean displayMechanicSettings(Menu previous) {
-		return false;
 	}
 }

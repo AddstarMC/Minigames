@@ -949,11 +949,11 @@ public class Minigame {
 	}
 
 	public void displayMenu(MinigamePlayer player){
-		Menu main = new Menu(6, getName(false), player);
-		Menu playerMenu = new Menu(6, getName(false), player);
-		Menu loadouts = new Menu(6, getName(false), player);
-		Menu flags = new Menu(6, getName(false), player);
-		Menu lobby = new Menu(6, getName(false), player);
+		Menu main = new Menu(6, getName(false));
+		Menu playerMenu = new Menu(6, getName(false));
+		Menu loadouts = new Menu(6, getName(false));
+		Menu flags = new Menu(6, getName(false));
+		Menu lobby = new Menu(6, getName(false));
 		
 		List<MenuItem> itemsMain = new ArrayList<MenuItem>();
 		itemsMain.add(enabled.getMenuItem("Enabled", Material.PAPER));
@@ -985,9 +985,9 @@ public class Minigame {
 		mechSettings.setClick(new InteractionInterface() {
 			
 			@Override
-			public Object interact(Object object) {
+			public Object interact(MinigamePlayer player, Object object) {
 				if(getMechanic().displaySettings(mgm) != null && 
-						getMechanic().displaySettings(mgm).displayMechanicSettings(fmain))
+						getMechanic().displaySettings(mgm).displayMechanicSettings(player, fmain))
 					return null;
 				return mechSettings.getItem();
 			}
@@ -1182,7 +1182,7 @@ public class Minigame {
 		lobby.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), lobby.getSize() - 9);
 
 		for(MinigameModule mod : getModules()){
-			mod.addEditMenuOptions(main);
+			mod.addEditMenuOptions(player, main);
 		}
 		main.displayMenu(player);
 		

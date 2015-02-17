@@ -126,7 +126,7 @@ public class RegionNodeEditToolMode implements ToolMode {
 	}
 	
 	private void openChooseMenu(MinigamePlayer player, RegionModule module, Set<Object> objects) {
-		Menu menu = new Menu(3, "Choose Region or Node", player);
+		Menu menu = new Menu(3, "Choose Region or Node");
 		
 		StringBuilder options = new StringBuilder();
 		for(Object object : objects) {

@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.RewardTypes;
@@ -38,8 +39,8 @@ public class MenuItemRewardAdd extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(){
-		Menu m = new Menu(6, "Select Reward Type", getContainer().getViewer());
+	public ItemStack onClick(final MinigamePlayer player){
+		Menu m = new Menu(6, "Select Reward Type");
 		final Menu orig = getContainer();
 		for(String type : RewardTypes.getAllRewardTypeNames()){
 			final MenuItemCustom custom = new MenuItemCustom("TYPE", Material.STONE);
@@ -52,12 +53,12 @@ public class MenuItemRewardAdd extends MenuItem{
 				custom.setClick(new InteractionInterface() {
 					
 					@Override
-					public Object interact(Object object) {
+					public Object interact(MinigamePlayer player, Object object) {
 						if(rewards != null)
 							rewards.addReward(rewType);
 						else
 							group.addItem(rewType);
-						orig.displayMenu(orig.getViewer());
+						orig.displayMenu(player);
 						orig.addItem(rewType.getMenuItem());
 						return null;
 					}
@@ -66,7 +67,7 @@ public class MenuItemRewardAdd extends MenuItem{
 			}
 		}
 		m.addItem(new MenuItemBack(orig), m.getSize() - 9);
-		m.displayMenu(m.getViewer());
+		m.displayMenu(player);
 		return null;
 	}
 }

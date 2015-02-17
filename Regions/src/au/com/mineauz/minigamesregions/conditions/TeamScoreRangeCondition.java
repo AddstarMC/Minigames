@@ -73,7 +73,7 @@ public class TeamScoreRangeCondition extends ConditionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
-		Menu m = new Menu(3, "Team Score Range", player);
+		Menu m = new Menu(3, "Team Score Range");
 		m.addItem(min.getMenuItem("Minimum Score", Material.STEP, 0, null));
 		m.addItem(max.getMenuItem("Maximum Score", Material.STONE, 0, null));
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);

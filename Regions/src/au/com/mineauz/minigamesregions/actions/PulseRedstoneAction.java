@@ -77,7 +77,7 @@ public class PulseRedstoneAction extends ActionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
-		Menu m = new Menu(3, "Redstone Pulse", player);
+		Menu m = new Menu(3, "Redstone Pulse");
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
 		m.addItem(time.getMenuItem("Pulse Time", Material.WATCH));
 		m.addItem(torch.getMenuItem("Use Redstone Torch", Material.REDSTONE_BLOCK));

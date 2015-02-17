@@ -86,13 +86,12 @@ public class MatchBlockCondition extends ConditionInterface {
 	}
 
 	@Override
-	public boolean displayMenu(MinigamePlayer player, Menu prev) {
-		Menu m = new Menu(3, "Match Block", player);
+	public boolean displayMenu(final MinigamePlayer player, Menu prev) {
+		Menu m = new Menu(3, "Match Block");
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
 		final MenuItemCustom c = new MenuItemCustom("Auto Set Block", 
 				MinigameUtils.stringToList("Click here with a;block you wish to;match to."), Material.ITEM_FRAME);
 		m.addItem(c, m.getSize() - 1);
-		final MinigamePlayer ply = m.getViewer();
 		
 		final MenuItemString btype = new MenuItemString("Block Type", Material.STONE, new Callback<String>() {
 
@@ -101,7 +100,7 @@ public class MatchBlockCondition extends ConditionInterface {
 				if(Material.matchMaterial(value.toUpperCase()) != null)
 					type.setFlag(value.toUpperCase());
 				else
-					ply.sendMessage("No block found by that name!", "error");
+					player.sendMessage("No block found by that name!", "error");
 			}
 
 			@Override
@@ -118,7 +117,7 @@ public class MatchBlockCondition extends ConditionInterface {
 		c.setClickItem(new InteractionInterface() {
 			
 			@Override
-			public Object interact(Object object) {
+			public Object interact(MinigamePlayer player, Object object) {
 				ItemStack i = (ItemStack) object;
 				type.setFlag(i.getType().toString());
 				useDur.setFlag(true);

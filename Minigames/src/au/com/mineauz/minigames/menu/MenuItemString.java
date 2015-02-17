@@ -57,30 +57,22 @@ public class MenuItemString extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onDoubleClick(){
-		MinigamePlayer ply = getContainer().getViewer();
-		ply.setNoClose(true);
-		ply.getPlayer().closeInventory();
-		ply.sendMessage("Enter string value into chat for " + getName() + ", the menu will automatically reopen in 20s if nothing is entered.", null);
+	public ItemStack onDoubleClick(MinigamePlayer player){
+		beginManualEntry(player, "Enter string value into chat for " + getName() + ", the menu will automatically reopen in 20s if nothing is entered.", 20);
 		if(allowNull){
-			ply.sendMessage("Enter \"null\" to remove the string value");
+			player.sendMessage("Enter \"null\" to remove the string value");
 		}
-		ply.setManualEntry(this);
-		getContainer().startReopenTimer(20);
-		
 		return null;
 	}
 	
 	@Override
-	public void checkValidEntry(String entry){
+	public void checkValidEntry(MinigamePlayer player, String entry){
 		if(entry.equals("null") && allowNull)
 			str.setValue(null);
 		else
 			str.setValue(entry);
 		
 		updateDescription();
-		getContainer().cancelReopenTimer();
-		getContainer().displayMenu(getContainer().getViewer());
 	}
 	
 	Callback<String> getString(){

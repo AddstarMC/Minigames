@@ -65,7 +65,7 @@ public class MenuItemDecimal extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(){
+	public ItemStack onClick(MinigamePlayer player){
 		if(max == null || value.getValue() < max)
 			value.setValue(Double.valueOf(form.format(value.getValue() + lowerInc)));
 		if(max != null && value.getValue() > max)
@@ -75,7 +75,7 @@ public class MenuItemDecimal extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onRightClick(){
+	public ItemStack onRightClick(MinigamePlayer player){
 		if(min == null || value.getValue() > min)
 			value.setValue(Double.valueOf(form.format(value.getValue() - lowerInc)));
 		if(min != null && value.getValue() < min)
@@ -85,7 +85,7 @@ public class MenuItemDecimal extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onShiftClick(){
+	public ItemStack onShiftClick(MinigamePlayer player){
 		if(max == null || value.getValue() < max)
 			value.setValue(Double.valueOf(form.format(value.getValue() + upperInc)));
 		if(max != null && value.getValue() > max)
@@ -95,7 +95,7 @@ public class MenuItemDecimal extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onShiftRightClick(){
+	public ItemStack onShiftRightClick(MinigamePlayer player){
 		if(min == null || value.getValue() > min)
 			value.setValue(Double.valueOf(form.format(value.getValue() - upperInc)));
 		if(min != null && value.getValue() < min)
@@ -105,11 +105,8 @@ public class MenuItemDecimal extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onDoubleClick(){
-		MinigamePlayer ply = getContainer().getViewer();
-		ply.setNoClose(true);
-		ply.getPlayer().closeInventory();
-		ply.sendMessage("Enter decimal value into chat for " + getName() + ", the menu will automatically reopen in 15s if nothing is entered.", null);
+	public ItemStack onDoubleClick(MinigamePlayer player){
+		beginManualEntry(player, "Enter decimal value into chat for " + getName() + ", the menu will automatically reopen in 15s if nothing is entered.", 15);
 		String min = "N/A";
 		String max = "N/A";
 		if(this.min != null){
@@ -118,30 +115,24 @@ public class MenuItemDecimal extends MenuItem{
 		if(this.max != null){
 			max = this.max.toString();
 		}
-		ply.setManualEntry(this);
-		ply.sendMessage("Min: " + min + ", Max: " + max);
-		getContainer().startReopenTimer(15);
+		player.sendMessage("Min: " + min + ", Max: " + max);
 		
 		return null;
 	}
 	
 	@Override
-	public void checkValidEntry(String entry){
+	public void checkValidEntry(MinigamePlayer player, String entry){
 		if(entry.matches("-?[0-9]+(.[0-9]+)?")){
 			double entryValue = Double.parseDouble(entry);
 			if((min == null || entryValue >= min) && (max == null || entryValue <= max)){
 				value.setValue(entryValue);
 				updateDescription();
 				
-				getContainer().cancelReopenTimer();
-				getContainer().displayMenu(getContainer().getViewer());
 				return;
 			}
 		}
-		getContainer().cancelReopenTimer();
-		getContainer().displayMenu(getContainer().getViewer());
 		
-		getContainer().getViewer().sendMessage("Invalid value entry!", "error");
+		player.sendMessage("Invalid value entry!", "error");
 	}
 
 }

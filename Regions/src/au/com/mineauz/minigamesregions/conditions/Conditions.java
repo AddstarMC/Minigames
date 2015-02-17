@@ -59,7 +59,7 @@ public class Conditions {
 	}
 	
 	public static void displayMenu(MinigamePlayer player, RegionExecutor exec, Menu prev){
-		Menu m = new Menu(3, "Conditions", player);
+		Menu m = new Menu(3, "Conditions");
 		m.setPreviousPage(prev);
 		for(ConditionInterface con : exec.getConditions()){
 			m.addItem(new MenuItemCondition(MinigameUtils.capitalize(con.getName()), Material.PAPER, exec, con));
@@ -70,7 +70,7 @@ public class Conditions {
 	}
 	
 	public static void displayMenu(MinigamePlayer player, NodeExecutor exec, Menu prev){
-		Menu m = new Menu(3, "Conditions", player);
+		Menu m = new Menu(3, "Conditions");
 		m.setPreviousPage(prev);
 		for(ConditionInterface con : exec.getConditions()){
 			m.addItem(new MenuItemCondition(MinigameUtils.capitalize(con.getName()), Material.PAPER, exec, con));

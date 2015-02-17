@@ -7,6 +7,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import au.com.mineauz.minigames.MinigamePlayer;
+
 public class MenuItemBoolean extends MenuItem{
 	
 	private Callback<Boolean> toggle = null;
@@ -50,7 +52,7 @@ public class MenuItemBoolean extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(){
+	public ItemStack onClick(MinigamePlayer player){
 		if(toggle.getValue())
 			toggle.setValue(false);
 		else

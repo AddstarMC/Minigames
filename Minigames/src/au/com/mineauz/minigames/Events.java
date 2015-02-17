@@ -3,10 +3,7 @@ package au.com.mineauz.minigames;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -28,11 +25,6 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
@@ -49,7 +41,6 @@ import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.events.RevertCheckpointEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;
@@ -565,91 +556,6 @@ public class Events implements Listener{
 				event.setCancelled(true);
 			}
 		}
-	}
-	
-	@EventHandler(ignoreCancelled = true)
-	private void clickMenu(InventoryClickEvent event){
-		MinigamePlayer ply = pdata.getMinigamePlayer((Player)event.getWhoClicked());
-		if(ply.isInMenu()){
-			if(event.getRawSlot() < ply.getMenu().getSize()){
-				if(!ply.getMenu().getAllowModify() || ply.getMenu().hasMenuItem(event.getRawSlot()))
-					event.setCancelled(true);
-				
-				MenuItem item = ply.getMenu().getClicked(event.getRawSlot());
-				if(item != null){
-					ItemStack disItem = null;
-					if(event.getClick() == ClickType.LEFT){
-						if(event.getCursor().getType() != Material.AIR)
-							disItem = item.onClickWithItem(event.getCursor());
-						else
-							disItem = item.onClick();
-					}
-					else if(event.getClick() == ClickType.RIGHT)
-						disItem = item.onRightClick();
-					else if(event.getClick() == ClickType.SHIFT_LEFT)
-						disItem = item.onShiftClick();
-					else if(event.getClick() == ClickType.SHIFT_RIGHT)
-						disItem = item.onShiftRightClick();
-					else if(event.getClick() == ClickType.DOUBLE_CLICK)
-						disItem = item.onDoubleClick();
-					
-					if(item != null)
-						event.setCurrentItem(disItem);
-				}
-			}
-		}
-		else if(ply.isInMinigame()){
-			if((ply.getLoadout().isArmourLocked() && event.getSlot() >= 36 && event.getSlot() <= 39) || 
-					(ply.getLoadout().isInventoryLocked() && event.getSlot() >= 0 && event.getSlot() <= 35))
-				event.setCancelled(true);
-		}
-	}
-	
-	@EventHandler(ignoreCancelled = true)
-	private void dragMenu(InventoryDragEvent event){
-		MinigamePlayer ply = pdata.getMinigamePlayer((Player)event.getWhoClicked());
-		if(ply.isInMenu()){
-			if(!ply.getMenu().getAllowModify()){
-				for(int slot : event.getRawSlots()){
-					if(slot < ply.getMenu().getSize()){
-						event.setCancelled(true);
-						break;
-					}
-				}
-			}
-			else{
-				Set<Integer> slots = new HashSet<Integer>();
-				slots.addAll(event.getRawSlots());
-				
-				for(int slot : slots){
-					if(ply.getMenu().hasMenuItem(slot)){
-						event.getRawSlots().remove(slot);
-					}
-				}
-			}
-		}
-	}
-	
-	@EventHandler(ignoreCancelled = true)
-	private void closeMenu(InventoryCloseEvent event){
-		MinigamePlayer ply = pdata.getMinigamePlayer((Player)event.getPlayer());
-		if(ply == null) return;
-		
-		if(ply.isInMenu() && !ply.getNoClose()){
-			ply.setMenu(null);
-		}
-	}
-	
-	@EventHandler
-	private void manualItemEntry(AsyncPlayerChatEvent event){
-		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-		if(ply.isInMenu() && ply.getNoClose() && ply.getManualEntry() != null){
-			event.setCancelled(true);
-			ply.setNoClose(false);
-			ply.getManualEntry().checkValidEntry(event.getMessage());
-			ply.setManualEntry(null);
-		}
-		
 	}
 	
 	@EventHandler(ignoreCancelled = true)

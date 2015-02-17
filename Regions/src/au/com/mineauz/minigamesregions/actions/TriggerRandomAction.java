@@ -113,7 +113,7 @@ public class TriggerRandomAction extends ActionInterface{
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
-		Menu m = new Menu(3, "Trigger Random", player);
+		Menu m = new Menu(3, "Trigger Random");
 		m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 		m.addItem(timesTriggered.getMenuItem("Times to Trigger Random", Material.COMMAND, 1, null));
 		m.addItem(randomPerTrigger.getMenuItem("Allow Same Executor", Material.ENDER_PEARL, 

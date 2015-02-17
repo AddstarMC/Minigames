@@ -141,7 +141,7 @@ public class MoneyReward extends RewardType{
 		}
 		
 		@Override
-		public ItemStack onClick(){
+		public ItemStack onClick(MinigamePlayer player){
 			int ind = options.lastIndexOf(getRarity().toString());
 			ind++;
 			if(ind == options.size())
@@ -154,7 +154,7 @@ public class MoneyReward extends RewardType{
 		}
 		
 		@Override
-		public ItemStack onRightClick(){
+		public ItemStack onRightClick(MinigamePlayer player){
 			int ind = options.lastIndexOf(getRarity().toString());
 			ind--;
 			if(ind == -1)
@@ -167,8 +167,8 @@ public class MoneyReward extends RewardType{
 		}
 		
 		@Override
-		public ItemStack onShiftClick(){
-			Menu m = new Menu(3, "Set Money Amount", getContainer().getViewer());
+		public ItemStack onShiftClick(MinigamePlayer player){
+			Menu m = new Menu(3, "Set Money Amount");
 			MenuItemDecimal dec = new MenuItemDecimal("Money", Material.PAPER, new Callback<Double>() {
 
 				@Override
@@ -184,12 +184,12 @@ public class MoneyReward extends RewardType{
 			}, 50d, 100d, 1d, null);
 			m.addItem(dec);
 			m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
-			m.displayMenu(getContainer().getViewer());
+			m.displayMenu(player);
 			return null;
 		}
 		
 		@Override
-		public ItemStack onShiftRightClick(){
+		public ItemStack onShiftRightClick(MinigamePlayer player){
 			getRewards().removeReward(reward);
 			getContainer().removeItem(getSlot());
 			return null;

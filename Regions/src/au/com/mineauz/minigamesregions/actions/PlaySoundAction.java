@@ -94,7 +94,7 @@ public class PlaySoundAction extends ActionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
-		Menu m = new Menu(3, "Play Sound", player);
+		Menu m = new Menu(3, "Play Sound");
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
 		List<String> sounds = new ArrayList<String>();
 		for(Sound s : Sound.values())

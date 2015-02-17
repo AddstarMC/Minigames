@@ -53,17 +53,13 @@ public class InfectionModule extends MinigameModule{
 	}
 
 	@Override
-	public void addEditMenuOptions(Menu menu) {
-	}
-
-	@Override
-	public boolean displayMechanicSettings(Menu previous) {
-		Menu m = new Menu(6, "Infection Settings", previous.getViewer());
+	public boolean displayMechanicSettings(MinigamePlayer player, Menu previous) {
+		Menu m = new Menu(6, "Infection Settings");
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
 		
 		m.addItem(infectedPercent.getMenuItem("Infected Percent", Material.SKULL_ITEM, 
 				MinigameUtils.stringToList("The percentage of players;chosen to start as;infected"), 1, 99));
-		m.displayMenu(previous.getViewer());
+		m.displayMenu(player);
 		return true;
 	}
 	

@@ -39,19 +39,13 @@ public class MenuItemLoadoutAdd extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(){
-		MinigamePlayer ply = getContainer().getViewer();
-		ply.setNoClose(true);
-		ply.getPlayer().closeInventory();
-		ply.sendMessage("Enter a name for the new Loadout, the menu will automatically reopen in 10s if nothing is entered.", null);
-		ply.setManualEntry(this);
-
-		getContainer().startReopenTimer(30);
+	public ItemStack onClick(MinigamePlayer player) {
+		beginManualEntry(player, "Enter a name for the new Loadout, the menu will automatically reopen in 10s if nothing is entered.", 10);
 		return null;
 	}
 	
 	@Override
-	public void checkValidEntry(String entry){
+	public void checkValidEntry(MinigamePlayer player, String entry){
 		entry = entry.replace(" ", "_");
 		if(!loadouts.keySet().contains(entry)){
 			for(int i = 0; i < 45; i++){
@@ -67,14 +61,8 @@ public class MenuItemLoadoutAdd extends MenuItem{
 					break;
 				}
 			}
-			
-			getContainer().cancelReopenTimer();
-			getContainer().displayMenu(getContainer().getViewer());
 			return;
 		}
-		getContainer().cancelReopenTimer();
-		getContainer().displayMenu(getContainer().getViewer());
-		
-		getContainer().getViewer().sendMessage("A Loadout already exists by the name \"" + entry + "\".", "error");
+		player.sendMessage("A Loadout already exists by the name \"" + entry + "\".", "error");
 	}
 }

@@ -23,23 +23,14 @@ public class MenuItemAddFlag extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(){
-		MinigamePlayer ply = getContainer().getViewer();
-		ply.setNoClose(true);
-		ply.getPlayer().closeInventory();
-		ply.sendMessage("Enter a flag name into chat for " + getName() + ", the menu will automatically reopen in 20s if nothing is entered.", null);
-		ply.setManualEntry(this);
-		getContainer().startReopenTimer(20);
-		
+	public ItemStack onClick(MinigamePlayer player){
+		beginManualEntry(player, "Enter a flag name into chat for " + getName() + ", the menu will automatically reopen in 20s if nothing is entered.", 20);
 		return null;
 	}
 	
 	@Override
-	public void checkValidEntry(String entry){
+	public void checkValidEntry(MinigamePlayer player, String entry){
 		mgm.addFlag(entry);
 		getContainer().addItem(new MenuItemFlag(Material.SIGN, entry, mgm.getFlags()));
-		
-		getContainer().cancelReopenTimer();
-		getContainer().displayMenu(getContainer().getViewer());
 	}
 }

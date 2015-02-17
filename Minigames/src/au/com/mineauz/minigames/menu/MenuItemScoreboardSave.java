@@ -8,6 +8,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.ScoreboardDisplay;
@@ -27,7 +28,7 @@ public class MenuItemScoreboardSave extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick() {
+	public ItemStack onClick(MinigamePlayer player) {
 		if(disp.getLocation().getBlock().getState() instanceof Sign){
 			Sign sign = (Sign)disp.getLocation().getBlock().getState();
 			sign.setLine(0, ChatColor.BLUE + disp.getMinigame().getName(false));
@@ -40,7 +41,7 @@ public class MenuItemScoreboardSave extends MenuItem{
 			disp.updateStats();
 			disp.getMinigame().getScoreboardData().addDisplay(disp);
 		}
-		getContainer().getViewer().getPlayer().closeInventory();
+		player.getPlayer().closeInventory();
 		return null;
 	}
 }

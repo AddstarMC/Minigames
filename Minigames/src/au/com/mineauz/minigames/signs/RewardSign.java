@@ -102,7 +102,7 @@ public class RewardSign implements MinigameSign {
 			}
 			rew = mdata.getRewardSign(loc);
 			
-			Menu rewardMenu = new Menu(5, getName(), player);
+			Menu rewardMenu = new Menu(5, getName());
 			
 			List<String> des = new ArrayList<String>();
 			des.add("Click this with an item");
@@ -116,10 +116,10 @@ public class RewardSign implements MinigameSign {
 			mic.setClick(new InteractionInterface() {
 				
 				@Override
-				public Object interact(Object object) {
+				public Object interact(MinigamePlayer player, Object object) {
 					mdata.saveRewardSign(MinigameUtils.createLocationID(floc), true);
-					mic.getContainer().getViewer().sendMessage("Saved rewards for this sign.", null);
-					mic.getContainer().getViewer().getPlayer().closeInventory();
+					player.sendMessage("Saved rewards for this sign.", null);
+					player.getPlayer().closeInventory();
 					return null;
 				}
 			});

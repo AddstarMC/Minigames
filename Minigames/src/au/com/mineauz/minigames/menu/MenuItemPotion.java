@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
+import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.PlayerLoadout;
 
 public class MenuItemPotion extends MenuItem{
@@ -60,7 +61,7 @@ public class MenuItemPotion extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onShiftRightClick(){
+	public ItemStack onShiftRightClick(MinigamePlayer player){
 		loadout.removePotionEffect(eff);
 		getContainer().removeItem(getSlot());
 		return null;

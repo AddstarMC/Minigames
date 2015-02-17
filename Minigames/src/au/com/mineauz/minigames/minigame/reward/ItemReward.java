@@ -87,7 +87,7 @@ public class ItemReward extends RewardType{
 		}
 		
 		@Override
-		public ItemStack onClickWithItem(ItemStack item){
+		public ItemStack onClickWithItem(MinigamePlayer player, ItemStack item){
 			setItem(item);
 			setRewardItem(item.clone());
 			updateDescription();
@@ -146,7 +146,7 @@ public class ItemReward extends RewardType{
 		}
 		
 		@Override
-		public ItemStack onClick(){
+		public ItemStack onClick(MinigamePlayer player){
 			int ind = options.lastIndexOf(getRarity().toString());
 			ind++;
 			if(ind == options.size())
@@ -159,7 +159,7 @@ public class ItemReward extends RewardType{
 		}
 		
 		@Override
-		public ItemStack onRightClick(){
+		public ItemStack onRightClick(MinigamePlayer player){
 			int ind = options.lastIndexOf(getRarity().toString());
 			ind--;
 			if(ind == -1)
@@ -172,7 +172,7 @@ public class ItemReward extends RewardType{
 		}
 		
 		@Override
-		public ItemStack onShiftRightClick(){
+		public ItemStack onShiftRightClick(MinigamePlayer player){
 			getRewards().removeReward(reward);
 			getContainer().removeItem(getSlot());
 			return null;

@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 
 public class MenuItemSaveMinigame extends MenuItem{
@@ -21,9 +22,9 @@ public class MenuItemSaveMinigame extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(){
+	public ItemStack onClick(MinigamePlayer player){
 		mgm.saveMinigame();
-		getContainer().getViewer().sendMessage("Saved the '" + mgm.getName(false) + "' Minigame.", null);
+		player.sendMessage("Saved the '" + mgm.getName(false) + "' Minigame.", null);
 		return getItem();
 	}
 

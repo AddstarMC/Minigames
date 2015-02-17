@@ -7,6 +7,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import au.com.mineauz.minigames.MinigamePlayer;
+
 public class MenuItem {
 	private ItemStack displayItem = null;
 	private Menu container = null;
@@ -65,37 +67,37 @@ public class MenuItem {
 		displayItem.setItemMeta(nmeta);
 	}
 	
-	public ItemStack onClick(){
+	public ItemStack onClick(MinigamePlayer player){
 		//Do stuff
 		return getItem();
 	}
 
-	public ItemStack onClickWithItem(ItemStack item){
+	public ItemStack onClickWithItem(MinigamePlayer player, ItemStack item){
 		//Do stuff
 		return getItem();
 	}
 	
-	public ItemStack onRightClick(){
+	public ItemStack onRightClick(MinigamePlayer player){
 		//Do stuff
 		return getItem();
 	}
 	
-	public ItemStack onShiftClick(){
+	public ItemStack onShiftClick(MinigamePlayer player){
 		//Do stuff
 		return getItem();
 	}
 	
-	public ItemStack onShiftRightClick(){
+	public ItemStack onShiftRightClick(MinigamePlayer player){
 		//Do stuff
 		return getItem();
 	}
 	
-	public ItemStack onDoubleClick(){
+	public ItemStack onDoubleClick(MinigamePlayer player){
 		//Do Stuff
 		return getItem();
 	}
 	
-	public void checkValidEntry(String entry){
+	public void checkValidEntry(MinigamePlayer player, String entry){
 		//Do Stuff
 	}
 	
@@ -113,5 +115,21 @@ public class MenuItem {
 	
 	public int getSlot(){
 		return slot;
+	}
+	
+	public final void beginManualEntry(MinigamePlayer player, String message, int time) {
+		player.setNoClose(true);
+		player.getPlayer().closeInventory();
+		player.sendMessage(message, null);
+		player.setManualEntry(this);
+		getContainer().startReopenTimer(time);
+	}
+	
+	public final void completeManualEntry(MinigamePlayer player, String value) {
+		player.setManualEntry(null);
+		player.setNoClose(false);
+		checkValidEntry(player, value);
+		getContainer().cancelReopenTimer();
+		getContainer().displayMenu(player);
 	}
 }

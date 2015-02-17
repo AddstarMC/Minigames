@@ -12,6 +12,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.google.common.collect.Sets;
+
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 
@@ -23,11 +25,11 @@ public class Menu {
 	private boolean allowModify = false;
 	private Menu previousPage = null;
 	private Menu nextPage = null;
-	private MinigamePlayer viewer = null;
 	private int reopenTimerID = -1;
 	private Inventory inv = null;
+	private Set<MinigamePlayer> viewers;
 	
-	public Menu(int rows, String name, MinigamePlayer viewer){
+	public Menu(int rows, String name){
 		if(rows > 6)
 			rows = 6;
 		else if(rows < 2)
@@ -35,7 +37,7 @@ public class Menu {
 		this.rows = rows;
 		this.name = name;
 		pageView = new ItemStack[rows*9];
-		this.viewer = viewer;
+		viewers = Sets.newHashSet();
 	}
 	
 	public String getName(){
@@ -113,7 +115,7 @@ public class Menu {
 	}
 	
 	public void addPage(){
-		Menu nextPage = new Menu(rows, name, viewer);
+		Menu nextPage = new Menu(rows, name);
 		addItem(new MenuItemPage("Next Page", Material.REDSTONE_TORCH_ON, nextPage), 9 * (rows - 1) + 5);
 		setNextPage(nextPage);
 		nextPage.setPreviousPage(this);
@@ -159,6 +161,12 @@ public class Menu {
 		inv.setContents(pageView);
 		ply.getPlayer().openInventory(inv);
 		ply.setMenu(this);
+		viewers.add(ply);
+	}
+	
+	void onCloseMenu(MinigamePlayer player) {
+		viewers.remove(player);
+		player.setMenu(null);
 	}
 	
 	public boolean getAllowModify(){
@@ -212,8 +220,8 @@ public class Menu {
 		return false;
 	}
 	
-	public MinigamePlayer getViewer(){
-		return viewer;
+	public Set<MinigamePlayer> getViewers(){
+		return viewers;
 	}
 	
 	public void startReopenTimer(int time){
@@ -221,17 +229,22 @@ public class Menu {
 			
 			@Override
 			public void run() {
-				viewer.setNoClose(false);
-				viewer.setManualEntry(null);
-				displayMenu(viewer);
+				for (MinigamePlayer viewer : viewers) {
+					viewer.setNoClose(false);
+					viewer.setManualEntry(null);
+					displayMenu(viewer);
+				}
 			}
 		}, (long)(time * 20));
 	}
 	
 	public void cancelReopenTimer(){
-		if(reopenTimerID != -1){
-			viewer.setNoClose(false);
-			viewer.setManualEntry(null);
+		if(reopenTimerID != -1) {
+			for (MinigamePlayer viewer : viewers) {
+				viewer.setNoClose(false);
+				viewer.setManualEntry(null);
+			}
+			
 			Bukkit.getScheduler().cancelTask(reopenTimerID);
 		}
 	}

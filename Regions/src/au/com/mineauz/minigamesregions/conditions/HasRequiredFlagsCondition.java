@@ -62,7 +62,7 @@ public class HasRequiredFlagsCondition extends ConditionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
-		Menu m = new Menu(3, "Required Flags", player);
+		Menu m = new Menu(3, "Required Flags");
 		addInvertMenuItem(m);
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
 		m.displayMenu(player);

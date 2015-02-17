@@ -46,7 +46,7 @@ public class RegionToolMode implements ToolMode {
 	@Override
 	public void onSetMode(final MinigamePlayer player, MinigameTool tool) {
 		tool.addSetting("Region", "None");
-		final Menu m = new Menu(2, "Region Selection", player);
+		final Menu m = new Menu(2, "Region Selection");
 		if(player.isInMenu()){
 			m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, player.getMenu()), m.getSize() - 9);
 		}
@@ -68,7 +68,7 @@ public class RegionToolMode implements ToolMode {
 			// Node selection menu
 			RegionModule module = RegionModule.getMinigameModule(tool.getMinigame());
 			
-			Menu regionMenu = new Menu(6, "Regions", player);
+			Menu regionMenu = new Menu(6, "Regions");
 			List<MenuItem> items = new ArrayList<MenuItem>();
 			
 			for(final Region region : module.getRegions()){
@@ -77,7 +77,7 @@ public class RegionToolMode implements ToolMode {
 				// Set the node and go back to the main menu
 				item.setClick(new InteractionInterface() {
 					@Override
-					public Object interact(Object object) {
+					public Object interact(MinigamePlayer player, Object object) {
 						ftool.changeSetting("Region", region.getName());
 						
 						m.displayMenu(player);

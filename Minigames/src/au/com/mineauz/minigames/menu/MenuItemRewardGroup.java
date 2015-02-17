@@ -86,7 +86,7 @@ public class MenuItemRewardGroup extends MenuItem{
 
 	
 	@Override
-	public ItemStack onClick(){
+	public ItemStack onClick(MinigamePlayer player){
 		List<String> options = getOptions();
 		int ind = options.lastIndexOf(group.getRarity().toString());
 		ind++;
@@ -100,7 +100,7 @@ public class MenuItemRewardGroup extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onRightClick(){
+	public ItemStack onRightClick(MinigamePlayer player){
 		List<String> options = getOptions();
 		int ind = options.lastIndexOf(group.getRarity().toString());
 		ind--;
@@ -114,39 +114,25 @@ public class MenuItemRewardGroup extends MenuItem{
 	}
 	
 	@Override
-	public void checkValidEntry(String entry){
+	public void checkValidEntry(MinigamePlayer player, String entry){
 		if(entry.equalsIgnoreCase("yes")){
 			rewards.removeGroup(group);
 			getContainer().removeItem(this.getSlot());
-
-			getContainer().cancelReopenTimer();
-			getContainer().displayMenu(getContainer().getViewer());
 			return;
 		}
-		getContainer().cancelReopenTimer();
-		getContainer().displayMenu(getContainer().getViewer());
-		
-		getContainer().getViewer().sendMessage("The selected group will not be removed from the rewards.", "error");
+		player.sendMessage("The selected group will not be removed from the rewards.", "error");
 	}
 	
 	@Override
-	public ItemStack onShiftRightClick(){
-		MinigamePlayer ply = getContainer().getViewer();
-		ply.setNoClose(true);
-		ply.getPlayer().closeInventory();
-		String itemName = group.getName();
-		
-		ply.sendMessage("Delete the reward group \"" + itemName + "\"? Type \"Yes\" to confirm.", null);
-		ply.sendMessage("The menu will automatically reopen in 10s if nothing is entered.");
-		ply.setManualEntry(this);
-
-		getContainer().startReopenTimer(10);
+	public ItemStack onShiftRightClick(MinigamePlayer player){
+		beginManualEntry(player, "Delete the reward group \"" + group.getName() + "\"? Type \"Yes\" to confirm.", 10);
+		player.sendMessage("The menu will automatically reopen in 10s if nothing is entered.");
 		return null;
 	}
 	
 	@Override
-	public ItemStack onDoubleClick(){
-		Menu rewardMenu = new Menu(5, getName(), getContainer().getViewer());
+	public ItemStack onDoubleClick(MinigamePlayer player){
+		Menu rewardMenu = new Menu(5, getName());
 		rewardMenu.setPreviousPage(getContainer());
 
 		List<String> des = new ArrayList<String>();
@@ -168,7 +154,7 @@ public class MenuItemRewardGroup extends MenuItem{
 		}
 		
 		rewardMenu.addItems(mi);
-		rewardMenu.displayMenu(getContainer().getViewer());
+		rewardMenu.displayMenu(player);
 		return null;
 	}
 }

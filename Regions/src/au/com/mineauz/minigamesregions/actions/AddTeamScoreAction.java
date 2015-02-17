@@ -86,7 +86,7 @@ public class AddTeamScoreAction extends ActionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
-		Menu m = new Menu(3, "Add Team Score", player);
+		Menu m = new Menu(3, "Add Team Score");
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
 		m.addItem(new MenuItemInteger("Add Score Amount", Material.STONE, new Callback<Integer>() {
 			

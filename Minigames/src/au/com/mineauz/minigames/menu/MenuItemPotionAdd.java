@@ -26,20 +26,14 @@ public class MenuItemPotionAdd extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(){
-		MinigamePlayer ply = getContainer().getViewer();
-		ply.setNoClose(true);
-		ply.getPlayer().closeInventory();
-		ply.sendMessage("Enter a potion using the syntax below into chat, the menu will automatically reopen in 30s if nothing is entered.", null);
-		ply.sendMessage("PotionName, level, duration (duration can be \"inf\")");
-		ply.setManualEntry(this);
-
-		getContainer().startReopenTimer(30);
+	public ItemStack onClick(MinigamePlayer player){
+		beginManualEntry(player, "Enter a potion using the syntax below into chat, the menu will automatically reopen in 30s if nothing is entered.", 30);
+		player.sendMessage("PotionName, level, duration (duration can be \"inf\")");
 		return null;
 	}
 	
 	@Override
-	public void checkValidEntry(String entry){
+	public void checkValidEntry(MinigamePlayer player, String entry){
 		String[] split = entry.split(", ");
 		if(split.length == 3){
 			String effect = split[0].toUpperCase();
@@ -67,7 +61,7 @@ public class MenuItemPotionAdd extends MenuItem{
 							if(getContainer().getClicked(slot) instanceof MenuItemPotion){
 								MenuItemPotion pot = (MenuItemPotion) getContainer().getClicked(slot);
 								if(pot.getEffect().getType() == peff.getType()){
-									pot.onShiftRightClick();
+									pot.onShiftRightClick(player);
 									break;
 								}
 							}
@@ -81,21 +75,16 @@ public class MenuItemPotionAdd extends MenuItem{
 						}
 					}
 					else
-						getContainer().getViewer().sendMessage(split[2] + " is not a valid duration! The time must be in seconds", "error");
+						player.sendMessage(split[2] + " is not a valid duration! The time must be in seconds", "error");
 				}
 				else
-					getContainer().getViewer().sendMessage(split[1] + " is not a valid level number!", "error");
+					player.sendMessage(split[1] + " is not a valid level number!", "error");
 			}
 			else
-				getContainer().getViewer().sendMessage(split[0] + " is not a valid potion name!", "error");
-			
-			getContainer().cancelReopenTimer();
-			getContainer().displayMenu(getContainer().getViewer());
+				player.sendMessage(split[0] + " is not a valid potion name!", "error");
 			return;
 		}
-		getContainer().cancelReopenTimer();
-		getContainer().displayMenu(getContainer().getViewer());
 		
-		getContainer().getViewer().sendMessage("Invalid syntax entry! Make sure there is an comma and a space (\", \") between each item.", "error");
+		player.sendMessage("Invalid syntax entry! Make sure there is an comma and a space (\", \") between each item.", "error");
 	}
 }

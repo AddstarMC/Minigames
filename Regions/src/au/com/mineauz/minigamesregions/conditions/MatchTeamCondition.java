@@ -73,7 +73,7 @@ public class MatchTeamCondition extends ConditionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
-		Menu m = new Menu(3, "Match Team", player);
+		Menu m = new Menu(3, "Match Team");
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
 		List<String> teams = new ArrayList<String>();
 		for(TeamColor t : TeamColor.values())

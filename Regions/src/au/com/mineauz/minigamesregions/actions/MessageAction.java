@@ -59,7 +59,7 @@ public class MessageAction extends ActionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
-		Menu m = new Menu(3, "Options", player);
+		Menu m = new Menu(3, "Options");
 		m.setPreviousPage(previous);
 		m.addItem(msg.getMenuItem("Message", Material.PAPER));
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, m.getPreviousPage()), m.getSize() - 9);

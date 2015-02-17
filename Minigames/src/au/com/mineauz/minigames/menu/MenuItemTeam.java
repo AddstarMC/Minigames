@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.scoreboard.NameTagVisibility;
 
+import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.minigame.Team;
@@ -66,8 +67,8 @@ public class MenuItemTeam extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(){
-		Menu m = new Menu(3, getName(), getContainer().getViewer());
+	public ItemStack onClick(MinigamePlayer player){
+		Menu m = new Menu(3, getName());
 		m.addItem(new MenuItemString("Display Name", Material.NAME_TAG, new Callback<String>() {
 			
 			@Override
@@ -118,12 +119,12 @@ public class MenuItemTeam extends MenuItem{
 		
 		
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, getContainer()), m.getSize() - 9);
-		m.displayMenu(getContainer().getViewer());
+		m.displayMenu(player);
 		return null;
 	}
 	
 	@Override
-	public ItemStack onRightClick(){
+	public ItemStack onRightClick(MinigamePlayer player){
 		TeamsModule.getMinigameModule(team.getMinigame()).removeTeam(team.getColor());
 		getContainer().removeItem(getSlot());
 		return null;

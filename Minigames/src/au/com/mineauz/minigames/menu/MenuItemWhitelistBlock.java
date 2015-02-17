@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 
 public class MenuItemWhitelistBlock extends MenuItem{
@@ -18,7 +19,7 @@ public class MenuItemWhitelistBlock extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onRightClick() {
+	public ItemStack onRightClick(MinigamePlayer player) {
 		whitelist.remove(getItem().getType());
 		getContainer().removeItem(getSlot());
 		return null;

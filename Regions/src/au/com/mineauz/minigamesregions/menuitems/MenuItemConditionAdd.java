@@ -9,6 +9,7 @@ import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
@@ -36,8 +37,8 @@ public class MenuItemConditionAdd extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(){
-		Menu m = new Menu(6, "Conditions", getContainer().getViewer());
+	public ItemStack onClick(MinigamePlayer player){
+		Menu m = new Menu(6, "Conditions");
 		m.setPreviousPage(getContainer());
 		Map<String, Menu> cats = new HashMap<String, Menu>();
 		List<String> cons = new ArrayList<String>(Conditions.getAllConditionNames());
@@ -51,7 +52,7 @@ public class MenuItemConditionAdd extends MenuItem{
 				catname.toLowerCase();
 				Menu cat = null;
 				if(!cats.containsKey(catname)){
-					cat = new Menu(6, MinigameUtils.capitalize(catname), getContainer().getViewer());
+					cat = new Menu(6, MinigameUtils.capitalize(catname));
 					cats.put(catname, cat);
 					m.addItem(new MenuItemPage(MinigameUtils.capitalize(catname), Material.CHEST, cat));
 					cat.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, m), cat.getSize() - 9);
@@ -63,7 +64,7 @@ public class MenuItemConditionAdd extends MenuItem{
 				c.setClick(new InteractionInterface() {
 					
 					@Override
-					public Object interact(Object object) {
+					public Object interact(MinigamePlayer player, Object object) {
 						ConditionInterface condition = Conditions.getConditionByName(fcon);
 						if(rexec != null){
 							rexec.addCondition(condition);
@@ -73,7 +74,7 @@ public class MenuItemConditionAdd extends MenuItem{
 							nexec.addCondition(condition);
 							getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, nexec, condition));
 						}
-						getContainer().displayMenu(getContainer().getViewer());
+						getContainer().displayMenu(player);
 						return null;
 					}
 				});
@@ -81,7 +82,7 @@ public class MenuItemConditionAdd extends MenuItem{
 			}
 		}
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, getContainer()), m.getSize() - 9);
-		m.displayMenu(getContainer().getViewer());
+		m.displayMenu(player);
 		return null;
 	}
 

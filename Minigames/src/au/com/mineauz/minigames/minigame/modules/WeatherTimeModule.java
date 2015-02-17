@@ -64,8 +64,8 @@ public class WeatherTimeModule extends MinigameModule {
 	}
 
 	@Override
-	public void addEditMenuOptions(Menu menu) {
-		Menu m = new Menu(6, "Time and Weather", menu.getViewer());
+	public void addEditMenuOptions(MinigamePlayer player, Menu menu) {
+		Menu m = new Menu(6, "Time and Weather");
 		m.addItem(new MenuItemBoolean("Use Custom Time", Material.WATCH, new Callback<Boolean>() {
 
 			@Override
@@ -120,11 +120,6 @@ public class WeatherTimeModule extends MinigameModule {
 		menu.addItem(new MenuItemPage("Time and Weather Settings", Material.CHEST, m));
 	}
 
-	@Override
-	public boolean displayMechanicSettings(Menu previous) {
-		return false;
-	}
-	
 	public static WeatherTimeModule getMinigameModule(Minigame minigame){
 		return (WeatherTimeModule) minigame.getModule("WeatherTime");
 	}

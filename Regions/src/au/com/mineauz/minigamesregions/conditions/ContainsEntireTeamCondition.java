@@ -56,7 +56,7 @@ public class ContainsEntireTeamCondition extends ConditionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
-		Menu menu = new Menu(3, "Contains Entire Team", player);
+		Menu menu = new Menu(3, "Contains Entire Team");
 		menu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), menu.getSize() - 9);
 		addInvertMenuItem(menu);
 		menu.displayMenu(player);

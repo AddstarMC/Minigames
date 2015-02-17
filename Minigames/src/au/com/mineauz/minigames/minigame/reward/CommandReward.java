@@ -149,12 +149,12 @@ public class CommandReward extends RewardType{
 		}
 		
 		@Override
-		public ItemStack onDoubleClick(){
+		public ItemStack onDoubleClick(MinigamePlayer player){
 			return getItem();
 		}
 		
 		@Override
-		public ItemStack onClick(){
+		public ItemStack onClick(MinigamePlayer player){
 			int ind = options.lastIndexOf(getRarity().toString());
 			ind++;
 			if(ind == options.size())
@@ -167,7 +167,7 @@ public class CommandReward extends RewardType{
 		}
 		
 		@Override
-		public ItemStack onRightClick(){
+		public ItemStack onRightClick(MinigamePlayer player){
 			int ind = options.lastIndexOf(getRarity().toString());
 			ind--;
 			if(ind == -1)
@@ -180,21 +180,21 @@ public class CommandReward extends RewardType{
 		}
 		
 		@Override
-		public ItemStack onShiftRightClick(){
+		public ItemStack onShiftRightClick(MinigamePlayer player){
 			getRewards().removeReward(reward);
 			getContainer().removeItem(getSlot());
 			return null;
 		}
 		
 		@Override
-		public ItemStack onShiftClick(){
-			super.onDoubleClick();
+		public ItemStack onShiftClick(MinigamePlayer player){
+			super.onDoubleClick(player);
 			return null;
 		}
 		
 		@Override
-		public void checkValidEntry(String entry){
-			super.checkValidEntry(entry);
+		public void checkValidEntry(MinigamePlayer player, String entry){
+			super.checkValidEntry(player, entry);
 			updateName(entry);
 		}
 	}

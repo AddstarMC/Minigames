@@ -339,7 +339,7 @@ public class RegionModule extends MinigameModule {
 	}
 	
 	public void displayMenu(MinigamePlayer viewer, Menu previous){
-		Menu rm = new Menu(6, "Regions and Nodes", viewer);
+		Menu rm = new Menu(6, "Regions and Nodes");
 		List<MenuItem> items = new ArrayList<MenuItem>(regions.size());
 		for(String name : regions.keySet()){
 			MenuItemRegion mir = new MenuItemRegion(name, Material.CHEST, regions.get(name), this);
@@ -359,22 +359,17 @@ public class RegionModule extends MinigameModule {
 	
 	
 	@Override
-	public void addEditMenuOptions(Menu menu) {
+	public void addEditMenuOptions(MinigamePlayer player, Menu menu) {
 		final MenuItemCustom c = new MenuItemCustom("Regions and Nodes", Material.DIAMOND_BLOCK);
 		final Menu fmenu = menu;
 		c.setClick(new InteractionInterface() {
 			
 			@Override
-			public Object interact(Object object) {
-				displayMenu(c.getContainer().getViewer(), fmenu);
+			public Object interact(MinigamePlayer player, Object object) {
+				displayMenu(player, fmenu);
 				return null;
 			}
 		});
 		menu.addItem(c);
-	}
-
-	@Override
-	public boolean displayMechanicSettings(Menu previous) {
-		return false;
 	}
 }

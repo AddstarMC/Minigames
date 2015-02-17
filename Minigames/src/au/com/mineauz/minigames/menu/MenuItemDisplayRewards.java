@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
@@ -26,8 +27,8 @@ public class MenuItemDisplayRewards extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(){
-		Menu rewardMenu = new Menu(5, getName(), getContainer().getViewer());
+	public ItemStack onClick(MinigamePlayer player){
+		Menu rewardMenu = new Menu(5, getName());
 		
 		rewardMenu.setPreviousPage(getContainer());
 		
@@ -55,7 +56,7 @@ public class MenuItemDisplayRewards extends MenuItem{
 			mi.add(rwg);
 		}
 		rewardMenu.addItems(mi);
-		rewardMenu.displayMenu(getContainer().getViewer());
+		rewardMenu.displayMenu(player);
 		return null;
 	}
 

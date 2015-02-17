@@ -8,7 +8,6 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 
 public class JuggernautModule extends MinigameModule{
@@ -42,15 +41,6 @@ public class JuggernautModule extends MinigameModule{
 	public void load(FileConfiguration config) {
 	}
 
-	@Override
-	public void addEditMenuOptions(Menu menu) {
-	}
-
-	@Override
-	public boolean displayMechanicSettings(Menu previous) {
-		return false;
-	}
-	
 	public static JuggernautModule getMinigameModule(Minigame minigame){
 		return (JuggernautModule) minigame.getModule("Juggernaut");
 	}

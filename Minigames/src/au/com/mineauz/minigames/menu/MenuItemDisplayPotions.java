@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
+import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.PlayerLoadout;
 
 public class MenuItemDisplayPotions extends MenuItem{
@@ -25,8 +26,8 @@ public class MenuItemDisplayPotions extends MenuItem{
 	
 	
 	@Override
-	public ItemStack onClick(){
-		Menu potionMenu = new Menu(5, getContainer().getName(), getContainer().getViewer());
+	public ItemStack onClick(MinigamePlayer player){
+		Menu potionMenu = new Menu(5, getContainer().getName());
 		
 		potionMenu.setAllowModify(true);
 		potionMenu.setPreviousPage(getContainer());
@@ -42,7 +43,7 @@ public class MenuItemDisplayPotions extends MenuItem{
 			inc++;
 		}
 		
-		potionMenu.displayMenu(getContainer().getViewer());
+		potionMenu.displayMenu(player);
 		
 		return null;
 	}

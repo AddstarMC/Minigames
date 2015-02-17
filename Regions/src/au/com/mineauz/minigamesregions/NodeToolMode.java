@@ -14,7 +14,6 @@ import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
-import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -47,7 +46,7 @@ public class NodeToolMode implements ToolMode {
 	@Override
 	public void onSetMode(final MinigamePlayer player, MinigameTool tool) {
 		tool.addSetting("Node", "None");
-		final Menu m = new Menu(2, "Node Selection", player);
+		final Menu m = new Menu(2, "Node Selection");
 		if(player.isInMenu()){
 			m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, player.getMenu()), m.getSize() - 9);
 		}
@@ -69,7 +68,7 @@ public class NodeToolMode implements ToolMode {
 			// Node selection menu
 			RegionModule module = RegionModule.getMinigameModule(tool.getMinigame());
 			
-			Menu nodeMenu = new Menu(6, "Nodes", player);
+			Menu nodeMenu = new Menu(6, "Nodes");
 			List<MenuItem> items = new ArrayList<MenuItem>();
 			
 			for(final Node node : module.getNodes()){
@@ -78,7 +77,7 @@ public class NodeToolMode implements ToolMode {
 				// Set the node and go back to the main menu
 				item.setClick(new InteractionInterface() {
 					@Override
-					public Object interact(Object object) {
+					public Object interact(MinigamePlayer player, Object object) {
 						ftool.changeSetting("Node", node.getName());
 						m.displayMenu(player);
 						

@@ -116,7 +116,7 @@ public class SpawnEntityAction extends ActionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
-		Menu m = new Menu(3, "Spawn Entity", player);
+		Menu m = new Menu(3, "Spawn Entity");
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
 		List<String> options = new ArrayList<String>();
 		for(EntityType type : EntityType.values()){
@@ -180,19 +180,18 @@ public class SpawnEntityAction extends ActionInterface {
 		
 		m.addItem(new MenuItemNewLine());
 		
-		final Menu eSet = new Menu(3, "Settings", player);
+		final Menu eSet = new Menu(3, "Settings");
 		final MenuItemPage backButton = new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, m);
 		final MenuItemCustom cus = new MenuItemCustom("Entity Settings", Material.CHEST);
-		final MinigamePlayer fply = player;
 		cus.setClick(new InteractionInterface() {
 			
 			@Override
-			public Object interact(Object object) {
+			public Object interact(MinigamePlayer player, Object object) {
 				if(type.getFlag().equals("ZOMBIE")){
 					eSet.clearMenu();
 					eSet.addItem(backButton, eSet.getSize() - 9);
 					livingEntitySettings(eSet);
-					eSet.displayMenu(fply);
+					eSet.displayMenu(player);
 					return null;
 				}
 				return cus.getItem();

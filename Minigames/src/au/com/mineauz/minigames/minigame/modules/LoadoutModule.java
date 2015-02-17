@@ -185,8 +185,7 @@ public class LoadoutModule extends MinigameModule {
 	}
 	
 	public void displaySelectionMenu(MinigamePlayer player, final boolean equip){
-		Menu m = new Menu(6, "Select Loadout", player);
-		final MinigamePlayer fply = player;
+		Menu m = new Menu(6, "Select Loadout");
 		
 		for(PlayerLoadout loadout : extraLoadouts.values()){
 			if(loadout.isDisplayedInMenu()){
@@ -200,14 +199,14 @@ public class LoadoutModule extends MinigameModule {
 						c.setClick(new InteractionInterface() {
 							
 							@Override
-							public Object interact(Object object) {
-								fply.setLoadout(floadout2);
-								fply.getPlayer().closeInventory();
+							public Object interact(MinigamePlayer player, Object object) {
+								player.setLoadout(floadout2);
+								player.getPlayer().closeInventory();
 								if(!equip)
-									fply.sendMessage(MinigameUtils.getLang("player.loadout.nextSpawn"), null);
+									player.sendMessage(MinigameUtils.getLang("player.loadout.nextSpawn"), null);
 								else{
-									fply.sendMessage(MinigameUtils.formStr("player.loadout.equipped", floadout2.getName(true)), null);
-									floadout2.equiptLoadout(fply);
+									player.sendMessage(MinigameUtils.formStr("player.loadout.equipped", floadout2.getName(true)), null);
+									floadout2.equiptLoadout(player);
 								}
 								return null;
 							}
@@ -219,16 +218,4 @@ public class LoadoutModule extends MinigameModule {
 		}
 		m.displayMenu(player);
 	}
-
-	@Override
-	public void addEditMenuOptions(Menu menu) {
-		// TODO Move loadout menu stuff here
-		
-	}
-
-	@Override
-	public boolean displayMechanicSettings(Menu previous) {
-		return false;
-	}
-
 }
