@@ -11,8 +11,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
@@ -41,7 +39,6 @@ import au.com.mineauz.minigames.sql.SQLDatabase;
 import au.com.mineauz.minigames.sql.SQLPlayer;
 
 public class Minigames extends JavaPlugin{
-	static Logger log = Logger.getLogger("Minecraft");
 	public PlayerData pdata;
 	public MinigameData mdata;
 	public DisplayManager display;
@@ -128,17 +125,17 @@ public class Minigames extends JavaPlugin{
 				}
 			}
 			catch(FileNotFoundException ex){
-				log.info("Failed to load config, creating one.");
+				getLogger().info("Failed to load config, creating one.");
 				try{
 					this.getConfig().save(this.getDataFolder() + "/config.yml");
 				} 
 				catch(IOException e){
-					log.log(Level.SEVERE, "Could not save config.yml!");
+					getLogger().severe("Could not save config.yml!");
 					e.printStackTrace();
 				}
 			}
 			catch(Exception e){
-				log.log(Level.SEVERE, "Failed to load config!");
+				getLogger().severe("Failed to load config!");
 				e.printStackTrace();
 			}
 			
@@ -205,7 +202,7 @@ public class Minigames extends JavaPlugin{
 			
 			initMetrics();
 	
-			log.info(desc.getName() + " successfully enabled.");
+			getLogger().info(desc.getName() + " successfully enabled.");
 		} catch (Throwable e) {
 			plugin = null;
 			getLogger().log(Level.SEVERE, "Failed to enable Minigames " + getDescription().getVersion() + ": ", e);
@@ -219,7 +216,7 @@ public class Minigames extends JavaPlugin{
 		}
 		
 		PluginDescriptionFile desc = this.getDescription();
-		log.info(desc.getName() + " successfully disabled.");
+		getLogger().info(desc.getName() + " successfully disabled.");
 		
 		for(Player p : getServer().getOnlinePlayers()){
 			if(pdata.getMinigamePlayer(p).isInMinigame()){
