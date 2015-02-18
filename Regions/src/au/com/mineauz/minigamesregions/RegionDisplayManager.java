@@ -3,8 +3,7 @@ package au.com.mineauz.minigamesregions;
 import java.util.Map;
 import java.util.Set;
 
-import net.md_5.bungee.api.ChatColor;
-
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;

@@ -1,5 +1,8 @@
 package au.com.mineauz.minigamesregions;
 
+import java.util.logging.Level;
+
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import au.com.mineauz.minigames.Minigames;
@@ -18,33 +21,46 @@ public class Main extends JavaPlugin{
 	
 	@Override
 	public void onEnable(){
-		plugin = this;
-		if(getServer().getPluginManager().getPlugin("Minigames") != null){
-			minigames = Minigames.plugin;
+		try {
+			plugin = this;
+			Plugin mgPlugin = getServer().getPluginManager().getPlugin("Minigames");
+			if(mgPlugin != null && mgPlugin.isEnabled()){
+				minigames = (Minigames)mgPlugin;
+			} else {
+				getLogger().severe("Minigames plugin not found! You must have the plugin to use Regions!");
+				plugin = null;
+				minigames = null;
+				this.getPluginLoader().disablePlugin(this);
+				return;
+			}
+			
+			display = new RegionDisplayManager();
+			
+			minigames.mdata.addModule(RegionModule.class);
+			
+			SetCommand.registerSetCommand(new SetNodeCommand());
+			SetCommand.registerSetCommand(new SetRegionCommand());
+			
+			getServer().getPluginManager().registerEvents(new RegionEvents(), this);
+			
+			ToolModes.addToolMode(new RegionToolMode());
+			ToolModes.addToolMode(new NodeToolMode());
+			ToolModes.addToolMode(new RegionNodeEditToolMode());
+			
+			getLogger().info("Minigames Regions successfully enabled!");
+		} catch (Throwable e) {
+			plugin = null;
+			minigames = null;
+			getLogger().log(Level.SEVERE, "Failed to enable Minigames Regions " + getDescription().getVersion() + ": ", e);
+			getPluginLoader().disablePlugin(this);
 		}
-		else{
-			getLogger().severe("Minigames plugin not found! You must have the plugin to use Regions!");
-			this.getPluginLoader().disablePlugin(this);
-		}
-		
-		display = new RegionDisplayManager();
-		
-		minigames.mdata.addModule(RegionModule.class);
-		
-		SetCommand.registerSetCommand(new SetNodeCommand());
-		SetCommand.registerSetCommand(new SetRegionCommand());
-		
-		getServer().getPluginManager().registerEvents(new RegionEvents(), this);
-		
-		ToolModes.addToolMode(new RegionToolMode());
-		ToolModes.addToolMode(new NodeToolMode());
-		ToolModes.addToolMode(new RegionNodeEditToolMode());
-		
-		getLogger().info("Minigames Regions successfully enabled!");
 	}
 	
 	@Override
 	public void onDisable(){
+		if (plugin == null) {
+			return;
+		}
 		for(Minigame mg : minigames.mdata.getAllMinigames().values()){
 			mg.saveMinigame();
 		}
