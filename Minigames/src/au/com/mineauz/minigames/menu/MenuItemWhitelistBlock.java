@@ -21,7 +21,7 @@ public class MenuItemWhitelistBlock extends MenuItem{
 	@Override
 	public ItemStack onRightClick(MinigamePlayer player) {
 		whitelist.remove(getItem().getType());
-		getContainer().removeItem(getSlot());
+		remove();
 		return null;
 	}
 }

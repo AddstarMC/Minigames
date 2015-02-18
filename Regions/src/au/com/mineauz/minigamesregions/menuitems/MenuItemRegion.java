@@ -9,7 +9,6 @@ import org.bukkit.inventory.ItemStack;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionExecutor;
 import au.com.mineauz.minigamesregions.RegionModule;
@@ -41,21 +40,18 @@ public class MenuItemRegion extends MenuItem{
 	@Override
 	public ItemStack onRightClick(MinigamePlayer player){
 		rmod.removeRegion(region.getName());
-		getContainer().removeItem(getSlot());
+		remove();
 		return null;
 	}
 	
 	public static Menu createMenu(MinigamePlayer viewer, Menu previousPage, Region region){
 		Menu m = new Menu(3, "Region: " + region.getName());
-		m.setPreviousPage(previousPage);
 		List<MenuItem> items = new ArrayList<MenuItem>();
 		for(RegionExecutor ex : region.getExecutors()){
 			items.add(new MenuItemRegionExecutor(region, ex));
 		}
-		if(previousPage != null){
-			m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previousPage), m.getSize() - 9);
-		}
-		m.addItem(new MenuItemRegionExecutorAdd("Add Executor", Material.ITEM_FRAME, region), m.getSize() - 1);
+
+		m.setControlItem(new MenuItemRegionExecutorAdd("Add Executor", Material.ITEM_FRAME, region), 4);
 		m.addItems(items);
 		
 		return m;

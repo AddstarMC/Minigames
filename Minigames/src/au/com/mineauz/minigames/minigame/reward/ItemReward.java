@@ -174,7 +174,7 @@ public class ItemReward extends RewardType{
 		@Override
 		public ItemStack onShiftRightClick(MinigamePlayer player){
 			getRewards().removeReward(reward);
-			getContainer().removeItem(getSlot());
+			remove();
 			return null;
 		}
 	}

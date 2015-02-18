@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -25,6 +26,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
@@ -581,6 +583,18 @@ public class Events implements Listener{
 							event.getPlayer().getLocation().getYaw(), event.getPlayer().getLocation().getPitch()));
 				}
 			}
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	private void onInvClick(InventoryClickEvent event) {
+		MinigamePlayer ply = pdata.getMinigamePlayer((Player)event.getWhoClicked());
+		if(ply == null) return;
+		
+		if(ply.isInMinigame()){
+			if((ply.getLoadout().isArmourLocked() && event.getSlot() >= 36 && event.getSlot() <= 39) || 
+					(ply.getLoadout().isInventoryLocked() && event.getSlot() >= 0 && event.getSlot() <= 35))
+				event.setCancelled(true);
 		}
 	}
 }

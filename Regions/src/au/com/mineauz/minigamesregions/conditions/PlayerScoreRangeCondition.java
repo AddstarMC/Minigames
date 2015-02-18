@@ -6,7 +6,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
@@ -70,7 +69,6 @@ public class PlayerScoreRangeCondition extends ConditionInterface {
 		Menu m = new Menu(3, "Score Range");
 		m.addItem(min.getMenuItem("Min Score", Material.STEP));
 		m.addItem(max.getMenuItem("Max Score", Material.STONE));
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
 		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;

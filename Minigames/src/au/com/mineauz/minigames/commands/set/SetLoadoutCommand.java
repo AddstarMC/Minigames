@@ -84,7 +84,7 @@ public class SetLoadoutCommand implements ICommand {
 			mil.setAllowDelete(mod.getLoadout(ld).isDeleteable());
 			mi.add(mil);
 		}
-		loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, mod.getLoadoutMap(), minigame), 53);
+		loadouts.setControlItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, mod.getLoadoutMap(), minigame), 4);
 		loadouts.addItems(mi);
 		
 		loadouts.displayMenu(player);

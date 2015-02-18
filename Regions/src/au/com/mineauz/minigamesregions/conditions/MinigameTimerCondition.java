@@ -6,7 +6,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemTime;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigamesregions.Node;
@@ -75,8 +74,7 @@ public class MinigameTimerCondition extends ConditionInterface{
 		
 		m.addItem(new MenuItemTime("Min Time", Material.WATCH, minTime.getCallback(), 0, null));
 		m.addItem(new MenuItemTime("Max Time", Material.WATCH, maxTime.getCallback(), 0, null));
-		
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
+
 		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;

@@ -117,8 +117,6 @@ public class MenuItemTeam extends MenuItem{
 		}
 		m.addItem(new MenuItemList("NameTag Visibility", Material.NAME_TAG, team.getNameTagVisibilityCallback(), ntvo));
 		
-		
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, getContainer()), m.getSize() - 9);
 		m.displayMenu(player);
 		return null;
 	}
@@ -126,7 +124,7 @@ public class MenuItemTeam extends MenuItem{
 	@Override
 	public ItemStack onRightClick(MinigamePlayer player){
 		TeamsModule.getMinigameModule(team.getMinigame()).removeTeam(team.getColor());
-		getContainer().removeItem(getSlot());
+		remove();
 		return null;
 	}
 }

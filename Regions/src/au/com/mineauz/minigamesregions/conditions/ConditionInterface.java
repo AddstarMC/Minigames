@@ -13,7 +13,7 @@ public abstract class ConditionInterface {
 	
 	private BooleanFlag invert = new BooleanFlag(false, "invert");
 	protected void addInvertMenuItem(Menu m){
-		m.addItem(invert.getMenuItem("Invert", Material.ENDER_PEARL), m.getSize() - 1);
+		m.setControlItem(invert.getMenuItem("Invert", Material.ENDER_PEARL), 3);
 	}
 	protected void saveInvert(FileConfiguration config, String path){
 		invert.saveValue(path, config);

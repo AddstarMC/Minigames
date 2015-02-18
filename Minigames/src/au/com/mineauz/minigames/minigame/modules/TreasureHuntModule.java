@@ -19,7 +19,6 @@ import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemTime;
 import au.com.mineauz.minigames.minigame.Minigame;
 
@@ -98,7 +97,6 @@ public class TreasureHuntModule extends MinigameModule{
 		itemsTreasureHunt.add(new MenuItemTime("Restart Delay", Material.WATCH, treasureWaitTime.getCallback(), 0, null));
 		itemsTreasureHunt.add(new MenuItemTime("Hint Usage Delay", Material.WATCH, hintWaitTime.getCallback(), 0, null));
 		treasureHunt.addItems(itemsTreasureHunt);
-		treasureHunt.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), treasureHunt.getSize() - 9);
 		treasureHunt.displayMenu(player);
 		return true;
 	}

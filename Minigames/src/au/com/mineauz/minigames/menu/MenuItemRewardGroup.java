@@ -117,7 +117,7 @@ public class MenuItemRewardGroup extends MenuItem{
 	public void checkValidEntry(MinigamePlayer player, String entry){
 		if(entry.equalsIgnoreCase("yes")){
 			rewards.removeGroup(group);
-			getContainer().removeItem(this.getSlot());
+			remove();
 			return;
 		}
 		player.sendMessage("The selected group will not be removed from the rewards.", "error");
@@ -133,7 +133,6 @@ public class MenuItemRewardGroup extends MenuItem{
 	@Override
 	public ItemStack onDoubleClick(MinigamePlayer player){
 		Menu rewardMenu = new Menu(5, getName());
-		rewardMenu.setPreviousPage(getContainer());
 
 		List<String> des = new ArrayList<String>();
 		des.add("Click this with an item");
@@ -141,8 +140,7 @@ public class MenuItemRewardGroup extends MenuItem{
 		des.add("Click without an item");
 		des.add("to add a money reward.");
 		
-		rewardMenu.addItem(new MenuItemRewardAdd("Add Item", des, Material.ITEM_FRAME, group), 43);
-		rewardMenu.addItem(new MenuItemPage("Save " + getName(), Material.REDSTONE_TORCH_ON, rewardMenu.getPreviousPage()), 44);
+		rewardMenu.setControlItem(new MenuItemRewardAdd("Add Item", des, Material.ITEM_FRAME, group), 4);
 		List<String> list = new ArrayList<String>();
 		for(RewardRarity r : RewardRarity.values()){
 			list.add(r.toString());

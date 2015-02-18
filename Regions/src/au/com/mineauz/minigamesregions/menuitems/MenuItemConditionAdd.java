@@ -15,7 +15,7 @@ import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
-import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuItemSubMenu;
 import au.com.mineauz.minigamesregions.NodeExecutor;
 import au.com.mineauz.minigamesregions.RegionExecutor;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
@@ -39,7 +39,6 @@ public class MenuItemConditionAdd extends MenuItem{
 	@Override
 	public ItemStack onClick(MinigamePlayer player){
 		Menu m = new Menu(6, "Conditions");
-		m.setPreviousPage(getContainer());
 		Map<String, Menu> cats = new HashMap<String, Menu>();
 		List<String> cons = new ArrayList<String>(Conditions.getAllConditionNames());
 		Collections.sort(cons);
@@ -54,8 +53,7 @@ public class MenuItemConditionAdd extends MenuItem{
 				if(!cats.containsKey(catname)){
 					cat = new Menu(6, MinigameUtils.capitalize(catname));
 					cats.put(catname, cat);
-					m.addItem(new MenuItemPage(MinigameUtils.capitalize(catname), Material.CHEST, cat));
-					cat.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, m), cat.getSize() - 9);
+					m.addItem(new MenuItemSubMenu(MinigameUtils.capitalize(catname), Material.CHEST, cat));
 				}
 				else
 					cat = cats.get(catname);
@@ -81,7 +79,6 @@ public class MenuItemConditionAdd extends MenuItem{
 				cat.addItem(c);
 			}
 		}
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, getContainer()), m.getSize() - 9);
 		m.displayMenu(player);
 		return null;
 	}

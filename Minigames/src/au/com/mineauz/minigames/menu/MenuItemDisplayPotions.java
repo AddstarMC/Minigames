@@ -30,17 +30,13 @@ public class MenuItemDisplayPotions extends MenuItem{
 		Menu potionMenu = new Menu(5, getContainer().getName());
 		
 		potionMenu.setAllowModify(true);
-		potionMenu.setPreviousPage(getContainer());
-		potionMenu.addItem(new MenuItemPotionAdd("Add Potion", Material.ITEM_FRAME, loadout), 43);
-		potionMenu.addItem(new MenuItemPage("Save Potions", Material.REDSTONE_TORCH_ON, getContainer().getPreviousPage()), 44);
+		potionMenu.setControlItem(new MenuItemPotionAdd("Add Potion", Material.ITEM_FRAME, loadout), 4);
 		
 		List<String> des = new ArrayList<String>();
 		des.add("Shift + Right Click to Delete");
 		
-		int inc = 0;
 		for(PotionEffect eff : loadout.getAllPotionEffects()){
-			potionMenu.addItem(new MenuItemPotion(eff.getType().getName().toLowerCase().replace("_", " "), des, Material.POTION, eff, loadout), inc);
-			inc++;
+			potionMenu.addItem(new MenuItemPotion(eff.getType().getName().toLowerCase().replace("_", " "), des, Material.POTION, eff, loadout));
 		}
 		
 		potionMenu.displayMenu(player);

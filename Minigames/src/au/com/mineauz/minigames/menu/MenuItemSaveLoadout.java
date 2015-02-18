@@ -37,7 +37,7 @@ public class MenuItemSaveLoadout extends MenuItem{
 	
 	@Override
 	public ItemStack onClick(MinigamePlayer player){
-		ItemStack[] items = getContainer().getInventory();
+		ItemStack[] items = ((MenuPageInventory)getContainer().getFirstPage()).getInventory();
 		loadout.clearLoadout();
 		
 		for(int i = 0; i < 36; i++){
@@ -58,7 +58,7 @@ public class MenuItemSaveLoadout extends MenuItem{
 		}
 		player.sendMessage("Saved the '" + loadout.getName(false) + "' loadout.", null);
 		if(altMenu == null)
-			getContainer().getPreviousPage().displayMenu(player);
+			player.showPreviousMenu();
 		else
 			altMenu.displayMenu(player);
 		return null;

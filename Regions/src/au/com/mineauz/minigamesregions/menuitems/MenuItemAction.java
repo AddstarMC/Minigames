@@ -46,7 +46,7 @@ public class MenuItemAction extends MenuItem{
 			rexec.removeAction(act);
 		else
 			nexec.removeAction(act);
-		getContainer().removeItem(getSlot());
+		remove();
 		return null;
 	}
 }

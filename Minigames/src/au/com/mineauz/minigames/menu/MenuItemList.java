@@ -32,6 +32,8 @@ public class MenuItemList extends MenuItem{
 	public void updateDescription(){
 		List<String> description = null;
 		int pos = options.indexOf(value.getValue());
+		if (pos == -1)
+			pos = 0;
 		int before = pos - 1;
 		int after = pos + 1;
 		if(before == -1)

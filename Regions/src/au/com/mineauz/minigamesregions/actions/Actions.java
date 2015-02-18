@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.NodeExecutor;
 import au.com.mineauz.minigamesregions.RegionExecutor;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemAction;
@@ -82,23 +81,19 @@ public class Actions {
 	
 	public static void displayMenu(MinigamePlayer player, RegionExecutor exec, Menu prev){
 		Menu m = new Menu(3, "Actions");
-		m.setPreviousPage(prev);
 		for(ActionInterface act : exec.getActions()){
 			m.addItem(new MenuItemAction(MinigameUtils.capitalize(act.getName()), Material.PAPER, exec, act));
 		}
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
-		m.addItem(new MenuItemActionAdd("Add Action", Material.ITEM_FRAME, exec), m.getSize() - 1);
+		m.setControlItem(new MenuItemActionAdd("Add Action", Material.ITEM_FRAME, exec), 4);
 		m.displayMenu(player);
 	}
 	
 	public static void displayMenu(MinigamePlayer player, NodeExecutor exec, Menu prev){
 		Menu m = new Menu(3, "Actions");
-		m.setPreviousPage(prev);
 		for(ActionInterface act : exec.getActions()){
 			m.addItem(new MenuItemAction(MinigameUtils.capitalize(act.getName()), Material.PAPER, exec, act));
 		}
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
-		m.addItem(new MenuItemActionAdd("Add Action", Material.ITEM_FRAME, exec), m.getSize() - 1);
+		m.setControlItem(new MenuItemActionAdd("Add Action", Material.ITEM_FRAME, exec), 4);
 		m.displayMenu(player);
 	}
 }

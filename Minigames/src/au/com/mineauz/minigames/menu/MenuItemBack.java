@@ -5,18 +5,17 @@ import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 
-public class MenuItemBack extends MenuItem{
+public class MenuItemBack extends MenuItem {
+	private MenuSession previous;
 	
-	private Menu prev;
-	
-	public MenuItemBack(Menu prev){
+	public MenuItemBack(MenuSession previous) {
 		super("Back", Material.REDSTONE_TORCH_ON);
-		this.prev = prev;
+		this.previous = previous;
 	}
 	
 	@Override
-	public ItemStack onClick(MinigamePlayer player){
-		prev.displayMenu(player);
+	public ItemStack onClick(MinigamePlayer player) {
+		previous.current.displaySession(player, previous);
 		return null;
 	}
 

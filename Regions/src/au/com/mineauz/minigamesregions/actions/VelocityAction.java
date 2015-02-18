@@ -8,7 +8,6 @@ import org.bukkit.util.Vector;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.FloatFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
@@ -77,7 +76,6 @@ public class VelocityAction extends ActionInterface{
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Velocity");
-		m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 		m.addItem(x.getMenuItem("X Velocity", Material.STONE, 0.5d, 1d, null, null));
 		m.addItem(y.getMenuItem("Y Velocity", Material.STONE, 0.5d, 1d, null, null));
 		m.addItem(z.getMenuItem("Z Velocity", Material.STONE, 0.5d, 1d, null, null));

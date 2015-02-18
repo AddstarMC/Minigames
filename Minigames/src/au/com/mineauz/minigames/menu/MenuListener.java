@@ -1,17 +1,20 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Iterator;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -24,61 +27,99 @@ public class MenuListener implements Listener {
 	@EventHandler(ignoreCancelled = true)
 	private void clickMenu(InventoryClickEvent event){
 		MinigamePlayer ply = plugin.pdata.getMinigamePlayer((Player)event.getWhoClicked());
-		if(ply.isInMenu()){
-			if(event.getRawSlot() < ply.getMenu().getSize()){
-				if(!ply.getMenu().getAllowModify() || ply.getMenu().hasMenuItem(event.getRawSlot()))
-					event.setCancelled(true);
+		MenuSession session = ply.getMenuSession();
+		if (session == null) {
+			return;
+		}
+		
+		Menu menu = session.current;
+		
+		MenuPage page = menu.getPage(session.page);
+		if(event.getRawSlot() >= 0 && event.getRawSlot() < menu.getSize() + 9) {
+			MenuItem clickedItem = menu.getClickItem(session, event.getRawSlot());
+			
+			if (clickedItem != null) {
+				event.setCancelled(true);
 				
-				MenuItem item = ply.getMenu().getClicked(event.getRawSlot());
-				if(item != null){
-					ItemStack disItem = null;
-					if(event.getClick() == ClickType.LEFT){
-						if(event.getCursor().getType() != Material.AIR)
-							disItem = item.onClickWithItem(ply, event.getCursor());
-						else
-							disItem = item.onClick(ply);
-					}
-					else if(event.getClick() == ClickType.RIGHT)
-						disItem = item.onRightClick(ply);
-					else if(event.getClick() == ClickType.SHIFT_LEFT)
-						disItem = item.onShiftClick(ply);
-					else if(event.getClick() == ClickType.SHIFT_RIGHT)
-						disItem = item.onShiftRightClick(ply);
-					else if(event.getClick() == ClickType.DOUBLE_CLICK)
-						disItem = item.onDoubleClick(ply);
-					
-					if(item != null)
-						event.setCurrentItem(disItem);
+				ItemStack display = null;
+				switch(event.getClick()) {
+				case LEFT:
+					if(event.getCursor().getType() != Material.AIR)
+						display = clickedItem.onClickWithItem(ply, event.getCursor());
+					else
+						display = clickedItem.onClick(ply);
+					break;
+				case RIGHT:
+					display = clickedItem.onRightClick(ply);
+					break;
+				case SHIFT_LEFT:
+					display = clickedItem.onShiftClick(ply);
+					break;
+				case SHIFT_RIGHT:
+					display = clickedItem.onShiftRightClick(ply);
+					break;
+				case DOUBLE_CLICK:
+					display = clickedItem.onDoubleClick(ply);
+					break;
+				default:
+					break;
+				}
+				if (display != null) {
+					event.setCurrentItem(display);
+				}
+			} else if (page instanceof MenuPageInventory) {
+				if (!menu.getAllowModify()) {
+					event.setCancelled(true);
+				} else {
+					final Inventory inv = event.getView().getTopInventory();
+					final MenuPageInventory invPage = (MenuPageInventory)page;
+					Bukkit.getScheduler().runTask(Minigames.plugin, new Runnable() {
+						@Override
+						public void run() {
+							invPage.updateFrom(inv);
+						}
+					});
 				}
 			}
-		}
-		else if(ply.isInMinigame()){
-			if((ply.getLoadout().isArmourLocked() && event.getSlot() >= 36 && event.getSlot() <= 39) || 
-					(ply.getLoadout().isInventoryLocked() && event.getSlot() >= 0 && event.getSlot() <= 35))
-				event.setCancelled(true);
+		} else if (event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.SHIFT_RIGHT) {
+			event.setCancelled(true);
 		}
 	}
 	
 	@EventHandler(ignoreCancelled = true)
 	private void dragMenu(InventoryDragEvent event){
 		MinigamePlayer ply = plugin.pdata.getMinigamePlayer((Player)event.getWhoClicked());
-		if(ply.isInMenu()){
-			if(!ply.getMenu().getAllowModify()){
-				for(int slot : event.getRawSlots()){
-					if(slot < ply.getMenu().getSize()){
+		
+		MenuSession session = ply.getMenuSession();
+		if (session == null) {
+			return;
+		}
+		
+		Menu menu = session.current;
+		
+		MenuPage page = menu.getPage(session.page);
+		if (page instanceof MenuPageInventory) {
+			Iterator<Integer> it = event.getRawSlots().iterator();
+			while(it.hasNext()) {
+				int slot = it.next();
+				if (slot < menu.getSize() + 9) {
+					if (menu.getAllowModify()) {
 						event.setCancelled(true);
 						break;
 					}
-				}
-			}
-			else{
-				Set<Integer> slots = new HashSet<Integer>();
-				slots.addAll(event.getRawSlots());
-				
-				for(int slot : slots){
-					if(ply.getMenu().hasMenuItem(slot)){
-						event.getRawSlots().remove(slot);
+					
+					MenuItem item = menu.getClickItem(session, slot);
+					if (item != null) {
+						it.remove();
+						break;
 					}
+				}
+			} 
+		} else {
+			for (int slot : event.getRawSlots()) {
+				if (slot < menu.getSize() + 9) {
+					event.setCancelled(true);
+					break;
 				}
 			}
 		}
@@ -92,19 +133,39 @@ public class MenuListener implements Listener {
 		MinigamePlayer ply = plugin.pdata.getMinigamePlayer((Player)event.getPlayer());
 		if(ply == null) return;
 		
-		Menu menu = ply.getMenu();
-		if (menu != null && !ply.getNoClose()) {
-			menu.onCloseMenu(ply);
+		MenuSession session = ply.getMenuSession();
+		if (session == null) {
+			return;
+		}
+		
+		session.current.onCloseMenu(ply);
+		
+		if (!ply.getNoClose()) {
+			ply.setMenuSession(null);
 		}
 	}
 	
-	@EventHandler
-	private void manualItemEntry(AsyncPlayerChatEvent event){
-		MinigamePlayer ply = plugin.pdata.getMinigamePlayer(event.getPlayer());
-		if(ply.isInMenu() && ply.getNoClose() && ply.getManualEntry() != null){
-			event.setCancelled(true);
-			ply.getManualEntry().completeManualEntry(ply, event.getMessage());
+	@EventHandler(priority = EventPriority.LOW)
+	private void onDisconnect(PlayerQuitEvent event) {
+		MinigamePlayer ply = plugin.pdata.getMinigamePlayer((Player)event.getPlayer());
+		
+		MenuSession session = ply.getMenuSession();
+		if (session == null) {
+			return;
 		}
 		
+		session.current.onCloseMenu(ply);
+	}
+	
+	@EventHandler(priority=EventPriority.MONITOR)
+	private void onManualItemEntry(AsyncPlayerChatEvent event){
+		MinigamePlayer ply = plugin.pdata.getMinigamePlayer(event.getPlayer());
+		
+		MenuSession session = ply.getMenuSession();
+		MenuItem manualEntry = ply.getManualEntry();
+		if (session != null && manualEntry != null) {
+			event.setCancelled(true);
+			manualEntry.completeManualEntry(ply, event.getMessage());
+		}
 	}
 }

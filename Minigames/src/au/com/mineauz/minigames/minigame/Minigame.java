@@ -51,7 +51,7 @@ import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.menu.MenuItemLoadoutAdd;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
-import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuItemSubMenu;
 import au.com.mineauz.minigames.menu.MenuItemSaveMinigame;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.menu.MenuItemTime;
@@ -949,11 +949,11 @@ public class Minigame {
 	}
 
 	public void displayMenu(MinigamePlayer player){
-		Menu main = new Menu(6, getName(false));
-		Menu playerMenu = new Menu(6, getName(false));
-		Menu loadouts = new Menu(6, getName(false));
-		Menu flags = new Menu(6, getName(false));
-		Menu lobby = new Menu(6, getName(false));
+		Menu main = new Menu(5, getName(false));
+		Menu playerMenu = new Menu(5, getName(false));
+		Menu loadouts = new Menu(5, getName(false));
+		Menu flags = new Menu(5, getName(false));
+		Menu lobby = new Menu(5, getName(false));
 		
 		List<MenuItem> itemsMain = new ArrayList<MenuItem>();
 		itemsMain.add(enabled.getMenuItem("Enabled", Material.PAPER));
@@ -1009,7 +1009,7 @@ public class Minigame {
 		itemsMain.add(maxPlayers.getMenuItem("Max. Players", Material.STONE, MinigameUtils.stringToList("Multiplayer Only")));
 		itemsMain.add(spMaxPlayers.getMenuItem("Enable Singleplayer Max Players", Material.IRON_FENCE));
 		itemsMain.add(displayScoreboard.getMenuItem("Display Scoreboard", Material.SIGN));
-		itemsMain.add(new MenuItemPage("Lobby Settings", MinigameUtils.stringToList("Multiplayer Only"), Material.WOOD_DOOR, lobby));
+		itemsMain.add(new MenuItemSubMenu("Lobby Settings", MinigameUtils.stringToList("Multiplayer Only"), Material.WOOD_DOOR, lobby));
 		itemsMain.add(new MenuItemNewLine());
 		itemsMain.add(new MenuItemTime("Time Length", MinigameUtils.stringToList("Multiplayer Only"), Material.WATCH, new Callback<Integer>() {
 
@@ -1080,7 +1080,7 @@ public class Minigame {
 			}
 		}, 0, null));
 		itemsMain.add(new MenuItemNewLine());
-		itemsMain.add(new MenuItemPage("Player Settings", Material.SKULL_ITEM, playerMenu));
+		itemsMain.add(new MenuItemSubMenu("Player Settings", Material.SKULL_ITEM, playerMenu));
 		List<String> thDes = new ArrayList<String>();
 		thDes.add("Treasure hunt related");
 		thDes.add("settings.");
@@ -1088,7 +1088,7 @@ public class Minigame {
 //		MenuItemDisplayLoadout defLoad = new MenuItemDisplayLoadout("Default Loadout", Material.DIAMOND_SWORD, LoadoutModule.getMinigameModule(this).getDefaultPlayerLoadout(), this);
 //		defLoad.setAllowDelete(false);
 //		itemsMain.add(defLoad);
-		itemsMain.add(new MenuItemPage("Loadouts", Material.CHEST, loadouts));
+		itemsMain.add(new MenuItemSubMenu("Loadouts", Material.CHEST, loadouts));
 		itemsMain.add(canSpectateFly.getMenuItem("Allow Spectator Fly", Material.FEATHER));
 		List<String> rndChstDes = new ArrayList<String>();
 		rndChstDes.add("Randomize items in");
@@ -1118,12 +1118,11 @@ public class Minigame {
 			else
 				mi.add(new MenuItemDisplayLoadout(ld, item, LoadoutModule.getMinigameModule(this).getLoadout(ld), this));
 		}
-		loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, LoadoutModule.getMinigameModule(this).getLoadoutMap(), this), 53);
-		loadouts.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), loadouts.getSize() - 9);
+		loadouts.setControlItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, LoadoutModule.getMinigameModule(this).getLoadoutMap(), this), 4);
 		loadouts.addItems(mi);
 		
 		main.addItems(itemsMain);
-		main.addItem(new MenuItemSaveMinigame("Save " + getName(false), Material.REDSTONE_TORCH_ON, this), main.getSize() - 1);
+		main.setControlItem(new MenuItemSaveMinigame("Save " + getName(false), Material.REDSTONE_TORCH_ON, this), 4);
 
 		//----------------------//
 		//Minigame Player Settings
@@ -1147,11 +1146,10 @@ public class Minigame {
 		itemsPlayer.add(unlimitedAmmo.getMenuItem("Unlimited Ammo", Material.SNOW_BLOCK));
 		itemsPlayer.add(allowMPCheckpoints.getMenuItem("Enable Multiplayer Checkpoints", Material.SIGN));
 		itemsPlayer.add(saveCheckpoints.getMenuItem("Save Checkpoints", Material.SIGN, MinigameUtils.stringToList("Singleplayer Only")));
-		itemsPlayer.add(new MenuItemPage("Flags", MinigameUtils.stringToList("Singleplayer flags"), Material.SIGN, flags));
+		itemsPlayer.add(new MenuItemSubMenu("Flags", MinigameUtils.stringToList("Singleplayer flags"), Material.SIGN, flags));
 		itemsPlayer.add(allowFlight.getMenuItem("Allow Flight", Material.FEATHER, MinigameUtils.stringToList("Allow flight to;be toggled")));
 		itemsPlayer.add(enableFlight.getMenuItem("Enable Flight", Material.FEATHER, MinigameUtils.stringToList("Start players;in flight;(Must have Allow;Flight)")));
 		playerMenu.addItems(itemsPlayer);
-		playerMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
 		
 		//--------------//
 		//Minigame Flags//
@@ -1160,8 +1158,7 @@ public class Minigame {
 		for(String flag : getFlags()){
 			itemsFlags.add(new MenuItemFlag(Material.SIGN, flag, getFlags()));
 		}
-		flags.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, playerMenu), flags.getSize() - 9);
-		flags.addItem(new MenuItemAddFlag("Add Flag", Material.ITEM_FRAME, this), flags.getSize() - 1);
+		flags.setControlItem(new MenuItemAddFlag("Add Flag", Material.ITEM_FRAME, this), 4);
 		flags.addItems(itemsFlags);
 		
 		//--------------//
@@ -1179,7 +1176,6 @@ public class Minigame {
 		itemsLobby.add(new MenuItemInteger("Waiting for Players Time", MinigameUtils.stringToList("The time in seconds;the game will wait for;more players to join.;A value of 0 will use;the config setting"),
 				Material.WATCH, LobbySettingsModule.getMinigameModule(this).getPlayerWaitTimeCallback(), 0, Integer.MAX_VALUE));
 		lobby.addItems(itemsLobby);
-		lobby.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), lobby.getSize() - 9);
 
 		for(MinigameModule mod : getModules()){
 			mod.addEditMenuOptions(player, main);

@@ -20,7 +20,7 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemList;
-import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuItemSubMenu;
 import au.com.mineauz.minigames.minigame.Minigame;
 
 public class WeatherTimeModule extends MinigameModule {
@@ -115,9 +115,7 @@ public class WeatherTimeModule extends MinigameModule {
 			}
 		}, MinigameUtils.stringToList("Clear;Downfall")));
 		
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, menu), m.getSize() - 9);
-		
-		menu.addItem(new MenuItemPage("Time and Weather Settings", Material.CHEST, m));
+		menu.addItem(new MenuItemSubMenu("Time and Weather Settings", Material.CHEST, m));
 	}
 
 	public static WeatherTimeModule getMinigameModule(Minigame minigame){

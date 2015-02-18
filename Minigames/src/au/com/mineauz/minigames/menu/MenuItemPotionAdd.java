@@ -57,22 +57,24 @@ public class MenuItemPotionAdd extends MenuItem{
 						des.add("Shift + Right Click to Delete");
 						
 						PotionEffect peff = new PotionEffect(eff, dur, level);
-						for(int slot : getContainer().getSlotMap()){
-							if(getContainer().getClicked(slot) instanceof MenuItemPotion){
-								MenuItemPotion pot = (MenuItemPotion) getContainer().getClicked(slot);
+						MenuItem toRemove = null;
+						
+						for (MenuItem rawItem : getContainer()) {
+							if (rawItem instanceof MenuItemPotion) {
+								MenuItemPotion pot = (MenuItemPotion)rawItem;
 								if(pot.getEffect().getType() == peff.getType()){
-									pot.onShiftRightClick(player);
+									toRemove = rawItem;
 									break;
 								}
 							}
 						}
-						for(int i = 0; i < 36; i++){
-							if(!getContainer().hasMenuItem(i)){
-								getContainer().addItem(new MenuItemPotion(eff.getName().toLowerCase().replace("_", " "), des, Material.POTION, peff, loadout), i);
-								loadout.addPotionEffect(peff);
-								break;
-							}
+						
+						if (toRemove != null) {
+							toRemove.onShiftRightClick(player);
 						}
+						
+						getContainer().addItem(new MenuItemPotion(eff.getName().toLowerCase().replace("_", " "), des, Material.POTION, peff, loadout));
+						getContainer().refresh();
 					}
 					else
 						player.sendMessage(split[2] + " is not a valid duration! The time must be in seconds", "error");

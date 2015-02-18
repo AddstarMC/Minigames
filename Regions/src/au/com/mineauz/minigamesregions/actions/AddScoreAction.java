@@ -8,7 +8,6 @@ import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
-import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
@@ -78,7 +77,6 @@ public class AddScoreAction extends ActionInterface {
 				return amount.getFlag();
 			}
 		}, null, null));
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
 		m.displayMenu(player);
 		return true;
 	}

@@ -20,7 +20,6 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
-import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
@@ -351,8 +350,6 @@ public class RegionModule extends MinigameModule {
 			items.add(min);
 		}
 		rm.addItems(items);
-		if(previous != null)
-			rm.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), rm.getSize() - 9);
 		rm.displayMenu(viewer);
 	}
 	

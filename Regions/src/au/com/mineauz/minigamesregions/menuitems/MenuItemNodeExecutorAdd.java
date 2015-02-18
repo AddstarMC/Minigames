@@ -10,7 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
 
@@ -38,8 +37,6 @@ public class MenuItemNodeExecutorAdd extends MenuItem{
 		for(String trig : triggers){
 			m.addItem(new MenuItemTrigger(Triggers.getTrigger(trig), node, getContainer()));
 		}
-		
-		m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
 		
 		m.displayMenu(player);
 		

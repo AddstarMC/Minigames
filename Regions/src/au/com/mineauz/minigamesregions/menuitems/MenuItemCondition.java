@@ -46,7 +46,7 @@ public class MenuItemCondition extends MenuItem{
 			rexec.removeCondition(con);
 		else
 			nexec.removeCondition(con);
-		getContainer().removeItem(getSlot());
+		remove();
 		return null;
 	}
 

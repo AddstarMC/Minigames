@@ -164,15 +164,15 @@ public class MinigameTool {
 			}
 		});
 		
-		men.addItem(mideselect, men.getSize() - 1);
-		men.addItem(miselect, men.getSize() - 2);
+		men.setControlItem(mideselect, 4);
+		men.setControlItem(miselect, 3);
 		
 		List<String> teams = new ArrayList<String>(TeamColor.values().length + 1);
 		for(TeamColor col : TeamColor.values())
 			teams.add(MinigameUtils.capitalize(col.toString().replace("_", " ")));
 		teams.add("None");
 		
-		men.addItem(new MenuItemToolTeam("Team", Material.PAPER, new Callback<String>() {
+		men.setControlItem(new MenuItemToolTeam("Team", Material.PAPER, new Callback<String>() {
 			
 			@Override
 			public void setValue(String value) {
@@ -185,7 +185,7 @@ public class MinigameTool {
 					return MinigameUtils.capitalize(getTeam().toString().replace("_", " "));
 				return "None";
 			}
-		}, teams), men.getSize() - 3);
+		}, teams), 2);
 		
 		for(ToolMode m : ToolModes.getToolModes()){
 			men.addItem(new MenuItemToolMode(m.getDisplayName(), MinigameUtils.stringToList(m.getDescription()), m.getIcon(), m));

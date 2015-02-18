@@ -9,7 +9,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
@@ -82,7 +81,6 @@ public class LightningAction extends ActionInterface{
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Lightning");
-		m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 		m.addItem(effect.getMenuItem("Effect Only", Material.ENDER_PEARL));
 		m.displayMenu(player);
 		return true;

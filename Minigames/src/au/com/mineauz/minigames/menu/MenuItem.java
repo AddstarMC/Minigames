@@ -13,6 +13,7 @@ public class MenuItem {
 	private ItemStack displayItem = null;
 	private Menu container = null;
 	private int slot = 0;
+	private int page = 0;
 	
 	public MenuItem(String name, Material displayItem){
 		boolean nullItem = false;
@@ -52,6 +53,12 @@ public class MenuItem {
 	
 	public String getName(){
 		return displayItem.getItemMeta().getDisplayName();
+	}
+	
+	public void setName(String name) {
+		ItemMeta meta = displayItem.getItemMeta();
+		meta.setDisplayName(name);
+		displayItem.setItemMeta(meta);
 	}
 	
 	public ItemStack getItem(){
@@ -101,35 +108,45 @@ public class MenuItem {
 		//Do Stuff
 	}
 	
-	public void setContainer(Menu container){
-		this.container = container;
-	}
-	
 	public Menu getContainer(){
 		return container;
 	}
 	
-	public void setSlot(int slot){
+	void onAdd(Menu container, int page, int slot) {
+		this.container = container;
+		this.page = page;
 		this.slot = slot;
 	}
 	
-	public int getSlot(){
+	public int getSlot() {
 		return slot;
+	}
+	
+	public int getPage() {
+		return page;
+	}
+	
+	public void remove() {
+		container.removeItemFlow(slot, page);
+		container.refresh();
+	}
+	
+	public void removeStatic() {
+		container.removeItem(slot, page);
+		container.refresh();
 	}
 	
 	public final void beginManualEntry(MinigamePlayer player, String message, int time) {
 		player.setNoClose(true);
 		player.getPlayer().closeInventory();
 		player.sendMessage(message, null);
-		player.setManualEntry(this);
-		getContainer().startReopenTimer(time);
+		player.startManualEntry(this, time);
 	}
 	
 	public final void completeManualEntry(MinigamePlayer player, String value) {
-		player.setManualEntry(null);
+		player.cancelMenuReopen();
 		player.setNoClose(false);
 		checkValidEntry(player, value);
-		getContainer().cancelReopenTimer();
-		getContainer().displayMenu(player);
+		getContainer().displaySession(player, player.getMenuSession());
 	}
 }

@@ -47,22 +47,18 @@ public class MenuItemLoadoutAdd extends MenuItem{
 	@Override
 	public void checkValidEntry(MinigamePlayer player, String entry){
 		entry = entry.replace(" ", "_");
-		if(!loadouts.keySet().contains(entry)){
-			for(int i = 0; i < 45; i++){
-				if(!getContainer().hasMenuItem(i)){
-					PlayerLoadout loadout = new PlayerLoadout(entry);
-					loadouts.put(entry, loadout);
-					List<String> des = new ArrayList<String>();
-					des.add("Shift + Right Click to Delete");
-					if(minigame != null)
-						getContainer().addItem(new MenuItemDisplayLoadout(entry, des, Material.DIAMOND_SWORD, loadout, minigame), i);
-					else
-						getContainer().addItem(new MenuItemDisplayLoadout(entry, des, Material.DIAMOND_SWORD, loadout), i);
-					break;
-				}
-			}
+		if(!loadouts.keySet().contains(entry)) {
+			PlayerLoadout loadout = new PlayerLoadout(entry);
+			loadouts.put(entry, loadout);
+			List<String> des = new ArrayList<String>();
+			des.add("Shift + Right Click to Delete");
+			if(minigame != null)
+				getContainer().addItem(new MenuItemDisplayLoadout(entry, des, Material.DIAMOND_SWORD, loadout, minigame));
+			else
+				getContainer().addItem(new MenuItemDisplayLoadout(entry, des, Material.DIAMOND_SWORD, loadout));
 			return;
 		}
+		
 		player.sendMessage("A Loadout already exists by the name \"" + entry + "\".", "error");
 	}
 }

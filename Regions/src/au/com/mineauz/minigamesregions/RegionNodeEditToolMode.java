@@ -120,7 +120,7 @@ public class RegionNodeEditToolMode implements ToolMode {
 			menu = MenuItemNode.createMenu(player, null, (Node)hit);
 		}
 		
-		menu.addItem(new MenuItemSaveMinigame("Save", Material.REDSTONE_TORCH_ON, minigame), menu.getSize() - 9);
+		menu.setControlItem(new MenuItemSaveMinigame("Save", Material.REDSTONE_TORCH_ON, minigame), 4);
 		
 		menu.displayMenu(player);
 	}
@@ -145,7 +145,7 @@ public class RegionNodeEditToolMode implements ToolMode {
 			}
 		}
 		
-		menu.addItem(new MenuItemSaveMinigame("Save", Material.REDSTONE_TORCH_ON, module.getMinigame()), menu.getSize() - 9);
+		menu.setControlItem(new MenuItemSaveMinigame("Save", Material.REDSTONE_TORCH_ON, module.getMinigame()), 4);
 		
 		menu.displayMenu(player);
 		

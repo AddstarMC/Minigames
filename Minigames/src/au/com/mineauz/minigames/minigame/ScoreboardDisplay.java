@@ -193,7 +193,7 @@ public class ScoreboardDisplay {
 			}
 		}, sbotypes));
 		setupMenu.addItems(items);
-		setupMenu.addItem(new MenuItemScoreboardSave("Create Scoreboard", Material.REDSTONE_TORCH_ON, this), setupMenu.getSize() - 1);
+		setupMenu.setControlItem(new MenuItemScoreboardSave("Create Scoreboard", Material.REDSTONE_TORCH_ON, this), 4);
 		setupMenu.displayMenu(player);
 	}
 	

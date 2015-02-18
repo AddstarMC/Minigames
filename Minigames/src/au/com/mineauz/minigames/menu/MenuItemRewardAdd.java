@@ -41,7 +41,8 @@ public class MenuItemRewardAdd extends MenuItem{
 	@Override
 	public ItemStack onClick(final MinigamePlayer player){
 		Menu m = new Menu(6, "Select Reward Type");
-		final Menu orig = getContainer();
+		m.setTrackHistory(false);
+		
 		for(String type : RewardTypes.getAllRewardTypeNames()){
 			final MenuItemCustom custom = new MenuItemCustom("TYPE", Material.STONE);
 			final RewardType rewType = RewardTypes.getRewardType(type, rewards);
@@ -58,15 +59,14 @@ public class MenuItemRewardAdd extends MenuItem{
 							rewards.addReward(rewType);
 						else
 							group.addItem(rewType);
-						orig.displayMenu(player);
-						orig.addItem(rewType.getMenuItem());
+						getContainer().addItem(rewType.getMenuItem());
+						player.showPreviousMenu();
 						return null;
 					}
 				});
 				m.addItem(custom);
 			}
 		}
-		m.addItem(new MenuItemBack(orig), m.getSize() - 9);
 		m.displayMenu(player);
 		return null;
 	}

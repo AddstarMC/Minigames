@@ -89,8 +89,7 @@ public class CommandReward extends RewardType{
 			}
 			meta.setDisplayName(ChatColor.RESET + newName);
 			getItem().setItemMeta(meta);
-			getContainer().removeItem(getSlot());
-			getContainer().addItem(this, getSlot());
+			getContainer().refresh();
 		}
 		
 		@Override
@@ -182,7 +181,7 @@ public class CommandReward extends RewardType{
 		@Override
 		public ItemStack onShiftRightClick(MinigamePlayer player){
 			getRewards().removeReward(reward);
-			getContainer().removeItem(getSlot());
+			remove();
 			return null;
 		}
 		

@@ -49,13 +49,13 @@ public class MenuItemAddTeam extends MenuItem{
 				player.sendMessage(ChatColor.RED + "A team already exists using that color!");
 			}
 			
-			List<String> teams = new ArrayList<String>(tm.getTeams().size() + 1);
-			for(Team t : tm.getTeams()){
-				teams.add(MinigameUtils.capitalize(t.getColor().toString().replace("_", " ")));
-			}
-			teams.add("None");
-			getContainer().removeItem(0);
-			getContainer().addItem(new MenuItemList("Default Winning Team", Material.PAPER, tm.getDefaultWinnerCallback(), teams), 0);
+//			List<String> teams = new ArrayList<String>(tm.getTeams().size() + 1);
+//			for(Team t : tm.getTeams()){
+//				teams.add(MinigameUtils.capitalize(t.getColor().toString().replace("_", " ")));
+//			}
+//			teams.add("None");
+			//getContainer().setItem(new MenuItemList("Default Winning Team", Material.PAPER, tm.getDefaultWinnerCallback(), teams), 0, 0);
+			getContainer().refresh();
 			return;
 		}
 		

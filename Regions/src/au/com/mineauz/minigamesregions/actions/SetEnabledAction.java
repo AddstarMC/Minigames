@@ -6,7 +6,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
@@ -57,7 +56,6 @@ public class SetEnabledAction extends ActionInterface{
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Set Enabled");
-		m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 		m.addItem(state.getMenuItem("Set Enabled", Material.ENDER_PEARL));
 		m.displayMenu(player);
 		return true;

@@ -13,7 +13,6 @@ import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
@@ -102,8 +101,6 @@ public class GiveItemAction extends ActionInterface{
 	@Override
 	public boolean displayMenu(final MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Give Item");
-		
-		m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 		
 		MenuItemString n = (MenuItemString) name.getMenuItem("Name", Material.NAME_TAG);
 		n.setAllowNull(true);

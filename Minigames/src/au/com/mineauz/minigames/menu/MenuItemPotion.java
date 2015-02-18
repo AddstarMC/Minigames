@@ -63,7 +63,7 @@ public class MenuItemPotion extends MenuItem{
 	@Override
 	public ItemStack onShiftRightClick(MinigamePlayer player){
 		loadout.removePotionEffect(eff);
-		getContainer().removeItem(getSlot());
+		remove();
 		return null;
 	}
 	

@@ -14,7 +14,7 @@ import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
-import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuItemSubMenu;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
@@ -47,9 +47,7 @@ public class RegionToolMode implements ToolMode {
 	public void onSetMode(final MinigamePlayer player, MinigameTool tool) {
 		tool.addSetting("Region", "None");
 		final Menu m = new Menu(2, "Region Selection");
-		if(player.isInMenu()){
-			m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, player.getMenu()), m.getSize() - 9);
-		}
+		
 		final MinigameTool ftool = tool;
 		m.addItem(new MenuItemString("Region Name", Material.PAPER, new Callback<String>() {
 			
@@ -90,9 +88,8 @@ public class RegionToolMode implements ToolMode {
 			}
 			
 			regionMenu.addItems(items);
-			regionMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, m), regionMenu.getSize() - 9);
 			
-			m.addItem(new MenuItemPage("Edit Region", Material.CHEST, regionMenu));
+			m.addItem(new MenuItemSubMenu("Edit Region", Material.CHEST, regionMenu));
 		}
 		m.displayMenu(player);
 	}

@@ -77,7 +77,7 @@ public class GlobalLoadoutCommand implements ICommand {
 			}
 			mi.add(new MenuItemDisplayLoadout(ld, des, item, mdata.getLoadout(ld)));
 		}
-		loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, mdata.getLoadoutMap()), 53);
+		loadouts.setControlItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, mdata.getLoadoutMap()), 4);
 		loadouts.addItems(mi);
 		
 		loadouts.displayMenu(player);

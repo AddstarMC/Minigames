@@ -13,7 +13,6 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
 
 public class InfectionModule extends MinigameModule{
@@ -55,7 +54,6 @@ public class InfectionModule extends MinigameModule{
 	@Override
 	public boolean displayMechanicSettings(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(6, "Infection Settings");
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
 		
 		m.addItem(infectedPercent.getMenuItem("Infected Percent", Material.SKULL_ITEM, 
 				MinigameUtils.stringToList("The percentage of players;chosen to start as;infected"), 1, 99));

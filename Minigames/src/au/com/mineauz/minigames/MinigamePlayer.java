@@ -13,11 +13,13 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 
 import au.com.mineauz.minigames.display.IDisplayCubiod;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuSession;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
@@ -50,9 +52,10 @@ public class MinigamePlayer {
 	private boolean isDead = false;
 	private Team team = null;
 	
-	private Menu menu = null;
+	private MenuSession menu = null;
 	private boolean noClose = false;
 	private MenuItem manualEntry = null;
+	private BukkitTask manualEntryTimer = null;
 	
 	private Location selection1 = null;
 	private Location selection2 = null;
@@ -473,11 +476,16 @@ public class MinigamePlayer {
 		this.isLatejoining = isLatejoining;
 	}
 
+	@Deprecated
 	public Menu getMenu(){
+		return menu.current;
+	}
+	
+	public MenuSession getMenuSession() {
 		return menu;
 	}
 	
-	public void setMenu(Menu menu){
+	public void setMenuSession(MenuSession menu){
 		this.menu = menu;
 	}
 	
@@ -488,6 +496,15 @@ public class MinigamePlayer {
 		return false;
 	}
 	
+	public void showPreviousMenu() {
+		if (menu != null) {
+			MenuSession session = menu.previous;
+			if (session != null) {
+				session.current.displaySession(this, session);
+			}
+		}
+	}
+	
 	public void setNoClose(boolean value){
 		noClose = value;
 	}
@@ -496,8 +513,26 @@ public class MinigamePlayer {
 		return noClose;
 	}
 	
-	public void setManualEntry(MenuItem item){
+	public void startManualEntry(MenuItem item, int time) {
 		manualEntry = item;
+		manualEntryTimer = Bukkit.getScheduler().runTaskLater(Minigames.plugin, new Runnable() {
+			@Override
+			public void run() {
+				noClose = false;
+				manualEntry = null;
+				manualEntryTimer = null;
+				if (menu != null) {
+					menu.current.displaySession(MinigamePlayer.this, menu);
+				}
+			}
+		}, (long)(time * 20));
+	}
+	
+	public void cancelMenuReopen() {
+		if (manualEntryTimer != null) {
+			manualEntryTimer.cancel();
+		}
+		manualEntry = null;
 	}
 	
 	public MenuItem getManualEntry(){

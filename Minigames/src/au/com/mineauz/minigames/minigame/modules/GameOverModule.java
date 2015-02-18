@@ -17,7 +17,7 @@ import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuItemSubMenu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 
@@ -71,9 +71,7 @@ public class GameOverModule extends MinigameModule{
 		m.addItem(humiliation.getMenuItem("Humiliation Mode", Material.DIAMOND_SWORD, MinigameUtils.stringToList("Losers are stripped;of weapons and can't kill")));
 		m.addItem(interact.getMenuItem("Allow Interact", Material.STONE_PLATE));
 		
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, menu), m.getSize() - 9);
-		
-		menu.addItem(new MenuItemPage("Game Over Settings", Material.WOOD_DOOR, m));
+		menu.addItem(new MenuItemSubMenu("Game Over Settings", Material.WOOD_DOOR, m));
 	}
 
 	public static GameOverModule getMinigameModule(Minigame minigame){

@@ -17,7 +17,6 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
-import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
@@ -88,10 +87,9 @@ public class MatchBlockCondition extends ConditionInterface {
 	@Override
 	public boolean displayMenu(final MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Match Block");
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
 		final MenuItemCustom c = new MenuItemCustom("Auto Set Block", 
 				MinigameUtils.stringToList("Click here with a;block you wish to;match to."), Material.ITEM_FRAME);
-		m.addItem(c, m.getSize() - 1);
+		m.setControlItem(c, 4);
 		
 		final MenuItemString btype = new MenuItemString("Block Type", Material.STONE, new Callback<String>() {
 

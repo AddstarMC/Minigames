@@ -109,8 +109,8 @@ public class RewardSign implements MinigameSign {
 			des.add("to add it to rewards.");
 			des.add("Click without an item");
 			des.add("to add a money reward.");
-			rewardMenu.addItem(new MenuItemRewardGroupAdd("Add Group", Material.ITEM_FRAME, rew), 42);
-			rewardMenu.addItem(new MenuItemRewardAdd("Add Item", des, Material.ITEM_FRAME, rew), 43);
+			rewardMenu.setControlItem(new MenuItemRewardGroupAdd("Add Group", Material.ITEM_FRAME, rew), 3);
+			rewardMenu.setControlItem(new MenuItemRewardAdd("Add Item", des, Material.ITEM_FRAME, rew), 2);
 			final MenuItemCustom mic = new MenuItemCustom("Save Rewards", Material.REDSTONE_TORCH_ON);
 			final Location floc = loc;
 			mic.setClick(new InteractionInterface() {
@@ -123,7 +123,7 @@ public class RewardSign implements MinigameSign {
 					return null;
 				}
 			});
-			rewardMenu.addItem(mic, 44);
+			rewardMenu.setControlItem(mic, 4);
 			List<String> list = new ArrayList<String>();
 			for(RewardRarity r : RewardRarity.values()){
 				list.add(r.toString());

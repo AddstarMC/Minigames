@@ -13,7 +13,6 @@ import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
-import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.NodeExecutor;
 import au.com.mineauz.minigamesregions.actions.Actions;
@@ -72,7 +71,6 @@ public class MenuItemNodeExecutor extends MenuItem{
 		m.addItem(new MenuItemBoolean("Trigger Per Player", 
 				MinigameUtils.stringToList("Whether this node;is triggered per player;or just on count"), 
 				Material.ENDER_PEARL, ex.getIsTriggerPerPlayerCallback()));
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, getContainer()), m.getSize() - 9);
 		m.displayMenu(player);
 		return null;
 	}
@@ -80,7 +78,7 @@ public class MenuItemNodeExecutor extends MenuItem{
 	@Override
 	public ItemStack onRightClick(MinigamePlayer player){
 		node.removeExecutor(ex);
-		getContainer().removeItem(getSlot());
+		remove();
 		return null;
 	}
 

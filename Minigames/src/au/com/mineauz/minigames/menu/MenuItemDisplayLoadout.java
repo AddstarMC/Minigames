@@ -58,9 +58,8 @@ public class MenuItemDisplayLoadout extends MenuItem{
 	
 	@Override
 	public ItemStack onClick(MinigamePlayer player){
-		Menu loadoutMenu = new Menu(5, loadout.getName(false));
+		Menu loadoutMenu = new Menu(5, loadout.getName(false), new MenuPageInventory(45, null));
 		Menu loadoutSettings = new Menu(6, loadout.getName(false));
-		loadoutSettings.setPreviousPage(loadoutMenu);
 		
 		List<MenuItem> mItems = new ArrayList<MenuItem>();
 		if(!loadout.getName(false).equals("default"))
@@ -81,31 +80,10 @@ public class MenuItemDisplayLoadout extends MenuItem{
 			teams.add(MinigameUtils.capitalize(col.toString()));
 		mItems.add(new MenuItemList("Lock to Team", Material.LEATHER_CHESTPLATE, loadout.getTeamColorCallback(), teams));
 		loadoutSettings.addItems(mItems);
-		if(mgm == null){
-			MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back", Material.REDSTONE_TORCH_ON, loadout);
-			dl.setAltMenu(getContainer());
-			loadoutSettings.addItem(dl, getContainer().getSize() - 9);
-		}
-		else{
-			MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back", Material.REDSTONE_TORCH_ON, loadout, mgm);
-			dl.setAltMenu(getContainer());
-			loadoutSettings.addItem(dl, getContainer().getSize() - 9);
-		}
 		
 		Menu potionMenu = new Menu(5, getContainer().getName());
 		
-		potionMenu.setPreviousPage(loadoutMenu);
-		potionMenu.addItem(new MenuItemPotionAdd("Add Potion", Material.ITEM_FRAME, loadout), 44);
-		if(mgm == null){
-			MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back", Material.REDSTONE_TORCH_ON, loadout);
-			dl.setAltMenu(getContainer());
-			potionMenu.addItem(dl, 45 - 9);
-		}
-		else{
-			MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back", Material.REDSTONE_TORCH_ON, loadout, mgm);
-			dl.setAltMenu(getContainer());
-			potionMenu.addItem(dl, 45 - 9);
-		}
+		potionMenu.setControlItem(new MenuItemPotionAdd("Add Potion", Material.ITEM_FRAME, loadout), 4);
 		
 		List<String> des = new ArrayList<String>();
 		des.add("Shift + Right Click to Delete");
@@ -117,32 +95,26 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		potionMenu.addItems(potions);
 		
 		loadoutMenu.setAllowModify(true);
-		if(altMenu == null)
-			loadoutMenu.setPreviousPage(getContainer());
-		else
-			loadoutMenu.setPreviousPage(altMenu);
 		
-		loadoutMenu.addItem(new MenuItemSaveLoadout("Loadout Settings", Material.CHEST, loadout, loadoutSettings), 42);
-		loadoutMenu.addItem(new MenuItemSaveLoadout("Edit Potion Effects", Material.POTION, loadout, potionMenu), 43);
-		loadoutMenu.addItem(new MenuItemSaveLoadout("Save Loadout", Material.REDSTONE_TORCH_ON, loadout), 44);
-		
-		for(int i = 40; i < 42; i++){
-			loadoutMenu.addItem(new MenuItem("", null), i);
-		}
-		loadoutMenu.displayMenu(player);
+		MenuPageInventory inventory = (MenuPageInventory)loadoutMenu.getFirstPage();
+		loadoutMenu.setControlItem(new MenuItemSaveLoadout("Loadout Settings", Material.CHEST, loadout, loadoutSettings), 2);
+		loadoutMenu.setControlItem(new MenuItemSaveLoadout("Edit Potion Effects", Material.POTION, loadout, potionMenu), 3);
+		loadoutMenu.setControlItem(new MenuItemSaveLoadout("Save Loadout", Material.REDSTONE_TORCH_ON, loadout), 4);
 		
 		for(Integer item : loadout.getItems()){
 			if(item < 100)
-				loadoutMenu.addItemStack(loadout.getItem(item), item);
+				inventory.setSlot(loadout.getItem(item), item);
 			else if(item == 100)
-				loadoutMenu.addItemStack(loadout.getItem(item), 39);
+				inventory.setSlot(loadout.getItem(item), 39);
 			else if(item == 101)
-				loadoutMenu.addItemStack(loadout.getItem(item), 38);
+				inventory.setSlot(loadout.getItem(item), 38);
 			else if(item == 102)
-				loadoutMenu.addItemStack(loadout.getItem(item), 37);
+				inventory.setSlot(loadout.getItem(item), 37);
 			else if(item == 103)
-				loadoutMenu.addItemStack(loadout.getItem(item), 36);
+				inventory.setSlot(loadout.getItem(item), 36);
 		}
+		
+		loadoutMenu.displayMenu(player);
 		
 		return null;
 	}
@@ -166,7 +138,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 				LoadoutModule.getMinigameModule(mgm).deleteLoadout(loadoutName);
 			else
 				Minigames.plugin.mdata.deleteLoadout(loadoutName);
-			getContainer().removeItem(getSlot());
+			remove();
 			
 			player.sendMessage(loadoutName + " has been deleted.", null);
 			return;

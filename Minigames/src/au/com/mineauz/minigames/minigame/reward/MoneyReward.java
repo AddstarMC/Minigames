@@ -15,7 +15,6 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemDecimal;
 
 public class MoneyReward extends RewardType{
@@ -183,7 +182,6 @@ public class MoneyReward extends RewardType{
 				}
 			}, 50d, 100d, 1d, null);
 			m.addItem(dec);
-			m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
 			m.displayMenu(player);
 			return null;
 		}
@@ -191,7 +189,7 @@ public class MoneyReward extends RewardType{
 		@Override
 		public ItemStack onShiftRightClick(MinigamePlayer player){
 			getRewards().removeReward(reward);
-			getContainer().removeItem(getSlot());
+			remove();
 			return null;
 		}
 	}

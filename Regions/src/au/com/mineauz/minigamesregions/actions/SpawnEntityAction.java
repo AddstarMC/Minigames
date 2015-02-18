@@ -26,7 +26,6 @@ import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.menu.MenuItemDecimal;
 import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
-import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
@@ -117,7 +116,6 @@ public class SpawnEntityAction extends ActionInterface {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Spawn Entity");
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
 		List<String> options = new ArrayList<String>();
 		for(EntityType type : EntityType.values()){
 			if(type != EntityType.ITEM_FRAME && type != EntityType.LEASH_HITCH && type != EntityType.PLAYER && 
@@ -180,16 +178,14 @@ public class SpawnEntityAction extends ActionInterface {
 		
 		m.addItem(new MenuItemNewLine());
 		
-		final Menu eSet = new Menu(3, "Settings");
-		final MenuItemPage backButton = new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, m);
 		final MenuItemCustom cus = new MenuItemCustom("Entity Settings", Material.CHEST);
 		cus.setClick(new InteractionInterface() {
 			
 			@Override
 			public Object interact(MinigamePlayer player, Object object) {
 				if(type.getFlag().equals("ZOMBIE")){
-					eSet.clearMenu();
-					eSet.addItem(backButton, eSet.getSize() - 9);
+					Menu eSet = new Menu(3, "Settings");
+					eSet.clear();
 					livingEntitySettings(eSet);
 					eSet.displayMenu(player);
 					return null;

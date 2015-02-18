@@ -29,7 +29,7 @@ public class MenuItemFlag extends MenuItem{
 		player.sendMessage("Removed " + flag + " flag.", "error");
 		flags.remove(flag);
 
-		getContainer().removeItem(getSlot());
+		remove();
 		return null;
 	}
 }

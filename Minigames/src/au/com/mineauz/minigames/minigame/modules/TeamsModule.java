@@ -21,7 +21,7 @@ import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemAddTeam;
 import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
-import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuItemSubMenu;
 import au.com.mineauz.minigames.menu.MenuItemTeam;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
@@ -182,7 +182,7 @@ public class TeamsModule extends MinigameModule {
 	@Override
 	public void addEditMenuOptions(MinigamePlayer player, Menu menu) {
 		Menu m = new Menu(6, "Teams");
-		m.setPreviousPage(menu);
+
 		List<MenuItem> items = new ArrayList<MenuItem>();
 		List<String> teams = new ArrayList<String>(this.teams.size() + 1);
 		for(TeamColor t : this.teams.keySet()){
@@ -195,13 +195,11 @@ public class TeamsModule extends MinigameModule {
 			items.add(new MenuItemTeam(t.getChatColor() + t.getDisplayName(), t));
 		}
 		
-		m.addItem(new MenuItemAddTeam("Add Team", getMinigame()), m.getSize() - 1);
+		m.setControlItem(new MenuItemAddTeam("Add Team", getMinigame()), 4);
 		
 		m.addItems(items);
 		
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, menu), m.getSize() - 9);
-		
-		MenuItemPage p = new MenuItemPage("Team Options", Material.CHEST, m);
+		MenuItemSubMenu p = new MenuItemSubMenu("Team Options", Material.CHEST, m);
 		menu.addItem(p);
 	}
 }
