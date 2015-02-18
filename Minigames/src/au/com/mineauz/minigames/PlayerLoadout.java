@@ -122,7 +122,6 @@ public class PlayerLoadout {
 		return potions;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void equiptLoadout(MinigamePlayer player){
 		player.getPlayer().getInventory().clear();
 		player.getPlayer().getInventory().setHelmet(null);

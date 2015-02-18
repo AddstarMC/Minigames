@@ -64,8 +64,7 @@ public class RewardSign implements MinigameSign {
 		plugin.pdata.getMinigamePlayer(event.getPlayer()).sendMessage(MinigameUtils.getLang("sign.reward.noName"), "error");
 		return false;
 	}
-
-	@SuppressWarnings("deprecation")
+	
 	@Override
 	public boolean signUse(Sign sign, MinigamePlayer player) {
 		Location loc = sign.getLocation();
@@ -90,7 +89,7 @@ public class RewardSign implements MinigameSign {
 							r.giveReward(player);
 						}
 						
-						player.getPlayer().updateInventory();
+						player.updateInventory();
 					}
 					player.addClaimedReward(label);
 				}

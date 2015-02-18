@@ -121,7 +121,6 @@ public class MinigamePlayer {
 		player.sendMessage(init + msg);
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void storePlayerData(){
 		ItemStack[] storedItems = player.getInventory().getContents();
 		ItemStack[] storedArmour = player.getInventory().getArmorContents();
@@ -146,7 +145,6 @@ public class MinigamePlayer {
 		player.updateInventory();
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void restorePlayerData(){
 		player.getInventory().clear();
 		player.getInventory().setArmorContents(null);
@@ -602,7 +600,6 @@ public class MinigamePlayer {
 		return bool;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void updateInventory(){
 		getPlayer().updateInventory();
 	}

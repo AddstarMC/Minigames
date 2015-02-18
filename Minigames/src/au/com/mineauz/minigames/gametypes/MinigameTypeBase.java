@@ -48,7 +48,6 @@ public abstract class MinigameTypeBase implements Listener{
 			}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public static void issuePlayerRewards(MinigamePlayer player, Minigame mgm, boolean hascompleted){
 		List<RewardType> rewardL = mgm.getRewardItem();
 		List<RewardType> srewardL = mgm.getSecondaryRewardItem();
@@ -91,7 +90,7 @@ public abstract class MinigameTypeBase implements Listener{
 				player.sendMessage(MinigameUtils.formStr("player.end.awardMoney", totalMoney), "win");
 			}
 		}
-		player.getPlayer().updateInventory();
+		player.updateInventory();
 	}
 	
 //	private static void giveRewardItem(MinigamePlayer player, RewardType reward){
