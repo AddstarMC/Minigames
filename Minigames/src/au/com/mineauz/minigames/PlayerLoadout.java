@@ -144,7 +144,7 @@ public class PlayerLoadout {
 				else if(slot == 103)
 					player.getPlayer().getInventory().setHelmet(getItem(slot));
 			}
-			player.getPlayer().updateInventory();
+			player.updateInventory();
 		}
 		
 		final MinigamePlayer fplayer = player;
