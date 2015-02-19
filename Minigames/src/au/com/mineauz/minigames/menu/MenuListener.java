@@ -37,10 +37,8 @@ public class MenuListener implements Listener {
 		MenuPage page = menu.getPage(session.page);
 		if(event.getRawSlot() >= 0 && event.getRawSlot() < menu.getSize() + 9) {
 			MenuItem clickedItem = menu.getClickItem(session, event.getRawSlot());
-			
 			if (clickedItem != null) {
 				event.setCancelled(true);
-				
 				ItemStack display = null;
 				switch(event.getClick()) {
 				case LEFT:
@@ -80,6 +78,8 @@ public class MenuListener implements Listener {
 						}
 					});
 				}
+			} else {
+				event.setCancelled(true);
 			}
 		} else if (event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.SHIFT_RIGHT) {
 			event.setCancelled(true);

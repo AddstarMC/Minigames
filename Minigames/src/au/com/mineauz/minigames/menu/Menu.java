@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 
@@ -127,6 +128,11 @@ public class Menu implements Iterable<MenuItem> {
 			// Do on current page
 			for (; slot < slotCount - 1; ++slot) {
 				menuPage.setItem(menuPage.getItem(slot+1), slot);
+				// Stop after new line
+				if (menuPage.getItem(slot) instanceof MenuItemNewLine) {
+					menuPage.setItem(null, slot+1);
+					return;
+				}
 			}
 			
 			// Do across pages
@@ -150,6 +156,65 @@ public class Menu implements Iterable<MenuItem> {
 		while (!menuPage.addItem(item)) {
 			menuPage = addPage();
 		}
+	}
+	
+	public void insertItem(MenuItem item, int slot, int page) {
+		Validate.isTrue(firstPage instanceof MenuPageNormal);
+		
+		int slotCount = rows * 9;
+		
+		MenuPageNormal menuPage = (MenuPageNormal)getPage(page);
+		MenuPageNormal nextPage;
+		
+		MenuItem temp = null;
+		
+		// Move items to fill space
+		while (menuPage != null) {
+			// Do on current page
+			for (; slot < slotCount; ++slot) {
+				temp = menuPage.getItem(slot);
+				menuPage.setItem(item, slot);
+				// Empty spot filled, dont continue
+				if (temp == null) {
+					return;
+				}
+				item = temp;
+			}
+			
+			// Do across pages
+			if (item != null) {
+				nextPage = menuPage.getNext();
+				if (nextPage == null) {
+					nextPage = addPage();
+				}
+			} else {
+				break;
+			}
+			
+			// Next page
+			slot = 0;
+			menuPage = nextPage;
+		}
+	}
+	
+	public void addItemBefore(MenuItem item, MenuItem before) {
+		Validate.notNull(before);
+		insertItem(item, before.getSlot(), before.getPage());
+	}
+	
+	public void addItemAfter(MenuItem item, MenuItem after) {
+		Validate.notNull(after);
+		int slotCount = rows * 9;
+		int slot = after.getSlot();
+		int page = after.getPage();
+		
+		++slot;
+		if (slot >= slotCount) {
+			slot = 0;
+			++page;
+		}
+		
+		insertItem(item, slot, page);
 	}
 	
 	public MenuPageNormal addPage() {
@@ -182,6 +247,8 @@ public class Menu implements Iterable<MenuItem> {
 			page.clear();
 			page = page.getNext();
 		}
+		
+		firstPage.setNext(null);
 	}
 	
 	public void displayMenu(MinigamePlayer player) {
@@ -243,6 +310,8 @@ public class Menu implements Iterable<MenuItem> {
 			MenuItem item = controlBar[i];
 			if (item != null) {
 				inv.setItem(inv.getSize()-9+i, item.getItem());
+			} else {
+				inv.setItem(inv.getSize()-9+i, null);
 			}
 		}
 	}
@@ -290,6 +359,7 @@ public class Menu implements Iterable<MenuItem> {
 			if (view != null && session != null && session.current == this) {
 				MenuPage page = getPage(session.page);
 				page.update();
+				session.controlBar = createControlBar(session);
 				displayInto(view.getTopInventory(), page, session.controlBar);
 				viewer.updateInventory();
 			}
@@ -330,6 +400,16 @@ public class Menu implements Iterable<MenuItem> {
 	public MenuItem getItem(int page, int slot) {
 		MenuPage menuPage = getPage(page);
 		return menuPage.getClickItem(slot);
+	}
+	
+	public MenuItem getItem(String name) {
+		for (MenuItem item : this) {
+			if (ChatColor.stripColor(item.getName()).equals(name)) {
+				return item;
+			}
+		}
+		
+		return null;
 	}
 	
 	public Iterator<MenuItem> iterator() {

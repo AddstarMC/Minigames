@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
-import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -23,6 +22,6 @@ public abstract class MinigameModule {
 	public abstract boolean useSeparateConfig();
 	public abstract void save(FileConfiguration config);
 	public abstract void load(FileConfiguration config);
-	public void addEditMenuOptions(MinigamePlayer player, Menu menu) {}
-	public boolean displayMechanicSettings(MinigamePlayer player, Menu previous) { return false; }
+	public void addEditMenuOptions(Menu menu) {}
+	public Menu createSettingsMenu() { return null; }
 }

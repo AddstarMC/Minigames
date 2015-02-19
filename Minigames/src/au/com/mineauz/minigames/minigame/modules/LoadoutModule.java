@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -199,7 +200,7 @@ public class LoadoutModule extends MinigameModule {
 						c.setClick(new InteractionInterface() {
 							
 							@Override
-							public Object interact(MinigamePlayer player, Object object) {
+							public ItemStack interact(MinigamePlayer player, ItemStack item) {
 								player.setLoadout(floadout2);
 								player.getPlayer().closeInventory();
 								if(!equip)

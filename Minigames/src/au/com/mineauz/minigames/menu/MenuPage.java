@@ -32,6 +32,10 @@ public abstract class MenuPage {
 		return next;
 	}
 	
+	void setNext(MenuPage page) {
+		next = page;
+	}
+	
 	public Menu getContainer() {
 		return container;
 	}

@@ -93,8 +93,6 @@ public class MenuPageNormal extends MenuPage implements Iterable<MenuItem> {
 		for (int i = 0; i < slots.length; ++i) {
 			MenuItem item = slots[i];
 			if (item instanceof MenuItemNewLine) {
-				// Go to next line
-				i += 9 - (i % 9) - 1;
 				continue;
 			}
 			

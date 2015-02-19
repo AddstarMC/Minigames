@@ -61,7 +61,7 @@ public class MenuItemActionAdd extends MenuItem{
 				c.setClick(new InteractionInterface() {
 					
 					@Override
-					public Object interact(MinigamePlayer player, Object object) {
+					public ItemStack interact(MinigamePlayer player, ItemStack item) {
 						ActionInterface action = Actions.getActionByName(fact);
 						if(nexec == null){
 							rexec.addAction(action);

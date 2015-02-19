@@ -74,7 +74,7 @@ public class TreasureHuntModule extends MinigameModule{
 	}
 
 	@Override
-	public boolean displayMechanicSettings(MinigamePlayer player, Menu previous){
+	public Menu createSettingsMenu(){
 		Menu treasureHunt = new Menu(6, getMinigame().getName(false));
 		
 		List<MenuItem> itemsTreasureHunt = new ArrayList<MenuItem>(5);
@@ -97,8 +97,7 @@ public class TreasureHuntModule extends MinigameModule{
 		itemsTreasureHunt.add(new MenuItemTime("Restart Delay", Material.WATCH, treasureWaitTime.getCallback(), 0, null));
 		itemsTreasureHunt.add(new MenuItemTime("Hint Usage Delay", Material.WATCH, hintWaitTime.getCallback(), 0, null));
 		treasureHunt.addItems(itemsTreasureHunt);
-		treasureHunt.displayMenu(player);
-		return true;
+		return treasureHunt;
 	}
 	
 	public static TreasureHuntModule getMinigameModule(Minigame minigame){

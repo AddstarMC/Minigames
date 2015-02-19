@@ -1,7 +1,9 @@
 package au.com.mineauz.minigames.menu;
 
+import org.bukkit.inventory.ItemStack;
+
 import au.com.mineauz.minigames.MinigamePlayer;
 
 public interface InteractionInterface {
-	Object interact(MinigamePlayer player, Object object);
+	ItemStack interact(MinigamePlayer player, ItemStack object);
 }

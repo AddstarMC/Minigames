@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -356,13 +357,13 @@ public class RegionModule extends MinigameModule {
 	
 	
 	@Override
-	public void addEditMenuOptions(MinigamePlayer player, Menu menu) {
+	public void addEditMenuOptions(Menu menu) {
 		final MenuItemCustom c = new MenuItemCustom("Regions and Nodes", Material.DIAMOND_BLOCK);
 		final Menu fmenu = menu;
 		c.setClick(new InteractionInterface() {
 			
 			@Override
-			public Object interact(MinigamePlayer player, Object object) {
+			public ItemStack interact(MinigamePlayer player, ItemStack item) {
 				displayMenu(player, fmenu);
 				return null;
 			}

@@ -9,7 +9,6 @@ import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
@@ -180,7 +179,7 @@ public class TeamsModule extends MinigameModule {
 	}
 
 	@Override
-	public void addEditMenuOptions(MinigamePlayer player, Menu menu) {
+	public void addEditMenuOptions(Menu menu) {
 		Menu m = new Menu(6, "Teams");
 
 		List<MenuItem> items = new ArrayList<MenuItem>();

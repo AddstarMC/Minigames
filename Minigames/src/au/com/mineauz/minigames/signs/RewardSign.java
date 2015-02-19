@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MinigameData;
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -116,7 +117,7 @@ public class RewardSign implements MinigameSign {
 			mic.setClick(new InteractionInterface() {
 				
 				@Override
-				public Object interact(MinigamePlayer player, Object object) {
+				public ItemStack interact(MinigamePlayer player, ItemStack item) {
 					mdata.saveRewardSign(MinigameUtils.createLocationID(floc), true);
 					player.sendMessage("Saved rewards for this sign.", null);
 					player.getPlayer().closeInventory();

@@ -52,13 +52,12 @@ public class InfectionModule extends MinigameModule{
 	}
 
 	@Override
-	public boolean displayMechanicSettings(MinigamePlayer player, Menu previous) {
+	public Menu createSettingsMenu() {
 		Menu m = new Menu(6, "Infection Settings");
 		
 		m.addItem(infectedPercent.getMenuItem("Infected Percent", Material.SKULL_ITEM, 
 				MinigameUtils.stringToList("The percentage of players;chosen to start as;infected"), 1, 99));
-		m.displayMenu(player);
-		return true;
+		return m;
 	}
 	
 	public static InfectionModule getMinigameModule(Minigame mgm){

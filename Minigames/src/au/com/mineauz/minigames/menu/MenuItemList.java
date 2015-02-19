@@ -15,6 +15,8 @@ public class MenuItemList extends MenuItem{
 	private Callback<String> value = null;
 	private List<String> options = null;
 	
+	private InteractionInterface onChange;
+	
 	public MenuItemList(String name, Material displayItem, Callback<String> value, List<String> options) {
 		super(name, displayItem);
 		this.value = value;
@@ -83,6 +85,11 @@ public class MenuItemList extends MenuItem{
 		value.setValue(options.get(ind));
 		updateDescription();
 		
+		onChange(player);
+		if (onChange != null) {
+			onChange.interact(player, null);
+		}
+		
 		return getItem();
 	}
 	
@@ -96,8 +103,15 @@ public class MenuItemList extends MenuItem{
 		value.setValue(options.get(ind));
 		updateDescription();
 		
+		onChange(player);
+		if (onChange != null) {
+			onChange.interact(player, null);
+		}
+		
 		return getItem();
 	}
+	
+	public void onChange(MinigamePlayer player) {}
 	
 	@Override
 	public ItemStack onDoubleClick(MinigamePlayer player){
@@ -116,5 +130,9 @@ public class MenuItemList extends MenuItem{
 			}
 		}
 		player.sendMessage("Could not find matching value!", "error");
+	}
+	
+	public void setOnChange(InteractionInterface ii) {
+		onChange = ii;
 	}
 }

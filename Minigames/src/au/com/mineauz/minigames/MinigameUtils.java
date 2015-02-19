@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 //import net.minecraft.server.v1_6_R2.EntityPlayer;
 //
@@ -390,18 +392,7 @@ public class MinigameUtils {
 	 * @return The capitalized string
 	 */
 	public static String capitalize(String toCapitalize){
-		String val = toCapitalize.toLowerCase();
-		String[] spl = val.split(" ");
-		val = "";
-		for(String s : spl){
-			String c = Character.toString(s.charAt(0));
-			s = s.substring(1);
-			c = c.toUpperCase();
-			s = c + s;
-			val += s + " ";
-		}
-		val = val.trim();
-		return val;
+		return WordUtils.capitalize(toCapitalize.toLowerCase()).trim();
 	}
 	
 	/**

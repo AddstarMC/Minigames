@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -69,16 +70,16 @@ public class NodeToolMode implements ToolMode {
 			List<MenuItem> items = new ArrayList<MenuItem>();
 			
 			for(final Node node : module.getNodes()){
-				MenuItemCustom item = new MenuItemCustom(node.getName(), Material.STONE_BUTTON);
+				final MenuItemCustom item = new MenuItemCustom(node.getName(), Material.STONE_BUTTON);
 				
 				// Set the node and go back to the main menu
 				item.setClick(new InteractionInterface() {
 					@Override
-					public Object interact(MinigamePlayer player, Object object) {
+					public ItemStack interact(MinigamePlayer player, ItemStack display) {
 						ftool.changeSetting("Node", node.getName());
 						m.displayMenu(player);
 						
-						return object;
+						return item.getItem();
 					}
 				});
 				

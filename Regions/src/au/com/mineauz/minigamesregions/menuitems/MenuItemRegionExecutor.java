@@ -44,7 +44,7 @@ public class MenuItemRegionExecutor extends MenuItem{
 		ca.setClick(new InteractionInterface() {
 			
 			@Override
-			public Object interact(MinigamePlayer player, Object object) {
+			public ItemStack interact(MinigamePlayer player, ItemStack item) {
 				Actions.displayMenu(player, ex, ffm);
 				return null;
 			}
@@ -55,7 +55,7 @@ public class MenuItemRegionExecutor extends MenuItem{
 		c2.setClick(new InteractionInterface() {
 			
 			@Override
-			public Object interact(MinigamePlayer player, Object object) {
+			public ItemStack interact(MinigamePlayer player, ItemStack item) {
 				Conditions.displayMenu(player, ex, ffm);
 				return null;
 			}

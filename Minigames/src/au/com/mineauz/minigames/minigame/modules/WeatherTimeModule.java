@@ -64,7 +64,7 @@ public class WeatherTimeModule extends MinigameModule {
 	}
 
 	@Override
-	public void addEditMenuOptions(MinigamePlayer player, Menu menu) {
+	public void addEditMenuOptions(Menu menu) {
 		Menu m = new Menu(6, "Time and Weather");
 		m.addItem(new MenuItemBoolean("Use Custom Time", Material.WATCH, new Callback<Boolean>() {
 

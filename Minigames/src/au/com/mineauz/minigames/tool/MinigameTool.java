@@ -146,7 +146,7 @@ public class MinigameTool {
 		miselect.setClick(new InteractionInterface() {
 			
 			@Override
-			public Object interact(MinigamePlayer player, Object object) {
+			public ItemStack interact(MinigamePlayer player, ItemStack item) {
 				if(mode != null){
 					mode.select(player, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
 				}
@@ -156,7 +156,7 @@ public class MinigameTool {
 		mideselect.setClick(new InteractionInterface() {
 			
 			@Override
-			public Object interact(MinigamePlayer player, Object object) {
+			public ItemStack interact(MinigamePlayer player, ItemStack item) {
 				if(mode != null){
 					mode.deselect(player, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
 				}

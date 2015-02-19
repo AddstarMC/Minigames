@@ -36,7 +36,8 @@ public class MenuItem {
 		this.displayItem = new ItemStack(displayItem);
 		ItemMeta meta = this.displayItem.getItemMeta();
 		meta.setDisplayName(ChatColor.RESET + name);
-		meta.setLore(description);
+		if (description != null)
+			meta.setLore(description);
 		this.displayItem.setItemMeta(meta);
 	}
 	

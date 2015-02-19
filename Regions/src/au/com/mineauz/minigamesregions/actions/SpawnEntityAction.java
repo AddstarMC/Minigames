@@ -11,6 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
@@ -182,7 +183,7 @@ public class SpawnEntityAction extends ActionInterface {
 		cus.setClick(new InteractionInterface() {
 			
 			@Override
-			public Object interact(MinigamePlayer player, Object object) {
+			public ItemStack interact(MinigamePlayer player, ItemStack item) {
 				if(type.getFlag().equals("ZOMBIE")){
 					Menu eSet = new Menu(3, "Settings");
 					eSet.clear();

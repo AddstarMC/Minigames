@@ -115,11 +115,10 @@ public class MatchBlockCondition extends ConditionInterface {
 		c.setClickItem(new InteractionInterface() {
 			
 			@Override
-			public Object interact(MinigamePlayer player, Object object) {
-				ItemStack i = (ItemStack) object;
-				type.setFlag(i.getType().toString());
+			public ItemStack interact(MinigamePlayer player, ItemStack item) {
+				type.setFlag(item.getType().toString());
 				useDur.setFlag(true);
-				dur.setFlag(((Short)i.getDurability()).intValue());
+				dur.setFlag(((Short)item.getDurability()).intValue());
 				bdur.updateDescription();
 				busedur.updateDescription();
 				btype.updateDescription();

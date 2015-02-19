@@ -64,7 +64,7 @@ public class GameOverModule extends MinigameModule{
 	}
 
 	@Override
-	public void addEditMenuOptions(MinigamePlayer player, Menu menu) {
+	public void addEditMenuOptions(Menu menu) {
 		Menu m = new Menu(6, "Game Over Settings");
 		m.addItem(timer.getMenuItem("Time Length", Material.WATCH, 0, null));
 		m.addItem(invincible.getMenuItem("Invincibility", Material.ENDER_PEARL));

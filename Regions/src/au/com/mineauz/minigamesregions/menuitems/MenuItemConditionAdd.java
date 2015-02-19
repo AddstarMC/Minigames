@@ -62,7 +62,7 @@ public class MenuItemConditionAdd extends MenuItem{
 				c.setClick(new InteractionInterface() {
 					
 					@Override
-					public Object interact(MinigamePlayer player, Object object) {
+					public ItemStack interact(MinigamePlayer player, ItemStack item) {
 						ConditionInterface condition = Conditions.getConditionByName(fcon);
 						if(rexec != null){
 							rexec.addCondition(condition);

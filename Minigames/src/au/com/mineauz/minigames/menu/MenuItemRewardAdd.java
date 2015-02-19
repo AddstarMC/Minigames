@@ -54,7 +54,7 @@ public class MenuItemRewardAdd extends MenuItem{
 				custom.setClick(new InteractionInterface() {
 					
 					@Override
-					public Object interact(MinigamePlayer player, Object object) {
+					public ItemStack interact(MinigamePlayer player, ItemStack item) {
 						if(rewards != null)
 							rewards.addReward(rewType);
 						else
