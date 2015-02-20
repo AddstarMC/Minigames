@@ -3,8 +3,6 @@ package au.com.mineauz.minigames.menu;
 import java.util.List;
 
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 
@@ -19,9 +17,8 @@ public class MenuItemWhitelistBlock extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onRightClick(MinigamePlayer player) {
+	public void onRightClick(MinigamePlayer player) {
 		whitelist.remove(getItem().getType());
 		remove();
-		return null;
 	}
 }

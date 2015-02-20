@@ -1,8 +1,6 @@
 package au.com.mineauz.minigamesregions.menuitems;
 
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigamesregions.NodeExecutor;
@@ -28,25 +26,16 @@ public class MenuItemAction extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(MinigamePlayer player){
-		if(rexec != null){
-			if(act.displayMenu(player, getContainer()))
-				return null;
-		}
-		else{
-			if(act.displayMenu(player, getContainer()))
-				return null;
-		}
-		return getItem();
+	public void onClick(MinigamePlayer player){
+		act.displayMenu(player, getContainer());
 	}
 	
 	@Override
-	public ItemStack onRightClick(MinigamePlayer player){
+	public void onRightClick(MinigamePlayer player){
 		if(rexec != null)
 			rexec.removeAction(act);
 		else
 			nexec.removeAction(act);
 		remove();
-		return null;
 	}
 }

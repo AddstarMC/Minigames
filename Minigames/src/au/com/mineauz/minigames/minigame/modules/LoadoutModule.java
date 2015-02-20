@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -16,9 +15,9 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.LoadoutSetFlag;
-import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
+import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItem.IMenuItemClick;
 import au.com.mineauz.minigames.minigame.Minigame;
 
 public class LoadoutModule extends MinigameModule {
@@ -193,14 +192,13 @@ public class LoadoutModule extends MinigameModule {
 				if(!loadout.getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + loadout.getName(false).toLowerCase())){
 					if(!player.getMinigame().isTeamGame() || loadout.getTeamColor() == null || 
 							player.getTeam().getColor() == loadout.getTeamColor()){
-						MenuItemCustom c = new MenuItemCustom(loadout.getName(true), Material.GLASS);
+						MenuItem c = new MenuItem(loadout.getName(true), Material.GLASS);
 						if(!loadout.getItems().isEmpty())
 							c.setItem(loadout.getItem(new ArrayList<Integer>(loadout.getItems()).get(0)));
 						final PlayerLoadout floadout2 = loadout;
-						c.setClick(new InteractionInterface() {
-							
+						c.setClickHandler(new IMenuItemClick() {
 							@Override
-							public ItemStack interact(MinigamePlayer player, ItemStack item) {
+							public void onClick(MenuItem menuItem, MinigamePlayer player) {
 								player.setLoadout(floadout2);
 								player.getPlayer().closeInventory();
 								if(!equip)
@@ -209,7 +207,6 @@ public class LoadoutModule extends MinigameModule {
 									player.sendMessage(MinigameUtils.formStr("player.loadout.equipped", floadout2.getName(true)), null);
 									floadout2.equiptLoadout(player);
 								}
-								return null;
 							}
 						});
 						m.addItem(c);

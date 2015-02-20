@@ -10,17 +10,13 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
-
-import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
+import au.com.mineauz.minigames.menu.MenuItemSubMenu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
@@ -338,7 +334,8 @@ public class RegionModule extends MinigameModule {
 		}
 	}
 	
-	public void displayMenu(MinigamePlayer viewer, Menu previous){
+	@Override
+	public Menu createSettingsMenu() {
 		Menu rm = new Menu(6, "Regions and Nodes");
 		List<MenuItem> items = new ArrayList<MenuItem>(regions.size());
 		for(String name : regions.keySet()){
@@ -351,23 +348,12 @@ public class RegionModule extends MinigameModule {
 			items.add(min);
 		}
 		rm.addItems(items);
-		rm.displayMenu(viewer);
+		return rm;
 	}
-	
 	
 	
 	@Override
 	public void addEditMenuOptions(Menu menu) {
-		final MenuItemCustom c = new MenuItemCustom("Regions and Nodes", Material.DIAMOND_BLOCK);
-		final Menu fmenu = menu;
-		c.setClick(new InteractionInterface() {
-			
-			@Override
-			public ItemStack interact(MinigamePlayer player, ItemStack item) {
-				displayMenu(player, fmenu);
-				return null;
-			}
-		});
-		menu.addItem(c);
+		menu.addItem(new MenuItemSubMenu("Regions and Nodes", Material.DIAMOND_BLOCK, createSettingsMenu()));
 	}
 }

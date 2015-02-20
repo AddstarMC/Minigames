@@ -7,14 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.menu.MenuItemSubMenu;
 import au.com.mineauz.minigamesregions.NodeExecutor;
 import au.com.mineauz.minigamesregions.RegionExecutor;
@@ -37,7 +33,7 @@ public class MenuItemActionAdd extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(MinigamePlayer player){
+	public void onClick(MinigamePlayer player){
 		Menu m = new Menu(6, "Actions");
 		Map<String, Menu> cats = new HashMap<String, Menu>();
 		List<String> acts = new ArrayList<String>(Actions.getAllActionNames());
@@ -51,35 +47,33 @@ public class MenuItemActionAdd extends MenuItem{
 				Menu cat = null;
 				if(!cats.containsKey(catname)){
 					cat = new Menu(6, MinigameUtils.capitalize(catname));
+					cat.setTrackHistory(false);
 					cats.put(catname, cat);
 					m.addItem(new MenuItemSubMenu(MinigameUtils.capitalize(catname), Material.CHEST, cat));
 				}
 				else
 					cat = cats.get(catname);
-				MenuItemCustom c = new MenuItemCustom(MinigameUtils.capitalize(act), Material.PAPER);
+				MenuItem c = new MenuItem(MinigameUtils.capitalize(act), Material.PAPER);
 				final String fact = act;
-				c.setClick(new InteractionInterface() {
-					
+				c.setClickHandler(new IMenuItemClick() {
 					@Override
-					public ItemStack interact(MinigamePlayer player, ItemStack item) {
+					public void onClick(MenuItem menuItem, MinigamePlayer player) {
 						ActionInterface action = Actions.getActionByName(fact);
 						if(nexec == null){
 							rexec.addAction(action);
 							getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, rexec, action));
-							getContainer().displayMenu(player);
 						}
 						else{
 							nexec.addAction(action);
 							getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, nexec, action));
-							getContainer().displayMenu(player);
 						}
-						return null;
+						
+						player.showPreviousMenu(2);
 					}
 				});
 				cat.addItem(c);
 			}
 		}
 		m.displayMenu(player);
-		return null;
 	}
 }

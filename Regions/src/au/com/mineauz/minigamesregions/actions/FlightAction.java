@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.Node;
@@ -67,7 +66,7 @@ public class FlightAction extends ActionInterface{
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Flight");
 		m.addItem(setFly.getMenuItem("Set Flight Mode", Material.FEATHER));
-		m.addItem(startFly.getMenuItem("Set Flying", Material.FEATHER, MinigameUtils.stringToList("Set Flight Mode must be;true to use this")));
+		m.addItem(startFly.getMenuItem("Set Flying", "Set Flight Mode must be;true to use this", Material.FEATHER));
 		m.displayMenu(player);
 		return true;
 	}

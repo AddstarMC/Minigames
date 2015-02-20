@@ -1,8 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 
 public class MenuItemChangePage extends MenuItem {
@@ -16,10 +14,9 @@ public class MenuItemChangePage extends MenuItem {
 	}
 	
 	@Override
-	public ItemStack onClick(MinigamePlayer player) {
+	public void onClick(MinigamePlayer player) {
 		session.page = page;
 		session.current.displaySession(player, session);
-		return null;
 	}
 
 }

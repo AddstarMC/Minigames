@@ -43,21 +43,21 @@ public class MenuListener implements Listener {
 				switch(event.getClick()) {
 				case LEFT:
 					if(event.getCursor().getType() != Material.AIR)
-						display = clickedItem.onClickWithItem(ply, event.getCursor());
+						display = clickedItem.handleClickWithItem(ply, event.getCursor());
 					else
-						display = clickedItem.onClick(ply);
+						display = clickedItem.handleClick(ply);
 					break;
 				case RIGHT:
-					display = clickedItem.onRightClick(ply);
+					display = clickedItem.handleRightClick(ply);
 					break;
 				case SHIFT_LEFT:
-					display = clickedItem.onShiftClick(ply);
+					display = clickedItem.handleShiftClick(ply);
 					break;
 				case SHIFT_RIGHT:
-					display = clickedItem.onShiftRightClick(ply);
+					display = clickedItem.handleShiftRightClick(ply);
 					break;
 				case DOUBLE_CLICK:
-					display = clickedItem.onDoubleClick(ply);
+					display = clickedItem.handleDoubleClick(ply);
 					break;
 				default:
 					break;

@@ -1,7 +1,5 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -18,7 +16,7 @@ public class MenuItemSaveLoadout extends MenuItem{
 		this.loadout = loadout;
 	}
 	
-	public MenuItemSaveLoadout(String name, List<String> description, Material displayItem, PlayerLoadout loadout) {
+	public MenuItemSaveLoadout(String name, String description, Material displayItem, PlayerLoadout loadout) {
 		super(name, description, displayItem);
 		this.loadout = loadout;
 	}
@@ -29,14 +27,14 @@ public class MenuItemSaveLoadout extends MenuItem{
 		this.altMenu = altMenu;
 	}
 	
-	public MenuItemSaveLoadout(String name, List<String> description, Material displayItem, PlayerLoadout loadout, Menu altMenu) {
+	public MenuItemSaveLoadout(String name, String description, Material displayItem, PlayerLoadout loadout, Menu altMenu) {
 		super(name, description, displayItem);
 		this.loadout = loadout;
 		this.altMenu = altMenu;
 	}
 	
 	@Override
-	public ItemStack onClick(MinigamePlayer player){
+	public void onClick(MinigamePlayer player){
 		ItemStack[] items = ((MenuPageInventory)getContainer().getFirstPage()).getInventory();
 		loadout.clearLoadout();
 		
@@ -61,6 +59,5 @@ public class MenuItemSaveLoadout extends MenuItem{
 			player.showPreviousMenu();
 		else
 			altMenu.displayMenu(player);
-		return null;
 	}
 }

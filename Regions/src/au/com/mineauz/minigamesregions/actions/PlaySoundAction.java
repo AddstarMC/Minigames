@@ -121,7 +121,7 @@ public class PlaySoundAction extends ActionInterface {
 			public Double getValue() {
 				return vol.getFlag().doubleValue();
 			}
-		}, 0.1, 1d, 0.5, null));
+		}, 0.1, 1d, 0.5, Double.MAX_VALUE));
 		m.addItem(new MenuItemDecimal("Pitch", Material.EYE_OF_ENDER, new Callback<Double>() {
 
 			@Override

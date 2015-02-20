@@ -1,10 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.List;
-
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
@@ -19,15 +15,14 @@ public class MenuItemRewardGroupAdd extends MenuItem{
 		this.rewards = rewards;
 	}
 
-	public MenuItemRewardGroupAdd(String name, List<String> description, Material displayItem, Rewards rewards) {
+	public MenuItemRewardGroupAdd(String name, String description, Material displayItem, Rewards rewards) {
 		super(name, description, displayItem);
 		this.rewards = rewards;
 	}
 	
 	@Override
-	public ItemStack onClick(MinigamePlayer player){
+	public void onClick(MinigamePlayer player){
 		beginManualEntry(player, "Enter reward group name into chat, the menu will automatically reopen in 30s if nothing is entered.", 30);
-		return null;
 	}
 	
 	@Override

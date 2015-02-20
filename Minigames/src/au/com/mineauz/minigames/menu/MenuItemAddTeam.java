@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -24,14 +22,12 @@ public class MenuItemAddTeam extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(MinigamePlayer player){
+	public void onClick(MinigamePlayer player){
 		beginManualEntry(player, "Enter the color of the team you wish to add. All colors available below:", 30);
 		List<String> teams = new ArrayList<String>();
 		for(TeamColor col : TeamColor.values())
 			teams.add(col.getColor() + MinigameUtils.capitalize(col.toString().replace("_", " ")));
 		player.sendMessage(MinigameUtils.listToString(teams));
-
-		return null;
 	}
 
 	@Override

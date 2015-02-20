@@ -3,6 +3,8 @@ package au.com.mineauz.minigames.minigame.reward;
 import java.util.ArrayList;
 import java.util.List;
 
+import au.com.mineauz.minigames.menu.Callback;
+
 public class RewardGroup {
 	
 	private String groupName;
@@ -41,5 +43,19 @@ public class RewardGroup {
 	
 	public void clearGroup(){
 		items.clear();
+	}
+	
+	public Callback<RewardRarity> getRarityCallback() {
+		return new Callback<RewardRarity>() {
+			@Override
+			public void setValue(RewardRarity value) {
+				rarity = value;
+			}
+			
+			@Override
+			public RewardRarity getValue() {
+				return rarity;
+			}
+		};
 	}
 }

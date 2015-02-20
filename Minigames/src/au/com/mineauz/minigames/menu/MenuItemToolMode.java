@@ -1,10 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.List;
-
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.tool.MinigameTool;
@@ -19,12 +15,12 @@ public class MenuItemToolMode extends MenuItem{
 		this.mode = mode;
 	}
 
-	public MenuItemToolMode(String name, List<String> description, Material displayItem, ToolMode mode) {
+	public MenuItemToolMode(String name, String description, Material displayItem, ToolMode mode) {
 		super(name, description, displayItem);
 		this.mode = mode;
 	}
 	
-	public ItemStack onClick(MinigamePlayer ply){
+	public void onClick(MinigamePlayer ply){
 		if(MinigameUtils.hasMinigameTool(ply)){
 			MinigameTool tool = MinigameUtils.getMinigameTool(ply);
 			if(tool.getMode() != null)
@@ -32,6 +28,5 @@ public class MenuItemToolMode extends MenuItem{
 			tool.setMode(mode);
 			tool.getMode().onSetMode(ply, tool);
 		}
-		return getItem();
 	}
 }

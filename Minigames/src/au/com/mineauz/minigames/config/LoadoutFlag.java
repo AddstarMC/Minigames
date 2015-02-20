@@ -1,15 +1,12 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.List;
 import java.util.Set;
 
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import au.com.mineauz.minigames.PlayerLoadout;
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.TeamColor;
 
 public class LoadoutFlag extends Flag<PlayerLoadout>{
@@ -103,16 +100,4 @@ public class LoadoutFlag extends Flag<PlayerLoadout>{
 		if(config.contains(path + "." + getName() + ".displayInMenu"))
 			getFlag().setDisplayInMenu(config.getBoolean(path + "." + getName() + ".displayInMenu"));
 	}
-
-	@Override
-	public MenuItem getMenuItem(String name, Material displayItem) {
-		return null; //TODO: Menu item easy access for loadouts.
-	}
-
-	@Override
-	public MenuItem getMenuItem(String name, Material displayItem,
-			List<String> description) {
-		return null;
-	}
-
 }

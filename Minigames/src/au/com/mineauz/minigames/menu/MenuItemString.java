@@ -1,81 +1,83 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 
-public class MenuItemString extends MenuItem{
-	
-	private Callback<String> str;
+public class MenuItemString extends MenuItemValue<String> {
 	private boolean allowNull = false;
 
-	public MenuItemString(String name, Material displayItem, Callback<String> str) {
-		super(name, displayItem);
-		this.str = str;
-		updateDescription();
+	public MenuItemString(String name, MaterialData displayItem, Callback<String> callback) {
+		super(name, displayItem, callback);
 	}
-
-	public MenuItemString(String name, List<String> description, Material displayItem, Callback<String> str) {
-		super(name, description, displayItem);
-		this.str = str;
-		updateDescription();
+	public MenuItemString(String name, String description, Material displayItem, Callback<String> callback) {
+		super(name, description, displayItem, callback);
+	}
+	public MenuItemString(String name, Material displayItem, Callback<String> callback) {
+		super(name, null, displayItem, callback);
+	}
+	public MenuItemString(String name, String description, MaterialData displayItem, Callback<String> callback) {
+		super(name, description, displayItem, callback);
 	}
 	
 	public void setAllowNull(boolean allow){
 		allowNull = allow;
 	}
 	
-	public void updateDescription(){
-		List<String> description = null;
-		String setting = str.getValue();
-		if(setting == null)
-			setting = "Not Set";
-		if(setting.length() > 20){
-			setting = setting.substring(0, 17) + "...";
+	@Override
+	protected List<String> getValueDescription(String value) {
+		if (value == null) {
+			return Arrays.asList(ChatColor.RED + "Not Set");
+		} else {
+			return Arrays.asList(ChatColor.GREEN + StringUtils.abbreviate(value, 20));
 		}
-		
-		if(getDescription() != null){
-			description = getDescription();
-			String desc = getDescription().get(0);
-			
-			if(desc.startsWith(ChatColor.GREEN.toString()))
-				description.set(0, ChatColor.GREEN.toString() + setting);
-			else
-				description.add(0, ChatColor.GREEN.toString() + setting);
-		}
-		else{
-			description = new ArrayList<String>();
-			description.add(ChatColor.GREEN.toString() + setting);
-		}
-		
-		setDescription(description);
 	}
 	
 	@Override
-	public ItemStack onDoubleClick(MinigamePlayer player){
-		beginManualEntry(player, "Enter string value into chat for " + getName() + ", the menu will automatically reopen in 20s if nothing is entered.", 20);
+	protected String increaseValue(String current, boolean shift) {
+		return current;
+	}
+	
+	@Override
+	protected String decreaseValue(String current, boolean shift) {
+		return current;
+	}
+	
+	@Override
+	protected boolean isManualEntryAllowed() {
+		return true;
+	}
+	
+	@Override
+	protected String getManualEntryText() {
+		return "Enter string value into chat for " + getName();
+	}
+	
+	@Override
+	protected int getManualEntryTime() {
+		return 40;
+	}
+	
+	@Override
+	protected void onManualEntryStart(MinigamePlayer player) {
 		if(allowNull){
 			player.sendMessage("Enter \"null\" to remove the string value");
 		}
-		return null;
 	}
 	
 	@Override
-	public void checkValidEntry(MinigamePlayer player, String entry){
-		if(entry.equals("null") && allowNull)
-			str.setValue(null);
-		else
-			str.setValue(entry);
+	protected String onManualEntryComplete(MinigamePlayer player, String raw) throws IllegalArgumentException {
+		if (allowNull && raw.equalsIgnoreCase("null")) {
+			return null;
+		} else {
+			return raw;
+		}
 		
-		updateDescription();
-	}
-	
-	Callback<String> getString(){
-		return str;
 	}
 }

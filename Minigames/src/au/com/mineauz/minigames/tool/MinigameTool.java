@@ -12,9 +12,9 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
+import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItem.IMenuItemClick;
 import au.com.mineauz.minigames.menu.MenuItemToolMode;
 import au.com.mineauz.minigames.menu.MenuItemToolTeam;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -141,26 +141,22 @@ public class MinigameTool {
 	public void openMenu(MinigamePlayer player){
 		Menu men = new Menu(2, "Set Tool Mode");
 		
-		final MenuItemCustom miselect = new MenuItemCustom("Select", MinigameUtils.stringToList("Selects and area;or points visually"), Material.DIAMOND_BLOCK);
-		final MenuItemCustom mideselect = new MenuItemCustom("Deselect", MinigameUtils.stringToList("Deselects an;area or points"), Material.GLASS);
-		miselect.setClick(new InteractionInterface() {
-			
+		final MenuItem miselect = new MenuItem("Select", "Selects and area;or points visually", Material.DIAMOND_BLOCK);
+		final MenuItem mideselect = new MenuItem("Deselect", "Deselects an;area or points", Material.GLASS);
+		miselect.setClickHandler(new IMenuItemClick() {
 			@Override
-			public ItemStack interact(MinigamePlayer player, ItemStack item) {
+			public void onClick(MenuItem menuItem, MinigamePlayer player) {
 				if(mode != null){
 					mode.select(player, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
 				}
-				return miselect.getItem();
 			}
 		});
-		mideselect.setClick(new InteractionInterface() {
-			
+		mideselect.setClickHandler(new IMenuItemClick() {
 			@Override
-			public ItemStack interact(MinigamePlayer player, ItemStack item) {
+			public void onClick(MenuItem menuItem, MinigamePlayer player) {
 				if(mode != null){
 					mode.deselect(player, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
 				}
-				return mideselect.getItem();
 			}
 		});
 		
@@ -188,7 +184,7 @@ public class MinigameTool {
 		}, teams), 2);
 		
 		for(ToolMode m : ToolModes.getToolModes()){
-			men.addItem(new MenuItemToolMode(m.getDisplayName(), MinigameUtils.stringToList(m.getDescription()), m.getIcon(), m));
+			men.addItem(new MenuItemToolMode(m.getDisplayName(), m.getDescription(), m.getIcon(), m));
 		}
 		
 		men.displayMenu(player);

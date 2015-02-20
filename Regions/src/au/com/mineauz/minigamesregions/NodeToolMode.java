@@ -6,15 +6,12 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
+import au.com.mineauz.minigames.menu.MenuItem.IMenuItemClick;
 import au.com.mineauz.minigames.menu.MenuItemSubMenu;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -70,16 +67,14 @@ public class NodeToolMode implements ToolMode {
 			List<MenuItem> items = new ArrayList<MenuItem>();
 			
 			for(final Node node : module.getNodes()){
-				final MenuItemCustom item = new MenuItemCustom(node.getName(), Material.STONE_BUTTON);
+				final MenuItem item = new MenuItem(node.getName(), Material.STONE_BUTTON);
 				
 				// Set the node and go back to the main menu
-				item.setClick(new InteractionInterface() {
+				item.setClickHandler(new IMenuItemClick() {
 					@Override
-					public ItemStack interact(MinigamePlayer player, ItemStack display) {
+					public void onClick(MenuItem menuItem, MinigamePlayer player) {
 						ftool.changeSetting("Node", node.getName());
-						m.displayMenu(player);
-						
-						return item.getItem();
+						player.showPreviousMenu();
 					}
 				});
 				

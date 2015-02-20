@@ -505,6 +505,20 @@ public class MinigamePlayer {
 		}
 	}
 	
+	public void showPreviousMenu(int backCount) {
+		if (menu != null) {
+			MenuSession session = menu;
+			while(session != null && backCount > 0) {
+				session = session.previous;
+				--backCount;
+			}
+			
+			if (session != null) {
+				session.current.displaySession(this, session);
+			}
+		}
+	}
+	
 	public void setNoClose(boolean value){
 		noClose = value;
 	}

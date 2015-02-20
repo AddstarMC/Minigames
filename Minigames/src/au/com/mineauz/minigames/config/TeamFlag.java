@@ -1,12 +1,9 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.List;
 import java.util.Set;
 
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
@@ -61,16 +58,4 @@ public class TeamFlag extends Flag<Team>{
 		
 		setFlag(t);
 	}
-
-	@Override
-	public MenuItem getMenuItem(String name, Material displayItem) {
-		return null; //TODO: Menu Item
-	}
-
-	@Override
-	public MenuItem getMenuItem(String name, Material displayItem,
-			List<String> description) {
-		return null;
-	}
-
 }

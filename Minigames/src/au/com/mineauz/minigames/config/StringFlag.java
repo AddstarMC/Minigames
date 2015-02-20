@@ -1,11 +1,10 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.material.MaterialData;
 
-import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemString;
 
 public class StringFlag extends Flag<String>{
@@ -25,37 +24,14 @@ public class StringFlag extends Flag<String>{
 	public void loadValue(String path, FileConfiguration config) {
 		setFlag(config.getString(path + "." + getName()));
 	}
-
+	
 	@Override
-	public MenuItemString getMenuItem(String name, Material displayItem) {
-		return new MenuItemString(name, displayItem, new Callback<String>() {
-			
-			@Override
-			public void setValue(String value) {
-				setFlag(value);
-			}
-			
-			@Override
-			public String getValue() {
-				return getFlag();
-			}
-		});
+	public MenuItem getMenuItem(String name, String description, Material displayItem) {
+		return new MenuItemString(name, description, displayItem, getCallback());
 	}
 	
 	@Override
-	public MenuItemString getMenuItem(String name, Material displayItem, List<String> description){
-		return new MenuItemString(name, description, displayItem, new Callback<String>() {
-			
-			@Override
-			public void setValue(String value) {
-				setFlag(value);
-			}
-			
-			@Override
-			public String getValue() {
-				return getFlag();
-			}
-		});
+	public MenuItem getMenuItem(String name, String description, MaterialData displayItem) {
+		return new MenuItemString(name, description, displayItem, getCallback());
 	}
-
 }

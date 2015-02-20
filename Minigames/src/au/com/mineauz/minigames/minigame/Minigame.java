@@ -12,7 +12,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -40,13 +39,13 @@ import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemAddFlag;
 import au.com.mineauz.minigames.menu.MenuItemDisplayLoadout;
 import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;
 import au.com.mineauz.minigames.menu.MenuItemDisplayWhitelist;
+import au.com.mineauz.minigames.menu.MenuItemEnum;
 import au.com.mineauz.minigames.menu.MenuItemFlag;
 import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.menu.MenuItemLoadoutAdd;
@@ -55,6 +54,8 @@ import au.com.mineauz.minigames.menu.MenuItemSubMenu;
 import au.com.mineauz.minigames.menu.MenuItemSaveMinigame;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.menu.MenuItemTime;
+import au.com.mineauz.minigames.menu.MenuItemValue;
+import au.com.mineauz.minigames.menu.MenuItemValue.IMenuItemChange;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
@@ -943,31 +944,9 @@ public class Minigame {
 			
 			menu.addItem(new MenuItemSubMenu("Lobby Settings", Material.WOOD_DOOR, LobbySettingsModule.getMinigameModule(this).createSettingsMenu()));
 			menu.addItem(new MenuItemNewLine());
-			menu.addItem(new MenuItemTime("Time Length", Material.WATCH, new Callback<Integer>() {
-
-				@Override
-				public void setValue(Integer value) {
-					timer.setFlag(value);
-				}
-
-				@Override
-				public Integer getValue() {
-					return timer.getFlag();
-				}
-			}, 0, null));
+			menu.addItem(new MenuItemTime("Time Length", Material.WATCH, timer.getCallback(), 0, Integer.MAX_VALUE));
 			menu.addItem(useXPBarTimer.getMenuItem("Use XP bar as Timer", Material.ENDER_PEARL));
-			menu.addItem(new MenuItemTime("Start Wait Time", Material.WATCH, new Callback<Integer>() {
-
-				@Override
-				public void setValue(Integer value) {
-					startWaitTime.setFlag(value);
-				}
-
-				@Override
-				public Integer getValue() {
-					return startWaitTime.getFlag();
-				}
-			}, 3, null));
+			menu.addItem(new MenuItemTime("Start Wait Time", Material.WATCH, startWaitTime.getCallback(), 3, Integer.MAX_VALUE));
 			menu.addItem(lateJoin.getMenuItem("Allow Late Join", Material.DEAD_BUSH));
 			break;
 		}
@@ -988,16 +967,16 @@ public class Minigame {
 		
 		main.addItem(enabled.getMenuItem("Enabled", Material.PAPER));
 		main.addItem(usePermissions.getMenuItem("Use Permissions", Material.PAPER));
-		MenuItemList gameTypeItem = type.getMenuItem("Game Type", Material.PAPER);
-		gameTypeItem.setOnChange(new InteractionInterface() {
+		MenuItemEnum<MinigameType> gameTypeItem = (MenuItemEnum<MinigameType>)type.getMenuItem("Game Type", Material.PAPER);
+		gameTypeItem.setChangeHandler(new IMenuItemChange<MinigameType>() {
 			@Override
-			public ItemStack interact(MinigamePlayer player, ItemStack object) {
+			public void onChange(MenuItemValue<MinigameType> menuItem, MinigamePlayer player, MinigameType previous, MinigameType current) {
 				main.clear();
 				buildMenu(main);
 				main.refresh();
-				return null;
 			}
 		});
+		
 		main.addItem(gameTypeItem);
 
 		List<String> scoreTypes = new ArrayList<String>();
@@ -1027,7 +1006,7 @@ public class Minigame {
 					if (module != null) {
 						Menu moduleMenu = module.createSettingsMenu();
 						if (moduleMenu != null) {
-							settingsButton = new MenuItemSubMenu("Game Mechanic Settings", MinigameUtils.stringToList(ChatColor.GRAY + "Edit " + MinigameUtils.capitalize(mechanic.getMechanic().replace('_', ' ')) + " settings"), Material.PAPER, moduleMenu);
+							settingsButton = new MenuItemSubMenu("Game Mechanic Settings", ChatColor.GRAY + "Edit " + MinigameUtils.capitalize(mechanic.getMechanic().replace('_', ' ')) + " settings", Material.PAPER, moduleMenu);
 							main.addItemAfter(settingsButton, main.getItem("Game Mechanic"));
 							main.refresh();
 						}
@@ -1041,7 +1020,7 @@ public class Minigame {
 			}
 		};
 		
-		main.addItem(new MenuItemList("Game Mechanic", MinigameUtils.stringToList("Multiplayer Only"), Material.ROTTEN_FLESH, gameMechanicCallback, scoreTypes));
+		main.addItem(new MenuItemList("Game Mechanic", "Multiplayer Only", Material.ROTTEN_FLESH, gameMechanicCallback, scoreTypes));
 		
 		// Add game mechanic settings button
 		{
@@ -1051,19 +1030,19 @@ public class Minigame {
 				if (module != null) {
 					Menu moduleMenu = module.createSettingsMenu();
 					if (moduleMenu != null) {
-						main.addItem(new MenuItemSubMenu("Game Mechanic Settings", MinigameUtils.stringToList(ChatColor.GRAY + "Edit " + MinigameUtils.capitalize(mechanic.getMechanic().replace('_', ' ')) + " settings"), Material.PAPER, moduleMenu));
+						main.addItem(new MenuItemSubMenu("Game Mechanic Settings", ChatColor.GRAY + "Edit " + MinigameUtils.capitalize(mechanic.getMechanic().replace('_', ' ')) + " settings", Material.PAPER, moduleMenu));
 					}
 				}
 			}
 		}
 		
-		MenuItemString obj = objective.getMenuItem("Objective Description", Material.DIAMOND);
+		MenuItemString obj = (MenuItemString) objective.getMenuItem("Objective Description", Material.DIAMOND);
 		obj.setAllowNull(true);
 		main.addItem(obj);
-		obj = gametypeName.getMenuItem("Gametype Description", Material.SIGN);
+		obj = (MenuItemString) gametypeName.getMenuItem("Gametype Description", Material.SIGN);
 		obj.setAllowNull(true);
 		main.addItem(obj);
-		obj = displayName.getMenuItem("Display Name", Material.SIGN);
+		obj = (MenuItemString) displayName.getMenuItem("Display Name", Material.SIGN);
 		obj.setAllowNull(true);
 		main.addItem(obj);
 		main.addItem(new MenuItemNewLine());
@@ -1072,19 +1051,17 @@ public class Minigame {
 		
 		main.addItem(displayScoreboard.getMenuItem("Display Scoreboard", Material.SIGN));
 		
-		main.addItem(new MenuItemDisplayRewards("Primary Rewards", Material.CHEST, rewardItem));
-		main.addItem(new MenuItemDisplayRewards("Secondary Rewards", Material.CHEST, secondaryRewardItem));
-		main.addItem(new MenuItemDisplayWhitelist("Block Whitelist/Blacklist", MinigameUtils.stringToList("Blocks that can/can't;be broken"), 
+		main.addItem(new MenuItemDisplayRewards("Primary Rewards", null, Material.CHEST, rewardItem));
+		main.addItem(new MenuItemDisplayRewards("Secondary Rewards", null, Material.CHEST, secondaryRewardItem));
+		main.addItem(new MenuItemDisplayWhitelist("Block Whitelist/Blacklist", "Blocks that can/can't;be broken", 
 				Material.CHEST, getBlockRecorder().getWBBlocks(), getBlockRecorder().getWhitelistModeCallback()));
 		main.addItem(new MenuItemNewLine());
-		List<String> floorDegenDes = new ArrayList<String>();
-		floorDegenDes.add("Mainly used to prevent");
-		floorDegenDes.add("islanding in spleef Minigames.");
+		
 		List<String> floorDegenOpt = new ArrayList<String>();
 		floorDegenOpt.add("Inward");
 		floorDegenOpt.add("Circle");
 		floorDegenOpt.add("Random");
-		main.addItem(new MenuItemList("Floor Degenerator Type", floorDegenDes, Material.SNOW_BLOCK, new Callback<String>() {
+		main.addItem(new MenuItemList("Floor Degenerator Type", "Mainly used to prevent;islanding in spleef Minigames.", Material.SNOW_BLOCK, new Callback<String>() {
 
 			@Override
 			public void setValue(String value) {
@@ -1096,53 +1073,29 @@ public class Minigame {
 				return MinigameUtils.capitalize(degenType.getFlag());
 			}
 		}, floorDegenOpt));
-		List<String> degenRandDes = new ArrayList<String>();
-		degenRandDes.add("Chance of block being");
-		degenRandDes.add("removed on random");
-		degenRandDes.add("degeneration.");
-		main.addItem(degenRandomChance.getMenuItem("Random Floor Degen Chance", Material.SNOW, degenRandDes, 1, 100));
-		main.addItem(floorDegenTime.getMenuItem("Floor Degenerator Delay", Material.WATCH, 1, null));
-		main.addItem(new MenuItemTime("Regeneration Delay", MinigameUtils.stringToList("Time in seconds before;Minigame regeneration starts"), Material.WATCH, new Callback<Integer>() {
-
-			@Override
-			public void setValue(Integer value) {
-				regenDelay.setFlag(value);
-			}
-
-			@Override
-			public Integer getValue() {
-				return regenDelay.getFlag();
-			}
-		}, 0, null));
+		main.addItem(degenRandomChance.getMenuItem("Random Floor Degen Chance", "Chance of block being;removed on random;degeneration.", Material.SNOW, 1, 100));
+		main.addItem(floorDegenTime.getMenuItem("Floor Degenerator Delay", Material.WATCH, 1, Integer.MAX_VALUE));
+		main.addItem(new MenuItemTime("Regeneration Delay", "Time in seconds before;Minigame regeneration starts", Material.WATCH, regenDelay.getCallback(), 0, Integer.MAX_VALUE));
 		main.addItem(new MenuItemNewLine());
 		main.addItem(new MenuItemSubMenu("Player Settings", Material.SKULL_ITEM, playerMenu));
 		main.addItem(new MenuItemSubMenu("Loadouts", Material.CHEST, loadouts));
 		main.addItem(canSpectateFly.getMenuItem("Allow Spectator Fly", Material.FEATHER));
-		List<String> rndChstDes = new ArrayList<String>();
-		rndChstDes.add("Randomize items in");
-		rndChstDes.add("chest upon first opening");
-		main.addItem(randomizeChests.getMenuItem("Randomize Chests", Material.CHEST, rndChstDes));
-		rndChstDes.clear();
-		rndChstDes.add("Min. item randomization");
-		main.addItem(minChestRandom.getMenuItem("Min. Chest Random", Material.STEP, rndChstDes, 0, null));
-		rndChstDes.clear();
-		rndChstDes.add("Max. item randomization");
-		main.addItem(maxChestRandom.getMenuItem("Max. Chest Random", Material.STONE, rndChstDes, 0, null));
+		main.addItem(randomizeChests.getMenuItem("Randomize Chests", "Randomize items in;chest upon first opening", Material.CHEST));
+		main.addItem(minChestRandom.getMenuItem("Min. Chest Random", "Min. item randomization", Material.STEP, 0, Integer.MAX_VALUE));
+		main.addItem(maxChestRandom.getMenuItem("Max. Chest Random", "Max. item randomization", Material.STONE, 0, Integer.MAX_VALUE));
 		main.addItem(new MenuItemNewLine());
 
 		//--------------//
 		//Loadout Settings
 		//--------------//
 		List<MenuItem> mi = new ArrayList<MenuItem>();
-		List<String> des = new ArrayList<String>();
-		des.add("Shift + Right Click to Delete");
 		for(String ld : LoadoutModule.getMinigameModule(this).getLoadouts()){
 			Material item = Material.THIN_GLASS;
 			if(LoadoutModule.getMinigameModule(this).getLoadout(ld).getItems().size() != 0){
 				item = LoadoutModule.getMinigameModule(this).getLoadout(ld).getItem((Integer)LoadoutModule.getMinigameModule(this).getLoadout(ld).getItems().toArray()[0]).getType();
 			}
 			if(LoadoutModule.getMinigameModule(this).getLoadout(ld).isDeleteable())
-				mi.add(new MenuItemDisplayLoadout(ld, des, item, LoadoutModule.getMinigameModule(this).getLoadout(ld), this));
+				mi.add(new MenuItemDisplayLoadout(ld, "Shift + Right Click to Delete", item, LoadoutModule.getMinigameModule(this).getLoadout(ld), this));
 			else
 				mi.add(new MenuItemDisplayLoadout(ld, item, LoadoutModule.getMinigameModule(this).getLoadout(ld), this));
 		}
@@ -1167,15 +1120,15 @@ public class Minigame {
 		itemsPlayer.add(blockBreak.getMenuItem("Allow Block Break", Material.DIAMOND_PICKAXE));
 		itemsPlayer.add(blockPlace.getMenuItem("Allow Block Place", Material.STONE));
 		itemsPlayer.add(blocksdrop.getMenuItem("Allow Block Drops", Material.COBBLESTONE));
-		itemsPlayer.add(lives.getMenuItem("Lives", Material.APPLE, 0, null));
+		itemsPlayer.add(lives.getMenuItem("Lives", Material.APPLE, 0, Integer.MAX_VALUE));
 		itemsPlayer.add(paintBallMode.getMenuItem("Paintball Mode", Material.SNOW_BALL));
-		itemsPlayer.add(paintBallDamage.getMenuItem("Paintball Damage", Material.ARROW, 1, null));
+		itemsPlayer.add(paintBallDamage.getMenuItem("Paintball Damage", Material.ARROW, 1, Integer.MAX_VALUE));
 		itemsPlayer.add(unlimitedAmmo.getMenuItem("Unlimited Ammo", Material.SNOW_BLOCK));
 		itemsPlayer.add(allowMPCheckpoints.getMenuItem("Enable Multiplayer Checkpoints", Material.SIGN));
-		itemsPlayer.add(saveCheckpoints.getMenuItem("Save Checkpoints", Material.SIGN, MinigameUtils.stringToList("Singleplayer Only")));
-		itemsPlayer.add(new MenuItemSubMenu("Flags", MinigameUtils.stringToList("Singleplayer flags"), Material.SIGN, flags));
-		itemsPlayer.add(allowFlight.getMenuItem("Allow Flight", Material.FEATHER, MinigameUtils.stringToList("Allow flight to;be toggled")));
-		itemsPlayer.add(enableFlight.getMenuItem("Enable Flight", Material.FEATHER, MinigameUtils.stringToList("Start players;in flight;(Must have Allow;Flight)")));
+		itemsPlayer.add(saveCheckpoints.getMenuItem("Save Checkpoints", "Singleplayer Only", Material.SIGN));
+		itemsPlayer.add(new MenuItemSubMenu("Flags", "Singleplayer flags", Material.SIGN, flags));
+		itemsPlayer.add(allowFlight.getMenuItem("Allow Flight", "Allow flight to;be toggled", Material.FEATHER));
+		itemsPlayer.add(enableFlight.getMenuItem("Enable Flight", "Start players;in flight;(Must have Allow;Flight)", Material.FEATHER));
 		playerMenu.addItems(itemsPlayer);
 		
 		//--------------//

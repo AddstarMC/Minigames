@@ -72,8 +72,8 @@ public class MinigameTimerCondition extends ConditionInterface{
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Minigame Timer");
 		
-		m.addItem(new MenuItemTime("Min Time", Material.WATCH, minTime.getCallback(), 0, null));
-		m.addItem(new MenuItemTime("Max Time", Material.WATCH, maxTime.getCallback(), 0, null));
+		m.addItem(new MenuItemTime("Min Time", Material.WATCH, minTime.getCallback(), 0, Integer.MAX_VALUE));
+		m.addItem(new MenuItemTime("Max Time", Material.WATCH, maxTime.getCallback(), 0, Integer.MAX_VALUE));
 
 		addInvertMenuItem(m);
 		m.displayMenu(player);

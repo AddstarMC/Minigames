@@ -1,21 +1,13 @@
 package au.com.mineauz.minigames.minigame.reward;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemDecimal;
+import au.com.mineauz.minigames.menu.MenuItemReward;
 
 public class MoneyReward extends RewardType{
 
@@ -45,7 +37,7 @@ public class MoneyReward extends RewardType{
 
 	@Override
 	public MenuItem getMenuItem() {
-		return new MenuItemReward(this);
+		return new MenuItemRewardMoney(this);
 	}
 
 	@Override
@@ -66,131 +58,31 @@ public class MoneyReward extends RewardType{
 		return money;
 	}
 	
-	private class MenuItemReward extends MenuItem{
-		private List<String> options = new ArrayList<String>();
-		private MoneyReward reward;
-		
-		public MenuItemReward(MoneyReward reward){
-			super("$" + money, Material.PAPER);
-			for(RewardRarity rarity : RewardRarity.values()){
-				options.add(rarity.toString());
-			}
-			this.reward = reward;
-			updateDescription();
-		}
-		
-		public void updateName(String newName){
-			ItemMeta meta = getItem().getItemMeta();
-			meta.setDisplayName(ChatColor.RESET + newName);
-			getItem().setItemMeta(meta);
-		}
-		
-		public void updateDescription(){
-			List<String> description = null;
-			if(options == null){
-				options = new ArrayList<String>();
-				for(RewardRarity rarity : RewardRarity.values()){
-					options.add(rarity.toString());
-				}
-			}
-			int pos = options.indexOf(getRarity().toString());
-			int before = pos - 1;
-			int after = pos + 1;
-			if(before == -1)
-				before = options.size() - 1;
-			if(after == options.size())
-				after = 0;
-			
-			if(getDescription() != null){
-				description = getDescription();
-				if(getDescription().size() >= 3){
-					String desc = ChatColor.stripColor(getDescription().get(1));
-					
-					if(options.contains(desc)){
-						description.set(0, ChatColor.GRAY.toString() + options.get(before));
-						description.set(1, ChatColor.GREEN.toString() + getRarity().toString());
-						description.set(2, ChatColor.GRAY.toString() + options.get(after));
-					}
-					else{
-						description.add(0, ChatColor.GRAY.toString() + options.get(before));
-						description.add(1, ChatColor.GREEN.toString() + getRarity().toString());
-						description.add(2, ChatColor.GRAY.toString() + options.get(after));
-						description.add(3, ChatColor.DARK_PURPLE.toString() + "Shift + Click to change");
-						description.add(4, ChatColor.DARK_PURPLE.toString() + "Shift + Right Click to remove");
-					}
-				}
-				else{
-					description.add(0, ChatColor.GRAY.toString() + options.get(before));
-					description.add(1, ChatColor.GREEN.toString() + getRarity().toString());
-					description.add(2, ChatColor.GRAY.toString() + options.get(after));
-					description.add(3, ChatColor.DARK_PURPLE.toString() + "Shift + Click to change");
-					description.add(4, ChatColor.DARK_PURPLE.toString() + "Shift + Right Click to remove");
-				}
-			}
-			else{
-				description = new ArrayList<String>();
-				description.add(ChatColor.GRAY.toString() + options.get(before));
-				description.add(ChatColor.GREEN.toString() + getRarity().toString());
-				description.add(ChatColor.GRAY.toString() + options.get(after));
-				description.add(3, ChatColor.DARK_PURPLE.toString() + "Shift + Click to change");
-				description.add(4, ChatColor.DARK_PURPLE.toString() + "Shift + Right Click to remove");
-			}
-			
-			setDescription(description);
+	private static class MenuItemRewardMoney extends MenuItemReward {
+		public MenuItemRewardMoney(MoneyReward reward){
+			super("$" + MenuItemDecimal.format.format(reward.money), "Double Click to change;Shift + Right Click to remove", Material.PAPER, reward);
 		}
 		
 		@Override
-		public ItemStack onClick(MinigamePlayer player){
-			int ind = options.lastIndexOf(getRarity().toString());
-			ind++;
-			if(ind == options.size())
-				ind = 0;
-			
-			setRarity(RewardRarity.valueOf(options.get(ind)));
-			updateDescription();
-			
-			return getItem();
+		protected void onDoubleClick(MinigamePlayer player) {
+			beginManualEntry(player, "Enter reward money value into chat, the menu will automatically reopen in 20s if nothing is entered." , 20);
 		}
 		
 		@Override
-		public ItemStack onRightClick(MinigamePlayer player){
-			int ind = options.lastIndexOf(getRarity().toString());
-			ind--;
-			if(ind == -1)
-				ind = options.size() - 1;
+		protected void checkValidEntry(MinigamePlayer player, String entry) {
+			if (entry.startsWith("$")) {
+				entry = entry.substring(1);
+			}
 			
-			setRarity(RewardRarity.valueOf(options.get(ind)));
-			updateDescription();
-			
-			return getItem();
-		}
-		
-		@Override
-		public ItemStack onShiftClick(MinigamePlayer player){
-			Menu m = new Menu(3, "Set Money Amount");
-			MenuItemDecimal dec = new MenuItemDecimal("Money", Material.PAPER, new Callback<Double>() {
-
-				@Override
-				public void setValue(Double value) {
-					reward.money = value;
-					updateName("$" + value);
-				}
-
-				@Override
-				public Double getValue() {
-					return reward.money;
-				}
-			}, 50d, 100d, 1d, null);
-			m.addItem(dec);
-			m.displayMenu(player);
-			return null;
-		}
-		
-		@Override
-		public ItemStack onShiftRightClick(MinigamePlayer player){
-			getRewards().removeReward(reward);
-			remove();
-			return null;
+			try {
+				double value = Double.parseDouble(entry);
+				value = Math.max(value, 0);
+				((MoneyReward)getReward()).money = value;
+				setName("$" + MenuItemDecimal.format.format(value));
+				updateDescription();
+			} catch (NumberFormatException e) {
+				player.sendMessage("Invalid value entry!", "error");
+			}
 		}
 	}
 

@@ -1,10 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -23,7 +20,7 @@ public class MenuItemRewardAdd extends MenuItem{
 		this.rewards = rewards;
 	}
 
-	public MenuItemRewardAdd(String name, List<String> description, Material displayItem, Rewards rewards) {
+	public MenuItemRewardAdd(String name, String description, Material displayItem, Rewards rewards) {
 		super(name, description, displayItem);
 		this.rewards = rewards;
 	}
@@ -33,41 +30,38 @@ public class MenuItemRewardAdd extends MenuItem{
 		this.group = group;
 	}
 
-	public MenuItemRewardAdd(String name, List<String> description, Material displayItem, RewardGroup group) {
+	public MenuItemRewardAdd(String name, String description, Material displayItem, RewardGroup group) {
 		super(name, description, displayItem);
 		this.group = group;
 	}
 	
 	@Override
-	public ItemStack onClick(final MinigamePlayer player){
+	public void onClick(final MinigamePlayer player){
 		Menu m = new Menu(6, "Select Reward Type");
 		m.setTrackHistory(false);
 		
 		for(String type : RewardTypes.getAllRewardTypeNames()){
-			final MenuItemCustom custom = new MenuItemCustom("TYPE", Material.STONE);
+			final MenuItem custom = new MenuItem("TYPE", Material.STONE);
 			final RewardType rewType = RewardTypes.getRewardType(type, rewards);
 			if(rewType.isUsable()){
 				ItemMeta meta = custom.getItem().getItemMeta();
 				meta.setDisplayName(ChatColor.RESET + type);
 				custom.getItem().setItemMeta(meta);
 				custom.setItem(rewType.getMenuItem().getItem());
-				custom.setClick(new InteractionInterface() {
-					
+				custom.setClickHandler(new IMenuItemClick() {
 					@Override
-					public ItemStack interact(MinigamePlayer player, ItemStack item) {
+					public void onClick(MenuItem menuItem, MinigamePlayer player) {
 						if(rewards != null)
 							rewards.addReward(rewType);
 						else
 							group.addItem(rewType);
 						getContainer().addItem(rewType.getMenuItem());
 						player.showPreviousMenu();
-						return null;
 					}
 				});
 				m.addItem(custom);
 			}
 		}
 		m.displayMenu(player);
-		return null;
 	}
 }

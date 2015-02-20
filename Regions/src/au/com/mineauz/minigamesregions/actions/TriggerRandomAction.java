@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
@@ -113,9 +112,8 @@ public class TriggerRandomAction extends ActionInterface{
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Trigger Random");
-		m.addItem(timesTriggered.getMenuItem("Times to Trigger Random", Material.COMMAND, 1, null));
-		m.addItem(randomPerTrigger.getMenuItem("Allow Same Executor", Material.ENDER_PEARL, 
-				MinigameUtils.stringToList("Should there be a chance;that the same execeutor;can be triggered more?")));
+		m.addItem(timesTriggered.getMenuItem("Times to Trigger Random", Material.COMMAND, 1, Integer.MAX_VALUE));
+		m.addItem(randomPerTrigger.getMenuItem("Allow Same Executor", "Should there be a chance;that the same execeutor;can be triggered more?", Material.ENDER_PEARL));
 		m.displayMenu(player);
 		return true;
 	}

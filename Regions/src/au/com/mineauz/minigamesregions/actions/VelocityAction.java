@@ -76,9 +76,9 @@ public class VelocityAction extends ActionInterface{
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Velocity");
-		m.addItem(x.getMenuItem("X Velocity", Material.STONE, 0.5d, 1d, null, null));
-		m.addItem(y.getMenuItem("Y Velocity", Material.STONE, 0.5d, 1d, null, null));
-		m.addItem(z.getMenuItem("Z Velocity", Material.STONE, 0.5d, 1d, null, null));
+		m.addItem(x.getMenuItem("X Velocity", Material.STONE, 0.5d, 1d, Double.MIN_VALUE, Double.MAX_VALUE));
+		m.addItem(y.getMenuItem("Y Velocity", Material.STONE, 0.5d, 1d, Double.MIN_VALUE, Double.MAX_VALUE));
+		m.addItem(z.getMenuItem("Z Velocity", Material.STONE, 0.5d, 1d, Double.MIN_VALUE, Double.MAX_VALUE));
 		m.displayMenu(player);
 		return true;
 	}

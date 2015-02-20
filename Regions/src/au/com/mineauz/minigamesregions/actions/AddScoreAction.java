@@ -5,9 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
@@ -65,18 +63,7 @@ public class AddScoreAction extends ActionInterface {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Add Score");
-		m.addItem(new MenuItemInteger("Add Score Amount", Material.ENDER_PEARL, new Callback<Integer>() {
-			
-			@Override
-			public void setValue(Integer value) {
-				amount.setFlag(value);
-			}
-			
-			@Override
-			public Integer getValue() {
-				return amount.getFlag();
-			}
-		}, null, null));
+		m.addItem(amount.getMenuItem("Add Score Amount", Material.ENDER_PEARL, Integer.MIN_VALUE, Integer.MAX_VALUE));
 		m.displayMenu(player);
 		return true;
 	}

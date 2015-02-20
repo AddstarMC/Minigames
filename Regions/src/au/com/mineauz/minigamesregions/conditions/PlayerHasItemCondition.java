@@ -102,7 +102,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
 			}
 		}));
 		m.addItem(useData.getMenuItem("Match Item Data", Material.ENDER_PEARL));
-		m.addItem(data.getMenuItem("Data Value", Material.EYE_OF_ENDER, 0, null));
+		m.addItem(data.getMenuItem("Data Value", Material.EYE_OF_ENDER, 0, Integer.MAX_VALUE));
 		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;

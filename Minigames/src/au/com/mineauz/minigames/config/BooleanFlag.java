@@ -1,11 +1,9 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.material.MaterialData;
 
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
 
@@ -28,35 +26,12 @@ public class BooleanFlag extends Flag<Boolean>{
 	}
 	
 	@Override
-	public MenuItem getMenuItem(String name, Material displayItem){
-		return new MenuItemBoolean(name, displayItem, new Callback<Boolean>() {
-			
-			@Override
-			public void setValue(Boolean value) {
-				setFlag(value);
-			}
-			
-			@Override
-			public Boolean getValue() {
-				return getFlag();
-			}
-		});
-	}
-	
-	@Override
-	public MenuItem getMenuItem(String name, Material displayItem, List<String> description){
-		return new MenuItemBoolean(name, description, displayItem, new Callback<Boolean>() {
-			
-			@Override
-			public void setValue(Boolean value) {
-				setFlag(value);
-			}
-			
-			@Override
-			public Boolean getValue() {
-				return getFlag();
-			}
-		});
+	public MenuItemBoolean getMenuItem(String name, String description, Material displayItem){
+		return new MenuItemBoolean(name, description, displayItem, getCallback());
 	}
 
+	@Override
+	public MenuItem getMenuItem(String name, String description, MaterialData displayItem) {
+		return new MenuItemBoolean(name, description, displayItem, getCallback());
+	}
 }

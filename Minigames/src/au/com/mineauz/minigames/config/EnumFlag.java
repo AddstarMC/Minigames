@@ -1,18 +1,11 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.material.MaterialData;
 
-import com.google.common.collect.Lists;
-
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemList;
+import au.com.mineauz.minigames.menu.MenuItemEnum;
 
 public class EnumFlag<T extends Enum<T>> extends Flag<T> {
 	
@@ -37,34 +30,13 @@ public class EnumFlag<T extends Enum<T>> extends Flag<T> {
 	}
 
 	@Override
-	public MenuItemList getMenuItem(String name, Material displayItem) {
-		return getMenuItem(name, displayItem, Collections.<String>emptyList());
+	public MenuItemEnum<T> getMenuItem(String name, String description, Material displayItem) {
+		return new MenuItemEnum<T>(name, description, displayItem, getCallback(), enumClass);
 	}
-
+	
 	@Override
-	public MenuItemList getMenuItem(String name, Material displayItem, List<String> description) {
-		List<String> values = Lists.newArrayList();
-		for(T value : EnumSet.allOf(enumClass)){
-			values.add(MinigameUtils.capitalize(value.name().replace('_', ' ')));
-		}
-		
-		return new MenuItemList(name, displayItem, new Callback<String>() {
-			@Override
-			public void setValue(String value) {
-				value = value.replace(' ', '_').toUpperCase();
-				for (T v : EnumSet.allOf(enumClass)) {
-					if (v.name().equalsIgnoreCase(value)) {
-						setFlag(v);
-						return;
-					}
-				}
-			}
-
-			@Override
-			public String getValue() {
-				return MinigameUtils.capitalize(getFlag().name().replace('_', ' '));
-			}
-		}, values);
+	public MenuItem getMenuItem(String name, String description, MaterialData displayItem) {
+		return new MenuItemEnum<T>(name, description, displayItem, getCallback(), enumClass);
 	}
 
 }

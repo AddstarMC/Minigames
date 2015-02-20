@@ -1,10 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.List;
-
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 
@@ -16,16 +12,10 @@ public class MenuItemAddFlag extends MenuItem{
 		super(name, displayItem);
 		this.mgm = mgm;
 	}
-
-	public MenuItemAddFlag(String name, List<String> description, Material displayItem, Minigame mgm) {
-		super(name, description, displayItem);
-		this.mgm = mgm;
-	}
 	
 	@Override
-	public ItemStack onClick(MinigamePlayer player){
+	public void onClick(MinigamePlayer player) {
 		beginManualEntry(player, "Enter a flag name into chat for " + getName() + ", the menu will automatically reopen in 20s if nothing is entered.", 20);
-		return null;
 	}
 	
 	@Override

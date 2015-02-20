@@ -19,21 +19,20 @@ public class MenuItemAddWhitelistBlock extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClickWithItem(MinigamePlayer player, ItemStack item) {
+	public void onClickWithItem(MinigamePlayer player, ItemStack item) {
 		if(!whitelist.contains(item.getType())){
 			whitelist.add(item.getType());
 			getContainer().addItem(new MenuItemWhitelistBlock(item.getType(), whitelist));
+			getContainer().refresh();
 		}
 		else{
 			player.sendMessage("Whitelist/Blacklist already contains this material", null);
 		}
-		return getItem();
 	}
 	
 	@Override
-	public ItemStack onClick(MinigamePlayer player) {
+	public void onClick(MinigamePlayer player) {
 		beginManualEntry(player, "Enter material name into chat to add to the whitelist/blacklist, the menu will automatically reopen in 30s if nothing is entered.", 30);
-		return null;
 	}
 	
 	@Override

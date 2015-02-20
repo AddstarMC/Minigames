@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
@@ -55,8 +54,7 @@ public class InfectionModule extends MinigameModule{
 	public Menu createSettingsMenu() {
 		Menu m = new Menu(6, "Infection Settings");
 		
-		m.addItem(infectedPercent.getMenuItem("Infected Percent", Material.SKULL_ITEM, 
-				MinigameUtils.stringToList("The percentage of players;chosen to start as;infected"), 1, 99));
+		m.addItem(infectedPercent.getMenuItem("Infected Percent", "The percentage of players;chosen to start as;infected", Material.SKULL_ITEM, 1, 99));
 		return m;
 	}
 	

@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;
@@ -103,13 +103,12 @@ public class RewardsFlag extends Flag<Rewards>{
 	}
 
 	@Override
-	public MenuItem getMenuItem(String name, Material displayItem) {
-		return new MenuItemDisplayRewards(name, displayItem, getFlag());
+	public MenuItem getMenuItem(String name, String description, Material displayItem) {
+		return new MenuItemDisplayRewards(name, description, displayItem, getFlag());
 	}
-
+	
 	@Override
-	public MenuItem getMenuItem(String name, Material displayItem,
-			List<String> description) {
+	public MenuItem getMenuItem(String name, String description, MaterialData displayItem) {
 		return new MenuItemDisplayRewards(name, description, displayItem, getFlag());
 	}
 

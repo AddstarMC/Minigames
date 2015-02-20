@@ -1,13 +1,8 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-
-import au.com.mineauz.minigames.menu.MenuItem;
 
 public class SimpleLocationFlag extends Flag<Location>{
 
@@ -34,16 +29,4 @@ public class SimpleLocationFlag extends Flag<Location>{
 		
 		setFlag(new Location(Bukkit.getWorld(world), x, y, z));
 	}
-
-	@Override
-	public MenuItem getMenuItem(String name, Material displayItem) {
-		return null;
-	}
-
-	@Override
-	public MenuItem getMenuItem(String name, Material displayItem,
-			List<String> description) {
-		return null;
-	}
-
 }

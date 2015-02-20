@@ -14,6 +14,7 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.Minigames;
 
 public class Menu implements Iterable<MenuItem> {
 	private int rows;
@@ -348,6 +349,15 @@ public class Menu implements Iterable<MenuItem> {
 			}
 		}
 		return bar;
+	}
+	
+	public void refreshLater() {
+		Bukkit.getScheduler().runTask(Minigames.plugin, new Runnable() {
+			@Override
+			public void run() {
+				refresh();
+			}
+		});
 	}
 	
 	public void refresh() {

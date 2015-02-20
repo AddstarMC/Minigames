@@ -1,138 +1,147 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
+
+import com.google.common.collect.Lists;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 
-public class MenuItemList extends MenuItem{
+public class MenuItemList extends MenuItemValue<String> {
 	
-	private Callback<String> value = null;
 	private List<String> options = null;
 	
-	private InteractionInterface onChange;
-	
-	public MenuItemList(String name, Material displayItem, Callback<String> value, List<String> options) {
-		super(name, displayItem);
-		this.value = value;
+	public MenuItemList(String name, MaterialData displayItem, Callback<String> callback, List<String> options) {
+		super(name, displayItem, callback);
+		this.options = options;
+		updateDescription();
+	}
+	public MenuItemList(String name, String description, Material displayItem, Callback<String> callback, List<String> options) {
+		super(name, description, displayItem, callback);
+		this.options = options;
+		updateDescription();
+	}
+	public MenuItemList(String name, Material displayItem, Callback<String> callback, List<String> options) {
+		super(name, null, displayItem, callback);
+		this.options = options;
+		updateDescription();
+	}
+	public MenuItemList(String name, String description, MaterialData displayItem, Callback<String> callback, List<String> options) {
+		super(name, description, displayItem, callback);
 		this.options = options;
 		updateDescription();
 	}
 	
-	public MenuItemList(String name, List<String> description, Material displayItem, Callback<String> value, List<String> options) {
-		super(name, description, displayItem);
-		this.value = value;
+	public MenuItemList setOptions(List<String> options) {
 		this.options = options;
 		updateDescription();
-	}
-	
-	public void updateDescription(){
-		List<String> description = null;
-		int pos = options.indexOf(value.getValue());
-		if (pos == -1)
-			pos = 0;
-		int before = pos - 1;
-		int after = pos + 1;
-		if(before == -1)
-			before = options.size() - 1;
-		if(after == options.size())
-			after = 0;
-		
-		if(getDescription() != null){
-			description = getDescription();
-			if(getDescription().size() >= 3){
-				String desc = ChatColor.stripColor(getDescription().get(1));
-				
-				if(options.contains(desc)){
-					description.set(0, ChatColor.GRAY.toString() + options.get(before));
-					description.set(1, ChatColor.GREEN.toString() + value.getValue());
-					description.set(2, ChatColor.GRAY.toString() + options.get(after));
-				}
-				else{
-					description.add(0, ChatColor.GRAY.toString() + options.get(before));
-					description.add(1, ChatColor.GREEN.toString() + value.getValue());
-					description.add(2, ChatColor.GRAY.toString() + options.get(after));
-				}
-			}
-			else{
-				description.add(0, ChatColor.GRAY.toString() + options.get(before));
-				description.add(1, ChatColor.GREEN.toString() + value.getValue());
-				description.add(2, ChatColor.GRAY.toString() + options.get(after));
-			}
-		}
-		else{
-			description = new ArrayList<String>();
-			description.add(ChatColor.GRAY.toString() + options.get(before));
-			description.add(ChatColor.GREEN.toString() + value.getValue());
-			description.add(ChatColor.GRAY.toString() + options.get(after));
-		}
-		
-		setDescription(description);
+		return this;
 	}
 	
 	@Override
-	public ItemStack onClick(MinigamePlayer player){
-		int ind = options.lastIndexOf(value.getValue());
-		ind++;
-		if(ind == options.size())
-			ind = 0;
-		
-		value.setValue(options.get(ind));
-		updateDescription();
-		
-		onChange(player);
-		if (onChange != null) {
-			onChange.interact(player, null);
+	protected List<String> getValueDescription(String value) {
+		// For the initial update
+		if (options == null) {
+			return Collections.emptyList();
 		}
 		
-		return getItem();
+		if (options.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
+		int position = options.indexOf(value);
+		if (position == -1) {
+			return Arrays.asList(ChatColor.RED + "*ERROR*");
+		}
+		
+		int last = position - 1;
+		int next = position + 1;
+		if (last < 0) {
+			last = options.size() - 1;
+		}
+		if (next >= options.size()) {
+			next = 0;
+		}
+		
+		List<String> description = Lists.newArrayListWithCapacity(3);
+		description.add(ChatColor.GRAY + options.get(last));
+		description.add(ChatColor.GREEN + options.get(position));
+		description.add(ChatColor.GRAY + options.get(next));
+		
+		return description;
 	}
 	
 	@Override
-	public ItemStack onRightClick(MinigamePlayer player){
-		int ind = options.lastIndexOf(value.getValue());
-		ind--;
-		if(ind == -1)
-			ind = options.size() - 1;
-		
-		value.setValue(options.get(ind));
-		updateDescription();
-		
-		onChange(player);
-		if (onChange != null) {
-			onChange.interact(player, null);
+	protected String increaseValue(String current, boolean shift) {
+		if (options.isEmpty()) {
+			return null;
 		}
 		
-		return getItem();
+		int index = options.indexOf(current);
+		if (index == -1) {
+			return options.get(0);
+		}
+		
+		++index;
+		if (index >= options.size()) {
+			index = 0;
+		}
+		
+		return options.get(index);
 	}
 	
-	public void onChange(MinigamePlayer player) {}
+	@Override
+	protected String decreaseValue(String current, boolean shift) {
+		if (options.isEmpty()) {
+			return null;
+		}
+		
+		int index = options.indexOf(current);
+		if (index == -1) {
+			return options.get(0);
+		}
+		
+		--index;
+		if (index < 0) {
+			index = options.size() - 1;
+		}
+		
+		return options.get(index);
+	}
 	
 	@Override
-	public ItemStack onDoubleClick(MinigamePlayer player){
-		beginManualEntry(player, "Enter the name of the option into chat for " + getName() + ", the menu will automatically reopen in 10s if nothing is entered.", 10);
+	protected boolean isManualEntryAllowed() {
+		return true;
+	}
+	
+	@Override
+	protected String getManualEntryText() {
+		return "Enter the name of the option into chat for " + getName();
+	}
+	
+	@Override
+	protected int getManualEntryTime() {
+		return 20;
+	}
+	
+	@Override
+	protected void onManualEntryStart(MinigamePlayer player) {
 		player.sendMessage("Possible Options: " + MinigameUtils.listToString(options));
-		return null;
 	}
 	
 	@Override
-	public void checkValidEntry(MinigamePlayer player, String entry){
-		for(String opt : options){
-			if(opt.equalsIgnoreCase(entry)){
-				value.setValue(opt);
-				updateDescription();
-				return;
+	protected String onManualEntryComplete(MinigamePlayer player, String raw) throws IllegalArgumentException {
+		for(String opt : options) {
+			if(opt.equalsIgnoreCase(raw)) {
+				return opt;
 			}
 		}
-		player.sendMessage("Could not find matching value!", "error");
-	}
-	
-	public void setOnChange(InteractionInterface ii) {
-		onChange = ii;
+		throw new IllegalArgumentException("Could not find matching option!");
 	}
 }

@@ -1,132 +1,106 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 
-public class MenuItemInteger extends MenuItem{
-
-	private Callback<Integer> value;
-	private Integer min = null;
-	private Integer max = null;
+public class MenuItemInteger extends MenuItemValue<Integer> {
+	private int min;
+	private int max;
 	
-	public MenuItemInteger(String name, Material displayItem, Callback<Integer> value, Integer min, Integer max) {
-		super(name, displayItem);
-		this.value = value;
-		if(min != null)
-			this.min = min;
-		if(max != null)
-			this.max = max;
-		updateDescription();
+	public MenuItemInteger(String name, MaterialData displayItem, Callback<Integer> callback, int min, int max) {
+		super(name, displayItem, callback);
+		this.min = min;
+		this.max = max;
 	}
-
-	public MenuItemInteger(String name, List<String> description, Material displayItem, Callback<Integer> value, Integer min, Integer max) {
-		super(name, description, displayItem);
-		this.value = value;
-		if(min != null)
-			this.min = min;
-		if(max != null)
-			this.max = max;
-		updateDescription();
+	public MenuItemInteger(String name, String description, Material displayItem, Callback<Integer> callback, int min, int max) {
+		super(name, description, displayItem, callback);
+		this.min = min;
+		this.max = max;
+	}
+	public MenuItemInteger(String name, Material displayItem, Callback<Integer> callback, int min, int max) {
+		super(name, null, displayItem, callback);
+		this.min = min;
+		this.max = max;
+	}
+	public MenuItemInteger(String name, String description, MaterialData displayItem, Callback<Integer> callback, int min, int max) {
+		super(name, description, displayItem, callback);
+		this.min = min;
+		this.max = max;
 	}
 	
-	public void updateDescription(){
-		List<String> description = null;
-		if(getDescription() != null){
-			description = getDescription();
-			String desc = ChatColor.stripColor(getDescription().get(0));
-			
-			if(desc.matches("-?[0-9]+"))
-				description.set(0, ChatColor.GREEN.toString() + value.getValue());
-			else
-				description.add(0, ChatColor.GREEN.toString() + value.getValue());
-		}
-		else{
-			description = new ArrayList<String>();
-			description.add(ChatColor.GREEN.toString() + value.getValue());
+	@Override
+	protected List<String> getValueDescription(Integer value) {
+		return Arrays.asList(ChatColor.GREEN.toString() + value);
+	}
+	
+	@Override
+	protected Integer increaseValue(Integer current, boolean shift) {
+		int value = current + (shift ? 10 : 1);
+		if (value > max) {
+			value = max;
 		}
 		
-		setDescription(description);
-	}
-	
-	@Override
-	public ItemStack onClick(MinigamePlayer player){
-		value.setValue(value.getValue() + 1);
-		if(max != null && value.getValue() > max)
-			value.setValue(max);
-		updateDescription();
-		return getItem();
-	}
-	
-	@Override
-	public ItemStack onRightClick(MinigamePlayer player){
-		value.setValue(value.getValue() - 1);
-		if(min != null && value.getValue() < min)
-			value.setValue(min);
-		updateDescription();
-		return getItem();
-	}
-	
-	@Override
-	public ItemStack onShiftClick(MinigamePlayer player){
-		value.setValue(value.getValue() + 10);
-		if(max != null && value.getValue() > max)
-			value.setValue(max);
-		updateDescription();
-		return getItem();
-	}
-	
-	@Override
-	public ItemStack onShiftRightClick(MinigamePlayer player){
-		value.setValue(value.getValue() - 10);
-		if(min != null && value.getValue() < min)
-			value.setValue(min);
-		updateDescription();
-		return getItem();
-	}
-	
-	@Override
-	public ItemStack onDoubleClick(MinigamePlayer player){
-		beginManualEntry(player, "Enter number value into chat for " + getName() + ", the menu will automatically reopen in 10s if nothing is entered.", 10);
-		String min = "N/A";
-		String max = "N/A";
-		if(this.min != null){
-			min = this.min.toString();
-		}
-		if(this.max != null){
-			max = this.max.toString();
-		}
-		player.sendMessage("Min: " + min + ", Max: " + max);
-		return null;
-	}
-	
-	@Override
-	public void checkValidEntry(MinigamePlayer player, String entry){
-		if(entry.matches("-?[0-9]+")){
-			int entryValue = Integer.parseInt(entry);
-			if((min == null || entryValue >= min) && (max == null || entryValue <= max)){
-				value.setValue(entryValue);
-				updateDescription();
-				return;
-			}
-		}
-		player.sendMessage("Invalid value entry!", "error");
-	}
-	
-	Callback<Integer> getValue(){
 		return value;
 	}
 	
-	Integer getMin(){
-		return min;
+	@Override
+	protected Integer decreaseValue(Integer current, boolean shift) {
+		int value = current - (shift ? 10 : 1);
+		if (value < min) {
+			value = min;
+		}
+		
+		return value;
 	}
 	
-	Integer getMax(){
-		return max;
+	@Override
+	protected boolean isManualEntryAllowed() {
+		return true;
+	}
+	
+	@Override
+	protected String getManualEntryText() {
+		return "Enter number value into chat for " + getName();
+	}
+	
+	@Override
+	protected int getManualEntryTime() {
+		return 10;
+	}
+	
+	@Override
+	protected void onManualEntryStart(MinigamePlayer player) {
+		String min;
+		String max = "N/A";
+		if(this.min == Integer.MIN_VALUE) {
+			min = "N/A";
+		} else {
+			min = String.valueOf(this.min);
+		}
+		
+		if(this.max == Integer.MAX_VALUE) {
+			max = "N/A";
+		} else {
+			max = String.valueOf(this.max);
+		}
+		
+		player.sendMessage("Min: " + min + ", Max: " + max);
+	}
+	
+	@Override
+	protected Integer onManualEntryComplete(MinigamePlayer player, String raw) throws IllegalArgumentException {
+		if(raw.matches("-?[0-9]+")) {
+			int value = Integer.parseInt(raw);
+			value = Math.min(Math.max(value, min), max);
+			return value;
+		}
+		
+		throw new IllegalArgumentException("Invalid value entry!");
 	}
 }

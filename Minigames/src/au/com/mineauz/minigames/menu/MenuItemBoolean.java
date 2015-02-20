@@ -1,64 +1,43 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-
-public class MenuItemBoolean extends MenuItem{
+public class MenuItemBoolean extends MenuItemValue<Boolean> {
 	
-	private Callback<Boolean> toggle = null;
-	
-	public MenuItemBoolean(String name, Material displayItem, Callback<Boolean> toggle){
-		super(name, displayItem);
-		this.toggle = toggle;
-		updateDescription();
+	public MenuItemBoolean(String name, MaterialData displayItem, Callback<Boolean> callback) {
+		super(name, displayItem, callback);
 	}
-	
-	public MenuItemBoolean(String name, List<String> description, Material displayItem, Callback<Boolean> toggle) {
-		super(name, description, displayItem);
-		this.toggle = toggle;
-		updateDescription();
+	public MenuItemBoolean(String name, String description, Material displayItem, Callback<Boolean> callback) {
+		super(name, description, displayItem, callback);
 	}
-	
-	public void updateDescription(){
-		List<String> description = null;
-		String col = "";
-		if(toggle.getValue()){
-			col = ChatColor.GREEN.toString() + "true";
-		}
-		else{
-			col = ChatColor.RED.toString() + "false";
-		}
-		if(getDescription() != null){
-			description = getDescription();
-			String desc = ChatColor.stripColor(getDescription().get(0));
-			
-			if(desc.matches("true|false"))
-				description.set(0, col);
-			else
-				description.add(0, col);
-		}
-		else{
-			description = new ArrayList<String>();
-			description.add(col);
-		}
-		
-		setDescription(description);
+	public MenuItemBoolean(String name, Material displayItem, Callback<Boolean> callback) {
+		super(name, null, displayItem, callback);
+	}
+	public MenuItemBoolean(String name, String description, MaterialData displayItem, Callback<Boolean> callback) {
+		super(name, description, displayItem, callback);
 	}
 	
 	@Override
-	public ItemStack onClick(MinigamePlayer player){
-		if(toggle.getValue())
-			toggle.setValue(false);
-		else
-			toggle.setValue(true);
-
-		updateDescription();
-		return getItem();
+	protected List<String> getValueDescription(Boolean value) {
+		if(getValue()) {
+			return Arrays.asList(ChatColor.GREEN + "True");
+		} else {
+			return Arrays.asList(ChatColor.GREEN + "False");
+		}
+	}
+	
+	@Override
+	protected Boolean increaseValue(Boolean current, boolean shift) {
+		return !current;
+	}
+	
+	@Override
+	protected Boolean decreaseValue(Boolean current, boolean shift) {
+		return !current;
 	}
 }

@@ -63,8 +63,8 @@ public class PlayerCountCondition extends ConditionInterface {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Player Count");
-		m.addItem(min.getMenuItem("Min Player Count", Material.STEP, 1, null));
-		m.addItem(max.getMenuItem("Max Player Count", Material.STONE, 1, null));
+		m.addItem(min.getMenuItem("Min Player Count", Material.STEP, 1, Integer.MAX_VALUE));
+		m.addItem(max.getMenuItem("Max Player Count", Material.STONE, 1, Integer.MAX_VALUE));
 		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;

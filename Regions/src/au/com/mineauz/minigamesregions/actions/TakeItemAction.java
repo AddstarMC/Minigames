@@ -118,7 +118,7 @@ public class TakeItemAction extends ActionInterface{
 			}
 		}));
 		m.addItem(count.getMenuItem("Count", Material.STEP, 1, 64));
-		m.addItem(damage.getMenuItem("Damage", Material.COBBLESTONE, 0, null));
+		m.addItem(damage.getMenuItem("Damage", Material.COBBLESTONE, 0, Integer.MAX_VALUE));
 		m.addItem(matchDamage.getMenuItem("Match Damage", Material.ENDER_PEARL));
 		
 		m.displayMenu(player);

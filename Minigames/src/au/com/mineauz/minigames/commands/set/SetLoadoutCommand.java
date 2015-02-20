@@ -70,9 +70,6 @@ public class SetLoadoutCommand implements ICommand {
 		List<MenuItem> mi = new ArrayList<MenuItem>();
 		LoadoutModule mod = LoadoutModule.getMinigameModule(minigame);
 		
-		List<String> des = new ArrayList<String>();
-		des.add("Shift + Right Click to Delete");
-		
 		Material item = Material.THIN_GLASS;
 		
 		for(String ld : mod.getLoadouts()){
@@ -80,7 +77,7 @@ public class SetLoadoutCommand implements ICommand {
 			if(mod.getLoadout(ld).getItems().size() != 0){
 				item = mod.getLoadout(ld).getItem((Integer)mod.getLoadout(ld).getItems().toArray()[0]).getType();
 			}
-			MenuItemDisplayLoadout mil = new MenuItemDisplayLoadout(ld, des, item, mod.getLoadout(ld), minigame);
+			MenuItemDisplayLoadout mil = new MenuItemDisplayLoadout(ld, "Shift + Right Click to Delete", item, mod.getLoadout(ld), minigame);
 			mil.setAllowDelete(mod.getLoadout(ld).isDeleteable());
 			mi.add(mil);
 		}

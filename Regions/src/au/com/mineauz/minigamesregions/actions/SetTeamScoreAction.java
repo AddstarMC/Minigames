@@ -85,14 +85,14 @@ public class SetTeamScoreAction extends ActionInterface {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Set Team Score");
-		m.addItem(score.getMenuItem("Set Score Amount", Material.STONE, null, null));
+		m.addItem(score.getMenuItem("Set Score Amount", Material.STONE, Integer.MIN_VALUE, Integer.MAX_VALUE));
 		
 		List<String> teams = new ArrayList<String>();
 		teams.add("None");
 		for(TeamColor team : TeamColor.values()){
 			teams.add(MinigameUtils.capitalize(team.toString()));
 		}
-		m.addItem(new MenuItemList("Specific Team", MinigameUtils.stringToList("If 'None', the players;team will be used"), Material.PAPER, new Callback<String>() {
+		m.addItem(new MenuItemList("Specific Team", "If 'None', the players;team will be used", Material.PAPER, new Callback<String>() {
 
 			@Override
 			public void setValue(String value) {

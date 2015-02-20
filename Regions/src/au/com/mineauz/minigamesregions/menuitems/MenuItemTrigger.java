@@ -1,8 +1,6 @@
 package au.com.mineauz.minigamesregions.menuitems;
 
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Menu;
@@ -35,7 +33,7 @@ public class MenuItemTrigger extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(MinigamePlayer player){
+	public void onClick(MinigamePlayer player){
 		if(region != null){
 			RegionExecutor exec = new RegionExecutor(trigger);
 			region.addExecutor(exec);
@@ -48,7 +46,6 @@ public class MenuItemTrigger extends MenuItem{
 			previous.addItem(new MenuItemNodeExecutor(node, exec));
 			previous.displayMenu(player);
 		}
-		return null;
 	}
 
 }

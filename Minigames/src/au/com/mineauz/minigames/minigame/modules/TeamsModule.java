@@ -9,7 +9,6 @@ import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.StringFlag;
@@ -18,13 +17,14 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemAddTeam;
-import au.com.mineauz.minigames.menu.MenuItemList;
+import au.com.mineauz.minigames.menu.MenuItemEnum;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.menu.MenuItemSubMenu;
 import au.com.mineauz.minigames.menu.MenuItemTeam;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
+import au.com.mineauz.minigames.minigame.TeamSelection;
 
 public class TeamsModule extends MinigameModule {
 	private Map<TeamColor, Team> teams = new HashMap<TeamColor, Team>();
@@ -143,22 +143,24 @@ public class TeamsModule extends MinigameModule {
 		return true;
 	}
 	
-	public Callback<String> getDefaultWinnerCallback(){
-		return new Callback<String>() {
+	public Callback<TeamSelection> getDefaultWinnerCallback(){
+		// TODO: Make the flag an enum flag
+		return new Callback<TeamSelection>() {
 
 			@Override
-			public void setValue(String value) {
-				if(!value.equals("None"))
-					defaultWinner.setFlag(TeamColor.matchColor(value.replace(" ", "_")).toString());
-				else
+			public void setValue(TeamSelection value) {
+				if (value == TeamSelection.NONE) {
 					defaultWinner.setFlag(null);
+				} else {
+					defaultWinner.setFlag(value.name());
+				}
 			}
 
 			@Override
-			public String getValue() {
+			public TeamSelection getValue() {
 				if(defaultWinner.getFlag() != null)
-					return MinigameUtils.capitalize(defaultWinner.getFlag().replace("_", " "));
-				return "None";
+					return TeamSelection.valueOf(defaultWinner.getFlag());
+				return TeamSelection.NONE;
 			}
 		};
 	}
@@ -177,18 +179,15 @@ public class TeamsModule extends MinigameModule {
 		teams.clear();
 		defaultWinner = null;
 	}
-
+	
 	@Override
 	public void addEditMenuOptions(Menu menu) {
 		Menu m = new Menu(6, "Teams");
 
 		List<MenuItem> items = new ArrayList<MenuItem>();
-		List<String> teams = new ArrayList<String>(this.teams.size() + 1);
-		for(TeamColor t : this.teams.keySet()){
-			teams.add(MinigameUtils.capitalize(t.toString().replace("_", " ")));
-		}
-		teams.add("None");
-		items.add(new MenuItemList("Default Winning Team", Material.PAPER, getDefaultWinnerCallback(), teams));
+		final MenuItemEnum<TeamSelection> defaultWinnerItem = new MenuItemEnum<TeamSelection>("Default Winning Team", Material.PAPER, getDefaultWinnerCallback(), TeamSelection.class);
+		
+		items.add(defaultWinnerItem);
 		items.add(new MenuItemNewLine());
 		for(Team t : this.teams.values()){
 			items.add(new MenuItemTeam(t.getChatColor() + t.getDisplayName(), t));

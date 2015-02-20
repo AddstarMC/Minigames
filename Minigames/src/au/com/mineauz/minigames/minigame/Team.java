@@ -290,18 +290,18 @@ public class Team {
 		return nametagVisibility.getFlag();
 	}
 	
-	public Callback<String> getNameTagVisibilityCallback(){
-		return new Callback<String>() {
+	public Callback<NameTagVisibility> getNameTagVisibilityCallback() {
+		return new Callback<NameTagVisibility>() {
 
 			@Override
-			public void setValue(String value) {
-				nametagVisibility.setFlag(NameTagVisibility.valueOf(value));
-				mgm.getScoreboardManager().getTeam(color.toString().toLowerCase()).setNameTagVisibility(nametagVisibility.getFlag());
+			public void setValue(NameTagVisibility value) {
+				nametagVisibility.setFlag(value);
+				mgm.getScoreboardManager().getTeam(color.toString().toLowerCase()).setNameTagVisibility(value);
 			}
 
 			@Override
-			public String getValue() {
-				return nametagVisibility.getFlag().toString();
+			public NameTagVisibility getValue() {
+				return nametagVisibility.getFlag();
 			}
 		};
 	}

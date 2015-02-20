@@ -78,24 +78,13 @@ public class TreasureHuntModule extends MinigameModule{
 		Menu treasureHunt = new Menu(6, getMinigame().getName(false));
 		
 		List<MenuItem> itemsTreasureHunt = new ArrayList<MenuItem>(5);
-		itemsTreasureHunt.add(location.getMenuItem("Location Name", Material.BED, MinigameUtils.stringToList("Name to appear when;treasure spawns")));
-		itemsTreasureHunt.add(maxRadius.getMenuItem("Max. Radius", Material.ENDER_PEARL, 10, null));
-		List<String> maxHeightDes = new ArrayList<String>();
-		maxHeightDes.add("Max. height of where a");
-		maxHeightDes.add("chest can generate.");
-		maxHeightDes.add("Can still move above to");
-		maxHeightDes.add("avoid terrain");
-		itemsTreasureHunt.add(maxHeight.getMenuItem("Max. Height", Material.BEACON, maxHeightDes, 1, 256));
-		List<String> minDes = new ArrayList<String>();
-		minDes.add("Minimum items to");
-		minDes.add("spawn in chest.");
-		itemsTreasureHunt.add(minTreasure.getMenuItem("Min. Items", Material.STEP, minDes, 0, 27));
-		List<String> maxDes = new ArrayList<String>();
-		maxDes.add("Maximum items to");
-		maxDes.add("spawn in chest.");
-		itemsTreasureHunt.add(maxTreasure.getMenuItem("Max. Items", Material.STONE, maxDes, 0, 27));
-		itemsTreasureHunt.add(new MenuItemTime("Restart Delay", Material.WATCH, treasureWaitTime.getCallback(), 0, null));
-		itemsTreasureHunt.add(new MenuItemTime("Hint Usage Delay", Material.WATCH, hintWaitTime.getCallback(), 0, null));
+		itemsTreasureHunt.add(location.getMenuItem("Location Name", "Name to appear when;treasure spawns", Material.BED));
+		itemsTreasureHunt.add(maxRadius.getMenuItem("Max. Radius", Material.ENDER_PEARL, 10, Integer.MAX_VALUE));
+		itemsTreasureHunt.add(maxHeight.getMenuItem("Max. Height", "Max. height of where a;chest can generate.;Can still move above to;avoid terrain", Material.BEACON, 1, 256));
+		itemsTreasureHunt.add(minTreasure.getMenuItem("Min. Items", "Minimum items to;spawn in chest.", Material.STEP, 0, 27));
+		itemsTreasureHunt.add(maxTreasure.getMenuItem("Max. Items", "Maximum items to;spawn in chest.", Material.STONE, 0, 27));
+		itemsTreasureHunt.add(new MenuItemTime("Restart Delay", Material.WATCH, treasureWaitTime.getCallback(), 0, Integer.MAX_VALUE));
+		itemsTreasureHunt.add(new MenuItemTime("Hint Usage Delay", Material.WATCH, hintWaitTime.getCallback(), 0, Integer.MAX_VALUE));
 		treasureHunt.addItems(itemsTreasureHunt);
 		return treasureHunt;
 	}

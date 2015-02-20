@@ -11,7 +11,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
@@ -20,10 +19,10 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItem.IMenuItemClick;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.menu.MenuItemDecimal;
 import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
@@ -151,7 +150,7 @@ public class SpawnEntityAction extends ActionInterface {
 			public Double getValue() {
 				return Double.valueOf(settings.get("velocityx"));
 			}
-		}, 0.5, 1, null, null));
+		}, 0.5, 1, Double.MIN_VALUE, Double.MAX_VALUE));
 		m.addItem(new MenuItemDecimal("Y Velocity", Material.ARROW, new Callback<Double>() {
 
 			@Override
@@ -163,7 +162,7 @@ public class SpawnEntityAction extends ActionInterface {
 			public Double getValue() {
 				return Double.valueOf(settings.get("velocityy"));
 			}
-		}, 0.5, 1, null, null));
+		}, 0.5, 1, Double.MIN_VALUE, Double.MAX_VALUE));
 		m.addItem(new MenuItemDecimal("Z Velocity", Material.ARROW, new Callback<Double>() {
 
 			@Override
@@ -175,23 +174,20 @@ public class SpawnEntityAction extends ActionInterface {
 			public Double getValue() {
 				return Double.valueOf(settings.get("velocityz"));
 			}
-		}, 0.5, 1, null, null));
+		}, 0.5, 1, Double.MIN_VALUE, Double.MAX_VALUE));
 		
 		m.addItem(new MenuItemNewLine());
 		
-		final MenuItemCustom cus = new MenuItemCustom("Entity Settings", Material.CHEST);
-		cus.setClick(new InteractionInterface() {
-			
+		final MenuItem cus = new MenuItem("Entity Settings", Material.CHEST);
+		cus.setClickHandler(new IMenuItemClick() {
 			@Override
-			public ItemStack interact(MinigamePlayer player, ItemStack item) {
+			public void onClick(MenuItem menuItem, MinigamePlayer player) {
 				if(type.getFlag().equals("ZOMBIE")){
 					Menu eSet = new Menu(3, "Settings");
 					eSet.clear();
 					livingEntitySettings(eSet);
 					eSet.displayMenu(player);
-					return null;
 				}
-				return cus.getItem();
 			}
 		});
 		m.addItem(cus);

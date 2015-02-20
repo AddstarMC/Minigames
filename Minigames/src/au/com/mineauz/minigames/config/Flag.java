@@ -1,9 +1,8 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.material.MaterialData;
 
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
@@ -55,6 +54,17 @@ public abstract class Flag<T> {
 	
 	public abstract void saveValue(String path, FileConfiguration config);
 	public abstract void loadValue(String path, FileConfiguration config);
-	public abstract MenuItem getMenuItem(String name, Material displayItem);
-	public abstract MenuItem getMenuItem(String name, Material displayItem, List<String> description);
+	public final MenuItem getMenuItem(String name, Material displayItem) {
+		return getMenuItem(name, null, displayItem);
+	}
+	public MenuItem getMenuItem(String name, String description, Material displayItem) {
+		throw new UnsupportedOperationException("This flag does not have a menu item");
+	}
+	public final MenuItem getMenuItem(String name, MaterialData displayItem) {
+		return getMenuItem(name, null, displayItem);
+	}
+	public MenuItem getMenuItem(String name, String description, MaterialData displayItem) {
+		throw new UnsupportedOperationException("This flag does not have a menu item");
+	}
+	
 }

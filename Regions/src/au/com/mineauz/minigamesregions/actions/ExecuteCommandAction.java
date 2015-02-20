@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
@@ -88,9 +87,7 @@ public class ExecuteCommandAction extends ActionInterface {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Execute Command");
-		m.addItem(new MenuItemString("Command", MinigameUtils.stringToList("Do not include '/';If '//' command, start with './'"), 
-				Material.COMMAND, new Callback<String>() {
-			
+		m.addItem(new MenuItemString("Command", "Do not include '/';If '//' command, start with './'", Material.COMMAND, new Callback<String>() {
 			@Override
 			public void setValue(String value) {
 				if(value.startsWith("./"))

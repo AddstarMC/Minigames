@@ -105,8 +105,7 @@ public class GiveItemAction extends ActionInterface{
 		MenuItemString n = (MenuItemString) name.getMenuItem("Name", Material.NAME_TAG);
 		n.setAllowNull(true);
 		m.addItem(n);
-		MenuItemString l = (MenuItemString) lore.getMenuItem("Lore", Material.PAPER, 
-				MinigameUtils.stringToList("Separate with semi-colons;for new lines"));
+		MenuItemString l = (MenuItemString) lore.getMenuItem("Lore", "Separate with semi-colons;for new lines", Material.PAPER);
 		l.setAllowNull(true);
 		m.addItem(l);
 		
@@ -127,7 +126,7 @@ public class GiveItemAction extends ActionInterface{
 			}
 		}));
 		m.addItem(count.getMenuItem("Count", Material.STEP, 1, 64));
-		m.addItem(damage.getMenuItem("Damage", Material.COBBLESTONE, 0, null));
+		m.addItem(damage.getMenuItem("Damage", Material.COBBLESTONE, 0, Integer.MAX_VALUE));
 		
 		m.displayMenu(player);
 		return true;

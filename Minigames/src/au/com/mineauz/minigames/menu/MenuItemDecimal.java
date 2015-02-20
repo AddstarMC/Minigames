@@ -1,138 +1,118 @@
 package au.com.mineauz.minigames.menu;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 
-public class MenuItemDecimal extends MenuItem{
+public class MenuItemDecimal extends MenuItemValue<Double> {
+	public static final DecimalFormat format = new DecimalFormat("#.##");
 	
-	protected Callback<Double> value;
 	private double lowerInc;
 	private double upperInc;
 	private Double min;
 	private Double max;
-	protected DecimalFormat form = new DecimalFormat("#.##");
-
-	public MenuItemDecimal(String name, Material displayItem, Callback<Double> value,
-			double lowerInc, double upperInc, Double min, Double max) {
-		super(name, displayItem);
-		this.value = value;
+	
+	public MenuItemDecimal(String name, MaterialData displayItem, Callback<Double> callback, double lowerInc, double upperInc, double min, double max) {
+		super(name, displayItem, callback);
 		this.lowerInc = lowerInc;
 		this.upperInc = upperInc;
 		this.min = min;
 		this.max = max;
-		updateDescription();
 	}
-
-	public MenuItemDecimal(String name, List<String> description, Material displayItem, Callback<Double> value,
-			double lowerInc, double upperInc, Double min, Double max) {
-		super(name, description, displayItem);
-		this.value = value;
+	public MenuItemDecimal(String name, String description, Material displayItem, Callback<Double> callback, double lowerInc, double upperInc, double min, double max) {
+		super(name, description, displayItem, callback);
 		this.lowerInc = lowerInc;
 		this.upperInc = upperInc;
 		this.min = min;
 		this.max = max;
-		updateDescription();
+	}
+	public MenuItemDecimal(String name, Material displayItem, Callback<Double> callback, double lowerInc, double upperInc, double min, double max) {
+		super(name, null, displayItem, callback);
+		this.lowerInc = lowerInc;
+		this.upperInc = upperInc;
+		this.min = min;
+		this.max = max;
+	}
+	public MenuItemDecimal(String name, String description, MaterialData displayItem, Callback<Double> callback, double lowerInc, double upperInc, double min, double max) {
+		super(name, description, displayItem, callback);
+		this.lowerInc = lowerInc;
+		this.upperInc = upperInc;
+		this.min = min;
+		this.max = max;
 	}
 	
-	public void setFormat(DecimalFormat format){
-		form = format;
+	@Override
+	protected List<String> getValueDescription(Double value) {
+		return Arrays.asList(ChatColor.GREEN + format.format(value));
 	}
 	
-	public void updateDescription(){
-		List<String> description = null;
-		if(getDescription() != null){
-			description = getDescription();
-			String desc = ChatColor.stripColor(getDescription().get(0));
-			
-			if(desc.matches("-?[0-9]+(.[0-9]+)?"))
-				description.set(0, ChatColor.GREEN.toString() + form.format(value.getValue()));
-			else
-				description.add(0, ChatColor.GREEN.toString() + form.format(value.getValue()));
-		}
-		else{
-			description = new ArrayList<String>();
-			description.add(ChatColor.GREEN.toString() + form.format(value.getValue()));
+	@Override
+	protected Double increaseValue(Double current, boolean shift) {
+		double value = current + (shift ? upperInc : lowerInc);
+		if (value > max) {
+			value = max;
 		}
 		
-		setDescription(description);
+		return value;
 	}
 	
 	@Override
-	public ItemStack onClick(MinigamePlayer player){
-		if(max == null || value.getValue() < max)
-			value.setValue(Double.valueOf(form.format(value.getValue() + lowerInc)));
-		if(max != null && value.getValue() > max)
-			value.setValue(max);
-		updateDescription();
-		return getItem();
-	}
-	
-	@Override
-	public ItemStack onRightClick(MinigamePlayer player){
-		if(min == null || value.getValue() > min)
-			value.setValue(Double.valueOf(form.format(value.getValue() - lowerInc)));
-		if(min != null && value.getValue() < min)
-			value.setValue(min);
-		updateDescription();
-		return getItem();
-	}
-	
-	@Override
-	public ItemStack onShiftClick(MinigamePlayer player){
-		if(max == null || value.getValue() < max)
-			value.setValue(Double.valueOf(form.format(value.getValue() + upperInc)));
-		if(max != null && value.getValue() > max)
-			value.setValue(max);
-		updateDescription();
-		return getItem();
-	}
-	
-	@Override
-	public ItemStack onShiftRightClick(MinigamePlayer player){
-		if(min == null || value.getValue() > min)
-			value.setValue(Double.valueOf(form.format(value.getValue() - upperInc)));
-		if(min != null && value.getValue() < min)
-			value.setValue(min);
-		updateDescription();
-		return getItem();
-	}
-	
-	@Override
-	public ItemStack onDoubleClick(MinigamePlayer player){
-		beginManualEntry(player, "Enter decimal value into chat for " + getName() + ", the menu will automatically reopen in 15s if nothing is entered.", 15);
-		String min = "N/A";
-		String max = "N/A";
-		if(this.min != null){
-			min = this.min.toString();
+	protected Double decreaseValue(Double current, boolean shift) {
+		double value = current - (shift ? upperInc : lowerInc);
+		if (value > min) {
+			value = min;
 		}
-		if(this.max != null){
-			max = this.max.toString();
+		
+		return value;
+	}
+	
+	@Override
+	protected boolean isManualEntryAllowed() {
+		return true;
+	}
+	
+	@Override
+	protected String getManualEntryText() {
+		return "Enter decimal value into chat for " + getName();
+	}
+	
+	@Override
+	protected int getManualEntryTime() {
+		return 15;
+	}
+	
+	@Override
+	protected void onManualEntryStart(MinigamePlayer player) {
+		String min;
+		String max;
+		if(this.min == Double.MIN_VALUE) {
+			min = "N/A";
+		} else {
+			min = format.format(this.min);
 		}
+		if(this.max == Double.MAX_VALUE) {
+			max = "N/A";
+		} else {
+			max = format.format(this.max);
+		}
+		
 		player.sendMessage("Min: " + min + ", Max: " + max);
-		
-		return null;
 	}
 	
 	@Override
-	public void checkValidEntry(MinigamePlayer player, String entry){
-		if(entry.matches("-?[0-9]+(.[0-9]+)?")){
-			double entryValue = Double.parseDouble(entry);
-			if((min == null || entryValue >= min) && (max == null || entryValue <= max)){
-				value.setValue(entryValue);
-				updateDescription();
-				
-				return;
-			}
+	protected Double onManualEntryComplete(MinigamePlayer player, String raw) throws IllegalArgumentException {
+		try {
+			double value = Double.parseDouble(raw);
+			value = Math.min(Math.max(value, min), max);
+			return value;
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Invalid value entry!");
 		}
-		
-		player.sendMessage("Invalid value entry!", "error");
 	}
-
 }

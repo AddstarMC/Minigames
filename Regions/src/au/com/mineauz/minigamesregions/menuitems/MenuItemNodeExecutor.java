@@ -2,15 +2,11 @@ package au.com.mineauz.minigamesregions.menuitems;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigamesregions.Node;
@@ -36,28 +32,24 @@ public class MenuItemNodeExecutor extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onClick(MinigamePlayer player){
+	public void onClick(MinigamePlayer player){
 		Menu m = new Menu(3, "Executor");
 		final Menu ffm = m;
 		
-		MenuItemCustom ca = new MenuItemCustom("Actions", Material.CHEST);
-		ca.setClick(new InteractionInterface() {
-			
+		MenuItem ca = new MenuItem("Actions", Material.CHEST);
+		ca.setClickHandler(new IMenuItemClick() {
 			@Override
-			public ItemStack interact(MinigamePlayer player, ItemStack item) {
+			public void onClick(MenuItem menuItem, MinigamePlayer player) {
 				Actions.displayMenu(player, ex, ffm);
-				return null;
 			}
 		});
 		m.addItem(ca);
 		
-		MenuItemCustom c2 = new MenuItemCustom("Conditions", Material.CHEST);
-		c2.setClick(new InteractionInterface() {
-			
+		MenuItem c2 = new MenuItem("Conditions", Material.CHEST);
+		c2.setClickHandler(new IMenuItemClick() {
 			@Override
-			public ItemStack interact(MinigamePlayer player, ItemStack item) {
+			public void onClick(MenuItem menuItem, MinigamePlayer player) {
 				Conditions.displayMenu(player, ex, ffm);
-				return null;
 			}
 		});
 		m.addItem(c2);
@@ -65,21 +57,19 @@ public class MenuItemNodeExecutor extends MenuItem{
 		m.addItem(new MenuItemNewLine());
 		
 		m.addItem(new MenuItemInteger("Trigger Count", 
-				MinigameUtils.stringToList("Number of times this;node can be;triggered"), 
-				Material.STONE, ex.getTriggerCountCallback(), 0, null));
+				"Number of times this;node can be;triggered", 
+				Material.STONE, ex.getTriggerCountCallback(), 0, Integer.MAX_VALUE));
 		
 		m.addItem(new MenuItemBoolean("Trigger Per Player", 
-				MinigameUtils.stringToList("Whether this node;is triggered per player;or just on count"), 
+				"Whether this node;is triggered per player;or just on count", 
 				Material.ENDER_PEARL, ex.getIsTriggerPerPlayerCallback()));
 		m.displayMenu(player);
-		return null;
 	}
 	
 	@Override
-	public ItemStack onRightClick(MinigamePlayer player){
+	public void onRightClick(MinigamePlayer player){
 		node.removeExecutor(ex);
 		remove();
-		return null;
 	}
 
 }

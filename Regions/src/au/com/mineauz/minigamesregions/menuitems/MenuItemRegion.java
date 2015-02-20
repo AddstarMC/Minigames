@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
@@ -24,24 +22,22 @@ public class MenuItemRegion extends MenuItem{
 		this.rmod = rmod;
 	}
 
-	public MenuItemRegion(String name, List<String> description, Material displayItem, Region region, RegionModule rmod) {
+	public MenuItemRegion(String name, String description, Material displayItem, Region region, RegionModule rmod) {
 		super(name, description, displayItem);
 		this.region = region;
 		this.rmod = rmod;
 	}
 	
 	@Override
-	public ItemStack onClick(MinigamePlayer player){
+	public void onClick(MinigamePlayer player){
 		Menu m = createMenu(player, getContainer(), region);
 		m.displayMenu(player);
-		return null;
 	}
 	
 	@Override
-	public ItemStack onRightClick(MinigamePlayer player){
+	public void onRightClick(MinigamePlayer player){
 		rmod.removeRegion(region.getName());
 		remove();
-		return null;
 	}
 	
 	public static Menu createMenu(MinigamePlayer viewer, Menu previousPage, Region region){

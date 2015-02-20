@@ -1,10 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -20,16 +16,15 @@ public class MenuItemPotionAdd extends MenuItem{
 		this.loadout = loadout;
 	}
 
-	public MenuItemPotionAdd(String name, List<String> description, Material displayItem, PlayerLoadout loadout) {
+	public MenuItemPotionAdd(String name, String description, Material displayItem, PlayerLoadout loadout) {
 		super(name, description, displayItem);
 		this.loadout = loadout;
 	}
 	
 	@Override
-	public ItemStack onClick(MinigamePlayer player){
+	public void onClick(MinigamePlayer player){
 		beginManualEntry(player, "Enter a potion using the syntax below into chat, the menu will automatically reopen in 30s if nothing is entered.", 30);
 		player.sendMessage("PotionName, level, duration (duration can be \"inf\")");
-		return null;
 	}
 	
 	@Override
@@ -53,9 +48,6 @@ public class MenuItemPotionAdd extends MenuItem{
 						}
 						dur*=20;
 
-						List<String> des = new ArrayList<String>();
-						des.add("Shift + Right Click to Delete");
-						
 						PotionEffect peff = new PotionEffect(eff, dur, level);
 						MenuItem toRemove = null;
 						
@@ -73,7 +65,7 @@ public class MenuItemPotionAdd extends MenuItem{
 							toRemove.onShiftRightClick(player);
 						}
 						
-						getContainer().addItem(new MenuItemPotion(eff.getName().toLowerCase().replace("_", " "), des, Material.POTION, peff, loadout));
+						getContainer().addItem(new MenuItemPotion(eff.getName().toLowerCase().replace("_", " "), "Shift + Right Click to Delete", Material.POTION, peff, loadout));
 						getContainer().refresh();
 					}
 					else

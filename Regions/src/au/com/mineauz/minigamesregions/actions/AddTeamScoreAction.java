@@ -12,7 +12,6 @@ import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
@@ -86,25 +85,14 @@ public class AddTeamScoreAction extends ActionInterface {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Add Team Score");
-		m.addItem(new MenuItemInteger("Add Score Amount", Material.STONE, new Callback<Integer>() {
-			
-			@Override
-			public void setValue(Integer value) {
-				score.setFlag(value);
-			}
-			
-			@Override
-			public Integer getValue() {
-				return score.getFlag();
-			}
-		}, null, null));
+		m.addItem(score.getMenuItem("Add Score Amount", Material.STONE, Integer.MIN_VALUE, Integer.MAX_VALUE));
 		
 		List<String> teams = new ArrayList<String>();
 		teams.add("None");
 		for(TeamColor team : TeamColor.values()){
 			teams.add(MinigameUtils.capitalize(team.toString()));
 		}
-		m.addItem(new MenuItemList("Specific Team", MinigameUtils.stringToList("If 'None', the players;team will be used"), Material.PAPER, new Callback<String>() {
+		m.addItem(new MenuItemList("Specific Team", "If 'None', the players;team will be used", Material.PAPER, new Callback<String>() {
 
 			@Override
 			public void setValue(String value) {

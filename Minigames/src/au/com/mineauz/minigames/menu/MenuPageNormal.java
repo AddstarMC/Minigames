@@ -97,6 +97,7 @@ public class MenuPageNormal extends MenuPage implements Iterable<MenuItem> {
 			}
 			
 			if (item != null) {
+				item.update();
 				cached[i] = item.getItem();
 			}
 		}

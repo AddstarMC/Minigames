@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -23,7 +22,7 @@ public class MenuItemPotion extends MenuItem{
 		updateDescription();
 	}
 
-	public MenuItemPotion(String name, List<String> description, Material displayItem, PotionEffect eff, PlayerLoadout loadout) {
+	public MenuItemPotion(String name, String description, Material displayItem, PotionEffect eff, PlayerLoadout loadout) {
 		super(name, description, displayItem);
 		this.eff = eff;
 		this.loadout = loadout;
@@ -31,11 +30,10 @@ public class MenuItemPotion extends MenuItem{
 	}
 	
 	public void updateDescription(){
-		List<String> description = null;
-		if(getDescription() != null){
-			description = getDescription();
-			if(getDescription().size() >= 2){
-				String desc = ChatColor.stripColor(getDescription().get(0));
+		List<String> description = new ArrayList<String>(getDescription());
+		if(!description.isEmpty()){
+			if(description.size() >= 2){
+				String desc = ChatColor.stripColor(description.get(0));
 				
 				if(desc.equals("Level: " + (eff.getAmplifier() + 1))){
 					description.set(0, ChatColor.GREEN.toString() + "Level: " + ChatColor.GRAY + (eff.getAmplifier() + 1));
@@ -61,10 +59,9 @@ public class MenuItemPotion extends MenuItem{
 	}
 	
 	@Override
-	public ItemStack onShiftRightClick(MinigamePlayer player){
+	public void onShiftRightClick(MinigamePlayer player){
 		loadout.removePotionEffect(eff);
 		remove();
-		return null;
 	}
 	
 	public PotionEffect getEffect(){

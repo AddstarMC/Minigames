@@ -1,17 +1,12 @@
 package au.com.mineauz.minigames.minigame.reward;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemReward;
 
 public class ItemReward extends RewardType{
 
@@ -43,7 +38,7 @@ public class ItemReward extends RewardType{
 
 	@Override
 	public MenuItem getMenuItem() {
-		return new MenuItemReward(this);
+		return new MenuItemRewardItem(this);
 	}
 
 	@Override
@@ -64,118 +59,20 @@ public class ItemReward extends RewardType{
 		this.item = item;
 	}
 	
-	private class MenuItemReward extends MenuItem{
-		private List<String> options = new ArrayList<String>();
-		private ItemReward reward;
+	private static class MenuItemRewardItem extends MenuItemReward {
 
-		public MenuItemReward(ItemReward reward) {
-			super("PLACEHOLDER", MinigameUtils.stringToList("Click with item;to change."), Material.DIAMOND);
+		public MenuItemRewardItem(ItemReward reward) {
+			super("PLACEHOLDER", "Click with item;to change.;Shift + Right Click to remove", Material.DIAMOND, reward);
 			setItem(reward.getRewardItem());
-			for(RewardRarity rarity : RewardRarity.values()){
-				options.add(rarity.toString());
-			}
-			this.reward = reward;
-			updateDescription();
+			setName(MinigameUtils.capitalize(reward.getRewardItem().getType().toString().replace('_', ' ')));
 		}
 		
 		@Override
-		public void setItem(ItemStack item){
-			super.setItem(item);
-			ItemMeta meta = getItem().getItemMeta();
-			meta.setDisplayName(ChatColor.RESET + MinigameUtils.capitalize(item.getType().toString().replace("_", " ")));
-			getItem().setItemMeta(meta);
-		}
-		
-		@Override
-		public ItemStack onClickWithItem(MinigamePlayer player, ItemStack item){
+		public void onClickWithItem(MinigamePlayer player, ItemStack item){
 			setItem(item);
-			setRewardItem(item.clone());
+			setName(MinigameUtils.capitalize(item.getType().toString().replace('_', ' ')));
 			updateDescription();
-			return getItem();
-		}
-		
-		public void updateDescription(){
-			List<String> description = null;
-			if(options == null){
-				options = new ArrayList<String>();
-				for(RewardRarity rarity : RewardRarity.values()){
-					options.add(rarity.toString());
-				}
-			}
-			int pos = options.indexOf(getRarity().toString());
-			int before = pos - 1;
-			int after = pos + 1;
-			if(before == -1)
-				before = options.size() - 1;
-			if(after == options.size())
-				after = 0;
-			
-			if(getDescription() != null){
-				description = getDescription();
-				if(getDescription().size() >= 3){
-					String desc = ChatColor.stripColor(getDescription().get(1));
-					
-					if(options.contains(desc)){
-						description.set(0, ChatColor.GRAY.toString() + options.get(before));
-						description.set(1, ChatColor.GREEN.toString() + getRarity().toString());
-						description.set(2, ChatColor.GRAY.toString() + options.get(after));
-					}
-					else{
-						description.add(0, ChatColor.GRAY.toString() + options.get(before));
-						description.add(1, ChatColor.GREEN.toString() + getRarity().toString());
-						description.add(2, ChatColor.GRAY.toString() + options.get(after));
-						description.add(3, ChatColor.DARK_PURPLE.toString() + "Shift + Right Click to remove");
-					}
-				}
-				else{
-					description.add(0, ChatColor.GRAY.toString() + options.get(before));
-					description.add(1, ChatColor.GREEN.toString() + getRarity().toString());
-					description.add(2, ChatColor.GRAY.toString() + options.get(after));
-					description.add(3, ChatColor.DARK_PURPLE.toString() + "Shift + Right Click to remove");
-				}
-			}
-			else{
-				description = new ArrayList<String>();
-				description.add(ChatColor.GRAY.toString() + options.get(before));
-				description.add(ChatColor.GREEN.toString() + getRarity().toString());
-				description.add(ChatColor.GRAY.toString() + options.get(after));
-				description.add(3, ChatColor.DARK_PURPLE.toString() + "Shift + Right Click to remove");
-			}
-			
-			setDescription(description);
-		}
-		
-		@Override
-		public ItemStack onClick(MinigamePlayer player){
-			int ind = options.lastIndexOf(getRarity().toString());
-			ind++;
-			if(ind == options.size())
-				ind = 0;
-			
-			setRarity(RewardRarity.valueOf(options.get(ind)));
-			updateDescription();
-			
-			return getItem();
-		}
-		
-		@Override
-		public ItemStack onRightClick(MinigamePlayer player){
-			int ind = options.lastIndexOf(getRarity().toString());
-			ind--;
-			if(ind == -1)
-				ind = options.size() - 1;
-			
-			setRarity(RewardRarity.valueOf(options.get(ind)));
-			updateDescription();
-			
-			return getItem();
-		}
-		
-		@Override
-		public ItemStack onShiftRightClick(MinigamePlayer player){
-			getRewards().removeReward(reward);
-			remove();
-			return null;
+			((ItemReward)getReward()).item = item.clone();
 		}
 	}
 }

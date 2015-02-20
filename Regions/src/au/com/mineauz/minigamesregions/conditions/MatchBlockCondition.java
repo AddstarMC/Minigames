@@ -7,15 +7,14 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItem.IMenuItemClickItem;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Node;
@@ -86,9 +85,8 @@ public class MatchBlockCondition extends ConditionInterface {
 
 	@Override
 	public boolean displayMenu(final MinigamePlayer player, Menu prev) {
-		Menu m = new Menu(3, "Match Block");
-		final MenuItemCustom c = new MenuItemCustom("Auto Set Block", 
-				MinigameUtils.stringToList("Click here with a;block you wish to;match to."), Material.ITEM_FRAME);
+		final Menu m = new Menu(3, "Match Block");
+		final MenuItem c = new MenuItem("Auto Set Block", "Click here with a;block you wish to;match to.", Material.ITEM_FRAME);
 		m.setControlItem(c, 4);
 		
 		final MenuItemString btype = new MenuItemString("Block Type", Material.STONE, new Callback<String>() {
@@ -112,17 +110,13 @@ public class MatchBlockCondition extends ConditionInterface {
 		final MenuItemInteger bdur = (MenuItemInteger) dur.getMenuItem("Data Value", Material.PAPER, 0, 16);
 		m.addItem(bdur);
 		
-		c.setClickItem(new InteractionInterface() {
-			
+		c.setClickWithItemHandler(new IMenuItemClickItem() {
 			@Override
-			public ItemStack interact(MinigamePlayer player, ItemStack item) {
+			public void onClickWithItem(MenuItem menuItem, MinigamePlayer player, ItemStack item) {
 				type.setFlag(item.getType().toString());
 				useDur.setFlag(true);
 				dur.setFlag(((Short)item.getDurability()).intValue());
-				bdur.updateDescription();
-				busedur.updateDescription();
-				btype.updateDescription();
-				return c.getItem();
+				m.refresh();
 			}
 		});
 		addInvertMenuItem(m);

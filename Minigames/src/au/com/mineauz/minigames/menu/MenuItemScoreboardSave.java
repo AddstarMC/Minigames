@@ -1,11 +1,8 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -22,13 +19,13 @@ public class MenuItemScoreboardSave extends MenuItem{
 		this.disp = disp;
 	}
 
-	public MenuItemScoreboardSave(String name, List<String> description, Material displayItem, ScoreboardDisplay disp) {
+	public MenuItemScoreboardSave(String name, String description, Material displayItem, ScoreboardDisplay disp) {
 		super(name, description, displayItem);
 		this.disp = disp;
 	}
 	
 	@Override
-	public ItemStack onClick(MinigamePlayer player) {
+	public void onClick(MinigamePlayer player) {
 		if(disp.getLocation().getBlock().getState() instanceof Sign){
 			Sign sign = (Sign)disp.getLocation().getBlock().getState();
 			sign.setLine(0, ChatColor.BLUE + disp.getMinigame().getName(false));
@@ -42,6 +39,5 @@ public class MenuItemScoreboardSave extends MenuItem{
 			disp.getMinigame().getScoreboardData().addDisplay(disp);
 		}
 		player.getPlayer().closeInventory();
-		return null;
 	}
 }

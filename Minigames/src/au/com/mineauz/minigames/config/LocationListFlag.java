@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-
-import au.com.mineauz.minigames.menu.MenuItem;
 
 public class LocationListFlag extends Flag<List<Location>>{
 	
@@ -43,16 +40,4 @@ public class LocationListFlag extends Flag<List<Location>>{
 		}
 		setFlag(locs);
 	}
-
-	@Override
-	public MenuItem getMenuItem(String name, Material displayItem) {
-		return null;
-	}
-
-	@Override
-	public MenuItem getMenuItem(String name, Material displayItem,
-			List<String> description) {
-		return null;
-	}
-
 }
