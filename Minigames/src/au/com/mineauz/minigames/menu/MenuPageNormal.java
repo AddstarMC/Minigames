@@ -9,6 +9,9 @@ import org.bukkit.inventory.ItemStack;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterators;
 
+/**
+ * Represents a normal MenuItem based page.
+ */
 public class MenuPageNormal extends MenuPage implements Iterable<MenuItem> {
 	private MenuItem[] slots;
 	private ItemStack[] cached;
@@ -31,6 +34,11 @@ public class MenuPageNormal extends MenuPage implements Iterable<MenuItem> {
 		return (MenuPageNormal)super.getNext();
 	}
 	
+	/**
+	 * Changes a slot
+	 * @param item The item to set, can be null
+	 * @param slot The slot to change.
+	 */
 	public void setItem(MenuItem item, int slot) {
 		Validate.isTrue(slot >= 0 && slot < slots.length);
 		slots[slot] = item;
@@ -40,6 +48,10 @@ public class MenuPageNormal extends MenuPage implements Iterable<MenuItem> {
 		cacheDirty = true;
 	}
 	
+	/**
+	 * Removes an item
+	 * @param slot The slot to change.
+	 */
 	public void removeItem(int slot) {
 		Validate.isTrue(slot >= 0 && slot < slots.length);
 		slots[slot] = null;
@@ -72,11 +84,19 @@ public class MenuPageNormal extends MenuPage implements Iterable<MenuItem> {
 		return false;
 	}
 	
+	/**
+	 * Clears this page
+	 */
 	public void clear() {
 		Arrays.fill(slots, null);
 		cacheDirty = true;
 	}
 	
+	/**
+	 * Gets the item in the specified slot
+	 * @param slot The slot to use
+	 * @return The MenuItem or null if it is empty
+	 */
 	public MenuItem getItem(int slot) {
 		Validate.isTrue(slot >= 0 && slot < slots.length);
 		return slots[slot];
@@ -105,6 +125,9 @@ public class MenuPageNormal extends MenuPage implements Iterable<MenuItem> {
 		cacheDirty = false;
 	}
 	
+	/**
+	 * Updates only if this has been modified
+	 */
 	public void updateIfDirty() {
 		if (cacheDirty) {
 			update();
