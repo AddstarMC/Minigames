@@ -69,24 +69,27 @@ public class TeamSign implements MinigameSign {
 					if(!mgm.isWaitingForPlayers() && !sign.getLine(2).equals(ChatColor.GRAY + "Neutral")){
 						Team sm = null;
 						Team nt = matchTeam(mgm, sign.getLine(2));
-						if(nt != null && !nt.isFull()){
-							for(Team t : mgm.getModule(TeamsModule.class).getTeams()){
-								if(sm == null || t.getPlayers().size() < sm.getPlayers().size())
-									sm = t;
+
+						if(nt != null) {
+							if (!nt.isFull()) {
+								for(Team t : mgm.getModule(TeamsModule.class).getTeams()){
+									if(sm == null || t.getPlayers().size() < sm.getPlayers().size())
+										sm = t;
+								}
+								if(nt.getPlayers().size() - sm.getPlayers().size() < 1){
+									MultiplayerType.switchTeam(mgm, player, nt);
+									plugin.mdata.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getDisplayName(), nt.getChatColor() + nt.getDisplayName()), null, player);
+									player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), null);
+								}
+								else{
+									player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
+								}
+								
+								player.getPlayer().damage(player.getPlayer().getHealth());
 							}
-							if(nt.getPlayers().size() - sm.getPlayers().size() < 1){
-								MultiplayerType.switchTeam(mgm, player, nt);
-								plugin.mdata.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getDisplayName(), nt.getChatColor() + nt.getDisplayName()), null, player);
-								player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), null);
+							else {
+								player.sendMessage(MinigameUtils.getLang("player.team.full"), "error");
 							}
-							else{
-								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
-							}
-							
-							player.getPlayer().damage(player.getPlayer().getHealth());
-						}
-						else if(nt.isFull()){
-							player.sendMessage(MinigameUtils.getLang("player.team.full"), "error");
 						}
 					}
 					else if(sign.getLine(2).equals(ChatColor.GRAY + "Neutral") || matchTeam(mgm, sign.getLine(2)) != player.getTeam()){
