@@ -32,7 +32,7 @@ public class ItemReward extends RewardType{
 			player.addRewardItem(item);
 		else
 			player.getPlayer().getInventory().addItem(item);
-		player.sendMessage(MinigameUtils.formStr("sign.reward.rewarded", item.getAmount(), 
+		player.sendMessage(MinigameUtils.formStr("reward.item", item.getAmount(), 
 				MinigameUtils.capitalize(item.getType().toString())), null);
 	}
 

@@ -42,8 +42,6 @@ player:
     broadcastScore: "Score: %s"
     broadcastNobodyWon: "Nobody was able to win %s."
     consMsg: "%s completed %s"
-    awardMoney: "You have been awarded %s"
-    awardItem: "You have been awarded with %s %s"
     team:
       win: "%s won %s"
       tie: "%s tied against %s in %s"
@@ -210,8 +208,6 @@ sign:
     createPermission: "You do not have permission to create a Minigames reward sign!"
     usePermission: "You do not have permission to use a Minigames reward sign!"
     noName: "You need to define a name for the reward on line 3!"
-    rewarded: "You have been awarded with %s %s"
-    rewardedMoney: "You have been awarded with %s"
     preRewarded: "Added %s %s to your Minigame completion rewards."
   spectate:
     createPermission: "You do not have permission to create a Minigame specate sign!"
@@ -234,7 +230,9 @@ sign:
     alreadyUsedTeam: "Your team has already used this score sign!"
     addScore: "Added %s to your score. New Score: %s"
     addScoreTeam: "Added %s to your teams score. New Score: %s"
-
+reward:
+  money: "You have been awarded with %s"
+  item: "You have been awarded with %s %s"
 time:
   weeks: "%s weeks"
   days: "%s days"
