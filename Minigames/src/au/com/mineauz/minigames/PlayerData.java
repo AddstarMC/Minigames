@@ -109,12 +109,12 @@ public class PlayerData {
 					}
 					else if(betAmount != 0 && !pbet.canBet(player, betAmount)){
 						player.sendMessage(MinigameUtils.getLang("player.bet.incorrectAmount"), "error");
-						player.sendMessage(MinigameUtils.formStr("player.bet.incorrectAmountInfo", minigame.getMpBets().getHighestMoneyBet()), "error");
+						player.sendMessage(MinigameUtils.formStr("player.bet.incorrectAmountInfo", Minigames.plugin.getEconomy().format(minigame.getMpBets().getHighestMoneyBet())), "error");
 						return;
 					}
 					else if(betAmount != 0 && plugin.getEconomy().getBalance(player.getPlayer().getPlayer()) < betAmount){
 						player.sendMessage(MinigameUtils.getLang("player.bet.notEnoughMoney"), "error");
-						player.sendMessage(MinigameUtils.formStr("player.bet.notEnoughMoneyInfo", minigame.getMpBets().getHighestMoneyBet()), "error");
+						player.sendMessage(MinigameUtils.formStr("player.bet.notEnoughMoneyInfo", Minigames.plugin.getEconomy().format(minigame.getMpBets().getHighestMoneyBet())), "error");
 						return;
 					}
 					else{
@@ -735,7 +735,7 @@ public class PlayerData {
 				//Group money bets
 				if(bets != 0){
 					plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), bets);
-					player.sendMessage(MinigameUtils.formStr("player.bet.winMoney", bets), null);
+					player.sendMessage(MinigameUtils.formStr("player.bet.winMoney", Minigames.plugin.getEconomy().format(bets)), null);
 				}
 				
 				//Reward Player

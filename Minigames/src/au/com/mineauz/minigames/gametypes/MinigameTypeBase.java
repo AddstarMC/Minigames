@@ -6,7 +6,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
@@ -51,43 +50,18 @@ public abstract class MinigameTypeBase implements Listener{
 	public static void issuePlayerRewards(MinigamePlayer player, Minigame mgm, boolean hascompleted){
 		List<RewardType> rewardL = mgm.getRewardItem();
 		List<RewardType> srewardL = mgm.getSecondaryRewardItem();
-		double totalMoney = 0;
 		if(!hascompleted && rewardL != null){
 			for(RewardType reward : rewardL){
 				if(reward != null){
 					reward.giveReward(player);
-//					if(reward.getItem() != null){
-//						giveRewardItem(player, reward);
-//					}
-//					else{
-//						if(Minigames.plugin.hasEconomy() && reward.getMoney() != 0){
-//							Minigames.plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), reward.getMoney());
-//							totalMoney += reward.getMoney();
-//						}
-//					}
 				}
-			}
-			if(totalMoney > 0){
-				player.sendMessage(MinigameUtils.formStr("player.end.awardMoney", totalMoney), "win");
 			}
 		}
 		else if(hascompleted && srewardL != null){
 			for(RewardType sreward : srewardL){
 				if(sreward != null){
 					sreward.giveReward(player);
-//					if(sreward.getItem() != null){
-//						giveRewardItem(player, sreward);
-//					}
-//					else{
-//						if(Minigames.plugin.hasEconomy() && sreward.getMoney() != 0){
-//							Minigames.plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), sreward.getMoney());
-//							totalMoney += sreward.getMoney();
-//						}
-//					}
 				}
-			}
-			if(totalMoney > 0){
-				player.sendMessage(MinigameUtils.formStr("player.end.awardMoney", totalMoney), "win");
 			}
 		}
 		player.updateInventory();
