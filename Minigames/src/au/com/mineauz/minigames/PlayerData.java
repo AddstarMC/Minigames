@@ -483,7 +483,7 @@ public class PlayerData {
 				//Group money bets
 				if(bets != 0){
 					plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), bets);
-					player.sendMessage(MinigameUtils.formStr("player.bet.winMoney", bets), null);
+					player.sendMessage(MinigameUtils.formStr("player.bet.winMoney", Minigames.plugin.getEconomy().format(bets)), null);
 				}
 				
 				//Reward Player

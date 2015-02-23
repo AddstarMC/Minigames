@@ -20,11 +20,14 @@ player:
   bet:
     plyMsg: "You have placed your bet, good luck!"
     plyNoBet: "You can not bet nothing!"
-    incorrectAmount: "You haven't placed the correct bet amount for this round!\nYou must bet $%s"
-    incorrectItem: "You haven't bet the correct item for this round!\nYou must bet %s %s"
-    notEnoughMoney: "You haven't got enough money!\nYou must have $%s"
+    incorrectAmount: "You haven't placed the correct bet amount for this round!"
+    incorrectAmountInfo: "You must bet %s"
+    incorrectItem: "You haven't bet the correct item for this round!"
+    incorrectItemInfo: "You must bet %s %s"
+    notEnoughMoney: "You haven't got enough money!"
+    notEnoughMoneyInfo: "You must have %s"
     wrongType: "You cannot bet on a non multiplayer game"
-    winMoney: 'You won $%s'
+    winMoney: 'You won %s'
   checkpoint:
     revert: "You have been reverted to your checkpoint."
     deathRevert: "Bad luck! Returning to checkpoint."
@@ -39,7 +42,7 @@ player:
     broadcastScore: "Score: %s"
     broadcastNobodyWon: "Nobody was able to win %s."
     consMsg: "%s completed %s"
-    awardMoney: "You have been awarded $%s"
+    awardMoney: "You have been awarded %s"
     awardItem: "You have been awarded with %s %s"
     team:
       win: "%s won %s"
@@ -208,7 +211,7 @@ sign:
     usePermission: "You do not have permission to use a Minigames reward sign!"
     noName: "You need to define a name for the reward on line 3!"
     rewarded: "You have been awarded with %s %s"
-    rewardedMoney: "You have been awarded with $%s"
+    rewardedMoney: "You have been awarded with %s"
     preRewarded: "Added %s %s to your Minigame completion rewards."
   spectate:
     createPermission: "You do not have permission to create a Minigame specate sign!"
