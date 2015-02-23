@@ -104,13 +104,8 @@ public class RewardSign implements MinigameSign {
 			
 			Menu rewardMenu = new Menu(5, getName(), player);
 			
-			List<String> des = new ArrayList<String>();
-			des.add("Click this with an item");
-			des.add("to add it to rewards.");
-			des.add("Click without an item");
-			des.add("to add a money reward.");
 			rewardMenu.addItem(new MenuItemRewardGroupAdd("Add Group", Material.ITEM_FRAME, rew), 42);
-			rewardMenu.addItem(new MenuItemRewardAdd("Add Item", des, Material.ITEM_FRAME, rew), 43);
+			rewardMenu.addItem(new MenuItemRewardAdd("Add Item", Material.ITEM_FRAME, rew), 43);
 			final MenuItemCustom mic = new MenuItemCustom("Save Rewards", Material.REDSTONE_TORCH_ON);
 			final Location floc = loc;
 			mic.setClick(new InteractionInterface() {
@@ -132,18 +127,8 @@ public class RewardSign implements MinigameSign {
 			List<MenuItem> mi = new ArrayList<MenuItem>();
 			for(RewardType item : rew.getRewards()){
 				mi.add(item.getMenuItem());
-//				if(item.getRewardItem() != null){
-//					MenuItemReward mrew = new MenuItemReward(MinigameUtils.getItemStackName(item.getRewardItem()), item.getRewardItem().getType(), item, rew, list);
-//					mrew.setRewardItem(item.getRewardItem());
-//					mrew.updateDescription();
-//					mi.add(mrew);
-//				}
-//				else{
-//					MenuItemReward mrew = new MenuItemReward("$" + item.getMoney(), Material.PAPER, item, rew, list);
-//					mi.add(mrew);
-//				}
 			}
-			des = new ArrayList<String>();
+			List<String> des = new ArrayList<String>();
 			des.add("Double Click to edit");
 			for(RewardGroup group : rew.getGroups()){
 				MenuItemRewardGroup rwg = new MenuItemRewardGroup(group.getName() + " Group", des, Material.CHEST, group, rew);
