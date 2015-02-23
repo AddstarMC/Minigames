@@ -156,8 +156,13 @@ public class TeamsModule extends MinigameModule {
 
 			@Override
 			public String getValue() {
-				if(defaultWinner.getFlag() != null)
+				if(defaultWinner.getFlag() != null) {
+					if (!teams.containsKey(TeamColor.matchColor(defaultWinner.getFlag()))) {
+						return "None";
+					}
+					
 					return MinigameUtils.capitalize(defaultWinner.getFlag().replace("_", " "));
+				}
 				return "None";
 			}
 		};
@@ -168,8 +173,14 @@ public class TeamsModule extends MinigameModule {
 	}
 	
 	public TeamColor getDefaultWinner() {
-		if(defaultWinner.getFlag() != null)
-			return TeamColor.matchColor(defaultWinner.getFlag());
+		if(defaultWinner.getFlag() != null) {
+			TeamColor team = TeamColor.matchColor(defaultWinner.getFlag());
+			if (!teams.containsKey(team)) {
+				return null;
+			} else {
+				return team;
+			}
+		}
 		return null;
 	}
 	
