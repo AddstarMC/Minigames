@@ -57,7 +57,7 @@ public class SetMinTreasureCommand implements ICommand {
 		if(args != null){
 			if(args[0].matches("[0-9]+")){
 				int amount = Integer.parseInt(args[0]);
-				TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
+				TreasureHuntModule thm = minigame.getModule(TreasureHuntModule.class);
 				thm.setMinTreasure(amount);
 				sender.sendMessage(ChatColor.GRAY + "Minimum items has been set to " + amount + " for " + minigame);
 				return true;

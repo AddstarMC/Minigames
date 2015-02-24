@@ -25,7 +25,6 @@ import au.com.mineauz.minigames.events.MinigameTimerTickEvent;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import au.com.mineauz.minigames.minigame.reward.ItemReward;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
@@ -48,13 +47,13 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 	}
 	
 	@Override
-	public MinigameModule displaySettings(Minigame minigame){
-		return minigame.getModule("TreasureHunt");
+	public TreasureHuntModule displaySettings(Minigame minigame){
+		return minigame.getModule(TreasureHuntModule.class);
 	}
 
 	@Override
 	public void startMinigame(Minigame minigame, MinigamePlayer caller) {
-		final TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
+		final TreasureHuntModule thm = minigame.getModule(TreasureHuntModule.class);
 		if(thm.getLocation() != null){
 			spawnTreasure(minigame);
 			
@@ -71,7 +70,7 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 
 	@Override
 	public void stopMinigame(Minigame minigame, MinigamePlayer caller) {
-		TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
+		TreasureHuntModule thm = minigame.getModule(TreasureHuntModule.class);
 		
 		minigame.getMinigameTimer().stopTimer();
 		minigame.setMinigameTimer(null);
@@ -101,7 +100,7 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 	}
 	
 	public static void removeTreasure(Minigame minigame){
-		TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
+		TreasureHuntModule thm = minigame.getModule(TreasureHuntModule.class);
 		thm.clearHints();
 		if(thm.hasTreasureLocation()){
 			Location old = thm.getTreasureLocation();
@@ -127,7 +126,7 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 	}
 	
 	public static void spawnTreasure(final Minigame mgm){
-		final TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
+		final TreasureHuntModule thm = mgm.getModule(TreasureHuntModule.class);
 		
 		if(thm.hasTreasureLocation())
 			removeTreasure(mgm);
@@ -233,7 +232,7 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 				!event.getMinigame().getMechanicName().equals(getMechanic())) return;
 		
 		Minigame mgm = event.getMinigame();
-		TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
+		TreasureHuntModule thm = mgm.getModule(TreasureHuntModule.class);
 		if(!thm.hasTreasureLocation() || thm.isTreasureFound()) return;
 		
 		int time = event.getTimeLeft();
@@ -323,7 +322,7 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 				!event.getMinigame().getMechanicName().equals(getMechanic())) return;
 		
 		Minigame mgm = event.getMinigame();
-		TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
+		TreasureHuntModule thm = mgm.getModule(TreasureHuntModule.class);
 		
 		if(thm.hasTreasureLocation()){
 			mgm.setMinigameTimer(new MinigameTimer(mgm, thm.getTreasureWaitTime()));
@@ -350,7 +349,7 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 					if(minigame.getType() == MinigameType.GLOBAL && 
 							minigame.getMechanicName().equalsIgnoreCase(getMechanic()) && 
 							minigame.getMinigameTimer() != null){
-						TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
+						TreasureHuntModule thm = minigame.getModule(TreasureHuntModule.class);
 						if(!thm.isTreasureFound() && thm.hasTreasureLocation()){
 							int x1 = thm.getTreasureLocation().getBlockX();
 							int x2 = cblock.getLocation().getBlockX();

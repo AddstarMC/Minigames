@@ -63,7 +63,7 @@ public class SetTeamCommand implements ICommand {
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-			TeamsModule tmod = TeamsModule.getMinigameModule(minigame);
+			TeamsModule tmod = minigame.getModule(TeamsModule.class);
 			if(args[0].equalsIgnoreCase("add")){
 				if(args.length >= 2){
 					TeamColor col = TeamColor.matchColor(args[1]);
@@ -232,14 +232,14 @@ public class SetTeamCommand implements ICommand {
 			}
 			else if(args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("rename")){
 				List<String> cols = new ArrayList<String>(TeamColor.values().length);
-				for(Team c : TeamsModule.getMinigameModule(minigame).getTeams()){
+				for(Team c : minigame.getModule(TeamsModule.class).getTeams()){
 					cols.add(c.getColor().toString());
 				}
 				return MinigameUtils.tabCompleteMatch(cols, args[1]);
 			}
 			else if(args[0].equalsIgnoreCase("maxplayers")){
 				List<String> cols = new ArrayList<String>();
-				for(Team t : TeamsModule.getMinigameModule(minigame).getTeams())
+				for(Team t : minigame.getModule(TeamsModule.class).getTeams())
 					cols.add(t.getColor().toString());
 				return MinigameUtils.tabCompleteMatch(cols, args[1]);
 			}

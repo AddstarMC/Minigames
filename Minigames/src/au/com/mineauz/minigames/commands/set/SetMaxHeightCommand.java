@@ -58,7 +58,7 @@ public class SetMaxHeightCommand implements ICommand {
 		if(args != null){
 			if(args[0].matches("[0-9]+")){
 				int num = Integer.parseInt(args[0]);
-				TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
+				TreasureHuntModule thm = minigame.getModule(TreasureHuntModule.class);
 				thm.setMaxHeight(num);
 				sender.sendMessage(ChatColor.GRAY + "Maximum height variance for " + minigame + " has been set to " + num);
 				return true;

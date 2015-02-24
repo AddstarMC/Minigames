@@ -89,8 +89,9 @@ public class TreasureHuntModule extends MinigameModule{
 		return treasureHunt;
 	}
 	
+	@Deprecated
 	public static TreasureHuntModule getMinigameModule(Minigame minigame){
-		return (TreasureHuntModule) minigame.getModule("TreasureHunt");
+		return (TreasureHuntModule) minigame.getModule(TreasureHuntModule.class);
 	}
 
 	public void setMaxRadius(int maxRadius){

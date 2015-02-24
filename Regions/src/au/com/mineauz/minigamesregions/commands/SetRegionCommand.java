@@ -66,7 +66,7 @@ public class SetRegionCommand implements ICommand {
 			String label, String[] args) {
 		if(args != null){
 			MinigamePlayer ply = Minigames.plugin.pdata.getMinigamePlayer((Player)sender);
-			RegionModule rmod = RegionModule.getMinigameModule(minigame);
+			RegionModule rmod = minigame.getModule(RegionModule.class);
 			if(args.length == 2){
 				if(args[0].equalsIgnoreCase("select")){
 					Location ploc = ply.getLocation();

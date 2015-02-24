@@ -64,7 +64,7 @@ public class SetGameOverCommand implements ICommand {
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-			GameOverModule gmo = GameOverModule.getMinigameModule(minigame);
+			GameOverModule gmo = minigame.getModule(GameOverModule.class);
 			if(args[0].equalsIgnoreCase("timer") && args.length == 2){
 				if(args[1].matches("[0-9]+")){
 					Integer t = Integer.parseInt(args[1]);

@@ -69,7 +69,7 @@ public class RegionNodeEditToolMode implements ToolMode {
 		Vector direction = event.getPlayer().getEyeLocation().getDirection().normalize();
 		
 		// Prepare region and node bounds for efficiency
-		RegionModule module = RegionModule.getMinigameModule(minigame);
+		RegionModule module = minigame.getModule(RegionModule.class);
 		Map<Region, Vector[]> regionBBs = Maps.newIdentityHashMap();
 		for (Region region : module.getRegions()) {
 			Vector point1 = region.getFirstPoint().toVector();

@@ -61,8 +61,9 @@ public class LobbySettingsModule extends MinigameModule {
 	public void load(FileConfiguration config) {
 	}
 	
+	@Deprecated
 	public static LobbySettingsModule getMinigameModule(Minigame minigame) {
-		return (LobbySettingsModule) minigame.getModule("LobbySettings");
+		return (LobbySettingsModule) minigame.getModule(LobbySettingsModule.class);
 	}
 	
 	public boolean canMovePlayerWait() {

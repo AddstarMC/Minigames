@@ -36,9 +36,11 @@ public class MultiplayerType extends MinigameTypeBase{
 
 	@Override
 	public boolean joinMinigame(MinigamePlayer player, Minigame mgm) {
-		if(!LobbySettingsModule.getMinigameModule(mgm).canInteractPlayerWait())
+		LobbySettingsModule lobbySettings = mgm.getModule(LobbySettingsModule.class);
+		
+		if(!lobbySettings.canInteractPlayerWait())
 			player.setCanInteract(false);
-		if(!LobbySettingsModule.getMinigameModule(mgm).canMovePlayerWait())
+		if(!lobbySettings.canMovePlayerWait())
 			player.setFrozen(true);
 		
 		if(!mgm.isWaitingForPlayers() && !mgm.hasStarted()){
@@ -65,8 +67,9 @@ public class MultiplayerType extends MinigameTypeBase{
 			final MinigamePlayer fply = player;
 			final Minigame fmgm = mgm;
 			if(mgm.isTeamGame()){
+				final TeamsModule teamsModule = mgm.getModule(TeamsModule.class);
 				Team smTeam = null;
-				for(Team team : TeamsModule.getMinigameModule(mgm).getTeams()){
+				for(Team team : teamsModule.getTeams()){
 					if(smTeam == null || team.getPlayers().size() < smTeam.getPlayers().size()){
 						smTeam = team;
 					}
@@ -82,7 +85,7 @@ public class MultiplayerType extends MinigameTypeBase{
 					public void run() {
 						if(fply.isInMinigame()){
 							List<Location> locs = new ArrayList<Location>();
-							if(TeamsModule.getMinigameModule(fmgm).hasTeamStartLocations()){
+							if(teamsModule.hasTeamStartLocations()){
 								locs.addAll(fteam.getStartLocations());
 							}
 							else{
@@ -130,7 +133,7 @@ public class MultiplayerType extends MinigameTypeBase{
 		
 		if(mgm.isTeamGame()){
 			player.removeTeam();
-			for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+			for(Team t : mgm.getModule(TeamsModule.class).getTeams()){
 				if(t.getPlayers().size() > 0)
 					teamsWithPlayers ++;
 			}
@@ -164,9 +167,10 @@ public class MultiplayerType extends MinigameTypeBase{
 		
 		if(mgm.isTeamGame() && mgm.getPlayers().size() > 1 && 
 				teamsWithPlayers == 1 && mgm.hasStarted() && !forced){
-			if(TeamsModule.getMinigameModule(mgm).getTeams().size() != 1){
+			TeamsModule module = mgm.getModule(TeamsModule.class);
+			if(module.getTeams().size() != 1){
 				Team winner = null;
-				for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+				for(Team t : module.getTeams()){
 					if(t.getPlayers().size() > 0){
 						winner = t;
 						break;
@@ -214,7 +218,7 @@ public class MultiplayerType extends MinigameTypeBase{
 			for(MinigamePlayer player : losers){
 				player.removeTeam();
 			}
-			for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+			for(Team t : mgm.getModule(TeamsModule.class).getTeams()){
 				t.resetScore();
 			}
 		}
@@ -248,7 +252,7 @@ public class MultiplayerType extends MinigameTypeBase{
 					}
 					else{
 						List<Location> starts = new ArrayList<Location>();
-						if(TeamsModule.getMinigameModule(mg).hasTeamStartLocations()){
+						if(mg.getModule(TeamsModule.class).hasTeamStartLocations()){
 							starts.addAll(team.getStartLocations());
 							ply.getLoadout().equiptLoadout(ply);
 						}
@@ -299,22 +303,23 @@ public class MultiplayerType extends MinigameTypeBase{
 		if(event.getMinigame().getType() == MinigameType.MULTIPLAYER && event.getMinigameState() == MinigameState.STARTED){
 			if(event.getMinigame().isTeamGame()){
 				Minigame mgm = event.getMinigame();
-				if(TeamsModule.getMinigameModule(mgm).getDefaultWinner() != null){
-					TeamsModule tm = TeamsModule.getMinigameModule(mgm);
+				TeamsModule teamModule = mgm.getModule(TeamsModule.class);
+				if(teamModule.getDefaultWinner() != null){
 					List<MinigamePlayer> w;
 					List<MinigamePlayer> l;
-					if(TeamsModule.getMinigameModule(mgm).hasTeam(TeamsModule.getMinigameModule(mgm).getDefaultWinner())){
-						w = new ArrayList<MinigamePlayer>(tm.getTeam(tm.getDefaultWinner()).getPlayers().size());
-						l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - tm.getTeam(tm.getDefaultWinner()).getPlayers().size());
-						w.addAll(tm.getTeam(tm.getDefaultWinner()).getPlayers());
+					if(teamModule.hasTeam(teamModule.getDefaultWinner())){
+						Team def = teamModule.getTeam(teamModule.getDefaultWinner());
+						w = new ArrayList<MinigamePlayer>(def.getPlayers().size());
+						l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - def.getPlayers().size());
+						w.addAll(def.getPlayers());
 					}
 					else{
 						w = new ArrayList<MinigamePlayer>();
 						l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size());
 					}
 					
-					for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
-						if(t.getColor() != TeamsModule.getMinigameModule(mgm).getDefaultWinner())
+					for(Team t : teamModule.getTeams()){
+						if(t.getColor() != teamModule.getDefaultWinner())
 							l.addAll(t.getPlayers());
 					}
 					plugin.pdata.endMinigame(mgm, w, l);
@@ -322,7 +327,7 @@ public class MultiplayerType extends MinigameTypeBase{
 				else{
 					List<Team> drawTeams = new ArrayList<Team>();
 					Team winner = null;
-					for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+					for(Team t : teamModule.getTeams()){
 						if(winner == null || (t.getScore() > winner.getScore() && 
 								(drawTeams.isEmpty() || t.getScore() > drawTeams.get(0).getScore()))){
 							winner = t;
@@ -343,7 +348,7 @@ public class MultiplayerType extends MinigameTypeBase{
 					if(winner != null){
 						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(winner.getPlayers());
 						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - winner.getPlayers().size());
-						for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+						for(Team t : teamModule.getTeams()){
 							if(t != winner)
 								l.addAll(t.getPlayers());
 						}
@@ -351,7 +356,7 @@ public class MultiplayerType extends MinigameTypeBase{
 					}
 					else{
 						List<MinigamePlayer> players = new ArrayList<MinigamePlayer>(mgm.getPlayers());
-						for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+						for(Team t : teamModule.getTeams()){
 							t.resetScore();
 						}
 						
@@ -391,9 +396,9 @@ public class MultiplayerType extends MinigameTypeBase{
 								}
 								String scores = "";
 								int c = 1;
-								for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+								for(Team t : teamModule.getTeams()){
 									scores += t.getChatColor().toString() + t.getScore();
-									if(c != TeamsModule.getMinigameModule(mgm).getTeams().size())
+									if(c != teamModule.getTeams().size())
 										scores += ChatColor.WHITE + " : ";
 									c++;
 								}
@@ -415,9 +420,9 @@ public class MultiplayerType extends MinigameTypeBase{
 							
 							String scores = "";
 							int c = 1;
-							for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+							for(Team t : teamModule.getTeams()){
 								scores += t.getChatColor().toString() + t.getScore();
-								if(c != TeamsModule.getMinigameModule(mgm).getTeams().size())
+								if(c != teamModule.getTeams().size())
 									scores += ChatColor.WHITE + " : ";
 								c++;
 							}

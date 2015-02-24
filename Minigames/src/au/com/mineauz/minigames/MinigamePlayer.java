@@ -241,13 +241,15 @@ public class MinigamePlayer {
 	}
 
 	public PlayerLoadout getLoadout() {
+		LoadoutModule module = minigame.getModule(LoadoutModule.class);
+		
 		if(loadout != null){
 			return loadout;
 		}
-		else if(team != null && LoadoutModule.getMinigameModule(minigame).hasLoadout(team.getColor().toString().toLowerCase())){
-			return LoadoutModule.getMinigameModule(minigame).getLoadout(team.getColor().toString().toLowerCase());
+		else if(team != null && module.hasLoadout(team.getColor().toString().toLowerCase())){
+			return module.getLoadout(team.getColor().toString().toLowerCase());
 		}
-		return LoadoutModule.getMinigameModule(minigame).getLoadout("default");
+		return module.getLoadout("default");
 	}
 
 	public boolean setLoadout(PlayerLoadout loadout) {

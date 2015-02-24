@@ -41,8 +41,9 @@ public class JuggernautModule extends MinigameModule{
 	public void load(FileConfiguration config) {
 	}
 
+	@Deprecated
 	public static JuggernautModule getMinigameModule(Minigame minigame){
-		return (JuggernautModule) minigame.getModule("Juggernaut");
+		return (JuggernautModule) minigame.getModule(JuggernautModule.class);
 	}
 	
 	public void setJuggernaut(MinigamePlayer player){
@@ -59,7 +60,7 @@ public class JuggernautModule extends MinigameModule{
 			Minigames.plugin.mdata.sendMinigameMessage(getMinigame(), 
 					MinigameUtils.formStr("player.juggernaut.gameMsg", juggernaut.getDisplayName()), null, juggernaut);
 			
-			LoadoutModule lm =LoadoutModule.getMinigameModule(getMinigame());
+			LoadoutModule lm = getMinigame().getModule(LoadoutModule.class);
 			if(lm.hasLoadout("juggernaut")){
 				player.setLoadout(lm.getLoadout("juggernaut"));
 				player.getLoadout().equiptLoadout(player);

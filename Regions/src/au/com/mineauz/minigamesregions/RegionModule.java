@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
@@ -238,8 +239,9 @@ public class RegionModule extends MinigameModule {
 		}
 	}
 	
+	@Deprecated
 	public static RegionModule getMinigameModule(Minigame minigame){
-		return (RegionModule) minigame.getModule("Regions");
+		return (RegionModule) minigame.getModule(RegionModule.class);
 	}
 	
 	public boolean hasRegion(String name){

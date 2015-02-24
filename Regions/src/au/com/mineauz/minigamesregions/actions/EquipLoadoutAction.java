@@ -40,7 +40,7 @@ public class EquipLoadoutAction extends ActionInterface {
 	public void executeNodeAction(MinigamePlayer player,
 			Node node) {
 		if(player == null || !player.isInMinigame()) return;
-		LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
+		LoadoutModule lmod = player.getMinigame().getModule(LoadoutModule.class);
 		if(lmod.hasLoadout(loadout.getFlag())){
 			player.setLoadout(lmod.getLoadout(loadout.getFlag()));
 		}
@@ -49,7 +49,7 @@ public class EquipLoadoutAction extends ActionInterface {
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Region region) {
 		if(player == null || !player.isInMinigame()) return;
-		LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
+		LoadoutModule lmod = player.getMinigame().getModule(LoadoutModule.class);
 		if(lmod.hasLoadout(loadout.getFlag())){
 			player.setLoadout(lmod.getLoadout(loadout.getFlag()));
 		}

@@ -64,7 +64,7 @@ public class SetHintDelayCommand implements ICommand {
 				else if(mod.equals("h"))
 					time = time * 60 * 60;
 				
-				TreasureHuntModule.getMinigameModule(minigame).setHintDelay(time);
+				minigame.getModule(TreasureHuntModule.class).setHintDelay(time);
 				sender.sendMessage(ChatColor.GRAY + minigame.getName(false) + 
 						"'s hint delay has been set to " + MinigameUtils.convertTime(time));
 				return true;

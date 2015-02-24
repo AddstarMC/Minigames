@@ -118,8 +118,9 @@ public class WeatherTimeModule extends MinigameModule {
 		menu.addItem(new MenuItemSubMenu("Time and Weather Settings", Material.CHEST, m));
 	}
 
+	@Deprecated
 	public static WeatherTimeModule getMinigameModule(Minigame minigame){
-		return (WeatherTimeModule) minigame.getModule("WeatherTime");
+		return (WeatherTimeModule) minigame.getModule(WeatherTimeModule.class);
 	}
 	
 	public long getTime(){

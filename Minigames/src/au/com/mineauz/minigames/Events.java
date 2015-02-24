@@ -39,6 +39,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.events.RevertCheckpointEvent;
@@ -107,7 +108,7 @@ public class Events implements Listener{
 		final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
 		if(ply.isInMinigame()){
-			final WeatherTimeModule mod = WeatherTimeModule.getMinigameModule(ply.getMinigame());
+			final WeatherTimeModule mod = ply.getMinigame().getModule(WeatherTimeModule.class);
 			if(mod.isUsingCustomWeather()){
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 					
@@ -295,10 +296,10 @@ public class Events implements Listener{
 								if(mgm.isTeamGame()){
 									String sc = "";
 									int c = 0;
-									for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+									for(Team t : mgm.getModule(TeamsModule.class).getTeams()){
 										c++;
 										sc += t.getColor().getColor().toString() + " " + t.getScore() + ChatColor.WHITE;
-										if(c != TeamsModule.getMinigameModule(mgm).getTeams().size()){
+										if(c != mgm.getModule(TeamsModule.class).getTeams().size()){
 											sc += " : ";
 										}
 									}
@@ -366,10 +367,10 @@ public class Events implements Listener{
 			else if(tool.getMode() != null && tool.getMinigame() != null){
 				Minigame mg = tool.getMinigame();
 				if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK){
-					tool.getMode().onRightClick(ply, mg, TeamsModule.getMinigameModule(mg).getTeam(tool.getTeam()), event);
+					tool.getMode().onRightClick(ply, mg, mg.getModule(TeamsModule.class).getTeam(tool.getTeam()), event);
 				}
 				else if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK){
-					tool.getMode().onLeftClick(ply, mg, TeamsModule.getMinigameModule(mg).getTeam(tool.getTeam()), event);
+					tool.getMode().onLeftClick(ply, mg, mg.getModule(TeamsModule.class).getTeam(tool.getTeam()), event);
 				}
 			}
 			else if(tool.getMinigame() == null) {
@@ -485,8 +486,8 @@ public class Events implements Listener{
 			if(ply.isInMinigame() && !ply.canPvP())
 				event.setCancelled(true);
 			else if(ply.isInMinigame() && ply.getMinigame().getState() == MinigameState.ENDED &&
-					GameOverModule.getMinigameModule(ply.getMinigame()).isHumiliationMode() && 
-					GameOverModule.getMinigameModule(ply.getMinigame()).getLosers().contains(ply)){
+					ply.getMinigame().getModule(GameOverModule.class).isHumiliationMode() && 
+					ply.getMinigame().getModule(GameOverModule.class).getLosers().contains(ply)){
 				event.setCancelled(true);
 			}
 		}
@@ -596,5 +597,10 @@ public class Events implements Listener{
 					(ply.getLoadout().isInventoryLocked() && event.getSlot() >= 0 && event.getSlot() <= 35))
 				event.setCancelled(true);
 		}
+	}
+	
+	@EventHandler
+	private void onPluginDisable(PluginDisableEvent event) {
+		mdata.removeAllModules(event.getPlugin());
 	}
 }

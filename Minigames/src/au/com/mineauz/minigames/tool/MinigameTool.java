@@ -147,7 +147,7 @@ public class MinigameTool {
 			@Override
 			public void onClick(MenuItem menuItem, MinigamePlayer player) {
 				if(mode != null){
-					mode.select(player, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
+					mode.select(player, minigame, minigame.getModule(TeamsModule.class).getTeam(team));
 				}
 			}
 		});
@@ -155,7 +155,7 @@ public class MinigameTool {
 			@Override
 			public void onClick(MenuItem menuItem, MinigamePlayer player) {
 				if(mode != null){
-					mode.deselect(player, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
+					mode.deselect(player, minigame, minigame.getModule(TeamsModule.class).getTeam(team));
 				}
 			}
 		});

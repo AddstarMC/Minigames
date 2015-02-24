@@ -98,6 +98,7 @@ public class CTFMechanic extends GameMechanicBase{
 				Minigame mgm = ply.getMinigame();
 				Sign sign = (Sign) event.getClickedBlock().getState();
 				if(mgm.getMechanicName().equals("ctf") && sign.getLine(1).equals(ChatColor.GREEN + "Flag")){
+					TeamsModule teamModule = mgm.getModule(TeamsModule.class);
 					Team team = ply.getTeam();
 					
 					String sloc = MinigameUtils.createLocationID(event.getClickedBlock().getLocation());
@@ -107,9 +108,9 @@ public class CTFMechanic extends GameMechanicBase{
 						if(mgm.getFlagCarrier(ply) == null){
 							TakeFlagEvent ev = null;
 							if(!mgm.hasDroppedFlag(sloc) && 
-									(TeamsModule.getMinigameModule(mgm).hasTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2)))) || 
+									(teamModule.hasTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2)))) || 
 											sign.getLine(2).equalsIgnoreCase(ChatColor.GRAY + "Neutral"))){
-								Team oTeam = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2))));
+								Team oTeam = teamModule.getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2))));
 								CTFFlag flag = new CTFFlag(event.getClickedBlock().getLocation(), oTeam, event.getPlayer(), mgm);
 								ev = new TakeFlagEvent(mgm, ply, flag);
 								Bukkit.getPluginManager().callEvent(ev);
@@ -148,8 +149,8 @@ public class CTFMechanic extends GameMechanicBase{
 						}
 						
 					}
-					else if(team == TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2)))) || 
-							(team == TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(3)))) && sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture")) ||
+					else if(team == teamModule.getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2)))) || 
+							(team == teamModule.getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(3)))) && sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture")) ||
 							(sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture") && sign.getLine(3).equalsIgnoreCase(ChatColor.GRAY + "Neutral"))){
 						
 						String clickID = MinigameUtils.createLocationID(event.getClickedBlock().getLocation());
@@ -185,7 +186,7 @@ public class CTFMechanic extends GameMechanicBase{
 												ply.getTeam().getChatColor() + ply.getTeam().getDisplayName()), null, null);
 										List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(ply.getTeam().getPlayers());
 										List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - ply.getTeam().getPlayers().size());
-										for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+										for(Team t : teamModule.getTeams()){
 											if(t != ply.getTeam())
 												l.addAll(t.getPlayers());
 										}
@@ -274,7 +275,7 @@ public class CTFMechanic extends GameMechanicBase{
 			if(mgm.getMechanicName().equals("ctf")){
 				Team smt = null;
 				Team lgt = ply.getTeam();
-				for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+				for(Team t : mgm.getModule(TeamsModule.class).getTeams()){
 					if(smt == null || t.getPlayers().size() < smt.getPlayers().size() - 1)
 						smt = t;
 				}

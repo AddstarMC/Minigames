@@ -58,14 +58,15 @@ public class SetDefaultWinnerCommand implements ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
+		TeamsModule module = minigame.getModule(TeamsModule.class);
 		if(args != null){
 			if(args[0].equalsIgnoreCase("none")){
-				TeamsModule.getMinigameModule(minigame).setDefaultWinner(null);
+				module.setDefaultWinner(null);
 				sender.sendMessage(ChatColor.GRAY + "The default winner of " + minigame + " has been set to none.");
 			}
 			else{
-				if(TeamsModule.getMinigameModule(minigame).hasTeam(TeamColor.matchColor(args[0]))){
-					TeamsModule.getMinigameModule(minigame).setDefaultWinner(TeamColor.matchColor(args[0]));
+				if(module.hasTeam(TeamColor.matchColor(args[0]))){
+					module.setDefaultWinner(TeamColor.matchColor(args[0]));
 					sender.sendMessage(ChatColor.GRAY + "The default winner of " + minigame + " has been set to " + args[0] + ".");
 				}
 				else{
@@ -82,7 +83,7 @@ public class SetDefaultWinnerCommand implements ICommand {
 			String alias, String[] args) {
 		if(args.length == 1){
 			List<String> teams = new ArrayList<String>();
-			for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
+			for(Team t : minigame.getModule(TeamsModule.class).getTeams()){
 				teams.add(t.getColor().toString().toLowerCase());
 			}
 			return MinigameUtils.tabCompleteMatch(teams, args[0]);

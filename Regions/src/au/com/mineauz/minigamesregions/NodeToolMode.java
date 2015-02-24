@@ -61,7 +61,7 @@ public class NodeToolMode implements ToolMode {
 		
 		if (tool.getMinigame() != null) {
 			// Node selection menu
-			RegionModule module = RegionModule.getMinigameModule(tool.getMinigame());
+			RegionModule module = tool.getMinigame().getModule(RegionModule.class);
 			
 			Menu nodeMenu = new Menu(6, "Nodes");
 			List<MenuItem> items = new ArrayList<MenuItem>();
@@ -96,7 +96,7 @@ public class NodeToolMode implements ToolMode {
 	@Override
 	public void onLeftClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEvent event) {
 		if (event.getClickedBlock() != null) {
-			RegionModule mod = RegionModule.getMinigameModule(minigame);
+			RegionModule mod = minigame.getModule(RegionModule.class);
 			String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
 			
 			Location loc = event.getClickedBlock().getLocation().add(0.5, 0.5, 0.5);
@@ -115,7 +115,7 @@ public class NodeToolMode implements ToolMode {
 
 	@Override
 	public void onRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEvent event) {
-		RegionModule mod = RegionModule.getMinigameModule(minigame);
+		RegionModule mod = minigame.getModule(RegionModule.class);
 		String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
 		
 		Node node = mod.getNode(name);
@@ -132,7 +132,7 @@ public class NodeToolMode implements ToolMode {
 
 	@Override
 	public void select(MinigamePlayer player, Minigame minigame, Team team) {
-		RegionModule mod = RegionModule.getMinigameModule(minigame);
+		RegionModule mod = minigame.getModule(RegionModule.class);
 		String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
 		if(mod.hasNode(name)){
 			Main.getPlugin().getDisplayManager().show(mod.getNode(name), player);
@@ -145,7 +145,7 @@ public class NodeToolMode implements ToolMode {
 
 	@Override
 	public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
-		RegionModule mod = RegionModule.getMinigameModule(minigame);
+		RegionModule mod = minigame.getModule(RegionModule.class);
 		String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
 		if(mod.hasNode(name)){
 			Main.getPlugin().getDisplayManager().hide(mod.getNode(name), player);

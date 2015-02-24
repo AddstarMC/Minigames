@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.Plugin;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
 
 import au.com.mineauz.minigames.config.RewardsFlag;
 import au.com.mineauz.minigames.events.StartGlobalMinigameEvent;
@@ -40,34 +45,39 @@ public class MinigameData {
 	private Map<Minigame, List<String>> claimedScoreSignsRed = new HashMap<Minigame, List<String>>();
 	private Map<Minigame, List<String>> claimedScoreSignsBlue = new HashMap<Minigame, List<String>>();
 	
-	private List<Class<? extends MinigameModule>> modules = new ArrayList<Class<? extends MinigameModule>>();
+	private SetMultimap<Plugin, Class<? extends MinigameModule>> modules;
 	
 	public MinigameData(){
+		modules = HashMultimap.create();
 		
-		modules.add(LoadoutModule.class);
-		modules.add(LobbySettingsModule.class);
-		modules.add(TeamsModule.class);
-		modules.add(WeatherTimeModule.class);
-		modules.add(TreasureHuntModule.class);
-		modules.add(InfectionModule.class);
-		modules.add(GameOverModule.class);
-		modules.add(JuggernautModule.class);
+		addModule(LoadoutModule.class);
+		addModule(LobbySettingsModule.class);
+		addModule(TeamsModule.class);
+		addModule(WeatherTimeModule.class);
+		addModule(TreasureHuntModule.class);
+		addModule(InfectionModule.class);
+		addModule(GameOverModule.class);
+		addModule(JuggernautModule.class);
 	}
 	
-	public List<Class<? extends MinigameModule>> getModules(){
-		return modules;
+	public Collection<Class<? extends MinigameModule>> getAvailableModules() {
+		return modules.values();
 	}
 	
-	public void addModule(Class<? extends MinigameModule> module){
-		modules.add(module);
+	private void addModule(Class<? extends MinigameModule> module) {
+		modules.put(Minigames.plugin, module);
 	}
 	
-	public void removeModule(String moduleName, Class<? extends MinigameModule> module){
-		for(Minigame mg : getAllMinigames().values()){
-			mg.removeModule(moduleName);
+	public void addModule(Plugin plugin, Class<? extends MinigameModule> module) {
+		modules.put(plugin, module);
+	}
+	
+	public void removeAllModules(Plugin plugin) {
+		for(Minigame mg : getAllMinigames().values()) {
+			for (Class<? extends MinigameModule> module : modules.removeAll(plugin)) {
+				mg.removeModule(module);
+			}
 		}
-		
-		modules.remove(module);
 	}
 	
 	public void startGlobalMinigame(Minigame minigame, MinigamePlayer caller){

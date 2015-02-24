@@ -58,12 +58,13 @@ public class Team {
 	 * @return true if the Minigame doesn't have the team color already available, fails if it already has that team.
 	 */
 	public boolean setColor(TeamColor color){
-		if(!TeamsModule.getMinigameModule(mgm).hasTeam(color)){
-			TeamsModule.getMinigameModule(mgm).removeTeam(this.color);
+		TeamsModule module = mgm.getModule(TeamsModule.class);
+		if(!module.hasTeam(color)){
+			module.removeTeam(this.color);
 			if(displayName.equals(this.color.toString().toLowerCase() + " team"))
 				displayName = MinigameUtils.capitalize(color.toString()) + " Team";
 			this.color = color;
-			TeamsModule.getMinigameModule(mgm).addTeam(color, this);
+			module.addTeam(color, this);
 			return true;
 		}
 		return false;

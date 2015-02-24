@@ -110,7 +110,7 @@ public class PlayerKillsMechanic extends GameMechanicBase{
 						
 						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(ateam.getPlayers());
 						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - ateam.getPlayers().size());
-						for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+						for(Team t : mgm.getModule(TeamsModule.class).getTeams()){
 							if(t != ateam)
 								l.addAll(t.getPlayers());
 						}
@@ -148,7 +148,7 @@ public class PlayerKillsMechanic extends GameMechanicBase{
 			if(mgm.getMechanicName().equals("custom")){
 				Team smt = null;
 				Team lgt = ply.getTeam();
-				for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+				for(Team t : mgm.getModule(TeamsModule.class).getTeams()){
 					if(smt == null || t.getPlayers().size() < smt.getPlayers().size() - 1)
 						smt = t;
 				}

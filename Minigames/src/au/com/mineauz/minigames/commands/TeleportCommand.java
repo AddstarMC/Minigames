@@ -156,7 +156,7 @@ public class TeleportCommand implements ICommand {
 					int pos = 0;
 					Team team = null;
 					if(args.length == 3)
-						team = TeamsModule.getMinigameModule(ply.getMinigame()).getTeam(TeamColor.matchColor(args[3]));
+						team = ply.getMinigame().getModule(TeamsModule.class).getTeam(TeamColor.matchColor(args[3]));
 					else if(ply.getTeam() != null)
 						team = ply.getTeam();
 					

@@ -58,8 +58,9 @@ public class InfectionModule extends MinigameModule{
 		return m;
 	}
 	
+	@Deprecated
 	public static InfectionModule getMinigameModule(Minigame mgm){
-		return (InfectionModule) mgm.getModule("Infection");
+		return (InfectionModule) mgm.getModule(InfectionModule.class);
 	}
 	
 	public void setInfectedPercent(int amount){

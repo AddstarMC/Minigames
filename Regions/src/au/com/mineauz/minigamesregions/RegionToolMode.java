@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Callback;
@@ -62,7 +63,7 @@ public class RegionToolMode implements ToolMode {
 		
 		if (tool.getMinigame() != null) {
 			// Node selection menu
-			RegionModule module = RegionModule.getMinigameModule(tool.getMinigame());
+			RegionModule module = tool.getMinigame().getModule(RegionModule.class);
 			
 			Menu regionMenu = new Menu(6, "Regions");
 			List<MenuItem> items = new ArrayList<MenuItem>();
@@ -100,7 +101,7 @@ public class RegionToolMode implements ToolMode {
 			Team team, PlayerInteractEvent event) {
 		if(player.hasSelection()){
 			String name = MinigameUtils.getMinigameTool(player).getSetting("Region");
-			RegionModule module = RegionModule.getMinigameModule(minigame);
+			RegionModule module = minigame.getModule(RegionModule.class);
 			Region region = module.getRegion(name);
 			
 			if(region == null) {
@@ -132,7 +133,7 @@ public class RegionToolMode implements ToolMode {
 
 	@Override
 	public void select(MinigamePlayer player, Minigame minigame, Team team) {
-		RegionModule mod = RegionModule.getMinigameModule(minigame);
+		RegionModule mod = minigame.getModule(RegionModule.class);
 		String name = MinigameUtils.getMinigameTool(player).getSetting("Region");
 		if(mod.hasRegion(name)){
 			Main.getPlugin().getDisplayManager().show(mod.getRegion(name), player);
@@ -145,7 +146,7 @@ public class RegionToolMode implements ToolMode {
 
 	@Override
 	public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
-		RegionModule mod = RegionModule.getMinigameModule(minigame);
+		RegionModule mod = minigame.getModule(RegionModule.class);
 		String name = MinigameUtils.getMinigameTool(player).getSetting("Region");
 		if(mod.hasRegion(name)){
 			Main.getPlugin().getDisplayManager().hide(mod.getRegion(name), player);

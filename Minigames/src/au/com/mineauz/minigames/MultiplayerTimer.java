@@ -26,7 +26,7 @@ public class MultiplayerTimer{
 	public MultiplayerTimer(Minigame mg){
 		minigame = mg;
 		
-		playerWaitTime = LobbySettingsModule.getMinigameModule(mg).getPlayerWaitTime();
+		playerWaitTime = mg.getModule(LobbySettingsModule.class).getPlayerWaitTime();
 		
 		if (playerWaitTime == 0) {
 			playerWaitTime = plugin.getConfig().getInt("multiplayer.waitforplayers");
@@ -54,7 +54,7 @@ public class MultiplayerTimer{
 			
 			@Override
 			public void run() {
-				
+				LobbySettingsModule module = minigame.getModule(LobbySettingsModule.class);
 				if(playerWaitTime != 0 && !paused){
 					if(playerWaitTime == plugin.getConfig().getInt("multiplayer.waitforplayers")){
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.waitingForPlayers"));
@@ -71,9 +71,9 @@ public class MultiplayerTimer{
 						minigame.setState(MinigameState.STARTING);
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.minigameStarts"));
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
-						freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMoveStartWait());
-						allowInteraction(LobbySettingsModule.getMinigameModule(minigame).canInteractStartWait());
-						if(LobbySettingsModule.getMinigameModule(minigame).isTeleportOnPlayerWait()){
+						freezePlayers(!module.canMoveStartWait());
+						allowInteraction(module.canInteractStartWait());
+						if(module.isTeleportOnPlayerWait()){
 							reclearInventories(minigame);
 							pdata.startMPMinigame(minigame, true);
 						}
@@ -86,7 +86,7 @@ public class MultiplayerTimer{
 				else if(playerWaitTime == 0 && startWaitTime == 0){
 					sendPlayersMessage(ChatColor.GREEN + MinigameUtils.getLang("time.startup.go"));
 					reclearInventories(minigame);
-					if(LobbySettingsModule.getMinigameModule(minigame).isTeleportOnStart())
+					if(module.isTeleportOnStart())
 						pdata.startMPMinigame(minigame, true);
 					else
 						pdata.startMPMinigame(minigame, false);

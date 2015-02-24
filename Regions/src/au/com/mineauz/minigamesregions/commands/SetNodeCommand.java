@@ -63,7 +63,7 @@ public class SetNodeCommand implements ICommand {
 			String label, String[] args) {
 		if(args != null){
 			MinigamePlayer ply = Minigames.plugin.pdata.getMinigamePlayer((Player)sender);
-			RegionModule rmod = RegionModule.getMinigameModule(minigame);
+			RegionModule rmod = minigame.getModule(RegionModule.class);
 			if(args[0].equalsIgnoreCase("create") && args.length >= 2){
 				if(!rmod.hasNode(args[1])){
 					rmod.addNode(args[1], new Node(args[1], ply.getLocation()));

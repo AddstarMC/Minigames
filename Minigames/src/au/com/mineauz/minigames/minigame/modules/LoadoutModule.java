@@ -122,8 +122,9 @@ public class LoadoutModule extends MinigameModule {
 		}
 	}
 	
+	@Deprecated
 	public static LoadoutModule getMinigameModule(Minigame minigame){
-		return (LoadoutModule) minigame.getModule("Loadouts");
+		return (LoadoutModule) minigame.getModule(LoadoutModule.class);
 	}
 	
 	public void addLoadout(String name){

@@ -64,7 +64,7 @@ public class HintCommand implements ICommand{
 			
 			if(mgm != null && mgm.getMinigameTimer() != null && mgm.getType() == MinigameType.GLOBAL && 
 					mgm.getMechanicName().equals("treasure_hunt")){
-				TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
+				TreasureHuntModule thm = mgm.getModule(TreasureHuntModule.class);
 				if(thm.hasTreasureLocation() && !thm.isTreasureFound()){
 					thm.getHints(player);
 				}
@@ -96,7 +96,7 @@ public class HintCommand implements ICommand{
 					player.sendMessage(ChatColor.GRAY + treasures);
 				}
 				else{
-					TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgs.get(0));
+					TreasureHuntModule thm = mgs.get(0).getModule(TreasureHuntModule.class);
 					if(thm.hasTreasureLocation() && !thm.isTreasureFound()){
 						thm.getHints(player);
 					}

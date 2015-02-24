@@ -18,7 +18,7 @@ public class MenuItemAddTeam extends MenuItem{
 
 	public MenuItemAddTeam(String name, Minigame minigame) {
 		super(name, Material.ITEM_FRAME);
-		tm = TeamsModule.getMinigameModule(minigame);
+		tm = minigame.getModule(TeamsModule.class);
 	}
 	
 	@Override

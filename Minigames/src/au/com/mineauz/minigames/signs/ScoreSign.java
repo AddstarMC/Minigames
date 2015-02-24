@@ -79,7 +79,8 @@ public class ScoreSign implements MinigameSign{
 			else{
 				TeamColor steam = TeamColor.matchColor(ChatColor.stripColor(sign.getLine(3)));
 				Team pteam = player.getTeam();
-				if(steam == null || !TeamsModule.getMinigameModule(mg).hasTeam(steam) || pteam.getColor() == steam){
+				TeamsModule module = mg.getModule(TeamsModule.class);
+				if(steam == null || !module.hasTeam(steam) || pteam.getColor() == steam){
 					if(Minigames.plugin.mdata.hasClaimedScore(mg, sign.getLocation(), 0)){
 						player.sendMessage(MinigameUtils.getLang("sign.score.alreadyUsedTeam"), "error");
 						return true;
@@ -94,7 +95,7 @@ public class ScoreSign implements MinigameSign{
 					if(mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= pteam.getScore()){
 						List<MinigamePlayer> winners = new ArrayList<MinigamePlayer>(pteam.getPlayers());
 						List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>(mg.getPlayers().size() - pteam.getPlayers().size());
-						for(Team t : TeamsModule.getMinigameModule(mg).getTeams()){
+						for(Team t : module.getTeams()){
 							if(t != pteam)
 								losers.addAll(t.getPlayers());
 						}

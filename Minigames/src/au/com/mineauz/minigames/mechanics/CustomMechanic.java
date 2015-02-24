@@ -63,7 +63,7 @@ public class CustomMechanic extends GameMechanicBase{
 			if(mgm.getMechanicName().equals("custom")){
 				Team smt = null;
 				Team lgt = ply.getTeam();
-				for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+				for(Team t : mgm.getModule(TeamsModule.class).getTeams()){
 					if(smt == null || t.getPlayers().size() < smt.getPlayers().size() - 1)
 						smt = t;
 				}

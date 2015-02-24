@@ -65,7 +65,7 @@ public abstract class GameMechanicBase implements Listener{
 			for(MinigamePlayer ply : players){
 				if(ply.getTeam() == null){
 					Team smt = null;
-					for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
+					for(Team t : minigame.getModule(TeamsModule.class).getTeams()){
 						if(smt == null || (t.getPlayers().size() < smt.getPlayers().size() && 
 								(t.getMaxPlayers() == 0 || t.getPlayers().size() != t.getMaxPlayers())))
 							smt = t;
@@ -85,7 +85,7 @@ public abstract class GameMechanicBase implements Listener{
 			while(!sorted){
 				Team smt = null;
 				Team lgt = null;
-				for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
+				for(Team t : minigame.getModule(TeamsModule.class).getTeams()){
 					if(smt == null || (t.getPlayers().size() < smt.getPlayers().size() - 1 && !t.isFull()))
 						smt = t;
 					if((lgt == null || (t.getPlayers().size() > lgt.getPlayers().size() && !t.isFull())) && t != smt)

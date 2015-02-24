@@ -97,7 +97,7 @@ public class ScoreCommand implements ICommand {
 							return true;
 						}
 
-						TeamsModule tmod = TeamsModule.getMinigameModule(mg);
+						TeamsModule tmod = mg.getModule(TeamsModule.class);
 						
 						if(mg.isTeamGame()){
 							if(tmod.hasTeam(color)){
@@ -157,7 +157,7 @@ public class ScoreCommand implements ICommand {
 							return true;
 						}
 
-						TeamsModule tmod = TeamsModule.getMinigameModule(mg);
+						TeamsModule tmod = mg.getModule(TeamsModule.class);
 						
 						if(mg.isTeamGame() && mg.hasPlayers()){
 							Team t = null;
@@ -239,7 +239,7 @@ public class ScoreCommand implements ICommand {
 						return true;
 					}
 					
-					TeamsModule tmod = TeamsModule.getMinigameModule(mg);
+					TeamsModule tmod = mg.getModule(TeamsModule.class);
 					
 					if(mg.isTeamGame() && mg.hasPlayers()){
 						Team team = null;

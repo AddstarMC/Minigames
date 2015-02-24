@@ -39,7 +39,7 @@ public class JuggernautMechanic extends GameMechanicBase{
 
 	@Override
 	public MinigameModule displaySettings(Minigame minigame) {
-		return JuggernautModule.getMinigameModule(minigame);
+		return minigame.getModule(JuggernautModule.class);
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class JuggernautMechanic extends GameMechanicBase{
 	@Override
 	public void quitMinigame(Minigame minigame, MinigamePlayer player,
 			boolean forced) {
-		JuggernautModule jm = JuggernautModule.getMinigameModule(minigame);
+		JuggernautModule jm = minigame.getModule(JuggernautModule.class);
 		if(jm.getJuggernaut() != null && jm.getJuggernaut() == player){
 			jm.setJuggernaut(null);
 			
@@ -82,7 +82,7 @@ public class JuggernautMechanic extends GameMechanicBase{
 	@Override
 	public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
 			List<MinigamePlayer> losers) {
-		JuggernautModule.getMinigameModule(minigame).setJuggernaut(null);
+		minigame.getModule(JuggernautModule.class).setJuggernaut(null);
 		
 		minigame.getScoreboardManager().getTeam("juggernaut").unregister();
 	}
@@ -116,7 +116,7 @@ public class JuggernautMechanic extends GameMechanicBase{
 			mgm.getScoreboardManager().getTeam("juggernaut").setPrefix(ChatColor.RED.toString());
 			
 			MinigamePlayer j = assignNewJuggernaut(event.getPlayers(), null);
-			JuggernautModule.getMinigameModule(event.getMinigame()).setJuggernaut(j);
+			event.getMinigame().getModule(JuggernautModule.class).setJuggernaut(j);
 		}
 	}
 	
@@ -125,7 +125,7 @@ public class JuggernautMechanic extends GameMechanicBase{
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
 		if(ply == null) return;
 		if(ply.getMinigame() != null && ply.getMinigame().getMechanic() == this){
-			JuggernautModule jm = JuggernautModule.getMinigameModule(ply.getMinigame());
+			JuggernautModule jm = ply.getMinigame().getModule(JuggernautModule.class);
 			
 			if(jm.getJuggernaut() == ply){
 				if(event.getEntity().getKiller() != null){

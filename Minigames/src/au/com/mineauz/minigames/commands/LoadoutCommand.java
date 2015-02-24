@@ -59,13 +59,14 @@ public class LoadoutCommand implements ICommand {
 			String label, String[] args) {
 		MinigamePlayer ply = Minigames.plugin.pdata.getMinigamePlayer((Player)sender);
 		if(ply.isInMinigame()){
+			LoadoutModule module = ply.getMinigame().getModule(LoadoutModule.class);
 			if(args == null){
-				LoadoutModule.getMinigameModule(ply.getMinigame()).displaySelectionMenu(ply, false);
+				module.displaySelectionMenu(ply, false);
 			}
 			else{
 				String ln = args[0];
-				if(LoadoutModule.getMinigameModule(ply.getMinigame()).hasLoadout(ln)){
-					ply.setLoadout(LoadoutModule.getMinigameModule(ply.getMinigame()).getLoadout(ln));
+				if(module.hasLoadout(ln)){
+					ply.setLoadout(module.getLoadout(ln));
 					ply.sendMessage(MinigameUtils.formStr("player.loadout.nextSpawnName", ln), null);
 				}
 				else{
@@ -87,7 +88,7 @@ public class LoadoutCommand implements ICommand {
 			if(ply.isInMinigame()){
 				if(args.length == 1){
 					return MinigameUtils.tabCompleteMatch(new ArrayList<String>(
-							LoadoutModule.getMinigameModule(ply.getMinigame()).getLoadoutMap().keySet()), 
+							ply.getMinigame().getModule(LoadoutModule.class).getLoadoutMap().keySet()), 
 							args[0]);
 				}
 			}

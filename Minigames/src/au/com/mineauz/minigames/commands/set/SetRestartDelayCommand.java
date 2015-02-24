@@ -64,7 +64,7 @@ public class SetRestartDelayCommand implements ICommand {
 				else if(mod.equals("h"))
 					time = time * 60 * 60;
 				
-				TreasureHuntModule.getMinigameModule(minigame).setTreasureWaitTime(time);
+				minigame.getModule(TreasureHuntModule.class).setTreasureWaitTime(time);
 				sender.sendMessage(ChatColor.GRAY + minigame.getName(false) + 
 						"'s restart delay has been set to " + MinigameUtils.convertTime(time));
 				return true;

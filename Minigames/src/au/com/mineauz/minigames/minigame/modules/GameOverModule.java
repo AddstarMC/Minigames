@@ -74,8 +74,9 @@ public class GameOverModule extends MinigameModule{
 		menu.addItem(new MenuItemSubMenu("Game Over Settings", Material.WOOD_DOOR, m));
 	}
 
+	@Deprecated
 	public static GameOverModule getMinigameModule(Minigame minigame){
-		return (GameOverModule) minigame.getModule("GameOver");
+		return (GameOverModule) minigame.getModule(GameOverModule.class);
 	}
 	
 	public void startEndGameTimer(){

@@ -83,8 +83,9 @@ public class TeamsModule extends MinigameModule {
 		}
 	}
 	
+	@Deprecated
 	public static TeamsModule getMinigameModule(Minigame minigame){
-		return (TeamsModule) minigame.getModule("Teams");
+		return (TeamsModule) minigame.getModule(TeamsModule.class);
 	}
 	
 	public Team getTeam(TeamColor color){

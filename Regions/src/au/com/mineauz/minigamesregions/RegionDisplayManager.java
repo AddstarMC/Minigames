@@ -151,7 +151,7 @@ public class RegionDisplayManager {
 	}
 	
 	public void showAll(Minigame minigame, MinigamePlayer player) {
-		RegionModule module = RegionModule.getMinigameModule(minigame);
+		RegionModule module = minigame.getModule(RegionModule.class);
 		for (Region region : module.getRegions()) {
 			show(region, player);
 		}
@@ -162,7 +162,7 @@ public class RegionDisplayManager {
 	}
 	
 	public void hideAll(Minigame minigame, MinigamePlayer player) {
-		RegionModule module = RegionModule.getMinigameModule(minigame);
+		RegionModule module = minigame.getModule(RegionModule.class);
 		for (Region region : module.getRegions()) {
 			hide(region, player);
 		}

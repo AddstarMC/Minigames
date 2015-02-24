@@ -77,7 +77,7 @@ public class PlayerData {
 					/*!minigame.isRegenerating() && 
 					(!minigame.isNotWaitingForPlayers() || (minigame.canLateJoin() && minigame.getMpTimer().getPlayerWaitTimeLeft() == 0)) &&*/ 
 					(minigame.getStartLocations().size() > 0 || 
-							(minigame.isTeamGame() && TeamsModule.getMinigameModule(minigame).hasTeamStartLocations())) &&
+							(minigame.isTeamGame() && minigame.getModule(TeamsModule.class).hasTeamStartLocations())) &&
 					minigame.getEndPosition() != null && minigame.getQuitPosition() != null && 
 					(minigame.getType() == MinigameType.SINGLEPLAYER || minigame.getLobbyPosition() != null) &&
 					((type == MinigameType.SINGLEPLAYER && !minigame.isSpMaxPlayers()) || minigame.getPlayers().size() < minigame.getMaxPlayers()) &&
@@ -185,8 +185,9 @@ public class PlayerData {
 				player.storePlayerData();
 				player.setMinigame(minigame);
 				minigame.addPlayer(player);
-				WeatherTimeModule.getMinigameModule(minigame).applyCustomTime(player);
-				WeatherTimeModule.getMinigameModule(minigame).applyCustomWeather(player);
+				WeatherTimeModule weatherModule = minigame.getModule(WeatherTimeModule.class);
+				weatherModule.applyCustomTime(player);
+				weatherModule.applyCustomWeather(player);
 				player.setCheckpoint(player.getPlayer().getLocation());
 				player.getPlayer().setFallDistance(0);
 				player.getPlayer().setWalkSpeed(0.2f);
@@ -218,7 +219,7 @@ public class PlayerData {
 					//Register regen recorder events
 					if(minigame.getBlockRecorder().hasRegenArea())
 						Bukkit.getServer().getPluginManager().registerEvents(minigame.getBlockRecorder(), plugin);
-					WeatherTimeModule.getMinigameModule(minigame).startTimeLoop();
+					weatherModule.startTimeLoop();
 				}
 				
 				//Call Type specific join
@@ -251,7 +252,7 @@ public class PlayerData {
 				player.sendMessage(MinigameUtils.formStr("minigame.lateJoinWait", minigame.getMpTimer().getStartWaitTimeLeft()), null);
 			}
 			else if(minigame.getStartLocations().size() == 0 || 
-							(minigame.isTeamGame() && !TeamsModule.getMinigameModule(minigame).hasTeamStartLocations())){
+							(minigame.isTeamGame() && !minigame.getModule(TeamsModule.class).hasTeamStartLocations())){
 				player.sendMessage(MinigameUtils.getLang("minigame.error.noStart"), "error");
 			}
 			else if(minigame.getEndPosition() == null){
@@ -328,7 +329,7 @@ public class PlayerData {
 		Location start = null;
 		int pos = 0;
 		Map<Team, Integer> tpos = new HashMap<Team, Integer>();
-		for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
+		for(Team t : minigame.getModule(TeamsModule.class).getTeams()){
 			tpos.put(t, 0);
 		}
 		
@@ -356,7 +357,7 @@ public class PlayerData {
 			}
 			else{
 				Team team = ply.getTeam();
-				if(TeamsModule.getMinigameModule(minigame).hasTeamStartLocations()){
+				if(minigame.getModule(TeamsModule.class).hasTeamStartLocations()){
 					if(tpos.get(team) >= team.getStartLocations().size()){
 						tpos.put(team, 0);
 					}
@@ -429,7 +430,8 @@ public class PlayerData {
 		Minigame minigame = player.getMinigame();
 		
 		boolean isWinner = false;
-		if(GameOverModule.getMinigameModule(minigame).getWinners().contains(player))
+		GameOverModule module = minigame.getModule(GameOverModule.class);
+		if(module.getWinners().contains(player))
 			isWinner = true;
 		
 		QuitMinigameEvent event = new QuitMinigameEvent(player, minigame, forced, isWinner);
@@ -440,9 +442,9 @@ public class PlayerData {
 					player.setEndTime(System.currentTimeMillis());
 				
 				if(isWinner)
-					GameOverModule.getMinigameModule(minigame).getWinners().remove(player);
+					module.getWinners().remove(player);
 				else
-					GameOverModule.getMinigameModule(minigame).getLosers().remove(player);
+					module.getLosers().remove(player);
 				
 				if(!isWinner){
 					//SQL stuff
@@ -537,9 +539,9 @@ public class PlayerData {
 					}
 					
 					mdata.clearClaimedScore(minigame);
-					WeatherTimeModule.getMinigameModule(minigame).stopTimeLoop();
-					GameOverModule.getMinigameModule(minigame).stopEndGameTimer();
-					for(Team team : TeamsModule.getMinigameModule(minigame).getTeams()){
+					minigame.getModule(WeatherTimeModule.class).stopTimeLoop();
+					module.stopEndGameTimer();
+					for(Team team : minigame.getModule(TeamsModule.class).getTeams()){
 						team.setScore(0);
 					}
 				}
@@ -639,14 +641,15 @@ public class PlayerData {
 			//Broadcast Message
 			if(plugin.getConfig().getBoolean("broadcastCompletion") && minigame.isEnabled()){
 				if(minigame.isTeamGame()){
-					if(winners.size() > 0 || ((TeamsModule)minigame.getModule("Teams")).getDefaultWinner() != null){
+					TeamsModule teamsModule = minigame.getModule(TeamsModule.class);
+					if(winners.size() > 0 || teamsModule.getDefaultWinner() != null){
 						Team team;
 						if(winners.size() > 0)
 							team = winners.get(0).getTeam();
 						else
-							team = ((TeamsModule)minigame.getModule("Teams")).getTeam(((TeamsModule)minigame.getModule("Teams")).getDefaultWinner());
+							team = teamsModule.getTeam(teamsModule.getDefaultWinner());
 						String score = "";
-						List<Team> teams = TeamsModule.getMinigameModule(minigame).getTeams();
+						List<Team> teams = minigame.getModule(TeamsModule.class).getTeams();
 						for(Team t : teams){
 							score += t.getColor().getColor().toString() + t.getScore();
 							if(t != teams.get(teams.size() - 1)){
@@ -706,7 +709,7 @@ public class PlayerData {
 				}
 			}
 			
-			GameOverModule gom = GameOverModule.getMinigameModule(minigame);
+			GameOverModule gom = minigame.getModule(GameOverModule.class);
 			boolean usedTimer = false;
 			
 			gom.setWinners(winners);

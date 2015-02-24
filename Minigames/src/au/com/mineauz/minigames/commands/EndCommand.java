@@ -102,9 +102,9 @@ public class EndCommand implements ICommand{
 						sender.sendMessage(ChatColor.RED + "No minigme found by the name " + args[1]);
 						return true;
 					}
-					
-					if(TeamsModule.getMinigameModule(mgm).hasTeam(color)){
-						team = TeamsModule.getMinigameModule(mgm).getTeam(color);
+					TeamsModule teamModule = mgm.getModule(TeamsModule.class);
+					if(teamModule.hasTeam(color)){
+						team = teamModule.getTeam(color);
 					}
 					else{
 						sender.sendMessage(ChatColor.RED + "No team found by the name " + args[0] + " in " + mgm.getName(false));
@@ -141,15 +141,16 @@ public class EndCommand implements ICommand{
 				}
 				else if(args.length >= 2 && team != null && mgm != null){
 					if(mgm.hasPlayers()){
+						TeamsModule teamModule = mgm.getModule(TeamsModule.class);
 						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(team.getPlayers());
 						int lcount = 0;
-						for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+						for(Team t : teamModule.getTeams()){
 							if(t != team){
 								lcount += t.getPlayers().size();
 							}
 						}
 						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(lcount);
-						for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+						for(Team t : teamModule.getTeams()){
 							if(t != team){
 								l.addAll(t.getPlayers());
 							}

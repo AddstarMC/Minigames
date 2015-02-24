@@ -122,7 +122,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		if(entry.equalsIgnoreCase("yes")){
 			String loadoutName = loadout.getName(false);
 			if(mgm != null)
-				LoadoutModule.getMinigameModule(mgm).deleteLoadout(loadoutName);
+				mgm.getModule(LoadoutModule.class).deleteLoadout(loadoutName);
 			else
 				Minigames.plugin.mdata.deleteLoadout(loadoutName);
 			remove();

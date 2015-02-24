@@ -103,7 +103,7 @@ public class ToolCommand implements ICommand {
 				
 				if(tool.getMinigame() != null && tool.getMode() != null){
 					tool.getMode().select(player, tool.getMinigame(), 
-							TeamsModule.getMinigameModule(tool.getMinigame()).getTeam(tool.getTeam()));
+							tool.getMinigame().getModule(TeamsModule.class).getTeam(tool.getTeam()));
 				}
 				else if(tool.getMode() == null)
 					sender.sendMessage(ChatColor.RED + "You must have a mode selected to select anything!");
@@ -119,7 +119,7 @@ public class ToolCommand implements ICommand {
 				
 				if(tool.getMinigame() != null && tool.getMode() != null){
 					tool.getMode().deselect(player, tool.getMinigame(), 
-							TeamsModule.getMinigameModule(tool.getMinigame()).getTeam(tool.getTeam()));
+							tool.getMinigame().getModule(TeamsModule.class).getTeam(tool.getTeam()));
 				}
 				else if(tool.getMode() == null)
 					sender.sendMessage(ChatColor.RED + "You must have a mode selected to deselect anything!");

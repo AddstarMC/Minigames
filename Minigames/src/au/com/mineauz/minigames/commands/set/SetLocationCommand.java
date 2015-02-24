@@ -62,7 +62,7 @@ public class SetLocationCommand implements ICommand{
 					location += " ";
 				}
 			}
-			TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
+			TreasureHuntModule thm = minigame.getModule(TreasureHuntModule.class);
 			thm.setLocation(location);
 			sender.sendMessage(ChatColor.GRAY + "The location name for " + minigame + " has been set to " + location);
 			return true;

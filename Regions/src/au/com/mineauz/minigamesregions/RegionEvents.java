@@ -37,7 +37,7 @@ public class RegionEvents implements Listener{
 	private PlayerData pdata = plugin.pdata;
 	
 	private void executeRegionChanges(Minigame mg, MinigamePlayer ply){
-		for(Region r : RegionModule.getMinigameModule(mg).getRegions()){
+		for(Region r : mg.getModule(RegionModule.class).getRegions()){
 			if(r.playerInRegion(ply)){
 				if(!r.hasPlayer(ply)){
 					r.addPlayer(ply);
@@ -55,10 +55,6 @@ public class RegionEvents implements Listener{
 				}
 			}
 		}
-	}
-	
-	private RegionModule getRegionModule(Minigame minigame){
-		return RegionModule.getMinigameModule(minigame);
 	}
 	
 	@EventHandler(ignoreCancelled = true)
@@ -86,11 +82,12 @@ public class RegionEvents implements Listener{
 					}
 					
 					executeRegionChanges(mg, ply);
+					RegionModule module = ply.getMinigame().getModule(RegionModule.class);
 					
-					for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
+					for(Node node : module.getNodes()){
 						node.execute(Triggers.getTrigger("RESPAWN"), ply);
 					}
-					for(Region region : RegionModule.getMinigameModule(ply.getMinigame()).getRegions()){
+					for(Region region : module.getRegions()){
 						if(region.hasPlayer(ply))
 							region.execute(Triggers.getTrigger("RESPAWN"), ply);
 					}
@@ -104,10 +101,11 @@ public class RegionEvents implements Listener{
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
 		if(ply == null) return;
 		if(ply.isInMinigame()){
-			for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
+			RegionModule module = ply.getMinigame().getModule(RegionModule.class);
+			for(Node node : module.getNodes()){
 				node.execute(Triggers.getTrigger("DEATH"), ply);
 			}
-			for(Region region : RegionModule.getMinigameModule(ply.getMinigame()).getRegions()){
+			for(Region region : module.getRegions()){
 				if(region.hasPlayer(ply))
 					region.execute(Triggers.getTrigger("DEATH"), ply);
 			}
@@ -124,18 +122,19 @@ public class RegionEvents implements Listener{
 			@Override
 			public void run() {
 				executeRegionChanges(mg, ply);
+				RegionModule module = mg.getModule(RegionModule.class);
 				
-				for(Node node : RegionModule.getMinigameModule(mg).getNodes()){
+				for(Node node : module.getNodes()){
 					node.execute(Triggers.getTrigger("GAME_JOIN"), ply);
 				}
-				for(Region region : RegionModule.getMinigameModule(mg).getRegions()){
+				for(Region region : module.getRegions()){
 					if(region.hasPlayer(ply))
 						region.execute(Triggers.getTrigger("GAME_JOIN"), ply);
 				}
 			}
 		});
 		if(event.getMinigame().getPlayers().size() == 0){
-			for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
+			for(Region region : event.getMinigame().getModule(RegionModule.class).getRegions()){
 				for(RegionExecutor ex : region.getExecutors()){
 					if(ex.getTrigger().getName().equalsIgnoreCase("TICK")){
 						region.startTickTask();
@@ -148,7 +147,7 @@ public class RegionEvents implements Listener{
 	
 	@EventHandler
 	private void minigameStart(StartMinigameEvent event){
-		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
+		for(Node node : event.getMinigame().getModule(RegionModule.class).getNodes()){
 			node.execute(Triggers.getTrigger("GAME_START"), null);
 		}
 	}
@@ -158,11 +157,12 @@ public class RegionEvents implements Listener{
 		MinigamePlayer ply = event.getMinigamePlayer();
 		if(ply == null) return;
 		Minigame mg = ply.getMinigame();
-		for(Region r : RegionModule.getMinigameModule(mg).getRegions()){
+		RegionModule module = mg.getModule(RegionModule.class);
+		for(Region r : module.getRegions()){
 			if(r.hasPlayer(ply))
 				r.removePlayer(ply);
 		}
-		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
+		for(Node node : module.getNodes()){
 			node.execute(Triggers.getTrigger("GAME_QUIT"), event.getMinigamePlayer());
 			if(event.getMinigame().getPlayers().size() > 1){
 				for(NodeExecutor exec : node.getExecutors())
@@ -174,7 +174,7 @@ public class RegionEvents implements Listener{
 				node.setEnabled(true);
 			}
 		}
-		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
+		for(Region region : module.getRegions()){
 			if(region.playerInRegion(ply))
 				region.execute(Triggers.getTrigger("GAME_QUIT"), event.getMinigamePlayer());
 			if(event.getMinigame().getPlayers().size() > 1){
@@ -193,19 +193,19 @@ public class RegionEvents implements Listener{
 	
 	@EventHandler(ignoreCancelled = true)
 	private void playersEnd(EndMinigameEvent event){
+		RegionModule module = event.getMinigame().getModule(RegionModule.class);
 		for(MinigamePlayer ply : event.getWinners()){
-			Minigame mg = ply.getMinigame();
-			for(Region r : RegionModule.getMinigameModule(mg).getRegions()){
+			for(Region r : module.getRegions()){
 				if(r.hasPlayer(ply))
 					r.removePlayer(ply);
 			}
 		}
-		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
+		for(Node node : module.getNodes()){
 			node.execute(Triggers.getTrigger("GAME_END"), null);
 			for(NodeExecutor exec : node.getExecutors())
 				exec.clearTriggers();
 		}
-		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
+		for(Region region : module.getRegions()){
 			for(RegionExecutor exec : region.getExecutors())
 				exec.clearTriggers();
 		}
@@ -233,7 +233,7 @@ public class RegionEvents implements Listener{
 						return;
 					}
 					
-					for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
+					for(Node node : ply.getMinigame().getModule(RegionModule.class).getNodes()){
 						if(node.getLocation().getWorld() == loc2.getWorld()){
 							Location loc1 = node.getLocation();
 							if(loc1.getBlockX() == loc2.getBlockX() &&
@@ -263,7 +263,7 @@ public class RegionEvents implements Listener{
 						return;
 					}
 					
-					for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
+					for(Node node : ply.getMinigame().getModule(RegionModule.class).getNodes()){
 						if(node.getLocation().getWorld() == loc2.getWorld()){
 							Location loc1 = node.getLocation();
 							if(loc1.getBlockX() == loc2.getBlockX() &&
@@ -293,7 +293,7 @@ public class RegionEvents implements Listener{
 						return;
 					}
 					
-					for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
+					for(Node node : ply.getMinigame().getModule(RegionModule.class).getNodes()){
 						if(node.getLocation().getWorld() == loc2.getWorld()){
 							Location loc1 = node.getLocation();
 							if(loc1.getBlockX() == loc2.getBlockX() &&
@@ -310,7 +310,7 @@ public class RegionEvents implements Listener{
 	
 	@EventHandler
 	private void minigameTimerTick(MinigameTimerTickEvent event){
-		for(Node node : getRegionModule(event.getMinigame()).getNodes()){
+		for(Node node : event.getMinigame().getModule(RegionModule.class).getNodes()){
 			node.execute(Triggers.getTrigger("MINIGAME_TIMER"), null);
 		}
 	}
@@ -331,11 +331,12 @@ public class RegionEvents implements Listener{
 						return;
 					}
 					
-					for(Node node : getRegionModule(ply.getMinigame()).getNodes()){
+					RegionModule module = ply.getMinigame().getModule(RegionModule.class);
+					for(Node node : module.getNodes()){
 						node.execute(trig, ply);
 					}
 					
-					for(Region region : getRegionModule(ply.getMinigame()).getRegions()){
+					for(Region region : module.getRegions()){
 						if(region.hasPlayer(ply)){
 							region.execute(trig, ply);
 						}
@@ -360,12 +361,14 @@ public class RegionEvents implements Listener{
 					if (!ply.isInMinigame()) {
 						return;
 					}
+					
+					RegionModule module = ply.getMinigame().getModule(RegionModule.class);
 
-					for(Node node : getRegionModule(ply.getMinigame()).getNodes()){
+					for(Node node : module.getNodes()){
 						node.execute(trig, ply);
 					}
 					
-					for(Region region : getRegionModule(ply.getMinigame()).getRegions()){
+					for(Region region : module.getRegions()){
 						if(region.hasPlayer(ply)){
 							region.execute(trig, ply);
 						}

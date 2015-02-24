@@ -42,7 +42,7 @@ public class TriggerNodeAction extends ActionInterface {
 		if(player == null || !player.isInMinigame()) return;
 		Minigame mg = player.getMinigame();
 		if(mg != null){
-			RegionModule rmod = RegionModule.getMinigameModule(mg);
+			RegionModule rmod = mg.getModule(RegionModule.class);
 			if(rmod.hasNode(node.getFlag()))
 				rmod.getNode(node.getFlag()).execute(Triggers.getTrigger("REMOTE"), player);
 		}
@@ -53,7 +53,7 @@ public class TriggerNodeAction extends ActionInterface {
 		if(player == null || !player.isInMinigame()) return;
 		Minigame mg = player.getMinigame();
 		if(mg != null){
-			RegionModule rmod = RegionModule.getMinigameModule(mg);
+			RegionModule rmod = mg.getModule(RegionModule.class);
 			if(rmod.hasNode(this.node.getFlag()))
 				rmod.getNode(this.node.getFlag()).execute(Triggers.getTrigger("REMOTE"), player);
 		}

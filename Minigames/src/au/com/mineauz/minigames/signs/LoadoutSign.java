@@ -53,7 +53,7 @@ public class LoadoutSign implements MinigameSign {
 	public boolean signUse(Sign sign, MinigamePlayer player) {
 		if(player.getPlayer().getItemInHand().getType() == Material.AIR && player.isInMinigame()){
 			Minigame mgm = player.getMinigame();
-			LoadoutModule loadout = LoadoutModule.getMinigameModule(mgm);
+			LoadoutModule loadout = mgm.getModule(LoadoutModule.class);
 			if(mgm == null || mgm.isSpectator(player)){
 				return false;
 			}
@@ -62,7 +62,7 @@ public class LoadoutSign implements MinigameSign {
 				boolean nores = true;
 				if(sign.getLine(3).equalsIgnoreCase("respawn"))
 					nores = false;
-				LoadoutModule.getMinigameModule(mgm).displaySelectionMenu(player, nores);
+				loadout.displaySelectionMenu(player, nores);
 			}
 			else if(loadout.hasLoadout(sign.getLine(2))){
 				if(!loadout.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){

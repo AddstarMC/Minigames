@@ -61,7 +61,7 @@ public class AddTeamScoreAction extends ActionInterface {
 			player.getTeam().addScore(score.getFlag());
 		}
 		else if(!team.getFlag().equals("NONE")){
-			TeamsModule tm = TeamsModule.getMinigameModule(player.getMinigame());
+			TeamsModule tm = player.getMinigame().getModule(TeamsModule.class);
 			if(tm.hasTeam(TeamColor.valueOf(team.getFlag()))){
 				tm.getTeam(TeamColor.valueOf(team.getFlag())).addScore(score.getFlag());
 			}

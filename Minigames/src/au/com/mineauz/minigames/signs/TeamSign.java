@@ -70,7 +70,7 @@ public class TeamSign implements MinigameSign {
 						Team sm = null;
 						Team nt = matchTeam(mgm, sign.getLine(2));
 						if(nt != null && !nt.isFull()){
-							for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+							for(Team t : mgm.getModule(TeamsModule.class).getTeams()){
 								if(sm == null || t.getPlayers().size() < sm.getPlayers().size())
 									sm = t;
 							}
@@ -121,8 +121,9 @@ public class TeamSign implements MinigameSign {
 	
 	private Team matchTeam(Minigame mgm, String text){
 		TeamColor col = TeamColor.matchColor(ChatColor.stripColor(text).replace(" ", "_"));
-		if(TeamsModule.getMinigameModule(mgm).hasTeam(col))
-			return TeamsModule.getMinigameModule(mgm).getTeam(col);
+		TeamsModule module = mgm.getModule(TeamsModule.class);
+		if(module.hasTeam(col))
+			return module.getTeam(col);
 		return null;
 	}
 

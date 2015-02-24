@@ -76,7 +76,7 @@ public class FinishSign implements MinigameSign {
 							if(player.getMinigame().isTeamGame()){
 								List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(player.getTeam().getPlayers());
 								List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(minigame.getPlayers().size() - player.getTeam().getPlayers().size());
-								for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
+								for(Team t : minigame.getModule(TeamsModule.class).getTeams()){
 									if(t != player.getTeam())
 										l.addAll(t.getPlayers());
 								}
@@ -120,7 +120,7 @@ public class FinishSign implements MinigameSign {
 					if(player.getMinigame().isTeamGame()){
 						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(player.getTeam().getPlayers());
 						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(minigame.getPlayers().size() - player.getTeam().getPlayers().size());
-						for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
+						for(Team t : minigame.getModule(TeamsModule.class).getTeams()){
 							if(t != player.getTeam())
 								l.addAll(t.getPlayers());
 						}

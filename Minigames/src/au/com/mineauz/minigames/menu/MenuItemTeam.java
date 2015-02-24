@@ -106,7 +106,7 @@ public class MenuItemTeam extends MenuItem{
 	
 	@Override
 	public void onRightClick(MinigamePlayer player){
-		TeamsModule.getMinigameModule(team.getMinigame()).removeTeam(team.getColor());
+		team.getMinigame().getModule(TeamsModule.class).removeTeam(team.getColor());
 		remove();
 	}
 }

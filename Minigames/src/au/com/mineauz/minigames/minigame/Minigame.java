@@ -1,6 +1,8 @@
 package au.com.mineauz.minigames.minigame;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,8 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
+
+import com.google.common.collect.Maps;
 
 import au.com.mineauz.minigames.CTFFlag;
 import au.com.mineauz.minigames.FloorDegenerator;
@@ -124,7 +128,7 @@ public class Minigame {
 	private LocationFlag regenArea2 = new LocationFlag(null, "regenarea.2");
 	private IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
 	
-	private Map<String, MinigameModule> modules = new HashMap<String, MinigameModule>();
+	private Map<Class<? extends MinigameModule>, MinigameModule> modules = Maps.newHashMap();
 	
 	private Scoreboard sbManager = Minigames.plugin.getServer().getScoreboardManager().getNewScoreboard();
 	
@@ -175,7 +179,8 @@ public class Minigame {
 		sbManager.registerNewObjective(this.name, "dummy");
 		sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
 		
-		for(Class<? extends MinigameModule> mod : Minigames.plugin.mdata.getModules()){
+		// TODO: For now, we will do this. End goal is to only add modules that are needed
+		for(Class<? extends MinigameModule> mod : Minigames.plugin.mdata.getAvailableModules()){
 			try {
 				addModule(mod.getDeclaredConstructor(Minigame.class).newInstance(this));
 			} catch (Exception e) {
@@ -257,27 +262,28 @@ public class Minigame {
 	}
 	
 	public boolean addModule(MinigameModule module){
-		if(!modules.containsKey(module.getName())){
-			modules.put(module.getName(), module);
+		if(!modules.containsKey(module.getClass())){
+			modules.put(module.getClass(), module);
 			return true;
 		}
 		return false;
 	}
 	
-	public void removeModule(String moduleName){
-		modules.remove(moduleName);
+	public void removeModule(Class<? extends MinigameModule> module){
+		modules.remove(module);
 	}
 	
-	public List<MinigameModule> getModules(){
-		return new ArrayList<MinigameModule>(modules.values());
+	public Collection<MinigameModule> getModules(){
+		return Collections.unmodifiableCollection(modules.values());
 	}
 	
-	public MinigameModule getModule(String name){
-		return modules.get(name);
+	@SuppressWarnings("unchecked")
+	public <T extends MinigameModule> T getModule(Class<T> moduleClass) {
+		return (T)modules.get(moduleClass);
 	}
 	
 	public boolean isTeamGame(){
-		if(getType() == MinigameType.MULTIPLAYER && TeamsModule.getMinigameModule(this).getTeams().size() > 0)
+		if(getType() == MinigameType.MULTIPLAYER && getModule(TeamsModule.class).getTeams().size() > 0)
 			return true;
 		return false;
 	}
@@ -942,7 +948,7 @@ public class Minigame {
 			menu.addItem(minPlayers.getMenuItem("Min. Players", Material.STEP));
 			menu.addItem(maxPlayers.getMenuItem("Max. Players", Material.STONE));
 			
-			menu.addItem(new MenuItemSubMenu("Lobby Settings", Material.WOOD_DOOR, LobbySettingsModule.getMinigameModule(this).createSettingsMenu()));
+			menu.addItem(new MenuItemSubMenu("Lobby Settings", Material.WOOD_DOOR, getModule(LobbySettingsModule.class).createSettingsMenu()));
 			menu.addItem(new MenuItemNewLine());
 			menu.addItem(new MenuItemTime("Time Length", Material.WATCH, timer.getCallback(), 0, Integer.MAX_VALUE));
 			menu.addItem(useXPBarTimer.getMenuItem("Use XP bar as Timer", Material.ENDER_PEARL));
@@ -1089,17 +1095,18 @@ public class Minigame {
 		//Loadout Settings
 		//--------------//
 		List<MenuItem> mi = new ArrayList<MenuItem>();
-		for(String ld : LoadoutModule.getMinigameModule(this).getLoadouts()){
+		LoadoutModule loadoutModule = getModule(LoadoutModule.class);
+		for(String ld : loadoutModule.getLoadouts()){
 			Material item = Material.THIN_GLASS;
-			if(LoadoutModule.getMinigameModule(this).getLoadout(ld).getItems().size() != 0){
-				item = LoadoutModule.getMinigameModule(this).getLoadout(ld).getItem((Integer)LoadoutModule.getMinigameModule(this).getLoadout(ld).getItems().toArray()[0]).getType();
+			if(loadoutModule.getLoadout(ld).getItems().size() != 0){
+				item = loadoutModule.getLoadout(ld).getItem((Integer)loadoutModule.getLoadout(ld).getItems().toArray()[0]).getType();
 			}
-			if(LoadoutModule.getMinigameModule(this).getLoadout(ld).isDeleteable())
-				mi.add(new MenuItemDisplayLoadout(ld, "Shift + Right Click to Delete", item, LoadoutModule.getMinigameModule(this).getLoadout(ld), this));
+			if(loadoutModule.getLoadout(ld).isDeleteable())
+				mi.add(new MenuItemDisplayLoadout(ld, "Shift + Right Click to Delete", item, loadoutModule.getLoadout(ld), this));
 			else
-				mi.add(new MenuItemDisplayLoadout(ld, item, LoadoutModule.getMinigameModule(this).getLoadout(ld), this));
+				mi.add(new MenuItemDisplayLoadout(ld, item, loadoutModule.getLoadout(ld), this));
 		}
-		loadouts.setControlItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, LoadoutModule.getMinigameModule(this).getLoadoutMap(), this), 4);
+		loadouts.setControlItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, loadoutModule.getLoadoutMap(), this), 4);
 		loadouts.addItems(mi);
 		
 		main.setControlItem(new MenuItemSaveMinigame("Save " + getName(false), Material.REDSTONE_TORCH_ON, this), 4);
@@ -1220,8 +1227,8 @@ public class Minigame {
 		if(cfg.contains(name + ".type")){
 			if(cfg.getString(name + ".type").equals("TEAMS")) {
 				cfg.set(name + ".type", "MULTIPLAYER");
-				TeamsModule.getMinigameModule(this).addTeam(TeamColor.RED);
-				TeamsModule.getMinigameModule(this).addTeam(TeamColor.BLUE);
+				getModule(TeamsModule.class).addTeam(TeamColor.RED);
+				getModule(TeamsModule.class).addTeam(TeamColor.BLUE);
 			}
 			else if(cfg.getString(name + ".type").equals("FREE_FOR_ALL")){
 				cfg.set(name + ".type", "MULTIPLAYER");

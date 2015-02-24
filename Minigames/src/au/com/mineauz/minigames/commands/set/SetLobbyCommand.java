@@ -64,7 +64,7 @@ public class SetLobbyCommand implements ICommand{
 			return true;
 		}
 		else{
-			LobbySettingsModule lobby = LobbySettingsModule.getMinigameModule(minigame);
+			LobbySettingsModule lobby = minigame.getModule(LobbySettingsModule.class);
 			if(args.length == 3){
 				if(args[0].equalsIgnoreCase("canmove")){
 					boolean v = true;
