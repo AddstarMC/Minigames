@@ -24,6 +24,7 @@ import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
+import au.com.mineauz.minigames.minigame.modules.CTFModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 
@@ -46,7 +47,7 @@ public class CTFMechanic extends GameMechanicBase{
 	
 	@Override
 	public MinigameModule displaySettings(Minigame minigame){
-		return null;
+		return minigame.getModule(CTFModule.class);
 	}
 
 	@Override
@@ -62,30 +63,30 @@ public class CTFMechanic extends GameMechanicBase{
 	}
 
 	@Override
-	public void quitMinigame(Minigame minigame, MinigamePlayer player,
-			boolean forced) {
-		if(minigame.isFlagCarrier(player)){
-			minigame.getFlagCarrier(player).stopCarrierParticleEffect();
-			minigame.getFlagCarrier(player).respawnFlag();
-			minigame.removeFlagCarrier(player);
+	public void quitMinigame(Minigame minigame, MinigamePlayer player, boolean forced) {
+		CTFModule module = minigame.getModule(CTFModule.class);
+		if(module.isFlagCarrier(player)){
+			module.getFlagCarrier(player).stopCarrierParticleEffect();
+			module.getFlagCarrier(player).respawnFlag();
+			module.removeFlagCarrier(player);
 		}
 		if(minigame.getPlayers().size() == 1){
-			minigame.resetFlags();
+			module.resetFlags();
 		}
 	}
 
 	@Override
-	public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
-			List<MinigamePlayer> losers) {
+	public void endMinigame(Minigame minigame, List<MinigamePlayer> winners, List<MinigamePlayer> losers) {
+		CTFModule module = minigame.getModule(CTFModule.class);
 		for(MinigamePlayer pl : winners){
-			if(minigame.isFlagCarrier(pl)){
-				minigame.getFlagCarrier(pl).stopCarrierParticleEffect();
-				minigame.getFlagCarrier(pl).respawnFlag();
-				minigame.removeFlagCarrier(pl);
+			if(module.isFlagCarrier(pl)){
+				module.getFlagCarrier(pl).stopCarrierParticleEffect();
+				module.getFlagCarrier(pl).respawnFlag();
+				module.removeFlagCarrier(pl);
 			}
 		}
 		if(minigame.getPlayers().size() == 1){
-			minigame.resetFlags();
+			module.resetFlags();
 		}
 	}
 	
@@ -99,15 +100,16 @@ public class CTFMechanic extends GameMechanicBase{
 				Sign sign = (Sign) event.getClickedBlock().getState();
 				if(mgm.getMechanicName().equals("ctf") && sign.getLine(1).equals(ChatColor.GREEN + "Flag")){
 					TeamsModule teamModule = mgm.getModule(TeamsModule.class);
+					CTFModule ctf = mgm.getModule(CTFModule.class);
 					Team team = ply.getTeam();
 					
 					String sloc = MinigameUtils.createLocationID(event.getClickedBlock().getLocation());
 					
 					if((!sign.getLine(2).equalsIgnoreCase(team.getChatColor() + team.getColor().toString()) && !sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture")) || 
 							sign.getLine(2).equalsIgnoreCase(ChatColor.GRAY + "Neutral")){
-						if(mgm.getFlagCarrier(ply) == null){
+						if(ctf.getFlagCarrier(ply) == null){
 							TakeFlagEvent ev = null;
-							if(!mgm.hasDroppedFlag(sloc) && 
+							if(!ctf.hasDroppedFlag(sloc) && 
 									(teamModule.hasTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2)))) || 
 											sign.getLine(2).equalsIgnoreCase(ChatColor.GRAY + "Neutral"))){
 								Team oTeam = teamModule.getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2))));
@@ -115,16 +117,16 @@ public class CTFMechanic extends GameMechanicBase{
 								ev = new TakeFlagEvent(mgm, ply, flag);
 								Bukkit.getPluginManager().callEvent(ev);
 								if(!ev.isCancelled()){
-									mgm.addFlagCarrier(ply, flag);
+									ctf.addFlagCarrier(ply, flag);
 									flag.removeFlag();
 								}
 							}
-							else if(mgm.hasDroppedFlag(sloc)){
-								CTFFlag flag = mgm.getDroppedFlag(sloc);
+							else if(ctf.hasDroppedFlag(sloc)){
+								CTFFlag flag = ctf.getDroppedFlag(sloc);
 								ev = new TakeFlagEvent(mgm, ply, flag);
 								Bukkit.getPluginManager().callEvent(ev);
 								if(!ev.isCancelled()){
-									mgm.addFlagCarrier(ply, flag);
+									ctf.addFlagCarrier(ply, flag);
 									if(!flag.isAtHome()){
 										flag.stopTimer();
 									}
@@ -133,17 +135,17 @@ public class CTFMechanic extends GameMechanicBase{
 							}
 							
 							
-							if(mgm.getFlagCarrier(ply) != null && !ev.isCancelled()){
-								if(mgm.getFlagCarrier(ply).getTeam() != null){
-									Team fteam = mgm.getFlagCarrier(ply).getTeam();
+							if(ctf.getFlagCarrier(ply) != null && !ev.isCancelled()){
+								if(ctf.getFlagCarrier(ply).getTeam() != null){
+									Team fteam = ctf.getFlagCarrier(ply).getTeam();
 									String message = ply.getName() + " stole " + fteam.getChatColor() + fteam.getDisplayName() + ChatColor.WHITE + "'s flag!";
 									mdata.sendMinigameMessage(mgm, message, null, null);
-									mgm.getFlagCarrier(ply).startCarrierParticleEffect(ply.getPlayer());
+									ctf.getFlagCarrier(ply).startCarrierParticleEffect(ply.getPlayer());
 								}
 								else{
 									String message = ply.getName() + " stole the " + ChatColor.GRAY + "neutral" + ChatColor.WHITE + " flag!";
 									mdata.sendMinigameMessage(mgm, message, null, null);
-									mgm.getFlagCarrier(ply).startCarrierParticleEffect(ply.getPlayer());
+									ctf.getFlagCarrier(ply).startCarrierParticleEffect(ply.getPlayer());
 								}
 							}
 						}
@@ -155,15 +157,15 @@ public class CTFMechanic extends GameMechanicBase{
 						
 						String clickID = MinigameUtils.createLocationID(event.getClickedBlock().getLocation());
 						
-						if(mgm.getFlagCarrier(ply) != null && ((mgm.hasDroppedFlag(clickID) && mgm.getDroppedFlag(clickID).isAtHome()) || !mgm.hasDroppedFlag(clickID))){
-							CTFFlag flag = mgm.getFlagCarrier(ply);
+						if(ctf.getFlagCarrier(ply) != null && ((ctf.hasDroppedFlag(clickID) && ctf.getDroppedFlag(clickID).isAtHome()) || !ctf.hasDroppedFlag(clickID))){
+							CTFFlag flag = ctf.getFlagCarrier(ply);
 							FlagCaptureEvent ev = new FlagCaptureEvent(mgm, ply, flag);
 							Bukkit.getPluginManager().callEvent(ev);
 							if(!ev.isCancelled()){
 								flag.respawnFlag();
 								String id = MinigameUtils.createLocationID(flag.getSpawnLocation());
-								mgm.addDroppedFlag(id, flag);
-								mgm.removeFlagCarrier(ply);
+								ctf.addDroppedFlag(id, flag);
+								ctf.removeFlagCarrier(ply);
 								
 								boolean end = false;
 								
@@ -191,7 +193,7 @@ public class CTFMechanic extends GameMechanicBase{
 												l.addAll(t.getPlayers());
 										}
 										plugin.pdata.endMinigame(mgm, w, l);
-										mgm.resetFlags();
+										ctf.resetFlags();
 									}
 								}
 								else{
@@ -208,23 +210,23 @@ public class CTFMechanic extends GameMechanicBase{
 										mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.captureNeutralFinal", ply.getName()), null, null);
 										
 										pdata.endMinigame(ply);
-										mgm.resetFlags();
+										ctf.resetFlags();
 									}
 								}
 							}
 						}
-						else if(mgm.getFlagCarrier(ply) == null && mgm.hasDroppedFlag(clickID) && !mgm.getDroppedFlag(clickID).isAtHome()){
-							CTFFlag flag = mgm.getDroppedFlag(sloc);
-							if(mgm.hasDroppedFlag(sloc)){
-								mgm.removeDroppedFlag(sloc);
+						else if(ctf.getFlagCarrier(ply) == null && ctf.hasDroppedFlag(clickID) && !ctf.getDroppedFlag(clickID).isAtHome()){
+							CTFFlag flag = ctf.getDroppedFlag(sloc);
+							if(ctf.hasDroppedFlag(sloc)){
+								ctf.removeDroppedFlag(sloc);
 								String newID = MinigameUtils.createLocationID(flag.getSpawnLocation());
-								mgm.addDroppedFlag(newID, flag);
+								ctf.addDroppedFlag(newID, flag);
 							}
 							flag.respawnFlag();
 							mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.returned", ply.getName(), 
 									ply.getTeam().getChatColor() + ply.getTeam().getDisplayName() + ChatColor.WHITE), null, null);
 						}
-						else if(mgm.getFlagCarrier(ply) != null && mgm.hasDroppedFlag(clickID) && !mgm.getDroppedFlag(clickID).isAtHome()){
+						else if(ctf.getFlagCarrier(ply) != null && ctf.hasDroppedFlag(clickID) && !ctf.getDroppedFlag(clickID).isAtHome()){
 							ply.sendMessage(MinigameUtils.getLang("player.ctf.returnFail"), null);
 						}
 					}
@@ -239,14 +241,15 @@ public class CTFMechanic extends GameMechanicBase{
 		if(ply == null) return;
 		if(ply.isInMinigame()){
 			Minigame mgm = ply.getMinigame();
-			if(mgm.isFlagCarrier(ply)){
-				CTFFlag flag = mgm.getFlagCarrier(ply);
+			CTFModule ctf = mgm.getModule(CTFModule.class);
+			if(ctf.isFlagCarrier(ply)){
+				CTFFlag flag = ctf.getFlagCarrier(ply);
 				Location loc = flag.spawnFlag(ply.getPlayer().getLocation());
 				if(loc != null){
 					String id = MinigameUtils.createLocationID(loc);
-					Team team = mgm.getFlagCarrier(ply).getTeam();
-					mgm.addDroppedFlag(id, flag);
-					mgm.removeFlagCarrier(ply);
+					Team team = ctf.getFlagCarrier(ply).getTeam();
+					ctf.addDroppedFlag(id, flag);
+					ctf.removeFlagCarrier(ply);
 					
 					if(team != null)
 						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.dropped", ply.getName(), 
@@ -258,7 +261,7 @@ public class CTFMechanic extends GameMechanicBase{
 				}
 				else{
 					flag.respawnFlag();
-					mgm.removeFlagCarrier(ply);
+					ctf.removeFlagCarrier(ply);
 					flag.stopCarrierParticleEffect();
 				}
 			}

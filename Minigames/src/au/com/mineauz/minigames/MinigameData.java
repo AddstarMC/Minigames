@@ -23,6 +23,7 @@ import au.com.mineauz.minigames.events.StopGlobalMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MinigameTypeBase;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.modules.CTFModule;
 import au.com.mineauz.minigames.minigame.modules.GameOverModule;
 import au.com.mineauz.minigames.minigame.modules.InfectionModule;
 import au.com.mineauz.minigames.minigame.modules.JuggernautModule;
@@ -58,6 +59,7 @@ public class MinigameData {
 		addModule(InfectionModule.class);
 		addModule(GameOverModule.class);
 		addModule(JuggernautModule.class);
+		addModule(CTFModule.class);
 	}
 	
 	public Collection<Class<? extends MinigameModule>> getAvailableModules() {

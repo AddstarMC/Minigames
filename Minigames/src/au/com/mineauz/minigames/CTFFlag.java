@@ -12,6 +12,7 @@ import org.bukkit.material.MaterialData;
 
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.minigame.modules.CTFModule;
 
 public class CTFFlag{
 	
@@ -179,16 +180,16 @@ public class CTFFlag{
 	}
 	
 	public void startReturnTimer(){
-		final CTFFlag self = this;
 		taskID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
 			
 			@Override
 			public void run() {
 				String id = MinigameUtils.createLocationID(currentLocation);
-				if(minigame.hasDroppedFlag(id)){
-					minigame.removeDroppedFlag(id);
+				CTFModule ctf = minigame.getModule(CTFModule.class);
+				if(ctf.hasDroppedFlag(id)){
+					ctf.removeDroppedFlag(id);
 					String newID = MinigameUtils.createLocationID(spawnLocation);
-					minigame.addDroppedFlag(newID, self);
+					ctf.addDroppedFlag(newID, CTFFlag.this);
 				}
 				respawnFlag();
 				for(MinigamePlayer pl : minigame.getPlayers()){
