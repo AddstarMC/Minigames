@@ -42,6 +42,11 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 	}
 	
 	@Override
+	public void addRequiredModules(Minigame minigame) {
+		minigame.addModule(TreasureHuntModule.class);
+	}
+	
+	@Override
 	public boolean checkCanStart(Minigame minigame, MinigamePlayer caller){
 		return true;
 	}

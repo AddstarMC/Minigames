@@ -12,6 +12,7 @@ import au.com.mineauz.minigames.events.StartMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
+import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class LivesMechanic extends GameMechanicBase{
 
@@ -23,6 +24,11 @@ public class LivesMechanic extends GameMechanicBase{
 	@Override
 	public EnumSet<MinigameType> validTypes() {
 		return EnumSet.of(MinigameType.MULTIPLAYER);
+	}
+	
+	@Override
+	public void addRequiredModules(Minigame minigame) {
+		minigame.addModule(TeamsModule.class);
 	}
 
 	@Override

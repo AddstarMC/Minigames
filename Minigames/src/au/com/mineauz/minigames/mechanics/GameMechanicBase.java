@@ -42,6 +42,11 @@ public abstract class GameMechanicBase implements Listener{
 	public abstract EnumSet<MinigameType> validTypes();
 	
 	/**
+	 * Adds the modules this mechanic requires to the minigame 
+	 */
+	public abstract void addRequiredModules(Minigame minigame);
+	
+	/**
 	 * Checks if a mechanic is allowed to start with the current settings. Caller 
 	 * can be sent message, but can also be null, in which case, should be sent
 	 * to the console.

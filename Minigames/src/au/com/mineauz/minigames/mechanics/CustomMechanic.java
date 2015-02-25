@@ -20,6 +20,13 @@ public class CustomMechanic extends GameMechanicBase{
 	public String getMechanic() {
 		return "custom";
 	}
+	
+	@Override
+	public void addRequiredModules(Minigame minigame) {
+		if (minigame.getType() == MinigameType.MULTIPLAYER) {
+			minigame.addModule(TeamsModule.class);
+		}
+	}
 
 	@Override
 	public EnumSet<MinigameType> validTypes() {

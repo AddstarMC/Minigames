@@ -76,18 +76,17 @@ public class ScoreboardData {
 		}
 	}
 	
-	public void loadDisplays(MinigameSave save, Minigame mgm){
-		FileConfiguration con = save.getConfig();
-		if(!save.getConfig().contains(mgm.getName(false) + ".scoreboards")) return;
+	public void loadDisplays(FileConfiguration con, Minigame mgm){
+		if(!con.contains(mgm.getName(false) + ".scoreboards")) return;
 		
-		Set<String> keys = save.getConfig().getConfigurationSection(mgm.getName(false) + ".scoreboards").getKeys(false);
+		Set<String> keys = con.getConfigurationSection(mgm.getName(false) + ".scoreboards").getKeys(false);
 		for(String key : keys){
 			String loc = mgm.getName(false) + ".scoreboards." + key + ".";
 			ScoreboardDisplay dis = 
 					new ScoreboardDisplay(mgm, 
 							con.getInt(loc + "width"), 
 							con.getInt(loc + "height"), 
-							Minigames.plugin.mdata.minigameLocationsShort(mgm.getName(false), "scoreboards." + key + ".location", save.getConfig()), 
+							Minigames.plugin.mdata.minigameLocationsShort(mgm.getName(false), "scoreboards." + key + ".location", con), 
 							BlockFace.valueOf(con.getString(loc + "dir")));
 			dis.setOrd(ScoreboardOrder.valueOf(con.getString(loc + "order")));
 			dis.setType(ScoreboardType.valueOf(con.getString(loc + "type")));

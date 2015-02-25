@@ -27,6 +27,11 @@ public class JuggernautMechanic extends GameMechanicBase{
 	public EnumSet<MinigameType> validTypes() {
 		return EnumSet.of(MinigameType.MULTIPLAYER);
 	}
+	
+	@Override
+	public void addRequiredModules(Minigame minigame) {
+		minigame.addModule(JuggernautModule.class);
+	}
 
 	@Override
 	public boolean checkCanStart(Minigame minigame, MinigamePlayer caller) {

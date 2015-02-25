@@ -31,6 +31,12 @@ public class InfectionMechanic extends GameMechanicBase{
 	}
 	
 	@Override
+	public void addRequiredModules(Minigame minigame) {
+		minigame.addModule(InfectionModule.class);
+		minigame.addModule(TeamsModule.class);
+	}
+	
+	@Override
 	public boolean checkCanStart(Minigame minigame, MinigamePlayer caller){
 		TeamsModule module = minigame.getModule(TeamsModule.class);
 		if(!minigame.isTeamGame() || 

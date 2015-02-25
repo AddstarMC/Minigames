@@ -9,6 +9,7 @@ import java.util.Map;
 
 import net.md_5.bungee.api.ChatColor;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -38,6 +39,7 @@ import au.com.mineauz.minigames.config.LocationListFlag;
 import au.com.mineauz.minigames.config.RewardsFlag;
 import au.com.mineauz.minigames.config.SimpleLocationFlag;
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.events.MinigameInitializeEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
@@ -45,13 +47,11 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemAddFlag;
-import au.com.mineauz.minigames.menu.MenuItemDisplayLoadout;
 import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;
 import au.com.mineauz.minigames.menu.MenuItemDisplayWhitelist;
 import au.com.mineauz.minigames.menu.MenuItemEnum;
 import au.com.mineauz.minigames.menu.MenuItemFlag;
 import au.com.mineauz.minigames.menu.MenuItemList;
-import au.com.mineauz.minigames.menu.MenuItemLoadoutAdd;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.menu.MenuItemSubMenu;
 import au.com.mineauz.minigames.menu.MenuItemSaveMinigame;
@@ -128,6 +128,8 @@ public class Minigame {
 	private IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
 	
 	private Map<Class<? extends MinigameModule>, MinigameModule> modules = Maps.newHashMap();
+	private Map<Class<? extends MinigameModule>, MinigameModule> cachedModules = Maps.newHashMap();
+	private FileConfiguration cachedConfig;
 	
 	private Scoreboard sbManager = Minigames.plugin.getServer().getScoreboardManager().getNewScoreboard();
 	
@@ -174,15 +176,6 @@ public class Minigame {
 		
 		sbManager.registerNewObjective(this.name, "dummy");
 		sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
-		
-		// TODO: For now, we will do this. End goal is to only add modules that are needed
-		for(Class<? extends MinigameModule> mod : Minigames.plugin.mdata.getAvailableModules()){
-			try {
-				addModule(mod.getDeclaredConstructor(Minigame.class).newInstance(this));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
 		
 		flags.setFlag(new ArrayList<String>());
 		
@@ -239,7 +232,30 @@ public class Minigame {
 		addConfigFlag(useXPBarTimer);
 		addConfigFlag(spectatorPosition);
 		addConfigFlag(displayScoreboard);
+		
+		initialize();
 	}
+		
+	private void initialize() {
+		cachedModules.putAll(modules);
+		modules.clear();
+		
+		// Add modules for the minigame type
+		for (Class<? extends MinigameModule> module : Minigames.plugin.modules.getDefaultModules(type.getFlag())) {
+			modules.put(module, MinigameModule.makeModule(module, this));
+		}
+		
+		// Add modules for the mechanic
+		GameMechanicBase mechanic = getMechanic();
+		if (mechanic != null) {
+			mechanic.addRequiredModules(this);
+		}
+		
+		// Fire event to get even more modules
+		MinigameInitializeEvent event = new MinigameInitializeEvent(this);
+		Bukkit.getPluginManager().callEvent(event);
+	}
+	
 	
 	public MinigameState getState(){
 		return state;
@@ -257,21 +273,32 @@ public class Minigame {
 		return configFlags.get(name);
 	}
 	
-	public boolean addModule(MinigameModule module){
-		if(!modules.containsKey(module.getClass())){
-			modules.put(module.getClass(), module);
+	public boolean addModule(Class<? extends MinigameModule> module) {
+		if(!modules.containsKey(module)){
+			if (cachedModules.containsKey(module)) {
+				modules.put(module, cachedModules.remove(module));
+			} else {
+				modules.put(module, MinigameModule.makeModule(module, this));
+			}
 			return true;
 		}
 		return false;
 	}
 	
 	public void removeModule(Class<? extends MinigameModule> module){
-		modules.remove(module);
+		if (modules.containsKey(module)) {
+			cachedModules.put(module, modules.remove(module));
+		}
 	}
 	
 	public Collection<MinigameModule> getModules(){
 		return Collections.unmodifiableCollection(modules.values());
 	}
+	
+	public void clearCachedModules() {
+		cachedModules.clear();
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	public <T extends MinigameModule> T getModule(Class<T> moduleClass) {
@@ -465,6 +492,7 @@ public class Minigame {
 	
 	public void setType(MinigameType type){
 		this.type.setFlag(type);
+		initialize();
 	}
 	
 	public MultiplayerTimer getMpTimer() {
@@ -713,6 +741,7 @@ public class Minigame {
 
 	public void setMechanic(String scoreType) {
 		this.mechanic.setFlag(scoreType);
+		initialize();
 	}
 
 	public boolean hasPaintBallMode() {
@@ -917,7 +946,6 @@ public class Minigame {
 	
 	private void buildMenu(final Menu main) {
 		Menu playerMenu = new Menu(5, getName(false));
-		Menu loadouts = new Menu(5, getName(false));
 		Menu flags = new Menu(5, getName(false));
 		
 		main.addItem(enabled.getMenuItem("Enabled", Material.PAPER));
@@ -926,6 +954,8 @@ public class Minigame {
 		gameTypeItem.setChangeHandler(new IMenuItemChange<MinigameType>() {
 			@Override
 			public void onChange(MenuItemValue<MinigameType> menuItem, MinigamePlayer player, MinigameType previous, MinigameType current) {
+				initialize();
+				
 				main.clear();
 				buildMenu(main);
 				main.refresh();
@@ -945,28 +975,11 @@ public class Minigame {
 			public void setValue(String value) {
 				mechanic.setFlag(value.toLowerCase().replace(' ', '_'));
 				
-				// Update the mechanic item
-				MenuItemSubMenu settingsButton = (MenuItemSubMenu)main.getItem("Game Mechanic Settings");
-				GameMechanicBase mechanic = getMechanic();
-				if (mechanic == null) {
-					if (settingsButton != null) {
-						settingsButton.remove();
-					}
-				} else {
-					if (settingsButton != null) {
-						settingsButton.remove();
-					}
-					
-					MinigameModule module = mechanic.displaySettings(Minigame.this);
-					if (module != null) {
-						Menu moduleMenu = module.createSettingsMenu();
-						if (moduleMenu != null) {
-							settingsButton = new MenuItemSubMenu("Game Mechanic Settings", ChatColor.GRAY + "Edit " + MinigameUtils.capitalize(mechanic.getMechanic().replace('_', ' ')) + " settings", Material.PAPER, moduleMenu);
-							main.addItemAfter(settingsButton, main.getItem("Game Mechanic"));
-							main.refresh();
-						}
-					}
-				}
+				initialize();
+				
+				main.clear();
+				buildMenu(main);
+				main.refresh();
 			}
 
 			@Override
@@ -1033,31 +1046,15 @@ public class Minigame {
 		main.addItem(new MenuItemTime("Regeneration Delay", "Time in seconds before;Minigame regeneration starts", Material.WATCH, regenDelay.getCallback(), 0, Integer.MAX_VALUE));
 		main.addItem(new MenuItemNewLine());
 		main.addItem(new MenuItemSubMenu("Player Settings", Material.SKULL_ITEM, playerMenu));
-		main.addItem(new MenuItemSubMenu("Loadouts", Material.CHEST, loadouts));
+		if (getModule(LoadoutModule.class) != null) {
+			main.addItem(new MenuItemSubMenu("Loadouts", Material.CHEST, getModule(LoadoutModule.class).createSettingsMenu()));
+		}
 		main.addItem(canSpectateFly.getMenuItem("Allow Spectator Fly", Material.FEATHER));
 		main.addItem(randomizeChests.getMenuItem("Randomize Chests", "Randomize items in;chest upon first opening", Material.CHEST));
 		main.addItem(minChestRandom.getMenuItem("Min. Chest Random", "Min. item randomization", Material.STEP, 0, Integer.MAX_VALUE));
 		main.addItem(maxChestRandom.getMenuItem("Max. Chest Random", "Max. item randomization", Material.STONE, 0, Integer.MAX_VALUE));
 		main.addItem(new MenuItemNewLine());
 
-		//--------------//
-		//Loadout Settings
-		//--------------//
-		List<MenuItem> mi = new ArrayList<MenuItem>();
-		LoadoutModule loadoutModule = getModule(LoadoutModule.class);
-		for(String ld : loadoutModule.getLoadouts()){
-			Material item = Material.THIN_GLASS;
-			if(loadoutModule.getLoadout(ld).getItems().size() != 0){
-				item = loadoutModule.getLoadout(ld).getItem((Integer)loadoutModule.getLoadout(ld).getItems().toArray()[0]).getType();
-			}
-			if(loadoutModule.getLoadout(ld).isDeleteable())
-				mi.add(new MenuItemDisplayLoadout(ld, "Shift + Right Click to Delete", item, loadoutModule.getLoadout(ld), this));
-			else
-				mi.add(new MenuItemDisplayLoadout(ld, item, loadoutModule.getLoadout(ld), this));
-		}
-		loadouts.setControlItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, loadoutModule.getLoadoutMap(), this), 4);
-		loadouts.addItems(mi);
-		
 		main.setControlItem(new MenuItemSaveMinigame("Save " + getName(false), Material.REDSTONE_TORCH_ON, this), 4);
 
 		//----------------------//
@@ -1115,7 +1112,6 @@ public class Minigame {
 	public void saveMinigame(){
 		MinigameSave minigame = new MinigameSave(name, "config");
 		FileConfiguration cfg = minigame.getConfig();
-		cfg.set(name, null);
 		
 		for(MinigameModule module : getModules()){
 			if(!module.useSeparateConfig()){
@@ -1167,9 +1163,35 @@ public class Minigame {
 		minigame.saveConfig();
 	}
 	
+	private FileConfiguration getModuleConfig(MinigameModule module) {
+		FileConfiguration config;
+		MinigameSave save = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
+		config = save.getConfig();
+		
+		return config;
+	}
+	
+	private void loadModule(MinigameModule module) {
+		FileConfiguration config;
+		if (module.useSeparateConfig()) {
+			config = getModuleConfig(module);
+		} else {
+			config = cachedConfig;
+		}
+		
+		module.load(config);
+			
+		if(module.getFlags() != null){
+			for(String flag : module.getFlags().keySet()){
+				if(config.contains(name + "." + flag))
+					module.getFlags().get(flag).loadValue(name, config);
+			}
+		}
+	}
+	
 	public void loadMinigame(){
-		MinigameSave minigame = new MinigameSave(name, "config");
-		FileConfiguration cfg = minigame.getConfig();
+		MinigameSave save = new MinigameSave(name, "config");
+		FileConfiguration cfg = cachedConfig = save.getConfig();
 		
 		//-----------------------------------------------
 		//TODO: Remove me after 1.7
@@ -1190,43 +1212,26 @@ public class Minigame {
 		}
 		//-----------------------------------------------
 		
-		for(MinigameModule module : getModules()){
-			if(!module.useSeparateConfig()){
-				module.load(cfg);
-				
-				if(module.getFlags() != null){
-					for(String flag : module.getFlags().keySet()){
-						if(cfg.contains(name + "." + flag))
-							module.getFlags().get(flag).loadValue(name, cfg);
-					}
-				}
-			}else{
-				MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
-				module.load(modsave.getConfig());
-				
-				if(module.getFlags() != null){
-					for(String flag : module.getFlags().keySet()){
-						if(modsave.getConfig().contains(name + "." + flag))
-							module.getFlags().get(flag).loadValue(name, modsave.getConfig());
-					}
-				}
-			}
-		}
-		
 		for(String flag : configFlags.keySet()){
 			if(cfg.contains(name + "." + flag))
 				configFlags.get(flag).loadValue(name, cfg);
 		}
 		
-		if(minigame.getConfig().contains(name + ".whitelistmode")){
-			getBlockRecorder().setWhitelistMode(minigame.getConfig().getBoolean(name + ".whitelistmode"));
+		if(cfg.contains(name + ".whitelistmode")){
+			getBlockRecorder().setWhitelistMode(cfg.getBoolean(name + ".whitelistmode"));
 		}
 		
-		if(minigame.getConfig().contains(name + ".whitelistblocks")){
-			List<String> blocklist = minigame.getConfig().getStringList(name + ".whitelistblocks");
+		if(cfg.contains(name + ".whitelistblocks")){
+			List<String> blocklist = cfg.getStringList(name + ".whitelistblocks");
 			for(String block : blocklist){
 				getBlockRecorder().addWBBlock(Material.matchMaterial(block));
 			}
+		}
+		
+		initialize();
+		
+		for(MinigameModule module : getModules()) {
+			loadModule(module);
 		}
 
 //		Bukkit.getLogger().info("------- Minigame Load -------");
@@ -1247,9 +1252,8 @@ public class Minigame {
 			});
 		}
 		
-		getScoreboardData().loadDisplays(minigame, this);
-		
-		saveMinigame();
+		getScoreboardData().loadDisplays(cfg, this);
+		save.saveConfig();
 	}
 	
 	@Override

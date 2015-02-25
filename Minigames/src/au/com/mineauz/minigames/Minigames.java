@@ -44,6 +44,8 @@ public class Minigames extends JavaPlugin{
 	public PlayerData pdata;
 	public MinigameData mdata;
 	public DisplayManager display;
+	public ModuleManager modules;
+	
 	public static Minigames plugin;
     private static Economy econ = null;
 	private SQLDatabase sql = null;
@@ -81,6 +83,7 @@ public class Minigames extends JavaPlugin{
 			mdata = new MinigameData();
 			pdata = new PlayerData();
 			display = new DisplayManager();
+			modules = new ModuleManager(this);
 			
 			mdata.addMinigameType(new SingleplayerType());
 	//		mdata.addMinigameType(new FreeForAllType());

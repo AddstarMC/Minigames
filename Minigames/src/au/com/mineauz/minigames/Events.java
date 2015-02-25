@@ -601,6 +601,6 @@ public class Events implements Listener{
 	
 	@EventHandler
 	private void onPluginDisable(PluginDisableEvent event) {
-		mdata.removeAllModules(event.getPlugin());
+		plugin.modules.unregisterAll(event.getPlugin());
 	}
 }

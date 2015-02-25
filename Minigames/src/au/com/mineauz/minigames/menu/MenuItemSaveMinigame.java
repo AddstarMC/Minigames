@@ -20,6 +20,7 @@ public class MenuItemSaveMinigame extends MenuItem{
 	@Override
 	public void onClick(MinigamePlayer player){
 		mgm.saveMinigame();
+		mgm.clearCachedModules();
 		player.sendMessage("Saved the '" + mgm.getName(false) + "' Minigame.", null);
 	}
 

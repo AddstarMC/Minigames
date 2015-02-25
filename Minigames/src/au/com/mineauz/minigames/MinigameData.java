@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,27 +11,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.Plugin;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.SetMultimap;
-
 import au.com.mineauz.minigames.config.RewardsFlag;
 import au.com.mineauz.minigames.events.StartGlobalMinigameEvent;
 import au.com.mineauz.minigames.events.StopGlobalMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MinigameTypeBase;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.modules.CTFModule;
-import au.com.mineauz.minigames.minigame.modules.GameOverModule;
-import au.com.mineauz.minigames.minigame.modules.InfectionModule;
-import au.com.mineauz.minigames.minigame.modules.JuggernautModule;
-import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
-import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
-import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
-import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 
 public class MinigameData {
@@ -45,42 +29,6 @@ public class MinigameData {
 	private MinigameSave rewardSignsSave = null;
 	private Map<Minigame, List<String>> claimedScoreSignsRed = new HashMap<Minigame, List<String>>();
 	private Map<Minigame, List<String>> claimedScoreSignsBlue = new HashMap<Minigame, List<String>>();
-	
-	private SetMultimap<Plugin, Class<? extends MinigameModule>> modules;
-	
-	public MinigameData(){
-		modules = HashMultimap.create();
-		
-		addModule(LoadoutModule.class);
-		addModule(LobbySettingsModule.class);
-		addModule(TeamsModule.class);
-		addModule(WeatherTimeModule.class);
-		addModule(TreasureHuntModule.class);
-		addModule(InfectionModule.class);
-		addModule(GameOverModule.class);
-		addModule(JuggernautModule.class);
-		addModule(CTFModule.class);
-	}
-	
-	public Collection<Class<? extends MinigameModule>> getAvailableModules() {
-		return modules.values();
-	}
-	
-	private void addModule(Class<? extends MinigameModule> module) {
-		modules.put(Minigames.plugin, module);
-	}
-	
-	public void addModule(Plugin plugin, Class<? extends MinigameModule> module) {
-		modules.put(plugin, module);
-	}
-	
-	public void removeAllModules(Plugin plugin) {
-		for(Minigame mg : getAllMinigames().values()) {
-			for (Class<? extends MinigameModule> module : modules.removeAll(plugin)) {
-				mg.removeModule(module);
-			}
-		}
-	}
 	
 	public void startGlobalMinigame(Minigame minigame, MinigamePlayer caller){
 		boolean canStart = minigame.getMechanic().checkCanStart(minigame, caller);

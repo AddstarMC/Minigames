@@ -41,6 +41,12 @@ public class CTFMechanic extends GameMechanicBase{
 	}
 	
 	@Override
+	public void addRequiredModules(Minigame minigame) {
+		minigame.addModule(CTFModule.class);
+		minigame.addModule(TeamsModule.class);
+	}
+	
+	@Override
 	public boolean checkCanStart(Minigame minigame, MinigamePlayer caller){
 		return true;
 	}

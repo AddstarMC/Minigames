@@ -17,6 +17,8 @@ import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.LoadoutSetFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemDisplayLoadout;
+import au.com.mineauz.minigames.menu.MenuItemLoadoutAdd;
 import au.com.mineauz.minigames.menu.MenuItem.IMenuItemClick;
 import au.com.mineauz.minigames.minigame.Minigame;
 
@@ -183,6 +185,24 @@ public class LoadoutModule extends MinigameModule {
 		else{
 			return true;
 		}
+	}
+	
+	@Override
+	public Menu createSettingsMenu() {
+		Menu menu = new Menu(5, "Loadouts");
+		
+		for(String ld : getLoadouts()){
+			Material item = Material.THIN_GLASS;
+			if(getLoadout(ld).getItems().size() != 0){
+				item = getLoadout(ld).getItem((Integer)getLoadout(ld).getItems().toArray()[0]).getType();
+			}
+			if(getLoadout(ld).isDeleteable())
+				menu.addItem(new MenuItemDisplayLoadout(ld, "Shift + Right Click to Delete", item, getLoadout(ld), getMinigame()));
+			else
+				menu.addItem(new MenuItemDisplayLoadout(ld, item, getLoadout(ld), getMinigame()));
+		}
+		menu.setControlItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, getLoadoutMap(), getMinigame()), 4);
+		return menu;
 	}
 	
 	public void displaySelectionMenu(MinigamePlayer player, final boolean equip){

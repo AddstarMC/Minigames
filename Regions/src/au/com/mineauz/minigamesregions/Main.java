@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.set.SetCommand;
+import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.tool.ToolModes;
 import au.com.mineauz.minigamesregions.commands.SetNodeCommand;
@@ -36,7 +37,9 @@ public class Main extends JavaPlugin{
 			
 			display = new RegionDisplayManager();
 			
-			minigames.mdata.addModule(this, RegionModule.class);
+			minigames.modules.registerModule(this, RegionModule.class);
+			minigames.modules.addDefaultModule(MinigameType.SINGLEPLAYER, RegionModule.class);
+			minigames.modules.addDefaultModule(MinigameType.MULTIPLAYER, RegionModule.class);
 			
 			SetCommand.registerSetCommand(new SetNodeCommand());
 			SetCommand.registerSetCommand(new SetRegionCommand());
