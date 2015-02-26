@@ -1,5 +1,7 @@
 package au.com.mineauz.minigames.signs;
 
+import net.milkbowl.vault.economy.Economy;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -70,63 +72,58 @@ public class JoinSign implements MinigameSign {
 			return false;
 		}
 		
-		boolean invOk = true;
-		boolean fullInv;
-		if (plugin.getConfig().getBoolean("requireEmptyInventory")) {
-			fullInv = true;
-			for (ItemStack item : player.getPlayer().getInventory().getContents()) {
-				if (item != null) {
-					System.out.println("Found: " + item);
-					invOk = false;
-					break;
+		try {
+			Minigame minigame = plugin.mdata.getMinigame(sign.getLine(2));
+			if (minigame == null) {
+				throw new IllegalArgumentException(MinigameUtils.getLang("minigame.error.noMinigame"));
+			}
+			
+			// Ignore the minigame tool
+			if(MinigameUtils.isMinigameTool(player.getPlayer().getItemInHand())) {
+				return true;
+			}
+			
+			// Make sure inventory constraints are met
+			if (plugin.getConfig().getBoolean("requireEmptyInventory")) {
+				for (ItemStack item : player.getPlayer().getInventory().getContents()) {
+					if (item != null) {
+						throw new IllegalStateException(MinigameUtils.getLang("sign.emptyInv"));
+					}
+				}
+				
+				for (ItemStack item : player.getPlayer().getInventory().getArmorContents()) {
+					if (item != null && item.getType() != Material.AIR) {
+						throw new IllegalStateException(MinigameUtils.getLang("sign.emptyInv"));
+					}
+				}
+			} else {
+				if (player.getPlayer().getItemInHand().getType() != Material.AIR) {
+					throw new IllegalStateException(MinigameUtils.getLang("sign.emptyHand"));
 				}
 			}
 			
-			for (ItemStack item : player.getPlayer().getInventory().getArmorContents()) {
-				if (item != null && item.getType() != Material.AIR) {
-					System.out.println("Found armor: " + item);
-					invOk = false;
-					break;
+			// Handle payment
+			double entryFee = 0;
+			Economy economy = Minigames.plugin.getEconomy();
+			
+			if(!sign.getLine(3).isEmpty() && Minigames.plugin.hasEconomy()) {
+				entryFee = Double.parseDouble(sign.getLine(3).replace("$", ""));
+				
+				if (!economy.has(player.getPlayer(), entryFee)) {
+					throw new IllegalStateException(MinigameUtils.getLang("sign.join.notEnoughMoney"));
 				}
 			}
-		} else {
-			fullInv = false;
-			invOk = player.getPlayer().getItemInHand().getType() == Material.AIR;
-		}
-		if(invOk){
-			Minigame mgm = plugin.mdata.getMinigame(sign.getLine(2));
-			if(mgm != null && (!mgm.getUsePermissions() || player.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))){
-				if(mgm.isEnabled()){
-					if(!sign.getLine(3).isEmpty() && Minigames.plugin.hasEconomy()){
-						double amount = Double.parseDouble(sign.getLine(3).replace("$", ""));
-						if(Minigames.plugin.getEconomy().getBalance(player.getPlayer().getPlayer()) >= amount){
-							Minigames.plugin.getEconomy().withdrawPlayer(player.getPlayer().getPlayer(), amount);
-						}
-						else{
-							player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.join.notEnoughMoney"));
-							return false;
-						}
-					}
-					plugin.pdata.joinMinigame(player, mgm, false, 0.0);
-					return true;
-				}
-				else if(!mgm.isEnabled()){
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.notEnabled"));
+			
+			// Join the game
+			if (player.joinMinigame(minigame)) {
+				if (entryFee > 0) {
+					economy.withdrawPlayer(player.getPlayer(), entryFee);
 				}
 			}
-			else if(mgm == null){
-				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noMinigame"));
-			}
-			else if(mgm.getUsePermissions()){
-				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()));
-			}
-		}
-		else if(!MinigameUtils.isMinigameTool(player.getPlayer().getItemInHand())) {
-			if (fullInv) {
-				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyInv"));
-			} else {
-				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
-			}
+		} catch (IllegalArgumentException e) {
+			player.sendMessage(e.getMessage(), "error");
+		} catch (IllegalStateException e) {
+			player.sendMessage(e.getMessage(), "error");
 		}
 			
 		return false;

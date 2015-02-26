@@ -3,6 +3,8 @@ lang:
   
 player:
   join:
+    alreadyPlaying: "You are already playing a minigame! Quit this one before joining another."
+    noMinigamePermission: "You require the permission %s to join this Minigame."
     consMsg: "%s joined %s"
     plyMsg: "%s has joined %s"
     plyInfo: "You have started a %s Minigame, type /minigame quit to exit."
@@ -18,12 +20,10 @@ player:
   bet:
     plyMsg: "You have placed your bet, good luck!"
     plyNoBet: "You can not bet nothing!"
-    incorrectAmount: "You haven't placed the correct bet amount for this round!"
-    incorrectAmountInfo: "You must bet $%s"
-    incorrectItem: "You haven't bet the correct item for this round!"
-    incorrectItemInfo: "You must bet %s %s"
-    notEnoughMoney: "You haven't got enough money!"
-    notEnoughMoneyInfo: "You must have $%s"
+    incorrectAmount: "You haven't placed the correct bet amount for this round!\nYou must bet $%s"
+    incorrectItem: "You haven't bet the correct item for this round!\nYou must bet %s %s"
+    notEnoughMoney: "You haven't got enough money!\nYou must have $%s"
+    wrongType: "You cannot bet on a non multiplayer game"
     winMoney: 'You won $%s'
   checkpoint:
     revert: "You have been reverted to your checkpoint."
@@ -109,6 +109,7 @@ minigame:
     invalidMechanic: "This Minigame Type cannot use the selected Mechanic!"
     mechanicStartFail: "The Game Mechanic has failed to initiate!"
     noSpectatePos: "There has been no spectator position assigned to this Minigame!"
+    wrongType: "Cannot join a global minigame"
   flag:
     returnedTeam: "%s flag has been returned home."
     returnedNeutral: "The Neutral flag has been returned home."
@@ -252,8 +253,6 @@ command:
     description: "Forces you to join a Minigame. Warning: This bypasses betting."
     noPermission: "You do not have permission to use the command to join a Minigame."
     joining: "Joining %s"
-    alreadyPlaying: "You are already playing a minigame! Quit this one before joining another."
-    noMinigamePermission: "You require the permission %s to join this Minigame."
   quit:
     description: "Quits the player that issues the command or if a player name is inserted, the named player."
     noPermission: "You do not have permission to use this command to quit a Minigame!"

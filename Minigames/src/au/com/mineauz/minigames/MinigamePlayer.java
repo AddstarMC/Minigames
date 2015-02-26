@@ -2,27 +2,40 @@ package au.com.mineauz.minigames;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.math.RandomUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 
+import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.display.IDisplayCubiod;
+import au.com.mineauz.minigames.events.JoinMinigameEvent;
+import au.com.mineauz.minigames.events.PreJoinMinigameEvent;
+import au.com.mineauz.minigames.events.SpectateMinigameEvent;
+import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuSession;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
+import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 
 public class MinigamePlayer {
 	private Player player;
@@ -775,5 +788,270 @@ public class MinigamePlayer {
 	
 	public void setLateJoinTimer(int taskID){
 		lateJoinTimer = taskID;
+	}
+	
+	private void checkPlayerJoin(Minigame minigame) throws IllegalStateException {
+		if (this.minigame != null) {
+			throw new IllegalStateException(MinigameUtils.getLang("player.join.alreadyPlaying"));
+		}
+		
+		if (minigame.getUsePermissions() && !player.hasPermission("minigame.join." + minigame.getName(false).toLowerCase())) {
+			throw new IllegalStateException(MinigameUtils.formStr("player.join.noMinigamePermission", "minigame.join." + minigame.getName(false).toLowerCase()));
+		}
+	}
+	
+	public boolean joinMinigame(Minigame minigame) throws IllegalStateException {
+		Validate.notNull(minigame);
+		
+		checkPlayerJoin(minigame);
+		
+		PreJoinMinigameEvent event = new PreJoinMinigameEvent(this, minigame);
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		if (event.isCancelled()) {
+			return false;
+		}
+		
+		// Check game integrity
+		minigame.checkMinigame(minigame, player.hasPermission("minigame.join.disabled"));
+		
+		GameMechanicBase mechanic = minigame.getMechanic();
+		if (!mechanic.checkCanStart(minigame)) {
+			return false;
+		}
+		
+		// Send them into the game
+		Location destination;
+		switch (minigame.getType()) {
+		case SINGLEPLAYER:
+			destination = minigame.getStartLocations().get(RandomUtils.nextInt(minigame.getStartLocations().size()));
+			break;
+		case MULTIPLAYER:
+			destination = minigame.getLobbyPosition();
+			break;
+		default:
+			throw new AssertionError("Unimplemented join for minigame type " + minigame.getType());
+		}
+		
+		// Admin warning for cross world teleport
+		if(Minigames.plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != destination.getWorld() && player.getPlayer().hasPermission("minigame.set.start")) {
+			sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Join location is across worlds! This may cause some server performance issues!", "error");
+		}
+		
+		// Send the player in
+		if (!teleport(destination)) {
+			throw new IllegalStateException(MinigameUtils.getLang("minigame.error.noTeleport"));
+		}
+		
+		// Give them the game type name
+		if(minigame.getGametypeName() == null)
+			sendMessage(MinigameUtils.formStr("player.join.plyInfo", minigame.getType().getName()), "win");
+		else
+			sendMessage(MinigameUtils.formStr("player.join.plyInfo", minigame.getGametypeName()), "win");
+		
+		// Give them the objective
+		if(minigame.getObjective() != null){
+			player.sendMessage(ChatColor.GREEN + "----------------------------------------------------");
+			player.sendMessage(ChatColor.AQUA.toString() + ChatColor.BOLD + MinigameUtils.formStr("player.join.objective", 
+					ChatColor.RESET.toString() + ChatColor.WHITE + minigame.getObjective()));
+			player.sendMessage(ChatColor.GREEN + "----------------------------------------------------");
+		}
+		
+		// Prepare regeneration region for rollback.
+		if(minigame.getBlockRecorder().hasRegenArea() && !minigame.getBlockRecorder().hasCreatedRegenBlocks()){
+			RecorderData d = minigame.getBlockRecorder();
+			d.setCreatedRegenBlocks(true);
+			
+			World world = minigame.getRegenArea1().getWorld();
+			for(int y = (int)d.getRegenMinY(); y <= d.getRegenMaxY(); y++){
+				for(int x = (int)d.getRegenMinX(); x <= d.getRegenMaxX(); x++){
+					for(int z = (int)d.getRegenMinZ(); z <= d.getRegenMaxZ(); z++){
+						d.addBlock(world.getBlockAt(x,y,z), null);
+					}
+				}
+			}
+		}
+		
+		// From this point on the player will be in the minigame.
+		storePlayerData();
+		this.minigame = minigame;
+		minigame.addPlayer(this);
+		
+		// Apply game settings to player
+		setCheckpoint(player.getLocation());
+		player.setFallDistance(0);
+		player.setWalkSpeed(0.2f);
+		setStartTime(Calendar.getInstance().getTimeInMillis());
+		setGamemode(minigame.getDefaultGamemode());
+		
+		if(minigame.getType() == MinigameType.SINGLEPLAYER) {
+			if(!minigame.isAllowedFlight()) {
+				setCanFly(false);
+			} else {
+				setCanFly(true);
+				if(minigame.isFlightEnabled())
+					player.getPlayer().setFlying(true);
+			}
+		} else {
+			// Dont set this yet because of lobby
+			player.getPlayer().setAllowFlight(false);
+		}
+		
+		// Apply module settings to player
+		for (MinigameModule module : minigame.getModules()) {
+			module.applySettings(this);
+		}
+		
+		// Hide Spectators
+		for(MinigamePlayer pl : minigame.getSpectators()){
+			player.hidePlayer(pl.getPlayer());
+		}
+		
+		if(minigame.getPlayers().size() == 1){
+			//Register regen recorder events
+			if(minigame.getBlockRecorder().hasRegenArea())
+				Bukkit.getServer().getPluginManager().registerEvents(minigame.getBlockRecorder(), Minigames.plugin);
+		}
+		
+		// Call Type specific join
+		// TODO: Should be minigame.getType().something
+		Minigames.plugin.mdata.minigameType(minigame.getType()).joinMinigame(this, minigame);
+		
+		// Call Mechanic specific join
+		minigame.getMechanic().joinMinigame(minigame, this);
+
+		// Send other players the join message.
+		// TODO: Should be minigame.broadcast
+		Minigames.plugin.mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.join.plyMsg", player.getDisplayName(), minigame.getName(true)), null, this);
+		player.updateInventory();
+		
+		if(minigame.canDisplayScoreboard()){
+			player.setScoreboard(minigame.getScoreboardManager());
+			minigame.setScore(this, 1);
+			minigame.setScore(this, 0);
+		}
+		
+		Bukkit.getServer().getPluginManager().callEvent(new JoinMinigameEvent(this, minigame));
+		
+		return true;
+	}
+	
+	public boolean joinMinigameWithBet(Minigame minigame, double money) throws IllegalStateException, IllegalArgumentException {
+		checkPlayerJoin(minigame);
+		
+		if (minigame.getType() != MinigameType.MULTIPLAYER) {
+			throw new IllegalArgumentException(MinigameUtils.getLang("player.bet.wrongType"));
+		}
+		
+		if (money <= 0) {
+			throw new IllegalArgumentException(MinigameUtils.getLang("player.bet.plyNoBet"));
+		}
+		
+		MultiplayerBets bets = minigame.getMpBets();
+		if (bets == null) {
+			bets = new MultiplayerBets();
+			minigame.setMpBets(bets);
+		}
+		
+		if(!bets.canBet(this, money)) {
+			throw new IllegalArgumentException(MinigameUtils.formStr("player.bet.incorrectAmount", bets.getHighestMoneyBet()));
+		}
+		
+		if (!Minigames.plugin.getEconomy().has(player, money)) {
+			throw new IllegalArgumentException(MinigameUtils.formStr("player.bet.notEnoughMoney", money));
+		}
+		
+		if (!joinMinigame(minigame)) {
+			return false;
+		}
+		
+		bets.addBet(this, money);
+		sendMessage(MinigameUtils.getLang("player.bet.plyMsg"), null);
+		return true;
+	}
+	
+	public boolean joinMinigameWithBet(Minigame minigame, ItemStack bet) throws IllegalStateException, IllegalArgumentException {
+		checkPlayerJoin(minigame);
+		
+		if (minigame.getType() != MinigameType.MULTIPLAYER) {
+			throw new IllegalArgumentException(MinigameUtils.getLang("player.bet.wrongType"));
+		}
+		
+		if (bet == null || bet.getType() == Material.AIR) {
+			throw new IllegalArgumentException(MinigameUtils.getLang("player.bet.plyNoBet"));
+		}
+		
+		MultiplayerBets bets = minigame.getMpBets();
+		if (bets == null) {
+			bets = new MultiplayerBets();
+			minigame.setMpBets(bets);
+		}
+		
+		if(!bets.canBet(this, bet)) {
+			throw new IllegalArgumentException(MinigameUtils.formStr("player.bet.incorrectItem", 1, bets.highestBetName()));
+		}
+		
+		if (!joinMinigame(minigame)) {
+			return false;
+		}
+		
+		bets.addBet(this, bet);
+		sendMessage(MinigameUtils.getLang("player.bet.plyMsg"), null);
+		return true;
+	}
+	
+	public boolean spectateMinigame(Minigame minigame) throws IllegalStateException {
+		Validate.notNull(minigame);
+		
+		SpectateMinigameEvent event = new SpectateMinigameEvent(this, minigame);
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		
+		if (event.isCancelled()) {
+			return false;
+		}
+		
+		Location destination = minigame.getSpectatorLocation();
+		if (destination == null) {
+			throw new IllegalStateException(MinigameUtils.getLang("minigame.error.noSpectatePos"));
+		}
+		
+		// Admin warning for cross world teleport
+		if(Minigames.plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != destination.getWorld() && player.getPlayer().hasPermission("minigame.set.start")) {
+			sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Join location is across worlds! This may cause some server performance issues!", "error");
+		}
+		
+		// Send the player in
+		if (!teleport(destination)) {
+			throw new IllegalStateException(MinigameUtils.getLang("minigame.error.noTeleport"));
+		}
+		
+		// Setup player
+		storePlayerData();
+		this.minigame = minigame;
+		setGamemode(GameMode.ADVENTURE);
+		// TODO: Use spigot no entity collide thing
+		
+		minigame.addSpectator(this);
+		
+		if (minigame.canSpectateFly()) {
+			player.setAllowFlight(true);
+		}
+		
+		for(MinigamePlayer pl : minigame.getPlayers()){
+			pl.getPlayer().hidePlayer(player.getPlayer());
+		}
+		
+		player.getPlayer().setScoreboard(minigame.getScoreboardManager());
+		
+		for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
+			player.getPlayer().removePotionEffect(potion.getType());
+		}
+		
+		
+		sendMessage(MinigameUtils.formStr("player.spectate.join.plyMsg", minigame.getName(false)) + "\n" +
+				MinigameUtils.formStr("player.spectate.join.plyHelp", "\"/minigame quit\""), null);
+		// TODO: Should be minigame.broadcast
+		Minigames.plugin.mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.spectate.join.minigameMsg", player.getDisplayName(), minigame.getName(false)), null, this);
+		
+		return true;
 	}
 }

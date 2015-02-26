@@ -46,6 +46,7 @@ public class ModuleManager {
 		// Add defaults
 		addDefaultModule(MinigameType.SINGLEPLAYER, WeatherTimeModule.class);
 		addDefaultModule(MinigameType.SINGLEPLAYER, LoadoutModule.class);
+		addDefaultModule(MinigameType.SINGLEPLAYER, GameOverModule.class); // FIXME: For now this will be added to sp, but it only makes sense for multiplayer
 		
 		addDefaultModule(MinigameType.MULTIPLAYER, WeatherTimeModule.class);
 		addDefaultModule(MinigameType.MULTIPLAYER, LoadoutModule.class);

@@ -47,7 +47,7 @@ public class CTFMechanic extends GameMechanicBase{
 	}
 	
 	@Override
-	public boolean checkCanStart(Minigame minigame, MinigamePlayer caller){
+	public boolean checkCanStart(Minigame minigame){
 		return true;
 	}
 	

@@ -37,15 +37,14 @@ public class InfectionMechanic extends GameMechanicBase{
 	}
 	
 	@Override
-	public boolean checkCanStart(Minigame minigame, MinigamePlayer caller){
+	public boolean checkCanStart(Minigame minigame){
 		TeamsModule module = minigame.getModule(TeamsModule.class);
 		if(!minigame.isTeamGame() || 
 				module.getTeams().size() != 2 || 
 				!module.hasTeam(TeamColor.RED) || 
 				!module.hasTeam(TeamColor.BLUE)){
-			if(caller != null)
-				caller.sendMessage(MinigameUtils.getLang("minigame.error.noInfection"), "error");
-			return false;
+			
+			throw new IllegalStateException(MinigameUtils.getLang("minigame.error.noInfection"));
 		}
 		return true;
 	}

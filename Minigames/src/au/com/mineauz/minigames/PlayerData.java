@@ -16,9 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.EntityType;
@@ -30,12 +28,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 
-import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.events.EndMinigameEvent;
-import au.com.mineauz.minigames.events.JoinMinigameEvent;
 import au.com.mineauz.minigames.events.QuitMinigameEvent;
 import au.com.mineauz.minigames.events.RevertCheckpointEvent;
-import au.com.mineauz.minigames.events.SpectateMinigameEvent;
 import au.com.mineauz.minigames.events.StartMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MinigameTypeBase;
@@ -61,260 +56,6 @@ public class PlayerData {
 	private MinigameData mdata = plugin.mdata;
 	
 	public PlayerData(){}
-	
-	public void joinMinigame(MinigamePlayer player, Minigame minigame, boolean isBetting, Double betAmount){
-		MinigameType type = minigame.getType();
-		JoinMinigameEvent event = new JoinMinigameEvent(player, minigame);
-		Bukkit.getServer().getPluginManager().callEvent(event);
-		boolean canStart = minigame.getMechanic().checkCanStart(minigame, player);
-		
-		if(!event.isCancelled()){
-			if((minigame.isEnabled() || player.getPlayer().hasPermission("minigame.join.disabled")) && 
-					(minigame.getState() == MinigameState.IDLE || 
-						minigame.getState() == MinigameState.OCCUPIED ||
-						minigame.getState() == MinigameState.WAITING || 
-						(minigame.getState() == MinigameState.STARTED && minigame.canLateJoin())) &&
-					/*!minigame.isRegenerating() && 
-					(!minigame.isNotWaitingForPlayers() || (minigame.canLateJoin() && minigame.getMpTimer().getPlayerWaitTimeLeft() == 0)) &&*/ 
-					(minigame.getStartLocations().size() > 0 || 
-							(minigame.isTeamGame() && minigame.getModule(TeamsModule.class).hasTeamStartLocations())) &&
-					minigame.getEndPosition() != null && minigame.getQuitPosition() != null && 
-					(minigame.getType() == MinigameType.SINGLEPLAYER || minigame.getLobbyPosition() != null) &&
-					((type == MinigameType.SINGLEPLAYER && !minigame.isSpMaxPlayers()) || minigame.getPlayers().size() < minigame.getMaxPlayers()) &&
-					minigame.getMechanic().validTypes().contains(minigame.getType()) &&
-					canStart){
-				//Do betting stuff
-				if(isBetting){
-					if(minigame.getMpBets() == null && (player.getPlayer().getItemInHand().getType() != Material.AIR || betAmount != 0)){
-						minigame.setMpBets(new MultiplayerBets());
-					}
-					MultiplayerBets pbet = minigame.getMpBets(); 
-					ItemStack item = player.getPlayer().getItemInHand().clone();
-					if(pbet != null && 
-							((betAmount != 0 && pbet.canBet(player, betAmount) && plugin.getEconomy().getBalance(player.getPlayer().getPlayer()) >= betAmount) || 
-									(pbet.canBet(player, item) && item.getType() != Material.AIR && pbet.betValue(item.getType()) > 0))){
-						player.sendMessage(MinigameUtils.getLang("player.bet.plyMsg"), null);
-						if(betAmount == 0){
-							pbet.addBet(player, item);
-						}
-						else{
-							pbet.addBet(player, betAmount);
-							plugin.getEconomy().withdrawPlayer(player.getPlayer().getPlayer(), betAmount);
-						}
-						player.getPlayer().getInventory().removeItem(new ItemStack(item.getType(), 1));
-					}
-					else if(item.getType() == Material.AIR && betAmount == 0){
-						player.sendMessage(MinigameUtils.getLang("player.bet.plyNoBet"), "error");
-						return;
-					}
-					else if(betAmount != 0 && !pbet.canBet(player, betAmount)){
-						player.sendMessage(MinigameUtils.getLang("player.bet.incorrectAmount"), "error");
-						player.sendMessage(MinigameUtils.formStr("player.bet.incorrectAmountInfo", minigame.getMpBets().getHighestMoneyBet()), "error");
-						return;
-					}
-					else if(betAmount != 0 && plugin.getEconomy().getBalance(player.getPlayer().getPlayer()) < betAmount){
-						player.sendMessage(MinigameUtils.getLang("player.bet.notEnoughMoney"), "error");
-						player.sendMessage(MinigameUtils.formStr("player.bet.notEnoughMoneyInfo", minigame.getMpBets().getHighestMoneyBet()), "error");
-						return;
-					}
-					else{
-						player.sendMessage(MinigameUtils.getLang("player.bet.incorrectItem"), "error");
-						player.sendMessage(MinigameUtils.formStr("player.bet.incorrectItemInfo", 1, minigame.getMpBets().highestBetName()), "error");
-						return;
-					}
-				}
-				
-				//Try teleport the player to their designated area.
-				boolean tpd = false;
-				if(type == MinigameType.SINGLEPLAYER){
-					List<Location> locs = new ArrayList<Location>(minigame.getStartLocations());
-					Collections.shuffle(locs);
-					tpd = player.teleport(locs.get(0));
-					if(plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != locs.get(0).getWorld() && 
-							player.getPlayer().hasPermission("minigame.set.start")){
-						player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + 
-								"Join location is across worlds! This may cause some server performance issues!", "error");
-					}
-				}
-				else{
-					tpd = player.teleport(minigame.getLobbyPosition());
-					if(plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != minigame.getLobbyPosition().getWorld() && 
-							player.getPlayer().hasPermission("minigame.set.lobby")){
-						player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + 
-								"Lobby location is across worlds! This may cause some server performance issues!", "error");
-					}
-				}
-				if(!tpd){
-					player.sendMessage(MinigameUtils.getLang("minigame.error.noTeleport"), "error");
-					return;
-				}
-				
-				//Give them the game type name
-				if(minigame.getGametypeName() == null)
-					player.sendMessage(MinigameUtils.formStr("player.join.plyInfo", minigame.getType().getName()), "win");
-				else
-					player.sendMessage(MinigameUtils.formStr("player.join.plyInfo", minigame.getGametypeName()), "win");
-				
-				//Give them the objective
-				if(minigame.getObjective() != null){
-					player.sendMessage(ChatColor.GREEN + "----------------------------------------------------");
-					player.sendMessage(ChatColor.AQUA.toString() + ChatColor.BOLD + MinigameUtils.formStr("player.join.objective", 
-							ChatColor.RESET.toString() + ChatColor.WHITE + minigame.getObjective()));
-					player.sendMessage(ChatColor.GREEN + "----------------------------------------------------");
-				}
-				
-				//Prepare regeneration region for rollback.
-				if(minigame.getBlockRecorder().hasRegenArea() && !minigame.getBlockRecorder().hasCreatedRegenBlocks()){
-					RecorderData d = minigame.getBlockRecorder();
-					d.setCreatedRegenBlocks(true);
-					
-					Location cur = new Location(minigame.getRegenArea1().getWorld(), 0, 0, 0);
-					for(double y = d.getRegenMinY(); y <= d.getRegenMaxY(); y++){
-						cur.setY(y);
-						for(double x = d.getRegenMinX(); x <= d.getRegenMaxX(); x++){
-							cur.setX(x);
-							for(double z = d.getRegenMinZ(); z <= d.getRegenMaxZ(); z++){
-								cur.setZ(z);
-								d.addBlock(cur.getBlock(), null);
-							}
-						}
-					}
-				}
-				
-				//Standardize player
-				player.storePlayerData();
-				player.setMinigame(minigame);
-				minigame.addPlayer(player);
-				WeatherTimeModule weatherModule = minigame.getModule(WeatherTimeModule.class);
-				weatherModule.applyCustomTime(player);
-				weatherModule.applyCustomWeather(player);
-				player.setCheckpoint(player.getPlayer().getLocation());
-				player.getPlayer().setFallDistance(0);
-				player.getPlayer().setWalkSpeed(0.2f);
-				player.setStartTime(Calendar.getInstance().getTimeInMillis());
-				player.setGamemode(minigame.getDefaultGamemode());
-				if(minigame.getType() == MinigameType.SINGLEPLAYER){
-					if(!minigame.isAllowedFlight()){
-						player.setCanFly(false);
-					}
-					else{
-						player.setCanFly(true);
-						if(minigame.isFlightEnabled())
-							player.getPlayer().setFlying(true);
-					}
-				}
-				else{
-					player.getPlayer().setAllowFlight(false);
-				}
-				for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
-					player.getPlayer().removePotionEffect(potion.getType());
-				}
-				
-				//Hide Spectators
-				for(MinigamePlayer pl : minigame.getSpectators()){
-					player.getPlayer().hidePlayer(pl.getPlayer());
-				}
-				
-				if(minigame.getPlayers().size() == 1){
-					//Register regen recorder events
-					if(minigame.getBlockRecorder().hasRegenArea())
-						Bukkit.getServer().getPluginManager().registerEvents(minigame.getBlockRecorder(), plugin);
-					weatherModule.startTimeLoop();
-				}
-				
-				//Call Type specific join
-				mdata.minigameType(type).joinMinigame(player, minigame);
-				
-				//Call Mechanic specific join
-				minigame.getMechanic().joinMinigame(minigame, player);
-
-				//Send other players the join message.
-				mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.join.plyMsg", player.getName(), minigame.getName(true)), null, player);
-				player.updateInventory();
-				
-				if(minigame.canDisplayScoreboard()){
-					player.getPlayer().setScoreboard(minigame.getScoreboardManager());
-					minigame.setScore(player, 1);
-					minigame.setScore(player, 0);
-				}
-			}
-			else if(!minigame.isEnabled()){
-				player.sendMessage(MinigameUtils.getLang("minigame.error.notEnabled"), "error");
-			}
-			else if(minigame.getState() == MinigameState.REGENERATING){
-				player.sendMessage(MinigameUtils.getLang("minigame.error.regenerating"), "error");
-			}
-			else if(minigame.getState() == MinigameState.STARTED && !minigame.canLateJoin()){
-				player.sendMessage(MinigameUtils.getLang("minigame.started"), "error");
-			}
-			else if(minigame.getState() == MinigameState.STARTING && minigame.canLateJoin() && 
-						minigame.getPlayers().size() != minigame.getMaxPlayers()){
-				player.sendMessage(MinigameUtils.formStr("minigame.lateJoinWait", minigame.getMpTimer().getStartWaitTimeLeft()), null);
-			}
-			else if(minigame.getStartLocations().size() == 0 || 
-							(minigame.isTeamGame() && !minigame.getModule(TeamsModule.class).hasTeamStartLocations())){
-				player.sendMessage(MinigameUtils.getLang("minigame.error.noStart"), "error");
-			}
-			else if(minigame.getEndPosition() == null){
-				player.sendMessage(MinigameUtils.getLang("minigame.error.noEnd"), "error");
-			}
-			else if(minigame.getQuitPosition() == null){
-				player.sendMessage(MinigameUtils.getLang("minigame.error.noQuit"), "error");
-			}
-			else if(minigame.getLobbyPosition() == null){
-				player.sendMessage(MinigameUtils.getLang("minigame.error.noLobby"), "error");
-			}
-			else if(minigame.getPlayers().size() >= minigame.getMaxPlayers()){
-				player.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
-			}
-			else if(!minigame.getMechanic().validTypes().contains(minigame.getType())){
-				player.sendMessage(MinigameUtils.getLang("minigame.error.invalidMechanic"), "error");
-			}
-			else if(!canStart){
-				player.sendMessage(MinigameUtils.getLang("minigame.error.mechanicStartFail"), "error");
-			}
-		}
-	}
-	
-	public void spectateMinigame(MinigamePlayer player, Minigame minigame) {
-		SpectateMinigameEvent event = new SpectateMinigameEvent(player, minigame);
-		Bukkit.getServer().getPluginManager().callEvent(event);
-		
-		if(!event.isCancelled()){
-			boolean tpd = false;
-			if(minigame.getSpectatorLocation() != null)
-				tpd = player.teleport(minigame.getSpectatorLocation());
-			else{
-				player.sendMessage(MinigameUtils.getLang("minigame.error.noSpectatePos"), "error");
-				return;
-			}
-			if(!tpd){
-				player.sendMessage(MinigameUtils.getLang("minigame.error.noTeleport"), "error");
-				return;
-			}
-			player.storePlayerData();
-			player.setMinigame(minigame);
-			player.setGamemode(GameMode.ADVENTURE);
-			
-			minigame.addSpectator(player);
-			
-			if(minigame.canSpectateFly()){
-				player.getPlayer().setAllowFlight(true);
-			}
-			for(MinigamePlayer pl : minigame.getPlayers()){
-				pl.getPlayer().hidePlayer(player.getPlayer());
-			}
-			
-			player.getPlayer().setScoreboard(minigame.getScoreboardManager());
-			
-			for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
-				player.getPlayer().removePotionEffect(potion.getType());
-			}
-			player.sendMessage(MinigameUtils.formStr("player.spectate.join.plyMsg", minigame.getName(false)) + "\n" +
-					MinigameUtils.formStr("player.spectate.join.plyHelp", "\"/minigame quit\""), null);
-			mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.spectate.join.minigameMsg", player.getName(), minigame.getName(false)), null, player);
-		}
-	}
 	
 	public void startMPMinigame(Minigame minigame, boolean teleport){
 		List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
@@ -541,8 +282,10 @@ public class PlayerData {
 					mdata.clearClaimedScore(minigame);
 					minigame.getModule(WeatherTimeModule.class).stopTimeLoop();
 					module.stopEndGameTimer();
-					for(Team team : minigame.getModule(TeamsModule.class).getTeams()){
-						team.setScore(0);
+					if (minigame.hasModule(TeamsModule.class)) {
+						for(Team team : minigame.getModule(TeamsModule.class).getTeams()){
+							team.setScore(0);
+						}
 					}
 				}
 				
@@ -709,15 +452,17 @@ public class PlayerData {
 				}
 			}
 			
-			GameOverModule gom = minigame.getModule(GameOverModule.class);
 			boolean usedTimer = false;
-			
-			gom.setWinners(winners);
-			gom.setLosers(losers);
-			
-			if(gom.getTimer() > 0 && minigame.getType() == MinigameType.MULTIPLAYER){
-				gom.startEndGameTimer();
-				usedTimer = true;
+			GameOverModule gom = minigame.getModule(GameOverModule.class);
+			if (gom != null) {
+				
+				gom.setWinners(winners);
+				gom.setLosers(losers);
+				
+				if(gom.getTimer() > 0 && minigame.getType() == MinigameType.MULTIPLAYER){
+					gom.startEndGameTimer();
+					usedTimer = true;
+				}
 			}
 			
 			for(MinigamePlayer player : losers){
@@ -781,7 +526,7 @@ public class PlayerData {
 				PlayMGSound.playSound(player, MGSounds.getSound("win"));
 			}
 			
-			if(!usedTimer){
+			if(gom != null && !usedTimer){
 				gom.clearLosers();
 				gom.clearWinners();
 			}

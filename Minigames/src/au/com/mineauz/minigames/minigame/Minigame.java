@@ -305,7 +305,12 @@ public class Minigame {
 		return (T)modules.get(moduleClass);
 	}
 	
+	public boolean hasModule(Class<? extends MinigameModule> moduleClass) {
+		return modules.containsKey(moduleClass);
+	}
+	
 	public boolean isTeamGame(){
+		// FIXME: This should not attempt to get teams module without checking
 		if(getType() == MinigameType.MULTIPLAYER && getModule(TeamsModule.class).getTeams().size() > 0)
 			return true;
 		return false;
@@ -1259,5 +1264,50 @@ public class Minigame {
 	@Override
 	public String toString(){
 		return getName(false);
+	}
+	
+	public void checkMinigame(Minigame minigame, boolean ignoreEnable) throws IllegalStateException {
+		if (!ignoreEnable && !minigame.isEnabled()) {
+			throw new IllegalStateException(MinigameUtils.getLang("minigame.error.notEnabled"));
+		} else if (minigame.getType() == MinigameType.GLOBAL) {
+			throw new IllegalStateException(MinigameUtils.getLang("minigame.error.wrongType"));
+		} else if(minigame.getState() == MinigameState.REGENERATING) {
+			throw new IllegalStateException(MinigameUtils.getLang("minigame.error.regenerating"));
+		} else if (minigame.getEndPosition() == null) {
+			throw new IllegalStateException(MinigameUtils.getLang("minigame.error.noEnd"));
+		} else if (minigame.getQuitPosition() == null) {
+			throw new IllegalStateException(MinigameUtils.getLang("minigame.error.noQuit"));
+		}
+		
+		if (minigame.getType() == MinigameType.SINGLEPLAYER) {
+			if (minigame.getStartLocations().size() == 0) {
+				throw new IllegalStateException(MinigameUtils.getLang("minigame.error.noStart"));
+			}
+			
+			if (minigame.isSpMaxPlayers() && minigame.getPlayers().size() >= minigame.getMaxPlayers()) {
+				throw new IllegalStateException(MinigameUtils.getLang("minigame.full"));
+			}
+		} else if (minigame.getType() == MinigameType.MULTIPLAYER) {
+			TeamsModule teams = minigame.getModule(TeamsModule.class);
+			if (teams != null) {
+				if (!teams.hasTeamStartLocations() && minigame.getStartLocations().size() == 0) {
+					throw new IllegalStateException(MinigameUtils.getLang("minigame.error.noStart"));
+				}
+			} else {
+				if (minigame.getStartLocations().size() == 0) {
+					throw new IllegalStateException(MinigameUtils.getLang("minigame.error.noStart"));
+				}
+			}
+			
+			if (minigame.getLobbyPosition() == null) {
+				throw new IllegalStateException(MinigameUtils.getLang("minigame.error.noLobby"));
+			} else if(minigame.getPlayers().size() >= minigame.getMaxPlayers()) {
+				throw new IllegalStateException(MinigameUtils.getLang("minigame.full"));
+			} else if(!minigame.getMechanic().validTypes().contains(minigame.getType())) {
+				throw new IllegalStateException(MinigameUtils.getLang("minigame.error.invalidMechanic"));
+			} else if(minigame.getState() == MinigameState.STARTED && !minigame.canLateJoin()) {
+				throw new IllegalStateException(MinigameUtils.getLang("minigame.started"));
+			}
+		}
 	}
 }

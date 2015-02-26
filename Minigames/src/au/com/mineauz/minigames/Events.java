@@ -366,11 +366,15 @@ public class Events implements Listener{
 			}
 			else if(tool.getMode() != null && tool.getMinigame() != null){
 				Minigame mg = tool.getMinigame();
+				Team team = null;
+				if (mg.hasModule(TeamsModule.class)) {
+					team = mg.getModule(TeamsModule.class).getTeam(tool.getTeam());
+				}
 				if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK){
-					tool.getMode().onRightClick(ply, mg, mg.getModule(TeamsModule.class).getTeam(tool.getTeam()), event);
+					tool.getMode().onRightClick(ply, mg, team, event);
 				}
 				else if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK){
-					tool.getMode().onLeftClick(ply, mg, mg.getModule(TeamsModule.class).getTeam(tool.getTeam()), event);
+					tool.getMode().onLeftClick(ply, mg, team, event);
 				}
 			}
 			else if(tool.getMinigame() == null) {

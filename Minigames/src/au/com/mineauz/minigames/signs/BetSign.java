@@ -56,14 +56,25 @@ public class BetSign implements MinigameSign{
 
 	@Override
 	public boolean signUse(Sign sign, MinigamePlayer player) {
-		Minigame mgm = plugin.mdata.getMinigame(sign.getLine(2));
-		if (mgm != null) {
-			boolean invOk = true;
-			boolean fullInv;
+		if (player.isInMinigame()) {
+			return false;
+		}
+		
+		try {
+			Minigame minigame = plugin.mdata.getMinigame(sign.getLine(2));
+			if (minigame == null) {
+				throw new IllegalArgumentException(MinigameUtils.getLang("minigame.error.noMinigame"));
+			}
+			
+			// Ignore the minigame tool
+			if(MinigameUtils.isMinigameTool(player.getPlayer().getItemInHand())) {
+				return true;
+			}
+			
 			boolean moneyBet = sign.getLine(3).startsWith("$");
 			
+			// Make sure inventory constraints are met
 			if (plugin.getConfig().getBoolean("requireEmptyInventory")) {
-				fullInv = true;
 				ItemStack[] contents = player.getPlayer().getInventory().getContents();
 				for (int i = 0; i < contents.length; ++i) {
 					// Non money bets can hold an item
@@ -72,69 +83,49 @@ public class BetSign implements MinigameSign{
 					}
 					
 					if (contents[i] != null) {
-						invOk = false;
-						break;
+						throw new IllegalStateException(MinigameUtils.getLang("sign.emptyInv"));
 					}
 				}
 				
 				for (ItemStack item : player.getPlayer().getInventory().getArmorContents()) {
 					if (item != null && item.getType() != Material.AIR) {
-						invOk = false;
-						break;
+						throw new IllegalStateException(MinigameUtils.getLang("sign.emptyInv"));
 					}
 				}
 			} else {
-				fullInv = false;
-				invOk = (moneyBet ? player.getPlayer().getItemInHand().getType() == Material.AIR : player.getPlayer().getItemInHand().getType() != Material.AIR);
+				if (moneyBet) {
+					if (player.getPlayer().getItemInHand().getType() != Material.AIR) {
+						throw new IllegalStateException(MinigameUtils.getLang("sign.emptyHand"));
+					}
+				} else {
+					if (player.getPlayer().getItemInHand().getType() == Material.AIR) {
+						throw new IllegalStateException(MinigameUtils.getLang("sign.bet.noBet"));
+					}
+				}
 			}
 			
-			if(invOk){
-				if(mgm.isEnabled() && (!mgm.getUsePermissions() || player.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))){
-					if(mgm.isSpectator(player)){
-						return false;
-					}
-					
-					if(!sign.getLine(3).startsWith("$")){
-						plugin.pdata.joinMinigame(player, plugin.mdata.getMinigame(sign.getLine(2)), true, 0.0);
-					}
-					else{
-						if(plugin.hasEconomy()){
-							Double bet = Double.parseDouble(sign.getLine(3).replace("$", ""));
-							plugin.pdata.joinMinigame(player, plugin.mdata.getMinigame(sign.getLine(2)), true, bet);
-							return true;
-						}
-						else{
-							player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noVault"));
-						}
-					}
+			// Join game
+			if (moneyBet) {
+				if (!Minigames.plugin.hasEconomy()) {
+					throw new IllegalArgumentException(MinigameUtils.getLang("minigame.error.noVault"));
 				}
-				else if(!mgm.isEnabled()){
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.notEnabled"));
-				}
-				else if(mgm.getUsePermissions()){
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()));
+				
+				double bet = Double.parseDouble(sign.getLine(3).replace("$", ""));
+				
+				player.joinMinigameWithBet(minigame, bet);
+			} else {
+				ItemStack bet = new ItemStack(player.getPlayer().getItemInHand());
+				bet.setAmount(1);
+				if (player.joinMinigameWithBet(minigame, bet)) {
+					player.getPlayer().getInventory().removeItem(bet);
 				}
 			}
-			else if(!moneyBet){
-				if(fullInv && player.getPlayer().getItemInHand().getType() != Material.AIR) {
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyInv"));
-				}
-				else {
-					player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.bet.noBet"));
-				}
-			}
-			else {
-				if(fullInv) {
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyInv"));
-				}
-				else {
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
-				}
-			}
+		} catch (IllegalArgumentException e) {
+			player.sendMessage(e.getMessage(), "error");
+		} catch (IllegalStateException e) {
+			player.sendMessage(e.getMessage(), "error");
 		}
-		else{
-			player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noMinigame"));
-		}
+			
 		return false;
 	}
 

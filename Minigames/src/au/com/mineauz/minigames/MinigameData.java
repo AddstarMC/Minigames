@@ -31,7 +31,7 @@ public class MinigameData {
 	private Map<Minigame, List<String>> claimedScoreSignsBlue = new HashMap<Minigame, List<String>>();
 	
 	public void startGlobalMinigame(Minigame minigame, MinigamePlayer caller){
-		boolean canStart = minigame.getMechanic().checkCanStart(minigame, caller);
+		boolean canStart = minigame.getMechanic().checkCanStart(minigame);
 		if(minigame.getType() == MinigameType.GLOBAL && 
 				minigame.getMechanic().validTypes().contains(MinigameType.GLOBAL) &&
 				canStart){

@@ -54,16 +54,18 @@ public class SpectateCommand implements ICommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Minigame minigame,
-			String label, String[] args) {
+	public boolean onCommand(CommandSender sender, Minigame minigame, String label, String[] args) {
 		if(args != null){
-			if(plugin.mdata.hasMinigame(args[0])){
-				MinigamePlayer ply = plugin.pdata.getMinigamePlayer((Player) sender);
-				Minigame mgm = plugin.mdata.getMinigame(args[0]);
-				plugin.pdata.spectateMinigame(ply, mgm);
-			}
-			else{
-				sender.sendMessage(ChatColor.RED + "No Minigame found by the name: " + args[0]);
+			MinigamePlayer player = plugin.pdata.getMinigamePlayer((Player)sender);
+			Minigame mgm = plugin.mdata.getMinigame(args[0]);
+			if (mgm == null) {
+				player.sendMessage(ChatColor.RED + MinigameUtils.getLang("minigame.error.noMinigame"));
+			} else {
+				try {
+					player.spectateMinigame(mgm);
+				} catch (IllegalStateException e) {
+					player.sendMessage(ChatColor.RED + e.getMessage(), "error");
+				}
 			}
 			return true;
 		}

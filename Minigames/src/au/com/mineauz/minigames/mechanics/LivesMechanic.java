@@ -32,12 +32,11 @@ public class LivesMechanic extends GameMechanicBase{
 	}
 
 	@Override
-	public boolean checkCanStart(Minigame minigame, MinigamePlayer caller) {
+	public boolean checkCanStart(Minigame minigame) throws IllegalStateException {
 		if(minigame.getLives() > 0){
 			return true;
 		}
-		caller.sendMessage("The Minigame must have more than 0 lives to use this type", "error");
-		return false;
+		throw new IllegalStateException("The Minigame must have more than 0 lives to use this type");
 	}
 
 	@Override

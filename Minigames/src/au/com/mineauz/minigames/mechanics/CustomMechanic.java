@@ -34,7 +34,7 @@ public class CustomMechanic extends GameMechanicBase{
 	}
 	
 	@Override
-	public boolean checkCanStart(Minigame minigame, MinigamePlayer caller){
+	public boolean checkCanStart(Minigame minigame){
 		return true;
 	}
 

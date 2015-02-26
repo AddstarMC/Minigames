@@ -186,4 +186,14 @@ public class WeatherTimeModule extends MinigameModule {
 		Bukkit.getScheduler().cancelTask(task);
 		task = -1;
 	}
+	
+	@Override
+	public void applySettings(MinigamePlayer player) {
+		applyCustomTime(player);
+		applyCustomWeather(player);
+		
+		if (task == -1) {
+			startTimeLoop();
+		}
+	}
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
+import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Menu;
@@ -26,6 +27,12 @@ public abstract class MinigameModule {
 	public abstract void load(FileConfiguration config);
 	public void addEditMenuOptions(Menu menu) {}
 	public Menu createSettingsMenu() { return null; }
+	
+	/**
+	 * Allows the module to apply any settings to the player
+	 * @param player The player to manipulate
+	 */
+	public void applySettings(MinigamePlayer player) {}
 	
 	public static <T extends MinigameModule> T makeModule(Class<T> moduleClass, Minigame minigame) {
 		try {

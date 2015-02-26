@@ -47,14 +47,13 @@ public abstract class GameMechanicBase implements Listener{
 	public abstract void addRequiredModules(Minigame minigame);
 	
 	/**
-	 * Checks if a mechanic is allowed to start with the current settings. Caller 
-	 * can be sent message, but can also be null, in which case, should be sent
-	 * to the console.
+	 * Checks if a mechanic is allowed to start with the current settings. Should throw 
+	 * IllegalStateException to give error message
 	 * @param minigame The Minigame in which settings to check
-	 * @param caller The Player (or Null) to send the error messages to
-	 * @return true if all checks pass.
+	 * @return True if the minigame can be started. This should only be false if no explanation is needed
+	 * @throws IllegalStateException To be thrown if the game cannot be started and needs to be explained.
 	 */
-	public abstract boolean checkCanStart(Minigame minigame, MinigamePlayer caller);
+	public abstract boolean checkCanStart(Minigame minigame) throws IllegalStateException;
 	
 	/**
 	 * In the case of a Minigame having teams, this should be used to balance players

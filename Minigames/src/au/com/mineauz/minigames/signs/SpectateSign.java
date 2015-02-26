@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -52,23 +53,49 @@ public class SpectateSign implements MinigameSign {
 
 	@Override
 	public boolean signUse(Sign sign, MinigamePlayer player) {
-		if(player.getPlayer().getItemInHand().getType() == Material.AIR && !player.isInMinigame()){
-			Minigame mgm = plugin.mdata.getMinigame(sign.getLine(2));
-			if(mgm != null){
-				if(mgm.isEnabled()){
-					plugin.pdata.spectateMinigame(player, mgm);
-					return true;
-				}
-				else if(!mgm.isEnabled()){
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.notEnabled"));
-				}
-			}
-			else if(mgm == null){
-				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noMinigame"));
-			}
+		if (player.isInMinigame()) {
+			return false;
 		}
-		else if(!player.isInMinigame())
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
+		
+		try {
+			Minigame minigame = plugin.mdata.getMinigame(sign.getLine(2));
+			if (minigame == null) {
+				throw new IllegalArgumentException(MinigameUtils.getLang("minigame.error.noMinigame"));
+			}
+			
+			// Ignore the minigame tool
+			if(MinigameUtils.isMinigameTool(player.getPlayer().getItemInHand())) {
+				return true;
+			}
+			
+			// Make sure inventory constraints are met
+			if (plugin.getConfig().getBoolean("requireEmptyInventory")) {
+				for (ItemStack item : player.getPlayer().getInventory().getContents()) {
+					if (item != null) {
+						throw new IllegalStateException(MinigameUtils.getLang("sign.emptyInv"));
+					}
+				}
+				
+				for (ItemStack item : player.getPlayer().getInventory().getArmorContents()) {
+					if (item != null && item.getType() != Material.AIR) {
+						throw new IllegalStateException(MinigameUtils.getLang("sign.emptyInv"));
+					}
+				}
+			} else {
+				if (player.getPlayer().getItemInHand().getType() != Material.AIR) {
+					throw new IllegalStateException(MinigameUtils.getLang("sign.emptyHand"));
+				}
+			}
+			
+			// Spectate the game
+			player.spectateMinigame(minigame);
+
+		} catch (IllegalArgumentException e) {
+			player.sendMessage(e.getMessage(), "error");
+		} catch (IllegalStateException e) {
+			player.sendMessage(e.getMessage(), "error");
+		}
+			
 		return false;
 	}
 
