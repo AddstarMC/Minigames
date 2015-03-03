@@ -15,6 +15,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import au.com.mineauz.minigames.CTFFlag;
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.events.FlagCaptureEvent;
@@ -145,12 +146,12 @@ public class CTFMechanic extends GameMechanicBase{
 								if(ctf.getFlagCarrier(ply).getTeam() != null){
 									Team fteam = ctf.getFlagCarrier(ply).getTeam();
 									String message = ply.getName() + " stole " + fteam.getChatColor() + fteam.getDisplayName() + ChatColor.WHITE + "'s flag!";
-									mdata.sendMinigameMessage(mgm, message, null, null);
+									mgm.broadcast(message, MessageType.Normal);
 									ctf.getFlagCarrier(ply).startCarrierParticleEffect(ply.getPlayer());
 								}
 								else{
 									String message = ply.getName() + " stole the " + ChatColor.GRAY + "neutral" + ChatColor.WHITE + " flag!";
-									mdata.sendMinigameMessage(mgm, message, null, null);
+									mgm.broadcast(message, MessageType.Normal);
 									ctf.getFlagCarrier(ply).startCarrierParticleEffect(ply.getPlayer());
 								}
 							}
@@ -183,15 +184,15 @@ public class CTFMechanic extends GameMechanicBase{
 									if(!end){
 										String message = MinigameUtils.formStr("player.ctf.capture", 
 												ply.getName(), ply.getTeam().getChatColor() + ply.getTeam().getDisplayName());
-										mdata.sendMinigameMessage(mgm, message, null, null);
+										mgm.broadcast(message, MessageType.Normal);
 									}
 									flag.stopCarrierParticleEffect();
 									ply.addScore();
 									mgm.setScore(ply, ply.getScore());
 									
 									if(end){
-										mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.captureFinal", ply.getName(), 
-												ply.getTeam().getChatColor() + ply.getTeam().getDisplayName()), null, null);
+										mgm.broadcast(MinigameUtils.formStr("player.ctf.captureFinal", ply.getName(), 
+												ply.getTeam().getChatColor() + ply.getTeam().getDisplayName()), MessageType.Normal);
 										List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(ply.getTeam().getPlayers());
 										List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - ply.getTeam().getPlayers().size());
 										for(Team t : teamModule.getTeams()){
@@ -209,11 +210,11 @@ public class CTFMechanic extends GameMechanicBase{
 										end = true;
 									}
 									
-									mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.captureNeutral", ply.getName()), null, null);
+									mgm.broadcast(MinigameUtils.formStr("player.ctf.captureNeutral", ply.getName()), MessageType.Normal);
 									flag.stopCarrierParticleEffect();
 									
 									if(end){
-										mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.captureNeutralFinal", ply.getName()), null, null);
+										mgm.broadcast(MinigameUtils.formStr("player.ctf.captureNeutralFinal", ply.getName()), MessageType.Normal);
 										
 										pdata.endMinigame(ply);
 										ctf.resetFlags();
@@ -229,11 +230,11 @@ public class CTFMechanic extends GameMechanicBase{
 								ctf.addDroppedFlag(newID, flag);
 							}
 							flag.respawnFlag();
-							mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.returned", ply.getName(), 
-									ply.getTeam().getChatColor() + ply.getTeam().getDisplayName() + ChatColor.WHITE), null, null);
+							mgm.broadcast(MinigameUtils.formStr("player.ctf.returned", ply.getName(), 
+									ply.getTeam().getChatColor() + ply.getTeam().getDisplayName() + ChatColor.WHITE), MessageType.Normal);
 						}
 						else if(ctf.getFlagCarrier(ply) != null && ctf.hasDroppedFlag(clickID) && !ctf.getDroppedFlag(clickID).isAtHome()){
-							ply.sendMessage(MinigameUtils.getLang("player.ctf.returnFail"), null);
+							ply.sendMessage(MinigameUtils.getLang("player.ctf.returnFail"), MessageType.Normal);
 						}
 					}
 				}
@@ -258,10 +259,10 @@ public class CTFMechanic extends GameMechanicBase{
 					ctf.removeFlagCarrier(ply);
 					
 					if(team != null)
-						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.dropped", ply.getName(), 
-							team.getChatColor() + team.getDisplayName() + ChatColor.WHITE), null, null);
+						mgm.broadcast(MinigameUtils.formStr("player.ctf.dropped", ply.getName(), 
+							team.getChatColor() + team.getDisplayName() + ChatColor.WHITE), MessageType.Normal);
 					else
-						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.droppedNeutral", ply.getName()), null, null);
+						mgm.broadcast(MinigameUtils.formStr("player.ctf.droppedNeutral", ply.getName()), MessageType.Normal);
 					flag.stopCarrierParticleEffect();
 					flag.startReturnTimer();
 				}
@@ -290,10 +291,9 @@ public class CTFMechanic extends GameMechanicBase{
 				}
 				if(lgt.getPlayers().size() - smt.getPlayers().size() > 1){
 					MultiplayerType.switchTeam(mgm, ply, smt);
-					ply.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), null);
-					mdata.sendMinigameMessage(mgm, 
-							String.format(smt.getGameAutobalanceMessage(), 
-									ply.getName(), smt.getChatColor() + smt.getDisplayName()), null, ply);
+					ply.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), MessageType.Normal);
+					mgm.broadcastExcept(String.format(smt.getGameAutobalanceMessage(), 
+						ply.getName(), smt.getChatColor() + smt.getDisplayName()), MessageType.Normal, ply);
 				}
 			}
 		}

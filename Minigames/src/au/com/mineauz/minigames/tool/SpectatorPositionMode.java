@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.tool;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
@@ -39,7 +40,7 @@ public class SpectatorPositionMode implements ToolMode{
 	public void onRightClick(MinigamePlayer player, Minigame minigame,
 			Team team, PlayerInteractEvent event) {
 		minigame.setSpectatorLocation(player.getLocation());
-		player.sendMessage("Set spectator start position.", null);
+		player.sendMessage("Set spectator start position.", MessageType.Normal);
 	}
 
 	@SuppressWarnings("deprecation") //TODO: Use alternate method once available
@@ -47,10 +48,10 @@ public class SpectatorPositionMode implements ToolMode{
 	public void select(MinigamePlayer player, Minigame minigame, Team team) {
 		if(minigame.getSpectatorLocation() != null){
 			player.getPlayer().sendBlockChange(minigame.getSpectatorLocation(), Material.SKULL, (byte)1);
-			player.sendMessage("Selected spectator position (marked with skull).", null);
+			player.sendMessage("Selected spectator position (marked with skull).", MessageType.Normal);
 		}
 		else{
-			player.sendMessage("No spectator position set!", "error");
+			player.sendMessage("No spectator position set!", MessageType.Error);
 		}
 	}
 
@@ -61,10 +62,10 @@ public class SpectatorPositionMode implements ToolMode{
 			player.getPlayer().sendBlockChange(minigame.getSpectatorLocation(), 
 					minigame.getSpectatorLocation().getBlock().getType(), 
 					minigame.getSpectatorLocation().getBlock().getData());
-			player.sendMessage("Spectator position deselected.", null);
+			player.sendMessage("Spectator position deselected.", MessageType.Normal);
 		}
 		else{
-			player.sendMessage("No spectator position set!", "error");
+			player.sendMessage("No spectator position set!", MessageType.Error);
 		}
 	}
 

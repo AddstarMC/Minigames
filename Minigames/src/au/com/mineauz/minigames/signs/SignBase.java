@@ -15,6 +15,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.Minigames;
 
 public class SignBase implements Listener{
@@ -70,7 +71,7 @@ public class SignBase implements Listener{
 				}
 			}
 			else{
-				Minigames.plugin.pdata.getMinigamePlayer(event.getPlayer()).sendMessage("Invalid Minigame sign!", "error");
+				Minigames.plugin.pdata.getMinigamePlayer(event.getPlayer()).sendMessage("Invalid Minigame sign!", MessageType.Error);
 				event.setCancelled(true);
 				event.getBlock().breakNaturally();
 			}

@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -78,7 +79,7 @@ public class TeamSign implements MinigameSign {
 								}
 								if(nt.getPlayers().size() - sm.getPlayers().size() < 1){
 									MultiplayerType.switchTeam(mgm, player, nt);
-									plugin.mdata.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getDisplayName(), nt.getChatColor() + nt.getDisplayName()), null, player);
+									mgm.broadcastExcept(String.format(nt.getGameAssignMessage(), player.getDisplayName(), nt.getChatColor() + nt.getDisplayName()), MessageType.Normal, player);
 									player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), null);
 								}
 								else{
@@ -88,7 +89,7 @@ public class TeamSign implements MinigameSign {
 								player.getPlayer().damage(player.getPlayer().getHealth());
 							}
 							else {
-								player.sendMessage(MinigameUtils.getLang("player.team.full"), "error");
+								player.sendMessage(MinigameUtils.getLang("player.team.full"), MessageType.Error);
 							}
 						}
 					}
@@ -98,8 +99,8 @@ public class TeamSign implements MinigameSign {
 						if(nt != null){
 							if(nt.getPlayers().size() - cur.getPlayers().size() < 2){
 								MultiplayerType.switchTeam(mgm, player, nt);
-								plugin.mdata.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
-								player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), null);
+								mgm.broadcastExcept(String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), MessageType.Normal, player);
+								player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), MessageType.Normal);
 							}
 							else{
 								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));

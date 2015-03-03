@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -67,12 +68,12 @@ public class LoadoutSign implements MinigameSign {
 			else if(loadout.hasLoadout(sign.getLine(2))){
 				if(!loadout.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
 					if(player.setLoadout(loadout.getLoadout(sign.getLine(2)))){
-						player.sendMessage(MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)), null);
+						player.sendMessage(MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)), MessageType.Normal);
 						
 						if(mgm.getType() == MinigameType.SINGLEPLAYER || 
 								mgm.hasStarted()){
 							if(sign.getLine(3).equalsIgnoreCase("respawn")){
-								player.sendMessage(MinigameUtils.getLang("sign.loadout.nextRespawn"), null);
+								player.sendMessage(MinigameUtils.getLang("sign.loadout.nextRespawn"), MessageType.Normal);
 							}
 							else{
 								loadout.getLoadout(sign.getLine(2)).equiptLoadout(player);
@@ -82,18 +83,18 @@ public class LoadoutSign implements MinigameSign {
 					return true;
 				}
 				else{
-					player.sendMessage(MinigameUtils.formStr("sign.loadout.noPermisson", sign.getLine(2)), "error");
+					player.sendMessage(MinigameUtils.formStr("sign.loadout.noPermisson", sign.getLine(2)), MessageType.Error);
 				}
 			}
 			else if(plugin.mdata.hasLoadout(sign.getLine(2))){
 				if(!plugin.mdata.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
 					if(player.setLoadout(plugin.mdata.getLoadout(sign.getLine(2)))){
-						player.sendMessage(MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)), null);
+						player.sendMessage(MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)), MessageType.Normal);
 	
 						if(mgm.getType() == MinigameType.SINGLEPLAYER || 
 								mgm.hasStarted()){
 							if(sign.getLine(3).equalsIgnoreCase("respawn")){
-								player.sendMessage(MinigameUtils.getLang("sign.loadout.nextRespawn"), null);
+								player.sendMessage(MinigameUtils.getLang("sign.loadout.nextRespawn"), MessageType.Normal);
 							}
 							else{
 								plugin.mdata.getLoadout(sign.getLine(2)).equiptLoadout(player);
@@ -103,15 +104,15 @@ public class LoadoutSign implements MinigameSign {
 					return true;
 				}
 				else{
-					player.sendMessage(MinigameUtils.formStr("sign.loadout.noPermission", sign.getLine(2)), "error");
+					player.sendMessage(MinigameUtils.formStr("sign.loadout.noPermission", sign.getLine(2)), MessageType.Error);
 				}
 			}
 			else{
-				player.sendMessage(MinigameUtils.getLang("sign.loadout.noLoadout"), "error");
+				player.sendMessage(MinigameUtils.getLang("sign.loadout.noLoadout"), MessageType.Error);
 			}
 		}
 		else if(player.getPlayer().getItemInHand().getType() != Material.AIR)
-			player.sendMessage(MinigameUtils.getLang("sign.emptyHand"), "error");
+			player.sendMessage(MinigameUtils.getLang("sign.emptyHand"), MessageType.Error);
 		return false;
 	}
 

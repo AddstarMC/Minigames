@@ -83,18 +83,18 @@ public class Events implements Listener{
 			}
 			
 			if(!msg.equals("")){
-				mdata.sendMinigameMessage(mgm, msg, "error", null);
+				mgm.broadcast(msg, MessageType.Error);
 			}
 			if(mgm.getState() == MinigameState.STARTED){
 				if(mgm.getLives() > 0 && mgm.getLives() <= ply.getDeaths()){
-					ply.sendMessage(MinigameUtils.getLang("player.quit.plyOutOfLives"), "error");
+					ply.sendMessage(MinigameUtils.getLang("player.quit.plyOutOfLives"), MessageType.Error);
 					if(!event.getDrops().isEmpty() && mgm.getPlayers().size() == 1){
 						event.getDrops().clear();
 					}
 					pdata.quitMinigame(ply, false);
 				}
 				else if(mgm.getLives() > 0){
-					ply.sendMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives() - ply.getDeaths()), null);
+					ply.sendMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives() - ply.getDeaths()), MessageType.Normal);
 				}
 			}
 			else if(mgm.getState() == MinigameState.ENDED){
@@ -360,7 +360,7 @@ public class Events implements Listener{
 				if(ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[Minigame]") && ChatColor.stripColor(sign.getLine(1)).equalsIgnoreCase("Join")){
 					Minigame minigame = mdata.getMinigame(sign.getLine(2));
 					tool.setMinigame(minigame);
-					ply.sendMessage("Tools Minigame has been set to " + minigame, null);
+					ply.sendMessage("Tools Minigame has been set to " + minigame, MessageType.Normal);
 					event.setCancelled(true);
 				}
 			}
@@ -378,10 +378,10 @@ public class Events implements Listener{
 				}
 			}
 			else if(tool.getMinigame() == null) {
-				ply.sendMessage("Please select a minigame. Click on the join sign, or /mg tool minigame <minigame>", null);
+				ply.sendMessage("Please select a minigame. Click on the join sign, or /mg tool minigame <minigame>", MessageType.Normal);
 			}
 			else if(tool.getMode() == null) {
-				ply.sendMessage("Please select a tool mode. Shift + Right click", null);
+				ply.sendMessage("Please select a tool mode. Shift + Right click", MessageType.Normal);
 			}
 		}
 		

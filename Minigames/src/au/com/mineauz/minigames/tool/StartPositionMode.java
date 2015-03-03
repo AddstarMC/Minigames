@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
@@ -62,11 +63,11 @@ public class StartPositionMode implements ToolMode{
 				if(delLoc != null){
 					team.getStartLocations().remove(delLoc);
 					player.sendMessage("Removed selected " + team.getChatColor() + team.getDisplayName() + ChatColor.WHITE + 
-							" start location.", null);
+							" start location.", MessageType.Normal);
 				}
 				else{
 					player.sendMessage("Could not find a " + team.getChatColor() + team.getDisplayName() + ChatColor.WHITE +
-							" start location at that point.", "error");
+							" start location at that point.", MessageType.Error);
 				}
 			}
 			else{
@@ -83,10 +84,10 @@ public class StartPositionMode implements ToolMode{
 				}
 				if(delLoc != null){
 					minigame.getStartLocations().remove(delLoc);
-					player.sendMessage("Removed selected start location.", null);
+					player.sendMessage("Removed selected start location.", MessageType.Normal);
 				}
 				else
-					player.sendMessage("Could not find a start location at that point.", "error");
+					player.sendMessage("Could not find a start location at that point.", MessageType.Error);
 			}
 		}
 	}
@@ -95,12 +96,12 @@ public class StartPositionMode implements ToolMode{
 	public void onRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEvent event) {
 		if(team == null){
 			minigame.addStartLocation(player.getLocation());
-			player.sendMessage("Added start location for " + minigame, null);
+			player.sendMessage("Added start location for " + minigame, MessageType.Normal);
 		}
 		else{
 			team.addStartLocation(player.getLocation());
 			player.sendMessage("Added " + team.getChatColor() + 
-					team.getDisplayName() + ChatColor.WHITE + " start location to " + minigame, null);
+					team.getDisplayName() + ChatColor.WHITE + " start location to " + minigame, MessageType.Normal);
 		}
 	}
 
@@ -112,13 +113,13 @@ public class StartPositionMode implements ToolMode{
 				player.getPlayer().sendBlockChange(loc, Material.SKULL, (byte)1);
 			}
 			player.sendMessage("Selected " + team.getChatColor() + team.getDisplayName() + ChatColor.WHITE + 
-					" start points in " + minigame, null);
+					" start points in " + minigame, MessageType.Normal);
 		}
 		else{
 			for(Location loc : minigame.getStartLocations()){
 				player.getPlayer().sendBlockChange(loc, Material.SKULL, (byte)1);
 			}
-			player.sendMessage("Selected start points in " + minigame, null);
+			player.sendMessage("Selected start points in " + minigame, MessageType.Normal);
 		}
 	}
 
@@ -130,13 +131,13 @@ public class StartPositionMode implements ToolMode{
 				player.getPlayer().sendBlockChange(loc, loc.getBlock().getType(), loc.getBlock().getData());
 			}
 			player.sendMessage("Deselected " + team.getChatColor() + team.getDisplayName() + ChatColor.WHITE + 
-					" start points in " + minigame, null);
+					" start points in " + minigame, MessageType.Normal);
 		}
 		else{
 			for(Location loc : minigame.getStartLocations()){
 				player.getPlayer().sendBlockChange(loc, loc.getBlock().getType(), loc.getBlock().getData());
 			}
-			player.sendMessage("Deselected start points in " + minigame, null);
+			player.sendMessage("Deselected start points in " + minigame, MessageType.Normal);
 		}
 	}
 

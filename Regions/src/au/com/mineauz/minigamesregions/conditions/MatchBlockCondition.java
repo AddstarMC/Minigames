@@ -6,6 +6,7 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
@@ -96,7 +97,7 @@ public class MatchBlockCondition extends ConditionInterface {
 				if(Material.matchMaterial(value.toUpperCase()) != null)
 					type.setFlag(value.toUpperCase());
 				else
-					player.sendMessage("No block found by that name!", "error");
+					player.sendMessage("No block found by that name!", MessageType.Error);
 			}
 
 			@Override

@@ -6,6 +6,8 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
+
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Callback;
@@ -104,10 +106,10 @@ public class NodeToolMode implements ToolMode {
 			if (node == null) {
 				node = new Node(name, loc);
 				mod.addNode(name, node);
-				player.sendMessage("Added new node to " + minigame + " called " + name, null);
+				player.sendMessage("Added new node to " + minigame + " called " + name, MessageType.Normal);
 			} else {
 				node.setLocation(loc);
-				player.sendMessage("Edited node " + name + " in " + minigame, null);
+				player.sendMessage("Edited node " + name + " in " + minigame, MessageType.Normal);
 				Main.getPlugin().getDisplayManager().update(node);
 			}
 		}
@@ -122,10 +124,10 @@ public class NodeToolMode implements ToolMode {
 		if (node == null) {
 			node = new Node(name, player.getLocation());
 			mod.addNode(name, node);
-			player.sendMessage("Added new node to " + minigame + " called " + name, null);
+			player.sendMessage("Added new node to " + minigame + " called " + name, MessageType.Normal);
 		} else {
 			node.setLocation(player.getLocation());
-			player.sendMessage("Edited node " + name + " in " + minigame, null);
+			player.sendMessage("Edited node " + name + " in " + minigame, MessageType.Normal);
 			Main.getPlugin().getDisplayManager().update(node);
 		}
 	}
@@ -136,10 +138,10 @@ public class NodeToolMode implements ToolMode {
 		String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
 		if(mod.hasNode(name)){
 			Main.getPlugin().getDisplayManager().show(mod.getNode(name), player);
-			player.sendMessage("Selected node '" + name + "' visually.", null);
+			player.sendMessage("Selected node '" + name + "' visually.", MessageType.Normal);
 		}
 		else{
-			player.sendMessage("No node exists by the name '" + name + "'", "error");
+			player.sendMessage("No node exists by the name '" + name + "'", MessageType.Error);
 		}
 	}
 
@@ -149,10 +151,10 @@ public class NodeToolMode implements ToolMode {
 		String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
 		if(mod.hasNode(name)){
 			Main.getPlugin().getDisplayManager().hide(mod.getNode(name), player);
-			player.sendMessage("Deselected node '" + name + "'", null);
+			player.sendMessage("Deselected node '" + name + "'", MessageType.Normal);
 		}
 		else{
-			player.sendMessage("No node exists by the name '" + name + "'", "error");
+			player.sendMessage("No node exists by the name '" + name + "'", MessageType.Error);
 		}
 	}
 

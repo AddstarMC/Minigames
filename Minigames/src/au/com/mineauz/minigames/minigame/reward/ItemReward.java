@@ -3,6 +3,8 @@ package au.com.mineauz.minigames.minigame.reward;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.MenuItem;
@@ -33,7 +35,7 @@ public class ItemReward extends RewardType{
 		else
 			player.getPlayer().getInventory().addItem(item);
 		player.sendMessage(MinigameUtils.formStr("reward.item", item.getAmount(), 
-				MinigameUtils.capitalize(item.getType().toString())), null);
+				MinigameUtils.capitalize(item.getType().toString())), MessageType.Normal);
 	}
 
 	@Override

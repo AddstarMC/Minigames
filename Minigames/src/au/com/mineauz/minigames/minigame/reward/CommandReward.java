@@ -4,6 +4,8 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemReward;
@@ -63,7 +65,7 @@ public class CommandReward extends RewardType{
 		@Override
 		public void onDoubleClick(MinigamePlayer player) {
 			beginManualEntry(player, "Enter command into chat, the menu will automatically reopen in 40s if nothing is entered." , 40);
-			player.sendMessage("Dont start the command with '/'. If the command requires a '/' to start, use './'. Note that placing a './' means the command would have 2 slashes", null);
+			player.sendMessage("Dont start the command with '/'. If the command requires a '/' to start, use './'. Note that placing a './' means the command would have 2 slashes", MessageType.Normal);
 		}
 		
 		@Override

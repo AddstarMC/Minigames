@@ -287,7 +287,7 @@ public class MinigameUtils {
 		Material toolMat = Material.getMaterial(Minigames.plugin.getConfig().getString("tool"));
 		if(toolMat == null){
 			toolMat = Material.BLAZE_ROD;
-			player.sendMessage("Invalid material type! Please check the configuration to see if it has been typed correctly! Default type given instead.", "error");
+			player.sendMessage("Invalid material type! Please check the configuration to see if it has been typed correctly! Default type given instead.", MessageType.Error);
 		}
 		
 		ItemStack tool = new ItemStack(toolMat);

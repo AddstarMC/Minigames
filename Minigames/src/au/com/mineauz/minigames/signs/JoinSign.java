@@ -8,6 +8,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -121,9 +122,9 @@ public class JoinSign implements MinigameSign {
 				}
 			}
 		} catch (IllegalArgumentException e) {
-			player.sendMessage(e.getMessage(), "error");
+			player.sendMessage(e.getMessage(), MessageType.Error);
 		} catch (IllegalStateException e) {
-			player.sendMessage(e.getMessage(), "error");
+			player.sendMessage(e.getMessage(), MessageType.Error);
 		}
 			
 		return false;

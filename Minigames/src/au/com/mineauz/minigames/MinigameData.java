@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
+
 import au.com.mineauz.minigames.config.RewardsFlag;
 import au.com.mineauz.minigames.events.StartGlobalMinigameEvent;
 import au.com.mineauz.minigames.events.StopGlobalMinigameEvent;
@@ -47,13 +47,13 @@ public class MinigameData {
 			if(caller == null)
 				Bukkit.getLogger().info(MinigameUtils.getLang("minigame.error.invalidMechanic"));
 			else
-				caller.sendMessage(MinigameUtils.getLang("minigame.error.invalidMechanic"), "error");
+				caller.sendMessage(MinigameUtils.getLang("minigame.error.invalidMechanic"), MessageType.Error);
 		}
 		else if(!canStart){
 			if(caller == null)
 				Bukkit.getLogger().info(MinigameUtils.getLang("minigame.error.mechanicStartFail"));
 			else
-				caller.sendMessage(MinigameUtils.getLang("minigame.error.mechanicStartFail"), "error");
+				caller.sendMessage(MinigameUtils.getLang("minigame.error.mechanicStartFail"), MessageType.Error);
 		}
 	}
 	
@@ -228,29 +228,6 @@ public class MinigameData {
 	
 	public boolean hasLoadout(String name){
 		return globalLoadouts.containsKey(name);
-	}
-	
-	public void sendMinigameMessage(Minigame minigame, String message, String type, MinigamePlayer exclude){
-		String finalMessage = "";
-		if(type == null){
-			type = "info";
-		}
-		if(type.equals("error")){
-			finalMessage = ChatColor.RED + "[Minigames] " + ChatColor.WHITE;
-		}
-		else{
-			finalMessage = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
-		}
-		
-		finalMessage += message;
-		for(MinigamePlayer pl : minigame.getPlayers()){
-			if(exclude == null || exclude != pl)
-				pl.sendMessage(finalMessage);
-		}
-		for(MinigamePlayer pl : minigame.getSpectators()){
-			if(exclude == null || exclude != pl)
-				pl.sendMessage(finalMessage);
-		}
 	}
 	
 	public void addRewardSign(Location loc){

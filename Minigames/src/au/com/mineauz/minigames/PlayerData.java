@@ -91,7 +91,7 @@ public class PlayerData {
 						}
 					}
 					else {
-						ply.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), "error");
+						ply.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), MessageType.Error);
 						quitMinigame(ply, false);
 					}
 				}
@@ -120,13 +120,13 @@ public class PlayerData {
 							}
 						}
 						else {
-							ply.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), "error");
+							ply.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), MessageType.Error);
 							quitMinigame(ply, false);
 						}
 					}
 				}
 				if(minigame.getLives() > 0){
-					ply.sendMessage(MinigameUtils.formStr("minigame.livesLeft", minigame.getLives()), null);
+					ply.sendMessage(MinigameUtils.formStr("minigame.livesLeft", minigame.getLives()), MessageType.Normal);
 				}
 			}
 			
@@ -136,7 +136,7 @@ public class PlayerData {
 					ply.setCheckpoint(start);
 				}
 				if(minigame.getMaxScore() != 0){
-					ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), null);
+					ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), MessageType.Normal);
 				}
 			}
 			
@@ -164,7 +164,7 @@ public class PlayerData {
 		if(!event.isCancelled()){
 			player.teleport(player.getCheckpoint());
 			player.addRevert();
-			player.sendMessage(MinigameUtils.getLang("player.checkpoint.revert"), null);
+			player.sendMessage(MinigameUtils.getLang("player.checkpoint.revert"), MessageType.Normal);
 		}
 	}
 	
@@ -301,7 +301,7 @@ public class PlayerData {
 				
 				//Send out messages
 				if(!forced){
-					mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.quit.plyMsg", player.getName(), minigame.getName(true)), "error", player);
+					minigame.broadcastExcept(MinigameUtils.formStr("player.quit.plyMsg", player.getName(), minigame.getName(true)), MessageType.Error, player);
 				}
 				plugin.getLogger().info(player.getName() + " quit " + minigame);
 				player.updateInventory();
@@ -339,8 +339,8 @@ public class PlayerData {
 					pl.getPlayer().showPlayer(player.getPlayer());
 				}
 				
-				player.sendMessage(MinigameUtils.formStr("player.spectate.quit.plyMsg", minigame.getName(true)), "error");
-				mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.spectate.quit.minigameMsg", player.getName(), minigame.getName(true)), "error", player);
+				player.sendMessage(MinigameUtils.formStr("player.spectate.quit.plyMsg", minigame.getName(true)), MessageType.Error);
+				minigame.broadcastExcept(MinigameUtils.formStr("player.spectate.quit.minigameMsg", player.getName(), minigame.getName(true)), MessageType.Error, player);
 			}
 			
 			if(player.getPlayer().getGameMode() != GameMode.CREATIVE)
@@ -486,7 +486,7 @@ public class PlayerData {
 				//Group money bets
 				if(bets != 0){
 					plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), bets);
-					player.sendMessage(MinigameUtils.formStr("player.bet.winMoney", Minigames.plugin.getEconomy().format(bets)), null);
+					player.sendMessage(MinigameUtils.formStr("player.bet.winMoney", Minigames.plugin.getEconomy().format(bets)), MessageType.Normal);
 				}
 				
 				//Reward Player

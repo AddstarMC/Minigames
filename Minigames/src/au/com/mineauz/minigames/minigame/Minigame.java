@@ -20,6 +20,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import com.google.common.collect.Maps;
 
 import au.com.mineauz.minigames.FloorDegenerator;
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameSave;
 import au.com.mineauz.minigames.MinigameTimer;
@@ -1301,6 +1302,45 @@ public class Minigame {
 				throw new IllegalStateException(MinigameUtils.getLang("minigame.error.invalidMechanic"));
 			} else if(minigame.getState() == MinigameState.STARTED && !minigame.canLateJoin()) {
 				throw new IllegalStateException(MinigameUtils.getLang("minigame.started"));
+			}
+		}
+	}
+	
+	public void broadcast(String message, MessageType type) {
+		broadcastExcept(message, type, null);
+	}
+	
+	public void broadcastExcept(String message, MessageType type, MinigamePlayer except) {
+		StringBuffer buffer = new StringBuffer();
+		switch (type) {
+		case Normal:
+			buffer.append(ChatColor.AQUA);
+			break;
+		case Win:
+			buffer.append(ChatColor.GREEN);
+			break;
+		case Error:
+			buffer.append(ChatColor.RED);
+			break;
+		default:
+			buffer.append(ChatColor.AQUA);
+			break;
+		}
+		buffer.append("[Minigames]");
+		buffer.append(ChatColor.WHITE);
+		buffer.append(message);
+		
+		String finalMessage = buffer.toString();
+		
+		for (MinigamePlayer player : players) {
+			if (player != except) {
+				player.sendMessage(finalMessage);
+			}
+		}
+		
+		for (MinigamePlayer spectator : spectators) {
+			if (spectator != except) {
+				spectator.sendMessage(finalMessage);
 			}
 		}
 	}

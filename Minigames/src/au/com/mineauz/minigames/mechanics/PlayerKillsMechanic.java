@@ -7,6 +7,7 @@ import java.util.List;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameType;
@@ -111,7 +112,7 @@ public class PlayerKillsMechanic extends GameMechanicBase{
 					
 					ateam.addScore();
 					if(mgm.getMaxScore() != 0 && mgm.getMaxScorePerPlayer() <= ateam.getScore()){
-						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.kills.finalKill", attacker.getName(), ply.getName()), null, null);
+						mgm.broadcast(MinigameUtils.formStr("player.kills.finalKill", attacker.getName(), ply.getName()), MessageType.Normal);
 						
 						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(ateam.getPlayers());
 						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - ateam.getPlayers().size());
@@ -159,10 +160,9 @@ public class PlayerKillsMechanic extends GameMechanicBase{
 				}
 				if(lgt.getPlayers().size() - smt.getPlayers().size() > 1){
 					MultiplayerType.switchTeam(mgm, ply, smt);
-					ply.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), null);
-					mdata.sendMinigameMessage(mgm, 
-							String.format(smt.getGameAutobalanceMessage(), 
-									ply.getName(), smt.getChatColor() + smt.getDisplayName()), null, ply);
+					ply.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), MessageType.Normal);
+					mgm.broadcastExcept(String.format(smt.getGameAutobalanceMessage(), 
+						ply.getName(), smt.getChatColor() + smt.getDisplayName()), MessageType.Normal, ply);
 				}
 			}
 		}

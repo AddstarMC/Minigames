@@ -3,6 +3,8 @@ package au.com.mineauz.minigames.menu;
 import java.util.List;
 
 import org.bukkit.Material;
+
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 
 public class MenuItemFlag extends MenuItem{
@@ -24,7 +26,7 @@ public class MenuItemFlag extends MenuItem{
 	
 	@Override
 	public void onShiftRightClick(MinigamePlayer player){
-		player.sendMessage("Removed " + flag + " flag.", "error");
+		player.sendMessage("Removed " + flag + " flag.", MessageType.Error);
 		flags.remove(flag);
 
 		remove();

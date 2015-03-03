@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.potion.PotionEffect;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -127,10 +128,10 @@ public class MenuItemDisplayLoadout extends MenuItem{
 				Minigames.plugin.mdata.deleteLoadout(loadoutName);
 			remove();
 			
-			player.sendMessage(loadoutName + " has been deleted.", null);
+			player.sendMessage(loadoutName + " has been deleted.", MessageType.Normal);
 			return;
 		}
-		player.sendMessage(loadout.getName(false) + " was not deleted.", "error");
+		player.sendMessage(loadout.getName(false) + " was not deleted.", MessageType.Error);
 	}
 	
 	public void setAllowDelete(boolean bool){

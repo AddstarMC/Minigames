@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.event.Listener;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigameData;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -76,13 +77,12 @@ public abstract class GameMechanicBase implements Listener{
 					}
 					if(smt == null){
 						pdata.quitMinigame(ply, false);
-						ply.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
+						ply.sendMessage(MinigameUtils.getLang("minigame.full"), MessageType.Error);
 					}
 					smt.addPlayer(ply);
-					ply.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), null);
-					mdata.sendMinigameMessage(minigame, 
-							String.format(smt.getGameAutobalanceMessage(), 
-									ply.getName(), smt.getChatColor() + smt.getDisplayName()), null, ply);
+					ply.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), MessageType.Normal);
+					minigame.broadcastExcept(String.format(smt.getGameAutobalanceMessage(), 
+						ply.getName(), smt.getChatColor() + smt.getDisplayName()), MessageType.Normal, ply);
 				}
 			}
 			
@@ -98,10 +98,9 @@ public abstract class GameMechanicBase implements Listener{
 				if(smt != null && lgt != null && lgt.getPlayers().size() - smt.getPlayers().size() > 1){
 					MinigamePlayer pl = lgt.getPlayers().get(0);
 					MultiplayerType.switchTeam(minigame, pl, smt);
-					pl.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), null);
-					mdata.sendMinigameMessage(minigame, 
-							String.format(smt.getGameAutobalanceMessage(), 
-									pl.getName(), smt.getChatColor() + smt.getDisplayName()), null, pl);
+					pl.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), MessageType.Normal);
+					minigame.broadcastExcept(String.format(smt.getGameAutobalanceMessage(), 
+						pl.getName(), smt.getChatColor() + smt.getDisplayName()), MessageType.Normal, pl);
 				}
 				else{
 					sorted = true;

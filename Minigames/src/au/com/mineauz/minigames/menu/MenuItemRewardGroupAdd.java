@@ -1,6 +1,8 @@
 package au.com.mineauz.minigames.menu;
 
 import org.bukkit.Material;
+
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
@@ -30,7 +32,7 @@ public class MenuItemRewardGroupAdd extends MenuItem{
 		entry = entry.replace(" ", "_");
 		for(RewardGroup group : rewards.getGroups()){
 			if(group.getName().equals(entry)){
-				player.sendMessage("A reward group already exists by the name \"" + entry + "\"!", "error");
+				player.sendMessage("A reward group already exists by the name \"" + entry + "\"!", MessageType.Error);
 				return;
 			}
 		}

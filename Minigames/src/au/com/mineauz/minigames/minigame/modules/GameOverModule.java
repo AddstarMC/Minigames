@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.potion.PotionEffect;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -80,7 +81,7 @@ public class GameOverModule extends MinigameModule{
 	}
 	
 	public void startEndGameTimer(){
-		Minigames.plugin.mdata.sendMinigameMessage(getMinigame(), MinigameUtils.formStr("minigame.gameOverQuit", timer.getFlag()), null, null);
+		getMinigame().broadcast(MinigameUtils.formStr("minigame.gameOverQuit", timer.getFlag()), MessageType.Normal);
 		getMinigame().setState(MinigameState.ENDED);
 		
 		List<MinigamePlayer> allPlys = new ArrayList<MinigamePlayer>(winners.size() + losers.size());

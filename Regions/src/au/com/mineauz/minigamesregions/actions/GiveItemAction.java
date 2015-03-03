@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.IntegerFlag;
@@ -117,7 +118,7 @@ public class GiveItemAction extends ActionInterface{
 					type.setFlag(value.toUpperCase());
 				}
 				else
-					player.sendMessage("Invalid item type!", "error");
+					player.sendMessage("Invalid item type!", MessageType.Error);
 			}
 			
 			@Override

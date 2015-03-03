@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.PlayerLoadout;
 
@@ -69,16 +70,16 @@ public class MenuItemPotionAdd extends MenuItem{
 						getContainer().refresh();
 					}
 					else
-						player.sendMessage(split[2] + " is not a valid duration! The time must be in seconds", "error");
+						player.sendMessage(split[2] + " is not a valid duration! The time must be in seconds", MessageType.Error);
 				}
 				else
-					player.sendMessage(split[1] + " is not a valid level number!", "error");
+					player.sendMessage(split[1] + " is not a valid level number!", MessageType.Error);
 			}
 			else
-				player.sendMessage(split[0] + " is not a valid potion name!", "error");
+				player.sendMessage(split[0] + " is not a valid potion name!", MessageType.Error);
 			return;
 		}
 		
-		player.sendMessage("Invalid syntax entry! Make sure there is an comma and a space (\", \") between each item.", "error");
+		player.sendMessage("Invalid syntax entry! Make sure there is an comma and a space (\", \") between each item.", MessageType.Error);
 	}
 }

@@ -100,8 +100,7 @@ public class MultiplayerTimer{
 					
 					if(minigame.getTimer() > 0){
 						minigame.setMinigameTimer(new MinigameTimer(minigame, minigame.getTimer()));
-						plugin.mdata.sendMinigameMessage(minigame, 
-								MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(minigame.getTimer())), null, null);
+						minigame.broadcast(MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(minigame.getTimer())), MessageType.Normal);
 					}
 					
 					Bukkit.getScheduler().cancelTask(taskID);
@@ -160,14 +159,14 @@ public class MultiplayerTimer{
 	public void pauseTimer(){
 		paused = true;
 		for(MinigamePlayer ply : minigame.getPlayers()){
-			ply.sendMessage(MinigameUtils.getLang("time.startup.timerPaused"), null);
+			ply.sendMessage(MinigameUtils.getLang("time.startup.timerPaused"), MessageType.Normal);
 		}
 	}
 	
 	public void pauseTimer(String reason){
 		paused = true;
 		for(MinigamePlayer ply : minigame.getPlayers()){
-			ply.sendMessage(MinigameUtils.formStr("time.startup.timerPaused", reason), null);
+			ply.sendMessage(MinigameUtils.formStr("time.startup.timerPaused", reason), MessageType.Normal);
 		}
 	}
 	
@@ -180,7 +179,7 @@ public class MultiplayerTimer{
 	public void resumeTimer(){
 		paused = false;
 		for(MinigamePlayer ply : minigame.getPlayers()){
-			ply.sendMessage(MinigameUtils.getLang("time.startup.timerResumed"), null);
+			ply.sendMessage(MinigameUtils.getLang("time.startup.timerResumed"), MessageType.Normal);
 		}
 	}
 	

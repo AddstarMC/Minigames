@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.PlayerLoadout;
@@ -223,9 +224,9 @@ public class LoadoutModule extends MinigameModule {
 								player.setLoadout(floadout2);
 								player.getPlayer().closeInventory();
 								if(!equip)
-									player.sendMessage(MinigameUtils.getLang("player.loadout.nextSpawn"), null);
+									player.sendMessage(MinigameUtils.getLang("player.loadout.nextSpawn"), MessageType.Normal);
 								else{
-									player.sendMessage(MinigameUtils.formStr("player.loadout.equipped", floadout2.getName(true)), null);
+									player.sendMessage(MinigameUtils.formStr("player.loadout.equipped", floadout2.getName(true)), MessageType.Normal);
 									floadout2.equiptLoadout(player);
 								}
 							}

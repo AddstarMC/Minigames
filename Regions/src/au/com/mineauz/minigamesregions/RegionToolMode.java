@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Callback;
@@ -106,17 +107,17 @@ public class RegionToolMode implements ToolMode {
 			
 			if(region == null) {
 				module.addRegion(name, new Region(name, player.getSelectionPoints()[0], player.getSelectionPoints()[1]));
-				player.sendMessage("Created a new region in " + minigame + " called " + name, null);
+				player.sendMessage("Created a new region in " + minigame + " called " + name, MessageType.Normal);
 				player.clearSelection();
 			}
 			else{
 				region.updateRegion(player.getSelectionPoints()[0], player.getSelectionPoints()[1]);
 				Main.getPlugin().getDisplayManager().update(region);
-				player.sendMessage("Updated region " + name + " in " + minigame, null);
+				player.sendMessage("Updated region " + name + " in " + minigame, MessageType.Normal);
 			}
 		}
 		else{
-			player.sendMessage("You need to select a region with right click first!", "error");
+			player.sendMessage("You need to select a region with right click first!", MessageType.Error);
 		}
 	}
 
@@ -126,7 +127,7 @@ public class RegionToolMode implements ToolMode {
 		if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
 			player.addSelectionPoint(event.getClickedBlock().getLocation());
 			if(player.hasSelection()){
-				player.sendMessage("Selection complete, finalise with left click.", null);
+				player.sendMessage("Selection complete, finalise with left click.", MessageType.Normal);
 			}
 		}
 	}
@@ -140,7 +141,7 @@ public class RegionToolMode implements ToolMode {
 			player.sendMessage("Selected the " + name + " region in " + minigame);
 		}
 		else{
-			player.sendMessage("No region created by the name '" + name + "'", "error");
+			player.sendMessage("No region created by the name '" + name + "'", MessageType.Error);
 		}
 	}
 
@@ -154,7 +155,7 @@ public class RegionToolMode implements ToolMode {
 			player.sendMessage("Deselected the region");
 		}
 		else{
-			player.sendMessage("No region created by the name '" + name + "'", "error");
+			player.sendMessage("No region created by the name '" + name + "'", MessageType.Error);
 		}
 	}
 

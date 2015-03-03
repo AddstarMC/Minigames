@@ -117,23 +117,26 @@ public class MinigamePlayer {
 		player.sendMessage(msg);
 	}
 	
-	public void sendMessage(String msg, String type){
-		String init = "";
-		if(type != null){
-			if(type.equals("error")){
-				init = ChatColor.RED + "[Minigames] " + ChatColor.WHITE;
-			}
-			else if(type.equals("win")){
-				init = ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE;
-			}
-			else{
-				init = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
-			}
+	public void sendMessage(String msg, MessageType type){
+		StringBuffer buffer = new StringBuffer();
+		switch (type) {
+		case Normal:
+			buffer.append(ChatColor.AQUA);
+			break;
+		case Win:
+			buffer.append(ChatColor.GREEN);
+			break;
+		case Error:
+			buffer.append(ChatColor.RED);
+			break;
+		default:
+			buffer.append(ChatColor.AQUA);
+			break;
 		}
-		else{
-			init = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
-		}
-		player.sendMessage(init + msg);
+		buffer.append("[Minigames]");
+		buffer.append(ChatColor.WHITE);
+		buffer.append(msg);
+		player.sendMessage(buffer.toString());
 	}
 	
 	public void storePlayerData(){
@@ -572,18 +575,18 @@ public class MinigamePlayer {
 		if(selection1 == null){
 			selection1 = loc;
 			showSelection(false);
-			sendMessage("Position 1 set", null);
+			sendMessage("Position 1 set", MessageType.Normal);
 		}
 		else if(selection2 == null){
 			selection2 = loc;
 			showSelection(false);
-			sendMessage("Position 2 set", null);
+			sendMessage("Position 2 set", MessageType.Normal);
 		}
 		else if(selection2 != null){
 			showSelection(true);
 			selection1 = loc;
-			sendMessage("Selection restarted", null);
-			sendMessage("Position 1 set", null);
+			sendMessage("Selection restarted", MessageType.Normal);
+			sendMessage("Position 1 set", MessageType.Normal);
 			selection2 = null;
 			showSelection(false);
 		}
@@ -834,7 +837,7 @@ public class MinigamePlayer {
 		
 		// Admin warning for cross world teleport
 		if(Minigames.plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != destination.getWorld() && player.getPlayer().hasPermission("minigame.set.start")) {
-			sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Join location is across worlds! This may cause some server performance issues!", "error");
+			sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Join location is across worlds! This may cause some server performance issues!", MessageType.Error);
 		}
 		
 		// Send the player in
@@ -844,9 +847,9 @@ public class MinigamePlayer {
 		
 		// Give them the game type name
 		if(minigame.getGametypeName() == null)
-			sendMessage(MinigameUtils.formStr("player.join.plyInfo", minigame.getType().getName()), "win");
+			sendMessage(MinigameUtils.formStr("player.join.plyInfo", minigame.getType().getName()), MessageType.Win);
 		else
-			sendMessage(MinigameUtils.formStr("player.join.plyInfo", minigame.getGametypeName()), "win");
+			sendMessage(MinigameUtils.formStr("player.join.plyInfo", minigame.getGametypeName()), MessageType.Win);
 		
 		// Give them the objective
 		if(minigame.getObjective() != null){
@@ -920,8 +923,7 @@ public class MinigamePlayer {
 		minigame.getMechanic().joinMinigame(minigame, this);
 
 		// Send other players the join message.
-		// TODO: Should be minigame.broadcast
-		Minigames.plugin.mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.join.plyMsg", player.getDisplayName(), minigame.getName(true)), null, this);
+		minigame.broadcastExcept(MinigameUtils.formStr("player.join.plyMsg", player.getDisplayName(), minigame.getName(true)), MessageType.Normal, this);
 		player.updateInventory();
 		
 		if(minigame.canDisplayScoreboard()){
@@ -965,7 +967,7 @@ public class MinigamePlayer {
 		}
 		
 		bets.addBet(this, money);
-		sendMessage(MinigameUtils.getLang("player.bet.plyMsg"), null);
+		sendMessage(MinigameUtils.getLang("player.bet.plyMsg"), MessageType.Normal);
 		return true;
 	}
 	
@@ -995,7 +997,7 @@ public class MinigamePlayer {
 		}
 		
 		bets.addBet(this, bet);
-		sendMessage(MinigameUtils.getLang("player.bet.plyMsg"), null);
+		sendMessage(MinigameUtils.getLang("player.bet.plyMsg"), MessageType.Normal);
 		return true;
 	}
 	
@@ -1016,7 +1018,7 @@ public class MinigamePlayer {
 		
 		// Admin warning for cross world teleport
 		if(Minigames.plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != destination.getWorld() && player.getPlayer().hasPermission("minigame.set.start")) {
-			sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Join location is across worlds! This may cause some server performance issues!", "error");
+			sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Join location is across worlds! This may cause some server performance issues!", MessageType.Error);
 		}
 		
 		// Send the player in
@@ -1048,9 +1050,8 @@ public class MinigamePlayer {
 		
 		
 		sendMessage(MinigameUtils.formStr("player.spectate.join.plyMsg", minigame.getName(false)) + "\n" +
-				MinigameUtils.formStr("player.spectate.join.plyHelp", "\"/minigame quit\""), null);
-		// TODO: Should be minigame.broadcast
-		Minigames.plugin.mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.spectate.join.minigameMsg", player.getDisplayName(), minigame.getName(false)), null, this);
+				MinigameUtils.formStr("player.spectate.join.plyHelp", "\"/minigame quit\""), MessageType.Normal);
+		minigame.broadcastExcept(MinigameUtils.formStr("player.spectate.join.minigameMsg", player.getDisplayName(), minigame.getName(false)), MessageType.Normal, this);
 		
 		return true;
 	}

@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.menu;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.PlayerLoadout;
 
@@ -54,7 +55,7 @@ public class MenuItemSaveLoadout extends MenuItem{
 					loadout.addItem(items[i], 100);
 			}
 		}
-		player.sendMessage("Saved the '" + loadout.getName(false) + "' loadout.", null);
+		player.sendMessage("Saved the '" + loadout.getName(false) + "' loadout.", MessageType.Normal);
 		if(altMenu == null)
 			player.showPreviousMenu();
 		else

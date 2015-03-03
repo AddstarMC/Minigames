@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -55,7 +57,7 @@ public class MenuItemAddTeam extends MenuItem{
 			return;
 		}
 		
-		player.sendMessage("There is no team color by the name of " + entry.toLowerCase().replace("_", " "), "error");
+		player.sendMessage("There is no team color by the name of " + entry.toLowerCase().replace("_", " "), MessageType.Error);
 	}
 
 }

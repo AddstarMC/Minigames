@@ -3,6 +3,7 @@ package au.com.mineauz.minigamesregions.actions;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
@@ -37,13 +38,13 @@ public class MessageAction extends ActionInterface {
 	public void executeNodeAction(MinigamePlayer player,
 			Node node) {
 		if(player == null || !player.isInMinigame()) return;
-		player.sendMessage(msg.getFlag(), null);
+		player.sendMessage(msg.getFlag(), MessageType.Normal);
 	}
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Region region) {
 		if(player == null || !player.isInMinigame()) return;
-		player.sendMessage(msg.getFlag(), null);
+		player.sendMessage(msg.getFlag(), MessageType.Normal);
 	}
 
 	@Override

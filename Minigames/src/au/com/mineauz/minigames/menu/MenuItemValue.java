@@ -9,6 +9,7 @@ import org.bukkit.material.MaterialData;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 
 /**
@@ -137,7 +138,7 @@ public abstract class MenuItemValue<T> extends MenuItem {
 				changeCallback.onChange(this, player, oldValue, newValue);
 			}
 		} catch (IllegalArgumentException e) {
-			player.sendMessage(e.getMessage(), "error");
+			player.sendMessage(e.getMessage(), MessageType.Error);
 		}
 	}
 	

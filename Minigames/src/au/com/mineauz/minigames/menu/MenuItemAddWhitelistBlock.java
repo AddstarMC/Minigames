@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 
@@ -26,7 +27,7 @@ public class MenuItemAddWhitelistBlock extends MenuItem{
 			getContainer().refresh();
 		}
 		else{
-			player.sendMessage("Whitelist/Blacklist already contains this material", null);
+			player.sendMessage("Whitelist/Blacklist already contains this material", MessageType.Normal);
 		}
 	}
 	
@@ -45,12 +46,12 @@ public class MenuItemAddWhitelistBlock extends MenuItem{
 				getContainer().addItem(new MenuItemWhitelistBlock(mat, whitelist));
 			}
 			else{
-				player.sendMessage("Whitelist/Blacklist already contains this material", null);
+				player.sendMessage("Whitelist/Blacklist already contains this material", MessageType.Normal);
 			}
 			
 			return;
 		}
 		
-		player.sendMessage("No material by the name \"" + entry + "\" was found!", "error");
+		player.sendMessage("No material by the name \"" + entry + "\" was found!", MessageType.Error);
 	}
 }

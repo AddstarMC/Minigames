@@ -12,6 +12,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemSaveMinigame;
@@ -113,10 +114,10 @@ public class RegionNodeEditToolMode implements ToolMode {
 	private void openMenu(MinigamePlayer player, Minigame minigame, Object hit) {
 		Menu menu = null;
 		if (hit instanceof Region) {
-			player.sendMessage("Editing region " + ((Region)hit).getName(), null);
+			player.sendMessage("Editing region " + ((Region)hit).getName(), MessageType.Normal);
 			menu = MenuItemRegion.createMenu(player, null, (Region)hit);
 		} else if (hit instanceof Node) {
-			player.sendMessage("Editing node " + ((Node)hit).getName(), null);
+			player.sendMessage("Editing node " + ((Node)hit).getName(), MessageType.Normal);
 			menu = MenuItemNode.createMenu(player, null, (Node)hit);
 		}
 		
@@ -149,7 +150,7 @@ public class RegionNodeEditToolMode implements ToolMode {
 		
 		menu.displayMenu(player);
 		
-		player.sendMessage("Multiple regions/nodes selected: " + options.toString(), null);
+		player.sendMessage("Multiple regions/nodes selected: " + options.toString(), MessageType.Normal);
 	}
 
 	@Override

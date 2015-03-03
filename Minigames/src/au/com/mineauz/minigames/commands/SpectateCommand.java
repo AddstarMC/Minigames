@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -64,7 +65,7 @@ public class SpectateCommand implements ICommand {
 				try {
 					player.spectateMinigame(mgm);
 				} catch (IllegalStateException e) {
-					player.sendMessage(ChatColor.RED + e.getMessage(), "error");
+					player.sendMessage(ChatColor.RED + e.getMessage(), MessageType.Error);
 				}
 			}
 			return true;

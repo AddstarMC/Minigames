@@ -3,8 +3,8 @@ package au.com.mineauz.minigamesregions.actions;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
@@ -48,14 +48,14 @@ public class BroadcastAction extends ActionInterface{
 	}
 	
 	private void execute(MinigamePlayer player){
-		String type = "info";
+		MessageType type = MessageType.Normal;
 		if(redText.getFlag())
-			type = "error";
+			type = MessageType.Error;
 		MinigamePlayer exclude = null;
 		if(excludeExecutor.getFlag())
 			exclude = player;
 		
-		Minigames.plugin.mdata.sendMinigameMessage(player.getMinigame(), message.getFlag().replaceAll("%player%", player.getDisplayName()), type, exclude);
+		player.getMinigame().broadcastExcept(message.getFlag().replaceAll("%player%", player.getDisplayName()), type, exclude);
 	}
 
 	@Override

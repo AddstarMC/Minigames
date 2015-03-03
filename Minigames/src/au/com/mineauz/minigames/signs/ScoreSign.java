@@ -8,6 +8,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.SignChangeEvent;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -65,12 +66,12 @@ public class ScoreSign implements MinigameSign{
 			int score = Integer.parseInt(sign.getLine(2));
 			if(!mg.isTeamGame()){
 				if(player.hasClaimedScore(sign.getLocation())){
-					player.sendMessage(MinigameUtils.getLang("sign.score.alreadyUsed"), "error");
+					player.sendMessage(MinigameUtils.getLang("sign.score.alreadyUsed"), MessageType.Error);
 					return true;
 				}
 				player.addScore(score);
 				mg.setScore(player, player.getScore());
-				player.sendMessage(MinigameUtils.formStr("sign.score.addScore", score, player.getScore()), null);
+				player.sendMessage(MinigameUtils.formStr("sign.score.addScore", score, player.getScore()), MessageType.Normal);
 				if(mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= player.getScore()){
 					Minigames.plugin.pdata.endMinigame(player);
 				}
@@ -82,7 +83,7 @@ public class ScoreSign implements MinigameSign{
 				TeamsModule module = mg.getModule(TeamsModule.class);
 				if(steam == null || !module.hasTeam(steam) || pteam.getColor() == steam){
 					if(Minigames.plugin.mdata.hasClaimedScore(mg, sign.getLocation(), 0)){
-						player.sendMessage(MinigameUtils.getLang("sign.score.alreadyUsedTeam"), "error");
+						player.sendMessage(MinigameUtils.getLang("sign.score.alreadyUsedTeam"), MessageType.Error);
 						return true;
 					}
 					player.addScore(score);
@@ -90,7 +91,7 @@ public class ScoreSign implements MinigameSign{
 					
 					pteam.addScore(score);
 					player.sendMessage(MinigameUtils.formStr("sign.score.addScoreTeam", 
-							score, pteam.getChatColor().toString() + pteam.getScore()), null);
+							score, pteam.getChatColor().toString() + pteam.getScore()), MessageType.Normal);
 					Minigames.plugin.mdata.addClaimedScore(mg, sign.getLocation(), 0);
 					if(mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= pteam.getScore()){
 						List<MinigamePlayer> winners = new ArrayList<MinigamePlayer>(pteam.getPlayers());
@@ -105,7 +106,7 @@ public class ScoreSign implements MinigameSign{
 			}
 		}
 		else if(player.isInMinigame() && !((LivingEntity)player.getPlayer()).isOnGround()){
-			player.sendMessage(MinigameUtils.getLang("sign.onGround"), "error");
+			player.sendMessage(MinigameUtils.getLang("sign.onGround"), MessageType.Error);
 		}
 		return true;
 	}

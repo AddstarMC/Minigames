@@ -12,6 +12,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigameData;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -49,16 +50,16 @@ public class MultiplayerType extends MinigameTypeBase{
 				mgm.getMpTimer().startTimer();
 				if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
 					mgm.getMpTimer().setPlayerWaitTime(0);
-					mdata.sendMinigameMessage(mgm, MinigameUtils.getLang("minigame.skipWaitTime"), "info", null);
+					mgm.broadcast(MinigameUtils.getLang("minigame.skipWaitTime"), MessageType.Normal);
 				}
 			}
 			else if(mgm.getMpTimer() != null && mgm.getPlayers().size() == mgm.getMaxPlayers()){
 				mgm.getMpTimer().setPlayerWaitTime(0);
-				mdata.sendMinigameMessage(mgm, MinigameUtils.getLang("minigame.skipWaitTime"), "info", null);
+				mgm.broadcast(MinigameUtils.getLang("minigame.skipWaitTime"), MessageType.Normal);
 			}
 			else if(mgm.getMpTimer() == null){
 				int neededPlayers = mgm.getMinPlayers() - mgm.getPlayers().size();
-				mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("minigame.waitingForPlayers", neededPlayers), null, null);
+				mgm.broadcast(MinigameUtils.formStr("minigame.waitingForPlayers", neededPlayers), MessageType.Normal);
 			}
 		}
 		else if(mgm.hasStarted()){
@@ -76,7 +77,7 @@ public class MultiplayerType extends MinigameTypeBase{
 				}
 				
 				smTeam.addPlayer(player);
-				player.sendMessage(String.format(smTeam.getAssignMessage(), smTeam.getChatColor() + smTeam.getDisplayName()), null);
+				player.sendMessage(String.format(smTeam.getAssignMessage(), smTeam.getChatColor() + smTeam.getDisplayName()), MessageType.Normal);
 				
 				final Team fteam = smTeam;
 				player.setLateJoinTimer(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -204,7 +205,7 @@ public class MultiplayerType extends MinigameTypeBase{
 			mgm.getMpTimer().removeTimer();
 			mgm.setMpTimer(null);
 			mgm.setState(MinigameState.IDLE);
-			mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("minigame.waitingForPlayers", 1), null, null);
+			mgm.broadcast(MinigameUtils.formStr("minigame.waitingForPlayers", 1), MessageType.Normal);
 		}
 	}
 
@@ -387,12 +388,12 @@ public class MultiplayerType extends MinigameTypeBase{
 									ply.sendMessage(MinigameUtils.formStr("player.end.team.tie", 
 											drawTeams.get(0).getChatColor() + drawTeams.get(0).getDisplayName() + ChatColor.WHITE, 
 											drawTeams.get(1).getChatColor() + drawTeams.get(1).getDisplayName() + ChatColor.WHITE, 
-											event.getMinigame().getName(true)), "error");
+											event.getMinigame().getName(true)), MessageType.Error);
 								}
 								else{
 									ply.sendMessage(MinigameUtils.formStr("player.end.team.tieCount", 
 											drawTeams.size(), 
-											event.getMinigame().getName(true)), "error");
+											event.getMinigame().getName(true)), MessageType.Error);
 								}
 								String scores = "";
 								int c = 1;

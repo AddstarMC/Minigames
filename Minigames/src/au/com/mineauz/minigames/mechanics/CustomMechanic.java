@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
@@ -76,10 +77,9 @@ public class CustomMechanic extends GameMechanicBase{
 				}
 				if(lgt.getPlayers().size() - smt.getPlayers().size() > 1){
 					MultiplayerType.switchTeam(mgm, ply, smt);
-					ply.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), null);
-					mdata.sendMinigameMessage(mgm, 
-							String.format(smt.getGameAutobalanceMessage(), 
-									ply.getName(), smt.getChatColor() + smt.getDisplayName()), null, ply);
+					ply.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), MessageType.Normal);
+					mgm.broadcastExcept(String.format(smt.getGameAutobalanceMessage(), 
+						ply.getName(), smt.getChatColor() + smt.getDisplayName()), MessageType.Normal, ply);
 				}
 			}
 		}

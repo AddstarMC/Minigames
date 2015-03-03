@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -27,7 +28,7 @@ public class SingleplayerType extends MinigameTypeBase{
 	public boolean joinMinigame(MinigamePlayer player, Minigame mgm){
 		
 		if(mgm.getLives() > 0){
-			player.sendMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives()), null);
+			player.sendMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives()), MessageType.Normal);
 		}
 		
 		if(player.getStoredPlayerCheckpoints().hasCheckpoint(mgm.getName(false))){
@@ -117,7 +118,7 @@ public class SingleplayerType extends MinigameTypeBase{
 			Minigame mgm = player.getMinigame();
 			if(mgm.getType() == MinigameType.SINGLEPLAYER){
 				event.setRespawnLocation(player.getCheckpoint());
-				player.sendMessage(MinigameUtils.getLang("player.checkpoint.deathRevert"), "error");
+				player.sendMessage(MinigameUtils.getLang("player.checkpoint.deathRevert"), MessageType.Error);
 				
 				player.getLoadout().equiptLoadout(player);
 			}

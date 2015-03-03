@@ -2,6 +2,8 @@ package au.com.mineauz.minigames.minigame.reward;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -32,7 +34,7 @@ public class MoneyReward extends RewardType{
 	@Override
 	public void giveReward(MinigamePlayer player) {
 		Minigames.plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), money);
-		player.sendMessage(MinigameUtils.formStr("reward.money", Minigames.plugin.getEconomy().format(money)), null);
+		player.sendMessage(MinigameUtils.formStr("reward.money", Minigames.plugin.getEconomy().format(money)), MessageType.Normal);
 	}
 
 	@Override
@@ -81,7 +83,7 @@ public class MoneyReward extends RewardType{
 				setName("$" + MenuItemDecimal.format.format(value));
 				updateDescription();
 			} catch (NumberFormatException e) {
-				player.sendMessage("Invalid value entry!", "error");
+				player.sendMessage("Invalid value entry!", MessageType.Error);
 			}
 		}
 	}

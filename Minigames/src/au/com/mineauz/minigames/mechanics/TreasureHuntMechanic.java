@@ -18,6 +18,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameTimer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -69,7 +70,7 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 			if(caller == null)
 				Bukkit.getLogger().info("Treasure Hunt requires a location name to run!");
 			else
-				caller.sendMessage("Treasure Hunt requires a location name to run!", "error");
+				caller.sendMessage("Treasure Hunt requires a location name to run!", MessageType.Error);
 		}
 	}
 

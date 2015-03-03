@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 
@@ -446,7 +447,7 @@ public class MenuItem {
 	public final void beginManualEntry(MinigamePlayer player, String message, int time) {
 		player.setNoClose(true);
 		player.getPlayer().closeInventory();
-		player.sendMessage(message, null);
+		player.sendMessage(message, MessageType.Normal);
 		player.startManualEntry(this, time);
 	}
 	

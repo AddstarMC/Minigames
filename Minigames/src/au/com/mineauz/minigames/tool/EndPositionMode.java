@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.tool;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
@@ -39,7 +40,7 @@ public class EndPositionMode implements ToolMode {
 	public void onRightClick(MinigamePlayer player, Minigame minigame,
 			Team team, PlayerInteractEvent event) {
 		minigame.setEndPosition(player.getLocation());
-		player.sendMessage("Set end position.", null);
+		player.sendMessage("Set end position.", MessageType.Normal);
 	}
 
 	@SuppressWarnings("deprecation") //TODO: Use alternate method once available
@@ -47,10 +48,10 @@ public class EndPositionMode implements ToolMode {
 	public void select(MinigamePlayer player, Minigame minigame, Team team) {
 		if(minigame.getEndPosition() != null){
 			player.getPlayer().sendBlockChange(minigame.getEndPosition(), Material.SKULL, (byte)1);
-			player.sendMessage("Selected end position (marked with skull)", null);
+			player.sendMessage("Selected end position (marked with skull)", MessageType.Normal);
 		}
 		else{
-			player.sendMessage("No end position set!", "error");
+			player.sendMessage("No end position set!", MessageType.Error);
 		}
 	}
 
@@ -61,10 +62,10 @@ public class EndPositionMode implements ToolMode {
 			player.getPlayer().sendBlockChange(minigame.getEndPosition(), 
 					minigame.getEndPosition().getBlock().getType(), 
 					minigame.getEndPosition().getBlock().getData());
-			player.sendMessage("Deselected end position", null);
+			player.sendMessage("Deselected end position", MessageType.Normal);
 		}
 		else{
-			player.sendMessage("No end position set!", "error");
+			player.sendMessage("No end position set!", MessageType.Error);
 		}
 	}
 

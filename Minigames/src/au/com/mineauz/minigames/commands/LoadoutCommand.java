@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -67,15 +68,15 @@ public class LoadoutCommand implements ICommand {
 				String ln = args[0];
 				if(module.hasLoadout(ln)){
 					ply.setLoadout(module.getLoadout(ln));
-					ply.sendMessage(MinigameUtils.formStr("player.loadout.nextSpawnName", ln), null);
+					ply.sendMessage(MinigameUtils.formStr("player.loadout.nextSpawnName", ln), MessageType.Normal);
 				}
 				else{
-					ply.sendMessage(MinigameUtils.formStr("player.loadout.noLoadout", ln), "error");
+					ply.sendMessage(MinigameUtils.formStr("player.loadout.noLoadout", ln), MessageType.Error);
 				}
 			}
 		}
 		else{
-			ply.sendMessage(MinigameUtils.getLang("command.loadout.noMinigame"), "error");
+			ply.sendMessage(MinigameUtils.getLang("command.loadout.noMinigame"), MessageType.Error);
 		}
 		return true;
 	}

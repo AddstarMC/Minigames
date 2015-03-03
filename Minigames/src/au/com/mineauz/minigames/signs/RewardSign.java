@@ -8,6 +8,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigameData;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -59,7 +61,7 @@ public class RewardSign implements MinigameSign {
 			event.setLine(1, ChatColor.GREEN + getName());
 			return true;
 		}
-		plugin.pdata.getMinigamePlayer(event.getPlayer()).sendMessage(MinigameUtils.getLang("sign.reward.noName"), "error");
+		plugin.pdata.getMinigamePlayer(event.getPlayer()).sendMessage(MinigameUtils.getLang("sign.reward.noName"), MessageType.Error);
 		return false;
 	}
 	
@@ -110,7 +112,7 @@ public class RewardSign implements MinigameSign {
 				@Override
 				public void onClick(MenuItem menuItem, MinigamePlayer player) {
 					mdata.saveRewardSign(MinigameUtils.createLocationID(floc), true);
-					player.sendMessage("Saved rewards for this sign.", null);
+					player.sendMessage("Saved rewards for this sign.", MessageType.Normal);
 					player.getPlayer().closeInventory();
 				}
 			});

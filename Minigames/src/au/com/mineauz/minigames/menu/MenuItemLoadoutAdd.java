@@ -3,6 +3,8 @@ package au.com.mineauz.minigames.menu;
 import java.util.Map;
 
 import org.bukkit.Material;
+
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -52,6 +54,6 @@ public class MenuItemLoadoutAdd extends MenuItem{
 			return;
 		}
 		
-		player.sendMessage("A Loadout already exists by the name \"" + entry + "\".", "error");
+		player.sendMessage("A Loadout already exists by the name \"" + entry + "\".", MessageType.Error);
 	}
 }

@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.events.StartMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
@@ -70,9 +71,8 @@ public class JuggernautMechanic extends GameMechanicBase{
 				
 				if(j != null){
 					jm.setJuggernaut(j);
-					j.sendMessage("You are the Juggernaut!", null); //TODO: Language file
-					mdata.sendMinigameMessage(minigame, 
-							j.getDisplayName() + " is the Juggernaut!", null, j); //TODO: Language file
+					j.sendMessage("You are the Juggernaut!", MessageType.Normal); //TODO: Language file
+					minigame.broadcastExcept(j.getDisplayName() + " is the Juggernaut!", MessageType.Normal, j); //TODO: Language file
 				}
 			}
 		}

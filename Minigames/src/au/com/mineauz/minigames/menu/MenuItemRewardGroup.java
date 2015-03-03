@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
+
+import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
@@ -43,7 +45,7 @@ public class MenuItemRewardGroup extends MenuItemEnum<RewardRarity> implements I
 			remove();
 			return;
 		}
-		player.sendMessage("The selected group will not be removed from the rewards.", "error");
+		player.sendMessage("The selected group will not be removed from the rewards.", MessageType.Error);
 	}
 	
 	@Override
