@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.modules.MultiplayerModule;
 
 public class SetLateJoinCommand implements ICommand {
 
@@ -57,7 +58,7 @@ public class SetLateJoinCommand implements ICommand {
 			String label, String[] args) {
 		if(args != null){
 			Boolean bool = Boolean.parseBoolean(args[0]);
-			minigame.setLateJoin(bool);
+			minigame.getModule(MultiplayerModule.class).setLateJoin(bool);
 			if(bool){
 				sender.sendMessage(ChatColor.GRAY + "Late join has been enabled for " + minigame);
 			}

@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.modules.MultiplayerModule;
 
 public class SetTimerCommand implements ICommand{
 
@@ -56,38 +57,43 @@ public class SetTimerCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-			if(args[0].matches("[0-9]+[mh]?")){
-				boolean hours = false;
-				boolean minutes = false;
-				if(args[0].contains("h")){
-					hours = true;
+			if (minigame.hasModule(MultiplayerModule.class)) {
+				if(args[0].matches("[0-9]+[mh]?")){
+					boolean hours = false;
+					boolean minutes = false;
+					if(args[0].contains("h")){
+						hours = true;
+					}
+					else if(args[0].contains("m")){
+						minutes = true;
+					}
+					
+					int time = Integer.parseInt(args[0].replace("m", "").replace("h", ""));
+					if(hours){
+						time = time * 60 * 60;
+					}else if(minutes){
+						time = time * 60;
+					}
+					minigame.getModule(MultiplayerModule.class).setTimer(time);
+					if(time != 0){
+						sender.sendMessage(ChatColor.GRAY + "The timer for \"" + minigame + "\" has been set to " + MinigameUtils.convertTime(time) + ".");
+					}
+					else{
+						sender.sendMessage(ChatColor.GRAY + "The timer for \"" + minigame + "\" has been removed.");
+					}
+					return true;
 				}
-				else if(args[0].contains("m")){
-					minutes = true;
+				else if(args[0].equalsIgnoreCase("usexpbar") && args.length == 2){
+					boolean bool = Boolean.parseBoolean(args[1]);
+					minigame.getModule(MultiplayerModule.class).setUseXPBarTimer(bool);
+					if(bool)
+						sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will now show the timer in the XP bar.");
+					else
+						sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will no longer show the timer in the XP bar.");
+					return true;
 				}
-				
-				int time = Integer.parseInt(args[0].replace("m", "").replace("h", ""));
-				if(hours){
-					time = time * 60 * 60;
-				}else if(minutes){
-					time = time * 60;
-				}
-				minigame.setTimer(time);
-				if(time != 0){
-					sender.sendMessage(ChatColor.GRAY + "The timer for \"" + minigame + "\" has been set to " + MinigameUtils.convertTime(time) + ".");
-				}
-				else{
-					sender.sendMessage(ChatColor.GRAY + "The timer for \"" + minigame + "\" has been removed.");
-				}
-				return true;
-			}
-			else if(args[0].equalsIgnoreCase("usexpbar") && args.length == 2){
-				boolean bool = Boolean.parseBoolean(args[1]);
-				minigame.setUseXPBarTimer(bool);
-				if(bool)
-					sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will now show the timer in the XP bar.");
-				else
-					sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will no longer show the timer in the XP bar.");
+			} else {
+				sender.sendMessage(ChatColor.RED + " This minigame needs to be a Multiplayer minigame");
 				return true;
 			}
 		}

@@ -31,6 +31,7 @@ public class TreasureHuntModule extends MinigameModule{
 	private IntegerFlag maxTreasure = new IntegerFlag(8, "maxtreasure");
 	private IntegerFlag treasureWaitTime = new IntegerFlag(Minigames.plugin.getConfig().getInt("treasurehunt.waittime"), "treasurehuntwait");
 	private IntegerFlag hintWaitTime = new IntegerFlag(500, "hintWaitTime");
+	private IntegerFlag timer = new IntegerFlag(0, "timer");
 	
 	//Unsaved Data
 	private Location treasureLocation = null;
@@ -57,6 +58,7 @@ public class TreasureHuntModule extends MinigameModule{
 		flags.put(maxTreasure.getName(), maxTreasure);
 		flags.put(treasureWaitTime.getName(), treasureWaitTime);
 		flags.put(hintWaitTime.getName(), hintWaitTime);
+		flags.put(timer.getName(), timer);
 		return flags;
 	}
 
@@ -83,6 +85,7 @@ public class TreasureHuntModule extends MinigameModule{
 		itemsTreasureHunt.add(maxHeight.getMenuItem("Max. Height", "Max. height of where a;chest can generate.;Can still move above to;avoid terrain", Material.BEACON, 1, 256));
 		itemsTreasureHunt.add(minTreasure.getMenuItem("Min. Items", "Minimum items to;spawn in chest.", Material.STEP, 0, 27));
 		itemsTreasureHunt.add(maxTreasure.getMenuItem("Max. Items", "Maximum items to;spawn in chest.", Material.STONE, 0, 27));
+		itemsTreasureHunt.add(new MenuItemTime("Time Length", Material.WATCH, timer.getCallback(), 0, Integer.MAX_VALUE));
 		itemsTreasureHunt.add(new MenuItemTime("Restart Delay", Material.WATCH, treasureWaitTime.getCallback(), 0, Integer.MAX_VALUE));
 		itemsTreasureHunt.add(new MenuItemTime("Hint Usage Delay", Material.WATCH, hintWaitTime.getCallback(), 0, Integer.MAX_VALUE));
 		treasureHunt.addItems(itemsTreasureHunt);
@@ -264,5 +267,13 @@ public class TreasureHuntModule extends MinigameModule{
 	
 	public int getHintDelay(){
 		return hintWaitTime.getFlag();
+	}
+	
+	public void setTimer(int time){
+		timer.setFlag(time);
+	}
+	
+	public int getTimer(){
+		return timer.getFlag();
 	}
 }

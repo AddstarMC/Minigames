@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
+import au.com.mineauz.minigames.minigame.modules.MultiplayerModule;
 
 public class SetLobbyCommand implements ICommand{
 
@@ -59,7 +60,7 @@ public class SetLobbyCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args == null){
-			minigame.setLobbyPosition(((Player)sender).getLocation());
+			minigame.getModule(MultiplayerModule.class).setLobbyPosition(((Player)sender).getLocation());
 			sender.sendMessage(ChatColor.GRAY + "Lobby position has been set for " + minigame);
 			return true;
 		}

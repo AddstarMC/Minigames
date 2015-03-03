@@ -60,8 +60,8 @@ import au.com.mineauz.minigames.menu.MenuItemTime;
 import au.com.mineauz.minigames.menu.MenuItemValue;
 import au.com.mineauz.minigames.menu.MenuItemValue.IMenuItemChange;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
-import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
+import au.com.mineauz.minigames.minigame.modules.MultiplayerModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
@@ -75,7 +75,6 @@ public class Minigame {
 	private StringFlag gametypeName = new StringFlag(null, "gametypeName");
 	private EnumFlag<MinigameType> type = new EnumFlag<MinigameType>(MinigameType.SINGLEPLAYER, "type");
 	private BooleanFlag enabled = new BooleanFlag(false, "enabled");
-	private IntegerFlag minPlayers = new IntegerFlag(2, "minplayers");
 	private IntegerFlag maxPlayers = new IntegerFlag(4, "maxplayers");
 	private BooleanFlag spMaxPlayers = new BooleanFlag(false, "spMaxPlayers");
 	private ListFlag flags = new ListFlag(null, "flags");
@@ -91,7 +90,6 @@ public class Minigame {
 	private LocationListFlag startLocations = new LocationListFlag(null, "startpos");
 	private LocationFlag endPosition = new LocationFlag(null, "endpos");
 	private LocationFlag quitPosition = new LocationFlag(null, "quitpos");
-	private LocationFlag lobbyPosisiton = new LocationFlag(null, "lobbypos");
 	private LocationFlag spectatorPosition = new LocationFlag(null, "spectatorpos");
 	
 	private Rewards rewardItem = new Rewards();
@@ -99,9 +97,6 @@ public class Minigame {
 	private Rewards secondaryRewardItem = new Rewards();
 	private RewardsFlag secondaryRewardItemFlag = new RewardsFlag(null, "reward2");
 	private BooleanFlag usePermissions = new BooleanFlag(false, "usepermissions");
-	private IntegerFlag timer = new IntegerFlag(0, "timer");
-	private BooleanFlag useXPBarTimer = new BooleanFlag(true, "useXPBarTimer");
-	private IntegerFlag startWaitTime = new IntegerFlag(0, "startWaitTime");
 	
 	private BooleanFlag itemDrops = new BooleanFlag(false, "itemdrops");
 	private BooleanFlag deathDrops = new BooleanFlag(false, "deathdrops");
@@ -120,7 +115,6 @@ public class Minigame {
 	private IntegerFlag paintBallDamage = new IntegerFlag(2, "paintballdmg");
 	private BooleanFlag unlimitedAmmo = new BooleanFlag(false, "unlimitedammo");
 	private BooleanFlag saveCheckpoints = new BooleanFlag(false, "saveCheckpoints");
-	private BooleanFlag lateJoin = new BooleanFlag(false, "latejoin");
 	private IntegerFlag lives = new IntegerFlag(0, "lives");
 	
 	private LocationFlag regenArea1 = new LocationFlag(null, "regenarea.1");
@@ -200,14 +194,11 @@ public class Minigame {
 		addConfigFlag(gametypeName);
 		addConfigFlag(itemDrops);
 		addConfigFlag(itemPickup);
-		addConfigFlag(lateJoin);
 		addConfigFlag(lives);
-		addConfigFlag(lobbyPosisiton);
 		addConfigFlag(maxChestRandom);
 		addConfigFlag(maxPlayers);
 		addConfigFlag(maxScore);
 		addConfigFlag(minChestRandom);
-		addConfigFlag(minPlayers);
 		addConfigFlag(minScore);
 		addConfigFlag(objective);
 		addConfigFlag(paintBallDamage);
@@ -223,12 +214,9 @@ public class Minigame {
 		addConfigFlag(secondaryRewardItemFlag);
 		addConfigFlag(spMaxPlayers);
 		addConfigFlag(startLocations);
-		addConfigFlag(startWaitTime);
-		addConfigFlag(timer);
 		addConfigFlag(this.type);
 		addConfigFlag(unlimitedAmmo);
 		addConfigFlag(usePermissions);
-		addConfigFlag(useXPBarTimer);
 		addConfigFlag(spectatorPosition);
 		addConfigFlag(displayScoreboard);
 		
@@ -400,14 +388,6 @@ public class Minigame {
 		this.enabled.setFlag(enabled);
 	}
 
-	public int getMinPlayers(){
-		return minPlayers.getFlag();
-	}
-
-	public void setMinPlayers(int minPlayers){
-		this.minPlayers.setFlag(minPlayers);
-	}
-
 	public int getMaxPlayers(){
 		return maxPlayers.getFlag();
 	}
@@ -472,14 +452,6 @@ public class Minigame {
 		this.quitPosition.setFlag(quitPosition);
 	}
 
-	public Location getLobbyPosition(){
-		return lobbyPosisiton.getFlag();
-	}
-
-	public void setLobbyPosition(Location lobbyPosisiton){
-		this.lobbyPosisiton.setFlag(lobbyPosisiton);
-	}
-	
 	public String getName(boolean useDisplay){
 		if(useDisplay && displayName.getFlag() != null)
 			return displayName.getFlag();
@@ -628,30 +600,6 @@ public class Minigame {
 		sfloordegen = new FloorDegenerator(getFloorDegen1(), getFloorDegen2(), this);
 	}
 	
-	public void setTimer(int time){
-		timer.setFlag(time);
-	}
-	
-	public int getTimer(){
-		return timer.getFlag();
-	}
-
-	public boolean isUsingXPBarTimer() {
-		return useXPBarTimer.getFlag();
-	}
-
-	public void setUseXPBarTimer(boolean useXPBarTimer) {
-		this.useXPBarTimer.setFlag(useXPBarTimer);
-	}
-
-	public int getStartWaitTime() {
-		return startWaitTime.getFlag();
-	}
-
-	public void setStartWaitTime(int startWaitTime) {
-		this.startWaitTime.setFlag(startWaitTime);
-	}
-
 	public boolean hasItemDrops() {
 		return itemDrops.getFlag();
 	}
@@ -774,14 +722,6 @@ public class Minigame {
 
 	public void setSaveCheckpoint(boolean saveCheckpoint) {
 		this.saveCheckpoints.setFlag(saveCheckpoint);
-	}
-
-	public boolean canLateJoin() {
-		return lateJoin.getFlag();
-	}
-
-	public void setLateJoin(boolean lateJoin) {
-		this.lateJoin.setFlag(lateJoin);
 	}
 
 	public boolean canSpectateFly() {
@@ -921,17 +861,7 @@ public class Minigame {
 	private void addGameTypeOptions(Menu menu, MinigameType type) {
 		switch (type) {
 		case MULTIPLAYER: {
-			menu.addItem(minScore.getMenuItem("Min. Score", Material.STEP));
-			menu.addItem(maxScore.getMenuItem("Max. Score", Material.STONE));
-			menu.addItem(minPlayers.getMenuItem("Min. Players", Material.STEP));
-			menu.addItem(maxPlayers.getMenuItem("Max. Players", Material.STONE));
-			
-			menu.addItem(new MenuItemSubMenu("Lobby Settings", Material.WOOD_DOOR, getModule(LobbySettingsModule.class).createSettingsMenu()));
-			menu.addItem(new MenuItemNewLine());
-			menu.addItem(new MenuItemTime("Time Length", Material.WATCH, timer.getCallback(), 0, Integer.MAX_VALUE));
-			menu.addItem(useXPBarTimer.getMenuItem("Use XP bar as Timer", Material.ENDER_PEARL));
-			menu.addItem(new MenuItemTime("Start Wait Time", Material.WATCH, startWaitTime.getCallback(), 3, Integer.MAX_VALUE));
-			menu.addItem(lateJoin.getMenuItem("Allow Late Join", Material.DEAD_BUSH));
+			getModule(MultiplayerModule.class).addGameTypeMenuItems(menu);
 			break;
 		}
 		case SINGLEPLAYER:
@@ -1014,6 +944,9 @@ public class Minigame {
 		obj.setAllowNull(true);
 		main.addItem(obj);
 		main.addItem(new MenuItemNewLine());
+		
+		main.addItem(minScore.getMenuItem("Min. Score", Material.STEP));
+		main.addItem(maxScore.getMenuItem("Max. Score", Material.STONE));
 		
 		addGameTypeOptions(main, getType());
 		
@@ -1284,6 +1217,8 @@ public class Minigame {
 			}
 		} else if (minigame.getType() == MinigameType.MULTIPLAYER) {
 			TeamsModule teams = minigame.getModule(TeamsModule.class);
+			MultiplayerModule multiplayer = minigame.getModule(MultiplayerModule.class);
+			
 			if (teams != null) {
 				if (!teams.hasTeamStartLocations() && minigame.getStartLocations().size() == 0) {
 					throw new IllegalStateException(MinigameUtils.getLang("minigame.error.noStart"));
@@ -1294,13 +1229,13 @@ public class Minigame {
 				}
 			}
 			
-			if (minigame.getLobbyPosition() == null) {
+			if (multiplayer.getLobbyPosition() == null) {
 				throw new IllegalStateException(MinigameUtils.getLang("minigame.error.noLobby"));
 			} else if(minigame.getPlayers().size() >= minigame.getMaxPlayers()) {
 				throw new IllegalStateException(MinigameUtils.getLang("minigame.full"));
 			} else if(!minigame.getMechanic().validTypes().contains(minigame.getType())) {
 				throw new IllegalStateException(MinigameUtils.getLang("minigame.error.invalidMechanic"));
-			} else if(minigame.getState() == MinigameState.STARTED && !minigame.canLateJoin()) {
+			} else if(minigame.getState() == MinigameState.STARTED && !multiplayer.canLateJoin()) {
 				throw new IllegalStateException(MinigameUtils.getLang("minigame.started"));
 			}
 		}
@@ -1326,7 +1261,7 @@ public class Minigame {
 			buffer.append(ChatColor.AQUA);
 			break;
 		}
-		buffer.append("[Minigames]");
+		buffer.append("[Minigames] ");
 		buffer.append(ChatColor.WHITE);
 		buffer.append(message);
 		

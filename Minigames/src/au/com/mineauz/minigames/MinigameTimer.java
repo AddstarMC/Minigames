@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import au.com.mineauz.minigames.events.MinigameTimerTickEvent;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.modules.MultiplayerModule;
 import au.com.mineauz.minigames.sounds.MGSounds;
 import au.com.mineauz.minigames.sounds.PlayMGSound;
 
@@ -44,7 +45,7 @@ public class MinigameTimer{
 			@Override
 			public void run() {
 				time -= 1;
-				if(minigame.isUsingXPBarTimer()){
+				if(minigame.getModule(MultiplayerModule.class).isUsingXPBarTimer()){
 					float timeper = ((Integer)time).floatValue() / ((Integer)otime).floatValue();
 					int level = 0;
 					if(time / 60 > 0)

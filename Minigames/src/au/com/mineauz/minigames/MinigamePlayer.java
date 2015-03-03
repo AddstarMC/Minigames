@@ -36,6 +36,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
+import au.com.mineauz.minigames.minigame.modules.MultiplayerModule;
 
 public class MinigamePlayer {
 	private Player player;
@@ -133,7 +134,7 @@ public class MinigamePlayer {
 			buffer.append(ChatColor.AQUA);
 			break;
 		}
-		buffer.append("[Minigames]");
+		buffer.append("[Minigames] ");
 		buffer.append(ChatColor.WHITE);
 		buffer.append(msg);
 		player.sendMessage(buffer.toString());
@@ -829,7 +830,7 @@ public class MinigamePlayer {
 			destination = minigame.getStartLocations().get(RandomUtils.nextInt(minigame.getStartLocations().size()));
 			break;
 		case MULTIPLAYER:
-			destination = minigame.getLobbyPosition();
+			destination = minigame.getModule(MultiplayerModule.class).getLobbyPosition();
 			break;
 		default:
 			throw new AssertionError("Unimplemented join for minigame type " + minigame.getType());

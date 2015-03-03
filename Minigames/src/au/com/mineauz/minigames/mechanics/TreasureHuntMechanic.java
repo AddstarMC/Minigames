@@ -229,7 +229,7 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 		plugin.getLogger().info(MinigameUtils.formStr("minigame.treasurehunt.consSpawn", mgm.getName(false), rpos.getBlockX() + ", " + rpos.getBlockY() + ", " + rpos.getBlockZ()));
 		MinigameUtils.broadcast(MinigameUtils.formStr("minigame.treasurehunt.plySpawn", maxradius, thm.getLocation()), mgm, "minigame.treasure.announce");
 		
-		mgm.setMinigameTimer(new MinigameTimer(mgm, mgm.getTimer()));
+		mgm.setMinigameTimer(new MinigameTimer(mgm, thm.getTimer()));
 	}
 	
 	@EventHandler
@@ -242,10 +242,10 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 		if(!thm.hasTreasureLocation() || thm.isTreasureFound()) return;
 		
 		int time = event.getTimeLeft();
-		int hintTime1 = event.getMinigame().getTimer() - 1;
-		int hintTime2 = (int) (event.getMinigame().getTimer() * 0.75);
-		int hintTime3 = (int) (event.getMinigame().getTimer() * 0.50);
-		int hintTime4 = (int) (event.getMinigame().getTimer() * 0.25);
+		int hintTime1 = thm.getTimer() - 1;
+		int hintTime2 = (int) (thm.getTimer() * 0.75);
+		int hintTime3 = (int) (thm.getTimer() * 0.50);
+		int hintTime4 = (int) (thm.getTimer() * 0.25);
 		Location block = thm.getTreasureLocation();
 		
 		if(time == hintTime1){

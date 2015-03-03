@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.modules.MultiplayerModule;
 
 public class SetStartTimeCommand implements ICommand {
 
@@ -52,23 +53,27 @@ public class SetStartTimeCommand implements ICommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Minigame minigame,
-			String label, String[] args) {
+	public boolean onCommand(CommandSender sender, Minigame minigame, String label, String[] args) {
 		if(args != null){
-			if(args[0].matches("[0-9]+")){
-				int time = Integer.parseInt(args[0]);
-				minigame.setStartWaitTime(time);
-				if(time != 0){
-					sender.sendMessage(ChatColor.GRAY + "Start time has been set to " + time + " seconds for " + minigame);
+			if (minigame.hasModule(MultiplayerModule.class)) {
+				if(args[0].matches("[0-9]+")){
+					int time = Integer.parseInt(args[0]);
+					minigame.getModule(MultiplayerModule.class).setStartWaitTime(time);
+					if(time != 0){
+						sender.sendMessage(ChatColor.GRAY + "Start time has been set to " + time + " seconds for " + minigame);
+					}
+					else{
+						sender.sendMessage(ChatColor.GRAY + "Start time for " + minigame + " has been reset.");
+					}
 				}
 				else{
-					sender.sendMessage(ChatColor.GRAY + "Start time for " + minigame + " has been reset.");
+					sender.sendMessage(ChatColor.RED + args[0] + " is not a valid number!");
 				}
+				return true;
+			} else {
+				sender.sendMessage(ChatColor.RED + " This minigame needs to be a Multiplayer minigame");
+				return true;
 			}
-			else{
-				sender.sendMessage(ChatColor.RED + args[0] + " is not a valid number!");
-			}
-			return true;
 		}
 		return false;
 	}

@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
+import au.com.mineauz.minigames.minigame.modules.MultiplayerModule;
 import au.com.mineauz.minigames.sounds.MGSounds;
 import au.com.mineauz.minigames.sounds.PlayMGSound;
 
@@ -17,6 +18,7 @@ public class MultiplayerTimer{
 	private int startWaitTime;
 	private int oStartWaitTime;
 	private Minigame minigame;
+	private MultiplayerModule multiplayer;
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
 	private boolean paused = false;
@@ -25,6 +27,7 @@ public class MultiplayerTimer{
 	
 	public MultiplayerTimer(Minigame mg){
 		minigame = mg;
+		multiplayer = minigame.getModule(MultiplayerModule.class);
 		
 		playerWaitTime = mg.getModule(LobbySettingsModule.class).getPlayerWaitTime();
 		
@@ -34,13 +37,13 @@ public class MultiplayerTimer{
 				playerWaitTime = 10;
 		}
 		
-		if(minigame.getStartWaitTime() == 0	){
+		if(multiplayer.getStartWaitTime() == 0	){
 			startWaitTime = plugin.getConfig().getInt("multiplayer.startcountdown");
 			if(startWaitTime <= 0)
 				startWaitTime = 5;
 		}
 		else
-			startWaitTime = minigame.getStartWaitTime();
+			startWaitTime = multiplayer.getStartWaitTime();
 		oStartWaitTime = startWaitTime;
 		timeMsg.addAll(plugin.getConfig().getIntegerList("multiplayer.timerMessageInterval"));
 	}
@@ -98,9 +101,9 @@ public class MultiplayerTimer{
 						minigame.getFloorDegenerator().startDegeneration();
 					}
 					
-					if(minigame.getTimer() > 0){
-						minigame.setMinigameTimer(new MinigameTimer(minigame, minigame.getTimer()));
-						minigame.broadcast(MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(minigame.getTimer())), MessageType.Normal);
+					if(multiplayer.getTimer() > 0){
+						minigame.setMinigameTimer(new MinigameTimer(minigame, multiplayer.getTimer()));
+						minigame.broadcast(MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(multiplayer.getTimer())), MessageType.Normal);
 					}
 					
 					Bukkit.getScheduler().cancelTask(taskID);

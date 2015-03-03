@@ -13,7 +13,6 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MessageType;
-import au.com.mineauz.minigames.MinigameData;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -24,12 +23,12 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
+import au.com.mineauz.minigames.minigame.modules.MultiplayerModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class MultiplayerType extends MinigameTypeBase{
 	private static Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = plugin.pdata;
-	private MinigameData mdata = plugin.mdata;
 	
 	public MultiplayerType(){
 		setType(MinigameType.MULTIPLAYER);
@@ -38,6 +37,7 @@ public class MultiplayerType extends MinigameTypeBase{
 	@Override
 	public boolean joinMinigame(MinigamePlayer player, Minigame mgm) {
 		LobbySettingsModule lobbySettings = mgm.getModule(LobbySettingsModule.class);
+		MultiplayerModule multiplayer = mgm.getModule(MultiplayerModule.class);
 		
 		if(!lobbySettings.canInteractPlayerWait())
 			player.setCanInteract(false);
@@ -45,7 +45,7 @@ public class MultiplayerType extends MinigameTypeBase{
 			player.setFrozen(true);
 		
 		if(!mgm.isWaitingForPlayers() && !mgm.hasStarted()){
-			if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMinPlayers()){
+			if(mgm.getMpTimer() == null && mgm.getPlayers().size() == multiplayer.getMinPlayers()){
 				mgm.setMpTimer(new MultiplayerTimer(mgm));
 				mgm.getMpTimer().startTimer();
 				if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
@@ -58,7 +58,7 @@ public class MultiplayerType extends MinigameTypeBase{
 				mgm.broadcast(MinigameUtils.getLang("minigame.skipWaitTime"), MessageType.Normal);
 			}
 			else if(mgm.getMpTimer() == null){
-				int neededPlayers = mgm.getMinPlayers() - mgm.getPlayers().size();
+				int neededPlayers = multiplayer.getMinPlayers() - mgm.getPlayers().size();
 				mgm.broadcast(MinigameUtils.formStr("minigame.waitingForPlayers", neededPlayers), MessageType.Normal);
 			}
 		}
@@ -131,6 +131,7 @@ public class MultiplayerType extends MinigameTypeBase{
 	@Override
 	public void quitMinigame(MinigamePlayer player, Minigame mgm, boolean forced) {
 		int teamsWithPlayers = 0;
+		MultiplayerModule multiplayer = mgm.getModule(MultiplayerModule.class);
 		
 		if(mgm.isTeamGame()){
 			player.removeTeam();
@@ -196,7 +197,7 @@ public class MultiplayerType extends MinigameTypeBase{
 				mgm.setMpBets(null);
 			}
 		}
-		else if(mgm.getPlayers().size() - 1 < mgm.getMinPlayers() && 
+		else if(mgm.getPlayers().size() - 1 < multiplayer.getMinPlayers() && 
 				mgm.getMpTimer() != null && 
 				mgm.getMpTimer().getStartWaitTimeLeft() != 0 && 
 				(mgm.getState() == MinigameState.STARTING || mgm.getState() == MinigameState.WAITING)){
@@ -244,6 +245,7 @@ public class MultiplayerType extends MinigameTypeBase{
 		final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply.isInMinigame() && ply.getMinigame().getType() == MinigameType.MULTIPLAYER){
 			Minigame mg = ply.getMinigame();
+			MultiplayerModule multiplayer = mg.getModule(MultiplayerModule.class);
 			Location respawnPos;
 			if(ply.getMinigame().isTeamGame()){
 				Team team = ply.getTeam();
@@ -266,7 +268,7 @@ public class MultiplayerType extends MinigameTypeBase{
 					ply.getLoadout().equiptLoadout(ply);
 				}
 				else{
-					respawnPos = mg.getLobbyPosition();
+					respawnPos = multiplayer.getLobbyPosition();
 				}
 			}
 			else{
@@ -284,7 +286,7 @@ public class MultiplayerType extends MinigameTypeBase{
 					ply.getLoadout().equiptLoadout(ply);
 				}
 				else{
-					respawnPos = mg.getLobbyPosition();
+					respawnPos = multiplayer.getLobbyPosition();
 				}
 			}
 			
