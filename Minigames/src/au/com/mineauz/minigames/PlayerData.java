@@ -597,6 +597,8 @@ public class PlayerData {
 				player.sendMessage(MinigameUtils.formStr("player.spectate.quit.plyMsg", minigame.getName(true)), "error");
 				mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.spectate.quit.minigameMsg", player.getName(), minigame.getName(true)), "error", player);
 			}
+			
+			player.setCanFly(false);
 		}
 	}
 	
