@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
@@ -51,15 +52,19 @@ public abstract class MinigameTypeBase implements Listener{
 		List<RewardType> rewardL = mgm.getRewardItem();
 		List<RewardType> srewardL = mgm.getSecondaryRewardItem();
 		if(!hascompleted && rewardL != null){
+			MinigameUtils.debugMessage("Issue Primary Reward for " + player.getName());
 			for(RewardType reward : rewardL){
 				if(reward != null){
+					MinigameUtils.debugMessage("Giving " + player.getName() + reward.getName() + " reward type.");
 					reward.giveReward(player);
 				}
 			}
 		}
 		else if(hascompleted && srewardL != null){
+			MinigameUtils.debugMessage("Issue Secondary Reward for " + player.getName());
 			for(RewardType sreward : srewardL){
 				if(sreward != null){
+					MinigameUtils.debugMessage("Giving " + player.getName() + sreward.getName() + " reward type.");
 					sreward.giveReward(player);
 				}
 			}
