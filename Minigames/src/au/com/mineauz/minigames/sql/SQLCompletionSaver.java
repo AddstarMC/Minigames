@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.PlayerData;
 import au.com.mineauz.minigames.gametypes.MinigameTypeBase;
@@ -232,8 +233,10 @@ public class SQLCompletionSaver extends Thread{
 			}
 			mgm.getScoreboardData().updateDisplays();
 			
-			if(completed)
+			if(completed){
+				MinigameUtils.debugMessage("SQL Saver giving rewards to " + player.getPlayerName());
 				MinigameTypeBase.issuePlayerRewards(pdata.getMinigamePlayer(player.getPlayerName()), mgm, hasAlreadyCompleted);
+			}
 			
 		}
 		catch(SQLException e){

@@ -54,6 +54,7 @@ public class Minigames extends JavaPlugin{
 	private List<SQLPlayer> sqlToStore = new ArrayList<SQLPlayer>();
 	private SQLCompletionSaver completionSaver = null;
 	public boolean thrownError = false;
+	private boolean debug = false;
 	
 	private long lastUpdateCheck = 0;
 	
@@ -450,5 +451,16 @@ public class Minigames extends JavaPlugin{
 	
 	public void removeSQLCompletionSaver(){
 		completionSaver = null;
+	}
+	
+	public void toggleDebug(){
+		if(debug)
+			debug = false;
+		else
+			debug = true;
+	}
+	
+	public boolean isDebugging(){
+		return debug;
 	}
 }

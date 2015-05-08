@@ -464,6 +464,12 @@ public class MinigameUtils {
 		Bukkit.getServer().broadcastMessage(ev.getMessageWithPrefix());
 	}
 	
+	public static void debugMessage(String message){
+		if(Minigames.plugin.isDebugging()){
+			Minigames.plugin.getLogger().info("DEBUG: " + message);
+		}
+	}
+	
 //	public static void removePlayerArrows(MinigamePlayer player){
 //		try{
 //			Class.forName("net.minecraft.server.v1_5_R3.EntityPlayer");
