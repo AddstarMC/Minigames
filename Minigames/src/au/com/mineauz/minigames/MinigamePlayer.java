@@ -47,7 +47,6 @@ public class MinigamePlayer {
 	private boolean canPvP = true;
 	private boolean isInvincible = false;
 	private boolean canInteract = true;
-	private boolean isDead = false;
 	private Team team = null;
 	
 	private Menu menu = null;
@@ -689,7 +688,7 @@ public class MinigamePlayer {
 	}
 	
 	public void claimTempRewardItems(){
-		if(!isDead){
+		if(!isDead()){
 			List<ItemStack> tempItems = new ArrayList<ItemStack>(getTempRewardItems());
 			
 			if(!tempItems.isEmpty()){
@@ -706,7 +705,7 @@ public class MinigamePlayer {
 	}
 	
 	public void claimRewards(){
-		if(!isDead){
+		if(!isDead()){
 			List<ItemStack> tempItems = new ArrayList<ItemStack>(getRewardItems());
 			
 			if(!tempItems.isEmpty()){
