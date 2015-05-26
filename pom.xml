@@ -2,13 +2,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>au.com.mineauz</groupId>
   <artifactId>MinigamesProject</artifactId>
-  <version>1.7.0-SNAPSHOT</version>
+  <version>1.7.0</version>
   <packaging>pom</packaging>
   <name>MinigamesProject</name>
   <url>http://dev.bukkit.org/server-mods/minigames/</url>
   
   <properties>
-    <version.build>1.7.0-b${env.BUILD_NUMBER}</version.build>
+    <version.build>1.7.0</version.build>
   </properties>
   
   <modules>
