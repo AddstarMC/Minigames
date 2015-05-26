@@ -312,6 +312,8 @@ public class RecorderData implements Listener{
 	}
 	
 	public void restoreBlocks(MinigamePlayer modifier){
+		minigame.setState(MinigameState.REGENERATING);
+		
 		List<String> changes = new ArrayList<String>();
 		List<BlockData> resBlocks = new ArrayList<BlockData>();
 		List<BlockData> addBlocks = new ArrayList<BlockData>();
@@ -344,9 +346,6 @@ public class RecorderData implements Listener{
 				blockdata.remove(id);
 			}
 		}
-		
-		minigame.setRegenerating(true);
-		minigame.setState(MinigameState.REGENERATING);
 		
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 			

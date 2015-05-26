@@ -67,7 +67,6 @@ public class BackupCommand implements ICommand {
 				if(minigame.getRegenArea1() != null && minigame.getRegenArea2() != null){
 					if(args.length == 1){
 						if(minigame.getPlayers().size() == 0){
-							minigame.setRegenerating(true);
 							minigame.setState(MinigameState.REGENERATING);
 							
 							RecorderData d = minigame.getBlockRecorder();
@@ -89,7 +88,6 @@ public class BackupCommand implements ICommand {
 							
 							d.clearRestoreData();
 							
-							minigame.setRegenerating(false);
 							minigame.setState(MinigameState.IDLE);
 							
 							sender.sendMessage(ChatColor.GRAY + minigame.getName(false) + " has been successfully backed up!");

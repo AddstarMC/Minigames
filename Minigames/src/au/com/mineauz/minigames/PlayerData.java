@@ -267,7 +267,6 @@ public class PlayerData {
 						minigame.getBlockRecorder().restoreEntities();
 						minigame.getBlockRecorder().setCreatedRegenBlocks(false);
 					}
-					minigame.getBlockRecorder().clearRestoreData();
 					
 					if(minigame.getMpTimer() != null){
 						minigame.getMpTimer().pauseTimer();
@@ -343,7 +342,8 @@ public class PlayerData {
 				mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.spectate.quit.minigameMsg", player.getName(), minigame.getName(true)), "error", player);
 			}
 			
-			player.setCanFly(false);
+			if(player.getPlayer().getGameMode() != GameMode.CREATIVE)
+				player.setCanFly(false);
 		}
 	}
 	
