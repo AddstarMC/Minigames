@@ -63,14 +63,14 @@ public class SingleplayerType extends MinigameTypeBase{
 	
 	@Override
 	public void endMinigame(List<MinigamePlayer> winners, List<MinigamePlayer> losers, Minigame mgm){
-		if(mgm.getBlockRecorder().hasData()){
+		/*if(mgm.getBlockRecorder().hasData()){
 			if(!mgm.getPlayers().isEmpty()){
 				for(MinigamePlayer player : winners){
 					mgm.getBlockRecorder().restoreBlocks(player);
 					mgm.getBlockRecorder().restoreEntities(player);
 				}
 			}
-		}
+		}*/
 		
 		for(MinigamePlayer player : winners){
 			if(player.getStoredPlayerCheckpoints().hasCheckpoint(mgm.getName(false))){
@@ -98,7 +98,7 @@ public class SingleplayerType extends MinigameTypeBase{
 			spc.saveCheckpoints();
 		}
 		
-		if(mgm.getBlockRecorder().hasData()){
+		if(mgm.getBlockRecorder().hasData() && mgm.getPlayers().size() > 1){
 			if(!mgm.getPlayers().isEmpty()){
 				mgm.getBlockRecorder().restoreBlocks(player);
 				mgm.getBlockRecorder().restoreEntities(player);

@@ -454,7 +454,8 @@ public class MinigamePlayer {
 		setInvincible(false);
 		setCanInteract(true);
 		setLatejoining(false);
-		setCanFly(false);
+		if(player.getGameMode() != GameMode.CREATIVE)
+			setCanFly(false);
 		tempClaimedRewards.clear();
 		tempRewardItems.clear();
 		claimedScoreSigns.clear();

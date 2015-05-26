@@ -83,13 +83,13 @@ public class RollbackScheduler implements Runnable {
 			if(System.nanoTime() - time > Minigames.plugin.getConfig().getDouble("regeneration.maxDelay") * 1000000)
 				return;
 		}
-		task.cancel();
 		
 		HandlerList.unregisterAll(minigame.getBlockRecorder());
 		HandlerList.bakeAll();
 		
-		minigame.setRegenerating(false);
 		minigame.setState(MinigameState.IDLE);
+		
+		task.cancel();
 	}
 
 }
