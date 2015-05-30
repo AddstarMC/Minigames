@@ -9,7 +9,6 @@ import java.util.Map;
 
 import net.md_5.bungee.api.ChatColor;
 
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
