@@ -90,10 +90,6 @@ public class Minigame {
 	private LocationFlag lobbyPosisiton = new LocationFlag(null, "lobbypos");
 	private LocationFlag spectatorPosition = new LocationFlag(null, "spectatorpos");
 	
-	private Rewards rewardItem = new Rewards();
-	private RewardsFlag rewardItemFlag = new RewardsFlag(null, "reward");
-	private Rewards secondaryRewardItem = new Rewards();
-	private RewardsFlag secondaryRewardItemFlag = new RewardsFlag(null, "reward2");
 	private BooleanFlag usePermissions = new BooleanFlag(false, "usepermissions");
 	private IntegerFlag timer = new IntegerFlag(0, "timer");
 	private BooleanFlag useXPBarTimer = new BooleanFlag(true, "useXPBarTimer");
@@ -164,8 +160,6 @@ public class Minigame {
 	private void setup(MinigameType type, Location start){
 		this.type.setFlag(type);
 		startLocations.setFlag(new ArrayList<Location>());
-		rewardItemFlag.setFlag(rewardItem);
-		secondaryRewardItemFlag.setFlag(secondaryRewardItem);
 		
 		if(start != null)
 			startLocations.getFlag().add(start);
@@ -222,10 +216,8 @@ public class Minigame {
 		addConfigFlag(regenArea1);
 		addConfigFlag(regenArea2);
 		addConfigFlag(regenDelay);
-		addConfigFlag(rewardItemFlag);
 		addConfigFlag(saveCheckpoints);
 		addConfigFlag(mechanic);
-		addConfigFlag(secondaryRewardItemFlag);
 		addConfigFlag(spMaxPlayers);
 		addConfigFlag(startLocations);
 		addConfigFlag(startWaitTime);
@@ -280,22 +272,6 @@ public class Minigame {
 		return false;
 	}
 
-	public List<RewardType> getSecondaryRewardItem(){
-		return secondaryRewardItem.getReward();
-	}
-	
-	public Rewards getSecondaryRewardItems(){
-		return secondaryRewardItem;
-	}
-
-	public List<RewardType> getRewardItem(){
-		return rewardItem.getReward();
-	}
-	
-	public Rewards getRewardItems(){
-		return rewardItem;
-	}
-	
 	public boolean hasFlags(){
 		return !flags.getFlag().isEmpty();
 	}
@@ -1032,8 +1008,6 @@ public class Minigame {
 			}
 		}, 3, null));
 		itemsMain.add(lateJoin.getMenuItem("Allow Late Join", Material.DEAD_BUSH, MinigameUtils.stringToList("Multiplayer Only")));
-		itemsMain.add(new MenuItemDisplayRewards("Primary Rewards", Material.CHEST, rewardItem));
-		itemsMain.add(new MenuItemDisplayRewards("Secondary Rewards", Material.CHEST, secondaryRewardItem));
 		itemsMain.add(new MenuItemDisplayWhitelist("Block Whitelist/Blacklist", MinigameUtils.stringToList("Blocks that can/can't;be broken"), 
 				Material.CHEST, getBlockRecorder().getWBBlocks(), getBlockRecorder().getWhitelistModeCallback()));
 		itemsMain.add(new MenuItemNewLine());

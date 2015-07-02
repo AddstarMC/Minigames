@@ -16,6 +16,9 @@ import au.com.mineauz.minigames.minigame.reward.ItemReward;
 import au.com.mineauz.minigames.minigame.reward.MoneyReward;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
 import au.com.mineauz.minigames.minigame.reward.RewardTypes;
+import au.com.mineauz.minigames.minigame.reward.Rewards;
+import au.com.mineauz.minigames.minigame.reward.RewardsModule;
+import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
 
 public class SetRewardCommand implements ICommand{
 
@@ -38,7 +41,8 @@ public class SetRewardCommand implements ICommand{
 	public String getDescription() {
 		return "Sets the players reward for completing the Minigame for the first time. " +
 				"This can be one item or a randomly selected item added to the rewards, depending on its defined rarity. \n" +
-				"Possible rarities are: very_common, common, normal, rare and very_rare";
+				"Possible rarities are: very_common, common, normal, rare and very_rare\n" +
+				"NOTE: This can only be used on minigames using the standard reward scheme";
 	}
 
 	@Override
@@ -67,6 +71,14 @@ public class SetRewardCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
+			RewardsModule module = RewardsModule.getModule(minigame);
+			if (!(module.getScheme() instanceof StandardRewardScheme)) {
+				sender.sendMessage(ChatColor.RED + "This command can only be used on minigames that use the standard reward scheme");
+				return true;
+			}
+			
+			Rewards rewards = ((StandardRewardScheme)module.getScheme()).getPrimaryReward();
+			
 			int quantity = 1;
 			double money = -1;
 			if(args.length >= 2 && args[1].matches("[0-9]+")){
@@ -89,10 +101,10 @@ public class SetRewardCommand implements ICommand{
 				if(args.length == 3){
 					rarity = RewardRarity.valueOf(args[2].toUpperCase());
 				}
-				ItemReward ir = (ItemReward) RewardTypes.getRewardType("ITEM", minigame.getRewardItems());
+				ItemReward ir = (ItemReward) RewardTypes.getRewardType("ITEM", rewards);
 				ir.setRewardItem(item);
 				ir.setRarity(rarity);
-				minigame.getRewardItems().addReward(ir);
+				rewards.addReward(ir);
 				
 				sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to primary rewards of \"" + minigame.getName(false) + "\" "
 						+ "with a rarity of \"" + rarity.toString().toLowerCase().replace("_", " ") + "\"");
@@ -104,10 +116,10 @@ public class SetRewardCommand implements ICommand{
 				if(args.length == 2){
 					rarity = RewardRarity.valueOf(args[1].toUpperCase());
 				}
-				ItemReward ir = (ItemReward) RewardTypes.getRewardType("ITEM", minigame.getRewardItems());
+				ItemReward ir = (ItemReward) RewardTypes.getRewardType("ITEM", rewards);
 				ir.setRewardItem(item);
 				ir.setRarity(rarity);
-				minigame.getRewardItems().addReward(ir);
+				rewards.addReward(ir);
 				sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to primary rewards of \"" + minigame.getName(false) + "\" "
 						+ "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
 				return true;
@@ -121,10 +133,10 @@ public class SetRewardCommand implements ICommand{
 				if(args.length == 2){
 					rarity = RewardRarity.valueOf(args[1].toUpperCase());
 				}
-				MoneyReward mr = (MoneyReward) RewardTypes.getRewardType("MONEY", minigame.getRewardItems());
+				MoneyReward mr = (MoneyReward) RewardTypes.getRewardType("MONEY", rewards);
 				mr.setRewardMoney(money);
 				mr.setRarity(rarity);
-				minigame.getRewardItems().addReward(mr);
+				rewards.addReward(mr);
 				sender.sendMessage(ChatColor.GRAY + "Added $" + money + " to primary rewards of \"" + minigame.getName(false) + "\" "
 						+ "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
 				return true;

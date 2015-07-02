@@ -28,6 +28,7 @@ import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
+import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 
 public class MinigameData {
 	private Map<String, Minigame> minigames = new HashMap<String, Minigame>();
@@ -52,6 +53,7 @@ public class MinigameData {
 		modules.add(InfectionModule.class);
 		modules.add(GameOverModule.class);
 		modules.add(JuggernautModule.class);
+		modules.add(RewardsModule.class);
 	}
 	
 	public List<Class<? extends MinigameModule>> getModules(){

@@ -9,9 +9,9 @@ import java.util.List;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.PlayerData;
-import au.com.mineauz.minigames.gametypes.MinigameTypeBase;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardPlayer;
+import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 
 public class SQLCompletionSaver extends Thread{
 	private Minigames plugin = Minigames.plugin;
@@ -235,7 +235,7 @@ public class SQLCompletionSaver extends Thread{
 			
 			if(completed){
 				MinigameUtils.debugMessage("SQL Saver giving rewards to " + player.getPlayerName());
-				MinigameTypeBase.issuePlayerRewards(pdata.getMinigamePlayer(player.getPlayerName()), mgm, hasAlreadyCompleted);
+				RewardsModule.getModule(mgm).awardPlayer(pdata.getMinigamePlayer(player.getPlayerName()), mgm, !hasAlreadyCompleted);
 			}
 			
 		}

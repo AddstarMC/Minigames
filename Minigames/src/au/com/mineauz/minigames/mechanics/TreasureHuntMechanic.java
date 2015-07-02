@@ -29,6 +29,8 @@ import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import au.com.mineauz.minigames.minigame.reward.ItemReward;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
+import au.com.mineauz.minigames.minigame.reward.RewardsModule;
+import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
 
 public class TreasureHuntMechanic extends GameMechanicBase{
 
@@ -201,19 +203,23 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 				if(rpos.getBlock().getState() instanceof Chest){
 					final Chest chest = (Chest) rpos.getBlock().getState();
 					
-					if(!mgm.getRewardItems().getRewards().isEmpty()){
-						int numitems = (int) Math.round(Math.random() * (thm.getMaxTreasure() - thm.getMinTreasure())) + thm.getMinTreasure();
-						
-						final ItemStack[] items = new ItemStack[27];
-						for(int i = 0; i < numitems; i++){
-							RewardType rew = mgm.getRewardItems().getReward().get(0);
-							if(rew instanceof ItemReward){
-								ItemReward irew = (ItemReward) rew;
-								items[i] = irew.getRewardItem();
+					// TODO: Treasure hunt needs own rewards specification
+					RewardsModule rewards = RewardsModule.getModule(mgm);
+					if (rewards.getScheme() instanceof StandardRewardScheme) {
+						if(!((StandardRewardScheme)rewards.getScheme()).getPrimaryReward().getRewards().isEmpty()){
+							int numitems = (int) Math.round(Math.random() * (thm.getMaxTreasure() - thm.getMinTreasure())) + thm.getMinTreasure();
+							
+							final ItemStack[] items = new ItemStack[27];
+							for(int i = 0; i < numitems; i++){
+								RewardType rew = ((StandardRewardScheme)rewards.getScheme()).getPrimaryReward().getReward().get(0);
+								if(rew instanceof ItemReward){
+									ItemReward irew = (ItemReward) rew;
+									items[i] = irew.getRewardItem();
+								}
 							}
+							Collections.shuffle(Arrays.asList(items));
+							chest.getInventory().setContents(items);
 						}
-						Collections.shuffle(Arrays.asList(items));
-						chest.getInventory().setContents(items);
 					}
 				}
 			}

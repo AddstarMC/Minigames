@@ -38,7 +38,6 @@ import au.com.mineauz.minigames.events.RevertCheckpointEvent;
 import au.com.mineauz.minigames.events.SpectateMinigameEvent;
 import au.com.mineauz.minigames.events.StartMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.gametypes.MinigameTypeBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
@@ -46,6 +45,7 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.GameOverModule;
 import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 import au.com.mineauz.minigames.sounds.MGSounds;
 import au.com.mineauz.minigames.sounds.PlayMGSound;
 import au.com.mineauz.minigames.sql.SQLPlayer;
@@ -756,7 +756,7 @@ public class PlayerData {
 						completionsave.saveConfig();
 					}
 					
-					MinigameTypeBase.issuePlayerRewards(player, minigame, hascompleted);
+					RewardsModule.getModule(minigame).awardPlayer(player, minigame, !hascompleted);
 				}
 				else if(minigame.isEnabled()){
 					plugin.addSQLToStore(sply);
