@@ -18,6 +18,9 @@ public final class RewardSchemes {
 		addRewardScheme("standard", StandardRewardScheme.class);
 		addRewardScheme("score", ScoreRewardScheme.class);
 		addRewardScheme("time", TimeRewardScheme.class);
+		addRewardScheme("kills", KillsRewardScheme.class);
+		addRewardScheme("deaths", DeathsRewardScheme.class);
+		addRewardScheme("reverts", RevertsRewardScheme.class);
 	}
 	
 	public static void addRewardScheme(String name, Class<? extends RewardScheme> scheme) {
