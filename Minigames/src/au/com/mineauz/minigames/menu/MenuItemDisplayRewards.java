@@ -1,14 +1,10 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.minigame.reward.RewardGroup;
-import au.com.mineauz.minigames.minigame.reward.RewardRarity;
-import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 
 public class MenuItemDisplayRewards extends MenuItem{
@@ -27,29 +23,8 @@ public class MenuItemDisplayRewards extends MenuItem{
 	
 	@Override
 	public ItemStack onClick(){
-		Menu rewardMenu = new Menu(5, getName(), getContainer().getViewer());
+		Menu rewardMenu = rewards.createMenu(getName(), getContainer().getViewer(), getContainer());
 		
-		rewardMenu.setPreviousPage(getContainer());
-		
-		rewardMenu.addItem(new MenuItemRewardGroupAdd("Add Group", Material.ITEM_FRAME, rewards), 42);
-		rewardMenu.addItem(new MenuItemRewardAdd("Add Item", Material.ITEM_FRAME, rewards), 43);
-		rewardMenu.addItem(new MenuItemPage("Save " + getName(), Material.REDSTONE_TORCH_ON, rewardMenu.getPreviousPage()), 44);
-		List<String> list = new ArrayList<String>();
-		for(RewardRarity r : RewardRarity.values()){
-			list.add(r.toString());
-		}
-		
-		List<MenuItem> mi = new ArrayList<MenuItem>();
-		for(RewardType item : rewards.getRewards()){
-			mi.add(item.getMenuItem());
-		}
-		List<String> des = new ArrayList<String>();
-		des.add("Double Click to edit");
-		for(RewardGroup group : rewards.getGroups()){
-			MenuItemRewardGroup rwg = new MenuItemRewardGroup(group.getName() + " Group", des, Material.CHEST, group, rewards);
-			mi.add(rwg);
-		}
-		rewardMenu.addItems(mi);
 		rewardMenu.displayMenu(getContainer().getViewer());
 		return null;
 	}

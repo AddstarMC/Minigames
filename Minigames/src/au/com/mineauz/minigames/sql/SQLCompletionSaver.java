@@ -235,7 +235,7 @@ public class SQLCompletionSaver extends Thread{
 			
 			if(completed){
 				MinigameUtils.debugMessage("SQL Saver giving rewards to " + player.getPlayerName());
-				RewardsModule.getModule(mgm).awardPlayer(pdata.getMinigamePlayer(player.getPlayerName()), mgm, !hasAlreadyCompleted);
+				RewardsModule.getModule(mgm).awardPlayer(pdata.getMinigamePlayer(player.getPlayerName()), player, mgm, !hasAlreadyCompleted);
 			}
 			
 		}

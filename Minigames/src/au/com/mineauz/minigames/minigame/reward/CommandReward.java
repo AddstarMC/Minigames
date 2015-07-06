@@ -6,7 +6,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -45,12 +45,12 @@ public class CommandReward extends RewardType{
 	}
 
 	@Override
-	public void saveReward(String path, FileConfiguration config) {
+	public void saveReward(String path, ConfigurationSection config) {
 		config.set(path, command);
 	}
 
 	@Override
-	public void loadReward(String path, FileConfiguration config) {
+	public void loadReward(String path, ConfigurationSection config) {
 		command = config.getString(path);
 	}
 	

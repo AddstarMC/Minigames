@@ -1165,6 +1165,7 @@ public class Minigame {
 		MinigameSave minigame = new MinigameSave(name, "config");
 		FileConfiguration cfg = minigame.getConfig();
 		cfg.set(name, null);
+		cfg.createSection(name);
 		
 		for(MinigameModule module : getModules()){
 			if(!module.useSeparateConfig()){
@@ -1179,6 +1180,7 @@ public class Minigame {
 			}else{
 				MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
 				modsave.getConfig().set(name, null);
+				modsave.getConfig().createSection(name);
 				module.save(modsave.getConfig());
 				
 				if(module.getFlags() != null){

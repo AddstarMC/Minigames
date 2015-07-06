@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -16,6 +17,7 @@ import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
+import au.com.mineauz.minigames.sql.SQLPlayer;
 
 /**
  * The standard reward scheme handles the previous reward behaviour.
@@ -47,11 +49,6 @@ public class StandardRewardScheme implements RewardScheme {
 				.build();
 	}
 	
-	@Override
-	public boolean useSeparateConfig() {
-		return false;
-	}
-	
 	public Rewards getPrimaryReward() {
 		return primaryReward;
 	}
@@ -61,7 +58,7 @@ public class StandardRewardScheme implements RewardScheme {
 	}
 	
 	@Override
-	public void awardPlayer(MinigamePlayer player, Minigame minigame, boolean firstCompletion) {
+	public void awardPlayer(MinigamePlayer player, SQLPlayer data, Minigame minigame, boolean firstCompletion) {
 		List<RewardType> rewards = primaryReward.getReward();
 		
 		if (firstCompletion && rewards != null) {
@@ -79,7 +76,7 @@ public class StandardRewardScheme implements RewardScheme {
 	}
 	
 	@Override
-	public void awardPlayerOnLoss(MinigamePlayer player, Minigame minigame) {
+	public void awardPlayerOnLoss(MinigamePlayer player, SQLPlayer data, Minigame minigame) {
 		// No lose awards
 	}
 	
@@ -91,6 +88,12 @@ public class StandardRewardScheme implements RewardScheme {
 			}
 		}
 	}
+	
+	@Override
+	public void load(ConfigurationSection config) {}
+	
+	@Override
+	public void save(ConfigurationSection config) {}
 	
 	@Override
 	public void addMenuItems(Menu menu) {

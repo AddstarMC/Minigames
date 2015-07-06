@@ -3,19 +3,22 @@ package au.com.mineauz.minigames.minigame.reward;
 import java.util.Map;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
-import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.reward.scheme.RewardScheme;
 import au.com.mineauz.minigames.minigame.reward.scheme.RewardSchemes;
 import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
+import au.com.mineauz.minigames.sql.SQLPlayer;
 
 public class RewardsModule extends MinigameModule {
 	public static final String Name = "rewards";
@@ -41,8 +44,8 @@ public class RewardsModule extends MinigameModule {
 		this.scheme = scheme;
 	}
 	
-	public void awardPlayer(MinigamePlayer player, Minigame minigame, boolean firstCompletion) {
-		scheme.awardPlayer(player, minigame, firstCompletion);
+	public void awardPlayer(MinigamePlayer player, SQLPlayer data, Minigame minigame, boolean firstCompletion) {
+		scheme.awardPlayer(player, data, minigame, firstCompletion);
 	}
 
 	@Override
@@ -52,35 +55,51 @@ public class RewardsModule extends MinigameModule {
 
 	@Override
 	public boolean useSeparateConfig() {
-		return scheme.useSeparateConfig();
+		return false;
 	}
 
 	@Override
 	public void save(FileConfiguration config) {
 		String name = RewardSchemes.getName(scheme.getClass());
-		config.set(getMinigame().getName(false) + ".reward-scheme", name);
+		
+		ConfigurationSection root = config.getConfigurationSection(getMinigame().getName(false));
+		root.set("reward-scheme", name);
+		
+		ConfigurationSection rewards = root.createSection("rewards");
+		scheme.save(rewards);
 	}
 
 	@Override
 	public void load(FileConfiguration config) {
-		String name = config.getString(getMinigame().getName(false) + ".reward-scheme", "standard");
+		ConfigurationSection root = config.getConfigurationSection(getMinigame().getName(false));
+		String name = root.getString("reward-scheme", "standard");
 		
 		scheme = RewardSchemes.createScheme(name);
 		if (scheme == null) {
 			scheme = new StandardRewardScheme();
 		}
+		
+		ConfigurationSection rewards = root.getConfigurationSection("rewards");
+		scheme.load(rewards);
 	}
 
 	@Override
-	public void addEditMenuOptions(Menu menu) {
-		final Menu submenu = new Menu(6, "Reward Settings", menu.getViewer());
-		buildMenu(submenu, menu);
+	public void addEditMenuOptions(final Menu menu) {
+		MenuItemCustom launcher = new MenuItemCustom("Reward Settings", Material.DIAMOND);
+		launcher.setClick(new InteractionInterface() {
+			@Override
+			public Object interact(Object object) {
+				Menu submenu = createSubMenu(menu);
+				submenu.displayMenu(menu.getViewer());
+				return null;
+			}
+		});
 		
-		// Add to actual menu
-		menu.addItem(new MenuItemPage("Reward Settings", Material.DIAMOND, submenu));
+		menu.addItem(launcher);
 	}
 	
-	private void buildMenu(final Menu submenu, final Menu parent) {
+	private Menu createSubMenu(final Menu parent) {
+		final Menu submenu = new Menu(6, "Reward Settings", parent.getViewer());
 		scheme.addMenuItems(submenu);
 		
 		submenu.addItem(RewardSchemes.newMenuItem("Reward Scheme", Material.PAPER, new Callback<Class<? extends RewardScheme>>() {
@@ -88,8 +107,8 @@ public class RewardsModule extends MinigameModule {
 			public void setValue(Class<? extends RewardScheme> value) {
 				scheme = RewardSchemes.createScheme(value);
 				// Update the menu
-				submenu.clearMenu();
-				buildMenu(submenu, parent);
+				Menu menu = createSubMenu(parent);
+				menu.displayMenu(submenu.getViewer());
 			}
 			
 			@Override
@@ -97,7 +116,9 @@ public class RewardsModule extends MinigameModule {
 				return scheme.getClass();
 			}
 		}), submenu.getSize() - 1);
+		
 		submenu.addItem(new MenuItemBack(parent), submenu.getSize() - 9);
+		return submenu;
 	}
 
 	@Override

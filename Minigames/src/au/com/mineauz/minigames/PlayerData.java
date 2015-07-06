@@ -756,7 +756,7 @@ public class PlayerData {
 						completionsave.saveConfig();
 					}
 					
-					RewardsModule.getModule(minigame).awardPlayer(player, minigame, !hascompleted);
+					RewardsModule.getModule(minigame).awardPlayer(player, sply, minigame, !hascompleted);
 				}
 				else if(minigame.isEnabled()){
 					plugin.addSQLToStore(sply);

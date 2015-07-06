@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.minigame.reward;
 
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.MenuItem;
@@ -29,6 +29,6 @@ public abstract class RewardType {
 	public abstract boolean isUsable();
 	public abstract void giveReward(MinigamePlayer player);
 	public abstract MenuItem getMenuItem();
-	public abstract void saveReward(String path, FileConfiguration config);
-	public abstract void loadReward(String path, FileConfiguration config);
+	public abstract void saveReward(String path, ConfigurationSection section);
+	public abstract void loadReward(String path, ConfigurationSection section);
 }
