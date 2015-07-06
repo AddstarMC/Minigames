@@ -1,10 +1,11 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.sql.SQLPlayer;
 
-public class ScoreRewardScheme extends HierarchyRewardScheme<Integer> {
+public class TimeRewardScheme extends HierarchyRewardScheme<Integer> {
 	@Override
 	protected Integer decrement(Integer value) {
 		return value - 1;
@@ -17,21 +18,26 @@ public class ScoreRewardScheme extends HierarchyRewardScheme<Integer> {
 	
 	@Override
 	protected Integer loadValue(String key) {
-		return Integer.valueOf(key);
+		int value = Integer.valueOf(key);
+		if (value <= 0) {
+			throw new IllegalArgumentException();
+		}
+		
+		return value;
 	}
 	
 	@Override
 	protected String getMenuItemDescName(Integer value) {
-		return "Score: " + value;
+		return "Time: " + MinigameUtils.convertTime(value, true);
 	}
 	
 	@Override
 	protected Integer getValue(MinigamePlayer player, SQLPlayer data, Minigame minigame) {
-		return data.getScore();
+		return (int)(data.getTime() / 1000);
 	}
 	
 	@Override
 	protected String getMenuItemName(Integer value) {
-		return value.toString();
+		return MinigameUtils.convertTime(value, true);
 	}
 }

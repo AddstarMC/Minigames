@@ -17,6 +17,7 @@ public final class RewardSchemes {
 	static {
 		addRewardScheme("standard", StandardRewardScheme.class);
 		addRewardScheme("score", ScoreRewardScheme.class);
+		addRewardScheme("time", TimeRewardScheme.class);
 	}
 	
 	public static void addRewardScheme(String name, Class<? extends RewardScheme> scheme) {
