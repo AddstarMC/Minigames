@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collections;
 import java.util.List;
+import com.google.common.collect.Lists;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -13,29 +15,30 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardPlayer;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 
-public class SQLCompletionSaver extends Thread{
+public class SQLCompletionSaver implements Runnable {
 	private Minigames plugin = Minigames.plugin;
 	private PlayerData pdata = Minigames.plugin.pdata;
 	
-	public SQLCompletionSaver(){
-		start();
+	private final List<SQLPlayer> data;
+	
+	public SQLCompletionSaver(List<SQLPlayer> data){
+		this.data = Collections.unmodifiableList(data);
+	}
+	
+	public SQLCompletionSaver(SQLPlayer player){
+		this(Lists.newArrayList(player));
 	}
 	
 	public void run(){
 		SQLDatabase sql = plugin.getSQL();
 		
-		while(plugin.hasSQLToStore()){
-			List<SQLPlayer> players = plugin.getSQLToStore();
-			plugin.clearSQLToStore();
-			for(SQLPlayer player : players){
-				addSQLData(player, sql);
-			}
+		for (SQLPlayer player : data) {
+			addSQLData(player, sql);
 		}
-
-		plugin.removeSQLCompletionSaver();
 	}
 	
 	private void addSQLData(SQLPlayer player, SQLDatabase database){
+		MinigameUtils.debugMessage("SQL Begining save of " + player);
 		
 		String table = "mgm_" + player.getMinigame() + "_comp";
 		
@@ -231,15 +234,18 @@ public class SQLCompletionSaver extends Thread{
 						ScoreboardPlayer(pname, uuid, ocompleted, ofailures, okills, odeaths, 
 								oscore, otime, oreverts, otkills, otdeaths, otscore, otreverts, ottime));
 			}
+			
 			mgm.getScoreboardData().updateDisplays();
 			
+			MinigameUtils.debugMessage("SQL Completed save of " + player);
+			
 			if(completed){
-				MinigameUtils.debugMessage("SQL Saver giving rewards to " + player.getPlayerName());
 				RewardsModule.getModule(mgm).awardPlayer(pdata.getMinigamePlayer(player.getPlayerName()), player, mgm, !hasAlreadyCompleted);
 			}
 			
 		}
 		catch(SQLException e){
+			MinigameUtils.debugMessage("SQL Save error for " + player);
 			e.printStackTrace();
 		}
 	}

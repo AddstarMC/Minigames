@@ -71,4 +71,9 @@ public class SQLPlayer {
 	public long getTime() {
 		return time;
 	}
+	
+	@Override
+	public String toString() {
+		return playerName;
+	}
 }

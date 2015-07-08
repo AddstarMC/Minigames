@@ -451,7 +451,6 @@ public class PlayerData {
 							plugin.addSQLToStore(new SQLPlayer(minigame.getName(false), player.getName(), player.getUUID().toString(), 0, 1, 
 									player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), 
 									player.getEndTime() - player.getStartTime() + player.getStoredTime()));
-							plugin.startSQLCompletionSaver();
 						}
 					}
 				}
@@ -760,7 +759,6 @@ public class PlayerData {
 				}
 				else if(minigame.isEnabled()){
 					plugin.addSQLToStore(sply);
-					plugin.startSQLCompletionSaver();
 				}
 				
 				//Item Bets (for non groups)

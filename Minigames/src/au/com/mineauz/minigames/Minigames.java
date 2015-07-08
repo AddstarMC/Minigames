@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,8 +53,7 @@ public class Minigames extends JavaPlugin{
 	private static SignBase minigameSigns;
 	private FileConfiguration lang = null;
 	private FileConfiguration defLang = null;
-	private List<SQLPlayer> sqlToStore = new ArrayList<SQLPlayer>();
-	private SQLCompletionSaver completionSaver = null;
+	private ExecutorService sqlSaverService;
 	public boolean thrownError = false;
 	private boolean debug = false;
 	
@@ -326,6 +327,8 @@ public class Minigames extends JavaPlugin{
 		sql = new SQLDatabase();
 		if(!sql.loadSQL())
 			sql = null;
+		
+		sqlSaverService = Executors.newSingleThreadExecutor();
 	}
 	
 	public long getLastUpdateCheck(){
@@ -423,34 +426,14 @@ public class Minigames extends JavaPlugin{
 		defLang = svb.getConfig();
 	}
 	
-	public List<SQLPlayer> getSQLToStore(){
-		return new ArrayList<SQLPlayer>(sqlToStore);
-	}
-	
-	public void clearSQLToStore(){
-		sqlToStore.clear();
-	}
-	
-	public boolean hasSQLToStore(){
-		return !sqlToStore.isEmpty();
-	}
-	
 	public void addSQLToStore(SQLPlayer player){
-		sqlToStore.add(player);
+		MinigameUtils.debugMessage("Scheduling SQL data save for " + player);
+		sqlSaverService.submit(new SQLCompletionSaver(player));
 	}
 	
 	public void addSQLToStore(List<SQLPlayer> players){
-		sqlToStore.addAll(players);
-	}
-	
-	public void startSQLCompletionSaver(){
-		if(completionSaver == null){
-			completionSaver = new SQLCompletionSaver();
-		}
-	}
-	
-	public void removeSQLCompletionSaver(){
-		completionSaver = null;
+		MinigameUtils.debugMessage("Scheduling SQL data save for " + players);
+		sqlSaverService.submit(new SQLCompletionSaver(players));
 	}
 	
 	public void toggleDebug(){
