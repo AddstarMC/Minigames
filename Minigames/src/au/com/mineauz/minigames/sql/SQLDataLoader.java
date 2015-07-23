@@ -12,6 +12,8 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardPlayer;
 
+// TODO: This class has to be updated to new stat format
+// also, it needs to be made more efficient grabbing only the data it needs
 public class SQLDataLoader extends Thread{
 	
 	private List<Minigame> mgs;

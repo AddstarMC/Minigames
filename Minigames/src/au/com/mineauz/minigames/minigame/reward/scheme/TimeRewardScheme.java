@@ -3,7 +3,8 @@ package au.com.mineauz.minigames.minigame.reward.scheme;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.sql.SQLPlayer;
+import au.com.mineauz.minigames.stats.MinigameStats;
+import au.com.mineauz.minigames.stats.StoredStats;
 
 public class TimeRewardScheme extends HierarchyRewardScheme<Integer> {
 	@Override
@@ -32,8 +33,8 @@ public class TimeRewardScheme extends HierarchyRewardScheme<Integer> {
 	}
 	
 	@Override
-	protected Integer getValue(MinigamePlayer player, SQLPlayer data, Minigame minigame) {
-		return (int)(data.getTime() / 1000);
+	protected Integer getValue(MinigamePlayer player, StoredStats data, Minigame minigame) {
+		return (int)(data.getStat(MinigameStats.CompletionTime) / 1000);
 	}
 	
 	@Override

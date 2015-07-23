@@ -1,5 +1,8 @@
 package au.com.mineauz.minigames.minigame;
 
+import au.com.mineauz.minigames.stats.MinigameStats;
+import au.com.mineauz.minigames.stats.StoredStats;
+
 public class ScoreboardPlayer {
 	private String playerName;
 	private String uuid;
@@ -16,6 +19,23 @@ public class ScoreboardPlayer {
 	private int totalReverts;
 	private long totalTime;
 	
+	public ScoreboardPlayer(StoredStats saveData) {
+		this(saveData.getPlayer().getName(),
+				saveData.getPlayer().getUUID().toString(), 
+				(int)saveData.getStat(MinigameStats.Wins),
+				(int)(saveData.getStat(MinigameStats.Attempts) - saveData.getStat(MinigameStats.Wins)),
+				(int)saveData.getStat(MinigameStats.Kills),
+				(int)saveData.getStat(MinigameStats.Deaths),
+				(int)saveData.getStat(MinigameStats.Score),
+				saveData.getStat(MinigameStats.CompletionTime),
+				(int)saveData.getStat(MinigameStats.Reverts),
+				(int)saveData.getStat(MinigameStats.Kills),
+				(int)saveData.getStat(MinigameStats.Deaths),
+				(int)saveData.getStat(MinigameStats.Score),
+				(int)saveData.getStat(MinigameStats.Reverts),
+				saveData.getStat(MinigameStats.CompletionTime)
+				);
+	}
 	public ScoreboardPlayer(String playerName, String uuid, int completions, int failures, int bestKills, 
 			int leastDeaths, int bestScore, long bestTime, int leastReverts, int totalKills, int totalDeaths, int totalScore, int totalReverts, long totalTime){
 		this.playerName = playerName;
@@ -136,6 +156,21 @@ public class ScoreboardPlayer {
 	
 	public String getUUID(){
 		return uuid;
+	}
+	
+	public void update(StoredStats data) {
+		completions += (int)data.getStat(MinigameStats.Wins);
+		failures += (int)(data.getStat(MinigameStats.Attempts) - data.getStat(MinigameStats.Wins));
+		bestKills = Math.max(bestKills, (int)data.getStat(MinigameStats.Kills));
+		leastDeaths = Math.min(leastDeaths, (int)data.getStat(MinigameStats.Deaths));
+		bestScore = Math.max(bestScore, (int)data.getStat(MinigameStats.Score));
+		bestTime = Math.min(bestTime, data.getStat(MinigameStats.CompletionTime));
+		leastReverts = Math.min(leastReverts, (int)data.getStat(MinigameStats.Reverts));
+		totalKills += (int)data.getStat(MinigameStats.Kills);
+		totalDeaths += (int)data.getStat(MinigameStats.Deaths);
+		totalScore += (int)data.getStat(MinigameStats.Score);
+		totalReverts += (int)data.getStat(MinigameStats.Reverts);
+		totalTime += data.getStat(MinigameStats.CompletionTime);
 	}
 	
 	public Object getByType(ScoreboardType type){
