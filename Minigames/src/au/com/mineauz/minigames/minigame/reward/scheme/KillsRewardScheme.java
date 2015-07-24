@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.minigame.reward.scheme;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.stats.MinigameStats;
-import au.com.mineauz.minigames.stats.StoredStats;
+import au.com.mineauz.minigames.stats.StoredGameStats;
 
 public class KillsRewardScheme extends HierarchyRewardScheme<Integer> {
 	@Override
@@ -27,7 +27,7 @@ public class KillsRewardScheme extends HierarchyRewardScheme<Integer> {
 	}
 	
 	@Override
-	protected Integer getValue(MinigamePlayer player, StoredStats data, Minigame minigame) {
+	protected Integer getValue(MinigamePlayer player, StoredGameStats data, Minigame minigame) {
 		return (int)data.getStat(MinigameStats.Kills);
 	}
 	

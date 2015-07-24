@@ -18,7 +18,7 @@ import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.reward.scheme.RewardScheme;
 import au.com.mineauz.minigames.minigame.reward.scheme.RewardSchemes;
 import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
-import au.com.mineauz.minigames.stats.StoredStats;
+import au.com.mineauz.minigames.stats.StoredGameStats;
 
 public class RewardsModule extends MinigameModule {
 	public static final String Name = "rewards";
@@ -44,7 +44,7 @@ public class RewardsModule extends MinigameModule {
 		this.scheme = scheme;
 	}
 	
-	public void awardPlayer(MinigamePlayer player, StoredStats data, Minigame minigame, boolean firstCompletion) {
+	public void awardPlayer(MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion) {
 		scheme.awardPlayer(player, data, minigame, firstCompletion);
 	}
 

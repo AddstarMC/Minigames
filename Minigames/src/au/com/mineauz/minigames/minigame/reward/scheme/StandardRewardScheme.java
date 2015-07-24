@@ -17,7 +17,7 @@ import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
-import au.com.mineauz.minigames.stats.StoredStats;
+import au.com.mineauz.minigames.stats.StoredGameStats;
 
 /**
  * The standard reward scheme handles the previous reward behaviour.
@@ -58,7 +58,7 @@ public class StandardRewardScheme implements RewardScheme {
 	}
 	
 	@Override
-	public void awardPlayer(MinigamePlayer player, StoredStats data, Minigame minigame, boolean firstCompletion) {
+	public void awardPlayer(MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion) {
 		List<RewardType> rewards = primaryReward.getReward();
 		
 		if (firstCompletion && rewards != null) {
@@ -76,7 +76,7 @@ public class StandardRewardScheme implements RewardScheme {
 	}
 	
 	@Override
-	public void awardPlayerOnLoss(MinigamePlayer player, StoredStats data, Minigame minigame) {
+	public void awardPlayerOnLoss(MinigamePlayer player, StoredGameStats data, Minigame minigame) {
 		// No lose awards
 	}
 	

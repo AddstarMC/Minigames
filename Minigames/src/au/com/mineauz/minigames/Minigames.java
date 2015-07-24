@@ -8,9 +8,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -46,10 +46,11 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardPlayer;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 import au.com.mineauz.minigames.signs.SignBase;
-import au.com.mineauz.minigames.sql.SQLDataLoader;
 import au.com.mineauz.minigames.sql.SQLDatabase;
+import au.com.mineauz.minigames.sql.SQLStatLoaderTask;
 import au.com.mineauz.minigames.sql.SQLStatSaverTask;
-import au.com.mineauz.minigames.stats.StoredStats;
+import au.com.mineauz.minigames.stats.StoredGameStats;
+import au.com.mineauz.minigames.stats.StoredHistoryStats;
 
 public class Minigames extends JavaPlugin{
 	static Logger log = Logger.getLogger("Minecraft");
@@ -121,7 +122,7 @@ public class Minigames extends JavaPlugin{
 						@Override
 						public void run() {
 							for(String minigame : allMGS){
-								Minigame game = new Minigame(minigame);
+								final Minigame game = new Minigame(minigame);
 								try{
 									game.loadMinigame();
 									mdata.addMinigame(game);
@@ -130,10 +131,22 @@ public class Minigames extends JavaPlugin{
 									getLogger().severe(ChatColor.RED.toString() + "Failed to load \"" + minigame +"\"! The configuration file may be corrupt or missing!");
 									e.printStackTrace();
 								}
-							}
-							if(getSQL() != null && getSQL().getSql() != null){
-								SQLDataLoader loader = new SQLDataLoader(mdata.getAllMinigames().values());
-								loader.start();
+								
+								if (getSQL() != null) {
+									ListenableFuture<Collection<StoredHistoryStats>> future = sqlSaverService.submit(new SQLStatLoaderTask(game, Minigames.this));
+									Futures.addCallback(future, new FutureCallback<Collection<StoredHistoryStats>>() {
+
+										@Override
+										public void onSuccess(Collection<StoredHistoryStats> result) {
+											game.getScoreboardData().loadData(result);
+										}
+
+										@Override
+										public void onFailure(Throwable t) {
+											// Do nothing
+										}
+									}, bukkitServerThreadExecutor);
+								}
 							}
 						}
 					}, 1L);
@@ -443,7 +456,7 @@ public class Minigames extends JavaPlugin{
 		defLang = svb.getConfig();
 	}
 	
-	public void queueStatSave(final StoredStats saveData, final boolean winner) {
+	public void queueStatSave(final StoredGameStats saveData, final boolean winner) {
 		MinigameUtils.debugMessage("Scheduling SQL data save for " + saveData);
 		final ListenableFuture<Boolean> completedFuture = sqlSaverService.submit(new SQLStatSaverTask(this, saveData));
 		

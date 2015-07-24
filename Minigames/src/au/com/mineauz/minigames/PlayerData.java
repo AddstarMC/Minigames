@@ -50,7 +50,7 @@ import au.com.mineauz.minigames.sounds.MGSounds;
 import au.com.mineauz.minigames.sounds.PlayMGSound;
 import au.com.mineauz.minigames.stats.DynamicMinigameStat;
 import au.com.mineauz.minigames.stats.MinigameStats;
-import au.com.mineauz.minigames.stats.StoredStats;
+import au.com.mineauz.minigames.stats.StoredGameStats;
 
 public class PlayerData {
 	private Map<String, MinigamePlayer> minigamePlayers = new HashMap<String, MinigamePlayer>();
@@ -450,7 +450,7 @@ public class PlayerData {
 					//SQL stuff
 					if(plugin.getSQL() != null){
 						if(minigame.canSaveCheckpoint() == false){
-							StoredStats saveData = new StoredStats(minigame, player);
+							StoredGameStats saveData = new StoredGameStats(minigame, player);
 							saveData.addStat(MinigameStats.Attempts, 1);
 							
 							for (DynamicMinigameStat stat : MinigameStats.getDynamicStats()) {
@@ -737,7 +737,7 @@ public class PlayerData {
 			for(MinigamePlayer player : winners){
 				player.setEndTime(System.currentTimeMillis());
 				
-				StoredStats saveData = new StoredStats(minigame, player);
+				StoredGameStats saveData = new StoredGameStats(minigame, player);
 				saveData.addStat(MinigameStats.Attempts, 1);
 				saveData.addStat(MinigameStats.Wins, 1);
 				

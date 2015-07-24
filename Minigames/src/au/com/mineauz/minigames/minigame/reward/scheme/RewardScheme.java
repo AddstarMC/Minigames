@@ -8,7 +8,7 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.stats.StoredStats;
+import au.com.mineauz.minigames.stats.StoredGameStats;
 
 /**
  * RewardSchemes allow more flexibility for reward handling.
@@ -28,7 +28,7 @@ public interface RewardScheme {
 	 * @param minigame The minigame they were playing
 	 * @param firstCompletion True if this is the first time they are completing the minigame
 	 */
-	public void awardPlayer(MinigamePlayer player, StoredStats data, Minigame minigame, boolean firstCompletion);
+	public void awardPlayer(MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion);
 	
 	/**
 	 * Awards the player with the rewards specified in this scheme.
@@ -37,7 +37,7 @@ public interface RewardScheme {
 	 * @param data The SQLData for the minigame.
 	 * @param minigame The minigame they were playing
 	 */
-	public void awardPlayerOnLoss(MinigamePlayer player, StoredStats data, Minigame minigame);
+	public void awardPlayerOnLoss(MinigamePlayer player, StoredGameStats data, Minigame minigame);
 	
 	/**
 	 * @return Returns the map of flags used for saving and loading values

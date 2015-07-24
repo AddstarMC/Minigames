@@ -1,7 +1,9 @@
 package au.com.mineauz.minigames.minigame;
 
 import au.com.mineauz.minigames.stats.MinigameStats;
-import au.com.mineauz.minigames.stats.StoredStats;
+import au.com.mineauz.minigames.stats.StatValueField;
+import au.com.mineauz.minigames.stats.StoredGameStats;
+import au.com.mineauz.minigames.stats.StoredHistoryStats;
 
 public class ScoreboardPlayer {
 	private String playerName;
@@ -19,7 +21,7 @@ public class ScoreboardPlayer {
 	private int totalReverts;
 	private long totalTime;
 	
-	public ScoreboardPlayer(StoredStats saveData) {
+	public ScoreboardPlayer(StoredGameStats saveData) {
 		this(saveData.getPlayer().getName(),
 				saveData.getPlayer().getUUID().toString(), 
 				(int)saveData.getStat(MinigameStats.Wins),
@@ -36,6 +38,26 @@ public class ScoreboardPlayer {
 				saveData.getStat(MinigameStats.CompletionTime)
 				);
 	}
+	
+	public ScoreboardPlayer(StoredHistoryStats saveData) {
+		this(saveData.getPlayerName(),
+				saveData.getPlayerId().toString(), 
+				(int)saveData.getStat(MinigameStats.Wins, StatValueField.Total),
+				(int)(saveData.getStat(MinigameStats.Attempts, StatValueField.Total) - saveData.getStat(MinigameStats.Wins, StatValueField.Total)),
+				(int)saveData.getStat(MinigameStats.Kills, StatValueField.Max),
+				(int)saveData.getStat(MinigameStats.Deaths, StatValueField.Min),
+				(int)saveData.getStat(MinigameStats.Score, StatValueField.Max),
+				saveData.getStat(MinigameStats.CompletionTime, StatValueField.Min),
+				(int)saveData.getStat(MinigameStats.Reverts, StatValueField.Min),
+				(int)saveData.getStat(MinigameStats.Kills, StatValueField.Total),
+				(int)saveData.getStat(MinigameStats.Deaths, StatValueField.Total),
+				(int)saveData.getStat(MinigameStats.Score, StatValueField.Total),
+				(int)saveData.getStat(MinigameStats.Reverts, StatValueField.Total),
+				saveData.getStat(MinigameStats.CompletionTime, StatValueField.Total)
+				);
+	}
+	
+	
 	public ScoreboardPlayer(String playerName, String uuid, int completions, int failures, int bestKills, 
 			int leastDeaths, int bestScore, long bestTime, int leastReverts, int totalKills, int totalDeaths, int totalScore, int totalReverts, long totalTime){
 		this.playerName = playerName;
@@ -158,7 +180,7 @@ public class ScoreboardPlayer {
 		return uuid;
 	}
 	
-	public void update(StoredStats data) {
+	public void update(StoredGameStats data) {
 		completions += (int)data.getStat(MinigameStats.Wins);
 		failures += (int)(data.getStat(MinigameStats.Attempts) - data.getStat(MinigameStats.Wins));
 		bestKills = Math.max(bestKills, (int)data.getStat(MinigameStats.Kills));

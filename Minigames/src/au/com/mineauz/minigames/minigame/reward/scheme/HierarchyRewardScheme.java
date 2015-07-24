@@ -32,7 +32,7 @@ import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
-import au.com.mineauz.minigames.stats.StoredStats;
+import au.com.mineauz.minigames.stats.StoredGameStats;
 
 public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements RewardScheme {
 	private EnumFlag<Comparison> comparisonType;
@@ -104,10 +104,10 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 		submenu.displayMenu(player);
 	}
 	
-	protected abstract T getValue(MinigamePlayer player, StoredStats data, Minigame minigame);
+	protected abstract T getValue(MinigamePlayer player, StoredGameStats data, Minigame minigame);
 	
 	@Override
-	public void awardPlayer(MinigamePlayer player, StoredStats data, Minigame minigame, boolean firstCompletion) {
+	public void awardPlayer(MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion) {
 		T value = getValue(player, data, minigame);
 		Rewards reward;
 		
@@ -150,7 +150,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 	}
 
 	@Override
-	public void awardPlayerOnLoss(MinigamePlayer player, StoredStats data, Minigame minigame) {
+	public void awardPlayerOnLoss(MinigamePlayer player, StoredGameStats data, Minigame minigame) {
 		if (enableRewardsOnLoss.getFlag())
 			awardPlayer(player, data, minigame, lossUsesSecondary.getFlag());
 	}

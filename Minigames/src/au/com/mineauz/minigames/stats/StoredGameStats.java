@@ -9,12 +9,12 @@ import com.google.common.collect.Maps;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 
-public class StoredStats {
+public class StoredGameStats {
 	private final MinigamePlayer player;
 	private final Minigame minigame;
 	private final Map<MinigameStat, Long> stats;
 	
-	public StoredStats(Minigame minigame, MinigamePlayer player) {
+	public StoredGameStats(Minigame minigame, MinigamePlayer player) {
 		this.minigame = minigame;
 		this.player = player;
 		

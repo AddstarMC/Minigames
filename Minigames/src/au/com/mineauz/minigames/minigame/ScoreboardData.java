@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.minigame;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import au.com.mineauz.minigames.MinigameSave;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.stats.StoredHistoryStats;
 
 public class ScoreboardData {
 	public Map<String, ScoreboardPlayer> scoreboards = new HashMap<String, ScoreboardPlayer>();
@@ -94,6 +96,12 @@ public class ScoreboardData {
 			addDisplay(dis);
 			dis.getLocation().getBlock().setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.plugin, true));
 			dis.getLocation().getBlock().setMetadata("Minigame", new FixedMetadataValue(Minigames.plugin, mgm.getName(false)));
+		}
+	}
+	
+	public void loadData(Collection<StoredHistoryStats> stats) {
+		for (StoredHistoryStats data : stats) {
+			addPlayer(new ScoreboardPlayer(data));
 		}
 	}
 }

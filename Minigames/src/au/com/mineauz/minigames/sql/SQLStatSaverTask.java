@@ -14,18 +14,18 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.MinigameStats;
-import au.com.mineauz.minigames.stats.StoredStats;
+import au.com.mineauz.minigames.stats.StoredGameStats;
 
 public class SQLStatSaverTask implements Callable<Boolean> {
 	private static final boolean defaultHasCompleted = true;
 	
 	private final SQLDatabase database;
 	private final Logger logger;
-	private final StoredStats data;
+	private final StoredGameStats data;
 	
 	private Connection con;
 	
-	public SQLStatSaverTask(Minigames plugin, StoredStats data) {
+	public SQLStatSaverTask(Minigames plugin, StoredGameStats data) {
 		this.database = plugin.getSQL();
 		this.logger = plugin.getLogger();
 		this.data = data;
@@ -52,7 +52,7 @@ public class SQLStatSaverTask implements Callable<Boolean> {
 		return database.getSql();
 	}
 	
-	private boolean saveData(StoredStats data) {
+	private boolean saveData(StoredGameStats data) {
 		MinigameUtils.debugMessage("SQL Begining save of " + data);
 		boolean hasCompleted = defaultHasCompleted;
 		try {
@@ -112,7 +112,7 @@ public class SQLStatSaverTask implements Callable<Boolean> {
 		}
 	}
 	
-	private void saveAttempt(StoredStats data, int minigameId) throws SQLException {
+	private void saveAttempt(StoredGameStats data, int minigameId) throws SQLException {
 		PreparedStatement statement = database.insertAttempt;
 		
 		statement.setString(1, data.getPlayer().getUUID().toString());
@@ -135,7 +135,7 @@ public class SQLStatSaverTask implements Callable<Boolean> {
 		statement.executeUpdate();
 	}
 	
-	private void saveStats(StoredStats data, UUID player, int minigameId) throws SQLException {
+	private void saveStats(StoredGameStats data, UUID player, int minigameId) throws SQLException {
 		// Prepare all updates
 		for (Entry<MinigameStat, Long> entry : data.getStats().entrySet()) {
 			// Only store this stat if it's required

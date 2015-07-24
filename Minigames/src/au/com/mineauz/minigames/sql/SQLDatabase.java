@@ -23,6 +23,9 @@ public class SQLDatabase {
 	public PreparedStatement insertMinigame;
 	public PreparedStatement insertPlayer;
 	
+	public PreparedStatement getStats;
+	public PreparedStatement getAttempts;
+	
 	public boolean loadSQL(){
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
@@ -105,6 +108,9 @@ public class SQLDatabase {
 		
 		insertMinigame = sql.prepareStatement("INSERT INTO `Minigames` (`name`) VALUES (?) ON DUPLICATE KEY UPDATE `minigame_id`=LAST_INSERT_ID(`minigame_id`);", Statement.RETURN_GENERATED_KEYS);
 		insertPlayer = sql.prepareStatement("INSERT INTO `Players` VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `name` = VALUES(`name`), `displayname` = VALUES(`displayname`);");
+		
+		getAttempts = sql.prepareStatement("SELECT `p`.`player_id`, `p`.`name`, `p`.`displayname`, `wins`, `attempts`, `time_min`, `time_max`, `time_total` FROM `PlayerAttempts` AS `s` JOIN `Players` AS `p` ON (`p`.`player_id` = `s`.`player_id`) WHERE `minigame_id`=?;");
+		getStats = sql.prepareStatement("SELECT `player_id`, `stat`, `value` FROM `PlayerStats` WHERE `minigame_id`=?;");
 	}
 
 	public Connection getSql() {
