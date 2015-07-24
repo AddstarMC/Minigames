@@ -1,5 +1,7 @@
 package au.com.mineauz.minigames.minigame;
 
+import java.util.UUID;
+
 import au.com.mineauz.minigames.stats.MinigameStats;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
@@ -7,7 +9,7 @@ import au.com.mineauz.minigames.stats.StoredHistoryStats;
 
 public class ScoreboardPlayer {
 	private String playerName;
-	private String uuid;
+	private UUID uuid;
 	private int completions;
 	private int failures;
 	private int bestKills;
@@ -23,7 +25,7 @@ public class ScoreboardPlayer {
 	
 	public ScoreboardPlayer(StoredGameStats saveData) {
 		this(saveData.getPlayer().getName(),
-				saveData.getPlayer().getUUID().toString(), 
+				saveData.getPlayer().getUUID(), 
 				(int)saveData.getStat(MinigameStats.Wins),
 				(int)(saveData.getStat(MinigameStats.Attempts) - saveData.getStat(MinigameStats.Wins)),
 				(int)saveData.getStat(MinigameStats.Kills),
@@ -41,7 +43,7 @@ public class ScoreboardPlayer {
 	
 	public ScoreboardPlayer(StoredHistoryStats saveData) {
 		this(saveData.getPlayerName(),
-				saveData.getPlayerId().toString(), 
+				saveData.getPlayerId(), 
 				(int)saveData.getStat(MinigameStats.Wins, StatValueField.Total),
 				(int)(saveData.getStat(MinigameStats.Attempts, StatValueField.Total) - saveData.getStat(MinigameStats.Wins, StatValueField.Total)),
 				(int)saveData.getStat(MinigameStats.Kills, StatValueField.Max),
@@ -58,7 +60,7 @@ public class ScoreboardPlayer {
 	}
 	
 	
-	public ScoreboardPlayer(String playerName, String uuid, int completions, int failures, int bestKills, 
+	public ScoreboardPlayer(String playerName, UUID uuid, int completions, int failures, int bestKills, 
 			int leastDeaths, int bestScore, long bestTime, int leastReverts, int totalKills, int totalDeaths, int totalScore, int totalReverts, long totalTime){
 		this.playerName = playerName;
 		this.uuid = uuid;
@@ -176,7 +178,7 @@ public class ScoreboardPlayer {
 		return playerName;
 	}
 	
-	public String getUUID(){
+	public UUID getUUID(){
 		return uuid;
 	}
 	

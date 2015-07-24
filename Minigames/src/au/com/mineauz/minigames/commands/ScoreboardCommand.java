@@ -3,7 +3,9 @@ package au.com.mineauz.minigames.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -88,7 +90,9 @@ public class ScoreboardCommand implements ICommand{
 						c++;
 					}
 					if(ply != null){
-						if(mg.getScoreboardData().hasPlayer(ply)){
+						OfflinePlayer target = Bukkit.getOfflinePlayer(ply);
+						
+						if(mg.getScoreboardData().hasPlayer(target.getUniqueId())){
 							if(args[2].matches("(asc)|(desc)")){
 								ScoreboardOrder ord = ScoreboardOrder.DESCENDING;
 								if(args[2].equals("asc")){

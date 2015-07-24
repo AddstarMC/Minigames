@@ -2,14 +2,16 @@ package au.com.mineauz.minigames.minigame;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.metadata.FixedMetadataValue;
+
+import com.google.common.collect.Maps;
 
 import au.com.mineauz.minigames.MinigameSave;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -17,18 +19,18 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.stats.StoredHistoryStats;
 
 public class ScoreboardData {
-	public Map<String, ScoreboardPlayer> scoreboards = new HashMap<String, ScoreboardPlayer>();
-	public Map<String, ScoreboardDisplay> displays = new HashMap<String, ScoreboardDisplay>();
+	public Map<UUID, ScoreboardPlayer> scoreboards = Maps.newHashMap();
+	public Map<String, ScoreboardDisplay> displays = Maps.newHashMap();
 	
 	public void addPlayer(ScoreboardPlayer player){
-		scoreboards.put(player.getPlayerName(), player);
+		scoreboards.put(player.getUUID(), player);
 	}
 	
-	public ScoreboardPlayer getPlayer(String uuid){
+	public ScoreboardPlayer getPlayer(UUID uuid){
 		return scoreboards.get(uuid);
 	}
 	
-	public boolean hasPlayer(String uuid){
+	public boolean hasPlayer(UUID uuid){
 		return scoreboards.containsKey(uuid);
 	}
 	

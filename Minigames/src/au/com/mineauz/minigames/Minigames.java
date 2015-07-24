@@ -471,8 +471,8 @@ public class Minigames extends JavaPlugin{
 				MinigamePlayer player = saveData.getPlayer();
 				
 				// Update scoreboards
-				if (minigame.getScoreboardData().hasPlayer(player.getUUID().toString())) {
-					ScoreboardPlayer sPlayer = minigame.getScoreboardData().getPlayer(player.getUUID().toString());
+				if (minigame.getScoreboardData().hasPlayer(player.getUUID())) {
+					ScoreboardPlayer sPlayer = minigame.getScoreboardData().getPlayer(player.getUUID());
 					sPlayer.update(saveData);
 				} else {
 					minigame.getScoreboardData().addPlayer(new ScoreboardPlayer(saveData));
