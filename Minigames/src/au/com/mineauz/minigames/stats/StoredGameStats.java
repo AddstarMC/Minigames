@@ -49,6 +49,10 @@ public class StoredGameStats {
 		return Collections.unmodifiableMap(newStats);
 	}
 	
+	public boolean hasStat(MinigameStat stat) {
+		return stats.containsKey(stat);
+	}
+	
 	public long getStat(MinigameStat stat) {
 		Long value = stats.get(stat);
 		if (value == null) {

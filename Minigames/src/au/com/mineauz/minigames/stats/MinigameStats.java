@@ -3,6 +3,15 @@ package au.com.mineauz.minigames.stats;
 import java.util.Collections;
 import java.util.Map;
 
+import org.apache.commons.lang.WordUtils;
+import org.bukkit.Material;
+
+import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.InteractionInterface;
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.menu.MenuItemCustom;
+
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 
@@ -10,19 +19,21 @@ import com.google.common.collect.Maps;
  * This class allows you to register stats that are usable in scoreboards 
  */
 public final class MinigameStats {
-	public static final MinigameStat Wins = new BasicMinigameStat("wins", StatFormat.Total, true);
-	public static final MinigameStat Attempts = new BasicMinigameStat("attempts", StatFormat.Total, true);
-	public static final MinigameStat CompletionTime = new BasicMinigameStat("time", StatFormat.MinMaxAndTotal, true);
+	public static final MinigameStat Wins = new BasicMinigameStat("wins", "Wins", StatFormat.Total, true);
+	public static final MinigameStat Losses = new BasicMinigameStat("losses", "Losses", StatFormat.Total, true); // Fake stat
+	public static final MinigameStat Attempts = new BasicMinigameStat("attempts", "Attempts", StatFormat.Total, true);
+	public static final MinigameStat CompletionTime = new BasicMinigameStat("time", "Completion Time", StatFormat.MinMaxAndTotal, true);
 	
-	public static final MinigameStat Kills = new BasicMinigameStat("kills", StatFormat.MaxAndTotal);
-	public static final MinigameStat Deaths = new BasicMinigameStat("deaths", StatFormat.MinAndTotal);
-	public static final MinigameStat Score = new BasicMinigameStat("score", StatFormat.MaxAndTotal);
-	public static final MinigameStat Reverts = new BasicMinigameStat("reverts", StatFormat.MinAndTotal);
+	public static final MinigameStat Kills = new BasicMinigameStat("kills", "Kills", StatFormat.MaxAndTotal);
+	public static final MinigameStat Deaths = new BasicMinigameStat("deaths", "Deaths", StatFormat.MinAndTotal);
+	public static final MinigameStat Score = new BasicMinigameStat("score", "Score", StatFormat.MaxAndTotal);
+	public static final MinigameStat Reverts = new BasicMinigameStat("reverts", "Reverts", StatFormat.MinAndTotal);
 	
 	private static Map<String, MinigameStat> stats = Maps.newHashMap();
 	
 	static {
 		registerStat0(Wins);
+		registerStat0(Losses);
 		registerStat0(Attempts);
 		registerStat0(CompletionTime);
 		registerStat0(Kills);
@@ -114,7 +125,60 @@ public final class MinigameStats {
 		return Iterables.filter(stats.values(), DynamicMinigameStat.class);
 	}
 	
-	private MinigameStats() {}
-
+	/**
+	 * Creates a menu that allows you to select a statistic
+	 * @param parent The parent menu
+	 * @param statCallback The callback to be invoked when the statistic is chosen. Note: only the setValue() method will be called.
+	 * @return The menu to display
+	 */
+	public static Menu createStatSelectMenu(final Menu parent, final Callback<MinigameStat> statCallback) {
+		final Menu submenu = new Menu(6, "Select Statistic", parent.getViewer());
+		
+		for (final MinigameStat stat : getAllStats().values()) {
+			MenuItemCustom item = new MenuItemCustom(WordUtils.capitalizeFully(stat.getDisplayName()), Material.BOOK_AND_QUILL);
+			item.setClick(new InteractionInterface() {
+				@Override
+				public Object interact(Object object) {
+					statCallback.setValue(stat);
+					parent.displayMenu(submenu.getViewer());
+					return null;
+				}
+			});
+			
+			submenu.addItem(item);
+		}
+		
+		submenu.addItem(new MenuItemBack(parent), submenu.getSize() - 9);
+		return submenu;
+	}
 	
+	/**
+	 * Creates a menu that allows you to select a statistic field
+	 * @param parent The parent menu
+	 * @param stat The statistic to limit the choices for
+	 * @param callback The callback to be invoked when the field is chosen. Note: only the setValue() method will be called.
+	 * @return The menu to display
+	 */
+	public static Menu createStatFieldSelectMenu(final Menu parent, MinigameStat stat, final Callback<StatValueField> callback) {
+		final Menu submenu = new Menu(6, "Select Statistic Field", parent.getViewer());
+		
+		for (final StatValueField field : stat.getFormat().getFields()) {
+			MenuItemCustom item = new MenuItemCustom(WordUtils.capitalizeFully(field.name()), Material.PAPER);
+			item.setClick(new InteractionInterface() {
+				@Override
+				public Object interact(Object object) {
+					callback.setValue(field);
+					parent.displayMenu(submenu.getViewer());
+					return null;
+				}
+			});
+			
+			submenu.addItem(item);
+		}
+		
+		submenu.addItem(new MenuItemBack(parent), submenu.getSize() - 9);
+		return submenu;
+	}
+	
+	private MinigameStats() {}
 }

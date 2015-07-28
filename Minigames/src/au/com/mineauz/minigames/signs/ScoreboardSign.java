@@ -1,21 +1,19 @@
 package au.com.mineauz.minigames.signs;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.material.Directional;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardDisplay;
 
 public class ScoreboardSign implements MinigameSign{
-	
 	private Minigames plugin = Minigames.plugin;
 
 	@Override
@@ -46,100 +44,81 @@ public class ScoreboardSign implements MinigameSign{
 	@Override
 	public boolean signCreate(SignChangeEvent event) {
 		Sign sign = (Sign)event.getBlock().getState();
-		if(sign.getType() != Material.WALL_SIGN){
+		if (sign.getType() != Material.WALL_SIGN) {
 			event.getPlayer().sendMessage(ChatColor.RED + "Scoreboards must be placed on a wall!");
 			return false;
 		}
 		
-		BlockFace dir = ((Directional)sign.getData()).getFacing();
+		// Parse minigame
+		Minigame minigame;
 		
-		if(plugin.mdata.hasMinigame(event.getLine(2))){
-			if(event.getLine(3).isEmpty() || event.getLine(3).matches("[0-9]+x[0-9]+")){
-				int len;
-				int hei;
-				if(!event.getLine(3).isEmpty()){
-					len = Integer.parseInt(event.getLine(3).split("x")[0]);
-					hei = Integer.parseInt(event.getLine(3).split("x")[1]);
-				}
-				else{
-					len = 3;
-					hei = 3;
-				}
-				
-				if(len % 2 == 0){
-					event.getPlayer().sendMessage(ChatColor.RED + "Length must not be an even number!");
-					return false;
-				}
-				Location cur = event.getBlock().getLocation().clone();
-				cur.setY(cur.getY() - hei);
-				int ord;
-				int ory = cur.getBlockY();
-				if(dir == BlockFace.EAST || dir == BlockFace.WEST){
-					cur.setZ(cur.getZ() - Math.floor(len / 2));
-					ord = cur.getBlockZ();
-				}
-				else{
-					cur.setX(cur.getX() - Math.floor(len / 2));
-					ord = cur.getBlockX();
-				}
-				
-				for(int y = 0; y < hei; y++){
-					cur.setY(ory + y);
-					for(int i = 0; i < len; i++){
-						if(dir == BlockFace.EAST || dir == BlockFace.WEST){
-							cur.setZ(ord + i);
-						}
-						else{
-							cur.setX(ord + i);
-						}
-						if(cur.getBlock().getType() == Material.AIR){
-							cur.getBlock().setType(Material.WALL_SIGN);
-							
-							if(cur.getBlock().getState() instanceof Sign){
-								Sign nsign = (Sign)cur.getBlock().getState();
-								org.bukkit.material.Sign mt = (org.bukkit.material.Sign) nsign.getData();
-								mt.setFacingDirection(dir);
-								nsign.update();
-							}
-						}
-						else{
-							event.getPlayer().sendMessage(ChatColor.RED + "Block in the way!");
-							return false;
-						}
-					}
-				}
-				event.setLine(1, ChatColor.GREEN + "Scoreboard");
-				event.setLine(2, plugin.mdata.getMinigame(event.getLine(2)).getName(false));
-				return true;
-			}
-		}
-		else{
+		if (plugin.mdata.hasMinigame(event.getLine(2))) {
+			minigame = plugin.mdata.getMinigame(event.getLine(2));
+		} else {
 			event.getPlayer().sendMessage(ChatColor.RED + "No Minigame found by the name " + event.getLine(2));
+			return false;
 		}
-		return false;
+		
+		// Parse size
+		int width;
+		int height;
+		
+		if (event.getLine(3).isEmpty()) {
+			width = ScoreboardDisplay.defaultWidth;
+			height = ScoreboardDisplay.defaultHeight;
+		} else if (event.getLine(3).matches("[0-9]+x[0-9]+")) {
+			String[] parts = event.getLine(3).split("x");
+			width = Integer.parseInt(parts[0]);
+			height = Integer.parseInt(parts[1]);
+		} else {
+			event.getPlayer().sendMessage(ChatColor.RED + "Invalid size. Requires nothing or (width)x(height) eg. 3x3");
+			return false;
+		}
+		
+		// So we dont have to deal with even size scoreboards
+		if (width % 2 == 0) {
+			event.getPlayer().sendMessage(ChatColor.RED + "Length must not be an even number!");
+			return false;
+		}
+		
+		BlockFace facing = ((Directional)sign.getData()).getFacing();
+		
+		// Add our display
+		ScoreboardDisplay display = new ScoreboardDisplay(minigame, width, height, event.getBlock().getLocation(), facing);
+		display.placeSigns();
+		
+		minigame.getScoreboardData().addDisplay(display);
+		
+		// Reformat this sign for the next part
+		event.setLine(1, ChatColor.GREEN + "Scoreboard");
+		event.setLine(2, minigame.getName(false));
+		
+		event.getBlock().setMetadata("Minigame", new FixedMetadataValue(plugin, minigame));
+		return true;
 	}
 
 	@Override
 	public boolean signUse(Sign sign, MinigamePlayer player) {
-		Minigame mgm = plugin.mdata.getMinigame(sign.getLine(2));
-		int width = 3;
-		int height = 3;
-		if(sign.getLine(3).matches("[0-9]+x[0-9]")){
-			width = Integer.parseInt(sign.getLine(3).split("x")[0]);
-			height = Integer.parseInt(sign.getLine(3).split("x")[1]);
+		Minigame minigame = plugin.mdata.getMinigame(sign.getLine(2));
+		if (minigame == null) {
+			return false;
 		}
-		if(mgm != null){
-			ScoreboardDisplay disp = new ScoreboardDisplay(mgm, width, height, sign.getLocation(), ((org.bukkit.material.Sign)sign.getData()).getFacing());
-			disp.displayMenu(player);
+		
+		ScoreboardDisplay display = minigame.getScoreboardData().getDisplay(sign.getBlock());
+		if (display == null) {
+			return false;
 		}
+		
+		display.displayMenu(player);
+		
 		return false;
 	}
 
 	@Override
 	public void signBreak(Sign sign, MinigamePlayer player) {
-		Minigame mg = plugin.mdata.getMinigame(sign.getBlock().getMetadata("Minigame").get(0).asString());
-		if(mg != null){
-			mg.getScoreboardData().removeDisplay(MinigameUtils.createLocationID(sign.getBlock().getLocation()));
+		Minigame minigame = (Minigame)sign.getBlock().getMetadata("Minigame").get(0).value();
+		if(minigame != null) {
+			minigame.getScoreboardData().removeDisplay(sign.getBlock());
 		}
 	}
 

@@ -607,6 +607,10 @@ public class PlayerData {
 			
 			if(player.getPlayer().getGameMode() != GameMode.CREATIVE)
 				player.setCanFly(false);
+			
+			if (!forced) {
+				minigame.getScoreboardData().reload();
+			}
 		}
 	}
 	
@@ -810,7 +814,7 @@ public class PlayerData {
 			
 			//Call Types End.
 			mdata.minigameType(minigame.getType()).endMinigame(winners, losers, minigame);
-			
+			minigame.getScoreboardData().reload();
 		}
 	}
 	

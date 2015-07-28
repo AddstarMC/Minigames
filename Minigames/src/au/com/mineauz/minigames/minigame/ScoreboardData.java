@@ -1,109 +1,112 @@
 package au.com.mineauz.minigames.minigame;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
-import org.bukkit.block.BlockFace;
+import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.metadata.FixedMetadataValue;
 
 import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 
 import au.com.mineauz.minigames.MinigameSave;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.stats.StoredHistoryStats;
+import au.com.mineauz.minigames.sql.SQLStatLoaderTask;
+import au.com.mineauz.minigames.stats.StoredStat;
 
 public class ScoreboardData {
-	public Map<UUID, ScoreboardPlayer> scoreboards = Maps.newHashMap();
-	public Map<String, ScoreboardDisplay> displays = Maps.newHashMap();
+	private final Minigame minigame;
+	private final Map<Block, ScoreboardDisplay> displays = Maps.newHashMap();
 	
-	public void addPlayer(ScoreboardPlayer player){
-		scoreboards.put(player.getUUID(), player);
+	public ScoreboardData(Minigame minigame) {
+		this.minigame = minigame;
 	}
 	
-	public ScoreboardPlayer getPlayer(UUID uuid){
-		return scoreboards.get(uuid);
+	public ScoreboardDisplay getDisplay(Block block) {
+		return displays.get(block);
 	}
 	
-	public boolean hasPlayer(UUID uuid){
-		return scoreboards.containsKey(uuid);
+	public void addDisplay(ScoreboardDisplay display) {
+		displays.put(display.getRoot().getBlock(), display);
 	}
 	
-	public List<ScoreboardPlayer> getPlayers(){
-		return new ArrayList<ScoreboardPlayer>(scoreboards.values());
-	}
-	
-	public ScoreboardDisplay getDisplay(String locID){
-		if(displays.containsKey(locID)){
-			return displays.get(locID);
-		}
-		return null;
-	}
-	
-	public void addDisplay(ScoreboardDisplay display){
-		displays.put(MinigameUtils.createLocationID(display.getLocation()), display);
-	}
-	
-	public void removeDisplay(String locID){
-		if(displays.containsKey(locID)){
-			displays.get(locID).deleteSigns();
-			displays.remove(locID);
+	public void removeDisplay(Block block) {
+		ScoreboardDisplay display = displays.remove(block);
+		if (display != null) {
+			display.deleteSigns();
+			
+			block.removeMetadata("MGScoreboardSign", Minigames.plugin);
+			block.removeMetadata("Minigame", Minigames.plugin);
 		}
 	}
 	
-	public void updateDisplays(){
-		if(!displays.isEmpty()){
-			for(ScoreboardDisplay dis : displays.values()){
-				dis.updateStats();
-			}
+	/**
+	 * Makes async queries to the database loading the data for each scoreboard display
+	 */
+	public void reload() {
+		for (ScoreboardDisplay display : displays.values()) {
+			loadAndApply(display);
+		}
+	}
+	
+	public void reload(Block block) {
+		ScoreboardDisplay display = getDisplay(block);
+		if (display != null) {
+			loadAndApply(display);
+		}
+	}
+	
+	private void loadAndApply(final ScoreboardDisplay display) {
+		SQLStatLoaderTask task = new SQLStatLoaderTask(
+				minigame,
+				display.getStat(),
+				display.getField(),
+				display.getOrder(),
+				0,
+				display.getWidth() * display.getHeight(),
+				Minigames.plugin
+				);
+		
+		ListenableFuture<List<StoredStat>> future = Minigames.plugin.getExecutorService().submit(task);
+		Futures.addCallback(future, display.getUpdateCallback(), Minigames.plugin.getBukkitThreadExecutor());
+	}
+	
+	/**
+	 * Makes each scoreboard update its signs with their current data. This does not update the scoreboard data.
+	 */
+	public void refreshDisplays() {
+		for (ScoreboardDisplay display : displays.values()) {
+			display.updateSigns();
 		}
 	}
 	
 	public void saveDisplays(MinigameSave save, String name){
-		int inc = 0;
-		FileConfiguration con = save.getConfig();
-		con.set(name + ".scoreboards", null);
-		for(ScoreboardDisplay dis : displays.values()){
-			String loc = dis.getMinigame().getName(false) + ".scoreboards." + inc + ".";
-			con.set(loc + "height", dis.getHeight());
-			con.set(loc + "width", dis.getWidth());
-			con.set(loc + "dir", dis.getDirection().toString());
-			con.set(loc + "type", dis.getType().toString());
-			con.set(loc + "order", dis.getOrder().toString());
-			Minigames.plugin.mdata.minigameSetLocationsShort(dis.getMinigame().getName(false), dis.getLocation(), "scoreboards." + inc + ".location", save.getConfig());
-			inc++;
-		}
-	}
-	
-	public void loadDisplays(MinigameSave save, Minigame mgm){
-		FileConfiguration con = save.getConfig();
-		if(!save.getConfig().contains(mgm.getName(false) + ".scoreboards")) return;
+		FileConfiguration root = save.getConfig();
+		ConfigurationSection section = root.createSection(name + ".scoreboards");
 		
-		Set<String> keys = save.getConfig().getConfigurationSection(mgm.getName(false) + ".scoreboards").getKeys(false);
-		for(String key : keys){
-			String loc = mgm.getName(false) + ".scoreboards." + key + ".";
-			ScoreboardDisplay dis = 
-					new ScoreboardDisplay(mgm, 
-							con.getInt(loc + "width"), 
-							con.getInt(loc + "height"), 
-							Minigames.plugin.mdata.minigameLocationsShort(mgm.getName(false), "scoreboards." + key + ".location", save.getConfig()), 
-							BlockFace.valueOf(con.getString(loc + "dir")));
-			dis.setOrd(ScoreboardOrder.valueOf(con.getString(loc + "order")));
-			dis.setType(ScoreboardType.valueOf(con.getString(loc + "type")));
-			addDisplay(dis);
-			dis.getLocation().getBlock().setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.plugin, true));
-			dis.getLocation().getBlock().setMetadata("Minigame", new FixedMetadataValue(Minigames.plugin, mgm.getName(false)));
+		int index = 0;
+		for(ScoreboardDisplay display : displays.values()) {
+			ConfigurationSection displaySection = section.createSection(String.valueOf(index++));
+			display.save(displaySection);
 		}
 	}
 	
-	public void loadData(Collection<StoredHistoryStats> stats) {
-		for (StoredHistoryStats data : stats) {
-			addPlayer(new ScoreboardPlayer(data));
+	public void loadDisplays(MinigameSave save, Minigame mgm) {
+		FileConfiguration con = save.getConfig();
+		ConfigurationSection root = con.getConfigurationSection(mgm.getName(false) + ".scoreboards");
+		
+		if (root == null) {
+			return;
+		}
+		
+		for (String key : root.getKeys(false)) {
+			ConfigurationSection displayConf = root.getConfigurationSection(key);
+			
+			ScoreboardDisplay display = ScoreboardDisplay.load(mgm, displayConf);
+			if (display != null) {
+				addDisplay(display);
+			}
 		}
 	}
 }

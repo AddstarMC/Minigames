@@ -76,4 +76,22 @@ public abstract class MinigameStat {
 			return true;
 		}
 	}
+	
+	/**
+	 * Converts the value into a string to display
+	 * @param value The value to display
+	 * @return The output string
+	 */
+	public String displayValue(long value) {
+		return String.valueOf(value);
+	}
+	
+	/**
+	 * Converts the value into a string for displaying on a sign
+	 * @param value The value to display
+	 * @return The output string
+	 */
+	public String displayValueSign(long value) {
+		return String.valueOf(value);
+	}
 }

@@ -23,7 +23,9 @@ public class SQLDatabase {
 	public PreparedStatement insertMinigame;
 	public PreparedStatement insertPlayer;
 	
-	public PreparedStatement getStats;
+	public PreparedStatement getAllStats;
+	public PreparedStatement getStatsAsc;
+	public PreparedStatement getStatsDesc;
 	public PreparedStatement getAttempts;
 	
 	public boolean loadSQL(){
@@ -110,7 +112,9 @@ public class SQLDatabase {
 		insertPlayer = sql.prepareStatement("INSERT INTO `Players` VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `name` = VALUES(`name`), `displayname` = VALUES(`displayname`);");
 		
 		getAttempts = sql.prepareStatement("SELECT `p`.`player_id`, `p`.`name`, `p`.`displayname`, `wins`, `attempts`, `time_min`, `time_max`, `time_total` FROM `PlayerAttempts` AS `s` JOIN `Players` AS `p` ON (`p`.`player_id` = `s`.`player_id`) WHERE `minigame_id`=?;");
-		getStats = sql.prepareStatement("SELECT `player_id`, `stat`, `value` FROM `PlayerStats` WHERE `minigame_id`=?;");
+		getAllStats = sql.prepareStatement("SELECT `p`.`player_id`, `p`.`name`, `p`.`displayname`, `stat`, `value` FROM `PlayerStats` AS `s` JOIN `Players` AS `p` ON (`p`.`player_id` = `s`.`player_id`) WHERE `minigame_id`=?;");
+		getStatsAsc = sql.prepareStatement("SELECT `p`.`player_id`, `p`.`name`, `p`.`displayname`, `value` FROM `PlayerStats` AS `s` JOIN `Players` AS `p` ON (`p`.`player_id` = `s`.`player_id`) WHERE `minigame_id`=? AND `stat`=? ORDER BY `value` ASC LIMIT ?, ?;");
+		getStatsDesc = sql.prepareStatement("SELECT `p`.`player_id`, `p`.`name`, `p`.`displayname`, `value` FROM `PlayerStats` AS `s` JOIN `Players` AS `p` ON (`p`.`player_id` = `s`.`player_id`) WHERE `minigame_id`=? AND `stat`=? ORDER BY `value` DESC LIMIT ?, ?;");
 	}
 
 	public Connection getSql() {

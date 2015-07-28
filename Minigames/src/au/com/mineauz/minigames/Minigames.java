@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -43,14 +42,11 @@ import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.gametypes.SingleplayerType;
 import au.com.mineauz.minigames.mechanics.TreasureHuntMechanic;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.ScoreboardPlayer;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 import au.com.mineauz.minigames.signs.SignBase;
 import au.com.mineauz.minigames.sql.SQLDatabase;
-import au.com.mineauz.minigames.sql.SQLStatLoaderTask;
 import au.com.mineauz.minigames.sql.SQLStatSaverTask;
 import au.com.mineauz.minigames.stats.StoredGameStats;
-import au.com.mineauz.minigames.stats.StoredHistoryStats;
 
 public class Minigames extends JavaPlugin{
 	static Logger log = Logger.getLogger("Minecraft");
@@ -133,19 +129,7 @@ public class Minigames extends JavaPlugin{
 								}
 								
 								if (getSQL() != null) {
-									ListenableFuture<Collection<StoredHistoryStats>> future = sqlSaverService.submit(new SQLStatLoaderTask(game, Minigames.this));
-									Futures.addCallback(future, new FutureCallback<Collection<StoredHistoryStats>>() {
-
-										@Override
-										public void onSuccess(Collection<StoredHistoryStats> result) {
-											game.getScoreboardData().loadData(result);
-										}
-
-										@Override
-										public void onFailure(Throwable t) {
-											// Do nothing
-										}
-									}, bukkitServerThreadExecutor);
+									game.getScoreboardData().reload();
 								}
 							}
 						}
@@ -456,6 +440,14 @@ public class Minigames extends JavaPlugin{
 		defLang = svb.getConfig();
 	}
 	
+	public ListeningExecutorService getExecutorService() {
+		return sqlSaverService;
+	}
+	
+	public Executor getBukkitThreadExecutor() {
+		return bukkitServerThreadExecutor;
+	}
+	
 	public void queueStatSave(final StoredGameStats saveData, final boolean winner) {
 		MinigameUtils.debugMessage("Scheduling SQL data save for " + saveData);
 		final ListenableFuture<Boolean> completedFuture = sqlSaverService.submit(new SQLStatSaverTask(this, saveData));
@@ -469,16 +461,6 @@ public class Minigames extends JavaPlugin{
 			public void onSuccess(Boolean secondaryCompletion) {
 				Minigame minigame = saveData.getMinigame();
 				MinigamePlayer player = saveData.getPlayer();
-				
-				// Update scoreboards
-				if (minigame.getScoreboardData().hasPlayer(player.getUUID())) {
-					ScoreboardPlayer sPlayer = minigame.getScoreboardData().getPlayer(player.getUUID());
-					sPlayer.update(saveData);
-				} else {
-					minigame.getScoreboardData().addPlayer(new ScoreboardPlayer(saveData));
-				}
-				
-				minigame.getScoreboardData().updateDisplays();
 				
 				// Do rewards
 				if (winner) {

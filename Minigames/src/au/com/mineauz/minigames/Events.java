@@ -22,6 +22,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -674,6 +675,17 @@ public class Events implements Listener{
 							event.getTo().getBlockY(), event.getFrom().getBlockZ() + 0.5, 
 							event.getPlayer().getLocation().getYaw(), event.getPlayer().getLocation().getPitch()));
 				}
+			}
+		}
+	}
+	
+	@EventHandler(ignoreCancelled=true)
+	private void breakScoreboard(BlockBreakEvent event) {
+		Block block = event.getBlock();
+		if (block.getType() == Material.WALL_SIGN) {
+			if (block.hasMetadata("MGScoreboardSign")) {
+				Minigame minigame = (Minigame)block.getMetadata("Minigame").get(0).value();
+				minigame.getScoreboardData().removeDisplay(block);
 			}
 		}
 	}

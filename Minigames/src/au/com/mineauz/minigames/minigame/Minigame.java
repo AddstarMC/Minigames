@@ -30,7 +30,6 @@ import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.ListFlag;
 import au.com.mineauz.minigames.config.LocationFlag;
 import au.com.mineauz.minigames.config.LocationListFlag;
-import au.com.mineauz.minigames.config.RewardsFlag;
 import au.com.mineauz.minigames.config.SimpleLocationFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.gametypes.MinigameType;
@@ -44,7 +43,6 @@ import au.com.mineauz.minigames.menu.MenuItemAddFlag;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.menu.MenuItemDisplayLoadout;
-import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;
 import au.com.mineauz.minigames.menu.MenuItemDisplayWhitelist;
 import au.com.mineauz.minigames.menu.MenuItemFlag;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
@@ -59,8 +57,6 @@ import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
-import au.com.mineauz.minigames.minigame.reward.RewardType;
-import au.com.mineauz.minigames.minigame.reward.Rewards;
 
 public class Minigame {
 	private Map<String, Flag<?>> configFlags = new HashMap<String, Flag<?>>();
@@ -133,7 +129,7 @@ public class Minigame {
 	private IntegerFlag minChestRandom = new IntegerFlag(5, "minchestrandom");
 	private IntegerFlag maxChestRandom = new IntegerFlag(10, "maxchestrandom");
 	
-	private ScoreboardData sbData = new ScoreboardData();
+	private ScoreboardData sbData = new ScoreboardData(this);
 	
 	//Unsaved data
 	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();

@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.minigame;
 
+@Deprecated
 public enum ScoreboardType {
 	COMPLETIONS("Wins"),
 	BEST_KILLS("Kills"),
