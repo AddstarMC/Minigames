@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,12 +26,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
-
 import au.com.mineauz.minigames.Metrics.Graph;
+import au.com.mineauz.minigames.backend.BackendManager;
 import au.com.mineauz.minigames.blockRecorder.BasicRecorder;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.display.DisplayManager;
@@ -44,8 +39,8 @@ import au.com.mineauz.minigames.mechanics.TreasureHuntMechanic;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 import au.com.mineauz.minigames.signs.SignBase;
-import au.com.mineauz.minigames.sql.SQLDatabase;
-import au.com.mineauz.minigames.sql.SQLStatSaverTask;
+import au.com.mineauz.minigames.stats.MinigameStats;
+import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 
 public class Minigames extends JavaPlugin{
@@ -55,16 +50,15 @@ public class Minigames extends JavaPlugin{
 	public DisplayManager display;
 	public static Minigames plugin;
     private static Economy econ = null;
-	private SQLDatabase sql = null;
 	private static SignBase minigameSigns;
 	private FileConfiguration lang = null;
 	private FileConfiguration defLang = null;
-	private Executor bukkitServerThreadExecutor;
-	private ListeningExecutorService sqlSaverService;
 	public boolean thrownError = false;
 	private boolean debug = false;
 	
 	private long lastUpdateCheck = 0;
+	
+	private BackendManager backend;
 	
 	public void onEnable(){
 		try {
@@ -128,9 +122,7 @@ public class Minigames extends JavaPlugin{
 									e.printStackTrace();
 								}
 								
-								if (getSQL() != null) {
-									game.getScoreboardData().reload();
-								}
+								game.getScoreboardData().reload();
 							}
 						}
 					}, 1L);
@@ -155,11 +147,14 @@ public class Minigames extends JavaPlugin{
 		        getLogger().info("No Vault plugin found! You may only reward items.");
 			 }
 			
+			backend = new BackendManager(getLogger());
+			if (!backend.initialize(getConfig())) {
+				getServer().getPluginManager().disablePlugin(this);
+				return;
+			}
+			
 			getConfig().options().copyDefaults(true);
 			saveConfig();
-			
-			if(getConfig().getBoolean("use-sql"))
-				loadSQL();
 			
 			Calendar cal = Calendar.getInstance();
 			if(cal.get(Calendar.DAY_OF_MONTH) == 21 && cal.get(Calendar.MONTH) == 8 ||
@@ -247,9 +242,8 @@ public class Minigames extends JavaPlugin{
 		for(Minigame mg : mdata.getAllMinigames().values()){
 			mg.saveMinigame();
 		}
-		if(sql != null){
-			getSQL().close();
-		}
+		
+		backend.shutdown();
 		
 //		pdata.saveDCPlayers();
 		pdata.saveDeniedCommands();
@@ -326,23 +320,8 @@ public class Minigames extends JavaPlugin{
 		mdata = new MinigameData();
 	}
 	
-	public SQLDatabase getSQL(){
-		return sql;
-	}
-	
-	public void loadSQL(){
-		sql = new SQLDatabase();
-		if(!sql.loadSQL())
-			sql = null;
-		
-		bukkitServerThreadExecutor = new Executor() {
-			@Override
-			public void execute(Runnable task) {
-				Bukkit.getScheduler().runTask(Minigames.this, task);
-			}
-		};
-		
-		sqlSaverService = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
+	public BackendManager getBackend() {
+		return backend;
 	}
 	
 	public long getLastUpdateCheck(){
@@ -440,36 +419,30 @@ public class Minigames extends JavaPlugin{
 		defLang = svb.getConfig();
 	}
 	
-	public ListeningExecutorService getExecutorService() {
-		return sqlSaverService;
-	}
-	
-	public Executor getBukkitThreadExecutor() {
-		return bukkitServerThreadExecutor;
-	}
-	
 	public void queueStatSave(final StoredGameStats saveData, final boolean winner) {
 		MinigameUtils.debugMessage("Scheduling SQL data save for " + saveData);
-		final ListenableFuture<Boolean> completedFuture = sqlSaverService.submit(new SQLStatSaverTask(this, saveData));
 		
-		Futures.addCallback(completedFuture, new FutureCallback<Boolean>() {
+		ListenableFuture<Long> winCountFuture = backend.loadSingleStat(saveData.getMinigame(), MinigameStats.Wins, StatValueField.Total, saveData.getPlayer().getUUID());
+		backend.saveStats(saveData);
+		
+		backend.addServerThreadCallback(winCountFuture, new FutureCallback<Long>() {
 			@Override
 			public void onFailure(Throwable t) {
 			}
 			
 			@Override
-			public void onSuccess(Boolean secondaryCompletion) {
+			public void onSuccess(Long winCount) {
 				Minigame minigame = saveData.getMinigame();
 				MinigamePlayer player = saveData.getPlayer();
 				
 				// Do rewards
 				if (winner) {
-					RewardsModule.getModule(minigame).awardPlayer(player, saveData, minigame, !secondaryCompletion);
+					RewardsModule.getModule(minigame).awardPlayer(player, saveData, minigame, winCount == 0);
 				} else {
 					//TODO: RewardsModule reward on loss
 				}
 			}
-		}, bukkitServerThreadExecutor);
+		});
 	}
 	
 	public void toggleDebug(){

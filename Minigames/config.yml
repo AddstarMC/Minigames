@@ -44,12 +44,13 @@ updateChecker: true
 lang: 'en_AU'
 # Select language
   
-use-sql: false
-sql-host: localhost
-sql-port: 3306
-sql-database: database
-sql-username: root
-sql-password: root
+backend:
+  # Can be sqlite, or mysql
+  type: sqlite
+  host: localhost:3306
+  database: database
+  username: username
+  password: password
 
 tool: "BLAZE_ROD"
 

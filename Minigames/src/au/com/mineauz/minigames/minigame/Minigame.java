@@ -129,7 +129,7 @@ public class Minigame {
 	private IntegerFlag minChestRandom = new IntegerFlag(5, "minchestrandom");
 	private IntegerFlag maxChestRandom = new IntegerFlag(10, "maxchestrandom");
 	
-	private ScoreboardData sbData = new ScoreboardData(this);
+	private ScoreboardData sbData = new ScoreboardData();
 	
 	//Unsaved data
 	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();

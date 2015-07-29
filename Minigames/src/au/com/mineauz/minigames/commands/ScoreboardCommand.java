@@ -15,7 +15,6 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
-import au.com.mineauz.minigames.sql.SQLStatLoaderTask;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.MinigameStats;
 import au.com.mineauz.minigames.stats.StatValueField;
@@ -68,11 +67,6 @@ public class ScoreboardCommand implements ICommand{
 	public boolean onCommand(final CommandSender sender, Minigame ignore, String label, String[] args) {
 		if (args == null || args.length < 3) {
 			return false;
-		}
-		
-		if (plugin.getSQL() == null) {
-			sender.sendMessage(ChatColor.RED + "Scoreboards are not enabled currently");
-			return true;
 		}
 		
 		// Decode arguments
@@ -157,8 +151,8 @@ public class ScoreboardCommand implements ICommand{
 		
 		sender.sendMessage(ChatColor.GRAY + "Loading scoreboard...");
 		// Now load the values
-		SQLStatLoaderTask task = new SQLStatLoaderTask(minigame, stat, field, order, start, length, plugin);
-		ListenableFuture<List<StoredStat>> future = plugin.getExecutorService().submit(task);
+		ListenableFuture<List<StoredStat>> future = plugin.getBackend().loadStats(minigame, stat, field, order, start, length);
+		
 		Futures.addCallback(future, new FutureCallback<List<StoredStat>>() {
 			@Override
 			public void onSuccess(List<StoredStat> result) {

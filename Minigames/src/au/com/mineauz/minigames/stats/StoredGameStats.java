@@ -34,15 +34,8 @@ public class StoredGameStats {
 	}
 	
 	public Map<MinigameStat, Long> getStats() {
-		// Strip out the field based stats
 		Map<MinigameStat, Long> newStats = Maps.newHashMapWithExpectedSize(stats.size());
 		for (Entry<MinigameStat, Long> entry : stats.entrySet()) {
-			if (entry.getKey() == MinigameStats.Wins ||
-				entry.getKey() == MinigameStats.Attempts ||
-				entry.getKey() == MinigameStats.CompletionTime) {
-				continue;
-			}
-			
 			newStats.put(entry.getKey(), entry.getValue());
 		}
 		

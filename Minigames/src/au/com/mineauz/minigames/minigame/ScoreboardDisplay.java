@@ -18,6 +18,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.ListenableFuture;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -420,8 +421,14 @@ public class ScoreboardDisplay {
 		return display;
 	}
 	
+	public void reload() {
+		needsLoad = false;
+		ListenableFuture<List<StoredStat>> future = Minigames.plugin.getBackend().loadStats(minigame, stat, field, order, 0, width * height);
+		Minigames.plugin.getBackend().addServerThreadCallback(future, getUpdateCallback());
+	}
+	
 	// The update callback to be provided to the future. MUST be executed on the bukkit server thread
-	FutureCallback<List<StoredStat>> getUpdateCallback() {
+	private FutureCallback<List<StoredStat>> getUpdateCallback() {
 		return new FutureCallback<List<StoredStat>>() {
 			@Override
 			public void onSuccess(List<StoredStat> result) {

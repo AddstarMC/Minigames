@@ -1,26 +1,18 @@
 package au.com.mineauz.minigames.minigame;
 
-import java.util.List;
 import java.util.Map;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import com.google.common.collect.Maps;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-
 import au.com.mineauz.minigames.MinigameSave;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.sql.SQLStatLoaderTask;
-import au.com.mineauz.minigames.stats.StoredStat;
 
 public class ScoreboardData {
-	private final Minigame minigame;
 	private final Map<Block, ScoreboardDisplay> displays = Maps.newHashMap();
 	
-	public ScoreboardData(Minigame minigame) {
-		this.minigame = minigame;
+	public ScoreboardData() {
 	}
 	
 	public ScoreboardDisplay getDisplay(Block block) {
@@ -46,30 +38,15 @@ public class ScoreboardData {
 	 */
 	public void reload() {
 		for (ScoreboardDisplay display : displays.values()) {
-			loadAndApply(display);
+			display.reload();
 		}
 	}
 	
 	public void reload(Block block) {
 		ScoreboardDisplay display = getDisplay(block);
 		if (display != null) {
-			loadAndApply(display);
+			display.reload();
 		}
-	}
-	
-	private void loadAndApply(final ScoreboardDisplay display) {
-		SQLStatLoaderTask task = new SQLStatLoaderTask(
-				minigame,
-				display.getStat(),
-				display.getField(),
-				display.getOrder(),
-				0,
-				display.getWidth() * display.getHeight(),
-				Minigames.plugin
-				);
-		
-		ListenableFuture<List<StoredStat>> future = Minigames.plugin.getExecutorService().submit(task);
-		Futures.addCallback(future, display.getUpdateCallback(), Minigames.plugin.getBukkitThreadExecutor());
 	}
 	
 	/**
