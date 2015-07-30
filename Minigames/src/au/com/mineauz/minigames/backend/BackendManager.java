@@ -46,6 +46,16 @@ public class BackendManager {
 		executorService = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
 	}
 	
+	private Backend makeBackend(String type) {
+		if (type.equals("sqlite")) {
+			return new SQLiteBackend(logger);
+		} else if (type.equals("mysql")) {
+			return new MySQLBackend(logger);
+		} else {
+			return null;
+		}
+	}
+	
 	/**
 	 * Initializes the backend.
 	 * @param config The configuration to load settings from
@@ -76,11 +86,9 @@ public class BackendManager {
 		
 		// Create the backend
 		String type = backendSection.getString("type", "sqlite").toLowerCase();
-		if (type.equals("sqlite")) {
-			backend = new SQLiteBackend(logger);
-		} else if (type.equals("mysql")) {
-			backend = new MySQLBackend(logger);
-		} else {
+		backend = makeBackend(type);
+		
+		if (backend == null) {
 			// Default to this
 			logger.warning("Invalid backend type " + type + ". Falling back to SQLite");
 			backend = new SQLiteBackend(logger);
@@ -94,7 +102,7 @@ public class BackendManager {
 	 * Asks the backend to shut down
 	 */
 	public void shutdown() {
-		
+		backend.shutdown();
 	}
 	
 	/**
@@ -155,5 +163,68 @@ public class BackendManager {
 	 */
 	public <T> void addServerThreadCallback(ListenableFuture<T> future, FutureCallback<T> callback) {
 		Futures.addCallback(future, callback, bukkitThreadExecutor);
+	}
+	
+	/**
+	 * Initializes an export to the target backend type.
+	 * The export can take a while and will prevent all other backend interactions while it goes on
+	 * @param type The type of backend to use. Same as in the config
+	 * @param config The config to load settings from
+	 * @param notifier A notifier that will give you status updates
+	 * @return A future to let you know when the process is finished
+	 * @throws IllegalArgumentException Thrown if the backend chosen cannot be used. Reason given in message
+	 */
+	public ListenableFuture<Void> exportTo(String type, ConfigurationSection config, final ExportNotifier notifier) throws IllegalArgumentException {
+		final Backend destination = makeBackend(type);
+		if (destination == null) {
+			throw new IllegalArgumentException("Invalid backend type");
+		}
+		
+		if (destination.getClass().equals(backend.getClass())) {
+			throw new IllegalArgumentException("You cannot export to the same backend that is in use");
+		}
+		
+		if (!destination.initialize(config.getConfigurationSection("backend"))) {
+			throw new IllegalArgumentException("Failed to initialize destination backend");
+		}
+		
+		return executorService.submit(new Runnable() {
+			@Override
+			public void run() {
+				backend.exportTo(destination, notifier);
+			}
+		}, null);
+	}
+	
+	/**
+	 * Allows you to change the backend dynamically.
+	 * This change will only occur after the last task (as of execution) has finished.
+	 * Note: This change will only apply for this session
+	 * @param type The new type of backend to use
+	 * @param config The config to load settings from
+	 * @throws IllegalArgumentException Thrown if the backend chosen cannot be used. Reason given in message
+	 */
+	public ListenableFuture<Void> switchBackend(final String type, ConfigurationSection config) throws IllegalArgumentException {
+		final Backend newBackend = makeBackend(type);
+		if (newBackend == null) {
+			throw new IllegalArgumentException("Invalid backend type");
+		}
+		
+		if (newBackend.getClass().equals(backend.getClass())) {
+			throw new IllegalArgumentException("Cannot switch to the same backend");
+		}
+		
+		if (!newBackend.initialize(config.getConfigurationSection("backend"))) {
+			throw new IllegalArgumentException("Failed to initialize target backend");
+		}
+		
+		return executorService.submit(new Runnable() {
+			@Override
+			public void run() {
+				backend.shutdown();
+				backend = newBackend;
+				logger.warning("Backend has been switched to " + type);
+			}
+		}, null);
 	}
 }

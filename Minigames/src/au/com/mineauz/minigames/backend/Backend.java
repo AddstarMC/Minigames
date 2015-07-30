@@ -12,19 +12,24 @@ import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import au.com.mineauz.minigames.stats.StoredStat;
 
-public interface Backend {
+public abstract class Backend {
 	/**
 	 * Initializes the backend. This may include creating / converting tables as needed
 	 * @param config The configuration to load settings from
 	 * @return Returns true if the initialization succeeded
 	 */
-	public boolean initialize(ConfigurationSection config);
+	public abstract boolean initialize(ConfigurationSection config);
+	
+	/**
+	 * Shutsdown the backend cleaning up resources
+	 */
+	public abstract void shutdown();
 	
 	/**
 	 * Saves the game stats to the backend. This method is blocking.
 	 * @param stats The game stats to store
 	 */
-	public void saveGameStatus(StoredGameStats stats);
+	public abstract void saveGameStatus(StoredGameStats stats);
 	
 	/**
 	 * Loads all player stats from the backend. This method is blocking.
@@ -34,7 +39,7 @@ public interface Backend {
 	 * @param order The order to get the stats in
 	 * @return A list of stats matching the requirements
 	 */
-	public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order);
+	public abstract List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order);
 	
 	/**
 	 * Loads player stats from the backend. This method is blocking.
@@ -46,7 +51,7 @@ public interface Backend {
 	 * @param length the maximum amount of data to return
 	 * @return A list of stats matching the requirements
 	 */
-	public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order, int offset, int length);
+	public abstract List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order, int offset, int length);
 	
 	/**
 	 * Gets the value of a stat for a player. This method is blocking
@@ -56,5 +61,18 @@ public interface Backend {
 	 * @param field the field of the stat to load
 	 * @return The value of the stat
 	 */
-	public long getStat(Minigame minigame, UUID playerId, MinigameStat stat, StatValueField field);
+	public abstract long getStat(Minigame minigame, UUID playerId, MinigameStat stat, StatValueField field);
+	
+	/**
+	 * Exports this backend to another backend
+	 * @param other The backend to export to
+	 * @param notifier A callback to receive progress updates
+	 */
+	public abstract void exportTo(Backend other, ExportNotifier notifier);
+	
+	protected abstract BackendImportCallback getImportCallback();
+	
+	protected final BackendImportCallback getImportCallback(Backend other) {
+		return other.getImportCallback();
+	}
 }

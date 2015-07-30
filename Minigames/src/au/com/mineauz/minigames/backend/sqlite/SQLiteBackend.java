@@ -13,9 +13,13 @@ import org.bukkit.configuration.ConfigurationSection;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.backend.Backend;
+import au.com.mineauz.minigames.backend.BackendImportCallback;
 import au.com.mineauz.minigames.backend.ConnectionHandler;
 import au.com.mineauz.minigames.backend.ConnectionPool;
+import au.com.mineauz.minigames.backend.ExportNotifier;
 import au.com.mineauz.minigames.backend.StatementKey;
+import au.com.mineauz.minigames.backend.both.SQLExport;
+import au.com.mineauz.minigames.backend.both.SQLImport;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.MinigameStat;
@@ -23,7 +27,7 @@ import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import au.com.mineauz.minigames.stats.StoredStat;
 
-public class SQLiteBackend implements Backend {
+public class SQLiteBackend extends Backend {
 	private ConnectionPool pool;
 	private final Logger logger;
 	
@@ -69,6 +73,11 @@ public class SQLiteBackend implements Backend {
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public void shutdown() {
+		pool.closeConnections();
 	}
 	
 	private void ensureTables(ConnectionHandler connection) throws SQLException {
@@ -164,4 +173,15 @@ public class SQLiteBackend implements Backend {
 		handler.executeUpdate(insertPlayer, player.getUUID().toString(), player.getName(), player.getDisplayName());
 	}
 
+	@Override
+	protected BackendImportCallback getImportCallback() {
+		return new SQLImport(pool);
+	}
+	
+	@Override
+	public void exportTo(Backend other, ExportNotifier notifier) {
+		BackendImportCallback callback = getImportCallback(other);
+		SQLExport exporter = new SQLExport(pool, callback, notifier);
+		exporter.beginExport();
+	}
 }

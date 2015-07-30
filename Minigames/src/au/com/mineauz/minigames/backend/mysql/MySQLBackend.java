@@ -11,9 +11,13 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.backend.Backend;
+import au.com.mineauz.minigames.backend.BackendImportCallback;
 import au.com.mineauz.minigames.backend.ConnectionHandler;
 import au.com.mineauz.minigames.backend.ConnectionPool;
+import au.com.mineauz.minigames.backend.ExportNotifier;
 import au.com.mineauz.minigames.backend.StatementKey;
+import au.com.mineauz.minigames.backend.both.SQLExport;
+import au.com.mineauz.minigames.backend.both.SQLImport;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.MinigameStat;
@@ -21,7 +25,7 @@ import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import au.com.mineauz.minigames.stats.StoredStat;
 
-public class MySQLBackend implements Backend {
+public class MySQLBackend extends Backend {
 	private ConnectionPool pool;
 	private final Logger logger;
 	
@@ -72,6 +76,11 @@ public class MySQLBackend implements Backend {
 		return false;
 	}
 	
+	@Override
+	public void shutdown() {
+		pool.closeConnections();
+	}
+	
 	private void ensureTables(ConnectionHandler connection) throws SQLException {
 		Statement statement = connection.getConnection().createStatement();
 		try {
@@ -109,7 +118,7 @@ public class MySQLBackend implements Backend {
 	
 	private void createStatements() {
 		insertMinigame = new StatementKey("INSERT INTO `Minigames` (`name`) VALUES (?) ON DUPLICATE KEY UPDATE `minigame_id`=LAST_INSERT_ID(`minigame_id`);", true);
-		insertPlayer = new StatementKey("INSERT OR REPLACE INTO `Players` VALUES (?, ?, ?);");
+		insertPlayer = new StatementKey("INSERT INTO `Players` VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `name` = VALUES(`name`), `displayname` = VALUES(`displayname`);");
 	}
 	
 	ConnectionPool getPool() {
@@ -153,5 +162,17 @@ public class MySQLBackend implements Backend {
 	
 	public void updatePlayer(ConnectionHandler handler, MinigamePlayer player) throws SQLException {
 		handler.executeUpdate(insertPlayer, player.getUUID().toString(), player.getName(), player.getDisplayName());
+	}
+	
+	@Override
+	protected BackendImportCallback getImportCallback() {
+		return new SQLImport(pool);
+	}
+	
+	@Override
+	public void exportTo(Backend other, ExportNotifier notifier) {
+		BackendImportCallback callback = getImportCallback(other);
+		SQLExport exporter = new SQLExport(pool, callback, notifier);
+		exporter.beginExport();
 	}
 }

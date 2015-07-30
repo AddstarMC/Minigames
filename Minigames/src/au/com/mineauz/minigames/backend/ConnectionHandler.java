@@ -54,6 +54,7 @@ public class ConnectionHandler {
         
         inUse = true;
         applyArguments(statement, arguments);
+        statement.setFetchSize(100); // MySQL fetches all rows at once by default, not good for memory usage
         return statement.executeQuery();
     }
     
