@@ -1,4 +1,4 @@
-package au.com.mineauz.minigames.backend.mysql;
+package au.com.mineauz.minigames.backend.sqlite;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,15 +19,15 @@ import au.com.mineauz.minigames.stats.StoredStat;
 
 import com.google.common.collect.Lists;
 
-class MySQLStatLoader {
-	private final MySQLBackend backend;
+class SQLiteStatLoader {
+	private final SQLiteBackend backend;
 	private final Logger logger;
 	
 	private final StatementKey getSingleAsc;
 	private final StatementKey getSingleDesc;
 	private final StatementKey getSingle;
 	
-	public MySQLStatLoader(MySQLBackend backend, Logger logger) {
+	public SQLiteStatLoader(SQLiteBackend backend, Logger logger) {
 		this.backend = backend;
 		this.logger = logger;
 		
@@ -90,32 +90,28 @@ class MySQLStatLoader {
 	private List<StoredStat> loadStats(ConnectionHandler handler, int minigameId, MinigameStat stat, StatValueField field, ScoreboardOrder order, int offset, int length) throws SQLException {
 		String statName = stat.getName() + stat.getFormat().getFieldSuffix(field);
 		
+		StatementKey statement;
+		switch (order) {
+		case ASCENDING:
+			statement = getSingleAsc;
+			break;
+		case DESCENDING:
+			statement = getSingleDesc;
+			break;
+		default:
+			throw new AssertionError();
+		}
+		
+		ResultSet rs = handler.executeQuery(statement, minigameId, statName, offset, length);
+		List<StoredStat> stats = Lists.newArrayList();
 		try {
-			StatementKey statement;
-			switch (order) {
-			case ASCENDING:
-				statement = getSingleAsc;
-				break;
-			case DESCENDING:
-				statement = getSingleDesc;
-				break;
-			default:
-				throw new AssertionError();
+			while (rs.next()) {
+				stats.add(loadStat(rs));
 			}
 			
-			ResultSet rs = handler.executeQuery(statement, minigameId, statName, offset, length);
-			List<StoredStat> stats = Lists.newArrayList();
-			try {
-				while (rs.next()) {
-					stats.add(loadStat(rs));
-				}
-				
-				return stats;
-			} finally {
-				rs.close();
-			}
+			return stats;
 		} finally {
-			handler.release();
+			rs.close();
 		}
 	}
 	

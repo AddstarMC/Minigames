@@ -64,7 +64,6 @@ public class MySQLBackend implements Backend {
 				return true;
 			} catch (SQLException e) {
 				logger.severe("Failed to connect to the MySQL database. Please check your database settings");
-				logger.warning("DEBUG: Connect url: " + url + " u: " + username + " p: " + password);
 			}
 		} catch (ClassNotFoundException e) {
 			logger.severe("Failed to find MySQL JDBC driver. This version of craftbukkit is defective.");
@@ -110,7 +109,7 @@ public class MySQLBackend implements Backend {
 	
 	private void createStatements() {
 		insertMinigame = new StatementKey("INSERT INTO `Minigames` (`name`) VALUES (?) ON DUPLICATE KEY UPDATE `minigame_id`=LAST_INSERT_ID(`minigame_id`);", true);
-		insertPlayer = new StatementKey("INSERT INTO `Players` VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `name` = VALUES(`name`), `displayname` = VALUES(`displayname`);");
+		insertPlayer = new StatementKey("INSERT OR REPLACE INTO `Players` VALUES (?, ?, ?);");
 	}
 	
 	ConnectionPool getPool() {
@@ -137,32 +136,22 @@ public class MySQLBackend implements Backend {
 		return loader.loadSingleValue(minigame, stat, field, playerId);
 	}
 	
-	public int getMinigameId(Minigame minigame) throws SQLException {
-		ConnectionHandler handler = pool.getConnection();
+	public int getMinigameId(ConnectionHandler handler, Minigame minigame) throws SQLException {
+		ResultSet rs = handler.executeUpdateWithResults(insertMinigame, minigame.getName(false));
+		
 		try {
-			ResultSet rs = handler.executeUpdateWithResults(insertMinigame, minigame.getName(false));
-			
-			try {
-				if (rs.next()) {
-					return rs.getInt(1);
-				} else {
-					// Insert should always return the value
-					throw new AssertionError();
-				}
-			} finally {
-				rs.close();
+			if (rs.next()) {
+				return rs.getInt(1);
+			} else {
+				// Insert should always return the value
+				throw new AssertionError();
 			}
 		} finally {
-			handler.release();
+			rs.close();
 		}
 	}
 	
-	public void updatePlayer(MinigamePlayer player) throws SQLException {
-		ConnectionHandler handler = pool.getConnection();
-		try {
-			handler.executeUpdate(insertPlayer, player.getUUID().toString(), player.getName(), player.getDisplayName());
-		} finally {
-			handler.release();
-		}
+	public void updatePlayer(ConnectionHandler handler, MinigamePlayer player) throws SQLException {
+		handler.executeUpdate(insertPlayer, player.getUUID().toString(), player.getName(), player.getDisplayName());
 	}
 }

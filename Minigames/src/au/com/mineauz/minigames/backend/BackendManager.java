@@ -77,13 +77,13 @@ public class BackendManager {
 		// Create the backend
 		String type = backendSection.getString("type", "sqlite").toLowerCase();
 		if (type.equals("sqlite")) {
-			backend = new SQLiteBackend();
+			backend = new SQLiteBackend(logger);
 		} else if (type.equals("mysql")) {
 			backend = new MySQLBackend(logger);
 		} else {
 			// Default to this
 			logger.warning("Invalid backend type " + type + ". Falling back to SQLite");
-			backend = new SQLiteBackend();
+			backend = new SQLiteBackend(logger);
 		}
 		
 		// Init

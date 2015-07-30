@@ -41,8 +41,8 @@ class MySQLStatSaver {
 				handler.beginTransaction();
 				
 				// Get the minigame id and update both the player and game
-				int minigameId = backend.getMinigameId(data.getMinigame());
-				backend.updatePlayer(data.getPlayer());
+				int minigameId = backend.getMinigameId(handler, data.getMinigame());
+				backend.updatePlayer(handler, data.getPlayer());
 				
 				saveStats(handler, data, data.getPlayer().getUUID(), minigameId);
 				
