@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.backend.BackendImportCallback;
 import au.com.mineauz.minigames.backend.ConnectionHandler;
 import au.com.mineauz.minigames.backend.ConnectionPool;
 import au.com.mineauz.minigames.backend.StatementKey;
+import au.com.mineauz.minigames.stats.StatFormat;
 
 public class SQLImport implements BackendImportCallback {
 	private final ConnectionPool pool;
@@ -14,15 +15,18 @@ public class SQLImport implements BackendImportCallback {
 	private final StatementKey clearPlayers;
 	private final StatementKey clearMinigames;
 	private final StatementKey clearStats;
+	private final StatementKey clearMetadata;
 	
 	private final StatementKey insertPlayer;
 	private final StatementKey insertMinigame;
 	private final StatementKey insertStat;
+	private final StatementKey insertMetadata;
 	
 	private ConnectionHandler handler;
 	private int playerBatchCount;
 	private int minigameBatchCount;
 	private int statBatchCount;
+	private int metadataBatchCount;
 	
 	public SQLImport(ConnectionPool pool) {
 		this.pool = pool;
@@ -31,10 +35,12 @@ public class SQLImport implements BackendImportCallback {
 		clearPlayers = new StatementKey("DELETE FROM `Players`;");
 		clearMinigames = new StatementKey("DELETE FROM `Minigames`;");
 		clearStats = new StatementKey("DELETE FROM `PlayerStats`;");
+		clearMetadata = new StatementKey("DELETE FROM `StatMetadata`;");
 		
 		insertPlayer = new StatementKey("INSERT INTO `Players` VALUES (?,?,?);");
 		insertMinigame = new StatementKey("INSERT INTO `Minigames` VALUES (?,?);");
-		insertStat = new StatementKey("INSERT INTO `PlayerStats` VALUES (?,?,?,?);"); 
+		insertStat = new StatementKey("INSERT INTO `PlayerStats` VALUES (?,?,?,?);");
+		insertMetadata = new StatementKey("INSERT INTO `StatMetadata` VALUES (?,?,?,?);");
 	}
 	
 	@Override
@@ -47,6 +53,7 @@ public class SQLImport implements BackendImportCallback {
 			handler.executeUpdate(clearPlayers);
 			handler.executeUpdate(clearMinigames);
 			handler.executeUpdate(clearStats);
+			handler.executeUpdate(clearMetadata);
 			
 			playerBatchCount = 0;
 			minigameBatchCount = 0;
@@ -124,14 +131,38 @@ public class SQLImport implements BackendImportCallback {
 			throw new IllegalStateException(e);
 		}
 	}
-
+	
 	@Override
-	public void end() {
+	public void acceptStatMetadata(int minigameId, String stat, String displayName, StatFormat format) {
 		try {
 			// Handle remaining stats
 			if (statBatchCount > 0) {
 				handler.executeBatch(insertStat);
 				statBatchCount = 0;
+			}
+			
+			// batch stats
+			handler.batchUpdate(insertMetadata, minigameId, stat, displayName, format.name());
+			++metadataBatchCount;
+			
+			if (metadataBatchCount > 50) {
+				handler.executeBatch(insertMetadata);
+				metadataBatchCount = 0;
+			}
+		} catch (SQLException e) {
+			handler.endTransactionFail();
+			handler.release();
+			throw new IllegalStateException(e);
+		}
+	}
+
+	@Override
+	public void end() {
+		try {
+			// Handle remaining metadata
+			if (metadataBatchCount > 0) {
+				handler.executeBatch(insertMetadata);
+				metadataBatchCount = 0;
 			}
 			
 			handler.endTransaction();

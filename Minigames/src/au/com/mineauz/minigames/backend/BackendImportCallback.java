@@ -2,6 +2,8 @@ package au.com.mineauz.minigames.backend;
 
 import java.util.UUID;
 
+import au.com.mineauz.minigames.stats.StatFormat;
+
 /**
  * This callback is used to take data from one backend and apply it to another backend.
  * <h1>Execution order:</h1>
@@ -11,6 +13,7 @@ import java.util.UUID;
  * <li>acceptPlayer() 0 or more times</li>
  * <li>acceptMinigame() 0 or more times</li>
  * <li>acceptStat() 0 or more times</li>
+ * <li>acceptStatMetadata() 0 or more times</li>
  * <li>end() 1 time</li>
  * </ul>
  */
@@ -55,6 +58,18 @@ public interface BackendImportCallback {
 	 * @param value The value of the stat
 	 */
 	public void acceptStat(UUID playerId, int minigameId, String stat, long value);
+	
+	/**
+	 * Called to add stat metadata to the destination backend.
+	 * It is up to implementers to how often to actually add the 
+	 * metadata to the backend but this will be called upon reading
+	 * each stat metadata from the source backend.
+	 * @param minigameId The id of the minigame
+	 * @param stat The stat name
+	 * @param displayName The stat display name
+	 * @param format The stat format
+	 */
+	public void acceptStatMetadata(int minigameId, String stat, String displayName, StatFormat format);
 	
 	/**
 	 * Called to notify the destination backend that the source is finished.
