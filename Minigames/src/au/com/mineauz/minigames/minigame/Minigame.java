@@ -55,6 +55,7 @@ import au.com.mineauz.minigames.menu.MenuItemLoadoutAdd;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemSaveMinigame;
+import au.com.mineauz.minigames.menu.MenuItemStatisticsSettings;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.menu.MenuItemTime;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
@@ -1093,6 +1094,7 @@ public class Minigame {
 		rndChstDes.clear();
 		rndChstDes.add("Max. item randomization");
 		itemsMain.add(maxChestRandom.getMenuItem("Max. Chest Random", Material.STONE, rndChstDes, 0, null));
+		itemsMain.add(new MenuItemStatisticsSettings(this, "Stat Settings", Material.BOOK_AND_QUILL));
 		itemsMain.add(new MenuItemNewLine());
 
 		//--------------//
@@ -1238,6 +1240,8 @@ public class Minigame {
 		}
 		
 		getScoreboardData().saveDisplays(minigame, name);
+		getScoreboardData().refreshDisplays();
+		Minigames.plugin.getBackend().saveStatSettings(this, statSettings.values());
 		
 		minigame.saveConfig();
 	}

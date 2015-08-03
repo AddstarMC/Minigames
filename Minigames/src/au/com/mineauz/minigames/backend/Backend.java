@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.backend;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -71,6 +72,13 @@ public abstract class Backend {
 	 * @return A map of stats to their settings
 	 */
 	public abstract Map<MinigameStat, StatSettings> loadStatSettings(Minigame minigame);
+	
+	/**
+	 * Saves the stat settings for the minigame
+	 * @param minigame The minigame to save settings for
+	 * @param settings The settings to save
+	 */
+	public abstract void saveStatSettings(Minigame minigame, Collection<StatSettings> settings);
 	
 	/**
 	 * Exports this backend to another backend

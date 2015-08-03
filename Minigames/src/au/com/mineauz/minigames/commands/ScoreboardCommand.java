@@ -18,6 +18,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.MinigameStats;
+import au.com.mineauz.minigames.stats.StatFormat;
 import au.com.mineauz.minigames.stats.StatSettings;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredStat;
@@ -84,8 +85,10 @@ public class ScoreboardCommand implements ICommand{
 			return true;
 		}
 		
+		final StatSettings settings = minigame.getSettings(stat);
+		
 		StatValueField field = null;
-		for (StatValueField f : stat.getFormat().getFields()) {
+		for (StatValueField f : settings.getFormat().getFields()) {
 			if (f.name().equalsIgnoreCase(args[2])) {
 				field = f;
 				break;
@@ -150,7 +153,7 @@ public class ScoreboardCommand implements ICommand{
 		}
 		
 		final ScoreboardOrder fOrder = order;
-		final StatSettings settings = minigame.getSettings(stat);
+		final StatValueField fField = field;
 		
 		sender.sendMessage(ChatColor.GRAY + "Loading scoreboard...");
 		// Now load the values
@@ -159,7 +162,7 @@ public class ScoreboardCommand implements ICommand{
 		Futures.addCallback(future, new FutureCallback<List<StoredStat>>() {
 			@Override
 			public void onSuccess(List<StoredStat> result) {
-				sender.sendMessage(ChatColor.GREEN + minigame.getName(true) + " Scoreboard: " + stat.getDisplayName() + " " + fOrder.toString().toLowerCase());
+				sender.sendMessage(ChatColor.GREEN + minigame.getName(true) + " Scoreboard: " + settings.getDisplayName() + " - " + fField.getTitle() + " " + fOrder.toString().toLowerCase());
 				for (StoredStat playerStat : result) {
 					sender.sendMessage(ChatColor.AQUA + playerStat.getPlayerDisplayName() + ": " + ChatColor.WHITE + stat.displayValue(playerStat.getValue(), settings));
 				}
@@ -176,7 +179,7 @@ public class ScoreboardCommand implements ICommand{
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Minigame minigame, String alias, String[] args) {
+	public List<String> onTabComplete(CommandSender sender, Minigame ignore, String alias, String[] args) {
 		if(args.length == 1) { // Minigame
 			List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
 			return MinigameUtils.tabCompleteMatch(mgs, args[0]);
@@ -188,9 +191,18 @@ public class ScoreboardCommand implements ICommand{
 				return null;
 			}
 			
+			final Minigame minigame = plugin.mdata.getMinigame(args[0]);
+			StatFormat format;
+			if (minigame == null) {
+				format = stat.getFormat();
+			} else {
+				StatSettings settings = minigame.getSettings(stat);
+				format = settings.getFormat();
+			}
+			
 			String toMatch = args[2].toLowerCase();
 			List<String> matches = Lists.newArrayList();
-			for (StatValueField field : stat.getFormat().getFields()) {
+			for (StatValueField field : format.getFields()) {
 				if (field.name().toLowerCase().startsWith(toMatch)) {
 					matches.add(field.name());
 				}

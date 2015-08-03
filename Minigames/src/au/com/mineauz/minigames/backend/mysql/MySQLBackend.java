@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.backend.mysql;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,7 @@ public class MySQLBackend extends Backend {
 	private StatementKey insertMinigame;
 	private StatementKey insertPlayer;
 	private StatementKey loadStatSettings;
+	private StatementKey saveStatSettings;
 	
 	private MySQLStatLoader loader;
 	private MySQLStatSaver saver;
@@ -128,6 +130,7 @@ public class MySQLBackend extends Backend {
 		insertMinigame = new StatementKey("INSERT INTO `Minigames` (`name`) VALUES (?) ON DUPLICATE KEY UPDATE `minigame_id`=LAST_INSERT_ID(`minigame_id`);", true);
 		insertPlayer = new StatementKey("INSERT INTO `Players` VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `name` = VALUES(`name`), `displayname` = VALUES(`displayname`);");
 		loadStatSettings = new StatementKey("SELECT `stat`, `display_name`, `format` FROM `StatMetadata` WHERE `minigame_id`=?;");
+		saveStatSettings = new StatementKey("REPLACE INTO `StatMetadata` VALUES (?, ?, ?, ?);");
 	}
 	
 	ConnectionPool getPool() {
@@ -220,6 +223,30 @@ public class MySQLBackend extends Backend {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Collections.emptyMap();
+		} finally {
+			if (handler != null) {
+				handler.release();
+			}
+		}
+	}
+	
+	@Override
+	public void saveStatSettings(Minigame minigame, Collection<StatSettings> settings) {
+		ConnectionHandler handler = null;
+		try {
+			handler = pool.getConnection();
+			handler.beginTransaction();
+			
+			int minigameId = getMinigameId(handler, minigame);
+			for (StatSettings setting : settings) {
+				handler.batchUpdate(saveStatSettings, minigameId, setting.getStat().getName(), setting.getDisplayName(), setting.getFormat().name().toUpperCase());
+			}
+			
+			handler.executeBatch(saveStatSettings);
+			handler.endTransaction();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			handler.endTransactionFail();
 		} finally {
 			if (handler != null) {
 				handler.release();

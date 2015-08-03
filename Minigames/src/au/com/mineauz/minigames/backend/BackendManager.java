@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.backend;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -168,6 +169,22 @@ public class BackendManager {
 			@Override
 			public Map<MinigameStat, StatSettings> call() throws Exception {
 				return backend.loadStatSettings(minigame);
+			}
+		});
+	}
+	
+	/**
+	 * Saves the stat settings for a minigame. This is performed asynchronously
+	 * @param minigame The minigame to save settings for
+	 * @param settings The collection of settings to save
+	 * @return A ListenableFuture to get the status of the save
+	 */
+	public ListenableFuture<Void> saveStatSettings(final Minigame minigame, final Collection<StatSettings> settings) {
+		return executorService.submit(new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				backend.saveStatSettings(minigame, settings);
+				return null;
 			}
 		});
 	}
