@@ -10,6 +10,8 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.backend.ConnectionHandler;
 import au.com.mineauz.minigames.backend.StatementKey;
 import au.com.mineauz.minigames.stats.MinigameStat;
+import au.com.mineauz.minigames.stats.StatFormat;
+import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 
 class SQLiteStatSaver {
@@ -21,6 +23,8 @@ class SQLiteStatSaver {
 	private final StatementKey insertStatMin;
 	private final StatementKey insertStatMax;
 	
+	private final StatementKey[] insertStatements = new StatementKey[4];
+	
 	public SQLiteStatSaver(SQLiteBackend backend, Logger logger) {
 		this.backend = backend;
 		this.logger = logger;
@@ -30,6 +34,12 @@ class SQLiteStatSaver {
 		insertStatTotal = new StatementKey("INSERT OR REPLACE INTO `PlayerStats` VALUES (?, ?, ?, (SELECT coalesce((SELECT (`value`+?) FROM `PlayerStats` WHERE `player_id`=? AND `minigame_id`=? AND `stat`=?), ?)));");
 		insertStatMin = new StatementKey("INSERT OR REPLACE INTO `PlayerStats` VALUES (?, ?, ?, (SELECT coalesce((SELECT MIN(`value`,?) FROM `PlayerStats` WHERE `player_id`=? AND `minigame_id`=? AND `stat`=?), ?)));");
 		insertStatMax = new StatementKey("INSERT OR REPLACE INTO `PlayerStats` VALUES (?, ?, ?, (SELECT coalesce((SELECT MAX(`value`,?) FROM `PlayerStats` WHERE `player_id`=? AND `minigame_id`=? AND `stat`=?), ?)));");
+		
+		// Prepare lookup table
+		insertStatements[StatValueField.Last.ordinal()] = insertStat;
+		insertStatements[StatValueField.Min.ordinal()] = insertStatMin;
+		insertStatements[StatValueField.Max.ordinal()] = insertStatMax;
+		insertStatements[StatValueField.Total.ordinal()] = insertStatTotal;
 	}
 	
 	public void saveData(StoredGameStats data) {
@@ -63,9 +73,10 @@ class SQLiteStatSaver {
 	private void saveStats(ConnectionHandler handler, StoredGameStats data, UUID player, int minigameId) throws SQLException {
 		// Prepare all updates
 		for (Entry<MinigameStat, Long> entry : data.getStats().entrySet()) {
+			StatFormat format = data.getFormat(entry.getKey());
 			// Only store this stat if it's required
-			if (entry.getKey().shouldStoreStat(entry.getValue(), entry.getKey().getFormat())) {
-				queueStat(handler, entry.getKey(), entry.getValue(), player, minigameId);
+			if (entry.getKey().shouldStoreStat(entry.getValue(), format)) {
+				queueStat(handler, entry.getKey(), entry.getValue(), format, player, minigameId);
 			}
 		}
 		
@@ -76,43 +87,13 @@ class SQLiteStatSaver {
 		handler.executeBatch(insertStatMax);
 	}
 	
-	private void queueStat(ConnectionHandler handler, MinigameStat stat, long value, UUID player, int minigameId) throws SQLException {
-		switch (stat.getFormat()) {
-		case Last:
-			handler.batchUpdate(insertStat, player.toString(), minigameId, stat.getName(), value);
-			break;
-		case LastAndTotal:
-			handler.batchUpdate(insertStat, player.toString(), minigameId, stat.getName(), value);
-			handler.batchUpdate(insertStatTotal, player.toString(), minigameId, stat.getName() + "_total", value, player.toString(), minigameId, stat.getName() + "_total", value);
-			break;
-		case Max:
-			handler.batchUpdate(insertStatMax, player.toString(), minigameId, stat.getName(), value, player.toString(), minigameId, stat.getName(), value);
-			break;
-		case MaxAndTotal:
-			handler.batchUpdate(insertStatMax, player.toString(), minigameId, stat.getName(), value, player.toString(), minigameId, stat.getName(), value);
-			handler.batchUpdate(insertStatTotal, player.toString(), minigameId, stat.getName() + "_total", value, player.toString(), minigameId, stat.getName() + "_total", value);
-			break;
-		case Min:
-			handler.batchUpdate(insertStatMin, player.toString(), minigameId, stat.getName(), value, player.toString(), minigameId, stat.getName(), value);
-			break;
-		case MinAndTotal:
-			handler.batchUpdate(insertStatMin, player.toString(), minigameId, stat.getName(), value, player.toString(), minigameId, stat.getName(), value);
-			handler.batchUpdate(insertStatTotal, player.toString(), minigameId, stat.getName() + "_total", value, player.toString(), minigameId, stat.getName() + "_total", value);
-			break;
-		case MinMax:
-			handler.batchUpdate(insertStatMin, player.toString(), minigameId, stat.getName() + "_min", value, player.toString(), minigameId, stat.getName() + "_min", value);
-			handler.batchUpdate(insertStatMax, player.toString(), minigameId, stat.getName() + "_max", value, player.toString(), minigameId, stat.getName() + "_max", value);
-			break;
-		case MinMaxAndTotal:
-			handler.batchUpdate(insertStatMin, player.toString(), minigameId, stat.getName() + "_min", value, player.toString(), minigameId, stat.getName() + "_min", value);
-			handler.batchUpdate(insertStatMax, player.toString(), minigameId, stat.getName() + "_max", value, player.toString(), minigameId, stat.getName() + "_max", value);
-			handler.batchUpdate(insertStatTotal, player.toString(), minigameId, stat.getName() + "_total", value, player.toString(), minigameId, stat.getName() + "_total", value);
-			break;
-		case Total:
-			handler.batchUpdate(insertStatTotal, player.toString(), minigameId, stat.getName(), value, player.toString(), minigameId, stat.getName(), value);
-			break;
-		default:
-			throw new AssertionError();
+	private void queueStat(ConnectionHandler handler, MinigameStat stat, long value, StatFormat format, UUID player, int minigameId) throws SQLException {
+		for (StatValueField field : format.getFields()) {
+			if (field == StatValueField.Last) {
+				handler.batchUpdate(insertStat, player.toString(), minigameId, stat.getName() + field.getSuffix(), value);
+			} else {
+				handler.batchUpdate(insertStatements[field.ordinal()], player.toString(), minigameId, stat.getName() + field.getSuffix(), value, player.toString(), minigameId, stat.getName() + field.getSuffix(), value);
+			}
 		}
 	}
 }

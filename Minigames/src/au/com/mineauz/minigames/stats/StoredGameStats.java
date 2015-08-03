@@ -13,12 +13,14 @@ public class StoredGameStats {
 	private final MinigamePlayer player;
 	private final Minigame minigame;
 	private final Map<MinigameStat, Long> stats;
+	private final Map<MinigameStat, StatSettings> settings;
 	
 	public StoredGameStats(Minigame minigame, MinigamePlayer player) {
 		this.minigame = minigame;
 		this.player = player;
 		
 		stats = Maps.newHashMap();
+		settings = Maps.newHashMap();
 	}
 	
 	public MinigamePlayer getPlayer() {
@@ -53,6 +55,14 @@ public class StoredGameStats {
 		} else {
 			return value;
 		}
+	}
+	
+	public void applySettings(Map<MinigameStat, StatSettings> settings) {
+		this.settings.putAll(settings);
+	}
+	
+	public StatFormat getFormat(MinigameStat stat) {
+		return settings.get(stat).getFormat();
 	}
 	
 	@Override

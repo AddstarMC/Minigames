@@ -31,6 +31,7 @@ import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.menu.MenuItemScoreboardSave;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.MinigameStats;
+import au.com.mineauz.minigames.stats.StatSettings;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredStat;
 
@@ -45,6 +46,8 @@ public class ScoreboardDisplay {
 	private int width;
 	private int height;
 	private BlockFace facing;
+	
+	private StatSettings settings;
 	
 	private List<StoredStat> stats;
 	
@@ -147,7 +150,7 @@ public class ScoreboardDisplay {
 			Block start = block;
 			for(int x = 0; x < width; ++x) {
 				// Only add signs
-				if (block.getType() == Material.WALL_SIGN || !onlySigns) {
+				if (block.getType() == Material.WALL_SIGN || (!onlySigns && block.getType() == Material.AIR)) {
 					blocks.add(block);
 				}
 				
@@ -163,6 +166,10 @@ public class ScoreboardDisplay {
 	 * Updates all signs with the current values of the stats
 	 */
 	public void updateSigns() {
+		settings = minigame.getSettings(stat);
+		
+		placeRootSign();
+		
 		List<Block> signs = getSignBlocks(true);
 		
 		int nextIndex = 0;
@@ -182,12 +189,12 @@ public class ScoreboardDisplay {
 		
 		Sign sign = (Sign)block.getState();
 		sign.setLine(0, ChatColor.GREEN + String.valueOf(place) + ". " + ChatColor.BLACK + stats[0].getPlayerDisplayName());
-		sign.setLine(1, ChatColor.BLUE + stat.displayValueSign(stats[0].getValue()));
+		sign.setLine(1, ChatColor.BLUE + stat.displayValueSign(stats[0].getValue(), settings));
 		
 		if (stats.length == 2) {
 			++place;
 			sign.setLine(2, ChatColor.GREEN + String.valueOf(place) + ". " + ChatColor.BLACK + stats[1].getPlayerDisplayName());
-			sign.setLine(3, ChatColor.BLUE + stat.displayValueSign(stats[1].getValue()));
+			sign.setLine(3, ChatColor.BLUE + stat.displayValueSign(stats[1].getValue(), settings));
 		} else {
 			sign.setLine(2, "");
 			sign.setLine(3, "");
@@ -199,11 +206,12 @@ public class ScoreboardDisplay {
 	public void displayMenu(MinigamePlayer player){
 		final Menu setupMenu = new Menu(3, "Setup Scoreboard", player);
 		
+		StatSettings settings = minigame.getSettings(stat);
 		final MenuItemCustom statisticChoice = new MenuItemCustom("Statistic", Material.BOOK_AND_QUILL);
-		statisticChoice.setDescription(Arrays.asList(ChatColor.GREEN + stat.getDisplayName()));
+		statisticChoice.setDescription(Arrays.asList(ChatColor.GREEN + settings.getDisplayName()));
 		
 		final MenuItemCustom fieldChoice = new MenuItemCustom("Statistic Field", Material.PAPER);
-		fieldChoice.setDescription(Arrays.asList(ChatColor.GREEN + field.toString()));
+		fieldChoice.setDescription(Arrays.asList(ChatColor.GREEN + field.getTitle()));
 		
 		statisticChoice.setClick(new InteractionInterface() {
 			@Override
@@ -217,12 +225,13 @@ public class ScoreboardDisplay {
 					@Override
 					public void setValue(MinigameStat value) {
 						stat = value;
-						statisticChoice.setDescription(Arrays.asList(ChatColor.GREEN + value.getDisplayName()));
+						StatSettings settings = minigame.getSettings(stat);
+						statisticChoice.setDescription(Arrays.asList(ChatColor.GREEN + settings.getDisplayName()));
 						
 						// Check that the field is valid
 						StatValueField first = null;
 						boolean valid = false;
-						for (StatValueField sfield : stat.getFormat().getFields()) {
+						for (StatValueField sfield : settings.getFormat().getFields()) {
 							if (first == null) {
 								first = sfield;
 							}
@@ -249,7 +258,8 @@ public class ScoreboardDisplay {
 		fieldChoice.setClick(new InteractionInterface() {
 			@Override
 			public Object interact(Object object) {
-				Menu childMenu = MinigameStats.createStatFieldSelectMenu(setupMenu, stat, new Callback<StatValueField>() {
+				StatSettings settings = minigame.getSettings(stat);
+				Menu childMenu = MinigameStats.createStatFieldSelectMenu(setupMenu, settings.getFormat(), new Callback<StatValueField>() {
 					@Override
 					public StatValueField getValue() {
 						throw new UnsupportedOperationException();
@@ -258,7 +268,7 @@ public class ScoreboardDisplay {
 					@Override
 					public void setValue(StatValueField value) {
 						field = value;
-						fieldChoice.setDescription(Arrays.asList(ChatColor.GREEN + value.toString()));
+						fieldChoice.setDescription(Arrays.asList(ChatColor.GREEN + value.getTitle()));
 					}
 				});
 				
@@ -323,12 +333,17 @@ public class ScoreboardDisplay {
 	}
 	
 	public void placeRootSign() {
+		// For external calls
+		if (settings == null) {
+			settings = minigame.getSettings(stat);
+		}
+		
 		Block root = rootBlock.getBlock();
 		Sign sign = (Sign)root.getState();
 		
 		sign.setLine(0, ChatColor.BLUE + minigame.getName(true));
-		sign.setLine(1, ChatColor.GREEN + WordUtils.capitalize(stat.getDisplayName()));
-		sign.setLine(2, ChatColor.GREEN + WordUtils.capitalize(field.toString()));
+		sign.setLine(1, ChatColor.GREEN + settings.getDisplayName());
+		sign.setLine(2, ChatColor.GREEN + field.getTitle());
 		sign.setLine(3, "(" + WordUtils.capitalize(order.toString()) + ")");
 		sign.update();
 		

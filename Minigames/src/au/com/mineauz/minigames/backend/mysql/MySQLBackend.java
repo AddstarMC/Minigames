@@ -3,11 +3,15 @@ package au.com.mineauz.minigames.backend.mysql;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.configuration.ConfigurationSection;
+
+import com.google.common.collect.Maps;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.backend.Backend;
@@ -21,6 +25,9 @@ import au.com.mineauz.minigames.backend.both.SQLImport;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.MinigameStat;
+import au.com.mineauz.minigames.stats.MinigameStats;
+import au.com.mineauz.minigames.stats.StatFormat;
+import au.com.mineauz.minigames.stats.StatSettings;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import au.com.mineauz.minigames.stats.StoredStat;
@@ -31,6 +38,7 @@ public class MySQLBackend extends Backend {
 	
 	private StatementKey insertMinigame;
 	private StatementKey insertPlayer;
+	private StatementKey loadStatSettings;
 	
 	private MySQLStatLoader loader;
 	private MySQLStatSaver saver;
@@ -109,7 +117,7 @@ public class MySQLBackend extends Backend {
 			try {
 				statement.executeQuery("SELECT 1 FROM `StatMetadata` LIMIT 0;");
 			} catch (SQLException e) {
-				statement.executeUpdate("CREATE TABLE `StatMetadata` (`minigame_id` INTEGER REFERENCES `Minigames` (`minigame_id`) ON DELETE CASCADE, `stat` VARCHAR(20) NOT NULL, `display_name` VARCHAR(20), `format` ENUM('LAST', 'LAST+TOTAL', 'MIN', 'MIN+TOTAL', 'MAX', 'MAX+TOTAL', 'MIN+MAX', 'MIN+MAX+TOTAL', 'TOTAL'), PRIMARY KEY (`minigame_id`, `stat`));");
+				statement.executeUpdate("CREATE TABLE `StatMetadata` (`minigame_id` INTEGER REFERENCES `Minigames` (`minigame_id`) ON DELETE CASCADE, `stat` VARCHAR(20) NOT NULL, `display_name` VARCHAR(20), `format` ENUM('LAST', 'LASTANDTOTAL', 'MIN', 'MINANDTOTAL', 'MAX', 'MAXANDTOTAL', 'MINMAX', 'MINMAXANDTOTAL', 'TOTAL'), PRIMARY KEY (`minigame_id`, `stat`));");
 			}
 		} finally {
 			statement.close();
@@ -119,6 +127,7 @@ public class MySQLBackend extends Backend {
 	private void createStatements() {
 		insertMinigame = new StatementKey("INSERT INTO `Minigames` (`name`) VALUES (?) ON DUPLICATE KEY UPDATE `minigame_id`=LAST_INSERT_ID(`minigame_id`);", true);
 		insertPlayer = new StatementKey("INSERT INTO `Players` VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `name` = VALUES(`name`), `displayname` = VALUES(`displayname`);");
+		loadStatSettings = new StatementKey("SELECT `stat`, `display_name`, `format` FROM `StatMetadata` WHERE `minigame_id`=?;");
 	}
 	
 	ConnectionPool getPool() {
@@ -162,6 +171,60 @@ public class MySQLBackend extends Backend {
 	
 	public void updatePlayer(ConnectionHandler handler, MinigamePlayer player) throws SQLException {
 		handler.executeUpdate(insertPlayer, player.getUUID().toString(), player.getName(), player.getDisplayName());
+	}
+	
+	@Override
+	public Map<MinigameStat, StatSettings> loadStatSettings(Minigame minigame) {
+		ConnectionHandler handler = null;
+		try {
+			handler = pool.getConnection();
+			
+			int minigameId = getMinigameId(handler, minigame);
+			ResultSet rs = handler.executeQuery(loadStatSettings, minigameId);
+			
+			Map<MinigameStat, StatSettings> settings = Maps.newHashMap();
+			
+			try {
+				while (rs.next()) {
+					String statName = rs.getString("stat");
+					String rawFormat = rs.getString("format");
+					String displayName = rs.getString("display_name");
+					
+					MinigameStat stat = MinigameStats.getStat(statName);
+					if (stat == null) {
+						// Just ignore it
+						continue;
+					}
+					
+					// Decode format
+					StatFormat format = null;
+					for (StatFormat f : StatFormat.values()) {
+						if (f.name().equalsIgnoreCase(rawFormat)) {
+							format = f;
+							break;
+						}
+					}
+					
+					if (format == null) {
+						format = stat.getFormat();
+					}
+					
+					StatSettings setting = new StatSettings(stat, format, displayName);
+					settings.put(stat, setting);
+				}
+				
+				return settings;
+			} finally {
+				rs.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Collections.emptyMap();
+		} finally {
+			if (handler != null) {
+				handler.release();
+			}
+		}
 	}
 	
 	@Override

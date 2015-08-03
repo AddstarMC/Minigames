@@ -121,8 +121,6 @@ public class Minigames extends JavaPlugin{
 									getLogger().severe(ChatColor.RED.toString() + "Failed to load \"" + minigame +"\"! The configuration file may be corrupt or missing!");
 									e.printStackTrace();
 								}
-								
-								game.getScoreboardData().reload();
 							}
 						}
 					}, 1L);

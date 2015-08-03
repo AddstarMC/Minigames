@@ -19,10 +19,10 @@ import com.google.common.collect.Maps;
  * This class allows you to register stats that are usable in scoreboards 
  */
 public final class MinigameStats {
-	public static final MinigameStat Wins = new BasicMinigameStat("wins", "Wins", StatFormat.Total, true);
-	public static final MinigameStat Losses = new BasicMinigameStat("losses", "Losses", StatFormat.Total, true); // Fake stat
-	public static final MinigameStat Attempts = new BasicMinigameStat("attempts", "Attempts", StatFormat.Total, true);
-	public static final MinigameStat CompletionTime = new BasicMinigameStat("time", "Completion Time", StatFormat.MinMaxAndTotal, true);
+	public static final MinigameStat Wins = new BasicMinigameStat("wins", "Wins", StatFormat.Total);
+	public static final MinigameStat Losses = new BasicMinigameStat("losses", "Losses", StatFormat.Total); // Fake stat
+	public static final MinigameStat Attempts = new BasicMinigameStat("attempts", "Attempts", StatFormat.Total);
+	public static final MinigameStat CompletionTime = new BasicMinigameStat("time", "Completion Time", StatFormat.MinMaxAndTotal);
 	
 	public static final MinigameStat Kills = new BasicMinigameStat("kills", "Kills", StatFormat.MaxAndTotal);
 	public static final MinigameStat Deaths = new BasicMinigameStat("deaths", "Deaths", StatFormat.MinAndTotal);
@@ -155,14 +155,14 @@ public final class MinigameStats {
 	/**
 	 * Creates a menu that allows you to select a statistic field
 	 * @param parent The parent menu
-	 * @param stat The statistic to limit the choices for
+	 * @param format The format to define the fields available
 	 * @param callback The callback to be invoked when the field is chosen. Note: only the setValue() method will be called.
 	 * @return The menu to display
 	 */
-	public static Menu createStatFieldSelectMenu(final Menu parent, MinigameStat stat, final Callback<StatValueField> callback) {
+	public static Menu createStatFieldSelectMenu(final Menu parent, StatFormat format, final Callback<StatValueField> callback) {
 		final Menu submenu = new Menu(6, "Select Statistic Field", parent.getViewer());
 		
-		for (final StatValueField field : stat.getFormat().getFields()) {
+		for (final StatValueField field : format.getFields()) {
 			MenuItemCustom item = new MenuItemCustom(WordUtils.capitalizeFully(field.name()), Material.PAPER);
 			item.setClick(new InteractionInterface() {
 				@Override

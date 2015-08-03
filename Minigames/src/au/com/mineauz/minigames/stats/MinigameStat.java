@@ -45,11 +45,6 @@ public abstract class MinigameStat {
 	}
 	
 	/**
-	 * @return Returns true if the format of this stat can be overridden per minigame
-	 */
-	public abstract boolean canOverrideFormat();
-	
-	/**
 	 * Queries this stat to check if its value should actually be stored.
 	 * The normal behaviour is to always save the stat unless the value 
 	 * is 0 and the format doesn't contain the minimum or last value  
@@ -80,18 +75,20 @@ public abstract class MinigameStat {
 	/**
 	 * Converts the value into a string to display
 	 * @param value The value to display
+	 * @param settings The settings of this stat
 	 * @return The output string
 	 */
-	public String displayValue(long value) {
+	public String displayValue(long value, StatSettings settings) {
 		return String.valueOf(value);
 	}
 	
 	/**
 	 * Converts the value into a string for displaying on a sign
 	 * @param value The value to display
+	 * @param settings The settings of this stat
 	 * @return The output string
 	 */
-	public String displayValueSign(long value) {
+	public String displayValueSign(long value, StatSettings settings) {
 		return String.valueOf(value);
 	}
 }

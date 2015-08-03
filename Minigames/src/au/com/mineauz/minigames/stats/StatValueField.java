@@ -5,10 +5,26 @@ package au.com.mineauz.minigames.stats;
  * fields are available
  */
 public enum StatValueField {
-	Last,
-	Min,
-	Max,
-	Total;
+	Last("", "Last Value"),
+	Min("_min", "Minimum"),
+	Max("_max", "Maximum"),
+	Total("_total", "Total");
+	
+	private final String title;
+	private final String suffix;
+	
+	private StatValueField(String suffix, String title) {
+		this.suffix = suffix;
+		this.title = title;
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+	
+	public String getSuffix() {
+		return suffix;
+	}
 	
 	/**
 	 * Can be used to apply this fields function

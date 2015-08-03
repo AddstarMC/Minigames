@@ -13,6 +13,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
+import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.ListenableFuture;
+
 import au.com.mineauz.minigames.CTFFlag;
 import au.com.mineauz.minigames.FloorDegenerator;
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -57,6 +61,9 @@ import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.stats.MinigameStat;
+import au.com.mineauz.minigames.stats.StatSettings;
+import au.com.mineauz.minigames.stats.StoredGameStats;
 
 public class Minigame {
 	private Map<String, Flag<?>> configFlags = new HashMap<String, Flag<?>>();
@@ -130,6 +137,7 @@ public class Minigame {
 	private IntegerFlag maxChestRandom = new IntegerFlag(10, "maxchestrandom");
 	
 	private ScoreboardData sbData = new ScoreboardData();
+	private Map<MinigameStat, StatSettings> statSettings = Maps.newHashMap();
 	
 	//Unsaved data
 	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
@@ -914,6 +922,26 @@ public class Minigame {
 	public void setDisplayScoreboard(boolean bool){
 		displayScoreboard.setFlag(bool);
 	}
+	
+	public StatSettings getSettings(MinigameStat stat) {
+		StatSettings settings = statSettings.get(stat);
+		if (settings == null) {
+			settings = new StatSettings(stat);
+			statSettings.put(stat, settings);
+		}
+		
+		return settings;
+	}
+	
+	public Map<MinigameStat, StatSettings> getStatSettings(StoredGameStats stats) {
+		Map<MinigameStat, StatSettings> settings = Maps.newHashMap();
+		
+		for (MinigameStat stat : stats.getStats().keySet()) {
+			settings.put(stat, getSettings(stat));
+		}
+		
+		return settings;
+	}
 
 	public void displayMenu(MinigamePlayer player){
 		Menu main = new Menu(6, getName(false), player);
@@ -1296,6 +1324,22 @@ public class Minigame {
 		
 		getScoreboardData().loadDisplays(minigame, this);
 		
+		ListenableFuture<Map<MinigameStat, StatSettings>> settingsFuture = Minigames.plugin.getBackend().loadStatSettings(this);
+		Minigames.plugin.getBackend().addServerThreadCallback(settingsFuture, new FutureCallback<Map<MinigameStat, StatSettings>>() {
+			@Override
+			public void onSuccess(Map<MinigameStat, StatSettings> result) {
+				statSettings.clear();
+				statSettings.putAll(result);
+				
+				getScoreboardData().reload();
+			}
+			
+			@Override
+			public void onFailure(Throwable t) {
+				t.printStackTrace();
+			}
+		});
+		
 		saveMinigame();
 	}
 	
@@ -1303,4 +1347,6 @@ public class Minigame {
 	public String toString(){
 		return getName(false);
 	}
+	
+	
 }

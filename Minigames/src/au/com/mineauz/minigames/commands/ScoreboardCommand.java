@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -17,6 +18,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.MinigameStats;
+import au.com.mineauz.minigames.stats.StatSettings;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredStat;
 
@@ -148,6 +150,7 @@ public class ScoreboardCommand implements ICommand{
 		}
 		
 		final ScoreboardOrder fOrder = order;
+		final StatSettings settings = minigame.getSettings(stat);
 		
 		sender.sendMessage(ChatColor.GRAY + "Loading scoreboard...");
 		// Now load the values
@@ -158,7 +161,7 @@ public class ScoreboardCommand implements ICommand{
 			public void onSuccess(List<StoredStat> result) {
 				sender.sendMessage(ChatColor.GREEN + minigame.getName(true) + " Scoreboard: " + stat.getDisplayName() + " " + fOrder.toString().toLowerCase());
 				for (StoredStat playerStat : result) {
-					sender.sendMessage(ChatColor.AQUA + playerStat.getPlayerDisplayName() + ": " + ChatColor.WHITE + stat.displayValue(playerStat.getValue()));
+					sender.sendMessage(ChatColor.AQUA + playerStat.getPlayerDisplayName() + ": " + ChatColor.WHITE + stat.displayValue(playerStat.getValue(), settings));
 				}
 			}
 			

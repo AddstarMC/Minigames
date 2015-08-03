@@ -63,7 +63,7 @@ class MySQLStatLoader {
 			// First get the id
 			int minigameId = backend.getMinigameId(handler, minigame);
 			
-			String statName = stat.getName() + stat.getFormat().getFieldSuffix(field);
+			String statName = stat.getName() + field.getSuffix();
 			
 			ResultSet rs = handler.executeQuery(getSingle, minigameId, playerId.toString(), statName);
 			
@@ -88,7 +88,7 @@ class MySQLStatLoader {
 	
 	// Loads from the stats table
 	private List<StoredStat> loadStats(ConnectionHandler handler, int minigameId, MinigameStat stat, StatValueField field, ScoreboardOrder order, int offset, int length) throws SQLException {
-		String statName = stat.getName() + stat.getFormat().getFieldSuffix(field);
+		String statName = stat.getName() + field.getSuffix();
 		
 		try {
 			StatementKey statement;

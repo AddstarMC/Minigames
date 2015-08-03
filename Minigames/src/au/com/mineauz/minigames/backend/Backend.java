@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.backend;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -8,6 +9,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.MinigameStat;
+import au.com.mineauz.minigames.stats.StatSettings;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import au.com.mineauz.minigames.stats.StoredStat;
@@ -62,6 +64,13 @@ public abstract class Backend {
 	 * @return The value of the stat
 	 */
 	public abstract long getStat(Minigame minigame, UUID playerId, MinigameStat stat, StatValueField field);
+	
+	/**
+	 * Loads stat settings for the minigame
+	 * @param minigame The minigame to load settings from
+	 * @return A map of stats to their settings
+	 */
+	public abstract Map<MinigameStat, StatSettings> loadStatSettings(Minigame minigame);
 	
 	/**
 	 * Exports this backend to another backend

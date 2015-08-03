@@ -455,6 +455,8 @@ public class PlayerData {
 							}
 						}
 						
+						saveData.applySettings(minigame.getStatSettings(saveData));
+						
 						plugin.queueStatSave(saveData, false);
 					}
 				}
@@ -751,6 +753,8 @@ public class PlayerData {
 						saveData.addStat(stat, stat.getValue(minigame, player, true));
 					}
 				}
+				
+				saveData.applySettings(minigame.getStatSettings(saveData));
 				
 				if(!usedTimer)
 					quitMinigame(player, true);

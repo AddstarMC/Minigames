@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.backend;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
@@ -22,6 +23,7 @@ import au.com.mineauz.minigames.backend.sqlite.SQLiteBackend;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.MinigameStat;
+import au.com.mineauz.minigames.stats.StatSettings;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import au.com.mineauz.minigames.stats.StoredStat;
@@ -152,6 +154,20 @@ public class BackendManager {
 			public StoredGameStats call() throws Exception {
 				backend.saveGameStatus(stats);
 				return stats;
+			}
+		});
+	}
+	
+	/**
+	 * Retrieves the settings for all stats in a minigame. This is loaded asynchronously
+	 * @param minigame The minigame to load settings for
+	 * @return A ListenerableFuture that returns a map of minigame stats and their settings
+	 */
+	public ListenableFuture<Map<MinigameStat, StatSettings>> loadStatSettings(final Minigame minigame) {
+		return executorService.submit(new Callable<Map<MinigameStat, StatSettings>>() {
+			@Override
+			public Map<MinigameStat, StatSettings> call() throws Exception {
+				return backend.loadStatSettings(minigame);
 			}
 		});
 	}
