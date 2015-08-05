@@ -274,4 +274,10 @@ public class SQLiteBackend extends Backend {
 		SQLExport exporter = new SQLExport(pool, callback, notifier);
 		exporter.beginExport();
 	}
+	
+	@Override
+	public boolean doConversion(ExportNotifier notifier) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

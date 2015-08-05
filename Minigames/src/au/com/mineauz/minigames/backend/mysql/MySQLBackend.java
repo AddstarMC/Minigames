@@ -35,6 +35,7 @@ import au.com.mineauz.minigames.stats.StoredStat;
 
 public class MySQLBackend extends Backend {
 	private ConnectionPool pool;
+	private String database;
 	private final Logger logger;
 	
 	private StatementKey insertMinigame;
@@ -57,10 +58,12 @@ public class MySQLBackend extends Backend {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			
+			database = config.getString("database", "database");
+			
 			// Create the pool
 			String url = String.format("jdbc:mysql://%s/%s", 
 					config.getString("host", "localhost:3306"), 
-					config.getString("database", "database")
+					database
 					);
 			
 			String username = config.getString("username", "username");
@@ -112,7 +115,7 @@ public class MySQLBackend extends Backend {
 			try {
 				statement.executeQuery("SELECT 1 FROM `PlayerStats` LIMIT 0;");
 			} catch (SQLException e) {
-				statement.executeUpdate("CREATE TABLE `PlayerStats` (`player_id` CHAR(36) REFERENCES `Players` (`player_id`) ON DELETE CASCADE, `minigame_id` INTEGER REFERENCES `Minigames` (`minigame_id`) ON DELETE CASCADE, `stat` VARCHAR(20) NOT NULL, `value` INTEGER, PRIMARY KEY (`player_id`, `minigame_id`, `stat`));");
+				statement.executeUpdate("CREATE TABLE `PlayerStats` (`player_id` CHAR(36) REFERENCES `Players` (`player_id`) ON DELETE CASCADE, `minigame_id` INTEGER REFERENCES `Minigames` (`minigame_id`) ON DELETE CASCADE, `stat` VARCHAR(20) NOT NULL, `value` BIGINT, PRIMARY KEY (`player_id`, `minigame_id`, `stat`));");
 			}
 			
 			// Check the stat metadata table
@@ -264,5 +267,12 @@ public class MySQLBackend extends Backend {
 		BackendImportCallback callback = getImportCallback(other);
 		SQLExport exporter = new SQLExport(pool, callback, notifier);
 		exporter.beginExport();
+	}
+	
+	@Override
+	public boolean doConversion(ExportNotifier notifier) {
+		BackendImportCallback callback = getImportCallback();
+		LegacyExporter exporter = new LegacyExporter(pool, database, callback, notifier);
+		return exporter.doExport();
 	}
 }

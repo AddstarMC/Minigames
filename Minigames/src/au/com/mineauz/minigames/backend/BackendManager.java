@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -77,6 +78,7 @@ public class BackendManager {
 			backendSection.set("host", config.getString("sql-host") + ":" + config.getInt("sql-port"));
 			backendSection.set("username", config.getString("sql-username"));
 			backendSection.set("password", config.getString("sql-password"));
+			backendSection.set("convert", true);
 			
 			// Clear the existing value
 			config.set("use-sql", null);
@@ -98,7 +100,36 @@ public class BackendManager {
 		}
 		
 		// Init
-		return backend.initialize(backendSection);
+		if (!backend.initialize(backendSection)) {
+			return false;
+		}
+		
+		// Handle conversion
+		if (backendSection.getBoolean("convert", false)) {
+			ExportNotifier notifier = new ExportNotifier() {
+				@Override
+				public void onProgress(String state, int count) {
+					logger.info("Conversion: " + state + " " + count);
+				}
+				
+				@Override
+				public void onError(Throwable e, String state, int count) {
+					logger.log(Level.SEVERE, "Conversion error: " + state + " " + count, e);
+				}
+				
+				@Override
+				public void onComplete() {
+					logger.info("Conversion complete");
+				}
+			};
+			
+			if (backend.doConversion(notifier)) {
+				backendSection.set("convert", false);
+			} else {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/**
