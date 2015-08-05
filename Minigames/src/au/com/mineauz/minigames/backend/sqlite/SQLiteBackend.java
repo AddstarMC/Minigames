@@ -172,7 +172,7 @@ public class SQLiteBackend extends Backend {
 		rs = handler.executeUpdateWithResults(insertMinigame, minigame.getName(false));
 		try {
 			if (rs.next()) {
-				return rs.getInt("minigame_id");
+				return rs.getInt(1);
 			} else {
 				throw new AssertionError("Insert should have returned id");
 			}
@@ -277,7 +277,8 @@ public class SQLiteBackend extends Backend {
 	
 	@Override
 	public boolean doConversion(ExportNotifier notifier) {
-		// TODO Auto-generated method stub
-		return false;
+		BackendImportCallback callback = getImportCallback();
+		FlatFileExporter exporter = new FlatFileExporter(new File(Minigames.plugin.getDataFolder(), "completion.yml"), callback, notifier);
+		return exporter.doExport();
 	}
 }
