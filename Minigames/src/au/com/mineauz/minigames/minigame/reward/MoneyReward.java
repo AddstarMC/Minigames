@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.minigame.reward;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 
 import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -43,12 +43,12 @@ public class MoneyReward extends RewardType{
 	}
 
 	@Override
-	public void saveReward(String path, FileConfiguration config) {
+	public void saveReward(String path, ConfigurationSection config) {
 		config.set(path, money);
 	}
 
 	@Override
-	public void loadReward(String path, FileConfiguration config) {
+	public void loadReward(String path, ConfigurationSection config) {
 		money = config.getDouble(path);
 	}
 	

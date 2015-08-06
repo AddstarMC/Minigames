@@ -107,6 +107,7 @@ public class RewardSign implements MinigameSign {
 			rewardMenu.setControlItem(new MenuItemRewardGroupAdd("Add Group", Material.ITEM_FRAME, rew), 3);
 			rewardMenu.setControlItem(new MenuItemRewardAdd("Add Item", Material.ITEM_FRAME, rew), 2);
 			final MenuItem mic = new MenuItem("Save Rewards", Material.REDSTONE_TORCH_ON);
+
 			final Location floc = loc;
 			mic.setClickHandler(new IMenuItemClick() {
 				@Override
@@ -126,6 +127,7 @@ public class RewardSign implements MinigameSign {
 			for(RewardType item : rew.getRewards()){
 				mi.add(item.getMenuItem());
 			}
+
 			for(RewardGroup group : rew.getGroups()){
 				MenuItemRewardGroup rwg = new MenuItemRewardGroup(group.getName() + " Group", Material.CHEST, group, rew);
 				mi.add(rwg);

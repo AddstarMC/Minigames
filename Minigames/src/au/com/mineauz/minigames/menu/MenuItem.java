@@ -454,8 +454,8 @@ public class MenuItem {
 	final void completeManualEntry(MinigamePlayer player, String value) {
 		player.cancelMenuReopen();
 		player.setNoClose(false);
-		checkValidEntry(player, value);
 		getContainer().displaySession(player, player.getMenuSession());
+		checkValidEntry(player, value);
 	}
 	
 	/**

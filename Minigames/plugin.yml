@@ -57,6 +57,7 @@ permissions:
             minigame.enableall: true
             minigame.disableall: true
             minigame.save: true
+            minigame.backend: true
     minigame.join:
         description: Allows a player to join a Minigame, bypassing betting.
         default: op
@@ -469,3 +470,6 @@ permissions:
     minigame.loadout.menu:
         description: Allows a player to use the Loadout selection menu command.
         default: true
+    minigame.backend:
+        description: Allows admins to change and export the backend
+        default: op

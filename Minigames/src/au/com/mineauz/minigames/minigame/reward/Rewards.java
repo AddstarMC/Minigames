@@ -4,10 +4,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
+
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemRewardAdd;
+import au.com.mineauz.minigames.menu.MenuItemRewardGroup;
+import au.com.mineauz.minigames.menu.MenuItemRewardGroupAdd;
+
 public class Rewards {
 	
 	private List<RewardType> items = new ArrayList<RewardType>();
 	private List<RewardGroup> groups = new ArrayList<RewardGroup>();
+	
+	public boolean isEmpty() {
+		return items.isEmpty() && groups.isEmpty();
+	}
 	
 	public List<RewardType> getReward(){
 		double rand = Math.random();
@@ -113,5 +127,72 @@ public class Rewards {
 	
 	public List<RewardGroup> getGroups(){
 		return groups;
+	}
+	
+	public Menu createMenu(String name) {
+		Menu rewardMenu = new Menu(5, name);
+		
+		rewardMenu.setControlItem(new MenuItemRewardGroupAdd("Add Group", Material.ITEM_FRAME, this), 3);
+		rewardMenu.setControlItem(new MenuItemRewardAdd("Add Item", Material.ITEM_FRAME, this), 4);
+		
+		List<MenuItem> mi = new ArrayList<MenuItem>();
+		for(RewardType item : items){
+			mi.add(item.getMenuItem());
+		}
+		for(RewardGroup group : groups){
+			MenuItemRewardGroup rwg = new MenuItemRewardGroup(group.getName() + " Group", Material.CHEST, group, this);
+			mi.add(rwg);
+		}
+		rewardMenu.addItems(mi);
+		
+		return rewardMenu;
+	}
+	
+	public void save(ConfigurationSection section) {
+		int index = 0;
+		for(RewardType item : items) {
+			ConfigurationSection itemSection = section.createSection(String.valueOf(index));
+			itemSection.set("type", item.getName());
+			itemSection.set("rarity", item.getRarity().name());
+			item.saveReward("data", itemSection);
+			index++;
+		}
+		
+		for(RewardGroup group : groups) {
+			ConfigurationSection groupSection = section.createSection(group.getName());
+			group.save(groupSection);
+		}
+	}
+	
+	public void load(ConfigurationSection section) {
+		for(String key : section.getKeys(false)) {
+			// Upgrade from pre 1.7
+			//TODO: Remove after 1.7 release
+			if (section.contains(key + ".item") || section.contains(key + ".money")) {
+				ItemStack item = section.getItemStack(key + ".item");
+				if(item != null) {
+					RewardType ir = RewardTypes.getRewardType("ITEM", this);
+					ir.loadReward(key + ".item", section);
+					ir.setRarity(RewardRarity.valueOf(section.getString(key + ".rarity")));
+					addReward(ir);
+				} else {
+					RewardType ir = RewardTypes.getRewardType("MONEY", this);
+					ir.loadReward(key + ".money", section);
+					ir.setRarity(RewardRarity.valueOf(section.getString(key + ".rarity")));
+					addReward(ir);
+				}
+			// Load reward item
+			} else if(section.contains(key + ".type")) {
+				ConfigurationSection itemSection = section.getConfigurationSection(key);
+				RewardType rew = RewardTypes.getRewardType(itemSection.getString("type"), this);
+				rew.loadReward("data", itemSection);
+				rew.setRarity(RewardRarity.valueOf(itemSection.getString("rarity")));
+				addReward(rew);
+			// Load reward group
+			} else {
+				ConfigurationSection groupSection = section.getConfigurationSection(key);
+				groups.add(RewardGroup.load(groupSection, this));
+			}
+		}
 	}
 }

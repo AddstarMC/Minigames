@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.WordUtils;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 //import net.minecraft.server.v1_6_R2.EntityPlayer;
 //
@@ -15,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 
 import au.com.mineauz.minigames.events.MinigamesBroadcastEvent;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -458,6 +460,38 @@ public class MinigameUtils {
 		if(Minigames.plugin.isDebugging()){
 			Minigames.plugin.getLogger().info("DEBUG: " + message);
 		}
+	}
+	
+	/**
+	 * Loads a short location (x, y, z, world) from a configuration section
+	 * @param section The section that contains the fields
+	 * @return A location with the the contents of that section, or null if the world is invalid
+	 */
+	public static Location loadShortLocation(ConfigurationSection section) {
+		double x = section.getDouble("x");
+		double y = section.getDouble("y");
+		double z = section.getDouble("z");
+		
+		String worldName = section.getString("world");
+		World world = Bukkit.getWorld(worldName);
+		
+		if (world != null) {
+			return new Location(world, x, y, z);
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Saves a short location (x, y, z, world) to a configuration section
+	 * @param section The ConfigurationSection to save into
+	 * @param location The location to save
+	 */
+	public static void saveShortLocation(ConfigurationSection section, Location location) {
+		section.set("x", location.getX());
+		section.set("y", location.getY());
+		section.set("z", location.getZ());
+		section.set("world", location.getWorld().getName());
 	}
 	
 //	public static void removePlayerArrows(MinigamePlayer player){

@@ -22,6 +22,7 @@ import au.com.mineauz.minigames.minigame.modules.MultiplayerModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
+import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 
 public class ModuleManager {
 	private Minigames plugin;
@@ -40,6 +41,7 @@ public class ModuleManager {
 		registerModule(plugin, WeatherTimeModule.class);
 		registerModule(plugin, MultiplayerModule.class);
 		registerModule(plugin, GameOverModule.class);
+		registerModule(plugin, RewardsModule.class);
 		// Game mode modules
 		registerModule(plugin, TreasureHuntModule.class);
 		registerModule(plugin, InfectionModule.class);
@@ -50,12 +52,14 @@ public class ModuleManager {
 		addDefaultModule(MinigameType.SINGLEPLAYER, WeatherTimeModule.class);
 		addDefaultModule(MinigameType.SINGLEPLAYER, LoadoutModule.class);
 		addDefaultModule(MinigameType.SINGLEPLAYER, GameOverModule.class); // FIXME: For now this will be added to sp, but it only makes sense for multiplayer
+		addDefaultModule(MinigameType.SINGLEPLAYER, RewardsModule.class);
 		
 		addDefaultModule(MinigameType.MULTIPLAYER, MultiplayerModule.class);
 		addDefaultModule(MinigameType.MULTIPLAYER, WeatherTimeModule.class);
 		addDefaultModule(MinigameType.MULTIPLAYER, LoadoutModule.class);
 		addDefaultModule(MinigameType.MULTIPLAYER, LobbySettingsModule.class);
 		addDefaultModule(MinigameType.MULTIPLAYER, GameOverModule.class);
+		addDefaultModule(MinigameType.MULTIPLAYER, RewardsModule.class);
 	}
 	
 	/**

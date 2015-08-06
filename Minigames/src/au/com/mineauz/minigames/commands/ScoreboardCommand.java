@@ -1,21 +1,29 @@
 package au.com.mineauz.minigames.commands;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+
+import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
-import au.com.mineauz.minigames.minigame.ScoreboardSortThread;
-import au.com.mineauz.minigames.minigame.ScoreboardType;
+import au.com.mineauz.minigames.stats.MinigameStat;
+import au.com.mineauz.minigames.stats.MinigameStats;
+import au.com.mineauz.minigames.stats.StatFormat;
+import au.com.mineauz.minigames.stats.StatSettings;
+import au.com.mineauz.minigames.stats.StatValueField;
+import au.com.mineauz.minigames.stats.StoredStat;
 
 public class ScoreboardCommand implements ICommand{
-	
 	private Minigames plugin = Minigames.plugin;
 
 	@Override
@@ -40,17 +48,12 @@ public class ScoreboardCommand implements ICommand{
 
 	@Override
 	public String[] getParameters() {
-		ScoreboardType[] types = ScoreboardType.values();
-		String[] tStr = new String[types.length];
-		for(int i = 0; i < types.length; i++){
-			tStr[i] = types[i].toString().toLowerCase();
-		}
-		return tStr;
+		return null;
 	}
 
 	@Override
 	public String[] getUsage() {
-		return new String[] {"/minigame scoreboard <Minigame> <Result Type> <asc/desc> [limit] [-p <PlayerName>]"};
+		return new String[] {"/minigame scoreboard <Minigame> <Statistic> <Field> [-o <asc/desc>|-l <length>|-s <start>]"};
 	}
 
 	@Override
@@ -64,104 +67,165 @@ public class ScoreboardCommand implements ICommand{
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Minigame minigame,
-			String label, String[] args) {
-		if(args != null && args.length >= 3 && plugin.getSQL() != null && plugin.getSQL().getSql() != null){
-			if(plugin.mdata.hasMinigame(args[0])){
-				Minigame mg = plugin.mdata.getMinigame(args[0]);
-				ScoreboardType type;
-				try{
-					type = ScoreboardType.valueOf(args[1].toUpperCase());
-				}
-				catch(IllegalArgumentException e){
-					type = null;
-				}
-				
-				if(type != null){
-					String ply = null;
-					int c = 0;
-					for(String arg : args){
-						if(arg.equals("-p") && args.length - 1 > c){
-							ply = args[c + 1];
-							break;
-						}
-						c++;
-					}
-					if(ply != null){
-						if(mg.getScoreboardData().hasPlayer(ply)){
-							if(args[2].matches("(asc)|(desc)")){
-								ScoreboardOrder ord = ScoreboardOrder.DESCENDING;
-								if(args[2].equals("asc")){
-									ord = ScoreboardOrder.ASCENDING;
-								}
-								ScoreboardSortThread sorter = new ScoreboardSortThread(mg.getScoreboardData().getPlayers(), type, ord, 
-										mg.getName(false), sender);
-								sorter.setSpecificPlayer(ply);
-								sorter.start();
-							}
-							else
-								sender.sendMessage(ChatColor.RED + "Order must be asc (ascending) or desc (descending)");
-						}
-						else
-							sender.sendMessage(ChatColor.RED + ply + " does not have any data stored in " + mg.getName(false));
-						return true;
-					}
-					else if(args[2].matches("(asc)|(desc)")){
-						ScoreboardOrder ord = ScoreboardOrder.DESCENDING;
-						if(args[2].equals("asc")){
-							ord = ScoreboardOrder.ASCENDING;
-						}
-						
-						ScoreboardSortThread sorter;
-						if(args.length == 4 && args[3].matches("[0-9]+"))
-							sorter = new ScoreboardSortThread(mg.getScoreboardData().getPlayers(), type, ord, mg.getName(false), sender, Integer.parseInt(args[3]));
-						else
-							sorter = new ScoreboardSortThread(mg.getScoreboardData().getPlayers(), type, ord, mg.getName(false), sender);
-						
-						sorter.start();
-						sender.sendMessage(ChatColor.GRAY + "Preparing scoreboard...");
-						return true;
-					}
-					else
-						sender.sendMessage(ChatColor.RED + "Order must be asc (ascending) or desc (descending)");
-				}
-				else
-					sender.sendMessage(ChatColor.RED + "No result type found by the name " + args[1]);
-			}
-			else
-				sender.sendMessage(ChatColor.RED + "No Minigame found by the name " + args[0]);
+	public boolean onCommand(final CommandSender sender, Minigame ignore, String label, String[] args) {
+		if (args == null || args.length < 3) {
+			return false;
 		}
-		return false;
+		
+		// Decode arguments
+		final Minigame minigame = plugin.mdata.getMinigame(args[0]);
+		if (minigame == null) {
+			sender.sendMessage(ChatColor.RED + "No Minigame found by the name " + args[0]);
+			return true;
+		}
+		
+		final MinigameStat stat = MinigameStats.getStat(args[1]);
+		if (stat == null) {
+			sender.sendMessage(ChatColor.RED + "No statistic found by the name " + args[1]);
+			return true;
+		}
+		
+		final StatSettings settings = minigame.getSettings(stat);
+		
+		StatValueField field = null;
+		for (StatValueField f : settings.getFormat().getFields()) {
+			if (f.name().equalsIgnoreCase(args[2])) {
+				field = f;
+				break;
+			}
+		}
+		
+		if (field == null) {
+			sender.sendMessage(ChatColor.RED + "No field found by the name " + args[2] + " for the statistic " + stat.getDisplayName());
+			return true;
+		}
+		
+		// Prepare defaults for optionals
+		ScoreboardOrder order;
+		switch (field) {
+		case Last:
+		case Total:
+		case Max:
+			order = ScoreboardOrder.DESCENDING;
+			break;
+		case Min:
+			order = ScoreboardOrder.ASCENDING;
+			break;
+		default:
+			throw new AssertionError();
+		}
+		
+		int start = 0;
+		int length = 8;
+		
+		// Now the optionals
+		for (int i = 3; i < args.length - 1; i += 2) {
+			if (args[i].equalsIgnoreCase("-o")) {
+				// Order
+				if (args[i+1].equalsIgnoreCase("asc") || args[i+1].equalsIgnoreCase("ascending")) {
+					order = ScoreboardOrder.ASCENDING;
+				} else if (args[i+1].equalsIgnoreCase("desc") || args[i+1].equalsIgnoreCase("descending")) {
+					order = ScoreboardOrder.DESCENDING;
+				} else {
+					sender.sendMessage(ChatColor.RED + "Unknown order " + args[i+1] + ". Expected asc, ascending, desc, or descending.");
+					return true;
+				}
+			} else if (args[i].equalsIgnoreCase("-l")) {
+				// Length
+				if (args[i+1].matches("[1-9][0-9]*")) {
+					length = Integer.parseInt(args[i+1]);
+				} else {
+					sender.sendMessage(ChatColor.RED + "Unknown length " + args[i+1] + ". Expected positive non-zero number");
+					return true;
+				}
+			} else if (args[i].equalsIgnoreCase("-s")) {
+				// Start
+				if (args[i+1].matches("[1-9][0-9]*")) {
+					start = Integer.parseInt(args[i+1]) - 1;
+				} else {
+					sender.sendMessage(ChatColor.RED + "Unknown start " + args[i+1] + ". Expected positive non-zero number");
+					return true;
+				}
+			} else {
+				sender.sendMessage(ChatColor.RED + "Unknown option " + args[i] + ". Expected -o, -l, or -s");
+				return true;
+			}
+		}
+		
+		final ScoreboardOrder fOrder = order;
+		final StatValueField fField = field;
+		
+		sender.sendMessage(ChatColor.GRAY + "Loading scoreboard...");
+		// Now load the values
+		ListenableFuture<List<StoredStat>> future = plugin.getBackend().loadStats(minigame, stat, field, order, start, length);
+		
+		Futures.addCallback(future, new FutureCallback<List<StoredStat>>() {
+			@Override
+			public void onSuccess(List<StoredStat> result) {
+				sender.sendMessage(ChatColor.GREEN + minigame.getName(true) + " Scoreboard: " + settings.getDisplayName() + " - " + fField.getTitle() + " " + fOrder.toString().toLowerCase());
+				for (StoredStat playerStat : result) {
+					sender.sendMessage(ChatColor.AQUA + playerStat.getPlayerDisplayName() + ": " + ChatColor.WHITE + stat.displayValue(playerStat.getValue(), settings));
+				}
+			}
+			
+			@Override
+			public void onFailure(Throwable t) {
+				sender.sendMessage(ChatColor.RED + "An internal error occured while loading the statistics");
+				t.printStackTrace();
+			}
+		});
+		
+		return true;
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-			String alias, String[] args) {
-		if(args.length == 1){
+	public List<String> onTabComplete(CommandSender sender, Minigame ignore, String alias, String[] args) {
+		if(args.length == 1) { // Minigame
 			List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
 			return MinigameUtils.tabCompleteMatch(mgs, args[0]);
-		}
-		else if(args.length == 2){
-			List<String> ts = new ArrayList<String>(ScoreboardType.values().length);
-			for(ScoreboardType t : ScoreboardType.values()){
-				ts.add(t.toString());
+		} else if(args.length == 2) { // Stat
+			return MinigameUtils.tabCompleteMatch(Lists.newArrayList(MinigameStats.getAllStats().keySet()), args[1]);
+		} else if (args.length == 3) { // Field
+			MinigameStat stat = MinigameStats.getStat(args[1]);
+			if (stat == null) {
+				return null;
 			}
-			return MinigameUtils.tabCompleteMatch(ts, args[1]);
-		}
-		else if(args.length == 3){
-			return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("asc;desc"), args[2]);
-		}
-		else if(args.length == 4){
-			return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("-p"), args[3]);
-		}
-		else if(args.length == 5 && args[3].equals("-p")){
-			List<String> pl = new ArrayList<String>();
-			for(Player p : plugin.getServer().getOnlinePlayers()){
-				pl.add(p.getName());
+			
+			final Minigame minigame = plugin.mdata.getMinigame(args[0]);
+			StatFormat format;
+			if (minigame == null) {
+				format = stat.getFormat();
+			} else {
+				StatSettings settings = minigame.getSettings(stat);
+				format = settings.getFormat();
 			}
-			return MinigameUtils.tabCompleteMatch(pl, args[4]);
+			
+			String toMatch = args[2].toLowerCase();
+			List<String> matches = Lists.newArrayList();
+			for (StatValueField field : format.getFields()) {
+				if (field.name().toLowerCase().startsWith(toMatch)) {
+					matches.add(field.name());
+				}
+			}
+			
+			return matches;
+		} else if (args.length > 3) {
+			if (args.length % 2 == 0) {
+				// Option
+				return MinigameUtils.tabCompleteMatch(Arrays.asList("-o", "-l", "-s"), args[args.length-1]);
+			} else {
+				// Option Parameter
+				String previous = args[args.length-2].toLowerCase();
+				String toMatch = args[args.length-1].toLowerCase();
+				
+				if (previous.equals("-o")) {
+					// Order
+					return MinigameUtils.tabCompleteMatch(Arrays.asList("asc", "ascending", "desc", "descending"), toMatch);
+				}
+				// The others cannot be tab completed
+			}
 		}
+		
 		return null;
 	}
-
 }

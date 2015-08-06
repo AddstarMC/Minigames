@@ -19,7 +19,6 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.FireworkEffect.Type;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -34,7 +33,6 @@ import au.com.mineauz.minigames.events.QuitMinigameEvent;
 import au.com.mineauz.minigames.events.RevertCheckpointEvent;
 import au.com.mineauz.minigames.events.StartMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.gametypes.MinigameTypeBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
@@ -44,7 +42,9 @@ import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.sounds.MGSounds;
 import au.com.mineauz.minigames.sounds.PlayMGSound;
-import au.com.mineauz.minigames.sql.SQLPlayer;
+import au.com.mineauz.minigames.stats.DynamicMinigameStat;
+import au.com.mineauz.minigames.stats.MinigameStats;
+import au.com.mineauz.minigames.stats.StoredGameStats;
 
 public class PlayerData {
 	private Map<String, MinigamePlayer> minigamePlayers = new HashMap<String, MinigamePlayer>();
@@ -189,14 +189,19 @@ public class PlayerData {
 					module.getLosers().remove(player);
 				
 				if(!isWinner){
-					//SQL stuff
-					if(plugin.getSQL() != null){
-						if(minigame.canSaveCheckpoint() == false){
-							plugin.addSQLToStore(new SQLPlayer(minigame.getName(false), player.getName(), player.getUUID().toString(), 0, 1, 
-									player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), 
-									player.getEndTime() - player.getStartTime() + player.getStoredTime()));
-							plugin.startSQLCompletionSaver();
+					if(!minigame.canSaveCheckpoint() && minigame.isEnabled()){
+						StoredGameStats saveData = new StoredGameStats(minigame, player);
+						saveData.addStat(MinigameStats.Attempts, 1);
+						
+						for (DynamicMinigameStat stat : MinigameStats.getDynamicStats()) {
+							if (stat.doesApply(minigame, player, false)) {
+								saveData.addStat(stat, stat.getValue(minigame, player, false));
+							}
 						}
+						
+						saveData.applySettings(minigame.getStatSettings(saveData));
+						
+						plugin.queueStatSave(saveData, false);
 					}
 				}
 				
@@ -345,6 +350,10 @@ public class PlayerData {
 			
 			if(player.getPlayer().getGameMode() != GameMode.CREATIVE)
 				player.setCanFly(false);
+
+			if (!forced) {
+				minigame.getScoreboardData().reload();
+			}
 		}
 	}
 	
@@ -477,9 +486,25 @@ public class PlayerData {
 			
 			for(MinigamePlayer player : winners){
 				player.setEndTime(System.currentTimeMillis());
-				SQLPlayer sply = new SQLPlayer(minigame.getName(false), player.getName(), player.getUUID().toString(), 1, 0, 
-						player.getKills(), player.getDeaths(), player.getScore(), player.getReverts(), 
-						player.getEndTime() - player.getStartTime());
+				
+				StoredGameStats saveData = new StoredGameStats(minigame, player);
+				saveData.addStat(MinigameStats.Attempts, 1);
+				saveData.addStat(MinigameStats.Wins, 1);
+				
+				saveData.addStat(MinigameStats.Kills, player.getKills());
+				saveData.addStat(MinigameStats.Deaths, player.getDeaths());
+				saveData.addStat(MinigameStats.Score, player.getScore());
+				saveData.addStat(MinigameStats.Reverts, player.getReverts());
+				saveData.addStat(MinigameStats.CompletionTime, player.getEndTime() - player.getStartTime() + player.getStoredTime());
+				
+				for (DynamicMinigameStat stat : MinigameStats.getDynamicStats()) {
+					if (stat.doesApply(minigame, player, true)) {
+						saveData.addStat(stat, stat.getValue(minigame, player, true));
+					}
+				}
+				
+				saveData.applySettings(minigame.getStatSettings(saveData));
+				
 				if(!usedTimer)
 					quitMinigame(player, true);
 				
@@ -489,27 +514,9 @@ public class PlayerData {
 					player.sendMessage(MinigameUtils.formStr("player.bet.winMoney", Minigames.plugin.getEconomy().format(bets)), MessageType.Normal);
 				}
 				
-				//Reward Player
-				boolean hascompleted = false;
-				Configuration completion = null;
-				if(plugin.getSQL() == null && minigame.isEnabled()){
-					completion = mdata.getConfigurationFile("completion");
-					hascompleted = completion.getStringList(minigame.getName(false)).contains(player.getUUID().toString().replace("-", "_"));
-					
-					if(!hascompleted){
-						List<String> completionlist = completion.getStringList(minigame.getName(false));
-						completionlist.add(player.getUUID().toString().replace("-", "_"));
-						completion.set(minigame.getName(false), completionlist);
-						MinigameSave completionsave = new MinigameSave("completion");
-						completionsave.getConfig().set(minigame.getName(false), completionlist);
-						completionsave.saveConfig();
-					}
-					
-					MinigameTypeBase.issuePlayerRewards(player, minigame, hascompleted);
-				}
-				else if(minigame.isEnabled()){
-					plugin.addSQLToStore(sply);
-					plugin.startSQLCompletionSaver();
+				// Record player completion and give rewards
+				if(minigame.isEnabled()){
+					plugin.queueStatSave(saveData, true);
 				}
 				
 				//Item Bets (for non groups)
@@ -538,7 +545,7 @@ public class PlayerData {
 			
 			//Call Types End.
 			mdata.minigameType(minigame.getType()).endMinigame(winners, losers, minigame);
-			
+			minigame.getScoreboardData().reload();
 		}
 	}
 	

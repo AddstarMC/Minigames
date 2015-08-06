@@ -7,10 +7,8 @@ import org.bukkit.event.Listener;
 
 import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.reward.RewardType;
 
 public abstract class MinigameTypeBase implements Listener{
 	private static Minigames plugin;
@@ -48,50 +46,4 @@ public abstract class MinigameTypeBase implements Listener{
 				player.setRequiredQuit(true);
 			}
 	}
-	
-	public static void issuePlayerRewards(MinigamePlayer player, Minigame mgm, boolean hascompleted){
-		List<RewardType> rewardL = mgm.getRewardItem();
-		List<RewardType> srewardL = mgm.getSecondaryRewardItem();
-		if(!hascompleted && rewardL != null){
-			MinigameUtils.debugMessage("Issue Primary Reward for " + player.getName());
-			for(RewardType reward : rewardL){
-				if(reward != null){
-					MinigameUtils.debugMessage("Giving " + player.getName() + reward.getName() + " reward type.");
-					reward.giveReward(player);
-				}
-			}
-		}
-		else if(hascompleted && srewardL != null){
-			MinigameUtils.debugMessage("Issue Secondary Reward for " + player.getName());
-			for(RewardType sreward : srewardL){
-				if(sreward != null){
-					MinigameUtils.debugMessage("Giving " + player.getName() + sreward.getName() + " reward type.");
-					sreward.giveReward(player);
-				}
-			}
-		}
-		player.updateInventory();
-	}
-	
-//	private static void giveRewardItem(MinigamePlayer player, RewardType reward){
-//		if(!player.isInMinigame()){
-//			if(!player.getPlayer().isDead())
-//				player.getPlayer().getInventory().addItem(reward.getItem());
-//			else{
-//				int c = 0;
-//				for(ItemStack i : player.getOfflineMinigamePlayer().getStoredItems()){
-//					if(i == null){
-//						player.getOfflineMinigamePlayer().getStoredItems()[c] = reward.getItem();
-//						break;
-//					}
-//					c++; //TODO: Add temp reward item to player instead and give it to them on respawn
-//				}
-//				player.getOfflineMinigamePlayer().savePlayerData();
-//			}
-//		}
-//		else{
-//			player.addTempRewardItem(reward.getItem());
-//		}
-//		player.sendMessage(MinigameUtils.formStr("player.end.awardItem", reward.getItem().getAmount(), MinigameUtils.getItemStackName(reward.getItem())), "win");
-//	}
 }

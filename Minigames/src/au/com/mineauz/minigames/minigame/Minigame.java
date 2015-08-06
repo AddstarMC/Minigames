@@ -19,6 +19,9 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import com.google.common.collect.Maps;
 
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.ListenableFuture;
+
 import au.com.mineauz.minigames.FloorDegenerator;
 import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -36,7 +39,6 @@ import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.ListFlag;
 import au.com.mineauz.minigames.config.LocationFlag;
 import au.com.mineauz.minigames.config.LocationListFlag;
-import au.com.mineauz.minigames.config.RewardsFlag;
 import au.com.mineauz.minigames.config.SimpleLocationFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.events.MinigameInitializeEvent;
@@ -47,7 +49,6 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemAddFlag;
-import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;
 import au.com.mineauz.minigames.menu.MenuItemDisplayWhitelist;
 import au.com.mineauz.minigames.menu.MenuItemEnum;
 import au.com.mineauz.minigames.menu.MenuItemFlag;
@@ -63,8 +64,9 @@ import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.MultiplayerModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
-import au.com.mineauz.minigames.minigame.reward.RewardType;
-import au.com.mineauz.minigames.minigame.reward.Rewards;
+import au.com.mineauz.minigames.stats.MinigameStat;
+import au.com.mineauz.minigames.stats.StatSettings;
+import au.com.mineauz.minigames.stats.StoredGameStats;
 
 public class Minigame {
 	private Map<String, Flag<?>> configFlags = new HashMap<String, Flag<?>>();
@@ -92,10 +94,6 @@ public class Minigame {
 	private LocationFlag quitPosition = new LocationFlag(null, "quitpos");
 	private LocationFlag spectatorPosition = new LocationFlag(null, "spectatorpos");
 	
-	private Rewards rewardItem = new Rewards();
-	private RewardsFlag rewardItemFlag = new RewardsFlag(null, "reward");
-	private Rewards secondaryRewardItem = new Rewards();
-	private RewardsFlag secondaryRewardItemFlag = new RewardsFlag(null, "reward2");
 	private BooleanFlag usePermissions = new BooleanFlag(false, "usepermissions");
 	
 	private BooleanFlag itemDrops = new BooleanFlag(false, "itemdrops");
@@ -138,6 +136,7 @@ public class Minigame {
 	private IntegerFlag maxChestRandom = new IntegerFlag(10, "maxchestrandom");
 	
 	private ScoreboardData sbData = new ScoreboardData();
+	private Map<MinigameStat, StatSettings> statSettings = Maps.newHashMap();
 	
 	//Unsaved data
 	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
@@ -161,8 +160,6 @@ public class Minigame {
 	private void setup(MinigameType type, Location start){
 		this.type.setFlag(type);
 		startLocations.setFlag(new ArrayList<Location>());
-		rewardItemFlag.setFlag(rewardItem);
-		secondaryRewardItemFlag.setFlag(secondaryRewardItem);
 		
 		if(start != null)
 			startLocations.getFlag().add(start);
@@ -208,10 +205,8 @@ public class Minigame {
 		addConfigFlag(regenArea1);
 		addConfigFlag(regenArea2);
 		addConfigFlag(regenDelay);
-		addConfigFlag(rewardItemFlag);
 		addConfigFlag(saveCheckpoints);
 		addConfigFlag(mechanic);
-		addConfigFlag(secondaryRewardItemFlag);
 		addConfigFlag(spMaxPlayers);
 		addConfigFlag(startLocations);
 		addConfigFlag(this.type);
@@ -303,22 +298,6 @@ public class Minigame {
 		return false;
 	}
 
-	public List<RewardType> getSecondaryRewardItem(){
-		return secondaryRewardItem.getReward();
-	}
-	
-	public Rewards getSecondaryRewardItems(){
-		return secondaryRewardItem;
-	}
-
-	public List<RewardType> getRewardItem(){
-		return rewardItem.getReward();
-	}
-	
-	public Rewards getRewardItems(){
-		return rewardItem;
-	}
-	
 	public boolean hasFlags(){
 		return !flags.getFlag().isEmpty();
 	}
@@ -858,6 +837,26 @@ public class Minigame {
 		displayScoreboard.setFlag(bool);
 	}
 	
+	public StatSettings getSettings(MinigameStat stat) {
+		StatSettings settings = statSettings.get(stat);
+		if (settings == null) {
+			settings = new StatSettings(stat);
+			statSettings.put(stat, settings);
+		}
+		
+		return settings;
+	}
+	
+	public Map<MinigameStat, StatSettings> getStatSettings(StoredGameStats stats) {
+		Map<MinigameStat, StatSettings> settings = Maps.newHashMap();
+		
+		for (MinigameStat stat : stats.getStats().keySet()) {
+			settings.put(stat, getSettings(stat));
+		}
+		
+		return settings;
+	}
+	
 	private void addGameTypeOptions(Menu menu, MinigameType type) {
 		switch (type) {
 		case MULTIPLAYER: {
@@ -873,7 +872,7 @@ public class Minigame {
 			break;
 		}
 	}
-	
+
 	private void buildMenu(final Menu main) {
 		Menu playerMenu = new Menu(5, getName(false));
 		Menu flags = new Menu(5, getName(false));
@@ -952,8 +951,7 @@ public class Minigame {
 		
 		main.addItem(displayScoreboard.getMenuItem("Display Scoreboard", Material.SIGN));
 		
-		main.addItem(new MenuItemDisplayRewards("Primary Rewards", null, Material.CHEST, rewardItem));
-		main.addItem(new MenuItemDisplayRewards("Secondary Rewards", null, Material.CHEST, secondaryRewardItem));
+		
 		main.addItem(new MenuItemDisplayWhitelist("Block Whitelist/Blacklist", "Blocks that can/can't;be broken", 
 				Material.CHEST, getBlockRecorder().getWBBlocks(), getBlockRecorder().getWhitelistModeCallback()));
 		main.addItem(new MenuItemNewLine());
@@ -1059,6 +1057,7 @@ public class Minigame {
 			}else{
 				MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
 				modsave.getConfig().set(name, null);
+				modsave.getConfig().createSection(name);
 				module.save(modsave.getConfig());
 				
 				if(module.getFlags() != null){
@@ -1092,6 +1091,8 @@ public class Minigame {
 		}
 		
 		getScoreboardData().saveDisplays(minigame, name);
+		getScoreboardData().refreshDisplays();
+		Minigames.plugin.getBackend().saveStatSettings(this, statSettings.values());
 		
 		minigame.saveConfig();
 	}
@@ -1186,6 +1187,23 @@ public class Minigame {
 		}
 		
 		getScoreboardData().loadDisplays(cfg, this);
+		
+		ListenableFuture<Map<MinigameStat, StatSettings>> settingsFuture = Minigames.plugin.getBackend().loadStatSettings(this);
+		Minigames.plugin.getBackend().addServerThreadCallback(settingsFuture, new FutureCallback<Map<MinigameStat, StatSettings>>() {
+			@Override
+			public void onSuccess(Map<MinigameStat, StatSettings> result) {
+				statSettings.clear();
+				statSettings.putAll(result);
+				
+				getScoreboardData().reload();
+			}
+			
+			@Override
+			public void onFailure(Throwable t) {
+				t.printStackTrace();
+			}
+		});
+		
 		save.saveConfig();
 	}
 	

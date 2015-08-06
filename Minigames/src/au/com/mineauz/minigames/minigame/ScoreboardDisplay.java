@@ -1,58 +1,97 @@
 package au.com.mineauz.minigames.minigame;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.metadata.FixedMetadataValue;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.ListenableFuture;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemList;
+import au.com.mineauz.minigames.menu.MenuItemEnum;
 import au.com.mineauz.minigames.menu.MenuItemScoreboardSave;
+import au.com.mineauz.minigames.stats.MinigameStat;
+import au.com.mineauz.minigames.stats.MinigameStats;
+import au.com.mineauz.minigames.stats.StatSettings;
+import au.com.mineauz.minigames.stats.StatValueField;
+import au.com.mineauz.minigames.stats.StoredStat;
 
 public class ScoreboardDisplay {
-	private Location loc;
-	private ScoreboardType type = ScoreboardType.COMPLETIONS;
-	private ScoreboardOrder ord = ScoreboardOrder.DESCENDING;
-	private Minigame mgm;
+	public static final int defaultWidth = 3;
+	public static final int defaultHeight = 3;
+	private Location rootBlock;
+	private MinigameStat stat;
+	private StatValueField field;
+	private ScoreboardOrder order;
+	private Minigame minigame;
 	private int width;
 	private int height;
-	private BlockFace dir;
+	private BlockFace facing;
 	
-	public ScoreboardDisplay(Minigame mgm, int width, int height, Location signLoc, BlockFace dir){
-		this.mgm = mgm;
+	private StatSettings settings;
+	
+	private List<StoredStat> stats;
+	
+	private boolean needsLoad;
+	
+	public ScoreboardDisplay(Minigame minigame, int width, int height, Location rootBlock, BlockFace facing) {
+		this.minigame = minigame;
 		this.width = width;
 		this.height = height;
-		loc = signLoc;
-		this.dir = dir;
+		this.rootBlock = rootBlock;
+		this.facing = facing;
+		
+		// Default values
+		stat = MinigameStats.Wins;
+		field = StatValueField.Total;
+		order = ScoreboardOrder.DESCENDING;
+		
+		stats = Lists.newArrayListWithCapacity(width * height);
+		needsLoad = true;
 	}
 
-	public Location getLocation() {
-		return loc;
+	public Location getRoot() {
+		return rootBlock;
 	}
 
-	public ScoreboardType getType() {
-		return type;
+	public MinigameStat getStat() {
+		return stat;
 	}
-
-	public void setType(ScoreboardType type) {
-		this.type = type;
+	
+	public StatValueField getField() {
+		return field;
+	}
+	
+	public void setStat(MinigameStat stat, StatValueField field) {
+		this.stat = stat;
+		this.field = field;
 	}
 
 	public ScoreboardOrder getOrder() {
-		return ord;
+		return order;
 	}
 
-	public void setOrd(ScoreboardOrder ord) {
-		this.ord = ord;
+	public void setOrder(ScoreboardOrder order) {
+		this.order = order;
+		stats.clear();
+		needsLoad = true;
 	}
 
 	public int getWidth() {
@@ -64,186 +103,352 @@ public class ScoreboardDisplay {
 	}
 
 	public Minigame getMinigame() {
-		return mgm;
+		return minigame;
 	}
 	
-	public BlockFace getDirection(){
-		return dir;
+	public BlockFace getFacing() {
+		return facing;
 	}
 	
-	public void updateStats(){
-		ScoreboardSortThread thread = new ScoreboardSortThread(mgm.getScoreboardData().getPlayers(), type, ord, this);
-		thread.start();
+	public boolean needsLoad() {
+		return needsLoad;
 	}
 	
-	public void displayStats(List<ScoreboardPlayer> results){
-		Location cur = loc.clone();
-		cur.setY(cur.getY() - height);
-		List<Chunk> chunksLoaded = new ArrayList<Chunk>();
-		if(!cur.getChunk().isLoaded()){
-			chunksLoaded.add(cur.getChunk());
-			cur.getChunk().load();
+	private List<Block> getSignBlocks(boolean onlySigns) {
+		// Find the horizontal direction (going across the the signs, left to right) 
+		BlockFace horizontal;
+		
+		switch(facing) {
+		case NORTH:
+			horizontal = BlockFace.WEST;
+			break;
+		case SOUTH:
+			horizontal = BlockFace.EAST;
+			break;
+		case WEST:
+			horizontal = BlockFace.SOUTH;
+			break;
+		case EAST:
+			horizontal = BlockFace.NORTH;
+			break;
+		default:
+			throw new AssertionError("Invalid facing " + facing);
 		}
 		
-		int cx = cur.getChunk().getX();
-		int cz = cur.getChunk().getZ();
-		cx--;
-		cz--;
-		for(int x = 0; x <= 2; x++){
-			for(int z = 0; z <= 2; z++){
-				Chunk c = cur.getWorld().getChunkAt(x + cx, z + cz);
-				if(!c.isLoaded()){
-					c.load();
-					chunksLoaded.add(c);
+		List<Block> blocks = Lists.newArrayListWithCapacity(width * height);
+		
+		// Find the corner that is the top left part of the scoreboard
+		Location min = rootBlock.clone();
+		min.add(-horizontal.getModX() * (width / 2), -1, -horizontal.getModZ() * (width / 2));
+
+		// Grab each sign of the scoreboards in order 
+		Block block = min.getBlock();
+		
+		for(int y = 0; y < height; ++y) {
+			Block start = block;
+			for(int x = 0; x < width; ++x) {
+				// Only add signs
+				if (block.getType() == Material.WALL_SIGN || (!onlySigns && block.getType() == Material.AIR)) {
+					blocks.add(block);
 				}
+				
+				block = block.getRelative(horizontal);
 			}
+			block = start.getRelative(BlockFace.DOWN);
 		}
 		
-		int ord;
-		int ory = cur.getBlockY();
-		if(dir == BlockFace.EAST || dir == BlockFace.WEST){
-			cur.setZ(cur.getZ() - Math.floor(width / 2));
-			ord = cur.getBlockZ();
+		return blocks;
+	}
+	
+	/**
+	 * Updates all signs with the current values of the stats
+	 */
+	public void updateSigns() {
+		settings = minigame.getSettings(stat);
+		
+		placeRootSign();
+		
+		List<Block> signs = getSignBlocks(true);
+		
+		int nextIndex = 0;
+		for (Block sign : signs) {
+			if (nextIndex <= stats.size() - 2) {
+				updateSign(sign, nextIndex + 1, stats.get(nextIndex++), stats.get(nextIndex++));
+			} else if (nextIndex <= stats.size() - 1) {
+				updateSign(sign, nextIndex + 1, stats.get(nextIndex++));
+			} else {
+				clearSign(sign);
+			}
 		}
-		else{
-			cur.setX(cur.getX() - Math.floor(width / 2));
-			ord = cur.getBlockX();
+	}
+	
+	private void updateSign(Block block, int place, StoredStat... stats) {
+		Preconditions.checkArgument(stats.length >= 1 && stats.length <= 2);
+		
+		Sign sign = (Sign)block.getState();
+		sign.setLine(0, ChatColor.GREEN + String.valueOf(place) + ". " + ChatColor.BLACK + stats[0].getPlayerDisplayName());
+		sign.setLine(1, ChatColor.BLUE + stat.displayValueSign(stats[0].getValue(), settings));
+		
+		if (stats.length == 2) {
+			++place;
+			sign.setLine(2, ChatColor.GREEN + String.valueOf(place) + ". " + ChatColor.BLACK + stats[1].getPlayerDisplayName());
+			sign.setLine(3, ChatColor.BLUE + stat.displayValueSign(stats[1].getValue(), settings));
+		} else {
+			sign.setLine(2, "");
+			sign.setLine(3, "");
 		}
 		
-		int place = 1;
-		mainLoop:
-		for(int y = height - 1; y >= 0; y--){
-			cur.setY(ory + y);
-			if(dir == BlockFace.WEST || dir == BlockFace.SOUTH){
-				for(int i = 0; i < width; i++){
-					if(dir == BlockFace.WEST){
-						cur.setZ(ord + i);
-					}
-					else{
-						cur.setX(ord + i);
-					}
-					if(cur.getBlock().getType() != Material.AIR){
-						if(cur.getBlock().getState() instanceof Sign){
-							if(place > results.size()) break mainLoop;
-							updateSign(cur, place, results);
-							place += 2;
-						}
-					}
-				}
-			}
-			else{
-				for(int i = width - 1; i >= 0; i--){
-					if(dir == BlockFace.EAST){
-						cur.setZ(ord + i);
-					}
-					else{
-						cur.setX(ord + i);
-					}
-					if(cur.getBlock().getType() != Material.AIR){
-						if(cur.getBlock().getState() instanceof Sign){
-							if(place > results.size()) break mainLoop;
-							updateSign(cur, place, results);
-							place += 2;
-						}
-					}
-				}
-			}
-		}
-		
-		for(Chunk c : chunksLoaded){
-			if(c.isLoaded() && !c.getWorld().isChunkLoaded(c)){
-				c.unload();
-			}
-		}
+		sign.update();
 	}
 	
 	public void displayMenu(MinigamePlayer player){
-		Menu setupMenu = new Menu(3, "Setup Scoreboard");
-		List<MenuItem> items = new ArrayList<MenuItem>();
-		List<String> sbtypes = new ArrayList<String>();
-		for(ScoreboardType t : ScoreboardType.values()){
-			sbtypes.add(t.toString().toLowerCase().replace("_", " "));
-		}
-		items.add(new MenuItemList("Scoreboard Display", Material.ENDER_PEARL, new Callback<String>() {
-			
+		final Menu setupMenu = new Menu(3, "Setup Scoreboard");
+		
+		StatSettings settings = minigame.getSettings(stat);
+		
+		final MenuItem fieldChoice = new MenuItem("Statistic Field", Material.PAPER) {
 			@Override
-			public void setValue(String value) {
-				type = ScoreboardType.valueOf(value.toUpperCase().replace(" ", "_"));
+			protected void onClick(MinigamePlayer player) {
+				StatSettings settings = minigame.getSettings(stat);
+				Menu childMenu = MinigameStats.createStatFieldSelectMenu(setupMenu, settings.getFormat(), new Callback<StatValueField>() {
+					@Override
+					public StatValueField getValue() {
+						throw new UnsupportedOperationException();
+					}
+					
+					@Override
+					public void setValue(StatValueField value) {
+						field = value;
+						setDescription(Arrays.asList(ChatColor.GREEN + value.getTitle()));
+					}
+				});
+				
+				childMenu.displayMenu(player);
+			}
+		};
+		
+		fieldChoice.setDescription(Arrays.asList(ChatColor.GREEN + field.getTitle()));
+		
+		final MenuItem statisticChoice = new MenuItem("Statistic", Material.BOOK_AND_QUILL) {
+			@Override
+			protected void onClick(MinigamePlayer player) {
+				Menu childMenu = MinigameStats.createStatSelectMenu(setupMenu, new Callback<MinigameStat>() {
+					@Override
+					public MinigameStat getValue() {
+						throw new UnsupportedOperationException();
+					}
+					
+					@Override
+					public void setValue(MinigameStat value) {
+						stat = value;
+						StatSettings settings = minigame.getSettings(stat);
+						setDescription(Arrays.asList(ChatColor.GREEN + settings.getDisplayName()));
+						
+						// Check that the field is valid
+						StatValueField first = null;
+						boolean valid = false;
+						for (StatValueField sfield : settings.getFormat().getFields()) {
+							if (first == null) {
+								first = sfield;
+							}
+							
+							if (sfield == field) {
+								valid = true;
+								break;
+							}
+						}
+						
+						// Update the field
+						if (!valid) {
+							field = first;
+							fieldChoice.setDescription(Arrays.asList(ChatColor.GREEN + value.toString()));
+						}
+					}
+				});
+				
+				childMenu.displayMenu(player);
+			}
+		};
+		
+		statisticChoice.setDescription(Arrays.asList(ChatColor.GREEN + settings.getDisplayName()));
+		
+		setupMenu.addItem(statisticChoice);
+		setupMenu.addItem(fieldChoice);
+		
+		setupMenu.addItem(new MenuItemEnum<ScoreboardOrder>("Scoreboard Order", Material.ENDER_PEARL, new Callback<ScoreboardOrder>() {
+			@Override
+			public ScoreboardOrder getValue() {
+				return order;
 			}
 			
 			@Override
-			public String getValue() {
-				return type.toString().toLowerCase().replace("_", " ");
+			public void setValue(ScoreboardOrder value) {
+				order = value;
 			}
-		}, sbtypes));
-		List<String> sbotypes = new ArrayList<String>();
-		for(ScoreboardOrder o : ScoreboardOrder.values()){
-			sbotypes.add(o.toString().toLowerCase());
-		}
-		items.add(new MenuItemList("Scoreboard Order", Material.ENDER_PEARL, new Callback<String>() {
-			
-			@Override
-			public void setValue(String value) {
-				ord = ScoreboardOrder.valueOf(value.toUpperCase());
-			}
-			
-			@Override
-			public String getValue() {
-				return ord.toString().toLowerCase();
-			}
-		}, sbotypes));
-		setupMenu.addItems(items);
+		}, ScoreboardOrder.class));
+		
 		setupMenu.setControlItem(new MenuItemScoreboardSave("Create Scoreboard", Material.REDSTONE_TORCH_ON, this), 4);
 		setupMenu.displayMenu(player);
 	}
 	
-	private void updateSign(Location cur, int place, List<ScoreboardPlayer> results){
-		Sign nsign = (Sign)cur.getBlock().getState();
-		nsign.setLine(0, ChatColor.GREEN.toString() + place + ". " + ChatColor.BLACK + results.get(place - 1).getPlayerName());
-		if(type != ScoreboardType.TOTAL_TIME && type != ScoreboardType.LEAST_TIME)
-			nsign.setLine(1, ChatColor.BLUE + ((Integer)results.get(place - 1).getByType(type)).toString() + " " + type.getTypeName());
-		else
-			nsign.setLine(1, ChatColor.BLUE + MinigameUtils.convertTime((int)((Long)results.get(place - 1).getByType(type) / 1000), true));
-		place++;
-		if(place <= results.size()){
-			nsign.setLine(2, ChatColor.GREEN.toString() + place + ". " + ChatColor.BLACK + results.get(place - 1).getPlayerName());
-			if(type != ScoreboardType.TOTAL_TIME && type != ScoreboardType.LEAST_TIME)
-				nsign.setLine(3, ChatColor.BLUE + ((Integer)results.get(place - 1).getByType(type)).toString() + " " + type.getTypeName());
-			else
-				nsign.setLine(3, ChatColor.BLUE + MinigameUtils.convertTime((int)((Long)results.get(place - 1).getByType(type) / 1000), true));
+	
+	
+	private void clearSign(Block block) {
+		Sign sign = (Sign)block.getState();
+		sign.setLine(0, "");
+		sign.setLine(1, "");
+		sign.setLine(2, "");
+		sign.setLine(3, "");
+		sign.update();
+	}
+
+	public void deleteSigns() {
+		List<Block> blocks = getSignBlocks(true);
+		
+		for (Block block : blocks) {
+			block.setType(Material.AIR);
 		}
-		nsign.update();
 	}
 	
-	public void deleteSigns(){
-		Location cur = loc.clone();
-		cur.setY(cur.getY() - height);
-		int ord;
-		int ory = cur.getBlockY();
-		if(dir == BlockFace.EAST || dir == BlockFace.WEST){
-			cur.setZ(cur.getZ() - Math.floor(width / 2));
-			ord = cur.getBlockZ();
+	@SuppressWarnings("deprecation")
+	public void placeSigns() {
+		List<Block> blocks = getSignBlocks(false);
+		
+		for (Block block : blocks) {
+			block.setType(Material.WALL_SIGN);
+			
+			org.bukkit.material.Sign signMat = new org.bukkit.material.Sign(Material.WALL_SIGN);
+			signMat.setFacingDirection(facing);
+			block.setData(signMat.getData());
 		}
-		else{
-			cur.setX(cur.getX() - Math.floor(width / 2));
-			ord = cur.getBlockX();
+	}
+	
+	public void placeRootSign() {
+		// For external calls
+		if (settings == null) {
+			settings = minigame.getSettings(stat);
 		}
 		
-		for(int y = height - 1; y >= 0; y--){
-			cur.setY(ory + y);
-			for(int i = 0; i < width; i++){
-				if(dir == BlockFace.WEST || dir == BlockFace.EAST){
-					cur.setZ(ord + i);
-				}
-				else{
-					cur.setX(ord + i);
-				}
-				if(cur.getBlock().getType() != Material.AIR){
-					if(cur.getBlock().getState() instanceof Sign){
-						cur.getBlock().setType(Material.AIR);
-					}
-				}
-			}
+		Block root = rootBlock.getBlock();
+		Sign sign = (Sign)root.getState();
+		
+		sign.setLine(0, ChatColor.BLUE + minigame.getName(true));
+		sign.setLine(1, ChatColor.GREEN + settings.getDisplayName());
+		sign.setLine(2, ChatColor.GREEN + field.getTitle());
+		sign.setLine(3, "(" + WordUtils.capitalize(order.toString()) + ")");
+		sign.update();
+		
+		sign.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.plugin, true));
+		sign.setMetadata("Minigame", new FixedMetadataValue(Minigames.plugin, minigame));
+	}
+	
+	public void save(ConfigurationSection section) {
+		section.set("height", height);
+		section.set("width", width);
+		section.set("dir", facing.name());
+		section.set("stat", stat.getName());
+		section.set("field", field.name());
+		section.set("order", order.name());
+		MinigameUtils.saveShortLocation(section.createSection("location"), rootBlock);
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static ScoreboardDisplay load(Minigame minigame, ConfigurationSection section) {
+		int width = section.getInt("width");
+		int height = section.getInt("height");
+		Location location = MinigameUtils.loadShortLocation(section.getConfigurationSection("location"));
+		BlockFace facing = BlockFace.valueOf(section.getString("dir"));
+		
+		// from invalid world
+		if (location == null) {
+			return null;
 		}
+		
+		ScoreboardDisplay display = new ScoreboardDisplay(minigame, width, height, location, facing);
+		display.setOrder(ScoreboardOrder.valueOf(section.getString("order")));
+		
+		// Convert type to new stat
+		if (section.contains("type")) {
+			ScoreboardType type = ScoreboardType.valueOf(section.getString("type"));
+			
+			switch (type) {
+			case BEST_KILLS:
+				display.setStat(MinigameStats.Kills, StatValueField.Max);
+				break;
+			case BEST_SCORE:
+				display.setStat(MinigameStats.Score, StatValueField.Max);
+				break;
+			case COMPLETIONS:
+				display.setStat(MinigameStats.Wins, StatValueField.Total);
+				break;
+			case FAILURES:
+				display.setStat(MinigameStats.Losses, StatValueField.Total);
+				break;
+			case LEAST_DEATHS:
+				display.setStat(MinigameStats.Deaths, StatValueField.Min);
+				break;
+			case LEAST_REVERTS:
+				display.setStat(MinigameStats.Reverts, StatValueField.Min);
+				break;
+			case LEAST_TIME:
+				display.setStat(MinigameStats.CompletionTime, StatValueField.Min);
+				break;
+			case TOTAL_DEATHS:
+				display.setStat(MinigameStats.Deaths, StatValueField.Total);
+				break;
+			case TOTAL_KILLS:
+				display.setStat(MinigameStats.Kills, StatValueField.Total);
+				break;
+			case TOTAL_REVERTS:
+				display.setStat(MinigameStats.Reverts, StatValueField.Total);
+				break;
+			case TOTAL_SCORE:
+				display.setStat(MinigameStats.Score, StatValueField.Total);
+				break;
+			case TOTAL_TIME:
+				display.setStat(MinigameStats.CompletionTime, StatValueField.Total);
+				break;
+			default:
+				break;
+			}
+			
+			section.set("type", null);
+		// Load stat
+		} else {
+			MinigameStat stat = MinigameStats.getStat(section.getString("stat", "wins"));
+			StatValueField field = StatValueField.valueOf(section.getString("field", "Total"));
+			display.setStat(stat, field);
+		}
+		
+		Block block = location.getBlock();
+		block.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.plugin, true));
+		block.setMetadata("Minigame", new FixedMetadataValue(Minigames.plugin, minigame));
+		
+		return display;
+	}
+	
+	public void reload() {
+		needsLoad = false;
+		ListenableFuture<List<StoredStat>> future = Minigames.plugin.getBackend().loadStats(minigame, stat, field, order, 0, width * height);
+		Minigames.plugin.getBackend().addServerThreadCallback(future, getUpdateCallback());
+	}
+	
+	// The update callback to be provided to the future. MUST be executed on the bukkit server thread
+	private FutureCallback<List<StoredStat>> getUpdateCallback() {
+		return new FutureCallback<List<StoredStat>>() {
+			@Override
+			public void onSuccess(List<StoredStat> result) {
+				stats = result;
+				needsLoad = false;
+				updateSigns();
+			}
+			
+			@Override
+			public void onFailure(Throwable t) {
+				t.printStackTrace();
+				stats = Collections.emptyList();
+				needsLoad = true;
+			}
+		};
 	}
 }
