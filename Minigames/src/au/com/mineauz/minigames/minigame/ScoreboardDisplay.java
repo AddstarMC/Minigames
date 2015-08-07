@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -188,13 +189,13 @@ public class ScoreboardDisplay {
 		Preconditions.checkArgument(stats.length >= 1 && stats.length <= 2);
 		
 		Sign sign = (Sign)block.getState();
-		sign.setLine(0, ChatColor.GREEN + String.valueOf(place) + ". " + ChatColor.BLACK + stats[0].getPlayerDisplayName());
-		sign.setLine(1, ChatColor.BLUE + stat.displayValueSign(stats[0].getValue(), settings));
+		sign.setLine(0, MinigameUtils.limitIgnoreCodes(ChatColor.GREEN + String.valueOf(place) + ". " + ChatColor.BLACK + stats[0].getPlayerDisplayName(), 15));
+		sign.setLine(1, MinigameUtils.limitIgnoreCodes(ChatColor.BLUE + stat.displayValueSign(stats[0].getValue(), settings), 15));
 		
 		if (stats.length == 2) {
 			++place;
-			sign.setLine(2, ChatColor.GREEN + String.valueOf(place) + ". " + ChatColor.BLACK + stats[1].getPlayerDisplayName());
-			sign.setLine(3, ChatColor.BLUE + stat.displayValueSign(stats[1].getValue(), settings));
+			sign.setLine(2, MinigameUtils.limitIgnoreCodes(ChatColor.GREEN + String.valueOf(place) + ". " + ChatColor.BLACK + stats[1].getPlayerDisplayName(), 15));
+			sign.setLine(3, MinigameUtils.limitIgnoreCodes(ChatColor.BLUE + stat.displayValueSign(stats[1].getValue(), settings), 15));
 		} else {
 			sign.setLine(2, "");
 			sign.setLine(3, "");
