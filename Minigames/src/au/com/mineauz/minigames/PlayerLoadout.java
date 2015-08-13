@@ -4,14 +4,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import com.google.common.collect.Maps;
 
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.TeamColor;
+import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
+import au.com.mineauz.minigames.minigame.modules.LoadoutModule.LoadoutAddon;
 
 public class PlayerLoadout {
 	private Map<Integer, ItemStack> itemSlot = new HashMap<Integer, ItemStack>();
@@ -27,6 +34,8 @@ public class PlayerLoadout {
 	private boolean lockArmour = false;
 	private TeamColor team = null;
 	private boolean displayInMenu = true;
+	
+	private Map<Class<? extends LoadoutAddon>, Object> addonValues = Maps.newHashMap();
 	
 	public PlayerLoadout(String name){
 		loadoutName = name;
@@ -156,8 +165,24 @@ public class PlayerLoadout {
 			}
 		});
 		
+		for (Entry<Class<? extends LoadoutAddon>, Object> addonValue : addonValues.entrySet()) {
+			LoadoutAddon<Object> addon = LoadoutModule.getAddon(addonValue.getKey());
+			if (addon != null) {
+				addon.applyLoadout(player, addonValue.getValue());
+			}
+		}
+		
 		if(level != -1)
 			player.getPlayer().setLevel(level);
+	}
+	
+	public void removeLoadout(MinigamePlayer player) {
+		for (Entry<Class<? extends LoadoutAddon>, Object> addonValue : addonValues.entrySet()) {
+			LoadoutAddon<Object> addon = LoadoutModule.getAddon(addonValue.getKey());
+			if (addon != null) {
+				addon.clearLoadout(player, addonValue.getValue());
+			}
+		}
 	}
 	
 	public Set<Integer> getItems(){
@@ -342,5 +367,136 @@ public class PlayerLoadout {
 	
 	public void setDisplayInMenu(boolean bool){
 		displayInMenu = bool;
+	}
+	
+	/**
+	 * Sets an addons value in this loadout
+	 * @param addon The addon
+	 * @param value The value to use
+	 */
+	public <T> void setAddonValue(Class<? extends LoadoutAddon<T>> addon, T value) {
+		addonValues.put(addon, value);
+	}
+	
+	/**
+	 * Gets an addons value in this loadout
+	 * @param addon The addon
+	 * @return The value of the addon, or null
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T getAddonValue(Class<? extends LoadoutAddon<T>> addon) {
+		return (T)addonValues.get(addon);
+	}
+	
+	public void save(ConfigurationSection section) {
+		for(Integer slot : getItems())
+			section.set("items." + slot, getItem(slot));
+		
+		for(PotionEffect eff : getAllPotionEffects()) {
+			section.set("potions." + eff.getType().getName() + ".amp", eff.getAmplifier());
+			section.set("potions." + eff.getType().getName() + ".dur", eff.getDuration());
+		}
+		
+		if(getUsePermissions())
+			section.set("usepermissions", true);
+		
+		if(!hasFallDamage())
+			section.set("falldamage", hasFallDamage());
+		
+		if(hasHunger())
+			section.set("hunger", hasHunger());
+		
+		if(getDisplayName() != null)
+			section.set("displayName", getDisplayName());
+		
+		if(isArmourLocked())
+			section.set("armourLocked", isArmourLocked());
+		
+		if(isInventoryLocked())
+			section.set("inventoryLocked", isInventoryLocked());
+		
+		if(getTeamColor() != null)
+			section.set("team", getTeamColor().toString());
+		
+		if(!isDisplayedInMenu())
+			section.set("displayInMenu", isDisplayedInMenu());
+		
+		for (Entry<Class<? extends LoadoutAddon>, Object> addonValue : addonValues.entrySet()) {
+			ConfigurationSection subSection = section.createSection("addons." + addonValue.getKey().getName().replace('.', '-'));
+			LoadoutAddon<Object> addon = LoadoutModule.getAddon(addonValue.getKey());
+			addon.save(subSection, addonValue.getValue());
+		}
+	}
+	
+	public void load(ConfigurationSection section) {
+		if (section.contains("items")) {
+			ConfigurationSection itemSection = section.getConfigurationSection("items");
+			for(String key : itemSection.getKeys(false)) {
+				if(key.matches("[0-9]+")) {
+					addItem(itemSection.getItemStack(key), Integer.parseInt(key));
+				}
+			}
+		}
+		
+		if (section.contains("potions")) {
+			ConfigurationSection potionSection = section.getConfigurationSection("potions");
+			for (String effectName : potionSection.getKeys(false)) {
+				if(PotionEffectType.getByName(effectName) == null) {
+					continue;
+				}
+				
+				PotionEffect effect = new PotionEffect(PotionEffectType.getByName(effectName),
+					potionSection.getInt(effectName + ".dur"),
+					potionSection.getInt(effectName + ".amp")
+					);
+				
+				addPotionEffect(effect);
+			}
+		}
+		
+		if(section.contains("usepermissions"))
+			setUsePermissions(section.getBoolean("usepermissions"));
+		
+		if(section.contains("falldamage"))
+			setHasFallDamage(section.getBoolean("falldamage"));
+		
+		if(section.contains("hunger"))
+			setHasHunger(section.getBoolean("hunger"));
+		
+		if(section.contains("displayName"))
+			setDisplayName(section.getString("displayName"));
+		
+		if(section.contains("lockInventory"))
+			setInventoryLocked(section.getBoolean("lockInventory"));
+		
+		if(section.contains("lockArmour"))
+			setArmourLocked(section.getBoolean("lockArmour"));
+		
+		if(section.contains("team"))
+			setTeamColor(TeamColor.matchColor(section.getString("team")));
+		
+		if(section.contains("displayInMenu"))
+			setDisplayInMenu(section.getBoolean("displayInMenu"));
+		
+		if (section.contains("addons")) {
+			ConfigurationSection addonSection = section.getConfigurationSection("addons");
+			
+			for (String addonKey : addonSection.getKeys(false)) {
+				try {
+					// First determine the class
+					Class<?> rawClass = Class.forName(addonKey.replace('-', '.'));
+					if (LoadoutAddon.class.isAssignableFrom(rawClass)) {
+						Class<? extends LoadoutAddon> clazz = rawClass.asSubclass(LoadoutAddon.class);
+						
+						// Now we can load the value
+						LoadoutAddon<Object> addon = LoadoutModule.getAddon(clazz);
+						Object value = addon.load(addonSection.getConfigurationSection(addonKey));
+						addonValues.put(clazz, value);
+					}
+				} catch (ClassNotFoundException e) {
+					// Ignore it
+				}
+			}
+		}
 	}
 }

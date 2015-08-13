@@ -92,6 +92,8 @@ public class MenuItemDisplayLoadout extends MenuItem{
 			loadoutSettings.addItem(dl, getContainer().getSize() - 9);
 		}
 		
+		LoadoutModule.addAddonMenuItems(loadoutSettings, loadout);
+		
 		Menu potionMenu = new Menu(5, getContainer().getName(), getContainer().getViewer());
 		
 		potionMenu.setPreviousPage(loadoutMenu);

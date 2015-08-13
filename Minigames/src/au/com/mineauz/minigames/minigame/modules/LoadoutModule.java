@@ -6,9 +6,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import com.google.common.collect.Maps;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -24,6 +28,7 @@ public class LoadoutModule extends MinigameModule {
 
 	private Map<String, PlayerLoadout> extraLoadouts = new HashMap<String, PlayerLoadout>();
 	private LoadoutSetFlag loadoutsFlag = new LoadoutSetFlag(extraLoadouts, "loadouts");
+	private static Map<Class<? extends LoadoutAddon>, LoadoutAddon<?>> addons = Maps.newHashMap();
 	
 	public LoadoutModule(Minigame mgm) {
 		super(mgm);
@@ -184,6 +189,39 @@ public class LoadoutModule extends MinigameModule {
 		}
 	}
 	
+	/**
+	 * Registers a loadout addon. This addon will be available for all loadouts on all games.
+	 * @param plugin The plugin registering the addon
+	 * @param addon The addon to register
+	 */
+	public static void registerAddon(Plugin plugin, LoadoutAddon<?> addon) {
+		addons.put(addon.getClass(), addon);
+	}
+	
+	/**
+	 * Unregisters a previously registered addon
+	 * @param addon The addon to unregister
+	 */
+	public static void unregisterAddon(Class<? extends LoadoutAddon<?>> addon) {
+		addons.remove(addon);
+	}
+	
+	/**
+	 * Retrieves a registered addon
+	 * @param addonClass The addon class to get the addon for
+	 * @return The addon or null
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends LoadoutAddon<?>> T getAddon(Class<T> addonClass) {
+		return (T)addons.get(addonClass);
+	}
+	
+	public static void addAddonMenuItems(Menu menu, PlayerLoadout loadout) {
+		for (LoadoutAddon<?> addon : addons.values()) {
+			addon.addMenuOptions(menu, loadout);
+		}
+	}
+	
 	public void displaySelectionMenu(MinigamePlayer player, final boolean equip){
 		Menu m = new Menu(6, "Select Loadout", player);
 		final MinigamePlayer fply = player;
@@ -231,4 +269,21 @@ public class LoadoutModule extends MinigameModule {
 		return false;
 	}
 
+	/**
+	 * Represents a custom loadout element.
+	 * This can be used to add things like disguises
+	 * or commands.
+	 * 
+	 * @param <T> The value type for this loadout addon.arg1
+	 */
+	public static interface LoadoutAddon<T> {
+		public String getName();
+		public void addMenuOptions(Menu menu, PlayerLoadout loadout);
+		
+		public void save(ConfigurationSection section, T value);
+		public T load(ConfigurationSection section);
+		
+		public void applyLoadout(MinigamePlayer player, T value);
+		public void clearLoadout(MinigamePlayer player, T value);
+	}
 }

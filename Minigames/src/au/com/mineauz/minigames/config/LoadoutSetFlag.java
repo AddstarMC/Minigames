@@ -11,7 +11,6 @@ import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.menu.MenuItem;
 
 public class LoadoutSetFlag extends Flag<Map<String, PlayerLoadout>>{
-	
 	public LoadoutSetFlag(Map<String, PlayerLoadout> value, String name){
 		setFlag(value);
 		setDefaultFlag(null);
