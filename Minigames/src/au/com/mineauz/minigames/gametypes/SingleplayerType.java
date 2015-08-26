@@ -98,11 +98,8 @@ public class SingleplayerType extends MinigameTypeBase{
 			spc.saveCheckpoints();
 		}
 		
-		if(mgm.getBlockRecorder().hasData() && mgm.getPlayers().size() > 1){
-			if(!mgm.getPlayers().isEmpty()){
-				mgm.getBlockRecorder().restoreBlocks(player);
-				mgm.getBlockRecorder().restoreEntities(player);
-			}
+		if(mgm.getBlockRecorder().hasData() && !mgm.getPlayers().isEmpty()){
+			mgm.getBlockRecorder().restoreAll(player);
 		}
 	}
 	

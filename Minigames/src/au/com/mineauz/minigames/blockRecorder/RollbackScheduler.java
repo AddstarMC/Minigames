@@ -14,6 +14,7 @@ import org.bukkit.material.FlowerPot;
 import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitTask;
 
+import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
@@ -24,11 +25,13 @@ public class RollbackScheduler implements Runnable {
 	private Iterator<BlockData> physIterator;
 	private BukkitTask task;
 	private Minigame minigame;
+	private MinigamePlayer modifier;
 	
-	public RollbackScheduler(List<BlockData> blocks, List<BlockData> physblocks, Minigame minigame){
+	public RollbackScheduler(List<BlockData> blocks, List<BlockData> physblocks, Minigame minigame, MinigamePlayer modifier){
 		iterator = blocks.iterator();
 		physIterator = physblocks.iterator();
 		this.minigame = minigame;
+		this.modifier = modifier;
 		int delay = minigame.getRegenDelay() * 20 + 1;
 		task = Bukkit.getScheduler().runTaskTimer(Minigames.plugin, this, delay, 1);
 	}
@@ -84,10 +87,13 @@ public class RollbackScheduler implements Runnable {
 				return;
 		}
 		
-		HandlerList.unregisterAll(minigame.getBlockRecorder());
-		HandlerList.bakeAll();
-		
-		minigame.setState(MinigameState.IDLE);
+		// When rolling back a single player's changes dont change the overall games state
+		if (modifier == null) {
+			HandlerList.unregisterAll(minigame.getBlockRecorder());
+			HandlerList.bakeAll();
+			
+			minigame.setState(MinigameState.IDLE);
+		}
 		
 		task.cancel();
 	}
