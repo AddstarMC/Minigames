@@ -494,6 +494,41 @@ public class MinigameUtils {
 		section.set("world", location.getWorld().getName());
 	}
 	
+	/**
+	 * Limits the length of a string ignoring all colour codes within it
+	 * @param string The string to limit
+	 * @param maxLength The maximum number of characters to allow
+	 * @return The string that is never longer than maxLength with chat colours stripped out
+	 */
+	public static String limitIgnoreCodes(String string, int maxLength) {
+		if (string.length() <= maxLength) {
+			return string;
+		}
+		
+		int size = 0;
+		int chompStart = -1;
+		for (int i = 0; i < string.length(); ++i) {
+			char c = string.charAt(i);
+			
+			if (c == ChatColor.COLOR_CHAR) {
+				++i;
+				continue;
+			}
+			
+			++size;
+			if (size > maxLength) {
+				chompStart = i;
+				break;
+			}
+		}
+		
+		if (chompStart != -1) {
+			return string.substring(0, chompStart);
+		} else {
+			return string;
+		}
+	}
+	
 //	public static void removePlayerArrows(MinigamePlayer player){
 //		try{
 //			Class.forName("net.minecraft.server.v1_5_R3.EntityPlayer");

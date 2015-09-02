@@ -11,10 +11,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -50,6 +49,8 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
+
+import com.google.common.collect.Lists;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -301,6 +302,16 @@ public class RecorderData implements Listener{
 		return false;
 	}
 	
+	public void restoreAll(MinigamePlayer modifier) {
+		if (!blockdata.isEmpty()) {
+			restoreBlocks(modifier);
+		}
+		
+		if (!entdata.isEmpty()) {
+			restoreEntities(modifier);
+		}
+	}
+	
 	public void restoreBlocks(){
 //		saveAllBlockData();
 		restoreBlocks(null);
@@ -311,47 +322,40 @@ public class RecorderData implements Listener{
 		entdata.clear();
 	}
 	
-	public void restoreBlocks(MinigamePlayer modifier){
-		minigame.setState(MinigameState.REGENERATING);
+	public void restoreBlocks(final MinigamePlayer modifier){
+		// When rolling back a single player's changes dont change the overall games state
+		if (modifier == null) {
+			minigame.setState(MinigameState.REGENERATING);
+		}
 		
-		List<String> changes = new ArrayList<String>();
-		List<BlockData> resBlocks = new ArrayList<BlockData>();
-		List<BlockData> addBlocks = new ArrayList<BlockData>();
-		for(String id : blockdata.keySet()){
-			final BlockData bdata = blockdata.get(id);
-			if(bdata.getModifier() == modifier || modifier == null){
-				if(bdata.getLocation().getBlock().getState() instanceof InventoryHolder){
-					InventoryHolder block = (InventoryHolder) bdata.getLocation().getBlock().getState();
+		Iterator<BlockData> it = blockdata.values().iterator();
+		final List<BlockData> resBlocks = Lists.newArrayList();
+		final List<BlockData> addBlocks = Lists.newArrayList();
+		
+		while (it.hasNext()) {
+			BlockData data = it.next();
+			
+			if (modifier == null || modifier.equals(data.getModifier())) {
+				it.remove();
+				
+				// Clear inventories
+				if(data.getLocation().getBlock().getState() instanceof InventoryHolder) {
+					InventoryHolder block = (InventoryHolder) data.getLocation().getBlock().getState();
 					block.getInventory().clear();
 				}
-				changes.add(id);
 				
-				if(physBlocks.contains(bdata.getBlockState().getType()) || bdata.getItems() != null){
-					addBlocks.add(bdata);
+				if(physBlocks.contains(data.getBlockState().getType()) || data.getItems() != null) {
+					addBlocks.add(data);
+				} else {
+					resBlocks.add(data);
 				}
-				else{
-					resBlocks.add(bdata);
-				}
-			}
-		}
-		
-		final List<BlockData> fresBlocks = new ArrayList<BlockData>(resBlocks);
-		final List<BlockData> faddBlocks = new ArrayList<BlockData>(addBlocks);
-		
-		if(modifier == null){
-			blockdata.clear();
-		}
-		else{
-			for(String id : changes){
-				blockdata.remove(id);
 			}
 		}
 		
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-			
 			@Override
 			public void run() {
-				Collections.sort(fresBlocks, new Comparator<BlockData>() {
+				Collections.sort(resBlocks, new Comparator<BlockData>() {
 
 					@Override
 					public int compare(BlockData o1, BlockData o2) {
@@ -364,7 +368,7 @@ public class RecorderData implements Listener{
 						return Integer.valueOf(o1.getBlockState().getY()).compareTo(o2.getBlockState().getY());
 					}
 				});
-				Collections.sort(faddBlocks, new Comparator<BlockData>() {
+				Collections.sort(addBlocks, new Comparator<BlockData>() {
 
 					@Override
 					public int compare(BlockData o1, BlockData o2) {
@@ -378,34 +382,29 @@ public class RecorderData implements Listener{
 					}
 				});
 				
-				new RollbackScheduler(fresBlocks, faddBlocks, minigame);
+				new RollbackScheduler(resBlocks, addBlocks, minigame, modifier);
 			}
 		});
 	}
 	
-	public void restoreEntities(MinigamePlayer player){
-		List<Integer> removal = new ArrayList<Integer>();
-		Set<Integer> set = new HashSet<Integer>(entdata.keySet());
-		for(Integer entID : set){
-			if(entdata.get(entID).getEntity().isValid() && (entdata.get(entID).getModifier() == player || player == null)){
-				if(entdata.get(entID).wasCreated()){
-					entdata.get(entID).getEntity().remove();
-					removal.add(entID);
+	public void restoreEntities(MinigamePlayer player) {
+		Iterator<EntityData> it = entdata.values().iterator();
+		while (it.hasNext()) {
+			EntityData entdata = it.next();
+			if (player == null || player.equals(entdata.getModifier())) {
+				if (entdata.wasCreated()) {
+					Entity ent = entdata.getEntity();
+					// Entity needs to be removed
+					if (ent.isValid()) {
+						ent.remove();
+					}
+				} else {
+					// Entity needs to be spawned
+					Location location = entdata.getEntityLocation();
+					location.getWorld().spawnEntity(location, entdata.getEntityType());
 				}
-			}
-			else if(!entdata.get(entID).wasCreated() && (entdata.get(entID).getModifier() == player || player == null)){
-				entdata.get(entID).getEntityLocation().getWorld().spawnEntity(entdata.get(entID).getEntityLocation(), 
-					entdata.get(entID).getEntityType());
-				removal.add(entID);
-			}
-		}
-		
-		if(player == null){
-			entdata.clear();
-		}
-		else{
-			for(Integer entID : removal){
-				entdata.remove(entID);
+				
+				it.remove();
 			}
 		}
 	}

@@ -217,11 +217,15 @@ public class PlayerData {
 					vehicle.eject();
 				}
 				player.getPlayer().closeInventory();
+				if (player.getLoadout() != null) {
+					player.getLoadout().removeLoadout(player);
+				}
 				player.removeMinigame();
 				minigame.removePlayer(player);
 				for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
 					player.getPlayer().removePotionEffect(potion.getType());
 				}
+				
 				player.getPlayer().setFallDistance(0);
 				player.getPlayer().setNoDamageTicks(60);
 				final MinigamePlayer fplayer = player;

@@ -77,6 +77,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		loadoutSettings.addItems(mItems);
 		
 		Menu potionMenu = new Menu(5, getContainer().getName());
+		LoadoutModule.addAddonMenuItems(loadoutSettings, loadout);
 		
 		potionMenu.setControlItem(new MenuItemPotionAdd("Add Potion", Material.ITEM_FRAME, loadout), 4);
 		
