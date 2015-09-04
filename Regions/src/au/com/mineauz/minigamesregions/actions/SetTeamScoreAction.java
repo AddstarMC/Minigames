@@ -1,27 +1,23 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemEnum;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
-import au.com.mineauz.minigames.menu.MenuItemList;
-import au.com.mineauz.minigames.minigame.TeamColor;
+import au.com.mineauz.minigames.minigame.TeamSelection;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.properties.types.EnumProperty;
 import au.com.mineauz.minigames.properties.types.IntegerProperty;
-import au.com.mineauz.minigames.properties.types.StringProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class SetTeamScoreAction extends ActionInterface {
 	
 	private final IntegerProperty score = new IntegerProperty(1, "amount");
-	private final StringProperty team = new StringProperty("NONE", "team"); // TODO: Change to EnumProperty<TeamSelection>
+	private final EnumProperty<TeamSelection> team = new EnumProperty<TeamSelection>(TeamSelection.NONE, "team");
 	
 	public SetTeamScoreAction() {
 		properties.addProperty(score);
@@ -60,15 +56,19 @@ public class SetTeamScoreAction extends ActionInterface {
 		executeAction(player);
 	}
 	
-	private void executeAction(MinigamePlayer player){
-		if(player == null || !player.isInMinigame()) return;
-		if(player.getTeam() != null && team.getValue().equals("NONE")){
-			player.getTeam().setScore(score.getValue());
+	private void executeAction(MinigamePlayer player) {
+		if (player == null || !player.isInMinigame()) {
+			return;
 		}
-		else if(!team.getValue().equals("NONE")){
+		
+		if (team.getValue() == TeamSelection.NONE) {
+			if (player.getTeam() != null) {
+				player.getTeam().setScore(score.getValue());
+			}
+		} else {
 			TeamsModule tm = player.getMinigame().getModule(TeamsModule.class);
-			if(tm.hasTeam(TeamColor.valueOf(team.getValue()))){
-				tm.getTeam(TeamColor.valueOf(team.getValue())).setScore(score.getValue());
+			if (tm.hasTeam(team.getValue().getTeam())) {
+				tm.getTeam(team.getValue().getTeam()).setScore(score.getValue());
 			}
 		}
 	}
@@ -86,12 +86,7 @@ public class SetTeamScoreAction extends ActionInterface {
 		Menu m = new Menu(3, "Set Team Score");
 		m.addItem(new MenuItemInteger("Set Score Amount", Material.STONE, score, Integer.MIN_VALUE, Integer.MAX_VALUE));
 		
-		List<String> teams = new ArrayList<String>();
-		teams.add("None");
-		for(TeamColor team : TeamColor.values()){
-			teams.add(MinigameUtils.capitalize(team.toString()));
-		}
-		m.addItem(new MenuItemList("Specific Team", "If 'None', the players;team will be used", Material.PAPER, team, teams));
+		m.addItem(new MenuItemEnum<TeamSelection>("Specific Team", "If 'None', the players;team will be used", Material.PAPER, team, TeamSelection.class));
 		m.displayMenu(player);
 		return true;
 	}
