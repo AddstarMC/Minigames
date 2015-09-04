@@ -7,8 +7,8 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.properties.types.IntegerProperty;
-import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class PlayerCountCondition extends ConditionInterface {
 	
@@ -39,17 +39,20 @@ public class PlayerCountCondition extends ConditionInterface {
 	public boolean useInNodes() {
 		return false;
 	}
-
+	
 	@Override
-	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-		if(region.getPlayers().size() >= min.getValue() && region.getPlayers().size() <= max.getValue())
-			return true;
+	public boolean requiresPlayer() {
 		return false;
 	}
-
+	
 	@Override
-	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
-		return false;
+	public boolean checkCondition(MinigamePlayer player, TriggerArea area) {
+		if (area instanceof Region) {
+			Region region = (Region)area;
+			return (region.getPlayers().size() >= min.getValue() && region.getPlayers().size() <= max.getValue());
+		} else {
+			return false;
+		}
 	}
 
 	@Override

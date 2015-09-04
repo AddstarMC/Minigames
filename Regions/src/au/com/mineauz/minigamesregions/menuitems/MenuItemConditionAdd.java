@@ -12,24 +12,17 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemSubMenu;
-import au.com.mineauz.minigamesregions.NodeExecutor;
-import au.com.mineauz.minigamesregions.RegionExecutor;
+import au.com.mineauz.minigamesregions.TriggerExecutor;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
 import au.com.mineauz.minigamesregions.conditions.Conditions;
 
 public class MenuItemConditionAdd extends MenuItem{
 	
-	private RegionExecutor rexec;
-	private NodeExecutor nexec;
+	private TriggerExecutor rexec;
 
-	public MenuItemConditionAdd(String name, Material displayItem, RegionExecutor exec) {
+	public MenuItemConditionAdd(String name, Material displayItem, TriggerExecutor exec) {
 		super(name, displayItem);
 		this.rexec = exec;
-	}
-
-	public MenuItemConditionAdd(String name, Material displayItem, NodeExecutor exec) {
-		super(name, displayItem);
-		this.nexec = exec;
 	}
 	
 	@Override
@@ -39,9 +32,9 @@ public class MenuItemConditionAdd extends MenuItem{
 		List<String> cons = new ArrayList<String>(Conditions.getAllConditionNames());
 		Collections.sort(cons);
 		for(String con : cons){
-			if((Conditions.getConditionByName(con).useInNodes() && nexec != null) || 
-					(Conditions.getConditionByName(con).useInRegions() && rexec != null)){
-				String catname = Conditions.getConditionByName(con).getCategory();
+			final ConditionInterface condition = Conditions.getConditionByName(con);
+			if (condition.canUseIn(rexec.getOwner())) {
+				String catname = condition.getCategory();
 				if(catname == null)
 					catname = "misc conditions";
 				catname.toLowerCase();
@@ -59,15 +52,8 @@ public class MenuItemConditionAdd extends MenuItem{
 				c.setClickHandler(new IMenuItemClick() {
 					@Override
 					public void onClick(MenuItem menuItem, MinigamePlayer player) {
-						ConditionInterface condition = Conditions.getConditionByName(fcon);
-						if(rexec != null){
-							rexec.addCondition(condition);
-							getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, rexec, condition));
-						}
-						else{
-							nexec.addCondition(condition);
-							getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, nexec, condition));
-						}
+						rexec.getConditions().add(condition);
+						getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, rexec, condition));
 						
 						player.showPreviousMenu(2);
 					}

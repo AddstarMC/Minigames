@@ -18,6 +18,7 @@ import au.com.mineauz.minigames.properties.types.IntegerProperty;
 import au.com.mineauz.minigames.properties.types.StringProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class SetBlockAction extends ActionInterface {
 	
@@ -51,16 +52,27 @@ public class SetBlockAction extends ActionInterface {
 		return true;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
-	public void executeRegionAction(MinigamePlayer player,
-			Region region) {
-		Location temp = region.getFirstPoint();
-		for(int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++){
+	public boolean requiresPlayer() {
+		return false;
+	}
+	
+	@Override
+	public void executeAction(MinigamePlayer player, TriggerArea area) {
+		if (area instanceof Region) {
+			executeRegionAction(player, (Region)area);
+		} else if (area instanceof Node) {
+			executeNodeAction(player, (Node)area);
+		}
+	}
+	@SuppressWarnings("deprecation")
+	private void executeRegionAction(MinigamePlayer player, Region region) {
+		Location temp = region.getMinCorner();
+		for(int y = region.getMinCorner().getBlockY(); y <= region.getMaxCorner().getBlockY(); y++){
 			temp.setY(y);
-			for(int x = region.getFirstPoint().getBlockX(); x <= region.getSecondPoint().getBlockX(); x++){
+			for(int x = region.getMinCorner().getBlockX(); x <= region.getMaxCorner().getBlockX(); x++){
 				temp.setX(x);
-				for(int z = region.getFirstPoint().getBlockZ(); z <= region.getSecondPoint().getBlockZ(); z++){
+				for(int z = region.getMinCorner().getBlockZ(); z <= region.getMaxCorner().getBlockZ(); z++){
 					temp.setZ(z);
 					
 					BlockState bs = temp.getBlock().getState();
@@ -75,9 +87,7 @@ public class SetBlockAction extends ActionInterface {
 	}
 
 	@SuppressWarnings("deprecation")
-	@Override
-	public void executeNodeAction(MinigamePlayer player,
-			Node node) {
+	private void executeNodeAction(MinigamePlayer player, Node node) {
 		BlockState bs = node.getLocation().getBlock().getState();
 		bs.setType(Material.getMaterial(type.getValue()));
 		if(usedur.getValue()){

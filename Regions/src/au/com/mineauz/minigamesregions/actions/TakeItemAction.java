@@ -12,8 +12,7 @@ import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.properties.types.BooleanProperty;
 import au.com.mineauz.minigames.properties.types.EnumProperty;
 import au.com.mineauz.minigames.properties.types.IntegerProperty;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class TakeItemAction extends ActionInterface{
 	
@@ -48,18 +47,9 @@ public class TakeItemAction extends ActionInterface{
 	public boolean useInNodes() {
 		return true;
 	}
-
-	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region) {
-		execute(player);
-	}
-
-	@Override
-	public void executeNodeAction(MinigamePlayer player, Node node) {
-		execute(player);
-	}
 	
-	private void execute(MinigamePlayer player){
+	@Override
+	public void executeAction(MinigamePlayer player, TriggerArea area) {
 		ItemStack match = new ItemStack(type.getValue(), count.getValue(), damage.getValue().shortValue());
 		ItemStack matched = null;
 		boolean remove = false;

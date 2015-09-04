@@ -5,8 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class HasRequiredFlagsCondition extends ConditionInterface {
 
@@ -29,20 +28,10 @@ public class HasRequiredFlagsCondition extends ConditionInterface {
 	public boolean useInNodes() {
 		return true;
 	}
-
+	
 	@Override
-	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
-		if(player == null || !player.isInMinigame()) return false;
-		if(Minigames.plugin.pdata.checkRequiredFlags(player, player.getMinigame().getName(false)).isEmpty()){
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-		if(player == null || !player.isInMinigame()) return false;
-		if(Minigames.plugin.pdata.checkRequiredFlags(player, player.getMinigame().getName(false)).isEmpty()){
+	public boolean checkCondition(MinigamePlayer player, TriggerArea area) {
+		if (Minigames.plugin.pdata.checkRequiredFlags(player, player.getMinigame().getName(false)).isEmpty()) {
 			return true;
 		}
 		return false;

@@ -9,8 +9,7 @@ import org.bukkit.Material;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigamesregions.NodeExecutor;
-import au.com.mineauz.minigamesregions.RegionExecutor;
+import au.com.mineauz.minigamesregions.TriggerExecutor;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemCondition;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemConditionAdd;
 
@@ -57,16 +56,7 @@ public class Conditions {
 		return conditions.keySet();
 	}
 	
-	public static void displayMenu(MinigamePlayer player, RegionExecutor exec, Menu prev){
-		Menu m = new Menu(3, "Conditions");
-		for(ConditionInterface con : exec.getConditions()){
-			m.addItem(new MenuItemCondition(MinigameUtils.capitalize(con.getName()), Material.PAPER, exec, con));
-		}
-		m.setControlItem(new MenuItemConditionAdd("Add Condition", Material.ITEM_FRAME, exec), 4);
-		m.displayMenu(player);
-	}
-	
-	public static void displayMenu(MinigamePlayer player, NodeExecutor exec, Menu prev){
+	public static void displayMenu(MinigamePlayer player, TriggerExecutor exec, Menu prev){
 		Menu m = new Menu(3, "Conditions");
 		for(ConditionInterface con : exec.getConditions()){
 			m.addItem(new MenuItemCondition(MinigameUtils.capitalize(con.getName()), Material.PAPER, exec, con));

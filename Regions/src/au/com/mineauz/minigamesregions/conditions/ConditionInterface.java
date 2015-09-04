@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
 import au.com.mineauz.minigames.properties.types.BooleanProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public abstract class ConditionInterface {
 	protected final ConfigPropertyContainer properties = new ConfigPropertyContainer();
@@ -35,9 +36,22 @@ public abstract class ConditionInterface {
 	public abstract String getCategory();
 	public abstract boolean useInRegions();
 	public abstract boolean useInNodes();
-	public abstract boolean checkRegionCondition(MinigamePlayer player, Region region);
-	public abstract boolean checkNodeCondition(MinigamePlayer player, Node node);
+	public abstract boolean checkCondition(MinigamePlayer player, TriggerArea area);
+	public boolean requiresPlayer() {
+		return true;
+	}
+	
 	public abstract void saveArguments(FileConfiguration config, String path);
 	public abstract void loadArguments(FileConfiguration config, String path);
 	public abstract boolean displayMenu(MinigamePlayer player, Menu prev);
+	
+	public boolean canUseIn(TriggerArea area) {
+		if (area instanceof Node) {
+			return useInNodes();
+		} else if (area instanceof Region) {
+			return useInRegions();
+		} else {
+			return true;
+		}
+	}
 }

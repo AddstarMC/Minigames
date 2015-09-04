@@ -12,6 +12,7 @@ import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import au.com.mineauz.minigames.properties.types.BooleanProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class LightningAction extends ActionInterface{
 	
@@ -40,37 +41,40 @@ public class LightningAction extends ActionInterface{
 	public boolean useInNodes() {
 		return true;
 	}
-
+	
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region) {
-		Random rand = new Random();
-		double xrand = rand.nextDouble() *
-				(region.getSecondPoint().getBlockX() - region.getFirstPoint().getBlockX()) +
-				region.getFirstPoint().getBlockX();
-		double yrand = rand.nextDouble() *
-				(region.getSecondPoint().getBlockY() - region.getFirstPoint().getBlockY()) +
-				region.getFirstPoint().getBlockY();
-		double zrand = rand.nextDouble() *
-				(region.getSecondPoint().getBlockZ() - region.getFirstPoint().getBlockZ()) +
-				region.getFirstPoint().getBlockZ();
-		
-		Location loc = region.getFirstPoint();
-		loc.setX(xrand);
-		loc.setY(yrand);
-		loc.setZ(zrand);
-		
-		if(effect.getValue())
-			loc.getWorld().strikeLightningEffect(loc);
-		else
-			loc.getWorld().strikeLightning(loc);
+	public boolean requiresPlayer() {
+		return false;
 	}
-
+	
 	@Override
-	public void executeNodeAction(MinigamePlayer player, Node node) {
+	public void executeAction(MinigamePlayer player, TriggerArea area) {
+		Location location;
+		
+		if (area instanceof Region) {
+			Region region = (Region)area;
+			Random rand = new Random();
+			double xrand = rand.nextDouble() *
+					(region.getMaxCorner().getBlockX() - region.getMinCorner().getBlockX()) +
+					region.getMinCorner().getBlockX();
+			double yrand = rand.nextDouble() *
+					(region.getMaxCorner().getBlockY() - region.getMinCorner().getBlockY()) +
+					region.getMinCorner().getBlockY();
+			double zrand = rand.nextDouble() *
+					(region.getMaxCorner().getBlockZ() - region.getMinCorner().getBlockZ()) +
+					region.getMinCorner().getBlockZ();
+			
+			location = new Location(region.getWorld(), xrand, yrand, zrand);
+		} else if (area instanceof Node) {
+			location = ((Node)area).getLocation();
+		} else {
+			return;
+		}
+		
 		if(effect.getValue())
-			node.getLocation().getWorld().strikeLightningEffect(node.getLocation());
+			location.getWorld().strikeLightningEffect(location);
 		else
-			node.getLocation().getWorld().strikeLightning(node.getLocation());
+			location.getWorld().strikeLightning(location);
 	}
 
 	@Override

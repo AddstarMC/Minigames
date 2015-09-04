@@ -3,25 +3,17 @@ package au.com.mineauz.minigamesregions.menuitems;
 import org.bukkit.Material;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigamesregions.NodeExecutor;
-import au.com.mineauz.minigamesregions.RegionExecutor;
+import au.com.mineauz.minigamesregions.TriggerExecutor;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 
 public class MenuItemAction extends MenuItem{
 	
-	private RegionExecutor rexec;
-	private NodeExecutor nexec;
+	private TriggerExecutor executor;
 	private ActionInterface act;
 
-	public MenuItemAction(String name, Material displayItem, RegionExecutor exec, ActionInterface act) {
+	public MenuItemAction(String name, Material displayItem, TriggerExecutor exec, ActionInterface act) {
 		super(name, displayItem);
-		this.rexec = exec;
-		this.act = act;
-	}
-	
-	public MenuItemAction(String name, Material displayItem, NodeExecutor exec, ActionInterface act) {
-		super(name, displayItem);
-		this.nexec = exec;
+		this.executor = exec;
 		this.act = act;
 	}
 	
@@ -32,10 +24,7 @@ public class MenuItemAction extends MenuItem{
 	
 	@Override
 	public void onRightClick(MinigamePlayer player){
-		if(rexec != null)
-			rexec.removeAction(act);
-		else
-			nexec.removeAction(act);
+		executor.getActions().remove(act);
 		remove();
 	}
 }

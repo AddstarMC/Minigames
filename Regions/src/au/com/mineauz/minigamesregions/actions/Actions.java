@@ -9,8 +9,7 @@ import org.bukkit.Material;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigamesregions.NodeExecutor;
-import au.com.mineauz.minigamesregions.RegionExecutor;
+import au.com.mineauz.minigamesregions.TriggerExecutor;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemAction;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemActionAdd;
 
@@ -79,18 +78,9 @@ public class Actions {
 		return actions.containsKey(name.toUpperCase());
 	}
 	
-	public static void displayMenu(MinigamePlayer player, RegionExecutor exec, Menu prev){
+	public static void displayMenu(MinigamePlayer player, TriggerExecutor exec, Menu prev) {
 		Menu m = new Menu(3, "Actions");
-		for(ActionInterface act : exec.getActions()){
-			m.addItem(new MenuItemAction(MinigameUtils.capitalize(act.getName()), Material.PAPER, exec, act));
-		}
-		m.setControlItem(new MenuItemActionAdd("Add Action", Material.ITEM_FRAME, exec), 4);
-		m.displayMenu(player);
-	}
-	
-	public static void displayMenu(MinigamePlayer player, NodeExecutor exec, Menu prev){
-		Menu m = new Menu(3, "Actions");
-		for(ActionInterface act : exec.getActions()){
+		for (ActionInterface act : exec.getActions()) {
 			m.addItem(new MenuItemAction(MinigameUtils.capitalize(act.getName()), Material.PAPER, exec, act));
 		}
 		m.setControlItem(new MenuItemActionAdd("Add Action", Material.ITEM_FRAME, exec), 4);

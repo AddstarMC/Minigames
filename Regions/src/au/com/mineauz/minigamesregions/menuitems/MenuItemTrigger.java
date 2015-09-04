@@ -1,51 +1,33 @@
 package au.com.mineauz.minigamesregions.menuitems;
 
 import org.bukkit.Material;
+
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.NodeExecutor;
-import au.com.mineauz.minigamesregions.Region;
-import au.com.mineauz.minigamesregions.RegionExecutor;
+import au.com.mineauz.minigamesregions.TriggerArea;
+import au.com.mineauz.minigamesregions.TriggerExecutor;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 
 public class MenuItemTrigger extends MenuItem{
+	private final Trigger trigger;
+	private final TriggerArea area;
 	
-	private Trigger trigger;
-	private Region region;
-	private Node node;
 	private Menu previous;
 
-	public MenuItemTrigger(Trigger trigger, Region region, Menu previous) {
+	public MenuItemTrigger(Trigger trigger, TriggerArea area, Menu previous) {
 		super(MinigameUtils.capitalize(trigger.getName().replace("_", " ")), Material.LEVER);
 		this.trigger = trigger;
-		this.region = region;
-		this.previous = previous;
-	}
-	
-	public MenuItemTrigger(Trigger trigger, Node node, Menu previous) {
-		super(MinigameUtils.capitalize(trigger.getName().replace("_", " ")), Material.LEVER);
-		this.trigger = trigger;
-		this.node = node;
+		this.area = area;
 		this.previous = previous;
 	}
 	
 	@Override
 	public void onClick(MinigamePlayer player){
-		if(region != null){
-			RegionExecutor exec = new RegionExecutor(trigger);
-			region.addExecutor(exec);
-			previous.addItem(new MenuItemRegionExecutor(region, exec));
-			previous.displayMenu(player);
-		}
-		else{
-			NodeExecutor exec = new NodeExecutor(trigger);
-			node.addExecutor(exec);
-			previous.addItem(new MenuItemNodeExecutor(node, exec));
-			previous.displayMenu(player);
-		}
+		TriggerExecutor executor = area.addExecutor(trigger);
+		previous.addItem(new MenuItemExecutor(area, executor));
+		player.showPreviousMenu();
 	}
 
 }

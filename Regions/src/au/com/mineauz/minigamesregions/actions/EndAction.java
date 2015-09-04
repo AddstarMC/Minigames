@@ -11,8 +11,7 @@ import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class EndAction extends ActionInterface {
 
@@ -37,18 +36,7 @@ public class EndAction extends ActionInterface {
 	}
 
 	@Override
-	public void executeNodeAction(MinigamePlayer player,
-			Node node) {
-		execute(player);
-	}
-
-	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region) {
-		execute(player);
-	}
-	
-	private void execute(MinigamePlayer player){
-		if(player == null || !player.isInMinigame()) return;
+	public void executeAction(MinigamePlayer player, TriggerArea area) {
 		if(player.getMinigame().getType() != MinigameType.SINGLEPLAYER){
 			List<MinigamePlayer> w = null;
 			List<MinigamePlayer> l = null;

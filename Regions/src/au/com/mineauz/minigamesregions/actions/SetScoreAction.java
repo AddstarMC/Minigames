@@ -7,8 +7,7 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.properties.types.IntegerProperty;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class SetScoreAction extends ActionInterface {
 	
@@ -37,18 +36,9 @@ public class SetScoreAction extends ActionInterface {
 	public boolean useInNodes() {
 		return true;
 	}
-
+	
 	@Override
-	public void executeNodeAction(MinigamePlayer player,
-			Node node) {
-		if(player == null || !player.isInMinigame()) return;
-		player.setScore(amount.getValue());
-		player.getMinigame().setScore(player, player.getScore());
-	}
-
-	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region) {
-		if(player == null || !player.isInMinigame()) return;
+	public void executeAction(MinigamePlayer player, TriggerArea area) {
 		player.setScore(amount.getValue());
 		player.getMinigame().setScore(player, player.getScore());
 	}

@@ -12,35 +12,31 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemSubMenu;
-import au.com.mineauz.minigamesregions.NodeExecutor;
-import au.com.mineauz.minigamesregions.RegionExecutor;
+import au.com.mineauz.minigamesregions.TriggerExecutor;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.actions.Actions;
 
 public class MenuItemActionAdd extends MenuItem{
 	
-	private RegionExecutor rexec;
-	private NodeExecutor nexec;
+	private TriggerExecutor rexec;
 
-	public MenuItemActionAdd(String name, Material displayItem, RegionExecutor exec) {
+	public MenuItemActionAdd(String name, Material displayItem, TriggerExecutor exec) {
 		super(name, displayItem);
 		this.rexec = exec;
-	}
-	
-	public MenuItemActionAdd(String name, Material displayItem, NodeExecutor exec) {
-		super(name, displayItem);
-		this.nexec = exec;
 	}
 	
 	@Override
 	public void onClick(MinigamePlayer player){
 		Menu m = new Menu(6, "Actions");
 		Map<String, Menu> cats = new HashMap<String, Menu>();
+		// TODO: Dont iterate through the string keys
 		List<String> acts = new ArrayList<String>(Actions.getAllActionNames());
 		Collections.sort(acts);
 		for(String act : acts){
-			if((Actions.getActionByName(act).useInNodes() && nexec != null) || (Actions.getActionByName(act).useInRegions() && rexec != null)){
-				String catname = Actions.getActionByName(act).getCategory();
+			final ActionInterface action = Actions.getActionByName(act);
+			
+			if (action.canUseIn(rexec.getOwner())) {
+				String catname = action.getCategory();
 				if(catname == null)
 					catname = "misc actions";
 				catname.toLowerCase();
@@ -58,15 +54,8 @@ public class MenuItemActionAdd extends MenuItem{
 				c.setClickHandler(new IMenuItemClick() {
 					@Override
 					public void onClick(MenuItem menuItem, MinigamePlayer player) {
-						ActionInterface action = Actions.getActionByName(fact);
-						if(nexec == null){
-							rexec.addAction(action);
-							getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, rexec, action));
-						}
-						else{
-							nexec.addAction(action);
-							getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, nexec, action));
-						}
+						rexec.getActions().add(action);
+						getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, rexec, action));
 						
 						player.showPreviousMenu(2);
 					}

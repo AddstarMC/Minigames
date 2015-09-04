@@ -9,8 +9,7 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.properties.types.IntegerProperty;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class RandomChanceCondition extends ConditionInterface {
 	
@@ -41,16 +40,7 @@ public class RandomChanceCondition extends ConditionInterface {
 	}
 
 	@Override
-	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-		return check();
-	}
-
-	@Override
-	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
-		return check();
-	}
-	
-	private boolean check(){
+	public boolean checkCondition(MinigamePlayer player, TriggerArea area) {
 		double chance = this.chance.getValue().doubleValue() / 100d;
 		Random rand = new Random();
 		if(rand.nextDouble() <= chance)

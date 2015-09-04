@@ -4,10 +4,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.NodeExecutor;
-import au.com.mineauz.minigamesregions.Region;
-import au.com.mineauz.minigamesregions.RegionExecutor;
+import au.com.mineauz.minigamesregions.TriggerArea;
+import au.com.mineauz.minigamesregions.TriggerExecutor;
 
 public class ResetTriggerCountAction extends ActionInterface{
 
@@ -30,17 +28,17 @@ public class ResetTriggerCountAction extends ActionInterface{
 	public boolean useInNodes() {
 		return true;
 	}
-
+	
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region) {
-		for(RegionExecutor ex : region.getExecutors())
-			ex.setTriggerCount(0);
+	public boolean requiresPlayer() {
+		return false;
 	}
-
+	
 	@Override
-	public void executeNodeAction(MinigamePlayer player, Node node) {
-		for(NodeExecutor ex : node.getExecutors())
-			ex.setTriggerCount(0);
+	public void executeAction(MinigamePlayer player, TriggerArea area) {
+		for (TriggerExecutor executor : area.getExecutors()) {
+			executor.setTriggerCount(0);
+		}
 	}
 
 	@Override

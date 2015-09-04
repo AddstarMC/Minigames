@@ -5,8 +5,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class ContainsOneTeamCondition extends ConditionInterface {
 
@@ -29,24 +29,28 @@ public class ContainsOneTeamCondition extends ConditionInterface {
 	public boolean useInNodes() {
 		return false;
 	}
-
+	
 	@Override
-	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
+	public boolean requiresPlayer() {
 		return false;
 	}
 
 	@Override
-	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-		boolean ret = true;
-		Team last = player.getTeam();
-		if(last == null) return true;
-		for(MinigamePlayer p : region.getPlayers()){
-			if(last != p.getTeam()){
-				ret = false;
-				break;
+	public boolean checkCondition(MinigamePlayer player, TriggerArea area) {
+		if (area instanceof Region) {
+			Team last = null;
+			
+			for (MinigamePlayer p : ((Region)area).getPlayers()) {
+				if (last == null) {
+					last = p.getTeam();
+				} else if (last != p.getTeam()) {
+					return false;
+				}
 			}
+			return true;
 		}
-		return ret;
+		
+		return false;
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,7 +19,7 @@ import au.com.mineauz.minigames.properties.types.BooleanProperty;
 import au.com.mineauz.minigames.properties.types.IntegerProperty;
 import au.com.mineauz.minigames.properties.types.StringProperty;
 import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class MatchBlockCondition extends ConditionInterface {
 	
@@ -53,24 +52,21 @@ public class MatchBlockCondition extends ConditionInterface {
 	public boolean useInNodes() {
 		return true;
 	}
-
+	
 	@Override
-	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
+	public boolean requiresPlayer() {
 		return false;
 	}
-
-	@Override
-	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
-		return check(node.getLocation());
-	}
 	
-	@SuppressWarnings("deprecation")
-	private boolean check(Location location){
-		Block block = location.getBlock();
-		if(block.getType() == Material.getMaterial(type.getValue()) &&
-				(!useDur.getValue() || 
-						block.getData() == dur.getValue().byteValue())){
-			return true;
+	@Override
+	public boolean checkCondition(MinigamePlayer player, TriggerArea area) {
+		if (area instanceof Node) {
+			Block block = ((Node)area).getLocation().getBlock();
+			if(block.getType() == Material.getMaterial(type.getValue()) &&
+					(!useDur.getValue() || 
+							block.getData() == dur.getValue().byteValue())){
+				return true;
+			}
 		}
 		return false;
 	}

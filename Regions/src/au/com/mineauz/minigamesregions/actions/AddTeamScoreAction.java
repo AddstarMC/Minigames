@@ -15,8 +15,7 @@ import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.properties.types.IntegerProperty;
 import au.com.mineauz.minigames.properties.types.StringProperty;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class AddTeamScoreAction extends ActionInterface {
 	
@@ -49,19 +48,7 @@ public class AddTeamScoreAction extends ActionInterface {
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player,
-			Region region) {
-		executeAction(player);
-	}
-
-	@Override
-	public void executeNodeAction(MinigamePlayer player,
-			Node node) {
-		executeAction(player);
-	}
-	
-	private void executeAction(MinigamePlayer player){
-		if(player == null || !player.isInMinigame()) return;
+	public void executeAction(MinigamePlayer player, TriggerArea area) {
 		if(player.getTeam() != null && team.getValue().equals("NONE")){
 			player.getTeam().addScore(score.getValue());
 		}

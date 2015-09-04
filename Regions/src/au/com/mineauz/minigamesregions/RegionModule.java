@@ -58,12 +58,12 @@ public class RegionModule extends MinigameModule {
 		Set<String> rs = regions.keySet();
 		for(String name : rs){
 			Region r = regions.get(name);
-			Map<String, Object> sloc = MinigameUtils.serializeLocation(r.getFirstPoint());
+			Map<String, Object> sloc = MinigameUtils.serializeLocation(r.getMinCorner());
 			for(String i : sloc.keySet()){
 				if(!i.equals("yaw") && !i.equals("pitch"))
 					config.set(getMinigame() + ".regions." + name + ".point1." + i, sloc.get(i));
 			}
-			sloc = MinigameUtils.serializeLocation(r.getSecondPoint());
+			sloc = MinigameUtils.serializeLocation(r.getMaxCorner());
 			for(String i : sloc.keySet()){
 				if(!i.equals("yaw") && !i.equals("pitch"))
 					config.set(getMinigame() + ".regions." + name + ".point2." + i, sloc.get(i));
@@ -74,7 +74,7 @@ public class RegionModule extends MinigameModule {
 			}
 			
 			int c = 0;
-			for(RegionExecutor ex : r.getExecutors()){
+			for(TriggerExecutor ex : r.getExecutors()){
 				String path = getMinigame() + ".regions." + name + ".executors." + c;
 				config.set(path + ".trigger", ex.getTrigger().getName());
 				
@@ -117,7 +117,7 @@ public class RegionModule extends MinigameModule {
 			}
 			
 			int c = 0;
-			for(NodeExecutor ex : n.getExecutors()){
+			for(TriggerExecutor ex : n.getExecutors()){
 				String path = getMinigame() + ".nodes." + name + ".executors." + c;
 				config.set(path + ".trigger", ex.getTrigger().getName());
 				
@@ -179,7 +179,7 @@ public class RegionModule extends MinigameModule {
 					Set<String> ex = config.getConfigurationSection(getMinigame() + ".regions." + name + ".executors").getKeys(false);
 					for(String i : ex){
 						String path = getMinigame() + ".regions." + name + ".executors." + i;
-						RegionExecutor rex = new RegionExecutor(Triggers.getTrigger(config.getString(path + ".trigger")));
+						TriggerExecutor rex = r.addExecutor(Triggers.getTrigger(config.getString(path + ".trigger")));
 						
 						if(config.contains(path + ".actions")){
 							for(String a : config.getConfigurationSection(path + ".actions").getKeys(false)){
@@ -189,7 +189,7 @@ public class RegionModule extends MinigameModule {
 									props.loadAll(config.getConfigurationSection(path + ".actions." + a + ".arguments"));
 								}
 								ai.loadArguments(config, path + ".actions." + a + ".arguments");
-								rex.addAction(ai);
+								rex.getActions().add(ai);
 							}
 						}
 						if(config.contains(path + ".conditions")){
@@ -200,7 +200,7 @@ public class RegionModule extends MinigameModule {
 									props.loadAll(config.getConfigurationSection(path + ".conditions." + c + ".arguments"));
 								}
 								ci.loadArguments(config, path + ".conditions." + c + ".arguments");
-								rex.addCondition(ci);
+								rex.getConditions().add(ci);
 							}
 						}
 						
@@ -208,7 +208,6 @@ public class RegionModule extends MinigameModule {
 							rex.setTriggerPerPlayer(config.getBoolean(path + ".isTriggeredPerPlayer"));
 						if(config.contains(path + ".triggerCount"))
 							rex.setTriggerCount(config.getInt(path + ".triggerCount"));
-						r.addExecutor(rex);
 					}
 				}
 			}
@@ -236,7 +235,7 @@ public class RegionModule extends MinigameModule {
 					Set<String> ex = config.getConfigurationSection(getMinigame() + ".nodes." + name + ".executors").getKeys(false);
 					for(String i : ex){
 						String path = getMinigame() + ".nodes." + name + ".executors." + i;
-						NodeExecutor rex = new NodeExecutor(Triggers.getTrigger(config.getString(path + ".trigger")));
+						TriggerExecutor rex = n.addExecutor(Triggers.getTrigger(config.getString(path + ".trigger")));
 
 						if(config.contains(path + ".actions")){
 							for(String a : config.getConfigurationSection(path + ".actions").getKeys(false)){
@@ -246,7 +245,7 @@ public class RegionModule extends MinigameModule {
 									props.loadAll(config.getConfigurationSection(path + ".actions." + a + ".arguments"));
 								}
 								ai.loadArguments(config, path + ".actions." + a + ".arguments");
-								rex.addAction(ai);
+								rex.getActions().add(ai);
 							}
 						}
 						if(config.contains(path + ".conditions")){
@@ -257,7 +256,7 @@ public class RegionModule extends MinigameModule {
 									props.loadAll(config.getConfigurationSection(path + ".conditions." + c + ".arguments"));
 								}
 								ci.loadArguments(config, path + ".conditions." + c + ".arguments");
-								rex.addCondition(ci);
+								rex.getConditions().add(ci);
 							}
 						}
 						
@@ -265,7 +264,6 @@ public class RegionModule extends MinigameModule {
 							rex.setTriggerPerPlayer(config.getBoolean(path + ".isTriggeredPerPlayer"));
 						if(config.contains(path + ".triggerCount"))
 							rex.setTriggerCount(config.getInt(path + ".triggerCount"));
-						n.addExecutor(rex);
 					}
 				}
 			}

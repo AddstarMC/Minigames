@@ -8,7 +8,7 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigamesregions.Region;
-import au.com.mineauz.minigamesregions.RegionExecutor;
+import au.com.mineauz.minigamesregions.TriggerExecutor;
 import au.com.mineauz.minigamesregions.RegionModule;
 
 public class MenuItemRegion extends MenuItem{
@@ -43,11 +43,11 @@ public class MenuItemRegion extends MenuItem{
 	public static Menu createMenu(MinigamePlayer viewer, Menu previousPage, Region region){
 		Menu m = new Menu(3, "Region: " + region.getName());
 		List<MenuItem> items = new ArrayList<MenuItem>();
-		for(RegionExecutor ex : region.getExecutors()){
-			items.add(new MenuItemRegionExecutor(region, ex));
+		for(TriggerExecutor ex : region.getExecutors()){
+			items.add(new MenuItemExecutor(region, ex));
 		}
 
-		m.setControlItem(new MenuItemRegionExecutorAdd("Add Executor", Material.ITEM_FRAME, region), 4);
+		m.setControlItem(new MenuItemExecutorAdd("Add Executor", Material.ITEM_FRAME, region), 4);
 		m.addItems(items);
 		
 		return m;

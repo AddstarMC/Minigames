@@ -5,8 +5,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class BarrierAction extends ActionInterface{
 
@@ -29,95 +29,97 @@ public class BarrierAction extends ActionInterface{
 	public boolean useInNodes() {
 		return false;
 	}
-
+	
 	@Override
-	public void executeNodeAction(MinigamePlayer player,
-			Node node) {
-		
+	public boolean requiresPlayer() {
+		return false;
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region) {
-		if(player == null || !player.isInMinigame()) return;
-		Location o = player.getLocation().clone();
-		Location[] locs = {region.getFirstPoint(), region.getSecondPoint()};
-		double xdis1 = Math.abs(o.getX() - locs[0].getX());
-		double ydis1 = Math.abs(o.getY() - locs[0].getY());
-		double zdis1 = Math.abs(o.getZ() - locs[0].getZ());
-		double xdis2 = Math.abs(o.getX() - (locs[1].getX() + 1));
-		double ydis2 = Math.abs(o.getY() - (locs[1].getY() + 1));
-		double zdis2 = Math.abs(o.getZ() - (locs[1].getZ() + 1));
-		boolean isMinX = false;
-		boolean isMinY = false;
-		boolean isMinZ = false;
-		double xval = 0;
-		double yval = 0;
-		double zval = 0;
-		if(xdis1 < xdis2){
-			isMinX = true;
-			xval = xdis1;
-		}
-		else
-			xval = xdis2;
-		if(ydis1 < ydis2){
-			isMinY = true;
-			yval = ydis1;
-		}
-		else
-			yval = ydis2;
-		if(zdis1 < zdis2){
-			isMinZ = true;
-			zval = zdis1;
-		}
-		else
-			zval = zdis2;
-		if(xval < yval && xval < zval){
-			if(region.getPlayers().contains(player)){
-				if(isMinX)
-					o.setX(o.getX() - 0.5);
-				else
-					o.setX(o.getX() + 0.5);
+	public void executeAction(MinigamePlayer player, TriggerArea area) {
+		if (area instanceof Region) {
+			Region region = (Region)area;
+			// TODO: Clean this up
+			Location o = player.getLocation().clone();
+			Location[] locs = {region.getMinCorner(), region.getMaxCorner()};
+			double xdis1 = Math.abs(o.getX() - locs[0].getX());
+			double ydis1 = Math.abs(o.getY() - locs[0].getY());
+			double zdis1 = Math.abs(o.getZ() - locs[0].getZ());
+			double xdis2 = Math.abs(o.getX() - (locs[1].getX() + 1));
+			double ydis2 = Math.abs(o.getY() - (locs[1].getY() + 1));
+			double zdis2 = Math.abs(o.getZ() - (locs[1].getZ() + 1));
+			boolean isMinX = false;
+			boolean isMinY = false;
+			boolean isMinZ = false;
+			double xval = 0;
+			double yval = 0;
+			double zval = 0;
+			if(xdis1 < xdis2){
+				isMinX = true;
+				xval = xdis1;
 			}
-			else{
-				if(isMinX)
-					o.setX(o.getX() + 0.5);
-				else
-					o.setX(o.getX() - 0.5);
+			else
+				xval = xdis2;
+			if(ydis1 < ydis2){
+				isMinY = true;
+				yval = ydis1;
 			}
+			else
+				yval = ydis2;
+			if(zdis1 < zdis2){
+				isMinZ = true;
+				zval = zdis1;
+			}
+			else
+				zval = zdis2;
+			if(xval < yval && xval < zval){
+				if(region.getPlayers().contains(player)){
+					if(isMinX)
+						o.setX(o.getX() - 0.5);
+					else
+						o.setX(o.getX() + 0.5);
+				}
+				else{
+					if(isMinX)
+						o.setX(o.getX() + 0.5);
+					else
+						o.setX(o.getX() - 0.5);
+				}
+			}
+			else if(yval < xval && yval < zval){
+				if(region.getPlayers().contains(player)){
+					if(isMinY)
+						o.setY(o.getY() - 0.5);
+					else
+						o.setY(o.getY() + 0.5);
+				}
+				else{
+					if(isMinY)
+						o.setY(o.getY() + 0.5);
+					else
+						o.setY(o.getY() - 0.5);
+				}
+			}
+			else if(zval < xval && zval < yval){
+				if(region.getPlayers().contains(player)){
+					if(isMinZ)
+						o.setZ(o.getZ() - 0.5);
+					else
+						o.setZ(o.getZ() + 0.5);
+				}
+				else{
+					if(isMinZ)
+						o.setZ(o.getZ() + 0.5);
+					else
+						o.setZ(o.getZ() - 0.5);
+				}
+			}
+			player.teleport(o);
+			if(region.getPlayers().contains(player))
+				region.removePlayer(player);
+			else
+				region.addPlayer(player);
 		}
-		else if(yval < xval && yval < zval){
-			if(region.getPlayers().contains(player)){
-				if(isMinY)
-					o.setY(o.getY() - 0.5);
-				else
-					o.setY(o.getY() + 0.5);
-			}
-			else{
-				if(isMinY)
-					o.setY(o.getY() + 0.5);
-				else
-					o.setY(o.getY() - 0.5);
-			}
-		}
-		else if(zval < xval && zval < yval){
-			if(region.getPlayers().contains(player)){
-				if(isMinZ)
-					o.setZ(o.getZ() - 0.5);
-				else
-					o.setZ(o.getZ() + 0.5);
-			}
-			else{
-				if(isMinZ)
-					o.setZ(o.getZ() + 0.5);
-				else
-					o.setZ(o.getZ() - 0.5);
-			}
-		}
-		player.teleport(o);
-		if(region.getPlayers().contains(player))
-			region.removePlayer(player);
-		else
-			region.addPlayer(player);
 	}
 
 	@Override

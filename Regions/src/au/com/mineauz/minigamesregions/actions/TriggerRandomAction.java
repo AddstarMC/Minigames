@@ -1,11 +1,12 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import com.google.common.collect.Lists;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
@@ -13,10 +14,8 @@ import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.properties.types.BooleanProperty;
 import au.com.mineauz.minigames.properties.types.IntegerProperty;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.NodeExecutor;
-import au.com.mineauz.minigamesregions.Region;
-import au.com.mineauz.minigamesregions.RegionExecutor;
+import au.com.mineauz.minigamesregions.TriggerArea;
+import au.com.mineauz.minigamesregions.TriggerExecutor;
 
 public class TriggerRandomAction extends ActionInterface{
 	
@@ -47,59 +46,33 @@ public class TriggerRandomAction extends ActionInterface{
 	public boolean useInNodes() {
 		return true;
 	}
-
+	
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region) {
-		List<RegionExecutor> exs = new ArrayList<RegionExecutor>();
-		for(RegionExecutor ex : region.getExecutors()){
-			if(ex.getTrigger().getName().equalsIgnoreCase("RANDOM"))
-				exs.add(ex);
-		}
-		Collections.shuffle(exs);
-		if(timesTriggered.getValue() == 1){
-			if(region.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
-				region.execute(exs.get(0), player);
-		}
-		else{
-			for(int i = 0; i < timesTriggered.getValue(); i++){
-				if(!randomPerTrigger.getValue()){
-					if(i == timesTriggered.getValue()) break;
-					if(region.checkConditions(exs.get(i), player) && exs.get(i).canBeTriggered(player))
-						region.execute(exs.get(i), player);
-				}
-				else{
-					if(region.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
-						region.execute(exs.get(0), player);
-					Collections.shuffle(exs);
-				}
+	public boolean requiresPlayer() {
+		return false;
+	}
+	
+	@Override
+	public void executeAction(MinigamePlayer player, TriggerArea area) {
+		List<TriggerExecutor> executors = Lists.newArrayList();
+		for (TriggerExecutor executor : area.getExecutors()) {
+			// TODO: Want to be able to get executors by trigger type
+			if (executor.getTrigger().getName().equalsIgnoreCase("RANDOM")) {
+				executors.add(executor);
 			}
 		}
-	}
-
-	@Override
-	public void executeNodeAction(MinigamePlayer player, Node node) {
-		List<NodeExecutor> exs = new ArrayList<NodeExecutor>();
-		for(NodeExecutor ex : node.getExecutors()){
-			if(ex.getTrigger().getName().equalsIgnoreCase("RANDOM"))
-				exs.add(ex);
-		}
-		Collections.shuffle(exs);
-		if(timesTriggered.getValue() == 1){
-			if(node.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
-				node.execute(exs.get(0), player);
-		}
-		else{
-			for(int i = 0; i < timesTriggered.getValue(); i++){
-				if(!randomPerTrigger.getValue()){
-					if(i == timesTriggered.getValue()) break;
-					if(node.checkConditions(exs.get(i), player) && exs.get(i).canBeTriggered(player))
-						node.execute(exs.get(i), player);
-				}
-				else{
-					if(node.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
-						node.execute(exs.get(0), player);
-					Collections.shuffle(exs);
-				}
+		
+		Collections.shuffle(executors);
+		
+		int triggerTimes = timesTriggered.getValue();
+		for (int i = 0; i < triggerTimes; ++i) {
+			if (randomPerTrigger.getValue()) {
+				Collections.shuffle(executors);
+			}
+			
+			TriggerExecutor executor = executors.get(i % executors.size());
+			if (executor.canTrigger(player, area)) {
+				executor.execute(player, area);
 			}
 		}
 	}

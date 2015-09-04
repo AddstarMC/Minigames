@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -14,8 +13,7 @@ import au.com.mineauz.minigames.properties.Properties;
 import au.com.mineauz.minigames.properties.types.BooleanProperty;
 import au.com.mineauz.minigames.properties.types.EnumProperty;
 import au.com.mineauz.minigames.properties.types.FloatProperty;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class PlaySoundAction extends ActionInterface {
 	
@@ -50,28 +48,16 @@ public class PlaySoundAction extends ActionInterface {
 	public boolean useInNodes() {
 		return true;
 	}
-
-	@Override
-	public void executeRegionAction(MinigamePlayer player,
-			Region region) {
-		execute(player, player.getLocation());
-	}
-
-	@Override
-	public void executeNodeAction(MinigamePlayer player,
-			Node node) {
-		execute(player, node.getLocation());
-	}
 	
-	private void execute(MinigamePlayer player, Location loc){
-		if(player == null || !player.isInMinigame()) return;
+	@Override
+	public void executeAction(MinigamePlayer player, TriggerArea area) {
 		if(priv.getValue())
-			player.getPlayer().playSound(loc, 
+			player.getPlayer().playSound(player.getLocation(), 
 					sound.getValue(), 
 					vol.getValue(), 
 					pit.getValue());
 		else
-			player.getPlayer().getWorld().playSound(loc, 
+			player.getPlayer().getWorld().playSound(player.getLocation(), 
 					sound.getValue(), 
 					vol.getValue(), 
 					pit.getValue());

@@ -99,7 +99,7 @@ public class RegionToolMode implements ToolMode {
 				player.clearSelection();
 			}
 			else{
-				region.updateRegion(player.getSelectionPoints()[0], player.getSelectionPoints()[1]);
+				region.setRegion(player.getSelectionPoints()[0], player.getSelectionPoints()[1]);
 				Main.getPlugin().getDisplayManager().update(region);
 				player.sendMessage("Updated region " + name + " in " + minigame, MessageType.Normal);
 			}

@@ -13,7 +13,7 @@ import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.properties.types.BooleanProperty;
 import au.com.mineauz.minigames.properties.types.IntegerProperty;
 import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class PulseRedstoneAction extends ActionInterface {
 	
@@ -44,27 +44,28 @@ public class PulseRedstoneAction extends ActionInterface {
 	public boolean useInNodes() {
 		return true;
 	}
-
+	
 	@Override
-	public void executeRegionAction(MinigamePlayer player,
-			Region region) {
+	public boolean requiresPlayer() {
+		return false;
 	}
 
 	@Override
-	public void executeNodeAction(MinigamePlayer player,
-			Node node) {
-		Material block = Material.REDSTONE_BLOCK;
-		if(torch.getValue())
-			block = Material.REDSTONE_TORCH_ON;
-		final BlockState last = node.getLocation().getBlock().getState();
-		node.getLocation().getBlock().setType(block);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-			
-			@Override
-			public void run() {
-				last.update(true);
-			}
-		}, 20 * time.getValue());
+	public void executeAction(MinigamePlayer player, TriggerArea area) {
+		if (area instanceof Node) {
+			Node node = (Node)area;
+			Material block = Material.REDSTONE_BLOCK;
+			if(torch.getValue())
+				block = Material.REDSTONE_TORCH_ON;
+			final BlockState last = node.getLocation().getBlock().getState();
+			node.getLocation().getBlock().setType(block);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+				@Override
+				public void run() {
+					last.update(true);
+				}
+			}, 20 * time.getValue());
+		}
 	}
 
 	@Override

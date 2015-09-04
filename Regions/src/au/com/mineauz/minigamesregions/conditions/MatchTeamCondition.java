@@ -12,8 +12,7 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.properties.types.StringProperty;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class MatchTeamCondition extends ConditionInterface {
 	
@@ -44,16 +43,7 @@ public class MatchTeamCondition extends ConditionInterface {
 	}
 
 	@Override
-	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
-		if(player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getValue())){
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-		if(player == null || !player.isInMinigame()) return false;
+	public boolean checkCondition(MinigamePlayer player, TriggerArea area) {
 		if(player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getValue())){
 			return true;
 		}

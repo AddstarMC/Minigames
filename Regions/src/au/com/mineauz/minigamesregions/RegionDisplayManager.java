@@ -14,7 +14,6 @@ import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.display.IDisplayObject;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -39,8 +38,8 @@ public class RegionDisplayManager {
 		
 		ArmorStand stand = nameDisplay.get(region);
 		if (stand == null) {
-			Location midPoint = region.getFirstPoint().clone().add(region.getSecondPoint()).add(1,1,1).multiply(0.5).subtract(0, 1.4, 0);
-			stand = region.getFirstPoint().getWorld().spawn(midPoint, ArmorStand.class);
+			Location midPoint = region.getMinCorner().clone().add(region.getMaxCorner()).add(1,1,1).multiply(0.5).subtract(0, 1.4, 0);
+			stand = region.getMinCorner().getWorld().spawn(midPoint, ArmorStand.class);
 			stand.setGravity(false);
 			stand.setSmall(true);
 			stand.setVisible(false);
@@ -99,9 +98,7 @@ public class RegionDisplayManager {
 			regionDisplays.put(player.getPlayer(), regions);
 		}
 		
-		Location[] corners = MinigameUtils.getMinMaxSelection(region.getFirstPoint(), region.getSecondPoint());
-		
-		IDisplayObject display = Minigames.plugin.display.displayCuboid(player.getPlayer(), corners[0], corners[1].add(1, 1, 1));
+		IDisplayObject display = Minigames.plugin.display.displayCuboid(player.getPlayer(), region.getMinCorner(), region.getMaxCorner().add(1, 1, 1));
 		display.show();
 		regions.put(region, display);
 		

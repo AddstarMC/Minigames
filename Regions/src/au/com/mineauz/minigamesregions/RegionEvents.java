@@ -135,7 +135,7 @@ public class RegionEvents implements Listener{
 		});
 		if(event.getMinigame().getPlayers().size() == 0){
 			for(Region region : event.getMinigame().getModule(RegionModule.class).getRegions()){
-				for(RegionExecutor ex : region.getExecutors()){
+				for(TriggerExecutor ex : region.getExecutors()){
 					if(ex.getTrigger().getName().equalsIgnoreCase("TICK")){
 						region.startTickTask();
 						break;
@@ -165,11 +165,11 @@ public class RegionEvents implements Listener{
 		for(Node node : module.getNodes()){
 			node.execute(Triggers.getTrigger("GAME_QUIT"), event.getMinigamePlayer());
 			if(event.getMinigame().getPlayers().size() > 1){
-				for(NodeExecutor exec : node.getExecutors())
+				for(TriggerExecutor exec : node.getExecutors())
 					exec.removeTrigger(event.getMinigamePlayer());
 			}
 			else{
-				for(NodeExecutor exec : node.getExecutors())
+				for(TriggerExecutor exec : node.getExecutors())
 					exec.clearTriggers();
 				node.setEnabled(true);
 			}
@@ -178,11 +178,11 @@ public class RegionEvents implements Listener{
 			if(region.playerInRegion(ply))
 				region.execute(Triggers.getTrigger("GAME_QUIT"), event.getMinigamePlayer());
 			if(event.getMinigame().getPlayers().size() > 1){
-				for(RegionExecutor exec : region.getExecutors())
+				for(TriggerExecutor exec : region.getExecutors())
 					exec.removeTrigger(event.getMinigamePlayer());
 			}
 			else{
-				for(RegionExecutor exec : region.getExecutors()){
+				for(TriggerExecutor exec : region.getExecutors()){
 					exec.clearTriggers();
 				}
 				region.removeTickTask();
@@ -202,11 +202,11 @@ public class RegionEvents implements Listener{
 		}
 		for(Node node : module.getNodes()){
 			node.execute(Triggers.getTrigger("GAME_END"), null);
-			for(NodeExecutor exec : node.getExecutors())
+			for(TriggerExecutor exec : node.getExecutors())
 				exec.clearTriggers();
 		}
 		for(Region region : module.getRegions()){
-			for(RegionExecutor exec : region.getExecutors())
+			for(TriggerExecutor exec : region.getExecutors())
 				exec.clearTriggers();
 		}
 	}

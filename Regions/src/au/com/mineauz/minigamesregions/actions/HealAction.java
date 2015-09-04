@@ -7,8 +7,7 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.properties.types.IntegerProperty;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class HealAction extends ActionInterface{
 	
@@ -39,18 +38,7 @@ public class HealAction extends ActionInterface{
 	}
 
 	@Override
-	public void executeNodeAction(MinigamePlayer player,
-			Node node) {
-		execute(player);
-	}
-
-	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region) {
-		execute(player);
-	}
-	
-	private void execute(MinigamePlayer player){
-		if(player == null || !player.isInMinigame()) return;
+	public void executeAction(MinigamePlayer player, TriggerArea area) {
 		if(heal.getValue() > 0){
 			if(player.getPlayer().getHealth() != 20){
 				double health = heal.getValue() + player.getPlayer().getHealth();

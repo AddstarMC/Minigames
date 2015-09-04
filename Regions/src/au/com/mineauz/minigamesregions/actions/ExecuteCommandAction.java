@@ -12,6 +12,7 @@ import au.com.mineauz.minigames.properties.ObservableValue;
 import au.com.mineauz.minigames.properties.types.StringProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class ExecuteCommandAction extends ActionInterface {
 	
@@ -70,20 +71,20 @@ public class ExecuteCommandAction extends ActionInterface {
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region) {
+	public void executeAction(MinigamePlayer player, TriggerArea area) {
 		String command = replacePlayerTags(player, comd.getValue());
-		command = command.replace("{region}", region.getName());
-		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
-	}
-
-	@Override
-	public void executeNodeAction(MinigamePlayer player, Node node) {
-		String command = replacePlayerTags(player, comd.getValue());
-		command = command
-			.replace("{x}", String.valueOf(node.getLocation().getBlockX()))
-			.replace("{y}", String.valueOf(node.getLocation().getBlockY()))
-			.replace("{z}", String.valueOf(node.getLocation().getBlockZ()))
-			.replace("{node}", node.getName());
+		
+		if (area instanceof Node) {
+			Node node = (Node)area;
+			command = command
+					.replace("{node}", area.getName())
+					.replace("{x}", String.valueOf(node.getLocation().getBlockX()))
+					.replace("{y}", String.valueOf(node.getLocation().getBlockY()))
+					.replace("{z}", String.valueOf(node.getLocation().getBlockZ()));
+		} else if (area instanceof Region) {
+			command = command.replace("{region}", area.getName());
+		}
+		
 		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
 	}
 	

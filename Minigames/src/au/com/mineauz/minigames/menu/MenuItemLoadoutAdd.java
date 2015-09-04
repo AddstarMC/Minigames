@@ -8,7 +8,6 @@ import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 
 public class MenuItemLoadoutAdd extends MenuItem{
 	

@@ -14,8 +14,8 @@ import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.properties.types.BooleanProperty;
 import au.com.mineauz.minigames.properties.types.EnumProperty;
 import au.com.mineauz.minigames.properties.types.IntegerProperty;
-import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class SwapBlockAction extends ActionInterface {
 	
@@ -54,17 +54,26 @@ public class SwapBlockAction extends ActionInterface {
 	public boolean useInNodes() {
 		return false;
 	}
-
-	@SuppressWarnings("deprecation")
+	
 	@Override
-	public void executeRegionAction(MinigamePlayer player,
-			Region region) {
-		Location temp = region.getFirstPoint();
-		for(int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++){
+	public boolean requiresPlayer() {
+		return false;
+	}
+
+	@Override
+	public void executeAction(MinigamePlayer player, TriggerArea area) {
+		if (area instanceof Region) {
+			executeRegionAction(player, (Region)area);
+		}
+	}
+	@SuppressWarnings("deprecation")
+	private void executeRegionAction(MinigamePlayer player, Region region) {
+		Location temp = region.getMinCorner();
+		for(int y = region.getMinCorner().getBlockY(); y <= region.getMaxCorner().getBlockY(); y++){
 			temp.setY(y);
-			for(int x = region.getFirstPoint().getBlockX(); x <= region.getSecondPoint().getBlockX(); x++){
+			for(int x = region.getMinCorner().getBlockX(); x <= region.getMaxCorner().getBlockX(); x++){
 				temp.setX(x);
-				for(int z = region.getFirstPoint().getBlockZ(); z <= region.getSecondPoint().getBlockZ(); z++){
+				for(int z = region.getMinCorner().getBlockZ(); z <= region.getMaxCorner().getBlockZ(); z++){
 					temp.setZ(z);
 					
 					if(temp.getBlock().getType() == matchType.getValue() &&
@@ -81,12 +90,6 @@ public class SwapBlockAction extends ActionInterface {
 				}
 			}
 		}
-	}
-
-	@Override
-	public void executeNodeAction(MinigamePlayer player,
-			Node node) {
-		
 	}
 
 	@Override

@@ -32,7 +32,7 @@ import au.com.mineauz.minigames.properties.Property;
 import au.com.mineauz.minigames.properties.types.StringProperty;
 import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class SpawnEntityAction extends ActionInterface {
 	
@@ -85,38 +85,35 @@ public class SpawnEntityAction extends ActionInterface {
 	public boolean useInNodes() {
 		return true;
 	}
-
+	
 	@Override
-	public void executeRegionAction(MinigamePlayer player,
-			Region region) {
-	}
-
-	@Override
-	public void executeNodeAction(MinigamePlayer player, Node node) {
-		if(player == null || !player.isInMinigame()) return;
-		final Entity ent = node.getLocation().getWorld().spawnEntity(node.getLocation(), EntityType.valueOf(type.getValue()));
-		
-		final double vx = getSetting("velocityx", Double.class).getValue();
-		final double vy = getSetting("velocityy", Double.class).getValue();
-		final double vz = getSetting("velocityz", Double.class).getValue();
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
+	public void executeAction(MinigamePlayer player, TriggerArea area) {
+		if (area instanceof Node) {
+			Node node = (Node)area;
+			final Entity ent = node.getLocation().getWorld().spawnEntity(node.getLocation(), EntityType.valueOf(type.getValue()));
 			
-			@Override
-			public void run() {
-				ent.setVelocity(new Vector(vx, vy, vz));
+			final double vx = getSetting("velocityx", Double.class).getValue();
+			final double vy = getSetting("velocityy", Double.class).getValue();
+			final double vz = getSetting("velocityz", Double.class).getValue();
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
+				
+				@Override
+				public void run() {
+					ent.setVelocity(new Vector(vx, vy, vz));
+				}
+			});
+			
+			if(ent instanceof LivingEntity){
+				LivingEntity lent = (LivingEntity) ent;
+				if (hasSetting("displayname")) {
+					lent.setCustomName(getSetting("displayname", String.class).getValue());
+					lent.setCustomNameVisible(getSetting("displaynamevisible", Boolean.class).getValue());
+				}
 			}
-		});
-		
-		if(ent instanceof LivingEntity){
-			LivingEntity lent = (LivingEntity) ent;
-			if (hasSetting("displayname")) {
-				lent.setCustomName(getSetting("displayname", String.class).getValue());
-				lent.setCustomNameVisible(getSetting("displaynamevisible", Boolean.class).getValue());
-			}
+			
+			ent.setMetadata("MinigameEntity", new FixedMetadataValue(Minigames.plugin, true));
+			player.getMinigame().getBlockRecorder().addEntity(ent, player, true);
 		}
-		
-		ent.setMetadata("MinigameEntity", new FixedMetadataValue(Minigames.plugin, true));
-		player.getMinigame().getBlockRecorder().addEntity(ent, player, true);
 	}
 
 	@Override

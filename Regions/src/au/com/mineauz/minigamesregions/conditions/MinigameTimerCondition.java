@@ -6,10 +6,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemTime;
-import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.properties.types.IntegerProperty;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class MinigameTimerCondition extends ConditionInterface{
 	
@@ -42,18 +40,9 @@ public class MinigameTimerCondition extends ConditionInterface{
 	}
 
 	@Override
-	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-		return check(player.getMinigame());
-	}
-
-	@Override
-	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
-		return check(player.getMinigame());
-	}
-	
-	private boolean check(Minigame mg){
-		if(mg.getMinigameTimer().getTimeLeft() >= minTime.getValue() &&
-				mg.getMinigameTimer().getTimeLeft() <= maxTime.getValue()){
+	public boolean checkCondition(MinigamePlayer player, TriggerArea area) {
+		if(player.getMinigame().getMinigameTimer().getTimeLeft() >= minTime.getValue() &&
+				player.getMinigame().getMinigameTimer().getTimeLeft() <= maxTime.getValue()){
 			return true;
 		}
 		return false;

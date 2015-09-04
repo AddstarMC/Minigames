@@ -8,9 +8,8 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.properties.types.StringProperty;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionModule;
+import au.com.mineauz.minigamesregions.TriggerArea;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
 
 public class TriggerRegionAction extends ActionInterface {
@@ -40,27 +39,15 @@ public class TriggerRegionAction extends ActionInterface {
 	public boolean useInNodes() {
 		return true;
 	}
-
+	
 	@Override
-	public void executeRegionAction(MinigamePlayer player,
-			Region region) {
-		if(player == null || !player.isInMinigame()) return;
+	public void executeAction(MinigamePlayer player, TriggerArea area) {
 		Minigame mg = player.getMinigame();
-		if(mg != null){
+		if (mg != null) {
 			RegionModule rmod = mg.getModule(RegionModule.class);
-			if(rmod.hasRegion(this.region.getValue()))
+			if (rmod.hasRegion(this.region.getValue())) {
 				rmod.getRegion(this.region.getValue()).execute(Triggers.getTrigger("REMOTE"), player);
-		}
-	}
-
-	@Override
-	public void executeNodeAction(MinigamePlayer player, Node node) {
-		if(player == null || !player.isInMinigame()) return;
-		Minigame mg = player.getMinigame();
-		if(mg != null){
-			RegionModule rmod = mg.getModule(RegionModule.class);
-			if(rmod.hasRegion(region.getValue()))
-				rmod.getRegion(region.getValue()).execute(Triggers.getTrigger("REMOTE"), player);
+			}
 		}
 	}
 

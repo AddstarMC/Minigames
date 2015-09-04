@@ -4,8 +4,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class KillAction extends ActionInterface {
 
@@ -30,16 +29,7 @@ public class KillAction extends ActionInterface {
 	}
 
 	@Override
-	public void executeNodeAction(MinigamePlayer player,
-			Node node) {
-		if(player == null || !player.isInMinigame()) return;
-		if(!player.isDead())
-			player.getPlayer().damage(player.getPlayer().getHealth());
-	}
-
-	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region) {
-		if(player == null || !player.isInMinigame()) return;
+	public void executeAction(MinigamePlayer player, TriggerArea area) {
 		if(!player.isDead())
 			player.getPlayer().damage(player.getPlayer().getHealth());
 	}

@@ -1,229 +1,135 @@
 package au.com.mineauz.minigamesregions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.scheduler.BukkitTask;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigamesregions.actions.ActionInterface;
-import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
-import au.com.mineauz.minigamesregions.triggers.Trigger;
+import au.com.mineauz.minigames.properties.Properties;
+import au.com.mineauz.minigames.properties.Property;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
 
-public class Region {
-	private String name;
-	private Location point1;
-	private Location point2;
-	private List<RegionExecutor> executors = new ArrayList<RegionExecutor>();
-	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
+public class Region extends TriggerArea {
+	private final Property<Location> minimum;
+	private final Property<Location> maximum;
+	
+	// Game state
+	private List<MinigamePlayer> players = Lists.newArrayList();
 	private long taskDelay = 20;
-	private int taskID;
-	private boolean enabled = true;
+	private BukkitTask tickTask;
 	
-	public Region(String name, Location point1, Location point2){
+	public Region(String name, Location point1, Location point2) {
+		super(name);
+		
 		Location[] locs = MinigameUtils.getMinMaxSelection(point1, point2);
-		this.point1 = locs[0].clone();
-		this.point2 = locs[1].clone();
-		this.name = name;
+		this.minimum = Properties.create(locs[0].clone());
+		this.maximum = Properties.create(locs[1].clone());
 	}
 	
-	public boolean playerInRegion(MinigamePlayer player){
-		if(player.getLocation().getWorld() == point1.getWorld()){
-			int minx = point1.getBlockX();
-			int maxx = point2.getBlockX();
-			int plyx = player.getLocation().getBlockX();
+	public boolean playerInRegion(MinigamePlayer player) {
+		return locationInRegion(player.getLocation());
+	}
+	
+	public boolean locationInRegion(Location location) {
+		if (location.getWorld() != getWorld()) {
+			return false;
+		}
+		
+		int minX = minimum.getValue().getBlockX();
+		int maxX = maximum.getValue().getBlockX();
+		int x = location.getBlockX();
+		
+		if (x >= minX && x <= maxX) {
+			int minY = minimum.getValue().getBlockY();
+			int maxY = maximum.getValue().getBlockY();
+			int y = location.getBlockY();
 			
-			if(plyx >= minx && plyx <= maxx){
-				int miny = point1.getBlockY();
-				int maxy = point2.getBlockY();
-				int plyy = player.getLocation().getBlockY();
+			if (y >= minY && y <= maxY) {
+				int minZ = minimum.getValue().getBlockZ();
+				int maxZ = maximum.getValue().getBlockZ();
+				int z = location.getBlockZ();
 				
-				if(plyy >= miny && plyy <= maxy){
-					int minz = point1.getBlockZ();
-					int maxz = point2.getBlockZ();
-					int plyz = player.getLocation().getBlockZ();
-					
-					if(plyz >= minz && plyz <= maxz){
-						return true;
-					}
+				if (z >= minZ && z <= maxZ) {
+					return true;
 				}
-				
 			}
 		}
 		return false;
 	}
 	
-	public boolean locationInRegion(Location loc){
-		if(loc.getWorld() == point1.getWorld()){
-			int minx = point1.getBlockX();
-			int maxx = point2.getBlockX();
-			int plyx = loc.getBlockX();
-			
-			if(plyx >= minx && plyx <= maxx){
-				int miny = point1.getBlockY();
-				int maxy = point2.getBlockY();
-				int plyy = loc.getBlockY();
-				
-				if(plyy >= miny && plyy <= maxy){
-					int minz = point1.getBlockZ();
-					int maxz = point2.getBlockZ();
-					int plyz = loc.getBlockZ();
-					
-					if(plyz >= minz && plyz <= maxz){
-						return true;
-					}
-				}
-				
-			}
-		}
-		return false;
+	public Location getMinCorner() {
+		return minimum.getValue().clone();
 	}
 	
-	public String getName(){
-		return name;
+	public Location getMaxCorner() {
+		return maximum.getValue().clone();
 	}
 	
-	public Location getFirstPoint(){
-		return point1.clone();
+	public World getWorld() {
+		return minimum.getValue().getWorld();
 	}
 	
-	public Location getSecondPoint(){
-		return point2.clone();
-	}
-	
-	public void updateRegion(Location point1, Location point2) {
+	public void setRegion(Location point1, Location point2) {
+		Preconditions.checkArgument(point1.getWorld() == point2.getWorld(), "Cannot set a region across worlds");
+		
 		Location[] locs = MinigameUtils.getMinMaxSelection(point1, point2);
-		this.point1 = locs[0];
-		this.point2 = locs[1];
+		this.minimum.setValue(locs[0]);
+		this.maximum.setValue(locs[1]);
 	}
 	
-	public boolean hasPlayer(MinigamePlayer player){
+	public boolean hasPlayer(MinigamePlayer player) {
 		return players.contains(player);
 	}
 	
-	public void addPlayer(MinigamePlayer player){
+	public void addPlayer(MinigamePlayer player) {
 		players.add(player);
 	}
 	
-	public void removePlayer(MinigamePlayer player){
+	public void removePlayer(MinigamePlayer player) {
 		players.remove(player);
 	}
 	
-	public List<MinigamePlayer> getPlayers(){
+	public List<MinigamePlayer> getPlayers() {
 		return players;
 	}
 	
-	public int addExecutor(Trigger trigger){
-		executors.add(new RegionExecutor(trigger));
-		return executors.size();
-	}
-	
-	public int addExecutor(RegionExecutor exec){
-		executors.add(exec);
-		return executors.size();
-	}
-	
-	public List<RegionExecutor> getExecutors(){
-		return executors;
-	}
-	
-	public void removeExecutor(int id){
-		if(executors.size() <= id){
-			executors.remove(id - 1);
-		}
-	}
-	
-	public void removeExecutor(RegionExecutor executor){
-		if(executors.contains(executor)){
-			executors.remove(executor);
-		}
-	}
-	
-	public void changeTickDelay(long delay){
+	public void changeTickDelay(long delay) {
 		removeTickTask();
 		taskDelay = delay;
-		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, new Runnable() {
-			
-			@Override
-			public void run() {
-				List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>(players);
-				for(MinigamePlayer player : plys){
-					execute(Triggers.getTrigger("TICK"), player);
-				}
-			}
-		}, 0, delay);
+		startTickTask();
 	}
 	
-	public long getTickDelay(){
+	public long getTickDelay() {
 		return taskDelay;
 	}
 	
-	public void startTickTask(){
-		if(taskID != -1)
-			removeTickTask();
+	public void startTickTask() {
+		removeTickTask();
 		
-		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, new Runnable() {
-			
-			@Override
-			public void run() {
-				List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>(players);
-				for(MinigamePlayer player : plys){
-					execute(Triggers.getTrigger("TICK"), player);
-				}
-			}
-		}, 0, taskDelay);
+		tickTask = Bukkit.getScheduler().runTaskTimer(Minigames.plugin, new TickTask(), 0, taskDelay);
 	}
 	
-	public void removeTickTask(){
-		Bukkit.getScheduler().cancelTask(taskID);
-	}
-	
-	public void setEnabled(boolean enabled){
-		this.enabled = enabled;
-	}
-	
-	public boolean getEnabled(){
-		return enabled;
-	}
-	
-	public void execute(Trigger trigger, MinigamePlayer player){
-		if(player != null && player.getMinigame() != null && player.getMinigame().isSpectator(player)) return;
-		List<RegionExecutor> toExecute = new ArrayList<RegionExecutor>();
-		for(RegionExecutor exec : executors){
-			if(exec.getTrigger() == trigger){
-				if(checkConditions(exec, player) && exec.canBeTriggered(player))
-					toExecute.add(exec);
-			}
-		}
-		for(RegionExecutor exec : toExecute){
-			execute(exec, player);
+	public void removeTickTask() {
+		if (tickTask != null) {
+			tickTask.cancel();
+			tickTask = null;
 		}
 	}
 	
-	public boolean checkConditions(RegionExecutor exec, MinigamePlayer player){
-		for(ConditionInterface con : exec.getConditions()){
-			boolean c = con.checkRegionCondition(player, this);
-			if(con.isInverted())
-				c = !c;
-			if(!c){
-				return false;
+	private class TickTask implements Runnable {
+		@Override
+		public void run() {
+			for (MinigamePlayer player : Lists.newArrayList(players)) {
+				execute(Triggers.getTrigger("TICK"), player);
 			}
-		}
-		return true;
-	}
-	
-	public void execute(RegionExecutor exec, MinigamePlayer player){
-		for(ActionInterface act : exec.getActions()){
-			if(!enabled && !act.getName().equalsIgnoreCase("SET_ENABLED")) continue;
-			act.executeRegionAction(player, this);
-			if(!exec.isTriggerPerPlayer())
-				exec.addPublicTrigger();
-			else
-				exec.addPlayerTrigger(player);
 		}
 	}
 }

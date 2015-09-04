@@ -11,8 +11,7 @@ import au.com.mineauz.minigames.menu.MenuItemDecimal;
 import au.com.mineauz.minigames.properties.Properties;
 import au.com.mineauz.minigames.properties.types.FloatProperty;
 import au.com.mineauz.minigamesregions.Main;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class VelocityAction extends ActionInterface{
 	
@@ -45,21 +44,10 @@ public class VelocityAction extends ActionInterface{
 	public boolean useInNodes() {
 		return true;
 	}
-
-	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region) {
-		execute(player);
-	}
-
-	@Override
-	public void executeNodeAction(MinigamePlayer player, Node node) {
-		execute(player);
-	}
 	
-	private void execute(final MinigamePlayer player){
-		if(player == null) return;
+	@Override
+	public void executeAction(final MinigamePlayer player, TriggerArea area) {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
-			
 			@Override
 			public void run() {
 				player.getPlayer().setVelocity(new Vector(x.getValue(), y.getValue(), z.getValue()));

@@ -10,8 +10,7 @@ import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.properties.types.BooleanProperty;
 import au.com.mineauz.minigames.properties.types.StringProperty;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class BroadcastAction extends ActionInterface{
 	
@@ -44,18 +43,14 @@ public class BroadcastAction extends ActionInterface{
 	public boolean useInNodes() {
 		return true;
 	}
-
-	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region) {
-		execute(player);
-	}
-
-	@Override
-	public void executeNodeAction(MinigamePlayer player, Node node) {
-		execute(player);
-	}
 	
-	private void execute(MinigamePlayer player){
+	@Override
+	public boolean requiresPlayer() {
+		return false;
+	}
+
+	@Override
+	public void executeAction(MinigamePlayer player, TriggerArea area) {
 		MessageType type = MessageType.Normal;
 		if(redText.getValue())
 			type = MessageType.Error;

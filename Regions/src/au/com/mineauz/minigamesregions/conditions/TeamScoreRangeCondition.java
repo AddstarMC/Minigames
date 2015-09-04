@@ -8,8 +8,7 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.properties.types.IntegerProperty;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class TeamScoreRangeCondition extends ConditionInterface {
 	
@@ -42,16 +41,7 @@ public class TeamScoreRangeCondition extends ConditionInterface {
 	}
 
 	@Override
-	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-		return checkCondition(player);
-	}
-
-	@Override
-	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
-		return checkCondition(player);
-	}
-	
-	private boolean checkCondition(MinigamePlayer player){
+	public boolean checkCondition(MinigamePlayer player, TriggerArea area) {
 		if(player.getTeam() != null){
 			Team t = player.getTeam();
 			if(t.getScore() >= min.getValue() && 

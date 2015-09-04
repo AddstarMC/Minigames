@@ -7,8 +7,7 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.properties.types.IntegerProperty;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class PlayerScoreRangeCondition extends ConditionInterface {
 	
@@ -41,16 +40,7 @@ public class PlayerScoreRangeCondition extends ConditionInterface {
 	}
 
 	@Override
-	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
-		if(player == null || !player.isInMinigame()) return false;
-		if(player.getScore() >= min.getValue() && player.getScore() <= max.getValue())
-			return true;
-		return false;
-	}
-
-	@Override
-	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-		if(player == null || !player.isInMinigame()) return false;
+	public boolean checkCondition(MinigamePlayer player, TriggerArea area) {
 		if(player.getScore() >= min.getValue() && player.getScore() <= max.getValue())
 			return true;
 		return false;

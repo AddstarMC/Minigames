@@ -16,8 +16,7 @@ import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.properties.types.EnumProperty;
 import au.com.mineauz.minigames.properties.types.IntegerProperty;
 import au.com.mineauz.minigames.properties.types.StringProperty;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class GiveItemAction extends ActionInterface{
 	
@@ -56,16 +55,7 @@ public class GiveItemAction extends ActionInterface{
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region) {
-		execute(player);
-	}
-
-	@Override
-	public void executeNodeAction(MinigamePlayer player, Node node) {
-		execute(player);
-	}
-	
-	private void execute(MinigamePlayer player){
+	public void executeAction(MinigamePlayer player, TriggerArea area) {
 		ItemStack item = new ItemStack(type.getValue(), count.getValue(), damage.getValue().shortValue());
 		ItemMeta meta = item.getItemMeta();
 		if(name.getValue() != null){

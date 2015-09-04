@@ -73,10 +73,10 @@ public class RegionNodeEditToolMode implements ToolMode {
 		RegionModule module = minigame.getModule(RegionModule.class);
 		Map<Region, Vector[]> regionBBs = Maps.newIdentityHashMap();
 		for (Region region : module.getRegions()) {
-			Vector point1 = region.getFirstPoint().toVector();
-			Vector point2 = region.getSecondPoint().toVector();
+			Vector point1 = region.getMinCorner().toVector();
+			Vector point2 = region.getMaxCorner().toVector();
 			
-			regionBBs.put(region, new Vector[] {Vector.getMinimum(point1, point2), Vector.getMaximum(point1, point2).add(new Vector(1,1,1))});
+			regionBBs.put(region, new Vector[] {point1, point2.add(new Vector(1,1,1))});
 		}
 		
 		Map<Node, Vector> nodeLocs = Maps.newIdentityHashMap();

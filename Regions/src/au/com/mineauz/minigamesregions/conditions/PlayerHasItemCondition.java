@@ -15,8 +15,7 @@ import au.com.mineauz.minigames.menu.MenuItemValue.IMenuItemChange;
 import au.com.mineauz.minigames.properties.types.BooleanProperty;
 import au.com.mineauz.minigames.properties.types.IntegerProperty;
 import au.com.mineauz.minigames.properties.types.StringProperty;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.TriggerArea;
 
 public class PlayerHasItemCondition extends ConditionInterface {
 	
@@ -51,16 +50,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
 	}
 
 	@Override
-	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-		return check(player);
-	}
-
-	@Override
-	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
-		return check(player);
-	}
-	
-	private boolean check(MinigamePlayer player){
+	public boolean checkCondition(MinigamePlayer player, TriggerArea area) {
 		if(player.getPlayer().getInventory().contains(Material.getMaterial(type.getValue()))){
 			if(useData.getValue()){
 				short dam = data.getValue().shortValue();
