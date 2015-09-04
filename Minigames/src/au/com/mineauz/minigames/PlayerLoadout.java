@@ -454,8 +454,10 @@ public class PlayerLoadout {
 						
 						// Now we can load the value
 						LoadoutAddon<Object> addon = LoadoutModule.getAddon(clazz);
-						Object value = addon.load(addonSection.getConfigurationSection(addonKey));
-						addonValues.put(clazz, value);
+						if (addon != null) {
+							Object value = addon.load(addonSection.getConfigurationSection(addonKey));
+							addonValues.put(clazz, value);
+						}
 					}
 				} catch (ClassNotFoundException e) {
 					// Ignore it

@@ -249,7 +249,7 @@ public class CTFMechanic extends GameMechanicBase{
 		if(ply.isInMinigame()){
 			Minigame mgm = ply.getMinigame();
 			CTFModule ctf = mgm.getModule(CTFModule.class);
-			if(ctf.isFlagCarrier(ply)){
+			if(ctf != null && ctf.isFlagCarrier(ply)){
 				CTFFlag flag = ctf.getFlagCarrier(ply);
 				Location loc = flag.spawnFlag(ply.getPlayer().getLocation());
 				if(loc != null){

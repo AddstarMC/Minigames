@@ -62,17 +62,21 @@ public class RegionModule extends MinigameModule {
 		ConfigurationSection root = config.createSection(getMinigame().getName(false));
 		
 		ConfigurationSection regionSection = root.getConfigurationSection("regions");
-		for (String name : regionSection.getKeys(false)) {
-			Region region = new Region(name);
-			region.load(regionSection.getConfigurationSection(name));
-			regions.put(name, region);
+		if (regionSection != null) {
+			for (String name : regionSection.getKeys(false)) {
+				Region region = new Region(name);
+				region.load(regionSection.getConfigurationSection(name));
+				regions.put(name, region);
+			}
 		}
 		
 		ConfigurationSection nodeSection = root.getConfigurationSection("nodes");
-		for (String name : nodeSection.getKeys(false)) {
-			Node node = new Node(name);
-			node.load(nodeSection.getConfigurationSection(name));
-			nodes.put(name, node);
+		if (nodeSection != null) {
+			for (String name : nodeSection.getKeys(false)) {
+				Node node = new Node(name);
+				node.load(nodeSection.getConfigurationSection(name));
+				nodes.put(name, node);
+			}
 		}
 	}
 	

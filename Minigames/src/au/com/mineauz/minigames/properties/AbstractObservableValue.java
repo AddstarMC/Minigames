@@ -14,8 +14,8 @@ public abstract class AbstractObservableValue<T> implements ObservableValue<T> {
 		this.value = value;
 		
 		// Hack to get a weak set
-		Map<ChangeListener<? super T>, Void> map = new WeakHashMap<ChangeListener<? super T>, Void>();
-		listeners = Collections.synchronizedSet(map.keySet());
+		Map<ChangeListener<? super T>, Boolean> map = new WeakHashMap<ChangeListener<? super T>, Boolean>();
+		listeners = Collections.synchronizedSet(Collections.newSetFromMap(map));
 	}
 	
 	public AbstractObservableValue() {

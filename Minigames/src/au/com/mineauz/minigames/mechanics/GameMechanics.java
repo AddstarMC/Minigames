@@ -25,7 +25,7 @@ public class GameMechanics {
 	 * @param mechanic A game mechanic extending GameMechanicBase
 	 */
 	public static void addGameMechanic(GameMechanicBase mechanic){
-		gameMechanics.put(mechanic.getMechanic(), mechanic);
+		gameMechanics.put(mechanic.getMechanic().toLowerCase(), mechanic);
 	}
 	
 	/**
@@ -34,9 +34,8 @@ public class GameMechanics {
 	 * @throws NullPointerException if the mechanic cannot be found.
 	 */
 	public static void removeGameMechanic(String mechanic) throws NullPointerException{
-		if(gameMechanics.containsKey(mechanic)){
-			HandlerList.unregisterAll(gameMechanics.get(mechanic));
-			gameMechanics.remove(mechanic);
+		if(gameMechanics.containsKey(mechanic.toLowerCase())){
+			HandlerList.unregisterAll(gameMechanics.remove(mechanic.toLowerCase()));
 		}
 		else
 			throw new NullPointerException("No GameMechanic of that name has been added!");
@@ -48,10 +47,7 @@ public class GameMechanics {
 	 * @return A game mechanic extending GameMechanicBase or Null if none found.
 	 */
 	public static GameMechanicBase getGameMechanic(String mechanic){
-		if(gameMechanics.containsKey(mechanic)){
-			return gameMechanics.get(mechanic);
-		}
-		return null;
+		return gameMechanics.get(mechanic.toLowerCase());
 	}
 	
 	/**

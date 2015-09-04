@@ -65,7 +65,7 @@ public abstract class TriggerArea {
 	
 	/**
 	 * Adds an executor to this area
-	 * @param executor The executor to add
+	 * @param trigger The type trigger for the executor
 	 */
 	public TriggerExecutor addExecutor(Trigger trigger) {
 		Preconditions.checkNotNull(trigger);
@@ -84,6 +84,10 @@ public abstract class TriggerArea {
 		executors.remove(executor.getTrigger(), executor);
 	}
 	
+	/**
+	 * Removes all executors for the specified trigger
+	 * @param trigger The trigger of the executors
+	 */
 	public void removeAllExecutors(Trigger trigger) {
 		Preconditions.checkNotNull(trigger);
 		executors.removeAll(trigger);
