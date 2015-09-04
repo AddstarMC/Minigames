@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -114,14 +113,6 @@ public class SpawnEntityAction extends ActionInterface {
 			ent.setMetadata("MinigameEntity", new FixedMetadataValue(Minigames.plugin, true));
 			player.getMinigame().getBlockRecorder().addEntity(ent, player, true);
 		}
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package au.com.mineauz.minigamesregions.conditions;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MessageType;
@@ -64,14 +63,6 @@ public class PlayerHasItemCondition extends ConditionInterface {
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override

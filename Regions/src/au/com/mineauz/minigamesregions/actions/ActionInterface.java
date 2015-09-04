@@ -1,7 +1,6 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import org.bukkit.configuration.file.FileConfiguration;
-
+import org.bukkit.configuration.ConfigurationSection;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
@@ -25,8 +24,6 @@ public abstract class ActionInterface {
 		return true;
 	}
 	
-	public void saveArguments(FileConfiguration config, String path) {};
-	public void loadArguments(FileConfiguration config, String path) {};
 	public abstract boolean displayMenu(MinigamePlayer player, Menu previous);
 	
 	public final ConfigPropertyContainer getProperties() {
@@ -40,6 +37,20 @@ public abstract class ActionInterface {
 			return useInRegions();
 		} else {
 			return true;
+		}
+	}
+	
+	public void save(ConfigurationSection section) {
+		ConfigPropertyContainer props = getProperties();
+		if (props != null) {
+			props.saveAll(section.createSection("arguments"));
+		}
+	}
+	
+	public void load(ConfigurationSection section) {
+		ConfigPropertyContainer props = getProperties();
+		if (props != null) {
+			props.loadAll(section.getConfigurationSection("arguments"));
 		}
 	}
 }

@@ -2,8 +2,6 @@ package au.com.mineauz.minigamesregions.actions;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.Node;
@@ -78,16 +76,6 @@ public class FallingBlockAction extends ActionInterface {
 					node.getLocation().getBlock().getData());
 			node.getLocation().getBlock().setType(Material.AIR);
 		}
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config,
-			String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config,
-			String path) {
 	}
 
 	@Override

@@ -1,7 +1,5 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.TriggerArea;
@@ -31,18 +29,6 @@ public class ReequipLoadoutAction extends ActionInterface {
 	@Override
 	public void executeAction(MinigamePlayer player, TriggerArea area) {
 		player.getLoadout().equiptLoadout(player);
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config,
-			String path) {
-		// None
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config,
-			String path) {
-		// None
 	}
 
 	@Override

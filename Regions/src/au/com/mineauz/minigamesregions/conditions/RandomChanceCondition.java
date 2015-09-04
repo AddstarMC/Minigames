@@ -3,8 +3,6 @@ package au.com.mineauz.minigamesregions.conditions;
 import java.util.Random;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
@@ -46,14 +44,6 @@ public class RandomChanceCondition extends ConditionInterface {
 		if(rand.nextDouble() <= chance)
 			return true;
 		return false;
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override

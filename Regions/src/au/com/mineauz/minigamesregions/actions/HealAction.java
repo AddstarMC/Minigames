@@ -1,8 +1,6 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
@@ -49,14 +47,6 @@ public class HealAction extends ActionInterface{
 		}
 		else
 			player.getPlayer().damage(heal.getValue() * -1);
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override

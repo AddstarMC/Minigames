@@ -3,8 +3,6 @@ package au.com.mineauz.minigamesregions.actions;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Menu;
@@ -66,14 +64,6 @@ public class PulseRedstoneAction extends ActionInterface {
 				}
 			}, 20 * time.getValue());
 		}
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override

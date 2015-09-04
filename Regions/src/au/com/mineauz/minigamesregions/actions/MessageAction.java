@@ -1,8 +1,6 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
@@ -41,14 +39,6 @@ public class MessageAction extends ActionInterface {
 	@Override
 	public void executeAction(MinigamePlayer player, TriggerArea area) {
 		player.sendMessage(msg.getValue(), MessageType.Normal);
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override

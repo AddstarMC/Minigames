@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.configuration.ConfigurationSection;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -11,7 +13,9 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.properties.Properties;
 import au.com.mineauz.minigames.properties.Property;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
+import au.com.mineauz.minigamesregions.actions.Actions;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
+import au.com.mineauz.minigamesregions.conditions.Conditions;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 
 public class TriggerExecutor {
@@ -156,6 +160,68 @@ public class TriggerExecutor {
 			triggers.put(player.getUUID(), 1);
 		} else {
 			triggers.put(player.getUUID(), triggers.get(player.getUUID()) + 1);
+		}
+	}
+	
+	public void save(ConfigurationSection section) {
+		// Save actions
+		int index = 0;
+		for (ActionInterface action : actions) {
+			ConfigurationSection actionSection = section.createSection("actions." + index);
+			actionSection.set("type", action.getName());
+			action.save(actionSection);
+			++index;
+		}
+		
+		// Save conditions
+		index = 0;
+		for (ConditionInterface condition : conditions) {
+			ConfigurationSection actionSection = section.createSection("conditions." + index);
+			actionSection.set("type", condition.getName());
+			condition.save(actionSection);
+			++index;
+		}
+		
+		// Save additional arguments
+		if (isTriggerPerPlayer()) {
+			section.set("isTriggeredPerPlayer", isTriggerPerPlayer());
+		}
+		if (getTriggerCount() != 0) {
+			section.set("triggerCount", getTriggerCount());
+		}
+	}
+	
+	public void load(ConfigurationSection section) {
+		// Load actions
+		ConfigurationSection actionsSection = section.getConfigurationSection("actions");
+		actions.clear();
+		
+		for (String key : actionsSection.getKeys(false)) {
+			ConfigurationSection actionSection = actionsSection.getConfigurationSection(key);
+			ActionInterface action = Actions.getActionByName(actionSection.getString("type"));
+			
+			action.load(actionSection);
+			actions.add(action);
+		}
+		
+		// Load conditions
+		ConfigurationSection conditionsSection = section.getConfigurationSection("conditions");
+		actions.clear();
+		
+		for (String key : conditionsSection.getKeys(false)) {
+			ConfigurationSection conditionSection = conditionsSection.getConfigurationSection(key);
+			ConditionInterface condition = Conditions.getConditionByName(conditionSection.getString("type"));
+			
+			condition.load(conditionSection);
+			conditions.add(condition);
+		}
+		
+		// Load additional arguments
+		if (section.contains("isTriggeredPerPlayer")) {
+			setTriggerPerPlayer(section.getBoolean("isTriggeredPerPlayer"));
+		}
+		if (section.contains("triggerCount")) {
+			setTriggerCount(section.getInt("triggerCount"));
 		}
 	}
 }

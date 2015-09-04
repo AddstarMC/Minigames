@@ -2,8 +2,6 @@ package au.com.mineauz.minigamesregions.actions;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemString;
@@ -88,14 +86,6 @@ public class ExecuteCommandAction extends ActionInterface {
 		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
 	}
 	
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
-	}
-
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Execute Command");

@@ -3,7 +3,6 @@ package au.com.mineauz.minigamesregions.actions;
 import java.util.Map;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -74,14 +73,6 @@ public class GiveItemAction extends ActionInterface{
 				player.getLocation().getWorld().dropItem(player.getLocation(), i);
 			}
 		}
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override

@@ -1,8 +1,6 @@
 package au.com.mineauz.minigamesregions.conditions;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
@@ -44,14 +42,6 @@ public class PlayerScoreRangeCondition extends ConditionInterface {
 		if(player.getScore() >= min.getValue() && player.getScore() <= max.getValue())
 			return true;
 		return false;
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override

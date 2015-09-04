@@ -3,8 +3,6 @@ package au.com.mineauz.minigamesregions.actions;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
@@ -90,14 +88,6 @@ public class SwapBlockAction extends ActionInterface {
 				}
 			}
 		}
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override

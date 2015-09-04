@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.google.common.base.Preconditions;
@@ -32,6 +33,13 @@ public class Region extends TriggerArea {
 		Location[] locs = MinigameUtils.getMinMaxSelection(point1, point2);
 		this.minimum = Properties.create(locs[0].clone());
 		this.maximum = Properties.create(locs[1].clone());
+	}
+	
+	Region(String name) {
+		super(name);
+		
+		this.minimum = Properties.create();
+		this.maximum = Properties.create();
 	}
 	
 	public boolean playerInRegion(MinigamePlayer player) {
@@ -122,6 +130,30 @@ public class Region extends TriggerArea {
 			tickTask.cancel();
 			tickTask = null;
 		}
+	}
+	
+	@Override
+	public void save(ConfigurationSection section) {
+		MinigameUtils.saveShortLocation(section.createSection("point1"), minimum.getValue());
+		MinigameUtils.saveShortLocation(section.createSection("point2"), maximum.getValue());
+		
+		if (taskDelay != 20) {
+			section.set("tickDelay", taskDelay);
+		}
+		
+		super.save(section);
+	}
+	
+	@Override
+	public void load(ConfigurationSection section) {
+		minimum.setValue(MinigameUtils.loadShortLocation(section.getConfigurationSection("point1")));
+		maximum.setValue(MinigameUtils.loadShortLocation(section.getConfigurationSection("point2")));
+		
+		if (section.contains("tickDelay")) {
+			taskDelay = section.getLong("tickDelay");
+		}
+		
+		super.load(section);
 	}
 	
 	private class TickTask implements Runnable {

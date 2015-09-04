@@ -1,7 +1,5 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.TriggerArea;
@@ -39,14 +37,6 @@ public class ResetTriggerCountAction extends ActionInterface{
 		for (TriggerExecutor executor : area.getExecutors()) {
 			executor.setTriggerCount(0);
 		}
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override

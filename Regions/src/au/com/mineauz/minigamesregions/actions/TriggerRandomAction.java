@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import com.google.common.collect.Lists;
 
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -75,14 +73,6 @@ public class TriggerRandomAction extends ActionInterface{
 				executor.execute(player, area);
 			}
 		}
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override

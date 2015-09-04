@@ -4,8 +4,6 @@ import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
@@ -78,14 +76,6 @@ public class ExplodeAction extends ActionInterface {
 		location.getWorld().createExplosion(location, power.getValue(), fire.getValue());
 	}
 	
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
-	}
-
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Explode");

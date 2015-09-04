@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Menu;
@@ -48,14 +46,6 @@ public class MatchTeamCondition extends ConditionInterface {
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override

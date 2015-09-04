@@ -3,8 +3,6 @@ package au.com.mineauz.minigamesregions.actions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
@@ -60,14 +58,6 @@ public class EndAction extends ActionInterface {
 		else{
 			Minigames.plugin.pdata.endMinigame(player);
 		}
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override

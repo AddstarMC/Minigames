@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -54,14 +53,6 @@ public class ApplyPotionAction extends ActionInterface {
 	public void executeAction(MinigamePlayer player, TriggerArea area) {
 		PotionEffect effect = new PotionEffect(PotionEffectType.getByName(type.getValue()), dur.getValue() * 20, amp.getValue() - 1);
 		player.getPlayer().addPotionEffect(effect);
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override

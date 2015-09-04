@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.bukkit.configuration.ConfigurationSection;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -13,6 +15,7 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.properties.Properties;
 import au.com.mineauz.minigames.properties.Property;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
+import au.com.mineauz.minigamesregions.triggers.Triggers;
 
 public abstract class TriggerArea {
 	private final String name;
@@ -130,6 +133,33 @@ public abstract class TriggerArea {
 		
 		for (TriggerExecutor executor : toExecute) {
 			executor.execute(player, this);
+		}
+	}
+	
+	public void save(ConfigurationSection section) {
+		ConfigurationSection executorsSection = section.createSection("executors");
+		
+		// Save executors
+		int index = 0;
+		for (TriggerExecutor executor : executors.values()) {
+			ConfigurationSection executorSection = executorsSection.createSection(String.valueOf(index));
+			executorSection.set("trigger", executor.getTrigger().getName());
+			executor.save(executorSection);
+			
+			++index;
+		}
+	}
+	
+	public void load(ConfigurationSection section) {
+		ConfigurationSection executorsSection = section.getConfigurationSection("executors");
+		
+		// Load executors
+		executors.clear();
+		for (String key : executorsSection.getKeys(false)) {
+			ConfigurationSection executorSection = executorsSection.getConfigurationSection(key);
+			
+			TriggerExecutor executor = addExecutor(Triggers.getTrigger(executorSection.getString("trigger")));
+			executor.load(executorSection);
 		}
 	}
 }

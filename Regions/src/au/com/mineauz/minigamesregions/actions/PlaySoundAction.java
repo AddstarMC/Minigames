@@ -2,8 +2,6 @@ package au.com.mineauz.minigamesregions.actions;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
@@ -61,14 +59,6 @@ public class PlaySoundAction extends ActionInterface {
 					sound.getValue(), 
 					vol.getValue(), 
 					pit.getValue());
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override

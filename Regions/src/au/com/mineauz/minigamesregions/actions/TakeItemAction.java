@@ -1,7 +1,6 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -77,14 +76,6 @@ public class TakeItemAction extends ActionInterface{
 		else{
 			player.getPlayer().getInventory().getItem(slot).setAmount(matched.getAmount());
 		}
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override

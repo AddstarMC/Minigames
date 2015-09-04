@@ -2,7 +2,6 @@ package au.com.mineauz.minigamesregions.actions;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.util.Vector;
 
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -53,14 +52,6 @@ public class VelocityAction extends ActionInterface{
 				player.getPlayer().setVelocity(new Vector(x.getValue(), y.getValue(), z.getValue()));
 			}
 		});
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override

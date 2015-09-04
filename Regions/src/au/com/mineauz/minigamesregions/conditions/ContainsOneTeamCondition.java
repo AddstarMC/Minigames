@@ -1,7 +1,5 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Team;
@@ -51,14 +49,6 @@ public class ContainsOneTeamCondition extends ConditionInterface {
 		}
 		
 		return false;
-	}
-
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
-
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override

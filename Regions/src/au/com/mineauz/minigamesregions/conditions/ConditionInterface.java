@@ -1,8 +1,7 @@
 package au.com.mineauz.minigamesregions.conditions;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
+import org.bukkit.configuration.ConfigurationSection;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
@@ -41,8 +40,6 @@ public abstract class ConditionInterface {
 		return true;
 	}
 	
-	public abstract void saveArguments(FileConfiguration config, String path);
-	public abstract void loadArguments(FileConfiguration config, String path);
 	public abstract boolean displayMenu(MinigamePlayer player, Menu prev);
 	
 	public boolean canUseIn(TriggerArea area) {
@@ -52,6 +49,20 @@ public abstract class ConditionInterface {
 			return useInRegions();
 		} else {
 			return true;
+		}
+	}
+	
+	public void save(ConfigurationSection section) {
+		ConfigPropertyContainer props = getProperties();
+		if (props != null) {
+			props.saveAll(section.createSection("arguments"));
+		}
+	}
+	
+	public void load(ConfigurationSection section) {
+		ConfigPropertyContainer props = getProperties();
+		if (props != null) {
+			props.loadAll(section.getConfigurationSection("arguments"));
 		}
 	}
 }
