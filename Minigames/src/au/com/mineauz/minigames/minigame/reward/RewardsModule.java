@@ -1,14 +1,10 @@
 package au.com.mineauz.minigames.minigame.reward;
 
-import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -16,6 +12,11 @@ import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.reward.scheme.RewardScheme;
 import au.com.mineauz.minigames.minigame.reward.scheme.RewardSchemes;
 import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
+import au.com.mineauz.minigames.properties.AbstractProperty;
+import au.com.mineauz.minigames.properties.ChangeListener;
+import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
+import au.com.mineauz.minigames.properties.ObservableValue;
+import au.com.mineauz.minigames.properties.Property;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 
 public class RewardsModule extends MinigameModule {
@@ -47,8 +48,8 @@ public class RewardsModule extends MinigameModule {
 	}
 
 	@Override
-	public Map<String, Flag<?>> getFlags() {
-		return scheme.getFlags();
+	public ConfigPropertyContainer getProperties() {
+		return scheme.getProperties();
 	}
 
 	@Override
@@ -98,22 +99,30 @@ public class RewardsModule extends MinigameModule {
 		final Menu submenu = new Menu(5, "Reward Settings");
 		scheme.addMenuItems(submenu);
 		
-		submenu.setControlItem(RewardSchemes.newMenuItem("Reward Scheme", Material.PAPER, new Callback<Class<? extends RewardScheme>>() {
+		Property<Class<? extends RewardScheme>> schemeProp = new AbstractProperty<Class<? extends RewardScheme>>() {
+			@Override
+			public Class<? extends RewardScheme> getValue() {
+				return scheme.getClass();
+			}
+			
 			@Override
 			public void setValue(Class<? extends RewardScheme> value) {
 				scheme = RewardSchemes.createScheme(value);
-				
+				super.setValue(value);
+			}
+		};
+		
+		schemeProp.addListener(new ChangeListener<Class<? extends RewardScheme>>() {
+			@Override
+			public void onValueChange(ObservableValue<? extends Class<? extends RewardScheme>> observable, Class<? extends RewardScheme> oldValue, Class<? extends RewardScheme> newValue) {
 				// Update the menu
 				submenu.clear();
 				scheme.addMenuItems(submenu);
 				submenu.refresh();
 			}
-			
-			@Override
-			public Class<? extends RewardScheme> getValue() {
-				return scheme.getClass();
-			}
-		}), 4);
+		});
+		
+		submenu.setControlItem(RewardSchemes.newMenuItem("Reward Scheme", Material.PAPER, schemeProp), 4);
 		
 		return submenu;
 	}

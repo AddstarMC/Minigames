@@ -55,15 +55,16 @@ import com.google.common.collect.Lists;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
+import au.com.mineauz.minigames.properties.Properties;
+import au.com.mineauz.minigames.properties.Property;
 
 public class RecorderData implements Listener{
 	private static Minigames plugin;
 	
 	private Minigame minigame;
-	private boolean whitelistMode = false;
+	private Property<Boolean> whitelistMode = Properties.create(false);
 	private List<Material> wbBlocks = new ArrayList<Material>();
 	private boolean hasCreatedRegenBlocks = false;
 	
@@ -130,26 +131,15 @@ public class RecorderData implements Listener{
 	}
 	
 	public void setWhitelistMode(boolean bool){
-		whitelistMode = bool;
+		whitelistMode.setValue(bool);
 	}
 	
 	public boolean getWhitelistMode(){
-		return whitelistMode;
+		return whitelistMode.getValue();
 	}
 	
-	public Callback<Boolean> getWhitelistModeCallback(){
-		return new Callback<Boolean>() {
-
-			@Override
-			public void setValue(Boolean value) {
-				whitelistMode = value;
-			}
-
-			@Override
-			public Boolean getValue() {
-				return whitelistMode;
-			}
-		};
+	public Property<Boolean> whitelistMode() {
+		return whitelistMode;
 	}
 	
 	public void addWBBlock(Material mat){
@@ -688,8 +678,8 @@ public class RecorderData implements Listener{
 				blocks.addAll(event.blockList());
 				
 				for(Block bl : blocks){
-					if((whitelistMode && getWBBlocks().contains(bl.getType())) ||
-							(!whitelistMode && !getWBBlocks().contains(bl.getType()))){
+					if((whitelistMode.getValue() && getWBBlocks().contains(bl.getType())) ||
+							(!whitelistMode.getValue() && !getWBBlocks().contains(bl.getType()))){
 						addBlock(bl, null);
 					}
 					else{

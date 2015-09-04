@@ -13,13 +13,13 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.menu.MenuItemSubMenu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
+import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.actions.Actions;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
@@ -41,12 +41,12 @@ public class RegionModule extends MinigameModule {
 	public String getName(){
 		return "Regions";
 	}
-
+	
 	@Override
-	public Map<String, Flag<?>> getFlags() {
+	public ConfigPropertyContainer getProperties() {
 		return null;
 	}
-	
+
 	@Override
 	public boolean useSeparateConfig(){
 		return true;
@@ -54,6 +54,7 @@ public class RegionModule extends MinigameModule {
 
 	@Override
 	public void save(FileConfiguration config) {
+		// TODO: Change to use hierarchical ConfigurationSections
 		Set<String> rs = regions.keySet();
 		for(String name : rs){
 			Region r = regions.get(name);
@@ -80,6 +81,10 @@ public class RegionModule extends MinigameModule {
 				int acc = 0;
 				for(ActionInterface act : ex.getActions()){
 					config.set(path + ".actions." + acc + ".type", act.getName());
+					ConfigPropertyContainer props = act.getProperties();
+					if (props != null) {
+						props.saveAll(config.createSection(path + ".actions." + acc + ".arguments"));
+					}
 					act.saveArguments(config, path + ".actions." + acc + ".arguments");
 					acc++;
 				}
@@ -87,6 +92,10 @@ public class RegionModule extends MinigameModule {
 				acc = 0;
 				for(ConditionInterface con : ex.getConditions()){
 					config.set(path + ".conditions." + acc + ".type", con.getName());
+					ConfigPropertyContainer props = con.getProperties();
+					if (props != null) {
+						props.saveAll(config.createSection(path + ".conditions." + acc + ".arguments"));
+					}
 					con.saveArguments(config, path + ".conditions." + acc + ".arguments");
 					acc++;
 				}
@@ -115,6 +124,10 @@ public class RegionModule extends MinigameModule {
 				int acc = 0;
 				for(ActionInterface act : ex.getActions()){
 					config.set(path + ".actions." + acc + ".type", act.getName());
+					ConfigPropertyContainer props = act.getProperties();
+					if (props != null) {
+						props.saveAll(config.createSection(path + ".actions." + acc + ".arguments"));
+					}
 					act.saveArguments(config, path + ".actions." + acc + ".arguments");
 					acc++;
 				}
@@ -122,6 +135,10 @@ public class RegionModule extends MinigameModule {
 				acc = 0;
 				for(ConditionInterface con : ex.getConditions()){
 					config.set(path + ".conditions." + acc + ".type", con.getName());
+					ConfigPropertyContainer props = con.getProperties();
+					if (props != null) {
+						props.saveAll(config.createSection(path + ".conditions." + acc + ".arguments"));
+					}
 					con.saveArguments(config, path + ".conditions." + acc + ".arguments");
 					acc++;
 				}
@@ -167,6 +184,10 @@ public class RegionModule extends MinigameModule {
 						if(config.contains(path + ".actions")){
 							for(String a : config.getConfigurationSection(path + ".actions").getKeys(false)){
 								ActionInterface ai = Actions.getActionByName(config.getString(path + ".actions." + a + ".type"));
+								ConfigPropertyContainer props = ai.getProperties();
+								if (props != null) {
+									props.loadAll(config.getConfigurationSection(path + ".actions." + a + ".arguments"));
+								}
 								ai.loadArguments(config, path + ".actions." + a + ".arguments");
 								rex.addAction(ai);
 							}
@@ -174,6 +195,10 @@ public class RegionModule extends MinigameModule {
 						if(config.contains(path + ".conditions")){
 							for(String c : config.getConfigurationSection(path + ".conditions").getKeys(false)){
 								ConditionInterface ci = Conditions.getConditionByName(config.getString(path + ".conditions." + c + ".type"));
+								ConfigPropertyContainer props = ci.getProperties();
+								if (props != null) {
+									props.loadAll(config.getConfigurationSection(path + ".conditions." + c + ".arguments"));
+								}
 								ci.loadArguments(config, path + ".conditions." + c + ".arguments");
 								rex.addCondition(ci);
 							}
@@ -216,6 +241,10 @@ public class RegionModule extends MinigameModule {
 						if(config.contains(path + ".actions")){
 							for(String a : config.getConfigurationSection(path + ".actions").getKeys(false)){
 								ActionInterface ai = Actions.getActionByName(config.getString(path + ".actions." + a + ".type"));
+								ConfigPropertyContainer props = ai.getProperties();
+								if (props != null) {
+									props.loadAll(config.getConfigurationSection(path + ".actions." + a + ".arguments"));
+								}
 								ai.loadArguments(config, path + ".actions." + a + ".arguments");
 								rex.addAction(ai);
 							}
@@ -223,6 +252,10 @@ public class RegionModule extends MinigameModule {
 						if(config.contains(path + ".conditions")){
 							for(String c : config.getConfigurationSection(path + ".conditions").getKeys(false)){
 								ConditionInterface ci = Conditions.getConditionByName(config.getString(path + ".conditions." + c + ".type"));
+								ConfigPropertyContainer props = ci.getProperties();
+								if (props != null) {
+									props.loadAll(config.getConfigurationSection(path + ".conditions." + c + ".arguments"));
+								}
 								ci.loadArguments(config, path + ".conditions." + c + ".arguments");
 								rex.addCondition(ci);
 							}

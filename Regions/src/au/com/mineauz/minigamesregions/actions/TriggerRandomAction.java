@@ -8,9 +8,11 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBoolean;
+import au.com.mineauz.minigames.menu.MenuItemInteger;
+import au.com.mineauz.minigames.properties.types.BooleanProperty;
+import au.com.mineauz.minigames.properties.types.IntegerProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.NodeExecutor;
 import au.com.mineauz.minigamesregions.Region;
@@ -18,8 +20,13 @@ import au.com.mineauz.minigamesregions.RegionExecutor;
 
 public class TriggerRandomAction extends ActionInterface{
 	
-	private IntegerFlag timesTriggered = new IntegerFlag(1, "timesTriggered");
-	private BooleanFlag randomPerTrigger = new BooleanFlag(false, "randomPerTrigger");
+	private final IntegerProperty timesTriggered = new IntegerProperty(1, "timesTriggered");
+	private final BooleanProperty randomPerTrigger = new BooleanProperty(false, "randomPerTrigger");
+	
+	public TriggerRandomAction() {
+		properties.addProperty(timesTriggered);
+		properties.addProperty(randomPerTrigger);
+	}
 
 	@Override
 	public String getName() {
@@ -49,14 +56,14 @@ public class TriggerRandomAction extends ActionInterface{
 				exs.add(ex);
 		}
 		Collections.shuffle(exs);
-		if(timesTriggered.getFlag() == 1){
+		if(timesTriggered.getValue() == 1){
 			if(region.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
 				region.execute(exs.get(0), player);
 		}
 		else{
-			for(int i = 0; i < timesTriggered.getFlag(); i++){
-				if(!randomPerTrigger.getFlag()){
-					if(i == timesTriggered.getFlag()) break;
+			for(int i = 0; i < timesTriggered.getValue(); i++){
+				if(!randomPerTrigger.getValue()){
+					if(i == timesTriggered.getValue()) break;
 					if(region.checkConditions(exs.get(i), player) && exs.get(i).canBeTriggered(player))
 						region.execute(exs.get(i), player);
 				}
@@ -77,14 +84,14 @@ public class TriggerRandomAction extends ActionInterface{
 				exs.add(ex);
 		}
 		Collections.shuffle(exs);
-		if(timesTriggered.getFlag() == 1){
+		if(timesTriggered.getValue() == 1){
 			if(node.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
 				node.execute(exs.get(0), player);
 		}
 		else{
-			for(int i = 0; i < timesTriggered.getFlag(); i++){
-				if(!randomPerTrigger.getFlag()){
-					if(i == timesTriggered.getFlag()) break;
+			for(int i = 0; i < timesTriggered.getValue(); i++){
+				if(!randomPerTrigger.getValue()){
+					if(i == timesTriggered.getValue()) break;
 					if(node.checkConditions(exs.get(i), player) && exs.get(i).canBeTriggered(player))
 						node.execute(exs.get(i), player);
 				}
@@ -99,21 +106,17 @@ public class TriggerRandomAction extends ActionInterface{
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
-		timesTriggered.saveValue(path, config);
-		randomPerTrigger.saveValue(path, config);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
-		timesTriggered.loadValue(path, config);
-		randomPerTrigger.loadValue(path, config);
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Trigger Random");
-		m.addItem(timesTriggered.getMenuItem("Times to Trigger Random", Material.COMMAND, 1, Integer.MAX_VALUE));
-		m.addItem(randomPerTrigger.getMenuItem("Allow Same Executor", "Should there be a chance;that the same execeutor;can be triggered more?", Material.ENDER_PEARL));
+		m.addItem(new MenuItemInteger("Times to Trigger Random", Material.COMMAND, timesTriggered, 1, Integer.MAX_VALUE));
+		m.addItem(new MenuItemBoolean("Allow Same Executor", "Should there be a chance;that the same execeutor;can be triggered more?", Material.ENDER_PEARL, randomPerTrigger));
 		m.displayMenu(player);
 		return true;
 	}

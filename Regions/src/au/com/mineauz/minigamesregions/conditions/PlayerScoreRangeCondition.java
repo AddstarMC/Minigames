@@ -4,15 +4,21 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemInteger;
+import au.com.mineauz.minigames.properties.types.IntegerProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class PlayerScoreRangeCondition extends ConditionInterface {
 	
-	private IntegerFlag min = new IntegerFlag(5, "min");
-	private IntegerFlag max = new IntegerFlag(10, "max");
+	private final IntegerProperty min = new IntegerProperty(5, "min");
+	private final IntegerProperty max = new IntegerProperty(10, "max");
+	
+	public PlayerScoreRangeCondition() {
+		properties.addProperty(min);
+		properties.addProperty(max);
+	}
 
 	@Override
 	public String getName() {
@@ -37,7 +43,7 @@ public class PlayerScoreRangeCondition extends ConditionInterface {
 	@Override
 	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
 		if(player == null || !player.isInMinigame()) return false;
-		if(player.getScore() >= min.getFlag() && player.getScore() <= max.getFlag())
+		if(player.getScore() >= min.getValue() && player.getScore() <= max.getValue())
 			return true;
 		return false;
 	}
@@ -45,30 +51,24 @@ public class PlayerScoreRangeCondition extends ConditionInterface {
 	@Override
 	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
 		if(player == null || !player.isInMinigame()) return false;
-		if(player.getScore() >= min.getFlag() && player.getScore() <= max.getFlag())
+		if(player.getScore() >= min.getValue() && player.getScore() <= max.getValue())
 			return true;
 		return false;
 	}
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
-		min.saveValue(path, config);
-		max.saveValue(path, config);
-		saveInvert(config, path);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
-		min.loadValue(path, config);
-		max.loadValue(path, config);
-		loadInvert(config, path);
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Score Range");
-		m.addItem(min.getMenuItem("Min Score", Material.STEP));
-		m.addItem(max.getMenuItem("Max Score", Material.STONE));
+		m.addItem(new MenuItemInteger("Min Score", Material.STEP, min, 0, Integer.MAX_VALUE));
+		m.addItem(new MenuItemInteger("Max Score", Material.STONE, max, 0, Integer.MAX_VALUE));
 		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;

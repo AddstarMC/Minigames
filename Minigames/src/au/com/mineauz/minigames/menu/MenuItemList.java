@@ -12,27 +12,28 @@ import com.google.common.collect.Lists;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.properties.ObservableValue;
 
 public class MenuItemList extends MenuItemValue<String> {
 	
 	private List<String> options = null;
 	
-	public MenuItemList(String name, MaterialData displayItem, Callback<String> callback, List<String> options) {
+	public MenuItemList(String name, MaterialData displayItem, ObservableValue<String> callback, List<String> options) {
 		super(name, displayItem, callback);
 		this.options = options;
 		updateDescription();
 	}
-	public MenuItemList(String name, String description, Material displayItem, Callback<String> callback, List<String> options) {
+	public MenuItemList(String name, String description, Material displayItem, ObservableValue<String> callback, List<String> options) {
 		super(name, description, displayItem, callback);
 		this.options = options;
 		updateDescription();
 	}
-	public MenuItemList(String name, Material displayItem, Callback<String> callback, List<String> options) {
+	public MenuItemList(String name, Material displayItem, ObservableValue<String> callback, List<String> options) {
 		super(name, null, displayItem, callback);
 		this.options = options;
 		updateDescription();
 	}
-	public MenuItemList(String name, String description, MaterialData displayItem, Callback<String> callback, List<String> options) {
+	public MenuItemList(String name, String description, MaterialData displayItem, ObservableValue<String> callback, List<String> options) {
 		super(name, description, displayItem, callback);
 		this.options = options;
 		updateDescription();

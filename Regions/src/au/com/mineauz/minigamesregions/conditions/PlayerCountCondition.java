@@ -4,15 +4,21 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemInteger;
+import au.com.mineauz.minigames.properties.types.IntegerProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class PlayerCountCondition extends ConditionInterface {
 	
-	private IntegerFlag min = new IntegerFlag(1, "min");
-	private IntegerFlag max = new IntegerFlag(5, "max");
+	private final IntegerProperty min = new IntegerProperty(1, "min");
+	private final IntegerProperty max = new IntegerProperty(5, "max");
+	
+	public PlayerCountCondition() {
+		properties.addProperty(min);
+		properties.addProperty(max);
+	}
 
 	@Override
 	public String getName() {
@@ -36,7 +42,7 @@ public class PlayerCountCondition extends ConditionInterface {
 
 	@Override
 	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-		if(region.getPlayers().size() >= min.getFlag() && region.getPlayers().size() <= max.getFlag())
+		if(region.getPlayers().size() >= min.getValue() && region.getPlayers().size() <= max.getValue())
 			return true;
 		return false;
 	}
@@ -48,23 +54,17 @@ public class PlayerCountCondition extends ConditionInterface {
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
-		min.saveValue(path, config);
-		max.saveValue(path, config);
-		saveInvert(config, path);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
-		min.loadValue(path, config);
-		max.saveValue(path, config);
-		loadInvert(config, path);
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Player Count");
-		m.addItem(min.getMenuItem("Min Player Count", Material.STEP, 1, Integer.MAX_VALUE));
-		m.addItem(max.getMenuItem("Max Player Count", Material.STONE, 1, Integer.MAX_VALUE));
+		m.addItem(new MenuItemInteger("Min Player Count", Material.STEP, min, 1, Integer.MAX_VALUE));
+		m.addItem(new MenuItemInteger("Max Player Count", Material.STONE, max, 1, Integer.MAX_VALUE));
 		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;

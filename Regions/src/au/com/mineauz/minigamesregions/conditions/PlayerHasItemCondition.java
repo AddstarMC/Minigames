@@ -6,20 +6,29 @@ import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBoolean;
+import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemString;
+import au.com.mineauz.minigames.menu.MenuItemValue;
+import au.com.mineauz.minigames.menu.MenuItemValue.IMenuItemChange;
+import au.com.mineauz.minigames.properties.types.BooleanProperty;
+import au.com.mineauz.minigames.properties.types.IntegerProperty;
+import au.com.mineauz.minigames.properties.types.StringProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class PlayerHasItemCondition extends ConditionInterface {
 	
-	private StringFlag type = new StringFlag("STONE", "type");
-	private BooleanFlag useData = new BooleanFlag(false, "usedata");
-	private IntegerFlag data = new IntegerFlag(0, "data");
+	private final StringProperty type = new StringProperty("STONE", "type"); // TODO: Change to enum property of Material
+	private final BooleanProperty useData = new BooleanProperty(false, "usedata");
+	private final IntegerProperty data = new IntegerProperty(0, "data");
+	
+	public PlayerHasItemCondition() {
+		properties.addProperty(type);
+		properties.addProperty(useData);
+		properties.addProperty(data);
+	}
 
 	@Override
 	public String getName() {
@@ -52,9 +61,9 @@ public class PlayerHasItemCondition extends ConditionInterface {
 	}
 	
 	private boolean check(MinigamePlayer player){
-		if(player.getPlayer().getInventory().contains(Material.getMaterial(type.getFlag()))){
-			if(useData.getFlag()){
-				short dam = data.getFlag().shortValue();
+		if(player.getPlayer().getInventory().contains(Material.getMaterial(type.getValue()))){
+			if(useData.getValue()){
+				short dam = data.getValue().shortValue();
 				for(ItemStack i : player.getPlayer().getInventory().getContents()){
 					if(i != null && i.getDurability() == dam){
 						return true;
@@ -69,41 +78,30 @@ public class PlayerHasItemCondition extends ConditionInterface {
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
-		type.saveValue(path, config);
-		useData.saveValue(path, config);
-		data.saveValue(path, config);
-		saveInvert(config, path);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
-		type.loadValue(path, config);
-		useData.loadValue(path, config);
-		data.loadValue(path, config);
-		loadInvert(config, path);
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Player Has Item");
-		final MinigamePlayer fply = player;
-		m.addItem(new MenuItemString("Item", Material.STONE, new Callback<String>() {
-			
+		MenuItemString typeItem = new MenuItemString("Item", Material.STONE, type);
+		
+		typeItem.setChangeHandler(new IMenuItemChange<String>() {
 			@Override
-			public void setValue(String value) {
-				if(Material.getMaterial(value.toUpperCase()) != null)
-					type.setFlag(value.toUpperCase());
-				else
-					fply.sendMessage("Invalid Item!", MessageType.Error);
+			public void onChange(MenuItemValue<String> menuItem, MinigamePlayer player, String previous, String current) {
+				if (Material.getMaterial(current.toUpperCase()) == null) {
+					type.setValue(previous);
+					player.sendMessage("Invalid Item!", MessageType.Error);
+				}
 			}
-			
-			@Override
-			public String getValue() {
-				return type.getFlag();
-			}
-		}));
-		m.addItem(useData.getMenuItem("Match Item Data", Material.ENDER_PEARL));
-		m.addItem(data.getMenuItem("Data Value", Material.EYE_OF_ENDER, 0, Integer.MAX_VALUE));
+		});
+		
+		m.addItem(typeItem);
+		m.addItem(new MenuItemBoolean("Match Item Data", Material.ENDER_PEARL, useData));
+		m.addItem(new MenuItemInteger("Data Value", Material.EYE_OF_ENDER, data, 0, Integer.MAX_VALUE));
 		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;

@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Material;
@@ -11,6 +10,8 @@ import com.google.common.collect.Lists;
 
 import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.properties.ChangeListener;
+import au.com.mineauz.minigames.properties.ObservableValue;
 
 /**
  * A specification of MenuItem that deals with MenuItems that have changeable values.
@@ -19,33 +20,34 @@ import au.com.mineauz.minigames.MinigamePlayer;
  * @param <T> The values type
  */
 public abstract class MenuItemValue<T> extends MenuItem {
-
 	private IMenuItemChange<T> changeCallback;
-	private final Callback<T> valueCallback;
+	private final ObservableValue<T> valueCallback;
 	private List<String> baseDescription;
 	
-	public MenuItemValue(String name, MaterialData displayItem, Callback<T> callback) {
-		super(name, displayItem);
-		baseDescription = Collections.emptyList();
-		valueCallback = callback;
-		updateDescription();
+	public MenuItemValue(String name, Material displayItem, ObservableValue<T> observable) {
+		this(name, "", displayItem.getNewData((byte)0), observable);
 	}
-	public MenuItemValue(String name, String description, Material displayItem, Callback<T> callback) {
+	
+	public MenuItemValue(String name, String description, Material displayItem, ObservableValue<T> observable) {
+		this(name, description, displayItem.getNewData((byte)0), observable);
+	}
+	
+	public MenuItemValue(String name, MaterialData displayItem, ObservableValue<T> observable) {
+		this(name, "", displayItem, observable);
+	}
+	
+	public MenuItemValue(String name, String description, MaterialData displayItem, ObservableValue<T> observable) {
 		super(name, description, displayItem);
 		baseDescription = getDescription();
-		valueCallback = callback;
-		updateDescription();
-	}
-	public MenuItemValue(String name, Material displayItem, Callback<T> callback) {
-		super(name, null, displayItem);
-		baseDescription = Collections.emptyList();
-		valueCallback = callback;
-		updateDescription();
-	}
-	public MenuItemValue(String name, String description, MaterialData displayItem, Callback<T> callback) {
-		super(name, description, displayItem);
-		baseDescription = getDescription();
-		valueCallback = callback;
+		valueCallback = observable;
+		
+		observable.addListener(new ChangeListener<T>() {
+			@Override
+			public void onValueChange(ObservableValue<? extends T> observable, T oldValue, T newValue) {
+				updateDescription();
+			}
+		});
+		
 		updateDescription();
 	}
 	

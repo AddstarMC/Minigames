@@ -10,7 +10,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.TeamColor;
+import au.com.mineauz.minigames.minigame.TeamSelection;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class SetDefaultWinnerCommand implements ICommand {
@@ -60,18 +60,12 @@ public class SetDefaultWinnerCommand implements ICommand {
 			String label, String[] args) {
 		TeamsModule module = minigame.getModule(TeamsModule.class);
 		if(args != null){
-			if(args[0].equalsIgnoreCase("none")){
-				module.setDefaultWinner(null);
-				sender.sendMessage(ChatColor.GRAY + "The default winner of " + minigame + " has been set to none.");
-			}
-			else{
-				if(module.hasTeam(TeamColor.matchColor(args[0]))){
-					module.setDefaultWinner(TeamColor.matchColor(args[0]));
-					sender.sendMessage(ChatColor.GRAY + "The default winner of " + minigame + " has been set to " + args[0] + ".");
-				}
-				else{
-					sender.sendMessage(ChatColor.RED + "There is no team for the color " + args[0]);
-				}
+			TeamSelection selection = TeamSelection.valueOf(args[0].toUpperCase());
+			if (selection != null) {
+				module.setDefaultWinner(selection);
+				sender.sendMessage(ChatColor.GRAY + "The default winner of " + minigame + " has been set to " + selection.name().toLowerCase() + ".");
+			} else {
+				sender.sendMessage(ChatColor.RED + "There is no team for the color " + args[0]);
 			}
 			return true;
 		}

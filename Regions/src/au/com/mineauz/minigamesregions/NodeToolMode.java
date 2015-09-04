@@ -10,7 +10,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItem.IMenuItemClick;
@@ -48,18 +47,7 @@ public class NodeToolMode implements ToolMode {
 		tool.addSetting("Node", "None");
 		final Menu m = new Menu(2, "Node Selection");
 		final MinigameTool ftool = tool;
-		m.addItem(new MenuItemString("Node Name", Material.PAPER, new Callback<String>() {
-			
-			@Override
-			public void setValue(String value) {
-				ftool.changeSetting("Node", value);
-			}
-			
-			@Override
-			public String getValue() {
-				return ftool.getSetting("Node");
-			}
-		}));
+		m.addItem(new MenuItemString("Node Name", Material.PAPER, tool.getSettingProperty("Node")));
 		
 		if (tool.getMinigame() != null) {
 			// Node selection menu

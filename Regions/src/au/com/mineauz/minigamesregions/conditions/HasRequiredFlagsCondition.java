@@ -50,12 +50,10 @@ public class HasRequiredFlagsCondition extends ConditionInterface {
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
-		saveInvert(config, path);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
-		loadInvert(config, path);
 	}
 
 	@Override

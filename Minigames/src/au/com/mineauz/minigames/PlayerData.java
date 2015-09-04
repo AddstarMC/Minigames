@@ -406,7 +406,7 @@ public class PlayerData {
 						if(winners.size() > 0)
 							team = winners.get(0).getTeam();
 						else
-							team = teamsModule.getTeam(teamsModule.getDefaultWinner());
+							team = teamsModule.getTeam(teamsModule.getDefaultWinner().getTeam());
 						String score = "";
 						List<Team> teams = minigame.getModule(TeamsModule.class).getTeams();
 						for(Team t : teams){

@@ -4,10 +4,17 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public abstract class ActionInterface {
+	protected final ConfigPropertyContainer properties;
+	
+	public ActionInterface() {
+		properties = new ConfigPropertyContainer();
+	}
+	
 	public abstract String getName();
 	public abstract String getCategory();
 	public abstract boolean useInRegions();
@@ -17,4 +24,8 @@ public abstract class ActionInterface {
 	public abstract void saveArguments(FileConfiguration config, String path);
 	public abstract void loadArguments(FileConfiguration config, String path);
 	public abstract boolean displayMenu(MinigamePlayer player, Menu previous);
+	
+	public final ConfigPropertyContainer getProperties() {
+		return properties;
+	}
 }

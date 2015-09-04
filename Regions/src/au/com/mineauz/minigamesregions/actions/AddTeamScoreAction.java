@@ -8,20 +8,25 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.properties.types.IntegerProperty;
+import au.com.mineauz.minigames.properties.types.StringProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class AddTeamScoreAction extends ActionInterface {
 	
-	private IntegerFlag score = new IntegerFlag(1, "amount");
-	private StringFlag team = new StringFlag("NONE", "team");
+	private final IntegerProperty score = new IntegerProperty(1, "amount");
+	private final StringProperty team = new StringProperty("NONE", "team"); // TODO: Make this an enum property on TeamSelection
+	
+	public AddTeamScoreAction() {
+		properties.addProperty(score);
+		properties.addProperty(team);
+	}
 
 	@Override
 	public String getName() {
@@ -57,53 +62,36 @@ public class AddTeamScoreAction extends ActionInterface {
 	
 	private void executeAction(MinigamePlayer player){
 		if(player == null || !player.isInMinigame()) return;
-		if(player.getTeam() != null && team.getFlag().equals("NONE")){
-			player.getTeam().addScore(score.getFlag());
+		if(player.getTeam() != null && team.getValue().equals("NONE")){
+			player.getTeam().addScore(score.getValue());
 		}
-		else if(!team.getFlag().equals("NONE")){
+		else if(!team.getValue().equals("NONE")){
 			TeamsModule tm = player.getMinigame().getModule(TeamsModule.class);
-			if(tm.hasTeam(TeamColor.valueOf(team.getFlag()))){
-				tm.getTeam(TeamColor.valueOf(team.getFlag())).addScore(score.getFlag());
+			if(tm.hasTeam(TeamColor.valueOf(team.getValue()))){
+				tm.getTeam(TeamColor.valueOf(team.getValue())).addScore(score.getValue());
 			}
 		}
 	}
 
 	@Override
-	public void saveArguments(FileConfiguration config,
-			String path) {
-		score.saveValue(path, config);
-		team.saveValue(path, config);
+	public void saveArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
-	public void loadArguments(FileConfiguration config,
-			String path) {
-		score.loadValue(path, config);
-		team.loadValue(path, config);
+	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Add Team Score");
-		m.addItem(score.getMenuItem("Add Score Amount", Material.STONE, Integer.MIN_VALUE, Integer.MAX_VALUE));
+		m.addItem(new MenuItemInteger("Add Score Amount", Material.STONE, score, Integer.MIN_VALUE, Integer.MAX_VALUE));
 		
 		List<String> teams = new ArrayList<String>();
 		teams.add("None");
 		for(TeamColor team : TeamColor.values()){
 			teams.add(MinigameUtils.capitalize(team.toString()));
 		}
-		m.addItem(new MenuItemList("Specific Team", "If 'None', the players;team will be used", Material.PAPER, new Callback<String>() {
-
-			@Override
-			public void setValue(String value) {
-				team.setFlag(value.toUpperCase());;
-			}
-
-			@Override
-			public String getValue() {
-				return MinigameUtils.capitalize(team.getFlag());
-			}
-		}, teams));
+		m.addItem(new MenuItemList("Specific Team", "If 'None', the players;team will be used", Material.PAPER, team, teams));
 		m.displayMenu(player);
 		return true;
 	}

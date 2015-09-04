@@ -4,9 +4,10 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.properties.types.StringProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionModule;
@@ -14,7 +15,11 @@ import au.com.mineauz.minigamesregions.triggers.Triggers;
 
 public class TriggerRegionAction extends ActionInterface {
 	
-	private StringFlag region = new StringFlag("None", "region");
+	private final StringProperty region = new StringProperty("None", "region");
+	
+	public TriggerRegionAction() {
+		properties.addProperty(region);
+	}
 
 	@Override
 	public String getName() {
@@ -43,8 +48,8 @@ public class TriggerRegionAction extends ActionInterface {
 		Minigame mg = player.getMinigame();
 		if(mg != null){
 			RegionModule rmod = mg.getModule(RegionModule.class);
-			if(rmod.hasRegion(this.region.getFlag()))
-				rmod.getRegion(this.region.getFlag()).execute(Triggers.getTrigger("REMOTE"), player);
+			if(rmod.hasRegion(this.region.getValue()))
+				rmod.getRegion(this.region.getValue()).execute(Triggers.getTrigger("REMOTE"), player);
 		}
 	}
 
@@ -54,27 +59,23 @@ public class TriggerRegionAction extends ActionInterface {
 		Minigame mg = player.getMinigame();
 		if(mg != null){
 			RegionModule rmod = mg.getModule(RegionModule.class);
-			if(rmod.hasRegion(region.getFlag()))
-				rmod.getRegion(region.getFlag()).execute(Triggers.getTrigger("REMOTE"), player);
+			if(rmod.hasRegion(region.getValue()))
+				rmod.getRegion(region.getValue()).execute(Triggers.getTrigger("REMOTE"), player);
 		}
 	}
 
 	@Override
-	public void saveArguments(FileConfiguration config,
-			String path) {
-		region.saveValue(path, config);
+	public void saveArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
-	public void loadArguments(FileConfiguration config,
-			String path) {
-		region.loadValue(path, config);
+	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Trigger Node");
-		m.addItem(region.getMenuItem("Region Name", Material.EYE_OF_ENDER));
+		m.addItem(new MenuItemString("Region Name", Material.EYE_OF_ENDER, region));
 		m.displayMenu(player);
 		return true;
 	}

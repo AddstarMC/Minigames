@@ -13,23 +13,26 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.google.common.collect.Maps;
+
 import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.PlayerLoadout;
-import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.LoadoutSetFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemDisplayLoadout;
 import au.com.mineauz.minigames.menu.MenuItemLoadoutAdd;
 import au.com.mineauz.minigames.menu.MenuItem.IMenuItemClick;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.TeamSelection;
+import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
+import au.com.mineauz.minigames.properties.types.LoadoutSetProperty;
 
 public class LoadoutModule extends MinigameModule {
 
+	private final ConfigPropertyContainer properties = new ConfigPropertyContainer();
 	private Map<String, PlayerLoadout> extraLoadouts = new HashMap<String, PlayerLoadout>();
-	private LoadoutSetFlag loadoutsFlag = new LoadoutSetFlag(extraLoadouts, "loadouts");
+	private final LoadoutSetProperty loadoutsFlag = new LoadoutSetProperty(extraLoadouts, "loadouts");
 	private static Map<Class<? extends LoadoutAddon>, LoadoutAddon<?>> addons = Maps.newHashMap();
 	
 	public LoadoutModule(Minigame mgm) {
@@ -37,6 +40,8 @@ public class LoadoutModule extends MinigameModule {
 		PlayerLoadout def = new PlayerLoadout("default");
 		def.setDeleteable(false);
 		extraLoadouts.put("default", def);
+		
+		properties.addProperty(loadoutsFlag);
 	}
 
 	@Override
@@ -45,10 +50,8 @@ public class LoadoutModule extends MinigameModule {
 	}
 	
 	@Override
-	public Map<String, Flag<?>> getFlags(){
-		Map<String, Flag<?>> flags = new HashMap<String, Flag<?>>();
-		flags.put(loadoutsFlag.getName(), loadoutsFlag);
-		return flags;
+	public ConfigPropertyContainer getProperties() {
+		return properties;
 	}
 	
 	@Override
@@ -248,9 +251,9 @@ public class LoadoutModule extends MinigameModule {
 		
 		for(PlayerLoadout loadout : extraLoadouts.values()){
 			if(loadout.isDisplayedInMenu()){
-				if(!loadout.getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + loadout.getName(false).toLowerCase())){
-					if(!player.getMinigame().isTeamGame() || loadout.getTeamColor() == null || 
-							player.getTeam().getColor() == loadout.getTeamColor()){
+				if(!loadout.getUsePermissions() || player.getPlayer().hasPermission("minigame.lonulladout." + loadout.getName(false).toLowerCase())){
+					if(!player.getMinigame().isTeamGame() || loadout.getTeamColor() == TeamSelection.NONE || 
+							player.getTeam().getColor() == loadout.getTeamColor().getTeam()){
 						MenuItem c = new MenuItem(loadout.getName(true), Material.GLASS);
 						if(!loadout.getItems().isEmpty())
 							c.setItem(loadout.getItem(new ArrayList<Integer>(loadout.getItems()).get(0)));

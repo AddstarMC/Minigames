@@ -13,27 +13,28 @@ import com.google.common.collect.Lists;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.properties.ObservableValue;
 
 public class MenuItemEnum<T extends Enum<T>> extends MenuItemValue<T> {
 	
 	private List<T> enumList;
 	
-	public MenuItemEnum(String name, MaterialData displayItem, Callback<T> callback, Class<T> enumClass) {
+	public MenuItemEnum(String name, MaterialData displayItem, ObservableValue<T> callback, Class<T> enumClass) {
 		super(name, displayItem, callback);
 		enumList = Lists.newArrayList(EnumSet.allOf(enumClass));
 		updateDescription();
 	}
-	public MenuItemEnum(String name, String description, Material displayItem, Callback<T> callback, Class<T> enumClass) {
+	public MenuItemEnum(String name, String description, Material displayItem, ObservableValue<T> callback, Class<T> enumClass) {
 		super(name, description, displayItem, callback);
 		enumList = Lists.newArrayList(EnumSet.allOf(enumClass));
 		updateDescription();
 	}
-	public MenuItemEnum(String name, Material displayItem, Callback<T> callback, Class<T> enumClass) {
+	public MenuItemEnum(String name, Material displayItem, ObservableValue<T> callback, Class<T> enumClass) {
 		super(name, null, displayItem, callback);
 		enumList = Lists.newArrayList(EnumSet.allOf(enumClass));
 		updateDescription();
 	}
-	public MenuItemEnum(String name, String description, MaterialData displayItem, Callback<T> callback, Class<T> enumClass) {
+	public MenuItemEnum(String name, String description, MaterialData displayItem, ObservableValue<T> callback, Class<T> enumClass) {
 		super(name, description, displayItem, callback);
 		enumList = Lists.newArrayList(EnumSet.allOf(enumClass));
 		updateDescription();

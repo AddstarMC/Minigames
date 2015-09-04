@@ -8,27 +8,28 @@ import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.properties.ObservableValue;
 
 public class MenuItemInteger extends MenuItemValue<Integer> {
 	private int min;
 	private int max;
 	
-	public MenuItemInteger(String name, MaterialData displayItem, Callback<Integer> callback, int min, int max) {
+	public MenuItemInteger(String name, MaterialData displayItem, ObservableValue<Integer> callback, int min, int max) {
 		super(name, displayItem, callback);
 		this.min = min;
 		this.max = max;
 	}
-	public MenuItemInteger(String name, String description, Material displayItem, Callback<Integer> callback, int min, int max) {
+	public MenuItemInteger(String name, String description, Material displayItem, ObservableValue<Integer> callback, int min, int max) {
 		super(name, description, displayItem, callback);
 		this.min = min;
 		this.max = max;
 	}
-	public MenuItemInteger(String name, Material displayItem, Callback<Integer> callback, int min, int max) {
+	public MenuItemInteger(String name, Material displayItem, ObservableValue<Integer> callback, int min, int max) {
 		super(name, null, displayItem, callback);
 		this.min = min;
 		this.max = max;
 	}
-	public MenuItemInteger(String name, String description, MaterialData displayItem, Callback<Integer> callback, int min, int max) {
+	public MenuItemInteger(String name, String description, MaterialData displayItem, ObservableValue<Integer> callback, int min, int max) {
 		super(name, description, displayItem, callback);
 		this.min = min;
 		this.max = max;

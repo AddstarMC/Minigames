@@ -10,10 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.config.TeamSetFlag;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemAddTeam;
@@ -25,16 +22,26 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.TeamSelection;
+import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
+import au.com.mineauz.minigames.properties.types.EnumProperty;
 
 public class TeamsModule extends MinigameModule {
 	private Map<TeamColor, Team> teams = new HashMap<TeamColor, Team>();
-	private TeamSetFlag teamsFlag;
-	private StringFlag defaultWinner = new StringFlag(null, "defaultwinner");
+	
+	private final ConfigPropertyContainer properties;
+	private final TeamSetFlag teamsFlag;
+	private final EnumProperty<TeamSelection> defaultWinner = new EnumProperty<TeamSelection>(TeamSelection.NONE, "defaultwinner");
 	
 	public TeamsModule(Minigame mgm){
 		super(mgm);
+		
+		properties = new ConfigPropertyContainer();
+		
 		teamsFlag = new TeamSetFlag(null, "teams", getMinigame());
-		teamsFlag.setFlag(teams);
+		teamsFlag.setValue(teams);
+		
+		properties.addProperty(teamsFlag);
+		properties.addProperty(defaultWinner);
 	}
 
 	@Override
@@ -43,11 +50,8 @@ public class TeamsModule extends MinigameModule {
 	}
 	
 	@Override
-	public Map<String, Flag<?>> getFlags(){
-		Map<String, Flag<?>> flags = new HashMap<String, Flag<?>>();
-		flags.put(teamsFlag.getName(), teamsFlag);
-		flags.put(defaultWinner.getName(), defaultWinner);
-		return flags;
+	public ConfigPropertyContainer getProperties() {
+		return properties;
 	}
 	
 	@Override
@@ -144,47 +148,21 @@ public class TeamsModule extends MinigameModule {
 		return true;
 	}
 	
-	public Callback<TeamSelection> getDefaultWinnerCallback(){
-		// TODO: Make the flag an enum flag
-		return new Callback<TeamSelection>() {
-
-			@Override
-			public void setValue(TeamSelection value) {
-				if (value == TeamSelection.NONE) {
-					defaultWinner.setFlag(null);
-				} else {
-					defaultWinner.setFlag(value.name());
-				}
-			}
-
-			@Override
-			public TeamSelection getValue() {
-				if(defaultWinner.getFlag() != null)
-					return TeamSelection.valueOf(defaultWinner.getFlag());
-				return TeamSelection.NONE;
-			}
-		};
-	}
-
-	public void setDefaultWinner(TeamColor defaultWinner) {
-		this.defaultWinner.setFlag(defaultWinner.toString());
+	public void setDefaultWinner(TeamSelection defaultWinner) {
+		this.defaultWinner.setValue(defaultWinner);
 	}
 	
-	public TeamColor getDefaultWinner() {
-		if(defaultWinner.getFlag() != null) {
-			TeamColor team = TeamColor.matchColor(defaultWinner.getFlag());
-			if (!teams.containsKey(team)) {
-				return null;
-			} else {
-				return team;
-			}
-		}
-		return null;
+	public TeamSelection getDefaultWinner() {
+		return defaultWinner.getValue();
+	}
+	
+	public EnumProperty<TeamSelection> defaultWinner() {
+		return defaultWinner;
 	}
 	
 	public void clearTeams(){
 		teams.clear();
-		defaultWinner = null;
+		defaultWinner.setValue(TeamSelection.NONE);
 	}
 	
 	@Override
@@ -192,7 +170,7 @@ public class TeamsModule extends MinigameModule {
 		Menu m = new Menu(6, "Teams");
 
 		List<MenuItem> items = new ArrayList<MenuItem>();
-		final MenuItemEnum<TeamSelection> defaultWinnerItem = new MenuItemEnum<TeamSelection>("Default Winning Team", Material.PAPER, getDefaultWinnerCallback(), TeamSelection.class);
+		final MenuItemEnum<TeamSelection> defaultWinnerItem = new MenuItemEnum<TeamSelection>("Default Winning Team", Material.PAPER, defaultWinner, TeamSelection.class);
 		
 		items.add(defaultWinnerItem);
 		items.add(new MenuItemNewLine());

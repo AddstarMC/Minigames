@@ -24,4 +24,23 @@ public enum TeamSelection {
 	public TeamColor getTeam() {
 		return team;
 	}
+	
+	public static TeamSelection from(TeamColor color) {
+		for (TeamSelection selection : values()) {
+			if (selection.getTeam() == color) {
+				return selection;
+			}
+		}
+		
+		return NONE;
+	}
+	
+	public static TeamSelection from(String name) {
+		TeamSelection team = valueOf(name.toUpperCase());
+		if (team != null) {
+			return team;
+		}
+		
+		return NONE;
+	}
 }

@@ -6,7 +6,6 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.scoreboard.NameTagVisibility;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
@@ -61,45 +60,13 @@ public class MenuItemTeam extends MenuItem{
 	@Override
 	public void onClick(MinigamePlayer player){
 		Menu m = new Menu(3, getName());
-		m.addItem(new MenuItemString("Display Name", Material.NAME_TAG, new Callback<String>() {
-			
-			@Override
-			public void setValue(String value) {
-				team.setDisplayName(value);
-			}
-			
-			@Override
-			public String getValue() {
-				return team.getDisplayName();
-			}
-		}));
-		m.addItem(new MenuItemInteger("Max Players", Material.STONE, new Callback<Integer>() {
-			
-			@Override
-			public void setValue(Integer value) {
-				team.setMaxPlayers(value);
-			}
-			
-			@Override
-			public Integer getValue() {
-				return team.getMaxPlayers();
-			}
-		}, 0, Integer.MAX_VALUE));
-		for(Flag<?> flag : team.getFlags()){
-			if(flag.getName().equals("assignMsg")){
-				m.addItem(flag.getMenuItem("Join Team Message", "Message sent to player;when they join;the team.;Use %s for team name", Material.PAPER));
-			}
-			else if(flag.getName().equals("gameAssignMsg")){
-				m.addItem(flag.getMenuItem("Join Team Broadcast Message", "Message sent to all players;when someone joins;a team.;Use %s for team/player name", Material.PAPER));
-			}
-			else if(flag.getName().equals("autobalanceMsg")){
-				m.addItem(flag.getMenuItem("Autobalance Message", "Message sent to player;when they are;autobalanced.;Use %s for team name", Material.PAPER));
-			}
-			else if(flag.getName().equals("gameAutobalanceMsg")){
-				m.addItem(flag.getMenuItem("Autobalance Broadcast Message", "Message sent to all players;when someone is;autobalanced.;Use %s for team/player name", Material.PAPER));
-			}
-		}
-		m.addItem(new MenuItemEnum<NameTagVisibility>("NameTag Visibility", Material.NAME_TAG, team.getNameTagVisibilityCallback(), NameTagVisibility.class));
+		m.addItem(new MenuItemString("Display Name", Material.NAME_TAG, team.displayName()));
+		m.addItem(new MenuItemInteger("Max Players", Material.STONE, team.maxPlayers(), 0, Integer.MAX_VALUE));
+		m.addItem(new MenuItemString("Join Team Message", "Message sent to player;when they join;the team.;Use %s for team name", Material.PAPER, team.assignMessage()));
+		m.addItem(new MenuItemString("Join Team Broadcast Message", "Message sent to all players;when someone joins;a team.;Use %s for team/player name", Material.PAPER, team.gameAssignMessage()));
+		m.addItem(new MenuItemString("Autobalance Message", "Message sent to player;when they are;autobalanced.;Use %s for team name", Material.PAPER, team.autobalanceMessage()));
+		m.addItem(new MenuItemString("Autobalance Broadcast Message", "Message sent to all players;when someone is;autobalanced.;Use %s for team/player name", Material.PAPER, team.gameAutobalanceMessage()));
+		m.addItem(new MenuItemEnum<NameTagVisibility>("NameTag Visibility", Material.NAME_TAG, team.nameTagVisibility(), NameTagVisibility.class));
 		
 		m.displayMenu(player);
 	}

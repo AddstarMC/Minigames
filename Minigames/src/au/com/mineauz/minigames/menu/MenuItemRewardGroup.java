@@ -18,7 +18,7 @@ public class MenuItemRewardGroup extends MenuItemEnum<RewardRarity> implements I
 	private Rewards rewards;
 
 	public MenuItemRewardGroup(String name, Material displayItem, RewardGroup group, Rewards rewards) {
-		super(name, "Double Click to edit;Shift + Right click to remove", displayItem, group.getRarityCallback(), RewardRarity.class);
+		super(name, "Double Click to edit;Shift + Right click to remove", displayItem, group.getRarityPropery(), RewardRarity.class);
 		this.group = group;
 		this.rewards = rewards;
 		

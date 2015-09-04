@@ -1,34 +1,43 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.LocationFlag;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBoolean;
+import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.menu.MenuItemSubMenu;
 import au.com.mineauz.minigames.menu.MenuItemTime;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
+import au.com.mineauz.minigames.properties.types.BooleanProperty;
+import au.com.mineauz.minigames.properties.types.IntegerProperty;
+import au.com.mineauz.minigames.properties.types.LocationProperty;
 
 public class MultiplayerModule extends MinigameModule {
 
-	private IntegerFlag minPlayers = new IntegerFlag(2, "minplayers");
-	private IntegerFlag maxPlayers = new IntegerFlag(4, "maxplayers");
-	private LocationFlag lobbyPosisiton = new LocationFlag(null, "lobbypos");
-	private IntegerFlag timer = new IntegerFlag(0, "timer");
-	private BooleanFlag useXPBarTimer = new BooleanFlag(true, "useXPBarTimer");
-	private IntegerFlag startWaitTime = new IntegerFlag(0, "startWaitTime");
-	private BooleanFlag lateJoin = new BooleanFlag(false, "latejoin");
+	private final ConfigPropertyContainer properties;
+	private final IntegerProperty minPlayers = new IntegerProperty(2, "minplayers");
+	private final IntegerProperty maxPlayers = new IntegerProperty(4, "maxplayers");
+	private final LocationProperty lobbyPosisiton = new LocationProperty(null, "lobbypos");
+	private final IntegerProperty timer = new IntegerProperty(0, "timer");
+	private final BooleanProperty useXPBarTimer = new BooleanProperty(true, "useXPBarTimer");
+	private final IntegerProperty startWaitTime = new IntegerProperty(0, "startWaitTime");
+	private final BooleanProperty lateJoin = new BooleanProperty(false, "latejoin");
 	
 	public MultiplayerModule(Minigame mgm) {
 		super(mgm);
+		
+		properties = new ConfigPropertyContainer();
+		properties.addProperty(minPlayers);
+		properties.addProperty(maxPlayers);
+		properties.addProperty(lobbyPosisiton);
+		properties.addProperty(timer);
+		properties.addProperty(useXPBarTimer);
+		properties.addProperty(startWaitTime);
+		properties.addProperty(lateJoin);
 	}
 
 	@Override
@@ -37,72 +46,64 @@ public class MultiplayerModule extends MinigameModule {
 	}
 
 	@Override
-	public Map<String, Flag<?>> getFlags() {
-		Map<String, Flag<?>> flags = new HashMap<String, Flag<?>>();
-		flags.put(minPlayers.getName(), minPlayers);
-		flags.put(maxPlayers.getName(), maxPlayers);
-		flags.put(lobbyPosisiton.getName(), lobbyPosisiton);
-		flags.put(timer.getName(), timer);
-		flags.put(useXPBarTimer.getName(), useXPBarTimer);
-		flags.put(startWaitTime.getName(), startWaitTime);
-		flags.put(lateJoin.getName(), lateJoin);
-		return flags;
+	public ConfigPropertyContainer getProperties() {
+		return properties;
 	}
 	
 	public int getMinPlayers(){
-		return minPlayers.getFlag();
+		return minPlayers.getValue();
 	}
 
 	public void setMinPlayers(int minPlayers){
-		this.minPlayers.setFlag(minPlayers);
+		this.minPlayers.setValue(minPlayers);
 	}
 	
 	public int getMaxPlayers(){
-		return maxPlayers.getFlag();
+		return maxPlayers.getValue();
 	}
 
 	public void setMaxPlayers(int maxPlayers){
-		this.maxPlayers.setFlag(maxPlayers);
+		this.maxPlayers.setValue(maxPlayers);
 	}
 	
 	public Location getLobbyPosition(){
-		return lobbyPosisiton.getFlag();
+		return lobbyPosisiton.getValue();
 	}
 
 	public void setLobbyPosition(Location lobbyPosisiton){
-		this.lobbyPosisiton.setFlag(lobbyPosisiton);
+		this.lobbyPosisiton.setValue(lobbyPosisiton);
 	}
 	
 	public void setTimer(int time){
-		timer.setFlag(time);
+		timer.setValue(time);
 	}
 	
 	public int getTimer(){
-		return timer.getFlag();
+		return timer.getValue();
 	}
 
 	public boolean isUsingXPBarTimer() {
-		return useXPBarTimer.getFlag();
+		return useXPBarTimer.getValue();
 	}
 
 	public void setUseXPBarTimer(boolean useXPBarTimer) {
-		this.useXPBarTimer.setFlag(useXPBarTimer);
+		this.useXPBarTimer.setValue(useXPBarTimer);
 	}
 
 	public int getStartWaitTime() {
-		return startWaitTime.getFlag();
+		return startWaitTime.getValue();
 	}
 
 	public void setStartWaitTime(int startWaitTime) {
-		this.startWaitTime.setFlag(startWaitTime);
+		this.startWaitTime.setValue(startWaitTime);
 	}
 	
 	public boolean canLateJoin() {
-		return lateJoin.getFlag();
+		return lateJoin.getValue();
 	}
 
 	public void setLateJoin(boolean lateJoin) {
-		this.lateJoin.setFlag(lateJoin);
+		this.lateJoin.setValue(lateJoin);
 	}
 
 	@Override
@@ -119,14 +120,14 @@ public class MultiplayerModule extends MinigameModule {
 	}
 
 	public void addGameTypeMenuItems(Menu menu) {
-		menu.addItem(minPlayers.getMenuItem("Min. Players", Material.STEP));
-		menu.addItem(maxPlayers.getMenuItem("Max. Players", Material.STONE));
+		menu.addItem(new MenuItemInteger("Min. Players", Material.STEP, minPlayers, 0, Integer.MAX_VALUE));
+		menu.addItem(new MenuItemInteger("Max. Players", Material.STONE, maxPlayers, 0, Integer.MAX_VALUE));
 		
 		menu.addItem(new MenuItemSubMenu("Lobby Settings", Material.WOOD_DOOR, getMinigame().getModule(LobbySettingsModule.class).createSettingsMenu()));
 		menu.addItem(new MenuItemNewLine());
-		menu.addItem(new MenuItemTime("Time Length", Material.WATCH, timer.getCallback(), 0, Integer.MAX_VALUE));
-		menu.addItem(useXPBarTimer.getMenuItem("Use XP bar as Timer", Material.ENDER_PEARL));
-		menu.addItem(new MenuItemTime("Start Wait Time", Material.WATCH, startWaitTime.getCallback(), 3, Integer.MAX_VALUE));
-		menu.addItem(lateJoin.getMenuItem("Allow Late Join", Material.DEAD_BUSH));
+		menu.addItem(new MenuItemTime("Time Length", Material.WATCH, timer, 0, Integer.MAX_VALUE));
+		menu.addItem(new MenuItemBoolean("Use XP bar as Timer", Material.ENDER_PEARL, useXPBarTimer));
+		menu.addItem(new MenuItemTime("Start Wait Time", Material.WATCH, startWaitTime, 3, Integer.MAX_VALUE));
+		menu.addItem(new MenuItemBoolean("Allow Late Join", Material.DEAD_BUSH, lateJoin));
 	}
 }

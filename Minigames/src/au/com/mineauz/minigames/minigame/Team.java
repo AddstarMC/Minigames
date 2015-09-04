@@ -1,9 +1,7 @@
 package au.com.mineauz.minigames.minigame;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -12,23 +10,28 @@ import org.bukkit.scoreboard.NameTagVisibility;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.EnumFlag;
-import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.properties.AbstractProperty;
+import au.com.mineauz.minigames.properties.ChangeListener;
+import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
+import au.com.mineauz.minigames.properties.ObservableValue;
+import au.com.mineauz.minigames.properties.Property;
+import au.com.mineauz.minigames.properties.types.EnumProperty;
+import au.com.mineauz.minigames.properties.types.IntegerProperty;
+import au.com.mineauz.minigames.properties.types.StringProperty;
 
 public class Team {
 	private String displayName = null;
 	private TeamColor color;
-	private IntegerFlag maxPlayers = new IntegerFlag(0, "maxPlayers");
-	private List<Location> startLocations = new ArrayList<Location>();
-	private StringFlag assignMsg = new StringFlag(MinigameUtils.getLang("player.team.assign.joinTeam"), "assignMsg");
-	private StringFlag gameAssignMsg = new StringFlag(MinigameUtils.getLang("player.team.assign.joinAnnounce"), "gameAssignMsg");
-	private StringFlag autobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.plyMsg"), "autobalanceMsg");
-	private StringFlag gameAutobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.minigameMsg"), "gameAutobalanceMsg");
-	private EnumFlag<NameTagVisibility> nametagVisibility = new EnumFlag<NameTagVisibility>(NameTagVisibility.ALWAYS, "nametagVisibility");
+	
+	private final ConfigPropertyContainer properties = new ConfigPropertyContainer();
+	private final IntegerProperty maxPlayers = new IntegerProperty(0, "maxPlayers");
+	private final List<Location> startLocations = new ArrayList<Location>();
+	private final StringProperty assignMsg = new StringProperty(MinigameUtils.getLang("player.team.assign.joinTeam"), "assignMsg");
+	private final StringProperty gameAssignMsg = new StringProperty(MinigameUtils.getLang("player.team.assign.joinAnnounce"), "gameAssignMsg");
+	private final StringProperty autobalanceMsg = new StringProperty(MinigameUtils.getLang("player.team.autobalance.plyMsg"), "autobalanceMsg");
+	private final StringProperty gameAutobalanceMsg = new StringProperty(MinigameUtils.getLang("player.team.autobalance.minigameMsg"), "gameAutobalanceMsg");
+	private final EnumProperty<NameTagVisibility> nametagVisibility = new EnumProperty<NameTagVisibility>(NameTagVisibility.ALWAYS, "nametagVisibility");
 	
 	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 	private int score = 0;
@@ -43,6 +46,20 @@ public class Team {
 		this.color = color;
 		displayName = MinigameUtils.capitalize(color.toString()) + " Team";
 		mgm = minigame;
+		
+		properties.addProperty(maxPlayers);
+		properties.addProperty(assignMsg);
+		properties.addProperty(gameAssignMsg);
+		properties.addProperty(autobalanceMsg);
+		properties.addProperty(gameAutobalanceMsg);
+		properties.addProperty(nametagVisibility);
+		
+		nametagVisibility.addListener(new ChangeListener<NameTagVisibility>() {
+			@Override
+			public void onValueChange(ObservableValue<? extends NameTagVisibility> observable, NameTagVisibility oldValue, NameTagVisibility newValue) {
+				mgm.getScoreboardManager().getTeam(Team.this.color.toString().toLowerCase()).setNameTagVisibility(newValue);
+			}
+		});
 	}
 	/**
 	 * Gets the teams Minigame
@@ -105,28 +122,38 @@ public class Team {
 		return displayName;
 	}
 	
-	public Set<Flag<?>> getFlags(){
-		Set<Flag<?>> flags = new HashSet<Flag<?>>();
-		flags.add(maxPlayers);
-		flags.add(assignMsg);
-		flags.add(gameAssignMsg);
-		flags.add(gameAutobalanceMsg);
-		flags.add(autobalanceMsg);
-		flags.add(nametagVisibility);
-		
-		return flags;
+	public Property<String> displayName() {
+		return new AbstractProperty<String>() {
+			@Override
+			public void setValue(String value) {
+				setDisplayName(value);
+			}
+			
+			@Override
+			public String getValue() {
+				return getDisplayName();
+			}
+		};
+	}
+	
+	public ConfigPropertyContainer getProperties() {
+		return properties;
 	}
 	
 	public int getMaxPlayers() {
-		return maxPlayers.getFlag();
+		return maxPlayers.getValue();
 	}
 	
 	public void setMaxPlayers(int maxPlayers) {
-		this.maxPlayers.setFlag(maxPlayers);
+		this.maxPlayers.setValue(maxPlayers);
+	}
+	
+	public Property<Integer> maxPlayers() {
+		return maxPlayers;
 	}
 	
 	public boolean isFull(){
-		if(maxPlayers.getFlag() != 0 && players.size() >= maxPlayers.getFlag())
+		if(maxPlayers.getValue() != 0 && players.size() >= maxPlayers.getValue())
 			return true;
 		return false;
 	}
@@ -256,59 +283,62 @@ public class Team {
 	}
 	
 	public String getAssignMessage(){
-		return assignMsg.getFlag();
+		return assignMsg.getValue();
 	}
 	
 	public void setAssignMessage(String msg){
-		assignMsg.setFlag(msg);
+		assignMsg.setValue(msg);
+	}
+	
+	public Property<String> assignMessage() {
+		return assignMsg;
 	}
 	
 	public String getGameAssignMessage(){
-		return gameAssignMsg.getFlag();
+		return gameAssignMsg.getValue();
 	}
 	
 	public void setGameAssignMessage(String msg){
-		gameAssignMsg.setFlag(msg);
+		gameAssignMsg.setValue(msg);
+	}
+	
+	public Property<String> gameAssignMessage() {
+		return gameAssignMsg;
 	}
 	
 	public String getAutobalanceMessage(){
-		return autobalanceMsg.getFlag();
+		return autobalanceMsg.getValue();
 	}
 	
 	public void setAutobalanceMessage(String msg){
-		autobalanceMsg.setFlag(msg);
+		autobalanceMsg.setValue(msg);
+	}
+	
+	public Property<String> autobalanceMessage() {
+		return autobalanceMsg;
 	}
 	
 	public String getGameAutobalanceMessage(){
-		return gameAutobalanceMsg.getFlag();
+		return gameAutobalanceMsg.getValue();
 	}
 	
 	public void setGameAutobalanceMessage(String msg){
-		gameAutobalanceMsg.setFlag(msg);
+		gameAutobalanceMsg.setValue(msg);
+	}
+	
+	public Property<String> gameAutobalanceMessage() {
+		return gameAutobalanceMsg;
 	}
 	
 	public NameTagVisibility getNameTagVisibility(){
-		return nametagVisibility.getFlag();
-	}
-	
-	public Callback<NameTagVisibility> getNameTagVisibilityCallback() {
-		return new Callback<NameTagVisibility>() {
-
-			@Override
-			public void setValue(NameTagVisibility value) {
-				nametagVisibility.setFlag(value);
-				mgm.getScoreboardManager().getTeam(color.toString().toLowerCase()).setNameTagVisibility(value);
-			}
-
-			@Override
-			public NameTagVisibility getValue() {
-				return nametagVisibility.getFlag();
-			}
-		};
+		return nametagVisibility.getValue();
 	}
 	
 	public void setNameTagVisibility(NameTagVisibility vis){
-		nametagVisibility.setFlag(vis);
-		mgm.getScoreboardManager().getTeam(color.toString().toLowerCase()).setNameTagVisibility(vis);
+		nametagVisibility.setValue(vis);
+	}
+	
+	public Property<NameTagVisibility> nameTagVisibility() {
+		return nametagVisibility;
 	}
 }

@@ -483,6 +483,42 @@ public class MinigameUtils {
 	}
 	
 	/**
+	 * Saves a location to a configuration section
+	 * @param section The ConfigurationSection to save into
+	 * @param location The location to save
+	 */
+	public static void saveLocation(ConfigurationSection section, Location location) {
+		section.set("x", location.getX());
+		section.set("y", location.getY());
+		section.set("z", location.getZ());
+		section.set("yaw", location.getYaw());
+		section.set("pitch", location.getPitch());
+		section.set("world", location.getWorld().getName());
+	}
+	
+	/**
+	 * Loads a location from a configuration section
+	 * @param section The section that contains the fields
+	 * @return A location with the the contents of that section, or null if the world is invalid
+	 */
+	public static Location loadLocation(ConfigurationSection section) {
+		double x = section.getDouble("x");
+		double y = section.getDouble("y");
+		double z = section.getDouble("z");
+		float yaw = (float)section.getDouble("yaw");
+		float pitch = (float)section.getDouble("pitch");
+		
+		String worldName = section.getString("world");
+		World world = Bukkit.getWorld(worldName);
+		
+		if (world != null) {
+			return new Location(world, x, y, z, yaw, pitch);
+		} else {
+			return null;
+		}
+	}
+	
+	/**
 	 * Saves a short location (x, y, z, world) to a configuration section
 	 * @param section The ConfigurationSection to save into
 	 * @param location The location to save

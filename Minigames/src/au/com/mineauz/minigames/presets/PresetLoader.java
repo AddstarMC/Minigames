@@ -8,8 +8,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import au.com.mineauz.minigames.MinigameSave;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.properties.ConfigProperty;
 
 public class PresetLoader {
 	
@@ -20,10 +20,11 @@ public class PresetLoader {
 			MinigameSave save = new MinigameSave("presets/" + preset);
 			FileConfiguration config = save.getConfig();
 			
+			//TODO: This wont load options in modules, perhaps it should
 			for(String opt : config.getConfigurationSection(preset).getKeys(false)){
-				Flag<?> flag = minigame.getConfigFlag(opt);
-				if(flag != null){
-					flag.loadValue(preset, config);
+				ConfigProperty<?> property = minigame.getProperties().getProperty(opt);
+				if (property != null) {
+					property.load(config.getConfigurationSection(preset));
 				}
 			}
 			

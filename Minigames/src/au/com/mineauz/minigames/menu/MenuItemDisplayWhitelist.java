@@ -4,20 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
+
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.properties.Property;
 
 public class MenuItemDisplayWhitelist extends MenuItem{
 	
 	private List<Material> whitelist;
-	private Callback<Boolean> whitelistMode;
+	private Property<Boolean> whitelistMode;
 
-	public MenuItemDisplayWhitelist(String name, Material displayItem, List<Material> whitelist, Callback<Boolean> whitelistMode) {
+	public MenuItemDisplayWhitelist(String name, Material displayItem, List<Material> whitelist, Property<Boolean> whitelistMode) {
 		super(name, displayItem);
 		this.whitelist = whitelist;
 		this.whitelistMode = whitelistMode;
 	}
 
-	public MenuItemDisplayWhitelist(String name, String description, Material displayItem, List<Material> whitelist, Callback<Boolean> whitelistMode) {
+	public MenuItemDisplayWhitelist(String name, String description, Material displayItem, List<Material> whitelist, Property<Boolean> whitelistMode) {
 		super(name, description, displayItem);
 		this.whitelist = whitelist;
 		this.whitelistMode = whitelistMode;

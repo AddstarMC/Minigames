@@ -5,16 +5,31 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemString;
+import au.com.mineauz.minigames.properties.ChangeListener;
+import au.com.mineauz.minigames.properties.ObservableValue;
+import au.com.mineauz.minigames.properties.types.StringProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class ExecuteCommandAction extends ActionInterface {
 	
-	private StringFlag comd = new StringFlag("say Hello World!", "command");
+	private final StringProperty comd = new StringProperty("say Hello World!", "command");
+	
+	public ExecuteCommandAction() {
+		properties.addProperty(comd);
+		
+		// Adds in the translation of ./ into /
+		comd.addListener(new ChangeListener<String>() {
+			@Override
+			public void onValueChange( ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if(newValue.startsWith("./")) {
+					((ObservableValue<String>)observable).setValue(newValue.replaceFirst("./", "/"));
+				}
+			}
+		});
+	}
 
 	@Override
 	public String getName() {
@@ -56,14 +71,14 @@ public class ExecuteCommandAction extends ActionInterface {
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Region region) {
-		String command = replacePlayerTags(player, comd.getFlag());
+		String command = replacePlayerTags(player, comd.getValue());
 		command = command.replace("{region}", region.getName());
 		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player, Node node) {
-		String command = replacePlayerTags(player, comd.getFlag());
+		String command = replacePlayerTags(player, comd.getValue());
 		command = command
 			.replace("{x}", String.valueOf(node.getLocation().getBlockX()))
 			.replace("{y}", String.valueOf(node.getLocation().getBlockY()))
@@ -73,33 +88,17 @@ public class ExecuteCommandAction extends ActionInterface {
 	}
 	
 	@Override
-	public void saveArguments(FileConfiguration config,
-			String path) {
-		comd.saveValue(path, config);
+	public void saveArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
-	public void loadArguments(FileConfiguration config,
-			String path) {
-		comd.loadValue(path, config);
+	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Execute Command");
-		m.addItem(new MenuItemString("Command", "Do not include '/';If '//' command, start with './'", Material.COMMAND, new Callback<String>() {
-			@Override
-			public void setValue(String value) {
-				if(value.startsWith("./"))
-					value = value.replaceFirst("./", "/");
-				comd.setFlag(value);
-			}
-			
-			@Override
-			public String getValue() {
-				return comd.getFlag();
-			}
-		}));
+		m.addItem(new MenuItemString("Command", "Do not include '/';If '//' command, start with './'", Material.COMMAND, comd));
 		m.displayMenu(player);
 		return true;
 	}

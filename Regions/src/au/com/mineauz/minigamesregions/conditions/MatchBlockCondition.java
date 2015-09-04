@@ -8,24 +8,31 @@ import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemValue;
 import au.com.mineauz.minigames.menu.MenuItem.IMenuItemClickItem;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemString;
+import au.com.mineauz.minigames.menu.MenuItemValue.IMenuItemChange;
+import au.com.mineauz.minigames.properties.types.BooleanProperty;
+import au.com.mineauz.minigames.properties.types.IntegerProperty;
+import au.com.mineauz.minigames.properties.types.StringProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class MatchBlockCondition extends ConditionInterface {
 	
-	private StringFlag type = new StringFlag("STONE", "type");
-	private BooleanFlag useDur = new BooleanFlag(false, "usedur");
-	private IntegerFlag dur = new IntegerFlag(0, "dur");
+	private final StringProperty type = new StringProperty("STONE", "type");
+	private final BooleanProperty useDur = new BooleanProperty(false, "usedur");
+	private final IntegerProperty dur = new IntegerProperty(0, "dur");
+	
+	public MatchBlockCondition() {
+		properties.addProperty(type);
+		properties.addProperty(useDur);
+		properties.addProperty(dur);
+	}
 
 	@Override
 	public String getName() {
@@ -60,9 +67,9 @@ public class MatchBlockCondition extends ConditionInterface {
 	@SuppressWarnings("deprecation")
 	private boolean check(Location location){
 		Block block = location.getBlock();
-		if(block.getType() == Material.getMaterial(type.getFlag()) &&
-				(!useDur.getFlag() || 
-						block.getData() == dur.getFlag().byteValue())){
+		if(block.getType() == Material.getMaterial(type.getValue()) &&
+				(!useDur.getValue() || 
+						block.getData() == dur.getValue().byteValue())){
 			return true;
 		}
 		return false;
@@ -70,18 +77,10 @@ public class MatchBlockCondition extends ConditionInterface {
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
-		type.saveValue(path, config);
-		useDur.saveValue(path, config);
-		dur.saveValue(path, config);
-		saveInvert(config, path);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
-		type.loadValue(path, config);
-		useDur.loadValue(path, config);
-		dur.loadValue(path, config);
-		loadInvert(config, path);
 	}
 
 	@Override
@@ -90,33 +89,27 @@ public class MatchBlockCondition extends ConditionInterface {
 		final MenuItem c = new MenuItem("Auto Set Block", "Click here with a;block you wish to;match to.", Material.ITEM_FRAME);
 		m.setControlItem(c, 4);
 		
-		final MenuItemString btype = new MenuItemString("Block Type", Material.STONE, new Callback<String>() {
-
+		MenuItemString btype = new MenuItemString("Block Type", Material.STONE, type);
+		
+		btype.setChangeHandler(new IMenuItemChange<String>() {
 			@Override
-			public void setValue(String value) {
-				if(Material.matchMaterial(value.toUpperCase()) != null)
-					type.setFlag(value.toUpperCase());
-				else
+			public void onChange(MenuItemValue<String> menuItem, MinigamePlayer player, String previous, String current) {
+				if (Material.matchMaterial(current.toUpperCase()) == null) {
+					type.setValue(previous);
 					player.sendMessage("No block found by that name!", MessageType.Error);
-			}
-
-			@Override
-			public String getValue() {
-				return type.getFlag();
+				}
 			}
 		});
 		m.addItem(btype);
-		final MenuItemBoolean busedur = (MenuItemBoolean) useDur.getMenuItem("Use Data Values", Material.ENDER_PEARL);
-		m.addItem(busedur);
-		final MenuItemInteger bdur = (MenuItemInteger) dur.getMenuItem("Data Value", Material.PAPER, 0, 16);
-		m.addItem(bdur);
+		m.addItem(new MenuItemBoolean("Use Data Values", Material.ENDER_PEARL, useDur));
+		m.addItem(new MenuItemInteger("Data Value", Material.PAPER, dur, 0, 16));
 		
 		c.setClickWithItemHandler(new IMenuItemClickItem() {
 			@Override
 			public void onClickWithItem(MenuItem menuItem, MinigamePlayer player, ItemStack item) {
-				type.setFlag(item.getType().toString());
-				useDur.setFlag(true);
-				dur.setFlag(((Short)item.getDurability()).intValue());
+				type.setValue(item.getType().toString());
+				useDur.setValue(true);
+				dur.setValue(((Short)item.getDurability()).intValue());
 				m.refresh();
 			}
 		});

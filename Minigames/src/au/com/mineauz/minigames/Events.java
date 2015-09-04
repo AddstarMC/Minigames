@@ -370,7 +370,7 @@ public class Events implements Listener{
 				Minigame mg = tool.getMinigame();
 				Team team = null;
 				if (mg.hasModule(TeamsModule.class)) {
-					team = mg.getModule(TeamsModule.class).getTeam(tool.getTeam());
+					team = mg.getModule(TeamsModule.class).getTeam(tool.getTeam().getTeam());
 				}
 				if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK){
 					tool.getMode().onRightClick(ply, mg, team, event);

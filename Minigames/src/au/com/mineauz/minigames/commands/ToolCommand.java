@@ -12,6 +12,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
+import au.com.mineauz.minigames.minigame.TeamSelection;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolModes;
@@ -103,7 +104,7 @@ public class ToolCommand implements ICommand {
 				
 				if(tool.getMinigame() != null && tool.getMode() != null){
 					tool.getMode().select(player, tool.getMinigame(), 
-							tool.getMinigame().getModule(TeamsModule.class).getTeam(tool.getTeam()));
+							tool.getMinigame().getModule(TeamsModule.class).getTeam(tool.getTeam().getTeam()));
 				}
 				else if(tool.getMode() == null)
 					sender.sendMessage(ChatColor.RED + "You must have a mode selected to select anything!");
@@ -119,7 +120,7 @@ public class ToolCommand implements ICommand {
 				
 				if(tool.getMinigame() != null && tool.getMode() != null){
 					tool.getMode().deselect(player, tool.getMinigame(), 
-							tool.getMinigame().getModule(TeamsModule.class).getTeam(tool.getTeam()));
+							tool.getMinigame().getModule(TeamsModule.class).getTeam(tool.getTeam().getTeam()));
 				}
 				else if(tool.getMode() == null)
 					sender.sendMessage(ChatColor.RED + "You must have a mode selected to deselect anything!");
@@ -134,10 +135,7 @@ public class ToolCommand implements ICommand {
 					else
 						tool = MinigameUtils.getMinigameTool(player);
 					
-					if(args[1].equalsIgnoreCase("none"))
-						tool.setTeam(null);
-					else
-						tool.setTeam(TeamColor.matchColor(args[1]));
+					tool.setTeam(TeamSelection.from(args[1]));
 					sender.sendMessage(ChatColor.GRAY + "Set the tools team to " + args[1]);
 				}
 				else{

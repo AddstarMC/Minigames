@@ -1,31 +1,35 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.FloatFlag;
-import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import au.com.mineauz.minigames.menu.MenuItemDecimal;
-import au.com.mineauz.minigames.menu.MenuItemList;
+import au.com.mineauz.minigames.menu.MenuItemEnum;
+import au.com.mineauz.minigames.properties.Properties;
+import au.com.mineauz.minigames.properties.types.BooleanProperty;
+import au.com.mineauz.minigames.properties.types.EnumProperty;
+import au.com.mineauz.minigames.properties.types.FloatProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class PlaySoundAction extends ActionInterface {
 	
-	private StringFlag sound = new StringFlag("LEVEL_UP", "sound");
-	private BooleanFlag priv = new BooleanFlag(true, "private");
-	private FloatFlag vol = new FloatFlag(1f, "volume");
-	private FloatFlag pit = new FloatFlag(1f, "pitch");
+	private final EnumProperty<Sound> sound = new EnumProperty<Sound>(Sound.LEVEL_UP, "sound");
+	private final BooleanProperty priv = new BooleanProperty(true, "private");
+	private final FloatProperty vol = new FloatProperty(1f, "volume");
+	private final FloatProperty pit = new FloatProperty(1f, "pitch");
+	
+	public PlaySoundAction() {
+		properties.addProperty(sound);
+		properties.addProperty(priv);
+		properties.addProperty(vol);
+		properties.addProperty(pit);
+	}
 
 	@Override
 	public String getName() {
@@ -61,79 +65,33 @@ public class PlaySoundAction extends ActionInterface {
 	
 	private void execute(MinigamePlayer player, Location loc){
 		if(player == null || !player.isInMinigame()) return;
-		if(priv.getFlag())
+		if(priv.getValue())
 			player.getPlayer().playSound(loc, 
-					Sound.valueOf(sound.getFlag()), 
-					vol.getFlag(), 
-					pit.getFlag());
+					sound.getValue(), 
+					vol.getValue(), 
+					pit.getValue());
 		else
 			player.getPlayer().getWorld().playSound(loc, 
-					Sound.valueOf(sound.getFlag()), 
-					vol.getFlag(), 
-					pit.getFlag());
+					sound.getValue(), 
+					vol.getValue(), 
+					pit.getValue());
 	}
 
 	@Override
-	public void saveArguments(FileConfiguration config,
-			String path) {
-		sound.saveValue(path, config);
-		priv.saveValue(path, config);
-		vol.saveValue(path, config);
-		pit.saveValue(path, config);
+	public void saveArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
-	public void loadArguments(FileConfiguration config,
-			String path) {
-		sound.loadValue(path, config);
-		priv.loadValue(path, config);
-		vol.loadValue(path, config);
-		pit.loadValue(path, config);
+	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Play Sound");
-		List<String> sounds = new ArrayList<String>();
-		for(Sound s : Sound.values())
-			sounds.add(MinigameUtils.capitalize(s.toString().replace("_", " ")));
-		m.addItem(new MenuItemList("Sound", Material.NOTE_BLOCK, new Callback<String>() {
-			
-			@Override
-			public void setValue(String value) {
-				sound.setFlag(value.toUpperCase().replace(" ", "_"));
-			}
-			
-			@Override
-			public String getValue() {
-				return MinigameUtils.capitalize(sound.getFlag().replace("_", " "));
-			}
-		}, sounds));
-		m.addItem(priv.getMenuItem("Private Playback", Material.ENDER_PEARL));
-		m.addItem(new MenuItemDecimal("Volume", Material.JUKEBOX, new Callback<Double>() {
-
-			@Override
-			public void setValue(Double value) {
-				vol.setFlag(value.floatValue());
-			}
-
-			@Override
-			public Double getValue() {
-				return vol.getFlag().doubleValue();
-			}
-		}, 0.1, 1d, 0.5, Double.MAX_VALUE));
-		m.addItem(new MenuItemDecimal("Pitch", Material.EYE_OF_ENDER, new Callback<Double>() {
-
-			@Override
-			public void setValue(Double value) {
-				pit.setFlag(value.floatValue());;
-			}
-
-			@Override
-			public Double getValue() {
-				return pit.getFlag().doubleValue();
-			}
-		}, 0.05, 0.1, 0d, 2d));
+		m.addItem(new MenuItemEnum<Sound>("Sound", Material.NOTE_BLOCK, sound, Sound.class));
+		m.addItem(new MenuItemBoolean("Private Playback", Material.ENDER_PEARL, priv));
+		m.addItem(new MenuItemDecimal("Volume", Material.JUKEBOX, Properties.toDouble(vol), 0.1, 1d, 0.5, Double.MAX_VALUE));
+		m.addItem(new MenuItemDecimal("Pitch", Material.EYE_OF_ENDER, Properties.toDouble(pit), 0.05, 0.1, 0d, 2d));
 		m.displayMenu(player);
 		return true;
 	}

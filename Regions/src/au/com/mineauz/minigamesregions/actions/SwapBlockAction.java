@@ -7,24 +7,36 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBoolean;
+import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.menu.MenuItemString;
+import au.com.mineauz.minigames.menu.MenuItemValue;
+import au.com.mineauz.minigames.menu.MenuItemValue.IMenuItemChange;
+import au.com.mineauz.minigames.properties.types.BooleanProperty;
+import au.com.mineauz.minigames.properties.types.IntegerProperty;
+import au.com.mineauz.minigames.properties.types.StringProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class SwapBlockAction extends ActionInterface {
 	
-	private StringFlag matchType = new StringFlag("STONE", "matchtype");
-	private BooleanFlag matchData = new BooleanFlag(false, "matchdata");
-	private IntegerFlag matchDataValue = new IntegerFlag(0, "matchdatavalue");
-	private StringFlag toType = new StringFlag("COBBLESTONE", "totype");
-	private BooleanFlag toData = new BooleanFlag(false, "todata");
-	private IntegerFlag toDataValue = new IntegerFlag(0, "todatavalue");
+	private final StringProperty matchType = new StringProperty("STONE", "matchtype"); // TODO: Make this an EnumProperty
+	private final BooleanProperty matchData = new BooleanProperty(false, "matchdata");
+	private final IntegerProperty matchDataValue = new IntegerProperty(0, "matchdatavalue");
+	private final StringProperty toType = new StringProperty("COBBLESTONE", "totype");
+	private final BooleanProperty toData = new BooleanProperty(false, "todata");
+	private final IntegerProperty toDataValue = new IntegerProperty(0, "todatavalue");
+	
+	public SwapBlockAction() {
+		properties.addProperty(matchType);
+		properties.addProperty(matchData);
+		properties.addProperty(matchDataValue);
+		properties.addProperty(toType);
+		properties.addProperty(toData);
+		properties.addProperty(toDataValue);
+	}
 
 	@Override
 	public String getName() {
@@ -58,14 +70,14 @@ public class SwapBlockAction extends ActionInterface {
 				for(int z = region.getFirstPoint().getBlockZ(); z <= region.getSecondPoint().getBlockZ(); z++){
 					temp.setZ(z);
 					
-					if(temp.getBlock().getType() == Material.getMaterial(matchType.getFlag()) &&
-							(!matchData.getFlag() ||
-									temp.getBlock().getData() == matchDataValue.getFlag().byteValue())){
+					if(temp.getBlock().getType() == Material.getMaterial(matchType.getValue()) &&
+							(!matchData.getValue() ||
+									temp.getBlock().getData() == matchDataValue.getValue().byteValue())){
 						byte b = 0;
-						if(toData.getFlag())
-							b = toDataValue.getFlag().byteValue();
+						if(toData.getValue())
+							b = toDataValue.getValue().byteValue();
 						BlockState bs = temp.getBlock().getState();
-						bs.setType(Material.getMaterial(toType.getFlag()));
+						bs.setType(Material.getMaterial(toType.getValue()));
 						bs.getData().setData(b);
 						bs.update(true);
 					}
@@ -81,68 +93,46 @@ public class SwapBlockAction extends ActionInterface {
 	}
 
 	@Override
-	public void saveArguments(FileConfiguration config,
-			String path) {
-		matchType.saveValue(path, config);
-		matchData.saveValue(path, config);
-		matchDataValue.saveValue(path, config);
-		toType.saveValue(path, config);
-		toData.saveValue(path, config);
-		toDataValue.saveValue(path, config);
+	public void saveArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
-	public void loadArguments(FileConfiguration config,
-			String path) {
-		matchType.loadValue(path, config);
-		matchData.loadValue(path, config);
-		matchDataValue.loadValue(path, config);
-		toType.loadValue(path, config);
-		toData.loadValue(path, config);
-		toDataValue.loadValue(path, config);
+	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Swap Block");
-		final MinigamePlayer fply = player;
-		m.addItem(new MenuItemString("Match Block", Material.COBBLESTONE, new Callback<String>() {
-			
+		MenuItemString matchTypeItem = new MenuItemString("Match Block", Material.COBBLESTONE, matchType);
+		matchTypeItem.setChangeHandler(new IMenuItemChange<String>() {
 			@Override
-			public void setValue(String value) {
-				if(Material.matchMaterial(value.toUpperCase()) != null)
-					matchType.setFlag(value.toUpperCase());
-				else
-					fply.sendMessage("Invalid block type!", MessageType.Error);
+			public void onChange(MenuItemValue<String> menuItem, MinigamePlayer player, String previous, String current) {
+				if (Material.matchMaterial(current.toUpperCase()) == null) {
+					matchType.setValue(previous);
+					player.sendMessage("Invalid block type!", MessageType.Error);
+				}
 			}
-			
-			@Override
-			public String getValue() {
-				return matchType.getFlag();
-			}
-		}));
-		m.addItem(matchData.getMenuItem("Match Block Use Data?", Material.ENDER_PEARL));
-		m.addItem(matchDataValue.getMenuItem("Match Block Data Value", Material.EYE_OF_ENDER, 0, 15));
+		});
+		
+		m.addItem(matchTypeItem);
+		m.addItem(new MenuItemBoolean("Match Block Use Data?", Material.ENDER_PEARL, matchData));
+		m.addItem(new MenuItemInteger("Match Block Data Value", Material.EYE_OF_ENDER, matchDataValue, 0, 15));
 		
 		m.addItem(new MenuItemNewLine());
 		
-		m.addItem(new MenuItemString("To Block", Material.STONE, new Callback<String>() {
-			
+		MenuItemString toTypeItem = new MenuItemString("To Block", Material.STONE, toType);
+		toTypeItem.setChangeHandler(new IMenuItemChange<String>() {
 			@Override
-			public void setValue(String value) {
-				if(Material.matchMaterial(value.toUpperCase()) != null)
-					toType.setFlag(value.toUpperCase());
-				else
-					fply.sendMessage("Invalid block type!", MessageType.Error);
+			public void onChange(MenuItemValue<String> menuItem, MinigamePlayer player, String previous, String current) {
+				if (Material.matchMaterial(current.toUpperCase()) == null) {
+					toType.setValue(previous);
+					player.sendMessage("Invalid block type!", MessageType.Error);
+				}
 			}
-			
-			@Override
-			public String getValue() {
-				return toType.getFlag();
-			}
-		}));
-		m.addItem(toData.getMenuItem("To Block Use Data?", Material.ENDER_PEARL));
-		m.addItem(toDataValue.getMenuItem("To Block Data Value", Material.EYE_OF_ENDER, 0, 15));
+		});
+		m.addItem(toTypeItem);
+		m.addItem(new MenuItemBoolean("To Block Use Data?", Material.ENDER_PEARL, toData));
+		m.addItem(new MenuItemInteger("To Block Data Value", Material.EYE_OF_ENDER, toDataValue, 0, 15));
 		m.displayMenu(player);
 		return true;
 	}

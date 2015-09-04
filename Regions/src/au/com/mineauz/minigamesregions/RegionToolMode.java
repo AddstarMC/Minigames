@@ -10,7 +10,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItem.IMenuItemClick;
@@ -49,18 +48,7 @@ public class RegionToolMode implements ToolMode {
 		final Menu m = new Menu(2, "Region Selection");
 		
 		final MinigameTool ftool = tool;
-		m.addItem(new MenuItemString("Region Name", Material.PAPER, new Callback<String>() {
-			
-			@Override
-			public void setValue(String value) {
-				ftool.changeSetting("Region", value);
-			}
-			
-			@Override
-			public String getValue() {
-				return ftool.getSetting("Region");
-			}
-		}));
+		m.addItem(new MenuItemString("Region Name", Material.PAPER, tool.getSettingProperty("Region")));
 		
 		if (tool.getMinigame() != null) {
 			// Node selection menu

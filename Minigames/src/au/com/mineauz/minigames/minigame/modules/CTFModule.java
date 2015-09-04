@@ -7,8 +7,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.CTFFlag;
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
 
 public class CTFModule extends MinigameModule {
 	private Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<MinigamePlayer, CTFFlag>();
@@ -24,10 +24,10 @@ public class CTFModule extends MinigameModule {
 	}
 
 	@Override
-	public Map<String, Flag<?>> getFlags() {
+	public ConfigPropertyContainer getProperties() {
 		return null;
 	}
-
+	
 	@Override
 	public boolean useSeparateConfig() {
 		return false;

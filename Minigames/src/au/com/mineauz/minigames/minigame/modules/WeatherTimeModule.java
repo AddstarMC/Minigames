@@ -1,38 +1,40 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.WeatherType;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.EnumFlag;
-import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.LongFlag;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
+import au.com.mineauz.minigames.menu.MenuItemEnum;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
-import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.menu.MenuItemSubMenu;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
+import au.com.mineauz.minigames.properties.types.BooleanProperty;
+import au.com.mineauz.minigames.properties.types.EnumProperty;
+import au.com.mineauz.minigames.properties.types.IntegerProperty;
 
 public class WeatherTimeModule extends MinigameModule {
 	
-	private LongFlag time = new LongFlag(0L, "customTime.value");
-	private BooleanFlag useCustomTime = new BooleanFlag(false, "customTime.enabled");
-	private BooleanFlag useCustomWeather = new BooleanFlag(false, "customWeather.enabled");
-	private EnumFlag<WeatherType> weather = new EnumFlag<WeatherType>(WeatherType.CLEAR, "customWeather.type");
+	private final ConfigPropertyContainer properties;
+	private final IntegerProperty time = new IntegerProperty(0, "customTime.value");
+	private final BooleanProperty useCustomTime = new BooleanProperty(false, "customTime.enabled");
+	private final BooleanProperty useCustomWeather = new BooleanProperty(false, "customWeather.enabled");
+	private final EnumProperty<WeatherType> weather = new EnumProperty<WeatherType>(WeatherType.CLEAR, "customWeather.type");
 	private int task = -1;
 	
 	public WeatherTimeModule(Minigame mgm){
 		super(mgm);
+		
+		properties = new ConfigPropertyContainer();
+		properties.addProperty(time);
+		properties.addProperty(useCustomTime);
+		properties.addProperty(useCustomWeather);
+		properties.addProperty(weather);
 	}
 
 	@Override
@@ -41,13 +43,8 @@ public class WeatherTimeModule extends MinigameModule {
 	}
 	
 	@Override
-	public Map<String, Flag<?>> getFlags(){
-		Map<String, Flag<?>> map = new HashMap<String, Flag<?>>();
-		map.put(time.getName(), time);
-		map.put(useCustomTime.getName(), useCustomTime);
-		map.put(useCustomWeather.getName(), useCustomWeather);
-		map.put(weather.getName(), weather);
-		return map;
+	public ConfigPropertyContainer getProperties() {
+		return properties;
 	}
 	
 	@Override
@@ -66,54 +63,10 @@ public class WeatherTimeModule extends MinigameModule {
 	@Override
 	public void addEditMenuOptions(Menu menu) {
 		Menu m = new Menu(6, "Time and Weather");
-		m.addItem(new MenuItemBoolean("Use Custom Time", Material.WATCH, new Callback<Boolean>() {
-
-			@Override
-			public void setValue(Boolean value) {
-				useCustomTime.setFlag(value);
-			}
-
-			@Override
-			public Boolean getValue() {
-				return useCustomTime.getFlag();
-			}
-		}));
-		m.addItem(new MenuItemInteger("Time of Day", Material.WATCH, new Callback<Integer>() {
-			
-			@Override
-			public void setValue(Integer value) {
-				time.setFlag(value.longValue());
-			}
-			
-			@Override
-			public Integer getValue() {
-				return time.getFlag().intValue();
-			}
-		}, 0, 24000));
-		m.addItem(new MenuItemBoolean("Use Custom Weather", Material.WATER_BUCKET, new Callback<Boolean>() {
-
-			@Override
-			public void setValue(Boolean value) {
-				useCustomWeather.setFlag(value);
-			}
-
-			@Override
-			public Boolean getValue() {
-				return useCustomWeather.getFlag();
-			}
-		}));
-		m.addItem(new MenuItemList("Weather Type", Material.WATER_BUCKET, new Callback<String>() {
-
-			@Override
-			public void setValue(String value) {
-				weather.setFlag(WeatherType.valueOf(value.toUpperCase()));
-			}
-
-			@Override
-			public String getValue() {
-				return MinigameUtils.capitalize(weather.getFlag().toString());
-			}
-		}, MinigameUtils.stringToList("Clear;Downfall")));
+		m.addItem(new MenuItemBoolean("Use Custom Time", Material.WATCH, useCustomTime));
+		m.addItem(new MenuItemInteger("Time of Day", Material.WATCH, time, 0, 24000));
+		m.addItem(new MenuItemBoolean("Use Custom Weather", Material.WATER_BUCKET, useCustomWeather));
+		m.addItem(new MenuItemEnum<WeatherType>("Weather Type", Material.WATER_BUCKET, weather, WeatherType.class));
 		
 		menu.addItem(new MenuItemSubMenu("Time and Weather Settings", Material.CHEST, m));
 	}
@@ -123,47 +76,47 @@ public class WeatherTimeModule extends MinigameModule {
 		return (WeatherTimeModule) minigame.getModule(WeatherTimeModule.class);
 	}
 	
-	public long getTime(){
-		return time.getFlag();
+	public int getTime() {
+		return time.getValue();
 	}
 	
-	public void setTime(long time){
-		this.time.setFlag(time);
+	public void setTime(int time) {
+		this.time.setValue(time);
 	}
 	
 	public boolean isUsingCustomTime(){
-		return useCustomTime.getFlag();
+		return useCustomTime.getValue();
 	}
 	
 	public void setUseCustomTime(boolean bool){
-		useCustomTime.setFlag(bool);
+		useCustomTime.setValue(bool);
 	}
 	
 	public void applyCustomTime(MinigamePlayer player){
 		if(isUsingCustomTime()){
-			player.getPlayer().setPlayerTime(time.getFlag(), false);
+			player.getPlayer().setPlayerTime(time.getValue(), false);
 		}
 	}
 	
 	public boolean isUsingCustomWeather(){
-		return useCustomWeather.getFlag();
+		return useCustomWeather.getValue();
 	}
 	
 	public void setUsingCustomWeather(boolean bool){
-		useCustomWeather.setFlag(bool);
+		useCustomWeather.setValue(bool);
 	}
 	
 	public WeatherType getCustomWeather(){
-		return weather.getFlag();
+		return weather.getValue();
 	}
 	
 	public void setCustomWeather(WeatherType type){
-		weather.setFlag(type);
+		weather.setValue(type);
 	}
 	
 	public void applyCustomWeather(MinigamePlayer player){
 		if(isUsingCustomWeather())
-			player.getPlayer().setPlayerWeather(weather.getFlag());
+			player.getPlayer().setPlayerWeather(weather.getValue());
 	}
 	
 	public void startTimeLoop(){
@@ -174,7 +127,7 @@ public class WeatherTimeModule extends MinigameModule {
 				@Override
 				public void run() {
 					for(MinigamePlayer player : fmgm.getPlayers()){
-						player.getPlayer().setPlayerTime(time.getFlag(), false);
+						player.getPlayer().setPlayerTime(time.getValue(), false);
 					}
 				}
 			}, 20 * 5, 20 * 5);

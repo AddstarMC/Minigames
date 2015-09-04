@@ -7,16 +7,24 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.FloatFlag;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBoolean;
+import au.com.mineauz.minigames.menu.MenuItemDecimal;
+import au.com.mineauz.minigames.properties.Properties;
+import au.com.mineauz.minigames.properties.types.BooleanProperty;
+import au.com.mineauz.minigames.properties.types.FloatProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class ExplodeAction extends ActionInterface {
 	
-	private FloatFlag power = new FloatFlag(4f, "power");
-	private BooleanFlag fire = new BooleanFlag(false, "fire");
+	private final FloatProperty power = new FloatProperty(4f, "power");
+	private final BooleanProperty fire = new BooleanProperty(false, "fire");
+	
+	public ExplodeAction() {
+		properties.addProperty(power);
+		properties.addProperty(fire);
+	}
 
 	@Override
 	public String getName() {
@@ -56,34 +64,28 @@ public class ExplodeAction extends ActionInterface {
 		loc.setX(xrand);
 		loc.setY(yrand);
 		loc.setZ(zrand);
-		loc.getWorld().createExplosion(loc, power.getFlag(), fire.getFlag());
+		loc.getWorld().createExplosion(loc, power.getValue(), fire.getValue());
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Node node) {
-		node.getLocation().getWorld().createExplosion(node.getLocation(), power.getFlag(), fire.getFlag());
+		node.getLocation().getWorld().createExplosion(node.getLocation(), power.getValue(), fire.getValue());
 	}
 	
 	@Override
-	public void saveArguments(FileConfiguration config,
-			String path) {
-		power.saveValue(path, config);
-		fire.saveValue(path, config);
+	public void saveArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
-	public void loadArguments(FileConfiguration config,
-			String path) {
-		power.loadValue(path, config);
-		fire.loadValue(path, config);
+	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Explode");
-		m.addItem(power.getMenuItem("Explosion Power", Material.TNT));
-		m.addItem(fire.getMenuItem("Cause Fire", Material.FLINT_AND_STEEL));
+		m.addItem(new MenuItemDecimal("Explosion Power", Material.TNT, Properties.toDouble(power), 1, 1, 0, Double.MAX_VALUE));
+		m.addItem(new MenuItemBoolean("Cause Fire", Material.FLINT_AND_STEEL, fire));
 		m.displayMenu(player);
 		return true;
 	}

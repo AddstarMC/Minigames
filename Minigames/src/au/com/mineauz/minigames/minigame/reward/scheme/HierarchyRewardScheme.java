@@ -2,7 +2,6 @@ package au.com.mineauz.minigames.minigame.reward.scheme;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -12,29 +11,27 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.google.common.base.Functions;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-
 import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.EnumFlag;
-import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemList;
+import au.com.mineauz.minigames.menu.MenuItemBoolean;
+import au.com.mineauz.minigames.menu.MenuItemEnum;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
+import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
+import au.com.mineauz.minigames.properties.types.BooleanProperty;
+import au.com.mineauz.minigames.properties.types.EnumProperty;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 
 public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements RewardScheme {
-	private EnumFlag<Comparison> comparisonType;
-	private BooleanFlag enableRewardsOnLoss;
-	private BooleanFlag lossUsesSecondary;
+	private final ConfigPropertyContainer properties;
+	
+	private final EnumProperty<Comparison> comparisonType;
+	private final BooleanProperty enableRewardsOnLoss;
+	private final BooleanProperty lossUsesSecondary;
 	
 	private TreeMap<T, Rewards> primaryRewards;
 	private TreeMap<T, Rewards> secondaryRewards;
@@ -43,25 +40,26 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 		primaryRewards = new TreeMap<T, Rewards>();
 		secondaryRewards = new TreeMap<T, Rewards>();
 		
-		comparisonType = new EnumFlag<Comparison>(Comparison.Greater, "comparison");
-		enableRewardsOnLoss = new BooleanFlag(false, "loss-rewards");
-		lossUsesSecondary = new BooleanFlag(true, "loss-use-secondary");
+		properties = new ConfigPropertyContainer();
+		comparisonType = new EnumProperty<Comparison>(Comparison.Greater, "comparison");
+		enableRewardsOnLoss = new BooleanProperty(false, "loss-rewards");
+		lossUsesSecondary = new BooleanProperty(true, "loss-use-secondary");
+		
+		properties.addProperty(comparisonType);
+		properties.addProperty(enableRewardsOnLoss);
+		properties.addProperty(lossUsesSecondary);
 	}
 	
 	@Override
-	public Map<String, Flag<?>> getFlags() {
-		return ImmutableMap.<String, Flag<?>>builder()
-				.put("comparison", comparisonType)
-				.put("loss-rewards", enableRewardsOnLoss)
-				.put("loss-use-secondary", lossUsesSecondary)
-				.build();
+	public ConfigPropertyContainer getProperties() {
+		return properties;
 	}
 	
 	@Override
 	public void addMenuItems(final Menu menu) {
-		menu.addItem(new MenuItemList("Comparison Type", Material.REDSTONE_COMPARATOR, getConfigurationTypeCallback(), Lists.transform(Arrays.asList(Comparison.values()), Functions.toStringFunction())));
-		menu.addItem(enableRewardsOnLoss.getMenuItem("Award On Loss", "When on, awards will still;be given to losing;players", Material.LEVER));
-		menu.addItem(lossUsesSecondary.getMenuItem("Losers Get Secondary", "When on, the losers;will only get the;secondary reward", Material.LEVER));
+		menu.addItem(new MenuItemEnum<Comparison>("Comparison Type", Material.REDSTONE_COMPARATOR, comparisonType, Comparison.class));
+		menu.addItem(new MenuItemBoolean("Award On Loss", "When on, awards will still;be given to losing;players", Material.LEVER, enableRewardsOnLoss));
+		menu.addItem(new MenuItemBoolean("Losers Get Secondary", "When on, the losers;will only get the;secondary reward", Material.LEVER, lossUsesSecondary));
 		menu.addItem(new MenuItemNewLine());
 		
 		MenuItem primary = new MenuItem("Primary Rewards", Material.CHEST) {
@@ -104,7 +102,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 		TreeMap<T, Rewards> rewards = (firstCompletion ? primaryRewards : secondaryRewards);
 		
 		// Calculate rewards
-		switch(comparisonType.getFlag()) {
+		switch(comparisonType.getValue()) {
 		case Equal:
 			reward = rewards.get(value);
 			break;
@@ -141,8 +139,8 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 
 	@Override
 	public void awardPlayerOnLoss(MinigamePlayer player, StoredGameStats data, Minigame minigame) {
-		if (enableRewardsOnLoss.getFlag())
-			awardPlayer(player, data, minigame, lossUsesSecondary.getFlag());
+		if (enableRewardsOnLoss.getValue())
+			awardPlayer(player, data, minigame, lossUsesSecondary.getValue());
 	}
 
 	@Override
@@ -183,20 +181,6 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 			
 			map.put(value, reward);
 		}
-	}
-	
-	private Callback<String> getConfigurationTypeCallback() {
-		return new Callback<String>() {
-			@Override
-			public void setValue(String value) {
-				comparisonType.setFlag(Comparison.valueOf(value));
-			}
-			
-			@Override
-			public String getValue() {
-				return comparisonType.getFlag().name();
-			}
-		};
 	}
 	
 	protected abstract String getMenuItemName(T value);

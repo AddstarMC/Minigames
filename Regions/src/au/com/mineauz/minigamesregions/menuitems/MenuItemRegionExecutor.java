@@ -58,11 +58,11 @@ public class MenuItemRegionExecutor extends MenuItem{
 		
 		m.addItem(new MenuItemInteger("Trigger Count", 
 				"Number of times this;node can be;triggered", 
-				Material.STONE, ex.getTriggerCountCallback(), 0, Integer.MAX_VALUE));
+				Material.STONE, ex.triggerCount(), 0, Integer.MAX_VALUE));
 		
 		m.addItem(new MenuItemBoolean("Trigger Per Player", 
 				"Whether this node;is triggered per player;or just on count", 
-				Material.ENDER_PEARL, ex.getIsTriggerPerPlayerCallback()));
+				Material.ENDER_PEARL, ex.triggerPerPlayer()));
 		m.displayMenu(player);
 	}
 	

@@ -1,15 +1,13 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import java.lang.reflect.Constructor;
-import java.util.Map;
-
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
 
 public abstract class MinigameModule {
 	private final Minigame mgm;
@@ -21,7 +19,7 @@ public abstract class MinigameModule {
 		return mgm;
 	}
 	public abstract String getName();
-	public abstract Map<String, Flag<?>> getFlags();
+	public abstract ConfigPropertyContainer getProperties();
 	public abstract boolean useSeparateConfig();
 	public abstract void save(FileConfiguration config);
 	public abstract void load(FileConfiguration config);

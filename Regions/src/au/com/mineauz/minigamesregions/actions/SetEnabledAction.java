@@ -4,14 +4,19 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBoolean;
+import au.com.mineauz.minigames.properties.types.BooleanProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class SetEnabledAction extends ActionInterface{
 	
-	private BooleanFlag state = new BooleanFlag(false, "state");
+	private final BooleanProperty state = new BooleanProperty(false, "state");
+	
+	public SetEnabledAction() {
+		properties.addProperty(state);
+	}
 
 	@Override
 	public String getName() {
@@ -35,28 +40,26 @@ public class SetEnabledAction extends ActionInterface{
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Region region) {
-		region.setEnabled(state.getFlag());
+		region.setEnabled(state.getValue());
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player, Node node) {
-		node.setEnabled(state.getFlag());
+		node.setEnabled(state.getValue());
 	}
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
-		state.saveValue(path, config);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
-		state.loadValue(path, config);
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Set Enabled");
-		m.addItem(state.getMenuItem("Set Enabled", Material.ENDER_PEARL));
+		m.addItem(new MenuItemBoolean("Set Enabled", Material.ENDER_PEARL, state));
 		m.displayMenu(player);
 		return true;
 	}

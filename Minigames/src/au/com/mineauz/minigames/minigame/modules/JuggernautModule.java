@@ -1,14 +1,12 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import java.util.Map;
-
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
 
 public class JuggernautModule extends MinigameModule{
 	
@@ -24,7 +22,7 @@ public class JuggernautModule extends MinigameModule{
 	}
 
 	@Override
-	public Map<String, Flag<?>> getFlags() {
+	public ConfigPropertyContainer getProperties() {
 		return null;
 	}
 

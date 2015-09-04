@@ -7,24 +7,33 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemEnum;
+import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemString;
+import au.com.mineauz.minigames.properties.types.EnumProperty;
+import au.com.mineauz.minigames.properties.types.IntegerProperty;
+import au.com.mineauz.minigames.properties.types.StringProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class GiveItemAction extends ActionInterface{
 	
-	private StringFlag type = new StringFlag("STONE", "type");
-	private IntegerFlag count = new IntegerFlag(1, "count");
-	private IntegerFlag damage = new IntegerFlag(0, "damage");
-	private StringFlag name = new StringFlag(null, "name");
-	private StringFlag lore = new StringFlag(null, "lore");
+	private final EnumProperty<Material> type = new EnumProperty<Material>(Material.STONE, "type");
+	private final IntegerProperty count = new IntegerProperty(1, "count");
+	private final IntegerProperty damage = new IntegerProperty(0, "damage");
+	private final StringProperty name = new StringProperty(null, "name");
+	private final StringProperty lore = new StringProperty(null, "lore");
+	
+	public GiveItemAction() {
+		properties.addProperty(type);
+		properties.addProperty(count);
+		properties.addProperty(damage);
+		properties.addProperty(name);
+		properties.addProperty(lore);
+	}
 
 	@Override
 	public String getName() {
@@ -57,13 +66,13 @@ public class GiveItemAction extends ActionInterface{
 	}
 	
 	private void execute(MinigamePlayer player){
-		ItemStack item = new ItemStack(Material.getMaterial(type.getFlag()), count.getFlag(), damage.getFlag().shortValue());
+		ItemStack item = new ItemStack(type.getValue(), count.getValue(), damage.getValue().shortValue());
 		ItemMeta meta = item.getItemMeta();
-		if(name.getFlag() != null){
-			meta.setDisplayName(name.getFlag());
+		if(name.getValue() != null){
+			meta.setDisplayName(name.getValue());
 		}
-		if(lore.getFlag() != null){
-			meta.setLore(MinigameUtils.stringToList(lore.getFlag()));
+		if(lore.getValue() != null){
+			meta.setLore(MinigameUtils.stringToList(lore.getValue()));
 		}
 		item.setItemMeta(meta);
 		
@@ -79,55 +88,26 @@ public class GiveItemAction extends ActionInterface{
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
-		type.saveValue(path, config);
-		count.saveValue(path, config);
-		damage.saveValue(path, config);
-		if(name.getFlag() != null)
-			name.saveValue(path, config);
-		if(lore.getFlag() != null)
-			lore.saveValue(path, config);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
-		type.loadValue(path, config);
-		count.loadValue(path, config);
-		damage.loadValue(path, config);
-		if(config.contains(path + ".name"))
-			name.loadValue(path, config);
-		if(config.contains(path + ".lore"))
-			lore.loadValue(path, config);
 	}
 
 	@Override
 	public boolean displayMenu(final MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Give Item");
 		
-		MenuItemString n = (MenuItemString) name.getMenuItem("Name", Material.NAME_TAG);
+		MenuItemString n = new MenuItemString("Name", Material.NAME_TAG, name);
 		n.setAllowNull(true);
 		m.addItem(n);
-		MenuItemString l = (MenuItemString) lore.getMenuItem("Lore", "Separate with semi-colons;for new lines", Material.PAPER);
+		MenuItemString l = new MenuItemString("Lore", "Separate with semi-colons;for new lines", Material.PAPER, lore);
 		l.setAllowNull(true);
 		m.addItem(l);
 		
-		m.addItem(new MenuItemString("Type", Material.STONE, new Callback<String>() {
-			
-			@Override
-			public void setValue(String value) {
-				if(Material.getMaterial(value.toUpperCase()) != null){
-					type.setFlag(value.toUpperCase());
-				}
-				else
-					player.sendMessage("Invalid item type!", MessageType.Error);
-			}
-			
-			@Override
-			public String getValue() {
-				return type.getFlag();
-			}
-		}));
-		m.addItem(count.getMenuItem("Count", Material.STEP, 1, 64));
-		m.addItem(damage.getMenuItem("Damage", Material.COBBLESTONE, 0, Integer.MAX_VALUE));
+		m.addItem(new MenuItemEnum<Material>("Type", Material.STONE, type, Material.class));
+		m.addItem(new MenuItemInteger("Count", Material.STEP, count, 1, 64));
+		m.addItem(new MenuItemInteger("Damage", Material.COBBLESTONE, damage, 0, Integer.MAX_VALUE));
 		
 		m.displayMenu(player);
 		return true;

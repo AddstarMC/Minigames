@@ -11,22 +11,22 @@ import au.com.mineauz.minigames.menu.MenuItem.IMenuItemClick;
 public abstract class MenuItemReward extends MenuItemEnum<RewardRarity> implements IMenuItemClick {
 	private RewardType reward;
 	public MenuItemReward(String name, MaterialData displayItem, RewardType reward) {
-		super(name, displayItem, reward.getRarityCallback(), RewardRarity.class);
+		super(name, displayItem, reward.getRarityProperty(), RewardRarity.class);
 		this.reward = reward;
 		setShiftRightClickHandler(this);
 	}
 	public MenuItemReward(String name, String description, Material displayItem, RewardType reward) {
-		super(name, description, displayItem, reward.getRarityCallback(), RewardRarity.class);
+		super(name, description, displayItem, reward.getRarityProperty(), RewardRarity.class);
 		this.reward = reward;
 		setShiftRightClickHandler(this);
 	}
 	public MenuItemReward(String name, Material displayItem, RewardType reward) {
-		super(name, null, displayItem, reward.getRarityCallback(), RewardRarity.class);
+		super(name, null, displayItem, reward.getRarityProperty(), RewardRarity.class);
 		this.reward = reward;
 		setShiftRightClickHandler(this);
 	}
 	public MenuItemReward(String name, String description, MaterialData displayItem, RewardType reward) {
-		super(name, description, displayItem, reward.getRarityCallback(), RewardRarity.class);
+		super(name, description, displayItem, reward.getRarityProperty(), RewardRarity.class);
 		this.reward = reward;
 		setShiftRightClickHandler(this);
 	}

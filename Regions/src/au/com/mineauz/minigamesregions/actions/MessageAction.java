@@ -5,14 +5,19 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemString;
+import au.com.mineauz.minigames.properties.types.StringProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class MessageAction extends ActionInterface {
 	
-	private StringFlag msg = new StringFlag("Hello World", "message");
+	private final StringProperty msg = new StringProperty("Hello World", "message");
+	
+	public MessageAction() {
+		properties.addProperty(msg);
+	}
 
 	@Override
 	public String getName() {
@@ -38,29 +43,27 @@ public class MessageAction extends ActionInterface {
 	public void executeNodeAction(MinigamePlayer player,
 			Node node) {
 		if(player == null || !player.isInMinigame()) return;
-		player.sendMessage(msg.getFlag(), MessageType.Normal);
+		player.sendMessage(msg.getValue(), MessageType.Normal);
 	}
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Region region) {
 		if(player == null || !player.isInMinigame()) return;
-		player.sendMessage(msg.getFlag(), MessageType.Normal);
+		player.sendMessage(msg.getValue(), MessageType.Normal);
 	}
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
-		msg.saveValue(path, config);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
-		msg.loadValue(path, config);
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Options");
-		m.addItem(msg.getMenuItem("Message", Material.PAPER));
+		m.addItem(new MenuItemString("Message", Material.PAPER, msg));
 		m.displayMenu(player);
 		return true;
 	}

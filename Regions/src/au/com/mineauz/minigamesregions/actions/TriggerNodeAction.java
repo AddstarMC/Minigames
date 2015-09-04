@@ -4,9 +4,10 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.properties.types.StringProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionModule;
@@ -14,7 +15,11 @@ import au.com.mineauz.minigamesregions.triggers.Triggers;
 
 public class TriggerNodeAction extends ActionInterface {
 	
-	private StringFlag node = new StringFlag("None", "node");
+	private final StringProperty node = new StringProperty("None", "node");
+	
+	public TriggerNodeAction() {
+		properties.addProperty(node);
+	}
 
 	@Override
 	public String getName() {
@@ -43,8 +48,8 @@ public class TriggerNodeAction extends ActionInterface {
 		Minigame mg = player.getMinigame();
 		if(mg != null){
 			RegionModule rmod = mg.getModule(RegionModule.class);
-			if(rmod.hasNode(node.getFlag()))
-				rmod.getNode(node.getFlag()).execute(Triggers.getTrigger("REMOTE"), player);
+			if(rmod.hasNode(node.getValue()))
+				rmod.getNode(node.getValue()).execute(Triggers.getTrigger("REMOTE"), player);
 		}
 	}
 
@@ -54,27 +59,23 @@ public class TriggerNodeAction extends ActionInterface {
 		Minigame mg = player.getMinigame();
 		if(mg != null){
 			RegionModule rmod = mg.getModule(RegionModule.class);
-			if(rmod.hasNode(this.node.getFlag()))
-				rmod.getNode(this.node.getFlag()).execute(Triggers.getTrigger("REMOTE"), player);
+			if(rmod.hasNode(this.node.getValue()))
+				rmod.getNode(this.node.getValue()).execute(Triggers.getTrigger("REMOTE"), player);
 		}
 	}
 
 	@Override
-	public void saveArguments(FileConfiguration config,
-			String path) {
-		node.saveValue(path, config);
+	public void saveArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
-	public void loadArguments(FileConfiguration config,
-			String path) {
-		node.loadValue(path, config);
+	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Trigger Node");
-		m.addItem(node.getMenuItem("Node Name", Material.EYE_OF_ENDER));
+		m.addItem(new MenuItemString("Node Name", Material.EYE_OF_ENDER, node));
 		m.displayMenu(player);
 		return true;
 	}

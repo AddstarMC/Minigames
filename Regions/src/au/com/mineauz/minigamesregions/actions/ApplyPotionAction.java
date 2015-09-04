@@ -10,21 +10,26 @@ import org.bukkit.potion.PotionEffectType;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.menu.MenuItemTime;
+import au.com.mineauz.minigames.properties.types.IntegerProperty;
+import au.com.mineauz.minigames.properties.types.StringProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class ApplyPotionAction extends ActionInterface {
 	
-	private StringFlag type = new StringFlag("SPEED", "type");
-	private IntegerFlag dur = new IntegerFlag(60, "duration");
-	private IntegerFlag amp = new IntegerFlag(1, "amplifier");
+	private final StringProperty type = new StringProperty("SPEED", "type"); // TODO: Change this to enum property on PotionEffectType
+	private final IntegerProperty dur = new IntegerProperty(60, "duration");
+	private final IntegerProperty amp = new IntegerProperty(1, "amplifier");
+	
+	public ApplyPotionAction() {
+		properties.addProperty(type);
+		properties.addProperty(dur);
+		properties.addProperty(amp);
+	}
 
 	@Override
 	public String getName() {
@@ -59,25 +64,17 @@ public class ApplyPotionAction extends ActionInterface {
 	}
 	
 	private void execute(MinigamePlayer player){
-		PotionEffect effect = new PotionEffect(PotionEffectType.getByName(type.getFlag()), 
-				dur.getFlag() * 20, amp.getFlag() - 1);
+		PotionEffect effect = new PotionEffect(PotionEffectType.getByName(type.getValue()), 
+				dur.getValue() * 20, amp.getValue() - 1);
 		player.getPlayer().addPotionEffect(effect);
 	}
 
 	@Override
-	public void saveArguments(FileConfiguration config,
-			String path) {
-		type.saveValue(path, config);
-		dur.saveValue(path, config);
-		amp.saveValue(path, config);
+	public void saveArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
-	public void loadArguments(FileConfiguration config,
-			String path) {
-		type.loadValue(path, config);
-		dur.loadValue(path, config);
-		amp.loadValue(path, config);
+	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
@@ -86,42 +83,9 @@ public class ApplyPotionAction extends ActionInterface {
 		List<String> pots = new ArrayList<String>(PotionEffectType.values().length);
 		for(PotionEffectType type : PotionEffectType.values())
 			pots.add(MinigameUtils.capitalize(type.toString().replace("_", " ")));
-		m.addItem(new MenuItemList("Potion Type", Material.POTION, new Callback<String>() {
-			
-			@Override
-			public void setValue(String value) {
-				type.setFlag(value.toUpperCase().replace(" ", "_"));
-			}
-			
-			@Override
-			public String getValue() {
-				return MinigameUtils.capitalize(type.getFlag().replace("_", " "));
-			}
-		}, pots));
-		m.addItem(new MenuItemTime("Duration", Material.WATCH, new Callback<Integer>() {
-
-			@Override
-			public void setValue(Integer value) {
-				dur.setFlag(value);
-			}
-
-			@Override
-			public Integer getValue() {
-				return dur.getFlag();
-			}
-		}, 0, 86400));
-		m.addItem(new MenuItemInteger("Level", Material.STONE, new Callback<Integer>() {
-
-			@Override
-			public void setValue(Integer value) {
-				amp.setFlag(value);;
-			}
-
-			@Override
-			public Integer getValue() {
-				return amp.getFlag();
-			}
-		}, 0, 100));
+		m.addItem(new MenuItemList("Potion Type", Material.POTION, type, pots));
+		m.addItem(new MenuItemTime("Duration", Material.WATCH, dur, 0, 86400));
+		m.addItem(new MenuItemInteger("Level", Material.STONE, amp, 0, 100));
 		m.displayMenu(player);
 		return true;
 	}

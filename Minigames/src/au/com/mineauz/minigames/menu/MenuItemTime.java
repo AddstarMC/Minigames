@@ -7,14 +7,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.properties.ObservableValue;
 
 public class MenuItemTime extends MenuItemInteger{
 
-	public MenuItemTime(String name, Material displayItem, Callback<Integer> value, int min, int max) {
+	public MenuItemTime(String name, Material displayItem, ObservableValue<Integer> value, int min, int max) {
 		super(name, displayItem, value, min, max);
 	}
 
-	public MenuItemTime(String name, String description, Material displayItem, Callback<Integer> value, int min, int max) {
+	public MenuItemTime(String name, String description, Material displayItem, ObservableValue<Integer> value, int min, int max) {
 		super(name, description, displayItem, value, min, max);
 	}
 	

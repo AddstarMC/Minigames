@@ -3,7 +3,9 @@ package au.com.mineauz.minigames.minigame.reward;
 import java.util.ArrayList;
 import java.util.List;
 
-import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.properties.Properties;
+import au.com.mineauz.minigames.properties.Property;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
@@ -11,11 +13,11 @@ public class RewardGroup {
 	
 	private String groupName;
 	private List<RewardType> items = new ArrayList<RewardType>();
-	private RewardRarity rarity;
+	private Property<RewardRarity> rarity;
 	
 	public RewardGroup(String groupName, RewardRarity rarity){
 		this.groupName = groupName;
-		this.rarity = rarity;
+		this.rarity = Properties.create(rarity);
 	}
 	
 	public String getName(){
@@ -35,29 +37,19 @@ public class RewardGroup {
 	}
 	
 	public RewardRarity getRarity(){
-		return rarity;
+		return rarity.getValue();
 	}
 	
 	public void setRarity(RewardRarity rarity){
-		this.rarity = rarity;
+		this.rarity.setValue(rarity);
+	}
+	
+	public Property<RewardRarity> getRarityPropery() {
+		return rarity;
 	}
 	
 	public void clearGroup(){
 		items.clear();
-	}
-	
-	public Callback<RewardRarity> getRarityCallback() {
-		return new Callback<RewardRarity>() {
-			@Override
-			public void setValue(RewardRarity value) {
-				rarity = value;
-			}
-			
-			@Override
-			public RewardRarity getValue() {
-				return rarity;
-			}
-		};
 	}
 	
 	public void save(ConfigurationSection section) {
@@ -69,7 +61,7 @@ public class RewardGroup {
 			index++;
 		}
 		
-		section.set("rarity", rarity.name());
+		section.set("rarity", getRarity().name());
 	}
 	
 	public static RewardGroup load(ConfigurationSection section, Rewards container) {

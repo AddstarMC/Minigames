@@ -22,6 +22,7 @@ import au.com.mineauz.minigames.events.TimerExpireEvent;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.minigame.TeamSelection;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.MultiplayerModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
@@ -307,11 +308,11 @@ public class MultiplayerType extends MinigameTypeBase{
 			if(event.getMinigame().isTeamGame()){
 				Minigame mgm = event.getMinigame();
 				TeamsModule teamModule = mgm.getModule(TeamsModule.class);
-				if(teamModule.getDefaultWinner() != null){
+				if(teamModule.getDefaultWinner() != TeamSelection.NONE){
 					List<MinigamePlayer> w;
 					List<MinigamePlayer> l;
-					if(teamModule.hasTeam(teamModule.getDefaultWinner())){
-						Team def = teamModule.getTeam(teamModule.getDefaultWinner());
+					if(teamModule.hasTeam(teamModule.getDefaultWinner().getTeam())){
+						Team def = teamModule.getTeam(teamModule.getDefaultWinner().getTeam());
 						w = new ArrayList<MinigamePlayer>(def.getPlayers().size());
 						l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - def.getPlayers().size());
 						w.addAll(def.getPlayers());
@@ -322,7 +323,7 @@ public class MultiplayerType extends MinigameTypeBase{
 					}
 					
 					for(Team t : teamModule.getTeams()){
-						if(t.getColor() != teamModule.getDefaultWinner())
+						if(t.getColor() != teamModule.getDefaultWinner().getTeam())
 							l.addAll(t.getPlayers());
 					}
 					plugin.pdata.endMinigame(mgm, w, l);

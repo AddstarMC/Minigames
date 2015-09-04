@@ -6,17 +6,25 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.util.Vector;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.FloatFlag;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemDecimal;
+import au.com.mineauz.minigames.properties.Properties;
+import au.com.mineauz.minigames.properties.types.FloatProperty;
 import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class VelocityAction extends ActionInterface{
 	
-	private FloatFlag x = new FloatFlag(0f, "xv");
-	private FloatFlag y = new FloatFlag(5f, "yv");
-	private FloatFlag z = new FloatFlag(0f, "zv");
+	private final FloatProperty x = new FloatProperty(0f, "xv");
+	private final FloatProperty y = new FloatProperty(5f, "yv");
+	private final FloatProperty z = new FloatProperty(0f, "zv");
+	
+	public VelocityAction() {
+		properties.addProperty(x);
+		properties.addProperty(y);
+		properties.addProperty(z);
+	}
 
 	@Override
 	public String getName() {
@@ -54,31 +62,25 @@ public class VelocityAction extends ActionInterface{
 			
 			@Override
 			public void run() {
-				player.getPlayer().setVelocity(new Vector(x.getFlag(), y.getFlag(), z.getFlag()));
+				player.getPlayer().setVelocity(new Vector(x.getValue(), y.getValue(), z.getValue()));
 			}
 		});
 	}
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
-		x.saveValue(path, config);
-		y.saveValue(path, config);
-		z.saveValue(path, config);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
-		x.loadValue(path, config);
-		y.loadValue(path, config);
-		z.loadValue(path, config);
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Velocity");
-		m.addItem(x.getMenuItem("X Velocity", Material.STONE, 0.5d, 1d, Double.MIN_VALUE, Double.MAX_VALUE));
-		m.addItem(y.getMenuItem("Y Velocity", Material.STONE, 0.5d, 1d, Double.MIN_VALUE, Double.MAX_VALUE));
-		m.addItem(z.getMenuItem("Z Velocity", Material.STONE, 0.5d, 1d, Double.MIN_VALUE, Double.MAX_VALUE));
+		m.addItem(new MenuItemDecimal("X Velocity", Material.STONE, Properties.toDouble(x), 0.5d, 1d, Double.MIN_VALUE, Double.MAX_VALUE));
+		m.addItem(new MenuItemDecimal("Y Velocity", Material.STONE, Properties.toDouble(y), 0.5d, 1d, Double.MIN_VALUE, Double.MAX_VALUE));
+		m.addItem(new MenuItemDecimal("Z Velocity", Material.STONE, Properties.toDouble(z), 0.5d, 1d, Double.MIN_VALUE, Double.MAX_VALUE));
 		m.displayMenu(player);
 		return true;
 	}

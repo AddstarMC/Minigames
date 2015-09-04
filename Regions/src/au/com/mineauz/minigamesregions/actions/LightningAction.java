@@ -7,14 +7,19 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBoolean;
+import au.com.mineauz.minigames.properties.types.BooleanProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class LightningAction extends ActionInterface{
 	
-	private BooleanFlag effect = new BooleanFlag(false, "effect");
+	private final BooleanProperty effect = new BooleanProperty(false, "effect");
+	
+	public LightningAction() {
+		properties.addProperty(effect);
+	}
 
 	@Override
 	public String getName() {
@@ -54,7 +59,7 @@ public class LightningAction extends ActionInterface{
 		loc.setY(yrand);
 		loc.setZ(zrand);
 		
-		if(effect.getFlag())
+		if(effect.getValue())
 			loc.getWorld().strikeLightningEffect(loc);
 		else
 			loc.getWorld().strikeLightning(loc);
@@ -62,7 +67,7 @@ public class LightningAction extends ActionInterface{
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player, Node node) {
-		if(effect.getFlag())
+		if(effect.getValue())
 			node.getLocation().getWorld().strikeLightningEffect(node.getLocation());
 		else
 			node.getLocation().getWorld().strikeLightning(node.getLocation());
@@ -70,18 +75,16 @@ public class LightningAction extends ActionInterface{
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
-		effect.saveValue(path, config);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
-		effect.loadValue(path, config);
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Lightning");
-		m.addItem(effect.getMenuItem("Effect Only", Material.ENDER_PEARL));
+		m.addItem(new MenuItemBoolean("Effect Only", Material.ENDER_PEARL, effect));
 		m.displayMenu(player);
 		return true;
 	}

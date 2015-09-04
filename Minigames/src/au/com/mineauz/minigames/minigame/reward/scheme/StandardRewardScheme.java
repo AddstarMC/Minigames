@@ -1,22 +1,18 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
-import com.google.common.collect.ImmutableMap;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.RewardsFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
+import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
+import au.com.mineauz.minigames.properties.types.RewardsProperty;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 
 /**
@@ -25,28 +21,29 @@ import au.com.mineauz.minigames.stats.StoredGameStats;
  * reward. The primary reward is acquired on the first completion only.
  */
 public class StandardRewardScheme implements RewardScheme {
+	private final ConfigPropertyContainer properties;
+	
 	private Rewards primaryReward;
-	private RewardsFlag primaryRewardFlag;
+	private final RewardsProperty primaryRewardFlag;
 	
 	private Rewards secondaryReward;
-	private RewardsFlag secondaryRewardFlag;
+	private final RewardsProperty secondaryRewardFlag;
 	
 	public StandardRewardScheme() {
 		primaryReward = new Rewards();
-		primaryRewardFlag = new RewardsFlag(null, "reward");
-		primaryRewardFlag.setFlag(primaryReward);
+		primaryRewardFlag = new RewardsProperty(primaryReward, "reward");
 		
 		secondaryReward = new Rewards();
-		secondaryRewardFlag = new RewardsFlag(null, "reward2");
-		secondaryRewardFlag.setFlag(secondaryReward);
+		secondaryRewardFlag = new RewardsProperty(secondaryReward, "reward2");
+		
+		properties = new ConfigPropertyContainer();
+		properties.addProperty(primaryRewardFlag);
+		properties.addProperty(secondaryRewardFlag);
 	}
 	
 	@Override
-	public Map<String, Flag<?>> getFlags() {
-		return ImmutableMap.<String, Flag<?>>builder()
-				.put("reward", primaryRewardFlag)
-				.put("reward2", secondaryRewardFlag)
-				.build();
+	public ConfigPropertyContainer getProperties() {
+		return properties;
 	}
 	
 	public Rewards getPrimaryReward() {

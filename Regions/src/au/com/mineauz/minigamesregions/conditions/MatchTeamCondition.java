@@ -8,17 +8,20 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.minigame.TeamColor;
+import au.com.mineauz.minigames.properties.types.StringProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class MatchTeamCondition extends ConditionInterface {
 	
-	private StringFlag team = new StringFlag("RED", "team");
+	private final StringProperty team = new StringProperty("RED", "team"); // TODO: Use EnumProperty of TeamSelection
+	
+	public MatchTeamCondition() {
+		properties.addProperty(team);
+	}
 
 	@Override
 	public String getName() {
@@ -42,7 +45,7 @@ public class MatchTeamCondition extends ConditionInterface {
 
 	@Override
 	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
-		if(player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getFlag())){
+		if(player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getValue())){
 			return true;
 		}
 		return false;
@@ -51,7 +54,7 @@ public class MatchTeamCondition extends ConditionInterface {
 	@Override
 	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
 		if(player == null || !player.isInMinigame()) return false;
-		if(player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getFlag())){
+		if(player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getValue())){
 			return true;
 		}
 		return false;
@@ -59,15 +62,10 @@ public class MatchTeamCondition extends ConditionInterface {
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
-		team.saveValue(path, config);
-		saveInvert(config, path);
 	}
 
 	@Override
-	public void loadArguments(FileConfiguration config,
-			String path) {
-		team.loadValue(path, config);
-		loadInvert(config, path);
+	public void loadArguments(FileConfiguration config, String path) {
 	}
 
 	@Override
@@ -76,18 +74,7 @@ public class MatchTeamCondition extends ConditionInterface {
 		List<String> teams = new ArrayList<String>();
 		for(TeamColor t : TeamColor.values())
 			teams.add(MinigameUtils.capitalize(t.toString().replace("_", " ")));
-		m.addItem(new MenuItemList("Team Color", Material.WOOL, new Callback<String>() {
-			
-			@Override
-			public void setValue(String value) {
-				team.setFlag(value.toUpperCase().replace(" ", "_"));
-			}
-			
-			@Override
-			public String getValue() {
-				return MinigameUtils.capitalize(team.getFlag().replace("_", " "));
-			}
-		}, teams));
+		m.addItem(new MenuItemList("Team Color", Material.WOOL, team, teams));
 		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;

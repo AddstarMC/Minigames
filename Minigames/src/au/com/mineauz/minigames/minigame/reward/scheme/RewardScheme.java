@@ -1,13 +1,11 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
-import java.util.Map;
-
 import org.bukkit.configuration.ConfigurationSection;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 
 /**
@@ -40,9 +38,9 @@ public interface RewardScheme {
 	public void awardPlayerOnLoss(MinigamePlayer player, StoredGameStats data, Minigame minigame);
 	
 	/**
-	 * @return Returns the map of flags used for saving and loading values
+	 * @return Returns the properties available in this scheme
 	 */
-	public Map<String, Flag<?>> getFlags();
+	public ConfigPropertyContainer getProperties();
 	
 	/**
 	 * Saves any extra info for this scheme. Flags will be saved elsewhere

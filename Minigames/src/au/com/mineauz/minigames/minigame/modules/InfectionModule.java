@@ -1,28 +1,29 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
+import au.com.mineauz.minigames.properties.types.IntegerProperty;
 
 public class InfectionModule extends MinigameModule{
-	
-	private IntegerFlag infectedPercent = new IntegerFlag(18, "infectedPercent");
+	private final ConfigPropertyContainer properties;
+	private IntegerProperty infectedPercent = new IntegerProperty(18, "infectedPercent");
 	
 	//Unsaved Data
 	private List<MinigamePlayer> infected = new ArrayList<MinigamePlayer>();
 
 	public InfectionModule(Minigame mgm) {
 		super(mgm);
+		
+		properties = new ConfigPropertyContainer();
+		properties.addProperty(infectedPercent);
 	}
 
 	@Override
@@ -31,10 +32,8 @@ public class InfectionModule extends MinigameModule{
 	}
 
 	@Override
-	public Map<String, Flag<?>> getFlags() {
-		Map<String, Flag<?>> flags = new HashMap<String, Flag<?>>();
-		flags.put("infectedPercent", infectedPercent);
-		return flags;
+	public ConfigPropertyContainer getProperties() {
+		return properties;
 	}
 
 	@Override
@@ -54,7 +53,7 @@ public class InfectionModule extends MinigameModule{
 	public Menu createSettingsMenu() {
 		Menu m = new Menu(6, "Infection Settings");
 		
-		m.addItem(infectedPercent.getMenuItem("Infected Percent", "The percentage of players;chosen to start as;infected", Material.SKULL_ITEM, 1, 99));
+		m.addItem(new MenuItemInteger("Infected Percent", "The percentage of players;chosen to start as;infected", Material.SKULL_ITEM, infectedPercent, 1, 99));
 		return m;
 	}
 	
@@ -64,11 +63,11 @@ public class InfectionModule extends MinigameModule{
 	}
 	
 	public void setInfectedPercent(int amount){
-		infectedPercent.setFlag(amount);
+		infectedPercent.setValue(amount);
 	}
 	
 	public int getInfectedPercent(){
-		return infectedPercent.getFlag();
+		return infectedPercent.getValue();
 	}
 	
 	public void addInfectedPlayer(MinigamePlayer ply){

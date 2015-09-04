@@ -1,10 +1,7 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -14,20 +11,23 @@ import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import au.com.mineauz.minigames.menu.MenuItemSubMenu;
+import au.com.mineauz.minigames.menu.MenuItemTime;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
+import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
+import au.com.mineauz.minigames.properties.types.BooleanProperty;
+import au.com.mineauz.minigames.properties.types.IntegerProperty;
 
 public class GameOverModule extends MinigameModule{
 	
-	private IntegerFlag timer = new IntegerFlag(0, "gameOver.timer");
-	private BooleanFlag invincible = new BooleanFlag(false, "gameOver.invincible");
-	private BooleanFlag humiliation = new BooleanFlag(false, "gameOver.humiliation");
-	private BooleanFlag interact = new BooleanFlag(false, "gameOver.interact");
+	private final ConfigPropertyContainer properties;
+	private IntegerProperty timer = new IntegerProperty(0, "gameOver.timer");
+	private BooleanProperty invincible = new BooleanProperty(false, "gameOver.invincible");
+	private BooleanProperty humiliation = new BooleanProperty(false, "gameOver.humiliation");
+	private BooleanProperty interact = new BooleanProperty(false, "gameOver.interact");
 	
 	private List<MinigamePlayer> winners = new ArrayList<MinigamePlayer>();
 	private List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>();
@@ -35,6 +35,12 @@ public class GameOverModule extends MinigameModule{
 
 	public GameOverModule(Minigame mgm) {
 		super(mgm);
+		
+		properties = new ConfigPropertyContainer();
+		properties.addProperty(timer);
+		properties.addProperty(invincible);
+		properties.addProperty(humiliation);
+		properties.addProperty(interact);
 	}
 
 	@Override
@@ -43,12 +49,8 @@ public class GameOverModule extends MinigameModule{
 	}
 
 	@Override
-	public Map<String, Flag<?>> getFlags() {
-		Map<String, Flag<?>> map = new HashMap<String, Flag<?>>();
-		map.put(timer.getName(), timer);
-		map.put(invincible.getName(), invincible);
-		map.put(humiliation.getName(), humiliation);
-		return map;
+	public ConfigPropertyContainer getProperties() {
+		return properties;
 	}
 
 	@Override
@@ -67,10 +69,10 @@ public class GameOverModule extends MinigameModule{
 	@Override
 	public void addEditMenuOptions(Menu menu) {
 		Menu m = new Menu(6, "Game Over Settings");
-		m.addItem(timer.getMenuItem("Time Length", Material.WATCH, 0, Integer.MAX_VALUE));
-		m.addItem(invincible.getMenuItem("Invincibility", Material.ENDER_PEARL));
-		m.addItem(humiliation.getMenuItem("Humiliation Mode", "Losers are stripped;of weapons and can't kill", Material.DIAMOND_SWORD));
-		m.addItem(interact.getMenuItem("Allow Interact", Material.STONE_PLATE));
+		m.addItem(new MenuItemTime("Time Length", Material.WATCH, timer, 0, Integer.MAX_VALUE));
+		m.addItem(new MenuItemBoolean("Invincibility", Material.ENDER_PEARL, invincible));
+		m.addItem(new MenuItemBoolean("Humiliation Mode", "Losers are stripped;of weapons and can't kill", Material.DIAMOND_SWORD, humiliation));
+		m.addItem(new MenuItemBoolean("Allow Interact", Material.STONE_PLATE, interact));
 		
 		menu.addItem(new MenuItemSubMenu("Game Over Settings", Material.WOOD_DOOR, m));
 	}
@@ -81,7 +83,7 @@ public class GameOverModule extends MinigameModule{
 	}
 	
 	public void startEndGameTimer(){
-		getMinigame().broadcast(MinigameUtils.formStr("minigame.gameOverQuit", timer.getFlag()), MessageType.Normal);
+		getMinigame().broadcast(MinigameUtils.formStr("minigame.gameOverQuit", timer.getValue()), MessageType.Normal);
 		getMinigame().setState(MinigameState.ENDED);
 		
 		List<MinigamePlayer> allPlys = new ArrayList<MinigamePlayer>(winners.size() + losers.size());
@@ -108,7 +110,7 @@ public class GameOverModule extends MinigameModule{
 			}
 		}
 		
-		if(timer.getFlag() > 0){
+		if(timer.getValue() > 0){
 			if(task != -1)
 				stopEndGameTimer();
 			task = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
@@ -127,7 +129,7 @@ public class GameOverModule extends MinigameModule{
 					clearLosers();
 					clearWinners();
 				}
-			}, timer.getFlag() * 20);
+			}, timer.getValue() * 20);
 		}
 	}
 	
@@ -161,35 +163,35 @@ public class GameOverModule extends MinigameModule{
 	}
 	
 	public void setTimer(int amount){
-		timer.setFlag(amount);
+		timer.setValue(amount);
 	}
 	
 	public int getTimer(){
-		return timer.getFlag();
+		return timer.getValue();
 	}
 	
 	public boolean isInvincible(){
-		return invincible.getFlag();
+		return invincible.getValue();
 	}
 	
 	public void setInvincible(boolean bool){
-		invincible.setFlag(bool);
+		invincible.setValue(bool);
 	}
 	
 	public boolean isHumiliationMode(){
-		return humiliation.getFlag();
+		return humiliation.getValue();
 	}
 	
 	public void setHumiliationMode(boolean bool){
-		humiliation.setFlag(bool);
+		humiliation.setValue(bool);
 	}
 	
 	public boolean isInteractAllowed(){
-		return interact.getFlag();
+		return interact.getValue();
 	}
 	
 	public void setInteractAllowed(boolean bool){
-		interact.setFlag(bool);
+		interact.setValue(bool);
 	}
 
 }

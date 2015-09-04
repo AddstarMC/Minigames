@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.properties.ObservableValue;
 
 public class MenuItemDecimal extends MenuItemValue<Double> {
 	public static final DecimalFormat format = new DecimalFormat("#.##");
@@ -18,28 +19,28 @@ public class MenuItemDecimal extends MenuItemValue<Double> {
 	private Double min;
 	private Double max;
 	
-	public MenuItemDecimal(String name, MaterialData displayItem, Callback<Double> callback, double lowerInc, double upperInc, double min, double max) {
+	public MenuItemDecimal(String name, MaterialData displayItem, ObservableValue<Double> callback, double lowerInc, double upperInc, double min, double max) {
 		super(name, displayItem, callback);
 		this.lowerInc = lowerInc;
 		this.upperInc = upperInc;
 		this.min = min;
 		this.max = max;
 	}
-	public MenuItemDecimal(String name, String description, Material displayItem, Callback<Double> callback, double lowerInc, double upperInc, double min, double max) {
+	public MenuItemDecimal(String name, String description, Material displayItem, ObservableValue<Double> callback, double lowerInc, double upperInc, double min, double max) {
 		super(name, description, displayItem, callback);
 		this.lowerInc = lowerInc;
 		this.upperInc = upperInc;
 		this.min = min;
 		this.max = max;
 	}
-	public MenuItemDecimal(String name, Material displayItem, Callback<Double> callback, double lowerInc, double upperInc, double min, double max) {
+	public MenuItemDecimal(String name, Material displayItem, ObservableValue<Double> callback, double lowerInc, double upperInc, double min, double max) {
 		super(name, null, displayItem, callback);
 		this.lowerInc = lowerInc;
 		this.upperInc = upperInc;
 		this.min = min;
 		this.max = max;
 	}
-	public MenuItemDecimal(String name, String description, MaterialData displayItem, Callback<Double> callback, double lowerInc, double upperInc, double min, double max) {
+	public MenuItemDecimal(String name, String description, MaterialData displayItem, ObservableValue<Double> callback, double lowerInc, double upperInc, double min, double max) {
 		super(name, description, displayItem, callback);
 		this.lowerInc = lowerInc;
 		this.upperInc = upperInc;

@@ -6,19 +6,20 @@ import java.util.List;
 import java.util.Map;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.properties.Properties;
+import au.com.mineauz.minigames.properties.Property;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 
-
+// TODO: Node and Region Executors need to have one base class (or not be different at all?)
 public class NodeExecutor {
 	
 	private Trigger trigger;
 	private List<ConditionInterface> conditions = new ArrayList<ConditionInterface>();
 	private List<ActionInterface> actions = new ArrayList<ActionInterface>();
-	private boolean triggerPerPlayer = false;
-	private int triggerCount = 0;
+	private Property<Boolean> triggerPerPlayer = Properties.create(false);
+	private Property<Integer> triggerCount = Properties.create(0);
 	private Map<String, Integer> triggers = new HashMap<String, Integer>();
 	
 	public NodeExecutor(Trigger trigger){
@@ -53,50 +54,28 @@ public class NodeExecutor {
 		actions.remove(action);
 	}
 	
-	public int getTriggerCount(){
+	public int getTriggerCount() {
+		return triggerCount.getValue();
+	}
+	
+	public void setTriggerCount(int count) {
+		triggerCount.setValue(count);
+	}
+	
+	public Property<Integer> triggerCount() {
 		return triggerCount;
 	}
 	
-	public void setTriggerCount(int count){
-		triggerCount = count;
+	public boolean isTriggerPerPlayer() {
+		return triggerPerPlayer.getValue();
 	}
 	
-	public Callback<Integer> getTriggerCountCallback(){
-		return new Callback<Integer>() {
-
-			@Override
-			public void setValue(Integer value) {
-				setTriggerCount(value);
-			}
-
-			@Override
-			public Integer getValue() {
-				return getTriggerCount();
-			}
-		};
+	public void setTriggerPerPlayer(boolean perPlayer) {
+		triggerPerPlayer.setValue(perPlayer);
 	}
 	
-	public boolean isTriggerPerPlayer(){
+	public Property<Boolean> triggerPerPlayer() {
 		return triggerPerPlayer;
-	}
-	
-	public void setTriggerPerPlayer(boolean perPlayer){
-		triggerPerPlayer = perPlayer;
-	}
-	
-	public Callback<Boolean> getIsTriggerPerPlayerCallback(){
-		return new Callback<Boolean>() {
-
-			@Override
-			public void setValue(Boolean value) {
-				setTriggerPerPlayer(value);
-			}
-
-			@Override
-			public Boolean getValue() {
-				return isTriggerPerPlayer();
-			}
-		};
 	}
 	
 	public void addPublicTrigger(){
@@ -113,16 +92,16 @@ public class NodeExecutor {
 	}
 	
 	public boolean canBeTriggered(MinigamePlayer player){
-		if(triggerCount != 0){
-			if(!triggerPerPlayer){
+		if(getTriggerCount() != 0){
+			if(!triggerPerPlayer.getValue()){
 				if(triggers.get("public") != null && 
-						triggers.get("public") >= triggerCount){
+						triggers.get("public") >= getTriggerCount()){
 					return false;
 				}
 			}
 			else{
 				if(triggers.get(player.getUUID().toString()) != null && 
-						triggers.get(player.getUUID().toString()) >= triggerCount){
+						triggers.get(player.getUUID().toString()) >= getTriggerCount()){
 					return false;
 				}
 			}

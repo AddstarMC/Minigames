@@ -28,6 +28,8 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemEnum;
 import au.com.mineauz.minigames.menu.MenuItemScoreboardSave;
+import au.com.mineauz.minigames.properties.Properties;
+import au.com.mineauz.minigames.properties.Property;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.MinigameStats;
 import au.com.mineauz.minigames.stats.StatSettings;
@@ -40,7 +42,7 @@ public class ScoreboardDisplay {
 	private Location rootBlock;
 	private MinigameStat stat;
 	private StatValueField field;
-	private ScoreboardOrder order;
+	private Property<ScoreboardOrder> order;
 	private Minigame minigame;
 	private int width;
 	private int height;
@@ -62,7 +64,7 @@ public class ScoreboardDisplay {
 		// Default values
 		stat = MinigameStats.Wins;
 		field = StatValueField.Total;
-		order = ScoreboardOrder.DESCENDING;
+		order = Properties.create(ScoreboardOrder.DESCENDING);
 		
 		stats = Lists.newArrayListWithCapacity(width * height);
 		needsLoad = true;
@@ -86,11 +88,11 @@ public class ScoreboardDisplay {
 	}
 
 	public ScoreboardOrder getOrder() {
-		return order;
+		return order.getValue();
 	}
 
 	public void setOrder(ScoreboardOrder order) {
-		this.order = order;
+		this.order.setValue(order);
 		stats.clear();
 		needsLoad = true;
 	}
@@ -276,17 +278,7 @@ public class ScoreboardDisplay {
 		setupMenu.addItem(statisticChoice);
 		setupMenu.addItem(fieldChoice);
 		
-		setupMenu.addItem(new MenuItemEnum<ScoreboardOrder>("Scoreboard Order", Material.ENDER_PEARL, new Callback<ScoreboardOrder>() {
-			@Override
-			public ScoreboardOrder getValue() {
-				return order;
-			}
-			
-			@Override
-			public void setValue(ScoreboardOrder value) {
-				order = value;
-			}
-		}, ScoreboardOrder.class));
+		setupMenu.addItem(new MenuItemEnum<ScoreboardOrder>("Scoreboard Order", Material.ENDER_PEARL, order, ScoreboardOrder.class));
 		
 		setupMenu.setControlItem(new MenuItemScoreboardSave("Create Scoreboard", Material.REDSTONE_TORCH_ON, this), 4);
 		setupMenu.displayMenu(player);
@@ -349,7 +341,7 @@ public class ScoreboardDisplay {
 		section.set("dir", facing.name());
 		section.set("stat", stat.getName());
 		section.set("field", field.name());
-		section.set("order", order.name());
+		section.set("order", order.getValue().name());
 		MinigameUtils.saveShortLocation(section.createSection("location"), rootBlock);
 	}
 	
@@ -430,7 +422,7 @@ public class ScoreboardDisplay {
 	
 	public void reload() {
 		needsLoad = false;
-		ListenableFuture<List<StoredStat>> future = Minigames.plugin.getBackend().loadStats(minigame, stat, field, order, 0, width * height);
+		ListenableFuture<List<StoredStat>> future = Minigames.plugin.getBackend().loadStats(minigame, stat, field, order.getValue(), 0, width * height);
 		Minigames.plugin.getBackend().addServerThreadCallback(future, getUpdateCallback());
 	}
 	

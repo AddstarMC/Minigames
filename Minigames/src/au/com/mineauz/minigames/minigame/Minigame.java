@@ -3,7 +3,6 @@ package au.com.mineauz.minigames.minigame;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,12 +12,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
 import com.google.common.collect.Maps;
-
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 
@@ -32,15 +31,6 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.MultiplayerBets;
 import au.com.mineauz.minigames.MultiplayerTimer;
 import au.com.mineauz.minigames.blockRecorder.RecorderData;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.EnumFlag;
-import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.ListFlag;
-import au.com.mineauz.minigames.config.LocationFlag;
-import au.com.mineauz.minigames.config.LocationListFlag;
-import au.com.mineauz.minigames.config.SimpleLocationFlag;
-import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.events.MinigameInitializeEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
@@ -49,9 +39,11 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemAddFlag;
+import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import au.com.mineauz.minigames.menu.MenuItemDisplayWhitelist;
 import au.com.mineauz.minigames.menu.MenuItemEnum;
 import au.com.mineauz.minigames.menu.MenuItemFlag;
+import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.menu.MenuItemSubMenu;
@@ -64,60 +56,68 @@ import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.MultiplayerModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
+import au.com.mineauz.minigames.properties.types.BooleanProperty;
+import au.com.mineauz.minigames.properties.types.EnumProperty;
+import au.com.mineauz.minigames.properties.types.IntegerProperty;
+import au.com.mineauz.minigames.properties.types.ListProperty;
+import au.com.mineauz.minigames.properties.types.LocationListProperty;
+import au.com.mineauz.minigames.properties.types.LocationProperty;
+import au.com.mineauz.minigames.properties.types.StringProperty;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatSettings;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 
 public class Minigame {
-	private Map<String, Flag<?>> configFlags = new HashMap<String, Flag<?>>();
-	
 	private final String name;
-	private StringFlag displayName = new StringFlag(null, "displayName");
-	private StringFlag objective = new StringFlag(null, "objective");
-	private StringFlag gametypeName = new StringFlag(null, "gametypeName");
-	private EnumFlag<MinigameType> type = new EnumFlag<MinigameType>(MinigameType.SINGLEPLAYER, "type");
-	private BooleanFlag enabled = new BooleanFlag(false, "enabled");
-	private IntegerFlag maxPlayers = new IntegerFlag(4, "maxplayers");
-	private BooleanFlag spMaxPlayers = new BooleanFlag(false, "spMaxPlayers");
-	private ListFlag flags = new ListFlag(null, "flags");
+	private final ConfigPropertyContainer properties;
+	
+	private StringProperty displayName = new StringProperty("displayName");
+	private StringProperty objective = new StringProperty("objective");
+	private StringProperty gametypeName = new StringProperty("gametypeName");
+	private EnumProperty<MinigameType> type = new EnumProperty<MinigameType>(MinigameType.SINGLEPLAYER, "type");
+	private BooleanProperty enabled = new BooleanProperty(false, "enabled");
+	private IntegerProperty maxPlayers = new IntegerProperty(4, "maxplayers");
+	private BooleanProperty spMaxPlayers = new BooleanProperty(false, "spMaxPlayers");
+	private ListProperty flags = new ListProperty(null, "flags");
 	private MinigameState state = MinigameState.IDLE;
 	
-	private SimpleLocationFlag floorDegen1 = new SimpleLocationFlag(null, "sfloorpos.1");
-	private SimpleLocationFlag floorDegen2 = new SimpleLocationFlag(null, "sfloorpos.2");
-	private StringFlag degenType = new StringFlag("inward", "degentype");
-	private IntegerFlag degenRandomChance = new IntegerFlag(15, "degenrandom");
+	private LocationProperty floorDegen1 = new LocationProperty(null, "sfloorpos.1");
+	private LocationProperty floorDegen2 = new LocationProperty(null, "sfloorpos.2");
+	private StringProperty degenType = new StringProperty("inward", "degentype");
+	private IntegerProperty degenRandomChance = new IntegerProperty(15, "degenrandom");
 	private FloorDegenerator sfloordegen;
-	private IntegerFlag floorDegenTime = new IntegerFlag(Minigames.plugin.getConfig().getInt("multiplayer.floordegenerator.time"), "floordegentime");
+	private IntegerProperty floorDegenTime = new IntegerProperty(Minigames.plugin.getConfig().getInt("multiplayer.floordegenerator.time"), "floordegentime");
 	
-	private LocationListFlag startLocations = new LocationListFlag(null, "startpos");
-	private LocationFlag endPosition = new LocationFlag(null, "endpos");
-	private LocationFlag quitPosition = new LocationFlag(null, "quitpos");
-	private LocationFlag spectatorPosition = new LocationFlag(null, "spectatorpos");
+	private LocationListProperty startLocations = new LocationListProperty(null, "startpos");
+	private LocationProperty endPosition = new LocationProperty(null, "endpos");
+	private LocationProperty quitPosition = new LocationProperty(null, "quitpos");
+	private LocationProperty spectatorPosition = new LocationProperty(null, "spectatorpos");
 	
-	private BooleanFlag usePermissions = new BooleanFlag(false, "usepermissions");
+	private BooleanProperty usePermissions = new BooleanProperty(false, "usepermissions");
 	
-	private BooleanFlag itemDrops = new BooleanFlag(false, "itemdrops");
-	private BooleanFlag deathDrops = new BooleanFlag(false, "deathdrops");
-	private BooleanFlag itemPickup = new BooleanFlag(true, "itempickup");
-	private BooleanFlag blockBreak = new BooleanFlag(false, "blockbreak");
-	private BooleanFlag blockPlace = new BooleanFlag(false, "blockplace");
-	private EnumFlag<GameMode> defaultGamemode = new EnumFlag<GameMode>(GameMode.ADVENTURE, "gamemode");
-	private BooleanFlag blocksdrop = new BooleanFlag(true, "blocksdrop");
-	private BooleanFlag allowEnderpearls = new BooleanFlag(false, "allowEnderpearls");
-	private BooleanFlag allowMPCheckpoints = new BooleanFlag(false, "allowMPCheckpoints");
-	private BooleanFlag allowFlight = new BooleanFlag(false, "allowFlight");
-	private BooleanFlag enableFlight = new BooleanFlag(false, "enableFlight");
+	private BooleanProperty itemDrops = new BooleanProperty(false, "itemdrops");
+	private BooleanProperty deathDrops = new BooleanProperty(false, "deathdrops");
+	private BooleanProperty itemPickup = new BooleanProperty(true, "itempickup");
+	private BooleanProperty blockBreak = new BooleanProperty(false, "blockbreak");
+	private BooleanProperty blockPlace = new BooleanProperty(false, "blockplace");
+	private EnumProperty<GameMode> defaultGamemode = new EnumProperty<GameMode>(GameMode.ADVENTURE, "gamemode");
+	private BooleanProperty blocksdrop = new BooleanProperty(true, "blocksdrop");
+	private BooleanProperty allowEnderpearls = new BooleanProperty(false, "allowEnderpearls");
+	private BooleanProperty allowMPCheckpoints = new BooleanProperty(false, "allowMPCheckpoints");
+	private BooleanProperty allowFlight = new BooleanProperty(false, "allowFlight");
+	private BooleanProperty enableFlight = new BooleanProperty(false, "enableFlight");
 	
-	private StringFlag mechanic = new StringFlag("custom", "scoretype");
-	private BooleanFlag paintBallMode = new BooleanFlag(false, "paintball");
-	private IntegerFlag paintBallDamage = new IntegerFlag(2, "paintballdmg");
-	private BooleanFlag unlimitedAmmo = new BooleanFlag(false, "unlimitedammo");
-	private BooleanFlag saveCheckpoints = new BooleanFlag(false, "saveCheckpoints");
-	private IntegerFlag lives = new IntegerFlag(0, "lives");
+	private StringProperty mechanic = new StringProperty("custom", "scoretype");
+	private BooleanProperty paintBallMode = new BooleanProperty(false, "paintball");
+	private IntegerProperty paintBallDamage = new IntegerProperty(2, "paintballdmg");
+	private BooleanProperty unlimitedAmmo = new BooleanProperty(false, "unlimitedammo");
+	private BooleanProperty saveCheckpoints = new BooleanProperty(false, "saveCheckpoints");
+	private IntegerProperty lives = new IntegerProperty(0, "lives");
 	
-	private LocationFlag regenArea1 = new LocationFlag(null, "regenarea.1");
-	private LocationFlag regenArea2 = new LocationFlag(null, "regenarea.2");
-	private IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
+	private LocationProperty regenArea1 = new LocationProperty(null, "regenarea.1");
+	private LocationProperty regenArea2 = new LocationProperty(null, "regenarea.2");
+	private IntegerProperty regenDelay = new IntegerProperty(0, "regenDelay");
 	
 	private Map<Class<? extends MinigameModule>, MinigameModule> modules = Maps.newHashMap();
 	private Map<Class<? extends MinigameModule>, MinigameModule> cachedModules = Maps.newHashMap();
@@ -125,15 +125,15 @@ public class Minigame {
 	
 	private Scoreboard sbManager = Minigames.plugin.getServer().getScoreboardManager().getNewScoreboard();
 	
-	private IntegerFlag minScore = new IntegerFlag(5, "minscore");
-	private IntegerFlag maxScore = new IntegerFlag(10, "maxscore");
-	private BooleanFlag displayScoreboard = new BooleanFlag(true, "displayScoreboard");
+	private IntegerProperty minScore = new IntegerProperty(5, "minscore");
+	private IntegerProperty maxScore = new IntegerProperty(10, "maxscore");
+	private BooleanProperty displayScoreboard = new BooleanProperty(true, "displayScoreboard");
 	
-	private BooleanFlag canSpectateFly = new BooleanFlag(false, "canspectatefly");
+	private BooleanProperty canSpectateFly = new BooleanProperty(false, "canspectatefly");
 	
-	private BooleanFlag randomizeChests = new BooleanFlag(false, "randomizechests");
-	private IntegerFlag minChestRandom = new IntegerFlag(5, "minchestrandom");
-	private IntegerFlag maxChestRandom = new IntegerFlag(10, "maxchestrandom");
+	private BooleanProperty randomizeChests = new BooleanProperty(false, "randomizechests");
+	private IntegerProperty minChestRandom = new IntegerProperty(5, "minchestrandom");
+	private IntegerProperty maxChestRandom = new IntegerProperty(10, "maxchestrandom");
 	
 	private ScoreboardData sbData = new ScoreboardData();
 	private Map<MinigameStat, StatSettings> statSettings = Maps.newHashMap();
@@ -147,73 +147,78 @@ public class Minigame {
 	private MinigameTimer miniTimer = null;
 	private MultiplayerBets mpBets = null;
 
-	public Minigame(String name, MinigameType type, Location start){
+	public Minigame(String name, MinigameType type, Location start) {
 		this.name = name;
+		
+		properties = new ConfigPropertyContainer();
 		setup(type, start);
 	}
 	
-	public Minigame(String name){
+	public Minigame(String name) {
 		this.name = name;
+		
+		properties = new ConfigPropertyContainer();
 		setup(MinigameType.SINGLEPLAYER, null);
 	}
 	
-	private void setup(MinigameType type, Location start){
-		this.type.setFlag(type);
-		startLocations.setFlag(new ArrayList<Location>());
+	private void setup(MinigameType type, Location start) {
+		this.type.setValue(type);
+		startLocations.setValue(new ArrayList<Location>());
 		
 		if(start != null)
-			startLocations.getFlag().add(start);
+			startLocations.getValue().add(start);
 		
 		sbManager.registerNewObjective(this.name, "dummy");
 		sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
 		
-		flags.setFlag(new ArrayList<String>());
+		flags.setValue(new ArrayList<String>());
 		
-		addConfigFlag(allowEnderpearls);
-		addConfigFlag(allowFlight);
-		addConfigFlag(allowMPCheckpoints);
-		addConfigFlag(blockBreak);
-		addConfigFlag(blockPlace);
-		addConfigFlag(blocksdrop);
-		addConfigFlag(canSpectateFly);
-		addConfigFlag(deathDrops);
-		addConfigFlag(defaultGamemode);
-		addConfigFlag(degenRandomChance);
-		addConfigFlag(degenType);
-		addConfigFlag(displayName);
-		addConfigFlag(enableFlight);
-		addConfigFlag(enabled);
-		addConfigFlag(endPosition);
-		addConfigFlag(flags);
-		addConfigFlag(floorDegen1);
-		addConfigFlag(floorDegen2);
-		addConfigFlag(floorDegenTime);
-		addConfigFlag(gametypeName);
-		addConfigFlag(itemDrops);
-		addConfigFlag(itemPickup);
-		addConfigFlag(lives);
-		addConfigFlag(maxChestRandom);
-		addConfigFlag(maxPlayers);
-		addConfigFlag(maxScore);
-		addConfigFlag(minChestRandom);
-		addConfigFlag(minScore);
-		addConfigFlag(objective);
-		addConfigFlag(paintBallDamage);
-		addConfigFlag(paintBallMode);
-		addConfigFlag(quitPosition);
-		addConfigFlag(randomizeChests);
-		addConfigFlag(regenArea1);
-		addConfigFlag(regenArea2);
-		addConfigFlag(regenDelay);
-		addConfigFlag(saveCheckpoints);
-		addConfigFlag(mechanic);
-		addConfigFlag(spMaxPlayers);
-		addConfigFlag(startLocations);
-		addConfigFlag(this.type);
-		addConfigFlag(unlimitedAmmo);
-		addConfigFlag(usePermissions);
-		addConfigFlag(spectatorPosition);
-		addConfigFlag(displayScoreboard);
+		properties.addProperty(allowEnderpearls);
+		properties.addProperty(allowEnderpearls);
+		properties.addProperty(allowFlight);
+		properties.addProperty(allowMPCheckpoints);
+		properties.addProperty(blockBreak);
+		properties.addProperty(blockPlace);
+		properties.addProperty(blocksdrop);
+		properties.addProperty(canSpectateFly);
+		properties.addProperty(deathDrops);
+		properties.addProperty(defaultGamemode);
+		properties.addProperty(degenRandomChance);
+		properties.addProperty(degenType);
+		properties.addProperty(displayName);
+		properties.addProperty(enableFlight);
+		properties.addProperty(enabled);
+		properties.addProperty(endPosition);
+		properties.addProperty(flags);
+		properties.addProperty(floorDegen1);
+		properties.addProperty(floorDegen2);
+		properties.addProperty(floorDegenTime);
+		properties.addProperty(gametypeName);
+		properties.addProperty(itemDrops);
+		properties.addProperty(itemPickup);
+		properties.addProperty(lives);
+		properties.addProperty(maxChestRandom);
+		properties.addProperty(maxPlayers);
+		properties.addProperty(maxScore);
+		properties.addProperty(minChestRandom);
+		properties.addProperty(minScore);
+		properties.addProperty(objective);
+		properties.addProperty(paintBallDamage);
+		properties.addProperty(paintBallMode);
+		properties.addProperty(quitPosition);
+		properties.addProperty(randomizeChests);
+		properties.addProperty(regenArea1);
+		properties.addProperty(regenArea2);
+		properties.addProperty(regenDelay);
+		properties.addProperty(saveCheckpoints);
+		properties.addProperty(mechanic);
+		properties.addProperty(spMaxPlayers);
+		properties.addProperty(startLocations);
+		properties.addProperty(this.type);
+		properties.addProperty(unlimitedAmmo);
+		properties.addProperty(usePermissions);
+		properties.addProperty(spectatorPosition);
+		properties.addProperty(displayScoreboard);
 		
 		initialize();
 	}
@@ -223,7 +228,7 @@ public class Minigame {
 		modules.clear();
 		
 		// Add modules for the minigame type
-		for (Class<? extends MinigameModule> module : Minigames.plugin.modules.getDefaultModules(type.getFlag())) {
+		for (Class<? extends MinigameModule> module : Minigames.plugin.modules.getDefaultModules(type.getValue())) {
 			modules.put(module, MinigameModule.makeModule(module, this));
 		}
 		
@@ -238,6 +243,9 @@ public class Minigame {
 		Bukkit.getPluginManager().callEvent(event);
 	}
 	
+	public ConfigPropertyContainer getProperties() {
+		return properties;
+	}
 	
 	public MinigameState getState(){
 		return state;
@@ -245,14 +253,6 @@ public class Minigame {
 	
 	public void setState(MinigameState state){
 		this.state = state;
-	}
-	
-	private void addConfigFlag(Flag<?> flag){
-		configFlags.put(flag.getName(), flag);
-	}
-	
-	public Flag<?> getConfigFlag(String name){
-		return configFlags.get(name);
 	}
 	
 	public boolean addModule(Class<? extends MinigameModule> module) {
@@ -299,154 +299,154 @@ public class Minigame {
 	}
 
 	public boolean hasFlags(){
-		return !flags.getFlag().isEmpty();
+		return !flags.getValue().isEmpty();
 	}
 	
 	public void addFlag(String flag){
-		flags.getFlag().add(flag);
+		flags.getValue().add(flag);
 	}
 	
 	public void setFlags(List<String> flags){
-		this.flags.setFlag(flags);
+		this.flags.setValue(flags);
 	}
 	
 	public List<String> getFlags(){
-		return flags.getFlag();
+		return flags.getValue();
 	}
 	
 	public boolean removeFlag(String flag){
-		if(flags.getFlag().contains(flag)){
-			flags.getFlag().remove(flag);
+		if(flags.getValue().contains(flag)){
+			flags.getValue().remove(flag);
 			return true;
 		}
 		return false;
 	}
 	
 	public void setStartLocation(Location loc){
-		startLocations.getFlag().set(0, loc);
+		startLocations.getValue().set(0, loc);
 	}
 	
 	public void addStartLocation(Location loc){
-		startLocations.getFlag().add(loc);
+		startLocations.getValue().add(loc);
 	}
 	
 	public void addStartLocation(Location loc, int number){
-		if(startLocations.getFlag().size() >= number){
-			startLocations.getFlag().set(number - 1, loc);
+		if(startLocations.getValue().size() >= number){
+			startLocations.getValue().set(number - 1, loc);
 		}
 		else{
-			startLocations.getFlag().add(loc);
+			startLocations.getValue().add(loc);
 		}
 	}
 	
 	public List<Location> getStartLocations(){
-		return startLocations.getFlag();
+		return startLocations.getValue();
 	}
 	
 	public boolean removeStartLocation(int locNumber){
-		if(startLocations.getFlag().size() < locNumber){
-			startLocations.getFlag().remove(locNumber);
+		if(startLocations.getValue().size() < locNumber){
+			startLocations.getValue().remove(locNumber);
 			return true;
 		}
 		return false;
 	}
 	
 	public void setSpectatorLocation(Location loc){
-		spectatorPosition.setFlag(loc);
+		spectatorPosition.setValue(loc);
 	}
 	
 	public Location getSpectatorLocation(){
-		return spectatorPosition.getFlag();
+		return spectatorPosition.getValue();
 	}
 	
 	public boolean isEnabled(){
-		return enabled.getFlag();
+		return enabled.getValue();
 	}
 
 	public void setEnabled(boolean enabled){
-		this.enabled.setFlag(enabled);
+		this.enabled.setValue(enabled);
 	}
 
 	public int getMaxPlayers(){
-		return maxPlayers.getFlag();
+		return maxPlayers.getValue();
 	}
 
 	public void setMaxPlayers(int maxPlayers){
-		this.maxPlayers.setFlag(maxPlayers);
+		this.maxPlayers.setValue(maxPlayers);
 	}
 
 	public boolean isSpMaxPlayers() {
-		return spMaxPlayers.getFlag();
+		return spMaxPlayers.getValue();
 	}
 
 	public void setSpMaxPlayers(boolean spMaxPlayers) {
-		this.spMaxPlayers.setFlag(spMaxPlayers);
+		this.spMaxPlayers.setValue(spMaxPlayers);
 	}
 
 	public Location getFloorDegen1(){
-		return floorDegen1.getFlag();
+		return floorDegen1.getValue();
 	}
 
 	public void setFloorDegen1(Location loc){
-		this.floorDegen1.setFlag(loc);
+		this.floorDegen1.setValue(loc);
 	}
 
 	public Location getFloorDegen2(){
-		return floorDegen2.getFlag();
+		return floorDegen2.getValue();
 	}
 
 	public void setFloorDegen2(Location loc){
-		this.floorDegen2.setFlag(loc);
+		this.floorDegen2.setValue(loc);
 	}
 
 	public String getDegenType() {
-		return degenType.getFlag();
+		return degenType.getValue();
 	}
 
 	public void setDegenType(String degenType) {
-		this.degenType.setFlag(degenType);
+		this.degenType.setValue(degenType);
 	}
 
 	public int getDegenRandomChance() {
-		return degenRandomChance.getFlag();
+		return degenRandomChance.getValue();
 	}
 
 	public void setDegenRandomChance(int degenRandomChance) {
-		this.degenRandomChance.setFlag(degenRandomChance);
+		this.degenRandomChance.setValue(degenRandomChance);
 	}
 
 	public Location getEndPosition(){
-		return endPosition.getFlag();
+		return endPosition.getValue();
 	}
 
 	public void setEndPosition(Location endPosition){
-		this.endPosition.setFlag(endPosition);
+		this.endPosition.setValue(endPosition);
 	}
 
 	public Location getQuitPosition(){
-		return quitPosition.getFlag();
+		return quitPosition.getValue();
 	}
 
 	public void setQuitPosition(Location quitPosition){
-		this.quitPosition.setFlag(quitPosition);
+		this.quitPosition.setValue(quitPosition);
 	}
 
 	public String getName(boolean useDisplay){
-		if(useDisplay && displayName.getFlag() != null)
-			return displayName.getFlag();
+		if(useDisplay && displayName.getValue() != null)
+			return displayName.getValue();
 		return name;
 	}
 
 	public void setDisplayName(String displayName) {
-		this.displayName.setFlag(displayName);
+		this.displayName.setValue(displayName);
 	}
 
 	public MinigameType getType(){
-		return type.getFlag();
+		return type.getValue();
 	}
 	
 	public void setType(MinigameType type){
-		this.type.setFlag(type);
+		this.type.setValue(type);
 		initialize();
 	}
 	
@@ -495,11 +495,11 @@ public class Minigame {
 	}
 
 	public void setUsePermissions(boolean usePermissions) {
-		this.usePermissions.setFlag(usePermissions);
+		this.usePermissions.setValue(usePermissions);
 	}
 
 	public boolean getUsePermissions() {
-		return usePermissions.getFlag();
+		return usePermissions.getValue();
 	}
 	
 	public List<MinigamePlayer> getPlayers() {
@@ -547,26 +547,26 @@ public class Minigame {
 	}
 
 	public int getMinScore() {
-		return minScore.getFlag();
+		return minScore.getValue();
 	}
 
 	public void setMinScore(int minScore) {
-		this.minScore.setFlag(minScore);
+		this.minScore.setValue(minScore);
 	}
 
 	public int getMaxScore() {
-		return maxScore.getFlag();
+		return maxScore.getValue();
 	}
 
 	public void setMaxScore(int maxScore) {
-		this.maxScore.setFlag(maxScore);
+		this.maxScore.setValue(maxScore);
 	}
 	
 	public int getMaxScorePerPlayer(){
 		float scorePerPlayer = getMaxScore() / getMaxPlayers();
 		int score = (int) Math.round(scorePerPlayer * getPlayers().size());
-		if(score < minScore.getFlag()){
-			score = minScore.getFlag();
+		if(score < minScore.getValue()){
+			score = minScore.getValue();
 		}
 		return score;
 	}
@@ -580,27 +580,27 @@ public class Minigame {
 	}
 	
 	public boolean hasItemDrops() {
-		return itemDrops.getFlag();
+		return itemDrops.getValue();
 	}
 
 	public void setItemDrops(boolean itemDrops) {
-		this.itemDrops.setFlag(itemDrops);
+		this.itemDrops.setValue(itemDrops);
 	}
 
 	public boolean hasDeathDrops() {
-		return deathDrops.getFlag();
+		return deathDrops.getValue();
 	}
 
 	public void setDeathDrops(boolean deathDrops) {
-		this.deathDrops.setFlag(deathDrops);
+		this.deathDrops.setValue(deathDrops);
 	}
 
 	public boolean hasItemPickup() {
-		return itemPickup.getFlag();
+		return itemPickup.getValue();
 	}
 
 	public void setItemPickup(boolean itemPickup) {
-		this.itemPickup.setFlag(itemPickup);
+		this.itemPickup.setValue(itemPickup);
 	}
 
 	public RecorderData getBlockRecorder() {
@@ -612,23 +612,23 @@ public class Minigame {
 	}
 
 	public boolean canBlockBreak() {
-		return blockBreak.getFlag();
+		return blockBreak.getValue();
 	}
 
 	public void setCanBlockBreak(boolean blockBreak) {
-		this.blockBreak.setFlag(blockBreak);
+		this.blockBreak.setValue(blockBreak);
 	}
 
 	public boolean canBlockPlace() {
-		return blockPlace.getFlag();
+		return blockPlace.getValue();
 	}
 
 	public void setCanBlockPlace(boolean blockPlace) {
-		this.blockPlace.setFlag(blockPlace);
+		this.blockPlace.setValue(blockPlace);
 	}
 	
 	public GameMode getDefaultGamemode() {
-		return defaultGamemode.getFlag();
+		return defaultGamemode.getValue();
 	}
 	
 	public Callback<String> getDefaultGamemodeCallback(){
@@ -636,177 +636,177 @@ public class Minigame {
 
 			@Override
 			public void setValue(String value) {
-				defaultGamemode.setFlag(GameMode.valueOf(value.toUpperCase()));
+				defaultGamemode.setValue(GameMode.valueOf(value.toUpperCase()));
 			}
 
 			@Override
 			public String getValue() {
-				return MinigameUtils.capitalize(defaultGamemode.getFlag().toString());
+				return MinigameUtils.capitalize(defaultGamemode.getValue().toString());
 			}
 		};
 	}
 
 	public void setDefaultGamemode(GameMode defaultGamemode) {
-		this.defaultGamemode.setFlag(defaultGamemode);
+		this.defaultGamemode.setValue(defaultGamemode);
 	}
 
 	public boolean canBlocksdrop() {
-		return blocksdrop.getFlag();
+		return blocksdrop.getValue();
 	}
 
 	public void setBlocksdrop(boolean blocksdrop) {
-		this.blocksdrop.setFlag(blocksdrop);
+		this.blocksdrop.setValue(blocksdrop);
 	}
 
 	public String getMechanicName() {
-		return mechanic.getFlag();
+		return mechanic.getValue();
 	}
 	
 	public GameMechanicBase getMechanic(){
-		return GameMechanics.getGameMechanic(mechanic.getFlag());
+		return GameMechanics.getGameMechanic(mechanic.getValue());
 	}
 
 	public void setMechanic(String scoreType) {
-		this.mechanic.setFlag(scoreType);
+		this.mechanic.setValue(scoreType);
 		initialize();
 	}
 
 	public boolean hasPaintBallMode() {
-		return paintBallMode.getFlag();
+		return paintBallMode.getValue();
 	}
 
 	public void setPaintBallMode(boolean paintBallMode) {
-		this.paintBallMode.setFlag(paintBallMode);
+		this.paintBallMode.setValue(paintBallMode);
 	}
 
 	public int getPaintBallDamage() {
-		return paintBallDamage.getFlag();
+		return paintBallDamage.getValue();
 	}
 
 	public void setPaintBallDamage(int paintBallDamage) {
-		this.paintBallDamage .setFlag(paintBallDamage);
+		this.paintBallDamage .setValue(paintBallDamage);
 	}
 
 	public boolean hasUnlimitedAmmo() {
-		return unlimitedAmmo.getFlag();
+		return unlimitedAmmo.getValue();
 	}
 
 	public void setUnlimitedAmmo(boolean unlimitedAmmo) {
-		this.unlimitedAmmo.setFlag(unlimitedAmmo);
+		this.unlimitedAmmo.setValue(unlimitedAmmo);
 	}
 
 	public boolean canSaveCheckpoint() {
-		return saveCheckpoints.getFlag();
+		return saveCheckpoints.getValue();
 	}
 
 	public void setSaveCheckpoint(boolean saveCheckpoint) {
-		this.saveCheckpoints.setFlag(saveCheckpoint);
+		this.saveCheckpoints.setValue(saveCheckpoint);
 	}
 
 	public boolean canSpectateFly() {
-		return canSpectateFly.getFlag();
+		return canSpectateFly.getValue();
 	}
 
 	public void setCanSpectateFly(boolean canSpectateFly) {
-		this.canSpectateFly.setFlag(canSpectateFly);
+		this.canSpectateFly.setValue(canSpectateFly);
 	}
 
 	public boolean isRandomizeChests() {
-		return randomizeChests.getFlag();
+		return randomizeChests.getValue();
 	}
 
 	public void setRandomizeChests(boolean randomizeChests) {
-		this.randomizeChests.setFlag(randomizeChests);
+		this.randomizeChests.setValue(randomizeChests);
 	}
 
 	public int getMinChestRandom() {
-		return minChestRandom.getFlag();
+		return minChestRandom.getValue();
 	}
 
 	public void setMinChestRandom(int minChestRandom) {
-		this.minChestRandom.setFlag(minChestRandom);
+		this.minChestRandom.setValue(minChestRandom);
 	}
 
 	public int getMaxChestRandom() {
-		return maxChestRandom.getFlag();
+		return maxChestRandom.getValue();
 	}
 
 	public void setMaxChestRandom(int maxChestRandom) {
-		this.maxChestRandom.setFlag(maxChestRandom);
+		this.maxChestRandom.setValue(maxChestRandom);
 	}
 
 	public Location getRegenArea1() {
-		return regenArea1.getFlag();
+		return regenArea1.getValue();
 	}
 
 	public void setRegenArea1(Location regenArea1) {
-		this.regenArea1.setFlag(regenArea1);
+		this.regenArea1.setValue(regenArea1);
 	}
 
 	public Location getRegenArea2() {
-		return regenArea2.getFlag();
+		return regenArea2.getValue();
 	}
 
 	public void setRegenArea2(Location regenArea2) {
-		this.regenArea2.setFlag(regenArea2);
+		this.regenArea2.setValue(regenArea2);
 	}
 
 	public int getRegenDelay() {
-		return regenDelay.getFlag();
+		return regenDelay.getValue();
 	}
 
 	public void setRegenDelay(int regenDelay) {
 		if(regenDelay < 0)
 			regenDelay = 0;
-		this.regenDelay.setFlag(regenDelay);
+		this.regenDelay.setValue(regenDelay);
 	}
 
 	public int getLives() {
-		return lives.getFlag();
+		return lives.getValue();
 	}
 
 	public void setLives(int lives) {
-		this.lives.setFlag(lives);
+		this.lives.setValue(lives);
 	}
 
 	public int getFloorDegenTime() {
-		return floorDegenTime.getFlag();
+		return floorDegenTime.getValue();
 	}
 
 	public void setFloorDegenTime(int floorDegenTime) {
-		this.floorDegenTime.setFlag(floorDegenTime);
+		this.floorDegenTime.setValue(floorDegenTime);
 	}
 	
 	public boolean isAllowedEnderpearls() {
-		return allowEnderpearls.getFlag();
+		return allowEnderpearls.getValue();
 	}
 
 	public void setAllowEnderpearls(boolean allowEnderpearls) {
-		this.allowEnderpearls.setFlag(allowEnderpearls);
+		this.allowEnderpearls.setValue(allowEnderpearls);
 	}
 
 	public boolean isAllowedMPCheckpoints() {
-		return allowMPCheckpoints.getFlag();
+		return allowMPCheckpoints.getValue();
 	}
 
 	public void setAllowMPCheckpoints(boolean allowMPCheckpoints) {
-		this.allowMPCheckpoints.setFlag(allowMPCheckpoints);
+		this.allowMPCheckpoints.setValue(allowMPCheckpoints);
 	}
 	
 	public boolean isAllowedFlight() {
-		return allowFlight.getFlag();
+		return allowFlight.getValue();
 	}
 
 	public void setAllowedFlight(boolean allowFlight) {
-		this.allowFlight.setFlag(allowFlight);
+		this.allowFlight.setValue(allowFlight);
 	}
 
 	public boolean isFlightEnabled() {
-		return enableFlight.getFlag();
+		return enableFlight.getValue();
 	}
 
 	public void setFlightEnabled(boolean enableFlight) {
-		this.enableFlight.setFlag(enableFlight);
+		this.enableFlight.setValue(enableFlight);
 	}
 
 	public Scoreboard getScoreboardManager(){
@@ -814,27 +814,27 @@ public class Minigame {
 	}
 	
 	public String getObjective() {
-		return objective.getFlag();
+		return objective.getValue();
 	}
 
 	public void setObjective(String objective) {
-		this.objective.setFlag(objective);
+		this.objective.setValue(objective);
 	}
 
 	public String getGametypeName() {
-		return gametypeName.getFlag();
+		return gametypeName.getValue();
 	}
 
 	public void setGametypeName(String gametypeName) {
-		this.gametypeName.setFlag(gametypeName);
+		this.gametypeName.setValue(gametypeName);
 	}
 	
 	public boolean canDisplayScoreboard(){
-		return displayScoreboard.getFlag();
+		return displayScoreboard.getValue();
 	}
 	
 	public void setDisplayScoreboard(boolean bool){
-		displayScoreboard.setFlag(bool);
+		displayScoreboard.setValue(bool);
 	}
 	
 	public StatSettings getSettings(MinigameStat stat) {
@@ -864,8 +864,8 @@ public class Minigame {
 			break;
 		}
 		case SINGLEPLAYER:
-			menu.addItem(maxPlayers.getMenuItem("Max. Players", Material.STONE));
-			menu.addItem(spMaxPlayers.getMenuItem("Enable Singleplayer Max Players", Material.IRON_FENCE));
+			menu.addItem(new MenuItemInteger("Max. Players", Material.STONE, maxPlayers, 0, Integer.MAX_VALUE));
+			menu.addItem(new MenuItemBoolean("Enable Singleplayer Max Players", Material.IRON_FENCE, spMaxPlayers));
 			menu.addItem(new MenuItemNewLine());
 			break;
 		case GLOBAL:
@@ -877,9 +877,9 @@ public class Minigame {
 		Menu playerMenu = new Menu(5, getName(false));
 		Menu flags = new Menu(5, getName(false));
 		
-		main.addItem(enabled.getMenuItem("Enabled", Material.PAPER));
-		main.addItem(usePermissions.getMenuItem("Use Permissions", Material.PAPER));
-		MenuItemEnum<MinigameType> gameTypeItem = (MenuItemEnum<MinigameType>)type.getMenuItem("Game Type", Material.PAPER);
+		main.addItem(new MenuItemBoolean("Enabled", Material.PAPER, enabled));
+		main.addItem(new MenuItemBoolean("Use Permissions", Material.PAPER, usePermissions));
+		MenuItemEnum<MinigameType> gameTypeItem = new MenuItemEnum<MinigameType>("Game Type", Material.PAPER, type, MinigameType.class);
 		gameTypeItem.setChangeHandler(new IMenuItemChange<MinigameType>() {
 			@Override
 			public void onChange(MenuItemValue<MinigameType> menuItem, MinigamePlayer player, MinigameType previous, MinigameType current) {
@@ -893,31 +893,25 @@ public class Minigame {
 		
 		main.addItem(gameTypeItem);
 
+		// Add the game mechanic button
 		List<String> scoreTypes = new ArrayList<String>();
 		for(GameMechanicBase val : GameMechanics.getGameMechanics()){
 			scoreTypes.add(MinigameUtils.capitalize(val.getMechanic().replace('_', ' ')));
 		}
 		
-		// Add the game mechanic button
-		Callback<String> gameMechanicCallback = new Callback<String>() {
+		MenuItemList mechanicItem = new MenuItemList("Game Mechanic", "Multiplayer Only", Material.ROTTEN_FLESH, mechanic, scoreTypes);
+		mechanicItem.setChangeHandler(new IMenuItemChange<String>() {
 			@Override
-			public void setValue(String value) {
-				mechanic.setFlag(value.toLowerCase().replace(' ', '_'));
-				
+			public void onChange(MenuItemValue<String> menuItem, MinigamePlayer player, String previous, String current) {
 				initialize();
 				
 				main.clear();
 				buildMenu(main);
 				main.refresh();
 			}
-
-			@Override
-			public String getValue() {
-				return MinigameUtils.capitalize(mechanic.getFlag().replace('_', ' '));
-			}
-		};
+		});
 		
-		main.addItem(new MenuItemList("Game Mechanic", "Multiplayer Only", Material.ROTTEN_FLESH, gameMechanicCallback, scoreTypes));
+		main.addItem(mechanicItem);
 		
 		// Add game mechanic settings button
 		{
@@ -933,57 +927,46 @@ public class Minigame {
 			}
 		}
 		
-		MenuItemString obj = (MenuItemString) objective.getMenuItem("Objective Description", Material.DIAMOND);
+		MenuItemString obj = new MenuItemString("Objective Description", Material.DIAMOND, objective);
 		obj.setAllowNull(true);
 		main.addItem(obj);
-		obj = (MenuItemString) gametypeName.getMenuItem("Gametype Description", Material.SIGN);
+		obj = new MenuItemString("Gametype Description", Material.SIGN, gametypeName);
 		obj.setAllowNull(true);
 		main.addItem(obj);
-		obj = (MenuItemString) displayName.getMenuItem("Display Name", Material.SIGN);
+		obj = new MenuItemString("Display Name", Material.SIGN, displayName);
 		obj.setAllowNull(true);
 		main.addItem(obj);
 		main.addItem(new MenuItemNewLine());
 		
-		main.addItem(minScore.getMenuItem("Min. Score", Material.STEP));
-		main.addItem(maxScore.getMenuItem("Max. Score", Material.STONE));
+		main.addItem(new MenuItemInteger("Min. Score", Material.STEP, minScore, 0, Integer.MAX_VALUE));
+		main.addItem(new MenuItemInteger("Max. Score", Material.STONE, maxScore, 0, Integer.MAX_VALUE));
 		
 		addGameTypeOptions(main, getType());
 		
-		main.addItem(displayScoreboard.getMenuItem("Display Scoreboard", Material.SIGN));
+		main.addItem(new MenuItemBoolean("Display Scoreboard", Material.SIGN, displayScoreboard));
 		
 		
 		main.addItem(new MenuItemDisplayWhitelist("Block Whitelist/Blacklist", "Blocks that can/can't;be broken", 
-				Material.CHEST, getBlockRecorder().getWBBlocks(), getBlockRecorder().getWhitelistModeCallback()));
+				Material.CHEST, getBlockRecorder().getWBBlocks(), getBlockRecorder().whitelistMode()));
 		main.addItem(new MenuItemNewLine());
 		
 		List<String> floorDegenOpt = new ArrayList<String>();
 		floorDegenOpt.add("Inward");
 		floorDegenOpt.add("Circle");
 		floorDegenOpt.add("Random");
-		main.addItem(new MenuItemList("Floor Degenerator Type", "Mainly used to prevent;islanding in spleef Minigames.", Material.SNOW_BLOCK, new Callback<String>() {
-
-			@Override
-			public void setValue(String value) {
-				degenType.setFlag(value.toLowerCase());
-			}
-
-			@Override
-			public String getValue() {
-				return MinigameUtils.capitalize(degenType.getFlag());
-			}
-		}, floorDegenOpt));
-		main.addItem(degenRandomChance.getMenuItem("Random Floor Degen Chance", "Chance of block being;removed on random;degeneration.", Material.SNOW, 1, 100));
-		main.addItem(floorDegenTime.getMenuItem("Floor Degenerator Delay", Material.WATCH, 1, Integer.MAX_VALUE));
-		main.addItem(new MenuItemTime("Regeneration Delay", "Time in seconds before;Minigame regeneration starts", Material.WATCH, regenDelay.getCallback(), 0, Integer.MAX_VALUE));
+		main.addItem(new MenuItemList("Floor Degenerator Type", "Mainly used to prevent;islanding in spleef Minigames.", Material.SNOW_BLOCK, degenType, floorDegenOpt));
+		main.addItem(new MenuItemInteger("Random Floor Degen Chance", "Chance of block being;removed on random;degeneration.", Material.SNOW, degenRandomChance, 1, 100));
+		main.addItem(new MenuItemTime("Floor Degenerator Delay", Material.WATCH, floorDegenTime, 1, Integer.MAX_VALUE));
+		main.addItem(new MenuItemTime("Regeneration Delay", "Time in seconds before;Minigame regeneration starts", Material.WATCH, regenDelay, 0, Integer.MAX_VALUE));
 		main.addItem(new MenuItemNewLine());
 		main.addItem(new MenuItemSubMenu("Player Settings", Material.SKULL_ITEM, playerMenu));
 		if (getModule(LoadoutModule.class) != null) {
 			main.addItem(new MenuItemSubMenu("Loadouts", Material.CHEST, getModule(LoadoutModule.class).createSettingsMenu()));
 		}
-		main.addItem(canSpectateFly.getMenuItem("Allow Spectator Fly", Material.FEATHER));
-		main.addItem(randomizeChests.getMenuItem("Randomize Chests", "Randomize items in;chest upon first opening", Material.CHEST));
-		main.addItem(minChestRandom.getMenuItem("Min. Chest Random", "Min. item randomization", Material.STEP, 0, Integer.MAX_VALUE));
-		main.addItem(maxChestRandom.getMenuItem("Max. Chest Random", "Max. item randomization", Material.STONE, 0, Integer.MAX_VALUE));
+		main.addItem(new MenuItemBoolean("Allow Spectator Fly", Material.FEATHER, canSpectateFly));
+		main.addItem(new MenuItemBoolean("Randomize Chests", "Randomize items in;chest upon first opening", Material.CHEST, randomizeChests));
+		main.addItem(new MenuItemInteger("Min. Chest Random", "Min. item randomization", Material.STEP, minChestRandom, 0, Integer.MAX_VALUE));
+		main.addItem(new MenuItemInteger("Max. Chest Random", "Max. item randomization", Material.STONE, maxChestRandom, 0, Integer.MAX_VALUE));
 		main.addItem(new MenuItemNewLine());
 
 		main.setControlItem(new MenuItemSaveMinigame("Save " + getName(false), Material.REDSTONE_TORCH_ON, this), 4);
@@ -992,27 +975,23 @@ public class Minigame {
 		//Minigame Player Settings
 		//----------------------//
 		List<MenuItem> itemsPlayer = new ArrayList<MenuItem>(14);
-		List<String> gmopts = new ArrayList<String>();
-		for(GameMode gm : GameMode.values()){
-			gmopts.add(MinigameUtils.capitalize(gm.toString()));
-		}
-		itemsPlayer.add(new MenuItemList("Players Gamemode", Material.WORKBENCH, getDefaultGamemodeCallback(), gmopts));
-		itemsPlayer.add(allowEnderpearls.getMenuItem("Allow Enderpearls", Material.ENDER_PEARL));
-		itemsPlayer.add(itemDrops.getMenuItem("Allow Item Drops", Material.DIAMOND_SWORD));
-		itemsPlayer.add(deathDrops.getMenuItem("Allow Death Drops", Material.SKULL_ITEM));
-		itemsPlayer.add(itemPickup.getMenuItem("Allow Item Pickup", Material.DIAMOND));
-		itemsPlayer.add(blockBreak.getMenuItem("Allow Block Break", Material.DIAMOND_PICKAXE));
-		itemsPlayer.add(blockPlace.getMenuItem("Allow Block Place", Material.STONE));
-		itemsPlayer.add(blocksdrop.getMenuItem("Allow Block Drops", Material.COBBLESTONE));
-		itemsPlayer.add(lives.getMenuItem("Lives", Material.APPLE, 0, Integer.MAX_VALUE));
-		itemsPlayer.add(paintBallMode.getMenuItem("Paintball Mode", Material.SNOW_BALL));
-		itemsPlayer.add(paintBallDamage.getMenuItem("Paintball Damage", Material.ARROW, 1, Integer.MAX_VALUE));
-		itemsPlayer.add(unlimitedAmmo.getMenuItem("Unlimited Ammo", Material.SNOW_BLOCK));
-		itemsPlayer.add(allowMPCheckpoints.getMenuItem("Enable Multiplayer Checkpoints", Material.SIGN));
-		itemsPlayer.add(saveCheckpoints.getMenuItem("Save Checkpoints", "Singleplayer Only", Material.SIGN));
+		itemsPlayer.add(new MenuItemEnum<GameMode>("Players Gamemode", Material.WORKBENCH, defaultGamemode, GameMode.class));
+		itemsPlayer.add(new MenuItemBoolean("Allow Enderpearls", Material.ENDER_PEARL, allowEnderpearls));
+		itemsPlayer.add(new MenuItemBoolean("Allow Item Drops", Material.DIAMOND_SWORD, itemDrops));
+		itemsPlayer.add(new MenuItemBoolean("Allow Death Drops", Material.SKULL_ITEM, deathDrops));
+		itemsPlayer.add(new MenuItemBoolean("Allow Item Pickup", Material.DIAMOND, itemPickup));
+		itemsPlayer.add(new MenuItemBoolean("Allow Block Break", Material.DIAMOND_PICKAXE, blockBreak));
+		itemsPlayer.add(new MenuItemBoolean("Allow Block Place", Material.STONE, blockPlace));
+		itemsPlayer.add(new MenuItemBoolean("Allow Block Drops", Material.COBBLESTONE, blocksdrop));
+		itemsPlayer.add(new MenuItemInteger("Lives", Material.APPLE, lives, 0, Integer.MAX_VALUE));
+		itemsPlayer.add(new MenuItemBoolean("Paintball Mode", Material.SNOW_BALL, paintBallMode));
+		itemsPlayer.add(new MenuItemInteger("Paintball Damage", Material.ARROW, paintBallDamage, 1, Integer.MAX_VALUE));
+		itemsPlayer.add(new MenuItemBoolean("Unlimited Ammo", Material.SNOW_BLOCK, unlimitedAmmo));
+		itemsPlayer.add(new MenuItemBoolean("Enable Multiplayer Checkpoints", Material.SIGN, allowMPCheckpoints));
+		itemsPlayer.add(new MenuItemBoolean("Save Checkpoints", "Singleplayer Only", Material.SIGN, saveCheckpoints));
 		itemsPlayer.add(new MenuItemSubMenu("Flags", "Singleplayer flags", Material.SIGN, flags));
-		itemsPlayer.add(allowFlight.getMenuItem("Allow Flight", "Allow flight to;be toggled", Material.FEATHER));
-		itemsPlayer.add(enableFlight.getMenuItem("Enable Flight", "Start players;in flight;(Must have Allow;Flight)", Material.FEATHER));
+		itemsPlayer.add(new MenuItemBoolean("Allow Flight", "Allow flight to;be toggled", Material.FEATHER, allowFlight));
+		itemsPlayer.add(new MenuItemBoolean("Enable Flight", "Start players;in flight;(Must have Allow;Flight)", Material.FEATHER, enableFlight));
 		playerMenu.addItems(itemsPlayer);
 		
 		//--------------//
@@ -1044,39 +1023,30 @@ public class Minigame {
 		MinigameSave minigame = new MinigameSave(name, "config");
 		FileConfiguration cfg = minigame.getConfig();
 		
-		for(MinigameModule module : getModules()){
-			if(!module.useSeparateConfig()){
+		ConfigurationSection root = cfg.createSection(name);
+		
+		for (MinigameModule module : getModules()) {
+			if (!module.useSeparateConfig()) {
 				module.save(cfg);
 				
-				if(module.getFlags() != null){
-					for(Flag<?> flag : module.getFlags().values()){
-						if(flag.getFlag() != null && (flag.getDefaultFlag() == null || !flag.getDefaultFlag().equals(flag.getFlag())))
-							flag.saveValue(name, cfg);
-					}
+				if (module.getProperties() != null) {
+					module.getProperties().saveAll(root);
 				}
-			}else{
+			} else {
 				MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
 				modsave.getConfig().set(name, null);
-				modsave.getConfig().createSection(name);
+				ConfigurationSection moduleRoot = modsave.getConfig().createSection(name);
 				module.save(modsave.getConfig());
 				
-				if(module.getFlags() != null){
-					for(Flag<?> flag : module.getFlags().values()){
-						if(flag.getFlag() != null && (flag.getDefaultFlag() == null || !flag.getDefaultFlag().equals(flag.getFlag())))
-							flag.saveValue(name, modsave.getConfig());
-					}
+				if (module.getProperties() != null) {
+					module.getProperties().saveAll(moduleRoot);
 				}
 				
 				modsave.saveConfig();
 			}
 		}
 		
-		for(String configOpt : configFlags.keySet()){
-			if(configFlags.get(configOpt).getFlag() != null && 
-					(configFlags.get(configOpt).getDefaultFlag() == null ||
-						!configFlags.get(configOpt).getDefaultFlag().equals(configFlags.get(configOpt).getFlag())))
-				configFlags.get(configOpt).saveValue(name, cfg);
-		}
+		properties.saveAll(root);
 		
 		if(!getBlockRecorder().getWBBlocks().isEmpty()){
 			List<String> blocklist = new ArrayList<String>();
@@ -1113,19 +1083,19 @@ public class Minigame {
 			config = cachedConfig;
 		}
 		
+		ConfigurationSection root = config.getConfigurationSection(name);
+		
 		module.load(config);
-			
-		if(module.getFlags() != null){
-			for(String flag : module.getFlags().keySet()){
-				if(config.contains(name + "." + flag))
-					module.getFlags().get(flag).loadValue(name, config);
-			}
+		
+		if (module.getProperties() != null) {
+			module.getProperties().loadAll(root);
 		}
 	}
 	
 	public void loadMinigame(){
 		MinigameSave save = new MinigameSave(name, "config");
 		FileConfiguration cfg = cachedConfig = save.getConfig();
+		ConfigurationSection root = cfg.getConfigurationSection(name);
 		
 		//-----------------------------------------------
 		//TODO: Remove me after 1.7
@@ -1146,10 +1116,7 @@ public class Minigame {
 		}
 		//-----------------------------------------------
 		
-		for(String flag : configFlags.keySet()){
-			if(cfg.contains(name + "." + flag))
-				configFlags.get(flag).loadValue(name, cfg);
-		}
+		properties.loadAll(root);
 		
 		if(cfg.contains(name + ".whitelistmode")){
 			getBlockRecorder().setWhitelistMode(cfg.getBoolean(name + ".whitelistmode"));

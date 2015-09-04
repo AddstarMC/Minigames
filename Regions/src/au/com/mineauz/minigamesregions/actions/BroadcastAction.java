@@ -5,17 +5,25 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBoolean;
+import au.com.mineauz.minigames.menu.MenuItemString;
+import au.com.mineauz.minigames.properties.types.BooleanProperty;
+import au.com.mineauz.minigames.properties.types.StringProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class BroadcastAction extends ActionInterface{
 	
-	private StringFlag message = new StringFlag("Hello World", "message");
-	private BooleanFlag excludeExecutor = new BooleanFlag(false, "exludeExecutor");
-	private BooleanFlag redText = new BooleanFlag(false, "redText");
+	private final StringProperty message = new StringProperty("Hello World", "message");
+	private final BooleanProperty excludeExecutor = new BooleanProperty(false, "exludeExecutor");
+	private final BooleanProperty redText = new BooleanProperty(false, "redText");
+	
+	public BroadcastAction() {
+		properties.addProperty(message);
+		properties.addProperty(excludeExecutor);
+		properties.addProperty(redText);
+	}
 
 	@Override
 	public String getName() {
@@ -49,36 +57,30 @@ public class BroadcastAction extends ActionInterface{
 	
 	private void execute(MinigamePlayer player){
 		MessageType type = MessageType.Normal;
-		if(redText.getFlag())
+		if(redText.getValue())
 			type = MessageType.Error;
 		MinigamePlayer exclude = null;
-		if(excludeExecutor.getFlag())
+		if(excludeExecutor.getValue())
 			exclude = player;
 		
-		player.getMinigame().broadcastExcept(message.getFlag().replaceAll("%player%", player.getDisplayName()), type, exclude);
+		player.getMinigame().broadcastExcept(message.getValue().replaceAll("%player%", player.getDisplayName()), type, exclude);
 	}
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
-		message.saveValue(path, config);
-		excludeExecutor.saveValue(path, config);
-		redText.saveValue(path, config);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
-		message.loadValue(path, config);
-		excludeExecutor.loadValue(path, config);
-		redText.loadValue(path, config);
 	}
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Broadcast");
 		
-		m.addItem(message.getMenuItem("Message", Material.NAME_TAG));
-		m.addItem(excludeExecutor.getMenuItem("Don't Send to Executor", Material.ENDER_PEARL));
-		m.addItem(redText.getMenuItem("Red Message", Material.ENDER_PEARL));
+		m.addItem(new MenuItemString("Message", Material.NAME_TAG, message));
+		m.addItem(new MenuItemBoolean("Don't Send to Executor", Material.ENDER_PEARL, excludeExecutor));
+		m.addItem(new MenuItemBoolean("Red Message", Material.ENDER_PEARL, redText));
 		
 		m.displayMenu(player);
 		return true;

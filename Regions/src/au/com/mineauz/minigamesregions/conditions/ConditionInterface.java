@@ -4,25 +4,31 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBoolean;
+import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
+import au.com.mineauz.minigames.properties.types.BooleanProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public abstract class ConditionInterface {
+	protected final ConfigPropertyContainer properties = new ConfigPropertyContainer();
+	private BooleanProperty invert = new BooleanProperty(false, "invert");
 	
-	private BooleanFlag invert = new BooleanFlag(false, "invert");
-	protected void addInvertMenuItem(Menu m){
-		m.setControlItem(invert.getMenuItem("Invert", Material.ENDER_PEARL), 3);
+	public ConditionInterface() {
+		properties.addProperty(invert);
 	}
-	protected void saveInvert(FileConfiguration config, String path){
-		invert.saveValue(path, config);
+	
+	public final ConfigPropertyContainer getProperties() {
+		return properties;
 	}
-	protected void loadInvert(FileConfiguration config, String path){
-		invert.loadValue(path, config);
+	
+	protected void addInvertMenuItem(Menu m) {
+		m.setControlItem(new MenuItemBoolean("Invert", Material.ENDER_PEARL, invert), 3);
 	}
-	public boolean isInverted(){
-		return invert.getFlag();
+	
+	public boolean isInverted() {
+		return invert.getValue();
 	}
 	
 	public abstract String getName();

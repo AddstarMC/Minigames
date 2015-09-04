@@ -6,21 +6,31 @@ import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBoolean;
+import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemString;
+import au.com.mineauz.minigames.menu.MenuItemValue;
+import au.com.mineauz.minigames.menu.MenuItemValue.IMenuItemChange;
+import au.com.mineauz.minigames.properties.types.BooleanProperty;
+import au.com.mineauz.minigames.properties.types.IntegerProperty;
+import au.com.mineauz.minigames.properties.types.StringProperty;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class TakeItemAction extends ActionInterface{
 	
-	private StringFlag type = new StringFlag("STONE", "type");
-	private BooleanFlag matchDamage = new BooleanFlag(true, "matchdamage");
-	private IntegerFlag damage = new IntegerFlag(0, "damage");
-	private IntegerFlag count = new IntegerFlag(1, "count");
+	private final StringProperty type = new StringProperty("STONE", "type"); // TODO: Make this an enum property
+	private final BooleanProperty matchDamage = new BooleanProperty(true, "matchdamage");
+	private final IntegerProperty damage = new IntegerProperty(0, "damage");
+	private final IntegerProperty count = new IntegerProperty(1, "count");
+	
+	public TakeItemAction() {
+		properties.addProperty(type);
+		properties.addProperty(matchDamage);
+		properties.addProperty(damage);
+		properties.addProperty(count);
+	}
 
 	@Override
 	public String getName() {
@@ -53,14 +63,14 @@ public class TakeItemAction extends ActionInterface{
 	}
 	
 	private void execute(MinigamePlayer player){
-		ItemStack match = new ItemStack(Material.getMaterial(type.getFlag()), count.getFlag(), damage.getFlag().shortValue());
+		ItemStack match = new ItemStack(Material.getMaterial(type.getValue()), count.getValue(), damage.getValue().shortValue());
 		ItemStack matched = null;
 		boolean remove = false;
 		int slot = 0;
 		
 		for(ItemStack i : player.getPlayer().getInventory().getContents()){
 			if(i != null && i.getType() == match.getType()){
-				if(!matchDamage.getFlag() || match.getDurability() == i.getDurability()){
+				if(!matchDamage.getValue() || match.getDurability() == i.getDurability()){
 					if(match.getAmount() >= i.getAmount()){
 						matched = i.clone();
 						remove = true;
@@ -84,43 +94,31 @@ public class TakeItemAction extends ActionInterface{
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
-		type.saveValue(path, config);
-		matchDamage.saveValue(path, config);
-		damage.saveValue(path, config);
-		count.saveValue(path, config);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
-		type.loadValue(path, config);
-		matchDamage.loadValue(path, config);
-		damage.loadValue(path, config);
-		count.loadValue(path, config);
 	}
 
 	@Override
 	public boolean displayMenu(final MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Give Item");
 		
-		m.addItem(new MenuItemString("Type", Material.STONE, new Callback<String>() {
-			
+		MenuItemString typeItem = new MenuItemString("Type", Material.STONE, type);
+		typeItem.setChangeHandler(new IMenuItemChange<String>() {
 			@Override
-			public void setValue(String value) {
-				if(Material.getMaterial(value.toUpperCase()) != null){
-					type.setFlag(value.toUpperCase());
-				}
-				else
+			public void onChange(MenuItemValue<String> menuItem, MinigamePlayer player, String previous, String current) {
+				if (Material.getMaterial(current.toUpperCase()) == null) {
 					player.sendMessage("Invalid item type!", MessageType.Error);
+					type.setValue(previous);
+				}
 			}
-			
-			@Override
-			public String getValue() {
-				return type.getFlag();
-			}
-		}));
-		m.addItem(count.getMenuItem("Count", Material.STEP, 1, 64));
-		m.addItem(damage.getMenuItem("Damage", Material.COBBLESTONE, 0, Integer.MAX_VALUE));
-		m.addItem(matchDamage.getMenuItem("Match Damage", Material.ENDER_PEARL));
+		});
+		
+		m.addItem(typeItem);
+		m.addItem(new MenuItemInteger("Count", Material.STEP, count, 1, 64));
+		m.addItem(new MenuItemInteger("Damage", Material.COBBLESTONE, damage, 0, Integer.MAX_VALUE));
+		m.addItem(new MenuItemBoolean("Match Damage", Material.ENDER_PEARL, matchDamage));
 		
 		m.displayMenu(player);
 		return true;

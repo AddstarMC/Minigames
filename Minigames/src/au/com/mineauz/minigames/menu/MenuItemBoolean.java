@@ -7,24 +7,25 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 
+import au.com.mineauz.minigames.properties.ObservableValue;
+
 public class MenuItemBoolean extends MenuItemValue<Boolean> {
-	
-	public MenuItemBoolean(String name, MaterialData displayItem, Callback<Boolean> callback) {
-		super(name, displayItem, callback);
+	public MenuItemBoolean(String name, MaterialData displayItem, ObservableValue<Boolean> observable) {
+		super(name, displayItem, observable);
 	}
-	public MenuItemBoolean(String name, String description, Material displayItem, Callback<Boolean> callback) {
-		super(name, description, displayItem, callback);
+	public MenuItemBoolean(String name, String description, Material displayItem, ObservableValue<Boolean> observable) {
+		super(name, description, displayItem, observable);
 	}
-	public MenuItemBoolean(String name, Material displayItem, Callback<Boolean> callback) {
-		super(name, null, displayItem, callback);
+	public MenuItemBoolean(String name, Material displayItem, ObservableValue<Boolean> observable) {
+		super(name, null, displayItem, observable);
 	}
-	public MenuItemBoolean(String name, String description, MaterialData displayItem, Callback<Boolean> callback) {
-		super(name, description, displayItem, callback);
+	public MenuItemBoolean(String name, String description, MaterialData displayItem, ObservableValue<Boolean> observable) {
+		super(name, description, displayItem, observable);
 	}
 	
 	@Override
 	protected List<String> getValueDescription(Boolean value) {
-		if(getValue()) {
+		if (value) {
 			return Arrays.asList(ChatColor.GREEN + "True");
 		} else {
 			return Arrays.asList(ChatColor.GREEN + "False");

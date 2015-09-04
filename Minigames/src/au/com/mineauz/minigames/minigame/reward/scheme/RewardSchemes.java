@@ -3,10 +3,13 @@ package au.com.mineauz.minigames.minigame.reward.scheme;
 import java.util.List;
 
 import org.bukkit.Material;
-import au.com.mineauz.minigames.menu.Callback;
+
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemList;
+import au.com.mineauz.minigames.properties.Properties;
+import au.com.mineauz.minigames.properties.Property;
 
+import com.google.common.base.Converter;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
@@ -60,31 +63,29 @@ public final class RewardSchemes {
 		return definedSchemes.inverse().get(schemeClass);
 	}
 	
-	public static MenuItem newMenuItem(String name, Material displayItem, Callback<Class<? extends RewardScheme>> callback) {
-		return new MenuItemRewardScheme(name, displayItem, callback);
+	public static MenuItem newMenuItem(String name, Material displayItem, Property<Class<? extends RewardScheme>> property) {
+		Converter<Class<? extends RewardScheme>, String> converter = new Converter<Class<? extends RewardScheme>, String>() {
+			@Override
+			protected String doForward(Class<? extends RewardScheme> a) {
+				return definedSchemes.inverse().get(a);
+			}
+			
+			@Override
+			protected Class<? extends RewardScheme> doBackward(String b) {
+				return definedSchemes.get(b.toLowerCase());
+			}
+		};
+		
+		return new MenuItemRewardScheme(name, displayItem, Properties.transform(property, converter));
 	}
 	
 	private static List<String> getSchemesAsNameList() {
 		return Lists.newArrayList(definedSchemes.keySet());
 	}
 	
-	private static Callback<String> transformCallback(final Callback<Class<? extends RewardScheme>> callback) {
-		return new Callback<String>() {
-			@Override
-			public void setValue(String value) {
-				callback.setValue(definedSchemes.get(value.toLowerCase()));
-			}
-			
-			@Override
-			public String getValue() {
-				return definedSchemes.inverse().get(callback.getValue());
-			}
-		};
-	}
-	
 	private static class MenuItemRewardScheme extends MenuItemList {
-		public MenuItemRewardScheme(String name, Material displayItem, Callback<Class<? extends RewardScheme>> callback) {
-			super(name, displayItem, transformCallback(callback), getSchemesAsNameList());
+		public MenuItemRewardScheme(String name, Material displayItem, Property<String> property) {
+			super(name, displayItem, property, getSchemesAsNameList());
 		}
 	}
 }

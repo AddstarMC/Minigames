@@ -34,6 +34,7 @@ import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuSession;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.minigame.TeamSelection;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.MultiplayerModule;
@@ -270,7 +271,7 @@ public class MinigamePlayer {
 
 	public boolean setLoadout(PlayerLoadout loadout) {
 		if(getMinigame() == null) return false;
-		if(loadout == null || !getMinigame().isTeamGame() || loadout.getTeamColor() == null || getTeam().getColor() == loadout.getTeamColor()){
+		if(loadout == null || !getMinigame().isTeamGame() || loadout.getTeamColor() == TeamSelection.NONE || getTeam().getColor() == loadout.getTeamColor().getTeam()){
 			this.loadout = loadout;
 			return true;
 		}

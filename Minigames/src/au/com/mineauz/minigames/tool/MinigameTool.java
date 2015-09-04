@@ -1,31 +1,47 @@
 package au.com.mineauz.minigames.tool;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemEnum;
 import au.com.mineauz.minigames.menu.MenuItem.IMenuItemClick;
 import au.com.mineauz.minigames.menu.MenuItemToolMode;
-import au.com.mineauz.minigames.menu.MenuItemToolTeam;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.TeamColor;
+import au.com.mineauz.minigames.minigame.TeamSelection;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.properties.ChangeListener;
+import au.com.mineauz.minigames.properties.ObservableValue;
+import au.com.mineauz.minigames.properties.Properties;
+import au.com.mineauz.minigames.properties.Property;
 
 public class MinigameTool {
 	private ItemStack tool;
 	private Minigame minigame = null;
 	private ToolMode mode = null;
-	private TeamColor team = null;
+	private Property<TeamSelection> team = Properties.create(TeamSelection.NONE);
+	private Map<String, Property<String>> properties = Maps.newHashMap();
+	
+	private final ChangeListener<String> propertyListener = new ChangeListener<String>() {
+		@Override
+		public void onValueChange(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+			updateItem();
+		}
+	};
 	
 	public MinigameTool(ItemStack tool){
 		this.tool = tool;
@@ -38,17 +54,64 @@ public class MinigameTool {
 			String md = ChatColor.stripColor(meta.getLore().get(1)).replace("Mode: ", "").replace(" ", "_");
 			mode = ToolModes.getToolMode(md);
 			
-			team = TeamColor.matchColor(ChatColor.stripColor(meta.getLore().get(2).replace("Team: ", "")).toUpperCase());
+			TeamSelection selection = TeamSelection.valueOf(ChatColor.stripColor(meta.getLore().get(2).replace("Team: ", "")).toUpperCase());
+			if (selection == null) {
+				selection = TeamSelection.NONE;
+			}
+			
+			team.setValue(selection);
+			loadSettings(meta.getLore());
 		}
 		else{
 			meta.setDisplayName(ChatColor.GREEN + "Minigame Tool");
-			List<String> lore = new ArrayList<String>();
-			lore.add(ChatColor.AQUA + "Minigame: " + ChatColor.WHITE + "None");
-			lore.add(ChatColor.AQUA + "Mode: " + ChatColor.WHITE + "None");
-			lore.add(ChatColor.AQUA + "Team: " + ChatColor.WHITE + "None");
-			meta.setLore(lore);
+			meta.setLore(generateLore());
 			tool.setItemMeta(meta);
 		}
+	}
+	
+	private void loadSettings(List<String> lore) {
+		for (String line : lore) {
+			line = ChatColor.stripColor(line);
+			if (line.startsWith("Minigame") || line.startsWith("Mode") || line.startsWith("Team")) {
+				continue;
+			}
+			
+			String[] parts = line.split(":");
+			if (parts.length != 2) {
+				continue;
+			}
+			
+			String name = parts[0].trim();
+			String value = parts[1].trim();
+			
+			Property<String> prop = Properties.create(value);
+			prop.addListener(propertyListener);
+			properties.put(name, prop);
+		}
+	}
+	
+	private List<String> generateLore() {
+		List<String> lore = Lists.newArrayList();
+		lore.add(ChatColor.AQUA + "Minigame: " + ChatColor.WHITE + "None");
+		lore.add(ChatColor.AQUA + "Mode: " + ChatColor.WHITE + "None");
+		lore.add(ChatColor.AQUA + "Team: " + ChatColor.WHITE + "None");
+		
+		for (Entry<String, Property<String>> entry : properties.entrySet()) {
+			if (entry.getValue().getValue() == null) {
+				continue;
+			}
+			
+			lore.add(ChatColor.AQUA + entry.getKey() + ": " + ChatColor.WHITE + entry.getValue().getValue());
+		}
+		
+		return lore;
+	}
+	
+	public void updateItem() {
+		ItemMeta meta = tool.getItemMeta();
+		meta.setDisplayName(ChatColor.GREEN + "Minigame Tool");
+		meta.setLore(generateLore());
+		tool.setItemMeta(meta);
 	}
 	
 	public ItemStack getTool(){
@@ -81,61 +144,66 @@ public class MinigameTool {
 		return minigame;
 	}
 	
-	public void setTeam(TeamColor color){
+	public void setTeam(TeamSelection team) {
 		ItemMeta meta = tool.getItemMeta();
 		List<String> lore = meta.getLore();
 		
-		if(color == null){
-			lore.set(2, ChatColor.AQUA + "Team: " + ChatColor.WHITE + "None");
+		ChatColor color = ChatColor.WHITE;
+		if (team.getTeam() != null) {
+			color = team.getTeam().getColor();
 		}
-		else{
-			lore.set(2, ChatColor.AQUA + "Team: " + color.getColor() + MinigameUtils.capitalize(color.toString().replace("_", " ")));
-		}
+		
+		lore.set(2, ChatColor.AQUA + "Team: " + color + WordUtils.capitalizeFully(team.name()));
 			
 		meta.setLore(lore);
 		tool.setItemMeta(meta);
-		team = color;
+		this.team.setValue(team);
 	}
 	
-	public TeamColor getTeam(){
+	public TeamSelection getTeam() {
+		return team.getValue();
+	}
+	
+	public Property<TeamSelection> team() {
 		return team;
 	}
 	
-	public void addSetting(String name, String setting){
-		ItemMeta meta = tool.getItemMeta();
-		List<String> lore = meta.getLore();
-		lore.add(ChatColor.AQUA + name + ": " + ChatColor.WHITE + setting);
-		meta.setLore(lore);
-		tool.setItemMeta(meta);
+	public void addSetting(String name, String setting) {
+		Property<String> prop = Properties.create(setting);
+		prop.addListener(propertyListener);
+		properties.put(name, prop);
+		updateItem();
 	}
 	
-	public void changeSetting(String name, String setting){
-		removeSetting(name);
-		addSetting(name, setting);
-	}
-	
-	public String getSetting(String name){
-		ItemMeta meta = tool.getItemMeta();
-		List<String> lore = meta.getLore();
-		for(String l : lore){
-			if(ChatColor.stripColor(l).startsWith(name)){
-				return ChatColor.stripColor(l).replace(name + ": ", "");
-			}
+	public void changeSetting(String name, String setting) {
+		Property<String> prop = properties.get(name);
+		if (prop != null) {
+			prop.setValue(setting);
+		} else {
+			addSetting(name, setting);
 		}
-		return "None";
 	}
 	
-	public void removeSetting(String name){
-		ItemMeta meta = tool.getItemMeta();
-		List<String> lore = meta.getLore();
-		for(String l : new ArrayList<String>(lore)){
-			if(ChatColor.stripColor(l).startsWith(name)){
-				lore.remove(l);
-				break;
-			}
+	public String getSetting(String name) {
+		Property<String> prop = properties.get(name);
+		if (prop != null) {
+			return prop.getValue();
+		} else {
+			return "None";
 		}
-		meta.setLore(lore);
-		tool.setItemMeta(meta);
+	}
+	
+	public Property<String> getSettingProperty(String name) {
+		return properties.get(name);
+	}
+	
+	public void removeSetting(String name) {
+		Property<String> prop = properties.remove(name);
+		if (prop != null) {
+			prop.removeListener(propertyListener);
+		}
+		
+		updateItem();
 	}
 	
 	public void openMenu(MinigamePlayer player){
@@ -147,7 +215,7 @@ public class MinigameTool {
 			@Override
 			public void onClick(MenuItem menuItem, MinigamePlayer player) {
 				if(mode != null){
-					mode.select(player, minigame, minigame.getModule(TeamsModule.class).getTeam(team));
+					mode.select(player, minigame, minigame.getModule(TeamsModule.class).getTeam(team.getValue().getTeam()));
 				}
 			}
 		});
@@ -155,7 +223,7 @@ public class MinigameTool {
 			@Override
 			public void onClick(MenuItem menuItem, MinigamePlayer player) {
 				if(mode != null){
-					mode.deselect(player, minigame, minigame.getModule(TeamsModule.class).getTeam(team));
+					mode.deselect(player, minigame, minigame.getModule(TeamsModule.class).getTeam(team.getValue().getTeam()));
 				}
 			}
 		});
@@ -163,25 +231,7 @@ public class MinigameTool {
 		men.setControlItem(mideselect, 4);
 		men.setControlItem(miselect, 3);
 		
-		List<String> teams = new ArrayList<String>(TeamColor.values().length + 1);
-		for(TeamColor col : TeamColor.values())
-			teams.add(MinigameUtils.capitalize(col.toString().replace("_", " ")));
-		teams.add("None");
-		
-		men.setControlItem(new MenuItemToolTeam("Team", Material.PAPER, new Callback<String>() {
-			
-			@Override
-			public void setValue(String value) {
-				setTeam(TeamColor.matchColor(value.replace(" ", "_")));
-			}
-			
-			@Override
-			public String getValue() {
-				if(getTeam() != null)
-					return MinigameUtils.capitalize(getTeam().toString().replace("_", " "));
-				return "None";
-			}
-		}, teams), 2);
+		men.setControlItem(new MenuItemEnum<TeamSelection>("Team", Material.PAPER, team, TeamSelection.class), 2);
 		
 		for(ToolMode m : ToolModes.getToolModes()){
 			men.addItem(new MenuItemToolMode(m.getDisplayName(), m.getDescription(), m.getIcon(), m));

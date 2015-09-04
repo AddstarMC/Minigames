@@ -14,24 +14,26 @@ import org.bukkit.configuration.file.FileConfiguration;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemInteger;
+import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.menu.MenuItemTime;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.properties.ConfigPropertyContainer;
+import au.com.mineauz.minigames.properties.types.IntegerProperty;
+import au.com.mineauz.minigames.properties.types.StringProperty;
 
 public class TreasureHuntModule extends MinigameModule{
 	
-	private StringFlag location = new StringFlag(null, "location");
-	private IntegerFlag maxRadius = new IntegerFlag(1000, "maxradius");
-	private IntegerFlag maxHeight = new IntegerFlag(20, "maxheight");
-	private IntegerFlag minTreasure = new IntegerFlag(0, "mintreasure");
-	private IntegerFlag maxTreasure = new IntegerFlag(8, "maxtreasure");
-	private IntegerFlag treasureWaitTime = new IntegerFlag(Minigames.plugin.getConfig().getInt("treasurehunt.waittime"), "treasurehuntwait");
-	private IntegerFlag hintWaitTime = new IntegerFlag(500, "hintWaitTime");
-	private IntegerFlag timer = new IntegerFlag(0, "timer");
+	private final ConfigPropertyContainer properties;
+	private final StringProperty location = new StringProperty(null, "location");
+	private final IntegerProperty maxRadius = new IntegerProperty(1000, "maxradius");
+	private final IntegerProperty maxHeight = new IntegerProperty(20, "maxheight");
+	private final IntegerProperty minTreasure = new IntegerProperty(0, "mintreasure");
+	private final IntegerProperty maxTreasure = new IntegerProperty(8, "maxtreasure");
+	private final IntegerProperty treasureWaitTime = new IntegerProperty(Minigames.plugin.getConfig().getInt("treasurehunt.waittime"), "treasurehuntwait");
+	private final IntegerProperty hintWaitTime = new IntegerProperty(500, "hintWaitTime");
+	private final IntegerProperty timer = new IntegerProperty(0, "timer");
 	
 	//Unsaved Data
 	private Location treasureLocation = null;
@@ -41,6 +43,16 @@ public class TreasureHuntModule extends MinigameModule{
 
 	public TreasureHuntModule(Minigame mgm) {
 		super(mgm);
+		
+		properties = new ConfigPropertyContainer();
+		properties.addProperty(location);
+		properties.addProperty(maxRadius);
+		properties.addProperty(maxHeight);
+		properties.addProperty(minTreasure);
+		properties.addProperty(maxTreasure);
+		properties.addProperty(treasureWaitTime);
+		properties.addProperty(hintWaitTime);
+		properties.addProperty(timer);
 	}
 
 	@Override
@@ -49,17 +61,8 @@ public class TreasureHuntModule extends MinigameModule{
 	}
 
 	@Override
-	public Map<String, Flag<?>> getFlags() {
-		Map<String, Flag<?>> flags = new HashMap<String, Flag<?>>();
-		flags.put(location.getName(), location);
-		flags.put(maxRadius.getName(), maxRadius);
-		flags.put(maxHeight.getName(), maxHeight);
-		flags.put(minTreasure.getName(), minTreasure);
-		flags.put(maxTreasure.getName(), maxTreasure);
-		flags.put(treasureWaitTime.getName(), treasureWaitTime);
-		flags.put(hintWaitTime.getName(), hintWaitTime);
-		flags.put(timer.getName(), timer);
-		return flags;
+	public ConfigPropertyContainer getProperties() {
+		return properties;
 	}
 
 	@Override
@@ -79,16 +82,14 @@ public class TreasureHuntModule extends MinigameModule{
 	public Menu createSettingsMenu(){
 		Menu treasureHunt = new Menu(6, getMinigame().getName(false));
 		
-		List<MenuItem> itemsTreasureHunt = new ArrayList<MenuItem>(5);
-		itemsTreasureHunt.add(location.getMenuItem("Location Name", "Name to appear when;treasure spawns", Material.BED));
-		itemsTreasureHunt.add(maxRadius.getMenuItem("Max. Radius", Material.ENDER_PEARL, 10, Integer.MAX_VALUE));
-		itemsTreasureHunt.add(maxHeight.getMenuItem("Max. Height", "Max. height of where a;chest can generate.;Can still move above to;avoid terrain", Material.BEACON, 1, 256));
-		itemsTreasureHunt.add(minTreasure.getMenuItem("Min. Items", "Minimum items to;spawn in chest.", Material.STEP, 0, 27));
-		itemsTreasureHunt.add(maxTreasure.getMenuItem("Max. Items", "Maximum items to;spawn in chest.", Material.STONE, 0, 27));
-		itemsTreasureHunt.add(new MenuItemTime("Time Length", Material.WATCH, timer.getCallback(), 0, Integer.MAX_VALUE));
-		itemsTreasureHunt.add(new MenuItemTime("Restart Delay", Material.WATCH, treasureWaitTime.getCallback(), 0, Integer.MAX_VALUE));
-		itemsTreasureHunt.add(new MenuItemTime("Hint Usage Delay", Material.WATCH, hintWaitTime.getCallback(), 0, Integer.MAX_VALUE));
-		treasureHunt.addItems(itemsTreasureHunt);
+		treasureHunt.addItem(new MenuItemString("Location Name", "Name to appear when;treasure spawns", Material.BED, location));
+		treasureHunt.addItem(new MenuItemInteger("Max. Radius", Material.ENDER_PEARL, maxRadius, 10, Integer.MAX_VALUE));
+		treasureHunt.addItem(new MenuItemInteger("Max. Height", "Max. height of where a;chest can generate.;Can still move above to;avoid terrain", Material.BEACON, maxHeight, 1, 256));
+		treasureHunt.addItem(new MenuItemInteger("Min. Items", "Minimum items to;spawn in chest.", Material.STEP, minTreasure, 0, 27));
+		treasureHunt.addItem(new MenuItemInteger("Max. Items", "Maximum items to;spawn in chest.", Material.STONE, maxTreasure, 0, 27));
+		treasureHunt.addItem(new MenuItemTime("Time Length", Material.WATCH, timer, 0, Integer.MAX_VALUE));
+		treasureHunt.addItem(new MenuItemTime("Restart Delay", Material.WATCH, treasureWaitTime, 0, Integer.MAX_VALUE));
+		treasureHunt.addItem(new MenuItemTime("Hint Usage Delay", Material.WATCH, hintWaitTime, 0, Integer.MAX_VALUE));
 		return treasureHunt;
 	}
 	
@@ -98,43 +99,43 @@ public class TreasureHuntModule extends MinigameModule{
 	}
 
 	public void setMaxRadius(int maxRadius){
-		this.maxRadius.setFlag(maxRadius);
+		this.maxRadius.setValue(maxRadius);
 	}
 
 	public int getMaxRadius(){
-		return maxRadius.getFlag();
+		return maxRadius.getValue();
 	}
 
 	public int getMaxHeight() {
-		return maxHeight.getFlag();
+		return maxHeight.getValue();
 	}
 
 	public void setMaxHeight(int maxHeight) {
-		this.maxHeight.setFlag(maxHeight);
+		this.maxHeight.setValue(maxHeight);
 	}
 
 	public String getLocation(){
-		return location.getFlag();
+		return location.getValue();
 	}
 
 	public void setLocation(String location){
-		this.location.setFlag(location);
+		this.location.setValue(location);
 	}
 
 	public int getMinTreasure() {
-		return minTreasure.getFlag();
+		return minTreasure.getValue();
 	}
 
 	public void setMinTreasure(int minTreasure) {
-		this.minTreasure.setFlag(minTreasure);
+		this.minTreasure.setValue(minTreasure);
 	}
 
 	public int getMaxTreasure() {
-		return maxTreasure.getFlag();
+		return maxTreasure.getValue();
 	}
 
 	public void setMaxTreasure(int maxTreasure) {
-		this.maxTreasure.setFlag(maxTreasure);
+		this.maxTreasure.setValue(maxTreasure);
 	}
 	
 	public Location getTreasureLocation(){
@@ -170,11 +171,11 @@ public class TreasureHuntModule extends MinigameModule{
 	}
 	
 	public int getTreasureWaitTime(){
-		return treasureWaitTime.getFlag();
+		return treasureWaitTime.getValue();
 	}
 	
 	public void setTreasureWaitTime(int time){
-		treasureWaitTime.setFlag(time);
+		treasureWaitTime.setValue(time);
 	}
 	
 	public long getLastHintUse(MinigamePlayer player){
@@ -262,18 +263,18 @@ public class TreasureHuntModule extends MinigameModule{
 	}
 	
 	public void setHintDelay(int time){
-		hintWaitTime.setFlag(time);
+		hintWaitTime.setValue(time);
 	}
 	
 	public int getHintDelay(){
-		return hintWaitTime.getFlag();
+		return hintWaitTime.getValue();
 	}
 	
 	public void setTimer(int time){
-		timer.setFlag(time);
+		timer.setValue(time);
 	}
 	
 	public int getTimer(){
-		return timer.getFlag();
+		return timer.getValue();
 	}
 }

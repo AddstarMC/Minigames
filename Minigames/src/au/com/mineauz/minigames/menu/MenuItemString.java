@@ -9,20 +9,21 @@ import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.properties.ObservableValue;
 
 public class MenuItemString extends MenuItemValue<String> {
 	private boolean allowNull = false;
 
-	public MenuItemString(String name, MaterialData displayItem, Callback<String> callback) {
+	public MenuItemString(String name, MaterialData displayItem, ObservableValue<String> callback) {
 		super(name, displayItem, callback);
 	}
-	public MenuItemString(String name, String description, Material displayItem, Callback<String> callback) {
+	public MenuItemString(String name, String description, Material displayItem, ObservableValue<String> callback) {
 		super(name, description, displayItem, callback);
 	}
-	public MenuItemString(String name, Material displayItem, Callback<String> callback) {
+	public MenuItemString(String name, Material displayItem, ObservableValue<String> callback) {
 		super(name, null, displayItem, callback);
 	}
-	public MenuItemString(String name, String description, MaterialData displayItem, Callback<String> callback) {
+	public MenuItemString(String name, String description, MaterialData displayItem, ObservableValue<String> callback) {
 		super(name, description, displayItem, callback);
 	}
 	

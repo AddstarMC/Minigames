@@ -11,20 +11,20 @@ import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import au.com.mineauz.minigames.config.RewardsFlag;
 import au.com.mineauz.minigames.events.StartGlobalMinigameEvent;
 import au.com.mineauz.minigames.events.StopGlobalMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MinigameTypeBase;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
+import au.com.mineauz.minigames.properties.types.RewardsProperty;
 
 public class MinigameData {
 	private Map<String, Minigame> minigames = new HashMap<String, Minigame>();
 	private Map<String, Configuration> configs = new HashMap<String, Configuration>();
 	private Map<MinigameType, MinigameTypeBase> minigameTypes = new HashMap<MinigameType, MinigameTypeBase>();
 	private Map<String, PlayerLoadout> globalLoadouts = new HashMap<String, PlayerLoadout>();
-	private Map<String, RewardsFlag> rewardSigns = new HashMap<String, RewardsFlag>();
+	private Map<String, RewardsProperty> rewardSigns = new HashMap<String, RewardsProperty>();
 	private static Minigames plugin = Minigames.plugin;
 	private MinigameSave rewardSignsSave = null;
 	private Map<Minigame, List<String>> claimedScoreSignsRed = new HashMap<Minigame, List<String>>();
@@ -231,12 +231,12 @@ public class MinigameData {
 	}
 	
 	public void addRewardSign(Location loc){
-		RewardsFlag flag = new RewardsFlag(new Rewards(), MinigameUtils.createLocationID(loc));
+		RewardsProperty flag = new RewardsProperty(new Rewards(), MinigameUtils.createLocationID(loc));
 		rewardSigns.put(MinigameUtils.createLocationID(loc), flag);
 	}
 	
 	public Rewards getRewardSign(Location loc){
-		return rewardSigns.get(MinigameUtils.createLocationID(loc)).getFlag();
+		return rewardSigns.get(MinigameUtils.createLocationID(loc)).getValue();
 	}
 	
 	public boolean hasRewardSign(Location loc){
@@ -268,12 +268,12 @@ public class MinigameData {
 	}
 	
 	public void saveRewardSign(String id, boolean save){
-		RewardsFlag reward = rewardSigns.get(id);
+		RewardsProperty reward = rewardSigns.get(id);
 		if(rewardSignsSave == null)
 			loadRewardSignsFile();
 		FileConfiguration cfg = rewardSignsSave.getConfig();
 		cfg.set(id, null);
-		reward.saveValue("", cfg);
+		reward.save(cfg);
 		if(save){
 			rewardSignsSave.saveConfig();
 			rewardSignsSave = null;
@@ -291,8 +291,8 @@ public class MinigameData {
 		FileConfiguration cfg = rewardSignsSave.getConfig();
 		Set<String> keys = cfg.getKeys(false);
 		for(String id : keys){
-			RewardsFlag rew = new RewardsFlag(new Rewards(), id);
-			rew.loadValue("", cfg);
+			RewardsProperty rew = new RewardsProperty(new Rewards(), id);
+			rew.load(cfg);
 			
 			rewardSigns.put(id, rew);
 		}
