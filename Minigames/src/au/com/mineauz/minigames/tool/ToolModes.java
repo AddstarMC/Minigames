@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import au.com.mineauz.minigames.degeneration.DegenerationToolMode;
+
 public class ToolModes {
 	
 	private static Map<String, ToolMode> modes = new HashMap<String, ToolMode>();
@@ -16,7 +18,7 @@ public class ToolModes {
 		addToolMode(new EndPositionMode());
 		addToolMode(new LobbyPositionMode());
 		addToolMode(new RegenAreaMode());
-		addToolMode(new DegenAreaMode());
+		addToolMode(new DegenerationToolMode());
 	}
 	
 	public static void addToolMode(ToolMode mode){

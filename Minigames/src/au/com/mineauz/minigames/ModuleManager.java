@@ -9,6 +9,7 @@ import org.bukkit.plugin.Plugin;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
+import au.com.mineauz.minigames.degeneration.DegenerationModule;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.CTFModule;
@@ -42,6 +43,7 @@ public class ModuleManager {
 		registerModule(plugin, MultiplayerModule.class);
 		registerModule(plugin, GameOverModule.class);
 		registerModule(plugin, RewardsModule.class);
+		registerModule(plugin, DegenerationModule.class);
 		// Game mode modules
 		registerModule(plugin, TreasureHuntModule.class);
 		registerModule(plugin, InfectionModule.class);
@@ -60,6 +62,7 @@ public class ModuleManager {
 		addDefaultModule(MinigameType.MULTIPLAYER, LobbySettingsModule.class);
 		addDefaultModule(MinigameType.MULTIPLAYER, GameOverModule.class);
 		addDefaultModule(MinigameType.MULTIPLAYER, RewardsModule.class);
+		addDefaultModule(MinigameType.MULTIPLAYER, DegenerationModule.class);
 	}
 	
 	/**

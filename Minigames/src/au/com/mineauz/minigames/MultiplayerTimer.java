@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
+import au.com.mineauz.minigames.degeneration.DegenerationModule;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
@@ -96,9 +97,9 @@ public class MultiplayerTimer{
 					freezePlayers(false);
 					allowInteraction(true);
 					
-					if(minigame.getFloorDegen1() != null && minigame.getFloorDegen2() != null){
-						minigame.addFloorDegenerator();
-						minigame.getFloorDegenerator().startDegeneration();
+					DegenerationModule degen = minigame.getModule(DegenerationModule.class);
+					if (degen != null) {
+						degen.start();
 					}
 					
 					if(multiplayer.getTimer() > 0){

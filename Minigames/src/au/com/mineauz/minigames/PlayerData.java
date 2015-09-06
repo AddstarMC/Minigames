@@ -28,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 
+import au.com.mineauz.minigames.degeneration.DegenerationModule;
 import au.com.mineauz.minigames.events.EndMinigameEvent;
 import au.com.mineauz.minigames.events.QuitMinigameEvent;
 import au.com.mineauz.minigames.events.RevertCheckpointEvent;
@@ -266,8 +267,9 @@ public class PlayerData {
 						minigame.setMinigameTimer(null);
 					}
 					
-					if(minigame.getFloorDegenerator() != null){
-						minigame.getFloorDegenerator().stopDegenerator();
+					DegenerationModule degen = minigame.getModule(DegenerationModule.class);
+					if (degen != null) {
+						degen.stop();
 					}
 					
 					minigame.setState(MinigameState.IDLE);

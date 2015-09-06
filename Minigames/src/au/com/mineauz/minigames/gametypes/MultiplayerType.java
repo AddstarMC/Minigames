@@ -18,6 +18,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.MultiplayerTimer;
 import au.com.mineauz.minigames.PlayerData;
+import au.com.mineauz.minigames.degeneration.DegenerationModule;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
@@ -376,8 +377,9 @@ public class MultiplayerType extends MinigameTypeBase{
 							mgm.setMpTimer(null);
 						}
 						
-						if(mgm.getFloorDegenerator() != null && mgm.getPlayers().size() == 0){
-							mgm.getFloorDegenerator().stopDegenerator();
+						DegenerationModule degen = mgm.getModule(DegenerationModule.class);
+						if (degen != null) {
+							degen.stop();
 						}
 						
 						if(mgm.getMpBets() != null && mgm.getPlayers().size() == 0){

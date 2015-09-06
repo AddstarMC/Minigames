@@ -86,7 +86,6 @@ public class Minigame {
 	private LocationProperty floorDegen2 = new LocationProperty(null, "sfloorpos.2");
 	private StringProperty degenType = new StringProperty("inward", "degentype");
 	private IntegerProperty degenRandomChance = new IntegerProperty(15, "degenrandom");
-	private FloorDegenerator sfloordegen;
 	private IntegerProperty floorDegenTime = new IntegerProperty(Minigames.plugin.getConfig().getInt("multiplayer.floordegenerator.time"), "floordegentime");
 	
 	private LocationListProperty startLocations = new LocationListProperty(null, "startpos");
@@ -571,14 +570,6 @@ public class Minigame {
 		return score;
 	}
 
-	public FloorDegenerator getFloorDegenerator() {
-		return sfloordegen;
-	}
-
-	public void addFloorDegenerator() {
-		sfloordegen = new FloorDegenerator(getFloorDegen1(), getFloorDegen2(), this);
-	}
-	
 	public boolean hasItemDrops() {
 		return itemDrops.getValue();
 	}
