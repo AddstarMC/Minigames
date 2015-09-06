@@ -23,7 +23,7 @@ public class EnumProperty<T extends Enum<T>> extends ConfigProperty<T> {
 
 	@Override
 	public void save(ConfigurationSection section) {
-		section.get(getName(), getValue().name());
+		section.set(getName(), getValue().name());
 	}
 	
 	@Override

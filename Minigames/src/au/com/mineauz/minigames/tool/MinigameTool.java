@@ -14,7 +14,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
@@ -92,9 +91,24 @@ public class MinigameTool {
 	
 	private List<String> generateLore() {
 		List<String> lore = Lists.newArrayList();
-		lore.add(ChatColor.AQUA + "Minigame: " + ChatColor.WHITE + "None");
-		lore.add(ChatColor.AQUA + "Mode: " + ChatColor.WHITE + "None");
-		lore.add(ChatColor.AQUA + "Team: " + ChatColor.WHITE + "None");
+		if (minigame != null) {
+			lore.add(ChatColor.AQUA + "Minigame: " + ChatColor.WHITE + minigame.getName(false));
+		} else {
+			lore.add(ChatColor.AQUA + "Minigame: " + ChatColor.WHITE + "None");
+		}
+		
+		if (mode != null) {
+			lore.add(ChatColor.AQUA + "Mode: " + ChatColor.WHITE + WordUtils.capitalizeFully(mode.getName().replace("_", " ")));
+		} else {
+			lore.add(ChatColor.AQUA + "Mode: " + ChatColor.WHITE + "None");
+		}
+		
+		ChatColor color = ChatColor.WHITE;
+		if (team.getValue() != TeamSelection.NONE) {
+			color = team.getValue().getTeam().getColor();
+		}
+		
+		lore.add(ChatColor.AQUA + "Team: " + color + WordUtils.capitalizeFully(team.getValue().name()));
 		
 		for (Entry<String, Property<String>> entry : properties.entrySet()) {
 			if (entry.getValue().getValue() == null) {
@@ -119,21 +133,13 @@ public class MinigameTool {
 	}
 	
 	public void setMinigame(Minigame minigame){
-		ItemMeta meta = tool.getItemMeta();
-		List<String> lore = meta.getLore();
-		lore.set(0, ChatColor.AQUA + "Minigame: " + ChatColor.WHITE + minigame.getName(false));
-		meta.setLore(lore);
-		tool.setItemMeta(meta);
 		this.minigame = minigame;
+		updateItem();
 	}
 	
 	public void setMode(ToolMode mode){
-		ItemMeta meta = tool.getItemMeta();
-		List<String> lore = meta.getLore();
-		lore.set(1, ChatColor.AQUA + "Mode: " + ChatColor.WHITE + MinigameUtils.capitalize(mode.getName().replace("_", " ")));
-		meta.setLore(lore);
-		tool.setItemMeta(meta);
 		this.mode = mode;
+		updateItem();
 	}
 	
 	public ToolMode getMode(){
@@ -145,19 +151,8 @@ public class MinigameTool {
 	}
 	
 	public void setTeam(TeamSelection team) {
-		ItemMeta meta = tool.getItemMeta();
-		List<String> lore = meta.getLore();
-		
-		ChatColor color = ChatColor.WHITE;
-		if (team.getTeam() != null) {
-			color = team.getTeam().getColor();
-		}
-		
-		lore.set(2, ChatColor.AQUA + "Team: " + color + WordUtils.capitalizeFully(team.name()));
-			
-		meta.setLore(lore);
-		tool.setItemMeta(meta);
 		this.team.setValue(team);
+		updateItem();
 	}
 	
 	public TeamSelection getTeam() {
