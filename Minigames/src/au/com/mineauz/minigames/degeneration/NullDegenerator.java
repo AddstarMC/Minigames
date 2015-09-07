@@ -17,9 +17,14 @@ class NullDegenerator extends Degenerator {
 	public String getName() {
 		return "NULL";
 	}
+	
+	@Override
+	public String getDescription() {
+		return "NULL";
+	}
 
 	@Override
-	public List<Block> next() {
+	public List<Block> next(DegeneratorSettings settings) {
 		return Collections.emptyList();
 	}
 	

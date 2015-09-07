@@ -14,6 +14,8 @@ public abstract class Degenerator {
 	
 	public abstract String getName();
 	
-	public abstract Iterable<Block> next();
+	public abstract String getDescription();
+	
+	public abstract Iterable<Block> next(DegeneratorSettings settings);
 	public abstract boolean isFinished();
 }

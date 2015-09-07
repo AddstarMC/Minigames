@@ -17,6 +17,8 @@ public class DegenerationStage {
 	private final IntegerProperty maxRunTime;
 	private final StringProperty degeneratorType;
 	
+	private DegeneratorSettings degenSettings;
+	
 	// TODO: This doesnt make sense here
 	private final IntegerProperty randomChance;
 	
@@ -126,6 +128,14 @@ public class DegenerationStage {
 		maxCorner = minmax[1];
 	}
 	
+	public DegeneratorSettings getDegenSettings() {
+		if (degenSettings == null) {
+			degenSettings = Degenerators.createSettings(degeneratorType.getValue());
+		}
+		
+		return degenSettings;
+	}
+	
 	public void save(ConfigurationSection section) {
 		startType.save(section);
 		delay.save(section);
@@ -135,6 +145,11 @@ public class DegenerationStage {
 		
 		MinigameUtils.saveShortLocation(section.createSection("min"), minCorner);
 		MinigameUtils.saveShortLocation(section.createSection("max"), maxCorner);
+		
+		DegeneratorSettings settings = getDegenSettings();
+		if (settings != null) {
+			settings.getProperties().saveAll(section);
+		}
 	}
 	
 	public void load(ConfigurationSection section) {
@@ -146,6 +161,11 @@ public class DegenerationStage {
 		
 		minCorner = MinigameUtils.loadShortLocation(section.getConfigurationSection("min"));
 		maxCorner = MinigameUtils.loadShortLocation(section.getConfigurationSection("max"));
+		
+		DegeneratorSettings settings = getDegenSettings();
+		if (settings != null) {
+			settings.getProperties().loadAll(section);
+		}
 	}
 	
 	public enum StartType {

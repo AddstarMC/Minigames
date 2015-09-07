@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.degeneration;
 import java.util.List;
 
 import org.apache.commons.lang.WordUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,6 +11,7 @@ import org.bukkit.Material;
 import com.google.common.collect.Lists;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.degeneration.DegenerationStage.StartType;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
@@ -87,9 +89,7 @@ class MenuItemStage extends MenuItem implements ChangeListener<Object> {
 		return String.format("(%d,%d,%d) - (%d,%d,%d)", min.getBlockX(), min.getBlockY(), min.getBlockZ(), max.getBlockX(), max.getBlockY(), max.getBlockZ());
 	}
 	
-	@Override
-	protected void onClick(MinigamePlayer player) {
-		Menu menu = new Menu(5, "Edit Degeneration Stage");
+	private void populateMenu(final Menu menu) {
 		menu.addItem(new MenuItemEnum<StartType>("Starts When", Material.DIODE, stage.startType(), StartType.class));
 		menu.addItem(new MenuItemTime("Start Delay", Material.WATCH, stage.delay(), 0, Integer.MAX_VALUE));
 		menu.addItem(new MenuItemTime("Interval", Material.WATCH, stage.interval(), 1, Integer.MAX_VALUE));
@@ -127,8 +127,15 @@ class MenuItemStage extends MenuItem implements ChangeListener<Object> {
 		stage.degeneratorType().addListener(new ChangeListener<String>() {
 			@Override
 			public void onValueChange(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				item.setDescription(ChatColor.GREEN + WordUtils.capitalizeFully(newValue));
-				item.getContainer().refresh();
+				// Delay to prevent CME
+				Bukkit.getScheduler().runTask(Minigames.plugin, new Runnable() {
+					@Override
+					public void run() {
+						menu.clear();
+						populateMenu(menu);
+						menu.refresh();
+					}
+				});
 			}
 		});
 		
@@ -141,6 +148,18 @@ class MenuItemStage extends MenuItem implements ChangeListener<Object> {
 		});
 		menu.addItem(item);
 		
+		menu.addItem(new MenuItemNewLine());
+		
+		DegeneratorSettings settings = stage.getDegenSettings();
+		if (settings != null) {
+			settings.addMenuItems(menu);
+		}
+	}
+	
+	@Override
+	protected void onClick(MinigamePlayer player) {
+		Menu menu = new Menu(5, "Edit Degeneration Stage");
+		populateMenu(menu);
 		menu.displayMenu(player);
 	}
 	

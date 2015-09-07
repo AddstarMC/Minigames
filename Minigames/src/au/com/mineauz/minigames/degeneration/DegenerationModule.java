@@ -259,7 +259,7 @@ public class DegenerationModule extends MinigameModule {
 				state.nextTrigger = state.counter + stage.getInterval();
 				
 				if (!state.degenerator.isFinished()) {
-					Iterable<Block> blocks = state.degenerator.next();
+					Iterable<Block> blocks = state.degenerator.next(stage.getDegenSettings());
 					degenerateBlocks(blocks);
 				} else {
 					System.out.println("Degen finished. stage " + stage);

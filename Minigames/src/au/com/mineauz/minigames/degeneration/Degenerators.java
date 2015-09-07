@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
@@ -31,11 +32,13 @@ public final class Degenerators {
 	private Degenerators() {}
 	
 	private static SetMultimap<Plugin, String> pluginDegenerators = HashMultimap.create();
-	private static Map<String, Class<? extends Degenerator>> degenerators = Maps.newHashMap();
+	private static Map<String, DefinedDegenerator> degenerators = Maps.newHashMap();
 	
 	static {
 		register(Minigames.plugin, InwardExpandingGenerator.class);
 		register(Minigames.plugin, OutwardExpandingGenerator.class);
+		register(Minigames.plugin, RandomDegenerator.class, RandomDegenerator.Settings.class);
+		register(Minigames.plugin, ClearDegenerator.class);
 	}
 	
 	/**
@@ -46,12 +49,12 @@ public final class Degenerators {
 	 * @return The created degenerator. When not found a NullDegenerator is returned (does nothing)
 	 */
 	public static Degenerator create(String type, Location min, Location max) {
-		Class<? extends Degenerator> degenClass = degenerators.get(type.toLowerCase());
+		DefinedDegenerator defined = degenerators.get(type.toLowerCase());
 		
-		if (degenClass == null) {
+		if (defined == null) {
 			return new NullDegenerator();
 		} else {
-			Degenerator degenerator = createInstance(degenClass, min, max);
+			Degenerator degenerator = defined.createDegenerator(min, max);
 			if (degenerator == null) {
 				return new NullDegenerator();
 			} else {
@@ -60,19 +63,30 @@ public final class Degenerators {
 		}
 	}
 	
-	private static <T extends Degenerator> T createInstance(Class<T> type, Location min, Location max) {
+	/**
+	 * Creates a settings object for the specified type
+	 * @param type The type of degenerator to get settings for
+	 * @return The created settings object or null if none is available
+	 */
+	public static DegeneratorSettings createSettings(String type) {
+		DefinedDegenerator defined = degenerators.get(type.toLowerCase());
+		
+		if (defined == null) {
+			return null;
+		}
+		
+		return defined.createSettings();
+	}
+	
+	private static <T extends Degenerator> T createInstance(Constructor<T> constructor, Location min, Location max) {
 		try {
-			Constructor<T> constructor = type.getConstructor(Location.class, Location.class);
 			return constructor.newInstance(min, max);
 		} catch (IllegalArgumentException e) {
 			// Should not happen
 			throw new AssertionError();
 		} catch (IllegalAccessException e) {
 			// The class's accessibility is probably bad
-			throw new IllegalArgumentException("Could not access constructor for " + type.getName());
-		} catch (NoSuchMethodException e) {
-			// Should have already been validated
-			throw new AssertionError();
+			throw new IllegalArgumentException("Could not access constructor for " + constructor.getDeclaringClass().getName());
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 			return null;
@@ -90,6 +104,18 @@ public final class Degenerators {
 	 * @throws IllegalArgumentException Thrown if the degenerator cannot be registered
 	 */
 	public static void register(Plugin plugin, Class<? extends Degenerator> type) throws IllegalArgumentException {
+		register(plugin, type, null);
+	}
+	
+	/**
+	 * Registers a new degenerator with a custom settings provider
+	 * @param plugin The plugin registering it
+	 * @param type The class of the degenerator. The class must not be abstract and must have a public constructor that takes 2 Locations.
+	 * The name returned by the class must be unique, if not an IllegalArgumentException will be thrown.
+	 * @param settingsType The class of the DegeneratorSettings that provides properties to save and put in the menu
+	 * @throws IllegalArgumentException Thrown if the degenerator cannot be registered
+	 */
+	public static void register(Plugin plugin, Class<? extends Degenerator> type, Class<? extends DegeneratorSettings> settingsType) throws IllegalArgumentException {
 		Preconditions.checkNotNull(plugin);
 		Preconditions.checkNotNull(type);
 		
@@ -98,8 +124,9 @@ public final class Degenerators {
 			throw new IllegalArgumentException("Type cannot be abstract");
 		}
 		
+		Constructor<? extends Degenerator> constructor;
 		try {
-			type.getConstructor(Location.class, Location.class);
+			constructor = type.getConstructor(Location.class, Location.class);
 		} catch (NoSuchMethodException e) {
 			throw new IllegalArgumentException("Missing constructor");
 		}
@@ -107,7 +134,7 @@ public final class Degenerators {
 		Location testLoc = Bukkit.getWorlds().get(0).getSpawnLocation();
 		
 		// Now get the name
-		Degenerator degen = createInstance(type, testLoc, testLoc);
+		Degenerator degen = createInstance(constructor, testLoc, testLoc);
 		if (degen == null) {
 			throw new IllegalArgumentException("Failed to create test instance");
 		}
@@ -123,8 +150,19 @@ public final class Degenerators {
 			throw new IllegalArgumentException("A degenerator with the name '" + name + "' is already registered");
 		}
 		
+		// Now for the settings
+		Constructor<? extends DegeneratorSettings> settingsConstructor = null;
+		if (settingsType != null) {
+			try {
+				settingsConstructor = settingsType.getConstructor();
+			} catch (NoSuchMethodException e) {
+				throw new IllegalArgumentException(settingsType.getName() + " requires a zero args constructor");
+			}
+		}
+		
 		// Now register it
-		degenerators.put(name, type);
+		DefinedDegenerator defined = new DefinedDegenerator(constructor, settingsConstructor, degen.getDescription());
+		degenerators.put(name, defined);
 		pluginDegenerators.put(plugin, name);
 	}
 	
@@ -162,7 +200,13 @@ public final class Degenerators {
 		Menu menu = new Menu(5, "Select Degenerator Type");
 		
 		for (final String type : degenerators.keySet()) {
+			DefinedDegenerator defined = degenerators.get(type);
 			MenuItem item = new MenuItem(WordUtils.capitalizeFully(type), Material.PAPER);
+			
+			String description = defined.getDescription();
+			description = WordUtils.wrap(description, 30, ";" + ChatColor.GRAY, false);
+			item.setDescription(ChatColor.GRAY + description);
+			
 			item.setClickHandler(new IMenuItemClick() {
 				@Override
 				public void onClick(MenuItem menuItem, MinigamePlayer player) {
@@ -175,5 +219,43 @@ public final class Degenerators {
 		}
 		
 		return menu;
+	}
+	
+	private static class DefinedDegenerator {
+		private final Constructor<? extends Degenerator> degenConstructor;
+		private final Constructor<? extends DegeneratorSettings> settingsConstructor;
+		
+		private final String description;
+		
+		public DefinedDegenerator(Constructor<? extends Degenerator> degenConstructor, Constructor<? extends DegeneratorSettings> settingsConstructor, String description) {
+			this.degenConstructor = degenConstructor;
+			this.settingsConstructor = settingsConstructor;
+			this.description = description;
+		}
+		
+		public String getDescription() {
+			return description;
+		}
+		
+		public Degenerator createDegenerator(Location min, Location max) {
+			return createInstance(degenConstructor, min, max);
+		}
+		
+		public DegeneratorSettings createSettings() {
+			if (settingsConstructor == null) {
+				return null;
+			}
+			try {
+				return settingsConstructor.newInstance();
+			} catch (IllegalAccessException e) {
+				throw new IllegalArgumentException("Could not access settings constructor on " + settingsConstructor.getDeclaringClass().getName());
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+				return null;
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
 	}
 }

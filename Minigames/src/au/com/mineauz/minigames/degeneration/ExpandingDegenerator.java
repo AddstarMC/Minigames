@@ -36,7 +36,7 @@ abstract class ExpandingDegenerator extends Degenerator {
 	}
 	
 	@Override
-	public Iterable<Block> next() {
+	public Iterable<Block> next(DegeneratorSettings settings) {
 		Set<Block> blocks = Sets.newHashSet();
 		
 		boolean isXMin = (curMax.getBlockX() == curMin.getBlockX());
@@ -169,6 +169,11 @@ abstract class ExpandingDegenerator extends Degenerator {
 		public String getName() {
 			return "inward";
 		}
+		
+		@Override
+		public String getDescription() {
+			return "Removes the outermost blocks in the region each step";
+		}
 	}
 	
 	public static class OutwardExpandingGenerator extends ExpandingDegenerator {
@@ -179,6 +184,11 @@ abstract class ExpandingDegenerator extends Degenerator {
 		@Override
 		public String getName() {
 			return "outward";
+		}
+		
+		@Override
+		public String getDescription() {
+			return "Removes the innermost blocks in the region each step";
 		}
 	}
 }
