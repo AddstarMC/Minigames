@@ -21,6 +21,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -618,6 +619,13 @@ public class Events implements Listener{
 				Minigame minigame = (Minigame)block.getMetadata("Minigame").get(0).value();
 				minigame.getScoreboardData().removeDisplay(block);
 			}
+		}
+	}
+	
+	@EventHandler(ignoreCancelled=true)
+	private void onFallingBlockLand(EntityChangeBlockEvent event) {
+		if (event.getEntity().hasMetadata("MG|NOFORM")) {
+			event.setCancelled(true);
 		}
 	}
 }

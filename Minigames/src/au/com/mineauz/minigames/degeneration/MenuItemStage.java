@@ -13,6 +13,7 @@ import com.google.common.collect.Lists;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.degeneration.DegenerationStage.StartType;
+import au.com.mineauz.minigames.degeneration.effect.DegenerationEffects;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
@@ -67,6 +68,7 @@ class MenuItemStage extends MenuItem implements ChangeListener<Object> {
 		}
 		
 		description.add(ChatColor.YELLOW + "Type: " + ChatColor.GRAY + WordUtils.capitalizeFully(stage.getDegeneratorType()));
+		description.add(ChatColor.YELLOW + "Effect: " + ChatColor.GRAY + WordUtils.capitalizeFully(stage.getEffectType()));
 		
 		description.add("Left click to open");
 		description.add("Shift + Right click to remove");
@@ -123,7 +125,7 @@ class MenuItemStage extends MenuItem implements ChangeListener<Object> {
 		
 		menu.addItem(changeAreaItem);
 		
-		final MenuItem item = new MenuItem("Degen Type", ChatColor.GREEN + WordUtils.capitalizeFully(stage.getDegeneratorType()), Material.PAPER);
+		final MenuItem typeItem = new MenuItem("Degen Type", ChatColor.GREEN + WordUtils.capitalizeFully(stage.getDegeneratorType()), Material.PAPER);
 		stage.degeneratorType().addListener(new ChangeListener<String>() {
 			@Override
 			public void onValueChange(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -139,14 +141,33 @@ class MenuItemStage extends MenuItem implements ChangeListener<Object> {
 			}
 		});
 		
-		item.setClickHandler(new IMenuItemClick() {
+		typeItem.setClickHandler(new IMenuItemClick() {
 			@Override
 			public void onClick(MenuItem menuItem, MinigamePlayer player) {
 				Menu selectMenu = Degenerators.createSelectionMenu(stage.degeneratorType());
 				selectMenu.displayMenu(player);
 			}
 		});
-		menu.addItem(item);
+		menu.addItem(typeItem);
+		
+		final MenuItem effectItem = new MenuItem("Effect", ChatColor.GREEN + WordUtils.capitalizeFully(stage.getEffectType()), Material.PAPER);
+		stage.effectType().addListener(new ChangeListener<String>() {
+			@Override
+			public void onValueChange(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				effectItem.setDescription(ChatColor.GREEN + WordUtils.capitalizeFully(stage.getEffectType()));
+				menu.refresh();
+			}
+		});
+		
+		effectItem.setClickHandler(new IMenuItemClick() {
+			@Override
+			public void onClick(MenuItem menuItem, MinigamePlayer player) {
+				Menu selectMenu = DegenerationEffects.createSelectionMenu(stage.effectType());
+				selectMenu.displayMenu(player);
+			}
+		});
+		menu.addItem(effectItem);
+		
 		
 		menu.addItem(new MenuItemNewLine());
 		

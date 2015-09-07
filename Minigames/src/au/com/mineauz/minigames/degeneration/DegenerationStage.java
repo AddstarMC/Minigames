@@ -16,11 +16,9 @@ public class DegenerationStage {
 	private final IntegerProperty interval;
 	private final IntegerProperty maxRunTime;
 	private final StringProperty degeneratorType;
+	private final StringProperty effect;
 	
 	private DegeneratorSettings degenSettings;
-	
-	// TODO: This doesnt make sense here
-	private final IntegerProperty randomChance;
 	
 	private Location minCorner;
 	private Location maxCorner;
@@ -32,8 +30,8 @@ public class DegenerationStage {
 		delay = new IntegerProperty(Minigames.plugin.getConfig().getInt("multiplayer.floordegenerator.time"), "delay");
 		interval = new IntegerProperty(delay.getValue(), "interval");
 		maxRunTime = new IntegerProperty(0, "runtime");
-		randomChance = new IntegerProperty(15, "randomChance");
 		degeneratorType = new StringProperty("inward", "degeneratorType");
+		effect = new StringProperty("clear", "effect");
 	}
 	
 	public DegenerationStage(Location point1, Location point2) {
@@ -52,6 +50,18 @@ public class DegenerationStage {
 	
 	public Property<String> degeneratorType() {
 		return degeneratorType;
+	}
+	
+	public String getEffectType() {
+		return effect.getValue();
+	}
+	
+	public void setEffectType(String type) {
+		effect.setValue(type);
+	}
+	
+	public Property<String> effectType() {
+		return effect;
 	}
 	
 	public StartType getStartType() {
@@ -102,18 +112,6 @@ public class DegenerationStage {
 		return maxRunTime;
 	}
 	
-	public int getRandomChance() {
-		return randomChance.getValue();
-	}
-	
-	public void setRandomChance(int chance) {
-		randomChance.setValue(chance);
-	}
-	
-	public Property<Integer> randomChance() {
-		return randomChance;
-	}
-	
 	public Location getMinCorner() {
 		return minCorner.clone();
 	}
@@ -141,7 +139,8 @@ public class DegenerationStage {
 		delay.save(section);
 		maxRunTime.save(section);
 		interval.save(section);
-		randomChance.save(section);
+		degeneratorType.save(section);
+		effect.save(section);
 		
 		MinigameUtils.saveShortLocation(section.createSection("min"), minCorner);
 		MinigameUtils.saveShortLocation(section.createSection("max"), maxCorner);
@@ -157,7 +156,8 @@ public class DegenerationStage {
 		delay.load(section);
 		maxRunTime.load(section);
 		interval.load(section);
-		randomChance.load(section);
+		degeneratorType.load(section);
+		effect.load(section);
 		
 		minCorner = MinigameUtils.loadShortLocation(section.getConfigurationSection("min"));
 		maxCorner = MinigameUtils.loadShortLocation(section.getConfigurationSection("max"));

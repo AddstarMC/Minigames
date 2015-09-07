@@ -25,6 +25,8 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.degeneration.DegenerationStage.StartType;
+import au.com.mineauz.minigames.degeneration.effect.DegenerationEffect;
+import au.com.mineauz.minigames.degeneration.effect.DegenerationEffects;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
@@ -260,7 +262,7 @@ public class DegenerationModule extends MinigameModule {
 				
 				if (!state.degenerator.isFinished()) {
 					Iterable<Block> blocks = state.degenerator.next(stage.getDegenSettings());
-					degenerateBlocks(blocks);
+					degenerateBlocks(blocks, state.effect);
 				} else {
 					System.out.println("Degen finished. stage " + stage);
 					it.remove();
@@ -276,14 +278,14 @@ public class DegenerationModule extends MinigameModule {
 		}
 	}
 	
-	private void degenerateBlocks(Iterable<Block> blocks) {
+	private void degenerateBlocks(Iterable<Block> blocks, DegenerationEffect effect) {
 		for (Block block : blocks) {
 			if (block.isEmpty()) {
 				continue;
 			}
 			
 			getMinigame().getBlockRecorder().addBlock(block, null);
-			block.setType(Material.AIR);
+			effect.removeBlock(block);
 		}
 	}
 	
@@ -306,12 +308,14 @@ public class DegenerationModule extends MinigameModule {
 		public int nextTrigger;
 		
 		public final Degenerator degenerator;
+		public final DegenerationEffect effect;
 		
 		public DegenState(DegenerationStage stage) {
 			counter = 0;
 			nextTrigger = stage.getDelay();
 			
 			degenerator = Degenerators.create(stage.getDegeneratorType(), stage.getMinCorner(), stage.getMaxCorner());
+			effect = DegenerationEffects.get(stage.getEffectType());
 		}
 	}
 	
