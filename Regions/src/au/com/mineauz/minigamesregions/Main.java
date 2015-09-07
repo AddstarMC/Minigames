@@ -8,7 +8,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.set.SetCommand;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.tool.ToolModes;
 import au.com.mineauz.minigamesregions.commands.SetNodeCommand;
 import au.com.mineauz.minigamesregions.commands.SetRegionCommand;
@@ -64,10 +63,7 @@ public class Main extends JavaPlugin{
 		if (plugin == null) {
 			return;
 		}
-		for(Minigame mg : minigames.mdata.getAllMinigames().values()){
-			mg.saveMinigame();
-		}
-		
+
 		ToolModes.removeToolMode("REGION");
 		ToolModes.removeToolMode("NODE");
 		ToolModes.removeToolMode("REGION_AND_NODE_EDITOR");

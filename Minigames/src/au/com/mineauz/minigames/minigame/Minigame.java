@@ -21,7 +21,6 @@ import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 
-import au.com.mineauz.minigames.FloorDegenerator;
 import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameSave;
@@ -1016,7 +1015,12 @@ public class Minigame {
 		
 		ConfigurationSection root = cfg.createSection(name);
 		
-		for (MinigameModule module : getModules()) {
+		// Get all modules with all settings
+		Map<Class<? extends MinigameModule>, MinigameModule> modules = Maps.newHashMap();
+		modules.putAll(cachedModules);
+		modules.putAll(modules);
+		
+		for (MinigameModule module : modules.values()) {
 			if (!module.useSeparateConfig()) {
 				module.save(cfg);
 				
