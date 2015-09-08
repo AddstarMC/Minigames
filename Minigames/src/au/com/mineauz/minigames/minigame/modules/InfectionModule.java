@@ -3,7 +3,6 @@ package au.com.mineauz.minigames.minigame.modules;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
@@ -39,14 +38,6 @@ public class InfectionModule extends MinigameModule{
 	@Override
 	public boolean useSeparateConfig() {
 		return false;
-	}
-
-	@Override
-	public void save(FileConfiguration config) {
-	}
-
-	@Override
-	public void load(FileConfiguration config) {
 	}
 
 	@Override

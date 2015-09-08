@@ -7,11 +7,7 @@ import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
 import com.google.common.collect.Maps;
 
 import au.com.mineauz.minigames.MessageType;
@@ -57,79 +53,6 @@ public class LoadoutModule extends MinigameModule {
 	@Override
 	public boolean useSeparateConfig(){
 		return false;
-	}
-
-	@Override
-	public void save(FileConfiguration config) {
-		//Do Nothing
-	}
-
-	@Override
-	public void load(FileConfiguration config) {
-		
-		//TODO: Remove entire load after 1.7
-		if(config.contains(getMinigame() + ".loadout")){
-			Set<String> keys = config.getConfigurationSection(getMinigame() + ".loadout").getKeys(false);
-			for(String key : keys){
-				if(key.matches("[0-9]+"))
-					getLoadout("default").addItem(config.getItemStack(getMinigame() + ".loadout." + key), Integer.parseInt(key));
-			}
-			
-			if(config.contains(getMinigame() + ".loadout.potions")){
-				keys = config.getConfigurationSection(getMinigame() + ".loadout.potions").getKeys(false);
-				for(String eff : keys){
-					if(PotionEffectType.getByName(eff) != null){
-						PotionEffect effect = new PotionEffect(PotionEffectType.getByName(eff),
-								config.getInt(getMinigame() + ".loadout.potions." + eff + ".dur"),
-								config.getInt(getMinigame() + ".loadout.potions." + eff + ".amp"), true);
-						getLoadout("default").addPotionEffect(effect);
-					}
-				}
-			}
-			
-			if(config.contains(getMinigame() + ".loadout.usepermissions")){
-				getLoadout("default").setUsePermissions(config.getBoolean(getMinigame() + ".loadout.usepermissions"));
-			}
-			
-			if(config.contains(getMinigame() + ".loadout.falldamage")){
-				getLoadout("default").setHasFallDamage(config.getBoolean(getMinigame() + ".loadout.falldamage"));
-			}
-			if(config.contains(getMinigame() + ".loadout.hunger")){
-				getLoadout("default").setHasHunger(config.getBoolean(getMinigame() + ".loadout.hunger"));
-			}
-		}
-		if(config.contains(getMinigame() + ".extraloadouts")){
-			Set<String> keys = config.getConfigurationSection(getMinigame() + ".extraloadouts").getKeys(false);
-			for(String loadout : keys){
-				addLoadout(loadout);
-				Set<String> items = config.getConfigurationSection(getMinigame() + ".extraloadouts." + loadout).getKeys(false);
-				for(String key : items){
-					if(key.matches("[0-9]+"))
-						getLoadout(loadout).addItem(config.getItemStack(getMinigame() + ".extraloadouts." + loadout + "." + key), Integer.parseInt(key));
-				}
-				if(config.contains(getMinigame() + ".extraloadouts." + loadout + ".potions")){
-					Set<String> pots = config.getConfigurationSection(getMinigame() + ".extraloadouts." + loadout + ".potions").getKeys(false);
-					for(String eff : pots){
-						if(PotionEffectType.getByName(eff) != null){
-							PotionEffect effect = new PotionEffect(PotionEffectType.getByName(eff),
-									config.getInt(getMinigame() + ".extraloadouts." + loadout + ".potions." + eff + ".dur"),
-									config.getInt(getMinigame() + ".extraloadouts." + loadout + ".potions." + eff + ".amp"));
-							getLoadout(loadout).addPotionEffect(effect);
-						}
-					}
-				}
-				
-				if(config.contains(getMinigame() + ".extraloadouts." + loadout + ".usepermissions")){
-					getLoadout(loadout).setUsePermissions(config.getBoolean(getMinigame() + ".extraloadouts." + loadout + ".usepermissions"));
-				}
-				
-				if(config.contains(getMinigame() + ".extraloadouts." + loadout + ".falldamage"))
-					getLoadout(loadout).setHasFallDamage(config.getBoolean(getMinigame() + ".extraloadouts." + loadout + ".falldamage"));
-				
-				if(config.contains(getMinigame() + ".extraloadouts." + loadout + ".hunger"))
-					getLoadout(loadout).setHasHunger(config.getBoolean(getMinigame() + ".extraloadouts." + loadout + ".hunger"));
-			}
-		}
 	}
 	
 	@Deprecated

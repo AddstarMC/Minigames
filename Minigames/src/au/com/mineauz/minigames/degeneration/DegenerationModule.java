@@ -15,7 +15,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.google.common.collect.Lists;
@@ -115,15 +114,9 @@ public class DegenerationModule extends MinigameModule {
 	}
 	
 	@Override
-	public void save(FileConfiguration config) {
-		ConfigurationSection root = config.getConfigurationSection(getMinigame().getName(false));
-		if (root == null) {
-			root = config.createSection(getMinigame().getName(false));
-		}
-		save(root.createSection("degen"));
-	}
-	
-	public void save(ConfigurationSection section) {
+	public void save(ConfigurationSection root) {
+		ConfigurationSection section = root.createSection("degen");
+
 		// Save the stages
 		int index = 0;
 		for (DegenerationStage stage : stages) {
@@ -140,14 +133,12 @@ public class DegenerationModule extends MinigameModule {
 	}
 	
 	@Override
-	public void load(FileConfiguration config) {
-		ConfigurationSection root = config.getConfigurationSection(getMinigame().getName(false));
-		if (root.contains("degen")) {
-			load(root.getConfigurationSection("degen"));
+	public void load(ConfigurationSection root) {
+		if (!root.contains("degen")) {
+			return;
 		}
-	}
-	
-	public void load(ConfigurationSection section) {
+		
+		ConfigurationSection section = root.getConfigurationSection("degen");
 		// Load the stages
 		stages.clear();
 		ConfigurationSection stagesSection = section.getConfigurationSection("stages");

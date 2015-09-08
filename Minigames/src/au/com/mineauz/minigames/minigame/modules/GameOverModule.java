@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.potion.PotionEffect;
 
 import au.com.mineauz.minigames.MessageType;
@@ -56,14 +55,6 @@ public class GameOverModule extends MinigameModule{
 	@Override
 	public boolean useSeparateConfig() {
 		return false;
-	}
-
-	@Override
-	public void save(FileConfiguration config) {
-	}
-
-	@Override
-	public void load(FileConfiguration config) {
 	}
 
 	@Override

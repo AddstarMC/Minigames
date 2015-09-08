@@ -3,8 +3,6 @@ package au.com.mineauz.minigames.minigame.modules;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.CTFFlag;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -33,12 +31,6 @@ public class CTFModule extends MinigameModule {
 		return false;
 	}
 
-	@Override
-	public void save(FileConfiguration config) {}
-
-	@Override
-	public void load(FileConfiguration config) {}
-	
 	public boolean isFlagCarrier(MinigamePlayer ply){
 		return flagCarriers.containsKey(ply);
 	}

@@ -1,7 +1,8 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import java.lang.reflect.Constructor;
-import org.bukkit.configuration.file.FileConfiguration;
+
+import org.bukkit.configuration.ConfigurationSection;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
@@ -21,8 +22,8 @@ public abstract class MinigameModule {
 	public abstract String getName();
 	public abstract ConfigPropertyContainer getProperties();
 	public abstract boolean useSeparateConfig();
-	public abstract void save(FileConfiguration config);
-	public abstract void load(FileConfiguration config);
+	public void save(ConfigurationSection config) {};
+	public void load(ConfigurationSection config) {};
 	public void addEditMenuOptions(Menu menu) {}
 	public Menu createSettingsMenu() { return null; }
 	

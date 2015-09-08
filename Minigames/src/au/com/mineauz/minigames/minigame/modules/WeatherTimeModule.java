@@ -3,7 +3,6 @@ package au.com.mineauz.minigames.minigame.modules;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.WeatherType;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
@@ -50,14 +49,6 @@ public class WeatherTimeModule extends MinigameModule {
 	@Override
 	public boolean useSeparateConfig(){
 		return false;
-	}
-
-	@Override
-	public void save(FileConfiguration config) {
-	}
-
-	@Override
-	public void load(FileConfiguration config) {
 	}
 
 	@Override

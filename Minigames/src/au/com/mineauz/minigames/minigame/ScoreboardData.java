@@ -3,10 +3,8 @@ package au.com.mineauz.minigames.minigame;
 import java.util.Map;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import com.google.common.collect.Maps;
-import au.com.mineauz.minigames.MinigameSave;
 import au.com.mineauz.minigames.Minigames;
 
 public class ScoreboardData {
@@ -58,26 +56,25 @@ public class ScoreboardData {
 		}
 	}
 	
-	public void saveDisplays(MinigameSave save, String name){
-		FileConfiguration root = save.getConfig();
-		ConfigurationSection section = root.createSection(name + ".scoreboards");
+	public void saveDisplays(ConfigurationSection root) {
+		ConfigurationSection section = root.createSection("scoreboards");
 		
 		int index = 0;
-		for(ScoreboardDisplay display : displays.values()) {
+		for (ScoreboardDisplay display : displays.values()) {
 			ConfigurationSection displaySection = section.createSection(String.valueOf(index++));
 			display.save(displaySection);
 		}
 	}
 	
-	public void loadDisplays(ConfigurationSection con, Minigame mgm) {
-		ConfigurationSection root = con.getConfigurationSection(mgm.getName(false) + ".scoreboards");
+	public void loadDisplays(ConfigurationSection root, Minigame mgm) {
+		ConfigurationSection section = root.getConfigurationSection("scoreboards");
 		
-		if (root == null) {
+		if (section == null) {
 			return;
 		}
 		
-		for (String key : root.getKeys(false)) {
-			ConfigurationSection displayConf = root.getConfigurationSection(key);
+		for (String key : section.getKeys(false)) {
+			ConfigurationSection displayConf = section.getConfigurationSection(key);
 			
 			ScoreboardDisplay display = ScoreboardDisplay.load(mgm, displayConf);
 			if (display != null) {

@@ -4,12 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
-import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.TeamSetFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
@@ -59,34 +54,6 @@ public class TeamsModule extends MinigameModule {
 		return false;
 	}
 
-	@Override
-	public void save(FileConfiguration config) {
-	}
-
-	@Override
-	public void load(FileConfiguration config) {
-		if(config.contains(getMinigame() + ".startposred")){ //TODO: Remove after 1.7
-			if(!hasTeam(TeamColor.RED))
-				addTeam(TeamColor.RED);
-			Set<String> locs = config.getConfigurationSection(getMinigame() + ".startposred").getKeys(false);
-			
-			for(int i = 0; i < locs.size(); i++){
-				getTeam(TeamColor.RED).addStartLocation(Minigames.plugin.mdata.minigameLocations(getMinigame().getName(false), 
-						"startposred." + String.valueOf(i), config));
-			}
-		}
-		if(config.contains(getMinigame() + ".startposblue")){ //TODO: Remove after 1.7
-			if(!hasTeam(TeamColor.BLUE))
-				addTeam(TeamColor.BLUE);
-			Set<String> locs = config.getConfigurationSection(getMinigame() + ".startposblue").getKeys(false);
-			
-			for(int i = 0; i < locs.size(); i++){
-				getTeam(TeamColor.BLUE).addStartLocation(Minigames.plugin.mdata.minigameLocations(getMinigame().getName(false), 
-						"startposblue." + String.valueOf(i), config));
-			}
-		}
-	}
-	
 	@Deprecated
 	public static TeamsModule getMinigameModule(Minigame minigame){
 		return (TeamsModule) minigame.getModule(TeamsModule.class);

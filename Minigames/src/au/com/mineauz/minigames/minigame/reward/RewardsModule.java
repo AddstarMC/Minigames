@@ -2,7 +2,6 @@ package au.com.mineauz.minigames.minigame.reward;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
@@ -58,10 +57,9 @@ public class RewardsModule extends MinigameModule {
 	}
 
 	@Override
-	public void save(FileConfiguration config) {
+	public void save(ConfigurationSection root) {
 		String name = RewardSchemes.getName(scheme.getClass());
 		
-		ConfigurationSection root = config.getConfigurationSection(getMinigame().getName(false));
 		root.set("reward-scheme", name);
 		
 		ConfigurationSection rewards = root.createSection("rewards");
@@ -69,8 +67,7 @@ public class RewardsModule extends MinigameModule {
 	}
 
 	@Override
-	public void load(FileConfiguration config) {
-		ConfigurationSection root = config.getConfigurationSection(getMinigame().getName(false));
+	public void load(ConfigurationSection root) {
 		String name = root.getString("reward-scheme", "standard");
 		
 		scheme = RewardSchemes.createScheme(name);

@@ -1,7 +1,5 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -29,14 +27,6 @@ public class JuggernautModule extends MinigameModule{
 	@Override
 	public boolean useSeparateConfig() {
 		return false;
-	}
-
-	@Override
-	public void save(FileConfiguration config) {
-	}
-
-	@Override
-	public void load(FileConfiguration config) {
 	}
 
 	@Deprecated

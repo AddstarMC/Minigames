@@ -9,7 +9,6 @@ import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -68,14 +67,6 @@ public class TreasureHuntModule extends MinigameModule{
 	@Override
 	public boolean useSeparateConfig() {
 		return false;
-	}
-
-	@Override
-	public void save(FileConfiguration config) {
-	}
-
-	@Override
-	public void load(FileConfiguration config) {
 	}
 
 	@Override

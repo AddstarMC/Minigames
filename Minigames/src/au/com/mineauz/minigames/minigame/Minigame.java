@@ -17,6 +17,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -1009,7 +1010,7 @@ public class Minigame {
 		return sbData;
 	}
 
-	public void saveMinigame(){
+	public void saveMinigame() {
 		MinigameSave minigame = new MinigameSave(name, "config");
 		FileConfiguration cfg = minigame.getConfig();
 		
@@ -1022,7 +1023,7 @@ public class Minigame {
 		
 		for (MinigameModule module : modules.values()) {
 			if (!module.useSeparateConfig()) {
-				module.save(cfg);
+				module.save(root);
 				
 				if (module.getProperties() != null) {
 					module.getProperties().saveAll(root);
@@ -1031,7 +1032,7 @@ public class Minigame {
 				MinigameSave modsave = new MinigameSave("minigames/" + name + "/" + module.getName().toLowerCase());
 				modsave.getConfig().set(name, null);
 				ConfigurationSection moduleRoot = modsave.getConfig().createSection(name);
-				module.save(modsave.getConfig());
+				module.save(moduleRoot);
 				
 				if (module.getProperties() != null) {
 					module.getProperties().saveAll(moduleRoot);
@@ -1043,19 +1044,19 @@ public class Minigame {
 		
 		properties.saveAll(root);
 		
-		if(!getBlockRecorder().getWBBlocks().isEmpty()){
-			List<String> blocklist = new ArrayList<String>();
-			for(Material mat : getBlockRecorder().getWBBlocks()){
+		if (!getBlockRecorder().getWBBlocks().isEmpty()) {
+			List<String> blocklist = Lists.newArrayList();
+			for (Material mat : getBlockRecorder().getWBBlocks()) {
 				blocklist.add(mat.toString());
 			}
-			minigame.getConfig().set(name + ".whitelistblocks", blocklist);
+			root.set("whitelistblocks", blocklist);
 		}
 		
-		if(getBlockRecorder().getWhitelistMode()){
-			minigame.getConfig().set(name + ".whitelistmode", getBlockRecorder().getWhitelistMode());
+		if (getBlockRecorder().getWhitelistMode()) {
+			root.set("whitelistmode", getBlockRecorder().getWhitelistMode());
 		}
 		
-		getScoreboardData().saveDisplays(minigame, name);
+		getScoreboardData().saveDisplays(root);
 		getScoreboardData().refreshDisplays();
 		Minigames.plugin.getBackend().saveStatSettings(this, statSettings.values());
 		
@@ -1080,62 +1081,37 @@ public class Minigame {
 		
 		ConfigurationSection root = config.getConfigurationSection(name);
 		
-		module.load(config);
+		module.load(root);
 		
 		if (module.getProperties() != null) {
 			module.getProperties().loadAll(root);
 		}
 	}
 	
-	public void loadMinigame(){
+	public void loadMinigame() {
 		MinigameSave save = new MinigameSave(name, "config");
 		FileConfiguration cfg = cachedConfig = save.getConfig();
 		ConfigurationSection root = cfg.getConfigurationSection(name);
 		
-		//-----------------------------------------------
-		//TODO: Remove me after 1.7
-		if(cfg.contains(name + ".type")){
-			if(cfg.getString(name + ".type").equals("TEAMS")) {
-				cfg.set(name + ".type", "MULTIPLAYER");
-				getModule(TeamsModule.class).addTeam(TeamColor.RED);
-				getModule(TeamsModule.class).addTeam(TeamColor.BLUE);
-			}
-			else if(cfg.getString(name + ".type").equals("FREE_FOR_ALL")){
-				cfg.set(name + ".type", "MULTIPLAYER");
-			}
-			else if(cfg.getString(name + ".type").equals("TREASURE_HUNT")){
-				cfg.set(name + ".type", "GLOBAL");
-				cfg.set(name + ".scoretype", "treasure_hunt");
-				cfg.set(name + ".timer", Minigames.plugin.getConfig().getInt("treasurehunt.findtime") * 60);
-			}
-		}
-		//-----------------------------------------------
-		
 		properties.loadAll(root);
 		
-		if(cfg.contains(name + ".whitelistmode")){
-			getBlockRecorder().setWhitelistMode(cfg.getBoolean(name + ".whitelistmode"));
+		if (cfg.contains(name + ".whitelistmode")) {
+			getBlockRecorder().setWhitelistMode(root.getBoolean("whitelistmode"));
 		}
 		
-		if(cfg.contains(name + ".whitelistblocks")){
-			List<String> blocklist = cfg.getStringList(name + ".whitelistblocks");
-			for(String block : blocklist){
+		if (cfg.contains(name + ".whitelistblocks")) {
+			List<String> blocklist = root.getStringList("whitelistblocks");
+			for (String block : blocklist) {
 				getBlockRecorder().addWBBlock(Material.matchMaterial(block));
 			}
 		}
 		
 		initialize();
 		
-		for(MinigameModule module : getModules()) {
+		for (MinigameModule module : getModules()) {
 			loadModule(module);
 		}
 
-//		Bukkit.getLogger().info("------- Minigame Load -------");
-//		Bukkit.getLogger().info("Name: " + getName());
-//		Bukkit.getLogger().info("Type: " + getType());
-//		Bukkit.getLogger().info("Enabled: " + isEnabled());
-//		Bukkit.getLogger().info("-----------------------------");
-		
 		final Minigame mgm = this;
 		
 		if(getType() == MinigameType.GLOBAL && isEnabled()){
@@ -1148,7 +1124,7 @@ public class Minigame {
 			});
 		}
 		
-		getScoreboardData().loadDisplays(cfg, this);
+		getScoreboardData().loadDisplays(root, this);
 		
 		ListenableFuture<Map<MinigameStat, StatSettings>> settingsFuture = Minigames.plugin.getBackend().loadStatSettings(this);
 		Minigames.plugin.getBackend().addServerThreadCallback(settingsFuture, new FutureCallback<Map<MinigameStat, StatSettings>>() {

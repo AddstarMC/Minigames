@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
@@ -43,9 +42,7 @@ public class RegionModule extends MinigameModule {
 	}
 
 	@Override
-	public void save(FileConfiguration config) {
-		ConfigurationSection root = config.createSection(getMinigame().getName(false));
-		
+	public void save(ConfigurationSection root) {
 		ConfigurationSection regionSection = root.createSection("regions");
 		for (Region region : regions.values()) {
 			region.save(regionSection.createSection(region.getName()));
@@ -58,9 +55,7 @@ public class RegionModule extends MinigameModule {
 	}
 
 	@Override
-	public void load(FileConfiguration config) {
-		ConfigurationSection root = config.createSection(getMinigame().getName(false));
-		
+	public void load(ConfigurationSection root) {
 		ConfigurationSection regionSection = root.getConfigurationSection("regions");
 		if (regionSection != null) {
 			for (String name : regionSection.getKeys(false)) {

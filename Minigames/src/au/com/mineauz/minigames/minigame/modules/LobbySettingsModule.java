@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
@@ -50,14 +49,6 @@ public class LobbySettingsModule extends MinigameModule {
 		return false;
 	}
 
-	@Override
-	public void save(FileConfiguration config) {
-	}
-
-	@Override
-	public void load(FileConfiguration config) {
-	}
-	
 	@Deprecated
 	public static LobbySettingsModule getMinigameModule(Minigame minigame) {
 		return (LobbySettingsModule) minigame.getModule(LobbySettingsModule.class);
