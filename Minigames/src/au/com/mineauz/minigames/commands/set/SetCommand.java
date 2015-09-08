@@ -47,7 +47,6 @@ public class SetCommand implements ICommand{
 		registerSetCommand(new SetRewardCommand());
 		registerSetCommand(new SetSecondaryRewardCommand());
 		registerSetCommand(new SetTypeCommand());
-		registerSetCommand(new SetFloorDegeneratorCommand());
 		registerSetCommand(new SetMaxPlayersCommand());
 		registerSetCommand(new SetMinPlayersCommand());
 		registerSetCommand(new SetLoadoutCommand());

@@ -39,6 +39,7 @@ public final class Degenerators {
 		register(Minigames.plugin, OutwardExpandingGenerator.class);
 		register(Minigames.plugin, RandomDegenerator.class, RandomDegenerator.Settings.class);
 		register(Minigames.plugin, ClearDegenerator.class);
+		register(Minigames.plugin, CircleDegenerator.class, CircleDegenerator.Settings.class);
 	}
 	
 	/**

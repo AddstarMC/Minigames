@@ -82,12 +82,6 @@ public class Minigame {
 	private ListProperty flags = new ListProperty(null, "flags");
 	private MinigameState state = MinigameState.IDLE;
 	
-	private LocationProperty floorDegen1 = new LocationProperty(null, "sfloorpos.1");
-	private LocationProperty floorDegen2 = new LocationProperty(null, "sfloorpos.2");
-	private StringProperty degenType = new StringProperty("inward", "degentype");
-	private IntegerProperty degenRandomChance = new IntegerProperty(15, "degenrandom");
-	private IntegerProperty floorDegenTime = new IntegerProperty(Minigames.plugin.getConfig().getInt("multiplayer.floordegenerator.time"), "floordegentime");
-	
 	private LocationListProperty startLocations = new LocationListProperty(null, "startpos");
 	private LocationProperty endPosition = new LocationProperty(null, "endpos");
 	private LocationProperty quitPosition = new LocationProperty(null, "quitpos");
@@ -182,16 +176,11 @@ public class Minigame {
 		properties.addProperty(canSpectateFly);
 		properties.addProperty(deathDrops);
 		properties.addProperty(defaultGamemode);
-		properties.addProperty(degenRandomChance);
-		properties.addProperty(degenType);
 		properties.addProperty(displayName);
 		properties.addProperty(enableFlight);
 		properties.addProperty(enabled);
 		properties.addProperty(endPosition);
 		properties.addProperty(flags);
-		properties.addProperty(floorDegen1);
-		properties.addProperty(floorDegen2);
-		properties.addProperty(floorDegenTime);
 		properties.addProperty(gametypeName);
 		properties.addProperty(itemDrops);
 		properties.addProperty(itemPickup);
@@ -380,38 +369,6 @@ public class Minigame {
 
 	public void setSpMaxPlayers(boolean spMaxPlayers) {
 		this.spMaxPlayers.setValue(spMaxPlayers);
-	}
-
-	public Location getFloorDegen1(){
-		return floorDegen1.getValue();
-	}
-
-	public void setFloorDegen1(Location loc){
-		this.floorDegen1.setValue(loc);
-	}
-
-	public Location getFloorDegen2(){
-		return floorDegen2.getValue();
-	}
-
-	public void setFloorDegen2(Location loc){
-		this.floorDegen2.setValue(loc);
-	}
-
-	public String getDegenType() {
-		return degenType.getValue();
-	}
-
-	public void setDegenType(String degenType) {
-		this.degenType.setValue(degenType);
-	}
-
-	public int getDegenRandomChance() {
-		return degenRandomChance.getValue();
-	}
-
-	public void setDegenRandomChance(int degenRandomChance) {
-		this.degenRandomChance.setValue(degenRandomChance);
 	}
 
 	public Location getEndPosition(){
@@ -760,14 +717,6 @@ public class Minigame {
 		this.lives.setValue(lives);
 	}
 
-	public int getFloorDegenTime() {
-		return floorDegenTime.getValue();
-	}
-
-	public void setFloorDegenTime(int floorDegenTime) {
-		this.floorDegenTime.setValue(floorDegenTime);
-	}
-	
 	public boolean isAllowedEnderpearls() {
 		return allowEnderpearls.getValue();
 	}
@@ -941,13 +890,6 @@ public class Minigame {
 				Material.CHEST, getBlockRecorder().getWBBlocks(), getBlockRecorder().whitelistMode()));
 		main.addItem(new MenuItemNewLine());
 		
-		List<String> floorDegenOpt = new ArrayList<String>();
-		floorDegenOpt.add("Inward");
-		floorDegenOpt.add("Circle");
-		floorDegenOpt.add("Random");
-		main.addItem(new MenuItemList("Floor Degenerator Type", "Mainly used to prevent;islanding in spleef Minigames.", Material.SNOW_BLOCK, degenType, floorDegenOpt));
-		main.addItem(new MenuItemInteger("Random Floor Degen Chance", "Chance of block being;removed on random;degeneration.", Material.SNOW, degenRandomChance, 1, 100));
-		main.addItem(new MenuItemTime("Floor Degenerator Delay", Material.WATCH, floorDegenTime, 1, Integer.MAX_VALUE));
 		main.addItem(new MenuItemTime("Regeneration Delay", "Time in seconds before;Minigame regeneration starts", Material.WATCH, regenDelay, 0, Integer.MAX_VALUE));
 		main.addItem(new MenuItemNewLine());
 		main.addItem(new MenuItemSubMenu("Player Settings", Material.SKULL_ITEM, playerMenu));

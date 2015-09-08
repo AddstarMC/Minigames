@@ -134,13 +134,15 @@ public class DegenerationModule extends MinigameModule {
 	
 	@Override
 	public void load(ConfigurationSection root) {
+		stages.clear();
+		
 		if (!root.contains("degen")) {
+			loadCompatability(root);
 			return;
 		}
 		
 		ConfigurationSection section = root.getConfigurationSection("degen");
 		// Load the stages
-		stages.clear();
 		ConfigurationSection stagesSection = section.getConfigurationSection("stages");
 		if (stagesSection != null) {
 			for (String key : stagesSection.getKeys(false)) {
@@ -165,8 +167,50 @@ public class DegenerationModule extends MinigameModule {
 		}
 	}
 	
+	private void loadCompatability(ConfigurationSection root) {
+		// Load the old degenerator
+		Location pos1 = null;
+		Location pos2 = null;
+		if (root.contains("sfloorpos.1")) {
+			pos1 = MinigameUtils.loadShortLocation(root.getConfigurationSection("sfloorpos.1"));
+		}
+		
+		if (root.contains("sfloorpos.2")) {
+			pos2 = MinigameUtils.loadShortLocation(root.getConfigurationSection("sfloorpos.2"));
+		}
+		
+		if (pos1 == null || pos2 == null) {
+			return;
+		}
+		
+		String type = root.getString("degentype", "inward");
+		int time = root.getInt("floordegentime", Minigames.plugin.getConfig().getInt("multiplayer.floordegenerator.time"));
+		
+		DegenerationStage stage = new DegenerationStage(pos1, pos2);
+		stage.setDegeneratorType(type);
+		stage.setDelay(time);
+		stage.setInteval(time);
+		
+		// Apply random settings
+		if (type.equalsIgnoreCase("random")) {
+			// NOTE: There is no exact conversion between the old system and the new one, so we just take it as the max blocks per run
+			int chance = root.getInt("degenrandom", 15);
+			RandomDegenerator.Settings settings = (RandomDegenerator.Settings)stage.getDegenSettings();
+			settings.setMinBlocks(0);
+			settings.setMaxBlocks(chance);
+		}
+		
+		stages.add(stage);
+		
+		// Clear old settings
+		root.set("sfloorpos.1", null);
+		root.set("sfloorpos.2", null);
+		root.set("floordegentime", null);
+		root.set("degenrandom", null);
+		root.set("degentype", null);
+	}
+	
 	public void start() {
-		System.out.println("Starting degeneration module");
 		remainingStages = Lists.newArrayList(stages);
 		activeStages = Maps.newIdentityHashMap();
 		waiting = Maps.newIdentityHashMap();
@@ -184,7 +228,6 @@ public class DegenerationModule extends MinigameModule {
 	}
 	
 	public void stop() {
-		System.out.println("Stopping degeneration module");
 		if (runTask != null) {
 			runTask.cancel();
 			runTask = null;
@@ -230,7 +273,6 @@ public class DegenerationModule extends MinigameModule {
 			if (add) {
 				DegenState state = new DegenState(stage);
 				activeStages.put(stage, state);
-				System.out.println("Activating stage " + stage);
 				it.remove();
 			} else {
 				break;
@@ -248,20 +290,17 @@ public class DegenerationModule extends MinigameModule {
 			DegenState state = entry.getValue();
 			
 			if (state.counter >= state.nextTrigger) {
-				System.out.println("Triggering stage " + stage);
 				state.nextTrigger = state.counter + stage.getInterval();
 				
 				if (!state.degenerator.isFinished()) {
 					Iterable<Block> blocks = state.degenerator.next(stage.getDegenSettings());
 					degenerateBlocks(blocks, state.effect);
 				} else {
-					System.out.println("Degen finished. stage " + stage);
 					it.remove();
 				}
 			}
 			
 			if (stage.getMaxRuntime() != 0 && state.counter >= stage.getMaxRuntime()) {
-				System.out.println("Degen out of time. stage " + stage);
 				// This one is done
 				it.remove();
 			}
