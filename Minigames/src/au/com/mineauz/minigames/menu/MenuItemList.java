@@ -34,7 +34,7 @@ public class MenuItemList extends MenuItem{
 		int pos = options.indexOf(value.getValue());
 		int before = pos - 1;
 		int after = pos + 1;
-		if(before == -1)
+		if(before < 0)
 			before = options.size() - 1;
 		if(after == options.size())
 			after = 0;

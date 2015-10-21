@@ -86,8 +86,11 @@ public class ApplyPotionAction extends ActionInterface {
 		Menu m = new Menu(3, "Apply Potion", player);
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
 		List<String> pots = new ArrayList<String>(PotionEffectType.values().length);
-		for(PotionEffectType type : PotionEffectType.values())
-			pots.add(MinigameUtils.capitalize(type.toString().replace("_", " ")));
+		for (PotionEffectType type : PotionEffectType.values()) {
+			if (type != null) {
+				pots.add(MinigameUtils.capitalize(type.getName().replace("_", " ")));
+			}
+		}
 		m.addItem(new MenuItemList("Potion Type", Material.POTION, new Callback<String>() {
 			
 			@Override
