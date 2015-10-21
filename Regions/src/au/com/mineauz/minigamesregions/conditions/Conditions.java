@@ -29,6 +29,7 @@ public class Conditions {
 		addCondition("CONTAINS_ENTIRE_TEAM", ContainsEntireTeamCondition.class);
 		addCondition("PLAYER_COUNT", PlayerCountCondition.class);
 		addCondition("PLAYER_HAS_ITEM", PlayerHasItemCondition.class);
+		addCondition("TEAM_PLAYER_COUNT", TeamPlayerCountCondition.class);
 		addCondition("TEAM_SCORE_RANGE", TeamScoreRangeCondition.class);
 		addCondition("MINIGAME_TIMER", MinigameTimerCondition.class);
 	}
