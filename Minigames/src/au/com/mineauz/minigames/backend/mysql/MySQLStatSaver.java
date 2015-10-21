@@ -45,8 +45,9 @@ class MySQLStatSaver {
 	public void saveData(StoredGameStats data) {
 		MinigameUtils.debugMessage("SQL Begining save of " + data);
 		
+		ConnectionHandler handler = null;
 		try {
-			ConnectionHandler handler = backend.getPool().getConnection();
+			handler = backend.getPool().getConnection();
 			try {
 				handler.beginTransaction();
 				
@@ -67,6 +68,10 @@ class MySQLStatSaver {
 			}
 		} catch (SQLException e) { 
 			e.printStackTrace();
+		} finally {
+			if (handler != null) {
+				handler.release();
+			}
 		}
 	}
 	

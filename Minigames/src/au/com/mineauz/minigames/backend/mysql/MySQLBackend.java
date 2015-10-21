@@ -141,6 +141,11 @@ public class MySQLBackend extends Backend {
 	}
 	
 	@Override
+	public void clean() {
+		pool.removeExpired();
+	}
+	
+	@Override
 	public void saveGameStatus(StoredGameStats stats) {
 		saver.saveData(stats);
 	}

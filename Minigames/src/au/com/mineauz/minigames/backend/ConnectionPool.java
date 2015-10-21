@@ -47,6 +47,11 @@ public class ConnectionPool {
                         handler.closeConnection();
                         it.remove();
                     }
+                } else {
+                	if (System.currentTimeMillis() - handler.getOpenTime() > maxIdleTime) {
+                		// So we dont just accumulate connections forever
+                		handler.release();
+                	}
                 }
             }
         }

@@ -29,6 +29,11 @@ public abstract class Backend {
 	public abstract void shutdown();
 	
 	/**
+	 * Cleans unused connections
+	 */
+	public abstract void clean();
+	
+	/**
 	 * Saves the game stats to the backend. This method is blocking.
 	 * @param stats The game stats to store
 	 */

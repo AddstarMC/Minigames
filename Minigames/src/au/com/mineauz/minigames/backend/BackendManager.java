@@ -129,6 +129,14 @@ public class BackendManager {
 				return false;
 			}
 		}
+		
+		// Start the cleaning task to remove old connections
+		Bukkit.getScheduler().runTaskTimer(Minigames.plugin, new Runnable() {
+			@Override
+			public void run() {
+				backend.clean();
+			}
+		}, 300, 300);
 		return true;
 	}
 	

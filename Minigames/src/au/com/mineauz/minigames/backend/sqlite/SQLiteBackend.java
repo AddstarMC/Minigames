@@ -90,6 +90,11 @@ public class SQLiteBackend extends Backend {
 		pool.closeConnections();
 	}
 	
+	@Override
+	public void clean() {
+		pool.removeExpired();
+	}
+	
 	private void ensureTables(ConnectionHandler connection) throws SQLException {
 		Statement statement = connection.getConnection().createStatement();
 		try {
