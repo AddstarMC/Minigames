@@ -66,7 +66,7 @@ public class ScoreboardDisplay {
 		field = StatValueField.Total;
 		order = ScoreboardOrder.DESCENDING;
 		
-		stats = Lists.newArrayListWithCapacity(width * height);
+		stats = Lists.newArrayListWithCapacity(width * height * 2);
 		needsLoad = true;
 	}
 
@@ -439,7 +439,7 @@ public class ScoreboardDisplay {
 	
 	public void reload() {
 		needsLoad = false;
-		ListenableFuture<List<StoredStat>> future = Minigames.plugin.getBackend().loadStats(minigame, stat, field, order, 0, width * height);
+		ListenableFuture<List<StoredStat>> future = Minigames.plugin.getBackend().loadStats(minigame, stat, field, order, 0, width * height * 2);
 		Minigames.plugin.getBackend().addServerThreadCallback(future, getUpdateCallback());
 	}
 	
