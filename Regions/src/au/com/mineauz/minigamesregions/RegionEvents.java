@@ -273,6 +273,12 @@ public class RegionEvents implements Listener{
 							}
 						}
 					}
+					
+					for(Region region : RegionModule.getMinigameModule(ply.getMinigame()).getRegions()){
+						if (region.locationInRegion(loc2)) {
+							region.execute(Triggers.getTrigger("BLOCK_BREAK"), ply);
+						}
+					}
 				}
 			});
 		}
@@ -301,6 +307,12 @@ public class RegionEvents implements Listener{
 									loc1.getBlockZ() == loc2.getBlockZ()){
 								node.execute(Triggers.getTrigger("BLOCK_PLACE"), ply);
 							}
+						}
+					}
+					
+					for(Region region : RegionModule.getMinigameModule(ply.getMinigame()).getRegions()){
+						if (region.locationInRegion(loc2)) {
+							region.execute(Triggers.getTrigger("BLOCK_PLACE"), ply);
 						}
 					}
 				}
