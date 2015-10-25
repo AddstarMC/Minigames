@@ -1,8 +1,12 @@
 package au.com.mineauz.minigamesregions.conditions;
 
+import java.util.Arrays;
+
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.BooleanFlag;
@@ -10,6 +14,7 @@ import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Node;
@@ -20,6 +25,8 @@ public class PlayerHasItemCondition extends ConditionInterface {
 	private StringFlag type = new StringFlag("STONE", "type");
 	private BooleanFlag useData = new BooleanFlag(false, "usedata");
 	private IntegerFlag data = new IntegerFlag(0, "data");
+	private StringFlag where = new StringFlag("ANYWHERE", "where");
+	private IntegerFlag slot = new IntegerFlag(0, "slot");
 
 	@Override
 	public String getName() {
@@ -52,18 +59,53 @@ public class PlayerHasItemCondition extends ConditionInterface {
 	}
 	
 	private boolean check(MinigamePlayer player){
-		if(player.getPlayer().getInventory().contains(Material.getMaterial(type.getFlag()))){
-			if(useData.getFlag()){
-				short dam = data.getFlag().shortValue();
-				for(ItemStack i : player.getPlayer().getInventory().getContents()){
-					if(i != null && i.getDurability() == dam){
-						return true;
-					}
-				}
-				return false;
-			}
-			return true;
+		PositionType checkType = PositionType.valueOf(where.getFlag().toUpperCase());
+		if (checkType == null) {
+			checkType = PositionType.ANYWHERE;
 		}
+		
+		PlayerInventory inventory = player.getPlayer().getInventory();
+		ItemStack[] searchItems;
+		int startSlot;
+		int endSlot;
+		
+		if (checkType == PositionType.ARMOR) {
+			searchItems = inventory.getArmorContents();
+			startSlot = 0;
+			endSlot = searchItems.length;
+		} else {
+			searchItems = inventory.getContents();
+			
+			if (checkType == PositionType.HOTBAR) {
+				startSlot = 0;
+				endSlot = 9;
+			} else if (checkType == PositionType.MAIN) {
+				startSlot = 9;
+				endSlot = 36;
+			} else if (checkType == PositionType.SLOT) {
+				startSlot = slot.getFlag();
+				endSlot = startSlot + 1;
+			} else {
+				startSlot = 0;
+				endSlot = searchItems.length;
+			}
+		}
+		
+		Material material = Material.getMaterial(type.getFlag());
+		
+		for (int i = startSlot; i < endSlot && i < searchItems.length; ++i) {
+			ItemStack itemInSlot = searchItems[i];
+			if (itemInSlot == null) {
+				continue;
+			}
+			
+			if (itemInSlot.getType() == material) {
+				if (!useData.getFlag() || itemInSlot.getDurability() == data.getFlag()) {
+					return true;
+				}
+			}
+		}
+		
 		return false;
 	}
 
@@ -72,6 +114,8 @@ public class PlayerHasItemCondition extends ConditionInterface {
 		type.saveValue(path, config);
 		useData.saveValue(path, config);
 		data.saveValue(path, config);
+		where.saveValue(path, config);
+		slot.saveValue(path, config);
 		saveInvert(config, path);
 	}
 
@@ -80,6 +124,8 @@ public class PlayerHasItemCondition extends ConditionInterface {
 		type.loadValue(path, config);
 		useData.loadValue(path, config);
 		data.loadValue(path, config);
+		where.loadValue(path, config);
+		slot.loadValue(path, config);
 		loadInvert(config, path);
 	}
 
@@ -105,9 +151,29 @@ public class PlayerHasItemCondition extends ConditionInterface {
 		}));
 		m.addItem(useData.getMenuItem("Match Item Data", Material.ENDER_PEARL));
 		m.addItem(data.getMenuItem("Data Value", Material.EYE_OF_ENDER, 0, null));
+		m.addItem(new MenuItemList("Search Where", Material.COMPASS, new Callback<String>() {
+			@Override
+			public void setValue(String value) {
+				where.setFlag(value.toUpperCase());
+			}
+			
+			@Override
+			public String getValue() {
+				return WordUtils.capitalizeFully(where.getFlag());
+			}
+		}, Arrays.asList("Anywhere", "Hotbar", "Main", "Armor", "Slot")));
+		m.addItem(slot.getMenuItem("Slot", Material.DIAMOND, 0, 35));
 		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;
+	}
+	
+	private enum PositionType {
+		ANYWHERE,
+		HOTBAR,
+		MAIN,
+		ARMOR,
+		SLOT
 	}
 
 }
