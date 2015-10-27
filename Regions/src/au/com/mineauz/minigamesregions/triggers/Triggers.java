@@ -27,6 +27,10 @@ public class Triggers {
 		addTrigger(new ItemPickupTrigger());
 		addTrigger(new ItemDropTrigger());
 		addTrigger(new RandomTrigger());
+		addTrigger(new PlayerDamageTrigger());
+		addTrigger(new PlayerFoodChangeTrigger());
+		addTrigger(new PlayerXPChangeTrigger());
+		addTrigger(new PlayerTakeFlagTrigger());
 	}
 	
 	public static void addTrigger(Trigger trigger){

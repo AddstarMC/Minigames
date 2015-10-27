@@ -32,6 +32,9 @@ public class Conditions {
 		addCondition("TEAM_PLAYER_COUNT", TeamPlayerCountCondition.class);
 		addCondition("TEAM_SCORE_RANGE", TeamScoreRangeCondition.class);
 		addCondition("MINIGAME_TIMER", MinigameTimerCondition.class);
+		addCondition("PLAYER_XP_RANGE", PlayerXPRangeCondition.class);
+		addCondition("PLAYER_FOOD_RANGE", PlayerFoodRangeCondition.class);
+		addCondition("HAS_FLAG", HasFlagCondition.class);
 	}
 	
 	public static void addCondition(String name, Class<? extends ConditionInterface> condition){

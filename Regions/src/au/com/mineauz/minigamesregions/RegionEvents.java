@@ -3,14 +3,18 @@ package au.com.mineauz.minigamesregions;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -25,6 +29,7 @@ import au.com.mineauz.minigames.events.JoinMinigameEvent;
 import au.com.mineauz.minigames.events.MinigameTimerTickEvent;
 import au.com.mineauz.minigames.events.QuitMinigameEvent;
 import au.com.mineauz.minigames.events.StartMinigameEvent;
+import au.com.mineauz.minigames.events.TakeFlagEvent;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigamesregions.events.EnterRegionEvent;
 import au.com.mineauz.minigamesregions.events.LeaveRegionEvent;
@@ -390,5 +395,75 @@ public class RegionEvents implements Listener{
 	@EventHandler(priority=EventPriority.LOWEST)
 	private void playerDisconnect(PlayerQuitEvent event) {
 		Main.getPlugin().getDisplayManager().hideAll(event.getPlayer());
+	}
+	
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
+	private void playerXpChange(PlayerExpChangeEvent event) {
+		final MinigamePlayer player = pdata.getMinigamePlayer(event.getPlayer());
+		if (player == null || !player.isInMinigame()) {
+			return;
+		}
+		
+		executeTrigger(Triggers.getTrigger("XP_CHANGE"), player);
+	}
+	
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
+	private void playerFoodChange(FoodLevelChangeEvent event) {
+		if (!(event.getEntity() instanceof Player)) {
+			return;
+		}
+		
+		final MinigamePlayer player = pdata.getMinigamePlayer((Player)event.getEntity());
+		if (player == null || !player.isInMinigame()) {
+			return;
+		}
+		
+		executeTrigger(Triggers.getTrigger("FOOD_CHANGE"), player);
+	}
+	
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
+	private void playerDamage(EntityDamageEvent event) {
+		if (!(event.getEntity() instanceof Player)) {
+			return;
+		}
+		
+		final MinigamePlayer player = pdata.getMinigamePlayer((Player)event.getEntity());
+		if (player == null || !player.isInMinigame()) {
+			return;
+		}
+		
+		executeTrigger(Triggers.getTrigger("PLAYER_DAMAGE"), player);
+	}
+	
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
+	private void playerGetFlag(TakeFlagEvent event) {
+		executeTrigger(Triggers.getTrigger("PLAYER_TAKE_FLAG"), event.getPlayer());
+	}
+	
+	private void executeTrigger(final Trigger trigger, final MinigamePlayer player) {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				if (!player.isInMinigame()) {
+					return;
+				}
+
+				RegionModule module = getRegionModule(player.getMinigame());
+				
+				if (trigger.useInNodes()) {
+					for (Node node : module.getNodes()) {
+						node.execute(trigger, player);
+					}
+				}
+				
+				if (trigger.useInRegions()) {
+					for (Region region : module.getRegions()) {
+						if (region.hasPlayer(player)) {
+							region.execute(trigger, player);
+						}
+					}
+				}
+			}
+		});
 	}
 }

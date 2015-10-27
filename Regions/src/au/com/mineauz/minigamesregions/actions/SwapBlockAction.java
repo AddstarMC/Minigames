@@ -1,11 +1,15 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.material.Directional;
+import org.bukkit.material.MaterialData;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
@@ -23,6 +27,7 @@ public class SwapBlockAction extends ActionInterface {
 	private BooleanFlag matchData = new BooleanFlag(false, "matchdata");
 	private IntegerFlag matchDataValue = new IntegerFlag(0, "matchdatavalue");
 	private StringFlag toType = new StringFlag("COBBLESTONE", "totype");
+	private BooleanFlag keepAttachment = new BooleanFlag(false, "keepattachment");
 	private BooleanFlag toData = new BooleanFlag(false, "todata");
 	private IntegerFlag toDataValue = new IntegerFlag(0, "todatavalue");
 
@@ -48,26 +53,44 @@ public class SwapBlockAction extends ActionInterface {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void executeRegionAction(MinigamePlayer player,
-			Region region) {
-		Location temp = region.getFirstPoint();
-		for(int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++){
-			temp.setY(y);
-			for(int x = region.getFirstPoint().getBlockX(); x <= region.getSecondPoint().getBlockX(); x++){
-				temp.setX(x);
-				for(int z = region.getFirstPoint().getBlockZ(); z <= region.getSecondPoint().getBlockZ(); z++){
-					temp.setZ(z);
+	public void executeRegionAction(MinigamePlayer player, Region region) {
+		for (int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++) {
+			for (int x = region.getFirstPoint().getBlockX(); x <= region.getSecondPoint().getBlockX(); x++) {
+				for (int z = region.getFirstPoint().getBlockZ(); z <= region.getSecondPoint().getBlockZ(); z++) {
+					Block block = region.getFirstPoint().getWorld().getBlockAt(x, y, z);
 					
-					if(temp.getBlock().getType() == Material.getMaterial(matchType.getFlag()) &&
-							(!matchData.getFlag() ||
-									temp.getBlock().getData() == matchDataValue.getFlag().byteValue())){
-						byte b = 0;
-						if(toData.getFlag())
-							b = toDataValue.getFlag().byteValue();
-						BlockState bs = temp.getBlock().getState();
-						bs.setType(Material.getMaterial(toType.getFlag()));
-						bs.getData().setData(b);
-						bs.update(true);
+					if (block.getType() == Material.getMaterial(matchType.getFlag())) {
+						if (matchData.getFlag() && block.getData() != matchDataValue.getFlag().byteValue()) {
+							continue;
+						}
+						
+						// Block matches, now replace it
+						byte data = 0;
+						BlockFace facing = null;
+						if (toData.getFlag()) {
+							// Replace data
+							data = toDataValue.getFlag().byteValue();
+						} else if (keepAttachment.getFlag()) {
+							// Keep attachments if possible
+							MaterialData mat = block.getState().getData();
+							if (mat instanceof Directional) {
+								facing = ((Directional)mat).getFacing();
+							}
+						}
+						
+						// Update block type
+						block.setType(Material.getMaterial(toType.getFlag()), false);
+						if (facing != null) {
+							BlockState state = block.getState();
+							MaterialData mat = block.getState().getData();
+							if (mat instanceof Directional) {
+								((Directional)mat).setFacingDirection(facing);
+							}
+							state.setData(mat);
+							state.update(true, false);
+						} else {
+							block.setData(data, false);
+						}
 					}
 				}
 			}
@@ -77,9 +100,8 @@ public class SwapBlockAction extends ActionInterface {
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Node node) {
-		
 	}
-
+	
 	@Override
 	public void saveArguments(FileConfiguration config,
 			String path) {
@@ -89,6 +111,7 @@ public class SwapBlockAction extends ActionInterface {
 		toType.saveValue(path, config);
 		toData.saveValue(path, config);
 		toDataValue.saveValue(path, config);
+		keepAttachment.saveValue(path, config);
 	}
 
 	@Override
@@ -100,6 +123,7 @@ public class SwapBlockAction extends ActionInterface {
 		toType.loadValue(path, config);
 		toData.loadValue(path, config);
 		toDataValue.loadValue(path, config);
+		keepAttachment.loadValue(path, config);
 	}
 
 	@Override
@@ -144,6 +168,7 @@ public class SwapBlockAction extends ActionInterface {
 		}));
 		m.addItem(toData.getMenuItem("To Block Use Data?", Material.ENDER_PEARL));
 		m.addItem(toDataValue.getMenuItem("To Block Data Value", Material.EYE_OF_ENDER, 0, 15));
+		m.addItem(keepAttachment.getMenuItem("Keep Attachment", Material.PISTON_BASE, MinigameUtils.stringToList("When on, and To Block Use Data is off;If the source and target block;types are both blocks that;attach to surfaces, this;attachment will be preserved")));
 		m.displayMenu(player);
 		return true;
 	}
