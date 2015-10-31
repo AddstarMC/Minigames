@@ -39,7 +39,7 @@ public class SQLImport implements BackendImportCallback {
 		
 		insertPlayer = new StatementKey("INSERT INTO `Players` VALUES (?,?,?);");
 		insertMinigame = new StatementKey("INSERT INTO `Minigames` VALUES (?,?);");
-		insertStat = new StatementKey("INSERT INTO `PlayerStats` VALUES (?,?,?,?);");
+		insertStat = new StatementKey("INSERT INTO `PlayerStats` (`player_id`, `minigame_id`, `stat`, `value`) VALUES (?,?,?,?);");
 		insertMetadata = new StatementKey("INSERT INTO `StatMetadata` VALUES (?,?,?,?);");
 	}
 	

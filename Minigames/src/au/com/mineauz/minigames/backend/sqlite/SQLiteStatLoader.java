@@ -38,7 +38,7 @@ class SQLiteStatLoader {
 	}
 	
 	public List<StoredStat> loadStatValues(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order, int offset, int length) {
-		MinigameUtils.debugMessage("SQL begining stat load for " + minigame.getName(false) + ", " + stat + ", " + field);
+		MinigameUtils.debugMessage("SQLite beginning stat load for " + minigame.getName(false) + ", " + stat + ", " + field);
 		ConnectionHandler handler = null;
 		try {
 			handler = backend.getPool().getConnection();
@@ -52,7 +52,7 @@ class SQLiteStatLoader {
 			if (handler != null) {
 				handler.release();
 			}
-			MinigameUtils.debugMessage("SQL completed stat load for " + minigame.getName(false));
+			MinigameUtils.debugMessage("SQLite completed stat load for " + minigame.getName(false));
 		}
 	}
 	
