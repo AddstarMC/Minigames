@@ -116,6 +116,7 @@ public class Minigame implements ScriptObject {
 	private BooleanFlag allowMPCheckpoints = new BooleanFlag(false, "allowMPCheckpoints");
 	private BooleanFlag allowFlight = new BooleanFlag(false, "allowFlight");
 	private BooleanFlag enableFlight = new BooleanFlag(false, "enableFlight");
+	private BooleanFlag allowDragonEggTeleport = new BooleanFlag(true, "allowDragonEggTeleport");
 	
 	private StringFlag mechanic = new StringFlag("custom", "scoretype");
 	private BooleanFlag paintBallMode = new BooleanFlag(false, "paintball");
@@ -239,6 +240,7 @@ public class Minigame implements ScriptObject {
 		addConfigFlag(useXPBarTimer);
 		addConfigFlag(spectatorPosition);
 		addConfigFlag(displayScoreboard);
+		addConfigFlag(allowDragonEggTeleport);
 	}
 	
 	public MinigameState getState(){
@@ -930,6 +932,14 @@ public class Minigame implements ScriptObject {
 		displayScoreboard.setFlag(bool);
 	}
 	
+	public boolean allowDragonEggTeleport() {
+		return allowDragonEggTeleport.getFlag();
+	}
+	
+	public void setAllowDragonEggTeleport(boolean allow) {
+		allowDragonEggTeleport.setFlag(allow);
+	}
+	
 	public StatSettings getSettings(MinigameStat stat) {
 		StatSettings settings = statSettings.get(stat);
 		if (settings == null) {
@@ -1151,6 +1161,7 @@ public class Minigame implements ScriptObject {
 		itemsPlayer.add(new MenuItemPage("Flags", MinigameUtils.stringToList("Singleplayer flags"), Material.SIGN, flags));
 		itemsPlayer.add(allowFlight.getMenuItem("Allow Flight", Material.FEATHER, MinigameUtils.stringToList("Allow flight to;be toggled")));
 		itemsPlayer.add(enableFlight.getMenuItem("Enable Flight", Material.FEATHER, MinigameUtils.stringToList("Start players;in flight;(Must have Allow;Flight)")));
+		itemsPlayer.add(allowDragonEggTeleport.getMenuItem("Allow Dragon Egg Teleport", Material.DRAGON_EGG));
 		playerMenu.addItems(itemsPlayer);
 		playerMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
 		

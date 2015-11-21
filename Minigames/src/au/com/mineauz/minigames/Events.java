@@ -23,6 +23,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -262,6 +263,13 @@ public class Events implements Listener{
 		if(ply.isInMinigame() && !ply.canInteract()){
 			event.setCancelled(true);
 			return;
+		}
+		
+		if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.DRAGON_EGG) {
+			if (!ply.getMinigame().allowDragonEggTeleport()) {
+				event.setCancelled(true);
+				return;
+			}
 		}
 		
 		if(event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("minigame.sign.use.details")){
