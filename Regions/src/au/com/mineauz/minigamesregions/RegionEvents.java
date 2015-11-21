@@ -2,7 +2,7 @@ package au.com.mineauz.minigamesregions;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -219,38 +219,54 @@ public class RegionEvents implements Listener{
 	@EventHandler(ignoreCancelled = true)
 	private void interactNode(PlayerInteractEvent event){
 		final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-		if(ply == null) return; 
-		if(ply.isInMinigame() && 
-				((event.getAction() == Action.PHYSICAL && 
-					(event.getClickedBlock().getType() == Material.STONE_PLATE || 
-					event.getClickedBlock().getType() == Material.WOOD_PLATE || 
-					event.getClickedBlock().getType() == Material.IRON_PLATE || 
-					event.getClickedBlock().getType() == Material.GOLD_PLATE)) || 
-				(event.getAction() == Action.RIGHT_CLICK_BLOCK && 
-					(event.getClickedBlock().getType() == Material.WOOD_BUTTON ||
-					event.getClickedBlock().getType() == Material.STONE_BUTTON)))){
-			final Location loc2 = event.getClickedBlock().getLocation();
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+		if (ply == null || !ply.isInMinigame()) {
+			return; 
+		}
+		
+		if (event.getAction() == Action.PHYSICAL) {
+			switch (event.getClickedBlock().getType()) {
+			case STONE_PLATE:
+			case WOOD_PLATE:
+			case IRON_PLATE:
+			case GOLD_PLATE:
+				trigger(ply, event.getClickedBlock(), Triggers.getTrigger("INTERACT"));
+				break;
+			default:
+				break;
+			}
+		} else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			switch (event.getClickedBlock().getType()) {
+			case WOOD_BUTTON:
+			case STONE_BUTTON:
+				trigger(ply, event.getClickedBlock(), Triggers.getTrigger("INTERACT"));
+				break;
+			default:
+				break;
+			}
+		}
+		
+		if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+			trigger(ply, event.getClickedBlock(), Triggers.getTrigger("LEFT_CLICK_BLOCK"));
+		} else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			trigger(ply, event.getClickedBlock(), Triggers.getTrigger("RIGHT_CLICK_BLOCK"));
+		}
+	}
+	
+	private void trigger(final MinigamePlayer player, final Block block, final Trigger trigger) {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				if (!player.isInMinigame()) {
+					return;
+				}
 				
-				@Override
-				public void run() {
-					if (!ply.isInMinigame()) {
-						return;
-					}
-					
-					for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
-						if(node.getLocation().getWorld() == loc2.getWorld()){
-							Location loc1 = node.getLocation();
-							if(loc1.getBlockX() == loc2.getBlockX() &&
-									loc1.getBlockY() == loc2.getBlockY() &&
-									loc1.getBlockZ() == loc2.getBlockZ()){
-								node.execute(Triggers.getTrigger("INTERACT"), ply);
-							}
-						}
+				for (Node node : RegionModule.getMinigameModule(player.getMinigame()).getNodes()) {
+					if (node.getLocation().getBlock().equals(block)) {
+						node.execute(trigger, player);
 					}
 				}
-			});
-		}
+			}
+		});
 	}
 	
 	@EventHandler(ignoreCancelled = true)
