@@ -216,32 +216,34 @@ public class RegionEvents implements Listener{
 		}
 	}
 	
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler()
 	private void interactNode(PlayerInteractEvent event){
 		final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if (ply == null || !ply.isInMinigame()) {
 			return; 
 		}
 		
-		if (event.getAction() == Action.PHYSICAL) {
-			switch (event.getClickedBlock().getType()) {
-			case STONE_PLATE:
-			case WOOD_PLATE:
-			case IRON_PLATE:
-			case GOLD_PLATE:
-				trigger(ply, event.getClickedBlock(), Triggers.getTrigger("INTERACT"));
-				break;
-			default:
-				break;
-			}
-		} else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			switch (event.getClickedBlock().getType()) {
-			case WOOD_BUTTON:
-			case STONE_BUTTON:
-				trigger(ply, event.getClickedBlock(), Triggers.getTrigger("INTERACT"));
-				break;
-			default:
-				break;
+		if (!event.isCancelled()) {
+			if (event.getAction() == Action.PHYSICAL) {
+				switch (event.getClickedBlock().getType()) {
+				case STONE_PLATE:
+				case WOOD_PLATE:
+				case IRON_PLATE:
+				case GOLD_PLATE:
+					trigger(ply, event.getClickedBlock(), Triggers.getTrigger("INTERACT"));
+					break;
+				default:
+					break;
+				}
+			} else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+				switch (event.getClickedBlock().getType()) {
+				case WOOD_BUTTON:
+				case STONE_BUTTON:
+					trigger(ply, event.getClickedBlock(), Triggers.getTrigger("INTERACT"));
+					break;
+				default:
+					break;
+				}
 			}
 		}
 		
