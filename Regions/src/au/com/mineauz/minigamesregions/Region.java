@@ -2,19 +2,27 @@ package au.com.mineauz.minigamesregions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
+import com.google.common.collect.ImmutableSet;
+
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.script.ScriptCollection;
+import au.com.mineauz.minigames.script.ScriptObject;
+import au.com.mineauz.minigames.script.ScriptReference;
+import au.com.mineauz.minigames.script.ScriptValue;
+import au.com.mineauz.minigames.script.ScriptWrapper;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
 
-public class Region {
+public class Region implements ScriptObject {
 	private String name;
 	private Location point1;
 	private Location point2;
@@ -225,5 +233,30 @@ public class Region {
 			else
 				exec.addPlayerTrigger(player);
 		}
+	}
+	
+	@Override
+	public ScriptReference get(String name) {
+		if (name.equalsIgnoreCase("name")) {
+			return ScriptValue.of(name);
+		} else if (name.equalsIgnoreCase("players")) {
+			return ScriptCollection.of(players);
+		} else if (name.equalsIgnoreCase("min")) {
+			return ScriptWrapper.wrap(point1);
+		} else if (name.equalsIgnoreCase("max")) {
+			return ScriptWrapper.wrap(point2);
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public String getAsString() {
+		return name;
+	}
+	
+	@Override
+	public Set<String> getKeys() {
+		return ImmutableSet.of("name", "players", "min", "max");
 	}
 }

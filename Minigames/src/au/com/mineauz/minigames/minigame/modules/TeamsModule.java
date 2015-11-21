@@ -9,6 +9,8 @@ import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import com.google.common.collect.ImmutableMap;
+
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
@@ -93,6 +95,16 @@ public class TeamsModule extends MinigameModule {
 	
 	public List<Team> getTeams(){
 		return new ArrayList<Team>(teams.values());
+	}
+	
+	public Map<String, Team> getTeamsNameMap() {
+		ImmutableMap.Builder<String, Team> builder = ImmutableMap.builder();
+		
+		for (Team team : teams.values()) {
+			builder.put(team.getColor().name().toLowerCase(), team);
+		}
+		
+		return builder.build();
 	}
 	
 	public Team addTeam(TeamColor color){

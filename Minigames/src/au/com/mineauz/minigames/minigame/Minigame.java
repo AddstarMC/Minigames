@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -13,6 +14,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -62,11 +64,15 @@ import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.script.ScriptCollection;
+import au.com.mineauz.minigames.script.ScriptObject;
+import au.com.mineauz.minigames.script.ScriptReference;
+import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatSettings;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 
-public class Minigame {
+public class Minigame implements ScriptObject {
 	private Map<String, Flag<?>> configFlags = new HashMap<String, Flag<?>>();
 	
 	private final String name;
@@ -1352,5 +1358,31 @@ public class Minigame {
 		return getName(false);
 	}
 	
+	@Override
+	public ScriptReference get(String name) {
+		if (name.equalsIgnoreCase("players")) {
+			return ScriptCollection.of(players);
+		} else if (name.equalsIgnoreCase("teams")) {
+			TeamsModule module = TeamsModule.getMinigameModule(this);
+			if (module != null) {
+				return ScriptCollection.of(module.getTeamsNameMap());
+			}
+		} else if (name.equalsIgnoreCase("name")) {
+			return ScriptValue.of(getName(false));
+		} else if (name.equalsIgnoreCase("displayname")) {
+			return ScriptValue.of(getName(true));
+		}
+		
+		return null;
+	}
 	
+	@Override
+	public Set<String> getKeys() {
+		return ImmutableSet.of("players", "teams", "name", "displayname");
+	}
+	
+	@Override
+	public String getAsString() {
+		return getName(false);
+	}
 }

@@ -9,6 +9,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.scoreboard.NameTagVisibility;
 
+import com.google.common.collect.ImmutableSet;
+
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -18,8 +20,12 @@ import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.script.ScriptCollection;
+import au.com.mineauz.minigames.script.ScriptObject;
+import au.com.mineauz.minigames.script.ScriptReference;
+import au.com.mineauz.minigames.script.ScriptValue;
 
-public class Team {
+public class Team implements ScriptObject {
 	private String displayName = null;
 	private TeamColor color;
 	private IntegerFlag maxPlayers = new IntegerFlag(0, "maxPlayers");
@@ -309,5 +315,34 @@ public class Team {
 	public void setNameTagVisibility(NameTagVisibility vis){
 		nametagVisibility.setFlag(vis);
 		mgm.getScoreboardManager().getTeam(color.toString().toLowerCase()).setNameTagVisibility(vis);
+	}
+	
+	@Override
+	public ScriptReference get(String name) {
+		if (name.equalsIgnoreCase("colorname")) {
+			return ScriptValue.of(getColor().name());
+		} else if (name.equalsIgnoreCase("color")) {
+			return ScriptValue.of(getChatColor().toString());
+		} else if (name.equalsIgnoreCase("name")) {
+			return ScriptValue.of(getDisplayName());
+		} else if (name.equalsIgnoreCase("score")) {
+			return ScriptValue.of(score);
+		} else if (name.equalsIgnoreCase("players")) {
+			return ScriptCollection.of(players);
+		} else if (name.equalsIgnoreCase("minigame")) {
+			return mgm;
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public Set<String> getKeys() {
+		return ImmutableSet.of("colorname", "color", "name", "score", "players", "minigame");
+	}
+	
+	@Override
+	public String getAsString() {
+		return getColor().name();
 	}
 }

@@ -1,12 +1,19 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import java.util.Set;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import com.google.common.collect.ImmutableSet;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.script.ExpressionParser;
+import au.com.mineauz.minigames.script.ScriptObject;
+import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
@@ -35,16 +42,79 @@ public class MessageAction extends ActionInterface {
 	}
 
 	@Override
-	public void executeNodeAction(MinigamePlayer player,
-			Node node) {
+	public void executeNodeAction(final MinigamePlayer player, final Node node) {
 		if(player == null || !player.isInMinigame()) return;
-		player.sendMessage(msg.getFlag(), null);
+		
+		ScriptObject base = new ScriptObject() {
+			@Override
+			public Set<String> getKeys() {
+				return ImmutableSet.of("player", "area", "minigame", "team");
+			}
+			
+			@Override
+			public String getAsString() {
+				return "";
+			}
+			
+			@Override
+			public ScriptReference get(String name) {
+				if (name.equalsIgnoreCase("player")) {
+					return player;
+				} else if (name.equalsIgnoreCase("area")) {
+					return node;
+				} else if (name.equalsIgnoreCase("minigame")) {
+					return player.getMinigame();
+				} else if (name.equalsIgnoreCase("team")) {
+					return player.getTeam();
+				}
+				
+				return null;
+			}
+		};
+		
+		execute(player, base);
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region) {
+	public void executeRegionAction(final MinigamePlayer player, final Region region) {
 		if(player == null || !player.isInMinigame()) return;
 		player.sendMessage(msg.getFlag(), null);
+		
+		ScriptObject base = new ScriptObject() {
+			@Override
+			public Set<String> getKeys() {
+				return ImmutableSet.of("player", "area", "minigame", "team");
+			}
+			
+			@Override
+			public String getAsString() {
+				return "";
+			}
+			
+			@Override
+			public ScriptReference get(String name) {
+				if (name.equalsIgnoreCase("player")) {
+					return player;
+				} else if (name.equalsIgnoreCase("area")) {
+					return region;
+				} else if (name.equalsIgnoreCase("minigame")) {
+					return player.getMinigame();
+				} else if (name.equalsIgnoreCase("team")) {
+					return player.getTeam();
+				}
+				
+				return null;
+			}
+		};
+		
+		execute(player, base);
+	}
+	
+	private void execute(MinigamePlayer player, ScriptObject base) {
+		String message = msg.getFlag();
+		
+		message = ExpressionParser.stringResolve(message, base, true, true);
+		player.sendMessage(message, null);
 	}
 
 	@Override

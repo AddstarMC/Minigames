@@ -1,8 +1,12 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import java.util.Set;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import com.google.common.collect.ImmutableSet;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -11,6 +15,9 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemString;
+import au.com.mineauz.minigames.script.ExpressionParser;
+import au.com.mineauz.minigames.script.ScriptObject;
+import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
@@ -57,20 +64,80 @@ public class ExecuteCommandAction extends ActionInterface {
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region) {
+	public void executeRegionAction(final MinigamePlayer player, final Region region) {
 		String command = replacePlayerTags(player, comd.getFlag());
 		command = command.replace("{region}", region.getName());
+		
+		// New expression system
+		ScriptObject base = new ScriptObject() {
+			@Override
+			public Set<String> getKeys() {
+				return ImmutableSet.of("player", "area", "minigame", "team");
+			}
+			
+			@Override
+			public String getAsString() {
+				return "";
+			}
+			
+			@Override
+			public ScriptReference get(String name) {
+				if (name.equalsIgnoreCase("player")) {
+					return player;
+				} else if (name.equalsIgnoreCase("area")) {
+					return region;
+				} else if (name.equalsIgnoreCase("minigame")) {
+					return player.getMinigame();
+				} else if (name.equalsIgnoreCase("team")) {
+					return player.getTeam();
+				}
+				
+				return null;
+			}
+		};
+		
+		command = ExpressionParser.stringResolve(command, base, true, true);
 		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
 	}
 
 	@Override
-	public void executeNodeAction(MinigamePlayer player, Node node) {
+	public void executeNodeAction(final MinigamePlayer player, final Node node) {
 		String command = replacePlayerTags(player, comd.getFlag());
 		command = command
 			.replace("{x}", String.valueOf(node.getLocation().getBlockX()))
 			.replace("{y}", String.valueOf(node.getLocation().getBlockY()))
 			.replace("{z}", String.valueOf(node.getLocation().getBlockZ()))
 			.replace("{node}", node.getName());
+		
+		// New expression system
+		ScriptObject base = new ScriptObject() {
+			@Override
+			public Set<String> getKeys() {
+				return ImmutableSet.of("player", "area", "minigame", "team");
+			}
+			
+			@Override
+			public String getAsString() {
+				return "";
+			}
+			
+			@Override
+			public ScriptReference get(String name) {
+				if (name.equalsIgnoreCase("player")) {
+					return player;
+				} else if (name.equalsIgnoreCase("area")) {
+					return node;
+				} else if (name.equalsIgnoreCase("minigame")) {
+					return player.getMinigame();
+				} else if (name.equalsIgnoreCase("team")) {
+					return player.getTeam();
+				}
+				
+				return null;
+			}
+		};
+		
+		command = ExpressionParser.stringResolve(command, base, true, true);
 		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
 	}
 	

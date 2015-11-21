@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -15,14 +16,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 
+import com.google.common.collect.ImmutableSet;
+
 import au.com.mineauz.minigames.display.IDisplayCubiod;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
+import au.com.mineauz.minigames.script.ScriptObject;
+import au.com.mineauz.minigames.script.ScriptReference;
+import au.com.mineauz.minigames.script.ScriptValue;
+import au.com.mineauz.minigames.script.ScriptWrapper;
 
-public class MinigamePlayer {
+public class MinigamePlayer implements ScriptObject {
 	private Player player;
 	private boolean allowTP = false;
 	private boolean allowGMChange = false;
@@ -724,5 +731,40 @@ public class MinigamePlayer {
 	
 	public void setLateJoinTimer(int taskID){
 		lateJoinTimer = taskID;
+	}
+	
+	@Override
+	public ScriptReference get(String name) {
+		if (name.equalsIgnoreCase("name")) {
+			return ScriptValue.of(player.getName());
+		} else if (name.equalsIgnoreCase("displayname")) {
+			return ScriptValue.of(player.getDisplayName());
+		} else if (name.equalsIgnoreCase("score")) {
+			return ScriptValue.of(score);
+		} else if (name.equalsIgnoreCase("kills")) {
+			return ScriptValue.of(kills);
+		} else if (name.equalsIgnoreCase("deaths")) {
+			return ScriptValue.of(deaths);
+		} else if (name.equalsIgnoreCase("health")) {
+			return ScriptValue.of(player.getHealth());
+		} else if (name.equalsIgnoreCase("team")) {
+			return team;
+		} else if (name.equalsIgnoreCase("pos")) {
+			return ScriptWrapper.wrap(player.getLocation());
+		} else if (name.equalsIgnoreCase("minigame")) {
+			return minigame;
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public Set<String> getKeys() {
+		return ImmutableSet.of("name", "displayname", "score", "kills", "deaths", "health", "team", "pos", "minigame");
+	}
+	
+	@Override
+	public String getAsString() {
+		return getName();
 	}
 }
