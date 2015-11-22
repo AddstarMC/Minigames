@@ -24,7 +24,11 @@ public class StringFlag extends Flag<String>{
 
 	@Override
 	public void loadValue(String path, FileConfiguration config) {
-		setFlag(config.getString(path + "." + getName()));
+		if (config.contains(path + "." + getName())) {
+			setFlag(config.getString(path + "." + getName()));
+		} else {
+			setFlag(getDefaultFlag());
+		}
 	}
 
 	@Override
