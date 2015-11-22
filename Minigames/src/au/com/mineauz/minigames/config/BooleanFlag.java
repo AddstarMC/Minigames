@@ -24,7 +24,11 @@ public class BooleanFlag extends Flag<Boolean>{
 
 	@Override
 	public void loadValue(String path, FileConfiguration config) {
-		setFlag(config.getBoolean(path + "." + getName()));
+		if (config.contains(path + "." + getName())) {
+			setFlag(config.getBoolean(path + "." + getName()));
+		} else {
+			setFlag(getDefaultFlag());
+		}
 	}
 	
 	@Override

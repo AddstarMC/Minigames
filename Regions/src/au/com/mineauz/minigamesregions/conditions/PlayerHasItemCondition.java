@@ -1,20 +1,27 @@
 package au.com.mineauz.minigamesregions.conditions;
 
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import com.google.common.base.Joiner;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemList;
+import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Node;
@@ -27,6 +34,12 @@ public class PlayerHasItemCondition extends ConditionInterface {
 	private IntegerFlag data = new IntegerFlag(0, "data");
 	private StringFlag where = new StringFlag("ANYWHERE", "where");
 	private IntegerFlag slot = new IntegerFlag(0, "slot");
+	
+	private BooleanFlag matchName = new BooleanFlag(false, "matchName");
+	private BooleanFlag matchLore = new BooleanFlag(false, "matchLore");
+	
+	private StringFlag name = new StringFlag(null, "name");
+	private StringFlag lore = new StringFlag(null, "lore");
 
 	@Override
 	public String getName() {
@@ -58,7 +71,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
 		return check(player);
 	}
 	
-	private boolean check(MinigamePlayer player){
+	private boolean check(MinigamePlayer player) {
 		PositionType checkType = PositionType.valueOf(where.getFlag().toUpperCase());
 		if (checkType == null) {
 			checkType = PositionType.ANYWHERE;
@@ -93,6 +106,17 @@ public class PlayerHasItemCondition extends ConditionInterface {
 		
 		Material material = Material.getMaterial(type.getFlag());
 		
+		Pattern namePattern = null;
+		Pattern lorePattern = null;
+		
+		if (matchName.getFlag()) {
+			namePattern = createNamePattern();
+		}
+		
+		if (matchLore.getFlag()) {
+			lorePattern = createLorePattern();
+		}
+		
 		for (int i = startSlot; i < endSlot && i < searchItems.length; ++i) {
 			ItemStack itemInSlot = searchItems[i];
 			if (itemInSlot == null) {
@@ -100,13 +124,103 @@ public class PlayerHasItemCondition extends ConditionInterface {
 			}
 			
 			if (itemInSlot.getType() == material) {
-				if (!useData.getFlag() || itemInSlot.getDurability() == data.getFlag()) {
-					return true;
+				if (useData.getFlag() && itemInSlot.getDurability() != data.getFlag()) {
+					continue;
 				}
+				
+				ItemMeta meta = itemInSlot.getItemMeta();
+				
+				if (matchName.getFlag()) {
+					Matcher m = namePattern.matcher(meta.getDisplayName());
+					if (!m.matches()) {
+						continue;
+					}
+				}
+				
+				if (matchLore.getFlag()) {
+					if (meta.getLore() != null) {
+						Matcher m = lorePattern.matcher(Joiner.on('\n').join(meta.getLore()));
+						if (!m.matches()) {
+							continue;
+						}
+					} else {
+						// Only an unset lore pattern can match this
+						if (lore.getFlag() != null) {
+							continue;
+						}
+					}
+				}
+				
+				// This item completely matches
+				return true;
 			}
 		}
 		
 		return false;
+	}
+	
+	private Pattern createNamePattern() {
+		String name = this.name.getFlag();
+		if (name == null) {
+			return Pattern.compile(".*");
+		}
+		
+		StringBuffer buffer = new StringBuffer();
+		int start = 0;
+		int index = 0;
+		
+		while (true) {
+			index = name.indexOf('%', start);
+			// End of input, append the rest
+			if (index == -1) {
+				buffer.append(Pattern.quote(name.substring(start)));
+				break;
+			}
+			
+			// Append the start
+			buffer.append(Pattern.quote(name.substring(start, index)));
+			
+			// Append the wildcard code
+			buffer.append(".*?");
+			
+			// Move to next position
+			start = index + 1;
+		}
+		
+		return Pattern.compile(buffer.toString());
+	}
+	
+	private Pattern createLorePattern() {
+		String lore = this.lore.getFlag();
+		if (lore == null) {
+			return Pattern.compile(".*");
+		}
+		
+		lore = lore.replace(';', '\n');
+		
+		StringBuffer buffer = new StringBuffer();
+		int start = 0;
+		int index = 0;
+		
+		while (true) {
+			index = lore.indexOf('%', start);
+			// End of input, append the rest
+			if (index == -1) {
+				buffer.append(Pattern.quote(lore.substring(start)));
+				break;
+			}
+			
+			// Append the start
+			buffer.append(Pattern.quote(lore.substring(start, index)));
+			
+			// Append the wildcard code
+			buffer.append(".*?");
+			
+			// Move to next position
+			start = index + 1;
+		}
+		
+		return Pattern.compile(buffer.toString());
 	}
 
 	@Override
@@ -116,6 +230,11 @@ public class PlayerHasItemCondition extends ConditionInterface {
 		data.saveValue(path, config);
 		where.saveValue(path, config);
 		slot.saveValue(path, config);
+		
+		matchName.saveValue(path, config);
+		matchLore.saveValue(path, config);
+		name.saveValue(path, config);
+		lore.saveValue(path, config);
 		saveInvert(config, path);
 	}
 
@@ -126,6 +245,11 @@ public class PlayerHasItemCondition extends ConditionInterface {
 		data.loadValue(path, config);
 		where.loadValue(path, config);
 		slot.loadValue(path, config);
+		
+		matchName.loadValue(path, config);
+		matchLore.loadValue(path, config);
+		name.loadValue(path, config);
+		lore.loadValue(path, config);
 		loadInvert(config, path);
 	}
 
@@ -163,6 +287,18 @@ public class PlayerHasItemCondition extends ConditionInterface {
 			}
 		}, Arrays.asList("Anywhere", "Hotbar", "Main", "Armor", "Slot")));
 		m.addItem(slot.getMenuItem("Slot", Material.DIAMOND, 0, 35));
+		m.addItem(new MenuItemNewLine());
+		
+		m.addItem(matchName.getMenuItem("Match Display Name", Material.NAME_TAG));
+		MenuItemString menuItem = (MenuItemString)name.getMenuItem("Display Name", Material.NAME_TAG, MinigameUtils.stringToList("The name to match.;Use % to do a wildcard match"));
+		menuItem.setAllowNull(true);
+		m.addItem(menuItem);
+		
+		m.addItem(matchLore.getMenuItem("Match Lore", Material.BOOK));
+		menuItem = (MenuItemString)lore.getMenuItem("Lore", Material.BOOK, MinigameUtils.stringToList("The lore to match. Separate;with semi-colons;for new lines.;Use % to do a wildcard match"));
+		menuItem.setAllowNull(true);
+		m.addItem(menuItem);
+		
 		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;
