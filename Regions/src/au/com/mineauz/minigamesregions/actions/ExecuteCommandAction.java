@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableSet;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
@@ -20,10 +21,12 @@ import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.util.NullCommandSender;
 
 public class ExecuteCommandAction extends ActionInterface {
 	
 	private StringFlag comd = new StringFlag("say Hello World!", "command");
+	private BooleanFlag silentExecute = new BooleanFlag(false, "silent");
 
 	@Override
 	public String getName() {
@@ -97,7 +100,7 @@ public class ExecuteCommandAction extends ActionInterface {
 		};
 		
 		command = ExpressionParser.stringResolve(command, base, true, true);
-		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
+		dispatch(command);
 	}
 
 	@Override
@@ -138,19 +141,29 @@ public class ExecuteCommandAction extends ActionInterface {
 		};
 		
 		command = ExpressionParser.stringResolve(command, base, true, true);
-		Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
+		dispatch(command);
+	}
+	
+	private void dispatch(String command) {
+		if (silentExecute.getFlag()) {
+			Bukkit.dispatchCommand(new NullCommandSender(), command);
+		} else {
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+		}
 	}
 	
 	@Override
 	public void saveArguments(FileConfiguration config,
 			String path) {
 		comd.saveValue(path, config);
+		silentExecute.saveValue(path, config);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config,
 			String path) {
 		comd.loadValue(path, config);
+		silentExecute.loadValue(path, config);
 	}
 
 	@Override
@@ -172,6 +185,7 @@ public class ExecuteCommandAction extends ActionInterface {
 				return comd.getFlag();
 			}
 		}));
+		m.addItem(silentExecute.getMenuItem("Is Silent", Material.NOTE_BLOCK, MinigameUtils.stringToList("When on, console output;for a command will be;silenced.;NOTE: Does not work with;minecraft commands")));
 		m.displayMenu(player);
 		return true;
 	}
