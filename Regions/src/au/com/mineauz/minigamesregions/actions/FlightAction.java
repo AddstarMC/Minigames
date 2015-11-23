@@ -1,5 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import java.util.Map;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -24,6 +26,12 @@ public class FlightAction extends ActionInterface{
 	@Override
 	public String getCategory() {
 		return "Player Actions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		out.put("Allow Flight", setFly.getFlag());
+		out.put("Flight On", startFly.getFlag());
 	}
 
 	@Override

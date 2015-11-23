@@ -1,5 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -27,6 +29,11 @@ public class VelocityAction extends ActionInterface{
 	@Override
 	public String getCategory() {
 		return "Player Actions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		out.put("Velocity", x.getFlag() + "," + y.getFlag() + "," + z.getFlag());
 	}
 
 	@Override

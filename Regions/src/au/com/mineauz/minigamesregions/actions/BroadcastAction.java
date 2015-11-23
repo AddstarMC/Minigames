@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Material;
@@ -33,6 +34,13 @@ public class BroadcastAction extends ActionInterface{
 	@Override
 	public String getCategory() {
 		return "Minigame Actions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		out.put("Message", message.getFlag());
+		out.put("Is Excluding", excludeExecutor.getFlag());
+		out.put("Red Text", redText.getFlag());
 	}
 
 	@Override

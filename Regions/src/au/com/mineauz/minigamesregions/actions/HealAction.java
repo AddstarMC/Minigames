@@ -1,5 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import java.util.Map;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -22,6 +24,11 @@ public class HealAction extends ActionInterface{
 	@Override
 	public String getCategory() {
 		return "World Actions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		out.put("Health", heal.getFlag());
 	}
 
 	@Override

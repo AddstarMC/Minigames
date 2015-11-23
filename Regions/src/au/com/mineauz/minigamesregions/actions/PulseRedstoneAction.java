@@ -1,11 +1,14 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
@@ -27,6 +30,12 @@ public class PulseRedstoneAction extends ActionInterface {
 	@Override
 	public String getCategory() {
 		return "Block Actions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		out.put("Time", MinigameUtils.convertTime(time.getFlag(), true));
+		out.put("Use Torch", torch.getFlag());
 	}
 
 	@Override

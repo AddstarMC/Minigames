@@ -152,7 +152,14 @@ public class Menu {
 		}
 	}
 	
+	private void updateAll() {
+		for (MenuItem item : pageMap.values()) {
+			item.update();
+		}
+	}
+	
 	public void displayMenu(MinigamePlayer ply){
+		updateAll();
 		populateMenu();
 		
 		inv = Bukkit.createInventory(ply.getPlayer(), rows*9, name);

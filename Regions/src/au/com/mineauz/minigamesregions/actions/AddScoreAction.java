@@ -1,5 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import java.util.Map;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -24,6 +26,11 @@ public class AddScoreAction extends ActionInterface {
 	@Override
 	public String getCategory() {
 		return "Minigame Actions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		out.put("Score", amount.getFlag());
 	}
 
 	@Override

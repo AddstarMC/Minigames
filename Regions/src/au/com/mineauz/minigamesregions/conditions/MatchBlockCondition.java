@@ -1,5 +1,7 @@
 package au.com.mineauz.minigamesregions.conditions;
 
+import java.util.Map;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -36,6 +38,15 @@ public class MatchBlockCondition extends ConditionInterface {
 	@Override
 	public String getCategory(){
 		return "World Conditions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		if (useDur.getFlag()) {
+			out.put("Type", type.getFlag() + ":" + dur.getFlag());
+		} else {
+			out.put("Type", type.getFlag() + ":all");
+		}
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Location;
@@ -27,6 +28,12 @@ public class ExplodeAction extends ActionInterface {
 	@Override
 	public String getCategory() {
 		return "World Actions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		out.put("Power", power.getFlag());
+		out.put("With Fire", fire.getFlag());
 	}
 
 	@Override

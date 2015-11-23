@@ -65,6 +65,9 @@ public class MenuItem {
 		displayItem.setItemMeta(nmeta);
 	}
 	
+	public void update() {
+	}
+	
 	public ItemStack onClick(){
 		//Do stuff
 		return getItem();

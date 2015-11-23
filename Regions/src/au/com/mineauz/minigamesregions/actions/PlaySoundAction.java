@@ -2,6 +2,7 @@ package au.com.mineauz.minigamesregions.actions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -36,6 +37,14 @@ public class PlaySoundAction extends ActionInterface {
 	@Override
 	public String getCategory() {
 		return "World Actions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		out.put("Sound", sound.getFlag());
+		out.put("Volume", vol.getFlag());
+		out.put("Pitch", pit.getFlag());
+		out.put("Is Private", priv.getFlag());
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package au.com.mineauz.minigamesregions.conditions;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,6 +50,26 @@ public class PlayerHasItemCondition extends ConditionInterface {
 	@Override
 	public String getCategory() {
 		return "Player Conditions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		if (useData.getFlag()) {
+			out.put("Item", type.getFlag() + ":" + data.getFlag());
+		} else {
+			out.put("Item", type.getFlag() + ":all");
+		}
+		
+		out.put("Where", where.getFlag());
+		out.put("Slot", slot.getFlag());
+		
+		if (matchName.getFlag()) {
+			out.put("Name", name.getFlag());
+		}
+		
+		if (matchLore.getFlag()) {
+			out.put("Lore", lore.getFlag());
+		}
 	}
 
 	@Override

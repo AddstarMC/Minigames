@@ -1,5 +1,7 @@
 package au.com.mineauz.minigamesregions.conditions;
 
+import java.util.Map;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -23,6 +25,11 @@ public class PlayerFoodRangeCondition extends ConditionInterface {
 	@Override
 	public String getCategory(){
 		return "Player Conditions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		out.put("Food", min.getFlag() + " - " + max.getFlag());
 	}
 
 	@Override

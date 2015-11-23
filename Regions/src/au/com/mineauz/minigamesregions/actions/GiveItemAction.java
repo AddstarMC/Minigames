@@ -35,6 +35,13 @@ public class GiveItemAction extends ActionInterface{
 	public String getCategory() {
 		return "Player Actions";
 	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		out.put("Item", count.getFlag() + "x " + type.getFlag() + ":" + damage.getFlag());
+		out.put("Display Name", name.getFlag());
+		out.put("Lore", lore.getFlag());
+	}
 
 	@Override
 	public boolean useInRegions() {

@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions.conditions;
 
+import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Material;
@@ -24,6 +25,11 @@ public class RandomChanceCondition extends ConditionInterface {
 	@Override
 	public String getCategory(){
 		return "Misc Conditions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		out.put("Chance", chance.getFlag() + "%");
 	}
 
 	@Override

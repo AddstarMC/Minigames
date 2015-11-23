@@ -1,5 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import java.util.Map;
+
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -18,6 +20,10 @@ public class RevertAction extends ActionInterface {
 	@Override
 	public String getCategory() {
 		return "Minigame Actions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
 	}
 
 	@Override

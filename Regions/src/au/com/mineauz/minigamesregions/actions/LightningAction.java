@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Location;
@@ -25,6 +26,11 @@ public class LightningAction extends ActionInterface{
 	@Override
 	public String getCategory() {
 		return "World Actions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		out.put("Effect Only", effect.getFlag());
 	}
 
 	@Override

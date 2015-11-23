@@ -2,6 +2,7 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -29,6 +30,11 @@ public class MatchTeamCondition extends ConditionInterface {
 	@Override
 	public String getCategory(){
 		return "Team Conditions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		out.put("Team", team.getFlag());
 	}
 
 	@Override

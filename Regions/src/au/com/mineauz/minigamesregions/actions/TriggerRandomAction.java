@@ -3,6 +3,7 @@ package au.com.mineauz.minigamesregions.actions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -31,6 +32,12 @@ public class TriggerRandomAction extends ActionInterface{
 	@Override
 	public String getCategory() {
 		return "Region/Node Actions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		out.put("Trigger Count", timesTriggered.getFlag());
+		out.put("Allow same", randomPerTrigger.getFlag());
 	}
 
 	@Override

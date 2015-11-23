@@ -2,6 +2,7 @@ package au.com.mineauz.minigamesregions.actions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -35,6 +36,12 @@ public class ApplyPotionAction extends ActionInterface {
 	@Override
 	public String getCategory() {
 		return "Player Actions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		out.put("Effect", type.getFlag() + " " + amp.getFlag());
+		out.put("Duration", MinigameUtils.convertTime(amp.getFlag(), true));
 	}
 
 	@Override

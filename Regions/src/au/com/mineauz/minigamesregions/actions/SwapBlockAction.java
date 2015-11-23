@@ -1,5 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import java.util.Map;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -39,6 +41,23 @@ public class SwapBlockAction extends ActionInterface {
 	@Override
 	public String getCategory() {
 		return "Block Actions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		if (matchData.getFlag()) {
+			out.put("From", matchType.getFlag() + ":" + matchDataValue.getFlag());
+		} else {
+			out.put("From", matchType.getFlag() + ":all");
+		}
+		
+		if (toData.getFlag()) {
+			out.put("To", toType.getFlag() + ":" + toDataValue.getFlag());
+		} else {
+			out.put("To", toType.getFlag());
+		}
+		
+		out.put("Keep Attachment", keepAttachment.getFlag());
 	}
 
 	@Override

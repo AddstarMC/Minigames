@@ -1,5 +1,7 @@
 package au.com.mineauz.minigamesregions.conditions;
 
+import java.util.Map;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -20,6 +22,10 @@ public class ContainsOneTeamCondition extends ConditionInterface {
 	@Override
 	public String getCategory(){
 		return "Team Conditions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
 	}
 
 	@Override

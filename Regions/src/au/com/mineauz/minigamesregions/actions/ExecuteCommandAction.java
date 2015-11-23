@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -36,6 +37,12 @@ public class ExecuteCommandAction extends ActionInterface {
 	@Override
 	public String getCategory() {
 		return "Server Actions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		out.put("Command", comd.getFlag());
+		out.put("Silent", silentExecute.getFlag());
 	}
 
 	@Override

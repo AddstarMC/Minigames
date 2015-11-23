@@ -1,5 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import java.util.Map;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -25,6 +27,11 @@ public class TriggerRegionAction extends ActionInterface {
 	@Override
 	public String getCategory() {
 		return "Remote Trigger Actions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		out.put("Region", region.getFlag());
 	}
 
 	@Override

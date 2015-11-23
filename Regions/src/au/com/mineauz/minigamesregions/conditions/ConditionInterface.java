@@ -1,5 +1,7 @@
 package au.com.mineauz.minigamesregions.conditions;
 
+import java.util.Map;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -34,4 +36,6 @@ public abstract class ConditionInterface {
 	public abstract void saveArguments(FileConfiguration config, String path);
 	public abstract void loadArguments(FileConfiguration config, String path);
 	public abstract boolean displayMenu(MinigamePlayer player, Menu prev);
+	
+	public abstract void describe(Map<String, Object> out);
 }

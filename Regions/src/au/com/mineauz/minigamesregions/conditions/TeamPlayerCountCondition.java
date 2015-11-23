@@ -1,6 +1,9 @@
 package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.minigame.Team;
+
+import java.util.Map;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -24,6 +27,11 @@ public class TeamPlayerCountCondition extends ConditionInterface {
 	@Override
 	public String getCategory() {
 		return "Team Conditions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		out.put("Count", min.getFlag() + " - " + max.getFlag());
 	}
 
 	@Override

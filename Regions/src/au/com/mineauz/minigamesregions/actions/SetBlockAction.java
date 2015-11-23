@@ -1,5 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import java.util.Map;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -30,6 +32,15 @@ public class SetBlockAction extends ActionInterface {
 	@Override
 	public String getCategory() {
 		return "Block Actions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		if (usedur.getFlag()) {
+			out.put("Block", type.getFlag() + ":" + dur.getFlag());
+		} else {
+			out.put("Block", type.getFlag());
+		}
 	}
 
 	@Override

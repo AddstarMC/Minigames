@@ -1,5 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import java.util.Map;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -30,6 +32,17 @@ public class TakeItemAction extends ActionInterface{
 	@Override
 	public String getCategory() {
 		return "Player Actions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		if (matchDamage.getFlag()) {
+			out.put("Item", type.getFlag() + ":" + damage.getFlag());
+		} else {
+			out.put("Item", type.getFlag() + ":all");
+		}
+		
+		out.put("Count", count);
 	}
 
 	@Override

@@ -56,6 +56,12 @@ public class SpawnEntityAction extends ActionInterface {
 	public String getCategory() {
 		return "World Actions";
 	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
+		out.put("Type", type.getFlag());
+		out.put("Velocity", settings.get("velocityx") + "," + settings.get("velocityy") + "," + settings.get("velocityz"));
+	}
 
 	@Override
 	public boolean useInRegions() {

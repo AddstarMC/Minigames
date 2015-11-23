@@ -2,6 +2,7 @@ package au.com.mineauz.minigamesregions.actions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -24,6 +25,10 @@ public class EndAction extends ActionInterface {
 	@Override
 	public String getCategory() {
 		return "Minigame Actions";
+	}
+	
+	@Override
+	public void describe(Map<String, Object> out) {
 	}
 
 	@Override
