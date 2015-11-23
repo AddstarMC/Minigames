@@ -56,6 +56,10 @@ public class ExecuteCommandAction extends ActionInterface {
 	}
 	
 	private String replacePlayerTags(MinigamePlayer player, String string) {
+		if (player == null) {
+			return string;
+		}
+		
 		return string
 			.replace("{player}", player.getName())
 			.replace("{dispplayer}", player.getName())
