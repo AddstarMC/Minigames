@@ -35,6 +35,7 @@ public class Conditions {
 		addCondition("PLAYER_XP_RANGE", PlayerXPRangeCondition.class);
 		addCondition("PLAYER_FOOD_RANGE", PlayerFoodRangeCondition.class);
 		addCondition("HAS_FLAG", HasFlagCondition.class);
+		addCondition("CONTAINS_ENTITY", ContainsEntityCondition.class);
 	}
 	
 	public static void addCondition(String name, Class<? extends ConditionInterface> condition){
