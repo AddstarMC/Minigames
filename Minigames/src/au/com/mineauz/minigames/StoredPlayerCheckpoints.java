@@ -149,37 +149,51 @@ public class StoredPlayerCheckpoints {
 		
 		save = new MinigameSave("playerdata/checkpoints/" + uuid);
 		for(String mgm : checkpoints.keySet()){
-			save.getConfig().set(mgm, null);
-			save.getConfig().set(mgm + ".x", checkpoints.get(mgm).getX());
-			save.getConfig().set(mgm + ".y", checkpoints.get(mgm).getY());
-			save.getConfig().set(mgm + ".z", checkpoints.get(mgm).getZ());
-			save.getConfig().set(mgm + ".yaw", checkpoints.get(mgm).getYaw());
-			save.getConfig().set(mgm + ".pitch", checkpoints.get(mgm).getPitch());
-			save.getConfig().set(mgm + ".world", checkpoints.get(mgm).getWorld().getName());
+			MinigameUtils.debugMessage("Attempting to save checkpoint for " + mgm + "...");
+			try {
+				save.getConfig().set(mgm, null);
+				save.getConfig().set(mgm + ".x", checkpoints.get(mgm).getX());
+				save.getConfig().set(mgm + ".y", checkpoints.get(mgm).getY());
+				save.getConfig().set(mgm + ".z", checkpoints.get(mgm).getZ());
+				save.getConfig().set(mgm + ".yaw", checkpoints.get(mgm).getYaw());
+				save.getConfig().set(mgm + ".pitch", checkpoints.get(mgm).getPitch());
+				save.getConfig().set(mgm + ".world", checkpoints.get(mgm).getWorld().getName());
+
+				if (flags.containsKey(mgm))
+					save.getConfig().set(mgm + ".flags", getFlags(mgm));
+
+				if (storedTime.containsKey(mgm))
+					save.getConfig().set(mgm + ".time", getTime(mgm));
+
+				if (storedDeaths.containsKey(mgm))
+					save.getConfig().set(mgm + ".deaths", getDeaths(mgm));
+
+				if (storedReverts.containsKey(mgm))
+					save.getConfig().set(mgm + ".reverts", getReverts(mgm));
+			}
+			catch (Exception e) {
+				// When an error is detected, remove the stored erroneous checkpoint
+				save.getConfig().set(mgm, null);
+				Minigames.plugin.getLogger().warning("Unable to save checkpoint for " + mgm + "!");
+				e.printStackTrace();
+			}
 		}
-		for(String mgm : flags.keySet()){
-			save.getConfig().set(mgm + ".flags", getFlags(mgm));
-		}
-		
-		for(String mgm : storedTime.keySet()){
-			save.getConfig().set(mgm + ".time", getTime(mgm));
-		}
-		
-		for(String mgm : storedDeaths.keySet()){
-			save.getConfig().set(mgm + ".deaths", getDeaths(mgm));
-		}
-		
-		for(String mgm : storedReverts.keySet()){
-			save.getConfig().set(mgm + ".reverts", getReverts(mgm));
-		}
-		
+
 		if(hasGlobalCheckpoint()){
-			save.getConfig().set("globalcheckpoint.x", globalCheckpoint.getX());
-			save.getConfig().set("globalcheckpoint.y", globalCheckpoint.getY());
-			save.getConfig().set("globalcheckpoint.z", globalCheckpoint.getZ());
-			save.getConfig().set("globalcheckpoint.yaw", globalCheckpoint.getYaw());
-			save.getConfig().set("globalcheckpoint.pitch", globalCheckpoint.getPitch());
-			save.getConfig().set("globalcheckpoint.world", globalCheckpoint.getWorld().getName());
+			try {
+				save.getConfig().set("globalcheckpoint.x", globalCheckpoint.getX());
+				save.getConfig().set("globalcheckpoint.y", globalCheckpoint.getY());
+				save.getConfig().set("globalcheckpoint.z", globalCheckpoint.getZ());
+				save.getConfig().set("globalcheckpoint.yaw", globalCheckpoint.getYaw());
+				save.getConfig().set("globalcheckpoint.pitch", globalCheckpoint.getPitch());
+				save.getConfig().set("globalcheckpoint.world", globalCheckpoint.getWorld().getName());
+			}
+			catch (Exception e) {
+				// When an error is detected, remove the global checkpoint
+				save.getConfig().set("globalcheckpoint", null);
+				Minigames.plugin.getLogger().warning("Unable to save global checkpoint!");
+				e.printStackTrace();
+			}
 		}
 		save.saveConfig();
 	}
