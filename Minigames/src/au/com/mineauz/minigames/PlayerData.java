@@ -422,6 +422,16 @@ public class PlayerData {
 			player.teleport(player.getCheckpoint());
 			player.addRevert();
 			player.sendMessage(MinigameUtils.getLang("player.checkpoint.revert"), null);
+
+			// Reset the player's health and extinguish flames when they revert
+			Player p = player.getPlayer();
+			if ((p != null) && (p.isOnline())) {
+				p.setFireTicks(0);
+				p.setHealth(p.getMaxHealth());
+				p.setFoodLevel(20);
+				p.setSaturation(20f);
+				p.setRemainingAir(p.getMaximumAir());
+			}
 		}
 	}
 	
