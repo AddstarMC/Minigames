@@ -17,7 +17,6 @@
   </modules>
 
   <repositories>
-    
     <!-- Other repositories -->
     <repository>
       <id>maven-central</id>
