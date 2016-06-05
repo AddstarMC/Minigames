@@ -44,6 +44,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -607,10 +608,27 @@ public class Events implements Listener{
 				}
 			}
 		}
-		else if(ply.isInMinigame()){
-			if((ply.getLoadout().isArmourLocked() && event.getSlot() >= 36 && event.getSlot() <= 39) || 
-					(ply.getLoadout().isInventoryLocked() && event.getSlot() >= 0 && event.getSlot() <= 35))
+		else if(ply.isInMinigame()) {
+			if (!ply.getLoadout().allowOffHand() && event.getSlot() == 40) {
 				event.setCancelled(true);
+			}
+			else if((ply.getLoadout().isArmourLocked() && event.getSlot() >= 36 && event.getSlot() <= 39) || 
+					(ply.getLoadout().isInventoryLocked() && event.getSlot() >= 0 && event.getSlot() <= 35)) {
+				event.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	private void onOffhandSwap(PlayerSwapHandItemsEvent event) {
+		MinigamePlayer player = pdata.getMinigamePlayer(event.getPlayer());
+		if (player.isInMenu()) {
+			event.setCancelled(true);
+		}
+		else if (player.isInMinigame()) {
+			if (!player.getLoadout().allowOffHand()) {
+				event.setCancelled(true);
+			}
 		}
 	}
 	

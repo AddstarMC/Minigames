@@ -32,6 +32,7 @@ public class PlayerLoadout {
 	private String displayname = null;
 	private boolean lockInventory = false;
 	private boolean lockArmour = false;
+	private boolean allowOffHand = true;
 	private TeamColor team = null;
 	private boolean displayInMenu = true;
 	
@@ -321,6 +322,28 @@ public class PlayerLoadout {
 		lockArmour = locked;
 	}
 	
+	public boolean allowOffHand() {
+		return allowOffHand;
+	}
+	
+	public Callback<Boolean> getAllowOffHandCallback() {
+		return new Callback<Boolean>() {
+			@Override
+			public void setValue(Boolean value) {
+				allowOffHand = value;
+			}
+			
+			@Override
+			public Boolean getValue() {
+				return allowOffHand;
+			}
+		};
+	}
+	
+	public void setAllowOffHand(boolean allow) {
+		allowOffHand = allow;
+	}
+	
 	public TeamColor getTeamColor(){
 		return team;
 	}
@@ -421,6 +444,9 @@ public class PlayerLoadout {
 		if(!isDisplayedInMenu())
 			section.set("displayInMenu", isDisplayedInMenu());
 		
+		if(!allowOffHand())
+			section.set("allowOffhand", allowOffHand());
+		
 		for (Entry<Class<? extends LoadoutAddon>, Object> addonValue : addonValues.entrySet()) {
 			ConfigurationSection subSection = section.createSection("addons." + addonValue.getKey().getName().replace('.', '-'));
 			LoadoutAddon<Object> addon = LoadoutModule.getAddon(addonValue.getKey());
@@ -477,6 +503,9 @@ public class PlayerLoadout {
 		
 		if(section.contains("displayInMenu"))
 			setDisplayInMenu(section.getBoolean("displayInMenu"));
+		
+		if(section.contains("allowOffhand"))
+			setAllowOffHand(section.getBoolean("allowOffhand"));
 		
 		if (section.contains("addons")) {
 			ConfigurationSection addonSection = section.getConfigurationSection("addons");
