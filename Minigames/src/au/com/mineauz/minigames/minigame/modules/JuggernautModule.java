@@ -14,6 +14,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 public class JuggernautModule extends MinigameModule{
 	
 	private MinigamePlayer juggernaut = null;
+	private boolean useDisplayNames = Minigames.plugin.getConfig().getBoolean("useDisplayNames");
 
 	public JuggernautModule(Minigame mgm) {
 		super(mgm);
@@ -66,8 +67,11 @@ public class JuggernautModule extends MinigameModule{
 			player.getMinigame().getScoreboardManager().getTeam("juggernaut").addPlayer(player.getPlayer().getPlayer());
 			
 			juggernaut.sendMessage(MinigameUtils.getLang("player.juggernaut.plyMsg"), null);
-			Minigames.plugin.mdata.sendMinigameMessage(getMinigame(), 
-					MinigameUtils.formStr("player.juggernaut.gameMsg", juggernaut.getDisplayName()), null, juggernaut);
+			
+			if(useDisplayNames)
+				Minigames.plugin.mdata.sendMinigameMessage(getMinigame(), MinigameUtils.formStr("player.juggernaut.gameMsg", juggernaut.getDisplayName()), null, juggernaut);
+			else
+				Minigames.plugin.mdata.sendMinigameMessage(getMinigame(), MinigameUtils.formStr("player.juggernaut.gameMsg", juggernaut.getName()), null, juggernaut);
 			
 			LoadoutModule lm =LoadoutModule.getMinigameModule(getMinigame());
 			if(lm.hasLoadout("juggernaut")){

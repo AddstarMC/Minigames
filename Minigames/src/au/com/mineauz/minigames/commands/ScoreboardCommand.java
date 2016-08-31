@@ -25,6 +25,7 @@ import au.com.mineauz.minigames.stats.StoredStat;
 
 public class ScoreboardCommand implements ICommand{
 	private Minigames plugin = Minigames.plugin;
+	private boolean useDisplayNames = Minigames.plugin.getConfig().getBoolean("useDisplayNames");
 
 	@Override
 	public String getName() {
@@ -164,7 +165,10 @@ public class ScoreboardCommand implements ICommand{
 			public void onSuccess(List<StoredStat> result) {
 				sender.sendMessage(ChatColor.GREEN + minigame.getName(true) + " Scoreboard: " + settings.getDisplayName() + " - " + fField.getTitle() + " " + fOrder.toString().toLowerCase());
 				for (StoredStat playerStat : result) {
-					sender.sendMessage(ChatColor.AQUA + playerStat.getPlayerDisplayName() + ": " + ChatColor.WHITE + stat.displayValue(playerStat.getValue(), settings));
+					if(useDisplayNames)
+						sender.sendMessage(ChatColor.AQUA + playerStat.getPlayerDisplayName() + ": " + ChatColor.WHITE + stat.displayValue(playerStat.getValue(), settings));
+					else
+						sender.sendMessage(ChatColor.AQUA + playerStat.getPlayerName() + ": " + ChatColor.WHITE + stat.displayValue(playerStat.getValue(), settings));
 				}
 			}
 			

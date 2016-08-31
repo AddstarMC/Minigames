@@ -52,6 +52,7 @@ import au.com.mineauz.minigames.stats.StoredGameStats;
 
 public class PlayerData {
 	private Map<String, MinigamePlayer> minigamePlayers = new HashMap<String, MinigamePlayer>();
+	private boolean useDisplayNames = Minigames.plugin.getConfig().getBoolean("useDisplayNames");
 	
 	private boolean partyMode = false;
 	
@@ -695,9 +696,13 @@ public class PlayerData {
 				else{
 					if(winners.size() == 1){
 						String score = "";
-						if(winners.get(0).getScore() != 0)
+						if(winners.get(0).getScore() != 0) {
 							score = MinigameUtils.formStr("player.end.broadcastScore", winners.get(0).getScore());
-						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getDisplayName(), minigame.getName(true)) + ". " + score, minigame, ChatColor.GREEN);
+						}
+						if(useDisplayNames)	
+							MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getDisplayName(), minigame.getName(true)) + ". " + score, minigame, ChatColor.GREEN);
+						else
+							MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getName(), minigame.getName(true)) + ". " + score, minigame, ChatColor.GREEN);
 					}
 					else if(winners.size() > 1){
 						String win = "";
@@ -711,7 +716,13 @@ public class PlayerData {
 						
 						for(MinigamePlayer pl : winners){
 							if(winners.indexOf(pl) < 2){
-								win += pl.getDisplayName();
+								
+								if(useDisplayNames)
+									win += pl.getDisplayName();
+								else
+									win += pl.getName();
+								
+								
 								if(winners.indexOf(pl) + 2 >= winners.size()){
 									win += " and ";
 								}
