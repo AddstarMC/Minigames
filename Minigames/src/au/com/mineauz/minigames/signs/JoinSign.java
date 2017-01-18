@@ -91,7 +91,7 @@ public class JoinSign implements MinigameSign {
 			}
 		} else {
 			fullInv = false;
-			invOk = player.getPlayer().getItemInHand().getType() == Material.AIR;
+			invOk = player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR;
 		}
 		if(invOk){
 			Minigame mgm = plugin.mdata.getMinigame(sign.getLine(2));
@@ -121,7 +121,7 @@ public class JoinSign implements MinigameSign {
 				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()));
 			}
 		}
-		else if(!MinigameUtils.isMinigameTool(player.getPlayer().getItemInHand())) {
+		else if(!MinigameUtils.isMinigameTool(player.getPlayer().getInventory().getItemInMainHand())) {
 			if (fullInv) {
 				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyInv"));
 			} else {

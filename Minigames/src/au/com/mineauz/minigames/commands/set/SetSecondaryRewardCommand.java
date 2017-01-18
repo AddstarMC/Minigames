@@ -110,7 +110,7 @@ public class SetSecondaryRewardCommand implements ICommand{
 				return true;
 			}
 			else if(sender instanceof Player && args[0].equals("SLOT")){
-				item = ((Player)sender).getItemInHand();
+				item = ((Player)sender).getInventory().getItemInMainHand();
 				RewardRarity rarity = RewardRarity.NORMAL;
 				if(args.length == 2){
 					rarity = RewardRarity.valueOf(args[1].toUpperCase());

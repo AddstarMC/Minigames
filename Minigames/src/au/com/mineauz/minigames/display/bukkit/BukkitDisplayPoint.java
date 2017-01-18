@@ -44,6 +44,7 @@ public class BukkitDisplayPoint extends AbstractDisplayObject implements IDispla
 	}
 	
 	@Override
+	@SuppressWarnings("deprecation")
 	public void hide() {
 		temp.setWorld(world);
 		temp.setX(position.getX());

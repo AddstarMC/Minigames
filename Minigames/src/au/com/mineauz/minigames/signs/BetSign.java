@@ -85,7 +85,7 @@ public class BetSign implements MinigameSign{
 				}
 			} else {
 				fullInv = false;
-				invOk = (moneyBet ? player.getPlayer().getItemInHand().getType() == Material.AIR : player.getPlayer().getItemInHand().getType() != Material.AIR);
+				invOk = (moneyBet ? player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR : player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR);
 			}
 			
 			if(invOk){
@@ -116,7 +116,7 @@ public class BetSign implements MinigameSign{
 				}
 			}
 			else if(!moneyBet){
-				if(fullInv && player.getPlayer().getItemInHand().getType() != Material.AIR) {
+				if(fullInv && player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR) {
 					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyInv"));
 				}
 				else {

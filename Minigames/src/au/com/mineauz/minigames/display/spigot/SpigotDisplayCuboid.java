@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.display.spigot;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -79,9 +80,9 @@ public class SpigotDisplayCuboid extends AbstractDisplayObject implements IDispl
 		temp.setWorld(world);
 		
 		if (player == null) {
-			world.spigot().playEffect(temp, Effect.FLAME, 0, 0, 0, 0, 0, 0, 1, 20);
+			world.spawnParticle(Particle.FLAME,temp,1);
 		} else {
-			player.spigot().playEffect(temp, Effect.FLAME, 0, 0, 0, 0, 0, 0, 1, 20);
+			player.spawnParticle(Particle.FLAME,temp,1);
 		}
 	}
 }

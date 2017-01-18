@@ -85,11 +85,11 @@ public class PlayerData {
 					canStart){
 				//Do betting stuff
 				if(isBetting){
-					if(minigame.getMpBets() == null && (player.getPlayer().getItemInHand().getType() != Material.AIR || betAmount != 0)){
+					if(minigame.getMpBets() == null && (player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR || betAmount != 0)){
 						minigame.setMpBets(new MultiplayerBets());
 					}
 					MultiplayerBets pbet = minigame.getMpBets(); 
-					ItemStack item = player.getPlayer().getItemInHand().clone();
+					ItemStack item = player.getPlayer().getInventory().getItemInMainHand().clone();
 					if(pbet != null && 
 							((betAmount != 0 && pbet.canBet(player, betAmount) && plugin.getEconomy().getBalance(player.getPlayer().getPlayer()) >= betAmount) || 
 									(pbet.canBet(player, item) && item.getType() != Material.AIR && pbet.betValue(item.getType()) > 0))){
@@ -823,7 +823,7 @@ public class PlayerData {
 	public List<Player> playersInMinigame(){
 		List<Player> players = new ArrayList<Player>();
 		for(Player player : plugin.getServer().getOnlinePlayers()){
-			if(playerInMinigame(player)){
+			if(hasMinigamePlayer(player.getUniqueId())){
 				players.add(player);
 			}
 		}

@@ -49,7 +49,7 @@ public class CheckpointSign implements MinigameSign {
 	@Override
 	public boolean signUse(Sign sign, MinigamePlayer player) {
 		if((player.isInMinigame() || (!player.isInMinigame() && sign.getLine(2).equals(ChatColor.BLUE + "Global"))) 
-				&& player.getPlayer().getItemInHand().getType() == Material.AIR){
+				&& player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR){
 			if(player.isInMinigame() && player.getMinigame().isSpectator(player)){
 				return false;
 			}

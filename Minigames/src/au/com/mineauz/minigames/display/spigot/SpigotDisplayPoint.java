@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.display.spigot;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -52,14 +52,14 @@ public class SpigotDisplayPoint extends AbstractDisplayObject implements IDispla
 		
 		double dist = 0.25;
 		
-		placeEffect(position.getX() - dist, position.getY() - dist, position.getZ() - dist, Effect.FLAME);
-		placeEffect(position.getX() + dist, position.getY() - dist, position.getZ() - dist, Effect.FLAME);
-		placeEffect(position.getX() - dist, position.getY() + dist, position.getZ() - dist, Effect.FLAME);
-		placeEffect(position.getX() + dist, position.getY() + dist, position.getZ() - dist, Effect.FLAME);
-		placeEffect(position.getX() - dist, position.getY() - dist, position.getZ() + dist, Effect.FLAME);
-		placeEffect(position.getX() + dist, position.getY() - dist, position.getZ() + dist, Effect.FLAME);
-		placeEffect(position.getX() - dist, position.getY() + dist, position.getZ() + dist, Effect.FLAME);
-		placeEffect(position.getX() + dist, position.getY() + dist, position.getZ() + dist, Effect.FLAME);
+		placeEffect(position.getX() - dist, position.getY() - dist, position.getZ() - dist, Particle.FLAME);
+		placeEffect(position.getX() + dist, position.getY() - dist, position.getZ() - dist, Particle.FLAME);
+		placeEffect(position.getX() - dist, position.getY() + dist, position.getZ() - dist, Particle.FLAME);
+		placeEffect(position.getX() + dist, position.getY() + dist, position.getZ() - dist, Particle.FLAME);
+		placeEffect(position.getX() - dist, position.getY() - dist, position.getZ() + dist, Particle.FLAME);
+		placeEffect(position.getX() + dist, position.getY() - dist, position.getZ() + dist, Particle.FLAME);
+		placeEffect(position.getX() - dist, position.getY() + dist, position.getZ() + dist, Particle.FLAME);
+		placeEffect(position.getX() + dist, position.getY() + dist, position.getZ() + dist, Particle.FLAME);
 		
 		if (showDirection) {
 			temp.setYaw(yaw);
@@ -69,21 +69,21 @@ public class SpigotDisplayPoint extends AbstractDisplayObject implements IDispla
 			
 			for (double p = 0; p <= 1; p += 0.25) {
 				Vector point = start.clone().add(dir.clone().multiply(p));
-				placeEffect(point.getX(), point.getY(), point.getZ(), Effect.FLAME);
+				placeEffect(point.getX(), point.getY(), point.getZ(), Particle.FLAME);
 			}
 		}
 	}
 	
-	private void placeEffect(double x, double y, double z, Effect effect) {
+	private void placeEffect(double x, double y, double z, Particle effect) {
 		temp.setWorld(world);
 		temp.setX(x);
 		temp.setY(y);
 		temp.setZ(z);
 		
 		if (player != null) {
-			player.spigot().playEffect(temp, effect, 0, 0, 0, 0, 0, 0, 1, 20);
+			player.getWorld().spawnParticle(effect,temp,1,0,0,0);
 		} else {
-			world.spigot().playEffect(temp, effect, 0, 0, 0, 0, 0, 0, 1, 20);
+			world.spawnParticle(effect,temp,1,0,0,0);
 		}
 	}
 }

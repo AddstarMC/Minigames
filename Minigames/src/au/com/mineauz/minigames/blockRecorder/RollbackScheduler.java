@@ -10,7 +10,8 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.Skull;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.material.FlowerPot;
+import org.bukkit.block.FlowerPot;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -63,8 +64,8 @@ public class RollbackScheduler implements Runnable {
 				if(bdata.getItems() != null)
 					block.getInventory().setContents(bdata.getItems().clone());
 			}
-			else if(bdata.getBlockState().getType() == Material.FLOWER_POT){
-				FlowerPot pot = (FlowerPot) bdata.getLocation().getBlock().getState().getData();
+			else if(bdata.getBlockState() instanceof FlowerPot){
+				FlowerPot pot = (FlowerPot) bdata.getLocation().getBlock().getState();
 				if((MaterialData)bdata.getSpecialData("contents") != null)
 					pot.setContents((MaterialData)bdata.getSpecialData("contents"));
 			}
@@ -77,7 +78,7 @@ public class RollbackScheduler implements Runnable {
 			else if(bdata.getBlockState().getType() == Material.SKULL){
 				Skull skull = (Skull) bdata.getBlockState().getBlock().getState();
 				Skull orig = (Skull) bdata.getBlockState();
-				skull.setOwner(orig.getOwner());
+				skull.setOwningPlayer(orig.getOwningPlayer());
 				skull.setRotation(orig.getRotation());
 				skull.setSkullType(orig.getSkullType());
 				skull.update();

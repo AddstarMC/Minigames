@@ -52,7 +52,7 @@ public class SpectateSign implements MinigameSign {
 
 	@Override
 	public boolean signUse(Sign sign, MinigamePlayer player) {
-		if(player.getPlayer().getItemInHand().getType() == Material.AIR && !player.isInMinigame()){
+		if(player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR && !player.isInMinigame()){
 			Minigame mgm = plugin.mdata.getMinigame(sign.getLine(2));
 			if(mgm != null){
 				if(mgm.isEnabled()){

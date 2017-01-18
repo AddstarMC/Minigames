@@ -46,11 +46,11 @@ public class QuitSign implements MinigameSign {
 
 	@Override
 	public boolean signUse(Sign sign, MinigamePlayer player) {
-		if(player.isInMinigame() && player.getPlayer().getItemInHand().getType() == Material.AIR){
+		if(player.isInMinigame() && player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR){
 			plugin.pdata.quitMinigame(player, false);
 			return true;
 		}
-		else if(player.getPlayer().getItemInHand().getType() != Material.AIR)
+		else if(player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR)
 			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
 		return false;
 	}

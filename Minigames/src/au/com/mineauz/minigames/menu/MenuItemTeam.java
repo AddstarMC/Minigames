@@ -8,7 +8,7 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.scoreboard.NameTagVisibility;
+import org.bukkit.scoreboard.Team.OptionStatus;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.Flag;
@@ -111,7 +111,7 @@ public class MenuItemTeam extends MenuItem{
 			}
 		}
 		List<String> ntvo = new ArrayList<String>();
-		for(NameTagVisibility v : NameTagVisibility.values()){
+		for(OptionStatus v : OptionStatus.values()){
 			ntvo.add(v.toString());
 		}
 		m.addItem(new MenuItemList("NameTag Visibility", Material.NAME_TAG, team.getNameTagVisibilityCallback(), ntvo));

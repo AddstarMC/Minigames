@@ -68,7 +68,7 @@ public class RewardSign implements MinigameSign {
 	@Override
 	public boolean signUse(Sign sign, MinigamePlayer player) {
 		Location loc = sign.getLocation();
-		if(!MinigameUtils.isMinigameTool(player.getPlayer().getItemInHand())){
+		if(!MinigameUtils.isMinigameTool(player.getPlayer().getInventory().getItemInMainHand())){
 			String label = sign.getLine(2).toLowerCase();
 			if(player.isInMinigame()){
 				if(!player.hasTempClaimedReward(label)){

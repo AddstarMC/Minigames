@@ -75,7 +75,7 @@ public class FlagSign implements MinigameSign {
 
 	@Override
 	public boolean signUse(Sign sign, MinigamePlayer player) {
-		if(player.getPlayer().getItemInHand().getType() == Material.AIR && player.isInMinigame()){
+		if(player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR && player.isInMinigame()){
 			Minigame mgm = player.getMinigame();
 
 			if(mgm.isSpectator(player)){
@@ -94,7 +94,7 @@ public class FlagSign implements MinigameSign {
 				return true;
 			}
 		}
-		else if(player.getPlayer().getItemInHand().getType() != Material.AIR)
+		else if(player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR)
 			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
 		return false;
 	}

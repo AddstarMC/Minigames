@@ -7,7 +7,8 @@ import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.scoreboard.NameTagVisibility;
+import org.bukkit.scoreboard.Team.OptionStatus;
+import org.bukkit.scoreboard.Team.Option;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -34,7 +35,7 @@ public class Team implements ScriptObject {
 	private StringFlag gameAssignMsg = new StringFlag(MinigameUtils.getLang("player.team.assign.joinAnnounce"), "gameAssignMsg");
 	private StringFlag autobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.plyMsg"), "autobalanceMsg");
 	private StringFlag gameAutobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.minigameMsg"), "gameAutobalanceMsg");
-	private EnumFlag<NameTagVisibility> nametagVisibility = new EnumFlag<NameTagVisibility>(NameTagVisibility.ALWAYS, "nametagVisibility");
+	private EnumFlag<OptionStatus> nametagVisibility = new EnumFlag<>(OptionStatus.ALWAYS, "nametagVisibility");
 	
 	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 	private int score = 0;
@@ -292,7 +293,7 @@ public class Team implements ScriptObject {
 		gameAutobalanceMsg.setFlag(msg);
 	}
 	
-	public NameTagVisibility getNameTagVisibility(){
+	public OptionStatus getNameTagVisibility(){
 		return nametagVisibility.getFlag();
 	}
 	
@@ -301,8 +302,8 @@ public class Team implements ScriptObject {
 
 			@Override
 			public void setValue(String value) {
-				nametagVisibility.setFlag(NameTagVisibility.valueOf(value));
-				mgm.getScoreboardManager().getTeam(color.toString().toLowerCase()).setNameTagVisibility(nametagVisibility.getFlag());
+				nametagVisibility.setFlag(OptionStatus.valueOf(value));
+				mgm.getScoreboardManager().getTeam(color.toString().toLowerCase()).setOption(Option.NAME_TAG_VISIBILITY,nametagVisibility.getFlag());
 			}
 
 			@Override
@@ -312,9 +313,9 @@ public class Team implements ScriptObject {
 		};
 	}
 	
-	public void setNameTagVisibility(NameTagVisibility vis){
+	public void setNameTagVisibility(OptionStatus vis){
 		nametagVisibility.setFlag(vis);
-		mgm.getScoreboardManager().getTeam(color.toString().toLowerCase()).setNameTagVisibility(vis);
+		mgm.getScoreboardManager().getTeam(color.toString().toLowerCase()).setOption(Option.NAME_TAG_VISIBILITY,vis);
 	}
 	
 	@Override

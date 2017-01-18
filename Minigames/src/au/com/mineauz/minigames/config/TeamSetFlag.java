@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
+import org.bukkit.scoreboard.Team.Option;
 import au.com.mineauz.minigames.minigame.TeamColor;
 
 public class TeamSetFlag extends Flag<Map<TeamColor, Team>>{
@@ -44,7 +45,7 @@ public class TeamSetFlag extends Flag<Map<TeamColor, Team>>{
 			mgm.getScoreboardManager().getTeam(sbTeam).setPrefix(tf.getFlag().getColor().getColor().toString());
 			mgm.getScoreboardManager().getTeam(sbTeam).setAllowFriendlyFire(false);
 			mgm.getScoreboardManager().getTeam(sbTeam).setCanSeeFriendlyInvisibles(true);
-			mgm.getScoreboardManager().getTeam(sbTeam).setNameTagVisibility(tf.getFlag().getNameTagVisibility());
+			mgm.getScoreboardManager().getTeam(sbTeam).setOption(Option.NAME_TAG_VISIBILITY,tf.getFlag().getNameTagVisibility());
 		}
 	}
 
