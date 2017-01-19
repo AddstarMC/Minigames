@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import au.com.mineauz.minigames.minigame.modules.CTFModule;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -46,7 +47,7 @@ public class CTFMechanic extends GameMechanicBase{
 	
 	@Override
 	public MinigameModule displaySettings(Minigame minigame){
-		return null;
+		return CTFModule.getMinigameModule(minigame);
 	}
 
 	@Override
@@ -148,7 +149,7 @@ public class CTFMechanic extends GameMechanicBase{
 						}
 						
 					}
-					else if(team == TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2)))) || 
+					else if(team == TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2)))) && CTFModule.getMinigameModule(mgm).getUseFlagAsCapturePoint() ||
 							(team == TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(3)))) && sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture")) ||
 							(sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture") && sign.getLine(3).equalsIgnoreCase(ChatColor.GRAY + "Neutral"))){
 						

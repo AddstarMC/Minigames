@@ -1270,6 +1270,7 @@ public class Minigame implements ScriptObject {
 		//-----------------------------------------------
 		//TODO: Remove me after 1.7
 		if(cfg.contains(name + ".type")){
+			Minigames.plugin.getLogger().warning("Your configuration files ("+cfg.getCurrentPath()+") are of an old version. They will not be supported past ver1.11");
 			if(cfg.getString(name + ".type").equals("TEAMS")) {
 				cfg.set(name + ".type", "MULTIPLAYER");
 				TeamsModule.getMinigameModule(this).addTeam(TeamColor.RED);

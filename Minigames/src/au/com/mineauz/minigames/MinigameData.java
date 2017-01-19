@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import au.com.mineauz.minigames.minigame.modules.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -18,15 +19,6 @@ import au.com.mineauz.minigames.events.StopGlobalMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MinigameTypeBase;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.modules.GameOverModule;
-import au.com.mineauz.minigames.minigame.modules.InfectionModule;
-import au.com.mineauz.minigames.minigame.modules.JuggernautModule;
-import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
-import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
-import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
-import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 
@@ -54,6 +46,7 @@ public class MinigameData {
 		modules.add(GameOverModule.class);
 		modules.add(JuggernautModule.class);
 		modules.add(RewardsModule.class);
+		modules.add(CTFModule.class);
 	}
 	
 	public List<Class<? extends MinigameModule>> getModules(){

@@ -7,6 +7,8 @@ import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.metadata.Metadatable;
 import org.bukkit.scoreboard.Team.OptionStatus;
 import org.bukkit.scoreboard.Team.Option;
 
@@ -197,16 +199,16 @@ public class Team implements ScriptObject {
 		players.add(player);
 		player.setTeam(this);
 		player.getPlayer().setScoreboard(mgm.getScoreboardManager());
-		mgm.getScoreboardManager().getTeam(getColor().toString().toLowerCase()).addPlayer(player.getPlayer());
+		mgm.getScoreboardManager().getTeam(getColor().toString().toLowerCase()).addEntry(player.getDisplayName());
 	}
-	
+
 	/**
 	 * Removes a player from the team.
 	 * @param player - The player to remove.
 	 */
 	public void removePlayer(MinigamePlayer player){
 		players.remove(player);
-		mgm.getScoreboardManager().getTeam(getColor().toString().toLowerCase()).removePlayer(player.getPlayer());
+		mgm.getScoreboardManager().getTeam(getColor().toString().toLowerCase()).removeEntry(player.getDisplayName());
 		player.getPlayer().setScoreboard(Minigames.plugin.getServer().getScoreboardManager().getMainScoreboard());
 	}
 	

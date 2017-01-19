@@ -54,8 +54,7 @@ public class RegionDisplayManager {
 		info.append("Region: ");
 		info.append(ChatColor.WHITE);
 		info.append(region.getName());
-		
-		// TODO: Add more info
+		info.append("Enabled: "+ region.getEnabled());
 		stand.setCustomName(info.toString());
 	}
 	
