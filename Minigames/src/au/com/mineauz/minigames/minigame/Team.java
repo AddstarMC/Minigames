@@ -7,8 +7,6 @@ import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.metadata.Metadatable;
 import org.bukkit.scoreboard.Team.OptionStatus;
 import org.bukkit.scoreboard.Team.Option;
 

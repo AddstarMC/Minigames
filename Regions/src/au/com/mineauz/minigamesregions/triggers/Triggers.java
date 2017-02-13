@@ -31,6 +31,7 @@ public class Triggers {
 		addTrigger(new PlayerFoodChangeTrigger());
 		addTrigger(new PlayerXPChangeTrigger());
 		addTrigger(new PlayerTakeFlagTrigger());
+		addTrigger(new PlayerDropFlagTrigger());
 		addTrigger(new LeftClickBlockTrigger());
 		addTrigger(new RightClickBlockTrigger());
 	}

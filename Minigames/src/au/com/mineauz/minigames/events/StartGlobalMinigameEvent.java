@@ -1,26 +1,19 @@
 package au.com.mineauz.minigames.events;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 
-public class StartGlobalMinigameEvent extends Event{
-	private static final HandlerList handlers = new HandlerList();
-	private final Minigame mgm;
+public class StartGlobalMinigameEvent extends AbstractMinigameEvent{
+
 	private final String mechanic;
 	private final MinigamePlayer caller;
 	
 	public StartGlobalMinigameEvent(Minigame mgm, MinigamePlayer caller){
-		this.mgm = mgm;
+		super(mgm);
 		mechanic = mgm.getMechanicName();
 		this.caller = caller;
 	}
-	
-	public Minigame getMinigame(){
-		return mgm;
-	}
+
 	
 	public String getMechanic(){
 		return mechanic;
@@ -31,11 +24,10 @@ public class StartGlobalMinigameEvent extends Event{
 	}
 
 	@Override
-	public HandlerList getHandlers() {
-		return handlers;
+	public boolean isCancelled(){return false;};
+
+	@Override
+	public void setCancelled(boolean b){
+		throw new UnsupportedOperationException("Cannot cancel a  Global Minigame Star Event");
 	}
-	
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
 }

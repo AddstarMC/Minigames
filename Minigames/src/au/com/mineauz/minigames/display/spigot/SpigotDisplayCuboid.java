@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.display.spigot;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;

@@ -3,22 +3,18 @@ package au.com.mineauz.minigames.events;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 
-public class StartMinigameEvent extends Event{
-	private static final HandlerList handlers = new HandlerList();
+public class StartMinigameEvent extends AbstractMinigameEvent{
+
 	private boolean willTeleport;
 	private List<MinigamePlayer> players;
-	private Minigame minigame;
-	
+
 	public StartMinigameEvent(List<MinigamePlayer> players, Minigame minigame, boolean willTeleport){
+		super(minigame);
 		this.willTeleport = willTeleport;
 		this.players = players;
-		this.minigame = minigame;
 	}
 	
 	public boolean getWillTeleport(){
@@ -28,17 +24,13 @@ public class StartMinigameEvent extends Event{
 	public List<MinigamePlayer> getPlayers(){
 		return new ArrayList<MinigamePlayer>(players);
 	}
-	
-	public Minigame getMinigame(){
-		return minigame;
-	}
 
 	@Override
-	public HandlerList getHandlers() {
-		return handlers;
+	public boolean isCancelled(){return false;};
+
+	@Override
+	public void setCancelled(boolean b){
+		throw new UnsupportedOperationException("Cannot cancel a  Minigames Broadcast Event");
 	}
-	
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
+
 }

@@ -1,34 +1,24 @@
 package au.com.mineauz.minigames.events;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 
-public class TimerExpireEvent extends Event{
-	private static final HandlerList handlers = new HandlerList();
-	private Minigame minigame;
-	
-	public TimerExpireEvent(Minigame minigame){
-		this.minigame = minigame;
-	}
-	
-	public Minigame getMinigame(){
-		return minigame;
-	}
-	
-	public MinigameState getMinigameState(){
-		return minigame.getState();
-	}
-	
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
- 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
+public class TimerExpireEvent extends AbstractMinigameEvent{
 
+
+	public TimerExpireEvent(Minigame minigame){
+		super(minigame);
+	}
+
+	public MinigameState getMinigameState(){
+		return getMinigame().getState();
+	}
+
+	@Override
+	public boolean isCancelled(){return false;};
+
+	@Override
+	public void setCancelled(boolean b){
+		throw new UnsupportedOperationException("Cannot cancel a  Minigames TimerExpire Event");
+	}
 }

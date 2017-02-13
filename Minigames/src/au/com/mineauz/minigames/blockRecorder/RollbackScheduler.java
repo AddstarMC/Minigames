@@ -11,7 +11,6 @@ import org.bukkit.block.Skull;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.block.FlowerPot;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitTask;
 

@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions;
 
+import au.com.mineauz.minigames.events.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -24,12 +25,6 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.PlayerData;
-import au.com.mineauz.minigames.events.EndMinigameEvent;
-import au.com.mineauz.minigames.events.JoinMinigameEvent;
-import au.com.mineauz.minigames.events.MinigameTimerTickEvent;
-import au.com.mineauz.minigames.events.QuitMinigameEvent;
-import au.com.mineauz.minigames.events.StartMinigameEvent;
-import au.com.mineauz.minigames.events.TakeFlagEvent;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigamesregions.events.EnterRegionEvent;
 import au.com.mineauz.minigamesregions.events.LeaveRegionEvent;
@@ -452,6 +447,12 @@ public class RegionEvents implements Listener{
 		
 		executeTrigger(Triggers.getTrigger("PLAYER_DAMAGE"), player);
 	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	private void playerDropFlag(DropFlagEvent ev){
+		executeTrigger(Triggers.getTrigger("PLAYER_DROP_FLAG"),ev.getPlayer());
+	}
+
 	
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	private void playerGetFlag(TakeFlagEvent event) {

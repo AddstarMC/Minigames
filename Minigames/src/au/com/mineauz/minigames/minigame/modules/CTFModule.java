@@ -6,7 +6,6 @@ import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 

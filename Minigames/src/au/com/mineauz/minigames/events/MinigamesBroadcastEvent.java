@@ -1,20 +1,15 @@
 package au.com.mineauz.minigames.events;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-
 import au.com.mineauz.minigames.minigame.Minigame;
 
-public class MinigamesBroadcastEvent extends Event{
-	private static final HandlerList handlers = new HandlerList();
-	
+public class MinigamesBroadcastEvent extends AbstractMinigameEvent{
+
 	private String message;
 	private String prefix;
-	private Minigame minigame;
-	
+
 	public MinigamesBroadcastEvent(String prefix, String message, Minigame minigame){
+		super(minigame);
 		this.message = message;
-		this.minigame = minigame;
 		this.prefix = prefix;
 	}
 	
@@ -29,18 +24,15 @@ public class MinigamesBroadcastEvent extends Event{
 	public void setMessage(String message){
 		this.message = message;
 	}
-	
-	public Minigame getMinigame(){
-		return minigame;
-	}
 
 	@Override
-	public HandlerList getHandlers() {
-		return handlers;
+	public boolean isCancelled(){return false;};
+
+	@Override
+	public void setCancelled(boolean b){
+		throw new UnsupportedOperationException("Cannot cancel a  Minigames Broadcast Event");
 	}
- 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
+
+
 
 }

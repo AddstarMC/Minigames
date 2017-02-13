@@ -1,18 +1,15 @@
 package au.com.mineauz.minigames.events;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 
-public class RevertCheckpointEvent extends Event implements Cancellable{
-	private static final HandlerList handlers = new HandlerList();
+public class RevertCheckpointEvent extends AbstractMinigameEvent{
+
 	private MinigamePlayer player = null;
-	private boolean cancelled = false;
-	
+
 	public RevertCheckpointEvent(MinigamePlayer player){
+		super(null);
 		this.player = player;
 	}
 	
@@ -23,20 +20,5 @@ public class RevertCheckpointEvent extends Event implements Cancellable{
 	public Player getPlayer(){
 		return player.getPlayer();
 	}
-	
-	public boolean isCancelled(){
-		return cancelled;
-	}
-	
-	public void setCancelled(boolean cancelled){
-		this.cancelled = cancelled;
-	}
 
-	public HandlerList getHandlers() {
-        return handlers;
-    }
- 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
 }

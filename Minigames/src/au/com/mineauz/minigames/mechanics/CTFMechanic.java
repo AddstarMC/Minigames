@@ -1,10 +1,19 @@
 package au.com.mineauz.minigames.mechanics;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
+import au.com.mineauz.minigames.CTFFlag;
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.events.DropFlagEvent;
+import au.com.mineauz.minigames.events.FlagCaptureEvent;
+import au.com.mineauz.minigames.events.TakeFlagEvent;
+import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.gametypes.MultiplayerType;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.CTFModule;
+import au.com.mineauz.minigames.minigame.modules.MinigameModule;
+import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -15,18 +24,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import au.com.mineauz.minigames.CTFFlag;
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.events.FlagCaptureEvent;
-import au.com.mineauz.minigames.events.TakeFlagEvent;
-import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.gametypes.MultiplayerType;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.TeamColor;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 public class CTFMechanic extends GameMechanicBase{
 
@@ -236,27 +236,30 @@ public class CTFMechanic extends GameMechanicBase{
 	@EventHandler
 	private void dropFlag(PlayerDeathEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
-		if(ply == null) return;
-		if(ply.isInMinigame()){
+		if (ply == null) return;
+		if (ply.isInMinigame()) {
 			Minigame mgm = ply.getMinigame();
-			if(mgm.isFlagCarrier(ply)){
+			if (mgm.isFlagCarrier(ply)) {
 				CTFFlag flag = mgm.getFlagCarrier(ply);
 				Location loc = flag.spawnFlag(ply.getPlayer().getLocation());
-				if(loc != null){
-					String id = MinigameUtils.createLocationID(loc);
-					Team team = mgm.getFlagCarrier(ply).getTeam();
-					mgm.addDroppedFlag(id, flag);
-					mgm.removeFlagCarrier(ply);
-					
-					if(team != null)
-						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.dropped", ply.getName(), 
-							team.getChatColor() + team.getDisplayName() + ChatColor.WHITE), null, null);
-					else
-						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.droppedNeutral", ply.getName()), null, null);
-					flag.stopCarrierParticleEffect();
-					flag.startReturnTimer();
-				}
-				else{
+				if (loc != null) {
+					DropFlagEvent ev = new DropFlagEvent(mgm, flag, ply);
+					Bukkit.getPluginManager().callEvent(ev);
+					if (!ev.isCancelled()) {
+						String id = MinigameUtils.createLocationID(loc);
+						Team team = mgm.getFlagCarrier(ply).getTeam();
+						mgm.addDroppedFlag(id, flag);
+						mgm.removeFlagCarrier(ply);
+
+						if (team != null)
+							mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.dropped", ply.getName(),
+									team.getChatColor() + team.getDisplayName() + ChatColor.WHITE), null, null);
+						else
+							mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.droppedNeutral", ply.getName()), null, null);
+						flag.stopCarrierParticleEffect();
+						flag.startReturnTimer();
+					}
+				} else {
 					flag.respawnFlag();
 					mgm.removeFlagCarrier(ply);
 					flag.stopCarrierParticleEffect();

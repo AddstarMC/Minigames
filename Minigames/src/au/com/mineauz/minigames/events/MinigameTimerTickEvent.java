@@ -1,25 +1,17 @@
 package au.com.mineauz.minigames.events;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-
 import au.com.mineauz.minigames.MinigameTimer;
 import au.com.mineauz.minigames.minigame.Minigame;
 
-public class MinigameTimerTickEvent extends Event{
-	private static final HandlerList handlers = new HandlerList();
-	private Minigame minigame;
+public class MinigameTimerTickEvent extends AbstractMinigameEvent{
+
 	private MinigameTimer timer;
 	
 	public MinigameTimerTickEvent(Minigame minigame, MinigameTimer timer){
-		this.minigame = minigame;
+		super(minigame);
 		this.timer = timer;
 	}
-	
-	public Minigame getMinigame(){
-		return minigame;
-	}
-	
+
 	public int getTimeLeft(){
 		return timer.getTimeLeft();
 	}
@@ -29,11 +21,11 @@ public class MinigameTimerTickEvent extends Event{
 	}
 
 	@Override
-	public HandlerList getHandlers() {
-		return handlers;
+	public boolean isCancelled(){return false;};
+
+	@Override
+	public void setCancelled(boolean b){
+		throw new UnsupportedOperationException("Cannot cancel a  Minigames tick Event");
 	}
-	 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
+
 }

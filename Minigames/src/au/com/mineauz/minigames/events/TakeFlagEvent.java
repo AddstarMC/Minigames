@@ -1,33 +1,31 @@
 package au.com.mineauz.minigames.events;
 
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-
 import au.com.mineauz.minigames.CTFFlag;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 
-public class TakeFlagEvent extends Event implements Cancellable{
-	private static final HandlerList handlers = new HandlerList();
+public class TakeFlagEvent extends AbstractMinigameEvent{
+
 	private CTFFlag flag = null;
 	private String flagName = null;
-	private Minigame minigame;
-	private boolean cancelled = false;
 	private boolean displayMessage = true;
 	private MinigamePlayer player;
 	
 	public TakeFlagEvent(Minigame minigame, MinigamePlayer player, CTFFlag flag){
-		this.flag = flag;
-		this.minigame = minigame;
-		this.player = player;
+		this(minigame,player,flag,null);
 	}
 	
 	public TakeFlagEvent(Minigame minigame, MinigamePlayer player, String flagName){
+		this(minigame,player,null,flagName);
+	}
+
+	public TakeFlagEvent(Minigame minigame, MinigamePlayer player, CTFFlag flag, String flagName){
+		super(minigame);
+		this.flag = flag;
 		this.flagName = flagName;
-		this.minigame = minigame;
 		this.player = player;
 	}
+
 	
 	public boolean isCTFFlag(){
 		return flag != null;
@@ -40,11 +38,7 @@ public class TakeFlagEvent extends Event implements Cancellable{
 	public String getFlagName(){
 		return flagName;
 	}
-	
-	public Minigame getMinigame(){
-		return minigame;
-	}
-	
+
 	public boolean shouldDisplayMessage(){
 		return displayMessage;
 	}
@@ -55,25 +49,6 @@ public class TakeFlagEvent extends Event implements Cancellable{
 	
 	public MinigamePlayer getPlayer(){
 		return player;
-	}
-	
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-	
-	public static HandlerList getHandlerList(){
-		return handlers;
-	}
-
-	@Override
-	public boolean isCancelled() {
-		return cancelled;
-	}
-
-	@Override
-	public void setCancelled(boolean arg0) {
-		cancelled = arg0;
 	}
 
 }
