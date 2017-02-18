@@ -14,9 +14,9 @@ import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class TeamSign implements MinigameSign {
-	
+
 	private Minigames plugin = Minigames.plugin;
-	
+
 	@Override
 	public String getName() {
 		return "Team";
@@ -83,7 +83,7 @@ public class TeamSign implements MinigameSign {
 								else{
 									player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
 								}
-								
+
 								player.getPlayer().damage(player.getPlayer().getHealth());
 							}
 							else {
@@ -95,13 +95,18 @@ public class TeamSign implements MinigameSign {
 						Team cur = player.getTeam();
 						Team nt = matchTeam(mgm, sign.getLine(2));
 						if(nt != null){
-							if(nt.getPlayers().size() - cur.getPlayers().size() < 2){
-								MultiplayerType.switchTeam(mgm, player, nt);
-								plugin.mdata.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
-								player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), null);
+							if(cur != null){
+								if(nt.getPlayers().size() - cur.getPlayers().size() < 2){
+									MultiplayerType.switchTeam(mgm, player, nt);
+									plugin.mdata.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
+									player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), null);
+								}
+								else{
+									player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
+								}
 							}
 							else{
-								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
+								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.waitForPlayers"));
 							}
 						}
 						else{
@@ -118,9 +123,9 @@ public class TeamSign implements MinigameSign {
 
 	@Override
 	public void signBreak(Sign sign, MinigamePlayer player) {
-		
+
 	}
-	
+
 	private Team matchTeam(Minigame mgm, String text){
 		TeamColor col = TeamColor.matchColor(ChatColor.stripColor(text).replace(" ", "_"));
 		if(TeamsModule.getMinigameModule(mgm).hasTeam(col))
