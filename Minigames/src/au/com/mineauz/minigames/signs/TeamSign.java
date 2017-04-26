@@ -16,6 +16,7 @@ import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 public class TeamSign implements MinigameSign {
 	
 	private Minigames plugin = Minigames.plugin;
+	private boolean useDisplayNames = Minigames.plugin.getConfig().getBoolean("useDisplayNames");
 	
 	@Override
 	public String getName() {
@@ -77,7 +78,11 @@ public class TeamSign implements MinigameSign {
 								}
 								if(nt.getPlayers().size() - sm.getPlayers().size() < 1){
 									MultiplayerType.switchTeam(mgm, player, nt);
-									plugin.mdata.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getDisplayName(), nt.getChatColor() + nt.getDisplayName()), null, player);
+									
+									if(useDisplayNames)
+										plugin.mdata.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getDisplayName(), nt.getChatColor() + nt.getDisplayName()), null, player);
+									else
+										plugin.mdata.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
 									player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), null);
 								}
 								else{

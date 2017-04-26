@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameTimer;
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.MinigameTimerTickEvent;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
@@ -33,6 +34,8 @@ import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
 
 public class TreasureHuntMechanic extends GameMechanicBase{
+	
+	private boolean useDisplayNames = Minigames.plugin.getConfig().getBoolean("useDisplayNames");
 
 	@Override
 	public String getMechanic() {
@@ -365,10 +368,12 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 							int z1 = thm.getTreasureLocation().getBlockZ();
 							int z2 = cblock.getLocation().getBlockZ();
 							if(x2 == x1 && y2 == y1 && z2 == z1){
-								MinigameUtils.broadcast(MinigameUtils.formStr("minigame.treasurehunt.plyFound", 
-										event.getPlayer().getDisplayName(), 
-										minigame.getName(true)), minigame, 
-										"minigame.treasure.announce");
+								
+								if(useDisplayNames)
+									MinigameUtils.broadcast(MinigameUtils.formStr("minigame.treasurehunt.plyFound", event.getPlayer().getDisplayName(), minigame.getName(true)), minigame, "minigame.treasure.announce");
+								else
+									MinigameUtils.broadcast(MinigameUtils.formStr("minigame.treasurehunt.plyFound", event.getPlayer().getName(), minigame.getName(true)), minigame, "minigame.treasure.announce");
+								
 								event.setCancelled(true);
 								Chest chest = (Chest) cblock.getState();
 								event.getPlayer().openInventory(chest.getInventory());
