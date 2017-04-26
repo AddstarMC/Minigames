@@ -17,10 +17,14 @@ public class QuitCommand implements ICommand{
 	public String getName() {
 		return "quit";
 	}
-	
+
 	@Override
 	public String[] getAliases(){
-		return new String[] {"q"};
+		return new String[] {
+			"q",
+			"leave",
+			"l"
+		};
 	}
 
 	@Override
@@ -42,7 +46,7 @@ public class QuitCommand implements ICommand{
 	public String[] getUsage() {
 		return new String[] {
 				"/minigame quit [Player]",
-				"/minigame quit ALL [MinigameName]"	
+				"/minigame quit ALL [MinigameName]"
 		};
 	}
 
@@ -108,7 +112,7 @@ public class QuitCommand implements ICommand{
 				else{
 					ply = plugin.pdata.getMinigamePlayer(players.get(0));
 				}
-				
+
 				if(ply != null && ply.isInMinigame()){
 					plugin.pdata.quitMinigame(ply, false);
 					sender.sendMessage(ChatColor.GRAY + MinigameUtils.formStr("command.quit.quitOther", ply.getName()));

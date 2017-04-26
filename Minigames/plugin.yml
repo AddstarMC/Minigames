@@ -10,8 +10,8 @@ commands:
         usage: Invalid command. Type "/minigame help" for help
         permission: minigame.minigame
         permisison-message: You don't have <permission>
-        aliases: [mgm, minigm, mgame, mg]
-        
+        aliases: [mgm, minigm, mgame, mg, minigames]
+
 permissions:
     minigame.minigame:
         description: Adds permission to the main command.
@@ -307,7 +307,7 @@ permissions:
         default: op
     minigame.set.gameover:
         default: op
-    
+
     minigame.info:
         description: Allows check to see if a minigames variables have been set
         default: op

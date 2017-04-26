@@ -1,6 +1,6 @@
 lang:
   info: "Minigames default language (Australian English)"
-  
+
 player:
   join:
     consMsg: "%s joined %s"
@@ -72,7 +72,7 @@ player:
     nextSpawnName: "The %s loadout will be equipped next time you respawn."
     equipped: "You have been equipped with the %s loadout."
     noLoadout: "There is no loadout by the name %s!"
-    
+
 minigame:
   full: "Sorry, this Minigame is full."
   started: "The game has already started. Please try again later."
@@ -114,7 +114,7 @@ minigame:
     expired: "Game over! The timer has expired."
   info:
     description: "------------------Minigame Info------------------"
-    status: 
+    status:
       title: "Status:"
       empty: "Empty"
       waitingForPlayers: "Waiting for Players"
@@ -125,7 +125,7 @@ minigame:
       disabled: "disabled"
     score: "Score:"
     playerCount: "Player Count:"
-    players: 
+    players:
       msg: "Players:"
       none: "None"
   treasurehunt:
@@ -142,7 +142,7 @@ minigame:
       west: "West"
       hint: "The %s treasure lies to the %s of %s."
     hint2: "The %s treasure rests upon %s."
-    hint3: 
+    hint3:
       above: "above"
       below: "below"
       hint: "The %s treasure is %sm %s sea level."
@@ -165,7 +165,7 @@ minigame:
         msg: "You must be in the %s to get a hint for the %s treasure hunt!"
   update:
     msg: "A new %s of Minigames, version %s for %s and above, is available for download. To update, go to:"
-    
+
 sign:
   emptyHand: "Your hand must be empty to use this sign."
   emptyInv: "Your inventory must be empty to use this sign."
@@ -215,6 +215,7 @@ sign:
     noUnbalance: "You cannot unbalance the teams!"
     autoAssign: "You will be automatically assigned a team"
     autoAssignAnnounce: "%s will automatically be assigned a team"
+    waitForPlayers: "Please wait for all players to join before selecting your team."
   teleport:
     createPermission: "You do not have permission to create a Minigame teleport sign!"
     usePermission: "You do not have permission to use a Minigames teleport sign!"
@@ -244,7 +245,7 @@ time:
     timerPausedReason: "Start timer paused: %s"
     timerResumed: "Start timer resumed."
     go: "Go!"
-    
+
 command:
   join:
     description: "Forces you to join a Minigame. Warning: This bypasses betting."

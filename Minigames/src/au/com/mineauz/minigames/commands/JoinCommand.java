@@ -16,10 +16,10 @@ public class JoinCommand implements ICommand{
 	public String getName() {
 		return "join";
 	}
-	
+
 	@Override
 	public String[] getAliases(){
-		return null;
+		return new String[] {"j"};
 	}
 
 	@Override
