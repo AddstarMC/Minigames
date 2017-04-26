@@ -155,7 +155,7 @@ public class CTFMechanic extends GameMechanicBase{
 						
 						String clickID = MinigameUtils.createLocationID(event.getClickedBlock().getLocation());
 						
-						if(mgm.getFlagCarrier(ply) != null && ((mgm.hasDroppedFlag(clickID) && mgm.getDroppedFlag(clickID).isAtHome()) || !mgm.hasDroppedFlag(clickID))){
+						if(mgm.getFlagCarrier(ply) != null && (!mgm.hasDroppedFlag(clickID) || mgm.getDroppedFlag(clickID).isAtHome())){
 							CTFFlag flag = mgm.getFlagCarrier(ply);
 							FlagCaptureEvent ev = new FlagCaptureEvent(mgm, ply, flag);
 							Bukkit.getPluginManager().callEvent(ev);
@@ -274,21 +274,8 @@ public class CTFMechanic extends GameMechanicBase{
 		if(ply == null) return;
 		if(ply.isInMinigame() && ply.getMinigame().getType() == MinigameType.MULTIPLAYER && ply.getMinigame().isTeamGame()){
 			Minigame mgm = ply.getMinigame();
-			
 			if(mgm.getMechanicName().equals("ctf")){
-				Team smt = null;
-				Team lgt = ply.getTeam();
-				for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
-					if(smt == null || t.getPlayers().size() < smt.getPlayers().size() - 1)
-						smt = t;
-				}
-				if(lgt.getPlayers().size() - smt.getPlayers().size() > 1){
-					MultiplayerType.switchTeam(mgm, ply, smt);
-					ply.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), null);
-					mdata.sendMinigameMessage(mgm, 
-							String.format(smt.getGameAutobalanceMessage(), 
-									ply.getName(), smt.getChatColor() + smt.getDisplayName()), null, ply);
-				}
+				autoBalanceonDeath(ply,mgm);
 			}
 		}
 	}

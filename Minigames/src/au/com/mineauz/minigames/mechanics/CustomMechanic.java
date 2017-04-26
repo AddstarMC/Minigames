@@ -61,19 +61,7 @@ public class CustomMechanic extends GameMechanicBase{
 			Minigame mgm = ply.getMinigame();
 			
 			if(mgm.getMechanicName().equals("custom")){
-				Team smt = null;
-				Team lgt = ply.getTeam();
-				for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
-					if(smt == null || t.getPlayers().size() < smt.getPlayers().size() - 1)
-						smt = t;
-				}
-				if(lgt.getPlayers().size() - smt.getPlayers().size() > 1){
-					MultiplayerType.switchTeam(mgm, ply, smt);
-					ply.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), null);
-					mdata.sendMinigameMessage(mgm, 
-							String.format(smt.getGameAutobalanceMessage(), 
-									ply.getName(), smt.getChatColor() + smt.getDisplayName()), null, ply);
-				}
+				autoBalanceonDeath(ply,mgm);
 			}
 		}
 	}

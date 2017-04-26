@@ -38,7 +38,7 @@ playSounds: true
 regeneration:
   maxDelay: 10
   
-updateChecker: true
+updateChecker: false
 # Whether the plugin should check for updates
 
 lang: 'en_AU'

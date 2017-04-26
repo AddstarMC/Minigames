@@ -56,6 +56,8 @@ public abstract class GameMechanicBase implements Listener{
 	 * to a specific team, usual games is evenly distributed, in the case of Infection,
 	 * only a specific percentage is assigned to one team by default. The default function
 	 * will assign teams automatically unless overridden.
+	 * Additionally teams that are flagged as autoBalance false will not have players removed or added through a team switch...
+	 *
 	 * @param players The players to be balanced to a team
 	 * @param minigame The minigame in which the balancing occours
 	 */
@@ -86,9 +88,9 @@ public abstract class GameMechanicBase implements Listener{
 				Team smt = null;
 				Team lgt = null;
 				for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
-					if(smt == null || (t.getPlayers().size() < smt.getPlayers().size() - 1 && !t.isFull()))
+					if(smt == null || (t.getPlayers().size() < smt.getPlayers().size() - 1 && !t.isFull() && t.getAutoBalanceTeam()))
 						smt = t;
-					if((lgt == null || (t.getPlayers().size() > lgt.getPlayers().size() && !t.isFull())) && t != smt)
+					if((lgt == null || (t.getPlayers().size() > lgt.getPlayers().size() && !t.isFull())) && t != smt && t.getAutoBalanceTeam())
 						lgt = t;
 				}
 				if(smt != null && lgt != null && lgt.getPlayers().size() - smt.getPlayers().size() > 1){
@@ -105,6 +107,27 @@ public abstract class GameMechanicBase implements Listener{
 			}
 		}
 	}
+
+	void autoBalanceonDeath(MinigamePlayer ply, Minigame mgm){
+		Team smt = null;
+		Team lgt = ply.getTeam();
+		if (lgt.getAutoBalanceTeam()){//this team is flagged as  balanced - players will be removed.
+			for (Team t : TeamsModule.getMinigameModule(mgm).getTeams()) {
+				if (smt == null || t.getPlayers().size() < smt.getPlayers().size() - 1)
+					smt = t;
+			}
+			if (smt != null) {
+				if (lgt.getPlayers().size() - smt.getPlayers().size() > 1 && smt.getAutoBalanceTeam()) {
+					MultiplayerType.switchTeam(mgm, ply, smt);
+					ply.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), null);
+					mdata.sendMinigameMessage(mgm,
+							String.format(smt.getGameAutobalanceMessage(),
+									ply.getName(), smt.getChatColor() + smt.getDisplayName()), null, ply);
+				}
+			}
+		}
+	}
+
 	
 	/**
 	 * Returns the module that is assigned to this mechanic, or null if none is assigned. This is to open the settings menu

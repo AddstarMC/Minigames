@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import au.com.mineauz.minigames.config.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.scoreboard.Team.OptionStatus;
@@ -15,10 +16,6 @@ import com.google.common.collect.ImmutableSet;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.EnumFlag;
-import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.script.ScriptCollection;
@@ -36,6 +33,7 @@ public class Team implements ScriptObject {
 	private StringFlag autobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.plyMsg"), "autobalanceMsg");
 	private StringFlag gameAutobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.minigameMsg"), "gameAutobalanceMsg");
 	private EnumFlag<OptionStatus> nametagVisibility = new EnumFlag<>(OptionStatus.ALWAYS, "nametagVisibility");
+	private BooleanFlag autoBalance = new BooleanFlag(true, "autoBalance");
 	
 	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
 	private int score = 0;
@@ -119,6 +117,7 @@ public class Team implements ScriptObject {
 		flags.add(gameAutobalanceMsg);
 		flags.add(autobalanceMsg);
 		flags.add(nametagVisibility);
+		flags.add(autoBalance);
 		
 		return flags;
 	}
@@ -132,11 +131,9 @@ public class Team implements ScriptObject {
 	}
 	
 	public boolean isFull(){
-		if(maxPlayers.getFlag() != 0 && players.size() >= maxPlayers.getFlag())
-			return true;
-		return false;
+		return maxPlayers.getFlag() != 0 && players.size() >= maxPlayers.getFlag();
 	}
-	
+
 	
 	/**
 	 * Gets the teams current score
@@ -316,6 +313,29 @@ public class Team implements ScriptObject {
 	public void setNameTagVisibility(OptionStatus vis){
 		nametagVisibility.setFlag(vis);
 		mgm.getScoreboardManager().getTeam(color.toString().toLowerCase()).setOption(Option.NAME_TAG_VISIBILITY,vis);
+	}
+
+	public Callback<Boolean> getAutoBalanceCallBack(){
+		return new Callback<Boolean>() {
+
+			@Override
+			public void setValue(Boolean value) {
+				setAutoBalance(value);
+			}
+
+			@Override
+			public Boolean getValue() {
+				return getAutoBalanceTeam();
+			}
+		};
+	}
+
+	public boolean getAutoBalanceTeam(){
+		return autoBalance.getFlag();
+	}
+
+	public void setAutoBalance(Boolean flag){
+		autoBalance.setFlag(flag);
 	}
 	
 	@Override
