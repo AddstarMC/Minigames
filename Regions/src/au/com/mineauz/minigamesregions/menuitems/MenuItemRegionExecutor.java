@@ -15,7 +15,7 @@ import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Region;
-import au.com.mineauz.minigamesregions.RegionExecutor;
+import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.actions.Actions;
 import au.com.mineauz.minigamesregions.conditions.Conditions;
 

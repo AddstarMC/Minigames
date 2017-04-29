@@ -10,8 +10,8 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigamesregions.NodeExecutor;
-import au.com.mineauz.minigamesregions.RegionExecutor;
+import  au.com.mineauz.minigamesregions.executors.NodeExecutor;
+import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemCondition;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemConditionAdd;
 

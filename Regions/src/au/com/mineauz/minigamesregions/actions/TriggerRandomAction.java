@@ -15,9 +15,9 @@ import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.NodeExecutor;
+import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.Region;
-import au.com.mineauz.minigamesregions.RegionExecutor;
+import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 
 public class TriggerRandomAction extends ActionInterface{
 	

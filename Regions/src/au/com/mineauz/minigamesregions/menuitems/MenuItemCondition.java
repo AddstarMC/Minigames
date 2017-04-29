@@ -12,8 +12,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigamesregions.NodeExecutor;
-import au.com.mineauz.minigamesregions.RegionExecutor;
+import au.com.mineauz.minigamesregions.executors.NodeExecutor;
+import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
 
 public class MenuItemCondition extends MenuItem{

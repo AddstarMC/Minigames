@@ -7,9 +7,9 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.NodeExecutor;
+import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.Region;
-import au.com.mineauz.minigamesregions.RegionExecutor;
+import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 
 public class MenuItemTrigger extends MenuItem{

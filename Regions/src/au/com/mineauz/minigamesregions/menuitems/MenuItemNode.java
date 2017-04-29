@@ -11,7 +11,7 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.NodeExecutor;
+import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.RegionModule;
 
 public class MenuItemNode extends MenuItem{

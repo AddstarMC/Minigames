@@ -7,9 +7,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.NodeExecutor;
+import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.Region;
-import au.com.mineauz.minigamesregions.RegionExecutor;
+import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 
 public class ResetTriggerCountAction extends ActionInterface{
 
