@@ -288,19 +288,13 @@ public class RecorderData implements Listener{
 	}
 	
 	public boolean hasEntity(Entity ent){
-		if(entdata.containsKey(ent.getEntityId())){
-			return true;
-		}
-		return false;
-	}
+        return entdata.containsKey(ent.getEntityId());
+    }
 	
 	public boolean hasBlock(Block block){
 		String sloc = String.valueOf(block.getLocation().getBlockX()) + ":" + block.getLocation().getBlockY() + ":" + block.getLocation().getBlockZ();
-		if(blockdata.containsKey(sloc)){
-			return true;
-		}
-		return false;
-	}
+        return blockdata.containsKey(sloc);
+    }
 	
 	public void restoreAll(MinigamePlayer modifier) {
 		if (!blockdata.isEmpty()) {
@@ -415,10 +409,8 @@ public class RecorderData implements Listener{
 	}
 	
 	public boolean hasData(){
-		if(blockdata.isEmpty() && entdata.isEmpty())
-			return false;
-		return true;
-	}
+        return !(blockdata.isEmpty() && entdata.isEmpty());
+    }
 	
 	public boolean checkBlockSides(Location location){
 		Location temp = location.clone();
@@ -447,11 +439,8 @@ public class RecorderData implements Listener{
 	}
 	
 	public boolean hasRegenArea(){
-		if(minigame.getRegenArea1() != null && minigame.getRegenArea2() != null){
-			return true;
-		}
-		return false;
-	}
+        return minigame.getRegenArea1() != null && minigame.getRegenArea2() != null;
+    }
 	
 	public double getRegenMinX(){
 		if(minigame.getRegenArea1().getX() > minigame.getRegenArea2().getX()){
@@ -491,14 +480,11 @@ public class RecorderData implements Listener{
 	}
 	
 	public boolean blockInRegenArea(Location location){
-		if(location.getWorld() == minigame.getRegenArea1().getWorld() && 
-				location.getBlockX() >= getRegenMinX() && location.getBlockX() <= getRegenMaxX() &&
-				location.getBlockY() >= getRegenMinY() && location.getBlockY() <= getRegenMaxY() &&
-				location.getBlockZ() >= getRegenMinZ() && location.getBlockZ() <= getRegenMaxZ()){
-			return true;
-		}
-		return false;
-	}
+        return location.getWorld() == minigame.getRegenArea1().getWorld() &&
+                location.getBlockX() >= getRegenMinX() && location.getBlockX() <= getRegenMaxX() &&
+                location.getBlockY() >= getRegenMinY() && location.getBlockY() <= getRegenMaxY() &&
+                location.getBlockZ() >= getRegenMinZ() && location.getBlockZ() <= getRegenMaxZ();
+    }
 	
 	public void saveAllBlockData(){
 		File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.dat");

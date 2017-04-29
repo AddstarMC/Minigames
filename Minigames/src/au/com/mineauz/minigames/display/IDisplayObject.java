@@ -5,14 +5,14 @@ import org.bukkit.entity.Player;
 
 public interface IDisplayObject {
 	
-	public boolean isPlayerDisplay();
+	boolean isPlayerDisplay();
 	
-	public Player getPlayer();
+	Player getPlayer();
 	
-	public World getWorld();
+	World getWorld();
 	
-	public void show();
-	public void hide();
+	void show();
+	void hide();
 	
-	public void remove();
+	void remove();
 }

@@ -126,8 +126,8 @@ public class ApplyPotionAction extends ActionInterface {
 
 			@Override
 			public void setValue(Integer value) {
-				amp.setFlag(value);;
-			}
+				amp.setFlag(value);
+            }
 
 			@Override
 			public Integer getValue() {

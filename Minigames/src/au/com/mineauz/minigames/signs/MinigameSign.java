@@ -7,19 +7,19 @@ import au.com.mineauz.minigames.MinigamePlayer;
 
 public interface MinigameSign {
 	
-	public String getName();
+	String getName();
 	
-	public String getCreatePermission();
+	String getCreatePermission();
 	
-	public String getCreatePermissionMessage();
+	String getCreatePermissionMessage();
 	
-	public String getUsePermission();
+	String getUsePermission();
 	
-	public String getUsePermissionMessage();
+	String getUsePermissionMessage();
 	
-	public boolean signCreate(SignChangeEvent event);
+	boolean signCreate(SignChangeEvent event);
 	
-	public boolean signUse(Sign sign, MinigamePlayer player);
+	boolean signUse(Sign sign, MinigamePlayer player);
 	
-	public void signBreak(Sign sign, MinigamePlayer player);
+	void signBreak(Sign sign, MinigamePlayer player);
 }

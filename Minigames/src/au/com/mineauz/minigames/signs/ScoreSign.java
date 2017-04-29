@@ -60,7 +60,7 @@ public class ScoreSign implements MinigameSign{
 
 	@Override
 	public boolean signUse(Sign sign, MinigamePlayer player) {
-		if(player.isInMinigame() && ((LivingEntity)player.getPlayer()).isOnGround()){
+		if(player.isInMinigame() && player.getPlayer().isOnGround()){
 			Minigame mg = player.getMinigame();
 			int score = Integer.parseInt(sign.getLine(2));
 			if(!mg.isTeamGame()){
@@ -103,7 +103,7 @@ public class ScoreSign implements MinigameSign{
 				}
 			}
 		}
-		else if(player.isInMinigame() && !((LivingEntity)player.getPlayer()).isOnGround()){
+		else if(player.isInMinigame() && !player.getPlayer().isOnGround()){
 			player.sendMessage(MinigameUtils.getLang("sign.onGround"), "error");
 		}
 		return true;

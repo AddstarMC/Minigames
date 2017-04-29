@@ -18,7 +18,7 @@ public enum TeamColor {
 	
 	private ChatColor color;
 	
-	private TeamColor(ChatColor color){
+	TeamColor(ChatColor color){
 		this.color = color;
 	}
 	

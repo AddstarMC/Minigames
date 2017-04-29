@@ -292,10 +292,7 @@ public class Minigames extends JavaPlugin{
     }
 	
 	public boolean hasEconomy(){
-		if(econ != null){
-			return true;
-		}
-		return false;
+		return econ != null;
 	}
 	
 	public Economy getEconomy(){
@@ -444,10 +441,7 @@ public class Minigames extends JavaPlugin{
 	}
 	
 	public void toggleDebug(){
-		if(debug)
-			debug = false;
-		else
-			debug = true;
+		debug = !debug;
 	}
 	
 	public boolean isDebugging(){

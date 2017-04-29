@@ -13,7 +13,7 @@ public enum StatValueField {
 	private final String title;
 	private final String suffix;
 	
-	private StatValueField(String suffix, String title) {
+	StatValueField(String suffix, String title) {
 		this.suffix = suffix;
 		this.title = title;
 	}

@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.display;
 
 public interface INonPersistantDisplay {
-	public int getRefreshInterval();
+	int getRefreshInterval();
 	
-	public void refresh();
+	void refresh();
 }

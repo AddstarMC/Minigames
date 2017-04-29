@@ -19,7 +19,7 @@ public interface RewardScheme {
 	 * Adds menu items to the /mg edit menu for this scheme. These are added under a sub menu
 	 * @param menu The menu to add into.
 	 */
-	public void addMenuItems(Menu menu);
+    void addMenuItems(Menu menu);
 	
 	/**
 	 * Awards the player with the rewards specified in this scheme.
@@ -28,7 +28,7 @@ public interface RewardScheme {
 	 * @param minigame The minigame they were playing
 	 * @param firstCompletion True if this is the first time they are completing the minigame
 	 */
-	public void awardPlayer(MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion);
+    void awardPlayer(MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion);
 	
 	/**
 	 * Awards the player with the rewards specified in this scheme.
@@ -37,22 +37,22 @@ public interface RewardScheme {
 	 * @param data The SQLData for the minigame.
 	 * @param minigame The minigame they were playing
 	 */
-	public void awardPlayerOnLoss(MinigamePlayer player, StoredGameStats data, Minigame minigame);
+    void awardPlayerOnLoss(MinigamePlayer player, StoredGameStats data, Minigame minigame);
 	
 	/**
 	 * @return Returns the map of flags used for saving and loading values
 	 */
-	public Map<String, Flag<?>> getFlags();
+    Map<String, Flag<?>> getFlags();
 	
 	/**
 	 * Saves any extra info for this scheme. Flags will be saved elsewhere
 	 * @param config The config to write into
 	 */
-	public void save(ConfigurationSection config);
+    void save(ConfigurationSection config);
 	
 	/**
 	 * Loads any extra info for this scheme. Flags will be loaded elsewhere
 	 * @param config The config to read from
 	 */
-	public void load(ConfigurationSection config);
+    void load(ConfigurationSection config);
 }

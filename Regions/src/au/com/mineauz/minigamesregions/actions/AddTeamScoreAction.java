@@ -117,8 +117,8 @@ public class AddTeamScoreAction extends ActionInterface {
 
 			@Override
 			public void setValue(String value) {
-				team.setFlag(value.toUpperCase());;
-			}
+				team.setFlag(value.toUpperCase());
+            }
 
 			@Override
 			public String getValue() {

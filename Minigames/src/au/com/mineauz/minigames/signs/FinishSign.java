@@ -70,7 +70,7 @@ public class FinishSign implements MinigameSign {
 			}
 			
 			if(!minigame.getFlags().isEmpty()){
-				if(((LivingEntity)player.getPlayer()).isOnGround()){
+				if(player.getPlayer().isOnGround()){
 					if(plugin.pdata.checkRequiredFlags(player, minigame.getName(false)).isEmpty()){
 						if(sign.getLine(2).isEmpty() || sign.getLine(2).equals(player.getMinigame().getName(false))){
 							if(player.getMinigame().isTeamGame()){
@@ -116,7 +116,7 @@ public class FinishSign implements MinigameSign {
 				return true;
 			}
 			else{
-				if(((LivingEntity)player.getPlayer()).isOnGround()){
+				if(player.getPlayer().isOnGround()){
 					if(player.getMinigame().isTeamGame()){
 						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(player.getTeam().getPlayers());
 						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(minigame.getPlayers().size() - player.getTeam().getPlayers().size());

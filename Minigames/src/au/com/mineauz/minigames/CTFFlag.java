@@ -30,7 +30,7 @@ public class CTFFlag{
 	
 	public CTFFlag(Location spawn, Team team, Player carrier, Minigame minigame){
 		spawnLocation = spawn;
-		data = ((Sign)spawnLocation.getBlock().getState()).getData();
+		data = spawnLocation.getBlock().getState().getData();
 		spawnData = spawnLocation.getBlock().getState();
 		signText = ((Sign)spawnLocation.getBlock().getState()).getLines();
 		this.team = team;

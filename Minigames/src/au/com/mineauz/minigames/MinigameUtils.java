@@ -320,10 +320,7 @@ public class MinigameUtils {
 	 * @return false if the item was not a Minigame tool
 	 */
 	public static boolean isMinigameTool(ItemStack item){
-		if(item.getItemMeta() != null && item.getItemMeta().getDisplayName() != null && item.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")){
-			return true;
-		}
-		return false;
+		return item.getItemMeta() != null && item.getItemMeta().getDisplayName() != null && item.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool");
 	}
 	
 	/**
@@ -356,28 +353,28 @@ public class MinigameUtils {
 		int maxz;
 		
 		if(selection1.getBlockX() > selection2.getBlockX()){
-			minx = (int)selection2.getBlockX();
-			maxx = (int)selection1.getBlockX();
+			minx = selection2.getBlockX();
+			maxx = selection1.getBlockX();
 		}
 		else{
-			minx = (int)selection1.getBlockX();
-			maxx = (int)selection2.getBlockX();
+			minx = selection1.getBlockX();
+			maxx = selection2.getBlockX();
 		}
 		if(selection1.getBlockY() > selection2.getBlockY()){
-			miny = (int)selection2.getBlockY();
-			maxy = (int)selection1.getBlockY();
+			miny = selection2.getBlockY();
+			maxy = selection1.getBlockY();
 		}
 		else{
-			miny = (int)selection1.getBlockY();
-			maxy = (int)selection2.getBlockY();
+			miny = selection1.getBlockY();
+			maxy = selection2.getBlockY();
 		}
 		if(selection1.getBlockZ() > selection2.getBlockZ()){
-			minz = (int)selection2.getBlockZ();
-			maxz = (int)selection1.getBlockZ();
+			minz = selection2.getBlockZ();
+			maxz = selection1.getBlockZ();
 		}
 		else{
-			minz = (int)selection1.getBlockZ();
-			maxz = (int)selection2.getBlockZ();
+			minz = selection1.getBlockZ();
+			maxz = selection2.getBlockZ();
 		}
 		
 		Location[] arr = new Location[2];

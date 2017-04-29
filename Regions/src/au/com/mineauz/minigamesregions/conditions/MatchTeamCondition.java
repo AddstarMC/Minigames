@@ -49,20 +49,14 @@ public class MatchTeamCondition extends ConditionInterface {
 
 	@Override
 	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
-		if(player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getFlag())){
-			return true;
-		}
-		return false;
-	}
+        return player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getFlag());
+    }
 
 	@Override
 	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
 		if(player == null || !player.isInMinigame()) return false;
-		if(player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getFlag())){
-			return true;
-		}
-		return false;
-	}
+        return player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getFlag());
+    }
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {

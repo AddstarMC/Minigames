@@ -128,7 +128,7 @@ public class BroadcastAction extends ActionInterface{
 		// Old replacement
 		String message = this.message.getFlag();
 		if (player != null) {
-			message = message.replace("%player%", player.getDisplayName());
+			message = message.replace("%player%", player.getDisplayName(player.getMinigame().usePlayerDisplayNames()));
 		}
 		
 		// New expression system

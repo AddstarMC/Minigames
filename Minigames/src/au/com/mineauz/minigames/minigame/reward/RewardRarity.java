@@ -9,7 +9,7 @@ public enum RewardRarity {
 	
 	private double rarity;
 	
-	private RewardRarity(double r){
+	RewardRarity(double r){
 		rarity = r;
 	}
 	

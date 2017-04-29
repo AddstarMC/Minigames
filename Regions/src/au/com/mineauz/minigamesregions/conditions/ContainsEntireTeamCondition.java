@@ -39,10 +39,8 @@ public class ContainsEntireTeamCondition extends ConditionInterface {
 
 	@Override
 	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-		if(region.getPlayers().containsAll(player.getTeam().getPlayers()))
-			return true;
-		return false;
-	}
+        return region.getPlayers().containsAll(player.getTeam().getPlayers());
+    }
 
 	@Override
 	public boolean checkNodeCondition(MinigamePlayer player, Node node) {

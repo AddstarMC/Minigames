@@ -65,7 +65,7 @@ public class RollbackScheduler implements Runnable {
 			}
 			else if(bdata.getBlockState() instanceof FlowerPot){
 				FlowerPot pot = (FlowerPot) bdata.getLocation().getBlock().getState();
-				if((MaterialData)bdata.getSpecialData("contents") != null)
+				if(bdata.getSpecialData("contents") != null)
 					pot.setContents((MaterialData)bdata.getSpecialData("contents"));
 			}
 			else if(bdata.getBlockState().getType() == Material.JUKEBOX){

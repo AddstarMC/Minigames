@@ -166,11 +166,8 @@ public class LoadoutModule extends MinigameModule {
 	}
 	
 	public boolean hasLoadouts(){
-		if(extraLoadouts.isEmpty()){
-			return false;
-		}
-		return true;
-	}
+        return !extraLoadouts.isEmpty();
+    }
 	
 	public boolean hasLoadout(String name){
 		if(!name.equalsIgnoreCase("default")){
@@ -276,14 +273,14 @@ public class LoadoutModule extends MinigameModule {
 	 * 
 	 * @param <T> The value type for this loadout addon.arg1
 	 */
-	public static interface LoadoutAddon<T> {
-		public String getName();
-		public void addMenuOptions(Menu menu, PlayerLoadout loadout);
+	public interface LoadoutAddon<T> {
+		String getName();
+		void addMenuOptions(Menu menu, PlayerLoadout loadout);
 		
-		public void save(ConfigurationSection section, T value);
-		public T load(ConfigurationSection section);
+		void save(ConfigurationSection section, T value);
+		T load(ConfigurationSection section);
 		
-		public void applyLoadout(MinigamePlayer player, T value);
-		public void clearLoadout(MinigamePlayer player, T value);
+		void applyLoadout(MinigamePlayer player, T value);
+		void clearLoadout(MinigamePlayer player, T value);
 	}
 }

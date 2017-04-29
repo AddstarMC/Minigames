@@ -24,9 +24,9 @@ public class StartGlobalMinigameEvent extends AbstractMinigameEvent{
 	}
 
 	@Override
-	public boolean isCancelled(){return false;};
+	public boolean isCancelled(){return false;}
 
-	@Override
+    @Override
 	public void setCancelled(boolean b){
 		throw new UnsupportedOperationException("Cannot cancel a  Global Minigame Star Event");
 	}

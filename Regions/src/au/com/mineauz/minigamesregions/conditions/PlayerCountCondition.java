@@ -44,10 +44,8 @@ public class PlayerCountCondition extends ConditionInterface {
 
 	@Override
 	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-		if(region.getPlayers().size() >= min.getFlag() && region.getPlayers().size() <= max.getFlag())
-			return true;
-		return false;
-	}
+        return region.getPlayers().size() >= min.getFlag() && region.getPlayers().size() <= max.getFlag();
+    }
 
 	@Override
 	public boolean checkNodeCondition(MinigamePlayer player, Node node) {

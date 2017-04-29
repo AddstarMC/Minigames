@@ -65,7 +65,7 @@ public enum StatFormat {
 	
 	private StatValueField[] fields;
 	
-	private StatFormat(StatValueField... fields) {
+	StatFormat(StatValueField... fields) {
 		this.fields = fields;
 	}
 	

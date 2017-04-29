@@ -45,18 +45,14 @@ public class PlayerScoreRangeCondition extends ConditionInterface {
 	@Override
 	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
 		if(player == null || !player.isInMinigame()) return false;
-		if(player.getScore() >= min.getFlag() && player.getScore() <= max.getFlag())
-			return true;
-		return false;
-	}
+        return player.getScore() >= min.getFlag() && player.getScore() <= max.getFlag();
+    }
 
 	@Override
 	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
 		if(player == null || !player.isInMinigame()) return false;
-		if(player.getScore() >= min.getFlag() && player.getScore() <= max.getFlag())
-			return true;
-		return false;
-	}
+        return player.getScore() >= min.getFlag() && player.getScore() <= max.getFlag();
+    }
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {

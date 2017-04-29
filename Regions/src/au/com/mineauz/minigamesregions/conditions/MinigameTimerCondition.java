@@ -56,12 +56,9 @@ public class MinigameTimerCondition extends ConditionInterface{
 	}
 	
 	private boolean check(Minigame mg){
-		if(mg.getMinigameTimer().getTimeLeft() >= minTime.getFlag() &&
-				mg.getMinigameTimer().getTimeLeft() <= maxTime.getFlag()){
-			return true;
-		}
-		return false;
-	}
+        return mg.getMinigameTimer().getTimeLeft() >= minTime.getFlag() &&
+                mg.getMinigameTimer().getTimeLeft() <= maxTime.getFlag();
+    }
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {

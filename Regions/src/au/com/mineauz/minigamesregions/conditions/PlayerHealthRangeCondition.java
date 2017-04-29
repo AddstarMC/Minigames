@@ -45,20 +45,16 @@ public class PlayerHealthRangeCondition extends ConditionInterface {
 	@Override
 	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
 		if(player == null || !player.isInMinigame()) return false;
-		if(player.getPlayer().getHealth() >= minHealth.getFlag().doubleValue() &&
-				player.getPlayer().getHealth() <= maxHealth.getFlag().doubleValue())
-			return true;
-		return false;
-	}
+        return player.getPlayer().getHealth() >= minHealth.getFlag().doubleValue() &&
+                player.getPlayer().getHealth() <= maxHealth.getFlag().doubleValue();
+    }
 
 	@Override
 	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
 		if(player == null || !player.isInMinigame()) return false;
-		if(player.getPlayer().getHealth() >= minHealth.getFlag().doubleValue() &&
-				player.getPlayer().getHealth() <= maxHealth.getFlag().doubleValue())
-			return true;
-		return false;
-	}
+        return player.getPlayer().getHealth() >= minHealth.getFlag().doubleValue() &&
+                player.getPlayer().getHealth() <= maxHealth.getFlag().doubleValue();
+    }
 	
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {

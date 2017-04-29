@@ -53,7 +53,7 @@ public class CheckpointSign implements MinigameSign {
 			if(player.isInMinigame() && player.getMinigame().isSpectator(player)){
 				return false;
 			}
-			if(((LivingEntity)player.getPlayer()).isOnGround()){
+			if(player.getPlayer().isOnGround()){
 				Location newloc = player.getPlayer().getLocation();
 				if(!sign.getLine(2).equals(ChatColor.BLUE + "Global")){
 					player.setCheckpoint(newloc);

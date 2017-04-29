@@ -23,7 +23,7 @@ public class CTFModule extends MinigameModule {
     }
 
     public void setUseFlagAsCapturePoint(Boolean useFlagAsCapturePoint) {
-        this.useFlagAsCapturePoint.setFlag(useFlagAsCapturePoint);;
+        this.useFlagAsCapturePoint.setFlag(useFlagAsCapturePoint);
     }
 
     private BooleanFlag useFlagAsCapturePoint = new BooleanFlag(true, "useFlagAsCapturePoint");

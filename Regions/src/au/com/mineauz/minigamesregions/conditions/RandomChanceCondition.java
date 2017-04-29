@@ -55,10 +55,8 @@ public class RandomChanceCondition extends ConditionInterface {
 	private boolean check(){
 		double chance = this.chance.getFlag().doubleValue() / 100d;
 		Random rand = new Random();
-		if(rand.nextDouble() <= chance)
-			return true;
-		return false;
-	}
+        return rand.nextDouble() <= chance;
+    }
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {

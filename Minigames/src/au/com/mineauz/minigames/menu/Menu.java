@@ -181,11 +181,8 @@ public class Menu {
 	}
 	
 	public boolean hasMenuItem(int slot){
-		if(pageMap.containsKey(slot)){
-			return true;
-		}
-		return false;
-	}
+        return pageMap.containsKey(slot);
+    }
 	
 	public int getSize(){
 		return rows * 9;
@@ -200,10 +197,8 @@ public class Menu {
 	}
 	
 	public boolean hasNextPage(){
-		if(nextPage != null)
-			return true;
-		return false;
-	}
+        return nextPage != null;
+    }
 	
 	public void setPreviousPage(Menu page){
 		previousPage = page;
@@ -214,10 +209,8 @@ public class Menu {
 	}
 	
 	public boolean hasPreviousPage(){
-		if(previousPage != null)
-			return true;
-		return false;
-	}
+        return previousPage != null;
+    }
 	
 	public MinigamePlayer getViewer(){
 		return viewer;

@@ -30,6 +30,8 @@ import au.com.mineauz.minigamesregions.events.EnterRegionEvent;
 import au.com.mineauz.minigamesregions.events.LeaveRegionEvent;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
+import au.com.mineauz.minigamesregions.executors.RegionExecutor;
+import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 
 public class RegionEvents implements Listener{
 	

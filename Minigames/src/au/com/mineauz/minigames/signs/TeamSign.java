@@ -77,7 +77,7 @@ public class TeamSign implements MinigameSign {
 								}
 								if(nt.getPlayers().size() - sm.getPlayers().size() < 1){
 									MultiplayerType.switchTeam(mgm, player, nt);
-									plugin.mdata.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getDisplayName(), nt.getChatColor() + nt.getDisplayName()), null, player);
+									plugin.mdata.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getDisplayName(mgm.usePlayerDisplayNames()), nt.getChatColor() + nt.getDisplayName()), null, player);
 									player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), null);
 								}
 								else{
@@ -93,20 +93,29 @@ public class TeamSign implements MinigameSign {
 					}
 					else if(sign.getLine(2).equals(ChatColor.GRAY + "Neutral") || matchTeam(mgm, sign.getLine(2)) != player.getTeam()){
 						Team cur = player.getTeam();
-						Team nt = matchTeam(mgm, sign.getLine(2));
-						if(nt != null){
-							if(nt.getPlayers().size() - cur.getPlayers().size() < 2){
-								MultiplayerType.switchTeam(mgm, player, nt);
-								plugin.mdata.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
-								player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), null);
+						if(cur != null) {
+							Team nt = matchTeam(mgm, sign.getLine(2));
+							if (nt != null) {
+								if (nt.getPlayers().size() - cur.getPlayers().size() < 2) {
+									MultiplayerType.switchTeam(mgm, player, nt);
+									plugin.mdata.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
+									player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), null);
+								} else {
+									player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
+								}
+							} else {
+									player.removeTeam();
 							}
-							else{
-								player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
-							}
-						}
-						else{
-							if(player.getTeam() != null){
-								player.removeTeam();
+						}else{
+							Team nt = matchTeam(mgm, sign.getLine(2));
+							if (nt != null) {
+								if (nt.getPlayers().size() < nt.getMaxPlayers()){
+									MultiplayerType.switchTeam(mgm, player, nt);
+									plugin.mdata.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
+									player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), null);
+								}else {
+									player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("player.team.full"));
+								}
 							}
 						}
 					}

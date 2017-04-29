@@ -117,6 +117,7 @@ public class Minigame implements ScriptObject {
 	private BooleanFlag allowFlight = new BooleanFlag(false, "allowFlight");
 	private BooleanFlag enableFlight = new BooleanFlag(false, "enableFlight");
 	private BooleanFlag allowDragonEggTeleport = new BooleanFlag(true, "allowDragonEggTeleport");
+	private BooleanFlag usePlayerDisplayNames = new BooleanFlag(true, "usePlayerDisplayNames");
 	
 	private StringFlag mechanic = new StringFlag("custom", "scoretype");
 	private BooleanFlag paintBallMode = new BooleanFlag(false, "paintball");
@@ -219,6 +220,7 @@ public class Minigame implements ScriptObject {
 		addConfigFlag(maxScore);
 		addConfigFlag(minChestRandom);
 		addConfigFlag(minPlayers);
+		addConfigFlag(usePlayerDisplayNames);
 		addConfigFlag(minScore);
 		addConfigFlag(objective);
 		addConfigFlag(paintBallDamage);
@@ -280,10 +282,8 @@ public class Minigame implements ScriptObject {
 	}
 	
 	public boolean isTeamGame(){
-		if(getType() == MinigameType.MULTIPLAYER && TeamsModule.getMinigameModule(this).getTeams().size() > 0)
-			return true;
-		return false;
-	}
+        return getType() == MinigameType.MULTIPLAYER && TeamsModule.getMinigameModule(this).getTeams().size() > 0;
+    }
 
 	public boolean hasFlags(){
 		return !flags.getFlag().isEmpty();
@@ -357,6 +357,14 @@ public class Minigame implements ScriptObject {
 	public int getMinPlayers(){
 		return minPlayers.getFlag();
 	}
+
+	public boolean usePlayerDisplayNames() {
+		return usePlayerDisplayNames.getFlag();
+	}
+
+    public void setUsePlayerDisplayNames(Boolean value){
+	    usePlayerDisplayNames.setFlag(value);
+    }
 
 	public void setMinPlayers(int minPlayers){
 		this.minPlayers.setFlag(minPlayers);
@@ -477,23 +485,16 @@ public class Minigame implements ScriptObject {
 	
 	@Deprecated
 	public boolean isNotWaitingForPlayers(){
-		if(getState() != MinigameState.WAITING){
-			return true;
-		}
-		return false;
-	}
+        return getState() != MinigameState.WAITING;
+    }
 	
 	public boolean isWaitingForPlayers(){
-		if(getState() == MinigameState.WAITING)
-			return true;
-		return false;
-	}
+        return getState() == MinigameState.WAITING;
+    }
 	
 	public boolean hasStarted(){
-		if(getState() == MinigameState.STARTED || getState() == MinigameState.OCCUPIED)
-			return true;
-		return false;
-	}
+        return getState() == MinigameState.STARTED || getState() == MinigameState.OCCUPIED;
+    }
 	
 	public MinigameTimer getMinigameTimer() {
 		return miniTimer;
@@ -581,7 +582,7 @@ public class Minigame implements ScriptObject {
 	
 	public int getMaxScorePerPlayer(){
 		float scorePerPlayer = getMaxScore() / getMaxPlayers();
-		int score = (int) Math.round(scorePerPlayer * getPlayers().size());
+		int score = Math.round(scorePerPlayer * getPlayers().size());
 		if(score < minScore.getFlag()){
 			score = minScore.getFlag();
 		}

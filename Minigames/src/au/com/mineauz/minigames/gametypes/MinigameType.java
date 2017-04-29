@@ -8,7 +8,7 @@ public enum MinigameType {
 	
 	private String name;
 	
-	private MinigameType(String name){
+	MinigameType(String name){
 		this.name = name;
 	}
 	

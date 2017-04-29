@@ -38,22 +38,16 @@ public class StoredPlayerCheckpoints {
 	}
 	
 	public boolean hasCheckpoint(String minigame){
-		if(checkpoints.containsKey(minigame)){
-			return true;
-		}
-		return false;
-	}
+        return checkpoints.containsKey(minigame);
+    }
 	
 	public Location getCheckpoint(String minigame){
 		return checkpoints.get(minigame);
 	}
 	
 	public boolean hasGlobalCheckpoint(){
-		if(globalCheckpoint != null){
-			return true;
-		}
-		return false;
-	}
+        return globalCheckpoint != null;
+    }
 	
 	public Location getGlobalCheckpoint(){
 		return globalCheckpoint;
@@ -68,11 +62,8 @@ public class StoredPlayerCheckpoints {
 	}
 	
 	public boolean hasFlags(String minigame){
-		if(flags.containsKey(minigame)){
-			return true;
-		}
-		return false;
-	}
+        return flags.containsKey(minigame);
+    }
 	
 	public void addFlags(String minigame, List<String> flagList){
 		flags.put(minigame, new ArrayList<String>(flagList));
@@ -95,11 +86,8 @@ public class StoredPlayerCheckpoints {
 	}
 	
 	public boolean hasTime(String minigame){
-		if(storedTime.containsKey(minigame)){
-			return true;
-		}
-		return false;
-	}
+        return storedTime.containsKey(minigame);
+    }
 	
 	public void removeTime(String minigame){
 		storedTime.remove(minigame);
@@ -114,11 +102,8 @@ public class StoredPlayerCheckpoints {
 	}
 	
 	public boolean hasDeaths(String minigame){
-		if(storedDeaths.containsKey(minigame)){
-			return true;
-		}
-		return false;
-	}
+        return storedDeaths.containsKey(minigame);
+    }
 	
 	public void removeDeaths(String minigame){
 		storedDeaths.remove(minigame);
@@ -133,11 +118,8 @@ public class StoredPlayerCheckpoints {
 	}
 	
 	public boolean hasReverts(String minigame){
-		if(storedReverts.containsKey(minigame)){
-			return true;
-		}
-		return false;
-	}
+        return storedReverts.containsKey(minigame);
+    }
 	
 	public void removeReverts(String minigame){
 		storedReverts.remove(minigame);

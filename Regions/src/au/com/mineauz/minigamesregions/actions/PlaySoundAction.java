@@ -137,8 +137,8 @@ public class PlaySoundAction extends ActionInterface {
 
 			@Override
 			public void setValue(Double value) {
-				pit.setFlag(value.floatValue());;
-			}
+				pit.setFlag(value.floatValue());
+            }
 
 			@Override
 			public Double getValue() {

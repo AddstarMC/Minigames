@@ -77,7 +77,7 @@ public class MinigamePlayer implements ScriptObject {
 	public MinigamePlayer(Player player){
 		this.player = player;
 		spc = new StoredPlayerCheckpoints(getUUID().toString());
-		
+
 		File plcp = new File(Minigames.plugin.getDataFolder() + "/playerdata/checkpoints/" + getUUID().toString() + ".yml");
 		if(plcp.exists()){
 			getStoredPlayerCheckpoints().loadCheckpoints();
@@ -91,9 +91,17 @@ public class MinigamePlayer implements ScriptObject {
 	public String getName(){
 		return player.getName();
 	}
-	
+
 	public String getDisplayName(){
-		return ChatColor.stripColor(player.getDisplayName());
+		return getDisplayName(true);
+	}
+
+	public String getDisplayName(Boolean displayName){
+		if(displayName){
+			return ChatColor.stripColor(player.getDisplayName());
+		}else {
+		 	return getName();
+		}
 	}
 	
 	public UUID getUUID(){
@@ -188,9 +196,7 @@ public class MinigamePlayer implements ScriptObject {
 	}
 	
 	public boolean hasStoredData(){
-		if(oply != null)
-			return true;
-		return false;
+		return oply != null;
 	}
 	
 	public boolean getAllowTeleport(){
@@ -222,9 +228,7 @@ public class MinigamePlayer implements ScriptObject {
 	}
 	
 	public boolean isInMinigame(){
-		if(minigame != null)
-			return true;
-		return false;
+		return minigame != null;
 	}
 	
 	public boolean isRequiredQuit() {
@@ -275,10 +279,7 @@ public class MinigamePlayer implements ScriptObject {
 	}
 	
 	public boolean hasFlag(String flagName){
-		if(flags.contains(flagName)){
-			return true;
-		}
-		return false;
+		return flags.contains(flagName);
 	}
 	
 	public void setFlags(List<String> flags){
@@ -294,9 +295,7 @@ public class MinigamePlayer implements ScriptObject {
 	}
 	
 	public boolean hasCheckpoint(){
-		if(checkpoint != null)
-			return true;
-		return false;
+		return checkpoint != null;
 	}
 	
 	public void setCheckpoint(Location checkpoint){
@@ -489,10 +488,7 @@ public class MinigamePlayer implements ScriptObject {
 	}
 	
 	public boolean isInMenu(){
-		if(menu != null){
-			return true;
-		}
-		return false;
+		return menu != null;
 	}
 	
 	public void setNoClose(boolean value){
@@ -533,9 +529,7 @@ public class MinigamePlayer implements ScriptObject {
 	}
 	
 	public boolean hasSelection(){
-		if(selection1 != null && selection2 != null)
-			return true;
-		return false;
+		return selection1 != null && selection2 != null;
 	}
 	
 	public Location[] getSelectionPoints(){
@@ -631,15 +625,11 @@ public class MinigamePlayer implements ScriptObject {
 	}
 	
 	public boolean hasClaimedReward(String reward){
-		if(claimedRewards.contains(reward))
-			return true;
-		return false;
+		return claimedRewards.contains(reward);
 	}
 	
 	public boolean hasTempClaimedReward(String reward){
-		if(tempClaimedRewards.contains(reward))
-			return true;
-		return false;
+		return tempClaimedRewards.contains(reward);
 	}
 	
 	public void addTempClaimedReward(String reward){
@@ -685,9 +675,7 @@ public class MinigamePlayer implements ScriptObject {
 	
 	public boolean hasClaimedScore(Location loc){
 		String id = MinigameUtils.createLocationID(loc);
-		if(claimedScoreSigns.contains(id))
-			return true;
-		return false;
+		return claimedScoreSigns.contains(id);
 	}
 	
 	public void addClaimedScore(Location loc){

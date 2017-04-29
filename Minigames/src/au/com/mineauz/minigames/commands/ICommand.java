@@ -10,25 +10,25 @@ import au.com.mineauz.minigames.minigame.Minigame;
 public interface ICommand {
 //	public PlayerData pdata = Minigames.plugin.getPlayerData();
 //	public MinigameData mdata = Minigames.plugin.getMinigameData();
-	public Minigames plugin = Minigames.plugin;
+Minigames plugin = Minigames.plugin;
 	
-	public String getName();
+	String getName();
 	
-	public String[] getAliases();
+	String[] getAliases();
 	
-	public boolean canBeConsole();
+	boolean canBeConsole();
 	
-	public String getDescription();
+	String getDescription();
 	
-	public String[] getParameters();
+	String[] getParameters();
 	
-	public String[] getUsage();
+	String[] getUsage();
 	
-	public String getPermissionMessage();
+	String getPermissionMessage();
 	
-	public String getPermission();
+	String getPermission();
 	
-	public boolean onCommand(CommandSender sender, Minigame minigame, String label, String[] args);
+	boolean onCommand(CommandSender sender, Minigame minigame, String label, String[] args);
 	
-	public List<String> onTabComplete(CommandSender sender, Minigame minigame, String alias, String[] args);
+	List<String> onTabComplete(CommandSender sender, Minigame minigame, String alias, String[] args);
 }

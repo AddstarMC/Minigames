@@ -309,9 +309,9 @@ public class PlayerData {
 			for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
 				player.getPlayer().removePotionEffect(potion.getType());
 			}
-			player.sendMessage(MinigameUtils.formStr("player.spectate.join.plyMsg", minigame.getName(false)) + "\n" +
+			player.sendMessage(MinigameUtils.formStr("player.spectate.join.plyMsg", minigame.getName(true)) + "\n" +
 					MinigameUtils.formStr("player.spectate.join.plyHelp", "\"/minigame quit\""), null);
-			mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.spectate.join.minigameMsg", player.getName(), minigame.getName(false)), null, player);
+			mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.spectate.join.minigameMsg", player.getName(), minigame.getName(true)), null, player);
 		}
 	}
 	
@@ -697,7 +697,7 @@ public class PlayerData {
 						String score = "";
 						if(winners.get(0).getScore() != 0)
 							score = MinigameUtils.formStr("player.end.broadcastScore", winners.get(0).getScore());
-						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getDisplayName(), minigame.getName(true)) + ". " + score, minigame, ChatColor.GREEN);
+						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getDisplayName(minigame.usePlayerDisplayNames()), minigame.getName(true)) + ". " + score, minigame, ChatColor.GREEN);
 					}
 					else if(winners.size() > 1){
 						String win = "";
@@ -711,7 +711,7 @@ public class PlayerData {
 						
 						for(MinigamePlayer pl : winners){
 							if(winners.indexOf(pl) < 2){
-								win += pl.getDisplayName();
+								win += pl.getDisplayName(minigame.usePlayerDisplayNames());
 								if(winners.indexOf(pl) + 2 >= winners.size()){
 									win += " and ";
 								}

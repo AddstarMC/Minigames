@@ -21,6 +21,8 @@ import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
+import au.com.mineauz.minigamesregions.executors.RegionExecutor;
+import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 
 public class Region implements ScriptObject {
 	private String name;

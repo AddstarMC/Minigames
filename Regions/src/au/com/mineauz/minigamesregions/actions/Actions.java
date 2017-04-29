@@ -10,8 +10,8 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigamesregions.NodeExecutor;
-import au.com.mineauz.minigamesregions.RegionExecutor;
+import au.com.mineauz.minigamesregions.executors.NodeExecutor;
+import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemAction;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemActionAdd;
 
@@ -64,9 +64,7 @@ public class Actions {
 		if(actions.containsKey(name.toUpperCase()))
 			try {
 				return actions.get(name.toUpperCase()).newInstance();
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
+			} catch (InstantiationException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
 		return null;

@@ -36,23 +36,17 @@ public class MultiplayerBets {
 		if(bet.containsKey(player)){
 			return false;
 		}
-		
-		if(!bet.isEmpty() && betValue(item.getType()) != highestBet()){
-			return false;
-		}
-		return true;
-	}
+
+        return !(!bet.isEmpty() && betValue(item.getType()) != highestBet());
+    }
 	
 	public boolean canBet(MinigamePlayer player, Double money){
 		if(moneyBet.containsKey(player)){
 			return false;
 		}
-		
-		if(greatestBet != 0 && money != greatestBet){
-			return false;
-		}
-		return true;
-	}
+
+        return !(greatestBet != 0 && money != greatestBet);
+    }
 	
 	public ItemStack[] claimBets(){
 		ItemStack[] items = new ItemStack[bet.values().size()];

@@ -54,8 +54,8 @@ public class Conditions {
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
-			};
-		}
+			}
+        }
 		return null;
 	}
 	

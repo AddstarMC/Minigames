@@ -135,10 +135,8 @@ public class TeamsModule extends MinigameModule {
 	}
 	
 	public boolean hasTeam(TeamColor color){
-		if(teams.containsKey(color))
-			return true;
-		return false;
-	}
+        return teams.containsKey(color);
+    }
 	
 	public void removeTeam(TeamColor color){
 		if(teams.containsKey(color)){

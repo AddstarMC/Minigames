@@ -68,7 +68,7 @@ public class JuggernautMechanic extends GameMechanicBase{
 					jm.setJuggernaut(j);
 					j.sendMessage("You are the Juggernaut!", null); //TODO: Language file
 					mdata.sendMinigameMessage(minigame, 
-							j.getDisplayName() + " is the Juggernaut!", null, j); //TODO: Language file
+							j.getDisplayName(minigame.usePlayerDisplayNames()) + " is the Juggernaut!", null, j); //TODO: Language file
 				}
 			}
 		}

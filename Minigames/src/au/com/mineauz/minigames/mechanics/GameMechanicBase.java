@@ -75,12 +75,13 @@ public abstract class GameMechanicBase implements Listener{
 					if(smt == null){
 						pdata.quitMinigame(ply, false);
 						ply.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
+					}else {
+						smt.addPlayer(ply);
+						ply.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), null);
+						mdata.sendMinigameMessage(minigame,
+								String.format(smt.getGameAutobalanceMessage(),
+										ply.getName(), smt.getChatColor() + smt.getDisplayName()), null, ply);
 					}
-					smt.addPlayer(ply);
-					ply.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), null);
-					mdata.sendMinigameMessage(minigame, 
-							String.format(smt.getGameAutobalanceMessage(), 
-									ply.getName(), smt.getChatColor() + smt.getDisplayName()), null, ply);
 				}
 			}
 			
@@ -99,7 +100,7 @@ public abstract class GameMechanicBase implements Listener{
 					pl.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), null);
 					mdata.sendMinigameMessage(minigame, 
 							String.format(smt.getGameAutobalanceMessage(), 
-									pl.getName(), smt.getChatColor() + smt.getDisplayName()), null, pl);
+									pl.getDisplayName(minigame.usePlayerDisplayNames()), smt.getChatColor() + smt.getDisplayName()), null, pl);
 				}
 				else{
 					sorted = true;
@@ -122,7 +123,7 @@ public abstract class GameMechanicBase implements Listener{
 					ply.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), null);
 					mdata.sendMinigameMessage(mgm,
 							String.format(smt.getGameAutobalanceMessage(),
-									ply.getName(), smt.getChatColor() + smt.getDisplayName()), null, ply);
+									ply.getDisplayName(mgm.usePlayerDisplayNames()), smt.getChatColor() + smt.getDisplayName()), null, ply);
 				}
 			}
 		}

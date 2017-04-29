@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import au.com.mineauz.minigamesregions.executors.BaseExecutor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -12,30 +13,21 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigamesregions.NodeExecutor;
-import au.com.mineauz.minigamesregions.RegionExecutor;
+
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 
 public class MenuItemAction extends MenuItem{
 	
-	private RegionExecutor rexec;
-	private NodeExecutor nexec;
+	private BaseExecutor exec;
 	private ActionInterface act;
 
-	public MenuItemAction(String name, Material displayItem, RegionExecutor exec, ActionInterface act) {
+	public MenuItemAction(String name, Material displayItem, BaseExecutor exec, ActionInterface act) {
 		super(name, displayItem);
-		this.rexec = exec;
+		this.exec = exec;
 		this.act = act;
 		updateDescription();
 	}
-	
-	public MenuItemAction(String name, Material displayItem, NodeExecutor exec, ActionInterface act) {
-		super(name, displayItem);
-		this.nexec = exec;
-		this.act = act;
-		updateDescription();
-	}
-	
+
 	@Override
 	public void update() {
 		updateDescription();
@@ -91,7 +83,7 @@ public class MenuItemAction extends MenuItem{
 	
 	@Override
 	public ItemStack onClick(){
-		if(rexec != null){
+		if(exec != null){
 			if(act.displayMenu(getContainer().getViewer(), getContainer()))
 				return null;
 		}
@@ -104,10 +96,10 @@ public class MenuItemAction extends MenuItem{
 	
 	@Override
 	public ItemStack onRightClick(){
-		if(rexec != null)
-			rexec.removeAction(act);
+		if(exec != null)
+			exec.removeAction(act);
 		else
-			nexec.removeAction(act);
+			exec.removeAction(act);
 		getContainer().removeItem(getSlot());
 		return null;
 	}

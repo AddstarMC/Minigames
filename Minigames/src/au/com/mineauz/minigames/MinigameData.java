@@ -255,11 +255,8 @@ public class MinigameData {
 	}
 	
 	public boolean hasLoadouts(){
-		if(globalLoadouts.isEmpty()){
-			return false;
-		}
-		return true;
-	}
+        return !globalLoadouts.isEmpty();
+    }
 	
 	public boolean hasLoadout(String name){
 		return globalLoadouts.containsKey(name);
@@ -298,10 +295,8 @@ public class MinigameData {
 	}
 	
 	public boolean hasRewardSign(Location loc){
-		if(rewardSigns.containsKey(MinigameUtils.createLocationID(loc)))
-			return true;
-		return false;
-	}
+        return rewardSigns.containsKey(MinigameUtils.createLocationID(loc));
+    }
 	
 	public void removeRewardSign(Location loc){
 		String locid = MinigameUtils.createLocationID(loc);

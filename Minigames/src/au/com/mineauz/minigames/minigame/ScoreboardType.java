@@ -17,7 +17,7 @@ public enum ScoreboardType {
 	
 	private String typeName;
 	
-	private ScoreboardType(String type){
+	ScoreboardType(String type){
 		typeName = type;
 	}
 	

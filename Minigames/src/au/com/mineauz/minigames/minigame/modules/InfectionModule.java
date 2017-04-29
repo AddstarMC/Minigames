@@ -88,10 +88,8 @@ public class InfectionModule extends MinigameModule{
 	}
 	
 	public boolean isInfectedPlayer(MinigamePlayer ply){
-		if(infected.contains(ply))
-			return true;
-		return false;
-	}
+        return infected.contains(ply);
+    }
 	
 	public void clearInfectedPlayers(){
 		infected.clear();

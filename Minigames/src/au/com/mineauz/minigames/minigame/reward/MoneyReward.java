@@ -33,10 +33,8 @@ public class MoneyReward extends RewardType{
 
 	@Override
 	public boolean isUsable() {
-		if(Minigames.plugin.getEconomy() == null)
-			return false;
-		return true;
-	}
+        return Minigames.plugin.getEconomy() != null;
+    }
 
 	@Override
 	public void giveReward(MinigamePlayer player) {

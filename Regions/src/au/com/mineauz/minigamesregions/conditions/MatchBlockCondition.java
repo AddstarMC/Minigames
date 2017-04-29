@@ -72,13 +72,10 @@ public class MatchBlockCondition extends ConditionInterface {
 	@SuppressWarnings("deprecation")
 	private boolean check(Location location){
 		Block block = location.getBlock();
-		if(block.getType() == Material.getMaterial(type.getFlag()) &&
-				(!useDur.getFlag() || 
-						block.getData() == dur.getFlag().byteValue())){
-			return true;
-		}
-		return false;
-	}
+        return block.getType() == Material.getMaterial(type.getFlag()) &&
+                (!useDur.getFlag() ||
+                        block.getData() == dur.getFlag().byteValue());
+    }
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {

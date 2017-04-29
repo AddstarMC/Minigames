@@ -81,7 +81,7 @@ public class FlagSign implements MinigameSign {
 			if(mgm.isSpectator(player)){
 				return false;
 			}
-			if(!sign.getLine(2).isEmpty() && ((LivingEntity)player.getPlayer()).isOnGround() && 
+			if(!sign.getLine(2).isEmpty() && player.getPlayer().isOnGround() &&
 					!mgm.getMechanicName().equals("ctf") &&
 					!player.hasFlag(ChatColor.stripColor(sign.getLine(2)))){
 				TakeFlagEvent ev = new TakeFlagEvent(mgm, player, ChatColor.stripColor(sign.getLine(2)));
