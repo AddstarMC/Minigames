@@ -4,11 +4,7 @@ import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -64,9 +60,10 @@ public class SQLiteBackend extends Backend {
 			File path = new File(Minigames.plugin.getDataFolder(), "minigames.db");
 			
 			String url = String.format("jdbc:sqlite:" + path.getAbsolutePath());
-			
-			pool = new ConnectionPool(url, null, null);
-			
+			Properties properties =  new Properties();
+			properties.put("username","");
+			properties.put("password","");
+			pool = new ConnectionPool(url, properties);
 			createStatements();
 			
 			// Test the connection
@@ -79,7 +76,7 @@ public class SQLiteBackend extends Backend {
 				logger.severe("Failed to connect to the SQLite database. Please check your database settings");
 			}
 		} catch (ClassNotFoundException e) {
-			logger.severe("Failed to find MySQL JDBC driver. This version of craftbukkit is defective.");
+			logger.severe("Failed to find SQLITE JDBC driver. This version of craftbukkit is defective.");
 		}
 		
 		return false;

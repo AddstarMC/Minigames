@@ -6,27 +6,34 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import com.google.common.collect.Lists;
 
 public class ConnectionPool {
     private String connectionString;
-    private String username;
-    private String password;
+    private Properties props ;
+
     
     private long maxIdleTime;
     
     private List<ConnectionHandler> connections;
-
+    @Deprecated
     public ConnectionPool(String connectionString, String username, String password) {
+        props = new Properties();
+        props.put("username", username);
+        props.put("password", password);
+        props.put("useSSL", false);
         this.connectionString = connectionString;
-        this.username = username;
-        this.password = password;
-        
         connections = Collections.synchronizedList(Lists.<ConnectionHandler>newArrayList());
         maxIdleTime = TimeUnit.SECONDS.toMillis(30);
     }
-    
+    public ConnectionPool(String connectionString, Properties properties) {
+        this.connectionString = connectionString;
+        props = properties;
+        connections = Collections.synchronizedList(Lists.<ConnectionHandler>newArrayList());
+        maxIdleTime = TimeUnit.SECONDS.toMillis(30);
+    }
     public void setMaxIdleTime(long maxTime) {
         maxIdleTime = maxTime;
     }
@@ -94,10 +101,8 @@ public class ConnectionPool {
     }
     
     private ConnectionHandler createConnection() throws SQLException {
-        Connection connection = DriverManager.getConnection(connectionString, username, password);
-
+        Connection connection = DriverManager.getConnection(connectionString, props);
         ConnectionHandler handler = new ConnectionHandler(connection);
-                
         connections.add(handler);
         return handler;
     }

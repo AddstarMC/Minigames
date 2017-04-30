@@ -3,11 +3,7 @@ package au.com.mineauz.minigames.backend.mysql;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -65,11 +61,11 @@ public class MySQLBackend extends Backend {
 					config.getString("host", "localhost:3306"), 
 					database
 					);
-			
-			String username = config.getString("username", "username");
-			String password = config.getString("password", "password");
-			
-			pool = new ConnectionPool(url, username, password);
+			Properties properties = new Properties();
+			properties.put("username", config.getString("username", "username"));
+			properties.put("password",config.getString("password", "password"));
+			properties.put("useSSL",config.getBoolean("useSSL"));
+			pool = new ConnectionPool(url, properties);
 			
 			createStatements();
 			

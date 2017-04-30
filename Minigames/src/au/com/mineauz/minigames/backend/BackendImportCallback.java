@@ -23,7 +23,7 @@ public interface BackendImportCallback {
 	 * Implementation Note: You can use this to clear the database to
 	 * accept new data
 	 */
-	public void begin();
+    void begin();
 	
 	/**
 	 * Called to add a player to the destination backend.
@@ -34,7 +34,7 @@ public interface BackendImportCallback {
 	 * @param name The user name of the player
 	 * @param displayName the display name of the player
 	 */
-	public void acceptPlayer(UUID playerId, String name, String displayName);
+    void acceptPlayer(UUID playerId, String name, String displayName);
 	
 	/**
 	 * Called to add a minigame to the destination backend.
@@ -45,7 +45,7 @@ public interface BackendImportCallback {
 	 * 				if you also change the if of corresponding data elsewhere 
 	 * @param name	The name of the minigame
 	 */
-	public void acceptMinigame(int id, String name);
+    void acceptMinigame(int id, String name);
 	
 	/**
 	 * Called to add a stat to the destination backend.
@@ -57,7 +57,7 @@ public interface BackendImportCallback {
 	 * @param stat The name of the stat
 	 * @param value The value of the stat
 	 */
-	public void acceptStat(UUID playerId, int minigameId, String stat, long value);
+    void acceptStat(UUID playerId, int minigameId, String stat, long value);
 	
 	/**
 	 * Called to add stat metadata to the destination backend.
@@ -69,10 +69,10 @@ public interface BackendImportCallback {
 	 * @param displayName The stat display name
 	 * @param format The stat format
 	 */
-	public void acceptStatMetadata(int minigameId, String stat, String displayName, StatFormat format);
+    void acceptStatMetadata(int minigameId, String stat, String displayName, StatFormat format);
 	
 	/**
 	 * Called to notify the destination backend that the source is finished.
 	 */
-	public void end();
+    void end();
 }
