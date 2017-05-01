@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.minigame.Team;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -72,6 +74,22 @@ public class SetTeamScoreAction extends ActionInterface {
 			TeamsModule tm = TeamsModule.getMinigameModule(player.getMinigame());
 			if(tm.hasTeam(TeamColor.valueOf(team.getFlag()))){
 				tm.getTeam(TeamColor.valueOf(team.getFlag())).setScore(score.getFlag());
+			}
+		}
+		checkScore(player);
+	}
+	private void checkScore(MinigamePlayer player){
+		if(player.getTeam().getScore() >= player.getMinigame().getMaxScore()){
+			if(player.getMinigame().isTeamGame()){
+				List<MinigamePlayer> w;
+				List<MinigamePlayer> l;
+				w = new ArrayList<>(player.getTeam().getPlayers());
+				l = new ArrayList<>(player.getMinigame().getPlayers().size() - player.getTeam().getPlayers().size());
+				for(Team t : TeamsModule.getMinigameModule(player.getMinigame()).getTeams()){
+					if(t != player.getTeam())
+						l.addAll(t.getPlayers());
+				}
+				Minigames.plugin.pdata.endMinigame(player.getMinigame(), w, l);
 			}
 		}
 	}

@@ -73,8 +73,7 @@ public class EndAction extends ActionInterface {
 				l.remove(player);
 			}
 			Minigames.plugin.pdata.endMinigame(player.getMinigame(), w, l);
-		}
-		else{
+		} else{
 			Minigames.plugin.pdata.endMinigame(player);
 		}
 	}
