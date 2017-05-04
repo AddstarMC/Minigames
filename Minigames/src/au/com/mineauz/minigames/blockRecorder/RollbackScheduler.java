@@ -77,7 +77,7 @@ public class RollbackScheduler implements Runnable {
 			else if(bdata.getBlockState().getType() == Material.SKULL){
 				Skull skull = (Skull) bdata.getBlockState().getBlock().getState();
 				Skull orig = (Skull) bdata.getBlockState();
-				skull.setOwningPlayer(orig.getOwningPlayer());
+				if(orig.getOwningPlayer() != null)skull.setOwningPlayer(orig.getOwningPlayer());
 				skull.setRotation(orig.getRotation());
 				skull.setSkullType(orig.getSkullType());
 				skull.update();
