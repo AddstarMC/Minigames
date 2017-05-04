@@ -1,16 +1,17 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import au.com.mineauz.minigames.PlayerLoadout;
+import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.menu.*;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
@@ -18,6 +19,7 @@ import au.com.mineauz.minigamesregions.Region;
 public class EquipLoadoutAction extends ActionInterface {
 	
 	private StringFlag loadout = new StringFlag("default", "loadout");
+	private BooleanFlag equipOnTrigger = new BooleanFlag(false, "equipOnTrigger");
 
 	@Override
 	public String getName() {
@@ -50,7 +52,9 @@ public class EquipLoadoutAction extends ActionInterface {
 		if(player == null || !player.isInMinigame()) return;
 		LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
 		if(lmod.hasLoadout(loadout.getFlag())){
-			player.setLoadout(lmod.getLoadout(loadout.getFlag()));
+			PlayerLoadout pLoadOut = lmod.getLoadout(loadout.getFlag());
+			player.setLoadout(pLoadOut);
+			pLoadOut.equiptLoadout(player);
 		}
 	}
 
@@ -59,8 +63,9 @@ public class EquipLoadoutAction extends ActionInterface {
 		if(player == null || !player.isInMinigame()) return;
 		LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
 		if(lmod.hasLoadout(loadout.getFlag())){
-			player.setLoadout(lmod.getLoadout(loadout.getFlag()));
-		}
+			PlayerLoadout pLoadOut = lmod.getLoadout(loadout.getFlag());
+			player.setLoadout(pLoadOut);
+			pLoadOut.equiptLoadout(player);		}
 	}
 
 	@Override
@@ -89,6 +94,19 @@ public class EquipLoadoutAction extends ActionInterface {
 			@Override
 			public String getValue() {
 				return loadout.getFlag();
+			}
+		}));
+		List<String> equipDesc =  new ArrayList<>();
+		equipDesc.add("This will force the loadout to equip as soon as the Action is triggered...");
+		m.addItem(new MenuItemBoolean("Equip on Trigger",equipDesc, Material.PAPER, new Callback<Boolean>() {
+			@Override
+			public void setValue(Boolean value) {
+				equipOnTrigger.setFlag(value);
+			}
+
+			@Override
+			public Boolean getValue() {
+				return equipOnTrigger.getFlag();
 			}
 		}));
 		m.displayMenu(player);
