@@ -62,9 +62,9 @@ public class MySQLBackend extends Backend {
 					database
 					);
 			Properties properties = new Properties();
-			properties.put("username", config.getString("username", "username"));
+			properties.put("user", config.getString("username", "username"));
 			properties.put("password",config.getString("password", "password"));
-			properties.put("useSSL",config.getBoolean("useSSL"));
+			properties.put("useSSL",config.getBoolean("useSSL",false));
 			pool = new ConnectionPool(url, properties);
 			
 			createStatements();
