@@ -526,7 +526,14 @@ public class Events implements Listener{
 				MinigamePlayer ply = pdata.getMinigamePlayer((Player) snowball.getShooter());
 				if(ply == null) return;
 				if(ply.isInMinigame() && ply.getMinigame().hasUnlimitedAmmo()){
-					ply.getPlayer().getInventory().addItem(new ItemStack(Material.SNOW_BALL));
+					ItemStack mainhand = ply.getPlayer().getInventory().getItemInMainHand();
+					if (mainhand.getType() == Material.SNOW_BALL){
+						mainhand.setAmount(16);
+						ply.getPlayer().updateInventory();
+					}else{
+						ply.getPlayer().getInventory().addItem(new ItemStack(Material.SNOW_BALL,1));
+					}
+
 				}
 			}
 		}
