@@ -1,5 +1,5 @@
 name: Minigames-Regions
 main: au.com.mineauz.minigamesregions.Main
-version: ${version.build}
+version: ${plugin.version}
 author: _Razz_
 depend: ['Minigames']

@@ -8,7 +8,9 @@
   </parent>
   <artifactId>Minigames-Regions</artifactId>
   <name>Minigames-Regions</name>
-
+  <properties>
+    <plugin.version>${project.version}-${build.number}</plugin.version>
+  </properties>
   <repositories>
     <!-- Other repositories -->
     <repository>
@@ -43,13 +45,7 @@
   </repositories>
 
   <dependencies>
-    <!-- Bukkit -->
-    <dependency>
-      <groupId>org.spigotmc</groupId>
-      <artifactId>spigot-api</artifactId>
-      <version>1.11.2-R0.1-SNAPSHOT</version>
-    </dependency>
-    
+
     <dependency>
       <groupId>au.com.mineauz</groupId>
       <artifactId>Minigames</artifactId>
@@ -62,13 +58,15 @@
       <resource>
         <targetPath>.</targetPath>
         <filtering>true</filtering>
-        <directory>${basedir}/.</directory>
+        <directory>src/main/resources</directory>
         <includes>
           <include>plugin.yml</include>
         </includes>
       </resource>
     </resources>
 
-    <sourceDirectory>src</sourceDirectory>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <testSourceDirectory>src/test/java</testSourceDirectory>
+
   </build>
 </project>

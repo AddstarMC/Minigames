@@ -4,6 +4,9 @@
 bin
 .settings
 target
-test/
 openDist.command
 Minigames/dependency-reduced-pom.xml
+.idea/
+Minigames/Minigames (1).iml
+Minigames/src/main/
+Regions/Minigames-Regions.iml
