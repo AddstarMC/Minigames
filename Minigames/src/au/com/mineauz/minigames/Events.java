@@ -76,7 +76,7 @@ public class Events implements Listener{
 			}
 			String msg = "";
 			msg = event.getDeathMessage();
-			event.setDeathMessage(null);
+			event.setDeathMessage("");
 			event.setDroppedExp(0);
 			
 			ply.addDeath();
