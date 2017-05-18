@@ -92,7 +92,7 @@ public class ApplyPotionAction extends ActionInterface {
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Apply Potion", player);
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
-		List<String> pots = new ArrayList<String>(PotionEffectType.values().length);
+		List<String> pots = new ArrayList<>(PotionEffectType.values().length);
 		for (PotionEffectType type : PotionEffectType.values()) {
 			if (type != null) {
 				pots.add(MinigameUtils.capitalize(type.getName().replace("_", " ")));

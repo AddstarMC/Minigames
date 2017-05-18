@@ -33,16 +33,15 @@ public class MenuItemActionAdd extends MenuItem{
 	public ItemStack onClick(){
 		Menu m = new Menu(6, "Actions", getContainer().getViewer());
 		m.setPreviousPage(getContainer());
-		Map<String, Menu> cats = new HashMap<String, Menu>();
-		List<String> acts = new ArrayList<String>(Actions.getAllActionNames());
+		Map<String, Menu> cats = new HashMap<>();
+		List<String> acts = new ArrayList<>(Actions.getAllActionNames());
 		Collections.sort(acts);
 		for(String act : acts){
 			if((Actions.getActionByName(act).useInNodes() && exec != null) || (Actions.getActionByName(act).useInRegions() && exec != null)){
 				String catname = Actions.getActionByName(act).getCategory();
-				if(catname == null)
-					catname = "misc actions";
-				catname.toLowerCase();
-				Menu cat = null;
+				if(catname == null) catname = "misc actions";
+				catname = catname.toLowerCase();
+				Menu cat;
 				if(!cats.containsKey(catname)){
 					cat = new Menu(6, MinigameUtils.capitalize(catname), getContainer().getViewer());
 					cats.put(catname, cat);

@@ -18,11 +18,11 @@ import java.util.Map;
 public class BaseExecutor {
 
     private Trigger trigger;
-    private List<ConditionInterface> conditions = new ArrayList<ConditionInterface>();
-    private List<ActionInterface> actions = new ArrayList<ActionInterface>();
+    private List<ConditionInterface> conditions = new ArrayList<>();
+    private List<ActionInterface> actions = new ArrayList<>();
     private boolean triggerPerPlayer = false;
     private int triggerCount = 0;
-    private Map<String, Integer> triggers = new HashMap<String, Integer>();
+    private Map<String, Integer> triggers = new HashMap<>();
 
     public BaseExecutor(Trigger trigger){
         this.trigger = trigger;

@@ -35,7 +35,7 @@ import au.com.mineauz.minigamesregions.Region;
 public class SpawnEntityAction extends ActionInterface {
 	
 	private StringFlag type = new StringFlag("ZOMBIE", "type");
-	private Map<String, String> settings = new HashMap<String, String>();
+	private Map<String, String> settings = new HashMap<>();
 	
 	public SpawnEntityAction(){
 		addBaseSettings();
@@ -124,7 +124,7 @@ public class SpawnEntityAction extends ActionInterface {
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Spawn Entity", player);
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
-		List<String> options = new ArrayList<String>();
+		List<String> options = new ArrayList<>();
 		for(EntityType type : EntityType.values()){
 			if(type != EntityType.ITEM_FRAME && type != EntityType.LEASH_HITCH && type != EntityType.PLAYER && 
 					type != EntityType.COMPLEX_PART && type != EntityType.WEATHER && type != EntityType.LIGHTNING &&

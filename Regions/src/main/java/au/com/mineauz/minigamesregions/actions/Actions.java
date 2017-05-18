@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import au.com.mineauz.minigamesregions.executors.BaseExecutor;
 import org.bukkit.Material;
 
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -16,7 +17,7 @@ import au.com.mineauz.minigamesregions.menuitems.MenuItemAction;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemActionAdd;
 
 public class Actions {
-	private static Map<String, Class<? extends ActionInterface>> actions = new HashMap<String, Class<? extends ActionInterface>>();
+	private static Map<String, Class<? extends ActionInterface>> actions = new HashMap<>();
 	
 	static{
 		addAction("KILL", KillAction.class);
@@ -78,18 +79,7 @@ public class Actions {
 		return actions.containsKey(name.toUpperCase());
 	}
 	
-	public static void displayMenu(MinigamePlayer player, RegionExecutor exec, Menu prev){
-		Menu m = new Menu(3, "Actions", player);
-		m.setPreviousPage(prev);
-		for(ActionInterface act : exec.getActions()){
-			m.addItem(new MenuItemAction(MinigameUtils.capitalize(act.getName()), Material.PAPER, exec, act));
-		}
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
-		m.addItem(new MenuItemActionAdd("Add Action", Material.ITEM_FRAME, exec), m.getSize() - 1);
-		m.displayMenu(player);
-	}
-	
-	public static void displayMenu(MinigamePlayer player, NodeExecutor exec, Menu prev){
+	public static void displayMenu(MinigamePlayer player, BaseExecutor exec, Menu prev){
 		Menu m = new Menu(3, "Actions", player);
 		m.setPreviousPage(prev);
 		for(ActionInterface act : exec.getActions()){

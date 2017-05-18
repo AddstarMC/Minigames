@@ -48,7 +48,7 @@ public class MenuItemRegion extends MenuItem{
 	public static Menu createMenu(MinigamePlayer viewer, Menu previousPage, Region region){
 		Menu m = new Menu(3, "Region: " + region.getName(), viewer);
 		m.setPreviousPage(previousPage);
-		List<MenuItem> items = new ArrayList<MenuItem>();
+		List<MenuItem> items = new ArrayList<>();
 		for(RegionExecutor ex : region.getExecutors()){
 			items.add(new MenuItemRegionExecutor(region, ex));
 		}

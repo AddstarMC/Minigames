@@ -8,16 +8,7 @@
   </parent>
   <artifactId>Minigames-Regions</artifactId>
   <name>Minigames-Regions</name>
-  <properties>
-    <plugin.version>${project.version}-${build.number}</plugin.version>
-  </properties>
   <repositories>
-    <!-- Other repositories -->
-    <repository>
-      <id>maven-central</id>
-      <url>http://repo1.maven.org/maven2/</url>
-    </repository>
-    
     <!-- Spigot repo -->
     <repository>
       <id>spigot-repo</id>
@@ -45,7 +36,6 @@
   </repositories>
 
   <dependencies>
-
     <dependency>
       <groupId>au.com.mineauz</groupId>
       <artifactId>Minigames</artifactId>

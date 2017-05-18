@@ -108,7 +108,7 @@ public class AddTeamScoreAction extends ActionInterface {
 			}
 		}, null, null));
 		
-		List<String> teams = new ArrayList<String>();
+		List<String> teams = new ArrayList<>();
 		teams.add("None");
 		for(TeamColor team : TeamColor.values()){
 			teams.add(MinigameUtils.capitalize(team.toString()));

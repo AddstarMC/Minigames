@@ -56,9 +56,9 @@ public class BarrierAction extends ActionInterface{
 		boolean isMinX = false;
 		boolean isMinY = false;
 		boolean isMinZ = false;
-		double xval = 0;
-		double yval = 0;
-		double zval = 0;
+		double xval;
+		double yval;
+		double zval;
 		if(xdis1 < xdis2){
 			isMinX = true;
 			xval = xdis1;

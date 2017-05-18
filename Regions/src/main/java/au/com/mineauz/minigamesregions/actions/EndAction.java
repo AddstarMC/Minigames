@@ -58,16 +58,16 @@ public class EndAction extends ActionInterface {
 			List<MinigamePlayer> w = null;
 			List<MinigamePlayer> l = null;
 			if(player.getMinigame().isTeamGame()){
-				w = new ArrayList<MinigamePlayer>(player.getTeam().getPlayers());
-				l = new ArrayList<MinigamePlayer>(player.getMinigame().getPlayers().size() - player.getTeam().getPlayers().size());
+				w = new ArrayList<>(player.getTeam().getPlayers());
+				l = new ArrayList<>(player.getMinigame().getPlayers().size() - player.getTeam().getPlayers().size());
 				for(Team t : TeamsModule.getMinigameModule(player.getMinigame()).getTeams()){
 					if(t != player.getTeam())
 						l.addAll(t.getPlayers());
 				}
 			}
 			else{
-				w = new ArrayList<MinigamePlayer>(1);
-				l = new ArrayList<MinigamePlayer>(player.getMinigame().getPlayers().size());
+				w = new ArrayList<>(1);
+				l = new ArrayList<>(player.getMinigame().getPlayers().size());
 				w.add(player);
 				l.addAll(player.getMinigame().getPlayers());
 				l.remove(player);

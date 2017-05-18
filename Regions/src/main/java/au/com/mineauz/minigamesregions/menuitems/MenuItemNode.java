@@ -48,7 +48,7 @@ public class MenuItemNode extends MenuItem{
 	public static Menu createMenu(MinigamePlayer viewer, Menu previousPage, Node node){
 		Menu m = new Menu(3, "Node: " + node.getName(), viewer);
 		m.setPreviousPage(previousPage);
-		List<MenuItem> items = new ArrayList<MenuItem>();
+		List<MenuItem> items = new ArrayList<>();
 		for(NodeExecutor ex : node.getExecutors()){
 			items.add(new MenuItemNodeExecutor(node, ex));
 		}

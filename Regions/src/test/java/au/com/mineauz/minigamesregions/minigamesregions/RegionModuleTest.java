@@ -29,7 +29,7 @@ public class RegionModuleTest {
 
     @Before
     public void setUp() throws Exception {
-        Plugin plugin = mock(Minigames.class);
+       // Plugin plugin = mock(Minigames.class);
 
     }
 

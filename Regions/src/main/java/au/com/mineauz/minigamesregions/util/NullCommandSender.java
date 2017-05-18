@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
@@ -43,6 +44,11 @@ public class NullCommandSender implements ConsoleCommandSender {
 	@Override
 	public String getName() {
 		return "Null";
+	}
+
+	@Override
+	public CommandSender.Spigot spigot() {
+		return new Spigot();
 	}
 
 	@Override
