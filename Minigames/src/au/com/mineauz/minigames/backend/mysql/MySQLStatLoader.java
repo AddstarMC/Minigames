@@ -38,7 +38,7 @@ class MySQLStatLoader {
 	}
 	
 	public List<StoredStat> loadStatValues(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order, int offset, int length) {
-		MinigameUtils.debugMessage("SQL begining stat load for " + minigame.getName(false) + ", " + stat + ", " + field);
+		MinigameUtils.debugMessage("MySQL beginning stat load for " + minigame.getName(false) + ", " + stat + ", " + field);
 		ConnectionHandler handler = null;
 		try {
 			handler = backend.getPool().getConnection();
@@ -52,7 +52,7 @@ class MySQLStatLoader {
 			if (handler != null) {
 				handler.release();
 			}
-			MinigameUtils.debugMessage("SQL completed stat load for " + minigame.getName(false));
+			MinigameUtils.debugMessage("MySQL completed stat load for " + minigame.getName(false));
 		}
 	}
 	

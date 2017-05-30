@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -76,7 +77,7 @@ public class SQLiteBackend extends Backend {
 				logger.severe("Failed to connect to the SQLite database. Please check your database settings");
 			}
 		} catch (ClassNotFoundException e) {
-			logger.severe("Failed to find SQLITE JDBC driver. This version of craftbukkit is defective.");
+			logger.severe("Failed to find sqlite JDBC driver. This version of craftbukkit is defective.");
 		}
 		
 		return false;
@@ -91,7 +92,28 @@ public class SQLiteBackend extends Backend {
 	public void clean() {
 		pool.removeExpired();
 	}
-	
+
+	private boolean checkForColumn(Statement statement, String tableName, String columnName) {
+
+		try {
+			ResultSet rs = statement.executeQuery("Pragma table_info(`" + tableName + "`);");
+
+			int nameColIndex = rs.findColumn("name");
+
+			while (rs.next()) {
+				if (rs.getString(nameColIndex).equals(columnName))
+					return true;
+			}
+
+			return false;
+
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Exception looking for SQLite column " + columnName + " on table " + tableName, e);
+			return false;
+		}
+
+	}
+
 	private void ensureTables(ConnectionHandler connection) throws SQLException {
 		Statement statement = connection.getConnection().createStatement();
 		try {
@@ -115,9 +137,33 @@ public class SQLiteBackend extends Backend {
 			try {
 				statement.executeQuery("SELECT 1 FROM `PlayerStats` LIMIT 0;");
 			} catch (SQLException e) {
-				statement.executeUpdate("CREATE TABLE `PlayerStats` (`player_id` TEXT REFERENCES `Players` (`player_id`) ON DELETE CASCADE, `minigame_id` INTEGER REFERENCES `Minigames` (`minigame_id`) ON DELETE CASCADE, `stat` TEXT NOT NULL, `value` INTEGER, PRIMARY KEY (`player_id`, `minigame_id`, `stat`));");
+				statement.executeUpdate("CREATE TABLE `PlayerStats` (`player_id` TEXT REFERENCES `Players` (`player_id`) ON DELETE CASCADE, `minigame_id` INTEGER REFERENCES `Minigames` (`minigame_id`) ON DELETE CASCADE, `stat` TEXT NOT NULL, `value` INTEGER, `last_updated` datetime DEFAULT NULL, `entered` DATETIME default NULL, PRIMARY KEY (`player_id`, `minigame_id`, `stat`));");
 			}
-			
+
+			// Check for column last_updated on the PlayerStats table
+			try {
+				if (!checkForColumn(statement, "PlayerStats", "last_updated")) {
+					logger.info("Adding SQLite column 'last_updated' to table PlayerStats");
+
+					statement.executeUpdate("ALTER TABLE `PlayerStats` ADD COLUMN `last_updated` DATETIME default NULL;");
+				}
+
+			} catch (SQLException e) {
+				logger.log(Level.SEVERE, "Failed to add column last_updated to the PlayerStats table in the SQLite Minigames database", e);
+			}
+
+			// Check for column entered on the PlayerStats table
+			try {
+				if (!checkForColumn(statement, "PlayerStats", "entered")) {
+					logger.info("Adding SQLite column 'entered' to table PlayerStats");
+
+					statement.executeUpdate("ALTER TABLE `PlayerStats` ADD COLUMN `entered` DATETIME default NULL;");
+				}
+
+			} catch (SQLException e) {
+				logger.log(Level.SEVERE, "Failed to add column entered to the PlayerStats table in the SQLite Minigames database", e);
+			}
+
 			// Check the stat metadata table
 			try {
 				statement.executeQuery("SELECT 1 FROM `StatMetadata` LIMIT 0;");

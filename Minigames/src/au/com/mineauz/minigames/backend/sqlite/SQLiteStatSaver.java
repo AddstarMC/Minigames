@@ -28,12 +28,17 @@ class SQLiteStatSaver {
 	public SQLiteStatSaver(SQLiteBackend backend, Logger logger) {
 		this.backend = backend;
 		this.logger = logger;
-		
+
+		String sqlDateEntered = "(SELECT coalesce((SELECT `entered`      FROM `PlayerStats` WHERE `player_id`=? AND `minigame_id`=? AND `stat`=?), datetime('now','localtime')))";
+		String sqlSumValue    = "(SELECT coalesce((SELECT (`value`+?)    FROM `PlayerStats` WHERE `player_id`=? AND `minigame_id`=? AND `stat`=?), ?))";
+		String sqlMinValue    = "(SELECT coalesce((SELECT MIN(`value`,?) FROM `PlayerStats` WHERE `player_id`=? AND `minigame_id`=? AND `stat`=?), ?))";
+		String sqlMaxValue    = "(SELECT coalesce((SELECT MAX(`value`,?) FROM `PlayerStats` WHERE `player_id`=? AND `minigame_id`=? AND `stat`=?), ?))";
+
 		// Create statements
-		insertStat = new StatementKey("INSERT OR REPLACE INTO `PlayerStats` VALUES (?, ?, ?, ?);");
-		insertStatTotal = new StatementKey("INSERT OR REPLACE INTO `PlayerStats` VALUES (?, ?, ?, (SELECT coalesce((SELECT (`value`+?) FROM `PlayerStats` WHERE `player_id`=? AND `minigame_id`=? AND `stat`=?), ?)));");
-		insertStatMin = new StatementKey("INSERT OR REPLACE INTO `PlayerStats` VALUES (?, ?, ?, (SELECT coalesce((SELECT MIN(`value`,?) FROM `PlayerStats` WHERE `player_id`=? AND `minigame_id`=? AND `stat`=?), ?)));");
-		insertStatMax = new StatementKey("INSERT OR REPLACE INTO `PlayerStats` VALUES (?, ?, ?, (SELECT coalesce((SELECT MAX(`value`,?) FROM `PlayerStats` WHERE `player_id`=? AND `minigame_id`=? AND `stat`=?), ?)));");
+		insertStat      = new StatementKey("INSERT OR REPLACE INTO `PlayerStats` (`player_id`, `minigame_id`, `stat`, `value`, `last_updated`, `entered`) VALUES (?, ?, ?, ? " +             ", datetime('now','localtime'), " + sqlDateEntered + ");");
+		insertStatTotal = new StatementKey("INSERT OR REPLACE INTO `PlayerStats` (`player_id`, `minigame_id`, `stat`, `value`, `last_updated`, `entered`) VALUES (?, ?, ?, " + sqlSumValue + ", datetime('now','localtime'), " + sqlDateEntered + ");");
+		insertStatMin   = new StatementKey("INSERT OR REPLACE INTO `PlayerStats` (`player_id`, `minigame_id`, `stat`, `value`, `last_updated`, `entered`) VALUES (?, ?, ?, " + sqlMinValue + ", datetime('now','localtime'), " + sqlDateEntered + ");");
+		insertStatMax   = new StatementKey("INSERT OR REPLACE INTO `PlayerStats` (`player_id`, `minigame_id`, `stat`, `value`, `last_updated`, `entered`) VALUES (?, ?, ?, " + sqlMaxValue + ", datetime('now','localtime'), " + sqlDateEntered + ");");
 		
 		// Prepare lookup table
 		insertStatements[StatValueField.Last.ordinal()] = insertStat;
@@ -43,7 +48,7 @@ class SQLiteStatSaver {
 	}
 	
 	public void saveData(StoredGameStats data) {
-		MinigameUtils.debugMessage("SQL Begining save of " + data);
+		MinigameUtils.debugMessage("SQLite beginning save of " + data);
 		
 		ConnectionHandler handler = null;
 		try {
@@ -64,7 +69,7 @@ class SQLiteStatSaver {
 				
 				handler.endTransactionFail();
 			} finally {
-				MinigameUtils.debugMessage("SQL Completed save of " + data);
+				MinigameUtils.debugMessage("SQLite completed save of " + data);
 			}
 		} catch (SQLException e) { 
 			e.printStackTrace();
@@ -76,6 +81,9 @@ class SQLiteStatSaver {
 	}
 	
 	private void saveStats(ConnectionHandler handler, StoredGameStats data, UUID player, int minigameId) throws SQLException {
+
+		MinigameUtils.debugMessage("SQLite saving stats for " + player + ", game " + minigameId);
+
 		// Prepare all updates
 		for (Entry<MinigameStat, Long> entry : data.getStats().entrySet()) {
 			StatFormat format = data.getFormat(entry.getKey());
@@ -90,14 +98,20 @@ class SQLiteStatSaver {
 		handler.executeBatch(insertStatTotal);
 		handler.executeBatch(insertStatMin);
 		handler.executeBatch(insertStatMax);
+
+		MinigameUtils.debugMessage("SQLite completed save for " + player + ", game " + minigameId);
 	}
 	
 	private void queueStat(ConnectionHandler handler, MinigameStat stat, long value, StatFormat format, UUID player, int minigameId) throws SQLException {
 		for (StatValueField field : format.getFields()) {
+			String statName = stat.getName() + field.getSuffix();
+
 			if (field == StatValueField.Last) {
-				handler.batchUpdate(insertStat, player.toString(), minigameId, stat.getName() + field.getSuffix(), value);
+				//                              player_id,         minigame_id, stat,    value, [..... fields for sqlDateEntered .....]
+				handler.batchUpdate(insertStat, player.toString(), minigameId, statName, value, player.toString(), minigameId, statName);
 			} else {
-				handler.batchUpdate(insertStatements[field.ordinal()], player.toString(), minigameId, stat.getName() + field.getSuffix(), value, player.toString(), minigameId, stat.getName() + field.getSuffix(), value);
+				//                                                     player_id,         minigame_id, stat,    value, [fields for sqlSumValue|sqlMaxValue|sqlMinValue], [..... fields for sqlDateEntered .....]
+				handler.batchUpdate(insertStatements[field.ordinal()], player.toString(), minigameId, statName, value, player.toString(), minigameId, statName, value,   player.toString(), minigameId, statName);
 			}
 		}
 	}

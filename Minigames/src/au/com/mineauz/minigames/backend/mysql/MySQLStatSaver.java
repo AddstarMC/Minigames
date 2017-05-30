@@ -30,10 +30,10 @@ class MySQLStatSaver {
 		this.logger = logger;
 		
 		// Create statements
-		insertStat = new StatementKey("INSERT INTO `PlayerStats` VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `value`=VALUES(`value`)");
-		insertStatTotal = new StatementKey("INSERT INTO `PlayerStats` VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `value`=`value`+VALUES(`value`)");
-		insertStatMin = new StatementKey("INSERT INTO `PlayerStats` VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `value`=LEAST(`value`, VALUES(`value`))");
-		insertStatMax = new StatementKey("INSERT INTO `PlayerStats` VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `value`=GREATEST(`value`, VALUES(`value`))");
+		insertStat = new StatementKey("INSERT INTO `PlayerStats` (`player_id`, `minigame_id`, `stat`, `value`, `entered`) VALUES (?, ?, ?, ?, Now()) ON DUPLICATE KEY UPDATE `value`=VALUES(`value`)");
+		insertStatTotal = new StatementKey("INSERT INTO `PlayerStats` (`player_id`, `minigame_id`, `stat`, `value`, `entered`) VALUES (?, ?, ?, ?, Now()) ON DUPLICATE KEY UPDATE `value`=`value`+VALUES(`value`)");
+		insertStatMin = new StatementKey("INSERT INTO `PlayerStats` (`player_id`, `minigame_id`, `stat`, `value`, `entered`) VALUES (?, ?, ?, ?, Now()) ON DUPLICATE KEY UPDATE `value`=LEAST(`value`, VALUES(`value`))");
+		insertStatMax = new StatementKey("INSERT INTO `PlayerStats` (`player_id`, `minigame_id`, `stat`, `value`, `entered`) VALUES (?, ?, ?, ?, Now()) ON DUPLICATE KEY UPDATE `value`=GREATEST(`value`, VALUES(`value`))");
 		
 		// Prepare lookup table
 		insertStatements[StatValueField.Last.ordinal()] = insertStat;
@@ -43,7 +43,7 @@ class MySQLStatSaver {
 	}
 	
 	public void saveData(StoredGameStats data) {
-		MinigameUtils.debugMessage("SQL Begining save of " + data);
+		MinigameUtils.debugMessage("MySQL beginning save of " + data);
 		
 		ConnectionHandler handler = null;
 		try {
@@ -64,7 +64,7 @@ class MySQLStatSaver {
 				
 				handler.endTransactionFail();
 			} finally {
-				MinigameUtils.debugMessage("SQL Completed save of " + data);
+				MinigameUtils.debugMessage("MySQL completed save of " + data);
 			}
 		} catch (SQLException e) { 
 			e.printStackTrace();
@@ -76,6 +76,9 @@ class MySQLStatSaver {
 	}
 	
 	private void saveStats(ConnectionHandler handler, StoredGameStats data, UUID player, int minigameId) throws SQLException {
+
+		MinigameUtils.debugMessage("MySQL saving stats for " + player + ", game " + minigameId);
+
 		// Prepare all updates
 		for (Entry<MinigameStat, Long> entry : data.getStats().entrySet()) {
 			StatFormat format = data.getFormat(entry.getKey());
@@ -84,12 +87,14 @@ class MySQLStatSaver {
 				queueStat(handler, entry.getKey(), entry.getValue(), format, player, minigameId);
 			}
 		}
-		
+
 		// Push all to database
 		handler.executeBatch(insertStat);
 		handler.executeBatch(insertStatTotal);
 		handler.executeBatch(insertStatMin);
 		handler.executeBatch(insertStatMax);
+
+		MinigameUtils.debugMessage("MySQL completed save for " + player + ", game " + minigameId);
 	}
 	
 	private void queueStat(ConnectionHandler handler, MinigameStat stat, long value, StatFormat format, UUID player, int minigameId) throws SQLException {

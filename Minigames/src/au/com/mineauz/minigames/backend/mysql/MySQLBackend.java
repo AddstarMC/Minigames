@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -111,7 +112,33 @@ public class MySQLBackend extends Backend {
 			try {
 				statement.executeQuery("SELECT 1 FROM `PlayerStats` LIMIT 0;");
 			} catch (SQLException e) {
-				statement.executeUpdate("CREATE TABLE `PlayerStats` (`player_id` CHAR(36) REFERENCES `Players` (`player_id`) ON DELETE CASCADE, `minigame_id` INTEGER REFERENCES `Minigames` (`minigame_id`) ON DELETE CASCADE, `stat` VARCHAR(20) NOT NULL, `value` BIGINT, PRIMARY KEY (`player_id`, `minigame_id`, `stat`));");
+				statement.executeUpdate("CREATE TABLE `PlayerStats` (`player_id` CHAR(36) REFERENCES `Players` (`player_id`) ON DELETE CASCADE, `minigame_id` INTEGER REFERENCES `Minigames` (`minigame_id`) ON DELETE CASCADE, `stat` VARCHAR(20) NOT NULL, `value` BIGINT, `last_updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `entered` datetime DEFAULT NULL, PRIMARY KEY (`player_id`, `minigame_id`, `stat`));");
+			}
+
+			// Check for column last_updated on the PlayerStats table
+			try {
+				ResultSet rs = statement.executeQuery("SHOW COLUMNS FROM `PlayerStats` WHERE Field = 'last_updated';");
+
+				if (!rs.next()) {
+					logger.info("Adding MySQL column 'last_updated' to table PlayerStats");
+					statement.executeUpdate("ALTER TABLE `PlayerStats` ADD COLUMN `last_updated` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;");
+				}
+
+			} catch (SQLException e) {
+				logger.log(Level.SEVERE, "Failed to add column last_updated to the PlayerStats table in the MySQL Minigames database", e);
+			}
+
+			// Check for column entered on the PlayerStats table
+			try {
+				ResultSet rs = statement.executeQuery("SHOW COLUMNS FROM `PlayerStats` WHERE Field = 'entered';");
+
+				if (!rs.next()) {
+					logger.info("Adding MySQL column 'entered' to table PlayerStats");
+					statement.executeUpdate("ALTER TABLE `PlayerStats` ADD COLUMN `entered` DATETIME DEFAULT NULL;");
+				}
+
+			} catch (SQLException e) {
+				logger.log(Level.SEVERE, "Failed to add column entered to the PlayerStats table in the MySQL Minigames database", e);
 			}
 			
 			// Check the stat metadata table

@@ -782,6 +782,8 @@ public class PlayerData {
 				// Record player completion and give rewards
 				if(minigame.isEnabled()){
 					plugin.queueStatSave(saveData, true);
+				} else {
+					MinigameUtils.debugMessage("Skipping SQL data save for " + saveData + "; minigame is disabled");
 				}
 				
 				//Item Bets (for non groups)

@@ -83,7 +83,7 @@ public class StandardRewardScheme implements RewardScheme {
 	private void giveRewards(List<RewardType> rewards, MinigamePlayer player) {
 		for(RewardType reward : rewards) {
 			if(reward != null) {
-				MinigameUtils.debugMessage("Giving " + player.getName() + reward.getName() + " reward type.");
+				MinigameUtils.debugMessage("Giving " + player.getName() + " " + reward.getName() + " reward type.");
 				reward.giveReward(player);
 			}
 		}
