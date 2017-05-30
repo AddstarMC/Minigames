@@ -8,6 +8,7 @@ import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -229,12 +230,12 @@ public class LoadoutModule extends MinigameModule {
 					if(!player.getMinigame().isTeamGame() || loadout.getTeamColor() == null || 
 							player.getTeam().getColor() == loadout.getTeamColor()){
 						MenuItemCustom c = new MenuItemCustom(loadout.getName(true), Material.GLASS);
-						if(!loadout.getItems().isEmpty())
-							c.setItem(loadout.getItem(new ArrayList<Integer>(loadout.getItems()).get(0)));
+						if(!loadout.getItems().isEmpty()){
+							ItemStack item = loadout.getItem(new ArrayList<Integer>(loadout.getItems()).get(0));
+							c.setItem(item);}
 						final PlayerLoadout floadout2 = loadout;
 						c.setClick(new InteractionInterface() {
-							
-							@Override
+
 							public Object interact(Object object) {
 								fply.setLoadout(floadout2);
 								fply.getPlayer().closeInventory();

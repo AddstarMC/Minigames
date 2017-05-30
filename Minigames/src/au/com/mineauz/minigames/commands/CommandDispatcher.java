@@ -140,8 +140,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter{
 			}
 		}
 	}
-	
-	@Override
+
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		Player ply = null;
 		if(sender instanceof Player){
@@ -250,7 +249,6 @@ AliasCheck:		for(ICommand com : commands.values()){
 		return false;
 	}
 
-	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 		if(args != null && args.length > 0){
 			Player ply = null;

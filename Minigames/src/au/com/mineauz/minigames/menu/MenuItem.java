@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.menu;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -57,6 +58,10 @@ public class MenuItem {
 	}
 	
 	public void setItem(ItemStack item){
+		if(item == null){
+			Bukkit.getLogger().fine("Item Stack was null on: " + this.getDescription().toString());
+			return;
+		}
 		ItemMeta ometa = displayItem.getItemMeta();
 		displayItem = item.clone();
 		ItemMeta nmeta = displayItem.getItemMeta();
