@@ -8,6 +8,7 @@
   </parent>
   <artifactId>Minigames-Regions</artifactId>
   <name>Minigames-Regions</name>
+  <packaging>jar</packaging>
   <repositories>
     <!-- Spigot repo -->
     <repository>

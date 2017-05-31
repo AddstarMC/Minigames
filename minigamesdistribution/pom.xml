@@ -7,8 +7,10 @@
         <groupId>au.com.mineauz</groupId>
         <version>1.12.0-SNAPSHOT</version>
     </parent>
+    <artifactId>minigames-distribution</artifactId>
     <name>Minigames-Pack</name>
     <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
     <dependencies>
         <dependency>
             <groupId>au.com.mineauz</groupId>
@@ -21,7 +23,6 @@
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
-    <artifactId>minigames-distribution</artifactId>
     <build>
         <finalName>Minigames-Pack-${project.parent.version}</finalName>
         <plugins>
