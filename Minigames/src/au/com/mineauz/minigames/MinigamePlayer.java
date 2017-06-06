@@ -178,7 +178,7 @@ public class MinigamePlayer implements ScriptObject {
 			player.setScoreboard(player.getServer().getScoreboardManager().getMainScoreboard());
 		}
 		
-		if(oply.getExp() != -1){ //TODO: Remove check after 1.7
+		if(oply.getExp() >= 0){
 			player.setExp(oply.getExp());
 			player.setLevel(oply.getLevel());
 		}

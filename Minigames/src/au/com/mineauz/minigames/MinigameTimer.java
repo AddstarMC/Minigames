@@ -53,8 +53,13 @@ public class MinigameTimer{
 						level = time;
 					
 					for(MinigamePlayer ply : minigame.getPlayers()){
-						ply.getPlayer().setExp(timeper);
-						ply.getPlayer().setLevel(level);
+						if(timeper < 0 ){
+							ply.getPlayer().setExp(0);
+							ply.getPlayer().setLevel(0);
+						}else {
+							ply.getPlayer().setExp(timeper);
+							ply.getPlayer().setLevel(level);
+						}
 					}
 				}
 				if(timeMsg.contains(time) && broadcastTime){
@@ -62,7 +67,7 @@ public class MinigameTimer{
 					plugin.mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(time)), null, null);
 				}
 
-				if(time == 0){
+				if(time <= 0){
 					Bukkit.getServer().getPluginManager().callEvent(new TimerExpireEvent(minigame));
 					stopTimer();
 				}
