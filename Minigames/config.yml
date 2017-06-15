@@ -1,6 +1,8 @@
 saveInventory: true
 requireEmptyInventory: false
 
+debug: false
+
 treasurehunt:
   waittime: 3600
   # Time to wait before spawning a new treasure after the time was up (seconds)

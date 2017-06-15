@@ -103,6 +103,7 @@ public class Minigames extends JavaPlugin{
 				if(getConfig().contains("minigames")){
 					mgs = getConfig().getStringList("minigames");
 				}
+				debug = getConfig().getBoolean("Debug", false);
 				final List<String> allMGS = new ArrayList<String>();
 				allMGS.addAll(mgs);
 				
@@ -442,6 +443,8 @@ public class Minigames extends JavaPlugin{
 	
 	public void toggleDebug(){
 		debug = !debug;
+		backend.toggleDebug();
+		if(backend.isDebugging() && !isDebugging())backend.toggleDebug();
 	}
 	
 	public boolean isDebugging(){

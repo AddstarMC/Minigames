@@ -34,7 +34,7 @@ public class MySQLBackend extends Backend {
 	private ConnectionPool pool;
 	private String database;
 	private final Logger logger;
-	
+	private boolean debug = false;
 	private StatementKey insertMinigame;
 	private StatementKey insertPlayer;
 	private StatementKey loadStatSettings;
@@ -51,7 +51,8 @@ public class MySQLBackend extends Backend {
 	}
 	
 	@Override
-	public boolean initialize(ConfigurationSection config) {
+	public boolean initialize(ConfigurationSection config, boolean debug) {
+	    this.debug = debug;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			
@@ -59,13 +60,14 @@ public class MySQLBackend extends Backend {
 			
 			// Create the pool
 			String url = String.format("jdbc:mysql://%s/%s", 
-					config.getString("host", "localhost:3306"), 
-					database
-					);
-			Properties properties = new Properties();
+					config.getString("host", "localhost:3306"), database);
+            if(debug)logger.info("URL: " + url);
+
+            Properties properties = new Properties();
 			properties.put("user", config.getString("username", "username"));
 			properties.put("password",config.getString("password", "password"));
 			properties.put("useSSL",config.getBoolean("useSSL",false));
+            if(debug)logger.info("Properties: " +properties.toString());
 			pool = new ConnectionPool(url, properties);
 			
 			createStatements();

@@ -21,7 +21,7 @@ public abstract class Backend {
 	 * @param config The configuration to load settings from
 	 * @return Returns true if the initialization succeeded
 	 */
-	public abstract boolean initialize(ConfigurationSection config);
+	public abstract boolean initialize(ConfigurationSection config, boolean debug);
 	
 	/**
 	 * Shutsdown the backend cleaning up resources

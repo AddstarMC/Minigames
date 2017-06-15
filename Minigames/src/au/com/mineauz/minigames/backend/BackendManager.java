@@ -32,13 +32,15 @@ import au.com.mineauz.minigames.stats.StoredStat;
 
 public class BackendManager {
 	private final Logger logger;
+	private boolean debug;
 	
 	private Backend backend;
 	private ListeningExecutorService executorService;
 	private Executor bukkitThreadExecutor;
-	
+
 	public BackendManager(Logger logger) {
 		this.logger = logger;
+		this.debug = false;
 		
 		bukkitThreadExecutor = new Executor() {
 			@Override
@@ -100,7 +102,7 @@ public class BackendManager {
 		}
 		
 		// Init
-		if (!backend.initialize(backendSection)) {
+		if (!backend.initialize(backendSection,debug)) {
 			return false;
 		}
 		
@@ -256,7 +258,7 @@ public class BackendManager {
 			throw new IllegalArgumentException("You cannot export to the same backend that is in use");
 		}
 		
-		if (!destination.initialize(config.getConfigurationSection("backend"))) {
+		if (!destination.initialize(config.getConfigurationSection("backend"),debug)) {
 			throw new IllegalArgumentException("Failed to initialize destination backend");
 		}
 		
@@ -286,7 +288,7 @@ public class BackendManager {
 			throw new IllegalArgumentException("Cannot switch to the same backend");
 		}
 		
-		if (!newBackend.initialize(config.getConfigurationSection("backend"))) {
+		if (!newBackend.initialize(config.getConfigurationSection("backend"), debug)) {
 			throw new IllegalArgumentException("Failed to initialize target backend");
 		}
 		
@@ -298,5 +300,13 @@ public class BackendManager {
 				logger.warning("Backend has been switched to " + type);
 			}
 		}, null);
+	}
+
+	public void toggleDebug(){
+		debug = !debug;
+	}
+
+	public boolean isDebugging(){
+		return debug;
 	}
 }

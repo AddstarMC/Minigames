@@ -42,7 +42,7 @@ public class SQLiteBackend extends Backend {
 	private StatementKey insertPlayer;
 	private StatementKey loadStatSettings;
 	private StatementKey saveStatSettings;
-	
+	private boolean debug;
 	private SQLiteStatLoader loader;
 	private SQLiteStatSaver saver;
 	
@@ -53,7 +53,8 @@ public class SQLiteBackend extends Backend {
 		saver = new SQLiteStatSaver(this, logger);
 	}
 	@Override
-	public boolean initialize(ConfigurationSection config) {
+	public boolean initialize(ConfigurationSection config, boolean debug) {
+		this.debug = debug;
 		try {
 			Class.forName("org.sqlite.JDBC");
 			
@@ -61,10 +62,13 @@ public class SQLiteBackend extends Backend {
 			File path = new File(Minigames.plugin.getDataFolder(), "minigames.db");
 			
 			String url = String.format("jdbc:sqlite:" + path.getAbsolutePath());
+			if(debug)logger.info("URL: " + url);
 			Properties properties =  new Properties();
 			properties.put("username","");
 			properties.put("password","");
+			if(debug)logger.info("Properties: " +properties.toString());
 			pool = new ConnectionPool(url, properties);
+			if(debug)logger.info("Pool: " +pool.toString());
 			createStatements();
 			
 			// Test the connection
