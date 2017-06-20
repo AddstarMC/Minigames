@@ -76,17 +76,17 @@
       <resource>
         <targetPath>.</targetPath>
         <filtering>true</filtering>
-        <directory>${basedir}/.</directory>
+        <directory>src/main/resources</directory>
         <includes>
           <include>plugin.yml</include>
 		  <include>config.yml</include>
-		  <include>lang/*.yml</include>
-		  <include>presets/*.yml</include>
+          <include>lang/*.yml</include>
+          <include>presets/*.yml</include>
         </includes>
       </resource>
     </resources>
 
-    <sourceDirectory>src</sourceDirectory>
+    <sourceDirectory>src/main/java</sourceDirectory>
 
   </build>
 </project>

@@ -103,7 +103,7 @@ public class Minigames extends JavaPlugin{
 				if(getConfig().contains("minigames")){
 					mgs = getConfig().getStringList("minigames");
 				}
-				debug = getConfig().getBoolean("Debug", false);
+				debug = getConfig().getBoolean("debug", false);
 				final List<String> allMGS = new ArrayList<String>();
 				allMGS.addAll(mgs);
 				

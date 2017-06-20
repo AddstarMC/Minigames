@@ -68,6 +68,7 @@ public class BackendManager {
 	 */
 	public boolean initialize(ConfigurationSection config) {
 		ConfigurationSection backendSection = config.getConfigurationSection("backend");
+		this.debug = config.getBoolean("debug", false);
 		if (config.isSet("use-sql")) {
 			// Load in values from previous system
 			if (config.getBoolean("use-sql")) {

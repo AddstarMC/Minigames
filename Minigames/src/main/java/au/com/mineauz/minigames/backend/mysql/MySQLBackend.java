@@ -50,9 +50,8 @@ public class MySQLBackend extends Backend {
 		saver = new MySQLStatSaver(this, logger);
 	}
 	
-	@Override
-	public boolean initialize(ConfigurationSection config, boolean debug) {
-	    this.debug = debug;
+	public boolean initialize(ConfigurationSection config,boolean debug) {
+		this.debug=debug;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			

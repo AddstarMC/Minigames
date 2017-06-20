@@ -1,12 +1,4 @@
-.project
-.classpath
-.DS_Store
-bin
 .settings
 target
-openDist.command
-Minigames/dependency-reduced-pom.xml
 .idea/
-Minigames/Minigames (1).iml
-Minigames/src/main/
-Regions/Minigames-Regions.iml
+*.iml
