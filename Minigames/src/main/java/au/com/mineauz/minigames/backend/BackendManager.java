@@ -132,15 +132,19 @@ public class BackendManager {
 				return false;
 			}
 		}
-		
-		// Start the cleaning task to remove old connections
-		Bukkit.getScheduler().runTaskTimer(Minigames.plugin, new Runnable() {
-			@Override
-			public void run() {
-				backend.clean();
-			}
-		}, 300, 300);
-		return true;
+		try {
+			// Start the cleaning task to remove old connections
+			Bukkit.getScheduler().runTaskTimer(Minigames.plugin, new Runnable() {
+				@Override
+				public void run() {
+					backend.clean();
+				}
+			}, 300, 300);
+		}catch (NullPointerException e){
+            logger.warning("Bukkit could not schedule a the db pool cleaner");
+            return false;
+		}
+	return true;
 	}
 	
 	/**

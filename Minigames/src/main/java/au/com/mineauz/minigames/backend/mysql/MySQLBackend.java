@@ -65,7 +65,7 @@ public class MySQLBackend extends Backend {
             Properties properties = new Properties();
 			properties.put("user", config.getString("username", "username"));
 			properties.put("password",config.getString("password", "password"));
-			properties.put("useSSL",config.getBoolean("useSSL",false));
+			properties.put("useSSL",config.getString("useSSL","false"));
             if(debug)logger.info("Properties: " +properties.toString());
 			pool = new ConnectionPool(url, properties);
 			
@@ -78,7 +78,7 @@ public class MySQLBackend extends Backend {
 				handler.release();
 				return true;
 			} catch (SQLException e) {
-				logger.severe("Failed to connect to the MySQL database. Please check your database settings");
+				logger.severe("Failed to connect to the MySQL database. Please check your database settings: URL: " + url + " Props:" +properties.toString() );
 			}
 		} catch (ClassNotFoundException e) {
 			logger.severe("Failed to find MySQL JDBC driver. This version of craftbukkit is defective.");

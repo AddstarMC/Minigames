@@ -45,23 +45,37 @@ public class SQLiteBackend extends Backend {
 	private boolean debug;
 	private SQLiteStatLoader loader;
 	private SQLiteStatSaver saver;
-	
+	private File database;
+
+
 	public SQLiteBackend(Logger logger) {
 		this.logger = logger;
-		
 		loader = new SQLiteStatLoader(this, logger);
 		saver = new SQLiteStatSaver(this, logger);
+		try {
+			database = new File(Minigames.plugin.getDataFolder(), "minigames.db");
+		}catch (NullPointerException e){
+			logger.warning("Could not locate or set database path");
+		}
+
 	}
+	public void setDatabase(File dbbath){
+		database = dbbath;
+	}
+
+
 	@Override
 	public boolean initialize(ConfigurationSection config, boolean debug) {
 		this.debug = debug;
+
 		try {
 			Class.forName("org.sqlite.JDBC");
 			
 			// Create the pool
-			File path = new File(Minigames.plugin.getDataFolder(), "minigames.db");
-			
-			String url = String.format("jdbc:sqlite:" + path.getAbsolutePath());
+			if(database == null){
+				return false;
+			}
+			String url = String.format("jdbc:sqlite:" + database.getAbsolutePath());
 			if(debug)logger.info("URL: " + url);
 			Properties properties =  new Properties();
 			properties.put("username","");

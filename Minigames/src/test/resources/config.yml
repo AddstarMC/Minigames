@@ -49,10 +49,10 @@ lang: 'en_AU'
 backend:
   # Can be sqlite, or mysql
   type: sqlite
-  host: localhost:3306
-  database: database
-  username: username
-  password: password
+  host: ${mysql.host}:${mysql.port}
+  database: ${mysql.database}
+  username: ${mysql.user}
+  password: ${mysql.password}
   useSSL: false
 
 tool: "BLAZE_ROD"
