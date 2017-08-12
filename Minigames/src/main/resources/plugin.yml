@@ -1,7 +1,7 @@
 name: Minigames
 main: au.com.mineauz.minigames.Minigames
 version: ${plugin.version}
-author: _Razz_ Schmoller AddstarMC
+author: _Razz_ Schmoller Addstar Narimm
 softdepend: ['Multiverse-Core']
 
 commands:

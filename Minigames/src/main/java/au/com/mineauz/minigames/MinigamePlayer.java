@@ -144,6 +144,10 @@ public class MinigamePlayer implements ScriptObject {
 		lastScoreboard = player.getScoreboard();
 		GameMode lastGM = player.getGameMode();
 		float exp = player.getExp();
+		if (exp < 0){
+			Minigames.log.warning("Player Experience was less that 0: " + player.getDisplayName()+  " " + player.getExp());
+			exp = 0;
+		}
 		int level = player.getLevel();
 		
 		player.setSaturation(15);
