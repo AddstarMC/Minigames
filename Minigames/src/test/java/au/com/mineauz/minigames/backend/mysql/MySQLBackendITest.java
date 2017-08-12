@@ -29,7 +29,7 @@ public class MySQLBackendITest {
         log = utilities.getLogger();
         config = utilities.createTestConfig().getConfigurationSection("backend");
         config.set("type","mysql");
-        config.set("host","localhost:3307");
+        config.set("host","localhost:3306");
         config.set("database","games");
         config.set("username", "games");
         config.set("password", "games");

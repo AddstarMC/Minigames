@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>au.com.mineauz</groupId>
@@ -9,13 +10,13 @@
   <artifactId>Minigames</artifactId>
   <packaging>jar</packaging>
   <name>Minigames</name>
-    <properties>
-        <mysql.user>root</mysql.user>
-        <mysql.password>password</mysql.password>
-        <mysql.database>test_games</mysql.database>
-        <mysql.host>localhost</mysql.host>
-        <mysql.port>3306</mysql.port>
-    </properties>
+  <properties>
+    <mysql.user>root</mysql.user>
+    <mysql.password>password</mysql.password>
+    <mysql.database>test_games</mysql.database>
+    <mysql.host>localhost</mysql.host>
+    <mysql.port>3306</mysql.port>
+  </properties>
   <repositories>
     <!-- Spigot repo -->
     <repository>
@@ -29,26 +30,26 @@
       <name>Public Releases</name>
       <url>http://nexus.hc.to/content/repositories/pub_releases/</url>
     </repository>
-    
+
     <!-- Other repositories -->
     <repository>
       <id>maven-central</id>
       <url>http://repo1.maven.org/maven2/</url>
     </repository>
-    
+
     <!-- Addstar repos -->
     <repository>
       <id>addstar-repo</id>
       <url>http://maven.addstar.com.au/artifactory/ext-release-local</url>
       <snapshots>
-      	<enabled>false</enabled>
+        <enabled>false</enabled>
       </snapshots>
     </repository>
     <repository>
       <id>addstar-snapshot-repo</id>
       <url>http://maven.addstar.com.au/artifactory/ext-snapshot-local</url>
       <snapshots>
-      	<enabled>true</enabled>
+        <enabled>true</enabled>
       </snapshots>
       <releases>
         <enabled>false</enabled>
@@ -60,22 +61,23 @@
 
     <!-- Used for Economy interop -->
 
-  </dependencies><dependency>
-  <groupId>net.milkbowl.vault</groupId>
-  <artifactId>VaultAPI</artifactId>
-  <version>1.6</version>
-  <exclusions>
-    <exclusion>
-      <groupId>org.bukkit</groupId>
-      <artifactId>bukkit</artifactId>
-    </exclusion>
-    <exclusion>
-      <groupId>org.bukkit</groupId>
-      <artifactId>craftbukkit</artifactId>
-    </exclusion>
-  </exclusions>
-  <scope>provided</scope>
-</dependency>
+    <dependency>
+      <groupId>net.milkbowl.vault</groupId>
+      <artifactId>VaultAPI</artifactId>
+      <version>1.6</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.bukkit</groupId>
+          <artifactId>bukkit</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.bukkit</groupId>
+          <artifactId>craftbukkit</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 
   <build>
     <resources>
@@ -85,7 +87,7 @@
         <directory>src/main/resources</directory>
         <includes>
           <include>plugin.yml</include>
-		  <include>config.yml</include>
+          <include>config.yml</include>
           <include>lang/*.yml</include>
           <include>presets/*.yml</include>
         </includes>
@@ -94,14 +96,14 @@
 
     <sourceDirectory>src/main/java</sourceDirectory>
     <testResources>
-        <testResource>
-            <filtering>true</filtering>
-            <directory>src/test/resources</directory>
-            <targetPath>.</targetPath>
-            <includes>
-                <include>config.yml</include>
-            </includes>
-        </testResource>
+      <testResource>
+        <filtering>true</filtering>
+        <directory>src/test/resources</directory>
+        <targetPath>.</targetPath>
+        <includes>
+          <include>config.yml</include>
+        </includes>
+      </testResource>
     </testResources>
   </build>
 </project>
