@@ -2,6 +2,9 @@ package au.com.mineauz.minigamesregions.actions;
 
 import java.util.Map;
 
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.script.ScriptObject;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -20,4 +23,10 @@ public abstract class ActionInterface {
 	public abstract void saveArguments(FileConfiguration config, String path);
 	public abstract void loadArguments(FileConfiguration config, String path);
 	public abstract boolean displayMenu(MinigamePlayer player, Menu previous);
+	public void debug(MinigamePlayer p, ScriptObject obj){
+		if (Minigames.plugin.isDebugging()){
+			Minigames.plugin.getLogger().info("Debug: Execute on Obj:" + String.valueOf(obj) + " as Action: " + String.valueOf(this) + " Player: " +String.valueOf(p));
+		}
+	}
+
 }
