@@ -47,6 +47,7 @@ public class TriggerNodeAction extends ActionInterface {
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
 			Region region) {
+		debug(player,region);
 		if(player == null || !player.isInMinigame()) return;
 		Minigame mg = player.getMinigame();
 		if(mg != null){
@@ -58,6 +59,7 @@ public class TriggerNodeAction extends ActionInterface {
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player, Node node) {
+		debug(player,node);
 		if(player == null || !player.isInMinigame()) return;
 		Minigame mg = player.getMinigame();
 		if(mg != null){

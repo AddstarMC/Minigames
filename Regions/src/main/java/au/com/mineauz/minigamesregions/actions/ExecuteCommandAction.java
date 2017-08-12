@@ -79,6 +79,7 @@ public class ExecuteCommandAction extends ActionInterface {
 
 	@Override
 	public void executeRegionAction(final MinigamePlayer player, final Region region) {
+		debug(player,region);
 		String command = replacePlayerTags(player, comd.getFlag());
 		command = command.replace("{region}", region.getName());
 		
@@ -116,6 +117,7 @@ public class ExecuteCommandAction extends ActionInterface {
 
 	@Override
 	public void executeNodeAction(final MinigamePlayer player, final Node node) {
+		debug(player,node);
 		String command = replacePlayerTags(player, comd.getFlag());
 		command = command
 			.replace("{x}", String.valueOf(node.getLocation().getBlockX()))

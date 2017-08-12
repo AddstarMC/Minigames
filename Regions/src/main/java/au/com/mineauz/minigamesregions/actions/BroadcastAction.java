@@ -81,7 +81,7 @@ public class BroadcastAction extends ActionInterface{
 				return null;
 			}
 		};
-		
+		debug(player,base);
 		execute(player, base);
 	}
 
@@ -113,7 +113,7 @@ public class BroadcastAction extends ActionInterface{
 				return null;
 			}
 		};
-		
+		debug(player,base);
 		execute(player, base);
 	}
 	

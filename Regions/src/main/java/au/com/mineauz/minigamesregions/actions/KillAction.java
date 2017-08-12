@@ -38,6 +38,7 @@ public class KillAction extends ActionInterface {
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Node node) {
+		debug(player,node);
 		if(player == null || !player.isInMinigame()) return;
 		if(!player.isDead())
 			player.getPlayer().damage(player.getPlayer().getHealth());
@@ -45,6 +46,7 @@ public class KillAction extends ActionInterface {
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Region region) {
+		debug(player,region);
 		if(player == null || !player.isInMinigame()) return;
 		if(!player.isDead())
 			player.getPlayer().damage(player.getPlayer().getHealth());

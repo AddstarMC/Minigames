@@ -45,10 +45,12 @@ public class EndAction extends ActionInterface {
 	public void executeNodeAction(MinigamePlayer player,
 			Node node) {
 		execute(player);
+		debug(player,node);
 	}
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Region region) {
+		debug(player,region);
 		execute(player);
 	}
 	

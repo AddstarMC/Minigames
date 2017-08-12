@@ -39,12 +39,14 @@ public class ResetTriggerCountAction extends ActionInterface{
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Region region) {
+		debug(player,region);
 		for(RegionExecutor ex : region.getExecutors())
 			ex.setTriggerCount(0);
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player, Node node) {
+		debug(player,node);
 		for(NodeExecutor ex : node.getExecutors())
 			ex.setTriggerCount(0);
 	}

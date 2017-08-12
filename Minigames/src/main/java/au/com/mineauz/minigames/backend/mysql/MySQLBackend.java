@@ -79,6 +79,7 @@ public class MySQLBackend extends Backend {
 				return true;
 			} catch (SQLException e) {
 				logger.severe("Failed to connect to the MySQL database. Please check your database settings: URL: " + url + " Props:" +properties.toString() );
+				e.printStackTrace();
 			}
 		} catch (ClassNotFoundException e) {
 			logger.severe("Failed to find MySQL JDBC driver. This version of craftbukkit is defective.");

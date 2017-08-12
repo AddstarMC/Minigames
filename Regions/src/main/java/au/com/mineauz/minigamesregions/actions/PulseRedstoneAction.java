@@ -51,11 +51,13 @@ public class PulseRedstoneAction extends ActionInterface {
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
 			Region region) {
+		debug(player,region);
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Node node) {
+		debug(player,node);
 		Material block = Material.REDSTONE_BLOCK;
 		if(torch.getFlag())
 			block = Material.REDSTONE_TORCH_ON;

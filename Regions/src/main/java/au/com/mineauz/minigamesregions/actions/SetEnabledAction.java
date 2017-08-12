@@ -43,11 +43,14 @@ public class SetEnabledAction extends ActionInterface{
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Region region) {
+
+		debug(player,region);
 		region.setEnabled(state.getFlag());
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player, Node node) {
+		debug(player,node);
 		node.setEnabled(state.getFlag());
 	}
 

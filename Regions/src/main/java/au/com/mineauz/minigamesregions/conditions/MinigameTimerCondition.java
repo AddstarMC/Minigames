@@ -63,7 +63,7 @@ public class MinigameTimerCondition extends ConditionInterface{
 		if(Minigames.plugin.isDebugging()){
 			Minigames.plugin.getLogger().info("Timer Condition Check: " +
 					mg.getName(false) +" mech: " + mg.getMechanicName() +
-					" maxTime: " maxTime.getFlag() + "minTime: " + minTime.getFlag() + " CurrTime: " +timeLeft);
+					" maxTime: "+ maxTime.getFlag() + "minTime: " + minTime.getFlag() + " CurrTime: " +timeLeft);
 
 		}
         return timeLeft >= min &&

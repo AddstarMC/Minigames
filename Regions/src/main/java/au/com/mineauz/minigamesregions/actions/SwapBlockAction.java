@@ -73,6 +73,7 @@ public class SwapBlockAction extends ActionInterface {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Region region) {
+		debug(player,region);
 		for (int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++) {
 			for (int x = region.getFirstPoint().getBlockX(); x <= region.getSecondPoint().getBlockX(); x++) {
 				for (int z = region.getFirstPoint().getBlockZ(); z <= region.getSecondPoint().getBlockZ(); z++) {
@@ -119,6 +120,7 @@ public class SwapBlockAction extends ActionInterface {
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Node node) {
+		debug(player,node);
 	}
 	
 	@Override

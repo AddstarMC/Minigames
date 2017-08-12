@@ -41,6 +41,7 @@ public class FallingBlockAction extends ActionInterface {
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
 			Region region) {
+		debug(player,region);
 		Location temp = region.getFirstPoint();
 		for(int y = region.getFirstPoint().getBlockY(); 
 				y <= region.getSecondPoint().getBlockY();
@@ -67,6 +68,7 @@ public class FallingBlockAction extends ActionInterface {
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Node node) {
+		debug(player,node);
 		if(node.getLocation().getBlock().getType() != Material.AIR){
 			node.getLocation().getWorld().spawnFallingBlock(node.getLocation(), 
 					node.getLocation().getBlock().getType(), 

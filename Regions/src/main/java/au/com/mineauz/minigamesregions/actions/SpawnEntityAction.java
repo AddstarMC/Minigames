@@ -76,10 +76,12 @@ public class SpawnEntityAction extends ActionInterface {
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
 			Region region) {
+		debug(player,region);
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player, Node node) {
+		debug(player,node);
 		if(player == null || !player.isInMinigame()) return;
 		final Entity ent = node.getLocation().getWorld().spawnEntity(node.getLocation(), EntityType.valueOf(type.getFlag()));
 		

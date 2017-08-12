@@ -39,7 +39,7 @@ public class MySQLBackendITest {
     @Test
     public void initializeTest() throws Exception {
         MySQLBackend backend = new MySQLBackend(log);
-        assertTrue(backend.initialize(config,false));
+        assertTrue(backend.initialize(config,true));
         Connection handler = backend.getPool().getConnection().getConnection();
         assertTrue(handler.isValid(10));
         backend.shutdown();

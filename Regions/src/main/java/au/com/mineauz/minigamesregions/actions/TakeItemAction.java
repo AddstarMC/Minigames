@@ -57,11 +57,13 @@ public class TakeItemAction extends ActionInterface{
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Region region) {
+		debug(player,region);
 		execute(player);
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player, Node node) {
+		debug(player,node);
 		execute(player);
 	}
 	

@@ -45,6 +45,7 @@ public class LightningAction extends ActionInterface{
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Region region) {
+		debug(player,region);
 		Random rand = new Random();
 		double xrand = rand.nextDouble() *
 				(region.getSecondPoint().getBlockX() - region.getFirstPoint().getBlockX()) +
@@ -69,6 +70,7 @@ public class LightningAction extends ActionInterface{
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player, Node node) {
+		debug(player,node);
 		if(effect.getFlag())
 			node.getLocation().getWorld().strikeLightningEffect(node.getLocation());
 		else

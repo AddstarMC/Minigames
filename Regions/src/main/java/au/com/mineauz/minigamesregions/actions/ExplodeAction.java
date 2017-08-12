@@ -49,6 +49,7 @@ public class ExplodeAction extends ActionInterface {
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
 			Region region) {
+		debug(player,region);
 		Random rand = new Random();
 		double xrand = rand.nextDouble() *
 				(region.getSecondPoint().getBlockX() - region.getFirstPoint().getBlockX()) +
@@ -70,6 +71,7 @@ public class ExplodeAction extends ActionInterface {
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Node node) {
+		debug(player,node);
 		node.getLocation().getWorld().createExplosion(node.getLocation(), power.getFlag(), fire.getFlag());
 	}
 	

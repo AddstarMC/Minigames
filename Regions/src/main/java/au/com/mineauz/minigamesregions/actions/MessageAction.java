@@ -49,6 +49,7 @@ public class MessageAction extends ActionInterface {
 
 	@Override
 	public void executeNodeAction(final MinigamePlayer player, final Node node) {
+		debug(player,node);
 		if(player == null || !player.isInMinigame()) return;
 		
 		ScriptObject base = new ScriptObject() {
@@ -77,12 +78,13 @@ public class MessageAction extends ActionInterface {
 				return null;
 			}
 		};
-		
+		debug(player,base);
 		execute(player, base);
 	}
 
 	@Override
 	public void executeRegionAction(final MinigamePlayer player, final Region region) {
+		debug(player,region);
 		if(player == null || !player.isInMinigame()) return;
 		player.sendMessage(msg.getFlag(), null);
 		
@@ -112,7 +114,7 @@ public class MessageAction extends ActionInterface {
 				return null;
 			}
 		};
-		
+		debug(player,base);
 		execute(player, base);
 	}
 	

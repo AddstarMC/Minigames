@@ -49,6 +49,7 @@ public class EquipLoadoutAction extends ActionInterface {
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Node node) {
+		debug(player,node);
 		if(player == null || !player.isInMinigame()) return;
 		LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
 		if(lmod.hasLoadout(loadout.getFlag())){
@@ -60,6 +61,7 @@ public class EquipLoadoutAction extends ActionInterface {
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Region region) {
+		debug(player,region);
 		if(player == null || !player.isInMinigame()) return;
 		LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
 		if(lmod.hasLoadout(loadout.getFlag())){

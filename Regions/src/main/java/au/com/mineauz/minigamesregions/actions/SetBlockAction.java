@@ -57,6 +57,7 @@ public class SetBlockAction extends ActionInterface {
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
 			Region region) {
+		debug(player,region);
 		Location temp = region.getFirstPoint();
 		for(int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++){
 			temp.setY(y);
@@ -80,6 +81,7 @@ public class SetBlockAction extends ActionInterface {
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Node node) {
+		debug(player,node);
 		BlockState bs = node.getLocation().getBlock().getState();
 		bs.setType(Material.getMaterial(type.getFlag()));
 		if(usedur.getFlag()){

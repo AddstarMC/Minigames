@@ -72,7 +72,7 @@ public class MinigameTimer{
 					stopTimer();
 				}
 				
-				if(time != 0)
+				if(time > 0)
 					Bukkit.getPluginManager().callEvent(new MinigameTimerTickEvent(minigame, minigame.getMinigameTimer()));
 			}
 		}, 0, 20);

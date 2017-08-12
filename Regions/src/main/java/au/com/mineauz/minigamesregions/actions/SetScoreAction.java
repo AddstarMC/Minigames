@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import org.bukkit.Material;

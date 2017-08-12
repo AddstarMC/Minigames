@@ -319,11 +319,11 @@ public class Minigames extends JavaPlugin{
 	public BackendManager getBackend() {
 		return backend;
 	}
-	
+	@Deprecated
 	public long getLastUpdateCheck(){
 		return lastUpdateCheck;
 	}
-	
+	@Deprecated
 	public void setLastUpdateCheck(long time){
 		lastUpdateCheck = time;
 	}
