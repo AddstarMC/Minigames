@@ -206,15 +206,6 @@ public class Events implements Listener{
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerConnect(PlayerJoinEvent event){
 		pdata.addMinigamePlayer(event.getPlayer());
-		if(event.getPlayer().isOp() && plugin.getConfig().getBoolean("updateChecker")){
-			long nextCheck = plugin.getLastUpdateCheck() + 86400000;
-			if(nextCheck <= Calendar.getInstance().getTimeInMillis()){
-				UpdateChecker check = new UpdateChecker(event.getPlayer());
-				check.start();
-				plugin.setLastUpdateCheck(Calendar.getInstance().getTimeInMillis());
-			}
-		}
-		
 		File pldata = new File(plugin.getDataFolder() + "/playerdata/inventories/" + event.getPlayer().getUniqueId().toString() + ".yml");
 		final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(pldata.exists()){
