@@ -69,7 +69,7 @@ public class AddScoreAction extends ActionInterface {
 	}
 
 	private void checkScore(MinigamePlayer player){
-		if(player.getMinigame().getMaxScorePerPlayer() >= player.getScore() || player.getTeam().getScore() >= player.getMinigame().getMaxScore()){
+		if(player.getMinigame().getMaxScorePerPlayer() <= player.getScore() || player.getTeam().getScore() >= player.getMinigame().getMaxScore()){
 			List<MinigamePlayer> w;
 			List<MinigamePlayer> l;
 			if(player.getMinigame().isTeamGame()){
