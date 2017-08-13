@@ -93,21 +93,23 @@ public class MenuItemTeam extends MenuItem{
 			}
 		}, 0, null));
 		for(Flag<?> flag : team.getFlags()){
-			if(flag.getName().equals("assignMsg")){
-				m.addItem(flag.getMenuItem("Join Team Message", Material.PAPER, 
-						MinigameUtils.stringToList("Message sent to player;when they join;the team.;Use %s for team name")));
-			}
-			else if(flag.getName().equals("gameAssignMsg")){
-				m.addItem(flag.getMenuItem("Join Team Broadcast Message", Material.PAPER, 
-						MinigameUtils.stringToList("Message sent to all players;when someone joins;a team.;Use %s for team/player name")));
-			}
-			else if(flag.getName().equals("autobalanceMsg")){
-				m.addItem(flag.getMenuItem("Autobalance Message", Material.PAPER, 
-						MinigameUtils.stringToList("Message sent to player;when they are;autobalanced.;Use %s for team name")));
-			}
-			else if(flag.getName().equals("gameAutobalanceMsg")){
-				m.addItem(flag.getMenuItem("Autobalance Broadcast Message", Material.PAPER, 
-						MinigameUtils.stringToList("Message sent to all players;when someone is;autobalanced.;Use %s for team/player name")));
+			switch (flag.getName()) {
+				case "assignMsg":
+					m.addItem(flag.getMenuItem("Join Team Message", Material.PAPER,
+							MinigameUtils.stringToList("Message sent to player;when they join;the team.;Use %s for team name")));
+					break;
+				case "gameAssignMsg":
+					m.addItem(flag.getMenuItem("Join Team Broadcast Message", Material.PAPER,
+							MinigameUtils.stringToList("Message sent to all players;when someone joins;a team.;Use %s for team/player name")));
+					break;
+				case "autobalanceMsg":
+					m.addItem(flag.getMenuItem("Autobalance Message", Material.PAPER,
+							MinigameUtils.stringToList("Message sent to player;when they are;autobalanced.;Use %s for team name")));
+					break;
+				case "gameAutobalanceMsg":
+					m.addItem(flag.getMenuItem("Autobalance Broadcast Message", Material.PAPER,
+							MinigameUtils.stringToList("Message sent to all players;when someone is;autobalanced.;Use %s for team/player name")));
+					break;
 			}
 		}
 		List<String> ntvo = new ArrayList<String>();

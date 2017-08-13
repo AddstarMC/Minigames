@@ -55,17 +55,11 @@ public class MinigameTimerCondition extends ConditionInterface{
 	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
 		return check(player.getMinigame());
 	}
-	
 	private boolean check(Minigame mg){
 		int timeLeft = mg.getMinigameTimer().getTimeLeft();
 		int min = minTime.getFlag();
 		int max = maxTime.getFlag();
-		if(Minigames.plugin.isDebugging()){
-			Minigames.plugin.getLogger().info("Timer Condition Check: " +
-					mg.getName(false) +" mech: " + mg.getMechanicName() +
-					" maxTime: "+ maxTime.getFlag() + "minTime: " + minTime.getFlag() + " CurrTime: " +timeLeft);
-
-		}
+		debug(mg);
         return timeLeft >= min &&
                 timeLeft <= max;
     }

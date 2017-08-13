@@ -2,6 +2,8 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import java.util.Map;
 
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -38,4 +40,11 @@ public abstract class ConditionInterface {
 	public abstract boolean displayMenu(MinigamePlayer player, Menu prev);
 	
 	public abstract void describe(Map<String, Object> out);
+
+	public void debug(Minigame mg){
+		if(Minigames.plugin.isDebugging()){
+			Minigames.plugin.getLogger().info("Cat " + this.getCategory() + " : " + this.getName() +
+					" Check:" +mg.getName(false) +" mech: " + mg.getMechanicName() + "Condition: 					" +this.toString());
+		}
+	}
 }

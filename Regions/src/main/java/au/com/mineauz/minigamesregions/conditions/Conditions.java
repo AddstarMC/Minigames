@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.Material;
 
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -85,4 +87,6 @@ public class Conditions {
 		m.addItem(new MenuItemConditionAdd("Add Condition", Material.ITEM_FRAME, exec), m.getSize() - 1);
 		m.displayMenu(player);
 	}
+
+
 }
