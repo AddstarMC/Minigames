@@ -64,6 +64,7 @@ public class AddScoreAction extends ActionInterface {
 		if(player == null || !player.isInMinigame()) return;
 		player.addScore(amount.getFlag());
 		player.getMinigame().setScore(player, player.getScore());
+
 		checkScore(player);
 	}
 
