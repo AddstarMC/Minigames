@@ -29,11 +29,11 @@ public class MySQLBackendITest {
         log = utilities.getLogger();
         config = utilities.createTestConfig().getConfigurationSection("backend");
         config.set("type","mysql");
-        config.set("host","localhost:3306");
-        config.set("database","games");
-        config.set("username", "games");
-        config.set("password", "games");
-        config.set("useSSL", "false");
+        config.get("host","localhost:3306");
+        config.get("database","games");
+        config.get("username", "games");
+        config.get("password", "games");
+        config.get("useSSL", "false");
     }
 
     @Test
