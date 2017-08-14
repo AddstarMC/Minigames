@@ -38,6 +38,12 @@
       <timezone>10</timezone>
     </developer>
   </developers>
+  <licenses>
+    <license>
+        <name>MIT License</name>
+        <url>https://opensource.org/licenses/MIT</url>
+    </license>
+  </licenses>
   <distributionManagement>
     <repository>
       <id>maven.addstar.com.au</id>
