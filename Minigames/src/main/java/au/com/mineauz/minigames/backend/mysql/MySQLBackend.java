@@ -78,7 +78,7 @@ public class MySQLBackend extends Backend {
 				handler.release();
 				return true;
 			} catch (SQLException e) {
-				logger.severe("Failed to connect to the MySQL database. Please check your database settings: URL: " + url + " Props:" +properties.toString() );
+				logger.severe("Failed to connect to the MySQL database. Please check your database settings. ");
 				e.printStackTrace();
 			}
 		} catch (ClassNotFoundException e) {
