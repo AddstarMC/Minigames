@@ -8,6 +8,8 @@ import java.util.Set;
 import au.com.mineauz.minigames.config.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team.OptionStatus;
 import org.bukkit.scoreboard.Team.Option;
 
@@ -203,7 +205,9 @@ public class Team implements ScriptObject {
 	 */
 	public void removePlayer(MinigamePlayer player){
 		players.remove(player);
-		mgm.getScoreboardManager().getTeam(getColor().toString().toLowerCase()).removeEntry(player.getDisplayName(mgm.usePlayerDisplayNames()));
+		Scoreboard board =  mgm.getScoreboardManager();
+		String color =  getColor().toString().toLowerCase();
+		board.getTeam(color).removeEntry(player.getDisplayName(mgm.usePlayerDisplayNames()));
 		player.getPlayer().setScoreboard(Minigames.plugin.getServer().getScoreboardManager().getMainScoreboard());
 	}
 	
