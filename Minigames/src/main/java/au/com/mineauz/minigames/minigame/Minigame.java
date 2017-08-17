@@ -1140,7 +1140,7 @@ public class Minigame implements ScriptObject {
 		//----------------------//
 		//Minigame Player Settings
 		//----------------------//
-		List<MenuItem> itemsPlayer = new ArrayList<MenuItem>(14);
+		List<MenuItem> itemsPlayer = new ArrayList<MenuItem>(20);
 		List<String> gmopts = new ArrayList<String>();
 		for(GameMode gm : GameMode.values()){
 			gmopts.add(MinigameUtils.capitalize(gm.toString()));
@@ -1163,7 +1163,7 @@ public class Minigame implements ScriptObject {
 		itemsPlayer.add(allowFlight.getMenuItem("Allow Flight", Material.FEATHER, MinigameUtils.stringToList("Allow flight to;be toggled")));
 		itemsPlayer.add(enableFlight.getMenuItem("Enable Flight", Material.FEATHER, MinigameUtils.stringToList("Start players;in flight;(Must have Allow;Flight)")));
 		itemsPlayer.add(allowDragonEggTeleport.getMenuItem("Allow Dragon Egg Teleport", Material.DRAGON_EGG));
-		itemsPlayer.add(usePlayerDisplayNames.getMenuItem("Use Players Display Names", Material.POTATO));
+		itemsPlayer.add(usePlayerDisplayNames.getMenuItem("Use Players Display Names", Material.POTATO_ITEM, MinigameUtils.stringToList("Use Player Nicks or Real Names")));
 		playerMenu.addItems(itemsPlayer);
 		playerMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
 		
