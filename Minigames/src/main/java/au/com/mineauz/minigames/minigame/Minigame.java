@@ -1163,6 +1163,7 @@ public class Minigame implements ScriptObject {
 		itemsPlayer.add(allowFlight.getMenuItem("Allow Flight", Material.FEATHER, MinigameUtils.stringToList("Allow flight to;be toggled")));
 		itemsPlayer.add(enableFlight.getMenuItem("Enable Flight", Material.FEATHER, MinigameUtils.stringToList("Start players;in flight;(Must have Allow;Flight)")));
 		itemsPlayer.add(allowDragonEggTeleport.getMenuItem("Allow Dragon Egg Teleport", Material.DRAGON_EGG));
+		itemsPlayer.add(usePlayerDisplayNames.getMenuItem("Use Players Display Names", Material.POTATO));
 		playerMenu.addItems(itemsPlayer);
 		playerMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
 		

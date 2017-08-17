@@ -89,7 +89,7 @@ public class MinigamePlayer implements ScriptObject {
 	}
 	
 	public String getName(){
-		return player.getName();
+		return ChatColor.stripColor(player.getName());
 	}
 
 	public String getDisplayName(){
