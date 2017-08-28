@@ -6,10 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -17,6 +15,7 @@ import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
 
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -27,7 +26,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import au.com.mineauz.minigames.Metrics.Graph;
 import au.com.mineauz.minigames.blockRecorder.BasicRecorder;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
 import au.com.mineauz.minigames.display.DisplayManager;
@@ -58,7 +56,7 @@ public class Minigames extends JavaPlugin{
 	private boolean debug = false;
 	
 	private long lastUpdateCheck = 0;
-	
+
 	public void onEnable(){
 		try {
 			plugin = this;
@@ -147,13 +145,13 @@ public class Minigames extends JavaPlugin{
 			if(!setupEconomy()){
 		        getLogger().info("No Vault plugin found! You may only reward items.");
 			 }
-			
+
 			getConfig().options().copyDefaults(true);
 			saveConfig();
 			
 			if(getConfig().getBoolean("use-sql"))
 				loadSQL();
-			
+
 			Calendar cal = Calendar.getInstance();
 			if(cal.get(Calendar.DAY_OF_MONTH) == 21 && cal.get(Calendar.MONTH) == 8 ||
 					cal.get(Calendar.DAY_OF_MONTH) == 25 && cal.get(Calendar.MONTH) == 11 ||
@@ -293,10 +291,7 @@ public class Minigames extends JavaPlugin{
     }
 	
 	public boolean hasEconomy(){
-		if(econ != null){
-			return true;
-		}
-		return false;
+		return econ != null;
 	}
 	
 	public Economy getEconomy(){
@@ -322,12 +317,12 @@ public class Minigames extends JavaPlugin{
 	public SQLDatabase getSQL(){
 		return sql;
 	}
-	
+
 	public void loadSQL(){
 		sql = new SQLDatabase();
 		if(!sql.loadSQL())
 			sql = null;
-		
+
 		sqlSaverService = Executors.newSingleThreadExecutor();
 	}
 	
@@ -343,58 +338,27 @@ public class Minigames extends JavaPlugin{
 		return minigameSigns;
 	}
 	
-	private void initMetrics(){
-		try {
-		    Metrics metrics = new Metrics(this);
-		    
-		    Graph playerGraph = metrics.createGraph("Players Playing Minigames");
-		    playerGraph.addPlotter(new Metrics.Plotter("Singleplayer") {
-				
-				@Override
-				public int getValue() {
-					int count = 0;
-					for(MinigamePlayer pl : pdata.getAllMinigamePlayers()){
-						if(pl.isInMinigame() && pl.getMinigame().getType() == MinigameType.SINGLEPLAYER){
-							count++;
-						}
+	private void initMetrics() {
+		Metrics metrics = new Metrics(this);
+		Metrics.MultiLineChart chart = new Metrics.MultiLineChart("Players_in_Minigames", new Callable<Map<String, Integer>>() {
+			@Override
+			public Map<String, Integer> call() throws Exception {
+				Map<String, Integer> result = new HashMap<String, Integer>();
+				Integer count = 0;
+				result.put("Total_Players", pdata.getAllMinigamePlayers().size());
+				for (MinigamePlayer pl : pdata.getAllMinigamePlayers()) {
+					if (pl.isInMinigame()) {
+						count = result.get(pl.getMinigame().getType().getName());
+						if(count==null)count=0;
+						result.put(pl.getMinigame().getType().getName(), count + 1);
 					}
-					return count;
 				}
-			});
-		    
-		    playerGraph.addPlotter(new Metrics.Plotter("Free For All") {
-				
-				@Override
-				public int getValue() {
-					int count = 0;
-					for(MinigamePlayer pl : pdata.getAllMinigamePlayers()){
-						if(pl.isInMinigame() && !pl.getMinigame().isTeamGame()){
-							count++;
-						}
-					}
-					return count;
-				}
-			});
-		    
-		    playerGraph.addPlotter(new Metrics.Plotter("Teams") {
-				
-				@Override
-				public int getValue() {
-					int count = 0;
-					for(MinigamePlayer pl : pdata.getAllMinigamePlayers()){
-						if(pl.isInMinigame() && pl.getMinigame().isTeamGame()){
-							count++;
-						}
-					}
-					return count;
-				}
-			});
-		    
-		    metrics.start();
-		} catch (IOException e) {
-		    // Failed to submit the stats :-(
-		}
+				return result;
+			}
+		});
+		metrics.addCustomChart(chart);
 	}
+
 	
 	public FileConfiguration getLang(){
 		return lang;
@@ -430,17 +394,14 @@ public class Minigames extends JavaPlugin{
 		MinigameUtils.debugMessage("Scheduling SQL data save for " + player);
 		sqlSaverService.submit(new SQLCompletionSaver(player));
 	}
-	
+
 	public void addSQLToStore(List<SQLPlayer> players){
 		MinigameUtils.debugMessage("Scheduling SQL data save for " + players);
 		sqlSaverService.submit(new SQLCompletionSaver(players));
 	}
 	
 	public void toggleDebug(){
-		if(debug)
-			debug = false;
-		else
-			debug = true;
+		debug = !debug;
 	}
 	
 	public boolean isDebugging(){
