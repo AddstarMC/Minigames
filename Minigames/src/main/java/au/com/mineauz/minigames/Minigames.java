@@ -6,14 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
+import org.bstats.bukkit.Metrics;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,7 +26,6 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
-import au.com.mineauz.minigames.Metrics.Graph;
 import au.com.mineauz.minigames.backend.BackendManager;
 import au.com.mineauz.minigames.blockRecorder.BasicRecorder;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
@@ -332,58 +330,26 @@ public class Minigames extends JavaPlugin{
 		return minigameSigns;
 	}
 	
-	private void initMetrics(){
-		try {
-		    Metrics metrics = new Metrics(this);
-		    
-		    Graph playerGraph = metrics.createGraph("Players Playing Minigames");
-		    playerGraph.addPlotter(new Metrics.Plotter("Singleplayer") {
-				
-				@Override
-				public int getValue() {
-					int count = 0;
-					for(MinigamePlayer pl : pdata.getAllMinigamePlayers()){
-						if(pl.isInMinigame() && pl.getMinigame().getType() == MinigameType.SINGLEPLAYER){
-							count++;
-						}
+	private void initMetrics() {
+		Metrics metrics = new Metrics(this);
+		Metrics.MultiLineChart chart = new Metrics.MultiLineChart("Players_in_Minigames", new Callable<Map<String, Integer>>() {
+			@Override
+			public Map<String, Integer> call() throws Exception {
+				Map<String, Integer> result = new HashMap<>();
+				int count = 0;
+				result.put("Total_Players", pdata.getAllMinigamePlayers().size());
+				for (MinigamePlayer pl : pdata.getAllMinigamePlayers()) {
+					if (pl.isInMinigame()) {
+						count = result.getOrDefault(pl.getMinigame().getType().getName(), 0);
+						result.put(pl.getMinigame().getType().getName(), count + 1);
 					}
-					return count;
 				}
-			});
-		    
-		    playerGraph.addPlotter(new Metrics.Plotter("Free For All") {
-				
-				@Override
-				public int getValue() {
-					int count = 0;
-					for(MinigamePlayer pl : pdata.getAllMinigamePlayers()){
-						if(pl.isInMinigame() && !pl.getMinigame().isTeamGame()){
-							count++;
-						}
-					}
-					return count;
-				}
-			});
-		    
-		    playerGraph.addPlotter(new Metrics.Plotter("Teams") {
-				
-				@Override
-				public int getValue() {
-					int count = 0;
-					for(MinigamePlayer pl : pdata.getAllMinigamePlayers()){
-						if(pl.isInMinigame() && pl.getMinigame().isTeamGame()){
-							count++;
-						}
-					}
-					return count;
-				}
-			});
-		    
-		    metrics.start();
-		} catch (IOException e) {
-		    // Failed to submit the stats :-(
-		}
+				return result;
+			}
+		});
+		metrics.addCustomChart(chart);
 	}
+
 	
 	public FileConfiguration getLang(){
 		return lang;
