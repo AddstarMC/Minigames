@@ -339,7 +339,11 @@ public class Minigames extends JavaPlugin{
 				result.put("Total_Players", pdata.getAllMinigamePlayers().size());
 				for (MinigamePlayer pl : pdata.getAllMinigamePlayers()) {
 					if (pl.isInMinigame()) {
-						count = result.get(pl.getMinigame().getType().getName());
+					    try {
+                            count = result.get(pl.getMinigame().getType().getName());
+                        }catch (NullPointerException e){
+					        count=0;
+                        }
 						if(count==null)count=0;
 						result.put(pl.getMinigame().getType().getName(), count + 1);
 					}
