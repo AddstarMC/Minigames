@@ -1,25 +1,23 @@
 package au.com.mineauz.minigames;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import au.com.mineauz.minigames.blockRecorder.RecorderData;
+import au.com.mineauz.minigames.events.*;
+import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.mechanics.GameMechanics;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.MinigameState;
+import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.minigame.modules.GameOverModule;
+import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
+import au.com.mineauz.minigames.sounds.MGSounds;
+import au.com.mineauz.minigames.sounds.PlayMGSound;
+import au.com.mineauz.minigames.stats.DynamicMinigameStat;
+import au.com.mineauz.minigames.stats.MinigameStats;
+import au.com.mineauz.minigames.stats.StoredGameStats;
+import org.bukkit.*;
 import org.bukkit.FireworkEffect.Type;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -29,26 +27,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 
-import au.com.mineauz.minigames.blockRecorder.RecorderData;
-import au.com.mineauz.minigames.events.EndMinigameEvent;
-import au.com.mineauz.minigames.events.JoinMinigameEvent;
-import au.com.mineauz.minigames.events.QuitMinigameEvent;
-import au.com.mineauz.minigames.events.RevertCheckpointEvent;
-import au.com.mineauz.minigames.events.SpectateMinigameEvent;
-import au.com.mineauz.minigames.events.StartMinigameEvent;
-import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.mechanics.GameMechanics;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.MinigameState;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.GameOverModule;
-import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
-import au.com.mineauz.minigames.sounds.MGSounds;
-import au.com.mineauz.minigames.sounds.PlayMGSound;
-import au.com.mineauz.minigames.stats.DynamicMinigameStat;
-import au.com.mineauz.minigames.stats.MinigameStats;
-import au.com.mineauz.minigames.stats.StoredGameStats;
+import java.math.BigDecimal;
+import java.util.*;
 
 public class PlayerData {
 	private Map<String, MinigamePlayer> minigamePlayers = new HashMap<String, MinigamePlayer>();
@@ -427,7 +407,7 @@ public class PlayerData {
 			Player p = player.getPlayer();
 			if ((p != null) && (p.isOnline())) {
 				p.setFireTicks(0);
-				p.setHealth(p.getMaxHealth());
+				p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 				p.setFoodLevel(20);
 				p.setSaturation(20f);
 				p.setRemainingAir(p.getMaximumAir());

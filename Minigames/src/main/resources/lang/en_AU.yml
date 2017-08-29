@@ -244,7 +244,10 @@ time:
     timerPausedReason: "Start timer paused: %s"
     timerResumed: "Start timer resumed."
     go: "Go!"
-    
+respawn:
+  start: "You will respawn shortly..."
+  timeMsg: "%ssec."
+  go: "Go!"
 command:
   join:
     description: "Forces you to join a Minigame. Warning: This bypasses betting."

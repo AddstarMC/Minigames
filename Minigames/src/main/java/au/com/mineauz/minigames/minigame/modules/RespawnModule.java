@@ -1,6 +1,9 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.config.*;
+import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.config.LongFlag;
+import au.com.mineauz.minigames.config.SimpleLocationFlag;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.Location;
@@ -27,7 +30,17 @@ public class RespawnModule extends MinigameModule {
     }
 
     private SimpleLocationFlag respawnLocation = new SimpleLocationFlag(null, "respawn.location");
+
+    public Boolean getCanMoveRespawnWait() {
+        return canMoveRespawnWait.getFlag();
+    }
+
     private BooleanFlag canMoveRespawnWait = new BooleanFlag(true, "respawn.canMoveRespawnWait");
+
+    public Boolean getCanInteractRespawnWait() {
+        return canInteractRespawnWait.getFlag();
+    }
+
     private BooleanFlag canInteractRespawnWait = new BooleanFlag(true, "respawn.canInteractRespawnWait");
 
     public RespawnModule(Minigame mgm) {

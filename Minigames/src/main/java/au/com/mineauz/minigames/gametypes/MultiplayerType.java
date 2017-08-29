@@ -1,9 +1,13 @@
 package au.com.mineauz.minigames.gametypes;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.events.TimerExpireEvent;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.MinigameState;
+import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
+import au.com.mineauz.minigames.minigame.modules.RespawnModule;
+import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -12,18 +16,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.MinigameData;
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.MultiplayerTimer;
-import au.com.mineauz.minigames.PlayerData;
-import au.com.mineauz.minigames.events.TimerExpireEvent;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.MinigameState;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class MultiplayerType extends MinigameTypeBase{
 	private static Minigames plugin = Minigames.plugin;
@@ -239,8 +234,8 @@ public class MultiplayerType extends MinigameTypeBase{
 		final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply.isInMinigame() && ply.getMinigame().getType() == MinigameType.MULTIPLAYER){
 			Minigame mg = ply.getMinigame();
-			Location respawnPos;
-			if(ply.getMinigame().isTeamGame()){
+            Location respawnPos = mg.getLobbyPosition();
+            if(ply.getMinigame().isTeamGame()){
 				Team team = ply.getTeam();
 				if(mg.hasStarted() && !ply.isLatejoining()){
 					if(mg.isAllowedMPCheckpoints() && ply.hasCheckpoint()){
@@ -260,12 +255,8 @@ public class MultiplayerType extends MinigameTypeBase{
 					}
 					ply.getLoadout().equiptLoadout(ply);
 				}
-				else{
-					respawnPos = mg.getLobbyPosition();
-				}
-			}
-			else{
-				if(mg.hasStarted() && !ply.isLatejoining()){
+            } else {
+                if(mg.hasStarted() && !ply.isLatejoining()){
 					if(mg.isAllowedMPCheckpoints() && ply.hasCheckpoint()){
 						respawnPos = ply.getCheckpoint();
 					}
@@ -278,22 +269,30 @@ public class MultiplayerType extends MinigameTypeBase{
 					
 					ply.getLoadout().equiptLoadout(ply);
 				}
-				else{
-					respawnPos = mg.getLobbyPosition();
-				}
 			}
-			
-			event.setRespawnLocation(respawnPos);
-			
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				@Override
-				public void run() {
-					ply.getPlayer().setNoDamageTicks(60);
-				}
-			});
+            if (mg.hasStarted() && mg.getRespawn()) {
+                Location newrespawn = RespawnModule.getMinigameModule(mg).getRespawnLocation();
+                setRespawn(mg, ply, respawnPos);
+                event.setRespawnLocation(newrespawn);
+            } else {
+                event.setRespawnLocation(respawnPos);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                    @Override
+                    public void run() {
+                        ply.getPlayer().setNoDamageTicks(60);
+                    }
+                });
+            }
+
+
 		}
 	}
-	
+
+    private void setRespawn(Minigame mg, MinigamePlayer ply, Location spawn) {
+        RespawnTimer timer = new RespawnTimer(mg, ply, spawn);
+        timer.startTimer();
+    }
+
 	@EventHandler
 	public void timerExpire(TimerExpireEvent event){
 		if(event.getMinigame().getType() == MinigameType.MULTIPLAYER && event.getMinigameState() == MinigameState.STARTED){
