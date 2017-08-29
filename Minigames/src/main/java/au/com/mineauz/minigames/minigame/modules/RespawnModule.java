@@ -1,14 +1,9 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.LocationFlag;
-import au.com.mineauz.minigames.config.LongFlag;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBoolean;
-import au.com.mineauz.minigames.menu.MenuItemInteger;
+import au.com.mineauz.minigames.config.*;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -20,8 +15,18 @@ import java.util.Map;
  * Created by benjamincharlton on 16/08/2017.
  */
 public class RespawnModule extends MinigameModule {
+
     private LongFlag timer = new LongFlag(0L, "respawn.timer");
-    private LocationFlag respawnLocation = new LocationFlag(null, "respawn.location");
+
+    public Location getRespawnLocation() {
+        return respawnLocation.getFlag();
+    }
+
+    public void setRespawnLocation(Location respawnLocation) {
+        this.respawnLocation.setFlag(respawnLocation);
+    }
+
+    private SimpleLocationFlag respawnLocation = new SimpleLocationFlag(null, "respawn.location");
     private BooleanFlag canMoveRespawnWait = new BooleanFlag(true, "respawn.canMoveRespawnWait");
     private BooleanFlag canInteractRespawnWait = new BooleanFlag(true, "respawn.canInteractRespawnWait");
 
@@ -66,45 +71,51 @@ public class RespawnModule extends MinigameModule {
     @Override
     public void addEditMenuOptions(Menu menu) {
         Menu m = new Menu(6, "Respawn", menu.getViewer());
-        m.addItem(new MenuItemInteger("Respawn Time", Material.WATCH, new Callback<Integer>() {
+        if (!menu.getViewer().getMinigame().getRespawn()){
+            m.addItem(new MenuItem("Repawn in main menu set to false",Material.BARRIER));
 
-            @Override
-            public void setValue(Integer value) {
-                timer.setFlag(value.longValue());
-            }
+        }else {
+            m.addItem(new MenuItemInteger("Respawn Time", Material.WATCH, new Callback<Integer>() {
+
+                @Override
+                public void setValue(Integer value) {
+                    timer.setFlag(value.longValue());
+                }
 
 
-            @Override
-            public Integer getValue() {
-                return timer.getFlag().intValue();
-            }
-        }, 0, 7200));
-        m.addItem(new MenuItemBoolean("Interact while in Respawn ", Material.REDSTONE_LAMP_ON, new Callback<Boolean>() {
+                @Override
+                public Integer getValue() {
+                    return timer.getFlag().intValue();
+                }
+            }, 0, 7200));
+            m.addItem(new MenuItemBoolean("Interact while in Respawn ", Material.REDSTONE_LAMP_ON, new Callback<Boolean>() {
 
-            @Override
-            public void setValue(Boolean value) {
-                canInteractRespawnWait.setFlag(value);
-            }
+                @Override
+                public void setValue(Boolean value) {
+                    canInteractRespawnWait.setFlag(value);
+                }
 
-            @Override
-            public Boolean getValue() {
-                return canInteractRespawnWait.getFlag();
-            }
-        }));
+                @Override
+                public Boolean getValue() {
+                    return canInteractRespawnWait.getFlag();
+                }
+            }));
 
-        m.addItem(new MenuItemBoolean("Move while in Respawn ", Material.CAULDRON_ITEM, new Callback<Boolean>() {
+            m.addItem(new MenuItemBoolean("Move while in Respawn ", Material.CAULDRON_ITEM, new Callback<Boolean>() {
 
-            @Override
-            public Boolean getValue() {
-                return canMoveRespawnWait.getFlag();
-            }
+                @Override
+                public Boolean getValue() {
+                    return canMoveRespawnWait.getFlag();
+                }
 
-            @Override
-            public void setValue(Boolean value) {
-                canMoveRespawnWait.setFlag(value);
-            }
-        }));
-
+                @Override
+                public void setValue(Boolean value) {
+                    canMoveRespawnWait.setFlag(value);
+                }
+            }));
+        }
+        m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, menu), m.getSize() - 9);
+        menu.addItem(new MenuItemPage("Respawn Settings", Material.EYE_OF_ENDER, m));
     }
 
     @Override

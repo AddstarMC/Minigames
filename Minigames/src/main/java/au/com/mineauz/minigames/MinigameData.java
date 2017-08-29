@@ -47,6 +47,7 @@ public class MinigameData {
 		modules.add(JuggernautModule.class);
 		modules.add(RewardsModule.class);
 		modules.add(CTFModule.class);
+		modules.add(RespawnModule.class);
 	}
 	
 	public List<Class<? extends MinigameModule>> getModules(){

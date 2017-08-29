@@ -93,7 +93,8 @@ public class Minigame implements ScriptObject {
 	private IntegerFlag degenRandomChance = new IntegerFlag(15, "degenrandom");
 	private FloorDegenerator sfloordegen;
 	private IntegerFlag floorDegenTime = new IntegerFlag(Minigames.plugin.getConfig().getInt("multiplayer.floordegenerator.time"), "floordegentime");
-	
+    private BooleanFlag respawn = new BooleanFlag(Minigames.plugin.getConfig().getBoolean("respawn", false),"respawn");
+
 	private LocationListFlag startLocations = new LocationListFlag(null, "startpos");
 	private LocationFlag endPosition = new LocationFlag(null, "endpos");
 	private LocationFlag quitPosition = new LocationFlag(null, "quitpos");
@@ -235,7 +236,8 @@ public class Minigame implements ScriptObject {
 		addConfigFlag(spMaxPlayers);
 		addConfigFlag(startLocations);
 		addConfigFlag(startWaitTime);
-		addConfigFlag(timer);
+        addConfigFlag(respawn);
+        addConfigFlag(timer);
 		addConfigFlag(this.type);
 		addConfigFlag(unlimitedAmmo);
 		addConfigFlag(usePermissions);
@@ -308,8 +310,16 @@ public class Minigame implements ScriptObject {
 		}
 		return false;
 	}
-	
-	public void setStartLocation(Location loc){
+
+    public Boolean getRespawn() {
+        return respawn.getFlag();
+    }
+
+    public void setRespawn(Boolean respawn) {
+        this.respawn.setFlag(respawn);
+    }
+
+    public void setStartLocation(Location loc){
 		startLocations.getFlag().set(0, loc);
 	}
 	
@@ -1049,6 +1059,7 @@ public class Minigame implements ScriptObject {
 				return startWaitTime.getFlag();
 			}
 		}, 3, null));
+		itemsMain.add(respawn.getMenuItem("Set a seperate Respawn point",Material.NETHER_STAR,MinigameUtils.stringToList("Allows a respawn point and wait time on death")));
 		itemsMain.add(lateJoin.getMenuItem("Allow Late Join", Material.DEAD_BUSH, MinigameUtils.stringToList("Multiplayer Only")));
 		itemsMain.add(new MenuItemDisplayWhitelist("Block Whitelist/Blacklist", MinigameUtils.stringToList("Blocks that can/can't;be broken"), 
 				Material.CHEST, getBlockRecorder().getWBBlocks(), getBlockRecorder().getWhitelistModeCallback()));
