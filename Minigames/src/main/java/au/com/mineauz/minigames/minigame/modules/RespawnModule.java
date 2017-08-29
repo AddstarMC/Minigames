@@ -1,6 +1,9 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.config.*;
+import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.config.LocationFlag;
+import au.com.mineauz.minigames.config.LongFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBoolean;
@@ -102,7 +105,6 @@ public class RespawnModule extends MinigameModule {
             }
         }));
 
-        m.addItem(new SimpleLocationFlag());
     }
 
     @Override
