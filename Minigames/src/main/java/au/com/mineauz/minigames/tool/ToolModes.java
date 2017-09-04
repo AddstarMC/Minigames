@@ -17,7 +17,6 @@ public class ToolModes {
 		addToolMode(new LobbyPositionMode());
 		addToolMode(new RegenAreaMode());
 		addToolMode(new DegenAreaMode());
-		addToolMode(new RespawnPositionMode());
 	}
 	
 	public static void addToolMode(ToolMode mode){
