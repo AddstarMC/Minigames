@@ -378,7 +378,7 @@ public class ScoreboardDisplay {
 		
 		// Convert type to new stat
 		if (section.contains("type")) { //todo Remove in 1.13
-			Minigames.plugin.getLogger().warning("Your scoreboard display is using an old configuration method. `type` is will not be supported past 1.12 Game: "+ minigame.getName(false));
+			Minigames.plugin.getLogger().warning("Your scoreboard display is using an old configuration method.  Please update to use `stat` -- `type` will not be supported past 1.12 Game: "+ minigame.getName(false));
 			ScoreboardType type = ScoreboardType.valueOf(section.getString("type"));
 			
 			switch (type) {

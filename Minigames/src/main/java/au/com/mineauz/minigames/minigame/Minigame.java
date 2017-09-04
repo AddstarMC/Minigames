@@ -53,7 +53,8 @@ public class Minigame implements ScriptObject {
 	private IntegerFlag degenRandomChance = new IntegerFlag(15, "degenrandom");
 	private FloorDegenerator sfloordegen;
 	private IntegerFlag floorDegenTime = new IntegerFlag(Minigames.plugin.getConfig().getInt("multiplayer.floordegenerator.time"), "floordegentime");
-	
+    // Respawn Module
+	private BooleanFlag respawn = new BooleanFlag(Minigames.plugin.getConfig().getBoolean("has-respawn"),"respawn");
 	private LocationListFlag startLocations = new LocationListFlag(null, "startpos");
 	private LocationFlag endPosition = new LocationFlag(null, "endpos");
 	private LocationFlag quitPosition = new LocationFlag(null, "quitpos");
@@ -1241,19 +1242,21 @@ public class Minigame implements ScriptObject {
 		FileConfiguration cfg = minigame.getConfig();
 		
 		//-----------------------------------------------
-		//TODO: Remove me after 1.7
+		//TODO: Remove me after 1.12
 		if(cfg.contains(name + ".type")){
-			//Minigames.plugin.getLogger().warning("Your configuration files ("+cfg.getCurrentPath()+") are of an old version. They will not be supported past ver1.11");
 			if(cfg.getString(name + ".type").equals("TEAMS")) {
+                Minigames.plugin.getLogger().warning("Your configuration files ("+cfg.getCurrentPath()+") is outdated and contains and Old type: TEAM, please update to use the New Types." );
 				cfg.set(name + ".type", "MULTIPLAYER");
 				TeamsModule.getMinigameModule(this).addTeam(TeamColor.RED);
 				TeamsModule.getMinigameModule(this).addTeam(TeamColor.BLUE);
 			}
 			else if(cfg.getString(name + ".type").equals("FREE_FOR_ALL")){
-				cfg.set(name + ".type", "MULTIPLAYER");
+                Minigames.plugin.getLogger().warning("Your configuration files ("+cfg.getCurrentPath()+") is outdated and contains and Old type: FREE_FOR_ALL, please update to use the New Types." );
+                cfg.set(name + ".type", "MULTIPLAYER");
 			}
 			else if(cfg.getString(name + ".type").equals("TREASURE_HUNT")){
-				cfg.set(name + ".type", "GLOBAL");
+                Minigames.plugin.getLogger().warning("Your configuration files ("+cfg.getCurrentPath()+") is outdated and contains and Old type:TREASURE_HUNT, please update to use the New Types." );
+                cfg.set(name + ".type", "GLOBAL");
 				cfg.set(name + ".scoretype", "treasure_hunt");
 				cfg.set(name + ".timer", Minigames.plugin.getConfig().getInt("treasurehunt.findtime") * 60);
 			}
