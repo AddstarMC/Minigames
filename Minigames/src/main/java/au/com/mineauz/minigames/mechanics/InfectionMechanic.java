@@ -60,7 +60,8 @@ public class InfectionMechanic extends GameMechanicBase{
 				}
 			}
 			else if(team == null){
-				if(red.getPlayers().size() < Math.ceil(players.size() * 0.18) && !red.isFull()){
+				if(red.getPlayers().size() < Math.ceil(players.size() *
+						(((Integer)InfectionModule.getMinigameModule(minigame).getInfectedPercent()).doubleValue() / 100d)) && !red.isFull()){
 					red.addPlayer(ply);
 					players.get(i).sendMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()), null);
 					mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), players.get(i).getName(), red.getChatColor() + red.getDisplayName()), null, players.get(i));
