@@ -1,12 +1,5 @@
 package au.com.mineauz.minigames.mechanics;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.PlayerDeathEvent;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameType;
@@ -17,6 +10,12 @@ import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.InfectionModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.PlayerDeathEvent;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 public class InfectionMechanic extends GameMechanicBase{
 
@@ -50,19 +49,17 @@ public class InfectionMechanic extends GameMechanicBase{
 			Team red = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.RED);
 			Team blue = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.BLUE);
 			Team team = ply.getTeam();
-			
-			if(team == blue){
-				if(red.getPlayers().size() < Math.ceil(players.size() * 
-						(((Integer)InfectionModule.getMinigameModule(minigame).getInfectedPercent()).doubleValue() / 100d)) && !red.isFull()){
-					MultiplayerType.switchTeam(minigame, ply, red);
+            Double percent = ((Integer) InfectionModule.getMinigameModule(minigame).getInfectedPercent()).doubleValue() / 100d;
+            if (team == blue) {
+                if (red.getPlayers().size() < Math.ceil(players.size() * percent) && !red.isFull()) {
+                    MultiplayerType.switchTeam(minigame, ply, red);
 					players.get(i).sendMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()), null);
 					mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), players.get(i).getName(), red.getChatColor() + red.getDisplayName()), null, players.get(i));
 				}
 			}
 			else if(team == null){
-				if(red.getPlayers().size() < Math.ceil(players.size() *
-						(((Integer)InfectionModule.getMinigameModule(minigame).getInfectedPercent()).doubleValue() / 100d)) && !red.isFull()){
-					red.addPlayer(ply);
+                if (red.getPlayers().size() < Math.ceil(players.size() * percent) && !red.isFull()) {
+                    red.addPlayer(ply);
 					players.get(i).sendMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()), null);
 					mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), players.get(i).getName(), red.getChatColor() + red.getDisplayName()), null, players.get(i));
 				}
