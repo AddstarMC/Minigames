@@ -316,7 +316,7 @@ public class PlayerData {
 	}
 	
 	public void startMPMinigame(Minigame minigame, boolean teleport){
-		List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
+		List<MinigamePlayer> players = new ArrayList<>();
 		players.addAll(minigame.getPlayers());
 		
 		Collections.shuffle(players);
@@ -412,6 +412,78 @@ public class PlayerData {
 		
 		minigame.setState(MinigameState.STARTED);
 	}
+
+	public void teleportToStart(Minigame minigame) {
+        List<MinigamePlayer> players = new ArrayList<>();
+        players.addAll(minigame.getPlayers());
+
+        Collections.shuffle(players);
+
+        if (minigame.isTeamGame() && GameMechanics.getGameMechanic(minigame.getMechanicName()) != null) {
+            GameMechanics.getGameMechanic(minigame.getMechanicName()).balanceTeam(players, minigame);
+        }
+
+        Location start = null;
+        int pos = 0;
+        Map<Team, Integer> tpos = new HashMap<Team, Integer>();
+        for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {
+            tpos.put(t, 0);
+        }
+
+        for (MinigamePlayer ply : players) {
+            if (!minigame.isTeamGame()) {
+                if (pos < minigame.getStartLocations().size()) {
+                    ply.setStartTime(Calendar.getInstance().getTimeInMillis());
+                    start = minigame.getStartLocations().get(pos);
+                } else {
+                    pos = 0;
+                    if (!minigame.getStartLocations().isEmpty()) {
+                        start = minigame.getStartLocations().get(0);
+                    } else {
+                        ply.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), "error");
+                        quitMinigame(ply, false);
+                    }
+                }
+            } else {
+                Team team = ply.getTeam();
+                if (TeamsModule.getMinigameModule(minigame).hasTeamStartLocations()) {
+                    if (tpos.get(team) >= team.getStartLocations().size()) {
+                        tpos.put(team, 0);
+                    }
+                    start = team.getStartLocations().get(tpos.get(team));
+                    tpos.put(team, tpos.get(team) + 1);
+                } else {
+                    if (pos < minigame.getStartLocations().size()) {
+                        start = minigame.getStartLocations().get(pos);
+                    } else {
+                        pos = 0;
+                        if (!minigame.getStartLocations().isEmpty()) {
+                            start = minigame.getStartLocations().get(0);
+                        } else {
+                            ply.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), "error");
+                            quitMinigame(ply, false);
+                        }
+                    }
+                }
+            }
+
+            if (start != null) {
+                ply.teleport(start);
+                ply.setStartPos(start);
+                ply.setCheckpoint(start);
+                if (minigame.getMaxScore() != 0) {
+                    ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), null);
+                }
+            }
+            pos++;
+            ply.getLoadout().equiptLoadout(ply);
+            if (minigame.isAllowedFlight()) {
+                ply.setCanFly(true);
+                if (minigame.isFlightEnabled())
+                    ply.getPlayer().setFlying(true);
+            }
+        }
+    }
 	
 	public void revertToCheckpoint(MinigamePlayer player) {
 		

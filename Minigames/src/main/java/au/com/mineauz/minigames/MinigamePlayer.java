@@ -39,6 +39,16 @@ public class MinigamePlayer implements ScriptObject {
 	private Minigame minigame = null;
 	private PlayerLoadout loadout = null;
 	private boolean requiredQuit = false;
+
+	public Location getStartPos() {
+		return startPos;
+	}
+
+	public void setStartPos(Location startPos) {
+		this.startPos = startPos;
+	}
+
+	private Location startPos = null;
 	private Location quitPos = null;
 	private List<String> flags = new ArrayList<String>();
 	private Location checkpoint = null;

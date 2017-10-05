@@ -14,6 +14,7 @@ import au.com.mineauz.minigames.sounds.PlayMGSound;
 
 public class MultiplayerTimer{
 	private int playerWaitTime;
+	private int oPlayerWaitTime;
 	private int startWaitTime;
 	private int oStartWaitTime;
 	private Minigame minigame;
@@ -33,21 +34,18 @@ public class MultiplayerTimer{
 			if(playerWaitTime <= 0)
 				playerWaitTime = 10;
 		}
-		
-		if(minigame.getStartWaitTime() == 0	){
+		oPlayerWaitTime = playerWaitTime;
+		startWaitTime = minigame.getStartWaitTime();  //minigames setting should be priority over general plugin config.
+		if(startWaitTime == 0	){
 			startWaitTime = plugin.getConfig().getInt("multiplayer.startcountdown");
 			if(startWaitTime <= 0)
 				startWaitTime = 5;
 		}
-		else
-			startWaitTime = minigame.getStartWaitTime();
 		oStartWaitTime = startWaitTime;
 		timeMsg.addAll(plugin.getConfig().getIntegerList("multiplayer.timerMessageInterval"));
 	}
 	
 	public void startTimer(){
-//		playerWaitTime += 1;
-//		startWaitTime += 1;
 		if(taskID != -1)
 			removeTimer();
 		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
@@ -56,7 +54,7 @@ public class MultiplayerTimer{
 			public void run() {
 				
 				if(playerWaitTime != 0 && !paused){
-					if(playerWaitTime == plugin.getConfig().getInt("multiplayer.waitforplayers")){
+					if(playerWaitTime == oPlayerWaitTime){
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.waitingForPlayers"));
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", playerWaitTime));
 						minigame.setState(MinigameState.WAITING);
