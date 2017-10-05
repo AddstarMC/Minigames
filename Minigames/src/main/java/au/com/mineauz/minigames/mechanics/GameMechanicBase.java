@@ -1,21 +1,17 @@
 package au.com.mineauz.minigames.mechanics;
 
-import java.util.EnumSet;
-import java.util.List;
-
-import org.bukkit.event.Listener;
-
-import au.com.mineauz.minigames.MinigameData;
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.PlayerData;
+import au.com.mineauz.minigames.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import org.bukkit.event.Listener;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 public abstract class GameMechanicBase implements Listener{
 	public static Minigames plugin;
@@ -60,9 +56,12 @@ public abstract class GameMechanicBase implements Listener{
 	 *
 	 * @param players The players to be balanced to a team
 	 * @param minigame The minigame in which the balancing occours
-	 */
-	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame){
-		if(minigame.isTeamGame()){
+     * @return List of {@link MinigamePlayer} that have been moved to a different or new team.
+     */
+
+    public List<MinigamePlayer> balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
+        List<MinigamePlayer> result = new ArrayList<>();
+        if(minigame.isTeamGame()){
 			boolean sorted = false;
 			for(MinigamePlayer ply : players){
 				if(ply.getTeam() == null){
@@ -97,7 +96,8 @@ public abstract class GameMechanicBase implements Listener{
 				if(smt != null && lgt != null && lgt.getPlayers().size() - smt.getPlayers().size() > 1){
 					MinigamePlayer pl = lgt.getPlayers().get(0);
 					MultiplayerType.switchTeam(minigame, pl, smt);
-					pl.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), null);
+                    result.add(pl);
+                    pl.sendMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()), null);
 					mdata.sendMinigameMessage(minigame, 
 							String.format(smt.getGameAutobalanceMessage(), 
 									pl.getDisplayName(minigame.usePlayerDisplayNames()), smt.getChatColor() + smt.getDisplayName()), null, pl);
@@ -107,7 +107,8 @@ public abstract class GameMechanicBase implements Listener{
 				}
 			}
 		}
-	}
+        return result;
+    }
 
 	void autoBalanceonDeath(MinigamePlayer ply, Minigame mgm){
 		Team smt = null;

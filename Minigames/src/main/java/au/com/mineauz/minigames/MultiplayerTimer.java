@@ -1,16 +1,15 @@
 package au.com.mineauz.minigames;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.sounds.MGSounds;
 import au.com.mineauz.minigames.sounds.PlayMGSound;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MultiplayerTimer{
 	private int playerWaitTime;
@@ -57,7 +56,9 @@ public class MultiplayerTimer{
 					if(playerWaitTime == oPlayerWaitTime){
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.waitingForPlayers"));
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", playerWaitTime));
-						minigame.setState(MinigameState.WAITING);
+                        allowInteraction(LobbySettingsModule.getMinigameModule(minigame).canInteractPlayerWait());
+                        freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMovePlayerWait());
+                        minigame.setState(MinigameState.WAITING);
 					}
 					else if(timeMsg.contains(playerWaitTime)){
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", playerWaitTime));
@@ -73,8 +74,9 @@ public class MultiplayerTimer{
 						allowInteraction(LobbySettingsModule.getMinigameModule(minigame).canInteractStartWait());
 						if(LobbySettingsModule.getMinigameModule(minigame).isTeleportOnPlayerWait()){
 							reclearInventories(minigame);
-							pdata.startMPMinigame(minigame, true);
-						}
+
+                            pdata.teleportToStart(minigame, true);
+                        }
 					}
 					else if(timeMsg.contains(startWaitTime)){
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));

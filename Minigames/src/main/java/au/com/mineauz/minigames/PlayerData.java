@@ -1,25 +1,24 @@
 package au.com.mineauz.minigames;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import au.com.mineauz.minigames.blockRecorder.RecorderData;
+import au.com.mineauz.minigames.events.*;
+import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.mechanics.GameMechanicBase;
+import au.com.mineauz.minigames.mechanics.GameMechanics;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.MinigameState;
+import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.minigame.modules.GameOverModule;
+import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
+import au.com.mineauz.minigames.sounds.MGSounds;
+import au.com.mineauz.minigames.sounds.PlayMGSound;
+import au.com.mineauz.minigames.stats.DynamicMinigameStat;
+import au.com.mineauz.minigames.stats.MinigameStats;
+import au.com.mineauz.minigames.stats.StoredGameStats;
+import org.bukkit.*;
 import org.bukkit.FireworkEffect.Type;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -29,26 +28,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 
-import au.com.mineauz.minigames.blockRecorder.RecorderData;
-import au.com.mineauz.minigames.events.EndMinigameEvent;
-import au.com.mineauz.minigames.events.JoinMinigameEvent;
-import au.com.mineauz.minigames.events.QuitMinigameEvent;
-import au.com.mineauz.minigames.events.RevertCheckpointEvent;
-import au.com.mineauz.minigames.events.SpectateMinigameEvent;
-import au.com.mineauz.minigames.events.StartMinigameEvent;
-import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.mechanics.GameMechanics;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.MinigameState;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.GameOverModule;
-import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
-import au.com.mineauz.minigames.sounds.MGSounds;
-import au.com.mineauz.minigames.sounds.PlayMGSound;
-import au.com.mineauz.minigames.stats.DynamicMinigameStat;
-import au.com.mineauz.minigames.stats.MinigameStats;
-import au.com.mineauz.minigames.stats.StoredGameStats;
+import java.math.BigDecimal;
+import java.util.*;
 
 public class PlayerData {
 	private Map<String, MinigamePlayer> minigamePlayers = new HashMap<String, MinigamePlayer>();
@@ -318,114 +299,52 @@ public class PlayerData {
 	public void startMPMinigame(Minigame minigame, boolean teleport){
 		List<MinigamePlayer> players = new ArrayList<>();
 		players.addAll(minigame.getPlayers());
-		
-		Collections.shuffle(players);
-		
-		if(minigame.isTeamGame() && GameMechanics.getGameMechanic(minigame.getMechanicName()) != null){
-			GameMechanics.getGameMechanic(minigame.getMechanicName()).balanceTeam(players, minigame);
-		}
-		
-		Location start = null;
-		int pos = 0;
-		Map<Team, Integer> tpos = new HashMap<Team, Integer>();
-		for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
-			tpos.put(t, 0);
-		}
-		
 		for(MinigamePlayer ply : players){
 			if(!minigame.isTeamGame()){
-				if(pos < minigame.getStartLocations().size()){
-					ply.setStartTime(Calendar.getInstance().getTimeInMillis());
-					if(teleport){
-						start = minigame.getStartLocations().get(pos);
-					}
-				} 
-				else{
-					pos = 0;
-					if(!minigame.getStartLocations().isEmpty()){
-						if(teleport){
-							start = minigame.getStartLocations().get(0);
-						}
-					}
-					else {
-						ply.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), "error");
-						quitMinigame(ply, false);
-					}
-				}
-				ply.setCheckpoint(start);
-			}
-			else{
-				Team team = ply.getTeam();
-				if(TeamsModule.getMinigameModule(minigame).hasTeamStartLocations()){
-					if(tpos.get(team) >= team.getStartLocations().size()){
-						tpos.put(team, 0);
-					}
-					start = team.getStartLocations().get(tpos.get(team));
-					tpos.put(team, tpos.get(team) + 1);
-				}
-				else{
-					if(pos < minigame.getStartLocations().size()){
-						if(teleport){
-							start = minigame.getStartLocations().get(pos);
-						}
-					} 
-					else{
-						pos = 0;
-						if(!minigame.getStartLocations().isEmpty()){
-							if(teleport){
-								start = minigame.getStartLocations().get(0);
-							}
-						}
-						else {
-							ply.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), "error");
-							quitMinigame(ply, false);
-						}
-					}
-				}
 				if(minigame.getLives() > 0){
 					ply.sendMessage(MinigameUtils.formStr("minigame.livesLeft", minigame.getLives()), null);
 				}
-			}
-			
-			if(start != null){
-				if(teleport){
-					ply.teleport(start);
-					ply.setCheckpoint(start);
-				}
-				if(minigame.getMaxScore() != 0){
-					ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), null);
-				}
-			}
-			
-			pos++;
+                GameMechanicBase mech = GameMechanics.getGameMechanic(minigame.getMechanicName());
+                if (mech != null) {
+                    List<MinigamePlayer> moved = mech.balanceTeam(players, minigame);
+                    //if any players are moved we need to reteleport everyone
+                    if (moved != null && moved.size() > 0) {
+                        teleportToStart(minigame, false);
+                    }
+                }
+            }
+            if (minigame.getMaxScore() != 0) {
+                ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), null);
+            }
+
 			ply.getLoadout().equiptLoadout(ply);
 			if(minigame.isAllowedFlight()){
 				ply.setCanFly(true);
 				if(minigame.isFlightEnabled())
 					ply.getPlayer().setFlying(true);
 			}
-			
 			PlayMGSound.playSound(ply, MGSounds.getSound("gameStart"));
 		}
-		
+
 		Bukkit.getServer().getPluginManager().callEvent(new StartMinigameEvent(players, minigame, teleport));
 		
 		minigame.setState(MinigameState.STARTED);
 	}
 
-	public void teleportToStart(Minigame minigame) {
+    public void teleportToStart(Minigame minigame, Boolean balance) {
         List<MinigamePlayer> players = new ArrayList<>();
         players.addAll(minigame.getPlayers());
-
-        Collections.shuffle(players);
-
-        if (minigame.isTeamGame() && GameMechanics.getGameMechanic(minigame.getMechanicName()) != null) {
-            GameMechanics.getGameMechanic(minigame.getMechanicName()).balanceTeam(players, minigame);
+        if (balance && minigame.isTeamGame()) {
+            GameMechanicBase mech = GameMechanics.getGameMechanic(minigame.getMechanicName());
+            if (mech != null) {
+                mech.balanceTeam(players, minigame);
+            }
         }
+        Collections.shuffle(players);
 
         Location start = null;
         int pos = 0;
-        Map<Team, Integer> tpos = new HashMap<Team, Integer>();
+        Map<Team, Integer> tpos = new HashMap<>();
         for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {
             tpos.put(t, 0);
         }
@@ -471,17 +390,8 @@ public class PlayerData {
                 ply.teleport(start);
                 ply.setStartPos(start);
                 ply.setCheckpoint(start);
-                if (minigame.getMaxScore() != 0) {
-                    ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), null);
-                }
             }
             pos++;
-            ply.getLoadout().equiptLoadout(ply);
-            if (minigame.isAllowedFlight()) {
-                ply.setCanFly(true);
-                if (minigame.isFlightEnabled())
-                    ply.getPlayer().setFlying(true);
-            }
         }
     }
 	
@@ -499,8 +409,8 @@ public class PlayerData {
 			Player p = player.getPlayer();
 			if ((p != null) && (p.isOnline())) {
 				p.setFireTicks(0);
-				p.setHealth(p.getMaxHealth());
-				p.setFoodLevel(20);
+                p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+                p.setFoodLevel(20);
 				p.setSaturation(20f);
 				p.setRemainingAir(p.getMaximumAir());
 			}
@@ -706,187 +616,189 @@ public class PlayerData {
 	
 	
 	public void endMinigame(Minigame minigame, List<MinigamePlayer> winners, List<MinigamePlayer> losers){
-		EndMinigameEvent event = new EndMinigameEvent(winners, losers, minigame);
-		Bukkit.getServer().getPluginManager().callEvent(event);
+        if (minigame.getState() != MinigameState.ENDING) {
+            minigame.setState(MinigameState.ENDING);
+            EndMinigameEvent event = new EndMinigameEvent(winners, losers, minigame);
+            Bukkit.getServer().getPluginManager().callEvent(event);
+            MinigameState state = minigame.getState();
+            if (!event.isCancelled()) {
+                winners = event.getWinners();
+                losers = event.getLosers();
+                //Call Mechanics End
+                minigame.getMechanic().endMinigame(minigame, winners, losers);
 
-		if(!event.isCancelled()){
-			winners = event.getWinners();
-			losers = event.getLosers();
+                //Prepare split money
+                double bets = 0;
+                if (minigame.getMpBets() != null) {
+                    if (minigame.getMpBets().hasMoneyBets()) {
+                        List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>();
+                        plys.addAll(event.getWinners());
 
-			//Call Mechanics End
-			minigame.getMechanic().endMinigame(minigame, winners, losers);
-			
-			//Prepare split money
-			double bets = 0;
-			if(minigame.getMpBets() != null){
-				if(minigame.getMpBets().hasMoneyBets()){
-					List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>();
-					plys.addAll(event.getWinners());
-					
-					if(!plys.isEmpty()){
-						bets = minigame.getMpBets().claimMoneyBets() / (double) plys.size();
-						BigDecimal roundBets = new BigDecimal(bets);
-						roundBets = roundBets.setScale(2, BigDecimal.ROUND_HALF_UP);
-						bets = roundBets.doubleValue();
-					}
-					minigame.setMpBets(null);
-				}
-			}
-			
-			//Broadcast Message
-			if(plugin.getConfig().getBoolean("broadcastCompletion") && minigame.isEnabled()){
-				if(minigame.isTeamGame()){
-					if(winners.size() > 0 || ((TeamsModule)minigame.getModule("Teams")).getDefaultWinner() != null){
-						Team team;
-						if(winners.size() > 0)
-							team = winners.get(0).getTeam();
-						else
-							team = ((TeamsModule)minigame.getModule("Teams")).getTeam(((TeamsModule)minigame.getModule("Teams")).getDefaultWinner());
-						String score = "";
-						List<Team> teams = TeamsModule.getMinigameModule(minigame).getTeams();
-						for(Team t : teams){
-							score += t.getColor().getColor().toString() + t.getScore();
-							if(t != teams.get(teams.size() - 1)){
-								score += ChatColor.WHITE + " : ";
-							}
-						}
-						String nscore = ", " + MinigameUtils.formStr("player.end.team.score", score);
-						if(team.getScore() > 0){
-							MinigameUtils.broadcast(MinigameUtils.formStr("player.end.team.win", 
-								team.getChatColor() + team.getDisplayName() + ChatColor.WHITE, minigame.getName(true)) + nscore, minigame, ChatColor.GREEN);
-						}
-						else{
-							MinigameUtils.broadcast(MinigameUtils.formStr("player.end.team.win", 
-									team.getChatColor() + team.getDisplayName() + ChatColor.WHITE, minigame.getName(true)), minigame, ChatColor.GREEN);
-						}
-					}
-					else{
-						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastNobodyWon", minigame.getName(true)), minigame, ChatColor.RED);
-					}
-				}
-				else{
-					if(winners.size() == 1){
-						String score = "";
-						if(winners.get(0).getScore() != 0)
-							score = MinigameUtils.formStr("player.end.broadcastScore", winners.get(0).getScore());
-						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getDisplayName(minigame.usePlayerDisplayNames()), minigame.getName(true)) + ". " + score, minigame, ChatColor.GREEN);
-					}
-					else if(winners.size() > 1){
-						String win = "";
-						Collections.sort(winners, new Comparator<MinigamePlayer>() {
-							@Override
-							public int compare(MinigamePlayer o1,
-									MinigamePlayer o2) {
-								return Integer.valueOf(o1.getScore()).compareTo(o2.getScore());
-							}
-						});
-						
-						for(MinigamePlayer pl : winners){
-							if(winners.indexOf(pl) < 2){
-								win += pl.getDisplayName(minigame.usePlayerDisplayNames());
-								if(winners.indexOf(pl) + 2 >= winners.size()){
-									win += " and ";
-								}
-								else{
-									win += ", ";
-								}
-							}
-							else{
-								win += String.valueOf(winners.size() - 3) + " others";
-							}
-						}
-						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", win, minigame.getName(true)) + ". ", minigame, ChatColor.GREEN);
-					}
-					else{
-						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastNobodyWon", minigame.getName(true)), minigame, ChatColor.RED);
-					}
-				}
-			}
-			
-			GameOverModule gom = GameOverModule.getMinigameModule(minigame);
-			boolean usedTimer = false;
-			
-			gom.setWinners(winners);
-			gom.setLosers(losers);
-			
-			if(gom.getTimer() > 0 && minigame.getType() == MinigameType.MULTIPLAYER){
-				gom.startEndGameTimer();
-				usedTimer = true;
-			}
-			
-			for(MinigamePlayer player : losers){
-				player.setEndTime(System.currentTimeMillis());
-				if(!usedTimer)
-					quitMinigame(player, true);
-				PlayMGSound.playSound(player, MGSounds.getSound("lose"));
-			}
-			
-			for(MinigamePlayer player : winners){
-				player.setEndTime(System.currentTimeMillis());
-				
-				StoredGameStats saveData = new StoredGameStats(minigame, player);
-				saveData.addStat(MinigameStats.Attempts, 1);
-				saveData.addStat(MinigameStats.Wins, 1);
-				
-				saveData.addStat(MinigameStats.Kills, player.getKills());
-				saveData.addStat(MinigameStats.Deaths, player.getDeaths());
-				saveData.addStat(MinigameStats.Score, player.getScore());
-				saveData.addStat(MinigameStats.Reverts, player.getReverts());
-				saveData.addStat(MinigameStats.CompletionTime, player.getEndTime() - player.getStartTime() + player.getStoredTime());
-				
-				for (DynamicMinigameStat stat : MinigameStats.getDynamicStats()) {
-					if (stat.doesApply(minigame, player, true)) {
-						saveData.addStat(stat, stat.getValue(minigame, player, true));
-					}
-				}
-				
-				saveData.applySettings(minigame.getStatSettings(saveData));
-				
-				if(!usedTimer)
-					quitMinigame(player, true);
-				
-				//Group money bets
-				if(bets != 0){
-					plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), bets);
-					player.sendMessage(MinigameUtils.formStr("player.bet.winMoney", Minigames.plugin.getEconomy().format(bets)), null);
-				}
-				
-				// Record player completion and give rewards
-				if(minigame.isEnabled()){
-					plugin.queueStatSave(saveData, true);
-				} else {
-					MinigameUtils.debugMessage("Skipping SQL data save for " + saveData + "; minigame is disabled");
-				}
-				
-				//Item Bets (for non groups)
-				if(minigame.getMpBets() != null){
-					if(minigame.getMpBets().hasBets()){
-						if(!player.isInMinigame())
-							player.getPlayer().getInventory().addItem(minigame.getMpBets().claimBets());
-						else{
-							for(ItemStack i : minigame.getMpBets().claimBets()){
-								player.addTempRewardItem(i);
-							}
-						}
-						minigame.setMpBets(null);
-					}
-				}
-				
-				PlayMGSound.playSound(player, MGSounds.getSound("win"));
-			}
-			
-			if(!usedTimer){
-				gom.clearLosers();
-				gom.clearWinners();
-			}
-			
-			mdata.clearClaimedScore(minigame);
-			
-			//Call Types End.
-			mdata.minigameType(minigame.getType()).endMinigame(winners, losers, minigame);
-			minigame.getScoreboardData().reload();
-		}
-	}
+                        if (!plys.isEmpty()) {
+                            bets = minigame.getMpBets().claimMoneyBets() / (double) plys.size();
+                            BigDecimal roundBets = new BigDecimal(bets);
+                            roundBets = roundBets.setScale(2, BigDecimal.ROUND_HALF_UP);
+                            bets = roundBets.doubleValue();
+                        }
+                        minigame.setMpBets(null);
+                    }
+                }
+
+                //Broadcast Message
+                if (plugin.getConfig().getBoolean("broadcastCompletion") && minigame.isEnabled()) {
+                    if (minigame.isTeamGame()) {
+                        if (winners.size() > 0 || ((TeamsModule) minigame.getModule("Teams")).getDefaultWinner() != null) {
+                            Team team;
+                            if (winners.size() > 0)
+                                team = winners.get(0).getTeam();
+                            else
+                                team = ((TeamsModule) minigame.getModule("Teams")).getTeam(((TeamsModule) minigame.getModule("Teams")).getDefaultWinner());
+                            String score = "";
+                            List<Team> teams = TeamsModule.getMinigameModule(minigame).getTeams();
+                            for (Team t : teams) {
+                                score += t.getColor().getColor().toString() + t.getScore();
+                                if (t != teams.get(teams.size() - 1)) {
+                                    score += ChatColor.WHITE + " : ";
+                                }
+                            }
+                            String nscore = ", " + MinigameUtils.formStr("player.end.team.score", score);
+                            if (team.getScore() > 0) {
+                                MinigameUtils.broadcast(MinigameUtils.formStr("player.end.team.win",
+                                        team.getChatColor() + team.getDisplayName() + ChatColor.WHITE, minigame.getName(true)) + nscore, minigame, ChatColor.GREEN);
+                            } else {
+                                MinigameUtils.broadcast(MinigameUtils.formStr("player.end.team.win",
+                                        team.getChatColor() + team.getDisplayName() + ChatColor.WHITE, minigame.getName(true)), minigame, ChatColor.GREEN);
+                            }
+                        } else {
+                            MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastNobodyWon", minigame.getName(true)), minigame, ChatColor.RED);
+                        }
+                    } else {
+                        if (winners.size() == 1) {
+                            String score = "";
+                            if (winners.get(0).getScore() != 0)
+                                score = MinigameUtils.formStr("player.end.broadcastScore", winners.get(0).getScore());
+                            MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getDisplayName(minigame.usePlayerDisplayNames()), minigame.getName(true)) + ". " + score, minigame, ChatColor.GREEN);
+                        } else if (winners.size() > 1) {
+                            String win = "";
+                            Collections.sort(winners, new Comparator<MinigamePlayer>() {
+                                @Override
+                                public int compare(MinigamePlayer o1,
+                                                   MinigamePlayer o2) {
+                                    return Integer.valueOf(o1.getScore()).compareTo(o2.getScore());
+                                }
+                            });
+
+                            for (MinigamePlayer pl : winners) {
+                                if (winners.indexOf(pl) < 2) {
+                                    win += pl.getDisplayName(minigame.usePlayerDisplayNames());
+                                    if (winners.indexOf(pl) + 2 >= winners.size()) {
+                                        win += " and ";
+                                    } else {
+                                        win += ", ";
+                                    }
+                                } else {
+                                    win += String.valueOf(winners.size() - 3) + " others";
+                                }
+                            }
+                            MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", win, minigame.getName(true)) + ". ", minigame, ChatColor.GREEN);
+                        } else {
+                            MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastNobodyWon", minigame.getName(true)), minigame, ChatColor.RED);
+                        }
+                    }
+                }
+
+                GameOverModule gom = GameOverModule.getMinigameModule(minigame);
+                boolean usedTimer = false;
+
+                gom.setWinners(winners);
+                gom.setLosers(losers);
+
+                if (gom.getTimer() > 0 && minigame.getType() == MinigameType.MULTIPLAYER) {
+                    gom.startEndGameTimer();
+                    usedTimer = true;
+                }
+
+                for (MinigamePlayer player : losers) {
+                    player.setEndTime(System.currentTimeMillis());
+                    if (!usedTimer)
+                        quitMinigame(player, true);
+                    PlayMGSound.playSound(player, MGSounds.getSound("lose"));
+                }
+
+                for (MinigamePlayer player : winners) {
+                    player.setEndTime(System.currentTimeMillis());
+
+                    StoredGameStats saveData = new StoredGameStats(minigame, player);
+                    saveData.addStat(MinigameStats.Attempts, 1);
+                    saveData.addStat(MinigameStats.Wins, 1);
+
+                    saveData.addStat(MinigameStats.Kills, player.getKills());
+                    saveData.addStat(MinigameStats.Deaths, player.getDeaths());
+                    saveData.addStat(MinigameStats.Score, player.getScore());
+                    saveData.addStat(MinigameStats.Reverts, player.getReverts());
+                    saveData.addStat(MinigameStats.CompletionTime, player.getEndTime() - player.getStartTime() + player.getStoredTime());
+
+                    for (DynamicMinigameStat stat : MinigameStats.getDynamicStats()) {
+                        if (stat.doesApply(minigame, player, true)) {
+                            saveData.addStat(stat, stat.getValue(minigame, player, true));
+                        }
+                    }
+
+                    saveData.applySettings(minigame.getStatSettings(saveData));
+
+                    if (!usedTimer)
+                        quitMinigame(player, true);
+
+                    //Group money bets
+                    if (bets != 0) {
+                        plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), bets);
+                        player.sendMessage(MinigameUtils.formStr("player.bet.winMoney", Minigames.plugin.getEconomy().format(bets)), null);
+                    }
+
+                    // Record player completion and give rewards
+                    if (minigame.isEnabled()) {
+                        plugin.queueStatSave(saveData, true);
+                    } else {
+                        MinigameUtils.debugMessage("Skipping SQL data save for " + saveData + "; minigame is disabled");
+                    }
+
+                    //Item Bets (for non groups)
+                    if (minigame.getMpBets() != null) {
+                        if (minigame.getMpBets().hasBets()) {
+                            if (!player.isInMinigame())
+                                player.getPlayer().getInventory().addItem(minigame.getMpBets().claimBets());
+                            else {
+                                for (ItemStack i : minigame.getMpBets().claimBets()) {
+                                    player.addTempRewardItem(i);
+                                }
+                            }
+                            minigame.setMpBets(null);
+                        }
+                    }
+
+                    PlayMGSound.playSound(player, MGSounds.getSound("win"));
+                }
+
+                if (!usedTimer) {
+                    gom.clearLosers();
+                    gom.clearWinners();
+                }
+
+                mdata.clearClaimedScore(minigame);
+
+                //Call Types End.
+                mdata.minigameType(minigame.getType()).endMinigame(winners, losers, minigame);
+                minigame.getScoreboardData().reload();
+                minigame.setState(MinigameState.ENDED);
+                if (minigame.getPlayers().size() == 0) {
+                    minigame.setState(MinigameState.IDLE);
+                }
+            } else {
+                minigame.setState(state);
+                Minigames.plugin.getLogger().info(minigame.getName(true) + ": MinigameEndEvent was cancelled.  State Reset");
+            }
+        }
+    }
 	
 	@Deprecated
 	public boolean playerInMinigame(Player player){

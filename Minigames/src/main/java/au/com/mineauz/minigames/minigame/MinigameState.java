@@ -8,5 +8,6 @@ public enum MinigameState {
 	STARTING,
 	STARTED,
 	REGENERATING,
-	ENDED
+    ENDING,
+    ENDED
 }
