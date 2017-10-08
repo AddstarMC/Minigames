@@ -1,9 +1,12 @@
 package au.com.mineauz.minigames.gametypes;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.events.TimerExpireEvent;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.MinigameState;
+import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
+import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -12,18 +15,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.MinigameData;
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.MultiplayerTimer;
-import au.com.mineauz.minigames.PlayerData;
-import au.com.mineauz.minigames.events.TimerExpireEvent;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.MinigameState;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class MultiplayerType extends MinigameTypeBase{
 	private static Minigames plugin = Minigames.plugin;

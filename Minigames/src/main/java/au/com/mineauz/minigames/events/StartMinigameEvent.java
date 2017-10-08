@@ -1,11 +1,14 @@
 package au.com.mineauz.minigames.events;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * You cannot cancel this event
+ */
 public class StartMinigameEvent extends AbstractMinigameEvent{
 
 	private boolean willTeleport;
@@ -16,11 +19,11 @@ public class StartMinigameEvent extends AbstractMinigameEvent{
 		this.willTeleport = willTeleport;
 		this.players = players;
 	}
-	
+
 	public boolean getWillTeleport(){
 		return willTeleport;
 	}
-	
+
 	public List<MinigamePlayer> getPlayers(){
 		return new ArrayList<MinigamePlayer>(players);
 	}
@@ -28,7 +31,7 @@ public class StartMinigameEvent extends AbstractMinigameEvent{
 	@Override
 	public boolean isCancelled(){return false;}
 
-    @Override
+	@Override
 	public void setCancelled(boolean b){
 		throw new UnsupportedOperationException("Cannot cancel a  Minigames Broadcast Event");
 	}

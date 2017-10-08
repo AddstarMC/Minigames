@@ -1,12 +1,5 @@
 package au.com.mineauz.minigames.mechanics;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.PlayerDeathEvent;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameType;
@@ -17,6 +10,12 @@ import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.InfectionModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.PlayerDeathEvent;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 public class InfectionMechanic extends GameMechanicBase{
 
@@ -44,39 +43,41 @@ public class InfectionMechanic extends GameMechanicBase{
 	}
 
 	@Override
-	public void balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
-		for(int i = 0; i < players.size(); i++){
-			MinigamePlayer ply = players.get(i);
-			Team red = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.RED);
+    public List<MinigamePlayer> balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
+        List<MinigamePlayer> result = new ArrayList<>();
+        for (MinigamePlayer ply : players) {
+            Team red = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.RED);
 			Team blue = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.BLUE);
 			Team team = ply.getTeam();
-			
-			if(team == blue){
-				if(red.getPlayers().size() < Math.ceil(players.size() * 
-						(((Integer)InfectionModule.getMinigameModule(minigame).getInfectedPercent()).doubleValue() / 100d)) && !red.isFull()){
-					MultiplayerType.switchTeam(minigame, ply, red);
-					players.get(i).sendMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()), null);
-					mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), players.get(i).getName(), red.getChatColor() + red.getDisplayName()), null, players.get(i));
-				}
+            Double percent = ((Integer) InfectionModule.getMinigameModule(minigame).getInfectedPercent()).doubleValue() / 100d;
+            if (team == blue) {
+                if (red.getPlayers().size() < Math.ceil(players.size() * percent) && !red.isFull()) {
+                    MultiplayerType.switchTeam(minigame, ply, red);
+                    result.add(ply);
+                    ply.sendMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()), null);
+                    mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), ply.getName(), red.getChatColor() + red.getDisplayName()), null, ply);
+                }
 			}
 			else if(team == null){
-				if(red.getPlayers().size() < Math.ceil(players.size() * 0.18) && !red.isFull()){
-					red.addPlayer(ply);
-					players.get(i).sendMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()), null);
-					mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), players.get(i).getName(), red.getChatColor() + red.getDisplayName()), null, players.get(i));
-				}
-				else if(!blue.isFull()){
+                if (red.getPlayers().size() < Math.ceil(players.size() * percent) && !red.isFull()) {
+                    red.addPlayer(ply);
+                    result.add(ply);
+                    ply.sendMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()), null);
+                    mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), ply.getName(), red.getChatColor() + red.getDisplayName()), null, ply);
+                } else if(!blue.isFull()){
 					blue.addPlayer(ply);
-					ply.sendMessage(String.format(blue.getAssignMessage(), blue.getChatColor() + blue.getDisplayName()), null);
-					mdata.sendMinigameMessage(minigame, String.format(blue.getGameAssignMessage(), players.get(i).getName(), blue.getChatColor() + blue.getDisplayName()), null, players.get(i));
-				}
+                    result.add(ply);
+                    ply.sendMessage(String.format(blue.getAssignMessage(), blue.getChatColor() + blue.getDisplayName()), null);
+                    mdata.sendMinigameMessage(minigame, String.format(blue.getGameAssignMessage(), ply.getName(), blue.getChatColor() + blue.getDisplayName()), null, ply);
+                }
 				else{
 					pdata.quitMinigame(ply, false);
 					ply.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
 				}
 			}
 		}
-	}
+        return result;
+    }
 	
 	@Override
 	public MinigameModule displaySettings(Minigame minigame){
