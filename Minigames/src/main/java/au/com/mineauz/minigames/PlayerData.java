@@ -35,7 +35,8 @@ public class PlayerData {
 	private Map<String, MinigamePlayer> minigamePlayers = new HashMap<String, MinigamePlayer>();
 	
 	private boolean partyMode = false;
-	
+	Map<Team, Integer> tpos;
+	private int pos;
 	private List<String> deniedCommands = new ArrayList<String>();
 	
 	private static Minigames plugin = Minigames.plugin;
@@ -300,100 +301,106 @@ public class PlayerData {
 		List<MinigamePlayer> players = new ArrayList<>();
 		players.addAll(minigame.getPlayers());
 		for(MinigamePlayer ply : players){
+			if (minigame.getMaxScore() != 0)
+				ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), null);
+			if (minigame.isAllowedFlight()) ply.setCanFly(true);
+			if (minigame.isFlightEnabled() && ply.canFly()) ply.getPlayer().setFlying(true);
+			ply.getLoadout().equiptLoadout(ply);
+
 			if(!minigame.isTeamGame()){
 				if(minigame.getLives() > 0){
 					ply.sendMessage(MinigameUtils.formStr("minigame.livesLeft", minigame.getLives()), null);
 				}
-                GameMechanicBase mech = GameMechanics.getGameMechanic(minigame.getMechanicName());
-                if (mech != null) {
-                    List<MinigamePlayer> moved = mech.balanceTeam(players, minigame);
-                    //if any players are moved we need to reteleport everyone
-                    if (moved != null && moved.size() > 0) {
-                        teleportToStart(minigame, false);
-                    }
-                }
-            }
-            if (minigame.getMaxScore() != 0) {
-                ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), null);
-            }
-
-			ply.getLoadout().equiptLoadout(ply);
-			if(minigame.isAllowedFlight()){
-				ply.setCanFly(true);
-				if(minigame.isFlightEnabled())
-					ply.getPlayer().setFlying(true);
+				ply.setStartTime(Calendar.getInstance().getTimeInMillis());
+			} else {
+				List<MinigamePlayer> moved = balanceGame(minigame);
+				if (moved != null && moved.size() > 0) {
+					teleportToStart(minigame, false);
+				}
 			}
+
 			PlayMGSound.playSound(ply, MGSounds.getSound("gameStart"));
 		}
-
+		if (teleport) teleportToStart(minigame, false);
 		Bukkit.getServer().getPluginManager().callEvent(new StartMinigameEvent(players, minigame, teleport));
-		
 		minigame.setState(MinigameState.STARTED);
 	}
+
+	private List<MinigamePlayer> balanceGame(Minigame game) {
+		List<MinigamePlayer> result = null;
+		if (game.isTeamGame()) {
+			GameMechanicBase mech = GameMechanics.getGameMechanic(game.getMechanicName());
+			if (mech != null) {
+				List<MinigamePlayer> players = new ArrayList<>();
+				players.addAll(game.getPlayers());
+				result = mech.balanceTeam(players, game);
+			}
+		}
+		return result;
+	}
+
 
     public void teleportToStart(Minigame minigame, Boolean balance) {
         List<MinigamePlayer> players = new ArrayList<>();
         players.addAll(minigame.getPlayers());
-        if (balance && minigame.isTeamGame()) {
-            GameMechanicBase mech = GameMechanics.getGameMechanic(minigame.getMechanicName());
-            if (mech != null) {
-                mech.balanceTeam(players, minigame);
-            }
-        }
-        Collections.shuffle(players);
-
-        Location start = null;
-        int pos = 0;
+		if (balance) balanceGame(minigame);
+		Collections.shuffle(players);
+		Location start;
+		int pos = 0;
         Map<Team, Integer> tpos = new HashMap<>();
         for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {
             tpos.put(t, 0);
         }
-
         for (MinigamePlayer ply : players) {
-            if (!minigame.isTeamGame()) {
-                if (pos < minigame.getStartLocations().size()) {
-                    ply.setStartTime(Calendar.getInstance().getTimeInMillis());
-                    start = minigame.getStartLocations().get(pos);
-                } else {
-                    pos = 0;
-                    if (!minigame.getStartLocations().isEmpty()) {
-                        start = minigame.getStartLocations().get(0);
-                    } else {
-                        ply.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), "error");
-                        quitMinigame(ply, false);
-                    }
-                }
-            } else {
-                Team team = ply.getTeam();
-                if (TeamsModule.getMinigameModule(minigame).hasTeamStartLocations()) {
-                    if (tpos.get(team) >= team.getStartLocations().size()) {
-                        tpos.put(team, 0);
-                    }
-                    start = team.getStartLocations().get(tpos.get(team));
-                    tpos.put(team, tpos.get(team) + 1);
-                } else {
-                    if (pos < minigame.getStartLocations().size()) {
-                        start = minigame.getStartLocations().get(pos);
-                    } else {
-                        pos = 0;
-                        if (!minigame.getStartLocations().isEmpty()) {
-                            start = minigame.getStartLocations().get(0);
-                        } else {
-                            ply.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), "error");
-                            quitMinigame(ply, false);
-                        }
-                    }
-                }
-            }
+			PlayerLocation ploc = getStartLocation(ply, minigame, pos, tpos);
+			start = ploc.location;
+			pos = ploc.position;
+			if (start == null) {
+				ply.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), "error");
+				quitMinigame(ply, false);
+			}
+			ply.teleport(start);
+			ply.setStartPos(start);
+			ply.setCheckpoint(start);
+			pos++;
 
-            if (start != null) {
-                ply.teleport(start);
-                ply.setStartPos(start);
-                ply.setCheckpoint(start);
-            }
-            pos++;
-        }
-    }
+		}
+	}
+
+	private PlayerLocation getStartLocation(MinigamePlayer player, Minigame game, int pos, Map<Team, Integer> tpos) {
+		PlayerLocation result = new PlayerLocation(pos);
+		if (!game.isTeamGame()) {
+			if (pos < game.getStartLocations().size()) {
+				player.setStartTime(Calendar.getInstance().getTimeInMillis());
+				result.location = game.getStartLocations().get(pos);
+			} else {
+				pos = 0;
+				if (!game.getStartLocations().isEmpty()) {
+					result.location = game.getStartLocations().get(0);
+				}
+			}
+		} else {
+			Team team = player.getTeam();
+			if (TeamsModule.getMinigameModule(game).hasTeamStartLocations()) {
+				if (tpos.get(team) >= team.getStartLocations().size()) {
+					tpos.put(team, 0);
+				}
+				result.location = team.getStartLocations().get(tpos.get(team));
+				tpos.put(team, tpos.get(team) + 1);
+			} else {
+				if (pos < game.getStartLocations().size()) {
+					result.location = game.getStartLocations().get(pos);
+				} else {
+					pos = 0;
+					if (!game.getStartLocations().isEmpty()) {
+						result.location = game.getStartLocations().get(0);
+					}
+				}
+			}
+		}
+		result.position = pos;
+		return result;
+	}
 	
 	public void revertToCheckpoint(MinigamePlayer player) {
 		
@@ -616,12 +623,9 @@ public class PlayerData {
 	
 	
 	public void endMinigame(Minigame minigame, List<MinigamePlayer> winners, List<MinigamePlayer> losers){
-        if (minigame.getState() != MinigameState.ENDING) {
-            minigame.setState(MinigameState.ENDING);
-            EndMinigameEvent event = new EndMinigameEvent(winners, losers, minigame);
-            Bukkit.getServer().getPluginManager().callEvent(event);
-            MinigameState state = minigame.getState();
-            if (!event.isCancelled()) {
+		EndMinigameEvent event = new EndMinigameEvent(winners, losers, minigame);
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		if (!event.isCancelled()) {
                 winners = event.getWinners();
                 losers = event.getLosers();
                 //Call Mechanics End
@@ -645,67 +649,7 @@ public class PlayerData {
                 }
 
                 //Broadcast Message
-                if (plugin.getConfig().getBoolean("broadcastCompletion") && minigame.isEnabled()) {
-                    if (minigame.isTeamGame()) {
-                        if (winners.size() > 0 || ((TeamsModule) minigame.getModule("Teams")).getDefaultWinner() != null) {
-                            Team team;
-                            if (winners.size() > 0)
-                                team = winners.get(0).getTeam();
-                            else
-                                team = ((TeamsModule) minigame.getModule("Teams")).getTeam(((TeamsModule) minigame.getModule("Teams")).getDefaultWinner());
-                            String score = "";
-                            List<Team> teams = TeamsModule.getMinigameModule(minigame).getTeams();
-                            for (Team t : teams) {
-                                score += t.getColor().getColor().toString() + t.getScore();
-                                if (t != teams.get(teams.size() - 1)) {
-                                    score += ChatColor.WHITE + " : ";
-                                }
-                            }
-                            String nscore = ", " + MinigameUtils.formStr("player.end.team.score", score);
-                            if (team.getScore() > 0) {
-                                MinigameUtils.broadcast(MinigameUtils.formStr("player.end.team.win",
-                                        team.getChatColor() + team.getDisplayName() + ChatColor.WHITE, minigame.getName(true)) + nscore, minigame, ChatColor.GREEN);
-                            } else {
-                                MinigameUtils.broadcast(MinigameUtils.formStr("player.end.team.win",
-                                        team.getChatColor() + team.getDisplayName() + ChatColor.WHITE, minigame.getName(true)), minigame, ChatColor.GREEN);
-                            }
-                        } else {
-                            MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastNobodyWon", minigame.getName(true)), minigame, ChatColor.RED);
-                        }
-                    } else {
-                        if (winners.size() == 1) {
-                            String score = "";
-                            if (winners.get(0).getScore() != 0)
-                                score = MinigameUtils.formStr("player.end.broadcastScore", winners.get(0).getScore());
-                            MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getDisplayName(minigame.usePlayerDisplayNames()), minigame.getName(true)) + ". " + score, minigame, ChatColor.GREEN);
-                        } else if (winners.size() > 1) {
-                            String win = "";
-                            Collections.sort(winners, new Comparator<MinigamePlayer>() {
-                                @Override
-                                public int compare(MinigamePlayer o1,
-                                                   MinigamePlayer o2) {
-                                    return Integer.valueOf(o1.getScore()).compareTo(o2.getScore());
-                                }
-                            });
-
-                            for (MinigamePlayer pl : winners) {
-                                if (winners.indexOf(pl) < 2) {
-                                    win += pl.getDisplayName(minigame.usePlayerDisplayNames());
-                                    if (winners.indexOf(pl) + 2 >= winners.size()) {
-                                        win += " and ";
-                                    } else {
-                                        win += ", ";
-                                    }
-                                } else {
-                                    win += String.valueOf(winners.size() - 3) + " others";
-                                }
-                            }
-                            MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", win, minigame.getName(true)) + ". ", minigame, ChatColor.GREEN);
-                        } else {
-                            MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastNobodyWon", minigame.getName(true)), minigame, ChatColor.RED);
-                        }
-                    }
-                }
+				broadcastEndGame(winners, minigame);
 
                 GameOverModule gom = GameOverModule.getMinigameModule(minigame);
                 boolean usedTimer = false;
@@ -789,16 +733,73 @@ public class PlayerData {
                 //Call Types End.
                 mdata.minigameType(minigame.getType()).endMinigame(winners, losers, minigame);
                 minigame.getScoreboardData().reload();
-                minigame.setState(MinigameState.ENDED);
-                if (minigame.getPlayers().size() == 0) {
-                    minigame.setState(MinigameState.IDLE);
-                }
-            } else {
-                minigame.setState(state);
-                Minigames.plugin.getLogger().info(minigame.getName(true) + ": MinigameEndEvent was cancelled.  State Reset");
-            }
-        }
-    }
+			}
+	}
+
+	public void broadcastEndGame(List<MinigamePlayer> winners, Minigame minigame) {
+		if (plugin.getConfig().getBoolean("broadcastCompletion") && minigame.isEnabled()) {
+			if (minigame.isTeamGame()) {
+				if (winners.size() > 0 || ((TeamsModule) minigame.getModule("Teams")).getDefaultWinner() != null) {
+					Team team;
+					if (winners.size() > 0)
+						team = winners.get(0).getTeam();
+					else
+						team = ((TeamsModule) minigame.getModule("Teams")).getTeam(((TeamsModule) minigame.getModule("Teams")).getDefaultWinner());
+					String score = "";
+					List<Team> teams = TeamsModule.getMinigameModule(minigame).getTeams();
+					for (Team t : teams) {
+						score += t.getColor().getColor().toString() + t.getScore();
+						if (t != teams.get(teams.size() - 1)) {
+							score += ChatColor.WHITE + " : ";
+						}
+					}
+					String nscore = ", " + MinigameUtils.formStr("player.end.team.score", score);
+					if (team.getScore() > 0) {
+						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.team.win",
+								team.getChatColor() + team.getDisplayName() + ChatColor.WHITE, minigame.getName(true)) + nscore, minigame, ChatColor.GREEN);
+					} else {
+						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.team.win",
+								team.getChatColor() + team.getDisplayName() + ChatColor.WHITE, minigame.getName(true)), minigame, ChatColor.GREEN);
+					}
+				} else {
+					MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastNobodyWon", minigame.getName(true)), minigame, ChatColor.RED);
+				}
+			} else {
+				if (winners.size() == 1) {
+					String score = "";
+					if (winners.get(0).getScore() != 0)
+						score = MinigameUtils.formStr("player.end.broadcastScore", winners.get(0).getScore());
+					MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getDisplayName(minigame.usePlayerDisplayNames()), minigame.getName(true)) + ". " + score, minigame, ChatColor.GREEN);
+				} else if (winners.size() > 1) {
+					String win = "";
+					Collections.sort(winners, new Comparator<MinigamePlayer>() {
+						@Override
+						public int compare(MinigamePlayer o1,
+										   MinigamePlayer o2) {
+							return Integer.valueOf(o1.getScore()).compareTo(o2.getScore());
+						}
+					});
+
+					for (MinigamePlayer pl : winners) {
+						if (winners.indexOf(pl) < 2) {
+							win += pl.getDisplayName(minigame.usePlayerDisplayNames());
+							if (winners.indexOf(pl) + 2 >= winners.size()) {
+								win += " and ";
+							} else {
+								win += ", ";
+							}
+						} else {
+							win += String.valueOf(winners.size() - 3) + " others";
+						}
+					}
+					MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", win, minigame.getName(true)) + ". ", minigame, ChatColor.GREEN);
+				} else {
+					MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastNobodyWon", minigame.getName(true)), minigame, ChatColor.RED);
+				}
+			}
+		}
+	}
+
 	
 	@Deprecated
 	public boolean playerInMinigame(Player player){
@@ -941,4 +942,15 @@ public class PlayerData {
 	public void loadDeniedCommands(){
 		setDeniedCommands(plugin.getConfig().getStringList("disabledCommands"));
 	}
+
+	private class PlayerLocation {
+		Location location;
+		Integer position;
+
+		public PlayerLocation(int pos) {
+			location = null;
+			this.position = pos;
+		}
+	}
+
 }

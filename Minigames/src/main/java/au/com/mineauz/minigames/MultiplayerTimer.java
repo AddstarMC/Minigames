@@ -74,7 +74,6 @@ public class MultiplayerTimer{
 						allowInteraction(LobbySettingsModule.getMinigameModule(minigame).canInteractStartWait());
 						if(LobbySettingsModule.getMinigameModule(minigame).isTeleportOnPlayerWait()){
 							reclearInventories(minigame);
-
                             pdata.teleportToStart(minigame, true);
                         }
 					}
@@ -86,11 +85,8 @@ public class MultiplayerTimer{
 				else if(playerWaitTime == 0 && startWaitTime == 0){
 					sendPlayersMessage(ChatColor.GREEN + MinigameUtils.getLang("time.startup.go"));
 					reclearInventories(minigame);
-					if(LobbySettingsModule.getMinigameModule(minigame).isTeleportOnStart())
-						pdata.startMPMinigame(minigame, true);
-					else
-						pdata.startMPMinigame(minigame, false);
-					freezePlayers(false);
+                    pdata.startMPMinigame(minigame, LobbySettingsModule.getMinigameModule(minigame).isTeleportOnStart());
+                    freezePlayers(false);
 					allowInteraction(true);
 					
 					if(minigame.getFloorDegen1() != null && minigame.getFloorDegen2() != null){
