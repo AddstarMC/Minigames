@@ -1,8 +1,12 @@
 package au.com.mineauz.minigames.gametypes;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -22,14 +26,42 @@ public class SingleplayerType extends MinigameTypeBase{
 	public SingleplayerType() {
 		setType(MinigameType.SINGLEPLAYER);
 	}
-	
+
+	@Override
+	public boolean cannotStart(Minigame mgm, MinigamePlayer player) {
+		boolean cannotStart = mgm.isSpMaxPlayers() && mgm.getPlayers().size() >= mgm.getMaxPlayers();
+		if(cannotStart)player.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
+
+		return cannotStart;
+	}
+
+	@Override
+	public boolean teleportOnJoin(MinigamePlayer player, Minigame mgm) {
+		List<Location> locs = new ArrayList<>(mgm.getStartLocations());
+		Collections.shuffle(locs);
+		boolean result = player.teleport(locs.get(0));
+		if(plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != locs.get(0).getWorld() &&
+				player.getPlayer().hasPermission("minigame.set.start")){
+			player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE +
+					"Join location is across worlds! This may cause some server performance issues!", "error");
+		}
+		return result;
+	}
+
 	@Override
 	public boolean joinMinigame(MinigamePlayer player, Minigame mgm){
 		
 		if(mgm.getLives() > 0){
 			player.sendMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives()), null);
 		}
-		
+		if(!mgm.isAllowedFlight()){
+			player.setCanFly(false);
+		}
+		else{
+			player.setCanFly(true);
+			if(mgm.isFlightEnabled())
+				player.getPlayer().setFlying(true);
+		}
 		if(player.getStoredPlayerCheckpoints().hasCheckpoint(mgm.getName(false))){
 			player.setCheckpoint(player.getStoredPlayerCheckpoints().getCheckpoint(mgm.getName(false)));
 			StoredPlayerCheckpoints spc = player.getStoredPlayerCheckpoints();

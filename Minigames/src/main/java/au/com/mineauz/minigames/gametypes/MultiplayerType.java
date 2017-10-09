@@ -29,6 +29,29 @@ public class MultiplayerType extends MinigameTypeBase{
 	}
 
 	@Override
+	public boolean cannotStart(Minigame mgm, MinigamePlayer player) {
+		String message = null;
+		boolean cannotStart;
+		cannotStart = mgm.getPlayers().size() >= mgm.getMaxPlayers();
+		if(cannotStart)message = MinigameUtils.getLang("minigame.full");
+		cannotStart = mgm.getLobbyPosition() == null;
+		if(cannotStart)message = MinigameUtils.getLang("minigame.error.noLobby");
+		player.sendMessage(message, "error");
+		return cannotStart;
+	}
+
+	@Override
+	public boolean teleportOnJoin(MinigamePlayer player, Minigame mgm) {
+		boolean result = player.teleport(mgm.getLobbyPosition());
+		if(plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != mgm.getLobbyPosition().getWorld() &&
+				player.getPlayer().hasPermission("minigame.set.lobby")){
+			player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE +
+					"Lobby location is across worlds! This may cause some server performance issues!", "error");
+		}
+		return result;
+	}
+
+	@Override
 	public boolean joinMinigame(MinigamePlayer player, Minigame mgm) {
 		if(!LobbySettingsModule.getMinigameModule(mgm).canInteractPlayerWait())
 			player.setCanInteract(false);

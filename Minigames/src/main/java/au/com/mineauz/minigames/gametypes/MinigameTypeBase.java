@@ -26,6 +26,10 @@ public abstract class MinigameTypeBase implements Listener{
 	public MinigameType getType(){
 		return type;
 	}
+
+	public abstract boolean cannotStart(Minigame mgm, MinigamePlayer player);
+
+	public abstract boolean teleportOnJoin(MinigamePlayer player, Minigame mgm);
 	
 	public abstract boolean joinMinigame(MinigamePlayer player, Minigame mgm);
 	
