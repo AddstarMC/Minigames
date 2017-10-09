@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames;
 
-import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.events.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
@@ -117,21 +116,8 @@ public class PlayerData {
 				
 				//Prepare regeneration region for rollback.
 				if(minigame.getBlockRecorder().hasRegenArea() && !minigame.getBlockRecorder().hasCreatedRegenBlocks()){
-					RecorderData d = minigame.getBlockRecorder();
-					d.setCreatedRegenBlocks(true);
-					
-					Location cur = new Location(minigame.getRegenArea1().getWorld(), 0, 0, 0);
-					for(double y = d.getRegenMinY(); y <= d.getRegenMaxY(); y++){
-						cur.setY(y);
-						for(double x = d.getRegenMinX(); x <= d.getRegenMaxX(); x++){
-							cur.setX(x);
-							for(double z = d.getRegenMinZ(); z <= d.getRegenMaxZ(); z++){
-								cur.setZ(z);
-								d.addBlock(cur.getBlock(), null);
-							}
-						}
-					}
-				}
+                    mdata.addBlockRecorderData(minigame);
+                }
 				
 				//Standardize player
 				player.storePlayerData();

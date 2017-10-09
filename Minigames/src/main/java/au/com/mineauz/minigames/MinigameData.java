@@ -1,26 +1,22 @@
 package au.com.mineauz.minigames;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import au.com.mineauz.minigames.minigame.modules.*;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.file.FileConfiguration;
-
+import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.config.RewardsFlag;
 import au.com.mineauz.minigames.events.StartGlobalMinigameEvent;
 import au.com.mineauz.minigames.events.StopGlobalMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MinigameTypeBase;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.modules.*;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.*;
 
 public class MinigameData {
 	private Map<String, Minigame> minigames = new HashMap<String, Minigame>();
@@ -176,6 +172,22 @@ public class MinigameData {
 		
 		Location loc = new Location(plugin.getServer().getWorld(world), locx, locy, locz, yaw, pitch);
 		return loc;
+	}
+
+	public void addBlockRecorderData(Minigame minigame) {
+		RecorderData d = minigame.getBlockRecorder();
+		d.setCreatedRegenBlocks(true);
+		Location cur = new Location(minigame.getRegenArea1().getWorld(), 0, 0, 0);
+		for (double y = d.getRegenMinY(); y <= d.getRegenMaxY(); y++) {
+			cur.setY(y);
+			for (double x = d.getRegenMinX(); x <= d.getRegenMaxX(); x++) {
+				cur.setX(x);
+				for (double z = d.getRegenMinZ(); z <= d.getRegenMaxZ(); z++) {
+					cur.setZ(z);
+					d.addBlock(cur.getBlock(), null);
+				}
+			}
+		}
 	}
 	
 	public Location minigameLocationsShort(String minigame, String type, Configuration save) {
