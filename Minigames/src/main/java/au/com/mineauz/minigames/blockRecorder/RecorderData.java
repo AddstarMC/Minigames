@@ -7,22 +7,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Chest;
+import org.bukkit.block.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
@@ -84,8 +76,10 @@ public class RecorderData implements Listener{
 		physBlocks.add(Material.REDSTONE_TORCH_OFF);
 		physBlocks.add(Material.REDSTONE_TORCH_ON);
 		physBlocks.add(Material.SAPLING);
-		physBlocks.add(Material.RED_ROSE);
+        physBlocks.add(Material.RED_ROSE);
 		physBlocks.add(Material.YELLOW_FLOWER);
+        physBlocks.add(Material.NETHER_WARTS);
+        physBlocks.add(Material.YELLOW_FLOWER);
 		physBlocks.add(Material.WOOD_PLATE);
 		physBlocks.add(Material.STONE_PLATE);
 		physBlocks.add(Material.GOLD_PLATE);
@@ -117,7 +111,14 @@ public class RecorderData implements Listener{
 		physBlocks.add(Material.ANVIL);
 		physBlocks.add(Material.DRAGON_EGG);
 		physBlocks.add(Material.SKULL);
-	}
+		physBlocks.add(Material.SNOW);
+        physBlocks.add(Material.VINE);
+        physBlocks.add(Material.PORTAL);
+        physBlocks.add(Material.COCOA);
+        physBlocks.add(Material.CARROT);
+        physBlocks.add(Material.POTATO);
+        physBlocks.add(Material.WALL_BANNER);
+    }
 	
 	public RecorderData(Minigame minigame){
 		plugin = Minigames.plugin;
@@ -188,86 +189,31 @@ public class RecorderData implements Listener{
 		BlockData bdata = new BlockData(block, modifier);
 		String sloc = String.valueOf(bdata.getLocation().getBlockX()) + ":" + bdata.getLocation().getBlockY() + ":" + bdata.getLocation().getBlockZ();
 		if(!blockdata.containsKey(sloc)){
-			if(block.getType() == Material.CHEST){
-				Chest chest = (Chest) block;
-				if(chest.getInventory().getSize() > 27){
-					Location loc = block.getLocation().clone();
-					boolean isRight = false;
-					BlockFace dir = ((org.bukkit.material.Chest)chest.getData()).getFacing();
-					BlockData secondChest = null;
-					//West = -z; East = +z; North = +x; South = -x;
-					if(dir == BlockFace.NORTH){
-						loc.setX(loc.getX() + 1);
-						if(loc.getBlock().getType() == Material.CHEST){
-							isRight = true;
-						}
-						secondChest = addBlock(loc.getBlock().getState(), modifier);
-					}
-					else if(dir == BlockFace.SOUTH){
-						loc.setX(loc.getX() - 1);
-						if(loc.getBlock().getType() == Material.CHEST){
-							isRight = true;
-						}
-						secondChest = addBlock(loc.getBlock().getState(), modifier);
-					}
-					else if(dir == BlockFace.WEST){
-						loc.setZ(loc.getZ() - 1);
-						if(loc.getBlock().getType() == Material.CHEST){
-							isRight = true;
-						}
-						secondChest = addBlock(loc.getBlock().getState(), modifier);
-					}
-					else if(dir == BlockFace.EAST){
-						loc.setZ(loc.getZ() + 1);
-						if(loc.getBlock().getType() == Material.CHEST){
-							isRight = true;
-						}
-						secondChest = addBlock(loc.getBlock().getState(), modifier);
-					}
-					
-					if(!isRight){
-						ItemStack[] items = new ItemStack[chest.getInventory().getContents().length];
-						for(int i = 0; i < items.length; i++){
-							if(chest.getInventory().getContents()[i] != null)
-								items[i] = chest.getInventory().getContents()[i].clone();
-						}
-						bdata.setItems(items);
-						if(minigame.isRandomizeChests())
-							bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
-					}
-					else{
-						if(secondChest.getItems() == null){
-							ItemStack[] items = new ItemStack[chest.getInventory().getContents().length];
-							for(int i = 0; i < items.length; i++){
-								if(chest.getInventory().getContents()[i] != null)
-									items[i] = chest.getInventory().getContents()[i].clone();
-							}
-							secondChest.setItems(items);
-							if(minigame.isRandomizeChests())
-								secondChest.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
-						}
-					}
-				}
-				else{
-					ItemStack[] items = new ItemStack[chest.getInventory().getContents().length];
-					for(int i = 0; i < items.length; i++){
-						if(chest.getInventory().getContents()[i] != null)
-							items[i] = chest.getInventory().getContents()[i].clone();
-					}
-					bdata.setItems(items);
-					if(minigame.isRandomizeChests())
-						bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
-				}
-			}
-			else if(block instanceof InventoryHolder){
-				InventoryHolder inv = (InventoryHolder) block;
-				ItemStack[] items = new ItemStack[inv.getInventory().getContents().length];
-				for(int i = 0; i < items.length; i++){
-					if(inv.getInventory().getContents()[i] != null)
-						items[i] = inv.getInventory().getContents()[i].clone();
-				}
-				bdata.setItems(items);
-			}
+		    if(block instanceof InventoryHolder){
+                InventoryHolder inv = (InventoryHolder) block;
+                if(inv instanceof DoubleChest){
+                    Location left = ((DoubleChest) inv).getLeftSide().getInventory().getLocation().clone();
+                    Location right = ((DoubleChest) inv).getRightSide().getInventory().getLocation().clone();
+                    if (bdata.getLocation() == left){
+                        addInventory(bdata,((DoubleChest) inv).getLeftSide());
+                        if(minigame.isRandomizeChests())
+                            bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
+                    }
+                    BlockData secondChest =  addBlock(right.getBlock(),null);
+                    if(secondChest.getItems() == null){
+                        addInventory(secondChest,((DoubleChest) inv).getRightSide());
+                        if(minigame.isRandomizeChests())
+                            secondChest.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
+                    }
+                else if(inv instanceof Chest){
+                        addInventory(bdata,inv);
+                        if(minigame.isRandomizeChests())
+                            bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
+                    }
+                }else{
+                    addInventory(bdata,inv);
+                }
+            }
 			else if(block.getType() == Material.FLOWER_POT){
 				bdata.setSpecialData("contents", block.getData());
 			}
@@ -281,6 +227,18 @@ public class RecorderData implements Listener{
 			return blockdata.get(sloc);
 		}
 	}
+
+	public void addInventory(BlockData bdata, InventoryHolder ih){
+        List<ItemStack> items = new ArrayList<>();
+
+        for(ItemStack item: ih.getInventory()){
+            items.add(item.clone());
+        }
+        ItemStack[] inventory = new ItemStack[items.size()];
+        items.toArray(inventory);
+        bdata.setItems(inventory);
+    }
+
 	
 	public void addEntity(Entity ent, MinigamePlayer player, boolean created){
 		EntityData edata = new EntityData(ent, player, created);
