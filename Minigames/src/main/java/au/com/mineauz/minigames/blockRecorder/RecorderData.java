@@ -232,13 +232,17 @@ public class RecorderData implements Listener{
 
 	public void addInventory(BlockData bdata, InventoryHolder ih){
         List<ItemStack> items = new ArrayList<>();
+        if(ih.getInventory() != null) {
+            for (ItemStack item : ih.getInventory()) {
+                if(item!=null) {
+                    items.add(item.clone());
+                }
+            }
+            ItemStack[] inventory = new ItemStack[items.size()];
+            items.toArray(inventory);
 
-        for(ItemStack item: ih.getInventory()){
-            items.add(item.clone());
+            bdata.setItems(inventory);
         }
-        ItemStack[] inventory = new ItemStack[items.size()];
-        items.toArray(inventory);
-        bdata.setItems(inventory);
     }
 
 	
