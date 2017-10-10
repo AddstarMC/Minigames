@@ -9,6 +9,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.GameOverModule;
+import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
 import au.com.mineauz.minigames.sounds.MGSounds;
@@ -111,7 +112,7 @@ public class PlayerData {
 					player.sendMessage(ChatColor.GREEN + "----------------------------------------------------");
 					player.sendMessage(ChatColor.AQUA.toString() + ChatColor.BOLD + MinigameUtils.formStr("player.join.objective", 
 							ChatColor.RESET.toString() + ChatColor.WHITE + minigame.getObjective()));
-					player.sendMessage(ChatColor.GREEN + "----------------------------------------------------");
+					player.sendMessage(ChatColor.GREEN  + "----------------------------------------------------");
 				}
 				
 				//Prepare regeneration region for rollback.
@@ -224,22 +225,6 @@ public class PlayerData {
             return;
         }
     }
-
-
-	private boolean canStartMinigame(Minigame minigame, MinigamePlayer player){
-        boolean canStart = minigame.getMechanic().checkCanStart(minigame, player);
-        return (minigame.isEnabled() || player.getPlayer().hasPermission("minigame.join.disabled")) &&
-                (minigame.getState() == MinigameState.IDLE || minigame.getState() == MinigameState.OCCUPIED ||
-                        minigame.getState() == MinigameState.WAITING ||(minigame.getState() == MinigameState.STARTED && minigame.canLateJoin())) &&
-                (minigame.getStartLocations().size() > 0 ||(minigame.isTeamGame() && TeamsModule.getMinigameModule(minigame).hasTeamStartLocations())) &&
-                minigame.getEndPosition() != null &&
-                minigame.getQuitPosition() != null &&
-                (minigame.getType() == MinigameType.SINGLEPLAYER || minigame.getLobbyPosition() != null) &&
-                ((minigame.getType() == MinigameType.SINGLEPLAYER && !minigame.isSpMaxPlayers()) ||
-                        minigame.getPlayers().size() < minigame.getMaxPlayers()) &&
-                minigame.getMechanic().validTypes().contains(minigame.getType()) &&
-                canStart;
-    }
 	
 	public void spectateMinigame(MinigamePlayer player, Minigame minigame) {
 		SpectateMinigameEvent event = new SpectateMinigameEvent(player, minigame);
@@ -280,6 +265,10 @@ public class PlayerData {
 			mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("player.spectate.join.minigameMsg", player.getName(), minigame.getName(true)), null, player);
 		}
 	}
+	public void startMPMinigame(Minigame minigame){
+	    startMPMinigame(minigame, false);
+    }
+
 	
 	public void startMPMinigame(Minigame minigame, boolean teleport){
 		List<MinigamePlayer> players = new ArrayList<>();
@@ -296,21 +285,22 @@ public class PlayerData {
 					ply.sendMessage(MinigameUtils.formStr("minigame.livesLeft", minigame.getLives()), null);
 				}
 				ply.setStartTime(Calendar.getInstance().getTimeInMillis());
-			} else {
+			}else {
 				List<MinigamePlayer> moved = balanceGame(minigame);
 				if (moved != null && moved.size() > 0) {
-					teleportToStart(minigame, false);
+					getStartLocations(minigame.getPlayers(),minigame);
 				}
 			}
 
 			PlayMGSound.playSound(ply, MGSounds.getSound("gameStart"));
 		}
-		if (teleport) teleportToStart(minigame, false);
-		Bukkit.getServer().getPluginManager().callEvent(new StartMinigameEvent(players, minigame, teleport));
+
+
+        Bukkit.getServer().getPluginManager().callEvent(new StartMinigameEvent(players, minigame, teleport));
 		minigame.setState(MinigameState.STARTED);
 	}
 
-	private List<MinigamePlayer> balanceGame(Minigame game) {
+	List<MinigamePlayer> balanceGame(Minigame game) {
 		List<MinigamePlayer> result = null;
 		if (game.isTeamGame()) {
 			GameMechanicBase mech = GameMechanics.getGameMechanic(game.getMechanicName());
@@ -324,66 +314,72 @@ public class PlayerData {
 	}
 
 
-    public void teleportToStart(Minigame minigame, Boolean balance) {
-        List<MinigamePlayer> players = new ArrayList<>();
-        players.addAll(minigame.getPlayers());
-		if (balance) balanceGame(minigame);
-		Collections.shuffle(players);
-		Location start;
-		int pos = 0;
+    void teleportToStart(Minigame minigame) {
+        List<MinigamePlayer> findStart = new ArrayList<>();
+        for (MinigamePlayer ply : minigame.getPlayers()) {
+            if(ply.getStartPos() == null){
+                findStart.add(ply);
+            }
+        }
+        if(findStart.size() != 0) {
+                getStartLocations(findStart,minigame);
+        }
+
+        for (MinigamePlayer ply : minigame.getPlayers()) {
+            ply.teleport(ply.getStartPos());
+        }
+    }
+
+	void getStartLocations(List<MinigamePlayer> players, Minigame game) {
+        Collections.shuffle(players);
+        int pos = 0;
         Map<Team, Integer> tpos = new HashMap<>();
-        for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {
+        for (Team t : TeamsModule.getMinigameModule(game).getTeams()) {
             tpos.put(t, 0);
         }
-        for (MinigamePlayer ply : players) {
-			PlayerLocation ploc = getStartLocation(ply, minigame, pos, tpos);
-			start = ploc.location;
-			pos = ploc.position;
-			if (start == null) {
-				ply.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), "error");
-				quitMinigame(ply, false);
-			}
-			ply.teleport(start);
-			ply.setStartPos(start);
-			ply.setCheckpoint(start);
-			pos++;
-
-		}
-	}
-
-	private PlayerLocation getStartLocation(MinigamePlayer player, Minigame game, int pos, Map<Team, Integer> tpos) {
-		PlayerLocation result = new PlayerLocation(pos);
-		if (!game.isTeamGame()) {
-			if (pos < game.getStartLocations().size()) {
-				player.setStartTime(Calendar.getInstance().getTimeInMillis());
-				result.location = game.getStartLocations().get(pos);
-			} else {
-				pos = 0;
-				if (!game.getStartLocations().isEmpty()) {
-					result.location = game.getStartLocations().get(0);
-				}
-			}
-		} else {
-			Team team = player.getTeam();
-			if (TeamsModule.getMinigameModule(game).hasTeamStartLocations()) {
-				if (tpos.get(team) >= team.getStartLocations().size()) {
-					tpos.put(team, 0);
-				}
-				result.location = team.getStartLocations().get(tpos.get(team));
-				tpos.put(team, tpos.get(team) + 1);
-			} else {
-				if (pos < game.getStartLocations().size()) {
-					result.location = game.getStartLocations().get(pos);
-				} else {
-					pos = 0;
-					if (!game.getStartLocations().isEmpty()) {
-						result.location = game.getStartLocations().get(0);
-					}
-				}
-			}
-		}
-		result.position = pos;
-		return result;
+        for(MinigamePlayer player: players) {
+            Location result = null;
+            if (!game.isTeamGame()) {
+                if (pos < game.getStartLocations().size()) {
+                    player.setStartTime(Calendar.getInstance().getTimeInMillis());
+                    result = game.getStartLocations().get(pos);
+                } else {
+                    pos = 0;
+                    if (!game.getStartLocations().isEmpty()) {
+                        result = game.getStartLocations().get(0);
+                    }
+                }
+            } else {
+                Team team = player.getTeam();
+                if (team != null) {
+                    if (TeamsModule.getMinigameModule(game).hasTeamStartLocations()) {
+                        if (tpos.get(team) >= team.getStartLocations().size()) {
+                            tpos.put(team, 0);
+                        }
+                        result = team.getStartLocations().get(tpos.get(team));
+                        tpos.put(team, tpos.get(team) + 1);
+                    } else {
+                        if (pos < game.getStartLocations().size()) {
+                            result = game.getStartLocations().get(pos);
+                        } else {
+                            pos = 0;
+                            if (!game.getStartLocations().isEmpty()) {
+                                result = game.getStartLocations().get(0);
+                            }
+                        }
+                    }
+                } else {
+                    player.sendMessage(MinigameUtils.getLang("minigame.error.noTeam"), "error");
+                }
+            }
+            if (result != null) {
+                player.setStartPos(result);
+                player.setCheckpoint(result);
+            } else {
+                player.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), "error");
+                quitMinigame(player, false);
+            }
+        }
 	}
 	
 	public void revertToCheckpoint(MinigamePlayer player) {

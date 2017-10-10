@@ -107,6 +107,7 @@ minigame:
     invalidMechanic: "This Minigame Type cannot use the selected Mechanic!"
     mechanicStartFail: "The Game Mechanic has failed to initiate!"
     noSpectatePos: "There has been no spectator position assigned to this Minigame!"
+    noTeam: "You have not been assigend a team...."
   flag:
     returnedTeam: "%s flag has been returned home."
     returnedNeutral: "The Neutral flag has been returned home."

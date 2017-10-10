@@ -73,7 +73,7 @@ public class MultiplayerType extends MinigameTypeBase{
 			}
 			else if(mgm.getMpTimer() == null){
 				int neededPlayers = mgm.getMinPlayers() - mgm.getPlayers().size();
-				mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("minigame.waitingForPlayers", neededPlayers), null, null);
+				mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("minigame.waitingForPlayers", neededPlayers), "info", null);
 			}
 		}
 		else if(mgm.hasStarted()){
