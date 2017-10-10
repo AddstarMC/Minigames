@@ -118,6 +118,8 @@ public class RecorderData implements Listener{
         physBlocks.add(Material.CARROT);
         physBlocks.add(Material.POTATO);
         physBlocks.add(Material.WALL_BANNER);
+        physBlocks.add(Material.PISTON_MOVING_PIECE);
+        physBlocks.add(Material.PISTON_EXTENSION);
     }
 	
 	public RecorderData(Minigame minigame){
