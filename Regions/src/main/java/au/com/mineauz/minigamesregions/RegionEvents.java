@@ -1,6 +1,7 @@
 package au.com.mineauz.minigamesregions;
 
 import au.com.mineauz.minigames.events.*;
+import javafx.scene.layout.Priority;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -12,6 +13,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -32,6 +34,8 @@ import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
+
+import javax.annotation.PreDestroy;
 
 public class RegionEvents implements Listener{
 	
@@ -104,14 +108,30 @@ public class RegionEvents implements Listener{
 	@EventHandler
 	private void playerDeath(PlayerDeathEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
+		boolean pvp = false;
+		MinigamePlayer killer = null;
 		if(ply == null) return;
 		if(ply.isInMinigame()){
+			if(event.getEntity().getLastDamageCause().getEntity() instanceof Player){
+				killer = pdata.getMinigamePlayer((Player)event.getEntity().getLastDamageCause().getEntity());
+				if(killer != null && killer.isInMinigame()){
+					pvp = true;
+				}
+			}
 			for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
 				node.execute(Triggers.getTrigger("DEATH"), ply);
+				if(pvp){
+					node.execute(Triggers.getTrigger("PLAYER_KILL"),killer);
+					node.execute(Triggers.getTrigger("PLAYER_KILLED"),ply);
+				}
 			}
 			for(Region region : RegionModule.getMinigameModule(ply.getMinigame()).getRegions()){
 				if(region.hasPlayer(ply))
 					region.execute(Triggers.getTrigger("DEATH"), ply);
+				if(pvp){
+					region.execute(Triggers.getTrigger("PLAYER_KILL"),killer);
+					region.execute(Triggers.getTrigger("PLAYER_KILLED"),ply);
+				}
 			}
 		}
 	}
@@ -460,6 +480,23 @@ public class RegionEvents implements Listener{
 	private void playerGetFlag(TakeFlagEvent event) {
 		executeTrigger(Triggers.getTrigger("PLAYER_TAKE_FLAG"), event.getPlayer());
 	}
+
+	@EventHandler(priority = EventPriority.MONITOR,ignoreCancelled = true)
+	private void entityGlide(EntityToggleGlideEvent event){
+		if (!(event.getEntity() instanceof Player)) {
+			return;
+		}
+		final MinigamePlayer player = pdata.getMinigamePlayer((Player)event.getEntity());
+		if (player == null || !player.isInMinigame()) {
+			return;
+		}
+		if(event.isGliding()){
+			executeTrigger(Triggers.getTrigger("START_GLIDE"),player);
+		}else{
+			executeTrigger(Triggers.getTrigger("STOP_GLID"),player);
+		}
+	}
+
 	
 	private void executeTrigger(final Trigger trigger, final MinigamePlayer player) {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {

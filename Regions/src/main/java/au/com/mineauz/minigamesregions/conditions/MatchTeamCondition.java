@@ -75,7 +75,7 @@ public class MatchTeamCondition extends ConditionInterface {
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Match Team", player);
 		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
-		List<String> teams = new ArrayList<String>();
+		List<String> teams = new ArrayList<>();
 		for(TeamColor t : TeamColor.values())
 			teams.add(MinigameUtils.capitalize(t.toString().replace("_", " ")));
 		m.addItem(new MenuItemList("Team Color", Material.WOOL, new Callback<String>() {

@@ -45,6 +45,7 @@ public class Actions {
 		addAction("FALLING_BLOCK", FallingBlockAction.class);
 		addAction("ADD_TEAM_SCORE", AddTeamScoreAction.class);
 		addAction("SET_TEAM_SCORE", SetTeamScoreAction.class);
+		addAction("SWITCH_TEAM",SwitchTeamAction.class);
 		addAction("FLIGHT", FlightAction.class);
 		addAction("VELOCITY", VelocityAction.class);
 		addAction("LIGHTNING", LightningAction.class);
