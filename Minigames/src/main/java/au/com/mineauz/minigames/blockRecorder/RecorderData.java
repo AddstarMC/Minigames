@@ -1,20 +1,20 @@
 package au.com.mineauz.minigames.blockRecorder;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.*;
-import java.util.Comparator;
-
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.MinigameState;
+import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
@@ -27,11 +27,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -42,14 +38,8 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import com.google.common.collect.Lists;
-
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.MinigameState;
+import java.io.*;
+import java.util.*;
 
 public class RecorderData implements Listener{
 	private static Minigames plugin;
@@ -201,8 +191,8 @@ public class RecorderData implements Listener{
                         if(minigame.isRandomizeChests())
                             bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
                     }
-                    BlockData secondChest =  addBlock(right.getBlock(),null);
-                    if(secondChest.getItems() == null){
+					BlockData secondChest = addBlock(right.getBlock(), modifier);
+					if(secondChest.getItems() == null){
                         addInventory(secondChest,((DoubleChest) inv).getRightSide());
                         if(minigame.isRandomizeChests())
                             secondChest.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
@@ -232,7 +222,6 @@ public class RecorderData implements Listener{
 
 	public void addInventory(BlockData bdata, InventoryHolder ih){
         List<ItemStack> items = new ArrayList<>();
-        if(ih.getInventory() != null) {
             for (ItemStack item : ih.getInventory()) {
                 if(item!=null) {
                     items.add(item.clone());
@@ -240,9 +229,7 @@ public class RecorderData implements Listener{
             }
             ItemStack[] inventory = new ItemStack[items.size()];
             items.toArray(inventory);
-
             bdata.setItems(inventory);
-        }
     }
 
 	
