@@ -9,7 +9,6 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.GameOverModule;
-import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
 import au.com.mineauz.minigames.sounds.MGSounds;
@@ -472,7 +471,7 @@ public class PlayerData {
 					}
 				});
 				player.resetAllStats();
-				
+				player.setStartPos(null);
 				if(!player.isDead()){
 					player.restorePlayerData();
 					if(!isWinner)
@@ -487,7 +486,7 @@ public class PlayerData {
 						player.setQuitPos(minigame.getEndPosition());
 					player.setRequiredQuit(true);
 				}
-				
+				player.setStartPos(null);
 				//Reward Player
 				if(isWinner){
 					player.claimTempRewardItems();
@@ -568,12 +567,11 @@ public class PlayerData {
 				});
 				
 				player.getPlayer().closeInventory();
-				
 				if(!player.isDead()){
 					player.restorePlayerData();
 				}
-				
 				player.teleport(minigame.getQuitPosition());
+				player.setStartPos(null);
 				player.removeMinigame();
 				minigame.removeSpectator(player);
 

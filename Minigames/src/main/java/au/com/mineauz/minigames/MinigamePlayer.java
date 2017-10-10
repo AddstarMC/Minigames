@@ -1,23 +1,5 @@
 package au.com.mineauz.minigames;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scoreboard.Scoreboard;
-
-import com.google.common.collect.ImmutableSet;
-
 import au.com.mineauz.minigames.display.IDisplayCubiod;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
@@ -28,6 +10,18 @@ import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.script.ScriptWrapper;
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.Scoreboard;
+
+import java.io.File;
+import java.util.*;
 
 public class MinigamePlayer implements ScriptObject {
 	private Player player;
@@ -196,8 +190,8 @@ public class MinigamePlayer implements ScriptObject {
 			player.setExp(oply.getExp());
 			player.setLevel(oply.getLevel());
 		}
-		
-		player.resetPlayerWeather();
+        startPos = null;
+        player.resetPlayerWeather();
 		player.resetPlayerTime();
 		allowGMChange = true;
 		allowTP = true;
