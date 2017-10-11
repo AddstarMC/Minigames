@@ -72,6 +72,7 @@ public class MultiplayerTimer{
 						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
 						freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMoveStartWait());
 						allowInteraction(LobbySettingsModule.getMinigameModule(minigame).canInteractStartWait());
+
 						if(LobbySettingsModule.getMinigameModule(minigame).isTeleportOnPlayerWait()){
 							reclearInventories(minigame);
 							pdata.balanceGame(minigame);
@@ -87,6 +88,10 @@ public class MultiplayerTimer{
 				else if(playerWaitTime == 0 && startWaitTime == 0){
 					sendPlayersMessage(ChatColor.GREEN + MinigameUtils.getLang("time.startup.go"));
 					reclearInventories(minigame);
+                    if(!LobbySettingsModule.getMinigameModule(minigame).isTeleportOnPlayerWait()){
+                        pdata.balanceGame(minigame);
+                        pdata.getStartLocations(minigame.getPlayers(),minigame);
+                    }
 					if(LobbySettingsModule.getMinigameModule(minigame).isTeleportOnStart()) {
                         pdata.startMPMinigame(minigame,true);
                         pdata.teleportToStart(minigame);

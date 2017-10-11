@@ -371,10 +371,9 @@ public class PlayerData {
                     player.sendMessage(MinigameUtils.getLang("minigame.error.noTeam"), "error");
                 }
             }
-            if (result != null) {
-                player.setStartPos(result);
-                player.setCheckpoint(result);
-            } else {
+            player.setStartPos(result);
+            player.setCheckpoint(result);
+            if (result == null) {
                 player.sendMessage(MinigameUtils.getLang("minigame.error.incorrectStart"), "error");
                 quitMinigame(player, false);
             }
