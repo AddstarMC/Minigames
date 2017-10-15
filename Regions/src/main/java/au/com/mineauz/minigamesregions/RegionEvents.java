@@ -1,7 +1,16 @@
 package au.com.mineauz.minigamesregions;
 
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.PlayerData;
 import au.com.mineauz.minigames.events.*;
-import javafx.scene.layout.Priority;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigamesregions.events.EnterRegionEvent;
+import au.com.mineauz.minigamesregions.events.LeaveRegionEvent;
+import au.com.mineauz.minigamesregions.executors.NodeExecutor;
+import au.com.mineauz.minigamesregions.executors.RegionExecutor;
+import au.com.mineauz.minigamesregions.triggers.Trigger;
+import au.com.mineauz.minigamesregions.triggers.Triggers;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -16,26 +25,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerExpChangeEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.PlayerData;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigamesregions.events.EnterRegionEvent;
-import au.com.mineauz.minigamesregions.events.LeaveRegionEvent;
-import au.com.mineauz.minigamesregions.triggers.Trigger;
-import au.com.mineauz.minigamesregions.triggers.Triggers;
-import au.com.mineauz.minigamesregions.executors.RegionExecutor;
-import au.com.mineauz.minigamesregions.executors.NodeExecutor;
-
-import javax.annotation.PreDestroy;
+import org.bukkit.event.player.*;
 
 public class RegionEvents implements Listener{
 	
@@ -112,13 +102,13 @@ public class RegionEvents implements Listener{
 		MinigamePlayer killer = null;
 		if(ply == null) return;
 		if(ply.isInMinigame()){
-			if(event.getEntity().getLastDamageCause().getEntity() instanceof Player){
-				killer = pdata.getMinigamePlayer((Player)event.getEntity().getLastDamageCause().getEntity());
-				if(killer != null && killer.isInMinigame()){
-					pvp = true;
-				}
-			}
-			for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
+            if (event.getEntity().getKiller() != null) {
+                killer = pdata.getMinigamePlayer(event.getEntity().getKiller());
+                if (killer != null && killer.isInMinigame()) {
+                    pvp = true;
+                }
+            }
+            for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
 				node.execute(Triggers.getTrigger("DEATH"), ply);
 				if(pvp){
 					node.execute(Triggers.getTrigger("PLAYER_KILL"),killer);
