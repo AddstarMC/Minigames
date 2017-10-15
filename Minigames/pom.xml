@@ -10,6 +10,7 @@
   <artifactId>Minigames</artifactId>
   <packaging>jar</packaging>
   <name>Minigames</name>
+    <description>A swiss knife plugin to construct any minigame you can imagine.</description>
   <properties>
     <mysql.user>root</mysql.user>
     <mysql.password>password</mysql.password>

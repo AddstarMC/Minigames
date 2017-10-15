@@ -8,6 +8,7 @@
   </parent>
   <artifactId>Minigames-Regions</artifactId>
   <name>Minigames-Regions</name>
+  <description>An addon to Minigames to allow regions and nodes to have triggers and actions</description>
   <packaging>jar</packaging>
   <repositories>
     <!-- Spigot repo -->

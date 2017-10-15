@@ -3,3 +3,4 @@ main: au.com.mineauz.minigamesregions.Main
 version: ${plugin.version}
 author: _Razz_ AddstarMC
 depend: ['Minigames']
+description: ${project.description}
