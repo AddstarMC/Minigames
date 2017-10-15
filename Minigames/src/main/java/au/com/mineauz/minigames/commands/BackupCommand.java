@@ -1,17 +1,15 @@
 package au.com.mineauz.minigames.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BackupCommand implements ICommand {
 
@@ -68,23 +66,9 @@ public class BackupCommand implements ICommand {
 					if(args.length == 1){
 						if(minigame.getPlayers().size() == 0){
 							minigame.setState(MinigameState.REGENERATING);
-							
-							RecorderData d = minigame.getBlockRecorder();
-							d.setCreatedRegenBlocks(true);
-							
-							Location cur = new Location(minigame.getRegenArea1().getWorld(), 0, 0, 0);
-							for(double y = d.getRegenMinY(); y <= d.getRegenMaxY(); y++){
-								cur.setY(y);
-								for(double x = d.getRegenMinX(); x <= d.getRegenMaxX(); x++){
-									cur.setX(x);
-									for(double z = d.getRegenMinZ(); z <= d.getRegenMaxZ(); z++){
-										cur.setZ(z);
-										d.addBlock(cur.getBlock(), null);
-									}
-								}
-							}
-							
-							d.saveAllBlockData();
+                            Minigames.plugin.mdata.addBlockRecorderData(minigame);
+                            RecorderData d = minigame.getBlockRecorder();
+                            d.saveAllBlockData();
 							
 							d.clearRestoreData();
 							
