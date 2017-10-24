@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -66,9 +67,9 @@ public class JuggernautMechanic extends GameMechanicBase{
 				
 				if(j != null){
 					jm.setJuggernaut(j);
-					j.sendMessage("You are the Juggernaut!", null); //TODO: Language file
-					mdata.sendMinigameMessage(minigame, 
-							j.getDisplayName(minigame.usePlayerDisplayNames()) + " is the Juggernaut!", null, j); //TODO: Language file
+					j.sendMessage(MinigameUtils.getLang("player.juggernaut.plyMsg"), null);
+					mdata.sendMinigameMessage(minigame,
+							MinigameUtils.formStr("player.juggernaut.gameMsg", j.getDisplayName(minigame.usePlayerDisplayNames())), null, j);
 				}
 			}
 		}

@@ -95,7 +95,8 @@ public class JoinSign implements MinigameSign {
 		}
 		if(invOk){
 			Minigame mgm = plugin.mdata.getMinigame(sign.getLine(2));
-			if(mgm != null && (!mgm.getUsePermissions() || player.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))){
+			if(mgm != null && (!mgm.getUsePermissions() ||
+					player.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))){
 				if(mgm.isEnabled()){
 					if(!sign.getLine(3).isEmpty() && Minigames.plugin.hasEconomy()){
 						double amount = Double.parseDouble(sign.getLine(3).replace("$", ""));

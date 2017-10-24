@@ -62,7 +62,7 @@ public class ExecuteCommandAction extends ActionInterface {
 		
 		return string
 			.replace("{player}", player.getName())
-			.replace("{dispplayer}", player.getName())
+			.replace("{dispplayer}", player.getDisplayName())
 			.replace("{px}", String.valueOf(player.getLocation().getX()))
 			.replace("{py}", String.valueOf(player.getLocation().getY()))
 			.replace("{pz}", String.valueOf(player.getLocation().getZ()))

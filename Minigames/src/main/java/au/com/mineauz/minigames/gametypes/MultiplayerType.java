@@ -36,7 +36,7 @@ public class MultiplayerType extends MinigameTypeBase{
 		if(cannotStart)message = MinigameUtils.getLang("minigame.full");
 		cannotStart = mgm.getLobbyPosition() == null;
 		if(cannotStart)message = MinigameUtils.getLang("minigame.error.noLobby");
-		player.sendMessage(message, "error");
+		if(cannotStart)player.sendMessage(message, "error");
 		return cannotStart;
 	}
 

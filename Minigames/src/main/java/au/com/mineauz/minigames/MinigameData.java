@@ -275,6 +275,7 @@ public class MinigameData {
 	}
 	
 	public void sendMinigameMessage(Minigame minigame, String message, String type, MinigamePlayer exclude){
+		if(!minigame.getShowPlayerBroadcasts())return;
 		String finalMessage = "";
 		if(type == null){
 			type = "info";

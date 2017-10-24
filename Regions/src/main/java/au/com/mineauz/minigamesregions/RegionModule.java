@@ -80,8 +80,9 @@ public class RegionModule extends MinigameModule {
 			int c = 0;
 			for(RegionExecutor ex : r.getExecutors()){
 				String path = getMinigame() + ".regions." + name + ".executors." + c;
-				config.set(path + ".trigger", ex.getTrigger().getName());
-				
+				if(ex.getTrigger() !=null ) {
+					config.set(path + ".trigger", ex.getTrigger().getName());
+				}
 				int acc = 0;
 				for(ActionInterface act : ex.getActions()){
 					config.set(path + ".actions." + acc + ".type", act.getName());

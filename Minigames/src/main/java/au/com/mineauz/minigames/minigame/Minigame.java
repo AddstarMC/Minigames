@@ -118,6 +118,7 @@ public class Minigame implements ScriptObject {
 	private BooleanFlag enableFlight = new BooleanFlag(false, "enableFlight");
 	private BooleanFlag allowDragonEggTeleport = new BooleanFlag(true, "allowDragonEggTeleport");
 	private BooleanFlag usePlayerDisplayNames = new BooleanFlag(true, "usePlayerDisplayNames");
+	private BooleanFlag showPlayerBroadcasts = new BooleanFlag(true, "showPlayerBroadcasts");
 	
 	private StringFlag mechanic = new StringFlag("custom", "scoretype");
 	private BooleanFlag paintBallMode = new BooleanFlag(false, "paintball");
@@ -221,6 +222,7 @@ public class Minigame implements ScriptObject {
 		addConfigFlag(minChestRandom);
 		addConfigFlag(minPlayers);
 		addConfigFlag(usePlayerDisplayNames);
+		addConfigFlag(showPlayerBroadcasts);
 		addConfigFlag(minScore);
 		addConfigFlag(objective);
 		addConfigFlag(paintBallDamage);
@@ -450,6 +452,14 @@ public class Minigame implements ScriptObject {
 
 	public void setDisplayName(String displayName) {
 		this.displayName.setFlag(displayName);
+	}
+
+	public void setshowPlayerBroadcasts(Boolean showPlayerBroadcasts){
+		this.showPlayerBroadcasts.setFlag(showPlayerBroadcasts);
+	}
+
+	public Boolean getShowPlayerBroadcasts() {
+		return showPlayerBroadcasts.getFlag();
 	}
 
 	public MinigameType getType(){
@@ -1164,6 +1174,7 @@ public class Minigame implements ScriptObject {
 		itemsPlayer.add(enableFlight.getMenuItem("Enable Flight", Material.FEATHER, MinigameUtils.stringToList("Start players;in flight;(Must have Allow;Flight)")));
 		itemsPlayer.add(allowDragonEggTeleport.getMenuItem("Allow Dragon Egg Teleport", Material.DRAGON_EGG));
 		itemsPlayer.add(usePlayerDisplayNames.getMenuItem("Use Players Display Names", Material.POTATO_ITEM, MinigameUtils.stringToList("Use Player Nicks or Real Names")));
+		itemsPlayer.add(showPlayerBroadcasts.getMenuItem("Show Join/Exit Broadcasts",Material.PAPER,MinigameUtils.stringToList("Show Join and Exit broadcasts; Plus other Player broadcasts")));
 		playerMenu.addItems(itemsPlayer);
 		playerMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, main), main.getSize() - 9);
 		
