@@ -377,7 +377,8 @@ public class ScoreboardDisplay {
 		display.setOrder(ScoreboardOrder.valueOf(section.getString("order")));
 		
 		// Convert type to new stat
-		if (section.contains("type")) {
+		if (section.contains("type")) { //todo Remove in 1.13
+			Minigames.plugin.getLogger().warning("Your scoreboard display is using an old configuration method. `type` is will not be supported past 1.12 Game: "+ minigame.getName(false));
 			ScoreboardType type = ScoreboardType.valueOf(section.getString("type"));
 			
 			switch (type) {
@@ -421,7 +422,7 @@ public class ScoreboardDisplay {
 				break;
 			}
 			
-			section.set("type", null);
+			section.set("type", null); //todo remove to here in 1.13
 		// Load stat
 		} else {
 			MinigameStat stat = MinigameStats.getStat(section.getString("stat", "wins"));

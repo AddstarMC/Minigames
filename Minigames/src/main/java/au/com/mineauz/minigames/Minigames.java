@@ -85,8 +85,6 @@ public class Minigames extends JavaPlugin{
 			display = new DisplayManager();
 			
 			mdata.addMinigameType(new SingleplayerType());
-	//		mdata.addMinigameType(new FreeForAllType());
-	//		mdata.addMinigameType(new TeamsType());
 			mdata.addMinigameType(new MultiplayerType());
 			
 			MinigameSave completion = new MinigameSave("completion");
