@@ -50,7 +50,7 @@ public class PlayerData {
 		boolean canStart = minigame.getMechanic().checkCanStart(minigame, player);
 
 		if(!event.isCancelled()){
-            if(!minigame.isEnabled()){
+            if(!minigame.isEnabled() && !player.getPlayer().hasPermission("minigame.join.disabled")){
                 player.sendMessage(MinigameUtils.getLang("minigame.error.notEnabled"), "error");
                 return;
             }
@@ -75,22 +75,22 @@ public class PlayerData {
                 return;
             }
             else if(mdata.minigameType(minigame.getType()).cannotStart(minigame,player)){ //type specific reasons we cannot start.
-                return;
+				player.sendMessage(MinigameUtils.getLang("minigame.error.noQuit"), "error");
+				return;
             }
             else if(!minigame.getMechanic().validTypes().contains(minigame.getType())){
-                player.sendMessage(MinigameUtils.getLang("minigame.error.invalidMechanic"), "error");
+                player.sendMessage(MinigameUtils.getLang("minigame.error.invalidType"), "error");
                 return;
             } else if(minigame.getStartLocations().size() <= 0 ||
                     (minigame.isTeamGame() && !TeamsModule.getMinigameModule(minigame).hasTeamStartLocations())){
                 player.sendMessage(MinigameUtils.getLang("minigame.error.noStart"), "error");
                 return;
             }
-			if(player.getPlayer().hasPermission("minigame.join.disabled") &&
-					(minigame.getState() == MinigameState.IDLE ||
-                            minigame.getState() == MinigameState.OCCUPIED ||
-                            minigame.getState() == MinigameState.WAITING ||
-                            (minigame.getState() == MinigameState.STARTED && minigame.canLateJoin())) &&
-                    minigame.getMechanic().validTypes().contains(minigame.getType())){
+			if((minigame.getState() == MinigameState.IDLE ||
+					minigame.getState() == MinigameState.OCCUPIED ||
+					minigame.getState() == MinigameState.WAITING ||
+					(minigame.getState() == MinigameState.STARTED || minigame.getState() == MinigameState.STARTING && minigame.canLateJoin())
+					) && minigame.getMechanic().validTypes().contains(minigame.getType())){
 				//Do betting stuff
 				if(isBetting)handleBets(minigame,player,betAmount);
 				//Try teleport the player to their designated area.
@@ -162,11 +162,15 @@ public class PlayerData {
 					minigame.setScore(player, 1);
 					minigame.setScore(player, 0);
 				}
+				if(minigame.getState() == MinigameState.STARTING && minigame.canLateJoin()){
+					player.sendMessage(MinigameUtils.formStr("minigame.lateJoinWait", minigame.getMpTimer().getStartWaitTimeLeft()), null);
+				}
+			}else{
+				player.sendMessage(MinigameUtils.formStr("minigame.error.unspecified"," pdata.join failed"), "error");
 			}
-			if(minigame.getState() == MinigameState.STARTING && minigame.canLateJoin() &&
-						minigame.getPlayers().size() != minigame.getMaxPlayers()){
-				player.sendMessage(MinigameUtils.formStr("minigame.lateJoinWait", minigame.getMpTimer().getStartWaitTimeLeft()), null);
-			}
+
+		}else{
+			Minigames.log.info("Start Event was cancelled..: "+ event.toString());
 		}
 	}
 

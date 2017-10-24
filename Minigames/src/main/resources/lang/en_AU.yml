@@ -105,9 +105,11 @@ minigame:
     regenerating: "This Minigame is currently being reset, please wait..."
     noTeleport: "Failed to teleport. This could be related to world permissions."
     invalidMechanic: "This Minigame Type cannot use the selected Mechanic!"
+    invalidType: "This Minigame failed the start up checks for its Type - contact admin"
     mechanicStartFail: "The Game Mechanic has failed to initiate!"
     noSpectatePos: "There has been no spectator position assigned to this Minigame!"
     noTeam: "You have not been assigend a team...."
+    unspecified: "An unspecified error has occured: %s"
   flag:
     returnedTeam: "%s flag has been returned home."
     returnedNeutral: "The Neutral flag has been returned home."
