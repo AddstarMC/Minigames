@@ -1,31 +1,5 @@
 package au.com.mineauz.minigames;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import net.milkbowl.vault.economy.Economy;
-import org.bstats.bukkit.Metrics;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.ListenableFuture;
 import au.com.mineauz.minigames.backend.BackendManager;
 import au.com.mineauz.minigames.blockRecorder.BasicRecorder;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
@@ -40,6 +14,25 @@ import au.com.mineauz.minigames.signs.SignBase;
 import au.com.mineauz.minigames.stats.MinigameStats;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.ListenableFuture;
+import net.milkbowl.vault.economy.Economy;
+import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Minigames extends JavaPlugin{
 	static Logger log = Logger.getLogger("Minecraft");
@@ -172,8 +165,8 @@ public class Minigames extends JavaPlugin{
 	//					mdata.getLoadout(loadout).addItemToLoadout(globalLoadouts.getConfig().getItemStack(loadout + "." + i));
 	//			}
 				for(String slot : items){
-					if(slot.matches("[0-9]+"))
-						mdata.getLoadout(loadout).addItem(globalLoadouts.getConfig().getItemStack(loadout + "." + slot), Integer.parseInt(slot));
+                    if (slot.matches("[-]?[0-9]+"))
+                        mdata.getLoadout(loadout).addItem(globalLoadouts.getConfig().getItemStack(loadout + "." + slot), Integer.parseInt(slot));
 				}
 				if(globalLoadouts.getConfig().contains(loadout + ".potions")){
 					Set<String> pots = globalLoadouts.getConfig().getConfigurationSection(loadout + ".potions").getKeys(false);

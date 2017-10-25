@@ -1,24 +1,18 @@
 package au.com.mineauz.minigames;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
+import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.minigame.TeamColor;
+import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
+import au.com.mineauz.minigames.minigame.modules.LoadoutModule.LoadoutAddon;
+import com.google.common.collect.Maps;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.google.common.collect.Maps;
-
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.minigame.TeamColor;
-import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
-import au.com.mineauz.minigames.minigame.modules.LoadoutModule.LoadoutAddon;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class PlayerLoadout {
 	private Map<Integer, ItemStack> itemSlot = new HashMap<Integer, ItemStack>();
@@ -153,7 +147,9 @@ public class PlayerLoadout {
 					player.getPlayer().getInventory().setChestplate(getItem(slot));
 				else if(slot == 103)
 					player.getPlayer().getInventory().setHelmet(getItem(slot));
-			}
+                else if (slot == -106)
+                    player.getPlayer().getInventory().setItemInOffHand(getItem(slot));
+            }
 			player.updateInventory();
 		}
 		
@@ -458,8 +454,8 @@ public class PlayerLoadout {
 		if (section.contains("items")) {
 			ConfigurationSection itemSection = section.getConfigurationSection("items");
 			for(String key : itemSection.getKeys(false)) {
-				if(key.matches("[0-9]+")) {
-					addItem(itemSection.getItemStack(key), Integer.parseInt(key));
+                if (key.matches("[-]?[0-9]+")) {
+                    addItem(itemSection.getItemStack(key), Integer.parseInt(key));
 				}
 			}
 		}
