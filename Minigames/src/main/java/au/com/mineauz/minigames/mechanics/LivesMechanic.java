@@ -1,17 +1,16 @@
 package au.com.mineauz.minigames.mechanics;
 
-import java.util.EnumSet;
-import java.util.List;
-
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.PlayerDeathEvent;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.StartMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.PlayerDeathEvent;
+
+import java.util.EnumSet;
+import java.util.List;
 
 public class LivesMechanic extends GameMechanicBase{
 
@@ -67,8 +66,14 @@ public class LivesMechanic extends GameMechanicBase{
 			final List<MinigamePlayer> players = event.getPlayers();
 			final Minigame minigame = event.getMinigame();
 			for(MinigamePlayer player : players){
-				player.setScore(minigame.getLives());
-				minigame.setScore(player, minigame.getLives());
+				if (Float.isFinite(minigame.getLives())) {
+					player.setScore(Integer.MAX_VALUE);
+					minigame.setScore(player, Integer.MAX_VALUE);
+				} else {
+					int lives = Float.floatToIntBits(minigame.getLives());
+					player.setScore(lives);
+					minigame.setScore(player, lives);
+				}
 			}
 		}
 	}

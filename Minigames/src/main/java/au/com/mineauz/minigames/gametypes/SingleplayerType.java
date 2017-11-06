@@ -1,23 +1,18 @@
 package au.com.mineauz.minigames.gametypes;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
-
+import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.MinigameState;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.PlayerData;
-import au.com.mineauz.minigames.StoredPlayerCheckpoints;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.MinigameState;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 
 public class SingleplayerType extends MinigameTypeBase{
 	private static Minigames plugin = Minigames.plugin;
@@ -50,8 +45,8 @@ public class SingleplayerType extends MinigameTypeBase{
 
 	@Override
 	public boolean joinMinigame(MinigamePlayer player, Minigame mgm){
-		
-		if(mgm.getLives() > 0){
+
+		if (mgm.getLives() > 0 && !Float.isFinite(mgm.getLives())) {
 			player.sendMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives()), null);
 		}
 		if(!mgm.isAllowedFlight()){
