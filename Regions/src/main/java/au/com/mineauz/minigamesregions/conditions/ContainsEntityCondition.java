@@ -119,6 +119,7 @@ public class ContainsEntityCondition extends ConditionInterface {
 		entityType.saveValue(path, config);
 		matchName.saveValue(path, config);
 		customName.saveValue(path, config);
+		saveInvert(config, path);
 	}
 
 	@Override
@@ -126,6 +127,7 @@ public class ContainsEntityCondition extends ConditionInterface {
 		entityType.loadValue(path, config);
 		matchName.loadValue(path, config);
 		customName.loadValue(path, config);
+		loadInvert(config, path);
 	}
 
 	@Override
@@ -142,6 +144,7 @@ public class ContainsEntityCondition extends ConditionInterface {
 		menu.addItem(menuItem);
 		
 		menu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), menu.getSize() - 9);
+		addInvertMenuItem(menu);
 		menu.displayMenu(player);
 		return true;
 	}
