@@ -66,12 +66,14 @@ public class HasLoudOutCondition extends ConditionInterface {
     @Override
     public void saveArguments(FileConfiguration config, String path) {
         loadOutName.saveValue(path, config);
+        saveInvert(config, path);
 
     }
 
     @Override
     public void loadArguments(FileConfiguration config, String path) {
         loadOutName.loadValue(path, config);
+        loadInvert(config, path);
 
     }
 
@@ -91,6 +93,7 @@ public class HasLoudOutCondition extends ConditionInterface {
                 return loadOutName.getFlag();
             }
         }));
+        addInvertMenuItem(m);
         m.displayMenu(player);
         return true;
     }
