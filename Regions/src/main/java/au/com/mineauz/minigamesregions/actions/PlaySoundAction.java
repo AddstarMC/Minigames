@@ -24,7 +24,7 @@ import au.com.mineauz.minigamesregions.Region;
 
 public class PlaySoundAction extends ActionInterface {
 	
-	private StringFlag sound = new StringFlag("LEVEL_UP", "sound");
+	private StringFlag sound = new StringFlag("ENTITY_PLAYER_LEVELUP", "sound");
 	private BooleanFlag priv = new BooleanFlag(true, "private");
 	private FloatFlag vol = new FloatFlag(1f, "volume");
 	private FloatFlag pit = new FloatFlag(1f, "pitch");
@@ -114,7 +114,11 @@ public class PlaySoundAction extends ActionInterface {
 			
 			@Override
 			public void setValue(String value) {
-				sound.setFlag(value.toUpperCase().replace(" ", "_"));
+				if(sounds.contains(value)) {
+					sound.setFlag(value.toUpperCase().replace(" ", "_"));
+				}else{
+					player.sendMessage("Sound not available");
+				}
 			}
 			
 			@Override
