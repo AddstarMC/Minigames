@@ -15,7 +15,7 @@ import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class EndAction extends ActionInterface {
+public class EndAction extends AbstractAction {
 
 	@Override
 	public String getName() {
@@ -56,28 +56,7 @@ public class EndAction extends ActionInterface {
 	
 	private void execute(MinigamePlayer player){
 		if(player == null || !player.isInMinigame()) return;
-		if(player.getMinigame().getType() != MinigameType.SINGLEPLAYER){
-			List<MinigamePlayer> w = null;
-			List<MinigamePlayer> l = null;
-			if(player.getMinigame().isTeamGame()){
-				w = new ArrayList<>(player.getTeam().getPlayers());
-				l = new ArrayList<>(player.getMinigame().getPlayers().size() - player.getTeam().getPlayers().size());
-				for(Team t : TeamsModule.getMinigameModule(player.getMinigame()).getTeams()){
-					if(t != player.getTeam())
-						l.addAll(t.getPlayers());
-				}
-			}
-			else{
-				w = new ArrayList<>(1);
-				l = new ArrayList<>(player.getMinigame().getPlayers().size());
-				w.add(player);
-				l.addAll(player.getMinigame().getPlayers());
-				l.remove(player);
-			}
-			Minigames.plugin.pdata.endMinigame(player.getMinigame(), w, l);
-		} else{
-			Minigames.plugin.pdata.endMinigame(player);
-		}
+		endGameWithWinner(player);
 	}
 
 	@Override

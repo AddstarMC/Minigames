@@ -18,7 +18,7 @@ import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class SetScoreAction extends ActionInterface {
+public class SetScoreAction extends AbstractAction {
 	
 	private IntegerFlag amount = new IntegerFlag(1, "amount");
 
@@ -48,44 +48,22 @@ public class SetScoreAction extends ActionInterface {
 	}
 
 	@Override
-	public void executeNodeAction(MinigamePlayer player,
-			Node node) {
-		if(player == null || !player.isInMinigame()) return;
-		player.setScore(amount.getFlag());
-		player.getMinigame().setScore(player, player.getScore());
-		checkScore(player);
+	public void executeNodeAction(MinigamePlayer player,Node node) {
+		executeAction(player);
 	}
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Region region) {
+		executeAction(player);
+	}
+
+	public void executeAction(MinigamePlayer player){
 		if(player == null || !player.isInMinigame()) return;
 		player.setScore(amount.getFlag());
 		player.getMinigame().setScore(player, player.getScore());
 		checkScore(player);
 	}
 
-	private void checkScore(MinigamePlayer player){
-		if( player.getScore()  >= player.getMinigame().getMaxScorePerPlayer()|| player.getTeam().getScore() >= player.getMinigame().getMaxScore()){
-			List<MinigamePlayer> w;
-			List<MinigamePlayer> l;
-			if(player.getMinigame().isTeamGame()){
-				w = new ArrayList<>(player.getTeam().getPlayers());
-				l = new ArrayList<>(player.getMinigame().getPlayers().size() - player.getTeam().getPlayers().size());
-				for(Team t : TeamsModule.getMinigameModule(player.getMinigame()).getTeams()){
-					if(t != player.getTeam())
-						l.addAll(t.getPlayers());
-				}
-			}
-			else{
-				w = new ArrayList<>(1);
-				l = new ArrayList<>(player.getMinigame().getPlayers().size());
-				w.add(player);
-				l.addAll(player.getMinigame().getPlayers());
-				l.remove(player);
-			}
-			Minigames.plugin.pdata.endMinigame(player.getMinigame(), w, l);
-		}
-	}
 	@Override
 	public void saveArguments(FileConfiguration config,
 			String path) {

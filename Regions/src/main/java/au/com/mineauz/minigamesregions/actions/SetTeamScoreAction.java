@@ -22,7 +22,7 @@ import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class SetTeamScoreAction extends ActionInterface {
+public class SetTeamScoreAction extends AbstractAction {
 	
 	private IntegerFlag score = new IntegerFlag(1, "amount");
 	private StringFlag team = new StringFlag("NONE", "team");
@@ -79,21 +79,6 @@ public class SetTeamScoreAction extends ActionInterface {
 			}
 		}
 		checkScore(player);
-	}
-	private void checkScore(MinigamePlayer player){
-		if(player.getTeam().getScore() >= player.getMinigame().getMaxScore()){
-			if(player.getMinigame().isTeamGame()){
-				List<MinigamePlayer> w;
-				List<MinigamePlayer> l;
-				w = new ArrayList<>(player.getTeam().getPlayers());
-				l = new ArrayList<>(player.getMinigame().getPlayers().size() - player.getTeam().getPlayers().size());
-				for(Team t : TeamsModule.getMinigameModule(player.getMinigame()).getTeams()){
-					if(t != player.getTeam())
-						l.addAll(t.getPlayers());
-				}
-				Minigames.plugin.pdata.endMinigame(player.getMinigame(), w, l);
-			}
-		}
 	}
 
 	@Override
