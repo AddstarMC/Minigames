@@ -289,3 +289,17 @@ command:
     description: "Opens the loadout selection menu, loadouts will only equip on respawn or when the game starts.\n Alternatively, if the name of the loadout is known, it can be selected directly by its name."
     noPermission: "You do not have permission to use the loadout command!"
     noMinigame: "You must be in a Minigame to use this command!"
+  info:
+    noMinigame: "You must either be in a game or use the game name."
+    noPermission: "You do not have permission to use the info command!"
+    description: "Shows information for a minigame currently running"
+    output:
+      header: "Minigame: %s"
+      noPlayer: "Game has no current players"
+      Timer: "Time Left: %s"
+      description: "Objective: %s"
+      gameType: "Game Type: %s"
+      notStarted: "Minigame is not currently running"
+      playerHeader: "List of Players  %s / %s"
+      playerData: "%s Score: %s Deaths: %s Reverts: %s Kills: %s"
+      teamData: "%s Score: %s Color: %s"
