@@ -80,7 +80,7 @@ public class SetDisplayScoreboardCommand implements ICommand {
 			String alias, String[] args) {
 		if(args != null){
 			if(args.length == 1){
-				List<String> items = new ArrayList<String>();
+				List<String> items = new ArrayList<>();
 				items.add("true");
 				items.add("false");
 				return MinigameUtils.tabCompleteMatch(items, args[0]);

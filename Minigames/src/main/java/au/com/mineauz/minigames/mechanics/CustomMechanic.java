@@ -8,11 +8,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 
 public class CustomMechanic extends GameMechanicBase{
 

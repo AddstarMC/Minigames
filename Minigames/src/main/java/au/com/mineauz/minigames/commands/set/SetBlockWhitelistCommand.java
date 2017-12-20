@@ -108,20 +108,20 @@ public class SetBlockWhitelistCommand implements ICommand {
 				}
 			}
 			else if(args[0].equalsIgnoreCase("list")){
-				String blocks = "";
+				StringBuilder blocks = new StringBuilder();
 				boolean switchColour = false;
 				for(Material block : minigame.getBlockRecorder().getWBBlocks()){
 					if(switchColour){
-						blocks += ChatColor.WHITE + block.toString();
+						blocks.append(ChatColor.WHITE).append(block.toString());
 						if(!block.toString().equalsIgnoreCase(minigame.getBlockRecorder().getWBBlocks().get(minigame.getBlockRecorder().getWBBlocks().size() - 1).toString())){
-							blocks += ChatColor.WHITE + ", ";
+							blocks.append(ChatColor.WHITE).append(", ");
 						}
 						switchColour = false;
 					}
 					else{
-						blocks += ChatColor.GRAY + block.toString();
+						blocks.append(ChatColor.GRAY).append(block.toString());
 						if(!block.toString().equalsIgnoreCase(minigame.getBlockRecorder().getWBBlocks().get(minigame.getBlockRecorder().getWBBlocks().size() - 1).toString())){
-							blocks += ChatColor.WHITE + ", ";
+							blocks.append(ChatColor.WHITE).append(", ");
 						}
 						switchColour = true;
 					}
@@ -132,7 +132,7 @@ public class SetBlockWhitelistCommand implements ICommand {
 				else{
 					sender.sendMessage(ChatColor.GRAY + "All blocks on the blacklist:");
 				}
-				sender.sendMessage(blocks);
+				sender.sendMessage(blocks.toString());
 			}
 			else{
 				boolean bool = Boolean.parseBoolean(args[0]);
@@ -155,7 +155,7 @@ public class SetBlockWhitelistCommand implements ICommand {
 		if(args.length == 1)
 			return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("true;false;add;remove;list;clear"), args[0]);
 		else if(args.length == 2 && args[0].equalsIgnoreCase("remove")){
-			List<String> ls = new ArrayList<String>();
+			List<String> ls = new ArrayList<>();
 			for(Material m : minigame.getBlockRecorder().getWBBlocks()){
 				ls.add(m.toString());
 			}

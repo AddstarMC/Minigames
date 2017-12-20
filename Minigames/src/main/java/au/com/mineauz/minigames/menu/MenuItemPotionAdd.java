@@ -59,7 +59,7 @@ public class MenuItemPotionAdd extends MenuItem{
 						}
 						dur*=20;
 
-						List<String> des = new ArrayList<String>();
+						List<String> des = new ArrayList<>();
 						des.add("Shift + Right Click to Delete");
 						
 						PotionEffect peff = new PotionEffect(eff, dur, level);

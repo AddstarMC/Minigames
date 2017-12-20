@@ -82,7 +82,7 @@ public class JoinCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+			List<String> mgs = new ArrayList<>(plugin.mdata.getAllMinigames().keySet());
 			return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
 		}
 		return null;

@@ -30,14 +30,11 @@ public final class RewardSchemes {
 	public static <T extends RewardScheme> T createScheme(Class<T> type) {
 		try {
 			return type.newInstance();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-			return null;
-		} catch (IllegalAccessException e) {
+		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 			return null;
 		}
-	}
+    }
 	
 	public static RewardScheme createScheme(String name) {
 		try {
@@ -47,14 +44,11 @@ public final class RewardSchemes {
 			} else {
 				return schemeClass.newInstance();
 			}
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-			return null;
-		} catch (IllegalAccessException e) {
+		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 			return null;
 		}
-	}
+    }
 	
 	public static String getName(Class<? extends RewardScheme> schemeClass) {
 		return definedSchemes.inverse().get(schemeClass);

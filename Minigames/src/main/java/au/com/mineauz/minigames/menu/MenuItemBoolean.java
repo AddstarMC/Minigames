@@ -42,7 +42,7 @@ public class MenuItemBoolean extends MenuItem{
 				description.add(0, col);
 		}
 		else{
-			description = new ArrayList<String>();
+			description = new ArrayList<>();
 			description.add(col);
 		}
 		

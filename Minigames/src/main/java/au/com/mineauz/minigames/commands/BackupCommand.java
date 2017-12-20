@@ -113,7 +113,7 @@ public class BackupCommand implements ICommand {
 			String alias, String[] args) {
 		if(args != null){
 			if(args.length == 1){
-				return MinigameUtils.tabCompleteMatch(new ArrayList<String>(Minigames.plugin.mdata.getAllMinigames().keySet()), args[0]);
+				return MinigameUtils.tabCompleteMatch(new ArrayList<>(Minigames.plugin.mdata.getAllMinigames().keySet()), args[0]);
 			}
 			else if(args.length == 2){
 				return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("restore"), args[1]);

@@ -89,7 +89,7 @@ public class DeleteCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> mgs = new ArrayList<String>(Minigames.plugin.mdata.getAllMinigames().keySet());
+			List<String> mgs = new ArrayList<>(Minigames.plugin.mdata.getAllMinigames().keySet());
 			return MinigameUtils.tabCompleteMatch(mgs, args[0]);
 		}
 		return null;

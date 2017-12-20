@@ -67,10 +67,10 @@ public class SetLoadoutCommand implements ICommand {
 
 		MinigamePlayer player = Minigames.plugin.pdata.getMinigamePlayer((Player)sender);
 		Menu loadouts = new Menu(6, getName(), player);
-		List<MenuItem> mi = new ArrayList<MenuItem>();
+		List<MenuItem> mi = new ArrayList<>();
 		LoadoutModule mod = LoadoutModule.getMinigameModule(minigame);
 		
-		List<String> des = new ArrayList<String>();
+		List<String> des = new ArrayList<>();
 		des.add("Shift + Right Click to Delete");
 		
 		Material item = Material.THIN_GLASS;

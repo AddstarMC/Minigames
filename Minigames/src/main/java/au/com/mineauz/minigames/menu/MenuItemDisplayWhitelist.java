@@ -28,7 +28,7 @@ public class MenuItemDisplayWhitelist extends MenuItem{
 	@Override
 	public ItemStack onClick() {
 		Menu menu = new Menu(6, "Block Whitelist", getContainer().getViewer());
-		List<MenuItem> items = new ArrayList<MenuItem>();
+		List<MenuItem> items = new ArrayList<>();
 		for(Material bl : whitelist){
 			items.add(new MenuItemWhitelistBlock(bl, whitelist));
 		}

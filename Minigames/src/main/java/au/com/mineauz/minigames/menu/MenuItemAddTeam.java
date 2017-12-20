@@ -29,7 +29,7 @@ public class MenuItemAddTeam extends MenuItem{
 		ply.setNoClose(true);
 		ply.getPlayer().closeInventory();
 		ply.sendMessage("Enter the color of the team you wish to add. All colors available below:", null);
-		List<String> teams = new ArrayList<String>();
+		List<String> teams = new ArrayList<>();
 		for(TeamColor col : TeamColor.values())
 			teams.add(col.getColor() + MinigameUtils.capitalize(col.toString().replace("_", " ")));
 		ply.sendMessage(MinigameUtils.listToString(teams));
@@ -55,7 +55,7 @@ public class MenuItemAddTeam extends MenuItem{
 				getContainer().getViewer().sendMessage(ChatColor.RED + "A team already exists using that color!");
 			}
 			
-			List<String> teams = new ArrayList<String>(tm.getTeams().size() + 1);
+			List<String> teams = new ArrayList<>(tm.getTeams().size() + 1);
 			for(Team t : tm.getTeams()){
 				teams.add(MinigameUtils.capitalize(t.getColor().toString().replace("_", " ")));
 			}

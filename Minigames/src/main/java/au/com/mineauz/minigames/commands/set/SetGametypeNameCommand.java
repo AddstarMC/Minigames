@@ -56,15 +56,15 @@ public class SetGametypeNameCommand implements ICommand {
 			String label, String[] args) {
 		if(args != null){
 			if(!args[0].equals("null")){
-				String gtn = "";
+				StringBuilder gtn = new StringBuilder();
 				int count = 0;
 				for(String arg : args){
-					gtn += arg;
+					gtn.append(arg);
 					count++;
 					if(count != args.length)
-						gtn += " ";
+						gtn.append(" ");
 				}
-				minigame.setGametypeName(gtn);
+				minigame.setGametypeName(gtn.toString());
 				sender.sendMessage(ChatColor.GRAY + "Gametype name for " + minigame + " has been set to " + gtn + ".");
 			}
 			else{

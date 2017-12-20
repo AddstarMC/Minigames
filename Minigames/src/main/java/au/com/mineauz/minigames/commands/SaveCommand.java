@@ -71,7 +71,7 @@ public class SaveCommand implements ICommand {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
-		List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+		List<String> mgs = new ArrayList<>(plugin.mdata.getAllMinigames().keySet());
 		return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
 	}
 

@@ -22,14 +22,13 @@ import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
-import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 
 public class Region implements ScriptObject {
 	private String name;
 	private Location point1;
 	private Location point2;
-	private List<RegionExecutor> executors = new ArrayList<RegionExecutor>();
-	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
+	private List<RegionExecutor> executors = new ArrayList<>();
+	private List<MinigamePlayer> players = new ArrayList<>();
 	private long taskDelay = 20;
 	private int taskID;
 	private boolean enabled = true;
@@ -56,10 +55,8 @@ public class Region implements ScriptObject {
 					int minz = point1.getBlockZ();
 					int maxz = point2.getBlockZ();
 					int plyz = player.getLocation().getBlockZ();
-					
-					if(plyz >= minz && plyz <= maxz){
-						return true;
-					}
+
+                    return plyz >= minz && plyz <= maxz;
 				}
 				
 			}
@@ -82,10 +79,8 @@ public class Region implements ScriptObject {
 					int minz = point1.getBlockZ();
 					int maxz = point2.getBlockZ();
 					int plyz = loc.getBlockZ();
-					
-					if(plyz >= minz && plyz <= maxz){
-						return true;
-					}
+
+                    return plyz >= minz && plyz <= maxz;
 				}
 				
 			}
@@ -156,16 +151,12 @@ public class Region implements ScriptObject {
 	public void changeTickDelay(long delay){
 		removeTickTask();
 		taskDelay = delay;
-		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, new Runnable() {
-			
-			@Override
-			public void run() {
-				List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>(players);
-				for(MinigamePlayer player : plys){
-					execute(Triggers.getTrigger("TICK"), player);
-				}
-			}
-		}, 0, delay);
+		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, () -> {
+            List<MinigamePlayer> plys = new ArrayList<>(players);
+            for(MinigamePlayer player : plys){
+                execute(Triggers.getTrigger("TICK"), player);
+            }
+        }, 0, delay);
 	}
 	
 	public long getTickDelay(){
@@ -176,16 +167,12 @@ public class Region implements ScriptObject {
 		if(taskID != -1)
 			removeTickTask();
 		
-		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, new Runnable() {
-			
-			@Override
-			public void run() {
-				List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>(players);
-				for(MinigamePlayer player : plys){
-					execute(Triggers.getTrigger("TICK"), player);
-				}
-			}
-		}, 0, taskDelay);
+		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, () -> {
+            List<MinigamePlayer> plys = new ArrayList<>(players);
+            for(MinigamePlayer player : plys){
+                execute(Triggers.getTrigger("TICK"), player);
+            }
+        }, 0, taskDelay);
 	}
 	
 	public void removeTickTask(){
@@ -202,7 +189,7 @@ public class Region implements ScriptObject {
 	
 	public void execute(Trigger trigger, MinigamePlayer player){
 		if(player != null && player.getMinigame() != null && player.getMinigame().isSpectator(player)) return;
-		List<RegionExecutor> toExecute = new ArrayList<RegionExecutor>();
+		List<RegionExecutor> toExecute = new ArrayList<>();
 		for(RegionExecutor exec : executors){
 			if(exec.getTrigger() == trigger){
 				if(checkConditions(exec, player) && exec.canBeTriggered(player))

@@ -18,7 +18,7 @@ import au.com.mineauz.minigames.Minigames;
 public class Menu {
 	private int rows = 2;
 	private ItemStack[] pageView;
-	private Map<Integer, MenuItem> pageMap = new HashMap<Integer, MenuItem>();
+	private Map<Integer, MenuItem> pageMap = new HashMap<>();
 	private String name = "Menu";
 	private boolean allowModify = false;
 	private Menu previousPage = null;
@@ -135,7 +135,7 @@ public class Menu {
 	}
 	
 	public void clearMenu(){
-		for(Integer i : new ArrayList<Integer>(pageMap.keySet())){
+		for(Integer i : new ArrayList<>(pageMap.keySet())){
 			pageMap.remove(i);
 			pageView[i] = null;
 		}
@@ -217,15 +217,11 @@ public class Menu {
 	}
 	
 	public void startReopenTimer(int time){
-		reopenTimerID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-			
-			@Override
-			public void run() {
-				viewer.setNoClose(false);
-				viewer.setManualEntry(null);
-				displayMenu(viewer);
-			}
-		}, (long)(time * 20));
+		reopenTimerID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, () -> {
+            viewer.setNoClose(false);
+            viewer.setManualEntry(null);
+            displayMenu(viewer);
+        }, (long)(time * 20));
 	}
 	
 	public void cancelReopenTimer(){

@@ -64,18 +64,14 @@ class SQLiteStatLoader {
 			int minigameId = backend.getMinigameId(handler, minigame);
 			
 			String statName = stat.getName() + field.getSuffix();
-			
-			ResultSet rs = handler.executeQuery(getSingle, minigameId, playerId.toString(), statName);
-			
-			try {
-				if (rs.next()) {
-					return rs.getLong("value");
-				} else {
-					return 0;
-				}
-			} finally {
-				rs.close();
-			}
+
+            try (ResultSet rs = handler.executeQuery(getSingle, minigameId, playerId.toString(), statName)) {
+                if (rs.next()) {
+                    return rs.getLong("value");
+                } else {
+                    return 0;
+                }
+            }
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to load stat for " + minigame.getName(false) + " " + playerId, e);
 			return 0;
@@ -101,18 +97,15 @@ class SQLiteStatLoader {
 		default:
 			throw new AssertionError();
 		}
-		
-		ResultSet rs = handler.executeQuery(statement, minigameId, statName, offset, length);
-		List<StoredStat> stats = Lists.newArrayList();
-		try {
-			while (rs.next()) {
-				stats.add(loadStat(rs));
-			}
-			
-			return stats;
-		} finally {
-			rs.close();
-		}
+
+        List<StoredStat> stats = Lists.newArrayList();
+        try (ResultSet rs = handler.executeQuery(statement, minigameId, statName, offset, length)) {
+            while (rs.next()) {
+                stats.add(loadStat(rs));
+            }
+
+            return stats;
+        }
 	}
 	
 	private StoredStat loadStat(ResultSet rs) throws SQLException {

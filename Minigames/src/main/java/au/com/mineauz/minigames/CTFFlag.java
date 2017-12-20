@@ -180,36 +180,26 @@ public class CTFFlag{
 	
 	public void startReturnTimer(){
 		final CTFFlag self = this;
-		taskID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-			
-			@Override
-			public void run() {
-				String id = MinigameUtils.createLocationID(currentLocation);
-				if(minigame.hasDroppedFlag(id)){
-					minigame.removeDroppedFlag(id);
-					String newID = MinigameUtils.createLocationID(spawnLocation);
-					minigame.addDroppedFlag(newID, self);
-				}
-				respawnFlag();
-				for(MinigamePlayer pl : minigame.getPlayers()){
-					if(getTeam() != null)
-						pl.sendMessage(MinigameUtils.formStr("minigame.flag.returnedTeam", getTeam().getChatColor() + getTeam().getDisplayName() + ChatColor.WHITE), null);
-					else
-						pl.sendMessage(MinigameUtils.getLang("minigame.flag.returnedNeutral"), null);
-				}
-				taskID = -1;
-			}
-		}, respawnTime * 20);
+		taskID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, () -> {
+            String id = MinigameUtils.createLocationID(currentLocation);
+            if(minigame.hasDroppedFlag(id)){
+                minigame.removeDroppedFlag(id);
+                String newID = MinigameUtils.createLocationID(spawnLocation);
+                minigame.addDroppedFlag(newID, self);
+            }
+            respawnFlag();
+            for(MinigamePlayer pl : minigame.getPlayers()){
+                if(getTeam() != null)
+                    pl.sendMessage(MinigameUtils.formStr("minigame.flag.returnedTeam", getTeam().getChatColor() + getTeam().getDisplayName() + ChatColor.WHITE), null);
+                else
+                    pl.sendMessage(MinigameUtils.getLang("minigame.flag.returnedNeutral"), null);
+            }
+            taskID = -1;
+        }, respawnTime * 20);
 	}
 	
 	public void startCarrierParticleEffect(final Player player){
-		cParticleID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, new Runnable() {
-			
-			@Override
-			public void run() {
-				player.getWorld().playEffect(player.getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
-			}
-		}, 15L, 15L);
+		cParticleID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, () -> player.getWorld().playEffect(player.getLocation(), Effect.MOBSPAWNER_FLAMES, 0), 15L, 15L);
 	}
 	
 	public void stopCarrierParticleEffect(){

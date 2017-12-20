@@ -93,46 +93,38 @@ public class MultiplayerType extends MinigameTypeBase{
 				player.sendMessage(String.format(smTeam.getAssignMessage(), smTeam.getChatColor() + smTeam.getDisplayName()), null);
 				
 				final Team fteam = smTeam;
-				player.setLateJoinTimer(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						if(fply.isInMinigame()){
-							List<Location> locs = new ArrayList<Location>();
-							if(TeamsModule.getMinigameModule(fmgm).hasTeamStartLocations()){
-								locs.addAll(fteam.getStartLocations());
-							}
-							else{
-								locs.addAll(fmgm.getStartLocations());
-							}
-							Collections.shuffle(locs);
-							fply.teleport(locs.get(0));
-							fply.getLoadout().equiptLoadout(fply);
-							fply.setLatejoining(false);
-							fply.setFrozen(false);
-							fply.setCanInteract(true);
-							fply.setLateJoinTimer(-1);
-						}
-					}
-				}, 5 * 20)); //TODO: Latejoin variable
+				player.setLateJoinTimer(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                    if(fply.isInMinigame()){
+                        List<Location> locs = new ArrayList<>();
+                        if(TeamsModule.getMinigameModule(fmgm).hasTeamStartLocations()){
+                            locs.addAll(fteam.getStartLocations());
+                        }
+                        else{
+                            locs.addAll(fmgm.getStartLocations());
+                        }
+                        Collections.shuffle(locs);
+                        fply.teleport(locs.get(0));
+                        fply.getLoadout().equiptLoadout(fply);
+                        fply.setLatejoining(false);
+                        fply.setFrozen(false);
+                        fply.setCanInteract(true);
+                        fply.setLateJoinTimer(-1);
+                    }
+                }, 5 * 20)); //TODO: Latejoin variable
 			}
 			else{
-				player.setLateJoinTimer(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						if(fply.isInMinigame()){
-							List<Location> locs = new ArrayList<Location>(fmgm.getStartLocations());
-							Collections.shuffle(locs);
-							fply.teleport(locs.get(0));
-							fply.getLoadout().equiptLoadout(fply);
-							fply.setLatejoining(false);
-							fply.setFrozen(false);
-							fply.setCanInteract(true);
-							fply.setLateJoinTimer(-1);
-						}
-					}
-				}, 5 * 20)); //TODO: Latejoin variable
+				player.setLateJoinTimer(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                    if(fply.isInMinigame()){
+                        List<Location> locs = new ArrayList<>(fmgm.getStartLocations());
+                        Collections.shuffle(locs);
+                        fply.teleport(locs.get(0));
+                        fply.getLoadout().equiptLoadout(fply);
+                        fply.setLatejoining(false);
+                        fply.setFrozen(false);
+                        fply.setCanInteract(true);
+                        fply.setLateJoinTimer(-1);
+                    }
+                }, 5 * 20)); //TODO: Latejoin variable
 			}
 			player.getPlayer().setScoreboard(mgm.getScoreboardManager());
 			mgm.setScore(player, 1);
@@ -164,13 +156,7 @@ public class MultiplayerType extends MinigameTypeBase{
 				if(mgm.getMpBets().getPlayersBet(player) != null){
 					final ItemStack item = mgm.getMpBets().getPlayersBet(player).clone();
 					final MinigamePlayer ply = player;
-					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-						
-						@Override
-						public void run() {
-							ply.getPlayer().getInventory().addItem(item);
-						}
-					});
+					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> ply.getPlayer().getInventory().addItem(item));
 				}
 				else if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
 					plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), mgm.getMpBets().getPlayersMoneyBet(player));
@@ -189,8 +175,8 @@ public class MultiplayerType extends MinigameTypeBase{
 						break;
 					}
 				}
-				List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(winner.getPlayers());
-				List<MinigamePlayer> l = new ArrayList<MinigamePlayer>();
+				List<MinigamePlayer> w = new ArrayList<>(winner.getPlayers());
+				List<MinigamePlayer> l = new ArrayList<>();
 				plugin.pdata.endMinigame(mgm, w, l);
 				
 				if(mgm.getMpBets() != null){
@@ -199,9 +185,9 @@ public class MultiplayerType extends MinigameTypeBase{
 			}
 		}
 		else if(mgm.getPlayers().size() == 2 && mgm.hasStarted() && !forced){
-			List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(mgm.getPlayers());
+			List<MinigamePlayer> w = new ArrayList<>(mgm.getPlayers());
 			w.remove(player);
-			List<MinigamePlayer> l = new ArrayList<MinigamePlayer>();
+			List<MinigamePlayer> l = new ArrayList<>();
 			plugin.pdata.endMinigame(mgm, w, l);
 			
 			if(mgm.getMpBets() != null){
@@ -264,7 +250,7 @@ public class MultiplayerType extends MinigameTypeBase{
 						respawnPos = ply.getCheckpoint();
 					}
 					else{
-						List<Location> starts = new ArrayList<Location>();
+						List<Location> starts = new ArrayList<>();
 						if(TeamsModule.getMinigameModule(mg).hasTeamStartLocations()){
 							starts.addAll(team.getStartLocations());
 							ply.getLoadout().equiptLoadout(ply);
@@ -287,8 +273,7 @@ public class MultiplayerType extends MinigameTypeBase{
 						respawnPos = ply.getCheckpoint();
 					}
 					else{
-						List<Location> starts = new ArrayList<Location>();
-						starts.addAll(mg.getStartLocations());
+						List<Location> starts = new ArrayList<>(mg.getStartLocations());
 						Collections.shuffle(starts);
 						respawnPos = starts.get(0);
 					}
@@ -302,12 +287,7 @@ public class MultiplayerType extends MinigameTypeBase{
 			
 			event.setRespawnLocation(respawnPos);
 			
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				@Override
-				public void run() {
-					ply.getPlayer().setNoDamageTicks(60);
-				}
-			});
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> ply.getPlayer().setNoDamageTicks(60));
 		}
 	}
 	
@@ -321,13 +301,13 @@ public class MultiplayerType extends MinigameTypeBase{
 					List<MinigamePlayer> w;
 					List<MinigamePlayer> l;
 					if(TeamsModule.getMinigameModule(mgm).hasTeam(TeamsModule.getMinigameModule(mgm).getDefaultWinner())){
-						w = new ArrayList<MinigamePlayer>(tm.getTeam(tm.getDefaultWinner()).getPlayers().size());
-						l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - tm.getTeam(tm.getDefaultWinner()).getPlayers().size());
+						w = new ArrayList<>(tm.getTeam(tm.getDefaultWinner()).getPlayers().size());
+						l = new ArrayList<>(mgm.getPlayers().size() - tm.getTeam(tm.getDefaultWinner()).getPlayers().size());
 						w.addAll(tm.getTeam(tm.getDefaultWinner()).getPlayers());
 					}
 					else{
-						w = new ArrayList<MinigamePlayer>();
-						l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size());
+						w = new ArrayList<>();
+						l = new ArrayList<>(mgm.getPlayers().size());
 					}
 					
 					for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
@@ -337,7 +317,7 @@ public class MultiplayerType extends MinigameTypeBase{
 					plugin.pdata.endMinigame(mgm, w, l);
 				}
 				else{
-					List<Team> drawTeams = new ArrayList<Team>();
+					List<Team> drawTeams = new ArrayList<>();
 					Team winner = null;
 					for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 						if(winner == null || (t.getScore() > winner.getScore() && 
@@ -358,8 +338,8 @@ public class MultiplayerType extends MinigameTypeBase{
 					}
 					
 					if(winner != null){
-						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(winner.getPlayers());
-						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - winner.getPlayers().size());
+						List<MinigamePlayer> w = new ArrayList<>(winner.getPlayers());
+						List<MinigamePlayer> l = new ArrayList<>(mgm.getPlayers().size() - winner.getPlayers().size());
 						for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 							if(t != winner)
 								l.addAll(t.getPlayers());
@@ -367,7 +347,7 @@ public class MultiplayerType extends MinigameTypeBase{
 						pdata.endMinigame(mgm, w, l);
 					}
 					else{
-						List<MinigamePlayer> players = new ArrayList<MinigamePlayer>(mgm.getPlayers());
+						List<MinigamePlayer> players = new ArrayList<>(mgm.getPlayers());
 						for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 							t.resetScore();
 						}
@@ -406,12 +386,12 @@ public class MultiplayerType extends MinigameTypeBase{
 											drawTeams.size(), 
 											event.getMinigame().getName(true)), "error");
 								}
-								String scores = "";
+								StringBuilder scores = new StringBuilder();
 								int c = 1;
 								for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
-									scores += t.getChatColor().toString() + t.getScore();
+									scores.append(t.getChatColor().toString()).append(t.getScore());
 									if(c != TeamsModule.getMinigameModule(mgm).getTeams().size())
-										scores += ChatColor.WHITE + " : ";
+										scores.append(ChatColor.WHITE).append(" : ");
 									c++;
 								}
 								ply.sendMessage(MinigameUtils.getLang("minigame.info.score") + " " + scores);
@@ -430,12 +410,12 @@ public class MultiplayerType extends MinigameTypeBase{
 										event.getMinigame().getName(true)));
 							}
 							
-							String scores = "";
+							StringBuilder scores = new StringBuilder();
 							int c = 1;
 							for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
-								scores += t.getChatColor().toString() + t.getScore();
+								scores.append(t.getChatColor().toString()).append(t.getScore());
 								if(c != TeamsModule.getMinigameModule(mgm).getTeams().size())
-									scores += ChatColor.WHITE + " : ";
+									scores.append(ChatColor.WHITE).append(" : ");
 								c++;
 							}
 							plugin.getServer().broadcastMessage(MinigameUtils.getLang("minigame.info.score") + " " + scores);
@@ -462,9 +442,8 @@ public class MultiplayerType extends MinigameTypeBase{
 						}
 					}
 				}
-				List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>();
-				losers.addAll(event.getMinigame().getPlayers());
-				List<MinigamePlayer> winners = new ArrayList<MinigamePlayer>();
+				List<MinigamePlayer> losers = new ArrayList<>(event.getMinigame().getPlayers());
+				List<MinigamePlayer> winners = new ArrayList<>();
 				if(player != null){
 					losers.remove(player);
 					winners.add(player);

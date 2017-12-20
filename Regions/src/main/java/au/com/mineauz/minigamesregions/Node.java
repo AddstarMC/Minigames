@@ -22,7 +22,7 @@ public class Node implements ScriptObject {
 	
 	private String name;
 	private Location loc;
-	private List<NodeExecutor> executors = new ArrayList<NodeExecutor>();
+	private List<NodeExecutor> executors = new ArrayList<>();
 	private boolean enabled = true;
 	
 	public Node(String name, Location loc){
@@ -79,7 +79,7 @@ public class Node implements ScriptObject {
 	public void execute(Trigger trigger, MinigamePlayer player){
 		if(player != null && player.getMinigame() != null && player.getMinigame().isSpectator(player)) return;
 		if(player == null || player.getMinigame() == null)return;
-		List<NodeExecutor> toExecute = new ArrayList<NodeExecutor>();
+		List<NodeExecutor> toExecute = new ArrayList<>();
 		for(NodeExecutor exec : executors){
 			if(exec.getTrigger() == trigger){
 				if(checkConditions(exec, player) && exec.canBeTriggered(player))

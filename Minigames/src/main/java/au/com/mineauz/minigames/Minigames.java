@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.Month;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
@@ -95,32 +96,27 @@ public class Minigames extends JavaPlugin{
 			
 			try{
 				this.getConfig().load(this.getDataFolder() + "/config.yml");
-				List<String> mgs = new ArrayList<String>();
+				List<String> mgs = new ArrayList<>();
 				if(getConfig().contains("minigames")){
 					mgs = getConfig().getStringList("minigames");
 				}
 				debug = getConfig().getBoolean("debug", false);
-				final List<String> allMGS = new ArrayList<String>();
-				allMGS.addAll(mgs);
+				final List<String> allMGS = new ArrayList<>(mgs);
 				
 				if(!mgs.isEmpty()){
-					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-						
-						@Override
-						public void run() {
-							for(String minigame : allMGS){
-								final Minigame game = new Minigame(minigame);
-								try{
-									game.loadMinigame();
-									mdata.addMinigame(game);
-								}
-								catch(Exception e){
-									getLogger().severe(ChatColor.RED.toString() + "Failed to load \"" + minigame +"\"! The configuration file may be corrupt or missing!");
-									e.printStackTrace();
-								}
-							}
-						}
-					}, 1L);
+					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                        for(String minigame : allMGS){
+                            final Minigame game = new Minigame(minigame);
+                            try{
+                                game.loadMinigame();
+                                mdata.addMinigame(game);
+                            }
+                            catch(Exception e){
+                                getLogger().severe(ChatColor.RED.toString() + "Failed to load \"" + minigame +"\"! The configuration file may be corrupt or missing!");
+                                e.printStackTrace();
+                            }
+                        }
+                    }, 1L);
 				}
 			}
 			catch(FileNotFoundException ex){
@@ -152,9 +148,8 @@ public class Minigames extends JavaPlugin{
 			saveConfig();
 			
 			Calendar cal = Calendar.getInstance();
-			if(cal.get(Calendar.DAY_OF_MONTH) == 21 && cal.get(Calendar.MONTH) == 8 ||
-					cal.get(Calendar.DAY_OF_MONTH) == 25 && cal.get(Calendar.MONTH) == 11 ||
-					cal.get(Calendar.DAY_OF_MONTH) == 1 && cal.get(Calendar.MONTH) == 0){
+			if(cal.get(Calendar.DAY_OF_MONTH) == 25 && cal.get(Calendar.MONTH) == Month.DECEMBER.ordinal() ||
+					cal.get(Calendar.DAY_OF_MONTH) == 1 && cal.get(Calendar.MONTH) == Month.JANUARY.ordinal()){
 				getLogger().info(ChatColor.GREEN.name() + "Party Mode enabled!");
 				pdata.setPartyMode(true);
 			}
@@ -330,21 +325,18 @@ public class Minigames extends JavaPlugin{
 	
 	private void initMetrics() {
 		Metrics metrics = new Metrics(this);
-		Metrics.MultiLineChart chart = new Metrics.MultiLineChart("Players_in_Minigames", new Callable<Map<String, Integer>>() {
-			@Override
-			public Map<String, Integer> call() throws Exception {
-				Map<String, Integer> result = new HashMap<>();
-				int count = 0;
-				result.put("Total_Players", pdata.getAllMinigamePlayers().size());
-				for (MinigamePlayer pl : pdata.getAllMinigamePlayers()) {
-					if (pl.isInMinigame()) {
-						count = result.getOrDefault(pl.getMinigame().getType().getName(), 0);
-						result.put(pl.getMinigame().getType().getName(), count + 1);
-					}
-				}
-				return result;
-			}
-		});
+		Metrics.MultiLineChart chart = new Metrics.MultiLineChart("Players_in_Minigames", () -> {
+            Map<String, Integer> result = new HashMap<>();
+            int count = 0;
+            result.put("Total_Players", pdata.getAllMinigamePlayers().size());
+            for (MinigamePlayer pl : pdata.getAllMinigamePlayers()) {
+                if (pl.isInMinigame()) {
+                    count = result.getOrDefault(pl.getMinigame().getType().getName(), 0);
+                    result.put(pl.getMinigame().getType().getName(), count + 1);
+                }
+            }
+            return result;
+        });
 		metrics.addCustomChart(chart);
 	}
 

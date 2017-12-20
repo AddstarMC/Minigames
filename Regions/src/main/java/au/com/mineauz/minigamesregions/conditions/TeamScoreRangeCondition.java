@@ -106,7 +106,7 @@ public class TeamScoreRangeCondition extends ConditionInterface {
 		Menu m = new Menu(3, "Team Score Range", player);
 		m.addItem(min.getMenuItem("Minimum Score", Material.STEP, 0, null));
 		m.addItem(max.getMenuItem("Maximum Score", Material.STONE, 0, null));
-		List<String> teams = new ArrayList<String>();
+		List<String> teams = new ArrayList<>();
 		for(TeamColor t : TeamColor.values())
 			teams.add(MinigameUtils.capitalize(t.toString().replace("_", " ")));
 		m.addItem(new MenuItemList("Team Color", Material.WOOL, new Callback<String>() {

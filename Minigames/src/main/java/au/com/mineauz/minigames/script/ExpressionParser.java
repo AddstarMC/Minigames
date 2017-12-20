@@ -21,14 +21,14 @@ public class ExpressionParser {
 		
 		ScriptReference lastRef = null;
 		ScriptObject current = root;
-		String pathToCurrent = "";
+		StringBuilder pathToCurrent = new StringBuilder();
 		
 		for (String segment : segments) {
 			// Keep track of path for error display
-			if (!pathToCurrent.isEmpty()) {
-				pathToCurrent += ".";
+			if (pathToCurrent.length() > 0) {
+				pathToCurrent.append(".");
 			}
-			pathToCurrent += segment;
+			pathToCurrent.append(segment);
 			
 			if (current == null) {
 				throw new NoSuchElementException("Unable to resolve '" + pathToCurrent + "'");

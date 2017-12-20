@@ -107,7 +107,7 @@ public class InfectionMechanic extends GameMechanicBase{
 	@Override
 	public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
 			List<MinigamePlayer> losers) {
-		List<MinigamePlayer> wins = new ArrayList<MinigamePlayer>(winners);
+		List<MinigamePlayer> wins = new ArrayList<>(winners);
 		for(MinigamePlayer ply : wins){
 			if(InfectionModule.getMinigameModule(minigame).isInfectedPlayer(ply)){
 				winners.remove(ply);
@@ -144,8 +144,8 @@ public class InfectionMechanic extends GameMechanicBase{
 						if(blue.getPlayers().isEmpty()){
 							List<MinigamePlayer> w;
 							List<MinigamePlayer> l;
-							w = new ArrayList<MinigamePlayer>(red.getPlayers());
-							l = new ArrayList<MinigamePlayer>();
+							w = new ArrayList<>(red.getPlayers());
+							l = new ArrayList<>();
 							pdata.endMinigame(mgm, w, l);
 						}
 					}

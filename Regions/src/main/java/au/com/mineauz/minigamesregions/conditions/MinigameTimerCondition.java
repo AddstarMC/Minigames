@@ -2,7 +2,6 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import java.util.Map;
 
-import au.com.mineauz.minigames.Minigames;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 

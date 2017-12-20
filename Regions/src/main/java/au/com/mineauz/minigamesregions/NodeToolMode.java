@@ -69,21 +69,18 @@ public class NodeToolMode implements ToolMode {
 			RegionModule module = RegionModule.getMinigameModule(tool.getMinigame());
 			
 			Menu nodeMenu = new Menu(6, "Nodes", player);
-			List<MenuItem> items = new ArrayList<MenuItem>();
+			List<MenuItem> items = new ArrayList<>();
 			
 			for(final Node node : module.getNodes()){
 				MenuItemCustom item = new MenuItemCustom(node.getName(), Material.STONE_BUTTON);
 				
 				// Set the node and go back to the main menu
-				item.setClick(new InteractionInterface() {
-					@Override
-					public Object interact(Object object) {
-						ftool.changeSetting("Node", node.getName());
-						m.displayMenu(player);
-						
-						return object;
-					}
-				});
+				item.setClick(object -> {
+                    ftool.changeSetting("Node", node.getName());
+                    m.displayMenu(player);
+
+                    return object;
+                });
 				
 				items.add(item);
 			}

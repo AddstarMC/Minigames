@@ -35,8 +35,8 @@ import au.com.mineauz.minigamesregions.triggers.Triggers;
 
 public class RegionModule extends MinigameModule {
 	
-	private Map<String, Region> regions = new HashMap<String, Region>();
-	private Map<String, Node> nodes = new HashMap<String, Node>();
+	private Map<String, Region> regions = new HashMap<>();
+	private Map<String, Node> nodes = new HashMap<>();
 	
 	public RegionModule(Minigame mgm){
 		super(mgm);
@@ -277,7 +277,7 @@ public class RegionModule extends MinigameModule {
 	}
 	
 	public List<Region> getRegions(){
-		return new ArrayList<Region>(regions.values());
+		return new ArrayList<>(regions.values());
 	}
 	
 	public void removeRegion(String name){
@@ -324,7 +324,7 @@ public class RegionModule extends MinigameModule {
 	}
 	
 	public List<Node> getNodes(){
-		return new ArrayList<Node>(nodes.values());
+		return new ArrayList<>(nodes.values());
 	}
 	
 	public void removeNode(String name){
@@ -343,7 +343,7 @@ public class RegionModule extends MinigameModule {
 	
 	public void displayMenu(MinigamePlayer viewer, Menu previous){
 		Menu rm = new Menu(6, "Regions and Nodes", viewer);
-		List<MenuItem> items = new ArrayList<MenuItem>(regions.size());
+		List<MenuItem> items = new ArrayList<>(regions.size());
 		for(String name : regions.keySet()){
 			MenuItemRegion mir = new MenuItemRegion(name, Material.CHEST, regions.get(name), this);
 			items.add(mir);
@@ -365,14 +365,10 @@ public class RegionModule extends MinigameModule {
 	public void addEditMenuOptions(Menu menu) {
 		final MenuItemCustom c = new MenuItemCustom("Regions and Nodes", Material.DIAMOND_BLOCK);
 		final Menu fmenu = menu;
-		c.setClick(new InteractionInterface() {
-			
-			@Override
-			public Object interact(Object object) {
-				displayMenu(c.getContainer().getViewer(), fmenu);
-				return null;
-			}
-		});
+		c.setClick(object -> {
+            displayMenu(c.getContainer().getViewer(), fmenu);
+            return null;
+        });
 		menu.addItem(c);
 	}
 

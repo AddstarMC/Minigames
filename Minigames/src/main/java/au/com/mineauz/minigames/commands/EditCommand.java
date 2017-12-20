@@ -80,7 +80,7 @@ public class EditCommand implements ICommand {
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args != null && args.length == 1){
-			List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+			List<String> mgs = new ArrayList<>(plugin.mdata.getAllMinigames().keySet());
 			return MinigameUtils.tabCompleteMatch(mgs, args[0]);
 		}
 		return null;

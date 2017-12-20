@@ -7,9 +7,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class MultiplayerBets {
-	private Map<MinigamePlayer, ItemStack> bet = new HashMap<MinigamePlayer, ItemStack>();
+	private Map<MinigamePlayer, ItemStack> bet = new HashMap<>();
 	private double greatestBet = 0;
-	private Map<MinigamePlayer, Double> moneyBet = new HashMap<MinigamePlayer, Double>();
+	private Map<MinigamePlayer, Double> moneyBet = new HashMap<>();
 	
 	public MultiplayerBets(){
 	}

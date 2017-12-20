@@ -48,14 +48,13 @@ public class RegionDisplayManager {
 			
 			nameDisplay.put(region, stand);
 		}
-		
-		StringBuilder info = new StringBuilder();
-		info.append(ChatColor.BLUE);
-		info.append("Region: ");
-		info.append(ChatColor.WHITE);
-		info.append(region.getName());
-		info.append("Enabled: "+ region.getEnabled());
-		stand.setCustomName(info.toString());
+
+		String info = String.valueOf(ChatColor.BLUE) +
+				"Region: " +
+				ChatColor.WHITE +
+				region.getName() +
+				"Enabled: " + region.getEnabled();
+		stand.setCustomName(info);
 	}
 	
 	private void showInfo(Node node, MinigamePlayer player) {
@@ -71,15 +70,14 @@ public class RegionDisplayManager {
 			
 			nameDisplay.put(node, stand);
 		}
-		
-		StringBuilder info = new StringBuilder();
-		info.append(ChatColor.RED);
-		info.append("Node: ");
-		info.append(ChatColor.WHITE);
-		info.append(node.getName());
-		
+
+		String info = String.valueOf(ChatColor.RED) +
+				"Node: " +
+				ChatColor.WHITE +
+				node.getName();
+
 		// TODO: Add more info
-		stand.setCustomName(info.toString());
+		stand.setCustomName(info);
 	}
 	
 	private void hideInfo(Object object, MinigamePlayer player) {
@@ -92,12 +90,8 @@ public class RegionDisplayManager {
 	}
 	
 	public void show(Region region, MinigamePlayer player) {
-		Map<Region, IDisplayObject> regions = regionDisplays.get(player.getPlayer());
-		if (regions == null) {
-			regions = Maps.newIdentityHashMap();
-			regionDisplays.put(player.getPlayer(), regions);
-		}
-		
+		Map<Region, IDisplayObject> regions = regionDisplays.computeIfAbsent(player.getPlayer(), k -> Maps.newIdentityHashMap());
+
 		Location[] corners = MinigameUtils.getMinMaxSelection(region.getFirstPoint(), region.getSecondPoint());
 		
 		IDisplayObject display = Minigames.plugin.display.displayCuboid(player.getPlayer(), corners[0], corners[1].add(1, 1, 1));
@@ -108,12 +102,8 @@ public class RegionDisplayManager {
 	}
 	
 	public void show(Node node, MinigamePlayer player) {
-		Map<Node, IDisplayObject> nodes = nodeDisplays.get(player.getPlayer());
-		if (nodes == null) {
-			nodes = Maps.newIdentityHashMap();
-			nodeDisplays.put(player.getPlayer(), nodes);
-		}
-		
+		Map<Node, IDisplayObject> nodes = nodeDisplays.computeIfAbsent(player.getPlayer(), k -> Maps.newIdentityHashMap());
+
 		IDisplayObject display = Minigames.plugin.display.displayPoint(player.getPlayer(), node.getLocation(), true);
 		display.show();
 		nodes.put(node, display);

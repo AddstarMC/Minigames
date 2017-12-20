@@ -28,8 +28,8 @@ public class GameOverModule extends MinigameModule{
 	private BooleanFlag humiliation = new BooleanFlag(false, "gameOver.humiliation");
 	private BooleanFlag interact = new BooleanFlag(false, "gameOver.interact");
 	
-	private List<MinigamePlayer> winners = new ArrayList<MinigamePlayer>();
-	private List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>();
+	private List<MinigamePlayer> winners = new ArrayList<>();
+	private List<MinigamePlayer> losers = new ArrayList<>();
 	private int task = -1;
 
 	public GameOverModule(Minigame mgm) {
@@ -43,7 +43,7 @@ public class GameOverModule extends MinigameModule{
 
 	@Override
 	public Map<String, Flag<?>> getFlags() {
-		Map<String, Flag<?>> map = new HashMap<String, Flag<?>>();
+		Map<String, Flag<?>> map = new HashMap<>();
 		map.put(timer.getName(), timer);
 		map.put(invincible.getName(), invincible);
 		map.put(humiliation.getName(), humiliation);
@@ -89,7 +89,7 @@ public class GameOverModule extends MinigameModule{
 		Minigames.plugin.mdata.sendMinigameMessage(getMinigame(), MinigameUtils.formStr("minigame.gameOverQuit", timer.getFlag()), null, null);
 		getMinigame().setState(MinigameState.ENDED);
 		
-		List<MinigamePlayer> allPlys = new ArrayList<MinigamePlayer>(winners.size() + losers.size());
+		List<MinigamePlayer> allPlys = new ArrayList<>(winners.size() + losers.size());
 		allPlys.addAll(losers);
 		allPlys.addAll(winners);
 		
@@ -116,23 +116,19 @@ public class GameOverModule extends MinigameModule{
 		if(timer.getFlag() > 0){
 			if(task != -1)
 				stopEndGameTimer();
-			task = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					for(MinigamePlayer loser : new ArrayList<MinigamePlayer>(losers)){
-						if(loser.isInMinigame())
-							Minigames.plugin.pdata.quitMinigame(loser, true);
-					}
-					for(MinigamePlayer winner : new ArrayList<MinigamePlayer>(winners)){
-						if(winner.isInMinigame())
-							Minigames.plugin.pdata.quitMinigame(winner, true);
-					}
-					
-					clearLosers();
-					clearWinners();
-				}
-			}, timer.getFlag() * 20);
+			task = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, () -> {
+                for(MinigamePlayer loser : new ArrayList<>(losers)){
+                    if(loser.isInMinigame())
+                        Minigames.plugin.pdata.quitMinigame(loser, true);
+                }
+                for(MinigamePlayer winner : new ArrayList<>(winners)){
+                    if(winner.isInMinigame())
+                        Minigames.plugin.pdata.quitMinigame(winner, true);
+                }
+
+                clearLosers();
+                clearWinners();
+            }, timer.getFlag() * 20);
 		}
 	}
 	

@@ -56,7 +56,7 @@ public class CommandReward extends RewardType{
 	
 	private class CommandRewardItem extends MenuItemString{
 
-		private List<String> options = new ArrayList<String>();
+		private List<String> options = new ArrayList<>();
 		private CommandReward reward;
 
 		public CommandRewardItem(CommandReward reward) {
@@ -97,7 +97,7 @@ public class CommandReward extends RewardType{
 		public void updateDescription(){
 			List<String> description = null;
 			if(options == null){
-				options = new ArrayList<String>();
+				options = new ArrayList<>();
 				for(RewardRarity rarity : RewardRarity.values()){
 					options.add(rarity.toString());
 				}
@@ -137,7 +137,7 @@ public class CommandReward extends RewardType{
 				}
 			}
 			else{
-				description = new ArrayList<String>();
+				description = new ArrayList<>();
 				description.add(ChatColor.GRAY.toString() + options.get(before));
 				description.add(ChatColor.GREEN.toString() + getRarity().toString());
 				description.add(ChatColor.GRAY.toString() + options.get(after));

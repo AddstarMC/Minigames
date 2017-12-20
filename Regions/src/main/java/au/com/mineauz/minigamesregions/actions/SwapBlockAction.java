@@ -13,7 +13,6 @@ import org.bukkit.material.MaterialData;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
@@ -26,12 +25,9 @@ import au.com.mineauz.minigamesregions.Region;
 public class SwapBlockAction extends ActionInterface {
 	
 	private StringFlag matchType = new StringFlag("STONE", "matchtype");
-	private BooleanFlag matchData = new BooleanFlag(false, "matchdata");
-	private IntegerFlag matchDataValue = new IntegerFlag(0, "matchdatavalue");
 	private StringFlag toType = new StringFlag("COBBLESTONE", "totype");
 	private BooleanFlag keepAttachment = new BooleanFlag(false, "keepattachment");
-	private BooleanFlag toData = new BooleanFlag(false, "todata");
-	private IntegerFlag toDataValue = new IntegerFlag(0, "todatavalue");
+
 
 	@Override
 	public String getName() {
@@ -45,18 +41,8 @@ public class SwapBlockAction extends ActionInterface {
 	
 	@Override
 	public void describe(Map<String, Object> out) {
-		if (matchData.getFlag()) {
-			out.put("From", matchType.getFlag() + ":" + matchDataValue.getFlag());
-		} else {
-			out.put("From", matchType.getFlag() + ":all");
-		}
-		
-		if (toData.getFlag()) {
-			out.put("To", toType.getFlag() + ":" + toDataValue.getFlag());
-		} else {
-			out.put("To", toType.getFlag());
-		}
-		
+		out.put("From", matchType.getFlag() + ":all");
+		out.put("To", toType.getFlag());
 		out.put("Keep Attachment", keepAttachment.getFlag());
 	}
 
@@ -79,17 +65,9 @@ public class SwapBlockAction extends ActionInterface {
 					Block block = region.getFirstPoint().getWorld().getBlockAt(x, y, z);
 					
 					if (block.getType() == Material.getMaterial(matchType.getFlag())) {
-						if (matchData.getFlag() && block.getData() != matchDataValue.getFlag().byteValue()) {
-							continue;
-						}
-						
 						// Block matches, now replace it
-						byte data = 0;
 						BlockFace facing = null;
-						if (toData.getFlag()) {
-							// Replace data
-							data = toDataValue.getFlag().byteValue();
-						} else if (keepAttachment.getFlag()) {
+						 if (keepAttachment.getFlag()) {
 							// Keep attachments if possible
 							MaterialData mat = block.getState().getData();
 							if (mat instanceof Directional) {
@@ -107,8 +85,6 @@ public class SwapBlockAction extends ActionInterface {
 							}
 							state.setData(mat);
 							state.update(true, false);
-						} else {
-							block.setData(data, false);
 						}
 					}
 				}
@@ -126,11 +102,7 @@ public class SwapBlockAction extends ActionInterface {
 	public void saveArguments(FileConfiguration config,
 			String path) {
 		matchType.saveValue(path, config);
-		matchData.saveValue(path, config);
-		matchDataValue.saveValue(path, config);
 		toType.saveValue(path, config);
-		toData.saveValue(path, config);
-		toDataValue.saveValue(path, config);
 		keepAttachment.saveValue(path, config);
 	}
 
@@ -138,11 +110,7 @@ public class SwapBlockAction extends ActionInterface {
 	public void loadArguments(FileConfiguration config,
 			String path) {
 		matchType.loadValue(path, config);
-		matchData.loadValue(path, config);
-		matchDataValue.loadValue(path, config);
 		toType.loadValue(path, config);
-		toData.loadValue(path, config);
-		toDataValue.loadValue(path, config);
 		keepAttachment.loadValue(path, config);
 	}
 
@@ -166,8 +134,6 @@ public class SwapBlockAction extends ActionInterface {
 				return matchType.getFlag();
 			}
 		}));
-		m.addItem(matchData.getMenuItem("Match Block Use Data?", Material.ENDER_PEARL));
-		m.addItem(matchDataValue.getMenuItem("Match Block Data Value", Material.EYE_OF_ENDER, 0, 15));
 		
 		m.addItem(new MenuItemNewLine());
 		
@@ -186,8 +152,6 @@ public class SwapBlockAction extends ActionInterface {
 				return toType.getFlag();
 			}
 		}));
-		m.addItem(toData.getMenuItem("To Block Use Data?", Material.ENDER_PEARL));
-		m.addItem(toDataValue.getMenuItem("To Block Data Value", Material.EYE_OF_ENDER, 0, 15));
 		m.addItem(keepAttachment.getMenuItem("Keep Attachment", Material.PISTON_BASE, MinigameUtils.stringToList("When on, and To Block Use Data is off;If the source and target block;types are both blocks that;attach to surfaces, this;attachment will be preserved")));
 		m.displayMenu(player);
 		return true;

@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.commands;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -66,20 +67,20 @@ public class DeniedCommandCommand implements ICommand {
 				return true;
 			}
 			else if(args[0].equalsIgnoreCase("list")){
-				String coms = "";
+				StringBuilder coms = new StringBuilder();
 				boolean switchColour = false;
 				for(String par : plugin.pdata.getDeniedCommands()){
 					if(switchColour){
-						coms += ChatColor.WHITE + par;
+						coms.append(ChatColor.WHITE).append(par);
 						if(!par.equalsIgnoreCase(plugin.pdata.getDeniedCommands().get(plugin.pdata.getDeniedCommands().size() - 1))){
-							coms += ChatColor.WHITE + ", ";
+							coms.append(ChatColor.WHITE).append(", ");
 						}
 						switchColour = false;
 					}
 					else{
-						coms += ChatColor.GRAY + par;
+						coms.append(ChatColor.GRAY).append(par);
 						if(!par.equalsIgnoreCase(plugin.pdata.getDeniedCommands().get(plugin.pdata.getDeniedCommands().size() - 1))){
-							coms += ChatColor.WHITE + ", ";
+							coms.append(ChatColor.WHITE).append(", ");
 						}
 						switchColour = true;
 					}
@@ -95,10 +96,8 @@ public class DeniedCommandCommand implements ICommand {
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> ls = new ArrayList<String>();
-			for(String par : getParameters()){
-				ls.add(par);
-			}
+			List<String> ls = new ArrayList<>();
+            Collections.addAll(ls, getParameters());
 			return MinigameUtils.tabCompleteMatch(ls, args[0]);
 		}
 		else if(args.length == 2 && args[0].equalsIgnoreCase("remove")){

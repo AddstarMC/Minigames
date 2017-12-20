@@ -3,7 +3,6 @@ package au.com.mineauz.minigamesregions.actions;
 import java.util.Map;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.script.ScriptObject;
 import org.bukkit.configuration.file.FileConfiguration;
 

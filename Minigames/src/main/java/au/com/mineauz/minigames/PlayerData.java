@@ -31,12 +31,12 @@ import java.math.BigDecimal;
 import java.util.*;
 
 public class PlayerData {
-	private Map<String, MinigamePlayer> minigamePlayers = new HashMap<String, MinigamePlayer>();
+	private Map<String, MinigamePlayer> minigamePlayers = new HashMap<>();
 	
 	private boolean partyMode = false;
 	Map<Team, Integer> tpos;
 	private int pos;
-	private List<String> deniedCommands = new ArrayList<String>();
+	private List<String> deniedCommands = new ArrayList<>();
 	
 	private static Minigames plugin = Minigames.plugin;
 	private MinigameData mdata = plugin.mdata;
@@ -196,23 +196,19 @@ public class PlayerData {
         }
         else if(item.getType() == Material.AIR && betAmount == 0){
             player.sendMessage(MinigameUtils.getLang("player.bet.plyNoBet"), "error");
-            return;
-        }
-        else if(betAmount != 0 && !pbet.canBet(player, betAmount)){
+		}
+        else if(betAmount != 0 && pbet != null && !pbet.canBet(player, betAmount)){
             player.sendMessage(MinigameUtils.getLang("player.bet.incorrectAmount"), "error");
             player.sendMessage(MinigameUtils.formStr("player.bet.incorrectAmountInfo", Minigames.plugin.getEconomy().format(minigame.getMpBets().getHighestMoneyBet())), "error");
-            return;
-        }
+		}
         else if(betAmount != 0 && plugin.getEconomy().getBalance(player.getPlayer().getPlayer()) < betAmount){
             player.sendMessage(MinigameUtils.getLang("player.bet.notEnoughMoney"), "error");
             player.sendMessage(MinigameUtils.formStr("player.bet.notEnoughMoneyInfo", Minigames.plugin.getEconomy().format(minigame.getMpBets().getHighestMoneyBet())), "error");
-            return;
-        }
+		}
         else{
             player.sendMessage(MinigameUtils.getLang("player.bet.incorrectItem"), "error");
             player.sendMessage(MinigameUtils.formStr("player.bet.incorrectItemInfo", 1, minigame.getMpBets().highestBetName()), "error");
-            return;
-        }
+		}
     }
 	
 	public void spectateMinigame(MinigamePlayer player, Minigame minigame) {
@@ -260,8 +256,7 @@ public class PlayerData {
 
 	
 	public void startMPMinigame(Minigame minigame, boolean teleport){
-		List<MinigamePlayer> players = new ArrayList<>();
-		players.addAll(minigame.getPlayers());
+		List<MinigamePlayer> players = new ArrayList<>(minigame.getPlayers());
 		for(MinigamePlayer ply : players){
 			if (minigame.getMaxScore() != 0)
 				ply.sendMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()), null);
@@ -294,8 +289,7 @@ public class PlayerData {
 		if (game.isTeamGame()) {
 			GameMechanicBase mech = GameMechanics.getGameMechanic(game.getMechanicName());
 			if (mech != null) {
-				List<MinigamePlayer> players = new ArrayList<>();
-				players.addAll(game.getPlayers());
+				List<MinigamePlayer> players = new ArrayList<>(game.getPlayers());
 				result = mech.balanceTeam(players, game);
 			}
 		}
@@ -452,13 +446,7 @@ public class PlayerData {
 				player.getPlayer().setFallDistance(0);
 				player.getPlayer().setNoDamageTicks(60);
 				final MinigamePlayer fplayer = player;
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						fplayer.getPlayer().setFireTicks(0);
-					}
-				});
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> fplayer.getPlayer().setFireTicks(0));
 				player.resetAllStats();
 				player.setStartPos(null);
 				if(!player.isDead()){
@@ -547,13 +535,7 @@ public class PlayerData {
 				for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
 					player.getPlayer().removePotionEffect(potion.getType());
 				}
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						fplayer.setFireTicks(0);
-					}
-				});
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> fplayer.setFireTicks(0));
 				
 				player.getPlayer().closeInventory();
 				if(!player.isDead()){
@@ -582,8 +564,8 @@ public class PlayerData {
 	}
 	
 	public void endMinigame(MinigamePlayer player){
-		List<MinigamePlayer> w = new ArrayList<MinigamePlayer>();
-		List<MinigamePlayer> l = new ArrayList<MinigamePlayer>();
+		List<MinigamePlayer> w = new ArrayList<>();
+		List<MinigamePlayer> l = new ArrayList<>();
 		w.add(player);
 		endMinigame(player.getMinigame(), w, l);
 	}
@@ -602,8 +584,7 @@ public class PlayerData {
                 double bets = 0;
                 if (minigame.getMpBets() != null) {
                     if (minigame.getMpBets().hasMoneyBets()) {
-                        List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>();
-                        plys.addAll(event.getWinners());
+						List<MinigamePlayer> plys = new ArrayList<>(event.getWinners());
 
                         if (!plys.isEmpty()) {
                             bets = minigame.getMpBets().claimMoneyBets() / (double) plys.size();
@@ -712,15 +693,15 @@ public class PlayerData {
 						team = winners.get(0).getTeam();
 					else
 						team = ((TeamsModule) minigame.getModule("Teams")).getTeam(((TeamsModule) minigame.getModule("Teams")).getDefaultWinner());
-					String score = "";
+					StringBuilder score = new StringBuilder();
 					List<Team> teams = TeamsModule.getMinigameModule(minigame).getTeams();
 					for (Team t : teams) {
-						score += t.getColor().getColor().toString() + t.getScore();
+						score.append(t.getColor().getColor().toString()).append(t.getScore());
 						if (t != teams.get(teams.size() - 1)) {
-							score += ChatColor.WHITE + " : ";
+							score.append(ChatColor.WHITE).append(" : ");
 						}
 					}
-					String nscore = ", " + MinigameUtils.formStr("player.end.team.score", score);
+					String nscore = ", " + MinigameUtils.formStr("player.end.team.score", score.toString());
 					if (team.getScore() > 0) {
 						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.team.win",
 								team.getChatColor() + team.getDisplayName() + ChatColor.WHITE, minigame.getName(true)) + nscore, minigame, ChatColor.GREEN);
@@ -738,28 +719,22 @@ public class PlayerData {
 						score = MinigameUtils.formStr("player.end.broadcastScore", winners.get(0).getScore());
 					MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getDisplayName(minigame.usePlayerDisplayNames()), minigame.getName(true)) + ". " + score, minigame, ChatColor.GREEN);
 				} else if (winners.size() > 1) {
-					String win = "";
-					Collections.sort(winners, new Comparator<MinigamePlayer>() {
-						@Override
-						public int compare(MinigamePlayer o1,
-										   MinigamePlayer o2) {
-							return Integer.valueOf(o1.getScore()).compareTo(o2.getScore());
-						}
-					});
+					StringBuilder win = new StringBuilder();
+					winners.sort((o1, o2) -> Integer.valueOf(o1.getScore()).compareTo(o2.getScore()));
 
 					for (MinigamePlayer pl : winners) {
 						if (winners.indexOf(pl) < 2) {
-							win += pl.getDisplayName(minigame.usePlayerDisplayNames());
+							win.append(pl.getDisplayName(minigame.usePlayerDisplayNames()));
 							if (winners.indexOf(pl) + 2 >= winners.size()) {
-								win += " and ";
+								win.append(" and ");
 							} else {
-								win += ", ";
+								win.append(", ");
 							}
 						} else {
-							win += String.valueOf(winners.size() - 3) + " others";
+							win.append(String.valueOf(winners.size() - 3)).append(" others");
 						}
 					}
-					MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", win, minigame.getName(true)) + ". ", minigame, ChatColor.GREEN);
+					MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", win.toString(), minigame.getName(true)) + ". ", minigame, ChatColor.GREEN);
 				} else {
 					MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastNobodyWon", minigame.getName(true)), minigame, ChatColor.RED);
 				}
@@ -775,7 +750,7 @@ public class PlayerData {
 	
 	@Deprecated
 	public List<Player> playersInMinigame(){
-		List<Player> players = new ArrayList<Player>();
+		List<Player> players = new ArrayList<>();
 		for(Player player : plugin.getServer().getOnlinePlayers()){
 			if(hasMinigamePlayer(player.getUniqueId())){
 				players.add(player);
@@ -827,8 +802,7 @@ public class PlayerData {
 	}
 	
 	public List<String> checkRequiredFlags(MinigamePlayer player, String minigame){
-		List<String> checkpoints = new ArrayList<String>();
-		checkpoints.addAll(mdata.getMinigame(minigame).getFlags());
+		List<String> checkpoints = new ArrayList<>(mdata.getMinigame(minigame).getFlags());
 		List<String> pchecks = player.getFlags();
 		
 		if(!pchecks.isEmpty()){
@@ -874,15 +848,12 @@ public class PlayerData {
 		final long fdelay = delay;
 		partyMode(fplayer);
 		if(amount == 1) return;
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-			@Override
-			public void run() {
-				if(fplayer != null){
-					partyMode(fplayer, fcount - 1, fdelay);
-				}
-				
-			}
-		}, delay);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            if(fplayer != null){
+                partyMode(fplayer, fcount - 1, fdelay);
+            }
+
+        }, delay);
 	}
 
 	public List<String> getDeniedCommands() {

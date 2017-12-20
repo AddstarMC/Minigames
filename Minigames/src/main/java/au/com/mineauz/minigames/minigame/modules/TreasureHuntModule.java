@@ -36,8 +36,8 @@ public class TreasureHuntModule extends MinigameModule{
 	//Unsaved Data
 	private Location treasureLocation = null;
 	private boolean treasureFound = false;
-	private ArrayList<String> curHints = new ArrayList<String>();
-	private Map<UUID, Long> hintUse = new HashMap<UUID, Long>();
+	private ArrayList<String> curHints = new ArrayList<>();
+	private Map<UUID, Long> hintUse = new HashMap<>();
 
 	public TreasureHuntModule(Minigame mgm) {
 		super(mgm);
@@ -50,7 +50,7 @@ public class TreasureHuntModule extends MinigameModule{
 
 	@Override
 	public Map<String, Flag<?>> getFlags() {
-		Map<String, Flag<?>> flags = new HashMap<String, Flag<?>>();
+		Map<String, Flag<?>> flags = new HashMap<>();
 		flags.put(location.getName(), location);
 		flags.put(maxRadius.getName(), maxRadius);
 		flags.put(maxHeight.getName(), maxHeight);
@@ -83,20 +83,20 @@ public class TreasureHuntModule extends MinigameModule{
 	public boolean displayMechanicSettings(Menu previous){
 		Menu treasureHunt = new Menu(6, getMinigame().getName(false), previous.getViewer());
 		
-		List<MenuItem> itemsTreasureHunt = new ArrayList<MenuItem>(5);
+		List<MenuItem> itemsTreasureHunt = new ArrayList<>(5);
 		itemsTreasureHunt.add(location.getMenuItem("Location Name", Material.BED, MinigameUtils.stringToList("Name to appear when;treasure spawns")));
 		itemsTreasureHunt.add(maxRadius.getMenuItem("Max. Radius", Material.ENDER_PEARL, 10, null));
-		List<String> maxHeightDes = new ArrayList<String>();
+		List<String> maxHeightDes = new ArrayList<>();
 		maxHeightDes.add("Max. height of where a");
 		maxHeightDes.add("chest can generate.");
 		maxHeightDes.add("Can still move above to");
 		maxHeightDes.add("avoid terrain");
 		itemsTreasureHunt.add(maxHeight.getMenuItem("Max. Height", Material.BEACON, maxHeightDes, 1, 256));
-		List<String> minDes = new ArrayList<String>();
+		List<String> minDes = new ArrayList<>();
 		minDes.add("Minimum items to");
 		minDes.add("spawn in chest.");
 		itemsTreasureHunt.add(minTreasure.getMenuItem("Min. Items", Material.STEP, minDes, 0, 27));
-		List<String> maxDes = new ArrayList<String>();
+		List<String> maxDes = new ArrayList<>();
 		maxDes.add("Maximum items to");
 		maxDes.add("spawn in chest.");
 		itemsTreasureHunt.add(maxTreasure.getMenuItem("Max. Items", Material.STONE, maxDes, 0, 27));

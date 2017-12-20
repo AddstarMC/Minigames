@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class ToolModes {
 	
-	private static Map<String, ToolMode> modes = new HashMap<String, ToolMode>();
+	private static Map<String, ToolMode> modes = new HashMap<>();
 	
 	static{
 		addToolMode(new StartPositionMode());
@@ -27,7 +27,7 @@ public class ToolModes {
 	}
 	
 	public static List<ToolMode> getToolModes(){
-		return new ArrayList<ToolMode>(modes.values());
+		return new ArrayList<>(modes.values());
 	}
 	
 	public static void removeToolMode(String name){

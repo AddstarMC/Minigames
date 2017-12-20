@@ -12,13 +12,13 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
@@ -79,25 +79,21 @@ public class RegionEvents implements Listener{
 		if(ply == null) return;
 		if(ply.isInMinigame()){
 			final Minigame mg = ply.getMinigame();
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					if (!ply.isInMinigame()) {
-						return;
-					}
-					
-					executeRegionChanges(mg, ply);
-					
-					for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
-						node.execute(Triggers.getTrigger("RESPAWN"), ply);
-					}
-					for(Region region : RegionModule.getMinigameModule(ply.getMinigame()).getRegions()){
-						if(region.hasPlayer(ply))
-							region.execute(Triggers.getTrigger("RESPAWN"), ply);
-					}
-				}
-			});
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                if (!ply.isInMinigame()) {
+                    return;
+                }
+
+                executeRegionChanges(mg, ply);
+
+                for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
+                    node.execute(Triggers.getTrigger("RESPAWN"), ply);
+                }
+                for(Region region : RegionModule.getMinigameModule(ply.getMinigame()).getRegions()){
+                    if(region.hasPlayer(ply))
+                        region.execute(Triggers.getTrigger("RESPAWN"), ply);
+                }
+            });
 		}
 	}
 	
@@ -121,21 +117,17 @@ public class RegionEvents implements Listener{
 		final MinigamePlayer ply = event.getMinigamePlayer();
 		if(ply == null) return;
 		final Minigame mg = event.getMinigame();
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-			
-			@Override
-			public void run() {
-				executeRegionChanges(mg, ply);
-				
-				for(Node node : RegionModule.getMinigameModule(mg).getNodes()){
-					node.execute(Triggers.getTrigger("GAME_JOIN"), ply);
-				}
-				for(Region region : RegionModule.getMinigameModule(mg).getRegions()){
-					if(region.hasPlayer(ply))
-						region.execute(Triggers.getTrigger("GAME_JOIN"), ply);
-				}
-			}
-		});
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            executeRegionChanges(mg, ply);
+
+            for(Node node : RegionModule.getMinigameModule(mg).getNodes()){
+                node.execute(Triggers.getTrigger("GAME_JOIN"), ply);
+            }
+            for(Region region : RegionModule.getMinigameModule(mg).getRegions()){
+                if(region.hasPlayer(ply))
+                    region.execute(Triggers.getTrigger("GAME_JOIN"), ply);
+            }
+        });
 		if(event.getMinigame().getPlayers().size() == 0){
 			for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
 				for(RegionExecutor ex : region.getExecutors()){
@@ -252,20 +244,17 @@ public class RegionEvents implements Listener{
 	}
 	
 	private void trigger(final MinigamePlayer player, final Block block, final Trigger trigger) {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-			@Override
-			public void run() {
-				if (!player.isInMinigame()) {
-					return;
-				}
-				
-				for (Node node : RegionModule.getMinigameModule(player.getMinigame()).getNodes()) {
-					if (node.getLocation().getBlock().equals(block)) {
-						node.execute(trigger, player);
-					}
-				}
-			}
-		});
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            if (!player.isInMinigame()) {
+                return;
+            }
+
+            for (Node node : RegionModule.getMinigameModule(player.getMinigame()).getNodes()) {
+                if (node.getLocation().getBlock().equals(block)) {
+                    node.execute(trigger, player);
+                }
+            }
+        });
 	}
 	
 	@EventHandler(ignoreCancelled = true)
@@ -275,32 +264,28 @@ public class RegionEvents implements Listener{
 		
 		if(ply.isInMinigame()){
 			final Location loc2 = event.getBlock().getLocation();
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					if (!ply.isInMinigame()) {
-						return;
-					}
-					
-					for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
-						if(node.getLocation().getWorld() == loc2.getWorld()){
-							Location loc1 = node.getLocation();
-							if(loc1.getBlockX() == loc2.getBlockX() &&
-									loc1.getBlockY() == loc2.getBlockY() &&
-									loc1.getBlockZ() == loc2.getBlockZ()){
-								node.execute(Triggers.getTrigger("BLOCK_BREAK"), ply);
-							}
-						}
-					}
-					
-					for(Region region : RegionModule.getMinigameModule(ply.getMinigame()).getRegions()){
-						if (region.locationInRegion(loc2)) {
-							region.execute(Triggers.getTrigger("BLOCK_BREAK"), ply);
-						}
-					}
-				}
-			});
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                if (!ply.isInMinigame()) {
+                    return;
+                }
+
+                for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
+                    if(node.getLocation().getWorld() == loc2.getWorld()){
+                        Location loc1 = node.getLocation();
+                        if(loc1.getBlockX() == loc2.getBlockX() &&
+                                loc1.getBlockY() == loc2.getBlockY() &&
+                                loc1.getBlockZ() == loc2.getBlockZ()){
+                            node.execute(Triggers.getTrigger("BLOCK_BREAK"), ply);
+                        }
+                    }
+                }
+
+                for(Region region : RegionModule.getMinigameModule(ply.getMinigame()).getRegions()){
+                    if (region.locationInRegion(loc2)) {
+                        region.execute(Triggers.getTrigger("BLOCK_BREAK"), ply);
+                    }
+                }
+            });
 		}
 	}
 	
@@ -311,32 +296,28 @@ public class RegionEvents implements Listener{
 		
 		if(ply.isInMinigame()){
 			final Location loc2 = event.getBlock().getLocation();
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					if (!ply.isInMinigame()) {
-						return;
-					}
-					
-					for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
-						if(node.getLocation().getWorld() == loc2.getWorld()){
-							Location loc1 = node.getLocation();
-							if(loc1.getBlockX() == loc2.getBlockX() &&
-									loc1.getBlockY() == loc2.getBlockY() &&
-									loc1.getBlockZ() == loc2.getBlockZ()){
-								node.execute(Triggers.getTrigger("BLOCK_PLACE"), ply);
-							}
-						}
-					}
-					
-					for(Region region : RegionModule.getMinigameModule(ply.getMinigame()).getRegions()){
-						if (region.locationInRegion(loc2)) {
-							region.execute(Triggers.getTrigger("BLOCK_PLACE"), ply);
-						}
-					}
-				}
-			});
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                if (!ply.isInMinigame()) {
+                    return;
+                }
+
+                for(Node node : RegionModule.getMinigameModule(ply.getMinigame()).getNodes()){
+                    if(node.getLocation().getWorld() == loc2.getWorld()){
+                        Location loc1 = node.getLocation();
+                        if(loc1.getBlockX() == loc2.getBlockX() &&
+                                loc1.getBlockY() == loc2.getBlockY() &&
+                                loc1.getBlockZ() == loc2.getBlockZ()){
+                            node.execute(Triggers.getTrigger("BLOCK_PLACE"), ply);
+                        }
+                    }
+                }
+
+                for(Region region : RegionModule.getMinigameModule(ply.getMinigame()).getRegions()){
+                    if (region.locationInRegion(loc2)) {
+                        region.execute(Triggers.getTrigger("BLOCK_PLACE"), ply);
+                    }
+                }
+            });
 		}
 	}
 	
@@ -348,32 +329,16 @@ public class RegionEvents implements Listener{
 	}
 	
 	@EventHandler(ignoreCancelled = true)
-	private void itemPickupEvent(PlayerPickupItemEvent event){
-		final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-		if(ply == null) return;
-		
-		if(ply.isInMinigame()){
-			final Trigger trig = Triggers.getTrigger("ITEM_PICKUP");
-			
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					if (!ply.isInMinigame()) {
-						return;
-					}
-					
-					for(Node node : getRegionModule(ply.getMinigame()).getNodes()){
-						node.execute(trig, ply);
-					}
-					
-					for(Region region : getRegionModule(ply.getMinigame()).getRegions()){
-						if(region.hasPlayer(ply)){
-							region.execute(trig, ply);
-						}
-					}
-				}
-			});
+	private void itemPickupEvent(EntityPickupItemEvent event) {
+		if (event.getEntity() instanceof Player) {
+			final MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getEntity());
+			if (ply == null) return;
+
+			if (ply.isInMinigame()) {
+				final Trigger trig = Triggers.getTrigger("ITEM_PICKUP");
+
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, getExecutor(trig, ply));
+			}
 		}
 	}
 	
@@ -385,26 +350,26 @@ public class RegionEvents implements Listener{
 		if(ply.isInMinigame()){
 			final Trigger trig = Triggers.getTrigger("ITEM_DROP");
 			
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					if (!ply.isInMinigame()) {
-						return;
-					}
-
-					for(Node node : getRegionModule(ply.getMinigame()).getNodes()){
-						node.execute(trig, ply);
-					}
-					
-					for(Region region : getRegionModule(ply.getMinigame()).getRegions()){
-						if(region.hasPlayer(ply)){
-							region.execute(trig, ply);
-						}
-					}
-				}
-			});
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, getExecutor(trig,ply));
 		}
+	}
+
+	private Runnable getExecutor(Trigger trig, MinigamePlayer ply) {
+		return () -> {
+            if (!ply.isInMinigame()) {
+                return;
+            }
+
+            for (Node node : getRegionModule(ply.getMinigame()).getNodes()) {
+                node.execute(trig, ply);
+            }
+
+            for (Region region : getRegionModule(ply.getMinigame()).getRegions()) {
+                if (region.hasPlayer(ply)) {
+                    region.execute(trig, ply);
+                }
+            }
+        };
 	}
 	
 	@EventHandler(priority=EventPriority.LOWEST)
@@ -462,29 +427,26 @@ public class RegionEvents implements Listener{
 	}
 	
 	private void executeTrigger(final Trigger trigger, final MinigamePlayer player) {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-			@Override
-			public void run() {
-				if (!player.isInMinigame()) {
-					return;
-				}
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            if (!player.isInMinigame()) {
+                return;
+            }
 
-				RegionModule module = getRegionModule(player.getMinigame());
-				
-				if (trigger.useInNodes()) {
-					for (Node node : module.getNodes()) {
-						node.execute(trigger, player);
-					}
-				}
-				
-				if (trigger.useInRegions()) {
-					for (Region region : module.getRegions()) {
-						if (region.hasPlayer(player)) {
-							region.execute(trigger, player);
-						}
-					}
-				}
-			}
-		});
+            RegionModule module = getRegionModule(player.getMinigame());
+
+            if (trigger.useInNodes()) {
+                for (Node node : module.getNodes()) {
+                    node.execute(trigger, player);
+                }
+            }
+
+            if (trigger.useInRegions()) {
+                for (Region region : module.getRegions()) {
+                    if (region.hasPlayer(player)) {
+                        region.execute(trigger, player);
+                    }
+                }
+            }
+        });
 	}
 }

@@ -62,7 +62,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		Menu loadoutSettings = new Menu(6, loadout.getName(false), getContainer().getViewer());
 		loadoutSettings.setPreviousPage(loadoutMenu);
 		
-		List<MenuItem> mItems = new ArrayList<MenuItem>();
+		List<MenuItem> mItems = new ArrayList<>();
 		if(!loadout.getName(false).equals("default"))
 			mItems.add(new MenuItemBoolean("Use Permissions", MinigameUtils.stringToList("Permission:;minigame.loadout." + loadout.getName(false).toLowerCase()), 
 					Material.GOLD_INGOT, loadout.getUsePermissionsCallback()));
@@ -76,7 +76,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		mItems.add(new MenuItemBoolean("Lock Armour", Material.DIAMOND_CHESTPLATE, loadout.getArmourLockedCallback()));
 		mItems.add(new MenuItemBoolean("Allow Offhand", Material.SHIELD, loadout.getAllowOffHandCallback()));
 		mItems.add(new MenuItemBoolean("Display in Loadout Menu", Material.THIN_GLASS, loadout.getDisplayInMenuCallback()));
-		List<String> teams = new ArrayList<String>();
+		List<String> teams = new ArrayList<>();
 		teams.add("None");
 		for(TeamColor col : TeamColor.values())
 			teams.add(MinigameUtils.capitalize(col.toString()));
@@ -110,9 +110,9 @@ public class MenuItemDisplayLoadout extends MenuItem{
 			potionMenu.addItem(dl, 45 - 9);
 		}
 		
-		List<String> des = new ArrayList<String>();
+		List<String> des = new ArrayList<>();
 		des.add("Shift + Right Click to Delete");
-		List<MenuItem> potions = new ArrayList<MenuItem>();
+		List<MenuItem> potions = new ArrayList<>();
 		
 		for(PotionEffect eff : loadout.getAllPotionEffects()){
 			potions.add(new MenuItemPotion(MinigameUtils.capitalize(eff.getType().getName().replace("_", " ")), des, Material.POTION, eff, loadout));

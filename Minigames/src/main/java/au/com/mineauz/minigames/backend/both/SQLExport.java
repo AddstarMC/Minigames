@@ -54,9 +54,7 @@ public class SQLExport {
 			
 			callback.end();
 			notifier.onComplete();
-		} catch (SQLException e) {
-			notifier.onError(e, notifyState, notifyCount);
-		} catch (IllegalStateException e) {
+		} catch (SQLException | IllegalStateException e) {
 			notifier.onError(e, notifyState, notifyCount);
 		} finally {
 			handler.release();
@@ -65,50 +63,40 @@ public class SQLExport {
 	
 	private void exportPlayers() throws SQLException {
 		notifyNext("Exporting players...");
-		ResultSet rs = handler.executeQuery(getPlayers);
-		try {
+		try (ResultSet rs = handler.executeQuery(getPlayers)) {
 			while (rs.next()) {
 				callback.acceptPlayer(UUID.fromString(rs.getString("player_id")), rs.getString("name"), rs.getString("displayname"));
 				++notifyCount;
 				notifyProgress();
 			}
-		} finally {			
-			rs.close();
 		}
 	}
 	
 	private void exportMinigames() throws SQLException {
 		notifyNext("Exporting minigames...");
-		ResultSet rs = handler.executeQuery(getMinigames);
-		try {
+		try (ResultSet rs = handler.executeQuery(getMinigames)) {
 			while (rs.next()) {
 				callback.acceptMinigame(rs.getInt("minigame_id"), rs.getString("name"));
 				++notifyCount;
 				notifyProgress();
 			}
-		} finally {			
-			rs.close();
 		}
 	}
 	
 	private void exportStats() throws SQLException {
 		notifyNext("Exporting stats...");
-		ResultSet rs = handler.executeQuery(getStats);
-		try {
+		try (ResultSet rs = handler.executeQuery(getStats)) {
 			while (rs.next()) {
 				callback.acceptStat(UUID.fromString(rs.getString("player_id")), rs.getInt("minigame_id"), rs.getString("stat"), rs.getLong("value"));
 				++notifyCount;
 				notifyProgress();
 			}
-		} finally {			
-			rs.close();
 		}
 	}
 	
 	private void exportStatMetadata() throws SQLException {
 		notifyNext("Exporting metadata...");
-		ResultSet rs = handler.executeQuery(getStatMetadata);
-		try {
+		try (ResultSet rs = handler.executeQuery(getStatMetadata)) {
 			while (rs.next()) {
 				String rawFormat = rs.getString("format");
 				StatFormat format = null;
@@ -118,17 +106,15 @@ public class SQLExport {
 						break;
 					}
 				}
-				
+
 				if (format == null) {
 					continue;
 				}
-				
+
 				callback.acceptStatMetadata(rs.getInt("minigame_id"), rs.getString("stat"), rs.getString("display_name"), format);
 				++notifyCount;
 				notifyProgress();
 			}
-		} finally {			
-			rs.close();
 		}
 	}
 	

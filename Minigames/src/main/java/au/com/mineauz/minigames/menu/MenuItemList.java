@@ -62,7 +62,7 @@ public class MenuItemList extends MenuItem{
 			}
 		}
 		else{
-			description = new ArrayList<String>();
+			description = new ArrayList<>();
 			description.add(ChatColor.GRAY.toString() + options.get(before));
 			description.add(ChatColor.GREEN.toString() + value.getValue());
 			description.add(ChatColor.GRAY.toString() + options.get(after));

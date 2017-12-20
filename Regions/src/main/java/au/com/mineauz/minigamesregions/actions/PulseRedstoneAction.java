@@ -63,13 +63,7 @@ public class PulseRedstoneAction extends ActionInterface {
 			block = Material.REDSTONE_TORCH_ON;
 		final BlockState last = node.getLocation().getBlock().getState();
 		node.getLocation().getBlock().setType(block);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-			
-			@Override
-			public void run() {
-				last.update(true);
-			}
-		}, 20 * time.getFlag());
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, () -> last.update(true), 20 * time.getFlag());
 	}
 
 	@Override

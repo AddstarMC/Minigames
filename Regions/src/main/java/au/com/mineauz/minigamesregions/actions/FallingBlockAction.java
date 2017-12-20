@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.material.MaterialData;
 
 public class FallingBlockAction extends ActionInterface {
 
@@ -55,7 +56,8 @@ public class FallingBlockAction extends ActionInterface {
 						z++){
 					temp.setZ(z);
 					if(temp.getBlock().getType() != Material.AIR){
-						temp.getWorld().spawnFallingBlock(temp, temp.getBlock().getType(), temp.getBlock().getData());
+						MaterialData materialData = new MaterialData(temp.getBlock().getType());
+						temp.getWorld().spawnFallingBlock(temp, materialData);
 						temp.getBlock().setType(Material.AIR);
 					}
 				}
@@ -68,9 +70,8 @@ public class FallingBlockAction extends ActionInterface {
 			Node node) {
 		debug(player,node);
 		if(node.getLocation().getBlock().getType() != Material.AIR){
-			node.getLocation().getWorld().spawnFallingBlock(node.getLocation(), 
-					node.getLocation().getBlock().getType(), 
-					node.getLocation().getBlock().getData());
+			node.getLocation().getWorld().spawnFallingBlock(node.getLocation(),new MaterialData(
+					node.getLocation().getBlock().getType()));
 			node.getLocation().getBlock().setType(Material.AIR);
 		}
 	}

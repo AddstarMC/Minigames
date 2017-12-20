@@ -39,8 +39,8 @@ public class MenuItemConditionAdd extends MenuItem{
 	public ItemStack onClick(){
 		Menu m = new Menu(6, "Conditions", getContainer().getViewer());
 		m.setPreviousPage(getContainer());
-		Map<String, Menu> cats = new HashMap<String, Menu>();
-		List<String> cons = new ArrayList<String>(Conditions.getAllConditionNames());
+		Map<String, Menu> cats = new HashMap<>();
+		List<String> cons = new ArrayList<>(Conditions.getAllConditionNames());
 		Collections.sort(cons);
 		for(String con : cons){
 			if((Conditions.getConditionByName(con).useInNodes() && nexec != null) || 
@@ -60,23 +60,19 @@ public class MenuItemConditionAdd extends MenuItem{
 					cat = cats.get(catname);
 				MenuItemCustom c = new MenuItemCustom(MinigameUtils.capitalize(con), Material.PAPER);
 				final String fcon = con;
-				c.setClick(new InteractionInterface() {
-					
-					@Override
-					public Object interact(Object object) {
-						ConditionInterface condition = Conditions.getConditionByName(fcon);
-						if(rexec != null){
-							rexec.addCondition(condition);
-							getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, rexec, condition));
-						}
-						else{
-							nexec.addCondition(condition);
-							getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, nexec, condition));
-						}
-						getContainer().displayMenu(getContainer().getViewer());
-						return null;
-					}
-				});
+				c.setClick(object -> {
+                    ConditionInterface condition = Conditions.getConditionByName(fcon);
+                    if(rexec != null){
+                        rexec.addCondition(condition);
+                        getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, rexec, condition));
+                    }
+                    else{
+                        nexec.addCondition(condition);
+                        getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, nexec, condition));
+                    }
+                    getContainer().displayMenu(getContainer().getViewer());
+                    return null;
+                });
 				cat.addItem(c);
 			}
 		}

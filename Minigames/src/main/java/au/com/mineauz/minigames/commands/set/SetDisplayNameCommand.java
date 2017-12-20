@@ -55,19 +55,19 @@ public class SetDisplayNameCommand implements ICommand {
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-			String name = "";
+			StringBuilder name = new StringBuilder();
 			for(String arg : args){
-				name += arg;
+				name.append(arg);
 				if(!arg.equals(args[args.length - 1])){
-					name += " ";
+					name.append(" ");
 				}
 			}
-			if(name.equalsIgnoreCase("null")){
+			if(name.toString().equalsIgnoreCase("null")){
 				minigame.setDisplayName(null);
 				sender.sendMessage(ChatColor.GRAY + "Removed " + minigame + "'s display name");
 			}
 			else{
-				minigame.setDisplayName(name);
+				minigame.setDisplayName(name.toString());
 				sender.sendMessage(ChatColor.GRAY + "Set " + minigame + "'s display name to \"" + name + "\"");
 			}
 			return true;

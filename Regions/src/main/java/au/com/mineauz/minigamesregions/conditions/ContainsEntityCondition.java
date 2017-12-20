@@ -27,7 +27,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
 public class ContainsEntityCondition extends ConditionInterface {
-	private EnumFlag<EntityType> entityType = new EnumFlag<EntityType>(EntityType.PLAYER, "entity");
+	private EnumFlag<EntityType> entityType = new EnumFlag<>(EntityType.PLAYER, "entity");
 	
 	private BooleanFlag matchName = new BooleanFlag(false, "matchName");
 	private StringFlag customName = new StringFlag(null, "name");
@@ -134,7 +134,7 @@ public class ContainsEntityCondition extends ConditionInterface {
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu menu = new Menu(3, "Contians Entity", player);
 		
-		menu.addItem(new MenuItemEnum<EntityType>("Entity Type", Material.MONSTER_EGGS, entityType.getCallback(), EntityType.class));
+		menu.addItem(new MenuItemEnum<>("Entity Type", Material.MONSTER_EGGS, entityType.getCallback(), EntityType.class));
 		
 		menu.addItem(new MenuItemNewLine());
 		

@@ -51,7 +51,7 @@ public class MenuItemPotion extends MenuItem{
 			}
 		}
 		else{
-			description = new ArrayList<String>();
+			description = new ArrayList<>();
 			description.add(0, ChatColor.GREEN.toString() + "Level: " + ChatColor.GRAY + (eff.getAmplifier() + 1));
 			description.add(1, ChatColor.GREEN.toString() + "Duration: " + ChatColor.GRAY + eff.getDuration());
 		}

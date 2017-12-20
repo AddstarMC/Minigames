@@ -1,9 +1,6 @@
 package au.com.mineauz.minigames;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -212,29 +209,29 @@ public class MinigameUtils {
 	
 	/**
 	 * Turns a list to a string.
-	 * @param list
+	 * @param list the list to convert
 	 * @return A string representation of the list
 	 */
 	public static String listToString(List<String> list){
-		String slist = "";
+		StringBuilder slist = new StringBuilder();
 		boolean switchColour = false;
 		for(String entry : list){
 			if(switchColour){
-				slist += ChatColor.WHITE + entry;
+				slist.append(ChatColor.WHITE).append(entry);
 				if(!entry.equalsIgnoreCase(list.get(list.size() - 1))){
-					slist += ChatColor.WHITE + ", ";
+					slist.append(ChatColor.WHITE).append(", ");
 				}
 				switchColour = false;
 			}
 			else{
-				slist += ChatColor.GRAY + entry;
+				slist.append(ChatColor.GRAY).append(entry);
 				if(!entry.equalsIgnoreCase(list.get(list.size() - 1))){
-					slist += ChatColor.WHITE + ", ";
+					slist.append(ChatColor.WHITE ).append(", ");
 				}
 				switchColour = true;
 			}
 		}
-		return slist;
+		return slist.toString();
 	}
 	
 	/**
@@ -244,10 +241,8 @@ public class MinigameUtils {
 	 */
 	public static List<String> stringToList(String toList){
 		String[] st = toList.split(";");
-		List<String> list = new ArrayList<String>();
-		for(String s : st){
-			list.add(s);
-		}
+		List<String> list = new ArrayList<>();
+		Collections.addAll(list, st);
 		return list;
 	}
 	
@@ -389,18 +384,18 @@ public class MinigameUtils {
 	 * @return The capitalized string
 	 */
 	public static String capitalize(String toCapitalize){
-		String val = toCapitalize.toLowerCase();
-		String[] spl = val.split(" ");
-		val = "";
+		StringBuilder val = new StringBuilder(toCapitalize.toLowerCase());
+		String[] spl = val.toString().split(" ");
+		val = new StringBuilder();
 		for(String s : spl){
 			String c = Character.toString(s.charAt(0));
 			s = s.substring(1);
 			c = c.toUpperCase();
 			s = c + s;
-			val += s + " ";
+			val.append(s).append(" ");
 		}
-		val = val.trim();
-		return val;
+		val = new StringBuilder(val.toString().trim());
+		return val.toString();
 	}
 	
 	/**
@@ -413,7 +408,7 @@ public class MinigameUtils {
 		if(match.equals(""))
 			return orig;
 		else{
-			List<String> ret = new ArrayList<String>(orig.size());
+			List<String> ret = new ArrayList<>(orig.size());
 			for(String m : orig){
 				if(m.toLowerCase().startsWith(match.toLowerCase()))
 					ret.add(m);
@@ -428,7 +423,7 @@ public class MinigameUtils {
 	 * @return A map of values to store
 	 */
 	public static Map<String, Object> serializeLocation(Location loc){
-		Map<String, Object> sloc = new HashMap<String, Object>();
+		Map<String, Object> sloc = new HashMap<>();
 		sloc.put("x", loc.getX());
 		sloc.put("y", loc.getY());
 		sloc.put("z", loc.getZ());

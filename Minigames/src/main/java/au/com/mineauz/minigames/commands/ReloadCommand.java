@@ -84,12 +84,11 @@ public class ReloadCommand implements ICommand{
 			e.printStackTrace();
 		}
 		
-		List<String> mgs = new ArrayList<String>();
+		List<String> mgs = new ArrayList<>();
 		if(Minigames.plugin.getConfig().contains("minigames")){
 			mgs = Minigames.plugin.getConfig().getStringList("minigames");
 		}
-		final List<String> allMGS = new ArrayList<String>();
-		allMGS.addAll(mgs);
+		final List<String> allMGS = new ArrayList<>(mgs);
 		
 		if(!mgs.isEmpty()){
 			for(String mgm : allMGS){

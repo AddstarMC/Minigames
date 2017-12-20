@@ -172,8 +172,8 @@ public class ScoreCommand implements ICommand {
 							}
 							
 							if(mg.getMaxScore() != 0 && score >= mg.getMaxScorePerPlayer()){
-								List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(t.getPlayers());
-								List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mg.getPlayers().size() - t.getPlayers().size());
+								List<MinigamePlayer> w = new ArrayList<>(t.getPlayers());
+								List<MinigamePlayer> l = new ArrayList<>(mg.getPlayers().size() - t.getPlayers().size());
 								for(Team te : tmod.getTeams()){
 									if(te != t){
 										l.addAll(te.getPlayers());
@@ -255,8 +255,8 @@ public class ScoreCommand implements ICommand {
 						}
 						
 						if(mg.getMaxScore() != 0 && team.getScore() >= mg.getMaxScorePerPlayer()){
-							List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(team.getPlayers());
-							List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mg.getPlayers().size() - team.getPlayers().size());
+							List<MinigamePlayer> w = new ArrayList<>(team.getPlayers());
+							List<MinigamePlayer> l = new ArrayList<>(mg.getPlayers().size() - team.getPlayers().size());
 							for(Team te : tmod.getTeams()){
 								if(te != team){
 									l.addAll(te.getPlayers());
@@ -286,7 +286,7 @@ public class ScoreCommand implements ICommand {
 		}
 		else if(args.length == 2){
 
-			List<String> pt = new ArrayList<String>(plugin.getServer().getOnlinePlayers().size() + 2);
+			List<String> pt = new ArrayList<>(plugin.getServer().getOnlinePlayers().size() + 2);
 			for(Player pl : plugin.getServer().getOnlinePlayers()){
 				pt.add(pl.getName());
 			}
@@ -295,7 +295,7 @@ public class ScoreCommand implements ICommand {
 			
 			return MinigameUtils.tabCompleteMatch(pt, args[1]);
 		}
-		List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+		List<String> mgs = new ArrayList<>(plugin.mdata.getAllMinigames().keySet());
 		return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
 	}
 

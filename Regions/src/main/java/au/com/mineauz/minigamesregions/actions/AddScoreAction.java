@@ -1,12 +1,9 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Map;
 
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -19,7 +16,7 @@ import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class AddScoreAction extends ActionInterface {
+public class AddScoreAction extends AbstractAction {
 	
 	private IntegerFlag amount = new IntegerFlag(1, "amount");
 
@@ -52,44 +49,23 @@ public class AddScoreAction extends ActionInterface {
 	public void executeNodeAction(MinigamePlayer player,
 			Node base) {
 		debug(player,base);
-		if(player == null || !player.isInMinigame()) return;
-		player.addScore(amount.getFlag());
-		player.getMinigame().setScore(player, player.getScore());
-		checkScore(player);
+		execute(player);
 	}
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Region base) {
 		debug(player,base);
+		execute(player);
+	}
+
+	public void execute(MinigamePlayer player){
 		if(player == null || !player.isInMinigame()) return;
 		player.addScore(amount.getFlag());
 		player.getMinigame().setScore(player, player.getScore());
-
 		checkScore(player);
 	}
 
-	private void checkScore(MinigamePlayer player){
-		if(player.getScore() >= player.getMinigame().getMaxScorePerPlayer()  || player.getTeam().getScore() >= player.getMinigame().getMaxScore()){
-			List<MinigamePlayer> w;
-			List<MinigamePlayer> l;
-			if(player.getMinigame().isTeamGame()){
-				w = new ArrayList<>(player.getTeam().getPlayers());
-				l = new ArrayList<>(player.getMinigame().getPlayers().size() - player.getTeam().getPlayers().size());
-				for(Team t : TeamsModule.getMinigameModule(player.getMinigame()).getTeams()){
-					if(t != player.getTeam())
-						l.addAll(t.getPlayers());
-				}
-			}
-			else{
-				w = new ArrayList<>(1);
-				l = new ArrayList<>(player.getMinigame().getPlayers().size());
-				w.add(player);
-				l.addAll(player.getMinigame().getPlayers());
-				l.remove(player);
-			}
-			Minigames.plugin.pdata.endMinigame(player.getMinigame(), w, l);
-		}
-	}
+
 
 	@Override
 	public void saveArguments(FileConfiguration config,

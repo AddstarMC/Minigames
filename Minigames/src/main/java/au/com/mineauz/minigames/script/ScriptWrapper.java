@@ -53,7 +53,7 @@ public class ScriptWrapper {
 		return new ScriptObject() {
 			@Override
 			public Set<String> getKeys() {
-				return ImmutableSet.of("pos", "type", "data", "temperature", "light", "blocklight", "skylight", "redstone");
+				return ImmutableSet.of("pos", "type", "temperature", "light", "blocklight", "skylight", "redstone");
 			}
 			
 			@Override
@@ -62,8 +62,6 @@ public class ScriptWrapper {
 					return wrap(object.getLocation());
 				} else if (name.equalsIgnoreCase("type")) {
 					return ScriptValue.of(object.getType());
-				} else if (name.equalsIgnoreCase("data")) {
-					return ScriptValue.of(object.getData());
 				} else if (name.equalsIgnoreCase("temperature")) {
 					return ScriptValue.of(object.getTemperature());
 				} else if (name.equalsIgnoreCase("light")) {
@@ -81,7 +79,7 @@ public class ScriptWrapper {
 			
 			@Override
 			public String getAsString() {
-				return String.format("%d,%d,%d,%s %s:%d", object.getX(), object.getY(), object.getZ(), object.getWorld().getName(), object.getType(), object.getData());
+				return String.format("%d,%d,%d,%s %s", object.getX(), object.getY(), object.getZ(), object.getWorld().getName(), object.getType());
 			}
 		};
 	}

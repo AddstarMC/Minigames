@@ -125,7 +125,7 @@ public class OfflineMinigamePlayer {
 	}
 	
 	public void savePlayerData(){
-		MinigameSave save = new MinigameSave("playerdata/inventories/" + uuid.toString());
+		MinigameSave save = new MinigameSave("playerdata/inventories/" + uuid);
 		FileConfiguration con = save.getConfig();
 		if(storedItems != null){
 			int num = 0;

@@ -10,15 +10,11 @@ import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBoolean;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
-import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Node;
@@ -27,8 +23,6 @@ import au.com.mineauz.minigamesregions.Region;
 public class MatchBlockCondition extends ConditionInterface {
 	
 	private StringFlag type = new StringFlag("STONE", "type");
-	private BooleanFlag useDur = new BooleanFlag(false, "usedur");
-	private IntegerFlag dur = new IntegerFlag(0, "dur");
 
 	@Override
 	public String getName() {
@@ -42,11 +36,7 @@ public class MatchBlockCondition extends ConditionInterface {
 	
 	@Override
 	public void describe(Map<String, Object> out) {
-		if (useDur.getFlag()) {
-			out.put("Type", type.getFlag() + ":" + dur.getFlag());
-		} else {
 			out.put("Type", type.getFlag() + ":all");
-		}
 	}
 
 	@Override
@@ -71,24 +61,18 @@ public class MatchBlockCondition extends ConditionInterface {
 	
 	private boolean check(Location location){
 		Block block = location.getBlock();
-        return block.getType() == Material.getMaterial(type.getFlag()) &&
-                (!useDur.getFlag() ||
-                        block.getData() == dur.getFlag().byteValue());
+        return block.getType() == Material.getMaterial(type.getFlag());
     }
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
 		type.saveValue(path, config);
-		useDur.saveValue(path, config);
-		dur.saveValue(path, config);
 		saveInvert(config, path);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
 		type.loadValue(path, config);
-		useDur.loadValue(path, config);
-		dur.loadValue(path, config);
 		loadInvert(config, path);
 	}
 
@@ -117,25 +101,12 @@ public class MatchBlockCondition extends ConditionInterface {
 			}
 		});
 		m.addItem(btype);
-		final MenuItemBoolean busedur = (MenuItemBoolean) useDur.getMenuItem("Use Data Values", Material.ENDER_PEARL);
-		m.addItem(busedur);
-		final MenuItemInteger bdur = (MenuItemInteger) dur.getMenuItem("Data Value", Material.PAPER, 0, 16);
-		m.addItem(bdur);
-		
-		c.setClickItem(new InteractionInterface() {
-			
-			@Override
-			public Object interact(Object object) {
-				ItemStack i = (ItemStack) object;
-				type.setFlag(i.getType().toString());
-				useDur.setFlag(true);
-				dur.setFlag(((Short)i.getDurability()).intValue());
-				bdur.updateDescription();
-				busedur.updateDescription();
-				btype.updateDescription();
-				return c.getItem();
-			}
-		});
+		c.setClickItem(object -> {
+            ItemStack i = (ItemStack) object;
+            type.setFlag(i.getType().toString());
+            btype.updateDescription();
+            return c.getItem();
+        });
 		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;

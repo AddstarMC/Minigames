@@ -52,24 +52,20 @@ public class MenuItemActionAdd extends MenuItem{
 					cat = cats.get(catname);
 				MenuItemCustom c = new MenuItemCustom(MinigameUtils.capitalize(act), Material.PAPER);
 				final String fact = act;
-				c.setClick(new InteractionInterface() {
-					
-					@Override
-					public Object interact(Object object) {
-						ActionInterface action = Actions.getActionByName(fact);
-						if(exec == null){
-							exec.addAction(action);
-							getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, exec, action));
-							getContainer().displayMenu(getContainer().getViewer());
-						}
-						else{
-							exec.addAction(action);
-							getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, exec, action));
-							getContainer().displayMenu(getContainer().getViewer());
-						}
-						return null;
-					}
-				});
+				c.setClick(object -> {
+                    ActionInterface action = Actions.getActionByName(fact);
+                    if(exec == null){
+                        exec.addAction(action);
+                        getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, exec, action));
+                        getContainer().displayMenu(getContainer().getViewer());
+                    }
+                    else{
+                        exec.addAction(action);
+                        getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, exec, action));
+                        getContainer().displayMenu(getContainer().getViewer());
+                    }
+                    return null;
+                });
 				cat.addItem(c);
 			}
 		}

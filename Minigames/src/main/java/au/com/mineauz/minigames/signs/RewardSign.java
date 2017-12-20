@@ -108,27 +108,23 @@ public class RewardSign implements MinigameSign {
 			rewardMenu.addItem(new MenuItemRewardAdd("Add Item", Material.ITEM_FRAME, rew), 43);
 			final MenuItemCustom mic = new MenuItemCustom("Save Rewards", Material.REDSTONE_TORCH_ON);
 			final Location floc = loc;
-			mic.setClick(new InteractionInterface() {
-				
-				@Override
-				public Object interact(Object object) {
-					mdata.saveRewardSign(MinigameUtils.createLocationID(floc), true);
-					mic.getContainer().getViewer().sendMessage("Saved rewards for this sign.", null);
-					mic.getContainer().getViewer().getPlayer().closeInventory();
-					return null;
-				}
-			});
+			mic.setClick(object -> {
+                mdata.saveRewardSign(MinigameUtils.createLocationID(floc), true);
+                mic.getContainer().getViewer().sendMessage("Saved rewards for this sign.", null);
+                mic.getContainer().getViewer().getPlayer().closeInventory();
+                return null;
+            });
 			rewardMenu.addItem(mic, 44);
-			List<String> list = new ArrayList<String>();
+			List<String> list = new ArrayList<>();
 			for(RewardRarity r : RewardRarity.values()){
 				list.add(r.toString());
 			}
 			
-			List<MenuItem> mi = new ArrayList<MenuItem>();
+			List<MenuItem> mi = new ArrayList<>();
 			for(RewardType item : rew.getRewards()){
 				mi.add(item.getMenuItem());
 			}
-			List<String> des = new ArrayList<String>();
+			List<String> des = new ArrayList<>();
 			des.add("Double Click to edit");
 			for(RewardGroup group : rew.getGroups()){
 				MenuItemRewardGroup rwg = new MenuItemRewardGroup(group.getName() + " Group", des, Material.CHEST, group, rew);

@@ -63,14 +63,11 @@ public class FlatFileExporter {
 			notifier.onComplete();
 			
 			return true;
-		} catch (InvalidConfigurationException e) {
-			notifier.onError(e, notifyState, notifyCount);
-			return false;
-		} catch (IOException e) {
+		} catch (InvalidConfigurationException | IOException e) {
 			notifier.onError(e, notifyState, notifyCount);
 			return false;
 		}
-	}
+    }
 	
 	private void loadCompletions() {
 		completions = HashMultimap.create();

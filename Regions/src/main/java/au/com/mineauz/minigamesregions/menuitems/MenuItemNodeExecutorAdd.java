@@ -31,7 +31,7 @@ public class MenuItemNodeExecutorAdd extends MenuItem{
 	public ItemStack onClick(){
 		Menu m = new Menu(6, "Select Trigger", getContainer().getViewer());
 		
-		List<String> triggers = new ArrayList<String>(Triggers.getAllNodeTriggers());
+		List<String> triggers = new ArrayList<>(Triggers.getAllNodeTriggers());
 		Collections.sort(triggers);
 		
 		for(String trig : triggers){

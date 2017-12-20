@@ -57,7 +57,7 @@ public class MenuItemDecimal extends MenuItem{
 				description.add(0, ChatColor.GREEN.toString() + form.format(value.getValue()));
 		}
 		else{
-			description = new ArrayList<String>();
+			description = new ArrayList<>();
 			description.add(ChatColor.GREEN.toString() + form.format(value.getValue()));
 		}
 		

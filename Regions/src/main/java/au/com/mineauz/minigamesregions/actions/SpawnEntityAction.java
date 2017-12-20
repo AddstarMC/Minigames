@@ -88,13 +88,7 @@ public class SpawnEntityAction extends ActionInterface {
 		final double vx = Double.valueOf(settings.get("velocityx"));
 		final double vy = Double.valueOf(settings.get("velocityy"));
 		final double vz = Double.valueOf(settings.get("velocityz"));
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
-			
-			@Override
-			public void run() {
-				ent.setVelocity(new Vector(vx, vy, vz));
-			}
-		});
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), () -> ent.setVelocity(new Vector(vx, vy, vz)));
 		
 		if(ent instanceof LivingEntity){
 			LivingEntity lent = (LivingEntity) ent;
@@ -192,20 +186,16 @@ public class SpawnEntityAction extends ActionInterface {
 		final MenuItemPage backButton = new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, m);
 		final MenuItemCustom cus = new MenuItemCustom("Entity Settings", Material.CHEST);
 		final MinigamePlayer fply = player;
-		cus.setClick(new InteractionInterface() {
-			
-			@Override
-			public Object interact(Object object) {
-				if(type.getFlag().equals("ZOMBIE")){
-					eSet.clearMenu();
-					eSet.addItem(backButton, eSet.getSize() - 9);
-					livingEntitySettings(eSet);
-					eSet.displayMenu(fply);
-					return null;
-				}
-				return cus.getItem();
-			}
-		});
+		cus.setClick(object -> {
+            if(type.getFlag().equals("ZOMBIE")){
+                eSet.clearMenu();
+                eSet.addItem(backButton, eSet.getSize() - 9);
+                livingEntitySettings(eSet);
+                eSet.displayMenu(fply);
+                return null;
+            }
+            return cus.getItem();
+        });
 		m.addItem(cus);
 		
 		m.displayMenu(player);

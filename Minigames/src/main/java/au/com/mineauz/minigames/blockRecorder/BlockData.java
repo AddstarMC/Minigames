@@ -7,20 +7,24 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
+import org.bukkit.block.Container;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 
-public class BlockData {
+public class BlockData implements ConfigurationSerializable {
 	private Location location;
 	private BlockState state;
 	private MinigamePlayer player = null;
 	private ItemStack[] items = null;
-	private Map<String, Object> specialData = new HashMap<String, Object>();
+	private Map<String, Object> specialData = new HashMap<>();
 	private boolean hasRandomized = false;
 	
 	public BlockData(Block original, MinigamePlayer modifier){
@@ -71,16 +75,16 @@ public class BlockData {
 		if(hasRandomized || items == null)
 			return;
 		
-		List<ItemStack> itemRand = new ArrayList<ItemStack>();
-		
-		for(int i=0; i < items.length; i++){
-			if(items[i] != null){
-				itemRand.add(items[i].clone());
+		List<ItemStack> itemRand = new ArrayList<>();
+
+		for (ItemStack item1 : items) {
+			if (item1 != null) {
+				itemRand.add(item1.clone());
 			}
 		}
 		
 		Collections.shuffle(itemRand);
-		List<ItemStack> itemChest = new ArrayList<ItemStack>();
+		List<ItemStack> itemChest = new ArrayList<>();
 		
 		if(maxContents > itemRand.size()){
 			maxContents = itemRand.size();
@@ -120,45 +124,84 @@ public class BlockData {
 	public boolean hasRandomized(){
 		return hasRandomized;
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	@Override
 	public String toString(){
-		String ret = "{";
-		ret += "mat:" + state.getType().toString() + ";";
-		ret += "data:" + state.getData().getData() + ";";
-		ret += "x:" + state.getX() + ";";
-		ret += "y:" + state.getY() + ";";
-		ret += "z:" + state.getZ() + ";";
-		ret += "world:" + state.getWorld().getName();
+		StringBuilder ret = new StringBuilder("{");
+		ret.append("mat:").append(state.getType().toString()).append(";");
+		ret.append("data:").append(state.getData().getData()).append(";");
+		ret.append("x:").append(state.getX()).append(";");
+		ret.append("y:").append(state.getY()).append(";");
+		ret.append("z:").append(state.getZ()).append(";");
+		ret.append("world:").append(state.getWorld().getName());
 		if(items != null){
-			ret += ";";
+			ret.append(";");
 			
 			int c = 0;
-			ret += "items:";
+			ret.append("items:");
 			for(ItemStack i : items){
 				if(i != null){
-					ret += "(";
-					ret += "item-" + i.getType().toString() + "|";
-					ret += "dur-" + i.getDurability() + "|";
-					ret += "c-" + i.getAmount() + "|";
+					ret.append("(");
+					ret.append("item-").append(i.getType().toString()).append("|");
+					ret.append("dur-").append(i.getDurability()).append("|");
+					ret.append("c-").append(i.getAmount()).append("|");
 					if(!i.getEnchantments().isEmpty()){
-						ret += "enc-";
+						ret.append("enc-");
 						for(Enchantment e : i.getEnchantments().keySet()){
-							ret += "[";
-							ret += e.getName() + ",";
-							ret += i.getEnchantments().get(e);
-							ret += "]";
+							ret.append("[");
+							ret.append(e.getName()).append(",");
+							ret.append(i.getEnchantments().get(e));
+							ret.append("]");
 						}
-						ret += "|";
+						ret.append("|");
 					}
-					ret += "slot-" + c;
-					ret += ")";
+					ret.append("slot-").append(c);
+					ret.append(")");
 				}
 				c++;
 			}
 		}
-		ret += "}";
-		return ret;
+		ret.append("}");
+		return ret.toString();
+	}
+
+	@Override
+	public Map<String, Object> serialize() {
+		Map<String,Object> out =  new HashMap<>();
+		out.put("Location",location.serialize());
+		out.put("Material",state.getType());
+		if(state instanceof Container){
+			List<ItemStack> itemStacks = new ArrayList<>();
+			Container container = (Container) state;
+			Inventory items = container.getInventory();
+			for (ItemStack item:items) {
+				itemStacks.add(item);
+			}
+			out.put("Contents",itemStacks);
+		}
+		return out;
+	}
+
+	@SuppressWarnings("unchecked")
+	public BlockData deserialize(Map<String,Object> input) {
+		Location location = null;
+		Material material = Material.AIR;
+		try {
+			location = Location.deserialize((Map<String, Object>) input.get("Location"));
+			material = (Material) input.get("Material");
+			BlockState b = location.getBlock().getState();
+			b.setType(material);
+			if(b instanceof Container){
+				List<ItemStack> items = (List<ItemStack>) input.get("Contents");
+				ItemStack[] contents = new ItemStack[items.size()];
+				items.toArray(contents);
+				((Container) b).getInventory().setContents(contents);
+			}
+			return new BlockData(b, null);
+
+		}catch (ClassCastException e){
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

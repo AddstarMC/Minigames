@@ -15,7 +15,7 @@ public class MinigameTimer{
 	private int time = 0;
 	private int otime = 0;
 	private Minigame minigame;
-	private List<Integer> timeMsg = new ArrayList<Integer>();
+	private List<Integer> timeMsg = new ArrayList<>();
 	private static Minigames plugin = Minigames.plugin;
 	private int taskID = -1;
 	private boolean broadcastTime = true;
@@ -39,43 +39,39 @@ public class MinigameTimer{
 	public void startTimer(){
 		if(taskID != -1)
 			stopTimer();
-		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-			
-			@Override
-			public void run() {
-				time -= 1;
-				if(minigame.isUsingXPBarTimer()){
-					float timeper = ((Integer)time).floatValue() / ((Integer)otime).floatValue();
-					int level = 0;
-					if(time / 60 > 0)
-						level = time / 60;
-					else
-						level = time;
-					
-					for(MinigamePlayer ply : minigame.getPlayers()){
-						if(timeper < 0 ){
-							ply.getPlayer().setExp(0);
-							ply.getPlayer().setLevel(0);
-						}else {
-							ply.getPlayer().setExp(timeper);
-							ply.getPlayer().setLevel(level);
-						}
-					}
-				}
-				if(timeMsg.contains(time) && broadcastTime){
-					PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
-					plugin.mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(time)), null, null);
-				}
+		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+            time -= 1;
+            if(minigame.isUsingXPBarTimer()){
+                float timeper = ((Integer)time).floatValue() / ((Integer)otime).floatValue();
+                int level = 0;
+                if(time / 60 > 0)
+                    level = time / 60;
+                else
+                    level = time;
 
-				if(time <= 0){
-					Bukkit.getServer().getPluginManager().callEvent(new TimerExpireEvent(minigame));
-					stopTimer();
-				}
-				
-				if(time > 0)
-					Bukkit.getPluginManager().callEvent(new MinigameTimerTickEvent(minigame, minigame.getMinigameTimer()));
-			}
-		}, 0, 20);
+                for(MinigamePlayer ply : minigame.getPlayers()){
+                    if(timeper < 0 ){
+                        ply.getPlayer().setExp(0);
+                        ply.getPlayer().setLevel(0);
+                    }else {
+                        ply.getPlayer().setExp(timeper);
+                        ply.getPlayer().setLevel(level);
+                    }
+                }
+            }
+            if(timeMsg.contains(time) && broadcastTime){
+                PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
+                plugin.mdata.sendMinigameMessage(minigame, MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(time)), null, null);
+            }
+
+            if(time <= 0){
+                Bukkit.getServer().getPluginManager().callEvent(new TimerExpireEvent(minigame));
+                stopTimer();
+            }
+
+            if(time > 0)
+                Bukkit.getPluginManager().callEvent(new MinigameTimerTickEvent(minigame, minigame.getMinigameTimer()));
+        }, 0, 20);
 	}
 	
 	public void stopTimer(){

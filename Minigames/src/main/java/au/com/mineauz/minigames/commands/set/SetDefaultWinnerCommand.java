@@ -81,7 +81,7 @@ public class SetDefaultWinnerCommand implements ICommand {
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> teams = new ArrayList<String>();
+			List<String> teams = new ArrayList<>();
 			for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
 				teams.add(t.getColor().toString().toLowerCase());
 			}

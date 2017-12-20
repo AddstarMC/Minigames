@@ -21,7 +21,7 @@ public class InfectionModule extends MinigameModule{
 	private IntegerFlag infectedPercent = new IntegerFlag(18, "infectedPercent");
 	
 	//Unsaved Data
-	private List<MinigamePlayer> infected = new ArrayList<MinigamePlayer>();
+	private List<MinigamePlayer> infected = new ArrayList<>();
 
 	public InfectionModule(Minigame mgm) {
 		super(mgm);
@@ -34,7 +34,7 @@ public class InfectionModule extends MinigameModule{
 
 	@Override
 	public Map<String, Flag<?>> getFlags() {
-		Map<String, Flag<?>> flags = new HashMap<String, Flag<?>>();
+		Map<String, Flag<?>> flags = new HashMap<>();
 		flags.put("infectedPercent", infectedPercent);
 		return flags;
 	}

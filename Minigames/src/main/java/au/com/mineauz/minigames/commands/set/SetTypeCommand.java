@@ -79,7 +79,7 @@ public class SetTypeCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> types = new ArrayList<String>();
+			List<String> types = new ArrayList<>();
 			for(MinigameType t : MinigameType.values()){
 				types.add(t.toString());
 			}

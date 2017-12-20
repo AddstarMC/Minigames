@@ -28,7 +28,7 @@ public class WeatherTimeModule extends MinigameModule {
 	private LongFlag time = new LongFlag(0L, "customTime.value");
 	private BooleanFlag useCustomTime = new BooleanFlag(false, "customTime.enabled");
 	private BooleanFlag useCustomWeather = new BooleanFlag(false, "customWeather.enabled");
-	private EnumFlag<WeatherType> weather = new EnumFlag<WeatherType>(WeatherType.CLEAR, "customWeather.type");
+	private EnumFlag<WeatherType> weather = new EnumFlag<>(WeatherType.CLEAR, "customWeather.type");
 	private int task = -1;
 	
 	public WeatherTimeModule(Minigame mgm){
@@ -42,7 +42,7 @@ public class WeatherTimeModule extends MinigameModule {
 	
 	@Override
 	public Map<String, Flag<?>> getFlags(){
-		Map<String, Flag<?>> map = new HashMap<String, Flag<?>>();
+		Map<String, Flag<?>> map = new HashMap<>();
 		map.put(time.getName(), time);
 		map.put(useCustomTime.getName(), useCustomTime);
 		map.put(useCustomWeather.getName(), useCustomWeather);
@@ -175,15 +175,11 @@ public class WeatherTimeModule extends MinigameModule {
 	public void startTimeLoop(){
 		final Minigame fmgm = getMinigame();
 		if(task == -1 && isUsingCustomTime()){
-			task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					for(MinigamePlayer player : fmgm.getPlayers()){
-						player.getPlayer().setPlayerTime(time.getFlag(), false);
-					}
-				}
-			}, 20 * 5, 20 * 5);
+			task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, () -> {
+                for(MinigamePlayer player : fmgm.getPlayers()){
+                    player.getPlayer().setPlayerTime(time.getFlag(), false);
+                }
+            }, 20 * 5, 20 * 5);
 		}
 	}
 	

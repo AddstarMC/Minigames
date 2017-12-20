@@ -86,14 +86,11 @@ public class RewardsModule extends MinigameModule {
 	@Override
 	public void addEditMenuOptions(final Menu menu) {
 		MenuItemCustom launcher = new MenuItemCustom("Reward Settings", Material.DIAMOND);
-		launcher.setClick(new InteractionInterface() {
-			@Override
-			public Object interact(Object object) {
-				Menu submenu = createSubMenu(menu);
-				submenu.displayMenu(menu.getViewer());
-				return null;
-			}
-		});
+		launcher.setClick(object -> {
+            Menu submenu = createSubMenu(menu);
+            submenu.displayMenu(menu.getViewer());
+            return null;
+        });
 		
 		menu.addItem(launcher);
 	}

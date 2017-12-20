@@ -33,7 +33,7 @@ public class LobbySettingsModule extends MinigameModule {
 	
 	@Override
 	public Map<String, Flag<?>> getFlags(){
-		Map<String, Flag<?>> map = new HashMap<String, Flag<?>>();
+		Map<String, Flag<?>> map = new HashMap<>();
 		addConfigFlag(canInteractPlayerWait, map);
 		addConfigFlag(canInteractStartWait, map);
 		addConfigFlag(canMovePlayerWait, map);

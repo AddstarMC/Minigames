@@ -42,7 +42,7 @@ public class MinigameTool {
 		}
 		else{
 			meta.setDisplayName(ChatColor.GREEN + "Minigame Tool");
-			List<String> lore = new ArrayList<String>();
+			List<String> lore = new ArrayList<>();
 			lore.add(ChatColor.AQUA + "Minigame: " + ChatColor.WHITE + "None");
 			lore.add(ChatColor.AQUA + "Mode: " + ChatColor.WHITE + "None");
 			lore.add(ChatColor.AQUA + "Team: " + ChatColor.WHITE + "None");
@@ -128,7 +128,7 @@ public class MinigameTool {
 	public void removeSetting(String name){
 		ItemMeta meta = tool.getItemMeta();
 		List<String> lore = meta.getLore();
-		for(String l : new ArrayList<String>(lore)){
+		for(String l : new ArrayList<>(lore)){
 			if(ChatColor.stripColor(l).startsWith(name)){
 				lore.remove(l);
 				break;
@@ -144,31 +144,23 @@ public class MinigameTool {
 		final MenuItemCustom miselect = new MenuItemCustom("Select", MinigameUtils.stringToList("Selects and area;or points visually"), Material.DIAMOND_BLOCK);
 		final MenuItemCustom mideselect = new MenuItemCustom("Deselect", MinigameUtils.stringToList("Deselects an;area or points"), Material.GLASS);
 		final MinigamePlayer fply = player;
-		miselect.setClick(new InteractionInterface() {
-			
-			@Override
-			public Object interact(Object object) {
-				if(mode != null){
-					mode.select(fply, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
-				}
-				return miselect.getItem();
-			}
-		});
-		mideselect.setClick(new InteractionInterface() {
-			
-			@Override
-			public Object interact(Object object) {
-				if(mode != null){
-					mode.deselect(fply, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
-				}
-				return mideselect.getItem();
-			}
-		});
+		miselect.setClick(object -> {
+            if(mode != null){
+                mode.select(fply, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
+            }
+            return miselect.getItem();
+        });
+		mideselect.setClick(object -> {
+            if(mode != null){
+                mode.deselect(fply, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
+            }
+            return mideselect.getItem();
+        });
 		
 		men.addItem(mideselect, men.getSize() - 1);
 		men.addItem(miselect, men.getSize() - 2);
 		
-		List<String> teams = new ArrayList<String>(TeamColor.values().length + 1);
+		List<String> teams = new ArrayList<>(TeamColor.values().length + 1);
 		for(TeamColor col : TeamColor.values())
 			teams.add(MinigameUtils.capitalize(col.toString().replace("_", " ")));
 		teams.add("None");

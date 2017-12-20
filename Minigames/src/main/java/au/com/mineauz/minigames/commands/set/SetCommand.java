@@ -17,7 +17,7 @@ import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 
 public class SetCommand implements ICommand{
-	private static Map<String, ICommand> parameterList = new HashMap<String, ICommand>();
+	private static Map<String, ICommand> parameterList = new HashMap<>();
 	private static BufferedWriter cmdFile;
 	
 	static{
@@ -244,9 +244,7 @@ AliasCheck:				for(ICommand com : parameterList.values()){
 				
 				if(args != null && args.length > 2){
 					shortArgs = new String[args.length - 2];
-					for(int i = 2; i < args.length; i++){
-						shortArgs[i - 2] = args[i];
-					}
+					System.arraycopy(args, 2, shortArgs, 0, args.length - 2);
 				}
 			}
 			
@@ -258,20 +256,20 @@ AliasCheck:				for(ICommand com : parameterList.values()){
 							sender.sendMessage(ChatColor.GREEN + "------------------Command Info------------------");
 							sender.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + comd.getDescription());
 							if(comd.getParameters() != null){
-								String parameters = "";
+								StringBuilder parameters = new StringBuilder();
 								boolean switchColour = false;
 								for(String par : comd.getParameters()){
 									if(switchColour){
-										parameters += ChatColor.WHITE + par;
+										parameters.append(ChatColor.WHITE).append(par);
 										if(!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])){
-											parameters += ChatColor.WHITE + ", ";
+											parameters.append(ChatColor.WHITE).append(", ");
 										}
 										switchColour = false;
 									}
 									else{
-										parameters += ChatColor.GRAY + par;
+										parameters.append(ChatColor.GRAY).append(par);
 										if(!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])){
-											parameters += ChatColor.WHITE + ", ";
+											parameters.append(ChatColor.WHITE).append(", ");
 										}
 										switchColour = true;
 									}
@@ -281,20 +279,20 @@ AliasCheck:				for(ICommand com : parameterList.values()){
 							sender.sendMessage(ChatColor.BLUE + "Usage: ");
 							sender.sendMessage(comd.getUsage());
 							if(comd.getAliases() != null){
-								String aliases = "";
+								StringBuilder aliases = new StringBuilder();
 								boolean switchColour = false;
 								for(String alias : comd.getAliases()){
 									if(switchColour){
-										aliases += ChatColor.WHITE + alias;
+										aliases.append(ChatColor.WHITE).append(alias);
 										if(!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])){
-											aliases += ChatColor.WHITE + ", ";
+											aliases.append(ChatColor.WHITE).append(", ");
 										}
 										switchColour = false;
 									}
 									else{
-										aliases += ChatColor.GRAY + alias;
+										aliases.append(ChatColor.GRAY).append(alias);
 										if(!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])){
-											aliases += ChatColor.WHITE + ", ";
+											aliases.append(ChatColor.WHITE).append(", ");
 										}
 										switchColour = true;
 									}
@@ -342,9 +340,7 @@ AliasCheck:				for(ICommand com : parameterList.values()){
 				}
 				
 				shortArgs = new String[args.length - 2];
-				for(int i = 2; i < args.length; i++){
-					shortArgs[i - 2] = args[i];
-				}
+				System.arraycopy(args, 2, shortArgs, 0, args.length - 2);
 				
 				if(comd != null){
 					if(ply != null){
@@ -356,12 +352,12 @@ AliasCheck:				for(ICommand com : parameterList.values()){
 					}
 				}
 				else{
-					List<String> ls = new ArrayList<String>(parameterList.keySet());
+					List<String> ls = new ArrayList<>(parameterList.keySet());
 					return MinigameUtils.tabCompleteMatch(ls, args[1]);
 				}
 			}
 			else if(args.length == 1){
-				List<String> ls = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+				List<String> ls = new ArrayList<>(plugin.mdata.getAllMinigames().keySet());
 				return MinigameUtils.tabCompleteMatch(ls, args[0]);
 			}
 		}

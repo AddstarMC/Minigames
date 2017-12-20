@@ -171,14 +171,7 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 			}
 			rpos.setY(rpos.getY() + 1);
 			
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					rpos.getBlock().setType(Material.CHEST);
-				}
-
-			});
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> rpos.getBlock().setType(Material.CHEST));
 		}
 		else
 		{
@@ -186,45 +179,34 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 				rpos.setY(rpos.getY() + 1);
 			}
 			
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					rpos.getBlock().setType(Material.CHEST);
-				}
-
-			});
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> rpos.getBlock().setType(Material.CHEST));
 		}
 		
 		//Fill new chest
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-			@Override
-			public void run() {
-				if(rpos.getBlock().getState() instanceof Chest){
-					final Chest chest = (Chest) rpos.getBlock().getState();
-					
-					// TODO: Treasure hunt needs own rewards specification
-					RewardsModule rewards = RewardsModule.getModule(mgm);
-					if (rewards.getScheme() instanceof StandardRewardScheme) {
-						if(!((StandardRewardScheme)rewards.getScheme()).getPrimaryReward().getRewards().isEmpty()){
-							int numitems = (int) Math.round(Math.random() * (thm.getMaxTreasure() - thm.getMinTreasure())) + thm.getMinTreasure();
-							
-							final ItemStack[] items = new ItemStack[27];
-							for(int i = 0; i < numitems; i++){
-								RewardType rew = ((StandardRewardScheme)rewards.getScheme()).getPrimaryReward().getReward().get(0);
-								if(rew instanceof ItemReward){
-									ItemReward irew = (ItemReward) rew;
-									items[i] = irew.getRewardItem();
-								}
-							}
-							Collections.shuffle(Arrays.asList(items));
-							chest.getInventory().setContents(items);
-						}
-					}
-				}
-			}
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            if(rpos.getBlock().getState() instanceof Chest){
+                final Chest chest = (Chest) rpos.getBlock().getState();
 
-		});
+                // TODO: Treasure hunt needs own rewards specification
+                RewardsModule rewards = RewardsModule.getModule(mgm);
+                if (rewards.getScheme() instanceof StandardRewardScheme) {
+                    if(!((StandardRewardScheme)rewards.getScheme()).getPrimaryReward().getRewards().isEmpty()){
+                        int numitems = (int) Math.round(Math.random() * (thm.getMaxTreasure() - thm.getMinTreasure())) + thm.getMinTreasure();
+
+                        final ItemStack[] items = new ItemStack[27];
+                        for(int i = 0; i < numitems; i++){
+                            RewardType rew = ((StandardRewardScheme)rewards.getScheme()).getPrimaryReward().getReward().get(0);
+                            if(rew instanceof ItemReward){
+                                ItemReward irew = (ItemReward) rew;
+                                items[i] = irew.getRewardItem();
+                            }
+                        }
+                        Collections.shuffle(Arrays.asList(items));
+                        chest.getInventory().setContents(items);
+                    }
+                }
+            }
+        });
 		
 		thm.setTreasureLocation(rpos);
 		plugin.getLogger().info(MinigameUtils.formStr("minigame.treasurehunt.consSpawn", mgm.getName(false), rpos.getBlockX() + ", " + rpos.getBlockY() + ", " + rpos.getBlockZ()));

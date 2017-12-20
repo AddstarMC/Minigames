@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.commands;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -167,11 +168,9 @@ public class ToolCommand implements ICommand {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
-		List<String> ret = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+		List<String> ret = new ArrayList<>(plugin.mdata.getAllMinigames().keySet());
 		if(args.length == 1){
-			for(String p : getParameters()){
-				ret.add(p);
-			}
+            Collections.addAll(ret, getParameters());
 			return MinigameUtils.tabCompleteMatch(ret, args[0]);
 		}
 		else if(args.length == 2 && args[0].equalsIgnoreCase("team")){

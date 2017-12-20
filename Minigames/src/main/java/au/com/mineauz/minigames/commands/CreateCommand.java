@@ -78,7 +78,7 @@ public class CreateCommand implements ICommand{
 					mgs = plugin.getConfig().getStringList("minigames");
 				}
 				else{
-					mgs = new ArrayList<String>();
+					mgs = new ArrayList<>();
 				}
 				mgs.add(mgmName);
 				plugin.getConfig().set("minigames", mgs);
@@ -98,7 +98,7 @@ public class CreateCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 2){
-			List<String> types = new ArrayList<String>(MinigameType.values().length);
+			List<String> types = new ArrayList<>(MinigameType.values().length);
 			for(MinigameType type : MinigameType.values()){
 				types.add(type.toString().toLowerCase());
 			}

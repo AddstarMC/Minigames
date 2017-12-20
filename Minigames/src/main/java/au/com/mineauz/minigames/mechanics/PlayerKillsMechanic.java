@@ -10,7 +10,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
@@ -86,8 +85,8 @@ public class PlayerKillsMechanic extends GameMechanicBase{
 				mgm.setScore(attacker, attacker.getScore());
 			
 				if(mgm.getMaxScore() != 0 && attacker.getScore() >= mgm.getMaxScorePerPlayer()){
-					List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - 1);
-					List<MinigamePlayer> winner = new ArrayList<MinigamePlayer>(1);
+					List<MinigamePlayer> losers = new ArrayList<>(mgm.getPlayers().size() - 1);
+					List<MinigamePlayer> winner = new ArrayList<>(1);
 					winner.add(attacker);
 					for(MinigamePlayer player : mgm.getPlayers()){
 						if(player != attacker)
@@ -108,8 +107,8 @@ public class PlayerKillsMechanic extends GameMechanicBase{
 					if(mgm.getMaxScore() != 0 && mgm.getMaxScorePerPlayer() <= ateam.getScore()){
 						mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.kills.finalKill", attacker.getName(), ply.getName()), null, null);
 						
-						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(ateam.getPlayers());
-						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - ateam.getPlayers().size());
+						List<MinigamePlayer> w = new ArrayList<>(ateam.getPlayers());
+						List<MinigamePlayer> l = new ArrayList<>(mgm.getPlayers().size() - ateam.getPlayers().size());
 						for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 							if(t != ateam)
 								l.addAll(t.getPlayers());

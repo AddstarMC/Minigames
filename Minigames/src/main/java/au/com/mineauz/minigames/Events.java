@@ -2,7 +2,6 @@ package au.com.mineauz.minigames;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,12 +22,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -40,7 +35,6 @@ import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
@@ -118,13 +112,7 @@ public class Events implements Listener{
 		if(ply.isInMinigame()){
 			final WeatherTimeModule mod = WeatherTimeModule.getMinigameModule(ply.getMinigame());
 			if(mod.isUsingCustomWeather()){
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						ply.getPlayer().setPlayerWeather(mod.getCustomWeather());
-					}
-				});
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> ply.getPlayer().setPlayerWeather(mod.getCustomWeather()));
 			}
 			
 			if(ply.getMinigame().getState() == MinigameState.ENDED){
@@ -132,13 +120,7 @@ public class Events implements Listener{
 			}
 		}
 		if(ply.isRequiredQuit()){
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					ply.restorePlayerData();
-				}
-			});
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> ply.restorePlayerData());
 			event.setRespawnLocation(ply.getQuitPos());
 			
 			ply.setRequiredQuit(false);
@@ -160,13 +142,15 @@ public class Events implements Listener{
 	}
 	
 	@EventHandler(ignoreCancelled = true)
-	public void itemPickup(PlayerPickupItemEvent event){
-		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-		if(ply.isInMinigame()){
-			Minigame mgm = ply.getMinigame();
-			if(!mgm.hasItemPickup() || 
-					mgm.isSpectator(ply)){
-				event.setCancelled(true);
+	public void itemPickup(EntityPickupItemEvent event){
+		if(event.getEntity() instanceof Player) {
+			MinigamePlayer ply = pdata.getMinigamePlayer((Player)event.getEntity());
+			if (ply.isInMinigame()) {
+				Minigame mgm = ply.getMinigame();
+				if (!mgm.hasItemPickup() ||
+						mgm.isSpectator(ply)) {
+					event.setCancelled(true);
+				}
 			}
 		}
 	}
@@ -215,13 +199,7 @@ public class Events implements Listener{
 			ply.setQuitPos(floc);
 			
 			if(!ply.getPlayer().isDead() && ply.isRequiredQuit()){
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						ply.restorePlayerData();
-					}
-				});
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> ply.restorePlayerData());
 				ply.teleport(ply.getQuitPos());
 				
 				ply.setRequiredQuit(false);
@@ -300,13 +278,13 @@ public class Events implements Listener{
 								}
 								
 								if(mgm.isTeamGame()){
-									String sc = "";
+									StringBuilder sc = new StringBuilder();
 									int c = 0;
 									for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 										c++;
-										sc += t.getColor().getColor().toString() + " " + t.getScore() + ChatColor.WHITE;
+										sc.append(t.getColor().getColor().toString()).append(" ").append(t.getScore()).append(ChatColor.WHITE);
 										if(c != TeamsModule.getMinigameModule(mgm).getTeams().size()){
-											sc += " : ";
+											sc.append(" : ");
 										}
 									}
 									event.getPlayer().sendMessage(ChatColor.AQUA + MinigameUtils.getLang("minigame.info.score") + sc);
@@ -321,7 +299,7 @@ public class Events implements Listener{
 										playerCount += "/" + mgm.getMaxPlayers();
 									}
 									
-									List<String> plyList = new ArrayList<String>();
+									List<String> plyList = new ArrayList<>();
 									for(MinigamePlayer pl : mgm.getPlayers()){
 										plyList.add(pl.getName());
 									}
@@ -642,8 +620,7 @@ public class Events implements Listener{
 				}
 			}
 			else{
-				Set<Integer> slots = new HashSet<Integer>();
-				slots.addAll(event.getRawSlots());
+				Set<Integer> slots = new HashSet<>(event.getRawSlots());
 				
 				for(int slot : slots){
 					if(ply.getMenu().hasMenuItem(slot)){

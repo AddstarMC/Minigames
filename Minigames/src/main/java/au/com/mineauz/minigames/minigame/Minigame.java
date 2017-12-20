@@ -73,13 +73,13 @@ import au.com.mineauz.minigames.stats.StatSettings;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 
 public class Minigame implements ScriptObject {
-	private Map<String, Flag<?>> configFlags = new HashMap<String, Flag<?>>();
+	private Map<String, Flag<?>> configFlags = new HashMap<>();
 	
 	private final String name;
 	private StringFlag displayName = new StringFlag(null, "displayName");
 	private StringFlag objective = new StringFlag(null, "objective");
 	private StringFlag gametypeName = new StringFlag(null, "gametypeName");
-	private EnumFlag<MinigameType> type = new EnumFlag<MinigameType>(MinigameType.SINGLEPLAYER, "type");
+	private EnumFlag<MinigameType> type = new EnumFlag<>(MinigameType.SINGLEPLAYER, "type");
 	private BooleanFlag enabled = new BooleanFlag(false, "enabled");
 	private IntegerFlag minPlayers = new IntegerFlag(2, "minplayers");
 	private IntegerFlag maxPlayers = new IntegerFlag(4, "maxplayers");
@@ -110,7 +110,7 @@ public class Minigame implements ScriptObject {
 	private BooleanFlag itemPickup = new BooleanFlag(true, "itempickup");
 	private BooleanFlag blockBreak = new BooleanFlag(false, "blockbreak");
 	private BooleanFlag blockPlace = new BooleanFlag(false, "blockplace");
-	private EnumFlag<GameMode> defaultGamemode = new EnumFlag<GameMode>(GameMode.ADVENTURE, "gamemode");
+	private EnumFlag<GameMode> defaultGamemode = new EnumFlag<>(GameMode.ADVENTURE, "gamemode");
 	private BooleanFlag blocksdrop = new BooleanFlag(true, "blocksdrop");
 	private BooleanFlag allowEnderpearls = new BooleanFlag(false, "allowEnderpearls");
 	private BooleanFlag allowMPCheckpoints = new BooleanFlag(false, "allowMPCheckpoints");
@@ -132,7 +132,7 @@ public class Minigame implements ScriptObject {
 	private LocationFlag regenArea2 = new LocationFlag(null, "regenarea.2");
 	private IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
 	
-	private Map<String, MinigameModule> modules = new HashMap<String, MinigameModule>();
+	private Map<String, MinigameModule> modules = new HashMap<>();
 	
 	private Scoreboard sbManager = Minigames.plugin.getServer().getScoreboardManager().getNewScoreboard();
 	
@@ -150,16 +150,16 @@ public class Minigame implements ScriptObject {
 	private Map<MinigameStat, StatSettings> statSettings = Maps.newHashMap();
 	
 	//Unsaved data
-	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
-	private List<MinigamePlayer> spectators = new ArrayList<MinigamePlayer>();
+	private List<MinigamePlayer> players = new ArrayList<>();
+	private List<MinigamePlayer> spectators = new ArrayList<>();
 	private RecorderData blockRecorder = new RecorderData(this);
 	//Multiplayer
 	private MultiplayerTimer mpTimer = null;
 	private MinigameTimer miniTimer = null;
 	private MultiplayerBets mpBets = null;
 	//CTF
-	private Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<MinigamePlayer, CTFFlag>();
-	private Map<String, CTFFlag> droppedFlag = new HashMap<String, CTFFlag>();
+	private Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<>();
+	private Map<String, CTFFlag> droppedFlag = new HashMap<>();
 
 	public Minigame(String name, MinigameType type, Location start){
 		this.name = name;
@@ -173,7 +173,7 @@ public class Minigame implements ScriptObject {
 	
 	private void setup(MinigameType type, Location start){
 		this.type.setFlag(type);
-		startLocations.setFlag(new ArrayList<Location>());
+		startLocations.setFlag(new ArrayList<>());
 		
 		if(start != null)
 			startLocations.getFlag().add(start);
@@ -189,7 +189,7 @@ public class Minigame implements ScriptObject {
 			}
 		}
 		
-		flags.setFlag(new ArrayList<String>());
+		flags.setFlag(new ArrayList<>());
 		
 		addConfigFlag(allowEnderpearls);
 		addConfigFlag(allowFlight);
@@ -276,7 +276,7 @@ public class Minigame implements ScriptObject {
 	}
 	
 	public List<MinigameModule> getModules(){
-		return new ArrayList<MinigameModule>(modules.values());
+		return new ArrayList<>(modules.values());
 	}
 	
 	public MinigameModule getModule(String name){
@@ -952,13 +952,9 @@ public class Minigame implements ScriptObject {
 	}
 	
 	public StatSettings getSettings(MinigameStat stat) {
-		StatSettings settings = statSettings.get(stat);
-		if (settings == null) {
-			settings = new StatSettings(stat);
-			statSettings.put(stat, settings);
-		}
-		
-		return settings;
+        StatSettings settings = statSettings.computeIfAbsent(stat, StatSettings::new);
+
+        return settings;
 	}
 	
 	public Map<MinigameStat, StatSettings> getStatSettings(StoredGameStats stats) {
@@ -978,15 +974,15 @@ public class Minigame implements ScriptObject {
 		Menu flags = new Menu(6, getName(false), player);
 		Menu lobby = new Menu(6, getName(false), player);
 		
-		List<MenuItem> itemsMain = new ArrayList<MenuItem>();
+		List<MenuItem> itemsMain = new ArrayList<>();
 		itemsMain.add(enabled.getMenuItem("Enabled", Material.PAPER));
 		itemsMain.add(usePermissions.getMenuItem("Use Permissions", Material.PAPER));
-		List<String> mgTypes = new ArrayList<String>();
+		List<String> mgTypes = new ArrayList<>();
 		for(MinigameType val : MinigameType.values()){
 			mgTypes.add(MinigameUtils.capitalize(val.toString().replace("_", " ")));
 		}
 		itemsMain.add(new MenuItemList("Game Type", Material.PAPER, getTypeCallback(), mgTypes));
-		List<String> scoreTypes = new ArrayList<String>();
+		List<String> scoreTypes = new ArrayList<>();
 		for(GameMechanicBase val : GameMechanics.getGameMechanics()){
 			scoreTypes.add(MinigameUtils.capitalize(val.getMechanic()));
 		}
@@ -1005,16 +1001,12 @@ public class Minigame implements ScriptObject {
 		final MenuItemCustom mechSettings = new MenuItemCustom("Game Mechanic Settings", Material.PAPER);
 		final Minigame mgm = this;
 		final Menu fmain = main;
-		mechSettings.setClick(new InteractionInterface() {
-			
-			@Override
-			public Object interact(Object object) {
-				if(getMechanic().displaySettings(mgm) != null && 
-						getMechanic().displaySettings(mgm).displayMechanicSettings(fmain))
-					return null;
-				return mechSettings.getItem();
-			}
-		});
+		mechSettings.setClick(object -> {
+            if(getMechanic().displaySettings(mgm) != null &&
+                    getMechanic().displaySettings(mgm).displayMechanicSettings(fmain))
+                return null;
+            return mechSettings.getItem();
+        });
 		itemsMain.add(mechSettings);
 		MenuItemString obj = (MenuItemString) objective.getMenuItem("Objective Description", Material.DIAMOND);
 		obj.setAllowNull(true);
@@ -1063,10 +1055,10 @@ public class Minigame implements ScriptObject {
 		itemsMain.add(new MenuItemDisplayWhitelist("Block Whitelist/Blacklist", MinigameUtils.stringToList("Blocks that can/can't;be broken"), 
 				Material.CHEST, getBlockRecorder().getWBBlocks(), getBlockRecorder().getWhitelistModeCallback()));
 		itemsMain.add(new MenuItemNewLine());
-		List<String> floorDegenDes = new ArrayList<String>();
+		List<String> floorDegenDes = new ArrayList<>();
 		floorDegenDes.add("Mainly used to prevent");
 		floorDegenDes.add("islanding in spleef Minigames.");
-		List<String> floorDegenOpt = new ArrayList<String>();
+		List<String> floorDegenOpt = new ArrayList<>();
 		floorDegenOpt.add("Inward");
 		floorDegenOpt.add("Circle");
 		floorDegenOpt.add("Random");
@@ -1082,7 +1074,7 @@ public class Minigame implements ScriptObject {
 				return MinigameUtils.capitalize(degenType.getFlag());
 			}
 		}, floorDegenOpt));
-		List<String> degenRandDes = new ArrayList<String>();
+		List<String> degenRandDes = new ArrayList<>();
 		degenRandDes.add("Chance of block being");
 		degenRandDes.add("removed on random");
 		degenRandDes.add("degeneration.");
@@ -1102,16 +1094,16 @@ public class Minigame implements ScriptObject {
 		}, 0, null));
 		itemsMain.add(new MenuItemNewLine());
 		itemsMain.add(new MenuItemPage("Player Settings", Material.SKULL_ITEM, playerMenu));
-		List<String> thDes = new ArrayList<String>();
-		thDes.add("Treasure hunt related");
-		thDes.add("settings.");
+//		List<String> thDes = new ArrayList<>();
+//		thDes.add("Treasure hunt related");
+//		thDes.add("settings.");
 //		itemsMain.add(new MenuItemPage("Treasure Hunt Settings", thDes, Material.CHEST, treasureHunt));
 //		MenuItemDisplayLoadout defLoad = new MenuItemDisplayLoadout("Default Loadout", Material.DIAMOND_SWORD, LoadoutModule.getMinigameModule(this).getDefaultPlayerLoadout(), this);
 //		defLoad.setAllowDelete(false);
 //		itemsMain.add(defLoad);
 		itemsMain.add(new MenuItemPage("Loadouts", Material.CHEST, loadouts));
 		itemsMain.add(canSpectateFly.getMenuItem("Allow Spectator Fly", Material.FEATHER));
-		List<String> rndChstDes = new ArrayList<String>();
+		List<String> rndChstDes = new ArrayList<>();
 		rndChstDes.add("Randomize items in");
 		rndChstDes.add("chest upon first opening");
 		itemsMain.add(randomizeChests.getMenuItem("Randomize Chests", Material.CHEST, rndChstDes));
@@ -1127,8 +1119,8 @@ public class Minigame implements ScriptObject {
 		//--------------//
 		//Loadout Settings
 		//--------------//
-		List<MenuItem> mi = new ArrayList<MenuItem>();
-		List<String> des = new ArrayList<String>();
+		List<MenuItem> mi = new ArrayList<>();
+		List<String> des = new ArrayList<>();
 		des.add("Shift + Right Click to Delete");
 		for(String ld : LoadoutModule.getMinigameModule(this).getLoadouts()){
 			Material item = Material.THIN_GLASS;
@@ -1150,8 +1142,8 @@ public class Minigame implements ScriptObject {
 		//----------------------//
 		//Minigame Player Settings
 		//----------------------//
-		List<MenuItem> itemsPlayer = new ArrayList<MenuItem>(20);
-		List<String> gmopts = new ArrayList<String>();
+		List<MenuItem> itemsPlayer = new ArrayList<>(20);
+		List<String> gmopts = new ArrayList<>();
 		for(GameMode gm : GameMode.values()){
 			gmopts.add(MinigameUtils.capitalize(gm.toString()));
 		}
@@ -1181,7 +1173,7 @@ public class Minigame implements ScriptObject {
 		//--------------//
 		//Minigame Flags//
 		//--------------//
-		List<MenuItem> itemsFlags = new ArrayList<MenuItem>(getFlags().size());
+		List<MenuItem> itemsFlags = new ArrayList<>(getFlags().size());
 		for(String flag : getFlags()){
 			itemsFlags.add(new MenuItemFlag(Material.SIGN, flag, getFlags()));
 		}
@@ -1192,7 +1184,7 @@ public class Minigame implements ScriptObject {
 		//--------------//
 		//Lobby Settings//
 		//--------------//
-		List<MenuItem> itemsLobby = new ArrayList<MenuItem>(4);
+		List<MenuItem> itemsLobby = new ArrayList<>(4);
 		itemsLobby.add(new MenuItemBoolean("Can Interact on Player Wait", Material.STONE_BUTTON, LobbySettingsModule.getMinigameModule(this).getCanInteractPlayerWaitCallback()));
 		itemsLobby.add(new MenuItemBoolean("Can Interact on Start Wait", Material.STONE_BUTTON, LobbySettingsModule.getMinigameModule(this).getCanInteractStartWaitCallback()));
 		itemsLobby.add(new MenuItemBoolean("Can Move on Player Wait", Material.ICE, LobbySettingsModule.getMinigameModule(this).getCanMovePlayerWaitCallback()));
@@ -1258,7 +1250,7 @@ public class Minigame implements ScriptObject {
 		}
 		
 		if(!getBlockRecorder().getWBBlocks().isEmpty()){
-			List<String> blocklist = new ArrayList<String>();
+			List<String> blocklist = new ArrayList<>();
 			for(Material mat : getBlockRecorder().getWBBlocks()){
 				blocklist.add(mat.toString());
 			}
@@ -1348,13 +1340,7 @@ public class Minigame implements ScriptObject {
 		final Minigame mgm = this;
 		
 		if(getType() == MinigameType.GLOBAL && isEnabled()){
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					Minigames.plugin.mdata.startGlobalMinigame(mgm, null);
-				}
-			});
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, () -> Minigames.plugin.mdata.startGlobalMinigame(mgm, null));
 		}
 		
 		getScoreboardData().loadDisplays(minigame, this);

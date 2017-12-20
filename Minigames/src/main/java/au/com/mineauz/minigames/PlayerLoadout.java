@@ -21,8 +21,8 @@ import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule.LoadoutAddon;
 
 public class PlayerLoadout {
-	private Map<Integer, ItemStack> itemSlot = new HashMap<Integer, ItemStack>();
-	private List<PotionEffect> potions = new ArrayList<PotionEffect>();
+	private Map<Integer, ItemStack> itemSlot = new HashMap<>();
+	private List<PotionEffect> potions = new ArrayList<>();
 	private String loadoutName = "default";
 	private boolean usePermission = false;
 	private boolean fallDamage = true;
@@ -158,13 +158,7 @@ public class PlayerLoadout {
 		}
 		
 		final MinigamePlayer fplayer = player;
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
-			
-			@Override
-			public void run() {
-				fplayer.getPlayer().addPotionEffects(potions);
-			}
-		});
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, () -> fplayer.getPlayer().addPotionEffects(potions));
 		
 		for (Entry<Class<? extends LoadoutAddon>, Object> addonValue : addonValues.entrySet()) {
 			LoadoutAddon<Object> addon = LoadoutModule.getAddon(addonValue.getKey());

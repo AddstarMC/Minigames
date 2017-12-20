@@ -31,7 +31,7 @@ public class MenuItemRegionExecutorAdd extends MenuItem{
 	public ItemStack onClick(){
 		Menu m = new Menu(6, "Select Trigger", getContainer().getViewer());
 		
-		List<String> triggers = new ArrayList<String>(Triggers.getAllRegionTriggers());
+		List<String> triggers = new ArrayList<>(Triggers.getAllRegionTriggers());
 		Collections.sort(triggers);
 		
 		for(String trig : triggers){

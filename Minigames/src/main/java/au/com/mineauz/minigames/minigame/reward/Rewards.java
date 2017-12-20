@@ -18,8 +18,8 @@ import au.com.mineauz.minigames.menu.MenuItemRewardGroupAdd;
 
 public class Rewards {
 	
-	private List<RewardType> items = new ArrayList<RewardType>();
-	private List<RewardGroup> groups = new ArrayList<RewardGroup>();
+	private List<RewardType> items = new ArrayList<>();
+	private List<RewardGroup> groups = new ArrayList<>();
 	
 	public boolean isEmpty() {
 		return items.isEmpty() && groups.isEmpty();
@@ -28,7 +28,7 @@ public class Rewards {
 	public List<RewardType> getReward(){
 		double rand = Math.random();
 		RewardRarity rarity = null;
-		List<Object> itemsCopy = new ArrayList<Object>();
+		List<Object> itemsCopy = new ArrayList<>();
 		itemsCopy.addAll(items);
 		itemsCopy.addAll(groups);
 		Collections.shuffle(itemsCopy);
@@ -81,7 +81,7 @@ public class Rewards {
 				}
 			}
 			if(item != null){
-				List<RewardType> items = new ArrayList<RewardType>();
+				List<RewardType> items = new ArrayList<>();
 				items.add(item);
 				return items;
 			}
@@ -140,11 +140,11 @@ public class Rewards {
 		rewardMenu.addItem(new MenuItemRewardAdd("Add Item", Material.ITEM_FRAME, this), 43);
 		rewardMenu.addItem(new MenuItemPage("Save " + name, Material.REDSTONE_TORCH_ON, parent), 44);
 		
-		List<MenuItem> mi = new ArrayList<MenuItem>();
+		List<MenuItem> mi = new ArrayList<>();
 		for(RewardType item : items){
 			mi.add(item.getMenuItem());
 		}
-		List<String> des = new ArrayList<String>();
+		List<String> des = new ArrayList<>();
 		des.add("Double Click to edit");
 		for(RewardGroup group : groups){
 			MenuItemRewardGroup rwg = new MenuItemRewardGroup(group.getName() + " Group", des, Material.CHEST, group, this);

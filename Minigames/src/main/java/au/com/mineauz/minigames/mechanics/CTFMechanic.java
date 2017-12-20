@@ -7,7 +7,6 @@ import au.com.mineauz.minigames.events.DropFlagEvent;
 import au.com.mineauz.minigames.events.FlagCaptureEvent;
 import au.com.mineauz.minigames.events.TakeFlagEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
@@ -184,8 +183,8 @@ public class CTFMechanic extends GameMechanicBase{
 									if(end){
 										mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.ctf.captureFinal", ply.getName(), 
 												ply.getTeam().getChatColor() + ply.getTeam().getDisplayName()), null, null);
-										List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(ply.getTeam().getPlayers());
-										List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - ply.getTeam().getPlayers().size());
+										List<MinigamePlayer> w = new ArrayList<>(ply.getTeam().getPlayers());
+										List<MinigamePlayer> l = new ArrayList<>(mgm.getPlayers().size() - ply.getTeam().getPlayers().size());
 										for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 											if(t != ply.getTeam())
 												l.addAll(t.getPlayers());

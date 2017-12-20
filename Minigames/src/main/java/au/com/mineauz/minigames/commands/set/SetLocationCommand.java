@@ -55,15 +55,15 @@ public class SetLocationCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-			String location = "";
+			StringBuilder location = new StringBuilder();
 			for(int i = 0; i < args.length; i++){
-				location += args[i];
+				location.append(args[i]);
 				if(i != args.length - 1){
-					location += " ";
+					location.append(" ");
 				}
 			}
 			TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
-			thm.setLocation(location);
+			thm.setLocation(location.toString());
 			sender.sendMessage(ChatColor.GRAY + "The location name for " + minigame + " has been set to " + location);
 			return true;
 		}

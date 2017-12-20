@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RewardTypes {
-	private static Map<String, Class<? extends RewardType>> types = new HashMap<String, Class<? extends RewardType>>();
+	private static Map<String, Class<? extends RewardType>> types = new HashMap<>();
 	
 	static{
 		addRewardType("ITEM", ItemReward.class);
@@ -28,24 +28,14 @@ public class RewardTypes {
 		if(types.containsKey(name.toUpperCase())){
 			try {
 				return types.get(name.toUpperCase()).getDeclaredConstructor(Rewards.class).newInstance(rewards);
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
-			} catch (SecurityException e) {
+			} catch (InstantiationException | SecurityException | NoSuchMethodException | InvocationTargetException | IllegalArgumentException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
-		}
+        }
 		return null;
 	}
 	
 	public static List<String> getAllRewardTypeNames(){
-		return new ArrayList<String>(types.keySet());
+		return new ArrayList<>(types.keySet());
 	}
 }

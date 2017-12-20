@@ -112,7 +112,7 @@ public class MenuItemTeam extends MenuItem{
 					break;
 			}
 		}
-		List<String> ntvo = new ArrayList<String>();
+		List<String> ntvo = new ArrayList<>();
 		for(OptionStatus v : OptionStatus.values()){
 			ntvo.add(v.toString());
 		}

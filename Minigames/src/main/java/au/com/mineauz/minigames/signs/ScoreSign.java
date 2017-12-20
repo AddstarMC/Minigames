@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.SignChangeEvent;
 
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -92,8 +91,8 @@ public class ScoreSign implements MinigameSign{
 							score, pteam.getChatColor().toString() + pteam.getScore()), null);
 					Minigames.plugin.mdata.addClaimedScore(mg, sign.getLocation(), 0);
 					if(mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= pteam.getScore()){
-						List<MinigamePlayer> winners = new ArrayList<MinigamePlayer>(pteam.getPlayers());
-						List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>(mg.getPlayers().size() - pteam.getPlayers().size());
+						List<MinigamePlayer> winners = new ArrayList<>(pteam.getPlayers());
+						List<MinigamePlayer> losers = new ArrayList<>(mg.getPlayers().size() - pteam.getPlayers().size());
 						for(Team t : TeamsModule.getMinigameModule(mg).getTeams()){
 							if(t != pteam)
 								losers.addAll(t.getPlayers());

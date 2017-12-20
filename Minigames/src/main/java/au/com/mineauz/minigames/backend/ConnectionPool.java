@@ -17,7 +17,7 @@ public class ConnectionPool {
     
     private long maxIdleTime;
     
-    private List<ConnectionHandler> connections;
+    private final List<ConnectionHandler> connections;
     @Deprecated
     public ConnectionPool(String connectionString, String username, String password) {
         props = new Properties();
@@ -28,6 +28,7 @@ public class ConnectionPool {
         connections = Collections.synchronizedList(Lists.<ConnectionHandler>newArrayList());
         maxIdleTime = TimeUnit.SECONDS.toMillis(30);
     }
+
     public ConnectionPool(String connectionString, Properties properties) {
         this.connectionString = connectionString;
         props = properties;

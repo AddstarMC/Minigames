@@ -25,7 +25,7 @@ public class StartMinigameEvent extends AbstractMinigameEvent{
 	}
 
 	public List<MinigamePlayer> getPlayers(){
-		return new ArrayList<MinigamePlayer>(players);
+		return new ArrayList<>(players);
 	}
 
 	@Override

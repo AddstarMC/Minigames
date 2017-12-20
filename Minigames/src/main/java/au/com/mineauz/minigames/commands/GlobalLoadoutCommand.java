@@ -67,9 +67,9 @@ public class GlobalLoadoutCommand implements ICommand {
 		MinigamePlayer player = Minigames.plugin.pdata.getMinigamePlayer((Player)sender);
 		Menu loadouts = new Menu(6, getName(), player);
 		
-		List<String> des = new ArrayList<String>();
+		List<String> des = new ArrayList<>();
 		des.add("Shift + Right Click to Delete");
-		List<MenuItem> mi = new ArrayList<MenuItem>();
+		List<MenuItem> mi = new ArrayList<>();
 		for(String ld : mdata.getLoadouts()){
 			Material item = Material.THIN_GLASS;
 			if(mdata.getLoadout(ld).getItems().size() != 0){

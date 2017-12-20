@@ -216,14 +216,14 @@ public class TeleportCommand implements ICommand {
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> pl = new ArrayList<String>();
+			List<String> pl = new ArrayList<>();
 			for(Player p : plugin.getServer().getOnlinePlayers()){
 				pl.add(p.getName());
 			}
 			return MinigameUtils.tabCompleteMatch(pl, args[0]);
 		}
 		else if(args.length == 2){
-			List<String> pl = new ArrayList<String>(plugin.getServer().getOnlinePlayers().size() + 2);
+			List<String> pl = new ArrayList<>(plugin.getServer().getOnlinePlayers().size() + 2);
 			for(Player ply : plugin.getServer().getOnlinePlayers()){
 				pl.add(ply.getName());
 			}

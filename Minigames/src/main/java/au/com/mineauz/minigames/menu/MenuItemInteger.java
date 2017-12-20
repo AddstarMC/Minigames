@@ -47,7 +47,7 @@ public class MenuItemInteger extends MenuItem{
 				description.add(0, ChatColor.GREEN.toString() + value.getValue());
 		}
 		else{
-			description = new ArrayList<String>();
+			description = new ArrayList<>();
 			description.add(ChatColor.GREEN.toString() + value.getValue());
 		}
 		

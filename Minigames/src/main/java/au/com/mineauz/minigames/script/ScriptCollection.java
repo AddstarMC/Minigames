@@ -9,10 +9,10 @@ public abstract class ScriptCollection implements ScriptReference {
 	public abstract Collection<String> getKeys();
 	
 	public static <E extends ScriptReference> ScriptCollection of(Collection<E> collection) {
-		return new ScriptCollectionImpl<E>(collection);
+		return new ScriptCollectionImpl<>(collection);
 	}
 	
 	public static <E extends ScriptReference> ScriptCollection of(Map<String, E> map) {
-		return new ScriptCollectionMapImpl<E>(map);
+		return new ScriptCollectionMapImpl<>(map);
 	}
 }

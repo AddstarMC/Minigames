@@ -21,7 +21,7 @@ public class MultiplayerTimer{
 	private PlayerData pdata = plugin.pdata;
 	private boolean paused = false;
 	private int taskID = -1;
-	private List<Integer> timeMsg = new ArrayList<Integer>();
+	private List<Integer> timeMsg = new ArrayList<>();
 	
 	public MultiplayerTimer(Minigame mg){
 		minigame = mg;
@@ -47,82 +47,78 @@ public class MultiplayerTimer{
 	public void startTimer(){
 		if(taskID != -1)
 			removeTimer();
-		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-			
-			@Override
-			public void run() {
-				
-				if(playerWaitTime != 0 && !paused){
-					if(playerWaitTime == oPlayerWaitTime){
-						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.waitingForPlayers"));
-						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", playerWaitTime));
-                        allowInteraction(LobbySettingsModule.getMinigameModule(minigame).canInteractPlayerWait());
-                        freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMovePlayerWait());
-                        minigame.setState(MinigameState.WAITING);
-					}
-					else if(timeMsg.contains(playerWaitTime)){
-						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", playerWaitTime));
-						PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
-					}
-				}
-				else if(playerWaitTime == 0 && startWaitTime != 0 && !paused){
-					if(startWaitTime == oStartWaitTime){
-						minigame.setState(MinigameState.STARTING);
-						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.minigameStarts"));
-						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
-						freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMoveStartWait());
-						allowInteraction(LobbySettingsModule.getMinigameModule(minigame).canInteractStartWait());
+		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
 
-						if(LobbySettingsModule.getMinigameModule(minigame).isTeleportOnPlayerWait()){
-							reclearInventories(minigame);
-							pdata.balanceGame(minigame);
-							pdata.getStartLocations(minigame.getPlayers(),minigame);
-                            pdata.teleportToStart(minigame);
-                        }
-					}
-					else if(timeMsg.contains(startWaitTime)){
-						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
-						PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
-					}
-				}
-				else if(playerWaitTime == 0 && startWaitTime == 0){
-					sendPlayersMessage(ChatColor.GREEN + MinigameUtils.getLang("time.startup.go"));
-					reclearInventories(minigame);
-                    if(!LobbySettingsModule.getMinigameModule(minigame).isTeleportOnPlayerWait()){
+            if(playerWaitTime != 0 && !paused){
+                if(playerWaitTime == oPlayerWaitTime){
+                    sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.waitingForPlayers"));
+                    sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", playerWaitTime));
+allowInteraction(LobbySettingsModule.getMinigameModule(minigame).canInteractPlayerWait());
+freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMovePlayerWait());
+minigame.setState(MinigameState.WAITING);
+                }
+                else if(timeMsg.contains(playerWaitTime)){
+                    sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", playerWaitTime));
+                    PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
+                }
+            }
+            else if(playerWaitTime == 0 && startWaitTime != 0 && !paused){
+                if(startWaitTime == oStartWaitTime){
+                    minigame.setState(MinigameState.STARTING);
+                    sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.minigameStarts"));
+                    sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
+                    freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMoveStartWait());
+                    allowInteraction(LobbySettingsModule.getMinigameModule(minigame).canInteractStartWait());
+
+                    if(LobbySettingsModule.getMinigameModule(minigame).isTeleportOnPlayerWait()){
+                        reclearInventories(minigame);
                         pdata.balanceGame(minigame);
                         pdata.getStartLocations(minigame.getPlayers(),minigame);
-                    }
-					if(LobbySettingsModule.getMinigameModule(minigame).isTeleportOnStart()) {
-                        pdata.startMPMinigame(minigame,true);
-                        pdata.teleportToStart(minigame);
-                    }else{
-					    pdata.startMPMinigame(minigame);
-                    }
-                    freezePlayers(false);
-					allowInteraction(true);
-					
-					if(minigame.getFloorDegen1() != null && minigame.getFloorDegen2() != null){
-						minigame.addFloorDegenerator();
-						minigame.getFloorDegenerator().startDegeneration();
-					}
-					
-					if(minigame.getTimer() > 0){
-						minigame.setMinigameTimer(new MinigameTimer(minigame, minigame.getTimer()));
-						plugin.mdata.sendMinigameMessage(minigame, 
-								MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(minigame.getTimer())), null, null);
-					}
-					
-					Bukkit.getScheduler().cancelTask(taskID);
-				}
-				
-				if(!paused){
-					if(playerWaitTime != 0)
-						playerWaitTime -= 1;
-					else
-						startWaitTime -= 1;
-				}
-			}
-		}, 0, 20);
+pdata.teleportToStart(minigame);
+}
+                }
+                else if(timeMsg.contains(startWaitTime)){
+                    sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
+                    PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
+                }
+            }
+            else if(playerWaitTime == 0 && startWaitTime == 0){
+                sendPlayersMessage(ChatColor.GREEN + MinigameUtils.getLang("time.startup.go"));
+                reclearInventories(minigame);
+if(!LobbySettingsModule.getMinigameModule(minigame).isTeleportOnPlayerWait()){
+pdata.balanceGame(minigame);
+pdata.getStartLocations(minigame.getPlayers(),minigame);
+}
+                if(LobbySettingsModule.getMinigameModule(minigame).isTeleportOnStart()) {
+pdata.startMPMinigame(minigame,true);
+pdata.teleportToStart(minigame);
+}else{
+                    pdata.startMPMinigame(minigame);
+}
+freezePlayers(false);
+                allowInteraction(true);
+
+                if(minigame.getFloorDegen1() != null && minigame.getFloorDegen2() != null){
+                    minigame.addFloorDegenerator();
+                    minigame.getFloorDegenerator().startDegeneration();
+                }
+
+                if(minigame.getTimer() > 0){
+                    minigame.setMinigameTimer(new MinigameTimer(minigame, minigame.getTimer()));
+                    plugin.mdata.sendMinigameMessage(minigame,
+                            MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(minigame.getTimer())), null, null);
+                }
+
+                Bukkit.getScheduler().cancelTask(taskID);
+            }
+
+            if(!paused){
+                if(playerWaitTime != 0)
+                    playerWaitTime -= 1;
+                else
+                    startWaitTime -= 1;
+            }
+        }, 0, 20);
 	}
 	
 	private void sendPlayersMessage(String message){

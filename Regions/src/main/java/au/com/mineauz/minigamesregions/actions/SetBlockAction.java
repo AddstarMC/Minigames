@@ -8,8 +8,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
@@ -21,8 +19,6 @@ import au.com.mineauz.minigamesregions.Region;
 public class SetBlockAction extends ActionInterface {
 	
 	private StringFlag type = new StringFlag("STONE", "type");
-	private BooleanFlag usedur = new BooleanFlag(false, "usedur");
-	private IntegerFlag dur = new IntegerFlag(0, "dur");
 
 	@Override
 	public String getName() {
@@ -36,11 +32,7 @@ public class SetBlockAction extends ActionInterface {
 	
 	@Override
 	public void describe(Map<String, Object> out) {
-		if (usedur.getFlag()) {
-			out.put("Block", type.getFlag() + ":" + dur.getFlag());
-		} else {
 			out.put("Block", type.getFlag());
-		}
 	}
 
 	@Override
@@ -67,9 +59,6 @@ public class SetBlockAction extends ActionInterface {
 					
 					BlockState bs = temp.getBlock().getState();
 					bs.setType(Material.getMaterial(type.getFlag()));
-					if(usedur.getFlag()){
-						bs.getData().setData(dur.getFlag().byteValue());
-					}
 					bs.update(true);
 				}
 			}
@@ -82,9 +71,6 @@ public class SetBlockAction extends ActionInterface {
 		debug(player,node);
 		BlockState bs = node.getLocation().getBlock().getState();
 		bs.setType(Material.getMaterial(type.getFlag()));
-		if(usedur.getFlag()){
-			bs.getData().setData(dur.getFlag().byteValue());
-		}
 		bs.update(true);
 	}
 
@@ -92,16 +78,13 @@ public class SetBlockAction extends ActionInterface {
 	public void saveArguments(FileConfiguration config,
 			String path) {
 		type.saveValue(path, config);
-		usedur.saveValue(path, config);
-		dur.saveValue(path, config);
+
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config,
 			String path) {
 		type.loadValue(path, config);
-		usedur.loadValue(path, config);
-		dur.loadValue(path, config);
 	}
 
 	@Override
@@ -124,8 +107,6 @@ public class SetBlockAction extends ActionInterface {
 				return type.getFlag();
 			}
 		}));
-		m.addItem(usedur.getMenuItem("Use Durability Value", Material.ENDER_PEARL));
-		m.addItem(dur.getMenuItem("Durability Value", Material.STONE, 0, 15));
 		m.displayMenu(player);
 		return true;
 	}

@@ -152,7 +152,7 @@ public class SetSecondaryRewardCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 3 || (args.length == 2 && args[0].startsWith("$"))){
-			List<String> ls = new ArrayList<String>();
+			List<String> ls = new ArrayList<>();
 			for(RewardRarity r : RewardRarity.values()){
 				ls.add(r.toString());
 			}

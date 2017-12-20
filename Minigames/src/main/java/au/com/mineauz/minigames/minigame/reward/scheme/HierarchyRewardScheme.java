@@ -43,10 +43,10 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 	private TreeMap<T, Rewards> secondaryRewards;
 	
 	public HierarchyRewardScheme() {
-		primaryRewards = new TreeMap<T, Rewards>();
-		secondaryRewards = new TreeMap<T, Rewards>();
+		primaryRewards = new TreeMap<>();
+		secondaryRewards = new TreeMap<>();
 		
-		comparisonType = new EnumFlag<Comparison>(Comparison.Greater, "comparison");
+		comparisonType = new EnumFlag<>(Comparison.Greater, "comparison");
 		enableRewardsOnLoss = new BooleanFlag(false, "loss-rewards");
 		lossUsesSecondary = new BooleanFlag(true, "loss-use-secondary");
 	}
@@ -68,22 +68,16 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 		menu.addItem(new MenuItemNewLine());
 		
 		MenuItemCustom primary = new MenuItemCustom("Primary Rewards", Material.CHEST);
-		primary.setClick(new InteractionInterface() {
-			@Override
-			public Object interact(Object object) {
-				showRewardsMenu(primaryRewards, menu.getViewer(), menu);
-				return null;
-			}
-		});
+		primary.setClick(object -> {
+            showRewardsMenu(primaryRewards, menu.getViewer(), menu);
+            return null;
+        });
 		
 		MenuItemCustom secondary = new MenuItemCustom("Secondary Rewards", Material.CHEST);
-		secondary.setClick(new InteractionInterface() {
-			@Override
-			public Object interact(Object object) {
-				showRewardsMenu(secondaryRewards, menu.getViewer(), menu);
-				return null;
-			}
-		});
+		secondary.setClick(object -> {
+            showRewardsMenu(secondaryRewards, menu.getViewer(), menu);
+            return null;
+        });
 		
 		menu.addItem(primary);
 		menu.addItem(secondary);

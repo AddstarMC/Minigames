@@ -89,7 +89,7 @@ public class JuggernautMechanic extends GameMechanicBase{
 	}
 	
 	private MinigamePlayer assignNewJuggernaut(List<MinigamePlayer> players, MinigamePlayer exclude){
-		List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>(players);
+		List<MinigamePlayer> plys = new ArrayList<>(players);
 		if(exclude != null){
 			plys.remove(exclude);
 		}
@@ -100,9 +100,9 @@ public class JuggernautMechanic extends GameMechanicBase{
 	
 	private void checkScore(MinigamePlayer ply){
 		if(ply.getScore() >= ply.getMinigame().getMaxScorePerPlayer()){
-			List<MinigamePlayer> winners = new ArrayList<MinigamePlayer>();
+			List<MinigamePlayer> winners = new ArrayList<>();
 			winners.add(ply);
-			List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>(ply.getMinigame().getPlayers());
+			List<MinigamePlayer> losers = new ArrayList<>(ply.getMinigame().getPlayers());
 			losers.remove(ply);
 			pdata.endMinigame(ply.getMinigame(), winners, losers);
 		}

@@ -32,7 +32,7 @@ public class LocationListFlag extends Flag<List<Location>>{
 
 	@Override
 	public void loadValue(String path, FileConfiguration config) {
-		List<Location> locs = new ArrayList<Location>();
+		List<Location> locs = new ArrayList<>();
 		Set<String> ids = config.getConfigurationSection(path + "." + getName()).getKeys(false);
 		LocationFlag locf;
 		

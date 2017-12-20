@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.Material;
 
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -18,7 +16,7 @@ import au.com.mineauz.minigamesregions.menuitems.MenuItemCondition;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemConditionAdd;
 
 public class Conditions {
-	private static Map<String, Class<? extends ConditionInterface>> conditions = new HashMap<String, Class<? extends ConditionInterface>>();
+	private static Map<String, Class<? extends ConditionInterface>> conditions = new HashMap<>();
 	
 	static{
 		addCondition("PLAYER_HEALTH_RANGE", PlayerHealthRangeCondition.class);
@@ -53,9 +51,7 @@ public class Conditions {
 		if(hasCondition(name.toUpperCase())){
 			try{
 				return conditions.get(name.toUpperCase()).newInstance();
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
+			} catch (InstantiationException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
         }

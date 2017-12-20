@@ -43,25 +43,17 @@ public class MenuItemNodeExecutor extends MenuItem{
 		final Menu ffm = m;
 		
 		MenuItemCustom ca = new MenuItemCustom("Actions", Material.CHEST);
-		ca.setClick(new InteractionInterface() {
-			
-			@Override
-			public Object interact(Object object) {
-				Actions.displayMenu(fviewer, ex, ffm);
-				return null;
-			}
-		});
+		ca.setClick(object -> {
+            Actions.displayMenu(fviewer, ex, ffm);
+            return null;
+        });
 		m.addItem(ca);
 		
 		MenuItemCustom c2 = new MenuItemCustom("Conditions", Material.CHEST);
-		c2.setClick(new InteractionInterface() {
-			
-			@Override
-			public Object interact(Object object) {
-				Conditions.displayMenu(fviewer, ex, ffm);
-				return null;
-			}
-		});
+		c2.setClick(object -> {
+            Conditions.displayMenu(fviewer, ex, ffm);
+            return null;
+        });
 		m.addItem(c2);
 		
 		m.addItem(new MenuItemNewLine());

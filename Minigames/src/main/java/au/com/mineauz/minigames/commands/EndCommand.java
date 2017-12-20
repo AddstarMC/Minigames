@@ -66,8 +66,8 @@ public class EndCommand implements ICommand{
 			MinigamePlayer ply = plugin.pdata.getMinigamePlayer((Player)sender);
 			if(ply.isInMinigame()){
 				if(ply.getMinigame().getType() != MinigameType.SINGLEPLAYER){
-					List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(1);
-					List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(ply.getMinigame().getPlayers().size());
+					List<MinigamePlayer> w = new ArrayList<>(1);
+					List<MinigamePlayer> l = new ArrayList<>(ply.getMinigame().getPlayers().size());
 					w.add(ply);
 					l.addAll(ply.getMinigame().getPlayers());
 					l.remove(ply);
@@ -125,8 +125,8 @@ public class EndCommand implements ICommand{
 				
 				if(ply != null && ply.isInMinigame()){
 					if(ply.getMinigame().getType() != MinigameType.SINGLEPLAYER){
-						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(1);
-						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(ply.getMinigame().getPlayers().size());
+						List<MinigamePlayer> w = new ArrayList<>(1);
+						List<MinigamePlayer> l = new ArrayList<>(ply.getMinigame().getPlayers().size());
 						w.add(ply);
 						l.addAll(ply.getMinigame().getPlayers());
 						l.remove(ply);
@@ -141,14 +141,14 @@ public class EndCommand implements ICommand{
 				}
 				else if(args.length >= 2 && team != null && mgm != null){
 					if(mgm.hasPlayers()){
-						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(team.getPlayers());
+						List<MinigamePlayer> w = new ArrayList<>(team.getPlayers());
 						int lcount = 0;
 						for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 							if(t != team){
 								lcount += t.getPlayers().size();
 							}
 						}
-						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(lcount);
+						List<MinigamePlayer> l = new ArrayList<>(lcount);
 						for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 							if(t != team){
 								l.addAll(t.getPlayers());
@@ -178,7 +178,7 @@ public class EndCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> plt = new ArrayList<String>(plugin.getServer().getOnlinePlayers().size() + 2);
+			List<String> plt = new ArrayList<>(plugin.getServer().getOnlinePlayers().size() + 2);
 			for(Player pl : plugin.getServer().getOnlinePlayers()){
 				plt.add(pl.getName());
 			}
@@ -188,7 +188,7 @@ public class EndCommand implements ICommand{
 			return MinigameUtils.tabCompleteMatch(plt, args[0]);
 		}
 		else if(args.length == 2 && TeamColor.matchColor(args[0]) != null){
-			List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+			List<String> mgs = new ArrayList<>(plugin.mdata.getAllMinigames().keySet());
 			return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
 		}
 		return null;

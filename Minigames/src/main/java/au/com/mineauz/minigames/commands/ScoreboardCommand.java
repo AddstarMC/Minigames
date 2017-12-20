@@ -181,7 +181,7 @@ public class ScoreboardCommand implements ICommand{
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Minigame ignore, String alias, String[] args) {
 		if(args.length == 1) { // Minigame
-			List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+			List<String> mgs = new ArrayList<>(plugin.mdata.getAllMinigames().keySet());
 			return MinigameUtils.tabCompleteMatch(mgs, args[0]);
 		} else if(args.length == 2) { // Stat
 			return MinigameUtils.tabCompleteMatch(Lists.newArrayList(MinigameStats.getAllStats().keySet()), args[1]);

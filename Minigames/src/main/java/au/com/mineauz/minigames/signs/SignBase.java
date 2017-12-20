@@ -19,7 +19,7 @@ import au.com.mineauz.minigames.Minigames;
 
 public class SignBase implements Listener{
 	
-	private static Map<String, MinigameSign> minigameSigns = new HashMap<String, MinigameSign>();
+	private static Map<String, MinigameSign> minigameSigns = new HashMap<>();
 	
 	static{
 		registerMinigameSign(new FinishSign());

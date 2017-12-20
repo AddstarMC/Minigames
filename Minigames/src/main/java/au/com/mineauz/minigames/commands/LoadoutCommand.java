@@ -77,8 +77,8 @@ public class LoadoutCommand implements ICommand {
 			MinigamePlayer ply = Minigames.plugin.pdata.getMinigamePlayer((Player)sender);
 			if(ply.isInMinigame()){
 				if(args.length == 1){
-					return MinigameUtils.tabCompleteMatch(new ArrayList<String>(
-							LoadoutModule.getMinigameModule(ply.getMinigame()).getLoadoutMap().keySet()), 
+					return MinigameUtils.tabCompleteMatch(new ArrayList<>(
+                                    LoadoutModule.getMinigameModule(ply.getMinigame()).getLoadoutMap().keySet()),
 							args[0]);
 				}
 			}

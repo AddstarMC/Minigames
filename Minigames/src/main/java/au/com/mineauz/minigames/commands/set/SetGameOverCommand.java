@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.commands.set;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -102,11 +103,9 @@ public class SetGameOverCommand implements ICommand {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
-		List<String> opts = new ArrayList<String>();
+		List<String> opts = new ArrayList<>();
 		if(args.length == 1){
-			for(String p : getParameters()){
-				opts.add(p);
-			}
+            Collections.addAll(opts, getParameters());
 			return MinigameUtils.tabCompleteMatch(opts, args[0]);
 		}
 		else if(args.length == 2 && (args[0].equalsIgnoreCase("invincible") ||

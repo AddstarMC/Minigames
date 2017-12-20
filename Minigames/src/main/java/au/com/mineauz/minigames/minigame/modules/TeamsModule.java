@@ -29,7 +29,7 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 
 public class TeamsModule extends MinigameModule {
-	private Map<TeamColor, Team> teams = new HashMap<TeamColor, Team>();
+	private Map<TeamColor, Team> teams = new HashMap<>();
 	private TeamSetFlag teamsFlag;
 	private StringFlag defaultWinner = new StringFlag(null, "defaultwinner");
 	
@@ -46,7 +46,7 @@ public class TeamsModule extends MinigameModule {
 	
 	@Override
 	public Map<String, Flag<?>> getFlags(){
-		Map<String, Flag<?>> flags = new HashMap<String, Flag<?>>();
+		Map<String, Flag<?>> flags = new HashMap<>();
 		flags.put(teamsFlag.getName(), teamsFlag);
 		flags.put(defaultWinner.getName(), defaultWinner);
 		return flags;
@@ -94,7 +94,7 @@ public class TeamsModule extends MinigameModule {
 	}
 	
 	public List<Team> getTeams(){
-		return new ArrayList<Team>(teams.values());
+		return new ArrayList<>(teams.values());
 	}
 	
 	public Map<String, Team> getTeamsNameMap() {
@@ -203,8 +203,8 @@ public class TeamsModule extends MinigameModule {
 	public void addEditMenuOptions(Menu menu) {
 		Menu m = new Menu(6, "Teams", menu.getViewer());
 		m.setPreviousPage(menu);
-		List<MenuItem> items = new ArrayList<MenuItem>();
-		List<String> teams = new ArrayList<String>(this.teams.size() + 1);
+		List<MenuItem> items = new ArrayList<>();
+		List<String> teams = new ArrayList<>(this.teams.size() + 1);
 		for(TeamColor t : this.teams.keySet()){
 			teams.add(MinigameUtils.capitalize(t.toString().replace("_", " ")));
 		}

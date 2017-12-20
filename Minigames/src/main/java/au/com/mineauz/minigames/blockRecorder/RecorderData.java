@@ -46,13 +46,13 @@ public class RecorderData implements Listener{
 	
 	private Minigame minigame;
 	private boolean whitelistMode = false;
-	private List<Material> wbBlocks = new ArrayList<Material>();
+	private List<Material> wbBlocks = new ArrayList<>();
 	private boolean hasCreatedRegenBlocks = false;
 	
 	private Map<String, BlockData> blockdata;
 	private Map<Integer, EntityData> entdata;
 	
-	private static List<Material> physBlocks = new ArrayList<Material>();
+	private static List<Material> physBlocks = new ArrayList<>();
 	
 	static{
 		physBlocks.add(Material.TORCH);
@@ -298,9 +298,9 @@ public class RecorderData implements Listener{
 		}
 
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            Collections.sort(resBlocks, getComparator());
+            resBlocks.sort(getComparator());
 
-            Collections.sort(addBlocks, getComparator());
+            addBlocks.sort(getComparator());
 
             new RollbackScheduler(resBlocks, addBlocks, minigame, modifier);
         });
@@ -495,8 +495,6 @@ public class RecorderData implements Listener{
 					w = Bukkit.getWorld(args.get("world"));
 					state = w.getBlockAt(Integer.valueOf(args.get("x")), Integer.valueOf(args.get("y")), Integer.valueOf(args.get("z"))).getState();
 					state.setType(Material.getMaterial(args.get("mat")));
-					state.setRawData(Byte.valueOf(args.get("data")));
-					
 					bd = new BlockData(state, null);
 					
 					if(args.containsKey("items")){
@@ -606,8 +604,7 @@ public class RecorderData implements Listener{
 		if(hasRegenArea() && minigame.hasPlayers()){
 			Location block = event.getLocation().getBlock().getLocation();
 			if(blockInRegenArea(block)){
-				List<Block> blocks = new ArrayList<Block>();
-				blocks.addAll(event.blockList());
+				List<Block> blocks = new ArrayList<>(event.blockList());
 				
 				for(Block bl : blocks){
 					if((whitelistMode && getWBBlocks().contains(bl.getType())) ||

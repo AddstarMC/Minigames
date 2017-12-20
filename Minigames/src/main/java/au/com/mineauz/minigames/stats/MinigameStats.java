@@ -136,14 +136,11 @@ public final class MinigameStats {
 		
 		for (final MinigameStat stat : getAllStats().values()) {
 			MenuItemCustom item = new MenuItemCustom(WordUtils.capitalizeFully(stat.getDisplayName()), Material.BOOK_AND_QUILL);
-			item.setClick(new InteractionInterface() {
-				@Override
-				public Object interact(Object object) {
-					statCallback.setValue(stat);
-					parent.displayMenu(submenu.getViewer());
-					return null;
-				}
-			});
+			item.setClick(object -> {
+                statCallback.setValue(stat);
+                parent.displayMenu(submenu.getViewer());
+                return null;
+            });
 			
 			submenu.addItem(item);
 		}
@@ -164,14 +161,11 @@ public final class MinigameStats {
 		
 		for (final StatValueField field : format.getFields()) {
 			MenuItemCustom item = new MenuItemCustom(WordUtils.capitalizeFully(field.name()), Material.PAPER);
-			item.setClick(new InteractionInterface() {
-				@Override
-				public Object interact(Object object) {
-					callback.setValue(field);
-					parent.displayMenu(submenu.getViewer());
-					return null;
-				}
-			});
+			item.setClick(object -> {
+                callback.setValue(field);
+                parent.displayMenu(submenu.getViewer());
+                return null;
+            });
 			
 			submenu.addItem(item);
 		}

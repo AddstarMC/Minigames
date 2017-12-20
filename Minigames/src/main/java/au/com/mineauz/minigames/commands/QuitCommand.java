@@ -81,7 +81,7 @@ public class QuitCommand implements ICommand{
 					if(args.length > 1){
 						if(plugin.mdata.hasMinigame(args[1])){
 							Minigame mg = plugin.mdata.getMinigame(args[1]);
-							List<MinigamePlayer> pls = new ArrayList<MinigamePlayer>(mg.getPlayers());
+							List<MinigamePlayer> pls = new ArrayList<>(mg.getPlayers());
 							for(MinigamePlayer pl : pls){
 								plugin.pdata.quitMinigame(pl, true);
 							}
@@ -130,7 +130,7 @@ public class QuitCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> plys = new ArrayList<String>(plugin.getServer().getOnlinePlayers().size() + 1);
+			List<String> plys = new ArrayList<>(plugin.getServer().getOnlinePlayers().size() + 1);
 			for(Player ply : plugin.getServer().getOnlinePlayers()){
 				plys.add(ply.getName());
 			}
@@ -138,7 +138,7 @@ public class QuitCommand implements ICommand{
 			return MinigameUtils.tabCompleteMatch(plys, args[0]);
 		}
 		else if(args.length == 2){
-			List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+			List<String> mgs = new ArrayList<>(plugin.mdata.getAllMinigames().keySet());
 			return MinigameUtils.tabCompleteMatch(mgs, args[1]);
 		}
 		return null;

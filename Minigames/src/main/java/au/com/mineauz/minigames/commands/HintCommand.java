@@ -77,7 +77,7 @@ public class HintCommand implements ICommand{
 			}
 		}
 		else{
-			List<Minigame> mgs = new ArrayList<Minigame>();
+			List<Minigame> mgs = new ArrayList<>();
 			for(Minigame mg : plugin.mdata.getAllMinigames().values()){
 				if(mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals("treasure_hunt")){
 					mgs.add(mg);
@@ -86,14 +86,14 @@ public class HintCommand implements ICommand{
 			if(!mgs.isEmpty()){
 				if(mgs.size() > 1){
 					player.sendMessage(ChatColor.LIGHT_PURPLE + "Currently running Treasure Hunts:");
-					String treasures = "";
+					StringBuilder treasures = new StringBuilder();
 					for(int i = 0; i < mgs.size(); i++){
-						treasures += mgs.get(i).getName(false);
+						treasures.append(mgs.get(i).getName(false));
 						if(i != mgs.size() - 1){
-							treasures += ", ";
+							treasures.append(", ");
 						}
 					}
-					player.sendMessage(ChatColor.GRAY + treasures);
+					player.sendMessage(ChatColor.GRAY + treasures.toString());
 				}
 				else{
 					TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgs.get(0));
@@ -116,7 +116,7 @@ public class HintCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> mgs = new ArrayList<String>();
+			List<String> mgs = new ArrayList<>();
 			for(Minigame mg : plugin.mdata.getAllMinigames().values()){
 				if(mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals("treasure_hunt"))
 					mgs.add(mg.getName(false));

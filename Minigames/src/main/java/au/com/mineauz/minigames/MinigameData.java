@@ -19,17 +19,17 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.*;
 
 public class MinigameData {
-	private Map<String, Minigame> minigames = new HashMap<String, Minigame>();
-	private Map<String, Configuration> configs = new HashMap<String, Configuration>();
-	private Map<MinigameType, MinigameTypeBase> minigameTypes = new HashMap<MinigameType, MinigameTypeBase>();
-	private Map<String, PlayerLoadout> globalLoadouts = new HashMap<String, PlayerLoadout>();
-	private Map<String, RewardsFlag> rewardSigns = new HashMap<String, RewardsFlag>();
+	private Map<String, Minigame> minigames = new HashMap<>();
+	private Map<String, Configuration> configs = new HashMap<>();
+	private Map<MinigameType, MinigameTypeBase> minigameTypes = new HashMap<>();
+	private Map<String, PlayerLoadout> globalLoadouts = new HashMap<>();
+	private Map<String, RewardsFlag> rewardSigns = new HashMap<>();
 	private static Minigames plugin = Minigames.plugin;
 	private MinigameSave rewardSignsSave = null;
-	private Map<Minigame, List<String>> claimedScoreSignsRed = new HashMap<Minigame, List<String>>();
-	private Map<Minigame, List<String>> claimedScoreSignsBlue = new HashMap<Minigame, List<String>>();
+	private Map<Minigame, List<String>> claimedScoreSignsRed = new HashMap<>();
+	private Map<Minigame, List<String>> claimedScoreSignsBlue = new HashMap<>();
 	
-	private List<Class<? extends MinigameModule>> modules = new ArrayList<Class<? extends MinigameModule>>();
+	private List<Class<? extends MinigameModule>> modules = new ArrayList<>();
 	
 	public MinigameData(){
 		
@@ -233,7 +233,7 @@ public class MinigameData {
 	}
 	
 	public List<String> getMinigameTypesList(){
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		for(MinigameType type : getMinigameTypes()){
 			list.add(type.getName());
 		}
@@ -367,26 +367,23 @@ public class MinigameData {
 	public boolean hasClaimedScore(Minigame mg, Location loc, int team){
 		String id = MinigameUtils.createLocationID(loc);
 		if(team == 0){
-			if(claimedScoreSignsRed.containsKey(mg) && claimedScoreSignsRed.get(mg).contains(id))
-				return true;
+            return claimedScoreSignsRed.containsKey(mg) && claimedScoreSignsRed.get(mg).contains(id);
 		}
 		else{
-			if(claimedScoreSignsBlue.containsKey(mg) && claimedScoreSignsBlue.get(mg).contains(id))
-				return true;
+            return claimedScoreSignsBlue.containsKey(mg) && claimedScoreSignsBlue.get(mg).contains(id);
 		}
-		return false;
-	}
+    }
 	
 	public void addClaimedScore(Minigame mg, Location loc, int team){
 		String id = MinigameUtils.createLocationID(loc);
 		if(team == 0){
 			if(!claimedScoreSignsRed.containsKey(mg))
-				claimedScoreSignsRed.put(mg, new ArrayList<String>());
+				claimedScoreSignsRed.put(mg, new ArrayList<>());
 			claimedScoreSignsRed.get(mg).add(id);
 		}
 		else{
 			if(!claimedScoreSignsBlue.containsKey(mg))
-				claimedScoreSignsBlue.put(mg, new ArrayList<String>());
+				claimedScoreSignsBlue.put(mg, new ArrayList<>());
 			claimedScoreSignsBlue.get(mg).add(id);
 		}
 	}

@@ -77,15 +77,15 @@ public class SetFlagCommand implements ICommand{
 			else if(args[0].equalsIgnoreCase("list")){
 				if(minigame.hasFlags()){
 					List<String> flag = minigame.getFlags();
-					String flags = "";
+					StringBuilder flags = new StringBuilder();
 					for(int i = 0; i < flag.size(); i++){
-						flags += flag.get(i);
+						flags.append(flag.get(i));
 						if(i != flag.size() - 1){
-							flags += ", ";
+							flags.append(", ");
 						}
 					}
 					sender.sendMessage(ChatColor.BLUE + "All " + minigame.getName(false) + " flags:");
-					sender.sendMessage(ChatColor.GRAY + flags);
+					sender.sendMessage(ChatColor.GRAY + flags.toString());
 				}
 				else{
 					sender.sendMessage(ChatColor.RED + "There are no flags in " + minigame.getName(false) + "!");

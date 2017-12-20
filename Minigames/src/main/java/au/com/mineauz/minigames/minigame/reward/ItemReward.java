@@ -65,7 +65,7 @@ public class ItemReward extends RewardType{
 	}
 	
 	private class MenuItemReward extends MenuItem{
-		private List<String> options = new ArrayList<String>();
+		private List<String> options = new ArrayList<>();
 		private ItemReward reward;
 
 		public MenuItemReward(ItemReward reward) {
@@ -97,7 +97,7 @@ public class ItemReward extends RewardType{
 		public void updateDescription(){
 			List<String> description = null;
 			if(options == null){
-				options = new ArrayList<String>();
+				options = new ArrayList<>();
 				for(RewardRarity rarity : RewardRarity.values()){
 					options.add(rarity.toString());
 				}
@@ -135,7 +135,7 @@ public class ItemReward extends RewardType{
 				}
 			}
 			else{
-				description = new ArrayList<String>();
+				description = new ArrayList<>();
 				description.add(ChatColor.GRAY.toString() + options.get(before));
 				description.add(ChatColor.GREEN.toString() + getRarity().toString());
 				description.add(ChatColor.GRAY.toString() + options.get(after));

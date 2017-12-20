@@ -58,7 +58,7 @@ public class MenuItemLoadoutAdd extends MenuItem{
 				if(!getContainer().hasMenuItem(i)){
 					PlayerLoadout loadout = new PlayerLoadout(entry);
 					loadouts.put(entry, loadout);
-					List<String> des = new ArrayList<String>();
+					List<String> des = new ArrayList<>();
 					des.add("Shift + Right Click to Delete");
 					if(minigame != null)
 						getContainer().addItem(new MenuItemDisplayLoadout(entry, des, Material.DIAMOND_SWORD, loadout, minigame), i);

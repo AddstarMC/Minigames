@@ -85,7 +85,7 @@ public class SetGameMechanicCommand implements ICommand {
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> types = new ArrayList<String>(GameMechanics.getGameMechanics().size());
+			List<String> types = new ArrayList<>(GameMechanics.getGameMechanics().size());
 			for(GameMechanicBase type : GameMechanics.getGameMechanics()){
 				types.add(type.getMechanic());
 			}

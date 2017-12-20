@@ -49,7 +49,7 @@ public class MenuItemString extends MenuItem{
 				description.add(0, ChatColor.GREEN.toString() + setting);
 		}
 		else{
-			description = new ArrayList<String>();
+			description = new ArrayList<>();
 			description.add(ChatColor.GREEN.toString() + setting);
 		}
 		

@@ -69,22 +69,19 @@ public class RegionToolMode implements ToolMode {
 			RegionModule module = RegionModule.getMinigameModule(tool.getMinigame());
 			
 			Menu regionMenu = new Menu(6, "Regions", player);
-			List<MenuItem> items = new ArrayList<MenuItem>();
+			List<MenuItem> items = new ArrayList<>();
 			
 			for(final Region region : module.getRegions()){
 				MenuItemCustom item = new MenuItemCustom(region.getName(), Material.CHEST);
 				
 				// Set the node and go back to the main menu
-				item.setClick(new InteractionInterface() {
-					@Override
-					public Object interact(Object object) {
-						ftool.changeSetting("Region", region.getName());
-						
-						m.displayMenu(player);
-						
-						return object;
-					}
-				});
+				item.setClick(object -> {
+                    ftool.changeSetting("Region", region.getName());
+
+                    m.displayMenu(player);
+
+                    return object;
+                });
 				
 				items.add(item);
 			}

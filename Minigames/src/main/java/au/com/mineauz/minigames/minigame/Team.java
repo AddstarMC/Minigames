@@ -9,7 +9,6 @@ import au.com.mineauz.minigames.config.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team.OptionStatus;
 import org.bukkit.scoreboard.Team.Option;
 
@@ -29,7 +28,7 @@ public class Team implements ScriptObject {
 	private String displayName = null;
 	private TeamColor color;
 	private IntegerFlag maxPlayers = new IntegerFlag(0, "maxPlayers");
-	private List<Location> startLocations = new ArrayList<Location>();
+	private List<Location> startLocations = new ArrayList<>();
 	private StringFlag assignMsg = new StringFlag(MinigameUtils.getLang("player.team.assign.joinTeam"), "assignMsg");
 	private StringFlag gameAssignMsg = new StringFlag(MinigameUtils.getLang("player.team.assign.joinAnnounce"), "gameAssignMsg");
 	private StringFlag autobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.plyMsg"), "autobalanceMsg");
@@ -37,7 +36,7 @@ public class Team implements ScriptObject {
 	private EnumFlag<OptionStatus> nametagVisibility = new EnumFlag<>(OptionStatus.ALWAYS, "nametagVisibility");
 	private BooleanFlag autoBalance = new BooleanFlag(true, "autoBalance");
 	
-	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
+	private List<MinigamePlayer> players = new ArrayList<>();
 	private int score = 0;
 	private Minigame mgm;
 	
@@ -112,7 +111,7 @@ public class Team implements ScriptObject {
 	}
 	
 	public Set<Flag<?>> getFlags(){
-		Set<Flag<?>> flags = new HashSet<Flag<?>>();
+		Set<Flag<?>> flags = new HashSet<>();
 		flags.add(maxPlayers);
 		flags.add(assignMsg);
 		flags.add(gameAssignMsg);

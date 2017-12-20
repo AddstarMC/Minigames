@@ -75,7 +75,7 @@ public class SQLiteBackend extends Backend {
 			if(database == null){
 				return false;
 			}
-			String url = String.format("jdbc:sqlite:" + database.getAbsolutePath());
+			String url = "jdbc:sqlite:" + database.getAbsolutePath();
 			if(debug)logger.info("URL: " + url);
 			Properties properties =  new Properties();
 			properties.put("username","");
@@ -133,8 +133,7 @@ public class SQLiteBackend extends Backend {
 	}
 
 	private void ensureTables(ConnectionHandler connection) throws SQLException {
-		Statement statement = connection.getConnection().createStatement();
-		try {
+		try (Statement statement = connection.getConnection().createStatement()) {
 			// Check the players table
 			try {
 				statement.executeQuery("SELECT 1 FROM `Players` LIMIT 0;");
@@ -142,15 +141,15 @@ public class SQLiteBackend extends Backend {
 				statement.executeUpdate("CREATE TABLE `Players` (`player_id` TEXT PRIMARY KEY, `name` TEXT NOT NULL, `displayname` TEXT);");
 				statement.executeUpdate("CREATE INDEX `Players_NameLookup` ON `Players` (`name`, `player_id`);");
 			}
-			
+
 			// Check the minigames table
 			try {
 				statement.executeQuery("SELECT 1 FROM `Minigames` LIMIT 0;");
 			} catch (SQLException e) {
-				statement.executeUpdate("CREATE TABLE `Minigames` (`minigame_id` INTEGER PRIMARY KEY ASC, `name` TEXT UNIQUE);");
+				statement.executeUpdate("CREATE TABLE `Minigames` (`minigame_id` INTEGER PRIMARY KEY, `name` TEXT UNIQUE);");
 				statement.executeUpdate("CREATE INDEX `Minigames_NameLookup` ON `Minigames` (`name`, `minigame_id`);");
 			}
-			
+
 			// Check the player stats table
 			try {
 				statement.executeQuery("SELECT 1 FROM `PlayerStats` LIMIT 0;");
@@ -188,8 +187,6 @@ public class SQLiteBackend extends Backend {
 			} catch (SQLException e) {
 				statement.executeUpdate("CREATE TABLE `StatMetadata` (`minigame_id` INTEGER REFERENCES `Minigames` (`minigame_id`) ON DELETE CASCADE, `stat` TEXT NOT NULL, `display_name` TEXT, `format` TEXT, PRIMARY KEY (`minigame_id`, `stat`));");
 			}
-		} finally {
-			statement.close();
 		}
 	}
 	
@@ -258,22 +255,21 @@ public class SQLiteBackend extends Backend {
 			handler = pool.getConnection();
 			
 			int minigameId = getMinigameId(handler, minigame);
-			ResultSet rs = handler.executeQuery(loadStatSettings, minigameId);
-			
+
 			Map<MinigameStat, StatSettings> settings = Maps.newHashMap();
-			
-			try {
+
+			try (ResultSet rs = handler.executeQuery(loadStatSettings, minigameId)) {
 				while (rs.next()) {
 					String statName = rs.getString("stat");
 					String rawFormat = rs.getString("format");
 					String displayName = rs.getString("display_name");
-					
+
 					MinigameStat stat = MinigameStats.getStat(statName);
 					if (stat == null) {
 						// Just ignore it
 						continue;
 					}
-					
+
 					// Decode format
 					StatFormat format = null;
 					for (StatFormat f : StatFormat.values()) {
@@ -282,18 +278,16 @@ public class SQLiteBackend extends Backend {
 							break;
 						}
 					}
-					
+
 					if (format == null) {
 						format = stat.getFormat();
 					}
-					
+
 					StatSettings setting = new StatSettings(stat, format, displayName);
 					settings.put(stat, setting);
 				}
-				
+
 				return settings;
-			} finally {
-				rs.close();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
