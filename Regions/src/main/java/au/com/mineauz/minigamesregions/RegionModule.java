@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import au.com.mineauz.minigames.script.ScriptObject;
+import au.com.mineauz.minigamesregions.executors.BaseExecutor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -17,7 +19,6 @@ import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
@@ -169,26 +170,8 @@ public class RegionModule extends MinigameModule {
 					for(String i : ex){
 						String path = getMinigame() + ".regions." + name + ".executors." + i;
 						RegionExecutor rex = new RegionExecutor(Triggers.getTrigger(config.getString(path + ".trigger")));
-						
-						if(config.contains(path + ".actions")){
-							for(String a : config.getConfigurationSection(path + ".actions").getKeys(false)){
-								ActionInterface ai = Actions.getActionByName(config.getString(path + ".actions." + a + ".type"));
-								ai.loadArguments(config, path + ".actions." + a + ".arguments");
-								rex.addAction(ai);
-							}
-						}
-						if(config.contains(path + ".conditions")){
-							for(String c : config.getConfigurationSection(path + ".conditions").getKeys(false)){
-								ConditionInterface ci = Conditions.getConditionByName(config.getString(path + ".conditions." + c + ".type"));
-								ci.loadArguments(config, path + ".conditions." + c + ".arguments");
-								rex.addCondition(ci);
-							}
-						}
-						
-						if(config.contains(path + ".isTriggeredPerPlayer"))
-							rex.setTriggerPerPlayer(config.getBoolean(path + ".isTriggeredPerPlayer"));
-						if(config.contains(path + ".triggerCount"))
-							rex.setTriggerCount(config.getInt(path + ".triggerCount"));
+						updateExector(config,path,rex);
+
 						r.addExecutor(rex);
 					}
 				}
@@ -218,46 +201,39 @@ public class RegionModule extends MinigameModule {
 					for(String i : ex){
 						String path = getMinigame() + ".nodes." + name + ".executors." + i;
 						NodeExecutor rex = new NodeExecutor(Triggers.getTrigger(config.getString(path + ".trigger")));
-
-						if(config.contains(path + ".actions")){
-							for(String a : config.getConfigurationSection(path + ".actions").getKeys(false)){
-								ActionInterface ai = Actions.getActionByName(config.getString(path + ".actions." + a + ".type"));
-								ai.loadArguments(config, path + ".actions." + a + ".arguments");
-								rex.addAction(ai);
-							}
-						}
-						if(config.contains(path + ".conditions")){
-							for(String c : config.getConfigurationSection(path + ".conditions").getKeys(false)){
-								ConditionInterface ci = Conditions.getConditionByName(config.getString(path + ".conditions." + c + ".type"));
-								ci.loadArguments(config, path + ".conditions." + c + ".arguments");
-								rex.addCondition(ci);
-							}
-						}
-						
-						if(config.contains(path + ".isTriggeredPerPlayer"))
-							rex.setTriggerPerPlayer(config.getBoolean(path + ".isTriggeredPerPlayer"));
-						if(config.contains(path + ".triggerCount"))
-							rex.setTriggerCount(config.getInt(path + ".triggerCount"));
+						updateExector(config,path,rex);
 						n.addExecutor(rex);
 					}
 				}
 			}
 		}
 	}
-	
+	private void updateExector(FileConfiguration config,String path, BaseExecutor rex){
+		if(config.contains(path + ".actions")){
+			for(String a : config.getConfigurationSection(path + ".actions").getKeys(false)){
+				ActionInterface ai = Actions.getActionByName(config.getString(path + ".actions." + a + ".type"));
+				ai.loadArguments(config, path + ".actions." + a + ".arguments");
+				rex.addAction(ai);
+			}
+		}
+		if(config.contains(path + ".conditions")){
+			for(String c : config.getConfigurationSection(path + ".conditions").getKeys(false)){
+				ConditionInterface ci = Conditions.getConditionByName(config.getString(path + ".conditions." + c + ".type"));
+				ci.loadArguments(config, path + ".conditions." + c + ".arguments");
+				rex.addCondition(ci);
+			}
+		}
+		if(config.contains(path + ".isTriggeredPerPlayer"))
+			rex.setTriggerPerPlayer(config.getBoolean(path + ".isTriggeredPerPlayer"));
+		if(config.contains(path + ".triggerCount"))
+			rex.setTriggerCount(config.getInt(path + ".triggerCount"));
+	}
 	public static RegionModule getMinigameModule(Minigame minigame){
 		return (RegionModule) minigame.getModule("Regions");
 	}
 	
 	public boolean hasRegion(String name){
-		if(!regions.containsKey(name)){
-			for(String n : regions.keySet()){
-				if(n.equalsIgnoreCase(name))
-					return true;
-			}
-			return false;
-		}
-		return true;
+		return hasScriptObject(regions,name);
 	}
 	
 	public void addRegion(String name, Region region){
@@ -297,8 +273,12 @@ public class RegionModule extends MinigameModule {
 	}
 	
 	public boolean hasNode(String name){
-		if(!nodes.containsKey(name)){
-			for(String n : nodes.keySet()){
+		return hasScriptObject(nodes,name);
+	}
+
+	private boolean hasScriptObject(Map<String,? extends ScriptObject> map, String name){
+		if(!map.containsKey(name)){
+			for(String n : map.keySet()){
 				if(n.equalsIgnoreCase(name))
 					return true;
 			}
@@ -306,7 +286,6 @@ public class RegionModule extends MinigameModule {
 		}
 		return true;
 	}
-	
 	public void addNode(String name, Node node){
 		if(!hasNode(name))
 			nodes.put(name, node);
