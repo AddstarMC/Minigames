@@ -50,7 +50,6 @@ public class BukkitDisplayCuboid extends AbstractDisplayObject implements IDispl
 		super.show();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void hide() {
 		temp.setWorld(world);
@@ -73,7 +72,6 @@ public class BukkitDisplayCuboid extends AbstractDisplayObject implements IDispl
 		super.hide();
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void send(Material mat, byte data) {
 		if (player != null) {
 			player.sendBlockChange(temp, mat, data);

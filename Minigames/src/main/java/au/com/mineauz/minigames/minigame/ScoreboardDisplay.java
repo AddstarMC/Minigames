@@ -319,7 +319,6 @@ public class ScoreboardDisplay {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void placeSigns() {
 		List<Block> blocks = getSignBlocks(false);
 		
@@ -361,7 +360,6 @@ public class ScoreboardDisplay {
 		MinigameUtils.saveShortLocation(section.createSection("location"), rootBlock);
 	}
 	
-	@SuppressWarnings("deprecation")
 	public static ScoreboardDisplay load(Minigame minigame, ConfigurationSection section) {
 		int width = section.getInt("width");
 		int height = section.getInt("height");

@@ -44,7 +44,6 @@ public class BukkitDisplayPoint extends AbstractDisplayObject implements IDispla
 	}
 	
 	@Override
-	@SuppressWarnings("deprecation")
 	public void hide() {
 		temp.setWorld(world);
 		temp.setX(position.getX());
@@ -55,7 +54,6 @@ public class BukkitDisplayPoint extends AbstractDisplayObject implements IDispla
 		super.hide();
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void send(Material mat, byte data) {
 		if (player != null) {
 			player.sendBlockChange(temp, mat, data);

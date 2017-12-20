@@ -116,8 +116,8 @@ public class RecorderData implements Listener{
 		plugin = Minigames.plugin;
 		
 		this.minigame = minigame;
-		blockdata = new HashMap<String, BlockData>();
-		entdata = new HashMap<Integer, EntityData>();
+		blockdata = new HashMap<>();
+		entdata = new HashMap<>();
 		
 //		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
@@ -267,69 +267,55 @@ public class RecorderData implements Listener{
 		entdata.clear();
 	}
 	
-	public void restoreBlocks(final MinigamePlayer modifier){
+	public void restoreBlocks(final MinigamePlayer modifier) {
 		// When rolling back a single player's changes dont change the overall games state
 		if (modifier == null) {
 			minigame.setState(MinigameState.REGENERATING);
 		}
-		
+
 		Iterator<BlockData> it = blockdata.values().iterator();
 		final List<BlockData> resBlocks = Lists.newArrayList();
 		final List<BlockData> addBlocks = Lists.newArrayList();
-		
+
 		while (it.hasNext()) {
 			BlockData data = it.next();
-			
+
 			if (modifier == null || modifier.equals(data.getModifier())) {
 				it.remove();
-				
+
 				// Clear inventories
-				if(data.getLocation().getBlock().getState() instanceof InventoryHolder) {
+				if (data.getLocation().getBlock().getState() instanceof InventoryHolder) {
 					InventoryHolder block = (InventoryHolder) data.getLocation().getBlock().getState();
 					block.getInventory().clear();
 				}
-				
-				if(physBlocks.contains(data.getBlockState().getType()) || data.getItems() != null) {
+
+				if (physBlocks.contains(data.getBlockState().getType()) || data.getItems() != null) {
 					addBlocks.add(data);
 				} else {
 					resBlocks.add(data);
 				}
 			}
 		}
-		
-		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-			@Override
-			public void run() {
-				Collections.sort(resBlocks, new Comparator<BlockData>() {
 
-					@Override
-					public int compare(BlockData o1, BlockData o2) {
-						int comp = Integer.valueOf(o1.getBlockState().getChunk().getX()).compareTo(o2.getBlockState().getChunk().getX());
-						if(comp != 0)
-							return comp;
-						comp = Integer.valueOf(o1.getBlockState().getChunk().getZ()).compareTo(o2.getBlockState().getChunk().getZ());
-						if(comp != 0)
-							return comp;
-						return Integer.valueOf(o1.getBlockState().getY()).compareTo(o2.getBlockState().getY());
-					}
-				});
-				Collections.sort(addBlocks, new Comparator<BlockData>() {
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            Collections.sort(resBlocks, getComparator());
 
-					@Override
-					public int compare(BlockData o1, BlockData o2) {
-						int comp = Integer.valueOf(o1.getBlockState().getChunk().getX()).compareTo(o2.getBlockState().getChunk().getX());
-						if(comp != 0)
-							return comp;
-						comp = Integer.valueOf(o1.getBlockState().getChunk().getZ()).compareTo(o2.getBlockState().getChunk().getZ());
-						if(comp != 0)
-							return comp;
-						return Integer.valueOf(o1.getBlockState().getY()).compareTo(o2.getBlockState().getY());
-					}
-				});
-				
-				new RollbackScheduler(resBlocks, addBlocks, minigame, modifier);
-			}
-		});
+            Collections.sort(addBlocks, getComparator());
+
+            new RollbackScheduler(resBlocks, addBlocks, minigame, modifier);
+        });
+	}
+
+	private Comparator<BlockData> getComparator() {
+		return (o1, o2) -> {
+            int comp = Integer.compare(o1.getBlockState().getChunk().getX(), o2.getBlockState().getChunk().getX());
+            if(comp != 0)
+                return comp;
+            comp = Integer.compare(o1.getBlockState().getChunk().getZ(), o2.getBlockState().getChunk().getZ());
+            if(comp != 0)
+                return comp;
+            return Integer.compare(o1.getBlockState().getY(), o2.getBlockState().getY());
+        };
 	}
 	
 	public void restoreEntities(MinigamePlayer player) {
@@ -464,7 +450,6 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public boolean restoreBlockData(){
 		File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.dat");
 		
@@ -476,7 +461,7 @@ public class RecorderData implements Listener{
 		try{
 			BufferedReader br = new BufferedReader(new FileReader(f));
 			
-			Map<String, String> args = new HashMap<String, String>();
+			Map<String, String> args = new HashMap<>();
 			String line;
 			String[] blocks;
 			String[] block;
@@ -486,7 +471,7 @@ public class RecorderData implements Listener{
 			ItemStack[] items;
 			String[] sitems;
 			ItemStack item;
-			Map<String, String> iargs = new HashMap<String, String>();
+			Map<String, String> iargs = new HashMap<>();
 			
 			while(br.ready()){
 				line = br.readLine();

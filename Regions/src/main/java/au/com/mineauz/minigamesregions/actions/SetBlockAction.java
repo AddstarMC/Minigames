@@ -53,7 +53,6 @@ public class SetBlockAction extends ActionInterface {
 		return true;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
 			Region region) {
@@ -77,7 +76,6 @@ public class SetBlockAction extends ActionInterface {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Node node) {

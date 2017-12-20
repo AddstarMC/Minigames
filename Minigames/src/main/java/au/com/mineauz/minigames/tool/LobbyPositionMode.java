@@ -42,7 +42,6 @@ public class LobbyPositionMode implements ToolMode {
 		player.sendMessage("Set lobby position.", null);
 	}
 
-	@SuppressWarnings("deprecation") //TODO: Use alternate method once available
 	@Override
 	public void select(MinigamePlayer player, Minigame minigame, Team team) {
 		if(minigame.getLobbyPosition() != null){
@@ -54,7 +53,6 @@ public class LobbyPositionMode implements ToolMode {
 		}
 	}
 
-	@SuppressWarnings("deprecation") //TODO: Use alternate method once available
 	@Override
 	public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
 		if(minigame.getLobbyPosition() != null){
