@@ -3,6 +3,7 @@ package au.com.mineauz.minigamesregions.menuitems;
 import java.util.ArrayList;
 import java.util.List;
 
+import au.com.mineauz.minigamesregions.executors.BaseExecutor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -49,8 +50,8 @@ public class MenuItemNode extends MenuItem{
 		Menu m = new Menu(3, "Node: " + node.getName(), viewer);
 		m.setPreviousPage(previousPage);
 		List<MenuItem> items = new ArrayList<>();
-		for(NodeExecutor ex : node.getExecutors()){
-			items.add(new MenuItemNodeExecutor(node, ex));
+		for(BaseExecutor ex : node.getExecutors()){
+			items.add(new MenuItemNodeExecutor(node, (NodeExecutor) ex));
 		}
 		if(previousPage != null){
 			m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previousPage), m.getSize() - 9);
