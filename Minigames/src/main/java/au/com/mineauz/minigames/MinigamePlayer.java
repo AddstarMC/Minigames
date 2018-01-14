@@ -124,15 +124,17 @@ public class MinigamePlayer implements ScriptObject {
 	public void sendMessage(String msg, String type){
 		String init = "";
 		if(type != null){
-			if(type.equals("error")){
-				init = ChatColor.RED + "[Minigames] " + ChatColor.WHITE;
-			}
-			else if(type.equals("win")){
-				init = ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE;
-			}
-			else{
-				init = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
-			}
+            switch (type) {
+                case "error":
+                    init = ChatColor.RED + "[Minigames] " + ChatColor.WHITE;
+                    break;
+                case "win":
+                    init = ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE;
+                    break;
+                default:
+                    init = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
+                    break;
+            }
 		}
 		else{
 			init = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
@@ -695,34 +697,27 @@ public class MinigamePlayer implements ScriptObject {
 	public void claimTempRewardItems(){
 		if(!isDead()){
 			List<ItemStack> tempItems = new ArrayList<>(getTempRewardItems());
-			
-			if(!tempItems.isEmpty()){
-				for(ItemStack item : tempItems){
-					Map<Integer, ItemStack> m = player.getPlayer().getInventory().addItem(item);
-					if(!m.isEmpty()){
-						for(ItemStack i : m.values()){
-							player.getPlayer().getWorld().dropItemNaturally(player.getPlayer().getLocation(), i);
-						}
-					}
-				}
-			}
+			givePlayerReward(tempItems);
 		}
 	}
-	
+
+	private void givePlayerReward(List<ItemStack> tempItems) {
+		if(!tempItems.isEmpty()){
+            for(ItemStack item : tempItems){
+                Map<Integer, ItemStack> m = player.getPlayer().getInventory().addItem(item);
+                if(!m.isEmpty()){
+                    for(ItemStack i : m.values()){
+                        player.getPlayer().getWorld().dropItemNaturally(player.getPlayer().getLocation(), i);
+                    }
+                }
+            }
+        }
+	}
+
 	public void claimRewards(){
 		if(!isDead()){
 			List<ItemStack> tempItems = new ArrayList<>(getRewardItems());
-			
-			if(!tempItems.isEmpty()){
-				for(ItemStack item : tempItems){
-					Map<Integer, ItemStack> m = player.getPlayer().getInventory().addItem(item);
-					if(!m.isEmpty()){
-						for(ItemStack i : m.values()){
-							player.getPlayer().getWorld().dropItemNaturally(player.getPlayer().getLocation(), i);
-						}
-					}
-				}
-			}
+			givePlayerReward(tempItems);
 		}
 	}
 	

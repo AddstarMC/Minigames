@@ -1,13 +1,10 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-
-import com.google.common.collect.ImmutableSet;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -19,12 +16,11 @@ import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.script.ExpressionParser;
 import au.com.mineauz.minigames.script.ScriptObject;
-import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.util.NullCommandSender;
 
-public class ExecuteCommandAction extends ActionInterface {
+public class ExecuteCommandAction extends AbstractAction {
 	
 	private StringFlag comd = new StringFlag("say Hello World!", "command");
 	private BooleanFlag silentExecute = new BooleanFlag(false, "silent");
@@ -84,32 +80,7 @@ public class ExecuteCommandAction extends ActionInterface {
 		command = command.replace("{region}", region.getName());
 		
 		// New expression system
-		ScriptObject base = new ScriptObject() {
-			@Override
-			public Set<String> getKeys() {
-				return ImmutableSet.of("player", "area", "minigame", "team");
-			}
-			
-			@Override
-			public String getAsString() {
-				return "";
-			}
-			
-			@Override
-			public ScriptReference get(String name) {
-				if (name.equalsIgnoreCase("player")) {
-					return player;
-				} else if (name.equalsIgnoreCase("area")) {
-					return region;
-				} else if (name.equalsIgnoreCase("minigame")) {
-					return player.getMinigame();
-				} else if (name.equalsIgnoreCase("team")) {
-					return player.getTeam();
-				}
-				
-				return null;
-			}
-		};
+		ScriptObject base = createScriptObject(player,region);
 		
 		command = ExpressionParser.stringResolve(command, base, true, true);
 		dispatch(command);
@@ -126,32 +97,7 @@ public class ExecuteCommandAction extends ActionInterface {
 			.replace("{node}", node.getName());
 		
 		// New expression system
-		ScriptObject base = new ScriptObject() {
-			@Override
-			public Set<String> getKeys() {
-				return ImmutableSet.of("player", "area", "minigame", "team");
-			}
-			
-			@Override
-			public String getAsString() {
-				return "";
-			}
-			
-			@Override
-			public ScriptReference get(String name) {
-				if (name.equalsIgnoreCase("player")) {
-					return player;
-				} else if (name.equalsIgnoreCase("area")) {
-					return node;
-				} else if (name.equalsIgnoreCase("minigame")) {
-					return player.getMinigame();
-				} else if (name.equalsIgnoreCase("team")) {
-					return player.getTeam();
-				}
-				
-				return null;
-			}
-		};
+		ScriptObject base = createScriptObject(player, node);
 		
 		command = ExpressionParser.stringResolve(command, base, true, true);
 		dispatch(command);

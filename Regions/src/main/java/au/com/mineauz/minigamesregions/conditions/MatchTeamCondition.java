@@ -54,8 +54,7 @@ public class MatchTeamCondition extends ConditionInterface {
 
 	@Override
 	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-		if(player == null || !player.isInMinigame()) return false;
-        return player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getFlag());
+        return player != null && player.isInMinigame() && player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getFlag());
     }
 
 	@Override

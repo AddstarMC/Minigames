@@ -3,7 +3,7 @@
     <parent>
         <artifactId>MinigamesProject</artifactId>
         <groupId>au.com.mineauz</groupId>
-        <version>1.12.1-SNAPSHOT</version>
+        <version>1.13.0-ALPHA</version>
     </parent>
     <artifactId>minigames-distribution</artifactId>
     <name>Minigames-Pack</name>

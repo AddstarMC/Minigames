@@ -24,7 +24,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -120,7 +119,7 @@ public class Events implements Listener{
 			}
 		}
 		if(ply.isRequiredQuit()){
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> ply.restorePlayerData());
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, ply::restorePlayerData);
 			event.setRespawnLocation(ply.getQuitPos());
 			
 			ply.setRequiredQuit(false);
@@ -187,6 +186,7 @@ public class Events implements Listener{
 		ply.saveClaimedRewards();
 	}
 	
+	@SuppressWarnings("Convert2MethodRef")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerConnect(PlayerJoinEvent event){
 		pdata.addMinigamePlayer(event.getPlayer());
@@ -199,7 +199,7 @@ public class Events implements Listener{
 			ply.setQuitPos(floc);
 			
 			if(!ply.getPlayer().isDead() && ply.isRequiredQuit()){
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> ply.restorePlayerData());
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin,ply::restorePlayerData);
 				ply.teleport(ply.getQuitPos());
 				
 				ply.setRequiredQuit(false);
@@ -563,20 +563,26 @@ public class Events implements Listener{
 				MenuItem item = ply.getMenu().getClicked(event.getRawSlot());
 				if(item != null){
 					ItemStack disItem = null;
-					if(event.getClick() == ClickType.LEFT){
-						if(event.getCursor().getType() != Material.AIR)
-							disItem = item.onClickWithItem(event.getCursor());
-						else
-							disItem = item.onClick();
+					switch (event.getClick()) {
+						case LEFT:
+							if (event.getCursor().getType() != Material.AIR)
+								disItem = item.onClickWithItem(event.getCursor());
+							else
+								disItem = item.onClick();
+							break;
+						case RIGHT:
+							disItem = item.onRightClick();
+							break;
+						case SHIFT_LEFT:
+							disItem = item.onShiftClick();
+							break;
+						case SHIFT_RIGHT:
+							disItem = item.onShiftRightClick();
+							break;
+						case DOUBLE_CLICK:
+							disItem = item.onDoubleClick();
+							break;
 					}
-					else if(event.getClick() == ClickType.RIGHT)
-						disItem = item.onRightClick();
-					else if(event.getClick() == ClickType.SHIFT_LEFT)
-						disItem = item.onShiftClick();
-					else if(event.getClick() == ClickType.SHIFT_RIGHT)
-						disItem = item.onShiftRightClick();
-					else if(event.getClick() == ClickType.DOUBLE_CLICK)
-						disItem = item.onDoubleClick();
 					
 					if(item != null)
 						event.setCurrentItem(disItem);

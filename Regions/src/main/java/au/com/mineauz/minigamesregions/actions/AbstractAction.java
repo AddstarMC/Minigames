@@ -5,9 +5,13 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.script.ScriptObject;
+import au.com.mineauz.minigames.script.ScriptReference;
+import com.google.common.collect.ImmutableSet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created for use for the Add5tar MC Minecraft server
@@ -47,5 +51,35 @@ public abstract class AbstractAction extends ActionInterface {
         } else{
             Minigames.plugin.pdata.endMinigame(player);
         }
+    }
+
+    protected ScriptObject createScriptObject(MinigamePlayer player,ScriptObject object){
+        ScriptObject base = new ScriptObject() {
+            @Override
+            public Set<String> getKeys() {
+                return ImmutableSet.of("player", "area", "minigame", "team");
+            }
+
+            @Override
+            public String getAsString() {
+                return "";
+            }
+
+            @Override
+            public ScriptReference get(String name) {
+                if (name.equalsIgnoreCase("player")) {
+                    return player;
+                } else if (name.equalsIgnoreCase("area")) {
+                    return object;
+                } else if (name.equalsIgnoreCase("minigame")) {
+                    return player.getMinigame();
+                } else if (name.equalsIgnoreCase("team")) {
+                    return player.getTeam();
+                }
+
+                return null;
+            }
+        };
+        return base;
     }
 }

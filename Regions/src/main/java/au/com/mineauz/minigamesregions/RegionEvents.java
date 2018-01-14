@@ -1,6 +1,7 @@
 package au.com.mineauz.minigamesregions;
 
 import au.com.mineauz.minigames.events.*;
+import au.com.mineauz.minigamesregions.executors.BaseExecutor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -30,8 +31,6 @@ import au.com.mineauz.minigamesregions.events.EnterRegionEvent;
 import au.com.mineauz.minigamesregions.events.LeaveRegionEvent;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
-import au.com.mineauz.minigamesregions.executors.RegionExecutor;
-import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 
 public class RegionEvents implements Listener{
 	
@@ -130,7 +129,7 @@ public class RegionEvents implements Listener{
         });
 		if(event.getMinigame().getPlayers().size() == 0){
 			for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
-				for(RegionExecutor ex : region.getExecutors()){
+				for(BaseExecutor ex : region.getExecutors()){
 					if(ex.getTrigger().getName().equalsIgnoreCase("TICK")){
 						region.startTickTask();
 						break;
@@ -159,11 +158,11 @@ public class RegionEvents implements Listener{
 		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
 			node.execute(Triggers.getTrigger("GAME_QUIT"), event.getMinigamePlayer());
 			if(event.getMinigame().getPlayers().size() > 1){
-				for(NodeExecutor exec : node.getExecutors())
+				for(BaseExecutor exec : node.getExecutors())
 					exec.removeTrigger(event.getMinigamePlayer());
 			}
 			else{
-				for(NodeExecutor exec : node.getExecutors())
+				for(BaseExecutor exec : node.getExecutors())
 					exec.clearTriggers();
 				node.setEnabled(true);
 			}
@@ -172,11 +171,11 @@ public class RegionEvents implements Listener{
 			if(region.playerInRegion(ply))
 				region.execute(Triggers.getTrigger("GAME_QUIT"), event.getMinigamePlayer());
 			if(event.getMinigame().getPlayers().size() > 1){
-				for(RegionExecutor exec : region.getExecutors())
+				for(BaseExecutor exec : region.getExecutors())
 					exec.removeTrigger(event.getMinigamePlayer());
 			}
 			else{
-				for(RegionExecutor exec : region.getExecutors()){
+				for(BaseExecutor exec : region.getExecutors()){
 					exec.clearTriggers();
 				}
 				region.removeTickTask();
@@ -196,11 +195,11 @@ public class RegionEvents implements Listener{
 		}
 		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
 			node.execute(Triggers.getTrigger("GAME_END"), null);
-			for(NodeExecutor exec : node.getExecutors())
+			for(BaseExecutor exec : node.getExecutors())
 				exec.clearTriggers();
 		}
 		for(Region region : RegionModule.getMinigameModule(event.getMinigame()).getRegions()){
-			for(RegionExecutor exec : region.getExecutors())
+			for(BaseExecutor exec : region.getExecutors())
 				exec.clearTriggers();
 		}
 	}

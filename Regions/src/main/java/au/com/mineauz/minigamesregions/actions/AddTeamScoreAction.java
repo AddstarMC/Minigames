@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.minigame.Team;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 

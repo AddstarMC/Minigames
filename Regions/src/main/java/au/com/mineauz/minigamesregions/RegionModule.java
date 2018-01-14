@@ -79,7 +79,7 @@ public class RegionModule extends MinigameModule {
 			}
 			
 			int c = 0;
-			for(RegionExecutor ex : r.getExecutors()){
+			for(BaseExecutor ex : r.getExecutors()){
 				String path = getMinigame() + ".regions." + name + ".executors." + c;
 				if(ex.getTrigger() !=null ) {
 					config.set(path + ".trigger", ex.getTrigger().getName());
@@ -115,7 +115,7 @@ public class RegionModule extends MinigameModule {
 			}
 			
 			int c = 0;
-			for(NodeExecutor ex : n.getExecutors()){
+			for(BaseExecutor ex : n.getExecutors()){
 				String path = getMinigame() + ".nodes." + name + ".executors." + c;
 				config.set(path + ".trigger", ex.getTrigger().getName());
 				
@@ -212,13 +212,15 @@ public class RegionModule extends MinigameModule {
 		if(config.contains(path + ".actions")){
 			for(String a : config.getConfigurationSection(path + ".actions").getKeys(false)){
 				ActionInterface ai = Actions.getActionByName(config.getString(path + ".actions." + a + ".type"));
-				ai.loadArguments(config, path + ".actions." + a + ".arguments");
+                assert ai != null;
+                ai.loadArguments(config, path + ".actions." + a + ".arguments");
 				rex.addAction(ai);
 			}
 		}
 		if(config.contains(path + ".conditions")){
 			for(String c : config.getConfigurationSection(path + ".conditions").getKeys(false)){
 				ConditionInterface ci = Conditions.getConditionByName(config.getString(path + ".conditions." + c + ".type"));
+				assert ci != null;
 				ci.loadArguments(config, path + ".conditions." + c + ".arguments");
 				rex.addCondition(ci);
 			}

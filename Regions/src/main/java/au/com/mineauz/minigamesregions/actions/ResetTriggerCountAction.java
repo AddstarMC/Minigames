@@ -2,14 +2,13 @@ package au.com.mineauz.minigamesregions.actions;
 
 import java.util.Map;
 
+import au.com.mineauz.minigamesregions.executors.BaseExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.Region;
-import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 
 public class ResetTriggerCountAction extends ActionInterface{
 
@@ -40,14 +39,14 @@ public class ResetTriggerCountAction extends ActionInterface{
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Region region) {
 		debug(player,region);
-		for(RegionExecutor ex : region.getExecutors())
+		for(BaseExecutor ex : region.getExecutors())
 			ex.setTriggerCount(0);
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player, Node node) {
 		debug(player,node);
-		for(NodeExecutor ex : node.getExecutors())
+		for(BaseExecutor ex : node.getExecutors())
 			ex.setTriggerCount(0);
 	}
 

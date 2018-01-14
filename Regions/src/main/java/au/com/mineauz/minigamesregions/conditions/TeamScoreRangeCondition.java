@@ -63,11 +63,11 @@ public class TeamScoreRangeCondition extends ConditionInterface {
 		return checkCondition(player);
 	}
 	
-	private boolean checkCondition(MinigamePlayer player){
+	private boolean checkCondition(MinigamePlayer player) {
 		if (player == null || !player.isInMinigame()) {
 			return false;
 		}
-		
+
 		Team team;
 		if (player.getTeam() != null && this.team.getFlag().equals("NONE")) {
 			team = player.getTeam();
@@ -77,12 +77,8 @@ public class TeamScoreRangeCondition extends ConditionInterface {
 		} else {
 			team = null;
 		}
-		
-		if (team != null) {
-			return team.getScore() >= min.getFlag() && team.getScore() <= max.getFlag();
-		} else {
-			return false;
-		}
+
+		return team != null && team.getScore() >= min.getFlag() && team.getScore() <= max.getFlag();
 	}
 
 	@Override

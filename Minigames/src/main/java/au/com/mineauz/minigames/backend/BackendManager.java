@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -48,12 +47,13 @@ public class BackendManager {
 	}
 	
 	private Backend makeBackend(String type) {
-		if (type.equals("sqlite")) {
-			return new SQLiteBackend(logger);
-		} else if (type.equals("mysql")) {
-			return new MySQLBackend(logger);
-		} else {
-			return null;
+		switch (type) {
+			case "sqlite":
+				return new SQLiteBackend(logger);
+			case "mysql":
+				return new MySQLBackend(logger);
+			default:
+				return null;
 		}
 	}
 	

@@ -32,20 +32,14 @@ public class MultiplayerBets {
 		}
 	}
 	
-	public boolean canBet(MinigamePlayer player, ItemStack item){
-		if(bet.containsKey(player)){
-			return false;
-		}
+	public boolean canBet(MinigamePlayer player, ItemStack item) {
+        return !bet.containsKey(player) && !(!bet.isEmpty() && betValue(item.getType()) != highestBet());
 
-        return !(!bet.isEmpty() && betValue(item.getType()) != highestBet());
     }
 	
-	public boolean canBet(MinigamePlayer player, Double money){
-		if(moneyBet.containsKey(player)){
-			return false;
-		}
+	public boolean canBet(MinigamePlayer player, Double money) {
+        return !moneyBet.containsKey(player) && !(greatestBet != 0 && money != greatestBet);
 
-        return !(greatestBet != 0 && money != greatestBet);
     }
 	
 	public ItemStack[] claimBets(){
@@ -89,15 +83,14 @@ public class MultiplayerBets {
 	}
 	
 	public int betValue(Material material){
-		if(material == Material.DIAMOND){
-			return 3;
-		}
-		else if(material == Material.GOLD_INGOT){
-			return 2;
-		}
-		else if(material == Material.IRON_INGOT){
-			return 1;
-		}
+        switch (material) {
+            case DIAMOND:
+                return 3;
+            case GOLD_INGOT:
+                return 2;
+            case IRON_INGOT:
+                return 1;
+        }
 		return 0;
 	}
 	

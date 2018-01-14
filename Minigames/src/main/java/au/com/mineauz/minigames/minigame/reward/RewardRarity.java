@@ -18,23 +18,27 @@ public enum RewardRarity {
 	}
 	
 	public RewardRarity getPreviousRarity(){
-		if(this == VERY_COMMON)
-			return COMMON;
-		else if(this == COMMON)
-			return NORMAL;
-		else if(this == NORMAL)
-			return RARE;
+        switch (this) {
+            case VERY_COMMON:
+                return COMMON;
+            case COMMON:
+                return NORMAL;
+            case NORMAL:
+                return RARE;
+        }
 		
 		return VERY_RARE;
 	}
 	
 	public RewardRarity getNextRarity(){
-		if(this == VERY_RARE)
-			return RARE;
-		else if(this == RARE)
-			return NORMAL;
-		else if(this == NORMAL)
-			return COMMON;
+        switch (this) {
+            case VERY_RARE:
+                return RARE;
+            case RARE:
+                return NORMAL;
+            case NORMAL:
+                return COMMON;
+        }
 		
 		return VERY_COMMON;
 	}

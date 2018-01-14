@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import au.com.mineauz.minigamesregions.executors.BaseExecutor;
 import org.bukkit.Location;
 
 import com.google.common.collect.ImmutableSet;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.script.ScriptWrapper;
@@ -18,7 +18,7 @@ import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 
-public class Node implements ScriptObject {
+public class Node extends BaseObject {
 	
 	private String name;
 	private Location loc;
@@ -41,33 +41,7 @@ public class Node implements ScriptObject {
 	public void setLocation(Location loc) {
 		this.loc = loc.clone();
 	}
-	
-	public int addExecutor(Trigger trigger){
-		executors.add(new NodeExecutor(trigger));
-		return executors.size();
-	}
-	
-	public int addExecutor(NodeExecutor exec){
-		executors.add(exec);
-		return executors.size();
-	}
-	
-	public List<NodeExecutor> getExecutors(){
-		return executors;
-	}
-	
-	public void removeExecutor(int id){
-		if(executors.size() <= id){
-			executors.remove(id - 1);
-		}
-	}
-	
-	public void removeExecutor(NodeExecutor executor){
-		if(executors.contains(executor)){
-			executors.remove(executor);
-		}
-	}
-	
+
 	public void setEnabled(boolean enabled){
 		this.enabled = enabled;
 	}
@@ -75,7 +49,8 @@ public class Node implements ScriptObject {
 	public boolean getEnabled(){
 		return enabled;
 	}
-	
+
+	@Override
 	public void execute(Trigger trigger, MinigamePlayer player){
 		if(player != null && player.getMinigame() != null && player.getMinigame().isSpectator(player)) return;
 		if(player == null || player.getMinigame() == null)return;
@@ -90,8 +65,9 @@ public class Node implements ScriptObject {
 			execute(exec, player);
 		}
 	}
-	
-	public boolean checkConditions(NodeExecutor exec, MinigamePlayer player){
+
+	@Override
+	public boolean checkConditions(BaseExecutor exec, MinigamePlayer player){
 		for(ConditionInterface con : exec.getConditions()){
 			boolean c = con.checkNodeCondition(player, this);
 			if(con.isInverted())
@@ -102,8 +78,9 @@ public class Node implements ScriptObject {
 		}
 		return true;
 	}
-	
-	public void execute(NodeExecutor exec, MinigamePlayer player){
+
+	@Override
+	public void execute(BaseExecutor exec, MinigamePlayer player){
 		for(ActionInterface act : exec.getActions()){
 			if(!enabled && !act.getName().equalsIgnoreCase("SET_ENABLED")) continue;
 			act.executeNodeAction(player, this);

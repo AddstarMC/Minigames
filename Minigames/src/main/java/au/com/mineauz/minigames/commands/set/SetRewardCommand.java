@@ -90,7 +90,7 @@ public class SetRewardCommand implements ICommand{
 				try{
 					money = Double.parseDouble(args[0].replace("$", ""));
 				}
-				catch(NumberFormatException e){}
+				catch(NumberFormatException ignored){}
 			}
 			else{
 				item = MinigameUtils.stringToItemStack(args[0], quantity);

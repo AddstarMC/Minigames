@@ -51,11 +51,8 @@ public class HasFlagCondition extends ConditionInterface {
 	}
 	
 	private boolean checkCondition(MinigamePlayer player) {
-		if (player == null) {
-			return false;
-		}
-		return player.hasFlag(flagName.getFlag());
-	}
+        return player != null && player.hasFlag(flagName.getFlag());
+    }
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {

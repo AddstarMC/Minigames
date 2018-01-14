@@ -118,16 +118,12 @@ public class BaseExecutor {
     public boolean canBeTriggered(MinigamePlayer player){
         if(triggerCount != 0){
             if(!triggerPerPlayer){
-                if(triggers.get("public") != null &&
-                        triggers.get("public") >= triggerCount){
-                    return false;
-                }
+                return triggers.get("public") == null ||
+                        triggers.get("public") < triggerCount;
             }
             else{
-                if(triggers.get(player.getUUID().toString()) != null &&
-                        triggers.get(player.getUUID().toString()) >= triggerCount){
-                    return false;
-                }
+                return triggers.get(player.getUUID().toString()) == null ||
+                        triggers.get(player.getUUID().toString()) < triggerCount;
             }
         }
         return true;

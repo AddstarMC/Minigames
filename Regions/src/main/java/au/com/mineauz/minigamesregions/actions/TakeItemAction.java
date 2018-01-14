@@ -1,6 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -93,7 +94,7 @@ public class TakeItemAction extends ActionInterface{
 		if(remove)
 			player.getPlayer().getInventory().removeItem(matched);
 		else{
-			player.getPlayer().getInventory().getItem(slot).setAmount(matched.getAmount());
+			player.getPlayer().getInventory().getItem(slot).setAmount(Objects.requireNonNull(matched).getAmount());
 		}
 	}
 

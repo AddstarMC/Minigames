@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import au.com.mineauz.minigamesregions.BaseObject;
+import au.com.mineauz.minigamesregions.executors.BaseExecutor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -54,59 +56,47 @@ public class TriggerRandomAction extends ActionInterface{
 	public void executeRegionAction(MinigamePlayer player, Region region) {
 		debug(player,region);
 		List<RegionExecutor> exs = new ArrayList<>();
-		for(RegionExecutor ex : region.getExecutors()){
+		for(BaseExecutor ex : region.getExecutors()){
 			if(ex.getTrigger().getName().equalsIgnoreCase("RANDOM"))
-				exs.add(ex);
+				if(ex instanceof RegionExecutor) exs.add((RegionExecutor)ex);
 		}
 		Collections.shuffle(exs);
-		if(timesTriggered.getFlag() == 1){
-			if(region.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
-				region.execute(exs.get(0), player);
-		}
-		else{
-			for(int i = 0; i < timesTriggered.getFlag(); i++){
-				if(!randomPerTrigger.getFlag()){
-					if(i == timesTriggered.getFlag()) break;
-					if(region.checkConditions(exs.get(i), player) && exs.get(i).canBeTriggered(player))
-						region.execute(exs.get(i), player);
-				}
-				else{
-					if(region.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
-						region.execute(exs.get(0), player);
-					Collections.shuffle(exs);
-				}
-			}
-		}
+		processActions(region,player,exs);
 	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player, Node node) {
 		debug(player,node);
 		List<NodeExecutor> exs = new ArrayList<>();
-		for(NodeExecutor ex : node.getExecutors()){
+		for(BaseExecutor ex : node.getExecutors()){
 			if(ex.getTrigger().getName().equalsIgnoreCase("RANDOM"))
-				exs.add(ex);
+				if(ex instanceof NodeExecutor)exs.add((NodeExecutor)ex);
 		}
 		Collections.shuffle(exs);
+		processActions(node,player,exs);
+	}
+
+	private void processActions(BaseObject object, MinigamePlayer player, List<? extends BaseExecutor> exs){
 		if(timesTriggered.getFlag() == 1){
-			if(node.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
-				node.execute(exs.get(0), player);
+			if(object.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
+				object.execute(exs.get(0), player);
 		}
 		else{
 			for(int i = 0; i < timesTriggered.getFlag(); i++){
 				if(!randomPerTrigger.getFlag()){
 					if(i == timesTriggered.getFlag()) break;
-					if(node.checkConditions(exs.get(i), player) && exs.get(i).canBeTriggered(player))
-						node.execute(exs.get(i), player);
+					if(object.checkConditions(exs.get(i), player) && exs.get(i).canBeTriggered(player))
+						object.execute(exs.get(i), player);
 				}
 				else{
-					if(node.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
-						node.execute(exs.get(0), player);
+					if(object.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
+						object.execute(exs.get(0), player);
 					Collections.shuffle(exs);
 				}
 			}
 		}
 	}
+
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {

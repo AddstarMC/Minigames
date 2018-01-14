@@ -44,23 +44,17 @@ public class HasLoudOutCondition extends ConditionInterface {
 
     @Override
     public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-        if(player == null || !player.isInMinigame()) return false;
+        if (player == null || !player.isInMinigame()) return false;
         LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
-        if(lmod.hasLoadout(loadOutName.getFlag())) {
-            return player.getLoadout().getName(false).equals(lmod.getLoadout(loadOutName.getFlag()).getName(false));
-        }
-        return false;
+        return lmod.hasLoadout(loadOutName.getFlag()) && player.getLoadout().getName(false).equals(lmod.getLoadout(loadOutName.getFlag()).getName(false));
     }
 
 
     @Override
     public boolean checkNodeCondition(MinigamePlayer player, Node node) {
-        if(player == null || !player.isInMinigame()) return false;
+        if (player == null || !player.isInMinigame()) return false;
         LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
-        if(lmod.hasLoadout(loadOutName.getFlag())) {
-            return player.getLoadout().getName(false).equals(lmod.getLoadout(loadOutName.getFlag()).getName(false));
-        }
-        return false;
+        return lmod.hasLoadout(loadOutName.getFlag()) && player.getLoadout().getName(false).equals(lmod.getLoadout(loadOutName.getFlag()).getName(false));
     }
 
     @Override

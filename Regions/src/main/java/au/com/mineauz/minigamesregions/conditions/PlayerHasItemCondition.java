@@ -109,20 +109,25 @@ public class PlayerHasItemCondition extends ConditionInterface {
 			endSlot = searchItems.length;
 		} else {
 			searchItems = inventory.getContents();
-			
-			if (checkType == PositionType.HOTBAR) {
-				startSlot = 0;
-				endSlot = 9;
-			} else if (checkType == PositionType.MAIN) {
-				startSlot = 9;
-				endSlot = 36;
-			} else if (checkType == PositionType.SLOT) {
-				startSlot = slot.getFlag();
-				endSlot = startSlot + 1;
-			} else {
-				startSlot = 0;
-				endSlot = searchItems.length;
-			}
+
+            switch (checkType) {
+                case HOTBAR:
+                    startSlot = 0;
+                    endSlot = 9;
+                    break;
+                case MAIN:
+                    startSlot = 9;
+                    endSlot = 36;
+                    break;
+                case SLOT:
+                    startSlot = slot.getFlag();
+                    endSlot = startSlot + 1;
+                    break;
+                default:
+                    startSlot = 0;
+                    endSlot = searchItems.length;
+                    break;
+            }
 		}
 		
 		Material material = Material.getMaterial(type.getFlag());
@@ -186,31 +191,33 @@ public class PlayerHasItemCondition extends ConditionInterface {
 			return Pattern.compile(".*");
 		}
 		
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		int start = 0;
-		int index = 0;
-		
+		buildBuilder(name, buffer, start);
+		return Pattern.compile(buffer.toString());
+	}
+
+	static void buildBuilder(String string, StringBuilder builder, int start) {
+		int index;
 		while (true) {
-			index = name.indexOf('%', start);
+			index = string.indexOf('%', start);
 			// End of input, append the rest
 			if (index == -1) {
-				buffer.append(Pattern.quote(name.substring(start)));
+				builder.append(Pattern.quote(string.substring(start)));
 				break;
 			}
-			
+
 			// Append the start
-			buffer.append(Pattern.quote(name.substring(start, index)));
-			
+			builder.append(Pattern.quote(string.substring(start, index)));
+
 			// Append the wildcard code
-			buffer.append(".*?");
-			
+			builder.append(".*?");
+
 			// Move to next position
 			start = index + 1;
 		}
-		
-		return Pattern.compile(buffer.toString());
 	}
-	
+
 	private Pattern createLorePattern() {
 		String lore = this.lore.getFlag();
 		if (lore == null) {
@@ -219,29 +226,10 @@ public class PlayerHasItemCondition extends ConditionInterface {
 		
 		lore = lore.replace(';', '\n');
 		
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder builder = new StringBuilder();
 		int start = 0;
-		int index = 0;
-		
-		while (true) {
-			index = lore.indexOf('%', start);
-			// End of input, append the rest
-			if (index == -1) {
-				buffer.append(Pattern.quote(lore.substring(start)));
-				break;
-			}
-			
-			// Append the start
-			buffer.append(Pattern.quote(lore.substring(start, index)));
-			
-			// Append the wildcard code
-			buffer.append(".*?");
-			
-			// Move to next position
-			start = index + 1;
-		}
-		
-		return Pattern.compile(buffer.toString());
+		buildBuilder(lore, builder, start);
+		return Pattern.compile(builder.toString());
 	}
 
 	@Override

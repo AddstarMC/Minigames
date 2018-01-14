@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import au.com.mineauz.minigamesregions.executors.BaseExecutor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -13,7 +14,6 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.script.ScriptCollection;
-import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.script.ScriptWrapper;
@@ -23,11 +23,10 @@ import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 
-public class Region implements ScriptObject {
+public class Region extends BaseObject {
 	private String name;
 	private Location point1;
 	private Location point2;
-	private List<RegionExecutor> executors = new ArrayList<>();
 	private List<MinigamePlayer> players = new ArrayList<>();
 	private long taskDelay = 20;
 	private int taskID;
@@ -122,32 +121,8 @@ public class Region implements ScriptObject {
 		return players;
 	}
 	
-	public int addExecutor(Trigger trigger){
-		executors.add(new RegionExecutor(trigger));
-		return executors.size();
-	}
-	
-	public int addExecutor(RegionExecutor exec){
-		executors.add(exec);
-		return executors.size();
-	}
-	
-	public List<RegionExecutor> getExecutors(){
-		return executors;
-	}
-	
-	public void removeExecutor(int id){
-		if(executors.size() <= id){
-			executors.remove(id - 1);
-		}
-	}
-	
-	public void removeExecutor(RegionExecutor executor){
-		if(executors.contains(executor)){
-			executors.remove(executor);
-		}
-	}
-	
+
+
 	public void changeTickDelay(long delay){
 		removeTickTask();
 		taskDelay = delay;
@@ -190,10 +165,10 @@ public class Region implements ScriptObject {
 	public void execute(Trigger trigger, MinigamePlayer player){
 		if(player != null && player.getMinigame() != null && player.getMinigame().isSpectator(player)) return;
 		List<RegionExecutor> toExecute = new ArrayList<>();
-		for(RegionExecutor exec : executors){
+		for(BaseExecutor exec : executors){
 			if(exec.getTrigger() == trigger){
 				if(checkConditions(exec, player) && exec.canBeTriggered(player))
-					toExecute.add(exec);
+					if(exec instanceof RegionExecutor)toExecute.add((RegionExecutor) exec);
 			}
 		}
 		for(RegionExecutor exec : toExecute){
@@ -201,7 +176,7 @@ public class Region implements ScriptObject {
 		}
 	}
 	
-	public boolean checkConditions(RegionExecutor exec, MinigamePlayer player){
+	public boolean checkConditions(BaseExecutor exec, MinigamePlayer player){
 		for(ConditionInterface con : exec.getConditions()){
 			boolean c = con.checkRegionCondition(player, this);
 			if(con.isInverted())
@@ -213,7 +188,7 @@ public class Region implements ScriptObject {
 		return true;
 	}
 	
-	public void execute(RegionExecutor exec, MinigamePlayer player){
+	public void execute(BaseExecutor exec, MinigamePlayer player){
 		for(ActionInterface act : exec.getActions()){
 			if(!enabled && !act.getName().equalsIgnoreCase("SET_ENABLED")) continue;
 			act.executeRegionAction(player, this);

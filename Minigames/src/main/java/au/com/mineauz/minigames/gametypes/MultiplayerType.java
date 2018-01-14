@@ -387,13 +387,7 @@ public class MultiplayerType extends MinigameTypeBase{
 											event.getMinigame().getName(true)), "error");
 								}
 								StringBuilder scores = new StringBuilder();
-								int c = 1;
-								for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
-									scores.append(t.getChatColor().toString()).append(t.getScore());
-									if(c != TeamsModule.getMinigameModule(mgm).getTeams().size())
-										scores.append(ChatColor.WHITE).append(" : ");
-									c++;
-								}
+								buildSCoreString(mgm, scores, 1);
 								ply.sendMessage(MinigameUtils.getLang("minigame.info.score") + " " + scores);
 							}
 						}
@@ -411,13 +405,7 @@ public class MultiplayerType extends MinigameTypeBase{
 							}
 							
 							StringBuilder scores = new StringBuilder();
-							int c = 1;
-							for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
-								scores.append(t.getChatColor().toString()).append(t.getScore());
-								if(c != TeamsModule.getMinigameModule(mgm).getTeams().size())
-									scores.append(ChatColor.WHITE).append(" : ");
-								c++;
-							}
+							buildSCoreString(mgm, scores, 1);
 							plugin.getServer().broadcastMessage(MinigameUtils.getLang("minigame.info.score") + " " + scores);
 						}
 					}
@@ -452,6 +440,15 @@ public class MultiplayerType extends MinigameTypeBase{
 				pdata.endMinigame(event.getMinigame(), winners, losers);
 			}
 		}
+	}
+
+	private void buildSCoreString(Minigame mgm, StringBuilder scores, int index) {
+		for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
+            scores.append(t.getChatColor().toString()).append(t.getScore());
+            if(index != TeamsModule.getMinigameModule(mgm).getTeams().size())
+                scores.append(ChatColor.WHITE).append(" : ");
+			index++;
+        }
 	}
 
 }

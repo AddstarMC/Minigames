@@ -101,7 +101,7 @@ public abstract class Backend {
 	/**
 	 * Performs a conversion from a previous format
 	 * @param notifier A notifier for progress updates
-	 * @returns boolean True if the conversion succeeded
+	 * @return boolean True if the conversion succeeded
 	 */
 	public abstract boolean doConversion(ExportNotifier notifier);
 }

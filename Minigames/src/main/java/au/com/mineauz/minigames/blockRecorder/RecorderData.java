@@ -498,21 +498,24 @@ public class RecorderData implements Listener{
 					bd = new BlockData(state, null);
 					
 					if(args.containsKey("items")){
-						if(state.getType() == Material.DISPENSER || state.getType() == Material.DROPPER){
-							items = new ItemStack[InventoryType.DISPENSER.getDefaultSize()];
-						}
-						else if(state.getType() == Material.HOPPER){
-							items = new ItemStack[InventoryType.HOPPER.getDefaultSize()];
-						}
-						else if(state.getType() == Material.FURNACE){
-							items = new ItemStack[InventoryType.FURNACE.getDefaultSize()];
-						}
-						else if(state.getType() == Material.BREWING_STAND){
-							items = new ItemStack[InventoryType.BREWING.getDefaultSize()];
-						}
-						else{
-							items = new ItemStack[InventoryType.CHEST.getDefaultSize()];
-						}
+                        switch (state.getType()) {
+                            case DISPENSER:
+                            case DROPPER:
+                                items = new ItemStack[InventoryType.DISPENSER.getDefaultSize()];
+                                break;
+                            case HOPPER:
+                                items = new ItemStack[InventoryType.HOPPER.getDefaultSize()];
+                                break;
+                            case FURNACE:
+                                items = new ItemStack[InventoryType.FURNACE.getDefaultSize()];
+                                break;
+                            case BREWING_STAND:
+                                items = new ItemStack[InventoryType.BREWING.getDefaultSize()];
+                                break;
+                            default:
+                                items = new ItemStack[InventoryType.CHEST.getDefaultSize()];
+                                break;
+                        }
 						
 						sitems = args.get("items").split("\\)\\(");
 						

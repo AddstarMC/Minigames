@@ -7,7 +7,6 @@ import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
@@ -102,14 +101,10 @@ public final class MinigameStats {
 	 * @return True if a stat was removed
 	 */
 	public static boolean removeStat(String name) {
-		MinigameStat stat = stats.get(name.toLowerCase());
-		
-		if (stat instanceof DynamicMinigameStat) {
-			return stats.remove(name.toLowerCase()) != null;
-		} else {
-			return false;
-		}
-	}
+        MinigameStat stat = stats.get(name.toLowerCase());
+
+        return stat instanceof DynamicMinigameStat && stats.remove(name.toLowerCase()) != null;
+    }
 	
 	/**
 	 * @return Returns an unmodifiable map of all registered stats

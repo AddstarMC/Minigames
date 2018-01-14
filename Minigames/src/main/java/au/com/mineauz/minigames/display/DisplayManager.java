@@ -183,7 +183,7 @@ public class DisplayManager {
 	
 	private void enableRefreshTask() {
 		if (refreshTask == null) {
-			refreshTask = Bukkit.getScheduler().runTaskTimer(Minigames.plugin, () -> doRefreshAll(), 1, 1);
+			refreshTask = Bukkit.getScheduler().runTaskTimer(Minigames.plugin, this::doRefreshAll, 1, 1);
 		}
 	}
 	

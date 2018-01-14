@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>au.com.mineauz</groupId>
   <artifactId>MinigamesProject</artifactId>
-  <version>1.12.1-SNAPSHOT</version>
+  <version>1.13.0-ALPHA</version>
   <packaging>pom</packaging>
   <name>Minigames-Project</name>
   <url>http://dev.bukkit.org/server-mods/minigames/</url>
@@ -17,6 +17,7 @@
     <build.number />
     <plugin.version>${project.version}-${build.number}</plugin.version>
     <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+    <spigot.version>1.12.2-R0.1-SNAPSHOT</spigot.version>
   </properties>
   <developers>
     <developer>
@@ -83,7 +84,7 @@
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
-      <version>1.12.1-R0.1-SNAPSHOT</version>
+      <version>${spigot.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

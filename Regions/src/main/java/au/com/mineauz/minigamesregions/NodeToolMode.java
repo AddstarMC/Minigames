@@ -2,6 +2,7 @@ package au.com.mineauz.minigamesregions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,7 +11,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
@@ -102,7 +102,7 @@ public class NodeToolMode implements ToolMode {
 	public void onLeftClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEvent event) {
 		if (event.getClickedBlock() != null) {
 			RegionModule mod = RegionModule.getMinigameModule(minigame);
-			String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
+			String name = Objects.requireNonNull(MinigameUtils.getMinigameTool(player)).getSetting("Node");
 			
 			Location loc = event.getClickedBlock().getLocation().add(0.5, 0.5, 0.5);
 			Node node = mod.getNode(name);
@@ -121,7 +121,7 @@ public class NodeToolMode implements ToolMode {
 	@Override
 	public void onRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEvent event) {
 		RegionModule mod = RegionModule.getMinigameModule(minigame);
-		String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
+		String name = Objects.requireNonNull(MinigameUtils.getMinigameTool(player)).getSetting("Node");
 		
 		Node node = mod.getNode(name);
 		if (node == null) {
@@ -138,7 +138,7 @@ public class NodeToolMode implements ToolMode {
 	@Override
 	public void select(MinigamePlayer player, Minigame minigame, Team team) {
 		RegionModule mod = RegionModule.getMinigameModule(minigame);
-		String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
+		String name = Objects.requireNonNull(MinigameUtils.getMinigameTool(player)).getSetting("Node");
 		if(mod.hasNode(name)){
 			Main.getPlugin().getDisplayManager().show(mod.getNode(name), player);
 			player.sendMessage("Selected node '" + name + "' visually.", null);
@@ -151,7 +151,7 @@ public class NodeToolMode implements ToolMode {
 	@Override
 	public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
 		RegionModule mod = RegionModule.getMinigameModule(minigame);
-		String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
+		String name = Objects.requireNonNull(MinigameUtils.getMinigameTool(player)).getSetting("Node");
 		if(mod.hasNode(name)){
 			Main.getPlugin().getDisplayManager().hide(mod.getNode(name), player);
 			player.sendMessage("Deselected node '" + name + "'", null);

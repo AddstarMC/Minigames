@@ -137,7 +137,7 @@ public class PlayerData {
 				
 				//Hide Spectators
 				for(MinigamePlayer pl : minigame.getSpectators()){
-					player.getPlayer().hidePlayer(pl.getPlayer());
+					player.getPlayer().hidePlayer(plugin,pl.getPlayer());
 				}
 				
 				if(minigame.getPlayers().size() == 1){
@@ -237,7 +237,7 @@ public class PlayerData {
 				player.getPlayer().setAllowFlight(true);
 			}
 			for(MinigamePlayer pl : minigame.getPlayers()){
-				pl.getPlayer().hidePlayer(player.getPlayer());
+				pl.getPlayer().hidePlayer(plugin,player.getPlayer());
 			}
 			
 			player.getPlayer().setScoreboard(minigame.getScoreboardManager());
@@ -510,7 +510,7 @@ public class PlayerData {
 				minigame.getScoreboardManager().resetScores(player.getName());
 				
 				for(MinigamePlayer pl : minigame.getSpectators()){
-					player.getPlayer().showPlayer(pl.getPlayer());
+					player.getPlayer().showPlayer(plugin,pl.getPlayer());
 				}
 				
 				if(minigame.getPlayers().size() == 0 && !minigame.isRegenerating()){
@@ -547,7 +547,7 @@ public class PlayerData {
 				minigame.removeSpectator(player);
 
 				for(MinigamePlayer pl : minigame.getPlayers()){
-					pl.getPlayer().showPlayer(player.getPlayer());
+					pl.getPlayer().showPlayer(plugin,player.getPlayer());
 				}
 				
 				player.sendMessage(MinigameUtils.formStr("player.spectate.quit.plyMsg", minigame.getName(true)), "error");
@@ -720,7 +720,7 @@ public class PlayerData {
 					MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getDisplayName(minigame.usePlayerDisplayNames()), minigame.getName(true)) + ". " + score, minigame, ChatColor.GREEN);
 				} else if (winners.size() > 1) {
 					StringBuilder win = new StringBuilder();
-					winners.sort((o1, o2) -> Integer.valueOf(o1.getScore()).compareTo(o2.getScore()));
+					winners.sort(Comparator.comparingInt(MinigamePlayer::getScore));
 
 					for (MinigamePlayer pl : winners) {
 						if (winners.indexOf(pl) < 2) {

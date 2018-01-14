@@ -86,22 +86,24 @@ public class FloorDegenerator{
 	
 	public void startDegeneration(){
 		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
-            if(mgm.getDegenType().equals("inward")){
-                degenerateSide(xSideNeg1, xSideNeg2);
-                degenerateSide(xSidePos1, xSidePos2);
-                degenerateSide(zSideNeg1, zSideNeg2);
-                degenerateSide(zSidePos1, zSidePos2);
+            switch (mgm.getDegenType()) {
+                case "inward":
+                    degenerateSide(xSideNeg1, xSideNeg2);
+                    degenerateSide(xSidePos1, xSidePos2);
+                    degenerateSide(zSideNeg1, zSideNeg2);
+                    degenerateSide(zSidePos1, zSidePos2);
 
-                incrementSide();
-                if(xSideNeg1.getZ() >= xSidePos1.getZ() || zSideNeg1.getX() >= zSidePos1.getX()){
-                    stopDegenerator();
-                }
-            }
-            else if(mgm.getDegenType().equals("random")){
-                degenerateRandom(bottomCorner, topCorner, mgm.getDegenRandomChance());
-            }
-            else if(mgm.getDegenType().equals("circle")){
-                degenerateCircle(bottomCorner, topCorner);
+                    incrementSide();
+                    if (xSideNeg1.getZ() >= xSidePos1.getZ() || zSideNeg1.getX() >= zSidePos1.getX()) {
+                        stopDegenerator();
+                    }
+                    break;
+                case "random":
+                    degenerateRandom(bottomCorner, topCorner, mgm.getDegenRandomChance());
+                    break;
+                case "circle":
+                    degenerateCircle(bottomCorner, topCorner);
+                    break;
             }
         }, timeDelay * 20, timeDelay * 20);
 	}

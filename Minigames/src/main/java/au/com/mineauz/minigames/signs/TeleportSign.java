@@ -38,15 +38,7 @@ public class TeleportSign implements MinigameSign {
 	@Override
 	public boolean signCreate(SignChangeEvent event) {
 		event.setLine(1, ChatColor.GREEN + "Teleport");
-		if(event.getLine(2).isEmpty()){
-			return false;
-		}
-		else{
-			if(!event.getLine(2).matches("-?[0-9]+,[0-9]+,-?[0-9]+")){
-				return false;
-			}
-		}
-		return true;
+		return !event.getLine(2).isEmpty() && event.getLine(2).matches("-?[0-9]+,[0-9]+,-?[0-9]+");
 	}
 
 	@Override

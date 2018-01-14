@@ -3,7 +3,7 @@
   <parent>
     <groupId>au.com.mineauz</groupId>
     <artifactId>MinigamesProject</artifactId>
-    <version>1.12.1-SNAPSHOT</version>
+    <version>1.13.0-ALPHA</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>Minigames-Regions</artifactId>
@@ -58,7 +58,7 @@
     </resources>
 
     <sourceDirectory>src/main/java</sourceDirectory>
-    <testSourceDirectory>src/test/java</testSourceDirectory>
+    <!--<testSourceDirectory>src/test/java</testSourceDirectory>-->
 
   </build>
 </project>

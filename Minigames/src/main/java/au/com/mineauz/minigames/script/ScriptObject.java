@@ -7,4 +7,5 @@ public interface ScriptObject extends ScriptReference {
 	Set<String> getKeys();
 	
 	String getAsString();
+
 }

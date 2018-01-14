@@ -45,14 +45,20 @@ public class MenuItemSaveLoadout extends MenuItem{
 		}
 		for(int i = 36; i < 40; i++){
 			if(items[i] != null){
-				if(i == 36)
-					loadout.addItem(items[i], 103);
-				else if(i == 37)
-					loadout.addItem(items[i], 102);
-				else if(i == 38)
-					loadout.addItem(items[i], 101);
-				else if(i == 39)
-					loadout.addItem(items[i], 100);
+                switch (i) {
+                    case 36:
+                        loadout.addItem(items[i], 103);
+                        break;
+                    case 37:
+                        loadout.addItem(items[i], 102);
+                        break;
+                    case 38:
+                        loadout.addItem(items[i], 101);
+                        break;
+                    case 39:
+                        loadout.addItem(items[i], 100);
+                        break;
+                }
 			}
 		}
 		getContainer().getViewer().sendMessage("Saved the '" + loadout.getName(false) + "' loadout.", null);

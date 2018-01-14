@@ -2,6 +2,7 @@ package au.com.mineauz.minigamesregions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
@@ -10,7 +11,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
@@ -103,7 +103,7 @@ public class RegionToolMode implements ToolMode {
 	public void onLeftClick(MinigamePlayer player, Minigame minigame,
 			Team team, PlayerInteractEvent event) {
 		if(player.hasSelection()){
-			String name = MinigameUtils.getMinigameTool(player).getSetting("Region");
+			String name = Objects.requireNonNull(MinigameUtils.getMinigameTool(player)).getSetting("Region");
 			RegionModule module = RegionModule.getMinigameModule(minigame);
 			Region region = module.getRegion(name);
 			
@@ -137,7 +137,7 @@ public class RegionToolMode implements ToolMode {
 	@Override
 	public void select(MinigamePlayer player, Minigame minigame, Team team) {
 		RegionModule mod = RegionModule.getMinigameModule(minigame);
-		String name = MinigameUtils.getMinigameTool(player).getSetting("Region");
+		String name = Objects.requireNonNull(MinigameUtils.getMinigameTool(player)).getSetting("Region");
 		if(mod.hasRegion(name)){
 			Main.getPlugin().getDisplayManager().show(mod.getRegion(name), player);
 			player.sendMessage("Selected the " + name + " region in " + minigame);
@@ -150,7 +150,7 @@ public class RegionToolMode implements ToolMode {
 	@Override
 	public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
 		RegionModule mod = RegionModule.getMinigameModule(minigame);
-		String name = MinigameUtils.getMinigameTool(player).getSetting("Region");
+		String name = Objects.requireNonNull(MinigameUtils.getMinigameTool(player)).getSetting("Region");
 		if(mod.hasRegion(name)){
 			Main.getPlugin().getDisplayManager().hide(mod.getRegion(name), player);
 			player.clearSelection();

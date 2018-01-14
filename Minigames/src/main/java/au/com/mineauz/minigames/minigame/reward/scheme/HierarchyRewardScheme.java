@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,7 +23,6 @@ import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemBack;
@@ -62,7 +62,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 	
 	@Override
 	public void addMenuItems(final Menu menu) {
-		menu.addItem(new MenuItemList("Comparison Type", Material.REDSTONE_COMPARATOR, getConfigurationTypeCallback(), Lists.transform(Arrays.asList(Comparison.values()), Functions.toStringFunction())));
+		menu.addItem(new MenuItemList("Comparison Type", Material.REDSTONE_COMPARATOR, getConfigurationTypeCallback(), Arrays.stream(Comparison.values()).map(Functions.toStringFunction()::apply).collect(Collectors.toList())));
 		menu.addItem(enableRewardsOnLoss.getMenuItem("Award On Loss", Material.LEVER, MinigameUtils.stringToList("When on, awards will still;be given to losing;players")));
 		menu.addItem(lossUsesSecondary.getMenuItem("Losers Get Secondary", Material.LEVER, MinigameUtils.stringToList("When on, the losers;will only get the;secondary reward")));
 		menu.addItem(new MenuItemNewLine());
@@ -286,15 +286,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 		@Override
 		// Open editor
 		public ItemStack onDoubleClick() {
-			MinigamePlayer ply = getContainer().getViewer();
-			ply.setNoClose(true);
-			ply.getPlayer().closeInventory();
-			ply.sendMessage("Enter the required value into chat, the menu will automatically reopen in 10s if nothing is entered.", null);
-			
-			ply.setManualEntry(this);
-			getContainer().startReopenTimer(10);
-			
-			return null;
+			return onClick();
 		}
 		
 		@Override

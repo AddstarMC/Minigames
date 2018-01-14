@@ -131,7 +131,7 @@ public class PlayerLoadout {
 	public List<PotionEffect> getAllPotionEffects(){
 		return potions;
 	}
-	
+	@SuppressWarnings("unchecked")
 	public void equiptLoadout(MinigamePlayer player){
 		player.getPlayer().getInventory().clear();
 		player.getPlayer().getInventory().setHelmet(null);
@@ -170,7 +170,8 @@ public class PlayerLoadout {
 		if(level != -1)
 			player.getPlayer().setLevel(level);
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	public void removeLoadout(MinigamePlayer player) {
 		for (Entry<Class<? extends LoadoutAddon>, Object> addonValue : addonValues.entrySet()) {
 			LoadoutAddon<Object> addon = LoadoutModule.getAddon(addonValue.getKey());
@@ -404,7 +405,8 @@ public class PlayerLoadout {
 	public <T> T getAddonValue(Class<? extends LoadoutAddon<T>> addon) {
 		return (T)addonValues.get(addon);
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	public void save(ConfigurationSection section) {
 		for(Integer slot : getItems())
 			section.set("items." + slot, getItem(slot));
@@ -447,7 +449,7 @@ public class PlayerLoadout {
 			addon.save(subSection, addonValue.getValue());
 		}
 	}
-	
+	@SuppressWarnings("unchecked")
 	public void load(ConfigurationSection section) {
 		if (section.contains("items")) {
 			ConfigurationSection itemSection = section.getConfigurationSection("items");

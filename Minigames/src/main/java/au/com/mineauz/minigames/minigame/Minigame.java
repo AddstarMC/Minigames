@@ -42,7 +42,6 @@ import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemAddFlag;
@@ -1276,18 +1275,20 @@ public class Minigame implements ScriptObject {
 		//TODO: Remove me after 1.7
 		if(cfg.contains(name + ".type")){
 			//Minigames.plugin.getLogger().warning("Your configuration files ("+cfg.getCurrentPath()+") are of an old version. They will not be supported past ver1.11");
-			if(cfg.getString(name + ".type").equals("TEAMS")) {
-				cfg.set(name + ".type", "MULTIPLAYER");
-				TeamsModule.getMinigameModule(this).addTeam(TeamColor.RED);
-				TeamsModule.getMinigameModule(this).addTeam(TeamColor.BLUE);
-			}
-			else if(cfg.getString(name + ".type").equals("FREE_FOR_ALL")){
-				cfg.set(name + ".type", "MULTIPLAYER");
-			}
-			else if(cfg.getString(name + ".type").equals("TREASURE_HUNT")){
-				cfg.set(name + ".type", "GLOBAL");
-				cfg.set(name + ".scoretype", "treasure_hunt");
-				cfg.set(name + ".timer", Minigames.plugin.getConfig().getInt("treasurehunt.findtime") * 60);
+			switch (cfg.getString(name + ".type")) {
+				case "TEAMS":
+					cfg.set(name + ".type", "MULTIPLAYER");
+					TeamsModule.getMinigameModule(this).addTeam(TeamColor.RED);
+					TeamsModule.getMinigameModule(this).addTeam(TeamColor.BLUE);
+					break;
+				case "FREE_FOR_ALL":
+					cfg.set(name + ".type", "MULTIPLAYER");
+					break;
+				case "TREASURE_HUNT":
+					cfg.set(name + ".type", "GLOBAL");
+					cfg.set(name + ".scoretype", "treasure_hunt");
+					cfg.set(name + ".timer", Minigames.plugin.getConfig().getInt("treasurehunt.findtime") * 60);
+					break;
 			}
 		}
 		//-----------------------------------------------
