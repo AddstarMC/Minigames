@@ -69,37 +69,36 @@ public class AddScoreAction extends ActionInterface {
 	}
 
 	private void checkScore(MinigamePlayer player){
-		if(player.getScore() >= player.getMinigame().getMaxScorePerPlayer()  || player.getTeam().getScore() >= player.getMinigame().getMaxScore()){
-			List<MinigamePlayer> w;
-			List<MinigamePlayer> l;
+		if(player.getScore() >= player.getMinigame().getMaxScorePerPlayer() ||
+				(player.getTeam() != null && player.getTeam().getScore() >= player.getMinigame().getMaxScore())){
+			List<MinigamePlayer> winners;
+			List<MinigamePlayer> losers;
 			if(player.getMinigame().isTeamGame()){
-				w = new ArrayList<>(player.getTeam().getPlayers());
-				l = new ArrayList<>(player.getMinigame().getPlayers().size() - player.getTeam().getPlayers().size());
-				for(Team t : TeamsModule.getMinigameModule(player.getMinigame()).getTeams()){
-					if(t != player.getTeam())
-						l.addAll(t.getPlayers());
+				winners = new ArrayList<>(player.getTeam().getPlayers());
+				losers = new ArrayList<>(player.getMinigame().getPlayers().size() - player.getTeam().getPlayers().size());
+				for(Team team : TeamsModule.getMinigameModule(player.getMinigame()).getTeams()){
+					if(team != player.getTeam())
+						losers.addAll(team.getPlayers());
 				}
 			}
 			else{
-				w = new ArrayList<>(1);
-				l = new ArrayList<>(player.getMinigame().getPlayers().size());
-				w.add(player);
-				l.addAll(player.getMinigame().getPlayers());
-				l.remove(player);
+				winners = new ArrayList<>(1);
+				losers = new ArrayList<>(player.getMinigame().getPlayers().size());
+				winners.add(player);
+				losers.addAll(player.getMinigame().getPlayers());
+				losers.remove(player);
 			}
-			Minigames.plugin.pdata.endMinigame(player.getMinigame(), w, l);
+			Minigames.plugin.pdata.endMinigame(player.getMinigame(), winners, losers);
 		}
 	}
 
 	@Override
-	public void saveArguments(FileConfiguration config,
-			String path) {
+	public void saveArguments(FileConfiguration config, String path) {
 		amount.saveValue(path, config);
 	}
 
 	@Override
-	public void loadArguments(FileConfiguration config,
-			String path) {
+	public void loadArguments(FileConfiguration config, String path) {
 		amount.loadValue(path, config);
 	}
 
