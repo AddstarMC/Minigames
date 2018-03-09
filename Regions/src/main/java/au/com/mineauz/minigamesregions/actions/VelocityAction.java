@@ -15,7 +15,7 @@ import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class VelocityAction extends ActionInterface{
+public class VelocityAction extends AbstractAction{
 	
 	private FloatFlag x = new FloatFlag(0f, "xv");
 	private FloatFlag y = new FloatFlag(5f, "yv");

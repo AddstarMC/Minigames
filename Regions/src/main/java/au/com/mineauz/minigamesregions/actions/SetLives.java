@@ -13,7 +13,7 @@ import java.util.Map;
  * Created for use for the Add5tar MC Minecraft server
  * Created by benjamincharlton on 6/11/2017.
  */
-public class SetLives extends ActionInterface {
+public class SetLives extends AbstractAction {
 
     private IntegerFlag amount = new IntegerFlag(1, "amount");
 

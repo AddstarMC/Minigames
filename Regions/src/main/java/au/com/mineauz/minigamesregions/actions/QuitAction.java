@@ -10,7 +10,7 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class QuitAction extends ActionInterface {
+public class QuitAction extends AbstractAction {
 
 	@Override
 	public String getName() {

@@ -24,7 +24,7 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.util.NullCommandSender;
 
-public class ExecuteCommandAction extends ActionInterface {
+public class ExecuteCommandAction extends AbstractAction {
 	
 	private StringFlag comd = new StringFlag("say Hello World!", "command");
 	private BooleanFlag silentExecute = new BooleanFlag(false, "silent");

@@ -20,7 +20,7 @@ import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class BroadcastAction extends ActionInterface{
+public class BroadcastAction extends AbstractAction{
 	
 	private StringFlag message = new StringFlag("Hello World", "message");
 	private BooleanFlag excludeExecutor = new BooleanFlag(false, "exludeExecutor");

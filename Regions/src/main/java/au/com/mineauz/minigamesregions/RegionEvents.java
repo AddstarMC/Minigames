@@ -369,25 +369,21 @@ public class RegionEvents implements Listener{
 		if(ply.isInMinigame()){
 			final Trigger trig = Triggers.getTrigger("ITEM_PICKUP");
 			
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					if (!ply.isInMinigame()) {
-						return;
-					}
-					
-					for(Node node : getRegionModule(ply.getMinigame()).getNodes()){
-						node.execute(trig, ply);
-					}
-					
-					for(Region region : getRegionModule(ply.getMinigame()).getRegions()){
-						if(region.hasPlayer(ply)){
-							region.execute(trig, ply);
-						}
-					}
-				}
-			});
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                if (!ply.isInMinigame()) {
+                    return;
+                }
+
+                for(Node node : getRegionModule(ply.getMinigame()).getNodes()){
+                    node.execute(trig, ply);
+                }
+
+                for(Region region : getRegionModule(ply.getMinigame()).getRegions()){
+                    if(region.hasPlayer(ply)){
+                        region.execute(trig, ply);
+                    }
+                }
+            });
 		}
 	}
 	
@@ -399,25 +395,21 @@ public class RegionEvents implements Listener{
 		if(ply.isInMinigame()){
 			final Trigger trig = Triggers.getTrigger("ITEM_DROP");
 			
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					if (!ply.isInMinigame()) {
-						return;
-					}
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                if (!ply.isInMinigame()) {
+                    return;
+                }
 
-					for(Node node : getRegionModule(ply.getMinigame()).getNodes()){
-						node.execute(trig, ply);
-					}
-					
-					for(Region region : getRegionModule(ply.getMinigame()).getRegions()){
-						if(region.hasPlayer(ply)){
-							region.execute(trig, ply);
-						}
-					}
-				}
-			});
+                for(Node node : getRegionModule(ply.getMinigame()).getNodes()){
+                    node.execute(trig, ply);
+                }
+
+                for(Region region : getRegionModule(ply.getMinigame()).getRegions()){
+                    if(region.hasPlayer(ply)){
+                        region.execute(trig, ply);
+                    }
+                }
+            });
 		}
 	}
 	

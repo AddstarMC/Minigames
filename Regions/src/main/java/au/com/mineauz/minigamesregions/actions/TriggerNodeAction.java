@@ -15,7 +15,7 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionModule;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
 
-public class TriggerNodeAction extends ActionInterface {
+public class TriggerNodeAction extends AbstractAction {
 	
 	private StringFlag node = new StringFlag("None", "node");
 

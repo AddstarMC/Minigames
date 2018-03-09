@@ -13,7 +13,7 @@ import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class FlightAction extends ActionInterface{
+public class FlightAction extends AbstractAction{
 	
 	private BooleanFlag setFly = new BooleanFlag(true, "setFlying");
 	private BooleanFlag startFly = new BooleanFlag(false, "startFly");

@@ -22,7 +22,7 @@ import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class PlaySoundAction extends ActionInterface {
+public class PlaySoundAction extends AbstractAction {
 	
 	private StringFlag sound = new StringFlag("ENTITY_PLAYER_LEVELUP", "sound");
 	private BooleanFlag priv = new BooleanFlag(true, "private");

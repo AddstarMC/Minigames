@@ -18,7 +18,7 @@ import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class MessageAction extends ActionInterface {
+public class MessageAction extends AbstractAction {
 	
 	private StringFlag msg = new StringFlag("Hello World", "message");
 

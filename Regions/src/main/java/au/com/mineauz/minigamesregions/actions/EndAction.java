@@ -56,7 +56,7 @@ public class EndAction extends AbstractAction {
 	
 	private void execute(MinigamePlayer player){
 		if(player == null || !player.isInMinigame()) return;
-		endGameWithWinner(player);
+		setWinnersLosers(player);
 	}
 
 	@Override

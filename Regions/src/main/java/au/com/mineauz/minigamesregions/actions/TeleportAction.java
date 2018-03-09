@@ -9,7 +9,7 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class TeleportAction extends ActionInterface{
+public class TeleportAction extends AbstractAction{
 
 	@Override
 	public String getName() {

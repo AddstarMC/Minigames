@@ -12,7 +12,7 @@ import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class HealAction extends ActionInterface{
+public class HealAction extends AbstractAction{
 	
 	private IntegerFlag heal = new IntegerFlag(1, "amount");
 

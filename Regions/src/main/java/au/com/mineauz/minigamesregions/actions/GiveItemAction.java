@@ -18,7 +18,7 @@ import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class GiveItemAction extends ActionInterface{
+public class GiveItemAction extends AbstractAction{
 	
 	private StringFlag type = new StringFlag("STONE", "type");
 	private IntegerFlag count = new IntegerFlag(1, "count");

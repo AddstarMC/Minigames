@@ -23,7 +23,7 @@ import au.com.mineauz.minigames.menu.MenuItemTime;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class ApplyPotionAction extends ActionInterface {
+public class ApplyPotionAction extends AbstractAction {
 	
 	private StringFlag type = new StringFlag("SPEED", "type");
 	private IntegerFlag dur = new IntegerFlag(60, "duration");

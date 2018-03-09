@@ -24,7 +24,7 @@ import java.util.Map;
  * Created for the AddstarMC
  * Created by Narimm on 10/10/2017.
  */
-public class SwitchTeamAction extends ActionInterface {
+public class SwitchTeamAction extends AbstractAction {
 
     private StringFlag teamto = new StringFlag("ALL", "To");
     private StringFlag teamfrom = new StringFlag("ALL", "From");

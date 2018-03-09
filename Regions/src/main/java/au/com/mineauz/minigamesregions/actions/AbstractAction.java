@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.script.ScriptObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,39 +15,36 @@ import java.util.List;
  * Created for use for the Add5tar MC Minecraft server
  * Created by benjamincharlton on 19/12/2017.
  */
-public abstract class AbstractAction extends ActionInterface {
+public abstract class AbstractAction implements ActionInterface {
 
-    protected void checkScore(MinigamePlayer player){
-        if(player.getMinigame().isTeamGame()){
-            if(player.getTeam().getScore() < player.getMinigame().getMaxScore())return;
-        }else {
-            if (player.getScore() < player.getMinigame().getMaxScorePerPlayer()) return;
+    public void debug(MinigamePlayer p, ScriptObject obj){
+        if (Minigames.plugin.isDebugging()){
+            Minigames.plugin.getLogger().info("Debug: Execute on Obj:" + String.valueOf(obj) + " as Action: " + String.valueOf(this) + " Player: " +String.valueOf(p));
         }
-        endGameWithWinner(player);
     }
-
-    protected void endGameWithWinner(MinigamePlayer player){
-        if(player.getMinigame().getType() != MinigameType.SINGLEPLAYER){
+    void setWinnersLosers(MinigamePlayer winner){
+        if(winner.getMinigame().getType() != MinigameType.SINGLEPLAYER){
             List<MinigamePlayer> w;
             List<MinigamePlayer> l;
-            if(player.getMinigame().isTeamGame()){
-                w = new ArrayList<>(player.getTeam().getPlayers());
-                l = new ArrayList<>(player.getMinigame().getPlayers().size() - player.getTeam().getPlayers().size());
-                for(Team t : TeamsModule.getMinigameModule(player.getMinigame()).getTeams()){
-                    if(t != player.getTeam())
+            if(winner.getMinigame().isTeamGame()){
+                w = new ArrayList<>(winner.getTeam().getPlayers());
+                l = new ArrayList<>(winner.getMinigame().getPlayers().size() - winner.getTeam().getPlayers().size());
+                for(Team t : TeamsModule.getMinigameModule(winner.getMinigame()).getTeams()){
+                    if(t != winner.getTeam())
                         l.addAll(t.getPlayers());
                 }
             }
             else{
                 w = new ArrayList<>(1);
-                l = new ArrayList<>(player.getMinigame().getPlayers().size());
-                w.add(player);
-                l.addAll(player.getMinigame().getPlayers());
-                l.remove(player);
+                l = new ArrayList<>(winner.getMinigame().getPlayers().size());
+                w.add(winner);
+                l.addAll(winner.getMinigame().getPlayers());
+                l.remove(winner);
             }
-            Minigames.plugin.pdata.endMinigame(player.getMinigame(), w, l);
+            Minigames.plugin.pdata.endMinigame(winner.getMinigame(), w, l);
         } else{
-            Minigames.plugin.pdata.endMinigame(player);
+            Minigames.plugin.pdata.endMinigame(winner);
         }
     }
+
 }
