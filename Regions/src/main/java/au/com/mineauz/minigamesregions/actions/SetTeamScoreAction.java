@@ -22,7 +22,7 @@ import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class SetTeamScoreAction extends AbstractAction {
+public class SetTeamScoreAction extends ScoreAction {
 	
 	private IntegerFlag score = new IntegerFlag(1, "amount");
 	private StringFlag team = new StringFlag("NONE", "team");
@@ -80,6 +80,7 @@ public class SetTeamScoreAction extends AbstractAction {
 		}
 		checkScore(player);
 	}
+
 
 	@Override
 	public void saveArguments(FileConfiguration config,

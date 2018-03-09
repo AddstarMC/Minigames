@@ -23,7 +23,7 @@ import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class AddTeamScoreAction extends AbstractAction {
+public class AddTeamScoreAction extends ScoreAction {
 	
 	private IntegerFlag score = new IntegerFlag(1, "amount");
 	private StringFlag team = new StringFlag("NONE", "team");

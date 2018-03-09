@@ -7,6 +7,7 @@ import java.util.Map;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.script.ScriptObject;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -18,8 +19,9 @@ import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.scoreboard.Score;
 
-public class AddScoreAction extends AbstractAction {
+public class AddScoreAction extends ScoreAction {
 	
 	private IntegerFlag amount = new IntegerFlag(1, "amount");
 
@@ -51,23 +53,25 @@ public class AddScoreAction extends AbstractAction {
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Node base) {
-		debug(player,base);
-		execute(player);
+		executeAction(player,base);
 	}
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Region base) {
-		debug(player,base);
-		execute(player);
+		executeAction(player,base);
+
+
 	}
 
-	public void execute(MinigamePlayer player){
+	private void executeAction(MinigamePlayer player, ScriptObject base){
+		debug(player,base);
+		debug(player,base);
 		if(player == null || !player.isInMinigame()) return;
 		player.addScore(amount.getFlag());
 		player.getMinigame().setScore(player, player.getScore());
 		checkScore(player);
-	}
 
+	}
 
 
 	@Override

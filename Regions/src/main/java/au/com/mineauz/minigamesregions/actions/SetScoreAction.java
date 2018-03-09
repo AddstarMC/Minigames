@@ -18,7 +18,7 @@ import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class SetScoreAction extends AbstractAction {
+public class SetScoreAction extends ScoreAction {
 	
 	private IntegerFlag amount = new IntegerFlag(1, "amount");
 
@@ -48,21 +48,22 @@ public class SetScoreAction extends AbstractAction {
 	}
 
 	@Override
-	public void executeNodeAction(MinigamePlayer player,Node node) {
-		executeAction(player);
-	}
-
-	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region) {
-		executeAction(player);
-	}
-
-	public void executeAction(MinigamePlayer player){
+	public void executeNodeAction(MinigamePlayer player,
+			Node node) {
 		if(player == null || !player.isInMinigame()) return;
 		player.setScore(amount.getFlag());
 		player.getMinigame().setScore(player, player.getScore());
 		checkScore(player);
 	}
+
+	@Override
+	public void executeRegionAction(MinigamePlayer player, Region region) {
+		if(player == null || !player.isInMinigame()) return;
+		player.setScore(amount.getFlag());
+		player.getMinigame().setScore(player, player.getScore());
+		checkScore(player);
+	}
+
 
 	@Override
 	public void saveArguments(FileConfiguration config,
