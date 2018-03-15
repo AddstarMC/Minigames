@@ -1,9 +1,12 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -73,14 +76,15 @@ public class PlaySoundAction extends AbstractAction {
 	
 	private void execute(MinigamePlayer player, Location loc){
 		if(player == null || !player.isInMinigame()) return;
-		if(priv.getFlag())
-			player.getPlayer().playSound(loc, 
-					Sound.valueOf(sound.getFlag()), 
-					vol.getFlag(), 
+		if(priv.getFlag()) {
+			player.getPlayer().playSound(loc,
+					getSound(sound.getFlag()),
+					vol.getFlag(),
 					pit.getFlag());
+		}
 		else
-			player.getPlayer().getWorld().playSound(loc, 
-					Sound.valueOf(sound.getFlag()), 
+			player.getPlayer().getWorld().playSound(loc,
+					getSound(sound.getFlag()),
 					vol.getFlag(), 
 					pit.getFlag());
 	}
@@ -153,6 +157,16 @@ public class PlaySoundAction extends AbstractAction {
 		}, 0.05, 0.1, 0d, 2d));
 		m.displayMenu(player);
 		return true;
+	}
+	private Sound getSound(String sound){
+		Sound result;
+		try{
+			 result = Sound.valueOf(sound);
+		}catch (IllegalArgumentException e){
+			Minigames.plugin.getLogger().warning("Bad Sound Config in Minigame Config : " + sound);
+			result =  Sound.ENTITY_PLAYER_BURP;
+		}
+		return result;
 	}
 
 }
