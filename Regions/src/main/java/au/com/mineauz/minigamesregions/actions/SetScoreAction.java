@@ -18,7 +18,7 @@ import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class SetScoreAction extends ActionInterface {
+public class SetScoreAction extends ScoreAction {
 	
 	private IntegerFlag amount = new IntegerFlag(1, "amount");
 
@@ -64,28 +64,7 @@ public class SetScoreAction extends ActionInterface {
 		checkScore(player);
 	}
 
-	private void checkScore(MinigamePlayer player){
-		if( player.getScore()  >= player.getMinigame().getMaxScorePerPlayer()|| player.getTeam().getScore() >= player.getMinigame().getMaxScore()){
-			List<MinigamePlayer> w;
-			List<MinigamePlayer> l;
-			if(player.getMinigame().isTeamGame()){
-				w = new ArrayList<>(player.getTeam().getPlayers());
-				l = new ArrayList<>(player.getMinigame().getPlayers().size() - player.getTeam().getPlayers().size());
-				for(Team t : TeamsModule.getMinigameModule(player.getMinigame()).getTeams()){
-					if(t != player.getTeam())
-						l.addAll(t.getPlayers());
-				}
-			}
-			else{
-				w = new ArrayList<>(1);
-				l = new ArrayList<>(player.getMinigame().getPlayers().size());
-				w.add(player);
-				l.addAll(player.getMinigame().getPlayers());
-				l.remove(player);
-			}
-			Minigames.plugin.pdata.endMinigame(player.getMinigame(), w, l);
-		}
-	}
+
 	@Override
 	public void saveArguments(FileConfiguration config,
 			String path) {

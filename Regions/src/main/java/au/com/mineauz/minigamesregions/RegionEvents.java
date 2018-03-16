@@ -151,7 +151,9 @@ public class RegionEvents implements Listener{
 	@EventHandler
 	private void minigameStart(StartMinigameEvent event){
 		for(Node node : RegionModule.getMinigameModule(event.getMinigame()).getNodes()){
-			node.execute(Triggers.getTrigger("GAME_START"), null);
+			for (MinigamePlayer player:event.getPlayers()) {
+				node.execute(Triggers.getTrigger("GAME_START"), player);
+			}
 		}
 	}
 	
@@ -343,7 +345,9 @@ public class RegionEvents implements Listener{
 	@EventHandler
 	private void minigameTimerTick(MinigameTimerTickEvent event){
 		for(Node node : getRegionModule(event.getMinigame()).getNodes()){
-			node.execute(Triggers.getTrigger("MINIGAME_TIMER"), null);
+			for(MinigamePlayer player : event.getMinigame().getPlayers()) {
+				node.execute(Triggers.getTrigger("MINIGAME_TIMER"), player);
+			}
 		}
 	}
 	
