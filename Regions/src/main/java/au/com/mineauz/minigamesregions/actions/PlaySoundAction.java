@@ -1,12 +1,10 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -127,6 +125,10 @@ public class PlaySoundAction extends AbstractAction {
 			
 			@Override
 			public String getValue() {
+				Sound s=getSound(sound.getFlag());              //ENSURE CONFIG doesnt contain old enums replace if they do.
+				if(!s.toString().equals(sound.getFlag())){
+					sound.setFlag(s.toString());
+				}
 				return MinigameUtils.capitalize(sound.getFlag().replace("_", " "));
 			}
 		}, sounds));
