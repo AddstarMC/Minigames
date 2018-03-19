@@ -117,6 +117,13 @@ public class MinigamePlayer implements ScriptObject {
 	}
 	
 	public void sendMessage(String msg){
+		int enc = Math.floorDiv(msg.getBytes().length, msg.length());
+		if(msg.getBytes().length > 32000 ){
+			int capLength = Math.floorDiv(msg.length(),enc);
+			String newMessage = msg.substring(0,capLength);
+			player.sendMessage(newMessage);
+			this.sendMessage(msg.substring(capLength));
+		}
 		player.sendMessage(msg);
 	}
 	
