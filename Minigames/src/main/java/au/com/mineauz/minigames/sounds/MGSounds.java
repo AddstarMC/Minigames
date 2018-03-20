@@ -1,13 +1,13 @@
 package au.com.mineauz.minigames.sounds;
 
+import org.bukkit.Sound;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.Sound;
-
 public class MGSounds {
-	
-	private static Map<String, MGSound> sounds = new HashMap<String, MGSound>();
+
+    private static Map<String, MGSound> sounds = new HashMap<>();
 	
 	static{
 		addSound("timerTick", new MGSound(Sound.BLOCK_NOTE_HAT, 10f, 1.5f));

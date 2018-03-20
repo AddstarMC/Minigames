@@ -21,8 +21,8 @@ import java.util.List;
 
 public class MultiplayerType extends MinigameTypeBase{
 	private static Minigames plugin = Minigames.plugin;
-	private PlayerData pdata = plugin.pdata;
-	private MinigameData mdata = plugin.mdata;
+	private MinigamePlayerManager pdata = plugin.playerManager;
+	private MinigameManager mdata = plugin.minigameManager;
 	
 	public MultiplayerType(){
 		setType(MinigameType.MULTIPLAYER);
@@ -36,7 +36,7 @@ public class MultiplayerType extends MinigameTypeBase{
 		if(cannotStart)message = MinigameUtils.getLang("minigame.full");
 		cannotStart = mgm.getLobbyPosition() == null;
 		if(cannotStart)message = MinigameUtils.getLang("minigame.error.noLobby");
-		if(cannotStart)player.sendMessage(message, "error");
+		if (cannotStart) player.sendMessage(message, MinigameMessageType.ERROR);
 		return cannotStart;
 	}
 
@@ -46,39 +46,36 @@ public class MultiplayerType extends MinigameTypeBase{
 		if(plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != mgm.getLobbyPosition().getWorld() &&
 				player.getPlayer().hasPermission("minigame.set.lobby")){
 			player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE +
-					"Lobby location is across worlds! This may cause some server performance issues!", "error");
+					"Lobby location is across worlds! This may cause some server performance issues!", MinigameMessageType.ERROR);
 		}
 		return result;
 	}
 
 	@Override
 	public boolean joinMinigame(MinigamePlayer player, Minigame mgm) {
-		if(!LobbySettingsModule.getMinigameModule(mgm).canInteractPlayerWait())
-			player.setCanInteract(false);
-		if(!LobbySettingsModule.getMinigameModule(mgm).canMovePlayerWait())
-			player.setFrozen(true);
-		
+		if (!LobbySettingsModule.getMinigameModule(mgm).canInteractPlayerWait()) player.setCanInteract(false);
+		if (!LobbySettingsModule.getMinigameModule(mgm).canMovePlayerWait()) player.setFrozen(true);
 		if(!mgm.isWaitingForPlayers() && !mgm.hasStarted()){
 			if(mgm.getMpTimer() == null && mgm.getPlayers().size() == mgm.getMinPlayers()){
 				mgm.setMpTimer(new MultiplayerTimer(mgm));
 				mgm.getMpTimer().startTimer();
 				if(mgm.getPlayers().size() == mgm.getMaxPlayers()){
-					mgm.getMpTimer().setPlayerWaitTime(0);
-					mdata.sendMinigameMessage(mgm, MinigameUtils.getLang("minigame.skipWaitTime"), "info", null);
+					mgm.getMpTimer().setCurrentLobbyWaitTime(0);
+					mdata.sendMinigameMessage(mgm, MinigameUtils.getLang("minigame.skipWaitTime"));
 				}
 			}
 			else if(mgm.getMpTimer() != null && mgm.getPlayers().size() == mgm.getMaxPlayers()){
-				mgm.getMpTimer().setPlayerWaitTime(0);
-				mdata.sendMinigameMessage(mgm, MinigameUtils.getLang("minigame.skipWaitTime"), "info", null);
+				mgm.getMpTimer().setCurrentLobbyWaitTime(0);
+				mdata.sendMinigameMessage(mgm, MinigameUtils.getLang("minigame.skipWaitTime"));
 			}
 			else if(mgm.getMpTimer() == null){
 				int neededPlayers = mgm.getMinPlayers() - mgm.getPlayers().size();
-				mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("minigame.waitingForPlayers", neededPlayers), "info", null);
+				mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("minigame.waitingForPlayers", neededPlayers));
 			}
 		}
 		else if(mgm.hasStarted()){
 			player.setLatejoining(true);
-			player.sendMessage(MinigameUtils.formStr("minigame.lateJoin", 5)); //TODO: Late join delay variable
+			player.sendInfoMessage(MinigameUtils.formStr("minigame.lateJoin", 5)); //TODO: Late join delay variable
 			final MinigamePlayer fply = player;
 			final Minigame fmgm = mgm;
 			if(mgm.isTeamGame()){
@@ -98,7 +95,7 @@ public class MultiplayerType extends MinigameTypeBase{
 					@Override
 					public void run() {
 						if(fply.isInMinigame()){
-							List<Location> locs = new ArrayList<Location>();
+							List<Location> locs = new ArrayList<>();
 							if(TeamsModule.getMinigameModule(fmgm).hasTeamStartLocations()){
 								locs.addAll(fteam.getStartLocations());
 							}
@@ -122,7 +119,7 @@ public class MultiplayerType extends MinigameTypeBase{
 					@Override
 					public void run() {
 						if(fply.isInMinigame()){
-							List<Location> locs = new ArrayList<Location>(fmgm.getStartLocations());
+							List<Location> locs = new ArrayList<>(fmgm.getStartLocations());
 							Collections.shuffle(locs);
 							fply.teleport(locs.get(0));
 							fply.getLoadout().equiptLoadout(fply);
@@ -189,9 +186,9 @@ public class MultiplayerType extends MinigameTypeBase{
 						break;
 					}
 				}
-				List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(winner.getPlayers());
-				List<MinigamePlayer> l = new ArrayList<MinigamePlayer>();
-				plugin.pdata.endMinigame(mgm, w, l);
+				List<MinigamePlayer> w = new ArrayList<>(winner.getPlayers());
+				List<MinigamePlayer> l = new ArrayList<>();
+				plugin.playerManager.endMinigame(mgm, w, l);
 				
 				if(mgm.getMpBets() != null){
 					mgm.setMpBets(null);
@@ -199,10 +196,10 @@ public class MultiplayerType extends MinigameTypeBase{
 			}
 		}
 		else if(mgm.getPlayers().size() == 2 && mgm.hasStarted() && !forced){
-			List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(mgm.getPlayers());
+			List<MinigamePlayer> w = new ArrayList<>(mgm.getPlayers());
 			w.remove(player);
-			List<MinigamePlayer> l = new ArrayList<MinigamePlayer>();
-			plugin.pdata.endMinigame(mgm, w, l);
+			List<MinigamePlayer> l = new ArrayList<>();
+			plugin.playerManager.endMinigame(mgm, w, l);
 			
 			if(mgm.getMpBets() != null){
 				mgm.setMpBets(null);
@@ -212,12 +209,12 @@ public class MultiplayerType extends MinigameTypeBase{
 				mgm.getMpTimer() != null && 
 				mgm.getMpTimer().getStartWaitTimeLeft() != 0 && 
 				(mgm.getState() == MinigameState.STARTING || mgm.getState() == MinigameState.WAITING)){
-			mgm.getMpTimer().setPlayerWaitTime(Minigames.plugin.getConfig().getInt("multiplayer.waitforplayers"));
+			mgm.getMpTimer().setCurrentLobbyWaitTime(Minigames.plugin.getConfig().getInt("multiplayer.waitforplayers"));
 			mgm.getMpTimer().pauseTimer();
 			mgm.getMpTimer().removeTimer();
 			mgm.setMpTimer(null);
 			mgm.setState(MinigameState.IDLE);
-			mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("minigame.waitingForPlayers", 1), null, null);
+			mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("minigame.waitingForPlayers", 1));
 		}
 	}
 
@@ -264,7 +261,7 @@ public class MultiplayerType extends MinigameTypeBase{
 						respawnPos = ply.getCheckpoint();
 					}
 					else{
-						List<Location> starts = new ArrayList<Location>();
+						List<Location> starts = new ArrayList<>();
 						if(TeamsModule.getMinigameModule(mg).hasTeamStartLocations()){
 							starts.addAll(team.getStartLocations());
 							ply.getLoadout().equiptLoadout(ply);
@@ -287,8 +284,7 @@ public class MultiplayerType extends MinigameTypeBase{
 						respawnPos = ply.getCheckpoint();
 					}
 					else{
-						List<Location> starts = new ArrayList<Location>();
-						starts.addAll(mg.getStartLocations());
+						List<Location> starts = new ArrayList<Location>(mg.getStartLocations());
 						Collections.shuffle(starts);
 						respawnPos = starts.get(0);
 					}
@@ -321,23 +317,23 @@ public class MultiplayerType extends MinigameTypeBase{
 					List<MinigamePlayer> w;
 					List<MinigamePlayer> l;
 					if(TeamsModule.getMinigameModule(mgm).hasTeam(TeamsModule.getMinigameModule(mgm).getDefaultWinner())){
-						w = new ArrayList<MinigamePlayer>(tm.getTeam(tm.getDefaultWinner()).getPlayers().size());
-						l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - tm.getTeam(tm.getDefaultWinner()).getPlayers().size());
+						w = new ArrayList<>(tm.getTeam(tm.getDefaultWinner()).getPlayers().size());
+						l = new ArrayList<>(mgm.getPlayers().size() - tm.getTeam(tm.getDefaultWinner()).getPlayers().size());
 						w.addAll(tm.getTeam(tm.getDefaultWinner()).getPlayers());
 					}
 					else{
-						w = new ArrayList<MinigamePlayer>();
-						l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size());
+						w = new ArrayList<>();
+						l = new ArrayList<>(mgm.getPlayers().size());
 					}
 					
 					for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 						if(t.getColor() != TeamsModule.getMinigameModule(mgm).getDefaultWinner())
 							l.addAll(t.getPlayers());
 					}
-					plugin.pdata.endMinigame(mgm, w, l);
+					plugin.playerManager.endMinigame(mgm, w, l);
 				}
 				else{
-					List<Team> drawTeams = new ArrayList<Team>();
+					List<Team> drawTeams = new ArrayList<>();
 					Team winner = null;
 					for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 						if(winner == null || (t.getScore() > winner.getScore() && 
@@ -358,8 +354,8 @@ public class MultiplayerType extends MinigameTypeBase{
 					}
 					
 					if(winner != null){
-						List<MinigamePlayer> w = new ArrayList<MinigamePlayer>(winner.getPlayers());
-						List<MinigamePlayer> l = new ArrayList<MinigamePlayer>(mgm.getPlayers().size() - winner.getPlayers().size());
+						List<MinigamePlayer> w = new ArrayList<>(winner.getPlayers());
+						List<MinigamePlayer> l = new ArrayList<>(mgm.getPlayers().size() - winner.getPlayers().size());
 						for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 							if(t != winner)
 								l.addAll(t.getPlayers());
@@ -367,7 +363,7 @@ public class MultiplayerType extends MinigameTypeBase{
 						pdata.endMinigame(mgm, w, l);
 					}
 					else{
-						List<MinigamePlayer> players = new ArrayList<MinigamePlayer>(mgm.getPlayers());
+						List<MinigamePlayer> players = new ArrayList<>(mgm.getPlayers());
 						for(Team t : TeamsModule.getMinigameModule(mgm).getTeams()){
 							t.resetScore();
 						}
@@ -398,13 +394,13 @@ public class MultiplayerType extends MinigameTypeBase{
 								if(drawTeams.size() == 2){
 									ply.sendMessage(MinigameUtils.formStr("player.end.team.tie", 
 											drawTeams.get(0).getChatColor() + drawTeams.get(0).getDisplayName() + ChatColor.WHITE, 
-											drawTeams.get(1).getChatColor() + drawTeams.get(1).getDisplayName() + ChatColor.WHITE, 
-											event.getMinigame().getName(true)), "error");
+											drawTeams.get(1).getChatColor() + drawTeams.get(1).getDisplayName() + ChatColor.WHITE,
+											event.getMinigame().getName(true)), MinigameMessageType.ERROR);
 								}
 								else{
 									ply.sendMessage(MinigameUtils.formStr("player.end.team.tieCount", 
-											drawTeams.size(), 
-											event.getMinigame().getName(true)), "error");
+											drawTeams.size(),
+											event.getMinigame().getName(true)), MinigameMessageType.ERROR);
 								}
 								String scores = "";
 								int c = 1;
@@ -414,7 +410,7 @@ public class MultiplayerType extends MinigameTypeBase{
 										scores += ChatColor.WHITE + " : ";
 									c++;
 								}
-								ply.sendMessage(MinigameUtils.getLang("minigame.info.score") + " " + scores);
+								ply.sendInfoMessage(MinigameUtils.getLang("minigame.info.score") + " " + scores);
 							}
 						}
 						if(plugin.getConfig().getBoolean("multiplayer.broadcastwin")){
@@ -462,9 +458,8 @@ public class MultiplayerType extends MinigameTypeBase{
 						}
 					}
 				}
-				List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>();
-				losers.addAll(event.getMinigame().getPlayers());
-				List<MinigamePlayer> winners = new ArrayList<MinigamePlayer>();
+				List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>(event.getMinigame().getPlayers());
+				List<MinigamePlayer> winners = new ArrayList<>();
 				if(player != null){
 					losers.remove(player);
 					winners.add(player);

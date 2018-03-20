@@ -1,24 +1,18 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.reward.*;
+import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.commands.ICommand;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.reward.ItemReward;
-import au.com.mineauz.minigames.minigame.reward.MoneyReward;
-import au.com.mineauz.minigames.minigame.reward.RewardRarity;
-import au.com.mineauz.minigames.minigame.reward.RewardTypes;
-import au.com.mineauz.minigames.minigame.reward.Rewards;
-import au.com.mineauz.minigames.minigame.reward.RewardsModule;
-import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SetSecondaryRewardCommand implements ICommand{
 	
@@ -88,8 +82,8 @@ public class SetSecondaryRewardCommand implements ICommand{
 			if(args[0].startsWith("$")){
 				try{
 					money = Double.parseDouble(args[0].replace("$", ""));
-				}
-				catch(NumberFormatException e){}
+				} catch (NumberFormatException ignored) {
+                }
 			}
 			else{
 				item = MinigameUtils.stringToItemStack(args[0], quantity);
@@ -152,7 +146,7 @@ public class SetSecondaryRewardCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 3 || (args.length == 2 && args[0].startsWith("$"))){
-			List<String> ls = new ArrayList<String>();
+            List<String> ls = new ArrayList<>();
 			for(RewardRarity r : RewardRarity.values()){
 				ls.add(r.toString());
 			}

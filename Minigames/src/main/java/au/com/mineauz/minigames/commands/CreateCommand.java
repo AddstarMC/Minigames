@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.minigame.Minigame;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CreateCommand implements ICommand{
 	
@@ -58,7 +57,7 @@ public class CreateCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame, String label, String[] args) {
 		if(args != null){
 			Player player = (Player)sender;
-			if(!plugin.mdata.hasMinigame(args[0])){
+            if (!plugin.minigameManager.hasMinigame(args[0])) {
 				String mgmName = args[0];
 				MinigameType type = MinigameType.SINGLEPLAYER;
 				if(args.length >= 2){
@@ -78,14 +77,14 @@ public class CreateCommand implements ICommand{
 					mgs = plugin.getConfig().getStringList("minigames");
 				}
 				else{
-					mgs = new ArrayList<String>();
+                    mgs = new ArrayList<>();
 				}
 				mgs.add(mgmName);
 				plugin.getConfig().set("minigames", mgs);
 				plugin.saveConfig();
 				
 				mgm.saveMinigame();
-				plugin.mdata.addMinigame(mgm);
+                plugin.minigameManager.addMinigame(mgm);
 			}else{
 				sender.sendMessage(ChatColor.RED + "This Minigame already exists!");
 			}
@@ -98,7 +97,7 @@ public class CreateCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 2){
-			List<String> types = new ArrayList<String>(MinigameType.values().length);
+            List<String> types = new ArrayList<>(MinigameType.values().length);
 			for(MinigameType type : MinigameType.values()){
 				types.add(type.toString().toLowerCase());
 			}

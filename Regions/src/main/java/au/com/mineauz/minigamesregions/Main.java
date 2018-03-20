@@ -1,16 +1,15 @@
 package au.com.mineauz.minigamesregions;
 
-import java.util.logging.Level;
-
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.set.SetCommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.tool.ToolModes;
 import au.com.mineauz.minigamesregions.commands.SetNodeCommand;
 import au.com.mineauz.minigamesregions.commands.SetRegionCommand;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.logging.Level;
 
 public class Main extends JavaPlugin{
 	
@@ -35,8 +34,8 @@ public class Main extends JavaPlugin{
 			}
 			
 			display = new RegionDisplayManager();
-			
-			minigames.mdata.addModule(RegionModule.class);
+
+            minigames.minigameManager.addModule(RegionModule.class);
 			
 			SetCommand.registerSetCommand(new SetNodeCommand());
 			SetCommand.registerSetCommand(new SetRegionCommand());
@@ -61,10 +60,10 @@ public class Main extends JavaPlugin{
 		if (plugin == null) {
 			return;
 		}
-		for(Minigame mg : minigames.mdata.getAllMinigames().values()){
+        for (Minigame mg : minigames.minigameManager.getAllMinigames().values()) {
 			mg.saveMinigame();
 		}
-		minigames.mdata.removeModule("Regions", RegionModule.class);
+        minigames.minigameManager.removeModule("Regions", RegionModule.class);
 		
 		ToolModes.removeToolMode("REGION");
 		ToolModes.removeToolMode("NODE");

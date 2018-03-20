@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.GameOverModule;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SetGameOverCommand implements ICommand {
 
@@ -102,7 +101,7 @@ public class SetGameOverCommand implements ICommand {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
-		List<String> opts = new ArrayList<String>();
+        List<String> opts = new ArrayList<>();
 		if(args.length == 1){
 			for(String p : getParameters()){
 				opts.add(p);

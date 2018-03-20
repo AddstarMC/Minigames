@@ -3,7 +3,6 @@ package au.com.mineauz.minigamesregions.actions;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.script.ScriptObject;
@@ -41,9 +40,9 @@ public abstract class AbstractAction implements ActionInterface {
                 l.addAll(winner.getMinigame().getPlayers());
                 l.remove(winner);
             }
-            Minigames.plugin.pdata.endMinigame(winner.getMinigame(), w, l);
+            Minigames.plugin.playerManager.endMinigame(winner.getMinigame(), w, l);
         } else{
-            Minigames.plugin.pdata.endMinigame(winner);
+            Minigames.plugin.playerManager.endMinigame(winner);
         }
     }
 

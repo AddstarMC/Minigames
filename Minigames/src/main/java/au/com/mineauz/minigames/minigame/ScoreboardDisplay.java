@@ -1,10 +1,14 @@
 package au.com.mineauz.minigames.minigame;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.stats.*;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.ListenableFuture;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -15,25 +19,10 @@ import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.ListenableFuture;
-
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.InteractionInterface;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
-import au.com.mineauz.minigames.menu.MenuItemList;
-import au.com.mineauz.minigames.menu.MenuItemScoreboardSave;
-import au.com.mineauz.minigames.stats.MinigameStat;
-import au.com.mineauz.minigames.stats.MinigameStats;
-import au.com.mineauz.minigames.stats.StatSettings;
-import au.com.mineauz.minigames.stats.StatValueField;
-import au.com.mineauz.minigames.stats.StoredStat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class ScoreboardDisplay {
 	public static final int defaultWidth = 3;
@@ -279,8 +268,8 @@ public class ScoreboardDisplay {
 		
 		setupMenu.addItem(statisticChoice);
 		setupMenu.addItem(fieldChoice);
-		
-		List<String> sbotypes = new ArrayList<String>();
+
+        List<String> sbotypes = new ArrayList<>();
 		for(ScoreboardOrder o : ScoreboardOrder.values()){
 			sbotypes.add(o.toString().toLowerCase());
 		}

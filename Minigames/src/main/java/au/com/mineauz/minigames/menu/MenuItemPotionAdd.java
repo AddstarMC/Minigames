@@ -1,15 +1,15 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.PlayerLoadout;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.PlayerLoadout;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuItemPotionAdd extends MenuItem{
 	
@@ -30,8 +30,8 @@ public class MenuItemPotionAdd extends MenuItem{
 		MinigamePlayer ply = getContainer().getViewer();
 		ply.setNoClose(true);
 		ply.getPlayer().closeInventory();
-		ply.sendMessage("Enter a potion using the syntax below into chat, the menu will automatically reopen in 30s if nothing is entered.", null);
-		ply.sendMessage("PotionName, level, duration (duration can be \"inf\")");
+        ply.sendInfoMessage("Enter a potion using the syntax below into chat, the menu will automatically reopen in 30s if nothing is entered.");
+        ply.sendInfoMessage("PotionName, level, duration (duration can be \"inf\")");
 		ply.setManualEntry(this);
 
 		getContainer().startReopenTimer(30);
@@ -59,7 +59,7 @@ public class MenuItemPotionAdd extends MenuItem{
 						}
 						dur*=20;
 
-						List<String> des = new ArrayList<String>();
+                        List<String> des = new ArrayList<>();
 						des.add("Shift + Right Click to Delete");
 						
 						PotionEffect peff = new PotionEffect(eff, dur, level);
@@ -81,13 +81,13 @@ public class MenuItemPotionAdd extends MenuItem{
 						}
 					}
 					else
-						getContainer().getViewer().sendMessage(split[2] + " is not a valid duration! The time must be in seconds", "error");
+                        getContainer().getViewer().sendMessage(split[2] + " is not a valid duration! The time must be in seconds", MinigameMessageType.ERROR);
 				}
 				else
-					getContainer().getViewer().sendMessage(split[1] + " is not a valid level number!", "error");
+                    getContainer().getViewer().sendMessage(split[1] + " is not a valid level number!", MinigameMessageType.ERROR);
 			}
 			else
-				getContainer().getViewer().sendMessage(split[0] + " is not a valid potion name!", "error");
+                getContainer().getViewer().sendMessage(split[0] + " is not a valid potion name!", MinigameMessageType.ERROR);
 			
 			getContainer().cancelReopenTimer();
 			getContainer().displayMenu(getContainer().getViewer());
@@ -95,7 +95,7 @@ public class MenuItemPotionAdd extends MenuItem{
 		}
 		getContainer().cancelReopenTimer();
 		getContainer().displayMenu(getContainer().getViewer());
-		
-		getContainer().getViewer().sendMessage("Invalid syntax entry! Make sure there is an comma and a space (\", \") between each item.", "error");
+
+        getContainer().getViewer().sendMessage("Invalid syntax entry! Make sure there is an comma and a space (\", \") between each item.", MinigameMessageType.ERROR);
 	}
 }

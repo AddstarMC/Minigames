@@ -1,34 +1,23 @@
 package au.com.mineauz.minigames.signs;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.minigame.reward.RewardGroup;
+import au.com.mineauz.minigames.minigame.reward.RewardType;
+import au.com.mineauz.minigames.minigame.reward.Rewards;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 
-import au.com.mineauz.minigames.MinigameData;
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.menu.InteractionInterface;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
-import au.com.mineauz.minigames.menu.MenuItemRewardAdd;
-import au.com.mineauz.minigames.menu.MenuItemRewardGroup;
-import au.com.mineauz.minigames.menu.MenuItemRewardGroupAdd;
-import au.com.mineauz.minigames.minigame.reward.RewardGroup;
-import au.com.mineauz.minigames.minigame.reward.RewardRarity;
-import au.com.mineauz.minigames.minigame.reward.RewardType;
-import au.com.mineauz.minigames.minigame.reward.Rewards;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RewardSign implements MinigameSign {
 	
 	private static Minigames plugin = Minigames.plugin;
-	private MinigameData mdata = plugin.mdata;
+	private MinigameManager mdata = plugin.minigameManager;
 
 	@Override
 	public String getName() {
@@ -61,7 +50,7 @@ public class RewardSign implements MinigameSign {
 			event.setLine(1, ChatColor.GREEN + getName());
 			return true;
 		}
-		plugin.pdata.getMinigamePlayer(event.getPlayer()).sendMessage(MinigameUtils.getLang("sign.reward.noName"), "error");
+		plugin.playerManager.getMinigamePlayer(event.getPlayer()).sendMessage(MinigameUtils.getLang("sign.reward.noName"), MinigameMessageType.ERROR);
 		return false;
 	}
 	
@@ -113,22 +102,22 @@ public class RewardSign implements MinigameSign {
 				@Override
 				public Object interact(Object object) {
 					mdata.saveRewardSign(MinigameUtils.createLocationID(floc), true);
-					mic.getContainer().getViewer().sendMessage("Saved rewards for this sign.", null);
+					mic.getContainer().getViewer().sendInfoMessage("Saved rewards for this sign.");
 					mic.getContainer().getViewer().getPlayer().closeInventory();
 					return null;
 				}
 			});
 			rewardMenu.addItem(mic, 44);
-			List<String> list = new ArrayList<String>();
-			for(RewardRarity r : RewardRarity.values()){
-				list.add(r.toString());
-			}
-			
-			List<MenuItem> mi = new ArrayList<MenuItem>();
+			//List<String> list = new ArrayList<String>();
+			//for(RewardRarity r : RewardRarity.values()){
+			//	list.add(r.toString());
+			//}
+
+			List<MenuItem> mi = new ArrayList<>();
 			for(RewardType item : rew.getRewards()){
 				mi.add(item.getMenuItem());
 			}
-			List<String> des = new ArrayList<String>();
+			List<String> des = new ArrayList<>();
 			des.add("Double Click to edit");
 			for(RewardGroup group : rew.getGroups()){
 				MenuItemRewardGroup rwg = new MenuItemRewardGroup(group.getName() + " Group", des, Material.CHEST, group, rew);
@@ -142,8 +131,8 @@ public class RewardSign implements MinigameSign {
 
 	@Override
 	public void signBreak(Sign sign, MinigamePlayer player) {
-		if(plugin.mdata.hasRewardSign(sign.getLocation())){
-			plugin.mdata.removeRewardSign(sign.getLocation());
+		if (plugin.minigameManager.hasRewardSign(sign.getLocation())) {
+			plugin.minigameManager.removeRewardSign(sign.getLocation());
 		}
 	}
 

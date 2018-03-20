@@ -1,17 +1,16 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SetDefaultWinnerCommand implements ICommand {
 
@@ -81,7 +80,7 @@ public class SetDefaultWinnerCommand implements ICommand {
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> teams = new ArrayList<String>();
+            List<String> teams = new ArrayList<>();
 			for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
 				teams.add(t.getColor().toString().toLowerCase());
 			}

@@ -1,16 +1,16 @@
 package au.com.mineauz.minigames.signs;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.block.Sign;
-import org.bukkit.event.block.SignChangeEvent;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Sign;
+import org.bukkit.event.block.SignChangeEvent;
 
 public class LoadoutSign implements MinigameSign {
 	
@@ -67,12 +67,12 @@ public class LoadoutSign implements MinigameSign {
 			else if(loadout.hasLoadout(sign.getLine(2))){
 				if(!loadout.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
 					if(player.setLoadout(loadout.getLoadout(sign.getLine(2)))){
-						player.sendMessage(MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)), null);
+						player.sendInfoMessage(MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)));
 						
 						if(mgm.getType() == MinigameType.SINGLEPLAYER || 
 								mgm.hasStarted()){
 							if(sign.getLine(3).equalsIgnoreCase("respawn")){
-								player.sendMessage(MinigameUtils.getLang("sign.loadout.nextRespawn"), null);
+								player.sendInfoMessage(MinigameUtils.getLang("sign.loadout.nextRespawn"));
 							}
 							else{
 								loadout.getLoadout(sign.getLine(2)).equiptLoadout(player);
@@ -82,36 +82,35 @@ public class LoadoutSign implements MinigameSign {
 					return true;
 				}
 				else{
-					player.sendMessage(MinigameUtils.formStr("sign.loadout.noPermisson", sign.getLine(2)), "error");
+					player.sendMessage(MinigameUtils.formStr("sign.loadout.noPermisson", sign.getLine(2)), MinigameMessageType.ERROR);
 				}
-			}
-			else if(plugin.mdata.hasLoadout(sign.getLine(2))){
-				if(!plugin.mdata.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())){
-					if(player.setLoadout(plugin.mdata.getLoadout(sign.getLine(2)))){
-						player.sendMessage(MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)), null);
+			} else if (plugin.minigameManager.hasLoadout(sign.getLine(2))) {
+				if (!plugin.minigameManager.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())) {
+					if (player.setLoadout(plugin.minigameManager.getLoadout(sign.getLine(2)))) {
+						player.sendInfoMessage(MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)));
 	
 						if(mgm.getType() == MinigameType.SINGLEPLAYER || 
 								mgm.hasStarted()){
 							if(sign.getLine(3).equalsIgnoreCase("respawn")){
-								player.sendMessage(MinigameUtils.getLang("sign.loadout.nextRespawn"), null);
+								player.sendInfoMessage(MinigameUtils.getLang("sign.loadout.nextRespawn"));
 							}
 							else{
-								plugin.mdata.getLoadout(sign.getLine(2)).equiptLoadout(player);
+								plugin.minigameManager.getLoadout(sign.getLine(2)).equiptLoadout(player);
 							}
 						}
 					}
 					return true;
 				}
 				else{
-					player.sendMessage(MinigameUtils.formStr("sign.loadout.noPermission", sign.getLine(2)), "error");
+					player.sendMessage(MinigameUtils.formStr("sign.loadout.noPermission", sign.getLine(2)), MinigameMessageType.ERROR);
 				}
 			}
 			else{
-				player.sendMessage(MinigameUtils.getLang("sign.loadout.noLoadout"), "error");
+				player.sendMessage(MinigameUtils.getLang("sign.loadout.noLoadout"), MinigameMessageType.ERROR);
 			}
 		}
 		else if(player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR)
-			player.sendMessage(MinigameUtils.getLang("sign.emptyHand"), "error");
+			player.sendMessage(MinigameUtils.getLang("sign.emptyHand"), MinigameMessageType.ERROR);
 		return false;
 	}
 

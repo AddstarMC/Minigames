@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
-import java.util.List;
-
-import org.bukkit.Material;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemList;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
+import org.bukkit.Material;
+
+import java.util.List;
 
 public final class RewardSchemes {
 	private static BiMap<String, Class<? extends RewardScheme>> definedSchemes = HashBiMap.create();
@@ -30,14 +29,11 @@ public final class RewardSchemes {
 	public static <T extends RewardScheme> T createScheme(Class<T> type) {
 		try {
 			return type.newInstance();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-			return null;
-		} catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 			return null;
 		}
-	}
+    }
 	
 	public static RewardScheme createScheme(String name) {
 		try {
@@ -47,14 +43,11 @@ public final class RewardSchemes {
 			} else {
 				return schemeClass.newInstance();
 			}
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-			return null;
-		} catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 			return null;
 		}
-	}
+    }
 	
 	public static String getName(Class<? extends RewardScheme> schemeClass) {
 		return definedSchemes.inverse().get(schemeClass);

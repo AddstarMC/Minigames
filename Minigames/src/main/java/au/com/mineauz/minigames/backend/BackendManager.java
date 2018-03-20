@@ -1,5 +1,15 @@
 package au.com.mineauz.minigames.backend;
 
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.backend.mysql.MySQLBackend;
+import au.com.mineauz.minigames.backend.sqlite.SQLiteBackend;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.ScoreboardOrder;
+import au.com.mineauz.minigames.stats.*;
+import com.google.common.util.concurrent.*;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -9,26 +19,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
-
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
-
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.backend.mysql.MySQLBackend;
-import au.com.mineauz.minigames.backend.sqlite.SQLiteBackend;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.ScoreboardOrder;
-import au.com.mineauz.minigames.stats.MinigameStat;
-import au.com.mineauz.minigames.stats.StatSettings;
-import au.com.mineauz.minigames.stats.StatValueField;
-import au.com.mineauz.minigames.stats.StoredGameStats;
-import au.com.mineauz.minigames.stats.StoredStat;
 
 public class BackendManager {
 	private final Logger logger;
@@ -53,12 +43,13 @@ public class BackendManager {
 	}
 	
 	private Backend makeBackend(String type) {
-		if (type.equals("sqlite")) {
-			return new SQLiteBackend(logger);
-		} else if (type.equals("mysql")) {
-			return new MySQLBackend(logger);
-		} else {
-			return null;
+		switch (type) {
+			case "sqlite":
+				return new SQLiteBackend(logger);
+			case "mysql":
+				return new MySQLBackend(logger);
+			default:
+				return null;
 		}
 	}
 	
@@ -167,7 +158,7 @@ public class BackendManager {
 	public ListenableFuture<List<StoredStat>> loadStats(final Minigame minigame, final MinigameStat stat, final StatValueField field, final ScoreboardOrder order, final int offset, final int length) {
 		return executorService.submit(new Callable<List<StoredStat>>() {
 			@Override
-			public List<StoredStat> call() throws Exception {
+			public List<StoredStat> call() {
 				return backend.loadStats(minigame, stat, field, order, offset, length);
 			}
 		});
@@ -184,7 +175,7 @@ public class BackendManager {
 	public ListenableFuture<Long> loadSingleStat(final Minigame minigame, final MinigameStat stat, final StatValueField field, final UUID playerId) {
 		return executorService.submit(new Callable<Long>() {
 			@Override
-			public Long call() throws Exception {
+			public Long call() {
 				return backend.getStat(minigame, playerId, stat, field);
 			}
 		});
@@ -198,7 +189,7 @@ public class BackendManager {
 	public ListenableFuture<StoredGameStats> saveStats(final StoredGameStats stats) {
 		return executorService.submit(new Callable<StoredGameStats>() {
 			@Override
-			public StoredGameStats call() throws Exception {
+			public StoredGameStats call() {
 				backend.saveGameStatus(stats);
 				return stats;
 			}
@@ -213,7 +204,7 @@ public class BackendManager {
 	public ListenableFuture<Map<MinigameStat, StatSettings>> loadStatSettings(final Minigame minigame) {
 		return executorService.submit(new Callable<Map<MinigameStat, StatSettings>>() {
 			@Override
-			public Map<MinigameStat, StatSettings> call() throws Exception {
+			public Map<MinigameStat, StatSettings> call() {
 				return backend.loadStatSettings(minigame);
 			}
 		});
@@ -228,7 +219,7 @@ public class BackendManager {
 	public ListenableFuture<Void> saveStatSettings(final Minigame minigame, final Collection<StatSettings> settings) {
 		return executorService.submit(new Callable<Void>() {
 			@Override
-			public Void call() throws Exception {
+			public Void call() {
 				backend.saveStatSettings(minigame, settings);
 				return null;
 			}

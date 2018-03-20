@@ -1,7 +1,14 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.Map;
-
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.config.IntegerFlag;
+import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigamesregions.Node;
+import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -10,18 +17,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.material.Directional;
 import org.bukkit.material.MaterialData;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemNewLine;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuItemString;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import java.util.Map;
 
 public class SwapBlockAction extends AbstractAction {
 	
@@ -159,7 +155,7 @@ public class SwapBlockAction extends AbstractAction {
 				if(Material.matchMaterial(value.toUpperCase()) != null)
 					matchType.setFlag(value.toUpperCase());
 				else
-					fply.sendMessage("Invalid block type!", "error");
+                    fply.sendMessage("Invalid block type!", MinigameMessageType.ERROR);
 			}
 			
 			@Override
@@ -179,7 +175,7 @@ public class SwapBlockAction extends AbstractAction {
 				if(Material.matchMaterial(value.toUpperCase()) != null)
 					toType.setFlag(value.toUpperCase());
 				else
-					fply.sendMessage("Invalid block type!", "error");
+                    fply.sendMessage("Invalid block type!", MinigameMessageType.ERROR);
 			}
 			
 			@Override

@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.signs;
 
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
-
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.minigame.Minigame;
 
 public class BetSign implements MinigameSign{
 	
@@ -42,9 +41,9 @@ public class BetSign implements MinigameSign{
 
 	@Override
 	public boolean signCreate(SignChangeEvent event) {
-		if(plugin.mdata.hasMinigame(event.getLine(2))){
+        if (plugin.minigameManager.hasMinigame(event.getLine(2))) {
 			event.setLine(1, ChatColor.GREEN + "Bet");
-			event.setLine(2, plugin.mdata.getMinigame(event.getLine(2)).getName(false));
+            event.setLine(2, plugin.minigameManager.getMinigame(event.getLine(2)).getName(false));
 			if(event.getLine(3).matches("[0-9]+")){
 				event.setLine(3, "$" + event.getLine(3));
 			}
@@ -56,7 +55,7 @@ public class BetSign implements MinigameSign{
 
 	@Override
 	public boolean signUse(Sign sign, MinigamePlayer player) {
-		Minigame mgm = plugin.mdata.getMinigame(sign.getLine(2));
+        Minigame mgm = plugin.minigameManager.getMinigame(sign.getLine(2));
 		if (mgm != null) {
 			boolean invOk = true;
 			boolean fullInv;
@@ -95,12 +94,12 @@ public class BetSign implements MinigameSign{
 					}
 					
 					if(!sign.getLine(3).startsWith("$")){
-						plugin.pdata.joinMinigame(player, plugin.mdata.getMinigame(sign.getLine(2)), true, 0.0);
+                        plugin.playerManager.joinMinigame(player, plugin.minigameManager.getMinigame(sign.getLine(2)), true, 0.0);
 					}
 					else{
 						if(plugin.hasEconomy()){
 							Double bet = Double.parseDouble(sign.getLine(3).replace("$", ""));
-							plugin.pdata.joinMinigame(player, plugin.mdata.getMinigame(sign.getLine(2)), true, bet);
+                            plugin.playerManager.joinMinigame(player, plugin.minigameManager.getMinigame(sign.getLine(2)), true, bet);
 							return true;
 						}
 						else{

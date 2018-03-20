@@ -60,13 +60,13 @@ public class BackupCommand implements ICommand {
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-			if(Minigames.plugin.mdata.hasMinigame(args[0])){
-				minigame = Minigames.plugin.mdata.getMinigame(args[0]);
+            if (Minigames.plugin.minigameManager.hasMinigame(args[0])) {
+                minigame = Minigames.plugin.minigameManager.getMinigame(args[0]);
 				if(minigame.getRegenArea1() != null && minigame.getRegenArea2() != null){
 					if(args.length == 1){
 						if(minigame.getPlayers().size() == 0){
 							minigame.setState(MinigameState.REGENERATING);
-                            Minigames.plugin.mdata.addBlockRecorderData(minigame);
+                            Minigames.plugin.minigameManager.addBlockRecorderData(minigame);
                             RecorderData d = minigame.getBlockRecorder();
                             d.saveAllBlockData();
 							
@@ -113,7 +113,7 @@ public class BackupCommand implements ICommand {
 			String alias, String[] args) {
 		if(args != null){
 			if(args.length == 1){
-				return MinigameUtils.tabCompleteMatch(new ArrayList<String>(Minigames.plugin.mdata.getAllMinigames().keySet()), args[0]);
+                return MinigameUtils.tabCompleteMatch(new ArrayList<>(Minigames.plugin.minigameManager.getAllMinigames().keySet()), args[0]);
 			}
 			else if(args.length == 2){
 				return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("restore"), args[1]);

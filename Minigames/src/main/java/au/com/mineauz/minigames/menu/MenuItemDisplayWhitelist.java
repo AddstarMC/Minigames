@@ -1,12 +1,11 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigameUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.MinigameUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuItemDisplayWhitelist extends MenuItem{
 	
@@ -28,7 +27,7 @@ public class MenuItemDisplayWhitelist extends MenuItem{
 	@Override
 	public ItemStack onClick() {
 		Menu menu = new Menu(6, "Block Whitelist", getContainer().getViewer());
-		List<MenuItem> items = new ArrayList<MenuItem>();
+        List<MenuItem> items = new ArrayList<>();
 		for(Material bl : whitelist){
 			items.add(new MenuItemWhitelistBlock(bl, whitelist));
 		}

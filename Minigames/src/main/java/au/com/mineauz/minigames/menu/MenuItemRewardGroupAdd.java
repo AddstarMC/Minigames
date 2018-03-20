@@ -1,14 +1,14 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.List;
-
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class MenuItemRewardGroupAdd extends MenuItem{
 	
@@ -29,7 +29,7 @@ public class MenuItemRewardGroupAdd extends MenuItem{
 		MinigamePlayer ply = getContainer().getViewer();
 		ply.setNoClose(true);
 		ply.getPlayer().closeInventory();
-		ply.sendMessage("Enter reward group name into chat, the menu will automatically reopen in 30s if nothing is entered.", null);
+		ply.sendInfoMessage("Enter reward group name into chat, the menu will automatically reopen in 30s if nothing is entered.");
 		ply.setManualEntry(this);
 
 		getContainer().startReopenTimer(30);
@@ -41,7 +41,7 @@ public class MenuItemRewardGroupAdd extends MenuItem{
 		entry = entry.replace(" ", "_");
 		for(RewardGroup group : rewards.getGroups()){
 			if(group.getName().equals(entry)){
-				getContainer().getViewer().sendMessage("A reward group already exists by the name \"" + entry + "\"!", "error");
+				getContainer().getViewer().sendMessage("A reward group already exists by the name \"" + entry + "\"!", MinigameMessageType.ERROR);
 				getContainer().cancelReopenTimer();
 				getContainer().displayMenu(getContainer().getViewer());
 				return;

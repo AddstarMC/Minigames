@@ -1,13 +1,5 @@
 package au.com.mineauz.minigames.backend.mysql;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.backend.ConnectionHandler;
 import au.com.mineauz.minigames.backend.StatementKey;
@@ -16,8 +8,15 @@ import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredStat;
-
 import com.google.common.collect.Lists;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 class MySQLStatLoader {
 	private final MySQLBackend backend;
@@ -64,18 +63,14 @@ class MySQLStatLoader {
 			int minigameId = backend.getMinigameId(handler, minigame);
 			
 			String statName = stat.getName() + field.getSuffix();
-			
-			ResultSet rs = handler.executeQuery(getSingle, minigameId, playerId.toString(), statName);
-			
-			try {
-				if (rs.next()) {
-					return rs.getLong("value");
-				} else {
-					return 0;
-				}
-			} finally {
-				rs.close();
-			}
+
+            try (ResultSet rs = handler.executeQuery(getSingle, minigameId, playerId.toString(), statName)) {
+                if (rs.next()) {
+                    return rs.getLong("value");
+                } else {
+                    return 0;
+                }
+            }
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to load stat for " + minigame.getName(false) + " " + playerId, e);
 			return 0;
@@ -102,18 +97,15 @@ class MySQLStatLoader {
 			default:
 				throw new AssertionError();
 			}
-			
-			ResultSet rs = handler.executeQuery(statement, minigameId, statName, offset, length);
-			List<StoredStat> stats = Lists.newArrayList();
-			try {
-				while (rs.next()) {
-					stats.add(loadStat(rs));
-				}
-				
-				return stats;
-			} finally {
-				rs.close();
-			}
+
+            List<StoredStat> stats = Lists.newArrayList();
+            try (ResultSet rs = handler.executeQuery(statement, minigameId, statName, offset, length)) {
+                while (rs.next()) {
+                    stats.add(loadStat(rs));
+                }
+
+                return stats;
+            }
 		} finally {
 			handler.release();
 		}

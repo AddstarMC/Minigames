@@ -1,14 +1,14 @@
 package au.com.mineauz.minigames.mechanics;
 
+import org.bukkit.event.HandlerList;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.bukkit.event.HandlerList;
-
 public class GameMechanics {
-	private static Map<String, GameMechanicBase> gameMechanics = new HashMap<String, GameMechanicBase>();
+    private static Map<String, GameMechanicBase> gameMechanics = new HashMap<>();
 	
 	static{
 		addGameMechanic(new PlayerKillsMechanic());
@@ -59,6 +59,6 @@ public class GameMechanics {
 	 * @return a Set containing the game mechanics
 	 */
 	public static Set<GameMechanicBase> getGameMechanics(){
-		return new HashSet<GameMechanicBase>(gameMechanics.values());
+        return new HashSet<>(gameMechanics.values());
 	}
 }

@@ -1,11 +1,6 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.Map;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
@@ -16,6 +11,11 @@ import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Map;
 
 public class TakeItemAction extends AbstractAction{
 	
@@ -126,7 +126,7 @@ Menu m = new Menu(3, "Give Item", player);
 					type.setFlag(value.toUpperCase());
 				}
 				else
-					player.sendMessage("Invalid item type!", "error");
+                    player.sendMessage("Invalid item type!", MinigameMessageType.ERROR);
 			}
 			
 			@Override

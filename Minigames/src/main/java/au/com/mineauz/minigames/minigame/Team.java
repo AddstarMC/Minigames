@@ -1,43 +1,40 @@
 package au.com.mineauz.minigames.minigame;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import au.com.mineauz.minigames.config.*;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
-import org.bukkit.scoreboard.Team.OptionStatus;
-import org.bukkit.scoreboard.Team.Option;
-
-import com.google.common.collect.ImmutableSet;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.config.*;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.script.ScriptCollection;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team.Option;
+import org.bukkit.scoreboard.Team.OptionStatus;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Team implements ScriptObject {
 	private String displayName = null;
 	private TeamColor color;
 	private IntegerFlag maxPlayers = new IntegerFlag(0, "maxPlayers");
-	private List<Location> startLocations = new ArrayList<Location>();
+    private List<Location> startLocations = new ArrayList<>();
 	private StringFlag assignMsg = new StringFlag(MinigameUtils.getLang("player.team.assign.joinTeam"), "assignMsg");
 	private StringFlag gameAssignMsg = new StringFlag(MinigameUtils.getLang("player.team.assign.joinAnnounce"), "gameAssignMsg");
 	private StringFlag autobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.plyMsg"), "autobalanceMsg");
 	private StringFlag gameAutobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.minigameMsg"), "gameAutobalanceMsg");
 	private EnumFlag<OptionStatus> nametagVisibility = new EnumFlag<>(OptionStatus.ALWAYS, "nametagVisibility");
 	private BooleanFlag autoBalance = new BooleanFlag(true, "autoBalance");
-	
-	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
+
+    private List<MinigamePlayer> players = new ArrayList<>();
 	private int score = 0;
 	private Minigame mgm;
 	
@@ -112,7 +109,7 @@ public class Team implements ScriptObject {
 	}
 	
 	public Set<Flag<?>> getFlags(){
-		Set<Flag<?>> flags = new HashSet<Flag<?>>();
+        Set<Flag<?>> flags = new HashSet<>();
 		flags.add(maxPlayers);
 		flags.add(assignMsg);
 		flags.add(gameAssignMsg);

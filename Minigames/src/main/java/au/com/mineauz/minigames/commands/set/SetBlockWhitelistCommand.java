@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.commands.ICommand;
-import au.com.mineauz.minigames.minigame.Minigame;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SetBlockWhitelistCommand implements ICommand {
 
@@ -155,7 +154,7 @@ public class SetBlockWhitelistCommand implements ICommand {
 		if(args.length == 1)
 			return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("true;false;add;remove;list;clear"), args[0]);
 		else if(args.length == 2 && args[0].equalsIgnoreCase("remove")){
-			List<String> ls = new ArrayList<String>();
+            List<String> ls = new ArrayList<>();
 			for(Material m : minigame.getBlockRecorder().getWBBlocks()){
 				ls.add(m.toString());
 			}

@@ -1,17 +1,16 @@
 package au.com.mineauz.minigames.minigame.reward;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.menu.MenuItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.menu.MenuItem;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemReward extends RewardType{
 
@@ -65,7 +64,7 @@ public class ItemReward extends RewardType{
 	}
 	
 	private class MenuItemReward extends MenuItem{
-		private List<String> options = new ArrayList<String>();
+        private List<String> options = new ArrayList<>();
 		private ItemReward reward;
 
 		public MenuItemReward(ItemReward reward) {
@@ -97,7 +96,7 @@ public class ItemReward extends RewardType{
 		public void updateDescription(){
 			List<String> description = null;
 			if(options == null){
-				options = new ArrayList<String>();
+                options = new ArrayList<>();
 				for(RewardRarity rarity : RewardRarity.values()){
 					options.add(rarity.toString());
 				}
@@ -135,7 +134,7 @@ public class ItemReward extends RewardType{
 				}
 			}
 			else{
-				description = new ArrayList<String>();
+                description = new ArrayList<>();
 				description.add(ChatColor.GRAY.toString() + options.get(before));
 				description.add(ChatColor.GREEN.toString() + getRarity().toString());
 				description.add(ChatColor.GRAY.toString() + options.get(after));

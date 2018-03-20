@@ -1,13 +1,13 @@
 package au.com.mineauz.minigames.gametypes;
 
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.event.Listener;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.ChatColor;
+import org.bukkit.event.Listener;
+
+import java.util.List;
 
 public abstract class MinigameTypeBase implements Listener{
 	private static Minigames plugin;
@@ -30,8 +30,15 @@ public abstract class MinigameTypeBase implements Listener{
 	public abstract boolean cannotStart(Minigame mgm, MinigamePlayer player);
 
 	public abstract boolean teleportOnJoin(MinigamePlayer player, Minigame mgm);
-	
-	public abstract boolean joinMinigame(MinigamePlayer player, Minigame mgm);
+
+    /**
+     * This should actually join the Player to the game Type
+     *
+     * @param player the player
+     * @param mgm    the Game
+     * @returns True if they join1
+     */
+    public abstract boolean joinMinigame(MinigamePlayer player, Minigame mgm);
 	
 	public abstract void quitMinigame(MinigamePlayer player, Minigame mgm, boolean forced);
 	
@@ -39,8 +46,8 @@ public abstract class MinigameTypeBase implements Listener{
 	
 	public void callGeneralQuit(MinigamePlayer player, Minigame minigame){
 			if(!player.getPlayer().isDead()){
-				if(player.getPlayer().getWorld() != minigame.getQuitPosition().getWorld() && player.getPlayer().hasPermission("minigame.set.quit") && plugin.getConfig().getBoolean("warnings")){
-					player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Quit location is across worlds! This may cause some server performance issues!", "error");
+				if(player.getPlayer().getWorld() != minigame.getQuitPosition().getWorld() && player.getPlayer().hasPermission("minigame.set.quit") && plugin.getConfig().getBoolean("warnings")) {
+                    player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Quit location is across worlds! This may cause some server performance issues!", MinigameMessageType.ERROR);
 				}
 				player.teleport(minigame.getQuitPosition());
 			}
@@ -69,6 +76,6 @@ public abstract class MinigameTypeBase implements Listener{
 //		else{
 //			player.addTempRewardItem(reward.getItem());
 //		}
-//		player.sendMessage(MinigameUtils.formStr("player.end.awardItem", reward.getItem().getAmount(), MinigameUtils.getItemStackName(reward.getItem())), "win");
+//		player.sendMessage(MinigameUtils.formStr("player.end.awardItem", reward.getItem().getAmount(), MinigameUtils.getItemStackName(reward.getItem())), MinigameMessageType.WIN);
 //	}
 }

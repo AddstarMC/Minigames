@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.events.StopGlobalMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MinigameTypeBase;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.modules.*;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
@@ -18,20 +19,20 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.*;
 
-public class MinigameData {
-	private Map<String, Minigame> minigames = new HashMap<String, Minigame>();
-	private Map<String, Configuration> configs = new HashMap<String, Configuration>();
-	private Map<MinigameType, MinigameTypeBase> minigameTypes = new HashMap<MinigameType, MinigameTypeBase>();
-	private Map<String, PlayerLoadout> globalLoadouts = new HashMap<String, PlayerLoadout>();
-	private Map<String, RewardsFlag> rewardSigns = new HashMap<String, RewardsFlag>();
+public class MinigameManager {
+	private Map<String, Minigame> minigames = new HashMap<>();
+	private Map<String, Configuration> configs = new HashMap<>();
+	private Map<MinigameType, MinigameTypeBase> minigameTypes = new HashMap<>();
+	private Map<String, PlayerLoadout> globalLoadouts = new HashMap<>();
+	private Map<String, RewardsFlag> rewardSigns = new HashMap<>();
 	private static Minigames plugin = Minigames.plugin;
 	private MinigameSave rewardSignsSave = null;
-	private Map<Minigame, List<String>> claimedScoreSignsRed = new HashMap<Minigame, List<String>>();
-	private Map<Minigame, List<String>> claimedScoreSignsBlue = new HashMap<Minigame, List<String>>();
-	
-	private List<Class<? extends MinigameModule>> modules = new ArrayList<Class<? extends MinigameModule>>();
-	
-	public MinigameData(){
+	private Map<Minigame, List<String>> claimedScoreSignsRed = new HashMap<>();
+	private Map<Minigame, List<String>> claimedScoreSignsBlue = new HashMap<>();
+
+	private List<Class<? extends MinigameModule>> modules = new ArrayList<>();
+
+	public MinigameManager() {
 		
 		modules.add(LoadoutModule.class);
 		modules.add(LobbySettingsModule.class);
@@ -78,13 +79,13 @@ public class MinigameData {
 			if(caller == null)
 				Bukkit.getLogger().info(MinigameUtils.getLang("minigame.error.invalidMechanic"));
 			else
-				caller.sendMessage(MinigameUtils.getLang("minigame.error.invalidMechanic"), "error");
+				caller.sendMessage(MinigameUtils.getLang("minigame.error.invalidMechanic"), MinigameMessageType.ERROR);
 		}
 		else if(!canStart){
 			if(caller == null)
 				Bukkit.getLogger().info(MinigameUtils.getLang("minigame.error.mechanicStartFail"));
 			else
-				caller.sendMessage(MinigameUtils.getLang("minigame.error.mechanicStartFail"), "error");
+				caller.sendMessage(MinigameUtils.getLang("minigame.error.mechanicStartFail"), MinigameMessageType.ERROR);
 		}
 	}
 	
@@ -175,19 +176,22 @@ public class MinigameData {
 	}
 
 	public void addBlockRecorderData(Minigame minigame) {
-		RecorderData d = minigame.getBlockRecorder();
-		d.setCreatedRegenBlocks(true);
-		Location cur = new Location(minigame.getRegenArea1().getWorld(), 0, 0, 0);
-		for (double y = d.getRegenMinY(); y <= d.getRegenMaxY(); y++) {
-			cur.setY(y);
-			for (double x = d.getRegenMinX(); x <= d.getRegenMaxX(); x++) {
-				cur.setX(x);
-				for (double z = d.getRegenMinZ(); z <= d.getRegenMaxZ(); z++) {
-					cur.setZ(z);
-					d.addBlock(cur.getBlock(), null);
+		if (minigame.getBlockRecorder().hasRegenArea() && !minigame.getBlockRecorder().hasCreatedRegenBlocks()) {
+			RecorderData d = minigame.getBlockRecorder();
+			d.setCreatedRegenBlocks(true);
+			Location cur = new Location(minigame.getRegenArea1().getWorld(), 0, 0, 0);
+			for (double y = d.getRegenMinY(); y <= d.getRegenMaxY(); y++) {
+				cur.setY(y);
+				for (double x = d.getRegenMinX(); x <= d.getRegenMaxX(); x++) {
+					cur.setX(x);
+					for (double z = d.getRegenMinZ(); z <= d.getRegenMaxZ(); z++) {
+						cur.setZ(z);
+						d.addBlock(cur.getBlock(), null);
+					}
 				}
 			}
 		}
+		
 	}
 	
 	public Location minigameLocationsShort(String minigame, String type, Configuration save) {
@@ -233,7 +237,7 @@ public class MinigameData {
 	}
 	
 	public List<String> getMinigameTypesList(){
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		for(MinigameType type : getMinigameTypes()){
 			list.add(type.getName());
 		}
@@ -273,28 +277,41 @@ public class MinigameData {
 	public boolean hasLoadout(String name){
 		return globalLoadouts.containsKey(name);
 	}
-	
-	public void sendMinigameMessage(Minigame minigame, String message, String type, MinigamePlayer exclude){
+
+	public void sendMinigameMessage(Minigame minigame, String message) {
+		sendMinigameMessage(minigame, message, MinigameMessageType.INFO);
+	}
+
+	public void sendMinigameMessage(Minigame minigame, String message, MinigameMessageType type) {
+		sendMinigameMessage(minigame, message, type, (List<MinigamePlayer>) null);
+	}
+
+	public void sendMinigameMessage(Minigame minigame, String message, MinigameMessageType type, MinigamePlayer exclude) {
+		sendMinigameMessage(minigame, message, type, Collections.singletonList(exclude));
+	}
+
+	public void sendMinigameMessage(Minigame minigame, String message, MinigameMessageType type, List<MinigamePlayer> exclude) {
 		if(!minigame.getShowPlayerBroadcasts())return;
 		String finalMessage = "";
-		if(type == null){
-			type = "info";
+		if (type == null) type = MinigameMessageType.INFO;
+		switch (type) {
+			case ERROR:
+				finalMessage = ChatColor.RED + "[Minigames] " + ChatColor.WHITE;
+				break;
+			case INFO:
+			default:
+				finalMessage = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
+				break;
 		}
-		if(type.equals("error")){
-			finalMessage = ChatColor.RED + "[Minigames] " + ChatColor.WHITE;
-		}
-		else{
-			finalMessage = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
-		}
-		
 		finalMessage += message;
-		for(MinigamePlayer pl : minigame.getPlayers()){
-			if(exclude == null || exclude != pl)
-				pl.sendMessage(finalMessage);
+		List<MinigamePlayer> sendto = new ArrayList<>();
+		Collections.copy(minigame.getPlayers(), sendto);
+		sendto.addAll(minigame.getSpectators());
+		if (exclude != null) {
+			sendto.removeAll(exclude);
 		}
-		for(MinigamePlayer pl : minigame.getSpectators()){
-			if(exclude == null || exclude != pl)
-				pl.sendMessage(finalMessage);
+		for (MinigamePlayer pl : sendto) {
+			pl.sendInfoMessage(finalMessage);
 		}
 	}
 	
@@ -367,26 +384,23 @@ public class MinigameData {
 	public boolean hasClaimedScore(Minigame mg, Location loc, int team){
 		String id = MinigameUtils.createLocationID(loc);
 		if(team == 0){
-			if(claimedScoreSignsRed.containsKey(mg) && claimedScoreSignsRed.get(mg).contains(id))
-				return true;
+			return claimedScoreSignsRed.containsKey(mg) && claimedScoreSignsRed.get(mg).contains(id);
 		}
 		else{
-			if(claimedScoreSignsBlue.containsKey(mg) && claimedScoreSignsBlue.get(mg).contains(id))
-				return true;
+			return claimedScoreSignsBlue.containsKey(mg) && claimedScoreSignsBlue.get(mg).contains(id);
 		}
-		return false;
 	}
 	
 	public void addClaimedScore(Minigame mg, Location loc, int team){
 		String id = MinigameUtils.createLocationID(loc);
 		if(team == 0){
 			if(!claimedScoreSignsRed.containsKey(mg))
-				claimedScoreSignsRed.put(mg, new ArrayList<String>());
+				claimedScoreSignsRed.put(mg, new ArrayList<>());
 			claimedScoreSignsRed.get(mg).add(id);
 		}
 		else{
 			if(!claimedScoreSignsBlue.containsKey(mg))
-				claimedScoreSignsBlue.put(mg, new ArrayList<String>());
+				claimedScoreSignsBlue.put(mg, new ArrayList<>());
 			claimedScoreSignsBlue.get(mg).add(id);
 		}
 	}
@@ -397,4 +411,51 @@ public class MinigameData {
 		if(claimedScoreSignsBlue.containsKey(mg))
 			claimedScoreSignsBlue.remove(mg);
 	}
+
+	public boolean minigameMechanicCheck(Minigame minigame, MinigamePlayer player) {
+		return minigame.getMechanic().checkCanStart(minigame, player);
+	}
+
+	public boolean minigameStartStateCheck(Minigame minigame, MinigamePlayer player) {
+		if (!minigame.isEnabled() && !player.getPlayer().hasPermission("minigame.join.disabled")) {
+			player.sendMessage(MinigameUtils.getLang("minigame.error.notEnabled"), MinigameMessageType.ERROR);
+			return false;
+		} else if (!minigameMechanicCheck(minigame, player)) {
+			player.sendMessage(MinigameUtils.getLang("minigame.error.mechanicStartFail"), MinigameMessageType.ERROR);
+			return false;
+		} else if (minigame.getState() == MinigameState.REGENERATING) {
+			player.sendMessage(MinigameUtils.getLang("minigame.error.regenerating"), MinigameMessageType.ERROR);
+			return false;
+		} else if (minigame.getState() == MinigameState.STARTED && !minigame.canLateJoin()) {
+			player.sendMessage(MinigameUtils.getLang("minigame.started"), MinigameMessageType.ERROR);
+			return false;
+		}
+		return true;
+	}
+
+	public boolean minigameStartSetupCheck(Minigame minigame, MinigamePlayer player) {
+		if (minigame.getEndPosition() == null) {
+			player.sendMessage(MinigameUtils.getLang("minigame.error.noEnd"), MinigameMessageType.ERROR);
+			return false;
+		} else if (minigame.getQuitPosition() == null) {
+			player.sendMessage(MinigameUtils.getLang("minigame.error.noQuit"), MinigameMessageType.ERROR);
+			return false;
+		} else if (minigameType(minigame.getType()).cannotStart(minigame, player)) { //type specific reasons we cannot start.
+			player.sendMessage(MinigameUtils.getLang("minigame.error.noQuit"), MinigameMessageType.ERROR);
+			return false;
+		} else if (!minigame.getMechanic().validTypes().contains(minigame.getType())) {
+			player.sendMessage(MinigameUtils.getLang("minigame.error.invalidType"), MinigameMessageType.ERROR);
+			return false;
+		} else if (minigame.getStartLocations().size() <= 0 ||
+				(minigame.isTeamGame() && !TeamsModule.getMinigameModule(minigame).hasTeamStartLocations())) {
+			player.sendMessage(MinigameUtils.getLang("minigame.error.noStart"), MinigameMessageType.ERROR);
+			return false;
+		}
+		return true;
+	}
+
+	public boolean teleportPlayerOnJoin(Minigame minigame, MinigamePlayer player) {
+		return minigameType(minigame.getType()).teleportOnJoin(player, minigame);
+	}
+
 }

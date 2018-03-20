@@ -1,16 +1,15 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SetGameMechanicCommand implements ICommand {
 
@@ -85,7 +84,7 @@ public class SetGameMechanicCommand implements ICommand {
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> types = new ArrayList<String>(GameMechanics.getGameMechanics().size());
+            List<String> types = new ArrayList<>(GameMechanics.getGameMechanics().size());
 			for(GameMechanicBase type : GameMechanics.getGameMechanics()){
 				types.add(type.getMechanic());
 			}

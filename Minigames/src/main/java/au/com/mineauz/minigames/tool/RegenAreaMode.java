@@ -1,12 +1,12 @@
 package au.com.mineauz.minigames.tool;
 
-import org.bukkit.Material;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
+import org.bukkit.Material;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class RegenAreaMode implements ToolMode {
 
@@ -36,15 +36,15 @@ public class RegenAreaMode implements ToolMode {
 		if(player.hasSelection()){
 			minigame.setRegenArea1(player.getSelectionPoints()[0]);
 			minigame.setRegenArea2(player.getSelectionPoints()[1]);
-			player.sendMessage("Created a regeneration area for " + minigame, null);
+			player.sendInfoMessage("Created a regeneration area for " + minigame);
 		}
 		else if(player.getSelectionPoints()[1] == null){
-			player.sendMessage("You must make a selection with right click first!", "error");
+			player.sendMessage("You must make a selection with right click first!", MinigameMessageType.INFO);
 		}
 		else{
 			minigame.setRegenArea1(null);
 			minigame.setRegenArea2(null);
-			player.sendMessage("Cleared regeneration area from " + minigame, null);
+			player.sendMessage("Cleared regeneration area from " + minigame, MinigameMessageType.INFO);
 		}
 	}
 
@@ -54,7 +54,7 @@ public class RegenAreaMode implements ToolMode {
 		if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
 			player.addSelectionPoint(event.getClickedBlock().getLocation());
 			if(player.getSelectionPoints()[1] != null){
-				player.sendMessage("Left click to finalise selection", null);
+				player.sendInfoMessage("Left click to finalise selection");
 			}
 		}
 	}
@@ -64,10 +64,10 @@ public class RegenAreaMode implements ToolMode {
 		if(minigame.getRegenArea1() != null && minigame.getRegenArea2() != null){
 			player.setSelection(minigame.getRegenArea1(), minigame.getRegenArea2());
 			player.showSelection(false);
-			player.sendMessage("Selected regeneration area in " + minigame, null);
+			player.sendInfoMessage("Selected regeneration area in " + minigame);
 		}
 		else{
-			player.sendMessage("No regeneration area selected for " + minigame, "error");
+			player.sendMessage("No regeneration area selected for " + minigame, MinigameMessageType.ERROR);
 		}
 	}
 
@@ -76,10 +76,10 @@ public class RegenAreaMode implements ToolMode {
 		if(minigame.getRegenArea1() != null && minigame.getRegenArea2() != null){
 			player.setSelection(minigame.getRegenArea1(), minigame.getRegenArea2());
 			player.showSelection(true);
-			player.sendMessage("Deselected regeneration area in " + minigame, null);
+			player.sendInfoMessage("Deselected regeneration area in " + minigame);
 		}
 		else{
-			player.sendMessage("No regen area selected for " + minigame, "error");
+			player.sendMessage("No regen area selected for " + minigame, MinigameMessageType.ERROR);
 		}
 	}
 

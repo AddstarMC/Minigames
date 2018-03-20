@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
-import au.com.mineauz.minigames.MinigameData;
+import au.com.mineauz.minigames.MinigameManager;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DisableAllCommand implements ICommand {
 
@@ -56,8 +55,8 @@ public class DisableAllCommand implements ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
-		MinigameData mdata = Minigames.plugin.mdata;
-		List<Minigame> minigames = new ArrayList<Minigame>(mdata.getAllMinigames().values());
+        MinigameManager mdata = Minigames.plugin.minigameManager;
+        List<Minigame> minigames = new ArrayList<>(mdata.getAllMinigames().values());
 		if(args != null){
 			for(String arg : args){
 				if(mdata.hasMinigame(arg))
@@ -76,7 +75,7 @@ public class DisableAllCommand implements ICommand {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
-		List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+        List<String> mgs = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
 		return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
 	}
 

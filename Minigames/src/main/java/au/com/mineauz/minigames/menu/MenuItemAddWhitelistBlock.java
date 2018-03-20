@@ -1,12 +1,12 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
+import java.util.List;
 
 public class MenuItemAddWhitelistBlock extends MenuItem{
 	
@@ -62,7 +62,7 @@ public class MenuItemAddWhitelistBlock extends MenuItem{
 		
 		getContainer().cancelReopenTimer();
 		getContainer().displayMenu(getContainer().getViewer());
-		
-		getContainer().getViewer().sendMessage("No material by the name \"" + entry + "\" was found!", "error");
+
+        getContainer().getViewer().sendMessage("No material by the name \"" + entry + "\" was found!", MinigameMessageType.ERROR);
 	}
 }

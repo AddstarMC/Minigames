@@ -1,17 +1,16 @@
 package au.com.mineauz.minigames.commands;
 
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.minigame.Minigame;
 
 public class ReloadCommand implements ICommand{
 
@@ -59,12 +58,12 @@ public class ReloadCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		for(Player p : plugin.getServer().getOnlinePlayers()){
-			if(plugin.pdata.getMinigamePlayer(p).isInMinigame()){
-				plugin.pdata.quitMinigame(plugin.pdata.getMinigamePlayer(p), true);
+            if (plugin.playerManager.getMinigamePlayer(p).isInMinigame()) {
+                plugin.playerManager.quitMinigame(plugin.playerManager.getMinigamePlayer(p), true);
 			}
 		}
-		
-		Minigames.plugin.mdata.getAllMinigames().clear();
+
+        Minigames.plugin.minigameManager.getAllMinigames().clear();
 		
 		try{
 			plugin.getConfig().load(plugin.getDataFolder() + "/config.yml");
@@ -83,19 +82,18 @@ public class ReloadCommand implements ICommand{
 			plugin.getLogger().log(Level.SEVERE, "Failed to load config!");
 			e.printStackTrace();
 		}
-		
-		List<String> mgs = new ArrayList<String>();
+
+        List<String> mgs = new ArrayList<>();
 		if(Minigames.plugin.getConfig().contains("minigames")){
 			mgs = Minigames.plugin.getConfig().getStringList("minigames");
 		}
-		final List<String> allMGS = new ArrayList<String>();
-		allMGS.addAll(mgs);
+        final List<String> allMGS = new ArrayList<String>(mgs);
 		
 		if(!mgs.isEmpty()){
 			for(String mgm : allMGS){
 				Minigame game = new Minigame(mgm);
 				game.loadMinigame();
-				Minigames.plugin.mdata.addMinigame(game);
+                Minigames.plugin.minigameManager.addMinigame(game);
 			}
 		}
 		

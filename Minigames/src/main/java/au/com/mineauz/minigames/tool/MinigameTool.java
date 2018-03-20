@@ -1,25 +1,19 @@
 package au.com.mineauz.minigames.tool;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.TeamColor;
+import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.InteractionInterface;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
-import au.com.mineauz.minigames.menu.MenuItemToolMode;
-import au.com.mineauz.minigames.menu.MenuItemToolTeam;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.TeamColor;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MinigameTool {
 	private ItemStack tool;
@@ -32,8 +26,8 @@ public class MinigameTool {
 		ItemMeta meta = tool.getItemMeta();
 		if(meta.getLore() != null){
 			String mg = ChatColor.stripColor(meta.getLore().get(0)).replace("Minigame: ", "");
-			if(Minigames.plugin.mdata.hasMinigame(mg))
-				minigame = Minigames.plugin.mdata.getMinigame(mg);
+            if (Minigames.plugin.minigameManager.hasMinigame(mg))
+                minigame = Minigames.plugin.minigameManager.getMinigame(mg);
 			
 			String md = ChatColor.stripColor(meta.getLore().get(1)).replace("Mode: ", "").replace(" ", "_");
 			mode = ToolModes.getToolMode(md);
@@ -42,7 +36,7 @@ public class MinigameTool {
 		}
 		else{
 			meta.setDisplayName(ChatColor.GREEN + "Minigame Tool");
-			List<String> lore = new ArrayList<String>();
+            List<String> lore = new ArrayList<>();
 			lore.add(ChatColor.AQUA + "Minigame: " + ChatColor.WHITE + "None");
 			lore.add(ChatColor.AQUA + "Mode: " + ChatColor.WHITE + "None");
 			lore.add(ChatColor.AQUA + "Team: " + ChatColor.WHITE + "None");
@@ -128,7 +122,7 @@ public class MinigameTool {
 	public void removeSetting(String name){
 		ItemMeta meta = tool.getItemMeta();
 		List<String> lore = meta.getLore();
-		for(String l : new ArrayList<String>(lore)){
+        for (String l : new ArrayList<>(lore)) {
 			if(ChatColor.stripColor(l).startsWith(name)){
 				lore.remove(l);
 				break;
@@ -167,8 +161,8 @@ public class MinigameTool {
 		
 		men.addItem(mideselect, men.getSize() - 1);
 		men.addItem(miselect, men.getSize() - 2);
-		
-		List<String> teams = new ArrayList<String>(TeamColor.values().length + 1);
+
+        List<String> teams = new ArrayList<>(TeamColor.values().length + 1);
 		for(TeamColor col : TeamColor.values())
 			teams.add(MinigameUtils.capitalize(col.toString().replace("_", " ")));
 		teams.add("None");

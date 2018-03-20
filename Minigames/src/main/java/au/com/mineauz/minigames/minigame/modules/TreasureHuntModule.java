@@ -1,16 +1,6 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -22,6 +12,12 @@ import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemTime;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.*;
 
 public class TreasureHuntModule extends MinigameModule{
 	
@@ -36,8 +32,8 @@ public class TreasureHuntModule extends MinigameModule{
 	//Unsaved Data
 	private Location treasureLocation = null;
 	private boolean treasureFound = false;
-	private ArrayList<String> curHints = new ArrayList<String>();
-	private Map<UUID, Long> hintUse = new HashMap<UUID, Long>();
+    private ArrayList<String> curHints = new ArrayList<>();
+    private Map<UUID, Long> hintUse = new HashMap<>();
 
 	public TreasureHuntModule(Minigame mgm) {
 		super(mgm);
@@ -50,7 +46,7 @@ public class TreasureHuntModule extends MinigameModule{
 
 	@Override
 	public Map<String, Flag<?>> getFlags() {
-		Map<String, Flag<?>> flags = new HashMap<String, Flag<?>>();
+        Map<String, Flag<?>> flags = new HashMap<>();
 		flags.put(location.getName(), location);
 		flags.put(maxRadius.getName(), maxRadius);
 		flags.put(maxHeight.getName(), maxHeight);
@@ -82,21 +78,21 @@ public class TreasureHuntModule extends MinigameModule{
 	@Override
 	public boolean displayMechanicSettings(Menu previous){
 		Menu treasureHunt = new Menu(6, getMinigame().getName(false), previous.getViewer());
-		
-		List<MenuItem> itemsTreasureHunt = new ArrayList<MenuItem>(5);
+
+        List<MenuItem> itemsTreasureHunt = new ArrayList<>(5);
 		itemsTreasureHunt.add(location.getMenuItem("Location Name", Material.BED, MinigameUtils.stringToList("Name to appear when;treasure spawns")));
 		itemsTreasureHunt.add(maxRadius.getMenuItem("Max. Radius", Material.ENDER_PEARL, 10, null));
-		List<String> maxHeightDes = new ArrayList<String>();
+        List<String> maxHeightDes = new ArrayList<>();
 		maxHeightDes.add("Max. height of where a");
 		maxHeightDes.add("chest can generate.");
 		maxHeightDes.add("Can still move above to");
 		maxHeightDes.add("avoid terrain");
 		itemsTreasureHunt.add(maxHeight.getMenuItem("Max. Height", Material.BEACON, maxHeightDes, 1, 256));
-		List<String> minDes = new ArrayList<String>();
+        List<String> minDes = new ArrayList<>();
 		minDes.add("Minimum items to");
 		minDes.add("spawn in chest.");
 		itemsTreasureHunt.add(minTreasure.getMenuItem("Min. Items", Material.STEP, minDes, 0, 27));
-		List<String> maxDes = new ArrayList<String>();
+        List<String> maxDes = new ArrayList<>();
 		maxDes.add("Maximum items to");
 		maxDes.add("spawn in chest.");
 		itemsTreasureHunt.add(maxTreasure.getMenuItem("Max. Items", Material.STONE, maxDes, 0, 27));
@@ -224,44 +220,44 @@ public class TreasureHuntModule extends MinigameModule{
 			int maxradius = getMaxRadius();
 			if(canUseHint(player)){
 				if(distance > maxradius){
-					player.sendMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance6"));
+                    player.sendInfoMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance6"));
 				}
 				else if(distance > maxradius / 2){
-					player.sendMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance5"));
+                    player.sendInfoMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance5"));
 				}
 				else if(distance > maxradius / 4){
-					player.sendMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance4"));
+                    player.sendInfoMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance4"));
 				}
 				else if(distance > 50){
-					player.sendMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance3"));
+                    player.sendInfoMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance3"));
 				}
 				else if(distance > 20){
-					player.sendMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance2"));
+                    player.sendInfoMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance2"));
 				}
 				else if(distance < 20){
-					player.sendMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance1"));
+                    player.sendInfoMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance1"));
 				}
-				player.sendMessage(ChatColor.GRAY + MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.timeLeft", 
+                player.sendInfoMessage(ChatColor.GRAY + MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.timeLeft",
 						MinigameUtils.convertTime(getMinigame().getMinigameTimer().getTimeLeft())));
-				player.sendMessage(ChatColor.GREEN + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.globalHints"));
+                player.sendInfoMessage(ChatColor.GREEN + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.globalHints"));
 				if(getCurrentHints().isEmpty()){
-					player.sendMessage(ChatColor.GRAY + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.noHint"));
+                    player.sendInfoMessage(ChatColor.GRAY + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.noHint"));
 				}
 				else{
 					for(String h : getCurrentHints()){
-						player.sendMessage(h);
+                        player.sendInfoMessage(h);
 					}
 				}
 				
 				addHintUse(player);
 			}
 			else{
-				player.sendMessage(ChatColor.RED + MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.noUse", 
+                player.sendInfoMessage(ChatColor.RED + MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.noUse",
 						getMinigame().getName(true)));
 				int nextuse = (300000 - (int) (System.currentTimeMillis() - getLastHintUse(player))) / 1000;
-				player.sendMessage(ChatColor.GRAY + MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.nextUse", 
+                player.sendInfoMessage(ChatColor.GRAY + MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.nextUse",
 						MinigameUtils.convertTime(nextuse)));
-				player.sendMessage(ChatColor.GRAY + MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.treasureTimeLeft", 
+                player.sendInfoMessage(ChatColor.GRAY + MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.treasureTimeLeft",
 						MinigameUtils.convertTime(getMinigame().getMinigameTimer().getTimeLeft())));
 			}
 		}
@@ -270,7 +266,7 @@ public class TreasureHuntModule extends MinigameModule{
 			if(world.equalsIgnoreCase("world")){
 				world = MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.wrongWorld.overworld");
 			}
-			player.sendMessage(ChatColor.RED + MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.wrongWorld", world));
+            player.sendMessage(MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.wrongWorld", world), MinigameMessageType.ERROR);
 		}
 	}
 	

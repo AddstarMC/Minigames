@@ -1,12 +1,11 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigameUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
-import au.com.mineauz.minigames.MinigameUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuItemTime extends MenuItemInteger{
 
@@ -31,7 +30,7 @@ public class MenuItemTime extends MenuItemInteger{
 				description.add(0, ChatColor.GREEN.toString() + MinigameUtils.convertTime(getValue().getValue(), true));
 		}
 		else{
-			description = new ArrayList<String>();
+            description = new ArrayList<>();
 			description.add(ChatColor.GREEN.toString() + MinigameUtils.convertTime(getValue().getValue(), true));
 		}
 		

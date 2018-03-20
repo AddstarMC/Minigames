@@ -1,5 +1,9 @@
 package au.com.mineauz.minigames.blockRecorder;
 
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigamePlayerManager;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,8 +17,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
@@ -27,14 +31,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.InventoryHolder;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.PlayerData;
-import au.com.mineauz.minigames.minigame.Minigame;
-
 public class BasicRecorder implements Listener{
-	
-	private PlayerData pdata = Minigames.plugin.pdata;
+
+    private MinigamePlayerManager pdata = Minigames.plugin.playerManager;
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	private void blockBreak(BlockBreakEvent event){
@@ -274,7 +273,7 @@ public class BasicRecorder implements Listener{
 	
 	@EventHandler(ignoreCancelled = true)
 	private void entityExplode(EntityExplodeEvent event){
-		for(Minigame mg : Minigames.plugin.mdata.getAllMinigames().values()){
+        for (Minigame mg : Minigames.plugin.minigameManager.getAllMinigames().values()) {
 			if(!mg.hasPlayers() && !mg.hasStarted() && mg.getBlockRecorder().hasRegenArea() && mg.getBlockRecorder().blockInRegenArea(event.getLocation())){
 				event.setCancelled(true);
 				break;

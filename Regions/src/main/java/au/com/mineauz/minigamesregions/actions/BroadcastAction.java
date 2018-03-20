@@ -1,13 +1,6 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.Map;
-import java.util.Set;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
-import com.google.common.collect.ImmutableSet;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
@@ -19,6 +12,12 @@ import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.Map;
+import java.util.Set;
 
 public class BroadcastAction extends AbstractAction{
 	
@@ -118,9 +117,9 @@ public class BroadcastAction extends AbstractAction{
 	}
 	
 	private void execute(MinigamePlayer player, ScriptObject base){
-		String type = "info";
+		MinigameMessageType type = MinigameMessageType.INFO;
 		if(redText.getFlag())
-			type = "error";
+			type = MinigameMessageType.ERROR;
 		MinigamePlayer exclude = null;
 		if(excludeExecutor.getFlag())
 			exclude = player;
@@ -130,11 +129,11 @@ public class BroadcastAction extends AbstractAction{
 		if (player != null) {
 			message = message.replace("%player%", player.getDisplayName(player.getMinigame().usePlayerDisplayNames()));
 		}
-		
 		// New expression system
 		message = ExpressionParser.stringResolve(message, base, true, true);
-		
-		Minigames.plugin.mdata.sendMinigameMessage(player.getMinigame(), message, type, exclude);
+		if (player != null)
+			Minigames.plugin.minigameManager.sendMinigameMessage(player.getMinigame(), message, type, exclude);
+
 	}
 
 	@Override

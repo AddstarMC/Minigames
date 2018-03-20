@@ -1,35 +1,25 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
-import com.google.common.collect.ImmutableMap;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.config.TeamSetFlag;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemAddTeam;
-import au.com.mineauz.minigames.menu.MenuItemList;
-import au.com.mineauz.minigames.menu.MenuItemNewLine;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuItemTeam;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
+import com.google.common.collect.ImmutableMap;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TeamsModule extends MinigameModule {
-	private Map<TeamColor, Team> teams = new HashMap<TeamColor, Team>();
+    private Map<TeamColor, Team> teams = new HashMap<>();
 	private TeamSetFlag teamsFlag;
 	private StringFlag defaultWinner = new StringFlag(null, "defaultwinner");
 	
@@ -46,7 +36,7 @@ public class TeamsModule extends MinigameModule {
 	
 	@Override
 	public Map<String, Flag<?>> getFlags(){
-		Map<String, Flag<?>> flags = new HashMap<String, Flag<?>>();
+        Map<String, Flag<?>> flags = new HashMap<>();
 		flags.put(teamsFlag.getName(), teamsFlag);
 		flags.put(defaultWinner.getName(), defaultWinner);
 		return flags;
@@ -63,25 +53,8 @@ public class TeamsModule extends MinigameModule {
 
 	@Override
 	public void load(FileConfiguration config) {
-		if(config.contains(getMinigame() + ".startposred")){ //TODO: Remove after 1.7
-			if(!hasTeam(TeamColor.RED))
-				addTeam(TeamColor.RED);
-			Set<String> locs = config.getConfigurationSection(getMinigame() + ".startposred").getKeys(false);
-			
-			for(int i = 0; i < locs.size(); i++){
-				getTeam(TeamColor.RED).addStartLocation(Minigames.plugin.mdata.minigameLocations(getMinigame().getName(false), 
-						"startposred." + String.valueOf(i), config));
-			}
-		}
-		if(config.contains(getMinigame() + ".startposblue")){ //TODO: Remove after 1.7
-			if(!hasTeam(TeamColor.BLUE))
-				addTeam(TeamColor.BLUE);
-			Set<String> locs = config.getConfigurationSection(getMinigame() + ".startposblue").getKeys(false);
-			
-			for(int i = 0; i < locs.size(); i++){
-				getTeam(TeamColor.BLUE).addStartLocation(Minigames.plugin.mdata.minigameLocations(getMinigame().getName(false), 
-						"startposblue." + String.valueOf(i), config));
-			}
+        if (config.contains(getMinigame() + ".startposred") || config.contains(getMinigame() + ".startposblue")) {
+            Minigames.plugin.getLogger().warning(config.getCurrentPath() + " contains unsupported configurations: " + getMinigame() + ".startpos*");
 		}
 	}
 	
@@ -203,8 +176,8 @@ public class TeamsModule extends MinigameModule {
 	public void addEditMenuOptions(Menu menu) {
 		Menu m = new Menu(6, "Teams", menu.getViewer());
 		m.setPreviousPage(menu);
-		List<MenuItem> items = new ArrayList<MenuItem>();
-		List<String> teams = new ArrayList<String>(this.teams.size() + 1);
+        List<MenuItem> items = new ArrayList<>();
+        List<String> teams = new ArrayList<>(this.teams.size() + 1);
 		for(TeamColor t : this.teams.keySet()){
 			teams.add(MinigameUtils.capitalize(t.toString().replace("_", " ")));
 		}

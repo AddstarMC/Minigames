@@ -1,17 +1,16 @@
 package au.com.mineauz.minigames.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.MultiplayerTimer;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StartCommand implements ICommand{
 
@@ -59,21 +58,21 @@ public class StartCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-			Minigame mgm = plugin.mdata.getMinigame(args[0]);
+            Minigame mgm = plugin.minigameManager.getMinigame(args[0]);
 			
 			if(mgm != null){
 				if(!mgm.isEnabled() && mgm.getType() == MinigameType.GLOBAL){
 					MinigamePlayer caller = null;
 					if(sender instanceof Player)
-						caller = plugin.pdata.getMinigamePlayer((Player)sender);
-					plugin.mdata.startGlobalMinigame(mgm, caller);
+                        caller = plugin.playerManager.getMinigamePlayer((Player) sender);
+                    plugin.minigameManager.startGlobalMinigame(mgm, caller);
 				}
 				else if(mgm.getType() != MinigameType.GLOBAL && mgm.getType() != MinigameType.SINGLEPLAYER && mgm.hasPlayers()){
 					if(mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
 						if(mgm.getMpTimer() == null){
 							mgm.setMpTimer(new MultiplayerTimer(mgm));
 						}
-						mgm.getMpTimer().setPlayerWaitTime(0);
+                        mgm.getMpTimer().setCurrentLobbyWaitTime(0);
 						mgm.getMpTimer().startTimer();
 					}
 					else
@@ -94,7 +93,7 @@ public class StartCommand implements ICommand{
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
-		List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+        List<String> mgs = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
 		return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
 	}
 

@@ -1,38 +1,30 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.config.EnumFlag;
+import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.reward.RewardType;
+import au.com.mineauz.minigames.minigame.reward.Rewards;
+import au.com.mineauz.minigames.stats.StoredGameStats;
+import com.google.common.base.Functions;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.google.common.base.Functions;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.EnumFlag;
-import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.InteractionInterface;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemBack;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
-import au.com.mineauz.minigames.menu.MenuItemList;
-import au.com.mineauz.minigames.menu.MenuItemNewLine;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.reward.RewardType;
-import au.com.mineauz.minigames.minigame.reward.Rewards;
-import au.com.mineauz.minigames.stats.StoredGameStats;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements RewardScheme {
 	private EnumFlag<Comparison> comparisonType;
@@ -43,10 +35,10 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 	private TreeMap<T, Rewards> secondaryRewards;
 	
 	public HierarchyRewardScheme() {
-		primaryRewards = new TreeMap<T, Rewards>();
-		secondaryRewards = new TreeMap<T, Rewards>();
-		
-		comparisonType = new EnumFlag<Comparison>(Comparison.Greater, "comparison");
+		primaryRewards = new TreeMap<>();
+		secondaryRewards = new TreeMap<>();
+
+		comparisonType = new EnumFlag<>(Comparison.Greater, "comparison");
 		enableRewardsOnLoss = new BooleanFlag(false, "loss-rewards");
 		lossUsesSecondary = new BooleanFlag(true, "loss-use-secondary");
 	}
@@ -308,13 +300,13 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 			try {
 				T value = loadValue(entry);
 				if (map.containsKey(value)) {
-					getContainer().getViewer().sendMessage("You cannot add duplicate entries", "error");
+					getContainer().getViewer().sendMessage("You cannot add duplicate entries", MinigameMessageType.ERROR);
 				} else {
 					updateValue(value);
 					updateDescription();
 				}
 			} catch (IllegalArgumentException e) {
-				getContainer().getViewer().sendMessage("Invalid value entry!", "error");
+				getContainer().getViewer().sendMessage("Invalid value entry!", MinigameMessageType.ERROR);
 			}
 			
 			getContainer().cancelReopenTimer();
@@ -371,14 +363,14 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 				Rewards reward = new Rewards();
 				
 				if (map.containsKey(value)) {
-					getContainer().getViewer().sendMessage("You cannot add duplicate entries", "error");
+					getContainer().getViewer().sendMessage("You cannot add duplicate entries", MinigameMessageType.ERROR);
 				} else {
 					map.put(value, reward);
 					showRewardsMenu(map, getContainer().getViewer(), getContainer().getPreviousPage());
 					show = false;
 				}
 			} catch (IllegalArgumentException e) {
-				getContainer().getViewer().sendMessage("Invalid value entry!", "error");
+				getContainer().getViewer().sendMessage("Invalid value entry!", MinigameMessageType.ERROR);
 			}
 			
 			getContainer().cancelReopenTimer();

@@ -44,5 +44,12 @@
             </plugin>
         </plugins>
     </build>
-
+    <profiles>
+        <profile>
+            <id>PAPER</id>
+            <build>
+                <finalName>${project.artifactId}-PAPER-${project.parent.version}</finalName>
+            </build>
+        </profile>
+    </profiles>
 </project>

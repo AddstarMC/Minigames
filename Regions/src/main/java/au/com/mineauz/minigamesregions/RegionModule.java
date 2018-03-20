@@ -1,42 +1,32 @@
 package au.com.mineauz.minigamesregions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigamesregions.executors.RegionExecutor;
-import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.menu.InteractionInterface;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
-import au.com.mineauz.minigames.menu.MenuItemNewLine;
-import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.actions.Actions;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
 import au.com.mineauz.minigamesregions.conditions.Conditions;
+import au.com.mineauz.minigamesregions.executors.NodeExecutor;
+import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemNode;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemRegion;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.*;
 
 public class RegionModule extends MinigameModule {
-	
-	private Map<String, Region> regions = new HashMap<String, Region>();
-	private Map<String, Node> nodes = new HashMap<String, Node>();
+
+    private Map<String, Region> regions = new HashMap<>();
+    private Map<String, Node> nodes = new HashMap<>();
 	
 	public RegionModule(Minigame mgm){
 		super(mgm);
@@ -277,7 +267,7 @@ public class RegionModule extends MinigameModule {
 	}
 	
 	public List<Region> getRegions(){
-		return new ArrayList<Region>(regions.values());
+        return new ArrayList<>(regions.values());
 	}
 	
 	public void removeRegion(String name){
@@ -324,7 +314,7 @@ public class RegionModule extends MinigameModule {
 	}
 	
 	public List<Node> getNodes(){
-		return new ArrayList<Node>(nodes.values());
+        return new ArrayList<>(nodes.values());
 	}
 	
 	public void removeNode(String name){
@@ -343,7 +333,7 @@ public class RegionModule extends MinigameModule {
 	
 	public void displayMenu(MinigamePlayer viewer, Menu previous){
 		Menu rm = new Menu(6, "Regions and Nodes", viewer);
-		List<MenuItem> items = new ArrayList<MenuItem>(regions.size());
+        List<MenuItem> items = new ArrayList<>(regions.size());
 		for(String name : regions.keySet()){
 			MenuItemRegion mir = new MenuItemRegion(name, Material.CHEST, regions.get(name), this);
 			items.add(mir);

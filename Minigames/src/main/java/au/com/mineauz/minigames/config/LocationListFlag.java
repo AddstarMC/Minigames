@@ -1,14 +1,13 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
+import au.com.mineauz.minigames.menu.MenuItem;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import au.com.mineauz.minigames.menu.MenuItem;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class LocationListFlag extends Flag<List<Location>>{
 	
@@ -32,7 +31,7 @@ public class LocationListFlag extends Flag<List<Location>>{
 
 	@Override
 	public void loadValue(String path, FileConfiguration config) {
-		List<Location> locs = new ArrayList<Location>();
+        List<Location> locs = new ArrayList<>();
 		Set<String> ids = config.getConfigurationSection(path + "." + getName()).getKeys(false);
 		LocationFlag locf;
 		

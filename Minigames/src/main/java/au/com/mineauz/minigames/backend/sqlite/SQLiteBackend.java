@@ -1,5 +1,16 @@
 package au.com.mineauz.minigames.backend.sqlite;
 
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.backend.*;
+import au.com.mineauz.minigames.backend.both.SQLExport;
+import au.com.mineauz.minigames.backend.both.SQLImport;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.ScoreboardOrder;
+import au.com.mineauz.minigames.stats.*;
+import com.google.common.collect.Maps;
+import org.bukkit.configuration.ConfigurationSection;
+
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,30 +18,6 @@ import java.sql.Statement;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.bukkit.configuration.ConfigurationSection;
-
-import com.google.common.collect.Maps;
-
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.backend.Backend;
-import au.com.mineauz.minigames.backend.BackendImportCallback;
-import au.com.mineauz.minigames.backend.ConnectionHandler;
-import au.com.mineauz.minigames.backend.ConnectionPool;
-import au.com.mineauz.minigames.backend.ExportNotifier;
-import au.com.mineauz.minigames.backend.StatementKey;
-import au.com.mineauz.minigames.backend.both.SQLExport;
-import au.com.mineauz.minigames.backend.both.SQLImport;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.ScoreboardOrder;
-import au.com.mineauz.minigames.stats.MinigameStat;
-import au.com.mineauz.minigames.stats.MinigameStats;
-import au.com.mineauz.minigames.stats.StatFormat;
-import au.com.mineauz.minigames.stats.StatSettings;
-import au.com.mineauz.minigames.stats.StatValueField;
-import au.com.mineauz.minigames.stats.StoredGameStats;
-import au.com.mineauz.minigames.stats.StoredStat;
 
 public class SQLiteBackend extends Backend {
 	private ConnectionPool pool;
@@ -133,64 +120,61 @@ public class SQLiteBackend extends Backend {
 	}
 
 	private void ensureTables(ConnectionHandler connection) throws SQLException {
-		Statement statement = connection.getConnection().createStatement();
-		try {
-			// Check the players table
-			try {
-				statement.executeQuery("SELECT 1 FROM `Players` LIMIT 0;");
-			} catch (SQLException e) {
-				statement.executeUpdate("CREATE TABLE `Players` (`player_id` TEXT PRIMARY KEY, `name` TEXT NOT NULL, `displayname` TEXT);");
-				statement.executeUpdate("CREATE INDEX `Players_NameLookup` ON `Players` (`name`, `player_id`);");
-			}
-			
-			// Check the minigames table
-			try {
-				statement.executeQuery("SELECT 1 FROM `Minigames` LIMIT 0;");
-			} catch (SQLException e) {
-				statement.executeUpdate("CREATE TABLE `Minigames` (`minigame_id` INTEGER PRIMARY KEY ASC, `name` TEXT UNIQUE);");
-				statement.executeUpdate("CREATE INDEX `Minigames_NameLookup` ON `Minigames` (`name`, `minigame_id`);");
-			}
-			
-			// Check the player stats table
-			try {
-				statement.executeQuery("SELECT 1 FROM `PlayerStats` LIMIT 0;");
-			} catch (SQLException e) {
-				statement.executeUpdate("CREATE TABLE `PlayerStats` (`player_id` TEXT REFERENCES `Players` (`player_id`) ON DELETE CASCADE, `minigame_id` INTEGER REFERENCES `Minigames` (`minigame_id`) ON DELETE CASCADE, `stat` TEXT NOT NULL, `value` INTEGER, `last_updated` datetime DEFAULT NULL, `entered` DATETIME default NULL, PRIMARY KEY (`player_id`, `minigame_id`, `stat`));");
-			}
+        try (Statement statement = connection.getConnection().createStatement()) {
+            // Check the players table
+            try {
+                statement.executeQuery("SELECT 1 FROM `Players` LIMIT 0;");
+            } catch (SQLException e) {
+                statement.executeUpdate("CREATE TABLE `Players` (`player_id` TEXT PRIMARY KEY, `name` TEXT NOT NULL, `displayname` TEXT);");
+                statement.executeUpdate("CREATE INDEX `Players_NameLookup` ON `Players` (`name`, `player_id`);");
+            }
 
-			// Check for column last_updated on the PlayerStats table
-			try {
-				if (!checkForColumn(statement, "PlayerStats", "last_updated")) {
-					logger.info("Adding SQLite column 'last_updated' to table PlayerStats");
+            // Check the minigames table
+            try {
+                statement.executeQuery("SELECT 1 FROM `Minigames` LIMIT 0;");
+            } catch (SQLException e) {
+                statement.executeUpdate("CREATE TABLE `Minigames` (`minigame_id` INTEGER PRIMARY KEY ASC, `name` TEXT UNIQUE);");
+                statement.executeUpdate("CREATE INDEX `Minigames_NameLookup` ON `Minigames` (`name`, `minigame_id`);");
+            }
 
-					statement.executeUpdate("ALTER TABLE `PlayerStats` ADD COLUMN `last_updated` DATETIME default NULL;");
-				}
+            // Check the player stats table
+            try {
+                statement.executeQuery("SELECT 1 FROM `PlayerStats` LIMIT 0;");
+            } catch (SQLException e) {
+                statement.executeUpdate("CREATE TABLE `PlayerStats` (`player_id` TEXT REFERENCES `Players` (`player_id`) ON DELETE CASCADE, `minigame_id` INTEGER REFERENCES `Minigames` (`minigame_id`) ON DELETE CASCADE, `stat` TEXT NOT NULL, `value` INTEGER, `last_updated` datetime DEFAULT NULL, `entered` DATETIME default NULL, PRIMARY KEY (`player_id`, `minigame_id`, `stat`));");
+            }
 
-			} catch (SQLException e) {
-				logger.log(Level.SEVERE, "Failed to add column last_updated to the PlayerStats table in the SQLite Minigames database", e);
-			}
+            // Check for column last_updated on the PlayerStats table
+            try {
+                if (!checkForColumn(statement, "PlayerStats", "last_updated")) {
+                    logger.info("Adding SQLite column 'last_updated' to table PlayerStats");
 
-			// Check for column entered on the PlayerStats table
-			try {
-				if (!checkForColumn(statement, "PlayerStats", "entered")) {
-					logger.info("Adding SQLite column 'entered' to table PlayerStats");
+                    statement.executeUpdate("ALTER TABLE `PlayerStats` ADD COLUMN `last_updated` DATETIME default NULL;");
+                }
 
-					statement.executeUpdate("ALTER TABLE `PlayerStats` ADD COLUMN `entered` DATETIME default NULL;");
-				}
+            } catch (SQLException e) {
+                logger.log(Level.SEVERE, "Failed to add column last_updated to the PlayerStats table in the SQLite Minigames database", e);
+            }
 
-			} catch (SQLException e) {
-				logger.log(Level.SEVERE, "Failed to add column entered to the PlayerStats table in the SQLite Minigames database", e);
-			}
+            // Check for column entered on the PlayerStats table
+            try {
+                if (!checkForColumn(statement, "PlayerStats", "entered")) {
+                    logger.info("Adding SQLite column 'entered' to table PlayerStats");
 
-			// Check the stat metadata table
-			try {
-				statement.executeQuery("SELECT 1 FROM `StatMetadata` LIMIT 0;");
-			} catch (SQLException e) {
-				statement.executeUpdate("CREATE TABLE `StatMetadata` (`minigame_id` INTEGER REFERENCES `Minigames` (`minigame_id`) ON DELETE CASCADE, `stat` TEXT NOT NULL, `display_name` TEXT, `format` TEXT, PRIMARY KEY (`minigame_id`, `stat`));");
-			}
-		} finally {
-			statement.close();
-		}
+                    statement.executeUpdate("ALTER TABLE `PlayerStats` ADD COLUMN `entered` DATETIME default NULL;");
+                }
+
+            } catch (SQLException e) {
+                logger.log(Level.SEVERE, "Failed to add column entered to the PlayerStats table in the SQLite Minigames database", e);
+            }
+
+            // Check the stat metadata table
+            try {
+                statement.executeQuery("SELECT 1 FROM `StatMetadata` LIMIT 0;");
+            } catch (SQLException e) {
+                statement.executeUpdate("CREATE TABLE `StatMetadata` (`minigame_id` INTEGER REFERENCES `Minigames` (`minigame_id`) ON DELETE CASCADE, `stat` TEXT NOT NULL, `display_name` TEXT, `format` TEXT, PRIMARY KEY (`minigame_id`, `stat`));");
+            }
+        }
 	}
 	
 	private void createStatements() {
@@ -258,43 +242,40 @@ public class SQLiteBackend extends Backend {
 			handler = pool.getConnection();
 			
 			int minigameId = getMinigameId(handler, minigame);
-			ResultSet rs = handler.executeQuery(loadStatSettings, minigameId);
-			
-			Map<MinigameStat, StatSettings> settings = Maps.newHashMap();
-			
-			try {
-				while (rs.next()) {
-					String statName = rs.getString("stat");
-					String rawFormat = rs.getString("format");
-					String displayName = rs.getString("display_name");
-					
-					MinigameStat stat = MinigameStats.getStat(statName);
-					if (stat == null) {
-						// Just ignore it
-						continue;
-					}
-					
-					// Decode format
-					StatFormat format = null;
-					for (StatFormat f : StatFormat.values()) {
-						if (f.name().equalsIgnoreCase(rawFormat)) {
-							format = f;
-							break;
-						}
-					}
-					
-					if (format == null) {
-						format = stat.getFormat();
-					}
-					
-					StatSettings setting = new StatSettings(stat, format, displayName);
-					settings.put(stat, setting);
-				}
-				
-				return settings;
-			} finally {
-				rs.close();
-			}
+
+            Map<MinigameStat, StatSettings> settings = Maps.newHashMap();
+
+            try (ResultSet rs = handler.executeQuery(loadStatSettings, minigameId)) {
+                while (rs.next()) {
+                    String statName = rs.getString("stat");
+                    String rawFormat = rs.getString("format");
+                    String displayName = rs.getString("display_name");
+
+                    MinigameStat stat = MinigameStats.getStat(statName);
+                    if (stat == null) {
+                        // Just ignore it
+                        continue;
+                    }
+
+                    // Decode format
+                    StatFormat format = null;
+                    for (StatFormat f : StatFormat.values()) {
+                        if (f.name().equalsIgnoreCase(rawFormat)) {
+                            format = f;
+                            break;
+                        }
+                    }
+
+                    if (format == null) {
+                        format = stat.getFormat();
+                    }
+
+                    StatSettings setting = new StatSettings(stat, format, displayName);
+                    settings.put(stat, setting);
+                }
+
+                return settings;
+            }
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return Collections.emptyMap();

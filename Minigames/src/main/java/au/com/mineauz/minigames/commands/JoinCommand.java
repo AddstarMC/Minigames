@@ -1,14 +1,13 @@
 package au.com.mineauz.minigames.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.minigame.Minigame;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JoinCommand implements ICommand{
 
@@ -57,11 +56,11 @@ public class JoinCommand implements ICommand{
 			String label, String[] args) {
 		Player player = (Player)sender;
 		if(args != null){
-			Minigame mgm = plugin.mdata.getMinigame(args[0]);
+            Minigame mgm = plugin.minigameManager.getMinigame(args[0]);
 			if(mgm != null && (!mgm.getUsePermissions() || player.hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))){
-				if(!plugin.pdata.getMinigamePlayer(player).isInMinigame()){
+                if (!plugin.playerManager.getMinigamePlayer(player).isInMinigame()) {
 					sender.sendMessage(ChatColor.GREEN + MinigameUtils.formStr("command.join.joining", mgm.getName(false)));
-					plugin.pdata.joinMinigame(plugin.pdata.getMinigamePlayer(player), mgm, false, 0.0);
+                    plugin.playerManager.joinMinigame(plugin.playerManager.getMinigamePlayer(player), mgm, false, 0.0);
 				}
 				else {
 					player.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.join.alreadyPlaying"));
@@ -82,7 +81,7 @@ public class JoinCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+            List<String> mgs = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
 			return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
 		}
 		return null;

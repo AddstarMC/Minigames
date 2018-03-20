@@ -1,16 +1,16 @@
 package au.com.mineauz.minigames.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoadoutCommand implements ICommand {
 
@@ -49,7 +49,7 @@ public class LoadoutCommand implements ICommand {
 
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
-		MinigamePlayer ply = Minigames.plugin.pdata.getMinigamePlayer((Player)sender);
+		MinigamePlayer ply = Minigames.plugin.playerManager.getMinigamePlayer((Player) sender);
 		if(ply.isInMinigame()){
 			if(args == null){
 				LoadoutModule.getMinigameModule(ply.getMinigame()).displaySelectionMenu(ply, false);
@@ -58,15 +58,15 @@ public class LoadoutCommand implements ICommand {
 				String ln = args[0];
 				if(LoadoutModule.getMinigameModule(ply.getMinigame()).hasLoadout(ln)){
 					ply.setLoadout(LoadoutModule.getMinigameModule(ply.getMinigame()).getLoadout(ln));
-					ply.sendMessage(MinigameUtils.formStr("player.loadout.nextSpawnName", ln), null);
+					ply.sendInfoMessage(MinigameUtils.formStr("player.loadout.nextSpawnName", ln));
 				}
 				else{
-					ply.sendMessage(MinigameUtils.formStr("player.loadout.noLoadout", ln), "error");
+					ply.sendMessage(MinigameUtils.formStr("player.loadout.noLoadout", ln), MinigameMessageType.ERROR);
 				}
 			}
 		}
 		else{
-			ply.sendMessage(MinigameUtils.getLang("command.loadout.noMinigame"), "error");
+			ply.sendMessage(MinigameUtils.getLang("command.loadout.noMinigame"), MinigameMessageType.ERROR);
 		}
 		return true;
 	}
@@ -74,11 +74,11 @@ public class LoadoutCommand implements ICommand {
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args != null){
-			MinigamePlayer ply = Minigames.plugin.pdata.getMinigamePlayer((Player)sender);
+			MinigamePlayer ply = Minigames.plugin.playerManager.getMinigamePlayer((Player) sender);
 			if(ply.isInMinigame()){
 				if(args.length == 1){
-					return MinigameUtils.tabCompleteMatch(new ArrayList<String>(
-							LoadoutModule.getMinigameModule(ply.getMinigame()).getLoadoutMap().keySet()), 
+					return MinigameUtils.tabCompleteMatch(new ArrayList<>(
+									LoadoutModule.getMinigameModule(ply.getMinigame()).getLoadoutMap().keySet()),
 							args[0]);
 				}
 			}

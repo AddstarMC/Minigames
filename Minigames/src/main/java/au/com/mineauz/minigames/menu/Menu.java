@@ -1,24 +1,19 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.Minigames;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.Minigames;
+import java.util.*;
 
 public class Menu {
 	private int rows = 2;
 	private ItemStack[] pageView;
-	private Map<Integer, MenuItem> pageMap = new HashMap<Integer, MenuItem>();
+    private Map<Integer, MenuItem> pageMap = new HashMap<>();
 	private String name = "Menu";
 	private boolean allowModify = false;
 	private Menu previousPage = null;
@@ -135,7 +130,7 @@ public class Menu {
 	}
 	
 	public void clearMenu(){
-		for(Integer i : new ArrayList<Integer>(pageMap.keySet())){
+        for (Integer i : new ArrayList<>(pageMap.keySet())) {
 			pageMap.remove(i);
 			pageView[i] = null;
 		}

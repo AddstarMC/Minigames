@@ -1,12 +1,5 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommand;
@@ -16,6 +9,12 @@ import au.com.mineauz.minigames.menu.MenuItemDisplayLoadout;
 import au.com.mineauz.minigames.menu.MenuItemLoadoutAdd;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
+import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SetLoadoutCommand implements ICommand {
 
@@ -65,12 +64,12 @@ public class SetLoadoutCommand implements ICommand {
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 
-		MinigamePlayer player = Minigames.plugin.pdata.getMinigamePlayer((Player)sender);
+        MinigamePlayer player = Minigames.plugin.playerManager.getMinigamePlayer((Player) sender);
 		Menu loadouts = new Menu(6, getName(), player);
-		List<MenuItem> mi = new ArrayList<MenuItem>();
+        List<MenuItem> mi = new ArrayList<>();
 		LoadoutModule mod = LoadoutModule.getMinigameModule(minigame);
-		
-		List<String> des = new ArrayList<String>();
+
+        List<String> des = new ArrayList<>();
 		des.add("Shift + Right Click to Delete");
 		
 		Material item = Material.THIN_GLASS;

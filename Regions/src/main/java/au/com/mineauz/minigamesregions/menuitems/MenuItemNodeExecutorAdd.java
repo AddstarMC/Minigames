@@ -1,17 +1,16 @@
 package au.com.mineauz.minigamesregions.menuitems;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class MenuItemNodeExecutorAdd extends MenuItem{
 	
@@ -30,8 +29,8 @@ public class MenuItemNodeExecutorAdd extends MenuItem{
 	@Override
 	public ItemStack onClick(){
 		Menu m = new Menu(6, "Select Trigger", getContainer().getViewer());
-		
-		List<String> triggers = new ArrayList<String>(Triggers.getAllNodeTriggers());
+
+        List<String> triggers = new ArrayList<>(Triggers.getAllNodeTriggers());
 		Collections.sort(triggers);
 		
 		for(String trig : triggers){

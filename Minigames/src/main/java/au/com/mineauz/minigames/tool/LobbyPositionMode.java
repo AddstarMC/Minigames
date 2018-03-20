@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.tool;
 
-import org.bukkit.Material;
-import org.bukkit.event.player.PlayerInteractEvent;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
+import org.bukkit.Material;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class LobbyPositionMode implements ToolMode {
 	
@@ -47,10 +47,10 @@ public class LobbyPositionMode implements ToolMode {
 	public void select(MinigamePlayer player, Minigame minigame, Team team) {
 		if(minigame.getLobbyPosition() != null){
 			player.getPlayer().sendBlockChange(minigame.getLobbyPosition(), Material.SKULL, (byte)1);
-			player.sendMessage("Selected lobby position (marked with skull)", null);
+			player.sendInfoMessage("Selected lobby position (marked with skull)");
 		}
 		else{
-			player.sendMessage("No lobby position set!", "error");
+			player.sendMessage("No lobby position set!", MinigameMessageType.ERROR);
 		}
 	}
 
@@ -61,10 +61,10 @@ public class LobbyPositionMode implements ToolMode {
 			player.getPlayer().sendBlockChange(minigame.getLobbyPosition(), 
 					minigame.getLobbyPosition().getBlock().getType(), 
 					minigame.getLobbyPosition().getBlock().getData());
-			player.sendMessage("Deselected lobby position", null);
+			player.sendInfoMessage("Deselected lobby position");
 		}
 		else{
-			player.sendMessage("No lobby position set!", "error");
+			player.sendMessage("No lobby position set!", MinigameMessageType.ERROR);
 		}
 	}
 

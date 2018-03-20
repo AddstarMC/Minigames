@@ -1,23 +1,6 @@
 package au.com.mineauz.minigames.mechanics;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Random;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameTimer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -31,6 +14,15 @@ import au.com.mineauz.minigames.minigame.reward.ItemReward;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
+import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.*;
 
 public class TreasureHuntMechanic extends GameMechanicBase{
 
@@ -67,7 +59,7 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 			if(caller == null)
 				Bukkit.getLogger().info("Treasure Hunt requires a location name to run!");
 			else
-				caller.sendMessage("Treasure Hunt requires a location name to run!", "error");
+                caller.sendMessage("Treasure Hunt requires a location name to run!", MinigameMessageType.ERROR);
 		}
 	}
 
@@ -89,7 +81,7 @@ public class TreasureHuntMechanic extends GameMechanicBase{
 	}
 
 	@Override
-	public void joinMinigame(Minigame minigame, MinigamePlayer player) {
+    public void onJoinMinigame(Minigame minigame, MinigamePlayer player) {
 	}
 
 	@Override

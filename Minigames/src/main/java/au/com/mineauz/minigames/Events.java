@@ -1,54 +1,5 @@
 package au.com.mineauz.minigames;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Egg;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Snowball;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerToggleFlightEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.inventory.ItemStack;
-
 import au.com.mineauz.minigames.events.RevertCheckpointEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.menu.MenuItem;
@@ -59,11 +10,37 @@ import au.com.mineauz.minigames.minigame.modules.GameOverModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
 import au.com.mineauz.minigames.tool.MinigameTool;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
+import org.bukkit.entity.*;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.ItemStack;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Events implements Listener{
 	private static Minigames plugin = Minigames.plugin;
-	private PlayerData pdata = plugin.pdata;
-	private MinigameData mdata = plugin.mdata;
+	private MinigamePlayerManager pdata = plugin.playerManager;
+	private MinigameManager mdata = plugin.minigameManager;
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerDeath(PlayerDeathEvent event){
@@ -91,22 +68,22 @@ public class Events implements Listener{
 			}
 			
 			if(!msg.equals("")){
-				mdata.sendMinigameMessage(mgm, msg, "error", null);
+				mdata.sendMinigameMessage(mgm, msg, MinigameMessageType.ERROR);
 			}
 			if(mgm.getState() == MinigameState.STARTED){
 				if(mgm.getLives() > 0 && mgm.getLives() <= ply.getDeaths()){
-					ply.sendMessage(MinigameUtils.getLang("player.quit.plyOutOfLives"), "error");
+					ply.sendMessage(MinigameUtils.getLang("player.quit.plyOutOfLives"), MinigameMessageType.ERROR);
 					if(!event.getDrops().isEmpty() && mgm.getPlayers().size() == 1){
 						event.getDrops().clear();
 					}
 					pdata.quitMinigame(ply, false);
 				}
 				else if(mgm.getLives() > 0){
-					ply.sendMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives() - ply.getDeaths()), null);
+					ply.sendInfoMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives() - ply.getDeaths()));
 				}
 			}
 			else if(mgm.getState() == MinigameState.ENDED){
-				plugin.pdata.quitMinigame(ply, true);
+				plugin.playerManager.quitMinigame(ply, true);
 			}
 		}
 	}
@@ -117,7 +94,7 @@ public class Events implements Listener{
 		if(ply == null) return;
 		if(ply.isInMinigame()){
 			final WeatherTimeModule mod = WeatherTimeModule.getMinigameModule(ply.getMinigame());
-			if(mod.isUsingCustomWeather()){
+			if (mod != null && mod.isUsingCustomWeather()) {
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 					
 					@Override
@@ -128,7 +105,7 @@ public class Events implements Listener{
 			}
 			
 			if(ply.getMinigame().getState() == MinigameState.ENDED){
-				plugin.pdata.quitMinigame(ply, true);
+				plugin.playerManager.quitMinigame(ply, true);
 			}
 		}
 		if(ply.isRequiredQuit()){
@@ -160,13 +137,16 @@ public class Events implements Listener{
 	}
 	
 	@EventHandler(ignoreCancelled = true)
-	public void itemPickup(PlayerPickupItemEvent event){
-		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-		if(ply.isInMinigame()){
-			Minigame mgm = ply.getMinigame();
-			if(!mgm.hasItemPickup() || 
-					mgm.isSpectator(ply)){
-				event.setCancelled(true);
+	public void itemPickup(EntityPickupItemEvent event) {
+		if (event.getEntity() instanceof Player) {
+			Player player = (Player) event.getEntity();
+			MinigamePlayer ply = pdata.getMinigamePlayer(player);
+			if (ply.isInMinigame()) {
+				Minigame mgm = ply.getMinigame();
+				if (!mgm.hasItemPickup() ||
+						mgm.isSpectator(ply)) {
+					event.setCancelled(true);
+				}
 			}
 		}
 	}
@@ -192,8 +172,8 @@ public class Events implements Listener{
 		if(Bukkit.getServer().getOnlinePlayers().size() == 1){
 			for(String mgm : mdata.getAllMinigames().keySet()){
 				if(mdata.getMinigame(mgm).getType() == MinigameType.GLOBAL){
-//					if(mdata.getMinigame(mgm).getThTimer() != null){
-//						mdata.getMinigame(mgm).getThTimer().pauseTimer(true);
+//					if(minigameManager.getMinigame(mgm).getThTimer() != null){
+//						minigameManager.getMinigame(mgm).getThTimer().pauseTimer(true);
 //					}
 					if(mdata.getMinigame(mgm).getMinigameTimer() != null)
 						mdata.getMinigame(mgm).getMinigameTimer().stopTimer();
@@ -236,8 +216,8 @@ public class Events implements Listener{
 		if(Bukkit.getServer().getOnlinePlayers().size() == 1){
 			for(String mgm : mdata.getAllMinigames().keySet()){
 				if(mdata.getMinigame(mgm).getType() == MinigameType.GLOBAL){
-//					if(mdata.getMinigame(mgm).getThTimer() != null){
-//						mdata.getMinigame(mgm).getThTimer().pauseTimer(false);
+//					if(minigameManager.getMinigame(mgm).getThTimer() != null){
+//						minigameManager.getMinigame(mgm).getThTimer().pauseTimer(false);
 //					}
 					if(mdata.getMinigame(mgm).getMinigameTimer() != null)
 						mdata.getMinigame(mgm).getMinigameTimer().startTimer();
@@ -320,8 +300,8 @@ public class Events implements Listener{
 									if(mgm.getType() != MinigameType.SINGLEPLAYER){
 										playerCount += "/" + mgm.getMaxPlayers();
 									}
-									
-									List<String> plyList = new ArrayList<String>();
+
+									List<String> plyList = new ArrayList<>();
 									for(MinigamePlayer pl : mgm.getPlayers()){
 										plyList.add(pl.getName());
 									}
@@ -366,7 +346,7 @@ public class Events implements Listener{
 				if(ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[Minigame]") && ChatColor.stripColor(sign.getLine(1)).equalsIgnoreCase("Join")){
 					Minigame minigame = mdata.getMinigame(sign.getLine(2));
 					tool.setMinigame(minigame);
-					ply.sendMessage("Tools Minigame has been set to " + minigame, null);
+					ply.sendInfoMessage("Tools Minigame has been set to " + minigame);
 					event.setCancelled(true);
 				}
 			}
@@ -380,10 +360,10 @@ public class Events implements Listener{
 				}
 			}
 			else if(tool.getMinigame() == null) {
-				ply.sendMessage("Please select a minigame. Click on the join sign, or /mg tool minigame <minigame>", null);
+				ply.sendInfoMessage("Please select a minigame. Click on the join sign, or /mg tool minigame <minigame>");
 			}
 			else if(tool.getMode() == null) {
-				ply.sendMessage("Please select a tool mode. Shift + Right click", null);
+				ply.sendInfoMessage("Please select a tool mode. Shift + Right click");
 			}
 		}
 		
@@ -585,20 +565,26 @@ public class Events implements Listener{
 				MenuItem item = ply.getMenu().getClicked(event.getRawSlot());
 				if(item != null){
 					ItemStack disItem = null;
-					if(event.getClick() == ClickType.LEFT){
-						if(event.getCursor().getType() != Material.AIR)
-							disItem = item.onClickWithItem(event.getCursor());
-						else
-							disItem = item.onClick();
+					switch (event.getClick()) {
+						case LEFT:
+							if (event.getCursor().getType() != Material.AIR)
+								disItem = item.onClickWithItem(event.getCursor());
+							else
+								disItem = item.onClick();
+							break;
+						case RIGHT:
+							disItem = item.onRightClick();
+							break;
+						case SHIFT_LEFT:
+							disItem = item.onShiftClick();
+							break;
+						case SHIFT_RIGHT:
+							disItem = item.onShiftRightClick();
+							break;
+						case DOUBLE_CLICK:
+							disItem = item.onDoubleClick();
+							break;
 					}
-					else if(event.getClick() == ClickType.RIGHT)
-						disItem = item.onRightClick();
-					else if(event.getClick() == ClickType.SHIFT_LEFT)
-						disItem = item.onShiftClick();
-					else if(event.getClick() == ClickType.SHIFT_RIGHT)
-						disItem = item.onShiftRightClick();
-					else if(event.getClick() == ClickType.DOUBLE_CLICK)
-						disItem = item.onDoubleClick();
 					
 					if(item != null)
 						event.setCurrentItem(disItem);
@@ -642,8 +628,7 @@ public class Events implements Listener{
 				}
 			}
 			else{
-				Set<Integer> slots = new HashSet<Integer>();
-				slots.addAll(event.getRawSlots());
+				Set<Integer> slots = new HashSet<Integer>(event.getRawSlots());
 				
 				for(int slot : slots){
 					if(ply.getMenu().hasMenuItem(slot)){

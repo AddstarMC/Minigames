@@ -1,14 +1,13 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.Map;
-
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.Map;
 
 public class QuitAction extends AbstractAction {
 
@@ -41,14 +40,14 @@ public class QuitAction extends AbstractAction {
 			Node node) {
 		debug(player,node);
 		if(player == null || !player.isInMinigame()) return;
-		Minigames.plugin.pdata.quitMinigame(player, false);
+        Minigames.plugin.playerManager.quitMinigame(player, false);
 	}
 
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Region region) {
 		debug(player,region);
 		if(player == null || !player.isInMinigame()) return;
-		Minigames.plugin.pdata.quitMinigame(player, false);
+        Minigames.plugin.playerManager.quitMinigame(player, false);
 	}
 
 	@Override

@@ -1,15 +1,15 @@
 package au.com.mineauz.minigames.commands;
 
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
+import java.util.List;
+
 //import au.com.mineauz.minigames.StoredPlayerCheckpoints;
-import au.com.mineauz.minigames.minigame.Minigame;
 
 public class RevertCommand implements ICommand{
 
@@ -56,13 +56,13 @@ public class RevertCommand implements ICommand{
 	@Override
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
-		MinigamePlayer player = plugin.pdata.getMinigamePlayer((Player)sender);
+        MinigamePlayer player = plugin.playerManager.getMinigamePlayer((Player) sender);
 		
 		if(player.isInMinigame()){
-			plugin.pdata.revertToCheckpoint(player);
-		}
-//		else if(plugin.pdata.hasStoredPlayerCheckpoint(player)){
-//			StoredPlayerCheckpoints spc = plugin.pdata.getPlayersStoredCheckpoints(player);
+            plugin.playerManager.revertToCheckpoint(player);
+        }
+//		else if(plugin.playerManager.hasStoredPlayerCheckpoint(player)){
+//			StoredPlayerCheckpoints spc = plugin.playerManager.getPlayersStoredCheckpoints(player);
 //			if(spc.hasGlobalCheckpoint()){
 //				player.getPlayer().teleport(spc.getGlobalCheckpoint());
 //			}

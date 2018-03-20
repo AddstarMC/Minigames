@@ -1,8 +1,9 @@
 package au.com.mineauz.minigames.minigame.reward;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemString;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -10,10 +11,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemString;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandReward extends RewardType{
 	
@@ -56,7 +55,7 @@ public class CommandReward extends RewardType{
 	
 	private class CommandRewardItem extends MenuItemString{
 
-		private List<String> options = new ArrayList<String>();
+        private List<String> options = new ArrayList<>();
 		private CommandReward reward;
 
 		public CommandRewardItem(CommandReward reward) {
@@ -97,7 +96,7 @@ public class CommandReward extends RewardType{
 		public void updateDescription(){
 			List<String> description = null;
 			if(options == null){
-				options = new ArrayList<String>();
+                options = new ArrayList<>();
 				for(RewardRarity rarity : RewardRarity.values()){
 					options.add(rarity.toString());
 				}
@@ -137,7 +136,7 @@ public class CommandReward extends RewardType{
 				}
 			}
 			else{
-				description = new ArrayList<String>();
+                description = new ArrayList<>();
 				description.add(ChatColor.GRAY.toString() + options.get(before));
 				description.add(ChatColor.GREEN.toString() + getRarity().toString());
 				description.add(ChatColor.GRAY.toString() + options.get(after));

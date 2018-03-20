@@ -1,25 +1,21 @@
 package au.com.mineauz.minigames;
 
+import au.com.mineauz.minigames.events.MinigamesBroadcastEvent;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.tool.MinigameTool;
+import org.bukkit.*;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 //import net.minecraft.server.v1_6_R2.EntityPlayer;
 //
 //import org.bukkit.craftbukkit.v1_6_R2.entity.CraftPlayer;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-
-import au.com.mineauz.minigames.events.MinigamesBroadcastEvent;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.tool.MinigameTool;
 
 public class MinigameUtils {
 	private static FileConfiguration lang = Minigames.plugin.getLang();
@@ -244,7 +240,7 @@ public class MinigameUtils {
 	 */
 	public static List<String> stringToList(String toList){
 		String[] st = toList.split(";");
-		List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
 		for(String s : st){
 			list.add(s);
 		}
@@ -288,7 +284,7 @@ public class MinigameUtils {
 		Material toolMat = Material.getMaterial(Minigames.plugin.getConfig().getString("tool"));
 		if(toolMat == null){
 			toolMat = Material.BLAZE_ROD;
-			player.sendMessage("Invalid material type! Please check the configuration to see if it has been typed correctly! Default type given instead.", "error");
+            player.sendMessage("Invalid material type! Please check the configuration to see if it has been typed correctly! Default type given instead.", MinigameMessageType.ERROR);
 		}
 		
 		ItemStack tool = new ItemStack(toolMat);
@@ -413,7 +409,7 @@ public class MinigameUtils {
 		if(match.equals(""))
 			return orig;
 		else{
-			List<String> ret = new ArrayList<String>(orig.size());
+            List<String> ret = new ArrayList<>(orig.size());
 			for(String m : orig){
 				if(m.toLowerCase().startsWith(match.toLowerCase()))
 					ret.add(m);
@@ -428,7 +424,7 @@ public class MinigameUtils {
 	 * @return A map of values to store
 	 */
 	public static Map<String, Object> serializeLocation(Location loc){
-		Map<String, Object> sloc = new HashMap<String, Object>();
+        Map<String, Object> sloc = new HashMap<>();
 		sloc.put("x", loc.getX());
 		sloc.put("y", loc.getY());
 		sloc.put("z", loc.getZ());
@@ -462,10 +458,10 @@ public class MinigameUtils {
 		Bukkit.getPluginManager().callEvent(ev);
 		Bukkit.getServer().broadcastMessage(ev.getMessageWithPrefix());
 	}
-	
-	public static void debugMessage(String message){
-		if(Minigames.plugin.isDebugging()){
-			Minigames.plugin.getLogger().info("DEBUG: " + message);
+
+    public static void debugMessage(String message) {
+        if (Minigames.plugin.isDebugging()) {
+            Minigames.log.info(ChatColor.RED + "[Debug] " + ChatColor.WHITE + message);
 		}
 	}
 	

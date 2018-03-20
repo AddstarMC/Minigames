@@ -15,8 +15,8 @@ import java.util.*;
 import java.util.Map.Entry;
 
 public class PlayerLoadout {
-	private Map<Integer, ItemStack> itemSlot = new HashMap<Integer, ItemStack>();
-	private List<PotionEffect> potions = new ArrayList<PotionEffect>();
+    private Map<Integer, ItemStack> itemSlot = new HashMap<>();
+    private List<PotionEffect> potions = new ArrayList<>();
 	private String loadoutName = "default";
 	private boolean usePermission = false;
 	private boolean fallDamage = true;

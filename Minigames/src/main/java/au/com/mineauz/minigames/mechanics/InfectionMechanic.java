@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.mechanics;
 
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameType;
@@ -36,7 +37,7 @@ public class InfectionMechanic extends GameMechanicBase{
 				!TeamsModule.getMinigameModule(minigame).hasTeam(TeamColor.RED) || 
 				!TeamsModule.getMinigameModule(minigame).hasTeam(TeamColor.BLUE)){
 			if(caller != null)
-				caller.sendMessage(MinigameUtils.getLang("minigame.error.noInfection"), "error");
+				caller.sendMessage(MinigameUtils.getLang("minigame.error.noInfection"), MinigameMessageType.ERROR);
 			return false;
 		}
 		return true;
@@ -54,7 +55,7 @@ public class InfectionMechanic extends GameMechanicBase{
                 if (red.getPlayers().size() < Math.ceil(players.size() * percent) && !red.isFull()) {
                     MultiplayerType.switchTeam(minigame, ply, red);
                     result.add(ply);
-                    ply.sendMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()), null);
+					ply.sendInfoMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()));
                     mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), ply.getName(), red.getChatColor() + red.getDisplayName()), null, ply);
                 }
 			}
@@ -62,17 +63,17 @@ public class InfectionMechanic extends GameMechanicBase{
                 if (red.getPlayers().size() < Math.ceil(players.size() * percent) && !red.isFull()) {
                     red.addPlayer(ply);
                     result.add(ply);
-                    ply.sendMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()), null);
+					ply.sendInfoMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()));
                     mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), ply.getName(), red.getChatColor() + red.getDisplayName()), null, ply);
                 } else if(!blue.isFull()){
 					blue.addPlayer(ply);
                     result.add(ply);
-                    ply.sendMessage(String.format(blue.getAssignMessage(), blue.getChatColor() + blue.getDisplayName()), null);
+					ply.sendInfoMessage(String.format(blue.getAssignMessage(), blue.getChatColor() + blue.getDisplayName()));
                     mdata.sendMinigameMessage(minigame, String.format(blue.getGameAssignMessage(), ply.getName(), blue.getChatColor() + blue.getDisplayName()), null, ply);
                 }
 				else{
 					pdata.quitMinigame(ply, false);
-					ply.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
+					ply.sendMessage(MinigameUtils.getLang("minigame.full"), MinigameMessageType.ERROR);
 				}
 			}
 		}
@@ -93,7 +94,7 @@ public class InfectionMechanic extends GameMechanicBase{
 	}
 
 	@Override
-	public void joinMinigame(Minigame minigame, MinigamePlayer player) {
+	public void onJoinMinigame(Minigame minigame, MinigamePlayer player) {
 	}
 
 	@Override
@@ -107,7 +108,7 @@ public class InfectionMechanic extends GameMechanicBase{
 	@Override
 	public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
 			List<MinigamePlayer> losers) {
-		List<MinigamePlayer> wins = new ArrayList<MinigamePlayer>(winners);
+		List<MinigamePlayer> wins = new ArrayList<>(winners);
 		for(MinigamePlayer ply : wins){
 			if(InfectionModule.getMinigameModule(minigame).isInfectedPlayer(ply)){
 				winners.remove(ply);
@@ -139,13 +140,13 @@ public class InfectionMechanic extends GameMechanicBase{
 						mgm.setScore(player, player.getScore());
 						
 						if(mgm.getLives() != player.getDeaths()){
-							mdata.sendMinigameMessage(mgm, String.format(red.getGameAssignMessage(), player.getName(), red.getChatColor() + red.getDisplayName()), "error", null);
+							mdata.sendMinigameMessage(mgm, String.format(red.getGameAssignMessage(), player.getName(), red.getChatColor() + red.getDisplayName()), MinigameMessageType.ERROR);
 						}
 						if(blue.getPlayers().isEmpty()){
 							List<MinigamePlayer> w;
 							List<MinigamePlayer> l;
-							w = new ArrayList<MinigamePlayer>(red.getPlayers());
-							l = new ArrayList<MinigamePlayer>();
+							w = new ArrayList<>(red.getPlayers());
+							l = new ArrayList<>();
 							pdata.endMinigame(mgm, w, l);
 						}
 					}

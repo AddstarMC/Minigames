@@ -1,8 +1,9 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -10,11 +11,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.scoreboard.Team.OptionStatus;
 
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.TeamColor;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuItemTeam extends MenuItem{
 	
@@ -38,30 +36,44 @@ public class MenuItemTeam extends MenuItem{
 	
 	private void setTeamIcon(){
 		LeatherArmorMeta m = (LeatherArmorMeta) getItem().getItemMeta();
-		if(team.getColor() == TeamColor.RED )
-			m.setColor(Color.RED);
-		else if(team.getColor() == TeamColor.BLUE)
-			m.setColor(Color.BLUE);
-		else if(team.getColor() == TeamColor.GREEN)
-			m.setColor(Color.GREEN);
-		else if(team.getColor() == TeamColor.YELLOW)
-			m.setColor(Color.YELLOW);
-		else if(team.getColor() == TeamColor.BLACK)
-			m.setColor(Color.BLACK);
-		else if(team.getColor() == TeamColor.WHITE)
-			m.setColor(Color.WHITE);
-		else if(team.getColor() == TeamColor.GRAY)
-			m.setColor(Color.GRAY);
-		else if(team.getColor() == TeamColor.PURPLE)
-			m.setColor(Color.PURPLE);
-		else if(team.getColor() == TeamColor.DARK_BLUE)
-			m.setColor(Color.BLUE);
-		else if(team.getColor() == TeamColor.DARK_GREEN)
-			m.setColor(Color.GREEN);
-		else if(team.getColor() == TeamColor.DARK_PURPLE)
-			m.setColor(Color.PURPLE);
-		else if(team.getColor() == TeamColor.DARK_RED)
-			m.setColor(Color.RED);
+        switch (team.getColor()) {
+            case RED:
+                m.setColor(Color.RED);
+                break;
+            case BLUE:
+                m.setColor(Color.BLUE);
+                break;
+            case GREEN:
+                m.setColor(Color.GREEN);
+                break;
+            case YELLOW:
+                m.setColor(Color.YELLOW);
+                break;
+            case BLACK:
+                m.setColor(Color.BLACK);
+                break;
+            case WHITE:
+                m.setColor(Color.WHITE);
+                break;
+            case GRAY:
+                m.setColor(Color.GRAY);
+                break;
+            case PURPLE:
+                m.setColor(Color.PURPLE);
+                break;
+            case DARK_BLUE:
+                m.setColor(Color.BLUE);
+                break;
+            case DARK_GREEN:
+                m.setColor(Color.GREEN);
+                break;
+            case DARK_PURPLE:
+                m.setColor(Color.PURPLE);
+                break;
+            case DARK_RED:
+                m.setColor(Color.RED);
+                break;
+        }
 		getItem().setItemMeta(m);
 	}
 	
@@ -112,7 +124,7 @@ public class MenuItemTeam extends MenuItem{
 					break;
 			}
 		}
-		List<String> ntvo = new ArrayList<String>();
+        List<String> ntvo = new ArrayList<>();
 		for(OptionStatus v : OptionStatus.values()){
 			ntvo.add(v.toString());
 		}

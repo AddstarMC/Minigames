@@ -36,8 +36,8 @@ import java.util.logging.Logger;
 
 public class Minigames extends JavaPlugin{
 	static Logger log = Logger.getLogger("Minecraft");
-	public PlayerData pdata;
-	public MinigameData mdata;
+	public MinigamePlayerManager playerManager;
+	public MinigameManager minigameManager;
 	public DisplayManager display;
 	public static Minigames plugin;
     private static Economy econ = null;
@@ -72,29 +72,28 @@ public class Minigames extends JavaPlugin{
 					saveResource("presets/" + preset + ".yml", false);
 				}
 			}
-			
-			mdata = new MinigameData();
-			pdata = new PlayerData();
+
+			minigameManager = new MinigameManager();
+			playerManager = new MinigamePlayerManager();
 			display = new DisplayManager();
-			
-			mdata.addMinigameType(new SingleplayerType());
-			mdata.addMinigameType(new MultiplayerType());
+
+			minigameManager.addMinigameType(new SingleplayerType());
+			minigameManager.addMinigameType(new MultiplayerType());
 			
 			MinigameSave completion = new MinigameSave("completion");
-			mdata.addConfigurationFile("completion", completion.getConfig());
+			minigameManager.addConfigurationFile("completion", completion.getConfig());
 			
 			getServer().getPluginManager().registerEvents(new Events(), this);
 			getServer().getPluginManager().registerEvents(new BasicRecorder(), this);
 			
 			try{
 				this.getConfig().load(this.getDataFolder() + "/config.yml");
-				List<String> mgs = new ArrayList<String>();
+				List<String> mgs = new ArrayList<>();
 				if(getConfig().contains("minigames")){
 					mgs = getConfig().getStringList("minigames");
 				}
 				debug = getConfig().getBoolean("debug", false);
-				final List<String> allMGS = new ArrayList<String>();
-				allMGS.addAll(mgs);
+				final List<String> allMGS = new ArrayList<String>(mgs);
 				
 				if(!mgs.isEmpty()){
 					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -105,7 +104,7 @@ public class Minigames extends JavaPlugin{
 								final Minigame game = new Minigame(minigame);
 								try{
 									game.loadMinigame();
-									mdata.addMinigame(game);
+									minigameManager.addMinigame(game);
 								}
 								catch(Exception e){
 									getLogger().severe(ChatColor.RED.toString() + "Failed to load \"" + minigame +"\"! The configuration file may be corrupt or missing!");
@@ -149,24 +148,24 @@ public class Minigames extends JavaPlugin{
 					cal.get(Calendar.DAY_OF_MONTH) == 25 && cal.get(Calendar.MONTH) == 11 ||
 					cal.get(Calendar.DAY_OF_MONTH) == 1 && cal.get(Calendar.MONTH) == 0){
 				getLogger().info(ChatColor.GREEN.name() + "Party Mode enabled!");
-				pdata.setPartyMode(true);
+				playerManager.setPartyMode(true);
 			}
-			
-	//		pdata.loadDCPlayers();
-			pdata.loadDeniedCommands();
+
+			//		playerManager.loadDCPlayers();
+			playerManager.loadDeniedCommands();
 			
 			MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
 			Set<String> keys = globalLoadouts.getConfig().getKeys(false);
 			for(String loadout : keys){
-				mdata.addLoadout(loadout);
+				minigameManager.addLoadout(loadout);
 				Set<String> items = globalLoadouts.getConfig().getConfigurationSection(loadout).getKeys(false);
 	//			for(int i = 0; i < items.size(); i++){
 	//				if(globalLoadouts.getConfig().contains(loadout + "." + i))
-	//					mdata.getLoadout(loadout).addItemToLoadout(globalLoadouts.getConfig().getItemStack(loadout + "." + i));
+				//					minigameManager.getLoadout(loadout).addItemToLoadout(globalLoadouts.getConfig().getItemStack(loadout + "." + i));
 	//			}
 				for(String slot : items){
                     if (slot.matches("[-]?[0-9]+"))
-                        mdata.getLoadout(loadout).addItem(globalLoadouts.getConfig().getItemStack(loadout + "." + slot), Integer.parseInt(slot));
+						minigameManager.getLoadout(loadout).addItem(globalLoadouts.getConfig().getItemStack(loadout + "." + slot), Integer.parseInt(slot));
 				}
 				if(globalLoadouts.getConfig().contains(loadout + ".potions")){
 					Set<String> pots = globalLoadouts.getConfig().getConfigurationSection(loadout + ".potions").getKeys(false);
@@ -175,24 +174,24 @@ public class Minigames extends JavaPlugin{
 							PotionEffect effect = new PotionEffect(PotionEffectType.getByName(eff),
 									globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".dur"),
 									globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".amp"));
-							mdata.getLoadout(loadout).addPotionEffect(effect);
+							minigameManager.getLoadout(loadout).addPotionEffect(effect);
 						}
 					}
 				}
 				if(globalLoadouts.getConfig().contains(loadout + ".usepermissions")){
-					mdata.getLoadout(loadout).setUsePermissions(globalLoadouts.getConfig().getBoolean(loadout + ".usepermissions"));
+					minigameManager.getLoadout(loadout).setUsePermissions(globalLoadouts.getConfig().getBoolean(loadout + ".usepermissions"));
 				}
 			}
 			
 			minigameSigns = new SignBase();
-			mdata.loadRewardSigns();
+			minigameManager.loadRewardSigns();
 			
 			CommandDispatcher disp = new CommandDispatcher();
 			getCommand("minigame").setExecutor(disp);
 			getCommand("minigame").setTabCompleter(disp);
 			
 			for(Player player : getServer().getOnlinePlayers()){
-				pdata.addMinigamePlayer(player);
+				playerManager.addMinigamePlayer(player);
 			}
 			
 			initMetrics();
@@ -214,11 +213,11 @@ public class Minigames extends JavaPlugin{
 		log.info(desc.getName() + " successfully disabled.");
 		
 		for(Player p : getServer().getOnlinePlayers()){
-			if(pdata.getMinigamePlayer(p).isInMinigame()){
-				pdata.quitMinigame(pdata.getMinigamePlayer(p), true);
+			if (playerManager.getMinigamePlayer(p).isInMinigame()) {
+				playerManager.quitMinigame(playerManager.getMinigamePlayer(p), true);
 			}
 		}
-		for(Minigame minigame : mdata.getAllMinigames().values()){
+		for (Minigame minigame : minigameManager.getAllMinigames().values()) {
 			if(minigame.getType() == MinigameType.GLOBAL && 
 					minigame.getMechanicName().equals("treasure_hunt") && 
 					minigame.isEnabled()){
@@ -227,26 +226,26 @@ public class Minigames extends JavaPlugin{
 				TreasureHuntMechanic.removeTreasure(minigame);
 			}
 		}
-		for(Minigame mg : mdata.getAllMinigames().values()){
+		for (Minigame mg : minigameManager.getAllMinigames().values()) {
 			mg.saveMinigame();
 		}
 		
 		backend.shutdown();
-		
-//		pdata.saveDCPlayers();
-		pdata.saveDeniedCommands();
+
+//		playerManager.saveDCPlayers();
+		playerManager.saveDeniedCommands();
 		
 		MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
-		if(mdata.hasLoadouts()){
-			for(String loadout : mdata.getLoadouts()){
-//				for(int i = 0; i < mdata.getLoadout(loadout).getItems().size(); i++){
-//					globalLoadouts.getConfig().set(loadout + "." + i, mdata.getLoadout(loadout).getItems().get(i));
+		if (minigameManager.hasLoadouts()) {
+			for (String loadout : minigameManager.getLoadouts()) {
+//				for(int i = 0; i < minigameManager.getLoadout(loadout).getItems().size(); i++){
+//					globalLoadouts.getConfig().set(loadout + "." + i, minigameManager.getLoadout(loadout).getItems().get(i));
 //				}
-				for(Integer slot : mdata.getLoadout(loadout).getItems()){
-					globalLoadouts.getConfig().set(loadout + "." + slot, mdata.getLoadout(loadout).getItem(slot));
+				for (Integer slot : minigameManager.getLoadout(loadout).getItems()) {
+					globalLoadouts.getConfig().set(loadout + "." + slot, minigameManager.getLoadout(loadout).getItem(slot));
 				}
-				if(!mdata.getLoadout(loadout).getAllPotionEffects().isEmpty()){
-					for(PotionEffect eff : mdata.getLoadout(loadout).getAllPotionEffects()){
+				if (!minigameManager.getLoadout(loadout).getAllPotionEffects().isEmpty()) {
+					for (PotionEffect eff : minigameManager.getLoadout(loadout).getAllPotionEffects()) {
 						globalLoadouts.getConfig().set(loadout + ".potions." + eff.getType().getName() + ".amp", eff.getAmplifier());
 						globalLoadouts.getConfig().set(loadout + ".potions." + eff.getType().getName() + ".dur", eff.getDuration());
 					}
@@ -254,7 +253,7 @@ public class Minigames extends JavaPlugin{
 				else{
 					globalLoadouts.getConfig().set(loadout + ".potions", null);
 				}
-				if(mdata.getLoadout(loadout).getUsePermissions()){
+				if (minigameManager.getLoadout(loadout).getUsePermissions()) {
 					globalLoadouts.getConfig().set(loadout + ".usepermissions", true);
 				}
 				else{
@@ -266,7 +265,7 @@ public class Minigames extends JavaPlugin{
 			globalLoadouts.getConfig().set("globalloadouts", null);
 		}
 		globalLoadouts.saveConfig();
-		mdata.saveRewardSigns();
+		minigameManager.saveRewardSigns();
 	}
 	
 	private boolean setupEconomy(){
@@ -288,21 +287,21 @@ public class Minigames extends JavaPlugin{
 	public Economy getEconomy(){
 		return econ;
 	}
-	
-	public PlayerData getPlayerData(){
-		return pdata;
+
+	public MinigamePlayerManager getPlayerData() {
+		return playerManager;
 	}
 	
 	public void newPlayerData(){
-		pdata = new PlayerData();
+		playerManager = new MinigamePlayerManager();
 	}
-	
-	public MinigameData getMinigameData(){
-		return mdata;
+
+	public MinigameManager getMinigameData() {
+		return minigameManager;
 	}
 	
 	public void newMinigameData(){
-		mdata = new MinigameData();
+		minigameManager = new MinigameManager();
 	}
 	
 	public BackendManager getBackend() {
@@ -325,11 +324,11 @@ public class Minigames extends JavaPlugin{
 		Metrics metrics = new Metrics(this);
 		Metrics.MultiLineChart chart = new Metrics.MultiLineChart("Players_in_Minigames", new Callable<Map<String, Integer>>() {
 			@Override
-			public Map<String, Integer> call() throws Exception {
+			public Map<String, Integer> call() {
 				Map<String, Integer> result = new HashMap<>();
 				int count = 0;
-				result.put("Total_Players", pdata.getAllMinigamePlayers().size());
-				for (MinigamePlayer pl : pdata.getAllMinigamePlayers()) {
+				result.put("Total_Players", playerManager.getAllMinigamePlayers().size());
+				for (MinigamePlayer pl : playerManager.getAllMinigamePlayers()) {
 					if (pl.isInMinigame()) {
 						count = result.getOrDefault(pl.getMinigame().getType().getName(), 0);
 						result.put(pl.getMinigame().getType().getName(), count + 1);

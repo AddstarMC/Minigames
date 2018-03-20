@@ -1,14 +1,13 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.Map;
-
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.Map;
 
 public class RevertAction extends AbstractAction {
 
@@ -42,7 +41,7 @@ public class RevertAction extends AbstractAction {
 		debug(player,node);
 		if(player == null || !player.isInMinigame()) return;
 		if(!player.isDead())
-			Minigames.plugin.pdata.revertToCheckpoint(player);
+            Minigames.plugin.playerManager.revertToCheckpoint(player);
 	}
 
 	@Override
@@ -50,7 +49,7 @@ public class RevertAction extends AbstractAction {
 		debug(player,region);
 		if(player == null || !player.isInMinigame()) return;
 		if(!player.isDead())
-			Minigames.plugin.pdata.revertToCheckpoint(player);
+            Minigames.plugin.playerManager.revertToCheckpoint(player);
 	}
 
 	@Override

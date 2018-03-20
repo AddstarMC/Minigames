@@ -1,15 +1,15 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class MenuItemLoadoutAdd extends MenuItem{
 	
@@ -43,7 +43,7 @@ public class MenuItemLoadoutAdd extends MenuItem{
 		MinigamePlayer ply = getContainer().getViewer();
 		ply.setNoClose(true);
 		ply.getPlayer().closeInventory();
-		ply.sendMessage("Enter a name for the new Loadout, the menu will automatically reopen in 10s if nothing is entered.", null);
+		ply.sendInfoMessage("Enter a name for the new Loadout, the menu will automatically reopen in 10s if nothing is entered.");
 		ply.setManualEntry(this);
 
 		getContainer().startReopenTimer(30);
@@ -58,7 +58,7 @@ public class MenuItemLoadoutAdd extends MenuItem{
 				if(!getContainer().hasMenuItem(i)){
 					PlayerLoadout loadout = new PlayerLoadout(entry);
 					loadouts.put(entry, loadout);
-					List<String> des = new ArrayList<String>();
+					List<String> des = new ArrayList<>();
 					des.add("Shift + Right Click to Delete");
 					if(minigame != null)
 						getContainer().addItem(new MenuItemDisplayLoadout(entry, des, Material.DIAMOND_SWORD, loadout, minigame), i);
@@ -74,7 +74,7 @@ public class MenuItemLoadoutAdd extends MenuItem{
 		}
 		getContainer().cancelReopenTimer();
 		getContainer().displayMenu(getContainer().getViewer());
-		
-		getContainer().getViewer().sendMessage("A Loadout already exists by the name \"" + entry + "\".", "error");
+
+		getContainer().getViewer().sendMessage("A Loadout already exists by the name \"" + entry + "\".", MinigameMessageType.ERROR);
 	}
 }

@@ -1,5 +1,15 @@
 package au.com.mineauz.minigames.commands;
 
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.commands.set.SetCommand;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,19 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
-
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.commands.set.SetCommand;
-
 public class CommandDispatcher implements CommandExecutor, TabCompleter{
-	private static Map<String, ICommand> commands = new HashMap<String, ICommand>();
+    private static Map<String, ICommand> commands = new HashMap<>();
 	private static Minigames plugin = Minigames.plugin;
 	private static BufferedWriter cmdFile;
 	
@@ -281,7 +280,7 @@ AliasCheck:		for(ICommand com : commands.values()){
 				}
 			}
 			else{
-				List<String> ls = new ArrayList<String>(commands.keySet());
+                List<String> ls = new ArrayList<>(commands.keySet());
 				return MinigameUtils.tabCompleteMatch(ls, args[0]);
 			}
 		}

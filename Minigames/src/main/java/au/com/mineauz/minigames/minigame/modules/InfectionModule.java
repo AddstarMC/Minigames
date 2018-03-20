@@ -1,13 +1,5 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.Flag;
@@ -15,13 +7,20 @@ import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InfectionModule extends MinigameModule{
 	
 	private IntegerFlag infectedPercent = new IntegerFlag(18, "infectedPercent");
 	
 	//Unsaved Data
-	private List<MinigamePlayer> infected = new ArrayList<MinigamePlayer>();
+    private List<MinigamePlayer> infected = new ArrayList<>();
 
 	public InfectionModule(Minigame mgm) {
 		super(mgm);
@@ -34,7 +33,7 @@ public class InfectionModule extends MinigameModule{
 
 	@Override
 	public Map<String, Flag<?>> getFlags() {
-		Map<String, Flag<?>> flags = new HashMap<String, Flag<?>>();
+        Map<String, Flag<?>> flags = new HashMap<>();
 		flags.put("infectedPercent", infectedPercent);
 		return flags;
 	}

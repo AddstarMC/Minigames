@@ -16,7 +16,7 @@ import java.util.List;
 
 public class SingleplayerType extends MinigameTypeBase{
 	private static Minigames plugin = Minigames.plugin;
-	private PlayerData pdata = plugin.pdata;
+	private MinigamePlayerManager pdata = plugin.playerManager;
 	
 	public SingleplayerType() {
 		setType(MinigameType.SINGLEPLAYER);
@@ -25,7 +25,7 @@ public class SingleplayerType extends MinigameTypeBase{
 	@Override
 	public boolean cannotStart(Minigame mgm, MinigamePlayer player) {
 		boolean cannotStart = mgm.isSpMaxPlayers() && mgm.getPlayers().size() >= mgm.getMaxPlayers();
-		if(cannotStart)player.sendMessage(MinigameUtils.getLang("minigame.full"), "error");
+		if (cannotStart) player.sendMessage(MinigameUtils.getLang("minigame.full"), MinigameMessageType.ERROR);
 
 		return cannotStart;
 	}
@@ -38,7 +38,7 @@ public class SingleplayerType extends MinigameTypeBase{
 		if(plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != locs.get(0).getWorld() &&
 				player.getPlayer().hasPermission("minigame.set.start")){
 			player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE +
-					"Join location is across worlds! This may cause some server performance issues!", "error");
+					"Join location is across worlds! This may cause some server performance issues!", MinigameMessageType.ERROR);
 		}
 		return result;
 	}
@@ -47,7 +47,7 @@ public class SingleplayerType extends MinigameTypeBase{
 	public boolean joinMinigame(MinigamePlayer player, Minigame mgm){
 
 		if (mgm.getLives() > 0 && !Float.isFinite(mgm.getLives())) {
-			player.sendMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives()), null);
+			player.sendInfoMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives()));
 		}
 		if(!mgm.isAllowedFlight()){
 			player.setCanFly(false);
@@ -141,7 +141,7 @@ public class SingleplayerType extends MinigameTypeBase{
 			Minigame mgm = player.getMinigame();
 			if(mgm.getType() == MinigameType.SINGLEPLAYER){
 				event.setRespawnLocation(player.getCheckpoint());
-				player.sendMessage(MinigameUtils.getLang("player.checkpoint.deathRevert"), "error");
+				player.sendMessage(MinigameUtils.getLang("player.checkpoint.deathRevert"), MinigameMessageType.ERROR);
 				
 				player.getLoadout().equiptLoadout(player);
 			}

@@ -1,12 +1,12 @@
 package au.com.mineauz.minigames.tool;
 
-import org.bukkit.Material;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
+import org.bukkit.Material;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class DegenAreaMode implements ToolMode {
 
@@ -36,15 +36,15 @@ public class DegenAreaMode implements ToolMode {
 		if(player.hasSelection()){
 			minigame.setFloorDegen1(player.getSelectionPoints()[0]);
 			minigame.setFloorDegen2(player.getSelectionPoints()[1]);
-			player.sendMessage("Created a degeneration area for " + minigame, null);
+			player.sendInfoMessage("Created a degeneration area for " + minigame);
 		}
 		else if(player.getSelectionPoints()[1] == null){
-			player.sendMessage("You must make a selection with right click first!", "error");
+			player.sendMessage("You must make a selection with right click first!", MinigameMessageType.ERROR);
 		}
 		else{
 			minigame.setFloorDegen1(null);
 			minigame.setFloorDegen2(null);
-			player.sendMessage("Cleared degeneration area from " + minigame, null);
+			player.sendInfoMessage("Cleared degeneration area from " + minigame);
 		}
 	}
 
@@ -54,7 +54,7 @@ public class DegenAreaMode implements ToolMode {
 		if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
 			player.addSelectionPoint(event.getClickedBlock().getLocation());
 			if(player.getSelectionPoints()[1] != null){
-				player.sendMessage("Left click to finalise selection", null);
+				player.sendInfoMessage("Left click to finalise selection");
 			}
 		}
 	}
@@ -64,10 +64,10 @@ public class DegenAreaMode implements ToolMode {
 		if(minigame.getFloorDegen1() != null && minigame.getFloorDegen2() != null){
 			player.setSelection(minigame.getFloorDegen1(), minigame.getFloorDegen2());
 			player.showSelection(false);
-			player.sendMessage("Selected degeneration area in " + minigame, null);
+			player.sendInfoMessage("Selected degeneration area in " + minigame);
 		}
 		else{
-			player.sendMessage("No degeneration area selected for " + minigame, "error");
+			player.sendMessage("No degeneration area selected for " + minigame, MinigameMessageType.ERROR);
 		}
 	}
 
@@ -76,10 +76,10 @@ public class DegenAreaMode implements ToolMode {
 		if(minigame.getFloorDegen1() != null && minigame.getFloorDegen2() != null){
 			player.setSelection(minigame.getFloorDegen1(), minigame.getFloorDegen2());
 			player.showSelection(true);
-			player.sendMessage("Selected degeneration area in " + minigame, null);
+			player.sendInfoMessage("Selected degeneration area in " + minigame);
 		}
 		else{
-			player.sendMessage("No degeneration area selected for " + minigame, "error");
+			player.sendMessage("No degeneration area selected for " + minigame, MinigameMessageType.ERROR);
 		}
 	}
 

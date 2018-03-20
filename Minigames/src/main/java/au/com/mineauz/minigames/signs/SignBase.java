@@ -1,8 +1,7 @@
 package au.com.mineauz.minigames.signs;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.Minigames;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -15,11 +14,12 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import au.com.mineauz.minigames.Minigames;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignBase implements Listener{
-	
-	private static Map<String, MinigameSign> minigameSigns = new HashMap<String, MinigameSign>();
+
+    private static Map<String, MinigameSign> minigameSigns = new HashMap<>();
 	
 	static{
 		registerMinigameSign(new FinishSign());
@@ -70,7 +70,7 @@ public class SignBase implements Listener{
 				}
 			}
 			else{
-				Minigames.plugin.pdata.getMinigamePlayer(event.getPlayer()).sendMessage("Invalid Minigame sign!", "error");
+                Minigames.plugin.playerManager.getMinigamePlayer(event.getPlayer()).sendMessage("Invalid Minigame sign!", MinigameMessageType.ERROR);
 				event.setCancelled(true);
 				event.getBlock().breakNaturally();
 			}
@@ -94,8 +94,8 @@ public class SignBase implements Listener{
 					}
 					
 					event.setCancelled(true);
-					
-					mgSign.signUse(sign, Minigames.plugin.pdata.getMinigamePlayer(event.getPlayer()));
+
+                    mgSign.signUse(sign, Minigames.plugin.playerManager.getMinigamePlayer(event.getPlayer()));
 				}
 			}
 		}
@@ -113,7 +113,7 @@ public class SignBase implements Listener{
 					event.setCancelled(true);
 					return;
 				}
-				mgSign.signBreak(sign, Minigames.plugin.pdata.getMinigamePlayer(event.getPlayer()));
+                mgSign.signBreak(sign, Minigames.plugin.playerManager.getMinigamePlayer(event.getPlayer()));
 			}
 		}
 	}

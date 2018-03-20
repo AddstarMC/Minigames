@@ -80,6 +80,7 @@ minigame:
   livesLeft: "Lives left: %s"
   timeLeft: "%s left."
   waitingForPlayers: "Waiting for %s more players."
+  startRandomized: "We are randomizing the start!!"
   skipWaitTime: "Minigame is full, skipping player wait time."
   lateJoin: "You will join in %s seconds..."
   lateJoinWait: "Please wait %s seconds and try again."

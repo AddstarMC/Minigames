@@ -1,25 +1,19 @@
 package au.com.mineauz.minigamesregions;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Material;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.InteractionInterface;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuItemString;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
+import org.bukkit.Material;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RegionToolMode implements ToolMode {
 
@@ -69,7 +63,7 @@ public class RegionToolMode implements ToolMode {
 			RegionModule module = RegionModule.getMinigameModule(tool.getMinigame());
 			
 			Menu regionMenu = new Menu(6, "Regions", player);
-			List<MenuItem> items = new ArrayList<MenuItem>();
+			List<MenuItem> items = new ArrayList<>();
 			
 			for(final Region region : module.getRegions()){
 				MenuItemCustom item = new MenuItemCustom(region.getName(), Material.CHEST);
@@ -112,17 +106,17 @@ public class RegionToolMode implements ToolMode {
 			
 			if(region == null) {
 				module.addRegion(name, new Region(name, player.getSelectionPoints()[0], player.getSelectionPoints()[1]));
-				player.sendMessage("Created a new region in " + minigame + " called " + name, null);
+				player.sendInfoMessage("Created a new region in " + minigame + " called " + name);
 				player.clearSelection();
 			}
 			else{
 				region.updateRegion(player.getSelectionPoints()[0], player.getSelectionPoints()[1]);
 				Main.getPlugin().getDisplayManager().update(region);
-				player.sendMessage("Updated region " + name + " in " + minigame, null);
+				player.sendInfoMessage("Updated region " + name + " in " + minigame);
 			}
 		}
 		else{
-			player.sendMessage("You need to select a region with right click first!", "error");
+			player.sendMessage("You need to select a region with right click first!", MinigameMessageType.ERROR);
 		}
 	}
 
@@ -132,7 +126,7 @@ public class RegionToolMode implements ToolMode {
 		if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
 			player.addSelectionPoint(event.getClickedBlock().getLocation());
 			if(player.hasSelection()){
-				player.sendMessage("Selection complete, finalise with left click.", null);
+				player.sendInfoMessage("Selection complete, finalise with left click.");
 			}
 		}
 	}
@@ -143,10 +137,10 @@ public class RegionToolMode implements ToolMode {
 		String name = MinigameUtils.getMinigameTool(player).getSetting("Region");
 		if(mod.hasRegion(name)){
 			Main.getPlugin().getDisplayManager().show(mod.getRegion(name), player);
-			player.sendMessage("Selected the " + name + " region in " + minigame);
+			player.sendInfoMessage("Selected the " + name + " region in " + minigame);
 		}
 		else{
-			player.sendMessage("No region created by the name '" + name + "'", "error");
+			player.sendMessage("No region created by the name '" + name + "'", MinigameMessageType.ERROR);
 		}
 	}
 
@@ -157,10 +151,10 @@ public class RegionToolMode implements ToolMode {
 		if(mod.hasRegion(name)){
 			Main.getPlugin().getDisplayManager().hide(mod.getRegion(name), player);
 			player.clearSelection();
-			player.sendMessage("Deselected the region");
+			player.sendInfoMessage("Deselected the region");
 		}
 		else{
-			player.sendMessage("No region created by the name '" + name + "'", "error");
+			player.sendMessage("No region created by the name '" + name + "'", MinigameMessageType.ERROR);
 		}
 	}
 

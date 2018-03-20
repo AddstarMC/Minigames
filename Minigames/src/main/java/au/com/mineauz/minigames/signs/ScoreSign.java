@@ -1,13 +1,6 @@
 package au.com.mineauz.minigames.signs;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.block.Sign;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.block.SignChangeEvent;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -15,6 +8,12 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import org.bukkit.ChatColor;
+import org.bukkit.block.Sign;
+import org.bukkit.event.block.SignChangeEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ScoreSign implements MinigameSign{
 
@@ -65,14 +64,14 @@ public class ScoreSign implements MinigameSign{
 			int score = Integer.parseInt(sign.getLine(2));
 			if(!mg.isTeamGame()){
 				if(player.hasClaimedScore(sign.getLocation())){
-					player.sendMessage(MinigameUtils.getLang("sign.score.alreadyUsed"), "error");
+                    player.sendMessage(MinigameUtils.getLang("sign.score.alreadyUsed"), MinigameMessageType.ERROR);
 					return true;
 				}
 				player.addScore(score);
 				mg.setScore(player, player.getScore());
-				player.sendMessage(MinigameUtils.formStr("sign.score.addScore", score, player.getScore()), null);
+                player.sendInfoMessage(MinigameUtils.formStr("sign.score.addScore", score, player.getScore()));
 				if(mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= player.getScore()){
-					Minigames.plugin.pdata.endMinigame(player);
+                    Minigames.plugin.playerManager.endMinigame(player);
 				}
 				player.addClaimedScore(sign.getLocation());
 			}
@@ -80,31 +79,31 @@ public class ScoreSign implements MinigameSign{
 				TeamColor steam = TeamColor.matchColor(ChatColor.stripColor(sign.getLine(3)));
 				Team pteam = player.getTeam();
 				if(steam == null || !TeamsModule.getMinigameModule(mg).hasTeam(steam) || pteam.getColor() == steam){
-					if(Minigames.plugin.mdata.hasClaimedScore(mg, sign.getLocation(), 0)){
-						player.sendMessage(MinigameUtils.getLang("sign.score.alreadyUsedTeam"), "error");
+                    if (Minigames.plugin.minigameManager.hasClaimedScore(mg, sign.getLocation(), 0)) {
+                        player.sendMessage(MinigameUtils.getLang("sign.score.alreadyUsedTeam"), MinigameMessageType.ERROR);
 						return true;
 					}
 					player.addScore(score);
 					mg.setScore(player, player.getScore());
 					
 					pteam.addScore(score);
-					player.sendMessage(MinigameUtils.formStr("sign.score.addScoreTeam", 
-							score, pteam.getChatColor().toString() + pteam.getScore()), null);
-					Minigames.plugin.mdata.addClaimedScore(mg, sign.getLocation(), 0);
+                    player.sendInfoMessage(MinigameUtils.formStr("sign.score.addScoreTeam",
+                            score, pteam.getChatColor().toString() + pteam.getScore()));
+                    Minigames.plugin.minigameManager.addClaimedScore(mg, sign.getLocation(), 0);
 					if(mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= pteam.getScore()){
-						List<MinigamePlayer> winners = new ArrayList<MinigamePlayer>(pteam.getPlayers());
-						List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>(mg.getPlayers().size() - pteam.getPlayers().size());
+                        List<MinigamePlayer> winners = new ArrayList<>(pteam.getPlayers());
+                        List<MinigamePlayer> losers = new ArrayList<>(mg.getPlayers().size() - pteam.getPlayers().size());
 						for(Team t : TeamsModule.getMinigameModule(mg).getTeams()){
 							if(t != pteam)
 								losers.addAll(t.getPlayers());
 						}
-						Minigames.plugin.pdata.endMinigame(mg, winners, losers);
+                        Minigames.plugin.playerManager.endMinigame(mg, winners, losers);
 					}
 				}
 			}
 		}
 		else if(player.isInMinigame() && !player.getPlayer().isOnGround()){
-			player.sendMessage(MinigameUtils.getLang("sign.onGround"), "error");
+            player.sendMessage(MinigameUtils.getLang("sign.onGround"), MinigameMessageType.ERROR);
 		}
 		return true;
 	}

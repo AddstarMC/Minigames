@@ -1,33 +1,27 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.config.EnumFlag;
+import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigamesregions.Node;
+import au.com.mineauz.minigamesregions.Region;
+import com.google.common.base.Strings;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
-import com.google.common.base.Strings;
-
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.EnumFlag;
-import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemEnum;
-import au.com.mineauz.minigames.menu.MenuItemNewLine;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuItemString;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import java.util.Collection;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ContainsEntityCondition extends ConditionInterface {
-	private EnumFlag<EntityType> entityType = new EnumFlag<EntityType>(EntityType.PLAYER, "entity");
+    private EnumFlag<EntityType> entityType = new EnumFlag<>(EntityType.PLAYER, "entity");
 	
 	private BooleanFlag matchName = new BooleanFlag(false, "matchName");
 	private StringFlag customName = new StringFlag(null, "name");
@@ -133,8 +127,8 @@ public class ContainsEntityCondition extends ConditionInterface {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu menu = new Menu(3, "Contians Entity", player);
-		
-		menu.addItem(new MenuItemEnum<EntityType>("Entity Type", Material.MONSTER_EGGS, entityType.getCallback(), EntityType.class));
+
+        menu.addItem(new MenuItemEnum<>("Entity Type", Material.MONSTER_EGGS, entityType.getCallback(), EntityType.class));
 		
 		menu.addItem(new MenuItemNewLine());
 		

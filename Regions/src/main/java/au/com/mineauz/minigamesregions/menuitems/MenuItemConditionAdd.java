@@ -1,24 +1,15 @@
 package au.com.mineauz.minigamesregions.menuitems;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
+import au.com.mineauz.minigamesregions.conditions.Conditions;
+import au.com.mineauz.minigamesregions.executors.NodeExecutor;
+import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.menu.InteractionInterface;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigamesregions.executors.NodeExecutor;
-import au.com.mineauz.minigamesregions.executors.RegionExecutor;
-import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
-import au.com.mineauz.minigamesregions.conditions.Conditions;
+import java.util.*;
 
 public class MenuItemConditionAdd extends MenuItem{
 	
@@ -39,8 +30,8 @@ public class MenuItemConditionAdd extends MenuItem{
 	public ItemStack onClick(){
 		Menu m = new Menu(6, "Conditions", getContainer().getViewer());
 		m.setPreviousPage(getContainer());
-		Map<String, Menu> cats = new HashMap<String, Menu>();
-		List<String> cons = new ArrayList<String>(Conditions.getAllConditionNames());
+        Map<String, Menu> cats = new HashMap<>();
+        List<String> cons = new ArrayList<>(Conditions.getAllConditionNames());
 		Collections.sort(cons);
 		for(String con : cons){
 			if((Conditions.getConditionByName(con).useInNodes() && nexec != null) || 

@@ -1,8 +1,8 @@
 package au.com.mineauz.minigamesregions;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigamePlayerManager;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.PlayerData;
 import au.com.mineauz.minigames.events.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigamesregions.events.EnterRegionEvent;
@@ -27,7 +27,7 @@ import org.bukkit.event.player.*;
 public class RegionEvents implements Listener{
 	
 	private Minigames plugin = Minigames.plugin;
-	private PlayerData pdata = plugin.pdata;
+    private MinigamePlayerManager pdata = plugin.playerManager;
 	
 	private void executeRegionChanges(Minigame mg, MinigamePlayer ply){
 		for(Region r : RegionModule.getMinigameModule(mg).getRegions()){

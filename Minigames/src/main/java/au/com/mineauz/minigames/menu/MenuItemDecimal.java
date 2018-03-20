@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -59,7 +60,7 @@ public class MenuItemDecimal extends MenuItem{
 			}
 		}
 		else{
-			description = new ArrayList<String>();
+            description = new ArrayList<>();
 			if (value.getValue().isInfinite()) {
 				description.add(0, ChatColor.GREEN.toString() + "INFINITE");
 			} else {
@@ -125,7 +126,7 @@ public class MenuItemDecimal extends MenuItem{
 			max = this.max.toString();
 		}
 		ply.setManualEntry(this);
-		ply.sendMessage("Min: " + min + ", Max: " + max);
+        ply.sendInfoMessage("Min: " + min + ", Max: " + max);
 		getContainer().startReopenTimer(15);
 		
 		return null;
@@ -154,8 +155,8 @@ public class MenuItemDecimal extends MenuItem{
 		}
 		getContainer().cancelReopenTimer();
 		getContainer().displayMenu(getContainer().getViewer());
-		
-		getContainer().getViewer().sendMessage("Invalid value entry!", "error");
+
+        getContainer().getViewer().sendMessage("Invalid value entry!", MinigameMessageType.ERROR);
 	}
 
 }

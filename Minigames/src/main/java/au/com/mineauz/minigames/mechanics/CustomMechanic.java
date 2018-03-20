@@ -1,18 +1,14 @@
 package au.com.mineauz.minigames.mechanics;
 
-import java.util.EnumSet;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.gametypes.MultiplayerType;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import java.util.EnumSet;
+import java.util.List;
 
 public class CustomMechanic extends GameMechanicBase{
 
@@ -40,7 +36,7 @@ public class CustomMechanic extends GameMechanicBase{
 	}
 
 	@Override
-	public void joinMinigame(Minigame minigame, MinigamePlayer player) {
+    public void onJoinMinigame(Minigame minigame, MinigamePlayer player) {
 	}
 
 	@Override

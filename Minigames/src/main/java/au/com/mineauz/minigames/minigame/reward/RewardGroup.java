@@ -1,16 +1,16 @@
 package au.com.mineauz.minigames.minigame.reward;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RewardGroup {
 	
 	private String groupName;
 //	private List<RewardItem> items = new ArrayList<RewardItem>();
-	private List<RewardType> items = new ArrayList<RewardType>();
+private List<RewardType> items = new ArrayList<>();
 	private RewardRarity rarity;
 	
 	public RewardGroup(String groupName, RewardRarity rarity){

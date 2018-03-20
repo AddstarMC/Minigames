@@ -1,14 +1,14 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuItemList extends MenuItem{
 	
@@ -62,7 +62,7 @@ public class MenuItemList extends MenuItem{
 			}
 		}
 		else{
-			description = new ArrayList<String>();
+			description = new ArrayList<>();
 			description.add(ChatColor.GRAY.toString() + options.get(before));
 			description.add(ChatColor.GREEN.toString() + value.getValue());
 			description.add(ChatColor.GRAY.toString() + options.get(after));
@@ -103,13 +103,13 @@ public class MenuItemList extends MenuItem{
 		
 		ply.setNoClose(true);
 		ply.getPlayer().closeInventory();
-		ply.sendMessage("Enter the name of the option into chat for " + getName() + ", the menu will automatically reopen in 10s if nothing is entered.", null);
+		ply.sendInfoMessage("Enter the name of the option into chat for " + getName() + ", the menu will automatically reopen in 10s if nothing is entered.");
 		ply.setManualEntry(this);
 		if(MinigameUtils.listToString(options).getBytes().length > 16000) {
-			ply.sendMessage("Unfortunately there are too many options to provide a list in game. Perhaps use the WIKI");
+			ply.sendInfoMessage("Unfortunately there are too many options to provide a list in game. Perhaps use the WIKI");
 		}
 		else {
-			ply.sendMessage("Possible Options: " + MinigameUtils.listToString(options));
+			ply.sendInfoMessage("Possible Options: " + MinigameUtils.listToString(options));
 		}
 		getContainer().startReopenTimer(10);
 		return null;
@@ -129,7 +129,7 @@ public class MenuItemList extends MenuItem{
 		}
 		getContainer().cancelReopenTimer();
 		getContainer().displayMenu(getContainer().getViewer());
-		
-		getContainer().getViewer().sendMessage("Could not find matching value!", "error");
+
+		getContainer().getViewer().sendMessage("Could not find matching value!", MinigameMessageType.ERROR);
 	}
 }

@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.tool;
 
-import org.bukkit.Material;
-import org.bukkit.event.player.PlayerInteractEvent;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
+import org.bukkit.Material;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class SpectatorPositionMode implements ToolMode{
 
@@ -39,7 +39,7 @@ public class SpectatorPositionMode implements ToolMode{
 	public void onRightClick(MinigamePlayer player, Minigame minigame,
 			Team team, PlayerInteractEvent event) {
 		minigame.setSpectatorLocation(player.getLocation());
-		player.sendMessage("Set spectator start position.", null);
+		player.sendInfoMessage("Set spectator start position.");
 	}
 
 	@SuppressWarnings("deprecation") //TODO: Use alternate method once available
@@ -47,10 +47,10 @@ public class SpectatorPositionMode implements ToolMode{
 	public void select(MinigamePlayer player, Minigame minigame, Team team) {
 		if(minigame.getSpectatorLocation() != null){
 			player.getPlayer().sendBlockChange(minigame.getSpectatorLocation(), Material.SKULL, (byte)1);
-			player.sendMessage("Selected spectator position (marked with skull).", null);
+			player.sendInfoMessage("Selected spectator position (marked with skull).");
 		}
 		else{
-			player.sendMessage("No spectator position set!", "error");
+			player.sendMessage("No spectator position set!", MinigameMessageType.ERROR);
 		}
 	}
 
@@ -61,10 +61,10 @@ public class SpectatorPositionMode implements ToolMode{
 			player.getPlayer().sendBlockChange(minigame.getSpectatorLocation(), 
 					minigame.getSpectatorLocation().getBlock().getType(), 
 					minigame.getSpectatorLocation().getBlock().getData());
-			player.sendMessage("Spectator position deselected.", null);
+			player.sendInfoMessage("Spectator position deselected.");
 		}
 		else{
-			player.sendMessage("No spectator position set!", "error");
+			player.sendMessage("No spectator position set!", MinigameMessageType.ERROR);
 		}
 	}
 

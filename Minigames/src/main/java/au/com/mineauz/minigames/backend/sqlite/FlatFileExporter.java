@@ -1,25 +1,23 @@
 package au.com.mineauz.minigames.backend.sqlite;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
+import au.com.mineauz.minigames.backend.BackendImportCallback;
+import au.com.mineauz.minigames.backend.ExportNotifier;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Maps;
+import com.google.common.collect.SetMultimap;
+import com.google.common.collect.Sets;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.SetMultimap;
-import com.google.common.collect.Sets;
-
-import au.com.mineauz.minigames.backend.BackendImportCallback;
-import au.com.mineauz.minigames.backend.ExportNotifier;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public class FlatFileExporter {
 	private final File file;
@@ -63,14 +61,11 @@ public class FlatFileExporter {
 			notifier.onComplete();
 			
 			return true;
-		} catch (InvalidConfigurationException e) {
-			notifier.onError(e, notifyState, notifyCount);
-			return false;
-		} catch (IOException e) {
+        } catch (InvalidConfigurationException | IOException e) {
 			notifier.onError(e, notifyState, notifyCount);
 			return false;
 		}
-	}
+    }
 	
 	private void loadCompletions() {
 		completions = HashMultimap.create();

@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuItemBoolean extends MenuItem{
 	
@@ -42,7 +42,7 @@ public class MenuItemBoolean extends MenuItem{
 				description.add(0, col);
 		}
 		else{
-			description = new ArrayList<String>();
+            description = new ArrayList<>();
 			description.add(col);
 		}
 		

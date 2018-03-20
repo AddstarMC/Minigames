@@ -1,13 +1,12 @@
 package au.com.mineauz.minigames.signs;
 
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
-
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
 
 public class QuitSign implements MinigameSign {
 	
@@ -47,7 +46,7 @@ public class QuitSign implements MinigameSign {
 	@Override
 	public boolean signUse(Sign sign, MinigamePlayer player) {
 		if(player.isInMinigame() && player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR){
-			plugin.pdata.quitMinigame(player, false);
+            plugin.playerManager.quitMinigame(player, false);
 			return true;
 		}
 		else if(player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR)

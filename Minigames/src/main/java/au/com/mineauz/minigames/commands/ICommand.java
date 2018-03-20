@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.commands;
 
-import java.util.List;
-
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public interface ICommand {
-//	public PlayerData pdata = Minigames.plugin.getPlayerData();
-//	public MinigameData mdata = Minigames.plugin.getMinigameData();
+    //	public MinigamePlayerManager playerManager = Minigames.plugin.getPlayerData();
+//	public MinigameManager minigameManager = Minigames.plugin.getMinigameData();
 Minigames plugin = Minigames.plugin;
 	
 	String getName();

@@ -1,19 +1,18 @@
 package au.com.mineauz.minigames.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TeleportCommand implements ICommand {
 
@@ -71,7 +70,7 @@ public class TeleportCommand implements ICommand {
 			List<Player> plys = plugin.getServer().matchPlayer(args[0]);
 			MinigamePlayer ply = null;
 			if(!plys.isEmpty()){
-				ply = plugin.pdata.getMinigamePlayer(plys.get(0));
+                ply = plugin.playerManager.getMinigamePlayer(plys.get(0));
 			}
 			else{
 				sender.sendMessage(ChatColor.RED + "No player found by the name " + args[0] + "!");
@@ -197,7 +196,7 @@ public class TeleportCommand implements ICommand {
 				MinigamePlayer ply2 = null;
 				
 				if(!plys.isEmpty()){
-					ply2 = plugin.pdata.getMinigamePlayer(plys.get(0));
+                    ply2 = plugin.playerManager.getMinigamePlayer(plys.get(0));
 				}
 				else{
 					sender.sendMessage(ChatColor.RED + "No player found by the name " + args[1] + "!");
@@ -216,14 +215,14 @@ public class TeleportCommand implements ICommand {
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> pl = new ArrayList<String>();
+            List<String> pl = new ArrayList<>();
 			for(Player p : plugin.getServer().getOnlinePlayers()){
 				pl.add(p.getName());
 			}
 			return MinigameUtils.tabCompleteMatch(pl, args[0]);
 		}
 		else if(args.length == 2){
-			List<String> pl = new ArrayList<String>(plugin.getServer().getOnlinePlayers().size() + 2);
+            List<String> pl = new ArrayList<>(plugin.getServer().getOnlinePlayers().size() + 2);
 			for(Player ply : plugin.getServer().getOnlinePlayers()){
 				pl.add(ply.getName());
 			}

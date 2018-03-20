@@ -1,5 +1,9 @@
 package au.com.mineauz.minigames.signs;
 
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.ScoreboardDisplay;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -7,11 +11,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.material.Directional;
 import org.bukkit.metadata.FixedMetadataValue;
-
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.ScoreboardDisplay;
 
 public class ScoreboardSign implements MinigameSign{
 	private Minigames plugin = Minigames.plugin;
@@ -51,9 +50,9 @@ public class ScoreboardSign implements MinigameSign{
 		
 		// Parse minigame
 		Minigame minigame;
-		
-		if (plugin.mdata.hasMinigame(event.getLine(2))) {
-			minigame = plugin.mdata.getMinigame(event.getLine(2));
+
+        if (plugin.minigameManager.hasMinigame(event.getLine(2))) {
+            minigame = plugin.minigameManager.getMinigame(event.getLine(2));
 		} else {
 			event.getPlayer().sendMessage(ChatColor.RED + "No Minigame found by the name " + event.getLine(2));
 			return false;
@@ -99,7 +98,7 @@ public class ScoreboardSign implements MinigameSign{
 
 	@Override
 	public boolean signUse(Sign sign, MinigamePlayer player) {
-		Minigame minigame = plugin.mdata.getMinigame(sign.getLine(2));
+        Minigame minigame = plugin.minigameManager.getMinigame(sign.getLine(2));
 		if (minigame == null) {
 			return false;
 		}

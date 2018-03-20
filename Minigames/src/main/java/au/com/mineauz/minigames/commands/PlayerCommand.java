@@ -1,17 +1,16 @@
 package au.com.mineauz.minigames.commands;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 public class PlayerCommand implements ICommand {
 
@@ -63,7 +62,7 @@ public class PlayerCommand implements ICommand {
 			String label, String[] args) {
 		if(args != null){
 			if(args[0].equalsIgnoreCase("list")){
-				List<MinigamePlayer> pls = new ArrayList<MinigamePlayer>();
+                List<MinigamePlayer> pls = new ArrayList<>();
 				for(MinigamePlayer pl : Minigames.plugin.getPlayerData().getAllMinigamePlayers()){
 					if(pl.isInMinigame()){
 						pls.add(pl);
@@ -111,7 +110,7 @@ public class PlayerCommand implements ICommand {
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> plys = new ArrayList<String>(plugin.getServer().getOnlinePlayers().size() + 1);
+            List<String> plys = new ArrayList<>(plugin.getServer().getOnlinePlayers().size() + 1);
 			for(Player ply : plugin.getServer().getOnlinePlayers()){
 				plys.add(ply.getName());
 			}

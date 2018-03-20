@@ -1,23 +1,21 @@
 package au.com.mineauz.minigamesregions;
 
-import java.util.Map;
-import java.util.Set;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Player;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.SetMultimap;
-import com.google.common.collect.Sets;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.display.IDisplayObject;
 import au.com.mineauz.minigames.minigame.Minigame;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Maps;
+import com.google.common.collect.SetMultimap;
+import com.google.common.collect.Sets;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Player;
+
+import java.util.Map;
+import java.util.Set;
 
 public class RegionDisplayManager {
 	private Map<Player, Map<Region, IDisplayObject>> regionDisplays;
@@ -172,7 +170,7 @@ public class RegionDisplayManager {
 	}
 	
 	public void hideAll(Player player) {
-		MinigamePlayer mplayer = Minigames.plugin.pdata.getMinigamePlayer(player);
+        MinigamePlayer mplayer = Minigames.plugin.playerManager.getMinigamePlayer(player);
 		Map<Region, IDisplayObject> regions = regionDisplays.remove(player);
 		if (regions != null) {
 			for (IDisplayObject display : regions.values()) {

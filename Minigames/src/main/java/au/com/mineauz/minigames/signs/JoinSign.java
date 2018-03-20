@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.signs;
 
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
-
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.minigame.Minigame;
 
 public class JoinSign implements MinigameSign {
 	
@@ -42,9 +41,9 @@ public class JoinSign implements MinigameSign {
 
 	@Override
 	public boolean signCreate(SignChangeEvent event) {
-		if(plugin.mdata.hasMinigame(event.getLine(2))){
+        if (plugin.minigameManager.hasMinigame(event.getLine(2))) {
 			event.setLine(1, ChatColor.GREEN + "Join");
-			event.setLine(2, plugin.mdata.getMinigame(event.getLine(2)).getName(false));
+            event.setLine(2, plugin.minigameManager.getMinigame(event.getLine(2)).getName(false));
 			if(Minigames.plugin.hasEconomy()){
 				if(!event.getLine(3).isEmpty() && !event.getLine(3).matches("\\$?[0-9]+(.[0-9]{2})?")){
 					event.getPlayer().sendMessage(ChatColor.RED + MinigameUtils.getLang("sign.join.invalidMoney"));
@@ -94,7 +93,7 @@ public class JoinSign implements MinigameSign {
 			invOk = player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR;
 		}
 		if(invOk){
-			Minigame mgm = plugin.mdata.getMinigame(sign.getLine(2));
+            Minigame mgm = plugin.minigameManager.getMinigame(sign.getLine(2));
 			if(mgm != null && (!mgm.getUsePermissions() ||
 					player.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))){
 				if(mgm.isEnabled()){
@@ -108,7 +107,7 @@ public class JoinSign implements MinigameSign {
 							return false;
 						}
 					}
-					plugin.pdata.joinMinigame(player, mgm, false, 0.0);
+                    plugin.playerManager.joinMinigame(player, mgm, false, 0.0);
 					return true;
 				}
 				else if(!mgm.isEnabled()){

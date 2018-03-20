@@ -1,13 +1,5 @@
 package au.com.mineauz.minigamesregions;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import org.bukkit.Location;
-
-import com.google.common.collect.ImmutableSet;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
@@ -15,14 +7,20 @@ import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.script.ScriptWrapper;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
-import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
+import au.com.mineauz.minigamesregions.triggers.Trigger;
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.Location;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class Node implements ScriptObject {
 	
 	private String name;
 	private Location loc;
-	private List<NodeExecutor> executors = new ArrayList<NodeExecutor>();
+    private List<NodeExecutor> executors = new ArrayList<>();
 	private boolean enabled = true;
 	
 	public Node(String name, Location loc){
@@ -79,7 +77,7 @@ public class Node implements ScriptObject {
 	public void execute(Trigger trigger, MinigamePlayer player){
 		if(player != null && player.getMinigame() != null && player.getMinigame().isSpectator(player)) return;
 		if(player == null || player.getMinigame() == null)return;
-		List<NodeExecutor> toExecute = new ArrayList<NodeExecutor>();
+        List<NodeExecutor> toExecute = new ArrayList<>();
 		for(NodeExecutor exec : executors){
 			if(exec.getTrigger() == trigger){
 				if(checkConditions(exec, player) && exec.canBeTriggered(player))

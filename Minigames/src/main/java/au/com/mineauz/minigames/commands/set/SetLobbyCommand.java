@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class SetLobbyCommand implements ICommand{
 
@@ -164,15 +163,14 @@ public class SetLobbyCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args != null){
-			if(args.length == 1){
-				return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("canmove;caninteract;teleport;playerWait"), args[args.length - 1]);
-			}
-			else if(args.length == 2){
-				return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("playerwait;startwait"), args[args.length - 1]);
-			}
-			else{
-				return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("true;false"), args[args.length - 1]);
-			}
+            switch (args.length) {
+                case 1:
+                    return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("canmove;caninteract;teleport;playerWait"), args[args.length - 1]);
+                case 2:
+                    return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("playerwait;startwait"), args[args.length - 1]);
+                default:
+                    return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("true;false"), args[args.length - 1]);
+            }
 		}
 		return null;
 	}

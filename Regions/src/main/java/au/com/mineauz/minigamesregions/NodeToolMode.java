@@ -1,25 +1,19 @@
 package au.com.mineauz.minigamesregions;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.event.player.PlayerInteractEvent;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.InteractionInterface;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuItemString;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.event.player.PlayerInteractEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NodeToolMode implements ToolMode {
 
@@ -69,7 +63,7 @@ public class NodeToolMode implements ToolMode {
 			RegionModule module = RegionModule.getMinigameModule(tool.getMinigame());
 			
 			Menu nodeMenu = new Menu(6, "Nodes", player);
-			List<MenuItem> items = new ArrayList<MenuItem>();
+			List<MenuItem> items = new ArrayList<>();
 			
 			for(final Node node : module.getNodes()){
 				MenuItemCustom item = new MenuItemCustom(node.getName(), Material.STONE_BUTTON);
@@ -112,10 +106,10 @@ public class NodeToolMode implements ToolMode {
 			if (node == null) {
 				node = new Node(name, loc);
 				mod.addNode(name, node);
-				player.sendMessage("Added new node to " + minigame + " called " + name, null);
+				player.sendInfoMessage("Added new node to " + minigame + " called " + name);
 			} else {
 				node.setLocation(loc);
-				player.sendMessage("Edited node " + name + " in " + minigame, null);
+				player.sendInfoMessage("Edited node " + name + " in " + minigame);
 				Main.getPlugin().getDisplayManager().update(node);
 			}
 		}
@@ -130,10 +124,10 @@ public class NodeToolMode implements ToolMode {
 		if (node == null) {
 			node = new Node(name, player.getLocation());
 			mod.addNode(name, node);
-			player.sendMessage("Added new node to " + minigame + " called " + name, null);
+			player.sendInfoMessage("Added new node to " + minigame + " called " + name);
 		} else {
 			node.setLocation(player.getLocation());
-			player.sendMessage("Edited node " + name + " in " + minigame, null);
+			player.sendInfoMessage("Edited node " + name + " in " + minigame);
 			Main.getPlugin().getDisplayManager().update(node);
 		}
 	}
@@ -144,10 +138,10 @@ public class NodeToolMode implements ToolMode {
 		String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
 		if(mod.hasNode(name)){
 			Main.getPlugin().getDisplayManager().show(mod.getNode(name), player);
-			player.sendMessage("Selected node '" + name + "' visually.", null);
+			player.sendInfoMessage("Selected node '" + name + "' visually.");
 		}
 		else{
-			player.sendMessage("No node exists by the name '" + name + "'", "error");
+			player.sendMessage("No node exists by the name '" + name + "'", MinigameMessageType.ERROR);
 		}
 	}
 
@@ -157,10 +151,10 @@ public class NodeToolMode implements ToolMode {
 		String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
 		if(mod.hasNode(name)){
 			Main.getPlugin().getDisplayManager().hide(mod.getNode(name), player);
-			player.sendMessage("Deselected node '" + name + "'", null);
+			player.sendInfoMessage("Deselected node '" + name + "'");
 		}
 		else{
-			player.sendMessage("No node exists by the name '" + name + "'", "error");
+			player.sendMessage("No node exists by the name '" + name + "'", MinigameMessageType.ERROR);
 		}
 	}
 

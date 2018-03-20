@@ -1,22 +1,17 @@
 package au.com.mineauz.minigames.minigame.reward;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.menu.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemBack;
-import au.com.mineauz.minigames.menu.MenuItemDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MoneyReward extends RewardType{
 
@@ -66,7 +61,7 @@ public class MoneyReward extends RewardType{
 	}
 	
 	private class MenuItemReward extends MenuItem{
-		private List<String> options = new ArrayList<String>();
+        private List<String> options = new ArrayList<>();
 		private MoneyReward reward;
 		
 		public MenuItemReward(MoneyReward reward){
@@ -87,7 +82,7 @@ public class MoneyReward extends RewardType{
 		public void updateDescription(){
 			List<String> description = null;
 			if(options == null){
-				options = new ArrayList<String>();
+                options = new ArrayList<>();
 				for(RewardRarity rarity : RewardRarity.values()){
 					options.add(rarity.toString());
 				}
@@ -127,7 +122,7 @@ public class MoneyReward extends RewardType{
 				}
 			}
 			else{
-				description = new ArrayList<String>();
+                description = new ArrayList<>();
 				description.add(ChatColor.GRAY.toString() + options.get(before));
 				description.add(ChatColor.GREEN.toString() + getRarity().toString());
 				description.add(ChatColor.GRAY.toString() + options.get(after));

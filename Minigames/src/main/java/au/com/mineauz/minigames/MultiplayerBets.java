@@ -1,15 +1,15 @@
 package au.com.mineauz.minigames;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MultiplayerBets {
-	private Map<MinigamePlayer, ItemStack> bet = new HashMap<MinigamePlayer, ItemStack>();
+    private Map<MinigamePlayer, ItemStack> bet = new HashMap<>();
 	private double greatestBet = 0;
-	private Map<MinigamePlayer, Double> moneyBet = new HashMap<MinigamePlayer, Double>();
+    private Map<MinigamePlayer, Double> moneyBet = new HashMap<>();
 	
 	public MultiplayerBets(){
 	}
@@ -89,14 +89,13 @@ public class MultiplayerBets {
 	}
 	
 	public int betValue(Material material){
-		if(material == Material.DIAMOND){
-			return 3;
-		}
-		else if(material == Material.GOLD_INGOT){
-			return 2;
-		}
-		else if(material == Material.IRON_INGOT){
-			return 1;
+        switch (material) {
+            case DIAMOND:
+                return 3;
+            case GOLD_INGOT:
+                return 2;
+            case IRON_INGOT:
+                return 1;
 		}
 		return 0;
 	}

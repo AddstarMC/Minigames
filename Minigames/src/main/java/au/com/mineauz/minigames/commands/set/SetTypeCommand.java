@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SetTypeCommand implements ICommand{
 
@@ -35,7 +34,7 @@ public class SetTypeCommand implements ICommand{
 
 	@Override
 	public String[] getParameters() {
-		String[] mgtypes = new String[plugin.mdata.getMinigameTypes().size() + 1];
+        String[] mgtypes = new String[plugin.minigameManager.getMinigameTypes().size() + 1];
 		int inc = 0;
 		for(MinigameType type : MinigameType.values()){
 			mgtypes[inc] = type.toString();
@@ -79,7 +78,7 @@ public class SetTypeCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> types = new ArrayList<String>();
+            List<String> types = new ArrayList<>();
 			for(MinigameType t : MinigameType.values()){
 				types.add(t.toString());
 			}

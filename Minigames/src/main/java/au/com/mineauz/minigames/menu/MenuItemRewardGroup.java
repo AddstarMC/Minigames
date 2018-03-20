@@ -1,17 +1,17 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuItemRewardGroup extends MenuItem{
 	
@@ -33,7 +33,7 @@ public class MenuItemRewardGroup extends MenuItem{
 	}
 	
 	public List<String> getOptions(){
-		List<String> options = new ArrayList<String>();
+		List<String> options = new ArrayList<>();
 		for(RewardRarity r : RewardRarity.values()){
 			options.add(r.toString());
 		}
@@ -75,7 +75,7 @@ public class MenuItemRewardGroup extends MenuItem{
 			}
 		}
 		else{
-			description = new ArrayList<String>();
+			description = new ArrayList<>();
 			description.add(ChatColor.GRAY.toString() + options.get(before));
 			description.add(ChatColor.GREEN.toString() + group.getRarity().toString());
 			description.add(ChatColor.GRAY.toString() + options.get(after));
@@ -125,8 +125,8 @@ public class MenuItemRewardGroup extends MenuItem{
 		}
 		getContainer().cancelReopenTimer();
 		getContainer().displayMenu(getContainer().getViewer());
-		
-		getContainer().getViewer().sendMessage("The selected group will not be removed from the rewards.", "error");
+
+		getContainer().getViewer().sendMessage("The selected group will not be removed from the rewards.", MinigameMessageType.ERROR);
 	}
 	
 	@Override
@@ -135,9 +135,9 @@ public class MenuItemRewardGroup extends MenuItem{
 		ply.setNoClose(true);
 		ply.getPlayer().closeInventory();
 		String itemName = group.getName();
-		
-		ply.sendMessage("Delete the reward group \"" + itemName + "\"? Type \"Yes\" to confirm.", null);
-		ply.sendMessage("The menu will automatically reopen in 10s if nothing is entered.");
+
+		ply.sendInfoMessage("Delete the reward group \"" + itemName + "\"? Type \"Yes\" to confirm.");
+		ply.sendInfoMessage("The menu will automatically reopen in 10s if nothing is entered.");
 		ply.setManualEntry(this);
 
 		getContainer().startReopenTimer(10);
@@ -149,7 +149,7 @@ public class MenuItemRewardGroup extends MenuItem{
 		Menu rewardMenu = new Menu(5, getName(), getContainer().getViewer());
 		rewardMenu.setPreviousPage(getContainer());
 
-		List<String> des = new ArrayList<String>();
+		List<String> des = new ArrayList<>();
 		des.add("Click this with an item");
 		des.add("to add it to rewards.");
 		des.add("Click without an item");
@@ -157,12 +157,12 @@ public class MenuItemRewardGroup extends MenuItem{
 		
 		rewardMenu.addItem(new MenuItemRewardAdd("Add Item", des, Material.ITEM_FRAME, group), 43);
 		rewardMenu.addItem(new MenuItemPage("Save " + getName(), Material.REDSTONE_TORCH_ON, rewardMenu.getPreviousPage()), 44);
-		List<String> list = new ArrayList<String>();
-		for(RewardRarity r : RewardRarity.values()){
-			list.add(r.toString());
-		}
-		
-		List<MenuItem> mi = new ArrayList<MenuItem>();
+		//List<String> list = new ArrayList<>();
+		//for(RewardRarity r : RewardRarity.values()){
+		//	list.add(r.toString());
+		//}
+
+		List<MenuItem> mi = new ArrayList<>();
 		for(RewardType item : group.getItems()){
 			mi.add(item.getMenuItem());
 		}

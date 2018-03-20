@@ -1,12 +1,6 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.Map;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.BlockState;
-import org.bukkit.configuration.file.FileConfiguration;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
@@ -17,6 +11,12 @@ import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.BlockState;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.Map;
 
 public class SetBlockAction extends AbstractAction {
 	
@@ -118,7 +118,7 @@ public class SetBlockAction extends AbstractAction {
 				if(Material.matchMaterial(value.toUpperCase()) != null)
 					type.setFlag(value.toUpperCase());
 				else
-					fply.sendMessage("Invalid block type!", "error");
+                    fply.sendMessage("Invalid block type!", MinigameMessageType.ERROR);
 			}
 			
 			@Override

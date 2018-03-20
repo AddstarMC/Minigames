@@ -1,5 +1,12 @@
 package au.com.mineauz.minigames.commands.set;
 
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,16 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.commands.ICommand;
-import au.com.mineauz.minigames.minigame.Minigame;
-
 public class SetCommand implements ICommand{
-	private static Map<String, ICommand> parameterList = new HashMap<String, ICommand>();
+    private static Map<String, ICommand> parameterList = new HashMap<>();
 	private static BufferedWriter cmdFile;
 	
 	static{
@@ -221,8 +220,8 @@ public class SetCommand implements ICommand{
 			String[] shortArgs = null;
 			
 			if(args.length >= 1){
-				if(plugin.mdata.hasMinigame(args[0])){
-					mgm = plugin.mdata.getMinigame(args[0]);
+                if (plugin.minigameManager.hasMinigame(args[0])) {
+                    mgm = plugin.minigameManager.getMinigame(args[0]);
 				}
 				if(args.length >= 2){
 					if(parameterList.containsKey(args[1].toLowerCase())){
@@ -331,9 +330,9 @@ AliasCheck:				for(ICommand com : parameterList.values()){
 			ICommand comd = null;
 			String[] shortArgs = null;
 			Minigame mgm = null;
-			
-			if(plugin.mdata.hasMinigame(args[0])){
-				mgm = plugin.mdata.getMinigame(args[0]);
+
+            if (plugin.minigameManager.hasMinigame(args[0])) {
+                mgm = plugin.minigameManager.getMinigame(args[0]);
 			}
 			
 			if(args.length > 1 && mgm != null){
@@ -356,12 +355,12 @@ AliasCheck:				for(ICommand com : parameterList.values()){
 					}
 				}
 				else{
-					List<String> ls = new ArrayList<String>(parameterList.keySet());
+                    List<String> ls = new ArrayList<>(parameterList.keySet());
 					return MinigameUtils.tabCompleteMatch(ls, args[1]);
 				}
 			}
 			else if(args.length == 1){
-				List<String> ls = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+                List<String> ls = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
 				return MinigameUtils.tabCompleteMatch(ls, args[0]);
 			}
 		}

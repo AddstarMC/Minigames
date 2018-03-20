@@ -1,12 +1,11 @@
 package au.com.mineauz.minigames.commands;
 
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.minigame.Minigame;
+import java.util.List;
 
 public class PartyModeCommand implements ICommand{
 
@@ -55,7 +54,7 @@ public class PartyModeCommand implements ICommand{
 			String label, String[] args) {
 		if(args != null){
 			boolean bool = Boolean.parseBoolean(args[0]);
-			plugin.pdata.setPartyMode(bool);
+            plugin.playerManager.setPartyMode(bool);
 			if(bool){
 				sender.sendMessage(ChatColor.GREEN + "Party mode has been enabled! WooHoo!");
 			}

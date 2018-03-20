@@ -1,14 +1,13 @@
 package au.com.mineauz.minigames.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.minigame.Minigame;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EditCommand implements ICommand {
 
@@ -57,16 +56,16 @@ public class EditCommand implements ICommand {
 			String label, String[] args) {
 		
 		if(args != null){
-			if(plugin.mdata.hasMinigame(args[0])){
-				Minigame mgm = plugin.mdata.getMinigame(args[0]);
-				mgm.displayMenu(plugin.pdata.getMinigamePlayer((Player)sender));
-//				Menu menu = new Menu(6, "Edit: " + mgm.getName(), plugin.pdata.getMinigamePlayer((Player)sender));
+            if (plugin.minigameManager.hasMinigame(args[0])) {
+                Minigame mgm = plugin.minigameManager.getMinigame(args[0]);
+                mgm.displayMenu(plugin.playerManager.getMinigamePlayer((Player) sender));
+//				Menu menu = new Menu(6, "Edit: " + mgm.getName(), plugin.playerManager.getMinigamePlayer((Player)sender));
 //				int slot = 0;
 //				for(MenuItem item : mgm.getMenuItems()){
 //					menu.addItem(item, slot);
 //					slot++;
 //				}
-//				menu.displayMenu(plugin.pdata.getMinigamePlayer((Player)sender));
+//				menu.displayMenu(plugin.playerManager.getMinigamePlayer((Player)sender));
 			}
 			else{
 				sender.sendMessage(ChatColor.RED + "There is no Minigame by the name " + args[0]);
@@ -80,7 +79,7 @@ public class EditCommand implements ICommand {
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args != null && args.length == 1){
-			List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+            List<String> mgs = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
 			return MinigameUtils.tabCompleteMatch(mgs, args[0]);
 		}
 		return null;

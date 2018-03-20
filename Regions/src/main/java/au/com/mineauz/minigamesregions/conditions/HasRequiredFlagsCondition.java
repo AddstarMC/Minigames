@@ -1,16 +1,15 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import java.util.Map;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.Map;
 
 public class HasRequiredFlagsCondition extends ConditionInterface {
 
@@ -41,13 +40,13 @@ public class HasRequiredFlagsCondition extends ConditionInterface {
 	@Override
 	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
 		if(player == null || !player.isInMinigame()) return false;
-        return Minigames.plugin.pdata.checkRequiredFlags(player, player.getMinigame().getName(false)).isEmpty();
+        return Minigames.plugin.playerManager.checkRequiredFlags(player, player.getMinigame().getName(false)).isEmpty();
     }
 
 	@Override
 	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
 		if(player == null || !player.isInMinigame()) return false;
-        return Minigames.plugin.pdata.checkRequiredFlags(player, player.getMinigame().getName(false)).isEmpty();
+        return Minigames.plugin.playerManager.checkRequiredFlags(player, player.getMinigame().getName(false)).isEmpty();
     }
 
 	@Override

@@ -46,13 +46,12 @@ public class RecorderData implements Listener{
 	
 	private Minigame minigame;
 	private boolean whitelistMode = false;
-	private List<Material> wbBlocks = new ArrayList<Material>();
+    private static List<Material> physBlocks = new ArrayList<>();
 	private boolean hasCreatedRegenBlocks = false;
 	
 	private Map<String, BlockData> blockdata;
 	private Map<Integer, EntityData> entdata;
-	
-	private static List<Material> physBlocks = new ArrayList<Material>();
+    private List<Material> wbBlocks = new ArrayList<>();
 	
 	static{
 		physBlocks.add(Material.TORCH);
@@ -116,8 +115,8 @@ public class RecorderData implements Listener{
 		plugin = Minigames.plugin;
 		
 		this.minigame = minigame;
-		blockdata = new HashMap<String, BlockData>();
-		entdata = new HashMap<Integer, EntityData>();
+        blockdata = new HashMap<>();
+        entdata = new HashMap<>();
 		
 //		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
@@ -304,26 +303,26 @@ public class RecorderData implements Listener{
 
 					@Override
 					public int compare(BlockData o1, BlockData o2) {
-						int comp = Integer.valueOf(o1.getBlockState().getChunk().getX()).compareTo(o2.getBlockState().getChunk().getX());
+                        int comp = Integer.compare(o1.getBlockState().getChunk().getX(), o2.getBlockState().getChunk().getX());
 						if(comp != 0)
 							return comp;
-						comp = Integer.valueOf(o1.getBlockState().getChunk().getZ()).compareTo(o2.getBlockState().getChunk().getZ());
+                        comp = Integer.compare(o1.getBlockState().getChunk().getZ(), o2.getBlockState().getChunk().getZ());
 						if(comp != 0)
 							return comp;
-						return Integer.valueOf(o1.getBlockState().getY()).compareTo(o2.getBlockState().getY());
+                        return Integer.compare(o1.getBlockState().getY(), o2.getBlockState().getY());
 					}
 				});
 				Collections.sort(addBlocks, new Comparator<BlockData>() {
 
 					@Override
 					public int compare(BlockData o1, BlockData o2) {
-						int comp = Integer.valueOf(o1.getBlockState().getChunk().getX()).compareTo(o2.getBlockState().getChunk().getX());
+                        int comp = Integer.compare(o1.getBlockState().getChunk().getX(), o2.getBlockState().getChunk().getX());
 						if(comp != 0)
 							return comp;
-						comp = Integer.valueOf(o1.getBlockState().getChunk().getZ()).compareTo(o2.getBlockState().getChunk().getZ());
+                        comp = Integer.compare(o1.getBlockState().getChunk().getZ(), o2.getBlockState().getChunk().getZ());
 						if(comp != 0)
 							return comp;
-						return Integer.valueOf(o1.getBlockState().getY()).compareTo(o2.getBlockState().getY());
+                        return Integer.compare(o1.getBlockState().getY(), o2.getBlockState().getY());
 					}
 				});
 				
@@ -475,8 +474,8 @@ public class RecorderData implements Listener{
 		
 		try{
 			BufferedReader br = new BufferedReader(new FileReader(f));
-			
-			Map<String, String> args = new HashMap<String, String>();
+
+            Map<String, String> args = new HashMap<>();
 			String line;
 			String[] blocks;
 			String[] block;
@@ -486,7 +485,7 @@ public class RecorderData implements Listener{
 			ItemStack[] items;
 			String[] sitems;
 			ItemStack item;
-			Map<String, String> iargs = new HashMap<String, String>();
+            Map<String, String> iargs = new HashMap<>();
 			
 			while(br.ready()){
 				line = br.readLine();
@@ -621,8 +620,7 @@ public class RecorderData implements Listener{
 		if(hasRegenArea() && minigame.hasPlayers()){
 			Location block = event.getLocation().getBlock().getLocation();
 			if(blockInRegenArea(block)){
-				List<Block> blocks = new ArrayList<Block>();
-				blocks.addAll(event.blockList());
+                List<Block> blocks = new ArrayList<Block>(event.blockList());
 				
 				for(Block bl : blocks){
 					if((whitelistMode && getWBBlocks().contains(bl.getType())) ||

@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.minigame.Minigame;
+import java.util.ArrayList;
+import java.util.List;
 
 public class QuitCommand implements ICommand{
 
@@ -60,9 +59,9 @@ public class QuitCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args == null && sender instanceof Player){
-			MinigamePlayer player = plugin.pdata.getMinigamePlayer((Player)sender);
+            MinigamePlayer player = plugin.playerManager.getMinigamePlayer((Player) sender);
 			if(player.isInMinigame()){
-				plugin.pdata.quitMinigame(player, false);
+                plugin.playerManager.quitMinigame(player, false);
 			}
 			else {
 				sender.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.quit.notPlaying"));
@@ -79,11 +78,11 @@ public class QuitCommand implements ICommand{
 				MinigamePlayer ply = null;
 				if(args[0].equals("ALL")){
 					if(args.length > 1){
-						if(plugin.mdata.hasMinigame(args[1])){
-							Minigame mg = plugin.mdata.getMinigame(args[1]);
-							List<MinigamePlayer> pls = new ArrayList<MinigamePlayer>(mg.getPlayers());
+                        if (plugin.minigameManager.hasMinigame(args[1])) {
+                            Minigame mg = plugin.minigameManager.getMinigame(args[1]);
+                            List<MinigamePlayer> pls = new ArrayList<>(mg.getPlayers());
 							for(MinigamePlayer pl : pls){
-								plugin.pdata.quitMinigame(pl, true);
+                                plugin.playerManager.quitMinigame(pl, true);
 							}
 							sender.sendMessage(ChatColor.GRAY + MinigameUtils.formStr("command.quit.quitAllMinigame", mg.getName(true)));
 						}
@@ -94,7 +93,7 @@ public class QuitCommand implements ICommand{
 					else{
 						for(MinigamePlayer pl : plugin.getPlayerData().getAllMinigamePlayers()){
 							if(pl.isInMinigame()){
-								plugin.pdata.quitMinigame(pl, true);
+                                plugin.playerManager.quitMinigame(pl, true);
 							}
 						}
 						sender.sendMessage(ChatColor.GRAY + MinigameUtils.getLang("command.quit.quitAll"));
@@ -106,11 +105,11 @@ public class QuitCommand implements ICommand{
 					return true;
 				}
 				else{
-					ply = plugin.pdata.getMinigamePlayer(players.get(0));
+                    ply = plugin.playerManager.getMinigamePlayer(players.get(0));
 				}
 				
 				if(ply != null && ply.isInMinigame()){
-					plugin.pdata.quitMinigame(ply, false);
+                    plugin.playerManager.quitMinigame(ply, false);
 					sender.sendMessage(ChatColor.GRAY + MinigameUtils.formStr("command.quit.quitOther", ply.getName()));
 				}
 				else{
@@ -130,7 +129,7 @@ public class QuitCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> plys = new ArrayList<String>(plugin.getServer().getOnlinePlayers().size() + 1);
+            List<String> plys = new ArrayList<>(plugin.getServer().getOnlinePlayers().size() + 1);
 			for(Player ply : plugin.getServer().getOnlinePlayers()){
 				plys.add(ply.getName());
 			}
@@ -138,7 +137,7 @@ public class QuitCommand implements ICommand{
 			return MinigameUtils.tabCompleteMatch(plys, args[0]);
 		}
 		else if(args.length == 2){
-			List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+            List<String> mgs = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
 			return MinigameUtils.tabCompleteMatch(mgs, args[1]);
 		}
 		return null;

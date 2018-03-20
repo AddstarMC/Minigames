@@ -1,17 +1,15 @@
 package au.com.mineauz.minigames.signs;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.block.Sign;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.block.SignChangeEvent;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.events.TakeFlagEvent;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Sign;
+import org.bukkit.event.block.SignChangeEvent;
 
 public class FlagSign implements MinigameSign {
 
@@ -67,7 +65,7 @@ public class FlagSign implements MinigameSign {
 		}
 //		else{
 //			event.getBlock().breakNaturally();
-//			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.flag.invalidSyntax") + " red, blue and neutral.");
+//			event.getPlayer().sendInfoMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.flag.invalidSyntax") + " red, blue and neutral.");
 //			return false;
 //		}
 		return true;
@@ -88,14 +86,13 @@ public class FlagSign implements MinigameSign {
 				Bukkit.getPluginManager().callEvent(ev);
 				if(!ev.isCancelled()){
 					player.addFlag(ChatColor.stripColor(sign.getLine(2)));
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + 
-							MinigameUtils.formStr("sign.flag.taken", ChatColor.stripColor(sign.getLine(2))));
+					player.sendInfoMessage(MinigameUtils.formStr("sign.flag.taken", ChatColor.stripColor(sign.getLine(2))));
 				}
 				return true;
 			}
 		}
 		else if(player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR)
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
+			player.sendInfoMessage(MinigameUtils.getLang("sign.emptyHand"));
 		return false;
 	}
 

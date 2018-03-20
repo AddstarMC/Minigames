@@ -1,16 +1,15 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LobbySettingsModule extends MinigameModule {
 	
@@ -33,7 +32,7 @@ public class LobbySettingsModule extends MinigameModule {
 	
 	@Override
 	public Map<String, Flag<?>> getFlags(){
-		Map<String, Flag<?>> map = new HashMap<String, Flag<?>>();
+        Map<String, Flag<?>> map = new HashMap<>();
 		addConfigFlag(canInteractPlayerWait, map);
 		addConfigFlag(canInteractStartWait, map);
 		addConfigFlag(canMovePlayerWait, map);

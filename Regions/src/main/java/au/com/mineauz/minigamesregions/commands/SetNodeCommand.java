@@ -1,17 +1,16 @@
 package au.com.mineauz.minigamesregions.commands;
 
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.RegionModule;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class SetNodeCommand implements ICommand {
 
@@ -62,7 +61,7 @@ public class SetNodeCommand implements ICommand {
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-			MinigamePlayer ply = Minigames.plugin.pdata.getMinigamePlayer((Player)sender);
+            MinigamePlayer ply = Minigames.plugin.playerManager.getMinigamePlayer((Player) sender);
 			RegionModule rmod = RegionModule.getMinigameModule(minigame);
 			if(args[0].equalsIgnoreCase("create") && args.length >= 2){
 				if(!rmod.hasNode(args[1])){

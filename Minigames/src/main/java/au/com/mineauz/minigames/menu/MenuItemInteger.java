@@ -1,13 +1,13 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuItemInteger extends MenuItem{
 
@@ -47,7 +47,7 @@ public class MenuItemInteger extends MenuItem{
 				description.add(0, ChatColor.GREEN.toString() + value.getValue());
 		}
 		else{
-			description = new ArrayList<String>();
+			description = new ArrayList<>();
 			description.add(ChatColor.GREEN.toString() + value.getValue());
 		}
 		
@@ -105,7 +105,7 @@ public class MenuItemInteger extends MenuItem{
 			max = this.max.toString();
 		}
 		ply.setManualEntry(this);
-		ply.sendMessage("Min: " + min + ", Max: " + max);
+		ply.sendInfoMessage("Min: " + min + ", Max: " + max);
 		getContainer().startReopenTimer(10);
 		
 		return null;
@@ -126,8 +126,8 @@ public class MenuItemInteger extends MenuItem{
 		}
 		getContainer().cancelReopenTimer();
 		getContainer().displayMenu(getContainer().getViewer());
-		
-		getContainer().getViewer().sendMessage("Invalid value entry!", "error");
+
+		getContainer().getViewer().sendMessage("Invalid value entry!", MinigameMessageType.ERROR);
 	}
 	
 	Callback<Integer> getValue(){

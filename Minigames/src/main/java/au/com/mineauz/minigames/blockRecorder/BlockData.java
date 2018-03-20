@@ -1,11 +1,6 @@
 package au.com.mineauz.minigames.blockRecorder;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import au.com.mineauz.minigames.MinigamePlayer;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -13,14 +8,14 @@ import org.bukkit.block.Chest;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import java.util.*;
 
 public class BlockData {
 	private Location location;
 	private BlockState state;
 	private MinigamePlayer player = null;
 	private ItemStack[] items = null;
-	private Map<String, Object> specialData = new HashMap<String, Object>();
+    private Map<String, Object> specialData = new HashMap<>();
 	private boolean hasRandomized = false;
 	
 	public BlockData(Block original, MinigamePlayer modifier){
@@ -70,17 +65,17 @@ public class BlockData {
 	public void randomizeContents(int minContents, int maxContents){
 		if(hasRandomized || items == null)
 			return;
-		
-		List<ItemStack> itemRand = new ArrayList<ItemStack>();
-		
-		for(int i=0; i < items.length; i++){
-			if(items[i] != null){
-				itemRand.add(items[i].clone());
+
+        List<ItemStack> itemRand = new ArrayList<>();
+
+        for (ItemStack item1 : items) {
+            if (item1 != null) {
+                itemRand.add(item1.clone());
 			}
 		}
 		
 		Collections.shuffle(itemRand);
-		List<ItemStack> itemChest = new ArrayList<ItemStack>();
+        List<ItemStack> itemChest = new ArrayList<>();
 		
 		if(maxContents > itemRand.size()){
 			maxContents = itemRand.size();

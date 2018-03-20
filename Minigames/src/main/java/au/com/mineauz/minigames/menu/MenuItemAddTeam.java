@@ -1,18 +1,18 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuItemAddTeam extends MenuItem{
 	
@@ -29,10 +29,10 @@ public class MenuItemAddTeam extends MenuItem{
 		ply.setNoClose(true);
 		ply.getPlayer().closeInventory();
 		ply.sendMessage("Enter the color of the team you wish to add. All colors available below:", null);
-		List<String> teams = new ArrayList<String>();
+        List<String> teams = new ArrayList<>();
 		for(TeamColor col : TeamColor.values())
 			teams.add(col.getColor() + MinigameUtils.capitalize(col.toString().replace("_", " ")));
-		ply.sendMessage(MinigameUtils.listToString(teams));
+        ply.sendInfoMessage(MinigameUtils.listToString(teams));
 		ply.setManualEntry(this);
 
 		getContainer().startReopenTimer(30);
@@ -52,10 +52,10 @@ public class MenuItemAddTeam extends MenuItem{
 				getContainer().addItem(new MenuItemTeam(t.getChatColor() + t.getDisplayName(), t));
 			}
 			else{
-				getContainer().getViewer().sendMessage(ChatColor.RED + "A team already exists using that color!");
+                getContainer().getViewer().sendInfoMessage(ChatColor.RED + "A team already exists using that color!");
 			}
-			
-			List<String> teams = new ArrayList<String>(tm.getTeams().size() + 1);
+
+            List<String> teams = new ArrayList<>(tm.getTeams().size() + 1);
 			for(Team t : tm.getTeams()){
 				teams.add(MinigameUtils.capitalize(t.getColor().toString().replace("_", " ")));
 			}
@@ -70,8 +70,8 @@ public class MenuItemAddTeam extends MenuItem{
 		
 		getContainer().cancelReopenTimer();
 		getContainer().displayMenu(getContainer().getViewer());
-		
-		getContainer().getViewer().sendMessage("There is no team color by the name of " + entry.toLowerCase().replace("_", " "), "error");
+
+        getContainer().getViewer().sendMessage("There is no team color by the name of " + entry.toLowerCase().replace("_", " "), MinigameMessageType.ERROR);
 	}
 
 }

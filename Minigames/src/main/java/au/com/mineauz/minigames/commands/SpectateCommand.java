@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.minigame.Minigame;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SpectateCommand implements ICommand {
 
@@ -57,10 +56,10 @@ public class SpectateCommand implements ICommand {
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-			if(plugin.mdata.hasMinigame(args[0])){
-				MinigamePlayer ply = plugin.pdata.getMinigamePlayer((Player) sender);
-				Minigame mgm = plugin.mdata.getMinigame(args[0]);
-				plugin.pdata.spectateMinigame(ply, mgm);
+            if (plugin.minigameManager.hasMinigame(args[0])) {
+                MinigamePlayer ply = plugin.playerManager.getMinigamePlayer((Player) sender);
+                Minigame mgm = plugin.minigameManager.getMinigame(args[0]);
+                plugin.playerManager.spectateMinigame(ply, mgm);
 			}
 			else{
 				sender.sendMessage(ChatColor.RED + "No Minigame found by the name: " + args[0]);
@@ -73,7 +72,7 @@ public class SpectateCommand implements ICommand {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
-		List<String> mgs = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+        List<String> mgs = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
 		return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
 	}
 

@@ -1,21 +1,21 @@
 package au.com.mineauz.minigames.mechanics;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-
-import au.com.mineauz.minigames.MinigameUtils;
-import org.bukkit.ChatColor;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.PlayerDeathEvent;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.events.StartMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.JuggernautModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
+import org.bukkit.ChatColor;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.PlayerDeathEvent;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
 
 public class JuggernautMechanic extends GameMechanicBase{
 
@@ -32,7 +32,7 @@ public class JuggernautMechanic extends GameMechanicBase{
 	@Override
 	public boolean checkCanStart(Minigame minigame, MinigamePlayer caller) {
 		if(minigame.isTeamGame()){
-			caller.sendMessage("Juggernaut cannot be a team Minigame!", "error");
+			caller.sendMessage("Juggernaut cannot be a team Minigame!", MinigameMessageType.ERROR);
 			return false;
 		}
 		return true;
@@ -52,7 +52,7 @@ public class JuggernautMechanic extends GameMechanicBase{
 	}
 
 	@Override
-	public void joinMinigame(Minigame minigame, MinigamePlayer player) {
+	public void onJoinMinigame(Minigame minigame, MinigamePlayer player) {
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class JuggernautMechanic extends GameMechanicBase{
 				
 				if(j != null){
 					jm.setJuggernaut(j);
-					j.sendMessage(MinigameUtils.getLang("player.juggernaut.plyMsg"), null);
+					j.sendInfoMessage(MinigameUtils.getLang("player.juggernaut.plyMsg"));
 					mdata.sendMinigameMessage(minigame,
 							MinigameUtils.formStr("player.juggernaut.gameMsg", j.getDisplayName(minigame.usePlayerDisplayNames())), null, j);
 				}
@@ -89,7 +89,7 @@ public class JuggernautMechanic extends GameMechanicBase{
 	}
 	
 	private MinigamePlayer assignNewJuggernaut(List<MinigamePlayer> players, MinigamePlayer exclude){
-		List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>(players);
+		List<MinigamePlayer> plys = new ArrayList<>(players);
 		if(exclude != null){
 			plys.remove(exclude);
 		}
@@ -100,9 +100,9 @@ public class JuggernautMechanic extends GameMechanicBase{
 	
 	private void checkScore(MinigamePlayer ply){
 		if(ply.getScore() >= ply.getMinigame().getMaxScorePerPlayer()){
-			List<MinigamePlayer> winners = new ArrayList<MinigamePlayer>();
+			List<MinigamePlayer> winners = new ArrayList<>();
 			winners.add(ply);
-			List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>(ply.getMinigame().getPlayers());
+			List<MinigamePlayer> losers = new ArrayList<>(ply.getMinigame().getPlayers());
 			losers.remove(ply);
 			pdata.endMinigame(ply.getMinigame(), winners, losers);
 		}

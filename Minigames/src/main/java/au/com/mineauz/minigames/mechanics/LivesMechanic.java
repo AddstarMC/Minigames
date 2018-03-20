@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.mechanics;
 
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.StartMinigameEvent;
@@ -29,7 +30,7 @@ public class LivesMechanic extends GameMechanicBase{
 		if(minigame.getLives() > 0){
 			return true;
 		}
-		caller.sendMessage("The Minigame must have more than 0 lives to use this type", "error");
+        caller.sendMessage("The Minigame must have more than 0 lives to use this type", MinigameMessageType.ERROR);
 		return false;
 	}
 
@@ -47,7 +48,7 @@ public class LivesMechanic extends GameMechanicBase{
 	}
 
 	@Override
-	public void joinMinigame(Minigame minigame, MinigamePlayer player) {
+    public void onJoinMinigame(Minigame minigame, MinigamePlayer player) {
 	}
 
 	@Override

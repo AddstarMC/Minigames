@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -44,7 +45,7 @@ public class MinigamePlayer implements ScriptObject {
 
 	private Location startPos = null;
 	private Location quitPos = null;
-	private List<String> flags = new ArrayList<String>();
+	private List<String> flags = new ArrayList<>();
 	private Location checkpoint = null;
 	private int kills = 0;
 	private int deaths = 0;
@@ -70,12 +71,12 @@ public class MinigamePlayer implements ScriptObject {
 	
 	private OfflineMinigamePlayer oply = null;
 	private StoredPlayerCheckpoints spc = null;
-	
-	private List<String> claimedRewards = new ArrayList<String>();
-	private List<String> tempClaimedRewards = new ArrayList<String>();
-	private List<ItemStack> tempRewardItems = new ArrayList<ItemStack>();
-	private List<ItemStack> rewardItems = new ArrayList<ItemStack>();
-	private List<String> claimedScoreSigns = new ArrayList<String>();
+
+	private List<String> claimedRewards = new ArrayList<>();
+	private List<String> tempClaimedRewards = new ArrayList<>();
+	private List<ItemStack> tempRewardItems = new ArrayList<>();
+	private List<ItemStack> rewardItems = new ArrayList<>();
+	private List<String> claimedScoreSigns = new ArrayList<>();
 	private int lateJoinTimer = -1;
 	
 	public MinigamePlayer(Player player){
@@ -115,8 +116,8 @@ public class MinigamePlayer implements ScriptObject {
 	public Location getLocation(){
 		return player.getLocation();
 	}
-	
-	public void sendMessage(String msg){
+
+	private void sendMessage(String msg) {
 		int enc = Math.floorDiv(msg.getBytes().length, msg.length());
 		if(msg.getBytes().length > 32000 ){
 			int capLength = Math.floorDiv(msg.length(),enc);
@@ -126,24 +127,25 @@ public class MinigamePlayer implements ScriptObject {
 		}
 		player.sendMessage(msg);
 	}
-	
-	public void sendMessage(String msg, String type){
+
+	public void sendInfoMessage(String msg) {
+		sendMessage(msg, MinigameMessageType.INFO);
+	}
+
+	public void sendMessage(String msg, MinigameMessageType type) {
 		String init = "";
-		if(type != null){
-			if(type.equals("error")){
+		switch (type) {
+			case ERROR:
 				init = ChatColor.RED + "[Minigames] " + ChatColor.WHITE;
-			}
-			else if(type.equals("win")){
+				break;
+			case WIN:
 				init = ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE;
-			}
-			else{
+				break;
+			case INFO:
+			default:
 				init = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
-			}
 		}
-		else{
-			init = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
-		}
-		player.sendMessage(init + msg);
+		this.sendMessage(init + msg);
 	}
 	
 	public void storePlayerData(){
@@ -163,7 +165,7 @@ public class MinigamePlayer implements ScriptObject {
 		
 		player.setSaturation(15);
 		player.setFoodLevel(20);
-		player.setHealth(player.getMaxHealth());
+		player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue());
 		player.getInventory().clear();
 		player.getInventory().setArmorContents(null);
 		player.setLevel(0);
@@ -700,7 +702,7 @@ public class MinigamePlayer implements ScriptObject {
 	
 	public void claimTempRewardItems(){
 		if(!isDead()){
-			List<ItemStack> tempItems = new ArrayList<ItemStack>(getTempRewardItems());
+			List<ItemStack> tempItems = new ArrayList<>(getTempRewardItems());
 			
 			if(!tempItems.isEmpty()){
 				for(ItemStack item : tempItems){
@@ -717,7 +719,7 @@ public class MinigamePlayer implements ScriptObject {
 	
 	public void claimRewards(){
 		if(!isDead()){
-			List<ItemStack> tempItems = new ArrayList<ItemStack>(getRewardItems());
+			List<ItemStack> tempItems = new ArrayList<>(getRewardItems());
 			
 			if(!tempItems.isEmpty()){
 				for(ItemStack item : tempItems){

@@ -25,7 +25,7 @@ import java.util.Set;
 
 public class LoadoutModule extends MinigameModule {
 
-	private Map<String, PlayerLoadout> extraLoadouts = new HashMap<String, PlayerLoadout>();
+    private Map<String, PlayerLoadout> extraLoadouts = new HashMap<>();
 	private LoadoutSetFlag loadoutsFlag = new LoadoutSetFlag(extraLoadouts, "loadouts");
 	private static Map<Class<? extends LoadoutAddon>, LoadoutAddon<?>> addons = Maps.newHashMap();
 	
@@ -43,7 +43,7 @@ public class LoadoutModule extends MinigameModule {
 	
 	@Override
 	public Map<String, Flag<?>> getFlags(){
-		Map<String, Flag<?>> flags = new HashMap<String, Flag<?>>();
+        Map<String, Flag<?>> flags = new HashMap<>();
 		flags.put(loadoutsFlag.getName(), loadoutsFlag);
 		return flags;
 	}
@@ -229,7 +229,7 @@ public class LoadoutModule extends MinigameModule {
 							player.getTeam().getColor() == loadout.getTeamColor()){
 						MenuItemCustom c = new MenuItemCustom(loadout.getName(true), Material.GLASS);
 						if(!loadout.getItems().isEmpty()){
-							ItemStack item = loadout.getItem(new ArrayList<Integer>(loadout.getItems()).get(0));
+                            ItemStack item = loadout.getItem(new ArrayList<>(loadout.getItems()).get(0));
 							c.setItem(item);}
 						final PlayerLoadout floadout2 = loadout;
 						c.setClick(new InteractionInterface() {

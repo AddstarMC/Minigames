@@ -1,13 +1,12 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuItemString extends MenuItem{
 	
@@ -49,7 +48,7 @@ public class MenuItemString extends MenuItem{
 				description.add(0, ChatColor.GREEN.toString() + setting);
 		}
 		else{
-			description = new ArrayList<String>();
+            description = new ArrayList<>();
 			description.add(ChatColor.GREEN.toString() + setting);
 		}
 		
@@ -63,7 +62,7 @@ public class MenuItemString extends MenuItem{
 		ply.getPlayer().closeInventory();
 		ply.sendMessage("Enter string value into chat for " + getName() + ", the menu will automatically reopen in 20s if nothing is entered.", null);
 		if(allowNull){
-			ply.sendMessage("Enter \"null\" to remove the string value");
+            ply.sendInfoMessage("Enter \"null\" to remove the string value");
 		}
 		ply.setManualEntry(this);
 		getContainer().startReopenTimer(20);

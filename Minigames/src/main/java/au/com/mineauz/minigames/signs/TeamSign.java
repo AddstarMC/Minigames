@@ -1,9 +1,6 @@
 package au.com.mineauz.minigames.signs;
 
-import org.bukkit.ChatColor;
-import org.bukkit.block.Sign;
-import org.bukkit.event.block.SignChangeEvent;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -12,6 +9,9 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import org.bukkit.ChatColor;
+import org.bukkit.block.Sign;
+import org.bukkit.event.block.SignChangeEvent;
 
 public class TeamSign implements MinigameSign {
 	
@@ -77,17 +77,17 @@ public class TeamSign implements MinigameSign {
 								}
 								if(nt.getPlayers().size() - sm.getPlayers().size() < 1){
 									MultiplayerType.switchTeam(mgm, player, nt);
-									plugin.mdata.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getDisplayName(mgm.usePlayerDisplayNames()), nt.getChatColor() + nt.getDisplayName()), null, player);
-									player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), null);
+									plugin.minigameManager.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getDisplayName(mgm.usePlayerDisplayNames()), nt.getChatColor() + nt.getDisplayName()), null, player);
+									player.sendInfoMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()));
 								}
 								else{
-									player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
+									player.sendInfoMessage(MinigameUtils.getLang("sign.team.noUnbalance"));
 								}
 								
 								player.getPlayer().damage(player.getPlayer().getHealth());
 							}
 							else {
-								player.sendMessage(MinigameUtils.getLang("player.team.full"), "error");
+								player.sendMessage(MinigameUtils.getLang("player.team.full"), MinigameMessageType.ERROR);
 							}
 						}
 					}
@@ -98,10 +98,10 @@ public class TeamSign implements MinigameSign {
 							if (nt != null) {
 								if (nt.getPlayers().size() - cur.getPlayers().size() < 2) {
 									MultiplayerType.switchTeam(mgm, player, nt);
-									plugin.mdata.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
-									player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), null);
+									plugin.minigameManager.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
+									player.sendInfoMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()));
 								} else {
-									player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.team.noUnbalance"));
+									player.sendInfoMessage(MinigameUtils.getLang("sign.team.noUnbalance"));
 								}
 							} else {
 									player.removeTeam();
@@ -111,10 +111,10 @@ public class TeamSign implements MinigameSign {
 							if (nt != null) {
 								if (nt.getPlayers().size() < nt.getMaxPlayers()){
 									MultiplayerType.switchTeam(mgm, player, nt);
-									plugin.mdata.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
+									plugin.minigameManager.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
 									player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), null);
 								}else {
-									player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("player.team.full"));
+									player.sendInfoMessage(MinigameUtils.getLang("player.team.full"));
 								}
 							}
 						}

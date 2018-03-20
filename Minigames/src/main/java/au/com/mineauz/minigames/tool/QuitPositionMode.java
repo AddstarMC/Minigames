@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.tool;
 
-import org.bukkit.Material;
-import org.bukkit.event.player.PlayerInteractEvent;
-
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
+import org.bukkit.Material;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class QuitPositionMode implements ToolMode{
 
@@ -39,7 +39,7 @@ public class QuitPositionMode implements ToolMode{
 	public void onRightClick(MinigamePlayer player, Minigame minigame,
 			Team team, PlayerInteractEvent event) {
 		minigame.setQuitPosition(player.getLocation());
-		player.sendMessage("Set quit position.", null);
+		player.sendInfoMessage("Set quit position.");
 	}
 
 	@SuppressWarnings("deprecation") //TODO: Use alternate method once available
@@ -47,10 +47,10 @@ public class QuitPositionMode implements ToolMode{
 	public void select(MinigamePlayer player, Minigame minigame, Team team) {
 		if(minigame.getQuitPosition() != null){
 			player.getPlayer().sendBlockChange(minigame.getQuitPosition(), Material.SKULL, (byte)1);
-			player.sendMessage("Selected quit position (marked with skull)", null);
+			player.sendInfoMessage("Selected quit position (marked with skull)");
 		}
 		else{
-			player.sendMessage("No quit position set!", "error");
+			player.sendMessage("No quit position set!", MinigameMessageType.ERROR);
 		}
 	}
 
@@ -61,10 +61,10 @@ public class QuitPositionMode implements ToolMode{
 			player.getPlayer().sendBlockChange(minigame.getQuitPosition(), 
 					minigame.getQuitPosition().getBlock().getType(), 
 					minigame.getQuitPosition().getBlock().getData());
-			player.sendMessage("Deselected quit position", null);
+			player.sendInfoMessage("Deselected quit position");
 		}
 		else{
-			player.sendMessage("No quit position set!", "error");
+			player.sendMessage("No quit position set!", MinigameMessageType.ERROR);
 		}
 	}
 

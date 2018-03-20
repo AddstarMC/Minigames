@@ -1,12 +1,5 @@
 package au.com.mineauz.minigames.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -15,6 +8,12 @@ import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolModes;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ToolCommand implements ICommand {
 
@@ -74,15 +73,15 @@ public class ToolCommand implements ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
-		MinigamePlayer player = Minigames.plugin.pdata.getMinigamePlayer((Player)sender);
+        MinigamePlayer player = Minigames.plugin.playerManager.getMinigamePlayer((Player) sender);
 		if(args == null){
 			MinigameUtils.giveMinigameTool(player);
 		}
 		else if(MinigameUtils.hasMinigameTool(player)){
 			if(args[0].equalsIgnoreCase("minigame") && args.length == 2){
-				if(Minigames.plugin.mdata.hasMinigame(args[1])){
+                if (Minigames.plugin.minigameManager.hasMinigame(args[1])) {
 					MinigameTool tool;
-					Minigame mg = Minigames.plugin.mdata.getMinigame(args[1]);
+                    Minigame mg = Minigames.plugin.minigameManager.getMinigame(args[1]);
 					if(!MinigameUtils.hasMinigameTool(player))
 						tool = MinigameUtils.giveMinigameTool(player);
 					else
@@ -167,7 +166,7 @@ public class ToolCommand implements ICommand {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
-		List<String> ret = new ArrayList<String>(plugin.mdata.getAllMinigames().keySet());
+        List<String> ret = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
 		if(args.length == 1){
 			for(String p : getParameters()){
 				ret.add(p);

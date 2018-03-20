@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.commands;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DeleteCommand implements ICommand{
 
@@ -57,7 +56,7 @@ public class DeleteCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-			Minigame mgm = plugin.mdata.getMinigame(args[0]);
+            Minigame mgm = plugin.minigameManager.getMinigame(args[0]);
 			
 			if(mgm != null){
 				File save = new File(plugin.getDataFolder() + "/minigames/" + mgm.getName(false));
@@ -75,7 +74,7 @@ public class DeleteCommand implements ICommand{
 					List<String> ls = plugin.getConfig().getStringList("minigames");
 					ls.remove(mgm.getName(false));
 					plugin.getConfig().set("minigames", ls);
-					plugin.mdata.removeMinigame(mgm.getName(false));
+                    plugin.minigameManager.removeMinigame(mgm.getName(false));
 					plugin.saveConfig();
 					sender.sendMessage(ChatColor.RED + "The minigame " + mgm.getName(false) + " has been removed");
 				}
@@ -89,7 +88,7 @@ public class DeleteCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-			List<String> mgs = new ArrayList<String>(Minigames.plugin.mdata.getAllMinigames().keySet());
+            List<String> mgs = new ArrayList<>(Minigames.plugin.minigameManager.getAllMinigames().keySet());
 			return MinigameUtils.tabCompleteMatch(mgs, args[0]);
 		}
 		return null;

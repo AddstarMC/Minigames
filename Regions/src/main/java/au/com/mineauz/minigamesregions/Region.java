@@ -1,35 +1,28 @@
 package au.com.mineauz.minigamesregions;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-
-import com.google.common.collect.ImmutableSet;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.script.ScriptCollection;
-import au.com.mineauz.minigames.script.ScriptObject;
-import au.com.mineauz.minigames.script.ScriptReference;
-import au.com.mineauz.minigames.script.ScriptValue;
-import au.com.mineauz.minigames.script.ScriptWrapper;
+import au.com.mineauz.minigames.script.*;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
+import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
-import au.com.mineauz.minigamesregions.executors.RegionExecutor;
-import au.com.mineauz.minigamesregions.executors.NodeExecutor;
+import com.google.common.collect.ImmutableSet;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class Region implements ScriptObject {
 	private String name;
 	private Location point1;
 	private Location point2;
-	private List<RegionExecutor> executors = new ArrayList<RegionExecutor>();
-	private List<MinigamePlayer> players = new ArrayList<MinigamePlayer>();
+    private List<RegionExecutor> executors = new ArrayList<>();
+    private List<MinigamePlayer> players = new ArrayList<>();
 	private long taskDelay = 20;
 	private int taskID;
 	private boolean enabled = true;
@@ -56,10 +49,8 @@ public class Region implements ScriptObject {
 					int minz = point1.getBlockZ();
 					int maxz = point2.getBlockZ();
 					int plyz = player.getLocation().getBlockZ();
-					
-					if(plyz >= minz && plyz <= maxz){
-						return true;
-					}
+
+                    return plyz >= minz && plyz <= maxz;
 				}
 				
 			}
@@ -82,10 +73,8 @@ public class Region implements ScriptObject {
 					int minz = point1.getBlockZ();
 					int maxz = point2.getBlockZ();
 					int plyz = loc.getBlockZ();
-					
-					if(plyz >= minz && plyz <= maxz){
-						return true;
-					}
+
+                    return plyz >= minz && plyz <= maxz;
 				}
 				
 			}
@@ -160,7 +149,7 @@ public class Region implements ScriptObject {
 			
 			@Override
 			public void run() {
-				List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>(players);
+                List<MinigamePlayer> plys = new ArrayList<>(players);
 				for(MinigamePlayer player : plys){
 					execute(Triggers.getTrigger("TICK"), player);
 				}
@@ -180,7 +169,7 @@ public class Region implements ScriptObject {
 			
 			@Override
 			public void run() {
-				List<MinigamePlayer> plys = new ArrayList<MinigamePlayer>(players);
+                List<MinigamePlayer> plys = new ArrayList<>(players);
 				for(MinigamePlayer player : plys){
 					execute(Triggers.getTrigger("TICK"), player);
 				}
@@ -202,7 +191,7 @@ public class Region implements ScriptObject {
 	
 	public void execute(Trigger trigger, MinigamePlayer player){
 		if(player != null && player.getMinigame() != null && player.getMinigame().isSpectator(player)) return;
-		List<RegionExecutor> toExecute = new ArrayList<RegionExecutor>();
+        List<RegionExecutor> toExecute = new ArrayList<>();
 		for(RegionExecutor exec : executors){
 			if(exec.getTrigger() == trigger){
 				if(checkConditions(exec, player) && exec.canBeTriggered(player))

@@ -1,12 +1,12 @@
 package au.com.mineauz.minigames.signs;
 
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
-
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 
 public class TeleportSign implements MinigameSign {
 
@@ -42,12 +42,9 @@ public class TeleportSign implements MinigameSign {
 			return false;
 		}
 		else{
-			if(!event.getLine(2).matches("-?[0-9]+,[0-9]+,-?[0-9]+")){
-				return false;
-			}
-		}
-		return true;
-	}
+            return event.getLine(2).matches("-?[0-9]+,[0-9]+,-?[0-9]+");
+        }
+    }
 
 	@Override
 	public boolean signUse(Sign sign, MinigamePlayer player) {
@@ -72,7 +69,7 @@ public class TeleportSign implements MinigameSign {
 			player.teleport(new Location(player.getPlayer().getWorld(), x + 0.5, y, z + 0.5));
 			return true;
 		}
-		player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.teleport.invalid"));
+        player.sendMessage(MinigameUtils.getLang("sign.teleport.invalid"), MinigameMessageType.ERROR);
 		return false;
 	}
 

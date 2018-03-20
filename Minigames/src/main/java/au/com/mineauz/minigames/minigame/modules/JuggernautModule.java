@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import java.util.Map;
-
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.Map;
 
 public class JuggernautModule extends MinigameModule{
 	
@@ -66,7 +65,7 @@ public class JuggernautModule extends MinigameModule{
 			player.getMinigame().getScoreboardManager().getTeam("juggernaut").addEntry(player.getPlayer().getDisplayName());
 			
 			juggernaut.sendMessage(MinigameUtils.getLang("player.juggernaut.plyMsg"), null);
-			Minigames.plugin.mdata.sendMinigameMessage(getMinigame(), 
+            Minigames.plugin.minigameManager.sendMinigameMessage(getMinigame(),
 					MinigameUtils.formStr("player.juggernaut.gameMsg", juggernaut.getDisplayName(getMinigame().usePlayerDisplayNames())), null, juggernaut);
 			
 			LoadoutModule lm =LoadoutModule.getMinigameModule(getMinigame());

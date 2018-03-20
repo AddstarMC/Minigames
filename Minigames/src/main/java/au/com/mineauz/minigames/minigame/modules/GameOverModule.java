@@ -1,15 +1,5 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.potion.PotionEffect;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -20,6 +10,15 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.potion.PotionEffect;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GameOverModule extends MinigameModule{
 	
@@ -27,9 +26,9 @@ public class GameOverModule extends MinigameModule{
 	private BooleanFlag invincible = new BooleanFlag(false, "gameOver.invincible");
 	private BooleanFlag humiliation = new BooleanFlag(false, "gameOver.humiliation");
 	private BooleanFlag interact = new BooleanFlag(false, "gameOver.interact");
-	
-	private List<MinigamePlayer> winners = new ArrayList<MinigamePlayer>();
-	private List<MinigamePlayer> losers = new ArrayList<MinigamePlayer>();
+
+    private List<MinigamePlayer> winners = new ArrayList<>();
+    private List<MinigamePlayer> losers = new ArrayList<>();
 	private int task = -1;
 
 	public GameOverModule(Minigame mgm) {
@@ -43,7 +42,7 @@ public class GameOverModule extends MinigameModule{
 
 	@Override
 	public Map<String, Flag<?>> getFlags() {
-		Map<String, Flag<?>> map = new HashMap<String, Flag<?>>();
+        Map<String, Flag<?>> map = new HashMap<>();
 		map.put(timer.getName(), timer);
 		map.put(invincible.getName(), invincible);
 		map.put(humiliation.getName(), humiliation);
@@ -86,10 +85,10 @@ public class GameOverModule extends MinigameModule{
 	}
 	
 	public void startEndGameTimer(){
-		Minigames.plugin.mdata.sendMinigameMessage(getMinigame(), MinigameUtils.formStr("minigame.gameOverQuit", timer.getFlag()), null, null);
+        Minigames.plugin.minigameManager.sendMinigameMessage(getMinigame(), MinigameUtils.formStr("minigame.gameOverQuit", timer.getFlag()));
 		getMinigame().setState(MinigameState.ENDED);
-		
-		List<MinigamePlayer> allPlys = new ArrayList<MinigamePlayer>(winners.size() + losers.size());
+
+        List<MinigamePlayer> allPlys = new ArrayList<>(winners.size() + losers.size());
 		allPlys.addAll(losers);
 		allPlys.addAll(winners);
 		
@@ -120,13 +119,13 @@ public class GameOverModule extends MinigameModule{
 				
 				@Override
 				public void run() {
-					for(MinigamePlayer loser : new ArrayList<MinigamePlayer>(losers)){
+                    for (MinigamePlayer loser : new ArrayList<>(losers)) {
 						if(loser.isInMinigame())
-							Minigames.plugin.pdata.quitMinigame(loser, true);
+                            Minigames.plugin.playerManager.quitMinigame(loser, true);
 					}
-					for(MinigamePlayer winner : new ArrayList<MinigamePlayer>(winners)){
+                    for (MinigamePlayer winner : new ArrayList<>(winners)) {
 						if(winner.isInMinigame())
-							Minigames.plugin.pdata.quitMinigame(winner, true);
+                            Minigames.plugin.playerManager.quitMinigame(winner, true);
 					}
 					
 					clearLosers();

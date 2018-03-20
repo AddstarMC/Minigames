@@ -1,13 +1,5 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.WeatherType;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -15,20 +7,23 @@ import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.LongFlag;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBoolean;
-import au.com.mineauz.minigames.menu.MenuItemInteger;
-import au.com.mineauz.minigames.menu.MenuItemList;
-import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.WeatherType;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class WeatherTimeModule extends MinigameModule {
 	
 	private LongFlag time = new LongFlag(0L, "customTime.value");
 	private BooleanFlag useCustomTime = new BooleanFlag(false, "customTime.enabled");
 	private BooleanFlag useCustomWeather = new BooleanFlag(false, "customWeather.enabled");
-	private EnumFlag<WeatherType> weather = new EnumFlag<WeatherType>(WeatherType.CLEAR, "customWeather.type");
+    private EnumFlag<WeatherType> weather = new EnumFlag<>(WeatherType.CLEAR, "customWeather.type");
 	private int task = -1;
 	
 	public WeatherTimeModule(Minigame mgm){
@@ -39,15 +34,14 @@ public class WeatherTimeModule extends MinigameModule {
 	public String getName() {
 		return "WeatherTime";
 	}
-	
-	@Override
-	public Map<String, Flag<?>> getFlags(){
-		Map<String, Flag<?>> map = new HashMap<String, Flag<?>>();
-		map.put(time.getName(), time);
-		map.put(useCustomTime.getName(), useCustomTime);
-		map.put(useCustomWeather.getName(), useCustomWeather);
-		map.put(weather.getName(), weather);
-		return map;
+
+    /**
+     * @param minigame The game
+     * @return WeatherTimeModule
+     */
+    @Nullable
+    public static WeatherTimeModule getMinigameModule(Minigame minigame) {
+        return (WeatherTimeModule) minigame.getModule("WeatherTime");
 	}
 	
 	@Override
@@ -123,10 +117,16 @@ public class WeatherTimeModule extends MinigameModule {
 	@Override
 	public boolean displayMechanicSettings(Menu previous) {
 		return false;
-	}
-	
-	public static WeatherTimeModule getMinigameModule(Minigame minigame){
-		return (WeatherTimeModule) minigame.getModule("WeatherTime");
+    }
+
+    @Override
+    public Map<String, Flag<?>> getFlags() {
+        Map<String, Flag<?>> map = new HashMap<>();
+        map.put(time.getName(), time);
+        map.put(useCustomTime.getName(), useCustomTime);
+        map.put(useCustomWeather.getName(), useCustomWeather);
+        map.put(weather.getName(), weather);
+        return map;
 	}
 	
 	public long getTime(){

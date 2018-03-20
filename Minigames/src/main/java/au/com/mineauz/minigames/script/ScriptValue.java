@@ -16,7 +16,7 @@ public class ScriptValue<T> implements ScriptReference {
 		return value.toString();
 	}
 	
-	public static <T> ScriptValue<T> of(T value) { 
-		return new ScriptValue<T>(value);
+	public static <T> ScriptValue<T> of(T value) {
+        return new ScriptValue<>(value);
 	}
 }

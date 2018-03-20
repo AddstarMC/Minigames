@@ -1,13 +1,9 @@
 package au.com.mineauz.minigames;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.bukkit.Location;
 import org.bukkit.World;
+
+import java.util.*;
 
 public class StoredPlayerCheckpoints {
 	private String uuid;
@@ -20,11 +16,11 @@ public class StoredPlayerCheckpoints {
 	
 	public StoredPlayerCheckpoints(String uuid){
 		this.uuid = uuid;
-		checkpoints = new HashMap<String, Location>();
-		flags = new HashMap<String, List<String>>();
-		storedTime = new HashMap<String, Long>();
-		storedDeaths = new HashMap<String, Integer>();
-		storedReverts = new HashMap<String, Integer>();
+        checkpoints = new HashMap<>();
+        flags = new HashMap<>();
+        storedTime = new HashMap<>();
+        storedDeaths = new HashMap<>();
+        storedReverts = new HashMap<>();
 	}
 	
 	public void addCheckpoint(String minigame, Location checkpoint){
@@ -66,7 +62,7 @@ public class StoredPlayerCheckpoints {
     }
 	
 	public void addFlags(String minigame, List<String> flagList){
-		flags.put(minigame, new ArrayList<String>(flagList));
+        flags.put(minigame, new ArrayList<>(flagList));
 	}
 	
 	public List<String> getFlags(String minigame){
