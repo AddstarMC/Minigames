@@ -50,7 +50,7 @@ public class QuitSign implements MinigameSign {
 			return true;
 		}
 		else if(player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR)
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
+			player.sendInfoMessage(MinigameUtils.getLang("sign.emptyHand"));
 		return false;
 	}
 

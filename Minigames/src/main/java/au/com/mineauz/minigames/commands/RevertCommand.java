@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.commands;
 
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.Minigame;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -68,7 +68,7 @@ public class RevertCommand implements ICommand{
 //			}
 //		}
 		else {
-			player.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.revert.noGlobal"));
+			player.sendMessage(MinigameUtils.getLang("command.revert.noGlobal"), MinigameMessageType.ERROR);
 		}
 		return true;
 	}

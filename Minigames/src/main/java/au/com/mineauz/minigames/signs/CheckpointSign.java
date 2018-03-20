@@ -1,14 +1,13 @@
 package au.com.mineauz.minigames.signs;
 
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.SignChangeEvent;
-
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 
 public class CheckpointSign implements MinigameSign {
 
@@ -61,16 +60,16 @@ public class CheckpointSign implements MinigameSign {
 				else{
 					player.getStoredPlayerCheckpoints().setGlobalCheckpoint(newloc);
 				}
-				
-				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.checkpoint.set"));
+
+				player.sendInfoMessage(MinigameUtils.getLang("sign.checkpoint.set"));
 				return true;
 			}
 			else{
-				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.checkpoint.fail"));
+				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.checkpoint.fail"), MinigameMessageType.ERROR);
 			}
 		}
 		else
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
+			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"), MinigameMessageType.INFO);
 		return false;
 	}
 

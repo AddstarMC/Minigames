@@ -59,15 +59,15 @@ public class SpectateSign implements MinigameSign {
 					return true;
 				}
 				else if(!mgm.isEnabled()){
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.notEnabled"));
+					player.sendInfoMessage(MinigameUtils.getLang("minigame.error.notEnabled"));
 				}
 			}
 			else if(mgm == null){
-				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noMinigame"));
+				player.sendInfoMessage(MinigameUtils.getLang("minigame.error.noMinigame"));
 			}
 		}
 		else if(!player.isInMinigame())
-			player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
+			player.sendInfoMessage(MinigameUtils.getLang("sign.emptyHand"));
 		return false;
 	}
 

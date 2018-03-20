@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.signs;
 
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -103,7 +104,7 @@ public class JoinSign implements MinigameSign {
 							Minigames.plugin.getEconomy().withdrawPlayer(player.getPlayer().getPlayer(), amount);
 						}
 						else{
-							player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.join.notEnoughMoney"));
+                            player.sendMessage(MinigameUtils.getLang("sign.join.notEnoughMoney"), MinigameMessageType.ERROR);
 							return false;
 						}
 					}
@@ -111,21 +112,21 @@ public class JoinSign implements MinigameSign {
 					return true;
 				}
 				else if(!mgm.isEnabled()){
-					player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.notEnabled"));
+                    player.sendInfoMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.notEnabled"));
 				}
 			}
 			else if(mgm == null){
-				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noMinigame"));
+                player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noMinigame"), MinigameMessageType.ERROR);
 			}
 			else if(mgm.getUsePermissions()){
-				player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()));
+                player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()), MinigameMessageType.ERROR);
 			}
 		}
 		else if(!MinigameUtils.isMinigameTool(player.getPlayer().getInventory().getItemInMainHand())) {
 			if (fullInv) {
-				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyInv"));
+                player.sendInfoMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyInv"));
 			} else {
-				player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
+                player.sendInfoMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
 			}
 		}
 			

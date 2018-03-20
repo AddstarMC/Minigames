@@ -1,27 +1,23 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.config.FloatFlag;
+import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigamesregions.Node;
+import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.FloatFlag;
-import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemDecimal;
-import au.com.mineauz.minigames.menu.MenuItemList;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class PlaySoundAction extends AbstractAction {
 	
@@ -119,7 +115,7 @@ public class PlaySoundAction extends AbstractAction {
 				if(sounds.contains(value)) {
 					sound.setFlag(value.toUpperCase().replace(" ", "_"));
 				}else{
-					player.sendMessage("Sound not available");
+                    player.sendMessage("Sound not available", MinigameMessageType.ERROR);
 				}
 			}
 			

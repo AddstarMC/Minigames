@@ -75,15 +75,15 @@ public class SetRegionCommand implements ICommand {
 						Location p2 = ply.getSelectionPoints()[1];
 						ply.clearSelection();
 						ply.setSelection(ploc, p2);
-						
-						ply.sendMessage(ChatColor.GRAY + "Point 1 selected");
+
+						ply.sendInfoMessage(ChatColor.GRAY + "Point 1 selected");
 					}
 					else{
 						Location p2 = ply.getSelectionPoints()[0];
 						ply.clearSelection();
 						ply.setSelection(p2, ploc);
-						
-						ply.sendMessage(ChatColor.GRAY + "Point 2 selected");
+
+						ply.sendInfoMessage(ChatColor.GRAY + "Point 2 selected");
 					}
 					return true;
 				}
@@ -92,21 +92,21 @@ public class SetRegionCommand implements ICommand {
 						String name = args[1];
 						rmod.addRegion(name, new Region(name, ply.getSelectionPoints()[0], ply.getSelectionPoints()[1]));
 						ply.clearSelection();
-						
-						ply.sendMessage(ChatColor.GRAY + "Created new region for " + minigame.getName(false) + " named " + name);
+
+						ply.sendInfoMessage(ChatColor.GRAY + "Created new region for " + minigame.getName(false) + " named " + name);
 					}
 					else{
-						ply.sendMessage(ChatColor.RED + "You have not made a selection!");
+						ply.sendInfoMessage(ChatColor.RED + "You have not made a selection!");
 					}
 					return true;
 				}
 				else if(args[0].equalsIgnoreCase("delete")){
 					if(rmod.hasRegion(args[1])){
 						rmod.removeRegion(args[1]);
-						ply.sendMessage(ChatColor.GRAY + "Removed the region named " + args[1] + " from " + minigame.getName(false));
+						ply.sendInfoMessage(ChatColor.GRAY + "Removed the region named " + args[1] + " from " + minigame.getName(false));
 					}
 					else{
-						ply.sendMessage(ChatColor.GRAY + "No region by the name " + args[1] + " was found in " + minigame.getName(false));
+						ply.sendInfoMessage(ChatColor.GRAY + "No region by the name " + args[1] + " was found in " + minigame.getName(false));
 					}
 					return true;
 				}
