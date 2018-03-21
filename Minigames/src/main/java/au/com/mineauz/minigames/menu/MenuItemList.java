@@ -100,12 +100,17 @@ public class MenuItemList extends MenuItem{
 	@Override
 	public ItemStack onDoubleClick(){
 		MinigamePlayer ply = getContainer().getViewer();
+		
 		ply.setNoClose(true);
 		ply.getPlayer().closeInventory();
 		ply.sendMessage("Enter the name of the option into chat for " + getName() + ", the menu will automatically reopen in 10s if nothing is entered.", null);
 		ply.setManualEntry(this);
-		ply.sendMessage("Possible Options: " + MinigameUtils.listToString(options));
-
+		if(MinigameUtils.listToString(options).getBytes().length > 16000) {
+			ply.sendMessage("Unfortunately there are too many options to provide a list in game. Perhaps use the WIKI");
+		}
+		else {
+			ply.sendMessage("Possible Options: " + MinigameUtils.listToString(options));
+		}
 		getContainer().startReopenTimer(10);
 		return null;
 	}

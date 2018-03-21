@@ -10,7 +10,7 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class BarrierAction extends ActionInterface{
+public class BarrierAction extends AbstractAction{
 
 	@Override
 	public String getName() {

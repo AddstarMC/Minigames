@@ -19,7 +19,7 @@ import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 
-public class TriggerRandomAction extends ActionInterface{
+public class TriggerRandomAction extends AbstractAction{
 	
 	private IntegerFlag timesTriggered = new IntegerFlag(1, "timesTriggered");
 	private BooleanFlag randomPerTrigger = new BooleanFlag(false, "randomPerTrigger");

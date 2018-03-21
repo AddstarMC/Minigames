@@ -17,7 +17,7 @@ import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class PulseRedstoneAction extends ActionInterface {
+public class PulseRedstoneAction extends AbstractAction {
 	
 	private IntegerFlag time = new IntegerFlag(1, "time");
 	private BooleanFlag torch = new BooleanFlag(false, "torch");

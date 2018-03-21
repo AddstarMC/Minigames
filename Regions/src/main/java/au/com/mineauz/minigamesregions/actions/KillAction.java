@@ -9,7 +9,7 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class KillAction extends ActionInterface {
+public class KillAction extends AbstractAction {
 
 	@Override
 	public String getName() {

@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.display.spigot;
 
+import au.com.mineauz.minigames.display.AbstractDisplayObject;
+import au.com.mineauz.minigames.display.DisplayManager;
+import au.com.mineauz.minigames.display.IDisplayCubiod;
+import au.com.mineauz.minigames.display.INonPersistantDisplay;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-
-import au.com.mineauz.minigames.display.AbstractDisplayObject;
-import au.com.mineauz.minigames.display.DisplayManager;
-import au.com.mineauz.minigames.display.IDisplayCubiod;
-import au.com.mineauz.minigames.display.INonPersistantDisplay;
 
 public class SpigotDisplayCuboid extends AbstractDisplayObject implements IDisplayCubiod, INonPersistantDisplay {
 	private static Location temp = new Location(null, 0, 0, 0);
@@ -79,9 +78,9 @@ public class SpigotDisplayCuboid extends AbstractDisplayObject implements IDispl
 		temp.setWorld(world);
 		
 		if (player == null) {
-			world.spawnParticle(Particle.FLAME,temp,1);
-		} else {
-			player.spawnParticle(Particle.FLAME,temp,1);
-		}
-	}
+            world.spawnParticle(Particle.BARRIER, temp, 1);
+        } else {
+            player.spawnParticle(Particle.BARRIER, temp, 1);
+        }
+    }
 }

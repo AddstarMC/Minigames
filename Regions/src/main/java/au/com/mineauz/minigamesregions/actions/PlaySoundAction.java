@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import au.com.mineauz.minigames.Minigames;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -22,7 +23,7 @@ import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class PlaySoundAction extends ActionInterface {
+public class PlaySoundAction extends AbstractAction {
 	
 	private StringFlag sound = new StringFlag("ENTITY_PLAYER_LEVELUP", "sound");
 	private BooleanFlag priv = new BooleanFlag(true, "private");
@@ -73,14 +74,15 @@ public class PlaySoundAction extends ActionInterface {
 	
 	private void execute(MinigamePlayer player, Location loc){
 		if(player == null || !player.isInMinigame()) return;
-		if(priv.getFlag())
-			player.getPlayer().playSound(loc, 
-					Sound.valueOf(sound.getFlag()), 
-					vol.getFlag(), 
+		if(priv.getFlag()) {
+			player.getPlayer().playSound(loc,
+					getSound(sound.getFlag()),
+					vol.getFlag(),
 					pit.getFlag());
+		}
 		else
-			player.getPlayer().getWorld().playSound(loc, 
-					Sound.valueOf(sound.getFlag()), 
+			player.getPlayer().getWorld().playSound(loc,
+					getSound(sound.getFlag()),
 					vol.getFlag(), 
 					pit.getFlag());
 	}
@@ -123,6 +125,10 @@ public class PlaySoundAction extends ActionInterface {
 			
 			@Override
 			public String getValue() {
+				Sound s=getSound(sound.getFlag());              //ENSURE CONFIG doesnt contain old enums replace if they do.
+				if(!s.toString().equals(sound.getFlag())){
+					sound.setFlag(s.toString());
+				}
 				return MinigameUtils.capitalize(sound.getFlag().replace("_", " "));
 			}
 		}, sounds));
@@ -153,6 +159,16 @@ public class PlaySoundAction extends ActionInterface {
 		}, 0.05, 0.1, 0d, 2d));
 		m.displayMenu(player);
 		return true;
+	}
+	private Sound getSound(String sound){
+		Sound result;
+		try{
+			 result = Sound.valueOf(sound);
+		}catch (IllegalArgumentException e){
+			Minigames.plugin.getLogger().warning("Bad Sound Config in Minigame Config : " + sound);
+			result =  Sound.ENTITY_PLAYER_BURP;
+		}
+		return result;
 	}
 
 }

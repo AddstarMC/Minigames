@@ -15,7 +15,7 @@ import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class EndAction extends ActionInterface {
+public class EndAction extends AbstractAction {
 
 	@Override
 	public String getName() {
@@ -54,9 +54,9 @@ public class EndAction extends ActionInterface {
 		execute(player);
 	}
 	
-	private void execute(MinigamePlayer winner){
-		if(winner == null || !winner.isInMinigame()) return;
-		setWinnersLosers(winner);
+	private void execute(MinigamePlayer player){
+		if(player == null || !player.isInMinigame()) return;
+		setWinnersLosers(player);
 	}
 
 	@Override

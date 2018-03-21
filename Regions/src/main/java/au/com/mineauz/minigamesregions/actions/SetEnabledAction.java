@@ -12,7 +12,7 @@ import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class SetEnabledAction extends ActionInterface{
+public class SetEnabledAction extends AbstractAction{
 	
 	private BooleanFlag state = new BooleanFlag(false, "state");
 

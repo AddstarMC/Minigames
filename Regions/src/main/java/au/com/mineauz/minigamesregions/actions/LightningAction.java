@@ -14,7 +14,7 @@ import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class LightningAction extends ActionInterface{
+public class LightningAction extends AbstractAction{
 	
 	private BooleanFlag effect = new BooleanFlag(false, "effect");
 

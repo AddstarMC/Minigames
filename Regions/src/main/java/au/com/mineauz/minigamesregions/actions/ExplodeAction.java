@@ -15,7 +15,7 @@ import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class ExplodeAction extends ActionInterface {
+public class ExplodeAction extends AbstractAction {
 	
 	private FloatFlag power = new FloatFlag(4f, "power");
 	private BooleanFlag fire = new BooleanFlag(false, "fire");

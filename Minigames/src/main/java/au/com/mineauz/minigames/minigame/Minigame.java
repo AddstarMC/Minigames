@@ -1,65 +1,12 @@
 package au.com.mineauz.minigames.minigame;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Scoreboard;
-
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.ListenableFuture;
-
-import au.com.mineauz.minigames.CTFFlag;
-import au.com.mineauz.minigames.FloorDegenerator;
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameSave;
-import au.com.mineauz.minigames.MinigameTimer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.MultiplayerBets;
-import au.com.mineauz.minigames.MultiplayerTimer;
+import au.com.mineauz.minigames.*;
 import au.com.mineauz.minigames.blockRecorder.RecorderData;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.EnumFlag;
-import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.ListFlag;
-import au.com.mineauz.minigames.config.LocationFlag;
-import au.com.mineauz.minigames.config.LocationListFlag;
-import au.com.mineauz.minigames.config.SimpleLocationFlag;
-import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.config.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.InteractionInterface;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemAddFlag;
-import au.com.mineauz.minigames.menu.MenuItemBoolean;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
-import au.com.mineauz.minigames.menu.MenuItemDisplayLoadout;
-import au.com.mineauz.minigames.menu.MenuItemDisplayWhitelist;
-import au.com.mineauz.minigames.menu.MenuItemFlag;
-import au.com.mineauz.minigames.menu.MenuItemInteger;
-import au.com.mineauz.minigames.menu.MenuItemList;
-import au.com.mineauz.minigames.menu.MenuItemLoadoutAdd;
-import au.com.mineauz.minigames.menu.MenuItemNewLine;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuItemSaveMinigame;
-import au.com.mineauz.minigames.menu.MenuItemStatisticsSettings;
-import au.com.mineauz.minigames.menu.MenuItemString;
-import au.com.mineauz.minigames.menu.MenuItemTime;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
@@ -71,6 +18,19 @@ import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatSettings;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.ListenableFuture;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Scoreboard;
+
+import java.util.*;
 
 public class Minigame implements ScriptObject {
 	private Map<String, Flag<?>> configFlags = new HashMap<String, Flag<?>>();
@@ -93,7 +53,8 @@ public class Minigame implements ScriptObject {
 	private IntegerFlag degenRandomChance = new IntegerFlag(15, "degenrandom");
 	private FloorDegenerator sfloordegen;
 	private IntegerFlag floorDegenTime = new IntegerFlag(Minigames.plugin.getConfig().getInt("multiplayer.floordegenerator.time"), "floordegentime");
-	
+    // Respawn Module
+	private BooleanFlag respawn = new BooleanFlag(Minigames.plugin.getConfig().getBoolean("has-respawn"),"respawn");
 	private LocationListFlag startLocations = new LocationListFlag(null, "startpos");
 	private LocationFlag endPosition = new LocationFlag(null, "endpos");
 	private LocationFlag quitPosition = new LocationFlag(null, "quitpos");
@@ -126,7 +87,7 @@ public class Minigame implements ScriptObject {
 	private BooleanFlag unlimitedAmmo = new BooleanFlag(false, "unlimitedammo");
 	private BooleanFlag saveCheckpoints = new BooleanFlag(false, "saveCheckpoints");
 	private BooleanFlag lateJoin = new BooleanFlag(false, "latejoin");
-	private IntegerFlag lives = new IntegerFlag(0, "lives");
+	private FloatFlag lives = new FloatFlag(0F, "lives");
 	
 	private LocationFlag regenArea1 = new LocationFlag(null, "regenarea.1");
 	private LocationFlag regenArea2 = new LocationFlag(null, "regenarea.2");
@@ -867,11 +828,11 @@ public class Minigame implements ScriptObject {
 		this.regenDelay.setFlag(regenDelay);
 	}
 
-	public int getLives() {
+	public float getLives() {
 		return lives.getFlag();
 	}
 
-	public void setLives(int lives) {
+	public void setLives(float lives) {
 		this.lives.setFlag(lives);
 	}
 
@@ -1163,7 +1124,7 @@ public class Minigame implements ScriptObject {
 		itemsPlayer.add(blockBreak.getMenuItem("Allow Block Break", Material.DIAMOND_PICKAXE));
 		itemsPlayer.add(blockPlace.getMenuItem("Allow Block Place", Material.STONE));
 		itemsPlayer.add(blocksdrop.getMenuItem("Allow Block Drops", Material.COBBLESTONE));
-		itemsPlayer.add(lives.getMenuItem("Lives", Material.APPLE, 0, null));
+		itemsPlayer.add(lives.getMenuItem("Lives", Material.APPLE, null));
 		itemsPlayer.add(paintBallMode.getMenuItem("Paintball Mode", Material.SNOW_BALL));
 		itemsPlayer.add(paintBallDamage.getMenuItem("Paintball Damage", Material.ARROW, 1, null));
 		itemsPlayer.add(unlimitedAmmo.getMenuItem("Unlimited Ammo", Material.SNOW_BLOCK));
@@ -1281,19 +1242,21 @@ public class Minigame implements ScriptObject {
 		FileConfiguration cfg = minigame.getConfig();
 		
 		//-----------------------------------------------
-		//TODO: Remove me after 1.7
+		//TODO: Remove me after 1.12
 		if(cfg.contains(name + ".type")){
-			//Minigames.plugin.getLogger().warning("Your configuration files ("+cfg.getCurrentPath()+") are of an old version. They will not be supported past ver1.11");
 			if(cfg.getString(name + ".type").equals("TEAMS")) {
+                Minigames.plugin.getLogger().warning("Your configuration files ("+cfg.getCurrentPath()+") is outdated and contains and Old type: TEAM, please update to use the New Types." );
 				cfg.set(name + ".type", "MULTIPLAYER");
 				TeamsModule.getMinigameModule(this).addTeam(TeamColor.RED);
 				TeamsModule.getMinigameModule(this).addTeam(TeamColor.BLUE);
 			}
 			else if(cfg.getString(name + ".type").equals("FREE_FOR_ALL")){
-				cfg.set(name + ".type", "MULTIPLAYER");
+                Minigames.plugin.getLogger().warning("Your configuration files ("+cfg.getCurrentPath()+") is outdated and contains and Old type: FREE_FOR_ALL, please update to use the New Types." );
+                cfg.set(name + ".type", "MULTIPLAYER");
 			}
 			else if(cfg.getString(name + ".type").equals("TREASURE_HUNT")){
-				cfg.set(name + ".type", "GLOBAL");
+                Minigames.plugin.getLogger().warning("Your configuration files ("+cfg.getCurrentPath()+") is outdated and contains and Old type:TREASURE_HUNT, please update to use the New Types." );
+                cfg.set(name + ".type", "GLOBAL");
 				cfg.set(name + ".scoretype", "treasure_hunt");
 				cfg.set(name + ".timer", Minigames.plugin.getConfig().getInt("treasurehunt.findtime") * 60);
 			}

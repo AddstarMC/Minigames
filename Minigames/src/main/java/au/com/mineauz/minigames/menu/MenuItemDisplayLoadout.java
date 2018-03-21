@@ -1,12 +1,5 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -14,6 +7,12 @@ import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuItemDisplayLoadout extends MenuItem{
 	
@@ -128,9 +127,12 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		loadoutMenu.addItem(new MenuItemSaveLoadout("Loadout Settings", Material.CHEST, loadout, loadoutSettings), 42);
 		loadoutMenu.addItem(new MenuItemSaveLoadout("Edit Potion Effects", Material.POTION, loadout, potionMenu), 43);
 		loadoutMenu.addItem(new MenuItemSaveLoadout("Save Loadout", Material.REDSTONE_TORCH_ON, loadout), 44);
-		
-		for(int i = 40; i < 42; i++){
-			loadoutMenu.addItem(new MenuItem("", null), i);
+        int a = 40;
+        if (loadout.allowOffHand()) {
+            a = 41;
+        }
+        for (int i = a; i < 42; i++) {
+            loadoutMenu.addItem(new MenuItem("", null), i);
 		}
 		loadoutMenu.displayMenu(getContainer().getViewer());
 		
@@ -145,6 +147,8 @@ public class MenuItemDisplayLoadout extends MenuItem{
 				loadoutMenu.addItemStack(loadout.getItem(item), 37);
 			else if(item == 103)
 				loadoutMenu.addItemStack(loadout.getItem(item), 36);
+            else if (item == -106 && loadout.allowOffHand()) loadoutMenu.addItemStack(loadout.getItem(item), 40);
+
 		}
 		
 		return null;

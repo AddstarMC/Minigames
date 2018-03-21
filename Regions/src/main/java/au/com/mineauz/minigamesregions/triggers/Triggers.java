@@ -13,6 +13,8 @@ public class Triggers {
 		addTrigger(new BlockBreakTrigger());
 		addTrigger(new BlockPlaceTrigger());
 		addTrigger(new DeathTrigger());
+		addTrigger(new PlayerKillTrigger());
+		addTrigger(new PlayerKilledTrigger());
 		addTrigger(new EnterTrigger());
 		addTrigger(new GameEndTrigger());
 		addTrigger(new GameJoinTrigger());
@@ -34,6 +36,8 @@ public class Triggers {
 		addTrigger(new PlayerDropFlagTrigger());
 		addTrigger(new LeftClickBlockTrigger());
 		addTrigger(new RightClickBlockTrigger());
+		addTrigger(new StartGlideTrigger());
+		addTrigger(new StopGlideTrigger());
 	}
 	
 	public static void addTrigger(Trigger trigger){

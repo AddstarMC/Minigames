@@ -32,7 +32,7 @@ import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class SpawnEntityAction extends ActionInterface {
+public class SpawnEntityAction extends AbstractAction {
 	
 	private StringFlag type = new StringFlag("ZOMBIE", "type");
 	private Map<String, String> settings = new HashMap<>();

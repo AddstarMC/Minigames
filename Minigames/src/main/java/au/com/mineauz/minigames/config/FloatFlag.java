@@ -1,13 +1,12 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.List;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemDecimal;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.List;
 
 public class FloatFlag extends Flag<Float>{
 	
@@ -40,8 +39,8 @@ public class FloatFlag extends Flag<Float>{
 			public Double getValue() {
 				return getFlag().doubleValue();
 			}
-		}, 1d, 1d, 0d, null);
-		return dec;
+        }, 1d, 1d, 0d, Double.POSITIVE_INFINITY);
+        return dec;
 	}
 
 	@Override
@@ -58,8 +57,8 @@ public class FloatFlag extends Flag<Float>{
 			public Double getValue() {
 				return getFlag().doubleValue();
 			}
-		}, 1d, 1d, 0d, null);
-		return dec;
+        }, 1d, 1d, 0d, Double.POSITIVE_INFINITY);
+        return dec;
 	}
 	
 	public MenuItem getMenuItem(String name, Material displayItem, double lowerinc, double upperinc, Double min, Double max) {

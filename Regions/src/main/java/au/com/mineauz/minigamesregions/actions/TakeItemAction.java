@@ -17,7 +17,7 @@ import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class TakeItemAction extends ActionInterface{
+public class TakeItemAction extends AbstractAction{
 	
 	private StringFlag type = new StringFlag("STONE", "type");
 	private BooleanFlag matchDamage = new BooleanFlag(true, "matchdamage");

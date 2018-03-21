@@ -94,7 +94,7 @@ public class TeamsModule extends MinigameModule {
 	}
 	
 	public List<Team> getTeams(){
-		return new ArrayList<Team>(teams.values());
+		return new ArrayList<>(teams.values());
 	}
 	
 	public Map<String, Team> getTeamsNameMap() {

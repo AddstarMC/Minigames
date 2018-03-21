@@ -23,7 +23,7 @@ import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class SwapBlockAction extends ActionInterface {
+public class SwapBlockAction extends AbstractAction {
 	
 	private StringFlag matchType = new StringFlag("STONE", "matchtype");
 	private BooleanFlag matchData = new BooleanFlag(false, "matchdata");

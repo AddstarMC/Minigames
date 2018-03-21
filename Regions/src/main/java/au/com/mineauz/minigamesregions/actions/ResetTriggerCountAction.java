@@ -11,7 +11,7 @@ import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 
-public class ResetTriggerCountAction extends ActionInterface{
+public class ResetTriggerCountAction extends AbstractAction{
 
 	@Override
 	public String getName() {

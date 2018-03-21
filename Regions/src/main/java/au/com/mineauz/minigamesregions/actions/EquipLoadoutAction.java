@@ -16,7 +16,7 @@ import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class EquipLoadoutAction extends ActionInterface {
+public class EquipLoadoutAction extends AbstractAction {
 	
 	private StringFlag loadout = new StringFlag("default", "loadout");
 	private BooleanFlag equipOnTrigger = new BooleanFlag(false, "equipOnTrigger");

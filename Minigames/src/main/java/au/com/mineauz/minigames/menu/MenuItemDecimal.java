@@ -1,14 +1,13 @@
 package au.com.mineauz.minigames.menu;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuItemDecimal extends MenuItem{
 	
@@ -53,12 +52,19 @@ public class MenuItemDecimal extends MenuItem{
 			
 			if(desc.matches("-?[0-9]+(.[0-9]+)?"))
 				description.set(0, ChatColor.GREEN.toString() + form.format(value.getValue()));
-			else
+			else if (value.getValue().isInfinite()) {
+				description.add(0, ChatColor.GREEN.toString() + "INFINITE");
+			} else {
 				description.add(0, ChatColor.GREEN.toString() + form.format(value.getValue()));
+			}
 		}
 		else{
 			description = new ArrayList<String>();
-			description.add(ChatColor.GREEN.toString() + form.format(value.getValue()));
+			if (value.getValue().isInfinite()) {
+				description.add(0, ChatColor.GREEN.toString() + "INFINITE");
+			} else {
+				description.add(0, ChatColor.GREEN.toString() + form.format(value.getValue()));
+			}
 		}
 		
 		setDescription(description);
@@ -137,6 +143,14 @@ public class MenuItemDecimal extends MenuItem{
 				getContainer().displayMenu(getContainer().getViewer());
 				return;
 			}
+		}
+		if (entry.equals("INFINITE")) {
+			double entryValue = Double.POSITIVE_INFINITY;
+			value.setValue(entryValue);
+			updateDescription();
+			getContainer().cancelReopenTimer();
+			getContainer().displayMenu(getContainer().getViewer());
+			return;
 		}
 		getContainer().cancelReopenTimer();
 		getContainer().displayMenu(getContainer().getViewer());

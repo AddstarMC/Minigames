@@ -59,6 +59,7 @@ permissions:
             minigame.disableall: true
             minigame.save: true
             minigame.backend: true
+            minigmae.info: true
     minigame.join:
         description: Allows a player to join a Minigame, bypassing betting.
         default: op
@@ -77,6 +78,9 @@ permissions:
     minigame.quit:
         description: Gives access to quitting a Minigame
         default: true
+    minigame.info:
+        description: Allows to report on currently running game
+        default: op
     minigame.quit.other:
         description: Gives access to force another player to quit a minigame
         default: op

@@ -1,20 +1,5 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
-import com.google.common.collect.Maps;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.PlayerLoadout;
@@ -24,6 +9,19 @@ import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.minigame.Minigame;
+import com.google.common.collect.Maps;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class LoadoutModule extends MinigameModule {
 
@@ -67,8 +65,8 @@ public class LoadoutModule extends MinigameModule {
 		if(config.contains(getMinigame() + ".loadout")){
 			Set<String> keys = config.getConfigurationSection(getMinigame() + ".loadout").getKeys(false);
 			for(String key : keys){
-				if(key.matches("[0-9]+"))
-					getLoadout("default").addItem(config.getItemStack(getMinigame() + ".loadout." + key), Integer.parseInt(key));
+                if (key.matches("[-]?[0-9]+"))
+                    getLoadout("default").addItem(config.getItemStack(getMinigame() + ".loadout." + key), Integer.parseInt(key));
 			}
 			
 			if(config.contains(getMinigame() + ".loadout.potions")){
@@ -100,8 +98,8 @@ public class LoadoutModule extends MinigameModule {
 				addLoadout(loadout);
 				Set<String> items = config.getConfigurationSection(getMinigame() + ".extraloadouts." + loadout).getKeys(false);
 				for(String key : items){
-					if(key.matches("[0-9]+"))
-						getLoadout(loadout).addItem(config.getItemStack(getMinigame() + ".extraloadouts." + loadout + "." + key), Integer.parseInt(key));
+                    if (key.matches("[-]?[0-9]+"))
+                        getLoadout(loadout).addItem(config.getItemStack(getMinigame() + ".extraloadouts." + loadout + "." + key), Integer.parseInt(key));
 				}
 				if(config.contains(getMinigame() + ".extraloadouts." + loadout + ".potions")){
 					Set<String> pots = config.getConfigurationSection(getMinigame() + ".extraloadouts." + loadout + ".potions").getKeys(false);

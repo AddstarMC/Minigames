@@ -11,7 +11,7 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
-public class FallingBlockAction extends ActionInterface {
+public class FallingBlockAction extends AbstractAction {
 
 	@Override
 	public String getName() {
