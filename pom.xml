@@ -5,7 +5,7 @@
   <version>1.12.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Minigames-Project</name>
-  <url>http://dev.bukkit.org/server-mods/minigames/</url>
+  <url>https://www.spigotmc.org/resources/minigames.19687/</url>
   <scm>
     <connection>scm:git:git@github.com:AddstarMC/Minigames.git</connection>
     <developerConnection>scm:git:git@github.com:AddstarMC/Minigames.git</developerConnection>
