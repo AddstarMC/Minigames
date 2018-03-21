@@ -15,6 +15,7 @@
                 <include>au.com.mineauz:Minigames-Regions</include>
             </includes>
             <binaries>
+                <includeDependencies>false</includeDependencies>
                 <outputDirectory>/</outputDirectory>
                 <unpack>false</unpack>
             </binaries>
