@@ -468,7 +468,7 @@ public class RegionEvents implements Listener{
 		if(event.isGliding()){
 			executeTrigger(Triggers.getTrigger("START_GLIDE"),player);
 		}else{
-			executeTrigger(Triggers.getTrigger("STOP_GLID"),player);
+			executeTrigger(Triggers.getTrigger("STOP_GLIDE"), player);
 		}
 	}
 
