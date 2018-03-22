@@ -1,17 +1,5 @@
 package au.com.mineauz.minigamesregions;
 
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.bukkit.Material;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.util.Vector;
-
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemSaveMinigame;
@@ -21,6 +9,18 @@ import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemNode;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemRegion;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import org.bukkit.Material;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.util.Vector;
+
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class RegionNodeEditToolMode implements ToolMode {
 
@@ -108,6 +108,16 @@ public class RegionNodeEditToolMode implements ToolMode {
 		} else if (!hits.isEmpty()) {
 			openChooseMenu(player, module, hits);
 		}
+	}
+	
+	@Override
+	public void onEntityLeftClick(MinigamePlayer player, Minigame minigame, Team team, EntityDamageByEntityEvent event) {
+	
+	}
+	
+	@Override
+	public void onEntityRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEntityEvent event) {
+	
 	}
 	
 	private void openMenu(MinigamePlayer player, Minigame minigame, Object hit) {

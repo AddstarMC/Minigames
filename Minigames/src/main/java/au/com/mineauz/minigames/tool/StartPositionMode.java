@@ -8,6 +8,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class StartPositionMode implements ToolMode{
@@ -103,7 +105,17 @@ public class StartPositionMode implements ToolMode{
 					team.getDisplayName() + ChatColor.WHITE + " start location to " + minigame);
 		}
 	}
-
+	
+	@Override
+	public void onEntityLeftClick(MinigamePlayer player, Minigame minigame, Team team, EntityDamageByEntityEvent event) {
+	
+	}
+	
+	@Override
+	public void onEntityRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEntityEvent event) {
+	
+	}
+	
 	@SuppressWarnings("deprecation") //TODO: Use alternate method once available
 	@Override
 	public void select(MinigamePlayer player, Minigame minigame, Team team) {

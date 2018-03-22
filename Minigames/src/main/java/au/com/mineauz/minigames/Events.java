@@ -333,39 +333,34 @@ public class Events implements Listener{
 		}
 		
 		ItemStack item = event.getItem();
-		if(item != null && MinigameUtils.isMinigameTool(item) && ply.getPlayer().hasPermission("minigame.tool")){
-			MinigameTool tool = new MinigameTool(item);
-			event.setCancelled(true);
-
-			if(event.getPlayer().isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)){
-				tool.openMenu(ply);
-				event.setCancelled(true);
-			}
-			else if(event.getClickedBlock() != null && (event.getClickedBlock().getType() == Material.WALL_SIGN || event.getClickedBlock().getType() == Material.SIGN_POST)){
-				Sign sign = (Sign) event.getClickedBlock().getState();
-				if(ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[Minigame]") && ChatColor.stripColor(sign.getLine(1)).equalsIgnoreCase("Join")){
-					Minigame minigame = mdata.getMinigame(sign.getLine(2));
-					tool.setMinigame(minigame);
-					ply.sendInfoMessage("Tools Minigame has been set to " + minigame);
-					event.setCancelled(true);
-				}
-			}
-			else if(tool.getMode() != null && tool.getMinigame() != null){
-				Minigame mg = tool.getMinigame();
-				if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK){
-					tool.getMode().onRightClick(ply, mg, TeamsModule.getMinigameModule(mg).getTeam(tool.getTeam()), event);
-				}
-				else if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK){
-					tool.getMode().onLeftClick(ply, mg, TeamsModule.getMinigameModule(mg).getTeam(tool.getTeam()), event);
-				}
-			}
-			else if(tool.getMinigame() == null) {
-				ply.sendInfoMessage("Please select a minigame. Click on the join sign, or /mg tool minigame <minigame>");
-			}
-			else if(tool.getMode() == null) {
-				ply.sendInfoMessage("Please select a tool mode. Shift + Right click");
-			}
-		}
+        if (item != null && MinigameUtils.isMinigameTool(item) && ply.getPlayer().hasPermission("minigame.tool")) {
+            MinigameTool tool = new MinigameTool(item);
+            event.setCancelled(true);
+            
+            if (event.getPlayer().isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
+                tool.openMenu(ply);
+                event.setCancelled(true);
+            } else if (event.getClickedBlock() != null && (event.getClickedBlock().getType() == Material.WALL_SIGN || event.getClickedBlock().getType() == Material.SIGN_POST)) {
+                Sign sign = (Sign) event.getClickedBlock().getState();
+                if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[Minigame]") && ChatColor.stripColor(sign.getLine(1)).equalsIgnoreCase("Join")) {
+                    Minigame minigame = mdata.getMinigame(sign.getLine(2));
+                    tool.setMinigame(minigame);
+                    ply.sendInfoMessage("Tools Minigame has been set to " + minigame);
+                    event.setCancelled(true);
+                }
+            } else {
+                checkTool(tool, ply);
+                if (tool.getMode() != null && tool.getMinigame() != null) {
+                    Minigame mg = tool.getMinigame();
+                    if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                        tool.getMode().onRightClick(ply, mg, TeamsModule.getMinigameModule(mg).getTeam(tool.getTeam()), event);
+                    } else if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
+                        tool.getMode().onLeftClick(ply, mg, TeamsModule.getMinigameModule(mg).getTeam(tool.getTeam()), event);
+                    }
+                }
+            }
+        }
+	
 		
 		//Spectator disables:
 		if(ply.isInMinigame() && pdata.getMinigamePlayer(event.getPlayer()).getMinigame().isSpectator(pdata.getMinigamePlayer(event.getPlayer()))){
@@ -438,82 +433,138 @@ public class Events implements Listener{
 			}
 		}
 	}
-	
-	@EventHandler(priority = EventPriority.LOWEST)
+    
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	private void entityDamageEntity(EntityDamageByEntityEvent event){
-		if(event.getEntity() instanceof Player && event.getDamager() instanceof Snowball){
-			MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getEntity());
-			if(ply == null) return;
-			Snowball sb = (Snowball) event.getDamager();
-			if(ply.isInMinigame() && ply.getMinigame().hasPaintBallMode()){
-				if(sb.getShooter() instanceof Player){
-					MinigamePlayer shooter = pdata.getMinigamePlayer((Player) sb.getShooter());
-					Minigame mgm = ply.getMinigame();
-					if(shooter == null) return;
-					if(shooter.isInMinigame() && shooter.getMinigame().equals(ply.getMinigame())){
-						if(!shooter.canPvP()){
-							event.setCancelled(true);
-							return;
-						}
-						
-						Team plyTeam = ply.getTeam();
-						Team atcTeam = shooter.getTeam();
-						if(!mgm.isTeamGame() || plyTeam != atcTeam){
-							int damage = mgm.getPaintBallDamage();
-							event.setDamage(damage);
-						}
-					}
-				}
-			}
-		}
-		else if(event.getEntity() instanceof Player && event.getDamager() instanceof Player){
-			MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getDamager());
-			if(ply == null) return;
-			if(ply.isInMinigame() && !ply.canPvP())
-				event.setCancelled(true);
-			else if(ply.isInMinigame() && ply.getMinigame().getState() == MinigameState.ENDED &&
-					GameOverModule.getMinigameModule(ply.getMinigame()).isHumiliationMode() && 
-					GameOverModule.getMinigameModule(ply.getMinigame()).getLosers().contains(ply)){
-				event.setCancelled(true);
-			}
-		}
-		else if(event.getEntity() instanceof Player && event.getDamager() instanceof Arrow){
-			Arrow arrow = (Arrow) event.getDamager();
-			if(arrow.getShooter() instanceof Player){
-				Player ply = (Player) arrow.getShooter();
-				MinigamePlayer mgpl = pdata.getMinigamePlayer(ply);
-				if(mgpl == null) return;
-				if(mgpl.isInMinigame() && !mgpl.canPvP())
-					event.setCancelled(true);
-			}
-		}
+        if (event.getEntity() instanceof Player && !event.isCancelled()) {
+            if (event.getDamager() instanceof Snowball) {
+                MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getEntity());
+                if (ply == null) return;
+                Snowball sb = (Snowball) event.getDamager();
+                if (ply.isInMinigame() && ply.getMinigame().hasPaintBallMode()) {
+                    if (sb.getShooter() instanceof Player) {
+                        MinigamePlayer shooter = pdata.getMinigamePlayer((Player) sb.getShooter());
+                        Minigame mgm = ply.getMinigame();
+                        if (shooter == null) return;
+                        if (shooter.isInMinigame() && shooter.getMinigame().equals(ply.getMinigame())) {
+                            if (!shooter.canPvP()) {
+                                event.setCancelled(true);
+                                return;
+                            }
+                            
+                            Team plyTeam = ply.getTeam();
+                            Team atcTeam = shooter.getTeam();
+                            if (!mgm.isTeamGame() || plyTeam != atcTeam) {
+                                int damage = mgm.getPaintBallDamage();
+                                event.setDamage(damage);
+                            }
+                        }
+                    }
+                }
+            } else if (event.getDamager() instanceof Player) {
+                MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getDamager());
+                if (ply == null) return;
+                if (ply.isInMinigame() && !ply.canPvP())
+                    event.setCancelled(true);
+                else if (ply.isInMinigame() && ply.getMinigame().getState() == MinigameState.ENDED &&
+                        GameOverModule.getMinigameModule(ply.getMinigame()).isHumiliationMode() &&
+                        GameOverModule.getMinigameModule(ply.getMinigame()).getLosers().contains(ply)) {
+                    event.setCancelled(true);
+                }
+            } else if (event.getDamager() instanceof Arrow) {
+                Arrow arrow = (Arrow) event.getDamager();
+                if (arrow.getShooter() instanceof Player) {
+                    Player ply = (Player) arrow.getShooter();
+                    MinigamePlayer mgpl = pdata.getMinigamePlayer(ply);
+                    if (mgpl == null) return;
+                    if (mgpl.isInMinigame() && !mgpl.canPvP())
+                        event.setCancelled(true);
+                }
+            }
+        }
+        if (event.getDamager() instanceof Player) {
+            Player player = (Player) event.getDamager();
+            MinigamePlayer ply = pdata.getMinigamePlayer(player);
+            ItemStack item = player.getEquipment().getItemInMainHand();
+            if (MinigameUtils.isMinigameTool(item) && player.hasPermission("minigame.tool")) {
+                if (ply.isInMinigame()) {
+                    ply.sendInfoMessage("Quit the game to use the tool at this time");
+                    return;
+                }
+                MinigameTool tool = new MinigameTool(item);
+                if (player.isSneaking()) {
+                    tool.openMenu(ply);
+                    event.setCancelled(true);
+                } else {
+                    checkTool(tool, ply);
+                    if (tool.getMinigame() != null && tool.getMode() != null) {
+                        Minigame mg = tool.getMinigame();
+                        tool.getMode().onEntityLeftClick(ply, mg, TeamsModule.getMinigameModule(mg).getTeam(tool.getTeam()), event);
+                    }
+                }
+                
+            }
+        }
 	}
-	
+    
+    @EventHandler(ignoreCancelled = true)
+    private void playerRightClickEntity(PlayerInteractEntityEvent event) {
+        Player player = event.getPlayer();
+        MinigamePlayer ply = pdata.getMinigamePlayer(player);
+        ItemStack item = player.getEquipment().getItemInMainHand();
+        if (MinigameUtils.isMinigameTool(item) && player.hasPermission("minigame.tool")) {
+            if (ply.isInMinigame()) {
+                ply.sendInfoMessage("Quit the game to use the tool at this time");
+                return;
+            }
+            MinigameTool tool = new MinigameTool(item);
+            if (player.isSneaking()) {
+                tool.openMenu(ply);
+                event.setCancelled(true);
+            } else {
+                checkTool(tool, ply);
+                if (tool.getMinigame() != null && tool.getMode() != null) {
+                    Minigame mg = tool.getMinigame();
+                    tool.getMode().onEntityRightClick(ply, mg, TeamsModule.getMinigameModule(mg).getTeam(tool.getTeam()), event);
+                }
+            }
+        }
+    }
+    
+    private void checkTool(MinigameTool tool, MinigamePlayer ply) {
+        if (tool.getMinigame() == null) {
+            ply.sendInfoMessage("Please select a minigame. Click on the join sign, or /mg tool minigame <minigame>");
+        }
+        if (tool.getMode() == null) {
+            ply.sendInfoMessage("Please select a tool mode. Shift + Right click");
+        }
+    }
+    
+    
 	@EventHandler(ignoreCancelled = true)
-	private void playerShoot(ProjectileLaunchEvent event){
-		if(event.getEntityType() == EntityType.SNOWBALL){
+    private void playerShoot(ProjectileLaunchEvent event) {
+        if (event.getEntityType() == EntityType.SNOWBALL) {
 			Snowball snowball = (Snowball) event.getEntity();
-			if(snowball.getShooter() != null && snowball.getShooter() instanceof Player){
+            if (snowball.getShooter() != null && snowball.getShooter() instanceof Player) {
 				MinigamePlayer ply = pdata.getMinigamePlayer((Player) snowball.getShooter());
-				if(ply == null) return;
-				if(ply.isInMinigame() && ply.getMinigame().hasUnlimitedAmmo()){
+                if (ply == null) return;
+                if (ply.isInMinigame() && ply.getMinigame().hasUnlimitedAmmo()) {
 					ItemStack mainhand = ply.getPlayer().getInventory().getItemInMainHand();
-					if (mainhand.getType() == Material.SNOW_BALL){
+                    if (mainhand.getType() == Material.SNOW_BALL) {
 						mainhand.setAmount(16);
 						ply.getPlayer().updateInventory();
-					}else{
-						ply.getPlayer().getInventory().addItem(new ItemStack(Material.SNOW_BALL,1));
+                    } else {
+                        ply.getPlayer().getInventory().addItem(new ItemStack(Material.SNOW_BALL, 1));
 					}
-
-				}
+                
+                }
 			}
-		}
-		else if(event.getEntityType() == EntityType.EGG){
+        } else if (event.getEntityType() == EntityType.EGG) {
 			Egg egg = (Egg) event.getEntity();
-			if(egg.getShooter() != null && egg.getShooter() instanceof Player){
+            if (egg.getShooter() != null && egg.getShooter() instanceof Player) {
 				MinigamePlayer ply = pdata.getMinigamePlayer((Player) egg.getShooter());
-				if(ply == null) return;
-				if(ply.isInMinigame() && ply.getMinigame().hasUnlimitedAmmo()){
+                if (ply == null) return;
+                if (ply.isInMinigame() && ply.getMinigame().hasUnlimitedAmmo()) {
 					ply.getPlayer().getInventory().addItem(new ItemStack(Material.EGG));
 				}
 			}

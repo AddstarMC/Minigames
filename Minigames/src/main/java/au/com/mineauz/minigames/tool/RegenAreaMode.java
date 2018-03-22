@@ -6,6 +6,8 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class RegenAreaMode implements ToolMode {
@@ -58,7 +60,17 @@ public class RegenAreaMode implements ToolMode {
 			}
 		}
 	}
-
+	
+	@Override
+	public void onEntityLeftClick(MinigamePlayer player, Minigame minigame, Team team, EntityDamageByEntityEvent event) {
+	
+	}
+	
+	@Override
+	public void onEntityRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEntityEvent event) {
+	
+	}
+	
 	@Override
 	public void select(MinigamePlayer player, Minigame minigame, Team team) {
 		if(minigame.getRegenArea1() != null && minigame.getRegenArea2() != null){

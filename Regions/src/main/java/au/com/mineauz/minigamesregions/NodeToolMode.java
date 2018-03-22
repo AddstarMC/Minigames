@@ -10,6 +10,8 @@ import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
@@ -131,7 +133,17 @@ public class NodeToolMode implements ToolMode {
 			Main.getPlugin().getDisplayManager().update(node);
 		}
 	}
-
+	
+	@Override
+	public void onEntityLeftClick(MinigamePlayer player, Minigame minigame, Team team, EntityDamageByEntityEvent event) {
+	
+	}
+	
+	@Override
+	public void onEntityRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEntityEvent event) {
+	
+	}
+	
 	@Override
 	public void select(MinigamePlayer player, Minigame minigame, Team team) {
 		RegionModule mod = RegionModule.getMinigameModule(minigame);
