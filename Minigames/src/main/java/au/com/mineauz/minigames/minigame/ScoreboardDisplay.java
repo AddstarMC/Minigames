@@ -328,16 +328,20 @@ public class ScoreboardDisplay {
 		}
 		
 		Block root = rootBlock.getBlock();
-		Sign sign = (Sign)root.getState();
-		
-		sign.setLine(0, ChatColor.BLUE + minigame.getName(true));
-		sign.setLine(1, ChatColor.GREEN + settings.getDisplayName());
-		sign.setLine(2, ChatColor.GREEN + field.getTitle());
-		sign.setLine(3, "(" + WordUtils.capitalize(order.toString()) + ")");
-		sign.update();
-		
-		sign.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.plugin, true));
-		sign.setMetadata("Minigame", new FixedMetadataValue(Minigames.plugin, minigame));
+        if (root instanceof Sign) {
+            Sign sign = (Sign) root.getState();
+            
+            sign.setLine(0, ChatColor.BLUE + minigame.getName(true));
+            sign.setLine(1, ChatColor.GREEN + settings.getDisplayName());
+            sign.setLine(2, ChatColor.GREEN + field.getTitle());
+            sign.setLine(3, "(" + WordUtils.capitalize(order.toString()) + ")");
+            sign.update();
+            
+            sign.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.plugin, true));
+            sign.setMetadata("Minigame", new FixedMetadataValue(Minigames.plugin, minigame));
+        } else {
+            Minigames.plugin.getLogger().warning("No Root Sign Block at: " + root.getLocation().toString());
+        }
 	}
 	
 	public void save(ConfigurationSection section) {
