@@ -1,24 +1,19 @@
 package au.com.mineauz.minigames.minigame.reward;
 
-import java.util.Map;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.InteractionInterface;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBack;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.reward.scheme.RewardScheme;
 import au.com.mineauz.minigames.minigame.reward.scheme.RewardSchemes;
 import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.Map;
 
 public class RewardsModule extends MinigameModule {
 	public static final String Name = "rewards";
@@ -72,15 +67,17 @@ public class RewardsModule extends MinigameModule {
 	@Override
 	public void load(FileConfiguration config) {
 		ConfigurationSection root = config.getConfigurationSection(getMinigame().getName(false));
-		String name = root.getString("reward-scheme", "standard");
-		
-		scheme = RewardSchemes.createScheme(name);
-		if (scheme == null) {
-			scheme = new StandardRewardScheme();
-		}
-		
-		ConfigurationSection rewards = root.getConfigurationSection("rewards");
-		scheme.load(rewards);
+        if (root != null) {
+            String name = root.getString("reward-scheme", "standard");
+            
+            scheme = RewardSchemes.createScheme(name);
+            if (scheme == null) {
+                scheme = new StandardRewardScheme();
+            }
+            
+            ConfigurationSection rewards = root.getConfigurationSection("rewards");
+            scheme.load(rewards);
+        }
 	}
 
 	@Override
