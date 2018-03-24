@@ -338,7 +338,18 @@ public class Minigames extends JavaPlugin{
 				return result;
 			}
 		});
+        Metrics.SimpleBarChart barChart = new Metrics.SimpleBarChart("Modules v Servers", new Callable<Map<String, Integer>>() {
+            @Override
+            public Map<String, Integer> call() {
+                Map<String, Integer> result = new HashMap<>();
+                for (Class module : mdata.getModules()) {
+                    result.put(module.getCanonicalName(), 1);
+                }
+                return result;
+            }
+        });
 		metrics.addCustomChart(chart);
+        metrics.addCustomChart(barChart);
 	}
 
 	
