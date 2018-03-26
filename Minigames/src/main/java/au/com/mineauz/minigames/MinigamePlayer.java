@@ -20,6 +20,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.*;
@@ -131,9 +132,10 @@ public class MinigamePlayer implements ScriptObject {
 	public void sendInfoMessage(String msg) {
 		sendMessage(msg, MinigameMessageType.INFO);
 	}
-
-	public void sendMessage(String msg, MinigameMessageType type) {
+	
+	public void sendMessage(String msg, @NotNull MinigameMessageType type) {
 		String init = "";
+		if (type == null) type = MinigameMessageType.INFO;
 		switch (type) {
 			case ERROR:
 				init = ChatColor.RED + "[Minigames] " + ChatColor.WHITE;

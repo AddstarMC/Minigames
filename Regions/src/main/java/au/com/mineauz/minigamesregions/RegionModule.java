@@ -163,15 +163,19 @@ public class RegionModule extends MinigameModule {
 						if(config.contains(path + ".actions")){
 							for(String a : config.getConfigurationSection(path + ".actions").getKeys(false)){
 								ActionInterface ai = Actions.getActionByName(config.getString(path + ".actions." + a + ".type"));
-								ai.loadArguments(config, path + ".actions." + a + ".arguments");
-								rex.addAction(ai);
+                                if (ai != null) {
+                                    ai.loadArguments(config, path + ".actions." + a + ".arguments");
+                                    rex.addAction(ai);
+                                }
 							}
 						}
 						if(config.contains(path + ".conditions")){
 							for(String c : config.getConfigurationSection(path + ".conditions").getKeys(false)){
 								ConditionInterface ci = Conditions.getConditionByName(config.getString(path + ".conditions." + c + ".type"));
-								ci.loadArguments(config, path + ".conditions." + c + ".arguments");
-								rex.addCondition(ci);
+                                if (ci != null) {
+                                    ci.loadArguments(config, path + ".conditions." + c + ".arguments");
+                                    rex.addCondition(ci);
+                                }
 							}
 						}
 						

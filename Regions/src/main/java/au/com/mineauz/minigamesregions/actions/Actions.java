@@ -1,23 +1,17 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.*;
-
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
-import au.com.mineauz.minigamesregions.executors.BaseExecutor;
-import org.bukkit.Material;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigamesregions.executors.NodeExecutor;
-import au.com.mineauz.minigamesregions.executors.RegionExecutor;
+import au.com.mineauz.minigamesregions.executors.BaseExecutor;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemAction;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemActionAdd;
+import org.bukkit.Material;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class Actions {
 	private static Map<String, Class<? extends ActionInterface>> actions = new HashMap<>();

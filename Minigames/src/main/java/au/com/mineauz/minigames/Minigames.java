@@ -210,8 +210,7 @@ public class Minigames extends JavaPlugin{
 		}
 		
 		PluginDescriptionFile desc = this.getDescription();
-		log.info(desc.getName() + " successfully disabled.");
-		
+
 		for(Player p : getServer().getOnlinePlayers()){
 			if (playerManager.getMinigamePlayer(p).isInMinigame()) {
 				playerManager.quitMinigame(playerManager.getMinigamePlayer(p), true);
@@ -266,6 +265,8 @@ public class Minigames extends JavaPlugin{
 		}
 		globalLoadouts.saveConfig();
 		minigameManager.saveRewardSigns();
+        log.info(desc.getName() + " successfully disabled.");
+
 	}
 	
 	private boolean setupEconomy(){

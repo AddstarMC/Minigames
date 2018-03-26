@@ -1,19 +1,12 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.Map;
 
 public class EndAction extends AbstractAction {
 

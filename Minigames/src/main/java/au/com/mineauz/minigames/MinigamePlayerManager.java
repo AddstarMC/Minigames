@@ -150,23 +150,19 @@ public class MinigamePlayerManager {
         }
         else if(item.getType() == Material.AIR && betAmount == 0){
             player.sendMessage(MinigameUtils.getLang("player.bet.plyNoBet"), MinigameMessageType.ERROR);
-            return;
-        }
+		}
         else if(betAmount != 0 && !pbet.canBet(player, betAmount)){
             player.sendMessage(MinigameUtils.getLang("player.bet.incorrectAmount"), MinigameMessageType.ERROR);
             player.sendMessage(MinigameUtils.formStr("player.bet.incorrectAmountInfo", Minigames.plugin.getEconomy().format(minigame.getMpBets().getHighestMoneyBet())), MinigameMessageType.ERROR);
-            return;
-        }
+		}
         else if(betAmount != 0 && plugin.getEconomy().getBalance(player.getPlayer().getPlayer()) < betAmount){
             player.sendMessage(MinigameUtils.getLang("player.bet.notEnoughMoney"), MinigameMessageType.ERROR);
             player.sendMessage(MinigameUtils.formStr("player.bet.notEnoughMoneyInfo", Minigames.plugin.getEconomy().format(minigame.getMpBets().getHighestMoneyBet())), MinigameMessageType.ERROR);
-            return;
-        }
+		}
         else{
             player.sendMessage(MinigameUtils.getLang("player.bet.incorrectItem"), MinigameMessageType.ERROR);
             player.sendMessage(MinigameUtils.formStr("player.bet.incorrectItemInfo", 1, minigame.getMpBets().highestBetName()), MinigameMessageType.ERROR);
-            return;
-        }
+		}
     }
 	
 	public void spectateMinigame(MinigamePlayer player, Minigame minigame) {
