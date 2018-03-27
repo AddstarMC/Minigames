@@ -461,7 +461,7 @@ public class MinigameUtils {
 
     public static void debugMessage(String message) {
         if (Minigames.plugin.isDebugging()) {
-            Minigames.log.info(ChatColor.RED + "[Debug] " + ChatColor.WHITE + message);
+            Minigames.plugin.getLogger().info(ChatColor.RED + "[Debug] " + ChatColor.WHITE + message);
 		}
 	}
 	
