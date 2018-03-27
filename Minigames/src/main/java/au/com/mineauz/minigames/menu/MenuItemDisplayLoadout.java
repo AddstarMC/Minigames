@@ -174,7 +174,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 			if(mgm != null)
 				LoadoutModule.getMinigameModule(mgm).deleteLoadout(loadoutName);
 			else
-                Minigames.plugin.minigameManager.deleteLoadout(loadoutName);
+				Minigames.getPlugin().getMinigameManager().deleteLoadout(loadoutName);
 			getContainer().removeItem(getSlot());
 			getContainer().cancelReopenTimer();
 			getContainer().displayMenu(getContainer().getViewer());

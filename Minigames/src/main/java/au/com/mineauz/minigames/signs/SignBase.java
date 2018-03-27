@@ -38,7 +38,7 @@ public class SignBase implements Listener{
 	}
 	
 	public SignBase(){
-		Minigames.plugin.getServer().getPluginManager().registerEvents(this, Minigames.plugin);
+		Minigames.getPlugin().getServer().getPluginManager().registerEvents(this, Minigames.getPlugin());
 	}
 	
 	public static void registerMinigameSign(MinigameSign mgSign){
@@ -70,7 +70,7 @@ public class SignBase implements Listener{
 				}
 			}
 			else{
-                Minigames.plugin.playerManager.getMinigamePlayer(event.getPlayer()).sendMessage("Invalid Minigame sign!", MinigameMessageType.ERROR);
+				Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()).sendMessage("Invalid Minigame sign!", MinigameMessageType.ERROR);
 				event.setCancelled(true);
 				event.getBlock().breakNaturally();
 			}
@@ -94,8 +94,8 @@ public class SignBase implements Listener{
 					}
 					
 					event.setCancelled(true);
-
-                    mgSign.signUse(sign, Minigames.plugin.playerManager.getMinigamePlayer(event.getPlayer()));
+					
+					mgSign.signUse(sign, Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()));
 				}
 			}
 		}
@@ -113,7 +113,7 @@ public class SignBase implements Listener{
 					event.setCancelled(true);
 					return;
 				}
-                mgSign.signBreak(sign, Minigames.plugin.playerManager.getMinigamePlayer(event.getPlayer()));
+				mgSign.signBreak(sign, Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()));
 			}
 		}
 	}

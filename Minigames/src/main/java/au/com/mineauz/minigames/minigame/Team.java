@@ -205,7 +205,7 @@ public class Team implements ScriptObject {
 		Scoreboard board =  mgm.getScoreboardManager();
 		String color =  getColor().toString().toLowerCase();
 		board.getTeam(color).removeEntry(player.getDisplayName(mgm.usePlayerDisplayNames()));
-		player.getPlayer().setScoreboard(Minigames.plugin.getServer().getScoreboardManager().getMainScoreboard());
+        player.getPlayer().setScoreboard(Minigames.getPlugin().getServer().getScoreboardManager().getMainScoreboard());
 	}
 	
 	/**

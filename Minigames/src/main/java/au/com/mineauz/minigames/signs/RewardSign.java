@@ -16,8 +16,8 @@ import java.util.List;
 
 public class RewardSign implements MinigameSign {
 	
-	private static Minigames plugin = Minigames.plugin;
-	private MinigameManager mdata = plugin.minigameManager;
+	private static Minigames plugin = Minigames.getPlugin();
+	private MinigameManager mdata = plugin.getMinigameManager();
 
 	@Override
 	public String getName() {
@@ -50,7 +50,7 @@ public class RewardSign implements MinigameSign {
 			event.setLine(1, ChatColor.GREEN + getName());
 			return true;
 		}
-		plugin.playerManager.getMinigamePlayer(event.getPlayer()).sendMessage(MinigameUtils.getLang("sign.reward.noName"), MinigameMessageType.ERROR);
+		plugin.getPlayerManager().getMinigamePlayer(event.getPlayer()).sendMessage(MinigameUtils.getLang("sign.reward.noName"), MinigameMessageType.ERROR);
 		return false;
 	}
 	
@@ -131,8 +131,8 @@ public class RewardSign implements MinigameSign {
 
 	@Override
 	public void signBreak(Sign sign, MinigamePlayer player) {
-		if (plugin.minigameManager.hasRewardSign(sign.getLocation())) {
-			plugin.minigameManager.removeRewardSign(sign.getLocation());
+		if (plugin.getMinigameManager().hasRewardSign(sign.getLocation())) {
+			plugin.getMinigameManager().removeRewardSign(sign.getLocation());
 		}
 	}
 

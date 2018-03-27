@@ -17,8 +17,8 @@ public class MultiplayerTimer{
 	private int startWaitTime;
 	private int oStartWaitTime;
 	private Minigame minigame;
-	private static Minigames plugin = Minigames.plugin;
-	private MinigamePlayerManager playerManager = plugin.playerManager;
+	private static Minigames plugin = Minigames.getPlugin();
+	private MinigamePlayerManager playerManager = plugin.getPlayerManager();
 	private boolean paused = false;
 	private int taskID = -1;
 	private List<Integer> timeMsg = new ArrayList<>();
@@ -103,7 +103,7 @@ public class MultiplayerTimer{
                     }else{
 						playerManager.startMPMinigame(minigame);
 						if (!minigame.isPlayersAtStart()) {
-							Minigames.plugin.getLogger().info("Minigame started and Players not teleported check configs:" + minigame.getName(false));
+							Minigames.getPlugin().getLogger().info("Minigame started and Players not teleported check configs:" + minigame.getName(false));
 						}
                     }
                     freezePlayers(false);
@@ -116,7 +116,7 @@ public class MultiplayerTimer{
 					
 					if(minigame.getTimer() > 0){
 						minigame.setMinigameTimer(new MinigameTimer(minigame, minigame.getTimer()));
-						plugin.minigameManager.sendMinigameMessage(minigame,
+						plugin.getMinigameManager().sendMinigameMessage(minigame,
 								MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(minigame.getTimer())));
 					}
 					

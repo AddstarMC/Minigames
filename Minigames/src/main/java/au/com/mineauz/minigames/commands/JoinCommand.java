@@ -56,11 +56,11 @@ public class JoinCommand implements ICommand{
 			String label, String[] args) {
 		Player player = (Player)sender;
 		if(args != null){
-            Minigame mgm = plugin.minigameManager.getMinigame(args[0]);
+			Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
 			if(mgm != null && (!mgm.getUsePermissions() || player.hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))){
-                if (!plugin.playerManager.getMinigamePlayer(player).isInMinigame()) {
+				if (!plugin.getPlayerManager().getMinigamePlayer(player).isInMinigame()) {
 					sender.sendMessage(ChatColor.GREEN + MinigameUtils.formStr("command.join.joining", mgm.getName(false)));
-                    plugin.playerManager.joinMinigame(plugin.playerManager.getMinigamePlayer(player), mgm, false, 0.0);
+					plugin.getPlayerManager().joinMinigame(plugin.getPlayerManager().getMinigamePlayer(player), mgm, false, 0.0);
 				}
 				else {
 					player.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.join.alreadyPlaying"));
@@ -81,7 +81,7 @@ public class JoinCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-            List<String> mgs = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
+			List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
 			return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
 		}
 		return null;

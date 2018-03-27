@@ -32,8 +32,8 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.InventoryHolder;
 
 public class BasicRecorder implements Listener{
-
-    private MinigamePlayerManager pdata = Minigames.plugin.playerManager;
+	
+	private MinigamePlayerManager pdata = Minigames.getPlugin().getPlayerManager();
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	private void blockBreak(BlockBreakEvent event){
@@ -273,7 +273,7 @@ public class BasicRecorder implements Listener{
 	
 	@EventHandler(ignoreCancelled = true)
 	private void entityExplode(EntityExplodeEvent event){
-        for (Minigame mg : Minigames.plugin.minigameManager.getAllMinigames().values()) {
+		for (Minigame mg : Minigames.getPlugin().getMinigameManager().getAllMinigames().values()) {
 			if(!mg.hasPlayers() && !mg.hasStarted() && mg.getBlockRecorder().hasRegenArea() && mg.getBlockRecorder().blockInRegenArea(event.getLocation())){
 				event.setCancelled(true);
 				break;

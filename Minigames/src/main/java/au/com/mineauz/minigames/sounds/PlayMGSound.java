@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.sounds;
 
-import org.bukkit.Bukkit;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
+import org.bukkit.Bukkit;
 
 public class PlayMGSound {
-	
-	private static boolean shouldPlay = Minigames.plugin.getConfig().getBoolean("playSounds");
+    
+    private static boolean shouldPlay = Minigames.getPlugin().getConfig().getBoolean("playSounds");
 	
 	public static void playSound(MinigamePlayer player, MGSound sound){
 		if(!shouldPlay) return;
@@ -24,7 +23,7 @@ public class PlayMGSound {
 	private static void playLoop(MinigamePlayer player, MGSound  sound){
 		final MinigamePlayer fplayer = player;
 		final MGSound fsound = sound;
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), new Runnable() {
 			
 			@Override
 			public void run() {

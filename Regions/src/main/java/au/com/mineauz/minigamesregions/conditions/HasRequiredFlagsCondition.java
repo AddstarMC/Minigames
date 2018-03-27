@@ -38,15 +38,15 @@ public class HasRequiredFlagsCondition extends ConditionInterface {
 	}
 
 	@Override
-	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
+	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
 		if(player == null || !player.isInMinigame()) return false;
-        return Minigames.plugin.playerManager.checkRequiredFlags(player, player.getMinigame().getName(false)).isEmpty();
+		return Minigames.getPlugin().getPlayerManager().checkRequiredFlags(player, player.getMinigame().getName(false)).isEmpty();
     }
 
 	@Override
-	public boolean checkRegionCondition(MinigamePlayer player, Region region) {
+	public boolean checkNodeCondition(MinigamePlayer player, Node node) {
 		if(player == null || !player.isInMinigame()) return false;
-        return Minigames.plugin.playerManager.checkRequiredFlags(player, player.getMinigame().getName(false)).isEmpty();
+		return Minigames.getPlugin().getPlayerManager().checkRequiredFlags(player, player.getMinigame().getName(false)).isEmpty();
     }
 
 	@Override

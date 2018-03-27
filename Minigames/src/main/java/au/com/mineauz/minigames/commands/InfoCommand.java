@@ -59,7 +59,7 @@ public class InfoCommand implements ICommand {
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame, String label, String[] args) {
         if(args != null) {
-            minigame = plugin.minigameManager.getMinigame(args[0]);
+            minigame = plugin.getMinigameManager().getMinigame(args[0]);
         }
         if(minigame != null){
             List<String> output = new ArrayList<>();
@@ -125,7 +125,7 @@ public class InfoCommand implements ICommand {
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame, String alias, String[] args) {
         if(args.length == 1){
-            List<String> mgs = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
+            List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
             return MinigameUtils.tabCompleteMatch(mgs, args[1]);
         }
         return null;

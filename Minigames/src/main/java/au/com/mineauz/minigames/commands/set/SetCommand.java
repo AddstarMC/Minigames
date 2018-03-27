@@ -220,8 +220,8 @@ public class SetCommand implements ICommand{
 			String[] shortArgs = null;
 			
 			if(args.length >= 1){
-                if (plugin.minigameManager.hasMinigame(args[0])) {
-                    mgm = plugin.minigameManager.getMinigame(args[0]);
+				if (plugin.getMinigameManager().hasMinigame(args[0])) {
+					mgm = plugin.getMinigameManager().getMinigame(args[0]);
 				}
 				if(args.length >= 2){
 					if(parameterList.containsKey(args[1].toLowerCase())){
@@ -330,9 +330,9 @@ AliasCheck:				for(ICommand com : parameterList.values()){
 			ICommand comd = null;
 			String[] shortArgs = null;
 			Minigame mgm = null;
-
-            if (plugin.minigameManager.hasMinigame(args[0])) {
-                mgm = plugin.minigameManager.getMinigame(args[0]);
+			
+			if (plugin.getMinigameManager().hasMinigame(args[0])) {
+				mgm = plugin.getMinigameManager().getMinigame(args[0]);
 			}
 			
 			if(args.length > 1 && mgm != null){
@@ -360,7 +360,7 @@ AliasCheck:				for(ICommand com : parameterList.values()){
 				}
 			}
 			else if(args.length == 1){
-                List<String> ls = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
+				List<String> ls = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
 				return MinigameUtils.tabCompleteMatch(ls, args[0]);
 			}
 		}

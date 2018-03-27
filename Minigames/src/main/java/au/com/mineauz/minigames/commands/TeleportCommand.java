@@ -70,7 +70,7 @@ public class TeleportCommand implements ICommand {
 			List<Player> plys = plugin.getServer().matchPlayer(args[0]);
 			MinigamePlayer ply = null;
 			if(!plys.isEmpty()){
-                ply = plugin.playerManager.getMinigamePlayer(plys.get(0));
+				ply = plugin.getPlayerManager().getMinigamePlayer(plys.get(0));
 			}
 			else{
 				sender.sendMessage(ChatColor.RED + "No player found by the name " + args[0] + "!");
@@ -196,7 +196,7 @@ public class TeleportCommand implements ICommand {
 				MinigamePlayer ply2 = null;
 				
 				if(!plys.isEmpty()){
-                    ply2 = plugin.playerManager.getMinigamePlayer(plys.get(0));
+					ply2 = plugin.getPlayerManager().getMinigamePlayer(plys.get(0));
 				}
 				else{
 					sender.sendMessage(ChatColor.RED + "No player found by the name " + args[1] + "!");

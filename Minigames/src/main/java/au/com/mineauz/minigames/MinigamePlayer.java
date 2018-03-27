@@ -83,8 +83,8 @@ public class MinigamePlayer implements ScriptObject {
 	public MinigamePlayer(Player player){
 		this.player = player;
 		spc = new StoredPlayerCheckpoints(getUUID().toString());
-
-		File plcp = new File(Minigames.plugin.getDataFolder() + "/playerdata/checkpoints/" + getUUID().toString() + ".yml");
+		
+		File plcp = new File(Minigames.getPlugin().getDataFolder() + "/playerdata/checkpoints/" + getUUID().toString() + ".yml");
 		if(plcp.exists()){
 			getStoredPlayerCheckpoints().loadCheckpoints();
 		}
@@ -580,13 +580,13 @@ public class MinigamePlayer implements ScriptObject {
 		if (!clear) {
 			if(selection2 != null && selection1 != null) {
 				Location[] locs = MinigameUtils.getMinMaxSelection(selection1, selection2);
-				selectionDisplay = Minigames.plugin.display.displayCuboid(getPlayer(), locs[0], locs[1].add(1, 1, 1));
+				selectionDisplay = Minigames.getPlugin().display.displayCuboid(getPlayer(), locs[0], locs[1].add(1, 1, 1));
 				selectionDisplay.show();
 			} else if (selection1 != null) {
-				selectionDisplay = Minigames.plugin.display.displayCuboid(getPlayer(), selection1, selection1.clone().add(1, 1, 1));
+				selectionDisplay = Minigames.getPlugin().display.displayCuboid(getPlayer(), selection1, selection1.clone().add(1, 1, 1));
 				selectionDisplay.show();
 			} else if (selection2 != null) {
-				selectionDisplay = Minigames.plugin.display.displayCuboid(getPlayer(), selection2, selection2.clone().add(1, 1, 1));
+				selectionDisplay = Minigames.getPlugin().display.displayCuboid(getPlayer(), selection2, selection2.clone().add(1, 1, 1));
 				selectionDisplay.show();
 			}
 		}
@@ -669,7 +669,7 @@ public class MinigamePlayer implements ScriptObject {
 	}
 	
 	public void loadClaimedRewards(){
-		File f = new File(Minigames.plugin.getDataFolder() + "/playerdata/data/" + getUUID().toString() + ".yml");
+		File f = new File(Minigames.getPlugin().getDataFolder() + "/playerdata/data/" + getUUID().toString() + ".yml");
 		if(f.exists()){
 			MinigameSave s = new MinigameSave("playerdata/data/" + getUUID().toString());
 			claimedRewards = s.getConfig().getStringList("claims");

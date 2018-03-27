@@ -13,7 +13,7 @@ import org.bukkit.material.Directional;
 import org.bukkit.metadata.FixedMetadataValue;
 
 public class ScoreboardSign implements MinigameSign{
-	private Minigames plugin = Minigames.plugin;
+	private Minigames plugin = Minigames.getPlugin();
 
 	@Override
 	public String getName() {
@@ -50,9 +50,9 @@ public class ScoreboardSign implements MinigameSign{
 		
 		// Parse minigame
 		Minigame minigame;
-
-        if (plugin.minigameManager.hasMinigame(event.getLine(2))) {
-            minigame = plugin.minigameManager.getMinigame(event.getLine(2));
+		
+		if (plugin.getMinigameManager().hasMinigame(event.getLine(2))) {
+			minigame = plugin.getMinigameManager().getMinigame(event.getLine(2));
 		} else {
 			event.getPlayer().sendMessage(ChatColor.RED + "No Minigame found by the name " + event.getLine(2));
 			return false;
@@ -98,7 +98,7 @@ public class ScoreboardSign implements MinigameSign{
 
 	@Override
 	public boolean signUse(Sign sign, MinigamePlayer player) {
-        Minigame minigame = plugin.minigameManager.getMinigame(sign.getLine(2));
+		Minigame minigame = plugin.getMinigameManager().getMinigame(sign.getLine(2));
 		if (minigame == null) {
 			return false;
 		}

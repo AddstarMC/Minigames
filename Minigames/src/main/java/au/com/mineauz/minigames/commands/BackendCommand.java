@@ -1,20 +1,18 @@
 package au.com.mineauz.minigames.commands;
 
-import java.util.List;
-import java.util.logging.Level;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.backend.BackendManager;
 import au.com.mineauz.minigames.backend.ExportNotifier;
 import au.com.mineauz.minigames.minigame.Minigame;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.List;
+import java.util.logging.Level;
 
 public class BackendCommand implements ICommand{
 	@Override
@@ -63,11 +61,11 @@ public class BackendCommand implements ICommand{
 			return false;
 		}
 		
-		BackendManager manager = Minigames.plugin.getBackend();
+		BackendManager manager = Minigames.getPlugin().getBackend();
 		
 		if (args[0].equalsIgnoreCase("export")) {
 			try {
-				ListenableFuture<Void> future = manager.exportTo(args[1], Minigames.plugin.getConfig(), new Notifier(sender));
+				ListenableFuture<Void> future = manager.exportTo(args[1], Minigames.getPlugin().getConfig(), new Notifier(sender));
 				sender.sendMessage(ChatColor.GOLD + "Exporting backend to " + args[1] + "...");
 				
 				Futures.addCallback(future, new FutureCallback<Void>() {
@@ -85,7 +83,7 @@ public class BackendCommand implements ICommand{
 			}
 		} else if (args[0].equalsIgnoreCase("switch")) {
 			try {
-				ListenableFuture<Void> future = manager.switchBackend(args[1], Minigames.plugin.getConfig());
+				ListenableFuture<Void> future = manager.switchBackend(args[1], Minigames.getPlugin().getConfig());
 				sender.sendMessage(ChatColor.GOLD + "Switching minigames backend to " + args[1] + "...");
 				
 				Futures.addCallback(future, new FutureCallback<Void>() {
@@ -133,20 +131,20 @@ public class BackendCommand implements ICommand{
 					sender.sendMessage(ChatColor.GREEN + "[Minigames] Export started...");
 				}
 				
-				Minigames.plugin.getLogger().warning("Started exporting backend. Started by " + sender.getName());
+				Minigames.getPlugin().getLogger().warning("Started exporting backend. Started by " + sender.getName());
 			}
 			
-			Minigames.plugin.getLogger().info("Exporting backend... " + state + ": " + count);
+			Minigames.getPlugin().getLogger().info("Exporting backend... " + state + ": " + count);
 		}
 		@Override
 		public void onComplete() {
 			sender.sendMessage(ChatColor.GREEN + "[Minigames] Export complete!");
-			Minigames.plugin.getLogger().info("Exporting complete");
+			Minigames.getPlugin().getLogger().info("Exporting complete");
 		}
 		@Override
 		public void onError(Throwable e, String state, int count) {
 			sender.sendMessage(ChatColor.RED + "[Minigames] Export error. See console for details.");
-			Minigames.plugin.getLogger().log(Level.SEVERE, "Exporting error at " + state + ": " + count, e);
+			Minigames.getPlugin().getLogger().log(Level.SEVERE, "Exporting error at " + state + ": " + count, e);
 		}
 	}
 }

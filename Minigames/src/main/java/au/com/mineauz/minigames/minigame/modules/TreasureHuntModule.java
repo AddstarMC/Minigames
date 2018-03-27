@@ -26,7 +26,7 @@ public class TreasureHuntModule extends MinigameModule{
 	private IntegerFlag maxHeight = new IntegerFlag(20, "maxheight");
 	private IntegerFlag minTreasure = new IntegerFlag(0, "mintreasure");
 	private IntegerFlag maxTreasure = new IntegerFlag(8, "maxtreasure");
-	private IntegerFlag treasureWaitTime = new IntegerFlag(Minigames.plugin.getConfig().getInt("treasurehunt.waittime"), "treasurehuntwait");
+    private IntegerFlag treasureWaitTime = new IntegerFlag(Minigames.getPlugin().getConfig().getInt("treasurehunt.waittime"), "treasurehuntwait");
 	private IntegerFlag hintWaitTime = new IntegerFlag(500, "hintWaitTime");
 	
 	//Unsaved Data

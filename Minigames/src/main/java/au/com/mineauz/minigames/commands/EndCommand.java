@@ -62,7 +62,7 @@ public class EndCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args == null && sender instanceof Player){
-            MinigamePlayer ply = plugin.playerManager.getMinigamePlayer((Player) sender);
+			MinigamePlayer ply = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
 			if(ply.isInMinigame()){
 				if(ply.getMinigame().getType() != MinigameType.SINGLEPLAYER){
                     List<MinigamePlayer> w = new ArrayList<>(1);
@@ -70,12 +70,12 @@ public class EndCommand implements ICommand{
 					w.add(ply);
 					l.addAll(ply.getMinigame().getPlayers());
 					l.remove(ply);
-
-                    plugin.playerManager.endMinigame(ply.getMinigame(), w, l);
+					
+					plugin.getPlayerManager().endMinigame(ply.getMinigame(), w, l);
 					sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to win the Minigame.");
 				}
 				else{
-                    plugin.playerManager.endMinigame(ply);
+					plugin.getPlayerManager().endMinigame(ply);
 					sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to win the Minigame.");
 				}
 			}
@@ -94,9 +94,9 @@ public class EndCommand implements ICommand{
 				MinigamePlayer ply = null;
 				Team team = null;
 				Minigame mgm = null;
-                if (args.length == 2 && plugin.minigameManager.hasMinigame(args[1])) {
+				if (args.length == 2 && plugin.getMinigameManager().hasMinigame(args[1])) {
 					TeamColor color = TeamColor.matchColor(args[0]);
-                    mgm = plugin.minigameManager.getMinigame(args[1]);
+					mgm = plugin.getMinigameManager().getMinigame(args[1]);
 					if(mgm == null){
 						sender.sendMessage(ChatColor.RED + "No minigme found by the name " + args[1]);
 						return true;
@@ -109,12 +109,12 @@ public class EndCommand implements ICommand{
 						sender.sendMessage(ChatColor.RED + "No team found by the name " + args[0] + " in " + mgm.getName(false));
 						return true;
 					}
-				} else if (args.length == 2 && !plugin.minigameManager.hasMinigame(args[1])) {
+				} else if (args.length == 2 && !plugin.getMinigameManager().hasMinigame(args[1])) {
 					sender.sendMessage(ChatColor.RED + "No Minigame found by the name " + args[1]);
 					return true;
 				}
 				else if(!players.isEmpty()){
-                    ply = plugin.playerManager.getMinigamePlayer(players.get(0));
+					ply = plugin.getPlayerManager().getMinigamePlayer(players.get(0));
 				}
 				else{
 					sender.sendMessage(ChatColor.RED + "No player found by the name " + args[0]);
@@ -128,12 +128,12 @@ public class EndCommand implements ICommand{
 						w.add(ply);
 						l.addAll(ply.getMinigame().getPlayers());
 						l.remove(ply);
-
-                        plugin.playerManager.endMinigame(ply.getMinigame(), w, l);
+						
+						plugin.getPlayerManager().endMinigame(ply.getMinigame(), w, l);
 						sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to win the Minigame.");
 					}
 					else{
-                        plugin.playerManager.endMinigame(ply);
+						plugin.getPlayerManager().endMinigame(ply);
 						sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to win the Minigame.");
 					}
 				}
@@ -152,7 +152,7 @@ public class EndCommand implements ICommand{
 								l.addAll(t.getPlayers());
 							}
 						}
-                        plugin.playerManager.endMinigame(mgm, w, l);
+						plugin.getPlayerManager().endMinigame(mgm, w, l);
 						sender.sendMessage(ChatColor.GRAY + "You forced " + team.getChatColor() + team.getDisplayName() + ChatColor.GRAY + " to win the Minigame.");
 					}
 					else{
@@ -186,7 +186,7 @@ public class EndCommand implements ICommand{
 			return MinigameUtils.tabCompleteMatch(plt, args[0]);
 		}
 		else if(args.length == 2 && TeamColor.matchColor(args[0]) != null){
-            List<String> mgs = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
+			List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
 			return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
 		}
 		return null;

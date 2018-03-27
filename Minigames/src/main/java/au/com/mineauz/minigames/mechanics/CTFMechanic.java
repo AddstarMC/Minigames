@@ -189,7 +189,7 @@ public class CTFMechanic extends GameMechanicBase{
 											if(t != ply.getTeam())
 												l.addAll(t.getPlayers());
 										}
-                                        plugin.playerManager.endMinigame(mgm, w, l);
+										plugin.getPlayerManager().endMinigame(mgm, w, l);
 										mgm.resetFlags();
 									}
 								}

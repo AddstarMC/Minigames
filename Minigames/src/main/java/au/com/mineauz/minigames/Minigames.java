@@ -36,10 +36,10 @@ import java.util.logging.Logger;
 
 public class Minigames extends JavaPlugin{
 	static Logger log = Logger.getLogger("Minecraft");
-	public MinigamePlayerManager playerManager;
-	public MinigameManager minigameManager;
+	private static Minigames plugin;
+	private MinigamePlayerManager playerManager;
 	public DisplayManager display;
-	public static Minigames plugin;
+	private MinigameManager minigameManager;
     private static Economy econ = null;
 	private static SignBase minigameSigns;
 	private FileConfiguration lang = null;
@@ -51,6 +51,72 @@ public class Minigames extends JavaPlugin{
 	
 	private BackendManager backend;
 	
+	public static Minigames getPlugin() {
+		return plugin;
+	}
+	
+	public void onDisable() {
+		if (getPlugin() == null) {
+			return;
+		}
+		
+		PluginDescriptionFile desc = this.getDescription();
+		
+		for (Player p : getServer().getOnlinePlayers()) {
+			if (getPlayerManager().getMinigamePlayer(p).isInMinigame()) {
+				getPlayerManager().quitMinigame(getPlayerManager().getMinigamePlayer(p), true);
+			}
+		}
+		for (Minigame minigame : getMinigameManager().getAllMinigames().values()) {
+			if (minigame.getType() == MinigameType.GLOBAL &&
+					minigame.getMechanicName().equals("treasure_hunt") &&
+					minigame.isEnabled()) {
+				if (minigame.getMinigameTimer() != null)
+					minigame.getMinigameTimer().stopTimer();
+				TreasureHuntMechanic.removeTreasure(minigame);
+			}
+		}
+		for (Minigame mg : getMinigameManager().getAllMinigames().values()) {
+			mg.saveMinigame();
+		}
+		
+		backend.shutdown();
+
+//		playerManager.saveDCPlayers();
+		getPlayerManager().saveDeniedCommands();
+		
+		MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
+		if (getMinigameManager().hasLoadouts()) {
+			for (String loadout : getMinigameManager().getLoadouts()) {
+//				for(int i = 0; i < minigameManager.getLoadout(loadout).getItems().size(); i++){
+//					globalLoadouts.getConfig().set(loadout + "." + i, minigameManager.getLoadout(loadout).getItems().get(i));
+//				}
+				for (Integer slot : getMinigameManager().getLoadout(loadout).getItems()) {
+					globalLoadouts.getConfig().set(loadout + "." + slot, getMinigameManager().getLoadout(loadout).getItem(slot));
+				}
+				if (!getMinigameManager().getLoadout(loadout).getAllPotionEffects().isEmpty()) {
+					for (PotionEffect eff : getMinigameManager().getLoadout(loadout).getAllPotionEffects()) {
+						globalLoadouts.getConfig().set(loadout + ".potions." + eff.getType().getName() + ".amp", eff.getAmplifier());
+						globalLoadouts.getConfig().set(loadout + ".potions." + eff.getType().getName() + ".dur", eff.getDuration());
+					}
+				} else {
+					globalLoadouts.getConfig().set(loadout + ".potions", null);
+				}
+				if (getMinigameManager().getLoadout(loadout).getUsePermissions()) {
+					globalLoadouts.getConfig().set(loadout + ".usepermissions", true);
+				} else {
+					globalLoadouts.getConfig().set(loadout + ".usepermissions", null);
+				}
+			}
+		} else {
+			globalLoadouts.getConfig().set("globalloadouts", null);
+		}
+		globalLoadouts.saveConfig();
+		getMinigameManager().saveRewardSigns();
+		log.info(desc.getName() + " successfully disabled.");
+		
+	}
+
 	public void onEnable(){
 		try {
 			plugin = this;
@@ -76,12 +142,12 @@ public class Minigames extends JavaPlugin{
 			minigameManager = new MinigameManager();
 			playerManager = new MinigamePlayerManager();
 			display = new DisplayManager();
-
-			minigameManager.addMinigameType(new SingleplayerType());
-			minigameManager.addMinigameType(new MultiplayerType());
+			
+			getMinigameManager().addMinigameType(new SingleplayerType());
+			getMinigameManager().addMinigameType(new MultiplayerType());
 			
 			MinigameSave completion = new MinigameSave("completion");
-			minigameManager.addConfigurationFile("completion", completion.getConfig());
+			getMinigameManager().addConfigurationFile("completion", completion.getConfig());
 			
 			getServer().getPluginManager().registerEvents(new Events(), this);
 			getServer().getPluginManager().registerEvents(new BasicRecorder(), this);
@@ -96,7 +162,7 @@ public class Minigames extends JavaPlugin{
 				final List<String> allMGS = new ArrayList<String>(mgs);
 				
 				if(!mgs.isEmpty()){
-					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					Bukkit.getScheduler().scheduleSyncDelayedTask(getPlugin(), new Runnable() {
 						
 						@Override
 						public void run() {
@@ -104,7 +170,7 @@ public class Minigames extends JavaPlugin{
 								final Minigame game = new Minigame(minigame);
 								try{
 									game.loadMinigame();
-									minigameManager.addMinigame(game);
+									getMinigameManager().addMinigame(game);
 								}
 								catch(Exception e){
 									getLogger().severe(ChatColor.RED.toString() + "Failed to load \"" + minigame +"\"! The configuration file may be corrupt or missing!");
@@ -119,7 +185,7 @@ public class Minigames extends JavaPlugin{
 				log.info("Failed to load config, creating one.");
 				try{
 					this.getConfig().save(this.getDataFolder() + "/config.yml");
-				} 
+				}
 				catch(IOException e){
 					log.log(Level.SEVERE, "Could not save config.yml!");
 					e.printStackTrace();
@@ -148,16 +214,16 @@ public class Minigames extends JavaPlugin{
 					cal.get(Calendar.DAY_OF_MONTH) == 25 && cal.get(Calendar.MONTH) == 11 ||
 					cal.get(Calendar.DAY_OF_MONTH) == 1 && cal.get(Calendar.MONTH) == 0){
 				getLogger().info(ChatColor.GREEN.name() + "Party Mode enabled!");
-				playerManager.setPartyMode(true);
+				getPlayerManager().setPartyMode(true);
 			}
 
 			//		playerManager.loadDCPlayers();
-			playerManager.loadDeniedCommands();
+			getPlayerManager().loadDeniedCommands();
 			
 			MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
 			Set<String> keys = globalLoadouts.getConfig().getKeys(false);
 			for(String loadout : keys){
-				minigameManager.addLoadout(loadout);
+				getMinigameManager().addLoadout(loadout);
 				Set<String> items = globalLoadouts.getConfig().getConfigurationSection(loadout).getKeys(false);
 	//			for(int i = 0; i < items.size(); i++){
 	//				if(globalLoadouts.getConfig().contains(loadout + "." + i))
@@ -165,7 +231,7 @@ public class Minigames extends JavaPlugin{
 	//			}
 				for(String slot : items){
                     if (slot.matches("[-]?[0-9]+"))
-						minigameManager.getLoadout(loadout).addItem(globalLoadouts.getConfig().getItemStack(loadout + "." + slot), Integer.parseInt(slot));
+						getMinigameManager().getLoadout(loadout).addItem(globalLoadouts.getConfig().getItemStack(loadout + "." + slot), Integer.parseInt(slot));
 				}
 				if(globalLoadouts.getConfig().contains(loadout + ".potions")){
 					Set<String> pots = globalLoadouts.getConfig().getConfigurationSection(loadout + ".potions").getKeys(false);
@@ -174,24 +240,24 @@ public class Minigames extends JavaPlugin{
 							PotionEffect effect = new PotionEffect(PotionEffectType.getByName(eff),
 									globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".dur"),
 									globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".amp"));
-							minigameManager.getLoadout(loadout).addPotionEffect(effect);
+							getMinigameManager().getLoadout(loadout).addPotionEffect(effect);
 						}
 					}
 				}
 				if(globalLoadouts.getConfig().contains(loadout + ".usepermissions")){
-					minigameManager.getLoadout(loadout).setUsePermissions(globalLoadouts.getConfig().getBoolean(loadout + ".usepermissions"));
+					getMinigameManager().getLoadout(loadout).setUsePermissions(globalLoadouts.getConfig().getBoolean(loadout + ".usepermissions"));
 				}
 			}
 			
 			minigameSigns = new SignBase();
-			minigameManager.loadRewardSigns();
+			getMinigameManager().loadRewardSigns();
 			
 			CommandDispatcher disp = new CommandDispatcher();
 			getCommand("minigame").setExecutor(disp);
 			getCommand("minigame").setTabCompleter(disp);
 			
 			for(Player player : getServer().getOnlinePlayers()){
-				playerManager.addMinigamePlayer(player);
+				getPlayerManager().addMinigamePlayer(player);
 			}
 			
 			initMetrics();
@@ -202,71 +268,6 @@ public class Minigames extends JavaPlugin{
 			getLogger().log(Level.SEVERE, "Failed to enable Minigames " + getDescription().getVersion() + ": ", e);
 			getPluginLoader().disablePlugin(this);
 		}
-	}
-
-	public void onDisable(){
-		if (plugin == null) {
-			return;
-		}
-		
-		PluginDescriptionFile desc = this.getDescription();
-
-		for(Player p : getServer().getOnlinePlayers()){
-			if (playerManager.getMinigamePlayer(p).isInMinigame()) {
-				playerManager.quitMinigame(playerManager.getMinigamePlayer(p), true);
-			}
-		}
-		for (Minigame minigame : minigameManager.getAllMinigames().values()) {
-			if(minigame.getType() == MinigameType.GLOBAL && 
-					minigame.getMechanicName().equals("treasure_hunt") && 
-					minigame.isEnabled()){
-				if(minigame.getMinigameTimer() != null)
-					minigame.getMinigameTimer().stopTimer();
-				TreasureHuntMechanic.removeTreasure(minigame);
-			}
-		}
-		for (Minigame mg : minigameManager.getAllMinigames().values()) {
-			mg.saveMinigame();
-		}
-		
-		backend.shutdown();
-
-//		playerManager.saveDCPlayers();
-		playerManager.saveDeniedCommands();
-		
-		MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
-		if (minigameManager.hasLoadouts()) {
-			for (String loadout : minigameManager.getLoadouts()) {
-//				for(int i = 0; i < minigameManager.getLoadout(loadout).getItems().size(); i++){
-//					globalLoadouts.getConfig().set(loadout + "." + i, minigameManager.getLoadout(loadout).getItems().get(i));
-//				}
-				for (Integer slot : minigameManager.getLoadout(loadout).getItems()) {
-					globalLoadouts.getConfig().set(loadout + "." + slot, minigameManager.getLoadout(loadout).getItem(slot));
-				}
-				if (!minigameManager.getLoadout(loadout).getAllPotionEffects().isEmpty()) {
-					for (PotionEffect eff : minigameManager.getLoadout(loadout).getAllPotionEffects()) {
-						globalLoadouts.getConfig().set(loadout + ".potions." + eff.getType().getName() + ".amp", eff.getAmplifier());
-						globalLoadouts.getConfig().set(loadout + ".potions." + eff.getType().getName() + ".dur", eff.getDuration());
-					}
-				}
-				else{
-					globalLoadouts.getConfig().set(loadout + ".potions", null);
-				}
-				if (minigameManager.getLoadout(loadout).getUsePermissions()) {
-					globalLoadouts.getConfig().set(loadout + ".usepermissions", true);
-				}
-				else{
-					globalLoadouts.getConfig().set(loadout + ".usepermissions", null);
-				}
-			}
-		}
-		else{
-			globalLoadouts.getConfig().set("globalloadouts", null);
-		}
-		globalLoadouts.saveConfig();
-		minigameManager.saveRewardSigns();
-        log.info(desc.getName() + " successfully disabled.");
-
 	}
 	
 	private boolean setupEconomy(){
@@ -289,19 +290,32 @@ public class Minigames extends JavaPlugin{
 		return econ;
 	}
 
+	/**
+	 * use {@link #getPlayerManager()}
+	 *
+	 * @return MinigamePlayeManager
+	 */
+	@Deprecated
 	public MinigamePlayerManager getPlayerData() {
-		return playerManager;
+		return getPlayerManager();
 	}
-	
-	public void newPlayerData(){
+
+	public void newPlayerManager() {
 		playerManager = new MinigamePlayerManager();
 	}
 
+	/**
+	 * use {@link #getMinigameManager()}
+	 *
+	 * @return MinigameManager
+	 */
+	@Deprecated
 	public MinigameManager getMinigameData() {
-		return minigameManager;
+		return getMinigameManager();
 	}
-	
-	public void newMinigameData(){
+
+
+	public void newMinigameManager(){
 		minigameManager = new MinigameManager();
 	}
 	
@@ -328,8 +342,8 @@ public class Minigames extends JavaPlugin{
 			public Map<String, Integer> call() {
 				Map<String, Integer> result = new HashMap<>();
 				int count = 0;
-				result.put("Total_Players", playerManager.getAllMinigamePlayers().size());
-				for (MinigamePlayer pl : playerManager.getAllMinigamePlayers()) {
+				result.put("Total_Players", getPlayerManager().getAllMinigamePlayers().size());
+				for (MinigamePlayer pl : getPlayerManager().getAllMinigamePlayers()) {
 					if (pl.isInMinigame()) {
 						count = result.getOrDefault(pl.getMinigame().getType().getName(), 0);
 						result.put(pl.getMinigame().getType().getName(), count + 1);
@@ -342,7 +356,7 @@ public class Minigames extends JavaPlugin{
             @Override
             public Map<String, Integer> call() {
                 Map<String, Integer> result = new HashMap<>();
-                for (Class module : minigameManager.getModules()) {
+				for (Class module : getMinigameManager().getModules()) {
                     result.put(module.getCanonicalName(), 1);
                 }
                 return result;
@@ -417,5 +431,13 @@ public class Minigames extends JavaPlugin{
 	
 	public boolean isDebugging(){
 		return debug;
+	}
+	
+	public MinigamePlayerManager getPlayerManager() {
+		return playerManager;
+	}
+	
+	public MinigameManager getMinigameManager() {
+		return minigameManager;
 	}
 }

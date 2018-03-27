@@ -54,8 +54,8 @@ public class SaveCommand implements ICommand {
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-            if (plugin.minigameManager.hasMinigame(args[0])) {
-                Minigame mg = plugin.minigameManager.getMinigame(args[0]);
+			if (plugin.getMinigameManager().hasMinigame(args[0])) {
+				Minigame mg = plugin.getMinigameManager().getMinigame(args[0]);
 				mg.saveMinigame();
 				sender.sendMessage(ChatColor.GRAY + mg.getName(false) + " has been saved.");
 			}
@@ -70,7 +70,7 @@ public class SaveCommand implements ICommand {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
-        List<String> mgs = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
+		List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
 		return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
 	}
 

@@ -26,8 +26,8 @@ public class MinigameTool {
 		ItemMeta meta = tool.getItemMeta();
 		if(meta.getLore() != null){
 			String mg = ChatColor.stripColor(meta.getLore().get(0)).replace("Minigame: ", "");
-            if (Minigames.plugin.minigameManager.hasMinigame(mg))
-                minigame = Minigames.plugin.minigameManager.getMinigame(mg);
+			if (Minigames.getPlugin().getMinigameManager().hasMinigame(mg))
+				minigame = Minigames.getPlugin().getMinigameManager().getMinigame(mg);
 			
 			String md = ChatColor.stripColor(meta.getLore().get(1)).replace("Mode: ", "").replace(" ", "_");
 			mode = ToolModes.getToolMode(md);

@@ -1,17 +1,17 @@
 package au.com.mineauz.minigames;
 
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
-
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 public class MinigameSave {
 	FileConfiguration minigameSave = null;
 	File minigameSaveFile = null;
 	String minigame = null;
-	private static Minigames plugin = Minigames.plugin;
+    private static Minigames plugin = Minigames.getPlugin();
 	private String name = null;
 	
 	public MinigameSave(String name){

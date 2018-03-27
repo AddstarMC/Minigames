@@ -1,8 +1,13 @@
 package au.com.mineauz.minigames.display;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.display.bukkit.BukkitDisplayCuboid;
+import au.com.mineauz.minigames.display.bukkit.BukkitDisplayPoint;
+import au.com.mineauz.minigames.display.spigot.SpigotDisplayCuboid;
+import au.com.mineauz.minigames.display.spigot.SpigotDisplayPoint;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Maps;
+import com.google.common.collect.SetMultimap;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -11,15 +16,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.display.bukkit.BukkitDisplayCuboid;
-import au.com.mineauz.minigames.display.bukkit.BukkitDisplayPoint;
-import au.com.mineauz.minigames.display.spigot.SpigotDisplayCuboid;
-import au.com.mineauz.minigames.display.spigot.SpigotDisplayPoint;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.SetMultimap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class DisplayManager {
 	private boolean isSpigot;
@@ -183,7 +181,7 @@ public class DisplayManager {
 	
 	private void enableRefreshTask() {
 		if (refreshTask == null) {
-			refreshTask = Bukkit.getScheduler().runTaskTimer(Minigames.plugin, new Runnable() {
+            refreshTask = Bukkit.getScheduler().runTaskTimer(Minigames.getPlugin(), new Runnable() {
 				@Override
 				public void run() {
 					doRefreshAll();

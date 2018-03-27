@@ -112,7 +112,7 @@ public class PlayerKillsMechanic extends GameMechanicBase{
 							if(t != ateam)
 								l.addAll(t.getPlayers());
 						}
-						plugin.playerManager.endMinigame(mgm, w, l);
+						plugin.getPlayerManager().endMinigame(mgm, w, l);
 					}
 				}
 			}

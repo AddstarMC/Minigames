@@ -56,10 +56,10 @@ public class RevertCommand implements ICommand{
 	@Override
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
-        MinigamePlayer player = plugin.playerManager.getMinigamePlayer((Player) sender);
+		MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
 		
 		if(player.isInMinigame()){
-            plugin.playerManager.revertToCheckpoint(player);
+			plugin.getPlayerManager().revertToCheckpoint(player);
         }
 //		else if(plugin.playerManager.hasStoredPlayerCheckpoint(player)){
 //			StoredPlayerCheckpoints spc = plugin.playerManager.getPlayersStoredCheckpoints(player);

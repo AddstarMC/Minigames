@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions.util;
 
-import java.util.Set;
-
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
@@ -13,8 +13,7 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
+import java.util.Set;
 
 public class NullCommandSender implements ConsoleCommandSender {
 	@Override
@@ -24,7 +23,7 @@ public class NullCommandSender implements ConsoleCommandSender {
 
 	@Override
 	public void sendMessage(String[] messages) {
-		if (Minigames.plugin.isDebugging()) {
+        if (Minigames.getPlugin().isDebugging()) {
 			for (String message : messages) {
 				MinigameUtils.debugMessage("[Suppressed] " + message);
 			}

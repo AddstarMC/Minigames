@@ -10,7 +10,7 @@ import org.bukkit.event.block.SignChangeEvent;
 
 public class QuitSign implements MinigameSign {
 	
-	private static Minigames plugin = Minigames.plugin;
+	private static Minigames plugin = Minigames.getPlugin();
 
 	@Override
 	public String getName() {
@@ -46,7 +46,7 @@ public class QuitSign implements MinigameSign {
 	@Override
 	public boolean signUse(Sign sign, MinigamePlayer player) {
 		if(player.isInMinigame() && player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR){
-            plugin.playerManager.quitMinigame(player, false);
+			plugin.getPlayerManager().quitMinigame(player, false);
 			return true;
 		}
 		else if(player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR)

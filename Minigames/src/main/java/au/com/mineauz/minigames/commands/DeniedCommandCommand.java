@@ -55,29 +55,29 @@ public class DeniedCommandCommand implements ICommand {
 			String label, String[] args) {
 		if(args != null){
 			if(args[0].equalsIgnoreCase("add") && args.length >= 2){
-                plugin.playerManager.addDeniedCommand(args[1]);
+				plugin.getPlayerManager().addDeniedCommand(args[1]);
 				sender.sendMessage(ChatColor.GRAY + "Added \"" + args[1] + "\" to the denied command list.");
 				return true;
 			}
 			else if(args[0].equalsIgnoreCase("remove") && args.length >= 2){
-                plugin.playerManager.removeDeniedCommand(args[1]);
+				plugin.getPlayerManager().removeDeniedCommand(args[1]);
 				sender.sendMessage(ChatColor.GRAY + "Removed \"" + args[1] + "\" from the denied command list.");
 				return true;
 			}
 			else if(args[0].equalsIgnoreCase("list")){
 				String coms = "";
 				boolean switchColour = false;
-                for (String par : plugin.playerManager.getDeniedCommands()) {
+				for (String par : plugin.getPlayerManager().getDeniedCommands()) {
 					if(switchColour){
 						coms += ChatColor.WHITE + par;
-                        if (!par.equalsIgnoreCase(plugin.playerManager.getDeniedCommands().get(plugin.playerManager.getDeniedCommands().size() - 1))) {
+						if (!par.equalsIgnoreCase(plugin.getPlayerManager().getDeniedCommands().get(plugin.getPlayerManager().getDeniedCommands().size() - 1))) {
 							coms += ChatColor.WHITE + ", ";
 						}
 						switchColour = false;
 					}
 					else{
 						coms += ChatColor.GRAY + par;
-                        if (!par.equalsIgnoreCase(plugin.playerManager.getDeniedCommands().get(plugin.playerManager.getDeniedCommands().size() - 1))) {
+						if (!par.equalsIgnoreCase(plugin.getPlayerManager().getDeniedCommands().get(plugin.getPlayerManager().getDeniedCommands().size() - 1))) {
 							coms += ChatColor.WHITE + ", ";
 						}
 						switchColour = true;
@@ -101,7 +101,7 @@ public class DeniedCommandCommand implements ICommand {
 			return MinigameUtils.tabCompleteMatch(ls, args[0]);
 		}
 		else if(args.length == 2 && args[0].equalsIgnoreCase("remove")){
-            return MinigameUtils.tabCompleteMatch(plugin.playerManager.getDeniedCommands(), args[1]);
+			return MinigameUtils.tabCompleteMatch(plugin.getPlayerManager().getDeniedCommands(), args[1]);
 		}
 		return null;
 	}

@@ -1,17 +1,12 @@
 package au.com.mineauz.minigames;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.Team;
+import org.bukkit.*;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
-
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.Team;
 
 public class CTFFlag{
 	
@@ -35,7 +30,7 @@ public class CTFFlag{
 		signText = ((Sign)spawnLocation.getBlock().getState()).getLines();
 		this.team = team;
 		this.setMinigame(minigame);
-		respawnTime = Minigames.plugin.getConfig().getInt("multiplayer.ctf.flagrespawntime");
+        respawnTime = Minigames.getPlugin().getConfig().getInt("multiplayer.ctf.flagrespawntime");
 	}
 	
 	public Location getSpawnLocation() {
@@ -180,7 +175,7 @@ public class CTFFlag{
 	
 	public void startReturnTimer(){
 		final CTFFlag self = this;
-		taskID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+        taskID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), new Runnable() {
 			
 			@Override
 			public void run() {
@@ -203,7 +198,7 @@ public class CTFFlag{
 	}
 	
 	public void startCarrierParticleEffect(final Player player){
-		cParticleID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, new Runnable() {
+        cParticleID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), new Runnable() {
 			
 			@Override
 			public void run() {

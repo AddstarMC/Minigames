@@ -19,7 +19,7 @@ import java.util.List;
 
 public class FinishSign implements MinigameSign {
 	
-	private static Minigames plugin = Minigames.plugin;
+	private static Minigames plugin = Minigames.getPlugin();
 
 	@Override
 	public String getName() {
@@ -49,8 +49,8 @@ public class FinishSign implements MinigameSign {
 	@Override
 	public boolean signCreate(SignChangeEvent event) {
 		event.setLine(1, ChatColor.GREEN + "Finish");
-        if (!event.getLine(2).isEmpty() && plugin.minigameManager.hasMinigame(event.getLine(2))) {
-            event.setLine(2, plugin.minigameManager.getMinigame(event.getLine(2)).getName(false));
+		if (!event.getLine(2).isEmpty() && plugin.getMinigameManager().hasMinigame(event.getLine(2))) {
+			event.setLine(2, plugin.getMinigameManager().getMinigame(event.getLine(2)).getName(false));
 		}
 		else if(!event.getLine(2).isEmpty()){
 			event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noMinigame"));
@@ -70,7 +70,7 @@ public class FinishSign implements MinigameSign {
 			
 			if(!minigame.getFlags().isEmpty()){
 				if(player.getPlayer().isOnGround()){
-                    if (plugin.playerManager.checkRequiredFlags(player, minigame.getName(false)).isEmpty()) {
+					if (plugin.getPlayerManager().checkRequiredFlags(player, minigame.getName(false)).isEmpty()) {
 						if(sign.getLine(2).isEmpty() || sign.getLine(2).equals(player.getMinigame().getName(false))){
 							if(player.getMinigame().isTeamGame()){
                                 List<MinigamePlayer> w = new ArrayList<>(player.getTeam().getPlayers());
@@ -79,7 +79,7 @@ public class FinishSign implements MinigameSign {
 									if(t != player.getTeam())
 										l.addAll(t.getPlayers());
 								}
-                                plugin.playerManager.endMinigame(minigame, w, l);
+								plugin.getPlayerManager().endMinigame(minigame, w, l);
 							}
 							else{
 								if(minigame.getType() == MinigameType.MULTIPLAYER){
@@ -88,17 +88,17 @@ public class FinishSign implements MinigameSign {
                                     List<MinigamePlayer> l = new ArrayList<>(minigame.getPlayers().size());
 									l.addAll(minigame.getPlayers());
 									l.remove(player);
-                                    plugin.playerManager.endMinigame(minigame, w, l);
+									plugin.getPlayerManager().endMinigame(minigame, w, l);
 								}
 								else
-                                    plugin.playerManager.endMinigame(player);
+									plugin.getPlayerManager().endMinigame(player);
 							}
-
-                            plugin.playerManager.partyMode(player, 3, 10L);
+							
+							plugin.getPlayerManager().partyMode(player, 3, 10L);
 						}
 					}
 					else{
-                        List<String> requiredFlags = plugin.playerManager.checkRequiredFlags(player, minigame.getName(false));
+						List<String> requiredFlags = plugin.getPlayerManager().checkRequiredFlags(player, minigame.getName(false));
 						String flags = "";
 						int num = requiredFlags.size();
 						
@@ -123,7 +123,7 @@ public class FinishSign implements MinigameSign {
 							if(t != player.getTeam())
 								l.addAll(t.getPlayers());
 						}
-                        plugin.playerManager.endMinigame(minigame, w, l);
+						plugin.getPlayerManager().endMinigame(minigame, w, l);
 					}
 					else{
 						if(minigame.getType() == MinigameType.MULTIPLAYER){
@@ -132,12 +132,12 @@ public class FinishSign implements MinigameSign {
                             List<MinigamePlayer> l = new ArrayList<>(minigame.getPlayers().size());
 							l.addAll(minigame.getPlayers());
 							l.remove(player);
-                            plugin.playerManager.endMinigame(minigame, w, l);
+							plugin.getPlayerManager().endMinigame(minigame, w, l);
 						}
 						else
-                            plugin.playerManager.endMinigame(player);
+							plugin.getPlayerManager().endMinigame(player);
 					}
-                    plugin.playerManager.partyMode(player);
+					plugin.getPlayerManager().partyMode(player);
 					return true;
 				}
 			}

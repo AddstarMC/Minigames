@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GlobalLoadoutCommand implements ICommand {
-    private MinigameManager mdata = Minigames.plugin.minigameManager;
+	private MinigameManager mdata = Minigames.getPlugin().getMinigameManager();
 
 	@Override
 	public String getName() {
@@ -63,7 +63,7 @@ public class GlobalLoadoutCommand implements ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
-        MinigamePlayer player = Minigames.plugin.playerManager.getMinigamePlayer((Player) sender);
+		MinigamePlayer player = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
 		Menu loadouts = new Menu(6, getName(), player);
 
         List<String> des = new ArrayList<>();

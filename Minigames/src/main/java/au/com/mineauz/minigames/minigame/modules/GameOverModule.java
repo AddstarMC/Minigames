@@ -85,7 +85,7 @@ public class GameOverModule extends MinigameModule{
 	}
 	
 	public void startEndGameTimer(){
-        Minigames.plugin.minigameManager.sendMinigameMessage(getMinigame(), MinigameUtils.formStr("minigame.gameOverQuit", timer.getFlag()));
+		Minigames.getPlugin().getMinigameManager().sendMinigameMessage(getMinigame(), MinigameUtils.formStr("minigame.gameOverQuit", timer.getFlag()));
 		getMinigame().setState(MinigameState.ENDED);
 
         List<MinigamePlayer> allPlys = new ArrayList<>(winners.size() + losers.size());
@@ -115,17 +115,17 @@ public class GameOverModule extends MinigameModule{
 		if(timer.getFlag() > 0){
 			if(task != -1)
 				stopEndGameTimer();
-			task = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+			task = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), new Runnable() {
 				
 				@Override
 				public void run() {
                     for (MinigamePlayer loser : new ArrayList<>(losers)) {
 						if(loser.isInMinigame())
-                            Minigames.plugin.playerManager.quitMinigame(loser, true);
+							Minigames.getPlugin().getPlayerManager().quitMinigame(loser, true);
 					}
                     for (MinigamePlayer winner : new ArrayList<>(winners)) {
 						if(winner.isInMinigame())
-                            Minigames.plugin.playerManager.quitMinigame(winner, true);
+							Minigames.getPlugin().getPlayerManager().quitMinigame(winner, true);
 					}
 					
 					clearLosers();

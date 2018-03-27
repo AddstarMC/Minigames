@@ -1,10 +1,13 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigamesregions.Main;
+import au.com.mineauz.minigamesregions.Node;
+import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -14,23 +17,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.InteractionInterface;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBoolean;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
-import au.com.mineauz.minigames.menu.MenuItemDecimal;
-import au.com.mineauz.minigames.menu.MenuItemList;
-import au.com.mineauz.minigames.menu.MenuItemNewLine;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuItemString;
-import au.com.mineauz.minigamesregions.Main;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SpawnEntityAction extends AbstractAction {
 	
@@ -103,8 +93,8 @@ public class SpawnEntityAction extends AbstractAction {
 				lent.setCustomNameVisible(Boolean.getBoolean(settings.get("displaynamevisible")));
 			}
 		}
-		
-		ent.setMetadata("MinigameEntity", new FixedMetadataValue(Minigames.plugin, true));
+        
+        ent.setMetadata("MinigameEntity", new FixedMetadataValue(Minigames.getPlugin(), true));
 		player.getMinigame().getBlockRecorder().addEntity(ent, player, true);
 	}
 

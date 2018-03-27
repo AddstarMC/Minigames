@@ -1,12 +1,5 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.Map;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.BlockState;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -16,6 +9,12 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.BlockState;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.Map;
 
 public class PulseRedstoneAction extends AbstractAction {
 	
@@ -63,7 +62,7 @@ public class PulseRedstoneAction extends AbstractAction {
 			block = Material.REDSTONE_TORCH_ON;
 		final BlockState last = node.getLocation().getBlock().getState();
 		node.getLocation().getBlock().setType(block);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), new Runnable() {
 			
 			@Override
 			public void run() {

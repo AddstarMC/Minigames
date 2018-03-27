@@ -15,7 +15,7 @@ public class MinigameTimer{
 	private int otime = 0;
 	private Minigame minigame;
 	private List<Integer> timeMsg = new ArrayList<>();
-	private static Minigames plugin = Minigames.plugin;
+	private static Minigames plugin = Minigames.getPlugin();
 	private int taskID = -1;
 	private boolean broadcastTime = true;
 	
@@ -63,7 +63,7 @@ public class MinigameTimer{
 				}
 				if(timeMsg.contains(time) && broadcastTime){
 					PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
-					plugin.minigameManager.sendMinigameMessage(minigame, MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(time)));
+					plugin.getMinigameManager().sendMinigameMessage(minigame, MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(time)));
 				}
 
 				if(time <= 0){

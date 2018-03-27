@@ -34,7 +34,7 @@ public class SetTypeCommand implements ICommand{
 
 	@Override
 	public String[] getParameters() {
-        String[] mgtypes = new String[plugin.minigameManager.getMinigameTypes().size() + 1];
+		String[] mgtypes = new String[plugin.getMinigameManager().getMinigameTypes().size() + 1];
 		int inc = 0;
 		for(MinigameType type : MinigameType.values()){
 			mgtypes[inc] = type.toString();

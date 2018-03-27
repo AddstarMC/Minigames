@@ -19,9 +19,9 @@ public abstract class GameMechanicBase implements Listener{
 	public MinigameManager mdata;
 	
 	public GameMechanicBase(){
-		plugin = Minigames.plugin;
-		pdata = plugin.playerManager;
-		mdata = plugin.minigameManager;
+		plugin = Minigames.getPlugin();
+		pdata = plugin.getPlayerManager();
+		mdata = plugin.getMinigameManager();
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 	

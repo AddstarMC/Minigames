@@ -71,7 +71,7 @@ public class ScoreSign implements MinigameSign{
 				mg.setScore(player, player.getScore());
                 player.sendInfoMessage(MinigameUtils.formStr("sign.score.addScore", score, player.getScore()));
 				if(mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= player.getScore()){
-                    Minigames.plugin.playerManager.endMinigame(player);
+					Minigames.getPlugin().getPlayerManager().endMinigame(player);
 				}
 				player.addClaimedScore(sign.getLocation());
 			}
@@ -79,7 +79,7 @@ public class ScoreSign implements MinigameSign{
 				TeamColor steam = TeamColor.matchColor(ChatColor.stripColor(sign.getLine(3)));
 				Team pteam = player.getTeam();
 				if(steam == null || !TeamsModule.getMinigameModule(mg).hasTeam(steam) || pteam.getColor() == steam){
-                    if (Minigames.plugin.minigameManager.hasClaimedScore(mg, sign.getLocation(), 0)) {
+					if (Minigames.getPlugin().getMinigameManager().hasClaimedScore(mg, sign.getLocation(), 0)) {
                         player.sendMessage(MinigameUtils.getLang("sign.score.alreadyUsedTeam"), MinigameMessageType.ERROR);
 						return true;
 					}
@@ -89,7 +89,7 @@ public class ScoreSign implements MinigameSign{
 					pteam.addScore(score);
                     player.sendInfoMessage(MinigameUtils.formStr("sign.score.addScoreTeam",
                             score, pteam.getChatColor().toString() + pteam.getScore()));
-                    Minigames.plugin.minigameManager.addClaimedScore(mg, sign.getLocation(), 0);
+					Minigames.getPlugin().getMinigameManager().addClaimedScore(mg, sign.getLocation(), 0);
 					if(mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= pteam.getScore()){
                         List<MinigamePlayer> winners = new ArrayList<>(pteam.getPlayers());
                         List<MinigamePlayer> losers = new ArrayList<>(mg.getPlayers().size() - pteam.getPlayers().size());
@@ -97,7 +97,7 @@ public class ScoreSign implements MinigameSign{
 							if(t != pteam)
 								losers.addAll(t.getPlayers());
 						}
-                        Minigames.plugin.playerManager.endMinigame(mg, winners, losers);
+						Minigames.getPlugin().getPlayerManager().endMinigame(mg, winners, losers);
 					}
 				}
 			}

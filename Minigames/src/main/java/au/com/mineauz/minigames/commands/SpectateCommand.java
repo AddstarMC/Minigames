@@ -56,10 +56,10 @@ public class SpectateCommand implements ICommand {
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-            if (plugin.minigameManager.hasMinigame(args[0])) {
-                MinigamePlayer ply = plugin.playerManager.getMinigamePlayer((Player) sender);
-                Minigame mgm = plugin.minigameManager.getMinigame(args[0]);
-                plugin.playerManager.spectateMinigame(ply, mgm);
+			if (plugin.getMinigameManager().hasMinigame(args[0])) {
+				MinigamePlayer ply = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
+				Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
+				plugin.getPlayerManager().spectateMinigame(ply, mgm);
 			}
 			else{
 				sender.sendMessage(ChatColor.RED + "No Minigame found by the name: " + args[0]);
@@ -72,7 +72,7 @@ public class SpectateCommand implements ICommand {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
-        List<String> mgs = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
+		List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
 		return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
 	}
 

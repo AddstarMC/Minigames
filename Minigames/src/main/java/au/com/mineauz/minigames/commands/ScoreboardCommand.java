@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ScoreboardCommand implements ICommand{
-	private Minigames plugin = Minigames.plugin;
+	private Minigames plugin = Minigames.getPlugin();
 
 	@Override
 	public String getName() {
@@ -66,7 +66,7 @@ public class ScoreboardCommand implements ICommand{
 		}
 		
 		// Decode arguments
-        final Minigame minigame = plugin.minigameManager.getMinigame(args[0]);
+		final Minigame minigame = plugin.getMinigameManager().getMinigame(args[0]);
 		if (minigame == null) {
 			sender.sendMessage(ChatColor.RED + "No Minigame found by the name " + args[0]);
 			return true;
@@ -174,7 +174,7 @@ public class ScoreboardCommand implements ICommand{
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Minigame ignore, String alias, String[] args) {
 		if(args.length == 1) { // Minigame
-            List<String> mgs = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
+			List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
 			return MinigameUtils.tabCompleteMatch(mgs, args[0]);
 		} else if(args.length == 2) { // Stat
 			return MinigameUtils.tabCompleteMatch(Lists.newArrayList(MinigameStats.getAllStats().keySet()), args[1]);
@@ -183,8 +183,8 @@ public class ScoreboardCommand implements ICommand{
 			if (stat == null) {
 				return null;
 			}
-
-            final Minigame minigame = plugin.minigameManager.getMinigame(args[0]);
+			
+			final Minigame minigame = plugin.getMinigameManager().getMinigame(args[0]);
 			StatFormat format;
 			if (minigame == null) {
 				format = stat.getFormat();

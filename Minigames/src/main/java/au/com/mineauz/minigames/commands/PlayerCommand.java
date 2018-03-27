@@ -63,7 +63,7 @@ public class PlayerCommand implements ICommand {
 		if(args != null){
 			if(args[0].equalsIgnoreCase("list")){
                 List<MinigamePlayer> pls = new ArrayList<>();
-				for(MinigamePlayer pl : Minigames.plugin.getPlayerData().getAllMinigamePlayers()){
+				for (MinigamePlayer pl : Minigames.getPlugin().getPlayerManager().getAllMinigamePlayers()) {
 					if(pl.isInMinigame()){
 						pls.add(pl);
 					}
@@ -80,9 +80,9 @@ public class PlayerCommand implements ICommand {
 				}
 			}
 			else{
-				List<Player> plmatch = Minigames.plugin.getServer().matchPlayer(args[0]);
+                List<Player> plmatch = Minigames.getPlugin().getServer().matchPlayer(args[0]);
 				if(!plmatch.isEmpty()){
-					MinigamePlayer pl = Minigames.plugin.getPlayerData().getMinigamePlayer(plmatch.get(0));
+					MinigamePlayer pl = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(plmatch.get(0));
 					sender.sendMessage(ChatColor.AQUA + "--------Player info on " + pl.getName() + "--------");
 					if(pl.isInMinigame()){
 						sender.sendMessage(ChatColor.GREEN + "Minigame: " + ChatColor.GRAY + pl.getMinigame().getName(false));

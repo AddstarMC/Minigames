@@ -34,20 +34,20 @@ public class QuitAction extends AbstractAction {
 	public boolean useInNodes() {
 		return true;
 	}
+	
+	@Override
+	public void executeRegionAction(MinigamePlayer player, Region region) {
+		debug(player, region);
+		if (player == null || !player.isInMinigame()) return;
+		Minigames.getPlugin().getPlayerManager().quitMinigame(player, false);
+	}
 
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Node node) {
 		debug(player,node);
 		if(player == null || !player.isInMinigame()) return;
-        Minigames.plugin.playerManager.quitMinigame(player, false);
-	}
-
-	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region) {
-		debug(player,region);
-		if(player == null || !player.isInMinigame()) return;
-        Minigames.plugin.playerManager.quitMinigame(player, false);
+		Minigames.getPlugin().getPlayerManager().quitMinigame(player, false);
 	}
 
 	@Override

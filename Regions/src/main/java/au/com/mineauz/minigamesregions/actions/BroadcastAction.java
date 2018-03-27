@@ -132,7 +132,7 @@ public class BroadcastAction extends AbstractAction{
 		// New expression system
 		message = ExpressionParser.stringResolve(message, base, true, true);
 		if (player != null)
-			Minigames.plugin.minigameManager.sendMinigameMessage(player.getMinigame(), message, type, exclude);
+			Minigames.getPlugin().getMinigameManager().sendMinigameMessage(player.getMinigame(), message, type, exclude);
 
 	}
 

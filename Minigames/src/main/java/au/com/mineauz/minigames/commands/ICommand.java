@@ -9,7 +9,7 @@ import java.util.List;
 public interface ICommand {
     //	public MinigamePlayerManager playerManager = Minigames.plugin.getPlayerData();
 //	public MinigameManager minigameManager = Minigames.plugin.getMinigameData();
-Minigames plugin = Minigames.plugin;
+    Minigames plugin = Minigames.getPlugin();
 	
 	String getName();
 	

@@ -40,7 +40,7 @@ public class SQLiteBackend extends Backend {
 		loader = new SQLiteStatLoader(this, logger);
 		saver = new SQLiteStatSaver(this, logger);
 		try {
-			database = new File(Minigames.plugin.getDataFolder(), "minigames.db");
+            database = new File(Minigames.getPlugin().getDataFolder(), "minigames.db");
 		}catch (NullPointerException e){
 			logger.warning("Could not locate or set database path");
 		}
@@ -325,7 +325,7 @@ public class SQLiteBackend extends Backend {
 	@Override
 	public boolean doConversion(ExportNotifier notifier) {
 		BackendImportCallback callback = getImportCallback();
-		FlatFileExporter exporter = new FlatFileExporter(new File(Minigames.plugin.getDataFolder(), "completion.yml"), callback, notifier);
+        FlatFileExporter exporter = new FlatFileExporter(new File(Minigames.getPlugin().getDataFolder(), "completion.yml"), callback, notifier);
 		return exporter.doExport();
 	}
 }

@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class JoinSign implements MinigameSign {
 	
-	private static Minigames plugin = Minigames.plugin;
+	private static Minigames plugin = Minigames.getPlugin();
 
 	@Override
 	public String getName() {
@@ -42,10 +42,10 @@ public class JoinSign implements MinigameSign {
 
 	@Override
 	public boolean signCreate(SignChangeEvent event) {
-        if (plugin.minigameManager.hasMinigame(event.getLine(2))) {
+		if (plugin.getMinigameManager().hasMinigame(event.getLine(2))) {
 			event.setLine(1, ChatColor.GREEN + "Join");
-            event.setLine(2, plugin.minigameManager.getMinigame(event.getLine(2)).getName(false));
-			if(Minigames.plugin.hasEconomy()){
+			event.setLine(2, plugin.getMinigameManager().getMinigame(event.getLine(2)).getName(false));
+			if (Minigames.getPlugin().hasEconomy()) {
 				if(!event.getLine(3).isEmpty() && !event.getLine(3).matches("\\$?[0-9]+(.[0-9]{2})?")){
 					event.getPlayer().sendMessage(ChatColor.RED + MinigameUtils.getLang("sign.join.invalidMoney"));
 					return false;
@@ -94,21 +94,21 @@ public class JoinSign implements MinigameSign {
 			invOk = player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR;
 		}
 		if(invOk){
-            Minigame mgm = plugin.minigameManager.getMinigame(sign.getLine(2));
+			Minigame mgm = plugin.getMinigameManager().getMinigame(sign.getLine(2));
 			if(mgm != null && (!mgm.getUsePermissions() ||
 					player.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))){
 				if(mgm.isEnabled()){
-					if(!sign.getLine(3).isEmpty() && Minigames.plugin.hasEconomy()){
+					if (!sign.getLine(3).isEmpty() && Minigames.getPlugin().hasEconomy()) {
 						double amount = Double.parseDouble(sign.getLine(3).replace("$", ""));
-						if(Minigames.plugin.getEconomy().getBalance(player.getPlayer().getPlayer()) >= amount){
-							Minigames.plugin.getEconomy().withdrawPlayer(player.getPlayer().getPlayer(), amount);
+						if (Minigames.getPlugin().getEconomy().getBalance(player.getPlayer().getPlayer()) >= amount) {
+							Minigames.getPlugin().getEconomy().withdrawPlayer(player.getPlayer().getPlayer(), amount);
 						}
 						else{
                             player.sendMessage(MinigameUtils.getLang("sign.join.notEnoughMoney"), MinigameMessageType.ERROR);
 							return false;
 						}
 					}
-                    plugin.playerManager.joinMinigame(player, mgm, false, 0.0);
+					plugin.getPlayerManager().joinMinigame(player, mgm, false, 0.0);
 					return true;
 				}
 				else if(!mgm.isEnabled()){

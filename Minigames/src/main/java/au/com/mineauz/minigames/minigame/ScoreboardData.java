@@ -1,13 +1,13 @@
 package au.com.mineauz.minigames.minigame;
 
-import java.util.Map;
+import au.com.mineauz.minigames.MinigameSave;
+import au.com.mineauz.minigames.Minigames;
+import com.google.common.collect.Maps;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import com.google.common.collect.Maps;
-import au.com.mineauz.minigames.MinigameSave;
-import au.com.mineauz.minigames.Minigames;
+import java.util.Map;
 
 public class ScoreboardData {
 	private final Map<Block, ScoreboardDisplay> displays = Maps.newHashMap();
@@ -27,9 +27,9 @@ public class ScoreboardData {
 		ScoreboardDisplay display = displays.remove(block);
 		if (display != null) {
 			display.deleteSigns();
-			
-			block.removeMetadata("MGScoreboardSign", Minigames.plugin);
-			block.removeMetadata("Minigame", Minigames.plugin);
+            
+            block.removeMetadata("MGScoreboardSign", Minigames.getPlugin());
+            block.removeMetadata("Minigame", Minigames.getPlugin());
 		}
 	}
 	

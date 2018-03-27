@@ -68,7 +68,7 @@ public class ScoreCommand implements ICommand {
 			if(color == null){
 				List<Player> plys = plugin.getServer().matchPlayer(args[1]);
 				if(!plys.isEmpty()){
-                    ply = plugin.playerManager.getMinigamePlayer(plys.get(0));
+					ply = plugin.getPlayerManager().getMinigamePlayer(plys.get(0));
 				}
 				else{
 					sender.sendMessage(ChatColor.RED + "No player or team found by the name " + args[1]);
@@ -88,8 +88,8 @@ public class ScoreCommand implements ICommand {
 				else if(color != null){
 					if(args.length >= 3){
 						Minigame mg = null;
-                        if (plugin.minigameManager.hasMinigame(args[2])) {
-                            mg = plugin.minigameManager.getMinigame(args[2]);
+						if (plugin.getMinigameManager().hasMinigame(args[2])) {
+							mg = plugin.getMinigameManager().getMinigame(args[2]);
 						}
 						else{
 							sender.sendMessage(ChatColor.RED + "No Minigame found by the name " + args[2]);
@@ -138,7 +138,7 @@ public class ScoreCommand implements ICommand {
 						sender.sendMessage(ChatColor.GRAY + ply.getName() + "'s score has been set to " + score);
 						
 						if(ply.getMinigame().getMaxScore() != 0 && score >= ply.getMinigame().getMaxScorePerPlayer()){
-                            plugin.playerManager.endMinigame(ply);
+							plugin.getPlayerManager().endMinigame(ply);
 						}
 					}
 					else{
@@ -148,8 +148,8 @@ public class ScoreCommand implements ICommand {
 				else if(color != null){
 					if(args.length >= 4){
 						Minigame mg = null;
-                        if (plugin.minigameManager.hasMinigame(args[3])) {
-                            mg = plugin.minigameManager.getMinigame(args[3]);
+						if (plugin.getMinigameManager().hasMinigame(args[3])) {
+							mg = plugin.getMinigameManager().getMinigame(args[3]);
 						}
 						else{
 							sender.sendMessage(ChatColor.RED + "No Minigame found by the name " + args[2]);
@@ -178,7 +178,7 @@ public class ScoreCommand implements ICommand {
 										l.addAll(te.getPlayers());
 									}
 								}
-                                plugin.playerManager.endMinigame(mg, w, l);
+								plugin.getPlayerManager().endMinigame(mg, w, l);
 							}
 						}
 						else if(!mg.hasPlayers()){
@@ -211,7 +211,7 @@ public class ScoreCommand implements ICommand {
 						sender.sendMessage(ChatColor.GRAY + "Added " + score + " to " + ply.getName() + "'s score, new score: " + ply.getScore());
 						
 						if(ply.getMinigame().getMaxScore() != 0 && ply.getScore() >= ply.getMinigame().getMaxScorePerPlayer()){
-                            plugin.playerManager.endMinigame(ply);
+							plugin.getPlayerManager().endMinigame(ply);
 						}
 					}
 					else{
@@ -228,10 +228,10 @@ public class ScoreCommand implements ICommand {
 					else{
 						mgName = args[2];
 					}
-
-
-                    if (plugin.minigameManager.hasMinigame(mgName)) {
-                        mg = plugin.minigameManager.getMinigame(mgName);
+					
+					
+					if (plugin.getMinigameManager().hasMinigame(mgName)) {
+						mg = plugin.getMinigameManager().getMinigame(mgName);
 					}
 					else{
 						sender.sendMessage(ChatColor.RED + "No Minigame found by the name " + mgName);
@@ -261,7 +261,7 @@ public class ScoreCommand implements ICommand {
 									l.addAll(te.getPlayers());
 								}
 							}
-                            plugin.playerManager.endMinigame(mg, w, l);
+							plugin.getPlayerManager().endMinigame(mg, w, l);
 						}
 					}
 					else if(!mg.hasPlayers()){
@@ -294,7 +294,7 @@ public class ScoreCommand implements ICommand {
 			
 			return MinigameUtils.tabCompleteMatch(pt, args[1]);
 		}
-        List<String> mgs = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
+		List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
 		return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
 	}
 

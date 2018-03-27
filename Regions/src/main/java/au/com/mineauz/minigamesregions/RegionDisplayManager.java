@@ -98,7 +98,7 @@ public class RegionDisplayManager {
 		
 		Location[] corners = MinigameUtils.getMinMaxSelection(region.getFirstPoint(), region.getSecondPoint());
 		
-		IDisplayObject display = Minigames.plugin.display.displayCuboid(player.getPlayer(), corners[0], corners[1].add(1, 1, 1));
+		IDisplayObject display = Minigames.getPlugin().display.displayCuboid(player.getPlayer(), corners[0], corners[1].add(1, 1, 1));
 		display.show();
 		regions.put(region, display);
 		
@@ -112,7 +112,7 @@ public class RegionDisplayManager {
 			nodeDisplays.put(player.getPlayer(), nodes);
 		}
 		
-		IDisplayObject display = Minigames.plugin.display.displayPoint(player.getPlayer(), node.getLocation(), true);
+		IDisplayObject display = Minigames.getPlugin().display.displayPoint(player.getPlayer(), node.getLocation(), true);
 		display.show();
 		nodes.put(node, display);
 		
@@ -170,7 +170,7 @@ public class RegionDisplayManager {
 	}
 	
 	public void hideAll(Player player) {
-        MinigamePlayer mplayer = Minigames.plugin.playerManager.getMinigamePlayer(player);
+		MinigamePlayer mplayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
 		Map<Region, IDisplayObject> regions = regionDisplays.remove(player);
 		if (regions != null) {
 			for (IDisplayObject display : regions.values()) {

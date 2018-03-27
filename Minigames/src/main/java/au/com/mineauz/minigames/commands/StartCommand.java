@@ -58,14 +58,14 @@ public class StartCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-            Minigame mgm = plugin.minigameManager.getMinigame(args[0]);
+			Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
 			
 			if(mgm != null){
 				if(!mgm.isEnabled() && mgm.getType() == MinigameType.GLOBAL){
 					MinigamePlayer caller = null;
 					if(sender instanceof Player)
-                        caller = plugin.playerManager.getMinigamePlayer((Player) sender);
-                    plugin.minigameManager.startGlobalMinigame(mgm, caller);
+						caller = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
+					plugin.getMinigameManager().startGlobalMinigame(mgm, caller);
 				}
 				else if(mgm.getType() != MinigameType.GLOBAL && mgm.getType() != MinigameType.SINGLEPLAYER && mgm.hasPlayers()){
 					if(mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
@@ -93,7 +93,7 @@ public class StartCommand implements ICommand{
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
-        List<String> mgs = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
+		List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
 		return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
 	}
 

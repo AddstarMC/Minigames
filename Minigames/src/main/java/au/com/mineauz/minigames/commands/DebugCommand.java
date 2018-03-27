@@ -1,12 +1,11 @@
 package au.com.mineauz.minigames.commands;
 
-import java.util.List;
-
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.minigame.Minigame;
+import java.util.List;
 
 public class DebugCommand implements ICommand {
 
@@ -53,8 +52,8 @@ public class DebugCommand implements ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
-		Minigames.plugin.toggleDebug();
-		if(Minigames.plugin.isDebugging())
+        Minigames.getPlugin().toggleDebug();
+        if (Minigames.getPlugin().isDebugging())
 			sender.sendMessage(ChatColor.GRAY + "Debug mode active.");
 		else
 			sender.sendMessage(ChatColor.GRAY + "Deactivated debug mode.");

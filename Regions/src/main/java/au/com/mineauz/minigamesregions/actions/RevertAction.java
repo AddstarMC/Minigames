@@ -36,20 +36,20 @@ public class RevertAction extends AbstractAction {
 	}
 
 	@Override
-	public void executeNodeAction(MinigamePlayer player,
-			Node node) {
-		debug(player,node);
+	public void executeRegionAction(MinigamePlayer player, Region region) {
+		debug(player, region);
 		if(player == null || !player.isInMinigame()) return;
 		if(!player.isDead())
-            Minigames.plugin.playerManager.revertToCheckpoint(player);
+			Minigames.getPlugin().getPlayerManager().revertToCheckpoint(player);
 	}
 
 	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region) {
-		debug(player,region);
+	public void executeNodeAction(MinigamePlayer player,
+								  Node node) {
+		debug(player, node);
 		if(player == null || !player.isInMinigame()) return;
 		if(!player.isDead())
-            Minigames.plugin.playerManager.revertToCheckpoint(player);
+			Minigames.getPlugin().getPlayerManager().revertToCheckpoint(player);
 	}
 
 	@Override

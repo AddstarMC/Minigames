@@ -19,7 +19,7 @@ public class FloorDegenerator{
 	private Location xSidePos2;
 	private Location zSideNeg2;
 	private Location zSidePos2;
-	private static Minigames plugin = Minigames.plugin;
+    private static Minigames plugin = Minigames.getPlugin();
 	private int timeDelay = 30;
 	private Minigame mgm = null;
 	private int taskID = -1;

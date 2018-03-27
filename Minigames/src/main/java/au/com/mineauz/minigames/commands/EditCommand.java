@@ -56,9 +56,9 @@ public class EditCommand implements ICommand {
 			String label, String[] args) {
 		
 		if(args != null){
-            if (plugin.minigameManager.hasMinigame(args[0])) {
-                Minigame mgm = plugin.minigameManager.getMinigame(args[0]);
-                mgm.displayMenu(plugin.playerManager.getMinigamePlayer((Player) sender));
+			if (plugin.getMinigameManager().hasMinigame(args[0])) {
+				Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
+				mgm.displayMenu(plugin.getPlayerManager().getMinigamePlayer((Player) sender));
 //				Menu menu = new Menu(6, "Edit: " + mgm.getName(), plugin.playerManager.getMinigamePlayer((Player)sender));
 //				int slot = 0;
 //				for(MenuItem item : mgm.getMenuItems()){
@@ -79,7 +79,7 @@ public class EditCommand implements ICommand {
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args != null && args.length == 1){
-            List<String> mgs = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
+			List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
 			return MinigameUtils.tabCompleteMatch(mgs, args[0]);
 		}
 		return null;

@@ -28,13 +28,13 @@ public class MoneyReward extends RewardType{
 
 	@Override
 	public boolean isUsable() {
-        return Minigames.plugin.getEconomy() != null;
+        return Minigames.getPlugin().getEconomy() != null;
     }
 
 	@Override
 	public void giveReward(MinigamePlayer player) {
-		Minigames.plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), money);
-		player.sendMessage(MinigameUtils.formStr("reward.money", Minigames.plugin.getEconomy().format(money)), null);
+        Minigames.getPlugin().getEconomy().depositPlayer(player.getPlayer().getPlayer(), money);
+        player.sendMessage(MinigameUtils.formStr("reward.money", Minigames.getPlugin().getEconomy().format(money)), null);
 	}
 
 	@Override

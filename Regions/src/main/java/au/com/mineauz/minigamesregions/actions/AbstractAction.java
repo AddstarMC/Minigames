@@ -17,8 +17,8 @@ import java.util.List;
 public abstract class AbstractAction implements ActionInterface {
 
     public void debug(MinigamePlayer p, ScriptObject obj){
-        if (Minigames.plugin.isDebugging()){
-            Minigames.plugin.getLogger().info("Debug: Execute on Obj:" + String.valueOf(obj) + " as Action: " + String.valueOf(this) + " Player: " +String.valueOf(p));
+        if (Minigames.getPlugin().isDebugging()) {
+            Minigames.getPlugin().getLogger().info("Debug: Execute on Obj:" + String.valueOf(obj) + " as Action: " + String.valueOf(this) + " Player: " + String.valueOf(p));
         }
     }
     void setWinnersLosers(MinigamePlayer winner){
@@ -40,9 +40,9 @@ public abstract class AbstractAction implements ActionInterface {
                 l.addAll(winner.getMinigame().getPlayers());
                 l.remove(winner);
             }
-            Minigames.plugin.playerManager.endMinigame(winner.getMinigame(), w, l);
+            Minigames.getPlugin().getPlayerManager().endMinigame(winner.getMinigame(), w, l);
         } else{
-            Minigames.plugin.playerManager.endMinigame(winner);
+            Minigames.getPlugin().getPlayerManager().endMinigame(winner);
         }
     }
 

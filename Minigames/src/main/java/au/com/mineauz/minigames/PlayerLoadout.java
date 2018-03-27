@@ -154,7 +154,7 @@ public class PlayerLoadout {
 		}
 		
 		final MinigamePlayer fplayer = player;
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), new Runnable() {
 			
 			@Override
 			public void run() {

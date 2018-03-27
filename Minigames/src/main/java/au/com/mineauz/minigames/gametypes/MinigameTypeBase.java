@@ -13,7 +13,7 @@ public abstract class MinigameTypeBase implements Listener{
 	private static Minigames plugin;
 	
 	protected MinigameTypeBase(){
-		plugin = Minigames.plugin;
+        plugin = Minigames.getPlugin();
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 	

@@ -18,7 +18,7 @@ import java.util.Map;
 //import org.bukkit.craftbukkit.v1_6_R2.entity.CraftPlayer;
 
 public class MinigameUtils {
-	private static FileConfiguration lang = Minigames.plugin.getLang();
+	private static FileConfiguration lang = Minigames.getPlugin().getLang();
 	
 	/**
 	 * Returns the item stack from a number or name.
@@ -254,7 +254,7 @@ public class MinigameUtils {
 	 * @return The formatted string. If not found, will return the format
 	 */
 	public static String formStr(String format, Object... text){
-		String lang = Minigames.plugin.getLang().getString(format);
+		String lang = Minigames.getPlugin().getLang().getString(format);
 		if(lang != null)
 			return String.format(lang, text);
 		lang = "No path found for: " + format;
@@ -267,7 +267,7 @@ public class MinigameUtils {
 	 * @return The translation. If not found, will return the argument.
 	 */
 	public static String getLang(String arg1){
-		String lang = Minigames.plugin.getLang().getString(arg1);
+		String lang = Minigames.getPlugin().getLang().getString(arg1);
 		if(lang != null){
 			return lang;
 		}
@@ -281,7 +281,7 @@ public class MinigameUtils {
 	 * @return The Minigame Tool
 	 */
 	public static MinigameTool giveMinigameTool(MinigamePlayer player){
-		Material toolMat = Material.getMaterial(Minigames.plugin.getConfig().getString("tool"));
+		Material toolMat = Material.getMaterial(Minigames.getPlugin().getConfig().getString("tool"));
 		if(toolMat == null){
 			toolMat = Material.BLAZE_ROD;
             player.sendMessage("Invalid material type! Please check the configuration to see if it has been typed correctly! Default type given instead.", MinigameMessageType.ERROR);
@@ -460,8 +460,8 @@ public class MinigameUtils {
 	}
 
     public static void debugMessage(String message) {
-        if (Minigames.plugin.isDebugging()) {
-            Minigames.plugin.getLogger().info(ChatColor.RED + "[Debug] " + ChatColor.WHITE + message);
+		if (Minigames.getPlugin().isDebugging()) {
+			Minigames.getPlugin().getLogger().info(ChatColor.RED + "[Debug] " + ChatColor.WHITE + message);
 		}
 	}
 	

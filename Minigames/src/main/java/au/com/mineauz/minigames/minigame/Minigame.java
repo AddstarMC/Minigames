@@ -52,9 +52,9 @@ public class Minigame implements ScriptObject {
 	private StringFlag degenType = new StringFlag("inward", "degentype");
 	private IntegerFlag degenRandomChance = new IntegerFlag(15, "degenrandom");
 	private FloorDegenerator sfloordegen;
-	private IntegerFlag floorDegenTime = new IntegerFlag(Minigames.plugin.getConfig().getInt("multiplayer.floordegenerator.time"), "floordegentime");
+	private IntegerFlag floorDegenTime = new IntegerFlag(Minigames.getPlugin().getConfig().getInt("multiplayer.floordegenerator.time"), "floordegentime");
     // Respawn Module
-	private BooleanFlag respawn = new BooleanFlag(Minigames.plugin.getConfig().getBoolean("has-respawn"),"respawn");
+	private BooleanFlag respawn = new BooleanFlag(Minigames.getPlugin().getConfig().getBoolean("has-respawn"), "respawn");
 	private LocationListFlag startLocations = new LocationListFlag(null, "startpos");
     private BooleanFlag randomizeStart = new BooleanFlag(false, "ranndomizeStart");
 	private LocationFlag endPosition = new LocationFlag(null, "endpos");
@@ -96,7 +96,7 @@ public class Minigame implements ScriptObject {
 
     private Map<String, MinigameModule> modules = new HashMap<>();
 	
-	private Scoreboard sbManager = Minigames.plugin.getServer().getScoreboardManager().getNewScoreboard();
+	private Scoreboard sbManager = Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard();
 	
 	private IntegerFlag minScore = new IntegerFlag(5, "minscore");
 	private IntegerFlag maxScore = new IntegerFlag(10, "maxscore");
@@ -151,8 +151,8 @@ public class Minigame implements ScriptObject {
 		
 		sbManager.registerNewObjective(this.name, "dummy");
 		sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
-
-        for (Class<? extends MinigameModule> mod : Minigames.plugin.minigameManager.getModules()) {
+		
+		for (Class<? extends MinigameModule> mod : Minigames.getPlugin().getMinigameManager().getModules()) {
 			try {
 				addModule(mod.getDeclaredConstructor(Minigame.class).newInstance(this));
 			} catch (Exception e) {
@@ -1252,7 +1252,7 @@ public class Minigame implements ScriptObject {
 		
 		getScoreboardData().saveDisplays(minigame, name);
 		getScoreboardData().refreshDisplays();
-		Minigames.plugin.getBackend().saveStatSettings(this, statSettings.values());
+		Minigames.getPlugin().getBackend().saveStatSettings(this, statSettings.values());
 		
 		minigame.saveConfig();
 	}
@@ -1266,20 +1266,20 @@ public class Minigame implements ScriptObject {
 		if(cfg.contains(name + ".type")){
             switch (cfg.getString(name + ".type")) {
                 case "TEAMS":
-                    Minigames.plugin.getLogger().warning("Your configuration files (" + cfg.getCurrentPath() + ") is outdated and contains and Old type: TEAM, please update to use the New Types.");
+					Minigames.getPlugin().getLogger().warning("Your configuration files (" + cfg.getCurrentPath() + ") is outdated and contains and Old type: TEAM, please update to use the New Types.");
                     cfg.set(name + ".type", "MULTIPLAYER");
                     TeamsModule.getMinigameModule(this).addTeam(TeamColor.RED);
                     TeamsModule.getMinigameModule(this).addTeam(TeamColor.BLUE);
                     break;
                 case "FREE_FOR_ALL":
-                    Minigames.plugin.getLogger().warning("Your configuration files (" + cfg.getCurrentPath() + ") is outdated and contains and Old type: FREE_FOR_ALL, please update to use the New Types.");
+					Minigames.getPlugin().getLogger().warning("Your configuration files (" + cfg.getCurrentPath() + ") is outdated and contains and Old type: FREE_FOR_ALL, please update to use the New Types.");
                     cfg.set(name + ".type", "MULTIPLAYER");
                     break;
                 case "TREASURE_HUNT":
-                    Minigames.plugin.getLogger().warning("Your configuration files (" + cfg.getCurrentPath() + ") is outdated and contains and Old type:TREASURE_HUNT, please update to use the New Types.");
+					Minigames.getPlugin().getLogger().warning("Your configuration files (" + cfg.getCurrentPath() + ") is outdated and contains and Old type:TREASURE_HUNT, please update to use the New Types.");
                     cfg.set(name + ".type", "GLOBAL");
                     cfg.set(name + ".scoretype", "treasure_hunt");
-                    cfg.set(name + ".timer", Minigames.plugin.getConfig().getInt("treasurehunt.findtime") * 60);
+					cfg.set(name + ".timer", Minigames.getPlugin().getConfig().getInt("treasurehunt.findtime") * 60);
                     break;
             }
 		}
@@ -1333,19 +1333,19 @@ public class Minigame implements ScriptObject {
 		final Minigame mgm = this;
 		
 		if(getType() == MinigameType.GLOBAL && isEnabled()){
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), new Runnable() {
 				
 				@Override
 				public void run() {
-                    Minigames.plugin.minigameManager.startGlobalMinigame(mgm, null);
+					Minigames.getPlugin().getMinigameManager().startGlobalMinigame(mgm, null);
 				}
 			});
 		}
 		
 		getScoreboardData().loadDisplays(minigame, this);
 		
-		ListenableFuture<Map<MinigameStat, StatSettings>> settingsFuture = Minigames.plugin.getBackend().loadStatSettings(this);
-		Minigames.plugin.getBackend().addServerThreadCallback(settingsFuture, new FutureCallback<Map<MinigameStat, StatSettings>>() {
+		ListenableFuture<Map<MinigameStat, StatSettings>> settingsFuture = Minigames.getPlugin().getBackend().loadStatSettings(this);
+		Minigames.getPlugin().getBackend().addServerThreadCallback(settingsFuture, new FutureCallback<Map<MinigameStat, StatSettings>>() {
 			@Override
 			public void onSuccess(Map<MinigameStat, StatSettings> result) {
 				statSettings.clear();

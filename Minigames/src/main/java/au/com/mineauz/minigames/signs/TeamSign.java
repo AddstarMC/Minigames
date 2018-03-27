@@ -15,7 +15,7 @@ import org.bukkit.event.block.SignChangeEvent;
 
 public class TeamSign implements MinigameSign {
 	
-	private Minigames plugin = Minigames.plugin;
+	private Minigames plugin = Minigames.getPlugin();
 	
 	@Override
 	public String getName() {
@@ -77,7 +77,7 @@ public class TeamSign implements MinigameSign {
 								}
 								if(nt.getPlayers().size() - sm.getPlayers().size() < 1){
 									MultiplayerType.switchTeam(mgm, player, nt);
-									plugin.minigameManager.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getDisplayName(mgm.usePlayerDisplayNames()), nt.getChatColor() + nt.getDisplayName()), null, player);
+									plugin.getMinigameManager().sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getDisplayName(mgm.usePlayerDisplayNames()), nt.getChatColor() + nt.getDisplayName()), null, player);
 									player.sendInfoMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()));
 								}
 								else{
@@ -98,7 +98,7 @@ public class TeamSign implements MinigameSign {
 							if (nt != null) {
 								if (nt.getPlayers().size() - cur.getPlayers().size() < 2) {
 									MultiplayerType.switchTeam(mgm, player, nt);
-									plugin.minigameManager.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
+									plugin.getMinigameManager().sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
 									player.sendInfoMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()));
 								} else {
 									player.sendInfoMessage(MinigameUtils.getLang("sign.team.noUnbalance"));
@@ -111,7 +111,7 @@ public class TeamSign implements MinigameSign {
 							if (nt != null) {
 								if (nt.getPlayers().size() < nt.getMaxPlayers()){
 									MultiplayerType.switchTeam(mgm, player, nt);
-									plugin.minigameManager.sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
+									plugin.getMinigameManager().sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
 									player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), null);
 								}else {
 									player.sendInfoMessage(MinigameUtils.getLang("player.team.full"));

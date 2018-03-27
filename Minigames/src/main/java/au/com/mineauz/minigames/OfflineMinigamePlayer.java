@@ -18,7 +18,7 @@ public class OfflineMinigamePlayer {
 	private int level = -1; //Set To default value after 1.7
 	private GameMode lastGM = GameMode.SURVIVAL;
 	private Location loginLocation;
-	private boolean shouldSave = Minigames.plugin.getConfig().getBoolean("saveInventory");
+    private boolean shouldSave = Minigames.getPlugin().getConfig().getBoolean("saveInventory");
 	
 	public OfflineMinigamePlayer(String uuid, ItemStack[] items, 
 			ItemStack[] armour, int food, double health, 
@@ -54,7 +54,7 @@ public class OfflineMinigamePlayer {
 		if(con.contains("level"))
 			level = con.getInt("level");
 		if(con.contains("location")){
-			loginLocation = new Location(Minigames.plugin.getServer().getWorld(con.getString("location.world")), 
+            loginLocation = new Location(Minigames.getPlugin().getServer().getWorld(con.getString("location.world")),
 					con.getDouble("location.x"), 
 					con.getDouble("location.y"), 
 					con.getDouble("location.z"), 
@@ -65,8 +65,8 @@ public class OfflineMinigamePlayer {
 		}
 		else
 			loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
-		
-		ItemStack[] items = Minigames.plugin.getServer().createInventory(null, InventoryType.PLAYER).getContents();
+        
+        ItemStack[] items = Minigames.getPlugin().getServer().createInventory(null, InventoryType.PLAYER).getContents();
 		ItemStack[] armour = new ItemStack[4];
 		for(int i = 0; i < items.length; i++){
 			if(con.contains("items." + i)){

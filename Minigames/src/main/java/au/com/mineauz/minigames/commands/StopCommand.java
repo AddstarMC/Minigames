@@ -57,13 +57,13 @@ public class StopCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-            Minigame mgm = plugin.minigameManager.getMinigame(args[0]);
+			Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
 			
 			if(mgm != null && mgm.isEnabled() && mgm.getType() == MinigameType.GLOBAL){
 				MinigamePlayer caller = null;
 				if(sender instanceof Player)
-                    caller = plugin.playerManager.getMinigamePlayer((Player) sender);
-                plugin.minigameManager.stopGlobalMinigame(mgm, caller);
+					caller = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
+				plugin.getMinigameManager().stopGlobalMinigame(mgm, caller);
 			}
 			else if(mgm == null || mgm.getType() != MinigameType.GLOBAL){
 				sender.sendMessage(ChatColor.RED + "There is no Global Minigame by the name \"" + args[0] + "\"");
@@ -80,7 +80,7 @@ public class StopCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
         List<String> mgs = new ArrayList<>();
-        for (Minigame mg : plugin.minigameManager.getAllMinigames().values()) {
+		for (Minigame mg : plugin.getMinigameManager().getAllMinigames().values()) {
 			if(mg.getType() == MinigameType.GLOBAL)
 				mgs.add(mg.getName(false));
 		}

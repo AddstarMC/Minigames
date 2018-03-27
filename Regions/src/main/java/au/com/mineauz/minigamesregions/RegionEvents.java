@@ -26,8 +26,8 @@ import org.bukkit.event.player.*;
 
 public class RegionEvents implements Listener{
 	
-	private Minigames plugin = Minigames.plugin;
-    private MinigamePlayerManager pdata = plugin.playerManager;
+	private Minigames plugin = Minigames.getPlugin();
+	private MinigamePlayerManager pdata = plugin.getPlayerManager();
 	
 	private void executeRegionChanges(Minigame mg, MinigamePlayer ply){
 		for(Region r : RegionModule.getMinigameModule(mg).getRegions()){

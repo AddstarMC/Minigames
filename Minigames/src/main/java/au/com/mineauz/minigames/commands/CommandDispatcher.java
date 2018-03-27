@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class CommandDispatcher implements CommandExecutor, TabCompleter{
     private static Map<String, ICommand> commands = new HashMap<>();
-	private static Minigames plugin = Minigames.plugin;
+    private static Minigames plugin = Minigames.getPlugin();
 	private static BufferedWriter cmdFile;
 	
 	static{

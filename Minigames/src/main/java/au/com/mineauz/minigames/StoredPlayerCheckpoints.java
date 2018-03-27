@@ -152,7 +152,7 @@ public class StoredPlayerCheckpoints {
 			}
 			catch (Exception e) {
 				// When an error is detected, remove the stored erroneous checkpoint
-				Minigames.plugin.getLogger().warning("Unable to save checkpoint for " + mgm + "! It has been been removed.");
+                Minigames.getPlugin().getLogger().warning("Unable to save checkpoint for " + mgm + "! It has been been removed.");
 				e.printStackTrace();
 
 				// Remove the checkpoint from memory so it doesn't cause an error again
@@ -177,7 +177,7 @@ public class StoredPlayerCheckpoints {
 			catch (Exception e) {
 				// When an error is detected, remove the global checkpoint
 				save.getConfig().set("globalcheckpoint", null);
-				Minigames.plugin.getLogger().warning("Unable to save global checkpoint!");
+                Minigames.getPlugin().getLogger().warning("Unable to save global checkpoint!");
 				e.printStackTrace();
 			}
 		}
@@ -196,10 +196,10 @@ public class StoredPlayerCheckpoints {
 				Float yaw = new Float(save.getConfig().get(mgm + ".yaw").toString());
 				Float pitch = new Float(save.getConfig().get(mgm + ".pitch").toString());
 				String world = (String) save.getConfig().get(mgm + ".world");
-
-				World w = Minigames.plugin.getServer().getWorld(world);
+                
+                World w = Minigames.getPlugin().getServer().getWorld(world);
 				if (w == null) {
-					Minigames.plugin.getLogger().warning("WARNING: Invalid world \"" + world + "\" found in checkpoint for " + mgm + "! Checkpoint has been removed.");
+                    Minigames.getPlugin().getLogger().warning("WARNING: Invalid world \"" + world + "\" found in checkpoint for " + mgm + "! Checkpoint has been removed.");
 					continue;
 				}
 
@@ -230,12 +230,12 @@ public class StoredPlayerCheckpoints {
 			Float yaw = new Float(save.getConfig().get("globalcheckpoint.yaw").toString());
 			Float pitch = new Float(save.getConfig().get("globalcheckpoint.pitch").toString());
 			String world = save.getConfig().getString("globalcheckpoint.world");
-			
-			World w = Minigames.plugin.getServer().getWorld(world);
+            
+            World w = Minigames.getPlugin().getServer().getWorld(world);
 			if (w == null) {
-				Minigames.plugin.getLogger().warning("WARNING: Invalid world \"" + world + "\" found in global checkpoint! Checkpoint has been removed.");
+                Minigames.getPlugin().getLogger().warning("WARNING: Invalid world \"" + world + "\" found in global checkpoint! Checkpoint has been removed.");
 			} else {
-				globalCheckpoint = new Location(Minigames.plugin.getServer().getWorld(world), x, y, z, yaw, pitch);
+                globalCheckpoint = new Location(Minigames.getPlugin().getServer().getWorld(world), x, y, z, yaw, pitch);
 			}
 		}
 	}

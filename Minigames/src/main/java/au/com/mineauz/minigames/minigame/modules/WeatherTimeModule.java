@@ -175,7 +175,7 @@ public class WeatherTimeModule extends MinigameModule {
 	public void startTimeLoop(){
 		final Minigame fmgm = getMinigame();
 		if(task == -1 && isUsingCustomTime()){
-			task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, new Runnable() {
+            task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), new Runnable() {
 				
 				@Override
 				public void run() {

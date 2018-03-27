@@ -57,7 +57,7 @@ public class CreateCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame, String label, String[] args) {
 		if(args != null){
 			Player player = (Player)sender;
-            if (!plugin.minigameManager.hasMinigame(args[0])) {
+			if (!plugin.getMinigameManager().hasMinigame(args[0])) {
 				String mgmName = args[0];
 				MinigameType type = MinigameType.SINGLEPLAYER;
 				if(args.length >= 2){
@@ -84,7 +84,7 @@ public class CreateCommand implements ICommand{
 				plugin.saveConfig();
 				
 				mgm.saveMinigame();
-                plugin.minigameManager.addMinigame(mgm);
+				plugin.getMinigameManager().addMinigame(mgm);
 			}else{
 				sender.sendMessage(ChatColor.RED + "This Minigame already exists!");
 			}

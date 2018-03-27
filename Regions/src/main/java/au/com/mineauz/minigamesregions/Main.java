@@ -19,6 +19,25 @@ public class Main extends JavaPlugin{
 	private RegionDisplayManager display;
 	
 	@Override
+	public void onDisable() {
+		if (plugin == null) {
+			return;
+		}
+		for (Minigame mg : minigames.getMinigameManager().getAllMinigames().values()) {
+			mg.saveMinigame();
+		}
+		minigames.getMinigameManager().removeModule("Regions", RegionModule.class);
+		
+		ToolModes.removeToolMode("REGION");
+		ToolModes.removeToolMode("NODE");
+		ToolModes.removeToolMode("REGION_AND_NODE_EDITOR");
+		
+		display.shutdown();
+		
+		getLogger().info("Minigames Regions disabled");
+	}
+	
+	@Override
 	public void onEnable(){
 		try {
 			plugin = this;
@@ -34,8 +53,8 @@ public class Main extends JavaPlugin{
 			}
 			
 			display = new RegionDisplayManager();
-
-            minigames.minigameManager.addModule(RegionModule.class);
+			
+			minigames.getMinigameManager().addModule(RegionModule.class);
 			
 			SetCommand.registerSetCommand(new SetNodeCommand());
 			SetCommand.registerSetCommand(new SetRegionCommand());
@@ -53,25 +72,6 @@ public class Main extends JavaPlugin{
 			getLogger().log(Level.SEVERE, "Failed to enable Minigames Regions " + getDescription().getVersion() + ": ", e);
 			getPluginLoader().disablePlugin(this);
 		}
-	}
-	
-	@Override
-	public void onDisable(){
-		if (plugin == null) {
-			return;
-		}
-        for (Minigame mg : minigames.minigameManager.getAllMinigames().values()) {
-			mg.saveMinigame();
-		}
-        minigames.minigameManager.removeModule("Regions", RegionModule.class);
-		
-		ToolModes.removeToolMode("REGION");
-		ToolModes.removeToolMode("NODE");
-		ToolModes.removeToolMode("REGION_AND_NODE_EDITOR");
-		
-		display.shutdown();
-		
-		getLogger().info("Minigames Regions disabled");
 	}
 	
 	public static Minigames getMinigames(){

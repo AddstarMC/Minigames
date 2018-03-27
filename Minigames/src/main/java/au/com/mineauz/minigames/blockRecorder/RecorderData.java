@@ -112,7 +112,7 @@ public class RecorderData implements Listener{
     }
 	
 	public RecorderData(Minigame minigame){
-		plugin = Minigames.plugin;
+        plugin = Minigames.getPlugin();
 		
 		this.minigame = minigame;
         blockdata = new HashMap<>();
@@ -667,7 +667,7 @@ public class RecorderData implements Listener{
 			}
 			else if(event.getEntityType() == EntityType.FALLING_BLOCK && minigame.hasPlayers())
 			{
-				event.getEntity().setMetadata("FellInMinigame", new FixedMetadataValue(Minigames.plugin, true));
+                event.getEntity().setMetadata("FellInMinigame", new FixedMetadataValue(Minigames.getPlugin(), true));
 				addEntity(event.getEntity(), null, true);
 			}
 		}

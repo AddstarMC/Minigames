@@ -61,7 +61,7 @@ public class SetNodeCommand implements ICommand {
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-            MinigamePlayer ply = Minigames.plugin.playerManager.getMinigamePlayer((Player) sender);
+			MinigamePlayer ply = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
 			RegionModule rmod = RegionModule.getMinigameModule(minigame);
 			if(args[0].equalsIgnoreCase("create") && args.length >= 2){
 				if(!rmod.hasNode(args[1])){

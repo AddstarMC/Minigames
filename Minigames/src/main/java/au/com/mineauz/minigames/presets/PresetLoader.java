@@ -1,21 +1,20 @@
 package au.com.mineauz.minigames.presets;
 
-import java.io.File;
-
-import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.MinigameSave;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.io.File;
 
 public class PresetLoader {
 	
 	public static String loadPreset(String preset, Minigame minigame){
 		preset = preset.toLowerCase();
-		File file = new File(Minigames.plugin.getDataFolder() + "/presets/" + preset + ".yml");
+        File file = new File(Minigames.getPlugin().getDataFolder() + "/presets/" + preset + ".yml");
 		if(file.exists()){
 			MinigameSave save = new MinigameSave("presets/" + preset);
 			FileConfiguration config = save.getConfig();
@@ -38,7 +37,7 @@ public class PresetLoader {
 	
 	public static String getPresetInfo(String preset){
 		preset = preset.toLowerCase();
-		File file = new File(Minigames.plugin.getDataFolder() + "/presets/" + preset + ".yml");
+        File file = new File(Minigames.getPlugin().getDataFolder() + "/presets/" + preset + ".yml");
 		if(file.exists()){
 			MinigameSave save = new MinigameSave("presets/" + preset);
 			FileConfiguration config = save.getConfig();

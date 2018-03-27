@@ -20,9 +20,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class MultiplayerType extends MinigameTypeBase{
-	private static Minigames plugin = Minigames.plugin;
-	private MinigamePlayerManager pdata = plugin.playerManager;
-	private MinigameManager mdata = plugin.minigameManager;
+	private static Minigames plugin = Minigames.getPlugin();
+	private MinigamePlayerManager pdata = plugin.getPlayerManager();
+	private MinigameManager mdata = plugin.getMinigameManager();
 	
 	public MultiplayerType(){
 		setType(MinigameType.MULTIPLAYER);
@@ -188,7 +188,7 @@ public class MultiplayerType extends MinigameTypeBase{
 				}
 				List<MinigamePlayer> w = new ArrayList<>(winner.getPlayers());
 				List<MinigamePlayer> l = new ArrayList<>();
-				plugin.playerManager.endMinigame(mgm, w, l);
+				plugin.getPlayerManager().endMinigame(mgm, w, l);
 				
 				if(mgm.getMpBets() != null){
 					mgm.setMpBets(null);
@@ -199,7 +199,7 @@ public class MultiplayerType extends MinigameTypeBase{
 			List<MinigamePlayer> w = new ArrayList<>(mgm.getPlayers());
 			w.remove(player);
 			List<MinigamePlayer> l = new ArrayList<>();
-			plugin.playerManager.endMinigame(mgm, w, l);
+			plugin.getPlayerManager().endMinigame(mgm, w, l);
 			
 			if(mgm.getMpBets() != null){
 				mgm.setMpBets(null);
@@ -209,7 +209,7 @@ public class MultiplayerType extends MinigameTypeBase{
 				mgm.getMpTimer() != null && 
 				mgm.getMpTimer().getStartWaitTimeLeft() != 0 && 
 				(mgm.getState() == MinigameState.STARTING || mgm.getState() == MinigameState.WAITING)){
-			mgm.getMpTimer().setCurrentLobbyWaitTime(Minigames.plugin.getConfig().getInt("multiplayer.waitforplayers"));
+			mgm.getMpTimer().setCurrentLobbyWaitTime(Minigames.getPlugin().getConfig().getInt("multiplayer.waitforplayers"));
 			mgm.getMpTimer().pauseTimer();
 			mgm.getMpTimer().removeTimer();
 			mgm.setMpTimer(null);
@@ -330,7 +330,7 @@ public class MultiplayerType extends MinigameTypeBase{
 						if(t.getColor() != TeamsModule.getMinigameModule(mgm).getDefaultWinner())
 							l.addAll(t.getPlayers());
 					}
-					plugin.playerManager.endMinigame(mgm, w, l);
+					plugin.getPlayerManager().endMinigame(mgm, w, l);
 				}
 				else{
 					List<Team> drawTeams = new ArrayList<>();

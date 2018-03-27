@@ -14,7 +14,7 @@ import org.bukkit.event.block.SignChangeEvent;
 
 public class LoadoutSign implements MinigameSign {
 	
-	private static Minigames plugin = Minigames.plugin;
+	private static Minigames plugin = Minigames.getPlugin();
 
 	@Override
 	public String getName() {
@@ -84,9 +84,9 @@ public class LoadoutSign implements MinigameSign {
 				else{
 					player.sendMessage(MinigameUtils.formStr("sign.loadout.noPermisson", sign.getLine(2)), MinigameMessageType.ERROR);
 				}
-			} else if (plugin.minigameManager.hasLoadout(sign.getLine(2))) {
-				if (!plugin.minigameManager.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())) {
-					if (player.setLoadout(plugin.minigameManager.getLoadout(sign.getLine(2)))) {
+			} else if (plugin.getMinigameManager().hasLoadout(sign.getLine(2))) {
+				if (!plugin.getMinigameManager().getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())) {
+					if (player.setLoadout(plugin.getMinigameManager().getLoadout(sign.getLine(2)))) {
 						player.sendInfoMessage(MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)));
 	
 						if(mgm.getType() == MinigameType.SINGLEPLAYER || 
@@ -95,7 +95,7 @@ public class LoadoutSign implements MinigameSign {
 								player.sendInfoMessage(MinigameUtils.getLang("sign.loadout.nextRespawn"));
 							}
 							else{
-								plugin.minigameManager.getLoadout(sign.getLine(2)).equiptLoadout(player);
+								plugin.getMinigameManager().getLoadout(sign.getLine(2)).equiptLoadout(player);
 							}
 						}
 					}

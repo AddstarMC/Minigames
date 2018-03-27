@@ -138,8 +138,8 @@ public class RegionModule extends MinigameModule {
 			for(String name : rs){
 				String cloc1 = getMinigame() + ".regions." + name + ".point1.";
 				String cloc2 = getMinigame() + ".regions." + name + ".point2.";
-				World w1 = Minigames.plugin.getServer().getWorld(config.getString(cloc1 + "world"));
-				World w2 = Minigames.plugin.getServer().getWorld(config.getString(cloc2 + "world"));
+                World w1 = Minigames.getPlugin().getServer().getWorld(config.getString(cloc1 + "world"));
+                World w2 = Minigames.getPlugin().getServer().getWorld(config.getString(cloc2 + "world"));
 				double x1 = config.getDouble(cloc1 + "x");
 				double x2 = config.getDouble(cloc2 + "x");
 				double y1 = config.getDouble(cloc1 + "y");
@@ -193,7 +193,7 @@ public class RegionModule extends MinigameModule {
 			Set<String> rs = config.getConfigurationSection(getMinigame() + ".nodes").getKeys(false);
 			for(String name : rs){
 				String cloc1 = getMinigame() + ".nodes." + name + ".point.";
-				World w1 = Minigames.plugin.getServer().getWorld(config.getString(cloc1 + "world"));
+                World w1 = Minigames.getPlugin().getServer().getWorld(config.getString(cloc1 + "world"));
 				double x1 = config.getDouble(cloc1 + "x");
 				double y1 = config.getDouble(cloc1 + "y");
 				double z1 = config.getDouble(cloc1 + "z");

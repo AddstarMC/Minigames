@@ -56,7 +56,7 @@ public class DeleteCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		if(args != null){
-            Minigame mgm = plugin.minigameManager.getMinigame(args[0]);
+			Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
 			
 			if(mgm != null){
 				File save = new File(plugin.getDataFolder() + "/minigames/" + mgm.getName(false));
@@ -74,7 +74,7 @@ public class DeleteCommand implements ICommand{
 					List<String> ls = plugin.getConfig().getStringList("minigames");
 					ls.remove(mgm.getName(false));
 					plugin.getConfig().set("minigames", ls);
-                    plugin.minigameManager.removeMinigame(mgm.getName(false));
+					plugin.getMinigameManager().removeMinigame(mgm.getName(false));
 					plugin.saveConfig();
 					sender.sendMessage(ChatColor.RED + "The minigame " + mgm.getName(false) + " has been removed");
 				}
@@ -88,7 +88,7 @@ public class DeleteCommand implements ICommand{
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
 		if(args.length == 1){
-            List<String> mgs = new ArrayList<>(Minigames.plugin.minigameManager.getAllMinigames().keySet());
+			List<String> mgs = new ArrayList<>(Minigames.getPlugin().getMinigameManager().getAllMinigames().keySet());
 			return MinigameUtils.tabCompleteMatch(mgs, args[0]);
 		}
 		return null;

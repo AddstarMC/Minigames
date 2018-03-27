@@ -54,7 +54,7 @@ public class TeamsModule extends MinigameModule {
 	@Override
 	public void load(FileConfiguration config) {
         if (config.contains(getMinigame() + ".startposred") || config.contains(getMinigame() + ".startposblue")) {
-            Minigames.plugin.getLogger().warning(config.getCurrentPath() + " contains unsupported configurations: " + getMinigame() + ".startpos*");
+            Minigames.getPlugin().getLogger().warning(config.getCurrentPath() + " contains unsupported configurations: " + getMinigame() + ".startpos*");
 		}
 	}
 	

@@ -73,15 +73,15 @@ public class ToolCommand implements ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
-        MinigamePlayer player = Minigames.plugin.playerManager.getMinigamePlayer((Player) sender);
+		MinigamePlayer player = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
 		if(args == null){
 			MinigameUtils.giveMinigameTool(player);
 		}
 		else if(MinigameUtils.hasMinigameTool(player)){
 			if(args[0].equalsIgnoreCase("minigame") && args.length == 2){
-                if (Minigames.plugin.minigameManager.hasMinigame(args[1])) {
+				if (Minigames.getPlugin().getMinigameManager().hasMinigame(args[1])) {
 					MinigameTool tool;
-                    Minigame mg = Minigames.plugin.minigameManager.getMinigame(args[1]);
+					Minigame mg = Minigames.getPlugin().getMinigameManager().getMinigame(args[1]);
 					if(!MinigameUtils.hasMinigameTool(player))
 						tool = MinigameUtils.giveMinigameTool(player);
 					else
@@ -166,7 +166,7 @@ public class ToolCommand implements ICommand {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
-        List<String> ret = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
+		List<String> ret = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
 		if(args.length == 1){
 			for(String p : getParameters()){
 				ret.add(p);

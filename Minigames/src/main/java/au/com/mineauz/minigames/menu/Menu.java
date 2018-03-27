@@ -212,7 +212,7 @@ public class Menu {
 	}
 	
 	public void startReopenTimer(int time){
-		reopenTimerID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.plugin, new Runnable() {
+        reopenTimerID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), new Runnable() {
 			
 			@Override
 			public void run() {

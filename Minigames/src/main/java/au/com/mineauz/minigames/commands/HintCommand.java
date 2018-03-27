@@ -58,9 +58,9 @@ public class HintCommand implements ICommand{
 	@Override
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
-        MinigamePlayer player = plugin.playerManager.getMinigamePlayer((Player) sender);
+		MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
 		if(args != null){
-            Minigame mgm = plugin.minigameManager.getMinigame(args[0]);
+			Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
 			
 			if(mgm != null && mgm.getMinigameTimer() != null && mgm.getType() == MinigameType.GLOBAL && 
 					mgm.getMechanicName().equals("treasure_hunt")){
@@ -78,7 +78,7 @@ public class HintCommand implements ICommand{
 		}
 		else{
             List<Minigame> mgs = new ArrayList<>();
-            for (Minigame mg : plugin.minigameManager.getAllMinigames().values()) {
+			for (Minigame mg : plugin.getMinigameManager().getAllMinigames().values()) {
 				if(mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals("treasure_hunt")){
 					mgs.add(mg);
 				}
@@ -117,7 +117,7 @@ public class HintCommand implements ICommand{
 			String alias, String[] args) {
 		if(args.length == 1){
             List<String> mgs = new ArrayList<>();
-            for (Minigame mg : plugin.minigameManager.getAllMinigames().values()) {
+			for (Minigame mg : plugin.getMinigameManager().getAllMinigames().values()) {
 				if(mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals("treasure_hunt"))
 					mgs.add(mg.getName(false));
 			}

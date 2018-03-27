@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class BetSign implements MinigameSign{
 	
-	private static Minigames plugin = Minigames.plugin;
+	private static Minigames plugin = Minigames.getPlugin();
 
 	@Override
 	public String getName() {
@@ -42,9 +42,9 @@ public class BetSign implements MinigameSign{
 
 	@Override
 	public boolean signCreate(SignChangeEvent event) {
-        if (plugin.minigameManager.hasMinigame(event.getLine(2))) {
+		if (plugin.getMinigameManager().hasMinigame(event.getLine(2))) {
 			event.setLine(1, ChatColor.GREEN + "Bet");
-            event.setLine(2, plugin.minigameManager.getMinigame(event.getLine(2)).getName(false));
+			event.setLine(2, plugin.getMinigameManager().getMinigame(event.getLine(2)).getName(false));
 			if(event.getLine(3).matches("[0-9]+")){
 				event.setLine(3, "$" + event.getLine(3));
 			}
@@ -56,7 +56,7 @@ public class BetSign implements MinigameSign{
 
 	@Override
 	public boolean signUse(Sign sign, MinigamePlayer player) {
-        Minigame mgm = plugin.minigameManager.getMinigame(sign.getLine(2));
+		Minigame mgm = plugin.getMinigameManager().getMinigame(sign.getLine(2));
 		if (mgm != null) {
 			boolean invOk = true;
 			boolean fullInv;
@@ -95,12 +95,12 @@ public class BetSign implements MinigameSign{
 					}
 					
 					if(!sign.getLine(3).startsWith("$")){
-                        plugin.playerManager.joinMinigame(player, plugin.minigameManager.getMinigame(sign.getLine(2)), true, 0.0);
+						plugin.getPlayerManager().joinMinigame(player, plugin.getMinigameManager().getMinigame(sign.getLine(2)), true, 0.0);
 					}
 					else{
 						if(plugin.hasEconomy()){
 							Double bet = Double.parseDouble(sign.getLine(3).replace("$", ""));
-                            plugin.playerManager.joinMinigame(player, plugin.minigameManager.getMinigame(sign.getLine(2)), true, bet);
+							plugin.getPlayerManager().joinMinigame(player, plugin.getMinigameManager().getMinigame(sign.getLine(2)), true, bet);
 							return true;
 						}
 						else{

@@ -38,9 +38,9 @@ import java.util.List;
 import java.util.Set;
 
 public class Events implements Listener{
-	private static Minigames plugin = Minigames.plugin;
-	private MinigamePlayerManager pdata = plugin.playerManager;
-	private MinigameManager mdata = plugin.minigameManager;
+	private static Minigames plugin = Minigames.getPlugin();
+	private MinigamePlayerManager pdata = plugin.getPlayerManager();
+	private MinigameManager mdata = plugin.getMinigameManager();
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerDeath(PlayerDeathEvent event){
@@ -83,7 +83,7 @@ public class Events implements Listener{
 				}
 			}
 			else if(mgm.getState() == MinigameState.ENDED){
-				plugin.playerManager.quitMinigame(ply, true);
+				plugin.getPlayerManager().quitMinigame(ply, true);
 			}
 		}
 	}
@@ -105,7 +105,7 @@ public class Events implements Listener{
 			}
 			
 			if(ply.getMinigame().getState() == MinigameState.ENDED){
-				plugin.playerManager.quitMinigame(ply, true);
+				plugin.getPlayerManager().quitMinigame(ply, true);
 			}
 		}
 		if(ply.isRequiredQuit()){

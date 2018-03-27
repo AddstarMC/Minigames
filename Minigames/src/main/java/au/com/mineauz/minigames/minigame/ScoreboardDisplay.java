@@ -321,39 +321,6 @@ public class ScoreboardDisplay {
 		}
 	}
 	
-	public void placeRootSign() {
-		// For external calls
-		if (settings == null) {
-			settings = minigame.getSettings(stat);
-		}
-		
-		Block root = rootBlock.getBlock();
-        if (root instanceof Sign) {
-            Sign sign = (Sign) root.getState();
-            
-            sign.setLine(0, ChatColor.BLUE + minigame.getName(true));
-            sign.setLine(1, ChatColor.GREEN + settings.getDisplayName());
-            sign.setLine(2, ChatColor.GREEN + field.getTitle());
-            sign.setLine(3, "(" + WordUtils.capitalize(order.toString()) + ")");
-            sign.update();
-            
-            sign.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.plugin, true));
-            sign.setMetadata("Minigame", new FixedMetadataValue(Minigames.plugin, minigame));
-        } else {
-            Minigames.plugin.getLogger().warning("No Root Sign Block at: " + root.getLocation().toString());
-        }
-	}
-	
-	public void save(ConfigurationSection section) {
-		section.set("height", height);
-		section.set("width", width);
-		section.set("dir", facing.name());
-		section.set("stat", stat.getName());
-		section.set("field", field.name());
-		section.set("order", order.name());
-		MinigameUtils.saveShortLocation(section.createSection("location"), rootBlock);
-	}
-	
 	@SuppressWarnings("deprecation")
 	public static ScoreboardDisplay load(Minigame minigame, ConfigurationSection section) {
 		int width = section.getInt("width");
@@ -371,7 +338,7 @@ public class ScoreboardDisplay {
 		
 		// Convert type to new stat
 		if (section.contains("type")) { //todo Remove in 1.13
-			Minigames.plugin.getLogger().warning("Your scoreboard display is using an old configuration method.  Please update to use `stat` -- `type` will not be supported past 1.12 Game: "+ minigame.getName(false));
+            Minigames.getPlugin().getLogger().warning("Your scoreboard display is using an old configuration method.  Please update to use `stat` -- `type` will not be supported past 1.12 Game: " + minigame.getName(false));
 			ScoreboardType type = ScoreboardType.valueOf(section.getString("type"));
 			
 			switch (type) {
@@ -424,16 +391,49 @@ public class ScoreboardDisplay {
 		}
 		
 		Block block = location.getBlock();
-		block.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.plugin, true));
-		block.setMetadata("Minigame", new FixedMetadataValue(Minigames.plugin, minigame));
+        block.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.getPlugin(), true));
+        block.setMetadata("Minigame", new FixedMetadataValue(Minigames.getPlugin(), minigame));
 		
 		return display;
 	}
+    
+    public void save(ConfigurationSection section) {
+        section.set("height", height);
+        section.set("width", width);
+        section.set("dir", facing.name());
+        section.set("stat", stat.getName());
+        section.set("field", field.name());
+        section.set("order", order.name());
+        MinigameUtils.saveShortLocation(section.createSection("location"), rootBlock);
+    }
+    
+    public void placeRootSign() {
+        // For external calls
+        if (settings == null) {
+            settings = minigame.getSettings(stat);
+        }
+        
+        Block root = rootBlock.getBlock();
+        if (root instanceof Sign) {
+            Sign sign = (Sign) root.getState();
+            
+            sign.setLine(0, ChatColor.BLUE + minigame.getName(true));
+            sign.setLine(1, ChatColor.GREEN + settings.getDisplayName());
+            sign.setLine(2, ChatColor.GREEN + field.getTitle());
+            sign.setLine(3, "(" + WordUtils.capitalize(order.toString()) + ")");
+            sign.update();
+            
+            sign.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.getPlugin(), true));
+            sign.setMetadata("Minigame", new FixedMetadataValue(Minigames.getPlugin(), minigame));
+        } else {
+            Minigames.getPlugin().getLogger().warning("No Root Sign Block at: " + root.getLocation().toString());
+        }
+    }
 	
 	public void reload() {
 		needsLoad = false;
-		ListenableFuture<List<StoredStat>> future = Minigames.plugin.getBackend().loadStats(minigame, stat, field, order, 0, width * height * 2);
-		Minigames.plugin.getBackend().addServerThreadCallback(future, getUpdateCallback());
+        ListenableFuture<List<StoredStat>> future = Minigames.getPlugin().getBackend().loadStats(minigame, stat, field, order, 0, width * height * 2);
+        Minigames.getPlugin().getBackend().addServerThreadCallback(future, getUpdateCallback());
 	}
 	
 	// The update callback to be provided to the future. MUST be executed on the bukkit server thread

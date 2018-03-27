@@ -25,7 +25,7 @@ public class MinigameManager {
 	private Map<MinigameType, MinigameTypeBase> minigameTypes = new HashMap<>();
 	private Map<String, PlayerLoadout> globalLoadouts = new HashMap<>();
 	private Map<String, RewardsFlag> rewardSigns = new HashMap<>();
-	private static Minigames plugin = Minigames.plugin;
+    private static Minigames plugin = Minigames.getPlugin();
 	private MinigameSave rewardSignsSave = null;
 	private Map<Minigame, List<String>> claimedScoreSignsRed = new HashMap<>();
 	private Map<Minigame, List<String>> claimedScoreSignsBlue = new HashMap<>();

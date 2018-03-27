@@ -35,7 +35,7 @@ public class BackendManager {
 		bukkitThreadExecutor = new Executor() {
 			@Override
 			public void execute(Runnable command) {
-				Bukkit.getScheduler().runTask(Minigames.plugin, command);
+                Bukkit.getScheduler().runTask(Minigames.getPlugin(), command);
 			}
 		};
 		
@@ -125,7 +125,7 @@ public class BackendManager {
 		}
 		try {
 			// Start the cleaning task to remove old connections
-			Bukkit.getScheduler().runTaskTimer(Minigames.plugin, new Runnable() {
+            Bukkit.getScheduler().runTaskTimer(Minigames.getPlugin(), new Runnable() {
 				@Override
 				public void run() {
 					backend.clean();

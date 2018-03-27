@@ -145,7 +145,7 @@ public class Region implements ScriptObject {
 	public void changeTickDelay(long delay){
 		removeTickTask();
 		taskDelay = delay;
-		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, new Runnable() {
+        taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), new Runnable() {
 			
 			@Override
 			public void run() {
@@ -164,8 +164,8 @@ public class Region implements ScriptObject {
 	public void startTickTask(){
 		if(taskID != -1)
 			removeTickTask();
-		
-		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.plugin, new Runnable() {
+        
+        taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), new Runnable() {
 			
 			@Override
 			public void run() {

@@ -63,8 +63,8 @@ public class SetLoadoutCommand implements ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
-
-        MinigamePlayer player = Minigames.plugin.playerManager.getMinigamePlayer((Player) sender);
+		
+		MinigamePlayer player = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
 		Menu loadouts = new Menu(6, getName(), player);
         List<MenuItem> mi = new ArrayList<>();
 		LoadoutModule mod = LoadoutModule.getMinigameModule(minigame);

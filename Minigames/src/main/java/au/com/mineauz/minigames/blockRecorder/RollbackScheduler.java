@@ -1,23 +1,22 @@
 package au.com.mineauz.minigames.blockRecorder;
 
-import java.util.Iterator;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.MinigameState;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.FlowerPot;
 import org.bukkit.block.Jukebox;
 import org.bukkit.block.Sign;
 import org.bukkit.block.Skull;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.block.FlowerPot;
 import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitTask;
 
-import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.MinigameState;
+import java.util.Iterator;
+import java.util.List;
 
 public class RollbackScheduler implements Runnable {
 	
@@ -33,7 +32,7 @@ public class RollbackScheduler implements Runnable {
 		this.minigame = minigame;
 		this.modifier = modifier;
 		int delay = minigame.getRegenDelay() * 20 + 1;
-		task = Bukkit.getScheduler().runTaskTimer(Minigames.plugin, this, delay, 1);
+        task = Bukkit.getScheduler().runTaskTimer(Minigames.getPlugin(), this, delay, 1);
 	}
 
 	@Override
@@ -42,7 +41,7 @@ public class RollbackScheduler implements Runnable {
 		while(iterator.hasNext()){
 			BlockData bdata = iterator.next();
 			bdata.getBlockState().update(true);
-			if(System.nanoTime() - time > Minigames.plugin.getConfig().getDouble("regeneration.maxDelay") * 1000000)
+            if (System.nanoTime() - time > Minigames.getPlugin().getConfig().getDouble("regeneration.maxDelay") * 1000000)
 				return;
 		}
 		while(physIterator.hasNext()){
@@ -82,8 +81,8 @@ public class RollbackScheduler implements Runnable {
 				skull.setSkullType(orig.getSkullType());
 				skull.update();
 			}
-			
-			if(System.nanoTime() - time > Minigames.plugin.getConfig().getDouble("regeneration.maxDelay") * 1000000)
+            
+            if (System.nanoTime() - time > Minigames.getPlugin().getConfig().getDouble("regeneration.maxDelay") * 1000000)
 				return;
 		}
 		

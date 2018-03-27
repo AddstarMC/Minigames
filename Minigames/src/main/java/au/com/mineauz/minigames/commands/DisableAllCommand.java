@@ -55,7 +55,7 @@ public class DisableAllCommand implements ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
-        MinigameManager mdata = Minigames.plugin.minigameManager;
+		MinigameManager mdata = Minigames.getPlugin().getMinigameManager();
         List<Minigame> minigames = new ArrayList<>(mdata.getAllMinigames().values());
 		if(args != null){
 			for(String arg : args){
@@ -75,7 +75,7 @@ public class DisableAllCommand implements ICommand {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {
-        List<String> mgs = new ArrayList<>(plugin.minigameManager.getAllMinigames().keySet());
+		List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
 		return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
 	}
 

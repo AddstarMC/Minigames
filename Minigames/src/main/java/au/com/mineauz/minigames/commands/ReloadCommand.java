@@ -58,12 +58,12 @@ public class ReloadCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame,
 			String label, String[] args) {
 		for(Player p : plugin.getServer().getOnlinePlayers()){
-            if (plugin.playerManager.getMinigamePlayer(p).isInMinigame()) {
-                plugin.playerManager.quitMinigame(plugin.playerManager.getMinigamePlayer(p), true);
+			if (plugin.getPlayerManager().getMinigamePlayer(p).isInMinigame()) {
+				plugin.getPlayerManager().quitMinigame(plugin.getPlayerManager().getMinigamePlayer(p), true);
 			}
 		}
-
-        Minigames.plugin.minigameManager.getAllMinigames().clear();
+		
+		Minigames.getPlugin().getMinigameManager().getAllMinigames().clear();
 		
 		try{
 			plugin.getConfig().load(plugin.getDataFolder() + "/config.yml");
@@ -84,8 +84,8 @@ public class ReloadCommand implements ICommand{
 		}
 
         List<String> mgs = new ArrayList<>();
-		if(Minigames.plugin.getConfig().contains("minigames")){
-			mgs = Minigames.plugin.getConfig().getStringList("minigames");
+		if (Minigames.getPlugin().getConfig().contains("minigames")) {
+			mgs = Minigames.getPlugin().getConfig().getStringList("minigames");
 		}
         final List<String> allMGS = new ArrayList<String>(mgs);
 		
@@ -93,7 +93,7 @@ public class ReloadCommand implements ICommand{
 			for(String mgm : allMGS){
 				Minigame game = new Minigame(mgm);
 				game.loadMinigame();
-                Minigames.plugin.minigameManager.addMinigame(game);
+				Minigames.getPlugin().getMinigameManager().addMinigame(game);
 			}
 		}
 		

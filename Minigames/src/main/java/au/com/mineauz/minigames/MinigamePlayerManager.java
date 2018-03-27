@@ -41,8 +41,8 @@ public class MinigamePlayerManager {
 	private int pos;
     private List<String> deniedCommands = new ArrayList<>();
 	
-	private static Minigames plugin = Minigames.plugin;
-    private MinigameManager mgManager = plugin.minigameManager;
+	private static Minigames plugin = Minigames.getPlugin();
+	private MinigameManager mgManager = plugin.getMinigameManager();
 
     public MinigamePlayerManager() {
     }
@@ -153,11 +153,11 @@ public class MinigamePlayerManager {
 		}
         else if(betAmount != 0 && !pbet.canBet(player, betAmount)){
             player.sendMessage(MinigameUtils.getLang("player.bet.incorrectAmount"), MinigameMessageType.ERROR);
-            player.sendMessage(MinigameUtils.formStr("player.bet.incorrectAmountInfo", Minigames.plugin.getEconomy().format(minigame.getMpBets().getHighestMoneyBet())), MinigameMessageType.ERROR);
+			player.sendMessage(MinigameUtils.formStr("player.bet.incorrectAmountInfo", Minigames.getPlugin().getEconomy().format(minigame.getMpBets().getHighestMoneyBet())), MinigameMessageType.ERROR);
 		}
         else if(betAmount != 0 && plugin.getEconomy().getBalance(player.getPlayer().getPlayer()) < betAmount){
             player.sendMessage(MinigameUtils.getLang("player.bet.notEnoughMoney"), MinigameMessageType.ERROR);
-            player.sendMessage(MinigameUtils.formStr("player.bet.notEnoughMoneyInfo", Minigames.plugin.getEconomy().format(minigame.getMpBets().getHighestMoneyBet())), MinigameMessageType.ERROR);
+			player.sendMessage(MinigameUtils.formStr("player.bet.notEnoughMoneyInfo", Minigames.getPlugin().getEconomy().format(minigame.getMpBets().getHighestMoneyBet())), MinigameMessageType.ERROR);
 		}
         else{
             player.sendMessage(MinigameUtils.getLang("player.bet.incorrectItem"), MinigameMessageType.ERROR);
@@ -652,7 +652,7 @@ public class MinigamePlayerManager {
                     //Group money bets
                     if (bets != 0) {
                         plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), bets);
-                        player.sendInfoMessage(MinigameUtils.formStr("player.bet.winMoney", Minigames.plugin.getEconomy().format(bets)));
+						player.sendInfoMessage(MinigameUtils.formStr("player.bet.winMoney", Minigames.getPlugin().getEconomy().format(bets)));
                     }
 
                     // Record player completion and give rewards
