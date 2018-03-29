@@ -130,14 +130,17 @@ public class MinigamePlayer implements ScriptObject {
 	public void sendMessage(String msg, String type){
 		String init = "";
 		if(type != null){
-			if(type.equals("error")){
-				init = ChatColor.RED + "[Minigames] " + ChatColor.WHITE;
-			}
-			else if(type.equals("win")){
-				init = ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE;
-			}
-			else{
-				init = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
+            switch (type) {
+                case "error":
+                    init = ChatColor.RED + "[Minigames] " + ChatColor.WHITE;
+                    break;
+                case "win":
+                    init = ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE;
+                    break;
+                case "info":
+                default:
+                    init = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
+                    break;
 			}
 		}
 		else{

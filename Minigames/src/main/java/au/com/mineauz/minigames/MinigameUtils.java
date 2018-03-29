@@ -1,25 +1,21 @@
 package au.com.mineauz.minigames;
 
+import au.com.mineauz.minigames.events.MinigamesBroadcastEvent;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.tool.MinigameTool;
+import org.bukkit.*;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 //import net.minecraft.server.v1_6_R2.EntityPlayer;
 //
 //import org.bukkit.craftbukkit.v1_6_R2.entity.CraftPlayer;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-
-import au.com.mineauz.minigames.events.MinigamesBroadcastEvent;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.tool.MinigameTool;
 
 public class MinigameUtils {
 	private static FileConfiguration lang = Minigames.plugin.getLang();
@@ -389,6 +385,7 @@ public class MinigameUtils {
 	 * @return The capitalized string
 	 */
 	public static String capitalize(String toCapitalize){
+		if (toCapitalize == null) return null;
 		String val = toCapitalize.toLowerCase();
 		String[] spl = val.split(" ");
 		val = "";
