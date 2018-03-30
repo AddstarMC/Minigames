@@ -26,6 +26,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -150,8 +151,7 @@ public class MinigamePlayerManager {
         }
         else if(item.getType() == Material.AIR && betAmount == 0){
             player.sendMessage(MinigameUtils.getLang("player.bet.plyNoBet"), MinigameMessageType.ERROR);
-		}
-        else if(betAmount != 0 && !pbet.canBet(player, betAmount)){
+		} else if (betAmount != 0 && pbet != null && !pbet.canBet(player, betAmount)) {
             player.sendMessage(MinigameUtils.getLang("player.bet.incorrectAmount"), MinigameMessageType.ERROR);
 			player.sendMessage(MinigameUtils.formStr("player.bet.incorrectAmountInfo", Minigames.getPlugin().getEconomy().format(minigame.getMpBets().getHighestMoneyBet())), MinigameMessageType.ERROR);
 		}
@@ -782,7 +782,8 @@ public class MinigamePlayerManager {
 			minigamePlayers.remove(player.getName());
 		}
 	}
-	
+
+	@NotNull
 	public MinigamePlayer getMinigamePlayer(Player player){
 		return minigamePlayers.get(player.getName());
 	}

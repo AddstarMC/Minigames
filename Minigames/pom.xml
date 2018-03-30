@@ -87,6 +87,11 @@
       <version>1.2</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+      <version>3.3.3</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -96,10 +101,11 @@
         <filtering>true</filtering>
         <directory>src/main/resources</directory>
         <includes>
-          <include>plugin.yml</include>
-          <include>config.yml</include>
-          <include>lang/*.yml</include>
-          <include>presets/*.yml</include>
+            <include>plugin.yml</include>
+            <include>config.yml</include>
+            <include>*.properties</include>
+            <include>lang/*.yml</include>
+            <include>presets/*.yml</include>
         </includes>
       </resource>
     </resources>

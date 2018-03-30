@@ -436,7 +436,7 @@ public class Events implements Listener{
     
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	private void entityDamageEntity(EntityDamageByEntityEvent event){
-        if (event.getEntity() instanceof Player && !event.isCancelled()) {
+        if (event.getEntity() instanceof Player) {
             if (event.getDamager() instanceof Snowball) {
                 MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getEntity());
                 if (ply == null) return;

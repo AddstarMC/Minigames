@@ -14,9 +14,11 @@ import au.com.mineauz.minigames.signs.SignBase;
 import au.com.mineauz.minigames.stats.MinigameStats;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import com.google.common.io.Closeables;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import net.milkbowl.vault.economy.Economy;
+import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -33,6 +35,7 @@ import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 public class Minigames extends JavaPlugin{
 	static Logger log = Logger.getLogger("Minecraft");
@@ -44,9 +47,13 @@ public class Minigames extends JavaPlugin{
 	private static SignBase minigameSigns;
 	private FileConfiguration lang = null;
 	private FileConfiguration defLang = null;
-	public boolean thrownError = false;
 	private boolean debug = false;
-	
+
+	public static ComparableVersion getVERSION() {
+		return VERSION;
+	}
+
+	private static ComparableVersion VERSION;
 	private long lastUpdateCheck = 0;
 	
 	private BackendManager backend;
@@ -59,7 +66,6 @@ public class Minigames extends JavaPlugin{
 		if (getPlugin() == null) {
 			return;
 		}
-		
 		PluginDescriptionFile desc = this.getDescription();
 		
 		for (Player p : getServer().getOnlinePlayers()) {
@@ -81,16 +87,11 @@ public class Minigames extends JavaPlugin{
 		}
 		
 		backend.shutdown();
-
-//		playerManager.saveDCPlayers();
 		getPlayerManager().saveDeniedCommands();
 		
 		MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
 		if (getMinigameManager().hasLoadouts()) {
 			for (String loadout : getMinigameManager().getLoadouts()) {
-//				for(int i = 0; i < minigameManager.getLoadout(loadout).getItems().size(); i++){
-//					globalLoadouts.getConfig().set(loadout + "." + i, minigameManager.getLoadout(loadout).getItems().get(i));
-//				}
 				for (Integer slot : getMinigameManager().getLoadout(loadout).getItems()) {
 					globalLoadouts.getConfig().set(loadout + "." + slot, getMinigameManager().getLoadout(loadout).getItem(slot));
 				}
@@ -126,76 +127,11 @@ public class Minigames extends JavaPlugin{
 			lang = sv.getConfig();
 			loadLang();
 			lang.setDefaults(defLang);
-			
+			loadVersion();
 			getLogger().info("Using lang " + getConfig().getString("lang"));
 			
-			String prespath = getDataFolder() + "/presets/";
-			String[] presets = {"spleef", "lms", "ctf", "infection"};
-			File pres;
-			for(String preset : presets){
-				pres = new File(prespath + preset + ".yml");
-				if(!pres.exists()){
-					saveResource("presets/" + preset + ".yml", false);
-				}
-			}
-
-			minigameManager = new MinigameManager();
-			playerManager = new MinigamePlayerManager();
-			display = new DisplayManager();
-			
-			getMinigameManager().addMinigameType(new SingleplayerType());
-			getMinigameManager().addMinigameType(new MultiplayerType());
-			
-			MinigameSave completion = new MinigameSave("completion");
-			getMinigameManager().addConfigurationFile("completion", completion.getConfig());
-			
-			getServer().getPluginManager().registerEvents(new Events(), this);
-			getServer().getPluginManager().registerEvents(new BasicRecorder(), this);
-			
-			try{
-				this.getConfig().load(this.getDataFolder() + "/config.yml");
-				List<String> mgs = new ArrayList<>();
-				if(getConfig().contains("minigames")){
-					mgs = getConfig().getStringList("minigames");
-				}
-				debug = getConfig().getBoolean("debug", false);
-				final List<String> allMGS = new ArrayList<String>(mgs);
-				
-				if(!mgs.isEmpty()){
-					Bukkit.getScheduler().scheduleSyncDelayedTask(getPlugin(), new Runnable() {
-						
-						@Override
-						public void run() {
-							for(String minigame : allMGS){
-								final Minigame game = new Minigame(minigame);
-								try{
-									game.loadMinigame();
-									getMinigameManager().addMinigame(game);
-								}
-								catch(Exception e){
-									getLogger().severe(ChatColor.RED.toString() + "Failed to load \"" + minigame +"\"! The configuration file may be corrupt or missing!");
-									e.printStackTrace();
-								}
-							}
-						}
-					}, 1L);
-				}
-			}
-			catch(FileNotFoundException ex){
-				log.info("Failed to load config, creating one.");
-				try{
-					this.getConfig().save(this.getDataFolder() + "/config.yml");
-				}
-				catch(IOException e){
-					log.log(Level.SEVERE, "Could not save config.yml!");
-					e.printStackTrace();
-				}
-			}
-			catch(Exception e){
-				log.log(Level.SEVERE, "Failed to load config!");
-				e.printStackTrace();
-			}
-			
+            loadPresets();
+            setupMinigames();
 			if(!setupEconomy()){
 		        getLogger().info("No Vault plugin found! You may only reward items.");
 			 }
@@ -208,15 +144,6 @@ public class Minigames extends JavaPlugin{
 			
 			getConfig().options().copyDefaults(true);
 			saveConfig();
-			
-			Calendar cal = Calendar.getInstance();
-			if(cal.get(Calendar.DAY_OF_MONTH) == 21 && cal.get(Calendar.MONTH) == 8 ||
-					cal.get(Calendar.DAY_OF_MONTH) == 25 && cal.get(Calendar.MONTH) == 11 ||
-					cal.get(Calendar.DAY_OF_MONTH) == 1 && cal.get(Calendar.MONTH) == 0){
-				getLogger().info(ChatColor.GREEN.name() + "Party Mode enabled!");
-				getPlayerManager().setPartyMode(true);
-			}
-
 			//		playerManager.loadDCPlayers();
 			getPlayerManager().loadDeniedCommands();
 			
@@ -269,6 +196,76 @@ public class Minigames extends JavaPlugin{
 			getPluginLoader().disablePlugin(this);
 		}
 	}
+    private void loadPresets(){
+        String prespath = getDataFolder() + "/presets/";
+        String[] presets = {"spleef", "lms", "ctf", "infection"};
+        File pres;
+        for(String preset : presets){
+            pres = new File(prespath + preset + ".yml");
+            if(!pres.exists()){
+                saveResource("presets/" + preset + ".yml", false);
+            }
+        }
+    }
+	private void setupMinigames(){
+
+        minigameManager = new MinigameManager();
+        playerManager = new MinigamePlayerManager();
+        display = new DisplayManager();
+
+        getMinigameManager().addMinigameType(new SingleplayerType());
+        getMinigameManager().addMinigameType(new MultiplayerType());
+
+        MinigameSave completion = new MinigameSave("completion");
+        getMinigameManager().addConfigurationFile("completion", completion.getConfig());
+
+        getServer().getPluginManager().registerEvents(new Events(), this);
+        getServer().getPluginManager().registerEvents(new BasicRecorder(), this);
+
+        try{
+            this.getConfig().load(this.getDataFolder() + "/config.yml");
+            List<String> mgs = new ArrayList<>();
+            if(getConfig().contains("minigames")){
+                mgs = getConfig().getStringList("minigames");
+            }
+            debug = getConfig().getBoolean("debug", false);
+            final List<String> allMGS = new ArrayList<String>(mgs);
+
+            if(!mgs.isEmpty()){
+                Bukkit.getScheduler().scheduleSyncDelayedTask(getPlugin(), new Runnable() {
+
+                    @Override
+                    public void run() {
+                        for(String minigame : allMGS){
+                            final Minigame game = new Minigame(minigame);
+                            try{
+                                game.loadMinigame();
+                                getMinigameManager().addMinigame(game);
+                            }
+                            catch(Exception e){
+                                getLogger().severe(ChatColor.RED.toString() + "Failed to load \"" + minigame +"\"! The configuration file may be corrupt or missing!");
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }, 1L);
+            }
+        }
+        catch(FileNotFoundException ex){
+            log.info("Failed to load config, creating one.");
+            try{
+                this.getConfig().save(this.getDataFolder() + "/config.yml");
+            }
+            catch(IOException e){
+                log.log(Level.SEVERE, "Could not save config.yml!");
+                e.printStackTrace();
+            }
+        }
+        catch(Exception e){
+            log.log(Level.SEVERE, "Failed to load config!");
+            e.printStackTrace();
+        }
+    }
 	
 	private boolean setupEconomy(){
         if(getServer().getPluginManager().getPlugin("Vault") == null){
@@ -289,6 +286,19 @@ public class Minigames extends JavaPlugin{
 	public Economy getEconomy(){
 		return econ;
 	}
+
+	private void loadVersion(){
+        InputStream stream = getClass().getResourceAsStream("minigame.properties");
+        Properties p = new Properties();
+        try {
+            p.load(stream );
+        } catch ( IOException e ) {
+            getLogger().warning(e.getMessage());
+        } finally {
+            Closeables.closeQuietly( stream );
+        }
+        VERSION = new ComparableVersion(p.getProperty("version"));
+    }
 
 	/**
 	 * use {@link #getPlayerManager()}

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 //import net.minecraft.server.v1_6_R2.EntityPlayer;
 //
@@ -385,6 +386,7 @@ public class MinigameUtils {
 	 * @return The capitalized string
 	 */
 	public static String capitalize(String toCapitalize){
+		if (toCapitalize == null) return null;
 		String val = toCapitalize.toLowerCase();
 		String[] spl = val.split(" ");
 		val = "";
@@ -531,6 +533,17 @@ public class MinigameUtils {
 			return string;
 		}
 	}
+
+	public static String sanitizeYamlString(String input){
+		final Pattern pattern = Pattern.compile("^[a-zA-Z\\d_]+$");
+		if (!pattern.matcher(input).matches()) {
+			return null;
+		}
+		else{
+			return input;
+		}
+	}
+
 	
 //	public static void removePlayerArrows(MinigamePlayer player){
 //		try{
