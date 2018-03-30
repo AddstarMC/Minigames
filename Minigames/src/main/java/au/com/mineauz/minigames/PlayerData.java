@@ -790,7 +790,6 @@ public class PlayerData {
 		}
 	}
 
-	@NotNull
 	public MinigamePlayer getMinigamePlayer(Player player){
 		if (minigamePlayers.containsKey(player.getName())) return minigamePlayers.get(player.getName());
 		else addMinigamePlayer(player);
