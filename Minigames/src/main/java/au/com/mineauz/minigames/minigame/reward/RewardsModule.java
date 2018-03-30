@@ -69,12 +69,12 @@ public class RewardsModule extends MinigameModule {
 		ConfigurationSection root = config.getConfigurationSection(getMinigame().getName(false));
 		if (root != null) {
 			String name = root.getString("reward-scheme", "standard");
-			
+
 			scheme = RewardSchemes.createScheme(name);
 			if (scheme == null) {
 				scheme = new StandardRewardScheme();
 			}
-			
+
 			ConfigurationSection rewards = root.getConfigurationSection("rewards");
 			scheme.load(rewards);
 		}

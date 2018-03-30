@@ -385,6 +385,7 @@ public class MinigameUtils {
 	 * @return The capitalized string
 	 */
 	public static String capitalize(String toCapitalize){
+		if (toCapitalize == null) return null;
 		String val = toCapitalize.toLowerCase();
 		String[] spl = val.split(" ");
 		val = "";

@@ -83,7 +83,7 @@ public class MinigamePlayer implements ScriptObject {
 	public MinigamePlayer(Player player){
 		this.player = player;
 		spc = new StoredPlayerCheckpoints(getUUID().toString());
-		
+
 		File plcp = new File(Minigames.getPlugin().getDataFolder() + "/playerdata/checkpoints/" + getUUID().toString() + ".yml");
 		if(plcp.exists()){
 			getStoredPlayerCheckpoints().loadCheckpoints();
@@ -132,7 +132,7 @@ public class MinigamePlayer implements ScriptObject {
 	public void sendInfoMessage(String msg) {
 		sendMessage(msg, MinigameMessageType.INFO);
 	}
-	
+
 	public void sendMessage(String msg, @NotNull MinigameMessageType type) {
 		String init = "";
 		if (type == null) type = MinigameMessageType.INFO;
