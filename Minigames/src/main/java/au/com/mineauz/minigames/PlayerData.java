@@ -26,6 +26,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -196,22 +197,17 @@ public class PlayerData {
         }
         else if(item.getType() == Material.AIR && betAmount == 0){
             player.sendMessage(MinigameUtils.getLang("player.bet.plyNoBet"), "error");
-            return;
-        }
-        else if(betAmount != 0 && !pbet.canBet(player, betAmount)){
+        } else if (betAmount != 0 && pbet != null && !pbet.canBet(player, betAmount)) {
             player.sendMessage(MinigameUtils.getLang("player.bet.incorrectAmount"), "error");
             player.sendMessage(MinigameUtils.formStr("player.bet.incorrectAmountInfo", Minigames.plugin.getEconomy().format(minigame.getMpBets().getHighestMoneyBet())), "error");
-            return;
         }
         else if(betAmount != 0 && plugin.getEconomy().getBalance(player.getPlayer().getPlayer()) < betAmount){
             player.sendMessage(MinigameUtils.getLang("player.bet.notEnoughMoney"), "error");
             player.sendMessage(MinigameUtils.formStr("player.bet.notEnoughMoneyInfo", Minigames.plugin.getEconomy().format(minigame.getMpBets().getHighestMoneyBet())), "error");
-            return;
         }
         else{
             player.sendMessage(MinigameUtils.getLang("player.bet.incorrectItem"), "error");
             player.sendMessage(MinigameUtils.formStr("player.bet.incorrectItemInfo", 1, minigame.getMpBets().highestBetName()), "error");
-            return;
         }
     }
 	
@@ -220,7 +216,7 @@ public class PlayerData {
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
 		if(!event.isCancelled()){
-			boolean tpd = false;
+			boolean tpd;
 			if(minigame.getSpectatorLocation() != null)
 				tpd = player.teleport(minigame.getSpectatorLocation());
 			else{
@@ -793,8 +789,11 @@ public class PlayerData {
 			minigamePlayers.remove(player.getName());
 		}
 	}
-	
+
+	@NotNull
 	public MinigamePlayer getMinigamePlayer(Player player){
+		if (minigamePlayers.containsKey(player.getName())) return minigamePlayers.get(player.getName());
+		else addMinigamePlayer(player);
 		return minigamePlayers.get(player.getName());
 	}
 	
