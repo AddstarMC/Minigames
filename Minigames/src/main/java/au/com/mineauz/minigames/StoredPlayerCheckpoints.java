@@ -197,7 +197,10 @@ public class StoredPlayerCheckpoints {
                     Float yaw = new Float(save.getConfig().get(mgm + ".yaw", 0).toString());
                     Float pitch = new Float(save.getConfig().get(mgm + ".pitch", 0).toString());
                     String world = (String) save.getConfig().get(mgm + ".world");
-
+                    if (world == null) {
+                        Minigames.plugin.getLogger().warning("WARNING: Invalid world \"" + world + "\" found in checkpoint for " + mgm + "! Checkpoint has been removed.");
+                        continue;
+                    }
                     World w = Minigames.plugin.getServer().getWorld(world);
                     if (w == null) {
                         Minigames.plugin.getLogger().warning("WARNING: Invalid world \"" + world + "\" found in checkpoint for " + mgm + "! Checkpoint has been removed.");
