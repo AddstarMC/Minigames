@@ -8,10 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 //import net.minecraft.server.v1_6_R2.EntityPlayer;
 //
@@ -425,14 +422,21 @@ public class MinigameUtils {
 	 * @return A map of values to store
 	 */
 	public static Map<String, Object> serializeLocation(Location loc){
+
 		Map<String, Object> sloc = new HashMap<String, Object>();
 		sloc.put("x", loc.getX());
 		sloc.put("y", loc.getY());
 		sloc.put("z", loc.getZ());
 		sloc.put("yaw", loc.getYaw());
 		sloc.put("pitch", loc.getPitch());
-		sloc.put("world", loc.getWorld().getName());
-		
+		String name;
+		if (loc.getWorld() != null) {
+			name = loc.getWorld().getName();
+		} else {
+			debugMessage("A Location could not be deserialized the world was null");
+			return Collections.emptyMap();
+		}
+		sloc.put("world", name);
 		return sloc;
 	}
 

@@ -1,14 +1,14 @@
 package au.com.mineauz.minigames.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.minigame.Minigame;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EditCommand implements ICommand {
 
@@ -59,14 +59,17 @@ public class EditCommand implements ICommand {
 		if(args != null){
 			if(plugin.mdata.hasMinigame(args[0])){
 				Minigame mgm = plugin.mdata.getMinigame(args[0]);
-				mgm.displayMenu(plugin.pdata.getMinigamePlayer((Player)sender));
-//				Menu menu = new Menu(6, "Edit: " + mgm.getName(), plugin.pdata.getMinigamePlayer((Player)sender));
-//				int slot = 0;
-//				for(MenuItem item : mgm.getMenuItems()){
-//					menu.addItem(item, slot);
-//					slot++;
-//				}
-//				menu.displayMenu(plugin.pdata.getMinigamePlayer((Player)sender));
+                if (mgm == null) {
+                    plugin.getLogger().warning("The Minigame requested has a configuration problem and is returning nulls");
+                    return false;
+                }
+                MinigamePlayer player = plugin.pdata.getMinigamePlayer((Player) sender);
+                if (player == null) {
+                    plugin.getLogger().warning("Player is null");
+                    Thread.dumpStack();
+                    return false;
+                }
+                mgm.displayMenu(player);
 			}
 			else{
 				sender.sendMessage(ChatColor.RED + "There is no Minigame by the name " + args[0]);
