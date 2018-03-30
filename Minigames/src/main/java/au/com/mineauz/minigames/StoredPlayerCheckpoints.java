@@ -1,13 +1,9 @@
 package au.com.mineauz.minigames;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.bukkit.Location;
 import org.bukkit.World;
+
+import java.util.*;
 
 public class StoredPlayerCheckpoints {
 	private String uuid;
@@ -194,21 +190,27 @@ public class StoredPlayerCheckpoints {
 		for(String mgm : mgms){
 			if(!mgm.equals("globalcheckpoint")){
 				MinigameUtils.debugMessage("Attempting to load checkpoint for " + mgm + "...");
-				Double locx = (Double) save.getConfig().get(mgm + ".x");
-				Double locy = (Double) save.getConfig().get(mgm + ".y");
-				Double locz = (Double) save.getConfig().get(mgm + ".z");
-				Float yaw = new Float(save.getConfig().get(mgm + ".yaw").toString());
-				Float pitch = new Float(save.getConfig().get(mgm + ".pitch").toString());
-				String world = (String) save.getConfig().get(mgm + ".world");
+                try {
+                    Double locx = (Double) save.getConfig().get(mgm + ".x");
+                    Double locy = (Double) save.getConfig().get(mgm + ".y");
+                    Double locz = (Double) save.getConfig().get(mgm + ".z");
+                    Float yaw = new Float(save.getConfig().get(mgm + ".yaw", 0).toString());
+                    Float pitch = new Float(save.getConfig().get(mgm + ".pitch", 0).toString());
+                    String world = (String) save.getConfig().get(mgm + ".world");
 
-				World w = Minigames.plugin.getServer().getWorld(world);
-				if (w == null) {
-					Minigames.plugin.getLogger().warning("WARNING: Invalid world \"" + world + "\" found in checkpoint for " + mgm + "! Checkpoint has been removed.");
-					continue;
-				}
+                    World w = Minigames.plugin.getServer().getWorld(world);
+                    if (w == null) {
+                        Minigames.plugin.getLogger().warning("WARNING: Invalid world \"" + world + "\" found in checkpoint for " + mgm + "! Checkpoint has been removed.");
+                        continue;
+                    }
 
-				Location loc = new Location(w, locx, locy, locz, yaw, pitch);
-				checkpoints.put(mgm, loc);
+                    Location loc = new Location(w, locx, locy, locz, yaw, pitch);
+                    checkpoints.put(mgm, loc);
+                } catch (ClassCastException e) {
+                    MinigameUtils.debugMessage("Checkpoint could not be loaded ... " + mgm + " xyz not double");
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
 				if(save.getConfig().contains(mgm + ".flags")){
 					flags.put(mgm, save.getConfig().getStringList(mgm + ".flags"));
 				}
