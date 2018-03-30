@@ -26,7 +26,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
-import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.util.*;
