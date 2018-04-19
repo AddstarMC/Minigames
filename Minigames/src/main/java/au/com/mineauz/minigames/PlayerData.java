@@ -332,6 +332,8 @@ public class PlayerData {
                 if (pos < game.getStartLocations().size()) {
                     player.setStartTime(Calendar.getInstance().getTimeInMillis());
                     result = game.getStartLocations().get(pos);
+                    
+                    pos++;
                 } else {
                     pos = 0;
                     if (!game.getStartLocations().isEmpty()) {
@@ -350,6 +352,7 @@ public class PlayerData {
                     } else {
                         if (pos < game.getStartLocations().size()) {
                             result = game.getStartLocations().get(pos);
+                            pos++;
                         } else {
                             pos = 0;
                             if (!game.getStartLocations().isEmpty()) {
