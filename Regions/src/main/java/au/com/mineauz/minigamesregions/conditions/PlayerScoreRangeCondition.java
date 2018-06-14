@@ -9,6 +9,7 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
@@ -71,9 +72,9 @@ public class PlayerScoreRangeCondition extends ConditionInterface {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Score Range", player);
-		m.addItem(min.getMenuItem("Min Score", Material.STEP));
+		m.addItem(min.getMenuItem("Min Score", Material.STONE_SLAB));
 		m.addItem(max.getMenuItem("Max Score", Material.STONE));
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
 		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;

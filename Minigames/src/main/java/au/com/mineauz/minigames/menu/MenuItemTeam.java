@@ -131,7 +131,7 @@ public class MenuItemTeam extends MenuItem{
 		m.addItem(new MenuItemList("NameTag Visibility", Material.NAME_TAG, team.getNameTagVisibilityCallback(), ntvo));
 		m.addItem(new MenuItemBoolean("Auto Balance Team",Material.PAPER, team.getAutoBalanceCallBack()));
 		
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, getContainer()), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), getContainer()), m.getSize() - 9);
 		m.displayMenu(getContainer().getViewer());
 		return null;
 	}

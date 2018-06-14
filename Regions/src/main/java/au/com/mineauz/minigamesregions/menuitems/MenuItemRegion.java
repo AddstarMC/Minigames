@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.RegionModule;
@@ -53,9 +54,9 @@ public class MenuItemRegion extends MenuItem{
 			items.add(new MenuItemRegionExecutor(region, ex));
 		}
 		if(previousPage != null){
-			m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previousPage), m.getSize() - 9);
+			m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), previousPage), m.getSize() - 9);
 		}
-		m.addItem(new MenuItemRegionExecutorAdd("Add Executor", Material.ITEM_FRAME, region), m.getSize() - 1);
+		m.addItem(new MenuItemRegionExecutorAdd("Add Executor", MenuUtility.getCreateMaterial(), region), m.getSize() - 1);
 		m.addItems(items);
 		
 		return m;

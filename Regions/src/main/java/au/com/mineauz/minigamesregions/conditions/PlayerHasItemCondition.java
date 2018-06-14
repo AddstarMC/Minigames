@@ -271,7 +271,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Player Has Item", player);
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
 		final MinigamePlayer fply = player;
 		m.addItem(new MenuItemString("Item", Material.STONE, new Callback<String>() {
 			
@@ -289,7 +289,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
 			}
 		}));
 		m.addItem(useData.getMenuItem("Match Item Data", Material.ENDER_PEARL));
-		m.addItem(data.getMenuItem("Data Value", Material.EYE_OF_ENDER, 0, null));
+		m.addItem(data.getMenuItem("Data Value", Material.ENDER_EYE, 0, null));
 		m.addItem(new MenuItemList("Search Where", Material.COMPASS, new Callback<String>() {
 			@Override
 			public void setValue(String value) {

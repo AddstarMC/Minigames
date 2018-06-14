@@ -28,7 +28,7 @@ public class QuitPositionMode implements ToolMode{
 
 	@Override
 	public Material getIcon() {
-		return Material.WOOD_DOOR;
+		return Material.OAK_DOOR;
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class QuitPositionMode implements ToolMode{
 	@Override
 	public void select(MinigamePlayer player, Minigame minigame, Team team) {
 		if(minigame.getQuitPosition() != null){
-			player.getPlayer().sendBlockChange(minigame.getQuitPosition(), Material.SKULL, (byte)1);
+			player.getPlayer().sendBlockChange(minigame.getQuitPosition(), Material.SKELETON_SKULL, (byte)1);
 			player.sendInfoMessage("Selected quit position (marked with skull)");
 		}
 		else{

@@ -145,16 +145,12 @@ public class Region implements ScriptObject {
 	public void changeTickDelay(long delay){
 		removeTickTask();
 		taskDelay = delay;
-        taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), new Runnable() {
-			
-			@Override
-			public void run() {
-                List<MinigamePlayer> plys = new ArrayList<>(players);
-				for(MinigamePlayer player : plys){
-					execute(Triggers.getTrigger("TICK"), player);
-				}
-			}
-		}, 0, delay);
+        taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
+List<MinigamePlayer> plys = new ArrayList<>(players);
+            for(MinigamePlayer player : plys){
+                execute(Triggers.getTrigger("TICK"), player);
+            }
+        }, 0, delay);
 	}
 	
 	public long getTickDelay(){
@@ -165,16 +161,12 @@ public class Region implements ScriptObject {
 		if(taskID != -1)
 			removeTickTask();
         
-        taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), new Runnable() {
-			
-			@Override
-			public void run() {
-                List<MinigamePlayer> plys = new ArrayList<>(players);
-				for(MinigamePlayer player : plys){
-					execute(Triggers.getTrigger("TICK"), player);
-				}
-			}
-		}, 0, taskDelay);
+        taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
+List<MinigamePlayer> plys = new ArrayList<>(players);
+            for(MinigamePlayer player : plys){
+                execute(Triggers.getTrigger("TICK"), player);
+            }
+        }, 0, taskDelay);
 	}
 	
 	public void removeTickTask(){

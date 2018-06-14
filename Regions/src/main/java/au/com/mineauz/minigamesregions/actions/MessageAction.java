@@ -12,6 +12,7 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.script.ExpressionParser;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
@@ -140,7 +141,7 @@ public class MessageAction extends AbstractAction {
 		Menu m = new Menu(3, "Options", player);
 		m.setPreviousPage(previous);
 		m.addItem(msg.getMenuItem("Message", Material.PAPER));
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, m.getPreviousPage()), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), m.getPreviousPage()), m.getSize() - 9);
 		m.displayMenu(player);
 		return true;
 	}

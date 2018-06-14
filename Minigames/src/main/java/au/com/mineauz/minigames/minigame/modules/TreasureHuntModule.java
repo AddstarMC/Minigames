@@ -11,6 +11,7 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemTime;
+import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -80,7 +81,7 @@ public class TreasureHuntModule extends MinigameModule{
 		Menu treasureHunt = new Menu(6, getMinigame().getName(false), previous.getViewer());
 
         List<MenuItem> itemsTreasureHunt = new ArrayList<>(5);
-		itemsTreasureHunt.add(location.getMenuItem("Location Name", Material.BED, MinigameUtils.stringToList("Name to appear when;treasure spawns")));
+		itemsTreasureHunt.add(location.getMenuItem("Location Name", Material.WHITE_BED, MinigameUtils.stringToList("Name to appear when;treasure spawns")));
 		itemsTreasureHunt.add(maxRadius.getMenuItem("Max. Radius", Material.ENDER_PEARL, 10, null));
         List<String> maxHeightDes = new ArrayList<>();
 		maxHeightDes.add("Max. height of where a");
@@ -91,15 +92,15 @@ public class TreasureHuntModule extends MinigameModule{
         List<String> minDes = new ArrayList<>();
 		minDes.add("Minimum items to");
 		minDes.add("spawn in chest.");
-		itemsTreasureHunt.add(minTreasure.getMenuItem("Min. Items", Material.STEP, minDes, 0, 27));
+		itemsTreasureHunt.add(minTreasure.getMenuItem("Min. Items", Material.STONE_SLAB, minDes, 0, 27));
         List<String> maxDes = new ArrayList<>();
 		maxDes.add("Maximum items to");
 		maxDes.add("spawn in chest.");
 		itemsTreasureHunt.add(maxTreasure.getMenuItem("Max. Items", Material.STONE, maxDes, 0, 27));
-		itemsTreasureHunt.add(new MenuItemTime("Restart Delay", Material.WATCH, treasureWaitTime.getCallback(), 0, null));
-		itemsTreasureHunt.add(new MenuItemTime("Hint Usage Delay", Material.WATCH, hintWaitTime.getCallback(), 0, null));
+		itemsTreasureHunt.add(new MenuItemTime("Restart Delay", Material.CLOCK, treasureWaitTime.getCallback(), 0, null));
+		itemsTreasureHunt.add(new MenuItemTime("Hint Usage Delay", Material.CLOCK, hintWaitTime.getCallback(), 0, null));
 		treasureHunt.addItems(itemsTreasureHunt);
-		treasureHunt.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), treasureHunt.getSize() - 9);
+		treasureHunt.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), previous), treasureHunt.getSize() - 9);
 		treasureHunt.displayMenu(treasureHunt.getViewer());
 		return true;
 	}

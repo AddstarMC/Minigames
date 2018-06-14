@@ -90,12 +90,8 @@ public class RegionDisplayManager {
 	}
 	
 	public void show(Region region, MinigamePlayer player) {
-		Map<Region, IDisplayObject> regions = regionDisplays.get(player.getPlayer());
-		if (regions == null) {
-			regions = Maps.newIdentityHashMap();
-			regionDisplays.put(player.getPlayer(), regions);
-		}
-		
+		Map<Region, IDisplayObject> regions = regionDisplays.computeIfAbsent(player.getPlayer(), k -> Maps.newIdentityHashMap());
+
 		Location[] corners = MinigameUtils.getMinMaxSelection(region.getFirstPoint(), region.getSecondPoint());
 		
 		IDisplayObject display = Minigames.getPlugin().display.displayCuboid(player.getPlayer(), corners[0], corners[1].add(1, 1, 1));
@@ -106,12 +102,8 @@ public class RegionDisplayManager {
 	}
 	
 	public void show(Node node, MinigamePlayer player) {
-		Map<Node, IDisplayObject> nodes = nodeDisplays.get(player.getPlayer());
-		if (nodes == null) {
-			nodes = Maps.newIdentityHashMap();
-			nodeDisplays.put(player.getPlayer(), nodes);
-		}
-		
+		Map<Node, IDisplayObject> nodes = nodeDisplays.computeIfAbsent(player.getPlayer(), k -> Maps.newIdentityHashMap());
+
 		IDisplayObject display = Minigames.getPlugin().display.displayPoint(player.getPlayer(), node.getLocation(), true);
 		display.show();
 		nodes.put(node, display);

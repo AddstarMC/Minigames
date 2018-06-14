@@ -59,7 +59,8 @@ public class CommandReward extends RewardType{
 		private CommandReward reward;
 
 		public CommandRewardItem(CommandReward reward) {
-			super("/" + command, Material.COMMAND, new Callback<String>() {
+			super("/" + command, Material.COMMAND_BLOCK, new Callback<String>() {
+
 
 				@Override
 				public void setValue(String value) {

@@ -104,7 +104,7 @@ public class PlaySoundAction extends AbstractAction {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Play Sound", player);
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
 		List<String> sounds = new ArrayList<>();
 		for(Sound s : Sound.values())
 			sounds.add(MinigameUtils.capitalize(s.toString().replace("_", " ")));
@@ -141,7 +141,7 @@ public class PlaySoundAction extends AbstractAction {
 				return vol.getFlag().doubleValue();
 			}
 		}, 0.1, 1d, 0.5, null));
-		m.addItem(new MenuItemDecimal("Pitch", Material.EYE_OF_ENDER, new Callback<Double>() {
+		m.addItem(new MenuItemDecimal("Pitch", Material.ENDER_EYE, new Callback<Double>() {
 
 			@Override
 			public void setValue(Double value) {

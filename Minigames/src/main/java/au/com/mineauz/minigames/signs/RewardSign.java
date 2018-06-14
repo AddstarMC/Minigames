@@ -93,20 +93,16 @@ public class RewardSign implements MinigameSign {
 			
 			Menu rewardMenu = new Menu(5, getName(), player);
 			
-			rewardMenu.addItem(new MenuItemRewardGroupAdd("Add Group", Material.ITEM_FRAME, rew), 42);
-			rewardMenu.addItem(new MenuItemRewardAdd("Add Item", Material.ITEM_FRAME, rew), 43);
-			final MenuItemCustom mic = new MenuItemCustom("Save Rewards", Material.REDSTONE_TORCH_ON);
+			rewardMenu.addItem(new MenuItemRewardGroupAdd("Add Group",MenuUtility.getCreateMaterial(), rew), 42);
+			rewardMenu.addItem(new MenuItemRewardAdd("Add Item",MenuUtility.getCreateMaterial(), rew), 43);
+			final MenuItemCustom mic = new MenuItemCustom("Save Rewards", MenuUtility.getSaveMaterial());
 			final Location floc = loc;
-			mic.setClick(new InteractionInterface() {
-				
-				@Override
-				public Object interact(Object object) {
-					mdata.saveRewardSign(MinigameUtils.createLocationID(floc), true);
-					mic.getContainer().getViewer().sendInfoMessage("Saved rewards for this sign.");
-					mic.getContainer().getViewer().getPlayer().closeInventory();
-					return null;
-				}
-			});
+			mic.setClick(object -> {
+                mdata.saveRewardSign(MinigameUtils.createLocationID(floc), true);
+                mic.getContainer().getViewer().sendInfoMessage("Saved rewards for this sign.");
+                mic.getContainer().getViewer().getPlayer().closeInventory();
+                return null;
+            });
 			rewardMenu.addItem(mic, 44);
 			//List<String> list = new ArrayList<String>();
 			//for(RewardRarity r : RewardRarity.values()){

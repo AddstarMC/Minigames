@@ -49,19 +49,15 @@ public class MenuItemRewardAdd extends MenuItem{
 				meta.setDisplayName(ChatColor.RESET + type);
 				custom.getItem().setItemMeta(meta);
 				custom.setItem(rewType.getMenuItem().getItem());
-				custom.setClick(new InteractionInterface() {
-					
-					@Override
-					public Object interact(Object object) {
-						if(rewards != null)
-							rewards.addReward(rewType);
-						else
-							group.addItem(rewType);
-						orig.displayMenu(orig.getViewer());
-						orig.addItem(rewType.getMenuItem());
-						return null;
-					}
-				});
+				custom.setClick(object -> {
+                    if(rewards != null)
+                        rewards.addReward(rewType);
+                    else
+                        group.addItem(rewType);
+                    orig.displayMenu(orig.getViewer());
+                    orig.addItem(rewType.getMenuItem());
+                    return null;
+                });
 				m.addItem(custom);
 			}
 		}

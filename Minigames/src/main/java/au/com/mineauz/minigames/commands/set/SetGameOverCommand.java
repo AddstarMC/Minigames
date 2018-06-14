@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SetGameOverCommand implements ICommand {
@@ -103,9 +104,7 @@ public class SetGameOverCommand implements ICommand {
 			String alias, String[] args) {
         List<String> opts = new ArrayList<>();
 		if(args.length == 1){
-			for(String p : getParameters()){
-				opts.add(p);
-			}
+            Collections.addAll(opts, getParameters());
 			return MinigameUtils.tabCompleteMatch(opts, args[0]);
 		}
 		else if(args.length == 2 && (args[0].equalsIgnoreCase("invincible") ||

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigamesregions.executors.BaseExecutor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -46,34 +47,30 @@ public class MenuItemActionAdd extends MenuItem{
 					cat = new Menu(6, MinigameUtils.capitalize(catname), getContainer().getViewer());
 					cats.put(catname, cat);
 					m.addItem(new MenuItemPage(MinigameUtils.capitalize(catname), Material.CHEST, cat));
-					cat.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, m), cat.getSize() - 9);
+					cat.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), m), cat.getSize() - 9);
 				}
 				else
 					cat = cats.get(catname);
 				MenuItemCustom c = new MenuItemCustom(MinigameUtils.capitalize(act), Material.PAPER);
 				final String fact = act;
-				c.setClick(new InteractionInterface() {
-					
-					@Override
-					public Object interact(Object object) {
-						ActionInterface action = Actions.getActionByName(fact);
-						if(exec == null){
-							exec.addAction(action);
-							getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, exec, action));
-							getContainer().displayMenu(getContainer().getViewer());
-						}
-						else{
-							exec.addAction(action);
-							getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, exec, action));
-							getContainer().displayMenu(getContainer().getViewer());
-						}
-						return null;
-					}
-				});
+				c.setClick(object -> {
+                    ActionInterface action = Actions.getActionByName(fact);
+                    if(exec == null){
+                        exec.addAction(action);
+                        getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, exec, action));
+                        getContainer().displayMenu(getContainer().getViewer());
+                    }
+                    else{
+                        exec.addAction(action);
+                        getContainer().addItem(new MenuItemAction(MinigameUtils.capitalize(fact), Material.PAPER, exec, action));
+                        getContainer().displayMenu(getContainer().getViewer());
+                    }
+                    return null;
+                });
 				cat.addItem(c);
 			}
 		}
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, getContainer()), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), getContainer()), m.getSize() - 9);
 		m.displayMenu(getContainer().getViewer());
 		return null;
 	}

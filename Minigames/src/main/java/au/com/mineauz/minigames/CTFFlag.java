@@ -96,7 +96,7 @@ public class CTFFlag{
 				blockBelow.getBlock().getType() == Material.DISPENSER ||
 				blockBelow.getBlock().getType() == Material.CHEST ||
 				blockBelow.getBlock().getType() == Material.BREWING_STAND || 
-				blockBelow.getBlock().getType() == Material.SIGN_POST || 
+				blockBelow.getBlock().getType() == Material.SIGN ||
 				blockBelow.getBlock().getType() == Material.WALL_SIGN){
 			blockBelow.setY(blockBelow.getY() + 1);
 		}
@@ -104,7 +104,7 @@ public class CTFFlag{
 		newLocation = blockBelow.clone();
 		newLocation.setY(newLocation.getY() + 1);
 		
-		newLocation.getBlock().setType(Material.SIGN_POST);
+		newLocation.getBlock().setType(Material.SIGN);
 		Sign sign = (Sign) newLocation.getBlock().getState();
 		
 		sign.setData(data);
@@ -175,36 +175,26 @@ public class CTFFlag{
 	
 	public void startReturnTimer(){
 		final CTFFlag self = this;
-        taskID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), new Runnable() {
-			
-			@Override
-			public void run() {
-				String id = MinigameUtils.createLocationID(currentLocation);
-				if(minigame.hasDroppedFlag(id)){
-					minigame.removeDroppedFlag(id);
-					String newID = MinigameUtils.createLocationID(spawnLocation);
-					minigame.addDroppedFlag(newID, self);
-				}
-				respawnFlag();
-				for(MinigamePlayer pl : minigame.getPlayers()){
-					if(getTeam() != null)
-						pl.sendMessage(MinigameUtils.formStr("minigame.flag.returnedTeam", getTeam().getChatColor() + getTeam().getDisplayName() + ChatColor.WHITE), null);
-					else
-						pl.sendMessage(MinigameUtils.getLang("minigame.flag.returnedNeutral"), null);
-				}
-				taskID = -1;
+        taskID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () -> {
+			String id = MinigameUtils.createLocationID(currentLocation);
+			if(minigame.hasDroppedFlag(id)){
+				minigame.removeDroppedFlag(id);
+				String newID = MinigameUtils.createLocationID(spawnLocation);
+				minigame.addDroppedFlag(newID, self);
 			}
+			respawnFlag();
+			for(MinigamePlayer pl : minigame.getPlayers()){
+				if(getTeam() != null)
+					pl.sendMessage(MinigameUtils.formStr("minigame.flag.returnedTeam", getTeam().getChatColor() + getTeam().getDisplayName() + ChatColor.WHITE), null);
+				else
+					pl.sendMessage(MinigameUtils.getLang("minigame.flag.returnedNeutral"), null);
+			}
+			taskID = -1;
 		}, respawnTime * 20);
 	}
 	
 	public void startCarrierParticleEffect(final Player player){
-        cParticleID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), new Runnable() {
-			
-			@Override
-			public void run() {
-				player.getWorld().playEffect(player.getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
-			}
-		}, 15L, 15L);
+        cParticleID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> player.getWorld().playEffect(player.getLocation(), Effect.MOBSPAWNER_FLAMES, 0), 15L, 15L);
 	}
 	
 	public void stopCarrierParticleEffect(){

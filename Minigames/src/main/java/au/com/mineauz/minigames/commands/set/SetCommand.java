@@ -243,9 +243,7 @@ AliasCheck:				for(ICommand com : parameterList.values()){
 				
 				if(args != null && args.length > 2){
 					shortArgs = new String[args.length - 2];
-					for(int i = 2; i < args.length; i++){
-						shortArgs[i - 2] = args[i];
-					}
+                    System.arraycopy(args, 2, shortArgs, 0, args.length - 2);
 				}
 			}
 			
@@ -341,9 +339,7 @@ AliasCheck:				for(ICommand com : parameterList.values()){
 				}
 				
 				shortArgs = new String[args.length - 2];
-				for(int i = 2; i < args.length; i++){
-					shortArgs[i - 2] = args[i];
-				}
+                System.arraycopy(args, 2, shortArgs, 0, args.length - 2);
 				
 				if(comd != null){
 					if(ply != null){

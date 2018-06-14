@@ -20,7 +20,7 @@ public class MenuItemStatisticsSettings extends MenuItem {
 		Menu subMenu = new Menu(6, "Statistics Settings", getContainer().getViewer());
 		
 		for (MinigameStat stat : MinigameStats.getAllStats().values()) {
-			subMenu.addItem(new MenuItemModifyStatSetting(minigame, stat, Material.BOOK_AND_QUILL));
+			subMenu.addItem(new MenuItemModifyStatSetting(minigame, stat, Material.WRITABLE_BOOK));
 		}
 		
 		subMenu.addItem(new MenuItemBack(getContainer()), subMenu.getSize() - 9);

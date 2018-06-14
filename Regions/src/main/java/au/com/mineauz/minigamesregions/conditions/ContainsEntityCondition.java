@@ -128,7 +128,7 @@ public class ContainsEntityCondition extends ConditionInterface {
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu menu = new Menu(3, "Contians Entity", player);
 
-        menu.addItem(new MenuItemEnum<>("Entity Type", Material.MONSTER_EGGS, entityType.getCallback(), EntityType.class));
+        menu.addItem(new MenuItemEnum<>("Entity Type", Material.LEGACY_MONSTER_EGG, entityType.getCallback(), EntityType.class));
 		
 		menu.addItem(new MenuItemNewLine());
 		
@@ -137,7 +137,7 @@ public class ContainsEntityCondition extends ConditionInterface {
 		menuItem.setAllowNull(true);
 		menu.addItem(menuItem);
 		
-		menu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), menu.getSize() - 9);
+		menu.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), menu.getSize() - 9);
 		addInvertMenuItem(menu);
 		menu.displayMenu(player);
 		return true;

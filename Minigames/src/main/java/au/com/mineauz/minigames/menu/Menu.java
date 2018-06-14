@@ -4,7 +4,6 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -110,10 +109,10 @@ public class Menu {
 	
 	public void addPage(){
 		Menu nextPage = new Menu(rows, name, viewer);
-		addItem(new MenuItemPage("Next Page", Material.REDSTONE_TORCH_ON, nextPage), 9 * (rows - 1) + 5);
+		addItem(new MenuItemPage("Next Page",MenuUtility.getBackMaterial(), nextPage), 9 * (rows - 1) + 5);
 		setNextPage(nextPage);
 		nextPage.setPreviousPage(this);
-		nextPage.addItem(new MenuItemPage("Previous Page", Material.REDSTONE_TORCH_ON, this), 9 * (rows - 1) + 3);
+		nextPage.addItem(new MenuItemPage("Previous Page",MenuUtility.getBackMaterial(), this), 9 * (rows - 1) + 3);
 		for(int j = 9 * (rows - 1) + 6; j < 9 * rows; j++){
 			if(getClicked(j) != null)
 				nextPage.addItem(getClicked(j), j);
@@ -214,14 +213,10 @@ public class Menu {
 	}
 	
 	public void startReopenTimer(int time){
-        reopenTimerID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), new Runnable() {
-			
-			@Override
-			public void run() {
-				viewer.setNoClose(false);
-				viewer.setManualEntry(null);
-				displayMenu(viewer);
-			}
+        reopenTimerID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () -> {
+			viewer.setNoClose(false);
+			viewer.setManualEntry(null);
+			displayMenu(viewer);
 		}, (long)(time * 20));
 	}
 	

@@ -5,11 +5,8 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.FlowerPot;
-import org.bukkit.block.Jukebox;
-import org.bukkit.block.Sign;
-import org.bukkit.block.Skull;
+import org.bukkit.block.*;
+import org.bukkit.block.data.Rotatable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.material.MaterialData;
@@ -47,40 +44,55 @@ public class RollbackScheduler implements Runnable {
 		while(physIterator.hasNext()){
 			BlockData bdata = physIterator.next();
 			bdata.getBlockState().update(true);
-			if((bdata.getBlockState().getType() == Material.SIGN_POST || bdata.getBlockState().getType() == Material.WALL_SIGN) && 
-					bdata.getBlockState() instanceof Sign){
-				Sign sign = (Sign) bdata.getLocation().getBlock().getState();
-				Sign signOld = (Sign) bdata.getBlockState();
-				sign.setLine(0, signOld.getLine(0));
-				sign.setLine(1, signOld.getLine(1));
-				sign.setLine(2, signOld.getLine(2));
-				sign.setLine(3, signOld.getLine(3));
-				sign.update();
+			switch (bdata.getBlockState().getType()){
+				case SIGN:
+				case WALL_SIGN:
+					if(bdata.getBlockState() instanceof Sign){
+						Sign sign =  (Sign) bdata.getLocation().getBlock().getState();
+						Sign signOld = (Sign) bdata.getBlockState();
+						sign.setLine(0, signOld.getLine(0));
+						sign.setLine(1, signOld.getLine(1));
+						sign.setLine(2, signOld.getLine(2));
+						sign.setLine(3, signOld.getLine(3));
+						sign.update();
+					}
+					break;
+				case SKELETON_SKULL:
+				case WITHER_SKELETON_SKULL:
+				case CREEPER_HEAD:
+				case PLAYER_HEAD:
+				case PLAYER_WALL_HEAD:
+				case SKELETON_WALL_SKULL:
+				case CREEPER_WALL_HEAD:
+				case WITHER_SKELETON_WALL_SKULL:
+					if(bdata.getBlockState() instanceof Skull){
+						Skull skull = (Skull) bdata.getBlockState().getBlock().getState();
+						Rotatable skullData = (Rotatable) skull.getBlockData();
+						Skull orig = (Skull) bdata.getBlockState();
+						Rotatable origData = (Rotatable) orig.getBlockData();
+						if(orig.getOwningPlayer() != null)skull.setOwningPlayer(orig.getOwningPlayer());
+						skullData.setRotation(origData.getRotation());
+						skull.update();
+					}
+					break;
+				case JUKEBOX:
+					Jukebox jbox = (Jukebox) bdata.getLocation().getBlock().getState();
+					Jukebox orig = (Jukebox) bdata.getBlockState();
+					jbox.setPlaying(orig.getPlaying());
+					jbox.update();
+					break;
+				case FLOWER_POT:
+				case POTTED_ACACIA_SAPLING:
+				case POTTED_ALLIUM:
+				case POTTED_AZURE_BLUET:
+				case POTTED_BIRCH_SAPLING:
 			}
-			else if(bdata.getLocation().getBlock().getState() instanceof InventoryHolder){
+			 if(bdata.getLocation().getBlock().getState() instanceof InventoryHolder){
 				InventoryHolder block = (InventoryHolder) bdata.getLocation().getBlock().getState();
 				if(bdata.getItems() != null)
 					block.getInventory().setContents(bdata.getItems().clone());
 			}
-			else if(bdata.getBlockState() instanceof FlowerPot){
-				FlowerPot pot = (FlowerPot) bdata.getLocation().getBlock().getState();
-				if(bdata.getSpecialData("contents") != null)
-					pot.setContents((MaterialData)bdata.getSpecialData("contents"));
-			}
-			else if(bdata.getBlockState().getType() == Material.JUKEBOX){
-				Jukebox jbox = (Jukebox) bdata.getLocation().getBlock().getState();
-				Jukebox orig = (Jukebox) bdata.getBlockState();
-				jbox.setPlaying(orig.getPlaying());
-				jbox.update();
-			}
-			else if(bdata.getBlockState().getType() == Material.SKULL){
-				Skull skull = (Skull) bdata.getBlockState().getBlock().getState();
-				Skull orig = (Skull) bdata.getBlockState();
-				if(orig.getOwningPlayer() != null)skull.setOwningPlayer(orig.getOwningPlayer());
-				skull.setRotation(orig.getRotation());
-				skull.setSkullType(orig.getSkullType());
-				skull.update();
-			}
+
             
             if (System.nanoTime() - time > Minigames.getPlugin().getConfig().getDouble("regeneration.maxDelay") * 1000000)
 				return;

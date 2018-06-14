@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -64,20 +65,7 @@ public class EndCommand implements ICommand{
 		if(args == null && sender instanceof Player){
 			MinigamePlayer ply = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
 			if(ply.isInMinigame()){
-				if(ply.getMinigame().getType() != MinigameType.SINGLEPLAYER){
-                    List<MinigamePlayer> w = new ArrayList<>(1);
-                    List<MinigamePlayer> l = new ArrayList<>(ply.getMinigame().getPlayers().size());
-					w.add(ply);
-					l.addAll(ply.getMinigame().getPlayers());
-					l.remove(ply);
-					
-					plugin.getPlayerManager().endMinigame(ply.getMinigame(), w, l);
-					sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to win the Minigame.");
-				}
-				else{
-					plugin.getPlayerManager().endMinigame(ply);
-					sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to win the Minigame.");
-				}
+				forceEnd(sender, ply);
 			}
 			else {
 				sender.sendMessage(ChatColor.RED + "Error: You are not in a minigame!");
@@ -90,7 +78,7 @@ public class EndCommand implements ICommand{
 				player = (Player)sender;
 			}
 			if(player == null || player.hasPermission("minigame.end.other")){
-				List<Player> players = plugin.getServer().matchPlayer(args[0]);
+				Player playertoEnd = Bukkit.getPlayerExact(args[0]);
 				MinigamePlayer ply = null;
 				Team team = null;
 				Minigame mgm = null;
@@ -113,8 +101,8 @@ public class EndCommand implements ICommand{
 					sender.sendMessage(ChatColor.RED + "No Minigame found by the name " + args[1]);
 					return true;
 				}
-				else if(!players.isEmpty()){
-					ply = plugin.getPlayerManager().getMinigamePlayer(players.get(0));
+				else if(playertoEnd !=null){
+					ply = plugin.getPlayerManager().getMinigamePlayer(playertoEnd);
 				}
 				else{
 					sender.sendMessage(ChatColor.RED + "No player found by the name " + args[0]);
@@ -122,20 +110,7 @@ public class EndCommand implements ICommand{
 				}
 				
 				if(ply != null && ply.isInMinigame()){
-					if(ply.getMinigame().getType() != MinigameType.SINGLEPLAYER){
-                        List<MinigamePlayer> w = new ArrayList<>(1);
-                        List<MinigamePlayer> l = new ArrayList<>(ply.getMinigame().getPlayers().size());
-						w.add(ply);
-						l.addAll(ply.getMinigame().getPlayers());
-						l.remove(ply);
-						
-						plugin.getPlayerManager().endMinigame(ply.getMinigame(), w, l);
-						sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to win the Minigame.");
-					}
-					else{
-						plugin.getPlayerManager().endMinigame(ply);
-						sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to win the Minigame.");
-					}
+					forceEnd(sender, ply);
 				}
 				else if(args.length >= 2 && team != null && mgm != null){
 					if(mgm.hasPlayers()){
@@ -171,7 +146,24 @@ public class EndCommand implements ICommand{
 		}
 		return false;
 	}
-
+	
+	private void forceEnd(CommandSender sender, MinigamePlayer ply) {
+		if(ply.getMinigame().getType() != MinigameType.SINGLEPLAYER){
+List<MinigamePlayer> w = new ArrayList<>(1);
+List<MinigamePlayer> l = new ArrayList<>(ply.getMinigame().getPlayers().size());
+			w.add(ply);
+			l.addAll(ply.getMinigame().getPlayers());
+			l.remove(ply);
+			
+			plugin.getPlayerManager().endMinigame(ply.getMinigame(), w, l);
+			sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to win the Minigame.");
+		}
+		else{
+			plugin.getPlayerManager().endMinigame(ply);
+			sender.sendMessage(ChatColor.GRAY + "You forced " + ply.getName() + " to win the Minigame.");
+		}
+	}
+	
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
 			String alias, String[] args) {

@@ -3,6 +3,7 @@ package au.com.mineauz.minigamesregions;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemSaveMinigame;
+import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.tool.MinigameTool;
@@ -41,7 +42,7 @@ public class RegionNodeEditToolMode implements ToolMode {
 
 	@Override
 	public Material getIcon() {
-		return Material.BOOK_AND_QUILL;
+		return Material.WRITABLE_BOOK;
 	}
 
 	@Override
@@ -130,7 +131,7 @@ public class RegionNodeEditToolMode implements ToolMode {
 			menu = MenuItemNode.createMenu(player, null, (Node)hit);
 		}
 		
-		menu.addItem(new MenuItemSaveMinigame("Save", Material.REDSTONE_TORCH_ON, minigame), menu.getSize() - 9);
+		menu.addItem(new MenuItemSaveMinigame("Save", MenuUtility.getSaveMaterial(), minigame), menu.getSize() - 9);
 		
 		menu.displayMenu(player);
 	}
@@ -155,7 +156,7 @@ public class RegionNodeEditToolMode implements ToolMode {
 			}
 		}
 		
-		menu.addItem(new MenuItemSaveMinigame("Save", Material.REDSTONE_TORCH_ON, module.getMinigame()), menu.getSize() - 9);
+		menu.addItem(new MenuItemSaveMinigame("Save", MenuUtility.getSaveMaterial(), module.getMinigame()), menu.getSize() - 9);
 		
 		menu.displayMenu(player);
 		

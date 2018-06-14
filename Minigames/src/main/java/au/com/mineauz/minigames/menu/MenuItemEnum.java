@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -54,7 +53,7 @@ public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
 		
 		int position = enumList.indexOf(value);
 		if (position == -1) {
-			return Arrays.asList(ChatColor.RED + "*ERROR*");
+			return Collections.singletonList(ChatColor.RED + "*ERROR*");
 		}
 		
 		int last = position - 1;

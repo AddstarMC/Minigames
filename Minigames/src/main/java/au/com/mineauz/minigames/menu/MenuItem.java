@@ -14,27 +14,21 @@ public class MenuItem {
 	private int slot = 0;
 	
 	public MenuItem(String name, Material displayItem){
-		boolean nullItem = false;
-		if(displayItem == null){
-			displayItem = Material.STAINED_GLASS_PANE;
-			nullItem = true;
-		}
-		this.displayItem = new ItemStack(displayItem);
-		ItemMeta meta = this.displayItem.getItemMeta();
-		meta.setDisplayName(ChatColor.RESET + name);
-		this.displayItem.setItemMeta(meta);
-		if(nullItem){
-			this.displayItem.setDurability((short)14);
-		}
+		this(name,null,displayItem);
+
 	}
 	
 	public MenuItem(String name, List<String> description, Material displayItem){
 		if(displayItem == null)
-			displayItem = Material.THIN_GLASS;
+			if(description ==null){
+				displayItem = MenuUtility.getSlotFillerItem();
+			}else {
+				displayItem =  MenuUtility.getUnknownDisplayItem();
+			}
 		this.displayItem = new ItemStack(displayItem);
 		ItemMeta meta = this.displayItem.getItemMeta();
 		meta.setDisplayName(ChatColor.RESET + name);
-		meta.setLore(description);
+		if(description != null)meta.setLore(description);
 		this.displayItem.setItemMeta(meta);
 	}
 	

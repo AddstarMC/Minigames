@@ -8,6 +8,7 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemList;
 import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
@@ -103,12 +104,12 @@ public class TeamScoreRangeCondition extends ConditionInterface {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Team Score Range", player);
-		m.addItem(min.getMenuItem("Minimum Score", Material.STEP, 0, null));
+		m.addItem(min.getMenuItem("Minimum Score", Material.STONE_SLAB, 0, null));
 		m.addItem(max.getMenuItem("Maximum Score", Material.STONE, 0, null));
         List<String> teams = new ArrayList<>();
 		for(TeamColor t : TeamColor.values())
 			teams.add(MinigameUtils.capitalize(t.toString().replace("_", " ")));
-		m.addItem(new MenuItemList("Team Color", Material.WOOL, new Callback<String>() {
+		m.addItem(new MenuItemList("Team Color", Material.WHITE_WOOL, new Callback<String>() {
 			
 			@Override
 			public void setValue(String value) {
@@ -120,7 +121,7 @@ public class TeamScoreRangeCondition extends ConditionInterface {
 				return MinigameUtils.capitalize(team.getFlag().replace("_", " "));
 			}
 		}, teams));
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
 		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;

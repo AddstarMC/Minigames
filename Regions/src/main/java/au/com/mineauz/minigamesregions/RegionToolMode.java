@@ -44,7 +44,7 @@ public class RegionToolMode implements ToolMode {
 		tool.addSetting("Region", "None");
 		final Menu m = new Menu(2, "Region Selection", player);
 		if(player.isInMenu()){
-			m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, player.getMenu()), m.getSize() - 9);
+			m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), player.getMenu()), m.getSize() - 9);
 		}
 		final MinigameTool ftool = tool;
 		m.addItem(new MenuItemString("Region Name", Material.PAPER, new Callback<String>() {
@@ -71,22 +71,19 @@ public class RegionToolMode implements ToolMode {
 				MenuItemCustom item = new MenuItemCustom(region.getName(), Material.CHEST);
 				
 				// Set the node and go back to the main menu
-				item.setClick(new InteractionInterface() {
-					@Override
-					public Object interact(Object object) {
-						ftool.changeSetting("Region", region.getName());
-						
-						m.displayMenu(player);
-						
-						return object;
-					}
-				});
+				item.setClick(object -> {
+                    ftool.changeSetting("Region", region.getName());
+
+                    m.displayMenu(player);
+
+                    return object;
+                });
 				
 				items.add(item);
 			}
 			
 			regionMenu.addItems(items);
-			regionMenu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, m), regionMenu.getSize() - 9);
+			regionMenu.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), m), regionMenu.getSize() - 9);
 			
 			m.addItem(new MenuItemPage("Edit Region", Material.CHEST, regionMenu));
 		}

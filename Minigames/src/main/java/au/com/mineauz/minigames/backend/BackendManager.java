@@ -32,12 +32,7 @@ public class BackendManager {
 		this.logger = logger;
 		this.debug = false;
 		
-		bukkitThreadExecutor = new Executor() {
-			@Override
-			public void execute(Runnable command) {
-                Bukkit.getScheduler().runTask(Minigames.getPlugin(), command);
-			}
-		};
+		bukkitThreadExecutor = command -> Bukkit.getScheduler().runTask(Minigames.getPlugin(), command);
 		
 		executorService = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
 	}
@@ -125,12 +120,7 @@ public class BackendManager {
 		}
 		try {
 			// Start the cleaning task to remove old connections
-            Bukkit.getScheduler().runTaskTimer(Minigames.getPlugin(), new Runnable() {
-				@Override
-				public void run() {
-					backend.clean();
-				}
-			}, 300, 300);
+            Bukkit.getScheduler().runTaskTimer(Minigames.getPlugin(), () -> backend.clean(), 300, 300);
 		}catch (NullPointerException e){
             logger.warning("Bukkit could not schedule a the db pool cleaner");
             return false;
@@ -156,12 +146,7 @@ public class BackendManager {
 	 * @return A ListenableFuture that returns the list of StoredStats loaded
 	 */
 	public ListenableFuture<List<StoredStat>> loadStats(final Minigame minigame, final MinigameStat stat, final StatValueField field, final ScoreboardOrder order, final int offset, final int length) {
-		return executorService.submit(new Callable<List<StoredStat>>() {
-			@Override
-			public List<StoredStat> call() {
-				return backend.loadStats(minigame, stat, field, order, offset, length);
-			}
-		});
+		return executorService.submit(() -> backend.loadStats(minigame, stat, field, order, offset, length));
 	}
 	
 	/**
@@ -173,12 +158,7 @@ public class BackendManager {
 	 * @return The value of the stat. If it is not set, 0 will be returned
 	 */
 	public ListenableFuture<Long> loadSingleStat(final Minigame minigame, final MinigameStat stat, final StatValueField field, final UUID playerId) {
-		return executorService.submit(new Callable<Long>() {
-			@Override
-			public Long call() {
-				return backend.getStat(minigame, playerId, stat, field);
-			}
-		});
+		return executorService.submit(() -> backend.getStat(minigame, playerId, stat, field));
 	}
 	
 	/**
@@ -187,13 +167,10 @@ public class BackendManager {
 	 * @return A ListenableFuture that returns the inputed stats for chaining.
 	 */
 	public ListenableFuture<StoredGameStats> saveStats(final StoredGameStats stats) {
-		return executorService.submit(new Callable<StoredGameStats>() {
-			@Override
-			public StoredGameStats call() {
-				backend.saveGameStatus(stats);
-				return stats;
-			}
-		});
+		return executorService.submit(() -> {
+            backend.saveGameStatus(stats);
+            return stats;
+        });
 	}
 	
 	/**
@@ -202,12 +179,7 @@ public class BackendManager {
 	 * @return A ListenerableFuture that returns a map of minigame stats and their settings
 	 */
 	public ListenableFuture<Map<MinigameStat, StatSettings>> loadStatSettings(final Minigame minigame) {
-		return executorService.submit(new Callable<Map<MinigameStat, StatSettings>>() {
-			@Override
-			public Map<MinigameStat, StatSettings> call() {
-				return backend.loadStatSettings(minigame);
-			}
-		});
+		return executorService.submit(() -> backend.loadStatSettings(minigame));
 	}
 	
 	/**
@@ -217,13 +189,10 @@ public class BackendManager {
 	 * @return A ListenableFuture to get the status of the save
 	 */
 	public ListenableFuture<Void> saveStatSettings(final Minigame minigame, final Collection<StatSettings> settings) {
-		return executorService.submit(new Callable<Void>() {
-			@Override
-			public Void call() {
-				backend.saveStatSettings(minigame, settings);
-				return null;
-			}
-		});
+		return executorService.submit(() -> {
+            backend.saveStatSettings(minigame, settings);
+            return null;
+        });
 	}
 	
 	/**
@@ -258,12 +227,7 @@ public class BackendManager {
 			throw new IllegalArgumentException("Failed to initialize destination backend");
 		}
 		
-		return executorService.submit(new Runnable() {
-			@Override
-			public void run() {
-				backend.exportTo(destination, notifier);
-			}
-		}, null);
+		return executorService.submit(() -> backend.exportTo(destination, notifier), null);
 	}
 	
 	/**
@@ -288,14 +252,11 @@ public class BackendManager {
 			throw new IllegalArgumentException("Failed to initialize target backend");
 		}
 		
-		return executorService.submit(new Runnable() {
-			@Override
-			public void run() {
-				backend.shutdown();
-				backend = newBackend;
-				logger.warning("Backend has been switched to " + type);
-			}
-		}, null);
+		return executorService.submit(() -> {
+            backend.shutdown();
+            backend = newBackend;
+            logger.warning("Backend has been switched to " + type);
+        }, null);
 	}
 
 	public void toggleDebug(){

@@ -67,11 +67,11 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		mItems.add(disName);
 		mItems.add(new MenuItemBoolean("Allow Fall Damage", Material.LEATHER_BOOTS, loadout.getFallDamageCallback()));
 		mItems.add(new MenuItemBoolean("Allow Hunger", Material.APPLE, loadout.getHungerCallback()));
-		mItems.add(new MenuItemInteger("XP Level", MinigameUtils.stringToList("Use -1 to not;use loadout levels"), Material.EXP_BOTTLE, loadout.getLevelCallback(), -1, null));
+		mItems.add(new MenuItemInteger("XP Level", MinigameUtils.stringToList("Use -1 to not;use loadout levels"), Material.EXPERIENCE_BOTTLE, loadout.getLevelCallback(), -1, null));
 		mItems.add(new MenuItemBoolean("Lock Inventory", Material.DIAMOND_SWORD, loadout.getInventoryLockedCallback()));
 		mItems.add(new MenuItemBoolean("Lock Armour", Material.DIAMOND_CHESTPLATE, loadout.getArmourLockedCallback()));
 		mItems.add(new MenuItemBoolean("Allow Offhand", Material.SHIELD, loadout.getAllowOffHandCallback()));
-		mItems.add(new MenuItemBoolean("Display in Loadout Menu", Material.THIN_GLASS, loadout.getDisplayInMenuCallback()));
+		mItems.add(new MenuItemBoolean("Display in Loadout Menu", Material.WHITE_STAINED_GLASS_PANE, loadout.getDisplayInMenuCallback()));
         List<String> teams = new ArrayList<>();
 		teams.add("None");
 		for(TeamColor col : TeamColor.values())
@@ -79,12 +79,12 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		mItems.add(new MenuItemList("Lock to Team", Material.LEATHER_CHESTPLATE, loadout.getTeamColorCallback(), teams));
 		loadoutSettings.addItems(mItems);
 		if(mgm == null){
-			MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back", Material.REDSTONE_TORCH_ON, loadout);
+			MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back",MenuUtility.getBackMaterial(), loadout);
 			dl.setAltMenu(getContainer());
 			loadoutSettings.addItem(dl, getContainer().getSize() - 9);
 		}
 		else{
-			MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back", Material.REDSTONE_TORCH_ON, loadout, mgm);
+			MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back",MenuUtility.getBackMaterial(), loadout, mgm);
 			dl.setAltMenu(getContainer());
 			loadoutSettings.addItem(dl, getContainer().getSize() - 9);
 		}
@@ -94,14 +94,14 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		Menu potionMenu = new Menu(5, getContainer().getName(), getContainer().getViewer());
 		
 		potionMenu.setPreviousPage(loadoutMenu);
-		potionMenu.addItem(new MenuItemPotionAdd("Add Potion", Material.ITEM_FRAME, loadout), 44);
+		potionMenu.addItem(new MenuItemPotionAdd("Add Potion",MenuUtility.getCreateMaterial(), loadout), 44);
 		if(mgm == null){
-			MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back", Material.REDSTONE_TORCH_ON, loadout);
+			MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back",MenuUtility.getBackMaterial(), loadout);
 			dl.setAltMenu(getContainer());
 			potionMenu.addItem(dl, 45 - 9);
 		}
 		else{
-			MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back", Material.REDSTONE_TORCH_ON, loadout, mgm);
+			MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back",MenuUtility.getBackMaterial(), loadout, mgm);
 			dl.setAltMenu(getContainer());
 			potionMenu.addItem(dl, 45 - 9);
 		}
@@ -123,7 +123,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
 		
 		loadoutMenu.addItem(new MenuItemSaveLoadout("Loadout Settings", Material.CHEST, loadout, loadoutSettings), 42);
 		loadoutMenu.addItem(new MenuItemSaveLoadout("Edit Potion Effects", Material.POTION, loadout, potionMenu), 43);
-		loadoutMenu.addItem(new MenuItemSaveLoadout("Save Loadout", Material.REDSTONE_TORCH_ON, loadout), 44);
+		loadoutMenu.addItem(new MenuItemSaveLoadout("Save Loadout", MenuUtility.getSaveMaterial(), loadout), 44);
         int a = 40;
         if (loadout.allowOffHand()) {
             a = 41;

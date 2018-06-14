@@ -8,6 +8,7 @@ import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import org.bukkit.Bukkit;
@@ -65,14 +66,15 @@ public class GameOverModule extends MinigameModule{
 	@Override
 	public void addEditMenuOptions(Menu menu) {
 		Menu m = new Menu(6, "Game Over Settings", menu.getViewer());
-		m.addItem(timer.getMenuItem("Time Length", Material.WATCH, 0, null));
+		m.addItem(timer.getMenuItem("Time Length", Material.CLOCK, 0, null));
+
 		m.addItem(invincible.getMenuItem("Invincibility", Material.ENDER_PEARL));
 		m.addItem(humiliation.getMenuItem("Humiliation Mode", Material.DIAMOND_SWORD, MinigameUtils.stringToList("Losers are stripped;of weapons and can't kill")));
-		m.addItem(interact.getMenuItem("Allow Interact", Material.STONE_PLATE));
+		m.addItem(interact.getMenuItem("Allow Interact", Material.STONE_PRESSURE_PLATE));
 		
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, menu), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), menu), m.getSize() - 9);
 		
-		menu.addItem(new MenuItemPage("Game Over Settings", Material.WOOD_DOOR, m));
+		menu.addItem(new MenuItemPage("Game Over Settings", Material.OAK_DOOR, m));
 	}
 
 	@Override
@@ -115,23 +117,19 @@ public class GameOverModule extends MinigameModule{
 		if(timer.getFlag() > 0){
 			if(task != -1)
 				stopEndGameTimer();
-			task = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), new Runnable() {
-				
-				@Override
-				public void run() {
-                    for (MinigamePlayer loser : new ArrayList<>(losers)) {
-						if(loser.isInMinigame())
-							Minigames.getPlugin().getPlayerManager().quitMinigame(loser, true);
-					}
-                    for (MinigamePlayer winner : new ArrayList<>(winners)) {
-						if(winner.isInMinigame())
-							Minigames.getPlugin().getPlayerManager().quitMinigame(winner, true);
-					}
-					
-					clearLosers();
-					clearWinners();
-				}
-			}, timer.getFlag() * 20);
+			task = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () -> {
+for (MinigamePlayer loser : new ArrayList<>(losers)) {
+                    if(loser.isInMinigame())
+                        Minigames.getPlugin().getPlayerManager().quitMinigame(loser, true);
+                }
+for (MinigamePlayer winner : new ArrayList<>(winners)) {
+                    if(winner.isInMinigame())
+                        Minigames.getPlugin().getPlayerManager().quitMinigame(winner, true);
+                }
+
+                clearLosers();
+                clearWinners();
+            }, timer.getFlag() * 20);
 		}
 	}
 	

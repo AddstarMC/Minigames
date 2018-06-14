@@ -140,39 +140,39 @@ public abstract class GameMechanicBase implements Listener{
 	
 	/**
 	 * Called when a global Minigame has been started.
-	 * @param minigame
+	 * @param minigame the game
 	 * @param caller The player who initiated the global Minigame or null if not by a player.
 	 */
 	public abstract void startMinigame(Minigame minigame, MinigamePlayer caller);
 	
 	/**
 	 * Called when a global Minigame has been stopped.
-	 * @param minigame
+	 * @param minigame the game
 	 * @param caller The player who stopped the global Minigame or null if not by a player.
 	 */
 	public abstract void stopMinigame(Minigame minigame, MinigamePlayer caller);
 	
 	/**
 	 * Called when a player joins a Minigame. Called after the player has completely joined the game.
-	 * @param minigame
-	 * @param player
+	 * @param minigame the game
+	 * @param player the player
 	 */
 	public abstract void onJoinMinigame(Minigame minigame, MinigamePlayer player);
 	
 	/**
 	 * Called when a player quits a Minigame or is forced to quit by the Minigame. Called as the quit function has started.
-	 * @param minigame
-	 * @param player
-	 * @param forced
+	 * @param minigame the game
+	 * @param player the player
+	 * @param forced true if forced
 	 */
 	public abstract void quitMinigame(Minigame minigame, MinigamePlayer player, boolean forced);
 	
 	/**
 	 * Called when a player (or group of players) wins a Minigame. Called as the end function has been started, so winners and
 	 * losers can still be modified.
-	 * @param minigame
-	 * @param winners
-	 * @param losers
+	 * @param minigame the game
+	 * @param winners winning players
+	 * @param losers losing players
 	 */
 	public abstract void endMinigame(Minigame minigame, List<MinigamePlayer> winners, List<MinigamePlayer> losers);
 }

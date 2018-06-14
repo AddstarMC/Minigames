@@ -20,7 +20,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -196,74 +195,68 @@ public class ScoreboardDisplay {
 		final Menu setupMenu = new Menu(3, "Setup Scoreboard", player);
 		
 		StatSettings settings = minigame.getSettings(stat);
-		final MenuItemCustom statisticChoice = new MenuItemCustom("Statistic", Material.BOOK_AND_QUILL);
-		statisticChoice.setDescription(Arrays.asList(ChatColor.GREEN + settings.getDisplayName()));
+		final MenuItemCustom statisticChoice = new MenuItemCustom("Statistic", Material.WRITABLE_BOOK);
+		statisticChoice.setDescription(Collections.singletonList(ChatColor.GREEN + settings.getDisplayName()));
 		
 		final MenuItemCustom fieldChoice = new MenuItemCustom("Statistic Field", Material.PAPER);
-		fieldChoice.setDescription(Arrays.asList(ChatColor.GREEN + field.getTitle()));
+		fieldChoice.setDescription(Collections.singletonList(ChatColor.GREEN + field.getTitle()));
 		
-		statisticChoice.setClick(new InteractionInterface() {
-			@Override
-			public Object interact(Object object) {
-				Menu childMenu = MinigameStats.createStatSelectMenu(setupMenu, new Callback<MinigameStat>() {
-					@Override
-					public MinigameStat getValue() {
-						throw new UnsupportedOperationException();
-					}
-					
-					@Override
-					public void setValue(MinigameStat value) {
-						stat = value;
-						StatSettings settings = minigame.getSettings(stat);
-						statisticChoice.setDescription(Arrays.asList(ChatColor.GREEN + settings.getDisplayName()));
-						
-						// Check that the field is valid
-						StatValueField first = null;
-						boolean valid = false;
-						for (StatValueField sfield : settings.getFormat().getFields()) {
-							if (first == null) {
-								first = sfield;
-							}
-							
-							if (sfield == field) {
-								valid = true;
-								break;
-							}
+		statisticChoice.setClick(object -> {
+			Menu childMenu = MinigameStats.createStatSelectMenu(setupMenu, new Callback<MinigameStat>() {
+				@Override
+				public MinigameStat getValue() {
+					throw new UnsupportedOperationException();
+				}
+
+				@Override
+				public void setValue(MinigameStat value) {
+					stat = value;
+					StatSettings settings12 = minigame.getSettings(stat);
+					statisticChoice.setDescription(Collections.singletonList(ChatColor.GREEN + settings12.getDisplayName()));
+
+					// Check that the field is valid
+					StatValueField first = null;
+					boolean valid = false;
+					for (StatValueField sfield : settings12.getFormat().getFields()) {
+						if (first == null) {
+							first = sfield;
 						}
-						
-						// Update the field
-						if (!valid) {
-							field = first;
-							fieldChoice.setDescription(Arrays.asList(ChatColor.GREEN + value.toString()));
+
+						if (sfield == field) {
+							valid = true;
+							break;
 						}
 					}
-				});
-				
-				childMenu.displayMenu(setupMenu.getViewer());
-				return null;
-			}
+
+					// Update the field
+					if (!valid) {
+						field = first;
+						fieldChoice.setDescription(Collections.singletonList(ChatColor.GREEN + value.toString()));
+					}
+				}
+			});
+
+			childMenu.displayMenu(setupMenu.getViewer());
+			return null;
 		});
 		
-		fieldChoice.setClick(new InteractionInterface() {
-			@Override
-			public Object interact(Object object) {
-				StatSettings settings = minigame.getSettings(stat);
-				Menu childMenu = MinigameStats.createStatFieldSelectMenu(setupMenu, settings.getFormat(), new Callback<StatValueField>() {
-					@Override
-					public StatValueField getValue() {
-						throw new UnsupportedOperationException();
-					}
-					
-					@Override
-					public void setValue(StatValueField value) {
-						field = value;
-						fieldChoice.setDescription(Arrays.asList(ChatColor.GREEN + value.getTitle()));
-					}
-				});
-				
-				childMenu.displayMenu(setupMenu.getViewer());
-				return null;
-			}
+		fieldChoice.setClick(object -> {
+			StatSettings settings1 = minigame.getSettings(stat);
+			Menu childMenu = MinigameStats.createStatFieldSelectMenu(setupMenu, settings1.getFormat(), new Callback<StatValueField>() {
+				@Override
+				public StatValueField getValue() {
+					throw new UnsupportedOperationException();
+				}
+
+				@Override
+				public void setValue(StatValueField value) {
+					field = value;
+					fieldChoice.setDescription(Collections.singletonList(ChatColor.GREEN + value.getTitle()));
+				}
+			});
+
+			childMenu.displayMenu(setupMenu.getViewer());
+			return null;
 		});
 		
 		setupMenu.addItem(statisticChoice);
@@ -285,7 +278,7 @@ public class ScoreboardDisplay {
 				return order.toString().toLowerCase();
 			}
 		}, sbotypes));
-		setupMenu.addItem(new MenuItemScoreboardSave("Create Scoreboard", Material.REDSTONE_TORCH_ON, this), setupMenu.getSize() - 1);
+		setupMenu.addItem(new MenuItemScoreboardSave("Create Scoreboard", MenuUtility.getCreateMaterial(), this), setupMenu.getSize() - 1);
 		setupMenu.displayMenu(player);
 	}
 	
@@ -335,61 +328,9 @@ public class ScoreboardDisplay {
 		
 		ScoreboardDisplay display = new ScoreboardDisplay(minigame, width, height, location, facing);
 		display.setOrder(ScoreboardOrder.valueOf(section.getString("order")));
-		
-		// Convert type to new stat
-		if (section.contains("type")) { //todo Remove in 1.13
-            Minigames.getPlugin().getLogger().warning("Your scoreboard display is using an old configuration method.  Please update to use `stat` -- `type` will not be supported past 1.12 Game: " + minigame.getName(false));
-			ScoreboardType type = ScoreboardType.valueOf(section.getString("type"));
-			
-			switch (type) {
-			case BEST_KILLS:
-				display.setStat(MinigameStats.Kills, StatValueField.Max);
-				break;
-			case BEST_SCORE:
-				display.setStat(MinigameStats.Score, StatValueField.Max);
-				break;
-			case COMPLETIONS:
-				display.setStat(MinigameStats.Wins, StatValueField.Total);
-				break;
-			case FAILURES:
-				display.setStat(MinigameStats.Losses, StatValueField.Total);
-				break;
-			case LEAST_DEATHS:
-				display.setStat(MinigameStats.Deaths, StatValueField.Min);
-				break;
-			case LEAST_REVERTS:
-				display.setStat(MinigameStats.Reverts, StatValueField.Min);
-				break;
-			case LEAST_TIME:
-				display.setStat(MinigameStats.CompletionTime, StatValueField.Min);
-				break;
-			case TOTAL_DEATHS:
-				display.setStat(MinigameStats.Deaths, StatValueField.Total);
-				break;
-			case TOTAL_KILLS:
-				display.setStat(MinigameStats.Kills, StatValueField.Total);
-				break;
-			case TOTAL_REVERTS:
-				display.setStat(MinigameStats.Reverts, StatValueField.Total);
-				break;
-			case TOTAL_SCORE:
-				display.setStat(MinigameStats.Score, StatValueField.Total);
-				break;
-			case TOTAL_TIME:
-				display.setStat(MinigameStats.CompletionTime, StatValueField.Total);
-				break;
-			default:
-				break;
-			}
-			
-			section.set("type", null); //todo remove to here in 1.13
-		// Load stat
-		} else {
-			MinigameStat stat = MinigameStats.getStat(section.getString("stat", "wins"));
-			StatValueField field = StatValueField.valueOf(section.getString("field", "Total"));
-			display.setStat(stat, field);
-		}
-		
+		MinigameStat stat = MinigameStats.getStat(section.getString("stat", "wins"));
+		StatValueField field = StatValueField.valueOf(section.getString("field", "Total"));
+		display.setStat(stat, field);
 		Block block = location.getBlock();
         block.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.getPlugin(), true));
         block.setMetadata("Minigame", new FixedMetadataValue(Minigames.getPlugin(), minigame));

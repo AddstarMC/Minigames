@@ -9,6 +9,7 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
@@ -74,9 +75,10 @@ public class PlayerHealthRangeCondition extends ConditionInterface {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Health Range", player);
-		m.addItem(minHealth.getMenuItem("Min Health", Material.STEP, 0, 20));
+		m.addItem(minHealth.getMenuItem("Min Health", Material.STONE_SLAB, 0, 20));
+
 		m.addItem(maxHealth.getMenuItem("Max Health", Material.STONE, 0, 20));
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
 		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;

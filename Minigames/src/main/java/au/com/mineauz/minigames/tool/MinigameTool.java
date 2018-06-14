@@ -138,26 +138,18 @@ public class MinigameTool {
 		final MenuItemCustom miselect = new MenuItemCustom("Select", MinigameUtils.stringToList("Selects and area;or points visually"), Material.DIAMOND_BLOCK);
 		final MenuItemCustom mideselect = new MenuItemCustom("Deselect", MinigameUtils.stringToList("Deselects an;area or points"), Material.GLASS);
 		final MinigamePlayer fply = player;
-		miselect.setClick(new InteractionInterface() {
-			
-			@Override
-			public Object interact(Object object) {
-				if(mode != null){
-					mode.select(fply, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
-				}
-				return miselect.getItem();
-			}
-		});
-		mideselect.setClick(new InteractionInterface() {
-			
-			@Override
-			public Object interact(Object object) {
-				if(mode != null){
-					mode.deselect(fply, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
-				}
-				return mideselect.getItem();
-			}
-		});
+		miselect.setClick(object -> {
+            if(mode != null){
+                mode.select(fply, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
+            }
+            return miselect.getItem();
+        });
+		mideselect.setClick(object -> {
+            if(mode != null){
+                mode.deselect(fply, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
+            }
+            return mideselect.getItem();
+        });
 		
 		men.addItem(mideselect, men.getSize() - 1);
 		men.addItem(miselect, men.getSize() - 2);

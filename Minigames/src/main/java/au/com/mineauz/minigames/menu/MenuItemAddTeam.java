@@ -19,7 +19,7 @@ public class MenuItemAddTeam extends MenuItem{
 	private TeamsModule tm;
 
 	public MenuItemAddTeam(String name, Minigame minigame) {
-		super(name, Material.ITEM_FRAME);
+		super(name, MenuUtility.getCreateMaterial());
 		tm = TeamsModule.getMinigameModule(minigame);
 	}
 	

@@ -25,7 +25,7 @@ public class ConnectionPool {
         props.put("password", password);
         props.put("useSSL", false);
         this.connectionString = connectionString;
-        connections = Collections.synchronizedList(Lists.<ConnectionHandler>newArrayList());
+        connections = Collections.synchronizedList(Lists.newArrayList());
         maxIdleTime = TimeUnit.SECONDS.toMillis(30);
     }
     public ConnectionPool(String connectionString, Properties properties) {

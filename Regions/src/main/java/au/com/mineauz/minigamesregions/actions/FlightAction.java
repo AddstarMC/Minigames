@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 
@@ -77,7 +78,7 @@ public class FlightAction extends AbstractAction{
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Flight", player);
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
 		m.addItem(setFly.getMenuItem("Set Flight Mode", Material.FEATHER));
 		m.addItem(startFly.getMenuItem("Set Flying", Material.FEATHER, MinigameUtils.stringToList("Set Flight Mode must be;true to use this")));
 		m.displayMenu(player);

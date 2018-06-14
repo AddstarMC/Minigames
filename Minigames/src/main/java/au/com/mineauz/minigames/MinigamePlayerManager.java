@@ -439,13 +439,7 @@ public class MinigamePlayerManager {
 				player.getPlayer().setFallDistance(0);
 				player.getPlayer().setNoDamageTicks(60);
 				final MinigamePlayer fplayer = player;
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						fplayer.getPlayer().setFireTicks(0);
-					}
-				});
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> fplayer.getPlayer().setFireTicks(0));
 				player.resetAllStats();
 				player.setStartPos(null);
 				if(!player.isDead()){
@@ -537,13 +531,7 @@ public class MinigamePlayerManager {
 				for(PotionEffect potion : player.getPlayer().getActivePotionEffects()){
 					player.getPlayer().removePotionEffect(potion.getType());
 				}
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						fplayer.setFireTicks(0);
-					}
-				});
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> fplayer.setFireTicks(0));
 				
 				player.getPlayer().closeInventory();
 				if(!player.isDead()){
@@ -701,15 +689,15 @@ public class MinigamePlayerManager {
 						team = winners.get(0).getTeam();
 					else
 						team = ((TeamsModule) minigame.getModule("Teams")).getTeam(((TeamsModule) minigame.getModule("Teams")).getDefaultWinner());
-					String score = "";
+					StringBuilder score = new StringBuilder();
 					List<Team> teams = TeamsModule.getMinigameModule(minigame).getTeams();
 					for (Team t : teams) {
-						score += t.getColor().getColor().toString() + t.getScore();
+						score.append(t.getColor().getColor().toString()).append(t.getScore());
 						if (t != teams.get(teams.size() - 1)) {
-							score += ChatColor.WHITE + " : ";
+							score.append(ChatColor.WHITE + " : ");
 						}
 					}
-					String nscore = ", " + MinigameUtils.formStr("player.end.team.score", score);
+					String nscore = ", " + MinigameUtils.formStr("player.end.team.score", score.toString());
 					if (team.getScore() > 0) {
 						MinigameUtils.broadcast(MinigameUtils.formStr("player.end.team.win",
 								team.getChatColor() + team.getDisplayName() + ChatColor.WHITE, minigame.getName(true)) + nscore, minigame, ChatColor.GREEN);
@@ -727,28 +715,22 @@ public class MinigamePlayerManager {
 						score = MinigameUtils.formStr("player.end.broadcastScore", winners.get(0).getScore());
 					MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getDisplayName(minigame.usePlayerDisplayNames()), minigame.getName(true)) + ". " + score, minigame, ChatColor.GREEN);
 				} else if (winners.size() > 1) {
-					String win = "";
-					Collections.sort(winners, new Comparator<MinigamePlayer>() {
-						@Override
-						public int compare(MinigamePlayer o1,
-										   MinigamePlayer o2) {
-                            return Integer.compare(o1.getScore(), o2.getScore());
-						}
-					});
+					StringBuilder win = new StringBuilder();
+					winners.sort((o1, o2) -> Integer.compare(o1.getScore(), o2.getScore()));
 
 					for (MinigamePlayer pl : winners) {
 						if (winners.indexOf(pl) < 2) {
-							win += pl.getDisplayName(minigame.usePlayerDisplayNames());
+							win.append(pl.getDisplayName(minigame.usePlayerDisplayNames()));
 							if (winners.indexOf(pl) + 2 >= winners.size()) {
-								win += " and ";
+								win.append(" and ");
 							} else {
-								win += ", ";
+								win.append(", ");
 							}
 						} else {
-							win += String.valueOf(winners.size() - 3) + " others";
+							win.append(String.valueOf(winners.size() - 3)).append(" others");
 						}
 					}
-					MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", win, minigame.getName(true)) + ". ", minigame, ChatColor.GREEN);
+					MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", win.toString(), minigame.getName(true)) + ". ", minigame, ChatColor.GREEN);
 				} else {
 					MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastNobodyWon", minigame.getName(true)), minigame, ChatColor.RED);
 				}
@@ -778,9 +760,7 @@ public class MinigamePlayerManager {
 	}
 	
 	public void removeMinigamePlayer(Player player){
-		if(minigamePlayers.containsKey(player.getName())){
-			minigamePlayers.remove(player.getName());
-		}
+		minigamePlayers.remove(player.getName());
 	}
 
 	@NotNull
@@ -865,14 +845,11 @@ public class MinigamePlayerManager {
 		final long fdelay = delay;
 		partyMode(fplayer);
 		if(amount == 1) return;
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-			@Override
-			public void run() {
-				if(fplayer != null){
-					partyMode(fplayer, fcount - 1, fdelay);
-				}
-				
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+			if(fplayer != null){
+				partyMode(fplayer, fcount - 1, fdelay);
 			}
+
 		}, delay);
 	}
 

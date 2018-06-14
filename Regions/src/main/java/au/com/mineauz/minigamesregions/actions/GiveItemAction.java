@@ -139,7 +139,7 @@ public class GiveItemAction extends AbstractAction{
 				return type.getFlag();
 			}
 		}));
-		m.addItem(count.getMenuItem("Count", Material.STEP, 1, 64));
+		m.addItem(count.getMenuItem("Count", Material.STONE_SLAB, 1, 64));
 		m.addItem(damage.getMenuItem("Damage", Material.COBBLESTONE, 0, null));
 		
 		m.displayMenu(player);

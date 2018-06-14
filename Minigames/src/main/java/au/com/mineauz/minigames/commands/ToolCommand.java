@@ -13,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ToolCommand implements ICommand {
@@ -168,9 +169,7 @@ public class ToolCommand implements ICommand {
 			String alias, String[] args) {
 		List<String> ret = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
 		if(args.length == 1){
-			for(String p : getParameters()){
-				ret.add(p);
-			}
+            Collections.addAll(ret, getParameters());
 			return MinigameUtils.tabCompleteMatch(ret, args[0]);
 		}
 		else if(args.length == 2 && args[0].equalsIgnoreCase("team")){

@@ -14,6 +14,7 @@ import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
 import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.actions.Actions;
@@ -43,25 +44,17 @@ public class MenuItemRegionExecutor extends MenuItem{
 		final Menu ffm = m;
 		
 		MenuItemCustom ca = new MenuItemCustom("Actions", Material.CHEST);
-		ca.setClick(new InteractionInterface() {
-			
-			@Override
-			public Object interact(Object object) {
-				Actions.displayMenu(fviewer, ex, ffm);
-				return null;
-			}
-		});
+		ca.setClick(object -> {
+            Actions.displayMenu(fviewer, ex, ffm);
+            return null;
+        });
 		m.addItem(ca);
 		
 		MenuItemCustom c2 = new MenuItemCustom("Conditions", Material.CHEST);
-		c2.setClick(new InteractionInterface() {
-			
-			@Override
-			public Object interact(Object object) {
-				Conditions.displayMenu(fviewer, ex, ffm);
-				return null;
-			}
-		});
+		c2.setClick(object -> {
+            Conditions.displayMenu(fviewer, ex, ffm);
+            return null;
+        });
 		m.addItem(c2);
 		
 		m.addItem(new MenuItemNewLine());
@@ -73,7 +66,7 @@ public class MenuItemRegionExecutor extends MenuItem{
 		m.addItem(new MenuItemBoolean("Trigger Per Player", 
 				MinigameUtils.stringToList("Whether this node;is triggered per player;or just on count"), 
 				Material.ENDER_PEARL, ex.getIsTriggerPerPlayerCallback()));
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, getContainer()), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), getContainer()), m.getSize() - 9);
 		m.displayMenu(fviewer);
 		return null;
 	}

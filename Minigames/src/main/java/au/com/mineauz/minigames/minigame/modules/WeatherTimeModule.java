@@ -18,6 +18,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+import static au.com.mineauz.minigames.menu.MenuUtility.getBackMaterial;
+
 public class WeatherTimeModule extends MinigameModule {
 	
 	private LongFlag time = new LongFlag(0L, "customTime.value");
@@ -60,7 +62,7 @@ public class WeatherTimeModule extends MinigameModule {
 	@Override
 	public void addEditMenuOptions(Menu menu) {
 		Menu m = new Menu(6, "Time and Weather", menu.getViewer());
-		m.addItem(new MenuItemBoolean("Use Custom Time", Material.WATCH, new Callback<Boolean>() {
+		m.addItem(new MenuItemBoolean("Use Custom Time", Material.CLOCK, new Callback<Boolean>() {
 
 			@Override
 			public void setValue(Boolean value) {
@@ -72,7 +74,7 @@ public class WeatherTimeModule extends MinigameModule {
 				return useCustomTime.getFlag();
 			}
 		}));
-		m.addItem(new MenuItemInteger("Time of Day", Material.WATCH, new Callback<Integer>() {
+		m.addItem(new MenuItemInteger("Time of Day", Material.CLOCK, new Callback<Integer>() {
 			
 			@Override
 			public void setValue(Integer value) {
@@ -109,7 +111,7 @@ public class WeatherTimeModule extends MinigameModule {
 			}
 		}, MinigameUtils.stringToList("Clear;Downfall")));
 		
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, menu), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back",getBackMaterial(), menu), m.getSize() - 9);
 		
 		menu.addItem(new MenuItemPage("Time and Weather Settings", Material.CHEST, m));
 	}
@@ -175,15 +177,11 @@ public class WeatherTimeModule extends MinigameModule {
 	public void startTimeLoop(){
 		final Minigame fmgm = getMinigame();
 		if(task == -1 && isUsingCustomTime()){
-            task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), new Runnable() {
-				
-				@Override
-				public void run() {
-					for(MinigamePlayer player : fmgm.getPlayers()){
-						player.getPlayer().setPlayerTime(time.getFlag(), false);
-					}
-				}
-			}, 20 * 5, 20 * 5);
+            task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
+                for(MinigamePlayer player : fmgm.getPlayers()){
+                    player.getPlayer().setPlayerTime(time.getFlag(), false);
+                }
+            }, 20 * 5, 20 * 5);
 		}
 	}
 	

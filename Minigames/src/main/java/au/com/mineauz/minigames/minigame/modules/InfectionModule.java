@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -58,9 +59,9 @@ public class InfectionModule extends MinigameModule{
 	@Override
 	public boolean displayMechanicSettings(Menu previous) {
 		Menu m = new Menu(6, "Infection Settings", previous.getViewer());
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
 		
-		m.addItem(infectedPercent.getMenuItem("Infected Percent", Material.SKULL_ITEM, 
+		m.addItem(infectedPercent.getMenuItem("Infected Percent", Material.ZOMBIE_HEAD,
 				MinigameUtils.stringToList("The percentage of players;chosen to start as;infected"), 1, 99));
 		m.displayMenu(previous.getViewer());
 		return true;

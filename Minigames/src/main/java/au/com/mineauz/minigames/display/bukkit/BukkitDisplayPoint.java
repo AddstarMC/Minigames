@@ -39,7 +39,7 @@ public class BukkitDisplayPoint extends AbstractDisplayObject implements IDispla
 		temp.setY(position.getY());
 		temp.setZ(position.getZ());
 		
-		send(Material.SKULL, (byte)0);
+		send(Material.SKELETON_SKULL, (byte)0);
 		super.show();
 	}
 	

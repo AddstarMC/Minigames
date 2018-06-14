@@ -168,9 +168,7 @@ AliasCheck:		for(ICommand com : commands.values()){
 			
 			if(args != null && args.length > 1){
 				shortArgs = new String[args.length - 1];
-				for(int i = 1; i < args.length; i++){
-					shortArgs[i - 1] = args[i];
-				}
+                System.arraycopy(args, 1, shortArgs, 0, args.length - 1);
 			}
 			
 			if(comd != null){
@@ -181,20 +179,20 @@ AliasCheck:		for(ICommand com : commands.values()){
 							sender.sendMessage(ChatColor.GREEN + "------------------Command Info------------------");
 							sender.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + comd.getDescription());
 							if(comd.getParameters() != null){
-								String parameters = "";
+								StringBuilder parameters = new StringBuilder();
 								boolean switchColour = false;
 								for(String par : comd.getParameters()){
 									if(switchColour){
-										parameters += ChatColor.WHITE + par;
+										parameters.append(ChatColor.WHITE).append(par);
 										if(!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])){
-											parameters += ChatColor.WHITE + ", ";
+											parameters.append(ChatColor.WHITE + ", ");
 										}
 										switchColour = false;
 									}
 									else{
-										parameters += ChatColor.GRAY + par;
+										parameters.append(ChatColor.GRAY).append(par);
 										if(!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])){
-											parameters += ChatColor.WHITE + ", ";
+											parameters.append(ChatColor.WHITE + ", ");
 										}
 										switchColour = true;
 									}
@@ -204,20 +202,20 @@ AliasCheck:		for(ICommand com : commands.values()){
 							sender.sendMessage(ChatColor.BLUE + "Usage: ");
 							sender.sendMessage(comd.getUsage());
 							if(comd.getAliases() != null){
-								String aliases = "";
+								StringBuilder aliases = new StringBuilder();
 								boolean switchColour = false;
 								for(String alias : comd.getAliases()){
 									if(switchColour){
-										aliases += ChatColor.WHITE + alias;
+										aliases.append(ChatColor.WHITE).append(alias);
 										if(!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])){
-											aliases += ChatColor.WHITE + ", ";
+											aliases.append(ChatColor.WHITE + ", ");
 										}
 										switchColour = false;
 									}
 									else{
-										aliases += ChatColor.GRAY + alias;
+										aliases.append(ChatColor.GRAY).append(alias);
 										if(!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])){
-											aliases += ChatColor.WHITE + ", ";
+											aliases.append(ChatColor.WHITE + ", ");
 										}
 										switchColour = true;
 									}
@@ -263,9 +261,7 @@ AliasCheck:		for(ICommand com : commands.values()){
 			
 			if(args != null && args.length > 1){
 				shortArgs = new String[args.length - 1];
-				for(int i = 1; i < args.length; i++){
-					shortArgs[i - 1] = args[i];
-				}
+                System.arraycopy(args, 1, shortArgs, 0, args.length - 1);
 			}
 			
 			if(comd != null){

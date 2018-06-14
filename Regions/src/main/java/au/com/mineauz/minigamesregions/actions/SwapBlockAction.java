@@ -146,7 +146,7 @@ public class SwapBlockAction extends AbstractAction {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Swap Block", player);
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
 		final MinigamePlayer fply = player;
 		m.addItem(new MenuItemString("Match Block", Material.COBBLESTONE, new Callback<String>() {
 			
@@ -164,7 +164,7 @@ public class SwapBlockAction extends AbstractAction {
 			}
 		}));
 		m.addItem(matchData.getMenuItem("Match Block Use Data?", Material.ENDER_PEARL));
-		m.addItem(matchDataValue.getMenuItem("Match Block Data Value", Material.EYE_OF_ENDER, 0, 15));
+		m.addItem(matchDataValue.getMenuItem("Match Block Data Value", Material.ENDER_EYE, 0, 15));
 		
 		m.addItem(new MenuItemNewLine());
 		
@@ -184,8 +184,8 @@ public class SwapBlockAction extends AbstractAction {
 			}
 		}));
 		m.addItem(toData.getMenuItem("To Block Use Data?", Material.ENDER_PEARL));
-		m.addItem(toDataValue.getMenuItem("To Block Data Value", Material.EYE_OF_ENDER, 0, 15));
-		m.addItem(keepAttachment.getMenuItem("Keep Attachment", Material.PISTON_BASE, MinigameUtils.stringToList("When on, and To Block Use Data is off;If the source and target block;types are both blocks that;attach to surfaces, this;attachment will be preserved")));
+		m.addItem(toDataValue.getMenuItem("To Block Data Value", Material.ENDER_EYE, 0, 15));
+		m.addItem(keepAttachment.getMenuItem("Keep Attachment", Material.PISTON, MinigameUtils.stringToList("When on, and To Block Use Data is off;If the source and target block;types are both blocks that;attach to surfaces, this;attachment will be preserved")));
 		m.displayMenu(player);
 		return true;
 	}

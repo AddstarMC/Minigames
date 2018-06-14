@@ -63,7 +63,7 @@ public class ScriptWrapper {
 				} else if (name.equalsIgnoreCase("type")) {
 					return ScriptValue.of(object.getType());
 				} else if (name.equalsIgnoreCase("data")) {
-					return ScriptValue.of(object.getData());
+					return ScriptValue.of(object.getBlockData());
 				} else if (name.equalsIgnoreCase("temperature")) {
 					return ScriptValue.of(object.getTemperature());
 				} else if (name.equalsIgnoreCase("light")) {
@@ -81,7 +81,7 @@ public class ScriptWrapper {
 			
 			@Override
 			public String getAsString() {
-				return String.format("%d,%d,%d,%s %s:%d", object.getX(), object.getY(), object.getZ(), object.getWorld().getName(), object.getType(), object.getData());
+				return String.format("%d,%d,%d,%s %s:%s", object.getX(), object.getY(), object.getZ(), object.getWorld().getName(), object.getType(), object.getBlockData().getAsString());
 			}
 		};
 	}

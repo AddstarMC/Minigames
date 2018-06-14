@@ -63,7 +63,7 @@ public class SQLiteBackend extends Backend {
 			if(database == null){
 				return false;
 			}
-			String url = String.format("jdbc:sqlite:" + database.getAbsolutePath());
+			String url = "jdbc:sqlite:" + database.getAbsolutePath();
 			if(debug)logger.info("URL: " + url);
 			Properties properties =  new Properties();
 			properties.put("username","");
@@ -134,7 +134,7 @@ public class SQLiteBackend extends Backend {
             try {
                 statement.executeQuery("SELECT 1 FROM `Minigames` LIMIT 0;");
             } catch (SQLException e) {
-                statement.executeUpdate("CREATE TABLE `Minigames` (`minigame_id` INTEGER PRIMARY KEY ASC, `name` TEXT UNIQUE);");
+                statement.executeUpdate("CREATE TABLE `Minigames` (`minigame_id` INTEGER PRIMARY KEY AUTO_INCREMENT, `name` TEXT UNIQUE);");
                 statement.executeUpdate("CREATE INDEX `Minigames_NameLookup` ON `Minigames` (`name`, `minigame_id`);");
             }
 

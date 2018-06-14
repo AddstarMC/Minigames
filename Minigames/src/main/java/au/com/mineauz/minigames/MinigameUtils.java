@@ -8,10 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 //import net.minecraft.server.v1_6_R2.EntityPlayer;
@@ -209,7 +206,7 @@ public class MinigameUtils {
 	
 	/**
 	 * Turns a list to a string.
-	 * @param list
+	 * @param list the list to convert
 	 * @return A string representation of the list
 	 */
 	public static String listToString(List<String> list){
@@ -242,9 +239,7 @@ public class MinigameUtils {
 	public static List<String> stringToList(String toList){
 		String[] st = toList.split(";");
         List<String> list = new ArrayList<>();
-		for(String s : st){
-			list.add(s);
-		}
+		Collections.addAll(list, st);
 		return list;
 	}
 	

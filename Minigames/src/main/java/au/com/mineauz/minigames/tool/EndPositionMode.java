@@ -58,7 +58,7 @@ public class EndPositionMode implements ToolMode {
 	@Override
 	public void select(MinigamePlayer player, Minigame minigame, Team team) {
 		if(minigame.getEndPosition() != null){
-			player.getPlayer().sendBlockChange(minigame.getEndPosition(), Material.SKULL, (byte)1);
+			player.getPlayer().sendBlockChange(minigame.getEndPosition(), Material.SKELETON_SKULL, (byte)1);
 			player.sendInfoMessage("Selected end position (marked with skull)");
 		}
 		else{

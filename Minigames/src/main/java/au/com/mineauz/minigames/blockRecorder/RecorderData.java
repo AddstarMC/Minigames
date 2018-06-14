@@ -7,6 +7,9 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import com.google.common.collect.Lists;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -36,9 +39,11 @@ import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Attachable;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.util.*;
 
 public class RecorderData implements Listener{
@@ -55,60 +60,61 @@ public class RecorderData implements Listener{
 	
 	static{
 		physBlocks.add(Material.TORCH);
-		physBlocks.add(Material.SIGN_POST);
+		physBlocks.add(Material.SIGN);
 		physBlocks.add(Material.WALL_SIGN);
 		physBlocks.add(Material.TRIPWIRE);
-		physBlocks.add(Material.RAILS);
+		physBlocks.add(Material.RAIL);
 		physBlocks.add(Material.POWERED_RAIL);
 		physBlocks.add(Material.ACTIVATOR_RAIL);
+		physBlocks.add(Material.DETECTOR_RAIL);
 		physBlocks.add(Material.REDSTONE_WIRE);
-		physBlocks.add(Material.REDSTONE_TORCH_OFF);
-		physBlocks.add(Material.REDSTONE_TORCH_ON);
-		physBlocks.add(Material.SAPLING);
-        physBlocks.add(Material.RED_ROSE);
-		physBlocks.add(Material.YELLOW_FLOWER);
-        physBlocks.add(Material.NETHER_WARTS);
-        physBlocks.add(Material.YELLOW_FLOWER);
-		physBlocks.add(Material.WOOD_PLATE);
-		physBlocks.add(Material.STONE_PLATE);
-		physBlocks.add(Material.GOLD_PLATE);
-		physBlocks.add(Material.IRON_PLATE);
+		physBlocks.add(Material.LEGACY_REDSTONE_TORCH_OFF);
+		physBlocks.add(Material.LEGACY_REDSTONE_TORCH_ON);
+		physBlocks.add(Material.LEGACY_SAPLING);
+        physBlocks.add(Material.ROSE_RED);
+		physBlocks.add(Material.SUNFLOWER);
+        physBlocks.add(Material.NETHER_WART);
+		physBlocks.add(Material.BOWL);
+		physBlocks.add(Material.LEGACY_WOOD_PLATE);
+		physBlocks.add(Material.LIGHT_WEIGHTED_PRESSURE_PLATE);
+		physBlocks.add(Material.HEAVY_WEIGHTED_PRESSURE_PLATE);
+		physBlocks.add(Material.STONE_PRESSURE_PLATE);
 		physBlocks.add(Material.STONE_BUTTON);
-		physBlocks.add(Material.WOOD_BUTTON);
+		physBlocks.add(Material.LEGACY_WOOD_BUTTON);
 		physBlocks.add(Material.LEVER);
 		physBlocks.add(Material.LADDER);
 		physBlocks.add(Material.IRON_DOOR);
-		physBlocks.add(Material.WOODEN_DOOR);
+		physBlocks.add(Material.LEGACY_WOOD_DOOR);
 		physBlocks.add(Material.RED_MUSHROOM);
 		physBlocks.add(Material.BROWN_MUSHROOM);
-		physBlocks.add(Material.DOUBLE_PLANT);
+		physBlocks.add(Material.LEGACY_DOUBLE_PLANT);
 		physBlocks.add(Material.FLOWER_POT);
-		physBlocks.add(Material.WATER_LILY);
+		physBlocks.add(Material.LILY_PAD);
 		physBlocks.add(Material.TRIPWIRE_HOOK);
-		physBlocks.add(Material.TRAP_DOOR);
-		physBlocks.add(Material.CARPET);
-		physBlocks.add(Material.LONG_GRASS);
+		physBlocks.add(Material.LEGACY_TRAP_DOOR);
+		physBlocks.add(Material.LEGACY_CARPET);
+		physBlocks.add(Material.LEGACY_LONG_GRASS);
 		physBlocks.add(Material.DEAD_BUSH);
-		physBlocks.add(Material.REDSTONE_COMPARATOR_ON);
-		physBlocks.add(Material.REDSTONE_COMPARATOR_OFF);
-		physBlocks.add(Material.DIODE_BLOCK_OFF);
-		physBlocks.add(Material.DIODE_BLOCK_ON);
+		physBlocks.add(Material.LEGACY_REDSTONE_COMPARATOR_ON);
+		physBlocks.add(Material.LEGACY_REDSTONE_COMPARATOR_OFF);
+		physBlocks.add(Material.LEGACY_DIODE_BLOCK_OFF);
+		physBlocks.add(Material.LEGACY_DIODE_BLOCK_ON);
 		physBlocks.add(Material.WATER);
 		physBlocks.add(Material.LAVA);
-		physBlocks.add(Material.STATIONARY_WATER);
-		physBlocks.add(Material.STATIONARY_LAVA);
+		physBlocks.add(Material.LEGACY_STATIONARY_WATER);
+		physBlocks.add(Material.LEGACY_STATIONARY_LAVA);
 		physBlocks.add(Material.ANVIL);
 		physBlocks.add(Material.DRAGON_EGG);
-		physBlocks.add(Material.SKULL);
+		physBlocks.add(Material.LEGACY_SKULL);
 		physBlocks.add(Material.SNOW);
         physBlocks.add(Material.VINE);
         physBlocks.add(Material.PORTAL);
         physBlocks.add(Material.COCOA);
         physBlocks.add(Material.CARROT);
         physBlocks.add(Material.POTATO);
-        physBlocks.add(Material.WALL_BANNER);
-        physBlocks.add(Material.PISTON_MOVING_PIECE);
-        physBlocks.add(Material.PISTON_EXTENSION);
+        physBlocks.add(Material.LEGACY_WALL_BANNER);
+        physBlocks.add(Material.LEGACY_PISTON_MOVING_PIECE);
+        physBlocks.add(Material.LEGACY_PISTON_EXTENSION);
     }
 	
 	public RecorderData(Minigame minigame){
@@ -273,12 +279,15 @@ public class RecorderData implements Listener{
 		}
 		
 		Iterator<BlockData> it = blockdata.values().iterator();
-		final List<BlockData> resBlocks = Lists.newArrayList();
-		final List<BlockData> addBlocks = Lists.newArrayList();
+		final List<BlockData> baseBlocks = Lists.newArrayList();
+		final List<BlockData> gravityBlocks = Lists.newArrayList();
+		final List<BlockData> attachableBlocks = Lists.newArrayList();
 		
 		while (it.hasNext()) {
 			BlockData data = it.next();
-			
+			boolean gravity = false;
+			boolean attachable = false;
+			boolean inventoryholder = false;
 			if (modifier == null || modifier.equals(data.getModifier())) {
 				it.remove();
 				
@@ -287,48 +296,40 @@ public class RecorderData implements Listener{
 					InventoryHolder block = (InventoryHolder) data.getLocation().getBlock().getState();
 					block.getInventory().clear();
 				}
-				
-				if(physBlocks.contains(data.getBlockState().getType()) || data.getItems() != null) {
-					addBlocks.add(data);
-				} else {
-					resBlocks.add(data);
+				if(data.getBukkitBlockData().getMaterial().hasGravity())gravity=true;
+				if(physBlocks.contains(data.getBlockState().getType()) || data.getBlockState().getData() instanceof
+						Attachable)attachable = true;
+				if(data.getItems() != null)inventoryholder=true;
+				if(attachable){
+					attachableBlocks.add(data);
+				} else if(gravity) {
+					gravityBlocks.add(data);
+				}else{
+					baseBlocks.add(data);
 				}
 			}
 		}
 		
-		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-			@Override
-			public void run() {
-				Collections.sort(resBlocks, new Comparator<BlockData>() {
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            customblockComparator(baseBlocks);
+            customblockComparator(attachableBlocks);
+            customblockComparator(gravityBlocks);
+            baseBlocks.addAll(gravityBlocks);
 
-					@Override
-					public int compare(BlockData o1, BlockData o2) {
-                        int comp = Integer.compare(o1.getBlockState().getChunk().getX(), o2.getBlockState().getChunk().getX());
-						if(comp != 0)
-							return comp;
-                        comp = Integer.compare(o1.getBlockState().getChunk().getZ(), o2.getBlockState().getChunk().getZ());
-						if(comp != 0)
-							return comp;
-                        return Integer.compare(o1.getBlockState().getY(), o2.getBlockState().getY());
-					}
-				});
-				Collections.sort(addBlocks, new Comparator<BlockData>() {
-
-					@Override
-					public int compare(BlockData o1, BlockData o2) {
-                        int comp = Integer.compare(o1.getBlockState().getChunk().getX(), o2.getBlockState().getChunk().getX());
-						if(comp != 0)
-							return comp;
-                        comp = Integer.compare(o1.getBlockState().getChunk().getZ(), o2.getBlockState().getChunk().getZ());
-						if(comp != 0)
-							return comp;
-                        return Integer.compare(o1.getBlockState().getY(), o2.getBlockState().getY());
-					}
-				});
-				
-				new RollbackScheduler(resBlocks, addBlocks, minigame, modifier);
-			}
-		});
+            new RollbackScheduler(baseBlocks, attachableBlocks, minigame, modifier);
+        });
+	}
+	
+	private void customblockComparator(List<BlockData> baseBlocks) {
+		baseBlocks.sort((o1, o2) -> {
+            int comp = Integer.compare(o1.getBlockState().getChunk().getX(), o2.getBlockState().getChunk().getX());
+            if (comp != 0)
+                return comp;
+            comp = Integer.compare(o1.getBlockState().getChunk().getZ(), o2.getBlockState().getChunk().getZ());
+            if (comp != 0)
+                return comp;
+            return Integer.compare(o1.getBlockState().getY(), o2.getBlockState().getY());
+        });
 	}
 	
 	public void restoreEntities(MinigamePlayer player) {
@@ -437,22 +438,11 @@ public class RecorderData implements Listener{
     }
 	
 	public void saveAllBlockData(){
-		File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.dat");
-		
-		try {
-			BufferedWriter wr = new BufferedWriter(new FileWriter(f));
-			int c = 0;
-			for(BlockData bd : blockdata.values()){
-				wr.write(bd.toString());
-				c++;
-				if(c >= 10){
-					wr.newLine();
-					c = 0;
-				}
-			}
-			
-			wr.close();
-		} 
+		File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.json");
+		Gson gson =  new Gson();
+		try( FileWriter writer = new FileWriter(f)) {
+		    gson.toJson(blockdata,writer);
+		    }
 		catch (FileNotFoundException e) {
 			Bukkit.getLogger().severe("File not found!!!");
 			e.printStackTrace();
@@ -464,118 +454,135 @@ public class RecorderData implements Listener{
 	}
 	
 	@SuppressWarnings("deprecation")
-	public boolean restoreBlockData(){
-		File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.dat");
-		
-		if(!f.exists()){
-			Bukkit.getLogger().info("No backup file found for " + minigame.getName(false));
-			return false;
-		}
-		
-		try{
-			BufferedReader br = new BufferedReader(new FileReader(f));
+	public boolean restoreBlockData() {
+        File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.json");
+        if (covertOldFormat()) {
+            saveAllBlockData();
+            Minigames.getPlugin().getLogger().info("Converted backup for: " +minigame.getName(false));
+            return true;
+        }else{
+            Gson gson =  new Gson();
+            Type type = new TypeToken<Map<String, BlockData>>(){}.getType();
+            try(FileReader reader = new FileReader(f)){
+                blockdata = gson.fromJson(reader,type);
+                return true;
+            }catch ( IOException e){
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+	private boolean covertOldFormat(){
+        File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.dat");
+
+        if(!f.exists()){
+            return false;
+        }
+        try{
+            BufferedReader br = new BufferedReader(new FileReader(f));
 
             Map<String, String> args = new HashMap<>();
-			String line;
-			String[] blocks;
-			String[] block;
-			World w;
-			BlockData bd;
-			BlockState state;
-			ItemStack[] items;
-			String[] sitems;
-			ItemStack item;
+            String line;
+            String[] blocks;
+            String[] block;
+            World w;
+            BlockData bd;
+            BlockState state;
+            ItemStack[] items;
+            String[] sitems;
+            ItemStack item;
             Map<String, String> iargs = new HashMap<>();
-			
-			while(br.ready()){
-				line = br.readLine();
-				
-				blocks = line.split("\\}\\{");
-				
-				for(String bl : blocks){
-					args.clear();
-					
-					bl = bl.replace("{", "");
-					bl = bl.replace("}", "");
-					
-					block = bl.split(";");
-					for(String b : block){
-						String[] spl = b.split(":");
-						if(spl.length > 1){
-							args.put(spl[0], spl[1]);
-						}
-					}
-					
-					w = Bukkit.getWorld(args.get("world"));
-					state = w.getBlockAt(Integer.valueOf(args.get("x")), Integer.valueOf(args.get("y")), Integer.valueOf(args.get("z"))).getState();
-					state.setType(Material.getMaterial(args.get("mat")));
-					state.setRawData(Byte.valueOf(args.get("data")));
-					
-					bd = new BlockData(state, null);
-					
-					if(args.containsKey("items")){
-						if(state.getType() == Material.DISPENSER || state.getType() == Material.DROPPER){
-							items = new ItemStack[InventoryType.DISPENSER.getDefaultSize()];
-						}
-						else if(state.getType() == Material.HOPPER){
-							items = new ItemStack[InventoryType.HOPPER.getDefaultSize()];
-						}
-						else if(state.getType() == Material.FURNACE){
-							items = new ItemStack[InventoryType.FURNACE.getDefaultSize()];
-						}
-						else if(state.getType() == Material.BREWING_STAND){
-							items = new ItemStack[InventoryType.BREWING.getDefaultSize()];
-						}
-						else{
-							items = new ItemStack[InventoryType.CHEST.getDefaultSize()];
-						}
-						
-						sitems = args.get("items").split("\\)\\(");
-						
-						for(String i : sitems){
-							i = i.replace("(", "");
-							i = i.replace(")", "");
-							
-							for(String s : i.split("\\|")){
-								String[] spl = s.split("-");
-								if(spl.length > 1){
-									iargs.put(s.split("-")[0], s.split("-")[1]);
-								}
-							}
-							
-							item = new ItemStack(Material.getMaterial(iargs.get("item")), 
-									Integer.valueOf(iargs.get("c")), Short.valueOf(iargs.get("dur")));
-							
-							if(iargs.containsKey("enc")){
-								for(String s : iargs.get("enc").split("\\]\\[")){
-									item.addUnsafeEnchantment(Enchantment.getByName(s.split(",")[0].replace("[", "")), 
-											Integer.valueOf(s.split(",")[1].replace("]", "")));
-								}
-							}
-							
-							items[Integer.valueOf(iargs.get("slot"))] = item;
-							iargs.clear();
-						}
-						
-						bd.setItems(items);
-					}
-					
-					blockdata.put(MinigameUtils.createLocationID(bd.getLocation()), bd);
-				}
-			}
-			
-			br.close();
-		}
-		catch (FileNotFoundException e){
-			Bukkit.getLogger().severe("File not found!!!");
-			e.printStackTrace();
-		} catch (IOException e) {
-			Bukkit.getLogger().severe("IO Error!");
-			e.printStackTrace();
-		}
-		
-		return true;
-	}
+
+            while(br.ready()){
+                line = br.readLine();
+
+                blocks = line.split("\\}\\{");
+
+                for(String bl : blocks){
+                    args.clear();
+
+                    bl = bl.replace("{", "");
+                    bl = bl.replace("}", "");
+
+                    block = bl.split(";");
+                    for(String b : block){
+                        String[] spl = b.split(":");
+                        if(spl.length > 1){
+                            args.put(spl[0], spl[1]);
+                        }
+                    }
+
+                    w = Bukkit.getWorld(args.get("world"));
+                    state = w.getBlockAt(Integer.valueOf(args.get("x")), Integer.valueOf(args.get("y")), Integer.valueOf(args.get("z"))).getState();
+                    state.setType(Material.getMaterial(args.get("mat")));
+                    state.setRawData(Byte.valueOf(args.get("data")));
+
+                    bd = new BlockData(state, null);
+
+                    if(args.containsKey("items")){
+                        if(state.getType() == Material.DISPENSER || state.getType() == Material.DROPPER){
+                            items = new ItemStack[InventoryType.DISPENSER.getDefaultSize()];
+                        }
+                        else if(state.getType() == Material.HOPPER){
+                            items = new ItemStack[InventoryType.HOPPER.getDefaultSize()];
+                        }
+                        else if(state.getType() == Material.FURNACE){
+                            items = new ItemStack[InventoryType.FURNACE.getDefaultSize()];
+                        }
+                        else if(state.getType() == Material.BREWING_STAND){
+                            items = new ItemStack[InventoryType.BREWING.getDefaultSize()];
+                        }
+                        else{
+                            items = new ItemStack[InventoryType.CHEST.getDefaultSize()];
+                        }
+
+                        sitems = args.get("items").split("\\)\\(");
+
+                        for(String i : sitems){
+                            i = i.replace("(", "");
+                            i = i.replace(")", "");
+
+                            for(String s : i.split("\\|")){
+                                String[] spl = s.split("-");
+                                if(spl.length > 1){
+                                    iargs.put(s.split("-")[0], s.split("-")[1]);
+                                }
+                            }
+
+                            item = new ItemStack(Material.getMaterial(iargs.get("item")),
+                                    Integer.valueOf(iargs.get("c")), Short.valueOf(iargs.get("dur")));
+
+                            if(iargs.containsKey("enc")){
+                                for(String s : iargs.get("enc").split("\\]\\[")){
+                                    item.addUnsafeEnchantment(Enchantment.getByName(s.split(",")[0].replace("[", "")),
+                                            Integer.valueOf(s.split(",")[1].replace("]", "")));
+                                }
+                            }
+
+                            items[Integer.valueOf(iargs.get("slot"))] = item;
+                            iargs.clear();
+                        }
+
+                        bd.setItems(items);
+                    }
+
+                    blockdata.put(MinigameUtils.createLocationID(bd.getLocation()), bd);
+                }
+            }
+
+            br.close();
+        }
+        catch (FileNotFoundException e){
+            Bukkit.getLogger().severe("File not found!!!");
+            e.printStackTrace();
+        } catch (IOException e) {
+            Bukkit.getLogger().severe("IO Error!");
+            e.printStackTrace();
+        }
+
+        return true;
+    }
 	
 	@EventHandler(ignoreCancelled = true)
 	private void vehicleCreate(VehicleCreateEvent event){

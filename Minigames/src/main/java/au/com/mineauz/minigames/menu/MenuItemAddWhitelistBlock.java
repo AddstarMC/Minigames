@@ -13,7 +13,7 @@ public class MenuItemAddWhitelistBlock extends MenuItem{
 	private List<Material> whitelist;
 
 	public MenuItemAddWhitelistBlock(String name, List<Material> whitelist) {
-		super(name, Material.ITEM_FRAME);
+		super(name,MenuUtility.getCreateMaterial());
 		setDescription(MinigameUtils.stringToList("Left Click with item to;add to whitelist/blacklist;Click without item to;manually add item."));
 		this.whitelist = whitelist;
 	}

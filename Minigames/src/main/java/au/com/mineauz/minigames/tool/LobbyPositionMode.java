@@ -28,7 +28,7 @@ public class LobbyPositionMode implements ToolMode {
 
 	@Override
 	public Material getIcon() {
-		return Material.TRAP_DOOR;
+		return Material.OAK_TRAPDOOR;
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class LobbyPositionMode implements ToolMode {
 	@Override
 	public void select(MinigamePlayer player, Minigame minigame, Team team) {
 		if(minigame.getLobbyPosition() != null){
-			player.getPlayer().sendBlockChange(minigame.getLobbyPosition(), Material.SKULL, (byte)1);
+			player.getPlayer().sendBlockChange(minigame.getLobbyPosition(), Material.SKELETON_SKULL, (byte)1);
 			player.sendInfoMessage("Selected lobby position (marked with skull)");
 		}
 		else{

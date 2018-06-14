@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions.conditions;
 
+import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.minigame.Team;
 
 import java.util.Map;
@@ -82,8 +83,8 @@ public class TeamPlayerCountCondition extends ConditionInterface {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Player Count", player);
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
-		m.addItem(min.getMenuItem("Min Player Count", Material.STEP, 1, null));
+		m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+		m.addItem(min.getMenuItem("Min Player Count", Material.STONE_SLAB, 1, null));
 		m.addItem(max.getMenuItem("Max Player Count", Material.STONE, 1, null));
 		addInvertMenuItem(m);
 		m.displayMenu(player);

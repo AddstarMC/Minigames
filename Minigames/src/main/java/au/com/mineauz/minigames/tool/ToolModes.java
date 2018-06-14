@@ -31,8 +31,7 @@ public class ToolModes {
 	}
 	
 	public static void removeToolMode(String name){
-		if(modes.containsKey(name.toUpperCase()))
-			modes.remove(name.toUpperCase());
+        modes.remove(name.toUpperCase());
 	}
 	
 	public static ToolMode getToolMode(String name){

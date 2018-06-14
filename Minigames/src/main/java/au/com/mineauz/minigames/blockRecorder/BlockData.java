@@ -1,6 +1,9 @@
 package au.com.mineauz.minigames.blockRecorder;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.Minigames;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -13,7 +16,8 @@ import java.util.*;
 public class BlockData {
 	private Location location;
 	private BlockState state;
-	private MinigamePlayer player = null;
+	private String blockData;
+	private UUID playerUUID = null;
 	private ItemStack[] items = null;
     private Map<String, Object> specialData = new HashMap<>();
 	private boolean hasRandomized = false;
@@ -21,13 +25,15 @@ public class BlockData {
 	public BlockData(Block original, MinigamePlayer modifier){
 		location = original.getLocation();
 		state = original.getState();
-		player = modifier;
+		blockData = original.getState().getBlockData().getAsString();
+		if(modifier !=null)playerUUID = modifier.getUUID();
 	}
 	
 	public BlockData(BlockState original, MinigamePlayer modifier){
 		location = original.getLocation();
 		state = original;
-		player = modifier;
+        blockData = state.getBlockData().getAsString();
+        if(modifier !=null)playerUUID = modifier.getUUID();
 	}
 	
 	public Location getLocation(){
@@ -39,11 +45,19 @@ public class BlockData {
 	}
 	
 	public MinigamePlayer getModifier(){
-		return player;
+		return Minigames.getPlugin().getPlayerManager().getMinigamePlayer(playerUUID);
 	}
 	
+	public String getBlockDataString(){
+	    return blockData;
+    }
+    
+    public org.bukkit.block.data.BlockData getBukkitBlockData(){
+	    return Bukkit.createBlockData(blockData);
+    }
+	
 	public void setModifier(MinigamePlayer modifier){
-		player = modifier;
+		playerUUID = (modifier !=null)?modifier.getUUID():null;
 	}
 	
 	public ItemStack[] getItems(){
@@ -116,12 +130,12 @@ public class BlockData {
 		return hasRandomized;
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
+	@Deprecated
 	public String toString(){
 		String ret = "{";
 		ret += "mat:" + state.getType().toString() + ";";
-		ret += "data:" + state.getData().getData() + ";";
+		ret += "data:" + blockData + ";";
 		ret += "x:" + state.getX() + ";";
 		ret += "y:" + state.getY() + ";";
 		ret += "z:" + state.getZ() + ";";

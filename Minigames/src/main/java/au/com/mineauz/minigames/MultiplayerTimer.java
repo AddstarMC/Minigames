@@ -47,90 +47,86 @@ public class MultiplayerTimer{
 	public void startTimer(){
 		if(taskID != -1)
 			removeTimer();
-		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-			
-			@Override
-			public void run() {
+		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
 
-				if (currentLobbyWaitTime != 0 && !paused) {
-					if (currentLobbyWaitTime == oLobbyWaitTime) {
-						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.waitingForPlayers"));
-						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", currentLobbyWaitTime));
-                        allowInteraction(LobbySettingsModule.getMinigameModule(minigame).canInteractPlayerWait());
-                        freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMovePlayerWait());
-                        minigame.setState(MinigameState.WAITING);
-					} else if (timeMsg.contains(currentLobbyWaitTime)) {
-						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", currentLobbyWaitTime));
-						PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
-					}
-				} else if (currentLobbyWaitTime == 0 && startWaitTime != 0 && !paused) {
-					//wait time done game will start.
-					if(startWaitTime == oStartWaitTime){
-						minigame.setState(MinigameState.STARTING);
-						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.minigameStarts"));
-						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
-						freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMoveStartWait());
-						allowInteraction(LobbySettingsModule.getMinigameModule(minigame).canInteractStartWait());
+            if (currentLobbyWaitTime != 0 && !paused) {
+                if (currentLobbyWaitTime == oLobbyWaitTime) {
+                    sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.waitingForPlayers"));
+                    sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", currentLobbyWaitTime));
+allowInteraction(LobbySettingsModule.getMinigameModule(minigame).canInteractPlayerWait());
+freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMovePlayerWait());
+minigame.setState(MinigameState.WAITING);
+                } else if (timeMsg.contains(currentLobbyWaitTime)) {
+                    sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", currentLobbyWaitTime));
+                    PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
+                }
+            } else if (currentLobbyWaitTime == 0 && startWaitTime != 0 && !paused) {
+                //wait time done game will start.
+                if(startWaitTime == oStartWaitTime){
+                    minigame.setState(MinigameState.STARTING);
+                    sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.minigameStarts"));
+                    sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
+                    freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMoveStartWait());
+                    allowInteraction(LobbySettingsModule.getMinigameModule(minigame).canInteractStartWait());
 
-						if(LobbySettingsModule.getMinigameModule(minigame).isTeleportOnPlayerWait()){
-							reclearInventories(minigame);
-							playerManager.balanceGame(minigame);
-							playerManager.getStartLocations(minigame.getPlayers(), minigame);
-							if (!minigame.isPlayersAtStart()) {
-								playerManager.teleportToStart(minigame);
-								minigame.setPlayersAtStart(true);
-							}
+                    if(LobbySettingsModule.getMinigameModule(minigame).isTeleportOnPlayerWait()){
+                        reclearInventories(minigame);
+                        playerManager.balanceGame(minigame);
+                        playerManager.getStartLocations(minigame.getPlayers(), minigame);
+                        if (!minigame.isPlayersAtStart()) {
+                            playerManager.teleportToStart(minigame);
+                            minigame.setPlayersAtStart(true);
                         }
-					}
-					else if(timeMsg.contains(startWaitTime)){
-						sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
-						PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
-					}
-				} else if (currentLobbyWaitTime == 0 && startWaitTime == 0) {
-					//game should start..
-					sendPlayersMessage(ChatColor.GREEN + MinigameUtils.getLang("time.startup.go"));
-					reclearInventories(minigame);
-                    if(!LobbySettingsModule.getMinigameModule(minigame).isTeleportOnPlayerWait()){
-						playerManager.balanceGame(minigame);
-						playerManager.getStartLocations(minigame.getPlayers(), minigame);
+}
+                }
+                else if(timeMsg.contains(startWaitTime)){
+                    sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
+                    PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
+                }
+            } else if (currentLobbyWaitTime == 0 && startWaitTime == 0) {
+                //game should start..
+                sendPlayersMessage(ChatColor.GREEN + MinigameUtils.getLang("time.startup.go"));
+                reclearInventories(minigame);
+if(!LobbySettingsModule.getMinigameModule(minigame).isTeleportOnPlayerWait()){
+                    playerManager.balanceGame(minigame);
+                    playerManager.getStartLocations(minigame.getPlayers(), minigame);
+}
+                if(LobbySettingsModule.getMinigameModule(minigame).isTeleportOnStart()) {
+                    playerManager.startMPMinigame(minigame, true);
+                    if (!minigame.isPlayersAtStart()) {
+                        playerManager.teleportToStart(minigame);
+                        minigame.setPlayersAtStart(true);
                     }
-					if(LobbySettingsModule.getMinigameModule(minigame).isTeleportOnStart()) {
-						playerManager.startMPMinigame(minigame, true);
-						if (!minigame.isPlayersAtStart()) {
-							playerManager.teleportToStart(minigame);
-							minigame.setPlayersAtStart(true);
-						}
-                    }else{
-						playerManager.startMPMinigame(minigame);
-						if (!minigame.isPlayersAtStart()) {
-							Minigames.getPlugin().getLogger().info("Minigame started and Players not teleported check configs:" + minigame.getName(false));
-						}
+}else{
+                    playerManager.startMPMinigame(minigame);
+                    if (!minigame.isPlayersAtStart()) {
+                        Minigames.getPlugin().getLogger().info("Minigame started and Players not teleported check configs:" + minigame.getName(false));
                     }
-                    freezePlayers(false);
-					allowInteraction(true);
-					
-					if(minigame.getFloorDegen1() != null && minigame.getFloorDegen2() != null){
-						minigame.addFloorDegenerator();
-						minigame.getFloorDegenerator().startDegeneration();
-					}
-					
-					if(minigame.getTimer() > 0){
-						minigame.setMinigameTimer(new MinigameTimer(minigame, minigame.getTimer()));
-						plugin.getMinigameManager().sendMinigameMessage(minigame,
-								MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(minigame.getTimer())));
-					}
-					
-					Bukkit.getScheduler().cancelTask(taskID);
-				}
-				
-				if(!paused){
-					if (currentLobbyWaitTime != 0)
-						currentLobbyWaitTime -= 1;
-					else
-						startWaitTime -= 1;
-				}
-			}
-		}, 0, 20);
+}
+freezePlayers(false);
+                allowInteraction(true);
+
+                if(minigame.getFloorDegen1() != null && minigame.getFloorDegen2() != null){
+                    minigame.addFloorDegenerator();
+                    minigame.getFloorDegenerator().startDegeneration();
+                }
+
+                if(minigame.getTimer() > 0){
+                    minigame.setMinigameTimer(new MinigameTimer(minigame, minigame.getTimer()));
+                    plugin.getMinigameManager().sendMinigameMessage(minigame,
+                            MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(minigame.getTimer())));
+                }
+
+                Bukkit.getScheduler().cancelTask(taskID);
+            }
+
+            if(!paused){
+                if (currentLobbyWaitTime != 0)
+                    currentLobbyWaitTime -= 1;
+                else
+                    startWaitTime -= 1;
+            }
+        }, 0, 20);
 	}
 	
 	private void sendPlayersMessage(String message){

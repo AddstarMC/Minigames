@@ -60,13 +60,7 @@ public class VelocityAction extends AbstractAction{
 	
 	private void execute(final MinigamePlayer player){
 		if(player == null) return;
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
-			
-			@Override
-			public void run() {
-				player.getPlayer().setVelocity(new Vector(x.getFlag(), y.getFlag(), z.getFlag()));
-			}
-		});
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), () -> player.getPlayer().setVelocity(new Vector(x.getFlag(), y.getFlag(), z.getFlag())));
 	}
 
 	@Override

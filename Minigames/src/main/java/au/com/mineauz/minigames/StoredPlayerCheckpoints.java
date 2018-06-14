@@ -28,9 +28,7 @@ public class StoredPlayerCheckpoints {
 	}
 	
 	public void removeCheckpoint(String minigame){
-		if(checkpoints.containsKey(minigame)){
-			checkpoints.remove(minigame);
-		}
+        checkpoints.remove(minigame);
 	}
 	
 	public boolean hasCheckpoint(String minigame){

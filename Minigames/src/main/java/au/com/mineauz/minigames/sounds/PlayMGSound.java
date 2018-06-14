@@ -23,16 +23,12 @@ public class PlayMGSound {
 	private static void playLoop(MinigamePlayer player, MGSound  sound){
 		final MinigamePlayer fplayer = player;
 		final MGSound fsound = sound;
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), new Runnable() {
-			
-			@Override
-			public void run() {
-				fplayer.getPlayer().playSound(fplayer.getLocation(), fsound.getSound(), fsound.getVolume(), fsound.getPitch());
-				fsound.setTimesPlayed(fsound.getTimesPlayed() + 1);
-				if(fsound.getTimesPlayed() < fsound.getCount())
-					playLoop(fplayer, fsound);
-			}
-		}, sound.getDelay());
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () -> {
+            fplayer.getPlayer().playSound(fplayer.getLocation(), fsound.getSound(), fsound.getVolume(), fsound.getPitch());
+            fsound.setTimesPlayed(fsound.getTimesPlayed() + 1);
+            if(fsound.getTimesPlayed() < fsound.getCount())
+                playLoop(fplayer, fsound);
+        }, sound.getDelay());
 	}
 	
 	public static void playSound(Minigame minigame, MGSound sound){

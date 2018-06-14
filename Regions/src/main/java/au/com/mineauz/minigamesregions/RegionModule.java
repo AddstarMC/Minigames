@@ -349,7 +349,7 @@ public class RegionModule extends MinigameModule {
 		}
 		rm.addItems(items);
 		if(previous != null)
-			rm.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), rm.getSize() - 9);
+			rm.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), previous), rm.getSize() - 9);
 		rm.displayMenu(viewer);
 	}
 	
@@ -359,14 +359,10 @@ public class RegionModule extends MinigameModule {
 	public void addEditMenuOptions(Menu menu) {
 		final MenuItemCustom c = new MenuItemCustom("Regions and Nodes", Material.DIAMOND_BLOCK);
 		final Menu fmenu = menu;
-		c.setClick(new InteractionInterface() {
-			
-			@Override
-			public Object interact(Object object) {
-				displayMenu(c.getContainer().getViewer(), fmenu);
-				return null;
-			}
-		});
+		c.setClick(object -> {
+            displayMenu(c.getContainer().getViewer(), fmenu);
+            return null;
+        });
 		menu.addItem(c);
 	}
 

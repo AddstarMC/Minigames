@@ -135,9 +135,7 @@ public class LoadoutModule extends MinigameModule {
 	}
 	
 	public void deleteLoadout(String name){
-		if(extraLoadouts.containsKey(name)){
-			extraLoadouts.remove(name);
-		}
+		extraLoadouts.remove(name);
 	}
 	
 	public Set<String> getLoadouts(){
@@ -232,19 +230,16 @@ public class LoadoutModule extends MinigameModule {
                             ItemStack item = loadout.getItem(new ArrayList<>(loadout.getItems()).get(0));
 							c.setItem(item);}
 						final PlayerLoadout floadout2 = loadout;
-						c.setClick(new InteractionInterface() {
-
-							public Object interact(Object object) {
-								fply.setLoadout(floadout2);
-								fply.getPlayer().closeInventory();
-								if(!equip)
-									fply.sendMessage(MinigameUtils.getLang("player.loadout.nextSpawn"), null);
-								else{
-									fply.sendMessage(MinigameUtils.formStr("player.loadout.equipped", floadout2.getName(true)), null);
-									floadout2.equiptLoadout(fply);
-								}
-								return null;
+						c.setClick(object -> {
+							fply.setLoadout(floadout2);
+							fply.getPlayer().closeInventory();
+							if(!equip)
+								fply.sendMessage(MinigameUtils.getLang("player.loadout.nextSpawn"), null);
+							else{
+								fply.sendMessage(MinigameUtils.formStr("player.loadout.equipped", floadout2.getName(true)), null);
+								floadout2.equiptLoadout(fply);
 							}
+							return null;
 						});
 						m.addItem(c);
 					}

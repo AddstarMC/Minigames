@@ -137,9 +137,7 @@ public class MinigameManager {
 	}
 	
 	public void removeMinigame(String minigame){
-		if(minigames.containsKey(minigame)){
-			minigames.remove(minigame);
-		}
+        minigames.remove(minigame);
 	}
 	
 	public void addConfigurationFile(String filename, Configuration config){
@@ -158,9 +156,7 @@ public class MinigameManager {
 	}
 	
 	public void removeConfigurationFile(String filename){
-		if(configs.containsKey(filename)){
-			configs.remove(filename);
-		}
+        configs.remove(filename);
 	}
 	
 	public Location minigameLocations(String minigame, String type, Configuration save) {
@@ -249,9 +245,7 @@ public class MinigameManager {
 	}
 	
 	public void deleteLoadout(String name){
-		if(globalLoadouts.containsKey(name)){
-			globalLoadouts.remove(name);
-		}
+        globalLoadouts.remove(name);
 	}
 	
 	public Set<String> getLoadouts(){
@@ -406,10 +400,8 @@ public class MinigameManager {
 	}
 	
 	public void clearClaimedScore(Minigame mg){
-		if(claimedScoreSignsRed.containsKey(mg))
-			claimedScoreSignsRed.remove(mg);
-		if(claimedScoreSignsBlue.containsKey(mg))
-			claimedScoreSignsBlue.remove(mg);
+        claimedScoreSignsRed.remove(mg);
+        claimedScoreSignsBlue.remove(mg);
 	}
 
 	public boolean minigameMechanicCheck(Minigame minigame, MinigamePlayer player) {

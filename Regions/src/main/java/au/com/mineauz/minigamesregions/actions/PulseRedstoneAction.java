@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Bukkit;
@@ -59,16 +60,10 @@ public class PulseRedstoneAction extends AbstractAction {
 		debug(player,node);
 		Material block = Material.REDSTONE_BLOCK;
 		if(torch.getFlag())
-			block = Material.REDSTONE_TORCH_ON;
+			block =MenuUtility.getBackMaterial();
 		final BlockState last = node.getLocation().getBlock().getState();
 		node.getLocation().getBlock().setType(block);
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), new Runnable() {
-			
-			@Override
-			public void run() {
-				last.update(true);
-			}
-		}, 20 * time.getFlag());
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () -> last.update(true), 20 * time.getFlag());
 	}
 
 	@Override
@@ -88,8 +83,8 @@ public class PulseRedstoneAction extends AbstractAction {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Redstone Pulse", player);
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
-		m.addItem(time.getMenuItem("Pulse Time", Material.WATCH));
+		m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+		m.addItem(time.getMenuItem("Pulse Time", Material.CLOCK));
 		m.addItem(torch.getMenuItem("Use Redstone Torch", Material.REDSTONE_BLOCK));
 		m.displayMenu(player);
 		return true;

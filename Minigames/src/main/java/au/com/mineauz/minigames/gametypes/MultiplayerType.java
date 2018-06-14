@@ -90,46 +90,38 @@ public class MultiplayerType extends MinigameTypeBase{
 				player.sendMessage(String.format(smTeam.getAssignMessage(), smTeam.getChatColor() + smTeam.getDisplayName()), null);
 				
 				final Team fteam = smTeam;
-				player.setLateJoinTimer(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						if(fply.isInMinigame()){
-							List<Location> locs = new ArrayList<>();
-							if(TeamsModule.getMinigameModule(fmgm).hasTeamStartLocations()){
-								locs.addAll(fteam.getStartLocations());
-							}
-							else{
-								locs.addAll(fmgm.getStartLocations());
-							}
-							Collections.shuffle(locs);
-							fply.teleport(locs.get(0));
-							fply.getLoadout().equiptLoadout(fply);
-							fply.setLatejoining(false);
-							fply.setFrozen(false);
-							fply.setCanInteract(true);
-							fply.setLateJoinTimer(-1);
-						}
-					}
-				}, 5 * 20)); //TODO: Latejoin variable
+				player.setLateJoinTimer(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                    if(fply.isInMinigame()){
+                        List<Location> locs = new ArrayList<>();
+                        if(TeamsModule.getMinigameModule(fmgm).hasTeamStartLocations()){
+                            locs.addAll(fteam.getStartLocations());
+                        }
+                        else{
+                            locs.addAll(fmgm.getStartLocations());
+                        }
+                        Collections.shuffle(locs);
+                        fply.teleport(locs.get(0));
+                        fply.getLoadout().equiptLoadout(fply);
+                        fply.setLatejoining(false);
+                        fply.setFrozen(false);
+                        fply.setCanInteract(true);
+                        fply.setLateJoinTimer(-1);
+                    }
+                }, 5 * 20)); //TODO: Latejoin variable
 			}
 			else{
-				player.setLateJoinTimer(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						if(fply.isInMinigame()){
-							List<Location> locs = new ArrayList<>(fmgm.getStartLocations());
-							Collections.shuffle(locs);
-							fply.teleport(locs.get(0));
-							fply.getLoadout().equiptLoadout(fply);
-							fply.setLatejoining(false);
-							fply.setFrozen(false);
-							fply.setCanInteract(true);
-							fply.setLateJoinTimer(-1);
-						}
-					}
-				}, 5 * 20)); //TODO: Latejoin variable
+				player.setLateJoinTimer(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                    if(fply.isInMinigame()){
+                        List<Location> locs = new ArrayList<>(fmgm.getStartLocations());
+                        Collections.shuffle(locs);
+                        fply.teleport(locs.get(0));
+                        fply.getLoadout().equiptLoadout(fply);
+                        fply.setLatejoining(false);
+                        fply.setFrozen(false);
+                        fply.setCanInteract(true);
+                        fply.setLateJoinTimer(-1);
+                    }
+                }, 5 * 20)); //TODO: Latejoin variable
 			}
 			player.getPlayer().setScoreboard(mgm.getScoreboardManager());
 			mgm.setScore(player, 1);
@@ -161,13 +153,7 @@ public class MultiplayerType extends MinigameTypeBase{
 				if(mgm.getMpBets().getPlayersBet(player) != null){
 					final ItemStack item = mgm.getMpBets().getPlayersBet(player).clone();
 					final MinigamePlayer ply = player;
-					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-						
-						@Override
-						public void run() {
-							ply.getPlayer().getInventory().addItem(item);
-						}
-					});
+					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> ply.getPlayer().getInventory().addItem(item));
 				}
 				else if(mgm.getMpBets().getPlayersMoneyBet(player) != null){
 					plugin.getEconomy().depositPlayer(player.getPlayer().getPlayer(), mgm.getMpBets().getPlayersMoneyBet(player));
@@ -298,12 +284,7 @@ public class MultiplayerType extends MinigameTypeBase{
 			
 			event.setRespawnLocation(respawnPos);
 			
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				@Override
-				public void run() {
-					ply.getPlayer().setNoDamageTicks(60);
-				}
-			});
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> ply.getPlayer().setNoDamageTicks(60));
 		}
 	}
 	

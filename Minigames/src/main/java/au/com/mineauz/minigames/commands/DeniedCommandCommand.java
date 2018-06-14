@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DeniedCommandCommand implements ICommand {
@@ -95,9 +96,7 @@ public class DeniedCommandCommand implements ICommand {
 			String alias, String[] args) {
 		if(args.length == 1){
             List<String> ls = new ArrayList<>();
-			for(String par : getParameters()){
-				ls.add(par);
-			}
+            Collections.addAll(ls, getParameters());
 			return MinigameUtils.tabCompleteMatch(ls, args[0]);
 		}
 		else if(args.length == 2 && args[0].equalsIgnoreCase("remove")){

@@ -78,13 +78,7 @@ public class SpawnEntityAction extends AbstractAction {
 		final double vx = Double.valueOf(settings.get("velocityx"));
 		final double vy = Double.valueOf(settings.get("velocityy"));
 		final double vz = Double.valueOf(settings.get("velocityz"));
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
-			
-			@Override
-			public void run() {
-				ent.setVelocity(new Vector(vx, vy, vz));
-			}
-		});
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), () -> ent.setVelocity(new Vector(vx, vy, vz)));
 		
 		if(ent instanceof LivingEntity){
 			LivingEntity lent = (LivingEntity) ent;
@@ -115,7 +109,7 @@ public class SpawnEntityAction extends AbstractAction {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Spawn Entity", player);
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
 		List<String> options = new ArrayList<>();
 		for(EntityType type : EntityType.values()){
 			if(type != EntityType.ITEM_FRAME && type != EntityType.LEASH_HITCH && type != EntityType.PLAYER && 
@@ -124,7 +118,7 @@ public class SpawnEntityAction extends AbstractAction {
 					type != EntityType.DROPPED_ITEM)
 				options.add(MinigameUtils.capitalize(type.toString().replace("_", " ")));
 		}
-		m.addItem(new MenuItemList("Entity Type", Material.SKULL_ITEM, new Callback<String>() {
+		m.addItem(new MenuItemList("Entity Type", Material.SKELETON_SKULL, new Callback<String>() {
 			
 			@Override
 			public void setValue(String value) {
@@ -179,22 +173,18 @@ public class SpawnEntityAction extends AbstractAction {
 		m.addItem(new MenuItemNewLine());
 		
 		final Menu eSet = new Menu(3, "Settings", player);
-		final MenuItemPage backButton = new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, m);
+		final MenuItemPage backButton = new MenuItemPage("Back",MenuUtility.getBackMaterial(), m);
 		final MenuItemCustom cus = new MenuItemCustom("Entity Settings", Material.CHEST);
 		final MinigamePlayer fply = player;
-		cus.setClick(new InteractionInterface() {
-			
-			@Override
-			public Object interact(Object object) {
-				if(type.getFlag().equals("ZOMBIE")){
-					eSet.clearMenu();
-					eSet.addItem(backButton, eSet.getSize() - 9);
-					livingEntitySettings(eSet);
-					eSet.displayMenu(fply);
-					return null;
-				}
-				return cus.getItem();
+		cus.setClick(object -> {
+			if(type.getFlag().equals("ZOMBIE")){
+				eSet.clearMenu();
+				eSet.addItem(backButton, eSet.getSize() - 9);
+				livingEntitySettings(eSet);
+				eSet.displayMenu(fply);
+				return null;
 			}
+			return cus.getItem();
 		});
 		m.addItem(cus);
 		
