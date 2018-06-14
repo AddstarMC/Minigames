@@ -170,7 +170,7 @@ public class MinigamePlayerManager {
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
 		if(!event.isCancelled()){
-			boolean tpd = false;
+			boolean tpd;
 			if(minigame.getSpectatorLocation() != null)
 				tpd = player.teleport(minigame.getSpectatorLocation());
 			else{
@@ -785,6 +785,8 @@ public class MinigamePlayerManager {
 
 	@NotNull
 	public MinigamePlayer getMinigamePlayer(Player player){
+		if (minigamePlayers.containsKey(player.getName())) return minigamePlayers.get(player.getName());
+		else addMinigamePlayer(player);
 		return minigamePlayers.get(player.getName());
 	}
 	

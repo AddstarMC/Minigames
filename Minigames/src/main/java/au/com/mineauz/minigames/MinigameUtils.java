@@ -432,8 +432,14 @@ public class MinigameUtils {
 		sloc.put("z", loc.getZ());
 		sloc.put("yaw", loc.getYaw());
 		sloc.put("pitch", loc.getPitch());
-		sloc.put("world", loc.getWorld().getName());
-		
+		String name;
+		if (loc.getWorld() != null) {
+			name = loc.getWorld().getName();
+		} else {
+			debugMessage("A Location could not be deserialized the world was null");
+			return Collections.emptyMap();
+		}
+		sloc.put("world", name);
 		return sloc;
 	}
 
