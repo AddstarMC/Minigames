@@ -9,4 +9,5 @@ caches:
 env:
   matrix:
     - PROFILE=1.13
-script: "mvn clean install -P ${PROFILE}"
+install: "mvn clean install -P ${PROFILE} -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
+script:"mvn test -P ${PROFILE} -B"
