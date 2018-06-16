@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -57,8 +58,11 @@ public class CreateCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, Minigame minigame, String label, String[] args) {
 		if(args != null){
 			Player player = (Player)sender;
-			if (!plugin.getMinigameManager().hasMinigame(args[0])) {
-				String mgmName = args[0];
+            String mgmName = args[0];
+            if(MinigameUtils.sanitizeYamlString(mgmName) == null) {
+                throw new CommandException("Name is not valid for use in a Config.");
+            }
+			if (!plugin.getMinigameManager().hasMinigame(mgmName)) {
 				MinigameType type = MinigameType.SINGLEPLAYER;
 				if(args.length >= 2){
 					if(MinigameType.hasValue(args[1].toUpperCase())){

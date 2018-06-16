@@ -8,11 +8,11 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 public class MinigameSave {
-	FileConfiguration minigameSave = null;
-	File minigameSaveFile = null;
+	private FileConfiguration minigameSave = null;
+	private File minigameSaveFile = null;
 	String minigame = null;
     private static Minigames plugin = Minigames.getPlugin();
-	private String name = null;
+	private String name;
 	
 	public MinigameSave(String name){
 		this.name = name;

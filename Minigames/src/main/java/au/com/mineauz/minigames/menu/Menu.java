@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.Minigames;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -156,8 +157,9 @@ public class Menu {
 	public void displayMenu(MinigamePlayer ply){
 		updateAll();
 		populateMenu();
-		
-		inv = Bukkit.createInventory(ply.getPlayer(), rows*9, name);
+		Player player = ply.getPlayer();
+
+		inv = Bukkit.createInventory(player, rows*9, name);
 		inv.setContents(pageView);
 		ply.getPlayer().openInventory(inv);
 		ply.setMenu(this);

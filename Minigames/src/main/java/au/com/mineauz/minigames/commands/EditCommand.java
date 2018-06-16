@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.commands;
 
+import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
@@ -58,14 +59,17 @@ public class EditCommand implements ICommand {
 		if(args != null){
 			if (plugin.getMinigameManager().hasMinigame(args[0])) {
 				Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
-				mgm.displayMenu(plugin.getPlayerManager().getMinigamePlayer((Player) sender));
-//				Menu menu = new Menu(6, "Edit: " + mgm.getName(), plugin.playerManager.getMinigamePlayer((Player)sender));
-//				int slot = 0;
-//				for(MenuItem item : mgm.getMenuItems()){
-//					menu.addItem(item, slot);
-//					slot++;
-//				}
-//				menu.displayMenu(plugin.playerManager.getMinigamePlayer((Player)sender));
+                if (mgm == null) {
+                    plugin.getLogger().warning("The Minigame requested has a configuration problem and is returning nulls");
+                    return false;
+                }
+                MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
+                if (player == null) {
+                    plugin.getLogger().warning("Player is null");
+                    Thread.dumpStack();
+                    return false;
+                }
+                mgm.displayMenu(player);
 			}
 			else{
 				sender.sendMessage(ChatColor.RED + "There is no Minigame by the name " + args[0]);

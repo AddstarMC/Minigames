@@ -9,9 +9,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 //import net.minecraft.server.v1_6_R2.EntityPlayer;
 //
@@ -431,8 +433,14 @@ public class MinigameUtils {
 		sloc.put("z", loc.getZ());
 		sloc.put("yaw", loc.getYaw());
 		sloc.put("pitch", loc.getPitch());
-		sloc.put("world", loc.getWorld().getName());
-		
+		String name;
+		if (loc.getWorld() != null) {
+			name = loc.getWorld().getName();
+		} else {
+			debugMessage("A Location could not be deserialized the world was null");
+			return Collections.emptyMap();
+		}
+		sloc.put("world", name);
 		return sloc;
 	}
 
@@ -532,6 +540,17 @@ public class MinigameUtils {
 			return string;
 		}
 	}
+
+	public static String sanitizeYamlString(String input){
+		final Pattern pattern = Pattern.compile("^[a-zA-Z\\d_]+$");
+		if (!pattern.matcher(input).matches()) {
+			return null;
+		}
+		else{
+			return input;
+		}
+	}
+
 	
 //	public static void removePlayerArrows(MinigamePlayer player){
 //		try{

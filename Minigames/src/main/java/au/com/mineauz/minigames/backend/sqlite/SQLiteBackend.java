@@ -19,6 +19,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@SuppressWarnings("SyntaxError")
 public class SQLiteBackend extends Backend {
 	private ConnectionPool pool;
 	private final Logger logger;

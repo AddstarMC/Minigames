@@ -195,13 +195,7 @@ public class Events implements Listener{
 			ply.setQuitPos(floc);
 			
 			if(!ply.getPlayer().isDead() && ply.isRequiredQuit()){
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					
-					@Override
-					public void run() {
-						ply.restorePlayerData();
-					}
-				});
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, ply::restorePlayerData);
 				ply.teleport(ply.getQuitPos());
 				
 				ply.setRequiredQuit(false);
@@ -214,6 +208,11 @@ public class Events implements Listener{
 		ply.loadClaimedRewards();
 		
 		if(Bukkit.getServer().getOnlinePlayers().size() == 1){
+			for (Minigame mgm : mdata.getAllMinigames().values()) {
+				if (mgm != null && mgm.getType() == MinigameType.GLOBAL) {
+					if (mgm.getMinigameTimer() != null) mgm.getMinigameTimer().startTimer();
+				}
+			}
 			for(String mgm : mdata.getAllMinigames().keySet()){
 				if(mdata.getMinigame(mgm).getType() == MinigameType.GLOBAL){
 //					if(minigameManager.getMinigame(mgm).getThTimer() != null){
@@ -436,7 +435,7 @@ public class Events implements Listener{
     
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	private void entityDamageEntity(EntityDamageByEntityEvent event){
-        if (event.getEntity() instanceof Player && !event.isCancelled()) {
+        if (event.getEntity() instanceof Player) {
             if (event.getDamager() instanceof Snowball) {
                 MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getEntity());
                 if (ply == null) return;
