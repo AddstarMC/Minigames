@@ -10,4 +10,4 @@ env:
   matrix:
     - PROFILE=1.13
 install: "mvn clean install -P ${PROFILE} -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
-script:"mvn test -P ${PROFILE} -B"
+script: "mvn test -P ${PROFILE} -B"
