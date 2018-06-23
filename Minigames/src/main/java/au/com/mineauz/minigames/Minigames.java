@@ -1,5 +1,9 @@
 package au.com.mineauz.minigames;
 
+import com.google.common.io.Closeables;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.ListenableFuture;
+
 import au.com.mineauz.minigames.backend.BackendManager;
 import au.com.mineauz.minigames.blockRecorder.BasicRecorder;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
@@ -14,11 +18,9 @@ import au.com.mineauz.minigames.signs.SignBase;
 import au.com.mineauz.minigames.stats.MinigameStats;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
-import com.google.common.io.Closeables;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.ListenableFuture;
+
 import net.milkbowl.vault.economy.Economy;
-import org.apache.maven.artifact.versioning.ComparableVersion;
+
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,32 +32,45 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.Callable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Minigames extends JavaPlugin{
-	static Logger log = Logger.getLogger("Minecraft");
-	private static Minigames plugin;
+    
+    public DisplayManager display;
+    
+    
 	private MinigamePlayerManager playerManager;
-	public DisplayManager display;
 	private MinigameManager minigameManager;
-    private static Economy econ = null;
-	private static SignBase minigameSigns;
 	private FileConfiguration lang = null;
 	private FileConfiguration defLang = null;
 	private boolean debug = false;
-
-	public static ComparableVersion getVERSION() {
+	private long lastUpdateCheck = 0;
+	private BackendManager backend;
+	
+	private static Minigames plugin;
+	private static Economy econ = null;
+	private static SignBase minigameSigns;
+	private static ComparableVersion VERSION;
+	private static ComparableVersion SPIGOT_VERSION;
+    static Logger log = Logger.getLogger("Minecraft");
+    private Metrics metrics;
+    
+    public static ComparableVersion getVERSION() {
 		return VERSION;
 	}
-
-	private static ComparableVersion VERSION;
-	private long lastUpdateCheck = 0;
-	
-	private BackendManager backend;
 	
 	public static Minigames getPlugin() {
 		return plugin;
@@ -63,6 +78,7 @@ public class Minigames extends JavaPlugin{
 	
 	public void onDisable() {
 		if (getPlugin() == null) {
+		    getLogger().info("Minigames is disabled");
 			return;
 		}
 		PluginDescriptionFile desc = this.getDescription();
@@ -120,13 +136,22 @@ public class Minigames extends JavaPlugin{
 	public void onEnable(){
 		try {
 			plugin = this;
+			if(!checkVersion() || !getConfig().getBoolean("forceload")){
+			    plugin = null;
+			    getLogger().warning("This version of Minigames (" + VERSION.getCanonical()+ ") " +
+                        "is designed for Bukkit Version: " + SPIGOT_VERSION.getCanonical());
+			    getLogger().warning("DISABLING MINIGAMES....");
+			    onDisable();
+			    return;
+            }
+            
 			PluginDescriptionFile desc = this.getDescription();
 			
 			MinigameSave sv = new MinigameSave("lang/" + getConfig().getString("lang"));
 			lang = sv.getConfig();
 			loadLang();
 			lang.setDefaults(defLang);
-			loadVersion();
+			checkVersion();
 			getLogger().info("Using lang " + getConfig().getString("lang"));
 			
             loadPresets();
@@ -282,7 +307,7 @@ public class Minigames extends JavaPlugin{
 		return econ;
 	}
 
-	private void loadVersion(){
+	private boolean checkVersion(){
         InputStream stream = getClass().getResourceAsStream("minigame.properties");
         Properties p = new Properties();
         try {
@@ -293,6 +318,9 @@ public class Minigames extends JavaPlugin{
             Closeables.closeQuietly( stream );
         }
         VERSION = new ComparableVersion(p.getProperty("version"));
+        SPIGOT_VERSION = new ComparableVersion(p.getProperty("spigot_version"));
+        ComparableVersion serverversion = new ComparableVersion(Bukkit.getVersion());
+        return SPIGOT_VERSION.compareTo(serverversion) < 0;
     }
 
 	/**
@@ -341,7 +369,7 @@ public class Minigames extends JavaPlugin{
 	}
 	
 	private void initMetrics() {
-		Metrics metrics = new Metrics(this);
+		metrics = new Metrics(this);
 		Metrics.MultiLineChart chart = new Metrics.MultiLineChart("Players_in_Minigames", () -> {
 			Map<String, Integer> result = new HashMap<>();
 			int count = 0;
@@ -363,6 +391,10 @@ public class Minigames extends JavaPlugin{
 		});
 		metrics.addCustomChart(chart);
         metrics.addCustomChart(barChart);
+	}
+
+	public void addMetric(Metrics.CustomChart chart){
+		metrics.addCustomChart(chart);
 	}
 
 	

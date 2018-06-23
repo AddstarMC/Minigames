@@ -2,16 +2,19 @@ package au.com.mineauz.minigames.minigame.modules;
 
 import java.util.Map;
 
+import org.bstats.bukkit.Metrics;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import au.com.mineauz.minigames.ComparableVersion;
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 
 public abstract class MinigameModule {
 	private final Minigame mgm;
-	
+
 	public MinigameModule(Minigame mgm){
 		this.mgm = mgm;
 	}
@@ -25,4 +28,21 @@ public abstract class MinigameModule {
 	public abstract void load(FileConfiguration config);
 	public abstract void addEditMenuOptions(Menu menu);
 	public abstract boolean displayMechanicSettings(Menu previous);
+
+	/**
+	 * This returns true if you the Minigames version is higher than your required version
+	 * ie if you require version 1.13 then and Minigames is at 1.14 it will be true
+	 *
+	 * @param minRequired The minimum version of minigames required.
+	 * @return true if the version exceeds your version
+	 */
+	public boolean checkVersion(ComparableVersion minRequired) {
+		return !(minRequired.compareTo(Minigames.getVERSION()) > 0);
+	}
+
+	public void addMetricChart(Metrics.CustomChart chart){
+	    Minigames.getPlugin().addMetric(chart);
+    }
+
+
 }
