@@ -53,7 +53,8 @@ backend:
   database: database
   username: username
   password: password
-  useSSL: false
+  properties:
+    useSSL: false
 
 tool: "BLAZE_ROD"
 
