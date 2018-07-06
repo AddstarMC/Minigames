@@ -23,7 +23,6 @@ description: A home page for the awesome spigot plugin originally designed by Ra
 
 # List of links in the navigation bar
 navbar-links:
-  About Me: "About Minigames"
   Resources:
     - Source: "https://github.com/AddstarMC/Minigames"
     - Wiki: "https://github.com/AddstarMC/Minigames/wiki"
