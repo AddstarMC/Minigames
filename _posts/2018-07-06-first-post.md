@@ -1,7 +1,7 @@
 ---
 layout: post
 title: New Minigames Support pages
-image: img/hello_world.jpeg
+image: /img/hello_world.jpeg
 ---
 
 This is a new page designed to help support people looking for information about minigames.
