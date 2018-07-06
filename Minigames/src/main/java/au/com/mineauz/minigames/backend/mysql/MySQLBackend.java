@@ -48,13 +48,17 @@ public class MySQLBackend extends Backend {
 			String url = String.format("jdbc:mysql://%s/%s", 
 					config.getString("host", "localhost:3306"), database);
             if(debug)logger.info("URL: " + url);
-
-            Properties properties = new Properties();
-			properties.put("user", config.getString("username", "username"));
-			properties.put("password",config.getString("password", "password"));
-			properties.put("useSSL",config.getString("useSSL","false"));
-            if(debug)logger.info("Properties: " +properties.toString());
-			pool = new ConnectionPool(url, properties);
+            Properties props =  new Properties();
+			props.put("user",config.getString("username", "username"));
+			props.put("pass",config.getString("password", "password"));
+			ConfigurationSection dbprops = config.getConfigurationSection("properties");
+			if(dbprops != null) {
+				for (Map.Entry<String, Object> entry : dbprops.getValues(false).entrySet()) {
+					props.put(entry.getKey(), entry.getValue());
+				}
+			}
+			if(debug)logger.info("Properties: " +props.toString());
+			pool = new ConnectionPool(url, props);
 			
 			createStatements();
 			
