@@ -347,31 +347,25 @@ public class Minigames extends JavaPlugin{
 	
 	private void initMetrics() {
 		Metrics metrics = new Metrics(this);
-		Metrics.MultiLineChart chart = new Metrics.MultiLineChart("Players_in_Minigames", new Callable<Map<String, Integer>>() {
-			@Override
-			public Map<String, Integer> call() {
-				Map<String, Integer> result = new HashMap<>();
-				int count = 0;
-				result.put("Total_Players", getPlayerManager().getAllMinigamePlayers().size());
-				for (MinigamePlayer pl : getPlayerManager().getAllMinigamePlayers()) {
-					if (pl.isInMinigame()) {
-						count = result.getOrDefault(pl.getMinigame().getType().getName(), 0);
-						result.put(pl.getMinigame().getType().getName(), count + 1);
-					}
+		Metrics.MultiLineChart chart = new Metrics.MultiLineChart("Players_in_Minigames", () -> {
+			Map<String, Integer> result = new HashMap<>();
+			int count = 0;
+			result.put("Total_Players", getPlayerManager().getAllMinigamePlayers().size());
+			for (MinigamePlayer pl : getPlayerManager().getAllMinigamePlayers()) {
+				if (pl.isInMinigame()) {
+					count = result.getOrDefault(pl.getMinigame().getType().getName(), 0);
+					result.put(pl.getMinigame().getType().getName(), count + 1);
 				}
-				return result;
 			}
+			return result;
 		});
-        Metrics.SimpleBarChart barChart = new Metrics.SimpleBarChart("Modules v Servers", new Callable<Map<String, Integer>>() {
-            @Override
-            public Map<String, Integer> call() {
-                Map<String, Integer> result = new HashMap<>();
-				for (Class module : getMinigameManager().getModules()) {
-                    result.put(module.getCanonicalName(), 1);
-                }
-                return result;
-            }
-        });
+        Metrics.SimpleBarChart barChart = new Metrics.SimpleBarChart("Modules v Servers", () -> {
+			Map<String, Integer> result = new HashMap<>();
+			for (Class module : getMinigameManager().getModules()) {
+				result.put(module.getCanonicalName(), 1);
+			}
+			return result;
+		});
 		metrics.addCustomChart(chart);
         metrics.addCustomChart(barChart);
 	}
