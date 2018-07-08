@@ -31,6 +31,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
@@ -53,7 +54,7 @@ public class Minigames extends JavaPlugin{
 		return VERSION;
 	}
 
-	private static ComparableVersion VERSION;
+	private static ComparableVersion VERSION = new ComparableVersion("1.12.2");
 	private long lastUpdateCheck = 0;
 	
 	private BackendManager backend;
@@ -127,9 +128,7 @@ public class Minigames extends JavaPlugin{
 			lang = sv.getConfig();
 			loadLang();
 			lang.setDefaults(defLang);
-			loadVersion();
 			getLogger().info("Using lang " + getConfig().getString("lang"));
-			
             loadPresets();
             setupMinigames();
 			if(!setupEconomy()){
@@ -286,19 +285,6 @@ public class Minigames extends JavaPlugin{
 	public Economy getEconomy(){
 		return econ;
 	}
-
-	private void loadVersion(){
-        InputStream stream = getClass().getResourceAsStream("minigame.properties");
-        Properties p = new Properties();
-        try {
-            p.load(stream );
-        } catch ( IOException e ) {
-            getLogger().warning(e.getMessage());
-        } finally {
-            Closeables.closeQuietly( stream );
-        }
-        VERSION = new ComparableVersion(p.getProperty("version"));
-    }
 
 	/**
 	 * use {@link #getPlayerManager()}
