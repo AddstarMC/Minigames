@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>au.com.mineauz</groupId>
   <artifactId>MinigamesProject</artifactId>
-  <version>1.12.2-SNAPSHOT</version>
+  <version>1.12.2-RC</version>
   <packaging>pom</packaging>
   <name>Minigames-Project</name>
   <url>https://www.spigotmc.org/resources/minigames.19687/</url>
