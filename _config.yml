@@ -23,9 +23,9 @@ description: A home page for the awesome spigot plugin originally designed by Ra
 
 # List of links in the navigation bar
 navbar-links:
+  The Wiki: "https://github.com/AddstarMC/Minigames/wiki"
   Resources:
     - Source: "https://github.com/AddstarMC/Minigames"
-    - Wiki: "https://github.com/AddstarMC/Minigames/wiki"
     - Jenkins: "https://jenkins.addstar.com.au/job/Minigames/"
     - SpigotMC: "https://www.spigotmc.org/resources/minigames.19687/"
 
@@ -92,7 +92,7 @@ share-links-active:
   twitter: true
   facebook: true
   google: false
-  linkedin: true
+  linkedin: false
 
 # How to display the link to the website in the footer
 # Remove this if you don't want a link in the footer
@@ -118,7 +118,7 @@ url-pretty: "www.addstar.com.au"  # eg. "deanattali.com/beautiful-jekyll"
 # --- Comments --- #
 
 # Fill in your Disqus shortname (NOT the userid) if you want to support Disqus comments
-# disqus: ""
+disqus: "minigames-addstar-com-au"
 
 # To use Facebook Comments, fill in a Facebook App ID
 # fb_comment_id: ""
