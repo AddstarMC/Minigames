@@ -31,12 +31,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.io.*;
-import java.net.URL;
 import java.util.*;
-import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 public class Minigames extends JavaPlugin{
 	static Logger log = Logger.getLogger("Minecraft");
