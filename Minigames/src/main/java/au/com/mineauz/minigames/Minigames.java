@@ -48,10 +48,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Minigames extends JavaPlugin{
-    
+
     public DisplayManager display;
-    
-    
+
+
 	private MinigamePlayerManager playerManager;
 	private MinigameManager minigameManager;
 	private FileConfiguration lang = null;
@@ -59,7 +59,7 @@ public class Minigames extends JavaPlugin{
 	private boolean debug = false;
 	private long lastUpdateCheck = 0;
 	private BackendManager backend;
-	
+
 	private static Minigames plugin;
 	private static Economy econ = null;
 	private static SignBase minigameSigns;
@@ -67,11 +67,11 @@ public class Minigames extends JavaPlugin{
 	private static ComparableVersion SPIGOT_VERSION;
     static Logger log = Logger.getLogger("Minecraft");
     private Metrics metrics;
-    
+
     public static ComparableVersion getVERSION() {
 		return VERSION;
 	}
-	
+
 	public static Minigames getPlugin() {
 		return plugin;
 	}
@@ -144,7 +144,7 @@ public class Minigames extends JavaPlugin{
 			    onDisable();
 			    return;
             }
-            
+
 			PluginDescriptionFile desc = this.getDescription();
 			
 			MinigameSave sv = new MinigameSave("lang/" + getConfig().getString("lang"));
@@ -153,7 +153,6 @@ public class Minigames extends JavaPlugin{
 			lang.setDefaults(defLang);
 			checkVersion();
 			getLogger().info("Using lang " + getConfig().getString("lang"));
-			
             loadPresets();
             setupMinigames();
 			if(!setupEconomy()){
@@ -397,7 +396,7 @@ public class Minigames extends JavaPlugin{
 		metrics.addCustomChart(chart);
 	}
 
-	
+
 	public FileConfiguration getLang(){
 		return lang;
 	}
