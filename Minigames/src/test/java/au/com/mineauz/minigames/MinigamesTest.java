@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames;
 
 import com.google.common.io.Closeables;
-import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.junit.Test;
 
 import java.io.IOException;
