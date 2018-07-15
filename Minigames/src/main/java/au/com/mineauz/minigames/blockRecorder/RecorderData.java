@@ -108,7 +108,7 @@ public class RecorderData implements Listener{
 		physBlocks.add(Material.LEGACY_SKULL);
 		physBlocks.add(Material.SNOW);
         physBlocks.add(Material.VINE);
-        physBlocks.add(Material.PORTAL);
+        physBlocks.add(Material.NETHER_PORTAL);
         physBlocks.add(Material.COCOA);
         physBlocks.add(Material.CARROT);
         physBlocks.add(Material.POTATO);
