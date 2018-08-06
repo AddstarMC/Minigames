@@ -18,7 +18,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
-
+//todo
 public class SetBlockAction extends AbstractAction {
 	
 	private StringFlag type = new StringFlag("STONE", "type");

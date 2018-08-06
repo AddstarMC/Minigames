@@ -16,12 +16,18 @@ import java.util.List;
  * Created for the AddstarMC Project. Created by Narimm on 6/08/2018.
  */
 public class MenuItemBlockData extends MenuItem {
-    
-    private Callback<BlockData> data;
-    
+
     public MenuItemBlockData(String name, Material displayItem) {
         super(name, displayItem);
         data.setValue(displayItem.createBlockData());
+        setDescription(createDescription(data.getValue()));
+    }
+
+    private Callback<BlockData> data;
+    
+    public MenuItemBlockData(String name, Material displayItem, Callback<BlockData> callback) {
+        super(name, displayItem);
+        this.data = callback;
         setDescription(createDescription(data.getValue()));
     }
     /**
@@ -56,8 +62,16 @@ public class MenuItemBlockData extends MenuItem {
     
     @Override
     public ItemStack onClickWithItem(ItemStack item) {
-        BlockData data = item.getType().createBlockData();
-        return super.onClickWithItem(item);
+        try {
+            BlockData data = item.getType().createBlockData();
+            this.data.setValue(data);
+        }catch (IllegalArgumentException e){
+            String name = "unknown";
+            if(item != null){
+                name = item.getType().name();
+            }
+            getContainer().getViewer().sendMessage(name + " cannot be made into a block!", MinigameMessageType.ERROR);        }
+        return getItem();
     }
     
     @Override

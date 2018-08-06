@@ -25,7 +25,7 @@ public class MenuItemAddWhitelistBlock extends MenuItem{
 			getContainer().addItem(new MenuItemWhitelistBlock(item.getType(), whitelist));
 		}
 		else{
-			getContainer().getViewer().sendMessage("Whitelist/Blacklist already contains this material", null);
+			getContainer().getViewer().sendMessage("Whitelist/Blacklist already contains this material", MinigameMessageType.ERROR);
 		}
 		return getItem();
 	}
@@ -35,7 +35,7 @@ public class MenuItemAddWhitelistBlock extends MenuItem{
 		MinigamePlayer ply = getContainer().getViewer();
 		ply.setNoClose(true);
 		ply.getPlayer().closeInventory();
-		ply.sendMessage("Enter material name into chat to add to the whitelist/blacklist, the menu will automatically reopen in 30s if nothing is entered.", null);
+		ply.sendMessage("Enter material name into chat to add to the whitelist/blacklist, the menu will automatically reopen in 30s if nothing is entered.", MinigameMessageType.INFO);
 		ply.setManualEntry(this);
 
 		getContainer().startReopenTimer(30);
@@ -52,7 +52,7 @@ public class MenuItemAddWhitelistBlock extends MenuItem{
 				getContainer().addItem(new MenuItemWhitelistBlock(mat, whitelist));
 			}
 			else{
-				getContainer().getViewer().sendMessage("Whitelist/Blacklist already contains this material", null);
+				getContainer().getViewer().sendMessage("Whitelist/Blacklist already contains this material", MinigameMessageType.ERROR);
 			}
 			
 			getContainer().cancelReopenTimer();

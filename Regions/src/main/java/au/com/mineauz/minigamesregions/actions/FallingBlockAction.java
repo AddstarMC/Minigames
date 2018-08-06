@@ -37,7 +37,6 @@ public class FallingBlockAction extends AbstractAction {
 		return true;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
 			Region region) {
@@ -56,7 +55,7 @@ public class FallingBlockAction extends AbstractAction {
 						z++){
 					temp.setZ(z);
 					if(temp.getBlock().getType() != Material.AIR){
-						temp.getWorld().spawnFallingBlock(temp, temp.getBlock().getType(), temp.getBlock().getData());
+						temp.getWorld().spawnFallingBlock(temp, temp.getBlock().getBlockData());
 						temp.getBlock().setType(Material.AIR);
 					}
 				}
@@ -64,15 +63,13 @@ public class FallingBlockAction extends AbstractAction {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void executeNodeAction(MinigamePlayer player,
 			Node node) {
 		debug(player,node);
 		if(node.getLocation().getBlock().getType() != Material.AIR){
 			node.getLocation().getWorld().spawnFallingBlock(node.getLocation(), 
-					node.getLocation().getBlock().getType(), 
-					node.getLocation().getBlock().getData());
+					node.getLocation().getBlock().getBlockData());
 			node.getLocation().getBlock().setType(Material.AIR);
 		}
 	}
