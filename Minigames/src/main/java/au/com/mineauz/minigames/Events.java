@@ -222,7 +222,13 @@ public class Events implements Listener{
 			event.setCancelled(true);
 			return;
 		}
-		
+		if(ply.isInMenu() && ply.getNoClose() && ply.getManualEntry() != null){
+			event.setCancelled(true);
+			ply.setNoClose(false);
+			ply.getManualEntry().checkValidEntry(event.getClickedBlock().getBlockData().getAsString());
+			ply.setManualEntry(null);
+			return;
+		}
 		if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.DRAGON_EGG) {
 			if (!ply.getMinigame().allowDragonEggTeleport()) {
 				event.setCancelled(true);
