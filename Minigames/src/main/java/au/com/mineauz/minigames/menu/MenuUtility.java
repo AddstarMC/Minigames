@@ -9,11 +9,11 @@ import org.bukkit.Material;
 public class MenuUtility {
 
     public static Material getBackMaterial(){
-        return  Material.LEGACY_REDSTONE_TORCH_ON;
+        return  Material.REDSTONE_TORCH;
     }
 
     public static Material getSaveMaterial() {
-        return  Material.LEGACY_REDSTONE_TORCH_ON;
+        return  Material.REDSTONE_TORCH;
     }
 
     public static Material getCreateMaterial() {

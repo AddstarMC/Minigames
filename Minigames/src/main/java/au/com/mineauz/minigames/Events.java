@@ -545,7 +545,7 @@ public class Events implements Listener{
 					ItemStack mainhand = ply.getPlayer().getInventory().getItemInMainHand();
                     if (mainhand.getType() == Material.SNOW_BLOCK) {
 						mainhand.setAmount(16);
-						ply.getPlayer().updateInventory();
+						ply.getPlayer().updateInventory();//todo
                     } else {
                         ply.getPlayer().getInventory().addItem(new ItemStack(Material.SNOWBALL, 1));
 					}

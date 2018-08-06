@@ -5,14 +5,14 @@ import au.com.mineauz.minigames.minigame.Team;
 import org.bukkit.*;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
-import org.bukkit.material.MaterialData;
 
 public class CTFFlag{
 	
 	private Location spawnLocation = null;
 	private Location currentLocation = null;
-	private MaterialData data = null;
+	private BlockData data = null;
 	private BlockState spawnData = null;
 	private BlockState originalBlock = null;
 	private String[] signText = null;
@@ -25,7 +25,7 @@ public class CTFFlag{
 	
 	public CTFFlag(Location spawn, Team team, Player carrier, Minigame minigame){
 		spawnLocation = spawn;
-		data = spawnLocation.getBlock().getState().getData();
+		data = spawnLocation.getBlock().getBlockData();
 		spawnData = spawnLocation.getBlock().getState();
 		signText = ((Sign)spawnLocation.getBlock().getState()).getLines();
 		this.team = team;
@@ -107,7 +107,7 @@ public class CTFFlag{
 		newLocation.getBlock().setType(Material.SIGN);
 		Sign sign = (Sign) newLocation.getBlock().getState();
 		
-		sign.setData(data);
+		sign.setBlockData(data);
 		
 		originalBlock = blockBelow.getBlock().getState();
 		blockBelow.getBlock().setType(Material.BEDROCK);

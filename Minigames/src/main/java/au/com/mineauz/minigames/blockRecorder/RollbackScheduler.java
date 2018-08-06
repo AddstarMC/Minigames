@@ -9,7 +9,6 @@ import org.bukkit.block.*;
 import org.bukkit.block.data.Rotatable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Iterator;

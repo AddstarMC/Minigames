@@ -126,9 +126,9 @@ public class ContainsEntityCondition extends ConditionInterface {
 
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
-		Menu menu = new Menu(3, "Contians Entity", player);
+		Menu menu = new Menu(3, "Contains Entity", player);
 
-        menu.addItem(new MenuItemEnum<>("Entity Type", Material.LEGACY_MONSTER_EGG, entityType.getCallback(), EntityType.class));
+        menu.addItem(new MenuItemEnum<>("Entity Type", Material.CHICKEN_SPAWN_EGG, entityType.getCallback(), EntityType.class));
 		
 		menu.addItem(new MenuItemNewLine());
 		

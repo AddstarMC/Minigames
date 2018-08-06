@@ -3,10 +3,8 @@ package au.com.mineauz.minigames.config;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemBlockData;
-import javafx.beans.binding.ObjectBinding;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 

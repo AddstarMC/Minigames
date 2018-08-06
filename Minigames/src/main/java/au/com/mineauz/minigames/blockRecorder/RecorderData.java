@@ -60,6 +60,7 @@ public class RecorderData implements Listener{
 	
 	static{
 		physBlocks.add(Material.TORCH);
+		physBlocks.add(Material.WALL_TORCH);
 		physBlocks.add(Material.SIGN);
 		physBlocks.add(Material.WALL_SIGN);
 		physBlocks.add(Material.TRIPWIRE);
@@ -68,53 +69,104 @@ public class RecorderData implements Listener{
 		physBlocks.add(Material.ACTIVATOR_RAIL);
 		physBlocks.add(Material.DETECTOR_RAIL);
 		physBlocks.add(Material.REDSTONE_WIRE);
-		physBlocks.add(Material.LEGACY_REDSTONE_TORCH_OFF);
-		physBlocks.add(Material.LEGACY_REDSTONE_TORCH_ON);
-		physBlocks.add(Material.LEGACY_SAPLING);
+		physBlocks.add(Material.REDSTONE_TORCH);
+		physBlocks.add(Material.REDSTONE_WALL_TORCH);
+		physBlocks.add(Material.ACACIA_SAPLING);
+        physBlocks.add(Material.JUNGLE_SAPLING);
+        physBlocks.add(Material.OAK_SAPLING);
+        physBlocks.add(Material.BIRCH_SAPLING);
+        physBlocks.add(Material.DARK_OAK_SAPLING);
         physBlocks.add(Material.ROSE_RED);
 		physBlocks.add(Material.SUNFLOWER);
         physBlocks.add(Material.NETHER_WART);
 		physBlocks.add(Material.BOWL);
-		physBlocks.add(Material.LEGACY_WOOD_PLATE);
-		physBlocks.add(Material.LIGHT_WEIGHTED_PRESSURE_PLATE);
+		physBlocks.add(Material.ACACIA_PRESSURE_PLATE);
+        physBlocks.add(Material.OAK_PRESSURE_PLATE);
+        physBlocks.add(Material.JUNGLE_PRESSURE_PLATE);
+        physBlocks.add(Material.DARK_OAK_PRESSURE_PLATE);
+        physBlocks.add(Material.BIRCH_PRESSURE_PLATE);
+        physBlocks.add(Material.LIGHT_WEIGHTED_PRESSURE_PLATE);
 		physBlocks.add(Material.HEAVY_WEIGHTED_PRESSURE_PLATE);
 		physBlocks.add(Material.STONE_PRESSURE_PLATE);
 		physBlocks.add(Material.STONE_BUTTON);
-		physBlocks.add(Material.LEGACY_WOOD_BUTTON);
-		physBlocks.add(Material.LEVER);
+		physBlocks.add(Material.OAK_BUTTON);
+        physBlocks.add(Material.DARK_OAK_BUTTON);
+        physBlocks.add(Material.JUNGLE_BUTTON);
+        physBlocks.add(Material.ACACIA_BUTTON);
+        physBlocks.add(Material.BIRCH_BUTTON);
+        physBlocks.add(Material.LEVER);
 		physBlocks.add(Material.LADDER);
 		physBlocks.add(Material.IRON_DOOR);
-		physBlocks.add(Material.LEGACY_WOOD_DOOR);
-		physBlocks.add(Material.RED_MUSHROOM);
+		physBlocks.add(Material.OAK_DOOR);
+        physBlocks.add(Material.JUNGLE_DOOR);
+        physBlocks.add(Material.DARK_OAK_DOOR);
+        physBlocks.add(Material.BIRCH_DOOR);
+        physBlocks.add(Material.ACACIA_DOOR);
+        physBlocks.add(Material.RED_MUSHROOM);
 		physBlocks.add(Material.BROWN_MUSHROOM);
-		physBlocks.add(Material.LEGACY_DOUBLE_PLANT);
 		physBlocks.add(Material.FLOWER_POT);
 		physBlocks.add(Material.LILY_PAD);
 		physBlocks.add(Material.TRIPWIRE_HOOK);
-		physBlocks.add(Material.LEGACY_TRAP_DOOR);
-		physBlocks.add(Material.LEGACY_CARPET);
-		physBlocks.add(Material.LEGACY_LONG_GRASS);
-		physBlocks.add(Material.DEAD_BUSH);
-		physBlocks.add(Material.LEGACY_REDSTONE_COMPARATOR_ON);
-		physBlocks.add(Material.LEGACY_REDSTONE_COMPARATOR_OFF);
-		physBlocks.add(Material.LEGACY_DIODE_BLOCK_OFF);
-		physBlocks.add(Material.LEGACY_DIODE_BLOCK_ON);
+		physBlocks.add(Material.OAK_TRAPDOOR);
+        physBlocks.add(Material.BIRCH_TRAPDOOR);
+        physBlocks.add(Material.ACACIA_TRAPDOOR);
+        physBlocks.add(Material.DARK_OAK_TRAPDOOR);
+        physBlocks.add(Material.JUNGLE_TRAPDOOR);
+		physBlocks.add(Material.RED_CARPET);
+        physBlocks.add(Material.BLUE_CARPET);
+        physBlocks.add(Material.CYAN_CARPET);
+        physBlocks.add(Material.GREEN_CARPET);
+        physBlocks.add(Material.PINK_CARPET);
+        physBlocks.add(Material.LIGHT_BLUE_CARPET);
+        physBlocks.add(Material.LIME_CARPET);
+        physBlocks.add(Material.WHITE_CARPET);
+        physBlocks.add(Material.GRAY_CARPET);
+        physBlocks.add(Material.LIGHT_GRAY_CARPET);
+        physBlocks.add(Material.ORANGE_CARPET);
+        physBlocks.add(Material.MAGENTA_CARPET);
+        physBlocks.add(Material.BLACK_CARPET);
+        physBlocks.add(Material.PURPLE_CARPET);
+        physBlocks.add(Material.BROWN_CARPET);
+        physBlocks.add(Material.TALL_GRASS);
+        physBlocks.add(Material.TALL_SEAGRASS);
+        physBlocks.add(Material.DEAD_BUSH);
+		physBlocks.add(Material.COMPARATOR);
+		physBlocks.add(Material.REPEATER);
 		physBlocks.add(Material.WATER);
 		physBlocks.add(Material.LAVA);
-		physBlocks.add(Material.LEGACY_STATIONARY_WATER);
-		physBlocks.add(Material.LEGACY_STATIONARY_LAVA);
 		physBlocks.add(Material.ANVIL);
 		physBlocks.add(Material.DRAGON_EGG);
-		physBlocks.add(Material.LEGACY_SKULL);
-		physBlocks.add(Material.SNOW);
+        physBlocks.add(Material.ZOMBIE_HEAD);
+        physBlocks.add(Material.ZOMBIE_WALL_HEAD);
+        physBlocks.add(Material.WITHER_SKELETON_WALL_SKULL);
+        physBlocks.add(Material.WITHER_SKELETON_SKULL);
+        physBlocks.add(Material.CREEPER_HEAD);
+        physBlocks.add(Material.PLAYER_HEAD);
+        physBlocks.add(Material.SKELETON_SKULL);
+        physBlocks.add(Material.SKELETON_WALL_SKULL);
+        physBlocks.add(Material.SNOW);
         physBlocks.add(Material.VINE);
         physBlocks.add(Material.NETHER_PORTAL);
         physBlocks.add(Material.COCOA);
         physBlocks.add(Material.CARROT);
         physBlocks.add(Material.POTATO);
-        physBlocks.add(Material.LEGACY_WALL_BANNER);
-        physBlocks.add(Material.LEGACY_PISTON_MOVING_PIECE);
-        physBlocks.add(Material.LEGACY_PISTON_EXTENSION);
+        physBlocks.add(Material.BLACK_BANNER);
+        physBlocks.add(Material.WHITE_BANNER);
+        physBlocks.add(Material.RED_BANNER);
+        physBlocks.add(Material.BLUE_BANNER);
+        physBlocks.add(Material.CYAN_BANNER);
+        physBlocks.add(Material.PINK_BANNER);
+        physBlocks.add(Material.YELLOW_BANNER);
+        physBlocks.add(Material.GREEN_BANNER);
+        physBlocks.add(Material.ORANGE_BANNER);
+        physBlocks.add(Material.LIME_BANNER);
+        physBlocks.add(Material.GRAY_BANNER);
+        physBlocks.add(Material.LIGHT_BLUE_BANNER);
+        physBlocks.add(Material.LIGHT_GRAY_BANNER);
+        physBlocks.add(Material.BROWN_BANNER);
+        physBlocks.add(Material.MAGENTA_BANNER);
+        physBlocks.add(Material.PISTON_HEAD);
+        physBlocks.add(Material.MOVING_PISTON);
     }
 	
 	public RecorderData(Minigame minigame){
@@ -453,7 +505,6 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public boolean restoreBlockData() {
         File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.json");
         if (covertOldFormat()) {
@@ -516,7 +567,7 @@ public class RecorderData implements Listener{
                     w = Bukkit.getWorld(args.get("world"));
                     state = w.getBlockAt(Integer.valueOf(args.get("x")), Integer.valueOf(args.get("y")), Integer.valueOf(args.get("z"))).getState();
                     state.setType(Material.getMaterial(args.get("mat")));
-                    state.setRawData(Byte.valueOf(args.get("data")));
+                    state.setRawData(Byte.valueOf(args.get("data"))); //todo
 
                     bd = new BlockData(state, null);
 
