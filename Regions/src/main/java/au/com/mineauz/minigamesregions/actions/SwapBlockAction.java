@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.material.Directional;
 import org.bukkit.material.MaterialData;
@@ -88,9 +89,9 @@ public class SwapBlockAction extends AbstractAction {
 							data = toDataValue.getFlag().byteValue();
 						} else if (keepAttachment.getFlag()) {
 							// Keep attachments if possible
-							MaterialData mat = block.getState().getData();
-							if (mat instanceof Directional) {
-								facing = ((Directional)mat).getFacing();
+							BlockData data = block.getBlockData();
+							if (data instanceof Directional) {
+								facing = ((Directional)data).getFacing();
 							}
 						}
 						
@@ -98,14 +99,14 @@ public class SwapBlockAction extends AbstractAction {
 						block.setType(Material.getMaterial(toType.getFlag()), false);
 						if (facing != null) {
 							BlockState state = block.getState();
-							MaterialData mat = block.getState().getData();
+							BlockData mat = block.getBlockData();
 							if (mat instanceof Directional) {
 								((Directional)mat).setFacingDirection(facing);
 							}
-							state.setData(mat);
+							block.setBlockData(mat);
 							state.update(true, false);
 						} else {
-							block.setData(data, false);
+							block.setBlockData(data, false);
 						}
 					}
 				}

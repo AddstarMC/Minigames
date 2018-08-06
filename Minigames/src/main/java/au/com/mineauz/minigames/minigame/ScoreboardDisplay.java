@@ -16,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.Directional;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -301,16 +302,14 @@ public class ScoreboardDisplay {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void placeSigns() {
 		List<Block> blocks = getSignBlocks(false);
 		
 		for (Block block : blocks) {
 			block.setType(Material.WALL_SIGN);
-			
-			org.bukkit.material.Sign signMat = new org.bukkit.material.Sign(Material.WALL_SIGN);
-			signMat.setFacingDirection(facing);
-			block.setData(signMat.getData());
+			Directional d = (Directional) block.getBlockData();
+			d.setFacing(facing);
+			block.setBlockData(d);
 		}
 	}
 	
