@@ -440,8 +440,8 @@ public class MinigameManager {
 		} else if (minigame.getQuitPosition() == null) {
 			player.sendMessage(MinigameUtils.getLang("minigame.error.noQuit"), MinigameMessageType.ERROR);
 			return false;
-		} else if (minigameType(minigame.getType()).cannotStart(minigame, player)) { //type specific reasons we cannot start.
-			player.sendMessage(MinigameUtils.getLang("minigame.error.noQuit"), MinigameMessageType.ERROR);
+		} else if ((minigame.getType() == null) || minigameType(minigame.getType()).cannotStart(minigame, player)) { //type specific reasons we cannot start.
+			player.sendMessage(MinigameUtils.getLang("minigame.error.invalidType"), MinigameMessageType.ERROR);
 			return false;
 		} else if (!minigame.getMechanic().validTypes().contains(minigame.getType())) {
 			player.sendMessage(MinigameUtils.getLang("minigame.error.invalidType"), MinigameMessageType.ERROR);

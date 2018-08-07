@@ -140,8 +140,8 @@ public class ConnectionHandler {
     
     public void endTransaction() {
         try {
-            connection.commit();
-            connection.setAutoCommit(true);
+            if(!connection.getAutoCommit()) connection.setAutoCommit(true);
+            else connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }
