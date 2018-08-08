@@ -17,7 +17,7 @@
       <build.number />
       <plugin.version>${project.version}-${build.number}</plugin.version>
       <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
-      <spigot.version>1.12.2-R0.1-SNAPSHOT</spigot.version>
+      <spigot.version>1.13-R0.1-SNAPSHOT</spigot.version>
   </properties>
   <developers>
     <developer>

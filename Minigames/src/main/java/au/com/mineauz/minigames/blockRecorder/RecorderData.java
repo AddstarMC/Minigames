@@ -10,10 +10,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
@@ -566,8 +563,7 @@ public class RecorderData implements Listener{
 
                     w = Bukkit.getWorld(args.get("world"));
                     state = w.getBlockAt(Integer.valueOf(args.get("x")), Integer.valueOf(args.get("y")), Integer.valueOf(args.get("z"))).getState();
-                    state.setType(Material.getMaterial(args.get("mat")));
-                    state.setRawData(Byte.valueOf(args.get("data"))); //todo
+                    state.setBlockData(Bukkit.getUnsafe().fromLegacy(Material.getMaterial(args.get("mat")),Byte.valueOf(args.get("data"))));
 
                     bd = new BlockData(state, null);
 

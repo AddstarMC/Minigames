@@ -25,7 +25,7 @@ public class BlockData {
 	public BlockData(Block original, MinigamePlayer modifier){
 		location = original.getLocation();
 		state = original.getState();
-		blockData = original.getState().getBlockData().getAsString();
+		blockData = original.getBlockData().getAsString();
 		if(modifier !=null)playerUUID = modifier.getUUID();
 	}
 	
