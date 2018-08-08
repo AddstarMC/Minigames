@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class BlockData {
+public class MgBlockData {
 	private Location location;
 	private BlockState state;
 	private String blockData;
@@ -22,14 +22,14 @@ public class BlockData {
     private Map<String, Object> specialData = new HashMap<>();
 	private boolean hasRandomized = false;
 	
-	public BlockData(Block original, MinigamePlayer modifier){
+	public MgBlockData(Block original, MinigamePlayer modifier){
 		location = original.getLocation();
 		state = original.getState();
 		blockData = original.getBlockData().getAsString();
 		if(modifier !=null)playerUUID = modifier.getUUID();
 	}
 	
-	public BlockData(BlockState original, MinigamePlayer modifier){
+	public MgBlockData(BlockState original, MinigamePlayer modifier){
 		location = original.getLocation();
 		state = original;
         blockData = state.getBlockData().getAsString();

@@ -16,13 +16,13 @@ import java.util.List;
 
 public class RollbackScheduler implements Runnable {
 	
-	private Iterator<BlockData> iterator;
-	private Iterator<BlockData> physIterator;
+	private Iterator<MgBlockData> iterator;
+	private Iterator<MgBlockData> physIterator;
 	private BukkitTask task;
 	private Minigame minigame;
 	private MinigamePlayer modifier;
 	
-	public RollbackScheduler(List<BlockData> blocks, List<BlockData> physblocks, Minigame minigame, MinigamePlayer modifier){
+	public RollbackScheduler(List<MgBlockData> blocks, List<MgBlockData> physblocks, Minigame minigame, MinigamePlayer modifier){
 		iterator = blocks.iterator();
 		physIterator = physblocks.iterator();
 		this.minigame = minigame;
@@ -35,13 +35,13 @@ public class RollbackScheduler implements Runnable {
 	public void run() {
 		long time = System.nanoTime();
 		while(iterator.hasNext()){
-			BlockData bdata = iterator.next();
+			MgBlockData bdata = iterator.next();
 			bdata.getBlockState().update(true);
             if (System.nanoTime() - time > Minigames.getPlugin().getConfig().getDouble("regeneration.maxDelay") * 1000000)
 				return;
 		}
 		while(physIterator.hasNext()){
-			BlockData bdata = physIterator.next();
+			MgBlockData bdata = physIterator.next();
 			bdata.getBlockState().update(true);
 			switch (bdata.getBlockState().getType()){
 				case SIGN:

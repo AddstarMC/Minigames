@@ -30,18 +30,34 @@ public class BlockDataFlag extends Flag<BlockData> {
     @Override
     public void loadValue(String path, FileConfiguration config) {
         String obj = config.getString(path+"."+getName());
-        BlockData data;
+        BlockData data= null;
         try {
             data = Bukkit.createBlockData(obj);
         }catch (IllegalArgumentException e){
-            Material mat = Material.matchMaterial(obj);
-            data = mat.createBlockData();
+            data = parseOldMaterialData(path,config);
         }
         if(data != null)
             setFlag(data); else{
-            Minigames.getPlugin().getLogger().log(Level.CONFIG,"Error loading Value for" + path);
                 setFlag(Material.STONE.createBlockData());
         }
+    }
+    
+    /**
+     * Remove in 1.14 as no configs should have materialdata stored.
+     */
+    @Deprecated
+    private BlockData parseOldMaterialData(String path,FileConfiguration config){
+        try {
+            String obj = config.getString(path+"."+getName());
+            Material mat = Material.matchMaterial(obj);
+            Integer olddata = config.getInt(path+".matchdatavalue");
+            if(olddata == 0) olddata = config.getInt(path+".todatavalue");
+            if(olddata == 0 ) olddata = config.getInt(path+".dur");
+            return Bukkit.getUnsafe().fromLegacy(mat, olddata.byteValue());
+        }catch (Exception ignored){
+            Minigames.getPlugin().getLogger().log(Level.CONFIG,"Error loading Value for" + path);
+        }
+        return Material.STONE.createBlockData();
     }
     
     @Override

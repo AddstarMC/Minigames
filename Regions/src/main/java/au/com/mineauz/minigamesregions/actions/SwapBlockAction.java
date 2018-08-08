@@ -4,6 +4,8 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BlockDataFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.config.IntegerFlag;
+import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
@@ -155,7 +157,7 @@ public class SwapBlockAction extends AbstractAction {
 
 			@Override
 			public BlockData getValue() {
-				return matchType.getFlag();
+				return toType.getFlag();
 			}
 		}));
 		m.addItem(toData.getMenuItem("To Block Use Data?", Material.ENDER_PEARL));

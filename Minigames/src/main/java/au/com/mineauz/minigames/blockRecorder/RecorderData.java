@@ -51,7 +51,7 @@ public class RecorderData implements Listener{
     private static List<Material> physBlocks = new ArrayList<>();
 	private boolean hasCreatedRegenBlocks = false;
 	
-	private Map<String, BlockData> blockdata;
+	private Map<String, MgBlockData> blockdata;
 	private Map<Integer, EntityData> entdata;
     private List<Material> wbBlocks = new ArrayList<>();
 	
@@ -227,12 +227,12 @@ public class RecorderData implements Listener{
 		return minigame;
 	}
 	
-	public BlockData addBlock(Block block, MinigamePlayer modifier){
+	public MgBlockData addBlock(Block block, MinigamePlayer modifier){
 		return addBlock(block.getState(), modifier);
 	}
 	
-	public BlockData addBlock(BlockState block, MinigamePlayer modifier){
-		BlockData bdata = new BlockData(block, modifier);
+	public MgBlockData addBlock(BlockState block, MinigamePlayer modifier){
+		MgBlockData bdata = new MgBlockData(block, modifier);
 		String sloc = String.valueOf(bdata.getLocation().getBlockX()) + ":" + bdata.getLocation().getBlockY() + ":" + bdata.getLocation().getBlockZ();
 		if(!blockdata.containsKey(sloc)){
 		    if(block instanceof InventoryHolder){
@@ -245,7 +245,7 @@ public class RecorderData implements Listener{
                         if(minigame.isRandomizeChests())
                             bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
                     }
-					BlockData secondChest = addBlock(right.getBlock(), modifier);
+					MgBlockData secondChest = addBlock(right.getBlock(), modifier);
 					if(secondChest.getItems() == null){
                         addInventory(secondChest,((DoubleChest) inv).getRightSide());
                         if(minigame.isRandomizeChests())
@@ -274,7 +274,7 @@ public class RecorderData implements Listener{
 		}
 	}
 
-	public void addInventory(BlockData bdata, InventoryHolder ih){
+	public void addInventory(MgBlockData bdata, InventoryHolder ih){
         List<ItemStack> items = new ArrayList<>();
             for (ItemStack item : ih.getInventory()) {
                 if(item!=null) {
@@ -327,13 +327,13 @@ public class RecorderData implements Listener{
 			minigame.setState(MinigameState.REGENERATING);
 		}
 		
-		Iterator<BlockData> it = blockdata.values().iterator();
-		final List<BlockData> baseBlocks = Lists.newArrayList();
-		final List<BlockData> gravityBlocks = Lists.newArrayList();
-		final List<BlockData> attachableBlocks = Lists.newArrayList();
+		Iterator<MgBlockData> it = blockdata.values().iterator();
+		final List<MgBlockData> baseBlocks = Lists.newArrayList();
+		final List<MgBlockData> gravityBlocks = Lists.newArrayList();
+		final List<MgBlockData> attachableBlocks = Lists.newArrayList();
 		
 		while (it.hasNext()) {
-			BlockData data = it.next();
+			MgBlockData data = it.next();
 			boolean gravity = false;
 			boolean attachable = false;
 			boolean inventoryholder = false;
@@ -346,7 +346,7 @@ public class RecorderData implements Listener{
 					block.getInventory().clear();
 				}
 				if(data.getBukkitBlockData().getMaterial().hasGravity())gravity=true;
-				if(physBlocks.contains(data.getBlockState().getType()) || data.getBlockState().getData() instanceof
+				if(physBlocks.contains(data.getBlockState().getType()) || data.getBlockState().getBlockData() instanceof
 						Attachable)attachable = true;
 				if(data.getItems() != null)inventoryholder=true;
 				if(attachable){
@@ -369,7 +369,7 @@ public class RecorderData implements Listener{
         });
 	}
 	
-	private void customblockComparator(List<BlockData> baseBlocks) {
+	private void customblockComparator(List<MgBlockData> baseBlocks) {
 		baseBlocks.sort((o1, o2) -> {
             int comp = Integer.compare(o1.getBlockState().getChunk().getX(), o2.getBlockState().getChunk().getX());
             if (comp != 0)
@@ -510,7 +510,7 @@ public class RecorderData implements Listener{
             return true;
         }else{
             Gson gson =  new Gson();
-            Type type = new TypeToken<Map<String, BlockData>>(){}.getType();
+            Type type = new TypeToken<Map<String, MgBlockData>>(){}.getType();
             try(FileReader reader = new FileReader(f)){
                 blockdata = gson.fromJson(reader,type);
                 return true;
@@ -535,7 +535,7 @@ public class RecorderData implements Listener{
             String[] blocks;
             String[] block;
             World w;
-            BlockData bd;
+            MgBlockData bd;
             BlockState state;
             ItemStack[] items;
             String[] sitems;
@@ -565,7 +565,7 @@ public class RecorderData implements Listener{
                     state = w.getBlockAt(Integer.valueOf(args.get("x")), Integer.valueOf(args.get("y")), Integer.valueOf(args.get("z"))).getState();
                     state.setBlockData(Bukkit.getUnsafe().fromLegacy(Material.getMaterial(args.get("mat")),Byte.valueOf(args.get("data"))));
 
-                    bd = new BlockData(state, null);
+                    bd = new MgBlockData(state, null);
 
                     if(args.containsKey("items")){
                         if(state.getType() == Material.DISPENSER || state.getType() == Material.DROPPER){

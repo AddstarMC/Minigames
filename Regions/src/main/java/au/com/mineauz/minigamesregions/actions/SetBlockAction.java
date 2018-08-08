@@ -2,27 +2,25 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.config.BlockDataFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuItemString;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
 //todo
 public class SetBlockAction extends AbstractAction {
 	
-	private StringFlag type = new StringFlag("STONE", "type");
-	private BooleanFlag usedur = new BooleanFlag(false, "usedur");
+	private BlockDataFlag type = new BlockDataFlag(Material.STONE.createBlockData(), "type");
+	private BooleanFlag useBlockData = new BooleanFlag(false, "usedur");//todo rename flag
 	private IntegerFlag dur = new IntegerFlag(0, "dur");
 
 	@Override
@@ -37,7 +35,7 @@ public class SetBlockAction extends AbstractAction {
 	
 	@Override
 	public void describe(Map<String, Object> out) {
-		if (usedur.getFlag()) {
+		if (useBlockData.getFlag()) {
 			out.put("Block", type.getFlag() + ":" + dur.getFlag());
 		} else {
 			out.put("Block", type.getFlag());
@@ -53,8 +51,7 @@ public class SetBlockAction extends AbstractAction {
 	public boolean useInNodes() {
 		return true;
 	}
-
-	@SuppressWarnings("deprecation")
+	
 	@Override
 	public void executeRegionAction(MinigamePlayer player,
 			Region region) {
@@ -68,10 +65,11 @@ public class SetBlockAction extends AbstractAction {
 					temp.setZ(z);
 					
 					BlockState bs = temp.getBlock().getState();
-					bs.setType(Material.getMaterial(type.getFlag()));
-					if(usedur.getFlag()){
-						bs.getData().setData(dur.getFlag().byteValue());
-					}
+                    if(useBlockData.getFlag()){
+                        bs.setBlockData(type.getFlag());
+                    }else {
+                        bs.setBlockData(type.getFlag().getMaterial().createBlockData());
+                    }
 					bs.update(true);
 				}
 			}
@@ -84,10 +82,11 @@ public class SetBlockAction extends AbstractAction {
 			Node node) {
 		debug(player,node);
 		BlockState bs = node.getLocation().getBlock().getState();
-		bs.setType(Material.getMaterial(type.getFlag()));
-		if(usedur.getFlag()){
-			bs.getData().setData(dur.getFlag().byteValue());
-		}
+        if(useBlockData.getFlag()){
+            bs.setBlockData(type.getFlag());
+        }else {
+            bs.setBlockData(type.getFlag().getMaterial().createBlockData());
+        }
 		bs.update(true);
 	}
 
@@ -95,15 +94,13 @@ public class SetBlockAction extends AbstractAction {
 	public void saveArguments(FileConfiguration config,
 			String path) {
 		type.saveValue(path, config);
-		usedur.saveValue(path, config);
-		dur.saveValue(path, config);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config,
 			String path) {
 		type.loadValue(path, config);
-		usedur.loadValue(path, config);
+		useBlockData.loadValue(path, config);
 		dur.loadValue(path, config);
 	}
 
@@ -112,23 +109,18 @@ public class SetBlockAction extends AbstractAction {
 		Menu m = new Menu(3, "Set Block", player);
 		final MinigamePlayer fply = player;
 		m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
-		m.addItem(new MenuItemString("Type", Material.STONE, new Callback<String>() {
-			
-			@Override
-			public void setValue(String value) {
-				if(Material.matchMaterial(value.toUpperCase()) != null)
-					type.setFlag(value.toUpperCase());
-				else
-                    fply.sendMessage("Invalid block type!", MinigameMessageType.ERROR);
-			}
-			
-			@Override
-			public String getValue() {
-				return type.getFlag();
-			}
-		}));
-		m.addItem(usedur.getMenuItem("Use Durability Value", Material.ENDER_PEARL));
-		m.addItem(dur.getMenuItem("Durability Value", Material.STONE, 0, 15));
+		m.addItem(new MenuItemBlockData("Type", Material.STONE, new Callback<BlockData>() {
+            @Override
+            public void setValue(BlockData value) {
+                type.setFlag(value);
+            }
+            
+            @Override
+            public BlockData getValue() {
+                return type.getFlag();
+            }
+        }));
+		m.addItem(useBlockData.getMenuItem("Use Specific BlockData", Material.ENDER_PEARL));
 		m.displayMenu(player);
 		return true;
 	}

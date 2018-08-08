@@ -76,7 +76,7 @@ public class MenuItemBlockData extends MenuItem {
     
     @Override
     public void checkValidEntry(String entry) {
-        String err = "No BlockData detected";
+        String err = "No MgBlockData detected";
         try {
             BlockData d = Bukkit.createBlockData(entry);
             if(d != null) {
@@ -87,7 +87,7 @@ public class MenuItemBlockData extends MenuItem {
                 return;
             }
         } catch (IllegalArgumentException e){
-           err = "Invalid BlockData !";
+           err = "Invalid MgBlockData !";
         }
         getContainer().cancelReopenTimer();
         getContainer().displayMenu(getContainer().getViewer());
