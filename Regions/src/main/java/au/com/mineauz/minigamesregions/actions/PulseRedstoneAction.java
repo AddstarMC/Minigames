@@ -13,6 +13,8 @@ import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Lightable;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
@@ -58,11 +60,14 @@ public class PulseRedstoneAction extends AbstractAction {
 	public void executeNodeAction(MinigamePlayer player,
 			Node node) {
 		debug(player,node);
-		Material block = Material.REDSTONE_BLOCK;
-		if(torch.getFlag())
-			block =MenuUtility.getBackMaterial();
+		BlockData bdata = Material.REDSTONE_BLOCK.createBlockData();
+		if(torch.getFlag()) {
+			bdata = Material.REDSTONE_TORCH.createBlockData();
+			if(bdata instanceof Lightable)
+					((Lightable) bdata).setLit(true);
+		}
 		final BlockState last = node.getLocation().getBlock().getState();
-		node.getLocation().getBlock().setType(block);
+		node.getLocation().getBlock().setBlockData(bdata);
         Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () -> last.update(true), 20 * time.getFlag());
 	}
 

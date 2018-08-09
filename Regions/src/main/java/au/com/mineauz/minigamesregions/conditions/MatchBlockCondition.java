@@ -3,15 +3,15 @@ package au.com.mineauz.minigamesregions.conditions;
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.config.BlockDataFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
@@ -19,10 +19,8 @@ import java.util.Map;
 
 public class MatchBlockCondition extends ConditionInterface {
 	
-	private StringFlag type = new StringFlag("STONE", "type");
-	private BooleanFlag useDur = new BooleanFlag(false, "usedur");
-	private IntegerFlag dur = new IntegerFlag(0, "dur");
-
+	private BlockDataFlag type = new BlockDataFlag(Material.STONE.createBlockData(), "type");
+	private BooleanFlag useBlockData = new BooleanFlag(false, "usedur");
 	@Override
 	public String getName() {
 		return "MATCH_BLOCK";
@@ -35,10 +33,10 @@ public class MatchBlockCondition extends ConditionInterface {
 	
 	@Override
 	public void describe(Map<String, Object> out) {
-		if (useDur.getFlag()) {
-			out.put("Type", type.getFlag() + ":" + dur.getFlag());
+		if (useBlockData.getFlag()) {
+			out.put("Type", type.getFlag().getMaterial() + " with full data)");
 		} else {
-			out.put("Type", type.getFlag() + ":all");
+			out.put("Type", type.getFlag());
 		}
 	}
 
@@ -65,24 +63,22 @@ public class MatchBlockCondition extends ConditionInterface {
 	@SuppressWarnings("deprecation")
 	private boolean check(Location location){
 		Block block = location.getBlock();
-        return block.getType() == Material.getMaterial(type.getFlag()) &&
-                (!useDur.getFlag() ||
-                        block.getData() == dur.getFlag().byteValue());
+        return block.getType() == type.getFlag().getMaterial() &&
+                (!useBlockData.getFlag() ||
+                        block.getBlockData() == type.getFlag());
     }
 
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
 		type.saveValue(path, config);
-		useDur.saveValue(path, config);
-		dur.saveValue(path, config);
+		useBlockData.saveValue(path, config);
 		saveInvert(config, path);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
 		type.loadValue(path, config);
-		useDur.loadValue(path, config);
-		dur.loadValue(path, config);
+		useBlockData.loadValue(path, config);
 		loadInvert(config, path);
 	}
 
@@ -95,35 +91,32 @@ public class MatchBlockCondition extends ConditionInterface {
 		m.addItem(c, m.getSize() - 1);
 		final MinigamePlayer ply = m.getViewer();
 		
-		final MenuItemString btype = new MenuItemString("Block Type", Material.STONE, new Callback<String>() {
+		final MenuItemBlockData btype = new MenuItemBlockData("Block Type", Material.STONE, new Callback<BlockData>() {
 
 			@Override
-			public void setValue(String value) {
-				if(Material.matchMaterial(value.toUpperCase()) != null)
-					type.setFlag(value.toUpperCase());
-				else
-                    ply.sendMessage("No block found by that name!", MinigameMessageType.ERROR);
+			public void setValue(BlockData value) {
+					type.setFlag(value);
 			}
 
 			@Override
-			public String getValue() {
+			public BlockData getValue() {
 				return type.getFlag();
 			}
 		});
 		m.addItem(btype);
-		final MenuItemBoolean busedur = (MenuItemBoolean) useDur.getMenuItem("Use Data Values", Material.ENDER_PEARL);
+		final MenuItemBoolean busedur = (MenuItemBoolean) useBlockData.getMenuItem("Use Data Values", Material.ENDER_PEARL);
 		m.addItem(busedur);
-		final MenuItemInteger bdur = (MenuItemInteger) dur.getMenuItem("Data Value", Material.PAPER, 0, 16);
-		m.addItem(bdur);
-		
 		c.setClickItem(object -> {
             ItemStack i = (ItemStack) object;
-            type.setFlag(i.getType().toString());
-            useDur.setFlag(true);
-            dur.setFlag(((Short)i.getDurability()).intValue());
-            bdur.updateDescription();
+            try {
+                type.setFlag(i.getType().createBlockData());
+                useBlockData.setFlag(true);
+            } catch (IllegalArgumentException e) {
+                c.getContainer().getViewer().sendMessage("That item is not a block",MinigameMessageType.ERROR);
+            }
+            useBlockData.setFlag(true);
             busedur.updateDescription();
-            btype.updateDescription();
+            btype.update();
             return c.getItem();
         });
 		addInvertMenuItem(m);

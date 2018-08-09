@@ -23,6 +23,11 @@ public class MenuItemBlockData extends MenuItem {
         setDescription(createDescription(data.getValue()));
     }
 
+    @Override
+    public void update() {
+        setDescription(createDescription(this.data.getValue()));
+    }
+
     private Callback<BlockData> data;
     
     public MenuItemBlockData(String name, Material displayItem, Callback<BlockData> callback) {
