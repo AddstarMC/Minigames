@@ -23,7 +23,7 @@ public class ConnectionPool {
         props = new Properties();
         props.put("username", username);
         props.put("password", password);
-        props.put("useSSL", false);
+        props.put("useSSL", "false");
         this.connectionString = connectionString;
         connections = Collections.synchronizedList(Lists.<ConnectionHandler>newArrayList());
         maxIdleTime = TimeUnit.SECONDS.toMillis(30);

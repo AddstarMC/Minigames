@@ -50,7 +50,7 @@ public class MySQLBackend extends Backend {
             if(debug)logger.info("URL: " + url);
             Properties props =  new Properties();
 			props.put("user",config.getString("username", "username"));
-			props.put("pass",config.getString("password", "password"));
+			props.put("password",config.getString("password", "password"));
 			ConfigurationSection dbprops = config.getConfigurationSection("properties");
 			if(dbprops != null) {
 				for (Map.Entry<String, Object> entry : dbprops.getValues(false).entrySet()) {
