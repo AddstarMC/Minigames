@@ -22,7 +22,6 @@ public class GiveItemAction extends AbstractAction{
 	
 	private StringFlag type = new StringFlag("STONE", "type");
 	private IntegerFlag count = new IntegerFlag(1, "count");
-	private IntegerFlag damage = new IntegerFlag(0, "damage");
 	private StringFlag name = new StringFlag(null, "name");
 	private StringFlag lore = new StringFlag(null, "lore");
 
@@ -38,7 +37,7 @@ public class GiveItemAction extends AbstractAction{
 	
 	@Override
 	public void describe(Map<String, Object> out) {
-		out.put("Item", count.getFlag() + "x " + type.getFlag() + ":" + damage.getFlag());
+		out.put("Item", count.getFlag() + "x " + type.getFlag());
 		out.put("Display Name", name.getFlag());
 		out.put("Lore", lore.getFlag());
 	}
@@ -67,7 +66,7 @@ public class GiveItemAction extends AbstractAction{
 	}
 	
 	private void execute(MinigamePlayer player){
-		ItemStack item = new ItemStack(Material.getMaterial(type.getFlag()), count.getFlag(), damage.getFlag().shortValue());
+		ItemStack item = new ItemStack(Material.getMaterial(type.getFlag()), count.getFlag());
 		ItemMeta meta = item.getItemMeta();
 		if(name.getFlag() != null){
 			meta.setDisplayName(name.getFlag());
@@ -91,7 +90,6 @@ public class GiveItemAction extends AbstractAction{
 	public void saveArguments(FileConfiguration config, String path) {
 		type.saveValue(path, config);
 		count.saveValue(path, config);
-		damage.saveValue(path, config);
 		if(name.getFlag() != null)
 			name.saveValue(path, config);
 		if(lore.getFlag() != null)
@@ -102,7 +100,6 @@ public class GiveItemAction extends AbstractAction{
 	public void loadArguments(FileConfiguration config, String path) {
 		type.loadValue(path, config);
 		count.loadValue(path, config);
-		damage.loadValue(path, config);
 		if(config.contains(path + ".name"))
 			name.loadValue(path, config);
 		if(config.contains(path + ".lore"))
@@ -140,8 +137,6 @@ public class GiveItemAction extends AbstractAction{
 			}
 		}));
 		m.addItem(count.getMenuItem("Count", Material.STONE_SLAB, 1, 64));
-		m.addItem(damage.getMenuItem("Damage", Material.COBBLESTONE, 0, null));
-		
 		m.displayMenu(player);
 		return true;
 	}

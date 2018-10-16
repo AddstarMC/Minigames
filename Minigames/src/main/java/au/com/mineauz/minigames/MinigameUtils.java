@@ -43,7 +43,7 @@ public class MinigameUtils {
 		ItemStack it = null;
 		
 		if(Material.getMaterial(itemName) != null){
-			it = new ItemStack(Material.getMaterial(itemName), quantity, itemData);
+			it = new ItemStack(Material.getMaterial(itemName), quantity);
 		}
 		return it;
 	}

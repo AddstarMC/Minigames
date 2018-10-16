@@ -20,8 +20,6 @@ import java.util.Map;
 public class TakeItemAction extends AbstractAction{
 	
 	private StringFlag type = new StringFlag("STONE", "type");
-	private BooleanFlag matchDamage = new BooleanFlag(true, "matchdamage");
-	private IntegerFlag damage = new IntegerFlag(0, "damage");
 	private IntegerFlag count = new IntegerFlag(1, "count");
 
 	@Override
@@ -36,12 +34,7 @@ public class TakeItemAction extends AbstractAction{
 	
 	@Override
 	public void describe(Map<String, Object> out) {
-		if (matchDamage.getFlag()) {
-			out.put("Item", type.getFlag() + ":" + damage.getFlag());
-		} else {
-			out.put("Item", type.getFlag() + ":all");
-		}
-		
+		out.put("Item", type.getFlag() + ":all");
 		out.put("Count", count);
 	}
 
@@ -68,14 +61,13 @@ public class TakeItemAction extends AbstractAction{
 	}
 	
 	private void execute(MinigamePlayer player){
-		ItemStack match = new ItemStack(Material.getMaterial(type.getFlag()), count.getFlag(), damage.getFlag().shortValue());
+		ItemStack match = new ItemStack(Material.getMaterial(type.getFlag()), count.getFlag());
 		ItemStack matched = null;
 		boolean remove = false;
 		int slot = 0;
 		
 		for(ItemStack i : player.getPlayer().getInventory().getContents()){
 			if(i != null && i.getType() == match.getType()){
-				if(!matchDamage.getFlag() || match.getDurability() == i.getDurability()){
 					if(match.getAmount() >= i.getAmount()){
 						matched = i.clone();
 						remove = true;
@@ -85,7 +77,7 @@ public class TakeItemAction extends AbstractAction{
 						matched.setAmount(matched.getAmount() - match.getAmount());
 					}
 					break;
-				}
+
 			}
 			slot++;
 		}
@@ -100,16 +92,12 @@ public class TakeItemAction extends AbstractAction{
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
 		type.saveValue(path, config);
-		matchDamage.saveValue(path, config);
-		damage.saveValue(path, config);
 		count.saveValue(path, config);
 	}
 
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
 		type.loadValue(path, config);
-		matchDamage.loadValue(path, config);
-		damage.loadValue(path, config);
 		count.loadValue(path, config);
 	}
 
@@ -135,9 +123,6 @@ Menu m = new Menu(3, "Give Item", player);
 			}
 		}));
 		m.addItem(count.getMenuItem("Count", Material.STONE_SLAB, 1, 64));
-		m.addItem(damage.getMenuItem("Damage", Material.COBBLESTONE, 0, null));
-		m.addItem(matchDamage.getMenuItem("Match Damage", Material.ENDER_PEARL));
-		
 		m.displayMenu(player);
 		return true;
 	}

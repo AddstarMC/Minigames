@@ -25,8 +25,6 @@ import java.util.regex.Pattern;
 public class PlayerHasItemCondition extends ConditionInterface {
 	
 	private StringFlag type = new StringFlag("STONE", "type");
-	private BooleanFlag useData = new BooleanFlag(false, "usedata");
-	private IntegerFlag data = new IntegerFlag(0, "data");
 	private StringFlag where = new StringFlag("ANYWHERE", "where");
 	private IntegerFlag slot = new IntegerFlag(0, "slot");
 	
@@ -48,12 +46,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
 	
 	@Override
 	public void describe(Map<String, Object> out) {
-		if (useData.getFlag()) {
-			out.put("Item", type.getFlag() + ":" + data.getFlag());
-		} else {
-			out.put("Item", type.getFlag() + ":all");
-		}
-		
+		out.put("Item", type.getFlag() + ":all");
 		out.put("Where", where.getFlag());
 		out.put("Slot", slot.getFlag());
 		
@@ -139,9 +132,6 @@ public class PlayerHasItemCondition extends ConditionInterface {
 			}
 			
 			if (itemInSlot.getType() == material) {
-				if (useData.getFlag() && itemInSlot.getDurability() != data.getFlag()) {
-					continue;
-				}
 				
 				ItemMeta meta = itemInSlot.getItemMeta();
 				
@@ -241,8 +231,6 @@ public class PlayerHasItemCondition extends ConditionInterface {
 	@Override
 	public void saveArguments(FileConfiguration config, String path) {
 		type.saveValue(path, config);
-		useData.saveValue(path, config);
-		data.saveValue(path, config);
 		where.saveValue(path, config);
 		slot.saveValue(path, config);
 		
@@ -256,8 +244,6 @@ public class PlayerHasItemCondition extends ConditionInterface {
 	@Override
 	public void loadArguments(FileConfiguration config, String path) {
 		type.loadValue(path, config);
-		useData.loadValue(path, config);
-		data.loadValue(path, config);
 		where.loadValue(path, config);
 		slot.loadValue(path, config);
 		
@@ -288,8 +274,6 @@ public class PlayerHasItemCondition extends ConditionInterface {
 				return type.getFlag();
 			}
 		}));
-		m.addItem(useData.getMenuItem("Match Item Data", Material.ENDER_PEARL));
-		m.addItem(data.getMenuItem("Data Value", Material.ENDER_EYE, 0, null));
 		m.addItem(new MenuItemList("Search Where", Material.COMPASS, new Callback<String>() {
 			@Override
 			public void setValue(String value) {
