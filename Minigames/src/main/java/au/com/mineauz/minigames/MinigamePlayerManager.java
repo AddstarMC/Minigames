@@ -580,6 +580,8 @@ public class MinigamePlayerManager {
 	
 	
 	public void endMinigame(Minigame minigame, List<MinigamePlayer> winners, List<MinigamePlayer> losers){
+		//When the minigame ends, the flag for recognizing the start teleportation needs to be resetted
+		minigame.setPlayersAtStart(false);
 		EndMinigameEvent event = new EndMinigameEvent(winners, losers, minigame);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		if (!event.isCancelled()) {
