@@ -14,12 +14,9 @@ import au.com.mineauz.minigames.signs.SignBase;
 import au.com.mineauz.minigames.stats.MinigameStats;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
-import com.google.common.io.Closeables;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import net.milkbowl.vault.economy.Economy;
-import org.apache.maven.artifact.versioning.ComparableVersion;
-import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -47,11 +44,6 @@ public class Minigames extends JavaPlugin{
 	private FileConfiguration defLang = null;
 	private boolean debug = false;
 
-	public static ComparableVersion getVERSION() {
-		return VERSION;
-	}
-
-	private static ComparableVersion VERSION = new ComparableVersion("1.12.2");
 	private long lastUpdateCheck = 0;
 	
 	private BackendManager backend;
@@ -183,7 +175,7 @@ public class Minigames extends JavaPlugin{
 				getPlayerManager().addMinigamePlayer(player);
 			}
 			
-			initMetrics();
+			
 	
 			log.info(desc.getName() + " successfully enabled.");
 		} catch (Throwable e) {
@@ -328,31 +320,6 @@ public class Minigames extends JavaPlugin{
 		return minigameSigns;
 	}
 	
-	private void initMetrics() {
-		Metrics metrics = new Metrics(this);
-		Metrics.MultiLineChart chart = new Metrics.MultiLineChart("Players_in_Minigames", () -> {
-			Map<String, Integer> result = new HashMap<>();
-			int count = 0;
-			result.put("Total_Players", getPlayerManager().getAllMinigamePlayers().size());
-			for (MinigamePlayer pl : getPlayerManager().getAllMinigamePlayers()) {
-				if (pl.isInMinigame()) {
-					count = result.getOrDefault(pl.getMinigame().getType().getName(), 0);
-					result.put(pl.getMinigame().getType().getName(), count + 1);
-				}
-			}
-			return result;
-		});
-        Metrics.SimpleBarChart barChart = new Metrics.SimpleBarChart("Modules v Servers", () -> {
-			Map<String, Integer> result = new HashMap<>();
-			for (Class module : getMinigameManager().getModules()) {
-				result.put(module.getCanonicalName(), 1);
-			}
-			return result;
-		});
-		metrics.addCustomChart(chart);
-        metrics.addCustomChart(barChart);
-	}
-
 	
 	public FileConfiguration getLang(){
 		return lang;

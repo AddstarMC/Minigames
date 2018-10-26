@@ -67,6 +67,7 @@ public class GiveItemAction extends AbstractAction{
 	}
 	
 	private void execute(MinigamePlayer player){
+		@SuppressWarnings("deprecation")
 		ItemStack item = new ItemStack(Material.getMaterial(type.getFlag()), count.getFlag(), damage.getFlag().shortValue());
 		ItemMeta meta = item.getItemMeta();
 		if(name.getFlag() != null){
@@ -139,7 +140,7 @@ public class GiveItemAction extends AbstractAction{
 				return type.getFlag();
 			}
 		}));
-		m.addItem(count.getMenuItem("Count", Material.STEP, 1, 64));
+		m.addItem(count.getMenuItem("Count", Material.COBBLESTONE_SLAB, 1, 64));
 		m.addItem(damage.getMenuItem("Damage", Material.COBBLESTONE, 0, null));
 		
 		m.displayMenu(player);

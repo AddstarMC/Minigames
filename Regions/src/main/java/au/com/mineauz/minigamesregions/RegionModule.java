@@ -349,7 +349,7 @@ public class RegionModule extends MinigameModule {
 		}
 		rm.addItems(items);
 		if(previous != null)
-			rm.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), rm.getSize() - 9);
+			rm.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, previous), rm.getSize() - 9);
 		rm.displayMenu(viewer);
 	}
 	

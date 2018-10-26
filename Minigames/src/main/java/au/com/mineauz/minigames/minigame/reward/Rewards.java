@@ -132,7 +132,7 @@ public class Rewards {
 		
 		rewardMenu.addItem(new MenuItemRewardGroupAdd("Add Group", Material.ITEM_FRAME, this), 42);
 		rewardMenu.addItem(new MenuItemRewardAdd("Add Item", Material.ITEM_FRAME, this), 43);
-		rewardMenu.addItem(new MenuItemPage("Save " + name, Material.REDSTONE_TORCH_ON, parent), 44);
+		rewardMenu.addItem(new MenuItemPage("Save " + name, Material.REDSTONE_TORCH, parent), 44);
 
         List<MenuItem> mi = new ArrayList<>();
 		for(RewardType item : items){

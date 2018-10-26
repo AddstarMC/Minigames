@@ -110,7 +110,7 @@ public class SetBlockAction extends AbstractAction {
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Set Block", player);
 		final MinigamePlayer fply = player;
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, previous), m.getSize() - 9);
 		m.addItem(new MenuItemString("Type", Material.STONE, new Callback<String>() {
 			
 			@Override

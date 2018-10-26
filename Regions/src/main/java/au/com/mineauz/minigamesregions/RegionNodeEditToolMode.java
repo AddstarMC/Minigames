@@ -41,7 +41,7 @@ public class RegionNodeEditToolMode implements ToolMode {
 
 	@Override
 	public Material getIcon() {
-		return Material.BOOK_AND_QUILL;
+		return Material.WRITABLE_BOOK;
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public class RegionNodeEditToolMode implements ToolMode {
 			menu = MenuItemNode.createMenu(player, null, (Node)hit);
 		}
 		
-		menu.addItem(new MenuItemSaveMinigame("Save", Material.REDSTONE_TORCH_ON, minigame), menu.getSize() - 9);
+		menu.addItem(new MenuItemSaveMinigame("Save", Material.REDSTONE_TORCH, minigame), menu.getSize() - 9);
 		
 		menu.displayMenu(player);
 	}
@@ -155,7 +155,7 @@ public class RegionNodeEditToolMode implements ToolMode {
 			}
 		}
 		
-		menu.addItem(new MenuItemSaveMinigame("Save", Material.REDSTONE_TORCH_ON, module.getMinigame()), menu.getSize() - 9);
+		menu.addItem(new MenuItemSaveMinigame("Save", Material.REDSTONE_TORCH, module.getMinigame()), menu.getSize() - 9);
 		
 		menu.displayMenu(player);
 		

@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class MenuItemRewardGroup extends MenuItem{
 	
 	private RewardGroup group;
@@ -156,7 +157,7 @@ public class MenuItemRewardGroup extends MenuItem{
 		des.add("to add a money reward.");
 		
 		rewardMenu.addItem(new MenuItemRewardAdd("Add Item", des, Material.ITEM_FRAME, group), 43);
-		rewardMenu.addItem(new MenuItemPage("Save " + getName(), Material.REDSTONE_TORCH_ON, rewardMenu.getPreviousPage()), 44);
+		rewardMenu.addItem(new MenuItemPage("Save " + getName(), Material.LEGACY_REDSTONE_TORCH_ON, rewardMenu.getPreviousPage()), 44);
 		//List<String> list = new ArrayList<>();
 		//for(RewardRarity r : RewardRarity.values()){
 		//	list.add(r.toString());

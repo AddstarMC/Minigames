@@ -58,7 +58,7 @@ public class SpectatorPositionMode implements ToolMode{
 	@Override
 	public void select(MinigamePlayer player, Minigame minigame, Team team) {
 		if(minigame.getSpectatorLocation() != null){
-			player.getPlayer().sendBlockChange(minigame.getSpectatorLocation(), Material.SKULL, (byte)1);
+			player.getPlayer().sendBlockChange(minigame.getSpectatorLocation(), Material.PLAYER_HEAD, (byte)1);
 			player.sendInfoMessage("Selected spectator position (marked with skull).");
 		}
 		else{

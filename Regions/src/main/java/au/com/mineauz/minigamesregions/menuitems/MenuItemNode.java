@@ -53,7 +53,7 @@ public class MenuItemNode extends MenuItem{
 			items.add(new MenuItemNodeExecutor(node, ex));
 		}
 		if(previousPage != null){
-			m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previousPage), m.getSize() - 9);
+			m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, previousPage), m.getSize() - 9);
 		}
 		m.addItem(new MenuItemNodeExecutorAdd("Add Executor", Material.ITEM_FRAME, node), m.getSize() - 1);
 		m.addItems(items);

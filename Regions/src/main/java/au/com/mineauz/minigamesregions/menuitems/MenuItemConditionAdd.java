@@ -45,7 +45,7 @@ public class MenuItemConditionAdd extends MenuItem{
 					cat = new Menu(6, MinigameUtils.capitalize(catname), getContainer().getViewer());
 					cats.put(catname, cat);
 					m.addItem(new MenuItemPage(MinigameUtils.capitalize(catname), Material.CHEST, cat));
-					cat.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, m), cat.getSize() - 9);
+					cat.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, m), cat.getSize() - 9);
 				}
 				else
 					cat = cats.get(catname);
@@ -71,7 +71,7 @@ public class MenuItemConditionAdd extends MenuItem{
 				cat.addItem(c);
 			}
 		}
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, getContainer()), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, getContainer()), m.getSize() - 9);
 		m.displayMenu(getContainer().getViewer());
 		return null;
 	}

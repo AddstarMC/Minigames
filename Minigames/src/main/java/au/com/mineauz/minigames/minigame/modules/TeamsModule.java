@@ -192,7 +192,7 @@ public class TeamsModule extends MinigameModule {
 		
 		m.addItems(items);
 		
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, menu), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, menu), m.getSize() - 9);
 		
 		MenuItemPage p = new MenuItemPage("Team Options", Material.CHEST, m);
 		menu.addItem(p);

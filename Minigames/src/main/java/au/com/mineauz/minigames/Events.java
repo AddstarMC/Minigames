@@ -339,7 +339,7 @@ public class Events implements Listener{
             if (event.getPlayer().isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
                 tool.openMenu(ply);
                 event.setCancelled(true);
-            } else if (event.getClickedBlock() != null && (event.getClickedBlock().getType() == Material.WALL_SIGN || event.getClickedBlock().getType() == Material.SIGN_POST)) {
+            } else if (event.getClickedBlock() != null && (event.getClickedBlock().getType() == Material.WALL_SIGN || event.getClickedBlock().getType() == Material.SIGN)) {
                 Sign sign = (Sign) event.getClickedBlock().getState();
                 if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[Minigame]") && ChatColor.stripColor(sign.getLine(1)).equalsIgnoreCase("Join")) {
                     Minigame minigame = mdata.getMinigame(sign.getLine(2));
@@ -549,11 +549,11 @@ public class Events implements Listener{
                 if (ply == null) return;
                 if (ply.isInMinigame() && ply.getMinigame().hasUnlimitedAmmo()) {
 					ItemStack mainhand = ply.getPlayer().getInventory().getItemInMainHand();
-                    if (mainhand.getType() == Material.SNOW_BALL) {
+                    if (mainhand.getType() == Material.SNOWBALL) {
 						mainhand.setAmount(16);
 						ply.getPlayer().updateInventory();
                     } else {
-                        ply.getPlayer().getInventory().addItem(new ItemStack(Material.SNOW_BALL, 1));
+                        ply.getPlayer().getInventory().addItem(new ItemStack(Material.SNOWBALL, 1));
 					}
                 
                 }
@@ -604,6 +604,7 @@ public class Events implements Listener{
 		}
 	}
 	
+	@SuppressWarnings("incomplete-switch")
 	@EventHandler(ignoreCancelled = true)
 	private void clickMenu(InventoryClickEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer((Player)event.getWhoClicked());

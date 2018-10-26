@@ -54,7 +54,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 	
 	@Override
 	public void addMenuItems(final Menu menu) {
-		menu.addItem(new MenuItemList("Comparison Type", Material.REDSTONE_COMPARATOR, getConfigurationTypeCallback(), Lists.transform(Arrays.asList(Comparison.values()), Functions.toStringFunction())));
+		menu.addItem(new MenuItemList("Comparison Type", Material.COMPARATOR, getConfigurationTypeCallback(), Lists.transform(Arrays.asList(Comparison.values()), Functions.toStringFunction())));
 		menu.addItem(enableRewardsOnLoss.getMenuItem("Award On Loss", Material.LEVER, MinigameUtils.stringToList("When on, awards will still;be given to losing;players")));
 		menu.addItem(lossUsesSecondary.getMenuItem("Losers Get Secondary", Material.LEVER, MinigameUtils.stringToList("When on, the losers;will only get the;secondary reward")));
 		menu.addItem(new MenuItemNewLine());

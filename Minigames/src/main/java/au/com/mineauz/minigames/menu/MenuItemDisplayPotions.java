@@ -7,7 +7,7 @@ import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@SuppressWarnings("deprecation")
 public class MenuItemDisplayPotions extends MenuItem{
 	
 	private PlayerLoadout loadout;
@@ -30,7 +30,7 @@ public class MenuItemDisplayPotions extends MenuItem{
 		potionMenu.setAllowModify(true);
 		potionMenu.setPreviousPage(getContainer());
 		potionMenu.addItem(new MenuItemPotionAdd("Add Potion", Material.ITEM_FRAME, loadout), 43);
-		potionMenu.addItem(new MenuItemPage("Save Potions", Material.REDSTONE_TORCH_ON, getContainer().getPreviousPage()), 44);
+		potionMenu.addItem(new MenuItemPage("Save Potions", Material.LEGACY_REDSTONE_TORCH_ON, getContainer().getPreviousPage()), 44);
 
         List<String> des = new ArrayList<>();
 		des.add("Shift + Right Click to Delete");

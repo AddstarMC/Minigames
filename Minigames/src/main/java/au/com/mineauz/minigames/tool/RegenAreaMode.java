@@ -29,7 +29,7 @@ public class RegenAreaMode implements ToolMode {
 
 	@Override
 	public Material getIcon() {
-		return Material.SAPLING;
+		return Material.OAK_SAPLING;
 	}
 
 	@Override

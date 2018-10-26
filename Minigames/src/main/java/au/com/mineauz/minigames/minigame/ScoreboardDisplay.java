@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
+@SuppressWarnings("deprecation")
 public class ScoreboardDisplay {
 	public static final int defaultWidth = 3;
 	public static final int defaultHeight = 3;
@@ -139,7 +139,7 @@ public class ScoreboardDisplay {
 			Block start = block;
 			for(int x = 0; x < width; ++x) {
 				// Only add signs
-				if (block.getType() == Material.WALL_SIGN || (!onlySigns && block.getType() == Material.AIR)) {
+				if (block.getType() == Material.LEGACY_WALL_SIGN || (!onlySigns && block.getType() == Material.LEGACY_AIR)) {
 					blocks.add(block);
 				}
 				
@@ -196,10 +196,10 @@ public class ScoreboardDisplay {
 		final Menu setupMenu = new Menu(3, "Setup Scoreboard", player);
 		
 		StatSettings settings = minigame.getSettings(stat);
-		final MenuItemCustom statisticChoice = new MenuItemCustom("Statistic", Material.BOOK_AND_QUILL);
+		final MenuItemCustom statisticChoice = new MenuItemCustom("Statistic", Material.LEGACY_BOOK_AND_QUILL);
 		statisticChoice.setDescription(Arrays.asList(ChatColor.GREEN + settings.getDisplayName()));
 		
-		final MenuItemCustom fieldChoice = new MenuItemCustom("Statistic Field", Material.PAPER);
+		final MenuItemCustom fieldChoice = new MenuItemCustom("Statistic Field", Material.LEGACY_PAPER);
 		fieldChoice.setDescription(Arrays.asList(ChatColor.GREEN + field.getTitle()));
 		
 		statisticChoice.setClick(new InteractionInterface() {
@@ -273,7 +273,7 @@ public class ScoreboardDisplay {
 		for(ScoreboardOrder o : ScoreboardOrder.values()){
 			sbotypes.add(o.toString().toLowerCase());
 		}
-		setupMenu.addItem(new MenuItemList("Scoreboard Order", Material.ENDER_PEARL, new Callback<String>() {
+		setupMenu.addItem(new MenuItemList("Scoreboard Order", Material.LEGACY_ENDER_PEARL, new Callback<String>() {
 			
 			@Override
 			public void setValue(String value) {
@@ -285,7 +285,7 @@ public class ScoreboardDisplay {
 				return order.toString().toLowerCase();
 			}
 		}, sbotypes));
-		setupMenu.addItem(new MenuItemScoreboardSave("Create Scoreboard", Material.REDSTONE_TORCH_ON, this), setupMenu.getSize() - 1);
+		setupMenu.addItem(new MenuItemScoreboardSave("Create Scoreboard", Material.LEGACY_REDSTONE_TORCH_ON, this), setupMenu.getSize() - 1);
 		setupMenu.displayMenu(player);
 	}
 	
@@ -304,24 +304,23 @@ public class ScoreboardDisplay {
 		List<Block> blocks = getSignBlocks(true);
 		
 		for (Block block : blocks) {
-			block.setType(Material.AIR);
+			block.setType(Material.LEGACY_AIR);
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void placeSigns() {
 		List<Block> blocks = getSignBlocks(false);
 		
 		for (Block block : blocks) {
-			block.setType(Material.WALL_SIGN);
+			block.setType(Material.LEGACY_WALL_SIGN);
 			
-			org.bukkit.material.Sign signMat = new org.bukkit.material.Sign(Material.WALL_SIGN);
+			org.bukkit.material.Sign signMat = new org.bukkit.material.Sign(Material.LEGACY_WALL_SIGN);
 			signMat.setFacingDirection(facing);
-			block.setData(signMat.getData());
+			signMat.setData(signMat.getData());
+			//block.setData(signMat.getData());
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public static ScoreboardDisplay load(Minigame minigame, ConfigurationSection section) {
 		int width = section.getInt("width");
 		int height = section.getInt("height");

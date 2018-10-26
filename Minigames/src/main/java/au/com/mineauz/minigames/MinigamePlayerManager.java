@@ -39,6 +39,7 @@ public class MinigamePlayerManager {
 	
 	private boolean partyMode = false;
 	Map<Team, Integer> tpos;
+	@SuppressWarnings("unused")
 	private int pos;
     private List<String> deniedCommands = new ArrayList<>();
 	
@@ -903,6 +904,7 @@ public class MinigamePlayerManager {
 		setDeniedCommands(plugin.getConfig().getStringList("disabledCommands"));
 	}
 
+	@SuppressWarnings("unused")
 	private class PlayerLocation {
 		Location location;
 		Integer position;

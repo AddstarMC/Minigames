@@ -9,6 +9,7 @@ import org.bukkit.util.Vector;
 import au.com.mineauz.minigames.display.AbstractDisplayObject;
 import au.com.mineauz.minigames.display.DisplayManager;
 import au.com.mineauz.minigames.display.IDisplayPoint;
+@SuppressWarnings({"deprecation", "unused"})
 
 public class BukkitDisplayPoint extends AbstractDisplayObject implements IDisplayPoint {
 	private static Location temp = new Location(null, 0, 0, 0);
@@ -39,12 +40,11 @@ public class BukkitDisplayPoint extends AbstractDisplayObject implements IDispla
 		temp.setY(position.getY());
 		temp.setZ(position.getZ());
 		
-		send(Material.SKULL, (byte)0);
+		send(Material.PLAYER_HEAD, (byte)0);
 		super.show();
 	}
 	
 	@Override
-	@SuppressWarnings("deprecation")
 	public void hide() {
 		temp.setWorld(world);
 		temp.setX(position.getX());
@@ -55,7 +55,6 @@ public class BukkitDisplayPoint extends AbstractDisplayObject implements IDispla
 		super.hide();
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void send(Material mat, byte data) {
 		if (player != null) {
 			player.sendBlockChange(temp, mat, data);

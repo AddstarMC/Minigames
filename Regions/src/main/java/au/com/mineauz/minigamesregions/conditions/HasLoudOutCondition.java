@@ -80,7 +80,7 @@ public class HasLoudOutCondition extends ConditionInterface {
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Equip Loadout", player);
-        m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
+        m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, prev), m.getSize() - 9);
         m.addItem(new MenuItemString("Loadout Name", Material.DIAMOND_SWORD, new Callback<String>() {
 
             @Override

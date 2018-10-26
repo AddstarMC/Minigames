@@ -2,7 +2,6 @@ package au.com.mineauz.minigames.minigame.modules;
 
 import java.util.Map;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.config.Flag;

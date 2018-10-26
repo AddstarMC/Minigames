@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import au.com.mineauz.minigames.Minigames;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.potion.PotionEffect;
@@ -94,7 +94,7 @@ public class ApplyPotionAction extends AbstractAction {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Apply Potion", player);
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, previous), m.getSize() - 9);
 		List<String> pots = new ArrayList<>(PotionEffectType.values().length);
 		for (PotionEffectType type : PotionEffectType.values()) {
 			if (type != null) {
@@ -113,7 +113,7 @@ public class ApplyPotionAction extends AbstractAction {
 				return MinigameUtils.capitalize(type.getFlag().replace("_", " "));
 			}
 		}, pots));
-		m.addItem(new MenuItemTime("Duration", Material.WATCH, new Callback<Integer>() {
+		m.addItem(new MenuItemTime("Duration", Material.CLOCK, new Callback<Integer>() {
 
 			@Override
 			public void setValue(Integer value) {

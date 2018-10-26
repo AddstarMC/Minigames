@@ -1,12 +1,9 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Map;
 
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+
 import au.com.mineauz.minigames.script.ScriptObject;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -19,7 +16,7 @@ import au.com.mineauz.minigames.menu.MenuItemInteger;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
-import org.bukkit.scoreboard.Score;
+
 
 public class AddScoreAction extends ScoreAction {
 	
@@ -101,7 +98,7 @@ public class AddScoreAction extends ScoreAction {
 				return amount.getFlag();
 			}
 		}, null, null));
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, previous), m.getSize() - 9);
 		m.displayMenu(player);
 		return true;
 	}

@@ -73,7 +73,7 @@ public class MenuItemRegionExecutor extends MenuItem{
 		m.addItem(new MenuItemBoolean("Trigger Per Player", 
 				MinigameUtils.stringToList("Whether this node;is triggered per player;or just on count"), 
 				Material.ENDER_PEARL, ex.getIsTriggerPerPlayerCallback()));
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, getContainer()), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, getContainer()), m.getSize() - 9);
 		m.displayMenu(fviewer);
 		return null;
 	}

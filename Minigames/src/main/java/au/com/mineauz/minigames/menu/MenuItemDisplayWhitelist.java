@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@SuppressWarnings("deprecation")
 public class MenuItemDisplayWhitelist extends MenuItem{
 	
 	private List<Material> whitelist;
@@ -31,7 +31,7 @@ public class MenuItemDisplayWhitelist extends MenuItem{
 		for(Material bl : whitelist){
 			items.add(new MenuItemWhitelistBlock(bl, whitelist));
 		}
-		menu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, getContainer()), menu.getSize() - 9);
+		menu.addItem(new MenuItemPage("Back", Material.LEGACY_REDSTONE_TORCH_ON, getContainer()), menu.getSize() - 9);
 		menu.addItem(new MenuItemAddWhitelistBlock("Add Material", whitelist), menu.getSize() - 1);
 		menu.addItem(new MenuItemBoolean("Whitelist Mode", MinigameUtils.stringToList("If whitelist mode only;added items can be;broken."), 
 				Material.ENDER_PEARL, whitelistMode), menu.getSize() - 2);

@@ -21,6 +21,7 @@ public class MySQLBackend extends Backend {
 	private ConnectionPool pool;
 	private String database;
 	private final Logger logger;
+	@SuppressWarnings("unused")
 	private boolean debug = false;
 	private StatementKey insertMinigame;
 	private StatementKey insertPlayer;

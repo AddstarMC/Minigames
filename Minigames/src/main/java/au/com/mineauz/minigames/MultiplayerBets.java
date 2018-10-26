@@ -88,6 +88,7 @@ public class MultiplayerBets {
 		return highest;
 	}
 	
+	@SuppressWarnings("incomplete-switch")
 	public int betValue(Material material){
         switch (material) {
             case DIAMOND:

@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.minigame.Team;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -99,7 +98,7 @@ public class AddTeamScoreAction extends ScoreAction {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Add Team Score", player);
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, previous), m.getSize() - 9);
 		m.addItem(new MenuItemInteger("Add Score Amount", Material.STONE, new Callback<Integer>() {
 			
 			@Override

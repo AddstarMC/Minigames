@@ -83,9 +83,9 @@ public class PlayerXPRangeCondition extends ConditionInterface {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "XP Range", player);
-		m.addItem(min.getMenuItem("Min XP", Material.STEP, 0.5, 1, 0.0, null));
+		m.addItem(min.getMenuItem("Min XP", Material.STONE_SLAB, 0.5, 1, 0.0, null));
 		m.addItem(max.getMenuItem("Max XP", Material.STONE, 0.5, 1, 0.0, null));
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, prev), m.getSize() - 9);
 		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;

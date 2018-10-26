@@ -70,7 +70,8 @@ public class GlobalLoadoutCommand implements ICommand {
 		des.add("Shift + Right Click to Delete");
         List<MenuItem> mi = new ArrayList<>();
 		for(String ld : mdata.getLoadouts()){
-			Material item = Material.THIN_GLASS;
+			@SuppressWarnings("deprecation")
+			Material item = Material.LEGACY_THIN_GLASS;
 			if(mdata.getLoadout(ld).getItems().size() != 0){
 				item = mdata.getLoadout(ld).getItem((Integer)mdata.getLoadout(ld).getItems().toArray()[0]).getType();
 			}

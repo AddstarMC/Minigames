@@ -53,7 +53,7 @@ public class MenuItemRegion extends MenuItem{
 			items.add(new MenuItemRegionExecutor(region, ex));
 		}
 		if(previousPage != null){
-			m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previousPage), m.getSize() - 9);
+			m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, previousPage), m.getSize() - 9);
 		}
 		m.addItem(new MenuItemRegionExecutorAdd("Add Executor", Material.ITEM_FRAME, region), m.getSize() - 1);
 		m.addItems(items);

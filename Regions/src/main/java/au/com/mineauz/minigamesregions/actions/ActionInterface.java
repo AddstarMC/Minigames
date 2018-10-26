@@ -1,14 +1,10 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.ArrayList;
-import java.util.List;
+
+import au.com.mineauz.minigames.script.ScriptObject;
+
 import java.util.Map;
 
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
-import au.com.mineauz.minigames.script.ScriptObject;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.MinigamePlayer;

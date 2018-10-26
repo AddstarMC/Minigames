@@ -2,7 +2,6 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import java.util.Map;
 
-import au.com.mineauz.minigames.Minigames;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -82,10 +81,10 @@ public class MinigameTimerCondition extends ConditionInterface{
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Minigame Timer", player);
 		
-		m.addItem(new MenuItemTime("Min Time", Material.WATCH, minTime.getCallback(), 0, null));
-		m.addItem(new MenuItemTime("Max Time", Material.WATCH, maxTime.getCallback(), 0, null));
+		m.addItem(new MenuItemTime("Min Time", Material.CLOCK, minTime.getCallback(), 0, null));
+		m.addItem(new MenuItemTime("Max Time", Material.CLOCK, maxTime.getCallback(), 0, null));
 		
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, prev), m.getSize() - 9);
 		addInvertMenuItem(m);
 		m.displayMenu(player);
 		return true;

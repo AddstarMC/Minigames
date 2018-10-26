@@ -124,7 +124,7 @@ public class TriggerRandomAction extends AbstractAction{
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Trigger Random", player);
 		m.addItem(new MenuItemBack(previous), m.getSize() - 9);
-		m.addItem(timesTriggered.getMenuItem("Times to Trigger Random", Material.COMMAND, 1, null));
+		m.addItem(timesTriggered.getMenuItem("Times to Trigger Random", Material.COMMAND_BLOCK, 1, null));
 		m.addItem(randomPerTrigger.getMenuItem("Allow Same Executor", Material.ENDER_PEARL, 
 				MinigameUtils.stringToList("Should there be a chance;that the same execeutor;can be triggered more?")));
 		m.displayMenu(player);

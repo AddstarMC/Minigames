@@ -135,7 +135,7 @@ public final class MinigameStats {
 		final Menu submenu = new Menu(6, "Select Statistic", parent.getViewer());
 		
 		for (final MinigameStat stat : getAllStats().values()) {
-			MenuItemCustom item = new MenuItemCustom(WordUtils.capitalizeFully(stat.getDisplayName()), Material.BOOK_AND_QUILL);
+			MenuItemCustom item = new MenuItemCustom(WordUtils.capitalizeFully(stat.getDisplayName()), Material.WRITABLE_BOOK);
 			item.setClick(new InteractionInterface() {
 				@Override
 				public Object interact(Object object) {

@@ -10,7 +10,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
-
+@SuppressWarnings("deprecation")
 public class Menu {
 	private int rows = 2;
 	private ItemStack[] pageView;
@@ -110,10 +110,10 @@ public class Menu {
 	
 	public void addPage(){
 		Menu nextPage = new Menu(rows, name, viewer);
-		addItem(new MenuItemPage("Next Page", Material.REDSTONE_TORCH_ON, nextPage), 9 * (rows - 1) + 5);
+		addItem(new MenuItemPage("Next Page", Material.LEGACY_REDSTONE_TORCH_ON, nextPage), 9 * (rows - 1) + 5);
 		setNextPage(nextPage);
 		nextPage.setPreviousPage(this);
-		nextPage.addItem(new MenuItemPage("Previous Page", Material.REDSTONE_TORCH_ON, this), 9 * (rows - 1) + 3);
+		nextPage.addItem(new MenuItemPage("Previous Page", Material.LEGACY_REDSTONE_TORCH_ON, this), 9 * (rows - 1) + 3);
 		for(int j = 9 * (rows - 1) + 6; j < 9 * rows; j++){
 			if(getClicked(j) != null)
 				nextPage.addItem(getClicked(j), j);

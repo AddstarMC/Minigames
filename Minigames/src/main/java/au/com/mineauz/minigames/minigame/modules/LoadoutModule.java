@@ -27,6 +27,7 @@ public class LoadoutModule extends MinigameModule {
 
     private Map<String, PlayerLoadout> extraLoadouts = new HashMap<>();
 	private LoadoutSetFlag loadoutsFlag = new LoadoutSetFlag(extraLoadouts, "loadouts");
+	@SuppressWarnings("rawtypes")
 	private static Map<Class<? extends LoadoutAddon>, LoadoutAddon<?>> addons = Maps.newHashMap();
 	
 	public LoadoutModule(Minigame mgm) {

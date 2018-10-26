@@ -7,11 +7,12 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
-
+@SuppressWarnings("deprecation")
 public class CTFFlag{
 	
 	private Location spawnLocation = null;
 	private Location currentLocation = null;
+	
 	private MaterialData data = null;
 	private BlockState spawnData = null;
 	private BlockState originalBlock = null;
@@ -96,7 +97,7 @@ public class CTFFlag{
 				blockBelow.getBlock().getType() == Material.DISPENSER ||
 				blockBelow.getBlock().getType() == Material.CHEST ||
 				blockBelow.getBlock().getType() == Material.BREWING_STAND || 
-				blockBelow.getBlock().getType() == Material.SIGN_POST || 
+				blockBelow.getBlock().getType() == Material.SIGN || 
 				blockBelow.getBlock().getType() == Material.WALL_SIGN){
 			blockBelow.setY(blockBelow.getY() + 1);
 		}
@@ -104,7 +105,7 @@ public class CTFFlag{
 		newLocation = blockBelow.clone();
 		newLocation.setY(newLocation.getY() + 1);
 		
-		newLocation.getBlock().setType(Material.SIGN_POST);
+		newLocation.getBlock().setType(Material.SIGN);
 		Sign sign = (Sign) newLocation.getBlock().getState();
 		
 		sign.setData(data);

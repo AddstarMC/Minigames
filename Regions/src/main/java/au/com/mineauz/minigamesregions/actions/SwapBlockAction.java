@@ -13,12 +13,14 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.material.Directional;
 import org.bukkit.material.MaterialData;
 
 import java.util.Map;
 
+@SuppressWarnings("deprecation")
 public class SwapBlockAction extends AbstractAction {
 	
 	private StringFlag matchType = new StringFlag("STONE", "matchtype");
@@ -66,7 +68,7 @@ public class SwapBlockAction extends AbstractAction {
 		return false;
 	}
 
-	@SuppressWarnings("deprecation")
+
 	@Override
 	public void executeRegionAction(MinigamePlayer player, Region region) {
 		debug(player,region);
@@ -81,14 +83,11 @@ public class SwapBlockAction extends AbstractAction {
 						}
 						
 						// Block matches, now replace it
-						byte data = 0;
+						BlockData data = null;
 						BlockFace facing = null;
-						if (toData.getFlag()) {
-							// Replace data
-							data = toDataValue.getFlag().byteValue();
-						} else if (keepAttachment.getFlag()) {
+						if (keepAttachment.getFlag()) {
 							// Keep attachments if possible
-							MaterialData mat = block.getState().getData();
+							BlockData mat = (BlockData) block.getState().getData();
 							if (mat instanceof Directional) {
 								facing = ((Directional)mat).getFacing();
 							}
@@ -105,7 +104,7 @@ public class SwapBlockAction extends AbstractAction {
 							state.setData(mat);
 							state.update(true, false);
 						} else {
-							block.setData(data, false);
+							block.setBlockData(data, false);
 						}
 					}
 				}
@@ -146,7 +145,7 @@ public class SwapBlockAction extends AbstractAction {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Swap Block", player);
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, previous), m.getSize() - 9);
 		final MinigamePlayer fply = player;
 		m.addItem(new MenuItemString("Match Block", Material.COBBLESTONE, new Callback<String>() {
 			
@@ -164,7 +163,7 @@ public class SwapBlockAction extends AbstractAction {
 			}
 		}));
 		m.addItem(matchData.getMenuItem("Match Block Use Data?", Material.ENDER_PEARL));
-		m.addItem(matchDataValue.getMenuItem("Match Block Data Value", Material.EYE_OF_ENDER, 0, 15));
+		m.addItem(matchDataValue.getMenuItem("Match Block Data Value", Material.ENDER_EYE, 0, 15));
 		
 		m.addItem(new MenuItemNewLine());
 		
@@ -184,8 +183,8 @@ public class SwapBlockAction extends AbstractAction {
 			}
 		}));
 		m.addItem(toData.getMenuItem("To Block Use Data?", Material.ENDER_PEARL));
-		m.addItem(toDataValue.getMenuItem("To Block Data Value", Material.EYE_OF_ENDER, 0, 15));
-		m.addItem(keepAttachment.getMenuItem("Keep Attachment", Material.PISTON_BASE, MinigameUtils.stringToList("When on, and To Block Use Data is off;If the source and target block;types are both blocks that;attach to surfaces, this;attachment will be preserved")));
+		m.addItem(toDataValue.getMenuItem("To Block Data Value", Material.ENDER_EYE, 0, 15));
+		m.addItem(keepAttachment.getMenuItem("Keep Attachment", Material.PISTON, MinigameUtils.stringToList("When on, and To Block Use Data is off;If the source and target block;types are both blocks that;attach to surfaces, this;attachment will be preserved")));
 		m.displayMenu(player);
 		return true;
 	}

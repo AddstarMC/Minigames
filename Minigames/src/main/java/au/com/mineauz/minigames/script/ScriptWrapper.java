@@ -56,6 +56,7 @@ public class ScriptWrapper {
 				return ImmutableSet.of("pos", "type", "data", "temperature", "light", "blocklight", "skylight", "redstone");
 			}
 			
+			@SuppressWarnings("deprecation")
 			@Override
 			public ScriptReference get(String name) {
 				if (name.equalsIgnoreCase("pos")) {
@@ -79,6 +80,7 @@ public class ScriptWrapper {
 				return null;
 			}
 			
+			@SuppressWarnings("deprecation")
 			@Override
 			public String getAsString() {
 				return String.format("%d,%d,%d,%s %s:%d", object.getX(), object.getY(), object.getZ(), object.getWorld().getName(), object.getType(), object.getData());

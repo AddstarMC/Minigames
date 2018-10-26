@@ -89,7 +89,7 @@ public class MatchBlockCondition extends ConditionInterface {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu prev) {
 		Menu m = new Menu(3, "Match Block", player);
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, prev), m.getSize() - 9);
 		final MenuItemCustom c = new MenuItemCustom("Auto Set Block", 
 				MinigameUtils.stringToList("Click here with a;block you wish to;match to."), Material.ITEM_FRAME);
 		m.addItem(c, m.getSize() - 1);
@@ -118,6 +118,7 @@ public class MatchBlockCondition extends ConditionInterface {
 		
 		c.setClickItem(new InteractionInterface() {
 			
+			@SuppressWarnings("deprecation")
 			@Override
 			public Object interact(Object object) {
 				ItemStack i = (ItemStack) object;

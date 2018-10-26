@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@SuppressWarnings("deprecation")
 public class SetLoadoutCommand implements ICommand {
 
 	@Override
@@ -72,10 +72,11 @@ public class SetLoadoutCommand implements ICommand {
         List<String> des = new ArrayList<>();
 		des.add("Shift + Right Click to Delete");
 		
-		Material item = Material.THIN_GLASS;
+		
+		Material item = Material.LEGACY_THIN_GLASS;
 		
 		for(String ld : mod.getLoadouts()){
-			item = Material.THIN_GLASS;
+			item = Material.LEGACY_THIN_GLASS;
 			if(mod.getLoadout(ld).getItems().size() != 0){
 				item = mod.getLoadout(ld).getItem((Integer)mod.getLoadout(ld).getItems().toArray()[0]).getType();
 			}

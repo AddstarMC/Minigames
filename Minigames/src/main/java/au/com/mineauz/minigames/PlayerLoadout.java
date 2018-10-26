@@ -30,6 +30,7 @@ public class PlayerLoadout {
 	private TeamColor team = null;
 	private boolean displayInMenu = true;
 	
+	@SuppressWarnings("rawtypes")
 	private Map<Class<? extends LoadoutAddon>, Object> addonValues = Maps.newHashMap();
 	
 	public PlayerLoadout(String name){
@@ -126,6 +127,7 @@ public class PlayerLoadout {
 		return potions;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void equiptLoadout(MinigamePlayer player){
 		player.getPlayer().getInventory().clear();
 		player.getPlayer().getInventory().setHelmet(null);
@@ -162,7 +164,7 @@ public class PlayerLoadout {
 			}
 		});
 		
-		for (Entry<Class<? extends LoadoutAddon>, Object> addonValue : addonValues.entrySet()) {
+		for (@SuppressWarnings("rawtypes") Entry<Class<? extends LoadoutAddon>, Object> addonValue : addonValues.entrySet()) {
 			LoadoutAddon<Object> addon = LoadoutModule.getAddon(addonValue.getKey());
 			if (addon != null) {
 				addon.applyLoadout(player, addonValue.getValue());
@@ -173,6 +175,7 @@ public class PlayerLoadout {
 			player.getPlayer().setLevel(level);
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void removeLoadout(MinigamePlayer player) {
 		for (Entry<Class<? extends LoadoutAddon>, Object> addonValue : addonValues.entrySet()) {
 			LoadoutAddon<Object> addon = LoadoutModule.getAddon(addonValue.getKey());
@@ -407,6 +410,7 @@ public class PlayerLoadout {
 		return (T)addonValues.get(addon);
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public void save(ConfigurationSection section) {
 		for(Integer slot : getItems())
 			section.set("items." + slot, getItem(slot));
@@ -445,6 +449,7 @@ public class PlayerLoadout {
 		
 		for (Entry<Class<? extends LoadoutAddon>, Object> addonValue : addonValues.entrySet()) {
 			ConfigurationSection subSection = section.createSection("addons." + addonValue.getKey().getName().replace('.', '-'));
+			@SuppressWarnings("unchecked")
 			LoadoutAddon<Object> addon = LoadoutModule.getAddon(addonValue.getKey());
 			addon.save(subSection, addonValue.getValue());
 		}
@@ -511,9 +516,11 @@ public class PlayerLoadout {
 					// First determine the class
 					Class<?> rawClass = Class.forName(addonKey.replace('-', '.'));
 					if (LoadoutAddon.class.isAssignableFrom(rawClass)) {
+						@SuppressWarnings("rawtypes")
 						Class<? extends LoadoutAddon> clazz = rawClass.asSubclass(LoadoutAddon.class);
 						
 						// Now we can load the value
+						@SuppressWarnings("unchecked")
 						LoadoutAddon<Object> addon = LoadoutModule.getAddon(clazz);
 						Object value = addon.load(addonSection.getConfigurationSection(addonKey));
 						addonValues.put(clazz, value);

@@ -1,14 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
-import au.com.mineauz.minigames.script.ScriptObject;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * au.com.mineauz.minigamesregions.actions

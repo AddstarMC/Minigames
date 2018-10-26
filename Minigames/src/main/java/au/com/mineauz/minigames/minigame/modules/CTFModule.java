@@ -67,9 +67,9 @@ public class CTFModule extends MinigameModule {
     @Override
     public boolean displayMechanicSettings(Menu previous) {
         Menu m = new Menu(6, "CTF Settings", previous.getViewer());
-        m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
+        m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, previous), m.getSize() - 9);
 
-        m.addItem(useFlagAsCapturePoint.getMenuItem("CTF Flag is Capture Point", Material.BANNER,
+        m.addItem(useFlagAsCapturePoint.getMenuItem("CTF Flag is Capture Point", Material.WHITE_BANNER,
                 MinigameUtils.stringToList("Use a teams Flag as a capture point")));
         m.displayMenu(previous.getViewer());
         return true;

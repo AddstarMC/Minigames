@@ -106,7 +106,7 @@ public class SwitchTeamAction extends AbstractAction {
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Switch Team", player);
-        m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, prev), m.getSize() - 9);
+        m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, prev), m.getSize() - 9);
         List<String> teams = new ArrayList<>();
         teams.add("All");
         for(TeamColor team : TeamColor.values()){

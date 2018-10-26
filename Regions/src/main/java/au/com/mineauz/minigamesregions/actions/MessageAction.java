@@ -140,7 +140,7 @@ public class MessageAction extends AbstractAction {
 		Menu m = new Menu(3, "Options", player);
 		m.setPreviousPage(previous);
 		m.addItem(msg.getMenuItem("Message", Material.PAPER));
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, m.getPreviousPage()), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, m.getPreviousPage()), m.getSize() - 9);
 		m.displayMenu(player);
 		return true;
 	}

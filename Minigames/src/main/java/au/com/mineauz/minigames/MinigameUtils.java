@@ -28,6 +28,7 @@ public class MinigameUtils {
 	 * @param quantity - The number of said item
 	 * @return The ItemStack referred to in the parameter.
 	 */
+	@SuppressWarnings("deprecation")
 	public static ItemStack stringToItemStack(String item, int quantity){
 		String itemName = "";
 		short itemData = 0;

@@ -84,8 +84,8 @@ public class TriggerRegionAction extends AbstractAction {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Trigger Node", player);
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
-		m.addItem(region.getMenuItem("Region Name", Material.EYE_OF_ENDER));
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, previous), m.getSize() - 9);
+		m.addItem(region.getMenuItem("Region Name", Material.ENDER_EYE));
 		m.displayMenu(player);
 		return true;
 	}

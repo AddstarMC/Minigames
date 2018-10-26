@@ -232,10 +232,10 @@ public class RegionEvents implements Listener{
 		if (!event.isCancelled()) {
 			if (event.getAction() == Action.PHYSICAL) {
 				switch (event.getClickedBlock().getType()) {
-				case STONE_PLATE:
-				case WOOD_PLATE:
-				case IRON_PLATE:
-				case GOLD_PLATE:
+				case STONE_PRESSURE_PLATE:
+				case OAK_PRESSURE_PLATE:
+				case HEAVY_WEIGHTED_PRESSURE_PLATE:
+				case LIGHT_WEIGHTED_PRESSURE_PLATE:
 					trigger(ply, event.getClickedBlock(), Triggers.getTrigger("INTERACT"));
 					break;
 				default:
@@ -243,7 +243,7 @@ public class RegionEvents implements Listener{
 				}
 			} else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				switch (event.getClickedBlock().getType()) {
-				case WOOD_BUTTON:
+				case OAK_BUTTON:
 				case STONE_BUTTON:
 					trigger(ply, event.getClickedBlock(), Triggers.getTrigger("INTERACT"));
 					break;

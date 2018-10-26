@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
+@SuppressWarnings("deprecation")
 public class MenuItem {
 	private ItemStack displayItem = null;
 	private Menu container = null;
@@ -16,7 +16,7 @@ public class MenuItem {
 	public MenuItem(String name, Material displayItem){
 		boolean nullItem = false;
 		if(displayItem == null){
-			displayItem = Material.STAINED_GLASS_PANE;
+			displayItem = Material.LEGACY_STAINED_GLASS_PANE;
 			nullItem = true;
 		}
 		this.displayItem = new ItemStack(displayItem);
@@ -30,7 +30,7 @@ public class MenuItem {
 	
 	public MenuItem(String name, List<String> description, Material displayItem){
 		if(displayItem == null)
-			displayItem = Material.THIN_GLASS;
+			displayItem = Material.LEGACY_THIN_GLASS;
 		this.displayItem = new ItemStack(displayItem);
 		ItemMeta meta = this.displayItem.getItemMeta();
 		meta.setDisplayName(ChatColor.RESET + name);

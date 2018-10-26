@@ -31,7 +31,7 @@ public class StartPositionMode implements ToolMode{
 	
 	@Override
 	public Material getIcon(){
-		return Material.SKULL_ITEM;
+		return Material.PLAYER_HEAD;
 	}
 
 	@Override
@@ -121,14 +121,14 @@ public class StartPositionMode implements ToolMode{
 	public void select(MinigamePlayer player, Minigame minigame, Team team) {
 		if(team != null){
 			for(Location loc : team.getStartLocations()){
-				player.getPlayer().sendBlockChange(loc, Material.SKULL, (byte)1);
+				player.getPlayer().sendBlockChange(loc, Material.PLAYER_HEAD, (byte)1);
 			}
 			player.sendInfoMessage("Selected " + team.getChatColor() + team.getDisplayName() + ChatColor.WHITE +
 					" start points in " + minigame);
 		}
 		else{
 			for(Location loc : minigame.getStartLocations()){
-				player.getPlayer().sendBlockChange(loc, Material.SKULL, (byte)1);
+				player.getPlayer().sendBlockChange(loc, Material.PLAYER_HEAD, (byte)1);
 			}
 			player.sendInfoMessage("Selected start points in " + minigame);
 		}

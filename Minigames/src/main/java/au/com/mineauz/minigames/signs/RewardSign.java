@@ -95,7 +95,7 @@ public class RewardSign implements MinigameSign {
 			
 			rewardMenu.addItem(new MenuItemRewardGroupAdd("Add Group", Material.ITEM_FRAME, rew), 42);
 			rewardMenu.addItem(new MenuItemRewardAdd("Add Item", Material.ITEM_FRAME, rew), 43);
-			final MenuItemCustom mic = new MenuItemCustom("Save Rewards", Material.REDSTONE_TORCH_ON);
+			final MenuItemCustom mic = new MenuItemCustom("Save Rewards", Material.REDSTONE_TORCH);
 			final Location floc = loc;
 			mic.setClick(new InteractionInterface() {
 				

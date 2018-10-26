@@ -115,7 +115,7 @@ public class SpawnEntityAction extends AbstractAction {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Spawn Entity", player);
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, previous), m.getSize() - 9);
 		List<String> options = new ArrayList<>();
 		for(EntityType type : EntityType.values()){
 			if(type != EntityType.ITEM_FRAME && type != EntityType.LEASH_HITCH && type != EntityType.PLAYER && 
@@ -124,7 +124,7 @@ public class SpawnEntityAction extends AbstractAction {
 					type != EntityType.DROPPED_ITEM)
 				options.add(MinigameUtils.capitalize(type.toString().replace("_", " ")));
 		}
-		m.addItem(new MenuItemList("Entity Type", Material.SKULL_ITEM, new Callback<String>() {
+		m.addItem(new MenuItemList("Entity Type", Material.PLAYER_HEAD, new Callback<String>() {
 			
 			@Override
 			public void setValue(String value) {
@@ -179,7 +179,7 @@ public class SpawnEntityAction extends AbstractAction {
 		m.addItem(new MenuItemNewLine());
 		
 		final Menu eSet = new Menu(3, "Settings", player);
-		final MenuItemPage backButton = new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, m);
+		final MenuItemPage backButton = new MenuItemPage("Back", Material.REDSTONE_TORCH, m);
 		final MenuItemCustom cus = new MenuItemCustom("Entity Settings", Material.CHEST);
 		final MinigamePlayer fply = player;
 		cus.setClick(new InteractionInterface() {

@@ -1,13 +1,8 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Map;
 
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -81,7 +76,7 @@ public class SetScoreAction extends ScoreAction {
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Set Score", player);
 		m.addItem(amount.getMenuItem("Set Score Amount", Material.ENDER_PEARL, null, null));
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, previous), m.getSize() - 9);
 		m.displayMenu(player);
 		return true;
 	}

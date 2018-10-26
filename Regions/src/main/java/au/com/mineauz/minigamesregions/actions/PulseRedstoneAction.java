@@ -59,7 +59,7 @@ public class PulseRedstoneAction extends AbstractAction {
 		debug(player,node);
 		Material block = Material.REDSTONE_BLOCK;
 		if(torch.getFlag())
-			block = Material.REDSTONE_TORCH_ON;
+			block = Material.REDSTONE_TORCH;
 		final BlockState last = node.getLocation().getBlock().getState();
 		node.getLocation().getBlock().setType(block);
         Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), new Runnable() {
@@ -88,8 +88,8 @@ public class PulseRedstoneAction extends AbstractAction {
 	@Override
 	public boolean displayMenu(MinigamePlayer player, Menu previous) {
 		Menu m = new Menu(3, "Redstone Pulse", player);
-		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), m.getSize() - 9);
-		m.addItem(time.getMenuItem("Pulse Time", Material.WATCH));
+		m.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, previous), m.getSize() - 9);
+		m.addItem(time.getMenuItem("Pulse Time", Material.CLOCK));
 		m.addItem(torch.getMenuItem("Use Redstone Torch", Material.REDSTONE_BLOCK));
 		m.displayMenu(player);
 		return true;

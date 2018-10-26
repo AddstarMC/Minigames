@@ -18,6 +18,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.Iterator;
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class RollbackScheduler implements Runnable {
 	
 	private Iterator<BlockData> iterator;
@@ -35,6 +36,7 @@ public class RollbackScheduler implements Runnable {
         task = Bukkit.getScheduler().runTaskTimer(Minigames.getPlugin(), this, delay, 1);
 	}
 
+
 	@Override
 	public void run() {
 		long time = System.nanoTime();
@@ -47,7 +49,7 @@ public class RollbackScheduler implements Runnable {
 		while(physIterator.hasNext()){
 			BlockData bdata = physIterator.next();
 			bdata.getBlockState().update(true);
-			if((bdata.getBlockState().getType() == Material.SIGN_POST || bdata.getBlockState().getType() == Material.WALL_SIGN) && 
+			if((bdata.getBlockState().getType() == Material.SIGN || bdata.getBlockState().getType() == Material.WALL_SIGN) && 
 					bdata.getBlockState() instanceof Sign){
 				Sign sign = (Sign) bdata.getLocation().getBlock().getState();
 				Sign signOld = (Sign) bdata.getBlockState();
@@ -73,7 +75,7 @@ public class RollbackScheduler implements Runnable {
 				jbox.setPlaying(orig.getPlaying());
 				jbox.update();
 			}
-			else if(bdata.getBlockState().getType() == Material.SKULL){
+			else if(bdata.getBlockState().getType() == Material.PLAYER_HEAD){
 				Skull skull = (Skull) bdata.getBlockState().getBlock().getState();
 				Skull orig = (Skull) bdata.getBlockState();
 				if(orig.getOwningPlayer() != null)skull.setOwningPlayer(orig.getOwningPlayer());

@@ -17,6 +17,7 @@ public enum RewardRarity {
 		return rarity;
 	}
 	
+	@SuppressWarnings("incomplete-switch")
 	public RewardRarity getPreviousRarity(){
         switch (this) {
             case VERY_COMMON:
@@ -30,6 +31,7 @@ public enum RewardRarity {
 		return VERY_RARE;
 	}
 	
+	@SuppressWarnings("incomplete-switch")
 	public RewardRarity getNextRarity(){
         switch (this) {
             case VERY_RARE:

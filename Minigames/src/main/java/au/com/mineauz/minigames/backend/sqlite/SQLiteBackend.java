@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@SuppressWarnings("SyntaxError")
+
 public class SQLiteBackend extends Backend {
 	private ConnectionPool pool;
 	private final Logger logger;
@@ -30,6 +30,7 @@ public class SQLiteBackend extends Backend {
 	private StatementKey insertPlayer;
 	private StatementKey loadStatSettings;
 	private StatementKey saveStatSettings;
+	@SuppressWarnings("unused")
 	private boolean debug;
 	private SQLiteStatLoader loader;
 	private SQLiteStatSaver saver;

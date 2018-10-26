@@ -4,6 +4,7 @@ version: ${plugin.version}
 author: _Razz_ Schmoller Addstar Narimm
 softdepend: ['Multiverse-Core']
 description: ${project.description}
+api-version: 1.13
 
 commands:
     minigame:

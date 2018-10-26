@@ -41,6 +41,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import java.io.*;
 import java.util.*;
 
+@SuppressWarnings("deprecation")
 public class RecorderData implements Listener{
 	private static Minigames plugin;
 	
@@ -55,60 +56,60 @@ public class RecorderData implements Listener{
 	
 	static{
 		physBlocks.add(Material.TORCH);
-		physBlocks.add(Material.SIGN_POST);
+		physBlocks.add(Material.SIGN);
 		physBlocks.add(Material.WALL_SIGN);
 		physBlocks.add(Material.TRIPWIRE);
-		physBlocks.add(Material.RAILS);
+		physBlocks.add(Material.RAIL);
 		physBlocks.add(Material.POWERED_RAIL);
 		physBlocks.add(Material.ACTIVATOR_RAIL);
 		physBlocks.add(Material.REDSTONE_WIRE);
-		physBlocks.add(Material.REDSTONE_TORCH_OFF);
-		physBlocks.add(Material.REDSTONE_TORCH_ON);
-		physBlocks.add(Material.SAPLING);
-        physBlocks.add(Material.RED_ROSE);
-		physBlocks.add(Material.YELLOW_FLOWER);
-        physBlocks.add(Material.NETHER_WARTS);
-        physBlocks.add(Material.YELLOW_FLOWER);
-		physBlocks.add(Material.WOOD_PLATE);
-		physBlocks.add(Material.STONE_PLATE);
-		physBlocks.add(Material.GOLD_PLATE);
-		physBlocks.add(Material.IRON_PLATE);
+		physBlocks.add(Material.REDSTONE_TORCH);
+		physBlocks.add(Material.LEGACY_REDSTONE_TORCH_ON);
+		physBlocks.add(Material.LEGACY_SAPLING);
+        physBlocks.add(Material.LEGACY_RED_ROSE);
+		physBlocks.add(Material.LEGACY_YELLOW_FLOWER);
+        physBlocks.add(Material.NETHER_WART);
+        physBlocks.add(Material.LEGACY_YELLOW_FLOWER);
+		physBlocks.add(Material.OAK_PRESSURE_PLATE);
+		physBlocks.add(Material.STONE_PRESSURE_PLATE);
+		physBlocks.add(Material.LIGHT_WEIGHTED_PRESSURE_PLATE);
+		physBlocks.add(Material.HEAVY_WEIGHTED_PRESSURE_PLATE);
 		physBlocks.add(Material.STONE_BUTTON);
-		physBlocks.add(Material.WOOD_BUTTON);
+		physBlocks.add(Material.OAK_BUTTON);
 		physBlocks.add(Material.LEVER);
 		physBlocks.add(Material.LADDER);
 		physBlocks.add(Material.IRON_DOOR);
-		physBlocks.add(Material.WOODEN_DOOR);
+		physBlocks.add(Material.OAK_DOOR);
 		physBlocks.add(Material.RED_MUSHROOM);
 		physBlocks.add(Material.BROWN_MUSHROOM);
-		physBlocks.add(Material.DOUBLE_PLANT);
+		physBlocks.add(Material.LEGACY_DOUBLE_PLANT);
 		physBlocks.add(Material.FLOWER_POT);
-		physBlocks.add(Material.WATER_LILY);
+		physBlocks.add(Material.LILY_PAD);
 		physBlocks.add(Material.TRIPWIRE_HOOK);
-		physBlocks.add(Material.TRAP_DOOR);
-		physBlocks.add(Material.CARPET);
-		physBlocks.add(Material.LONG_GRASS);
+		physBlocks.add(Material.OAK_TRAPDOOR);
+		physBlocks.add(Material.LEGACY_CARPET);
+		physBlocks.add(Material.LEGACY_LONG_GRASS);
 		physBlocks.add(Material.DEAD_BUSH);
-		physBlocks.add(Material.REDSTONE_COMPARATOR_ON);
-		physBlocks.add(Material.REDSTONE_COMPARATOR_OFF);
-		physBlocks.add(Material.DIODE_BLOCK_OFF);
-		physBlocks.add(Material.DIODE_BLOCK_ON);
+		physBlocks.add(Material.LEGACY_REDSTONE_COMPARATOR_ON);
+		physBlocks.add(Material.LEGACY_REDSTONE_COMPARATOR_OFF);
+		physBlocks.add(Material.LEGACY_DIODE_BLOCK_OFF);
+		physBlocks.add(Material.LEGACY_DIODE_BLOCK_ON);
 		physBlocks.add(Material.WATER);
 		physBlocks.add(Material.LAVA);
-		physBlocks.add(Material.STATIONARY_WATER);
-		physBlocks.add(Material.STATIONARY_LAVA);
+		physBlocks.add(Material.LEGACY_STATIONARY_WATER);
+		physBlocks.add(Material.LEGACY_STATIONARY_LAVA);
 		physBlocks.add(Material.ANVIL);
 		physBlocks.add(Material.DRAGON_EGG);
-		physBlocks.add(Material.SKULL);
+		physBlocks.add(Material.LEGACY_SKULL);
 		physBlocks.add(Material.SNOW);
         physBlocks.add(Material.VINE);
-        physBlocks.add(Material.PORTAL);
+        physBlocks.add(Material.LEGACY_PORTAL);
         physBlocks.add(Material.COCOA);
         physBlocks.add(Material.CARROT);
         physBlocks.add(Material.POTATO);
-        physBlocks.add(Material.WALL_BANNER);
-        physBlocks.add(Material.PISTON_MOVING_PIECE);
-        physBlocks.add(Material.PISTON_EXTENSION);
+        physBlocks.add(Material.LEGACY_WALL_BANNER);
+        physBlocks.add(Material.LEGACY_PISTON_MOVING_PIECE);
+        physBlocks.add(Material.LEGACY_PISTON_EXTENSION);
     }
 	
 	public RecorderData(Minigame minigame){
@@ -463,7 +464,6 @@ public class RecorderData implements Listener{
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public boolean restoreBlockData(){
 		File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.dat");
 		

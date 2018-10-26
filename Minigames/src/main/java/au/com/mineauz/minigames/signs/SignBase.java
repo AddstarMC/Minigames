@@ -103,7 +103,7 @@ public class SignBase implements Listener{
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	private void signBreak(BlockBreakEvent event){
-		if(event.getBlock().getType() == Material.SIGN_POST || event.getBlock().getType() == Material.WALL_SIGN){
+		if(event.getBlock().getType() == Material.SIGN || event.getBlock().getType() == Material.WALL_SIGN){
 			Sign sign = (Sign) event.getBlock().getState();
 			if(sign.getLine(0).equals(ChatColor.DARK_BLUE + "[Minigame]") && 
 					minigameSigns.containsKey(ChatColor.stripColor(sign.getLine(1).toLowerCase()))){
