@@ -4,6 +4,13 @@ title: 1.13 Snapshot Published
 image: /img/addstarmc.png
 ---
 
-I have published a new snaphot for 1.13 that will be available on jenkins  [here](https://jenkins.addstar.com.au/job/Minigames/267/)
+I have published a new snaphot for 1.13 that will be available on jenkins
+https://jenkins.addstar.com.au/job/Minigames/267/
+
+A couple of points -
+* existing backups of games that included rollback data may need to be re backed up to use the new
+rollback generator.  This needs testing
+* Configs will no longer accept magic numbers or material data.  Most will serealize items and blockdata.
+* Old configs that contained this sort of data may need manual editing
 
 Please post feedback...on spigot discussion thread for now.
