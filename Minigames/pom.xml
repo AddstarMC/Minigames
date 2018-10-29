@@ -141,44 +141,4 @@
       </plugin>
     </plugins>
   </build>
-  <profiles>
-    <profile>
-      <id>SPIGOT</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>org.spigotmc</groupId>
-          <artifactId>spigot-api</artifactId>
-          <version>${spigot.version}</version>
-          <scope>provided</scope>
-        </dependency>
-      </dependencies>
-      <repositories>
-        <!--Spigot-api-->
-        <repository>
-          <id>spigot-repo</id>
-          <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-      </repositories>
-    </profile>
-    <profile>
-      <id>PAPER</id>
-      <repositories>
-        <repository>
-          <id>destroystokyo-repo</id>
-          <url>https://repo.destroystokyo.com/repository/maven-public/</url>
-        </repository>
-      </repositories>
-      <dependencies>
-        <dependency>
-          <groupId>com.destroystokyo.paper</groupId>
-          <artifactId>paper-api</artifactId>
-          <version>${spigot.version}</version>
-          <scope>provided</scope>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
 </project>
