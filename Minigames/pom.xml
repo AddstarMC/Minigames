@@ -3,7 +3,7 @@
   <parent>
     <groupId>au.com.mineauz</groupId>
     <artifactId>MinigamesProject</artifactId>
-    <version>1.13-ALPHA</version>
+    <version>1.13-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>Minigames</artifactId>
@@ -37,8 +37,8 @@
     </repository>
     <!--Bstats-->
     <repository>
-      <id>bstats-repo</id>
-      <url>http://repo.bstats.org/content/repositories/releases/</url>
+      <id>CodeMC</id>
+      <url>https://repo.codemc.org/repository/maven-public</url>
     </repository>
 
     <!-- Addstar repos -->
@@ -50,7 +50,7 @@
     <dependency>
       <groupId>net.milkbowl.vault</groupId>
       <artifactId>VaultAPI</artifactId>
-      <version>1.6</version>
+      <version>1.7</version>
       <exclusions>
         <exclusion>
           <groupId>org.bukkit</groupId>
@@ -66,7 +66,7 @@
     <dependency>
       <groupId>org.bstats</groupId>
       <artifactId>bstats-bukkit</artifactId>
-      <version>1.2</version>
+      <version>1.4</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
@@ -141,4 +141,44 @@
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>SPIGOT</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.spigotmc</groupId>
+          <artifactId>spigot-api</artifactId>
+          <version>${spigot.version}</version>
+          <scope>provided</scope>
+        </dependency>
+      </dependencies>
+      <repositories>
+        <!--Spigot-api-->
+        <repository>
+          <id>spigot-repo</id>
+          <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+      </repositories>
+    </profile>
+    <profile>
+      <id>PAPER</id>
+      <repositories>
+        <repository>
+          <id>destroystokyo-repo</id>
+          <url>https://repo.destroystokyo.com/repository/maven-public/</url>
+        </repository>
+      </repositories>
+      <dependencies>
+        <dependency>
+          <groupId>com.destroystokyo.paper</groupId>
+          <artifactId>paper-api</artifactId>
+          <version>${spigot.version}</version>
+          <scope>provided</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 </project>

@@ -3,7 +3,7 @@
   <parent>
     <groupId>au.com.mineauz</groupId>
     <artifactId>MinigamesProject</artifactId>
-    <version>1.13-ALPHA</version>
+    <version>1.13-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>Minigames-Regions</artifactId>

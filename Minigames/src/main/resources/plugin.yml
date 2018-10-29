@@ -1,7 +1,7 @@
 name: Minigames
 main: au.com.mineauz.minigames.Minigames
 version: ${plugin.version}
-api-version: 1.13
+api-version: ${spigot.api.version}
 author: _Razz_ Schmoller Addstar Narimm
 softdepend: ['Multiverse-Core']
 description: ${project.description}
@@ -46,9 +46,6 @@ permissions:
             minigame.sign.use.*: true
             minigame.restoreinv: true
             minigame.info: true
-            minigame.treasure.announce: true
-            minigame.treasure.hint: true
-            minigame.list: true
             minigame.regen: true
             minigame.globalloadout: true
             minigame.player: true
@@ -313,10 +310,6 @@ permissions:
         default: op
     minigame.set.gameover:
         default: op
-    
-    minigame.info:
-        description: Allows check to see if a minigames variables have been set
-        default: op
     minigame.delete:
         description: Allows access to deleting a minigame
         default: op
@@ -436,9 +429,6 @@ permissions:
         default: true
     minigame.treasure.hint:
         description: Allows access to the hint command and receiving hint messages
-        default: true
-    minigame.list:
-        description: Allows players to see a list of all minigames
         default: true
     minigame.toggletimer:
         description: Allows a player to pause a multiplayer countdown timer.
