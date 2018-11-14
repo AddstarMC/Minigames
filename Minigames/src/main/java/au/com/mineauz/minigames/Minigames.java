@@ -311,15 +311,18 @@ public class Minigames extends JavaPlugin{
         Properties p = new Properties();
         try {
             p.load(stream );
-        } catch ( IOException e ) {
+        } catch ( NullPointerException | IOException e ) {
             getLogger().warning(e.getMessage());
         } finally {
             Closeables.closeQuietly( stream );
         }
-        VERSION = new ComparableVersion(p.getProperty("version"));
-        SPIGOT_VERSION = new ComparableVersion(p.getProperty("spigot_version"));
-        ComparableVersion serverversion = new ComparableVersion(Bukkit.getVersion());
-        return SPIGOT_VERSION.compareTo(serverversion) < 0;
+
+        if(p.containsKey("version")) {
+            VERSION = new ComparableVersion(p.getProperty("version"));
+            SPIGOT_VERSION = new ComparableVersion(p.getProperty("spigot_version"));
+            ComparableVersion serverversion = new ComparableVersion(Bukkit.getVersion());
+            return SPIGOT_VERSION.compareTo(serverversion) < 0;
+        }else return true;
     }
 
 	/**
