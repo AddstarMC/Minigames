@@ -15,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
 import org.bukkit.configuration.ConfigurationSection;
@@ -354,20 +355,25 @@ public class ScoreboardDisplay {
         }
         
         Block root = rootBlock.getBlock();
-        if (root instanceof Sign) {
-            Sign sign = (Sign) root.getState();
-            
-            sign.setLine(0, ChatColor.BLUE + minigame.getName(true));
-            sign.setLine(1, ChatColor.GREEN + settings.getDisplayName());
-            sign.setLine(2, ChatColor.GREEN + field.getTitle());
-            sign.setLine(3, "(" + WordUtils.capitalize(order.toString()) + ")");
-            sign.update();
-            
-            sign.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.getPlugin(), true));
-            sign.setMetadata("Minigame", new FixedMetadataValue(Minigames.getPlugin(), minigame));
-        } else {
-            Minigames.getPlugin().getLogger().warning("No Root Sign Block at: " + root.getLocation().toString());
-        }
+        if(root.getType() == Material.WALL_SIGN || root.getType() == Material.SIGN) {
+			BlockState state = root.getState();
+			if (state instanceof Sign) {
+				Sign sign = (Sign) state;
+
+				sign.setLine(0, ChatColor.BLUE + minigame.getName(true));
+				sign.setLine(1, ChatColor.GREEN + settings.getDisplayName());
+				sign.setLine(2, ChatColor.GREEN + field.getTitle());
+				sign.setLine(3, "(" + WordUtils.capitalize(order.toString()) + ")");
+				sign.update();
+
+				sign.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.getPlugin(), true));
+				sign.setMetadata("Minigame", new FixedMetadataValue(Minigames.getPlugin(), minigame));
+			} else {
+				Minigames.getPlugin().getLogger().warning("No Root Sign Block at: " + root.getLocation().toString());
+			}
+		}else {
+			Minigames.getPlugin().getLogger().warning("No Root Sign Block at: " + root.getLocation().toString());
+		}
     }
 	
 	public void reload() {
