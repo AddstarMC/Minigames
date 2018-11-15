@@ -165,14 +165,14 @@
   </build>
     <profiles>
         <profile>
-            <id>SPIGOT</id>
+            <id>BUKKIT</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>org.spigotmc</groupId>
-                    <artifactId>spigot-api</artifactId>
+                    <groupId>org.bukkit</groupId>
+                    <artifactId>bukkit</artifactId>
                     <version>${spigot.version}</version>
                     <scope>provided</scope>
                 </dependency>

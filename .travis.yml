@@ -8,6 +8,7 @@ caches:
   - $HOME/.m2
 env:
   matrix:
-    - PROFILE=1.13
+    - PROFILE=BUKKIT
+    - PROFILE=PAPER
 install: "mvn clean install -P ${PROFILE} -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
 script: "mvn test -P ${PROFILE} -B"
