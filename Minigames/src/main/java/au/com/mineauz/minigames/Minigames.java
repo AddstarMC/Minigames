@@ -79,7 +79,7 @@ public class Minigames extends JavaPlugin{
 	
 	public void onDisable() {
 		if (getPlugin() == null) {
-		    getLogger().info("Minigames is disabled");
+		    log.info("Minigames is disabled");
 			return;
 		}
 		PluginDescriptionFile desc = this.getDescription();
@@ -138,15 +138,16 @@ public class Minigames extends JavaPlugin{
 		try {
 			plugin = this;
 			if(!checkVersion() || !getConfig().getBoolean("forceload")){
-			    plugin = null;
-			    getLogger().warning("This version of Minigames (" + VERSION.getCanonical()+ ") " +
+			    
+			    log.warning("This version of Minigames (" + VERSION.getCanonical()+ ") " +
                         "is designed for Bukkit Version: " + SPIGOT_VERSION.getCanonical());
-			    getLogger().warning("DISABLING MINIGAMES....");
+			    log.warning("Your version is " + Bukkit.getVersion());
+                log.warning("DISABLING MINIGAMES....");
+                plugin = null;
 			    onDisable();
 			    return;
             }
             
-
 			PluginDescriptionFile desc = this.getDescription();
 			
 			MinigameSave sv = new MinigameSave("lang/" + getConfig().getString("lang"));
@@ -217,7 +218,7 @@ public class Minigames extends JavaPlugin{
 			log.info(desc.getName() + " successfully enabled.");
 		} catch (Throwable e) {
 			plugin = null;
-			getLogger().log(Level.SEVERE, "Failed to enable Minigames " + getDescription().getVersion() + ": ", e);
+			log.log(Level.SEVERE, "Failed to enable Minigames " + getDescription().getVersion() + ": ", e);
 			getPluginLoader().disablePlugin(this);
 		}
 	}
