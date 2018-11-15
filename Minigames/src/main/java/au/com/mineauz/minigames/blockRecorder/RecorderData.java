@@ -10,6 +10,8 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import io.papermc.lib.PaperLib;
+import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshotResult;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -228,7 +230,8 @@ public class RecorderData implements Listener{
 	}
 	
 	public MgBlockData addBlock(Block block, MinigamePlayer modifier){
-		return addBlock(block.getState(), modifier);
+		BlockStateSnapshotResult blockstate = PaperLib.getBlockState(block,true);
+		return addBlock(blockstate.getState(), modifier);
 	}
 	
 	public MgBlockData addBlock(BlockState block, MinigamePlayer modifier){

@@ -69,6 +69,12 @@
       <version>1.4</version>
       <scope>compile</scope>
     </dependency>
+      <dependency>
+        <groupId>io.papermc</groupId>
+        <artifactId>paperlib</artifactId>
+        <version>1.0.1</version>
+        <scope>compile</scope>
+      </dependency>
   </dependencies>
   <build>
     <resources>
@@ -101,11 +107,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>2.4</version>
+        <version>3.2.0</version>
         <configuration>
-          <artifactSet>
+            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+            <artifactSet>
             <includes>
               <include>org.bstats:*</include>
+                <include>io.papermc:paperlib</include>
             </includes>
           </artifactSet>
           <relocations>
@@ -114,16 +122,20 @@
               <!-- Replace this with your package! -->
               <shadedPattern>au.com.mineauz.minigames</shadedPattern>
             </relocation>
+              <relocation>
+                  <pattern>io.papermc.lib</pattern>
+                  <shadedPattern>au.com.mineauz.minigames.paperlib</shadedPattern> <!-- Replace this -->
+              </relocation>
           </relocations>
         </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-          </execution>
-        </executions>
+          <executions>
+              <execution>
+                  <phase>package</phase>
+                  <goals>
+                      <goal>shade</goal>
+                  </goals>
+              </execution>
+          </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

@@ -166,9 +166,6 @@
     <profiles>
         <profile>
             <id>BUKKIT</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <dependencies>
                 <dependency>
                     <groupId>org.bukkit</groupId>
@@ -187,6 +184,9 @@
         </profile>
         <profile>
             <id>PAPER</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <repositories>
                 <repository>
                     <id>destroystokyo-repo</id>
