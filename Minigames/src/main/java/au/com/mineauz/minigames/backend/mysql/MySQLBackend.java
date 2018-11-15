@@ -54,7 +54,7 @@ public class MySQLBackend extends Backend {
 			ConfigurationSection dbprops = config.getConfigurationSection("properties");
 			if(dbprops != null) {
 				for (Map.Entry<String, Object> entry : dbprops.getValues(false).entrySet()) {
-					props.put(entry.getKey(), entry.getValue());
+					props.put(entry.getKey(), entry.getValue().toString());
 				}
 			}
 			if(debug)logger.info("Properties: " +props.toString());
