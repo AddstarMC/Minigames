@@ -1320,7 +1320,21 @@ public class Minigame implements ScriptObject {
 		if(minigame.getConfig().contains(name + ".whitelistblocks")){
 			List<String> blocklist = minigame.getConfig().getStringList(name + ".whitelistblocks");
 			for(String block : blocklist){
-				getBlockRecorder().addWBBlock(Material.matchMaterial(block));
+				Material material = Material.matchMaterial(block);
+				if(material == null){
+					material = Material.matchMaterial(block,true);
+					if(material == null) {
+						Minigames.log().info(" Failed to match config material.");
+						Minigames.log().info(block + " did not match a material please update config: " + this.name);
+					}
+					else {
+						Minigames.log().info(block + " is a legacy material please review the config we will attempt to auto update..but you may want to add newer materials GAME: " + this.name);
+						getBlockRecorder().addWBBlock(Material.matchMaterial(block));
+						
+					}
+				}else {
+					getBlockRecorder().addWBBlock(Material.matchMaterial(block));
+				}
 			}
 		}
 
