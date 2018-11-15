@@ -30,15 +30,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,7 +64,21 @@ public class Minigames extends JavaPlugin{
 	private static ComparableVersion SPIGOT_VERSION;
     static Logger log = Logger.getLogger("Minecraft");
     private Metrics metrics;
-
+    
+    public void setLog(Logger log) {
+        Minigames.log = log;
+    }
+    
+    public Minigames()
+    {
+        super();
+    }
+    
+    protected Minigames(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file)
+    {
+        super(loader, description, dataFolder, file);
+    }
+    
     public static ComparableVersion getVERSION() {
 		return VERSION;
 	}
@@ -79,7 +89,7 @@ public class Minigames extends JavaPlugin{
 	
 	public void onDisable() {
 		if (getPlugin() == null) {
-		    log.info("Minigames is disabled");
+		    log().info("Minigames is disabled");
 			return;
 		}
 		PluginDescriptionFile desc = this.getDescription();
@@ -130,23 +140,36 @@ public class Minigames extends JavaPlugin{
 		}
 		globalLoadouts.saveConfig();
 		getMinigameManager().saveRewardSigns();
-		log.info(desc.getName() + " successfully disabled.");
+		log().info(desc.getName() + " successfully disabled.");
 		
 	}
 
 	public void onEnable(){
 		try {
 			plugin = this;
-			if(!checkVersion() || !getConfig().getBoolean("forceload")){
-			    
-			    log.warning("This version of Minigames (" + VERSION.getCanonical()+ ") " +
-                        "is designed for Bukkit Version: " + SPIGOT_VERSION.getCanonical());
-			    log.warning("Your version is " + Bukkit.getVersion());
-                log.warning("DISABLING MINIGAMES....");
-                plugin = null;
-			    onDisable();
-			    return;
+			switch(checkVersion()){
+                case -1:
+                    log().warning("This version of Minigames (" + VERSION.getCanonical()+ ") is designed for Bukkit Version: " + SPIGOT_VERSION.getCanonical());
+                    log().warning("Your version is newer: " + Bukkit.getBukkitVersion());
+                    log().warning("Please check for an updated");
+    
+                    break;
+                case 0:
+                    break;
+                case 1:
+                    if(!getConfig().getBoolean("forceload",true)){
+                        log().warning("This version of Minigames (" + VERSION.getCanonical()+ ") " +
+                                "is designed for Bukkit Version: " + SPIGOT_VERSION.getCanonical());
+                        log().warning("Your version is " + Bukkit.getVersion());
+                        log().warning(" Bypass this by setting forceload: true in the config");
+    
+                        log().warning("DISABLING MINIGAMES....");
+                        plugin = null;
+                        onDisable();
+                        return;
+                    }
             }
+			
             
 			PluginDescriptionFile desc = this.getDescription();
 			
@@ -215,10 +238,10 @@ public class Minigames extends JavaPlugin{
 			
 			initMetrics();
 			PaperLib.suggestPaper(this);
-			log.info(desc.getName() + " successfully enabled.");
+			log().info(desc.getName() + " successfully enabled.");
 		} catch (Throwable e) {
 			plugin = null;
-			log.log(Level.SEVERE, "Failed to enable Minigames " + getDescription().getVersion() + ": ", e);
+			log().log(Level.SEVERE, "Failed to enable Minigames " + getDescription().getVersion() + ": ", e);
 			getPluginLoader().disablePlugin(this);
 		}
 	}
@@ -274,17 +297,17 @@ public class Minigames extends JavaPlugin{
             }
         }
         catch(FileNotFoundException ex){
-            log.info("Failed to load config, creating one.");
+            log().info("Failed to load config, creating one.");
             try{
                 this.getConfig().save(this.getDataFolder() + "/config.yml");
             }
             catch(IOException e){
-                log.log(Level.SEVERE, "Could not save config.yml!");
+                log().log(Level.SEVERE, "Could not save config.yml!");
                 e.printStackTrace();
             }
         }
         catch(Exception e){
-            log.log(Level.SEVERE, "Failed to load config!");
+            log().log(Level.SEVERE, "Failed to load config!");
             e.printStackTrace();
         }
     }
@@ -309,8 +332,8 @@ public class Minigames extends JavaPlugin{
 		return econ;
 	}
 
-	private boolean checkVersion(){
-        InputStream stream = getClass().getResourceAsStream("minigame.properties");
+	private int checkVersion(){
+        InputStream stream = this.getResource("minigame.properties");
         Properties p = new Properties();
         try {
             p.load(stream );
@@ -323,9 +346,9 @@ public class Minigames extends JavaPlugin{
         if(p.containsKey("version")) {
             VERSION = new ComparableVersion(p.getProperty("version"));
             SPIGOT_VERSION = new ComparableVersion(p.getProperty("spigot_version"));
-            ComparableVersion serverversion = new ComparableVersion(Bukkit.getVersion());
-            return SPIGOT_VERSION.compareTo(serverversion) < 0;
-        }else return true;
+            ComparableVersion serverversion = new ComparableVersion(getServer().getBukkitVersion());
+            return SPIGOT_VERSION.compareTo(serverversion);
+        }else return 1;
     }
 
 	/**
@@ -369,6 +392,10 @@ public class Minigames extends JavaPlugin{
 		lastUpdateCheck = time;
 	}
 	
+	public static Logger log(){
+	    return log;
+    }
+
 	public SignBase getMinigameSigns(){
 		return minigameSigns;
 	}

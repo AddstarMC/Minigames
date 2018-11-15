@@ -11,7 +11,7 @@ commands:
         description: The Minigame creation command.
         usage: Invalid command. Type "/minigame help" for help
         permission: minigame.minigame
-        permisison-message: You don't have <permission>
+        permission-message: You don't have <permission>
         aliases: [mgm, minigm, mgame, mg]
         
 permissions:

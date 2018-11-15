@@ -1,6 +1,6 @@
 saveInventory: true
 requireEmptyInventory: false
-
+forceload: false
 debug: false
 
 treasurehunt:
