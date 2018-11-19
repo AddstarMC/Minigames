@@ -1,10 +1,10 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
+import au.com.mineauz.minigames.config.MaterialFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigamesregions.Node;
@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 public class PlayerHasItemCondition extends ConditionInterface {
 	
-	private StringFlag type = new StringFlag("STONE", "type");
+	private MaterialFlag type = new MaterialFlag(Material.STONE, "type");
 	private StringFlag where = new StringFlag("ANYWHERE", "where");
 	private IntegerFlag slot = new IntegerFlag(0, "slot");
 	
@@ -46,7 +46,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
 	
 	@Override
 	public void describe(Map<String, Object> out) {
-		out.put("Item", type.getFlag() + ":all");
+		out.put("Item", type.getFlag());
 		out.put("Where", where.getFlag());
 		out.put("Slot", slot.getFlag());
 		
@@ -112,7 +112,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
 			}
 		}
 		
-		Material material = Material.getMaterial(type.getFlag());
+		Material material = type.getFlag();
 		
 		Pattern namePattern = null;
 		Pattern lorePattern = null;
@@ -135,7 +135,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
 				
 				ItemMeta meta = itemInSlot.getItemMeta();
 				
-				if (matchName.getFlag()) {
+				if (namePattern !=null) {
 					Matcher m = namePattern.matcher(meta.getDisplayName());
 					if (!m.matches()) {
 						continue;
@@ -143,7 +143,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
 				}
 				
 				if (matchLore.getFlag()) {
-					if (meta.getLore() != null) {
+					if (lorePattern != null) {
 						Matcher m = lorePattern.matcher(Joiner.on('\n').join(meta.getLore()));
 						if (!m.matches()) {
 							continue;
@@ -173,25 +173,9 @@ public class PlayerHasItemCondition extends ConditionInterface {
 		StringBuffer buffer = new StringBuffer();
 		int start = 0;
 		int index = 0;
-		
-		while (true) {
-			index = name.indexOf('%', start);
-			// End of input, append the rest
-			if (index == -1) {
-				buffer.append(Pattern.quote(name.substring(start)));
-				break;
-			}
-			
-			// Append the start
-			buffer.append(Pattern.quote(name.substring(start, index)));
-			
-			// Append the wildcard code
-			buffer.append(".*?");
-			
-			// Move to next position
-			start = index + 1;
-		}
-		
+
+		createPattern(name, buffer, start);
+
 		return Pattern.compile(buffer.toString());
 	}
 	
@@ -206,26 +190,29 @@ public class PlayerHasItemCondition extends ConditionInterface {
 		StringBuffer buffer = new StringBuffer();
 		int start = 0;
 		int index = 0;
-		
+		createPattern(lore, buffer, start);
+		return Pattern.compile(buffer.toString());
+	}
+
+	static void createPattern(String value, StringBuffer buffer, int start) {
+		int index;
 		while (true) {
-			index = lore.indexOf('%', start);
+			index = value.indexOf('%', start);
 			// End of input, append the rest
 			if (index == -1) {
-				buffer.append(Pattern.quote(lore.substring(start)));
+				buffer.append(Pattern.quote(value.substring(start)));
 				break;
 			}
-			
+
 			// Append the start
-			buffer.append(Pattern.quote(lore.substring(start, index)));
-			
+			buffer.append(Pattern.quote(value.substring(start, index)));
+
 			// Append the wildcard code
 			buffer.append(".*?");
-			
+
 			// Move to next position
 			start = index + 1;
 		}
-		
-		return Pattern.compile(buffer.toString());
 	}
 
 	@Override
@@ -259,18 +246,17 @@ public class PlayerHasItemCondition extends ConditionInterface {
 		Menu m = new Menu(3, "Player Has Item", player);
 		m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
 		final MinigamePlayer fply = player;
-		m.addItem(new MenuItemString("Item", Material.STONE, new Callback<String>() {
+		Material display = type.getFlag();
+		if(display == null)display = Material.STONE;
+		m.addItem(new MenuItemMaterial("Item",display, new Callback<Material>() {
 			
 			@Override
-			public void setValue(String value) {
-				if(Material.getMaterial(value.toUpperCase()) != null)
-					type.setFlag(value.toUpperCase());
-				else
-                    fply.sendMessage("Invalid Item!", MinigameMessageType.ERROR);
+			public void setValue(Material value) {
+					type.setFlag(value);
 			}
 			
 			@Override
-			public String getValue() {
+			public Material getValue() {
 				return type.getFlag();
 			}
 		}));

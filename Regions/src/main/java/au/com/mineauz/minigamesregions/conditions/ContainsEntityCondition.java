@@ -81,26 +81,10 @@ public class ContainsEntityCondition extends ConditionInterface {
 		StringBuffer buffer = new StringBuffer();
 		int start = 0;
 		int index = 0;
-		
-		while (true) {
-			index = name.indexOf('%', start);
-			// End of input, append the rest
-			if (index == -1) {
-				buffer.append(Pattern.quote(name.substring(start)));
-				break;
-			}
-			
-			// Append the start
-			buffer.append(Pattern.quote(name.substring(start, index)));
-			
-			// Append the wildcard code
-			buffer.append(".*?");
-			
-			// Move to next position
-			start = index + 1;
-		}
-		
-		return Pattern.compile(buffer.toString());
+
+        PlayerHasItemCondition.createPattern(name, buffer, start);
+
+        return Pattern.compile(buffer.toString());
 	}
 
 	@Override
