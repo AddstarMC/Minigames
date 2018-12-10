@@ -6,8 +6,8 @@ spleef:
   lives: 1
   loadouts:
     default:
-	  items:
-	    '0':
+      items:
+        '0':
           ==: org.bukkit.inventory.ItemStack
           type: DIAMOND_SPADE
   whitelistblocks:
