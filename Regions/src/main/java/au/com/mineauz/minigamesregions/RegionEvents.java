@@ -158,6 +158,10 @@ public class RegionEvents implements Listener{
 	
 	@EventHandler(ignoreCancelled = true)
 	private void playerQuit(QuitMinigameEvent event){
+		if(RegionModule.getMinigameModule(event.getMinigame()) == null) {
+			Minigames.debugMessage(event.getMinigame() + " called region event with no RegionModule loaded... was this intended?");
+			return;
+		}
 		MinigamePlayer ply = event.getMinigamePlayer();
 		if(ply == null) return;
 		Minigame mg = ply.getMinigame();
@@ -196,6 +200,10 @@ public class RegionEvents implements Listener{
 	
 	@EventHandler(ignoreCancelled = true)
 	private void playersEnd(EndMinigameEvent event){
+		if(RegionModule.getMinigameModule(event.getMinigame()) == null) {
+			Minigames.debugMessage(event.getMinigame() + " called region event with no RegionModule loaded... was this intended?");
+			return;
+		}
 		for(MinigamePlayer ply : event.getWinners()){
 			Minigame mg = ply.getMinigame();
 			for(Region r : RegionModule.getMinigameModule(mg).getRegions()){
@@ -353,11 +361,8 @@ public class RegionEvents implements Listener{
 	private void itemPickupEvent(EntityPickupItemEvent event){
 		if(!(event.getEntity() instanceof Player))return;
 		final MinigamePlayer ply = pdata.getMinigamePlayer(((Player)event.getEntity()));
-		if(ply == null) return;
-		
 		if(ply.isInMinigame()){
 			final Trigger trig = Triggers.getTrigger("ITEM_PICKUP");
-			
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, executeScriptObjects(ply,trig));
 		}
 	}
@@ -365,8 +370,6 @@ public class RegionEvents implements Listener{
 	@EventHandler(ignoreCancelled = true)
 	private void itemPickupEvent(PlayerDropItemEvent event) {
 		final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-		if (ply == null) return;
-		
 		if (ply.isInMinigame()) {
 			final Trigger trig = Triggers.getTrigger("ITEM_DROP");
 			

@@ -167,10 +167,10 @@ public class Minigames extends JavaPlugin{
                         plugin = null;
                         onDisable();
                         return;
-                    }
+                    }else{
+						log().warning("Version incompatible - Force Loading Minigames.");
+					}
             }
-			
-            
 			PluginDescriptionFile desc = this.getDescription();
 			
 			MinigameSave sv = new MinigameSave("lang/" + getConfig().getString("lang"));
@@ -395,7 +395,15 @@ public class Minigames extends JavaPlugin{
 	public static Logger log(){
 	    return log;
     }
+	public static void log(Level level, String message){
+		log(level,message);
+	}
 
+	public static void debugMessage(String message){
+		if(Minigames.getPlugin().debug){
+			log(Level.INFO,"[MINIGAMAES DEBUG] "+message);
+		}
+	}
 	public SignBase getMinigameSigns(){
 		return minigameSigns;
 	}
@@ -414,7 +422,7 @@ public class Minigames extends JavaPlugin{
 			}
 			return result;
 		});
-        Metrics.SimpleBarChart barChart = new Metrics.SimpleBarChart("Modules v Servers", () -> {
+        Metrics.SimpleBarChart barChart = new Metrics.SimpleBarChart("Modules_v_Servers", () -> {
 			Map<String, Integer> result = new HashMap<>();
 			for (Class module : getMinigameManager().getModules()) {
 				result.put(module.getCanonicalName(), 1);

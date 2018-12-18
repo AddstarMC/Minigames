@@ -405,7 +405,7 @@ public class MinigameManager {
 	}
 
 	public boolean minigameMechanicCheck(Minigame minigame, MinigamePlayer player) {
-		return minigame.getMechanic().checkCanStart(minigame, player);
+		return minigame.getMechanic() == null || minigame.getMechanic().checkCanStart(minigame, player);
 	}
 
 	public boolean minigameStartStateCheck(Minigame minigame, MinigamePlayer player) {
