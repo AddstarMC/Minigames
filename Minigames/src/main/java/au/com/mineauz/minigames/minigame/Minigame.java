@@ -31,6 +31,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.*;
+import java.util.logging.Level;
 
 public class Minigame implements ScriptObject {
     private Map<String, Flag<?>> configFlags = new HashMap<>();
@@ -149,7 +150,7 @@ public class Minigame implements ScriptObject {
 		if(start != null)
 			startLocations.getFlag().add(start);
 		
-		sbManager.registerNewObjective(this.name, "dummy","dummy");
+		sbManager.registerNewObjective(this.name, "dummy",this.name);
 		sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
 		
 		for (Class<? extends MinigameModule> mod : Minigames.getPlugin().getMinigameManager().getModules()) {
@@ -695,8 +696,12 @@ public class Minigame implements ScriptObject {
 	}
 
 	public void setMechanic(String scoreType) {
-		this.mechanic.setFlag(scoreType);
-	}
+    	try{
+    		this.mechanic.setFlag(GameMechanics.MECHANIC_NAME.valueOf(scoreType.toUpperCase()).toString());
+		}catch (Exception e){
+    		Minigames.log(Level.WARNING,"Mechanic Not found:" +e.getLocalizedMessage());
+		}
+    }
 
 	public boolean isFlagCarrier(MinigamePlayer ply){
 		return flagCarriers.containsKey(ply);

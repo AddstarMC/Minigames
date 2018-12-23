@@ -9,6 +9,25 @@ import java.util.Set;
 
 public class GameMechanics {
     private static Map<String, GameMechanicBase> gameMechanics = new HashMap<>();
+    public static enum MECHANIC_NAME{
+    	KILLS("kills"),
+		CTF("ctf"),
+		INFECTION("infection"),
+		TREASUREHUNT("treasurehunt"),
+		LIVES("lives"),
+		JUGGERNAUT("juggernaut");
+
+		private String name;
+
+		MECHANIC_NAME(String name){
+			this.name = name;
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
+	}
 	
 	static{
 		addGameMechanic(new PlayerKillsMechanic());

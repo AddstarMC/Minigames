@@ -235,13 +235,18 @@ public class Minigames extends JavaPlugin{
 			for(Player player : getServer().getOnlinePlayers()){
 				getPlayerManager().addMinigamePlayer(player);
 			}
-			
-			initMetrics();
+			try {
+				initMetrics();
+			}catch (IllegalStateException|NoClassDefFoundError|ExceptionInInitializerError e){
+				log().log(Level.INFO,"Metrics will not be available(enabled debug for more details): " +e.getMessage());
+				if(debug)e.printStackTrace();
+			}
 			PaperLib.suggestPaper(this);
 			log().info(desc.getName() + " successfully enabled.");
 		} catch (Throwable e) {
 			plugin = null;
-			log().log(Level.SEVERE, "Failed to enable Minigames " + getDescription().getVersion() + ": ", e);
+			log().log(Level.SEVERE, "Failed to enable Minigames " + getDescription().getVersion() + ": "+e.getMessage());
+			e.printStackTrace();
 			getPluginLoader().disablePlugin(this);
 		}
 	}

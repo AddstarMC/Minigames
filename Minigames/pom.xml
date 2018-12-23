@@ -35,10 +35,6 @@
       <id>maven-central</id>
       <url>http://repo1.maven.org/maven2/</url>
     </repository>
-      <repository>
-          <id>jitpack</id>
-          <url>https://jitpack.io</url>
-      </repository>
     <!--Bstats-->
     <repository>
       <id>CodeMC</id>
@@ -80,10 +76,21 @@
         <scope>compile</scope>
       </dependency>
       <dependency>
-          <groupId>com.github.seeseemelk</groupId>
+          <groupId>be.seeseemelk</groupId>
           <artifactId>MockBukkit</artifactId>
-          <version>v1.13-88dd8473ca-1</version>
+          <version>0.1</version>
           <scope>test</scope>
+      </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.47</version>
+      <scope>test</scope>
+    </dependency>
+      <dependency>
+        <groupId>org.xerial</groupId>
+        <artifactId>sqlite-jdbc</artifactId>
+        <version>3.25.2</version>
       </dependency>
   </dependencies>
   <build>

@@ -18,7 +18,7 @@ public class PlayerKillsMechanic extends GameMechanicBase{
 
 	@Override
 	public String getMechanic() {
-		return "kills";
+		return GameMechanics.MECHANIC_NAME.KILLS.toString();
 	}
 
 	@Override

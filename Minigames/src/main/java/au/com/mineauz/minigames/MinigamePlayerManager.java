@@ -457,6 +457,7 @@ public class MinigamePlayerManager {
 					player.setRequiredQuit(true);
 				}
 				player.setStartPos(null);
+
 				//Reward Player
 				if(isWinner){
 					player.claimTempRewardItems();
@@ -475,6 +476,7 @@ public class MinigamePlayerManager {
 					}
 					
 					minigame.setState(MinigameState.IDLE);
+					minigame.setPlayersAtStart(false);
 					
 					if(minigame.getBlockRecorder().hasData()){
 						minigame.getBlockRecorder().restoreBlocks();

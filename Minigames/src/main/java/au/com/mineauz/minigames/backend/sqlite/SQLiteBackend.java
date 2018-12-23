@@ -134,7 +134,7 @@ public class SQLiteBackend extends Backend {
             try {
                 statement.executeQuery("SELECT 1 FROM `Minigames` LIMIT 0;");
             } catch (SQLException e) {
-                statement.executeUpdate("CREATE TABLE `Minigames` (`minigame_id` INTEGER PRIMARY KEY AUTO_INCREMENT, `name` TEXT UNIQUE);");
+                statement.executeUpdate("CREATE TABLE `Minigames` (`minigame_id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT UNIQUE);");
                 statement.executeUpdate("CREATE INDEX `Minigames_NameLookup` ON `Minigames` (`name`, `minigame_id`);");
             }
 
