@@ -57,7 +57,6 @@ public class MinigamePlayerManager {
             return;
         }
         if (!mgManager.minigameStartStateCheck(minigame, player)) return;
-        if (!mgManager.minigameStartSetupCheck(minigame, player)) return;
         //Do betting stuff
         if (isBetting) handleBets(minigame, player, betAmount);
         //Try teleport the player to their designated area.
@@ -228,9 +227,7 @@ public class MinigamePlayerManager {
 				if (moved != null && moved.size() > 0) {
 					getStartLocations(minigame.getPlayers(),minigame);
                     if (minigame.isPlayersAtStart()) {
-                        //players are already teleported...
                         if (!teleport) {
-                            //we wont be teleporting after this so better move em all!!
                             teleportToStart(minigame);
                         }
                     }
