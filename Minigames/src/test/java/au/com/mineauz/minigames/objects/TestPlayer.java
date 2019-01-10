@@ -179,4 +179,9 @@ public class TestPlayer extends PlayerMock {
     public void setFallDistance(float distance) {
         this.fallDistance = fallDistance;
     }
+    
+    @Override
+    public boolean isDead() {
+        return false;
+    }
 }

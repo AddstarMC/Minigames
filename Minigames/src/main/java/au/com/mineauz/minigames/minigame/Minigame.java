@@ -123,7 +123,7 @@ public class Minigame implements ScriptObject {
 	//CTF
     private Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<>();
     private Map<String, CTFFlag> droppedFlag = new HashMap<>();
-    private boolean playersAtStart;
+    private boolean playersAtStart = false;
 
     public boolean isPlayersAtStart() {
         return playersAtStart;
