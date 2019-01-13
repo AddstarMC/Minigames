@@ -9,7 +9,7 @@ public class GameEndTrigger implements Trigger {
 
 	@Override
 	public boolean useInRegions() {
-		return false;
+		return true;
 	}
 
 	@Override
