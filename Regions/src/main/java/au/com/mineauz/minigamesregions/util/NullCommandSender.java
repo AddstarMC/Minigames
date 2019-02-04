@@ -44,10 +44,6 @@ public class NullCommandSender implements ConsoleCommandSender {
 		return "Null";
 	}
 
-	public Spigot spigot() {
-		return new Spigot();
-	}
-
 	@Override
 	public boolean isPermissionSet(String name) {
 		return true;
