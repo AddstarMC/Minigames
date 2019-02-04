@@ -193,7 +193,7 @@ public class Team implements ScriptObject {
 		players.add(player);
 		player.setTeam(this);
 		player.getPlayer().setScoreboard(mgm.getScoreboardManager());
-		mgm.getScoreboardManager().getTeam(getColor().toString().toLowerCase()).addEntry(player.getDisplayName(mgm.usePlayerDisplayNames()));
+		mgm.getScoreboardManager().getTeam(getColor().toString().toLowerCase()).addEntry(getColor().getColor()+player.getDisplayName(mgm.usePlayerDisplayNames()));
 	}
 
 	/**
@@ -204,7 +204,7 @@ public class Team implements ScriptObject {
 		players.remove(player);
 		Scoreboard board =  mgm.getScoreboardManager();
 		String color =  getColor().toString().toLowerCase();
-		board.getTeam(color).removeEntry(player.getDisplayName(mgm.usePlayerDisplayNames()));
+		board.getTeam(color).removeEntry(getColor().getColor()+player.getDisplayName(mgm.usePlayerDisplayNames()));
         player.getPlayer().setScoreboard(Minigames.getPlugin().getServer().getScoreboardManager().getMainScoreboard());
 	}
 	

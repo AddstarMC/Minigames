@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.scoreboard.Team;
 
 import java.util.Map;
 
@@ -56,13 +57,15 @@ public class JuggernautModule extends MinigameModule{
 	
 	public void setJuggernaut(MinigamePlayer player){
 		if(juggernaut != null){
+			Team team = juggernaut.getMinigame().getScoreboardManager().getTeam("juggernaut");
 			juggernaut.setLoadout(null);
-			juggernaut.getMinigame().getScoreboardManager().getTeam("juggernaut").removeEntry(juggernaut.getPlayer().getDisplayName());
+			team.removeEntry(team.getColor()+juggernaut.getPlayer().getDisplayName());
 		}
 		juggernaut = player;
 		
 		if(juggernaut != null){
-			player.getMinigame().getScoreboardManager().getTeam("juggernaut").addEntry(player.getPlayer().getDisplayName());
+			Team team = player.getMinigame().getScoreboardManager().getTeam("juggernaut");
+			team.addEntry(team.getColor()+player.getPlayer().getDisplayName());
 			
 			juggernaut.sendMessage(MinigameUtils.getLang("player.juggernaut.plyMsg"), null);
 			Minigames.getPlugin().getMinigameManager().sendMinigameMessage(getMinigame(),

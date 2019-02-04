@@ -2,6 +2,7 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.MaterialFlag;
@@ -80,11 +81,12 @@ public class PlayerHasItemCondition extends ConditionInterface {
 	}
 	
 	private boolean check(MinigamePlayer player) {
-		PositionType checkType = PositionType.valueOf(where.getFlag().toUpperCase());
-		if (checkType == null) {
-			checkType = PositionType.ANYWHERE;
-		}
-		
+        PositionType checkType = PositionType.ANYWHERE;
+	    try {
+            checkType = PositionType.valueOf(where.getFlag().toUpperCase());
+        }catch (IllegalArgumentException e){
+            Minigames.log().warning(e.getMessage());
+        }
 		PlayerInventory inventory = player.getPlayer().getInventory();
 		ItemStack[] searchItems;
 		int startSlot;
@@ -124,16 +126,13 @@ public class PlayerHasItemCondition extends ConditionInterface {
 		if (matchLore.getFlag()) {
 			lorePattern = createLorePattern();
 		}
-		
-		for (int i = startSlot; i < endSlot && i < searchItems.length; ++i) {
-			ItemStack itemInSlot = searchItems[i];
-			if (itemInSlot == null) {
+		int i =0;
+		for(ItemStack slot: searchItems){
+			if((i<startSlot) && (i>endSlot))
 				continue;
-			}
-			
-			if (itemInSlot.getType() == material) {
+			if (slot.getType() == material) {
 				
-				ItemMeta meta = itemInSlot.getItemMeta();
+				ItemMeta meta = slot.getItemMeta();
 				
 				if (namePattern !=null) {
 					Matcher m = namePattern.matcher(meta.getDisplayName());
@@ -160,7 +159,6 @@ public class PlayerHasItemCondition extends ConditionInterface {
 				return true;
 			}
 		}
-		
 		return false;
 	}
 	
