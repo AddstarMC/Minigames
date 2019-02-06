@@ -90,7 +90,7 @@ public class CTFMechanic extends GameMechanicBase{
 	}
 	
 	@EventHandler
-	private void takeFlag(PlayerInteractEvent event){
+	public void takeFlag(PlayerInteractEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 		if(ply == null) return;
 		if(ply.isInMinigame() && !ply.getPlayer().isDead() && ply.getMinigame().hasStarted()){
@@ -233,7 +233,7 @@ public class CTFMechanic extends GameMechanicBase{
 	}
 	
 	@EventHandler
-	private void dropFlag(PlayerDeathEvent event){
+	public void dropFlag(PlayerDeathEvent event){
 		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
 		if (ply == null) return;
 		if (ply.isInMinigame()) {

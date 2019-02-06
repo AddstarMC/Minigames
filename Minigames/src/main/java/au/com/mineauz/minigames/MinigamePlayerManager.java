@@ -210,31 +210,37 @@ public class MinigamePlayerManager {
 	
 	public void startMPMinigame(Minigame minigame, boolean teleport){
         List<MinigamePlayer> players = new ArrayList<>(minigame.getPlayers());
-		for(MinigamePlayer ply : players){
+		for(MinigamePlayer ply : players) {
 			if (minigame.getMaxScore() != 0)
-                ply.sendInfoMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()));
+				ply.sendInfoMessage(MinigameUtils.formStr("minigame.scoreToWin", minigame.getMaxScorePerPlayer()));
 			if (minigame.isAllowedFlight()) ply.setCanFly(true);
 			if (minigame.isFlightEnabled() && ply.canFly()) ply.getPlayer().setFlying(true);
 			ply.getLoadout().equiptLoadout(ply);
-
-			if(!minigame.isTeamGame()){
-				if(minigame.getLives() > 0){
-                    ply.sendInfoMessage(MinigameUtils.formStr("minigame.livesLeft", minigame.getLives()));
+			
+			if (!minigame.isTeamGame()) {
+				if (minigame.getLives() > 0) {
+					ply.sendInfoMessage(MinigameUtils.formStr("minigame.livesLeft", minigame.getLives()));
 				}
 				ply.setStartTime(Calendar.getInstance().getTimeInMillis());
-			}else {
+			} else {
 				List<MinigamePlayer> moved = balanceGame(minigame);
 				if (moved != null && moved.size() > 0) {
-					getStartLocations(minigame.getPlayers(),minigame);
-                    if (minigame.isPlayersAtStart()) {
-                        if (!teleport) {
-                            teleportToStart(minigame);
-                        }
-                    }
+					getStartLocations(minigame.getPlayers(), minigame);
+					if (!minigame.isPlayersAtStart()) {
+						if (!teleport) {
+							teleportToStart(minigame);
+						}
+					}
+				} else {
+					if (!minigame.isPlayersAtStart()) {
+						if (!teleport) {
+							teleportToStart(minigame);
+						}
+					}
 				}
+				
+				PlayMGSound.playSound(ply, MGSounds.getSound("gameStart"));
 			}
-
-			PlayMGSound.playSound(ply, MGSounds.getSound("gameStart"));
 		}
 
 
@@ -436,7 +442,7 @@ public class MinigamePlayerManager {
 				player.getPlayer().setFallDistance(0);
 				player.getPlayer().setNoDamageTicks(60);
 				final MinigamePlayer fplayer = player;
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> fplayer.getPlayer().setFireTicks(0));
+				Bukkit.getScheduler().runTaskLater(plugin, () -> fplayer.getPlayer().setFireTicks(0),0L);
 				player.resetAllStats();
 				player.setStartPos(null);
 				if(!player.isDead()){
