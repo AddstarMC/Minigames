@@ -3,9 +3,7 @@ package au.com.mineauz.minigames.objects;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import be.seeseemelk.mockbukkit.scoreboard.ScoreboardMock;
-import org.bukkit.Location;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
+import org.bukkit.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -20,7 +18,8 @@ import java.util.UUID;
  */
 public class TestPlayer extends PlayerMock {
 
-
+    private Long playerTime;
+    private Long playerTimeoffset;
     private int foodLevel = 10;
     private float saturation = 10;
     private float exp;
@@ -30,6 +29,65 @@ public class TestPlayer extends PlayerMock {
     private boolean allowFlight;
     private float walkSpeed;
     private float flyspeed;
+    private int noDamageTicks;
+    private WeatherType playerWeather = WeatherType.CLEAR;
+    
+    @Override
+    public void setPlayerWeather(WeatherType type) {
+        playerWeather = type;
+    }
+    
+    @Override
+    public void setPlayerTime(long time, boolean relative) {
+        if(relative){
+            playerTimeoffset = time - this.getWorld().getTime();
+        }
+        else playerTime = time;
+        
+    }
+    
+    @Override
+    public long getPlayerTime() {
+        return playerTime+playerTimeoffset;
+    }
+    
+    @Override
+    public long getPlayerTimeOffset() {
+        return playerTimeoffset;
+    }
+    
+    @Override
+    public boolean isPlayerTimeRelative() {
+        return playerTimeoffset >0;
+    }
+    
+    @Override
+    public void resetPlayerTime() {
+        playerTime = this.getWorld().getTime();
+        playerTimeoffset = 0L;
+    }
+    
+    
+    @Override
+    public WeatherType getPlayerWeather() {
+        return playerWeather;
+    }
+    
+    @Override
+    public void resetPlayerWeather() {
+        playerWeather = WeatherType.CLEAR;
+    }
+    
+    @Override
+    public int getNoDamageTicks() {
+        return noDamageTicks;
+    }
+    
+    @Override
+    public void setNoDamageTicks(int ticks) {
+        noDamageTicks = ticks;
+    }
+    
     private List<PotionEffect> effects;
     private Scoreboard scoreboard = new ScoreboardMock();
     public TestPlayer(ServerMock server, String name, UUID uuid) {

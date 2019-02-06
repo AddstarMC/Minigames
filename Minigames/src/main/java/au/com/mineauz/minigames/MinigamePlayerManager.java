@@ -442,7 +442,7 @@ public class MinigamePlayerManager {
 				player.getPlayer().setFallDistance(0);
 				player.getPlayer().setNoDamageTicks(60);
 				final MinigamePlayer fplayer = player;
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> fplayer.getPlayer().setFireTicks(0));
+				Bukkit.getScheduler().runTaskLater(plugin, () -> fplayer.getPlayer().setFireTicks(0),0L);
 				player.resetAllStats();
 				player.setStartPos(null);
 				if(!player.isDead()){

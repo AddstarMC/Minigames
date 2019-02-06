@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.helpers.TestHelper;
 import au.com.mineauz.minigames.mechanics.CTFMechanic;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -8,27 +9,28 @@ import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
-import au.com.mineauz.minigames.objects.MockSign;
 import au.com.mineauz.minigames.objects.SignBlockMock;
 import au.com.mineauz.minigames.objects.TestPlayer;
 import be.seeseemelk.mockbukkit.Coordinate;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
+import be.seeseemelk.mockbukkit.block.BlockMock;
 import be.seeseemelk.mockbukkit.command.ConsoleCommandSenderMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMockFactory;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.material.MaterialData;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.sqlite.SQLiteDataSource;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,23 +59,53 @@ public class MinigamesTest {
 
     @Before
     public void Setup(){
-
-        server = MockBukkit.mock();
+        try {
+            server = MockBukkit.mock();
+        }catch (Exception e){
+            server = MockBukkit.getMock();
+        }
         server.setPlayerFactory(new PlayerMockFactory(server,TestPlayer.class));
         ((ConsoleCommandSenderMock)server.getConsoleSender()).setOutputOnSend(true);
-        MockBukkit.getMock().addSimpleWorld("GAMES");
+        world = MockBukkit.getMock().addSimpleWorld("GAMES");
         Logger log = Logger.getAnonymousLogger();
         log.setLevel(Level.ALL);
         plugin = MockBukkit.load(Minigames.class);
+        spawn =world.getSpawnLocation();
         plugin.toggleDebug();
         plugin.setLog(log);
         world = (WorldMock) MockBukkit.getMock().getWorld("GAMES");
-        spawn =world.getSpawnLocation();
         start = new Location(world,10,10,10);
         lobby = new Location(world,0,5,0);
         end = new Location(world,0,10,0);
         quit = new Location(world,0,20,0);
-        createMinigame();
+        
+        game = TestHelper.createMinigame(plugin,world,MinigameType.MULTIPLAYER, GameMechanics.MECHANIC_NAME.CTF);
+        Map<Integer,String> lines =  new HashMap<>();
+        lines.put(0, ChatColor.GREEN +"Flag");
+        lines.put(1,ChatColor.GRAY+"Neutral");
+        lines.put(2,"");
+        lines.put(3,"");
+        BlockMock flag = TestHelper.createSignBlock(lines,world);
+        lines.put(0,"");
+        lines.put(1, ChatColor.GREEN +"Capture");
+        lines.put(2,ChatColor.GRAY+"Neutral");
+        lines.put(3,"");
+        BlockMock captureFlag = TestHelper.createSignBlock(lines,world);
+        world.createBlock(new Coordinate(10,40,10),flag);
+        world.createBlock(new Coordinate(10,50,10),captureFlag);
+        start = game.getStartLocations().get(0);
+        quit = game.getQuitPosition();
+        lobby = game.getLobbyPosition();
+        end = game.getEndPosition();
+        TeamsModule tmod = (TeamsModule) game.getModule("Teams");
+        tmod.addTeam(TeamColor.BLUE);
+        tmod.addTeam(TeamColor.RED);
+        MinigameModule module = game.getModule("LobbySettings");
+        if(module != null) {
+            LobbySettingsModule lMod = (LobbySettingsModule) module;
+            lMod.setTeleportOnPlayerWait(true);
+            lMod.setTeleportOnStart(true);
+        }
         player = server.addPlayer();
         player.setLocation(new Location(world,0,0,0));
         player.setOutputOnSend(true);
@@ -81,59 +113,9 @@ public class MinigamesTest {
     }
 
     private void createMinigame(){
-        start = new Location(world,0,21,0);
-        game = new Minigame("TestGame",MinigameType.MULTIPLAYER,start);
         game.setType(MinigameType.MULTIPLAYER);
         game.setMechanic(GameMechanics.MECHANIC_NAME.CTF.toString());
         game.setDeathDrops(true);
-        MaterialData data = new MaterialData(Material.SIGN,(byte)0);
-        MockSign sign = new MockSign(data,true);
-        sign.setLine(1, ChatColor.GREEN +"Flag");
-        sign.setLine(2,ChatColor.GRAY+"Neutral");
-        BlockData bData = new BlockData() {
-            @Override
-            public Material getMaterial() {
-                return Material.SIGN;
-            }
-    
-            @Override
-            public String getAsString() {
-                return null;
-            }
-    
-            @Override
-            public String getAsString(boolean b) {
-                return "SIGN";
-            }
-    
-            @Override
-            public BlockData merge(BlockData blockData) {
-                return this;
-            }
-    
-            @Override
-            public boolean matches(BlockData blockData) {
-                return true;
-            }
-    
-            @Override
-            public BlockData clone() {
-                return this;
-            }
-        };
-        flag = new SignBlockMock(Material.SIGN,new Location(world,10,40,10),sign,bData);
-        MockSign captureSign = new MockSign(data,true);
-        sign.setLine(2, ChatColor.GREEN +"Capture");
-        sign.setLine(3,ChatColor.GRAY+"Neutral");
-        captureFlag = new SignBlockMock(Material.SIGN, new Location(world,10,50,10),captureSign,bData);
-        world.createBlock(new Coordinate(10,40,10),flag);
-        world.createBlock(new Coordinate(10,50,10),captureFlag);
-        quit = new Location(world,0,20,0);
-        game.setQuitPosition(quit);
-        lobby= new Location(world,0,5.,0);
-        game.setLobbyPosition(lobby);
-        end = new Location(world, 0, 25, 0);
-        game.setEndPosition(end);
         game.setEnabled(true);
         game.setStartWaitTime(5);
         game.setTimer(5);
@@ -178,11 +160,11 @@ public class MinigamesTest {
         
     }
     
-    public void onQuitMinigame(){
-        plugin.getPlayerManager().addMinigamePlayer(player);
-        MinigamePlayer mplayer = plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId());
-        plugin.getPlayerManager().joinMinigame(mplayer, game, false, 0D);
-    
-    
+    @After
+    public void TearDown(){
+        try{
+            MockBukkit.unload();
+        }catch (Exception e){
+        }
     }
 }
