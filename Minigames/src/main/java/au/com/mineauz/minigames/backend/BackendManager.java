@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.backend;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.backend.mysql.MySQLBackend;
 import au.com.mineauz.minigames.backend.sqlite.SQLiteBackend;
+import au.com.mineauz.minigames.backend.test.TestBackEnd;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.*;
@@ -37,6 +38,9 @@ public class BackendManager {
     }
     
     private Backend makeBackend(String type) {
+        String serverType = Bukkit.getServer().getName();
+        if(serverType.equals("ServerMock"))
+            return new TestBackEnd();
         switch (type) {
             case "sqlite":
                 return new SQLiteBackend(logger);

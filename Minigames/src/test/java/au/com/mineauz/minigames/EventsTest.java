@@ -35,8 +35,11 @@ public class EventsTest {
     private Minigame game;
     
     public void setUp() throws Exception {
-        
-        server = MockBukkit.mock();
+        try {
+            server = MockBukkit.mock();
+        }catch (IllegalStateException e){
+            server = MockBukkit.getMock();
+        }
         server.setPlayerFactory(new PlayerMockFactory(server, TestPlayer.class));
         ((ConsoleCommandSenderMock)server.getConsoleSender()).setOutputOnSend(true);
         plugin = MockBukkit.load(Minigames.class);
@@ -53,6 +56,7 @@ public class EventsTest {
     }
     
     public void tearDown() throws Exception {
+        wait(2000);
         MockBukkit.unload();
         server = null;
     }

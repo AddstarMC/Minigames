@@ -43,8 +43,11 @@ public class MinigamesTest {
 
     @Before
     public void Setup(){
-
-        server = MockBukkit.mock();
+        try {
+            server = MockBukkit.mock();
+        }catch (IllegalStateException e){
+            server = MockBukkit.getMock();
+        }
         ConsoleCommandSenderMock sender  = (ConsoleCommandSenderMock) server.getConsoleSender();
         sender.setOutputOnSend(true);
         MockBukkit.getMock().addSimpleWorld("GAMES");

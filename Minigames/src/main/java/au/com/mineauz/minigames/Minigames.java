@@ -78,7 +78,7 @@ public class Minigames extends JavaPlugin{
     {
         super(loader, description, dataFolder, file);
     }
-    
+
     public static ComparableVersion getVERSION() {
         return VERSION;
     }
@@ -188,13 +188,11 @@ public class Minigames extends JavaPlugin{
             if(!setupEconomy()){
                 getLogger().info("No Vault plugin found! You may only reward items.");
              }
-            
             backend = new BackendManager(getLogger());
             if (!backend.initialize(getConfig())) {
                 getServer().getPluginManager().disablePlugin(this);
                 return;
             }
-            
             getConfig().options().copyDefaults(true);
             saveConfig();
             //        playerManager.loadDCPlayers();
