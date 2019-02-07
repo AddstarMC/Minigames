@@ -9,61 +9,61 @@ import java.util.List;
 
 public class DebugCommand implements ICommand {
 
-	@Override
-	public String getName() {
-		return "debug";
-	}
+    @Override
+    public String getName() {
+        return "debug";
+    }
 
-	@Override
-	public String[] getAliases() {
-		return null;
-	}
+    @Override
+    public String[] getAliases() {
+        return null;
+    }
 
-	@Override
-	public boolean canBeConsole() {
-		return true;
-	}
+    @Override
+    public boolean canBeConsole() {
+        return true;
+    }
 
-	@Override
-	public String getDescription() {
-		return "Debugs stuff.";
-	}
+    @Override
+    public String getDescription() {
+        return "Debugs stuff.";
+    }
 
-	@Override
-	public String[] getParameters() {
-		return null;
-	}
+    @Override
+    public String[] getParameters() {
+        return null;
+    }
 
-	@Override
-	public String[] getUsage() {
-		return new String[] {"/minigame debug"};
-	}
+    @Override
+    public String[] getUsage() {
+        return new String[] {"/minigame debug"};
+    }
 
-	@Override
-	public String getPermissionMessage() {
-		return "You may not debug!";
-	}
+    @Override
+    public String getPermissionMessage() {
+        return "You may not debug!";
+    }
 
-	@Override
-	public String getPermission() {
-		return "minigame.debug";
-	}
+    @Override
+    public String getPermission() {
+        return "minigame.debug";
+    }
 
-	@Override
-	public boolean onCommand(CommandSender sender, Minigame minigame,
-			String label, String[] args) {
+    @Override
+    public boolean onCommand(CommandSender sender, Minigame minigame,
+            String label, String[] args) {
         Minigames.getPlugin().toggleDebug();
         if (Minigames.getPlugin().isDebugging())
-			sender.sendMessage(ChatColor.GRAY + "Debug mode active.");
-		else
-			sender.sendMessage(ChatColor.GRAY + "Deactivated debug mode.");
-		return true;
-	}
+            sender.sendMessage(ChatColor.GRAY + "Debug mode active.");
+        else
+            sender.sendMessage(ChatColor.GRAY + "Deactivated debug mode.");
+        return true;
+    }
 
-	@Override
-	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-			String alias, String[] args) {
-		return null;
-	}
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+            String alias, String[] args) {
+        return null;
+    }
 
 }

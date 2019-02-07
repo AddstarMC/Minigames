@@ -465,7 +465,7 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public void resetAllStats(){
-//		setLoadout(null);
+//        setLoadout(null);
         loadout = null;
         resetReverts();
         resetDeaths();

@@ -55,10 +55,10 @@ public class ConnectionPool {
                         it.remove();
                     }
                 } else {
-                	if (System.currentTimeMillis() - handler.getOpenTime() > maxIdleTime) {
-                		// So we dont just accumulate connections forever
-                		handler.release();
-                	}
+                    if (System.currentTimeMillis() - handler.getOpenTime() > maxIdleTime) {
+                        // So we dont just accumulate connections forever
+                        handler.release();
+                    }
                 }
             }
         }

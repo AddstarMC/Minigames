@@ -6,19 +6,19 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 
 public class SpectateMinigameEvent extends AbstractMinigameEvent{
-	private MinigamePlayer player = null;
+    private MinigamePlayer player = null;
 
-	public SpectateMinigameEvent(MinigamePlayer player, Minigame minigame){
-		super(minigame);
-		this.player = player;
-	}
-	
+    public SpectateMinigameEvent(MinigamePlayer player, Minigame minigame){
+        super(minigame);
+        this.player = player;
+    }
+    
     public MinigamePlayer getMinigamePlayer() {
-		return player;
-	}
+        return player;
+    }
     
     public Player getPlayer(){
-    	return player.getPlayer();
+        return player.getPlayer();
     }
 
 

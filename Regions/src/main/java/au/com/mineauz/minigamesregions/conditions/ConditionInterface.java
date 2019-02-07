@@ -13,37 +13,37 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.Map;
 
 public abstract class ConditionInterface {
-	
-	private BooleanFlag invert = new BooleanFlag(false, "invert");
-	protected void addInvertMenuItem(Menu m){
-		m.addItem(invert.getMenuItem("Invert", Material.ENDER_PEARL), m.getSize() - 1);
-	}
-	protected void saveInvert(FileConfiguration config, String path){
-		invert.saveValue(path, config);
-	}
-	protected void loadInvert(FileConfiguration config, String path){
-		invert.loadValue(path, config);
-	}
-	public boolean isInverted(){
-		return invert.getFlag();
-	}
-	
-	public abstract String getName();
-	public abstract String getCategory();
-	public abstract boolean useInRegions();
-	public abstract boolean useInNodes();
-	public abstract boolean checkRegionCondition(MinigamePlayer player, Region region);
-	public abstract boolean checkNodeCondition(MinigamePlayer player, Node node);
-	public abstract void saveArguments(FileConfiguration config, String path);
-	public abstract void loadArguments(FileConfiguration config, String path);
-	public abstract boolean displayMenu(MinigamePlayer player, Menu prev);
-	
-	public abstract void describe(Map<String, Object> out);
+    
+    private BooleanFlag invert = new BooleanFlag(false, "invert");
+    protected void addInvertMenuItem(Menu m){
+        m.addItem(invert.getMenuItem("Invert", Material.ENDER_PEARL), m.getSize() - 1);
+    }
+    protected void saveInvert(FileConfiguration config, String path){
+        invert.saveValue(path, config);
+    }
+    protected void loadInvert(FileConfiguration config, String path){
+        invert.loadValue(path, config);
+    }
+    public boolean isInverted(){
+        return invert.getFlag();
+    }
+    
+    public abstract String getName();
+    public abstract String getCategory();
+    public abstract boolean useInRegions();
+    public abstract boolean useInNodes();
+    public abstract boolean checkRegionCondition(MinigamePlayer player, Region region);
+    public abstract boolean checkNodeCondition(MinigamePlayer player, Node node);
+    public abstract void saveArguments(FileConfiguration config, String path);
+    public abstract void loadArguments(FileConfiguration config, String path);
+    public abstract boolean displayMenu(MinigamePlayer player, Menu prev);
+    
+    public abstract void describe(Map<String, Object> out);
 
-	public void debug(Minigame mg){
+    public void debug(Minigame mg){
         if (Minigames.getPlugin().isDebugging()) {
             Minigames.getPlugin().getLogger().info("Cat " + this.getCategory() + " : " + this.getName() +
-					" Check:" +mg.getName(false) +" mech: " + mg.getMechanicName() + "Condition: 					" +this.toString());
-		}
-	}
+                    " Check:" +mg.getName(false) +" mech: " + mg.getMechanicName() + "Condition:                     " +this.toString());
+        }
+    }
 }

@@ -12,75 +12,75 @@ import org.bukkit.scoreboard.Team;
 import java.util.Map;
 
 public class JuggernautModule extends MinigameModule{
-	
-	private MinigamePlayer juggernaut = null;
+    
+    private MinigamePlayer juggernaut = null;
 
-	public JuggernautModule(Minigame mgm) {
-		super(mgm);
-	}
+    public JuggernautModule(Minigame mgm) {
+        super(mgm);
+    }
 
-	@Override
-	public String getName() {
-		return "Juggernaut";
-	}
+    @Override
+    public String getName() {
+        return "Juggernaut";
+    }
 
-	@Override
-	public Map<String, Flag<?>> getFlags() {
-		return null;
-	}
+    @Override
+    public Map<String, Flag<?>> getFlags() {
+        return null;
+    }
 
-	@Override
-	public boolean useSeparateConfig() {
-		return false;
-	}
+    @Override
+    public boolean useSeparateConfig() {
+        return false;
+    }
 
-	@Override
-	public void save(FileConfiguration config) {
-	}
+    @Override
+    public void save(FileConfiguration config) {
+    }
 
-	@Override
-	public void load(FileConfiguration config) {
-	}
+    @Override
+    public void load(FileConfiguration config) {
+    }
 
-	@Override
-	public void addEditMenuOptions(Menu menu) {
-	}
+    @Override
+    public void addEditMenuOptions(Menu menu) {
+    }
 
-	@Override
-	public boolean displayMechanicSettings(Menu previous) {
-		return false;
-	}
-	
-	public static JuggernautModule getMinigameModule(Minigame minigame){
-		return (JuggernautModule) minigame.getModule("Juggernaut");
-	}
-	
-	public void setJuggernaut(MinigamePlayer player){
-		if(juggernaut != null){
-			Team team = juggernaut.getMinigame().getScoreboardManager().getTeam("juggernaut");
-			juggernaut.setLoadout(null);
-			team.removeEntry(team.getColor()+juggernaut.getPlayer().getDisplayName());
-		}
-		juggernaut = player;
-		
-		if(juggernaut != null){
-			Team team = player.getMinigame().getScoreboardManager().getTeam("juggernaut");
-			team.addEntry(team.getColor()+player.getPlayer().getDisplayName());
-			
-			juggernaut.sendMessage(MinigameUtils.getLang("player.juggernaut.plyMsg"), null);
-			Minigames.getPlugin().getMinigameManager().sendMinigameMessage(getMinigame(),
-					MinigameUtils.formStr("player.juggernaut.gameMsg", juggernaut.getDisplayName(getMinigame().usePlayerDisplayNames())), null, juggernaut);
-			
-			LoadoutModule lm =LoadoutModule.getMinigameModule(getMinigame());
-			if(lm.hasLoadout("juggernaut")){
-				player.setLoadout(lm.getLoadout("juggernaut"));
-				player.getLoadout().equiptLoadout(player);
-			}
-		}
-	}
-	
-	public MinigamePlayer getJuggernaut(){
-		return juggernaut;
-	}
+    @Override
+    public boolean displayMechanicSettings(Menu previous) {
+        return false;
+    }
+    
+    public static JuggernautModule getMinigameModule(Minigame minigame){
+        return (JuggernautModule) minigame.getModule("Juggernaut");
+    }
+    
+    public void setJuggernaut(MinigamePlayer player){
+        if(juggernaut != null){
+            Team team = juggernaut.getMinigame().getScoreboardManager().getTeam("juggernaut");
+            juggernaut.setLoadout(null);
+            team.removeEntry(team.getColor()+juggernaut.getPlayer().getDisplayName());
+        }
+        juggernaut = player;
+        
+        if(juggernaut != null){
+            Team team = player.getMinigame().getScoreboardManager().getTeam("juggernaut");
+            team.addEntry(team.getColor()+player.getPlayer().getDisplayName());
+            
+            juggernaut.sendMessage(MinigameUtils.getLang("player.juggernaut.plyMsg"), null);
+            Minigames.getPlugin().getMinigameManager().sendMinigameMessage(getMinigame(),
+                    MinigameUtils.formStr("player.juggernaut.gameMsg", juggernaut.getDisplayName(getMinigame().usePlayerDisplayNames())), null, juggernaut);
+            
+            LoadoutModule lm =LoadoutModule.getMinigameModule(getMinigame());
+            if(lm.hasLoadout("juggernaut")){
+                player.setLoadout(lm.getLoadout("juggernaut"));
+                player.getLoadout().equiptLoadout(player);
+            }
+        }
+    }
+    
+    public MinigamePlayer getJuggernaut(){
+        return juggernaut;
+    }
 
 }

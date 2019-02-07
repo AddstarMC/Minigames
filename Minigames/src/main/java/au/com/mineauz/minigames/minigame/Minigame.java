@@ -1089,10 +1089,10 @@ public class Minigame implements ScriptObject {
         List<String> thDes = new ArrayList<>();
         thDes.add("Treasure hunt related");
         thDes.add("settings.");
-//		itemsMain.add(new MenuItemPage("Treasure Hunt Settings", thDes, Material.CHEST, treasureHunt));
-//		MenuItemDisplayLoadout defLoad = new MenuItemDisplayLoadout("Default Loadout", Material.DIAMOND_SWORD, LoadoutModule.getMinigameModule(this).getDefaultPlayerLoadout(), this);
-//		defLoad.setAllowDelete(false);
-//		itemsMain.add(defLoad);
+//        itemsMain.add(new MenuItemPage("Treasure Hunt Settings", thDes, Material.CHEST, treasureHunt));
+//        MenuItemDisplayLoadout defLoad = new MenuItemDisplayLoadout("Default Loadout", Material.DIAMOND_SWORD, LoadoutModule.getMinigameModule(this).getDefaultPlayerLoadout(), this);
+//        defLoad.setAllowDelete(false);
+//        itemsMain.add(defLoad);
         itemsMain.add(new MenuItemPage("Loadouts", Material.CHEST, loadouts));
         itemsMain.add(canSpectateFly.getMenuItem("Allow Spectator Fly", Material.FEATHER));
         List<String> rndChstDes = new ArrayList<>();
@@ -1341,11 +1341,11 @@ public class Minigame implements ScriptObject {
             }
         }
 
-//		Bukkit.getLogger().info("------- Minigame Load -------");
-//		Bukkit.getLogger().info("Name: " + getName());
-//		Bukkit.getLogger().info("Type: " + getType());
-//		Bukkit.getLogger().info("Enabled: " + isEnabled());
-//		Bukkit.getLogger().info("-----------------------------");
+//        Bukkit.getLogger().info("------- Minigame Load -------");
+//        Bukkit.getLogger().info("Name: " + getName());
+//        Bukkit.getLogger().info("Type: " + getType());
+//        Bukkit.getLogger().info("Enabled: " + isEnabled());
+//        Bukkit.getLogger().info("-----------------------------");
         
         final Minigame mgm = this;
         

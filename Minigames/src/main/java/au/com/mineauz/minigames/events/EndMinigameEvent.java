@@ -7,23 +7,23 @@ import au.com.mineauz.minigames.minigame.Minigame;
 
 public class EndMinigameEvent extends AbstractMinigameEvent {
 
-	private List<MinigamePlayer> winners = null;
-	private List<MinigamePlayer> losers = null;
+    private List<MinigamePlayer> winners = null;
+    private List<MinigamePlayer> losers = null;
 
 
-	public EndMinigameEvent(List<MinigamePlayer> winners, List<MinigamePlayer> losers, Minigame minigame) {
-		super(minigame);
-		this.winners = winners;
-		this.losers = losers;
-	}
+    public EndMinigameEvent(List<MinigamePlayer> winners, List<MinigamePlayer> losers, Minigame minigame) {
+        super(minigame);
+        this.winners = winners;
+        this.losers = losers;
+    }
 
-	public List<MinigamePlayer> getWinners() {
-		return winners;
-	}
+    public List<MinigamePlayer> getWinners() {
+        return winners;
+    }
 
-	public List<MinigamePlayer> getLosers() {
-		return losers;
-	}
+    public List<MinigamePlayer> getLosers() {
+        return losers;
+    }
 }
 
 

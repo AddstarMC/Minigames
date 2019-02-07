@@ -14,97 +14,97 @@ import java.util.logging.Level;
 
 public class ReloadCommand implements ICommand{
 
-	@Override
-	public String getName() {
-		return "reload";
-	}
+    @Override
+    public String getName() {
+        return "reload";
+    }
 
-	@Override
-	public String[] getAliases() {
-		return null;
-	}
+    @Override
+    public String[] getAliases() {
+        return null;
+    }
 
-	@Override
-	public boolean canBeConsole() {
-		return true;
-	}
+    @Override
+    public boolean canBeConsole() {
+        return true;
+    }
 
-	@Override
-	public String getDescription() {
-		return "Reloads the Minigames config files.";
-	}
+    @Override
+    public String getDescription() {
+        return "Reloads the Minigames config files.";
+    }
 
-	@Override
-	public String[] getParameters() {
-		return null;
-	}
+    @Override
+    public String[] getParameters() {
+        return null;
+    }
 
-	@Override
-	public String[] getUsage() {
-		return new String[] {"/minigame reload"};
-	}
+    @Override
+    public String[] getUsage() {
+        return new String[] {"/minigame reload"};
+    }
 
-	@Override
-	public String getPermissionMessage() {
-		return "You do not have permission to reload the plugin!";
-	}
+    @Override
+    public String getPermissionMessage() {
+        return "You do not have permission to reload the plugin!";
+    }
 
-	@Override
-	public String getPermission() {
-		return "minigame.reload";
-	}
+    @Override
+    public String getPermission() {
+        return "minigame.reload";
+    }
 
-	@Override
-	public boolean onCommand(CommandSender sender, Minigame minigame,
-			String label, String[] args) {
-		for(Player p : plugin.getServer().getOnlinePlayers()){
-			if (plugin.getPlayerManager().getMinigamePlayer(p).isInMinigame()) {
-				plugin.getPlayerManager().quitMinigame(plugin.getPlayerManager().getMinigamePlayer(p), true);
-			}
-		}
-		
-		Minigames.getPlugin().getMinigameManager().getAllMinigames().clear();
-		
-		try{
-			plugin.getConfig().load(plugin.getDataFolder() + "/config.yml");
-		}
-		catch(FileNotFoundException ex){
-			plugin.getLogger().info("Failed to load config, creating one.");
-			try{
-				plugin.getConfig().save(plugin.getDataFolder() + "/config.yml");
-			} 
-			catch(IOException e){
-				plugin.getLogger().log(Level.SEVERE, "Could not save config.yml!");
-				e.printStackTrace();
-			}
-		}
-		catch(Exception e){
-			plugin.getLogger().log(Level.SEVERE, "Failed to load config!");
-			e.printStackTrace();
-		}
+    @Override
+    public boolean onCommand(CommandSender sender, Minigame minigame,
+            String label, String[] args) {
+        for(Player p : plugin.getServer().getOnlinePlayers()){
+            if (plugin.getPlayerManager().getMinigamePlayer(p).isInMinigame()) {
+                plugin.getPlayerManager().quitMinigame(plugin.getPlayerManager().getMinigamePlayer(p), true);
+            }
+        }
+        
+        Minigames.getPlugin().getMinigameManager().getAllMinigames().clear();
+        
+        try{
+            plugin.getConfig().load(plugin.getDataFolder() + "/config.yml");
+        }
+        catch(FileNotFoundException ex){
+            plugin.getLogger().info("Failed to load config, creating one.");
+            try{
+                plugin.getConfig().save(plugin.getDataFolder() + "/config.yml");
+            }
+            catch(IOException e){
+                plugin.getLogger().log(Level.SEVERE, "Could not save config.yml!");
+                e.printStackTrace();
+            }
+        }
+        catch(Exception e){
+            plugin.getLogger().log(Level.SEVERE, "Failed to load config!");
+            e.printStackTrace();
+        }
 
         List<String> mgs = new ArrayList<>();
-		if (Minigames.getPlugin().getConfig().contains("minigames")) {
-			mgs = Minigames.getPlugin().getConfig().getStringList("minigames");
-		}
+        if (Minigames.getPlugin().getConfig().contains("minigames")) {
+            mgs = Minigames.getPlugin().getConfig().getStringList("minigames");
+        }
         final List<String> allMGS = new ArrayList<String>(mgs);
-		
-		if(!mgs.isEmpty()){
-			for(String mgm : allMGS){
-				Minigame game = new Minigame(mgm);
-				game.loadMinigame();
-				Minigames.getPlugin().getMinigameManager().addMinigame(game);
-			}
-		}
-		
-		sender.sendMessage(ChatColor.GREEN + "Reloaded Minigame configs");
-		return true;
-	}
+        
+        if(!mgs.isEmpty()){
+            for(String mgm : allMGS){
+                Minigame game = new Minigame(mgm);
+                game.loadMinigame();
+                Minigames.getPlugin().getMinigameManager().addMinigame(game);
+            }
+        }
+        
+        sender.sendMessage(ChatColor.GREEN + "Reloaded Minigame configs");
+        return true;
+    }
 
-	@Override
-	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-			String alias, String[] args) {
-		return null;
-	}
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+            String alias, String[] args) {
+        return null;
+    }
 
 }

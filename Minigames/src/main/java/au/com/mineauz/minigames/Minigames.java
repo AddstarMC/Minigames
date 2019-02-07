@@ -197,7 +197,7 @@ public class Minigames extends JavaPlugin{
             
             getConfig().options().copyDefaults(true);
             saveConfig();
-            //		playerManager.loadDCPlayers();
+            //        playerManager.loadDCPlayers();
             getPlayerManager().loadDeniedCommands();
             
             MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
@@ -205,10 +205,10 @@ public class Minigames extends JavaPlugin{
             for(String loadout : keys){
                 getMinigameManager().addLoadout(loadout);
                 Set<String> items = globalLoadouts.getConfig().getConfigurationSection(loadout).getKeys(false);
-    //			for(int i = 0; i < items.size(); i++){
-    //				if(globalLoadouts.getConfig().contains(loadout + "." + i))
-                //					minigameManager.getLoadout(loadout).addItemToLoadout(globalLoadouts.getConfig().getItemStack(loadout + "." + i));
-    //			}
+    //            for(int i = 0; i < items.size(); i++){
+    //                if(globalLoadouts.getConfig().contains(loadout + "." + i))
+                //                    minigameManager.getLoadout(loadout).addItemToLoadout(globalLoadouts.getConfig().getItemStack(loadout + "." + i));
+    //            }
                 for(String slot : items){
                     if (slot.matches("[-]?[0-9]+"))
                         getMinigameManager().getLoadout(loadout).addItem(globalLoadouts.getConfig().getItemStack(loadout + "." + slot), Integer.parseInt(slot));

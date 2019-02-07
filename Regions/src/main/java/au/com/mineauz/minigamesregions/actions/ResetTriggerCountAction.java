@@ -13,55 +13,55 @@ import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 
 public class ResetTriggerCountAction extends AbstractAction{
 
-	@Override
-	public String getName() {
-		return "RESET_TRIGGER_COUNT";
-	}
+    @Override
+    public String getName() {
+        return "RESET_TRIGGER_COUNT";
+    }
 
-	@Override
-	public String getCategory() {
-		return "Region/Node Actions";
-	}
-	
-	@Override
-	public void describe(Map<String, Object> out) {
-	}
+    @Override
+    public String getCategory() {
+        return "Region/Node Actions";
+    }
+    
+    @Override
+    public void describe(Map<String, Object> out) {
+    }
 
-	@Override
-	public boolean useInRegions() {
-		return true;
-	}
+    @Override
+    public boolean useInRegions() {
+        return true;
+    }
 
-	@Override
-	public boolean useInNodes() {
-		return true;
-	}
+    @Override
+    public boolean useInNodes() {
+        return true;
+    }
 
-	@Override
-	public void executeRegionAction(MinigamePlayer player, Region region) {
-		debug(player,region);
-		for(RegionExecutor ex : region.getExecutors())
-			ex.setTriggerCount(0);
-	}
+    @Override
+    public void executeRegionAction(MinigamePlayer player, Region region) {
+        debug(player,region);
+        for(RegionExecutor ex : region.getExecutors())
+            ex.setTriggerCount(0);
+    }
 
-	@Override
-	public void executeNodeAction(MinigamePlayer player, Node node) {
-		debug(player,node);
-		for(NodeExecutor ex : node.getExecutors())
-			ex.setTriggerCount(0);
-	}
+    @Override
+    public void executeNodeAction(MinigamePlayer player, Node node) {
+        debug(player,node);
+        for(NodeExecutor ex : node.getExecutors())
+            ex.setTriggerCount(0);
+    }
 
-	@Override
-	public void saveArguments(FileConfiguration config, String path) {
-	}
+    @Override
+    public void saveArguments(FileConfiguration config, String path) {
+    }
 
-	@Override
-	public void loadArguments(FileConfiguration config, String path) {
-	}
+    @Override
+    public void loadArguments(FileConfiguration config, String path) {
+    }
 
-	@Override
-	public boolean displayMenu(MinigamePlayer player, Menu previous) {
-		return false;
-	}
+    @Override
+    public boolean displayMenu(MinigamePlayer player, Menu previous) {
+        return false;
+    }
 
 }

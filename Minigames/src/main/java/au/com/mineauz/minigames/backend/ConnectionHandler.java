@@ -68,7 +68,7 @@ public class ConnectionHandler {
     }
     
     public void batchUpdate(StatementKey key, Object... arguments) throws SQLException {
-    	PreparedStatement statement = getStatement(key);
+        PreparedStatement statement = getStatement(key);
         Preconditions.checkNotNull(statement, "Statement was never registered (or failed)");
         
         inUse = true;
@@ -77,7 +77,7 @@ public class ConnectionHandler {
     }
     
     public int[] executeBatch(StatementKey key) throws SQLException {
-    	PreparedStatement statement = getStatement(key);
+        PreparedStatement statement = getStatement(key);
         Preconditions.checkNotNull(statement, "Statement was never registered (or failed)");
         
         inUse = true;

@@ -11,34 +11,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MinigameTimer{
-	private int time = 0;
-	private int otime = 0;
-	private Minigame minigame;
-	private List<Integer> timeMsg = new ArrayList<>();
-	private static Minigames plugin = Minigames.getPlugin();
-	private int taskID = -1;
-	private boolean broadcastTime = true;
-	
-	public MinigameTimer(Minigame minigame, int time){
-		this.time = time;
-		otime = time;
-		this.minigame = minigame;
-		timeMsg.addAll(plugin.getConfig().getIntegerList("multiplayer.timerMessageInterval"));
-		startTimer();
-	}
-	
-	public boolean isBroadcastingTime(){
-		return broadcastTime;
-	}
-	
-	public void setBroadcastTime(boolean bool){
-		broadcastTime = bool;
-	}
-	
-	public void startTimer(){
-		if(taskID != -1)
-			stopTimer();
-		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+    private int time = 0;
+    private int otime = 0;
+    private Minigame minigame;
+    private List<Integer> timeMsg = new ArrayList<>();
+    private static Minigames plugin = Minigames.getPlugin();
+    private int taskID = -1;
+    private boolean broadcastTime = true;
+    
+    public MinigameTimer(Minigame minigame, int time){
+        this.time = time;
+        otime = time;
+        this.minigame = minigame;
+        timeMsg.addAll(plugin.getConfig().getIntegerList("multiplayer.timerMessageInterval"));
+        startTimer();
+    }
+    
+    public boolean isBroadcastingTime(){
+        return broadcastTime;
+    }
+    
+    public void setBroadcastTime(boolean bool){
+        broadcastTime = bool;
+    }
+    
+    public void startTimer(){
+        if(taskID != -1)
+            stopTimer();
+        taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             time -= 1;
             if(minigame.isUsingXPBarTimer()){
                 float timeper = ((Integer)time).floatValue() / ((Integer)otime).floatValue();
@@ -71,19 +71,19 @@ public class MinigameTimer{
             if(time > 0)
                 Bukkit.getPluginManager().callEvent(new MinigameTimerTickEvent(minigame, minigame.getMinigameTimer()));
         }, 0, 20);
-	}
-	
-	public void stopTimer(){
-		if(taskID != -1){
-			Bukkit.getScheduler().cancelTask(taskID);
-		}
-	}
-	
-	public int getTimeLeft(){
-		return time;
-	}
-	
-	public void setTimeLeft(int time){
-		this.time = time;
-	}
+    }
+    
+    public void stopTimer(){
+        if(taskID != -1){
+            Bukkit.getScheduler().cancelTask(taskID);
+        }
+    }
+    
+    public int getTimeLeft(){
+        return time;
+    }
+    
+    public void setTimeLeft(int time){
+        this.time = time;
+    }
 }

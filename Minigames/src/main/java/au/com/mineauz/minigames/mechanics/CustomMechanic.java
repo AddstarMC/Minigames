@@ -12,58 +12,58 @@ import java.util.List;
 
 public class CustomMechanic extends GameMechanicBase{
 
-	@Override
-	public String getMechanic() {
-		return "custom";
-	}
+    @Override
+    public String getMechanic() {
+        return "custom";
+    }
 
-	@Override
-	public EnumSet<MinigameType> validTypes() {
-		return EnumSet.of(MinigameType.MULTIPLAYER, MinigameType.SINGLEPLAYER);
-	}
-	
-	@Override
-	public boolean checkCanStart(Minigame minigame, MinigamePlayer caller){
-		return true;
-	}
+    @Override
+    public EnumSet<MinigameType> validTypes() {
+        return EnumSet.of(MinigameType.MULTIPLAYER, MinigameType.SINGLEPLAYER);
+    }
+    
+    @Override
+    public boolean checkCanStart(Minigame minigame, MinigamePlayer caller){
+        return true;
+    }
 
-	@Override
-	public void startMinigame(Minigame minigame, MinigamePlayer caller) {
-	}
+    @Override
+    public void startMinigame(Minigame minigame, MinigamePlayer caller) {
+    }
 
-	@Override
-	public void stopMinigame(Minigame minigame, MinigamePlayer caller) {
-	}
+    @Override
+    public void stopMinigame(Minigame minigame, MinigamePlayer caller) {
+    }
 
-	@Override
+    @Override
     public void onJoinMinigame(Minigame minigame, MinigamePlayer player) {
-	}
+    }
 
-	@Override
-	public void quitMinigame(Minigame minigame, MinigamePlayer player,
-			boolean forced) {
-	}
+    @Override
+    public void quitMinigame(Minigame minigame, MinigamePlayer player,
+            boolean forced) {
+    }
 
-	@Override
-	public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
-			List<MinigamePlayer> losers) {
-	}
-	
-	@EventHandler
-	public void playerAutoBalance(PlayerDeathEvent event){
-		MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
-		if(ply == null) return;
-		if(ply.isInMinigame() && ply.getMinigame().isTeamGame()){
-			Minigame mgm = ply.getMinigame();
-			
-			if(mgm.getMechanicName().equals("custom")){
-				autoBalanceonDeath(ply,mgm);
-			}
-		}
-	}
-	
-	@Override
-	public MinigameModule displaySettings(Minigame minigame){
-		return null;
-	}
+    @Override
+    public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
+            List<MinigamePlayer> losers) {
+    }
+    
+    @EventHandler
+    public void playerAutoBalance(PlayerDeathEvent event){
+        MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
+        if(ply == null) return;
+        if(ply.isInMinigame() && ply.getMinigame().isTeamGame()){
+            Minigame mgm = ply.getMinigame();
+            
+            if(mgm.getMechanicName().equals("custom")){
+                autoBalanceonDeath(ply,mgm);
+            }
+        }
+    }
+    
+    @Override
+    public MinigameModule displaySettings(Minigame minigame){
+        return null;
+    }
 }

@@ -6,19 +6,19 @@ import au.com.mineauz.minigames.MinigamePlayer;
 
 public class RevertCheckpointEvent extends AbstractMinigameEvent{
 
-	private MinigamePlayer player = null;
+    private MinigamePlayer player = null;
 
-	public RevertCheckpointEvent(MinigamePlayer player){
-		super(null);
-		this.player = player;
-	}
-	
-	public MinigamePlayer getMinigamePlayer(){
-		return player;
-	}
-	
-	public Player getPlayer(){
-		return player.getPlayer();
-	}
+    public RevertCheckpointEvent(MinigamePlayer player){
+        super(null);
+        this.player = player;
+    }
+    
+    public MinigamePlayer getMinigamePlayer(){
+        return player;
+    }
+    
+    public Player getPlayer(){
+        return player.getPlayer();
+    }
 
 }

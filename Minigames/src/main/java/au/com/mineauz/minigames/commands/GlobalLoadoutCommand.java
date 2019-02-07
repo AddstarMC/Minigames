@@ -16,77 +16,77 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GlobalLoadoutCommand implements ICommand {
-	private MinigameManager mdata = Minigames.getPlugin().getMinigameManager();
+    private MinigameManager mdata = Minigames.getPlugin().getMinigameManager();
 
-	@Override
-	public String getName() {
-		return "globalloadout";
-	}
+    @Override
+    public String getName() {
+        return "globalloadout";
+    }
 
-	@Override
-	public String[] getAliases() {
-		return new String[] {"gloadout", "loadout"};
-	}
+    @Override
+    public String[] getAliases() {
+        return new String[] {"gloadout", "loadout"};
+    }
 
-	@Override
-	public boolean canBeConsole() {
-		return false;
-	}
+    @Override
+    public boolean canBeConsole() {
+        return false;
+    }
 
-	@Override
-	public String getDescription() {
-		return "Opens the Loadout edit window for Global Loadouts. These loadouts may be used in any Minigame.";
-	}
+    @Override
+    public String getDescription() {
+        return "Opens the Loadout edit window for Global Loadouts. These loadouts may be used in any Minigame.";
+    }
 
-	@Override
-	public String[] getParameters() {
-		return null;
-	}
+    @Override
+    public String[] getParameters() {
+        return null;
+    }
 
-	@Override
-	public String[] getUsage() {
-		return new String[] {
-				"/minigame globalloadout"
-		};
-	}
+    @Override
+    public String[] getUsage() {
+        return new String[] {
+                "/minigame globalloadout"
+        };
+    }
 
-	@Override
-	public String getPermissionMessage() {
-		return "You do not have permission to edit global loadouts!";
-	}
+    @Override
+    public String getPermissionMessage() {
+        return "You do not have permission to edit global loadouts!";
+    }
 
-	@Override
-	public String getPermission() {
-		return "minigame.globalloadout";
-	}
+    @Override
+    public String getPermission() {
+        return "minigame.globalloadout";
+    }
 
-	@Override
-	public boolean onCommand(CommandSender sender, Minigame minigame,
-			String label, String[] args) {
-		MinigamePlayer player = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
-		Menu loadouts = new Menu(6, getName(), player);
+    @Override
+    public boolean onCommand(CommandSender sender, Minigame minigame,
+            String label, String[] args) {
+        MinigamePlayer player = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
+        Menu loadouts = new Menu(6, getName(), player);
 
         List<String> des = new ArrayList<>();
-		des.add("Shift + Right Click to Delete");
+        des.add("Shift + Right Click to Delete");
         List<MenuItem> mi = new ArrayList<>();
-		for(String ld : mdata.getLoadouts()){
-			Material item = Material.WHITE_STAINED_GLASS_PANE;
-			if(mdata.getLoadout(ld).getItems().size() != 0){
-				item = mdata.getLoadout(ld).getItem((Integer)mdata.getLoadout(ld).getItems().toArray()[0]).getType();
-			}
-			mi.add(new MenuItemDisplayLoadout(ld, des, item, mdata.getLoadout(ld)));
-		}
-		loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, mdata.getLoadoutMap()), 53);
-		loadouts.addItems(mi);
-		
-		loadouts.displayMenu(player);
-		return true;
-	}
+        for(String ld : mdata.getLoadouts()){
+            Material item = Material.WHITE_STAINED_GLASS_PANE;
+            if(mdata.getLoadout(ld).getItems().size() != 0){
+                item = mdata.getLoadout(ld).getItem((Integer)mdata.getLoadout(ld).getItems().toArray()[0]).getType();
+            }
+            mi.add(new MenuItemDisplayLoadout(ld, des, item, mdata.getLoadout(ld)));
+        }
+        loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, mdata.getLoadoutMap()), 53);
+        loadouts.addItems(mi);
+        
+        loadouts.displayMenu(player);
+        return true;
+    }
 
-	@Override
-	public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-			String alias, String[] args) {
-		return null;
-	}
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
+            String alias, String[] args) {
+        return null;
+    }
 
 }

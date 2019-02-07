@@ -20,6 +20,7 @@
       <spigot.version>${spigot.api.version}.${spigot.minor.version}-R0.1-SNAPSHOT</spigot.version>
       <spigot.api.version>1.13</spigot.api.version>
       <spigot.minor.version>2</spigot.minor.version>
+      <codacy.api.token>${env.CODACY_API_TOKEN}</codacy.api.token>
   </properties>
   <developers>
     <developer>
@@ -61,7 +62,7 @@
   </distributionManagement>
   <modules>
     <module>Minigames</module>
-	<module>Regions</module>
+    <module>Regions</module>
     <module>minigamesdistribution</module>
   </modules>
   <repositories>
@@ -161,9 +162,35 @@
               <artifactId>maven-dependency-plugin</artifactId>
               <version>2.9</version>
           </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-project-info-reports-plugin</artifactId>
+              <version>3.0.0</version>
+          </plugin>
+              <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>cobertura-maven-plugin</artifactId>
+                  <version>2.7</version>
+              </plugin>
       </plugins>
     </pluginManagement>
   </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.7</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>cobertura</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
     <profiles>
         <profile>
             <id>BUKKIT</id>
@@ -204,5 +231,6 @@
                 </dependency>
             </dependencies>
         </profile>
+
     </profiles>
 </project>

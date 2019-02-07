@@ -4,7 +4,7 @@ import au.com.mineauz.minigamesregions.triggers.Trigger;
 
 public class RegionExecutor extends BaseExecutor{
 
-	public RegionExecutor(Trigger trigger) {
-		super(trigger);
-	}
+    public RegionExecutor(Trigger trigger) {
+        super(trigger);
+    }
 }

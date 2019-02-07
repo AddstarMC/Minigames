@@ -21,106 +21,106 @@ import java.util.logging.Logger;
 
 @SuppressWarnings("SyntaxError")
 public class SQLiteBackend extends Backend {
-	private ConnectionPool pool;
-	private final Logger logger;
-	
-	private StatementKey insertMinigame;
-	private StatementKey getMinigameId;
-	
-	private StatementKey insertPlayer;
-	private StatementKey loadStatSettings;
-	private StatementKey saveStatSettings;
-	private boolean debug;
-	private SQLiteStatLoader loader;
-	private SQLiteStatSaver saver;
-	private File database;
+    private ConnectionPool pool;
+    private final Logger logger;
+    
+    private StatementKey insertMinigame;
+    private StatementKey getMinigameId;
+    
+    private StatementKey insertPlayer;
+    private StatementKey loadStatSettings;
+    private StatementKey saveStatSettings;
+    private boolean debug;
+    private SQLiteStatLoader loader;
+    private SQLiteStatSaver saver;
+    private File database;
 
 
-	public SQLiteBackend(Logger logger) {
-		this.logger = logger;
-		loader = new SQLiteStatLoader(this, logger);
-		saver = new SQLiteStatSaver(this, logger);
-		try {
+    public SQLiteBackend(Logger logger) {
+        this.logger = logger;
+        loader = new SQLiteStatLoader(this, logger);
+        saver = new SQLiteStatSaver(this, logger);
+        try {
             database = new File(Minigames.getPlugin().getDataFolder(), "minigames.db");
-		}catch (NullPointerException e){
-			logger.warning("Could not locate or set database path");
-		}
+        }catch (NullPointerException e){
+            logger.warning("Could not locate or set database path");
+        }
 
-	}
-	public void setDatabase(File dbbath){
-		database = dbbath;
-	}
+    }
+    public void setDatabase(File dbbath){
+        database = dbbath;
+    }
 
 
-	@Override
-	public boolean initialize(ConfigurationSection config, boolean debug) {
-		this.debug = debug;
+    @Override
+    public boolean initialize(ConfigurationSection config, boolean debug) {
+        this.debug = debug;
 
-		try {
-			Class.forName("org.sqlite.JDBC");
-			
-			// Create the pool
-			if(database == null){
-				return false;
-			}
-			String url = "jdbc:sqlite:" + database.getAbsolutePath();
-			if(debug)logger.info("URL: " + url);
-			Properties properties =  new Properties();
-			properties.put("username","");
-			properties.put("password","");
-			if(debug)logger.info("Properties: " +properties.toString());
-			pool = new ConnectionPool(url, properties);
-			if(debug)logger.info("Pool: " +pool.toString());
-			createStatements();
-			
-			// Test the connection
-			try {
-				ConnectionHandler handler = pool.getConnection();
-				ensureTables(handler);
-				handler.release();
-				return true;
-			} catch (SQLException e) {
-				logger.severe("Failed to connect to the SQLite database. Please check your database settings");
-			}
-		} catch (ClassNotFoundException e) {
-			logger.severe("Failed to find sqlite JDBC driver. This version of craftbukkit is defective.");
-		}
-		
-		return false;
-	}
-	
-	@Override
-	public void shutdown() {
-		pool.closeConnections();
-	}
-	
-	@Override
-	public void clean() {
-		pool.removeExpired();
-	}
+        try {
+            Class.forName("org.sqlite.JDBC");
+            
+            // Create the pool
+            if(database == null){
+                return false;
+            }
+            String url = "jdbc:sqlite:" + database.getAbsolutePath();
+            if(debug)logger.info("URL: " + url);
+            Properties properties =  new Properties();
+            properties.put("username","");
+            properties.put("password","");
+            if(debug)logger.info("Properties: " +properties.toString());
+            pool = new ConnectionPool(url, properties);
+            if(debug)logger.info("Pool: " +pool.toString());
+            createStatements();
+            
+            // Test the connection
+            try {
+                ConnectionHandler handler = pool.getConnection();
+                ensureTables(handler);
+                handler.release();
+                return true;
+            } catch (SQLException e) {
+                logger.severe("Failed to connect to the SQLite database. Please check your database settings");
+            }
+        } catch (ClassNotFoundException e) {
+            logger.severe("Failed to find sqlite JDBC driver. This version of craftbukkit is defective.");
+        }
+        
+        return false;
+    }
+    
+    @Override
+    public void shutdown() {
+        pool.closeConnections();
+    }
+    
+    @Override
+    public void clean() {
+        pool.removeExpired();
+    }
 
-	private boolean checkForColumn(Statement statement, String tableName, String columnName) {
+    private boolean checkForColumn(Statement statement, String tableName, String columnName) {
 
-		try {
-			ResultSet rs = statement.executeQuery("Pragma table_info(`" + tableName + "`);");
+        try {
+            ResultSet rs = statement.executeQuery("Pragma table_info(`" + tableName + "`);");
 
-			int nameColIndex = rs.findColumn("name");
+            int nameColIndex = rs.findColumn("name");
 
-			while (rs.next()) {
-				if (rs.getString(nameColIndex).equals(columnName))
-					return true;
-			}
+            while (rs.next()) {
+                if (rs.getString(nameColIndex).equals(columnName))
+                    return true;
+            }
 
-			return false;
+            return false;
 
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Exception looking for SQLite column " + columnName + " on table " + tableName, e);
-			return false;
-		}
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Exception looking for SQLite column " + columnName + " on table " + tableName, e);
+            return false;
+        }
 
-	}
+    }
 
-	private void ensureTables(ConnectionHandler connection) throws SQLException {
+    private void ensureTables(ConnectionHandler connection) throws SQLException {
         try (Statement statement = connection.getConnection().createStatement()) {
             // Check the players table
             try {
@@ -176,73 +176,73 @@ public class SQLiteBackend extends Backend {
                 statement.executeUpdate("CREATE TABLE `StatMetadata` (`minigame_id` INTEGER REFERENCES `Minigames` (`minigame_id`) ON DELETE CASCADE, `stat` TEXT NOT NULL, `display_name` TEXT, `format` TEXT, PRIMARY KEY (`minigame_id`, `stat`));");
             }
         }
-	}
-	
-	private void createStatements() {
-		insertMinigame = new StatementKey("INSERT OR IGNORE INTO `Minigames` (`name`) VALUES (?);", true);
-		getMinigameId = new StatementKey("SELECT `minigame_id` FROM `Minigames` WHERE `name` = ?;");
-		insertPlayer = new StatementKey("INSERT OR REPLACE INTO `Players` VALUES (?, ?, ?);");
-		loadStatSettings = new StatementKey("SELECT `stat`, `display_name`, `format` FROM `StatMetadata` WHERE `minigame_id`=?;");
-		saveStatSettings = new StatementKey("INSERT OR REPLACE INTO `StatMetadata` VALUES (?, ?, ?, ?);");
-	}
-	
-	ConnectionPool getPool() {
-		return pool;
-	}
-	
-	@Override
-	public void saveGameStatus(StoredGameStats stats) {
-		saver.saveData(stats);
-	}
+    }
+    
+    private void createStatements() {
+        insertMinigame = new StatementKey("INSERT OR IGNORE INTO `Minigames` (`name`) VALUES (?);", true);
+        getMinigameId = new StatementKey("SELECT `minigame_id` FROM `Minigames` WHERE `name` = ?;");
+        insertPlayer = new StatementKey("INSERT OR REPLACE INTO `Players` VALUES (?, ?, ?);");
+        loadStatSettings = new StatementKey("SELECT `stat`, `display_name`, `format` FROM `StatMetadata` WHERE `minigame_id`=?;");
+        saveStatSettings = new StatementKey("INSERT OR REPLACE INTO `StatMetadata` VALUES (?, ?, ?, ?);");
+    }
+    
+    ConnectionPool getPool() {
+        return pool;
+    }
+    
+    @Override
+    public void saveGameStatus(StoredGameStats stats) {
+        saver.saveData(stats);
+    }
 
-	@Override
-	public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order) {
-		return loadStats(minigame, stat, field, order, 0, Integer.MAX_VALUE);
-	}
+    @Override
+    public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order) {
+        return loadStats(minigame, stat, field, order, 0, Integer.MAX_VALUE);
+    }
 
-	@Override
-	public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order, int offset, int length) {
-		return loader.loadStatValues(minigame, stat, field, order, offset, length);
-	}
-	
-	@Override
-	public long getStat(Minigame minigame, UUID playerId, MinigameStat stat, StatValueField field) {
-		return loader.loadSingleValue(minigame, stat, field, playerId);
-	}
-	
-	public int getMinigameId(ConnectionHandler handler, Minigame minigame) throws SQLException {
-		ResultSet rs = handler.executeQuery(getMinigameId, minigame.getName(false));
-		try {
-			if (rs.next()) {
-				return rs.getInt("minigame_id");
-			}
-		} finally {
-			rs.close();
-		}
-		
-		rs = handler.executeUpdateWithResults(insertMinigame, minigame.getName(false));
-		try {
-			if (rs.next()) {
-				return rs.getInt(1);
-			} else {
-				throw new AssertionError("Insert should have returned id");
-			}
-		} finally {
-			rs.close();
-		}
-	}
-	
-	public void updatePlayer(ConnectionHandler handler, MinigamePlayer player) throws SQLException {
-		handler.executeUpdate(insertPlayer, player.getUUID().toString(), player.getName(), player.getDisplayName());
-	}
-	
-	@Override
-	public Map<MinigameStat, StatSettings> loadStatSettings(Minigame minigame) {
-		ConnectionHandler handler = null;
-		try {
-			handler = pool.getConnection();
-			
-			int minigameId = getMinigameId(handler, minigame);
+    @Override
+    public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order, int offset, int length) {
+        return loader.loadStatValues(minigame, stat, field, order, offset, length);
+    }
+    
+    @Override
+    public long getStat(Minigame minigame, UUID playerId, MinigameStat stat, StatValueField field) {
+        return loader.loadSingleValue(minigame, stat, field, playerId);
+    }
+    
+    public int getMinigameId(ConnectionHandler handler, Minigame minigame) throws SQLException {
+        ResultSet rs = handler.executeQuery(getMinigameId, minigame.getName(false));
+        try {
+            if (rs.next()) {
+                return rs.getInt("minigame_id");
+            }
+        } finally {
+            rs.close();
+        }
+        
+        rs = handler.executeUpdateWithResults(insertMinigame, minigame.getName(false));
+        try {
+            if (rs.next()) {
+                return rs.getInt(1);
+            } else {
+                throw new AssertionError("Insert should have returned id");
+            }
+        } finally {
+            rs.close();
+        }
+    }
+    
+    public void updatePlayer(ConnectionHandler handler, MinigamePlayer player) throws SQLException {
+        handler.executeUpdate(insertPlayer, player.getUUID().toString(), player.getName(), player.getDisplayName());
+    }
+    
+    @Override
+    public Map<MinigameStat, StatSettings> loadStatSettings(Minigame minigame) {
+        ConnectionHandler handler = null;
+        try {
+            handler = pool.getConnection();
+            
+            int minigameId = getMinigameId(handler, minigame);
 
             Map<MinigameStat, StatSettings> settings = Maps.newHashMap();
 
@@ -277,56 +277,56 @@ public class SQLiteBackend extends Backend {
 
                 return settings;
             }
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return Collections.emptyMap();
-		} finally {
-			if (handler != null) {
-				handler.release();
-			}
-		}
-	}
-	
-	@Override
-	public void saveStatSettings(Minigame minigame, Collection<StatSettings> settings) {
-		ConnectionHandler handler = null;
-		try {
-			handler = pool.getConnection();
-			handler.beginTransaction();
-			
-			int minigameId = getMinigameId(handler, minigame);
-			for (StatSettings setting : settings) {
-				handler.batchUpdate(saveStatSettings, minigameId, setting.getStat().getName(), setting.getDisplayName(), setting.getFormat().name().toUpperCase());
-			}
-			
-			handler.executeBatch(saveStatSettings);
-			handler.endTransaction();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			handler.endTransactionFail();
-		} finally {
-			if (handler != null) {
-				handler.release();
-			}
-		}
-	}
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Collections.emptyMap();
+        } finally {
+            if (handler != null) {
+                handler.release();
+            }
+        }
+    }
+    
+    @Override
+    public void saveStatSettings(Minigame minigame, Collection<StatSettings> settings) {
+        ConnectionHandler handler = null;
+        try {
+            handler = pool.getConnection();
+            handler.beginTransaction();
+            
+            int minigameId = getMinigameId(handler, minigame);
+            for (StatSettings setting : settings) {
+                handler.batchUpdate(saveStatSettings, minigameId, setting.getStat().getName(), setting.getDisplayName(), setting.getFormat().name().toUpperCase());
+            }
+            
+            handler.executeBatch(saveStatSettings);
+            handler.endTransaction();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            handler.endTransactionFail();
+        } finally {
+            if (handler != null) {
+                handler.release();
+            }
+        }
+    }
 
-	@Override
-	protected BackendImportCallback getImportCallback() {
-		return new SQLImport(pool);
-	}
-	
-	@Override
-	public void exportTo(Backend other, ExportNotifier notifier) {
-		BackendImportCallback callback = getImportCallback(other);
-		SQLExport exporter = new SQLExport(pool, callback, notifier);
-		exporter.beginExport();
-	}
-	
-	@Override
-	public boolean doConversion(ExportNotifier notifier) {
-		BackendImportCallback callback = getImportCallback();
+    @Override
+    protected BackendImportCallback getImportCallback() {
+        return new SQLImport(pool);
+    }
+    
+    @Override
+    public void exportTo(Backend other, ExportNotifier notifier) {
+        BackendImportCallback callback = getImportCallback(other);
+        SQLExport exporter = new SQLExport(pool, callback, notifier);
+        exporter.beginExport();
+    }
+    
+    @Override
+    public boolean doConversion(ExportNotifier notifier) {
+        BackendImportCallback callback = getImportCallback();
         FlatFileExporter exporter = new FlatFileExporter(new File(Minigames.getPlugin().getDataFolder(), "completion.yml"), callback, notifier);
-		return exporter.doExport();
-	}
+        return exporter.doExport();
+    }
 }
