@@ -212,6 +212,14 @@
           </executions>
         </plugin>
         <plugin>
+          <groupId>org.eluder.coveralls</groupId>
+          <artifactId>coveralls-maven-plugin</artifactId>
+          <version>4.3.0</version>
+          <configuration>
+            <repoToken>tGd4UFZlq2ltbSDTmfeo7GhG5x0LsHhoG</repoToken>
+          </configuration>
+        </plugin>
+        <plugin>
           <groupId>com.gavinmogan</groupId>
           <artifactId>codacy-maven-plugin</artifactId>
           <version>1.0.3</version>
