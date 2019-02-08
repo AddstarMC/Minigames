@@ -7,6 +7,7 @@ To build this source you require Vault and the latest build of Bukkit.
 
 `mvn clean install`
 ####Build Status
+
 Branch|Status|Coverage|
 ------|------|------|
 |Master|[![Build Status - Master](https://travis-ci.org/AddstarMC/Minigames.svg?branch=master)](https://travis-ci.org/AddstarMC/Minigames)|[![Coverage Status](https://coveralls.io/repos/github/AddstarMC/Minigames/badge.svg?branch=master)](https://coveralls.io/github/AddstarMC/Minigames?branch=master)| 
