@@ -16,6 +16,7 @@
     <mysql.database>test_games</mysql.database>
     <mysql.host>localhost</mysql.host>
     <mysql.port>3306</mysql.port>
+    <skipTests>false</skipTests>
   </properties>
   <repositories>
     <!-- Spigot repo -->
@@ -193,6 +194,9 @@
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
+          <configuration>
+            <skip>${skipTests}</skip>
+          </configuration>
           <executions>
             <execution>
               <id>jacoco</id>
@@ -210,14 +214,16 @@
           <executions>
             <execution>
               <id>coveralls</id>
+              <phase>verify</phase>
               <goals>
                 <goal>report </goal>
               </goals>
-              <phase>verify</phase>
             </execution>
           </executions>
           <configuration>
+            <skip>${skipTests}</skip>
             <repoToken>tGd4UFZlq2ltbSDTmfeo7GhG5x0LsHhoG</repoToken>
+
           </configuration>
         </plugin>
         <plugin>
