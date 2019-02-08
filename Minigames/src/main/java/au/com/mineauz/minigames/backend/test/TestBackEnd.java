@@ -22,7 +22,7 @@ public class TestBackEnd extends Backend {
      * Initializes the backend. This may include creating / converting tables as needed
      *
      * @param config The configuration to load settings from
-     * @param debug
+     * @param debug if in debug mode
      *
      * @return Returns true if the initialization succeeded
      */

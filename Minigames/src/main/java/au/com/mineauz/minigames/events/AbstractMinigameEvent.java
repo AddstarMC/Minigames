@@ -6,39 +6,52 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Created for the AddstarMC Project.
- * Created by Narimm on 13/02/2017.
+ * Created for the AddstarMC Project. Created by Narimm on 13/02/2017.
  */
 public class AbstractMinigameEvent extends Event implements Cancellable {
 
-    private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList HANDLERS = new HandlerList();
     private boolean cancelled = false;
-    private Minigame mgm;
-
-    public AbstractMinigameEvent(Minigame mgm) {
-        this.mgm = mgm;
+    private final Minigame mgm;
+    /**
+     * Instantiates a new Abstract minigame event.
+     *
+     * @param game the mgm
+     */
+    public AbstractMinigameEvent(final Minigame game) {
+        super();
+        this.mgm = game;
     }
-
+    /**
+     *  True if cancelled.
+     * @return boolean
+     */
     @Override
     public boolean isCancelled() {
-        return cancelled;
+        return this.cancelled;
     }
-
+    /**
+     * Sets the cancel status of the event.
+     * @param b boolean
+     */
     @Override
-    public void setCancelled(boolean b) {
-        cancelled=b;
+    public void setCancelled(final boolean b) {
+        this.cancelled = b;
     }
-
-    public Minigame getMinigame(){
-        return mgm;
+    /**
+     * Get minigame minigame.
+     *
+     * @return the minigame
+     */
+    public Minigame getMinigame() {
+        return this.mgm;
     }
-
+    /**
+     * The event handlers.
+     * @return HandlerList
+     */
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
+        return HANDLERS;
     }
 }

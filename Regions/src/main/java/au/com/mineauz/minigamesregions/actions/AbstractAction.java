@@ -15,25 +15,39 @@ import java.util.List;
  * Created by benjamincharlton on 19/12/2017.
  */
 public abstract class AbstractAction implements ActionInterface {
-
-    public void debug(MinigamePlayer p, ScriptObject obj){
+    /**
+     * Logs Debug re these 2 items.
+     *
+     * @param p the player
+     * @param obj a script object
+     */
+    public void debug(final MinigamePlayer p, final ScriptObject obj) {
         if (Minigames.getPlugin().isDebugging()) {
-            Minigames.getPlugin().getLogger().info("Debug: Execute on Obj:" + String.valueOf(obj) + " as Action: " + String.valueOf(this) + " Player: " + String.valueOf(p));
+            Minigames.getPlugin().getLogger().info("Debug: Execute on Obj:"
+                    + obj.getAsString() + " as Action: " + this + " Player: "
+                    + p.getAsString());
         }
     }
-    void setWinnersLosers(MinigamePlayer winner){
-        if(winner.getMinigame().getType() != MinigameType.SINGLEPLAYER){
-            List<MinigamePlayer> w;
-            List<MinigamePlayer> l;
-            if(winner.getMinigame().isTeamGame()){
+    /**
+     * Set winners losers.
+     *
+     * @param winner the winner
+     */
+    void setWinnersLosers(final MinigamePlayer winner) {
+        if (winner.getMinigame().getType() != MinigameType.SINGLEPLAYER) {
+            final List<MinigamePlayer> w;
+            final List<MinigamePlayer> l;
+            if (winner.getMinigame().isTeamGame()) {
                 w = new ArrayList<>(winner.getTeam().getPlayers());
-                l = new ArrayList<>(winner.getMinigame().getPlayers().size() - winner.getTeam().getPlayers().size());
-                for(Team t : TeamsModule.getMinigameModule(winner.getMinigame()).getTeams()){
-                    if(t != winner.getTeam())
+                l = new ArrayList<>(winner.getMinigame().getPlayers().size()
+                        - winner.getTeam().getPlayers().size());
+                for (final Team t
+                        :TeamsModule.getMinigameModule(winner.getMinigame()).getTeams()) {
+                    if (t != winner.getTeam()) {
                         l.addAll(t.getPlayers());
+                    }
                 }
-            }
-            else{
+            } else {
                 w = new ArrayList<>(1);
                 l = new ArrayList<>(winner.getMinigame().getPlayers().size());
                 w.add(winner);
@@ -41,9 +55,8 @@ public abstract class AbstractAction implements ActionInterface {
                 l.remove(winner);
             }
             Minigames.getPlugin().getPlayerManager().endMinigame(winner.getMinigame(), w, l);
-        } else{
+        } else {
             Minigames.getPlugin().getPlayerManager().endMinigame(winner);
         }
     }
-
 }
