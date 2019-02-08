@@ -30,7 +30,7 @@ public class BukkitDisplayCuboid extends AbstractDisplayObject implements IDispl
     
     @Override
     public void show() {
-        temp.setWorld(world);
+        temp.setWorld(getWorld());
         for(int x = minCorner.getBlockX(); x <= maxCorner.getBlockX(); x++){
             temp.setX(x);
             for(int y = minCorner.getBlockY(); y <= maxCorner.getBlockY(); y++){
@@ -53,7 +53,7 @@ public class BukkitDisplayCuboid extends AbstractDisplayObject implements IDispl
     @SuppressWarnings("deprecation")
     @Override
     public void hide() {
-        temp.setWorld(world);
+        temp.setWorld(getWorld());
         for(int x = minCorner.getBlockX(); x <= maxCorner.getBlockX(); x++){
             temp.setX(x);
             for(int y = minCorner.getBlockY(); y <= maxCorner.getBlockY(); y++){
@@ -78,7 +78,7 @@ public class BukkitDisplayCuboid extends AbstractDisplayObject implements IDispl
         if (player != null) {
             player.sendBlockChange(temp, mat, data);
         } else {
-            for (Player player : world.getPlayers()) {
+            for (Player player : getWorld().getPlayers()) {
                 player.sendBlockChange(temp, mat, data);
             }
         }

@@ -41,7 +41,7 @@ public class SpigotDisplayCuboid extends AbstractDisplayObject implements IDispl
     @Override
     public void refresh() {
         // Dont display effect if they cant see it
-        if (player != null && player.getWorld() != world)
+        if (player != null && player.getWorld() != getWorld())
             return;
         
         double step = 0.5;
@@ -75,10 +75,10 @@ public class SpigotDisplayCuboid extends AbstractDisplayObject implements IDispl
         temp.setX(x);
         temp.setY(y);
         temp.setZ(z);
-        temp.setWorld(world);
+        temp.setWorld(getWorld());
         
         if (player == null) {
-            world.spawnParticle(Particle.BARRIER, temp, 1);
+            getWorld().spawnParticle(Particle.BARRIER, temp, 1);
         } else {
             player.spawnParticle(Particle.BARRIER, temp, 1);
         }

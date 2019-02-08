@@ -34,7 +34,7 @@ public class BukkitDisplayPoint extends AbstractDisplayObject implements IDispla
     
     @Override
     public void show() {
-        temp.setWorld(world);
+        temp.setWorld(getWorld());
         temp.setX(position.getX());
         temp.setY(position.getY());
         temp.setZ(position.getZ());
@@ -46,7 +46,7 @@ public class BukkitDisplayPoint extends AbstractDisplayObject implements IDispla
     @Override
     @SuppressWarnings("deprecation")
     public void hide() {
-        temp.setWorld(world);
+        temp.setWorld(getWorld());
         temp.setX(position.getX());
         temp.setY(position.getY());
         temp.setZ(position.getZ());
@@ -60,7 +60,7 @@ public class BukkitDisplayPoint extends AbstractDisplayObject implements IDispla
         if (player != null) {
             player.sendBlockChange(temp, mat, data);
         } else {
-            for (Player player : world.getPlayers()) {
+            for (Player player : getWorld().getPlayers()) {
                 player.sendBlockChange(temp, mat, data);
             }
         }

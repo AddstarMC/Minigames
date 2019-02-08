@@ -46,7 +46,7 @@ public class SpigotDisplayPoint extends AbstractDisplayObject implements IDispla
 
     @Override
     public void refresh() {
-        if (player != null && player.getWorld() != world) {
+        if (player != null && player.getWorld() != getWorld()) {
             return;
         }
         
@@ -75,7 +75,7 @@ public class SpigotDisplayPoint extends AbstractDisplayObject implements IDispla
     }
     
     private void placeEffect(double x, double y, double z, Particle effect) {
-        temp.setWorld(world);
+        temp.setWorld(getWorld());
         temp.setX(x);
         temp.setY(y);
         temp.setZ(z);
@@ -83,7 +83,7 @@ public class SpigotDisplayPoint extends AbstractDisplayObject implements IDispla
         if (player != null) {
             player.getWorld().spawnParticle(effect,temp,1,0,0,0);
         } else {
-            world.spawnParticle(effect,temp,1,0,0,0);
+            getWorld().spawnParticle(effect,temp,1,0,0,0);
         }
     }
 }

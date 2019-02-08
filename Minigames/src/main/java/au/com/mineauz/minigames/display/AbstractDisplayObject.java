@@ -12,7 +12,7 @@ public abstract class AbstractDisplayObject implements IDisplayObject {
     
     private final DisplayManager manager;
   
-    private Player player;
+    protected Player player;
     
     /**
      * Instantiates a new Abstract display object.
