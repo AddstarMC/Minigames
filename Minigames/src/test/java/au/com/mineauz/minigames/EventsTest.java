@@ -55,24 +55,6 @@ public class EventsTest {
         game = TestHelper.createMinigame(plugin,world, MinigameType.MULTIPLAYER, GameMechanics.MECHANIC_NAME.KILLS);
     }
     
-    public void tearDown() throws Exception {
-        wait(2000);
-        MockBukkit.unload();
-        server = null;
-    }
-    
-    @Test
-    public void onPlayerDeath() {
-    }
-    
-    @Test
-    public void playerDropItem() {
-    }
-    
-    @Test
-    public void itemPickup() {
-    }
-    
     public void onPlayerDisconnect() {
         PlayerMock mock = server.addPlayer();
         mock.setLocation(server.getWorld("GAMES").getSpawnLocation());
@@ -99,23 +81,4 @@ public class EventsTest {
         
     }
     
-    @Test
-    public void playerInterract() {
-    }
-    
-    @Test
-    public void onTeleportAway() {
-    }
-    
-    @Test
-    public void onGMChange() {
-    }
-    
-    @Test
-    public void onFlyToggle() {
-    }
-    
-    @Test
-    public void playerRevert() {
-    }
 }

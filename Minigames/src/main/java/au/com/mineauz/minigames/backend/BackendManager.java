@@ -182,6 +182,7 @@ public class BackendManager {
      * @return A ListenerableFuture that returns a map of minigame stats and their settings
      */
     public ListenableFuture<Map<MinigameStat, StatSettings>> loadStatSettings(final Minigame minigame) {
+        
         return executorService.submit(() -> backend.loadStatSettings(minigame));
     }
     
@@ -192,6 +193,10 @@ public class BackendManager {
      * @return A ListenableFuture to get the status of the save
      */
     public ListenableFuture<Void> saveStatSettings(final Minigame minigame, final Collection<StatSettings> settings) {
+        if(backend instanceof TestBackEnd){
+            backend.saveStatSettings(minigame,settings);
+            return null;
+        }
         return executorService.submit(() -> {
             backend.saveStatSettings(minigame, settings);
             return null;

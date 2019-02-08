@@ -92,7 +92,6 @@ public class MinigamesTest {
         plugin.getMinigameManager().addMinigame(game);
     }
     
-    @Test
     public void onJoinMinigame() {
         plugin.getPlayerManager().addMinigamePlayer(player);
         MinigamePlayer mplayer = plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId());
