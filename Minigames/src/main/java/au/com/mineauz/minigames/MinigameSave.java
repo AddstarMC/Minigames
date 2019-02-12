@@ -11,7 +11,6 @@ public class MinigameSave {
     private FileConfiguration minigameSave = null;
     private File minigameSaveFile = null;
     String minigame = null;
-    private static Minigames plugin = Minigames.getPlugin();
     private String name;
     
     public MinigameSave(String name){
@@ -30,13 +29,13 @@ public class MinigameSave {
     public void reloadFile(){
         if(minigame != null){
             if(minigameSaveFile == null){
-                minigameSaveFile = new File(plugin.getDataFolder() + "/minigames/" + minigame + "/", name + ".yml");
+                minigameSaveFile = new File(Minigames.getPlugin().getDataFolder() + "/minigames/" + minigame + "/", name + ".yml");
             }
             minigameSave = YamlConfiguration.loadConfiguration(minigameSaveFile);
         }
         else{
             if(minigameSaveFile == null){
-                minigameSaveFile = new File(plugin.getDataFolder() + "/", name + ".yml");
+                minigameSaveFile = new File(Minigames.getPlugin().getDataFolder() + "/", name + ".yml");
             }
             minigameSave = YamlConfiguration.loadConfiguration(minigameSaveFile);
         }
@@ -57,7 +56,7 @@ public class MinigameSave {
             minigameSave.save(minigameSaveFile);
         }
         catch(IOException ex) {
-            plugin.getLogger().log(Level.SEVERE, "Could not save " + minigame + " config file!");
+            Minigames.getPlugin().getLogger().log(Level.SEVERE, "Could not save " + minigame + " config file!");
         }
     }
     

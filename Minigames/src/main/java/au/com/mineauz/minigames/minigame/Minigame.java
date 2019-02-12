@@ -94,7 +94,7 @@ public class Minigame implements ScriptObject {
     private LocationFlag regenArea1 = new LocationFlag(null, "regenarea.1");
     private LocationFlag regenArea2 = new LocationFlag(null, "regenarea.2");
     private IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
-
+    
     private Map<String, MinigameModule> modules = new HashMap<>();
     
     private Scoreboard sbManager = Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard();

@@ -67,7 +67,6 @@ public class LoadoutModule extends MinigameModule {
                 if (key.matches("[-]?[0-9]+"))
                     getLoadout("default").addItem(config.getItemStack(getMinigame() + ".loadout." + key), Integer.parseInt(key));
             }
-            
             if(config.contains(getMinigame() + ".loadout.potions")){
                 keys = config.getConfigurationSection(getMinigame() + ".loadout.potions").getKeys(false);
                 for(String eff : keys){
@@ -79,11 +78,9 @@ public class LoadoutModule extends MinigameModule {
                     }
                 }
             }
-            
             if(config.contains(getMinigame() + ".loadout.usepermissions")){
                 getLoadout("default").setUsePermissions(config.getBoolean(getMinigame() + ".loadout.usepermissions"));
             }
-            
             if(config.contains(getMinigame() + ".loadout.falldamage")){
                 getLoadout("default").setHasFallDamage(config.getBoolean(getMinigame() + ".loadout.falldamage"));
             }
@@ -124,7 +121,6 @@ public class LoadoutModule extends MinigameModule {
             }
         }
     }
-    
     public static LoadoutModule getMinigameModule(Minigame minigame){
         return (LoadoutModule) minigame.getModule("Loadouts");
     }

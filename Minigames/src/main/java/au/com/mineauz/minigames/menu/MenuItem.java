@@ -97,7 +97,7 @@ public class MenuItem {
         return getItem();
     }
     
-    public void checkValidEntry(String entry){
+     public void checkValidEntry(String entry){
         //Do Stuff
     }
     

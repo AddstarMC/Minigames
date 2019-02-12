@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames;
 
+import au.com.mineauz.minigames.managers.ResourcePackManager;
 import com.google.common.io.Closeables;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -48,7 +49,7 @@ public class Minigames extends JavaPlugin{
 
     public DisplayManager display;
 
-
+    private ResourcePackManager resourceManager;
     private MinigamePlayerManager playerManager;
     private MinigameManager minigameManager;
     private FileConfiguration lang = null;
@@ -264,7 +265,7 @@ public class Minigames extends JavaPlugin{
         }
     }
     private void setupMinigames(){
-
+        resourceManager =  new ResourcePackManager();
         minigameManager = new MinigameManager();
         playerManager = new MinigamePlayerManager();
         display = new DisplayManager();
@@ -517,5 +518,9 @@ public class Minigames extends JavaPlugin{
     
     public MinigameManager getMinigameManager() {
         return minigameManager;
+    }
+    
+    public ResourcePackManager getResourceManager() {
+        return resourceManager;
     }
 }
