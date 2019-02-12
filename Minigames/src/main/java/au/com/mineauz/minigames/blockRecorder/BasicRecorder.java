@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.blockRecorder;
 
 import au.com.mineauz.minigames.MinigamePlayer;
-import au.com.mineauz.minigames.MinigamePlayerManager;
+import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;

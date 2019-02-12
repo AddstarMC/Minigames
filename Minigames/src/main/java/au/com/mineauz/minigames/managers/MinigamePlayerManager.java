@@ -1,5 +1,6 @@
-package au.com.mineauz.minigames;
+package au.com.mineauz.minigames.managers;
 
+import au.com.mineauz.minigames.*;
 import au.com.mineauz.minigames.events.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
@@ -248,7 +249,7 @@ public class MinigamePlayerManager {
         minigame.setState(MinigameState.STARTED);
     }
 
-    List<MinigamePlayer> balanceGame(Minigame game) {
+    public List<MinigamePlayer> balanceGame(Minigame game) {
         List<MinigamePlayer> result = null;
         if (game.isTeamGame()) {
             GameMechanicBase mech = GameMechanics.getGameMechanic(game.getMechanicName());
@@ -261,7 +262,7 @@ public class MinigamePlayerManager {
     }
 
 
-    void teleportToStart(Minigame minigame) {
+    public void teleportToStart(Minigame minigame) {
         List<MinigamePlayer> findStart = new ArrayList<>();
         for (MinigamePlayer ply : minigame.getPlayers()) {
             if(ply.getStartPos() == null){
@@ -278,7 +279,7 @@ public class MinigamePlayerManager {
         minigame.setPlayersAtStart(true);
     }
 
-    void getStartLocations(List<MinigamePlayer> players, Minigame game) {
+    public void getStartLocations(List<MinigamePlayer> players, Minigame game) {
         mgManager.sendMinigameMessage(game, MinigameUtils.getLang("minigame.startRandomized"), MinigameMessageType.INFO, (List<MinigamePlayer>) null);
         Collections.shuffle(players);
         int pos = 0;

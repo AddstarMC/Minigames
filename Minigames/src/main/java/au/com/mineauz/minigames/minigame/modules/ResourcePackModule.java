@@ -25,6 +25,7 @@ public class ResourcePackModule extends MinigameModule {
     
     private BooleanFlag enabled = new BooleanFlag(false,"resourcePackEnabled");
     private StringFlag resourcePackName = new StringFlag("","resourcePackName");
+    private BooleanFlag forced = new BooleanFlag(false,"forceResourcePack");
     
     public ResourcePackModule(Minigame mgm) {
         super(mgm);
@@ -68,7 +69,6 @@ public class ResourcePackModule extends MinigameModule {
     
     @Override
     public void save(FileConfiguration config) {
-    
     }
     
     @Override
@@ -82,7 +82,6 @@ public class ResourcePackModule extends MinigameModule {
     public void addEditMenuOptions(Menu menu) {
         Menu m = new Menu(3, "Teams", menu.getViewer());
         m.setPreviousPage(menu);
-        List<MenuItem> items = new ArrayList<>();
         m.addItem(enabled.getMenuItem("Enable Resource Pack",Material.MAP));
         MenuItem item = new MenuItemString("Resource Pack Name", Material.PAPER, new Callback<String>() {
             @Override
@@ -111,7 +110,8 @@ public class ResourcePackModule extends MinigameModule {
                 }
             }
         };
-        m.addItem(resourcePackName.getMenuItem("Resource Pack Name",Material.PAPER));
+        m.addItem(item);
+        m.addItem(forced.getMenuItem("Force Resource Pack",Material.SKELETON_SKULL));
         MenuItemPage p = new MenuItemPage("Resource Pack Options", Material.MAP, m);
         m.addItem(new MenuItemPage("Back", getBackMaterial(), menu), m.getSize() - 9);
         menu.addItem(p);

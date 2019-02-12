@@ -1,5 +1,6 @@
-package au.com.mineauz.minigames;
+package au.com.mineauz.minigames.managers;
 
+import au.com.mineauz.minigames.*;
 import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.config.RewardsFlag;
 import au.com.mineauz.minigames.events.StartGlobalMinigameEvent;
@@ -11,6 +12,7 @@ import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.modules.*;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
+import au.com.mineauz.minigames.object.ResourcePack;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -44,6 +46,7 @@ public class MinigameManager {
         modules.add(JuggernautModule.class);
         modules.add(RewardsModule.class);
         modules.add(CTFModule.class);
+        modules.add(ResourcePackModule.class);
     }
     
     public List<Class<? extends MinigameModule>> getModules(){
@@ -216,7 +219,7 @@ public class MinigameManager {
         save.set(minigame + "." + type + "." + ".world", loc.getWorld().getName());
     }
     
-    void addMinigameType(MinigameTypeBase minigameType){
+    public void addMinigameType(MinigameTypeBase minigameType){
         minigameTypes.put(minigameType.getType(), minigameType);
 //        Minigames.log.info("Loaded " + minigameType.getType().getName() + " minigame type."); //DEBUG
     }

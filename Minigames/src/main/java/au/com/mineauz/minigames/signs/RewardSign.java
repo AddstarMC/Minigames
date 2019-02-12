@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardType;

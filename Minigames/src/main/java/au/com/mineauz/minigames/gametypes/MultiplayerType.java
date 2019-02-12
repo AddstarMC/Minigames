@@ -2,6 +2,8 @@ package au.com.mineauz.minigames.gametypes;
 
 import au.com.mineauz.minigames.*;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
+import au.com.mineauz.minigames.managers.MinigameManager;
+import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;

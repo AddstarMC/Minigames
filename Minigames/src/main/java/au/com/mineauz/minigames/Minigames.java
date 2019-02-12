@@ -1,5 +1,7 @@
 package au.com.mineauz.minigames;
 
+import au.com.mineauz.minigames.managers.MinigameManager;
+import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.managers.ResourcePackManager;
 import com.google.common.io.Closeables;
 import com.google.common.util.concurrent.FutureCallback;
@@ -63,7 +65,7 @@ public class Minigames extends JavaPlugin{
     private static SignBase minigameSigns;
     private static ComparableVersion VERSION;
     private static ComparableVersion SPIGOT_VERSION;
-    static Logger log = Logger.getLogger("Minecraft");
+    public static Logger log = Logger.getLogger("Minecraft");
     private Metrics metrics;
     
     public void setLog(Logger log) {
@@ -266,6 +268,8 @@ public class Minigames extends JavaPlugin{
     }
     private void setupMinigames(){
         resourceManager =  new ResourcePackManager();
+        if(getConfig().get("resources") != null)
+            resourceManager.initialize(getConfig().getConfigurationSection("resources"));
         minigameManager = new MinigameManager();
         playerManager = new MinigamePlayerManager();
         display = new DisplayManager();

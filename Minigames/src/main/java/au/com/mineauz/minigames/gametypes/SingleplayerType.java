@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.gametypes;
 
 import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import org.bukkit.ChatColor;

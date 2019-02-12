@@ -6,14 +6,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import au.com.mineauz.minigames.Minigames;
 
+import au.com.mineauz.minigames.managers.ResourcePackManager;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
+import sun.net.ResourceManager;
 
 /**
  * Created for the AddstarMC Project. Created by Narimm on 12/02/2019.
@@ -21,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 public class ResourcePack {
     
     private final String name;
-    
+    private final String ext = "resourcepack";
     public String getName() {
         return this.name;
     }
@@ -29,6 +32,12 @@ public class ResourcePack {
     private final URL url;
     private File local;
     private byte[] hash;
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    private boolean valid;
     
     public String getDescription() {
         return this.description;
@@ -86,30 +95,35 @@ public class ResourcePack {
     
     private void validateExternal(){
         Bukkit.getScheduler().runTaskAsynchronously(Minigames.getPlugin(), () -> {
-            File path = new File(Minigames.getPlugin().getDataFolder() + "/resources/");
-            if (!path.exists())
-                path.mkdirs();
+            Path path = ResourcePackManager.getResourceDir();
             if(local != null ){
                 if(!local.exists()) {
                     download(local);
                 } else {
                     try (InputStream in = url.openStream()) {
-                        File temp = File.createTempFile(name,"resource");
+                        File temp = File.createTempFile(name,ext);
                         Files.copy(in, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
                         byte[] has = getSH1Hash(temp);
                         if(has.equals(hash)) {
                             Minigames.log().info("Resource Pack: " +name+ " passed external validation");
+                            valid = true;
                         } else {
                             Files.copy(new FileInputStream(temp),local.toPath(),StandardCopyOption.REPLACE_EXISTING);
                             Files.delete(temp.toPath());
                             Minigames.log().warning("Resource Pack: " +name+ " the local resource did not match the external"
                                     + " and has been updated");
+                            byte[] newHash  = getSH1Hash(local);
+                            if(newHash == hash){
+                                valid = true;
+                            }
                         }
                     }catch (IOException e) {
                         Minigames.log().warning(e.getMessage());
+                        valid = false;
                     }
                 }
             } else {
+                local = new File(path.toFile(),name+"."+ext);
                 download(local);
             }
         }
@@ -117,13 +131,13 @@ public class ResourcePack {
     }
     
     public void download(File file){
-        try {
-            try (InputStream in = url.openStream()) {
-                Files.copy(in, file.toPath(),StandardCopyOption.REPLACE_EXISTING);
-            }
+        try (InputStream in = url.openStream()) {
+            Files.copy(in, file.toPath(),StandardCopyOption.REPLACE_EXISTING);
             hash = getSH1Hash(local);
+            valid = true;
         } catch (IOException e) {
             Minigames.log().warning(e.getMessage());
+            valid = false;
         }
     }
     
