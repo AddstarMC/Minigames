@@ -85,8 +85,11 @@ public class  ResourcePackManager {
             Minigames.log().warning("Minigames Resource Manager could not create the empty reset pack");
             enabled = false;
             return false;
-        }else{
-        
+        }
+        if(config == null){
+            Minigames.log().warning("Minigames Resource Manager did not have configuration information");
+            enabled = false;
+            return false;
         }
         Set<String> keys =  config.getKeys(false);
         boolean emptyPresent = false;
