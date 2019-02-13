@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.tool;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import org.bukkit.Material;

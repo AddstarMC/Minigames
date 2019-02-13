@@ -1,4 +1,4 @@
-package au.com.mineauz.minigames.object;
+package au.com.mineauz.minigames.objects;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +16,6 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.ResourcePackManager;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
-import sun.net.ResourceManager;
 
 /**
  * Created for the AddstarMC Project. Created by Narimm on 12/02/2019.

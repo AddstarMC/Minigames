@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.presets;
 
-import au.com.mineauz.minigames.MinigameSave;
+import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;

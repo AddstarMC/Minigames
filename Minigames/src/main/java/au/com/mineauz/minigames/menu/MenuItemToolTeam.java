@@ -5,7 +5,7 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.tool.MinigameTool;

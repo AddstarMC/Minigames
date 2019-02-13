@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.events;
 
-import au.com.mineauz.minigames.CTFFlag;
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.CTFFlag;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 
 public class TakeFlagEvent extends AbstractMinigameEvent{

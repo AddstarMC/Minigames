@@ -1,6 +1,6 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigamesregions.Node;

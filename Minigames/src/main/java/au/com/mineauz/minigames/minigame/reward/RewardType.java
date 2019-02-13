@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.minigame.reward;
 
 import org.bukkit.configuration.ConfigurationSection;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.menu.MenuItem;
 
 public abstract class RewardType {

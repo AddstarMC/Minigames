@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;

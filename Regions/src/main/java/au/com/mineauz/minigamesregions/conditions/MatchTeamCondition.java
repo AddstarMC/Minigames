@@ -7,7 +7,7 @@ import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;

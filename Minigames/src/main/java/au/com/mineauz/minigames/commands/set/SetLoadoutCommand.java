@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.menu.Menu;

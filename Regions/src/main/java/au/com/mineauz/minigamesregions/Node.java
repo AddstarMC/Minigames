@@ -1,6 +1,6 @@
 package au.com.mineauz.minigamesregions;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;

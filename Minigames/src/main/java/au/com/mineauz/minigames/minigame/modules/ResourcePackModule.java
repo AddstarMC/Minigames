@@ -1,8 +1,6 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import au.com.mineauz.minigames.MinigameMessageType;
@@ -12,7 +10,7 @@ import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.object.ResourcePack;
+import au.com.mineauz.minigames.objects.ResourcePack;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -35,6 +33,9 @@ public class ResourcePackModule extends MinigameModule {
         return enabled.getFlag();
     }
     
+    public boolean isForced(){
+        return forced.getFlag();
+    }
     public void setEnabled(Boolean bool){
         enabled.setFlag(bool);
     }

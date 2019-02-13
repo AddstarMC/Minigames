@@ -1,5 +1,7 @@
-package au.com.mineauz.minigames;
+package au.com.mineauz.minigames.objects;
 
+import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.display.IDisplayCubiod;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
@@ -695,6 +697,16 @@ public class MinigamePlayer implements ScriptObject {
     public boolean hasClaimedScore(Location loc){
         String id = MinigameUtils.createLocationID(loc);
         return claimedScoreSigns.contains(id);
+    }
+    
+    public boolean applyResourcePack(ResourcePack pack){
+        try{
+            player.getPlayer().setResourcePack(pack.getUrl().toString(),pack.getSH1Hash());
+            return true;
+        }catch (IllegalArgumentException e){
+            Minigames.log().warning(e.getMessage());
+        }
+        return false;
     }
     
     public void addClaimedScore(Location loc){

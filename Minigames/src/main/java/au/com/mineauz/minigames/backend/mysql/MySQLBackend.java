@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.backend.mysql;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.backend.*;
 import au.com.mineauz.minigames.backend.both.SQLExport;
 import au.com.mineauz.minigames.backend.both.SQLImport;

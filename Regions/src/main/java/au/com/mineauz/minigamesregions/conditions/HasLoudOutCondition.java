@@ -1,6 +1,6 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;

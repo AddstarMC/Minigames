@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.blockRecorder;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Callback;
@@ -599,7 +599,6 @@ public class RecorderData implements Listener{
                                     iargs.put(s.split("-")[0], s.split("-")[1]);
                                 }
                             }
-
                             item = new ItemStack(Material.getMaterial(iargs.get("item")),
                                     Integer.valueOf(iargs.get("c")), Short.valueOf(iargs.get("dur")));
 

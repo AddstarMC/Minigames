@@ -9,7 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;

@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.managers;
 
 import au.com.mineauz.minigames.*;
 import au.com.mineauz.minigames.blockRecorder.RecorderData;
+import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.config.RewardsFlag;
 import au.com.mineauz.minigames.events.StartGlobalMinigameEvent;
 import au.com.mineauz.minigames.events.StopGlobalMinigameEvent;
@@ -12,7 +13,8 @@ import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.modules.*;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
-import au.com.mineauz.minigames.object.ResourcePack;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.ResourcePack;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -74,7 +76,18 @@ public class MinigameManager {
             Bukkit.getPluginManager().callEvent(ev);
             
             minigame.getMechanic().startMinigame(minigame, caller);
-            
+            ResourcePackModule module = (ResourcePackModule) minigame.getModule("ResourcePack");
+            if ( module != null) {
+                if (module.isEnabled()) {
+                    String name = module.getResourcePackName();
+                    ResourcePack pack = plugin.getResourceManager().getResourcePack(name);
+                    if (pack.isValid()) {
+                        for (MinigamePlayer player: minigame.getPlayers()) {
+                            player.applyResourcePack(pack);
+                        }
+                    }
+                }
+            }
             minigame.setEnabled(true);
             minigame.saveMinigame();
         }
@@ -93,13 +106,24 @@ public class MinigameManager {
     }
     
     public void stopGlobalMinigame(Minigame minigame, MinigamePlayer caller){
-        if(minigame.getType() == MinigameType.GLOBAL){
+        if (minigame.getType() == MinigameType.GLOBAL) {
             StopGlobalMinigameEvent ev = new StopGlobalMinigameEvent(minigame, caller);
             Bukkit.getPluginManager().callEvent(ev);
             
             minigame.getMechanic().stopMinigame(minigame, caller);
-
+            
             minigame.setEnabled(false);
+            ResourcePackModule module = (ResourcePackModule) minigame.getModule("ResourcePack");
+            if ( module != null) {
+                if (module.isEnabled()) {
+                    ResourcePack pack = plugin.getResourceManager().getResourcePack("empty");
+                    if (pack.isValid()) {
+                        for (MinigamePlayer player: minigame.getPlayers()) {
+                            player.applyResourcePack(pack);
+                        }
+                    }
+                }
+            }
             minigame.saveMinigame();
         }
     }

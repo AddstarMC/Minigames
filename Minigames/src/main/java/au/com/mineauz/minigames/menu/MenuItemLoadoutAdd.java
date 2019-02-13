@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.Material;

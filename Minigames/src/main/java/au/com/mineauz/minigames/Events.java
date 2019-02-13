@@ -9,8 +9,11 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.GameOverModule;
+import au.com.mineauz.minigames.minigame.modules.ResourcePackModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.OfflineMinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,7 +46,32 @@ public class Events implements Listener{
     private static Minigames plugin = Minigames.getPlugin();
     private MinigamePlayerManager pdata = plugin.getPlayerManager();
     private MinigameManager mdata = plugin.getMinigameManager();
+    
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerResourcePack(PlayerResourcePackStatusEvent event){
+        final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+        if(ply == null) return;
+        if(ply.isInMinigame()) {
+            ResourcePackModule module = ResourcePackModule.getMinigameModule(ply.getMinigame());
+            if(!module.isEnabled())return;
+            if(!module.isForced())return;
+            switch (event.getStatus()){
+                case ACCEPTED:
+                    return;
+                case DECLINED:
+                    Minigames.getPlugin().getPlayerManager().quitMinigame(ply,true);
+                    ply.sendMessage(MinigameUtils.getLang("minigames.resource.declined"),MinigameMessageType.ERROR);
+                    return;
+                case FAILED_DOWNLOAD:
+                    Minigames.getPlugin().getPlayerManager().quitMinigame(ply,true);
+                    ply.sendMessage(MinigameUtils.getLang("minigames.resource.failed"),MinigameMessageType.ERROR);
+                case SUCCESSFULLY_LOADED:
+                    return;
+    
+            }
 
+        }
+    }
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerDeath(PlayerDeathEvent event){
         final MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity().getPlayer());
@@ -203,15 +231,15 @@ public class Events implements Listener{
                     if (mgm.getMinigameTimer() != null) mgm.getMinigameTimer().startTimer();
                 }
             }
-            for(String mgm : mdata.getAllMinigames().keySet()){
-                if(mdata.getMinigame(mgm).getType() == MinigameType.GLOBAL){
+            //for(String mgm : mdata.getAllMinigames().keySet()){
+            //    if(mdata.getMinigame(mgm).getType() == MinigameType.GLOBAL){
 //                    if(minigameManager.getMinigame(mgm).getThTimer() != null){
 //                        minigameManager.getMinigame(mgm).getThTimer().pauseTimer(false);
 //                    }
-                    if(mdata.getMinigame(mgm).getMinigameTimer() != null)
-                        mdata.getMinigame(mgm).getMinigameTimer().startTimer();
-                }
-            }
+            //        if(mdata.getMinigame(mgm).getMinigameTimer() != null)
+            //            mdata.getMinigame(mgm).getMinigameTimer().startTimer();
+            //    }
+        //       }
         }
     }
 

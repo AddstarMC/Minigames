@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.events;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 
 public class StopGlobalMinigameEvent extends AbstractMinigameEvent{

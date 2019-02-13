@@ -9,6 +9,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;

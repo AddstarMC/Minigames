@@ -1,5 +1,6 @@
-package au.com.mineauz.minigames;
+package au.com.mineauz.minigames.config;
 
+import au.com.mineauz.minigames.Minigames;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 

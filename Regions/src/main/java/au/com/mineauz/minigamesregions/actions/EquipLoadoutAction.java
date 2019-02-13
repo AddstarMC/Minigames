@@ -10,7 +10,7 @@ import au.com.mineauz.minigames.menu.*;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigamesregions.Node;

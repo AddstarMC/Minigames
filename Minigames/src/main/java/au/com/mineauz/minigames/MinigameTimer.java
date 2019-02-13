@@ -3,6 +3,7 @@ package au.com.mineauz.minigames;
 import au.com.mineauz.minigames.events.MinigameTimerTickEvent;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.sounds.MGSounds;
 import au.com.mineauz.minigames.sounds.PlayMGSound;
 import org.bukkit.Bukkit;

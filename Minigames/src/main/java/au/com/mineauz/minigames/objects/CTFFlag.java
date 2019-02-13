@@ -1,5 +1,7 @@
-package au.com.mineauz.minigames;
+package au.com.mineauz.minigames.objects;
 
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import org.bukkit.*;

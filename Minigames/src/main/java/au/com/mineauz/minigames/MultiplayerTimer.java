@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.sounds.MGSounds;
 import au.com.mineauz.minigames.sounds.PlayMGSound;
 import org.bukkit.Bukkit;

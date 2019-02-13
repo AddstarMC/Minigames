@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

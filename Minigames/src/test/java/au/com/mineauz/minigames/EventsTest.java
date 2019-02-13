@@ -8,6 +8,7 @@ import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.helpers.TestHelper;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.TestPlayer;
 import au.com.mineauz.minigames.objects.TestWorld;
 import be.seeseemelk.mockbukkit.MockBukkit;
@@ -17,11 +18,7 @@ import be.seeseemelk.mockbukkit.command.ConsoleCommandSenderMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMockFactory;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.event.player.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import static org.junit.Assert.*;
 

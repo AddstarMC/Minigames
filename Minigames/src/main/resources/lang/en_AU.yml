@@ -104,13 +104,17 @@ minigame:
     noInfection: "Infection must be run on a teams Minigame with a red and blue team!"
     noVault: "This server does not have Vault! Money cannot be used!"
     regenerating: "This Minigame is currently being reset, please wait..."
-    noTeleport: "Failed to teleport. This could be related to world permissions."
     invalidMechanic: "This Minigame Type cannot use the selected Mechanic!"
     invalidType: "This Minigame failed the start up checks for its Type - contact admin"
     mechanicStartFail: "The Game Mechanic has failed to initiate!"
     noSpectatePos: "There has been no spectator position assigned to this Minigame!"
     noTeam: "You have not been assigend a team...."
     unspecified: "An unspecified error has occured: %s"
+    resourcepack:
+      apply: "Custom Server Resource Pack has been sent to your client."
+      remove: "Custom Server Resource Pack has been removed."
+      declined: "You have declined a custom resourcepack that is required for this game"
+      failed: "A custom resource pack for this game could not be found and loaded"
   flag:
     returnedTeam: "%s flag has been returned home."
     returnedNeutral: "The Neutral flag has been returned home."

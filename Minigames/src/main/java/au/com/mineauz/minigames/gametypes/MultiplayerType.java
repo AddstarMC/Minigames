@@ -9,6 +9,7 @@ import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

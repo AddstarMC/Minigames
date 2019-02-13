@@ -3,7 +3,7 @@ package au.com.mineauz.minigamesregions.events;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Region;
 
 public class LeaveRegionEvent extends Event{

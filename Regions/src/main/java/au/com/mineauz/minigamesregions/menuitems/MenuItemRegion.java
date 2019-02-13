@@ -6,7 +6,7 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemPage;

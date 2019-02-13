@@ -11,6 +11,8 @@ import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.objects.CTFFlag;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptCollection;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;

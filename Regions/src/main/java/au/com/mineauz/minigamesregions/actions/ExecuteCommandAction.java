@@ -9,7 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import com.google.common.collect.ImmutableSet;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;

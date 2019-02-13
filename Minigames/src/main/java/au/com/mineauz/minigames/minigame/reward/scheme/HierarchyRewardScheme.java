@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;

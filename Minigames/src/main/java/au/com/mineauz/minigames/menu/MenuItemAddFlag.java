@@ -5,7 +5,7 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 
 public class MenuItemAddFlag extends MenuItem{

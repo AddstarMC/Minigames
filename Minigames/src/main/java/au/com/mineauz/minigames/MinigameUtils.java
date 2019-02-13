@@ -2,6 +2,7 @@ package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.events.MinigamesBroadcastEvent;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;

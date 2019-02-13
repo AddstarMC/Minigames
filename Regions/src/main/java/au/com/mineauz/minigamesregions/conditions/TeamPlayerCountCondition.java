@@ -8,7 +8,7 @@ import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;

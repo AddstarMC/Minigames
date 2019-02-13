@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.stats;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 
 /**

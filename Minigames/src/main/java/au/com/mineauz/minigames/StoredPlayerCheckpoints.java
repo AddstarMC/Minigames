@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames;
 
+import au.com.mineauz.minigames.config.MinigameSave;
 import org.bukkit.Location;
 import org.bukkit.World;
 

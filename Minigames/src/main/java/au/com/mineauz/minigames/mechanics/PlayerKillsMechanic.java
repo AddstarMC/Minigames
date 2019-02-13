@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.mechanics;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;

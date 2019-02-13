@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 
 import com.google.common.collect.Maps;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 
 public class StoredGameStats {

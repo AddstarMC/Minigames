@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames;
 
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

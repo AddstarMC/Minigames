@@ -8,7 +8,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import com.google.common.collect.ImmutableSet;
 
-import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;

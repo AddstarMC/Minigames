@@ -9,8 +9,11 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.GameOverModule;
+import au.com.mineauz.minigames.minigame.modules.ResourcePackModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.ResourcePack;
 import au.com.mineauz.minigames.sounds.MGSounds;
 import au.com.mineauz.minigames.sounds.PlayMGSound;
 import au.com.mineauz.minigames.stats.DynamicMinigameStat;
@@ -61,6 +64,11 @@ public class MinigamePlayerManager {
         //Do betting stuff
         if (isBetting) handleBets(minigame, player, betAmount);
         //Try teleport the player to their designated area.
+        ResourcePack pack = getResourcePack(minigame);
+        if(pack != null & pack.isValid()){
+            if(player.applyResourcePack(pack))
+            player.sendInfoMessage(MinigameUtils.getLang("minigame.resourcepack.apply"));
+        }
         if (!mgManager.teleportPlayerOnJoin(minigame, player)) {
             player.sendMessage(MinigameUtils.getLang("minigame.error.noTeleport"), MinigameMessageType.ERROR);
             return;
@@ -277,6 +285,30 @@ public class MinigamePlayerManager {
             ply.teleport(ply.getStartPos());
         }
         minigame.setPlayersAtStart(true);
+    }
+    
+    public ResourcePack getResourcePack(Minigame game){
+        ResourcePackModule module = (ResourcePackModule) game.getModule("ResourcePack");
+        if(module != null && module.isEnabled()) {
+            ResourcePack pack = plugin.getResourceManager().getResourcePack(module.getResourcePackName());
+            if (pack != null && pack.isValid()) {
+                return pack;
+            }
+            else {
+                return null;
+            }
+        }
+        return null;
+    }
+    
+    public void clearResourcePack(Minigame game) {
+        ResourcePack pack = plugin.getResourceManager().getResourcePack("empty");
+        if (pack != null && pack.isValid()) {
+            for (MinigamePlayer player:game.getPlayers()) {
+                player.applyResourcePack(pack);
+            }
+        }
+    
     }
 
     public void getStartLocations(List<MinigamePlayer> players, Minigame game) {
@@ -507,6 +539,7 @@ public class MinigamePlayerManager {
                     for(Team team : TeamsModule.getMinigameModule(minigame).getTeams()){
                         team.setScore(0);
                     }
+                    
                 }
                 
                 minigame.getScoreboardManager().resetScores(player.getName());
@@ -518,7 +551,7 @@ public class MinigamePlayerManager {
                 if(minigame.getPlayers().size() == 0 && !minigame.isRegenerating()){
                     HandlerList.unregisterAll(minigame.getBlockRecorder());
                 }
-                
+
                 //Send out messages
                 if(!forced){
                     mgManager.sendMinigameMessage(minigame, MinigameUtils.formStr("player.quit.plyMsg", player.getName(), minigame.getName(true)), MinigameMessageType.ERROR, player);
@@ -555,7 +588,13 @@ public class MinigamePlayerManager {
                 player.sendMessage(MinigameUtils.formStr("player.spectate.quit.plyMsg", minigame.getName(true)), MinigameMessageType.ERROR);
                 mgManager.sendMinigameMessage(minigame, MinigameUtils.formStr("player.spectate.quit.minigameMsg", player.getName(), minigame.getName(true)), MinigameMessageType.ERROR, player);
             }
-            
+            if(ResourcePackModule.getMinigameModule(minigame).isEnabled()){
+                if(player.applyResourcePack(plugin.getResourceManager().getResourcePack("empty"))){
+                    Minigames.log().warning("Could not apply empty resource pack to " +player.getDisplayName());
+                }else{
+                    player.sendInfoMessage(MinigameUtils.getLang("minigames.resourcepack.remove"));
+                }
+            }
             if(player.getPlayer().getGameMode() != GameMode.CREATIVE)
                 player.setCanFly(false);
             

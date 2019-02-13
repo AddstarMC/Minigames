@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.*;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
