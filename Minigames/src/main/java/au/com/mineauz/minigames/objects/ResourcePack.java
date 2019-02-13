@@ -118,6 +118,7 @@ public class ResourcePack {
                         }
                     }catch (IOException e) {
                         Minigames.log().warning(e.getMessage());
+                        e.printStackTrace();
                         valid = false;
                     }
                 }
@@ -131,11 +132,13 @@ public class ResourcePack {
     
     public void download(File file){
         try (InputStream in = url.openStream()) {
+            if(!file.exists())file.createNewFile();
             Files.copy(in, file.toPath(),StandardCopyOption.REPLACE_EXISTING);
             hash = getSH1Hash(local);
             valid = true;
         } catch (IOException e) {
             Minigames.log().warning(e.getMessage());
+            e.printStackTrace();
             valid = false;
         }
     }

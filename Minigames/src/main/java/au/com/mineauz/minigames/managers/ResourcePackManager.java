@@ -16,6 +16,7 @@ import java.util.Set;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.objects.ResourcePack;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.plugin.java.JavaPlugin;
 
 
 /**
@@ -29,7 +30,7 @@ public class  ResourcePackManager {
         return resourceDir;
     }
 
-    final static Path resourceDir = Paths.get(Minigames.getPlugin().getDataFolder().toPath()+"resources");
+    final static Path resourceDir = Paths.get(Minigames.getPlugin().getDataFolder().toString(),"resources");
 
     private Map<String, ResourcePack> resources = new HashMap<>();
 
@@ -42,7 +43,13 @@ public class  ResourcePackManager {
                             "- they will be unavailable");
                     enabled = false;
                 } else {
+                    if(Files.exists(path))
                     enabled = true;
+                    else {
+                        enabled = false;
+                        Minigames.log().severe("Cannot create a resource directory to house resources " +
+                                "- they will be unavailable.");
+                    }
                 }
 
             }catch (IOException e){
@@ -53,18 +60,15 @@ public class  ResourcePackManager {
     }
 
     private boolean loadEmptyPack() {
-        Path path = Paths.get(resourceDir.toString(), "emptyResourcePack.zip");
-        if (Files.notExists(path)) {
-            InputStream stream = this.getClass().getResourceAsStream("resourcepack/emptyResourcePack.zip");
-            try {
-                Files.copy(stream, path, StandardCopyOption.REPLACE_EXISTING);
-                return true;
-            } catch (IOException e) {
-                Minigames.log().severe(e.getMessage());
-                return false;
+        try {
+            URL u = new URL("https://github.com/AddstarMC/Minigames/raw/resourcepack/Minigames/src/main/resources/resourcepack/emptyResourcePack.zip");
+            ResourcePack empty = new ResourcePack("empty",u);
+            if(empty.isValid()){
+                resources.put("empty",empty);
             }
-        } else {
             return true;
+        }catch (MalformedURLException e){
+            return false;
         }
     }
     
@@ -81,16 +85,6 @@ public class  ResourcePackManager {
     };
     
     public boolean initialize(ConfigurationSection config){
-        if(!loadEmptyPack()){
-            Minigames.log().warning("Minigames Resource Manager could not create the empty reset pack");
-            enabled = false;
-            return false;
-        }
-        if(config == null){
-            Minigames.log().warning("Minigames Resource Manager did not have configuration information");
-            enabled = false;
-            return false;
-        }
         Set<String> keys =  config.getKeys(false);
         boolean emptyPresent = false;
         for(String key:keys){
@@ -110,13 +104,19 @@ public class  ResourcePackManager {
             
         }
         if(!emptyPresent){
+            if(!loadEmptyPack()){
+                Minigames.log().warning("Minigames Resource Manager could not create the empty reset pack");
+                enabled = false;
+                return false;
+            }
             ConfigurationSection sec = config.createSection("empty");
-            sec.set("url","https://update.this");
+            sec.set("url","https://github.com/AddstarMC/Minigames/raw/resourcepack/Minigames/src/main/resources/resourcepack/emptyResourcePack.zip");
             Minigames.log().warning("You will need to update your minigames main config and replace the url for "
                    + "the empty resource pack.  Please see the wiki");
-            enabled = false;
-            return false;
+            enabled = true;
         }
         return true;
     }
+
+
 }

@@ -269,12 +269,15 @@ public class Minigames extends JavaPlugin{
         }
     }
     private void setupMinigames(){
-        resourceManager =  new ResourcePackManager();
-        if(getConfig().get("resources") != null)
-            resourceManager.initialize(getConfig().getConfigurationSection("resources"));
         minigameManager = new MinigameManager();
         playerManager = new MinigamePlayerManager();
         display = new DisplayManager();
+
+        resourceManager =  new ResourcePackManager();
+        MinigameSave resources = new MinigameSave("resources");
+        getMinigameManager().addConfigurationFile("resources",resources.getConfig());
+        resourceManager.initialize(resources.getConfig());
+        resources.saveConfig();
 
         getMinigameManager().addMinigameType(new SingleplayerType());
         getMinigameManager().addMinigameType(new MultiplayerType());
@@ -324,6 +327,7 @@ public class Minigames extends JavaPlugin{
             log().log(Level.SEVERE, "Failed to load config!");
             e.printStackTrace();
         }
+
     }
     
     private boolean setupEconomy(){
