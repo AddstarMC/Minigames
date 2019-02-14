@@ -1,157 +1,282 @@
 package au.com.mineauz.minigames.objects;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import au.com.mineauz.minigames.Minigames;
 
 import au.com.mineauz.minigames.managers.ResourcePackManager;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Created for the AddstarMC Project. Created by Narimm on 12/02/2019.
  */
-public class ResourcePack {
+public final class ResourcePack implements ConfigurationSerializable {
     
     private final String name;
-    private final String ext = "resourcepack";
+    private static final  String ext = "resourcepack";
+    
+    
+    
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     public String getName() {
         return this.name;
     }
     
     private final URL url;
-    private File local;
+    private final File local;
+    /**
+     * Unique SH1 hash
+     */
     private byte[] hash;
-
+    
+    /**
+     * True if the resource pack is validated.
+     *
+     * @return the boolean
+     */
     public boolean isValid() {
-        return valid;
+        return this.valid;
     }
 
     private boolean valid;
     
+    /**
+     * Gets description.
+     *
+     * @return the description
+     */
     public String getDescription() {
         return this.description;
     }
     
     private String description;
     
+    public ResourcePack(final Map<String,Object> input) {
+        URL url1;
+        this.name = (String) input.get("name");
+        try {
+            url1 = new URL((String) input.get("url"));
+        }catch (final MalformedURLException e){
+            Minigames.log().warning("The URL defined in the configuration is malformed: " + e.getMessage());
+            url1 = null;
+            this.valid =false;
+        }
+        this.url = url1;
+        final Path path = ResourcePackManager.getResourceDir();
+        this.local = new File(path.toFile(), this.name + '.' + ext);
+        this.validate();
+    }
+    /**
+     * Instantiates a new Resource pack.
+     *
+     * @param name the name
+     * @param url  the url
+     */
     public ResourcePack(final String name, final @NotNull URL url) {
         this(name,url,null);
     }
     
+    /**
+     * Instantiates a new Resource pack.
+     *
+     * @param name the name
+     * @param url  the url
+     * @param file the file
+     */
     public ResourcePack(final String name, final @NotNull URL url, final File file) {
         this(name,url,file,null);
     }
-
     
+    
+    /**
+     * Instantiates a new Resource pack.
+     *
+     * @param name        the name
+     * @param url         the url
+     * @param file        the file
+     * @param description the description
+     */
     public ResourcePack(final String name, final @NotNull URL url, final File file, final String description ) {
         this.name = name;
-        this.local = file;
+        final Path path = ResourcePackManager.getResourceDir();
+        this.local = file!=null ? file : new File(path.toFile(), name + '.' + ext);
         this.url = url;
         this.description = description;
-        this.validateExternal();
+        this.validate();
     }
     
     
-    private byte[] getSH1Hash(final File file)  {
+    private byte[] getSH1Hash(final InputStream fis)  {
         try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-1");
-            if (file != null && file.exists()) {
+            final MessageDigest digest = MessageDigest.getInstance("SHA-1");
                 try {
-                    InputStream fis = new FileInputStream(file);
                     int n = 0;
-                    byte[] buffer = new byte[8192];
+                    final byte[] buffer = new byte[8192];
                     while (n != -1) {
                         n = fis.read(buffer);
                         if (n > 0) {
                             digest.update(buffer, 0, n);
                         }
                     }
-                }catch (IOException e) {
+                }catch (final IOException e) {
                     Minigames.log().warning(e.getMessage());
                     return null;
                 }
-            }else{
-                Minigames.log().warning("File defined by Resource "+ name
-                        +" does not exist and the resource is invalid");
-                return null;
-            }
             return digest.digest();
-        }catch (NoSuchAlgorithmException e){
+        }catch (final NoSuchAlgorithmException e){
             Minigames.log().severe(e.getMessage());
             return null;
         }
     }
     
-    private void validateExternal(){
+    private void validate() {
         Bukkit.getScheduler().runTaskAsynchronously(Minigames.getPlugin(), () -> {
-            Path path = ResourcePackManager.getResourceDir();
-            if(local != null ){
-                if(!local.exists()) {
-                    download(local);
-                } else {
-                    try (InputStream in = url.openStream()) {
-                        File temp = File.createTempFile(name,ext);
-                        Files.copy(in, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                        byte[] has = getSH1Hash(temp);
-                        if(has.equals(hash)) {
-                            Minigames.log().info("Resource Pack: " +name+ " passed external validation");
-                            valid = true;
-                        } else {
-                            Files.copy(new FileInputStream(temp),local.toPath(),StandardCopyOption.REPLACE_EXISTING);
-                            Files.delete(temp.toPath());
-                            Minigames.log().warning("Resource Pack: " +name+ " the local resource did not match the external"
-                                    + " and has been updated");
-                            byte[] newHash  = getSH1Hash(local);
-                            if(newHash == hash){
-                                valid = true;
-                            }
-                        }
-                    }catch (IOException e) {
+            synchronized (this.local) {
+                if (this.local.exists()) {
+                    //set the local hash;
+                    try (final FileInputStream fis = new FileInputStream(this.local)) {
+                        this.hash = this.getSH1Hash(fis);
+                    } catch (final IOException e) {
+                            e.printStackTrace();
+                    }
+                    //Validate the remote file hash = local.
+                    final File temp;
+                    try (final InputStream in = this.url.openStream()) {
+                        temp = File.createTempFile(this.name, ext);
+                            Files.copy(in, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    } catch (final IOException e) {
                         Minigames.log().warning(e.getMessage());
                         e.printStackTrace();
-                        valid = false;
+                        this.valid = false;
+                        return;
+                    }
+                    try (final FileInputStream fis = new FileInputStream(temp)) {
+                        final byte[] has = this.getSH1Hash(fis);
+                        if (Arrays.equals(has, this.hash)) {
+                            Minigames.log().info("Resource Pack: " + this.name + " passed external validation");
+                            this.valid = true;
+                            return;
+                        }
+                        }catch(final IOException e){
+                            e.printStackTrace();
+                        this.valid = false;
+                            return;
+                        }
+                    // Local did not match hash on remote so copy the remote over the local.
+                        try (final FileInputStream fis = new FileInputStream(temp)) {
+                                Files.copy(fis, this.local.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        } catch (final IOException e) {
+                            e.printStackTrace();
+                        }
+                        //set the new hash as long as its not null its valid
+                    this.setLocalHash();
+                    } else{
+                    this.download(this.local);
+                    this.setLocalHash();
                     }
                 }
-            } else {
-                local = new File(path.toFile(),name+"."+ext);
-                download(local);
+        });
+    }
+    
+    /**
+     * Generate the local SH1 hash
+     */
+    private void setLocalHash() {
+        if(this.local != null  && this.local.exists()) {
+            try (final FileInputStream fis = new FileInputStream(this.local)) {
+                this.hash = this.getSH1Hash(fis);
+                this.valid = true;
+                return;
+            } catch (final IOException e) {
+                Minigames.log().warning(e.getMessage());
+                e.printStackTrace();
+                this.valid = false;
+                return;
             }
         }
-        );
+        this.valid =false;
     }
     
-    public void download(File file){
-        try (InputStream in = url.openStream()) {
-            if(!file.exists())file.createNewFile();
-            Files.copy(in, file.toPath(),StandardCopyOption.REPLACE_EXISTING);
-            hash = getSH1Hash(local);
-            valid = true;
-        } catch (IOException e) {
-            Minigames.log().warning(e.getMessage());
-            e.printStackTrace();
-            valid = false;
+    /**
+     * Download.
+     *
+     * @param file the file
+     */
+    public void download(final File file) {
+        if (!file.exists()) {
+            if (!file.getParentFile().exists()) {
+                if (!file.getParentFile().mkdirs()) {
+                    this.valid = false;
+                    return;
+                }
+            }
+        }
+        try (final InputStream in = this.url.openStream()) {
+            Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }catch(final IOException e) {
+                e.printStackTrace();
+                this.valid = false;
         }
     }
     
+    /**
+     * Get sh 1 hash byte [ ].
+     *
+     * @return the byte [ ]
+     */
+    @SuppressWarnings("syncronized")
     public byte[] getSH1Hash() {
-        return hash;
+        return this.hash;
     }
     
     /**
      * Gets the Publicly available URL
-     * @return
+     *
+     * @return url
      */
     public URL getUrl() {
         return this.url;
     }
+    
+    @Override
+    public Map<String, Object> serialize() {
+        final Map<String, Object> result = new HashMap<>();
+        result.put("name",this.name);
+        result.put("url",this.url.toString());
+        return result;
+    }
+    /**
+     * Statically create the class
+     * @param map A map of values
+     * @return ResourcePack
+     */
+    public static ResourcePack deserialize(final Map<String, Object> map) {
+        return new ResourcePack(map);
+    }
+    
+    /**
+     * Statically create the class
+     * @param map A map of values
+     * @return ResourcePack
+     */
+    public static ResourcePack valueOf(final Map<String, Object> map) {
+        return new ResourcePack(map);
+    }
+    
 }

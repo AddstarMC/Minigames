@@ -9,13 +9,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.objects.ResourcePack;
+import com.google.common.collect.Lists;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
@@ -64,7 +65,7 @@ public class  ResourcePackManager {
             URL u = new URL("https://github.com/AddstarMC/Minigames/raw/resourcepack/Minigames/src/main/resources/resourcepack/emptyResourcePack.zip");
             ResourcePack empty = new ResourcePack("empty",u);
             if(empty.isValid()){
-                resources.put("empty",empty);
+               addResourcePack(empty);
             }
             return true;
         }catch (MalformedURLException e){
@@ -84,24 +85,23 @@ public class  ResourcePackManager {
         return resources.put(pack.getName(),pack);
     };
     
-    public boolean initialize(ConfigurationSection config){
-        Set<String> keys =  config.getKeys(false);
+    public boolean initialize(FileConfiguration config){
         boolean emptyPresent = false;
-        for(String key:keys){
-            ConfigurationSection section = config.getConfigurationSection(key);
-            if (key == "empty")emptyPresent = true;
-            String url = section.getString("url");
-                try {
-                    URL u = new URL(url);
-                    File local = new File(resourceDir.toFile(), key + ".resourcepack");
-                    ResourcePack pack = new ResourcePack(key, u, local);
-                    addResourcePack(pack);
-                } catch (MalformedURLException e) {
-                    Minigames.log().warning("Minigames Resource:" + key + " could not load see following error");
-                    Minigames.log().warning(e.getMessage());
-                    continue;
+        final List<ResourcePack> resources = new ArrayList<>();
+        final Object objects = config.get("resources");
+        if(objects instanceof List){
+            final List obj = (List) objects;
+            for(final Object object : obj){
+                if(object instanceof ResourcePack){
+                    resources.add((ResourcePack) object);
                 }
-            
+            }
+        }
+        for(final ResourcePack pack:resources){
+            if (pack.getName().equals("empty")) {
+                emptyPresent = true;
+            }
+            addResourcePack(pack);
         }
         if(!emptyPresent){
             if(!loadEmptyPack()){
@@ -109,13 +109,15 @@ public class  ResourcePackManager {
                 enabled = false;
                 return false;
             }
-            ConfigurationSection sec = config.createSection("empty");
-            sec.set("url","https://github.com/AddstarMC/Minigames/raw/resourcepack/Minigames/src/main/resources/resourcepack/emptyResourcePack.zip");
-            Minigames.log().warning("You will need to update your minigames main config and replace the url for "
-                   + "the empty resource pack.  Please see the wiki");
             enabled = true;
         }
         return true;
+    }
+    
+    public void saveResources(MinigameSave mSave){
+        List<ResourcePack> resourceList = new ArrayList<>(resources.values());
+        mSave.getConfig().set("resources",resourceList);
+        mSave.saveConfig();
     }
 
 
