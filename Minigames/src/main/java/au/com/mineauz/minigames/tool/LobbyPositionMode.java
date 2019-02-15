@@ -41,7 +41,7 @@ public class LobbyPositionMode implements ToolMode {
     public void onRightClick(MinigamePlayer player, Minigame minigame,
             Team team, PlayerInteractEvent event) {
         minigame.setLobbyPosition(player.getLocation());
-        player.sendMessage("Set lobby position.", null);
+        player.sendInfoMessage("Set lobby position.");
     }
     
     @Override

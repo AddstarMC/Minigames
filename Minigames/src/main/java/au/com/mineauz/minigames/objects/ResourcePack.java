@@ -24,125 +24,37 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class ResourcePack implements ConfigurationSerializable {
     
+    private static final String ext = "resourcepack";
     private final String name;
-    private static final  String ext = "resourcepack";
-    
-    
-    
-    /**
-     * Gets name.
-     *
-     * @return the name
-     */
-    public String getName() {
-        return this.name;
-    }
-    
     private final URL url;
     private final File local;
     /**
      * Unique SH1 hash
      */
     private byte[] hash;
-    
-    /**
-     * True if the resource pack is validated.
-     *
-     * @return the boolean
-     */
-    public boolean isValid() {
-        return this.valid;
-    }
-
     private boolean valid;
-    
-    /**
-     * Gets description.
-     *
-     * @return the description
-     */
-    public String getDescription() {
-        return this.description;
-    }
-    
     private String description;
     
-    public ResourcePack(final Map<String,Object> input) {
+    /**
+     * Instantiates a new Resource pack.
+     *
+     * @param input the input
+     */
+    public ResourcePack(final Map<String, Object> input) {
         URL url1;
         this.name = (String) input.get("name");
+        this.description = (String) input.get("description");
         try {
             url1 = new URL((String) input.get("url"));
-        }catch (final MalformedURLException e){
+        } catch (final MalformedURLException e) {
             Minigames.log().warning("The URL defined in the configuration is malformed: " + e.getMessage());
             url1 = null;
-            this.valid =false;
+            this.valid = false;
         }
         this.url = url1;
         final Path path = ResourcePackManager.getResourceDir();
         this.local = new File(path.toFile(), this.name + '.' + ext);
         this.validate();
-    }
-    /**
-     * Instantiates a new Resource pack.
-     *
-     * @param name the name
-     * @param url  the url
-     */
-    public ResourcePack(final String name, final @NotNull URL url) {
-        this(name,url,null);
-    }
-    
-    /**
-     * Instantiates a new Resource pack.
-     *
-     * @param name the name
-     * @param url  the url
-     * @param file the file
-     */
-    public ResourcePack(final String name, final @NotNull URL url, final File file) {
-        this(name,url,file,null);
-    }
-    
-    
-    /**
-     * Instantiates a new Resource pack.
-     *
-     * @param name        the name
-     * @param url         the url
-     * @param file        the file
-     * @param description the description
-     */
-    public ResourcePack(final String name, final @NotNull URL url, final File file, final String description ) {
-        this.name = name;
-        final Path path = ResourcePackManager.getResourceDir();
-        this.local = file!=null ? file : new File(path.toFile(), name + '.' + ext);
-        this.url = url;
-        this.description = description;
-        this.validate();
-    }
-    
-    
-    private byte[] getSH1Hash(final InputStream fis)  {
-        try {
-            final MessageDigest digest = MessageDigest.getInstance("SHA-1");
-                try {
-                    int n = 0;
-                    final byte[] buffer = new byte[8192];
-                    while (n != -1) {
-                        n = fis.read(buffer);
-                        if (n > 0) {
-                            digest.update(buffer, 0, n);
-                        }
-                    }
-                }catch (final IOException e) {
-                    Minigames.log().warning(e.getMessage());
-                    return null;
-                }
-            return digest.digest();
-        }catch (final NoSuchAlgorithmException e){
-            Minigames.log().severe(e.getMessage());
-            return null;
-        }
     }
     
     private void validate() {
@@ -153,13 +65,13 @@ public final class ResourcePack implements ConfigurationSerializable {
                     try (final FileInputStream fis = new FileInputStream(this.local)) {
                         this.hash = this.getSH1Hash(fis);
                     } catch (final IOException e) {
-                            e.printStackTrace();
+                        e.printStackTrace();
                     }
                     //Validate the remote file hash = local.
                     final File temp;
                     try (final InputStream in = this.url.openStream()) {
                         temp = File.createTempFile(this.name, ext);
-                            Files.copy(in, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        Files.copy(in, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     } catch (final IOException e) {
                         Minigames.log().warning(e.getMessage());
                         e.printStackTrace();
@@ -173,32 +85,55 @@ public final class ResourcePack implements ConfigurationSerializable {
                             this.valid = true;
                             return;
                         }
-                        }catch(final IOException e){
-                            e.printStackTrace();
+                    } catch (final IOException e) {
+                        e.printStackTrace();
                         this.valid = false;
-                            return;
-                        }
+                        return;
+                    }
                     // Local did not match hash on remote so copy the remote over the local.
-                        try (final FileInputStream fis = new FileInputStream(temp)) {
-                                Files.copy(fis, this.local.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                        } catch (final IOException e) {
-                            e.printStackTrace();
-                        }
-                        //set the new hash as long as its not null its valid
+                    try (final FileInputStream fis = new FileInputStream(temp)) {
+                        Files.copy(fis, this.local.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    } catch (final IOException e) {
+                        e.printStackTrace();
+                    }
+                    //set the new hash as long as its not null its valid
                     this.setLocalHash();
-                    } else{
+                } else {
                     this.download(this.local);
                     this.setLocalHash();
+                }
+            }
+        });
+    }
+    
+    private byte[] getSH1Hash(final InputStream fis) {
+        try {
+            final MessageDigest digest = MessageDigest.getInstance("SHA-1");
+            try {
+                int n = 0;
+                final byte[] buffer = new byte[8192];
+                while (n != -1) {
+                    n = fis.read(buffer);
+                    if (n > 0) {
+                        digest.update(buffer, 0, n);
                     }
                 }
-        });
+            } catch (final IOException e) {
+                Minigames.log().warning(e.getMessage());
+                return null;
+            }
+            return digest.digest();
+        } catch (final NoSuchAlgorithmException e) {
+            Minigames.log().severe(e.getMessage());
+            return null;
+        }
     }
     
     /**
      * Generate the local SH1 hash
      */
     private void setLocalHash() {
-        if(this.local != null  && this.local.exists()) {
+        if (this.local != null && this.local.exists()) {
             try (final FileInputStream fis = new FileInputStream(this.local)) {
                 this.hash = this.getSH1Hash(fis);
                 this.valid = true;
@@ -210,7 +145,7 @@ public final class ResourcePack implements ConfigurationSerializable {
                 return;
             }
         }
-        this.valid =false;
+        this.valid = false;
     }
     
     /**
@@ -229,10 +164,99 @@ public final class ResourcePack implements ConfigurationSerializable {
         }
         try (final InputStream in = this.url.openStream()) {
             Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }catch(final IOException e) {
-                e.printStackTrace();
-                this.valid = false;
+        } catch (final IOException e) {
+            e.printStackTrace();
+            this.valid = false;
         }
+    }
+    
+    /**
+     * Instantiates a new Resource pack.
+     *
+     * @param name the name
+     * @param url  the url
+     */
+    public ResourcePack(final String name, final @NotNull URL url) {
+        this(name, url, null);
+    }
+    
+    
+    /**
+     * Instantiates a new Resource pack.
+     *
+     * @param name the name
+     * @param url  the url
+     * @param file the file
+     */
+    public ResourcePack(final String name, final @NotNull URL url, final File file) {
+        this(name, url, file, null);
+    }
+    
+    
+    /**
+     * Instantiates a new Resource pack.
+     *
+     * @param name        the name
+     * @param url         the url
+     * @param file        the file
+     * @param description the description
+     */
+    public ResourcePack(final String name, final @NotNull URL url, final File file, final String description) {
+        this.name = name;
+        final Path path = ResourcePackManager.getResourceDir();
+        this.local = file != null ? file : new File(path.toFile(), name + '.' + ext);
+        this.url = url;
+        this.description = description;
+        this.validate();
+    }
+    
+    /**
+     * Statically create the class
+     *
+     * @param map A map of values
+     *
+     * @return ResourcePack resource pack
+     */
+    public static ResourcePack valueOf(final Map<String, Object> map) {
+        return deserialize(map);
+    }
+    
+    /**
+     * Statically create the class
+     *
+     * @param map A map of values
+     *
+     * @return ResourcePack resource pack
+     */
+    public static ResourcePack deserialize(final Map<String, Object> map) {
+        return new ResourcePack(map);
+    }
+    
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
+    public String getName() {
+        return this.name;
+    }
+    
+    /**
+     * True if the resource pack is validated.
+     *
+     * @return the boolean
+     */
+    public boolean isValid() {
+        return this.valid;
+    }
+    
+    /**
+     * Gets description.
+     *
+     * @return the description
+     */
+    public String getDescription() {
+        return this.description;
     }
     
     /**
@@ -248,7 +272,7 @@ public final class ResourcePack implements ConfigurationSerializable {
     /**
      * Gets the Publicly available URL
      *
-     * @return url
+     * @return url url
      */
     public URL getUrl() {
         return this.url;
@@ -257,26 +281,11 @@ public final class ResourcePack implements ConfigurationSerializable {
     @Override
     public Map<String, Object> serialize() {
         final Map<String, Object> result = new HashMap<>();
-        result.put("name",this.name);
-        result.put("url",this.url.toString());
-        return result;
-    }
-    /**
-     * Statically create the class
-     * @param map A map of values
-     * @return ResourcePack
-     */
-    public static ResourcePack deserialize(final Map<String, Object> map) {
-        return new ResourcePack(map);
-    }
+        result.put("name", this.name);
+        result.put("url", this.url.toString());
+        result.put("description", this.description);
     
-    /**
-     * Statically create the class
-     * @param map A map of values
-     * @return ResourcePack
-     */
-    public static ResourcePack valueOf(final Map<String, Object> map) {
-        return new ResourcePack(map);
+        return result;
     }
     
 }

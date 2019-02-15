@@ -158,7 +158,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
             MinigamePlayer ply = getContainer().getViewer();
             ply.setNoClose(true);
             ply.getPlayer().closeInventory();
-            ply.sendMessage("Delete the " + loadout.getName(false) + " loadout from " + getName() + "? Type \"Yes\" to confirm.", null);
+            ply.sendMessage("Delete the " + loadout.getName(false) + " loadout from " + getName() + "? Type \"Yes\" to confirm.", MinigameMessageType.INFO);
             ply.sendInfoMessage("The menu will automatically reopen in 10s if nothing is entered.");
             ply.setManualEntry(this);
             getContainer().startReopenTimer(10);
@@ -179,7 +179,7 @@ public class MenuItemDisplayLoadout extends MenuItem{
             getContainer().removeItem(getSlot());
             getContainer().cancelReopenTimer();
             getContainer().displayMenu(getContainer().getViewer());
-            getContainer().getViewer().sendMessage(loadoutName + " has been deleted.", null);
+            getContainer().getViewer().sendMessage(loadoutName + " has been deleted.", MinigameMessageType.INFO);
             return;
         }
         getContainer().getViewer().sendMessage(loadout.getName(false) + " was not deleted.", MinigameMessageType.ERROR);

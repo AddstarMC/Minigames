@@ -64,9 +64,7 @@ public class  ResourcePackManager {
         try {
             URL u = new URL("https://github.com/AddstarMC/Minigames/raw/resourcepack/Minigames/src/main/resources/resourcepack/emptyResourcePack.zip");
             ResourcePack empty = new ResourcePack("empty",u);
-            if(empty.isValid()){
-               addResourcePack(empty);
-            }
+            addResourcePack(empty);
             return true;
         }catch (MalformedURLException e){
             return false;
@@ -100,6 +98,7 @@ public class  ResourcePackManager {
         for(final ResourcePack pack:resources){
             if (pack.getName().equals("empty")) {
                 emptyPresent = true;
+                enabled = true;
             }
             addResourcePack(pack);
         }
@@ -111,6 +110,7 @@ public class  ResourcePackManager {
             }
             enabled = true;
         }
+        enabled = true;
         return true;
     }
     

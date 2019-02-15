@@ -34,7 +34,7 @@ public class MoneyReward extends RewardType{
     @Override
     public void giveReward(MinigamePlayer player) {
         Minigames.getPlugin().getEconomy().depositPlayer(player.getPlayer().getPlayer(), money);
-        player.sendMessage(MinigameUtils.formStr("reward.money", Minigames.getPlugin().getEconomy().format(money)), null);
+        player.sendInfoMessage(MinigameUtils.formStr("reward.money", Minigames.getPlugin().getEconomy().format(money)));
     }
 
     @Override

@@ -95,7 +95,7 @@ public class MenuItemInteger extends MenuItem{
         MinigamePlayer ply = getContainer().getViewer();
         ply.setNoClose(true);
         ply.getPlayer().closeInventory();
-        ply.sendMessage("Enter number value into chat for " + getName() + ", the menu will automatically reopen in 10s if nothing is entered.", null);
+        ply.sendMessage("Enter number value into chat for " + getName() + ", the menu will automatically reopen in 10s if nothing is entered.", MinigameMessageType.INFO);
         String min = "N/A";
         String max = "N/A";
         if(this.min != null){

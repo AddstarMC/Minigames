@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.menu;
 
 import java.util.List;
 
+import au.com.mineauz.minigames.MinigameMessageType;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -27,7 +28,7 @@ public class MenuItemAddFlag extends MenuItem{
         MinigamePlayer ply = getContainer().getViewer();
         ply.setNoClose(true);
         ply.getPlayer().closeInventory();
-        ply.sendMessage("Enter a flag name into chat for " + getName() + ", the menu will automatically reopen in 20s if nothing is entered.", null);
+        ply.sendMessage("Enter a flag name into chat for " + getName() + ", the menu will automatically reopen in 20s if nothing is entered.", MinigameMessageType.INFO);
         ply.setManualEntry(this);
         getContainer().startReopenTimer(20);
         

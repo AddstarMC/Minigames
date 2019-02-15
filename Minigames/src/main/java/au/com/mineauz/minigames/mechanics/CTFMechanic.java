@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.mechanics;
 
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.objects.CTFFlag;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
@@ -224,7 +225,7 @@ public class CTFMechanic extends GameMechanicBase{
                                     ply.getTeam().getChatColor() + ply.getTeam().getDisplayName() + ChatColor.WHITE));
                         }
                         else if(mgm.getFlagCarrier(ply) != null && mgm.hasDroppedFlag(clickID) && !mgm.getDroppedFlag(clickID).isAtHome()){
-                            ply.sendMessage(MinigameUtils.getLang("player.ctf.returnFail"), null);
+                            ply.sendMessage(MinigameUtils.getLang("player.ctf.returnFail"), MinigameMessageType.LOSS);
                         }
                     }
                 }

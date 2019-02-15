@@ -28,7 +28,7 @@ public class MenuItemAddTeam extends MenuItem{
         MinigamePlayer ply = getContainer().getViewer();
         ply.setNoClose(true);
         ply.getPlayer().closeInventory();
-        ply.sendMessage("Enter the color of the team you wish to add. All colors available below:", null);
+        ply.sendMessage("Enter the color of the team you wish to add. All colors available below:", MinigameMessageType.INFO);
         List<String> teams = new ArrayList<>();
         for(TeamColor col : TeamColor.values())
             teams.add(col.getColor() + MinigameUtils.capitalize(col.toString().replace("_", " ")));

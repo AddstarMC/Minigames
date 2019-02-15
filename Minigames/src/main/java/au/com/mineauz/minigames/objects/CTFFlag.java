@@ -187,9 +187,9 @@ public class CTFFlag{
             respawnFlag();
             for(MinigamePlayer pl : minigame.getPlayers()){
                 if(getTeam() != null)
-                    pl.sendMessage(MinigameUtils.formStr("minigame.flag.returnedTeam", getTeam().getChatColor() + getTeam().getDisplayName() + ChatColor.WHITE), null);
+                    pl.sendInfoMessage(MinigameUtils.formStr("minigame.flag.returnedTeam", getTeam().getChatColor() + getTeam().getDisplayName() + ChatColor.WHITE));
                 else
-                    pl.sendMessage(MinigameUtils.getLang("minigame.flag.returnedNeutral"), null);
+                    pl.sendInfoMessage(MinigameUtils.getLang("minigame.flag.returnedNeutral"));
             }
             taskID = -1;
         }, respawnTime * 20);

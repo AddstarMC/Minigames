@@ -112,7 +112,7 @@ public class TeamSign implements MinigameSign {
                                 if (nt.getPlayers().size() < nt.getMaxPlayers()){
                                     MultiplayerType.switchTeam(mgm, player, nt);
                                     plugin.getMinigameManager().sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
-                                    player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), null);
+                                    player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), MinigameMessageType.INFO);
                                 }else {
                                     player.sendInfoMessage(MinigameUtils.getLang("player.team.full"));
                                 }

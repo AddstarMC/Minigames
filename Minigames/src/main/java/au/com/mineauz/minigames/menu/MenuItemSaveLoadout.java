@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.PlayerLoadout;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -67,7 +68,7 @@ public class MenuItemSaveLoadout extends MenuItem{
                 }
             }
         }
-        getContainer().getViewer().sendMessage("Saved the '" + loadout.getName(false) + "' loadout.", null);
+        getContainer().getViewer().sendMessage("Saved the '" + loadout.getName(false) + "' loadout.", MinigameMessageType.INFO);
         if(altMenu == null)
             getContainer().getPreviousPage().displayMenu(getContainer().getViewer());
         else

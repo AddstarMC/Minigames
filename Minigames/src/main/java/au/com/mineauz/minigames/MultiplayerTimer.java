@@ -179,14 +179,14 @@ public class MultiplayerTimer{
     public void pauseTimer(){
         paused = true;
         for(MinigamePlayer ply : minigame.getPlayers()){
-            ply.sendMessage(MinigameUtils.getLang("time.startup.timerPaused"), null);
+            ply.sendMessage(MinigameUtils.getLang("time.startup.timerPaused"), MinigameMessageType.INFO);
         }
     }
     
     public void pauseTimer(String reason){
         paused = true;
         for(MinigamePlayer ply : minigame.getPlayers()){
-            ply.sendMessage(MinigameUtils.formStr("time.startup.timerPaused", reason), null);
+            ply.sendMessage(MinigameUtils.formStr("time.startup.timerPaused", reason), MinigameMessageType.INFO);
         }
     }
     
@@ -199,7 +199,7 @@ public class MultiplayerTimer{
     public void resumeTimer(){
         paused = false;
         for(MinigamePlayer ply : minigame.getPlayers()){
-            ply.sendMessage(MinigameUtils.getLang("time.startup.timerResumed"), null);
+            ply.sendMessage(MinigameUtils.getLang("time.startup.timerResumed"), MinigameMessageType.INFO);
         }
     }
     
