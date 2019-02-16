@@ -51,13 +51,14 @@ public class MinigameSave {
     
     public void saveConfig(){
         if(minigameSave == null || minigameSaveFile == null){
+            Minigames.getPlugin().getLogger().log(Level.INFO, "Could not save " + minigame + File.separator+name+ " config file!");
             return;
         }
         try{
             minigameSave.save(minigameSaveFile);
         }
         catch(IOException ex) {
-            Minigames.getPlugin().getLogger().log(Level.SEVERE, "Could not save " + minigame + " config file!");
+            Minigames.getPlugin().getLogger().log(Level.SEVERE, "Could not save " + minigame + File.separator+name+ " config file!");
         }
     }
     

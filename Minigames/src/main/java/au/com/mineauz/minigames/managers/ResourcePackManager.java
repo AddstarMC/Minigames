@@ -35,6 +35,8 @@ public class  ResourcePackManager {
 
     private Map<String, ResourcePack> resources = new HashMap<>();
 
+    private MinigameSave config;
+
     public ResourcePackManager() {
         if(!Files.notExists(resourceDir))
             try {
@@ -82,11 +84,18 @@ public class  ResourcePackManager {
         if(!enabled)return null;
         return resources.put(pack.getName(),pack);
     };
+
+    public void removeResourcePack(ResourcePack pack){
+        if(!enabled) return;
+        resources.remove(pack.getName());
+        saveResources();
+    }
     
-    public boolean initialize(FileConfiguration config){
+    public boolean initialize(final MinigameSave c){
+        this.config = c;
         boolean emptyPresent = false;
         final List<ResourcePack> resources = new ArrayList<>();
-        final Object objects = config.get("resources");
+        final Object objects = this.config.getConfig().get("resources");
         if(objects instanceof List){
             final List obj = (List) objects;
             for(final Object object : obj){
@@ -114,10 +123,14 @@ public class  ResourcePackManager {
         return true;
     }
     
-    public void saveResources(MinigameSave mSave){
+    public void saveResources(){
         List<ResourcePack> resourceList = new ArrayList<>(resources.values());
-        mSave.getConfig().set("resources",resourceList);
-        mSave.saveConfig();
+        config.getConfig().set("resources",resourceList);
+        config.saveConfig();
+    }
+
+    public Set<String> getResourceNames(){
+        return resources.keySet();
     }
 
 

@@ -101,6 +101,7 @@ public final class ResourcePack implements ConfigurationSerializable {
                 } else {
                     this.download(this.local);
                     this.setLocalHash();
+                    this.valid = true;
                 }
             }
         });

@@ -50,24 +50,29 @@ public class Events implements Listener{
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerResourcePack(PlayerResourcePackStatusEvent event){
         final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-        if(ply == null) return;
+        List<MinigamePlayer> required = plugin.getPlayerManager().getApplyingPack();
         if(ply.isInMinigame()) {
+            if(required.contains(ply)){
             ResourcePackModule module = ResourcePackModule.getMinigameModule(ply.getMinigame());
             if(!module.isEnabled())return;
             if(!module.isForced())return;
             switch (event.getStatus()){
                 case ACCEPTED:
+                    required.remove(ply);
                     return;
                 case DECLINED:
                     Minigames.getPlugin().getPlayerManager().quitMinigame(ply,true);
                     ply.sendMessage(MinigameUtils.getLang("minigames.resource.declined"),MinigameMessageType.ERROR);
+                    required.remove(ply);
                     return;
                 case FAILED_DOWNLOAD:
                     Minigames.getPlugin().getPlayerManager().quitMinigame(ply,true);
                     ply.sendMessage(MinigameUtils.getLang("minigames.resource.failed"),MinigameMessageType.ERROR);
-                case SUCCESSFULLY_LOADED:
+                    required.remove(ply);
                     return;
-    
+                case SUCCESSFULLY_LOADED:
+                    required.remove(ply);
+            }
             }
 
         }

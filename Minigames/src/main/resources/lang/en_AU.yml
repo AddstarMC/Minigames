@@ -115,6 +115,11 @@ minigame:
       remove: "Custom Server Resource Pack has been removed."
       declined: "You have declined a custom resourcepack that is required for this game"
       failed: "A custom resource pack for this game could not be found and loaded"
+      command:
+        description: "Commands that manipulate resource packs"
+        remove: "The resource pack has been removed"
+        badurl: "The url you provided was not valid."
+        invalidpack: "The information could not be used to create a pack"
   flag:
     returnedTeam: "%s flag has been returned home."
     returnedNeutral: "The Neutral flag has been returned home."

@@ -40,7 +40,12 @@ import java.util.*;
  **/
 public class MinigamePlayerManager {
     private Map<String, MinigamePlayer> minigamePlayers = new HashMap<>();
-    
+
+    public List<MinigamePlayer> getApplyingPack() {
+        return applyingPack;
+    }
+
+    private List<MinigamePlayer> applyingPack = new ArrayList<>();
     private boolean partyMode = false;
     Map<Team, Integer> tpos;
     private int pos;
@@ -52,6 +57,9 @@ public class MinigamePlayerManager {
     public MinigamePlayerManager() {
     }
 
+    public void needsResourcePack(MinigamePlayer player){
+        applyingPack.add(player);
+    }
     public void joinMinigame(MinigamePlayer player, Minigame minigame, boolean isBetting, Double betAmount) {
         MinigameType type = minigame.getType();
         JoinMinigameEvent event = new JoinMinigameEvent(player, minigame);
@@ -480,10 +488,18 @@ public class MinigamePlayerManager {
                 player.setStartPos(null);
                 if(!player.isDead()){
                     player.restorePlayerData();
-                    if(!isWinner)
-                        player.teleport(minigame.getQuitPosition());
-                    else
-                        player.teleport(minigame.getEndPosition());
+                    Location loc;
+                    if(!isWinner) {
+                        if (minigame.getQuitPosition() != null) {
+                            loc = minigame.getQuitPosition();
+                        } else {
+                            loc = minigame.getEndPosition();
+                        }
+                        ;
+                    } else {
+                             loc = minigame.getEndPosition();
+                    }
+                    player.teleport(loc);
                 }
                 else{
                     if(!isWinner)

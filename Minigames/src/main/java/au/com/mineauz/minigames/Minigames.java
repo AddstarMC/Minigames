@@ -152,8 +152,8 @@ public class Minigames extends JavaPlugin{
         }
         globalLoadouts.saveConfig();
         this.minigameManager.saveRewardSigns();
+        resourceManager.saveResources();
         log().info(desc.getName() + " successfully disabled.");
-        
     }
 
     public void onEnable(){
@@ -286,8 +286,7 @@ public class Minigames extends JavaPlugin{
         this.resourceManager =  new ResourcePackManager();
         final MinigameSave resources = new MinigameSave("resources");
         this.minigameManager.addConfigurationFile("resources",resources.getConfig());
-        this.resourceManager.initialize(resources.getConfig());
-        this.resourceManager.saveResources(resources);
+        this.resourceManager.initialize(resources);
         this.minigameManager.addMinigameType(new SingleplayerType());
         this.minigameManager.addMinigameType(new MultiplayerType());
 
