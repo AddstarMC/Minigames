@@ -17,7 +17,7 @@ public class SaveCommand implements ICommand {
 
     @Override
     public String[] getAliases() {
-        return new String[] {"s"};
+        return new String[]{"s"};
     }
 
     @Override
@@ -37,7 +37,7 @@ public class SaveCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame save <Minigame>"};
+        return new String[]{"/minigame save <Minigame>"};
     }
 
     @Override
@@ -52,14 +52,13 @@ public class SaveCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
+                             String label, String[] args) {
+        if (args != null) {
             if (plugin.getMinigameManager().hasMinigame(args[0])) {
                 Minigame mg = plugin.getMinigameManager().getMinigame(args[0]);
                 mg.saveMinigame();
                 sender.sendMessage(ChatColor.GRAY + mg.getName(false) + " has been saved.");
-            }
-            else{
+            } else {
                 sender.sendMessage(ChatColor.RED + "There is no Minigame by the name: " + args[0]);
             }
             return true;
@@ -69,7 +68,7 @@ public class SaveCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
         return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
     }

@@ -13,9 +13,9 @@ public class ScriptWrapper {
         return new ScriptObject() {
             @Override
             public Set<String> getKeys() {
-                return ImmutableSet.of("x","y","z","bx","by","bz","world","yaw","pitch","block");
+                return ImmutableSet.of("x", "y", "z", "bx", "by", "bz", "world", "yaw", "pitch", "block");
             }
-            
+
             @Override
             public ScriptReference get(String name) {
                 if (name.equalsIgnoreCase("x")) {
@@ -41,21 +41,21 @@ public class ScriptWrapper {
                 }
                 return null;
             }
-            
+
             @Override
             public String getAsString() {
                 return String.format("%.1f,%.1f,%.1f,%s", object.getX(), object.getY(), object.getZ(), object.getWorld().getName());
             }
         };
     }
-    
+
     public static ScriptObject wrap(final Block object) {
         return new ScriptObject() {
             @Override
             public Set<String> getKeys() {
                 return ImmutableSet.of("pos", "type", "data", "temperature", "light", "blocklight", "skylight", "redstone");
             }
-            
+
             @Override
             public ScriptReference get(String name) {
                 if (name.equalsIgnoreCase("pos")) {
@@ -75,24 +75,24 @@ public class ScriptWrapper {
                 } else if (name.equalsIgnoreCase("redstone")) {
                     return ScriptValue.of(object.getBlockPower());
                 }
-                
+
                 return null;
             }
-            
+
             @Override
             public String getAsString() {
                 return String.format("%d,%d,%d,%s %s:%s", object.getX(), object.getY(), object.getZ(), object.getWorld().getName(), object.getType(), object.getBlockData().getAsString());
             }
         };
     }
-    
+
     public static ScriptObject wrap(final World object) {
         return new ScriptObject() {
             @Override
             public Set<String> getKeys() {
                 return ImmutableSet.of("name", "time");
             }
-            
+
             @Override
             public ScriptReference get(String name) {
                 if (name.equalsIgnoreCase("name")) {
@@ -100,10 +100,10 @@ public class ScriptWrapper {
                 } else if (name.equalsIgnoreCase("time")) {
                     return ScriptValue.of(object.getTime());
                 }
-                
+
                 return null;
             }
-            
+
             @Override
             public String getAsString() {
                 return object.getName();

@@ -25,8 +25,8 @@ import au.com.mineauz.minigamesregions.Region;
 
 public class AddTeamScoreAction extends ScoreAction {
     
-    private IntegerFlag score = new IntegerFlag(1, "amount");
-    private StringFlag team = new StringFlag("NONE", "team");
+    private final IntegerFlag score = new IntegerFlag(1, "amount");
+    private final StringFlag team = new StringFlag("NONE", "team");
 
     @Override
     public String getName() {

@@ -36,12 +36,12 @@ public class SetRegenAreaCommand implements ICommand {
 
     @Override
     public String[] getParameters() {
-        return new String[] {"1", "2", "clear"};
+        return new String[]{"1", "2", "clear"};
     }
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> regenarea <parameters>"};
+        return new String[]{"/minigame set <Minigame> regenarea <parameters>"};
     }
 
     @Override
@@ -56,39 +56,35 @@ public class SetRegenAreaCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
+                             String label, String[] args) {
+        if (args != null) {
             Player ply = (Player) sender;
-            if(args[0].equals("1")){
+            if (args[0].equals("1")) {
                 Location loc = ply.getLocation();
                 loc.setY(loc.getY() - 1);
                 loc = loc.getBlock().getLocation();
-                if(minigame.getRegenArea2() == null || minigame.getRegenArea2().getWorld() == loc.getWorld()){
+                if (minigame.getRegenArea2() == null || minigame.getRegenArea2().getWorld() == loc.getWorld()) {
                     minigame.setRegenArea1(loc);
                     ply.sendMessage(ChatColor.GRAY + "The first point of the regeneration area in " + minigame + " has been set to the block below your position.");
-                }
-                else{
+                } else {
                     ply.sendMessage(ChatColor.RED + "The first point of the regeneration area must be within the same world as the second point!");
                 }
                 return true;
-            }
-            else if(args[0].equals("2")){
+            } else if (args[0].equals("2")) {
                 Location loc = ply.getLocation();
                 loc.setY(loc.getY() - 1);
                 loc = loc.getBlock().getLocation();
-                if(minigame.getRegenArea1() == null || minigame.getRegenArea1().getWorld() == loc.getWorld()){
+                if (minigame.getRegenArea1() == null || minigame.getRegenArea1().getWorld() == loc.getWorld()) {
                     minigame.setRegenArea2(loc);
                     ply.sendMessage(ChatColor.GRAY + "The second point of the regeneration area in " + minigame + " has been set to the block below your position.");
-                }
-                else{
+                } else {
                     ply.sendMessage(ChatColor.RED + "The second point of the regeneration area must be within the same world as the first point!");
                 }
                 return true;
-            }
-            else if(args[0].equalsIgnoreCase("clear")){
+            } else if (args[0].equalsIgnoreCase("clear")) {
                 minigame.setRegenArea1(null);
                 minigame.setRegenArea2(null);
-                
+
                 ply.sendMessage(ChatColor.GRAY + "The regeneration area has been cleared for " + minigame);
                 return true;
             }
@@ -98,8 +94,8 @@ public class SetRegenAreaCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
-        if(args.length == 1)
+                                      String alias, String[] args) {
+        if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("1;2;clear"), args[0]);
         return null;
     }

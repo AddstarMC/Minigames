@@ -13,10 +13,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MoneyReward extends RewardType{
+public class MoneyReward extends RewardType {
 
     private double money = 0d;
-    
+
     public MoneyReward(Rewards rewards) {
         super(rewards);
     }
@@ -51,77 +51,74 @@ public class MoneyReward extends RewardType{
     public void loadReward(String path, ConfigurationSection config) {
         money = config.getDouble(path);
     }
-    
-    public void setRewardMoney(double amount){
-        money = amount;
-    }
-    
-    public double getRewardMoney(){
+
+    public double getRewardMoney() {
         return money;
     }
-    
-    private class MenuItemReward extends MenuItem{
+
+    public void setRewardMoney(double amount) {
+        money = amount;
+    }
+
+    private class MenuItemReward extends MenuItem {
         private List<String> options = new ArrayList<>();
         private MoneyReward reward;
-        
-        public MenuItemReward(MoneyReward reward){
+
+        public MenuItemReward(MoneyReward reward) {
             super("$" + money, Material.PAPER);
-            for(RewardRarity rarity : RewardRarity.values()){
+            for (RewardRarity rarity : RewardRarity.values()) {
                 options.add(rarity.toString());
             }
             this.reward = reward;
             updateDescription();
         }
-        
-        public void updateName(String newName){
+
+        public void updateName(String newName) {
             ItemMeta meta = getItem().getItemMeta();
             meta.setDisplayName(ChatColor.RESET + newName);
             getItem().setItemMeta(meta);
         }
-        
-        public void updateDescription(){
+
+        public void updateDescription() {
             List<String> description = null;
-            if(options == null){
+            if (options == null) {
                 options = new ArrayList<>();
-                for(RewardRarity rarity : RewardRarity.values()){
+                for (RewardRarity rarity : RewardRarity.values()) {
                     options.add(rarity.toString());
                 }
             }
             int pos = options.indexOf(getRarity().toString());
             int before = pos - 1;
             int after = pos + 1;
-            if(before == -1)
+            if (before == -1)
                 before = options.size() - 1;
-            if(after == options.size())
+            if (after == options.size())
                 after = 0;
-            
-            if(getDescription() != null){
+
+            if (getDescription() != null) {
                 description = getDescription();
-                if(getDescription().size() >= 3){
+                if (getDescription().size() >= 3) {
                     String desc = ChatColor.stripColor(getDescription().get(1));
-                    
-                    if(options.contains(desc)){
+
+                    if (options.contains(desc)) {
                         description.set(0, ChatColor.GRAY.toString() + options.get(before));
                         description.set(1, ChatColor.GREEN.toString() + getRarity().toString());
                         description.set(2, ChatColor.GRAY.toString() + options.get(after));
-                    }
-                    else{
+                    } else {
                         description.add(0, ChatColor.GRAY.toString() + options.get(before));
                         description.add(1, ChatColor.GREEN.toString() + getRarity().toString());
                         description.add(2, ChatColor.GRAY.toString() + options.get(after));
                         description.add(3, ChatColor.DARK_PURPLE.toString() + "Shift + Click to change");
                         description.add(4, ChatColor.DARK_PURPLE.toString() + "Shift + Right Click to remove");
                     }
-                }
-                else{
+                } else {
                     description.add(0, ChatColor.GRAY.toString() + options.get(before));
                     description.add(1, ChatColor.GREEN.toString() + getRarity().toString());
                     description.add(2, ChatColor.GRAY.toString() + options.get(after));
                     description.add(3, ChatColor.DARK_PURPLE.toString() + "Shift + Click to change");
                     description.add(4, ChatColor.DARK_PURPLE.toString() + "Shift + Right Click to remove");
                 }
-            }
-            else{
+            } else {
                 description = new ArrayList<>();
                 description.add(ChatColor.GRAY.toString() + options.get(before));
                 description.add(ChatColor.GREEN.toString() + getRarity().toString());
@@ -129,50 +126,50 @@ public class MoneyReward extends RewardType{
                 description.add(3, ChatColor.DARK_PURPLE.toString() + "Shift + Click to change");
                 description.add(4, ChatColor.DARK_PURPLE.toString() + "Shift + Right Click to remove");
             }
-            
+
             setDescription(description);
         }
-        
+
         @Override
-        public ItemStack onClick(){
+        public ItemStack onClick() {
             int ind = options.lastIndexOf(getRarity().toString());
             ind++;
-            if(ind == options.size())
+            if (ind == options.size())
                 ind = 0;
-            
+
             setRarity(RewardRarity.valueOf(options.get(ind)));
             updateDescription();
-            
+
             return getItem();
         }
-        
+
         @Override
-        public ItemStack onRightClick(){
+        public ItemStack onRightClick() {
             int ind = options.lastIndexOf(getRarity().toString());
             ind--;
-            if(ind == -1)
+            if (ind == -1)
                 ind = options.size() - 1;
-            
+
             setRarity(RewardRarity.valueOf(options.get(ind)));
             updateDescription();
-            
+
             return getItem();
         }
-        
+
         @Override
-        public ItemStack onShiftClick(){
+        public ItemStack onShiftClick() {
             Menu m = new Menu(3, "Set Money Amount", getContainer().getViewer());
             MenuItemDecimal dec = new MenuItemDecimal("Money", Material.PAPER, new Callback<Double>() {
+
+                @Override
+                public Double getValue() {
+                    return reward.money;
+                }
 
                 @Override
                 public void setValue(Double value) {
                     reward.money = value;
                     updateName("$" + value);
-                }
-
-                @Override
-                public Double getValue() {
-                    return reward.money;
                 }
             }, 50d, 100d, 1d, null);
             m.addItem(dec);
@@ -180,9 +177,9 @@ public class MoneyReward extends RewardType{
             m.displayMenu(getContainer().getViewer());
             return null;
         }
-        
+
         @Override
-        public ItemStack onShiftRightClick(){
+        public ItemStack onShiftRightClick() {
             getRewards().removeReward(reward);
             getContainer().removeItem(getSlot());
             return null;

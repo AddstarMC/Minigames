@@ -25,7 +25,7 @@ public class GlobalLoadoutCommand implements ICommand {
 
     @Override
     public String[] getAliases() {
-        return new String[] {"gloadout", "loadout"};
+        return new String[]{"gloadout", "loadout"};
     }
 
     @Override
@@ -45,7 +45,7 @@ public class GlobalLoadoutCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {
+        return new String[]{
                 "/minigame globalloadout"
         };
     }
@@ -62,30 +62,30 @@ public class GlobalLoadoutCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
+                             String label, String[] args) {
         MinigamePlayer player = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
         Menu loadouts = new Menu(6, getName(), player);
 
         List<String> des = new ArrayList<>();
         des.add("Shift + Right Click to Delete");
         List<MenuItem> mi = new ArrayList<>();
-        for(String ld : mdata.getLoadouts()){
+        for (String ld : mdata.getLoadouts()) {
             Material item = Material.WHITE_STAINED_GLASS_PANE;
-            if(mdata.getLoadout(ld).getItems().size() != 0){
-                item = mdata.getLoadout(ld).getItem((Integer)mdata.getLoadout(ld).getItems().toArray()[0]).getType();
+            if (mdata.getLoadout(ld).getItems().size() != 0) {
+                item = mdata.getLoadout(ld).getItem((Integer) mdata.getLoadout(ld).getItems().toArray()[0]).getType();
             }
             mi.add(new MenuItemDisplayLoadout(ld, des, item, mdata.getLoadout(ld)));
         }
         loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, mdata.getLoadoutMap()), 53);
         loadouts.addItems(mi);
-        
+
         loadouts.displayMenu(player);
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

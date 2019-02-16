@@ -10,8 +10,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class MenuItemRewardGroupAdd extends MenuItem{
-    
+public class MenuItemRewardGroupAdd extends MenuItem {
+
     private Rewards rewards;
 
     public MenuItemRewardGroupAdd(String name, Material displayItem, Rewards rewards) {
@@ -23,9 +23,9 @@ public class MenuItemRewardGroupAdd extends MenuItem{
         super(name, description, displayItem);
         this.rewards = rewards;
     }
-    
+
     @Override
-    public ItemStack onClick(){
+    public ItemStack onClick() {
         MinigamePlayer ply = getContainer().getViewer();
         ply.setNoClose(true);
         ply.getPlayer().closeInventory();
@@ -35,24 +35,24 @@ public class MenuItemRewardGroupAdd extends MenuItem{
         getContainer().startReopenTimer(30);
         return null;
     }
-    
+
     @Override
-    public void checkValidEntry(String entry){
+    public void checkValidEntry(String entry) {
         entry = entry.replace(" ", "_");
-        for(RewardGroup group : rewards.getGroups()){
-            if(group.getName().equals(entry)){
+        for (RewardGroup group : rewards.getGroups()) {
+            if (group.getName().equals(entry)) {
                 getContainer().getViewer().sendMessage("A reward group already exists by the name \"" + entry + "\"!", MinigameMessageType.ERROR);
                 getContainer().cancelReopenTimer();
                 getContainer().displayMenu(getContainer().getViewer());
                 return;
             }
         }
-        
+
         RewardGroup group = rewards.addGroup(entry, RewardRarity.NORMAL);
-        
+
         MenuItemRewardGroup mrg = new MenuItemRewardGroup(entry + " Group", Material.CHEST, group, rewards);
         getContainer().addItem(mrg);
-        
+
         getContainer().cancelReopenTimer();
         getContainer().displayMenu(getContainer().getViewer());
     }

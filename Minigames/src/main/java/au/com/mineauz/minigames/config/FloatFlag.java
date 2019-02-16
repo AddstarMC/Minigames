@@ -8,9 +8,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.List;
 
-public class FloatFlag extends Flag<Float>{
-    
-    public FloatFlag(Float value, String name){
+public class FloatFlag extends Flag<Float> {
+
+    public FloatFlag(Float value, String name) {
         setFlag(value);
         setDefaultFlag(value);
         setName(name);
@@ -23,73 +23,73 @@ public class FloatFlag extends Flag<Float>{
 
     @Override
     public void loadValue(String path, FileConfiguration config) {
-        setFlag(((Double)config.getDouble(path + "." + getName())).floatValue());
+        setFlag(((Double) config.getDouble(path + "." + getName())).floatValue());
     }
 
     @Override
     public MenuItem getMenuItem(String name, Material displayItem) {
         MenuItemDecimal dec = new MenuItemDecimal(name, displayItem, new Callback<Double>() {
-            
-            @Override
-            public void setValue(Double value) {
-                setFlag(value.floatValue());
-            }
-            
+
             @Override
             public Double getValue() {
                 return getFlag().doubleValue();
+            }            @Override
+            public void setValue(Double value) {
+                setFlag(value.floatValue());
             }
+
+
         }, 1d, 1d, 0d, Double.POSITIVE_INFINITY);
         return dec;
     }
 
     @Override
     public MenuItem getMenuItem(String name, Material displayItem,
-            List<String> description) {
+                                List<String> description) {
         MenuItemDecimal dec = new MenuItemDecimal(name, description, displayItem, new Callback<Double>() {
-            
-            @Override
-            public void setValue(Double value) {
-                setFlag(value.floatValue());
-            }
-            
+
             @Override
             public Double getValue() {
                 return getFlag().doubleValue();
+            }            @Override
+            public void setValue(Double value) {
+                setFlag(value.floatValue());
             }
+
+
         }, 1d, 1d, 0d, Double.POSITIVE_INFINITY);
         return dec;
     }
-    
+
     public MenuItem getMenuItem(String name, Material displayItem, double lowerinc, double upperinc, Double min, Double max) {
         MenuItemDecimal dec = new MenuItemDecimal(name, displayItem, new Callback<Double>() {
-            
-            @Override
-            public void setValue(Double value) {
-                setFlag(value.floatValue());
-            }
-            
+
             @Override
             public Double getValue() {
                 return getFlag().doubleValue();
+            }            @Override
+            public void setValue(Double value) {
+                setFlag(value.floatValue());
             }
+
+
         }, lowerinc, upperinc, min, max);
         return dec;
     }
 
     public MenuItem getMenuItem(String name, Material displayItem,
-            List<String> description, double lowerinc, double upperinc, Double min, Double max) {
+                                List<String> description, double lowerinc, double upperinc, Double min, Double max) {
         MenuItemDecimal dec = new MenuItemDecimal(name, description, displayItem, new Callback<Double>() {
-            
-            @Override
-            public void setValue(Double value) {
-                setFlag(value.floatValue());
-            }
-            
+
             @Override
             public Double getValue() {
                 return getFlag().doubleValue();
+            }            @Override
+            public void setValue(Double value) {
+                setFlag(value.floatValue());
             }
+
+
         }, lowerinc, upperinc, min, max);
         return dec;
     }

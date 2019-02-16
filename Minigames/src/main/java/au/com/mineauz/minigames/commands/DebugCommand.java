@@ -36,7 +36,7 @@ public class DebugCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame debug"};
+        return new String[]{"/minigame debug"};
     }
 
     @Override
@@ -51,7 +51,7 @@ public class DebugCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
+                             String label, String[] args) {
         Minigames.getPlugin().toggleDebug();
         if (Minigames.getPlugin().isDebugging())
             sender.sendMessage(ChatColor.GRAY + "Debug mode active.");
@@ -62,7 +62,7 @@ public class DebugCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

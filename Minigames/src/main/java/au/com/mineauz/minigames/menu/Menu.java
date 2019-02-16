@@ -21,226 +21,223 @@ public class Menu {
     private MinigamePlayer viewer = null;
     private int reopenTimerID = -1;
     private Inventory inv = null;
-    
-    public Menu(int rows, String name, MinigamePlayer viewer){
-        if(rows > 6)
+
+    public Menu(int rows, String name, MinigamePlayer viewer) {
+        if (rows > 6)
             rows = 6;
-        else if(rows < 2)
+        else if (rows < 2)
             rows = 2;
         this.rows = rows;
         this.name = name;
-        pageView = new ItemStack[rows*9];
+        pageView = new ItemStack[rows * 9];
         this.viewer = viewer;
     }
-    
-    public String getName(){
+
+    public String getName() {
         return name;
     }
-    
-    public boolean addItem(MenuItem item, int slot){
-        if(!pageMap.containsKey(slot) && slot < pageView.length){
+
+    public boolean addItem(MenuItem item, int slot) {
+        if (!pageMap.containsKey(slot) && slot < pageView.length) {
             item.setContainer(this);
             item.setSlot(slot);
             pageMap.put(slot, item);
-            if(inv != null){
+            if (inv != null) {
                 inv.setItem(slot, item.getItem());
             }
             return true;
         }
         return false;
     }
-    
-    public void addItem(MenuItem item){
+
+    public void addItem(MenuItem item) {
         int inc = 0;
         Menu m = this;
         int maxItems = 9 * (rows - 1);
-        while(true){
-            if(inc >= maxItems){
-                if(m.getNextPage() == null)
+        while (true) {
+            if (inc >= maxItems) {
+                if (m.getNextPage() == null)
                     m.addPage();
-                
+
                 m = m.getNextPage();
                 inc = 0;
             }
-            
-            if(m.getClicked(inc) == null){
+
+            if (m.getClicked(inc) == null) {
                 m.addItem(item, inc);
                 break;
-            }
-            else if(m.getClicked(inc).getName() != null && ChatColor.stripColor(m.getClicked(inc).getName()).equals("NL")){
-                for(int i = 1; i < 10; i++){
-                    if((inc + i) % 9 == 0){
+            } else if (m.getClicked(inc).getName() != null && ChatColor.stripColor(m.getClicked(inc).getName()).equals("NL")) {
+                for (int i = 1; i < 10; i++) {
+                    if ((inc + i) % 9 == 0) {
                         inc += i;
                         break;
                     }
                 }
-            }
-            else
+            } else
                 inc++;
         }
     }
-    
-    public void addItems(List<MenuItem> items){
+
+    public void addItems(List<MenuItem> items) {
         Menu curPage = this;
         int inc = 0;
-        for(MenuItem it : items){
-            if(it.getName() != null && ChatColor.stripColor(it.getName()).equals("NL")){
+        for (MenuItem it : items) {
+            if (it.getName() != null && ChatColor.stripColor(it.getName()).equals("NL")) {
                 curPage.addItem(it, inc);
-                for(int i = 1; i < 10; i++){
-                    if((inc + i) % 9 == 0){
+                for (int i = 1; i < 10; i++) {
+                    if ((inc + i) % 9 == 0) {
                         inc += i;
                         break;
                     }
                 }
-            }
-            else{
+            } else {
                 curPage.addItem(it, inc);
                 inc++;
             }
-            if(inc >= (9 * (rows - 1))){
+            if (inc >= (9 * (rows - 1))) {
                 inc = 0;
-                if(curPage.getNextPage() == null && items.indexOf(it) < items.size()){
+                if (curPage.getNextPage() == null && items.indexOf(it) < items.size()) {
                     curPage.addPage();
                 }
                 curPage = curPage.getNextPage();
             }
         }
     }
-    
-    public void addPage(){
+
+    public void addPage() {
         Menu nextPage = new Menu(rows, name, viewer);
-        addItem(new MenuItemPage("Next Page",MenuUtility.getBackMaterial(), nextPage), 9 * (rows - 1) + 5);
+        addItem(new MenuItemPage("Next Page", MenuUtility.getBackMaterial(), nextPage), 9 * (rows - 1) + 5);
         setNextPage(nextPage);
         nextPage.setPreviousPage(this);
-        nextPage.addItem(new MenuItemPage("Previous Page",MenuUtility.getBackMaterial(), this), 9 * (rows - 1) + 3);
-        for(int j = 9 * (rows - 1) + 6; j < 9 * rows; j++){
-            if(getClicked(j) != null)
+        nextPage.addItem(new MenuItemPage("Previous Page", MenuUtility.getBackMaterial(), this), 9 * (rows - 1) + 3);
+        for (int j = 9 * (rows - 1) + 6; j < 9 * rows; j++) {
+            if (getClicked(j) != null)
                 nextPage.addItem(getClicked(j), j);
         }
     }
-    
-    public void removeItem(int slot){
-        if(pageMap.containsKey(slot)){
+
+    public void removeItem(int slot) {
+        if (pageMap.containsKey(slot)) {
             pageMap.remove(slot);
             pageView[slot] = null;
-            if(inv != null){
+            if (inv != null) {
                 inv.setItem(slot, null);
             }
         }
     }
-    
-    public void clearMenu(){
+
+    public void clearMenu() {
         for (Integer i : new ArrayList<>(pageMap.keySet())) {
             pageMap.remove(i);
             pageView[i] = null;
         }
     }
-    
-    public void addItemStack(ItemStack item, int slot){
+
+    public void addItemStack(ItemStack item, int slot) {
         inv.setItem(slot, item);
     }
-    
-    private void populateMenu(){
-        for(Integer key : pageMap.keySet()){
-            if(!(pageMap.get(key) instanceof MenuItemNewLine))
+
+    private void populateMenu() {
+        for (Integer key : pageMap.keySet()) {
+            if (!(pageMap.get(key) instanceof MenuItemNewLine))
                 pageView[key] = pageMap.get(key).getItem();
         }
     }
-    
+
     private void updateAll() {
         for (MenuItem item : pageMap.values()) {
             item.update();
         }
     }
-    
-    public void displayMenu(MinigamePlayer ply){
+
+    public void displayMenu(MinigamePlayer ply) {
         updateAll();
         populateMenu();
         Player player = ply.getPlayer();
 
-        inv = Bukkit.createInventory(player, rows*9, name);
+        inv = Bukkit.createInventory(player, rows * 9, name);
         inv.setContents(pageView);
         ply.getPlayer().openInventory(inv);
         ply.setMenu(this);
     }
-    
-    public boolean getAllowModify(){
+
+    public boolean getAllowModify() {
         return allowModify;
     }
-    
-    public void setAllowModify(boolean canModify){
+
+    public void setAllowModify(boolean canModify) {
         allowModify = canModify;
     }
-    
-    public MenuItem getClicked(int slot){
+
+    public MenuItem getClicked(int slot) {
         return pageMap.get(slot);
     }
-    
-    public boolean hasMenuItem(int slot){
+
+    public boolean hasMenuItem(int slot) {
         return pageMap.containsKey(slot);
     }
-    
-    public int getSize(){
+
+    public int getSize() {
         return rows * 9;
     }
-    
-    public void setNextPage(Menu page){
-        nextPage = page;
-    }
-    
-    public Menu getNextPage(){
+
+    public Menu getNextPage() {
         return nextPage;
     }
-    
-    public boolean hasNextPage(){
+
+    public void setNextPage(Menu page) {
+        nextPage = page;
+    }
+
+    public boolean hasNextPage() {
         return nextPage != null;
     }
-    
-    public void setPreviousPage(Menu page){
-        previousPage = page;
-    }
-    
-    public Menu getPreviousPage(){
+
+    public Menu getPreviousPage() {
         return previousPage;
     }
-    
-    public boolean hasPreviousPage(){
+
+    public void setPreviousPage(Menu page) {
+        previousPage = page;
+    }
+
+    public boolean hasPreviousPage() {
         return previousPage != null;
     }
-    
-    public MinigamePlayer getViewer(){
+
+    public MinigamePlayer getViewer() {
         return viewer;
     }
-    
-    public void startReopenTimer(int time){
+
+    public void startReopenTimer(int time) {
         reopenTimerID = Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () -> {
             viewer.setNoClose(false);
             viewer.setManualEntry(null);
             displayMenu(viewer);
-        }, (long)(time * 20));
+        }, (long) (time * 20));
     }
-    
-    public void cancelReopenTimer(){
-        if(reopenTimerID != -1){
+
+    public void cancelReopenTimer() {
+        if (reopenTimerID != -1) {
             viewer.setNoClose(false);
             viewer.setManualEntry(null);
             Bukkit.getScheduler().cancelTask(reopenTimerID);
         }
     }
-    
-    public ItemStack[] getInventory(){
+
+    public ItemStack[] getInventory() {
         ItemStack[] inv = new ItemStack[getSize()];
-        
-        for(int i = 0; i < this.inv.getContents().length; i++){
-            if(!pageMap.containsKey(i)){
+
+        for (int i = 0; i < this.inv.getContents().length; i++) {
+            if (!pageMap.containsKey(i)) {
                 inv[i] = this.inv.getContents()[i];
             }
         }
-        
+
         return inv;
     }
-    
-    public Set<Integer> getSlotMap(){
+
+    public Set<Integer> getSlotMap() {
         return pageMap.keySet();
     }
 }

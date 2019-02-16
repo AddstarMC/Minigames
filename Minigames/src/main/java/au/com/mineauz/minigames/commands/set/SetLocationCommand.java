@@ -9,7 +9,7 @@ import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 
-public class SetLocationCommand implements ICommand{
+public class SetLocationCommand implements ICommand {
 
     @Override
     public String getName() {
@@ -38,7 +38,7 @@ public class SetLocationCommand implements ICommand{
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> location <Location Name Here>"};
+        return new String[]{"/minigame set <Minigame> location <Location Name Here>"};
     }
 
     @Override
@@ -53,12 +53,12 @@ public class SetLocationCommand implements ICommand{
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
+                             String label, String[] args) {
+        if (args != null) {
             String location = "";
-            for(int i = 0; i < args.length; i++){
+            for (int i = 0; i < args.length; i++) {
                 location += args[i];
-                if(i != args.length - 1){
+                if (i != args.length - 1) {
                     location += " ";
                 }
             }
@@ -72,7 +72,7 @@ public class SetLocationCommand implements ICommand{
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

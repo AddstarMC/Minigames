@@ -31,69 +31,67 @@ public class TestPlayer extends PlayerMock {
     private float flyspeed;
     private int noDamageTicks;
     private WeatherType playerWeather = WeatherType.CLEAR;
-    
-    @Override
-    public void setPlayerWeather(WeatherType type) {
-        playerWeather = type;
+    private List<PotionEffect> effects;
+    private Scoreboard scoreboard = new ScoreboardMock();
+
+    public TestPlayer(ServerMock server, String name, UUID uuid) {
+
+        super(server, name, uuid);
+        effects = new ArrayList<>();
     }
-    
+
     @Override
     public void setPlayerTime(long time, boolean relative) {
-        if(relative){
+        if (relative) {
             playerTimeoffset = time - this.getWorld().getTime();
-        }
-        else playerTime = time;
-        
+        } else playerTime = time;
+
     }
-    
+
     @Override
     public long getPlayerTime() {
-        return playerTime+playerTimeoffset;
+        return playerTime + playerTimeoffset;
     }
-    
+
     @Override
     public long getPlayerTimeOffset() {
         return playerTimeoffset;
     }
-    
+
     @Override
     public boolean isPlayerTimeRelative() {
-        return playerTimeoffset >0;
+        return playerTimeoffset > 0;
     }
-    
+
     @Override
     public void resetPlayerTime() {
         playerTime = this.getWorld().getTime();
         playerTimeoffset = 0L;
     }
-    
-    
+
     @Override
     public WeatherType getPlayerWeather() {
         return playerWeather;
     }
-    
+
+    @Override
+    public void setPlayerWeather(WeatherType type) {
+        playerWeather = type;
+    }
+
     @Override
     public void resetPlayerWeather() {
         playerWeather = WeatherType.CLEAR;
     }
-    
+
     @Override
     public int getNoDamageTicks() {
         return noDamageTicks;
     }
-    
+
     @Override
     public void setNoDamageTicks(int ticks) {
         noDamageTicks = ticks;
-    }
-    
-    private List<PotionEffect> effects;
-    private Scoreboard scoreboard = new ScoreboardMock();
-    public TestPlayer(ServerMock server, String name, UUID uuid) {
-
-        super(server, name,uuid);
-        effects = new ArrayList<>();
     }
 
     @Override
@@ -103,12 +101,12 @@ public class TestPlayer extends PlayerMock {
 
     @Override
     public void playSound(Location location, Sound sound, float volume, float pitch) {
-        this.playSound(location, sound,null , volume, pitch);
+        this.playSound(location, sound, null, volume, pitch);
     }
 
     @Override
     public void playSound(Location location, String sound, float volume, float pitch) {
-        this.playSound(location, sound,null , volume, pitch);
+        this.playSound(location, sound, null, volume, pitch);
     }
 
     @Override
@@ -119,8 +117,9 @@ public class TestPlayer extends PlayerMock {
     @Override
     public void playSound(Location location, String sound, SoundCategory category, float volume, float pitch) {
         String catString;
-        if(category==null)catString = "null";else catString =category.name();
-        System.out.println("Sound played:" + sound.toUpperCase() + " from " +catString+ " at Vol"+volume+":"+pitch);
+        if (category == null) catString = "null";
+        else catString = category.name();
+        System.out.println("Sound played:" + sound.toUpperCase() + " from " + catString + " at Vol" + volume + ":" + pitch);
     }
 
     @Override
@@ -154,8 +153,13 @@ public class TestPlayer extends PlayerMock {
     }
 
     @Override
+    public void setScoreboard(Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException {
+        this.scoreboard = scoreboard;
+    }
+
+    @Override
     public void giveExp(int amount) {
-        this.exp = this.exp+amount;
+        this.exp = this.exp + amount;
     }
 
     @Override
@@ -180,7 +184,7 @@ public class TestPlayer extends PlayerMock {
 
     @Override
     public void setLevel(int level) {
-        this.level =level;
+        this.level = level;
     }
 
     @Override
@@ -194,18 +198,8 @@ public class TestPlayer extends PlayerMock {
     }
 
     @Override
-    public void setScoreboard(Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException {
-        this.scoreboard = scoreboard;
-    }
-
-    @Override
     public void setFlying(boolean value) {
         this.flying = value;
-    }
-
-    @Override
-    public void setFlySpeed(float value) throws IllegalArgumentException {
-        super.setFlySpeed(value);
     }
 
     @Override
@@ -217,9 +211,10 @@ public class TestPlayer extends PlayerMock {
     public boolean getAllowFlight() {
         return allowFlight;
     }
+
     @Override
     public void setAllowFlight(boolean flight) {
-            this.allowFlight = flight;
+        this.allowFlight = flight;
     }
 
     @Override
@@ -228,8 +223,13 @@ public class TestPlayer extends PlayerMock {
     }
 
     @Override
+    public void setFlySpeed(float value) throws IllegalArgumentException {
+        super.setFlySpeed(value);
+    }
+
+    @Override
     public boolean teleport(Location location) {
-        System.out.println("Called Teleport on "+this.getName() + " to " + location.toString());
+        System.out.println("Called Teleport on " + this.getName() + " to " + location.toString());
         return super.teleport(location);
     }
 
@@ -237,7 +237,7 @@ public class TestPlayer extends PlayerMock {
     public void setFallDistance(float distance) {
         this.fallDistance = fallDistance;
     }
-    
+
     @Override
     public boolean isDead() {
         return false;

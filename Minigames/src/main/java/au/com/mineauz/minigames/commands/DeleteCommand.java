@@ -10,7 +10,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeleteCommand implements ICommand{
+public class DeleteCommand implements ICommand {
 
     @Override
     public String getName() {
@@ -39,7 +39,7 @@ public class DeleteCommand implements ICommand{
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame delete <Minigame>"};
+        return new String[]{"/minigame delete <Minigame>"};
     }
 
     @Override
@@ -54,18 +54,17 @@ public class DeleteCommand implements ICommand{
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
+                             String label, String[] args) {
+        if (args != null) {
             Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
-            
-            if(mgm != null){
+
+            if (mgm != null) {
                 File save = new File(plugin.getDataFolder() + "/minigames/" + mgm.getName(false));
-                if(save.exists() && save.isDirectory()){
-                    if(save.list().length == 0){
+                if (save.exists() && save.isDirectory()) {
+                    if (save.list().length == 0) {
                         save.delete();
-                    }
-                    else{
-                        for(String file : save.list()){
+                    } else {
+                        for (String file : save.list()) {
                             File nfile = new File(save, file);
                             nfile.delete();
                         }
@@ -86,8 +85,8 @@ public class DeleteCommand implements ICommand{
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
-        if(args.length == 1){
+                                      String alias, String[] args) {
+        if (args.length == 1) {
             List<String> mgs = new ArrayList<>(Minigames.getPlugin().getMinigameManager().getAllMinigames().keySet());
             return MinigameUtils.tabCompleteMatch(mgs, args[0]);
         }

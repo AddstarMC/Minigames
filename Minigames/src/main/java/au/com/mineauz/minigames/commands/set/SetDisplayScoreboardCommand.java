@@ -18,7 +18,7 @@ public class SetDisplayScoreboardCommand implements ICommand {
 
     @Override
     public String[] getAliases() {
-        return new String[] {
+        return new String[]{
                 "showscoreboard",
                 "dispscore",
                 "displayscore",
@@ -43,7 +43,7 @@ public class SetDisplayScoreboardCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {
+        return new String[]{
                 "/minigame set <Minigame> displayscoreboard <true/false>"
         };
     }
@@ -60,12 +60,12 @@ public class SetDisplayScoreboardCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
+                             String label, String[] args) {
+        if (args != null) {
             boolean bool = Boolean.valueOf(args[0]);
-            
+
             minigame.setDisplayScoreboard(bool);
-            if(bool)
+            if (bool)
                 sender.sendMessage(ChatColor.GRAY + "Players will now see the scoreboard in " + minigame.getName(false));
             else
                 sender.sendMessage(ChatColor.GRAY + "Players will no longer see the scoreboard in " + minigame.getName(false));
@@ -76,9 +76,9 @@ public class SetDisplayScoreboardCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
-        if(args != null){
-            if(args.length == 1){
+                                      String alias, String[] args) {
+        if (args != null) {
+            if (args.length == 1) {
                 List<String> items = new ArrayList<>();
                 items.add("true");
                 items.add("false");

@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HintCommand implements ICommand{
+public class HintCommand implements ICommand {
 
     @Override
     public String getName() {
@@ -42,7 +42,7 @@ public class HintCommand implements ICommand{
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame hint [Minigame Name]"};
+        return new String[]{"/minigame hint [Minigame Name]"};
     }
 
     @Override
@@ -57,55 +57,49 @@ public class HintCommand implements ICommand{
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
+                             String label, String[] args) {
         MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
-        if(args != null){
+        if (args != null) {
             Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
-            
-            if(mgm != null && mgm.getMinigameTimer() != null && mgm.getType() == MinigameType.GLOBAL &&
-                    mgm.getMechanicName().equals("treasure_hunt")){
+
+            if (mgm != null && mgm.getMinigameTimer() != null && mgm.getType() == MinigameType.GLOBAL &&
+                    mgm.getMechanicName().equals("treasure_hunt")) {
                 TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
-                if(thm.hasTreasureLocation() && !thm.isTreasureFound()){
+                if (thm.hasTreasureLocation() && !thm.isTreasureFound()) {
                     thm.getHints(player);
-                }
-                else{
+                } else {
                     player.sendInfoMessage(ChatColor.GRAY + mgm.getName(false) + " is currently not running.");
                 }
-            }
-            else if(mgm == null || mgm.getType() != MinigameType.GLOBAL){
+            } else if (mgm == null || mgm.getType() != MinigameType.GLOBAL) {
                 player.sendMessage(ChatColor.RED + "There is no treasure hunt running by the name \"" + args[0] + "\"", MinigameMessageType.ERROR);
             }
-        }
-        else{
+        } else {
             List<Minigame> mgs = new ArrayList<>();
             for (Minigame mg : plugin.getMinigameManager().getAllMinigames().values()) {
-                if(mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals("treasure_hunt")){
+                if (mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals("treasure_hunt")) {
                     mgs.add(mg);
                 }
             }
-            if(!mgs.isEmpty()){
-                if(mgs.size() > 1){
+            if (!mgs.isEmpty()) {
+                if (mgs.size() > 1) {
                     player.sendInfoMessage(ChatColor.LIGHT_PURPLE + "Currently running Treasure Hunts:");
                     String treasures = "";
-                    for(int i = 0; i < mgs.size(); i++){
+                    for (int i = 0; i < mgs.size(); i++) {
                         treasures += mgs.get(i).getName(false);
-                        if(i != mgs.size() - 1){
+                        if (i != mgs.size() - 1) {
                             treasures += ", ";
                         }
                     }
                     player.sendInfoMessage(ChatColor.GRAY + treasures);
-                }
-                else{
+                } else {
                     TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgs.get(0));
-                    if(thm.hasTreasureLocation() && !thm.isTreasureFound()){
+                    if (thm.hasTreasureLocation() && !thm.isTreasureFound()) {
                         thm.getHints(player);
-                    }
-                    else{
+                    } else {
                         player.sendInfoMessage(ChatColor.GRAY + mgs.get(0).getName(false) + " is currently not running.");
                     }
                 }
-            }
-            else if(mgs.isEmpty()){
+            } else if (mgs.isEmpty()) {
                 player.sendInfoMessage(ChatColor.LIGHT_PURPLE + "There are no Treasure Hunt minigames currently running.");
             }
         }
@@ -114,11 +108,11 @@ public class HintCommand implements ICommand{
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
-        if(args.length == 1){
+                                      String alias, String[] args) {
+        if (args.length == 1) {
             List<String> mgs = new ArrayList<>();
             for (Minigame mg : plugin.getMinigameManager().getAllMinigames().values()) {
-                if(mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals("treasure_hunt"))
+                if (mg.getType() == MinigameType.GLOBAL && mg.getMechanicName().equals("treasure_hunt"))
                     mgs.add(mg.getName(false));
             }
             return MinigameUtils.tabCompleteMatch(mgs, args[0]);

@@ -9,8 +9,8 @@ import org.bukkit.inventory.ItemStack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 
-public class MenuItemAddFlag extends MenuItem{
-    
+public class MenuItemAddFlag extends MenuItem {
+
     private Minigame mgm;
 
     public MenuItemAddFlag(String name, Material displayItem, Minigame mgm) {
@@ -22,24 +22,24 @@ public class MenuItemAddFlag extends MenuItem{
         super(name, description, displayItem);
         this.mgm = mgm;
     }
-    
+
     @Override
-    public ItemStack onClick(){
+    public ItemStack onClick() {
         MinigamePlayer ply = getContainer().getViewer();
         ply.setNoClose(true);
         ply.getPlayer().closeInventory();
         ply.sendMessage("Enter a flag name into chat for " + getName() + ", the menu will automatically reopen in 20s if nothing is entered.", MinigameMessageType.INFO);
         ply.setManualEntry(this);
         getContainer().startReopenTimer(20);
-        
+
         return null;
     }
-    
+
     @Override
-    public void checkValidEntry(String entry){
+    public void checkValidEntry(String entry) {
         mgm.addFlag(entry);
         getContainer().addItem(new MenuItemFlag(Material.SIGN, entry, mgm.getFlags()));
-        
+
         getContainer().cancelReopenTimer();
         getContainer().displayMenu(getContainer().getViewer());
     }

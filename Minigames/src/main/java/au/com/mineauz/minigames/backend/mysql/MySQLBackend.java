@@ -18,50 +18,50 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MySQLBackend extends Backend {
+    private final Logger logger;
     private ConnectionPool pool;
     private String database;
-    private final Logger logger;
     private boolean debug = false;
     private StatementKey insertMinigame;
     private StatementKey insertPlayer;
     private StatementKey loadStatSettings;
     private StatementKey saveStatSettings;
-    
+
     private MySQLStatLoader loader;
     private MySQLStatSaver saver;
-    
+
     public MySQLBackend(Logger logger) {
         this.logger = logger;
-        
+
         loader = new MySQLStatLoader(this, logger);
         saver = new MySQLStatSaver(this, logger);
     }
-    
-    public boolean initialize(ConfigurationSection config,boolean debug) {
-        this.debug=debug;
+
+    public boolean initialize(ConfigurationSection config, boolean debug) {
+        this.debug = debug;
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            
+
             database = config.getString("database", "database");
-            
+
             // Create the pool
             String url = String.format("jdbc:mysql://%s/%s",
                     config.getString("host", "localhost:3306"), database);
-            if(debug)logger.info("URL: " + url);
-            Properties props =  new Properties();
-            props.put("user",config.getString("username", "username"));
-            props.put("password",config.getString("password", "password"));
+            if (debug) logger.info("URL: " + url);
+            Properties props = new Properties();
+            props.put("user", config.getString("username", "username"));
+            props.put("password", config.getString("password", "password"));
             ConfigurationSection dbprops = config.getConfigurationSection("properties");
-            if(dbprops != null) {
+            if (dbprops != null) {
                 for (Map.Entry<String, Object> entry : dbprops.getValues(false).entrySet()) {
                     props.put(entry.getKey(), entry.getValue().toString());
                 }
             }
-            if(debug)logger.info("Properties: " +props.toString());
+            if (debug) logger.info("Properties: " + props.toString());
             pool = new ConnectionPool(url, props);
-            
+
             createStatements();
-            
+
             // Test the connection
             try {
                 ConnectionHandler handler = pool.getConnection();
@@ -75,15 +75,15 @@ public class MySQLBackend extends Backend {
         } catch (ClassNotFoundException e) {
             logger.severe("Failed to find MySQL JDBC driver. This version of craftbukkit is defective.");
         }
-        
+
         return false;
     }
-    
+
     @Override
     public void shutdown() {
         pool.closeConnections();
     }
-    
+
     private void ensureTables(ConnectionHandler connection) throws SQLException {
         try (Statement statement = connection.getConnection().createStatement()) {
             // Check the players table
@@ -141,23 +141,23 @@ public class MySQLBackend extends Backend {
             }
         }
     }
-    
+
     private void createStatements() {
         insertMinigame = new StatementKey("INSERT INTO `Minigames` (`name`) VALUES (?) ON DUPLICATE KEY UPDATE `minigame_id`=LAST_INSERT_ID(`minigame_id`);", true);
         insertPlayer = new StatementKey("INSERT INTO `Players` VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `name` = VALUES(`name`), `displayname` = VALUES(`displayname`);");
         loadStatSettings = new StatementKey("SELECT `stat`, `display_name`, `format` FROM `StatMetadata` WHERE `minigame_id`=?;");
         saveStatSettings = new StatementKey("REPLACE INTO `StatMetadata` VALUES (?, ?, ?, ?);");
     }
-    
+
     ConnectionPool getPool() {
         return pool;
     }
-    
+
     @Override
     public void clean() {
         pool.removeExpired();
     }
-    
+
     @Override
     public void saveGameStatus(StoredGameStats stats) {
         saver.saveData(stats);
@@ -172,12 +172,12 @@ public class MySQLBackend extends Backend {
     public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order, int offset, int length) {
         return loader.loadStatValues(minigame, stat, field, order, offset, length);
     }
-    
+
     @Override
     public long getStat(Minigame minigame, UUID playerId, MinigameStat stat, StatValueField field) {
         return loader.loadSingleValue(minigame, stat, field, playerId);
     }
-    
+
     public int getMinigameId(ConnectionHandler handler, Minigame minigame) throws SQLException {
 
         try (ResultSet rs = handler.executeUpdateWithResults(insertMinigame, minigame.getName(false))) {
@@ -189,17 +189,17 @@ public class MySQLBackend extends Backend {
             }
         }
     }
-    
+
     public void updatePlayer(ConnectionHandler handler, MinigamePlayer player) throws SQLException {
         handler.executeUpdate(insertPlayer, player.getUUID().toString(), player.getName(), player.getDisplayName());
     }
-    
+
     @Override
     public Map<MinigameStat, StatSettings> loadStatSettings(Minigame minigame) {
         ConnectionHandler handler = null;
         try {
             handler = pool.getConnection();
-            
+
             int minigameId = getMinigameId(handler, minigame);
 
             Map<MinigameStat, StatSettings> settings = Maps.newHashMap();
@@ -244,19 +244,19 @@ public class MySQLBackend extends Backend {
             }
         }
     }
-    
+
     @Override
     public void saveStatSettings(Minigame minigame, Collection<StatSettings> settings) {
         ConnectionHandler handler = null;
         try {
             handler = pool.getConnection();
             handler.beginTransaction();
-            
+
             int minigameId = getMinigameId(handler, minigame);
             for (StatSettings setting : settings) {
                 handler.batchUpdate(saveStatSettings, minigameId, setting.getStat().getName(), setting.getDisplayName(), setting.getFormat().name().toUpperCase());
             }
-            
+
             handler.executeBatch(saveStatSettings);
             handler.endTransaction();
         } catch (SQLException e) {
@@ -268,19 +268,19 @@ public class MySQLBackend extends Backend {
             }
         }
     }
-    
+
     @Override
     protected BackendImportCallback getImportCallback() {
         return new SQLImport(pool);
     }
-    
+
     @Override
     public void exportTo(Backend other, ExportNotifier notifier) {
         BackendImportCallback callback = getImportCallback(other);
         SQLExport exporter = new SQLExport(pool, callback, notifier);
         exporter.beginExport();
     }
-    
+
     @Override
     public boolean doConversion(ExportNotifier notifier) {
         BackendImportCallback callback = getImportCallback();

@@ -38,7 +38,7 @@ public class SetGametypeNameCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> gametypename <Name>"};
+        return new String[]{"/minigame set <Minigame> gametypename <Name>"};
     }
 
     @Override
@@ -53,21 +53,20 @@ public class SetGametypeNameCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(!args[0].equals("null")){
+                             String label, String[] args) {
+        if (args != null) {
+            if (!args[0].equals("null")) {
                 String gtn = "";
                 int count = 0;
-                for(String arg : args){
+                for (String arg : args) {
                     gtn += arg;
                     count++;
-                    if(count != args.length)
+                    if (count != args.length)
                         gtn += " ";
                 }
                 minigame.setGametypeName(gtn);
                 sender.sendMessage(ChatColor.GRAY + "Gametype name for " + minigame + " has been set to " + gtn + ".");
-            }
-            else{
+            } else {
                 minigame.setGametypeName(null);
                 sender.sendMessage(ChatColor.GRAY + "Gametype name for " + minigame + " has been removed.");
             }
@@ -78,7 +77,7 @@ public class SetGametypeNameCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

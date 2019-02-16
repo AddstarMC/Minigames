@@ -1,15 +1,16 @@
 package au.com.mineauz.minigames.config;
 
 import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 
-public class RewardsFlag extends Flag<Rewards>{
-    
-    public RewardsFlag(Rewards value, String name){
+public class RewardsFlag extends Flag<Rewards> {
+
+    public RewardsFlag(Rewards value, String name) {
         setFlag(value);
         setDefaultFlag(value);
         setName(name);
@@ -34,7 +35,7 @@ public class RewardsFlag extends Flag<Rewards>{
 
     @Override
     public MenuItem getMenuItem(String name, Material displayItem,
-            List<String> description) {
+                                List<String> description) {
         return new MenuItemDisplayRewards(name, description, displayItem, getFlag());
     }
 

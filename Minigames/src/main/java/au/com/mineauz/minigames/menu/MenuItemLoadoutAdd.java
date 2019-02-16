@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MenuItemLoadoutAdd extends MenuItem{
-    
+public class MenuItemLoadoutAdd extends MenuItem {
+
     private Map<String, PlayerLoadout> loadouts;
     private Minigame minigame = null;
 
@@ -37,9 +37,9 @@ public class MenuItemLoadoutAdd extends MenuItem{
         super(name, description, displayItem);
         this.loadouts = loadouts;
     }
-    
+
     @Override
-    public ItemStack onClick(){
+    public ItemStack onClick() {
         MinigamePlayer ply = getContainer().getViewer();
         ply.setNoClose(true);
         ply.getPlayer().closeInventory();
@@ -49,25 +49,25 @@ public class MenuItemLoadoutAdd extends MenuItem{
         getContainer().startReopenTimer(30);
         return null;
     }
-    
+
     @Override
-    public void checkValidEntry(String entry){
+    public void checkValidEntry(String entry) {
         entry = entry.replace(" ", "_");
-        if(!loadouts.keySet().contains(entry)){
-            for(int i = 0; i < 45; i++){
-                if(!getContainer().hasMenuItem(i)){
+        if (!loadouts.keySet().contains(entry)) {
+            for (int i = 0; i < 45; i++) {
+                if (!getContainer().hasMenuItem(i)) {
                     PlayerLoadout loadout = new PlayerLoadout(entry);
                     loadouts.put(entry, loadout);
                     List<String> des = new ArrayList<>();
                     des.add("Shift + Right Click to Delete");
-                    if(minigame != null)
+                    if (minigame != null)
                         getContainer().addItem(new MenuItemDisplayLoadout(entry, des, Material.DIAMOND_SWORD, loadout, minigame), i);
                     else
                         getContainer().addItem(new MenuItemDisplayLoadout(entry, des, Material.DIAMOND_SWORD, loadout), i);
                     break;
                 }
             }
-            
+
             getContainer().cancelReopenTimer();
             getContainer().displayMenu(getContainer().getViewer());
             return;

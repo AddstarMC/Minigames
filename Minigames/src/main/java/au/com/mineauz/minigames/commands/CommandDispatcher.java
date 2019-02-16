@@ -18,13 +18,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CommandDispatcher implements CommandExecutor, TabCompleter{
+public class CommandDispatcher implements CommandExecutor, TabCompleter {
     private static Map<String, ICommand> commands = new HashMap<>();
     private static Minigames plugin = Minigames.getPlugin();
     private static BufferedWriter cmdFile;
-    
-    static{
-        if(plugin.getConfig().getBoolean("outputCMDToFile")){
+
+    static {
+        if (plugin.getConfig().getBoolean("outputCMDToFile")) {
             try {
                 cmdFile = new BufferedWriter(new FileWriter(plugin.getDataFolder() + "/cmds.txt"));
                 cmdFile.write("{| class=\"wikitable\"");
@@ -78,8 +78,8 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter{
         registerCommand(new BackendCommand());
         registerCommand(new InfoCommand());
         registerCommand(new ResourcePackCommand());
-        
-        if(plugin.getConfig().getBoolean("outputCMDToFile")){
+
+        if (plugin.getConfig().getBoolean("outputCMDToFile")) {
             try {
                 cmdFile.write("|}");
                 cmdFile.close();
@@ -88,52 +88,50 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter{
             }
         }
     }
-    
-    public static void registerCommand(ICommand command){
+
+    public static void registerCommand(ICommand command) {
         commands.put(command.getName(), command);
-        
-        if(plugin.getConfig().getBoolean("outputCMDToFile")){
+
+        if (plugin.getConfig().getBoolean("outputCMDToFile")) {
             try {
                 cmdFile.write("|-");
                 cmdFile.newLine();
                 cmdFile.write("| '''" + command.getName() + "'''");
                 cmdFile.newLine();
-                if(command.getUsage() != null){
+                if (command.getUsage() != null) {
                     int count = 0;
                     cmdFile.write("| ");
-                    for(String use : command.getUsage()){
+                    for (String use : command.getUsage()) {
                         cmdFile.write(use);
                         count++;
-                        if(count != command.getUsage().length){
+                        if (count != command.getUsage().length) {
                             cmdFile.write("\n\n");
                         }
                     }
-                }
-                else
+                } else
                     cmdFile.write("| N/A");
                 cmdFile.newLine();
-                if(command.getDescription() != null)
+                if (command.getDescription() != null)
                     cmdFile.write("| " + command.getDescription());
                 else
                     cmdFile.write("| N/A");
                 cmdFile.newLine();
-                if(command.getPermission() != null)
+                if (command.getPermission() != null)
                     cmdFile.write("| " + command.getPermission());
                 else
                     cmdFile.write("| N/A");
                 cmdFile.newLine();
-                if(command.getAliases() != null){
+                if (command.getAliases() != null) {
                     int count = 0;
                     cmdFile.write("| ");
-                    for(String alias : command.getAliases()){
+                    for (String alias : command.getAliases()) {
                         cmdFile.write(alias);
                         count++;
-                        if(count != command.getAliases().length){
+                        if (count != command.getAliases().length) {
                             cmdFile.write("\n\n");
                         }
                     }
-                }
-                else
+                } else
                     cmdFile.write("| N/A");
                 cmdFile.newLine();
             } catch (IOException e) {
@@ -144,22 +142,22 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter{
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Player ply = null;
-        if(sender instanceof Player){
-            ply = (Player)sender;
+        if (sender instanceof Player) {
+            ply = (Player) sender;
         }
-        
-        if(args != null && args.length > 0){
+
+        if (args != null && args.length > 0) {
             ICommand comd = null;
             String[] shortArgs = null;
-            
-            if(commands.containsKey(args[0].toLowerCase())){
+
+            if (commands.containsKey(args[0].toLowerCase())) {
                 comd = commands.get(args[0].toLowerCase());
-            }
-            else{
-AliasCheck:        for(ICommand com : commands.values()){
-                    if(com.getAliases() != null){
-                        for(String alias : com.getAliases()){
-                            if(args[0].equalsIgnoreCase(alias)){
+            } else {
+                AliasCheck:
+                for (ICommand com : commands.values()) {
+                    if (com.getAliases() != null) {
+                        for (String alias : com.getAliases()) {
+                            if (args[0].equalsIgnoreCase(alias)) {
                                 comd = com;
                                 break AliasCheck;
                             }
@@ -167,33 +165,32 @@ AliasCheck:        for(ICommand com : commands.values()){
                     }
                 }
             }
-            
-            if(args != null && args.length > 1){
+
+            if (args != null && args.length > 1) {
                 shortArgs = new String[args.length - 1];
                 System.arraycopy(args, 1, shortArgs, 0, args.length - 1);
             }
-            
-            if(comd != null){
-                if((ply == null && comd.canBeConsole()) || ply != null){
-                    if(ply == null || (comd.getPermission() == null || ply.hasPermission(comd.getPermission()))){
+
+            if (comd != null) {
+                if (ply != null || comd.canBeConsole()) {
+                    if (ply == null || (comd.getPermission() == null || ply.hasPermission(comd.getPermission()))) {
                         boolean returnValue = comd.onCommand(sender, null, label, shortArgs);
-                        if(!returnValue){
+                        if (!returnValue) {
                             sender.sendMessage(ChatColor.GREEN + "------------------Command Info------------------");
                             sender.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + comd.getDescription());
-                            if(comd.getParameters() != null){
+                            if (comd.getParameters() != null) {
                                 StringBuilder parameters = new StringBuilder();
                                 boolean switchColour = false;
-                                for(String par : comd.getParameters()){
-                                    if(switchColour){
+                                for (String par : comd.getParameters()) {
+                                    if (switchColour) {
                                         parameters.append(ChatColor.WHITE).append(par);
-                                        if(!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])){
+                                        if (!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])) {
                                             parameters.append(ChatColor.WHITE + ", ");
                                         }
                                         switchColour = false;
-                                    }
-                                    else{
+                                    } else {
                                         parameters.append(ChatColor.GRAY).append(par);
-                                        if(!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])){
+                                        if (!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])) {
                                             parameters.append(ChatColor.WHITE + ", ");
                                         }
                                         switchColour = true;
@@ -203,20 +200,19 @@ AliasCheck:        for(ICommand com : commands.values()){
                             }
                             sender.sendMessage(ChatColor.BLUE + "Usage: ");
                             sender.sendMessage(comd.getUsage());
-                            if(comd.getAliases() != null){
+                            if (comd.getAliases() != null) {
                                 StringBuilder aliases = new StringBuilder();
                                 boolean switchColour = false;
-                                for(String alias : comd.getAliases()){
-                                    if(switchColour){
+                                for (String alias : comd.getAliases()) {
+                                    if (switchColour) {
                                         aliases.append(ChatColor.WHITE).append(alias);
-                                        if(!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])){
+                                        if (!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])) {
                                             aliases.append(ChatColor.WHITE + ", ");
                                         }
                                         switchColour = false;
-                                    }
-                                    else{
+                                    } else {
                                         aliases.append(ChatColor.GRAY).append(alias);
-                                        if(!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])){
+                                        if (!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])) {
                                             aliases.append(ChatColor.WHITE + ", ");
                                         }
                                         switchColour = true;
@@ -225,23 +221,20 @@ AliasCheck:        for(ICommand com : commands.values()){
                                 sender.sendMessage(ChatColor.BLUE + "Aliases: " + aliases);
                             }
                         }
-                    }
-                    else{
+                    } else {
                         sender.sendMessage(ChatColor.RED + comd.getPermissionMessage());
                         sender.sendMessage(ChatColor.RED + comd.getPermission());
                     }
                     return true;
-                }
-                else{
+                } else {
                     sender.sendMessage(ChatColor.RED + "You must be a player to execute this command!");
                     return true;
                 }
             }
-        }
-        else{
+        } else {
             sender.sendMessage(ChatColor.GREEN + "Minigames");
             sender.sendMessage(ChatColor.GRAY + "By: " + plugin.getDescription().getAuthors().get(0));
-            sender.sendMessage(ChatColor.GRAY + "Version: " +  plugin.getDescription().getVersion());
+            sender.sendMessage(ChatColor.GRAY + "Version: " + plugin.getDescription().getVersion());
             sender.sendMessage(ChatColor.GRAY + "Type /minigame help for help");
             return true;
         }
@@ -249,35 +242,34 @@ AliasCheck:        for(ICommand com : commands.values()){
     }
 
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if(args != null && args.length > 0){
+        if (args != null && args.length > 0) {
             Player ply = null;
-            if(sender instanceof Player){
-                ply = (Player)sender;
+            if (sender instanceof Player) {
+                ply = (Player) sender;
             }
             ICommand comd = null;
             String[] shortArgs = null;
-            
-            if(commands.containsKey(args[0].toLowerCase())){
+
+            if (commands.containsKey(args[0].toLowerCase())) {
                 comd = commands.get(args[0].toLowerCase());
             }
-            
-            if(args != null && args.length > 1){
+
+            if (args != null && args.length > 1) {
                 shortArgs = new String[args.length - 1];
                 System.arraycopy(args, 1, shortArgs, 0, args.length - 1);
             }
-            
-            if(comd != null){
-                if(ply != null){
-                    if(args.length > 1){
+
+            if (comd != null) {
+                if (ply != null) {
+                    if (args.length > 1) {
                         List<String> l = comd.onTabComplete(sender, null, alias, shortArgs);
-                        if(l != null)
+                        if (l != null)
                             return l;
                         else
                             return MinigameUtils.stringToList("");
                     }
                 }
-            }
-            else{
+            } else {
                 List<String> ls = new ArrayList<>(commands.keySet());
                 return MinigameUtils.tabCompleteMatch(ls, args[0]);
             }

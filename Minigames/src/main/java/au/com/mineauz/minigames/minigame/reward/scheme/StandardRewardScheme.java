@@ -25,22 +25,22 @@ import au.com.mineauz.minigames.stats.StoredGameStats;
  * reward. The primary reward is acquired on the first completion only.
  */
 public class StandardRewardScheme implements RewardScheme {
-    private Rewards primaryReward;
-    private RewardsFlag primaryRewardFlag;
-    
-    private Rewards secondaryReward;
-    private RewardsFlag secondaryRewardFlag;
-    
+    private final Rewards primaryReward;
+    private final RewardsFlag primaryRewardFlag;
+
+    private final Rewards secondaryReward;
+    private final RewardsFlag secondaryRewardFlag;
+
     public StandardRewardScheme() {
         primaryReward = new Rewards();
         primaryRewardFlag = new RewardsFlag(null, "reward");
         primaryRewardFlag.setFlag(primaryReward);
-        
+
         secondaryReward = new Rewards();
         secondaryRewardFlag = new RewardsFlag(null, "reward2");
         secondaryRewardFlag.setFlag(secondaryReward);
     }
-    
+
     @Override
     public Map<String, Flag<?>> getFlags() {
         return ImmutableMap.<String, Flag<?>>builder()
@@ -48,19 +48,19 @@ public class StandardRewardScheme implements RewardScheme {
                 .put("reward2", secondaryRewardFlag)
                 .build();
     }
-    
+
     public Rewards getPrimaryReward() {
         return primaryReward;
     }
-    
+
     public Rewards getSecondaryReward() {
         return secondaryReward;
     }
-    
+
     @Override
     public void awardPlayer(MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion) {
         List<RewardType> rewards = primaryReward.getReward();
-        
+
         if (firstCompletion && rewards != null) {
             MinigameUtils.debugMessage("Issue Primary Reward for " + player.getName());
             giveRewards(rewards, player);
@@ -71,30 +71,32 @@ public class StandardRewardScheme implements RewardScheme {
                 giveRewards(rewards, player);
             }
         }
-        
+
         player.updateInventory();
     }
-    
+
     @Override
     public void awardPlayerOnLoss(MinigamePlayer player, StoredGameStats data, Minigame minigame) {
         // No lose awards
     }
-    
+
     private void giveRewards(List<RewardType> rewards, MinigamePlayer player) {
-        for(RewardType reward : rewards) {
-            if(reward != null) {
+        for (RewardType reward : rewards) {
+            if (reward != null) {
                 MinigameUtils.debugMessage("Giving " + player.getName() + " " + reward.getName() + " reward type.");
                 reward.giveReward(player);
             }
         }
     }
-    
+
     @Override
-    public void load(ConfigurationSection config) {}
-    
+    public void load(ConfigurationSection config) {
+    }
+
     @Override
-    public void save(ConfigurationSection config) {}
-    
+    public void save(ConfigurationSection config) {
+    }
+
     @Override
     public void addMenuItems(Menu menu) {
         menu.addItem(new MenuItemDisplayRewards("Primary Rewards", Material.CHEST, primaryReward));

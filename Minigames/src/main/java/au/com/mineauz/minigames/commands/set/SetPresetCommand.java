@@ -40,8 +40,8 @@ public class SetPresetCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> preset <Preset>",
-                            "/minigame set <Minigame> preset <Preset> info"
+        return new String[]{"/minigame set <Minigame> preset <Preset>",
+                "/minigame set <Minigame> preset <Preset> info"
         };
     }
 
@@ -57,29 +57,27 @@ public class SetPresetCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(args.length == 1){
+                             String label, String[] args) {
+        if (args != null) {
+            if (args.length == 1) {
                 sender.sendMessage(PresetLoader.loadPreset(args[0], minigame));
                 return true;
-            }
-            else if(args.length >= 2){
+            } else if (args.length >= 2) {
                 sender.sendMessage(ChatColor.AQUA + "------------------Preset Info------------------");
                 sender.sendMessage(PresetLoader.getPresetInfo(args[0]));
                 return true;
-            }
-            else{
+            } else {
                 sender.sendMessage(ChatColor.GRAY + "There is no preset by the name " + args[0]);
             }
-            
+
         }
         return false;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
-        if(args.length == 2)
+                                      String alias, String[] args) {
+        if (args.length == 2)
             return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("info"), args[1]);
         return null;
     }

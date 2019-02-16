@@ -7,9 +7,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.menu.MenuItem;
 
-public class ListFlag extends Flag<List<String>>{
-    
-    public ListFlag(List<String> value, String name){
+public class ListFlag extends Flag<List<String>> {
+
+    public ListFlag(List<String> value, String name) {
         setFlag(value);
         setDefaultFlag(value);
         setName(name);
@@ -32,7 +32,7 @@ public class ListFlag extends Flag<List<String>>{
 
     @Override
     public MenuItem getMenuItem(String name, Material displayItem,
-            List<String> description) {
+                                List<String> description) {
         return null;
     }
 

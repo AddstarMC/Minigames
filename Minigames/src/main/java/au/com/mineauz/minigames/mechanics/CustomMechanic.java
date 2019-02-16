@@ -10,7 +10,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import java.util.EnumSet;
 import java.util.List;
 
-public class CustomMechanic extends GameMechanicBase{
+public class CustomMechanic extends GameMechanicBase {
 
     @Override
     public String getMechanic() {
@@ -21,9 +21,9 @@ public class CustomMechanic extends GameMechanicBase{
     public EnumSet<MinigameType> validTypes() {
         return EnumSet.of(MinigameType.MULTIPLAYER, MinigameType.SINGLEPLAYER);
     }
-    
+
     @Override
-    public boolean checkCanStart(Minigame minigame, MinigamePlayer caller){
+    public boolean checkCanStart(Minigame minigame, MinigamePlayer caller) {
         return true;
     }
 
@@ -41,29 +41,29 @@ public class CustomMechanic extends GameMechanicBase{
 
     @Override
     public void quitMinigame(Minigame minigame, MinigamePlayer player,
-            boolean forced) {
+                             boolean forced) {
     }
 
     @Override
     public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
-            List<MinigamePlayer> losers) {
+                            List<MinigamePlayer> losers) {
     }
-    
+
     @EventHandler
-    public void playerAutoBalance(PlayerDeathEvent event){
+    public void playerAutoBalance(PlayerDeathEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
-        if(ply == null) return;
-        if(ply.isInMinigame() && ply.getMinigame().isTeamGame()){
+        if (ply == null) return;
+        if (ply.isInMinigame() && ply.getMinigame().isTeamGame()) {
             Minigame mgm = ply.getMinigame();
-            
-            if(mgm.getMechanicName().equals("custom")){
-                autoBalanceonDeath(ply,mgm);
+
+            if (mgm.getMechanicName().equals("custom")) {
+                autoBalanceonDeath(ply, mgm);
             }
         }
     }
-    
+
     @Override
-    public MinigameModule displaySettings(Minigame minigame){
+    public MinigameModule displaySettings(Minigame minigame) {
         return null;
     }
 }

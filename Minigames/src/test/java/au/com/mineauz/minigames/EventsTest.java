@@ -26,21 +26,21 @@ import static org.junit.Assert.*;
  * Created for the AddstarMC Project. Created by Narimm on 6/02/2019.
  */
 public class EventsTest {
-    
+
     private ServerMock server;
     private Minigames plugin;
     private Minigame game;
-    
+
     public void setUp() throws Exception {
         try {
             server = MockBukkit.mock();
-        }catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             server = MockBukkit.getMock();
         }
         server.setPlayerFactory(new PlayerMockFactory(server, TestPlayer.class));
-        ((ConsoleCommandSenderMock)server.getConsoleSender()).setOutputOnSend(true);
+        ((ConsoleCommandSenderMock) server.getConsoleSender()).setOutputOnSend(true);
         plugin = MockBukkit.load(Minigames.class);
-        Minigames.getPlugin().getConfig().set("saveInventory",true);
+        Minigames.getPlugin().getConfig().set("saveInventory", true);
         TestWorld testworld = new TestWorld();
         testworld.setName("GAMES");
         MockBukkit.getMock().addWorld(testworld);
@@ -49,33 +49,33 @@ public class EventsTest {
         plugin.toggleDebug();
         plugin.setLog(log);
         WorldMock world = (WorldMock) MockBukkit.getMock().getWorld("GAMES");
-        game = TestHelper.createMinigame(plugin,world, MinigameType.MULTIPLAYER, GameMechanics.MECHANIC_NAME.KILLS);
+        game = TestHelper.createMinigame(plugin, world, MinigameType.MULTIPLAYER, GameMechanics.MECHANIC_NAME.KILLS);
     }
-    
+
     public void onPlayerDisconnect() {
         PlayerMock mock = server.addPlayer();
         mock.setLocation(server.getWorld("GAMES").getSpawnLocation());
-        PlayerJoinEvent event = new PlayerJoinEvent(mock,"Joined the Server");
+        PlayerJoinEvent event = new PlayerJoinEvent(mock, "Joined the Server");
         server.getPluginManager().callEvent(event);
         MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer(mock);
         JoinCommand command = new JoinCommand();
         String[] args = {game.getName(false)};
-        command.onCommand(mock,game,"",args);
+        command.onCommand(mock, game, "", args);
         assertTrue(player.isInMinigame());
-        PlayerQuitEvent event2 = new PlayerQuitEvent(mock,"has left the game");
+        PlayerQuitEvent event2 = new PlayerQuitEvent(mock, "has left the game");
         Location loc = player.getLocation();
         server.getPluginManager().callEvent(event2);
         assertFalse(player.isInMinigame());
         assertFalse(plugin.getPlayerManager().hasMinigamePlayer(player.getUUID()));
-        assertEquals(mock.getUniqueId(),player.getOfflineMinigamePlayer().getUUID());
+        assertEquals(mock.getUniqueId(), player.getOfflineMinigamePlayer().getUUID());
     }
-    
+
     public void onPlayerConnect() {
         PlayerMock mock = server.addPlayer();
-        PlayerJoinEvent event = new PlayerJoinEvent(mock,"Joined the Server");
+        PlayerJoinEvent event = new PlayerJoinEvent(mock, "Joined the Server");
         server.getPluginManager().callEvent(event);
         assertTrue(plugin.getPlayerManager().hasMinigamePlayer(mock.getUniqueId()));
-        
+
     }
-    
+
 }

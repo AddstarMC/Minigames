@@ -22,7 +22,7 @@ public class PlayerCommand implements ICommand {
 
     @Override
     public String[] getAliases() {
-        return new String[] {"ply", "pl"};
+        return new String[]{"ply", "pl"};
     }
 
     @Override
@@ -37,7 +37,7 @@ public class PlayerCommand implements ICommand {
 
     @Override
     public String[] getParameters() {
-        return new String[] {"<PlayersName>", "list"};
+        return new String[]{"<PlayersName>", "list"};
     }
 
     @Override
@@ -60,45 +60,41 @@ public class PlayerCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(args[0].equalsIgnoreCase("list")){
+                             String label, String[] args) {
+        if (args != null) {
+            if (args[0].equalsIgnoreCase("list")) {
                 List<MinigamePlayer> pls = new ArrayList<>();
                 for (MinigamePlayer pl : Minigames.getPlugin().getPlayerManager().getAllMinigamePlayers()) {
-                    if(pl.isInMinigame()){
+                    if (pl.isInMinigame()) {
                         pls.add(pl);
                     }
                 }
-                
+
                 sender.sendMessage(ChatColor.AQUA + "-----------List of Players Playing Minigames-----------");
-                if(!pls.isEmpty()){
-                    for(MinigamePlayer pl : pls){
+                if (!pls.isEmpty()) {
+                    for (MinigamePlayer pl : pls) {
                         sender.sendMessage(ChatColor.GREEN + pl.getName() + ChatColor.GRAY + " (Playing \"" + pl.getMinigame().getName(false) + "\")");
                     }
-                }
-                else{
+                } else {
                     sender.sendMessage(ChatColor.RED + "None");
                 }
-            }
-            else{
+            } else {
                 List<Player> plmatch = Minigames.getPlugin().getServer().matchPlayer(args[0]);
-                if(!plmatch.isEmpty()){
+                if (!plmatch.isEmpty()) {
                     MinigamePlayer pl = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(plmatch.get(0));
                     sender.sendMessage(ChatColor.AQUA + "--------Player info on " + pl.getName() + "--------");
-                    if(pl.isInMinigame()){
+                    if (pl.isInMinigame()) {
                         sender.sendMessage(ChatColor.GREEN + "Minigame: " + ChatColor.GRAY + pl.getMinigame().getName(false));
                         sender.sendMessage(ChatColor.GREEN + "Score: " + ChatColor.GRAY + pl.getScore());
-                        sender.sendMessage(ChatColor.GREEN + "Kills: "  + ChatColor.GRAY + pl.getKills());
+                        sender.sendMessage(ChatColor.GREEN + "Kills: " + ChatColor.GRAY + pl.getKills());
                         sender.sendMessage(ChatColor.GREEN + "Deaths: " + ChatColor.GRAY + pl.getDeaths());
                         sender.sendMessage(ChatColor.GREEN + "Reverts: " + ChatColor.GRAY + pl.getReverts());
                         sender.sendMessage(ChatColor.GREEN + "Play Time: " + ChatColor.GRAY +
-                                MinigameUtils.convertTime((int)((Calendar.getInstance().getTimeInMillis() - pl.getStartTime() + pl.getStoredTime()) / 1000)));
-                    }
-                    else{
+                                MinigameUtils.convertTime((int) ((Calendar.getInstance().getTimeInMillis() - pl.getStartTime() + pl.getStoredTime()) / 1000)));
+                    } else {
                         sender.sendMessage(ChatColor.GREEN + "Minigame: " + ChatColor.RED + "Not in Minigame");
                     }
-                }
-                else{
+                } else {
                     sender.sendMessage(ChatColor.RED + "Could not find a player by the name \"" + args[0] + "\"");
                 }
             }
@@ -109,10 +105,10 @@ public class PlayerCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
-        if(args.length == 1){
+                                      String alias, String[] args) {
+        if (args.length == 1) {
             List<String> plys = new ArrayList<>(plugin.getServer().getOnlinePlayers().size() + 1);
-            for(Player ply : plugin.getServer().getOnlinePlayers()){
+            for (Player ply : plugin.getServer().getOnlinePlayers()) {
                 plys.add(ply.getName());
             }
             plys.add("list");

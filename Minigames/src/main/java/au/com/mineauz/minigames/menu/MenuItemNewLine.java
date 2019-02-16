@@ -2,34 +2,34 @@ package au.com.mineauz.minigames.menu;
 
 import org.bukkit.inventory.ItemStack;
 
-public class MenuItemNewLine extends MenuItem{
+public class MenuItemNewLine extends MenuItem {
 
     public MenuItemNewLine() {
         super("NL", null);
     }
-    
+
     @Override
-    public ItemStack onClick(){
+    public ItemStack onClick() {
         return null;
     }
-    
+
     @Override
-    public ItemStack onRightClick(){
+    public ItemStack onRightClick() {
         return null;
     }
-    
+
     @Override
-    public ItemStack onShiftClick(){
+    public ItemStack onShiftClick() {
         return null;
     }
-    
+
     @Override
-    public ItemStack onShiftRightClick(){
+    public ItemStack onShiftRightClick() {
         return null;
     }
-    
+
     @Override
-    public ItemStack onDoubleClick(){
+    public ItemStack onDoubleClick() {
         return null;
     }
 }

@@ -39,7 +39,7 @@ public class SetHintDelayCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> hintdelay <time>[m|h]"};
+        return new String[]{"/minigame set <Minigame> hintdelay <time>[m|h]"};
     }
 
     @Override
@@ -54,16 +54,16 @@ public class SetHintDelayCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(args[0].matches("[0-9]+(m|h)?")){
+                             String label, String[] args) {
+        if (args != null) {
+            if (args[0].matches("[0-9]+(m|h)?")) {
                 int time = Integer.parseInt(args[0].replaceAll("[mh]", ""));
                 String mod = args[0].replaceAll("[0-9]", "");
-                if(mod.equals("m"))
+                if (mod.equals("m"))
                     time *= 60;
-                else if(mod.equals("h"))
+                else if (mod.equals("h"))
                     time = time * 60 * 60;
-                
+
                 TreasureHuntModule.getMinigameModule(minigame).setHintDelay(time);
                 sender.sendMessage(ChatColor.GRAY + minigame.getName(false) +
                         "'s hint delay has been set to " + MinigameUtils.convertTime(time));
@@ -75,7 +75,7 @@ public class SetHintDelayCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

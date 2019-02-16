@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class Actions {
-    private static Map<String, Class<? extends ActionInterface>> actions = new HashMap<>();
+    private static final Map<String, Class<? extends ActionInterface>> actions = new HashMap<>();
     
     static{
         addAction("KILL", KillAction.class);

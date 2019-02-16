@@ -21,11 +21,11 @@ public class OfflineMinigamePlayer {
     private GameMode lastGM = GameMode.SURVIVAL;
     private Location loginLocation;
     private boolean shouldSave = Minigames.getPlugin().getConfig().getBoolean("saveInventory");
-    
+
     public OfflineMinigamePlayer(String uuid, ItemStack[] items,
-            ItemStack[] armour, int food, double health,
-            float saturation, GameMode lastGM, float exp, int level,
-            Location loginLocation){
+                                 ItemStack[] armour, int food, double health,
+                                 float saturation, GameMode lastGM, float exp, int level,
+                                 Location loginLocation) {
         this.uuid = uuid;
         storedItems = items;
         storedArmour = armour;
@@ -35,14 +35,14 @@ public class OfflineMinigamePlayer {
         this.lastGM = lastGM;
         this.exp = exp;
         this.level = level;
-        if(loginLocation != null && loginLocation.getWorld() == null)
+        if (loginLocation != null && loginLocation.getWorld() == null)
             loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
         this.loginLocation = loginLocation;
-        if(shouldSave)
+        if (shouldSave)
             savePlayerData();
     }
-    
-    public OfflineMinigamePlayer(String uuid){
+
+    public OfflineMinigamePlayer(String uuid) {
         MinigameSave save = new MinigameSave("playerdata/inventories/" + uuid);
         FileConfiguration con = save.getConfig();
         this.uuid = uuid;
@@ -50,112 +50,111 @@ public class OfflineMinigamePlayer {
         health = con.getDouble("health");
         saturation = con.getInt("saturation");
         lastGM = GameMode.valueOf(con.getString("gamemode"));
-        if(con.contains("exp")){
-            exp = ((Double)con.getDouble("exp")).floatValue();
+        if (con.contains("exp")) {
+            exp = ((Double) con.getDouble("exp")).floatValue();
         }
-        if(con.contains("level"))
+        if (con.contains("level"))
             level = con.getInt("level");
-        if(con.contains("location")){
+        if (con.contains("location")) {
             loginLocation = new Location(Minigames.getPlugin().getServer().getWorld(con.getString("location.world")),
                     con.getDouble("location.x"),
                     con.getDouble("location.y"),
                     con.getDouble("location.z"),
                     new Float(con.getString("location.yaw")),
                     new Float(con.getString("location.pitch")));
-            if(loginLocation.getWorld() == null)
+            if (loginLocation.getWorld() == null)
                 loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
-        }
-        else
+        } else
             loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
-        
+
         ItemStack[] items = Minigames.getPlugin().getServer().createInventory(null, InventoryType.PLAYER).getContents();
         ItemStack[] armour = new ItemStack[4];
-        for(int i = 0; i < items.length; i++){
-            if(con.contains("items." + i)){
+        for (int i = 0; i < items.length; i++) {
+            if (con.contains("items." + i)) {
                 items[i] = con.getItemStack("items." + i);
             }
         }
-        for(int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++) {
             armour[i] = con.getItemStack("armour." + i);
         }
         storedItems = items;
         storedArmour = armour;
     }
-    
-    public String getUUID(){
+
+    public String getUUID() {
         return uuid;
     }
-    
-    public ItemStack[] getStoredItems(){
+
+    public ItemStack[] getStoredItems() {
         return storedItems;
     }
-    
-    public ItemStack[] getStoredArmour(){
+
+    public ItemStack[] getStoredArmour() {
         return storedArmour;
     }
-    
-    public int getFood(){
+
+    public int getFood() {
         return food;
     }
-    
-    public double getHealth(){
+
+    public double getHealth() {
         return health;
     }
-    
-    public float getSaturation(){
+
+    public float getSaturation() {
         return saturation;
     }
-    
-    public GameMode getLastGamemode(){
+
+    public GameMode getLastGamemode() {
         return lastGM;
     }
-    
-    public Location getLoginLocation(){
+
+    public Location getLoginLocation() {
         return loginLocation;
     }
-    
-    public float getExp(){
-        return exp;
-    }
-    
-    public int getLevel(){
-        return level;
-    }
-    
-    public void setLoginLocation(Location loc){
+
+    public void setLoginLocation(Location loc) {
         loginLocation = loc;
     }
-    
-    public void savePlayerData(){
+
+    public float getExp() {
+        return exp;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void savePlayerData() {
         MinigameSave save = new MinigameSave("playerdata/inventories/" + uuid.toString());
         FileConfiguration con = save.getConfig();
-        if(storedItems != null){
+        if (storedItems != null) {
             int num = 0;
-            for(ItemStack item : storedItems){
-                if(item != null){
+            for (ItemStack item : storedItems) {
+                if (item != null) {
                     con.set("items." + num, item);
                 }
                 num++;
             }
         }
-        
-        if(storedArmour != null){
+
+        if (storedArmour != null) {
             int num = 0;
-            for(ItemStack item : storedArmour){
-                if(item != null){
+            for (ItemStack item : storedArmour) {
+                if (item != null) {
                     con.set("armour." + num, item);
                 }
                 num++;
             }
         }
-        
+
         con.set("food", food);
         con.set("saturation", saturation);
         con.set("health", health);
         con.set("gamemode", lastGM.toString());
         con.set("exp", exp);
         con.set("level", level);
-        if(loginLocation != null){
+        if (loginLocation != null) {
             con.set("location.x", loginLocation.getBlockX());
             con.set("location.y", loginLocation.getBlockY());
             con.set("location.z", loginLocation.getBlockZ());
@@ -165,8 +164,8 @@ public class OfflineMinigamePlayer {
         }
         save.saveConfig();
     }
-    
-    public void deletePlayerData(){
+
+    public void deletePlayerData() {
         MinigameSave save = new MinigameSave("playerdata/inventories/" + uuid);
         save.deleteFile();
     }

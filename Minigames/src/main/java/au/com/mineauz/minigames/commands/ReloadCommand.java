@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-public class ReloadCommand implements ICommand{
+public class ReloadCommand implements ICommand {
 
     @Override
     public String getName() {
@@ -41,7 +41,7 @@ public class ReloadCommand implements ICommand{
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame reload"};
+        return new String[]{"/minigame reload"};
     }
 
     @Override
@@ -56,29 +56,26 @@ public class ReloadCommand implements ICommand{
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        for(Player p : plugin.getServer().getOnlinePlayers()){
+                             String label, String[] args) {
+        for (Player p : plugin.getServer().getOnlinePlayers()) {
             if (plugin.getPlayerManager().getMinigamePlayer(p).isInMinigame()) {
                 plugin.getPlayerManager().quitMinigame(plugin.getPlayerManager().getMinigamePlayer(p), true);
             }
         }
-        
+
         Minigames.getPlugin().getMinigameManager().getAllMinigames().clear();
-        
-        try{
+
+        try {
             plugin.getConfig().load(plugin.getDataFolder() + "/config.yml");
-        }
-        catch(FileNotFoundException ex){
+        } catch (FileNotFoundException ex) {
             plugin.getLogger().info("Failed to load config, creating one.");
-            try{
+            try {
                 plugin.getConfig().save(plugin.getDataFolder() + "/config.yml");
-            }
-            catch(IOException e){
+            } catch (IOException e) {
                 plugin.getLogger().log(Level.SEVERE, "Could not save config.yml!");
                 e.printStackTrace();
             }
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "Failed to load config!");
             e.printStackTrace();
         }
@@ -87,23 +84,23 @@ public class ReloadCommand implements ICommand{
         if (Minigames.getPlugin().getConfig().contains("minigames")) {
             mgs = Minigames.getPlugin().getConfig().getStringList("minigames");
         }
-        final List<String> allMGS = new ArrayList<String>(mgs);
-        
-        if(!mgs.isEmpty()){
-            for(String mgm : allMGS){
+        final List<String> allMGS = new ArrayList<>(mgs);
+
+        if (!mgs.isEmpty()) {
+            for (String mgm : allMGS) {
                 Minigame game = new Minigame(mgm);
                 game.loadMinigame();
                 Minigames.getPlugin().getMinigameManager().addMinigame(game);
             }
         }
-        
+
         sender.sendMessage(ChatColor.GREEN + "Reloaded Minigame configs");
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

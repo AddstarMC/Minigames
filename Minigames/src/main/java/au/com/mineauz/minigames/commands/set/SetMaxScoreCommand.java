@@ -37,7 +37,7 @@ public class SetMaxScoreCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> maxscore <Number>"};
+        return new String[]{"/minigame set <Minigame> maxscore <Number>"};
     }
 
     @Override
@@ -52,9 +52,9 @@ public class SetMaxScoreCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(args[0].matches("[0-9]+")){
+                             String label, String[] args) {
+        if (args != null) {
+            if (args[0].matches("[0-9]+")) {
                 int maxscore = Integer.parseInt(args[0]);
                 minigame.setMaxScore(maxscore);
                 sender.sendMessage(ChatColor.GRAY + "Maximum score has been set to " + maxscore + " for " + minigame.getName(false));
@@ -66,7 +66,7 @@ public class SetMaxScoreCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

@@ -18,7 +18,7 @@ public class DeniedCommandCommand implements ICommand {
 
     @Override
     public String[] getAliases() {
-        return new String[] {"deniedcomd", "deniedcom"};
+        return new String[]{"deniedcomd", "deniedcom"};
     }
 
     @Override
@@ -33,12 +33,12 @@ public class DeniedCommandCommand implements ICommand {
 
     @Override
     public String[] getParameters() {
-        return new String[] {"add", "remove", "list"};
+        return new String[]{"add", "remove", "list"};
     }
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame deniedcommand add <Command>", "/minigame deniedcommand remove <Command>", "/minigame deniedcommand list"};
+        return new String[]{"/minigame deniedcommand add <Command>", "/minigame deniedcommand remove <Command>", "/minigame deniedcommand list"};
     }
 
     @Override
@@ -53,30 +53,27 @@ public class DeniedCommandCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(args[0].equalsIgnoreCase("add") && args.length >= 2){
+                             String label, String[] args) {
+        if (args != null) {
+            if (args[0].equalsIgnoreCase("add") && args.length >= 2) {
                 plugin.getPlayerManager().addDeniedCommand(args[1]);
                 sender.sendMessage(ChatColor.GRAY + "Added \"" + args[1] + "\" to the denied command list.");
                 return true;
-            }
-            else if(args[0].equalsIgnoreCase("remove") && args.length >= 2){
+            } else if (args[0].equalsIgnoreCase("remove") && args.length >= 2) {
                 plugin.getPlayerManager().removeDeniedCommand(args[1]);
                 sender.sendMessage(ChatColor.GRAY + "Removed \"" + args[1] + "\" from the denied command list.");
                 return true;
-            }
-            else if(args[0].equalsIgnoreCase("list")){
+            } else if (args[0].equalsIgnoreCase("list")) {
                 String coms = "";
                 boolean switchColour = false;
                 for (String par : plugin.getPlayerManager().getDeniedCommands()) {
-                    if(switchColour){
+                    if (switchColour) {
                         coms += ChatColor.WHITE + par;
                         if (!par.equalsIgnoreCase(plugin.getPlayerManager().getDeniedCommands().get(plugin.getPlayerManager().getDeniedCommands().size() - 1))) {
                             coms += ChatColor.WHITE + ", ";
                         }
                         switchColour = false;
-                    }
-                    else{
+                    } else {
                         coms += ChatColor.GRAY + par;
                         if (!par.equalsIgnoreCase(plugin.getPlayerManager().getDeniedCommands().get(plugin.getPlayerManager().getDeniedCommands().size() - 1))) {
                             coms += ChatColor.WHITE + ", ";
@@ -93,13 +90,12 @@ public class DeniedCommandCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
-        if(args.length == 1){
+                                      String alias, String[] args) {
+        if (args.length == 1) {
             List<String> ls = new ArrayList<>();
             Collections.addAll(ls, getParameters());
             return MinigameUtils.tabCompleteMatch(ls, args[0]);
-        }
-        else if(args.length == 2 && args[0].equalsIgnoreCase("remove")){
+        } else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
             return MinigameUtils.tabCompleteMatch(plugin.getPlayerManager().getDeniedCommands(), args[1]);
         }
         return null;

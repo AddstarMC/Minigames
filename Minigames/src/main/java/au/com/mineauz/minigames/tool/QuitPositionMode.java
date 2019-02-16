@@ -9,7 +9,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-public class QuitPositionMode implements ToolMode{
+public class QuitPositionMode implements ToolMode {
 
     @Override
     public String getName() {
@@ -33,35 +33,34 @@ public class QuitPositionMode implements ToolMode{
 
     @Override
     public void onLeftClick(MinigamePlayer player, Minigame minigame,
-            Team team, PlayerInteractEvent event) {
-        
+                            Team team, PlayerInteractEvent event) {
+
     }
 
     @Override
     public void onRightClick(MinigamePlayer player, Minigame minigame,
-            Team team, PlayerInteractEvent event) {
+                             Team team, PlayerInteractEvent event) {
         minigame.setQuitPosition(player.getLocation());
         player.sendInfoMessage("Set quit position.");
     }
-    
+
     @Override
     public void onEntityLeftClick(MinigamePlayer player, Minigame minigame, Team team, EntityDamageByEntityEvent event) {
-    
+
     }
-    
+
     @Override
     public void onEntityRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEntityEvent event) {
-    
+
     }
-    
+
     @SuppressWarnings("deprecation") //TODO: Use alternate method once available
     @Override
     public void select(MinigamePlayer player, Minigame minigame, Team team) {
-        if(minigame.getQuitPosition() != null){
-            player.getPlayer().sendBlockChange(minigame.getQuitPosition(), Material.SKELETON_SKULL, (byte)1);
+        if (minigame.getQuitPosition() != null) {
+            player.getPlayer().sendBlockChange(minigame.getQuitPosition(), Material.SKELETON_SKULL, (byte) 1);
             player.sendInfoMessage("Selected quit position (marked with skull)");
-        }
-        else{
+        } else {
             player.sendMessage("No quit position set!", MinigameMessageType.ERROR);
         }
     }
@@ -69,13 +68,12 @@ public class QuitPositionMode implements ToolMode{
     @SuppressWarnings("deprecation") //TODO: Use alternate method once available
     @Override
     public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
-        if(minigame.getQuitPosition() != null){
+        if (minigame.getQuitPosition() != null) {
             player.getPlayer().sendBlockChange(minigame.getQuitPosition(),
                     minigame.getQuitPosition().getBlock().getType(),
                     minigame.getQuitPosition().getBlock().getData());
             player.sendInfoMessage("Deselected quit position");
-        }
-        else{
+        } else {
             player.sendMessage("No quit position set!", MinigameMessageType.ERROR);
         }
     }

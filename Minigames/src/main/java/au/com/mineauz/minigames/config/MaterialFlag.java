@@ -28,9 +28,9 @@ public class MaterialFlag extends Flag<Material> {
     public void loadValue(String path, FileConfiguration config) {
         if (config.contains(path + "." + getName())) {
             Material flag = Material.getMaterial(config.getString(path + "." + getName()));
-            if(flag == null){
+            if (flag == null) {
                 flag = Material.STONE;
-                Minigames.log().warning("Failed to load Material from config at :" +path + "." + getName()+ " Value: " +config.getString(path + "." + getName()));
+                Minigames.log().warning("Failed to load Material from config at :" + path + "." + getName() + " Value: " + config.getString(path + "." + getName()));
             }
             setFlag(flag);
         } else {
@@ -40,7 +40,7 @@ public class MaterialFlag extends Flag<Material> {
 
     @Override
     public MenuItem getMenuItem(String name, org.bukkit.Material displayItem) {
-        return new MenuItemMaterial(name,getFlag());
+        return new MenuItemMaterial(name, getFlag());
     }
 
     @Override

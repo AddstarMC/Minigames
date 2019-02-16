@@ -19,7 +19,7 @@ public class SpectateCommand implements ICommand {
 
     @Override
     public String[] getAliases() {
-        return new String[] {"spec"};
+        return new String[]{"spec"};
     }
 
     @Override
@@ -39,7 +39,7 @@ public class SpectateCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame spectate <Minigame>"};
+        return new String[]{"/minigame spectate <Minigame>"};
     }
 
     @Override
@@ -54,14 +54,13 @@ public class SpectateCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
+                             String label, String[] args) {
+        if (args != null) {
             if (plugin.getMinigameManager().hasMinigame(args[0])) {
                 MinigamePlayer ply = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
                 Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
                 plugin.getPlayerManager().spectateMinigame(ply, mgm);
-            }
-            else{
+            } else {
                 sender.sendMessage(ChatColor.RED + "No Minigame found by the name: " + args[0]);
             }
             return true;
@@ -71,7 +70,7 @@ public class SpectateCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
         return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
     }

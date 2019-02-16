@@ -8,24 +8,23 @@ import java.util.Map;
 
 public class RewardTypes {
     private static Map<String, Class<? extends RewardType>> types = new HashMap<>();
-    
-    static{
+
+    static {
         addRewardType("ITEM", ItemReward.class);
         addRewardType("MONEY", MoneyReward.class);
         addRewardType("COMMAND", CommandReward.class);
     }
-    
-    public static void addRewardType(String name, Class<? extends RewardType> type){
-        if(types.containsKey(name.toUpperCase())){
+
+    public static void addRewardType(String name, Class<? extends RewardType> type) {
+        if (types.containsKey(name.toUpperCase())) {
             throw new InvalidRewardTypeException("A reward type already exists by that name");
-        }
-        else{
+        } else {
             types.put(name.toUpperCase(), type);
         }
     }
-    
-    public static RewardType getRewardType(String name, Rewards rewards){
-        if(types.containsKey(name.toUpperCase())){
+
+    public static RewardType getRewardType(String name, Rewards rewards) {
+        if (types.containsKey(name.toUpperCase())) {
             try {
                 return types.get(name.toUpperCase()).getDeclaredConstructor(Rewards.class).newInstance(rewards);
             } catch (InstantiationException | SecurityException | NoSuchMethodException | InvocationTargetException | IllegalArgumentException | IllegalAccessException e) {
@@ -34,8 +33,8 @@ public class RewardTypes {
         }
         return null;
     }
-    
-    public static List<String> getAllRewardTypeNames(){
+
+    public static List<String> getAllRewardTypeNames() {
         return new ArrayList<>(types.keySet());
     }
 }

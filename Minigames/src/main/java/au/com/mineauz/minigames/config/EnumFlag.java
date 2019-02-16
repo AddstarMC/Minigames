@@ -8,11 +8,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import au.com.mineauz.minigames.menu.MenuItem;
 
 public class EnumFlag<T extends Enum<T>> extends Flag<T> {
-    
+
     private Class<T> enumClass;
-    
+
     @SuppressWarnings("unchecked")
-    public EnumFlag(T value, String name){
+    public EnumFlag(T value, String name) {
         setFlag(value);
         setDefaultFlag(value);
         setName(name);
@@ -23,7 +23,7 @@ public class EnumFlag<T extends Enum<T>> extends Flag<T> {
     public void saveValue(String path, FileConfiguration config) {
         config.set(path + "." + getName(), getFlag().name());
     }
-    
+
     @Override
     public void loadValue(String path, FileConfiguration config) {
         setFlag(T.valueOf(enumClass, config.getString(path + "." + getName())));
@@ -36,7 +36,7 @@ public class EnumFlag<T extends Enum<T>> extends Flag<T> {
 
     @Override
     public MenuItem getMenuItem(String name, Material displayItem,
-            List<String> description) {
+                                List<String> description) {
         return null;
     }
 

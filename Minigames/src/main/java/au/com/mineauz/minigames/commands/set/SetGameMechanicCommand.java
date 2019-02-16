@@ -20,7 +20,7 @@ public class SetGameMechanicCommand implements ICommand {
 
     @Override
     public String[] getAliases() {
-        return new String[] {"scoretype", "mech", "gamemech", "mechanic"};
+        return new String[]{"scoretype", "mech", "gamemech", "mechanic"};
     }
 
     @Override
@@ -37,7 +37,7 @@ public class SetGameMechanicCommand implements ICommand {
     public String[] getParameters() {
         String[] types = new String[GameMechanics.getGameMechanics().size()];
         int inc = 0;
-        for(GameMechanicBase type : GameMechanics.getGameMechanics()){
+        for (GameMechanicBase type : GameMechanics.getGameMechanics()) {
             types[inc] = type.getMechanic();
             inc++;
         }
@@ -46,7 +46,7 @@ public class SetGameMechanicCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> gamemechanic <Parameter>"};
+        return new String[]{"/minigame set <Minigame> gamemechanic <Parameter>"};
     }
 
     @Override
@@ -61,17 +61,17 @@ public class SetGameMechanicCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
+                             String label, String[] args) {
+        if (args != null) {
             boolean bool = false;
-            for(String par : getParameters()){
-                if(par.equalsIgnoreCase(args[0])){
+            for (String par : getParameters()) {
+                if (par.equalsIgnoreCase(args[0])) {
                     bool = true;
                     break;
                 }
             }
-            
-            if(bool){
+
+            if (bool) {
                 minigame.setMechanic(args[0].toLowerCase());
                 sender.sendMessage(ChatColor.GRAY + minigame.getName(false) + " game mechanic has been set to " + args[0]);
                 return true;
@@ -82,10 +82,10 @@ public class SetGameMechanicCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
-        if(args.length == 1){
+                                      String alias, String[] args) {
+        if (args.length == 1) {
             List<String> types = new ArrayList<>(GameMechanics.getGameMechanics().size());
-            for(GameMechanicBase type : GameMechanics.getGameMechanics()){
+            for (GameMechanicBase type : GameMechanics.getGameMechanics()) {
                 types.add(type.getMechanic());
             }
             return MinigameUtils.tabCompleteMatch(types, args[0]);

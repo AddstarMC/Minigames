@@ -15,14 +15,14 @@ import java.util.Iterator;
 import java.util.List;
 
 public class RollbackScheduler implements Runnable {
-    
-    private Iterator<MgBlockData> iterator;
-    private Iterator<MgBlockData> physIterator;
-    private BukkitTask task;
-    private Minigame minigame;
-    private MinigamePlayer modifier;
-    
-    public RollbackScheduler(List<MgBlockData> blocks, List<MgBlockData> physblocks, Minigame minigame, MinigamePlayer modifier){
+
+    private final Iterator<MgBlockData> iterator;
+    private final Iterator<MgBlockData> physIterator;
+    private final BukkitTask task;
+    private final Minigame minigame;
+    private final MinigamePlayer modifier;
+
+    public RollbackScheduler(List<MgBlockData> blocks, List<MgBlockData> physblocks, Minigame minigame, MinigamePlayer modifier) {
         iterator = blocks.iterator();
         physIterator = physblocks.iterator();
         this.minigame = minigame;
@@ -34,20 +34,20 @@ public class RollbackScheduler implements Runnable {
     @Override
     public void run() {
         long time = System.nanoTime();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             MgBlockData bdata = iterator.next();
             bdata.getBlockState().update(true);
             if (System.nanoTime() - time > Minigames.getPlugin().getConfig().getDouble("regeneration.maxDelay") * 1000000)
                 return;
         }
-        while(physIterator.hasNext()){
+        while (physIterator.hasNext()) {
             MgBlockData bdata = physIterator.next();
             bdata.getBlockState().update(true);
-            switch (bdata.getBlockState().getType()){
+            switch (bdata.getBlockState().getType()) {
                 case SIGN:
                 case WALL_SIGN:
-                    if(bdata.getBlockState() instanceof Sign){
-                        Sign sign =  (Sign) bdata.getLocation().getBlock().getState();
+                    if (bdata.getBlockState() instanceof Sign) {
+                        Sign sign = (Sign) bdata.getLocation().getBlock().getState();
                         Sign signOld = (Sign) bdata.getBlockState();
                         sign.setLine(0, signOld.getLine(0));
                         sign.setLine(1, signOld.getLine(1));
@@ -64,12 +64,12 @@ public class RollbackScheduler implements Runnable {
                 case SKELETON_WALL_SKULL:
                 case CREEPER_WALL_HEAD:
                 case WITHER_SKELETON_WALL_SKULL:
-                    if(bdata.getBlockState() instanceof Skull){
+                    if (bdata.getBlockState() instanceof Skull) {
                         Skull skull = (Skull) bdata.getBlockState().getBlock().getState();
                         Rotatable skullData = (Rotatable) skull.getBlockData();
                         Skull orig = (Skull) bdata.getBlockState();
                         Rotatable origData = (Rotatable) orig.getBlockData();
-                        if(orig.getOwningPlayer() != null)skull.setOwningPlayer(orig.getOwningPlayer());
+                        if (orig.getOwningPlayer() != null) skull.setOwningPlayer(orig.getOwningPlayer());
                         skullData.setRotation(origData.getRotation());
                         skull.update();
                     }
@@ -86,25 +86,25 @@ public class RollbackScheduler implements Runnable {
                 case POTTED_AZURE_BLUET:
                 case POTTED_BIRCH_SAPLING:
             }
-             if(bdata.getLocation().getBlock().getState() instanceof InventoryHolder){
+            if (bdata.getLocation().getBlock().getState() instanceof InventoryHolder) {
                 InventoryHolder block = (InventoryHolder) bdata.getLocation().getBlock().getState();
-                if(bdata.getItems() != null)
+                if (bdata.getItems() != null)
                     block.getInventory().setContents(bdata.getItems().clone());
             }
 
-            
+
             if (System.nanoTime() - time > Minigames.getPlugin().getConfig().getDouble("regeneration.maxDelay") * 1000000)
                 return;
         }
-        
+
         // When rolling back a single player's changes dont change the overall games state
         if (modifier == null) {
             HandlerList.unregisterAll(minigame.getBlockRecorder());
             HandlerList.bakeAll();
-            
+
             minigame.setState(MinigameState.IDLE);
         }
-        
+
         task.cancel();
     }
 

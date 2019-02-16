@@ -33,12 +33,12 @@ public class SetItemDropCommand implements ICommand {
 
     @Override
     public String[] getParameters() {
-        return new String[] {"player", "death"};
+        return new String[]{"player", "death"};
     }
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> itemdrop player <true/false>",
+        return new String[]{"/minigame set <Minigame> itemdrop player <true/false>",
                 "/minigame set <Minigame> itemdrop death <true/false>"};
     }
 
@@ -54,26 +54,23 @@ public class SetItemDropCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(args[0].equalsIgnoreCase("player") && args.length >= 2){
+                             String label, String[] args) {
+        if (args != null) {
+            if (args[0].equalsIgnoreCase("player") && args.length >= 2) {
                 boolean bool = Boolean.parseBoolean(args[1]);
                 minigame.setItemDrops(bool);
-                if(bool){
+                if (bool) {
                     sender.sendMessage(ChatColor.GRAY + "Item drops have been enabled for " + minigame);
-                }
-                else{
+                } else {
                     sender.sendMessage(ChatColor.GRAY + "Item drops have been disabled for " + minigame);
                 }
                 return true;
-            }
-            else if(args[0].equalsIgnoreCase("death") && args.length >= 2){
+            } else if (args[0].equalsIgnoreCase("death") && args.length >= 2) {
                 boolean bool = Boolean.parseBoolean(args[1]);
                 minigame.setDeathDrops(bool);
-                if(bool){
+                if (bool) {
                     sender.sendMessage(ChatColor.GRAY + "Death drops have been enabled for " + minigame);
-                }
-                else{
+                } else {
                     sender.sendMessage(ChatColor.GRAY + "Death drops have been disabled for " + minigame);
                 }
                 return true;
@@ -84,8 +81,8 @@ public class SetItemDropCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
-        if(args.length == 1)
+                                      String alias, String[] args) {
+        if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("true;false"), args[0]);
         return null;
     }

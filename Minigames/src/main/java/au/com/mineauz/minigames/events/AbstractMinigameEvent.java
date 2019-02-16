@@ -11,8 +11,9 @@ import org.bukkit.event.HandlerList;
 public class AbstractMinigameEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
-    private boolean cancelled = false;
     private final Minigame mgm;
+    private boolean cancelled = false;
+
     /**
      * Instantiates a new Abstract minigame event.
      *
@@ -22,22 +23,31 @@ public class AbstractMinigameEvent extends Event implements Cancellable {
         super();
         this.mgm = game;
     }
+
+    public static HandlerList getHandlerList() {
+        return HANDLERS;
+    }
+
     /**
-     *  True if cancelled.
+     * True if cancelled.
+     *
      * @return boolean
      */
     @Override
     public boolean isCancelled() {
         return this.cancelled;
     }
+
     /**
      * Sets the cancel status of the event.
+     *
      * @param b boolean
      */
     @Override
     public void setCancelled(final boolean b) {
         this.cancelled = b;
     }
+
     /**
      * Get minigame minigame.
      *
@@ -46,16 +56,14 @@ public class AbstractMinigameEvent extends Event implements Cancellable {
     public Minigame getMinigame() {
         return this.mgm;
     }
+
     /**
      * The event handlers.
+     *
      * @return HandlerList
      */
     @Override
     public HandlerList getHandlers() {
-        return HANDLERS;
-    }
-    
-    public static HandlerList getHandlerList() {
         return HANDLERS;
     }
 }

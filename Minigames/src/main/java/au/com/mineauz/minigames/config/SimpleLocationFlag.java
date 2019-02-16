@@ -9,14 +9,14 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.menu.MenuItem;
 
-public class SimpleLocationFlag extends Flag<Location>{
+public class SimpleLocationFlag extends Flag<Location> {
 
-    public SimpleLocationFlag(Location value, String name){
+    public SimpleLocationFlag(Location value, String name) {
         setFlag(value);
         setDefaultFlag(value);
         setName(name);
     }
-    
+
     @Override
     public void saveValue(String path, FileConfiguration config) {
         config.set(path + "." + getName() + ".x", getFlag().getX());
@@ -31,7 +31,7 @@ public class SimpleLocationFlag extends Flag<Location>{
         double y = config.getDouble(path + "." + getName() + ".y");
         double z = config.getDouble(path + "." + getName() + ".z");
         String world = config.getString(path + "." + getName() + ".world");
-        
+
         setFlag(new Location(Bukkit.getWorld(world), x, y, z));
     }
 
@@ -42,7 +42,7 @@ public class SimpleLocationFlag extends Flag<Location>{
 
     @Override
     public MenuItem getMenuItem(String name, Material displayItem,
-            List<String> description) {
+                                List<String> description) {
         return null;
     }
 

@@ -7,9 +7,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.menu.MenuItem;
 
-public class LongFlag extends Flag<Long>{
-    
-    public LongFlag(Long value, String name){
+public class LongFlag extends Flag<Long> {
+
+    public LongFlag(Long value, String name) {
         setFlag(value);
         setDefaultFlag(value);
         setName(name);
@@ -22,7 +22,7 @@ public class LongFlag extends Flag<Long>{
 
     @Override
     public void loadValue(String path, FileConfiguration config) {
-        setFlag(((Integer)config.getInt(path + "." + getName())).longValue());
+        setFlag(((Integer) config.getInt(path + "." + getName())).longValue());
     }
 
     @Override
@@ -32,7 +32,7 @@ public class LongFlag extends Flag<Long>{
 
     @Override
     public MenuItem getMenuItem(String name, Material displayItem,
-            List<String> description) {
+                                List<String> description) {
         return null;
     }
 

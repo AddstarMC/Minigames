@@ -12,32 +12,32 @@ public class EntityData {
     private Location entLocation;
     private MinigamePlayer player;
     private boolean created;
-    
-    public EntityData(Entity ent, MinigamePlayer modifier, boolean created){
+
+    public EntityData(Entity ent, MinigamePlayer modifier, boolean created) {
         this.ent = ent;
         entType = ent.getType();
         entLocation = ent.getLocation();
         player = modifier;
         this.created = created;
     }
-    
-    public Entity getEntity(){
+
+    public Entity getEntity() {
         return ent;
     }
-    
-    public MinigamePlayer getModifier(){
+
+    public MinigamePlayer getModifier() {
         return player;
     }
-    
-    public boolean wasCreated(){
+
+    public boolean wasCreated() {
         return created;
     }
-    
-    public EntityType getEntityType(){
+
+    public EntityType getEntityType() {
         return entType;
     }
-    
-    public Location getEntityLocation(){
+
+    public Location getEntityLocation() {
         return entLocation;
     }
 }

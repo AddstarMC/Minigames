@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
  * Created for the AddstarMC Project. Created by Narimm on 12/02/2019.
  */
 public final class ResourcePack implements ConfigurationSerializable {
-    
+
     private static final String ext = "resourcepack";
     private final String name;
     private final URL url;
@@ -34,7 +34,7 @@ public final class ResourcePack implements ConfigurationSerializable {
     private byte[] hash;
     private boolean valid;
     private String description;
-    
+
     /**
      * Instantiates a new Resource pack.
      *
@@ -56,7 +56,65 @@ public final class ResourcePack implements ConfigurationSerializable {
         this.local = new File(path.toFile(), this.name + '.' + ext);
         this.validate();
     }
-    
+
+    /**
+     * Instantiates a new Resource pack.
+     *
+     * @param name the name
+     * @param url  the url
+     */
+    public ResourcePack(final String name, final @NotNull URL url) {
+        this(name, url, null);
+    }
+
+    /**
+     * Instantiates a new Resource pack.
+     *
+     * @param name the name
+     * @param url  the url
+     * @param file the file
+     */
+    public ResourcePack(final String name, final @NotNull URL url, final File file) {
+        this(name, url, file, null);
+    }
+
+    /**
+     * Instantiates a new Resource pack.
+     *
+     * @param name        the name
+     * @param url         the url
+     * @param file        the file
+     * @param description the description
+     */
+    public ResourcePack(final String name, final @NotNull URL url, final File file, final String description) {
+        this.name = name;
+        final Path path = ResourcePackManager.getResourceDir();
+        this.local = file != null ? file : new File(path.toFile(), name + '.' + ext);
+        this.url = url;
+        this.description = description;
+        this.validate();
+    }
+
+    /**
+     * Statically create the class
+     *
+     * @param map A map of values
+     * @return ResourcePack resource pack
+     */
+    public static ResourcePack valueOf(final Map<String, Object> map) {
+        return deserialize(map);
+    }
+
+    /**
+     * Statically create the class
+     *
+     * @param map A map of values
+     * @return ResourcePack resource pack
+     */
+    public static ResourcePack deserialize(final Map<String, Object> map) {
+        return new ResourcePack(map);
+    }
+
     private void validate() {
         Bukkit.getScheduler().runTaskAsynchronously(Minigames.getPlugin(), () -> {
             synchronized (this.local) {
@@ -106,7 +164,7 @@ public final class ResourcePack implements ConfigurationSerializable {
             }
         });
     }
-    
+
     private byte[] getSH1Hash(final InputStream fis) {
         try {
             final MessageDigest digest = MessageDigest.getInstance("SHA-1");
@@ -129,7 +187,7 @@ public final class ResourcePack implements ConfigurationSerializable {
             return null;
         }
     }
-    
+
     /**
      * Generate the local SH1 hash
      */
@@ -148,7 +206,7 @@ public final class ResourcePack implements ConfigurationSerializable {
         }
         this.valid = false;
     }
-    
+
     /**
      * Download.
      *
@@ -170,69 +228,7 @@ public final class ResourcePack implements ConfigurationSerializable {
             this.valid = false;
         }
     }
-    
-    /**
-     * Instantiates a new Resource pack.
-     *
-     * @param name the name
-     * @param url  the url
-     */
-    public ResourcePack(final String name, final @NotNull URL url) {
-        this(name, url, null);
-    }
-    
-    
-    /**
-     * Instantiates a new Resource pack.
-     *
-     * @param name the name
-     * @param url  the url
-     * @param file the file
-     */
-    public ResourcePack(final String name, final @NotNull URL url, final File file) {
-        this(name, url, file, null);
-    }
-    
-    
-    /**
-     * Instantiates a new Resource pack.
-     *
-     * @param name        the name
-     * @param url         the url
-     * @param file        the file
-     * @param description the description
-     */
-    public ResourcePack(final String name, final @NotNull URL url, final File file, final String description) {
-        this.name = name;
-        final Path path = ResourcePackManager.getResourceDir();
-        this.local = file != null ? file : new File(path.toFile(), name + '.' + ext);
-        this.url = url;
-        this.description = description;
-        this.validate();
-    }
-    
-    /**
-     * Statically create the class
-     *
-     * @param map A map of values
-     *
-     * @return ResourcePack resource pack
-     */
-    public static ResourcePack valueOf(final Map<String, Object> map) {
-        return deserialize(map);
-    }
-    
-    /**
-     * Statically create the class
-     *
-     * @param map A map of values
-     *
-     * @return ResourcePack resource pack
-     */
-    public static ResourcePack deserialize(final Map<String, Object> map) {
-        return new ResourcePack(map);
-    }
-    
+
     /**
      * Gets name.
      *
@@ -241,7 +237,7 @@ public final class ResourcePack implements ConfigurationSerializable {
     public String getName() {
         return this.name;
     }
-    
+
     /**
      * True if the resource pack is validated.
      *
@@ -250,7 +246,7 @@ public final class ResourcePack implements ConfigurationSerializable {
     public boolean isValid() {
         return this.valid;
     }
-    
+
     /**
      * Gets description.
      *
@@ -259,7 +255,7 @@ public final class ResourcePack implements ConfigurationSerializable {
     public String getDescription() {
         return this.description;
     }
-    
+
     /**
      * Get sh 1 hash byte [ ].
      *
@@ -269,7 +265,7 @@ public final class ResourcePack implements ConfigurationSerializable {
     public byte[] getSH1Hash() {
         return this.hash;
     }
-    
+
     /**
      * Gets the Publicly available URL
      *
@@ -278,15 +274,15 @@ public final class ResourcePack implements ConfigurationSerializable {
     public URL getUrl() {
         return this.url;
     }
-    
+
     @Override
     public Map<String, Object> serialize() {
         final Map<String, Object> result = new HashMap<>();
         result.put("name", this.name);
         result.put("url", this.url.toString());
         result.put("description", this.description);
-    
+
         return result;
     }
-    
+
 }

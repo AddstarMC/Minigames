@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 
-public class SetMinPlayersCommand implements ICommand{
+public class SetMinPlayersCommand implements ICommand {
 
     @Override
     public String getName() {
@@ -37,7 +37,7 @@ public class SetMinPlayersCommand implements ICommand{
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> minplayers <Number>"};
+        return new String[]{"/minigame set <Minigame> minplayers <Number>"};
     }
 
     @Override
@@ -52,9 +52,9 @@ public class SetMinPlayersCommand implements ICommand{
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(args[0].matches("[0-9]+")){
+                             String label, String[] args) {
+        if (args != null) {
+            if (args[0].matches("[0-9]+")) {
                 int min = Integer.parseInt(args[0]);
                 minigame.setMinPlayers(min);
                 sender.sendMessage(ChatColor.GRAY + "Minimum players has been set to " + min + " for " + minigame);
@@ -66,7 +66,7 @@ public class SetMinPlayersCommand implements ICommand{
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

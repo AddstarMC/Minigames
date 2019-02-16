@@ -24,10 +24,10 @@ import java.util.Set;
 
 public class LoadoutModule extends MinigameModule {
 
+    private static Map<Class<? extends LoadoutAddon>, LoadoutAddon<?>> addons = Maps.newHashMap();
     private Map<String, PlayerLoadout> extraLoadouts = new HashMap<>();
     private LoadoutSetFlag loadoutsFlag = new LoadoutSetFlag(extraLoadouts, "loadouts");
-    private static Map<Class<? extends LoadoutAddon>, LoadoutAddon<?>> addons = Maps.newHashMap();
-    
+
     public LoadoutModule(Minigame mgm) {
         super(mgm);
         PlayerLoadout def = new PlayerLoadout("default");
@@ -35,20 +35,60 @@ public class LoadoutModule extends MinigameModule {
         extraLoadouts.put("default", def);
     }
 
+    public static LoadoutModule getMinigameModule(Minigame minigame) {
+        return (LoadoutModule) minigame.getModule("Loadouts");
+    }
+
+    /**
+     * Registers a loadout addon. This addon will be available for all loadouts on all games.
+     *
+     * @param plugin The plugin registering the addon
+     * @param addon  The addon to register
+     */
+    public static void registerAddon(Plugin plugin, LoadoutAddon<?> addon) {
+        addons.put(addon.getClass(), addon);
+    }
+
+    /**
+     * Unregisters a previously registered addon
+     *
+     * @param addon The addon to unregister
+     */
+    public static void unregisterAddon(Class<? extends LoadoutAddon<?>> addon) {
+        addons.remove(addon);
+    }
+
+    /**
+     * Retrieves a registered addon
+     *
+     * @param addonClass The addon class to get the addon for
+     * @return The addon or null
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends LoadoutAddon<?>> T getAddon(Class<T> addonClass) {
+        return (T) addons.get(addonClass);
+    }
+
+    public static void addAddonMenuItems(Menu menu, PlayerLoadout loadout) {
+        for (LoadoutAddon<?> addon : addons.values()) {
+            addon.addMenuOptions(menu, loadout);
+        }
+    }
+
     @Override
     public String getName() {
         return "Loadouts";
     }
-    
+
     @Override
-    public Map<String, Flag<?>> getFlags(){
+    public Map<String, Flag<?>> getFlags() {
         Map<String, Flag<?>> flags = new HashMap<>();
         flags.put(loadoutsFlag.getName(), loadoutsFlag);
         return flags;
     }
-    
+
     @Override
-    public boolean useSeparateConfig(){
+    public boolean useSeparateConfig() {
         return false;
     }
 
@@ -59,18 +99,18 @@ public class LoadoutModule extends MinigameModule {
 
     @Override
     public void load(FileConfiguration config) {
-        
+
         //TODO: Remove entire load after 1.7
-        if(config.contains(getMinigame() + ".loadout")){
+        if (config.contains(getMinigame() + ".loadout")) {
             Set<String> keys = config.getConfigurationSection(getMinigame() + ".loadout").getKeys(false);
-            for(String key : keys){
+            for (String key : keys) {
                 if (key.matches("[-]?[0-9]+"))
                     getLoadout("default").addItem(config.getItemStack(getMinigame() + ".loadout." + key), Integer.parseInt(key));
             }
-            if(config.contains(getMinigame() + ".loadout.potions")){
+            if (config.contains(getMinigame() + ".loadout.potions")) {
                 keys = config.getConfigurationSection(getMinigame() + ".loadout.potions").getKeys(false);
-                for(String eff : keys){
-                    if(PotionEffectType.getByName(eff) != null){
+                for (String eff : keys) {
+                    if (PotionEffectType.getByName(eff) != null) {
                         PotionEffect effect = new PotionEffect(PotionEffectType.getByName(eff),
                                 config.getInt(getMinigame() + ".loadout.potions." + eff + ".dur"),
                                 config.getInt(getMinigame() + ".loadout.potions." + eff + ".amp"), true);
@@ -78,29 +118,29 @@ public class LoadoutModule extends MinigameModule {
                     }
                 }
             }
-            if(config.contains(getMinigame() + ".loadout.usepermissions")){
+            if (config.contains(getMinigame() + ".loadout.usepermissions")) {
                 getLoadout("default").setUsePermissions(config.getBoolean(getMinigame() + ".loadout.usepermissions"));
             }
-            if(config.contains(getMinigame() + ".loadout.falldamage")){
+            if (config.contains(getMinigame() + ".loadout.falldamage")) {
                 getLoadout("default").setHasFallDamage(config.getBoolean(getMinigame() + ".loadout.falldamage"));
             }
-            if(config.contains(getMinigame() + ".loadout.hunger")){
+            if (config.contains(getMinigame() + ".loadout.hunger")) {
                 getLoadout("default").setHasHunger(config.getBoolean(getMinigame() + ".loadout.hunger"));
             }
         }
-        if(config.contains(getMinigame() + ".extraloadouts")){
+        if (config.contains(getMinigame() + ".extraloadouts")) {
             Set<String> keys = config.getConfigurationSection(getMinigame() + ".extraloadouts").getKeys(false);
-            for(String loadout : keys){
+            for (String loadout : keys) {
                 addLoadout(loadout);
                 Set<String> items = config.getConfigurationSection(getMinigame() + ".extraloadouts." + loadout).getKeys(false);
-                for(String key : items){
+                for (String key : items) {
                     if (key.matches("[-]?[0-9]+"))
                         getLoadout(loadout).addItem(config.getItemStack(getMinigame() + ".extraloadouts." + loadout + "." + key), Integer.parseInt(key));
                 }
-                if(config.contains(getMinigame() + ".extraloadouts." + loadout + ".potions")){
+                if (config.contains(getMinigame() + ".extraloadouts." + loadout + ".potions")) {
                     Set<String> pots = config.getConfigurationSection(getMinigame() + ".extraloadouts." + loadout + ".potions").getKeys(false);
-                    for(String eff : pots){
-                        if(PotionEffectType.getByName(eff) != null){
+                    for (String eff : pots) {
+                        if (PotionEffectType.getByName(eff) != null) {
                             PotionEffect effect = new PotionEffect(PotionEffectType.getByName(eff),
                                     config.getInt(getMinigame() + ".extraloadouts." + loadout + ".potions." + eff + ".dur"),
                                     config.getInt(getMinigame() + ".extraloadouts." + loadout + ".potions." + eff + ".amp"));
@@ -108,47 +148,43 @@ public class LoadoutModule extends MinigameModule {
                         }
                     }
                 }
-                
-                if(config.contains(getMinigame() + ".extraloadouts." + loadout + ".usepermissions")){
+
+                if (config.contains(getMinigame() + ".extraloadouts." + loadout + ".usepermissions")) {
                     getLoadout(loadout).setUsePermissions(config.getBoolean(getMinigame() + ".extraloadouts." + loadout + ".usepermissions"));
                 }
-                
-                if(config.contains(getMinigame() + ".extraloadouts." + loadout + ".falldamage"))
+
+                if (config.contains(getMinigame() + ".extraloadouts." + loadout + ".falldamage"))
                     getLoadout(loadout).setHasFallDamage(config.getBoolean(getMinigame() + ".extraloadouts." + loadout + ".falldamage"));
-                
-                if(config.contains(getMinigame() + ".extraloadouts." + loadout + ".hunger"))
+
+                if (config.contains(getMinigame() + ".extraloadouts." + loadout + ".hunger"))
                     getLoadout(loadout).setHasHunger(config.getBoolean(getMinigame() + ".extraloadouts." + loadout + ".hunger"));
             }
         }
     }
-    public static LoadoutModule getMinigameModule(Minigame minigame){
-        return (LoadoutModule) minigame.getModule("Loadouts");
-    }
-    
-    public void addLoadout(String name){
+
+    public void addLoadout(String name) {
         extraLoadouts.put(name, new PlayerLoadout(name));
     }
-    
-    public void deleteLoadout(String name){
+
+    public void deleteLoadout(String name) {
         extraLoadouts.remove(name);
     }
-    
-    public Set<String> getLoadouts(){
+
+    public Set<String> getLoadouts() {
         return extraLoadouts.keySet();
     }
-    
-    public Map<String, PlayerLoadout> getLoadoutMap(){
+
+    public Map<String, PlayerLoadout> getLoadoutMap() {
         return extraLoadouts;
     }
-    
-    public PlayerLoadout getLoadout(String name){
+
+    public PlayerLoadout getLoadout(String name) {
         PlayerLoadout pl = null;
-        if(extraLoadouts.containsKey(name)){
+        if (extraLoadouts.containsKey(name)) {
             pl = extraLoadouts.get(name);
-        }
-        else{
-            for(String loadout : extraLoadouts.keySet()){
-                if(loadout.equalsIgnoreCase(name)){
+        } else {
+            for (String loadout : extraLoadouts.keySet()) {
+                if (loadout.equalsIgnoreCase(name)) {
                     pl = extraLoadouts.get(loadout);
                     break;
                 }
@@ -156,81 +192,48 @@ public class LoadoutModule extends MinigameModule {
         }
         return pl;
     }
-    
-    public boolean hasLoadouts(){
+
+    public boolean hasLoadouts() {
         return !extraLoadouts.isEmpty();
     }
-    
-    public boolean hasLoadout(String name){
-        if(!name.equalsIgnoreCase("default")){
-            if(extraLoadouts.containsKey(name))
+
+    public boolean hasLoadout(String name) {
+        if (!name.equalsIgnoreCase("default")) {
+            if (extraLoadouts.containsKey(name))
                 return extraLoadouts.containsKey(name);
-            else{
-                for(String loadout : extraLoadouts.keySet()){
-                    if(loadout.equalsIgnoreCase(name))
+            else {
+                for (String loadout : extraLoadouts.keySet()) {
+                    if (loadout.equalsIgnoreCase(name))
                         return true;
                 }
                 return false;
             }
-        }
-        else{
+        } else {
             return true;
         }
     }
-    
-    /**
-     * Registers a loadout addon. This addon will be available for all loadouts on all games.
-     * @param plugin The plugin registering the addon
-     * @param addon The addon to register
-     */
-    public static void registerAddon(Plugin plugin, LoadoutAddon<?> addon) {
-        addons.put(addon.getClass(), addon);
-    }
-    
-    /**
-     * Unregisters a previously registered addon
-     * @param addon The addon to unregister
-     */
-    public static void unregisterAddon(Class<? extends LoadoutAddon<?>> addon) {
-        addons.remove(addon);
-    }
-    
-    /**
-     * Retrieves a registered addon
-     * @param addonClass The addon class to get the addon for
-     * @return The addon or null
-     */
-    @SuppressWarnings("unchecked")
-    public static <T extends LoadoutAddon<?>> T getAddon(Class<T> addonClass) {
-        return (T)addons.get(addonClass);
-    }
-    
-    public static void addAddonMenuItems(Menu menu, PlayerLoadout loadout) {
-        for (LoadoutAddon<?> addon : addons.values()) {
-            addon.addMenuOptions(menu, loadout);
-        }
-    }
-    
-    public void displaySelectionMenu(MinigamePlayer player, final boolean equip){
+
+    public void displaySelectionMenu(MinigamePlayer player, final boolean equip) {
         Menu m = new Menu(6, "Select Loadout", player);
         final MinigamePlayer fply = player;
-        
-        for(PlayerLoadout loadout : extraLoadouts.values()){
-            if(loadout.isDisplayedInMenu()){
-                if(!loadout.getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + loadout.getName(false).toLowerCase())){
-                    if(!player.getMinigame().isTeamGame() || loadout.getTeamColor() == null ||
-                            player.getTeam().getColor() == loadout.getTeamColor()){
+
+        for (PlayerLoadout loadout : extraLoadouts.values()) {
+            if (loadout.isDisplayedInMenu()) {
+                if (!loadout.getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + loadout.getName(false).toLowerCase())) {
+                    if (!player.getMinigame().isTeamGame() || loadout.getTeamColor() == null ||
+                            player.getTeam().getColor() == loadout.getTeamColor()) {
                         MenuItemCustom c = new MenuItemCustom(loadout.getName(true), Material.GLASS);
-                        if(!loadout.getItems().isEmpty()){
+                        if (!loadout.getItems().isEmpty()) {
                             ItemStack item = loadout.getItem(new ArrayList<>(loadout.getItems()).get(0));
-                            c.setItem(item);}
+                            c.setItem(item);
+                        }
                         final PlayerLoadout floadout2 = loadout;
                         c.setClick(object -> {
                             fply.setLoadout(floadout2);
                             fply.getPlayer().closeInventory();
-                            if(!equip)
+                            if (!equip)
                                 fply.sendMessage(MinigameUtils.getLang("player.loadout.nextSpawn"), null);
-                            else{
+                            else {
                                 fply.sendMessage(MinigameUtils.formStr("player.loadout.equipped", floadout2.getName(true)), null);
                                 floadout2.equiptLoadout(fply);
                             }
@@ -247,7 +250,7 @@ public class LoadoutModule extends MinigameModule {
     @Override
     public void addEditMenuOptions(Menu menu) {
         // TODO Move loadout menu stuff here
-        
+
     }
 
     @Override
@@ -264,12 +267,15 @@ public class LoadoutModule extends MinigameModule {
      */
     public interface LoadoutAddon<T> {
         String getName();
+
         void addMenuOptions(Menu menu, PlayerLoadout loadout);
-        
+
         void save(ConfigurationSection section, T value);
+
         T load(ConfigurationSection section);
-        
+
         void applyLoadout(MinigamePlayer player, T value);
+
         void clearLoadout(MinigamePlayer player, T value);
     }
 }

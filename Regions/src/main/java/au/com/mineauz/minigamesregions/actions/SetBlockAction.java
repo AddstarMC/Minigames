@@ -74,7 +74,6 @@ public class SetBlockAction extends AbstractAction {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void executeNodeAction(MinigamePlayer player,
             Node node) {

@@ -36,7 +36,7 @@ public class LoadoutCommand implements ICommand {
     }
 
     public String[] getUsage() {
-        return new String[] {"/minigame loadout", "/minigame loadout <LoadoutName>"};
+        return new String[]{"/minigame loadout", "/minigame loadout <LoadoutName>"};
     }
 
     public String getPermissionMessage() {
@@ -48,35 +48,32 @@ public class LoadoutCommand implements ICommand {
     }
 
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
+                             String label, String[] args) {
         MinigamePlayer ply = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
-        if(ply.isInMinigame()){
-            if(args == null){
+        if (ply.isInMinigame()) {
+            if (args == null) {
                 LoadoutModule.getMinigameModule(ply.getMinigame()).displaySelectionMenu(ply, false);
-            }
-            else{
+            } else {
                 String ln = args[0];
-                if(LoadoutModule.getMinigameModule(ply.getMinigame()).hasLoadout(ln)){
+                if (LoadoutModule.getMinigameModule(ply.getMinigame()).hasLoadout(ln)) {
                     ply.setLoadout(LoadoutModule.getMinigameModule(ply.getMinigame()).getLoadout(ln));
                     ply.sendInfoMessage(MinigameUtils.formStr("player.loadout.nextSpawnName", ln));
-                }
-                else{
+                } else {
                     ply.sendMessage(MinigameUtils.formStr("player.loadout.noLoadout", ln), MinigameMessageType.ERROR);
                 }
             }
-        }
-        else{
+        } else {
             ply.sendMessage(MinigameUtils.getLang("command.loadout.noMinigame"), MinigameMessageType.ERROR);
         }
         return true;
     }
 
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
-        if(args != null){
+                                      String alias, String[] args) {
+        if (args != null) {
             MinigamePlayer ply = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
-            if(ply.isInMinigame()){
-                if(args.length == 1){
+            if (ply.isInMinigame()) {
+                if (args.length == 1) {
                     return MinigameUtils.tabCompleteMatch(new ArrayList<>(
                                     LoadoutModule.getMinigameModule(ply.getMinigame()).getLoadoutMap().keySet()),
                             args[0]);

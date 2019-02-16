@@ -33,35 +33,34 @@ public class EndPositionMode implements ToolMode {
 
     @Override
     public void onLeftClick(MinigamePlayer player, Minigame minigame,
-            Team team, PlayerInteractEvent event) {
-        
+                            Team team, PlayerInteractEvent event) {
+
     }
 
     @Override
     public void onRightClick(MinigamePlayer player, Minigame minigame,
-            Team team, PlayerInteractEvent event) {
+                             Team team, PlayerInteractEvent event) {
         minigame.setEndPosition(player.getLocation());
         player.sendInfoMessage("Set end position.");
     }
-    
+
     @Override
     public void onEntityLeftClick(MinigamePlayer player, Minigame minigame, Team team, EntityDamageByEntityEvent event) {
-    
+
     }
-    
+
     @Override
     public void onEntityRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEntityEvent event) {
-    
+
     }
-    
+
     @SuppressWarnings("deprecation") //TODO: Use alternate method once available
     @Override
     public void select(MinigamePlayer player, Minigame minigame, Team team) {
-        if(minigame.getEndPosition() != null){
-            player.getPlayer().sendBlockChange(minigame.getEndPosition(), Material.SKELETON_SKULL, (byte)1);
+        if (minigame.getEndPosition() != null) {
+            player.getPlayer().sendBlockChange(minigame.getEndPosition(), Material.SKELETON_SKULL, (byte) 1);
             player.sendInfoMessage("Selected end position (marked with skull)");
-        }
-        else{
+        } else {
             player.sendMessage("No end position set!", MinigameMessageType.ERROR);
         }
     }
@@ -69,13 +68,12 @@ public class EndPositionMode implements ToolMode {
     @SuppressWarnings("deprecation") //TODO: Use alternate method once available
     @Override
     public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
-        if(minigame.getEndPosition() != null){
+        if (minigame.getEndPosition() != null) {
             player.getPlayer().sendBlockChange(minigame.getEndPosition(),
                     minigame.getEndPosition().getBlock().getType(),
                     minigame.getEndPosition().getBlock().getData());
             player.sendInfoMessage("Deselected end position");
-        }
-        else{
+        } else {
             player.sendMessage("No end position set!", MinigameMessageType.ERROR);
         }
     }
@@ -87,7 +85,7 @@ public class EndPositionMode implements ToolMode {
     @Override
     public void onUnsetMode(MinigamePlayer player, MinigameTool tool) {
     }
-    
+
     @Override
     protected Object clone() throws CloneNotSupportedException {
         return super.clone();

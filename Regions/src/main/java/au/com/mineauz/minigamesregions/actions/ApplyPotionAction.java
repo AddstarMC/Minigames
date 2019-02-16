@@ -25,9 +25,9 @@ import au.com.mineauz.minigamesregions.Region;
 
 public class ApplyPotionAction extends AbstractAction {
     
-    private StringFlag type = new StringFlag("SPEED", "type");
-    private IntegerFlag dur = new IntegerFlag(60, "duration");
-    private IntegerFlag amp = new IntegerFlag(1, "amplifier");
+    private final StringFlag type = new StringFlag("SPEED", "type");
+    private final IntegerFlag dur = new IntegerFlag(60, "duration");
+    private final IntegerFlag amp = new IntegerFlag(1, "amplifier");
 
     @Override
     public String getName() {

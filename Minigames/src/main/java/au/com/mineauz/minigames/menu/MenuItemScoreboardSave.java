@@ -6,8 +6,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import au.com.mineauz.minigames.minigame.ScoreboardDisplay;
 
-public class MenuItemScoreboardSave extends MenuItem{
-    
+public class MenuItemScoreboardSave extends MenuItem {
+
     private ScoreboardDisplay disp;
 
     public MenuItemScoreboardSave(String name, Material displayItem, ScoreboardDisplay disp) {
@@ -19,12 +19,12 @@ public class MenuItemScoreboardSave extends MenuItem{
         super(name, description, displayItem);
         this.disp = disp;
     }
-    
+
     @Override
     public ItemStack onClick() {
         disp.placeRootSign();
         disp.getMinigame().getScoreboardData().reload(disp.getRoot().getBlock());
-        
+
         getContainer().getViewer().getPlayer().closeInventory();
         return null;
     }

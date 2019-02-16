@@ -14,8 +14,8 @@ public class StoredPlayerCheckpoints {
     private Map<String, Integer> storedDeaths;
     private Map<String, Integer> storedReverts;
     private Location globalCheckpoint;
-    
-    public StoredPlayerCheckpoints(String uuid){
+
+    public StoredPlayerCheckpoints(String uuid) {
         this.uuid = uuid;
         checkpoints = new HashMap<>();
         flags = new HashMap<>();
@@ -23,110 +23,110 @@ public class StoredPlayerCheckpoints {
         storedDeaths = new HashMap<>();
         storedReverts = new HashMap<>();
     }
-    
-    public void addCheckpoint(String minigame, Location checkpoint){
+
+    public void addCheckpoint(String minigame, Location checkpoint) {
         checkpoints.put(minigame, checkpoint);
     }
-    
-    public void removeCheckpoint(String minigame){
+
+    public void removeCheckpoint(String minigame) {
         checkpoints.remove(minigame);
     }
-    
-    public boolean hasCheckpoint(String minigame){
+
+    public boolean hasCheckpoint(String minigame) {
         return checkpoints.containsKey(minigame);
     }
-    
-    public Location getCheckpoint(String minigame){
+
+    public Location getCheckpoint(String minigame) {
         return checkpoints.get(minigame);
     }
-    
-    public boolean hasGlobalCheckpoint(){
+
+    public boolean hasGlobalCheckpoint() {
         return globalCheckpoint != null;
     }
-    
-    public Location getGlobalCheckpoint(){
+
+    public Location getGlobalCheckpoint() {
         return globalCheckpoint;
     }
-    
-    public void setGlobalCheckpoint(Location checkpoint){
+
+    public void setGlobalCheckpoint(Location checkpoint) {
         globalCheckpoint = checkpoint;
     }
-    
-    public boolean hasNoCheckpoints(){
+
+    public boolean hasNoCheckpoints() {
         return checkpoints.isEmpty();
     }
-    
-    public boolean hasFlags(String minigame){
+
+    public boolean hasFlags(String minigame) {
         return flags.containsKey(minigame);
     }
-    
-    public void addFlags(String minigame, List<String> flagList){
+
+    public void addFlags(String minigame, List<String> flagList) {
         flags.put(minigame, new ArrayList<>(flagList));
     }
-    
-    public List<String> getFlags(String minigame){
+
+    public List<String> getFlags(String minigame) {
         return flags.get(minigame);
     }
-    
-    public void removeFlags(String minigame){
+
+    public void removeFlags(String minigame) {
         flags.remove(minigame);
     }
-    
-    public void addTime(String minigame, long time){
+
+    public void addTime(String minigame, long time) {
         storedTime.put(minigame, time);
     }
-    
-    public Long getTime(String minigame){
+
+    public Long getTime(String minigame) {
         return storedTime.get(minigame);
     }
-    
-    public boolean hasTime(String minigame){
+
+    public boolean hasTime(String minigame) {
         return storedTime.containsKey(minigame);
     }
-    
-    public void removeTime(String minigame){
+
+    public void removeTime(String minigame) {
         storedTime.remove(minigame);
     }
-    
-    public void addDeaths(String minigame, int deaths){
+
+    public void addDeaths(String minigame, int deaths) {
         storedDeaths.put(minigame, deaths);
     }
-    
-    public Integer getDeaths(String minigame){
+
+    public Integer getDeaths(String minigame) {
         return storedDeaths.get(minigame);
     }
-    
-    public boolean hasDeaths(String minigame){
+
+    public boolean hasDeaths(String minigame) {
         return storedDeaths.containsKey(minigame);
     }
-    
-    public void removeDeaths(String minigame){
+
+    public void removeDeaths(String minigame) {
         storedDeaths.remove(minigame);
     }
-    
-    public void addReverts(String minigame, int reverts){
+
+    public void addReverts(String minigame, int reverts) {
         storedReverts.put(minigame, reverts);
     }
-    
-    public Integer getReverts(String minigame){
+
+    public Integer getReverts(String minigame) {
         return storedReverts.get(minigame);
     }
-    
-    public boolean hasReverts(String minigame){
+
+    public boolean hasReverts(String minigame) {
         return storedReverts.containsKey(minigame);
     }
-    
-    public void removeReverts(String minigame){
+
+    public void removeReverts(String minigame) {
         storedReverts.remove(minigame);
     }
-    
-    public void saveCheckpoints(){
+
+    public void saveCheckpoints() {
         MinigameSave save = new MinigameSave("playerdata/checkpoints/" + uuid);
         save.deleteFile();
-        if(hasNoCheckpoints()) return;
-        
+        if (hasNoCheckpoints()) return;
+
         save = new MinigameSave("playerdata/checkpoints/" + uuid);
-        for(String mgm : checkpoints.keySet()){
+        for (String mgm : checkpoints.keySet()) {
             MinigameUtils.debugMessage("Attempting to save checkpoint for " + mgm + "...");
             try {
                 save.getConfig().set(mgm, null);
@@ -148,8 +148,7 @@ public class StoredPlayerCheckpoints {
 
                 if (storedReverts.containsKey(mgm))
                     save.getConfig().set(mgm + ".reverts", getReverts(mgm));
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 // When an error is detected, remove the stored erroneous checkpoint
                 Minigames.getPlugin().getLogger().warning("Unable to save checkpoint for " + mgm + "! It has been been removed.");
                 e.printStackTrace();
@@ -164,7 +163,7 @@ public class StoredPlayerCheckpoints {
             }
         }
 
-        if(hasGlobalCheckpoint()){
+        if (hasGlobalCheckpoint()) {
             try {
                 save.getConfig().set("globalcheckpoint.x", globalCheckpoint.getX());
                 save.getConfig().set("globalcheckpoint.y", globalCheckpoint.getY());
@@ -172,8 +171,7 @@ public class StoredPlayerCheckpoints {
                 save.getConfig().set("globalcheckpoint.yaw", globalCheckpoint.getYaw());
                 save.getConfig().set("globalcheckpoint.pitch", globalCheckpoint.getPitch());
                 save.getConfig().set("globalcheckpoint.world", globalCheckpoint.getWorld().getName());
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 // When an error is detected, remove the global checkpoint
                 save.getConfig().set("globalcheckpoint", null);
                 Minigames.getPlugin().getLogger().warning("Unable to save global checkpoint!");
@@ -182,12 +180,12 @@ public class StoredPlayerCheckpoints {
         }
         save.saveConfig();
     }
-    
-    public void loadCheckpoints(){
+
+    public void loadCheckpoints() {
         MinigameSave save = new MinigameSave("playerdata/checkpoints/" + uuid);
         Set<String> mgms = save.getConfig().getKeys(false);
-        for(String mgm : mgms){
-            if(!mgm.equals("globalcheckpoint")){
+        for (String mgm : mgms) {
+            if (!mgm.equals("globalcheckpoint")) {
                 MinigameUtils.debugMessage("Attempting to load checkpoint for " + mgm + "...");
                 try {
                     Double locx = (Double) save.getConfig().get(mgm + ".x");
@@ -210,25 +208,25 @@ public class StoredPlayerCheckpoints {
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
-                if(save.getConfig().contains(mgm + ".flags")){
+                if (save.getConfig().contains(mgm + ".flags")) {
                     flags.put(mgm, save.getConfig().getStringList(mgm + ".flags"));
                 }
-                
-                if(save.getConfig().contains(mgm + ".time")){
+
+                if (save.getConfig().contains(mgm + ".time")) {
                     storedTime.put(mgm, save.getConfig().getLong(mgm + ".time"));
                 }
-                
-                if(save.getConfig().contains(mgm + ".deaths")){
+
+                if (save.getConfig().contains(mgm + ".deaths")) {
                     storedDeaths.put(mgm, save.getConfig().getInt(mgm + ".deaths"));
                 }
-                
-                if(save.getConfig().contains(mgm + ".reverts")){
+
+                if (save.getConfig().contains(mgm + ".reverts")) {
                     storedReverts.put(mgm, save.getConfig().getInt(mgm + ".reverts"));
                 }
             }
         }
-        
-        if(save.getConfig().contains("globalcheckpoint")){
+
+        if (save.getConfig().contains("globalcheckpoint")) {
             double x = save.getConfig().getDouble("globalcheckpoint.x");
             double y = save.getConfig().getDouble("globalcheckpoint.y");
             double z = save.getConfig().getDouble("globalcheckpoint.z");

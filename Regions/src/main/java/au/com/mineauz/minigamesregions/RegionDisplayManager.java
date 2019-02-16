@@ -18,11 +18,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class RegionDisplayManager {
-    private Map<Player, Map<Region, IDisplayObject>> regionDisplays;
-    private Map<Player, Map<Node, IDisplayObject>> nodeDisplays;
+    private final Map<Player, Map<Region, IDisplayObject>> regionDisplays;
+    private final Map<Player, Map<Node, IDisplayObject>> nodeDisplays;
     
-    private SetMultimap<Object, MinigamePlayer> activeWatchers;
-    private Map<Object, ArmorStand> nameDisplay;
+    private final SetMultimap<Object, MinigamePlayer> activeWatchers;
+    private final Map<Object, ArmorStand> nameDisplay;
     
     public RegionDisplayManager() {
         regionDisplays = Maps.newHashMap();

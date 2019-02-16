@@ -9,7 +9,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 
 public class QuitSign implements MinigameSign {
-    
+
     private static Minigames plugin = Minigames.getPlugin();
 
     @Override
@@ -45,18 +45,17 @@ public class QuitSign implements MinigameSign {
 
     @Override
     public boolean signUse(Sign sign, MinigamePlayer player) {
-        if(player.isInMinigame() && player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR){
+        if (player.isInMinigame() && player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
             plugin.getPlayerManager().quitMinigame(player, false);
             return true;
-        }
-        else if(player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR)
+        } else if (player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR)
             player.sendInfoMessage(MinigameUtils.getLang("sign.emptyHand"));
         return false;
     }
 
     @Override
     public void signBreak(Sign sign, MinigamePlayer player) {
-    
+
     }
 
 }

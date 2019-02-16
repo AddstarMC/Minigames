@@ -10,7 +10,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 
 public class SpectateSign implements MinigameSign {
-    
+
     private Minigames plugin = Minigames.getPlugin();
 
     @Override
@@ -51,29 +51,26 @@ public class SpectateSign implements MinigameSign {
 
     @Override
     public boolean signUse(Sign sign, MinigamePlayer player) {
-        if(player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR && !player.isInMinigame()){
+        if (player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR && !player.isInMinigame()) {
             Minigame mgm = plugin.getMinigameManager().getMinigame(sign.getLine(2));
-            if(mgm != null){
-                if(mgm.isEnabled()){
+            if (mgm != null) {
+                if (mgm.isEnabled()) {
                     plugin.getPlayerManager().spectateMinigame(player, mgm);
                     return true;
-                }
-                else if(!mgm.isEnabled()){
+                } else if (!mgm.isEnabled()) {
                     player.sendInfoMessage(MinigameUtils.getLang("minigame.error.notEnabled"));
                 }
-            }
-            else if(mgm == null){
+            } else if (mgm == null) {
                 player.sendInfoMessage(MinigameUtils.getLang("minigame.error.noMinigame"));
             }
-        }
-        else if(!player.isInMinigame())
+        } else if (!player.isInMinigame())
             player.sendInfoMessage(MinigameUtils.getLang("sign.emptyHand"));
         return false;
     }
 
     @Override
     public void signBreak(Sign sign, MinigamePlayer player) {
-    
+
     }
 
 }

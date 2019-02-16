@@ -1,14 +1,15 @@
 package au.com.mineauz.minigames.config;
 
 import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.menu.MenuItem;
 
-public class LoadoutFlag extends Flag<PlayerLoadout>{
-    
-    public LoadoutFlag(PlayerLoadout value, String name){
+public class LoadoutFlag extends Flag<PlayerLoadout> {
+
+    public LoadoutFlag(PlayerLoadout value, String name) {
         setFlag(value);
         setDefaultFlag(null);
         setName(name);
@@ -31,7 +32,7 @@ public class LoadoutFlag extends Flag<PlayerLoadout>{
 
     @Override
     public MenuItem getMenuItem(String name, Material displayItem,
-            List<String> description) {
+                                List<String> description) {
         return null;
     }
 

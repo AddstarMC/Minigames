@@ -5,22 +5,22 @@ class BasicMinigameStat extends MinigameStat {
         super(name, format);
         setDisplayName(displayName);
     }
-    
+
     @Override
     public String displayValue(long value, StatSettings settings) {
         if (this == MinigameStats.CompletionTime) {
             return (value / 1000) + " seconds";
         } else {
-            return String.valueOf(value) + " " + settings.getDisplayName();
+            return value + " " + settings.getDisplayName();
         }
     }
-    
+
     @Override
     public String displayValueSign(long value, StatSettings settings) {
         if (this == MinigameStats.CompletionTime) {
             return (value / 1000) + "sec";
         } else {
-            return String.valueOf(value) + " " + settings.getDisplayName();
+            return value + " " + settings.getDisplayName();
         }
     }
 }

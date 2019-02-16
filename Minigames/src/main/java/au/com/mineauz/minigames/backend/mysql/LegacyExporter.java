@@ -12,41 +12,38 @@ public class LegacyExporter {
     private final String database;
     private final BackendImportCallback callback;
     private final ExportNotifier notifier;
-    
-    private ConnectionHandler handler;
-    
     private final StatementKey selectTables;
     private final StatementKey selectPlayers;
     private final StatementKey selectStats;
-    
+    private ConnectionHandler handler;
     private String notifyState;
     private int notifyCount;
     private long notifyTime;
-    
+
     public LegacyExporter(ConnectionPool pool, String database, BackendImportCallback callback, ExportNotifier notifier) {
         this.pool = pool;
         this.database = database;
         this.callback = callback;
         this.notifier = notifier;
-        
+
         selectTables = new StatementKey("SELECT `TABLE_NAME` FROM information_schema.`TABLES` WHERE `TABLE_SCHEMA`=? AND `TABLE_NAME` LIKE 'mgm_%_comp';");
         selectPlayers = new StatementKey("SELECT `UUID`, `Player` FROM `mgm_conversion` GROUP BY `UUID`;");
         selectStats = new StatementKey("SELECT `UUID`, m.`minigame_id`, `Completion`, `Failures`, `Kills`, `Deaths`, `Score`, `Time`, `Reverts`, `TotalKills`, `TotalDeaths`, `TotalScore`, `TotalTime`, `TotalReverts` FROM `mgm_conversion` AS c JOIN `mgm_minigames` AS m ON m.`name`=c.`minigame`;");
     }
-    
+
     public boolean doExport() {
         try {
             handler = pool.getConnection();
             callback.begin();
-            
+
             initializeConversion();
-            
+
             exportPlayers();
             exportMinigames();
             exportStats();
-            
+
             notifyNext("Done");
-            
+
             callback.end();
             notifier.onComplete();
             return true;
@@ -57,7 +54,7 @@ public class LegacyExporter {
             handler.release();
         }
     }
-    
+
     private void initializeConversion() throws SQLException {
         notifyNext("Preparing...");
         // Consolidate the tables into one
@@ -80,10 +77,10 @@ public class LegacyExporter {
                 notifyProgress();
             }
         }
-        
+
         statement.close();
     }
-    
+
     private void exportPlayers() throws SQLException {
         notifyNext("Exporting players...");
 
@@ -95,15 +92,15 @@ public class LegacyExporter {
             }
         }
     }
-    
+
     private void exportMinigames() throws SQLException {
         notifyNext("Exporting minigames...");
-        
+
         // Create an id for each minigame
         Statement statement = handler.getConnection().createStatement();
         statement.executeUpdate("CREATE TEMPORARY TABLE `mgm_minigames` (`minigame_id` INTEGER AUTO_INCREMENT PRIMARY KEY, `name` VARCHAR(30), UNIQUE INDEX (`name`, `minigame_id`));");
         statement.executeUpdate("INSERT INTO `mgm_minigames` (`name`) SELECT DISTINCT `Minigame` AS `name` FROM `mgm_conversion`;");
-        
+
         // Do the conversion
         try (ResultSet rs = statement.executeQuery("SELECT `minigame_id`, `name` FROM `mgm_minigames`")) {
             while (rs.next()) {
@@ -112,10 +109,10 @@ public class LegacyExporter {
                 notifyProgress();
             }
         }
-        
+
         statement.close();
     }
-    
+
     private void exportStats() throws SQLException {
         notifyNext("Exporting stats...");
 
@@ -174,23 +171,23 @@ public class LegacyExporter {
             }
         }
     }
-    
+
     private void notifyProgress() {
         if (System.currentTimeMillis() - notifyTime >= 2000) {
             notifier.onProgress(notifyState, notifyCount);
             notifyTime = System.currentTimeMillis();
         }
     }
-    
+
     private void notifyNext(String state) {
         if (notifyCount != 0) {
             notifier.onProgress(notifyState, notifyCount);
         }
-        
+
         notifyTime = System.currentTimeMillis();
         notifyCount = 0;
         notifyState = state;
-        
+
         notifier.onProgress(state, 0);
     }
 }

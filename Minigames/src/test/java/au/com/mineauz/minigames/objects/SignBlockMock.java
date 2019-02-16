@@ -11,10 +11,10 @@ import org.bukkit.block.data.BlockData;
  * Created for the AddstarMC Project. Created by Narimm on 10/01/2019.
  */
 public class SignBlockMock extends BlockMock {
-    
+
     private BlockStateMock state;
     private BlockData data;
-    
+
     /**
      * Creates a basic block with a given material that is also linked to a specific location.
      *
@@ -26,18 +26,18 @@ public class SignBlockMock extends BlockMock {
         this.state = state;
         this.data = data;
     }
-    
+
     @Override
     public BlockData getBlockData() {
         return data;
     }
-    
+
     @Override
     public BlockState getState() {
         return state;
     }
-    
-    public void setBlockState(BlockStateMock state){
+
+    public void setBlockState(BlockStateMock state) {
         this.state = state;
     }
 }

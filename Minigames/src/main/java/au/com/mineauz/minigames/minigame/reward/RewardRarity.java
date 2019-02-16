@@ -6,18 +6,18 @@ public enum RewardRarity {
     NORMAL(0.1),
     RARE(0.02),
     VERY_RARE(0);
-    
+
     private double rarity;
-    
-    RewardRarity(double r){
+
+    RewardRarity(double r) {
         rarity = r;
     }
-    
-    public double getRarity(){
+
+    public double getRarity() {
         return rarity;
     }
-    
-    public RewardRarity getPreviousRarity(){
+
+    public RewardRarity getPreviousRarity() {
         switch (this) {
             case VERY_COMMON:
                 return COMMON;
@@ -26,11 +26,11 @@ public enum RewardRarity {
             case NORMAL:
                 return RARE;
         }
-        
+
         return VERY_RARE;
     }
-    
-    public RewardRarity getNextRarity(){
+
+    public RewardRarity getNextRarity() {
         switch (this) {
             case VERY_RARE:
                 return RARE;
@@ -39,7 +39,7 @@ public enum RewardRarity {
             case NORMAL:
                 return COMMON;
         }
-        
+
         return VERY_COMMON;
     }
 }

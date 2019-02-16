@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 
-public class SetQuitCommand implements ICommand{
+public class SetQuitCommand implements ICommand {
 
     @Override
     public String getName() {
@@ -38,7 +38,7 @@ public class SetQuitCommand implements ICommand{
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> quit"};
+        return new String[]{"/minigame set <Minigame> quit"};
     }
 
     @Override
@@ -53,8 +53,8 @@ public class SetQuitCommand implements ICommand{
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        Player player = (Player)sender;
+                             String label, String[] args) {
+        Player player = (Player) sender;
         minigame.setQuitPosition(player.getLocation());
         sender.sendMessage(ChatColor.GRAY + "Quit position has been set for " + minigame);
         return true;
@@ -62,7 +62,7 @@ public class SetQuitCommand implements ICommand{
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

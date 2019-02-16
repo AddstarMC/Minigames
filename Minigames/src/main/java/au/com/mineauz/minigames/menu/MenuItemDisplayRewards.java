@@ -7,8 +7,8 @@ import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 
-public class MenuItemDisplayRewards extends MenuItem{
-    
+public class MenuItemDisplayRewards extends MenuItem {
+
     private Rewards rewards;
 
     public MenuItemDisplayRewards(String name, Material displayItem, Rewards rewards) {
@@ -20,11 +20,11 @@ public class MenuItemDisplayRewards extends MenuItem{
         super(name, description, displayItem);
         this.rewards = rewards;
     }
-    
+
     @Override
-    public ItemStack onClick(){
+    public ItemStack onClick() {
         Menu rewardMenu = rewards.createMenu(getName(), getContainer().getViewer(), getContainer());
-        
+
         rewardMenu.displayMenu(getContainer().getViewer());
         return null;
     }

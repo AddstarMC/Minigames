@@ -9,7 +9,7 @@ import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 
-public class SetMaxRadiusCommand implements ICommand{
+public class SetMaxRadiusCommand implements ICommand {
 
     @Override
     public String getName() {
@@ -38,7 +38,7 @@ public class SetMaxRadiusCommand implements ICommand{
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> maxradius <Number>"};
+        return new String[]{"/minigame set <Minigame> maxradius <Number>"};
     }
 
     @Override
@@ -53,9 +53,9 @@ public class SetMaxRadiusCommand implements ICommand{
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(args[0].matches("[0-9]+")){
+                             String label, String[] args) {
+        if (args != null) {
+            if (args[0].matches("[0-9]+")) {
                 int max = Integer.parseInt(args[0]);
                 TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
                 thm.setMaxRadius(max);
@@ -68,7 +68,7 @@ public class SetMaxRadiusCommand implements ICommand{
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

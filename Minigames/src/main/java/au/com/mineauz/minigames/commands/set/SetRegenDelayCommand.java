@@ -38,7 +38,7 @@ public class SetRegenDelayCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> regendelay <TimeInSeconds>"};
+        return new String[]{"/minigame set <Minigame> regendelay <TimeInSeconds>"};
     }
 
     @Override
@@ -53,8 +53,8 @@ public class SetRegenDelayCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null && args[0].matches("[0-9]+")){
+                             String label, String[] args) {
+        if (args != null && args[0].matches("[0-9]+")) {
             int time = Integer.parseInt(args[0]);
             minigame.setRegenDelay(time);
             sender.sendMessage(ChatColor.GRAY + "Set " + minigame.getName(false) + "'s regeneration delay to " + time + " seconds.");
@@ -65,7 +65,7 @@ public class SetRegenDelayCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

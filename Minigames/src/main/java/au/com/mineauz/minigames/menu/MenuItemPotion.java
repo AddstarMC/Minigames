@@ -9,8 +9,8 @@ import org.bukkit.potion.PotionEffect;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemPotion extends MenuItem{
-    
+public class MenuItemPotion extends MenuItem {
+
     private PotionEffect eff;
     private PlayerLoadout loadout;
 
@@ -27,45 +27,42 @@ public class MenuItemPotion extends MenuItem{
         this.loadout = loadout;
         updateDescription();
     }
-    
-    public void updateDescription(){
+
+    public void updateDescription() {
         List<String> description = null;
-        if(getDescription() != null){
+        if (getDescription() != null) {
             description = getDescription();
-            if(getDescription().size() >= 2){
+            if (getDescription().size() >= 2) {
                 String desc = ChatColor.stripColor(getDescription().get(0));
-                
-                if(desc.equals("Level: " + (eff.getAmplifier() + 1))){
+
+                if (desc.equals("Level: " + (eff.getAmplifier() + 1))) {
                     description.set(0, ChatColor.GREEN.toString() + "Level: " + ChatColor.GRAY + (eff.getAmplifier() + 1));
                     description.set(1, ChatColor.GREEN.toString() + "Duration: " + ChatColor.GRAY + eff.getDuration());
-                }
-                else{
+                } else {
                     description.add(0, ChatColor.GREEN.toString() + "Level: " + ChatColor.GRAY + (eff.getAmplifier() + 1));
                     description.add(1, ChatColor.GREEN.toString() + "Duration: " + ChatColor.GRAY + eff.getDuration());
                 }
-            }
-            else{
+            } else {
                 description.add(0, ChatColor.GREEN.toString() + "Level: " + ChatColor.GRAY + (eff.getAmplifier() + 1));
                 description.add(1, ChatColor.GREEN.toString() + "Duration: " + ChatColor.GRAY + eff.getDuration());
             }
-        }
-        else{
+        } else {
             description = new ArrayList<>();
             description.add(0, ChatColor.GREEN.toString() + "Level: " + ChatColor.GRAY + (eff.getAmplifier() + 1));
             description.add(1, ChatColor.GREEN.toString() + "Duration: " + ChatColor.GRAY + eff.getDuration());
         }
-        
+
         setDescription(description);
     }
-    
+
     @Override
-    public ItemStack onShiftRightClick(){
+    public ItemStack onShiftRightClick() {
         loadout.removePotionEffect(eff);
         getContainer().removeItem(getSlot());
         return null;
     }
-    
-    public PotionEffect getEffect(){
+
+    public PotionEffect getEffect() {
         return eff;
     }
 }

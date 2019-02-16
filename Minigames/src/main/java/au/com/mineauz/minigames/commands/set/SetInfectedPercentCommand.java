@@ -18,7 +18,7 @@ public class SetInfectedPercentCommand implements ICommand {
 
     @Override
     public String[] getAliases() {
-        return new String[] {"infperc"};
+        return new String[]{"infperc"};
     }
 
     @Override
@@ -38,7 +38,7 @@ public class SetInfectedPercentCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> infectedpercent <1-99>"};
+        return new String[]{"/minigame set <Minigame> infectedpercent <1-99>"};
     }
 
     @Override
@@ -53,20 +53,18 @@ public class SetInfectedPercentCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(args[0].matches("[0-9]+")){
+                             String label, String[] args) {
+        if (args != null) {
+            if (args[0].matches("[0-9]+")) {
                 int val = Integer.valueOf(args[0]);
-                if(val > 0 && val < 100){
+                if (val > 0 && val < 100) {
                     InfectionModule.getMinigameModule(minigame).setInfectedPercent(val);
                     sender.sendMessage(ChatColor.GRAY + "Infected percent has been set to " + val + "% for " + minigame);
-                }
-                else{
+                } else {
                     sender.sendMessage(ChatColor.RED + "Invalid percentage! Value must be between 1 and 99");
                 }
                 return true;
-            }
-            else{
+            } else {
                 sender.sendMessage(ChatColor.RED + args[0] + " is not a valid value! Make sure the value is between 1 and 99.");
             }
         }
@@ -75,7 +73,7 @@ public class SetInfectedPercentCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

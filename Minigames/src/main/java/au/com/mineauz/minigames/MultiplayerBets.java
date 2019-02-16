@@ -11,85 +11,85 @@ public class MultiplayerBets {
     private Map<MinigamePlayer, ItemStack> bet = new HashMap<>();
     private double greatestBet = 0;
     private Map<MinigamePlayer, Double> moneyBet = new HashMap<>();
-    
-    public MultiplayerBets(){
+
+    public MultiplayerBets() {
     }
-    
-    public void addBet(MinigamePlayer player, ItemStack item){
-        if(!bet.containsKey(player)){
-            if(betValue(item.getType()) >= highestBet()){
+
+    public void addBet(MinigamePlayer player, ItemStack item) {
+        if (!bet.containsKey(player)) {
+            if (betValue(item.getType()) >= highestBet()) {
                 item.setAmount(1);
                 bet.put(player, item);
             }
         }
     }
-    
-    public void addBet(MinigamePlayer player, Double money){
-        if(!moneyBet.containsKey(player)){
-            if(money >= greatestBet){
+
+    public void addBet(MinigamePlayer player, Double money) {
+        if (!moneyBet.containsKey(player)) {
+            if (money >= greatestBet) {
                 greatestBet = money;
                 moneyBet.put(player, money);
             }
         }
     }
-    
-    public boolean canBet(MinigamePlayer player, ItemStack item){
-        if(bet.containsKey(player)){
+
+    public boolean canBet(MinigamePlayer player, ItemStack item) {
+        if (bet.containsKey(player)) {
             return false;
         }
 
         return !(!bet.isEmpty() && betValue(item.getType()) != highestBet());
     }
-    
-    public boolean canBet(MinigamePlayer player, Double money){
-        if(moneyBet.containsKey(player)){
+
+    public boolean canBet(MinigamePlayer player, Double money) {
+        if (moneyBet.containsKey(player)) {
             return false;
         }
 
         return !(greatestBet != 0 && money != greatestBet);
     }
-    
-    public ItemStack[] claimBets(){
+
+    public ItemStack[] claimBets() {
         ItemStack[] items = new ItemStack[bet.values().size()];
         int num = 0;
-        for(ItemStack item : bet.values()){
+        for (ItemStack item : bet.values()) {
             items[num] = item;
             num++;
         }
         return items;
     }
-    
-    public Double claimMoneyBets(){
+
+    public Double claimMoneyBets() {
         Double money = 0d;
-        for(Double mon : moneyBet.values()){
+        for (Double mon : moneyBet.values()) {
             money += mon;
         }
         return money;
     }
-    
-    public int highestBet(){
+
+    public int highestBet() {
         int highest = 0;
-        for(ItemStack item : bet.values()){
-            if(betValue(item.getType()) > highest){
+        for (ItemStack item : bet.values()) {
+            if (betValue(item.getType()) > highest) {
                 highest = betValue(item.getType());
             }
         }
         return highest;
     }
-    
-    public String highestBetName(){
+
+    public String highestBetName() {
         String highest = "iron ingot";
         int largest = 0;
-        for(ItemStack item : bet.values()){
-            if(betValue(item.getType()) > largest){
+        for (ItemStack item : bet.values()) {
+            if (betValue(item.getType()) > largest) {
                 largest = betValue(item.getType());
                 highest = item.getType().toString().toLowerCase().replace("_", " ");
             }
         }
         return highest;
     }
-    
-    public int betValue(Material material){
+
+    public int betValue(Material material) {
         switch (material) {
             case DIAMOND:
                 return 3;
@@ -100,35 +100,35 @@ public class MultiplayerBets {
         }
         return 0;
     }
-    
-    public ItemStack getPlayersBet(MinigamePlayer player){
-        if(bet.containsKey(player)){
+
+    public ItemStack getPlayersBet(MinigamePlayer player) {
+        if (bet.containsKey(player)) {
             return bet.get(player);
         }
         return null;
     }
-    
-    public Double getPlayersMoneyBet(MinigamePlayer player){
-        if(moneyBet.containsKey(player)){
+
+    public Double getPlayersMoneyBet(MinigamePlayer player) {
+        if (moneyBet.containsKey(player)) {
             return moneyBet.get(player);
         }
         return null;
     }
-    
-    public void removePlayersBet(MinigamePlayer player){
+
+    public void removePlayersBet(MinigamePlayer player) {
         bet.remove(player);
         moneyBet.remove(player);
     }
-    
-    public boolean hasBets(){
+
+    public boolean hasBets() {
         return !bet.isEmpty();
     }
-    
-    public boolean hasMoneyBets(){
+
+    public boolean hasMoneyBets() {
         return !moneyBet.isEmpty();
     }
-    
-    public double getHighestMoneyBet(){
+
+    public double getHighestMoneyBet() {
         return greatestBet;
     }
 }

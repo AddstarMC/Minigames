@@ -18,7 +18,7 @@ public class SetSpectatorSpawnCommand implements ICommand {
 
     @Override
     public String[] getAliases() {
-        return new String[] {"specstart"};
+        return new String[]{"specstart"};
     }
 
     @Override
@@ -38,7 +38,7 @@ public class SetSpectatorSpawnCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> spectatorstart"};
+        return new String[]{"/minigame set <Minigame> spectatorstart"};
     }
 
     @Override
@@ -53,8 +53,8 @@ public class SetSpectatorSpawnCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        Player ply = (Player)sender;
+                             String label, String[] args) {
+        Player ply = (Player) sender;
         minigame.setSpectatorLocation(ply.getLocation());
         ply.sendMessage(ChatColor.GRAY + "Set the spectator start point to where you are standing");
         return true;
@@ -62,7 +62,7 @@ public class SetSpectatorSpawnCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

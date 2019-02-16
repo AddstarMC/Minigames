@@ -21,7 +21,7 @@ public class SetDefaultWinnerCommand implements ICommand {
 
     @Override
     public String[] getAliases() {
-        return new String[] {"defwin"};
+        return new String[]{"defwin"};
     }
 
     @Override
@@ -41,7 +41,7 @@ public class SetDefaultWinnerCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> defaultwinner <TeamColor>"};
+        return new String[]{"/minigame set <Minigame> defaultwinner <TeamColor>"};
     }
 
     @Override
@@ -56,18 +56,16 @@ public class SetDefaultWinnerCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(args[0].equalsIgnoreCase("none")){
+                             String label, String[] args) {
+        if (args != null) {
+            if (args[0].equalsIgnoreCase("none")) {
                 TeamsModule.getMinigameModule(minigame).setDefaultWinner(null);
                 sender.sendMessage(ChatColor.GRAY + "The default winner of " + minigame + " has been set to none.");
-            }
-            else{
-                if(TeamsModule.getMinigameModule(minigame).hasTeam(TeamColor.matchColor(args[0]))){
+            } else {
+                if (TeamsModule.getMinigameModule(minigame).hasTeam(TeamColor.matchColor(args[0]))) {
                     TeamsModule.getMinigameModule(minigame).setDefaultWinner(TeamColor.matchColor(args[0]));
                     sender.sendMessage(ChatColor.GRAY + "The default winner of " + minigame + " has been set to " + args[0] + ".");
-                }
-                else{
+                } else {
                     sender.sendMessage(ChatColor.RED + "There is no team for the color " + args[0]);
                 }
             }
@@ -78,10 +76,10 @@ public class SetDefaultWinnerCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
-        if(args.length == 1){
+                                      String alias, String[] args) {
+        if (args.length == 1) {
             List<String> teams = new ArrayList<>();
-            for(Team t : TeamsModule.getMinigameModule(minigame).getTeams()){
+            for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {
                 teams.add(t.getColor().toString().toLowerCase());
             }
             return MinigameUtils.tabCompleteMatch(teams, args[0]);

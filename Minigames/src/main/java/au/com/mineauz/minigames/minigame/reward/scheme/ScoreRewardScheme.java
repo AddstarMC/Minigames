@@ -10,27 +10,27 @@ public class ScoreRewardScheme extends HierarchyRewardScheme<Integer> {
     protected Integer decrement(Integer value) {
         return value - 1;
     }
-    
+
     @Override
     protected Integer increment(Integer value) {
         return value + 1;
     }
-    
+
     @Override
     protected Integer loadValue(String key) {
         return Integer.valueOf(key);
     }
-    
+
     @Override
     protected String getMenuItemDescName(Integer value) {
         return "Score: " + value;
     }
-    
+
     @Override
     protected Integer getValue(MinigamePlayer player, StoredGameStats data, Minigame minigame) {
-        return (int)data.getStat(MinigameStats.Score);
+        return (int) data.getStat(MinigameStats.Score);
     }
-    
+
     @Override
     protected String getMenuItemName(Integer value) {
         return value.toString();

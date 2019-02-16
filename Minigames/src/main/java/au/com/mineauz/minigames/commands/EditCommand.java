@@ -39,7 +39,7 @@ public class EditCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame edit <Minigame>"};
+        return new String[]{"/minigame edit <Minigame>"};
     }
 
     @Override
@@ -54,9 +54,9 @@ public class EditCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        
-        if(args != null){
+                             String label, String[] args) {
+
+        if (args != null) {
             if (plugin.getMinigameManager().hasMinigame(args[0])) {
                 Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
                 if (mgm == null) {
@@ -70,8 +70,7 @@ public class EditCommand implements ICommand {
                     return false;
                 }
                 mgm.displayMenu(player);
-            }
-            else{
+            } else {
                 sender.sendMessage(ChatColor.RED + "There is no Minigame by the name " + args[0]);
             }
             return true;
@@ -81,8 +80,8 @@ public class EditCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
-        if(args != null && args.length == 1){
+                                      String alias, String[] args) {
+        if (args != null && args.length == 1) {
             List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
             return MinigameUtils.tabCompleteMatch(mgs, args[0]);
         }

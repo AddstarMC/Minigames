@@ -9,15 +9,15 @@ import org.bukkit.entity.Player;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 
-public class SetEndCommand implements ICommand{
+public class SetEndCommand implements ICommand {
 
     @Override
     public String getName() {
         return "end";
     }
-    
+
     @Override
-    public String[] getAliases(){
+    public String[] getAliases() {
         return null;
     }
 
@@ -38,7 +38,7 @@ public class SetEndCommand implements ICommand{
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> end"};
+        return new String[]{"/minigame set <Minigame> end"};
     }
 
     @Override
@@ -53,7 +53,7 @@ public class SetEndCommand implements ICommand{
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
+                             String label, String[] args) {
         minigame.setEndPosition(((Player) sender).getLocation());
         sender.sendMessage(ChatColor.GRAY + "Ending position has been set for " + minigame);
         return true;
@@ -61,7 +61,7 @@ public class SetEndCommand implements ICommand{
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

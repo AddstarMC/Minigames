@@ -17,7 +17,7 @@ public class SetDisplayNameCommand implements ICommand {
 
     @Override
     public String[] getAliases() {
-        return new String[] {"dispname", "dname"};
+        return new String[]{"dispname", "dname"};
     }
 
     @Override
@@ -38,7 +38,7 @@ public class SetDisplayNameCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> displayname <Some Displayname Here>"};
+        return new String[]{"/minigame set <Minigame> displayname <Some Displayname Here>"};
     }
 
     @Override
@@ -53,20 +53,19 @@ public class SetDisplayNameCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
+                             String label, String[] args) {
+        if (args != null) {
             String name = "";
-            for(String arg : args){
+            for (String arg : args) {
                 name += arg;
-                if(!arg.equals(args[args.length - 1])){
+                if (!arg.equals(args[args.length - 1])) {
                     name += " ";
                 }
             }
-            if(name.equalsIgnoreCase("null")){
+            if (name.equalsIgnoreCase("null")) {
                 minigame.setDisplayName(null);
                 sender.sendMessage(ChatColor.GRAY + "Removed " + minigame + "'s display name");
-            }
-            else{
+            } else {
                 minigame.setDisplayName(name);
                 sender.sendMessage(ChatColor.GRAY + "Set " + minigame + "'s display name to \"" + name + "\"");
             }
@@ -77,7 +76,7 @@ public class SetDisplayNameCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

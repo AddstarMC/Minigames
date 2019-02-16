@@ -12,47 +12,47 @@ public class MenuItem {
     private ItemStack displayItem = null;
     private Menu container = null;
     private int slot = 0;
-    
-    public MenuItem(String name, Material displayItem){
-        this(name,null,displayItem);
+
+    public MenuItem(String name, Material displayItem) {
+        this(name, null, displayItem);
 
     }
-    
-    public MenuItem(String name, List<String> description, Material displayItem){
-        if(displayItem == null)
-            if(description ==null){
+
+    public MenuItem(String name, List<String> description, Material displayItem) {
+        if (displayItem == null)
+            if (description == null) {
                 displayItem = MenuUtility.getSlotFillerItem();
-            }else {
-                displayItem =  MenuUtility.getUnknownDisplayItem();
+            } else {
+                displayItem = MenuUtility.getUnknownDisplayItem();
             }
         this.displayItem = new ItemStack(displayItem);
         ItemMeta meta = this.displayItem.getItemMeta();
         meta.setDisplayName(ChatColor.RESET + name);
-        if(description != null)meta.setLore(description);
+        if (description != null) meta.setLore(description);
         this.displayItem.setItemMeta(meta);
     }
-    
-    public void setDescription(List<String> description){
+
+    public List<String> getDescription() {
+        return displayItem.getItemMeta().getLore();
+    }
+
+    public void setDescription(List<String> description) {
         ItemMeta meta = displayItem.getItemMeta();
-        
+
         meta.setLore(description);
         displayItem.setItemMeta(meta);
     }
-    
-    public List<String> getDescription(){
-        return displayItem.getItemMeta().getLore();
-    }
-    
-    public String getName(){
+
+    public String getName() {
         return displayItem.getItemMeta().getDisplayName();
     }
-    
-    public ItemStack getItem(){
+
+    public ItemStack getItem() {
         return displayItem;
     }
-    
-    public void setItem(ItemStack item){
-        if(item == null){
+
+    public void setItem(ItemStack item) {
+        if (item == null) {
             Bukkit.getLogger().fine("Item Stack was null on: " + this.getDescription().toString());
             return;
         }
@@ -63,57 +63,57 @@ public class MenuItem {
         nmeta.setLore(nmeta.getLore());
         displayItem.setItemMeta(nmeta);
     }
-    
+
     public void update() {
     }
-    
-    public ItemStack onClick(){
+
+    public ItemStack onClick() {
         //Do stuff
         return getItem();
     }
 
-    public ItemStack onClickWithItem(ItemStack item){
+    public ItemStack onClickWithItem(ItemStack item) {
         //Do stuff
         return getItem();
     }
-    
-    public ItemStack onRightClick(){
+
+    public ItemStack onRightClick() {
         //Do stuff
         return getItem();
     }
-    
-    public ItemStack onShiftClick(){
+
+    public ItemStack onShiftClick() {
         //Do stuff
         return getItem();
     }
-    
-    public ItemStack onShiftRightClick(){
+
+    public ItemStack onShiftRightClick() {
         //Do stuff
         return getItem();
     }
-    
-    public ItemStack onDoubleClick(){
+
+    public ItemStack onDoubleClick() {
         //Do Stuff
         return getItem();
     }
-    
-     public void checkValidEntry(String entry){
+
+    public void checkValidEntry(String entry) {
         //Do Stuff
     }
-    
-    public void setContainer(Menu container){
-        this.container = container;
-    }
-    
-    public Menu getContainer(){
+
+    public Menu getContainer() {
         return container;
     }
-    
-    public void setSlot(int slot){
-        this.slot = slot;
+
+    public void setContainer(Menu container) {
+        this.container = container;
     }
-    
-    public int getSlot(){
+
+    public int getSlot() {
         return slot;
+    }
+
+    public void setSlot(int slot) {
+        this.slot = slot;
     }
 }

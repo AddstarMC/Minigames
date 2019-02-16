@@ -38,7 +38,7 @@ public class SetMaxTreasureCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> maxtreasure <Number>"};
+        return new String[]{"/minigame set <Minigame> maxtreasure <Number>"};
     }
 
     @Override
@@ -53,9 +53,9 @@ public class SetMaxTreasureCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(args[0].matches("[0-9]+")){
+                             String label, String[] args) {
+        if (args != null) {
+            if (args[0].matches("[0-9]+")) {
                 int amount = Integer.parseInt(args[0]);
                 TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
                 thm.setMaxTreasure(amount);
@@ -68,7 +68,7 @@ public class SetMaxTreasureCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

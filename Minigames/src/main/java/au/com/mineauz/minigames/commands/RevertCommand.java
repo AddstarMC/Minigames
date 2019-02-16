@@ -11,7 +11,7 @@ import java.util.List;
 
 //import au.com.mineauz.minigames.StoredPlayerCheckpoints;
 
-public class RevertCommand implements ICommand{
+public class RevertCommand implements ICommand {
 
     @Override
     public String getName() {
@@ -20,7 +20,7 @@ public class RevertCommand implements ICommand{
 
     @Override
     public String[] getAliases() {
-        return new String[] {"r"};
+        return new String[]{"r"};
     }
 
     @Override
@@ -40,7 +40,7 @@ public class RevertCommand implements ICommand{
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame revert"};
+        return new String[]{"/minigame revert"};
     }
 
     @Override
@@ -55,10 +55,10 @@ public class RevertCommand implements ICommand{
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
+                             String label, String[] args) {
         MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
-        
-        if(player.isInMinigame()){
+
+        if (player.isInMinigame()) {
             plugin.getPlayerManager().revertToCheckpoint(player);
         }
 //        else if(plugin.playerManager.hasStoredPlayerCheckpoint(player)){
@@ -75,7 +75,7 @@ public class RevertCommand implements ICommand{
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

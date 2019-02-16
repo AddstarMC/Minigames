@@ -40,18 +40,20 @@ public class ResourcePackCommand implements ICommand {
 
     @Override
     public String[] getParameters() {
-        String[] res =  new String[6];
-        res[1] = "apply";
-        res[2] = "addnew";
-        res[3] = "clear";
-        res[4] = "remove";
-        res[5] = "list";
+        List<String> result = new ArrayList<>();
+        result.add("apply");
+        result.add( "addnew");
+        result.add( "clear");
+        result.add( "remove");
+        result.add( "list");
+        String[] res = new String[result.size()];
+        result.toArray(res);
         return res;
     }
 
     @Override
     public String[] getUsage() {
-        return  new String[] {
+        return new String[]{
                 "/minigame resourcepack <options>"
         };
     }
@@ -69,29 +71,29 @@ public class ResourcePackCommand implements ICommand {
     @Override
     public boolean onCommand(final CommandSender sender, Minigame minigame, String label, String[] args) {
         ResourcePack pack;
-        switch (args[0]){
+        switch (args[0]) {
             case "apply":
-                if(args.length < 3){
+                if (args.length < 3) {
                     sender.sendMessage(getUsage());
                     return false;
                 }
-                 pack = plugin.getResourceManager().getResourcePack(args[1]);
-                if(pack != null && pack.isValid()){
+                pack = plugin.getResourceManager().getResourcePack(args[1]);
+                if (pack != null && pack.isValid()) {
                     MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer(args[2]);
                     player.applyResourcePack(pack);
                     player.sendInfoMessage(MinigameUtils.getLang("minigame.resourcepack.apply"));
                     return true;
                 }
             case "remove":
-                if(args.length < 2){
+                if (args.length < 2) {
                     return false;
                 }
-                 pack = plugin.getResourceManager().getResourcePack(args[1]);
-                 plugin.getResourceManager().removeResourcePack(pack);
-                 sender.sendMessage(MinigameUtils.getLang("minigame.resourcepack.command.remove"));
+                pack = plugin.getResourceManager().getResourcePack(args[1]);
+                plugin.getResourceManager().removeResourcePack(pack);
+                sender.sendMessage(MinigameUtils.getLang("minigame.resourcepack.command.remove"));
                 return sendList(sender);
             case "addnew":
-                if(args.length < 3){
+                if (args.length < 3) {
                     sender.sendMessage(getUsage());
                     return false;
                 }
@@ -99,7 +101,7 @@ public class ResourcePackCommand implements ICommand {
                 String u = args[2];
                 try {
                     URL url = new URL(u);
-                    final ResourcePack newPack = new ResourcePack(name,url);
+                    final ResourcePack newPack = new ResourcePack(name, url);
                     plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
                         if (newPack.isValid()) {
                             plugin.getResourceManager().addResourcePack(newPack);
@@ -108,7 +110,7 @@ public class ResourcePackCommand implements ICommand {
                         } else {
                             sender.sendMessage(MinigameUtils.getLang("minigame.resourcepack.command.invalidpack"));
                         }
-                    },100);
+                    }, 100);
                     return true;
 
                 } catch (MalformedURLException e) {
@@ -118,31 +120,33 @@ public class ResourcePackCommand implements ICommand {
             case "list":
                 return sendList(sender);
             case "clear":
-                for(MinigamePlayer p :plugin.getPlayerManager().getAllMinigamePlayers()){
+                for (MinigamePlayer p : plugin.getPlayerManager().getAllMinigamePlayers()) {
                     p.applyResourcePack(plugin.getResourceManager().getResourcePack("empty"));
                 }
                 return true;
         }
         return false;
     }
-    private boolean sendList(CommandSender sender){
+
+    private boolean sendList(CommandSender sender) {
         sender.sendMessage("List of ResourcePacks");
         Set<String> arr = plugin.getResourceManager().getResourceNames();
-        for(String s:arr){
+        for (String s : arr) {
             sender.sendMessage(s);
         }
         sender.sendMessage("--------------------");
         return true;
     }
+
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame, String alias, String[] args) {
         List<String> result = new ArrayList<>();
-        switch(args.length){
+        switch (args.length) {
             case 1:
-                Collections.addAll(result,getParameters());
+                Collections.addAll(result, getParameters());
                 break;
             case 2:
-                switch (args[0]){
+                switch (args[0]) {
                     case "apply":
                     case "remove":
                         result.addAll(plugin.getResourceManager().getResourceNames());
@@ -152,9 +156,9 @@ public class ResourcePackCommand implements ICommand {
                         return null;
                 }
             case 3:
-                switch (args[0]){
+                switch (args[0]) {
                     case "apply":
-                        for(MinigamePlayer p:plugin.getPlayerManager().getAllMinigamePlayers()){
+                        for (MinigamePlayer p : plugin.getPlayerManager().getAllMinigamePlayers()) {
                             result.add(p.getName());
                         }
                 }

@@ -9,9 +9,9 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemInteger;
 
-public class IntegerFlag extends Flag<Integer>{
-    
-    public IntegerFlag(Integer value, String name){
+public class IntegerFlag extends Flag<Integer> {
+
+    public IntegerFlag(Integer value, String name) {
         setFlag(value);
         setDefaultFlag(value);
         setName(name);
@@ -30,62 +30,62 @@ public class IntegerFlag extends Flag<Integer>{
     @Override
     public MenuItem getMenuItem(String name, Material displayItem) {
         return new MenuItemInteger(name, displayItem, new Callback<Integer>() {
-            
-            @Override
-            public void setValue(Integer value) {
-                setFlag(value);
-            }
-            
+
             @Override
             public Integer getValue() {
                 return getFlag();
+            }            @Override
+            public void setValue(Integer value) {
+                setFlag(value);
             }
+
+
         }, 0, null);
     }
-    
-    public MenuItem getMenuItem(String name, Material displayItem, Integer min, Integer max){
+
+    public MenuItem getMenuItem(String name, Material displayItem, Integer min, Integer max) {
         return new MenuItemInteger(name, displayItem, new Callback<Integer>() {
-            
-            @Override
-            public void setValue(Integer value) {
-                setFlag(value);
-            }
-            
+
             @Override
             public Integer getValue() {
                 return getFlag();
+            }            @Override
+            public void setValue(Integer value) {
+                setFlag(value);
             }
+
+
         }, min, max);
     }
-    
+
     @Override
-    public MenuItem getMenuItem(String name, Material displayItem, List<String> description){
+    public MenuItem getMenuItem(String name, Material displayItem, List<String> description) {
         return new MenuItemInteger(name, description, displayItem, new Callback<Integer>() {
-            
-            @Override
-            public void setValue(Integer value) {
-                setFlag(value);
-            }
-            
+
             @Override
             public Integer getValue() {
                 return getFlag();
+            }            @Override
+            public void setValue(Integer value) {
+                setFlag(value);
             }
+
+
         }, 0, null);
     }
-    
-    public MenuItem getMenuItem(String name, Material displayItem, List<String> description, Integer min, Integer max){
+
+    public MenuItem getMenuItem(String name, Material displayItem, List<String> description, Integer min, Integer max) {
         return new MenuItemInteger(name, description, displayItem, new Callback<Integer>() {
-            
-            @Override
-            public void setValue(Integer value) {
-                setFlag(value);
-            }
-            
+
             @Override
             public Integer getValue() {
                 return getFlag();
+            }            @Override
+            public void setValue(Integer value) {
+                setFlag(value);
             }
+
+
         }, min, max);
     }
 

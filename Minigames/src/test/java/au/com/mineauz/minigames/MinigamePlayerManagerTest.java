@@ -32,16 +32,17 @@ public class MinigamePlayerManagerTest {
     private ServerMock server;
     private Minigames plugin;
     private Minigame game;
+
     @Before
-    public void Setup(){
+    public void Setup() {
         try {
             server = MockBukkit.mock();
-        }catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             server = MockBukkit.getMock();
         }
         server.setPlayerFactory(new PlayerMockFactory(server, TestPlayer.class));
-        ((ConsoleCommandSenderMock)server.getConsoleSender()).setOutputOnSend(false);
-        WorldMock world =  new TestWorld();
+        ((ConsoleCommandSenderMock) server.getConsoleSender()).setOutputOnSend(false);
+        WorldMock world = new TestWorld();
         world.setName("GAMES");
         world = MockBukkit.getMock().addWorld(world);
         Logger log = Logger.getAnonymousLogger();
@@ -49,16 +50,18 @@ public class MinigamePlayerManagerTest {
         plugin = MockBukkit.load(Minigames.class);
         plugin.toggleDebug();
         plugin.setLog(log);
-        game = TestHelper.createMinigame(plugin,world, MinigameType.MULTIPLAYER, GameMechanics.MECHANIC_NAME.KILLS);
+        game = TestHelper.createMinigame(plugin, world, MinigameType.MULTIPLAYER, GameMechanics.MECHANIC_NAME.KILLS);
     }
+
     @After
-    public void TearDown(){
+    public void TearDown() {
         try {
             MockBukkit.unload();
             server = null;
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
     }
-    
+
     public void joinMinigame() {
         final PlayerMock mock = server.addPlayer();
         mock.setOutputOnSend(false);
@@ -66,7 +69,7 @@ public class MinigamePlayerManagerTest {
         assertTrue(plugin.getPlayerManager().hasMinigamePlayer(mock.getUniqueId()));
         plugin.getPlayerManager().joinMinigame(plugin.getPlayerManager().getMinigamePlayer(mock), game, false, 0.0);
         assertTrue(plugin.getPlayerManager().getMinigamePlayer(mock.getUniqueId()).isInMinigame());
-        
+
     }
     
     /*@Test
@@ -98,7 +101,7 @@ public class MinigamePlayerManagerTest {
     public void revertToCheckpoint() {
     }
     */
-    
+
     public void quitMinigame() {
         final PlayerMock mock = server.addPlayer();
         mock.setOutputOnSend(false);
@@ -106,10 +109,10 @@ public class MinigamePlayerManagerTest {
         assertTrue(plugin.getPlayerManager().hasMinigamePlayer(mock.getUniqueId()));
         plugin.getPlayerManager().joinMinigame(plugin.getPlayerManager().getMinigamePlayer(mock), game, false, 0.0);
         assertTrue(plugin.getPlayerManager().getMinigamePlayer(mock.getUniqueId()).isInMinigame());
-        plugin.getPlayerManager().quitMinigame(plugin.getPlayerManager().getMinigamePlayer(mock),false);
+        plugin.getPlayerManager().quitMinigame(plugin.getPlayerManager().getMinigamePlayer(mock), false);
         assertFalse(plugin.getPlayerManager().getMinigamePlayer(mock.getUniqueId()).isInMinigame());
         MockBukkit.getMock().getScheduler().performTicks(20);
-    
+
     }
     /*
     @Test

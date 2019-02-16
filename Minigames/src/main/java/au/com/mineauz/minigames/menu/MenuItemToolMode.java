@@ -10,8 +10,8 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
 
-public class MenuItemToolMode extends MenuItem{
-    
+public class MenuItemToolMode extends MenuItem {
+
     private ToolMode mode;
 
     public MenuItemToolMode(String name, Material displayItem, ToolMode mode) {
@@ -23,12 +23,12 @@ public class MenuItemToolMode extends MenuItem{
         super(name, description, displayItem);
         this.mode = mode;
     }
-    
-    public ItemStack onClick(){
+
+    public ItemStack onClick() {
         MinigamePlayer ply = getContainer().getViewer();
-        if(MinigameUtils.hasMinigameTool(ply)){
+        if (MinigameUtils.hasMinigameTool(ply)) {
             MinigameTool tool = MinigameUtils.getMinigameTool(ply);
-            if(tool.getMode() != null)
+            if (tool.getMode() != null)
                 tool.getMode().onUnsetMode(ply, tool);
             tool.setMode(mode);
             tool.getMode().onSetMode(ply, tool);

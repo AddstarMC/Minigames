@@ -18,7 +18,7 @@ public class SetRandomizeChestsCommand implements ICommand {
 
     @Override
     public String[] getAliases() {
-        return new String[] {"randomisechests", "randomchests", "rchests"};
+        return new String[]{"randomisechests", "randomchests", "rchests"};
     }
 
     @Override
@@ -41,7 +41,7 @@ public class SetRandomizeChestsCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> randomizechests <true/false>",
+        return new String[]{"/minigame set <Minigame> randomizechests <true/false>",
                 "/minigame set <Minigame> randomizechests <minValue> <maxValue>"};
     }
 
@@ -57,25 +57,23 @@ public class SetRandomizeChestsCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(args.length == 1){
+                             String label, String[] args) {
+        if (args != null) {
+            if (args.length == 1) {
                 boolean bool = Boolean.parseBoolean(args[0]);
                 minigame.setRandomizeChests(bool);
-                if(bool){
+                if (bool) {
                     sender.sendMessage(ChatColor.GRAY + "Chest randomization has been enabled for " + minigame);
-                }
-                else{
+                } else {
                     sender.sendMessage(ChatColor.GRAY + "Chest randomization has been disabled for " + minigame);
                 }
                 return true;
-            }
-            else if(args.length >= 2 && args[0].matches("[0-9]+") && args[1].matches("[0-9]+")){
+            } else if (args.length >= 2 && args[0].matches("[0-9]+") && args[1].matches("[0-9]+")) {
                 int min = Integer.parseInt(args[0]);
                 int max = Integer.parseInt(args[1]);
                 minigame.setMinChestRandom(min);
                 minigame.setMaxChestRandom(max);
-                
+
                 sender.sendMessage(ChatColor.GRAY + "Chest randomization set for " + minigame + ". Minimum: " + min + ", Maximum: " + max);
                 return true;
             }
@@ -85,8 +83,8 @@ public class SetRandomizeChestsCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
-        if(args.length == 1)
+                                      String alias, String[] args) {
+        if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("true;false"), args[0]);
         return null;
     }

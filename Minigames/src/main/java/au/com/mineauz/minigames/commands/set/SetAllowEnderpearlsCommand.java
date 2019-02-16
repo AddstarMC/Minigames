@@ -38,7 +38,7 @@ public class SetAllowEnderpearlsCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] { "/minigame set <Minigame> allowenderpearls <true / false>"};
+        return new String[]{"/minigame set <Minigame> allowenderpearls <true / false>"};
     }
 
     @Override
@@ -53,14 +53,13 @@ public class SetAllowEnderpearlsCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
+                             String label, String[] args) {
+        if (args != null) {
             boolean bool = Boolean.parseBoolean(args[0]);
-            if(bool){
+            if (bool) {
                 minigame.setAllowEnderpearls(bool);
                 sender.sendMessage(ChatColor.GRAY + "Allowed Enderpearl usage in " + minigame);
-            }
-            else{
+            } else {
                 minigame.setAllowEnderpearls(bool);
                 sender.sendMessage(ChatColor.GRAY + "Disallowed Enderpearl usage in " + minigame);
             }
@@ -71,8 +70,8 @@ public class SetAllowEnderpearlsCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
-        if(args.length == 1)
+                                      String alias, String[] args) {
+        if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("true;false"), args[0]);
         return null;
     }

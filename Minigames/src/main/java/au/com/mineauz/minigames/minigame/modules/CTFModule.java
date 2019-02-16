@@ -19,18 +19,22 @@ import java.util.Map;
  */
 public class CTFModule extends MinigameModule {
 
+    private BooleanFlag useFlagAsCapturePoint = new BooleanFlag(true, "useFlagAsCapturePoint");
+
+    public CTFModule(Minigame mgm) {
+        super(mgm);
+    }
+
+    public static CTFModule getMinigameModule(Minigame mgm) {
+        return (CTFModule) mgm.getModule("CTF");
+    }
+
     public Boolean getUseFlagAsCapturePoint() {
         return useFlagAsCapturePoint.getFlag();
     }
 
     public void setUseFlagAsCapturePoint(Boolean useFlagAsCapturePoint) {
         this.useFlagAsCapturePoint.setFlag(useFlagAsCapturePoint);
-    }
-
-    private BooleanFlag useFlagAsCapturePoint = new BooleanFlag(true, "useFlagAsCapturePoint");
-
-    public CTFModule(Minigame mgm) {
-        super(mgm);
     }
 
     @Override
@@ -68,16 +72,12 @@ public class CTFModule extends MinigameModule {
     @Override
     public boolean displayMechanicSettings(Menu previous) {
         Menu m = new Menu(6, "CTF Settings", previous.getViewer());
-        m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
 
         m.addItem(useFlagAsCapturePoint.getMenuItem("CTF Flag is Capture Point", Material.BLACK_BANNER,
                 MinigameUtils.stringToList("Use a teams Flag as a capture point")));
         m.displayMenu(previous.getViewer());
         return true;
     }
-
-    public static CTFModule getMinigameModule(Minigame mgm){
-        return (CTFModule) mgm.getModule("CTF");
-    }
-    }
+}
 

@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class SetLobbyCommand implements ICommand{
+public class SetLobbyCommand implements ICommand {
 
     @Override
     public String getName() {
@@ -39,7 +39,7 @@ public class SetLobbyCommand implements ICommand{
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> lobby",
+        return new String[]{"/minigame set <Minigame> lobby",
                 "/minigame set <Minigame> lobby <canMove/canInteract/teleport> <playerWait/startWait> <true/false>",
                 "/minigame set <Minigame> lobby <playerWait> <time>"};
     }
@@ -56,81 +56,71 @@ public class SetLobbyCommand implements ICommand{
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args == null){
-            minigame.setLobbyPosition(((Player)sender).getLocation());
+                             String label, String[] args) {
+        if (args == null) {
+            minigame.setLobbyPosition(((Player) sender).getLocation());
             sender.sendMessage(ChatColor.GRAY + "Lobby position has been set for " + minigame);
             return true;
-        }
-        else{
+        } else {
             LobbySettingsModule lobby = LobbySettingsModule.getMinigameModule(minigame);
-            if(args.length == 3){
-                if(args[0].equalsIgnoreCase("canmove")){
+            if (args.length == 3) {
+                if (args[0].equalsIgnoreCase("canmove")) {
                     boolean v = true;
                     v = Boolean.getBoolean(args[2]);
-                    if(args[1].equalsIgnoreCase("playerwait")){
+                    if (args[1].equalsIgnoreCase("playerwait")) {
                         lobby.setCanMovePlayerWait(v);
-                        if(v)
+                        if (v)
                             sender.sendMessage(ChatColor.GRAY + "Allowed players to move in lobby on player wait.");
                         else
                             sender.sendMessage(ChatColor.GRAY + "Disallowed players to move in lobby on player wait.");
-                    }
-                    else if(args[1].equalsIgnoreCase("startwait")){
+                    } else if (args[1].equalsIgnoreCase("startwait")) {
                         lobby.setCanMoveStartWait(v);
-                        if(v)
+                        if (v)
                             sender.sendMessage(ChatColor.GRAY + "Allowed players to move in lobby on start wait.");
                         else
                             sender.sendMessage(ChatColor.GRAY + "Disallowed players to move in lobby on start wait.");
-                    }
-                    else{
+                    } else {
                         sender.sendMessage(ChatColor.RED + "Invalid syntax!");
                         return false;
                     }
-                }
-                else if(args[0].equalsIgnoreCase("caninteract")){
+                } else if (args[0].equalsIgnoreCase("caninteract")) {
                     boolean v = true;
                     v = Boolean.getBoolean(args[2]);
-                    if(args[1].equalsIgnoreCase("playerwait")){
+                    if (args[1].equalsIgnoreCase("playerwait")) {
                         lobby.setCanInteractPlayerWait(v);
-                        if(v)
+                        if (v)
                             sender.sendMessage(ChatColor.GRAY + "Allowed players to interact in lobby on player wait.");
                         else
                             sender.sendMessage(ChatColor.GRAY + "Disallowed players to interact in lobby on player wait.");
-                    }
-                    else if(args[1].equalsIgnoreCase("startwait")){
+                    } else if (args[1].equalsIgnoreCase("startwait")) {
                         lobby.setCanInteractStartWait(v);
-                        if(v)
+                        if (v)
                             sender.sendMessage(ChatColor.GRAY + "Allowed players to interact in lobby on start wait.");
                         else
                             sender.sendMessage(ChatColor.GRAY + "Disallowed players to interact in lobby on start wait.");
-                    }
-                    else{
+                    } else {
                         sender.sendMessage(ChatColor.RED + "Invalid syntax!");
                         return false;
                     }
-                }
-                else if(args[0].equalsIgnoreCase("teleport")){
+                } else if (args[0].equalsIgnoreCase("teleport")) {
                     boolean v = Boolean.parseBoolean(args[2]);
-                    if(args[1].equalsIgnoreCase("playerwait")){
+                    if (args[1].equalsIgnoreCase("playerwait")) {
                         lobby.setTeleportOnPlayerWait(v);
-                        if(v)
+                        if (v)
                             sender.sendMessage(ChatColor.GRAY + "Allowed players to teleport out of lobby on player wait.");
                         else
                             sender.sendMessage(ChatColor.GRAY + "Disallowed players to teleport out of lobby on player wait.");
-                    }
-                    else if(args[1].equalsIgnoreCase("startwait")){
+                    } else if (args[1].equalsIgnoreCase("startwait")) {
                         lobby.setTeleportOnStart(v);
-                        if(v)
+                        if (v)
                             sender.sendMessage(ChatColor.GRAY + "Allowed players to teleport out of lobby on start.");
                         else
                             sender.sendMessage(ChatColor.GRAY + "Disallowed players to teleport out of lobby on start.");
-                    }
-                    else{
+                    } else {
                         sender.sendMessage(ChatColor.RED + "Invalid syntax!");
                         return false;
                     }
-                }
-                else{
+                } else {
                     sender.sendMessage(ChatColor.RED + "Invalid syntax!");
                     return false;
                 }
@@ -141,9 +131,9 @@ public class SetLobbyCommand implements ICommand{
                         if (value < 0) {
                             value = 0;
                         }
-                        
+
                         lobby.setPlayerWaitTime(value);
-                        
+
                         if (value == 0) {
                             sender.sendMessage(ChatColor.GRAY + "Using the default player wait time.");
                         } else {
@@ -161,8 +151,8 @@ public class SetLobbyCommand implements ICommand{
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
-        if(args != null){
+                                      String alias, String[] args) {
+        if (args != null) {
             switch (args.length) {
                 case 1:
                     return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("canmove;caninteract;teleport;playerWait"), args[args.length - 1]);

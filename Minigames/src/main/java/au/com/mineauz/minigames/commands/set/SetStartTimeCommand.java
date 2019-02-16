@@ -38,7 +38,7 @@ public class SetStartTimeCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> starttime <Time>"};
+        return new String[]{"/minigame set <Minigame> starttime <Time>"};
     }
 
     @Override
@@ -53,19 +53,17 @@ public class SetStartTimeCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(args[0].matches("[0-9]+")){
+                             String label, String[] args) {
+        if (args != null) {
+            if (args[0].matches("[0-9]+")) {
                 int time = Integer.parseInt(args[0]);
                 minigame.setStartWaitTime(time);
-                if(time != 0){
+                if (time != 0) {
                     sender.sendMessage(ChatColor.GRAY + "Start time has been set to " + time + " seconds for " + minigame);
-                }
-                else{
+                } else {
                     sender.sendMessage(ChatColor.GRAY + "Start time for " + minigame + " has been reset.");
                 }
-            }
-            else{
+            } else {
                 sender.sendMessage(ChatColor.RED + args[0] + " is not a valid number!");
             }
             return true;
@@ -75,7 +73,7 @@ public class SetStartTimeCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

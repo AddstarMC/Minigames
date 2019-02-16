@@ -11,9 +11,9 @@ import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class BetSign implements MinigameSign{
-    
-    private static Minigames plugin = Minigames.getPlugin();
+public class BetSign implements MinigameSign {
+
+    private static final Minigames plugin = Minigames.getPlugin();
 
     @Override
     public String getName() {
@@ -45,7 +45,7 @@ public class BetSign implements MinigameSign{
         if (plugin.getMinigameManager().hasMinigame(event.getLine(2))) {
             event.setLine(1, ChatColor.GREEN + "Bet");
             event.setLine(2, plugin.getMinigameManager().getMinigame(event.getLine(2)).getName(false));
-            if(event.getLine(3).matches("[0-9]+")){
+            if (event.getLine(3).matches("[0-9]+")) {
                 event.setLine(3, "$" + event.getLine(3));
             }
             return true;
@@ -61,7 +61,7 @@ public class BetSign implements MinigameSign{
             boolean invOk = true;
             boolean fullInv;
             boolean moneyBet = sign.getLine(3).startsWith("$");
-            
+
             if (plugin.getConfig().getBoolean("requireEmptyInventory")) {
                 fullInv = true;
                 ItemStack[] contents = player.getPlayer().getInventory().getContents();
@@ -70,13 +70,13 @@ public class BetSign implements MinigameSign{
                     if (!moneyBet && i == player.getPlayer().getInventory().getHeldItemSlot()) {
                         continue;
                     }
-                    
+
                     if (contents[i] != null) {
                         invOk = false;
                         break;
                     }
                 }
-                
+
                 for (ItemStack item : player.getPlayer().getInventory().getArmorContents()) {
                     if (item != null && item.getType() != Material.AIR) {
                         invOk = false;
@@ -85,54 +85,45 @@ public class BetSign implements MinigameSign{
                 }
             } else {
                 fullInv = false;
-                invOk = (moneyBet ? player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR : player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR);
+                invOk = (moneyBet == (player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR));
             }
-            
-            if(invOk){
-                if(mgm.isEnabled() && (!mgm.getUsePermissions() || player.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))){
-                    if(mgm.isSpectator(player)){
+
+            if (invOk) {
+                if (mgm.isEnabled() && (!mgm.getUsePermissions() || player.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))) {
+                    if (mgm.isSpectator(player)) {
                         return false;
                     }
-                    
-                    if(!sign.getLine(3).startsWith("$")){
+
+                    if (!sign.getLine(3).startsWith("$")) {
                         plugin.getPlayerManager().joinMinigame(player, plugin.getMinigameManager().getMinigame(sign.getLine(2)), true, 0.0);
-                    }
-                    else{
-                        if(plugin.hasEconomy()){
+                    } else {
+                        if (plugin.hasEconomy()) {
                             Double bet = Double.parseDouble(sign.getLine(3).replace("$", ""));
                             plugin.getPlayerManager().joinMinigame(player, plugin.getMinigameManager().getMinigame(sign.getLine(2)), true, bet);
                             return true;
-                        }
-                        else{
+                        } else {
                             player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noVault"), MinigameMessageType.ERROR);
                         }
                     }
-                }
-                else if(!mgm.isEnabled()){
+                } else if (!mgm.isEnabled()) {
                     player.sendInfoMessage(MinigameUtils.getLang("minigame.error.notEnabled"));
-                }
-                else if(mgm.getUsePermissions()){
+                } else if (mgm.getUsePermissions()) {
                     player.sendInfoMessage(MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()));
                 }
-            }
-            else if(!moneyBet){
-                if(fullInv && player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR) {
+            } else if (!moneyBet) {
+                if (fullInv && player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR) {
                     player.sendInfoMessage(MinigameUtils.getLang("sign.emptyInv"));
-                }
-                else {
+                } else {
                     player.sendMessage(MinigameUtils.getLang("sign.bet.noBet"), MinigameMessageType.ERROR);
                 }
-            }
-            else {
-                if(fullInv) {
+            } else {
+                if (fullInv) {
                     player.sendInfoMessage(MinigameUtils.getLang("sign.emptyInv"));
-                }
-                else {
+                } else {
                     player.sendInfoMessage(MinigameUtils.getLang("sign.emptyHand"));
                 }
             }
-        }
-        else{
+        } else {
             player.sendMessage(MinigameUtils.getLang("minigame.error.noMinigame"), MinigameMessageType.ERROR);
         }
         return false;
@@ -140,7 +131,7 @@ public class BetSign implements MinigameSign{
 
     @Override
     public void signBreak(Sign sign, MinigamePlayer player) {
-    
+
     }
 
 }

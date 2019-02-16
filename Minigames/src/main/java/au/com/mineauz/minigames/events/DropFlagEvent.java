@@ -18,8 +18,8 @@ public class DropFlagEvent extends AbstractMinigameEvent {
 
     public DropFlagEvent(Minigame mgm, CTFFlag flag, MinigamePlayer player) {
         super(mgm);
-        this.flag= flag;
-        this.player=player;
+        this.flag = flag;
+        this.player = player;
     }
 
     public MinigamePlayer getPlayer() {
@@ -30,11 +30,11 @@ public class DropFlagEvent extends AbstractMinigameEvent {
         return flag;
     }
 
-    public boolean shouldDisplayMessage(){
+    public boolean shouldDisplayMessage() {
         return displayMessage;
     }
 
-    public void setShouldDisplayMessage(boolean arg0){
+    public void setShouldDisplayMessage(boolean arg0) {
         displayMessage = arg0;
     }
 }

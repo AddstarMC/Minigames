@@ -9,61 +9,59 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 public class MinigameSave {
+    String minigame = null;
     private FileConfiguration minigameSave = null;
     private File minigameSaveFile = null;
-    String minigame = null;
     private String name;
-    
-    public MinigameSave(String name){
+
+    public MinigameSave(String name) {
         this.name = name;
         reloadFile();
         saveConfig();
     }
-    
-    public MinigameSave(String minigame, String name){
+
+    public MinigameSave(String minigame, String name) {
         this.minigame = minigame;
         this.name = name;
         reloadFile();
         saveConfig();
     }
-    
-    public void reloadFile(){
-        if(minigame != null){
-            if(minigameSaveFile == null){
+
+    public void reloadFile() {
+        if (minigame != null) {
+            if (minigameSaveFile == null) {
                 minigameSaveFile = new File(Minigames.getPlugin().getDataFolder() + "/minigames/" + minigame + "/", name + ".yml");
             }
             minigameSave = YamlConfiguration.loadConfiguration(minigameSaveFile);
-        }
-        else{
-            if(minigameSaveFile == null){
+        } else {
+            if (minigameSaveFile == null) {
                 minigameSaveFile = new File(Minigames.getPlugin().getDataFolder() + "/", name + ".yml");
             }
             minigameSave = YamlConfiguration.loadConfiguration(minigameSaveFile);
         }
     }
-    
-    public FileConfiguration getConfig(){
-        if(minigameSave == null){
+
+    public FileConfiguration getConfig() {
+        if (minigameSave == null) {
             reloadFile();
         }
         return minigameSave;
     }
-    
-    public void saveConfig(){
-        if(minigameSave == null || minigameSaveFile == null){
-            Minigames.getPlugin().getLogger().log(Level.INFO, "Could not save " + minigame + File.separator+name+ " config file!");
+
+    public void saveConfig() {
+        if (minigameSave == null || minigameSaveFile == null) {
+            Minigames.getPlugin().getLogger().log(Level.INFO, "Could not save " + minigame + File.separator + name + " config file!");
             return;
         }
-        try{
+        try {
             minigameSave.save(minigameSaveFile);
-        }
-        catch(IOException ex) {
-            Minigames.getPlugin().getLogger().log(Level.SEVERE, "Could not save " + minigame + File.separator+name+ " config file!");
+        } catch (IOException ex) {
+            Minigames.getPlugin().getLogger().log(Level.SEVERE, "Could not save " + minigame + File.separator + name + " config file!");
         }
     }
-    
-    public void deleteFile(){
-        if(minigameSave == null){
+
+    public void deleteFile() {
+        if (minigameSave == null) {
             reloadFile();
         }
         File delfile = new File(minigameSaveFile.getPath());

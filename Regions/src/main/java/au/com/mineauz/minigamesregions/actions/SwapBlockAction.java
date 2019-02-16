@@ -60,7 +60,6 @@ public class SwapBlockAction extends AbstractAction {
         return false;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void executeRegionAction(MinigamePlayer player, Region region) {
         debug(player,region);

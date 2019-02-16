@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SetTypeCommand implements ICommand{
+public class SetTypeCommand implements ICommand {
 
     @Override
     public String getName() {
@@ -36,7 +36,7 @@ public class SetTypeCommand implements ICommand{
     public String[] getParameters() {
         String[] mgtypes = new String[plugin.getMinigameManager().getMinigameTypes().size() + 1];
         int inc = 0;
-        for(MinigameType type : MinigameType.values()){
+        for (MinigameType type : MinigameType.values()) {
             mgtypes[inc] = type.toString();
             inc++;
         }
@@ -45,7 +45,7 @@ public class SetTypeCommand implements ICommand{
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> type <Type>"};
+        return new String[]{"/minigame set <Minigame> type <Type>"};
     }
 
     @Override
@@ -60,13 +60,12 @@ public class SetTypeCommand implements ICommand{
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(MinigameType.hasValue(args[0])){
+                             String label, String[] args) {
+        if (args != null) {
+            if (MinigameType.hasValue(args[0])) {
                 minigame.setType(MinigameType.valueOf(args[0].toUpperCase()));
                 sender.sendMessage(ChatColor.GRAY + "Minigame type has been set to " + args[0]);
-            }
-            else{
+            } else {
                 sender.sendMessage(ChatColor.RED + "Error: Invalid minigame type!");
             }
             return true;
@@ -76,10 +75,10 @@ public class SetTypeCommand implements ICommand{
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
-        if(args.length == 1){
+                                      String alias, String[] args) {
+        if (args.length == 1) {
             List<String> types = new ArrayList<>();
-            for(MinigameType t : MinigameType.values()){
+            for (MinigameType t : MinigameType.values()) {
                 types.add(t.toString());
             }
             return MinigameUtils.tabCompleteMatch(types, args[0]);

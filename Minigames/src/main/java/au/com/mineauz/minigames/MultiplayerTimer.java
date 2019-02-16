@@ -14,19 +14,19 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiplayerTimer{
+public class MultiplayerTimer {
+    private static Minigames plugin = Minigames.getPlugin();
     private int currentLobbyWaitTime;
     private int oLobbyWaitTime;
     private int startWaitTime;
     private int oStartWaitTime;
     private Minigame minigame;
-    private static Minigames plugin = Minigames.getPlugin();
     private MinigamePlayerManager playerManager = plugin.getPlayerManager();
     private boolean paused = false;
     private int taskID = -1;
     private List<Integer> timeMsg = new ArrayList<>();
-    
-    public MultiplayerTimer(Minigame mg){
+
+    public MultiplayerTimer(Minigame mg) {
         minigame = mg;
 
         currentLobbyWaitTime = LobbySettingsModule.getMinigameModule(mg).getPlayerWaitTime();
@@ -38,19 +38,19 @@ public class MultiplayerTimer{
         }
         oLobbyWaitTime = currentLobbyWaitTime;
         startWaitTime = minigame.getStartWaitTime();  //minigames setting should be priority over general plugin config.
-        if(startWaitTime == 0    ){
+        if (startWaitTime == 0) {
             startWaitTime = plugin.getConfig().getInt("multiplayer.startcountdown");
-            if(startWaitTime <= 0)
+            if (startWaitTime <= 0)
                 startWaitTime = 5;
         }
         oStartWaitTime = startWaitTime;
         timeMsg.addAll(plugin.getConfig().getIntegerList("multiplayer.timerMessageInterval"));
     }
-    
-    public void startTimer(){
-        if(taskID != -1)
+
+    public void startTimer() {
+        if (taskID != -1)
             removeTimer();
-        BukkitTask task = Bukkit.getScheduler().runTaskTimer(plugin,this::doTimer,0, 20L);
+        BukkitTask task = Bukkit.getScheduler().runTaskTimer(plugin, this::doTimer, 0, 20L);
         taskID = task.getTaskId();
     }
 
@@ -135,75 +135,75 @@ public class MultiplayerTimer{
 
         };
     }
-    
-    private void sendPlayersMessage(String message){
-        for(MinigamePlayer ply : minigame.getPlayers()){
+
+    private void sendPlayersMessage(String message) {
+        for (MinigamePlayer ply : minigame.getPlayers()) {
             ply.sendInfoMessage(message);
         }
     }
-    
-    private void reclearInventories(Minigame minigame){
-        for(MinigamePlayer ply : minigame.getPlayers()){
+
+    private void reclearInventories(Minigame minigame) {
+        for (MinigamePlayer ply : minigame.getPlayers()) {
             ply.getPlayer().getInventory().clear();
         }
     }
-    
-    private void freezePlayers(boolean freeze){
-        for(MinigamePlayer ply : minigame.getPlayers()){
+
+    private void freezePlayers(boolean freeze) {
+        for (MinigamePlayer ply : minigame.getPlayers()) {
             ply.setFrozen(freeze);
         }
     }
-    
-    private void allowInteraction(boolean allow){
-        for(MinigamePlayer ply : minigame.getPlayers()){
+
+    private void allowInteraction(boolean allow) {
+        for (MinigamePlayer ply : minigame.getPlayers()) {
             ply.setCanInteract(allow);
         }
     }
-    
-    public int getPlayerWaitTimeLeft(){
+
+    public int getPlayerWaitTimeLeft() {
         return currentLobbyWaitTime;
     }
-    
-    public int getStartWaitTimeLeft(){
+
+    public int getStartWaitTimeLeft() {
         return startWaitTime;
     }
 
     public void setCurrentLobbyWaitTime(int time) {
         currentLobbyWaitTime = time;
     }
-    
-    public void setStartWaitTime(int time){
+
+    public void setStartWaitTime(int time) {
         startWaitTime = time;
     }
-    
-    public void pauseTimer(){
+
+    public void pauseTimer() {
         paused = true;
-        for(MinigamePlayer ply : minigame.getPlayers()){
+        for (MinigamePlayer ply : minigame.getPlayers()) {
             ply.sendMessage(MinigameUtils.getLang("time.startup.timerPaused"), MinigameMessageType.INFO);
         }
     }
-    
-    public void pauseTimer(String reason){
+
+    public void pauseTimer(String reason) {
         paused = true;
-        for(MinigamePlayer ply : minigame.getPlayers()){
+        for (MinigamePlayer ply : minigame.getPlayers()) {
             ply.sendMessage(MinigameUtils.formStr("time.startup.timerPaused", reason), MinigameMessageType.INFO);
         }
     }
-    
-    public void removeTimer(){
-        if(taskID != -1){
+
+    public void removeTimer() {
+        if (taskID != -1) {
             Bukkit.getScheduler().cancelTask(taskID);
         }
     }
-    
-    public void resumeTimer(){
+
+    public void resumeTimer() {
         paused = false;
-        for(MinigamePlayer ply : minigame.getPlayers()){
+        for (MinigamePlayer ply : minigame.getPlayers()) {
             ply.sendMessage(MinigameUtils.getLang("time.startup.timerResumed"), MinigameMessageType.INFO);
         }
     }
-    
-    public boolean isPaused(){
+
+    public boolean isPaused() {
         return paused;
     }
 }

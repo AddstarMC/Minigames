@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-
 import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
@@ -16,23 +15,22 @@ import static org.junit.Assert.*;
 public class MinigameUtilsTest {
 
     @Before
-    public void Setup(){
+    public void Setup() {
 
     }
 
     @Test
-    public void TestSanitize(){
+    public void TestSanitize() {
         assertNull(sanitize("EnderJump2.0"));
-        assertEquals("TestGame",sanitize("TestGame"));
-        assertEquals("asdasgfar231123asd__",sanitize("asdasgfar231123asd__"));
+        assertEquals("TestGame", sanitize("TestGame"));
+        assertEquals("asdasgfar231123asd__", sanitize("asdasgfar231123asd__"));
     }
 
-    private String sanitize(String input){
+    private String sanitize(String input) {
         final Pattern pattern = Pattern.compile("^[a-zA-Z\\d_]+$");
         if (!pattern.matcher(input).matches()) {
             return null;
-        }
-        else{
+        } else {
             return input;
         }
     }

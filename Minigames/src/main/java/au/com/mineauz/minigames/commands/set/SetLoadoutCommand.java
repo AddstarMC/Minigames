@@ -45,7 +45,7 @@ public class SetLoadoutCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {
+        return new String[]{
                 "/minigame set <Minigame> loadout"
         };
     }
@@ -62,8 +62,8 @@ public class SetLoadoutCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        
+                             String label, String[] args) {
+
         MinigamePlayer player = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
         Menu loadouts = new Menu(6, getName(), player);
         List<MenuItem> mi = new ArrayList<>();
@@ -71,13 +71,13 @@ public class SetLoadoutCommand implements ICommand {
 
         List<String> des = new ArrayList<>();
         des.add("Shift + Right Click to Delete");
-        
+
         Material item = Material.WHITE_STAINED_GLASS_PANE;
-        
-        for(String ld : mod.getLoadouts()){
+
+        for (String ld : mod.getLoadouts()) {
             item = Material.WHITE_STAINED_GLASS_PANE;
-            if(mod.getLoadout(ld).getItems().size() != 0){
-                item = mod.getLoadout(ld).getItem((Integer)mod.getLoadout(ld).getItems().toArray()[0]).getType();
+            if (mod.getLoadout(ld).getItems().size() != 0) {
+                item = mod.getLoadout(ld).getItem((Integer) mod.getLoadout(ld).getItems().toArray()[0]).getType();
             }
             MenuItemDisplayLoadout mil = new MenuItemDisplayLoadout(ld, des, item, mod.getLoadout(ld), minigame);
             mil.setAllowDelete(mod.getLoadout(ld).isDeleteable());
@@ -85,14 +85,14 @@ public class SetLoadoutCommand implements ICommand {
         }
         loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", Material.ITEM_FRAME, mod.getLoadoutMap(), minigame), 53);
         loadouts.addItems(mi);
-        
+
         loadouts.displayMenu(player);
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

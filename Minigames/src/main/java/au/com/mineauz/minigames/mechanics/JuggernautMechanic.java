@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
-public class JuggernautMechanic extends GameMechanicBase{
+public class JuggernautMechanic extends GameMechanicBase {
 
     @Override
     public String getMechanic() {
@@ -31,7 +31,7 @@ public class JuggernautMechanic extends GameMechanicBase{
 
     @Override
     public boolean checkCanStart(Minigame minigame, MinigamePlayer caller) {
-        if(minigame.isTeamGame()){
+        if (minigame.isTeamGame()) {
             caller.sendMessage("Juggernaut cannot be a team Minigame!", MinigameMessageType.ERROR);
             return false;
         }
@@ -57,15 +57,15 @@ public class JuggernautMechanic extends GameMechanicBase{
 
     @Override
     public void quitMinigame(Minigame minigame, MinigamePlayer player,
-            boolean forced) {
+                             boolean forced) {
         JuggernautModule jm = JuggernautModule.getMinigameModule(minigame);
-        if(jm.getJuggernaut() != null && jm.getJuggernaut() == player){
+        if (jm.getJuggernaut() != null && jm.getJuggernaut() == player) {
             jm.setJuggernaut(null);
-            
-            if(!forced && minigame.getPlayers().size() > 1){
+
+            if (!forced && minigame.getPlayers().size() > 1) {
                 MinigamePlayer j = assignNewJuggernaut(minigame.getPlayers(), player);
-                
-                if(j != null){
+
+                if (j != null) {
                     jm.setJuggernaut(j);
                     j.sendInfoMessage(MinigameUtils.getLang("player.juggernaut.plyMsg"));
                     mdata.sendMinigameMessage(minigame,
@@ -73,33 +73,33 @@ public class JuggernautMechanic extends GameMechanicBase{
                 }
             }
         }
-        
-        if(minigame.getPlayers().size() == 1){
-            if(minigame.getScoreboardManager().getTeam("juggernaut") != null)
+
+        if (minigame.getPlayers().size() == 1) {
+            if (minigame.getScoreboardManager().getTeam("juggernaut") != null)
                 minigame.getScoreboardManager().getTeam("juggernaut").unregister();
         }
     }
 
     @Override
     public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
-            List<MinigamePlayer> losers) {
+                            List<MinigamePlayer> losers) {
         JuggernautModule.getMinigameModule(minigame).setJuggernaut(null);
-        
+
         minigame.getScoreboardManager().getTeam("juggernaut").unregister();
     }
-    
-    private MinigamePlayer assignNewJuggernaut(List<MinigamePlayer> players, MinigamePlayer exclude){
+
+    private MinigamePlayer assignNewJuggernaut(List<MinigamePlayer> players, MinigamePlayer exclude) {
         List<MinigamePlayer> plys = new ArrayList<>(players);
-        if(exclude != null){
+        if (exclude != null) {
             plys.remove(exclude);
         }
         Collections.shuffle(plys);
-        
+
         return plys.get(0);
     }
-    
-    private void checkScore(MinigamePlayer ply){
-        if(ply.getScore() >= ply.getMinigame().getMaxScorePerPlayer()){
+
+    private void checkScore(MinigamePlayer ply) {
+        if (ply.getScore() >= ply.getMinigame().getMaxScorePerPlayer()) {
             List<MinigamePlayer> winners = new ArrayList<>();
             winners.add(ply);
             List<MinigamePlayer> losers = new ArrayList<>(ply.getMinigame().getPlayers());
@@ -107,48 +107,45 @@ public class JuggernautMechanic extends GameMechanicBase{
             pdata.endMinigame(ply.getMinigame(), winners, losers);
         }
     }
-    
+
     @EventHandler
-    private void minigameStart(StartMinigameEvent event){
-        if(event.getMinigame().getMechanic() == this){
+    private void minigameStart(StartMinigameEvent event) {
+        if (event.getMinigame().getMechanic() == this) {
             Minigame mgm = event.getMinigame();
-            
+
             mgm.getScoreboardManager().registerNewTeam("juggernaut");
             mgm.getScoreboardManager().getTeam("juggernaut").setPrefix(ChatColor.RED.toString());
-            
+
             MinigamePlayer j = assignNewJuggernaut(event.getPlayers(), null);
             JuggernautModule.getMinigameModule(event.getMinigame()).setJuggernaut(j);
         }
     }
-    
+
     @EventHandler
-    private void playerDeath(PlayerDeathEvent event){
+    private void playerDeath(PlayerDeathEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
-        if(ply == null) return;
-        if(ply.getMinigame() != null && ply.getMinigame().getMechanic() == this){
+        if (ply == null) return;
+        if (ply.getMinigame() != null && ply.getMinigame().getMechanic() == this) {
             JuggernautModule jm = JuggernautModule.getMinigameModule(ply.getMinigame());
-            
-            if(jm.getJuggernaut() == ply){
-                if(event.getEntity().getKiller() != null){
+
+            if (jm.getJuggernaut() == ply) {
+                if (event.getEntity().getKiller() != null) {
                     MinigamePlayer pk = pdata.getMinigamePlayer(event.getEntity().getKiller());
-                    if(pk != null){
+                    if (pk != null) {
                         jm.setJuggernaut(pk);
                         pk.addScore();
                         pk.getMinigame().setScore(pk, pk.getScore());
                         checkScore(pk);
-                    }
-                    else{
+                    } else {
                         jm.setJuggernaut(assignNewJuggernaut(ply.getMinigame().getPlayers(), ply));
                     }
-                }
-                else{
+                } else {
                     jm.setJuggernaut(assignNewJuggernaut(ply.getMinigame().getPlayers(), ply));
                 }
-            }
-            else{
-                if(event.getEntity().getKiller() != null){
+            } else {
+                if (event.getEntity().getKiller() != null) {
                     MinigamePlayer pk = pdata.getMinigamePlayer(event.getEntity().getKiller());
-                    if(pk != null && jm.getJuggernaut() == pk){
+                    if (pk != null && jm.getJuggernaut() == pk) {
                         pk.addScore();
                         pk.getMinigame().setScore(pk, pk.getScore());
                         checkScore(pk);

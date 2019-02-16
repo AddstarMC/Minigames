@@ -34,12 +34,12 @@ public class SetPaintballCommand implements ICommand {
 
     @Override
     public String[] getParameters() {
-        return new String[] {"damage"};
+        return new String[]{"damage"};
     }
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> paintball <true/false>",
+        return new String[]{"/minigame set <Minigame> paintball <true/false>",
                 "/minigame set <Minigame> paintball damage <Number>"};
     }
 
@@ -55,21 +55,19 @@ public class SetPaintballCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(args.length == 1){
+                             String label, String[] args) {
+        if (args != null) {
+            if (args.length == 1) {
                 boolean bool = Boolean.parseBoolean(args[0]);
                 minigame.setPaintBallMode(bool);
-                if(bool){
+                if (bool) {
                     sender.sendMessage(ChatColor.GRAY + "Paintball mode has been enabled for " + minigame);
-                }
-                else{
+                } else {
                     sender.sendMessage(ChatColor.GRAY + "Paintball mode has been disabled for " + minigame);
                 }
                 return true;
-            }
-            else if(args.length >= 2){
-                if(args[0].equalsIgnoreCase("damage") && args[1].matches("[0-9]+")){
+            } else if (args.length >= 2) {
+                if (args[0].equalsIgnoreCase("damage") && args[1].matches("[0-9]+")) {
                     minigame.setPaintBallDamage(Integer.parseInt(args[1]));
                     sender.sendMessage(ChatColor.GRAY + "Paintball damage has been set to " + args[1] + " for " + minigame);
                     return true;
@@ -81,8 +79,8 @@ public class SetPaintballCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
-        if(args.length == 1)
+                                      String alias, String[] args) {
+        if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("true;false;damage"), args[0]);
         return null;
     }

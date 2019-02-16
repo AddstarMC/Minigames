@@ -1,14 +1,14 @@
 package au.com.mineauz.minigames.tool;
 
-public class InvalidToolModeException extends RuntimeException{
+public class InvalidToolModeException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
-    
-    public InvalidToolModeException(){
+
+    public InvalidToolModeException() {
         super();
     }
-    
-    public InvalidToolModeException(String message){
+
+    public InvalidToolModeException(String message) {
         super(message);
     }
 

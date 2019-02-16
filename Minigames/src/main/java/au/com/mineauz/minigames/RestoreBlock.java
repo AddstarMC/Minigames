@@ -7,27 +7,27 @@ public class RestoreBlock {
     private String name;
     private Material block;
     private Location location = null;
-    
-    public RestoreBlock(String name, Material block, Location loc){
+
+    public RestoreBlock(String name, Material block, Location loc) {
         this.name = name;
         this.block = block;
         setLocation(loc);
     }
 
-    public Material getBlock(){
+    public Material getBlock() {
         return block;
     }
 
-    public void setBlock(Material block){
+    public void setBlock(Material block) {
         this.block = block;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
     }
 
     public Location getLocation() {
         return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public String getName() {

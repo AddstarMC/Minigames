@@ -38,17 +38,16 @@ public class TeleportSign implements MinigameSign {
     @Override
     public boolean signCreate(SignChangeEvent event) {
         event.setLine(1, ChatColor.GREEN + "Teleport");
-        if(event.getLine(2).isEmpty()){
+        if (event.getLine(2).isEmpty()) {
             return false;
-        }
-        else{
+        } else {
             return event.getLine(2).matches("-?[0-9]+,[0-9]+,-?[0-9]+");
         }
     }
 
     @Override
     public boolean signUse(Sign sign, MinigamePlayer player) {
-        if(!sign.getLine(2).isEmpty() && sign.getLine(2).matches("-?[0-9]+,[0-9]+,-?[0-9]+")){
+        if (!sign.getLine(2).isEmpty() && sign.getLine(2).matches("-?[0-9]+,[0-9]+,-?[0-9]+")) {
             int x;
             int y;
             int z;
@@ -56,8 +55,8 @@ public class TeleportSign implements MinigameSign {
             x = Integer.parseInt(split[0]);
             y = Integer.parseInt(split[1]);
             z = Integer.parseInt(split[2]);
-            
-            if(!sign.getLine(3).isEmpty() && sign.getLine(3).matches("-?[0-9]+,-?[0-9]+")){
+
+            if (!sign.getLine(3).isEmpty() && sign.getLine(3).matches("-?[0-9]+,-?[0-9]+")) {
                 float yaw;
                 float pitch;
                 String[] split2 = sign.getLine(3).split(",");
@@ -75,7 +74,7 @@ public class TeleportSign implements MinigameSign {
 
     @Override
     public void signBreak(Sign sign, MinigamePlayer player) {
-    
+
     }
 
 }

@@ -15,12 +15,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SetCommand implements ICommand{
+public class SetCommand implements ICommand {
     private static Map<String, ICommand> parameterList = new HashMap<>();
     private static BufferedWriter cmdFile;
-    
-    static{
-        if(plugin.getConfig().getBoolean("outputCMDToFile")){
+
+    static {
+        if (plugin.getConfig().getBoolean("outputCMDToFile")) {
             try {
                 cmdFile = new BufferedWriter(new FileWriter(plugin.getDataFolder() + "/setcmds.txt"));
                 cmdFile.write("{| class=\"wikitable\"");
@@ -95,8 +95,8 @@ public class SetCommand implements ICommand{
         registerSetCommand(new SetInfectedPercentCommand());
         registerSetCommand(new SetGameOverCommand());
         registerSetCommand(new SetDisplayScoreboardCommand());
-        
-        if(plugin.getConfig().getBoolean("outputCMDToFile")){
+
+        if (plugin.getConfig().getBoolean("outputCMDToFile")) {
             try {
                 cmdFile.write("|}");
                 cmdFile.close();
@@ -105,56 +105,54 @@ public class SetCommand implements ICommand{
             }
         }
     }
-    
-    public static void registerSetCommand(ICommand command){
+
+    public static void registerSetCommand(ICommand command) {
         parameterList.put(command.getName(), command);
-        
-        if(plugin.getConfig().getBoolean("outputCMDToFile")){
+
+        if (plugin.getConfig().getBoolean("outputCMDToFile")) {
             try {
-                
+
                 cmdFile.write("|-");
                 cmdFile.newLine();
                 cmdFile.write("| '''" + command.getName() + "'''");
                 cmdFile.newLine();
-                if(command.getUsage() != null){
+                if (command.getUsage() != null) {
                     int count = 0;
                     cmdFile.write("| ");
-                    for(String use : command.getUsage()){
+                    for (String use : command.getUsage()) {
                         cmdFile.write(use);
                         count++;
-                        if(count != command.getUsage().length){
+                        if (count != command.getUsage().length) {
                             cmdFile.write("\n\n");
                         }
                     }
-                }
-                else
+                } else
                     cmdFile.write("| N/A");
                 cmdFile.newLine();
-                if(command.getDescription() != null)
+                if (command.getDescription() != null)
                     cmdFile.write("| " + command.getDescription());
                 else
                     cmdFile.write("| N/A");
                 cmdFile.newLine();
-                if(command.getPermission() != null)
+                if (command.getPermission() != null)
                     cmdFile.write("| " + command.getPermission());
                 else
                     cmdFile.write("| N/A");
                 cmdFile.newLine();
-                if(command.getAliases() != null){
+                if (command.getAliases() != null) {
                     int count = 0;
                     cmdFile.write("| ");
-                    for(String alias : command.getAliases()){
+                    for (String alias : command.getAliases()) {
                         cmdFile.write(alias);
                         count++;
-                        if(count != command.getAliases().length){
+                        if (count != command.getAliases().length) {
                             cmdFile.write("\n\n");
                         }
                     }
-                }
-                else
+                } else
                     cmdFile.write("| N/A");
                 cmdFile.newLine();
-                
+
             } catch (IOException e) {
                 //Failed to write
             }
@@ -165,9 +163,9 @@ public class SetCommand implements ICommand{
     public String getName() {
         return "set";
     }
-    
+
     @Override
-    public String[] getAliases(){
+    public String[] getAliases() {
         return null;
     }
 
@@ -183,20 +181,20 @@ public class SetCommand implements ICommand{
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> <Parameters>..."};
+        return new String[]{"/minigame set <Minigame> <Parameters>..."};
     }
 
     @Override
-    public String[] getParameters(){
+    public String[] getParameters() {
         String[] parameters = new String[parameterList.size()];
         int inc = 0;
-        for(String key : parameterList.keySet()){
+        for (String key : parameterList.keySet()) {
             parameters[inc] = key;
             inc++;
         }
         return parameters;
     }
-    
+
     @Override
     public String getPermissionMessage() {
         return null;
@@ -210,28 +208,28 @@ public class SetCommand implements ICommand{
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame, String label, String[] args) {
         Player ply = null;
-        if(sender instanceof Player){
-            ply = (Player)sender;
+        if (sender instanceof Player) {
+            ply = (Player) sender;
         }
-        
-        if(args != null){
+
+        if (args != null) {
             ICommand comd = null;
             Minigame mgm = null;
             String[] shortArgs = null;
-            
-            if(args.length >= 1){
+
+            if (args.length >= 1) {
                 if (plugin.getMinigameManager().hasMinigame(args[0])) {
                     mgm = plugin.getMinigameManager().getMinigame(args[0]);
                 }
-                if(args.length >= 2){
-                    if(parameterList.containsKey(args[1].toLowerCase())){
+                if (args.length >= 2) {
+                    if (parameterList.containsKey(args[1].toLowerCase())) {
                         comd = parameterList.get(args[1].toLowerCase());
-                    }
-                    else{
-AliasCheck:                for(ICommand com : parameterList.values()){
-                            if(com.getAliases() != null){
-                                for(String alias : com.getAliases()){
-                                    if(args[1].equalsIgnoreCase(alias)){
+                    } else {
+                        AliasCheck:
+                        for (ICommand com : parameterList.values()) {
+                            if (com.getAliases() != null) {
+                                for (String alias : com.getAliases()) {
+                                    if (args[1].equalsIgnoreCase(alias)) {
                                         comd = com;
                                         break AliasCheck;
                                     }
@@ -240,34 +238,33 @@ AliasCheck:                for(ICommand com : parameterList.values()){
                         }
                     }
                 }
-                
-                if(args != null && args.length > 2){
+
+                if (args != null && args.length > 2) {
                     shortArgs = new String[args.length - 2];
                     System.arraycopy(args, 2, shortArgs, 0, args.length - 2);
                 }
             }
-            
-            if(comd != null && mgm != null){
-                if((ply == null && comd.canBeConsole()) || ply != null){
-                    if(ply == null || (comd.getPermission() == null || ply.hasPermission(comd.getPermission()))){
+
+            if (comd != null && mgm != null) {
+                if ((ply == null && comd.canBeConsole()) || ply != null) {
+                    if (ply == null || (comd.getPermission() == null || ply.hasPermission(comd.getPermission()))) {
                         boolean returnValue = comd.onCommand(sender, mgm, label, shortArgs);
-                        if(!returnValue){
+                        if (!returnValue) {
                             sender.sendMessage(ChatColor.GREEN + "------------------Command Info------------------");
                             sender.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + comd.getDescription());
-                            if(comd.getParameters() != null){
+                            if (comd.getParameters() != null) {
                                 String parameters = "";
                                 boolean switchColour = false;
-                                for(String par : comd.getParameters()){
-                                    if(switchColour){
+                                for (String par : comd.getParameters()) {
+                                    if (switchColour) {
                                         parameters += ChatColor.WHITE + par;
-                                        if(!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])){
+                                        if (!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])) {
                                             parameters += ChatColor.WHITE + ", ";
                                         }
                                         switchColour = false;
-                                    }
-                                    else{
+                                    } else {
                                         parameters += ChatColor.GRAY + par;
-                                        if(!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])){
+                                        if (!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])) {
                                             parameters += ChatColor.WHITE + ", ";
                                         }
                                         switchColour = true;
@@ -277,20 +274,19 @@ AliasCheck:                for(ICommand com : parameterList.values()){
                             }
                             sender.sendMessage(ChatColor.BLUE + "Usage: ");
                             sender.sendMessage(comd.getUsage());
-                            if(comd.getAliases() != null){
+                            if (comd.getAliases() != null) {
                                 String aliases = "";
                                 boolean switchColour = false;
-                                for(String alias : comd.getAliases()){
-                                    if(switchColour){
+                                for (String alias : comd.getAliases()) {
+                                    if (switchColour) {
                                         aliases += ChatColor.WHITE + alias;
-                                        if(!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])){
+                                        if (!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])) {
                                             aliases += ChatColor.WHITE + ", ";
                                         }
                                         switchColour = false;
-                                    }
-                                    else{
+                                    } else {
                                         aliases += ChatColor.GRAY + alias;
-                                        if(!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])){
+                                        if (!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])) {
                                             aliases += ChatColor.WHITE + ", ";
                                         }
                                         switchColour = true;
@@ -299,19 +295,16 @@ AliasCheck:                for(ICommand com : parameterList.values()){
                                 sender.sendMessage(ChatColor.BLUE + "Aliases: " + aliases);
                             }
                         }
-                    }
-                    else{
+                    } else {
                         sender.sendMessage(ChatColor.RED + comd.getPermissionMessage());
                         sender.sendMessage(ChatColor.RED + comd.getPermission());
                     }
                     return true;
-                }
-                else{
+                } else {
                     sender.sendMessage(ChatColor.RED + "You must be a player to execute this command!");
                     return true;
                 }
-            }
-            else if(mgm == null){
+            } else if (mgm == null) {
                 sender.sendMessage(ChatColor.RED + "There is no Minigame by the name \"" + args[0] + "\"");
             }
         }
@@ -320,47 +313,45 @@ AliasCheck:                for(ICommand com : parameterList.values()){
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame, String alias, String[] args) {
-        if(args != null && args.length > 0){
+        if (args != null && args.length > 0) {
             Player ply = null;
-            if(sender instanceof Player){
-                ply = (Player)sender;
+            if (sender instanceof Player) {
+                ply = (Player) sender;
             }
             ICommand comd = null;
             String[] shortArgs = null;
             Minigame mgm = null;
-            
+
             if (plugin.getMinigameManager().hasMinigame(args[0])) {
                 mgm = plugin.getMinigameManager().getMinigame(args[0]);
             }
-            
-            if(args.length > 1 && mgm != null){
-                if(parameterList.containsKey(args[1].toLowerCase())){
+
+            if (args.length > 1 && mgm != null) {
+                if (parameterList.containsKey(args[1].toLowerCase())) {
                     comd = parameterList.get(args[1].toLowerCase());
                 }
-                
+
                 shortArgs = new String[args.length - 2];
                 System.arraycopy(args, 2, shortArgs, 0, args.length - 2);
-                
-                if(comd != null){
-                    if(ply != null){
+
+                if (comd != null) {
+                    if (ply != null) {
                         List<String> l = comd.onTabComplete(sender, mgm, alias, shortArgs);
-                        if(l != null)
+                        if (l != null)
                             return l;
                         else
                             return MinigameUtils.stringToList("");
                     }
-                }
-                else{
+                } else {
                     List<String> ls = new ArrayList<>(parameterList.keySet());
                     return MinigameUtils.tabCompleteMatch(ls, args[1]);
                 }
-            }
-            else if(args.length == 1){
+            } else if (args.length == 1) {
                 List<String> ls = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
                 return MinigameUtils.tabCompleteMatch(ls, args[0]);
             }
         }
         return null;
     }
-    
+
 }

@@ -18,7 +18,7 @@ public class SetPlayersGamemodeCommand implements ICommand {
 
     @Override
     public String[] getAliases() {
-        return new String[] {"gm"};
+        return new String[]{"gm"};
     }
 
     @Override
@@ -33,12 +33,12 @@ public class SetPlayersGamemodeCommand implements ICommand {
 
     @Override
     public String[] getParameters() {
-        return new String[] {"survival", "adventure", "creative", "0", "1", "2"};
+        return new String[]{"survival", "adventure", "creative", "0", "1", "2"};
     }
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> gamemode <Parameter>"};
+        return new String[]{"/minigame set <Minigame> gamemode <Parameter>"};
     }
 
     @Override
@@ -53,19 +53,17 @@ public class SetPlayersGamemodeCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(args[0].equalsIgnoreCase("survival") || args[0].equalsIgnoreCase("0")){
+                             String label, String[] args) {
+        if (args != null) {
+            if (args[0].equalsIgnoreCase("survival") || args[0].equalsIgnoreCase("0")) {
                 minigame.setDefaultGamemode(GameMode.SURVIVAL);
                 sender.sendMessage(minigame.getName(false) + "'s gamemode has been set to Survival.");
                 return true;
-            }
-            else if(args[0].equalsIgnoreCase("adventure") || args[0].equalsIgnoreCase("2")){
+            } else if (args[0].equalsIgnoreCase("adventure") || args[0].equalsIgnoreCase("2")) {
                 minigame.setDefaultGamemode(GameMode.ADVENTURE);
                 sender.sendMessage(minigame.getName(false) + "'s gamemode has been set to Adventure.");
                 return true;
-            }
-            else if(args[0].equalsIgnoreCase("creative") || args[0].equalsIgnoreCase("1")){
+            } else if (args[0].equalsIgnoreCase("creative") || args[0].equalsIgnoreCase("1")) {
                 minigame.setDefaultGamemode(GameMode.CREATIVE);
                 sender.sendMessage(minigame.getName(false) + "'s gamemode has been set to Creative.");
                 return true;
@@ -76,8 +74,8 @@ public class SetPlayersGamemodeCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
-        if(args.length == 1)
+                                      String alias, String[] args) {
+        if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("survival;adventure;creative"), args[0]);
         return null;
     }

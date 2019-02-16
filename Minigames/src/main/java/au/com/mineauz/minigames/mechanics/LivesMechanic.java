@@ -13,7 +13,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import java.util.EnumSet;
 import java.util.List;
 
-public class LivesMechanic extends GameMechanicBase{
+public class LivesMechanic extends GameMechanicBase {
 
     @Override
     public String getMechanic() {
@@ -27,7 +27,7 @@ public class LivesMechanic extends GameMechanicBase{
 
     @Override
     public boolean checkCanStart(Minigame minigame, MinigamePlayer caller) {
-        if(minigame.getLives() > 0){
+        if (minigame.getLives() > 0) {
             return true;
         }
         caller.sendMessage("The Minigame must have more than 0 lives to use this type", MinigameMessageType.ERROR);
@@ -53,20 +53,20 @@ public class LivesMechanic extends GameMechanicBase{
 
     @Override
     public void quitMinigame(Minigame minigame, MinigamePlayer player,
-            boolean forced) {
+                             boolean forced) {
     }
 
     @Override
     public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
-            List<MinigamePlayer> losers) {
+                            List<MinigamePlayer> losers) {
     }
-    
+
     @EventHandler
-    private void minigameStart(StartMinigameEvent event){
-        if(event.getMinigame().getMechanicName().equals(getMechanic())){
+    private void minigameStart(StartMinigameEvent event) {
+        if (event.getMinigame().getMechanicName().equals(getMechanic())) {
             final List<MinigamePlayer> players = event.getPlayers();
             final Minigame minigame = event.getMinigame();
-            for(MinigamePlayer player : players){
+            for (MinigamePlayer player : players) {
                 if (Float.isFinite(minigame.getLives())) {
                     player.setScore(Integer.MAX_VALUE);
                     minigame.setScore(player, Integer.MAX_VALUE);
@@ -78,12 +78,12 @@ public class LivesMechanic extends GameMechanicBase{
             }
         }
     }
-    
+
     @EventHandler
-    private void playerDeath(PlayerDeathEvent event){
+    private void playerDeath(PlayerDeathEvent event) {
         MinigamePlayer ply = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getEntity());
-        if(ply == null)return;
-        if(ply.isInMinigame() && ply.getMinigame().getMechanicName().equals(getMechanic())){
+        if (ply == null) return;
+        if (ply.isInMinigame() && ply.getMinigame().getMechanicName().equals(getMechanic())) {
             ply.addScore(-1);
             ply.getMinigame().setScore(ply, ply.getScore());
         }

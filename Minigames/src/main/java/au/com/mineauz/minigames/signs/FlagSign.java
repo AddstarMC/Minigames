@@ -41,23 +41,19 @@ public class FlagSign implements MinigameSign {
     @Override
     public boolean signCreate(SignChangeEvent event) {
         event.setLine(1, ChatColor.GREEN + "Flag");
-        if(TeamColor.matchColor(event.getLine(2)) != null){
+        if (TeamColor.matchColor(event.getLine(2)) != null) {
             TeamColor col = TeamColor.matchColor(event.getLine(2));
             event.setLine(2, col.getColor() + MinigameUtils.capitalize(col.toString()));
-        }
-        else if(event.getLine(2).equalsIgnoreCase("neutral")){
+        } else if (event.getLine(2).equalsIgnoreCase("neutral")) {
             event.setLine(2, ChatColor.GRAY + "Neutral");
-        }
-        else if(event.getLine(2).equalsIgnoreCase("capture") && !event.getLine(3).isEmpty()){
+        } else if (event.getLine(2).equalsIgnoreCase("capture") && !event.getLine(3).isEmpty()) {
             event.setLine(2, ChatColor.GREEN + "Capture");
-            if(TeamColor.matchColor(event.getLine(3)) != null){
+            if (TeamColor.matchColor(event.getLine(3)) != null) {
                 TeamColor col = TeamColor.matchColor(event.getLine(3));
                 event.setLine(3, col.getColor() + MinigameUtils.capitalize(col.toString()));
-            }
-            else if(event.getLine(3).equalsIgnoreCase("neutral")){
+            } else if (event.getLine(3).equalsIgnoreCase("neutral")) {
                 event.setLine(3, ChatColor.GRAY + "Neutral");
-            }
-            else{
+            } else {
                 event.getBlock().breakNaturally();
                 event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.flag.invalidSyntax") + " red, blue and neutral.");
                 return false;
@@ -73,32 +69,31 @@ public class FlagSign implements MinigameSign {
 
     @Override
     public boolean signUse(Sign sign, MinigamePlayer player) {
-        if(player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR && player.isInMinigame()){
+        if (player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR && player.isInMinigame()) {
             Minigame mgm = player.getMinigame();
 
-            if(mgm.isSpectator(player)){
+            if (mgm.isSpectator(player)) {
                 return false;
             }
-            if(!sign.getLine(2).isEmpty() && player.getPlayer().isOnGround() &&
+            if (!sign.getLine(2).isEmpty() && player.getPlayer().isOnGround() &&
                     !mgm.getMechanicName().equals("ctf") &&
-                    !player.hasFlag(ChatColor.stripColor(sign.getLine(2)))){
+                    !player.hasFlag(ChatColor.stripColor(sign.getLine(2)))) {
                 TakeFlagEvent ev = new TakeFlagEvent(mgm, player, ChatColor.stripColor(sign.getLine(2)));
                 Bukkit.getPluginManager().callEvent(ev);
-                if(!ev.isCancelled()){
+                if (!ev.isCancelled()) {
                     player.addFlag(ChatColor.stripColor(sign.getLine(2)));
                     player.sendInfoMessage(MinigameUtils.formStr("sign.flag.taken", ChatColor.stripColor(sign.getLine(2))));
                 }
                 return true;
             }
-        }
-        else if(player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR)
+        } else if (player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR)
             player.sendInfoMessage(MinigameUtils.getLang("sign.emptyHand"));
         return false;
     }
 
     @Override
     public void signBreak(Sign sign, MinigamePlayer player) {
-    
+
     }
 
 }

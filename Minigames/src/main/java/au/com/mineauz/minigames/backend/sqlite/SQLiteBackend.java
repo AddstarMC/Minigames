@@ -21,12 +21,11 @@ import java.util.logging.Logger;
 
 @SuppressWarnings("SyntaxError")
 public class SQLiteBackend extends Backend {
-    private ConnectionPool pool;
     private final Logger logger;
-    
+    private ConnectionPool pool;
     private StatementKey insertMinigame;
     private StatementKey getMinigameId;
-    
+
     private StatementKey insertPlayer;
     private StatementKey loadStatSettings;
     private StatementKey saveStatSettings;
@@ -42,12 +41,13 @@ public class SQLiteBackend extends Backend {
         saver = new SQLiteStatSaver(this, logger);
         try {
             database = new File(Minigames.getPlugin().getDataFolder(), "minigames.db");
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             logger.warning("Could not locate or set database path");
         }
 
     }
-    public void setDatabase(File dbbath){
+
+    public void setDatabase(File dbbath) {
         database = dbbath;
     }
 
@@ -58,21 +58,21 @@ public class SQLiteBackend extends Backend {
 
         try {
             Class.forName("org.sqlite.JDBC");
-            
+
             // Create the pool
-            if(database == null){
+            if (database == null) {
                 return false;
             }
             String url = "jdbc:sqlite:" + database.getAbsolutePath();
-            if(debug)logger.info("URL: " + url);
-            Properties properties =  new Properties();
-            properties.put("username","");
-            properties.put("password","");
-            if(debug)logger.info("Properties: " +properties.toString());
+            if (debug) logger.info("URL: " + url);
+            Properties properties = new Properties();
+            properties.put("username", "");
+            properties.put("password", "");
+            if (debug) logger.info("Properties: " + properties.toString());
             pool = new ConnectionPool(url, properties);
-            if(debug)logger.info("Pool: " +pool.toString());
+            if (debug) logger.info("Pool: " + pool.toString());
             createStatements();
-            
+
             // Test the connection
             try {
                 ConnectionHandler handler = pool.getConnection();
@@ -85,15 +85,15 @@ public class SQLiteBackend extends Backend {
         } catch (ClassNotFoundException e) {
             logger.severe("Failed to find sqlite JDBC driver. This version of craftbukkit is defective.");
         }
-        
+
         return false;
     }
-    
+
     @Override
     public void shutdown() {
         pool.closeConnections();
     }
-    
+
     @Override
     public void clean() {
         pool.removeExpired();
@@ -177,7 +177,7 @@ public class SQLiteBackend extends Backend {
             }
         }
     }
-    
+
     private void createStatements() {
         insertMinigame = new StatementKey("INSERT OR IGNORE INTO `Minigames` (`name`) VALUES (?);", true);
         getMinigameId = new StatementKey("SELECT `minigame_id` FROM `Minigames` WHERE `name` = ?;");
@@ -185,11 +185,11 @@ public class SQLiteBackend extends Backend {
         loadStatSettings = new StatementKey("SELECT `stat`, `display_name`, `format` FROM `StatMetadata` WHERE `minigame_id`=?;");
         saveStatSettings = new StatementKey("INSERT OR REPLACE INTO `StatMetadata` VALUES (?, ?, ?, ?);");
     }
-    
+
     ConnectionPool getPool() {
         return pool;
     }
-    
+
     @Override
     public void saveGameStatus(StoredGameStats stats) {
         saver.saveData(stats);
@@ -204,12 +204,12 @@ public class SQLiteBackend extends Backend {
     public List<StoredStat> loadStats(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order, int offset, int length) {
         return loader.loadStatValues(minigame, stat, field, order, offset, length);
     }
-    
+
     @Override
     public long getStat(Minigame minigame, UUID playerId, MinigameStat stat, StatValueField field) {
         return loader.loadSingleValue(minigame, stat, field, playerId);
     }
-    
+
     public int getMinigameId(ConnectionHandler handler, Minigame minigame) throws SQLException {
         ResultSet rs = handler.executeQuery(getMinigameId, minigame.getName(false));
         try {
@@ -219,7 +219,7 @@ public class SQLiteBackend extends Backend {
         } finally {
             rs.close();
         }
-        
+
         rs = handler.executeUpdateWithResults(insertMinigame, minigame.getName(false));
         try {
             if (rs.next()) {
@@ -231,17 +231,17 @@ public class SQLiteBackend extends Backend {
             rs.close();
         }
     }
-    
+
     public void updatePlayer(ConnectionHandler handler, MinigamePlayer player) throws SQLException {
         handler.executeUpdate(insertPlayer, player.getUUID().toString(), player.getName(), player.getDisplayName());
     }
-    
+
     @Override
     public Map<MinigameStat, StatSettings> loadStatSettings(Minigame minigame) {
         ConnectionHandler handler = null;
         try {
             handler = pool.getConnection();
-            
+
             int minigameId = getMinigameId(handler, minigame);
 
             Map<MinigameStat, StatSettings> settings = Maps.newHashMap();
@@ -286,19 +286,19 @@ public class SQLiteBackend extends Backend {
             }
         }
     }
-    
+
     @Override
     public void saveStatSettings(Minigame minigame, Collection<StatSettings> settings) {
         ConnectionHandler handler = null;
         try {
             handler = pool.getConnection();
             handler.beginTransaction();
-            
+
             int minigameId = getMinigameId(handler, minigame);
             for (StatSettings setting : settings) {
                 handler.batchUpdate(saveStatSettings, minigameId, setting.getStat().getName(), setting.getDisplayName(), setting.getFormat().name().toUpperCase());
             }
-            
+
             handler.executeBatch(saveStatSettings);
             handler.endTransaction();
         } catch (SQLException e) {
@@ -315,14 +315,14 @@ public class SQLiteBackend extends Backend {
     protected BackendImportCallback getImportCallback() {
         return new SQLImport(pool);
     }
-    
+
     @Override
     public void exportTo(Backend other, ExportNotifier notifier) {
         BackendImportCallback callback = getImportCallback(other);
         SQLExport exporter = new SQLExport(pool, callback, notifier);
         exporter.beginExport();
     }
-    
+
     @Override
     public boolean doConversion(ExportNotifier notifier) {
         BackendImportCallback callback = getImportCallback();

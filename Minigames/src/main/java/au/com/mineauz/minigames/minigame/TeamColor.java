@@ -15,23 +15,23 @@ public enum TeamColor {
     DARK_GREEN(ChatColor.DARK_GREEN),
     DARK_BLUE(ChatColor.DARK_BLUE),
     GRAY(ChatColor.GRAY);
-    
+
     private ChatColor color;
-    
-    TeamColor(ChatColor color){
+
+    TeamColor(ChatColor color) {
         this.color = color;
     }
-    
-    public ChatColor getColor(){
-        return color;
-    }
-    
-    public static TeamColor matchColor(String color){
-        for(TeamColor col : values()){
-            if(color.equalsIgnoreCase(col.toString())){
+
+    public static TeamColor matchColor(String color) {
+        for (TeamColor col : values()) {
+            if (color.equalsIgnoreCase(col.toString())) {
                 return col;
             }
         }
         return null;
+    }
+
+    public ChatColor getColor() {
+        return color;
     }
 }

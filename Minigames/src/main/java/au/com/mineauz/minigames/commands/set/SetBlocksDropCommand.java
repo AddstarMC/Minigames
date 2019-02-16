@@ -38,7 +38,7 @@ public class SetBlocksDropCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> blocksdrop <true/false>"};
+        return new String[]{"/minigame set <Minigame> blocksdrop <true/false>"};
     }
 
     @Override
@@ -53,14 +53,13 @@ public class SetBlocksDropCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
+                             String label, String[] args) {
+        if (args != null) {
             boolean bool = Boolean.parseBoolean(args[0]);
             minigame.setBlocksdrop(bool);
-            if(bool){
+            if (bool) {
                 sender.sendMessage(ChatColor.GRAY + "Blocks can now drop when broken in " + minigame);
-            }
-            else{
+            } else {
                 sender.sendMessage(ChatColor.GRAY + "Blocks will no longer drop when broken in " + minigame);
             }
             return true;
@@ -70,8 +69,8 @@ public class SetBlocksDropCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
-        if(args.length == 1)
+                                      String alias, String[] args) {
+        if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("true;false"), args[0]);
         return null;
     }

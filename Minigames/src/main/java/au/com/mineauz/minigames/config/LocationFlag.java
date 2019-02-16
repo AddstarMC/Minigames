@@ -9,9 +9,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.menu.MenuItem;
 
-public class LocationFlag extends Flag<Location>{
-    
-    public LocationFlag(Location value, String name){
+public class LocationFlag extends Flag<Location> {
+
+    public LocationFlag(Location value, String name) {
         setFlag(value);
         setDefaultFlag(value);
         setName(name);
@@ -32,10 +32,10 @@ public class LocationFlag extends Flag<Location>{
         double x = config.getDouble(path + "." + getName() + ".x");
         double y = config.getDouble(path + "." + getName() + ".y");
         double z = config.getDouble(path + "." + getName() + ".z");
-        float yaw = ((Double)config.getDouble(path + "." + getName() + ".yaw")).floatValue();
-        float pitch = ((Double)config.getDouble(path + "." + getName() + ".pitch")).floatValue();
+        float yaw = ((Double) config.getDouble(path + "." + getName() + ".yaw")).floatValue();
+        float pitch = ((Double) config.getDouble(path + "." + getName() + ".pitch")).floatValue();
         String world = config.getString(path + "." + getName() + ".world");
-        
+
         setFlag(new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch));
     }
 
@@ -46,7 +46,7 @@ public class LocationFlag extends Flag<Location>{
 
     @Override
     public MenuItem getMenuItem(String name, Material displayItem,
-            List<String> description) {
+                                List<String> description) {
         return null;
     }
 

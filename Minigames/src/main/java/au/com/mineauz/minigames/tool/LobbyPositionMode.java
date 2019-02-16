@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class LobbyPositionMode implements ToolMode {
-    
+
     @Override
     public String getName() {
         return "LOBBY";
@@ -33,35 +33,34 @@ public class LobbyPositionMode implements ToolMode {
 
     @Override
     public void onLeftClick(MinigamePlayer player, Minigame minigame,
-            Team team, PlayerInteractEvent event) {
-        
+                            Team team, PlayerInteractEvent event) {
+
     }
 
     @Override
     public void onRightClick(MinigamePlayer player, Minigame minigame,
-            Team team, PlayerInteractEvent event) {
+                             Team team, PlayerInteractEvent event) {
         minigame.setLobbyPosition(player.getLocation());
         player.sendInfoMessage("Set lobby position.");
     }
-    
+
     @Override
     public void onEntityLeftClick(MinigamePlayer player, Minigame minigame, Team team, EntityDamageByEntityEvent event) {
-    
+
     }
-    
+
     @Override
     public void onEntityRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEntityEvent event) {
-    
+
     }
-    
+
     @SuppressWarnings("deprecation") //TODO: Use alternate method once available
     @Override
     public void select(MinigamePlayer player, Minigame minigame, Team team) {
-        if(minigame.getLobbyPosition() != null){
-            player.getPlayer().sendBlockChange(minigame.getLobbyPosition(), Material.SKELETON_SKULL, (byte)1);
+        if (minigame.getLobbyPosition() != null) {
+            player.getPlayer().sendBlockChange(minigame.getLobbyPosition(), Material.SKELETON_SKULL, (byte) 1);
             player.sendInfoMessage("Selected lobby position (marked with skull)");
-        }
-        else{
+        } else {
             player.sendMessage("No lobby position set!", MinigameMessageType.ERROR);
         }
     }
@@ -69,13 +68,12 @@ public class LobbyPositionMode implements ToolMode {
     @SuppressWarnings("deprecation") //TODO: Use alternate method once available
     @Override
     public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
-        if(minigame.getLobbyPosition() != null){
+        if (minigame.getLobbyPosition() != null) {
             player.getPlayer().sendBlockChange(minigame.getLobbyPosition(),
                     minigame.getLobbyPosition().getBlock().getType(),
                     minigame.getLobbyPosition().getBlock().getData());
             player.sendInfoMessage("Deselected lobby position");
-        }
-        else{
+        } else {
             player.sendMessage("No lobby position set!", MinigameMessageType.ERROR);
         }
     }

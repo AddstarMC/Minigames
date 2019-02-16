@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 
 import au.com.mineauz.minigames.minigame.Minigame;
 
-public class ListCommand implements ICommand{
+public class ListCommand implements ICommand {
 
     @Override
     public String getName() {
@@ -36,7 +36,7 @@ public class ListCommand implements ICommand{
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame list"};
+        return new String[]{"/minigame list"};
     }
 
     @Override
@@ -51,24 +51,24 @@ public class ListCommand implements ICommand{
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
+                             String label, String[] args) {
         List<String> mglist = plugin.getConfig().getStringList("minigames");
         String minigames = "";
-        
-        for(int i = 0; i < mglist.size(); i++){
+
+        for (int i = 0; i < mglist.size(); i++) {
             minigames += mglist.get(i);
-            if(i != mglist.size() - 1){
+            if (i != mglist.size() - 1) {
                 minigames += ", ";
             }
         }
-        
+
         sender.sendMessage(ChatColor.GRAY + minigames);
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

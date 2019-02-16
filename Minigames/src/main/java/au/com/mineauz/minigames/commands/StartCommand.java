@@ -12,15 +12,15 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StartCommand implements ICommand{
+public class StartCommand implements ICommand {
 
     @Override
     public String getName() {
         return "start";
     }
-    
+
     @Override
-    public String[] getAliases(){
+    public String[] getAliases() {
         return null;
     }
 
@@ -41,7 +41,7 @@ public class StartCommand implements ICommand{
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame start <Minigame>"};
+        return new String[]{"/minigame start <Minigame>"};
     }
 
     @Override
@@ -56,33 +56,29 @@ public class StartCommand implements ICommand{
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
+                             String label, String[] args) {
+        if (args != null) {
             Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
-            
-            if(mgm != null){
-                if(!mgm.isEnabled() && mgm.getType() == MinigameType.GLOBAL){
+
+            if (mgm != null) {
+                if (!mgm.isEnabled() && mgm.getType() == MinigameType.GLOBAL) {
                     MinigamePlayer caller = null;
-                    if(sender instanceof Player)
+                    if (sender instanceof Player)
                         caller = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
                     plugin.getMinigameManager().startGlobalMinigame(mgm, caller);
-                }
-                else if(mgm.getType() != MinigameType.GLOBAL && mgm.getType() != MinigameType.SINGLEPLAYER && mgm.hasPlayers()){
-                    if(mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0){
-                        if(mgm.getMpTimer() == null){
+                } else if (mgm.getType() != MinigameType.GLOBAL && mgm.getType() != MinigameType.SINGLEPLAYER && mgm.hasPlayers()) {
+                    if (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0) {
+                        if (mgm.getMpTimer() == null) {
                             mgm.setMpTimer(new MultiplayerTimer(mgm));
                         }
                         mgm.getMpTimer().setCurrentLobbyWaitTime(0);
                         mgm.getMpTimer().startTimer();
-                    }
-                    else
+                    } else
                         sender.sendMessage(ChatColor.RED + mgm.getName(false) + " has already started.");
-                }
-                else if(mgm.isEnabled() && mgm.getType() == MinigameType.GLOBAL){
+                } else if (mgm.isEnabled() && mgm.getType() == MinigameType.GLOBAL) {
                     sender.sendMessage(ChatColor.RED + mgm.getName(false) + " is already running!");
                 }
-            }
-            else{
+            } else {
                 sender.sendMessage(ChatColor.RED + "No Global or Multiplayer Minigame found by the name " + args[0]);
             }
             return true;
@@ -92,7 +88,7 @@ public class StartCommand implements ICommand{
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
         return MinigameUtils.tabCompleteMatch(mgs, args[args.length - 1]);
     }

@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.logging.Level;
 
-public class BackendCommand implements ICommand{
+public class BackendCommand implements ICommand {
     @Override
     public String getName() {
         return "backend";
@@ -37,12 +37,12 @@ public class BackendCommand implements ICommand{
 
     @Override
     public String[] getParameters() {
-        return new String[] {"export", "switch"};
+        return new String[]{"export", "switch"};
     }
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame backend export <type>", "/minigame backend switch <type>"};
+        return new String[]{"/minigame backend export <type>", "/minigame backend switch <type>"};
     }
 
     @Override
@@ -60,20 +60,20 @@ public class BackendCommand implements ICommand{
         if (args == null || args.length != 2) {
             return false;
         }
-        
+
         BackendManager manager = Minigames.getPlugin().getBackend();
-        
+
         if (args[0].equalsIgnoreCase("export")) {
             try {
                 ListenableFuture<Void> future = manager.exportTo(args[1], Minigames.getPlugin().getConfig(), new Notifier(sender));
                 sender.sendMessage(ChatColor.GOLD + "Exporting backend to " + args[1] + "...");
-                
+
                 Futures.addCallback(future, new FutureCallback<Void>() {
                     @Override
                     public void onFailure(Throwable t) {
                         sender.sendMessage(ChatColor.RED + "An internal error occured while exporting.");
                     }
-                    
+
                     @Override
                     public void onSuccess(Void result) {
                     }
@@ -85,13 +85,13 @@ public class BackendCommand implements ICommand{
             try {
                 ListenableFuture<Void> future = manager.switchBackend(args[1], Minigames.getPlugin().getConfig());
                 sender.sendMessage(ChatColor.GOLD + "Switching minigames backend to " + args[1] + "...");
-                
+
                 Futures.addCallback(future, new FutureCallback<Void>() {
                     @Override
                     public void onFailure(Throwable t) {
                         sender.sendMessage(ChatColor.RED + "An internal error occured while switching backend.");
                     }
-                    
+
                     @Override
                     public void onSuccess(Void result) {
                         sender.sendMessage(ChatColor.GOLD + "The backend has been successfully switched");
@@ -104,25 +104,25 @@ public class BackendCommand implements ICommand{
         } else {
             sender.sendMessage(ChatColor.RED + "Unknown option " + args[0]);
         }
-        
+
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
-    
+
     private static class Notifier implements ExportNotifier {
         private final CommandSender sender;
         private boolean begun;
-        
+
         public Notifier(CommandSender sender) {
             this.sender = sender;
             begun = false;
         }
-        
+
         @Override
         public void onProgress(String state, int count) {
             if (!begun) {
@@ -130,17 +130,19 @@ public class BackendCommand implements ICommand{
                 if (sender instanceof Player) {
                     sender.sendMessage(ChatColor.GREEN + "[Minigames] Export started...");
                 }
-                
+
                 Minigames.getPlugin().getLogger().warning("Started exporting backend. Started by " + sender.getName());
             }
-            
+
             Minigames.getPlugin().getLogger().info("Exporting backend... " + state + ": " + count);
         }
+
         @Override
         public void onComplete() {
             sender.sendMessage(ChatColor.GREEN + "[Minigames] Export complete!");
             Minigames.getPlugin().getLogger().info("Exporting complete");
         }
+
         @Override
         public void onError(Throwable e, String state, int count) {
             sender.sendMessage(ChatColor.RED + "[Minigames] Export error. See console for details.");

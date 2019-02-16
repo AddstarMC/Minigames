@@ -60,7 +60,6 @@ public class MatchBlockCondition extends ConditionInterface {
         return check(node.getLocation());
     }
     
-    @SuppressWarnings("deprecation")
     private boolean check(Location location){
         Block block = location.getBlock();
         return block.getType() == type.getFlag().getMaterial() &&

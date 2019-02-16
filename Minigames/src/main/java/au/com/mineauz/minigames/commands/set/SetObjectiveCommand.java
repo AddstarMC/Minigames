@@ -17,7 +17,7 @@ public class SetObjectiveCommand implements ICommand {
 
     @Override
     public String[] getAliases() {
-        return new String[] {"obj"};
+        return new String[]{"obj"};
     }
 
     @Override
@@ -37,7 +37,7 @@ public class SetObjectiveCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> objective <Objective Here>"};
+        return new String[]{"/minigame set <Minigame> objective <Objective Here>"};
     }
 
     @Override
@@ -52,25 +52,24 @@ public class SetObjectiveCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(!args[0].equals("null")){
+                             String label, String[] args) {
+        if (args != null) {
+            if (!args[0].equals("null")) {
                 String obj = "";
                 int count = 0;
-                for(String arg : args){
+                for (String arg : args) {
                     obj += arg;
                     count++;
-                    if(count != args.length)
+                    if (count != args.length)
                         obj += " ";
                 }
                 minigame.setObjective(obj);
                 sender.sendMessage(ChatColor.GRAY + "The objective for " + minigame + " has been set.");
-            }
-            else{
+            } else {
                 minigame.setObjective(null);
                 sender.sendMessage(ChatColor.GRAY + "The objective for " + minigame + " has been removed.");
             }
-            
+
             return true;
         }
         return false;
@@ -78,7 +77,7 @@ public class SetObjectiveCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

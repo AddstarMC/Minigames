@@ -27,8 +27,8 @@ public class TestMinigame extends Minigame {
         setTimer(5);
         setMaxScore(3);
         setMaxPlayers(2);
-        ((TeamsModule)this.getModule("Teams")).addTeam(TeamColor.BLUE);
-        ((TeamsModule)this.getModule("Teams")).addTeam(TeamColor.RED);
+        ((TeamsModule) this.getModule("Teams")).addTeam(TeamColor.BLUE);
+        ((TeamsModule) this.getModule("Teams")).addTeam(TeamColor.RED);
         manager.addMinigame(this);
     }
 }

@@ -9,7 +9,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 
-public class SetTimerCommand implements ICommand{
+public class SetTimerCommand implements ICommand {
 
     @Override
     public String getName() {
@@ -39,7 +39,7 @@ public class SetTimerCommand implements ICommand{
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> timer <Number>[m|h]", "/minigame set <Minigame> timer useXPBar <true/false>"};
+        return new String[]{"/minigame set <Minigame> timer <Number>[m|h]", "/minigame set <Minigame> timer useXPBar <true/false>"};
     }
 
     @Override
@@ -54,37 +54,34 @@ public class SetTimerCommand implements ICommand{
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(args[0].matches("[0-9]+[mh]?")){
+                             String label, String[] args) {
+        if (args != null) {
+            if (args[0].matches("[0-9]+[mh]?")) {
                 boolean hours = false;
                 boolean minutes = false;
-                if(args[0].contains("h")){
+                if (args[0].contains("h")) {
                     hours = true;
-                }
-                else if(args[0].contains("m")){
+                } else if (args[0].contains("m")) {
                     minutes = true;
                 }
-                
+
                 int time = Integer.parseInt(args[0].replace("m", "").replace("h", ""));
-                if(hours){
+                if (hours) {
                     time = time * 60 * 60;
-                }else if(minutes){
+                } else if (minutes) {
                     time = time * 60;
                 }
                 minigame.setTimer(time);
-                if(time != 0){
+                if (time != 0) {
                     sender.sendMessage(ChatColor.GRAY + "The timer for \"" + minigame + "\" has been set to " + MinigameUtils.convertTime(time) + ".");
-                }
-                else{
+                } else {
                     sender.sendMessage(ChatColor.GRAY + "The timer for \"" + minigame + "\" has been removed.");
                 }
                 return true;
-            }
-            else if(args[0].equalsIgnoreCase("usexpbar") && args.length == 2){
+            } else if (args[0].equalsIgnoreCase("usexpbar") && args.length == 2) {
                 boolean bool = Boolean.parseBoolean(args[1]);
                 minigame.setUseXPBarTimer(bool);
-                if(bool)
+                if (bool)
                     sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will now show the timer in the XP bar.");
                 else
                     sender.sendMessage(ChatColor.GRAY + minigame.toString() + " will no longer show the timer in the XP bar.");
@@ -96,7 +93,7 @@ public class SetTimerCommand implements ICommand{
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

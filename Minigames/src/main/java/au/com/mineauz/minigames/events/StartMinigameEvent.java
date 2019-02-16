@@ -9,30 +9,32 @@ import java.util.List;
 /**
  * You cannot cancel this event
  */
-public class StartMinigameEvent extends AbstractMinigameEvent{
+public class StartMinigameEvent extends AbstractMinigameEvent {
 
     private boolean willTeleport;
     private List<MinigamePlayer> players;
 
-    public StartMinigameEvent(List<MinigamePlayer> players, Minigame minigame, boolean willTeleport){
+    public StartMinigameEvent(List<MinigamePlayer> players, Minigame minigame, boolean willTeleport) {
         super(minigame);
         this.willTeleport = willTeleport;
         this.players = players;
     }
 
-    public boolean getWillTeleport(){
+    public boolean getWillTeleport() {
         return willTeleport;
     }
 
-    public List<MinigamePlayer> getPlayers(){
+    public List<MinigamePlayer> getPlayers() {
         return new ArrayList<>(players);
     }
 
     @Override
-    public boolean isCancelled(){return false;}
+    public boolean isCancelled() {
+        return false;
+    }
 
     @Override
-    public void setCancelled(boolean b){
+    public void setCancelled(boolean b) {
         throw new UnsupportedOperationException("Cannot cancel a  Minigames Broadcast Event");
     }
 

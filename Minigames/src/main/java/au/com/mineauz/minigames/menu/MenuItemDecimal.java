@@ -10,17 +10,17 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemDecimal extends MenuItem{
-    
+public class MenuItemDecimal extends MenuItem {
+
     protected Callback<Double> value;
+    protected DecimalFormat form = new DecimalFormat("#.##");
     private double lowerInc;
     private double upperInc;
     private Double min;
     private Double max;
-    protected DecimalFormat form = new DecimalFormat("#.##");
 
     public MenuItemDecimal(String name, Material displayItem, Callback<Double> value,
-            double lowerInc, double upperInc, Double min, Double max) {
+                           double lowerInc, double upperInc, Double min, Double max) {
         super(name, displayItem);
         this.value = value;
         this.lowerInc = lowerInc;
@@ -31,7 +31,7 @@ public class MenuItemDecimal extends MenuItem{
     }
 
     public MenuItemDecimal(String name, List<String> description, Material displayItem, Callback<Double> value,
-            double lowerInc, double upperInc, Double min, Double max) {
+                           double lowerInc, double upperInc, Double min, Double max) {
         super(name, description, displayItem);
         this.value = value;
         this.lowerInc = lowerInc;
@@ -40,26 +40,25 @@ public class MenuItemDecimal extends MenuItem{
         this.max = max;
         updateDescription();
     }
-    
-    public void setFormat(DecimalFormat format){
+
+    public void setFormat(DecimalFormat format) {
         form = format;
     }
-    
-    public void updateDescription(){
+
+    public void updateDescription() {
         List<String> description = null;
-        if(getDescription() != null){
+        if (getDescription() != null) {
             description = getDescription();
             String desc = ChatColor.stripColor(getDescription().get(0));
-            
-            if(desc.matches("-?[0-9]+(.[0-9]+)?"))
+
+            if (desc.matches("-?[0-9]+(.[0-9]+)?"))
                 description.set(0, ChatColor.GREEN.toString() + form.format(value.getValue()));
             else if (value.getValue().isInfinite()) {
                 description.add(0, ChatColor.GREEN.toString() + "INFINITE");
             } else {
                 description.add(0, ChatColor.GREEN.toString() + form.format(value.getValue()));
             }
-        }
-        else{
+        } else {
             description = new ArrayList<>();
             if (value.getValue().isInfinite()) {
                 description.add(0, ChatColor.GREEN.toString() + "INFINITE");
@@ -67,79 +66,79 @@ public class MenuItemDecimal extends MenuItem{
                 description.add(0, ChatColor.GREEN.toString() + form.format(value.getValue()));
             }
         }
-        
+
         setDescription(description);
     }
-    
+
     @Override
-    public ItemStack onClick(){
-        if(max == null || value.getValue() < max)
+    public ItemStack onClick() {
+        if (max == null || value.getValue() < max)
             value.setValue(Double.valueOf(form.format(value.getValue() + lowerInc)));
-        if(max != null && value.getValue() > max)
+        if (max != null && value.getValue() > max)
             value.setValue(max);
         updateDescription();
         return getItem();
     }
-    
+
     @Override
-    public ItemStack onRightClick(){
-        if(min == null || value.getValue() > min)
+    public ItemStack onRightClick() {
+        if (min == null || value.getValue() > min)
             value.setValue(Double.valueOf(form.format(value.getValue() - lowerInc)));
-        if(min != null && value.getValue() < min)
+        if (min != null && value.getValue() < min)
             value.setValue(min);
         updateDescription();
         return getItem();
     }
-    
+
     @Override
-    public ItemStack onShiftClick(){
-        if(max == null || value.getValue() < max)
+    public ItemStack onShiftClick() {
+        if (max == null || value.getValue() < max)
             value.setValue(Double.valueOf(form.format(value.getValue() + upperInc)));
-        if(max != null && value.getValue() > max)
+        if (max != null && value.getValue() > max)
             value.setValue(max);
         updateDescription();
         return getItem();
     }
-    
+
     @Override
-    public ItemStack onShiftRightClick(){
-        if(min == null || value.getValue() > min)
+    public ItemStack onShiftRightClick() {
+        if (min == null || value.getValue() > min)
             value.setValue(Double.valueOf(form.format(value.getValue() - upperInc)));
-        if(min != null && value.getValue() < min)
+        if (min != null && value.getValue() < min)
             value.setValue(min);
         updateDescription();
         return getItem();
     }
-    
+
     @Override
-    public ItemStack onDoubleClick(){
+    public ItemStack onDoubleClick() {
         MinigamePlayer ply = getContainer().getViewer();
         ply.setNoClose(true);
         ply.getPlayer().closeInventory();
         ply.sendMessage("Enter decimal value into chat for " + getName() + ", the menu will automatically reopen in 15s if nothing is entered.", null);
         String min = "N/A";
         String max = "N/A";
-        if(this.min != null){
+        if (this.min != null) {
             min = this.min.toString();
         }
-        if(this.max != null){
+        if (this.max != null) {
             max = this.max.toString();
         }
         ply.setManualEntry(this);
         ply.sendInfoMessage("Min: " + min + ", Max: " + max);
         getContainer().startReopenTimer(15);
-        
+
         return null;
     }
-    
+
     @Override
-    public void checkValidEntry(String entry){
-        if(entry.matches("-?[0-9]+(.[0-9]+)?")){
+    public void checkValidEntry(String entry) {
+        if (entry.matches("-?[0-9]+(.[0-9]+)?")) {
             double entryValue = Double.parseDouble(entry);
-            if((min == null || entryValue >= min) && (max == null || entryValue <= max)){
+            if ((min == null || entryValue >= min) && (max == null || entryValue <= max)) {
                 value.setValue(entryValue);
                 updateDescription();
-                
+
                 getContainer().cancelReopenTimer();
                 getContainer().displayMenu(getContainer().getViewer());
                 return;

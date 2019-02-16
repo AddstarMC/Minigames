@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.stats;
 
 /**
  * The value of StatFormat determines how a stat is stored.
+ *
  * @see #Last
  * @see #LastAndTotal
  * @see #Min
@@ -10,7 +11,7 @@ package au.com.mineauz.minigames.stats;
  * @see #MaxAndTotal
  * @see #MinMax
  * @see #MinMaxAndTotal
- * @see #Total 
+ * @see #Total
  */
 public enum StatFormat {
     /**
@@ -62,13 +63,13 @@ public enum StatFormat {
      * The stored key will be {@code '<name>'}
      */
     Total(StatValueField.Total);
-    
+
     private StatValueField[] fields;
-    
+
     StatFormat(StatValueField... fields) {
         this.fields = fields;
     }
-    
+
     /**
      * @return Returns all fields in use by this format
      */

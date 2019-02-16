@@ -24,20 +24,20 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.*;
 
 public class MinigameManager {
-    private Map<String, Minigame> minigames = new HashMap<>();
-    private Map<String, Configuration> configs = new HashMap<>();
-    private Map<MinigameType, MinigameTypeBase> minigameTypes = new HashMap<>();
-    private Map<String, PlayerLoadout> globalLoadouts = new HashMap<>();
-    private Map<String, RewardsFlag> rewardSigns = new HashMap<>();
-    private static Minigames plugin = Minigames.getPlugin();
+    private static final Minigames plugin = Minigames.getPlugin();
+    private final Map<String, Minigame> minigames = new HashMap<>();
+    private final Map<String, Configuration> configs = new HashMap<>();
+    private final Map<MinigameType, MinigameTypeBase> minigameTypes = new HashMap<>();
+    private final Map<String, PlayerLoadout> globalLoadouts = new HashMap<>();
+    private final Map<String, RewardsFlag> rewardSigns = new HashMap<>();
     private MinigameSave rewardSignsSave = null;
-    private Map<Minigame, List<String>> claimedScoreSignsRed = new HashMap<>();
-    private Map<Minigame, List<String>> claimedScoreSignsBlue = new HashMap<>();
+    private final Map<Minigame, List<String>> claimedScoreSignsRed = new HashMap<>();
+    private final Map<Minigame, List<String>> claimedScoreSignsBlue = new HashMap<>();
 
-    private List<Class<? extends MinigameModule>> modules = new ArrayList<>();
+    private final List<Class<? extends MinigameModule>> modules = new ArrayList<>();
 
     public MinigameManager() {
-        
+
         modules.add(LoadoutModule.class);
         modules.add(LobbySettingsModule.class);
         modules.add(TeamsModule.class);
@@ -50,39 +50,39 @@ public class MinigameManager {
         modules.add(CTFModule.class);
         modules.add(ResourcePackModule.class);
     }
-    
-    public List<Class<? extends MinigameModule>> getModules(){
+
+    public List<Class<? extends MinigameModule>> getModules() {
         return modules;
     }
-    
-    public void addModule(Class<? extends MinigameModule> module){
+
+    public void addModule(Class<? extends MinigameModule> module) {
         modules.add(module);
     }
-    
-    public void removeModule(String moduleName, Class<? extends MinigameModule> module){
-        for(Minigame mg : getAllMinigames().values()){
+
+    public void removeModule(String moduleName, Class<? extends MinigameModule> module) {
+        for (Minigame mg : getAllMinigames().values()) {
             mg.removeModule(moduleName);
         }
-        
+
         modules.remove(module);
     }
-    
-    public void startGlobalMinigame(Minigame minigame, MinigamePlayer caller){
+
+    public void startGlobalMinigame(Minigame minigame, MinigamePlayer caller) {
         boolean canStart = minigame.getMechanic().checkCanStart(minigame, caller);
-        if(minigame.getType() == MinigameType.GLOBAL &&
+        if (minigame.getType() == MinigameType.GLOBAL &&
                 minigame.getMechanic().validTypes().contains(MinigameType.GLOBAL) &&
-                canStart){
+                canStart) {
             StartGlobalMinigameEvent ev = new StartGlobalMinigameEvent(minigame, caller);
             Bukkit.getPluginManager().callEvent(ev);
-            
+
             minigame.getMechanic().startMinigame(minigame, caller);
             ResourcePackModule module = (ResourcePackModule) minigame.getModule("ResourcePack");
-            if ( module != null) {
+            if (module != null) {
                 if (module.isEnabled()) {
                     String name = module.getResourcePackName();
                     ResourcePack pack = plugin.getResourceManager().getResourcePack(name);
                     if (pack.isValid()) {
-                        for (MinigamePlayer player: minigame.getPlayers()) {
+                        for (MinigamePlayer player : minigame.getPlayers()) {
                             player.applyResourcePack(pack);
                         }
                     }
@@ -90,35 +90,33 @@ public class MinigameManager {
             }
             minigame.setEnabled(true);
             minigame.saveMinigame();
-        }
-        else if(!minigame.getMechanic().validTypes().contains(MinigameType.GLOBAL)){
-            if(caller == null)
+        } else if (!minigame.getMechanic().validTypes().contains(MinigameType.GLOBAL)) {
+            if (caller == null)
                 Bukkit.getLogger().info(MinigameUtils.getLang("minigame.error.invalidMechanic"));
             else
                 caller.sendMessage(MinigameUtils.getLang("minigame.error.invalidMechanic"), MinigameMessageType.ERROR);
-        }
-        else if(!canStart){
-            if(caller == null)
+        } else if (!canStart) {
+            if (caller == null)
                 Bukkit.getLogger().info(MinigameUtils.getLang("minigame.error.mechanicStartFail"));
             else
                 caller.sendMessage(MinigameUtils.getLang("minigame.error.mechanicStartFail"), MinigameMessageType.ERROR);
         }
     }
-    
-    public void stopGlobalMinigame(Minigame minigame, MinigamePlayer caller){
+
+    public void stopGlobalMinigame(Minigame minigame, MinigamePlayer caller) {
         if (minigame.getType() == MinigameType.GLOBAL) {
             StopGlobalMinigameEvent ev = new StopGlobalMinigameEvent(minigame, caller);
             Bukkit.getPluginManager().callEvent(ev);
-            
+
             minigame.getMechanic().stopMinigame(minigame, caller);
-            
+
             minigame.setEnabled(false);
             ResourcePackModule module = (ResourcePackModule) minigame.getModule("ResourcePack");
-            if ( module != null) {
+            if (module != null) {
                 if (module.isEnabled()) {
                     ResourcePack pack = plugin.getResourceManager().getResourcePack("empty");
                     if (pack.isValid()) {
-                        for (MinigamePlayer player: minigame.getPlayers()) {
+                        for (MinigamePlayer player : minigame.getPlayers()) {
                             player.applyResourcePack(pack);
                         }
                     }
@@ -127,34 +125,34 @@ public class MinigameManager {
             minigame.saveMinigame();
         }
     }
-    
-    public void addMinigame(Minigame game){
+
+    public void addMinigame(Minigame game) {
         minigames.put(game.getName(false), game);
     }
-    
-    public Minigame getMinigame(String minigame){
-        if(minigames.containsKey(minigame)){
+
+    public Minigame getMinigame(String minigame) {
+        if (minigames.containsKey(minigame)) {
             return minigames.get(minigame);
         }
-        
-        for(String mg : minigames.keySet()){
-            if(minigame.equalsIgnoreCase(mg) || mg.startsWith(minigame)){
+
+        for (String mg : minigames.keySet()) {
+            if (minigame.equalsIgnoreCase(mg) || mg.startsWith(minigame)) {
                 return minigames.get(mg);
             }
         }
-        
+
         return null;
     }
-    
-    public Map<String, Minigame> getAllMinigames(){
+
+    public Map<String, Minigame> getAllMinigames() {
         return minigames;
     }
-    
-    public boolean hasMinigame(String minigame){
+
+    public boolean hasMinigame(String minigame) {
         boolean hasmg = minigames.containsKey(minigame);
-        if(!hasmg){
-            for(String mg : minigames.keySet()){
-                if(mg.equalsIgnoreCase(minigame) || mg.toLowerCase().startsWith(minigame.toLowerCase())){
+        if (!hasmg) {
+            for (String mg : minigames.keySet()) {
+                if (mg.equalsIgnoreCase(minigame) || mg.toLowerCase().startsWith(minigame.toLowerCase())) {
                     hasmg = true;
                     break;
                 }
@@ -162,30 +160,30 @@ public class MinigameManager {
         }
         return hasmg;
     }
-    
-    public void removeMinigame(String minigame){
+
+    public void removeMinigame(String minigame) {
         minigames.remove(minigame);
     }
-    
-    public void addConfigurationFile(String filename, Configuration config){
+
+    public void addConfigurationFile(String filename, Configuration config) {
         configs.put(filename, config);
     }
-    
-    public Configuration getConfigurationFile(String filename){
-        if(configs.containsKey(filename)){
+
+    public Configuration getConfigurationFile(String filename) {
+        if (configs.containsKey(filename)) {
             return configs.get(filename);
         }
         return null;
     }
-    
-    public boolean hasConfigurationFile(String filename){
+
+    public boolean hasConfigurationFile(String filename) {
         return configs.containsKey(filename);
     }
-    
-    public void removeConfigurationFile(String filename){
+
+    public void removeConfigurationFile(String filename) {
         configs.remove(filename);
     }
-    
+
     public Location minigameLocations(String minigame, String type, Configuration save) {
         Double locx = (Double) save.get(minigame + "." + type + ".x");
         Double locy = (Double) save.get(minigame + "." + type + ".y");
@@ -193,7 +191,7 @@ public class MinigameManager {
         Float yaw = new Float(save.get(minigame + "." + type + ".yaw").toString());
         Float pitch = new Float(save.get(minigame + "." + type + ".pitch").toString());
         String world = (String) save.get(minigame + "." + type + ".world");
-        
+
         Location loc = new Location(plugin.getServer().getWorld(world), locx, locy, locz, yaw, pitch);
         return loc;
     }
@@ -214,20 +212,20 @@ public class MinigameManager {
                 }
             }
         }
-        
+
     }
-    
+
     public Location minigameLocationsShort(String minigame, String type, Configuration save) {
         Double locx = (Double) save.get(minigame + "." + type + ".x");
         Double locy = (Double) save.get(minigame + "." + type + ".y");
         Double locz = (Double) save.get(minigame + "." + type + ".z");
         String world = (String) save.get(minigame + "." + type + ".world");
-        
+
         Location loc = new Location(plugin.getServer().getWorld(world), locx, locy, locz);
         return loc;
     }
-    
-    public void minigameSetLocations(String minigame, Location loc, String type, FileConfiguration save){
+
+    public void minigameSetLocations(String minigame, Location loc, String type, FileConfiguration save) {
         save.set(minigame + "." + type + "." + ".x", loc.getX());
         save.set(minigame + "." + type + "." + ".y", loc.getY());
         save.set(minigame + "." + type + "." + ".z", loc.getZ());
@@ -235,67 +233,67 @@ public class MinigameManager {
         save.set(minigame + "." + type + "." + ".pitch", loc.getPitch());
         save.set(minigame + "." + type + "." + ".world", loc.getWorld().getName());
     }
-    
-    public void minigameSetLocationsShort(String minigame, Location loc, String type, FileConfiguration save){
+
+    public void minigameSetLocationsShort(String minigame, Location loc, String type, FileConfiguration save) {
         save.set(minigame + "." + type + "." + ".x", loc.getX());
         save.set(minigame + "." + type + "." + ".y", loc.getY());
         save.set(minigame + "." + type + "." + ".z", loc.getZ());
         save.set(minigame + "." + type + "." + ".world", loc.getWorld().getName());
     }
-    
-    public void addMinigameType(MinigameTypeBase minigameType){
+
+    public void addMinigameType(MinigameTypeBase minigameType) {
         minigameTypes.put(minigameType.getType(), minigameType);
 //        Minigames.log.info("Loaded " + minigameType.getType().getName() + " minigame type."); //DEBUG
     }
-    
-    public MinigameTypeBase minigameType(MinigameType name){
-        if(minigameTypes.containsKey(name)){
+
+    public MinigameTypeBase minigameType(MinigameType name) {
+        if (minigameTypes.containsKey(name)) {
             return minigameTypes.get(name);
         }
         return null;
     }
-    
-    public Set<MinigameType> getMinigameTypes(){
+
+    public Set<MinigameType> getMinigameTypes() {
         return minigameTypes.keySet();
     }
-    
-    public List<String> getMinigameTypesList(){
+
+    public List<String> getMinigameTypesList() {
         List<String> list = new ArrayList<>();
-        for(MinigameType type : getMinigameTypes()){
+        for (MinigameType type : getMinigameTypes()) {
             list.add(type.getName());
         }
         return list;
     }
-    
-    public void addLoadout(String name){
+
+    public void addLoadout(String name) {
         globalLoadouts.put(name, new PlayerLoadout(name));
     }
-    
-    public void deleteLoadout(String name){
+
+    public void deleteLoadout(String name) {
         globalLoadouts.remove(name);
     }
-    
-    public Set<String> getLoadouts(){
+
+    public Set<String> getLoadouts() {
         return globalLoadouts.keySet();
     }
-    
-    public Map<String, PlayerLoadout> getLoadoutMap(){
+
+    public Map<String, PlayerLoadout> getLoadoutMap() {
         return globalLoadouts;
     }
-    
-    public PlayerLoadout getLoadout(String name){
+
+    public PlayerLoadout getLoadout(String name) {
         PlayerLoadout pl = null;
-        if(globalLoadouts.containsKey(name)){
+        if (globalLoadouts.containsKey(name)) {
             pl = globalLoadouts.get(name);
         }
         return pl;
     }
-    
-    public boolean hasLoadouts(){
+
+    public boolean hasLoadouts() {
         return !globalLoadouts.isEmpty();
     }
-    
-    public boolean hasLoadout(String name){
+
+    public boolean hasLoadout(String name) {
         return globalLoadouts.containsKey(name);
     }
 
@@ -312,7 +310,7 @@ public class MinigameManager {
     }
 
     public void sendMinigameMessage(Minigame minigame, String message, MinigameMessageType type, List<MinigamePlayer> exclude) {
-        if(!minigame.getShowPlayerBroadcasts())return;
+        if (!minigame.getShowPlayerBroadcasts()) return;
         String finalMessage = "";
         if (type == null) type = MinigameMessageType.INFO;
         switch (type) {
@@ -335,98 +333,96 @@ public class MinigameManager {
             pl.sendInfoMessage(finalMessage);
         }
     }
-    
-    public void addRewardSign(Location loc){
+
+    public void addRewardSign(Location loc) {
         RewardsFlag flag = new RewardsFlag(new Rewards(), MinigameUtils.createLocationID(loc));
         rewardSigns.put(MinigameUtils.createLocationID(loc), flag);
     }
-    
-    public Rewards getRewardSign(Location loc){
+
+    public Rewards getRewardSign(Location loc) {
         return rewardSigns.get(MinigameUtils.createLocationID(loc)).getFlag();
     }
-    
-    public boolean hasRewardSign(Location loc){
+
+    public boolean hasRewardSign(Location loc) {
         return rewardSigns.containsKey(MinigameUtils.createLocationID(loc));
     }
-    
-    public void removeRewardSign(Location loc){
+
+    public void removeRewardSign(Location loc) {
         String locid = MinigameUtils.createLocationID(loc);
-        if(rewardSigns.containsKey(locid)){
+        if (rewardSigns.containsKey(locid)) {
             rewardSigns.remove(locid);
-            if(rewardSignsSave == null)
+            if (rewardSignsSave == null)
                 loadRewardSignsFile();
             rewardSignsSave.getConfig().set(locid, null);
             rewardSignsSave.saveConfig();
             rewardSignsSave = null;
         }
     }
-    
-    public void saveRewardSigns(){
-        for(String rew : rewardSigns.keySet()){
+
+    public void saveRewardSigns() {
+        for (String rew : rewardSigns.keySet()) {
             saveRewardSign(rew, false);
         }
-        if(rewardSignsSave != null){
+        if (rewardSignsSave != null) {
             rewardSignsSave.saveConfig();
             rewardSignsSave = null;
         }
     }
-    
-    public void saveRewardSign(String id, boolean save){
+
+    public void saveRewardSign(String id, boolean save) {
         RewardsFlag reward = rewardSigns.get(id);
-        if(rewardSignsSave == null)
+        if (rewardSignsSave == null)
             loadRewardSignsFile();
         FileConfiguration cfg = rewardSignsSave.getConfig();
         cfg.set(id, null);
         reward.saveValue("", cfg);
-        if(save){
+        if (save) {
             rewardSignsSave.saveConfig();
             rewardSignsSave = null;
         }
     }
-    
-    public void loadRewardSignsFile(){
+
+    public void loadRewardSignsFile() {
         rewardSignsSave = new MinigameSave("rewardSigns");
     }
-    
-    public void loadRewardSigns(){
-        if(rewardSignsSave == null)
+
+    public void loadRewardSigns() {
+        if (rewardSignsSave == null)
             loadRewardSignsFile();
-        
+
         FileConfiguration cfg = rewardSignsSave.getConfig();
         Set<String> keys = cfg.getKeys(false);
-        for(String id : keys){
+        for (String id : keys) {
             RewardsFlag rew = new RewardsFlag(new Rewards(), id);
             rew.loadValue("", cfg);
-            
+
             rewardSigns.put(id, rew);
         }
     }
-    
-    public boolean hasClaimedScore(Minigame mg, Location loc, int team){
+
+    public boolean hasClaimedScore(Minigame mg, Location loc, int team) {
         String id = MinigameUtils.createLocationID(loc);
-        if(team == 0){
+        if (team == 0) {
             return claimedScoreSignsRed.containsKey(mg) && claimedScoreSignsRed.get(mg).contains(id);
-        }
-        else{
+        } else {
             return claimedScoreSignsBlue.containsKey(mg) && claimedScoreSignsBlue.get(mg).contains(id);
         }
     }
-    
-    public void addClaimedScore(Minigame mg, Location loc, int team){
+
+    public void addClaimedScore(Minigame mg, Location loc, int team) {
         String id = MinigameUtils.createLocationID(loc);
-        if(team == 0){
-            if(!claimedScoreSignsRed.containsKey(mg))
+        if (team == 0) {
+            if (!claimedScoreSignsRed.containsKey(mg))
                 claimedScoreSignsRed.put(mg, new ArrayList<>());
             claimedScoreSignsRed.get(mg).add(id);
-        }
-        else{
-            if(!claimedScoreSignsBlue.containsKey(mg))
+        } else {
+            if (!claimedScoreSignsBlue.containsKey(mg))
                 claimedScoreSignsBlue.put(mg, new ArrayList<>());
             claimedScoreSignsBlue.get(mg).add(id);
         }
     }
-    
-    public void clearClaimedScore(Minigame mg){
+
+    public void clearClaimedScore(Minigame mg) {
         claimedScoreSignsRed.remove(mg);
         claimedScoreSignsBlue.remove(mg);
     }

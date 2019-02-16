@@ -8,10 +8,10 @@ import org.bukkit.potion.PotionEffect;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItemDisplayPotions extends MenuItem{
-    
+public class MenuItemDisplayPotions extends MenuItem {
+
     private PlayerLoadout loadout;
-    
+
     public MenuItemDisplayPotions(String name, Material displayItem, PlayerLoadout loadout) {
         super(name, displayItem);
         this.loadout = loadout;
@@ -21,12 +21,12 @@ public class MenuItemDisplayPotions extends MenuItem{
         super(name, description, displayItem);
         this.loadout = loadout;
     }
-    
-    
+
+
     @Override
-    public ItemStack onClick(){
+    public ItemStack onClick() {
         Menu potionMenu = new Menu(5, getContainer().getName(), getContainer().getViewer());
-        
+
         potionMenu.setAllowModify(true);
         potionMenu.setPreviousPage(getContainer());
         potionMenu.addItem(new MenuItemPotionAdd("Add Potion", MenuUtility.getCreateMaterial(), loadout), 43);
@@ -34,15 +34,15 @@ public class MenuItemDisplayPotions extends MenuItem{
 
         List<String> des = new ArrayList<>();
         des.add("Shift + Right Click to Delete");
-        
+
         int inc = 0;
-        for(PotionEffect eff : loadout.getAllPotionEffects()){
+        for (PotionEffect eff : loadout.getAllPotionEffects()) {
             potionMenu.addItem(new MenuItemPotion(eff.getType().getName().toLowerCase().replace("_", " "), des, Material.POTION, eff, loadout), inc);
             inc++;
         }
-        
+
         potionMenu.displayMenu(getContainer().getViewer());
-        
+
         return null;
     }
 }

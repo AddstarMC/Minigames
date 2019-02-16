@@ -8,16 +8,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+
 import com.google.common.collect.Lists;
 
 public class ConnectionPool {
     private String connectionString;
-    private Properties props ;
+    private Properties props;
 
-    
+
     private long maxIdleTime;
-    
-    private List<ConnectionHandler> connections;
+
+    private final List<ConnectionHandler> connections;
+
     @Deprecated
     public ConnectionPool(String connectionString, String username, String password) {
         props = new Properties();
@@ -28,26 +30,28 @@ public class ConnectionPool {
         connections = Collections.synchronizedList(Lists.newArrayList());
         maxIdleTime = TimeUnit.SECONDS.toMillis(30);
     }
+
     public ConnectionPool(String connectionString, Properties properties) {
         this.connectionString = connectionString;
         props = properties;
         connections = Collections.synchronizedList(Lists.<ConnectionHandler>newArrayList());
         maxIdleTime = TimeUnit.SECONDS.toMillis(30);
     }
-    public void setMaxIdleTime(long maxTime) {
-        maxIdleTime = maxTime;
-    }
-    
+
     public long getMaxIdleTime() {
         return maxIdleTime;
     }
-    
+
+    public void setMaxIdleTime(long maxTime) {
+        maxIdleTime = maxTime;
+    }
+
     public void removeExpired() {
-        synchronized(connections) {
+        synchronized (connections) {
             Iterator<ConnectionHandler> it = connections.iterator();
-            while(it.hasNext()) {
+            while (it.hasNext()) {
                 ConnectionHandler handler = it.next();
-                
+
                 if (!handler.isInUse()) {
                     if (System.currentTimeMillis() - handler.getCloseTime() > maxIdleTime) {
                         // Timeout
@@ -63,19 +67,19 @@ public class ConnectionPool {
             }
         }
     }
-    
+
     /**
      * @return Returns a free connection from the pool of connections. Creates a new connection if there are none available
      */
     public ConnectionHandler getConnection() throws SQLException {
-        synchronized(connections) {
+        synchronized (connections) {
             for (int i = 0; i < connections.size(); ++i) {
                 ConnectionHandler con = connections.get(i);
-                
+
                 if (con.lease()) {
                     // Check connection
                     boolean healthy = true;
-                    
+
                     try {
                         if (con.getConnection().isClosed()) {
                             healthy = false;
@@ -83,23 +87,23 @@ public class ConnectionPool {
                     } catch (SQLException e) {
                         healthy = false;
                     }
-                    
+
                     // Get rid of the connection
                     if (!healthy) {
                         con.closeConnection();
                         connections.remove(i--);
-                    // Its ok
+                        // Its ok
                     } else {
                         return con;
                     }
                 }
             }
         }
-        
+
         // Create a new connection
         return createConnection();
     }
-    
+
     private ConnectionHandler createConnection() throws SQLException {
         Connection connection = DriverManager.getConnection(connectionString, props);
         ConnectionHandler handler = new ConnectionHandler(connection);
@@ -108,11 +112,11 @@ public class ConnectionPool {
     }
 
     public void closeConnections() {
-        synchronized(connections) {
+        synchronized (connections) {
             for (ConnectionHandler c : connections) {
                 c.closeConnection();
             }
-            
+
             connections.clear();
         }
     }

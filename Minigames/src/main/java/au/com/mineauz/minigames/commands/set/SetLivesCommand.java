@@ -37,7 +37,7 @@ public class SetLivesCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> lives <number>"};
+        return new String[]{"/minigame set <Minigame> lives <number>"};
     }
 
     @Override
@@ -52,12 +52,12 @@ public class SetLivesCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(args[0].matches("[0-9]+")){
+                             String label, String[] args) {
+        if (args != null) {
+            if (args[0].matches("[0-9]+")) {
                 int lives = Integer.parseInt(args[0]);
                 minigame.setLives(lives);
-                
+
                 sender.sendMessage(ChatColor.GRAY + minigame.getName(false) + "'s lives has been set to " + lives);
                 return true;
             }
@@ -67,7 +67,7 @@ public class SetLivesCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

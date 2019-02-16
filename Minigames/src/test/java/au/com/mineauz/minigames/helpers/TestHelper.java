@@ -19,15 +19,15 @@ import org.bukkit.material.MaterialData;
  * Created for the AddstarMC Project. Created by Narimm on 6/02/2019.
  */
 public class TestHelper {
-    public static Minigame createMinigame(Minigames plugin, WorldMock world, MinigameType type, GameMechanics.MECHANIC_NAME mechanic){
-        Location start = new Location(world,0,21,0);
-        Minigame game = new Minigame("TestGame", MinigameType.MULTIPLAYER,start);
+    public static Minigame createMinigame(Minigames plugin, WorldMock world, MinigameType type, GameMechanics.MECHANIC_NAME mechanic) {
+        Location start = new Location(world, 0, 21, 0);
+        Minigame game = new Minigame("TestGame", MinigameType.MULTIPLAYER, start);
         game.setType(type);
         game.setMechanic(mechanic.toString());
         game.setDeathDrops(true);
-        Location quit = new Location(world,0,20,0);
+        Location quit = new Location(world, 0, 20, 0);
         game.setQuitPosition(quit);
-        Location lobby= new Location(world,0,5.,0);
+        Location lobby = new Location(world, 0, 5., 0);
         game.setLobbyPosition(lobby);
         Location end = new Location(world, 0, 25, 0);
         game.setEndPosition(end);
@@ -39,44 +39,44 @@ public class TestHelper {
         plugin.getMinigameManager().addMinigame(game);
         return game;
     }
-    
-    public static BlockMock createSignBlock(Map<Integer,String> lines, WorldMock world){
-        MaterialData data = new MaterialData(Material.SIGN,(byte)0);
-        MockSign sign = new MockSign(data,true);
-        for(Map.Entry<Integer,String> e:lines.entrySet()){
-            sign.setLine(e.getKey(),e.getValue());
+
+    public static BlockMock createSignBlock(Map<Integer, String> lines, WorldMock world) {
+        MaterialData data = new MaterialData(Material.SIGN, (byte) 0);
+        MockSign sign = new MockSign(data, true);
+        for (Map.Entry<Integer, String> e : lines.entrySet()) {
+            sign.setLine(e.getKey(), e.getValue());
         }
         BlockData bData = new BlockData() {
             @Override
             public Material getMaterial() {
                 return Material.SIGN;
             }
-        
+
             @Override
             public String getAsString() {
                 return null;
             }
-        
+
             @Override
             public String getAsString(boolean b) {
                 return "SIGN";
             }
-        
+
             @Override
             public BlockData merge(BlockData blockData) {
                 return this;
             }
-        
+
             @Override
             public boolean matches(BlockData blockData) {
                 return true;
             }
-        
+
             @Override
             public BlockData clone() {
                 return this;
             }
         };
-        return new SignBlockMock(Material.SIGN,new Location(world,10,40,10),sign,bData);
+        return new SignBlockMock(Material.SIGN, new Location(world, 10, 40, 10), sign, bData);
     }
 }

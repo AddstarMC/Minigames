@@ -7,24 +7,24 @@ public class StatSettings {
     private final MinigameStat stat;
     private StatFormat format;
     private String displayName;
-    
+
     public StatSettings(MinigameStat stat, StatFormat format, String displayName) {
         this.stat = stat;
         this.format = format;
         this.displayName = displayName;
     }
-    
+
     public StatSettings(MinigameStat stat) {
         this(stat, null, null);
     }
-    
+
     /**
      * @return Returns the stat
      */
     public MinigameStat getStat() {
         return stat;
     }
-    
+
     /**
      * @return Returns the current format of this stat for this minigame
      */
@@ -35,15 +35,16 @@ public class StatSettings {
             return format;
         }
     }
-    
+
     /**
      * Sets the format of this stat for this minigame.
+     *
      * @param format The new format to display. Setting to null will reset the format
      */
     public void setFormat(StatFormat format) {
         this.format = format;
     }
-    
+
     /**
      * @return Returns the current display name of this stat
      */
@@ -54,9 +55,10 @@ public class StatSettings {
             return displayName;
         }
     }
-    
+
     /**
      * Sets the display name of this stat for this minigame
+     *
      * @param displayName The new name of this stat. Setting to null will reset the name
      */
     public void setDisplayName(String displayName) {

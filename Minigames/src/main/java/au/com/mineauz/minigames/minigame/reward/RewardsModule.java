@@ -18,27 +18,31 @@ import java.util.Map;
 public class RewardsModule extends MinigameModule {
     public static final String Name = "rewards";
     private RewardScheme scheme;
-    
+
     public RewardsModule(Minigame minigame) {
         super(minigame);
-        
+
         // Default scheme
         scheme = new StandardRewardScheme();
+    }
+
+    public static RewardsModule getModule(Minigame minigame) {
+        return (RewardsModule) minigame.getModule(Name);
     }
 
     @Override
     public String getName() {
         return Name;
     }
-    
+
     public RewardScheme getScheme() {
         return scheme;
     }
-    
+
     public void setRewardScheme(RewardScheme scheme) {
         this.scheme = scheme;
     }
-    
+
     public void awardPlayer(MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion) {
         scheme.awardPlayer(player, data, minigame, firstCompletion);
     }
@@ -56,10 +60,10 @@ public class RewardsModule extends MinigameModule {
     @Override
     public void save(FileConfiguration config) {
         String name = RewardSchemes.getName(scheme.getClass());
-        
+
         ConfigurationSection root = config.getConfigurationSection(getMinigame().getName(false));
         root.set("reward-scheme", name);
-        
+
         ConfigurationSection rewards = root.createSection("rewards");
         scheme.save(rewards);
     }
@@ -88,15 +92,20 @@ public class RewardsModule extends MinigameModule {
             submenu.displayMenu(menu.getViewer());
             return null;
         });
-        
+
         menu.addItem(launcher);
     }
-    
+
     private Menu createSubMenu(final Menu parent) {
         final Menu submenu = new Menu(6, "Reward Settings", parent.getViewer());
         scheme.addMenuItems(submenu);
-        
+
         submenu.addItem(RewardSchemes.newMenuItem("Reward Scheme", Material.PAPER, new Callback<Class<? extends RewardScheme>>() {
+            @Override
+            public Class<? extends RewardScheme> getValue() {
+                return scheme.getClass();
+            }
+
             @Override
             public void setValue(Class<? extends RewardScheme> value) {
                 scheme = RewardSchemes.createScheme(value);
@@ -104,13 +113,8 @@ public class RewardsModule extends MinigameModule {
                 Menu menu = createSubMenu(parent);
                 menu.displayMenu(submenu.getViewer());
             }
-            
-            @Override
-            public Class<? extends RewardScheme> getValue() {
-                return scheme.getClass();
-            }
         }), submenu.getSize() - 1);
-        
+
         submenu.addItem(new MenuItemBack(parent), submenu.getSize() - 9);
         return submenu;
     }
@@ -119,9 +123,5 @@ public class RewardsModule extends MinigameModule {
     public boolean displayMechanicSettings(Menu previous) {
         // Not used
         return false;
-    }
-    
-    public static RewardsModule getModule(Minigame minigame) {
-        return (RewardsModule)minigame.getModule(Name);
     }
 }

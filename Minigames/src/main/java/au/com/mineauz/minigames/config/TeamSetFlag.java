@@ -13,11 +13,11 @@ import au.com.mineauz.minigames.minigame.Team;
 import org.bukkit.scoreboard.Team.Option;
 import au.com.mineauz.minigames.minigame.TeamColor;
 
-public class TeamSetFlag extends Flag<Map<TeamColor, Team>>{
-    
+public class TeamSetFlag extends Flag<Map<TeamColor, Team>> {
+
     private final Minigame mgm;
-    
-    public TeamSetFlag(Map<TeamColor, Team> value, String name, Minigame mgm){
+
+    public TeamSetFlag(Map<TeamColor, Team> value, String name, Minigame mgm) {
         setFlag(value);
         setDefaultFlag(value);
         setName(name);
@@ -26,7 +26,7 @@ public class TeamSetFlag extends Flag<Map<TeamColor, Team>>{
 
     @Override
     public void saveValue(String path, FileConfiguration config) {
-        for(Team t : getFlag().values()){
+        for (Team t : getFlag().values()) {
             TeamFlag tf = new TeamFlag(null, t.getColor().toString(), mgm);
             tf.setFlag(t);
             tf.saveValue(path + "." + getName(), config);
@@ -36,7 +36,7 @@ public class TeamSetFlag extends Flag<Map<TeamColor, Team>>{
     @Override
     public void loadValue(String path, FileConfiguration config) {
         Set<String> teams = config.getConfigurationSection(path + "." + getName()).getKeys(false);
-        for(String t : teams){
+        for (String t : teams) {
             TeamFlag tf = new TeamFlag(null, t, mgm);
             tf.loadValue(path + "." + getName(), config);
             getFlag().put(tf.getFlag().getColor(), tf.getFlag());
@@ -45,7 +45,7 @@ public class TeamSetFlag extends Flag<Map<TeamColor, Team>>{
             mgm.getScoreboardManager().getTeam(sbTeam).setPrefix(tf.getFlag().getColor().getColor().toString());
             mgm.getScoreboardManager().getTeam(sbTeam).setAllowFriendlyFire(false);
             mgm.getScoreboardManager().getTeam(sbTeam).setCanSeeFriendlyInvisibles(true);
-            mgm.getScoreboardManager().getTeam(sbTeam).setOption(Option.NAME_TAG_VISIBILITY,tf.getFlag().getNameTagVisibility());
+            mgm.getScoreboardManager().getTeam(sbTeam).setOption(Option.NAME_TAG_VISIBILITY, tf.getFlag().getNameTagVisibility());
         }
     }
 
@@ -56,7 +56,7 @@ public class TeamSetFlag extends Flag<Map<TeamColor, Team>>{
 
     @Override
     public MenuItem getMenuItem(String name, Material displayItem,
-            List<String> description) {
+                                List<String> description) {
         return null;
     }
 

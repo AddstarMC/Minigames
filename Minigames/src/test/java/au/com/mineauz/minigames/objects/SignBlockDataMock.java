@@ -11,27 +11,27 @@ public class SignBlockDataMock implements BlockData {
     public Material getMaterial() {
         return null;
     }
-    
+
     @Override
     public String getAsString() {
         return null;
     }
-    
+
     @Override
     public String getAsString(boolean b) {
         return null;
     }
-    
+
     @Override
     public BlockData merge(BlockData blockData) {
         return null;
     }
-    
+
     @Override
     public boolean matches(BlockData blockData) {
         return false;
     }
-    
+
     @Override
     public BlockData clone() {
         return null;

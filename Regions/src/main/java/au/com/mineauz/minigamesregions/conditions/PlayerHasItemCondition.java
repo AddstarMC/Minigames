@@ -25,15 +25,15 @@ import java.util.regex.Pattern;
 
 public class PlayerHasItemCondition extends ConditionInterface {
     
-    private MaterialFlag type = new MaterialFlag(Material.STONE, "type");
-    private StringFlag where = new StringFlag("ANYWHERE", "where");
-    private IntegerFlag slot = new IntegerFlag(0, "slot");
+    private final MaterialFlag type = new MaterialFlag(Material.STONE, "type");
+    private final StringFlag where = new StringFlag("ANYWHERE", "where");
+    private final IntegerFlag slot = new IntegerFlag(0, "slot");
     
-    private BooleanFlag matchName = new BooleanFlag(false, "matchName");
-    private BooleanFlag matchLore = new BooleanFlag(false, "matchLore");
+    private final BooleanFlag matchName = new BooleanFlag(false, "matchName");
+    private final BooleanFlag matchLore = new BooleanFlag(false, "matchLore");
     
-    private StringFlag name = new StringFlag(null, "name");
-    private StringFlag lore = new StringFlag(null, "lore");
+    private final StringFlag name = new StringFlag(null, "name");
+    private final StringFlag lore = new StringFlag(null, "lore");
 
     @Override
     public String getName() {

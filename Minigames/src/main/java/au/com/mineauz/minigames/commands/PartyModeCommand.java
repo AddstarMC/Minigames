@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
-public class PartyModeCommand implements ICommand{
+public class PartyModeCommand implements ICommand {
 
     @Override
     public String getName() {
@@ -16,7 +16,7 @@ public class PartyModeCommand implements ICommand{
 
     @Override
     public String[] getAliases() {
-        return new String[] {"pm", "party"};
+        return new String[]{"pm", "party"};
     }
 
     @Override
@@ -36,7 +36,7 @@ public class PartyModeCommand implements ICommand{
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame partymode <true/false>"};
+        return new String[]{"/minigame partymode <true/false>"};
     }
 
     @Override
@@ -51,14 +51,13 @@ public class PartyModeCommand implements ICommand{
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
+                             String label, String[] args) {
+        if (args != null) {
             boolean bool = Boolean.parseBoolean(args[0]);
             plugin.getPlayerManager().setPartyMode(bool);
-            if(bool){
+            if (bool) {
                 sender.sendMessage(ChatColor.GREEN + "Party mode has been enabled! WooHoo!");
-            }
-            else{
+            } else {
                 sender.sendMessage(ChatColor.RED + "Party mode has been disabled. :(");
             }
             return true;
@@ -68,7 +67,7 @@ public class PartyModeCommand implements ICommand{
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("true;false"), args[0]);
     }
 

@@ -10,24 +10,24 @@ public interface ICommand {
     //    public MinigamePlayerManager playerManager = Minigames.plugin.getPlayerData();
 //    public MinigameManager minigameManager = Minigames.plugin.getMinigameData();
     Minigames plugin = Minigames.getPlugin();
-    
+
     String getName();
-    
+
     String[] getAliases();
-    
+
     boolean canBeConsole();
-    
+
     String getDescription();
-    
+
     String[] getParameters();
-    
+
     String[] getUsage();
-    
+
     String getPermissionMessage();
-    
+
     String getPermission();
-    
+
     boolean onCommand(CommandSender sender, Minigame minigame, String label, String[] args);
-    
+
     List<String> onTabComplete(CommandSender sender, Minigame minigame, String alias, String[] args);
 }

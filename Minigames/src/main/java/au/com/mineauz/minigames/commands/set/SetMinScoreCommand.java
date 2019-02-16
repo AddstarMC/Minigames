@@ -37,7 +37,7 @@ public class SetMinScoreCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[] {"/minigame set <Minigame> minscore <Number>"};
+        return new String[]{"/minigame set <Minigame> minscore <Number>"};
     }
 
     @Override
@@ -52,9 +52,9 @@ public class SetMinScoreCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
-            if(args[0].matches("[0-9]+")){
+                             String label, String[] args) {
+        if (args != null) {
+            if (args[0].matches("[0-9]+")) {
                 int minscore = Integer.parseInt(args[0]);
                 minigame.setMinScore(minscore);
                 sender.sendMessage(ChatColor.GRAY + "Minimum score has been set to " + minscore + " for " + minigame.getName(false));
@@ -66,7 +66,7 @@ public class SetMinScoreCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
         return null;
     }
 

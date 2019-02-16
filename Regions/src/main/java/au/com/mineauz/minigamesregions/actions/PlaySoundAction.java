@@ -21,10 +21,10 @@ import java.util.Map;
 
 public class PlaySoundAction extends AbstractAction {
     
-    private StringFlag sound = new StringFlag("ENTITY_PLAYER_LEVELUP", "sound");
-    private BooleanFlag priv = new BooleanFlag(true, "private");
-    private FloatFlag vol = new FloatFlag(1f, "volume");
-    private FloatFlag pit = new FloatFlag(1f, "pitch");
+    private final StringFlag sound = new StringFlag("ENTITY_PLAYER_LEVELUP", "sound");
+    private final BooleanFlag priv = new BooleanFlag(true, "private");
+    private final FloatFlag vol = new FloatFlag(1f, "volume");
+    private final FloatFlag pit = new FloatFlag(1f, "pitch");
 
     @Override
     public String getName() {
