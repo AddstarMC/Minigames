@@ -32,7 +32,7 @@ public final class ResourcePack implements ConfigurationSerializable {
      * Unique SH1 hash
      */
     private byte[] hash;
-    private boolean valid;
+    private boolean valid = false;
     private String description;
 
     /**

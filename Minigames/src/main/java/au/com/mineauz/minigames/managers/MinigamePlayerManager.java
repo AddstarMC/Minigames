@@ -71,7 +71,7 @@ public class MinigamePlayerManager {
         if (isBetting) handleBets(minigame, player, betAmount);
         //Try teleport the player to their designated area.
         ResourcePack pack = getResourcePack(minigame);
-        if (pack != null & pack.isValid()) {
+        if (pack != null && pack.isValid()) {
             if (player.applyResourcePack(pack))
                 player.sendInfoMessage(MinigameUtils.getLang("minigame.resourcepack.apply"));
         }
