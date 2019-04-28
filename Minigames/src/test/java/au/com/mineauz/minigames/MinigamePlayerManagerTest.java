@@ -61,7 +61,7 @@ public class MinigamePlayerManagerTest {
         } catch (Exception e) {
         }
     }
-
+    @Test
     public void joinMinigame() {
         final PlayerMock mock = server.addPlayer();
         mock.setOutputOnSend(false);

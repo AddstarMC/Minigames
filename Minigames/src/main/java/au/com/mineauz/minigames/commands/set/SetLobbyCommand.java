@@ -152,8 +152,9 @@ public class SetLobbyCommand implements ICommand {
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
                                       String alias, String[] args) {
-        if (args != null) {
+        if (args != null && args.length > 0 ) {
             switch (args.length) {
+
                 case 1:
                     return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("canmove;caninteract;teleport;playerWait"), args[args.length - 1]);
                 case 2:

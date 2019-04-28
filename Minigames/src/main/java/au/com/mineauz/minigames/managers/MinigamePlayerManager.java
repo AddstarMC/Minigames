@@ -8,10 +8,7 @@ import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;
-import au.com.mineauz.minigames.minigame.modules.GameOverModule;
-import au.com.mineauz.minigames.minigame.modules.ResourcePackModule;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
-import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
+import au.com.mineauz.minigames.minigame.modules.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
 import au.com.mineauz.minigames.sounds.MGSounds;
@@ -216,7 +213,7 @@ public class MinigamePlayerManager {
     }
 
     public void startMPMinigame(Minigame minigame) {
-        startMPMinigame(minigame, false);
+        startMPMinigame(minigame, LobbySettingsModule.getMinigameModule(minigame).isTeleportOnStart());
     }
 
 

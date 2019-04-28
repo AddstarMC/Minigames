@@ -14,6 +14,7 @@ import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.junit.Before;
+import org.junit.Test;
 import org.sqlite.SQLiteDataSource;
 
 
@@ -90,14 +91,14 @@ public class MinigamesTest {
         }
         plugin.getMinigameManager().addMinigame(game);
     }
-
+    @Test
     public void onJoinMinigame() {
         plugin.getPlayerManager().addMinigamePlayer(player);
         MinigamePlayer mplayer = plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId());
         plugin.getPlayerManager().joinMinigame(mplayer, game, false, 0D);
         player.assertLocation(lobby, 0);
         plugin.getPlayerManager().startMPMinigame(game);
-        //player.assertLocation(start,0);
+        player.assertLocation(start,0);
     }
 
     public void onQuitMinigame() {
