@@ -51,11 +51,6 @@ public class InfectionMechanic extends GameMechanicBase {
             
             //Generate random player index
             int indexRandom = (int) (players.size() * Math.random());
-            
-            //In improbable case that index == players.size(), reduce index by 1
-            if (indexRandom == players.size()) {
-                indexRandom--;
-            }
                 
             MinigamePlayer ply = players.remove(indexRandom);
             

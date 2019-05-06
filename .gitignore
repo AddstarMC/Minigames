@@ -2,3 +2,7 @@
 target
 .idea/
 *.iml
+
+#Eclipse
+.project
+.classpath
