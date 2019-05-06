@@ -48,15 +48,17 @@ public class InfectionMechanic extends GameMechanicBase {
         List<MinigamePlayer> result = new ArrayList<>();
 
         while (players.size() > 0) {
-        	
-        	//Generate random player index
+            
+            //Generate random player index
             int indexRandom = (int) (players.size() * Math.random());
             
             //In improbable case that index == players.size(), reduce index by 1
-            if (indexRandom == players.size()) indexRandom--;
-        	
-        	MinigamePlayer ply = players.remove(indexRandom);
-        	
+            if (indexRandom == players.size()) {
+                indexRandom--;
+            }
+                
+            MinigamePlayer ply = players.remove(indexRandom);
+            
             Team red = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.RED);
             Team blue = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.BLUE);
             Team team = ply.getTeam();
