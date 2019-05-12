@@ -41,7 +41,7 @@ public class TestHelper {
     }
 
     public static BlockMock createSignBlock(Map<Integer, String> lines, WorldMock world) {
-        MaterialData data = new MaterialData(Material.SIGN, (byte) 0);
+        MaterialData data = new MaterialData(Material.OAK_SIGN, (byte) 0);
         MockSign sign = new MockSign(data, true);
         for (Map.Entry<Integer, String> e : lines.entrySet()) {
             sign.setLine(e.getKey(), e.getValue());
@@ -49,7 +49,7 @@ public class TestHelper {
         BlockData bData = new BlockData() {
             @Override
             public Material getMaterial() {
-                return Material.SIGN;
+                return Material.OAK_SIGN;
             }
 
             @Override
@@ -77,6 +77,6 @@ public class TestHelper {
                 return this;
             }
         };
-        return new SignBlockMock(Material.SIGN, new Location(world, 10, 40, 10), sign, bData);
+        return new SignBlockMock(Material.OAK_SIGN, new Location(world, 10, 40, 10), sign, bData);
     }
 }
