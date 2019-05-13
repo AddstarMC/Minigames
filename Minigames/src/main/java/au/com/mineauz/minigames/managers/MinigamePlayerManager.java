@@ -231,18 +231,23 @@ public class MinigamePlayerManager {
                     ply.sendInfoMessage(MinigameUtils.formStr("minigame.livesLeft", minigame.getLives()));
                 }
                 ply.setStartTime(Calendar.getInstance().getTimeInMillis());
+                if (!minigame.isPlayersAtStart()) {
+                    if (teleport) {
+                        teleportToStart(minigame);
+                    }
+                }
             } else {
                 List<MinigamePlayer> moved = balanceGame(minigame);
                 if (moved != null && moved.size() > 0) {
                     getStartLocations(minigame.getPlayers(), minigame);
                     if (!minigame.isPlayersAtStart()) {
-                        if (!teleport) {
+                        if (teleport) {
                             teleportToStart(minigame);
                         }
                     }
                 } else {
                     if (!minigame.isPlayersAtStart()) {
-                        if (!teleport) {
+                        if (teleport) {
                             teleportToStart(minigame);
                         }
                     }
@@ -349,7 +354,7 @@ public class MinigamePlayerManager {
                     player.setStartTime(Calendar.getInstance().getTimeInMillis());
                     result = game.getStartLocations().get(pos);
                 } else {
-                    MinigameUtils.debugMessage("StartLocations filled - recylcing from start");
+                    MinigameUtils.debugMessage("StartLocations filled - recycling from start");
                     if (!game.getStartLocations().isEmpty()) {
                         pos = 0;
                         result = game.getStartLocations().get(pos);
@@ -369,7 +374,7 @@ public class MinigamePlayerManager {
                         if (pos < game.getStartLocations().size()) {
                             result = game.getStartLocations().get(pos);
                         } else {
-                            MinigameUtils.debugMessage("StartLocations filled - recylcing from start");
+                            MinigameUtils.debugMessage("StartLocations filled - recycling from start");
                             pos = 0;
                             if (!game.getStartLocations().isEmpty()) {
                                 result = game.getStartLocations().get(pos);

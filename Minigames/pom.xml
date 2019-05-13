@@ -85,13 +85,7 @@
         <dependency>
             <groupId>be.seeseemelk</groupId>
             <artifactId>MockBukkit</artifactId>
-            <version>0.2-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.fusesource.jansi</groupId>
-            <artifactId>jansi</artifactId>
-            <version>RELEASE</version>
+            <version>0.2.1-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
