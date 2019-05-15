@@ -14,6 +14,7 @@ import au.com.mineauz.minigames.minigame.reward.ItemReward;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
+import io.papermc.lib.PaperLib;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -88,23 +89,27 @@ public class TreasureHuntMechanic extends GameMechanicBase {
 
         //Add a new Chest
         //TODO: Improve so no invalid spawns (Not over void, Strict containment)
-        if (rpos.getBlock().getType() == Material.AIR) {
-            while (rpos.getBlock().getType() == Material.AIR && rpos.getY() > 1) {
-                rpos.setY(rpos.getY() - 1);
-            }
-            rpos.setY(rpos.getY() + 1);
-
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> rpos.getBlock().setType(Material.CHEST));
-        } else {
-            while (rpos.getBlock().getType() != Material.AIR && rpos.getY() < 255) {
+        switch (rpos.getBlock().getType()){
+            case AIR:
+            case CAVE_AIR:
+            case VOID_AIR:
+                while (rpos.getBlock().getType() == Material.AIR && rpos.getY() > 1) {
+                    rpos.setY(rpos.getY() - 1);
+                }
                 rpos.setY(rpos.getY() + 1);
-            }
 
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> rpos.getBlock().setType(Material.CHEST));
+                Bukkit.getScheduler().runTaskLater(plugin, () -> rpos.getBlock().setType(Material.CHEST),1L);
+                break;
+
+                default:
+                    while (rpos.getBlock().getType() != Material.AIR && rpos.getY() < 255) {
+                        rpos.setY(rpos.getY() + 1);
+                    }
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> rpos.getBlock().setType(Material.CHEST),1L);
+                    break;
         }
-
         //Fill new chest
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
             if (rpos.getBlock().getState() instanceof Chest) {
                 final Chest chest = (Chest) rpos.getBlock().getState();
 
@@ -127,7 +132,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
                     }
                 }
             }
-        });
+        },0L);
 
         thm.setTreasureLocation(rpos);
         plugin.getLogger().info(MinigameUtils.formStr("minigame.treasurehunt.consSpawn", mgm.getName(false), rpos.getBlockX() + ", " + rpos.getBlockY() + ", " + rpos.getBlockZ()));

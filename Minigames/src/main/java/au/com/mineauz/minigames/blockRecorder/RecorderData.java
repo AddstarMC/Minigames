@@ -243,6 +243,7 @@ public class RecorderData implements Listener {
                     Location left = ((DoubleChest) inv).getLeftSide().getInventory().getLocation().clone();
                     Location right = ((DoubleChest) inv).getRightSide().getInventory().getLocation().clone();
                     if (bdata.getLocation() == left) {
+
                         addInventory(bdata, ((DoubleChest) inv).getLeftSide());
                         if (minigame.isRandomizeChests())
                             bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());

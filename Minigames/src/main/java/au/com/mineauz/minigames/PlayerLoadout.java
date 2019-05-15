@@ -155,7 +155,7 @@ public class PlayerLoadout {
         }
 
         final MinigamePlayer fplayer = player;
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () -> fplayer.getPlayer().addPotionEffects(potions));
+        Bukkit.getScheduler().runTask(Minigames.getPlugin(), () -> fplayer.getPlayer().addPotionEffects(potions));
 
         for (Entry<Class<? extends LoadoutAddon>, Object> addonValue : addonValues.entrySet()) {
             LoadoutAddon<Object> addon = LoadoutModule.getAddon(addonValue.getKey());
