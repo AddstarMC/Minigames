@@ -19,6 +19,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.sqlite.SQLiteDataSource;
@@ -30,6 +31,7 @@ import java.util.logging.Logger;
 
 import static junit.framework.TestCase.assertNotSame;
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 /**
  * Created for use for the Add5tar MC Minecraft server
@@ -124,12 +126,24 @@ public class MinigamesTest {
         server.getScheduler().performTicks(400L);
         player.assertLocation(start,0);
     }
-
+    @Test
     public void onQuitMinigame() {
         plugin.getPlayerManager().addMinigamePlayer(player);
         MinigamePlayer mplayer = plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId());
         plugin.getPlayerManager().joinMinigame(mplayer, game, false, 0D);
+        player.assertLocation(lobby, 0);
+        Assert.assertTrue(plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId()).isInMinigame());
 
+        plugin.getPlayerManager().quitMinigame(plugin.getPlayerManager().getMinigamePlayer(player), false);
+        player.assertLocation(quit, 0);
+        assertFalse(plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId()).isInMinigame());
+        server.getScheduler().performTicks(400L);
 
+    }
+
+    public void testOnDisable(){
+        assertTrue(plugin.isEnabled());
+        server.getPluginManager().disablePlugin(plugin);
+        assertFalse(plugin.isEnabled());
     }
 }
