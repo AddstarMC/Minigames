@@ -187,6 +187,9 @@ public class Minigames extends JavaPlugin {
                         return;
                     } else {
                         log().warning("Version incompatible - Force Loading Minigames.");
+                        log().warning("This version of Minigames (" + VERSION.getCanonical() + ") " +
+                                "is designed for Bukkit Version: " + SPIGOT_VERSION.getCanonical());
+                        log().warning("Your version is " + Bukkit.getBukkitVersion());
                     }
             }
             final PluginDescriptionFile desc = this.getDescription();
