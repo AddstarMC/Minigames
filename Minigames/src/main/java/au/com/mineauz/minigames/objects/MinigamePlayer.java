@@ -170,8 +170,8 @@ public class MinigamePlayer implements ScriptObject {
         this.player.setLevel(0);
         this.player.setExp(0);
 
-        this.oply = new OfflineMinigamePlayer(this.getPlayer().getUniqueId().toString(),
-                storedItems, storedArmour, food, health, saturation, lastGM, exp, level, null);
+        this.oply = new OfflineMinigamePlayer(this.getPlayer().getUniqueId(),storedItems, storedArmour, food,
+                health, saturation, lastGM, exp, level,this.getPlayer().getLocation());
         this.player.updateInventory();
     }
 

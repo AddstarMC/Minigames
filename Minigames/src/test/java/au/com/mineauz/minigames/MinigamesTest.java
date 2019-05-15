@@ -19,6 +19,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.sqlite.SQLiteDataSource;
@@ -62,7 +63,6 @@ public class MinigamesTest {
         TestWorld testworld = new TestWorld();
         testworld.setName("GAMES");
         MockBukkit.getMock().addWorld(testworld);
-        String ver = server.getBukkitVersion();
         Logger log = Logger.getAnonymousLogger();
         log.setLevel(Level.ALL);
         plugin = MockBukkit.load(Minigames.class);
@@ -75,6 +75,16 @@ public class MinigamesTest {
         player.setOutputOnSend(true);
         player.setLocation(spawn);
         MockBukkit.getMock().addPlayer(player);
+    }
+
+    @After
+    public void teardown() {
+        MockBukkit.unload();
+        plugin = null;
+        server = null;
+        player = null;
+        datasource = null;
+
     }
 
     private void createMinigame() {
@@ -111,6 +121,7 @@ public class MinigamesTest {
         }
         plugin.getMinigameManager().addMinigame(game);
     }
+
     @Test
     public void onJoinMinigame() {
         assertNotSame(player.getLocation(),game.getLobbyPosition());
@@ -123,13 +134,5 @@ public class MinigamesTest {
         assertNotSame(player.getLocation(),game.getStartLocations().indexOf(0));
         server.getScheduler().performTicks(400L);
         player.assertLocation(start,0);
-    }
-
-    public void onQuitMinigame() {
-        plugin.getPlayerManager().addMinigamePlayer(player);
-        MinigamePlayer mplayer = plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId());
-        plugin.getPlayerManager().joinMinigame(mplayer, game, false, 0D);
-
-
     }
 }

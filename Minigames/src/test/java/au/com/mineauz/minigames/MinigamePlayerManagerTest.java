@@ -58,6 +58,7 @@ public class MinigamePlayerManagerTest {
         try {
             MockBukkit.unload();
             server = null;
+            plugin = null;
         } catch (Exception e) {
         }
     }
@@ -102,7 +103,7 @@ public class MinigamePlayerManagerTest {
     }
     */
 
-    public void quitMinigame() {
+    /*public void quitMinigame() {
         final PlayerMock mock = server.addPlayer();
         mock.setOutputOnSend(false);
         plugin.getPlayerManager().addMinigamePlayer(mock);
@@ -113,7 +114,7 @@ public class MinigamePlayerManagerTest {
         assertFalse(plugin.getPlayerManager().getMinigamePlayer(mock.getUniqueId()).isInMinigame());
         MockBukkit.getMock().getScheduler().performTicks(20);
 
-    }
+    }*/
     /*
     @Test
     public void endMinigame() {

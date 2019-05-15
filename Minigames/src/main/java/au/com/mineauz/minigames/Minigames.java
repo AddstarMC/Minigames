@@ -31,6 +31,8 @@ import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
@@ -43,12 +45,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -253,9 +250,12 @@ public class Minigames extends JavaPlugin {
             this.minigameManager.loadRewardSigns();
 
             final CommandDispatcher disp = new CommandDispatcher();
-            this.getCommand("minigame").setExecutor(disp);
-            this.getCommand("minigame").setTabCompleter(disp);
-
+            PluginCommand command = this.getCommand("minigame");
+            if(command == null) {
+                throw(new Throwable("Could not find command `minigame`"));
+            }
+            command.setExecutor(disp);
+            command.setTabCompleter(disp);
             for (final Player player : this.getServer().getOnlinePlayers()) {
                 this.playerManager.addMinigamePlayer(player);
             }

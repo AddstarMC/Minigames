@@ -193,9 +193,6 @@ public class Events implements Listener {
         if (Bukkit.getServer().getOnlinePlayers().isEmpty()) {
             for (String mgm : mdata.getAllMinigames().keySet()) {
                 if (mdata.getMinigame(mgm).getType() == MinigameType.GLOBAL) {
-//                    if(minigameManager.getMinigame(mgm).getThTimer() != null){
-//                        minigameManager.getMinigame(mgm).getThTimer().pauseTimer(true);
-//                    }
                     if (mdata.getMinigame(mgm).getMinigameTimer() != null)
                         mdata.getMinigame(mgm).getMinigameTimer().stopTimer();
                 }
@@ -210,7 +207,7 @@ public class Events implements Listener {
         File pldata = new File(plugin.getDataFolder() + "/playerdata/inventories/" + event.getPlayer().getUniqueId().toString() + ".yml");
         final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
         if (pldata.exists()) {
-            ply.setOfflineMinigamePlayer(new OfflineMinigamePlayer(event.getPlayer().getUniqueId().toString()));
+            ply.setOfflineMinigamePlayer(new OfflineMinigamePlayer(event.getPlayer().getUniqueId()));
             Location floc = ply.getOfflineMinigamePlayer().getLoginLocation();
             ply.setRequiredQuit(true);
             ply.setQuitPos(floc);

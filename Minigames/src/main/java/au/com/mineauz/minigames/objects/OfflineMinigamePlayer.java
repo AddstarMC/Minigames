@@ -9,8 +9,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.UUID;
+
 public class OfflineMinigamePlayer {
-    private String uuid;
+    private UUID uuid;
     private ItemStack[] storedItems = null;
     private ItemStack[] storedArmour = null;
     private int food = 20;
@@ -22,7 +24,7 @@ public class OfflineMinigamePlayer {
     private Location loginLocation;
     private boolean shouldSave = Minigames.getPlugin().getConfig().getBoolean("saveInventory");
 
-    public OfflineMinigamePlayer(String uuid, ItemStack[] items,
+    public OfflineMinigamePlayer(UUID uuid, ItemStack[] items,
                                  ItemStack[] armour, int food, double health,
                                  float saturation, GameMode lastGM, float exp, int level,
                                  Location loginLocation) {
@@ -42,8 +44,8 @@ public class OfflineMinigamePlayer {
             savePlayerData();
     }
 
-    public OfflineMinigamePlayer(String uuid) {
-        MinigameSave save = new MinigameSave("playerdata/inventories/" + uuid);
+    public OfflineMinigamePlayer(UUID uuid) {
+        MinigameSave save = new MinigameSave("playerdata/inventories/" + uuid.toString());
         FileConfiguration con = save.getConfig();
         this.uuid = uuid;
         food = con.getInt("food");
@@ -81,7 +83,7 @@ public class OfflineMinigamePlayer {
         storedArmour = armour;
     }
 
-    public String getUUID() {
+    public UUID getUUID() {
         return uuid;
     }
 

@@ -64,6 +64,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -142,7 +143,7 @@ public class Minigame implements ScriptObject {
     private BooleanFlag randomizeChests = new BooleanFlag(false, "randomizechests");
     private IntegerFlag minChestRandom = new IntegerFlag(5, "minchestrandom");
     private IntegerFlag maxChestRandom = new IntegerFlag(10, "maxchestrandom");
-
+    @NotNull
     private ScoreboardData sbData = new ScoreboardData();
     private Map<MinigameStat, StatSettings> statSettings = Maps.newHashMap();
 
@@ -1232,6 +1233,7 @@ public class Minigame implements ScriptObject {
 
     }
 
+    @NotNull
     public ScoreboardData getScoreboardData() {
         return sbData;
     }

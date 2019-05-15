@@ -14,10 +14,6 @@ import static org.junit.Assert.*;
  */
 public class MinigameUtilsTest {
 
-    @Before
-    public void Setup() {
-
-    }
 
     @Test
     public void TestSanitize() {

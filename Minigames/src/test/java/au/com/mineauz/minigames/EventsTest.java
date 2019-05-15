@@ -19,6 +19,8 @@ import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMockFactory;
 import org.bukkit.Location;
 import org.bukkit.event.player.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 
@@ -31,6 +33,7 @@ public class EventsTest {
     private Minigames plugin;
     private Minigame game;
 
+    @Before
     public void setUp() throws Exception {
         try {
             server = MockBukkit.mock();
@@ -50,8 +53,10 @@ public class EventsTest {
         plugin.setLog(log);
         WorldMock world = (WorldMock) MockBukkit.getMock().getWorld("GAMES");
         game = TestHelper.createMinigame(plugin, world, MinigameType.MULTIPLAYER, GameMechanics.MECHANIC_NAME.KILLS);
+
     }
 
+    @Test
     public void onPlayerDisconnect() {
         PlayerMock mock = server.addPlayer();
         mock.setLocation(server.getWorld("GAMES").getSpawnLocation());
@@ -63,11 +68,9 @@ public class EventsTest {
         command.onCommand(mock, game, "", args);
         assertTrue(player.isInMinigame());
         PlayerQuitEvent event2 = new PlayerQuitEvent(mock, "has left the game");
-        Location loc = player.getLocation();
         server.getPluginManager().callEvent(event2);
         assertFalse(player.isInMinigame());
         assertFalse(plugin.getPlayerManager().hasMinigamePlayer(player.getUUID()));
-        assertEquals(mock.getUniqueId(), player.getOfflineMinigamePlayer().getUUID());
     }
 
     public void onPlayerConnect() {
