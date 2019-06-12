@@ -228,7 +228,7 @@
                     <plugin>
                         <groupId>com.gavinmogan</groupId>
                         <artifactId>codacy-maven-plugin</artifactId>
-                        <version>1.1.0</version>
+                        <version>1.2.0</version>
                         <configuration>
                             <apiToken>${codacy.api.token}</apiToken>
                             <projectToken>9a3fb2fe5b374cb5ad11e69df7db98fb</projectToken>
