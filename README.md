@@ -21,6 +21,6 @@ For the most up to date info go to [Minigames](https://minigames.addstar.com.au)
 
 Minigames is supported and will be profiled by
 
-[![YourKit Profiler](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com/java/profiler/)
+[![YourKit Profiler](https://www.yourkit.com/images/yklogo.png)](https://www.yourkit.com/java/profiler/) [![Join the chat at https://gitter.im/Minigames-/community](https://badges.gitter.im/Minigames-/community.svg)](https://gitter.im/Minigames-/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
