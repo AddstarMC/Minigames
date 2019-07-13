@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -61,6 +62,7 @@ public abstract class GameMechanicBase implements Listener{
 
     public List<MinigamePlayer> balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
         List<MinigamePlayer> result = new ArrayList<>();
+        Collections.shuffle(players);
         if(minigame.isTeamGame()){
 			boolean sorted = false;
 			for(MinigamePlayer ply : players){
