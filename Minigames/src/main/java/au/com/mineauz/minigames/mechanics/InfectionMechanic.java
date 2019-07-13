@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -46,6 +47,7 @@ public class InfectionMechanic extends GameMechanicBase {
     @Override
     public List<MinigamePlayer> balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
         List<MinigamePlayer> result = new ArrayList<>();
+		Collections.shuffle(players);
         for (MinigamePlayer ply : players) {
             Team red = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.RED);
             Team blue = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.BLUE);
@@ -55,20 +57,26 @@ public class InfectionMechanic extends GameMechanicBase {
                 if (red.getPlayers().size() < Math.ceil(players.size() * percent) && !red.isFull()) {
                     MultiplayerType.switchTeam(minigame, ply, red);
                     result.add(ply);
-                    ply.sendInfoMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()));
-                    mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), ply.getName(), red.getChatColor() + red.getDisplayName()), null, ply);
+                    if (!red.getAssignMessage().equals("null")) {
+						ply.sendMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()), null);
+						mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), ply.getName(), red.getChatColor() + red.getDisplayName()), null, ply);
+					}
                 }
             } else if (team == null) {
                 if (red.getPlayers().size() < Math.ceil(players.size() * percent) && !red.isFull()) {
                     red.addPlayer(ply);
                     result.add(ply);
-                    ply.sendInfoMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()));
-                    mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), ply.getName(), red.getChatColor() + red.getDisplayName()), null, ply);
+                    if (!red.getAssignMessage().equals("null")) {
+                        ply.sendInfoMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()));
+                        mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), ply.getName(), red.getChatColor() + red.getDisplayName()), null, ply);
+                    }
                 } else if (!blue.isFull()) {
                     blue.addPlayer(ply);
                     result.add(ply);
-                    ply.sendInfoMessage(String.format(blue.getAssignMessage(), blue.getChatColor() + blue.getDisplayName()));
-                    mdata.sendMinigameMessage(minigame, String.format(blue.getGameAssignMessage(), ply.getName(), blue.getChatColor() + blue.getDisplayName()), null, ply);
+                    if (!blue.getAssignMessage().equals("null")) {
+                        ply.sendInfoMessage(String.format(blue.getAssignMessage(), blue.getChatColor() + blue.getDisplayName()));
+                        mdata.sendMinigameMessage(minigame, String.format(blue.getGameAssignMessage(), ply.getName(), blue.getChatColor() + blue.getDisplayName()), null, ply);
+                    }
                 } else {
                     pdata.quitMinigame(ply, false);
                     ply.sendMessage(MinigameUtils.getLang("minigame.full"), MinigameMessageType.ERROR);
