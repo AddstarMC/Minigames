@@ -13,6 +13,7 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
