@@ -163,7 +163,7 @@ public class ScoreboardDisplay {
             Block start = block;
             for (int x = 0; x < width; ++x) {
                 // Only add signs
-                if (block.getType() == Material.WALL_SIGN || (!onlySigns && block.getType() == Material.AIR)) {
+                if (block.getType() == Material.OAK_WALL_SIGN || (!onlySigns && block.getType() == Material.AIR)) {
                     blocks.add(block);
                 }
 
@@ -328,7 +328,7 @@ public class ScoreboardDisplay {
         List<Block> blocks = getSignBlocks(false);
 
         for (Block block : blocks) {
-            block.setType(Material.WALL_SIGN);
+            block.setType(Material.OAK_WALL_SIGN);
             Directional d = (Directional) block.getBlockData();
             d.setFacing(facing);
             block.setBlockData(d);
@@ -352,7 +352,7 @@ public class ScoreboardDisplay {
         }
 
         Block root = rootBlock.getBlock();
-        if (root.getType() == Material.WALL_SIGN || root.getType() == Material.SIGN) {
+        if (root.getType() == Material.OAK_WALL_SIGN || root.getType() == Material.OAK_SIGN) {
             BlockState state = root.getState();
             if (state instanceof Sign) {
                 Sign sign = (Sign) state;

@@ -282,7 +282,7 @@ public class ComparableVersion
          * or QUALIFIERS.size and then resort to lexical ordering. Most comparisons are decided by the first character,
          * so this is still fast. If more characters are needed then it requires a lexical sort anyway.
          *
-         * @param qualifier
+         * @param qualifier the Qualifier to compare
          * @return an equivalent value that can be used with lexical comparison
          */
         public static String comparableQualifier(String qualifier) {

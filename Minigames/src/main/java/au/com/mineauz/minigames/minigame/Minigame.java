@@ -1030,10 +1030,10 @@ public class Minigame implements ScriptObject {
         MenuItemString obj = (MenuItemString) objective.getMenuItem("Objective Description", Material.DIAMOND);
         obj.setAllowNull(true);
         itemsMain.add(obj);
-        obj = (MenuItemString) gametypeName.getMenuItem("Gametype Description", Material.SIGN);
+        obj = (MenuItemString) gametypeName.getMenuItem("Gametype Description", Material.OAK_WALL_SIGN);
         obj.setAllowNull(true);
         itemsMain.add(obj);
-        obj = (MenuItemString) displayName.getMenuItem("Display Name", Material.SIGN);
+        obj = (MenuItemString) displayName.getMenuItem("Display Name", Material.OAK_WALL_SIGN);
         obj.setAllowNull(true);
         itemsMain.add(obj);
         itemsMain.add(new MenuItemNewLine());
@@ -1043,7 +1043,7 @@ public class Minigame implements ScriptObject {
         itemsMain.add(minPlayers.getMenuItem("Min. Players", Material.STONE_SLAB, MinigameUtils.stringToList("Multiplayer Only")));
         itemsMain.add(maxPlayers.getMenuItem("Max. Players", Material.STONE, MinigameUtils.stringToList("Multiplayer Only")));
         itemsMain.add(spMaxPlayers.getMenuItem("Enable Singleplayer Max Players", Material.IRON_BARS));
-        itemsMain.add(displayScoreboard.getMenuItem("Display Scoreboard", Material.SIGN));
+        itemsMain.add(displayScoreboard.getMenuItem("Display Scoreboard", Material.OAK_WALL_SIGN));
         itemsMain.add(new MenuItemPage("Lobby Settings", MinigameUtils.stringToList("Multiplayer Only"), Material
                 .OAK_DOOR, lobby));
         itemsMain.add(new MenuItemNewLine());
@@ -1185,9 +1185,9 @@ public class Minigame implements ScriptObject {
         itemsPlayer.add(paintBallMode.getMenuItem("Paintball Mode", Material.SNOWBALL));
         itemsPlayer.add(paintBallDamage.getMenuItem("Paintball Damage", Material.ARROW, 1, null));
         itemsPlayer.add(unlimitedAmmo.getMenuItem("Unlimited Ammo", Material.SNOW_BLOCK));
-        itemsPlayer.add(allowMPCheckpoints.getMenuItem("Enable Multiplayer Checkpoints", Material.SIGN));
-        itemsPlayer.add(saveCheckpoints.getMenuItem("Save Checkpoints", Material.SIGN, MinigameUtils.stringToList("Singleplayer Only")));
-        itemsPlayer.add(new MenuItemPage("Flags", MinigameUtils.stringToList("Singleplayer flags"), Material.SIGN, flags));
+        itemsPlayer.add(allowMPCheckpoints.getMenuItem("Enable Multiplayer Checkpoints", Material.OAK_WALL_SIGN));
+        itemsPlayer.add(saveCheckpoints.getMenuItem("Save Checkpoints", Material.OAK_WALL_SIGN, MinigameUtils.stringToList("Singleplayer Only")));
+        itemsPlayer.add(new MenuItemPage("Flags", MinigameUtils.stringToList("Singleplayer flags"), Material.OAK_WALL_SIGN, flags));
         itemsPlayer.add(allowFlight.getMenuItem("Allow Flight", Material.FEATHER, MinigameUtils.stringToList("Allow flight to;be toggled")));
         itemsPlayer.add(enableFlight.getMenuItem("Enable Flight", Material.FEATHER, MinigameUtils.stringToList("Start players;in flight;(Must have Allow;Flight)")));
         itemsPlayer.add(allowDragonEggTeleport.getMenuItem("Allow Dragon Egg Teleport", Material.DRAGON_EGG));
@@ -1202,7 +1202,7 @@ public class Minigame implements ScriptObject {
         //--------------//
         List<MenuItem> itemsFlags = new ArrayList<>(getFlags().size());
         for (String flag : getFlags()) {
-            itemsFlags.add(new MenuItemFlag(Material.SIGN, flag, getFlags()));
+            itemsFlags.add(new MenuItemFlag(Material.OAK_WALL_SIGN, flag, getFlags()));
         }
         flags.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), playerMenu), flags.getSize() - 9);
         flags.addItem(new MenuItemAddFlag("Add Flag", MenuUtility.getCreateMaterial(), this), flags.getSize() - 1);

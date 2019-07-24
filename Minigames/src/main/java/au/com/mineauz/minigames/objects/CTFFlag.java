@@ -95,7 +95,7 @@ public class CTFFlag {
                 blockBelow.getBlock().getType() == Material.DISPENSER ||
                 blockBelow.getBlock().getType() == Material.CHEST ||
                 blockBelow.getBlock().getType() == Material.BREWING_STAND ||
-                blockBelow.getBlock().getType() == Material.SIGN ||
+                blockBelow.getBlock().getType() == Material.OAK_SIGN ||
                 blockBelow.getBlock().getType() == Material.WALL_SIGN) {
             blockBelow.setY(blockBelow.getY() + 1);
         }
@@ -103,7 +103,7 @@ public class CTFFlag {
         newLocation = blockBelow.clone();
         newLocation.setY(newLocation.getY() + 1);
 
-        newLocation.getBlock().setType(Material.SIGN);
+        newLocation.getBlock().setType(Material.OAK_SIGN);
         Sign sign = (Sign) newLocation.getBlock().getState();
 
         sign.setBlockData(data);

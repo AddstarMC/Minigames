@@ -17,9 +17,9 @@
       <build.number />
       <plugin.version>${project.version}-${build.number}</plugin.version>
       <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
-      <spigot.version>${spigot.api.version}.${spigot.minor.version}-R0.1-SNAPSHOT</spigot.version>
+      <spigot.version>1.14-R0.1-SNAPSHOT</spigot.version>
       <spigot.api.version>1.13</spigot.api.version>
-      <spigot.minor.version>2</spigot.minor.version>
+      <spigot.minor.version></spigot.minor.version>
       <codacy.api.token>${env.CODACY_API_TOKEN}</codacy.api.token>
       <argline/>
   </properties>
@@ -199,6 +199,11 @@
   </build>
     <reporting>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>3.1.1</version>
+            </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>

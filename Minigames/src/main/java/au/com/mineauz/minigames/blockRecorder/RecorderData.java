@@ -52,8 +52,8 @@ public class RecorderData implements Listener {
     static {
         physBlocks.add(Material.TORCH);
         physBlocks.add(Material.WALL_TORCH);
-        physBlocks.add(Material.SIGN);
-        physBlocks.add(Material.WALL_SIGN);
+        physBlocks.add(Material.OAK_SIGN);
+        physBlocks.add(Material.OAK_WALL_SIGN);
         physBlocks.add(Material.TRIPWIRE);
         physBlocks.add(Material.RAIL);
         physBlocks.add(Material.POWERED_RAIL);
@@ -67,7 +67,7 @@ public class RecorderData implements Listener {
         physBlocks.add(Material.OAK_SAPLING);
         physBlocks.add(Material.BIRCH_SAPLING);
         physBlocks.add(Material.DARK_OAK_SAPLING);
-        physBlocks.add(Material.ROSE_RED);
+        physBlocks.add(Material.ROSE_BUSH);
         physBlocks.add(Material.SUNFLOWER);
         physBlocks.add(Material.NETHER_WART);
         physBlocks.add(Material.BOWL);

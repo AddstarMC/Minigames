@@ -357,7 +357,7 @@ public class Events implements Listener {
             if (event.getPlayer().isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
                 tool.openMenu(ply);
                 event.setCancelled(true);
-            } else if (event.getClickedBlock() != null && (event.getClickedBlock().getType() == Material.WALL_SIGN || event.getClickedBlock().getType() == Material.SIGN)) {
+            } else if (event.getClickedBlock() != null && (event.getClickedBlock().getType() == Material.OAK_WALL_SIGN || event.getClickedBlock().getType() == Material.OAK_SIGN)) {
                 Sign sign = (Sign) event.getClickedBlock().getState();
                 if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[Minigame]") && ChatColor.stripColor(sign.getLine(1)).equalsIgnoreCase("Join")) {
                     Minigame minigame = mdata.getMinigame(sign.getLine(2));
@@ -751,7 +751,7 @@ public class Events implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void breakScoreboard(BlockBreakEvent event) {
         Block block = event.getBlock();
-        if (block.getType() == Material.WALL_SIGN) {
+        if (block.getType() == Material.OAK_WALL_SIGN) {
             if (block.hasMetadata("MGScoreboardSign")) {
                 Minigame minigame = (Minigame) block.getMetadata("Minigame").get(0).value();
                 minigame.getScoreboardData().removeDisplay(block);
