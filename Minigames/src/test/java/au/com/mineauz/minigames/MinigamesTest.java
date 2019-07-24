@@ -79,15 +79,6 @@ public class MinigamesTest {
         MockBukkit.getMock().addPlayer(player);
     }
 
-    @After
-    public void teardown() {
-        MockBukkit.unload();
-        plugin = null;
-        server = null;
-        player = null;
-        datasource = null;
-
-    }
 
     private void createMinigame() {
         start = new Location(world, 0, 21, 0);
@@ -134,10 +125,12 @@ public class MinigamesTest {
         player.assertLocation(lobby, 0);
         assertTrue(module.isTeleportOnStart());
         assertNotSame(player.getLocation(),game.getStartLocations().indexOf(0));
-        server.getScheduler().performTicks(400L);
+        server.getScheduler().performTicks(200L);
         player.assertLocation(start,0);
+        server.getScheduler().performTicks(200L);
+        player.assertLocation(quit,0);
+
     }
-    @Test
     public void onQuitMinigame() {
         plugin.getPlayerManager().addMinigamePlayer(player);
         MinigamePlayer mplayer = plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId());
@@ -148,8 +141,6 @@ public class MinigamesTest {
         plugin.getPlayerManager().quitMinigame(plugin.getPlayerManager().getMinigamePlayer(player), false);
         player.assertLocation(quit, 0);
         assertFalse(plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId()).isInMinigame());
-        server.getScheduler().performTicks(400L);
-
     }
 
     public void testOnDisable(){

@@ -40,7 +40,8 @@ public class EventsTest {
         } catch (IllegalStateException e) {
             server = MockBukkit.getMock();
         }
-        server.setPlayerFactory(new PlayerMockFactory(server, TestPlayer.class));
+        PlayerMockFactory<TestPlayer> factory = new PlayerMockFactory<>(server,TestPlayer.class);
+        server.setPlayerFactory(factory);
         ((ConsoleCommandSenderMock) server.getConsoleSender()).setOutputOnSend(true);
         plugin = MockBukkit.load(Minigames.class);
         Minigames.getPlugin().getConfig().set("saveInventory", true);
@@ -56,7 +57,6 @@ public class EventsTest {
 
     }
 
-    @Test
     public void onPlayerDisconnect() {
         PlayerMock mock = server.addPlayer();
         mock.setLocation(server.getWorld("GAMES").getSpawnLocation());

@@ -17,6 +17,7 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.ResourcePackManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -116,53 +117,59 @@ public final class ResourcePack implements ConfigurationSerializable {
     }
 
     private void validate() {
-        Bukkit.getScheduler().runTaskAsynchronously(Minigames.getPlugin(), () -> {
-            synchronized (this.local) {
-                if (this.local.exists()) {
-                    //set the local hash;
-                    try (final FileInputStream fis = new FileInputStream(this.local)) {
-                        this.hash = this.getSH1Hash(fis);
-                    } catch (final IOException e) {
-                        e.printStackTrace();
-                    }
-                    //Validate the remote file hash = local.
-                    final File temp;
-                    try (final InputStream in = this.url.openStream()) {
-                        temp = File.createTempFile(this.name, ext);
-                        Files.copy(in, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    } catch (final IOException e) {
-                        Minigames.log().warning(e.getMessage());
-                        e.printStackTrace();
-                        this.valid = false;
-                        return;
-                    }
-                    try (final FileInputStream fis = new FileInputStream(temp)) {
-                        final byte[] has = this.getSH1Hash(fis);
-                        if (Arrays.equals(has, this.hash)) {
-                            Minigames.log().info("Resource Pack: " + this.name + " passed external validation");
-                            this.valid = true;
-                            return;
-                        }
-                    } catch (final IOException e) {
-                        e.printStackTrace();
-                        this.valid = false;
-                        return;
-                    }
-                    // Local did not match hash on remote so copy the remote over the local.
-                    try (final FileInputStream fis = new FileInputStream(temp)) {
-                        Files.copy(fis, this.local.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    } catch (final IOException e) {
-                        e.printStackTrace();
-                    }
-                    //set the new hash as long as its not null its valid
-                    this.setLocalHash();
-                } else {
-                    this.download(this.local);
-                    this.setLocalHash();
-                    this.valid = true;
-                }
-            }
-        });
+       BukkitScheduler scheduler = Bukkit.getScheduler();
+       try {
+           scheduler.runTaskAsynchronously(Minigames.getPlugin(), () -> {
+               synchronized (this.local) {
+                   if (this.local.exists()) {
+                       //set the local hash;
+                       try (final FileInputStream fis = new FileInputStream(this.local)) {
+                           this.hash = this.getSH1Hash(fis);
+                       } catch (final IOException e) {
+                           e.printStackTrace();
+                       }
+                       //Validate the remote file hash = local.
+                       final File temp;
+                       try (final InputStream in = this.url.openStream()) {
+                           temp = File.createTempFile(this.name, ext);
+                           Files.copy(in, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                       } catch (final IOException e) {
+                           Minigames.log().warning(e.getMessage());
+                           e.printStackTrace();
+                           this.valid = false;
+                           return;
+                       }
+                       try (final FileInputStream fis = new FileInputStream(temp)) {
+                           final byte[] has = this.getSH1Hash(fis);
+                           if (Arrays.equals(has, this.hash)) {
+                               Minigames.log().info("Resource Pack: " + this.name + " passed external validation");
+                               this.valid = true;
+                               return;
+                           }
+                       } catch (final IOException e) {
+                           e.printStackTrace();
+                           this.valid = false;
+                           return;
+                       }
+                       // Local did not match hash on remote so copy the remote over the local.
+                       try (final FileInputStream fis = new FileInputStream(temp)) {
+                           Files.copy(fis, this.local.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                       } catch (final IOException e) {
+                           e.printStackTrace();
+                       }
+                       //set the new hash as long as its not null its valid
+                       this.setLocalHash();
+                   } else {
+                       this.download(this.local);
+                       this.setLocalHash();
+                       this.valid = true;
+                   }
+               }
+           });
+       }catch (Exception e){
+           e.printStackTrace();
+           this.valid = false;
+       }
     }
 
     private byte[] getSH1Hash(final InputStream fis) {
