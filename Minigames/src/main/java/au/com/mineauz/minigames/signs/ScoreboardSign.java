@@ -43,7 +43,7 @@ public class ScoreboardSign implements MinigameSign {
     @Override
     public boolean signCreate(SignChangeEvent event) {
         Sign sign = (Sign) event.getBlock().getState();
-        if (sign.getType() != Material.WALL_SIGN) {
+        if (sign.getType() != Material.OAK_WALL_SIGN) {
             event.getPlayer().sendMessage(ChatColor.RED + "Scoreboards must be placed on a wall!");
             return false;
         }

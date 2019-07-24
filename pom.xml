@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>au.com.mineauz</groupId>
   <artifactId>MinigamesProject</artifactId>
-  <version>1.13.1-SNAPSHOT</version>
+  <version>1.14-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Minigames-Project</name>
   <url>https://www.spigotmc.org/resources/minigames.19687/</url>
@@ -21,6 +21,7 @@
       <spigot.api.version>1.13</spigot.api.version>
       <spigot.minor.version></spigot.minor.version>
       <codacy.api.token>${env.CODACY_API_TOKEN}</codacy.api.token>
+      <env.CODACY_API_TOKEN/>
       <argline/>
   </properties>
   <developers>
@@ -202,7 +203,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>2.7</version>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>

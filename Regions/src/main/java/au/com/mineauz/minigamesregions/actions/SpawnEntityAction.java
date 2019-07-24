@@ -113,8 +113,7 @@ public class SpawnEntityAction extends AbstractAction {
         List<String> options = new ArrayList<>();
         for(EntityType type : EntityType.values()){
             if(type != EntityType.ITEM_FRAME && type != EntityType.LEASH_HITCH && type != EntityType.PLAYER &&
-                    type != EntityType.COMPLEX_PART && type != EntityType.WEATHER && type != EntityType.LIGHTNING &&
-                    type != EntityType.PAINTING && type != EntityType.UNKNOWN &&
+                type != EntityType.LIGHTNING && type != EntityType.PAINTING && type != EntityType.UNKNOWN &&
                     type != EntityType.DROPPED_ITEM)
                 options.add(MinigameUtils.capitalize(type.toString().replace("_", " ")));
         }
