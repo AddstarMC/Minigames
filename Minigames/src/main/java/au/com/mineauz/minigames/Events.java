@@ -255,7 +255,9 @@ public class Events implements Listener {
         if (ply.isInMenu() && ply.getNoClose() && ply.getManualEntry() != null) {
             event.setCancelled(true);
             ply.setNoClose(false);
-            ply.getManualEntry().checkValidEntry(event.getClickedBlock().getBlockData().getAsString());
+            if (event.getClickedBlock() != null) {
+              ply.getManualEntry().checkValidEntry(event.getClickedBlock().getBlockData().getAsString());
+            }
             ply.setManualEntry(null);
             return;
         }

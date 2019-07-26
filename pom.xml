@@ -18,7 +18,7 @@
       <plugin.version>${project.version}-${build.number}</plugin.version>
       <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
       <spigot.version>1.14-R0.1-SNAPSHOT</spigot.version>
-      <spigot.api.version>1.13</spigot.api.version>
+      <spigot.api.version>1.14</spigot.api.version>
       <spigot.minor.version></spigot.minor.version>
       <codacy.api.token>${env.CODACY_API_TOKEN}</codacy.api.token>
       <env.CODACY_API_TOKEN/>

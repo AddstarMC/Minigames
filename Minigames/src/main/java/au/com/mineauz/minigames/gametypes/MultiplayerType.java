@@ -51,11 +51,17 @@ public class MultiplayerType extends MinigameTypeBase {
 
     @Override
     public boolean teleportOnJoin(MinigamePlayer player, Minigame mgm) {
-        boolean result = player.teleport(mgm.getLobbyPosition());
-        if (plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != mgm.getLobbyPosition().getWorld() &&
-                player.getPlayer().hasPermission("minigame.set.lobby")) {
+        Location location = mgm.getLobbyPosition();
+        boolean result = false;
+        if (location == null) {
+          plugin.getLogger().warning("Game has no lobby set and it was expected:" + mgm.getName(true));
+        } else {
+           result = player.teleport(location);
+          if (plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != location.getWorld() &&
+              player.getPlayer().hasPermission("minigame.set.lobby")) {
             player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE +
-                    "Lobby location is across worlds! This may cause some server performance issues!", MinigameMessageType.ERROR);
+                "Lobby location is across worlds! This may cause some server performance issues!", MinigameMessageType.ERROR);
+          }
         }
         return result;
     }

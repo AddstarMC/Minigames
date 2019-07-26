@@ -603,9 +603,8 @@ public class MinigamePlayer implements ScriptObject {
         this.setAllowGamemodeChange(false);
     }
 
-    public boolean teleport(final Location location) {
+    public boolean teleport(final @NotNull Location location) {
         boolean bool = false;
-
         this.setAllowTeleport(true);
         bool = this.getPlayer().teleport(location);
         this.setAllowTeleport(false);
