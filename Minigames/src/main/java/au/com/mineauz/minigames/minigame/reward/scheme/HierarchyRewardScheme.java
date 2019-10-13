@@ -13,18 +13,19 @@ import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements RewardScheme {
     private final EnumFlag<Comparison> comparisonType;
@@ -54,7 +55,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 
     @Override
     public void addMenuItems(final Menu menu) {
-        menu.addItem(new MenuItemList("Comparison Type", Material.COMPARATOR, getConfigurationTypeCallback(), Lists.transform(Arrays.asList(Comparison.values()), Functions.toStringFunction())));
+        menu.addItem(new MenuItemList("Comparison Type", Material.COMPARATOR, getConfigurationTypeCallback(), Arrays.stream(Comparison.values()).map(Functions.toStringFunction()).collect(Collectors.toList())));
         menu.addItem(enableRewardsOnLoss.getMenuItem("Award On Loss", Material.LEVER, MinigameUtils.stringToList("When on, awards will still;be given to losing;players")));
         menu.addItem(lossUsesSecondary.getMenuItem("Losers Get Secondary", Material.LEVER, MinigameUtils.stringToList("When on, the losers;will only get the;secondary reward")));
         menu.addItem(new MenuItemNewLine());
@@ -161,22 +162,23 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
     public void load(ConfigurationSection config) {
         ConfigurationSection primary = config.getConfigurationSection("score-primary");
         ConfigurationSection secondary = config.getConfigurationSection("score-secondary");
-
-        load(primaryRewards, primary);
-        load(secondaryRewards, secondary);
+        if(primary != null)
+          load(primaryRewards, primary);
+        if(secondary != null)
+          load(secondaryRewards, secondary);
     }
 
     protected abstract T loadValue(String key);
 
-    private void load(TreeMap<T, Rewards> map, ConfigurationSection section) {
+    private void load(TreeMap<T, Rewards> map, @NotNull ConfigurationSection section) {
         map.clear();
         for (String key : section.getKeys(false)) {
             T value = loadValue(key);
 
             ConfigurationSection subSection = section.getConfigurationSection(key);
             Rewards reward = new Rewards();
-            reward.load(subSection);
-
+            if(subSection != null)
+              reward.load(subSection);
             map.put(value, reward);
         }
     }
@@ -236,9 +238,10 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
             // Update name
             ItemStack item = getItem();
             ItemMeta meta = item.getItemMeta();
-
-            meta.setDisplayName(getMenuItemName(value));
-            item.setItemMeta(meta);
+            if(meta != null) {
+              meta.setDisplayName(getMenuItemName(value));
+              item.setItemMeta(meta);
+            }
 
             setItem(item);
         }
@@ -283,7 +286,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
             MinigamePlayer ply = getContainer().getViewer();
             ply.setNoClose(true);
             ply.getPlayer().closeInventory();
-            ply.sendMessage("Enter the required value into chat, the menu will automatically reopen in 10s if nothing is entered.", null);
+            ply.sendMessage("Enter the required value into chat, the menu will automatically reopen in 10s if nothing is entered.", MinigameMessageType.INFO);
 
             ply.setManualEntry(this);
             getContainer().startReopenTimer(10);
@@ -342,7 +345,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
             MinigamePlayer ply = getContainer().getViewer();
             ply.setNoClose(true);
             ply.getPlayer().closeInventory();
-            ply.sendMessage("Enter the required value into chat, the menu will automatically reopen in 10s if nothing is entered.", null);
+            ply.sendMessage("Enter the required value into chat, the menu will automatically reopen in 10s if nothing is entered.", MinigameMessageType.INFO);
 
             ply.setManualEntry(this);
             getContainer().startReopenTimer(10);

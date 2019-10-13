@@ -566,8 +566,8 @@ public class RecorderData implements Listener {
                     }
 
                     w = Bukkit.getWorld(args.get("world"));
-                    state = w.getBlockAt(Integer.valueOf(args.get("x")), Integer.valueOf(args.get("y")), Integer.valueOf(args.get("z"))).getState();
-                    state.setBlockData(Bukkit.getUnsafe().fromLegacy(Material.getMaterial(args.get("mat")), Byte.valueOf(args.get("data"))));
+                    state = w.getBlockAt(Integer.parseInt(args.get("x")), Integer.parseInt(args.get("y")), Integer.parseInt(args.get("z"))).getState();
+                    state.setBlockData(Bukkit.getUnsafe().fromLegacy(Material.getMaterial(args.get("mat")), Byte.parseByte(args.get("data"))));
 
                     bd = new MgBlockData(state, null);
 
@@ -597,16 +597,16 @@ public class RecorderData implements Listener {
                                 }
                             }
                             item = new ItemStack(Material.getMaterial(iargs.get("item")),
-                                    Integer.valueOf(iargs.get("c")), Short.valueOf(iargs.get("dur")));
+                                    Integer.parseInt(iargs.get("c")), Short.parseShort(iargs.get("dur")));
 
                             if (iargs.containsKey("enc")) {
                                 for (String s : iargs.get("enc").split("\\]\\[")) {
                                     item.addUnsafeEnchantment(Enchantment.getByName(s.split(",")[0].replace("[", "")),
-                                            Integer.valueOf(s.split(",")[1].replace("]", "")));
+                                            Integer.parseInt(s.split(",")[1].replace("]", "")));
                                 }
                             }
 
-                            items[Integer.valueOf(iargs.get("slot"))] = item;
+                            items[Integer.parseInt(iargs.get("slot"))] = item;
                             iargs.clear();
                         }
 

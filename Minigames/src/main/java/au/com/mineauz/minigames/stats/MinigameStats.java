@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.stats;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
@@ -128,7 +129,10 @@ public final class MinigameStats {
      * @return Returns all dynamic stats
      */
     public static Iterable<DynamicMinigameStat> getDynamicStats() {
-        return Iterables.filter(stats.values(), DynamicMinigameStat.class);
+        return stats.values().stream()
+            .filter(DynamicMinigameStat.class::isInstance)
+            .map(DynamicMinigameStat.class::cast)
+            .collect(Collectors.toList());
     }
 
     /**

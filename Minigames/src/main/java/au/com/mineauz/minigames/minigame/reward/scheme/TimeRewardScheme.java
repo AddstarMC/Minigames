@@ -19,7 +19,7 @@ public class TimeRewardScheme extends HierarchyRewardScheme<Integer> {
 
     @Override
     protected Integer loadValue(String key) {
-        int value = Integer.valueOf(key);
+        int value = Integer.parseInt(key);
         if (value <= 0) {
             throw new IllegalArgumentException();
         }

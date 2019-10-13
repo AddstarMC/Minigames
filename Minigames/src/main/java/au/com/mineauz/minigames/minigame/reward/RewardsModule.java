@@ -39,12 +39,17 @@ public class RewardsModule extends MinigameModule {
         return scheme;
     }
 
+    @SuppressWarnings("unused")
     public void setRewardScheme(RewardScheme scheme) {
         this.scheme = scheme;
     }
 
     public void awardPlayer(MinigamePlayer player, StoredGameStats data, Minigame minigame, boolean firstCompletion) {
         scheme.awardPlayer(player, data, minigame, firstCompletion);
+    }
+
+    public void awardPlayerOnLoss(MinigamePlayer player, StoredGameStats data, Minigame minigame) {
+      scheme.awardPlayerOnLoss(player,data,minigame);
     }
 
     @Override
@@ -62,10 +67,11 @@ public class RewardsModule extends MinigameModule {
         String name = RewardSchemes.getName(scheme.getClass());
 
         ConfigurationSection root = config.getConfigurationSection(getMinigame().getName(false));
-        root.set("reward-scheme", name);
-
-        ConfigurationSection rewards = root.createSection("rewards");
-        scheme.save(rewards);
+        if(root != null) {
+          root.set("reward-scheme", name);
+          ConfigurationSection rewards = root.createSection("rewards");
+          scheme.save(rewards);
+        }
     }
 
     @Override
@@ -73,12 +79,12 @@ public class RewardsModule extends MinigameModule {
         ConfigurationSection root = config.getConfigurationSection(getMinigame().getName(false));
         if (root != null) {
             String name = root.getString("reward-scheme", "standard");
-
-            scheme = RewardSchemes.createScheme(name);
-            if (scheme == null) {
+            if(name != null) {
+              scheme = RewardSchemes.createScheme(name);
+              if (scheme == null) {
                 scheme = new StandardRewardScheme();
+              }
             }
-
             ConfigurationSection rewards = root.getConfigurationSection("rewards");
             scheme.load(rewards);
         }

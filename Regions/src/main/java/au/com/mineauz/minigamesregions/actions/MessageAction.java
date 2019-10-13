@@ -3,6 +3,7 @@ package au.com.mineauz.minigamesregions.actions;
 import java.util.Map;
 import java.util.Set;
 
+import au.com.mineauz.minigames.MinigameMessageType;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -87,7 +88,7 @@ public class MessageAction extends AbstractAction {
     public void executeRegionAction(final MinigamePlayer player, final Region region) {
         debug(player,region);
         if(player == null || !player.isInMinigame()) return;
-        player.sendMessage(msg.getFlag(), null);
+        player.sendMessage(msg.getFlag(), MinigameMessageType.INFO);
         
         ScriptObject base = new ScriptObject() {
             @Override
@@ -123,7 +124,7 @@ public class MessageAction extends AbstractAction {
         String message = msg.getFlag();
         
         message = ExpressionParser.stringResolve(message, base, true, true);
-        player.sendMessage(message, null);
+        player.sendMessage(message, MinigameMessageType.INFO);
     }
 
     @Override

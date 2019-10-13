@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions;
 
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemSaveMinigame;
@@ -124,10 +125,10 @@ public class RegionNodeEditToolMode implements ToolMode {
     private void openMenu(MinigamePlayer player, Minigame minigame, Object hit) {
         Menu menu = null;
         if (hit instanceof Region) {
-            player.sendMessage("Editing region " + ((Region)hit).getName(), null);
+            player.sendMessage("Editing region " + ((Region)hit).getName(), MinigameMessageType.INFO);
             menu = MenuItemRegion.createMenu(player, null, (Region)hit);
         } else if (hit instanceof Node) {
-            player.sendMessage("Editing node " + ((Node)hit).getName(), null);
+            player.sendMessage("Editing node " + ((Node)hit).getName(), MinigameMessageType.INFO);
             menu = MenuItemNode.createMenu(player, null, (Node)hit);
         }
         
@@ -160,7 +161,7 @@ public class RegionNodeEditToolMode implements ToolMode {
         
         menu.displayMenu(player);
         
-        player.sendMessage("Multiple regions/nodes selected: " + options.toString(), null);
+        player.sendMessage("Multiple regions/nodes selected: " + options.toString(), MinigameMessageType.INFO);
     }
 
     @Override

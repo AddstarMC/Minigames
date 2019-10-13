@@ -63,12 +63,15 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.logging.Level;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class Minigame implements ScriptObject {
     private final String name;
     private Map<String, Flag<?>> configFlags = new HashMap<>();
@@ -131,9 +134,8 @@ public class Minigame implements ScriptObject {
     private IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
 
     private Map<String, MinigameModule> modules = new HashMap<>();
-
-    private Scoreboard sbManager = Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard();
-
+    private Scoreboard sbManager = (Minigames.getPlugin().getServer().getScoreboardManager() != null)
+      ?Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard():null;
     private IntegerFlag minScore = new IntegerFlag(5, "minscore");
     private IntegerFlag maxScore = new IntegerFlag(10, "maxscore");
     private BooleanFlag displayScoreboard = new BooleanFlag(true, "displayScoreboard");
@@ -162,11 +164,20 @@ public class Minigame implements ScriptObject {
 
     public Minigame(String name, MinigameType type, Location start) {
         this.name = name;
+      if(sbManager == null) {
+        Minigames.getPlugin().getLogger().warning("Plugin loaded before worlds and no " +
+            "ScoreboardManager was present - Could not scoreboard for Minigame:" + name);
+      }
         setup(type, start);
+
     }
 
     public Minigame(String name) {
         this.name = name;
+      if(sbManager == null) {
+        Minigames.getPlugin().getLogger().warning("Plugin loaded before worlds and no " +
+            "ScoreboardManager was present - Could not scoreboard for Minigame:" + name);
+      }
         setup(MinigameType.SINGLEPLAYER, null);
     }
 
@@ -184,10 +195,10 @@ public class Minigame implements ScriptObject {
 
         if (start != null)
             startLocations.getFlag().add(start);
-
-        sbManager.registerNewObjective(this.name, "dummy", this.name);
-        sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
-
+        if(sbManager != null) {
+          sbManager.registerNewObjective(this.name, "dummy", this.name);
+          sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
+        }
         for (Class<? extends MinigameModule> mod : Minigames.getPlugin().getMinigameManager().getModules()) {
             try {
                 addModule(mod.getDeclaredConstructor(Minigame.class).newInstance(this));
@@ -582,7 +593,20 @@ public class Minigame implements ScriptObject {
     }
 
     public void setScore(MinigamePlayer ply, int amount) {
-        sbManager.getObjective(getName(false)).getScore(ply.getName()).setScore(amount);
+        if (sbManager == null){
+          ScoreboardManager s  = Minigames.getPlugin().getServer().getScoreboardManager();
+          if(s !=null) {
+            sbManager = s.getNewScoreboard();
+            Minigames.getPlugin().getLogger().info("ScoreBoardManager was null - Created new Scoreboard - for:" + name );
+          } else {
+            Minigames.getPlugin().getLogger().warning("ScoreBoardManager is null is the WORLD loaded!!! - Could not set Score!!!");
+            return;
+          }
+        }
+      Objective o = sbManager.getObjective(getName(false));
+      if(o != null){
+        o.getScore(ply.getName()).setScore(amount);
+      }
     }
 
     public int getMinScore() {
@@ -1300,31 +1324,6 @@ public class Minigame implements ScriptObject {
     public void loadMinigame() {
         MinigameSave minigame = new MinigameSave(name, "config");
         FileConfiguration cfg = minigame.getConfig();
-
-        //-----------------------------------------------
-        //TODO: Remove me after 1.12
-        if (cfg.contains(name + ".type")) {
-            switch (cfg.getString(name + ".type")) {
-                case "TEAMS":
-                    Minigames.getPlugin().getLogger().warning("Your configuration files (" + cfg.getCurrentPath() + ") is outdated and contains and Old type: TEAM, please update to use the New Types.");
-                    cfg.set(name + ".type", "MULTIPLAYER");
-                    TeamsModule.getMinigameModule(this).addTeam(TeamColor.RED);
-                    TeamsModule.getMinigameModule(this).addTeam(TeamColor.BLUE);
-                    break;
-                case "FREE_FOR_ALL":
-                    Minigames.getPlugin().getLogger().warning("Your configuration files (" + cfg.getCurrentPath() + ") is outdated and contains and Old type: FREE_FOR_ALL, please update to use the New Types.");
-                    cfg.set(name + ".type", "MULTIPLAYER");
-                    break;
-                case "TREASURE_HUNT":
-                    Minigames.getPlugin().getLogger().warning("Your configuration files (" + cfg.getCurrentPath() + ") is outdated and contains and Old type:TREASURE_HUNT, please update to use the New Types.");
-                    cfg.set(name + ".type", "GLOBAL");
-                    cfg.set(name + ".scoretype", "treasure_hunt");
-                    cfg.set(name + ".timer", Minigames.getPlugin().getConfig().getInt("treasurehunt.findtime") * 60);
-                    break;
-            }
-        }
-        //-----------------------------------------------
-
         for (MinigameModule module : getModules()) {
             if (!module.useSeparateConfig()) {
                 module.load(cfg);

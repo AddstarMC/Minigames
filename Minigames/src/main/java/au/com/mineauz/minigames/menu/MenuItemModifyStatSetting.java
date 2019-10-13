@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -51,7 +52,7 @@ public class MenuItemModifyStatSetting extends MenuItem {
                 }
 
 
-            }, Lists.transform(Arrays.asList(StatFormat.values()), Functions.toStringFunction())));
+            }, Arrays.stream(StatFormat.values()).map(Functions.toStringFunction()).collect(Collectors.toList())));
         }
 
         subMenu.addItem(new MenuItemBack(getContainer()), subMenu.getSize() - 9);

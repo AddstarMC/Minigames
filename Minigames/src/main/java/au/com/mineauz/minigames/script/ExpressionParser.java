@@ -121,7 +121,7 @@ public class ExpressionParser {
      * @throws IllegalArgumentException Thrown if there is a syntax error in a path. Only thrown if ignoreSyntaxErrors is false
      */
     public static String stringResolve(String input, ScriptObject object, boolean ignoreSyntaxErrors, boolean ignoreResolutionErrors) throws IllegalArgumentException, NoSuchElementException {
-        StringBuffer buffer = new StringBuffer(input);
+        StringBuilder buffer = new StringBuilder(input);
         int start = 0;
         int index = 0;
 

@@ -525,16 +525,16 @@ public class MinigamePlayer implements ScriptObject {
         if (this.selection1 == null) {
             this.selection1 = loc;
             this.showSelection(false);
-            this.sendMessage("Position 1 set", null);
+            this.sendMessage("Position 1 set", MinigameMessageType.INFO);
         } else if (this.selection2 == null) {
             this.selection2 = loc;
             this.showSelection(false);
-            this.sendMessage("Position 2 set", null);
+            this.sendMessage("Position 2 set", MinigameMessageType.INFO);
         } else if (this.selection2 != null) {
             this.showSelection(true);
             this.selection1 = loc;
-            this.sendMessage("Selection restarted", null);
-            this.sendMessage("Position 1 set", null);
+            this.sendMessage("Selection restarted", MinigameMessageType.INFO);
+            this.sendMessage("Position 1 set", MinigameMessageType.INFO);
             this.selection2 = null;
             this.showSelection(false);
         }

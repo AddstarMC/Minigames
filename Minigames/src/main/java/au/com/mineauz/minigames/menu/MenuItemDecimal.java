@@ -115,7 +115,7 @@ public class MenuItemDecimal extends MenuItem {
         MinigamePlayer ply = getContainer().getViewer();
         ply.setNoClose(true);
         ply.getPlayer().closeInventory();
-        ply.sendMessage("Enter decimal value into chat for " + getName() + ", the menu will automatically reopen in 15s if nothing is entered.", null);
+        ply.sendMessage("Enter decimal value into chat for " + getName() + ", the menu will automatically reopen in 15s if nothing is entered.", MinigameMessageType.INFO);
         String min = "N/A";
         String max = "N/A";
         if (this.min != null) {

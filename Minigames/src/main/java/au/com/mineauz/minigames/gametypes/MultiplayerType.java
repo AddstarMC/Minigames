@@ -99,7 +99,7 @@ public class MultiplayerType extends MinigameTypeBase {
                 }
 
                 smTeam.addPlayer(player);
-                player.sendMessage(String.format(smTeam.getAssignMessage(), smTeam.getChatColor() + smTeam.getDisplayName()), null);
+                player.sendMessage(String.format(smTeam.getAssignMessage(), smTeam.getChatColor() + smTeam.getDisplayName()), MinigameMessageType.INFO);
 
                 final Team fteam = smTeam;
                 player.setLateJoinTimer(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {

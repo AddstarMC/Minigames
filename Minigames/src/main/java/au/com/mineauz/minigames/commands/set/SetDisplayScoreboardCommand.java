@@ -62,7 +62,7 @@ public class SetDisplayScoreboardCommand implements ICommand {
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
         if (args != null) {
-            boolean bool = Boolean.valueOf(args[0]);
+            boolean bool = Boolean.parseBoolean(args[0]);
 
             minigame.setDisplayScoreboard(bool);
             if (bool)

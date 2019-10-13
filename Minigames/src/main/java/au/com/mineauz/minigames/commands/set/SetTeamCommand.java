@@ -182,8 +182,8 @@ public class SetTeamCommand implements ICommand {
                     TeamColor col = TeamColor.matchColor(args[1]);
                     if (tmod.hasTeam(col)) {
                         if (args[2].matches("[0-9]+")) {
-                            int val = Integer.valueOf(args[2]);
-                            tmod.getTeam(col).setMaxPlayers(Integer.valueOf(args[2]));
+                            int val = Integer.parseInt(args[2]);
+                            tmod.getTeam(col).setMaxPlayers(Integer.parseInt(args[2]));
                             sender.sendMessage(ChatColor.GRAY + "Maximum players for the team " + tmod.getTeam(col).getDisplayName() + " has been set to " + val);
                         } else {
                             sender.sendMessage(ChatColor.RED + args[2] + " is not a valid number!");

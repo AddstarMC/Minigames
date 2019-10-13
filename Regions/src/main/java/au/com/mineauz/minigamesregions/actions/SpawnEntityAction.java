@@ -75,9 +75,9 @@ public class SpawnEntityAction extends AbstractAction {
         if(player == null || !player.isInMinigame()) return;
         final Entity ent = node.getLocation().getWorld().spawnEntity(node.getLocation(), EntityType.valueOf(type.getFlag()));
         
-        final double vx = Double.valueOf(settings.get("velocityx"));
-        final double vy = Double.valueOf(settings.get("velocityy"));
-        final double vz = Double.valueOf(settings.get("velocityz"));
+        final double vx = Double.parseDouble(settings.get("velocityx"));
+        final double vy = Double.parseDouble(settings.get("velocityy"));
+        final double vz = Double.parseDouble(settings.get("velocityz"));
         Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), () -> ent.setVelocity(new Vector(vx, vy, vz)));
         
         if(ent instanceof LivingEntity){

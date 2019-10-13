@@ -31,8 +31,8 @@ import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
@@ -96,7 +96,7 @@ public class Minigames extends JavaPlugin {
 
     public static void debugMessage(final String message) {
         if (Minigames.getPlugin().debug) {
-            log(Level.INFO, "[MINIGAMAES DEBUG] " + message);
+            log(Level.INFO, "[MINIGAMES DEBUG] " + message);
         }
     }
 
@@ -223,26 +223,29 @@ public class Minigames extends JavaPlugin {
             final Set<String> keys = globalLoadouts.getConfig().getKeys(false);
             for (final String loadout : keys) {
                 this.minigameManager.addLoadout(loadout);
-                final Set<String> items = globalLoadouts.getConfig().getConfigurationSection(loadout).getKeys(false);
-                //            for(int i = 0; i < items.size(); i++){
-                //                if(globalLoadouts.getConfig().contains(loadout + "." + i))
-                //                    minigameManager.getLoadout(loadout).addItemToLoadout(globalLoadouts.getConfig().getItemStack(loadout + "." + i));
-                //            }
-                for (final String slot : items) {
+              ConfigurationSection loadOutSection = globalLoadouts.getConfig().getConfigurationSection(loadout);
+                if(loadOutSection != null) {
+                  final Set<String> items = loadOutSection.getKeys(false);
+                  for (final String slot : items) {
                     if (COMPILE.matcher(slot).matches()) {
-                        this.minigameManager.getLoadout(loadout).addItem(globalLoadouts.getConfig().getItemStack(loadout + '.' + slot), Integer.parseInt(slot));
+                      this.minigameManager.getLoadout(loadout).addItem(globalLoadouts.getConfig().getItemStack(loadout + '.' + slot), Integer.parseInt(slot));
                     }
+                  }
                 }
                 if (globalLoadouts.getConfig().contains(loadout + ".potions")) {
-                    final Set<String> pots = globalLoadouts.getConfig().getConfigurationSection(loadout + ".potions").getKeys(false);
+                  ConfigurationSection potionLoadOutSection = globalLoadouts.getConfig().getConfigurationSection(loadout + ".potions");
+                  if(potionLoadOutSection != null) {
+                    final Set<String> pots = potionLoadOutSection.getKeys(false);
                     for (final String eff : pots) {
-                        if (PotionEffectType.getByName(eff) != null) {
-                            final PotionEffect effect = new PotionEffect(PotionEffectType.getByName(eff),
-                                    globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".dur"),
-                                    globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".amp"));
-                            this.minigameManager.getLoadout(loadout).addPotionEffect(effect);
-                        }
+                      PotionEffectType type = PotionEffectType.getByName(eff);
+                      if (type != null) {
+                        final PotionEffect effect = new PotionEffect(type,
+                            globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".dur"),
+                            globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".amp"));
+                        this.minigameManager.getLoadout(loadout).addPotionEffect(effect);
+                      }
                     }
+                  }
                 }
                 if (globalLoadouts.getConfig().contains(loadout + ".usepermissions")) {
                     this.minigameManager.getLoadout(loadout).setUsePermissions(globalLoadouts.getConfig().getBoolean(loadout + ".usepermissions"));
@@ -357,7 +360,7 @@ public class Minigames extends JavaPlugin {
             return false;
         }
         econ = rsp.getProvider();
-        return econ != null;
+        return true;
     }
 
     public boolean hasEconomy() {
@@ -376,7 +379,8 @@ public class Minigames extends JavaPlugin {
         } catch (final NullPointerException | IOException e) {
             this.getLogger().warning(e.getMessage());
         } finally {
-            Closeables.closeQuietly(stream);
+          //noinspection UnstableApiUsage
+          Closeables.closeQuietly(stream);
         }
 
         if (p.containsKey("version")) {
@@ -423,7 +427,12 @@ public class Minigames extends JavaPlugin {
         this.lastUpdateCheck = time;
     }
 
-    public SignBase getMinigameSigns() {
+  /**
+   *
+   * @return Signs
+   */
+  @SuppressWarnings("unused")
+  public SignBase getMinigameSigns() {
         return minigameSigns;
     }
 
@@ -431,11 +440,10 @@ public class Minigames extends JavaPlugin {
         this.metrics = new Metrics(this);
         final Metrics.MultiLineChart chart = new Metrics.MultiLineChart("Players_in_Minigames", () -> {
             final Map<String, Integer> result = new HashMap<>();
-            int count = 0;
             result.put("Total_Players", this.playerManager.getAllMinigamePlayers().size());
             for (final MinigamePlayer pl : this.playerManager.getAllMinigamePlayers()) {
                 if (pl.isInMinigame()) {
-                    count = result.getOrDefault(pl.getMinigame().getType().getName(), 0);
+                    int count = result.getOrDefault(pl.getMinigame().getType().getName(), 0);
                     result.put(pl.getMinigame().getType().getName(), count + 1);
                 }
             }
@@ -509,7 +517,7 @@ public class Minigames extends JavaPlugin {
                 if (winner) {
                     RewardsModule.getModule(minigame).awardPlayer(player, saveData, minigame, winCount == 0);
                 } else {
-                    //TODO: RewardsModule reward on loss
+                  RewardsModule.getModule(minigame).awardPlayerOnLoss(player, saveData, minigame);
                 }
             }
         });

@@ -56,7 +56,7 @@ public class SetInfectedPercentCommand implements ICommand {
                              String label, String[] args) {
         if (args != null) {
             if (args[0].matches("[0-9]+")) {
-                int val = Integer.valueOf(args[0]);
+                int val = Integer.parseInt(args[0]);
                 if (val > 0 && val < 100) {
                     InfectionModule.getMinigameModule(minigame).setInfectedPercent(val);
                     sender.sendMessage(ChatColor.GRAY + "Infected percent has been set to " + val + "% for " + minigame);

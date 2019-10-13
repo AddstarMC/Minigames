@@ -125,7 +125,7 @@ public class MenuItemBlockData extends MenuItem {
         ply.sendMessage("Click a block to set Data for " + getName() + ", the menu" +
                 " " +
                 "will " +
-                "automatically reopen in 10s if nothing is clicked.", null);
+                "automatically reopen in 10s if nothing is clicked.", MinigameMessageType.INFO);
         ply.setManualEntry(this);
         getContainer().startReopenTimer(10);
         return null;

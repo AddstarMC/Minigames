@@ -14,10 +14,10 @@ import au.com.mineauz.minigames.minigame.reward.ItemReward;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
-import io.papermc.lib.PaperLib;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -32,27 +32,26 @@ public class TreasureHuntMechanic extends GameMechanicBase {
         thm.clearHints();
         if (thm.hasTreasureLocation()) {
             Location old = thm.getTreasureLocation();
-            boolean loaded = false;
-            Chunk c = null;
-            if (!old.getWorld().isChunkInUse(old.getChunk().getX(), old.getChunk().getZ())) {
-                old.getChunk().load();
-                loaded = true;
-                c = old.getChunk();
+            if (old.getWorld() != null && !old.getWorld().isChunkLoaded(old.getChunk().getX(), old.getChunk().getZ())) {
+              boolean loaded = old.getChunk().load();
+              Chunk c = null;
+              if(loaded) {
+                  c = old.getChunk();
+                  c.setForceLoaded(true);
+                }
+                if (old.getBlock().getState() instanceof Chest) {
+                    Chest chest = (Chest) old.getBlock().getState();
+                    chest.getInventory().clear();
+                    old.getBlock().setType(Material.AIR);
+                }
+                if (loaded) {
+                  c.setForceLoaded(false);
+                  c.unload();
+                }
+              thm.setTreasureLocation(null);
             }
-
-            if (old.getBlock().getState() instanceof Chest) {
-                Chest chest = (Chest) old.getBlock().getState();
-                chest.getInventory().clear();
-            }
-
-            old.getBlock().setType(Material.AIR);
-            if (loaded && !c.getWorld().isChunkInUse(c.getX(), c.getZ())) {
-                c.unload();
-            }
-            thm.setTreasureLocation(null);
         }
     }
-
     public static void spawnTreasure(final Minigame mgm) {
         final TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
 
@@ -64,9 +63,9 @@ public class TreasureHuntMechanic extends GameMechanicBase {
 
         Location tcpos = mgm.getStartLocations().get(0).clone();
         final Location rpos = tcpos;
-        double rx = 0;
-        double ry = 0;
-        double rz = 0;
+        double rx;
+        double ry;
+        double rz;
         final int maxradius;
         if (thm.getMaxRadius() == 0) {
             maxradius = 1000;
@@ -225,10 +224,10 @@ public class TreasureHuntMechanic extends GameMechanicBase {
         Location block = thm.getTreasureLocation();
 
         if (time == hintTime1) {
-            double dfcx = 0.0;
-            double dfcz = 0.0;
-            String xdir = null;
-            String zdir = null;
+            double dfcx;
+            double dfcz;
+            String xdir;
+            String zdir;
 
             if (mgm.getStartLocations().get(0).getX() > block.getX()) {
                 dfcx = mgm.getStartLocations().get(0).getX() - block.getX();
@@ -244,7 +243,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
                 dfcz = block.getZ() - mgm.getStartLocations().get(0).getZ();
                 zdir = MinigameUtils.getLang("minigame.treasurehunt.hint1.south");
             }
-            String dir = null;
+            String dir;
 
             if (dfcz > dfcx) {
                 if (dfcx > dfcz / 2) {
@@ -316,7 +315,8 @@ public class TreasureHuntMechanic extends GameMechanicBase {
     private void interactEvent(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block cblock = event.getClickedBlock();
-            if (cblock.getState() instanceof Chest && !event.isCancelled()) {
+            boolean cancelled = (event.useInteractedBlock() == Event.Result.DENY || event.useItemInHand() == Event.Result.DENY);
+            if (cblock != null && cblock.getState() instanceof Chest && !cancelled) {
                 for (Minigame minigame : mdata.getAllMinigames().values()) {
                     if (minigame.getType() == MinigameType.GLOBAL &&
                             minigame.getMechanicName().equalsIgnoreCase(getMechanic()) &&
