@@ -11,8 +11,10 @@ import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import com.google.common.collect.ImmutableSet;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team.Option;
 import org.bukkit.scoreboard.Team.OptionStatus;
@@ -38,6 +40,8 @@ public class Team implements ScriptObject {
     private int score = 0;
     private final Minigame mgm;
 
+    private String scoreboardName;
+
     /**
      * Creates a team for the use in a specific Minigame
      *
@@ -47,6 +51,7 @@ public class Team implements ScriptObject {
     public Team(TeamColor color, Minigame minigame) {
         this.color = color;
         displayName = MinigameUtils.capitalize(color.toString()) + " Team";
+        scoreboardName = color.toString().toLowerCase();
         mgm = minigame;
     }
 
@@ -67,11 +72,12 @@ public class Team implements ScriptObject {
      */
     public boolean setColor(TeamColor color) {
         if (!TeamsModule.getMinigameModule(mgm).hasTeam(color)) {
-            TeamsModule.getMinigameModule(mgm).removeTeam(this.color);
-            if (displayName.equals(this.color.toString().toLowerCase() + " team"))
+            if (displayName.toLowerCase().equals(this.color.toString().toLowerCase() + " team"))
                 displayName = MinigameUtils.capitalize(color.toString()) + " Team";
+            TeamsModule.getMinigameModule(mgm).removeTeam(this.color);
             this.color = color;
             TeamsModule.getMinigameModule(mgm).addTeam(color, this);
+
             return true;
         }
         return false;
@@ -96,7 +102,7 @@ public class Team implements ScriptObject {
     }
 
     /**
-     * Gets the teams display name. If none is set, it will return the color folowed by "Team".
+     * Gets the teams display name. If none is set, it will return the color followed by "Team".
      *
      * @return The display name or the color followed by "Team"
      */
@@ -157,8 +163,9 @@ public class Team implements ScriptObject {
      * @param amount The score amount to set for the team.
      */
     public void setScore(int amount) {
-        score = amount;
-        mgm.getScoreboardManager().getObjective(mgm.getName(false)).getScore(getChatColor() + getDisplayName()).setScore(score);
+      score = amount;
+      Objective obj = mgm.getScoreboardManager().getObjective(mgm.getName(false));
+      if(obj != null)obj.getScore(getDisplayName()).setScore(score);
     }
 
     /**
@@ -176,7 +183,8 @@ public class Team implements ScriptObject {
      */
     public int addScore(int amount) {
         score += amount;
-        mgm.getScoreboardManager().getObjective(mgm.getName(false)).getScore(getChatColor() + getDisplayName()).setScore(score);
+        Objective obj = mgm.getScoreboardManager().getObjective(mgm.getName(false));
+        if(obj != null)obj.getScore(getDisplayName()).setScore(score);
         return score;
     }
 
@@ -185,7 +193,7 @@ public class Team implements ScriptObject {
      */
     public void resetScore() {
         score = 0;
-        mgm.getScoreboardManager().resetScores(getChatColor() + getDisplayName());
+        mgm.getScoreboardManager().resetScores(getDisplayName());
     }
 
     /**
@@ -206,7 +214,8 @@ public class Team implements ScriptObject {
         players.add(player);
         player.setTeam(this);
         player.getPlayer().setScoreboard(mgm.getScoreboardManager());
-        mgm.getScoreboardManager().getTeam(getColor().toString().toLowerCase()).addEntry(getColor().getColor() + player.getDisplayName(mgm.usePlayerDisplayNames()));
+        org.bukkit.scoreboard.Team team = mgm.getScoreboardManager().getTeam(scoreboardName);
+        if(team != null)team.addEntry(player.getDisplayName(mgm.usePlayerDisplayNames()));
     }
 
     /**
@@ -217,9 +226,11 @@ public class Team implements ScriptObject {
     public void removePlayer(MinigamePlayer player) {
         players.remove(player);
         Scoreboard board = mgm.getScoreboardManager();
-        String color = getColor().toString().toLowerCase();
-        board.getTeam(color).removeEntry(getColor().getColor() + player.getDisplayName(mgm.usePlayerDisplayNames()));
-        player.getPlayer().setScoreboard(Minigames.getPlugin().getServer().getScoreboardManager().getMainScoreboard());
+      org.bukkit.scoreboard.Team team = board.getTeam(scoreboardName);
+      if(team != null) {
+       team.removeEntry(player.getDisplayName(mgm.usePlayerDisplayNames()));
+      }
+      player.getPlayer().setScoreboard(Minigames.getPlugin().getServer().getScoreboardManager().getMainScoreboard());
     }
 
     /**
@@ -270,7 +281,7 @@ public class Team implements ScriptObject {
      * @return true if removal was successful.
      */
     public boolean removeStartLocation(int locNumber) {
-        if (startLocations.size() < locNumber) {
+        if (startLocations.size() > locNumber) {
             startLocations.remove(locNumber);
             return true;
         }
@@ -315,7 +326,11 @@ public class Team implements ScriptObject {
 
     public void setNameTagVisibility(OptionStatus vis) {
         nametagVisibility.setFlag(vis);
-        mgm.getScoreboardManager().getTeam(color.toString().toLowerCase()).setOption(Option.NAME_TAG_VISIBILITY, vis);
+        org.bukkit.scoreboard.Team team = mgm.getScoreboardManager().getTeam(color.toString().toLowerCase());
+        if(team != null)
+          team.setOption(Option.NAME_TAG_VISIBILITY, vis);
+        else
+          Minigames.log().warning("No team set for visibility call");
     }
 
     public Callback<String> getNameTagVisibilityCallback() {
@@ -323,11 +338,10 @@ public class Team implements ScriptObject {
 
             @Override
             public String getValue() {
-                return nametagVisibility.getFlag().toString();
+                return getNameTagVisibility().toString();
             }            @Override
             public void setValue(String value) {
-                nametagVisibility.setFlag(OptionStatus.valueOf(value));
-                mgm.getScoreboardManager().getTeam(color.toString().toLowerCase()).setOption(Option.NAME_TAG_VISIBILITY, nametagVisibility.getFlag());
+                setNameTagVisibility(OptionStatus.valueOf(value));
             }
 
 

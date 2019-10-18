@@ -12,6 +12,9 @@ import au.com.mineauz.minigames.minigame.TeamColor;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,41 +85,79 @@ public class TeamsModule extends MinigameModule {
         return builder.build();
     }
 
+  /**
+   *  Adds or returns the existing team of TeamColor
+   * @param color  {@link TeamColor}
+   * @return {@link Team}
+   */
     public Team addTeam(TeamColor color) {
         return addTeam(color, "");
     }
 
+  /**
+   * Adds a new team with the color unless one already exists in which case this returns the
+   * existing team
+   * @param color {@link TeamColor}
+   * @param name Team name
+   * @return Team
+   */
     public Team addTeam(TeamColor color, String name) {
-        if (!teams.containsKey(color)) {
+        if (!hasTeam(color)) {
             teams.put(color, new Team(color, getMinigame()));
-            String sbTeam = color.toString().toLowerCase();
-            getMinigame().getScoreboardManager().registerNewTeam(sbTeam);
-            getMinigame().getScoreboardManager().getTeam(sbTeam).setPrefix(color.getColor().toString());
-            getMinigame().getScoreboardManager().getTeam(sbTeam).setAllowFriendlyFire(false);
-            getMinigame().getScoreboardManager().getTeam(sbTeam).setCanSeeFriendlyInvisibles(true);
-        }
-        if (!name.equals(""))
+            String teamNameString = color.toString().toLowerCase();
+            org.bukkit.scoreboard.@NotNull Team bukkitTeam = getMinigame().getScoreboardManager().registerNewTeam(teamNameString);
+          bukkitTeam.setPrefix(color.getColor().name());
+          bukkitTeam.setAllowFriendlyFire(false);
+          bukkitTeam.setCanSeeFriendlyInvisibles(true);
+          bukkitTeam.setColor(color.getColor());
+          if (name != null && !name.equals("")) {
             teams.get(color).setDisplayName(name);
-        return teams.get(color);
+            bukkitTeam.setDisplayName(name);
+          }
+        }
+      return teams.get(color);
     }
 
+  /**
+   * Adds a team with the new color -and removes any other team with that color name from the scoreboard
+   * @param color  {@link TeamColor}  the TeamColor to set
+   * @param team The new Team
+   */
     public void addTeam(TeamColor color, Team team) {
         teams.put(color, team);
         String sbTeam = color.toString().toLowerCase();
-        getMinigame().getScoreboardManager().registerNewTeam(sbTeam);
-        getMinigame().getScoreboardManager().getTeam(sbTeam).setPrefix(color.getColor().toString());
-        getMinigame().getScoreboardManager().getTeam(sbTeam).setAllowFriendlyFire(false);
-        getMinigame().getScoreboardManager().getTeam(sbTeam).setCanSeeFriendlyInvisibles(true);
+        Scoreboard scoreboard = getMinigame().getScoreboardManager();
+        org.bukkit.scoreboard.Team bukkitTeam = scoreboard.getTeam(sbTeam);
+        if(bukkitTeam != null) {
+          bukkitTeam.unregister();
+        }
+          bukkitTeam = getMinigame().getScoreboardManager().registerNewTeam(sbTeam);
+          bukkitTeam.setPrefix(color.getColor().toString());
+          bukkitTeam.setAllowFriendlyFire(false);
+          bukkitTeam.setCanSeeFriendlyInvisibles(true);
+          bukkitTeam.setDisplayName(team.getDisplayName());
+          bukkitTeam.setColor(color.getColor());
     }
 
+  /**
+   * True of {@link TeamColor} exists as a team
+   * @param color {@link TeamColor}
+   * @return boolean
+   */
     public boolean hasTeam(TeamColor color) {
         return teams.containsKey(color);
     }
 
+  /**
+   * Removes a team from the module and the scoreboard
+   * @param color {@link TeamColor}
+   */
     public void removeTeam(TeamColor color) {
-        if (teams.containsKey(color)) {
+        if (hasTeam(color)) {
             teams.remove(color);
-            getMinigame().getScoreboardManager().getTeam(color.toString().toLowerCase()).unregister();
+          org.bukkit.scoreboard.Team bukkitTeam =
+              getMinigame().getScoreboardManager().getTeam(color.toString().toLowerCase());
+          if(bukkitTeam != null)bukkitTeam.unregister();
         }
     }
 

@@ -66,24 +66,24 @@ public class SetTeamCommand implements ICommand {
             if (args[0].equalsIgnoreCase("add")) {
                 if (args.length >= 2) {
                     TeamColor col = TeamColor.matchColor(args[1]);
-                    String name = null;
+                    StringBuilder name = null;
                     if (col != null) {
                         if (args.length > 2) {
-                            name = "";
+                            name = new StringBuilder();
                             for (int i = 2; i < args.length; i++) {
-                                name += args[i];
+                                name.append(args[i]);
                                 if (i != args.length - 1)
-                                    name += " ";
+                                    name.append(" ");
                             }
                         }
                         if (name != null) {
-                            tmod.addTeam(col, name);
-                            sender.sendMessage(ChatColor.GRAY + "Added " + MinigameUtils.capitalize(col.toString()) +
+                            Team team = tmod.addTeam(col, name.toString());
+                            sender.sendMessage(ChatColor.GRAY + "Added " + MinigameUtils.capitalize(team.getColor().toString()) +
                                     " team to " + minigame.getName(false) + " with the display name " + name);
                         } else {
-                            tmod.addTeam(col);
-                            sender.sendMessage(ChatColor.GRAY + "Added " + MinigameUtils.capitalize(col.toString()) +
-                                    " team to " + minigame.getName(false));
+                            Team team = tmod.addTeam(col);
+                            sender.sendMessage(ChatColor.GRAY + "Added " + MinigameUtils.capitalize(team.getDisplayName()) +
+                                    " to " + minigame.getName(false));
                         }
                     } else {
                         sender.sendMessage(ChatColor.RED + "Invalid team color! Valid options:");
@@ -108,14 +108,14 @@ public class SetTeamCommand implements ICommand {
                     teams.add(t.getChatColor() + t.getColor().toString() + ChatColor.GRAY +
                             "(" + t.getChatColor() + t.getDisplayName() + ChatColor.GRAY + ")");
                 }
-                String teamsString = "";
+                StringBuilder teamsString = new StringBuilder();
                 for (String t : teams) {
-                    teamsString += t;
+                    teamsString.append(t);
                     if (!t.equals(teams.get(teams.size() - 1)))
-                        teamsString += ", ";
+                        teamsString.append(", ");
                 }
                 sender.sendMessage(ChatColor.GRAY + "List of teams in " + minigame.getName(false) + ":");
-                sender.sendMessage(teamsString);
+                sender.sendMessage(teamsString.toString());
                 return true;
             } else if (args[0].equalsIgnoreCase("remove")) {
                 if (args.length >= 2) {

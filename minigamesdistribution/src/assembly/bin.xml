@@ -11,11 +11,11 @@
             <!-- Enable access to all projects in the current multimodule build! -->
             <useAllReactorProjects>true</useAllReactorProjects>
             <includes>
-                <include>au.com.mineauz:Minigames</include>
-                <include>au.com.mineauz:Minigames-Regions</include>
+                <include>au.com.mineauz:Minigames:jar</include>
+                <include>au.com.mineauz:Minigames-Regions:jar</include>
             </includes>
             <binaries>
-                <includeDependencies>false</includeDependencies>
+                <includeDependencies>true</includeDependencies>
                 <outputDirectory>/</outputDirectory>
                 <unpack>false</unpack>
             </binaries>

@@ -37,7 +37,7 @@
                             <descriptors>
                                 <descriptor>src/assembly/bin.xml</descriptor>
                             </descriptors>
-                            <appendAssemblyId>false</appendAssemblyId>
+                            <appendAssemblyId>true</appendAssemblyId>
                         </configuration>
                     </execution>
                 </executions>
