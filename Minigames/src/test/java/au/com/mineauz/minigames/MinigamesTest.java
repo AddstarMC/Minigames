@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.helpers.TestHelper;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
@@ -11,6 +12,7 @@ import au.com.mineauz.minigames.objects.TestPlayer;
 import au.com.mineauz.minigames.objects.TestWorld;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
+import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.command.ConsoleCommandSenderMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import org.bukkit.Location;
@@ -42,7 +44,7 @@ public class MinigamesTest {
     private Minigames plugin;
     private PlayerMock player;
     private Minigame game;
-    private World world;
+    private WorldMock world;
     private SQLiteDataSource datasource;
     private Location spawn;
     private Location lobby;
@@ -62,54 +64,19 @@ public class MinigamesTest {
         TestWorld testworld = new TestWorld();
         testworld.setName("GAMES");
         MockBukkit.getMock().addWorld(testworld);
+        String ver = server.getBukkitVersion();
         Logger log = Logger.getAnonymousLogger();
         log.setLevel(Level.ALL);
         plugin = MockBukkit.load(Minigames.class);
         plugin.toggleDebug();
         plugin.setLog(log);
-        world = MockBukkit.getMock().getWorld("GAMES");
+        world = (WorldMock) MockBukkit.getMock().getWorld("GAMES");
         spawn = world.getSpawnLocation();
-        createMinigame();
+        TestHelper.createMinigame(plugin,world,MinigameType.MULTIPLAYER, GameMechanics.MECHANIC_NAME.CTF);
         player = new TestPlayer(MockBukkit.getMock(), "TestPlayer", UUID.randomUUID());
         player.setOutputOnSend(true);
         player.setLocation(spawn);
         MockBukkit.getMock().addPlayer(player);
-    }
-
-
-    private void createMinigame() {
-        start = new Location(world, 0, 21, 0);
-        game = new Minigame("TestGame", MinigameType.MULTIPLAYER, start);
-        game.setType(MinigameType.MULTIPLAYER);
-        game.setMechanic(GameMechanics.MECHANIC_NAME.CTF.toString());
-        game.setDeathDrops(true);
-        quit = new Location(world, 0, 20, 0);
-        game.setQuitPosition(quit);
-        lobby = new Location(world, 0, 5., 0);
-        game.setLobbyPosition(lobby);
-        end = new Location(world, 0, 25, 0);
-        game.setEndPosition(end);
-        game.setEnabled(true);
-        game.setStartWaitTime(5);
-        game.setTimer(5);
-        game.setMaxScore(3);
-        game.setMaxPlayers(2);
-        game.setMinPlayers(1);
-        MinigameModule module = game.getModule("LobbySettings");
-        if (module != null) {
-            LobbySettingsModule lMod = (LobbySettingsModule) module;
-            lMod.setTeleportOnPlayerWait(true);
-            lMod.setTeleportOnStart(true);
-            lMod.setPlayerWaitTime(5);
-        }
-        MinigameModule lmod = game.getModule("Loadouts");
-        if (lmod != null) {
-            LoadoutModule lmodule = (LoadoutModule) lmod;
-            PlayerLoadout pl = new PlayerLoadout("TestLoadout");
-            pl.addItem(new ItemStack(Material.LEATHER_HELMET,1),103);
-            lmodule.getLoadoutMap().put("TestLoadout",pl);
-        }
-        plugin.getMinigameManager().addMinigame(game);
     }
 
     @Test
@@ -128,6 +95,8 @@ public class MinigamesTest {
         player.assertLocation(quit,0);
 
     }
+
+    @Test
     public void onQuitMinigame() {
         plugin.getPlayerManager().addMinigamePlayer(player);
         MinigamePlayer mplayer = plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId());
