@@ -821,8 +821,11 @@ public class MinigamePlayerManager {
 
     @NotNull
     public MinigamePlayer getMinigamePlayer(Player player) {
-        if (minigamePlayers.containsKey(player.getName())) return minigamePlayers.get(player.getName());
-        else addMinigamePlayer(player);
+        if (minigamePlayers.containsKey(player.getName())) {
+            return minigamePlayers.get(player.getName());
+        } else {
+            addMinigamePlayer(player);
+        }
         return minigamePlayers.get(player.getName());
     }
 

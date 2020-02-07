@@ -41,9 +41,9 @@ public class SpigotDisplayCuboid extends AbstractDisplayObject implements IDispl
     @Override
     public void refresh() {
         // Dont display effect if they cant see it
-        if (player != null && player.getWorld() != getWorld())
+        if (player != null && player.getWorld() != getWorld()) {
             return;
-
+        }
         double step = 0.5;
 
         // X axis
