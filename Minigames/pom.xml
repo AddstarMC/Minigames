@@ -1,4 +1,5 @@
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -26,11 +27,11 @@
             <url>https://hub.spigotmc.org/nexus/content/groups/public</url>
         </repository>
         <!-- For Vault -->
-<!--        <repository>
-            <id>vault-repo</id>
-            <name>Public Releases</name>
-            <url>http://nexus.hc.to/content/repositories/pub_releases/</url>
-        </repository>-->
+        <!--        <repository>
+                    <id>vault-repo</id>
+                    <name>Public Releases</name>
+                    <url>http://nexus.hc.to/content/repositories/pub_releases/</url>
+                </repository>-->
 
         <!-- Other repositories -->
         <repository>
@@ -140,7 +141,8 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
-                    <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml
+                    <dependencyReducedPomLocation>
+                        ${project.build.directory}/dependency-reduced-pom.xml
                     </dependencyReducedPomLocation>
                     <artifactSet>
                         <includes>
@@ -156,7 +158,8 @@
                         </relocation>
                         <relocation>
                             <pattern>io.papermc.lib</pattern>
-                            <shadedPattern>au.com.mineauz.minigames.paperlib</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>au.com.mineauz.minigames.paperlib
+                            </shadedPattern> <!-- Replace this -->
                         </relocation>
                     </relocations>
                 </configuration>
@@ -184,13 +187,14 @@
                 </executions>
             </plugin>
             <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>3.0.0-M3</version>
-            <configuration>
-            <forkCount>1</forkCount>
-            <reuseForks>false</reuseForks>
-            </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M3</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                    <forkCount>1</forkCount>
+                    <reuseForks>false</reuseForks>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -256,7 +260,8 @@
                         <configuration>
                             <apiToken>${codacy.api.token}</apiToken>
                             <projectToken>9a3fb2fe5b374cb5ad11e69df7db98fb</projectToken>
-                            <coverageReportFile>${project.build.directory}/site/jacoco/jacoco.xml</coverageReportFile>
+                            <coverageReportFile>${project.build.directory}/site/jacoco/jacoco.xml
+                            </coverageReportFile>
                             <commit>${env.TRAVIS_COMMIT}</commit>
                             <codacyApiBaseUrl>https://api.codacy.com</codacyApiBaseUrl>
                             <failOnMissingReportFile>false</failOnMissingReportFile>
