@@ -105,6 +105,7 @@
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.25.2</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>
@@ -250,7 +251,6 @@
                         <configuration>
                             <skip>${skipTests}</skip>
                             <repoToken>tGd4UFZlq2ltbSDTmfeo7GhG5x0LsHhoG</repoToken>
-
                         </configuration>
                     </plugin>
                     <plugin>
@@ -262,7 +262,7 @@
                             <projectToken>9a3fb2fe5b374cb5ad11e69df7db98fb</projectToken>
                             <coverageReportFile>${project.build.directory}/site/jacoco/jacoco.xml
                             </coverageReportFile>
-                            <commit>${env.TRAVIS_COMMIT}</commit>
+                            <commit>${travis.commit}</commit>
                             <codacyApiBaseUrl>https://api.codacy.com</codacyApiBaseUrl>
                             <failOnMissingReportFile>false</failOnMissingReportFile>
                         </configuration>

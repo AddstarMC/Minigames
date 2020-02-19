@@ -21,6 +21,8 @@
       <spigot.api.version>1.15</spigot.api.version>
       <spigot.minor.version>2</spigot.minor.version>
       <codacy.api.token>${env.CODACY_API_TOKEN}</codacy.api.token>
+      <!--suppress UnresolvedMavenProperty -->
+      <travis.commit>${env.TRAVIS_COMMIT}</travis.commit>
       <env.CODACY_API_TOKEN/>
       <argline/>
   </properties>
@@ -115,7 +117,8 @@
           <groupId>org.jetbrains</groupId>
           <artifactId>annotations</artifactId>
           <version>18.0.0</version>
-          <scope>compile</scope>
+          <scope>provided</scope>
+          <!-- no runtime features are used-->
       </dependency>
   </dependencies>
 

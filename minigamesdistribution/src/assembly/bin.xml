@@ -4,6 +4,7 @@
     <id>bin</id>
     <formats>
         <format>zip</format>
+        <!--<format>tar.gz</format>-->
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
     <moduleSets>
@@ -11,12 +12,14 @@
             <!-- Enable access to all projects in the current multimodule build! -->
             <useAllReactorProjects>true</useAllReactorProjects>
             <includes>
-                <include>au.com.mineauz:Minigames:jar</include>
-                <include>au.com.mineauz:Minigames-Regions:jar</include>
+                <include>*:Minigames*:jar</include>
             </includes>
             <binaries>
                 <includeDependencies>true</includeDependencies>
-                <outputDirectory>/</outputDirectory>
+                <excludes>
+                    <exclude>org.bstats:bstats-bukkit:jar</exclude>
+                    <exclude>io.papermc:paperlib:jar</exclude>
+                </excludes>
                 <unpack>false</unpack>
             </binaries>
         </moduleSet>
