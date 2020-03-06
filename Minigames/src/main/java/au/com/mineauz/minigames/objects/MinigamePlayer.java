@@ -115,6 +115,8 @@ public class MinigamePlayer implements ScriptObject {
 
     private void sendMessage(final String msg) {
         final int enc = Math.floorDiv(msg.getBytes().length, msg.length());
+        Minigames.debugMessage("Sending message: " + msg
+              .replace(ChatColor.COLOR_CHAR, '@') + " TO: " + this.getName());
         if (msg.getBytes().length > 32000) {
             final int capLength = Math.floorDiv(msg.length(), enc);
             final String newMessage = msg.substring(0, capLength);
@@ -129,7 +131,7 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public void sendMessage(final String msg, final @NotNull MinigameMessageType type) {
-        String init = "";
+        final String init;
         switch (type) {
             case ERROR:
                 init = ChatColor.RED + "[Minigames] " + ChatColor.WHITE;

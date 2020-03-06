@@ -298,11 +298,14 @@ public class MinigameManager {
         }
         finalMessage += message;
         final List<MinigamePlayer> sendto = new ArrayList<>();
-        Collections.copy(minigame.getPlayers(), sendto);
+        sendto.addAll(minigame.getPlayers());
         sendto.addAll(minigame.getSpectators());
         if (exclude != null) {
             sendto.removeAll(exclude);
         }
+
+        Minigames.debugMessage("Sending message: " + finalMessage
+              .replace(ChatColor.COLOR_CHAR, '@') + " TO: " + sendto.toString());
         for (final MinigamePlayer pl : sendto) {
             pl.sendInfoMessage(finalMessage);
         }
