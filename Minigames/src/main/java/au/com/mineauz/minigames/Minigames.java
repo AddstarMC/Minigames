@@ -437,7 +437,7 @@ public class Minigames extends JavaPlugin {
     }
 
     private void initMetrics() {
-        this.metrics = new Metrics(this);
+        this.metrics = new Metrics(this,1190);
         final Metrics.MultiLineChart chart = new Metrics.MultiLineChart("Players_in_Minigames", () -> {
             final Map<String, Integer> result = new HashMap<>();
             result.put("Total_Players", this.playerManager.getAllMinigamePlayers().size());
