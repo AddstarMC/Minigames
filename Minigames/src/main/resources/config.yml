@@ -2,6 +2,7 @@ saveInventory: true
 requireEmptyInventory: false
 forceload: false
 debug: false
+pasteApiKey:
 
 treasurehunt:
   waittime: 3600
