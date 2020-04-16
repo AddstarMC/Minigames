@@ -72,6 +72,11 @@ public class MinigamePlayerManager {
             if (player.applyResourcePack(pack))
                 player.sendInfoMessage(MinigameUtils.getLang("minigame.resourcepack.apply"));
         }
+        //Check if Minigame is full
+        if (minigame.isGameFull()) {
+            player.sendMessage(MinigameUtils.getLang("minigame.full"), MinigameMessageType.ERROR);
+            return;
+        }
         if (!mgManager.teleportPlayerOnJoin(minigame, player)) {
             player.sendMessage(MinigameUtils.getLang("minigame.error.noTeleport"), MinigameMessageType.ERROR);
             return;
