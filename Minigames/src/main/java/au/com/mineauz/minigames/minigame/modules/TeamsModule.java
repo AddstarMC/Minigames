@@ -106,7 +106,7 @@ public class TeamsModule extends MinigameModule {
             teams.put(color, new Team(color, getMinigame()));
             String teamNameString = color.toString().toLowerCase();
             org.bukkit.scoreboard.@NotNull Team bukkitTeam = getMinigame().getScoreboardManager().registerNewTeam(teamNameString);
-          bukkitTeam.setPrefix(color.getColor().name());
+        //   bukkitTeam.setPrefix(color.getColor().name());
           bukkitTeam.setAllowFriendlyFire(false);
           bukkitTeam.setCanSeeFriendlyInvisibles(true);
           bukkitTeam.setColor(color.getColor());
