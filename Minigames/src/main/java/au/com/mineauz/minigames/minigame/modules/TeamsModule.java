@@ -106,14 +106,13 @@ public class TeamsModule extends MinigameModule {
             teams.put(color, new Team(color, getMinigame()));
             String teamNameString = color.toString().toLowerCase();
             org.bukkit.scoreboard.@NotNull Team bukkitTeam = getMinigame().getScoreboardManager().registerNewTeam(teamNameString);
-          bukkitTeam.setPrefix(color.getColor().name());
-          bukkitTeam.setAllowFriendlyFire(false);
-          bukkitTeam.setCanSeeFriendlyInvisibles(true);
-          bukkitTeam.setColor(color.getColor());
-          if (name != null && !name.equals("")) {
-            teams.get(color).setDisplayName(name);
-            bukkitTeam.setDisplayName(name);
-          }
+            bukkitTeam.setAllowFriendlyFire(false);
+            bukkitTeam.setCanSeeFriendlyInvisibles(true);
+            bukkitTeam.setColor(color.getColor());
+            if (name != null && !name.equals("")) {
+                teams.get(color).setDisplayName(name);
+                bukkitTeam.setDisplayName(name);
+            }
         }
       return teams.get(color);
     }
@@ -129,14 +128,13 @@ public class TeamsModule extends MinigameModule {
         Scoreboard scoreboard = getMinigame().getScoreboardManager();
         org.bukkit.scoreboard.Team bukkitTeam = scoreboard.getTeam(sbTeam);
         if(bukkitTeam != null) {
-          bukkitTeam.unregister();
+            bukkitTeam.unregister();
         }
-          bukkitTeam = getMinigame().getScoreboardManager().registerNewTeam(sbTeam);
-          bukkitTeam.setPrefix(color.getColor().toString());
-          bukkitTeam.setAllowFriendlyFire(false);
-          bukkitTeam.setCanSeeFriendlyInvisibles(true);
-          bukkitTeam.setDisplayName(team.getDisplayName());
-          bukkitTeam.setColor(color.getColor());
+        bukkitTeam = getMinigame().getScoreboardManager().registerNewTeam(sbTeam);
+        bukkitTeam.setAllowFriendlyFire(false);
+        bukkitTeam.setCanSeeFriendlyInvisibles(true);
+        bukkitTeam.setDisplayName(team.getDisplayName());
+        bukkitTeam.setColor(color.getColor());
     }
 
   /**

@@ -102,12 +102,22 @@ public class Team implements ScriptObject {
     }
 
     /**
-     * Gets the teams display name. If none is set, it will return the color followed by "Team".
+     * Gets the teams display name. If none is set, it will return the teams color followed by "Team".
      *
-     * @return The display name or the color followed by "Team"
+     * @return The display name or the teams color followed by "Team"
      */
     public String getDisplayName() {
         return displayName;
+    }
+
+    /**
+     * Gets the display name prefixed with its color. If none is set, 
+     * it will return the teams color followed by "Team".
+     * 
+     * @return The colored display name or the team color followed by "Team"
+     */
+    public String getColoredDisplayName() {
+        return getChatColor() + getDisplayName();
     }
 
     /**
@@ -165,7 +175,7 @@ public class Team implements ScriptObject {
     public void setScore(int amount) {
       score = amount;
       Objective obj = mgm.getScoreboardManager().getObjective(mgm.getName(false));
-      if(obj != null)obj.getScore(getDisplayName()).setScore(score);
+      if(obj != null)obj.getScore(getColoredDisplayName()).setScore(score);
     }
 
     /**
@@ -184,7 +194,7 @@ public class Team implements ScriptObject {
     public int addScore(int amount) {
         score += amount;
         Objective obj = mgm.getScoreboardManager().getObjective(mgm.getName(false));
-        if(obj != null)obj.getScore(getDisplayName()).setScore(score);
+        if(obj != null)obj.getScore(getColoredDisplayName()).setScore(score);
         return score;
     }
 
@@ -193,7 +203,7 @@ public class Team implements ScriptObject {
      */
     public void resetScore() {
         score = 0;
-        mgm.getScoreboardManager().resetScores(getDisplayName());
+        mgm.getScoreboardManager().resetScores(getColoredDisplayName());
     }
 
     /**

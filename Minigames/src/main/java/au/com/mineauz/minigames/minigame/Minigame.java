@@ -414,6 +414,14 @@ public class Minigame implements ScriptObject {
         this.spMaxPlayers.setFlag(spMaxPlayers);
     }
 
+    public boolean isGameFull() {
+        if ((getType() == MinigameType.SINGLEPLAYER && isSpMaxPlayers()) || 
+                                    getType() == MinigameType.MULTIPLAYER) {
+            return getPlayers().size() >= getMaxPlayers();
+        }
+        return false;
+    }
+
     public Location getFloorDegen1() {
         return floorDegen1.getFlag();
     }
