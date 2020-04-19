@@ -10,9 +10,11 @@ import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import com.google.common.collect.ObjectArrays;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.util.Map;
 
@@ -64,8 +66,10 @@ public class TakeItemAction extends AbstractAction{
         ItemStack matched = null;
         boolean remove = false;
         int slot = 0;
-        
-        for(ItemStack i : player.getPlayer().getInventory().getContents()){
+        PlayerInventory inventory = player.getPlayer().getInventory();
+        ItemStack[] items = ObjectArrays.concat(inventory.getContents(), inventory.getArmorContents(), ItemStack.class);
+
+        for(ItemStack i : items){
             if(i != null && i.getType() == match.getType()){
                     if(match.getAmount() >= i.getAmount()){
                         matched = i.clone();
@@ -82,9 +86,9 @@ public class TakeItemAction extends AbstractAction{
         }
         
         if(remove)
-            player.getPlayer().getInventory().removeItem(matched);
+            inventory.removeItem(matched);
         else{
-            player.getPlayer().getInventory().getItem(slot).setAmount(matched.getAmount());
+            inventory.getItem(slot).setAmount(matched.getAmount());
         }
     }
 
