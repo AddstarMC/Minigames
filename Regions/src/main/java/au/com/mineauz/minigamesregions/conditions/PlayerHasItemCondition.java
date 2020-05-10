@@ -29,6 +29,8 @@ public class PlayerHasItemCondition extends ConditionInterface {
     private final StringFlag where = new StringFlag("ANYWHERE", "where");
     private final IntegerFlag slot = new IntegerFlag(0, "slot");
     
+    private final IntegerFlag amount = new IntegerFlag(1, "amount");
+    
     private final BooleanFlag matchName = new BooleanFlag(false, "matchName");
     private final BooleanFlag matchLore = new BooleanFlag(false, "matchLore");
     
@@ -50,6 +52,8 @@ public class PlayerHasItemCondition extends ConditionInterface {
         out.put("Item", type.getFlag());
         out.put("Where", where.getFlag());
         out.put("Slot", slot.getFlag());
+        
+        out.put("Amount", slot.getFlag());
         
         if (matchName.getFlag()) {
             out.put("Name", name.getFlag());
@@ -119,6 +123,8 @@ public class PlayerHasItemCondition extends ConditionInterface {
         Pattern namePattern = null;
         Pattern lorePattern = null;
         
+        int minAmount = amount.getFlag();
+        
         if (matchName.getFlag()) {
             namePattern = createNamePattern();
         }
@@ -130,7 +136,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
         for(ItemStack slot: searchItems){
             if((i<startSlot) && (i>endSlot))
                 continue;
-            if (slot.getType() == material) {
+            if (slot.getType() == material && slot.getAmount() >= minAmount) {
                 
                 ItemMeta meta = slot.getItemMeta();
                 
@@ -219,6 +225,8 @@ public class PlayerHasItemCondition extends ConditionInterface {
         where.saveValue(path, config);
         slot.saveValue(path, config);
         
+        amount.saveValue(path, config);
+        
         matchName.saveValue(path, config);
         matchLore.saveValue(path, config);
         name.saveValue(path, config);
@@ -231,6 +239,8 @@ public class PlayerHasItemCondition extends ConditionInterface {
         type.loadValue(path, config);
         where.loadValue(path, config);
         slot.loadValue(path, config);
+        
+        amount.loadValue(path, config);
         
         matchName.loadValue(path, config);
         matchLore.loadValue(path, config);
@@ -281,6 +291,8 @@ public class PlayerHasItemCondition extends ConditionInterface {
         menuItem = (MenuItemString)lore.getMenuItem("Lore", Material.BOOK, MinigameUtils.stringToList("The lore to match. Separate;with semi-colons;for new lines.;Use % to do a wildcard match"));
         menuItem.setAllowNull(true);
         m.addItem(menuItem);
+        
+        m.addItem(amount.getMenuItem("Mimimum Item Amount", Material.CLOCK, 1, 64));
         
         addInvertMenuItem(m);
         m.displayMenu(player);
