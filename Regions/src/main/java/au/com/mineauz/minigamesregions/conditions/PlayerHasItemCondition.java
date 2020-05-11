@@ -53,7 +53,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
         out.put("Where", where.getFlag());
         out.put("Slot", slot.getFlag());
         
-        out.put("Amount", slot.getFlag());
+        out.put("Amount", amount.getFlag());
         
         if (matchName.getFlag()) {
             out.put("Name", name.getFlag());
@@ -132,15 +132,28 @@ public class PlayerHasItemCondition extends ConditionInterface {
         if (matchLore.getFlag()) {
             lorePattern = createLorePattern();
         }
-        int i =0;
+
+        int i = 0;
         for(ItemStack slot: searchItems){
-            if((i<startSlot) && (i>endSlot))
+            if((i<startSlot) || (i>endSlot)) {
+                i += 1;
                 continue;
-            if (slot.getType() == material && slot.getAmount() >= minAmount) {
-                
+            }
+            if (slot != null) {
+
+                i += 1;
+
+                if (slot.getType() != material) {
+                    continue;
+                }
+
+                if (slot.getAmount() < minAmount) {
+                    continue;
+                }
+
                 ItemMeta meta = slot.getItemMeta();
                 
-                if (namePattern !=null) {
+                if (namePattern != null) {
                     Matcher m = namePattern.matcher(meta.getDisplayName());
                     if (!m.matches()) {
                         continue;
@@ -163,6 +176,8 @@ public class PlayerHasItemCondition extends ConditionInterface {
                 
                 // This item completely matches
                 return true;
+            } else {
+                i += 1;
             }
         }
         return false;
@@ -249,6 +264,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
         loadInvert(config, path);
     }
 
+
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Player Has Item", player);
@@ -257,12 +273,12 @@ public class PlayerHasItemCondition extends ConditionInterface {
         Material display = type.getFlag();
         if(display == null)display = Material.STONE;
         m.addItem(new MenuItemMaterial("Item",display, new Callback<Material>() {
-            
+
             @Override
             public void setValue(Material value) {
-                    type.setFlag(value);
+                type.setFlag(value);
             }
-            
+
             @Override
             public Material getValue() {
                 return type.getFlag();
@@ -273,27 +289,28 @@ public class PlayerHasItemCondition extends ConditionInterface {
             public void setValue(String value) {
                 where.setFlag(value.toUpperCase());
             }
-            
+
             @Override
             public String getValue() {
                 return WordUtils.capitalizeFully(where.getFlag());
             }
         }, Arrays.asList("Anywhere", "Hotbar", "Main", "Armor", "Slot")));
         m.addItem(slot.getMenuItem("Slot", Material.DIAMOND, 0, 35));
+
+        m.addItem(amount.getMenuItem("Minimum Item Amount", Material.CLOCK, 1, 64));
+
         m.addItem(new MenuItemNewLine());
-        
+
         m.addItem(matchName.getMenuItem("Match Display Name", Material.NAME_TAG));
         MenuItemString menuItem = (MenuItemString)name.getMenuItem("Display Name", Material.NAME_TAG, MinigameUtils.stringToList("The name to match.;Use % to do a wildcard match"));
         menuItem.setAllowNull(true);
         m.addItem(menuItem);
-        
+
         m.addItem(matchLore.getMenuItem("Match Lore", Material.BOOK));
         menuItem = (MenuItemString)lore.getMenuItem("Lore", Material.BOOK, MinigameUtils.stringToList("The lore to match. Separate;with semi-colons;for new lines.;Use % to do a wildcard match"));
         menuItem.setAllowNull(true);
         m.addItem(menuItem);
-        
-        m.addItem(amount.getMenuItem("Mimimum Item Amount", Material.CLOCK, 1, 64));
-        
+
         addInvertMenuItem(m);
         m.displayMenu(player);
         return true;
