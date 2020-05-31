@@ -724,7 +724,6 @@ public class MinigamePlayerManager {
                         minigame.setMpBets(null);
                     }
                 }
-
                 PlayMGSound.playSound(player, MGSounds.getSound("win"));
             }
 
@@ -772,8 +771,13 @@ public class MinigamePlayerManager {
             } else {
                 if (winners.size() == 1) {
                     String score = "";
-                    if (winners.get(0).getScore() != 0)
+                    long time = 0;
+                    if (winners.get(0).getScore() != 0) {
                         score = MinigameUtils.formStr("player.end.broadcastScore", winners.get(0).getScore());
+                    } else if (minigame.getShowCompletionTime()) {
+                        time = winners.get(0).getEndTime() - winners.get(0).getStartTime() + winners.get(0).getStoredTime();
+                        winners.get(0).sendInfoMessage("Completion time: "+time);
+                    }
                     MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getDisplayName(minigame.usePlayerDisplayNames()), minigame.getName(true)) + ". " + score, minigame, ChatColor.GREEN);
                 } else if (winners.size() > 1) {
                     StringBuilder win = new StringBuilder();

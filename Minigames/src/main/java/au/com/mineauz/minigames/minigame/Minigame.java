@@ -105,6 +105,7 @@ public class Minigame implements ScriptObject {
     private IntegerFlag timer = new IntegerFlag(0, "timer");
     private BooleanFlag useXPBarTimer = new BooleanFlag(true, "useXPBarTimer");
     private IntegerFlag startWaitTime = new IntegerFlag(0, "startWaitTime");
+    private BooleanFlag showCompletionTime = new BooleanFlag(false, "showCompletionTime");
 
     private BooleanFlag itemDrops = new BooleanFlag(false, "itemdrops");
     private BooleanFlag deathDrops = new BooleanFlag(false, "deathdrops");
@@ -264,6 +265,7 @@ public class Minigame implements ScriptObject {
         addConfigFlag(spectatorPosition);
         addConfigFlag(displayScoreboard);
         addConfigFlag(allowDragonEggTeleport);
+        addConfigFlag(showCompletionTime);
     }
 
     public MinigameState getState() {
@@ -998,6 +1000,10 @@ public class Minigame implements ScriptObject {
         allowDragonEggTeleport.setFlag(allow);
     }
 
+    public boolean getShowCompletionTime() {return showCompletionTime.getFlag();}
+
+    public void setShowCompletionTime(boolean bool) {showCompletionTime.setFlag(bool);}
+
     public StatSettings getSettings(MinigameStat stat) {
         StatSettings settings = statSettings.get(stat);
         if (settings == null) {
@@ -1107,6 +1113,7 @@ public class Minigame implements ScriptObject {
 
 
                 }, 3, null));
+        itemsMain.add(showCompletionTime.getMenuItem("Show completion time", Material.PAPER));
         itemsMain.add(lateJoin.getMenuItem("Allow Late Join", Material.DEAD_BUSH, MinigameUtils.stringToList("Multiplayer Only")));
         itemsMain.add(randomizeStart.getMenuItem("Randomize Start Point", Material.LIGHT_BLUE_GLAZED_TERRACOTTA, MinigameUtils.stringToList("The location will be; chosen at random;from global or team lists.")));
         itemsMain.add(new MenuItemDisplayWhitelist("Block Whitelist/Blacklist", MinigameUtils.stringToList("Blocks that can/can't;be broken"),

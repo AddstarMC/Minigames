@@ -32,7 +32,7 @@ public class MinigamesBroadcastEvent extends AbstractMinigameEvent {
 
     @Override
     public void setCancelled(boolean b) {
-        throw new UnsupportedOperationException("Cannot cancel a  Minigames Broadcast Event");
+        throw new UnsupportedOperationException("Cannot cancel a Minigames Broadcast Event");
     }
 
 
