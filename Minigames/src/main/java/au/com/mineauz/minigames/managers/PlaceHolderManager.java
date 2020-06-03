@@ -20,7 +20,7 @@ import java.util.Set;
  * Created for the AddstarMC Project.
  * Created by Narimm on 3/06/2020.
  */
-public class PlaceHolderManager extends  PlaceholderExpansion  {
+public class PlaceHolderManager extends PlaceholderExpansion  {
 
     private final Minigames plugin;
     private final List<ModulePlaceHolderProvider> providers;
@@ -125,20 +125,20 @@ public class PlaceHolderManager extends  PlaceholderExpansion  {
                 //this means the first part is not a gameName ?? what else could it be
                 return null;
             }
-        }
+        } else {
+            switch (identifier) {
+                case "gameCount":
+                    return Integer.toString(plugin.getMinigameManager().getAllMinigames().size());
+                case "enabledGameCount":
+                    return Long.toString(plugin.getMinigameManager().getAllMinigames().values()
+                          .stream().filter(Minigame::isEnabled).count());
+                case "totalPlaying":
+                    return Long.toString(plugin.getPlayerManager().getAllMinigamePlayers().stream()
+                          .filter(MinigamePlayer::isInMinigame).count());
+                default:
 
-        switch(identifier){
-            case "gameCount":
-                return Integer.toString(plugin.getMinigameManager().getAllMinigames().size());
-            case "enabledGameCount":
-                return Long.toString(plugin.getMinigameManager().getAllMinigames().values()
-                        .stream().filter(Minigame::isEnabled).count());
-            case "totalPlaying":
-                return Long.toString(plugin.getPlayerManager().getAllMinigamePlayers().stream()
-                        .filter(MinigamePlayer::isInMinigame).count());
-            default:
-
-                return null;
+                    return null;
+            }
         }
     }
 
@@ -149,7 +149,7 @@ public class PlaceHolderManager extends  PlaceholderExpansion  {
         }
     }
 
-    public void registerModulePlacholders(String gameName,ModulePlaceHolderProvider provider){
+    public void registerModulePlaceholders(String gameName, ModulePlaceHolderProvider provider){
         providers.add(provider);
         for(String id:provider.getIdentifiers()){
             if(identifiers.containsKey(gameName+"_"+id)) {

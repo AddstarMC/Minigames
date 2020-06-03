@@ -381,7 +381,7 @@ public class Minigames extends JavaPlugin {
             for(MinigameModule module: game.getValue().getModules()){
                 ModulePlaceHolderProvider provider = module.getModulePlaceHolders();
                 if(provider != null){
-                    placeHolderManager.registerModulePlacholders(game.getValue().getName(false),provider);
+                    placeHolderManager.registerModulePlaceholders(game.getValue().getName(false),provider);
                 }
             }
         }
