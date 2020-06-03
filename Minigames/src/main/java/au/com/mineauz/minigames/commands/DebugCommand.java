@@ -8,10 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
-import org.kitteh.pastegg.PasteBuilder;
-import org.kitteh.pastegg.PasteContent;
-import org.kitteh.pastegg.PasteFile;
-import org.kitteh.pastegg.Visibility;
+import org.kitteh.pastegg.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,6 +16,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 public class DebugCommand implements ICommand {
 
@@ -154,6 +153,16 @@ public class DebugCommand implements ICommand {
             gamesConfigs.forEach(builder::addFile);
             builder.addFile(spigot);
             builder.addFile(config);
+            PasteBuilder.PasteResult result = builder.build();
+            if (result.getPaste().isPresent()) {
+                Paste paste = result.getPaste().get();
+                sender.sendMessage("Debug: https://paste.gg/" + paste.getId());
+                sender.sendMessage("Deletion Key: " + paste.getDeletionKey());
+                plugin.getLogger().log(new LogRecord(Level.INFO,"Paste:  https://paste.gg/" + paste.getId()));
+                plugin.getLogger().log(new LogRecord(Level.INFO,"Paste:  Deletion Key: " + paste.getDeletionKey()));
+            } else {
+                sender.sendMessage("Paste Failed.");
+            }
 
 
 
