@@ -7,13 +7,8 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.List;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 
 
 /**
@@ -89,6 +84,8 @@ public class PlaceHolderManager extends  PlaceholderExpansion  {
                             return minigame.getGametypeName();
                         case "timeLeft":
                             return Integer.toString(minigame.getMinigameTimer().getTimeLeft());
+                        case "name":
+                            return minigame.getName(true);
                         default:
                             return null;
                     }
