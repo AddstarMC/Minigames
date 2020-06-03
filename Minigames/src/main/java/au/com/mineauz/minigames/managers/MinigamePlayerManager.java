@@ -19,6 +19,7 @@ import au.com.mineauz.minigames.stats.StoredGameStats;
 import org.bukkit.*;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -33,7 +34,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 /**
- * Manager Class of all players playing minigames.
+ * Manager Class of all players playing Minigames.
  **/
 public class MinigamePlayerManager {
     private static final Minigames plugin = Minigames.getPlugin();
@@ -245,16 +246,10 @@ public class MinigamePlayerManager {
                 List<MinigamePlayer> moved = balanceGame(minigame);
                 if (moved != null && moved.size() > 0) {
                     getStartLocations(minigame.getPlayers(), minigame);
-                    if (!minigame.isPlayersAtStart()) {
-                        if (teleport) {
-                            teleportToStart(minigame);
-                        }
-                    }
-                } else {
-                    if (!minigame.isPlayersAtStart()) {
-                        if (teleport) {
-                            teleportToStart(minigame);
-                        }
+                }
+                if (!minigame.isPlayersAtStart()) {
+                    if (teleport) {
+                        teleportToStart(minigame);
                     }
                 }
 
@@ -416,7 +411,10 @@ public class MinigamePlayerManager {
             Player p = player.getPlayer();
             if ((p != null) && (p.isOnline())) {
                 p.setFireTicks(0);
-                p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+                AttributeInstance maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                if(maxHealth != null) {
+                    p.setHealth(maxHealth.getValue());
+                }
                 p.setFoodLevel(20);
                 p.setSaturation(20f);
                 p.setRemainingAir(p.getMaximumAir());
@@ -754,7 +752,7 @@ public class MinigamePlayerManager {
                     for (Team t : teams) {
                         score.append(t.getColor().getColor().toString()).append(t.getScore());
                         if (t != teams.get(teams.size() - 1)) {
-                            score.append(ChatColor.WHITE + " : ");
+                            score.append(ChatColor.WHITE).append(" : ");
                         }
                     }
                     String nscore = ", " + MinigameUtils.formStr("player.end.team.score", score.toString());
@@ -771,14 +769,15 @@ public class MinigamePlayerManager {
             } else {
                 if (winners.size() == 1) {
                     String score = "";
-                    long time = 0;
-                    if (winners.get(0).getScore() != 0) {
-                        score = MinigameUtils.formStr("player.end.broadcastScore", winners.get(0).getScore());
+                    long time;
+                    MinigamePlayer winner = winners.get(0);
+                    if (winner.getScore() != 0) {
+                        score = MinigameUtils.formStr("player.end.broadcastScore", winner.getScore());
                     } else if (minigame.getShowCompletionTime()) {
-                        time = winners.get(0).getEndTime() - winners.get(0).getStartTime() + winners.get(0).getStoredTime();
-                        winners.get(0).sendInfoMessage("Completion time: "+time);
+                        time = winner.getEndTime() - winner.getStartTime() + winner.getStoredTime();
+                        winner.sendInfoMessage("Completion time: "+time);
                     }
-                    MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winners.get(0).getDisplayName(minigame.usePlayerDisplayNames()), minigame.getName(true)) + ". " + score, minigame, ChatColor.GREEN);
+                    MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winner.getDisplayName(minigame.usePlayerDisplayNames()), minigame.getName(true)) + ". " + score, minigame, ChatColor.GREEN);
                 } else if (winners.size() > 1) {
                     StringBuilder win = new StringBuilder();
                     winners.sort(Comparator.comparingInt(MinigamePlayer::getScore));
