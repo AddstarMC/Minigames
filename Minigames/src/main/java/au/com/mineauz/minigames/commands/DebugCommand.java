@@ -1,17 +1,13 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.minigame.Minigame;
 import com.google.common.base.Charsets;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 import org.kitteh.pastegg.PasteBuilder;
 import org.kitteh.pastegg.PasteContent;
 import org.kitteh.pastegg.PasteFile;
@@ -23,8 +19,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class DebugCommand implements ICommand {
 
@@ -102,6 +96,7 @@ public class DebugCommand implements ICommand {
                 sender.sendMessage(ChatColor.GRAY + "Deactivated debug mode.");
             return true;
         }
+        return false;
     }
 
     @Override
@@ -135,38 +130,34 @@ public class DebugCommand implements ICommand {
             mainInfo.append(' ').append(plugin.getName()).append(" - ").append(plugin.getDescription().getVersion()).append('\n');
             mainInfo.append("  ").append(plugin.getDescription().getAuthors()).append('\n');
         }
-        Bukkit.getScheduler().runTaskAsynchronously(Minigames.getPlugin(), new Runnable() {
-            @Override
-            public void run() {
-                Path dataPath = Minigames.getPlugin().getDataFolder().toPath();
+        Bukkit.getScheduler().runTaskAsynchronously(Minigames.getPlugin(), () -> {
+            Path dataPath = Minigames.getPlugin().getDataFolder().toPath();
 
-                String apiKey = Minigames.getPlugin().getConfig().getString("pasteApiKey",null);
-                PasteFile config = new PasteFile("config.yml",
-                      new PasteContent(PasteContent.ContentType.TEXT,
-                            getFile(dataPath.resolve("config.yml"))));
-                PasteFile spigot = new PasteFile("spigot.yml",
-                      new PasteContent(PasteContent.ContentType.TEXT,
-                            getFile(Paths.get("spigot.yml")));
-                List<PasteFile> gamesConfigs =  new ArrayList<>();
-                Minigames.getPlugin().getMinigameManager().getAllMinigames().forEach((s, minigame1) -> {
-                    PasteContent content = new PasteContent(PasteContent.ContentType.TEXT,
-                          getFile(dataPath.resolve("/minigames/" + s + "/config.yml"));
-                    PasteFile file = new PasteFile(s+"-config.yml",content);
-                    gamesConfigs.add(file);
-                });
-                PasteBuilder builder = new PasteBuilder();
-                builder.setApiKey(apiKey)
-                      .name("Minigames Debug Outpout")
-                      .visibility(Visibility.UNLISTED);
-                gamesConfigs.forEach(builder::addFile);
-                builder.addFile(spigot);
-                builder.addFile(config);
+            String apiKey = Minigames.getPlugin().getConfig().getString("pasteApiKey",null);
+            PasteFile config = new PasteFile("config.yml",
+                  new PasteContent(PasteContent.ContentType.TEXT,
+                        getFile(dataPath.resolve("config.yml"))));
+            PasteFile spigot = new PasteFile("spigot.yml",
+                  new PasteContent(PasteContent.ContentType.TEXT,
+                        getFile(Paths.get("spigot.yml"))));
+            List<PasteFile> gamesConfigs =  new ArrayList<>();
+            Minigames.getPlugin().getMinigameManager().getAllMinigames().forEach((s, minigame1) -> {
+                PasteContent content = new PasteContent(PasteContent.ContentType.TEXT,
+                      getFile(dataPath.resolve("/minigames/" + s + "/config.yml")));
+                PasteFile file = new PasteFile(s+"-config.yml",content);
+                gamesConfigs.add(file);
+            });
+            PasteBuilder builder = new PasteBuilder();
+            builder.setApiKey(apiKey)
+                  .name("Minigames Debug Outpout")
+                  .visibility(Visibility.UNLISTED);
+            gamesConfigs.forEach(builder::addFile);
+            builder.addFile(spigot);
+            builder.addFile(config);
 
 
 
-            }
-        })
-
+        });
     }
 
 }
