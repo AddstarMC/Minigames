@@ -57,6 +57,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         registerCommand(new HelpCommand());
 //        registerCommand(new ReloadCommand());
         registerCommand(new ListCommand());
+        registerCommand(new ListPlaceholder());
         registerCommand(new ToggleTimerCommand());
         registerCommand(new DeleteCommand());
         registerCommand(new PartyModeCommand());

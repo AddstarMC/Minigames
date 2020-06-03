@@ -3,8 +3,11 @@ package au.com.mineauz.minigames;
 import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
+import au.com.mineauz.minigames.managers.PlaceHolderManager;
 import au.com.mineauz.minigames.managers.ResourcePackManager;
+import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.ModulePlaceHolderProvider;
 import au.com.mineauz.minigames.objects.ResourcePack;
 import com.google.common.io.Closeables;
 import com.google.common.util.concurrent.FutureCallback;
@@ -65,6 +68,7 @@ public class Minigames extends JavaPlugin {
     private ResourcePackManager resourceManager;
     private MinigamePlayerManager playerManager;
     private MinigameManager minigameManager;
+    private PlaceHolderManager placeHolderManager;
     private FileConfiguration lang;
     private FileConfiguration defLang;
     private boolean debug;
@@ -110,6 +114,10 @@ public class Minigames extends JavaPlugin {
 
     public String getStartupExceptionLog() {
         return startupExceptionLog;
+    }
+
+    public PlaceHolderManager getPlaceHolderManager() {
+        return placeHolderManager;
     }
 
     public void setLog(final Logger log) {
@@ -251,6 +259,7 @@ public class Minigames extends JavaPlugin {
             if (!this.setupEconomy()) {
                 this.getLogger().info("No Vault plugin found! You may only reward items.");
             }
+            this.hookPlaceHolderApi();
             this.backend = new BackendManager(this.getLogger());
             if (!this.backend.initialize(this.getConfig())) {
                 this.getServer().getPluginManager().disablePlugin(this);
@@ -408,6 +417,22 @@ public class Minigames extends JavaPlugin {
         return true;
     }
 
+    private void hookPlaceHolderApi() {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            placeHolderManager = new PlaceHolderManager(this);
+            placeHolderManager.register();
+        }
+        for(Map.Entry<String, Minigame> game:getMinigameManager().getAllMinigames().entrySet()) {
+            placeHolderManager.addGameIdentifiers(game.getValue());
+            for(MinigameModule module: game.getValue().getModules()){
+                ModulePlaceHolderProvider provider = module.getModulePlaceHolders();
+                if(provider != null){
+                    placeHolderManager.registerModulePlaceholders(game.getValue().getName(false),provider);
+                }
+            }
+        }
+    }
+
     public boolean hasEconomy() {
         return econ != null;
     }
@@ -481,7 +506,7 @@ public class Minigames extends JavaPlugin {
     }
 
     private void initMetrics() {
-        this.metrics = new Metrics(this,1190);
+        this.metrics = new Metrics(this, 1190);
         final Metrics.MultiLineChart chart = new Metrics.MultiLineChart("Players_in_Minigames", () -> {
             final Map<String, Integer> result = new HashMap<>();
             result.put("Total_Players", this.playerManager.getAllMinigamePlayers().size());
@@ -570,7 +595,9 @@ public class Minigames extends JavaPlugin {
     public void toggleDebug() {
         this.debug = !this.debug;
         this.backend.toggleDebug();
-        if (this.backend.isDebugging() && !this.debug) this.backend.toggleDebug();
+        if (this.backend.isDebugging() && !this.debug) {
+            this.backend.toggleDebug();
+        }
     }
 
     public boolean isDebugging() {

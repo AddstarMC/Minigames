@@ -43,7 +43,7 @@ public class NullCommandSender implements ConsoleCommandSender {
     public String getName() {
         return "Null";
     }
-    
+
     @Override
     public boolean isPermissionSet(String name) {
         return true;
