@@ -3,6 +3,7 @@ package au.com.mineauz.minigames;
 import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
+import au.com.mineauz.minigames.managers.PlaceHolderManager;
 import au.com.mineauz.minigames.managers.ResourcePackManager;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
@@ -209,6 +210,7 @@ public class Minigames extends JavaPlugin {
             if (!this.setupEconomy()) {
                 this.getLogger().info("No Vault plugin found! You may only reward items.");
             }
+            this.hookPlaceHolderApi();
             this.backend = new BackendManager(this.getLogger());
             if (!this.backend.initialize(this.getConfig())) {
                 this.getServer().getPluginManager().disablePlugin(this);
@@ -363,6 +365,11 @@ public class Minigames extends JavaPlugin {
         return true;
     }
 
+    private void hookPlaceHolderApi(){
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
+            new PlaceHolderManager(this).register();
+        }
+    }
     public boolean hasEconomy() {
         return econ != null;
     }
