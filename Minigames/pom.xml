@@ -26,18 +26,6 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public</url>
         </repository>
-        <!-- For Vault -->
-        <!--        <repository>
-                    <id>vault-repo</id>
-                    <name>Public Releases</name>
-                    <url>http://nexus.hc.to/content/repositories/pub_releases/</url>
-                </repository>-->
-
-        <!-- Other repositories -->
-        <repository>
-            <id>maven-central</id>
-            <url>http://repo1.maven.org/maven2/</url>
-        </repository>
         <!--Bstats-->
         <repository>
             <id>CodeMC</id>
@@ -80,7 +68,7 @@
         <dependency>
             <groupId>io.papermc</groupId>
             <artifactId>paperlib</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -140,7 +128,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.2</version>
+                <version>3.2.4</version>
                 <configuration>
                     <dependencyReducedPomLocation>
                         ${project.build.directory}/dependency-reduced-pom.xml
