@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.managers;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ModulePlaceHolderProvider;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -25,6 +26,11 @@ public class PlaceHolderManager extends PlaceholderExpansion  {
     private final Minigames plugin;
     private final List<ModulePlaceHolderProvider> providers;
     private final Map<String,String> identifiers;
+    private static boolean enabled = false;
+
+    public static boolean isEnabled() {
+        return enabled;
+    }
 
     public PlaceHolderManager(Minigames plugin) {
         this.plugin = plugin;
@@ -33,6 +39,7 @@ public class PlaceHolderManager extends PlaceholderExpansion  {
         identifiers.put("gameCount","CORE");
         identifiers.put("enabledGameCount","CORE");
         identifiers.put("totalPlaying","CORE");
+        enabled = true;
     }
 
     public Set<String> getRegisteredPlaceHolders() {
@@ -143,10 +150,19 @@ public class PlaceHolderManager extends PlaceholderExpansion  {
     }
 
     public void addGameIdentifiers(Minigame game) {
-        String name = game.getName(false);
-        for (GameOptions o : GameOptions.values()) {
-            identifiers.put(name+"_"+o.name,"GAME_"+name);
+        if(enabled) {
+            String name = game.getName(false);
+            for (GameOptions o : GameOptions.values()) {
+                identifiers.put(name + "_" + o.name, "GAME_" + name);
+            }
         }
+        for(MinigameModule module: game.getModules()){
+            ModulePlaceHolderProvider provider = module.getModulePlaceHolders();
+            if(provider != null){
+                registerModulePlaceholders(game.getName(false),provider);
+            }
+        }
+        plugin.getLogger().info("PAPI hooked for " + game.getName(true));
     }
 
     public void registerModulePlaceholders(String gameName, ModulePlaceHolderProvider provider){

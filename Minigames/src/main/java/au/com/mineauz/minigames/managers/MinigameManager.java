@@ -130,6 +130,10 @@ public class MinigameManager {
 
     public void addMinigame(final Minigame game) {
         this.minigames.put(game.getName(false), game);
+        if(PlaceHolderManager.isEnabled()){
+            Minigames.getPlugin().getPlaceHolderManager().addGameIdentifiers(game);
+        }
+
     }
 
     public Minigame getMinigame(final String minigame) {

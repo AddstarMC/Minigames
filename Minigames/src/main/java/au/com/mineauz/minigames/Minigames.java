@@ -259,7 +259,6 @@ public class Minigames extends JavaPlugin {
             if (!this.setupEconomy()) {
                 this.getLogger().info("No Vault plugin found! You may only reward items.");
             }
-            this.hookPlaceHolderApi();
             this.backend = new BackendManager(this.getLogger());
             if (!this.backend.initialize(this.getConfig())) {
                 this.getServer().getPluginManager().disablePlugin(this);
@@ -326,6 +325,7 @@ public class Minigames extends JavaPlugin {
             }
             PaperLib.suggestPaper(this);
             log().info(desc.getName() + " successfully enabled.");
+            this.hookPlaceHolderApi();
         } catch (final Throwable e) {
             plugin = null;
             log().log(Level.SEVERE, "Failed to enable Minigames " + this.getDescription().getVersion() + ": " + e.getMessage());
@@ -419,18 +419,18 @@ public class Minigames extends JavaPlugin {
 
     private void hookPlaceHolderApi() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            log.info("--------------------");
+            log.info("Hooking PlaceHolder API");
             placeHolderManager = new PlaceHolderManager(this);
             placeHolderManager.register();
         }
+        log.info("Adding Placeholders for " + getMinigameManager().getAllMinigames().size() + " games");
         for(Map.Entry<String, Minigame> game:getMinigameManager().getAllMinigames().entrySet()) {
+            log.fine("Adding Placeholders for "+ game.getKey());
             placeHolderManager.addGameIdentifiers(game.getValue());
-            for(MinigameModule module: game.getValue().getModules()){
-                ModulePlaceHolderProvider provider = module.getModulePlaceHolders();
-                if(provider != null){
-                    placeHolderManager.registerModulePlaceholders(game.getValue().getName(false),provider);
-                }
-            }
         }
+        log.info("PlaceHolders: "+ placeHolderManager.getRegisteredPlaceHolders().toString());
+        log.info("--------------------");
     }
 
     public boolean hasEconomy() {
