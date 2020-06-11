@@ -775,7 +775,8 @@ public class MinigamePlayerManager {
                         score = MinigameUtils.formStr("player.end.broadcastScore", winner.getScore());
                     } else if (minigame.getShowCompletionTime()) {
                         time = winner.getEndTime() - winner.getStartTime() + winner.getStoredTime();
-                        winner.sendInfoMessage("Completion time: "+time);
+                        winner.sendInfoMessage(MinigameUtils.formStr("player.end.broadcastTime",time));
+
                     }
                     MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winner.getDisplayName(minigame.usePlayerDisplayNames()), minigame.getName(true)) + ". " + score, minigame, ChatColor.GREEN);
                 } else if (winners.size() > 1) {

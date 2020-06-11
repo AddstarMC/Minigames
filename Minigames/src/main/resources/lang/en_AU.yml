@@ -37,6 +37,7 @@ player:
     plyMsg: "You've won the %s Minigame! Congratulations!"
     broadcastMsg: "%s won %s"
     broadcastScore: "Score: %s"
+    broadcastTime: "Time: %s ms"
     broadcastNobodyWon: "Nobody was able to win %s."
     consMsg: "%s completed %s"
     team:
