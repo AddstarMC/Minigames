@@ -20,6 +20,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -130,6 +131,10 @@ public class MinigameManager {
 
     public void addMinigame(final Minigame game) {
         this.minigames.put(game.getName(false), game);
+        if(PlaceHolderManager.isEnabled()){
+            Minigames.getPlugin().getPlaceHolderManager().addGameIdentifiers(game);
+        }
+
     }
 
     public Minigame getMinigame(final String minigame) {
@@ -447,7 +452,10 @@ public class MinigameManager {
         return true;
     }
 
-    public boolean teleportPlayerOnJoin(final Minigame minigame, final MinigamePlayer player) {
+    public boolean teleportPlayerOnJoin(@NotNull final Minigame minigame, final MinigamePlayer player) {
+        if(this.minigameType(minigame.getType()) == null) {
+            Minigames.log().warning(MinigameUtils.formStr("error.invalidType") + " : "+minigame.getName(true));
+        }
         return this.minigameType(minigame.getType()).teleportOnJoin(player, minigame);
     }
 
