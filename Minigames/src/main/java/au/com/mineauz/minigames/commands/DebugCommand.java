@@ -139,6 +139,10 @@ public class DebugCommand implements ICommand {
             PasteFile spigot = new PasteFile("spigot.yml",
                   new PasteContent(PasteContent.ContentType.TEXT,
                         getFile(Paths.get("spigot.yml"))));
+            PasteFile startupLog = new PasteFile("startup.log", new PasteContent(PasteContent.ContentType.TEXT,
+                    plugin.getStartupLog()));
+            PasteFile startupExceptionsLog = new PasteFile("startupExceptions.log", new PasteContent(PasteContent.ContentType.TEXT,
+                    plugin.getStartupExceptionLog()));
             List<PasteFile> gamesConfigs =  new ArrayList<>();
             Minigames.getPlugin().getMinigameManager().getAllMinigames().forEach((s, minigame1) -> {
                 PasteContent content = new PasteContent(PasteContent.ContentType.TEXT,
@@ -153,6 +157,8 @@ public class DebugCommand implements ICommand {
             gamesConfigs.forEach(builder::addFile);
             builder.addFile(spigot);
             builder.addFile(config);
+            builder.addFile(startupLog);
+            builder.addFile(startupExceptionsLog);
             PasteBuilder.PasteResult result = builder.build();
             if (result.getPaste().isPresent()) {
                 Paste paste = result.getPaste().get();

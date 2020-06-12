@@ -48,6 +48,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
+import java.lang.reflect.Member;
 import java.util.*;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -58,7 +59,7 @@ import java.util.regex.Pattern;
 public class Minigames extends JavaPlugin {
 
     private static final Pattern COMPILE = Pattern.compile("[-]?[0-9]+");
-    public static Logger log = Logger.getLogger("Minecraft");
+    public static Logger log;
     private static Minigames plugin;
     private static Economy econ;
     private static SignBase minigameSigns;
@@ -75,15 +76,18 @@ public class Minigames extends JavaPlugin {
     private long lastUpdateCheck;
     private BackendManager backend;
     private Metrics metrics;
-    private String startupLog;
-    private String startupExceptionLog;
+    private final StartUpLogHandler startUpHandler;
 
     public Minigames() {
         super();
+        log = this.getLogger();
+        startUpHandler = new StartUpLogHandler();
     }
 
     protected Minigames(final JavaPluginLoader loader, final PluginDescriptionFile description, final File dataFolder, final File file) {
         super(loader, description, dataFolder, file);
+        log = this.getLogger();
+        startUpHandler = new StartUpLogHandler();
     }
 
     public static ComparableVersion getVERSION() {
@@ -109,11 +113,11 @@ public class Minigames extends JavaPlugin {
     }
 
     public String getStartupLog() {
-        return startupLog;
+        return startUpHandler.getNormalLog();
     }
 
     public String getStartupExceptionLog() {
-        return startupExceptionLog;
+        return startUpHandler.getExceptionLog();
     }
 
     public PlaceHolderManager getPlaceHolderManager() {
@@ -182,37 +186,8 @@ public class Minigames extends JavaPlugin {
         log().info(desc.getName() + " successfully disabled.");
     }
 
-    private Handler createStartUpLogHandler(final StringBuilder builder, final StringBuilder exceptionBuilder) {
-        Handler handler = new Handler() {
-            @Override
-            public void publish(LogRecord record) {
-                builder.append('[').append(record.getLevel().getName()).append("] ").append(record.getMessage()).append('\n');
-                if (record.getThrown() != null) {
-                    StringWriter stringWriter = new StringWriter();
-                    PrintWriter printWriter = new PrintWriter(stringWriter);
-                    record.getThrown().printStackTrace(printWriter);
-                    exceptionBuilder.append('[').append(record.getLevel().getName()).append("] ").append(record.getMessage()).append('\n')
-                          .append(stringWriter.toString()).append('\n');
-                }
-            }
-
-            @Override
-            public void flush() {
-
-            }
-
-            @Override
-            public void close() throws SecurityException {
-
-            }
-        };
-        return handler;
-    }
-
     public void onEnable() {
-        StringBuilder startup = new StringBuilder();
-        StringBuilder exceptions = new StringBuilder();
-        Handler handler = createStartUpLogHandler(startup, exceptions);
+        log.addHandler(startUpHandler);
         try {
             plugin = this;
             switch (this.checkVersion()) {
@@ -268,40 +243,7 @@ public class Minigames extends JavaPlugin {
             this.saveConfig();
             //        playerManager.loadDCPlayers();
             this.playerManager.loadDeniedCommands();
-
-            final MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
-            final Set<String> keys = globalLoadouts.getConfig().getKeys(false);
-            for (final String loadout : keys) {
-                this.minigameManager.addLoadout(loadout);
-                ConfigurationSection loadOutSection = globalLoadouts.getConfig().getConfigurationSection(loadout);
-                if (loadOutSection != null) {
-                    final Set<String> items = loadOutSection.getKeys(false);
-                    for (final String slot : items) {
-                        if (COMPILE.matcher(slot).matches()) {
-                            this.minigameManager.getLoadout(loadout).addItem(globalLoadouts.getConfig().getItemStack(loadout + '.' + slot), Integer.parseInt(slot));
-                        }
-                    }
-                }
-                if (globalLoadouts.getConfig().contains(loadout + ".potions")) {
-                    ConfigurationSection potionLoadOutSection = globalLoadouts.getConfig().getConfigurationSection(loadout + ".potions");
-                    if (potionLoadOutSection != null) {
-                        final Set<String> pots = potionLoadOutSection.getKeys(false);
-                        for (final String eff : pots) {
-                            PotionEffectType type = PotionEffectType.getByName(eff);
-                            if (type != null) {
-                                final PotionEffect effect = new PotionEffect(type,
-                                      globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".dur"),
-                                      globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".amp"));
-                                this.minigameManager.getLoadout(loadout).addPotionEffect(effect);
-                            }
-                        }
-                    }
-                }
-                if (globalLoadouts.getConfig().contains(loadout + ".usepermissions")) {
-                    this.minigameManager.getLoadout(loadout).setUsePermissions(globalLoadouts.getConfig().getBoolean(loadout + ".usepermissions"));
-                }
-            }
-
+            setupLoadOuts();
             minigameSigns = new SignBase();
             this.minigameManager.loadRewardSigns();
 
@@ -332,11 +274,42 @@ public class Minigames extends JavaPlugin {
             e.printStackTrace();
             this.getPluginLoader().disablePlugin(this);
         }
-        log.removeHandler(handler);
-        this.startupLog = startup.toString();
-        this.startupExceptionLog = exceptions.toString();
+        log.removeHandler(startUpHandler);
     }
-
+    private void setupLoadOuts(){
+        final MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
+        final Set<String> keys = globalLoadouts.getConfig().getKeys(false);
+        for (final String loadout : keys) {
+            this.minigameManager.addLoadout(loadout);
+            ConfigurationSection loadOutSection = globalLoadouts.getConfig().getConfigurationSection(loadout);
+            if (loadOutSection != null) {
+                final Set<String> items = loadOutSection.getKeys(false);
+                for (final String slot : items) {
+                    if (COMPILE.matcher(slot).matches()) {
+                        this.minigameManager.getLoadout(loadout).addItem(globalLoadouts.getConfig().getItemStack(loadout + '.' + slot), Integer.parseInt(slot));
+                    }
+                }
+            }
+            if (globalLoadouts.getConfig().contains(loadout + ".potions")) {
+                ConfigurationSection potionLoadOutSection = globalLoadouts.getConfig().getConfigurationSection(loadout + ".potions");
+                if (potionLoadOutSection != null) {
+                    final Set<String> pots = potionLoadOutSection.getKeys(false);
+                    for (final String eff : pots) {
+                        PotionEffectType type = PotionEffectType.getByName(eff);
+                        if (type != null) {
+                            final PotionEffect effect = new PotionEffect(type,
+                                    globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".dur"),
+                                    globalLoadouts.getConfig().getInt(loadout + ".potions." + eff + ".amp"));
+                            this.minigameManager.getLoadout(loadout).addPotionEffect(effect);
+                        }
+                    }
+                }
+            }
+            if (globalLoadouts.getConfig().contains(loadout + ".usepermissions")) {
+                this.minigameManager.getLoadout(loadout).setUsePermissions(globalLoadouts.getConfig().getBoolean(loadout + ".usepermissions"));
+            }
+        }
+    }
     private void loadPresets() {
         final String prespath = this.getDataFolder() + "/presets/";
         final String[] presets = {"spleef", "lms", "ctf", "infection"};
