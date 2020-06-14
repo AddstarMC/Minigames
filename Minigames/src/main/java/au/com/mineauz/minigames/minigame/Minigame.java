@@ -1081,7 +1081,7 @@ public class Minigame implements ScriptObject {
         itemsMain.add(minPlayers.getMenuItem("Min. Players", Material.STONE_SLAB, MinigameUtils.stringToList("Multiplayer Only")));
         itemsMain.add(maxPlayers.getMenuItem("Max. Players", Material.STONE, MinigameUtils.stringToList("Multiplayer Only")));
         itemsMain.add(spMaxPlayers.getMenuItem("Enable Singleplayer Max Players", Material.IRON_BARS));
-        itemsMain.add(displayScoreboard.getMenuItem("Display Scoreboard", Material.OAK_WALL_SIGN));
+        itemsMain.add(displayScoreboard.getMenuItem("Display Scoreboard", Material.OAK_SIGN));
         itemsMain.add(new MenuItemPage("Lobby Settings", MinigameUtils.stringToList("Multiplayer Only"), Material
                 .OAK_DOOR, lobby));
         itemsMain.add(new MenuItemNewLine());
@@ -1224,9 +1224,9 @@ public class Minigame implements ScriptObject {
         itemsPlayer.add(paintBallMode.getMenuItem("Paintball Mode", Material.SNOWBALL));
         itemsPlayer.add(paintBallDamage.getMenuItem("Paintball Damage", Material.ARROW, 1, null));
         itemsPlayer.add(unlimitedAmmo.getMenuItem("Unlimited Ammo", Material.SNOW_BLOCK));
-        itemsPlayer.add(allowMPCheckpoints.getMenuItem("Enable Multiplayer Checkpoints", Material.OAK_WALL_SIGN));
-        itemsPlayer.add(saveCheckpoints.getMenuItem("Save Checkpoints", Material.OAK_WALL_SIGN, MinigameUtils.stringToList("Singleplayer Only")));
-        itemsPlayer.add(new MenuItemPage("Flags", MinigameUtils.stringToList("Singleplayer flags"), Material.OAK_WALL_SIGN, flags));
+        itemsPlayer.add(allowMPCheckpoints.getMenuItem("Enable Multiplayer Checkpoints", Material.OAK_SIGN));
+        itemsPlayer.add(saveCheckpoints.getMenuItem("Save Checkpoints", Material.OAK_SIGN, MinigameUtils.stringToList("Singleplayer Only")));
+        itemsPlayer.add(new MenuItemPage("Flags", MinigameUtils.stringToList("Singleplayer flags"), Material.OAK_SIGN, flags));
         itemsPlayer.add(allowFlight.getMenuItem("Allow Flight", Material.FEATHER, MinigameUtils.stringToList("Allow flight to;be toggled")));
         itemsPlayer.add(enableFlight.getMenuItem("Enable Flight", Material.FEATHER, MinigameUtils.stringToList("Start players;in flight;(Must have Allow;Flight)")));
         itemsPlayer.add(allowDragonEggTeleport.getMenuItem("Allow Dragon Egg Teleport", Material.DRAGON_EGG));
