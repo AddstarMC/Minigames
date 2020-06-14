@@ -151,7 +151,7 @@
                         <includes>
                             <include>org.bstats:*</include>
                             <include>io.papermc:paperlib</include>
-                            <include>org.kitteh.pastegg:*</include>
+                            <include>org.kitteh:paste-gg-api</include>
                         </includes>
                     </artifactSet>
                     <relocations>
