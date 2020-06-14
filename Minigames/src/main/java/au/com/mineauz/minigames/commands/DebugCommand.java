@@ -64,7 +64,7 @@ public class DebugCommand implements ICommand {
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
-        if(args.length > 1) {
+        if(args != null && args.length > 1) {
             switch (args[0].toUpperCase()){
                 case "ON":
                     if(Minigames.getPlugin().isDebugging()){
@@ -83,10 +83,13 @@ public class DebugCommand implements ICommand {
                     }
                     break;
                 case "PASTE":
+                    sender.sendMessage(ChatColor.GRAY + "Generating a paste.....");
                     generatePaste(sender,minigame);
                     break;
+                default:
+                    return false;
             }
-        }else {
+        } else {
             Minigames.getPlugin().toggleDebug();
 
             if (Minigames.getPlugin().isDebugging())
@@ -169,9 +172,6 @@ public class DebugCommand implements ICommand {
             } else {
                 sender.sendMessage("Paste Failed.");
             }
-
-
-
         });
     }
 
