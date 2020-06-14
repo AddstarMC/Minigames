@@ -151,6 +151,7 @@
                         <includes>
                             <include>org.bstats:*</include>
                             <include>io.papermc:paperlib</include>
+                            <include>org.kitteh.pastegg:*</include>
                         </includes>
                     </artifactSet>
                     <relocations>
@@ -163,6 +164,10 @@
                             <pattern>io.papermc.lib</pattern>
                             <shadedPattern>au.com.mineauz.minigames.paperlib
                             </shadedPattern> <!-- Replace this -->
+                        </relocation>
+                        <relocation>
+                            <pattern>org.kitteh.pastegg</pattern>
+                            <shadedPattern>au.com.mineauz.minigames.pastegg</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
