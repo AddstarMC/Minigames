@@ -64,7 +64,7 @@ public class DebugCommand implements ICommand {
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
-        if(args != null && args.length > 1) {
+        if(args != null && args.length > 0) {
             switch (args[0].toUpperCase()){
                 case "ON":
                     if(Minigames.getPlugin().isDebugging()){
