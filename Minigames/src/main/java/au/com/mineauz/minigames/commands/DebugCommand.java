@@ -146,23 +146,25 @@ public class DebugCommand implements ICommand {
                     plugin.getStartupLog()));
             PasteFile startupExceptionsLog = new PasteFile("startupExceptions.log", new PasteContent(PasteContent.ContentType.TEXT,
                     plugin.getStartupExceptionLog()));
-            List<PasteFile> gamesConfigs =  new ArrayList<>();
+ /*           List<PasteFile> gamesConfigs =  new ArrayList<>();
             Minigames.getPlugin().getMinigameManager().getAllMinigames().forEach((s, minigame1) -> {
                 PasteContent content = new PasteContent(PasteContent.ContentType.TEXT,
                       getFile(dataPath.resolve("/minigames/" + s + "/config.yml")));
                 PasteFile file = new PasteFile(s+"-config.yml",content);
                 gamesConfigs.add(file);
-            });
+            });*/
             PasteBuilder builder = new PasteBuilder();
-            builder.setApiKey(apiKey)
-                  .name("Minigames Debug Outpout")
-                  .visibility(Visibility.UNLISTED);
-            gamesConfigs.forEach(builder::addFile);
-            builder.addFile(spigot);
-            builder.addFile(config);
+            //gamesConfigs.forEach(builder::addFile);
             builder.addFile(startupLog);
             builder.addFile(startupExceptionsLog);
-            PasteBuilder.PasteResult result = builder.build();
+            PasteBuilder.PasteResult result = builder
+                  .setApiKey(apiKey)
+                  .name("Minigames Debug Outpout")
+                  .visibility(Visibility.UNLISTED)
+                  .addFile(spigot)
+                  .addFile(config)
+                  .debug(Minigames.getPlugin().isDebugging())
+                  .build();
             if (result.getPaste().isPresent()) {
                 Paste paste = result.getPaste().get();
                 sender.sendMessage("Debug: https://paste.gg/" + paste.getId());
