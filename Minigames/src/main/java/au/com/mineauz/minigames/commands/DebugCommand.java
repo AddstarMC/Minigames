@@ -157,22 +157,27 @@ public class DebugCommand implements ICommand {
             //gamesConfigs.forEach(builder::addFile);
             builder.addFile(startupLog);
             builder.addFile(startupExceptionsLog);
-            PasteBuilder.PasteResult result = builder
-                  .setApiKey(apiKey)
-                  .name("Minigames Debug Outpout")
-                  .visibility(Visibility.UNLISTED)
-                  .addFile(spigot)
-                  .addFile(config)
-                  .debug(Minigames.getPlugin().isDebugging())
-                  .build();
-            if (result.getPaste().isPresent()) {
-                Paste paste = result.getPaste().get();
-                sender.sendMessage("Debug: https://paste.gg/" + paste.getId());
-                sender.sendMessage("Deletion Key: " + paste.getDeletionKey());
-                plugin.getLogger().log(new LogRecord(Level.INFO,"Paste:  https://paste.gg/" + paste.getId()));
-                plugin.getLogger().log(new LogRecord(Level.INFO,"Paste:  Deletion Key: " + paste.getDeletionKey()));
-            } else {
-                sender.sendMessage("Paste Failed.");
+            try {
+                PasteBuilder.PasteResult result = builder
+                      .setApiKey(apiKey)
+                      .name("Minigames Debug Outpout")
+                      .visibility(Visibility.UNLISTED)
+                      .addFile(spigot)
+                      .addFile(config)
+                      .debug(Minigames.getPlugin().isDebugging())
+                      .build();
+                if (result.getPaste().isPresent()) {
+                    Paste paste = result.getPaste().get();
+                    sender.sendMessage("Debug Paste: https://paste.gg/" + paste.getId());
+                    sender.sendMessage("Deletion Key: " + paste.getDeletionKey());
+                    plugin.getLogger().log(new LogRecord(Level.INFO,"Paste:  https://paste.gg/" + paste.getId()));
+                    plugin.getLogger().log(new LogRecord(Level.INFO,"Paste:  Deletion Key: " + paste.getDeletionKey()));
+                } else {
+                    sender.sendMessage("Paste Failed.");
+                }
+            }catch (InvalidPasteException e) {
+                sender.sendMessage("Paste Failed" + e.getMessage());
+                Minigames.log().warning(e.getMessage());
             }
         });
     }
