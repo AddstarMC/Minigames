@@ -1,12 +1,11 @@
 package au.com.mineauz.minigames;
 
-import au.com.mineauz.minigames.events.MinigamesBroadcastEvent;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -17,7 +16,6 @@ import java.util.regex.Pattern;
 //import org.bukkit.craftbukkit.v1_6_R2.entity.CraftPlayer;
 
 public class MinigameUtils {
-    private static FileConfiguration lang = Minigames.getPlugin().getLang();
 
     /**
      * Returns the item stack from a number or name.
@@ -108,7 +106,7 @@ public class MinigameUtils {
 
         if (weeks != 0) {
             if (!small)
-                msg = String.format(lang.getString("time.weeks"), weeks);
+                msg = String.format(getLang("time.weeks"), weeks);
             else {
                 msg = weeks + "w";
             }
@@ -119,14 +117,14 @@ public class MinigameUtils {
                     if (seconds != 0 || hours != 0 || minutes != 0) {
                         msg += ", ";
                     } else {
-                        msg += " " + lang.getString("time.and") + " ";
+                        msg += " " + getLang("time.and") + " ";
                     }
                 } else {
                     msg += ":";
                 }
             }
             if (!small)
-                msg += String.format(lang.getString("time.days"), days);
+                msg += String.format(getLang("time.days"), days);
             else
                 msg += days + "d";
         }
@@ -136,13 +134,13 @@ public class MinigameUtils {
                     if (seconds != 0 || minutes != 0) {
                         msg += ", ";
                     } else {
-                        msg += " " + lang.getString("time.and") + " ";
+                        msg += " " + getLang("time.and") + " ";
                     }
                 } else
                     msg += ":";
             }
             if (!small)
-                msg += String.format(lang.getString("time.hours"), hours);
+                msg += String.format(getLang("time.hours"), hours);
             else
                 msg += hours + "h";
         }
@@ -152,25 +150,25 @@ public class MinigameUtils {
                     if (seconds != 0) {
                         msg += ", ";
                     } else {
-                        msg += " " + lang.getString("time.and") + " ";
+                        msg += " " + getLang("time.and") + " ";
                     }
                 } else
                     msg += ":";
             }
             if (!small)
-                msg += String.format(lang.getString("time.minutes"), minutes);
+                msg += String.format(getLang("time.minutes"), minutes);
             else
                 msg += minutes + "m";
         }
         if (seconds != 0 || msg.equals("")) {
             if (!msg.equals("")) {
                 if (!small)
-                    msg += " " + lang.getString("time.and") + " ";
+                    msg += " " + getLang("time.and") + " ";
                 else
                     msg += ":";
             }
             if (!small)
-                msg += String.format(lang.getString("time.seconds"), seconds);
+                msg += String.format(getLang("time.seconds"), seconds);
             else
                 msg += seconds + "s";
         }
@@ -245,13 +243,16 @@ public class MinigameUtils {
      * @param format - The location in the YAML of the string to format.
      * @param text   - What to replace the formatted variables with.
      * @return The formatted string. If not found, will return the format
+     * @deprecated use {@link MessageManager#getMinigamesMessage(String, String...)}
      */
+    @Deprecated
     public static String formStr(String format, Object... text) {
-        String lang = Minigames.getPlugin().getLang().getString(format);
-        if (lang != null)
+        String lang = getLang(format);
+        try {
             return String.format(lang, text);
-        lang = "No path found for: " + format;
-        return lang;
+        }catch (IllegalArgumentException e){
+            return lang;
+        }
     }
 
     /**
@@ -259,14 +260,17 @@ public class MinigameUtils {
      *
      * @param arg1 - The path of the language string
      * @return The translation. If not found, will return the argument.
+     * @deprecated use {@link MessageManager#getUnformattedMessage(String, String)}
      */
+    @Deprecated
     public static String getLang(String arg1) {
-        String lang = Minigames.getPlugin().getLang().getString(arg1);
-        if (lang != null) {
-            return lang;
+        String out;
+        try {
+            out = MessageManager.getUnformattedMessage(null, arg1);
+        }catch (MissingResourceException e){
+            out = "No path found in: " +e.getMessage() +" for " + e.getKey();
         }
-        lang = "No path found for: " + arg1;
-        return lang;
+        return out;
     }
 
     /**
@@ -279,7 +283,7 @@ public class MinigameUtils {
         Material toolMat = Material.getMaterial(Minigames.getPlugin().getConfig().getString("tool"));
         if (toolMat == null) {
             toolMat = Material.BLAZE_ROD;
-            player.sendMessage("Invalid material type! Please check the configuration to see if it has been typed correctly! Default type given instead.", MinigameMessageType.ERROR);
+            MessageManager.sendMessage(player,MinigameMessageType.ERROR,null,"minigame.error.noDefaultTool");
         }
 
         ItemStack tool = new ItemStack(toolMat);
@@ -380,7 +384,9 @@ public class MinigameUtils {
      *
      * @param toCapitalize The string to capitalize
      * @return The capitalized string
+     * @deprecated use {@link org.apache.commons.lang.WordUtils#capitalize(String)}
      */
+    @Deprecated
     public static String capitalize(String toCapitalize) {
         if (toCapitalize == null) return null;
         String val = toCapitalize.toLowerCase();
@@ -444,14 +450,14 @@ public class MinigameUtils {
     /**
      * Broadcasts a message with a defined permission.
      *
-     * @param message    - The message to be broadcasted (Can be manipulated with MinigamesBroadcastEvent)
+     * @param message    - The message to be broadcast (Can be manipulated with MinigamesBroadcastEvent)
      * @param minigame   - The Minigame this broadcast is related to.
      * @param permission - The permission required to see this broadcast message.
+     * @deprecated use {@link MessageManager#broadcast(String, Minigame, String)}
      */
+    @Deprecated
     public static void broadcast(String message, Minigame minigame, String permission) {
-        MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(ChatColor.AQUA + "[Minigames]" + ChatColor.WHITE, message, minigame);
-        Bukkit.getPluginManager().callEvent(ev);
-        Bukkit.getServer().broadcast(ev.getMessageWithPrefix(), permission);
+       MessageManager.broadcast(message,minigame,permission);
     }
 
     /**
@@ -460,11 +466,11 @@ public class MinigameUtils {
      * @param message     - The message to be broadcasted (Can be manipulated with MinigamesBroadcastEvent)
      * @param minigame    - The Minigame this broadcast is related to.
      * @param prefixColor - The color to be used in the prefix.
+     * @deprecated use {@link MessageManager#broadcast(String, Minigame, ChatColor)}
      */
+    @Deprecated
     public static void broadcast(String message, Minigame minigame, ChatColor prefixColor) {
-        MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(prefixColor + "[Minigames]" + ChatColor.WHITE, message, minigame);
-        Bukkit.getPluginManager().callEvent(ev);
-        Bukkit.getServer().broadcastMessage(ev.getMessageWithPrefix());
+        MessageManager.broadcast(message,minigame,prefixColor);
     }
 
     public static void debugMessage(String message) {

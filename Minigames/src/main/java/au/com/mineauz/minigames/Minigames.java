@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.config.MinigameSave;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.managers.PlaceHolderManager;
@@ -70,8 +71,6 @@ public class Minigames extends JavaPlugin {
     private MinigamePlayerManager playerManager;
     private MinigameManager minigameManager;
     private PlaceHolderManager placeHolderManager;
-    private FileConfiguration lang;
-    private FileConfiguration defLang;
     private boolean debug;
     private long lastUpdateCheck;
     private BackendManager backend;
@@ -219,14 +218,7 @@ public class Minigames extends JavaPlugin {
             }
             final PluginDescriptionFile desc = this.getDescription();
             ConfigurationSerialization.registerClass(ResourcePack.class);
-            final MinigameSave sv = new MinigameSave("lang/" + this.getConfig().getString("lang"));
-            this.lang = sv.getConfig();
             this.loadLang();
-            try {
-                this.lang.setDefaults(this.defLang);
-            } catch (final IllegalArgumentException e) {
-                log().info("Language defaults were NULL");
-            }
             this.checkVersion();
             this.getLogger().info("Using lang " + this.getConfig().getString("lang"));
             this.loadPresets();
@@ -506,37 +498,16 @@ public class Minigames extends JavaPlugin {
         this.metrics.addCustomChart(chart);
     }
 
-
+    /**
+     * Use {@link MessageManager}
+      */
+    @Deprecated
     public FileConfiguration getLang() {
-        return this.lang;
+        return null;
     }
 
     private void loadLang() {
-        final InputStream is = this.getClassLoader().getResourceAsStream("lang/en_AU.yml");
-        final OutputStream os;
-        try {
-            os = new FileOutputStream(this.getDataFolder() + "/lang/en_AU.yml");
-        } catch (final FileNotFoundException e) {
-            log().warning(e.getMessage());
-            return;
-        }
-        final byte[] buffer = new byte[4096];
-        int length;
-
-        try {
-            assert is != null;
-            while ((length = is.read(buffer)) > 0) {
-                os.write(buffer, 0, length);
-            }
-
-            os.close();
-            is.close();
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
-
-        final MinigameSave svb = new MinigameSave("lang/en_AU");
-        this.defLang = svb.getConfig();
+        MessageManager.registerCoreLanguage();
     }
 
     public void queueStatSave(final StoredGameStats saveData, final boolean winner) {

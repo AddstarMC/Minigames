@@ -51,7 +51,7 @@ public class SignBase implements Listener {
         for (int i = 0; i < 4; i++) {
             signinfo[i] = ChatColor.stripColor(event.getLine(i));
         }
-        if (signinfo[0].equalsIgnoreCase("[minigame]") || signinfo[0].equalsIgnoreCase("[mgm]") || signinfo[0].equalsIgnoreCase("[mg]")) {
+        if ("[minigame]".equalsIgnoreCase(signinfo[0]) || "[mgm]".equalsIgnoreCase(signinfo[0]) || "[mg]".equals(signinfo[0])) {
             if (minigameSigns.containsKey(signinfo[1].toLowerCase())) {
                 event.setLine(0, ChatColor.DARK_BLUE + "[Minigame]");
                 MinigameSign mgSign = minigameSigns.get(signinfo[1].toLowerCase());

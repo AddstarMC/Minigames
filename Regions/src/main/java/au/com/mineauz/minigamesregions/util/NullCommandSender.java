@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
@@ -11,6 +12,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
@@ -42,6 +44,11 @@ public class NullCommandSender implements ConsoleCommandSender {
     @Override
     public String getName() {
         return "Null";
+    }
+
+    @Override
+    public @NotNull Spigot spigot() {
+        return new CommandSender.Spigot();
     }
 
     @Override

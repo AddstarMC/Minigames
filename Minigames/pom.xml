@@ -120,7 +120,6 @@
                     <include>plugin.yml</include>
                     <include>config.yml</include>
                     <include>*.properties</include>
-                    <include>lang/*.yml</include>
                     <include>presets/*.yml</include>
                     <include>resourcepack/*.zip</include>
                 </includes>

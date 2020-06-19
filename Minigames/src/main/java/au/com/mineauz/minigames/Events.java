@@ -2,6 +2,7 @@ package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.events.RevertCheckpointEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.menu.MenuItem;
@@ -62,12 +63,12 @@ public class Events implements Listener {
                         return;
                     case DECLINED:
                         Minigames.getPlugin().getPlayerManager().quitMinigame(ply, true);
-                        ply.sendMessage(MinigameUtils.getLang("minigames.resource.declined"), MinigameMessageType.ERROR);
+                        MessageManager.sendMessage(ply,MinigameMessageType.ERROR,null,"minigames.resource.declined");
                         required.remove(ply);
                         return;
                     case FAILED_DOWNLOAD:
                         Minigames.getPlugin().getPlayerManager().quitMinigame(ply, true);
-                        ply.sendMessage(MinigameUtils.getLang("minigames.resource.failed"), MinigameMessageType.ERROR);
+                        MessageManager.sendMessage(ply,MinigameMessageType.ERROR,null,"minigames.resource.failed");
                         required.remove(ply);
                         return;
                     case SUCCESSFULLY_LOADED:

@@ -112,7 +112,6 @@ public class StartPositionMode implements ToolMode {
 
     }
 
-    @SuppressWarnings("deprecation") //TODO: Use alternate method once available
     @Override
     public void select(MinigamePlayer player, Minigame minigame, Team team) {
         if (team != null) {

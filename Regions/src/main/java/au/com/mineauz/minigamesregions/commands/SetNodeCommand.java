@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.RegionModule;
 import org.bukkit.ChatColor;
@@ -49,7 +50,7 @@ public class SetNodeCommand implements ICommand {
 
     @Override
     public String getPermissionMessage() {
-        return "You do not have permission to modify Minigame nodes!";
+        return Main.getPlugin().getMessage("command.node.noPermission");
     }
 
     @Override
@@ -66,10 +67,10 @@ public class SetNodeCommand implements ICommand {
             if(args[0].equalsIgnoreCase("create") && args.length >= 2){
                 if(!rmod.hasNode(args[1])){
                     rmod.addNode(args[1], new Node(args[1], ply.getLocation()));
-                    sender.sendMessage(ChatColor.GRAY + "Added new node called " + args[1] + " to " + minigame);
+                    sender.sendMessage(ChatColor.GRAY + Main.getPlugin().getMessage("command.node.addedNode",args[1],minigame.getName(true)));
                 }
                 else
-                    sender.sendMessage(ChatColor.RED + "A node by the name " + args[1] + " already exists in " + minigame);
+                    sender.sendMessage(ChatColor.RED +Main.getPlugin().getMessage("command.node.nodeExists",args[1],minigame.getName(true)));
                 return true;
             }
             else if(args[0].equalsIgnoreCase("modify")){
