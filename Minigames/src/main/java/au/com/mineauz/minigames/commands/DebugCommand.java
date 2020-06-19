@@ -64,7 +64,7 @@ public class DebugCommand implements ICommand {
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
-        if(args.length > 1) {
+        if(args != null && args.length > 0) {
             switch (args[0].toUpperCase()){
                 case "ON":
                     if(Minigames.getPlugin().isDebugging()){
@@ -83,10 +83,13 @@ public class DebugCommand implements ICommand {
                     }
                     break;
                 case "PASTE":
+                    sender.sendMessage(ChatColor.GRAY + "Generating a paste.....");
                     generatePaste(sender,minigame);
                     break;
+                default:
+                    return false;
             }
-        }else {
+        } else {
             Minigames.getPlugin().toggleDebug();
 
             if (Minigames.getPlugin().isDebugging())
@@ -143,35 +146,39 @@ public class DebugCommand implements ICommand {
                     plugin.getStartupLog()));
             PasteFile startupExceptionsLog = new PasteFile("startupExceptions.log", new PasteContent(PasteContent.ContentType.TEXT,
                     plugin.getStartupExceptionLog()));
-            List<PasteFile> gamesConfigs =  new ArrayList<>();
+ /*           List<PasteFile> gamesConfigs =  new ArrayList<>();
             Minigames.getPlugin().getMinigameManager().getAllMinigames().forEach((s, minigame1) -> {
                 PasteContent content = new PasteContent(PasteContent.ContentType.TEXT,
                       getFile(dataPath.resolve("/minigames/" + s + "/config.yml")));
                 PasteFile file = new PasteFile(s+"-config.yml",content);
                 gamesConfigs.add(file);
-            });
+            });*/
             PasteBuilder builder = new PasteBuilder();
-            builder.setApiKey(apiKey)
-                  .name("Minigames Debug Outpout")
-                  .visibility(Visibility.UNLISTED);
-            gamesConfigs.forEach(builder::addFile);
-            builder.addFile(spigot);
-            builder.addFile(config);
+            //gamesConfigs.forEach(builder::addFile);
             builder.addFile(startupLog);
             builder.addFile(startupExceptionsLog);
-            PasteBuilder.PasteResult result = builder.build();
-            if (result.getPaste().isPresent()) {
-                Paste paste = result.getPaste().get();
-                sender.sendMessage("Debug: https://paste.gg/" + paste.getId());
-                sender.sendMessage("Deletion Key: " + paste.getDeletionKey());
-                plugin.getLogger().log(new LogRecord(Level.INFO,"Paste:  https://paste.gg/" + paste.getId()));
-                plugin.getLogger().log(new LogRecord(Level.INFO,"Paste:  Deletion Key: " + paste.getDeletionKey()));
-            } else {
-                sender.sendMessage("Paste Failed.");
+            try {
+                PasteBuilder.PasteResult result = builder
+                      .setApiKey(apiKey)
+                      .name("Minigames Debug Outpout")
+                      .visibility(Visibility.UNLISTED)
+                      .addFile(spigot)
+                      .addFile(config)
+                      .debug(Minigames.getPlugin().isDebugging())
+                      .build();
+                if (result.getPaste().isPresent()) {
+                    Paste paste = result.getPaste().get();
+                    sender.sendMessage("Debug Paste: https://paste.gg/" + paste.getId());
+                    sender.sendMessage("Deletion Key: " + paste.getDeletionKey());
+                    plugin.getLogger().log(new LogRecord(Level.INFO,"Paste:  https://paste.gg/" + paste.getId()));
+                    plugin.getLogger().log(new LogRecord(Level.INFO,"Paste:  Deletion Key: " + paste.getDeletionKey()));
+                } else {
+                    sender.sendMessage("Paste Failed.");
+                }
+            }catch (InvalidPasteException e) {
+                sender.sendMessage("Paste Failed" + e.getMessage());
+                Minigames.log().warning(e.getMessage());
             }
-
-
-
         });
     }
 
