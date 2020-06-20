@@ -35,8 +35,12 @@ public class MessageManager {
      * Stores each prop file with a identifier
      */
     private static final Hashtable<String, ResourceBundle> propertiesHashMap = new Hashtable<>();
+    private static Locale locale = Locale.getDefault();
 
     public static void registerCoreLanguage() {
+        String tag = Minigames.getPlugin().getConfig().getString("lang",Locale.getDefault().toLanguageTag());
+        locale = Locale.forLanguageTag(tag);
+        Minigames.log().info("MessageManager set locale for language:"+locale.toLanguageTag());
         File file = new File(new File(Minigames.getPlugin().getDataFolder(),"lang"),"minigames.properties");
         ResourceBundle minigames = null;
         if(file.exists()){
@@ -46,7 +50,7 @@ public class MessageManager {
                 e.printStackTrace();
             }
         } else {
-            minigames = ResourceBundle.getBundle("minigames", new UTF8Control(Locale.getDefault()));
+            minigames = ResourceBundle.getBundle("messages", new UTF8Control());
         }
         if(minigames != null) {
             registerMessageFile("minigames", minigames);
@@ -217,16 +221,14 @@ public class MessageManager {
         }
     }
     public static class UTF8Control extends ResourceBundle.Control {
-        private Locale locale;
-        public UTF8Control(Locale locale) {
+        public UTF8Control() {
             super();
-            this.locale = locale;
         }
 
         @Override
         public ResourceBundle newBundle(String baseName,Locale locale, String format, ClassLoader loader, boolean reload) throws IOException {
             // The below is a copy of the default implementation.
-            String bundleName = toBundleName(baseName, this.locale);
+            String bundleName = toBundleName(baseName, MessageManager.locale);
             String resourceName = toResourceName(bundleName, "properties");
             ResourceBundle bundle = null;
             InputStream stream = null;

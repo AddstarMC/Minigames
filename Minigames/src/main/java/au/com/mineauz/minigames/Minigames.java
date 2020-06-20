@@ -50,6 +50,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.lang.reflect.Member;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -219,9 +220,8 @@ public class Minigames extends JavaPlugin {
             }
             final PluginDescriptionFile desc = this.getDescription();
             ConfigurationSerialization.registerClass(ResourcePack.class);
-            this.loadLang();
+            MessageManager.registerCoreLanguage();
             this.checkVersion();
-            this.getLogger().info("Using lang " + this.getConfig().getString("lang"));
             this.loadPresets();
             this.setupMinigames();
             if (!this.setupEconomy()) {
@@ -509,7 +509,6 @@ public class Minigames extends JavaPlugin {
     }
 
     private void loadLang() {
-        MessageManager.registerCoreLanguage();
     }
 
     public void queueStatSave(final StoredGameStats saveData, final boolean winner) {
