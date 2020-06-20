@@ -1,7 +1,10 @@
 package au.com.mineauz.minigames.commands.set;
 
+import java.security.MessageDigest;
 import java.util.List;
 
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.managers.MessageManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -28,8 +31,7 @@ public class SetStoreCheckpointsCommand implements ICommand {
 
     @Override
     public String getDescription() {
-        return "When enabled, if a player quits from a single player Minigame, their checkpoint will be stored so they can join at" +
-                "that position later.";
+        return MessageManager.getMinigamesMessage("command.checkpoint.saving.description");
     }
 
     @Override
@@ -44,7 +46,7 @@ public class SetStoreCheckpointsCommand implements ICommand {
 
     @Override
     public String getPermissionMessage() {
-        return "You do not have permission to enable or disable storing of checkpoints!";
+        return MessageManager.getMinigamesMessage("command.checkpoint.saving.nopermission");
     }
 
     @Override
@@ -58,11 +60,7 @@ public class SetStoreCheckpointsCommand implements ICommand {
         if (args != null) {
             Boolean bool = Boolean.parseBoolean(args[0]);
             minigame.setSaveCheckpoint(bool);
-            if (bool) {
-                sender.sendMessage(ChatColor.GRAY + "Checkpoint saving has been enabled for " + minigame);
-            } else {
-                sender.sendMessage(ChatColor.GRAY + "Checkpoint saving has been disabled for " + minigame);
-            }
+            MessageManager.sendMessage(sender,MinigameMessageType.INFO,null,"command.checkpoint.saving.toggle",bool.toString(),minigame.getName(true));
             return true;
         }
         return false;

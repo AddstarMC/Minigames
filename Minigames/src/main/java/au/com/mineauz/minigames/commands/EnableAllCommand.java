@@ -1,5 +1,7 @@
 package au.com.mineauz.minigames.commands;
 
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -29,7 +31,7 @@ public class EnableAllCommand implements ICommand {
 
     @Override
     public String getDescription() {
-        return "Enables all Minigames, unless it's added to exclude list.";
+        return MessageManager.getMinigamesMessage("command.enableAll.desc");
     }
 
     @Override
@@ -44,7 +46,7 @@ public class EnableAllCommand implements ICommand {
 
     @Override
     public String getPermissionMessage() {
-        return "You don't have permission to enable all Minigames!";
+        return MessageManager.getMinigamesMessage("command.enable.noPerm");
     }
 
     @Override
@@ -62,13 +64,13 @@ public class EnableAllCommand implements ICommand {
                 if (mdata.hasMinigame(arg))
                     minigames.remove(mdata.getMinigame(arg));
                 else
-                    sender.sendMessage(ChatColor.RED + "No Minigame found by the name \"" + arg + "\"; Ignoring...");
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR,null,"command.enable.notfound",arg);
             }
         }
         for (Minigame mg : minigames) {
             mg.setEnabled(true);
         }
-        sender.sendMessage(ChatColor.GRAY + String.valueOf(minigames.size()) + " Minigames enabled!");
+        MessageManager.sendMessage(sender,MinigameMessageType.INFO,null,"command.enable.resultnum",minigames.size());
         return true;
     }
 

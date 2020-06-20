@@ -17,7 +17,7 @@ public class Main extends JavaPlugin{
     
     private static Minigames minigames;
     private static Main plugin;
-    
+    public static String LANG_KEY = "minigames-regions";
     private RegionDisplayManager display;
     
     @Override
@@ -77,11 +77,11 @@ public class Main extends JavaPlugin{
     }
 
     private void loadLanguages(){
-        MessageManager.registerMessageFile("minigames-regions", ResourceBundle.getBundle("minigames_regions"));
+        MessageManager.registerMessageFile(LANG_KEY, ResourceBundle.getBundle("minigames_regions"));
     }
 
     public String getMessage(String key, String... args){
-        return MessageManager.getMessage("minigame-regions",key,args);
+        return MessageManager.getMessage(LANG_KEY,key,args);
     }
     
     public static Minigames getMinigames(){

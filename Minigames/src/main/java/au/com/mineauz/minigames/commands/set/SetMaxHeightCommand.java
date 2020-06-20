@@ -2,6 +2,8 @@ package au.com.mineauz.minigames.commands.set;
 
 import java.util.List;
 
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.managers.MessageManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -28,8 +30,7 @@ public class SetMaxHeightCommand implements ICommand {
 
     @Override
     public String getDescription() {
-        return "Sets the maximum Y height from the start location for a treasure chest to pick its random, however, " +
-                "if there are blocks in the way, it can still move above this height. (Default: 20)";
+        return MessageManager.getMinigamesMessage("command.treasures.setMaxHeight.desc");
     }
 
     @Override
@@ -44,7 +45,7 @@ public class SetMaxHeightCommand implements ICommand {
 
     @Override
     public String getPermissionMessage() {
-        return "You do not have permission to modify the treasures spawn height!";
+        return MessageManager.getMinigamesMessage("command.treasures.setMaxHeight.noPerm");
     }
 
     @Override
@@ -60,7 +61,7 @@ public class SetMaxHeightCommand implements ICommand {
                 int num = Integer.parseInt(args[0]);
                 TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
                 thm.setMaxHeight(num);
-                sender.sendMessage(ChatColor.GRAY + "Maximum height variance for " + minigame + " has been set to " + num);
+                MessageManager.sendMessage(sender, MinigameMessageType.INFO,null,"command.treasures.setMaxHeight.set",minigame.toString(),num);
                 return true;
             }
         }

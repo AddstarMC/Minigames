@@ -102,7 +102,7 @@ public class MessageManager {
      * @param args Varargs to replace
      * @return Formatted String.
      */
-    public static String getMessage(@Nullable String identifier, @NotNull String key, String... args) throws MissingResourceException {
+    public static String getMessage(@Nullable String identifier, @NotNull String key, Object... args) throws MissingResourceException {
         String unformatted = getUnformattedMessage(identifier,key);
         return String.format(unformatted, args);
 
@@ -132,16 +132,16 @@ public class MessageManager {
         return bundle.getString(key);
     }
 
-    public static String getMinigamesMessage(String key, String... args) throws MissingResourceException {
+    public static String getMinigamesMessage(String key, Object... args) throws MissingResourceException {
         return getMessage(null, key, args);
     }
 
-    public static void sendInfoMessage(CommandSender sender, String identifier, String key, String... args) {
+    public static void sendInfoMessage(CommandSender sender, String identifier, String key, Object... args) {
         sendMessage(sender, MinigameMessageType.INFO, identifier, key, args);
     }
 
     public static void sendClickedCommandMessage(CommandSender target, String command, String identifier, String key,
-                                                 String... args) {
+                                                 Object... args) {
         BaseComponent init = getMessageStart(MinigameMessageType.INFO);
         TextComponent message = new TextComponent(getMessage(identifier, key, args));
         message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command));
@@ -152,8 +152,12 @@ public class MessageManager {
         sendMessage(target.getPlayer(),type,identifier,key,args);
     }
 
+    public static void sendCoreMessage(CommandSender target,MinigameMessageType type,String key,Object... args){
+        sendMessage(target,type,null,key,args);
+    }
+
     public static void sendMessage(CommandSender target, MinigameMessageType type, String identifier, String key,
-                                   String... args) {
+                                   Object... args) {
         BaseComponent init = getMessageStart(type);
         TextComponent message = new TextComponent(getMessage(identifier, key, args));
         sendMessage(target, init, message);
