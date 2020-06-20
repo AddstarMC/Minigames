@@ -72,6 +72,7 @@ public class Minigames extends JavaPlugin {
     private MinigameManager minigameManager;
     private PlaceHolderManager placeHolderManager;
     private boolean debug;
+    private boolean hasPAPI = false;
     private long lastUpdateCheck;
     private BackendManager backend;
     private Metrics metrics;
@@ -384,18 +385,19 @@ public class Minigames extends JavaPlugin {
 
     private void hookPlaceHolderApi() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            hasPAPI = true;
             log.info("--------------------");
             log.info("Hooking PlaceHolder API");
             placeHolderManager = new PlaceHolderManager(this);
             placeHolderManager.register();
+            log.info("Adding Placeholders for " + getMinigameManager().getAllMinigames().size() + " games");
+            for(Map.Entry<String, Minigame> game:getMinigameManager().getAllMinigames().entrySet()) {
+                log.fine("Adding Placeholders for "+ game.getKey());
+                placeHolderManager.addGameIdentifiers(game.getValue());
+            }
+            log.info("PlaceHolders: "+ placeHolderManager.getRegisteredPlaceHolders().toString());
+            log.info("--------------------");
         }
-        log.info("Adding Placeholders for " + getMinigameManager().getAllMinigames().size() + " games");
-        for(Map.Entry<String, Minigame> game:getMinigameManager().getAllMinigames().entrySet()) {
-            log.fine("Adding Placeholders for "+ game.getKey());
-            placeHolderManager.addGameIdentifiers(game.getValue());
-        }
-        log.info("PlaceHolders: "+ placeHolderManager.getRegisteredPlaceHolders().toString());
-        log.info("--------------------");
     }
 
     public boolean hasEconomy() {
@@ -558,5 +560,9 @@ public class Minigames extends JavaPlugin {
 
     public ResourcePackManager getResourceManager() {
         return this.resourceManager;
+    }
+
+    public boolean includesPapi() {
+        return hasPAPI;
     }
 }

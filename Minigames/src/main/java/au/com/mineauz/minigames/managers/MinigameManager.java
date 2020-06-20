@@ -131,7 +131,7 @@ public class MinigameManager {
 
     public void addMinigame(final Minigame game) {
         this.minigames.put(game.getName(false), game);
-        if(PlaceHolderManager.isEnabled()){
+        if(Minigames.getPlugin().includesPapi()){
             Minigames.getPlugin().getPlaceHolderManager().addGameIdentifiers(game);
         }
 
