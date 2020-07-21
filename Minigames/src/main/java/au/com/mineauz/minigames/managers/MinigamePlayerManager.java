@@ -685,6 +685,10 @@ public class MinigamePlayerManager {
                 saveData.addStat(MinigameStats.Reverts, player.getReverts());
                 saveData.addStat(MinigameStats.CompletionTime, player.getEndTime() - player.getStartTime() + player.getStoredTime());
 
+                if (minigame.getShowCompletionTime()) {
+                    player.sendInfoMessage("Completion time: " + (double)(winners.get(0).getEndTime() - winners.get(0).getStartTime() + winners.get(0).getStoredTime())/1000 +" Seconds.");
+                }
+
                 for (DynamicMinigameStat stat : MinigameStats.getDynamicStats()) {
                     if (stat.doesApply(minigame, player, true)) {
                         saveData.addStat(stat, stat.getValue(minigame, player, true));
@@ -769,14 +773,9 @@ public class MinigamePlayerManager {
             } else {
                 if (winners.size() == 1) {
                     String score = "";
-                    long time;
                     MinigamePlayer winner = winners.get(0);
                     if (winner.getScore() != 0) {
                         score = MinigameUtils.formStr("player.end.broadcastScore", winner.getScore());
-                    } else if (minigame.getShowCompletionTime()) {
-                        time = winner.getEndTime() - winner.getStartTime() + winner.getStoredTime();
-                        winner.sendInfoMessage(MinigameUtils.formStr("player.end.broadcastTime",time));
-
                     }
                     MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winner.getDisplayName(minigame.usePlayerDisplayNames()), minigame.getName(true)) + ". " + score, minigame, ChatColor.GREEN);
                 } else if (winners.size() > 1) {
