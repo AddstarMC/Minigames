@@ -4,7 +4,7 @@
     <groupId>au.com.mineauz</groupId>
     <artifactId>MinigamesProject</artifactId>
     <version>1.16-SNAPSHOT</version>
-    <relativePath>..</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>Minigames-Regions</artifactId>
   <name>Minigames-Regions</name>

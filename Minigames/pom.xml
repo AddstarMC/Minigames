@@ -6,7 +6,7 @@
         <groupId>au.com.mineauz</groupId>
         <artifactId>MinigamesProject</artifactId>
         <version>1.16-SNAPSHOT</version>
-        <relativePath>..</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>Minigames</artifactId>
     <packaging>jar</packaging>
@@ -143,6 +143,14 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.4</version>
                 <configuration>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/MANIFEST.MF</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
                     <dependencyReducedPomLocation>
                         ${project.build.directory}/dependency-reduced-pom.xml
                     </dependencyReducedPomLocation>
