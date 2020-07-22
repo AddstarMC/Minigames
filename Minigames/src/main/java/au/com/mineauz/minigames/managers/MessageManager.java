@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.managers;
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.MinigamesBroadcastEvent;
+import au.com.mineauz.minigames.managers.message.UTF8Control;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import io.papermc.lib.PaperLib;
@@ -23,7 +24,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Class will hold and store all messages that are required for minigames
@@ -36,33 +39,47 @@ public class MessageManager {
      */
     private static final Hashtable<String, ResourceBundle> propertiesHashMap = new Hashtable<>();
     private static Locale locale = Locale.getDefault();
+    private static Logger logger = null;
+
+    public static void setLocale(Locale locale) {
+        MessageManager.locale = locale;
+    }
+
+    public static void setLogger(Logger logger) {
+        MessageManager.logger = logger;
+    }
 
     public static void registerCoreLanguage() {
-        String tag = Minigames.getPlugin().getConfig().getString("lang",Locale.getDefault().toLanguageTag());
+        String tag = Minigames.getPlugin().getConfig().getString("lang", Locale.getDefault().toLanguageTag());
         locale = Locale.forLanguageTag(tag);
-        Minigames.log().info("MessageManager set locale for language:"+locale.toLanguageTag());
-        File file = new File(new File(Minigames.getPlugin().getDataFolder(),"lang"),"minigames.properties");
+        Minigames.log().info("MessageManager set locale for language:" + locale.toLanguageTag());
+        File file = new File(new File(Minigames.getPlugin().getDataFolder(), "lang"), "minigames.properties");
+        registerCoreLanguage(file, Locale.getDefault());
+    }
+
+    public static void registerCoreLanguage(File file, Locale locale) {
+        MessageManager.setLocale(locale);
         ResourceBundle minigames = null;
-        if(file.exists()){
+        if (file.exists()) {
             try {
                 minigames = fromFile(file);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            minigames = ResourceBundle.getBundle("messages", new UTF8Control());
+            minigames = ResourceBundle.getBundle("messages", locale, new UTF8Control());
         }
-        if(minigames != null) {
+        if (minigames != null) {
             registerMessageFile("minigames", minigames);
         } else {
-            Minigames.log().severe("No Core Language Resource Could be loaded...messaging will be broken");
+            logger.severe("No Core Language Resource Could be loaded...messaging will be broken");
         }
 
     }
 
     private static ResourceBundle fromFile(File file) throws IOException {
-        try (InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file),StandardCharsets.UTF_8)) {
-          return new PropertyResourceBundle(inputStreamReader);
+        try (InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
+            return new PropertyResourceBundle(inputStreamReader);
         }
     }
 
@@ -73,7 +90,7 @@ public class MessageManager {
      * This loads the resource with UTF8
      *
      * @param identifier Unique identifier for your resource bundle
-     * @param bundle the ResourceBundle
+     * @param bundle     the ResourceBundle
      * @return true on success.
      */
     public static boolean registerMessageFile(String identifier, ResourceBundle bundle) {
@@ -81,8 +98,8 @@ public class MessageManager {
             return false;
         } else {
             if (propertiesHashMap.put(identifier, bundle) == null) {
-                Minigames.log().info("Loaded and registered Resource Bundle " + bundle.getBaseBundleName()
-                      + " with Locale:"+bundle.getLocale().toString() + " Added "+bundle.keySet().size()+" keys");
+                logger.info("Loaded and registered Resource Bundle " + bundle.getBaseBundleName()
+                        + " with Locale:" + bundle.getLocale().toString() + " Added " + bundle.keySet().size() + " keys");
                 return true;
             } else {
                 return false;
@@ -98,22 +115,21 @@ public class MessageManager {
      * If the identifier is null this uses the core language file
      *
      * @param identifier Unique identifier of the bundle to search
-     * @param key key
-     * @param args Varargs to replace
+     * @param key        key
+     * @param args       Varargs to replace
      * @return Formatted String.
      */
     public static String getMessage(@Nullable String identifier, @NotNull String key, Object... args) throws MissingResourceException {
-        String unformatted = getUnformattedMessage(identifier,key);
+        String unformatted = getUnformattedMessage(identifier, key);
         return String.format(unformatted, args);
 
     }
 
     /**
-     *
      * @param identifier Unique identifier of the bundle to search
-     * @param key key
+     * @param key        key
      * @return Unformatted String.
-     * @throws MissingResourceException
+     * @throws MissingResourceException If bundle not found.
      */
     public static String getUnformattedMessage(@Nullable String identifier, @NotNull String key) throws MissingResourceException {
         ResourceBundle bundle;
@@ -149,11 +165,11 @@ public class MessageManager {
     }
 
     public static void sendMessage(MinigamePlayer target, MinigameMessageType type, String identifier, String key, String... args) {
-        sendMessage(target.getPlayer(),type,identifier,key,args);
+        sendMessage(target.getPlayer(), type, identifier, key, args);
     }
 
-    public static void sendCoreMessage(CommandSender target,MinigameMessageType type,String key,Object... args){
-        sendMessage(target,type,null,key,args);
+    public static void sendCoreMessage(CommandSender target, MinigameMessageType type, String key, Object... args) {
+        sendMessage(target, type, null, key, args);
     }
 
     public static void sendMessage(CommandSender target, MinigameMessageType type, String identifier, String key,
@@ -218,46 +234,13 @@ public class MessageManager {
         TextComponent m = new TextComponent(message);
         MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(prefixColor + "[Minigames]" + org.bukkit.ChatColor.WHITE, message, minigame);
         Bukkit.getPluginManager().callEvent(ev);
-        if(PaperLib.isPaper()){
-            Bukkit.getServer().broadcast(init,m);
+        if (PaperLib.isPaper()) {
+            Bukkit.getServer().broadcast(init, m);
         } else {
-            Bukkit.getServer().spigot().broadcast(init,m);
+            Bukkit.getServer().spigot().broadcast(init, m);
         }
     }
-    public static class UTF8Control extends ResourceBundle.Control {
-        public UTF8Control() {
-            super();
-        }
 
-        @Override
-        public ResourceBundle newBundle(String baseName,Locale locale, String format, ClassLoader loader, boolean reload) throws IOException {
-            // The below is a copy of the default implementation.
-            String bundleName = toBundleName(baseName, MessageManager.locale);
-            String resourceName = toResourceName(bundleName, "properties");
-            ResourceBundle bundle = null;
-            InputStream stream = null;
-            if (reload) {
-                URL url = loader.getResource(resourceName);
-                if (url != null) {
-                    URLConnection connection = url.openConnection();
-                    if (connection != null) {
-                        connection.setUseCaches(false);
-                        stream = connection.getInputStream();
-                    }
-                }
-            } else {
-                stream = loader.getResourceAsStream(resourceName);
-            }
-            if (stream != null) {
-                try {
-                    // Only this line is changed to make it to read properties files as UTF-8.
-                    bundle = new PropertyResourceBundle(new InputStreamReader(stream, StandardCharsets.UTF_8));
-                } finally {
-                    stream.close();
-                }
-            }
-            return bundle;
-        }
-    }
+
 }
 

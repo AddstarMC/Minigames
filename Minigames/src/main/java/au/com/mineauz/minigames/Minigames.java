@@ -220,6 +220,7 @@ public class Minigames extends JavaPlugin {
             }
             final PluginDescriptionFile desc = this.getDescription();
             ConfigurationSerialization.registerClass(ResourcePack.class);
+            MessageManager.setLogger(log);
             MessageManager.registerCoreLanguage();
             this.checkVersion();
             this.loadPresets();
