@@ -46,7 +46,14 @@ public class InfectionMechanic extends GameMechanicBase {
     @Override
     public List<MinigamePlayer> balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
         List<MinigamePlayer> result = new ArrayList<>();
-        for (MinigamePlayer ply : players) {
+
+        while (players.size() > 0) {
+            
+            //Generate random player index
+            int indexRandom = (int) (players.size() * Math.random());
+                
+            MinigamePlayer ply = players.remove(indexRandom);
+            
             Team red = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.RED);
             Team blue = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.BLUE);
             Team team = ply.getTeam();
