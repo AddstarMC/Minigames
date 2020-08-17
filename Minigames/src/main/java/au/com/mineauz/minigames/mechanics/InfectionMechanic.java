@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -46,6 +47,7 @@ public class InfectionMechanic extends GameMechanicBase {
     @Override
     public List<MinigamePlayer> balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
         List<MinigamePlayer> result = new ArrayList<>();
+        Collections.shuffle(players);
         for (MinigamePlayer ply : players) {
             Team red = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.RED);
             Team blue = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.BLUE);
