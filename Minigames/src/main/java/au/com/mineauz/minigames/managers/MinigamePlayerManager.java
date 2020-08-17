@@ -651,9 +651,6 @@ public class MinigamePlayerManager {
                 }
             }
 
-            //Broadcast Message
-            broadcastEndGame(winners, minigame);
-
             GameOverModule gom = GameOverModule.getMinigameModule(minigame);
             boolean usedTimer = false;
 
@@ -686,7 +683,8 @@ public class MinigamePlayerManager {
                 saveData.addStat(MinigameStats.CompletionTime, player.getEndTime() - player.getStartTime() + player.getStoredTime());
 
                 if (minigame.getShowCompletionTime()) {
-                    player.sendInfoMessage("Completion time: " + (double)(winners.get(0).getEndTime() - winners.get(0).getStartTime() + winners.get(0).getStoredTime())/1000 +" Seconds.");
+                    player.setCompleteTime(winners.get(0).getEndTime() - winners.get(0).getStartTime() + winners.get(0).getStoredTime());
+                    //player.sendInfoMessage("Completion time: " + (double)(winners.get(0).getEndTime() - winners.get(0).getStartTime() + winners.get(0).getStoredTime())/1000 +" Seconds.");
                 }
 
                 for (DynamicMinigameStat stat : MinigameStats.getDynamicStats()) {
@@ -726,6 +724,9 @@ public class MinigamePlayerManager {
                         minigame.setMpBets(null);
                     }
                 }
+                //Broadcast Message
+                broadcastEndGame(winners, minigame);
+
                 PlayMGSound.playSound(player, MGSounds.getSound("win"));
             }
 
@@ -774,7 +775,9 @@ public class MinigamePlayerManager {
                 if (winners.size() == 1) {
                     String score = "";
                     MinigamePlayer winner = winners.get(0);
-                    if (winner.getScore() != 0) {
+                    if (minigame.getShowCompletionTime()) {
+                        score = MinigameUtils.formStr("player.end.broadcastTime", (double)winner.getCompletionTime()/1000);
+                    } else if (winner.getScore() != 0) {
                         score = MinigameUtils.formStr("player.end.broadcastScore", winner.getScore());
                     }
                     MinigameUtils.broadcast(MinigameUtils.formStr("player.end.broadcastMsg", winner.getDisplayName(minigame.usePlayerDisplayNames()), minigame.getName(true)) + ". " + score, minigame, ChatColor.GREEN);

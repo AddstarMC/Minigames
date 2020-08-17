@@ -50,6 +50,7 @@ public class MinigamePlayer implements ScriptObject {
     private long startTime;
     private long endTime;
     private long storedTime;
+    private long completeTime;
     private int reverts;
     private boolean isLatejoining;
     private boolean isFrozen;
@@ -400,6 +401,14 @@ public class MinigamePlayer implements ScriptObject {
 
     public void setStoredTime(final long ms) {
         this.storedTime = ms;
+    }
+
+    public long getCompletionTime() {
+        return this.completeTime;
+    }
+
+    public void setCompleteTime(final long ms) {
+        this.completeTime = ms;
     }
 
     public void addRevert() {
