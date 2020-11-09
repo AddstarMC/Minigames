@@ -148,7 +148,7 @@ public class MinigamePlayer implements ScriptObject {
         this.sendMessage(init + msg);
     }
 
-    public void storePlayerData() {
+    public void storePlayerData(boolean clearInv) {
         final ItemStack[] storedItems = this.player.getInventory().getContents();
         final ItemStack[] storedArmour = this.player.getInventory().getArmorContents();
         final int food = this.player.getFoodLevel();
@@ -166,8 +166,10 @@ public class MinigamePlayer implements ScriptObject {
         this.player.setSaturation(15);
         this.player.setFoodLevel(20);
         this.player.setHealth(this.player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue());
-        this.player.getInventory().clear();
-        this.player.getInventory().setArmorContents(null);
+        if(clearInv) {
+            this.player.getInventory().clear();
+            this.player.getInventory().setArmorContents(null);
+        }
         this.player.setLevel(0);
         this.player.setExp(0);
 
@@ -176,12 +178,13 @@ public class MinigamePlayer implements ScriptObject {
         this.player.updateInventory();
     }
 
-    public void restorePlayerData() {
-        this.player.getInventory().clear();
-        this.player.getInventory().setArmorContents(null);
-
-        this.player.getInventory().setContents(this.oply.getStoredItems());
-        this.player.getInventory().setArmorContents(this.oply.getStoredArmour());
+    public void restorePlayerData(boolean clearInv) {
+        if (clearInv) {
+            this.player.getInventory().clear();
+            this.player.getInventory().setArmorContents(null);
+            this.player.getInventory().setContents(this.oply.getStoredItems());
+            this.player.getInventory().setArmorContents(this.oply.getStoredArmour());
+        }
         this.player.setFoodLevel(this.oply.getFood());
         if (this.oply.getHealth() > 20)
             this.player.setHealth(20);

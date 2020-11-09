@@ -30,7 +30,6 @@ public class MultiplayerTimer {
         minigame = mg;
 
         currentLobbyWaitTime = LobbySettingsModule.getMinigameModule(mg).getPlayerWaitTime();
-
         if (currentLobbyWaitTime == 0) {
             currentLobbyWaitTime = plugin.getConfig().getInt("multiplayer.waitforplayers");
             if (currentLobbyWaitTime <= 0)

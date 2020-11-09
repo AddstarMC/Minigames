@@ -138,7 +138,8 @@ public class Events implements Listener {
             }
         }
         if (ply.isRequiredQuit()) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, ply::restorePlayerData);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin,
+                    () -> ply.restorePlayerData(ply.getMinigame().clearPlayerInventory()));
             event.setRespawnLocation(ply.getQuitPos());
 
             ply.setRequiredQuit(false);
@@ -214,7 +215,8 @@ public class Events implements Listener {
             ply.setQuitPos(floc);
 
             if (!ply.getPlayer().isDead() && ply.isRequiredQuit()) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, ply::restorePlayerData);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin,
+                        () -> ply.restorePlayerData(ply.getMinigame().clearPlayerInventory()));
                 ply.teleport(ply.getQuitPos());
 
                 ply.setRequiredQuit(false);

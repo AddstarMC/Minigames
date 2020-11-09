@@ -98,7 +98,7 @@ public class MinigamePlayerManager {
         //Prepare regeneration region for rollback.
         mgManager.addBlockRecorderData(minigame);
         //Standardize player
-        player.storePlayerData();
+        player.storePlayerData(minigame.clearPlayerInventory());
         player.setMinigame(minigame);
         minigame.addPlayer(player);
         WeatherTimeModule mod = WeatherTimeModule.getMinigameModule(minigame);
@@ -194,7 +194,7 @@ public class MinigamePlayerManager {
                 player.sendMessage(MinigameUtils.getLang("minigame.error.noTeleport"), MinigameMessageType.ERROR);
                 return;
             }
-            player.storePlayerData();
+            player.storePlayerData(minigame.clearPlayerInventory());
             player.setMinigame(minigame);
             player.setGamemode(GameMode.ADVENTURE);
 
@@ -491,7 +491,7 @@ public class MinigamePlayerManager {
                 player.resetAllStats();
                 player.setStartPos(null);
                 if (!player.isDead()) {
-                    player.restorePlayerData();
+                    player.restorePlayerData(minigame.clearPlayerInventory());
                     Location loc;
                     if (!isWinner) {
                         if (minigame.getQuitPosition() != null) {
@@ -591,7 +591,7 @@ public class MinigamePlayerManager {
 
                 player.getPlayer().closeInventory();
                 if (!player.isDead()) {
-                    player.restorePlayerData();
+                    player.restorePlayerData(minigame.clearPlayerInventory());
                 }
                 player.teleport(minigame.getQuitPosition());
                 player.setStartPos(null);

@@ -110,6 +110,7 @@ public class Minigame implements ScriptObject {
     private BooleanFlag itemDrops = new BooleanFlag(false, "itemdrops");
     private BooleanFlag deathDrops = new BooleanFlag(false, "deathdrops");
     private BooleanFlag itemPickup = new BooleanFlag(true, "itempickup");
+    private BooleanFlag inventoryClear = new BooleanFlag(true, "inventoryClear");
     private BooleanFlag blockBreak = new BooleanFlag(false, "blockbreak");
     private BooleanFlag blockPlace = new BooleanFlag(false, "blockplace");
     private EnumFlag<GameMode> defaultGamemode = new EnumFlag<>(GameMode.ADVENTURE, "gamemode");
@@ -232,6 +233,7 @@ public class Minigame implements ScriptObject {
         addConfigFlag(gametypeName);
         addConfigFlag(itemDrops);
         addConfigFlag(itemPickup);
+        addConfigFlag(inventoryClear);
         addConfigFlag(lateJoin);
         addConfigFlag(lives);
         addConfigFlag(lobbyPosisiton);
@@ -670,6 +672,10 @@ public class Minigame implements ScriptObject {
 
     public int getStartWaitTime() {
         return startWaitTime.getFlag();
+    }
+
+    public boolean clearPlayerInventory() {
+        return inventoryClear.getFlag();
     }
 
     public void setStartWaitTime(int startWaitTime) {
