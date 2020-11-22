@@ -1,6 +1,8 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
@@ -10,9 +12,11 @@ import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import com.google.common.collect.ObjectArrays;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.util.Map;
 
@@ -20,6 +24,7 @@ public class TakeItemAction extends AbstractAction{
     
     private StringFlag type = new StringFlag("STONE", "type");
     private IntegerFlag count = new IntegerFlag(1, "count");
+    private BooleanFlag firstOnly = new BooleanFlag(true, "firstOnly");
 
     @Override
     public String getName() {
@@ -35,6 +40,7 @@ public class TakeItemAction extends AbstractAction{
     public void describe(Map<String, Object> out) {
         out.put("Item", type.getFlag() + ":all");
         out.put("Count", count);
+        out.put("Take first only", firstOnly.getFlag());
     }
 
     @Override
@@ -64,8 +70,10 @@ public class TakeItemAction extends AbstractAction{
         ItemStack matched = null;
         boolean remove = false;
         int slot = 0;
-        
-        for(ItemStack i : player.getPlayer().getInventory().getContents()){
+        PlayerInventory inventory = player.getPlayer().getInventory();
+        ItemStack[] items = ObjectArrays.concat(inventory.getContents(), inventory.getArmorContents(), ItemStack.class);
+
+        for(ItemStack i : items){
             if(i != null && i.getType() == match.getType()){
                     if(match.getAmount() >= i.getAmount()){
                         matched = i.clone();
@@ -75,16 +83,21 @@ public class TakeItemAction extends AbstractAction{
                         matched = i.clone();
                         matched.setAmount(matched.getAmount() - match.getAmount());
                     }
-                    break;
-
+                    if (firstOnly.getFlag()) {
+                        if(remove)
+                            inventory.removeItem(matched);
+                        else{
+                            inventory.getItem(slot).setAmount(matched.getAmount());
+                        }
+                        break;
+                    }
+            }
+            if(remove)
+                inventory.removeItem(matched);
+            else{
+                inventory.getItem(slot).setAmount(matched.getAmount());
             }
             slot++;
-        }
-        
-        if(remove)
-            player.getPlayer().getInventory().removeItem(matched);
-        else{
-            player.getPlayer().getInventory().getItem(slot).setAmount(matched.getAmount());
         }
     }
 
@@ -102,7 +115,7 @@ public class TakeItemAction extends AbstractAction{
 
     @Override
     public boolean displayMenu(final MinigamePlayer player, Menu previous) {
-Menu m = new Menu(3, "Give Item", player);
+Menu m = new Menu(3, "Take Item", player);
         
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(new MenuItemString("Type", Material.STONE, new Callback<String>() {
@@ -122,6 +135,8 @@ Menu m = new Menu(3, "Give Item", player);
             }
         }));
         m.addItem(count.getMenuItem("Count", Material.STONE_SLAB, 1, 64));
+        m.addItem(firstOnly.getMenuItem("Take first only", Material.ENDER_PEARL,
+                MinigameUtils.stringToList("Take only the first item;of this type found")));
         m.displayMenu(player);
         return true;
     }
