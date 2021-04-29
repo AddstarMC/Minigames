@@ -1,0 +1,16 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "09:00"
+    timezone: Australia/ACT
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: mysql:mysql-connector-java
+    versions:
+    - "> 5.1.47"
+  - dependency-name: org.bstats:bstats-bukkit
+    versions:
+    - 2.1.0
