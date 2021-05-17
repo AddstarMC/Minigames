@@ -48,7 +48,7 @@ public class MessageManager {
     public static void registerCoreLanguage() {
         String tag = Minigames.getPlugin().getConfig().getString("lang", Locale.getDefault().toLanguageTag());
         locale = Locale.forLanguageTag(tag);
-        Minigames.log().info("MessageManager set locale for language:" + locale.toLanguageTag());
+        Minigames.log().info("MessageManager set locale for language: " + locale.toLanguageTag());
         File file = new File(new File(Minigames.getPlugin().getDataFolder(), "lang"), "minigames.properties");
         registerCoreLanguage(file, Locale.getDefault());
     }
@@ -94,8 +94,14 @@ public class MessageManager {
             return false;
         } else {
             if (propertiesHashMap.put(identifier, bundle) == null) {
-                logger.info("Loaded and registered Resource Bundle " + bundle.getBaseBundleName()
-                        + " with Locale:" + bundle.getLocale().toString() + " Added " + bundle.keySet().size() + " keys");
+                String bundleName = bundle.getBaseBundleName();
+                if ( bundleName == null ) bundleName = "custom";
+                Locale getLocale = bundle.getLocale();
+                String locale;
+                if ( getLocale == null ) locale = "unknown";
+                else locale = getLocale.toString();
+                logger.info("Loaded and registered Resource Bundle " + bundleName
+                        + " with Locale:" + locale + ", Added " + bundle.keySet().size() + " keys");
                 return true;
             } else {
                 return false;
