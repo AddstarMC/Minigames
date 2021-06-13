@@ -29,6 +29,8 @@ public class PlayerHasItemCondition extends ConditionInterface {
     private final StringFlag where = new StringFlag("ANYWHERE", "where");
     private final IntegerFlag slot = new IntegerFlag(0, "slot");
     
+    private final IntegerFlag amount = new IntegerFlag(1, "amount");
+    
     private final BooleanFlag matchName = new BooleanFlag(false, "matchName");
     private final BooleanFlag matchLore = new BooleanFlag(false, "matchLore");
     
@@ -50,6 +52,8 @@ public class PlayerHasItemCondition extends ConditionInterface {
         out.put("Item", type.getFlag());
         out.put("Where", where.getFlag());
         out.put("Slot", slot.getFlag());
+        
+        out.put("Amount", amount.getFlag());
         
         if (matchName.getFlag()) {
             out.put("Name", name.getFlag());
@@ -119,6 +123,8 @@ public class PlayerHasItemCondition extends ConditionInterface {
         Pattern namePattern = null;
         Pattern lorePattern = null;
         
+        int minAmount = amount.getFlag();
+        
         if (matchName.getFlag()) {
             namePattern = createNamePattern();
         }
@@ -126,15 +132,28 @@ public class PlayerHasItemCondition extends ConditionInterface {
         if (matchLore.getFlag()) {
             lorePattern = createLorePattern();
         }
-        int i =0;
+
+        int i = 0;
         for(ItemStack slot: searchItems){
-            if((i<startSlot) && (i>endSlot))
+            if((i<startSlot) || (i>endSlot)) {
+                i += 1;
                 continue;
-            if (slot.getType() == material) {
-                
+            }
+            if (slot != null) {
+
+                i += 1;
+
+                if (slot.getType() != material) {
+                    continue;
+                }
+
+                if (slot.getAmount() < minAmount) {
+                    continue;
+                }
+
                 ItemMeta meta = slot.getItemMeta();
                 
-                if (namePattern !=null) {
+                if (namePattern != null) {
                     Matcher m = namePattern.matcher(meta.getDisplayName());
                     if (!m.matches()) {
                         continue;
@@ -157,6 +176,8 @@ public class PlayerHasItemCondition extends ConditionInterface {
                 
                 // This item completely matches
                 return true;
+            } else {
+                i += 1;
             }
         }
         return false;
@@ -219,6 +240,8 @@ public class PlayerHasItemCondition extends ConditionInterface {
         where.saveValue(path, config);
         slot.saveValue(path, config);
         
+        amount.saveValue(path, config);
+        
         matchName.saveValue(path, config);
         matchLore.saveValue(path, config);
         name.saveValue(path, config);
@@ -232,12 +255,15 @@ public class PlayerHasItemCondition extends ConditionInterface {
         where.loadValue(path, config);
         slot.loadValue(path, config);
         
+        amount.loadValue(path, config);
+        
         matchName.loadValue(path, config);
         matchLore.loadValue(path, config);
         name.loadValue(path, config);
         lore.loadValue(path, config);
         loadInvert(config, path);
     }
+
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
@@ -247,12 +273,12 @@ public class PlayerHasItemCondition extends ConditionInterface {
         Material display = type.getFlag();
         if(display == null)display = Material.STONE;
         m.addItem(new MenuItemMaterial("Item",display, new Callback<Material>() {
-            
+
             @Override
             public void setValue(Material value) {
-                    type.setFlag(value);
+                type.setFlag(value);
             }
-            
+
             @Override
             public Material getValue() {
                 return type.getFlag();
@@ -263,25 +289,28 @@ public class PlayerHasItemCondition extends ConditionInterface {
             public void setValue(String value) {
                 where.setFlag(value.toUpperCase());
             }
-            
+
             @Override
             public String getValue() {
                 return WordUtils.capitalizeFully(where.getFlag());
             }
         }, Arrays.asList("Anywhere", "Hotbar", "Main", "Armor", "Slot")));
         m.addItem(slot.getMenuItem("Slot", Material.DIAMOND, 0, 35));
+
+        m.addItem(amount.getMenuItem("Minimum Item Amount", Material.CLOCK, 1, 64));
+
         m.addItem(new MenuItemNewLine());
-        
+
         m.addItem(matchName.getMenuItem("Match Display Name", Material.NAME_TAG));
         MenuItemString menuItem = (MenuItemString)name.getMenuItem("Display Name", Material.NAME_TAG, MinigameUtils.stringToList("The name to match.;Use % to do a wildcard match"));
         menuItem.setAllowNull(true);
         m.addItem(menuItem);
-        
+
         m.addItem(matchLore.getMenuItem("Match Lore", Material.BOOK));
         menuItem = (MenuItemString)lore.getMenuItem("Lore", Material.BOOK, MinigameUtils.stringToList("The lore to match. Separate;with semi-colons;for new lines.;Use % to do a wildcard match"));
         menuItem.setAllowNull(true);
         m.addItem(menuItem);
-        
+
         addInvertMenuItem(m);
         m.displayMenu(player);
         return true;
