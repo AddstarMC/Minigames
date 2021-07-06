@@ -14,7 +14,7 @@ public class CTFFlag {
 
     private Location spawnLocation = null;
     private Location currentLocation = null;
-    private BlockData data = null;
+    private BlockState data = null;
     private BlockState spawnData = null;
     private BlockState originalBlock = null;
     private String[] signText = null;
@@ -27,7 +27,7 @@ public class CTFFlag {
 
     public CTFFlag(Location spawn, Team team, Player carrier, Minigame minigame) {
         spawnLocation = spawn;
-        data = spawnLocation.getBlock().getBlockData();
+        data = spawnLocation.getBlock().getState();
         spawnData = spawnLocation.getBlock().getState();
         signText = ((Sign) spawnLocation.getBlock().getState()).getLines();
         this.team = team;
@@ -106,7 +106,7 @@ public class CTFFlag {
         newLocation.getBlock().setType(Material.OAK_SIGN);
         Sign sign = (Sign) newLocation.getBlock().getState();
 
-        sign.setBlockData(data);
+        data.update();
 
         originalBlock = blockBelow.getBlock().getState();
         blockBelow.getBlock().setType(Material.BEDROCK);
