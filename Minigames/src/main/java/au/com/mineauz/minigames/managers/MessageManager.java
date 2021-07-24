@@ -213,7 +213,10 @@ public class MessageManager {
     public static void broadcast(String message, Minigame minigame, String permission) {
         MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(org.bukkit.ChatColor.AQUA + "[Minigames]" + org.bukkit.ChatColor.WHITE, message, minigame);
         Bukkit.getPluginManager().callEvent(ev);
-        Bukkit.getServer().broadcast(ev.getMessageWithPrefix(), permission);
+
+        // Only send broadcast if event was not cancelled and is not empty
+        if (!ev.isCancelled() && !ev.getMessage().isEmpty())
+            Bukkit.getServer().broadcast(ev.getMessageWithPrefix(), permission);
     }
 
 
