@@ -233,10 +233,14 @@ public class MessageManager {
         TextComponent m = new TextComponent(" "+ message);
         MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(prefixColor + "[Minigames]" + org.bukkit.ChatColor.WHITE, message, minigame);
         Bukkit.getPluginManager().callEvent(ev);
-        if (PaperLib.isPaper()) {
-            Bukkit.getServer().broadcast(init, m);
-        } else {
-            Bukkit.getServer().spigot().broadcast(init, m);
+
+        // Only send broadcast if event was not cancelled and is not empty
+        if (!ev.isCancelled() && !ev.getMessage().isEmpty()) {
+            if (PaperLib.isPaper()) {
+                Bukkit.getServer().broadcast(init, m);
+            } else {
+                Bukkit.getServer().spigot().broadcast(init, m);
+            }
         }
     }
 
