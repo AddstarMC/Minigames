@@ -9,5 +9,5 @@ cache:
 env:
   matrix:
     - PROFILE=BUKKIT
-install: "mvn clean install -P ${PROFILE} -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
-script: "mvn test -P ${PROFILE} -B"
+install: "mvn -T 1C clean install -P ${PROFILE} -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
+script: "mvn -T 1C test -P ${PROFILE} -B"

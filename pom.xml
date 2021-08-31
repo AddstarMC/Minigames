@@ -193,6 +193,9 @@
               <configuration>
                       <!-- no argLine here -->
               </configuration>
+              	<parallel>classes</parallel>
+              	<useUnlimitedThreads>true</useUnlimitedThreads>
+
           </plugin>
           <plugin>
               <groupId>org.jacoco</groupId>
