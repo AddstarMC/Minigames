@@ -25,7 +25,7 @@
       <travis.commit>${env.TRAVIS_COMMIT}</travis.commit>
       <env.CODACY_API_TOKEN/>
       <argline/>
-  	<closeTestReports>true</closeTestReports>
+  	  <closeTestReports>true</closeTestReports>
   </properties>
   <developers>
     <developer>
@@ -192,9 +192,8 @@
               <artifactId>maven-surefire-plugin</artifactId>
               <version>2.22.2</version>
               <configuration>
-                      <!-- no argLine here -->
+                  <disableXmlReport>${closeTestReports}</disableXmlReport>
               </configuration>
-              	<disableXmlReport>${closeTestReports}</disableXmlReport>
           </plugin>
           <plugin>
               <groupId>org.jacoco</groupId>
