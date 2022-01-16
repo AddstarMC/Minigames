@@ -25,6 +25,7 @@
       <travis.commit>${env.TRAVIS_COMMIT}</travis.commit>
       <env.CODACY_API_TOKEN/>
       <argline/>
+  	<closeTestReports>true</closeTestReports>
   </properties>
   <developers>
     <developer>
@@ -193,6 +194,7 @@
               <configuration>
                       <!-- no argLine here -->
               </configuration>
+              	<disableXmlReport>${closeTestReports}</disableXmlReport>
           </plugin>
           <plugin>
               <groupId>org.jacoco</groupId>
