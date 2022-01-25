@@ -90,10 +90,10 @@ public class MinigamePlayerManager {
 
         //Give them the objective
         if (minigame.getObjective() != null) {
-            player.sendInfoMessage(ChatColor.GREEN + "----------------------------------------------------");
+            player.sendUnprefixedMessage(ChatColor.GREEN + "----------------------------------------------------");
             player.sendInfoMessage(ChatColor.AQUA.toString() + ChatColor.BOLD + MinigameUtils.formStr("player.join.objective",
                     ChatColor.RESET.toString() + ChatColor.WHITE + minigame.getObjective()));
-            player.sendInfoMessage(ChatColor.GREEN + "----------------------------------------------------");
+            player.sendUnprefixedMessage(ChatColor.GREEN + "----------------------------------------------------");
         }
         //Prepare regeneration region for rollback.
         mgManager.addBlockRecorderData(minigame);

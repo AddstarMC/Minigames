@@ -4,5 +4,6 @@ public enum MinigameMessageType {
     INFO,
     ERROR,
     WIN,
-    LOSS
+    LOSS,
+    NONE
 }

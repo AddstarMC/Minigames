@@ -129,6 +129,10 @@ public class MinigamePlayer implements ScriptObject {
         this.sendMessage(msg, MinigameMessageType.INFO);
     }
 
+    public void sendUnprefixedMessage(final String msg) {
+        this.sendMessage(msg, MinigameMessageType.NONE);
+    }
+
     public void sendMessage(final String msg, final @NotNull MinigameMessageType type) {
         String init = "";
         switch (type) {
@@ -140,6 +144,8 @@ public class MinigamePlayer implements ScriptObject {
                 break;
             case LOSS:
                 init = ChatColor.DARK_RED + "[Minigames] " + ChatColor.WHITE;
+                break;
+            case NONE:
                 break;
             case INFO:
             default:
