@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -65,6 +66,7 @@ public class LoadoutSign implements MinigameSign {
                 LoadoutModule.getMinigameModule(mgm).displaySelectionMenu(player, nores);
             } else if (loadout.hasLoadout(sign.getLine(2))) {
                 if (!loadout.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())) {
+                    String previousLoadout = player.getLoadout().getName(false);
                     if (player.setLoadout(loadout.getLoadout(sign.getLine(2)))) {
                         player.sendInfoMessage(MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)));
 
@@ -72,6 +74,10 @@ public class LoadoutSign implements MinigameSign {
                                 mgm.hasStarted()) {
                             if (sign.getLine(3).equalsIgnoreCase("respawn")) {
                                 player.sendInfoMessage(MinigameUtils.getLang("sign.loadout.nextRespawn"));
+                            } else if (sign.getLine(3).equalsIgnoreCase("temporary")) {
+                                player.sendInfoMessage(MessageManager.getUnformattedMessage(null, "sign.loadout.temporarilyEquipped"));
+                                loadout.getLoadout(sign.getLine(2)).equiptLoadout(player);
+                                player.setLoadout(loadout.getLoadout(previousLoadout));
                             } else {
                                 loadout.getLoadout(sign.getLine(2)).equiptLoadout(player);
                             }
@@ -83,6 +89,7 @@ public class LoadoutSign implements MinigameSign {
                 }
             } else if (plugin.getMinigameManager().hasLoadout(sign.getLine(2))) {
                 if (!plugin.getMinigameManager().getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())) {
+                    String previousLoadout = player.getLoadout().getName(false);
                     if (player.setLoadout(plugin.getMinigameManager().getLoadout(sign.getLine(2)))) {
                         player.sendInfoMessage(MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)));
 
@@ -90,6 +97,10 @@ public class LoadoutSign implements MinigameSign {
                                 mgm.hasStarted()) {
                             if (sign.getLine(3).equalsIgnoreCase("respawn")) {
                                 player.sendInfoMessage(MinigameUtils.getLang("sign.loadout.nextRespawn"));
+                            } else if (sign.getLine(3).equalsIgnoreCase("temporary")) {
+                                player.sendInfoMessage(MessageManager.getUnformattedMessage(null, "sign.loadout.temporarilyEquipped"));
+                                plugin.getMinigameManager().getLoadout(sign.getLine(2)).equiptLoadout(player);
+                                player.setLoadout(loadout.getLoadout(previousLoadout));
                             } else {
                                 plugin.getMinigameManager().getLoadout(sign.getLine(2)).equiptLoadout(player);
                             }
