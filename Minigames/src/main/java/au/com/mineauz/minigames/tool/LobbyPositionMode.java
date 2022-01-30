@@ -58,7 +58,7 @@ public class LobbyPositionMode implements ToolMode {
     @Override
     public void select(MinigamePlayer player, Minigame minigame, Team team) {
         if (minigame.getLobbyPosition() != null) {
-            player.getPlayer().sendBlockChange(minigame.getLobbyPosition(), Material.SKELETON_SKULL, (byte) 1);
+            player.getPlayer().sendBlockChange(minigame.getLobbyPosition(), Material.SKELETON_SKULL.createBlockData());
             player.sendInfoMessage("Selected lobby position (marked with skull)");
         } else {
             player.sendMessage("No lobby position set!", MinigameMessageType.ERROR);
