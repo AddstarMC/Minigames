@@ -500,7 +500,11 @@ public class MinigamePlayerManager {
                             loc = minigame.getEndPosition();
                         }
                     } else {
-                        loc = minigame.getEndPosition();
+                        if (minigame.getEndPosition() != null) {
+                            loc = minigame.getEndPosition();
+                        } else {
+                            loc = minigame.getQuitPosition();
+                        }
                     }
                     player.teleport(loc);
                 } else {
