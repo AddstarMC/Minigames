@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.commands;
 
 import java.util.List;
 
+import au.com.mineauz.minigames.managers.MessageManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -58,51 +59,51 @@ public class HelpCommand implements ICommand {
         if (sender instanceof Player) {
             player = (Player) sender;
         }
-        sender.sendMessage(ChatColor.GREEN + "List of Minigame commands");
+        sender.sendMessage(ChatColor.GREEN + MessageManager.getUnformattedMessage(null, "command.info.header"));
         sender.sendMessage(ChatColor.BLUE + "/minigame");
-        sender.sendMessage(ChatColor.GRAY + "The default command (alias /mgm)");
+        sender.sendMessage(ChatColor.GRAY + MessageManager.getUnformattedMessage(null, "command.info.mgm"));
         if (player == null || player.hasPermission("minigame.join")) {
             sender.sendMessage(ChatColor.BLUE + "/minigame join <minigame>");
-            sender.sendMessage(MinigameUtils.getLang("command.help.info.join"));
+            sender.sendMessage(MinigameUtils.getLang("command.info.join"));
         }
         if (player == null || player.hasPermission("minigame.quit")) {
             sender.sendMessage(ChatColor.BLUE + "/minigame quit");
-            sender.sendMessage(MinigameUtils.getLang("command.help.info.quit"));
+            sender.sendMessage(MinigameUtils.getLang("command.info.quit"));
             if (player == null || player.hasPermission("minigame.quit.other")) {
-                sender.sendMessage(MinigameUtils.getLang("command.help.info.quitOther"));
+                sender.sendMessage(MinigameUtils.getLang("command.info.quitOther"));
             }
         }
         if (player == null || player.hasPermission("minigame.end")) {
             sender.sendMessage(ChatColor.BLUE + "/minigame end [Player]");
-            sender.sendMessage(MinigameUtils.getLang("command.help.info.end"));
+            sender.sendMessage(MinigameUtils.getLang("command.info.end"));
         }
         if (player == null || player.hasPermission("minigame.revert")) {
             sender.sendMessage(ChatColor.BLUE + "/minigame revert");
-            sender.sendMessage(MinigameUtils.getLang("command.help.info.revert"));
+            sender.sendMessage(MinigameUtils.getLang("command.info.revert"));
         }
         if (player == null || player.hasPermission("minigame.delete")) {
             sender.sendMessage(ChatColor.BLUE + "/minigame delete <Minigame>");
-            sender.sendMessage(MinigameUtils.getLang("command.help.info.delete"));
+            sender.sendMessage(MinigameUtils.getLang("command.info.delete"));
         }
         if (player == null || player.hasPermission("minigame.hint")) {
             sender.sendMessage(ChatColor.BLUE + "/minigame hint <minigame>");
-            sender.sendMessage(MinigameUtils.getLang("command.help.info.hint"));
+            sender.sendMessage(MinigameUtils.getLang("command.info.hint"));
         }
         if (player == null || player.hasPermission("minigame.toggletimer")) {
             sender.sendMessage(ChatColor.BLUE + "/minigame toggletimer <Minigame>");
-            sender.sendMessage(MinigameUtils.getLang("command.help.info.timer"));
+            sender.sendMessage(MinigameUtils.getLang("command.info.timer"));
         }
         if (player == null || player.hasPermission("minigame.list")) {
             sender.sendMessage(ChatColor.BLUE + "/minigame list");
-            sender.sendMessage(MinigameUtils.getLang("command.help.info.list"));
+            sender.sendMessage(MinigameUtils.getLang("command.info.list"));
         }
         if (player == null || player.hasPermission("minigame.reload")) {
             sender.sendMessage(ChatColor.BLUE + "/minigame reload");
-            sender.sendMessage(MinigameUtils.getLang("command.help.info.reload"));
+            sender.sendMessage(MinigameUtils.getLang("command.info.reload"));
         }
 
         sender.sendMessage(ChatColor.BLUE + "/minigame set <Minigame> <parameter>...");
-        sender.sendMessage(MinigameUtils.getLang("command.help.info.set"));
+        sender.sendMessage(MinigameUtils.getLang("command.info.set"));
         return true;
     }
 
