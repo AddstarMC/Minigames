@@ -33,7 +33,7 @@ public class Team implements ScriptObject {
     private final StringFlag gameAssignMsg = new StringFlag(MinigameUtils.getLang("player.team.assign.joinAnnounce"), "gameAssignMsg");
     private final StringFlag autobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.plyMsg"), "autobalanceMsg");
     private final StringFlag gameAutobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.minigameMsg"), "gameAutobalanceMsg");
-    private final EnumFlag<OptionStatus> nametagVisibility = new EnumFlag<>(OptionStatus.FOR_OWN_TEAM, "nametagVisibility");
+    private final EnumFlag<OptionStatus> nametagVisibility = new EnumFlag<>(OptionStatus.ALWAYS, "nametagVisibility");
     private final BooleanFlag autoBalance = new BooleanFlag(true, "autoBalance");
 
     private final List<MinigamePlayer> players = new ArrayList<>();

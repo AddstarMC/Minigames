@@ -19,12 +19,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -217,7 +213,10 @@ public class MessageManager {
     public static void broadcast(String message, Minigame minigame, String permission) {
         MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(org.bukkit.ChatColor.AQUA + "[Minigames]" + org.bukkit.ChatColor.WHITE, message, minigame);
         Bukkit.getPluginManager().callEvent(ev);
-        Bukkit.getServer().broadcast(ev.getMessageWithPrefix(), permission);
+
+        // Only send broadcast if event was not cancelled and is not empty
+        if (!ev.isCancelled() && !ev.getMessage().isEmpty())
+            Bukkit.getServer().broadcast(ev.getMessageWithPrefix(), permission);
     }
 
 
@@ -231,13 +230,17 @@ public class MessageManager {
     public static void broadcast(String message, Minigame minigame, org.bukkit.ChatColor prefixColor) {
         BaseComponent init = new TextComponent("[Minigames]");
         init.setColor(prefixColor.asBungee());
-        TextComponent m = new TextComponent(message);
+        TextComponent m = new TextComponent(" "+ message);
         MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(prefixColor + "[Minigames]" + org.bukkit.ChatColor.WHITE, message, minigame);
         Bukkit.getPluginManager().callEvent(ev);
-        if (PaperLib.isPaper()) {
-            Bukkit.getServer().broadcast(init, m);
-        } else {
-            Bukkit.getServer().spigot().broadcast(init, m);
+
+        // Only send broadcast if event was not cancelled and is not empty
+        if (!ev.isCancelled() && !ev.getMessage().isEmpty()) {
+            if (PaperLib.isPaper()) {
+                Bukkit.getServer().broadcast(init, m);
+            } else {
+                Bukkit.getServer().spigot().broadcast(init, m);
+            }
         }
     }
 

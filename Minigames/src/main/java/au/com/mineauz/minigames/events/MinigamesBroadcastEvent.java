@@ -3,9 +3,9 @@ package au.com.mineauz.minigames.events;
 import au.com.mineauz.minigames.minigame.Minigame;
 
 public class MinigamesBroadcastEvent extends AbstractMinigameEvent {
-
     private String message;
     private String prefix;
+    private boolean cancelled = false;
 
     public MinigamesBroadcastEvent(String prefix, String message, Minigame minigame) {
         super(minigame);
@@ -27,13 +27,11 @@ public class MinigamesBroadcastEvent extends AbstractMinigameEvent {
 
     @Override
     public boolean isCancelled() {
-        return false;
+        return cancelled;
     }
 
     @Override
     public void setCancelled(boolean b) {
-        throw new UnsupportedOperationException("Cannot cancel a Minigames Broadcast Event");
+        cancelled = b;
     }
-
-
 }

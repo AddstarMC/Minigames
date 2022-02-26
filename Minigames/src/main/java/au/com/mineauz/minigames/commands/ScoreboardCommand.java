@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.*;
 import com.google.common.collect.Lists;
+import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -46,7 +47,8 @@ public class ScoreboardCommand implements ICommand {
 
     @Override
     public String[] getUsage() {
-        return new String[]{"/minigame scoreboard <Minigame> <Statistic> <Field> [-o <asc/desc>|-l <length>|-s <start>]"};
+        return new String[] {
+                "/minigame scoreboard <Minigame> <Statistic> <Field> [-o <asc/desc>|-l <length>|-s <start>]" };
     }
 
     @Override
@@ -89,7 +91,8 @@ public class ScoreboardCommand implements ICommand {
         }
 
         if (field == null) {
-            sender.sendMessage(ChatColor.RED + "No field found by the name " + args[2] + " for the statistic " + stat.getDisplayName());
+            sender.sendMessage(ChatColor.RED + "No field found by the name " + args[2] + " for the statistic "
+                    + stat.getDisplayName());
             return true;
         }
 
@@ -120,7 +123,8 @@ public class ScoreboardCommand implements ICommand {
                 } else if (args[i + 1].equalsIgnoreCase("desc") || args[i + 1].equalsIgnoreCase("descending")) {
                     order = ScoreboardOrder.DESCENDING;
                 } else {
-                    sender.sendMessage(ChatColor.RED + "Unknown order " + args[i + 1] + ". Expected asc, ascending, desc, or descending.");
+                    sender.sendMessage(ChatColor.RED + "Unknown order " + args[i + 1]
+                            + ". Expected asc, ascending, desc, or descending.");
                     return true;
                 }
             } else if (args[i].equalsIgnoreCase("-l")) {
@@ -128,7 +132,8 @@ public class ScoreboardCommand implements ICommand {
                 if (args[i + 1].matches("[1-9][0-9]*")) {
                     length = Integer.parseInt(args[i + 1]);
                 } else {
-                    sender.sendMessage(ChatColor.RED + "Unknown length " + args[i + 1] + ". Expected positive non-zero number");
+                    sender.sendMessage(
+                            ChatColor.RED + "Unknown length " + args[i + 1] + ". Expected positive non-zero number");
                     return true;
                 }
             } else if (args[i].equalsIgnoreCase("-s")) {
@@ -136,7 +141,8 @@ public class ScoreboardCommand implements ICommand {
                 if (args[i + 1].matches("[1-9][0-9]*")) {
                     start = Integer.parseInt(args[i + 1]) - 1;
                 } else {
-                    sender.sendMessage(ChatColor.RED + "Unknown start " + args[i + 1] + ". Expected positive non-zero number");
+                    sender.sendMessage(
+                            ChatColor.RED + "Unknown start " + args[i + 1] + ". Expected positive non-zero number");
                     return true;
                 }
             } else {
@@ -150,14 +156,18 @@ public class ScoreboardCommand implements ICommand {
 
         sender.sendMessage(ChatColor.GRAY + "Loading scoreboard...");
         // Now load the values
-        ListenableFuture<List<StoredStat>> future = plugin.getBackend().loadStats(minigame, stat, field, order, start, length);
+        ListenableFuture<List<StoredStat>> future = plugin.getBackend().loadStats(minigame, stat, field, order, start,
+                length);
 
         Futures.addCallback(future, new FutureCallback<List<StoredStat>>() {
             @Override
             public void onSuccess(List<StoredStat> result) {
-                sender.sendMessage(ChatColor.GREEN + minigame.getName(true) + " Scoreboard: " + settings.getDisplayName() + " - " + fField.getTitle() + " " + fOrder.toString().toLowerCase());
+                sender.sendMessage(
+                        ChatColor.GREEN + minigame.getName(true) + " Scoreboard: " + settings.getDisplayName() + " - "
+                                + fField.getTitle() + " " + fOrder.toString().toLowerCase());
                 for (StoredStat playerStat : result) {
-                    sender.sendMessage(ChatColor.AQUA + playerStat.getPlayerDisplayName() + ": " + ChatColor.WHITE + stat.displayValue(playerStat.getValue(), settings));
+                    sender.sendMessage(ChatColor.AQUA + playerStat.getPlayerDisplayName() + ": " + ChatColor.WHITE
+                            + stat.displayValue(playerStat.getValue(), settings));
                 }
             }
 
@@ -166,7 +176,7 @@ public class ScoreboardCommand implements ICommand {
                 sender.sendMessage(ChatColor.RED + "An internal error occured while loading the statistics");
                 t.printStackTrace();
             }
-        });
+        }, directExecutor());
 
         return true;
     }
@@ -213,7 +223,8 @@ public class ScoreboardCommand implements ICommand {
 
                 if (previous.equals("-o")) {
                     // Order
-                    return MinigameUtils.tabCompleteMatch(Arrays.asList("asc", "ascending", "desc", "descending"), toMatch);
+                    return MinigameUtils.tabCompleteMatch(Arrays.asList("asc", "ascending", "desc", "descending"),
+                            toMatch);
                 }
                 // The others cannot be tab completed
             }

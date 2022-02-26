@@ -5,8 +5,10 @@ import au.com.mineauz.minigames.display.DisplayManager;
 import au.com.mineauz.minigames.display.IDisplayCubiod;
 import au.com.mineauz.minigames.display.INonPersistantDisplay;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -78,9 +80,9 @@ public class SpigotDisplayCuboid extends AbstractDisplayObject implements IDispl
         temp.setWorld(getWorld());
 
         if (player == null) {
-            getWorld().spawnParticle(Particle.BARRIER, temp, 1);
+            getWorld().spawnParticle(Particle.BLOCK_MARKER, temp, 1, 0, 0, 0, 0, Material.BARRIER.createBlockData());
         } else {
-            player.spawnParticle(Particle.BARRIER, temp, 1);
+            player.spawnParticle(Particle.BLOCK_MARKER, temp, 1, 0, 0, 0, 0, Material.BARRIER.createBlockData());
         }
     }
 }

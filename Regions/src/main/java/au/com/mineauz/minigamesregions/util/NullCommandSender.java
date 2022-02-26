@@ -2,6 +2,8 @@ package au.com.mineauz.minigamesregions.util;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import net.kyori.adventure.text.Component;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
@@ -13,8 +15,10 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
+import java.util.UUID;
 
 public class NullCommandSender implements ConsoleCommandSender {
     @Override
@@ -30,7 +34,7 @@ public class NullCommandSender implements ConsoleCommandSender {
             }
         }
     }
-    
+
     @Override
     public void sendRawMessage(String message) {
         MinigameUtils.debugMessage("[Suppressed] " + message);
@@ -133,5 +137,32 @@ public class NullCommandSender implements ConsoleCommandSender {
 
     @Override
     public void abandonConversation(Conversation conversation, ConversationAbandonedEvent details) {
+    }
+
+    @Override
+    public @NotNull Component name() {
+        return Component.text(this.getName());
+    }
+
+    @Override
+    public void sendMessage(@Nullable UUID arg0, @NotNull String arg1) {
+        MinigameUtils.debugMessage("[Suppressed] " + arg1);
+
+    }
+
+    @Override
+    public void sendMessage(@Nullable UUID arg0, @NotNull String... arg1) {
+        if (Minigames.getPlugin().isDebugging()) {
+            for (String message : arg1) {
+                MinigameUtils.debugMessage("[Suppressed] " + message);
+            }
+        }
+
+    }
+
+    @Override
+    public void sendRawMessage(@Nullable UUID arg0, @NotNull String arg1) {
+        MinigameUtils.debugMessage("[Suppressed] " + arg1);
+
     }
 }

@@ -12,14 +12,17 @@ import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.block.BlockMock;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.SoundGroup;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.material.MaterialData;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created for the AddstarMC Project. Created by Narimm on 6/02/2019.
  */
 public class TestHelper {
-    public static Minigame createMinigame(Minigames plugin, WorldMock world, MinigameType type, GameMechanics.MECHANIC_NAME mechanic) {
+    public static Minigame createMinigame(Minigames plugin, WorldMock world, MinigameType type,
+            GameMechanics.MECHANIC_NAME mechanic) {
         Location start = new Location(world, 0, 21, 0);
         Minigame game = new Minigame("TestGame", MinigameType.MULTIPLAYER, start);
         game.setType(type);
@@ -75,6 +78,12 @@ public class TestHelper {
             @Override
             public BlockData clone() {
                 return this;
+            }
+
+            @Override
+            public @NotNull SoundGroup getSoundGroup() {
+
+                return data.getItemType().createBlockData().getSoundGroup();
             }
         };
         return new SignBlockMock(Material.OAK_SIGN, new Location(world, 10, 40, 10), sign, bData);

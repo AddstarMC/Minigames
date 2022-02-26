@@ -90,10 +90,10 @@ public class MinigamePlayerManager {
 
         //Give them the objective
         if (minigame.getObjective() != null) {
-            player.sendInfoMessage(ChatColor.GREEN + "----------------------------------------------------");
+            player.sendUnprefixedMessage(ChatColor.GREEN + "----------------------------------------------------");
             player.sendInfoMessage(ChatColor.AQUA.toString() + ChatColor.BOLD + MinigameUtils.formStr("player.join.objective",
                     ChatColor.RESET.toString() + ChatColor.WHITE + minigame.getObjective()));
-            player.sendInfoMessage(ChatColor.GREEN + "----------------------------------------------------");
+            player.sendUnprefixedMessage(ChatColor.GREEN + "----------------------------------------------------");
         }
         //Prepare regeneration region for rollback.
         mgManager.addBlockRecorderData(minigame);
@@ -436,9 +436,14 @@ public class MinigamePlayerManager {
                 if (player.getEndTime() == 0)
                     player.setEndTime(System.currentTimeMillis());
 
-                if (isWinner)
+                if (isWinner) {
                     GameOverModule.getMinigameModule(minigame).getWinners().remove(player);
-                else
+
+                    if (minigame.getShowCompletionTime()) {
+                        player.setCompleteTime(player.getEndTime() - player.getStartTime() + player.getStoredTime());
+                    }
+
+                } else
                     GameOverModule.getMinigameModule(minigame).getLosers().remove(player);
 
                 if (!isWinner) {
@@ -686,7 +691,7 @@ public class MinigamePlayerManager {
                 saveData.addStat(MinigameStats.CompletionTime, player.getEndTime() - player.getStartTime() + player.getStoredTime());
 
                 if (minigame.getShowCompletionTime()) {
-                    player.sendInfoMessage("Completion time: " + (double)(winners.get(0).getEndTime() - winners.get(0).getStartTime() + winners.get(0).getStoredTime())/1000 +" Seconds.");
+                    player.sendInfoMessage("Completion time: " + (double)(winners.get(0).getEndTime() - winners.get(0).getStartTime() + winners.get(0).getStoredTime())/1000+" seconds");
                 }
 
                 for (DynamicMinigameStat stat : MinigameStats.getDynamicStats()) {
@@ -726,6 +731,7 @@ public class MinigamePlayerManager {
                         minigame.setMpBets(null);
                     }
                 }
+
                 PlayMGSound.playSound(player, MGSounds.getSound("win"));
             }
 

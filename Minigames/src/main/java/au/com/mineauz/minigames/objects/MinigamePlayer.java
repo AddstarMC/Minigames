@@ -50,6 +50,7 @@ public class MinigamePlayer implements ScriptObject {
     private long startTime;
     private long endTime;
     private long storedTime;
+    private long completeTime;
     private int reverts;
     private boolean isLatejoining;
     private boolean isFrozen;
@@ -128,6 +129,10 @@ public class MinigamePlayer implements ScriptObject {
         this.sendMessage(msg, MinigameMessageType.INFO);
     }
 
+    public void sendUnprefixedMessage(final String msg) {
+        this.sendMessage(msg, MinigameMessageType.NONE);
+    }
+
     public void sendMessage(final String msg, final @NotNull MinigameMessageType type) {
         String init = "";
         switch (type) {
@@ -139,6 +144,8 @@ public class MinigamePlayer implements ScriptObject {
                 break;
             case LOSS:
                 init = ChatColor.DARK_RED + "[Minigames] " + ChatColor.WHITE;
+                break;
+            case NONE:
                 break;
             case INFO:
             default:
@@ -400,6 +407,14 @@ public class MinigamePlayer implements ScriptObject {
 
     public void setStoredTime(final long ms) {
         this.storedTime = ms;
+    }
+
+    public long getCompletionTime() {
+        return this.completeTime;
+    }
+
+    public void setCompleteTime(final long ms) {
+        this.completeTime = ms;
     }
 
     public void addRevert() {

@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>au.com.mineauz</groupId>
   <artifactId>MinigamesProject</artifactId>
-  <version>1.16-SNAPSHOT</version>
+  <version>1.18-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Minigames-Project</name>
   <url>https://www.spigotmc.org/resources/minigames.19687/</url>
@@ -13,18 +13,18 @@
     <tag>HEAD</tag>
   </scm>
   <properties>
-      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <build.number />
-      <plugin.version>${project.version}-${build.number}</plugin.version>
-      <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
-      <spigot.version>${spigot.api.version}.${spigot.minor.version}-R0.1-SNAPSHOT</spigot.version>
-      <spigot.api.version>1.16</spigot.api.version>
-      <spigot.minor.version>1</spigot.minor.version>
-      <codacy.api.token>${env.CODACY_API_TOKEN}</codacy.api.token>
-      <!--suppress UnresolvedMavenProperty -->
-      <travis.commit>${env.TRAVIS_COMMIT}</travis.commit>
-      <env.CODACY_API_TOKEN/>
-      <argline/>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <build.number />
+    <plugin.version>${project.version}-${build.number}</plugin.version>
+    <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+    <spigot.version>${spigot.api.version}.${spigot.minor.version}-R0.1-SNAPSHOT</spigot.version>
+    <spigot.api.version>1.18</spigot.api.version>
+    <spigot.minor.version>1</spigot.minor.version>
+    <codacy.api.token>${env.CODACY_API_TOKEN}</codacy.api.token>
+    <!--suppress UnresolvedMavenProperty -->
+    <travis.commit>${env.TRAVIS_COMMIT}</travis.commit>
+    <env.CODACY_API_TOKEN />
+    <argline />
   </properties>
   <developers>
     <developer>
@@ -48,8 +48,8 @@
   </developers>
   <licenses>
     <license>
-        <name>MIT License</name>
-        <url>https://opensource.org/licenses/MIT</url>
+      <name>MIT License</name>
+      <url>https://opensource.org/licenses/MIT</url>
     </license>
   </licenses>
   <distributionManagement>
@@ -58,7 +58,7 @@
       <name>maven.addstar.com.au-releases</name>
       <url>https://maven.addstar.com.au/artifactory/ext-release-local</url>
     </repository>
-      <snapshotRepository>
+    <snapshotRepository>
       <id>maven.addstar.com.au</id>
       <name>maven.addstar.com.au-snapshots</name>
       <url>https://maven.addstar.com.au/artifactory/ext-snapshot-local</url>
@@ -71,65 +71,65 @@
   </modules>
   <repositories>
     <!-- Addstar repo -->
-      <repository>
-          <id>addstar-repo</id>
-          <url>https://maven.addstar.com.au/artifactory/ext-release-local</url>
-          <snapshots>
-              <enabled>false</enabled>
-          </snapshots>
-      </repository>
-      <repository>
-          <id>addstar-snapshot-repo</id>
-          <url>https://maven.addstar.com.au/artifactory/ext-snapshot-local</url>
-          <snapshots>
-              <enabled>true</enabled>
-          </snapshots>
-          <releases>
-              <enabled>false</enabled>
-          </releases>
-      </repository>
-      <repository>
-          <id>destroystokyo-repo</id>
-          <url>https://repo.destroystokyo.com/repository/maven-public/</url>
-      </repository>
+    <repository>
+      <id>addstar-repo</id>
+      <url>https://maven.addstar.com.au/artifactory/ext-release-local</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>addstar-snapshot-repo</id>
+      <url>https://maven.addstar.com.au/artifactory/ext-snapshot-local</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+    <repository>
+      <id>papermc</id>
+      <url>https://papermc.io/repo/repository/maven-public/</url>
+    </repository>
     <!-- Other repositories -->
-      <repository>
-          <id>spigot-repo</id>
-          <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-      </repository>
+    <repository>
+      <id>spigot-repo</id>
+      <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+    </repository>
     <repository>
       <id>maven-central</id>
       <url>https://repo1.maven.org/maven2/</url>
-  </repository>
-      <repository>
-          <snapshots>
-              <enabled>false</enabled>
-          </snapshots>
-          <id>jcenter</id>
-          <name>bintray</name>
-          <url>https://jcenter.bintray.com</url>
-      </repository>
+    </repository>
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>jcenter</id>
+      <name>bintray</name>
+      <url>https://jcenter.bintray.com</url>
+    </repository>
   </repositories>
   <dependencies>
-      <dependency>
-          <groupId>com.destroystokyo.paper</groupId>
-          <artifactId>paper-api</artifactId>
-          <version>${spigot.version}</version>
-          <scope>provided</scope>
-      </dependency>
+    <dependency>
+      <groupId>io.papermc.paper</groupId>
+      <artifactId>paper-api</artifactId>
+      <version>1.18.1-R0.1-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.13</version>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>org.jetbrains</groupId>
-          <artifactId>annotations</artifactId>
-          <version>19.0.0</version>
-          <scope>provided</scope>
-          <!-- no runtime features are used-->
-      </dependency>
+    <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <version>20.1.0</version>
+      <scope>provided</scope>
+      <!-- no runtime features are used-->
+    </dependency>
   </dependencies>
 
   <build>
@@ -154,82 +154,82 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>3.2.0</version>
         </plugin>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-source-plugin</artifactId>
-              <version>3.2.1</version>
-              <executions>
-                  <execution>
-                      <id>attach-sources</id>
-                      <goals>
-                          <goal>jar</goal>
-                      </goals>
-                      <phase>package</phase>
-                  </execution>
-              </executions>
-              <configuration>
-                  <skipSource>false</skipSource>
-              </configuration>
-          </plugin>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-release-plugin</artifactId>
-              <version>2.5.3</version>
-          </plugin>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-dependency-plugin</artifactId>
-              <version>3.1.2</version>
-          </plugin>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-project-info-reports-plugin</artifactId>
-              <version>3.1.0</version>
-          </plugin>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <version>2.22.2</version>
-              <configuration>
-                      <!-- no argLine here -->
-              </configuration>
-          </plugin>
-          <plugin>
-              <groupId>org.jacoco</groupId>
-              <artifactId>jacoco-maven-plugin</artifactId>
-              <version>0.8.5</version>
-              <executions>
-                  <execution>
-                      <id>prepare</id>
-                      <goals>
-                          <goal>prepare-agent</goal>
-                      </goals>
-                      <phase>compile</phase>
-                  </execution>
-              </executions>
-          </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.2.1</version>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+              <phase>package</phase>
+            </execution>
+          </executions>
+          <configuration>
+            <skipSource>false</skipSource>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5.3</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>3.1.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <version>3.1.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.22.2</version>
+          <configuration>
+            <!-- no argLine here -->
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.8.5</version>
+          <executions>
+            <execution>
+              <id>prepare</id>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+              <phase>compile</phase>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.7</version>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <!-- select non-aggregate reports -->
-                            <report>report</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-        </plugins>
-    </reporting>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <version>2.8.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <!-- select non-aggregate reports -->
+              <report>report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>

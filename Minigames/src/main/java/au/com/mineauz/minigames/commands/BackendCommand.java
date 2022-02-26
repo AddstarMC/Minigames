@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.backend.BackendManager;
 import au.com.mineauz.minigames.backend.ExportNotifier;
 import au.com.mineauz.minigames.minigame.Minigame;
+import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -37,12 +38,12 @@ public class BackendCommand implements ICommand {
 
     @Override
     public String[] getParameters() {
-        return new String[]{"export", "switch"};
+        return new String[] { "export", "switch" };
     }
 
     @Override
     public String[] getUsage() {
-        return new String[]{"/minigame backend export <type>", "/minigame backend switch <type>"};
+        return new String[] { "/minigame backend export <type>", "/minigame backend switch <type>" };
     }
 
     @Override
@@ -65,7 +66,8 @@ public class BackendCommand implements ICommand {
 
         if (args[0].equalsIgnoreCase("export")) {
             try {
-                ListenableFuture<Void> future = manager.exportTo(args[1], Minigames.getPlugin().getConfig(), new Notifier(sender));
+                ListenableFuture<Void> future = manager.exportTo(args[1], Minigames.getPlugin().getConfig(),
+                        new Notifier(sender));
                 sender.sendMessage(ChatColor.GOLD + "Exporting backend to " + args[1] + "...");
 
                 Futures.addCallback(future, new FutureCallback<Void>() {
@@ -77,7 +79,7 @@ public class BackendCommand implements ICommand {
                     @Override
                     public void onSuccess(Void result) {
                     }
-                });
+                }, directExecutor());
             } catch (IllegalArgumentException e) {
                 sender.sendMessage(ChatColor.RED + e.getMessage());
             }
@@ -95,9 +97,10 @@ public class BackendCommand implements ICommand {
                     @Override
                     public void onSuccess(Void result) {
                         sender.sendMessage(ChatColor.GOLD + "The backend has been successfully switched");
-                        sender.sendMessage(ChatColor.GOLD + "!!! This change is " + ChatColor.BOLD + "temporary" + ChatColor.GOLD + ". Please update the config !!!");
+                        sender.sendMessage(ChatColor.GOLD + "!!! This change is " + ChatColor.BOLD + "temporary"
+                                + ChatColor.GOLD + ". Please update the config !!!");
                     }
-                });
+                }, directExecutor());
             } catch (IllegalArgumentException e) {
                 sender.sendMessage(ChatColor.RED + e.getMessage());
             }
@@ -110,7 +113,7 @@ public class BackendCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+            String alias, String[] args) {
         return null;
     }
 
