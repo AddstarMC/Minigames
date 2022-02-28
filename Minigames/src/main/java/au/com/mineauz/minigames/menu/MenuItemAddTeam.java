@@ -71,7 +71,7 @@ public class MenuItemAddTeam extends MenuItem {
         getContainer().cancelReopenTimer();
         getContainer().displayMenu(getContainer().getViewer());
 
-        getContainer().getViewer().sendMessage("There is no team color by the name of " + entry.toLowerCase().replace("_", " "), MinigameMessageType.ERROR);
+        getContainer().getViewer().sendMessage(MessageManager.getMessage(null, "team.invalidColor", entry.toLowerCase().replace("_", " ")), MinigameMessageType.ERROR);
     }
 
 }
