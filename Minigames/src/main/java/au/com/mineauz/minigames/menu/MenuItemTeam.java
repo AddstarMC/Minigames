@@ -44,7 +44,7 @@ public class MenuItemTeam extends MenuItem {
                 m.setColor(Color.BLUE);
                 break;
             case GREEN:
-                m.setColor(Color.GREEN);
+                m.setColor(Color.LIME);
                 break;
             case YELLOW:
                 m.setColor(Color.YELLOW);
@@ -56,13 +56,25 @@ public class MenuItemTeam extends MenuItem {
                 m.setColor(Color.WHITE);
                 break;
             case GRAY:
+                m.setColor(Color.SILVER);
+                break;
+            case DARK_GRAY:
                 m.setColor(Color.GRAY);
                 break;
             case PURPLE:
-                m.setColor(Color.PURPLE);
+                m.setColor(Color.FUCHSIA);
+                break;
+            case ORANGE:
+                m.setColor(Color.ORANGE);
+                break;
+            case CYAN:
+                m.setColor(Color.TEAL);
+                break;
+            case LIGHT_BLUE:
+                m.setColor(Color.AQUA);
                 break;
             case DARK_BLUE:
-                m.setColor(Color.BLUE);
+                m.setColor(Color.NAVY);
                 break;
             case DARK_GREEN:
                 m.setColor(Color.GREEN);
@@ -71,7 +83,7 @@ public class MenuItemTeam extends MenuItem {
                 m.setColor(Color.PURPLE);
                 break;
             case DARK_RED:
-                m.setColor(Color.RED);
+                m.setColor(Color.MAROON);
                 break;
         }
         getItem().setItemMeta(m);

@@ -6,7 +6,7 @@ public enum TeamColor {
     RED(ChatColor.RED),
     BLUE(ChatColor.BLUE),
     GREEN(ChatColor.GREEN),
-    YELLOW(ChatColor.GOLD),
+    ORANGE(ChatColor.GOLD),
     PURPLE(ChatColor.LIGHT_PURPLE),
     WHITE(ChatColor.WHITE),
     BLACK(ChatColor.BLACK),
@@ -14,7 +14,11 @@ public enum TeamColor {
     DARK_PURPLE(ChatColor.DARK_PURPLE),
     DARK_GREEN(ChatColor.DARK_GREEN),
     DARK_BLUE(ChatColor.DARK_BLUE),
-    GRAY(ChatColor.GRAY);
+    GRAY(ChatColor.GRAY),
+    DARK_GRAY(ChatColor.DARK_GRAY),
+    LIGHT_BLUE(ChatColor.AQUA),
+    CYAN(ChatColor.DARK_AQUA),
+    YELLOW(ChatColor.YELLOW);
 
     private ChatColor color;
 
