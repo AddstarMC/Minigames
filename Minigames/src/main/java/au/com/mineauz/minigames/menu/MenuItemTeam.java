@@ -40,17 +40,38 @@ public class MenuItemTeam extends MenuItem {
             case RED:
                 m.setColor(Color.RED);
                 break;
-            case BLUE:
-                m.setColor(Color.BLUE);
+            case DARK_RED:
+                m.setColor(Color.MAROON);
                 break;
-            case GREEN:
-                m.setColor(Color.LIME);
+            case ORANGE:
+                m.setColor(Color.ORANGE);
                 break;
             case YELLOW:
                 m.setColor(Color.YELLOW);
                 break;
-            case BLACK:
-                m.setColor(Color.BLACK);
+            case GREEN:
+                m.setColor(Color.LIME);
+                break;
+            case DARK_GREEN:
+                m.setColor(Color.GREEN);
+                break;
+            case CYAN:
+                m.setColor(Color.TEAL);
+                break;
+            case LIGHT_BLUE:
+                m.setColor(Color.AQUA);
+                break;
+            case BLUE:
+                m.setColor(Color.BLUE);
+                break;
+            case DARK_BLUE:
+                m.setColor(Color.NAVY);
+                break;
+            case DARK_PURPLE:
+                m.setColor(Color.PURPLE);
+                break;
+            case PURPLE:
+                m.setColor(Color.FUCHSIA);
                 break;
             case WHITE:
                 m.setColor(Color.WHITE);
@@ -61,29 +82,8 @@ public class MenuItemTeam extends MenuItem {
             case DARK_GRAY:
                 m.setColor(Color.GRAY);
                 break;
-            case PURPLE:
-                m.setColor(Color.FUCHSIA);
-                break;
-            case ORANGE:
-                m.setColor(Color.ORANGE);
-                break;
-            case CYAN:
-                m.setColor(Color.TEAL);
-                break;
-            case LIGHT_BLUE:
-                m.setColor(Color.AQUA);
-                break;
-            case DARK_BLUE:
-                m.setColor(Color.NAVY);
-                break;
-            case DARK_GREEN:
-                m.setColor(Color.GREEN);
-                break;
-            case DARK_PURPLE:
-                m.setColor(Color.PURPLE);
-                break;
-            case DARK_RED:
-                m.setColor(Color.MAROON);
+            case BLACK:
+                m.setColor(Color.BLACK);
                 break;
         }
         getItem().setItemMeta(m);
