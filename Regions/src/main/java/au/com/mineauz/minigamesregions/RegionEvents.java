@@ -13,6 +13,7 @@ import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -231,34 +232,13 @@ public class RegionEvents implements Listener{
         
         if (!event.isCancelled()) {
             if (event.getAction() == Action.PHYSICAL) {
-                switch (event.getClickedBlock().getType()) {
-                    case STONE_PRESSURE_PLATE:
-                    case ACACIA_PRESSURE_PLATE:
-                    case LIGHT_WEIGHTED_PRESSURE_PLATE:
-                    case HEAVY_WEIGHTED_PRESSURE_PLATE:
-                    case BIRCH_PRESSURE_PLATE:
-                    case DARK_OAK_PRESSURE_PLATE:
-                    case JUNGLE_PRESSURE_PLATE:
-                    case OAK_PRESSURE_PLATE:
-                    case SPRUCE_PRESSURE_PLATE:
+                if (event.getClickedBlock().getType().toString().contains("PRESSURE_PLATE")) {
                     trigger(ply, event.getClickedBlock(), Triggers.getTrigger("INTERACT"));
-                    break;
-                default:
-                    break;
                 }
             } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                switch (event.getClickedBlock().getType()) {
-                    case ACACIA_BUTTON:
-                    case BIRCH_BUTTON:
-                    case DARK_OAK_BUTTON:
-                    case JUNGLE_BUTTON:
-                    case OAK_BUTTON:
-                    case SPRUCE_BUTTON:
-                    case STONE_BUTTON:
-                        trigger(ply, event.getClickedBlock(), Triggers.getTrigger("INTERACT"));
-                        break;
-                    default:
-                        break;
+                if (event.getClickedBlock().getType().toString().contains("BUTTON") ||
+                        event.getClickedBlock().getType() == Material.LEVER) {
+                    trigger(ply, event.getClickedBlock(), Triggers.getTrigger("INTERACT"));
                 }
             }
         }
