@@ -116,13 +116,13 @@ public class StartPositionMode implements ToolMode {
     public void select(MinigamePlayer player, Minigame minigame, Team team) {
         if (team != null) {
             for (Location loc : team.getStartLocations()) {
-                player.getPlayer().sendBlockChange(loc, Material.SKELETON_SKULL, (byte) 1);
+                player.getPlayer().sendBlockChange(loc, Material.SKELETON_SKULL.createBlockData());
             }
             player.sendInfoMessage("Selected " + team.getChatColor() + team.getDisplayName() + ChatColor.WHITE +
                     " start points in " + minigame);
         } else {
             for (Location loc : minigame.getStartLocations()) {
-                player.getPlayer().sendBlockChange(loc, Material.SKELETON_SKULL, (byte) 1);
+                player.getPlayer().sendBlockChange(loc, Material.SKELETON_SKULL.createBlockData());
             }
             player.sendInfoMessage("Selected start points in " + minigame);
         }
