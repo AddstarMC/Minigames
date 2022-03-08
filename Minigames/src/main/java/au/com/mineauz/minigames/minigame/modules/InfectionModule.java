@@ -66,7 +66,7 @@ public class InfectionModule extends MinigameModule {
             @Override
             public String getValue() {
                 if (infectedTeam.getFlag() != null) {
-                    if (!TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(infectedTeam.getFlag())) {
+                    if (!TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(infectedTeam.getFlag().toLowerCase())) {
                         return "None";
                     }
 
@@ -77,7 +77,7 @@ public class InfectionModule extends MinigameModule {
 
             @Override
             public void setValue(String value) {
-                if (!value.equals("None"))
+                if (TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(value.toLowerCase()))
                     infectedTeam.setFlag(TeamColor.matchColor(value.replace(" ", "_")).toString());
                 else
                     infectedTeam.setFlag(null);
@@ -90,7 +90,7 @@ public class InfectionModule extends MinigameModule {
             @Override
             public String getValue() {
                 if (survivorTeam.getFlag() != null) {
-                    if (!TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(survivorTeam.getFlag())) {
+                    if (!TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(survivorTeam.getFlag().toLowerCase())) {
                         return "None";
                     }
 
@@ -101,7 +101,7 @@ public class InfectionModule extends MinigameModule {
 
             @Override
             public void setValue(String value) {
-                if (!value.equals("None"))
+                if (TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(value.toLowerCase()))
                     survivorTeam.setFlag(TeamColor.matchColor(value.replace(" ", "_")).toString());
                 else
                     survivorTeam.setFlag(null);
@@ -143,33 +143,48 @@ public class InfectionModule extends MinigameModule {
 
     public TeamColor getInfectedTeam() {
         if (infectedTeam.getFlag() != null) {
-            if (!TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(infectedTeam.getFlag())) {
+            TeamColor team = TeamColor.matchColor(infectedTeam.getFlag());
+            if (!TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(team.toString().toLowerCase())) {
                 return null;
             } else {
-                return TeamColor.matchColor(infectedTeam.getFlag());
+                return team;
             }
         }
         return null;
     }
 
-    public void setInfectedTeam(TeamColor infectedTeam) {
-        this.infectedTeam.setFlag(infectedTeam.toString());
+    public void setInfectedTeam(TeamColor iTeam) {
+        if (iTeam != null) {
+            if (!TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(iTeam.toString().toLowerCase()))
+                this.infectedTeam.setFlag(null);
+            else
+                this.infectedTeam.setFlag(iTeam.toString());
+        } else {
+            this.infectedTeam.setFlag(null);
+        }
     }
 
     public TeamColor getSurvivorTeam() {
         if (survivorTeam.getFlag() != null) {
             TeamColor team = TeamColor.matchColor(survivorTeam.getFlag());
-            if (!TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(survivorTeam.getFlag())) {
+            if (!TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(team.toString().toLowerCase())) {
                 return null;
             } else {
-                return TeamColor.matchColor(survivorTeam.getFlag());
+                return team;
             }
         }
         return null;
     }
 
-    public void setSurvivorTeam(TeamColor survivorTeam) {
-        this.survivorTeam.setFlag(survivorTeam.toString());
+    public void setSurvivorTeam(TeamColor sTeam) {
+        if (sTeam != null) {
+            if (!TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(sTeam.toString().toLowerCase()))
+                this.survivorTeam.setFlag(null);
+            else
+                this.survivorTeam.setFlag(sTeam.toString());
+        } else {
+            this.survivorTeam.setFlag(null);
+        }
     }
 
     public void addInfectedPlayer(MinigamePlayer ply) {
