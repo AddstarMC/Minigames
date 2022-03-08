@@ -138,7 +138,7 @@ public class PlayerLoadout {
         }
         if (!itemSlot.isEmpty()) {
             for (Integer slot : itemSlot.keySet()) {
-                if (slot < 100)
+                if (slot < 100 && slot >= 0)
                     player.getPlayer().getInventory().setItem(slot, getItem(slot));
                 else if (slot == 100)
                     player.getPlayer().getInventory().setBoots(getItem(slot));
