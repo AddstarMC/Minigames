@@ -231,15 +231,13 @@ public class RegionEvents implements Listener{
         }
         
         if (!event.isCancelled()) {
-            if (event.getAction() == Action.PHYSICAL) {
-                if (event.getClickedBlock().getType().toString().contains("PRESSURE_PLATE")) {
+            if (event.getAction() == Action.PHYSICAL &&
+                    event.getClickedBlock().getType().toString().contains("PRESSURE_PLATE")) {
                     trigger(ply, event.getClickedBlock(), Triggers.getTrigger("INTERACT"));
-                }
-            } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                if (event.getClickedBlock().getType().toString().contains("BUTTON") ||
+            } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK &&
+                    event.getClickedBlock().getType().toString().contains("BUTTON") ||
                         event.getClickedBlock().getType() == Material.LEVER) {
                     trigger(ply, event.getClickedBlock(), Triggers.getTrigger("INTERACT"));
-                }
             }
         }
         
