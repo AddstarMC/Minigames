@@ -133,7 +133,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
         loadoutMenu.displayMenu(getContainer().getViewer());
 
         for (Integer item : loadout.getItems()) {
-            if (item < 100)
+            if (item < 100 && item >= 0)
                 loadoutMenu.addItemStack(loadout.getItem(item), item);
             else if (item == 100)
                 loadoutMenu.addItemStack(loadout.getItem(item), 39);
