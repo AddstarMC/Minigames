@@ -135,4 +135,9 @@ public class MatchTeamCondition extends ConditionInterface {
         }
     }
 
+    @Override
+    public boolean onPlayerApplicable() {
+        return true;
+    }
+
 }

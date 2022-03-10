@@ -17,4 +17,8 @@ public class BlockPlaceTrigger implements Trigger {
         return true;
     }
 
+    @Override
+    public boolean triggerOnPlayerAvailable() {
+        return true;
+    }
 }

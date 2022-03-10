@@ -11,6 +11,7 @@ import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
@@ -25,6 +26,8 @@ public class Region implements ScriptObject {
     private List<MinigamePlayer> players = new ArrayList<>();
     private long taskDelay = 20;
     private int taskID;
+    private int gameTickTaskID;
+    private int gameTickDelay = 1;
     private boolean enabled = true;
     
     public Region(String name, Location point1, Location point2){
@@ -146,7 +149,7 @@ public class Region implements ScriptObject {
         removeTickTask();
         taskDelay = delay;
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
-List<MinigamePlayer> plys = new ArrayList<>(players);
+            List<MinigamePlayer> plys = new ArrayList<>(players);
             for(MinigamePlayer player : plys){
                 execute(Triggers.getTrigger("TICK"), player);
             }
@@ -158,19 +161,34 @@ List<MinigamePlayer> plys = new ArrayList<>(players);
     }
     
     public void startTickTask(){
-        if(taskID != -1)
+        if(taskID != -1) {
             removeTickTask();
-        
+        }
+
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
-List<MinigamePlayer> plys = new ArrayList<>(players);
+            List<MinigamePlayer> plys = new ArrayList<>(players);
             for(MinigamePlayer player : plys){
                 execute(Triggers.getTrigger("TICK"), player);
             }
         }, 0, taskDelay);
     }
+
+    public void startGameTickTask() {
+        if(gameTickTaskID != -1) {
+            removeGameTickTask();
+        }
+
+        gameTickTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
+            executeGameTick();
+        }, 0, gameTickDelay);
+    }
     
     public void removeTickTask(){
         Bukkit.getScheduler().cancelTask(taskID);
+    }
+
+    public void removeGameTickTask() {
+        Bukkit.getScheduler().cancelTask(gameTickTaskID);
     }
     
     public void setEnabled(boolean enabled){
@@ -215,6 +233,27 @@ List<MinigamePlayer> plys = new ArrayList<>(players);
                 exec.addPublicTrigger();
             else
                 exec.addPlayerTrigger(player);
+        }
+    }
+
+    public void executeGameTick() {
+        if(players.size() == 0) return;
+        // There is no condition, which is not player specific, so we can just execute all executors.
+        for(RegionExecutor exec : executors) {
+            for (ActionInterface act : exec.getActions()) {
+                if (!enabled && !act.getName().equalsIgnoreCase("SET_ENABLED")) continue;
+                try {
+                    if (checkConditions(exec, null) && exec.getTrigger() == Triggers.getTrigger("GAME_TICK")) {
+                        act.executeRegionAction(null, this);
+                        exec.addPublicTrigger();
+                    }
+                } catch (Exception e) {
+                    for (MinigamePlayer player : players) {
+                        player.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames]" +
+                                ChatColor.RED + " Only RandomChanceCondition is applicable to game tick trigger!");
+                    }
+                }
+            }
         }
     }
     

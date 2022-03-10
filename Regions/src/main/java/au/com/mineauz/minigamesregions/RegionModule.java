@@ -277,12 +277,14 @@ public class RegionModule extends MinigameModule {
     public void removeRegion(String name){
         if(hasRegion(name)){
             regions.get(name).removeTickTask();
+            regions.get(name).removeGameTickTask();
             regions.remove(name);
         }
         else{
             for(String n : regions.keySet()){
                 if(n.equalsIgnoreCase(name)){
                     regions.get(n).removeTickTask();
+                    regions.get(n).removeGameTickTask();
                     regions.remove(n);
                     break;
                 }

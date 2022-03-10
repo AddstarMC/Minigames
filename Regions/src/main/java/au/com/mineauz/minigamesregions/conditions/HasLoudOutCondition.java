@@ -104,5 +104,9 @@ public class HasLoudOutCondition extends ConditionInterface {
             out.put("Loadout",loadOutName.getFlag());
         }
 
+    @Override
+    public boolean onPlayerApplicable() {
+        return true;
+    }
 }
 

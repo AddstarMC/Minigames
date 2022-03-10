@@ -84,4 +84,8 @@ public class PlayerHealthRangeCondition extends ConditionInterface {
         return true;
     }
 
+    @Override
+    public boolean onPlayerApplicable() {
+        return true;
+    }
 }

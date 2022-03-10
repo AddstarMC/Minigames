@@ -80,4 +80,8 @@ public class HasFlagCondition extends ConditionInterface {
         return true;
     }
 
+    @Override
+    public boolean onPlayerApplicable() {
+        return true;
+    }
 }

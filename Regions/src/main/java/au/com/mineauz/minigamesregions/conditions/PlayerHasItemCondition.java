@@ -298,4 +298,8 @@ public class PlayerHasItemCondition extends ConditionInterface {
         SLOT
     }
 
+    @Override
+    public boolean onPlayerApplicable() {
+        return true;
+    }
 }
