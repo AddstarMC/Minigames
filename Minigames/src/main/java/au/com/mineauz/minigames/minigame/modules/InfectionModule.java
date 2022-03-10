@@ -71,9 +71,9 @@ public class InfectionModule extends MinigameModule {
                             TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(infectedTeam.getFlag().toLowerCase())) {
                         return WordUtils.capitalize(infectedTeam.getFlag().replace("_", " "));
                     } else
-                        return "Red";
+                        return WordUtils.capitalize(infectedTeam.getDefaultFlag().toLowerCase().replace("_", " "));
                 } else
-                    return "Red";
+                    return WordUtils.capitalize(infectedTeam.getDefaultFlag().toLowerCase().replace("_", " "));
             }
 
             @Override
@@ -98,9 +98,9 @@ public class InfectionModule extends MinigameModule {
                             TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(survivorTeam.getFlag().toLowerCase())) {
                         return WordUtils.capitalize(survivorTeam.getFlag().replace("_", " "));
                     } else
-                        return "Blue";
+                        return WordUtils.capitalize(survivorTeam.getDefaultFlag().toLowerCase().replace("_", " "));
                 } else
-                    return "Blue";
+                    return WordUtils.capitalize(survivorTeam.getDefaultFlag().toLowerCase().replace("_", " "));
             }
 
             @Override
