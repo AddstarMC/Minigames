@@ -77,10 +77,11 @@ public class SpigotDisplayCuboid extends AbstractDisplayObject implements IDispl
         temp.setZ(z);
         temp.setWorld(getWorld());
 
+        // TODO Can be changed to Barrier after update to 1.18
         if (player == null) {
-            getWorld().spawnParticle(Particle.BARRIER, temp, 1);
+            getWorld().spawnParticle(Particle.FLAME, temp, 1, 0, 0, 0, 0);
         } else {
-            player.spawnParticle(Particle.BARRIER, temp, 1);
+            player.spawnParticle(Particle.FLAME, temp, 1, 0, 0, 0, 0);
         }
     }
 }
