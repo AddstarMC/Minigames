@@ -66,20 +66,23 @@ public class InfectionModule extends MinigameModule {
             @Override
             public String getValue() {
                 if (infectedTeam.getFlag() != null) {
-                    if (!TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(infectedTeam.getFlag().toLowerCase())) {
-                        return "None";
-                    }
-
-                    return WordUtils.capitalize(infectedTeam.getFlag().replace("_", " "));
-                }
-                return "None";
+                    if (TeamColor.matchColor(infectedTeam.getFlag()) == TeamColor.matchColor(infectedTeam.getDefaultFlag()) ||
+                            TeamColor.matchColor(infectedTeam.getFlag()) == TeamColor.matchColor(survivorTeam.getDefaultFlag()) ||
+                            TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(infectedTeam.getFlag().toLowerCase())) {
+                        return WordUtils.capitalize(infectedTeam.getFlag().replace("_", " "));
+                    } else
+                        return "Red";
+                } else
+                    return "Red";
             }
 
             @Override
             public void setValue(String value) {
-                if (TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(value.toLowerCase()))
+                if (TeamColor.matchColor(value) == TeamColor.matchColor(infectedTeam.getDefaultFlag()) ||
+                        TeamColor.matchColor(value) == TeamColor.matchColor(survivorTeam.getDefaultFlag()) ||
+                        TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(value.toLowerCase())) {
                     infectedTeam.setFlag(TeamColor.matchColor(value.replace(" ", "_")).toString());
-                else
+                } else
                     infectedTeam.setFlag(null);
             }
         };
@@ -90,20 +93,23 @@ public class InfectionModule extends MinigameModule {
             @Override
             public String getValue() {
                 if (survivorTeam.getFlag() != null) {
-                    if (!TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(survivorTeam.getFlag().toLowerCase())) {
-                        return "None";
-                    }
-
-                    return WordUtils.capitalize(survivorTeam.getFlag().replace("_", " "));
-                }
-                return "None";
+                    if (TeamColor.matchColor(survivorTeam.getFlag()) == TeamColor.matchColor(infectedTeam.getDefaultFlag()) ||
+                            TeamColor.matchColor(survivorTeam.getFlag()) == TeamColor.matchColor(survivorTeam.getDefaultFlag()) ||
+                            TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(survivorTeam.getFlag().toLowerCase())) {
+                        return WordUtils.capitalize(survivorTeam.getFlag().replace("_", " "));
+                    } else
+                        return "Blue";
+                } else
+                    return "Blue";
             }
 
             @Override
             public void setValue(String value) {
-                if (TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(value.toLowerCase()))
+                if (TeamColor.matchColor(value) == TeamColor.matchColor(infectedTeam.getDefaultFlag()) ||
+                        TeamColor.matchColor(value) == TeamColor.matchColor(survivorTeam.getDefaultFlag()) ||
+                        TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(value.toLowerCase())) {
                     survivorTeam.setFlag(TeamColor.matchColor(value.replace(" ", "_")).toString());
-                else
+                } else
                     survivorTeam.setFlag(null);
             }
         };
@@ -123,10 +129,15 @@ public class InfectionModule extends MinigameModule {
 
         List<String> teams = new ArrayList<>(TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().size() + 1);
         for (String t : TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().keySet()) {
-            teams.add(WordUtils.capitalize(t.replace("_", " ")));
+            if (t.equalsIgnoreCase(infectedTeam.getDefaultFlag()) || t.equalsIgnoreCase(survivorTeam.getDefaultFlag())) {
+                // avoiding adding defaults twice
+            } else {
+                teams.add(WordUtils.capitalize(t.replace("_", " ")));
+            }
         }
-        teams.add("None");
-
+        // add defaults
+        teams.add(infectedTeam.getDefaultFlag());
+        teams.add(survivorTeam.getDefaultFlag());
         m.addItem(new MenuItemList("Infected Team", Material.PAPER, getInfectedTeamCallback(), teams));
         m.addItem(new MenuItemList("Survivor Team", Material.PAPER, getSurvivorTeamCallback(), teams));
         m.displayMenu(previous.getViewer());
@@ -144,47 +155,51 @@ public class InfectionModule extends MinigameModule {
     public TeamColor getInfectedTeam() {
         if (infectedTeam.getFlag() != null) {
             TeamColor team = TeamColor.matchColor(infectedTeam.getFlag());
-            if (!TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(team.toString().toLowerCase())) {
-                return null;
-            } else {
+            if (team == TeamColor.matchColor(infectedTeam.getDefaultFlag()) ||
+                    team == TeamColor.matchColor(survivorTeam.getDefaultFlag()) ||
+                    TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(team.toString().toLowerCase())) {
                 return team;
-            }
-        }
-        return null;
+            } else
+                return null;
+        } else
+            return null;
     }
 
     public void setInfectedTeam(TeamColor iTeam) {
         if (iTeam != null) {
-            if (!TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(iTeam.toString().toLowerCase()))
-                this.infectedTeam.setFlag(null);
-            else
+            if (iTeam == TeamColor.matchColor(infectedTeam.getDefaultFlag()) ||
+                    iTeam == TeamColor.matchColor(survivorTeam.getDefaultFlag()) ||
+                    TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(iTeam.toString().toLowerCase())) {
                 this.infectedTeam.setFlag(iTeam.toString());
-        } else {
+            } else
+                this.infectedTeam.setFlag(null);
+        } else
             this.infectedTeam.setFlag(null);
-        }
     }
 
     public TeamColor getSurvivorTeam() {
         if (survivorTeam.getFlag() != null) {
             TeamColor team = TeamColor.matchColor(survivorTeam.getFlag());
-            if (!TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(team.toString().toLowerCase())) {
-                return null;
-            } else {
+            if (team == TeamColor.matchColor(infectedTeam.getDefaultFlag()) ||
+                    team == TeamColor.matchColor(survivorTeam.getDefaultFlag()) ||
+                    TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(team.toString().toLowerCase())) {
                 return team;
-            }
-        }
-        return null;
+            } else
+                return null;
+        } else
+            return null;
     }
 
     public void setSurvivorTeam(TeamColor sTeam) {
         if (sTeam != null) {
-            if (!TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(sTeam.toString().toLowerCase()))
-                this.survivorTeam.setFlag(null);
-            else
+            if (sTeam == TeamColor.matchColor(infectedTeam.getDefaultFlag()) ||
+                    sTeam == TeamColor.matchColor(survivorTeam.getDefaultFlag()) ||
+                    TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().containsKey(sTeam.toString().toLowerCase()))
                 this.survivorTeam.setFlag(sTeam.toString());
-        } else {
+            else
+                this.survivorTeam.setFlag(null);
+        } else
             this.survivorTeam.setFlag(null);
-        }
     }
 
     public void addInfectedPlayer(MinigamePlayer ply) {
