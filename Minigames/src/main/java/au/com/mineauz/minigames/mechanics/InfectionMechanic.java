@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.mechanics;
 
 import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameType;
@@ -35,10 +36,10 @@ public class InfectionMechanic extends GameMechanicBase {
     public boolean checkCanStart(Minigame minigame, MinigamePlayer caller) {
         if (!minigame.isTeamGame() ||
                 TeamsModule.getMinigameModule(minigame).getTeams().size() != 2 ||
-                !TeamsModule.getMinigameModule(minigame).hasTeam(TeamColor.RED) ||
-                !TeamsModule.getMinigameModule(minigame).hasTeam(TeamColor.BLUE)) {
+                !TeamsModule.getMinigameModule(minigame).hasTeam(InfectionModule.getMinigameModule(minigame).getInfectedTeam()) ||
+                !TeamsModule.getMinigameModule(minigame).hasTeam(InfectionModule.getMinigameModule(minigame).getSurvivorTeam())) {
             if (caller != null)
-                caller.sendMessage(MinigameUtils.getLang("minigame.error.noInfection"), MinigameMessageType.ERROR);
+                caller.sendMessage(MessageManager.getUnformattedMessage(null, "minigame.error.noInfection"), MinigameMessageType.ERROR);
             return false;
         }
         return true;
@@ -49,28 +50,28 @@ public class InfectionMechanic extends GameMechanicBase {
         List<MinigamePlayer> result = new ArrayList<>();
         Collections.shuffle(players);
         for (MinigamePlayer ply : players) {
-            Team red = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.RED);
-            Team blue = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.BLUE);
+            Team infectedTeam = TeamsModule.getMinigameModule(minigame).getTeam(InfectionModule.getMinigameModule(minigame).getInfectedTeam());
+            Team survivorTeam = TeamsModule.getMinigameModule(minigame).getTeam(InfectionModule.getMinigameModule(minigame).getSurvivorTeam());
             Team team = ply.getTeam();
             Double percent = ((Integer) InfectionModule.getMinigameModule(minigame).getInfectedPercent()).doubleValue() / 100d;
-            if (team == blue) {
-                if (red.getPlayers().size() < Math.ceil(players.size() * percent) && !red.isFull()) {
-                    MultiplayerType.switchTeam(minigame, ply, red);
+            if (team == survivorTeam) {
+                if (infectedTeam.getPlayers().size() < Math.ceil(players.size() * percent) && !infectedTeam.isFull()) {
+                    MultiplayerType.switchTeam(minigame, ply, infectedTeam);
                     result.add(ply);
-                    ply.sendInfoMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()));
-                    mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), ply.getName(), red.getChatColor() + red.getDisplayName()), null, ply);
+                    ply.sendInfoMessage(String.format(infectedTeam.getAssignMessage(), infectedTeam.getChatColor() + infectedTeam.getDisplayName()));
+                    mdata.sendMinigameMessage(minigame, String.format(infectedTeam.getGameAssignMessage(), ply.getName(), infectedTeam.getChatColor() + infectedTeam.getDisplayName()), null, ply);
                 }
             } else if (team == null) {
-                if (red.getPlayers().size() < Math.ceil(players.size() * percent) && !red.isFull()) {
-                    red.addPlayer(ply);
+                if (infectedTeam.getPlayers().size() < Math.ceil(players.size() * percent) && !infectedTeam.isFull()) {
+                    infectedTeam.addPlayer(ply);
                     result.add(ply);
-                    ply.sendInfoMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()));
-                    mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), ply.getName(), red.getChatColor() + red.getDisplayName()), null, ply);
-                } else if (!blue.isFull()) {
-                    blue.addPlayer(ply);
+                    ply.sendInfoMessage(String.format(infectedTeam.getAssignMessage(), infectedTeam.getChatColor() + infectedTeam.getDisplayName()));
+                    mdata.sendMinigameMessage(minigame, String.format(infectedTeam.getGameAssignMessage(), ply.getName(), infectedTeam.getChatColor() + infectedTeam.getDisplayName()), null, ply);
+                } else if (!survivorTeam.isFull()) {
+                    survivorTeam.addPlayer(ply);
                     result.add(ply);
-                    ply.sendInfoMessage(String.format(blue.getAssignMessage(), blue.getChatColor() + blue.getDisplayName()));
-                    mdata.sendMinigameMessage(minigame, String.format(blue.getGameAssignMessage(), ply.getName(), blue.getChatColor() + blue.getDisplayName()), null, ply);
+                    ply.sendInfoMessage(String.format(survivorTeam.getAssignMessage(), survivorTeam.getChatColor() + survivorTeam.getDisplayName()));
+                    mdata.sendMinigameMessage(minigame, String.format(survivorTeam.getGameAssignMessage(), ply.getName(), survivorTeam.getChatColor() + survivorTeam.getDisplayName()), null, ply);
                 } else {
                     pdata.quitMinigame(ply, false);
                     ply.sendMessage(MinigameUtils.getLang("minigame.full"), MinigameMessageType.ERROR);
@@ -125,11 +126,11 @@ public class InfectionMechanic extends GameMechanicBase {
         if (player.isInMinigame()) {
             Minigame mgm = player.getMinigame();
             if (mgm.isTeamGame() && mgm.getMechanicName().equals("infection")) {
-                Team blue = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.BLUE);
-                Team red = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.RED);
-                if (blue.getPlayers().contains(player)) {
-                    if (!red.isFull()) {
-                        MultiplayerType.switchTeam(mgm, player, red);
+                Team survivorTeam = TeamsModule.getMinigameModule(mgm).getTeam(InfectionModule.getMinigameModule(mgm).getSurvivorTeam());
+                Team infectedTeam = TeamsModule.getMinigameModule(mgm).getTeam(InfectionModule.getMinigameModule(mgm).getInfectedTeam());
+                if (survivorTeam.getPlayers().contains(player)) {
+                    if (!infectedTeam.isFull()) {
+                        MultiplayerType.switchTeam(mgm, player, infectedTeam);
                         InfectionModule.getMinigameModule(mgm).addInfectedPlayer(player);
                         if (event.getEntity().getKiller() != null) {
                             MinigamePlayer killer = pdata.getMinigamePlayer(event.getEntity().getKiller());
@@ -140,12 +141,12 @@ public class InfectionMechanic extends GameMechanicBase {
                         mgm.setScore(player, player.getScore());
 
                         if (mgm.getLives() != player.getDeaths()) {
-                            mdata.sendMinigameMessage(mgm, String.format(red.getGameAssignMessage(), player.getName(), red.getChatColor() + red.getDisplayName()), MinigameMessageType.ERROR);
+                            mdata.sendMinigameMessage(mgm, String.format(infectedTeam.getGameAssignMessage(), player.getName(), infectedTeam.getChatColor() + infectedTeam.getDisplayName()), MinigameMessageType.ERROR);
                         }
-                        if (blue.getPlayers().isEmpty()) {
+                        if (survivorTeam.getPlayers().isEmpty()) {
                             List<MinigamePlayer> w;
                             List<MinigamePlayer> l;
-                            w = new ArrayList<>(red.getPlayers());
+                            w = new ArrayList<>(infectedTeam.getPlayers());
                             l = new ArrayList<>();
                             pdata.endMinigame(mgm, w, l);
                         }
