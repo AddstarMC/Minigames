@@ -137,11 +137,9 @@ public class InfectionModule extends MinigameModule {
 
         List<String> teams = new ArrayList<>(TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().size() + 3);
         for (String t : TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().keySet()) {
-            if (t.equalsIgnoreCase(infectedTeam.getDefaultFlag()) || t.equalsIgnoreCase(survivorTeam.getDefaultFlag())) {
-                // avoiding adding defaults twice
-            } else {
+            if (!t.equalsIgnoreCase(infectedTeam.getDefaultFlag()) || t.equalsIgnoreCase(survivorTeam.getDefaultFlag())) {
                 teams.add(WordUtils.capitalize(t.replace("_", " ")));
-            }
+            } // avoid adding defaults twice
         }
         // add defaults
         teams.add(WordUtils.capitalize(infectedTeam.getDefaultFlag().toLowerCase().replace("_", " ")));
