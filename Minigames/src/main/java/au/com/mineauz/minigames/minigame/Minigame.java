@@ -121,6 +121,7 @@ public class Minigame implements ScriptObject {
     private BooleanFlag allowDragonEggTeleport = new BooleanFlag(true, "allowDragonEggTeleport");
     private BooleanFlag usePlayerDisplayNames = new BooleanFlag(true, "usePlayerDisplayNames");
     private BooleanFlag showPlayerBroadcasts = new BooleanFlag(true, "showPlayerBroadcasts");
+    private BooleanFlag keepInventory = new BooleanFlag(false, "keepInventory");
 
     private StringFlag mechanic = new StringFlag("custom", "scoretype");
     private BooleanFlag paintBallMode = new BooleanFlag(false, "paintball");
@@ -241,6 +242,7 @@ public class Minigame implements ScriptObject {
         addConfigFlag(minChestRandom);
         addConfigFlag(minPlayers);
         addConfigFlag(usePlayerDisplayNames);
+        addConfigFlag(keepInventory);
         addConfigFlag(showPlayerBroadcasts);
         addConfigFlag(minScore);
         addConfigFlag(objective);
@@ -398,6 +400,14 @@ public class Minigame implements ScriptObject {
 
     public void setUsePlayerDisplayNames(Boolean value) {
         usePlayerDisplayNames.setFlag(value);
+    }
+
+    public boolean keepInventory() {
+        return keepInventory.getFlag();
+    }
+
+    public void setKeepInventory(boolean value) {
+        keepInventory.setFlag(value);
     }
 
     public int getMaxPlayers() {
@@ -1233,6 +1243,7 @@ public class Minigame implements ScriptObject {
         itemsPlayer.add(usePlayerDisplayNames.getMenuItem("Use Players Display Names", Material.POTATO, MinigameUtils
                 .stringToList("Use Player Nicks or Real Names")));
         itemsPlayer.add(showPlayerBroadcasts.getMenuItem("Show Join/Exit Broadcasts", Material.PAPER, MinigameUtils.stringToList("Show Join and Exit broadcasts; Plus other Player broadcasts")));
+        itemsPlayer.add(keepInventory.getMenuItem("Keep Inventory", Material.ZOMBIE_HEAD));
         playerMenu.addItems(itemsPlayer);
         playerMenu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), main), main.getSize() - 9);
 

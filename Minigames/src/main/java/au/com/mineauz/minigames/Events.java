@@ -38,10 +38,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Events implements Listener {
     private static Minigames plugin = Minigames.getPlugin();
@@ -86,6 +83,14 @@ public class Events implements Listener {
         if (ply.isInMinigame()) {
             Minigame mgm = ply.getMinigame();
             if (!mgm.hasDeathDrops()) {
+                if (mgm.keepInventory()) {
+                    List<ItemStack> drops = Arrays.asList(ply.getPlayer().getInventory().getContents());
+                    PlayerLoadout l = new PlayerLoadout("deathDrops");
+                    for (int i = 0; i < drops.size(); i++) {
+                        l.addItem(drops.get(i), i);
+                    }
+                    ply.setLoadout(l);
+                }
                 event.getDrops().clear();
             }
             String msg = "";
