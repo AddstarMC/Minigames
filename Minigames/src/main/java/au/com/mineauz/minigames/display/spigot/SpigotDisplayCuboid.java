@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.display.DisplayManager;
 import au.com.mineauz.minigames.display.IDisplayCubiod;
 import au.com.mineauz.minigames.display.INonPersistantDisplay;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -15,6 +16,8 @@ public class SpigotDisplayCuboid extends AbstractDisplayObject implements IDispl
 
     private Vector minCorner;
     private Vector maxCorner;
+
+    private int lastBarrier = 41;
 
     public SpigotDisplayCuboid(DisplayManager manager, World world, Vector minCorner, Vector maxCorner) {
         super(manager, world);
@@ -72,16 +75,20 @@ public class SpigotDisplayCuboid extends AbstractDisplayObject implements IDispl
     }
 
     private void placeEffectAt(double x, double y, double z) {
+        lastBarrier++;
+        if (lastBarrier < 41) {
+            return;
+        }
+        lastBarrier = 0;
         temp.setX(x);
         temp.setY(y);
         temp.setZ(z);
         temp.setWorld(getWorld());
 
-        // TODO Can be changed to Barrier after update to 1.18
         if (player == null) {
-            getWorld().spawnParticle(Particle.FLAME, temp, 1, 0, 0, 0, 0);
+            getWorld().spawnParticle(Particle.BLOCK_MARKER, temp, 1, 0, 0, 0, 0, Material.BARRIER.createBlockData());
         } else {
-            player.spawnParticle(Particle.FLAME, temp, 1, 0, 0, 0, 0);
+            player.spawnParticle(Particle.BLOCK_MARKER, temp, 1, 0, 0, 0, 0, Material.BARRIER.createBlockData());
         }
     }
 }

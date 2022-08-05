@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
+
 public class ScoreboardCommand implements ICommand {
     private Minigames plugin = Minigames.getPlugin();
 
@@ -166,7 +168,7 @@ public class ScoreboardCommand implements ICommand {
                 sender.sendMessage(ChatColor.RED + "An internal error occured while loading the statistics");
                 t.printStackTrace();
             }
-        });
+        }, directExecutor());
 
         return true;
     }

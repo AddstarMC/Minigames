@@ -14,6 +14,8 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.logging.Level;
 
+import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
+
 public class BackendCommand implements ICommand {
     @Override
     public String getName() {
@@ -77,7 +79,7 @@ public class BackendCommand implements ICommand {
                     @Override
                     public void onSuccess(Void result) {
                     }
-                });
+                }, directExecutor());
             } catch (IllegalArgumentException e) {
                 sender.sendMessage(ChatColor.RED + e.getMessage());
             }
@@ -97,7 +99,7 @@ public class BackendCommand implements ICommand {
                         sender.sendMessage(ChatColor.GOLD + "The backend has been successfully switched");
                         sender.sendMessage(ChatColor.GOLD + "!!! This change is " + ChatColor.BOLD + "temporary" + ChatColor.GOLD + ". Please update the config !!!");
                     }
-                });
+                }, directExecutor());
             } catch (IllegalArgumentException e) {
                 sender.sendMessage(ChatColor.RED + e.getMessage());
             }

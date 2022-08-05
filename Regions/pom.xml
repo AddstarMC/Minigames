@@ -3,7 +3,7 @@
   <parent>
     <groupId>au.com.mineauz</groupId>
     <artifactId>MinigamesProject</artifactId>
-    <version>1.16-SNAPSHOT</version>
+    <version>1.19-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>Minigames-Regions</artifactId>
