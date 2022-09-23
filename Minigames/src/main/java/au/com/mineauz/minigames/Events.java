@@ -36,9 +36,12 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.io.File;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class Events implements Listener {
     private static Minigames plugin = Minigames.getPlugin();
@@ -765,5 +768,56 @@ public class Events implements Listener {
                 minigame.getScoreboardData().removeDisplay(block);
             }
         }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    private void potionAffectsPlayer(PotionSplashEvent event) {
+        if (!(event.getPotion().getShooter() instanceof Player)) return;
+        MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getPotion().getShooter());
+        if (ply == null) return;
+        if (!ply.isInMinigame()) return;
+        if (ply.getMinigame().friendlyFireSplashPotions()) return;
+        List<Player> list = event.getAffectedEntities().stream()
+                .filter(p -> p instanceof Player)
+                .filter(p -> pdata.getMinigamePlayer((Player) p) != null)
+                .filter(p -> pdata.getMinigamePlayer((Player) p).isInMinigame())
+                .filter(p -> pdata.getMinigamePlayer((Player) p).getMinigame() == ply.getMinigame())
+                .map(p -> (Player) p)
+                .toList();
+        if (list.isEmpty()) return;
+        List<PotionEffectType> effects = event.getPotion().getEffects().stream().map(PotionEffect::getType).toList();
+        list.stream().filter(Predicate.not(p -> isEffectApplicable(effects, ply, pdata.getMinigamePlayer(p)))).forEach(p -> event.setIntensity(p, 0.0));
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    private void effectAreaAffectsPlayer(AreaEffectCloudApplyEvent event) {
+        if (!(event.getEntity().getSource() instanceof Player)) return;
+        MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getEntity().getSource());
+        if (ply == null) return;
+        if (!ply.isInMinigame()) return;
+        if (ply.getMinigame().friendlyFireLingeringPotions()) return;
+        List<Player> list = event.getAffectedEntities().stream()
+                .filter(p -> p instanceof Player)
+                .filter(p -> pdata.getMinigamePlayer((Player) p) != null)
+                .filter(p -> pdata.getMinigamePlayer((Player) p).isInMinigame())
+                .filter(p -> pdata.getMinigamePlayer((Player) p).getMinigame() == ply.getMinigame())
+                .map(p -> (Player) p)
+                .toList();
+        if (list.isEmpty()) return;
+        List<PotionEffectType> effects = List.of(event.getEntity().getBasePotionData().getType().getEffectType());
+        event.getAffectedEntities().removeAll(list.stream().filter(Predicate.not(p -> isEffectApplicable(effects, ply, pdata.getMinigamePlayer(p)))).toList());
+    }
+
+    private boolean isEffectApplicable(Collection<PotionEffectType> effectTypes, MinigamePlayer ply, MinigamePlayer rPly) {
+        if (!ply.getMinigame().isTeamGame()) {
+            if (ply == rPly) {
+                return !MinigameTag.NEGATIVE_POTION.isTagged(effectTypes);
+            }
+            return !MinigameTag.POSITIVE_POTION.isTagged(effectTypes);
+        }
+        if (ply.getTeam() == rPly.getTeam()) {
+            return !MinigameTag.NEGATIVE_POTION.isTagged(effectTypes);
+        }
+        return !MinigameTag.POSITIVE_POTION.isTagged(effectTypes);
     }
 }
