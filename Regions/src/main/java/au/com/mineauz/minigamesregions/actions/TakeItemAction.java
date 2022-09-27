@@ -102,7 +102,7 @@ public class TakeItemAction extends AbstractAction{
 
     @Override
     public boolean displayMenu(final MinigamePlayer player, Menu previous) {
-Menu m = new Menu(3, "Give Item", player);
+        Menu m = new Menu(3, "Take Item", player);
         
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(new MenuItemString("Type", Material.STONE, new Callback<String>() {
