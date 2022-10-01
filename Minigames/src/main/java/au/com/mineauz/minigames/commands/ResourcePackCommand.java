@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
@@ -35,7 +35,7 @@ public class ResourcePackCommand implements ICommand {
 
     @Override
     public String getDescription() {
-        return MinigameUtils.getLang("minigame.resource.command.description");
+        return MessageManager.getMessage(null, "minigame.resource.command.description");
     }
 
     @Override
@@ -81,7 +81,7 @@ public class ResourcePackCommand implements ICommand {
                 if (pack != null && pack.isValid()) {
                     MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer(args[2]);
                     player.applyResourcePack(pack);
-                    player.sendInfoMessage(MinigameUtils.getLang("minigame.resourcepack.apply"));
+                    player.sendInfoMessage(MessageManager.getMessage(null, "minigame.resourcepack.apply"));
                     return true;
                 }
             case "remove":
@@ -90,7 +90,7 @@ public class ResourcePackCommand implements ICommand {
                 }
                 pack = plugin.getResourceManager().getResourcePack(args[1]);
                 plugin.getResourceManager().removeResourcePack(pack);
-                sender.sendMessage(MinigameUtils.getLang("minigame.resourcepack.command.remove"));
+                sender.sendMessage(MessageManager.getMessage(null, "minigame.resourcepack.command.remove"));
                 return sendList(sender);
             case "addnew":
                 if (args.length < 3) {
@@ -105,16 +105,16 @@ public class ResourcePackCommand implements ICommand {
                     plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
                         if (newPack.isValid()) {
                             plugin.getResourceManager().addResourcePack(newPack);
-                            sender.sendMessage(MinigameUtils.getLang("minigame.resourcepack.command.addresource"));
+                            sender.sendMessage(MessageManager.getMessage(null, "minigame.resourcepack.command.addresource"));
                             sendList(sender);
                         } else {
-                            sender.sendMessage(MinigameUtils.getLang("minigame.resourcepack.command.invalidpack"));
+                            sender.sendMessage(MessageManager.getMessage(null, "minigame.resourcepack.command.invalidpack"));
                         }
                     }, 100);
                     return true;
 
                 } catch (MalformedURLException e) {
-                    sender.sendMessage(MinigameUtils.getLang("minigame.resourcepack.command.badurl"));
+                    sender.sendMessage(MessageManager.getMessage(null, "minigame.resourcepack.command.badurl"));
                     return false;
                 }
             case "list":

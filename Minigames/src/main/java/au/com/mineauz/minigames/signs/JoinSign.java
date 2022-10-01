@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -27,7 +28,7 @@ public class JoinSign implements MinigameSign {
 
     @Override
     public String getCreatePermissionMessage() {
-        return MinigameUtils.getLang("sign.join.createPermission");
+        return MessageManager.getMessage(null, "sign.join.createPermission");
     }
 
     @Override
@@ -37,7 +38,7 @@ public class JoinSign implements MinigameSign {
 
     @Override
     public String getUsePermissionMessage() {
-        return MinigameUtils.getLang("sign.join.usePermission");
+        return MessageManager.getMessage(null, "sign.join.usePermission");
     }
 
     @Override
@@ -101,25 +102,25 @@ public class JoinSign implements MinigameSign {
                         if (Minigames.getPlugin().getEconomy().getBalance(player.getPlayer().getPlayer()) >= amount) {
                             Minigames.getPlugin().getEconomy().withdrawPlayer(player.getPlayer().getPlayer(), amount);
                         } else {
-                            player.sendMessage(MinigameUtils.getLang("sign.join.notEnoughMoney"), MinigameMessageType.ERROR);
+                            player.sendMessage(MessageManager.getMessage(null, "sign.join.notEnoughMoney"), MinigameMessageType.ERROR);
                             return false;
                         }
                     }
                     plugin.getPlayerManager().joinMinigame(player, mgm, false, 0.0);
                     return true;
                 } else if (!mgm.isEnabled()) {
-                    player.sendInfoMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.notEnabled"));
+                    player.sendInfoMessage(ChatColor.WHITE + MessageManager.getMessage(null, "minigame.error.notEnabled"));
                 }
             } else if (mgm == null) {
-                player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noMinigame"), MinigameMessageType.ERROR);
+                player.sendMessage(ChatColor.WHITE + MessageManager.getMessage(null, "minigame.error.noMinigame"), MinigameMessageType.ERROR);
             } else if (mgm.getUsePermissions()) {
-                player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()), MinigameMessageType.ERROR);
+                player.sendMessage(ChatColor.WHITE + MessageManager.getMessage(null, "minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()), MinigameMessageType.ERROR);
             }
         } else if (!MinigameUtils.isMinigameTool(player.getPlayer().getInventory().getItemInMainHand())) {
             if (fullInv) {
-                player.sendInfoMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyInv"));
+                player.sendInfoMessage(ChatColor.WHITE + MessageManager.getMessage(null, "sign.emptyInv"));
             } else {
-                player.sendInfoMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"));
+                player.sendInfoMessage(ChatColor.WHITE + MessageManager.getMessage(null, "sign.emptyHand"));
             }
         }
 

@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.commands;
 
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -33,7 +34,7 @@ public class InfoCommand implements ICommand {
 
     @Override
     public String getDescription() {
-        return MinigameUtils.getLang("command.info.description");
+        return MessageManager.getUnformattedMessage(null, "command.info.description");
     }
 
     @Override
@@ -48,7 +49,7 @@ public class InfoCommand implements ICommand {
 
     @Override
     public String getPermissionMessage() {
-        return MinigameUtils.getLang("command.info.noPermission");
+        return MessageManager.getUnformattedMessage(null, "command.info.noPermission");
     }
 
     @Override
@@ -63,19 +64,19 @@ public class InfoCommand implements ICommand {
         }
         if (minigame != null) {
             List<String> output = new ArrayList<>();
-            output.add(ChatColor.GREEN + MinigameUtils.formStr(MinigameUtils.getLang("command.info.output.header"), minigame.getName(true)));
+            output.add(ChatColor.GREEN + MessageManager.getMessage(null, "command.info.output.header", minigame.getName(true)));
             output.add(ChatColor.GOLD + "<-------------------------------------->");
-            output.add(ChatColor.WHITE + MinigameUtils.formStr(MinigameUtils.getLang("command.info.output.description"), minigame.getObjective()));
-            output.add(ChatColor.WHITE + MinigameUtils.formStr(MinigameUtils.getLang("command.info.output.gameType"), minigame.getType().getName()));
+            output.add(ChatColor.WHITE + MessageManager.getMessage(null, "command.info.output.description", minigame.getObjective()));
+            output.add(ChatColor.WHITE + MessageManager.getMessage(null, "command.info.output.gameType", minigame.getType().getName()));
             if (minigame.isEnabled() && minigame.hasStarted()) {
                 if (minigame.getMinigameTimer() != null && minigame.getMinigameTimer().getTimeLeft() > 0) {
-                    output.add(ChatColor.WHITE + MinigameUtils.formStr(MinigameUtils.getLang("command.info.output.Timer"), minigame.getMinigameTimer().getTimeLeft()));
+                    output.add(ChatColor.WHITE + MessageManager.getMessage(null, "command.info.output.Timer", minigame.getMinigameTimer().getTimeLeft()));
                 }
                 if (minigame.hasPlayers()) {
-                    output.add(ChatColor.WHITE + MinigameUtils.formStr(MinigameUtils.getLang("command.info.out.playerHeader"), minigame.getPlayers().size(), minigame.getMaxPlayers()));
+                    output.add(ChatColor.WHITE + MessageManager.getMessage(null, "command.info.output.playerHeader", minigame.getPlayers().size(), minigame.getMaxPlayers()));
                     if (minigame.isTeamGame()) {
                         for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {
-                            String teamData = MinigameUtils.formStr(MinigameUtils.getLang("command.info.output.teamData"), t.getDisplayName(), t.getScore(), t.getChatColor().name());
+                            String teamData = MessageManager.getMessage(null, "command.info.output.teamData", t.getDisplayName(), t.getScore(), t.getChatColor().name());
                             output.add(teamData);
                             output.add(ChatColor.GOLD + "~~~~~~~~~~~~~~~~~");
                             for (MinigamePlayer ply : t.getPlayers()) {
@@ -84,7 +85,7 @@ public class InfoCommand implements ICommand {
                                 Integer reverts = ply.getReverts();
                                 Integer kills = ply.getKills();
                                 String name = ply.getTeam().getChatColor() + ply.getDisplayName(minigame.usePlayerDisplayNames()) + ChatColor.GRAY;
-                                String playerData = MinigameUtils.formStr(MinigameUtils.getLang("command.info.output.playerData"), name, score, deaths, reverts, kills);
+                                String playerData = MessageManager.getMessage(null, "command.info.output.playerData", name, score, deaths, reverts, kills);
                                 output.add(playerData + ChatColor.GRAY);
                             }
                         }
@@ -98,18 +99,18 @@ public class InfoCommand implements ICommand {
                             if (minigame.isTeamGame()) {
                                 name = ply.getTeam().getChatColor() + name;
                             }
-                            String playerData = MinigameUtils.formStr(MinigameUtils.getLang("command.info.output.playerData"), name, score, deaths, reverts, kills);
+                            String playerData = MessageManager.getMessage(null, "command.info.output.playerData", name, score, deaths, reverts, kills);
                             output.add(ChatColor.GRAY + playerData + ChatColor.GRAY);
                         }
                     }
                 } else {
-                    output.add(ChatColor.RED + MinigameUtils.getLang("command.info.output.noPlayer"));
+                    output.add(ChatColor.RED + MessageManager.getUnformattedMessage(null, "command.info.output.noPlayer"));
                 }
             } else {
                 if (minigame.isEnabled()) {
-                    output.add(ChatColor.RED + MinigameUtils.getLang("command.info.output.notStarted"));
+                    output.add(ChatColor.RED + MessageManager.getUnformattedMessage(null, "command.info.output.notStarted"));
                 } else {
-                    output.add(ChatColor.RED + MinigameUtils.getLang("minigame.error.notEnabled"));
+                    output.add(ChatColor.RED + MessageManager.getUnformattedMessage(null, "minigame.error.notEnabled"));
                 }
             }
             for (String out : output) {
@@ -117,7 +118,7 @@ public class InfoCommand implements ICommand {
             }
             return true;
         } else {
-            sender.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.info.noMinigame"));
+            sender.sendMessage(ChatColor.RED + MessageManager.getUnformattedMessage(null, "command.info.noMinigame"));
             return false;
         }
     }
@@ -126,7 +127,7 @@ public class InfoCommand implements ICommand {
     public List<String> onTabComplete(CommandSender sender, Minigame minigame, String alias, String[] args) {
         if (args.length == 1) {
             List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
-            return MinigameUtils.tabCompleteMatch(mgs, args[1]);
+            return MinigameUtils.tabCompleteMatch(mgs, args[0]);
         }
         return null;
     }
