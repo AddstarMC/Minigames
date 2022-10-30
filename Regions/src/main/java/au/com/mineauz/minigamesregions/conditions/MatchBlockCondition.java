@@ -123,4 +123,8 @@ public class MatchBlockCondition extends ConditionInterface {
         return true;
     }
 
+    @Override
+    public boolean onPlayerApplicable() {
+        return true;
+    }
 }

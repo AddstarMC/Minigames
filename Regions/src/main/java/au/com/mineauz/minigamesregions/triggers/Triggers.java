@@ -38,6 +38,7 @@ public class Triggers {
         addTrigger(new RightClickBlockTrigger());
         addTrigger(new StartGlideTrigger());
         addTrigger(new StopGlideTrigger());
+        addTrigger(new GameTickTrigger());
     }
     
     public static void addTrigger(Trigger trigger){

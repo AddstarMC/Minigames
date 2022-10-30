@@ -5,5 +5,5 @@ public interface Trigger {
     String getName();
     boolean useInRegions();
     boolean useInNodes();
-
+    boolean triggerOnPlayerAvailable();
 }

@@ -134,4 +134,9 @@ public class ContainsEntityCondition extends ConditionInterface {
             out.put("Match Name", customName.getFlag());
         }
     }
+
+    @Override
+    public boolean onPlayerApplicable() {
+        return true;
+    }
 }

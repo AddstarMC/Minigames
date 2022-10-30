@@ -101,13 +101,13 @@ public class PlayerHasItemCondition extends ConditionInterface {
             
             if (checkType == PositionType.HOTBAR) {
                 startSlot = 0;
-                endSlot = 9;
+                endSlot = 8;
             } else if (checkType == PositionType.MAIN) {
                 startSlot = 9;
-                endSlot = 36;
+                endSlot = 35;
             } else if (checkType == PositionType.SLOT) {
                 startSlot = slot.getFlag();
-                endSlot = startSlot + 1;
+                endSlot = startSlot;
             } else {
                 startSlot = 0;
                 endSlot = searchItems.length;
@@ -128,9 +128,12 @@ public class PlayerHasItemCondition extends ConditionInterface {
         }
         int i =0;
         for(ItemStack slot: searchItems){
-            if((i<startSlot) && (i>endSlot))
+            if((i<startSlot) || (i>endSlot)) {
+                i++;
                 continue;
-            if (slot.getType() == material) {
+            }
+            i++;
+            if (slot != null && slot.getType() == material) {
                 
                 ItemMeta meta = slot.getItemMeta();
                 
@@ -295,4 +298,8 @@ public class PlayerHasItemCondition extends ConditionInterface {
         SLOT
     }
 
+    @Override
+    public boolean onPlayerApplicable() {
+        return true;
+    }
 }

@@ -67,4 +67,8 @@ public class ContainsEntireTeamCondition extends ConditionInterface {
         return true;
     }
 
+    @Override
+    public boolean onPlayerApplicable() {
+        return true;
+    }
 }

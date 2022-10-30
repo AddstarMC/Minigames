@@ -141,7 +141,9 @@ public class RegionEvents implements Listener{
                 for(RegionExecutor ex : region.getExecutors()){
                     if(ex.getTrigger().getName().equalsIgnoreCase("TICK")){
                         region.startTickTask();
-                        break;
+                    }
+                    if(ex.getTrigger().getName().equals("GAME_TICK")){
+                        region.startGameTickTask();
                     }
                 }
             }
@@ -194,6 +196,7 @@ public class RegionEvents implements Listener{
                     exec.clearTriggers();
                 }
                 region.removeTickTask();
+                region.removeGameTickTask();
                 region.setEnabled(true);
             }
         }

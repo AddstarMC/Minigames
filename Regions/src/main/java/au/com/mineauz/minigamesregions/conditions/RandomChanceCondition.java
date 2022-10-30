@@ -81,4 +81,8 @@ public class RandomChanceCondition extends ConditionInterface {
         return true;
     }
 
+    @Override
+    public boolean onPlayerApplicable() {
+        return false;
+    }
 }

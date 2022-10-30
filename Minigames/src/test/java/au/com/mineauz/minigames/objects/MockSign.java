@@ -5,6 +5,7 @@ import java.util.List;
 
 import be.seeseemelk.mockbukkit.UnimplementedOperationException;
 import be.seeseemelk.mockbukkit.block.BlockStateMock;
+import net.kyori.adventure.text.Component;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -31,6 +32,21 @@ public class MockSign extends BlockStateMock implements Sign {
         lines.addLast("");
         lines.addLast("");
         lines.addLast("");
+    }
+
+    @Override
+    public @NotNull List<Component> lines() {
+        return null;
+    }
+
+    @Override
+    public @NotNull Component line(int i) throws IndexOutOfBoundsException {
+        return null;
+    }
+
+    @Override
+    public void line(int i, @NotNull Component component) throws IndexOutOfBoundsException {
+
     }
 
     @Override
@@ -61,16 +77,36 @@ public class MockSign extends BlockStateMock implements Sign {
     }
 
     @Override
+    public boolean isGlowingText() {
+        return false;
+    }
+
+    @Override
+    public void setGlowingText(boolean b) {
+
+    }
+
+    @Override
     public Location getLocation(Location loc) {
         return super.getLocation(loc);
     }
 
-  @Override
+    @Override
+    public boolean isCollidable() {
+        return false;
+    }
+
+    @Override
   public @NotNull PersistentDataContainer getPersistentDataContainer() {
     throw new UnimplementedOperationException("This is not yet implemented");
   }
 
-  @Override
+    @Override
+    public boolean isSnapshot() {
+        return false;
+    }
+
+    @Override
   public @Nullable DyeColor getColor() {
     return null;
   }

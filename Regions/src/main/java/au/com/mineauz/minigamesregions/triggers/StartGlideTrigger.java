@@ -20,4 +20,9 @@ public class StartGlideTrigger implements Trigger {
     public boolean useInNodes() {
         return false;
     }
+
+    @Override
+    public boolean triggerOnPlayerAvailable() {
+        return true;
+    }
 }

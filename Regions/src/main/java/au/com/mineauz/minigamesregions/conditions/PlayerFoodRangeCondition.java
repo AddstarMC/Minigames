@@ -91,4 +91,9 @@ public class PlayerFoodRangeCondition extends ConditionInterface {
         m.displayMenu(player);
         return true;
     }
+
+    @Override
+    public boolean onPlayerApplicable() {
+        return true;
+    }
 }

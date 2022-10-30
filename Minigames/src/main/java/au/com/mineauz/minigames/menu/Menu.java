@@ -151,14 +151,17 @@ public class Menu {
     }
 
     public void displayMenu(MinigamePlayer ply) {
+        Menu t = this;
+        Player player = ply.getPlayer();
         updateAll();
         populateMenu();
-        Player player = ply.getPlayer();
-
         inv = Bukkit.createInventory(player, rows * 9, name);
         inv.setContents(pageView);
-        ply.getPlayer().openInventory(inv);
-        ply.setMenu(this);
+        // Some calls of displayMenu are async, which is not allowed.
+        Minigames.getPlugin().getServer().getScheduler().runTask(Minigames.getPlugin(), () -> {
+            ply.getPlayer().openInventory(inv);
+            ply.setMenu(t);
+        });
     }
 
     public boolean getAllowModify() {

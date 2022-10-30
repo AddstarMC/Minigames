@@ -37,6 +37,7 @@ public abstract class ConditionInterface {
     public abstract void saveArguments(FileConfiguration config, String path);
     public abstract void loadArguments(FileConfiguration config, String path);
     public abstract boolean displayMenu(MinigamePlayer player, Menu prev);
+    public abstract boolean onPlayerApplicable();
     
     public abstract void describe(Map<String, Object> out);
 

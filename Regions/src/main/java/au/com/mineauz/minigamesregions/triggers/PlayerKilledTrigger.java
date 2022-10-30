@@ -19,4 +19,9 @@ public class PlayerKilledTrigger implements Trigger {
     public boolean useInNodes() {
         return true;
     }
+
+    @Override
+    public boolean triggerOnPlayerAvailable() {
+        return true;
+    }
 }

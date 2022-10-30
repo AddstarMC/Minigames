@@ -181,6 +181,7 @@ public class CTFFlag {
                 minigame.addDroppedFlag(newID, self);
             }
             respawnFlag();
+            //TODO: Build this again with broadcasts.
             for (MinigamePlayer pl : minigame.getPlayers()) {
                 if (getTeam() != null)
                     pl.sendInfoMessage(MinigameUtils.formStr("minigame.flag.returnedTeam", getTeam().getChatColor() + getTeam().getDisplayName() + ChatColor.WHITE));

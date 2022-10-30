@@ -18,21 +18,22 @@ import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.inventory.ItemStack;
 
 public class MatchTeamCondition extends ConditionInterface {
-    
+
     private StringFlag team = new StringFlag("RED", "team");
 
     @Override
     public String getName() {
         return "MATCH_TEAM";
     }
-    
+
     @Override
-    public String getCategory(){
+    public String getCategory() {
         return "Team Conditions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
         out.put("Team", team.getFlag());
@@ -55,7 +56,7 @@ public class MatchTeamCondition extends ConditionInterface {
 
     @Override
     public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-        if(player == null || !player.isInMinigame()) return false;
+        if (player == null || !player.isInMinigame()) return false;
         return player.getTeam() != null && player.getTeam().getColor().toString().equals(team.getFlag());
     }
 
@@ -67,7 +68,7 @@ public class MatchTeamCondition extends ConditionInterface {
 
     @Override
     public void loadArguments(FileConfiguration config,
-            String path) {
+                              String path) {
         team.loadValue(path, config);
         loadInvert(config, path);
     }
@@ -75,24 +76,67 @@ public class MatchTeamCondition extends ConditionInterface {
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Match Team", player);
-        m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
         List<String> teams = new ArrayList<>();
-        for(TeamColor t : TeamColor.values())
+        for (TeamColor t : TeamColor.values())
             teams.add(MinigameUtils.capitalize(t.toString().replace("_", " ")));
-        m.addItem(new MenuItemList("Team Color", Material.WHITE_WOOL, new Callback<String>() {
-            
+
+        m.addItem(new MenuItemList("Team Color", getTeamMaterial(), new Callback<String>() {
+
             @Override
             public void setValue(String value) {
                 team.setFlag(value.toUpperCase().replace(" ", "_"));
             }
-            
+
             @Override
             public String getValue() {
                 return MinigameUtils.capitalize(team.getFlag().replace("_", " "));
             }
-        }, teams));
+        }, teams) {
+            @Override
+            public ItemStack getItem() {
+                ItemStack stack = super.getItem();
+                stack.setType(getTeamMaterial());
+                return stack;
+            }
+        });
         addInvertMenuItem(m);
         m.displayMenu(player);
+        return true;
+    }
+
+    private Material getTeamMaterial() {
+        switch (team.getFlag()) {
+            case "RED":
+                return Material.RED_WOOL;
+            case "BLUE":
+                return Material.BLUE_WOOL;
+            case "GREEN":
+                return Material.GREEN_WOOL;
+            case "YELLOW":
+                return Material.YELLOW_WOOL;
+            case "PURPLE":
+                return Material.PURPLE_WOOL;
+            case "BLACK":
+                return Material.BLACK_WOOL;
+            case "DARK_RED":
+                return Material.RED_CONCRETE;
+            case "DARK_BLUE":
+                return Material.BLUE_CONCRETE;
+            case "DARK_GREEN":
+                return Material.GREEN_CONCRETE;
+            case "DARK_PURPLE":
+                return Material.PURPLE_CONCRETE;
+            case "GRAY":
+                return Material.GRAY_WOOL;
+            case "WHITE":
+            default:
+                return Material.WHITE_WOOL;
+        }
+    }
+
+    @Override
+    public boolean onPlayerApplicable() {
         return true;
     }
 

@@ -1,10 +1,10 @@
 package au.com.mineauz.minigamesregions.triggers;
 
-public class DeathTrigger implements Trigger {
+public class GameTickTrigger implements Trigger {
 
     @Override
     public String getName() {
-        return "DEATH";
+        return "GAME_TICK";
     }
 
     @Override
@@ -14,11 +14,11 @@ public class DeathTrigger implements Trigger {
 
     @Override
     public boolean useInNodes() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean triggerOnPlayerAvailable() {
-        return true;
+        return false;
     }
 }

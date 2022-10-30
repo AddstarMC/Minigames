@@ -283,33 +283,51 @@ public class MinigameManager {
         this.sendMinigameMessage(minigame, message, type, Collections.singletonList(exclude));
     }
 
+    /**
+     * Sending a general Broadcast
+     * @param minigame The minigame in which this message shall be sent
+     * @param message The message
+     * @param type Message Type
+     * @param exclude Players, which shall not get this message
+     */
     public void sendMinigameMessage(final Minigame minigame, final String message, MinigameMessageType type,
                                     final List<MinigamePlayer> exclude) {
         if (!minigame.getShowPlayerBroadcasts()) {
             return;
         }
-        String finalMessage;
+        sendBroadcastMessage(minigame, message, type, exclude);
+    }
+
+    /**
+     * Sending a ctf relevant message
+     * @param minigame The minigame in which this message shall be sent
+     * @param message The message
+     * @param type Message Type
+     * @param exclude Players, which shall not get this message
+     */
+    public void sendCTFMessage(final Minigame minigame, final String message, MinigameMessageType type,
+                               final List<MinigamePlayer> exclude) {
+        if (!minigame.getShowCTFBroadcasts()) {
+            return;
+        }
+        sendBroadcastMessage(minigame, message, type, exclude);
+    }
+
+    // This sends a message to every player which is not excluded from the exclude list
+    private void sendBroadcastMessage(Minigame minigame, String message, MinigameMessageType type, List<MinigamePlayer> exclude) {
+        String finalMessage = "";
         if (type == null) {
             type = MinigameMessageType.INFO;
         }
-        switch (type) {
-            case ERROR:
-                finalMessage = ChatColor.RED + "[Minigames] " + ChatColor.WHITE;
-                break;
-            case INFO:
-            default:
-                finalMessage = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
-                break;
-        }
         finalMessage += message;
         final List<MinigamePlayer> sendto = new ArrayList<>();
-        Collections.copy(minigame.getPlayers(), sendto);
+        sendto.addAll(minigame.getPlayers());
         sendto.addAll(minigame.getSpectators());
         if (exclude != null) {
             sendto.removeAll(exclude);
         }
         for (final MinigamePlayer pl : sendto) {
-            pl.sendInfoMessage(finalMessage);
+            pl.sendMessage(finalMessage, type);
         }
     }
 

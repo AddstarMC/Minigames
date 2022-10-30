@@ -12,8 +12,13 @@ import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.block.BlockMock;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.SoundGroup;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockSupport;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.material.MaterialData;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created for the AddstarMC Project. Created by Narimm on 6/02/2019.
@@ -75,6 +80,31 @@ public class TestHelper {
             @Override
             public BlockData clone() {
                 return this;
+            }
+
+            @Override
+            public @NotNull SoundGroup getSoundGroup() {
+                return null;
+            }
+
+            @Override
+            public boolean isSupported(@NotNull Block block) {
+                return false;
+            }
+
+            @Override
+            public boolean isSupported(@NotNull Location location) {
+                return false;
+            }
+
+            @Override
+            public boolean isFaceSturdy(@NotNull BlockFace blockFace, @NotNull BlockSupport blockSupport) {
+                return false;
+            }
+
+            @Override
+            public boolean isRandomlyTicked() {
+                return false;
             }
         };
         return new SignBlockMock(Material.OAK_SIGN, new Location(world, 10, 40, 10), sign, bData);
