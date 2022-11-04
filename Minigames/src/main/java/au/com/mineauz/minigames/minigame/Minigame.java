@@ -121,6 +121,7 @@ public class Minigame implements ScriptObject {
     private BooleanFlag allowDragonEggTeleport = new BooleanFlag(true, "allowDragonEggTeleport");
     private BooleanFlag usePlayerDisplayNames = new BooleanFlag(true, "usePlayerDisplayNames");
     private BooleanFlag showPlayerBroadcasts = new BooleanFlag(true, "showPlayerBroadcasts");
+    private BooleanFlag showCTFBroadcasts = new BooleanFlag(true, "showCTFBroadcasts");
     private BooleanFlag keepInventory = new BooleanFlag(false, "keepInventory");
     private BooleanFlag friendlyFireSplashPotions = new BooleanFlag(true, "friendlyFireSplashPotions");
     private BooleanFlag friendlyFireLingeringPotions = new BooleanFlag(true, "friendlyFireLingeringPotions");
@@ -248,6 +249,7 @@ public class Minigame implements ScriptObject {
         addConfigFlag(friendlyFireSplashPotions);
         addConfigFlag(friendlyFireLingeringPotions);
         addConfigFlag(showPlayerBroadcasts);
+        addConfigFlag(showCTFBroadcasts);
         addConfigFlag(minScore);
         addConfigFlag(objective);
         addConfigFlag(paintBallDamage);
@@ -526,6 +528,14 @@ public class Minigame implements ScriptObject {
 
     public Boolean getShowPlayerBroadcasts() {
         return showPlayerBroadcasts.getFlag();
+    }
+
+    public void setShowCTFBroadcasts(Boolean showCTFBroadcasts) {
+        this.showCTFBroadcasts.setFlag(showCTFBroadcasts);
+    }
+
+    public Boolean getShowCTFBroadcasts() {
+        return showCTFBroadcasts.getFlag();
     }
 
     public MinigameType getType() {
@@ -1263,6 +1273,7 @@ public class Minigame implements ScriptObject {
         itemsPlayer.add(usePlayerDisplayNames.getMenuItem("Use Players Display Names", Material.POTATO, MinigameUtils
                 .stringToList("Use Player Nicks or Real Names")));
         itemsPlayer.add(showPlayerBroadcasts.getMenuItem("Show Join/Exit Broadcasts", Material.PAPER, MinigameUtils.stringToList("Show Join and Exit broadcasts; Plus other Player broadcasts")));
+        itemsPlayer.add(showCTFBroadcasts.getMenuItem("Show CTF Broadcasts", Material.PAPER, MinigameUtils.stringToList("Show Flag captures and home returns")));
         itemsPlayer.add(keepInventory.getMenuItem("Keep Inventory", Material.ZOMBIE_HEAD));
         itemsPlayer.add(friendlyFireSplashPotions.getMenuItem("Allow friendly fire with splash potions", Material.SPLASH_POTION));
         itemsPlayer.add(friendlyFireLingeringPotions.getMenuItem("Allow friendly fire with lingering potions", Material.LINGERING_POTION));

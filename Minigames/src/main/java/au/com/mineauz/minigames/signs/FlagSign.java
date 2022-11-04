@@ -76,14 +76,11 @@ public class FlagSign implements MinigameSign {
                 return false;
             }
             if (!sign.getLine(2).isEmpty() && player.getPlayer().isOnGround() &&
-                    !mgm.getMechanicName().equals("ctf") &&
-                    !player.hasFlag(ChatColor.stripColor(sign.getLine(2)))) {
+                    mgm.getMechanicName().equals("ctf") &&
+                    !player.hasFlag(ChatColor.stripColor(sign.getLine(2))) &&
+                    !player.getTeam().getDisplayName().equals(ChatColor.stripColor(sign.getLine(2) + " Team"))) {
                 TakeFlagEvent ev = new TakeFlagEvent(mgm, player, ChatColor.stripColor(sign.getLine(2)));
                 Bukkit.getPluginManager().callEvent(ev);
-                if (!ev.isCancelled()) {
-                    player.addFlag(ChatColor.stripColor(sign.getLine(2)));
-                    player.sendInfoMessage(MinigameUtils.formStr("sign.flag.taken", ChatColor.stripColor(sign.getLine(2))));
-                }
                 return true;
             }
         } else if (player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR)
