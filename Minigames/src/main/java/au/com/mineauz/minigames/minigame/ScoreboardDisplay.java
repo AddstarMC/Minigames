@@ -13,6 +13,7 @@ import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -163,7 +164,7 @@ public class ScoreboardDisplay {
             Block start = block;
             for (int x = 0; x < width; ++x) {
                 // Only add signs
-                if (block.getType() == Material.OAK_WALL_SIGN || (!onlySigns && block.getType() == Material.AIR)) {
+                if (Tag.WALL_SIGNS.isTagged(block.getType()) || (!onlySigns && block.getType() == Material.AIR)) {
                     blocks.add(block);
                 }
 
@@ -324,11 +325,11 @@ public class ScoreboardDisplay {
         }
     }
 
-    public void placeSigns() {
+    public void placeSigns(Material material) {
         List<Block> blocks = getSignBlocks(false);
 
         for (Block block : blocks) {
-            block.setType(Material.OAK_WALL_SIGN);
+            block.setType(material);
             Directional d = (Directional) block.getBlockData();
             d.setFacing(facing);
             block.setBlockData(d);
@@ -352,7 +353,7 @@ public class ScoreboardDisplay {
         }
 
         Block root = rootBlock.getBlock();
-        if (root.getType() == Material.OAK_WALL_SIGN || root.getType() == Material.OAK_SIGN) {
+        if (Tag.SIGNS.isTagged(root.getType()) || Tag.WALL_SIGNS.isTagged(root.getType())) {
             BlockState state = root.getState();
             if (state instanceof Sign) {
                 Sign sign = (Sign) state;

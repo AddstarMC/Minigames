@@ -16,10 +16,7 @@ import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.OfflineMinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
@@ -368,7 +365,7 @@ public class Events implements Listener {
             if (event.getPlayer().isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
                 tool.openMenu(ply);
                 event.setCancelled(true);
-            } else if (event.getClickedBlock() != null && (event.getClickedBlock().getType() == Material.OAK_WALL_SIGN || event.getClickedBlock().getType() == Material.OAK_SIGN)) {
+            } else if (event.getClickedBlock() != null && (Tag.WALL_SIGNS.isTagged(event.getClickedBlock().getType()) || Tag.SIGNS.isTagged(event.getClickedBlock().getType()))) {
                 Sign sign = (Sign) event.getClickedBlock().getState();
                 if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[Minigame]") && ChatColor.stripColor(sign.getLine(1)).equalsIgnoreCase("Join")) {
                     Minigame minigame = mdata.getMinigame(sign.getLine(2));
@@ -762,7 +759,7 @@ public class Events implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void breakScoreboard(BlockBreakEvent event) {
         Block block = event.getBlock();
-        if (block.getType() == Material.OAK_WALL_SIGN) {
+        if (Tag.WALL_SIGNS.isTagged(block.getType())) {
             if (block.hasMetadata("MGScoreboardSign")) {
                 Minigame minigame = (Minigame) block.getMetadata("Minigame").get(0).value();
                 minigame.getScoreboardData().removeDisplay(block);
