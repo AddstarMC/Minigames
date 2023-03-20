@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions.commands;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommand;
@@ -7,6 +8,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.RegionModule;
+import java.util.ArrayList;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -90,11 +92,26 @@ public class SetNodeCommand implements ICommand {
         return false;
     }
 
+    // create, modify, delete
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
             String alias, String[] args) {
-        // TODO Auto-generated method stub
+        if (args.length == 1) {
+            List<String> tab = new ArrayList<>();
+            tab.add("create");
+            tab.add("modify");
+            tab.add("delete");
+            return MinigameUtils.tabCompleteMatch(tab, args[0]);
+        } else if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("delete")) {
+                List<String> tab = new ArrayList<>();
+                RegionModule rmod = RegionModule.getMinigameModule(minigame);
+                for (Node node : rmod.getNodes()) {
+                    tab.add(node.getName());
+                }
+                return MinigameUtils.tabCompleteMatch(tab, args[1]);
+            }
+        }
         return null;
     }
-
 }
