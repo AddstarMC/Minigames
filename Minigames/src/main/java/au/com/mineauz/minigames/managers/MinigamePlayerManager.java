@@ -78,8 +78,9 @@ public class MinigamePlayerManager {
             player.sendMessage(MinigameUtils.getLang("minigame.full"), MinigameMessageType.ERROR);
             return;
         }
+        //Check if Minigame has a lobby and teleport them there
         if (!mgManager.teleportPlayerOnJoin(minigame, player)) {
-            player.sendMessage(MinigameUtils.getLang("minigame.error.noTeleport"), MinigameMessageType.ERROR);
+            player.sendMessage(MinigameUtils.getLang("minigame.error.noLobby"), MinigameMessageType.ERROR);
             return;
         }
         //Give them the game type name
@@ -502,7 +503,11 @@ public class MinigamePlayerManager {
                     } else {
                         loc = minigame.getEndPosition();
                     }
-                    player.teleport(loc);
+                    if (loc != null) {
+                        player.teleport(loc);
+                    } else {
+                        Minigames.log.warning("Minigame " + minigame.getName(true) + " has no end position set! (Player: " + player.getName() + ")");
+                    }
                 } else {
                     if (!isWinner)
                         player.setQuitPos(minigame.getQuitPosition());
