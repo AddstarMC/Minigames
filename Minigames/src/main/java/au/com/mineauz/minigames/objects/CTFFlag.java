@@ -91,19 +91,23 @@ public class CTFFlag {
             blockBelow.setY(blockBelow.getY() - 1);
         }
 
+        if (blockBelow.getBlock().getType() == Material.LAVA) {
+            return null;
+        }
+
         if (blockBelow.getBlock().getType() == Material.FURNACE ||
                 blockBelow.getBlock().getType() == Material.DISPENSER ||
                 blockBelow.getBlock().getType() == Material.CHEST ||
                 blockBelow.getBlock().getType() == Material.BREWING_STAND ||
-                blockBelow.getBlock().getType() == Material.OAK_SIGN ||
-                blockBelow.getBlock().getType() == Material.OAK_WALL_SIGN) {
+                Tag.SIGNS.isTagged(blockBelow.getBlock().getType()) ||
+                Tag.WALL_SIGNS.isTagged(blockBelow.getBlock().getType())) {
             blockBelow.setY(blockBelow.getY() + 1);
         }
 
         newLocation = blockBelow.clone();
         newLocation.setY(newLocation.getY() + 1);
 
-        newLocation.getBlock().setType(Material.OAK_SIGN);
+        newLocation.getBlock().setType(spawnData.getType());
         Sign sign = (Sign) newLocation.getBlock().getState();
 
         sign.setBlockData(data);
