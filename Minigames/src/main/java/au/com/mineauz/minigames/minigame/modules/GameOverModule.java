@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.minigame.modules;
 
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -87,7 +88,7 @@ public class GameOverModule extends MinigameModule {
     }
 
     public void startEndGameTimer() {
-        Minigames.getPlugin().getMinigameManager().sendMinigameMessage(getMinigame(), MinigameUtils.formStr("minigame.gameOverQuit", timer.getFlag()));
+        Minigames.getPlugin().getMinigameManager().sendMinigameMessage(getMinigame(), MessageManager.getMinigamesMessage("minigame.gameOverQuit", timer.getFlag()));
         getMinigame().setState(MinigameState.ENDED);
 
         List<MinigamePlayer> allPlys = new ArrayList<>(winners.size() + losers.size());

@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames;
 
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
@@ -58,12 +59,12 @@ public class MultiplayerTimer {
         if (currentLobbyWaitTime != 0 && !paused) {
             if (currentLobbyWaitTime == oLobbyWaitTime) {
                 sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.waitingForPlayers"));
-                sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", currentLobbyWaitTime));
+                sendPlayersMessage(ChatColor.GRAY + MessageManager.getMinigamesMessage("time.startup.time", currentLobbyWaitTime));
                 allowInteraction(LobbySettingsModule.getMinigameModule(minigame).canInteractPlayerWait());
                 freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMovePlayerWait());
                 minigame.setState(MinigameState.WAITING);
             } else if (timeMsg.contains(currentLobbyWaitTime)) {
-                sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", currentLobbyWaitTime));
+                sendPlayersMessage(ChatColor.GRAY + MessageManager.getMinigamesMessage("time.startup.time", currentLobbyWaitTime));
                 PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
             }
         } else if (currentLobbyWaitTime == 0 && startWaitTime != 0 && !paused) {
@@ -71,7 +72,7 @@ public class MultiplayerTimer {
             if (startWaitTime == oStartWaitTime) {
                 minigame.setState(MinigameState.STARTING);
                 sendPlayersMessage(ChatColor.GRAY + MinigameUtils.getLang("time.startup.minigameStarts"));
-                sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
+                sendPlayersMessage(ChatColor.GRAY + MessageManager.getMinigamesMessage("time.startup.time", startWaitTime));
                 freezePlayers(!LobbySettingsModule.getMinigameModule(minigame).canMoveStartWait());
                 allowInteraction(LobbySettingsModule.getMinigameModule(minigame).canInteractStartWait());
 
@@ -85,7 +86,7 @@ public class MultiplayerTimer {
                     }
                 }
             } else if (timeMsg.contains(startWaitTime)) {
-                sendPlayersMessage(ChatColor.GRAY + MinigameUtils.formStr("time.startup.time", startWaitTime));
+                sendPlayersMessage(ChatColor.GRAY + MessageManager.getMinigamesMessage("time.startup.time", startWaitTime));
                 PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
             }
         } else if (currentLobbyWaitTime == 0 && startWaitTime == 0) {
@@ -119,7 +120,7 @@ public class MultiplayerTimer {
             if (minigame.getTimer() > 0) {
                 minigame.setMinigameTimer(new MinigameTimer(minigame, minigame.getTimer()));
                 plugin.getMinigameManager().sendMinigameMessage(minigame,
-                        MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(minigame.getTimer())));
+                    MessageManager.getMinigamesMessage("minigame.timeLeft", MinigameUtils.convertTime(minigame.getTimer())));
             }
 
             Bukkit.getScheduler().cancelTask(taskID);
@@ -183,7 +184,7 @@ public class MultiplayerTimer {
     public void pauseTimer(String reason) {
         paused = true;
         for (MinigamePlayer ply : minigame.getPlayers()) {
-            ply.sendMessage(MinigameUtils.formStr("time.startup.timerPaused", reason), MinigameMessageType.INFO);
+            ply.sendMessage(MessageManager.getMinigamesMessage("time.startup.timerPaused", reason), MinigameMessageType.INFO);
         }
     }
 

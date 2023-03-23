@@ -16,7 +16,6 @@ import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -472,7 +471,7 @@ public class MinigameManager {
 
     public boolean teleportPlayerOnJoin(@NotNull final Minigame minigame, final MinigamePlayer player) {
         if(this.minigameType(minigame.getType()) == null) {
-            Minigames.log().warning(MinigameUtils.formStr("error.invalidType") + " : "+minigame.getName(true));
+            Minigames.log().warning(MessageManager.getMinigamesMessage("error.invalidType") + " : "+minigame.getName(true));
         }
         return this.minigameType(minigame.getType()).teleportOnJoin(player, minigame);
     }

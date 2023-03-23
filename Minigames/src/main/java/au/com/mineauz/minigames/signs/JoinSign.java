@@ -59,7 +59,7 @@ public class JoinSign implements MinigameSign {
             }
             return true;
         }
-        event.getPlayer().sendMessage(ChatColor.RED + MinigameUtils.formStr("minigame.error.noMinigameName", event.getLine(2)));
+        event.getPlayer().sendMessage(ChatColor.RED + MessageManager.getMinigamesMessage("minigame.error.noMinigameName", event.getLine(2)));
         return false;
     }
 

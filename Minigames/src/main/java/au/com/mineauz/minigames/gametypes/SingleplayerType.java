@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.gametypes;
 
 import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
@@ -49,7 +50,7 @@ public class SingleplayerType extends MinigameTypeBase {
     public boolean joinMinigame(MinigamePlayer player, Minigame mgm) {
 
         if (mgm.getLives() > 0 && !Float.isFinite(mgm.getLives())) {
-            player.sendInfoMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives()));
+            player.sendInfoMessage(MessageManager.getMinigamesMessage("minigame.livesLeft", mgm.getLives()));
         }
         if (!mgm.isAllowedFlight()) {
             player.setCanFly(false);

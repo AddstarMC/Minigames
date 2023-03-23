@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -233,7 +234,7 @@ public class TreasureHuntModule extends MinigameModule {
                 } else if (distance < 20) {
                     player.sendInfoMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance1"));
                 }
-                player.sendInfoMessage(ChatColor.GRAY + MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.timeLeft",
+                player.sendInfoMessage(ChatColor.GRAY + MessageManager.getMinigamesMessage("minigame.treasurehunt.playerSpecificHint.timeLeft",
                         MinigameUtils.convertTime(getMinigame().getMinigameTimer().getTimeLeft())));
                 player.sendInfoMessage(ChatColor.GREEN + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.globalHints"));
                 if (getCurrentHints().isEmpty()) {
@@ -246,12 +247,12 @@ public class TreasureHuntModule extends MinigameModule {
 
                 addHintUse(player);
             } else {
-                player.sendInfoMessage(ChatColor.RED + MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.noUse",
+                player.sendInfoMessage(ChatColor.RED + MessageManager.getMinigamesMessage("minigame.treasurehunt.playerSpecificHint.noUse",
                         getMinigame().getName(true)));
                 int nextuse = (300000 - (int) (System.currentTimeMillis() - getLastHintUse(player))) / 1000;
-                player.sendInfoMessage(ChatColor.GRAY + MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.nextUse",
+                player.sendInfoMessage(ChatColor.GRAY + MessageManager.getMinigamesMessage("minigame.treasurehunt.playerSpecificHint.nextUse",
                         MinigameUtils.convertTime(nextuse)));
-                player.sendInfoMessage(ChatColor.GRAY + MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.treasureTimeLeft",
+                player.sendInfoMessage(ChatColor.GRAY + MessageManager.getMinigamesMessage("minigame.treasurehunt.playerSpecificHint.treasureTimeLeft",
                         MinigameUtils.convertTime(getMinigame().getMinigameTimer().getTimeLeft())));
             }
         } else {
@@ -259,7 +260,7 @@ public class TreasureHuntModule extends MinigameModule {
             if (world.equalsIgnoreCase("world")) {
                 world = MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.wrongWorld.overworld");
             }
-            player.sendMessage(MinigameUtils.formStr("minigame.treasurehunt.playerSpecificHint.wrongWorld", world), MinigameMessageType.ERROR);
+            player.sendMessage(MessageManager.getMinigamesMessage("minigame.treasurehunt.playerSpecificHint.wrongWorld", world), MinigameMessageType.ERROR);
         }
     }
 

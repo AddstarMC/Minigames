@@ -2,6 +2,7 @@ package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.events.MinigameTimerTickEvent;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.sounds.MGSounds;
@@ -66,7 +67,7 @@ public class MinigameTimer {
         }
         if (timeMsg.contains(time) && broadcastTime) {
             PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
-            plugin.getMinigameManager().sendMinigameMessage(minigame, MinigameUtils.formStr("minigame.timeLeft", MinigameUtils.convertTime(time)));
+            plugin.getMinigameManager().sendMinigameMessage(minigame, MessageManager.getMinigamesMessage("minigame.timeLeft", MinigameUtils.convertTime(time)));
         }
 
         if (time <= 0) {

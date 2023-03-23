@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.signs;
 
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -45,7 +46,7 @@ public class SpectateSign implements MinigameSign {
             event.setLine(2, plugin.getMinigameManager().getMinigame(event.getLine(2)).getName(false));
             return true;
         }
-        event.getPlayer().sendMessage(ChatColor.RED + MinigameUtils.formStr("minigame.error.noMinigameName", event.getLine(2)));
+        event.getPlayer().sendMessage(ChatColor.RED + MessageManager.getMinigamesMessage("minigame.error.noMinigameName", event.getLine(2)));
         return false;
     }
 

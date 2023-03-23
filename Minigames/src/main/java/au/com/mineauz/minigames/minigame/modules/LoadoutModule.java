@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.PlayerLoadout;
@@ -235,7 +236,7 @@ public class LoadoutModule extends MinigameModule {
                             if (!equip)
                                 fply.sendMessage(MinigameUtils.getLang("player.loadout.nextSpawn"), MinigameMessageType.INFO);
                             else {
-                                fply.sendMessage(MinigameUtils.formStr("player.loadout.equipped", floadout2.getName(true)), MinigameMessageType.INFO);
+                                fply.sendMessage(MessageManager.getMinigamesMessage("player.loadout.equipped", floadout2.getName(true)), MinigameMessageType.INFO);
                                 floadout2.equiptLoadout(fply);
                             }
                             return null;

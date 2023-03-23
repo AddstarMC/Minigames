@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -74,7 +75,7 @@ public class JuggernautModule extends MinigameModule {
 
             juggernaut.sendMessage(MinigameUtils.getLang("player.juggernaut.plyMsg"), MinigameMessageType.WIN);
             Minigames.getPlugin().getMinigameManager().sendMinigameMessage(getMinigame(),
-                    MinigameUtils.formStr("player.juggernaut.gameMsg", juggernaut.getDisplayName(getMinigame().usePlayerDisplayNames())), MinigameMessageType.INFO, juggernaut);
+                MessageManager.getMinigamesMessage("player.juggernaut.gameMsg", juggernaut.getDisplayName(getMinigame().usePlayerDisplayNames())), MinigameMessageType.INFO, juggernaut);
 
             LoadoutModule lm = LoadoutModule.getMinigameModule(getMinigame());
             if (lm.hasLoadout("juggernaut")) {

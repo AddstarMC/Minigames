@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.minigame.reward;
 
 import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.MenuItem;
@@ -37,7 +38,7 @@ public class ItemReward extends RewardType {
             player.addRewardItem(item);
         else
             player.getPlayer().getInventory().addItem(item);
-        player.sendMessage(MinigameUtils.formStr("reward.item", item.getAmount(),
+        player.sendMessage(MessageManager.getMinigamesMessage("reward.item", item.getAmount(),
                 MinigameUtils.capitalize(item.getType().toString())), MinigameMessageType.WIN);
     }
 

@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
@@ -57,9 +58,10 @@ public class LoadoutCommand implements ICommand {
                 String ln = args[0];
                 if (LoadoutModule.getMinigameModule(ply.getMinigame()).hasLoadout(ln)) {
                     ply.setLoadout(LoadoutModule.getMinigameModule(ply.getMinigame()).getLoadout(ln));
-                    ply.sendInfoMessage(MinigameUtils.formStr("player.loadout.nextSpawnName", ln));
+                    ply.sendInfoMessage(
+                        MessageManager.getMinigamesMessage("player.loadout.nextSpawnName", ln));
                 } else {
-                    ply.sendMessage(MinigameUtils.formStr("player.loadout.noLoadout", ln), MinigameMessageType.ERROR);
+                    ply.sendMessage(MessageManager.getMinigamesMessage("player.loadout.noLoadout", ln), MinigameMessageType.ERROR);
                 }
             }
         } else {
