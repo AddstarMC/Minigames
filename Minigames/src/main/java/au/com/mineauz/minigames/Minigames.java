@@ -332,6 +332,7 @@ public class Minigames extends JavaPlugin {
         this.minigameManager.addConfigurationFile("completion", completion.getConfig());
 
         this.getServer().getPluginManager().registerEvents(new Events(), this);
+        //always active recorder, don't get confused with RegenRecorder, that is only active, if the minigame has a regen area
         this.getServer().getPluginManager().registerEvents(new BasicRecorder(), this);
 
         try {

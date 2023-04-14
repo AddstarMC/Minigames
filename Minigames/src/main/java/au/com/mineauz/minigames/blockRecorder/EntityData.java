@@ -1,28 +1,33 @@
 package au.com.mineauz.minigames.blockRecorder;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 
-public class EntityData {
-    private Entity ent;
-    private EntityType entType;
-    private Location entLocation;
-    private MinigamePlayer player;
-    private boolean created;
+import javax.annotation.Nullable;
+import java.util.UUID;
 
-    public EntityData(Entity ent, MinigamePlayer modifier, boolean created) {
-        this.ent = ent;
-        entType = ent.getType();
-        entLocation = ent.getLocation();
-        player = modifier;
+public class EntityData {
+    private final UUID uuid;
+    private final EntityType entType;
+    private final Location entLocation;
+    private final MinigamePlayer player;
+    private final boolean created;
+
+    //todo save metadata like armor
+    public EntityData(Entity entity, MinigamePlayer modifier, boolean created) {
+        this.uuid = entity.getUniqueId();
+        this.entType = entity.getType();
+        this.entLocation = entity.getLocation();
+        this.player = modifier;
         this.created = created;
     }
 
-    public Entity getEntity() {
-        return ent;
+    public @Nullable Entity getEntity() {
+        return Bukkit.getEntity(uuid);
     }
 
     public MinigamePlayer getModifier() {

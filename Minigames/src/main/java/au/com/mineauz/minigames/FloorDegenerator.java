@@ -126,7 +126,7 @@ public class FloorDegenerator {
             for (int i = loc1.getBlockX(); i <= loc2.getBlockX() + 1; i++) {
                 for (int k = loc1.getBlockZ(); k <= loc2.getBlockZ() + 1; k++) {
                     if (curblock.getBlock().getType() != Material.AIR) {
-                        mgm.getBlockRecorder().addBlock(curblock.getBlock(), null);
+                        mgm.getRecorderData().addBlock(curblock.getBlock(), null);
                         curblock.getBlock().setType(Material.AIR);
                     }
                     curblock.setZ(k);
@@ -151,7 +151,7 @@ public class FloorDegenerator {
             for (int i = lowest.getBlockX(); i <= highest.getBlockX() + 1; i++) {
                 for (int k = lowest.getBlockZ(); k <= highest.getBlockZ() + 1; k++) {
                     if (curblock.getBlock().getType() != Material.AIR && random.nextInt(100) < chance) {
-                        mgm.getBlockRecorder().addBlock(curblock.getBlock(), null);
+                        mgm.getRecorderData().addBlock(curblock.getBlock(), null);
                         curblock.getBlock().setType(Material.AIR);
                     }
                     curblock.setZ(k);
@@ -181,7 +181,7 @@ public class FloorDegenerator {
             curBlock.setZ(cz);
             for (int k = lowest.getBlockY(); k <= highest.getBlockY(); k++) {
                 curBlock.setY(k);
-                mgm.getBlockRecorder().addBlock(curBlock.getBlock(), null);
+                mgm.getRecorderData().addBlock(curBlock.getBlock(), null);
                 curBlock.getBlock().setType(Material.AIR);
             }
         }

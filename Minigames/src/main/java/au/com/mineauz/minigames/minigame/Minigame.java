@@ -740,7 +740,7 @@ public class Minigame implements ScriptObject {
         this.itemPickup.setFlag(itemPickup);
     }
 
-    public RecorderData getBlockRecorder() {
+    public RecorderData getRecorderData() {
         return blockRecorder;
     }
 
@@ -1157,7 +1157,7 @@ public class Minigame implements ScriptObject {
         itemsMain.add(lateJoin.getMenuItem("Allow Late Join", Material.DEAD_BUSH, MinigameUtils.stringToList("Multiplayer Only")));
         itemsMain.add(randomizeStart.getMenuItem("Randomize Start Point", Material.LIGHT_BLUE_GLAZED_TERRACOTTA, MinigameUtils.stringToList("The location will be; chosen at random;from global or team lists.")));
         itemsMain.add(new MenuItemDisplayWhitelist("Block Whitelist/Blacklist", MinigameUtils.stringToList("Blocks that can/can't;be broken"),
-                Material.CHEST, getBlockRecorder().getWBBlocks(), getBlockRecorder().getWhitelistModeCallback()));
+                Material.CHEST, getRecorderData().getWBBlocks(), getRecorderData().getWhitelistModeCallback()));
         itemsMain.add(new MenuItemNewLine());
         List<String> floorDegenDes = new ArrayList<>();
         floorDegenDes.add("Mainly used to prevent");
@@ -1361,16 +1361,16 @@ public class Minigame implements ScriptObject {
                 configFlags.get(configOpt).saveValue(name, cfg);
         }
 
-        if (!getBlockRecorder().getWBBlocks().isEmpty()) {
+        if (!getRecorderData().getWBBlocks().isEmpty()) {
             List<String> blocklist = new ArrayList<>();
-            for (Material mat : getBlockRecorder().getWBBlocks()) {
+            for (Material mat : getRecorderData().getWBBlocks()) {
                 blocklist.add(mat.toString());
             }
             minigame.getConfig().set(name + ".whitelistblocks", blocklist);
         }
 
-        if (getBlockRecorder().getWhitelistMode()) {
-            minigame.getConfig().set(name + ".whitelistmode", getBlockRecorder().getWhitelistMode());
+        if (getRecorderData().getWhitelistMode()) {
+            minigame.getConfig().set(name + ".whitelistmode", getRecorderData().getWhitelistMode());
         }
 
         getScoreboardData().saveDisplays(minigame, name);
@@ -1412,7 +1412,7 @@ public class Minigame implements ScriptObject {
         }
 
         if (minigame.getConfig().contains(name + ".whitelistmode")) {
-            getBlockRecorder().setWhitelistMode(minigame.getConfig().getBoolean(name + ".whitelistmode"));
+            getRecorderData().setWhitelistMode(minigame.getConfig().getBoolean(name + ".whitelistmode"));
         }
 
         if (minigame.getConfig().contains(name + ".whitelistblocks")) {
@@ -1426,10 +1426,10 @@ public class Minigame implements ScriptObject {
                         Minigames.log().info(block + " did not match a material please update config: " + this.name);
                     } else {
                         Minigames.log().info(block + " is a legacy material please review the config we will attempt to auto update..but you may want to add newer materials GAME: " + this.name);
-                        getBlockRecorder().addWBBlock(material);
+                        getRecorderData().addWBBlock(material);
                     }
                 } else {
-                    getBlockRecorder().addWBBlock(material);
+                    getRecorderData().addWBBlock(material);
                 }
             }
         }

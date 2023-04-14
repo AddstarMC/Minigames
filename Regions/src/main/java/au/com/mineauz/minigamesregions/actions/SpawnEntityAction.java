@@ -89,7 +89,7 @@ public class SpawnEntityAction extends AbstractAction {
         }
         
         ent.setMetadata("MinigameEntity", new FixedMetadataValue(Minigames.getPlugin(), true));
-        player.getMinigame().getBlockRecorder().addEntity(ent, player, true);
+        player.getMinigame().getRecorderData().addEntity(ent, player, true);
     }
 
     @Override

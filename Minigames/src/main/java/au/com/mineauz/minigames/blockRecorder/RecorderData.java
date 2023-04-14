@@ -1,13 +1,12 @@
 package au.com.mineauz.minigames.blockRecorder;
 
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import com.google.common.collect.Lists;
-import com.google.gson.Gson;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
 import io.papermc.lib.PaperLib;
@@ -17,29 +16,15 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.block.data.Hangable;
+import org.bukkit.block.data.type.Bamboo;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.minecart.HopperMinecart;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.block.BlockSpreadEvent;
-import org.bukkit.event.entity.*;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
-import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.vehicle.VehicleCreateEvent;
-import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Attachable;
-import org.bukkit.metadata.FixedMetadataValue;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -47,134 +32,55 @@ import java.util.*;
 
 public class RecorderData implements Listener {
     private static Minigames plugin;
-    private static List<Material> physBlocks = new ArrayList<>();
+    private static final ArrayList<Material> supportedMats = new ArrayList<>();
+    private static final ArrayList<Tag<Material>> supportedTags = new ArrayList<>();
 
     static {
-        physBlocks.add(Material.TORCH);
-        physBlocks.add(Material.WALL_TORCH);
-        physBlocks.add(Material.OAK_SIGN);
-        physBlocks.add(Material.OAK_WALL_SIGN);
-        physBlocks.add(Material.TRIPWIRE);
-        physBlocks.add(Material.RAIL);
-        physBlocks.add(Material.POWERED_RAIL);
-        physBlocks.add(Material.ACTIVATOR_RAIL);
-        physBlocks.add(Material.DETECTOR_RAIL);
-        physBlocks.add(Material.REDSTONE_WIRE);
-        physBlocks.add(Material.REDSTONE_TORCH);
-        physBlocks.add(Material.REDSTONE_WALL_TORCH);
-        physBlocks.add(Material.ACACIA_SAPLING);
-        physBlocks.add(Material.JUNGLE_SAPLING);
-        physBlocks.add(Material.OAK_SAPLING);
-        physBlocks.add(Material.BIRCH_SAPLING);
-        physBlocks.add(Material.DARK_OAK_SAPLING);
-        physBlocks.add(Material.ROSE_BUSH);
-        physBlocks.add(Material.SUNFLOWER);
-        physBlocks.add(Material.NETHER_WART);
-        physBlocks.add(Material.BOWL);
-        physBlocks.add(Material.ACACIA_PRESSURE_PLATE);
-        physBlocks.add(Material.OAK_PRESSURE_PLATE);
-        physBlocks.add(Material.JUNGLE_PRESSURE_PLATE);
-        physBlocks.add(Material.DARK_OAK_PRESSURE_PLATE);
-        physBlocks.add(Material.BIRCH_PRESSURE_PLATE);
-        physBlocks.add(Material.LIGHT_WEIGHTED_PRESSURE_PLATE);
-        physBlocks.add(Material.HEAVY_WEIGHTED_PRESSURE_PLATE);
-        physBlocks.add(Material.STONE_PRESSURE_PLATE);
-        physBlocks.add(Material.STONE_BUTTON);
-        physBlocks.add(Material.OAK_BUTTON);
-        physBlocks.add(Material.DARK_OAK_BUTTON);
-        physBlocks.add(Material.JUNGLE_BUTTON);
-        physBlocks.add(Material.ACACIA_BUTTON);
-        physBlocks.add(Material.BIRCH_BUTTON);
-        physBlocks.add(Material.LEVER);
-        physBlocks.add(Material.LADDER);
-        physBlocks.add(Material.IRON_DOOR);
-        physBlocks.add(Material.OAK_DOOR);
-        physBlocks.add(Material.JUNGLE_DOOR);
-        physBlocks.add(Material.DARK_OAK_DOOR);
-        physBlocks.add(Material.BIRCH_DOOR);
-        physBlocks.add(Material.ACACIA_DOOR);
-        physBlocks.add(Material.RED_MUSHROOM);
-        physBlocks.add(Material.BROWN_MUSHROOM);
-        physBlocks.add(Material.FLOWER_POT);
-        physBlocks.add(Material.LILY_PAD);
-        physBlocks.add(Material.TRIPWIRE_HOOK);
-        physBlocks.add(Material.OAK_TRAPDOOR);
-        physBlocks.add(Material.BIRCH_TRAPDOOR);
-        physBlocks.add(Material.ACACIA_TRAPDOOR);
-        physBlocks.add(Material.DARK_OAK_TRAPDOOR);
-        physBlocks.add(Material.JUNGLE_TRAPDOOR);
-        physBlocks.add(Material.RED_CARPET);
-        physBlocks.add(Material.BLUE_CARPET);
-        physBlocks.add(Material.CYAN_CARPET);
-        physBlocks.add(Material.GREEN_CARPET);
-        physBlocks.add(Material.PINK_CARPET);
-        physBlocks.add(Material.LIGHT_BLUE_CARPET);
-        physBlocks.add(Material.LIME_CARPET);
-        physBlocks.add(Material.WHITE_CARPET);
-        physBlocks.add(Material.GRAY_CARPET);
-        physBlocks.add(Material.LIGHT_GRAY_CARPET);
-        physBlocks.add(Material.ORANGE_CARPET);
-        physBlocks.add(Material.MAGENTA_CARPET);
-        physBlocks.add(Material.BLACK_CARPET);
-        physBlocks.add(Material.PURPLE_CARPET);
-        physBlocks.add(Material.BROWN_CARPET);
-        physBlocks.add(Material.TALL_GRASS);
-        physBlocks.add(Material.TALL_SEAGRASS);
-        physBlocks.add(Material.DEAD_BUSH);
-        physBlocks.add(Material.COMPARATOR);
-        physBlocks.add(Material.REPEATER);
-        physBlocks.add(Material.WATER);
-        physBlocks.add(Material.LAVA);
-        physBlocks.add(Material.ANVIL);
-        physBlocks.add(Material.DRAGON_EGG);
-        physBlocks.add(Material.ZOMBIE_HEAD);
-        physBlocks.add(Material.ZOMBIE_WALL_HEAD);
-        physBlocks.add(Material.WITHER_SKELETON_WALL_SKULL);
-        physBlocks.add(Material.WITHER_SKELETON_SKULL);
-        physBlocks.add(Material.CREEPER_HEAD);
-        physBlocks.add(Material.PLAYER_HEAD);
-        physBlocks.add(Material.SKELETON_SKULL);
-        physBlocks.add(Material.SKELETON_WALL_SKULL);
-        physBlocks.add(Material.SNOW);
-        physBlocks.add(Material.VINE);
-        physBlocks.add(Material.NETHER_PORTAL);
-        physBlocks.add(Material.COCOA);
-        physBlocks.add(Material.CARROT);
-        physBlocks.add(Material.POTATO);
-        physBlocks.add(Material.BLACK_BANNER);
-        physBlocks.add(Material.WHITE_BANNER);
-        physBlocks.add(Material.RED_BANNER);
-        physBlocks.add(Material.BLUE_BANNER);
-        physBlocks.add(Material.CYAN_BANNER);
-        physBlocks.add(Material.PINK_BANNER);
-        physBlocks.add(Material.YELLOW_BANNER);
-        physBlocks.add(Material.GREEN_BANNER);
-        physBlocks.add(Material.ORANGE_BANNER);
-        physBlocks.add(Material.LIME_BANNER);
-        physBlocks.add(Material.GRAY_BANNER);
-        physBlocks.add(Material.LIGHT_BLUE_BANNER);
-        physBlocks.add(Material.LIGHT_GRAY_BANNER);
-        physBlocks.add(Material.BROWN_BANNER);
-        physBlocks.add(Material.MAGENTA_BANNER);
-        physBlocks.add(Material.PISTON_HEAD);
-        physBlocks.add(Material.MOVING_PISTON);
+        supportedMats.add(Material.WATER);
+        supportedMats.add(Material.LAVA);
+        supportedTags.add(Tag.DOORS);
+        supportedTags.add(Tag.RAILS);
+        supportedMats.add(Material.TRIPWIRE);
+        supportedTags.add(Tag.PRESSURE_PLATES);
+        supportedMats.add(Material.COMPARATOR);
+        supportedMats.add(Material.REPEATER);
+        supportedMats.add(Material.REDSTONE_WIRE);
+        supportedMats.add(Material.SNOW);
+        supportedMats.add(Material.NETHER_PORTAL);
+        supportedMats.add(Material.PISTON_HEAD);
+        supportedMats.add(Material.MOVING_PISTON);
+        supportedMats.add(Material.LILY_PAD);
+        supportedTags.add(Tag.WOOL_CARPETS);
+        supportedMats.add(Material.MOSS_CARPET);
+        supportedMats.add(Material.TALL_GRASS);
+        supportedMats.add(Material.TALL_SEAGRASS);
+        supportedMats.add(Material.DEAD_BUSH);
+        supportedMats.add(Material.RED_MUSHROOM);
+        supportedMats.add(Material.BROWN_MUSHROOM);
+        supportedTags.add(Tag.SAPLINGS);
+        supportedTags.add(Tag.FLOWERS);
+        supportedTags.add(Tag.CORALS);
+        supportedTags.add(Tag.CROPS);
+        supportedMats.add(Material.HANGING_ROOTS);
+        supportedMats.add(Material.NETHER_WART);
+        supportedMats.add(Material.SMALL_DRIPLEAF);
+        supportedMats.add(Material.BIG_DRIPLEAF);
+        supportedMats.add(Material.KELP_PLANT);
+        supportedTags.add(Tag.CAVE_VINES);
+        supportedMats.add(Material.VINE);
     }
 
-    private Minigame minigame;
+    private final Minigame minigame;
     private boolean whitelistMode = false;
     private boolean hasCreatedRegenBlocks = false;
-    private Map<String, MgBlockData> blockdata;
-    private Map<Integer, EntityData> entdata;
-    private List<Material> wbBlocks = new ArrayList<>();
+    private Map<Position, MgBlockData> blockdata = new HashMap<>();
+    private final Map<UUID, EntityData> entdata = new HashMap<>();
+    private final List<Material> wbBlocks = new ArrayList<>();
 
     public RecorderData(Minigame minigame) {
         plugin = Minigames.getPlugin();
 
         this.minigame = minigame;
-        blockdata = new HashMap<>();
-        entdata = new HashMap<>();
-
-//        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public boolean getWhitelistMode() {
@@ -186,7 +92,7 @@ public class RecorderData implements Listener {
     }
 
     public Callback<Boolean> getWhitelistModeCallback() {
-        return new Callback<Boolean>() {
+        return new Callback<>() {
 
             @Override
             public Boolean getValue() {
@@ -209,11 +115,7 @@ public class RecorderData implements Listener {
     }
 
     public boolean removeWBBlock(Material mat) {
-        if (wbBlocks.contains(mat)) {
-            wbBlocks.remove(mat);
-            return true;
-        }
-        return false;
+        return wbBlocks.remove(mat);
     }
 
     public boolean hasCreatedRegenBlocks() {
@@ -235,70 +137,71 @@ public class RecorderData implements Listener {
 
     public MgBlockData addBlock(BlockState block, MinigamePlayer modifier) {
         MgBlockData bdata = new MgBlockData(block, modifier);
-        String sloc = bdata.getLocation().getBlockX() + ":" + bdata.getLocation().getBlockY() + ":" + bdata.getLocation().getBlockZ();
-        if (!blockdata.containsKey(sloc)) {
-            if (block instanceof InventoryHolder) {
-                InventoryHolder inv = (InventoryHolder) block;
-                if (inv instanceof DoubleChest) {
-                    Location left = ((DoubleChest) inv).getLeftSide().getInventory().getLocation().clone();
-                    Location right = ((DoubleChest) inv).getRightSide().getInventory().getLocation().clone();
+        Position pos = Position.block(block.getLocation());
+
+        if (!blockdata.containsKey(pos)) {
+            if (block instanceof InventoryHolder invHolder) {
+                if (invHolder instanceof DoubleChest doubleChest) {
+                    Location left = doubleChest.getLeftSide().getInventory().getLocation().clone();
+                    Location right = doubleChest.getRightSide().getInventory().getLocation().clone();
+
                     if (bdata.getLocation() == left) {
 
-                        addInventory(bdata, ((DoubleChest) inv).getLeftSide());
+                        addInventory(bdata, doubleChest.getLeftSide());
                         if (minigame.isRandomizeChests())
                             bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
                     }
+
                     MgBlockData secondChest = addBlock(right.getBlock(), modifier);
                     if (secondChest.getItems() == null) {
-                        addInventory(secondChest, ((DoubleChest) inv).getRightSide());
+                        addInventory(secondChest, doubleChest.getRightSide());
                         if (minigame.isRandomizeChests())
                             secondChest.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
-                    } else if (inv instanceof Chest) {
-                        addInventory(bdata, inv);
+                    }
+                } else if (invHolder instanceof Chest) {
+                        addInventory(bdata, invHolder);
                         if (minigame.isRandomizeChests())
                             bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
-                    }
                 } else {
-                    addInventory(bdata, inv);
+                    addInventory(bdata, invHolder);
                 }
-            } else if (block.getType() == Material.FLOWER_POT) {
-                bdata.setSpecialData("contents", block.getData());
             }
 
-            blockdata.put(sloc, bdata);
+            blockdata.put(pos, bdata);
             return bdata;
-        } else {
-            if (block.getType() != Material.CHEST || !blockdata.get(sloc).hasRandomized())
-                blockdata.get(sloc).setModifier(modifier);
-            return blockdata.get(sloc);
+        } else { //already known
+            //set last modifier of a not random inventory
+            if (block.getType() != Material.CHEST || !blockdata.get(pos).hasRandomized()){
+                blockdata.get(pos).setModifier(modifier);
+            }
+
+            return blockdata.get(pos);
         }
     }
 
     public void addInventory(MgBlockData bdata, InventoryHolder ih) {
-        List<ItemStack> items = new ArrayList<>();
-        for (ItemStack item : ih.getInventory()) {
-            if (item != null) {
-                items.add(item.clone());
-            }
-        }
-        ItemStack[] inventory = new ItemStack[items.size()];
-        items.toArray(inventory);
+        ItemStack[] inventory = Arrays.stream(ih.getInventory().getContents()).
+                map(itemStack -> itemStack == null ? null : itemStack.clone()).toArray(ItemStack[]::new);
+
         bdata.setItems(inventory);
     }
 
-
+    //add an entity to get reset
     public void addEntity(Entity ent, MinigamePlayer player, boolean created) {
-        EntityData edata = new EntityData(ent, player, created);
-        entdata.put(ent.getEntityId(), edata);
-    }
+        EntityData oldData = entdata.get(ent.getUniqueId());
+        if (oldData != null){
+            if (oldData.wasCreated() && !created){
+                entdata.remove(ent.getUniqueId());
 
-    public boolean hasEntity(Entity ent) {
-        return entdata.containsKey(ent.getEntityId());
+                return;
+            }
+        }
+
+        entdata.put(ent.getUniqueId(), new EntityData(ent, player, created));
     }
 
     public boolean hasBlock(Block block) {
-        String sloc = block.getLocation().getBlockX() + ":" + block.getLocation().getBlockY() + ":" + block.getLocation().getBlockZ();
-        return blockdata.containsKey(sloc);
+        return blockdata.containsKey(Position.block(block.getLocation()));
     }
 
     public void restoreAll(MinigamePlayer modifier) {
@@ -312,8 +215,8 @@ public class RecorderData implements Listener {
     }
 
     public void restoreBlocks() {
-//        saveAllBlockData();
         restoreBlocks(null);
+        //blockdata.clear(); //<-- probably
     }
 
     public void restoreEntities() {
@@ -322,7 +225,7 @@ public class RecorderData implements Listener {
     }
 
     public void restoreBlocks(final MinigamePlayer modifier) {
-        // When rolling back a single player's changes dont change the overall games state
+        // When rolling back a single player's changes don't change the overall games state
         if (modifier == null) {
             minigame.setState(MinigameState.REGENERATING);
         }
@@ -332,26 +235,22 @@ public class RecorderData implements Listener {
         final List<MgBlockData> gravityBlocks = Lists.newArrayList();
         final List<MgBlockData> attachableBlocks = Lists.newArrayList();
 
+        //sort the blocks into the three lists above
         while (it.hasNext()) {
             MgBlockData data = it.next();
-            boolean gravity = false;
-            boolean attachable = false;
-            boolean inventoryholder = false;
             if (modifier == null || modifier.equals(data.getModifier())) {
                 it.remove();
 
                 // Clear inventories
-                if (data.getLocation().getBlock().getState() instanceof InventoryHolder) {
-                    InventoryHolder block = (InventoryHolder) data.getLocation().getBlock().getState();
-                    block.getInventory().clear();
+                if (data.getLocation().getBlock().getState() instanceof InventoryHolder invHolder) {
+                    invHolder.getInventory().clear();
                 }
-                if (data.getBukkitBlockData().getMaterial().hasGravity()) gravity = true;
-                if (physBlocks.contains(data.getBlockState().getType()) || data.getBlockState().getBlockData() instanceof
-                        Attachable) attachable = true;
-                if (data.getItems() != null) inventoryholder = true;
-                if (attachable) {
+
+                if (supportedMats.contains(data.getBlockState().getType()) ||
+                        supportedTags.stream().anyMatch(tag -> tag.isTagged(data.getBlockState().getType())) ||
+                        data.getBlockState().getBlockData() instanceof Attachable || data.getBlockState() instanceof Hangable) {
                     attachableBlocks.add(data);
-                } else if (gravity) {
+                } else if (data.getBukkitBlockData().getMaterial().hasGravity()) {
                     gravityBlocks.add(data);
                 } else {
                     baseBlocks.add(data);
@@ -360,42 +259,47 @@ public class RecorderData implements Listener {
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            //first place all base blocks
+            //next place the gravity blocks and finally place the attachable blocks
             customblockComparator(baseBlocks);
             customblockComparator(attachableBlocks);
             customblockComparator(gravityBlocks);
             baseBlocks.addAll(gravityBlocks);
+            baseBlocks.addAll(attachableBlocks);
 
-            new RollbackScheduler(baseBlocks, attachableBlocks, minigame, modifier);
+            new RollbackScheduler(baseBlocks, minigame, modifier);
         });
     }
 
     private void customblockComparator(List<MgBlockData> baseBlocks) {
-        baseBlocks.sort((o1, o2) -> {
-            int comp = Integer.compare(o1.getBlockState().getChunk().getX(), o2.getBlockState().getChunk().getX());
-            if (comp != 0)
-                return comp;
-            comp = Integer.compare(o1.getBlockState().getChunk().getZ(), o2.getBlockState().getChunk().getZ());
-            if (comp != 0)
-                return comp;
-            return Integer.compare(o1.getBlockState().getY(), o2.getBlockState().getY());
-        });
+        baseBlocks.sort(
+                Comparator.comparingInt(
+                        (MgBlockData o) -> o.getBlockState().getChunk().getX()
+                ).thenComparingInt(
+                        o -> o.getBlockState().getChunk().getZ()
+                ).thenComparingInt(
+                        o -> o.getBlockState().getY()
+                )
+        );
     }
 
     public void restoreEntities(MinigamePlayer player) {
         Iterator<EntityData> it = entdata.values().iterator();
         while (it.hasNext()) {
-            EntityData entdata = it.next();
-            if (player == null || player.equals(entdata.getModifier())) {
-                if (entdata.wasCreated()) {
-                    Entity ent = entdata.getEntity();
+            EntityData nextEntityData = it.next();
+
+            if (player == null || player.equals(nextEntityData.getModifier())) {
+                if (nextEntityData.wasCreated()) {
+                    Entity ent = nextEntityData.getEntity();
                     // Entity needs to be removed
-                    if (ent.isValid()) {
+                    if (ent != null && ent.isValid()) {
                         ent.remove();
                     }
                 } else {
                     // Entity needs to be spawned
-                    Location location = entdata.getEntityLocation();
-                    location.getWorld().spawnEntity(location, entdata.getEntityType());
+                    //todo restore metadata like armor
+                    Location location = nextEntityData.getEntityLocation();
+                    location.getWorld().spawnEntity(location, nextEntityData.getEntityType());
                 }
 
                 it.remove();
@@ -443,80 +347,97 @@ public class RecorderData implements Listener {
     }
 
     public double getRegenMinX() {
-        if (minigame.getRegenArea1().getX() > minigame.getRegenArea2().getX()) {
-            return minigame.getRegenArea2().getX();
-        }
-        return minigame.getRegenArea1().getX();
+        return Math.min(minigame.getRegenArea1().getX(), minigame.getRegenArea2().getX());
     }
 
     public double getRegenMaxX() {
-        if (minigame.getRegenArea1().getX() < minigame.getRegenArea2().getX()) {
-            return minigame.getRegenArea2().getX();
-        }
-        return minigame.getRegenArea1().getX();
+        return Math.max(minigame.getRegenArea1().getX(), minigame.getRegenArea2().getX());
     }
 
     public double getRegenMinY() {
-        if (minigame.getRegenArea1().getY() > minigame.getRegenArea2().getY()) {
-            return minigame.getRegenArea2().getY();
-        }
-        return minigame.getRegenArea1().getY();
+        return Math.min(minigame.getRegenArea1().getY(), minigame.getRegenArea2().getY());
     }
 
     public double getRegenMaxY() {
-        if (minigame.getRegenArea1().getY() < minigame.getRegenArea2().getY()) {
-            return minigame.getRegenArea2().getY();
-        }
-        return minigame.getRegenArea1().getY();
+        return Math.max(minigame.getRegenArea1().getY(), minigame.getRegenArea2().getY());
     }
 
     public double getRegenMinZ() {
-        if (minigame.getRegenArea1().getZ() > minigame.getRegenArea2().getZ()) {
-            return minigame.getRegenArea2().getZ();
-        }
-        return minigame.getRegenArea1().getZ();
+        return Math.min(minigame.getRegenArea1().getZ(), minigame.getRegenArea2().getZ());
     }
 
     public double getRegenMaxZ() {
-        if (minigame.getRegenArea1().getZ() < minigame.getRegenArea2().getZ()) {
-            return minigame.getRegenArea2().getZ();
-        }
-        return minigame.getRegenArea1().getZ();
+        return Math.max(minigame.getRegenArea1().getZ(), minigame.getRegenArea2().getZ());
     }
 
-    public boolean blockInRegenArea(Location location) {
+    public boolean isInRegenArea(Location location) {
         return location.getWorld() == minigame.getRegenArea1().getWorld() &&
                 location.getBlockX() >= getRegenMinX() && location.getBlockX() <= getRegenMaxX() &&
                 location.getBlockY() >= getRegenMinY() && location.getBlockY() <= getRegenMaxY() &&
                 location.getBlockZ() >= getRegenMinZ() && location.getBlockZ() <= getRegenMaxZ();
     }
 
-    public void saveAllBlockData() {
+    public void saveAllBlockData() { //todo save entity data as well and use hasData() instead of blockdata.isEmpty()
+        if (blockdata.isEmpty())
+            return;
+
         File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.json");
-        Gson gson = new Gson();
+
+        // register custom serializer for Position.
+        // this is purely for backwards compatibility.
+        // If that is not important to you, just use Gson gson = new Gson(); instead of GsonBuilder gsonBuilder = new GsonBuilder();
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        JsonSerializer<Position> serializer = (src, typeOfSrc, context) -> new JsonPrimitive(src.x() + ":" + src.y() + ":" + src.z());
+
+        gsonBuilder.registerTypeAdapter(Position.class, serializer);
+        Gson customGson = gsonBuilder.create();
+
         try (FileWriter writer = new FileWriter(f)) {
-            gson.toJson(blockdata, writer);
+            customGson.toJson(blockdata, writer);
         } catch (FileNotFoundException e) {
-            Bukkit.getLogger().severe("File not found!!!");
+            Minigames.log().severe("File not found!!!");
             e.printStackTrace();
         } catch (IOException e) {
-            Bukkit.getLogger().severe("IO Error!");
+            Minigames.log().severe("IO Error!");
             e.printStackTrace();
         }
     }
 
-    public boolean restoreBlockData() {
+    public boolean restoreBlockData() { //todo load entity data as well
         File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.json");
         if (covertOldFormat()) {
             saveAllBlockData();
             Minigames.getPlugin().getLogger().info("Converted backup for: " + minigame.getName(false));
             return true;
         } else {
-            Gson gson = new Gson();
-            Type type = new TypeToken<Map<String, MgBlockData>>() {
+
+            // register custom deserializer for Position.
+            // this is purely for backwards compatibility.
+            // If that is not important to you, just use Gson gson = new Gson(); instead of GsonBuilder gsonBuilder = new GsonBuilder(); and following
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            JsonDeserializer<Position> deserializer = (json, typeOfT, context) -> {
+                try {
+                String posStr = json.getAsString(); //throws JsonParseException
+
+                 String[] args = posStr.split(":");
+                 if (args.length < 3){
+                     throw new JsonParseException("'" + posStr + "' is not a valid position.");
+                 }
+
+                return new Position(Double.parseDouble(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2])); //throws NumberFormatException
+                } catch (JsonParseException | NumberFormatException exception){
+                    exception.printStackTrace();
+                    return null;
+                }
+            };
+
+            gsonBuilder.registerTypeAdapter(Position.class, deserializer);
+
+            Gson customGson = gsonBuilder.create();
+            Type type = new TypeToken<Map<Position, MgBlockData>>() {
             }.getType();
             try (FileReader reader = new FileReader(f)) {
-                blockdata = gson.fromJson(reader, type);
+                blockdata = customGson.fromJson(reader, type);
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -613,7 +534,7 @@ public class RecorderData implements Listener {
                         bd.setItems(items);
                     }
 
-                    blockdata.put(MinigameUtils.createLocationID(bd.getLocation()), bd);
+                    blockdata.put(Position.block(bd.getLocation()), bd);
                 }
             }
 
@@ -627,149 +548,5 @@ public class RecorderData implements Listener {
         }
 
         return true;
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    private void vehicleCreate(VehicleCreateEvent event) {
-        if (hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getVehicle().getLocation())) {
-            addEntity(event.getVehicle(), null, true);
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    private void vehicleDestroy(VehicleDestroyEvent event) {
-        if (event.getAttacker() == null) {
-            if (hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getVehicle().getLocation())) {
-                addEntity(event.getVehicle(), null, false);
-            }
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    private void animalDeath(EntityDamageByEntityEvent event) {
-        if (event.getEntity() instanceof Animals) {
-            Animals animal = (Animals) event.getEntity();
-            if (hasRegenArea() && minigame.hasPlayers() && !(event.getDamager() instanceof Player)) {
-                Location ent = event.getEntity().getLocation();
-                if (blockInRegenArea(ent)) {
-                    if (animal.getHealth() <= event.getDamage()) {
-                        addEntity(event.getEntity(), null, true);
-                    }
-                }
-            }
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    private void mobSpawnEvent(CreatureSpawnEvent event) {
-        if (hasRegenArea() && minigame.hasPlayers() && blockInRegenArea(event.getLocation())) {
-            addEntity(event.getEntity(), null, true);
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    private void entityExplode(EntityExplodeEvent event) {
-        if (hasRegenArea() && minigame.hasPlayers()) {
-            Location block = event.getLocation().getBlock().getLocation();
-            if (blockInRegenArea(block)) {
-                List<Block> blocks = new ArrayList<>(event.blockList());
-
-                for (Block bl : blocks) {
-                    if ((whitelistMode && getWBBlocks().contains(bl.getType())) ||
-                            (!whitelistMode && !getWBBlocks().contains(bl.getType()))) {
-                        addBlock(bl, null);
-                    } else {
-                        event.blockList().remove(bl);
-                    }
-                }
-            }
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    private void itemDrop(ItemSpawnEvent event) {
-        if (hasRegenArea() && minigame.hasPlayers()) {
-            Location ent = event.getLocation();
-            if (blockInRegenArea(ent)) {
-                addEntity(event.getEntity(), null, true);
-            }
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    private void physicalBlock(EntityChangeBlockEvent event) {
-        if (hasRegenArea() && blockInRegenArea(event.getBlock().getLocation())) {
-            if (minigame.isRegenerating()) {
-                event.setCancelled(true);
-                return;
-            }
-            if (event.getTo() == Material.SAND ||
-                    event.getTo() == Material.GRAVEL ||
-                    event.getTo() == Material.DRAGON_EGG ||
-                    event.getTo() == Material.ANVIL) {
-
-                if (minigame.hasPlayers() || event.getEntity().hasMetadata("FellInMinigame")) {
-                    addEntity(event.getEntity(), null, true);
-                }
-            } else if (event.getEntityType() == EntityType.FALLING_BLOCK && minigame.hasPlayers()) {
-                event.getEntity().setMetadata("FellInMinigame", new FixedMetadataValue(Minigames.getPlugin(), true));
-                addEntity(event.getEntity(), null, true);
-            }
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    private void cartHopperPickup(InventoryPickupItemEvent event) {
-        if (hasRegenArea() && minigame.hasPlayers() && event.getInventory().getHolder() instanceof HopperMinecart) {
-            Location loc = ((HopperMinecart) event.getInventory().getHolder()).getLocation();
-            if (blockInRegenArea(loc)) {
-                addEntity((HopperMinecart) event.getInventory().getHolder(), null, false);
-            }
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    private void cartkMoveItem(InventoryMoveItemEvent event) {
-        if (!hasRegenArea() || !minigame.hasPlayers()) return;
-
-        Location loc = null;
-        if (event.getInitiator().getHolder() instanceof HopperMinecart) {
-            loc = ((HopperMinecart) event.getInitiator().getHolder()).getLocation().clone();
-            if (blockInRegenArea(loc))
-                addEntity((Entity) event.getInitiator().getHolder(), null, false);
-        }
-
-        loc = null;
-        if (event.getDestination().getHolder() instanceof HopperMinecart) {
-            loc = ((HopperMinecart) event.getDestination().getHolder()).getLocation().clone();
-            if (blockInRegenArea(loc))
-                addEntity((Entity) event.getInitiator().getHolder(), null, false);
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    private void physEvent(BlockPhysicsEvent event) {
-        if (minigame.isRegenerating() && hasRegenArea() && blockInRegenArea(event.getBlock().getLocation())) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    private void waterFlow(BlockFromToEvent event) {
-        if (minigame.isRegenerating() && hasRegenArea() && blockInRegenArea(event.getBlock().getLocation()))
-            event.setCancelled(true);
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    private void fireSpread(BlockSpreadEvent event) {
-        if (minigame.isRegenerating() && hasRegenArea() && blockInRegenArea(event.getBlock().getLocation()))
-            event.setCancelled(true);
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    private void interact(PlayerInteractEvent event) {
-        if (minigame.isRegenerating() && hasRegenArea() && blockInRegenArea(event.getClickedBlock().getLocation())) {
-            event.setCancelled(true);
-        }
     }
 }

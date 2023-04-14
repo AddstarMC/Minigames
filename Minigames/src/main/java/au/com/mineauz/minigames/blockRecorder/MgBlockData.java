@@ -15,12 +15,12 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 public class MgBlockData {
-    private Location location;
-    private BlockState state;
-    private String blockData;
+    private final Location location;
+    private final BlockState state;
+    private final String blockData;
     private UUID playerUUID = null;
     private ItemStack[] items = null;
-    private Map<String, Object> specialData = new HashMap<>();
+    private final Map<String, Object> specialData = new HashMap<>();
     private boolean hasRandomized = false;
 
     public MgBlockData(Block original, MinigamePlayer modifier) {
@@ -148,7 +148,7 @@ public class MgBlockData {
             for (ItemStack i : items) {
                 if (i != null) {
                     ret += "(";
-                    ret += "item-" + i.getType().toString() + "|";
+                    ret += "item-" + i.getType() + "|";
                     ret += "dur-" + i.getDurability() + "|";
                     ret += "c-" + i.getAmount() + "|";
                     if (!i.getEnchantments().isEmpty()) {

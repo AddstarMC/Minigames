@@ -67,7 +67,7 @@ public class BackupCommand implements ICommand {
                         if (minigame.getPlayers().size() == 0) {
                             minigame.setState(MinigameState.REGENERATING);
                             Minigames.getPlugin().getMinigameManager().addBlockRecorderData(minigame);
-                            RecorderData d = minigame.getBlockRecorder();
+                            RecorderData d = minigame.getRecorderData();
                             d.saveAllBlockData();
 
                             d.clearRestoreData();
@@ -81,11 +81,11 @@ public class BackupCommand implements ICommand {
                     } else if (args.length == 2 && args[1].equalsIgnoreCase("restore")) {
                         if (minigame.getPlayers().size() == 0) {
 
-                            if (!minigame.getBlockRecorder().restoreBlockData()) {
+                            if (!minigame.getRecorderData().restoreBlockData()) {
                                 sender.sendMessage(ChatColor.RED + "No backup found for " + minigame.getName(false));
                                 return true;
                             }
-                            minigame.getBlockRecorder().restoreBlocks();
+                            minigame.getRecorderData().restoreBlocks();
 
                             sender.sendMessage(ChatColor.GRAY + minigame.getName(false) + " is now restoring from backup.");
                         } else {

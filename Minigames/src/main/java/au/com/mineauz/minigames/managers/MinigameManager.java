@@ -191,27 +191,29 @@ public class MinigameManager {
     }
 
     public Location minigameLocations(final String minigame, final String type, final Configuration save) {
-        final Double locx = (Double) save.get(minigame + '.' + type + ".x");
-        final Double locy = (Double) save.get(minigame + '.' + type + ".y");
-        final Double locz = (Double) save.get(minigame + '.' + type + ".z");
-        final Float yaw = new Float(save.get(minigame + '.' + type + ".yaw",0F).toString());
-        final Float pitch = new Float(save.get(minigame + '.' + type + ".pitch",0F).toString());
-        final String world = (String) save.get(minigame + '.' + type + ".world");
-        return  new Location(PLUGIN.getServer().getWorld(world), locx, locy, locz, yaw, pitch);
+        final double locx = save.getDouble(minigame + '.' + type + ".x");
+        final double locy = save.getDouble(minigame + '.' + type + ".y");
+        final double locz = save.getDouble(minigame + '.' + type + ".z");
+        final double yaw = save.getDouble(minigame + '.' + type + ".yaw",0F);
+        final double pitch = save.getDouble(minigame + '.' + type + ".pitch",0F);
+        final String world = save.getString(minigame + '.' + type + ".world");
+        return  new Location(PLUGIN.getServer().getWorld(world), locx, locy, locz, (float)yaw, (float)pitch);
     }
 
     public void addBlockRecorderData(final Minigame minigame) {
-        if (minigame.getBlockRecorder().hasRegenArea() && !minigame.getBlockRecorder().hasCreatedRegenBlocks()) {
-            final RecorderData d = minigame.getBlockRecorder();
-            d.setCreatedRegenBlocks(true);
-            final Location cur = new Location(minigame.getRegenArea1().getWorld(), 0, 0, 0);
-            for (double y = d.getRegenMinY(); y <= d.getRegenMaxY(); y++) {
-                cur.setY(y);
-                for (double x = d.getRegenMinX(); x <= d.getRegenMaxX(); x++) {
-                    cur.setX(x);
-                    for (double z = d.getRegenMinZ(); z <= d.getRegenMaxZ(); z++) {
-                        cur.setZ(z);
-                        d.addBlock(cur.getBlock(), null);
+        if (minigame.getRecorderData().hasRegenArea() && !minigame.getRecorderData().hasCreatedRegenBlocks()) {
+            final RecorderData recorderData = minigame.getRecorderData();
+            final Location currentLoc = new Location(minigame.getRegenArea1().getWorld(), 0, 0, 0);
+
+            recorderData.setCreatedRegenBlocks(true);
+
+            for (double y = recorderData.getRegenMinY(); y <= recorderData.getRegenMaxY(); y++) {
+                currentLoc.setY(y);
+                for (double x = recorderData.getRegenMinX(); x <= recorderData.getRegenMaxX(); x++) {
+                    currentLoc.setX(x);
+                    for (double z = recorderData.getRegenMinZ(); z <= recorderData.getRegenMaxZ(); z++) {
+                        currentLoc.setZ(z);
+                        recorderData.addBlock(currentLoc.getBlock(), null);
                     }
                 }
             }

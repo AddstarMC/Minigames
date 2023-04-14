@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.managers;
 
 import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.blockRecorder.RegenRecorder;
 import au.com.mineauz.minigames.events.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
@@ -123,8 +124,8 @@ public class MinigamePlayerManager {
 
         if (minigame.getPlayers().size() == 1) {
             //Register regen recorder events
-            if (minigame.getBlockRecorder().hasRegenArea())
-                Bukkit.getServer().getPluginManager().registerEvents(minigame.getBlockRecorder(), plugin);
+            if (minigame.getRecorderData().hasRegenArea())
+                Bukkit.getServer().getPluginManager().registerEvents(new RegenRecorder(minigame), plugin);
             if (mod != null) mod.startTimeLoop();
         }
         //Call Type specific join
@@ -537,10 +538,10 @@ public class MinigamePlayerManager {
                     minigame.setState(MinigameState.IDLE);
                     minigame.setPlayersAtStart(false);
 
-                    if (minigame.getBlockRecorder().hasData()) {
-                        minigame.getBlockRecorder().restoreBlocks();
-                        minigame.getBlockRecorder().restoreEntities();
-                        minigame.getBlockRecorder().setCreatedRegenBlocks(false);
+                    if (minigame.getRecorderData().hasData()) {
+                        minigame.getRecorderData().restoreBlocks();
+                        minigame.getRecorderData().restoreEntities();
+                        minigame.getRecorderData().setCreatedRegenBlocks(false);
                     }
 
                     if (minigame.getMpTimer() != null) {
@@ -572,7 +573,7 @@ public class MinigamePlayerManager {
                 }
 
                 if (minigame.getPlayers().size() == 0 && !minigame.isRegenerating()) {
-                    HandlerList.unregisterAll(minigame.getBlockRecorder());
+                    HandlerList.unregisterAll(minigame.getRecorderData());
                 }
 
                 //Send out messages
