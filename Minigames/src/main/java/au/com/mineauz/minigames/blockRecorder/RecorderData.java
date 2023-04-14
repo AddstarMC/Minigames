@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.blockRecorder;
 
+import au.com.mineauz.minigames.minigame.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Callback;
@@ -76,6 +77,8 @@ public class RecorderData implements Listener {
     private Map<Position, MgBlockData> blockdata = new HashMap<>();
     private final Map<UUID, EntityData> entdata = new HashMap<>();
     private final List<Material> wbBlocks = new ArrayList<>();
+
+    private static final Object MUTEX = new Object();
 
     public RecorderData(Minigame minigame) {
         plugin = Minigames.getPlugin();
@@ -167,15 +170,21 @@ public class RecorderData implements Listener {
                 }
             }
 
-            blockdata.put(pos, bdata);
+            synchronized (MUTEX){
+                blockdata.put(pos, bdata);
+            }
             return bdata;
         } else { //already known
             //set last modifier of a not random inventory
             if (block.getType() != Material.CHEST || !blockdata.get(pos).hasRandomized()){
-                blockdata.get(pos).setModifier(modifier);
+                synchronized (MUTEX){
+                    blockdata.get(pos).setModifier(modifier);
+                }
             }
 
-            return blockdata.get(pos);
+            synchronized (MUTEX){
+                return blockdata.get(pos);
+            }
         }
     }
 
@@ -201,11 +210,18 @@ public class RecorderData implements Listener {
     }
 
     public boolean hasBlock(Block block) {
-        return blockdata.containsKey(Position.block(block.getLocation()));
+        synchronized (MUTEX){
+            return blockdata.containsKey(Position.block(block.getLocation()));
+        }
     }
 
     public void restoreAll(MinigamePlayer modifier) {
-        if (!blockdata.isEmpty()) {
+        boolean isBlockDataEmpty;
+        synchronized (MUTEX){
+            isBlockDataEmpty = blockdata.isEmpty();
+        }
+
+        if (!isBlockDataEmpty) {
             restoreBlocks(modifier);
         }
 
@@ -229,8 +245,10 @@ public class RecorderData implements Listener {
         if (modifier == null) {
             minigame.setState(MinigameState.REGENERATING);
         }
-
-        Iterator<MgBlockData> it = blockdata.values().iterator();
+        Iterator<MgBlockData> it;
+        synchronized (MUTEX){
+            it = blockdata.values().iterator();
+        }
         final List<MgBlockData> baseBlocks = Lists.newArrayList();
         final List<MgBlockData> gravityBlocks = Lists.newArrayList();
         final List<MgBlockData> attachableBlocks = Lists.newArrayList();
@@ -309,11 +327,15 @@ public class RecorderData implements Listener {
 
     public void clearRestoreData() {
         entdata.clear();
-        blockdata.clear();
+        synchronized (MUTEX){
+            blockdata.clear();
+        }
     }
 
     public boolean hasData() {
-        return !(blockdata.isEmpty() && entdata.isEmpty());
+        synchronized (MUTEX){
+            return !(blockdata.isEmpty() && entdata.isEmpty());
+        }
     }
 
     public boolean checkBlockSides(Location location) {
@@ -343,43 +365,51 @@ public class RecorderData implements Listener {
     }
 
     public boolean hasRegenArea() {
-        return minigame.getRegenArea1() != null && minigame.getRegenArea2() != null;
+        return minigame.getRegenRegions () != null && !minigame.getRegenRegions ().isEmpty();
     }
 
-    public double getRegenMinX() {
-        return Math.min(minigame.getRegenArea1().getX(), minigame.getRegenArea2().getX());
+    public double getRegenMinX(int i) {
+        return Math.min(minigame.getRegenRegions().get(i).pos1().x(), minigame.getRegenRegions().get(i).pos2().x());
     }
 
-    public double getRegenMaxX() {
-        return Math.max(minigame.getRegenArea1().getX(), minigame.getRegenArea2().getX());
+    public double getRegenMaxX(int i) {
+        return Math.max(minigame.getRegenRegions().get(i).pos1().x(), minigame.getRegenRegions().get(i).pos2().x());
     }
 
-    public double getRegenMinY() {
-        return Math.min(minigame.getRegenArea1().getY(), minigame.getRegenArea2().getY());
+    public double getRegenMinY(int i) {
+        return Math.min(minigame.getRegenRegions().get(i).pos1().y(), minigame.getRegenRegions().get(i).pos2().y());
     }
 
-    public double getRegenMaxY() {
-        return Math.max(minigame.getRegenArea1().getY(), minigame.getRegenArea2().getY());
+    public double getRegenMaxY(int i) {
+        return Math.max(minigame.getRegenRegions().get(i).pos1().y(), minigame.getRegenRegions().get(i).pos2().y());
     }
 
-    public double getRegenMinZ() {
-        return Math.min(minigame.getRegenArea1().getZ(), minigame.getRegenArea2().getZ());
+    public double getRegenMinZ(int i) {
+        return Math.min(minigame.getRegenRegions().get(i).pos1().z(), minigame.getRegenRegions().get(i).pos2().z());
     }
 
-    public double getRegenMaxZ() {
-        return Math.max(minigame.getRegenArea1().getZ(), minigame.getRegenArea2().getZ());
+    public double getRegenMaxZ(int i) {
+        return Math.max(minigame.getRegenRegions().get(i).pos1().z(), minigame.getRegenRegions().get(i).pos2().z());
     }
 
     public boolean isInRegenArea(Location location) {
-        return location.getWorld() == minigame.getRegenArea1().getWorld() &&
-                location.getBlockX() >= getRegenMinX() && location.getBlockX() <= getRegenMaxX() &&
-                location.getBlockY() >= getRegenMinY() && location.getBlockY() <= getRegenMaxY() &&
-                location.getBlockZ() >= getRegenMinZ() && location.getBlockZ() <= getRegenMaxZ();
+        for (int i = 0; i < minigame.getRegenRegions().size(); i++){
+            if (location.getWorld().getUID() == minigame.getRegenRegions().get(i).world().getUID() &&
+                    location.getBlockX() >= getRegenMinX(i) && location.getBlockX() <= getRegenMaxX(i) &&
+                    location.getBlockY() >= getRegenMinY(i) && location.getBlockY() <= getRegenMaxY(i) &&
+                    location.getBlockZ() >= getRegenMinZ(i) && location.getBlockZ() <= getRegenMaxZ(i)){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void saveAllBlockData() { //todo save entity data as well and use hasData() instead of blockdata.isEmpty()
-        if (blockdata.isEmpty())
-            return;
+        synchronized (MUTEX){
+            if (blockdata.isEmpty())
+                return;
+        }
 
         File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.json");
 
@@ -393,7 +423,9 @@ public class RecorderData implements Listener {
         Gson customGson = gsonBuilder.create();
 
         try (FileWriter writer = new FileWriter(f)) {
-            customGson.toJson(blockdata, writer);
+            synchronized (MUTEX){
+                customGson.toJson(blockdata, writer);
+            }
         } catch (FileNotFoundException e) {
             Minigames.log().severe("File not found!!!");
             e.printStackTrace();
@@ -437,7 +469,9 @@ public class RecorderData implements Listener {
             Type type = new TypeToken<Map<Position, MgBlockData>>() {
             }.getType();
             try (FileReader reader = new FileReader(f)) {
-                blockdata = customGson.fromJson(reader, type);
+                synchronized (MUTEX){
+                    blockdata = customGson.fromJson(reader, type);
+                }
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -533,8 +567,9 @@ public class RecorderData implements Listener {
 
                         bd.setItems(items);
                     }
-
-                    blockdata.put(Position.block(bd.getLocation()), bd);
+                    synchronized (MUTEX){
+                        blockdata.put(Position.block(bd.getLocation()), bd);
+                    }
                 }
             }
 

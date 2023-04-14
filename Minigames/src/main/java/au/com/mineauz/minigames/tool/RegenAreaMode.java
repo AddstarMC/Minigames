@@ -34,7 +34,7 @@ public class RegenAreaMode implements ToolMode {
 
     @Override
     public void onLeftClick(MinigamePlayer player, Minigame minigame,
-                            Team team, PlayerInteractEvent event) {
+                            Team team, PlayerInteractEvent event) { //todo
         if (player.hasSelection()) {
             minigame.setRegenArea1(player.getSelectionPoints()[0]);
             minigame.setRegenArea2(player.getSelectionPoints()[1]);
@@ -71,7 +71,7 @@ public class RegenAreaMode implements ToolMode {
 
     @Override
     public void select(MinigamePlayer player, Minigame minigame, Team team) {
-        if (minigame.getRegenArea1() != null && minigame.getRegenArea2() != null) {
+        if (!minigame.getRegenRegions().isEmpty()) {
             player.setSelection(minigame.getRegenArea1(), minigame.getRegenArea2());
             player.showSelection(false);
             player.sendInfoMessage("Selected regeneration area in " + minigame);
@@ -82,7 +82,7 @@ public class RegenAreaMode implements ToolMode {
 
     @Override
     public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
-        if (minigame.getRegenArea1() != null && minigame.getRegenArea2() != null) {
+        if (!minigame.getRegenRegions().isEmpty()) {
             player.setSelection(minigame.getRegenArea1(), minigame.getRegenArea2());
             player.showSelection(true);
             player.sendInfoMessage("Deselected regeneration area in " + minigame);

@@ -6,18 +6,9 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.MultiplayerBets;
 import au.com.mineauz.minigames.MultiplayerTimer;
+import au.com.mineauz.minigames.blockRecorder.Position;
 import au.com.mineauz.minigames.blockRecorder.RecorderData;
-import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.config.EnumFlag;
-import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.FloatFlag;
-import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.ListFlag;
-import au.com.mineauz.minigames.config.LocationFlag;
-import au.com.mineauz.minigames.config.LocationListFlag;
-import au.com.mineauz.minigames.config.MinigameSave;
-import au.com.mineauz.minigames.config.SimpleLocationFlag;
-import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.config.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
@@ -83,7 +74,7 @@ public class Minigame implements ScriptObject {
     private IntegerFlag minPlayers = new IntegerFlag(2, "minplayers");
     private IntegerFlag maxPlayers = new IntegerFlag(4, "maxplayers");
     private BooleanFlag spMaxPlayers = new BooleanFlag(false, "spMaxPlayers");
-    private ListFlag flags = new ListFlag(null, "flags");
+    private StrListFlag flags = new StrListFlag(null, "flags");
     private MinigameState state = MinigameState.IDLE;
 
     private SimpleLocationFlag floorDegen1 = new SimpleLocationFlag(null, "sfloorpos.1");
@@ -134,8 +125,7 @@ public class Minigame implements ScriptObject {
     private BooleanFlag lateJoin = new BooleanFlag(false, "latejoin");
     private FloatFlag lives = new FloatFlag(0F, "lives");
 
-    private LocationFlag regenArea1 = new LocationFlag(null, "regenarea.1");
-    private LocationFlag regenArea2 = new LocationFlag(null, "regenarea.2");
+    private RegionListFlag regenRegions = new RegionListFlag(new ArrayList<>(), "regenRegions");
     private IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
 
     private Map<String, MinigameModule> modules = new HashMap<>();
@@ -256,8 +246,7 @@ public class Minigame implements ScriptObject {
         addConfigFlag(paintBallMode);
         addConfigFlag(quitPosition);
         addConfigFlag(randomizeChests);
-        addConfigFlag(regenArea1);
-        addConfigFlag(regenArea2);
+        addConfigFlag(regenRegions);
         addConfigFlag(regenDelay);
         addConfigFlag(saveCheckpoints);
         addConfigFlag(mechanic);
@@ -930,20 +919,26 @@ public class Minigame implements ScriptObject {
         this.maxChestRandom.setFlag(maxChestRandom);
     }
 
-    public Location getRegenArea1() {
-        return regenArea1.getFlag();
+    public List<MgRegion> getRegenRegions() {
+        return regenRegions.getFlag();
     }
 
-    public void setRegenArea1(Location regenArea1) {
-        this.regenArea1.setFlag(regenArea1);
+    public void setRegionX(MgRegion mgRegion, int i) {
+        if (i >= regenRegions.getFlag().size()){
+            regenRegions.getFlag().add(mgRegion);
+        } else {
+            regenRegions.getFlag().set(i, mgRegion);
+        }
     }
 
-    public Location getRegenArea2() {
-        return regenArea2.getFlag();
-    }
+    public void setRegionXLocation(Location location, int i, boolean first) {
+        if (i >= regenRegions.getFlag().size()){
+            regenRegions.getFlag().add(new MgRegion(location.getWorld(), first ? Position.block(location) : null, first ? null : Position.block(location)));
+        } else {
+            MgRegion region = regenRegions.getFlag().get(i);
 
-    public void setRegenArea2(Location regenArea2) {
-        this.regenArea2.setFlag(regenArea2);
+            regenRegions.getFlag().set(i, new MgRegion(location.getWorld(), first ? Position.block(location) : region.pos1(), first ? region.pos2() : Position.block(location)));
+        }
     }
 
     public int getRegenDelay() {

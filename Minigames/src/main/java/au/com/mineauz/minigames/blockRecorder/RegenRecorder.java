@@ -3,7 +3,6 @@ package au.com.mineauz.minigames.blockRecorder;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
@@ -117,11 +116,7 @@ public class RegenRecorder implements Listener {
                 event.setCancelled(true);
                 return;
             }
-            if (event.getTo() == Material.SAND ||
-                    event.getTo() == Material.GRAVEL ||
-                    event.getTo() == Material.DRAGON_EGG ||
-                    event.getTo() == Material.ANVIL) {
-
+            if (event.getTo().hasGravity()) {
                 if (minigame.hasPlayers() || event.getEntity().hasMetadata("FellInMinigame")) {
                     recorderData.addEntity(event.getEntity(), null, true);
                 }

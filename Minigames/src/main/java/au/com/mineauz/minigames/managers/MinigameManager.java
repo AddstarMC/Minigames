@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.managers;
 
 import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.blockRecorder.Position;
 import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.config.RewardsFlag;
@@ -19,6 +20,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -203,20 +205,52 @@ public class MinigameManager {
     public void addBlockRecorderData(final Minigame minigame) {
         if (minigame.getRecorderData().hasRegenArea() && !minigame.getRecorderData().hasCreatedRegenBlocks()) {
             final RecorderData recorderData = minigame.getRecorderData();
-            final Location currentLoc = new Location(minigame.getRegenArea1().getWorld(), 0, 0, 0);
 
             recorderData.setCreatedRegenBlocks(true);
 
-            for (double y = recorderData.getRegenMinY(); y <= recorderData.getRegenMaxY(); y++) {
-                currentLoc.setY(y);
-                for (double x = recorderData.getRegenMinX(); x <= recorderData.getRegenMaxX(); x++) {
-                    currentLoc.setX(x);
-                    for (double z = recorderData.getRegenMinZ(); z <= recorderData.getRegenMaxZ(); z++) {
-                        currentLoc.setZ(z);
-                        recorderData.addBlock(currentLoc.getBlock(), null);
+            final HashSet<Position> positions = new HashSet<>();
+
+            //create
+            Bukkit.getScheduler().runTaskAsynchronously(Minigames.getPlugin(), () ->{
+                synchronized (positions) {
+
+                    for (int i = 0; i < recorderData.getMinigame().getRegenRegions().size(); i++){
+                        for (double y = recorderData.getRegenMinY(i); y <= recorderData.getRegenMaxY(i); y++) {
+                            for (double x = recorderData.getRegenMinX(i); x <= recorderData.getRegenMaxX(i); x++) {
+                                for (double z = recorderData.getRegenMinZ(i); z <= recorderData.getRegenMaxZ(i); z++) {
+                                    positions.add(new Position(x, y, z));
+                                }
+                            }
+                        }
+
+                        Iterator<Position> iterator = positions.iterator();
+
+                        int finalI = i;
+                        BukkitTask task = Bukkit.getScheduler().runTaskTimerAsynchronously(Minigames.getPlugin(), () -> {//todo abbruch wenn minigame beendet
+                            synchronized (positions) { //wait for first thread
+                                while (iterator.hasNext()) {
+                                    long time = System.nanoTime();
+
+                                    Position posNow = iterator.next();
+
+                                    //add block
+                                    recorderData.addBlock(posNow.toLocation(minigame.getRegenRegions().get(finalI).world()).getBlock(), null);
+
+                                    //free used postions
+                                    iterator.remove();
+
+                                    if (System.nanoTime() - time > 2 * 1000000)
+                                        return;
+                                }
+                            }
+                        }, 41, 2);
+
                     }
                 }
-            }
+            });
+
+
+
             Minigames.debugMessage("Block Regen Data has been created for "+minigame.getName(false));
         }
 
