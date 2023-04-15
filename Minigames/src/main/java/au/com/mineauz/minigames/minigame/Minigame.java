@@ -54,7 +54,8 @@ public class Minigame implements ScriptObject {
     private final StrListFlag flags = new StrListFlag(null, "flags");
     private MinigameState state = MinigameState.IDLE;
 
-    private final RegionFlag floorDegen = new RegionFlag(null, "sfloor");
+    private final SimpleLocationFlag floorDegen1 = new SimpleLocationFlag(null, "sfloorpos.1");
+    private final SimpleLocationFlag floorDegen2 = new SimpleLocationFlag(null, "sfloorpos.2");
     private final StringFlag degenType = new StringFlag("inward", "degentype");
     private final IntegerFlag degenRandomChance = new IntegerFlag(15, "degenrandom");
     private FloorDegenerator sfloordegen;
