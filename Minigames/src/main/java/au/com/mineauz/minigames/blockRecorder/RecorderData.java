@@ -1,15 +1,13 @@
 package au.com.mineauz.minigames.blockRecorder;
 
-import au.com.mineauz.minigames.minigame.MgRegion;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import com.google.common.collect.Lists;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-
 import io.papermc.lib.PaperLib;
 import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshotResult;
 import org.bukkit.*;
@@ -18,7 +16,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.data.Hangable;
-import org.bukkit.block.data.type.Bamboo;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Listener;
@@ -162,29 +159,24 @@ public class RecorderData implements Listener {
                             secondChest.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
                     }
                 } else if (invHolder instanceof Chest) {
-                        addInventory(bdata, invHolder);
-                        if (minigame.isRandomizeChests())
-                            bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
+                    addInventory(bdata, invHolder);
+                    if (minigame.isRandomizeChests())
+                        bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
                 } else {
                     addInventory(bdata, invHolder);
                 }
             }
 
-            synchronized (MUTEX){
-                blockdata.put(pos, bdata);
-            }
+            blockdata.put(pos, bdata);
+
             return bdata;
         } else { //already known
             //set last modifier of a not random inventory
             if (block.getType() != Material.CHEST || !blockdata.get(pos).hasRandomized()){
-                synchronized (MUTEX){
-                    blockdata.get(pos).setModifier(modifier);
-                }
+                blockdata.get(pos).setModifier(modifier);
             }
 
-            synchronized (MUTEX){
-                return blockdata.get(pos);
-            }
+            return blockdata.get(pos);
         }
     }
 
@@ -210,16 +202,12 @@ public class RecorderData implements Listener {
     }
 
     public boolean hasBlock(Block block) {
-        synchronized (MUTEX){
-            return blockdata.containsKey(Position.block(block.getLocation()));
-        }
+        return blockdata.containsKey(Position.block(block.getLocation()));
     }
 
     public void restoreAll(MinigamePlayer modifier) {
         boolean isBlockDataEmpty;
-        synchronized (MUTEX){
-            isBlockDataEmpty = blockdata.isEmpty();
-        }
+        isBlockDataEmpty = blockdata.isEmpty();
 
         if (!isBlockDataEmpty) {
             restoreBlocks(modifier);
@@ -245,10 +233,8 @@ public class RecorderData implements Listener {
         if (modifier == null) {
             minigame.setState(MinigameState.REGENERATING);
         }
-        Iterator<MgBlockData> it;
-        synchronized (MUTEX){
-            it = blockdata.values().iterator();
-        }
+        Iterator<MgBlockData> it = blockdata.values().iterator();
+
         final List<MgBlockData> baseBlocks = Lists.newArrayList();
         final List<MgBlockData> gravityBlocks = Lists.newArrayList();
         final List<MgBlockData> attachableBlocks = Lists.newArrayList();
@@ -327,15 +313,11 @@ public class RecorderData implements Listener {
 
     public void clearRestoreData() {
         entdata.clear();
-        synchronized (MUTEX){
-            blockdata.clear();
-        }
+        blockdata.clear();
     }
 
     public boolean hasData() {
-        synchronized (MUTEX){
-            return !(blockdata.isEmpty() && entdata.isEmpty());
-        }
+        return !(blockdata.isEmpty() && entdata.isEmpty());
     }
 
     public boolean checkBlockSides(Location location) {
@@ -364,51 +346,9 @@ public class RecorderData implements Listener {
         return false;
     }
 
-    public boolean hasRegenArea() {
-        return minigame.getRegenRegions () != null && !minigame.getRegenRegions ().isEmpty();
-    }
-
-    public double getRegenMinX(int i) {
-        return Math.min(minigame.getRegenRegions().get(i).pos1().x(), minigame.getRegenRegions().get(i).pos2().x());
-    }
-
-    public double getRegenMaxX(int i) {
-        return Math.max(minigame.getRegenRegions().get(i).pos1().x(), minigame.getRegenRegions().get(i).pos2().x());
-    }
-
-    public double getRegenMinY(int i) {
-        return Math.min(minigame.getRegenRegions().get(i).pos1().y(), minigame.getRegenRegions().get(i).pos2().y());
-    }
-
-    public double getRegenMaxY(int i) {
-        return Math.max(minigame.getRegenRegions().get(i).pos1().y(), minigame.getRegenRegions().get(i).pos2().y());
-    }
-
-    public double getRegenMinZ(int i) {
-        return Math.min(minigame.getRegenRegions().get(i).pos1().z(), minigame.getRegenRegions().get(i).pos2().z());
-    }
-
-    public double getRegenMaxZ(int i) {
-        return Math.max(minigame.getRegenRegions().get(i).pos1().z(), minigame.getRegenRegions().get(i).pos2().z());
-    }
-
-    public boolean isInRegenArea(Location location) {
-        for (int i = 0; i < minigame.getRegenRegions().size(); i++){
-            if (location.getWorld().getUID() == minigame.getRegenRegions().get(i).world().getUID() &&
-                    location.getBlockX() >= getRegenMinX(i) && location.getBlockX() <= getRegenMaxX(i) &&
-                    location.getBlockY() >= getRegenMinY(i) && location.getBlockY() <= getRegenMaxY(i) &&
-                    location.getBlockZ() >= getRegenMinZ(i) && location.getBlockZ() <= getRegenMaxZ(i)){
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public void saveAllBlockData() { //todo save entity data as well and use hasData() instead of blockdata.isEmpty()
-        synchronized (MUTEX){
-            if (blockdata.isEmpty())
-                return;
+        if (blockdata.isEmpty()) {
+            return;
         }
 
         File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.json");
@@ -423,9 +363,7 @@ public class RecorderData implements Listener {
         Gson customGson = gsonBuilder.create();
 
         try (FileWriter writer = new FileWriter(f)) {
-            synchronized (MUTEX){
-                customGson.toJson(blockdata, writer);
-            }
+            customGson.toJson(blockdata, writer);
         } catch (FileNotFoundException e) {
             Minigames.log().severe("File not found!!!");
             e.printStackTrace();
@@ -469,9 +407,7 @@ public class RecorderData implements Listener {
             Type type = new TypeToken<Map<Position, MgBlockData>>() {
             }.getType();
             try (FileReader reader = new FileReader(f)) {
-                synchronized (MUTEX){
-                    blockdata = customGson.fromJson(reader, type);
-                }
+                blockdata = customGson.fromJson(reader, type);
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -567,9 +503,8 @@ public class RecorderData implements Listener {
 
                         bd.setItems(items);
                     }
-                    synchronized (MUTEX){
-                        blockdata.put(Position.block(bd.getLocation()), bd);
-                    }
+
+                    blockdata.put(Position.block(bd.getLocation()), bd);
                 }
             }
 

@@ -1,7 +1,9 @@
 package au.com.mineauz.minigames.managers;
 
-import au.com.mineauz.minigames.*;
-import au.com.mineauz.minigames.blockRecorder.Position;
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.config.RewardsFlag;
@@ -9,6 +11,7 @@ import au.com.mineauz.minigames.events.StartGlobalMinigameEvent;
 import au.com.mineauz.minigames.events.StopGlobalMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MinigameTypeBase;
+import au.com.mineauz.minigames.minigame.MgRegion;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.modules.*;
@@ -20,7 +23,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -192,68 +194,25 @@ public class MinigameManager {
         this.configs.remove(filename);
     }
 
-    public Location minigameLocations(final String minigame, final String type, final Configuration save) {
-        final double locx = save.getDouble(minigame + '.' + type + ".x");
-        final double locy = save.getDouble(minigame + '.' + type + ".y");
-        final double locz = save.getDouble(minigame + '.' + type + ".z");
-        final double yaw = save.getDouble(minigame + '.' + type + ".yaw",0F);
-        final double pitch = save.getDouble(minigame + '.' + type + ".pitch",0F);
-        final String world = save.getString(minigame + '.' + type + ".world");
-        return  new Location(PLUGIN.getServer().getWorld(world), locx, locy, locz, (float)yaw, (float)pitch);
-    }
-
     public void addBlockRecorderData(final Minigame minigame) {
-        if (minigame.getRecorderData().hasRegenArea() && !minigame.getRecorderData().hasCreatedRegenBlocks()) {
+        if (minigame.hasRegenArea() && !minigame.getRecorderData().hasCreatedRegenBlocks()) {
             final RecorderData recorderData = minigame.getRecorderData();
 
             recorderData.setCreatedRegenBlocks(true);
 
-            final HashSet<Position> positions = new HashSet<>();
-
-            //create
-            Bukkit.getScheduler().runTaskAsynchronously(Minigames.getPlugin(), () ->{
-                synchronized (positions) {
-
-                    for (int i = 0; i < recorderData.getMinigame().getRegenRegions().size(); i++){
-                        for (double y = recorderData.getRegenMinY(i); y <= recorderData.getRegenMaxY(i); y++) {
-                            for (double x = recorderData.getRegenMinX(i); x <= recorderData.getRegenMaxX(i); x++) {
-                                for (double z = recorderData.getRegenMinZ(i); z <= recorderData.getRegenMaxZ(i); z++) {
-                                    positions.add(new Position(x, y, z));
-                                }
-                            }
+            for (MgRegion region : recorderData.getMinigame().getRegenRegions()) {
+                for (int x = (int) region.getMinX(); x <= region.getMinX(); x++) {
+                    for (int y = (int) region.getMinY(); y <= region.getMaxY(); y++) {
+                        for (int z = (int) region.getMinZ(); z <= region.getMaxZ(); z++) {
+                            //add block
+                            recorderData.addBlock(region.getWorld().getBlockAt(x, y, z), null);
                         }
-
-                        Iterator<Position> iterator = positions.iterator();
-
-                        int finalI = i;
-                        BukkitTask task = Bukkit.getScheduler().runTaskTimerAsynchronously(Minigames.getPlugin(), () -> {//todo abbruch wenn minigame beendet
-                            synchronized (positions) { //wait for first thread
-                                while (iterator.hasNext()) {
-                                    long time = System.nanoTime();
-
-                                    Position posNow = iterator.next();
-
-                                    //add block
-                                    recorderData.addBlock(posNow.toLocation(minigame.getRegenRegions().get(finalI).world()).getBlock(), null);
-
-                                    //free used postions
-                                    iterator.remove();
-
-                                    if (System.nanoTime() - time > 2 * 1000000)
-                                        return;
-                                }
-                            }
-                        }, 41, 2);
-
                     }
                 }
-            });
+            }
 
-
-
-            Minigames.debugMessage("Block Regen Data has been created for "+minigame.getName(false));
+            Minigames.debugMessage("Block Regen Data has been created for " + minigame.getName(false));
         }
-
     }
 
     public void addMinigameType(final MinigameTypeBase minigameType) {

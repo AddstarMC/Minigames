@@ -5,13 +5,14 @@ import au.com.mineauz.minigames.minigame.MgRegion;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-public class RegionListFlag extends Flag<List<MgRegion>> {
+public class RegionMapFlag extends Flag<Map<String, MgRegion>> {
 
-    public RegionListFlag(List<MgRegion> value, String name) {
+    public RegionMapFlag(Map<String, MgRegion> value, String name) {
         setFlag(value);
         setDefaultFlag(value);
         setName(name);
@@ -22,8 +23,8 @@ public class RegionListFlag extends Flag<List<MgRegion>> {
         if (!getFlag().isEmpty()) {
             RegionFlag regionFlag;
 
-            for (int i = 0; i < getFlag().size(); i++) {
-                regionFlag = new RegionFlag(getFlag().get(i), getName() + "." + i);
+            for (MgRegion region : getFlag().values()) {
+                regionFlag = new RegionFlag(region, getName() + "." + region.getName());
                 regionFlag.saveValue(path, config);
             }
         }
@@ -31,14 +32,14 @@ public class RegionListFlag extends Flag<List<MgRegion>> {
 
     @Override
     public void loadValue(String path, FileConfiguration config) {
-        List<MgRegion> regions = new ArrayList<>();
-        Set<String> ids = config.getConfigurationSection(path + "." + getName()).getKeys(false);
+        Map<String, MgRegion> regions = new HashMap<>();
+        Set<String> regionNames = config.getConfigurationSection(path + "." + getName()).getKeys(false);
         RegionFlag regionFlag;
 
-        for (int i = 0; i < ids.size(); i++) {
-            regionFlag = new RegionFlag(null, getName() + "." + i);
+        for (String regionName : regionNames) {
+            regionFlag = new RegionFlag(null, getName() + "." + regionName);
             regionFlag.loadValue(path, config);
-            regions.add(regionFlag.getFlag());
+            regions.put(regionFlag.getFlag().getName(), regionFlag.getFlag());
         }
         setFlag(regions);
     }

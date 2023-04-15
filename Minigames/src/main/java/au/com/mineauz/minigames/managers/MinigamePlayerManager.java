@@ -124,7 +124,7 @@ public class MinigamePlayerManager {
 
         if (minigame.getPlayers().size() == 1) {
             //Register regen recorder events
-            if (minigame.getRecorderData().hasRegenArea())
+            if (minigame.hasRegenArea())
                 Bukkit.getServer().getPluginManager().registerEvents(new RegenRecorder(minigame), plugin);
             if (mod != null) mod.startTimeLoop();
         }
