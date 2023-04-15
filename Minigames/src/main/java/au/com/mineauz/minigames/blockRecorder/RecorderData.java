@@ -76,8 +76,6 @@ public class RecorderData implements Listener {
     private final Map<UUID, EntityData> entdata = new HashMap<>();
     private final List<Material> wbBlocks = new ArrayList<>();
 
-    private static final Object MUTEX = new Object();
-
     public RecorderData(Minigame minigame) {
         plugin = Minigames.getPlugin();
 
