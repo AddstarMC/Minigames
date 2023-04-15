@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.config;
 
-import au.com.mineauz.minigames.blockRecorder.Position;
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.minigame.MgRegion;
+import au.com.mineauz.minigames.objects.MgRegion;
+import au.com.mineauz.minigames.objects.Position;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;

@@ -1,41 +1,18 @@
 package au.com.mineauz.minigames.minigame;
 
-import au.com.mineauz.minigames.FloorDegenerator;
-import au.com.mineauz.minigames.MinigameTimer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.MultiplayerBets;
-import au.com.mineauz.minigames.MultiplayerTimer;
-import au.com.mineauz.minigames.blockRecorder.Position;
+import au.com.mineauz.minigames.*;
 import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.config.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemAddFlag;
-import au.com.mineauz.minigames.menu.MenuItemBoolean;
-import au.com.mineauz.minigames.menu.MenuItemCustom;
-import au.com.mineauz.minigames.menu.MenuItemDisplayLoadout;
-import au.com.mineauz.minigames.menu.MenuItemDisplayWhitelist;
-import au.com.mineauz.minigames.menu.MenuItemFlag;
-import au.com.mineauz.minigames.menu.MenuItemInteger;
-import au.com.mineauz.minigames.menu.MenuItemList;
-import au.com.mineauz.minigames.menu.MenuItemLoadoutAdd;
-import au.com.mineauz.minigames.menu.MenuItemNewLine;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuItemSaveMinigame;
-import au.com.mineauz.minigames.menu.MenuItemStatisticsSettings;
-import au.com.mineauz.minigames.menu.MenuItemString;
-import au.com.mineauz.minigames.menu.MenuItemTime;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.CTFFlag;
+import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptCollection;
 import au.com.mineauz.minigames.script.ScriptObject;
@@ -124,8 +101,8 @@ public class Minigame implements ScriptObject {
     private final BooleanFlag lateJoin = new BooleanFlag(false, "latejoin");
     private final FloatFlag lives = new FloatFlag(0F, "lives");
 
-    private RegionListFlag regenRegions = new RegionListFlag(new ArrayList<>(), "regenRegions");
-    private IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
+    private final RegionMapFlag regenRegions = new RegionMapFlag(new HashMap<>(), "regenRegions");
+    private final IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
 
     private final Map<String, MinigameModule> modules = new HashMap<>();
     private Scoreboard sbManager = Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard();

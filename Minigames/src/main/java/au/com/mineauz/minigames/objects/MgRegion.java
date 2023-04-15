@@ -1,6 +1,5 @@
-package au.com.mineauz.minigames.minigame;
+package au.com.mineauz.minigames.objects;
 
-import au.com.mineauz.minigames.blockRecorder.Position;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;

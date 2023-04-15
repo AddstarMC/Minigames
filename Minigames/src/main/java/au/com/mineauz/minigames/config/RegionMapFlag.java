@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.minigame.MgRegion;
+import au.com.mineauz.minigames.objects.MgRegion;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 

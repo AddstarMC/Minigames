@@ -1,4 +1,4 @@
-package au.com.mineauz.minigames.blockRecorder;
+package au.com.mineauz.minigames.objects;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -6,8 +6,6 @@ import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 //io.papermc.paper.math.FinePosition
 //please note: This is a copy of an experimental implementation. It is most likely not compatible with later versions or even the original.
