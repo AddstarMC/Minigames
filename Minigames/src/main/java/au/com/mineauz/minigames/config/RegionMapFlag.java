@@ -4,6 +4,8 @@ import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.objects.MgRegion;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,8 +13,21 @@ import java.util.Map;
 import java.util.Set;
 
 public class RegionMapFlag extends Flag<Map<String, MgRegion>> {
+    private final @Nullable String legacyFistPointLabel, legacySecondPointLabel;
 
-    public RegionMapFlag(Map<String, MgRegion> value, String name) {
+    public RegionMapFlag(@NotNull Map<String, MgRegion> value, @NotNull String name, @Nullable String legacyFirstPoint, @Nullable String legacySecondPoint) {
+        this.legacyFistPointLabel = legacyFirstPoint;
+        this.legacySecondPointLabel = legacySecondPoint;
+
+        setFlag(value);
+        setDefaultFlag(value);
+        setName(name);
+    }
+
+    public RegionMapFlag(@NotNull Map<String, MgRegion> value, @NotNull String name) {
+        this.legacyFistPointLabel = null;
+        this.legacySecondPointLabel = null;
+
         setFlag(value);
         setDefaultFlag(value);
         setName(name);
@@ -41,6 +56,17 @@ public class RegionMapFlag extends Flag<Map<String, MgRegion>> {
             regionFlag.loadValue(path, config);
             regions.put(regionFlag.getFlag().getName(), regionFlag.getFlag());
         }
+
+        //import legacy regions from before regions existed
+        if (legacyFistPointLabel != null && legacySecondPointLabel != null) {
+            SimpleLocationFlag locFlag1 = new SimpleLocationFlag(null, legacyFistPointLabel);
+            SimpleLocationFlag locFlag2 = new SimpleLocationFlag(null, legacySecondPointLabel);
+
+            if (locFlag1.getFlag() != null && locFlag2.getFlag() != null) {
+                regions.put("legacy", new MgRegion("legacy", locFlag1.getFlag(), locFlag2.getFlag()));
+            }
+        }
+
         setFlag(regions);
     }
 

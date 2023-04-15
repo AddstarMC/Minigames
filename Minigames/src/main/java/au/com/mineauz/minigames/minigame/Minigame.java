@@ -102,7 +102,7 @@ public class Minigame implements ScriptObject {
     private final BooleanFlag lateJoin = new BooleanFlag(false, "latejoin");
     private final FloatFlag lives = new FloatFlag(0F, "lives");
 
-    private final RegionMapFlag regenRegions = new RegionMapFlag(new HashMap<>(), "regenRegions");
+    private final RegionMapFlag regenRegions = new RegionMapFlag(new HashMap<>(), "regenRegions", "regenarea.1", "regenarea.2");
     private final IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
 
     private final Map<String, MinigameModule> modules = new HashMap<>();
@@ -610,13 +610,8 @@ public class Minigame implements ScriptObject {
     public void setScore(MinigamePlayer ply, int amount) {
         if (sbManager == null){
           ScoreboardManager s  = Minigames.getPlugin().getServer().getScoreboardManager();
-          if(s !=null) {
             sbManager = s.getNewScoreboard();
             Minigames.getPlugin().getLogger().info("ScoreBoardManager was null - Created new Scoreboard - for:" + name );
-          } else {
-            Minigames.getPlugin().getLogger().warning("ScoreBoardManager is null is the WORLD loaded!!! - Could not set Score!!!");
-            return;
-          }
         }
       Objective o = sbManager.getObjective(getName(false));
       if(o != null){
