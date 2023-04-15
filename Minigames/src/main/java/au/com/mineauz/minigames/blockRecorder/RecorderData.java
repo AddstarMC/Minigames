@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.Position;
 import com.google.common.collect.Lists;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;

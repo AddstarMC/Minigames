@@ -1,6 +1,9 @@
 package au.com.mineauz.minigames.managers;
 
-import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.MultiplayerBets;
 import au.com.mineauz.minigames.blockRecorder.RegenRecorder;
 import au.com.mineauz.minigames.events.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
@@ -17,6 +20,10 @@ import au.com.mineauz.minigames.sounds.PlayMGSound;
 import au.com.mineauz.minigames.stats.DynamicMinigameStat;
 import au.com.mineauz.minigames.stats.MinigameStats;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.attribute.Attribute;
@@ -62,7 +69,7 @@ public class MinigamePlayerManager {
         JoinMinigameEvent event = new JoinMinigameEvent(player, minigame);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) {
-            Minigames.log.info("Start Event was cancelled..: " + event.toString());
+            Minigames.log.info("Start Event was cancelled..: " + event);
             return;
         }
         if (!mgManager.minigameStartStateCheck(minigame, player)) return;
@@ -92,10 +99,11 @@ public class MinigamePlayerManager {
 
         //Give them the objective
         if (minigame.getObjective() != null) {
-            player.sendUnprefixedMessage(ChatColor.GREEN + "----------------------------------------------------");
-            player.sendInfoMessage(ChatColor.AQUA.toString() + ChatColor.BOLD + MessageManager.getMinigamesMessage("player.join.objective",
-                    ChatColor.RESET.toString() + ChatColor.WHITE + minigame.getObjective()));
-            player.sendUnprefixedMessage(ChatColor.GREEN + "----------------------------------------------------");
+            player.sendUnprefixedMessage(Component.text("----------------------------------------------------", NamedTextColor.GREEN));
+            player.sendInfoMessage(Component.join(JoinConfiguration.noSeparators(),
+                    Component.text(MessageManager.getMinigamesMessage("player.join.objective"), NamedTextColor.AQUA, TextDecoration.BOLD),
+                    Component.text(minigame.getObjective(), NamedTextColor.WHITE)));
+            player.sendUnprefixedMessage(Component.text("----------------------------------------------------", NamedTextColor.GREEN));
         }
         //Prepare regeneration region for rollback.
         mgManager.addBlockRecorderData(minigame);
@@ -224,7 +232,6 @@ public class MinigamePlayerManager {
         startMPMinigame(minigame, LobbySettingsModule.getMinigameModule(minigame).isTeleportOnStart());
     }
 
-
     public void startMPMinigame(Minigame minigame, boolean teleport) {
         List<MinigamePlayer> players = new ArrayList<>(minigame.getPlayers());
         for (MinigamePlayer ply : players) {
@@ -275,7 +282,6 @@ public class MinigamePlayerManager {
         }
         return result;
     }
-
 
     public void teleportToStart(Minigame minigame) {
         List<MinigamePlayer> findStart = new ArrayList<>();
