@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MgRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,58 +26,21 @@ public class FloorDegenerator {
 
     private int radiusModifier = 0;
 
-    public FloorDegenerator(Location point1, Location point2, Minigame mgm) {
+    public FloorDegenerator(MgRegion region, Minigame mgm) {
         timeDelay = mgm.getFloorDegenTime();
         this.mgm = mgm;
-        double minX;
-        double maxX;
-        double minY;
-        double maxY;
-        double minZ;
-        double maxZ;
 
-        Double x1 = point1.getX();
-        Double x2 = point2.getX();
-        Double y1 = point1.getY();
-        Double y2 = point2.getY();
-        Double z1 = point1.getZ();
-        Double z2 = point2.getZ();
+        topCorner = new Location(region.getWorld(), region.getMaxX(), region.getMaxY(), region.getMaxZ());
+        bottomCorner = new Location(region.getWorld(), region.getMinX(), region.getMaxY(), region.getMinZ());
 
-        if (x1 < x2) {
-            minX = x1;
-            maxX = x2;
-        } else {
-            minX = x2;
-            maxX = x1;
-        }
-
-        if (y1 < y2) {
-            minY = y1;
-            maxY = y2;
-        } else {
-            minY = y2;
-            maxY = y1;
-        }
-
-        if (z1 < z2) {
-            minZ = z1;
-            maxZ = z2;
-        } else {
-            minZ = z2;
-            maxZ = z1;
-        }
-
-        topCorner = new Location(point1.getWorld(), maxX, maxY, maxZ);
-        bottomCorner = new Location(point1.getWorld(), minX, minY, minZ);
-
-        xSideNeg1 = new Location(point1.getWorld(), minX, minY, minZ);
-        xSideNeg2 = new Location(point1.getWorld(), maxX, maxY, minZ);
-        zSideNeg1 = new Location(point1.getWorld(), minX, minY, minZ);
-        zSideNeg2 = new Location(point1.getWorld(), minX, maxY, maxZ);
-        xSidePos1 = new Location(point1.getWorld(), minX, minY, maxZ);
-        xSidePos2 = new Location(point1.getWorld(), maxX, maxY, maxZ);
-        zSidePos1 = new Location(point1.getWorld(), maxX, minY, minZ);
-        zSidePos2 = new Location(point1.getWorld(), maxX, maxY, maxZ);
+        xSideNeg1 = new Location(region.getWorld(), region.getMinX(), region.getMinY(), region.getMinZ());
+        xSideNeg2 = new Location(region.getWorld(), region.getMaxX(), region.getMaxY(), region.getMinZ());
+        zSideNeg1 = new Location(region.getWorld(), region.getMinX(), region.getMinY(), region.getMinZ());
+        zSideNeg2 = new Location(region.getWorld(), region.getMinX(), region.getMaxY(), region.getMaxZ());
+        xSidePos1 = new Location(region.getWorld(), region.getMinX(), region.getMinY(), region.getMaxZ());
+        xSidePos2 = new Location(region.getWorld(), region.getMaxX(), region.getMaxY(), region.getMaxZ());
+        zSidePos1 = new Location(region.getWorld(), region.getMaxX(), region.getMinY(), region.getMinZ());
+        zSidePos2 = new Location(region.getWorld(), region.getMaxX(), region.getMaxY(), region.getMaxZ());
     }
 
     public void startDegeneration() {
@@ -100,7 +64,7 @@ public class FloorDegenerator {
                     degenerateCircle(bottomCorner, topCorner);
                     break;
             }
-        }, timeDelay * 20, timeDelay * 20);
+        }, timeDelay * 20L, timeDelay * 20L);
     }
 
     private void incrementSide() {

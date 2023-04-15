@@ -35,6 +35,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -134,10 +135,10 @@ public class Minigame implements ScriptObject {
 
     public Minigame(String name, MinigameType type, Location start) {
         this.name = name;
-      if(sbManager == null) {
-        Minigames.getPlugin().getLogger().warning("Plugin loaded before worlds and no " +
-            "ScoreboardManager was present - Could not scoreboard for Minigame:" + name);
-      }
+        if (sbManager == null) {
+            Minigames.getPlugin().getLogger().warning("Plugin loaded before worlds and no " +
+                    "ScoreboardManager was present - Could not scoreboard for Minigame:" + name);
+        }
         setup(type, start);
 
     }
@@ -195,8 +196,7 @@ public class Minigame implements ScriptObject {
         addConfigFlag(enabled);
         addConfigFlag(endPosition);
         addConfigFlag(flags);
-        addConfigFlag(floorDegen1);
-        addConfigFlag(floorDegen2);
+        addConfigFlag(floorDegen);
         addConfigFlag(floorDegenTime);
         addConfigFlag(gametypeName);
         addConfigFlag(itemDrops);
@@ -413,27 +413,23 @@ public class Minigame implements ScriptObject {
     }
 
     public boolean isGameFull() {
-        if ((getType() == MinigameType.SINGLEPLAYER && isSpMaxPlayers()) || 
-                                    getType() == MinigameType.MULTIPLAYER) {
+        if ((getType() == MinigameType.SINGLEPLAYER && isSpMaxPlayers()) ||
+                getType() == MinigameType.MULTIPLAYER) {
             return getPlayers().size() >= getMaxPlayers();
         }
         return false;
     }
 
-    public Location getFloorDegen1() {
-        return floorDegen1.getFlag();
+    public @Nullable MgRegion getFloorDegen() {
+        return floorDegen.getFlag();
     }
 
-    public void setFloorDegen1(Location loc) {
-        this.floorDegen1.setFlag(loc);
+    public void setFloorDegen(@Nullable MgRegion region) {
+        floorDegen.setFlag(region);
     }
 
-    public Location getFloorDegen2() {
-        return floorDegen2.getFlag();
-    }
-
-    public void setFloorDegen2(Location loc) {
-        this.floorDegen2.setFlag(loc);
+    public void removeFloorDegen() {
+        floorDegen.setFlag(null);
     }
 
     public String getDegenType() {
@@ -653,7 +649,7 @@ public class Minigame implements ScriptObject {
     }
 
     public void addFloorDegenerator() {
-        sfloordegen = new FloorDegenerator(getFloorDegen1(), getFloorDegen2(), this);
+        sfloordegen = new FloorDegenerator(floorDegen.getFlag(), this);
     }
 
     public int getTimer() {

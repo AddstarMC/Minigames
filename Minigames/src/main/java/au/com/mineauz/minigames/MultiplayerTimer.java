@@ -112,7 +112,7 @@ public class MultiplayerTimer {
             freezePlayers(false);
             allowInteraction(true);
 
-            if (minigame.getFloorDegen1() != null && minigame.getFloorDegen2() != null) {
+            if (minigame.getFloorDegen() != null) {
                 minigame.addFloorDegenerator();
                 minigame.getFloorDegenerator().startDegeneration();
             }

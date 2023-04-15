@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.commands.ICommand;
-import au.com.mineauz.minigames.minigame.Minigame;
+import java.util.List;
 
 public class SetFloorDegeneratorCommand implements ICommand {
     @Override
@@ -62,16 +61,15 @@ public class SetFloorDegeneratorCommand implements ICommand {
             if (args[0].equals("1")) {
                 Location loc = player.getLocation().clone();
                 loc.setY(loc.getY() - 1);
-                minigame.setFloorDegen1(loc);
+                minigame.getFloorDegen().setFirstPos(loc);
                 sender.sendMessage(ChatColor.GRAY + "Floor degenerator corner 1 has been set for " + minigame);
             } else if (args[0].equals("2")) {
                 Location loc = player.getLocation().clone();
                 loc.setY(loc.getY() - 1);
-                minigame.setFloorDegen2(loc);
+                minigame.getFloorDegen().setSecondPos(loc);
                 sender.sendMessage(ChatColor.GRAY + "Floor degenerator corner 2 has been set for " + minigame);
             } else if (args[0].equalsIgnoreCase("clear")) {
-                minigame.setFloorDegen1(null);
-                minigame.setFloorDegen2(null);
+                minigame.removeFloorDegen();
                 sender.sendMessage(ChatColor.GRAY + "Floor degenerator corners have been removed for " + minigame);
             } else if (args[0].equalsIgnoreCase("type") && args.length >= 2) {
                 if (args[1].equalsIgnoreCase("random") || args[1].equalsIgnoreCase("inward") || args[1].equalsIgnoreCase("circle")) {
