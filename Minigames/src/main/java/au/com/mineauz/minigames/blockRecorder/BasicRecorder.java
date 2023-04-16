@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.blockRecorder;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,7 +22,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -242,18 +244,10 @@ public class BasicRecorder implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    private void onAnimalSpawn(EntitySpawnEvent event){
-        if (event.getEntity() instanceof Animals animal){
-
-        }
-
-    }
-
     //revive animals
     //entities like monsters or armor stands are reset if restore regions is turned on.
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    private void animalHurt(EntityDamageByEntityEvent event) { //todo check for spawn to not revive fresh
+    private void animalHurt(EntityDamageByEntityEvent event) { //todo check for spawn to not revive animals spawned while the minigame was running.
         if (event.getEntity() instanceof Animals animal) {
             //did the player kill the animal?
             if (animal.getHealth() <= event.getDamage()) {

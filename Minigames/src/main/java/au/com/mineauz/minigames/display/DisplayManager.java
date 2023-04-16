@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.display.bukkit.BukkitDisplayCuboid;
 import au.com.mineauz.minigames.display.bukkit.BukkitDisplayPoint;
 import au.com.mineauz.minigames.display.spigot.SpigotDisplayCuboid;
 import au.com.mineauz.minigames.display.spigot.SpigotDisplayPoint;
+import au.com.mineauz.minigames.objects.MgRegion;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import org.apache.commons.lang.Validate;
@@ -83,11 +84,27 @@ public class DisplayManager {
         }
     }
 
+    public IDisplayCubiod displayCuboid(Player player, MgRegion region) {
+        if (isSpigot) {
+            return new SpigotDisplayCuboid(this, player, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
+        } else {
+            return new BukkitDisplayCuboid(this, player, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
+        }
+    }
+
     public IDisplayCubiod displayCuboid(World world, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
         if (isSpigot) {
             return new SpigotDisplayCuboid(this, world, new Vector(minX, minY, minZ), new Vector(maxX, maxY, maxZ));
         } else {
             return new BukkitDisplayCuboid(this, world, new Vector(minX, minY, minZ), new Vector(maxX, maxY, maxZ));
+        }
+    }
+
+    public IDisplayCubiod displayCuboid(World world, MgRegion region) {
+        if (isSpigot) {
+            return new SpigotDisplayCuboid(this, world, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
+        } else {
+            return new BukkitDisplayCuboid(this, world, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
         }
     }
 

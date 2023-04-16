@@ -49,7 +49,7 @@ public class Region extends MgRegion implements ScriptObject {
     }
     
     public Location getFirstPoint(){
-        return super.getLocation2();
+        return super.getLocation1();
     }
     
     public Location getSecondPoint(){

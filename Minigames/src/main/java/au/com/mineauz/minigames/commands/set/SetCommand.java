@@ -76,8 +76,7 @@ public class SetCommand implements ICommand {
         registerSetCommand(new SetUnlimitedAmmoCommand());
         registerSetCommand(new SetSpectateCommand());
         registerSetCommand(new SetRandomizeChestsCommand());
-        registerSetCommand(new SetRegenArea1Command());
-        registerSetCommand(new SetRegenArea2Command());
+        registerSetCommand(new SetRegenAreaCommand());
         registerSetCommand(new SetLivesCommand());
         registerSetCommand(new SetDefaultWinnerCommand());
         registerSetCommand(new SetAllowEnderpearlsCommand());

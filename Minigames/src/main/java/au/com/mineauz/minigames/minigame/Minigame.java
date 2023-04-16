@@ -55,7 +55,8 @@ public class Minigame implements ScriptObject {
     private final StrListFlag flags = new StrListFlag(null, "flags");
     private MinigameState state = MinigameState.IDLE;
 
-    private final RegionFlag floorDegen = new RegionFlag(null, "sfloor");
+    private final SimpleLocationFlag floorDegen1 = new SimpleLocationFlag(null, "sfloorpos.1");
+    private final SimpleLocationFlag floorDegen2 = new SimpleLocationFlag(null, "sfloorpos.2");
     private final StringFlag degenType = new StringFlag("inward", "degentype");
     private final IntegerFlag degenRandomChance = new IntegerFlag(15, "degenrandom");
     private FloorDegenerator sfloordegen;
@@ -102,8 +103,8 @@ public class Minigame implements ScriptObject {
     private final BooleanFlag lateJoin = new BooleanFlag(false, "latejoin");
     private final FloatFlag lives = new FloatFlag(0F, "lives");
 
-    private RegionListFlag regenRegions = new RegionListFlag(new ArrayList<>(), "regenRegions");
-    private IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
+    private final RegionMapFlag regenRegions = new RegionMapFlag(new HashMap<>(), "regenRegions", "regenarea.1", "regenarea.2");
+    private final IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
 
     private final Map<String, MinigameModule> modules = new HashMap<>();
     private Scoreboard sbManager = Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard();
@@ -605,13 +606,8 @@ public class Minigame implements ScriptObject {
     public void setScore(MinigamePlayer ply, int amount) {
         if (sbManager == null){
           ScoreboardManager s  = Minigames.getPlugin().getServer().getScoreboardManager();
-          if(s !=null) {
             sbManager = s.getNewScoreboard();
             Minigames.getPlugin().getLogger().info("ScoreBoardManager was null - Created new Scoreboard - for:" + name );
-          } else {
-            Minigames.getPlugin().getLogger().warning("ScoreBoardManager is null is the WORLD loaded!!! - Could not set Score!!!");
-            return;
-          }
         }
       Objective o = sbManager.getObjective(getName(false));
       if(o != null){
