@@ -128,6 +128,7 @@ public class MgRegion {
     @Override
     public String toString() {
         return "MgRegion[" +
+                "name=" + name + ", " +
                 "world=" + world + ", " +
                 "pos1=" + pos1 + ", " +
                 "pos2=" + pos2 + ']';
