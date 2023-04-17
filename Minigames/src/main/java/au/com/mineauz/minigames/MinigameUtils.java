@@ -229,7 +229,9 @@ public class MinigameUtils {
      *
      * @param toList - String to be turned into a list.
      * @return A List with the defined items.
+     * @deprecated use {@link List#of(Object[])} instead
      */
+    @Deprecated
     public static List<String> stringToList(String toList) {
         String[] st = toList.split(";");
         List<String> list = new ArrayList<>();
@@ -243,7 +245,7 @@ public class MinigameUtils {
      * @param format - The location in the YAML of the string to format.
      * @param text   - What to replace the formatted variables with.
      * @return The formatted string. If not found, will return the format
-     * @deprecated use {@link MessageManager#getMinigamesMessage(String, String...)}
+     * @deprecated use {@link MessageManager#getMinigamesMessage(String, Object...)}
      */
     @Deprecated
     public static String formStr(String format, Object... text) {
