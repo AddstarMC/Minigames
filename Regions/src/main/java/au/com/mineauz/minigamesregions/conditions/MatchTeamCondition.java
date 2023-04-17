@@ -1,28 +1,23 @@
 package au.com.mineauz.minigamesregions.conditions;
 
+import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.minigame.TeamColor;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigamesregions.Node;
+import au.com.mineauz.minigamesregions.Region;
+import org.apache.commons.lang.WordUtils;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemList;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuUtility;
-import au.com.mineauz.minigames.minigame.TeamColor;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
-import org.bukkit.inventory.ItemStack;
-
 public class MatchTeamCondition extends ConditionInterface {
 
-    private StringFlag team = new StringFlag("RED", "team");
+    private final StringFlag team = new StringFlag("RED", "team");
 
     @Override
     public String getName() {
@@ -79,18 +74,18 @@ public class MatchTeamCondition extends ConditionInterface {
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
         List<String> teams = new ArrayList<>();
         for (TeamColor t : TeamColor.values())
-            teams.add(MinigameUtils.capitalize(t.toString().replace("_", " ")));
+            teams.add(WordUtils.capitalize(t.toString().replace("_", " ")));
 
-        m.addItem(new MenuItemList("Team Color", getTeamMaterial(), new Callback<String>() {
+        m.addItem(new MenuItemList("Team Color", getTeamMaterial(), new Callback<>() {
+
+            @Override
+            public String getValue() {
+                return WordUtils.capitalize(team.getFlag().replace("_", " "));
+            }
 
             @Override
             public void setValue(String value) {
                 team.setFlag(value.toUpperCase().replace(" ", "_"));
-            }
-
-            @Override
-            public String getValue() {
-                return MinigameUtils.capitalize(team.getFlag().replace("_", " "));
             }
         }, teams) {
             @Override
@@ -106,33 +101,20 @@ public class MatchTeamCondition extends ConditionInterface {
     }
 
     private Material getTeamMaterial() {
-        switch (team.getFlag()) {
-            case "RED":
-                return Material.RED_WOOL;
-            case "BLUE":
-                return Material.BLUE_WOOL;
-            case "GREEN":
-                return Material.GREEN_WOOL;
-            case "YELLOW":
-                return Material.YELLOW_WOOL;
-            case "PURPLE":
-                return Material.PURPLE_WOOL;
-            case "BLACK":
-                return Material.BLACK_WOOL;
-            case "DARK_RED":
-                return Material.RED_CONCRETE;
-            case "DARK_BLUE":
-                return Material.BLUE_CONCRETE;
-            case "DARK_GREEN":
-                return Material.GREEN_CONCRETE;
-            case "DARK_PURPLE":
-                return Material.PURPLE_CONCRETE;
-            case "GRAY":
-                return Material.GRAY_WOOL;
-            case "WHITE":
-            default:
-                return Material.WHITE_WOOL;
-        }
+        return switch (team.getFlag()) {
+            case "RED" -> Material.RED_WOOL;
+            case "BLUE" -> Material.BLUE_WOOL;
+            case "GREEN" -> Material.GREEN_WOOL;
+            case "YELLOW" -> Material.YELLOW_WOOL;
+            case "PURPLE" -> Material.PURPLE_WOOL;
+            case "BLACK" -> Material.BLACK_WOOL;
+            case "DARK_RED" -> Material.RED_CONCRETE;
+            case "DARK_BLUE" -> Material.BLUE_CONCRETE;
+            case "DARK_GREEN" -> Material.GREEN_CONCRETE;
+            case "DARK_PURPLE" -> Material.PURPLE_CONCRETE;
+            case "GRAY" -> Material.GRAY_WOOL;
+            default -> Material.WHITE_WOOL;
+        };
     }
 
     @Override

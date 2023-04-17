@@ -1,11 +1,11 @@
 package au.com.mineauz.minigamesregions.menuitems;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
 import au.com.mineauz.minigamesregions.conditions.Conditions;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -36,41 +36,33 @@ public class MenuItemConditionAdd extends MenuItem {
         for (String con : cons) {
             if ((Conditions.getConditionByName(con).useInNodes() && nexec != null) ||
                     (Conditions.getConditionByName(con).useInRegions() && rexec != null)) {
-                if (rexec != null) {
-                    if (!rexec.getTrigger().triggerOnPlayerAvailable()) {
-                        if (Conditions.getConditionByName(con).onPlayerApplicable()) {
-                            continue;
-                        }
-                    }
-                } else {
-                    if (!nexec.getTrigger().triggerOnPlayerAvailable()) {
-                        if (Conditions.getConditionByName(con).onPlayerApplicable()) {
-                            continue;
-                        }
+                if (!Objects.requireNonNullElseGet(rexec, () -> nexec).getTrigger().triggerOnPlayerAvailable()) {
+                    if (Conditions.getConditionByName(con).onPlayerApplicable()) {
+                        continue;
                     }
                 }
                 String catname = Conditions.getConditionByName(con).getCategory();
                 if (catname == null)
                     catname = "misc conditions";
-                catname.toLowerCase();
-                Menu cat = null;
+                catname = catname.toLowerCase();
+                Menu cat;
                 if (!cats.containsKey(catname)) {
-                    cat = new Menu(6, MinigameUtils.capitalize(catname), getContainer().getViewer());
+                    cat = new Menu(6, WordUtils.capitalize(catname), getContainer().getViewer());
                     cats.put(catname, cat);
-                    m.addItem(new MenuItemPage(MinigameUtils.capitalize(catname), Material.CHEST, cat));
+                    m.addItem(new MenuItemPage(WordUtils.capitalize(catname), Material.CHEST, cat));
                     cat.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), m), cat.getSize() - 9);
                 } else
                     cat = cats.get(catname);
-                MenuItemCustom c = new MenuItemCustom(MinigameUtils.capitalize(con), Material.PAPER);
+                MenuItemCustom c = new MenuItemCustom(WordUtils.capitalize(con), Material.PAPER);
                 final String fcon = con;
                 c.setClick(object -> {
                     ConditionInterface condition = Conditions.getConditionByName(fcon);
                     if (rexec != null) {
                         rexec.addCondition(condition);
-                        getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, rexec, condition));
+                        getContainer().addItem(new MenuItemCondition(WordUtils.capitalize(fcon), Material.PAPER, rexec, condition));
                     } else {
                         nexec.addCondition(condition);
-                        getContainer().addItem(new MenuItemCondition(MinigameUtils.capitalize(fcon), Material.PAPER, nexec, condition));
+                        getContainer().addItem(new MenuItemCondition(WordUtils.capitalize(fcon), Material.PAPER, nexec, condition));
                     }
                     getContainer().displayMenu(getContainer().getViewer());
                     return null;

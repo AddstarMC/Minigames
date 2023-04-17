@@ -1,12 +1,11 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.List;
-
+import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import au.com.mineauz.minigames.commands.ICommand;
-import au.com.mineauz.minigames.minigame.Minigame;
+import java.util.List;
 
 public class SetStartTimeCommand implements ICommand {
 

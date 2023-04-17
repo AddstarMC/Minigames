@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class MenuItemAddWhitelistBlock extends MenuItem {
 
-    private List<Material> whitelist;
+    private final List<Material> whitelist;
 
     public MenuItemAddWhitelistBlock(String name, List<Material> whitelist) {
         super(name, MenuUtility.getCreateMaterial());

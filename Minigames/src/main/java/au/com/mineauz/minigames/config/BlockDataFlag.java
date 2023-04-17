@@ -9,11 +9,9 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 
-/**
- * Created for the AddstarMC Project. Created by Narimm on 6/08/2018.
- */
 public class BlockDataFlag extends Flag<BlockData> {
 
     public BlockDataFlag(BlockData value, String name) {
@@ -30,17 +28,13 @@ public class BlockDataFlag extends Flag<BlockData> {
     @Override
     public void loadValue(String path, FileConfiguration config) {
         String obj = config.getString(path + "." + getName());
-        BlockData data = null;
+        BlockData data;
         try {
             data = Bukkit.createBlockData(obj);
         } catch (IllegalArgumentException e) {
             data = parseOldMaterialData(path, config);
         }
-        if (data != null)
-            setFlag(data);
-        else {
-            setFlag(Material.STONE.createBlockData());
-        }
+        setFlag(Objects.requireNonNullElseGet(data, Material.STONE::createBlockData));
     }
 
     /**
@@ -51,10 +45,10 @@ public class BlockDataFlag extends Flag<BlockData> {
         try {
             String obj = config.getString(path + "." + getName());
             Material mat = Material.matchMaterial(obj);
-            Integer olddata = config.getInt(path + ".matchdatavalue");
+            int olddata = config.getInt(path + ".matchdatavalue");
             if (olddata == 0) olddata = config.getInt(path + ".todatavalue");
             if (olddata == 0) olddata = config.getInt(path + ".dur");
-            return Bukkit.getUnsafe().fromLegacy(mat, olddata.byteValue());
+            return Bukkit.getUnsafe().fromLegacy(mat, (byte) olddata);
         } catch (Exception ignored) {
             Minigames.getPlugin().getLogger().log(Level.CONFIG, "Error loading Value for" + path);
         }

@@ -1,8 +1,8 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -14,8 +14,7 @@ import java.util.Map;
  * Created by benjamincharlton on 6/11/2017.
  */
 public class SetLives extends AbstractAction {
-
-    private IntegerFlag amount = new IntegerFlag(1, "amount");
+    private final IntegerFlag amount = new IntegerFlag(1, "amount");
 
     @Override
     public String getName() {

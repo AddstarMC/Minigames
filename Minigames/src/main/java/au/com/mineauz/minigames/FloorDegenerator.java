@@ -46,23 +46,18 @@ public class FloorDegenerator {
     public void startDegeneration() {
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             switch (mgm.getDegenType()) {
-                case "inward":
+                case "inward" -> {
                     degenerateSide(xSideNeg1, xSideNeg2);
                     degenerateSide(xSidePos1, xSidePos2);
                     degenerateSide(zSideNeg1, zSideNeg2);
                     degenerateSide(zSidePos1, zSidePos2);
-
                     incrementSide();
                     if (xSideNeg1.getZ() >= xSidePos1.getZ() || zSideNeg1.getX() >= zSidePos1.getX()) {
                         stopDegenerator();
                     }
-                    break;
-                case "random":
-                    degenerateRandom(bottomCorner, topCorner, mgm.getDegenRandomChance());
-                    break;
-                case "circle":
-                    degenerateCircle(bottomCorner, topCorner);
-                    break;
+                }
+                case "random" -> degenerateRandom(bottomCorner, topCorner, mgm.getDegenRandomChance());
+                case "circle" -> degenerateCircle(bottomCorner, topCorner);
             }
         }, timeDelay * 20L, timeDelay * 20L);
     }
@@ -128,7 +123,7 @@ public class FloorDegenerator {
     }
 
     private void degenerateCircle(Location lowest, Location highest) {
-        int middledist = (int) Math.abs(Math.floor((highest.getBlockX() - lowest.getBlockX()) / 2));
+        int middledist = (int) Math.abs(Math.floor((double) (highest.getBlockX() - lowest.getBlockX()) / 2));
         int radius = middledist - radiusModifier;
         Location centerBlock = lowest.clone();
         centerBlock.setX(centerBlock.getX() + middledist);

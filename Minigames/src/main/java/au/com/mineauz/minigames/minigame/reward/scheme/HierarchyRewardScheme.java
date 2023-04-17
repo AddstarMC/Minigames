@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
@@ -10,6 +9,7 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableMap;
@@ -102,10 +102,8 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 
         // Calculate rewards
         switch (comparisonType.getFlag()) {
-            case Equal:
-                reward = rewards.get(value);
-                break;
-            case Lesser:
+            case Equal -> reward = rewards.get(value);
+            case Lesser -> {
                 reward = null;
                 for (Entry<T, Rewards> entry : rewards.entrySet()) {
                     if (value.compareTo(entry.getKey()) < 0) {
@@ -113,8 +111,8 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
                         break;
                     }
                 }
-                break;
-            case Greater:
+            }
+            case Greater -> {
                 reward = null;
                 for (Entry<T, Rewards> entry : rewards.descendingMap().entrySet()) {
                     if (value.compareTo(entry.getKey()) > 0) {
@@ -122,9 +120,8 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
                         break;
                     }
                 }
-                break;
-            default:
-                throw new AssertionError();
+            }
+            default -> throw new AssertionError();
         }
 
         // Apply reward
@@ -162,10 +159,10 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
     public void load(ConfigurationSection config) {
         ConfigurationSection primary = config.getConfigurationSection("score-primary");
         ConfigurationSection secondary = config.getConfigurationSection("score-secondary");
-        if(primary != null)
-          load(primaryRewards, primary);
-        if(secondary != null)
-          load(secondaryRewards, secondary);
+        if (primary != null)
+            load(primaryRewards, primary);
+        if (secondary != null)
+            load(secondaryRewards, secondary);
     }
 
     protected abstract T loadValue(String key);
@@ -177,14 +174,14 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 
             ConfigurationSection subSection = section.getConfigurationSection(key);
             Rewards reward = new Rewards();
-            if(subSection != null)
-              reward.load(subSection);
+            if (subSection != null)
+                reward.load(subSection);
             map.put(value, reward);
         }
     }
 
     private Callback<String> getConfigurationTypeCallback() {
-        return new Callback<String>() {
+        return new Callback<>() {
             @Override
             public String getValue() {
                 return comparisonType.getFlag().name();
@@ -213,8 +210,8 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 
     private class MenuItemRewardPair extends MenuItem {
         private final Rewards reward;
-        private T value;
         private final TreeMap<T, Rewards> map;
+        private T value;
 
         public MenuItemRewardPair(TreeMap<T, Rewards> map, T value, Material displayItem) {
             super(getMenuItemName(value), displayItem);
@@ -238,9 +235,9 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
             // Update name
             ItemStack item = getItem();
             ItemMeta meta = item.getItemMeta();
-            if(meta != null) {
-              meta.setDisplayName(getMenuItemName(value));
-              item.setItemMeta(meta);
+            if (meta != null) {
+                meta.setDisplayName(getMenuItemName(value));
+                item.setItemMeta(meta);
             }
 
             setItem(item);

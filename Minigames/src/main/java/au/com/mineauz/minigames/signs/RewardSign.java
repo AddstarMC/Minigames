@@ -1,6 +1,8 @@
 package au.com.mineauz.minigames.signs;
 
-import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
@@ -18,8 +20,8 @@ import java.util.List;
 
 public class RewardSign implements MinigameSign {
 
-    private static Minigames plugin = Minigames.getPlugin();
-    private MinigameManager mdata = plugin.getMinigameManager();
+    private static final Minigames plugin = Minigames.getPlugin();
+    private final MinigameManager mdata = plugin.getMinigameManager();
 
     @Override
     public String getName() {
@@ -85,7 +87,7 @@ public class RewardSign implements MinigameSign {
                 }
             }
         } else if (player.getPlayer().hasPermission("minigame.tool")) {
-            Rewards rew = null;
+            Rewards rew;
             if (!mdata.hasRewardSign(loc)) {
                 mdata.addRewardSign(loc);
             }

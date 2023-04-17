@@ -1,12 +1,11 @@
 package au.com.mineauz.minigames.script;
 
-import java.util.Set;
-
+import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import com.google.common.collect.ImmutableSet;
+import java.util.Set;
 
 public class ScriptWrapper {
     public static ScriptObject wrap(final Location object) {

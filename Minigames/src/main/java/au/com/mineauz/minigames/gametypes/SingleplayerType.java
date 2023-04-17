@@ -1,6 +1,9 @@
 package au.com.mineauz.minigames.gametypes;
 
-import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.StoredPlayerCheckpoints;
 import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -18,8 +21,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class SingleplayerType extends MinigameTypeBase {
-    private static Minigames plugin = Minigames.getPlugin();
-    private MinigamePlayerManager pdata = plugin.getPlayerManager();
+    private static final Minigames plugin = Minigames.getPlugin();
+    private final MinigamePlayerManager pdata = plugin.getPlayerManager();
 
     public SingleplayerType() {
         setType(MinigameType.SINGLEPLAYER);

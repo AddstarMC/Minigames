@@ -30,9 +30,9 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 public class RecorderData implements Listener {
-    private static Minigames plugin;
     private static final ArrayList<Material> supportedMats = new ArrayList<>();
     private static final ArrayList<Tag<Material>> supportedTags = new ArrayList<>();
+    private static Minigames plugin;
 
     static {
         supportedMats.add(Material.WATER);
@@ -70,11 +70,11 @@ public class RecorderData implements Listener {
     }
 
     private final Minigame minigame;
+    private final Map<UUID, EntityData> entdata = new HashMap<>();
+    private final List<Material> wbBlocks = new ArrayList<>();
     private boolean whitelistMode = false;
     private boolean hasCreatedRegenBlocks = false;
     private Map<Position, MgBlockData> blockdata = new HashMap<>();
-    private final Map<UUID, EntityData> entdata = new HashMap<>();
-    private final List<Material> wbBlocks = new ArrayList<>();
 
     public RecorderData(Minigame minigame) {
         plugin = Minigames.getPlugin();
@@ -171,7 +171,7 @@ public class RecorderData implements Listener {
             return bdata;
         } else { //already known
             //set last modifier of a not random inventory
-            if (block.getType() != Material.CHEST || !blockdata.get(pos).hasRandomized()){
+            if (block.getType() != Material.CHEST || !blockdata.get(pos).hasRandomized()) {
                 blockdata.get(pos).setModifier(modifier);
             }
 
@@ -189,8 +189,8 @@ public class RecorderData implements Listener {
     //add an entity to get reset
     public void addEntity(Entity ent, MinigamePlayer player, boolean created) {
         EntityData oldData = entdata.get(ent.getUniqueId());
-        if (oldData != null){
-            if (oldData.wasCreated() && !created){
+        if (oldData != null) {
+            if (oldData.wasCreated() && !created) {
                 entdata.remove(ent.getUniqueId());
 
                 return;
@@ -205,10 +205,7 @@ public class RecorderData implements Listener {
     }
 
     public void restoreAll(MinigamePlayer modifier) {
-        boolean isBlockDataEmpty;
-        isBlockDataEmpty = blockdata.isEmpty();
-
-        if (!isBlockDataEmpty) {
+        if (!blockdata.isEmpty()) {
             restoreBlocks(modifier);
         }
 
@@ -386,15 +383,15 @@ public class RecorderData implements Listener {
             GsonBuilder gsonBuilder = new GsonBuilder();
             JsonDeserializer<Position> deserializer = (json, typeOfT, context) -> {
                 try {
-                String posStr = json.getAsString(); //throws JsonParseException
+                    String posStr = json.getAsString(); //throws JsonParseException
 
-                 String[] args = posStr.split(":");
-                 if (args.length < 3){
-                     throw new JsonParseException("'" + posStr + "' is not a valid position.");
-                 }
+                    String[] args = posStr.split(":");
+                    if (args.length < 3) {
+                        throw new JsonParseException("'" + posStr + "' is not a valid position.");
+                    }
 
-                return new Position(Double.parseDouble(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2])); //throws NumberFormatException
-                } catch (JsonParseException | NumberFormatException exception){
+                    return new Position(Double.parseDouble(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2])); //throws NumberFormatException
+                } catch (JsonParseException | NumberFormatException exception) {
                     exception.printStackTrace();
                     return null;
                 }
@@ -439,7 +436,7 @@ public class RecorderData implements Listener {
             while (br.ready()) {
                 line = br.readLine();
 
-                blocks = line.split("\\}\\{");
+                blocks = line.split("}\\{");
 
                 for (String bl : blocks) {
                     args.clear();

@@ -1,13 +1,12 @@
 package au.com.mineauz.minigames.mechanics;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.managers.MessageManager;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameTimer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.events.MinigameTimerTickEvent;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
@@ -15,6 +14,7 @@ import au.com.mineauz.minigames.minigame.reward.ItemReward;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -34,25 +34,25 @@ public class TreasureHuntMechanic extends GameMechanicBase {
         if (thm.hasTreasureLocation()) {
             Location old = thm.getTreasureLocation();
             if (old.getWorld() != null && !old.getWorld().isChunkLoaded(old.getChunk().getX(), old.getChunk().getZ())) {
-              boolean loaded = old.getChunk().load();
-              Chunk c = null;
-              if(loaded) {
-                  c = old.getChunk();
-                  c.setForceLoaded(true);
+                boolean loaded = old.getChunk().load();
+                Chunk c = null;
+                if (loaded) {
+                    c = old.getChunk();
+                    c.setForceLoaded(true);
                 }
-                if (old.getBlock().getState() instanceof Chest) {
-                    Chest chest = (Chest) old.getBlock().getState();
+                if (old.getBlock().getState() instanceof Chest chest) {
                     chest.getInventory().clear();
                     old.getBlock().setType(Material.AIR);
                 }
                 if (loaded) {
-                  c.setForceLoaded(false);
-                  c.unload();
+                    c.setForceLoaded(false);
+                    c.unload();
                 }
-              thm.setTreasureLocation(null);
+                thm.setTreasureLocation(null);
             }
         }
     }
+
     public static void spawnTreasure(final Minigame mgm) {
         final TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgm);
 
@@ -89,29 +89,24 @@ public class TreasureHuntMechanic extends GameMechanicBase {
 
         //Add a new Chest
         //TODO: Improve so no invalid spawns (Not over void, Strict containment)
-        switch (rpos.getBlock().getType()){
-            case AIR:
-            case CAVE_AIR:
-            case VOID_AIR:
+        switch (rpos.getBlock().getType()) {
+            case AIR, CAVE_AIR, VOID_AIR -> {
                 while (rpos.getBlock().getType() == Material.AIR && rpos.getY() > 1) {
                     rpos.setY(rpos.getY() - 1);
                 }
                 rpos.setY(rpos.getY() + 1);
-
-                Bukkit.getScheduler().runTaskLater(plugin, () -> rpos.getBlock().setType(Material.CHEST),1L);
-                break;
-
-                default:
-                    while (rpos.getBlock().getType() != Material.AIR && rpos.getY() < 255) {
-                        rpos.setY(rpos.getY() + 1);
-                    }
-                    Bukkit.getScheduler().runTaskLater(plugin, () -> rpos.getBlock().setType(Material.CHEST),1L);
-                    break;
+                Bukkit.getScheduler().runTaskLater(plugin, () -> rpos.getBlock().setType(Material.CHEST), 1L);
+            }
+            default -> {
+                while (rpos.getBlock().getType() != Material.AIR && rpos.getY() < 255) {
+                    rpos.setY(rpos.getY() + 1);
+                }
+                Bukkit.getScheduler().runTaskLater(plugin, () -> rpos.getBlock().setType(Material.CHEST), 1L);
+            }
         }
         //Fill new chest
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            if (rpos.getBlock().getState() instanceof Chest) {
-                final Chest chest = (Chest) rpos.getBlock().getState();
+            if (rpos.getBlock().getState() instanceof Chest chest) {
 
                 // TODO: Treasure hunt needs own rewards specification
                 RewardsModule rewards = RewardsModule.getModule(mgm);
@@ -122,8 +117,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
                         final ItemStack[] items = new ItemStack[27];
                         for (int i = 0; i < numitems; i++) {
                             RewardType rew = ((StandardRewardScheme) rewards.getScheme()).getPrimaryReward().getReward().get(0);
-                            if (rew instanceof ItemReward) {
-                                ItemReward irew = (ItemReward) rew;
+                            if (rew instanceof ItemReward irew) {
                                 items[i] = irew.getRewardItem();
                             }
                         }
@@ -132,12 +126,12 @@ public class TreasureHuntMechanic extends GameMechanicBase {
                     }
                 }
             }
-        },0L);
+        }, 0L);
 
         thm.setTreasureLocation(rpos);
         plugin.getLogger().info(
-            MessageManager.getMinigamesMessage("minigame.treasurehunt.consSpawn", mgm.getName(false), rpos.getBlockX() + ", " + rpos.getBlockY() + ", " + rpos.getBlockZ()));
-        MinigameUtils.broadcast(MessageManager.getMinigamesMessage("minigame.treasurehunt.plySpawn", maxradius, thm.getLocation()), mgm, "minigame.treasure.announce");
+                MessageManager.getMinigamesMessage("minigame.treasurehunt.consSpawn", mgm.getName(false), rpos.getBlockX() + ", " + rpos.getBlockY() + ", " + rpos.getBlockZ()));
+        MessageManager.broadcast(MessageManager.getMinigamesMessage("minigame.treasurehunt.plySpawn", maxradius, thm.getLocation()), mgm, "minigame.treasure.announce");
 
         mgm.setMinigameTimer(new MinigameTimer(mgm, mgm.getTimer()));
     }
@@ -189,7 +183,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
         if (thm.hasTreasureLocation()) {
             removeTreasure(minigame);
             if (!thm.isTreasureFound()) {
-                MinigameUtils.broadcast(MessageManager.getMinigamesMessage("minigame.treasurehunt.plyRemoved", minigame.getName(true))
+                MessageManager.broadcast(MessageManager.getMinigamesMessage("minigame.treasurehunt.plyRemoved", minigame.getName(true))
                         , minigame, "minigame.treasure.announce");
             }
         }
@@ -261,12 +255,12 @@ public class TreasureHuntMechanic extends GameMechanicBase {
                 }
             }
             String hint = MessageManager.getMinigamesMessage("minigame.treasurehunt.hint1.hint", mgm.getName(true), dir, thm.getLocation());
-            MinigameUtils.broadcast(hint, mgm, "minigame.treasure.announce");
+            MessageManager.broadcast(hint, mgm, "minigame.treasure.announce");
             thm.addHint(ChatColor.GRAY + hint);
         } else if (time == hintTime2) {
             block.setY(block.getY() - 1);
             String hint = MessageManager.getMinigamesMessage("minigame.treasurehunt.hint2", mgm.getName(true), block.getBlock().getType().toString().toLowerCase().replace("_", " "));
-            MinigameUtils.broadcast(hint, mgm, "minigame.treasure.announce");
+            MessageManager.broadcast(hint, mgm, "minigame.treasure.announce");
             thm.addHint(ChatColor.GRAY + hint);
             block.setY(block.getY() + 1);
         } else if (time == hintTime3) {
@@ -281,11 +275,11 @@ public class TreasureHuntMechanic extends GameMechanicBase {
                 dir = MinigameUtils.getLang("minigame.treasurehunt.hint3.below");
             }
             String hint = MessageManager.getMinigamesMessage("minigame.treasurehunt.hint3.hint", mgm.getName(true), dist, dir);
-            MinigameUtils.broadcast(hint, mgm, "minigame.treasure.announce");
+            MessageManager.broadcast(hint, mgm, "minigame.treasure.announce");
             thm.addHint(ChatColor.GRAY + hint);
         } else if (time == hintTime4) {
             String hint = MessageManager.getMinigamesMessage("minigame.treasurehunt.hint4", mgm.getName(true), block.getBlock().getBiome().toString().toLowerCase().replace("_", " "));
-            MinigameUtils.broadcast(hint, mgm, "minigame.treasure.announce");
+            MessageManager.broadcast(hint, mgm, "minigame.treasure.announce");
             thm.addHint(ChatColor.GRAY + hint);
         }
     }
@@ -303,7 +297,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
             Location old = thm.getTreasureLocation();
             removeTreasure(mgm);
             if (!thm.isTreasureFound()) {
-                MinigameUtils.broadcast(MessageManager.getMinigamesMessage("minigame.treasurehunt.plyDespawn", mgm.getName(true)) + "\n" +
+                MessageManager.broadcast(MessageManager.getMinigamesMessage("minigame.treasurehunt.plyDespawn", mgm.getName(true)) + "\n" +
                         ChatColor.GRAY + MessageManager.getMinigamesMessage("minigame.treasurehunt.plyDespawnCoords",
                         old.getBlockX(), old.getBlockY(), old.getBlockZ()), mgm, "minigame.treasure.announce");
             }
@@ -333,8 +327,8 @@ public class TreasureHuntMechanic extends GameMechanicBase {
                             int z2 = cblock.getLocation().getBlockZ();
                             if (x2 == x1 && y2 == y1 && z2 == z1) {
                                 MinigameUtils.broadcast(MessageManager.getMinigamesMessage("minigame.treasurehunt.plyFound",
-                                        event.getPlayer().getDisplayName(),
-                                        minigame.getName(true)), minigame,
+                                                event.getPlayer().getDisplayName(),
+                                                minigame.getName(true)), minigame,
                                         "minigame.treasure.announce");
                                 event.setCancelled(true);
                                 Chest chest = (Chest) cblock.getState();

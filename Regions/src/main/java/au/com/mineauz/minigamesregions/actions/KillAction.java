@@ -1,13 +1,12 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.Map;
-
-import org.bukkit.configuration.file.FileConfiguration;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.Map;
 
 public class KillAction extends AbstractAction {
 
@@ -20,7 +19,7 @@ public class KillAction extends AbstractAction {
     public String getCategory() {
         return "World Actions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
     }
@@ -37,18 +36,18 @@ public class KillAction extends AbstractAction {
 
     @Override
     public void executeNodeAction(MinigamePlayer player,
-            Node node) {
-        debug(player,node);
-        if(player == null || !player.isInMinigame()) return;
-        if(!player.isDead())
+                                  Node node) {
+        debug(player, node);
+        if (player == null || !player.isInMinigame()) return;
+        if (player.isLiving())
             player.getPlayer().damage(player.getPlayer().getHealth());
     }
 
     @Override
     public void executeRegionAction(MinigamePlayer player, Region region) {
-        debug(player,region);
-        if(player == null || !player.isInMinigame()) return;
-        if(!player.isDead())
+        debug(player, region);
+        if (player == null || !player.isInMinigame()) return;
+        if (player.isLiving())
             player.getPlayer().damage(player.getPlayer().getHealth());
     }
 

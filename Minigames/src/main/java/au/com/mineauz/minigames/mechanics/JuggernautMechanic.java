@@ -1,14 +1,14 @@
 package au.com.mineauz.minigames.mechanics;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.managers.MessageManager;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.events.StartMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.JuggernautModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -70,7 +70,7 @@ public class JuggernautMechanic extends GameMechanicBase {
                     jm.setJuggernaut(j);
                     j.sendInfoMessage(MinigameUtils.getLang("player.juggernaut.plyMsg"));
                     mdata.sendMinigameMessage(minigame,
-                        MessageManager.getMinigamesMessage("player.juggernaut.gameMsg", j.getDisplayName(minigame.usePlayerDisplayNames())), null, j);
+                            MessageManager.getMinigamesMessage("player.juggernaut.gameMsg", j.getDisplayName(minigame.usePlayerDisplayNames())), null, j);
                 }
             }
         }
@@ -125,28 +125,24 @@ public class JuggernautMechanic extends GameMechanicBase {
     @EventHandler
     private void playerDeath(PlayerDeathEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
-        if (ply == null) return;
         if (ply.getMinigame() != null && ply.getMinigame().getMechanic() == this) {
             JuggernautModule jm = JuggernautModule.getMinigameModule(ply.getMinigame());
 
             if (jm.getJuggernaut() == ply) {
                 if (event.getEntity().getKiller() != null) {
                     MinigamePlayer pk = pdata.getMinigamePlayer(event.getEntity().getKiller());
-                    if (pk != null) {
-                        jm.setJuggernaut(pk);
-                        pk.addScore();
-                        pk.getMinigame().setScore(pk, pk.getScore());
-                        checkScore(pk);
-                    } else {
-                        jm.setJuggernaut(assignNewJuggernaut(ply.getMinigame().getPlayers(), ply));
-                    }
+                    jm.setJuggernaut(pk);
+                    pk.addScore();
+                    pk.getMinigame().setScore(pk, pk.getScore());
+                    checkScore(pk);
+
                 } else {
                     jm.setJuggernaut(assignNewJuggernaut(ply.getMinigame().getPlayers(), ply));
                 }
             } else {
                 if (event.getEntity().getKiller() != null) {
                     MinigamePlayer pk = pdata.getMinigamePlayer(event.getEntity().getKiller());
-                    if (pk != null && jm.getJuggernaut() == pk) {
+                    if (jm.getJuggernaut() == pk) {
                         pk.addScore();
                         pk.getMinigame().setScore(pk, pk.getScore());
                         checkScore(pk);

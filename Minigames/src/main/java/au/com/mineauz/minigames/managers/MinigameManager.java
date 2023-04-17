@@ -34,11 +34,10 @@ public class MinigameManager {
     private final Map<MinigameType, MinigameTypeBase> minigameTypes = new HashMap<>();
     private final Map<String, PlayerLoadout> globalLoadouts = new HashMap<>();
     private final Map<String, RewardsFlag> rewardSigns = new HashMap<>();
-    private MinigameSave rewardSignsSave;
     private final Map<Minigame, List<String>> claimedScoreSignsRed = new HashMap<>();
     private final Map<Minigame, List<String>> claimedScoreSignsBlue = new HashMap<>();
-
     private final List<Class<? extends MinigameModule>> modules = new ArrayList<>();
+    private MinigameSave rewardSignsSave;
 
     public MinigameManager() {
 
@@ -134,7 +133,7 @@ public class MinigameManager {
 
     public void addMinigame(final Minigame game) {
         this.minigames.put(game.getName(false), game);
-        if(Minigames.getPlugin().includesPapi()){
+        if (Minigames.getPlugin().includesPapi()) {
             Minigames.getPlugin().getPlaceHolderManager().addGameIdentifiers(game);
         }
 
@@ -279,10 +278,11 @@ public class MinigameManager {
 
     /**
      * Sending a general Broadcast
+     *
      * @param minigame The minigame in which this message shall be sent
-     * @param message The message
-     * @param type Message Type
-     * @param exclude Players, which shall not get this message
+     * @param message  The message
+     * @param type     Message Type
+     * @param exclude  Players, which shall not get this message
      */
     public void sendMinigameMessage(final Minigame minigame, final String message, MinigameMessageType type,
                                     final List<MinigamePlayer> exclude) {
@@ -294,10 +294,11 @@ public class MinigameManager {
 
     /**
      * Sending a ctf relevant message
+     *
      * @param minigame The minigame in which this message shall be sent
-     * @param message The message
-     * @param type Message Type
-     * @param exclude Players, which shall not get this message
+     * @param message  The message
+     * @param type     Message Type
+     * @param exclude  Players, which shall not get this message
      */
     public void sendCTFMessage(final Minigame minigame, final String message, MinigameMessageType type,
                                final List<MinigamePlayer> exclude) {
@@ -456,7 +457,7 @@ public class MinigameManager {
         } else if (!minigame.getMechanic().validTypes().contains(minigame.getType())) {
             player.sendMessage(MinigameUtils.getLang("minigame.error.invalidType"), MinigameMessageType.ERROR);
             return false;
-        } else if (minigame.getStartLocations().size() <= 0 ||
+        } else if (minigame.getStartLocations().size() == 0 ||
                 minigame.isTeamGame() && !TeamsModule.getMinigameModule(minigame).hasTeamStartLocations()) {
             player.sendMessage(MinigameUtils.getLang("minigame.error.noStart"), MinigameMessageType.ERROR);
             return false;
@@ -465,8 +466,8 @@ public class MinigameManager {
     }
 
     public boolean teleportPlayerOnJoin(@NotNull final Minigame minigame, final MinigamePlayer player) {
-        if(this.minigameType(minigame.getType()) == null) {
-            Minigames.log().warning(MessageManager.getMinigamesMessage("error.invalidType") + " : "+minigame.getName(true));
+        if (this.minigameType(minigame.getType()) == null) {
+            Minigames.log().warning(MessageManager.getMinigamesMessage("error.invalidType") + " : " + minigame.getName(true));
         }
         return this.minigameType(minigame.getType()).teleportOnJoin(player, minigame);
     }

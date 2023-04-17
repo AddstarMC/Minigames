@@ -1,13 +1,10 @@
 package au.com.mineauz.minigames.blockRecorder;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.Tag;
-import org.bukkit.block.*;
-import org.bukkit.block.data.Rotatable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.scheduler.BukkitTask;
@@ -22,7 +19,7 @@ public class RollbackScheduler implements Runnable {
     private final Minigame minigame;
     private final MinigamePlayer modifier;
 
-    public RollbackScheduler(List<MgBlockData> blocks,  Minigame minigame, MinigamePlayer modifier) {
+    public RollbackScheduler(List<MgBlockData> blocks, Minigame minigame, MinigamePlayer modifier) {
         iterator = blocks.iterator();
         this.minigame = minigame;
         this.modifier = modifier;
@@ -39,7 +36,7 @@ public class RollbackScheduler implements Runnable {
             //there might be odd cases when we don't apply physics. This smells like a bucket full of strange bugs. might change in the future.
             bdata.getLocation().getBlock().setBlockData(bdata.getBukkitBlockData(), false);
 
-            if (bdata.getItems() != null){
+            if (bdata.getItems() != null) {
                 if (bdata.getLocation().getBlock().getState() instanceof InventoryHolder inventoryHolder)
                     inventoryHolder.getInventory().setContents(bdata.getItems());
             }

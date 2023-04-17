@@ -35,9 +35,10 @@ public class SetFloorDegeneratorCommand implements ICommand {
 
     @Override
     public String getDescription() {
-        return "Sets the two corners of a floor to degenerate or clears both of them (if set).\n" +
-                "The types of degeneration are: \"inward\"(default), \"circle\" and \"random [%chance]\"(Default chance: 15).\n" +
-                "Optionally, a degeneration time can be set, this defaults to the value set in the main config.";
+        return """
+                Sets the two corners of a floor to degenerate or clears both of them (if set).
+                The types of degeneration are: "inward"(default), "circle" and "random [%chance]"(Default chance: 15).
+                Optionally, a degeneration time can be set, this defaults to the value set in the main config.""";
     }
 
     @Override

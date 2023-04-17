@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.signs;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardDisplay;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -12,7 +12,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
 public class ScoreboardSign implements MinigameSign {
-    private Minigames plugin = Minigames.getPlugin();
+    private final Minigames plugin = Minigames.getPlugin();
 
     @Override
     public String getName() {
@@ -50,7 +50,7 @@ public class ScoreboardSign implements MinigameSign {
                 minigame = plugin.getMinigameManager().getMinigame(event.getLine(2));
             } else {
                 event.getPlayer().sendMessage(
-                    ChatColor.RED + "No Minigame found by the name " + event.getLine(2));
+                        ChatColor.RED + "No Minigame found by the name " + event.getLine(2));
                 return false;
             }
 
@@ -67,11 +67,11 @@ public class ScoreboardSign implements MinigameSign {
                 height = Integer.parseInt(parts[1]);
             } else {
                 event.getPlayer().sendMessage(
-                    ChatColor.RED + "Invalid size. Requires nothing or (width)x(height) eg. 3x3");
+                        ChatColor.RED + "Invalid size. Requires nothing or (width)x(height) eg. 3x3");
                 return false;
             }
 
-            // So we dont have to deal with even size scoreboards
+            // So we don't have to deal with even size scoreboards
             if (width % 2 == 0) {
                 event.getPlayer().sendMessage(ChatColor.RED + "Length must not be an even number!");
                 return false;
@@ -81,7 +81,7 @@ public class ScoreboardSign implements MinigameSign {
 
             // Add our display
             ScoreboardDisplay display = new ScoreboardDisplay(minigame, width, height,
-                event.getBlock().getLocation(), facing);
+                    event.getBlock().getLocation(), facing);
             display.placeSigns(sign.getMaterial());
 
             minigame.getScoreboardData().addDisplay(display);

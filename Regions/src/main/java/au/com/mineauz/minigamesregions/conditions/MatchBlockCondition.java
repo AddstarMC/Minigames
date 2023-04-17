@@ -1,11 +1,11 @@
 package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BlockDataFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Location;
@@ -18,19 +18,20 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Map;
 
 public class MatchBlockCondition extends ConditionInterface {
-    
-    private BlockDataFlag type = new BlockDataFlag(Material.STONE.createBlockData(), "type");
-    private BooleanFlag useBlockData = new BooleanFlag(false, "usedur");
+
+    private final BlockDataFlag type = new BlockDataFlag(Material.STONE.createBlockData(), "type");
+    private final BooleanFlag useBlockData = new BooleanFlag(false, "usedur");
+
     @Override
     public String getName() {
         return "MATCH_BLOCK";
     }
-    
+
     @Override
-    public String getCategory(){
+    public String getCategory() {
         return "World Conditions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
         if (useBlockData.getFlag()) {
@@ -59,8 +60,8 @@ public class MatchBlockCondition extends ConditionInterface {
     public boolean checkNodeCondition(MinigamePlayer player, Node node) {
         return check(node.getLocation());
     }
-    
-    private boolean check(Location location){
+
+    private boolean check(Location location) {
         Block block = location.getBlock();
         return block.getType() == type.getFlag().getMaterial() &&
                 (!useBlockData.getFlag() ||
@@ -84,22 +85,21 @@ public class MatchBlockCondition extends ConditionInterface {
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Match Block", player);
-        m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
         final MenuItemCustom c = new MenuItemCustom("Auto Set Block",
                 MinigameUtils.stringToList("Click here with a;block you wish to;match to."), Material.ITEM_FRAME);
         m.addItem(c, m.getSize() - 1);
-        final MinigamePlayer ply = m.getViewer();
-        
-        final MenuItemBlockData btype = new MenuItemBlockData("Block Type", Material.STONE, new Callback<BlockData>() {
 
-            @Override
-            public void setValue(BlockData value) {
-                    type.setFlag(value);
-            }
+        final MenuItemBlockData btype = new MenuItemBlockData("Block Type", Material.STONE, new Callback<>() {
 
             @Override
             public BlockData getValue() {
                 return type.getFlag();
+            }
+
+            @Override
+            public void setValue(BlockData value) {
+                type.setFlag(value);
             }
         });
         m.addItem(btype);
@@ -111,7 +111,7 @@ public class MatchBlockCondition extends ConditionInterface {
                 type.setFlag(i.getType().createBlockData());
                 useBlockData.setFlag(true);
             } catch (IllegalArgumentException e) {
-                c.getContainer().getViewer().sendMessage("That item is not a block",MinigameMessageType.ERROR);
+                c.getContainer().getViewer().sendMessage("That item is not a block", MinigameMessageType.ERROR);
             }
             useBlockData.setFlag(true);
             busedur.updateDescription();

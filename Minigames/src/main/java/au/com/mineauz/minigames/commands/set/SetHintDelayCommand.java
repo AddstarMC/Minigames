@@ -1,14 +1,13 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public class SetHintDelayCommand implements ICommand {
 
@@ -56,7 +55,7 @@ public class SetHintDelayCommand implements ICommand {
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
         if (args != null) {
-            if (args[0].matches("[0-9]+(m|h)?")) {
+            if (args[0].matches("[0-9]+([mh])?")) {
                 int time = Integer.parseInt(args[0].replaceAll("[mh]", ""));
                 String mod = args[0].replaceAll("[0-9]", "");
                 if (mod.equals("m"))

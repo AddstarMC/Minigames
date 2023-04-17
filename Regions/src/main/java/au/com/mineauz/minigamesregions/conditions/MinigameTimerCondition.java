@@ -1,11 +1,5 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import java.util.Map;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
@@ -13,13 +7,18 @@ import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuItemTime;
 import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 
-public class MinigameTimerCondition extends ConditionInterface{
-    
-    private IntegerFlag minTime = new IntegerFlag(5, "minTime");
-    private IntegerFlag maxTime = new IntegerFlag(10, "maxTime");
+import java.util.Map;
+
+public class MinigameTimerCondition extends ConditionInterface {
+
+    private final IntegerFlag minTime = new IntegerFlag(5, "minTime");
+    private final IntegerFlag maxTime = new IntegerFlag(10, "maxTime");
 
     @Override
     public String getName() {
@@ -30,7 +29,7 @@ public class MinigameTimerCondition extends ConditionInterface{
     public String getCategory() {
         return "Minigame Conditions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
         out.put("Time", MinigameUtils.convertTime(minTime.getFlag(), true) + " - " + MinigameUtils.convertTime(maxTime.getFlag(), true));
@@ -55,7 +54,8 @@ public class MinigameTimerCondition extends ConditionInterface{
     public boolean checkNodeCondition(MinigamePlayer player, Node node) {
         return check(player.getMinigame());
     }
-    private boolean check(Minigame mg){
+
+    private boolean check(Minigame mg) {
         int timeLeft = mg.getMinigameTimer().getTimeLeft();
         int min = minTime.getFlag();
         int max = maxTime.getFlag();
@@ -81,11 +81,11 @@ public class MinigameTimerCondition extends ConditionInterface{
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Minigame Timer", player);
-        
+
         m.addItem(new MenuItemTime("Min Time", Material.CLOCK, minTime.getCallback(), 0, null));
         m.addItem(new MenuItemTime("Max Time", Material.CLOCK, maxTime.getCallback(), 0, null));
-        
-        m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+
+        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
         addInvertMenuItem(m);
         m.displayMenu(player);
         return true;

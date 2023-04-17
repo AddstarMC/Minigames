@@ -1,13 +1,12 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
-
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
@@ -18,12 +17,12 @@ public class HasRequiredFlagsCondition extends ConditionInterface {
     public String getName() {
         return "HAS_REQUIRED_FLAGS";
     }
-    
+
     @Override
-    public String getCategory(){
+    public String getCategory() {
         return "Player Conditions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
     }
@@ -40,13 +39,13 @@ public class HasRequiredFlagsCondition extends ConditionInterface {
 
     @Override
     public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-        if(player == null || !player.isInMinigame()) return false;
+        if (player == null || !player.isInMinigame()) return false;
         return Minigames.getPlugin().getPlayerManager().checkRequiredFlags(player, player.getMinigame().getName(false)).isEmpty();
     }
 
     @Override
     public boolean checkNodeCondition(MinigamePlayer player, Node node) {
-        if(player == null || !player.isInMinigame()) return false;
+        if (player == null || !player.isInMinigame()) return false;
         return Minigames.getPlugin().getPlayerManager().checkRequiredFlags(player, player.getMinigame().getName(false)).isEmpty();
     }
 
@@ -64,7 +63,7 @@ public class HasRequiredFlagsCondition extends ConditionInterface {
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Required Flags", player);
         addInvertMenuItem(m);
-        m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
         m.displayMenu(player);
         return true;
     }

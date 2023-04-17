@@ -1,16 +1,15 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import java.util.Map;
-
-import org.bukkit.configuration.file.FileConfiguration;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.Map;
 
 public class ContainsOneTeamCondition extends ConditionInterface {
 
@@ -18,12 +17,12 @@ public class ContainsOneTeamCondition extends ConditionInterface {
     public String getName() {
         return "CONTAINS_ONE_TEAM";
     }
-    
+
     @Override
-    public String getCategory(){
+    public String getCategory() {
         return "Team Conditions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
     }
@@ -47,9 +46,9 @@ public class ContainsOneTeamCondition extends ConditionInterface {
     public boolean checkRegionCondition(MinigamePlayer player, Region region) {
         boolean ret = true;
         Team last = player.getTeam();
-        if(last == null) return true;
-        for(MinigamePlayer p : region.getPlayers()){
-            if(last != p.getTeam()){
+        if (last == null) return true;
+        for (MinigamePlayer p : region.getPlayers()) {
+            if (last != p.getTeam()) {
                 ret = false;
                 break;
             }
@@ -70,7 +69,7 @@ public class ContainsOneTeamCondition extends ConditionInterface {
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Contains One Team", player);
-        m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
         addInvertMenuItem(m);
         m.displayMenu(player);
         return true;

@@ -1,12 +1,11 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.List;
-
+import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import au.com.mineauz.minigames.commands.ICommand;
-import au.com.mineauz.minigames.minigame.Minigame;
+import java.util.List;
 
 public class SetGametypeNameCommand implements ICommand {
 
@@ -56,18 +55,18 @@ public class SetGametypeNameCommand implements ICommand {
                              String label, String[] args) {
         if (args != null) {
             if (!args[0].equals("null")) {
-                String gtn = "";
+                StringBuilder gtn = new StringBuilder();
                 int count = 0;
                 for (String arg : args) {
-                    gtn += arg;
+                    gtn.append(arg);
                     count++;
                     if (count != args.length)
-                        gtn += " ";
+                        gtn.append(" ");
                 }
-                minigame.setGametypeName(gtn);
+                minigame.setGameTypeName(gtn.toString());
                 sender.sendMessage(ChatColor.GRAY + "Gametype name for " + minigame + " has been set to " + gtn + ".");
             } else {
-                minigame.setGametypeName(null);
+                minigame.setGameTypeName(null);
                 sender.sendMessage(ChatColor.GRAY + "Gametype name for " + minigame + " has been removed.");
             }
             return true;

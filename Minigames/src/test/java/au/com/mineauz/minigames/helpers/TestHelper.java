@@ -1,7 +1,5 @@
 package au.com.mineauz.minigames.helpers;
 
-import java.util.*;
-
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
@@ -16,13 +14,13 @@ import org.bukkit.SoundGroup;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockSupport;
+import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.material.MaterialData;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created for the AddstarMC Project. Created by Narimm on 6/02/2019.
- */
+import java.util.Map;
+
 public class TestHelper {
     public static Minigame createMinigame(Minigames plugin, WorldMock world, MinigameType type, GameMechanics.MECHANIC_NAME mechanic) {
         Location start = new Location(world, 0, 21, 0);
@@ -46,15 +44,14 @@ public class TestHelper {
     }
 
     public static BlockMock createSignBlock(Map<Integer, String> lines, WorldMock world) {
-        MaterialData data = new MaterialData(Material.OAK_SIGN, (byte) 0);
-        MockSign sign = new MockSign(data, true);
+        MockSign sign = new MockSign(Material.CRIMSON_SIGN, true);
         for (Map.Entry<Integer, String> e : lines.entrySet()) {
             sign.setLine(e.getKey(), e.getValue());
         }
-        BlockData bData = new BlockData() {
+        BlockData bData = new BlockData() { //there is probably something in MockBukkit 4 this
             @Override
-            public Material getMaterial() {
-                return Material.OAK_SIGN;
+            public @NotNull Material getMaterial() {
+                return Material.CRIMSON_SIGN;
             }
 
             @Override
@@ -68,7 +65,7 @@ public class TestHelper {
             }
 
             @Override
-            public BlockData merge(BlockData blockData) {
+            public @NotNull BlockData merge(BlockData blockData) {
                 return this;
             }
 
@@ -78,13 +75,39 @@ public class TestHelper {
             }
 
             @Override
-            public BlockData clone() {
+            public @NotNull BlockData clone() {
                 return this;
             }
 
             @Override
             public @NotNull SoundGroup getSoundGroup() {
                 return null;
+            }
+
+            @Override
+            public int getLightEmission() {
+                return 0;
+            }
+
+            @Override
+            public boolean isOccluding() {
+                return false;
+            }
+
+            @Override
+            public boolean requiresCorrectToolForDrops() {
+                return false;
+            }
+
+
+            @Override
+            public boolean isPreferredTool(@NotNull ItemStack tool) {
+                return false;
+            }
+
+            @Override
+            public @NotNull PistonMoveReaction getPistonMoveReaction() {
+                return PistonMoveReaction.BREAK;
             }
 
             @Override
@@ -107,6 +130,6 @@ public class TestHelper {
                 return false;
             }
         };
-        return new SignBlockMock(Material.OAK_SIGN, new Location(world, 10, 40, 10), sign, bData);
+        return new SignBlockMock(Material.CRIMSON_SIGN, new Location(world, 10, 40, 10), sign, bData);
     }
 }

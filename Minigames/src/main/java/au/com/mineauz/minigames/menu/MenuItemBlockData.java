@@ -8,15 +8,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created for the AddstarMC Project. Created by Narimm on 6/08/2018.
- */
 public class MenuItemBlockData extends MenuItem {
-
     private Callback<BlockData> data;
 
     public MenuItemBlockData(String name, Material displayItem) {
@@ -61,17 +58,11 @@ public class MenuItemBlockData extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
-
-        return super.onClick();
-    }
-
-    @Override
-    public ItemStack onClickWithItem(ItemStack item) {
+    public ItemStack onClickWithItem(@Nullable ItemStack item) {
         try {
             BlockData data = item.getType().createBlockData();
             this.data.setValue(data);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | NullPointerException e) {
             String name = "unknown";
             if (item != null) {
                 name = item.getType().name();
@@ -86,13 +77,11 @@ public class MenuItemBlockData extends MenuItem {
         String err = "No MgBlockData detected";
         try {
             BlockData d = Bukkit.createBlockData(entry);
-            if (d != null) {
-                data.setValue(d);
-                setDescription(createDescription(data.getValue()));
-                getContainer().cancelReopenTimer();
-                getContainer().displayMenu(getContainer().getViewer());
-                return;
-            }
+            data.setValue(d);
+            setDescription(createDescription(data.getValue()));
+            getContainer().cancelReopenTimer();
+            getContainer().displayMenu(getContainer().getViewer());
+            return;
         } catch (IllegalArgumentException e) {
             err = "Invalid MgBlockData !";
         }
@@ -100,21 +89,6 @@ public class MenuItemBlockData extends MenuItem {
         getContainer().displayMenu(getContainer().getViewer());
         getContainer().getViewer().sendMessage(err, MinigameMessageType.ERROR);
 
-    }
-
-    @Override
-    public ItemStack onRightClick() {
-        return super.onRightClick();
-    }
-
-    @Override
-    public ItemStack onShiftClick() {
-        return super.onShiftClick();
-    }
-
-    @Override
-    public ItemStack onShiftRightClick() {
-        return super.onShiftRightClick();
     }
 
     @Override

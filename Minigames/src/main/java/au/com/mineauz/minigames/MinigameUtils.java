@@ -11,10 +11,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 import java.util.regex.Pattern;
 
-//import net.minecraft.server.v1_6_R2.EntityPlayer;
-//
-//import org.bukkit.craftbukkit.v1_6_R2.entity.CraftPlayer;
-
 public class MinigameUtils {
 
     /**
@@ -25,16 +21,12 @@ public class MinigameUtils {
      * @return The ItemStack referred to in the parameter.
      */
     public static ItemStack stringToItemStack(String item, int quantity) {
-        String itemName = "";
-        short itemData = 0;
-        String[] split = null;
+        String itemName;
+        String[] split;
 
         if (item.contains(":")) {
             split = item.split(":");
             itemName = split[0].toUpperCase();
-            if (split[1].matches("[0-9]+")) {
-                itemData = Short.parseShort(split[1]);
-            }
         } else {
             itemName = item.toUpperCase();
         }
@@ -204,24 +196,24 @@ public class MinigameUtils {
      * @return A string representation of the list
      */
     public static String listToString(List<String> list) {
-        String slist = "";
+        StringBuilder slist = new StringBuilder();
         boolean switchColour = false;
         for (String entry : list) {
             if (switchColour) {
-                slist += ChatColor.WHITE + entry;
+                slist.append(ChatColor.WHITE).append(entry);
                 if (!entry.equalsIgnoreCase(list.get(list.size() - 1))) {
-                    slist += ChatColor.WHITE + ", ";
+                    slist.append(ChatColor.WHITE + ", ");
                 }
                 switchColour = false;
             } else {
-                slist += ChatColor.GRAY + entry;
+                slist.append(ChatColor.GRAY).append(entry);
                 if (!entry.equalsIgnoreCase(list.get(list.size() - 1))) {
-                    slist += ChatColor.WHITE + ", ";
+                    slist.append(ChatColor.WHITE + ", ");
                 }
                 switchColour = true;
             }
         }
-        return slist;
+        return slist.toString();
     }
 
     /**
@@ -252,7 +244,7 @@ public class MinigameUtils {
         String lang = getLang(format);
         try {
             return String.format(lang, text);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return lang;
         }
     }
@@ -269,8 +261,8 @@ public class MinigameUtils {
         String out;
         try {
             out = MessageManager.getUnformattedMessage(null, arg1);
-        }catch (MissingResourceException e){
-            out = "No path found in: " +e.getMessage() +" for " + e.getKey();
+        } catch (MissingResourceException e) {
+            out = "No path found in: " + e.getMessage() + " for " + e.getKey();
         }
         return out;
     }
@@ -285,7 +277,7 @@ public class MinigameUtils {
         Material toolMat = Material.getMaterial(Minigames.getPlugin().getConfig().getString("tool"));
         if (toolMat == null) {
             toolMat = Material.BLAZE_ROD;
-            MessageManager.sendMessage(player,MinigameMessageType.ERROR,null,"minigame.error.noDefaultTool");
+            MessageManager.sendMessage(player, MinigameMessageType.ERROR, null, "minigame.error.noDefaultTool");
         }
 
         ItemStack tool = new ItemStack(toolMat);
@@ -304,9 +296,10 @@ public class MinigameUtils {
      */
     public static boolean hasMinigameTool(MinigamePlayer player) {
         for (ItemStack i : player.getPlayer().getInventory().getContents()) {
-            if (i != null && i.getItemMeta() != null && i.getItemMeta().getDisplayName() != null &&
-                    i.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")) {
-                return true;
+            if (i != null && i.getItemMeta() != null) {
+                if (i.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")) {
+                    return true;
+                }
             }
         }
         return false;
@@ -319,7 +312,7 @@ public class MinigameUtils {
      * @return false if the item was not a Minigame tool
      */
     public static boolean isMinigameTool(ItemStack item) {
-        return item.getItemMeta() != null && item.getItemMeta().getDisplayName() != null && item.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool");
+        return item.getItemMeta() != null && item.getItemMeta().displayName() != null && item.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool");
     }
 
     /**
@@ -330,7 +323,7 @@ public class MinigameUtils {
      */
     public static MinigameTool getMinigameTool(MinigamePlayer player) {
         for (ItemStack i : player.getPlayer().getInventory().getContents()) {
-            if (i != null && i.getItemMeta() != null && i.getItemMeta().getDisplayName() != null &&
+            if (i != null && i.getItemMeta() != null &&
                     i.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")) {
                 return new MinigameTool(i);
             }
@@ -379,30 +372,6 @@ public class MinigameUtils {
         arr[0] = new Location(selection1.getWorld(), minx, miny, minz);
         arr[1] = new Location(selection1.getWorld(), maxx, maxy, maxz);
         return arr;
-    }
-
-    /**
-     * Capitalizes the first letter of every word in a sentence.
-     *
-     * @param toCapitalize The string to capitalize
-     * @return The capitalized string
-     * @deprecated use {@link org.apache.commons.lang.WordUtils#capitalize(String)}
-     */
-    @Deprecated
-    public static String capitalize(String toCapitalize) {
-        if (toCapitalize == null) return null;
-        String val = toCapitalize.toLowerCase();
-        String[] spl = val.split(" ");
-        val = "";
-        for (String s : spl) {
-            String c = Character.toString(s.charAt(0));
-            s = s.substring(1);
-            c = c.toUpperCase();
-            s = c + s;
-            val += s + " ";
-        }
-        val = val.trim();
-        return val;
     }
 
     /**
@@ -459,7 +428,7 @@ public class MinigameUtils {
      */
     @Deprecated
     public static void broadcast(String message, Minigame minigame, String permission) {
-       MessageManager.broadcast(message,minigame,permission);
+        MessageManager.broadcast(message, minigame, permission);
     }
 
     /**
@@ -472,7 +441,7 @@ public class MinigameUtils {
      */
     @Deprecated
     public static void broadcast(String message, Minigame minigame, ChatColor prefixColor) {
-        MessageManager.broadcast(message,minigame,prefixColor);
+        MessageManager.broadcast(message, minigame, prefixColor);
     }
 
     public static void debugMessage(String message) {
@@ -485,7 +454,7 @@ public class MinigameUtils {
      * Loads a short location (x, y, z, world) from a configuration section
      *
      * @param section The section that contains the fields
-     * @return A location with the the contents of that section, or null if the world is invalid
+     * @return A location with the contents of that section, or null if the world is invalid
      */
     public static Location loadShortLocation(ConfigurationSection section) {
         double x = section.getDouble("x");

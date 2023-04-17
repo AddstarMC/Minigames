@@ -1,12 +1,12 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.managers.MessageManager;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -59,7 +59,7 @@ public class LoadoutCommand implements ICommand {
                 if (LoadoutModule.getMinigameModule(ply.getMinigame()).hasLoadout(ln)) {
                     ply.setLoadout(LoadoutModule.getMinigameModule(ply.getMinigame()).getLoadout(ln));
                     ply.sendInfoMessage(
-                        MessageManager.getMinigamesMessage("player.loadout.nextSpawnName", ln));
+                            MessageManager.getMinigamesMessage("player.loadout.nextSpawnName", ln));
                 } else {
                     ply.sendMessage(MessageManager.getMinigamesMessage("player.loadout.noLoadout", ln), MinigameMessageType.ERROR);
                 }

@@ -64,7 +64,7 @@ public enum StatFormat {
      */
     Total(StatValueField.Total);
 
-    private StatValueField[] fields;
+    private final StatValueField[] fields;
 
     StatFormat(StatValueField... fields) {
         this.fields = fields;

@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.events;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +10,8 @@ import java.util.List;
  * You cannot cancel this event
  */
 public class StartMinigameEvent extends AbstractMinigameEvent {
-
-    private boolean willTeleport;
-    private List<MinigamePlayer> players;
+    private final boolean willTeleport;
+    private final List<MinigamePlayer> players;
 
     public StartMinigameEvent(List<MinigamePlayer> players, Minigame minigame, boolean willTeleport) {
         super(minigame);

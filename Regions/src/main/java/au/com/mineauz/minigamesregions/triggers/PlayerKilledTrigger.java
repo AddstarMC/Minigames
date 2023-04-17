@@ -1,9 +1,5 @@
 package au.com.mineauz.minigamesregions.triggers;
 
-/**
- * Created for the AddstarMC
- * Created by Narimm on 10/10/2017.
- */
 public class PlayerKilledTrigger implements Trigger {
     @Override
     public String getName() {

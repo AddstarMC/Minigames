@@ -39,7 +39,7 @@ public class BasicRecorder implements Listener {
 
     //helper methode to not write code double
     //this checks for Minigame signs and cancels the event, adds the block to the block recorder and handles block drops
-    private boolean handleBlockBreak(BlockBreakEvent event, MinigamePlayer mgPlayer){
+    private boolean handleBlockBreak(BlockBreakEvent event, MinigamePlayer mgPlayer) {
         Block eBlock = event.getBlock();
         Minigame mgm = mgPlayer.getMinigame();
         RecorderData recData = mgm.getRecorderData();
@@ -47,12 +47,12 @@ public class BasicRecorder implements Listener {
         //don't allow breakage of Minigame signs
         //therefore check if the Block is next to such a sign.
         //please note: this doesn't check if the said sign is even attached to the block, todo if it gets necessary a check has to be added for this.
-        for (BlockFace face : BlockFace.values()){
-            if (face.isCartesian() || face == BlockFace.SELF){
+        for (BlockFace face : BlockFace.values()) {
+            if (face.isCartesian() || face == BlockFace.SELF) {
                 Block other = eBlock.getRelative(face);
 
                 if (other.getState() instanceof Sign sign &&
-                        PlainTextComponentSerializer.plainText().serialize(sign.line(0)).equalsIgnoreCase("[Minigame]") ){
+                        PlainTextComponentSerializer.plainText().serialize(sign.line(0)).equalsIgnoreCase("[Minigame]")) {
                     return true;
                 }
             }
@@ -82,17 +82,17 @@ public class BasicRecorder implements Listener {
             Minigame mgm = mgPlayer.getMinigame();
             RecorderData recData = mgm.getRecorderData();
 
-            if (mgm.canBlockBreak()){
-                if (recData.getWhitelistMode()){
+            if (mgm.canBlockBreak()) {
+                if (recData.getWhitelistMode()) {
                     //white list --> blocks that are allowed to be broken
-                    if (recData.getWBBlocks().contains(event.getBlock().getType())){
-                        if (handleBlockBreak(event, mgPlayer)){
+                    if (recData.getWBBlocks().contains(event.getBlock().getType())) {
+                        if (handleBlockBreak(event, mgPlayer)) {
                             event.setCancelled(true);
                         }
                     }
                     //black list --> blocks that are not allowed to be broken
                 } else if (!recData.getWBBlocks().contains(event.getBlock().getType())) {
-                    if (handleBlockBreak(event, mgPlayer)){
+                    if (handleBlockBreak(event, mgPlayer)) {
                         event.setCancelled(true);
                     }
                 }
@@ -118,10 +118,10 @@ public class BasicRecorder implements Listener {
             RecorderData recData = mgm.getRecorderData();
 
 
-            if (mgm.canBlockPlace()){
-                if (recData.getWhitelistMode()){
+            if (mgm.canBlockPlace()) {
+                if (recData.getWhitelistMode()) {
                     //white list --> blocks that are allowed to be placed
-                    if (recData.getWBBlocks().contains(event.getBlock().getType())){
+                    if (recData.getWBBlocks().contains(event.getBlock().getType())) {
                         recData.addBlock(event.getBlockReplacedState(), mgPlayer);
                     }
                     //black list --> blocks that are not allowed to be placed
@@ -141,7 +141,7 @@ public class BasicRecorder implements Listener {
 
         if (mgPlayer.isInMinigame() && event.getAction() == Action.RIGHT_CLICK_BLOCK
                 && !mgPlayer.getMinigame().isSpectator(mgPlayer)) {
-            
+
             Minigame mgm = mgPlayer.getMinigame();
             RecorderData recData = mgm.getRecorderData();
 
@@ -155,15 +155,15 @@ public class BasicRecorder implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void bucketFill(PlayerBucketFillEvent event) {
         MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
-        
+
         if (mgPlayer.isInMinigame()) {
             Minigame mgm = mgPlayer.getMinigame();
             RecorderData recData = mgm.getRecorderData();
 
-            if (mgm.canBlockBreak()){
-                if (recData.getWhitelistMode()){
+            if (mgm.canBlockBreak()) {
+                if (recData.getWhitelistMode()) {
                     //white list --> blocks that are allowed to be broken
-                    if (recData.getWBBlocks().contains(event.getBlock().getType())){
+                    if (recData.getWBBlocks().contains(event.getBlock().getType())) {
                         recData.addBlock(event.getBlockClicked(), playerManager.getMinigamePlayer(event.getPlayer()));
                     }
                     //black list --> blocks that are not allowed to be broken
@@ -178,8 +178,8 @@ public class BasicRecorder implements Listener {
 
     //remove fire
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void igniteblock(BlockIgniteEvent event) {
-        if (event.getPlayer() != null){
+    public void igniteBlock(BlockIgniteEvent event) {
+        if (event.getPlayer() != null) {
             MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
 
             if (mgPlayer.isInMinigame() &&
@@ -187,10 +187,10 @@ public class BasicRecorder implements Listener {
                 Minigame mgm = mgPlayer.getMinigame();
                 RecorderData recData = mgm.getRecorderData();
 
-                if (mgm.canBlockPlace()){
-                    if (recData.getWhitelistMode()){
+                if (mgm.canBlockPlace()) {
+                    if (recData.getWhitelistMode()) {
                         //white list --> blocks that are allowed to be broken
-                        if (recData.getWBBlocks().contains(event.getBlock().getType())){
+                        if (recData.getWBBlocks().contains(event.getBlock().getType())) {
                             recData.addBlock(event.getBlock(), playerManager.getMinigamePlayer(event.getPlayer()));
                         }
                         //black list --> blocks that are not allowed to be broken
@@ -207,16 +207,16 @@ public class BasicRecorder implements Listener {
     //remove hanging entities
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void hangingPlace(HangingPlaceEvent event) {
-        if (event.getPlayer() != null){
+        if (event.getPlayer() != null) {
             MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
             if (mgPlayer.isInMinigame()) {
                 Minigame mgm = mgPlayer.getMinigame();
                 RecorderData recData = mgm.getRecorderData();
 
                 Material usedMaterial;
-                if (event.getItemStack() == null){
+                if (event.getItemStack() == null) {
                     //using a leash on a fence still uses the deprecated version of this event, without an item stack
-                    if (event.getEntity() instanceof LeashHitch){
+                    if (event.getEntity() instanceof LeashHitch) {
                         usedMaterial = Material.LEAD;
                     } else {
                         //we have no idea what Material was used
@@ -227,9 +227,9 @@ public class BasicRecorder implements Listener {
                 }
 
                 //todo we might want a flag parallel to BlockPlace/break for entities spawn / hurt
-                if (recData.getWhitelistMode()){
+                if (recData.getWhitelistMode()) {
                     //white list --> blocks that are allowed to be broken
-                    if (recData.getWBBlocks().contains(usedMaterial)){
+                    if (recData.getWBBlocks().contains(usedMaterial)) {
                         recData.addEntity(event.getEntity(), mgPlayer, true);
                         return;
                     }
@@ -301,9 +301,9 @@ public class BasicRecorder implements Listener {
         }
     }
 
-    //remove enderperl entities (important if some where caught in bubble columns)
+    //remove ender perl entities (important if some where caught in bubble columns)
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    private void throwEnderpearl(ProjectileLaunchEvent event) {
+    private void throwEnderPearl(ProjectileLaunchEvent event) {
         if (event.getEntity().getShooter() instanceof Player player) {
             MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(player);
 
@@ -318,15 +318,15 @@ public class BasicRecorder implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void bucketEmpty(PlayerBucketEmptyEvent event) {
         MinigamePlayer mgPlayer = playerManager.getMinigamePlayer(event.getPlayer());
-        
+
         if (mgPlayer.isInMinigame()) {
             Minigame mgm = mgPlayer.getMinigame();
             RecorderData recData = mgm.getRecorderData();
 
-            if (mgm.canBlockPlace()){
-                if (recData.getWhitelistMode()){
+            if (mgm.canBlockPlace()) {
+                if (recData.getWhitelistMode()) {
                     //white list --> blocks that are allowed to be broken
-                    if (recData.getWBBlocks().contains(event.getBlock().getType())){
+                    if (recData.getWBBlocks().contains(event.getBlock().getType())) {
                         Location loc = new Location(event.getBlockClicked().getWorld(),
                                 event.getBlockFace().getModX() + event.getBlockClicked().getX(),
                                 event.getBlockFace().getModY() + event.getBlockClicked().getY(),

@@ -1,14 +1,13 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.presets.PresetLoader;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public class SetPresetCommand implements ICommand {
 
@@ -67,7 +66,7 @@ public class SetPresetCommand implements ICommand {
                 sender.sendMessage(PresetLoader.getPresetInfo(args[0]));
                 return true;
             } else {
-                sender.sendMessage(ChatColor.GRAY + "There is no preset by the name " + args[0]);
+                sender.sendMessage(ChatColor.GRAY + "Please specify the name of the preset!");
             }
 
         }

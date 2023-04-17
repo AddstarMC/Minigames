@@ -8,8 +8,8 @@ import java.util.List;
 
 public class MenuItemFlag extends MenuItem {
 
-    private String flag;
-    private List<String> flags;
+    private final String flag;
+    private final List<String> flags;
 
     public MenuItemFlag(Material displayItem, String flag, List<String> flags) {
         super(flag, displayItem);

@@ -1,11 +1,11 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import com.google.common.base.Strings;
@@ -21,11 +21,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ContainsEntityCondition extends ConditionInterface {
-    private EnumFlag<EntityType> entityType = new EnumFlag<>(EntityType.PLAYER, "entity");
-    
-    private BooleanFlag matchName = new BooleanFlag(false, "matchName");
-    private StringFlag customName = new StringFlag(null, "name");
-    
+    private final EnumFlag<EntityType> entityType = new EnumFlag<>(EntityType.PLAYER, "entity");
+
+    private final BooleanFlag matchName = new BooleanFlag(false, "matchName");
+    private final StringFlag customName = new StringFlag(null, "name");
+
     @Override
     public String getName() {
         return "CONTAINS_ENTITY";
@@ -49,12 +49,12 @@ public class ContainsEntityCondition extends ConditionInterface {
     @Override
     public boolean checkRegionCondition(MinigamePlayer player, Region region) {
         Collection<? extends Entity> entities = region.getFirstPoint().getWorld().getEntitiesByClass(entityType.getFlag().getEntityClass());
-        
+
         Pattern namePattern = null;
         if (matchName.getFlag()) {
             namePattern = createNamePattern();
         }
-        
+
         Location temp = new Location(null, 0, 0, 0);
         for (Entity entity : entities) {
             if (entity.getType() == entityType.getFlag() && region.locationInRegion(entity.getLocation(temp))) {
@@ -64,23 +64,22 @@ public class ContainsEntityCondition extends ConditionInterface {
                         continue;
                     }
                 }
-                
+
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     private Pattern createNamePattern() {
         String name = customName.getFlag();
         if (name == null) {
             return Pattern.compile(".*");
         }
-        
+
         StringBuffer buffer = new StringBuffer();
         int start = 0;
-        int index = 0;
 
         PlayerHasItemCondition.createPattern(name, buffer, start);
 
@@ -113,15 +112,15 @@ public class ContainsEntityCondition extends ConditionInterface {
         Menu menu = new Menu(3, "Contains Entity", player);
 
         menu.addItem(new MenuItemEnum<>("Entity Type", Material.CHICKEN_SPAWN_EGG, entityType.getCallback(), EntityType.class));
-        
+
         menu.addItem(new MenuItemNewLine());
-        
+
         menu.addItem(matchName.getMenuItem("Match Display Name", Material.NAME_TAG));
-        MenuItemString menuItem = (MenuItemString)customName.getMenuItem("Display Name", Material.NAME_TAG, MinigameUtils.stringToList("The name to match.;Use % to do a wildcard match"));
+        MenuItemString menuItem = (MenuItemString) customName.getMenuItem("Display Name", Material.NAME_TAG, MinigameUtils.stringToList("The name to match.;Use % to do a wildcard match"));
         menuItem.setAllowNull(true);
         menu.addItem(menuItem);
-        
-        menu.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), menu.getSize() - 9);
+
+        menu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), menu.getSize() - 9);
         addInvertMenuItem(menu);
         menu.displayMenu(player);
         return true;

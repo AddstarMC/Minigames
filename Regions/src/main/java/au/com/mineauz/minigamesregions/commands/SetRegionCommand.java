@@ -1,18 +1,18 @@
 package au.com.mineauz.minigamesregions.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionModule;
-import java.util.ArrayList;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SetRegionCommand implements ICommand {
@@ -39,12 +39,12 @@ public class SetRegionCommand implements ICommand {
 
     @Override
     public String[] getParameters() {
-        return new String[] {"select", "create", "delete", "modify"};
+        return new String[]{"select", "create", "delete", "modify"};
     }
 
     @Override
     public String[] getUsage() {
-        return new String[] {
+        return new String[]{
                 "/minigame set <Minigame> region select <1/2>",
                 "/minigame set <Minigame> region create <name>",
                 "/minigame set <Minigame> region delete <name>",
@@ -64,23 +64,22 @@ public class SetRegionCommand implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
-            String label, String[] args) {
-        if(args != null){
+                             String label, String[] args) {
+        if (args != null) {
             MinigamePlayer ply = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
             RegionModule rmod = RegionModule.getMinigameModule(minigame);
-            if(args.length == 2){
-                if(args[0].equalsIgnoreCase("select")){
+            if (args.length == 2) {
+                if (args[0].equalsIgnoreCase("select")) {
                     Location ploc = ply.getLocation();
                     ploc.setY(ploc.getY() - 1);
-                    
-                    if(args[1].equals("1")){
+
+                    if (args[1].equals("1")) {
                         Location p2 = ply.getSelectionPoints()[1];
                         ply.clearSelection();
                         ply.setSelection(ploc, p2);
 
                         ply.sendInfoMessage(ChatColor.GRAY + "Point 1 selected");
-                    }
-                    else{
+                    } else {
                         Location p2 = ply.getSelectionPoints()[0];
                         ply.clearSelection();
                         ply.setSelection(p2, ploc);
@@ -88,34 +87,29 @@ public class SetRegionCommand implements ICommand {
                         ply.sendInfoMessage(ChatColor.GRAY + "Point 2 selected");
                     }
                     return true;
-                }
-                else if(args[0].equalsIgnoreCase("create")){
-                    if(ply.hasSelection()){
+                } else if (args[0].equalsIgnoreCase("create")) {
+                    if (ply.hasSelection()) {
                         String name = args[1];
                         rmod.addRegion(name, new Region(name, ply.getSelectionPoints()[0], ply.getSelectionPoints()[1]));
                         ply.clearSelection();
 
                         ply.sendInfoMessage(ChatColor.GRAY + "Created new region for " + minigame.getName(false) + " named " + name);
-                    }
-                    else{
+                    } else {
                         ply.sendInfoMessage(ChatColor.RED + "You have not made a selection!");
                     }
                     return true;
-                }
-                else if(args[0].equalsIgnoreCase("delete")){
-                    if(rmod.hasRegion(args[1])){
+                } else if (args[0].equalsIgnoreCase("delete")) {
+                    if (rmod.hasRegion(args[1])) {
                         rmod.removeRegion(args[1]);
                         ply.sendInfoMessage(ChatColor.GRAY + "Removed the region named " + args[1] + " from " + minigame.getName(false));
-                    }
-                    else{
+                    } else {
                         ply.sendInfoMessage(ChatColor.GRAY + "No region by the name " + args[1] + " was found in " + minigame.getName(false));
                     }
                     return true;
                 }
-                
-            }
-            else if(args.length == 1){
-                if(args[0].equalsIgnoreCase("modify")){
+
+            } else if (args.length == 1) {
+                if (args[0].equalsIgnoreCase("modify")) {
                     rmod.displayMenu(ply, null);
                     return true;
                 }
@@ -126,7 +120,7 @@ public class SetRegionCommand implements ICommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-            String alias, String[] args) {
+                                      String alias, String[] args) {
 
         if (args.length == 1) {
             List<String> tab = new ArrayList<>();

@@ -21,14 +21,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class DisplayManager {
-    private boolean isSpigot;
-
-    private BukkitTask refreshTask;
-
-    private final Map<INonPersistantDisplay, Integer> nextTickDelay = new IdentityHashMap<>();
-
+    private final Map<INonPersistentDisplay, Integer> nextTickDelay = new IdentityHashMap<>();
     private final SetMultimap<Player, AbstractDisplayObject> playerDisplays;
     private final SetMultimap<World, AbstractDisplayObject> worldDisplays;
+    private boolean isSpigot;
+    private BukkitTask refreshTask;
 
     public DisplayManager() {
         playerDisplays = HashMultimap.create();
@@ -50,7 +47,7 @@ public class DisplayManager {
         return isSpigot;
     }
 
-    public IDisplayCubiod displayCuboid(Player player, Location corner1, Location corner2) {
+    public IDisplayCuboid displayCuboid(Player player, Location corner1, Location corner2) {
         Validate.isTrue(corner1.getWorld() == corner2.getWorld(), "Both corners must be in the same world");
 
         double minX = Math.min(corner1.getX(), corner2.getX());
@@ -63,7 +60,7 @@ public class DisplayManager {
         return displayCuboid(player, minX, minY, minZ, maxX, maxY, maxZ);
     }
 
-    public IDisplayCubiod displayCuboid(Location corner1, Location corner2) {
+    public IDisplayCuboid displayCuboid(Location corner1, Location corner2) {
         Validate.isTrue(corner1.getWorld() == corner2.getWorld(), "Both corners must be in the same world");
 
         double minX = Math.min(corner1.getX(), corner2.getX());
@@ -76,7 +73,7 @@ public class DisplayManager {
         return displayCuboid(corner1.getWorld(), minX, minY, minZ, maxX, maxY, maxZ);
     }
 
-    public IDisplayCubiod displayCuboid(Player player, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+    public IDisplayCuboid displayCuboid(Player player, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
         if (isSpigot) {
             return new SpigotDisplayCuboid(this, player, new Vector(minX, minY, minZ), new Vector(maxX, maxY, maxZ));
         } else {
@@ -84,7 +81,7 @@ public class DisplayManager {
         }
     }
 
-    public IDisplayCubiod displayCuboid(Player player, MgRegion region) {
+    public IDisplayCuboid displayCuboid(Player player, MgRegion region) {
         if (isSpigot) {
             return new SpigotDisplayCuboid(this, player, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
         } else {
@@ -92,7 +89,7 @@ public class DisplayManager {
         }
     }
 
-    public IDisplayCubiod displayCuboid(World world, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+    public IDisplayCuboid displayCuboid(World world, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
         if (isSpigot) {
             return new SpigotDisplayCuboid(this, world, new Vector(minX, minY, minZ), new Vector(maxX, maxY, maxZ));
         } else {
@@ -100,7 +97,7 @@ public class DisplayManager {
         }
     }
 
-    public IDisplayCubiod displayCuboid(World world, MgRegion region) {
+    public IDisplayCuboid displayCuboid(World world, MgRegion region) {
         if (isSpigot) {
             return new SpigotDisplayCuboid(this, world, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
         } else {
@@ -158,7 +155,7 @@ public class DisplayManager {
     }
 
     protected void onShow(IDisplayObject object) {
-        if (object instanceof INonPersistantDisplay display) {
+        if (object instanceof INonPersistentDisplay display) {
             nextTickDelay.put(display, display.getRefreshInterval());
 
             enableRefreshTask();
@@ -166,7 +163,7 @@ public class DisplayManager {
     }
 
     protected void onHide(IDisplayObject object) {
-        if (object instanceof INonPersistantDisplay display) {
+        if (object instanceof INonPersistentDisplay display) {
             nextTickDelay.remove(display);
 
             disableRefreshTask();
@@ -182,7 +179,7 @@ public class DisplayManager {
     }
 
     private void doRefreshAll() {
-        for (Entry<INonPersistantDisplay, Integer> next : nextTickDelay.entrySet()) {
+        for (Entry<INonPersistentDisplay, Integer> next : nextTickDelay.entrySet()) {
             if (next.getValue() <= 0) {
                 next.setValue(next.getKey().getRefreshInterval());
                 next.getKey().refresh();

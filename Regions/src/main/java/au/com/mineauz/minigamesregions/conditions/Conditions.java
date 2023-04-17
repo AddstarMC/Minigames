@@ -1,24 +1,25 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemCondition;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemConditionAdd;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class Conditions {
-    private static Map<String, Class<? extends ConditionInterface>> conditions = new HashMap<>();
-    
-    static{
+    private static final Map<String, Class<? extends ConditionInterface>> conditions = new HashMap<>();
+
+    static {
         addCondition("PLAYER_HEALTH_RANGE", PlayerHealthRangeCondition.class);
         addCondition("HAS_REQUIRED_FLAGS", HasRequiredFlagsCondition.class);
         addCondition("PLAYER_SCORE_RANGE", PlayerScoreRangeCondition.class);
@@ -36,51 +37,52 @@ public class Conditions {
         addCondition("PLAYER_FOOD_RANGE", PlayerFoodRangeCondition.class);
         addCondition("HAS_FLAG", HasFlagCondition.class);
         addCondition("CONTAINS_ENTITY", ContainsEntityCondition.class);
-        addCondition("HAS_LOADOUT", HasLoudOutCondition.class);
+        addCondition("HAS_LOADOUT", HasLoadoutCondition.class);
     }
-    
-    public static void addCondition(String name, Class<? extends ConditionInterface> condition){
+
+    public static void addCondition(String name, Class<? extends ConditionInterface> condition) {
         conditions.put(name, condition);
     }
-    
-    public static boolean hasCondition(String condition){
+
+    public static boolean hasCondition(String condition) {
         return conditions.containsKey(condition.toUpperCase());
     }
-    
-    public static ConditionInterface getConditionByName(String name){
-        if(hasCondition(name.toUpperCase())){
-            try{
-                return conditions.get(name.toUpperCase()).newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+
+    public static ConditionInterface getConditionByName(String name) {
+        if (hasCondition(name.toUpperCase())) {
+            try {
+                return conditions.get(name.toUpperCase()).getDeclaredConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                     InvocationTargetException e) {
                 e.printStackTrace();
             }
         }
         return null;
     }
-    
-    public static Set<String> getAllConditionNames(){
+
+    public static Set<String> getAllConditionNames() {
         return conditions.keySet();
     }
-    
-    public static void displayMenu(MinigamePlayer player, RegionExecutor exec, Menu prev){
+
+    public static void displayMenu(MinigamePlayer player, RegionExecutor exec, Menu prev) {
         Menu m = new Menu(3, "Conditions", player);
         m.setPreviousPage(prev);
-        for(ConditionInterface con : exec.getConditions()){
-            m.addItem(new MenuItemCondition(MinigameUtils.capitalize(con.getName()), Material.PAPER, exec, con));
+        for (ConditionInterface con : exec.getConditions()) {
+            m.addItem(new MenuItemCondition(WordUtils.capitalize(con.getName()), Material.PAPER, exec, con));
         }
-        m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
         m.addItem(new MenuItemConditionAdd("Add Condition", MenuUtility.getCreateMaterial(), exec), m.getSize() - 1);
         m.displayMenu(player);
     }
-    
-    public static void displayMenu(MinigamePlayer player, NodeExecutor exec, Menu prev){
+
+    public static void displayMenu(MinigamePlayer player, NodeExecutor exec, Menu prev) {
         Menu m = new Menu(3, "Conditions", player);
         m.setPreviousPage(prev);
-        for(ConditionInterface con : exec.getConditions()){
-            m.addItem(new MenuItemCondition(MinigameUtils.capitalize(con.getName()), Material.PAPER, exec, con));
+        for (ConditionInterface con : exec.getConditions()) {
+            m.addItem(new MenuItemCondition(WordUtils.capitalize(con.getName()), Material.PAPER, exec, con));
         }
-        m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
-        m.addItem(new MenuItemConditionAdd("Add Condition",MenuUtility.getCreateMaterial(), exec), m.getSize() - 1);
+        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemConditionAdd("Add Condition", MenuUtility.getCreateMaterial(), exec), m.getSize() - 1);
         m.displayMenu(player);
     }
 

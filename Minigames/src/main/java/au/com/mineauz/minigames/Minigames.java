@@ -1,37 +1,28 @@
 package au.com.mineauz.minigames;
 
-import au.com.mineauz.minigames.config.MinigameSave;
-import au.com.mineauz.minigames.managers.MessageManager;
-import au.com.mineauz.minigames.managers.MinigameManager;
-import au.com.mineauz.minigames.managers.MinigamePlayerManager;
-import au.com.mineauz.minigames.managers.PlaceHolderManager;
-import au.com.mineauz.minigames.managers.ResourcePackManager;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.objects.ModulePlaceHolderProvider;
-import au.com.mineauz.minigames.objects.ResourcePack;
-import com.google.common.io.Closeables;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.ListenableFuture;
-
 import au.com.mineauz.minigames.backend.BackendManager;
 import au.com.mineauz.minigames.blockRecorder.BasicRecorder;
 import au.com.mineauz.minigames.commands.CommandDispatcher;
+import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.display.DisplayManager;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.gametypes.SingleplayerType;
+import au.com.mineauz.minigames.managers.*;
 import au.com.mineauz.minigames.mechanics.TreasureHuntMechanic;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.ResourcePack;
 import au.com.mineauz.minigames.signs.SignBase;
 import au.com.mineauz.minigames.stats.MinigameStats;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
-
+import com.google.common.io.Closeables;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.ListenableFuture;
 import io.papermc.lib.PaperLib;
 import net.milkbowl.vault.economy.Economy;
-
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -48,13 +39,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
-import java.lang.reflect.Member;
-import java.time.LocalDate;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
-import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
@@ -67,6 +57,7 @@ public class Minigames extends JavaPlugin {
     private static SignBase minigameSigns;
     private static ComparableVersion VERSION;
     private static ComparableVersion SPIGOT_VERSION;
+    private final StartUpLogHandler startUpHandler;
     public DisplayManager display;
     private ResourcePackManager resourceManager;
     private MinigamePlayerManager playerManager;
@@ -77,7 +68,6 @@ public class Minigames extends JavaPlugin {
     private long lastUpdateCheck;
     private BackendManager backend;
     private Metrics metrics;
-    private final StartUpLogHandler startUpHandler;
 
     public Minigames() {
         super();
@@ -143,8 +133,8 @@ public class Minigames extends JavaPlugin {
         }
         for (final Minigame minigame : this.minigameManager.getAllMinigames().values()) {
             if (minigame.getType() == MinigameType.GLOBAL &&
-                  "treasure_hunt".equals(minigame.getMechanicName())
-                  && minigame.isEnabled()) {
+                    "treasure_hunt".equals(minigame.getMechanicName())
+                    && minigame.isEnabled()) {
                 if (minigame.getMinigameTimer() != null) {
                     minigame.getMinigameTimer().stopTimer();
                 }
@@ -203,7 +193,7 @@ public class Minigames extends JavaPlugin {
                 case 1:
                     if (!this.getConfig().getBoolean("forceload", true)) {
                         log().warning("This version of Minigames (" + VERSION.getCanonical() + ") " +
-                              "is designed for Bukkit Version: " + SPIGOT_VERSION.getCanonical());
+                                "is designed for Bukkit Version: " + SPIGOT_VERSION.getCanonical());
                         log().warning("Your version is " + Bukkit.getVersion());
                         log().warning(" Bypass this by setting forceload: true in the config");
 
@@ -214,7 +204,7 @@ public class Minigames extends JavaPlugin {
                     } else {
                         log().warning("Version incompatible - Force Loading Minigames.");
                         log().warning("This version of Minigames (" + VERSION.getCanonical() + ") " +
-                              "is designed for Bukkit Version: " + SPIGOT_VERSION.getCanonical());
+                                "is designed for Bukkit Version: " + SPIGOT_VERSION.getCanonical());
                         log().warning("Your version is " + Bukkit.getBukkitVersion());
                     }
             }
@@ -270,7 +260,8 @@ public class Minigames extends JavaPlugin {
         }
         log.removeHandler(startUpHandler);
     }
-    private void setupLoadOuts(){
+
+    private void setupLoadOuts() {
         final MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
         final Set<String> keys = globalLoadouts.getConfig().getKeys(false);
         for (final String loadout : keys) {
@@ -304,6 +295,7 @@ public class Minigames extends JavaPlugin {
             }
         }
     }
+
     private void loadPresets() {
         final String prespath = this.getDataFolder() + "/presets/";
         final String[] presets = {"spleef", "lms", "ctf", "infection"};
@@ -393,11 +385,11 @@ public class Minigames extends JavaPlugin {
             placeHolderManager = new PlaceHolderManager(this);
             placeHolderManager.register();
             log.info("Adding Placeholders for " + getMinigameManager().getAllMinigames().size() + " games");
-            for(Map.Entry<String, Minigame> game:getMinigameManager().getAllMinigames().entrySet()) {
-                log.fine("Adding Placeholders for "+ game.getKey());
+            for (Map.Entry<String, Minigame> game : getMinigameManager().getAllMinigames().entrySet()) {
+                log.fine("Adding Placeholders for " + game.getKey());
                 placeHolderManager.addGameIdentifiers(game.getValue());
             }
-            log.info("PlaceHolders: "+ placeHolderManager.getRegisteredPlaceHolders().toString());
+            log.info("PlaceHolders: " + placeHolderManager.getRegisteredPlaceHolders().toString());
             log.info("--------------------");
         }
     }
@@ -504,13 +496,10 @@ public class Minigames extends JavaPlugin {
 
     /**
      * Use {@link MessageManager}
-      */
+     */
     @Deprecated
     public FileConfiguration getLang() {
         return null;
-    }
-
-    private void loadLang() {
     }
 
     public void queueStatSave(final StoredGameStats saveData, final boolean winner) {
@@ -519,7 +508,7 @@ public class Minigames extends JavaPlugin {
         final ListenableFuture<Long> winCountFuture = this.backend.loadSingleStat(saveData.getMinigame(), MinigameStats.Wins, StatValueField.Total, saveData.getPlayer().getUUID());
         this.backend.saveStats(saveData);
 
-        this.backend.addServerThreadCallback(winCountFuture, new FutureCallback<Long>() {
+        this.backend.addServerThreadCallback(winCountFuture, new FutureCallback<>() {
             @Override
             public void onFailure(final @NotNull Throwable t) {
             }

@@ -3,6 +3,7 @@ package au.com.mineauz.minigames;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 public interface MinigameTag<T> {
@@ -16,12 +17,12 @@ public interface MinigameTag<T> {
         @Override
         public boolean isTagged(Object item) {
             List<PotionEffectType> list = getValues().stream().flatMap(Collection::stream).toList();
-            return ((Collection) item).stream().allMatch(list::contains);
+            return list.containsAll((Collection) item);
         }
 
         @Override
         public List<Collection<PotionEffectType>> getValues() {
-            List<Collection<PotionEffectType>> list = List.of(
+            return List.of(
                     List.of(PotionEffectType.SLOW),
                     List.of(PotionEffectType.HARM),
                     List.of(PotionEffectType.WEAKNESS),
@@ -37,7 +38,6 @@ public interface MinigameTag<T> {
                     List.of(PotionEffectType.UNLUCK),
                     List.of(PotionEffectType.WITHER)
             );
-            return list;
         }
     };
 
@@ -49,12 +49,12 @@ public interface MinigameTag<T> {
         @Override
         public boolean isTagged(Collection<PotionEffectType> item) {
             List<PotionEffectType> list = getValues().stream().flatMap(Collection::stream).toList();
-            return ((Collection) item).stream().allMatch(list::contains);
+            return new HashSet<>(list).containsAll(item);
         }
 
         @Override
         public List<Collection<PotionEffectType>> getValues() {
-            List<Collection<PotionEffectType>> list = List.of(
+            return List.of(
                     List.of(PotionEffectType.FIRE_RESISTANCE),
                     List.of(PotionEffectType.LUCK),
                     List.of(PotionEffectType.HEAL),
@@ -75,7 +75,6 @@ public interface MinigameTag<T> {
                     List.of(PotionEffectType.HERO_OF_THE_VILLAGE),
                     List.of(PotionEffectType.SATURATION)
             );
-            return list;
         }
     };
 
@@ -91,15 +90,15 @@ public interface MinigameTag<T> {
 
         @Override
         public List<Collection<PotionEffectType>> getValues() {
-            List<Collection<PotionEffectType>> list = List.of(
+            return List.of(
                     List.of(PotionEffectType.SLOW, PotionEffectType.DAMAGE_RESISTANCE)
             );
-            return list;
         }
     };
 
     /**
      * Returns whether this tag has an entry for the specified object
+     *
      * @param item to check
      * @return if it is tagged
      */
@@ -107,7 +106,6 @@ public interface MinigameTag<T> {
 
     /**
      * Returns a list of all tagged objects
-     * @return
      */
     List<T> getValues();
 }

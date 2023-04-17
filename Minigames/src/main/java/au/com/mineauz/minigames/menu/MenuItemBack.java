@@ -4,7 +4,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class MenuItemBack extends MenuItem {
 
-    private Menu prev;
+    private final Menu prev;
 
     public MenuItemBack(Menu prev) {
         super("Back", MenuUtility.getBackMaterial());

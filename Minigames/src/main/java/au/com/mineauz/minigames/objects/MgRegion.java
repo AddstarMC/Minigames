@@ -30,12 +30,12 @@ public class MgRegion {
         return name;
     }
 
-    public void setWorld(@NotNull World world) {
-        this.world = world;
-    }
-
     public @NotNull World getWorld() {
         return world;
+    }
+
+    public void setWorld(@NotNull World world) {
+        this.world = world;
     }
 
     public void setFirstPos(@NotNull Position pos1) {

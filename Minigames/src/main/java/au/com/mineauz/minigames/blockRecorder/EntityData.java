@@ -1,11 +1,10 @@
 package au.com.mineauz.minigames.blockRecorder;
 
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 
 import javax.annotation.Nullable;
 import java.util.UUID;

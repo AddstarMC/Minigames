@@ -10,6 +10,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -70,10 +71,10 @@ public class BackendCommand implements ICommand {
                 ListenableFuture<Void> future = manager.exportTo(args[1], Minigames.getPlugin().getConfig(), new Notifier(sender));
                 sender.sendMessage(ChatColor.GOLD + "Exporting backend to " + args[1] + "...");
 
-                Futures.addCallback(future, new FutureCallback<Void>() {
+                Futures.addCallback(future, new FutureCallback<>() {
                     @Override
-                    public void onFailure(Throwable t) {
-                        sender.sendMessage(ChatColor.RED + "An internal error occured while exporting.");
+                    public void onFailure(@NotNull Throwable t) {
+                        sender.sendMessage(ChatColor.RED + "An internal error occurred while exporting.");
                     }
 
                     @Override
@@ -88,10 +89,10 @@ public class BackendCommand implements ICommand {
                 ListenableFuture<Void> future = manager.switchBackend(args[1], Minigames.getPlugin().getConfig());
                 sender.sendMessage(ChatColor.GOLD + "Switching minigames backend to " + args[1] + "...");
 
-                Futures.addCallback(future, new FutureCallback<Void>() {
+                Futures.addCallback(future, new FutureCallback<>() {
                     @Override
-                    public void onFailure(Throwable t) {
-                        sender.sendMessage(ChatColor.RED + "An internal error occured while switching backend.");
+                    public void onFailure(@NotNull Throwable t) {
+                        sender.sendMessage(ChatColor.RED + "An internal error occurred while switching backend.");
                     }
 
                     @Override

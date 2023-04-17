@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MinigameTimer {
-    private static Minigames plugin = Minigames.getPlugin();
+    private static final Minigames plugin = Minigames.getPlugin();
     private int time = 0;
     private int otime = 0;
-    private Minigame minigame;
-    private List<Integer> timeMsg = new ArrayList<>();
+    private final Minigame minigame;
+    private final List<Integer> timeMsg = new ArrayList<>();
     private int taskID = -1;
     private boolean broadcastTime = true;
 
@@ -40,12 +40,13 @@ public class MinigameTimer {
     public void startTimer() {
         if (taskID != -1)
             stopTimer();
-        //a delay of 1 is used because bukkit doesnt gaurantee that it will run on the current tick if the scheduler has
+        //a delay of 1 is used because bukkit doesn't guarantee that it will run on the current tick if the scheduler has
         // already run that tick . In that case it runs next tick - a delay of 1 means the behaviour is consistent.
         /// this effectively means the timer runs 50ms behind expected.
         taskID = Bukkit.getScheduler().runTaskTimer(plugin, this::runTimer, 1L, 20L).getTaskId();
     }
-    private void runTimer(){
+
+    private void runTimer() {
         time -= 1;
         if (minigame.isUsingXPBarTimer()) {
             float timeper = ((Integer) time).floatValue() / ((Integer) otime).floatValue();
@@ -79,6 +80,7 @@ public class MinigameTimer {
             Bukkit.getPluginManager().callEvent(new MinigameTimerTickEvent(minigame, minigame.getMinigameTimer()));
 
     }
+
     public void stopTimer() {
         if (taskID != -1) {
             Bukkit.getScheduler().cancelTask(taskID);

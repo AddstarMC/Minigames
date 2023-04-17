@@ -1,19 +1,15 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.managers.MessageManager;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItem;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuItemTime;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -200,7 +196,7 @@ public class TreasureHuntModule extends MinigameModule {
         if (hintUse.containsKey(player.getUUID())) {
             long curtime = System.currentTimeMillis();
             long lastuse = curtime - hintUse.get(player.getUUID());
-            return lastuse >= getHintDelay() * 1000;
+            return lastuse >= getHintDelay() * 1000L;
         }
         return true;
     }
@@ -223,9 +219,9 @@ public class TreasureHuntModule extends MinigameModule {
             if (canUseHint(player)) {
                 if (distance > maxradius) {
                     player.sendInfoMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance6"));
-                } else if (distance > maxradius / 2) {
+                } else if (distance > (double) maxradius / 2) {
                     player.sendInfoMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance5"));
-                } else if (distance > maxradius / 4) {
+                } else if (distance > (double) maxradius / 4) {
                     player.sendInfoMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance4"));
                 } else if (distance > 50) {
                     player.sendInfoMessage(ChatColor.LIGHT_PURPLE + MinigameUtils.getLang("minigame.treasurehunt.playerSpecificHint.distance3"));

@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.managers.MessageManager;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -74,7 +74,7 @@ public class QuitCommand implements ICommand {
             }
             if (player == null || player.hasPermission("minigame.quit.other")) {
                 List<Player> players = plugin.getServer().matchPlayer(args[0]);
-                MinigamePlayer ply = null;
+                MinigamePlayer ply;
                 if (args[0].equals("ALL")) {
                     if (args.length > 1) {
                         if (plugin.getMinigameManager().hasMinigame(args[1])) {
@@ -103,13 +103,13 @@ public class QuitCommand implements ICommand {
                     ply = plugin.getPlayerManager().getMinigamePlayer(players.get(0));
                 }
 
-                if (ply != null && ply.isInMinigame()) {
+                if (ply.isInMinigame()) {
                     plugin.getPlayerManager().quitMinigame(ply, false);
                     sender.sendMessage(ChatColor.GRAY + MessageManager.getMinigamesMessage("command.quit.quitOther", ply.getName()));
                 } else {
                     sender.sendMessage(ChatColor.RED + MessageManager.getMinigamesMessage("command.quit.invalidPlayer", args[0]));
                 }
-            } else if (player != null) {
+            } else {
                 sender.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.quit.noPermissionOther"));
                 sender.sendMessage(ChatColor.RED + "minigame.quit.other");
             }

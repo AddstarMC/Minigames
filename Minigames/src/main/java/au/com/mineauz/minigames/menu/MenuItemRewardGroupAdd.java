@@ -1,10 +1,10 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -12,7 +12,7 @@ import java.util.List;
 
 public class MenuItemRewardGroupAdd extends MenuItem {
 
-    private Rewards rewards;
+    private final Rewards rewards;
 
     public MenuItemRewardGroupAdd(String name, Material displayItem, Rewards rewards) {
         super(name, displayItem);

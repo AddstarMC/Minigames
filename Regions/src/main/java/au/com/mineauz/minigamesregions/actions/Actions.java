@@ -1,23 +1,24 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.executors.BaseExecutor;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemAction;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemActionAdd;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class Actions {
     private static final Map<String, Class<? extends ActionInterface>> actions = new HashMap<>();
-    
-    static{
+
+    static {
         addAction("KILL", KillAction.class);
         addAction("REVERT", RevertAction.class);
         addAction("QUIT", QuitAction.class);
@@ -43,7 +44,7 @@ public class Actions {
         addAction("FALLING_BLOCK", FallingBlockAction.class);
         addAction("ADD_TEAM_SCORE", AddTeamScoreAction.class);
         addAction("SET_TEAM_SCORE", SetTeamScoreAction.class);
-        addAction("SWITCH_TEAM",SwitchTeamAction.class);
+        addAction("SWITCH_TEAM", SwitchTeamAction.class);
         addAction("FLIGHT", FlightAction.class);
         addAction("VELOCITY", VelocityAction.class);
         addAction("LIGHTNING", LightningAction.class);
@@ -55,36 +56,37 @@ public class Actions {
         addAction("RESET_TRIGGER_COUNT", ResetTriggerCountAction.class);
         addAction("TRIGGER_RANDOM", TriggerRandomAction.class);
     }
-    
-    public static void addAction(String name, Class<? extends ActionInterface> action){
+
+    public static void addAction(String name, Class<? extends ActionInterface> action) {
         actions.put(name, action);
     }
-    
-    public static ActionInterface getActionByName(String name){
-        if(actions.containsKey(name.toUpperCase()))
+
+    public static ActionInterface getActionByName(String name) {
+        if (actions.containsKey(name.toUpperCase()))
             try {
-                return actions.get(name.toUpperCase()).newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+                return actions.get(name.toUpperCase()).getDeclaredConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
                 e.printStackTrace();
             }
         return null;
     }
-    
-    public static Set<String> getAllActionNames(){
+
+    public static Set<String> getAllActionNames() {
         return actions.keySet();
     }
-    
-    public static boolean hasAction(String name){
+
+    public static boolean hasAction(String name) {
         return actions.containsKey(name.toUpperCase());
     }
-    
-    public static void displayMenu(MinigamePlayer player, BaseExecutor exec, Menu prev){
+
+    public static void displayMenu(MinigamePlayer player, BaseExecutor exec, Menu prev) {
         Menu m = new Menu(3, "Actions", player);
         m.setPreviousPage(prev);
-        for(ActionInterface act : exec.getActions()){
-            m.addItem(new MenuItemAction(MinigameUtils.capitalize(act.getName()), Material.PAPER, exec, act));
+        for (ActionInterface act : exec.getActions()) {
+            m.addItem(new MenuItemAction(WordUtils.capitalize(act.getName()), Material.PAPER, exec, act));
         }
-        m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
         m.addItem(new MenuItemActionAdd("Add Action", MenuUtility.getCreateMaterial(), exec), m.getSize() - 1);
         m.displayMenu(player);
     }

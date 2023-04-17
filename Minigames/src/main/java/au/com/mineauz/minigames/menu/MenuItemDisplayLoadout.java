@@ -1,10 +1,14 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -76,7 +80,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
         List<String> teams = new ArrayList<>();
         teams.add("None");
         for (TeamColor col : TeamColor.values())
-            teams.add(MinigameUtils.capitalize(col.toString()));
+            teams.add(WordUtils.capitalize(col.toString()));
         mItems.add(new MenuItemList("Lock to Team", Material.LEATHER_CHESTPLATE, loadout.getTeamColorCallback(), teams));
         loadoutSettings.addItems(mItems);
         if (mgm == null) {
@@ -110,7 +114,7 @@ public class MenuItemDisplayLoadout extends MenuItem {
         List<MenuItem> potions = new ArrayList<>();
 
         for (PotionEffect eff : loadout.getAllPotionEffects()) {
-            potions.add(new MenuItemPotion(MinigameUtils.capitalize(eff.getType().getName().replace("_", " ")), des, Material.POTION, eff, loadout));
+            potions.add(new MenuItemPotion(WordUtils.capitalize(eff.getType().getName().replace("_", " ")), des, Material.POTION, eff, loadout));
         }
         potionMenu.addItems(potions);
 

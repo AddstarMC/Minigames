@@ -1,13 +1,9 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuItemString;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Material;
@@ -15,13 +11,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
 
-/**
- * Created for the Ark: Survival Evolved.
- * Created by Narimm on 4/05/2017.
- */
-public class HasLoudOutCondition extends ConditionInterface {
-
-    private StringFlag loadOutName = new StringFlag("default", "loadout");
+public class HasLoadoutCondition extends ConditionInterface {
+    private final StringFlag loadOutName = new StringFlag("default", "loadout");
 
     @Override
     public String getName() {
@@ -30,7 +21,7 @@ public class HasLoudOutCondition extends ConditionInterface {
 
     @Override
     public String getCategory() {
-        return  "Player Conditions";
+        return "Player Conditions";
     }
 
     @Override
@@ -45,9 +36,9 @@ public class HasLoudOutCondition extends ConditionInterface {
 
     @Override
     public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-        if(player == null || !player.isInMinigame()) return false;
+        if (player == null || !player.isInMinigame()) return false;
         LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
-        if(lmod.hasLoadout(loadOutName.getFlag())) {
+        if (lmod.hasLoadout(loadOutName.getFlag())) {
             return player.getLoadout().getName(false).equals(lmod.getLoadout(loadOutName.getFlag()).getName(false));
         }
         return false;
@@ -56,9 +47,9 @@ public class HasLoudOutCondition extends ConditionInterface {
 
     @Override
     public boolean checkNodeCondition(MinigamePlayer player, Node node) {
-        if(player == null || !player.isInMinigame()) return false;
+        if (player == null || !player.isInMinigame()) return false;
         LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
-        if(lmod.hasLoadout(loadOutName.getFlag())) {
+        if (lmod.hasLoadout(loadOutName.getFlag())) {
             return player.getLoadout().getName(false).equals(lmod.getLoadout(loadOutName.getFlag()).getName(false));
         }
         return false;
@@ -81,17 +72,17 @@ public class HasLoudOutCondition extends ConditionInterface {
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Equip Loadout", player);
-        m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
-        m.addItem(new MenuItemString("Loadout Name", Material.DIAMOND_SWORD, new Callback<String>() {
-
-            @Override
-            public void setValue(String value) {
-                loadOutName.setFlag(value);
-            }
+        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemString("Loadout Name", Material.DIAMOND_SWORD, new Callback<>() {
 
             @Override
             public String getValue() {
                 return loadOutName.getFlag();
+            }
+
+            @Override
+            public void setValue(String value) {
+                loadOutName.setFlag(value);
             }
         }));
         addInvertMenuItem(m);
@@ -101,8 +92,8 @@ public class HasLoudOutCondition extends ConditionInterface {
 
     @Override
     public void describe(Map<String, Object> out) {
-            out.put("Loadout",loadOutName.getFlag());
-        }
+        out.put("Loadout", loadOutName.getFlag());
+    }
 
     @Override
     public boolean onPlayerApplicable() {

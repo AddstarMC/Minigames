@@ -1,13 +1,12 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public class SetBlocksDropCommand implements ICommand {
 
@@ -56,7 +55,7 @@ public class SetBlocksDropCommand implements ICommand {
                              String label, String[] args) {
         if (args != null) {
             boolean bool = Boolean.parseBoolean(args[0]);
-            minigame.setBlocksdrop(bool);
+            minigame.setBlocksDrop(bool);
             if (bool) {
                 sender.sendMessage(ChatColor.GRAY + "Blocks can now drop when broken in " + minigame);
             } else {

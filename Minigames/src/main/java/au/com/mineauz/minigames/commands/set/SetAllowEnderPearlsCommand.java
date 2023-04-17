@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 
-public class SetAllowEnderpearlsCommand implements ICommand {
+import java.util.List;
+
+public class SetAllowEnderPearlsCommand implements ICommand {
 
     @Override
     public String getName() {
@@ -28,7 +27,7 @@ public class SetAllowEnderpearlsCommand implements ICommand {
 
     @Override
     public String getDescription() {
-        return "Sets whether players can use enderpearls in a Minigame.";
+        return "Sets whether players can use ender pearls in a Minigame.";
     }
 
     @Override
@@ -43,7 +42,7 @@ public class SetAllowEnderpearlsCommand implements ICommand {
 
     @Override
     public String getPermissionMessage() {
-        return "You don't have permission to change allow enderpearl usage!";
+        return "You don't have permission to change allow ender pearl usage!";
     }
 
     @Override
@@ -55,13 +54,12 @@ public class SetAllowEnderpearlsCommand implements ICommand {
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
         if (args != null) {
-            boolean bool = Boolean.parseBoolean(args[0]);
-            if (bool) {
-                minigame.setAllowEnderpearls(bool);
-                sender.sendMessage(ChatColor.GRAY + "Allowed Enderpearl usage in " + minigame);
+            if (Boolean.parseBoolean(args[0])) {
+                minigame.setAllowEnderPearls(true);
+                sender.sendMessage(ChatColor.GRAY + "Allowed ender pearl usage in " + minigame);
             } else {
-                minigame.setAllowEnderpearls(bool);
-                sender.sendMessage(ChatColor.GRAY + "Disallowed Enderpearl usage in " + minigame);
+                minigame.setAllowEnderPearls(false);
+                sender.sendMessage(ChatColor.GRAY + "Disallowed ender pearl usage in " + minigame);
             }
             return true;
         }

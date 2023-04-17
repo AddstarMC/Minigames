@@ -69,10 +69,11 @@ public class SetBlockWhitelistCommand implements ICommand {
 
                     minigame.getRecorderData().addWBBlock(mat);
 
+                    final String matStr = mat.toString().replace("_", " ").toLowerCase();
                     if (minigame.getRecorderData().getWhitelistMode()) {
-                        sender.sendMessage(ChatColor.GRAY + "Added " + mat.toString().replace("_", " ").toLowerCase() + " to the whitelist for " + minigame);
+                        sender.sendMessage(ChatColor.GRAY + "Added " + matStr + " to the whitelist for " + minigame);
                     } else {
-                        sender.sendMessage(ChatColor.GRAY + "Added " + mat.toString().replace("_", " ").toLowerCase() + " to the blacklist for " + minigame);
+                        sender.sendMessage(ChatColor.GRAY + "Added " + matStr + " to the blacklist for " + minigame);
                     }
                 } else {
                     sender.sendMessage(ChatColor.RED + "Invalid item name or ID!");
@@ -83,10 +84,11 @@ public class SetBlockWhitelistCommand implements ICommand {
 
                     minigame.getRecorderData().removeWBBlock(mat);
 
+                    final String matStr = mat.toString().replace("_", " ").toLowerCase();
                     if (minigame.getRecorderData().getWhitelistMode()) {
-                        sender.sendMessage(ChatColor.GRAY + "Removed " + mat.toString().replace("_", " ").toLowerCase() + " from the whitelist for " + minigame);
+                        sender.sendMessage(ChatColor.GRAY + "Removed " + matStr + " from the whitelist for " + minigame);
                     } else {
-                        sender.sendMessage(ChatColor.GRAY + "Removed " + mat.toString().replace("_", " ").toLowerCase() + " from the blacklist for " + minigame);
+                        sender.sendMessage(ChatColor.GRAY + "Removed " + matStr + " from the blacklist for " + minigame);
                     }
                 } else {
                     sender.sendMessage(ChatColor.RED + "Invalid item name or ID!");
@@ -99,19 +101,19 @@ public class SetBlockWhitelistCommand implements ICommand {
                     sender.sendMessage(ChatColor.GRAY + "Cleared all blocks from the blacklist for " + minigame);
                 }
             } else if (args[0].equalsIgnoreCase("list")) {
-                String blocks = "";
+                StringBuilder blocks = new StringBuilder();
                 boolean switchColour = false;
                 for (Material block : minigame.getRecorderData().getWBBlocks()) {
                     if (switchColour) {
-                        blocks += ChatColor.WHITE + block.toString();
+                        blocks.append(ChatColor.WHITE).append(block.toString());
                         if (!block.toString().equalsIgnoreCase(minigame.getRecorderData().getWBBlocks().get(minigame.getRecorderData().getWBBlocks().size() - 1).toString())) {
-                            blocks += ChatColor.WHITE + ", ";
+                            blocks.append(ChatColor.WHITE + ", ");
                         }
                         switchColour = false;
                     } else {
-                        blocks += ChatColor.GRAY + block.toString();
+                        blocks.append(ChatColor.GRAY).append(block.toString());
                         if (!block.toString().equalsIgnoreCase(minigame.getRecorderData().getWBBlocks().get(minigame.getRecorderData().getWBBlocks().size() - 1).toString())) {
-                            blocks += ChatColor.WHITE + ", ";
+                            blocks.append(ChatColor.WHITE + ", ");
                         }
                         switchColour = true;
                     }
@@ -121,7 +123,7 @@ public class SetBlockWhitelistCommand implements ICommand {
                 } else {
                     sender.sendMessage(ChatColor.GRAY + "All blocks on the blacklist:");
                 }
-                sender.sendMessage(blocks);
+                sender.sendMessage(blocks.toString());
             } else {
                 boolean bool = Boolean.parseBoolean(args[0]);
                 minigame.getRecorderData().setWhitelistMode(bool);

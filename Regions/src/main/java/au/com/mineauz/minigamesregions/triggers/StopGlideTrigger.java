@@ -1,10 +1,7 @@
 package au.com.mineauz.minigamesregions.triggers;
 
-/**
- * Created for the AddstarMC
- * Created by Narimm on 10/10/2017.
- */
-public class StopGlideTrigger  implements Trigger {
+public class StopGlideTrigger implements Trigger {
+
     @Override
     public String getName() {
         return "STOP_GLIDE";

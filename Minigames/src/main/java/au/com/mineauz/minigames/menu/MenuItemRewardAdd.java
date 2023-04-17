@@ -1,16 +1,15 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.List;
-
+import au.com.mineauz.minigames.minigame.reward.RewardGroup;
+import au.com.mineauz.minigames.minigame.reward.RewardType;
+import au.com.mineauz.minigames.minigame.reward.RewardTypes;
+import au.com.mineauz.minigames.minigame.reward.Rewards;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import au.com.mineauz.minigames.minigame.reward.RewardGroup;
-import au.com.mineauz.minigames.minigame.reward.RewardType;
-import au.com.mineauz.minigames.minigame.reward.RewardTypes;
-import au.com.mineauz.minigames.minigame.reward.Rewards;
+import java.util.List;
 
 public class MenuItemRewardAdd extends MenuItem {
 
