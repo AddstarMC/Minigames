@@ -38,6 +38,7 @@ public class Triggers {
         addTrigger(new StartGlideTrigger());
         addTrigger(new StopGlideTrigger());
         addTrigger(new GameTickTrigger());
+				addTrigger(new TimedRemoteTrigger());
     }
 
     public static void addTrigger(Trigger trigger) {

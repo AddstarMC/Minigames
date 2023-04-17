@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class Region extends MgRegion implements ScriptObject {
+public class Region extends MgRegion implements ExecutableScriptObject {
     private final List<RegionExecutor> executors = new ArrayList<>();
     private final List<MinigamePlayer> players = new ArrayList<>();
     private final int gameTickDelay = 1;

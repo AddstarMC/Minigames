@@ -700,7 +700,11 @@ public class Minigame implements ScriptObject {
         this.itemPickup.setFlag(itemPickup);
     }
 
-    public RecorderData getRecorderData() {
+    /**
+     * get the recorder data holder of this minigame.
+     * This holds all block and entity changes recorded while the minigame was running.
+     */
+    public @NotNull RecorderData getRecorderData() {
         return blockRecorder;
     }
 

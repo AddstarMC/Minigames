@@ -38,6 +38,7 @@ public class Conditions {
         addCondition("HAS_FLAG", HasFlagCondition.class);
         addCondition("CONTAINS_ENTITY", ContainsEntityCondition.class);
         addCondition("HAS_LOADOUT", HasLoadoutCondition.class);
+        addCondition("BLOCK_ON_AND_HELD", BlockOnAndHeldCondition.class);
     }
 
     public static void addCondition(String name, Class<? extends ConditionInterface> condition) {

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class Node implements ScriptObject {
+public class Node implements ExecutableScriptObject {
 
     private final String name;
     private Location loc;
