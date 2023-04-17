@@ -1,14 +1,14 @@
 package au.com.mineauz.minigames.blockRecorder;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.Position;
 import com.google.common.collect.Lists;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-
 import io.papermc.lib.PaperLib;
 import io.papermc.lib.features.blockstatesnapshot.BlockStateSnapshotResult;
 import org.bukkit.*;
@@ -17,7 +17,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.data.Hangable;
-import org.bukkit.block.data.type.Bamboo;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Listener;
@@ -159,15 +158,16 @@ public class RecorderData implements Listener {
                             secondChest.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
                     }
                 } else if (invHolder instanceof Chest) {
-                        addInventory(bdata, invHolder);
-                        if (minigame.isRandomizeChests())
-                            bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
+                    addInventory(bdata, invHolder);
+                    if (minigame.isRandomizeChests())
+                        bdata.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
                 } else {
                     addInventory(bdata, invHolder);
                 }
             }
 
             blockdata.put(pos, bdata);
+
             return bdata;
         } else { //already known
             //set last modifier of a not random inventory
@@ -205,7 +205,10 @@ public class RecorderData implements Listener {
     }
 
     public void restoreAll(MinigamePlayer modifier) {
-        if (!blockdata.isEmpty()) {
+        boolean isBlockDataEmpty;
+        isBlockDataEmpty = blockdata.isEmpty();
+
+        if (!isBlockDataEmpty) {
             restoreBlocks(modifier);
         }
 
@@ -229,8 +232,8 @@ public class RecorderData implements Listener {
         if (modifier == null) {
             minigame.setState(MinigameState.REGENERATING);
         }
-
         Iterator<MgBlockData> it = blockdata.values().iterator();
+
         final List<MgBlockData> baseBlocks = Lists.newArrayList();
         final List<MgBlockData> gravityBlocks = Lists.newArrayList();
         final List<MgBlockData> attachableBlocks = Lists.newArrayList();
@@ -342,44 +345,10 @@ public class RecorderData implements Listener {
         return false;
     }
 
-    public boolean hasRegenArea() {
-        return minigame.getRegenArea1() != null && minigame.getRegenArea2() != null;
-    }
-
-    public double getRegenMinX() {
-        return Math.min(minigame.getRegenArea1().getX(), minigame.getRegenArea2().getX());
-    }
-
-    public double getRegenMaxX() {
-        return Math.max(minigame.getRegenArea1().getX(), minigame.getRegenArea2().getX());
-    }
-
-    public double getRegenMinY() {
-        return Math.min(minigame.getRegenArea1().getY(), minigame.getRegenArea2().getY());
-    }
-
-    public double getRegenMaxY() {
-        return Math.max(minigame.getRegenArea1().getY(), minigame.getRegenArea2().getY());
-    }
-
-    public double getRegenMinZ() {
-        return Math.min(minigame.getRegenArea1().getZ(), minigame.getRegenArea2().getZ());
-    }
-
-    public double getRegenMaxZ() {
-        return Math.max(minigame.getRegenArea1().getZ(), minigame.getRegenArea2().getZ());
-    }
-
-    public boolean isInRegenArea(Location location) {
-        return location.getWorld() == minigame.getRegenArea1().getWorld() &&
-                location.getBlockX() >= getRegenMinX() && location.getBlockX() <= getRegenMaxX() &&
-                location.getBlockY() >= getRegenMinY() && location.getBlockY() <= getRegenMaxY() &&
-                location.getBlockZ() >= getRegenMinZ() && location.getBlockZ() <= getRegenMaxZ();
-    }
-
     public void saveAllBlockData() { //todo save entity data as well and use hasData() instead of blockdata.isEmpty()
-        if (blockdata.isEmpty())
+        if (blockdata.isEmpty()) {
             return;
+        }
 
         File f = new File(plugin.getDataFolder() + "/minigames/" + minigame.getName(false) + "/backup.json");
 

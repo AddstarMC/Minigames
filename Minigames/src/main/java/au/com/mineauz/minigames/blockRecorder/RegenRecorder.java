@@ -3,7 +3,6 @@ package au.com.mineauz.minigames.blockRecorder;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
@@ -41,7 +40,7 @@ public class RegenRecorder implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void vehicleCreate(VehicleCreateEvent event) {
-        if (minigame.hasPlayers() && recorderData.isInRegenArea(event.getVehicle().getLocation())) {
+        if (minigame.hasPlayers() && minigame.isInRegenArea(event.getVehicle().getLocation())) {
             recorderData.addEntity(event.getVehicle(), null, true);
         }
     }
@@ -49,7 +48,7 @@ public class RegenRecorder implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void vehicleDestroy(VehicleDestroyEvent event) {
         if (event.getAttacker() == null) {
-            if (minigame.hasPlayers() && recorderData.isInRegenArea(event.getVehicle().getLocation())) {
+            if (minigame.hasPlayers() && minigame.isInRegenArea(event.getVehicle().getLocation())) {
                 recorderData.addEntity(event.getVehicle(), null, false);
             }
         }
@@ -61,7 +60,7 @@ public class RegenRecorder implements Listener {
             if (minigame.hasPlayers() && !(event.getDamager() instanceof Player)) {
                 Location entityLoc = event.getEntity().getLocation();
 
-                if (recorderData.isInRegenArea(entityLoc)) {
+                if (minigame.isInRegenArea(entityLoc)) {
                     if (animal.getHealth() <= event.getDamage()) {
                         recorderData.addEntity(event.getEntity(), null, false);
                     }
@@ -73,7 +72,7 @@ public class RegenRecorder implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void mobSpawnEvent(CreatureSpawnEvent event) {
-        if (minigame.hasPlayers() && recorderData.isInRegenArea(event.getLocation())) {
+        if (minigame.hasPlayers() && minigame.isInRegenArea(event.getLocation())) {
             recorderData.addEntity(event.getEntity(), null, true);
         }
     }
@@ -82,7 +81,7 @@ public class RegenRecorder implements Listener {
     private void entityExplode(EntityExplodeEvent event) {
         if (minigame.hasPlayers()) {
             Location block = event.getLocation().getBlock().getLocation();
-            if (recorderData.isInRegenArea(block)) {
+            if (minigame.isInRegenArea(block)) {
                 List<Block> blocks = new ArrayList<>(event.blockList());
 
                 for (Block bl : blocks) {
@@ -94,8 +93,8 @@ public class RegenRecorder implements Listener {
                     }
                 }
             }
-        //don't allow explosions while regenerating
-        } else if (minigame.isRegenerating() && minigame.getRecorderData().isInRegenArea(event.getLocation())) {
+            //don't allow explosions while regenerating
+        } else if (minigame.isRegenerating() && minigame.isInRegenArea(event.getLocation())) {
             event.setCancelled(true);
         }
     }
@@ -104,7 +103,7 @@ public class RegenRecorder implements Listener {
     private void itemDrop(ItemSpawnEvent event) {
         if (minigame.hasPlayers()) {
             Location ent = event.getLocation();
-            if (recorderData.isInRegenArea(ent)) {
+            if (minigame.isInRegenArea(ent)) {
                 recorderData.addEntity(event.getEntity(), null, true);
             }
         }
@@ -112,16 +111,12 @@ public class RegenRecorder implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     private void physicalBlock(EntityChangeBlockEvent event) {
-        if (recorderData.isInRegenArea(event.getBlock().getLocation())) {
+        if (minigame.isInRegenArea(event.getBlock().getLocation())) {
             if (minigame.isRegenerating()) {
                 event.setCancelled(true);
                 return;
             }
-            if (event.getTo() == Material.SAND ||
-                    event.getTo() == Material.GRAVEL ||
-                    event.getTo() == Material.DRAGON_EGG ||
-                    event.getTo() == Material.ANVIL) {
-
+            if (event.getTo().hasGravity()) {
                 if (minigame.hasPlayers() || event.getEntity().hasMetadata("FellInMinigame")) {
                     recorderData.addEntity(event.getEntity(), null, true);
                 }
@@ -136,7 +131,7 @@ public class RegenRecorder implements Listener {
     private void cartHopperPickup(InventoryPickupItemEvent event) {
         if (minigame.hasPlayers() && event.getInventory().getHolder() instanceof HopperMinecart) {
             Location loc = ((HopperMinecart) event.getInventory().getHolder()).getLocation();
-            if (recorderData.isInRegenArea(loc)) {
+            if (minigame.isInRegenArea(loc)) {
                 recorderData.addEntity((HopperMinecart) event.getInventory().getHolder(), null, false);
             }
         }
@@ -149,39 +144,39 @@ public class RegenRecorder implements Listener {
         Location loc;
         if (event.getInitiator().getHolder() instanceof HopperMinecart) {
             loc = ((HopperMinecart) event.getInitiator().getHolder()).getLocation().clone();
-            if (recorderData.isInRegenArea(loc))
+            if (minigame.isInRegenArea(loc))
                 recorderData.addEntity((Entity) event.getInitiator().getHolder(), null, false);
         }
 
         if (event.getDestination().getHolder() instanceof HopperMinecart) {
             loc = ((HopperMinecart) event.getDestination().getHolder()).getLocation().clone();
-            if (recorderData.isInRegenArea(loc))
+            if (minigame.isInRegenArea(loc))
                 recorderData.addEntity((Entity) event.getInitiator().getHolder(), null, false);
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     private void physEvent(BlockPhysicsEvent event) {
-        if (minigame.isRegenerating() && recorderData.isInRegenArea(event.getBlock().getLocation())) {
+        if (minigame.isRegenerating() && minigame.isInRegenArea(event.getBlock().getLocation())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     private void waterFlow(BlockFromToEvent event) {
-        if (minigame.isRegenerating() && recorderData.isInRegenArea(event.getBlock().getLocation()))
+        if (minigame.isRegenerating() && minigame.isInRegenArea(event.getBlock().getLocation()))
             event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     private void fireSpread(BlockSpreadEvent event) {
-        if (minigame.isRegenerating() && recorderData.isInRegenArea(event.getBlock().getLocation()))
+        if (minigame.isRegenerating() && minigame.isInRegenArea(event.getBlock().getLocation()))
             event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     private void interact(PlayerInteractEvent event) {
-        if (minigame.isRegenerating() && recorderData.isInRegenArea(event.getClickedBlock().getLocation())) {
+        if (minigame.isRegenerating() && minigame.isInRegenArea(event.getClickedBlock().getLocation())) {
             event.setCancelled(true);
         }
     }

@@ -1,8 +1,10 @@
 package au.com.mineauz.minigamesregions;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.objects.MgRegion;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.Position;
 import au.com.mineauz.minigames.script.*;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
@@ -10,97 +12,53 @@ import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
 import com.google.common.collect.ImmutableSet;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class Region implements ScriptObject {
-    private String name;
-    private Location point1;
-    private Location point2;
-    private List<RegionExecutor> executors = new ArrayList<>();
-    private List<MinigamePlayer> players = new ArrayList<>();
+public class Region extends MgRegion implements ScriptObject {
+    private final List<RegionExecutor> executors = new ArrayList<>();
+    private final List<MinigamePlayer> players = new ArrayList<>();
     private long taskDelay = 20;
     private int taskID;
     private int gameTickTaskID;
-    private int gameTickDelay = 1;
+    private final int gameTickDelay = 1;
     private boolean enabled = true;
-    
-    public Region(String name, Location point1, Location point2){
-        Location[] locs = MinigameUtils.getMinMaxSelection(point1, point2);
-        this.point1 = locs[0].clone();
-        this.point2 = locs[1].clone();
-        this.name = name;
-    }
-    
-    public boolean playerInRegion(MinigamePlayer player){
-        if(player.getLocation().getWorld() == point1.getWorld()){
-            int minx = point1.getBlockX();
-            int maxx = point2.getBlockX();
-            int plyx = player.getLocation().getBlockX();
-            
-            if(plyx >= minx && plyx <= maxx){
-                int miny = point1.getBlockY();
-                int maxy = point2.getBlockY();
-                int plyy = player.getLocation().getBlockY();
-                
-                if(plyy >= miny && plyy <= maxy){
-                    int minz = point1.getBlockZ();
-                    int maxz = point2.getBlockZ();
-                    int plyz = player.getLocation().getBlockZ();
 
-                    return plyz >= minz && plyz <= maxz;
-                }
-                
-            }
-        }
-        return false;
+    public Region(@NotNull World world, @NotNull String name, @NotNull Position pos1, @NotNull Position pos2) {
+        super(world, name, pos1, pos2);
     }
-    
-    public boolean locationInRegion(Location loc){
-        if(loc.getWorld() == point1.getWorld()){
-            int minx = point1.getBlockX();
-            int maxx = point2.getBlockX();
-            int plyx = loc.getBlockX();
-            
-            if(plyx >= minx && plyx <= maxx){
-                int miny = point1.getBlockY();
-                int maxy = point2.getBlockY();
-                int plyy = loc.getBlockY();
-                
-                if(plyy >= miny && plyy <= maxy){
-                    int minz = point1.getBlockZ();
-                    int maxz = point2.getBlockZ();
-                    int plyz = loc.getBlockZ();
 
-                    return plyz >= minz && plyz <= maxz;
-                }
-                
-            }
-        }
-        return false;
+    public Region(@NotNull String name, @NotNull Location loc1, @NotNull Location loc2) {
+        super(name, loc1, loc2);
     }
-    
-    public String getName(){
-        return name;
+
+    public boolean playerInRegion(MinigamePlayer player) {
+        return super.isInRegen(player.getLocation());
+    }
+
+    public boolean locationInRegion(Location loc) {
+        return super.isInRegen(loc);
     }
     
     public Location getFirstPoint(){
-        return point1.clone();
+        return super.getLocation1();
     }
     
     public Location getSecondPoint(){
-        return point2.clone();
+        return super.getLocation2();
     }
     
     public void updateRegion(Location point1, Location point2) {
         Location[] locs = MinigameUtils.getMinMaxSelection(point1, point2);
-        this.point1 = locs[0];
-        this.point2 = locs[1];
+        super.updateRegion(locs[0], locs[1]);
     }
     
     public boolean hasPlayer(MinigamePlayer player){
@@ -140,9 +98,7 @@ public class Region implements ScriptObject {
     }
     
     public void removeExecutor(RegionExecutor executor){
-        if(executors.contains(executor)){
-            executors.remove(executor);
-        }
+        executors.remove(executor);
     }
     
     public void changeTickDelay(long delay){
@@ -174,13 +130,13 @@ public class Region implements ScriptObject {
     }
 
     public void startGameTickTask() {
-        if(gameTickTaskID != -1) {
+        if (gameTickTaskID != -1) {
             removeGameTickTask();
         }
 
-        gameTickTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(), () -> {
-            executeGameTick();
-        }, 0, gameTickDelay);
+        gameTickTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Minigames.getPlugin(),
+                this::executeGameTick,
+                0, gameTickDelay);
     }
     
     public void removeTickTask(){
@@ -249,8 +205,7 @@ public class Region implements ScriptObject {
                     }
                 } catch (Exception e) {
                     for (MinigamePlayer player : players) {
-                        player.getPlayer().sendMessage(ChatColor.AQUA + "[Minigames]" +
-                                ChatColor.RED + " Only RandomChanceCondition is applicable to game tick trigger!");
+                        player.sendInfoMessage(Component.text("Only RandomChanceCondition is applicable to game tick trigger!", NamedTextColor.RED));
                     }
                 }
             }
@@ -264,9 +219,9 @@ public class Region implements ScriptObject {
         } else if (name.equalsIgnoreCase("players")) {
             return ScriptCollection.of(players);
         } else if (name.equalsIgnoreCase("min")) {
-            return ScriptWrapper.wrap(point1);
+            return ScriptWrapper.wrap(super.getLocation1());
         } else if (name.equalsIgnoreCase("max")) {
-            return ScriptWrapper.wrap(point2);
+            return ScriptWrapper.wrap(super.getLocation2());
         }
         
         return null;
@@ -274,7 +229,7 @@ public class Region implements ScriptObject {
     
     @Override
     public String getAsString() {
-        return name;
+        return super.getName();
     }
     
     @Override

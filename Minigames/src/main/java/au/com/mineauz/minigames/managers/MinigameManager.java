@@ -1,6 +1,9 @@
 package au.com.mineauz.minigames.managers;
 
-import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.config.RewardsFlag;
@@ -13,6 +16,7 @@ import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.modules.*;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
+import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
 import org.bukkit.Bukkit;
@@ -190,36 +194,25 @@ public class MinigameManager {
         this.configs.remove(filename);
     }
 
-    public Location minigameLocations(final String minigame, final String type, final Configuration save) {
-        final double locx = save.getDouble(minigame + '.' + type + ".x");
-        final double locy = save.getDouble(minigame + '.' + type + ".y");
-        final double locz = save.getDouble(minigame + '.' + type + ".z");
-        final double yaw = save.getDouble(minigame + '.' + type + ".yaw",0F);
-        final double pitch = save.getDouble(minigame + '.' + type + ".pitch",0F);
-        final String world = save.getString(minigame + '.' + type + ".world");
-        return  new Location(PLUGIN.getServer().getWorld(world), locx, locy, locz, (float)yaw, (float)pitch);
-    }
-
     public void addBlockRecorderData(final Minigame minigame) {
-        if (minigame.getRecorderData().hasRegenArea() && !minigame.getRecorderData().hasCreatedRegenBlocks()) {
+        if (minigame.hasRegenArea() && !minigame.getRecorderData().hasCreatedRegenBlocks()) {
             final RecorderData recorderData = minigame.getRecorderData();
-            final Location currentLoc = new Location(minigame.getRegenArea1().getWorld(), 0, 0, 0);
 
             recorderData.setCreatedRegenBlocks(true);
 
-            for (double y = recorderData.getRegenMinY(); y <= recorderData.getRegenMaxY(); y++) {
-                currentLoc.setY(y);
-                for (double x = recorderData.getRegenMinX(); x <= recorderData.getRegenMaxX(); x++) {
-                    currentLoc.setX(x);
-                    for (double z = recorderData.getRegenMinZ(); z <= recorderData.getRegenMaxZ(); z++) {
-                        currentLoc.setZ(z);
-                        recorderData.addBlock(currentLoc.getBlock(), null);
+            for (MgRegion region : recorderData.getMinigame().getRegenRegions()) {
+                for (int x = (int) region.getMinX(); x <= region.getMinX(); x++) {
+                    for (int y = (int) region.getMinY(); y <= region.getMaxY(); y++) {
+                        for (int z = (int) region.getMinZ(); z <= region.getMaxZ(); z++) {
+                            //add block
+                            recorderData.addBlock(region.getWorld().getBlockAt(x, y, z), null);
+                        }
                     }
                 }
             }
-            Minigames.debugMessage("Block Regen Data has been created for "+minigame.getName(false));
-        }
 
+            Minigames.debugMessage("Block Regen Data has been created for " + minigame.getName(false));
+        }
     }
 
     public void addMinigameType(final MinigameTypeBase minigameType) {

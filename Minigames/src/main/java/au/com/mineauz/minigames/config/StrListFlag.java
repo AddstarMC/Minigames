@@ -7,9 +7,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.menu.MenuItem;
 
-public class ListFlag extends Flag<List<String>> {
+public class StrListFlag extends Flag<List<String>> {
 
-    public ListFlag(List<String> value, String name) {
+    public StrListFlag(List<String> value, String name) {
         setFlag(value);
         setDefaultFlag(value);
         setName(name);

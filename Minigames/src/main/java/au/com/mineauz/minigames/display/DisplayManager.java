@@ -5,8 +5,8 @@ import au.com.mineauz.minigames.display.bukkit.BukkitDisplayCuboid;
 import au.com.mineauz.minigames.display.bukkit.BukkitDisplayPoint;
 import au.com.mineauz.minigames.display.spigot.SpigotDisplayCuboid;
 import au.com.mineauz.minigames.display.spigot.SpigotDisplayPoint;
+import au.com.mineauz.minigames.objects.MgRegion;
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Maps;
 import com.google.common.collect.SetMultimap;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -24,16 +25,14 @@ public class DisplayManager {
 
     private BukkitTask refreshTask;
 
-    private Map<INonPersistantDisplay, Integer> nextTickDelay;
+    private final Map<INonPersistantDisplay, Integer> nextTickDelay = new IdentityHashMap<>();
 
-    private SetMultimap<Player, AbstractDisplayObject> playerDisplays;
-    private SetMultimap<World, AbstractDisplayObject> worldDisplays;
+    private final SetMultimap<Player, AbstractDisplayObject> playerDisplays;
+    private final SetMultimap<World, AbstractDisplayObject> worldDisplays;
 
     public DisplayManager() {
         playerDisplays = HashMultimap.create();
         worldDisplays = HashMultimap.create();
-
-        nextTickDelay = Maps.newIdentityHashMap();
 
         checkSpigot();
     }
@@ -85,11 +84,27 @@ public class DisplayManager {
         }
     }
 
+    public IDisplayCubiod displayCuboid(Player player, MgRegion region) {
+        if (isSpigot) {
+            return new SpigotDisplayCuboid(this, player, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
+        } else {
+            return new BukkitDisplayCuboid(this, player, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
+        }
+    }
+
     public IDisplayCubiod displayCuboid(World world, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
         if (isSpigot) {
             return new SpigotDisplayCuboid(this, world, new Vector(minX, minY, minZ), new Vector(maxX, maxY, maxZ));
         } else {
             return new BukkitDisplayCuboid(this, world, new Vector(minX, minY, minZ), new Vector(maxX, maxY, maxZ));
+        }
+    }
+
+    public IDisplayCubiod displayCuboid(World world, MgRegion region) {
+        if (isSpigot) {
+            return new SpigotDisplayCuboid(this, world, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
+        } else {
+            return new BukkitDisplayCuboid(this, world, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
         }
     }
 
@@ -143,8 +158,7 @@ public class DisplayManager {
     }
 
     protected void onShow(IDisplayObject object) {
-        if (object instanceof INonPersistantDisplay) {
-            INonPersistantDisplay display = (INonPersistantDisplay) object;
+        if (object instanceof INonPersistantDisplay display) {
             nextTickDelay.put(display, display.getRefreshInterval());
 
             enableRefreshTask();
@@ -152,8 +166,7 @@ public class DisplayManager {
     }
 
     protected void onHide(IDisplayObject object) {
-        if (object instanceof INonPersistantDisplay) {
-            INonPersistantDisplay display = (INonPersistantDisplay) object;
+        if (object instanceof INonPersistantDisplay display) {
             nextTickDelay.remove(display);
 
             disableRefreshTask();

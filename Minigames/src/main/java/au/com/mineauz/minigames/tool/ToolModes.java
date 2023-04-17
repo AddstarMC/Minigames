@@ -39,5 +39,4 @@ public class ToolModes {
             return modes.get(name.toUpperCase());
         return null;
     }
-
 }

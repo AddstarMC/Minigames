@@ -13,6 +13,8 @@ import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.script.ScriptWrapper;
 import com.google.common.collect.ImmutableSet;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -114,9 +116,10 @@ public class MinigamePlayer implements ScriptObject {
         return this.player.getLocation();
     }
 
+    @Deprecated
     private void sendMessage(final String msg) {
         final int enc = Math.floorDiv(msg.getBytes().length, msg.length());
-        if (msg.getBytes().length > 32000) {
+        if (msg.getBytes().length > 32000) { //chat limit set to a higher number.
             final int capLength = Math.floorDiv(msg.length(), enc);
             final String newMessage = msg.substring(0, capLength);
             this.player.sendMessage(newMessage);
@@ -125,14 +128,29 @@ public class MinigamePlayer implements ScriptObject {
         this.player.sendMessage(msg);
     }
 
+    private void sendMessage(final Component msg) {
+        this.player.sendMessage(msg);
+    }
+
+    @Deprecated
     public void sendInfoMessage(final String msg) {
         this.sendMessage(msg, MinigameMessageType.INFO);
     }
 
+    public void sendInfoMessage(final Component msg) {
+        this.sendMessage(msg, MinigameMessageType.INFO);
+    }
+
+    @Deprecated
     public void sendUnprefixedMessage(final String msg) {
         this.sendMessage(msg, MinigameMessageType.NONE);
     }
 
+    public void sendUnprefixedMessage(final Component msg) {
+        this.sendMessage(msg, MinigameMessageType.NONE);
+    }
+
+    @Deprecated
     public void sendMessage(final String msg, final @NotNull MinigameMessageType type) {
         String init = "";
         switch (type) {
@@ -152,6 +170,19 @@ public class MinigamePlayer implements ScriptObject {
                 init = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
         }
         this.sendMessage(init + msg);
+    }
+
+    public void sendMessage(final Component msg, final @NotNull MinigameMessageType type) {
+        Component init;
+        init = switch (type) {
+            case ERROR -> Component.text("[Minigames] ", NamedTextColor.RED);
+            case WIN -> Component.text("[Minigames] ", NamedTextColor.GREEN);
+            case LOSS -> Component.text("[Minigames]", NamedTextColor.DARK_RED);
+            case NONE -> Component.text("");
+            default -> Component.text("[Minigames]", NamedTextColor.AQUA); //also info
+        };
+
+        this.sendMessage(init.append(msg.colorIfAbsent(NamedTextColor.WHITE)));
     }
 
     public void storePlayerData() {
@@ -575,6 +606,13 @@ public class MinigamePlayer implements ScriptObject {
     public void setSelection(final Location point1, final Location point2) {
         this.selection1 = point1;
         this.selection2 = point2;
+
+        this.showSelection(false);
+    }
+
+    public void setSelection(final MgRegion region) {
+        this.selection1 = region.getLocation1();
+        this.selection2 = region.getLocation2();
 
         this.showSelection(false);
     }
