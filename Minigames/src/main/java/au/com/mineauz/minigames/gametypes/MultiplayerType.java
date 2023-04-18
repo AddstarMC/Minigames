@@ -163,8 +163,8 @@ public class MultiplayerType extends MinigameTypeBase {
             }
         } else {
             if (mgm.getMpBets() != null && (mgm.getMpTimer() == null || mgm.getMpTimer().getPlayerWaitTimeLeft() != 0)) {
-                if (mgm.getMpBets().getPlayersBet(player) != null) {
-                    final ItemStack item = mgm.getMpBets().getPlayersBet(player).clone();
+                if (mgm.getMpBets().getPlayersItemBet(player) != null) {
+                    final ItemStack item = mgm.getMpBets().getPlayersItemBet(player).clone();
                     final MinigamePlayer ply = player;
                     Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> ply.getPlayer().getInventory().addItem(item));
                 } else if (mgm.getMpBets().getPlayersMoneyBet(player) != null) {

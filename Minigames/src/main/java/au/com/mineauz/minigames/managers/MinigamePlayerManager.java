@@ -72,7 +72,9 @@ public class MinigamePlayerManager {
         }
         if (!mgManager.minigameStartStateCheck(minigame, player)) return;
         //Do betting stuff
-        if (isBetting) handleBets(minigame, player, betAmount);
+        if (isBetting && !handleBets(minigame, player, betAmount)) {
+            return;
+        }
         //Try teleport the player to their designated area.
         ResourcePack pack = getResourcePack(minigame);
         if (pack != null && pack.isValid()) {
@@ -153,35 +155,77 @@ public class MinigamePlayerManager {
         }
     }
 
-    private void handleBets(Minigame minigame, MinigamePlayer player, Double betAmount) {
-
+    /**
+     * @param minigame  the minigame to bet on
+     * @param player    the player who was betting
+     * @param betAmount the amount in economy money. might be 0, if the player was betting an item
+     * @return true if the player could successfully bet
+     */
+    private boolean handleBets(Minigame minigame, MinigamePlayer player, Double betAmount) {
         if (minigame.getMpBets() == null && (player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR || betAmount != 0)) {
             minigame.setMpBets(new MultiplayerBets());
         }
-        MultiplayerBets pbet = minigame.getMpBets();
+
+        MultiplayerBets mpBets = minigame.getMpBets();
         ItemStack item = player.getPlayer().getInventory().getItemInMainHand().clone();
-        if (pbet != null &&
-                ((betAmount != 0 && pbet.canBet(player, betAmount) && plugin.getEconomy().getBalance(player.getPlayer().getPlayer()) >= betAmount) ||
-                        (pbet.canBet(player, item) && item.getType() != Material.AIR && pbet.betValue(item.getType()) > 0))) {
-            player.sendInfoMessage(MinigameUtils.getLang("player.bet.plyMsg"));
-            if (betAmount == 0) {
-                pbet.addBet(player, item);
-            } else {
-                pbet.addBet(player, betAmount);
-                plugin.getEconomy().withdrawPlayer(player.getPlayer().getPlayer(), betAmount);
+
+        if (mpBets != null) {
+            if (!mpBets.hasAlreadyBet(player)) {
+                //has the player not already bet and are they the highest better?
+                if (mpBets.isHighestBetter(betAmount, item)) {
+                    if (betAmount >= 0) {
+                        if (plugin.getEconomy().getBalance(player.getPlayer().getPlayer()) >= betAmount) {
+                            player.sendInfoMessage(Component.text(MinigameUtils.getLang("player.bet.plyMsg")));
+
+                            mpBets.addBet(player, betAmount);
+                            plugin.getEconomy().withdrawPlayer(player.getPlayer().getPlayer(), betAmount);
+
+                            return true;
+                        } else {
+                            //not enough money
+                            player.sendMessage(Component.text(MinigameUtils.getLang("player.bet.notEnoughMoney")), MinigameMessageType.ERROR);
+                            player.sendMessage(Component.text(MessageManager.getMinigamesMessage("player.bet.notEnoughMoneyInfo", Minigames.getPlugin().getEconomy().format(minigame.getMpBets().getHighestMoneyBet()))), MinigameMessageType.ERROR);
+                        }
+                    }
+
+                    if (item.getType() != Material.AIR) {
+                        player.sendInfoMessage(Component.text(MinigameUtils.getLang("player.bet.plyMsg")));
+                        player.getPlayer().getInventory().remove(item);
+
+                        mpBets.addBet(player, item);
+
+                        return true;
+                    } else {
+                        //no item to bet, and betAmount == 0
+                        player.sendMessage(Component.text(MinigameUtils.getLang("player.bet.plyNoBet")), MinigameMessageType.ERROR);
+                        return false; //maybe? or better true in this case?
+                    }
+                } else {
+                    if (mpBets.getHighestMoneyBet() > 0) {
+                        player.sendMessage(Component.text(
+                                MessageManager.getMinigamesMessage("player.bet.incorrectMoneyAmountInfo",
+                                        Minigames.getPlugin().getEconomy().format(mpBets.getHighestMoneyBet()))
+                        ), MinigameMessageType.ERROR);
+                    }
+                    //todo connect both messages with an "or"
+                    if (mpBets.getHighestItemBet().getType() != Material.AIR) {
+                        player.sendMessage(Component.text(
+                                MessageManager.getMinigamesMessage("player.bet.incorrectItemAmountInfo",
+                                        mpBets.getHighestItemBet().getAmount(),
+                                        mpBets.getHighestItemBet().getType().name()) //todo use translation
+                        ), MinigameMessageType.ERROR);
+                    }
+                    return false;
+                }
+            } else { //todo figure out why
+                //already bet once.
+                //todo feedback
+                return false;
             }
-            player.getPlayer().getInventory().removeItem(new ItemStack(item.getType(), 1));
-        } else if (item.getType() == Material.AIR && betAmount == 0) {
-            player.sendMessage(MinigameUtils.getLang("player.bet.plyNoBet"), MinigameMessageType.ERROR);
-        } else if (betAmount != 0 && pbet != null && !pbet.canBet(player, betAmount)) {
-            player.sendMessage(MinigameUtils.getLang("player.bet.incorrectAmount"), MinigameMessageType.ERROR);
-            player.sendMessage(MessageManager.getMinigamesMessage("player.bet.incorrectAmountInfo", Minigames.getPlugin().getEconomy().format(minigame.getMpBets().getHighestMoneyBet())), MinigameMessageType.ERROR);
-        } else if (betAmount != 0 && plugin.getEconomy().getBalance(player.getPlayer().getPlayer()) < betAmount) {
-            player.sendMessage(MinigameUtils.getLang("player.bet.notEnoughMoney"), MinigameMessageType.ERROR);
-            player.sendMessage(MessageManager.getMinigamesMessage("player.bet.notEnoughMoneyInfo", Minigames.getPlugin().getEconomy().format(minigame.getMpBets().getHighestMoneyBet())), MinigameMessageType.ERROR);
         } else {
-            player.sendMessage(MinigameUtils.getLang("player.bet.incorrectItem"), MinigameMessageType.ERROR);
-            player.sendMessage(MessageManager.getMinigamesMessage("player.bet.incorrectItemInfo", 1, minigame.getMpBets().highestBetName()), MinigameMessageType.ERROR);
+            // no bets where made already, no amount and no item in hand
+            //todo feedback
+            return false;
         }
     }
 
@@ -734,11 +778,11 @@ public class MinigamePlayerManager {
 
                 //Item Bets (for non groups)
                 if (minigame.getMpBets() != null) {
-                    if (minigame.getMpBets().hasBets()) {
+                    if (minigame.getMpBets().hasItemBets()) {
                         if (!player.isInMinigame())
-                            player.getPlayer().getInventory().addItem(minigame.getMpBets().claimBets());
+                            player.getPlayer().getInventory().addItem(minigame.getMpBets().claimItemBets());
                         else {
-                            for (ItemStack i : minigame.getMpBets().claimBets()) {
+                            for (ItemStack i : minigame.getMpBets().claimItemBets()) {
                                 player.addTempRewardItem(i);
                             }
                         }

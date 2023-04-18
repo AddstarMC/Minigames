@@ -47,6 +47,7 @@ public class BetSign implements MinigameSign {
             event.setLine(1, ChatColor.GREEN + "Bet");
             event.setLine(2, plugin.getMinigameManager().getMinigame(event.getLine(2)).getName(false));
             if (event.getLine(3).matches("[0-9]+")) {
+                //todo use  plugin.getEconomy().currencyNamePlural()
                 event.setLine(3, "$" + event.getLine(3));
             }
             return true;
@@ -99,6 +100,7 @@ public class BetSign implements MinigameSign {
                         plugin.getPlayerManager().joinMinigame(player, plugin.getMinigameManager().getMinigame(sign.getLine(2)), true, 0.0);
                     } else {
                         if (plugin.hasEconomy()) {
+                            //todo use  plugin.getEconomy().currencyNamePlural()
                             Double bet = Double.parseDouble(sign.getLine(3).replace("$", ""));
                             plugin.getPlayerManager().joinMinigame(player, plugin.getMinigameManager().getMinigame(sign.getLine(2)), true, bet);
                             return true;
