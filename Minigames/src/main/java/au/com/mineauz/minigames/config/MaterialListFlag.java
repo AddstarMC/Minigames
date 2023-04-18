@@ -13,7 +13,7 @@ public class MaterialListFlag extends Flag<List<Material>> {
 
     public MaterialListFlag(List<Material> value, String name) {
         setFlag(value);
-        setDefaultFlag(value);
+        setDefaultFlag(new ArrayList<>()); //saving tests if the flag is equal to their default
         setName(name);
     }
 

@@ -21,7 +21,7 @@ public class RegionMapFlag extends Flag<Map<String, MgRegion>> {
         this.legacySecondPointLabel = legacySecondPoint;
 
         setFlag(value);
-        setDefaultFlag(value);
+        setDefaultFlag(new HashMap<>()); //saving tests if the flag is equal to their default
         setName(name);
     }
 
@@ -30,7 +30,7 @@ public class RegionMapFlag extends Flag<Map<String, MgRegion>> {
         this.legacySecondPointLabel = null;
 
         setFlag(value);
-        setDefaultFlag(value);
+        setDefaultFlag(new HashMap<>()); //saving tests if the flag is equal to their default
         setName(name);
     }
 

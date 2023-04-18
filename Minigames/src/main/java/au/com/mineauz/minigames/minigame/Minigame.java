@@ -1445,12 +1445,6 @@ public class Minigame implements ScriptObject {
             }
         }
 
-//        Bukkit.getLogger().info("------- Minigame Load -------");
-//        Bukkit.getLogger().info("Name: " + getName());
-//        Bukkit.getLogger().info("Type: " + getType());
-//        Bukkit.getLogger().info("Enabled: " + isEnabled());
-//        Bukkit.getLogger().info("-----------------------------");
-
         final Minigame mgm = this;
 
         if (getType() == MinigameType.GLOBAL && isEnabled()) {
