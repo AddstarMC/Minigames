@@ -200,7 +200,7 @@ public class MinigameManager {
             recorderData.setCreatedRegenBlocks(true);
 
             for (MgRegion region : recorderData.getMinigame().getRegenRegions()) {
-                for (int x = (int) region.getMinX(); x <= region.getMinX(); x++) {
+                for (int x = (int) region.getMinX(); x <= region.getMaxX(); x++) {
                     for (int y = (int) region.getMinY(); y <= region.getMaxY(); y++) {
                         for (int z = (int) region.getMinZ(); z <= region.getMaxZ(); z++) {
                             //add block
