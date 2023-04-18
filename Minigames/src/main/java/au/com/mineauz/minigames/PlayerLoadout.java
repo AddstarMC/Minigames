@@ -508,11 +508,11 @@ public class PlayerLoadout {
         if (section.contains("displayName"))
             setDisplayName(section.getString("displayName"));
 
-        if (section.contains("lockInventory"))
-            setInventoryLocked(section.getBoolean("lockInventory"));
+        if (section.contains("inventoryLocked"))
+            setInventoryLocked(section.getBoolean("inventoryLocked"));
 
-        if (section.contains("lockArmour"))
-            setArmourLocked(section.getBoolean("lockArmour"));
+        if (section.contains("armourLocked"))
+            setArmourLocked(section.getBoolean("armourLocked"));
 
         if (section.contains("team"))
             setTeamColor(TeamColor.matchColor(section.getString("team")));
