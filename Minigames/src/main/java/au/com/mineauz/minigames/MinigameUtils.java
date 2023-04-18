@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.tool.MinigameTool;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -311,21 +312,33 @@ public class MinigameUtils {
      * @param item The item to check
      * @return false if the item was not a Minigame tool
      */
-    public static boolean isMinigameTool(ItemStack item) {
-        return item.getItemMeta() != null && item.getItemMeta().displayName() != null && item.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool");
+    public static boolean isMinigameTool(@Nullable ItemStack item) {
+        return item != null && item.getItemMeta() != null && item.getItemMeta().displayName() != null && item.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool");
     }
 
     /**
-     * Gets the item Minigames considers a Miniame tool from the players inventory
+     * Gets the item, Minigames considers as a Minigame tool, from the players inventory
+     * It will prefer the item in main/offhand
      *
      * @param player The player to get the tool from
      * @return null if no tool was found
      */
-    public static MinigameTool getMinigameTool(MinigamePlayer player) {
-        for (ItemStack i : player.getPlayer().getInventory().getContents()) {
-            if (i != null && i.getItemMeta() != null &&
-                    i.getItemMeta().getDisplayName().equals(ChatColor.GREEN + "Minigame Tool")) {
-                return new MinigameTool(i);
+    public static @Nullable MinigameTool getMinigameTool(@Nullable MinigamePlayer player) {
+        ItemStack inHand = player.getPlayer().getInventory().getItemInMainHand();
+        if (isMinigameTool(inHand)) {
+            return new MinigameTool(inHand);
+        }
+
+        inHand = player.getPlayer().getInventory().getItemInOffHand();
+        if (isMinigameTool(inHand)) {
+            return new MinigameTool(inHand);
+        }
+
+        //was not in hands, search in inventory.
+        for (ItemStack item : player.getPlayer().getInventory().getContents()) {
+            ;
+            if (isMinigameTool(item)) {
+                return new MinigameTool(item);
             }
         }
         return null;
