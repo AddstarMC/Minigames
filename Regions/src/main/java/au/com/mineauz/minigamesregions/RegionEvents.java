@@ -33,6 +33,8 @@ public class RegionEvents implements Listener {
     private void executeRegionChanges(Minigame mg, MinigamePlayer ply) {
         for (Region r : RegionModule.getMinigameModule(mg).getRegions()) {
             if (r.playerInRegion(ply)) {
+                r.execute(Triggers.getTrigger("MOVE_IN_REGION"), ply);
+
                 if (!r.hasPlayer(ply)) {
                     r.addPlayer(ply);
                     r.execute(Triggers.getTrigger("ENTER"), ply);
