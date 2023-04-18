@@ -187,9 +187,9 @@ public class MemorySwapBlockAction extends AbstractAction {
     ArrayList<Block> blocksToSwap = new ArrayList<>();
 
     //Collects all blocks to be swapped
-    for (int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++) {
-      for (int x = region.getFirstPoint().getBlockX(); x <= region.getSecondPoint().getBlockX(); x++) {
-        for (int z = region.getFirstPoint().getBlockZ(); z <= region.getSecondPoint().getBlockZ(); z++) {
+    for (int y = (int) region.getMinY(); y <= region.getMaxY(); y++) {
+      for (int x = (int) region.getMinX(); x <= region.getMaxX(); x++) {
+        for (int z = (int) region.getMinZ(); z <= region.getMaxZ(); z++) {
           Block block = region.getFirstPoint().getWorld().getBlockAt(x, y, z);
 
           if (block.getType() == matchType.getFlag()) {
