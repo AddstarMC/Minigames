@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.RegenRegionSetResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
@@ -92,19 +93,27 @@ public class SetRegenAreaCommand implements ICommand {
                         }
                         case "create" -> {
                             if (mgPlayer.hasSelection()) {
-                                String name = args[1];
+                                String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Region");
+                                MgRegion region = minigame.getRegenRegion(name);
 
-                                boolean success = minigame.setRegenRegion(new MgRegion(name, mgPlayer.getSelectionPoints()[0], mgPlayer.getSelectionPoints()[1]));
+                                RegenRegionSetResult result = minigame.setRegenRegion(new MgRegion(name, mgPlayer.getSelectionPoints()[0], mgPlayer.getSelectionPoints()[1]));
 
-                                if (success) {
-                                    mgPlayer.sendInfoMessage(Component.text("Created new regen region for " + minigame.getName(false) + " named " + name, NamedTextColor.GRAY));
+                                if (result.success()) {
+                                    if (region == null) {
+                                        mgPlayer.sendInfoMessage(Component.text("Created a new regen region in " + minigame + " called " + name + ", " + result.numOfBlocksTotal() + "/" + minigame.getRegenBlocklimit()));
+                                    } else {
+                                        mgPlayer.sendInfoMessage(Component.text("Updated region " + name + " in " + minigame));
+                                    }
+
                                     mgPlayer.clearSelection();
                                 } else {
-                                    mgPlayer.sendMessage(Component.text("Error: the limit of Blocks of all regen areas together has been reached. Pleas contact an admin if necessary.", NamedTextColor.RED), MinigameMessageType.ERROR);
+                                    mgPlayer.sendMessage(Component.text("Error: the limit of Blocks of all regen areas together has been reached +(" + result.numOfBlocksTotal() + "/" + minigame.getRegenBlocklimit() + ")." +
+                                            " Please contact an admin if necessary.", NamedTextColor.RED), MinigameMessageType.ERROR);
                                 }
                             } else {
-                                mgPlayer.sendInfoMessage(Component.text("You have not made a selection!", NamedTextColor.RED));
+                                mgPlayer.sendMessage(Component.text("You need to select a region with right click first!"), MinigameMessageType.ERROR);
                             }
+
                             return true;
                         }
                         case "delete" -> {

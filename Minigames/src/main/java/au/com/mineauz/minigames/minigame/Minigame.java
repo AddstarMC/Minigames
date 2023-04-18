@@ -14,6 +14,7 @@ import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.CTFFlag;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.RegenRegionSetResult;
 import au.com.mineauz.minigames.script.ScriptCollection;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
@@ -909,24 +910,32 @@ public class Minigame implements ScriptObject {
     }
 
     /**
-     * checks if the limit of all regen regions together, if we are still under it, add the new region to the list
+     * checks if the limit of all regen regions together,
+     * if we are still under it, add the new region to the list
+     * Please note: The regions are name unique,
+     * setting a new one with a name that already exists, it will overwrite the old one.
      *
      * @param newRegenRegion new regeneration region.
-     * @return true, if the max block limit was not reached.
+     * @return a record containing whenever this was a success or not
+     * and the total number of all blocks in regen regions after the setting would happen
      */
-    public boolean setRegenRegion(MgRegion newRegenRegion) {
+    public RegenRegionSetResult setRegenRegion(MgRegion newRegenRegion) {
         long numOfBlocksTotal = (long) Math.ceil(newRegenRegion.getVolume());
 
         for (MgRegion region : regenRegions.getFlag().values()) {
             numOfBlocksTotal += (long) Math.ceil(region.getVolume());
         }
 
-        if (numOfBlocksTotal > maxBlocksRegenRegions.getFlag()) {
-            return false;
-        } else {
+        if (numOfBlocksTotal <= maxBlocksRegenRegions.getFlag()) {
             regenRegions.getFlag().put(newRegenRegion.getName(), newRegenRegion);
-            return true;
+            return new RegenRegionSetResult(true, numOfBlocksTotal);
+        } else {
+            return new RegenRegionSetResult(false, numOfBlocksTotal);
         }
+    }
+
+    public long getRegenBlocklimit() {
+        return maxBlocksRegenRegions.getFlag();
     }
 
     public boolean hasRegenArea() {
@@ -1444,12 +1453,6 @@ public class Minigame implements ScriptObject {
                 }
             }
         }
-
-//        Bukkit.getLogger().info("------- Minigame Load -------");
-//        Bukkit.getLogger().info("Name: " + getName());
-//        Bukkit.getLogger().info("Type: " + getType());
-//        Bukkit.getLogger().info("Enabled: " + isEnabled());
-//        Bukkit.getLogger().info("-----------------------------");
 
         final Minigame mgm = this;
 

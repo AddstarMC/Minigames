@@ -127,8 +127,7 @@ public class MessageManager {
      * @throws MissingResourceException If bundle not found.
      */
     public static String getUnformattedMessage(@Nullable String identifier, @NotNull String key) throws MissingResourceException {
-        ResourceBundle bundle;
-        bundle = propertiesHashMap.get(Objects.requireNonNullElse(identifier, "minigames"));
+        ResourceBundle bundle = propertiesHashMap.get(Objects.requireNonNullElse(identifier, "minigames"));
         if (bundle == null) {
             String err = (identifier == null) ? "NULL" : identifier;
             throw new MissingResourceException(err, "MessageManager", key);

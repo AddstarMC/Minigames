@@ -21,9 +21,7 @@ import au.com.mineauz.minigames.stats.DynamicMinigameStat;
 import au.com.mineauz.minigames.stats.MinigameStats;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.attribute.Attribute;
@@ -100,9 +98,8 @@ public class MinigamePlayerManager {
         //Give them the objective
         if (minigame.getObjective() != null) {
             player.sendUnprefixedMessage(Component.text("----------------------------------------------------", NamedTextColor.GREEN));
-            player.sendInfoMessage(Component.join(JoinConfiguration.noSeparators(),
-                    Component.text(MessageManager.getMinigamesMessage("player.join.objective"), NamedTextColor.AQUA, TextDecoration.BOLD),
-                    Component.text(minigame.getObjective(), NamedTextColor.WHITE)));
+            player.sendInfoMessage(ChatColor.AQUA.toString() + ChatColor.BOLD + MessageManager.getMinigamesMessage("player.join.objective",
+                    ChatColor.RESET.toString() + ChatColor.WHITE + minigame.getObjective()));
             player.sendUnprefixedMessage(Component.text("----------------------------------------------------", NamedTextColor.GREEN));
         }
         //Prepare regeneration region for rollback.

@@ -9,6 +9,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.objects.RegenRegionSetResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
@@ -108,24 +109,19 @@ public class RegenAreaMode implements ToolMode {
             String name = MinigameUtils.getMinigameTool(player).getSetting("Region");
             MgRegion region = minigame.getRegenRegion(name);
 
-            if (region == null) {
-                boolean success = minigame.setRegenRegion(new MgRegion(name, player.getSelectionPoints()[0], player.getSelectionPoints()[1]));
-                if (success) {
-                    player.sendInfoMessage(Component.text("Created a new regen region in " + minigame + " called " + name));
-                    player.clearSelection();
+            RegenRegionSetResult result = minigame.setRegenRegion(new MgRegion(name, player.getSelectionPoints()[0], player.getSelectionPoints()[1]));
+
+            if (result.success()) {
+                if (region == null) {
+                    player.sendInfoMessage(Component.text("Created a new regen region in " + minigame + " called " + name + ", " + result.numOfBlocksTotal() + "/" + minigame.getRegenBlocklimit()));
                 } else {
-                    player.sendMessage(Component.text("Error: the limit of Blocks of all regen areas together has been reached. Pleas contact an admin if necessary.", NamedTextColor.RED), MinigameMessageType.ERROR);
+                    player.sendInfoMessage(Component.text("Updated region " + name + " in " + minigame));
                 }
+
+                player.clearSelection();
             } else {
-                region.updateRegion(player.getSelectionPoints()[0], player.getSelectionPoints()[1]);
-
-                IDisplayObject displayed = displayedRegions.get(player.getUUID());
-                if (displayed != null) {
-                    displayed.remove();
-                }
-
-                Minigames.getPlugin().display.displayCuboid(player.getPlayer(), region);
-                player.sendInfoMessage(Component.text("Updated region " + name + " in " + minigame));
+                player.sendMessage(Component.text("Error: the limit of Blocks of all regen areas together has been reached +(" + result.numOfBlocksTotal() + "/" + minigame.getRegenBlocklimit() + ")." +
+                        " Please contact an admin if necessary.", NamedTextColor.RED), MinigameMessageType.ERROR);
             }
         } else {
             player.sendMessage(Component.text("You need to select a region with right click first!"), MinigameMessageType.ERROR);

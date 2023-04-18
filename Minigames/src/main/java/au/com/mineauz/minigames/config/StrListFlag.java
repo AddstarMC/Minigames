@@ -4,13 +4,14 @@ import au.com.mineauz.minigames.menu.MenuItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StrListFlag extends Flag<List<String>> {
 
     public StrListFlag(List<String> value, String name) {
         setFlag(value);
-        setDefaultFlag(value);
+        setDefaultFlag(new ArrayList<>()); //saving tests if the flag is equal to their default
         setName(name);
     }
 

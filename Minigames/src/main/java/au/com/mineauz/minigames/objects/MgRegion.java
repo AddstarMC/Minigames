@@ -111,11 +111,11 @@ public class MgRegion {
     }
 
     public double getBaseArea() {
-        return Math.abs((pos1.x() - pos2.x()) * (pos1.z() - pos2.z()));
+        return Math.min(1, Math.abs(pos1.x() - pos2.x())) * Math.min(1, Math.abs(pos1.z() - pos2.z()));
     }
 
     public double getVolume() {
-        return Math.abs(getBaseArea() * (pos1.y() - pos2.y()));
+        return getBaseArea() * Math.min(1, Math.abs(pos1.y() - pos2.y()));
     }
 
     @Override

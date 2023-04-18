@@ -13,7 +13,6 @@ import java.util.List;
 public class RegionFlag extends Flag<MgRegion> {
     private final @Nullable String legacyFistPointLabel, legacySecondPointLabel;
 
-
     public RegionFlag(MgRegion value, String name, @Nullable String legacyFirstPoint, @Nullable String legacySecondPoint) {
         this.legacyFistPointLabel = legacyFirstPoint;
         this.legacySecondPointLabel = legacySecondPoint;
