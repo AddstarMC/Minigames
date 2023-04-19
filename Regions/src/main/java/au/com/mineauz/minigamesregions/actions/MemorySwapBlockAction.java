@@ -46,9 +46,11 @@ public class MemorySwapBlockAction extends AbstractAction {
 
     //Resource blocks
     blockPool.addAll(Tag.BEACON_BASE_BLOCKS.getValues());
-    blockPool.add(Material.COPPER_BLOCK);
     blockPool.add(Material.COAL_BLOCK);
-    blockPool.add(Material.WEATHERED_COPPER);
+    blockPool.add(Material.WAXED_CUT_COPPER);
+    blockPool.add(Material.WAXED_EXPOSED_COPPER);
+    blockPool.add(Material.WAXED_WEATHERED_CUT_COPPER);
+    blockPool.add(Material.WAXED_OXIDIZED_COPPER);
 
     //Concrete
     blockPool.add(Material.WHITE_CONCRETE);
@@ -76,6 +78,7 @@ public class MemorySwapBlockAction extends AbstractAction {
     blockPool.addAll(Tag.GOLD_ORES.getValues());
     blockPool.addAll(Tag.LAPIS_ORES.getValues());
     blockPool.add(Material.NETHER_QUARTZ_ORE);
+    blockPool.add(Material.ANCIENT_DEBRIS);
 
     //Wool blocks
     blockPool.addAll(Tag.WOOL.getValues());
@@ -92,6 +95,8 @@ public class MemorySwapBlockAction extends AbstractAction {
     blockPool.add(Material.ACACIA_LOG);
     blockPool.add(Material.STRIPPED_ACACIA_LOG);
     blockPool.add(Material.DARK_OAK_LOG);
+    blockPool.add(Material.MANGROVE_LOG);
+    blockPool.add(Material.STRIPPED_MANGROVE_LOG);
     blockPool.add(Material.STRIPPED_DARK_OAK_LOG);
     blockPool.add(Material.CRIMSON_STEM);
     blockPool.add(Material.STRIPPED_CRIMSON_STEM);
@@ -101,20 +106,84 @@ public class MemorySwapBlockAction extends AbstractAction {
     //Planks
     blockPool.addAll(Tag.PLANKS.getValues());
 
-    //Misc
-    blockPool.add(Material.BRICKS);
-    blockPool.add(Material.PRISMARINE);
-    blockPool.add(Material.SEA_LANTERN);
-    blockPool.add(Material.SANDSTONE);
-    blockPool.add(Material.RED_SANDSTONE);
+    //Stone-alike
+    blockPool.add(Material.STONE);
+    blockPool.add(Material.SMOOTH_STONE);
+    blockPool.add(Material.CHISELED_STONE_BRICKS);
+    blockPool.add(Material.COBBLESTONE);
+    blockPool.add(Material.MOSSY_COBBLESTONE);
     blockPool.add(Material.STONE_BRICKS);
+    blockPool.add(Material.BRICKS);
+    blockPool.add(Material.BASALT);
+    blockPool.add(Material.CALCITE);
+    blockPool.add(Material.TUFF);
+    blockPool.add(Material.DRIPSTONE_BLOCK);
+    blockPool.add(Material.SMOOTH_BASALT);
+    blockPool.add(Material.POLISHED_BASALT);
+    blockPool.add(Material.POLISHED_ANDESITE);
+    blockPool.add(Material.CHISELED_DEEPSLATE);
+    blockPool.add(Material.POLISHED_DEEPSLATE);
+    blockPool.add(Material.DEEPSLATE_BRICKS);
+    blockPool.add(Material.DEEPSLATE);
+    blockPool.add(Material.DEEPSLATE_TILES);
+    blockPool.add(Material.POLISHED_BLACKSTONE);
+    blockPool.add(Material.GILDED_BLACKSTONE);
+    blockPool.add(Material.CHISELED_POLISHED_BLACKSTONE);
+    blockPool.add(Material.NETHERRACK);
     blockPool.add(Material.NETHER_BRICKS);
     blockPool.add(Material.RED_NETHER_BRICKS);
-    blockPool.add(Material.STONE);
-    blockPool.add(Material.DIRT);
-    blockPool.add(Material.SCULK);
+    blockPool.add(Material.SMOOTH_QUARTZ);
+    blockPool.add(Material.CHISELED_QUARTZ_BLOCK);
+    blockPool.add(Material.QUARTZ_BRICKS);
+    blockPool.add(Material.QUARTZ_PILLAR);
+    blockPool.add(Material.PURPUR_BLOCK);
+    blockPool.add(Material.PURPUR_PILLAR);
+    blockPool.add(Material.END_STONE_BRICKS);
 
-    //todo more block types
+    //dirt alike
+    blockPool.add(Material.DIRT);
+    blockPool.add(Material.MUD);
+    blockPool.add(Material.PODZOL);
+    blockPool.add(Material.CLAY);
+    blockPool.add(Material.SOUL_SAND);
+    blockPool.add(Material.SOUL_SOIL);
+    blockPool.add(Material.PACKED_MUD);
+    blockPool.add(Material.MUD_BRICKS);
+    blockPool.add(Material.SANDSTONE);
+    blockPool.add(Material.RED_SANDSTONE);
+    blockPool.add(Material.AMETHYST_BLOCK);
+
+    //kinda living
+    blockPool.add(Material.SCULK);
+    blockPool.add(Material.SCULK_CATALYST);
+    blockPool.add(Material.BONE_BLOCK);
+    blockPool.add(Material.NETHER_WART_BLOCK);
+    blockPool.add(Material.WARPED_WART_BLOCK);
+    blockPool.add(Material.SHROOMLIGHT);
+    blockPool.add(Material.DRIED_KELP_BLOCK);
+    blockPool.add(Material.DEAD_BRAIN_CORAL_BLOCK);
+    blockPool.add(Material.SPONGE);
+    blockPool.add(Material.HONEYCOMB_BLOCK);
+    blockPool.add(Material.OCHRE_FROGLIGHT);
+    blockPool.add(Material.VERDANT_FROGLIGHT);
+    blockPool.add(Material.PEARLESCENT_FROGLIGHT);
+
+    //elements
+    blockPool.add(Material.PACKED_ICE);
+    blockPool.add(Material.BLUE_ICE);
+    blockPool.add(Material.SNOW_BLOCK);
+    blockPool.add(Material.MAGMA_BLOCK);
+    blockPool.add(Material.PRISMARINE_BRICKS);
+    blockPool.add(Material.DARK_PRISMARINE);
+    blockPool.add(Material.SEA_LANTERN);
+
+    //usage blocks
+    blockPool.add(Material.CRAFTING_TABLE);
+    blockPool.add(Material.FLETCHING_TABLE);
+    blockPool.add(Material.SMITHING_TABLE);
+    blockPool.add(Material.BOOKSHELF);
+
+    //todo config for this, also move this standard list into a ressource file
   }
 
   private final MaterialFlag matchType = new MaterialFlag(Material.COBBLESTONE, "matchtype");
