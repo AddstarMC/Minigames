@@ -5,27 +5,25 @@ import au.com.mineauz.minigames.helpers.TestHelper;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.TestPlayer;
-import au.com.mineauz.minigames.objects.TestWorld;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.junit.Assert.assertTrue;
 
 public class MinigamePlayerManagerTest {
     private ServerMock server;
     private Minigames plugin;
     private Minigame game;
 
-    @Before
+    @BeforeEach
     public void Setup() {
         try {
             server = MockBukkit.mock();
@@ -33,7 +31,7 @@ public class MinigamePlayerManagerTest {
             server = MockBukkit.getMock();
         }
         server.addPlayer(new TestPlayer(server, "Silverzahn", UUID.randomUUID()));
-        WorldMock world = new TestWorld();
+        WorldMock world = new WorldMock();
         world.setName("GAMES");
         MockBukkit.getMock().addWorld(world);
         Logger log = Logger.getAnonymousLogger();
@@ -44,7 +42,7 @@ public class MinigamePlayerManagerTest {
         game = TestHelper.createMinigame(plugin, world, MinigameType.MULTIPLAYER, GameMechanics.MECHANIC_NAME.KILLS);
     }
 
-    @After
+    @AfterEach
     public void TearDown() {
         try {
             MockBukkit.unmock();
@@ -53,19 +51,19 @@ public class MinigamePlayerManagerTest {
         } catch (Exception ignored) {
         }
     }
+
     @Test
     public void joinMinigame() {
         final PlayerMock mock = server.getPlayer(0);
         plugin.getPlayerManager().addMinigamePlayer(mock);
-        assertTrue(plugin.getPlayerManager().hasMinigamePlayer(mock.getUniqueId()));
+        Assertions.assertTrue(plugin.getPlayerManager().hasMinigamePlayer(mock.getUniqueId()));
         plugin.getPlayerManager().joinMinigame(plugin.getPlayerManager().getMinigamePlayer(mock), game, false, 0.0);
-        assertTrue(plugin.getPlayerManager().getMinigamePlayer(mock.getUniqueId()).isInMinigame());
-
+        Assertions.assertTrue(plugin.getPlayerManager().getMinigamePlayer(mock.getUniqueId()).isInMinigame());
     }
-    
+
     /*@Test
     public void spectateMinigame() {
-    
+
     }
     
     @Test
@@ -83,7 +81,7 @@ public class MinigamePlayerManagerTest {
     @Test
     public void teleportToStart() {
     }
-    
+
     @Test
     public void getStartLocations() {
     }

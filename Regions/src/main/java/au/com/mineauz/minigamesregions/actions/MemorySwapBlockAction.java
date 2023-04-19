@@ -26,10 +26,7 @@ import java.util.stream.Collectors;
  * in the game and which will be replaced by the random blocks B) the blacklist, which removes
  * blocks from the given blockPool to provide a free choice in gameboard design. Removed blocks will
  * not appear on the gameboard. The blacklist follows this format:
- * block:data,block2,block3,block4:data4 (no spaces) If the block data is provided, only precise
- * matches with that block will be removed. If the block data is not provided, all blocks with that
- * name will be removed. For example, if the entry is WOOL, all WOOL blocks, no matter the color
- * will be removed, but if the entry is WOOL:1, only orange WOOL will be removed.
+ * block,block2,block3,block4 (no spaces). All blocks with that name will be removed.
  */
 public class MemorySwapBlockAction extends AbstractAction {
   /*

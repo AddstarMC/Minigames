@@ -16,9 +16,9 @@ import java.util.Map.Entry;
 
 public class MenuItemCondition extends MenuItem {
 
+    private final ConditionInterface con;
     private RegionExecutor rexec;
     private NodeExecutor nexec;
-    private final ConditionInterface con;
 
     public MenuItemCondition(String name, Material displayItem, RegionExecutor exec, ConditionInterface con) {
         super(name, displayItem);

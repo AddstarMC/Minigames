@@ -1,7 +1,6 @@
 package au.com.mineauz.minigamesregions;
 
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.script.ScriptWrapper;
@@ -19,8 +18,8 @@ import java.util.Set;
 public class Node implements ExecutableScriptObject {
 
     private final String name;
-    private Location loc;
     private final List<NodeExecutor> executors = new ArrayList<>();
+    private Location loc;
     private boolean enabled = true;
 
     public Node(String name, Location loc) {

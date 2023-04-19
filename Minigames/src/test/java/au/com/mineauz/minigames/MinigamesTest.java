@@ -14,21 +14,16 @@ import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.command.ConsoleCommandSenderMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import org.bukkit.Location;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.sqlite.SQLiteDataSource;
 
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static junit.framework.TestCase.assertNotSame;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertFalse;
-
 public class MinigamesTest {
-
     private ServerMock server;
     private Minigames plugin;
     private PlayerMock player;
@@ -41,13 +36,14 @@ public class MinigamesTest {
     private Location start;
     private Location quit;
 
-    @Before
+    @BeforeEach
     public void Setup() {
         try {
             server = MockBukkit.mock();
         } catch (IllegalStateException e) {
             server = MockBukkit.getMock();
         }
+
         ConsoleCommandSenderMock sender = (ConsoleCommandSenderMock) server.getConsoleSender();
         TestWorld testworld = new TestWorld();
         testworld.setName("GAMES");
@@ -60,7 +56,7 @@ public class MinigamesTest {
         plugin.setLog(log);
         world = (WorldMock) MockBukkit.getMock().getWorld("GAMES");
         spawn = world.getSpawnLocation();
-        TestHelper.createMinigame(plugin,world,MinigameType.MULTIPLAYER, GameMechanics.MECHANIC_NAME.CTF);
+        TestHelper.createMinigame(plugin, world, MinigameType.MULTIPLAYER, GameMechanics.MECHANIC_NAME.CTF);
         player = new TestPlayer(MockBukkit.getMock(), "TestPlayer", UUID.randomUUID());
         player.setLocation(spawn);
         MockBukkit.getMock().addPlayer(player);
@@ -68,19 +64,18 @@ public class MinigamesTest {
 
     @Test
     public void onJoinMinigame() {
-        assertNotSame(player.getLocation(),game.getLobbyPosition());
+        Assertions.assertNotSame(player.getLocation(), game.getLobbyPosition());
         plugin.getPlayerManager().addMinigamePlayer(player);
         MinigamePlayer mplayer = plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId());
-        plugin.getPlayerManager().joinMinigame(mplayer, game, false, 0D);
+        plugin.getPlayerManager().joinMinigame(mplayer, game, false, 0.0);
         LobbySettingsModule module = (LobbySettingsModule) game.getModule("LobbySettings");
-        player.assertLocation(lobby, 0);
-        assertTrue(module.isTeleportOnStart());
-        assertNotSame(game.getStartLocations().indexOf(player.getLocation()), -1);
+        player.assertLocation(lobby, 0.0);
+        Assertions.assertTrue(module.isTeleportOnStart());
+        Assertions.assertNotSame(game.getStartLocations().indexOf(player.getLocation()), -1);
         server.getScheduler().performTicks(200L);
-        player.assertLocation(start,0);
+        player.assertLocation(start, 0);
         server.getScheduler().performTicks(200L);
-        player.assertLocation(quit,0);
-
+        player.assertLocation(quit, 0);
     }
 
     @Test
@@ -89,17 +84,16 @@ public class MinigamesTest {
         MinigamePlayer mplayer = plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId());
         plugin.getPlayerManager().joinMinigame(mplayer, game, false, 0D);
         player.assertLocation(lobby, 0);
-        Assert.assertTrue(plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId()).isInMinigame());
-
+        Assertions.assertTrue(plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId()).isInMinigame());
         plugin.getPlayerManager().quitMinigame(plugin.getPlayerManager().getMinigamePlayer(player), false);
         player.assertLocation(quit, 0);
-        assertFalse(plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId()).isInMinigame());
+        Assertions.assertFalse(plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId()).isInMinigame());
     }
 
     @Test
-    public void testOnDisable(){
-        assertTrue(plugin.isEnabled());
+    public void testOnDisable() {
+        Assertions.assertTrue(plugin.isEnabled());
         server.getPluginManager().disablePlugin(plugin);
-        assertFalse(plugin.isEnabled());
+        Assertions.assertFalse(plugin.isEnabled());
     }
 }

@@ -24,23 +24,33 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Attachable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
 
 public class RecorderData implements Listener {
+    // list of blocks that need another block to not break
     private static final ArrayList<Material> supportedMats = new ArrayList<>();
-    private static final ArrayList<Tag<Material>> supportedTags = new ArrayList<>();
+    // this plugin
     private static Minigames plugin;
 
+    /*
+     * this list of Blocks will be regenerated after all the solid ones.
+     * It contains an arrangement of Blocks that need a block under / next or over it to support it.
+     * If one block is missing or wrongly added here there shouldn't be big issues anyway.
+     * We will test if the Material is affected by gravity or is attachable later.
+     * However, just to be sure we will delay regenerating this ones
+     */
     static {
         supportedMats.add(Material.WATER);
         supportedMats.add(Material.LAVA);
-        supportedTags.add(Tag.DOORS);
-        supportedTags.add(Tag.RAILS);
+        supportedMats.addAll(Tag.DOORS.getValues());
+        supportedMats.addAll(Tag.RAILS.getValues());
         supportedMats.add(Material.TRIPWIRE);
-        supportedTags.add(Tag.PRESSURE_PLATES);
+        supportedMats.addAll(Tag.PRESSURE_PLATES.getValues());
         supportedMats.add(Material.COMPARATOR);
         supportedMats.add(Material.REPEATER);
         supportedMats.add(Material.REDSTONE_WIRE);
@@ -49,31 +59,38 @@ public class RecorderData implements Listener {
         supportedMats.add(Material.PISTON_HEAD);
         supportedMats.add(Material.MOVING_PISTON);
         supportedMats.add(Material.LILY_PAD);
-        supportedTags.add(Tag.WOOL_CARPETS);
+        supportedMats.addAll(Tag.WOOL_CARPETS.getValues());
         supportedMats.add(Material.MOSS_CARPET);
         supportedMats.add(Material.TALL_GRASS);
         supportedMats.add(Material.TALL_SEAGRASS);
         supportedMats.add(Material.DEAD_BUSH);
         supportedMats.add(Material.RED_MUSHROOM);
         supportedMats.add(Material.BROWN_MUSHROOM);
-        supportedTags.add(Tag.SAPLINGS);
-        supportedTags.add(Tag.FLOWERS);
-        supportedTags.add(Tag.CORALS);
-        supportedTags.add(Tag.CROPS);
+        supportedMats.addAll(Tag.SAPLINGS.getValues());
+        supportedMats.addAll(Tag.FLOWERS.getValues());
+        supportedMats.addAll(Tag.CORALS.getValues());
+        supportedMats.addAll(Tag.CROPS.getValues());
         supportedMats.add(Material.HANGING_ROOTS);
         supportedMats.add(Material.NETHER_WART);
         supportedMats.add(Material.SMALL_DRIPLEAF);
         supportedMats.add(Material.BIG_DRIPLEAF);
         supportedMats.add(Material.KELP_PLANT);
-        supportedTags.add(Tag.CAVE_VINES);
+        supportedMats.addAll(Tag.CAVE_VINES.getValues());
         supportedMats.add(Material.VINE);
+        supportedMats.add(Material.SCAFFOLDING);
     }
 
+    // the minigame this data belongs to
     private final Minigame minigame;
-    private final Map<UUID, EntityData> entdata = new HashMap<>();
+    // data of entities that will be regenerated
+    private final Map<UUID, EntityData> entityData = new HashMap<>();
+    // white/blacklisted blocks that can (not) be broken by a player in the minigame
+    // and therefore is not required to regenerated
     private final List<Material> wbBlocks = new ArrayList<>();
+    // is it a white or a blacklist?
     private boolean whitelistMode = false;
     private boolean hasCreatedRegenBlocks = false;
+    //data of blocks that will be regenerated
     private Map<Position, MgBlockData> blockdata = new HashMap<>();
 
     public RecorderData(Minigame minigame) {
@@ -152,7 +169,7 @@ public class RecorderData implements Listener {
                     }
 
                     MgBlockData secondChest = addBlock(right.getBlock(), modifier);
-                    if (secondChest.getItems() == null) {
+                    if (secondChest.getInventoryContents() == null) {
                         addInventory(secondChest, doubleChest.getRightSide());
                         if (minigame.isRandomizeChests())
                             secondChest.randomizeContents(minigame.getMinChestRandom(), minigame.getMaxChestRandom());
@@ -183,21 +200,21 @@ public class RecorderData implements Listener {
         ItemStack[] inventory = Arrays.stream(ih.getInventory().getContents()).
                 map(itemStack -> itemStack == null ? null : itemStack.clone()).toArray(ItemStack[]::new);
 
-        bdata.setItems(inventory);
+        bdata.setInventory(inventory);
     }
 
     //add an entity to get reset
-    public void addEntity(Entity ent, MinigamePlayer player, boolean created) {
-        EntityData oldData = entdata.get(ent.getUniqueId());
+    public void addEntity(@NotNull Entity ent, @Nullable MinigamePlayer player, boolean created) {
+        EntityData oldData = entityData.get(ent.getUniqueId());
         if (oldData != null) {
             if (oldData.wasCreated() && !created) {
-                entdata.remove(ent.getUniqueId());
+                entityData.remove(ent.getUniqueId());
 
                 return;
             }
         }
 
-        entdata.put(ent.getUniqueId(), new EntityData(ent, player, created));
+        entityData.put(ent.getUniqueId(), new EntityData(ent, player, created));
     }
 
     public boolean hasBlock(Block block) {
@@ -209,7 +226,7 @@ public class RecorderData implements Listener {
             restoreBlocks(modifier);
         }
 
-        if (!entdata.isEmpty()) {
+        if (!entityData.isEmpty()) {
             restoreEntities(modifier);
         }
     }
@@ -221,7 +238,7 @@ public class RecorderData implements Listener {
 
     public void restoreEntities() {
         restoreEntities(null);
-        entdata.clear();
+        entityData.clear();
     }
 
     public void restoreBlocks(final MinigamePlayer modifier) {
@@ -247,7 +264,6 @@ public class RecorderData implements Listener {
                 }
 
                 if (supportedMats.contains(data.getBlockState().getType()) ||
-                        supportedTags.stream().anyMatch(tag -> tag.isTagged(data.getBlockState().getType())) ||
                         data.getBlockState().getBlockData() instanceof Attachable || data.getBlockState() instanceof Hangable) {
                     attachableBlocks.add(data);
                 } else if (data.getBukkitBlockData().getMaterial().hasGravity()) {
@@ -284,7 +300,7 @@ public class RecorderData implements Listener {
     }
 
     public void restoreEntities(MinigamePlayer player) {
-        Iterator<EntityData> it = entdata.values().iterator();
+        Iterator<EntityData> it = entityData.values().iterator();
         while (it.hasNext()) {
             EntityData nextEntityData = it.next();
 
@@ -308,12 +324,12 @@ public class RecorderData implements Listener {
     }
 
     public void clearRestoreData() {
-        entdata.clear();
+        entityData.clear();
         blockdata.clear();
     }
 
     public boolean hasData() {
-        return !(blockdata.isEmpty() && entdata.isEmpty());
+        return !(blockdata.isEmpty() && entityData.isEmpty());
     }
 
     public boolean checkBlockSides(Location location) {
@@ -428,7 +444,7 @@ public class RecorderData implements Listener {
             World w;
             MgBlockData bd;
             BlockState state;
-            ItemStack[] items;
+            ItemStack[] inventory;
             String[] sitems;
             ItemStack item;
             Map<String, String> iargs = new HashMap<>();
@@ -460,15 +476,15 @@ public class RecorderData implements Listener {
 
                     if (args.containsKey("items")) {
                         if (state.getType() == Material.DISPENSER || state.getType() == Material.DROPPER) {
-                            items = new ItemStack[InventoryType.DISPENSER.getDefaultSize()];
+                            inventory = new ItemStack[InventoryType.DISPENSER.getDefaultSize()];
                         } else if (state.getType() == Material.HOPPER) {
-                            items = new ItemStack[InventoryType.HOPPER.getDefaultSize()];
+                            inventory = new ItemStack[InventoryType.HOPPER.getDefaultSize()];
                         } else if (state.getType() == Material.FURNACE) {
-                            items = new ItemStack[InventoryType.FURNACE.getDefaultSize()];
+                            inventory = new ItemStack[InventoryType.FURNACE.getDefaultSize()];
                         } else if (state.getType() == Material.BREWING_STAND) {
-                            items = new ItemStack[InventoryType.BREWING.getDefaultSize()];
+                            inventory = new ItemStack[InventoryType.BREWING.getDefaultSize()];
                         } else {
-                            items = new ItemStack[InventoryType.CHEST.getDefaultSize()];
+                            inventory = new ItemStack[InventoryType.CHEST.getDefaultSize()];
                         }
 
                         sitems = args.get("items").split("\\)\\(");
@@ -493,11 +509,11 @@ public class RecorderData implements Listener {
                                 }
                             }
 
-                            items[Integer.parseInt(iargs.get("slot"))] = item;
+                            inventory[Integer.parseInt(iargs.get("slot"))] = item;
                             iargs.clear();
                         }
 
-                        bd.setItems(items);
+                        bd.setInventory(inventory);
                     }
 
                     blockdata.put(Position.block(bd.getLocation()), bd);

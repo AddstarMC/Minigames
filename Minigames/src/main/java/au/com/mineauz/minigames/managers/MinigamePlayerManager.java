@@ -105,7 +105,7 @@ public class MinigamePlayerManager {
             player.sendUnprefixedMessage(Component.text("----------------------------------------------------", NamedTextColor.GREEN));
         }
         //Prepare regeneration region for rollback.
-        mgManager.addBlockRecorderData(minigame);
+        mgManager.addRegenDataToRecorder(minigame);
         //Standardize player
         player.storePlayerData();
         player.setMinigame(minigame);

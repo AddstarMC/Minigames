@@ -66,7 +66,7 @@ public class BackupCommand implements ICommand {
                     if (args.length == 1) {
                         if (minigame.getPlayers().size() == 0) {
                             minigame.setState(MinigameState.REGENERATING);
-                            Minigames.getPlugin().getMinigameManager().addBlockRecorderData(minigame);
+                            Minigames.getPlugin().getMinigameManager().addRegenDataToRecorder(minigame);
                             RecorderData d = minigame.getRecorderData();
                             d.saveAllBlockData();
 

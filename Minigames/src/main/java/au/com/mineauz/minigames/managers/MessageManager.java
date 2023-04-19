@@ -26,8 +26,6 @@ import java.util.logging.Logger;
 
 /**
  * Class will hold and store all messages that are required for minigames
- * Created for the Charlton IT Project.
- * Created by benjicharlton on 19/06/2020.
  */
 public class MessageManager {
     /**

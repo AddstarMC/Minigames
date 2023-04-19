@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.commands;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import com.google.common.base.Charsets;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -118,7 +118,7 @@ public class DebugCommand implements ICommand {
         try {
             return Files.readString(file, Charsets.UTF_8);
         } catch (IOException e) {
-            return ExceptionUtils.getFullStackTrace(e);
+            return ExceptionUtils.getStackTrace(e);
         }
     }
 

@@ -193,7 +193,7 @@ public class MinigameManager {
         this.configs.remove(filename);
     }
 
-    public void addBlockRecorderData(final Minigame minigame) {
+    public void addRegenDataToRecorder(final Minigame minigame) {
         if (minigame.hasRegenArea() && !minigame.getRecorderData().hasCreatedRegenBlocks()) {
             final RecorderData recorderData = minigame.getRecorderData();
 
