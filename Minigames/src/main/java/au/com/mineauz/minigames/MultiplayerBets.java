@@ -6,6 +6,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 
 public class MultiplayerBets {
@@ -41,8 +43,39 @@ public class MultiplayerBets {
         return true;
     }
 
-    public ItemStack[] claimItemBets() {
-        return itemBet.values().toArray(ItemStack[]::new);
+    /**
+     * returns a set of all bettet items, where all amounts of similar items where added together
+     */
+    public HashSet<ItemStack> claimItemBets() {
+        HashSet<ItemStack> resultItems = new HashSet<>();
+
+        for (ItemStack itemToAdd : itemBet.values()) {
+            boolean inResult = false;
+
+            Iterator<ItemStack> it = resultItems.iterator();
+            ItemStack alreadyIn = null;
+
+            //count together item amounts, if nbt (except amount) matches
+            while (it.hasNext() && !inResult) {
+                alreadyIn = it.next();
+
+                if (itemToAdd.isSimilar(alreadyIn)) {
+                    alreadyIn.setAmount(alreadyIn.getAmount() + itemToAdd.getAmount());
+
+                    it.remove();
+                    inResult = true;
+                }
+            }
+
+            // readd item or add new one
+            if (inResult) {
+                resultItems.add(alreadyIn);
+            } else {
+                resultItems.add(itemToAdd);
+            }
+        }
+
+        return resultItems;
     }
 
     public Double claimMoneyBets() {

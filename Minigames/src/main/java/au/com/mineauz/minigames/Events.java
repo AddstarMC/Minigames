@@ -544,7 +544,6 @@ public class Events implements Listener {
         }
     }
 
-
     @EventHandler(ignoreCancelled = true)
     private void playerShoot(ProjectileLaunchEvent event) {
         if (event.getEntityType() == EntityType.SNOWBALL) {
@@ -587,7 +586,7 @@ public class Events implements Listener {
                     }, 1L);
                 }
             }
-        }
+        } //todo unlimited arrows
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -36,8 +36,6 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.Nullable;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 
 /**
@@ -689,26 +687,31 @@ public class MinigamePlayerManager {
         minigame.setPlayersAtStart(false);
         EndMinigameEvent event = new EndMinigameEvent(winners, losers, minigame);
         Bukkit.getServer().getPluginManager().callEvent(event);
+
         if (!event.isCancelled()) {
             winners = event.getWinners();
             losers = event.getLosers();
             //Call Mechanics End
             minigame.getMechanic().endMinigame(minigame, winners, losers);
 
-            //Prepare split money
+            //Prepare split bet rewards
             double bets = 0;
-            if (minigame.getMpBets() != null) {
+            HashSet<ItemStack> betItems = new HashSet<>();
+            if (minigame.getMpBets() != null && !winners.isEmpty()) {
                 if (minigame.getMpBets().hasMoneyBets()) {
-                    List<MinigamePlayer> plys = new ArrayList<>(event.getWinners());
-
-                    if (!plys.isEmpty()) {
-                        bets = minigame.getMpBets().claimMoneyBets() / (double) plys.size();
-                        BigDecimal roundBets = new BigDecimal(bets);
-                        roundBets = roundBets.setScale(2, RoundingMode.HALF_UP);
-                        bets = roundBets.doubleValue();
-                    }
-                    minigame.setMpBets(null);
+                    bets = Math.round(minigame.getMpBets().claimMoneyBets() / (double) winners.size());
                 }
+
+                //todo this  multiplies items, if the rest is over 0.5 and deletes items, if the rest is under it, but not 0
+                // for items that are in the division rest me might want to give them to random winners.
+                if (minigame.getMpBets().hasItemBets()) {
+                    betItems = minigame.getMpBets().claimItemBets();
+
+                    final List<MinigamePlayer> finalWinners = winners;
+                    betItems.forEach(item -> item.setAmount((int) Math.round(item.getAmount() / (double) finalWinners.size())));
+                }
+
+                minigame.setMpBets(null);
             }
 
             //Broadcast Message
@@ -779,11 +782,17 @@ public class MinigamePlayerManager {
                 //Item Bets (for non groups)
                 if (minigame.getMpBets() != null) {
                     if (minigame.getMpBets().hasItemBets()) {
-                        if (!player.isInMinigame())
-                            player.getPlayer().getInventory().addItem(minigame.getMpBets().claimItemBets());
-                        else {
-                            for (ItemStack i : minigame.getMpBets().claimItemBets()) {
+                        if (player.isInMinigame()) {
+                            for (ItemStack i : betItems) {
                                 player.addTempRewardItem(i);
+                            }
+                        } else {
+                            for (ItemStack i : betItems) {
+                                for (ItemStack notAdded : player.getPlayer().getInventory().addItem(i).values()) {
+                                    //drop items the player had no room for
+                                    player.getPlayer().getWorld().dropItemNaturally(player.getLocation(), notAdded);
+                                }
+
                             }
                         }
                         minigame.setMpBets(null);
