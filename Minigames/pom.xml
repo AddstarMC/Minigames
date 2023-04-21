@@ -175,13 +175,11 @@
                             <include>org.bstats:*</include>
                             <include>io.papermc:paperlib</include>
                             <include>org.kitteh:paste-gg-api</include>
-                            <include>org.apache.commons:commons-text</include>
                         </includes>
                     </artifactSet>
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <!-- Replace this with your package! -->
                             <shadedPattern>au.com.mineauz.minigames</shadedPattern>
                         </relocation>
                         <relocation>
@@ -192,10 +190,6 @@
                         <relocation>
                             <pattern>org.kitteh.pastegg</pattern>
                             <shadedPattern>au.com.mineauz.minigames.pastegg</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>org.apache.commons.text</pattern>
-                            <shadedPattern>au.com.mineauz.minigames.text</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -227,7 +221,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M6</version>
                 <configuration>
-                    <skipTests>true</skipTests>
+                    <skipTests>false</skipTests>
                     <forkCount>1</forkCount>
                     <reuseForks>false</reuseForks>
                 </configuration>

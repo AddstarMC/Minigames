@@ -3,8 +3,11 @@ main: au.com.mineauz.minigames.Minigames
 version: ${plugin.version}
 api-version: ${spigot.api.version}
 author: _Razz_ Schmoller Addstar Narimm
-softdepend: ['Multiverse-Core']
+softdepend: [ 'Multiverse-Core' ]
 description: ${project.description}
+
+libraries:
+    - org.apache.commons:commons-text:1.10.0
 
 commands:
     minigame:
@@ -12,8 +15,8 @@ commands:
         usage: Invalid command. Type "/minigame help" for help
         permission: minigame.minigame
         permission-message: You don't have <permission>
-        aliases: [mgm, minigm, mgame, mg]
-        
+        aliases: [ mgm, minigm, mgame, mg ]
+
 permissions:
     minigame.minigame:
         description: Adds permission to the main command.
