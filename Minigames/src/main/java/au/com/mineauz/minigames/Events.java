@@ -549,27 +549,42 @@ public class Events implements Listener {
     private void playerShoot(ProjectileLaunchEvent event) {
         if (event.getEntityType() == EntityType.SNOWBALL) {
             Snowball snowball = (Snowball) event.getEntity();
-            if (snowball.getShooter() != null && snowball.getShooter() instanceof Player) {
-                MinigamePlayer ply = pdata.getMinigamePlayer((Player) snowball.getShooter());
+
+            if (snowball.getShooter() instanceof Player player) {
+                MinigamePlayer ply = pdata.getMinigamePlayer(player);
 
                 if (ply.isInMinigame() && ply.getMinigame().hasUnlimitedAmmo()) {
-                    ItemStack mainhand = ply.getPlayer().getInventory().getItemInMainHand();
-                    if (mainhand.getType() == Material.SNOW_BLOCK) {
-                        mainhand.setAmount(16);
-                        ply.getPlayer().updateInventory();//todo
-                    } else {
-                        ply.getPlayer().getInventory().addItem(new ItemStack(Material.SNOWBALL, 1));
-                    }
+                    //wait for the inventory to update
+                    Bukkit.getScheduler().runTaskLater(Minigames.getPlugin(), () -> {
+                        ItemStack itemInMainHand = ply.getPlayer().getInventory().getItemInMainHand();
 
+                        if (itemInMainHand.getType() == Material.SNOWBALL) {
+                            itemInMainHand.setAmount(16);
+                            ply.getPlayer().updateInventory();
+                        } else {
+                            ply.getPlayer().getInventory().addItem(new ItemStack(Material.SNOWBALL, 1));
+                        }
+                    }, 1L);
                 }
             }
+
         } else if (event.getEntityType() == EntityType.EGG) {
             Egg egg = (Egg) event.getEntity();
             if (egg.getShooter() != null && egg.getShooter() instanceof Player player) {
                 MinigamePlayer ply = pdata.getMinigamePlayer(player);
 
                 if (ply.isInMinigame() && ply.getMinigame().hasUnlimitedAmmo()) {
-                    ply.getPlayer().getInventory().addItem(new ItemStack(Material.EGG));
+                    //wait for the inventory to update
+                    Bukkit.getScheduler().runTaskLater(Minigames.getPlugin(), () -> {
+                        ItemStack itemInMainHand = ply.getPlayer().getInventory().getItemInMainHand();
+
+                        if (itemInMainHand.getType() == Material.EGG) {
+                            itemInMainHand.setAmount(16);
+                            ply.getPlayer().updateInventory();
+                        } else {
+                            ply.getPlayer().getInventory().addItem(new ItemStack(Material.EGG, 1));
+                        }
+                    }, 1L);
                 }
             }
         }
