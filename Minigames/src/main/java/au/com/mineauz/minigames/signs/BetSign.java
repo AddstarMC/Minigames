@@ -47,7 +47,7 @@ public class BetSign implements MinigameSign {
             event.setLine(1, ChatColor.GREEN + "Bet");
             event.setLine(2, plugin.getMinigameManager().getMinigame(event.getLine(2)).getName(false));
             if (event.getLine(3).matches("[0-9]+")) {
-                //todo use  plugin.getEconomy().currencyNamePlural()
+                //todo use plugin.getEconomy().currencyNamePlural()
                 event.setLine(3, "$" + event.getLine(3));
             }
             return true;

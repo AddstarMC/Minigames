@@ -54,7 +54,6 @@ public class SpectatorPositionMode implements ToolMode {
 
     }
 
-    @SuppressWarnings("deprecation") //TODO: Use alternate method once available
     @Override
     public void select(MinigamePlayer player, Minigame minigame, Team team) {
         if (minigame.getSpectatorLocation() != null) {
@@ -65,13 +64,11 @@ public class SpectatorPositionMode implements ToolMode {
         }
     }
 
-    @SuppressWarnings("deprecation") //TODO: Use alternate method once available
     @Override
     public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
         if (minigame.getSpectatorLocation() != null) {
             player.getPlayer().sendBlockChange(minigame.getSpectatorLocation(),
-                    minigame.getSpectatorLocation().getBlock().getType(),
-                    minigame.getSpectatorLocation().getBlock().getData());
+                    minigame.getSpectatorLocation().getBlock().getBlockData());
             player.sendInfoMessage("Spectator position deselected.");
         } else {
             player.sendMessage("No spectator position set!", MinigameMessageType.ERROR);

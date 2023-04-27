@@ -168,17 +168,16 @@ public class Rewards {
             //TODO: Remove after 1.7 release
             if (section.contains(key + ".item") || section.contains(key + ".money")) {
                 ItemStack item = section.getItemStack(key + ".item");
+                RewardType ir;
                 if (item != null) {
-                    RewardType ir = RewardTypes.getRewardType("ITEM", this);
+                    ir = RewardTypes.getRewardType("ITEM", this);
                     ir.loadReward(key + ".item", section);
-                    ir.setRarity(RewardRarity.valueOf(section.getString(key + ".rarity")));
-                    addReward(ir);
                 } else {
-                    RewardType ir = RewardTypes.getRewardType("MONEY", this);
+                    ir = RewardTypes.getRewardType("MONEY", this);
                     ir.loadReward(key + ".money", section);
-                    ir.setRarity(RewardRarity.valueOf(section.getString(key + ".rarity")));
-                    addReward(ir);
                 }
+                ir.setRarity(RewardRarity.valueOf(section.getString(key + ".rarity")));
+                addReward(ir);
                 // Load reward item
             } else if (section.contains(key + ".type")) {
                 ConfigurationSection itemSection = section.getConfigurationSection(key);
