@@ -1170,10 +1170,10 @@ public class Minigame implements ScriptObject {
 
                 }, 3, null));
         itemsMain.add(showCompletionTime.getMenuItem("Show completion time", Material.PAPER));
-        itemsMain.add(lateJoin.getMenuItem("Allow Late Join", Material.DEAD_BUSH, MinigameUtils.stringToList("Multiplayer Only")));
-        itemsMain.add(randomizeStart.getMenuItem("Randomize Start Point", Material.LIGHT_BLUE_GLAZED_TERRACOTTA, MinigameUtils.stringToList("The location will be; chosen at random;from global or team lists.")));
-        itemsMain.add(new MenuItemDisplayWhitelist("Block Whitelist/Blacklist", MinigameUtils.stringToList("Blocks that can/can't;be broken"),
-                Material.CHEST, getRecorderData().getWBBlocks(), getRecorderData().getWhitelistModeCallback()));
+        itemsMain.add(lateJoin.getMenuItem("Allow Late Join", Material.DEAD_BUSH, List.of("Multiplayer Only")));
+        itemsMain.add(randomizeStart.getMenuItem("Randomize Start Point", Material.LIGHT_BLUE_GLAZED_TERRACOTTA, List.of("The location will be", "chosen at random", "from global or team lists.")));
+        itemsMain.add(new MenuItemDisplayWhitelist("Block Whitelist/Blacklist", List.of("Blocks that can/can't", "be broken"),
+                Material.CHEST, getRecorderData().getWBBlocks(), getRecorderData().getWhitelistModeCallback(), List.of("If whitelist mode only", "added items can be", "broken.")));
         itemsMain.add(new MenuItemNewLine());
         List<String> floorDegenDes = new ArrayList<>();
         floorDegenDes.add("Mainly used to prevent");
