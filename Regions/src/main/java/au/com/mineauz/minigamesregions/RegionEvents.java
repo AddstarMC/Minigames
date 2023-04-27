@@ -14,6 +14,7 @@ import au.com.mineauz.minigamesregions.triggers.Triggers;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -233,11 +234,11 @@ public class RegionEvents implements Listener {
 
         if (!event.isCancelled()) {
             if (event.getAction() == Action.PHYSICAL) {
-                if (event.getClickedBlock().getType().toString().contains("PRESSURE_PLATE")) {
+                if (Tag.PRESSURE_PLATES.isTagged(event.getClickedBlock().getType())) {
                     trigger(ply, event.getClickedBlock(), Triggers.getTrigger("INTERACT"));
                 }
             } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                if (event.getClickedBlock().getType().toString().contains("BUTTON") ||
+                if (Tag.BUTTONS.isTagged(event.getClickedBlock().getType()) ||
                         event.getClickedBlock().getType() == Material.LEVER) {
                     trigger(ply, event.getClickedBlock(), Triggers.getTrigger("INTERACT"));
                 }
