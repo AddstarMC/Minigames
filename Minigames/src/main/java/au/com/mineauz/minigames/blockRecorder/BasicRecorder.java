@@ -92,14 +92,18 @@ public class BasicRecorder implements Listener {
                         if (handleBlockBreak(event, mgPlayer)) {
                             event.setCancelled(true);
                         }
+                    } else { //whitelist mode and not on whitelist
+                        event.setCancelled(true);
                     }
                     //black list --> blocks that are not allowed to be broken
                 } else if (!recData.getWBBlocks().contains(event.getBlock().getType())) {
                     if (handleBlockBreak(event, mgPlayer)) {
                         event.setCancelled(true);
                     }
+                } else { //blacklist mode and on blacklist
+                    event.setCancelled(true);
                 }
-            } else {
+            } else { //block breaking is turned off
                 event.setCancelled(true);
             }
         }
