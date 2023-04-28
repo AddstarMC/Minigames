@@ -1127,17 +1127,15 @@ public class Minigame implements ScriptObject {
         obj.setAllowNull(true);
         itemsMain.add(obj);
         itemsMain.add(new MenuItemNewLine());
-        itemsMain.add(minScore.getMenuItem("Min. Score", Material.STONE_SLAB, MinigameUtils.stringToList("Multiplayer " +
-                "Only")));
-        itemsMain.add(maxScore.getMenuItem("Max. Score", Material.STONE, MinigameUtils.stringToList("Multiplayer Only")));
-        itemsMain.add(minPlayers.getMenuItem("Min. Players", Material.STONE_SLAB, MinigameUtils.stringToList("Multiplayer Only")));
-        itemsMain.add(maxPlayers.getMenuItem("Max. Players", Material.STONE, MinigameUtils.stringToList("Multiplayer Only")));
+        itemsMain.add(minScore.getMenuItem("Min. Score", Material.STONE_SLAB, List.of("Multiplayer Only")));
+        itemsMain.add(maxScore.getMenuItem("Max. Score", Material.STONE, List.of("Multiplayer Only")));
+        itemsMain.add(minPlayers.getMenuItem("Min. Players", Material.STONE_SLAB, List.of("Multiplayer Only")));
+        itemsMain.add(maxPlayers.getMenuItem("Max. Players", Material.STONE, List.of("Multiplayer Only")));
         itemsMain.add(spMaxPlayers.getMenuItem("Enable Singleplayer Max Players", Material.IRON_BARS));
         itemsMain.add(displayScoreboard.getMenuItem("Display Scoreboard", Material.OAK_SIGN));
-        itemsMain.add(new MenuItemPage("Lobby Settings", MinigameUtils.stringToList("Multiplayer Only"), Material
-                .OAK_DOOR, lobby));
+        itemsMain.add(new MenuItemPage("Lobby Settings", List.of("Multiplayer Only"), Material.OAK_DOOR, lobby));
         itemsMain.add(new MenuItemNewLine());
-        itemsMain.add(new MenuItemTime("Time Length", MinigameUtils.stringToList("Multiplayer Only"), Material.CLOCK, new
+        itemsMain.add(new MenuItemTime("Time Length", List.of("Multiplayer Only"), Material.CLOCK, new
                 Callback<>() {
 
                     @Override
@@ -1153,7 +1151,7 @@ public class Minigame implements ScriptObject {
 
                 }, 0, null));
         itemsMain.add(useXPBarTimer.getMenuItem("Use XP bar as Timer", Material.ENDER_PEARL));
-        itemsMain.add(new MenuItemTime("Start Wait Time", MinigameUtils.stringToList("Multiplayer Only"), Material
+        itemsMain.add(new MenuItemTime("Start Wait Time", List.of("Multiplayer Only"), Material
                 .CLOCK,
                 new Callback<>() {
 
@@ -1202,7 +1200,7 @@ public class Minigame implements ScriptObject {
         degenRandDes.add("degeneration.");
         itemsMain.add(degenRandomChance.getMenuItem("Random Floor Degen Chance", Material.SNOW, degenRandDes, 1, 100));
         itemsMain.add(floorDegenTime.getMenuItem("Floor Degenerator Delay", Material.CLOCK, 1, null));
-        itemsMain.add(new MenuItemTime("Regeneration Delay", MinigameUtils.stringToList("Time in seconds before;" +
+        itemsMain.add(new MenuItemTime("Regeneration Delay", List.of("Time in seconds before",
                 "Minigame regeneration starts"), Material.CLOCK, new Callback<>() {
 
             @Override
@@ -1285,15 +1283,14 @@ public class Minigame implements ScriptObject {
         itemsPlayer.add(paintBallDamage.getMenuItem("Paintball Damage", Material.ARROW, 1, null));
         itemsPlayer.add(unlimitedAmmo.getMenuItem("Unlimited Ammo", Material.SNOW_BLOCK));
         itemsPlayer.add(allowMPCheckpoints.getMenuItem("Enable Multiplayer Checkpoints", Material.OAK_SIGN));
-        itemsPlayer.add(saveCheckpoints.getMenuItem("Save Checkpoints", Material.OAK_SIGN, MinigameUtils.stringToList("Singleplayer Only")));
-        itemsPlayer.add(new MenuItemPage("Flags", MinigameUtils.stringToList("Singleplayer flags"), Material.OAK_SIGN, flags));
-        itemsPlayer.add(allowFlight.getMenuItem("Allow Flight", Material.FEATHER, MinigameUtils.stringToList("Allow flight to;be toggled")));
-        itemsPlayer.add(enableFlight.getMenuItem("Enable Flight", Material.FEATHER, MinigameUtils.stringToList("Start players;in flight;(Must have Allow;Flight)")));
+        itemsPlayer.add(saveCheckpoints.getMenuItem("Save Checkpoints", Material.OAK_SIGN, List.of("Singleplayer Only")));
+        itemsPlayer.add(new MenuItemPage("Flags", List.of("Singleplayer flags"), Material.OAK_SIGN, flags));
+        itemsPlayer.add(allowFlight.getMenuItem("Allow Flight", Material.FEATHER, List.of("Allow flight to", "be toggled")));
+        itemsPlayer.add(enableFlight.getMenuItem("Enable Flight", Material.FEATHER, List.of("Start players", "in flight", "(Must have Allow", "Flight)")));
         itemsPlayer.add(allowDragonEggTeleport.getMenuItem("Allow Dragon Egg Teleport", Material.DRAGON_EGG));
-        itemsPlayer.add(usePlayerDisplayNames.getMenuItem("Use Players Display Names", Material.POTATO, MinigameUtils
-                .stringToList("Use Player Nicks or Real Names")));
-        itemsPlayer.add(showPlayerBroadcasts.getMenuItem("Show Join/Exit Broadcasts", Material.PAPER, MinigameUtils.stringToList("Show Join and Exit broadcasts; Plus other Player broadcasts")));
-        itemsPlayer.add(showCTFBroadcasts.getMenuItem("Show CTF Broadcasts", Material.PAPER, MinigameUtils.stringToList("Show Flag captures and home returns")));
+        itemsPlayer.add(usePlayerDisplayNames.getMenuItem("Use Players Display Names", Material.POTATO, List.of("Use Player Nicks or Real Names")));
+        itemsPlayer.add(showPlayerBroadcasts.getMenuItem("Show Join/Exit Broadcasts", Material.PAPER, List.of("Show Join and Exit broadcasts", "Plus other Player broadcasts")));
+        itemsPlayer.add(showCTFBroadcasts.getMenuItem("Show CTF Broadcasts", Material.PAPER, List.of("Show Flag captures and home returns")));
         itemsPlayer.add(keepInventory.getMenuItem("Keep Inventory", Material.ZOMBIE_HEAD));
         itemsPlayer.add(friendlyFireSplashPotions.getMenuItem("Allow friendly fire with splash potions", Material.SPLASH_POTION));
         itemsPlayer.add(friendlyFireLingeringPotions.getMenuItem("Allow friendly fire with lingering potions", Material.LINGERING_POTION));
@@ -1319,11 +1316,11 @@ public class Minigame implements ScriptObject {
         itemsLobby.add(new MenuItemBoolean("Can Interact on Start Wait", Material.STONE_BUTTON, LobbySettingsModule.getMinigameModule(this).getCanInteractStartWaitCallback()));
         itemsLobby.add(new MenuItemBoolean("Can Move on Player Wait", Material.ICE, LobbySettingsModule.getMinigameModule(this).getCanMovePlayerWaitCallback()));
         itemsLobby.add(new MenuItemBoolean("Can Move on Start Wait", Material.ICE, LobbySettingsModule.getMinigameModule(this).getCanMoveStartWaitCallback()));
-        itemsLobby.add(new MenuItemBoolean("Teleport After Player Wait", MinigameUtils.stringToList("Should players be teleported;after player wait time?"),
+        itemsLobby.add(new MenuItemBoolean("Teleport After Player Wait", List.of("Should players be teleported", "after player wait time?"),
                 Material.ENDER_PEARL, LobbySettingsModule.getMinigameModule(this).getTeleportOnPlayerWaitCallback()));
-        itemsLobby.add(new MenuItemBoolean("Teleport on Start", MinigameUtils.stringToList("Should players teleport;to the start position;after lobby?"),
+        itemsLobby.add(new MenuItemBoolean("Teleport on Start", List.of("Should players teleport", "to the start position", "after lobby?"),
                 Material.ENDER_PEARL, LobbySettingsModule.getMinigameModule(this).getTeleportOnStartCallback()));
-        itemsLobby.add(new MenuItemInteger("Waiting for Players Time", MinigameUtils.stringToList("The time in seconds;the game will wait for;more players to join.;A value of 0 will use;the config setting"),
+        itemsLobby.add(new MenuItemInteger("Waiting for Players Time", List.of("The time in seconds", "the game will wait for", "more players to join.", "A value of 0 will use", "the config setting"),
                 Material.CLOCK, LobbySettingsModule.getMinigameModule(this).getPlayerWaitTimeCallback(), 0, Integer
                 .MAX_VALUE));
         lobby.addItems(itemsLobby);

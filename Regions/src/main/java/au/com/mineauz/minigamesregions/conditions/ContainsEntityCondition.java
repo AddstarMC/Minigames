@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.StringFlag;
@@ -16,6 +15,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -116,7 +116,7 @@ public class ContainsEntityCondition extends ConditionInterface {
         menu.addItem(new MenuItemNewLine());
 
         menu.addItem(matchName.getMenuItem("Match Display Name", Material.NAME_TAG));
-        MenuItemString menuItem = (MenuItemString) customName.getMenuItem("Display Name", Material.NAME_TAG, MinigameUtils.stringToList("The name to match.;Use % to do a wildcard match"));
+        MenuItemString menuItem = (MenuItemString) customName.getMenuItem("Display Name", Material.NAME_TAG, List.of("The name to match.", "Use % to do a wildcard match"));
         menuItem.setAllowNull(true);
         menu.addItem(menuItem);
 

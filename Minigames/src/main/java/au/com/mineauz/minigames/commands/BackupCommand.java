@@ -110,7 +110,7 @@ public class BackupCommand implements ICommand {
             if (args.length == 1) {
                 return MinigameUtils.tabCompleteMatch(new ArrayList<>(Minigames.getPlugin().getMinigameManager().getAllMinigames().keySet()), args[0]);
             } else if (args.length == 2) {
-                return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("restore"), args[1]);
+                return MinigameUtils.tabCompleteMatch(List.of("restore"), args[1]);
             }
         }
         return null;

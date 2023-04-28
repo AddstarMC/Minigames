@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
@@ -11,6 +10,7 @@ import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.List;
 import java.util.Map;
 
 public class FlightAction extends AbstractAction {
@@ -79,7 +79,7 @@ public class FlightAction extends AbstractAction {
         Menu m = new Menu(3, "Flight", player);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
         m.addItem(setFly.getMenuItem("Set Flight Mode", Material.FEATHER));
-        m.addItem(startFly.getMenuItem("Set Flying", Material.FEATHER, MinigameUtils.stringToList("Set Flight Mode must be;true to use this")));
+        m.addItem(startFly.getMenuItem("Set Flying", Material.FEATHER, List.of("Set Flight Mode must be", "true to use this")));
         m.displayMenu(player);
         return true;
     }

@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.*;
@@ -101,7 +100,7 @@ public class SetTeamScoreAction extends ScoreAction {
         for (TeamColor team : TeamColor.values()) {
             teams.add(WordUtils.capitalize(team.toString()));
         }
-        m.addItem(new MenuItemList("Specific Team", MinigameUtils.stringToList("If 'None', the players;team will be used"), Material.PAPER, new Callback<>() {
+        m.addItem(new MenuItemList("Specific Team", List.of("If 'None', the players", "team will be used"), Material.PAPER, new Callback<>() {
 
             @Override
             public String getValue() {

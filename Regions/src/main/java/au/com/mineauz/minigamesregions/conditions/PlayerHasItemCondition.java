@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
@@ -19,6 +18,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -277,12 +277,12 @@ public class PlayerHasItemCondition extends ConditionInterface {
         m.addItem(new MenuItemNewLine());
 
         m.addItem(matchName.getMenuItem("Match Display Name", Material.NAME_TAG));
-        MenuItemString menuItem = (MenuItemString) name.getMenuItem("Display Name", Material.NAME_TAG, MinigameUtils.stringToList("The name to match.;Use % to do a wildcard match"));
+        MenuItemString menuItem = (MenuItemString) name.getMenuItem("Display Name", Material.NAME_TAG, List.of("The name to match.", "Use % to do a wildcard match"));
         menuItem.setAllowNull(true);
         m.addItem(menuItem);
 
         m.addItem(matchLore.getMenuItem("Match Lore", Material.BOOK));
-        menuItem = (MenuItemString) lore.getMenuItem("Lore", Material.BOOK, MinigameUtils.stringToList("The lore to match. Separate;with semi-colons;for new lines.;Use % to do a wildcard match"));
+        menuItem = (MenuItemString) lore.getMenuItem("Lore", Material.BOOK, List.of("The lore to match. Separate", "with semi-colons", "for new lines.", "Use % to do a wildcard match"));
         menuItem.setAllowNull(true);
         m.addItem(menuItem);
 

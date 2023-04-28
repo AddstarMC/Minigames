@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Menu;
@@ -11,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CTFModule extends MinigameModule {
@@ -80,9 +80,9 @@ public class CTFModule extends MinigameModule {
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
 
         m.addItem(useFlagAsCapturePoint.getMenuItem("CTF Flag is Capture Point", Material.BLACK_BANNER,
-                MinigameUtils.stringToList("Use a teams Flag as a capture point")));
+                List.of("Use a teams Flag as a capture point")));
         m.addItem(bringFlagBackManual.getMenuItem("Bring Flag Back Manually", Material.ENDER_EYE,
-                MinigameUtils.stringToList("If enabled, the flag can be brought;back to the base manually")));
+                List.of("If enabled, the flag can be brought;back to the base manually")));
         m.displayMenu(previous.getViewer());
         return true;
     }

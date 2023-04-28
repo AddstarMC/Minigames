@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
@@ -17,6 +16,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static au.com.mineauz.minigames.menu.MenuUtility.getBackMaterial;
@@ -118,7 +118,7 @@ public class WeatherTimeModule extends MinigameModule {
             }
 
 
-        }, MinigameUtils.stringToList("Clear;Downfall")));
+        }, List.of("Clear", "Downfall")));
 
         m.addItem(new MenuItemPage("Back", getBackMaterial(), menu), m.getSize() - 9);
 

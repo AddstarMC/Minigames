@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -14,7 +13,7 @@ public class MenuItemAddWhitelistBlock extends MenuItem {
 
     public MenuItemAddWhitelistBlock(String name, List<Material> whitelist) {
         super(name, MenuUtility.getCreateMaterial());
-        setDescription(MinigameUtils.stringToList("Left Click with item to;add to whitelist/blacklist;Click without item to;manually add item."));
+        setDescription(List.of("Left Click with item to", "add to whitelist/blacklist", "Click without item to", "manually add item."));
         this.whitelist = whitelist;
     }
 

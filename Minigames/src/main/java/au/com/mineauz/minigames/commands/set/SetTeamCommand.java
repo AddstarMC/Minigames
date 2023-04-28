@@ -205,7 +205,7 @@ public class SetTeamCommand implements ICommand {
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
                                       String alias, String[] args) {
         if (args.length == 1)
-            return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("add;rename;remove;list;maxplayers"), args[0]);
+            return MinigameUtils.tabCompleteMatch(List.of("add", "rename", "remove", "list", "maxplayers"), args[0]);
         else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("add")) {
                 List<String> cols = new ArrayList<>(TeamColor.values().length);

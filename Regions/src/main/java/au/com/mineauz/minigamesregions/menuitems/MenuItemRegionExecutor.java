@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions.menuitems;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Region;
@@ -12,6 +11,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class MenuItemRegionExecutor extends MenuItem {
     private final Region region;
     private final RegionExecutor ex;
@@ -20,11 +21,11 @@ public class MenuItemRegionExecutor extends MenuItem {
         super("Region Executor:", Material.ENDER_PEARL);
         this.region = region;
         this.ex = ex;
-        setDescription(MinigameUtils.stringToList(ChatColor.GREEN + "Trigger: " + ChatColor.GRAY +
-                WordUtils.capitalize(ex.getTrigger().getName()) + ";" +
+        setDescription(List.of(ChatColor.GREEN + "Trigger: " + ChatColor.GRAY +
+                        WordUtils.capitalize(ex.getTrigger().getName()),
                 ChatColor.GREEN + "Actions: " + ChatColor.GRAY +
-                ex.getActions().size() + ";" +
-                ChatColor.DARK_PURPLE + "(Right click to delete);" +
+                        ex.getActions().size(),
+                ChatColor.DARK_PURPLE + "(Right click to delete)",
                 "(Left click to edit)"));
     }
 
@@ -51,12 +52,12 @@ public class MenuItemRegionExecutor extends MenuItem {
         m.addItem(new MenuItemNewLine());
         if (ex.getTrigger().triggerOnPlayerAvailable()) {
             m.addItem(new MenuItemInteger("Trigger Count",
-                    MinigameUtils.stringToList("Number of times this;node can be;triggered"),
+                    List.of("Number of times this", "node can be", "triggered"),
                     Material.STONE, ex.getTriggerCountCallback(), 0, null));
         }
         if (ex.getTrigger().triggerOnPlayerAvailable()) {
             m.addItem(new MenuItemBoolean("Trigger Per Player",
-                    MinigameUtils.stringToList("Whether this node;is triggered per player;or just on count"),
+                    List.of("Whether this node", "is triggered per player", "or just on count"),
                     Material.ENDER_PEARL, ex.getIsTriggerPerPlayerCallback()));
         }
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), getContainer()), m.getSize() - 9);

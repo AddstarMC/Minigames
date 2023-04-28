@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class SetPlayersGamemodeCommand implements ICommand {
@@ -75,7 +76,7 @@ public class SetPlayersGamemodeCommand implements ICommand {
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
                                       String alias, String[] args) {
         if (args.length == 1)
-            return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("survival;adventure;creative"), args[0]);
+            return MinigameUtils.tabCompleteMatch(Arrays.stream(GameMode.values()).map(gm -> gm.name().toLowerCase()).toList(), args[0]);
         return null;
     }
 

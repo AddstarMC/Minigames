@@ -1,7 +1,6 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
@@ -15,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
@@ -146,7 +146,7 @@ public class RandomFillingAction extends AbstractAction {
         //Percentage of blocks that will replaced
         m.addItem(new MenuItemNewLine());
         m.addItem(
-                new MenuItemInteger("Chance in integer percentage (0-100)", MinigameUtils.stringToList(""),
+                new MenuItemInteger("Chance in integer percentage (0-100)", List.of(""),
                         Material.BOOK, new Callback<>() {
 
                     @Override

@@ -70,7 +70,7 @@ public class SetBlockPlaceCommand implements ICommand {
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
                                       String alias, String[] args) {
         if (args.length == 1)
-            return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("true;false"), args[0]);
+            return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
         return null;
     }
 
