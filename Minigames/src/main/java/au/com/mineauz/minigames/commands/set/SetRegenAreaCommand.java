@@ -93,7 +93,7 @@ public class SetRegenAreaCommand implements ICommand {
                         }
                         case "create" -> {
                             if (mgPlayer.hasSelection()) {
-                                String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Region");
+                                String name = args[1];
                                 MgRegion region = minigame.getRegenRegion(name);
 
                                 RegenRegionSetResult result = minigame.setRegenRegion(new MgRegion(name, mgPlayer.getSelectionPoints()[0], mgPlayer.getSelectionPoints()[1]));
