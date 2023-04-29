@@ -629,8 +629,7 @@ public class MinigamePlayer implements ScriptObject {
 
         if (!clear) {
             if (this.selection2 != null && this.selection1 != null) {
-                final Location[] locs = MinigameUtils.getMinMaxSelection(this.selection1, this.selection2);
-                this.selectionDisplay = Minigames.getPlugin().display.displayCuboid(this.getPlayer(), locs[0], locs[1].add(1, 1, 1));
+                this.selectionDisplay = Minigames.getPlugin().display.displayCuboid(this.getPlayer(), selection1, selection2.clone().add(1, 1, 1));
                 this.selectionDisplay.show();
             } else if (this.selection1 != null) {
                 this.selectionDisplay = Minigames.getPlugin().display.displayCuboid(this.getPlayer(), this.selection1, this.selection1.clone().add(1, 1, 1));

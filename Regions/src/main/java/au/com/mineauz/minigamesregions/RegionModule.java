@@ -102,7 +102,7 @@ public class RegionModule extends MinigameModule {
         Set<String> ns = nodes.keySet();
         for (String name : ns) {
             Node n = nodes.get(name);
-            Map<String, Object> sloc = MinigameUtils.serializeLocation(n.getLocation());
+            Map<String, Object> sloc = n.getLocation().serialize();
             for (String i : sloc.keySet()) {
                 config.set(getMinigame() + ".nodes." + name + ".point." + i, sloc.get(i));
             }

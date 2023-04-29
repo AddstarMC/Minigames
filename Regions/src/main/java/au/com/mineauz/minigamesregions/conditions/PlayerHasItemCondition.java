@@ -24,7 +24,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PlayerHasItemCondition extends ConditionInterface {
-
     private final MaterialFlag type = new MaterialFlag(Material.STONE, "type");
     private final StringFlag where = new StringFlag("ANYWHERE", "where");
     private final IntegerFlag slot = new IntegerFlag(0, "slot");

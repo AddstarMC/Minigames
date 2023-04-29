@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.display.IDisplayObject;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -88,9 +87,7 @@ public class RegionDisplayManager {
     public void show(Region region, MinigamePlayer player) {
         Map<Region, IDisplayObject> regions = regionDisplays.computeIfAbsent(player.getPlayer(), k -> Maps.newIdentityHashMap());
 
-        Location[] corners = MinigameUtils.getMinMaxSelection(region.getFirstPoint(), region.getSecondPoint());
-
-        IDisplayObject display = Minigames.getPlugin().display.displayCuboid(player.getPlayer(), corners[0], corners[1].add(1, 1, 1));
+        IDisplayObject display = Minigames.getPlugin().display.displayCuboid(player.getPlayer(), region.getFirstPoint(), region.getSecondPoint().clone().add(1, 1, 1));
         display.show();
         regions.put(region, display);
 
