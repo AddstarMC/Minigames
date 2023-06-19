@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.minigame;
 
 import au.com.mineauz.minigames.*;
-import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.config.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
@@ -15,6 +14,7 @@ import au.com.mineauz.minigames.objects.CTFFlag;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.RegenRegionSetResult;
+import au.com.mineauz.minigames.recorder.RecorderData;
 import au.com.mineauz.minigames.script.ScriptCollection;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;

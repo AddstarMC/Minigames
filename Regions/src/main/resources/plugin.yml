@@ -2,6 +2,6 @@ name: Minigames-Regions
 main: au.com.mineauz.minigamesregions.Main
 version: ${plugin.version}
 api-version: "${spigot.api.version}"
-author: _Razz_ AddstarMC
+author: _Razz_ AddstarMC GreenSurvivors
 depend: [ 'Minigames' ]
 description: ${project.description}

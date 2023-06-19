@@ -2,9 +2,9 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.blockRecorder.RecorderData;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
+import au.com.mineauz.minigames.recorder.RecorderData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 

@@ -458,7 +458,10 @@ public class Events implements Listener {
                     if (sb.getShooter() instanceof Player player) {
                         MinigamePlayer shooter = pdata.getMinigamePlayer(player);
                         Minigame mgm = ply.getMinigame();
-                        if (shooter == null) return;
+
+                        if (shooter == null)
+                            return;
+
                         if (shooter.isInMinigame() && shooter.getMinigame().equals(ply.getMinigame())) {
                             if (!shooter.canPvP()) {
                                 event.setCancelled(true);
