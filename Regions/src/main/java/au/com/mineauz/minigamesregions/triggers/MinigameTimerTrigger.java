@@ -1,6 +1,6 @@
 package au.com.mineauz.minigamesregions.triggers;
 
-public class MinigameTimerTrigger implements Trigger{
+public class MinigameTimerTrigger implements Trigger {
 
     @Override
     public String getName() {
@@ -17,4 +17,8 @@ public class MinigameTimerTrigger implements Trigger{
         return true;
     }
 
+    @Override
+    public boolean triggerOnPlayerAvailable() {
+        return true;
+    }
 }

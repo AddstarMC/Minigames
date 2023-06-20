@@ -1,20 +1,19 @@
 package au.com.mineauz.minigames.backend;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
-
 public class ConnectionHandler {
     private Connection connection;
     private boolean inUse;
     private long openTime;
-    private long closeTime;
-    private Map<StatementKey, PreparedStatement> preparedStatements;
+    private final Map<StatementKey, PreparedStatement> preparedStatements;
 
     public ConnectionHandler(Connection connection) {
         this.connection = connection;
@@ -115,7 +114,7 @@ public class ConnectionHandler {
     }
 
     public long getCloseTime() {
-        return closeTime;
+        return 0;
     }
 
     void closeConnection() {

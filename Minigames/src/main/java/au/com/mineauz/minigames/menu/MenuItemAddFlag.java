@@ -1,17 +1,16 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.List;
-
 import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.minigame.Minigame;
+import java.util.List;
 
 public class MenuItemAddFlag extends MenuItem {
 
-    private Minigame mgm;
+    private final Minigame mgm;
 
     public MenuItemAddFlag(String name, Material displayItem, Minigame mgm) {
         super(name, displayItem);

@@ -8,10 +8,11 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
 import org.bukkit.Material;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public final class RewardSchemes {
-    private static BiMap<String, Class<? extends RewardScheme>> definedSchemes = HashBiMap.create();
+    private static final BiMap<String, Class<? extends RewardScheme>> definedSchemes = HashBiMap.create();
 
     static {
         addRewardScheme("standard", StandardRewardScheme.class);
@@ -28,8 +29,9 @@ public final class RewardSchemes {
 
     public static <T extends RewardScheme> T createScheme(Class<T> type) {
         try {
-            return type.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            return type.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                 NoSuchMethodException e) {
             e.printStackTrace();
             return null;
         }
@@ -41,9 +43,10 @@ public final class RewardSchemes {
             if (schemeClass == null) {
                 return null;
             } else {
-                return schemeClass.newInstance();
+                return schemeClass.getDeclaredConstructor().newInstance();
             }
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                 NoSuchMethodException e) {
             e.printStackTrace();
             return null;
         }
@@ -62,7 +65,7 @@ public final class RewardSchemes {
     }
 
     private static Callback<String> transformCallback(final Callback<Class<? extends RewardScheme>> callback) {
-        return new Callback<String>() {
+        return new Callback<>() {
             @Override
             public String getValue() {
                 return definedSchemes.inverse().get(callback.getValue());

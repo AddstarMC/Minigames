@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.stats;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 
 /**
  * DynamicMinigameStats allow you to add stats that are always checked on win or loss.
@@ -24,7 +24,7 @@ public abstract class DynamicMinigameStat extends MinigameStat {
     public abstract boolean doesApply(Minigame minigame, MinigamePlayer player, boolean win);
 
     /**
-     * Gets the value of this stat so it can be saved.
+     * Gets the value of this stat, so it can be saved.
      *
      * @param minigame The minigame the player is in
      * @param player   The player

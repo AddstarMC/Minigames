@@ -73,11 +73,13 @@ public class LobbySettingsModule extends MinigameModule {
     }
 
     public Callback<Boolean> getCanMovePlayerWaitCallback() {
-        return new Callback<Boolean>() {
+        return new Callback<>() {
             @Override
             public Boolean getValue() {
                 return canMovePlayerWait.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Boolean value) {
                 canMovePlayerWait.setFlag(value);
             }
@@ -95,11 +97,13 @@ public class LobbySettingsModule extends MinigameModule {
     }
 
     public Callback<Boolean> getCanMoveStartWaitCallback() {
-        return new Callback<Boolean>() {
+        return new Callback<>() {
             @Override
             public Boolean getValue() {
                 return canMoveStartWait.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Boolean value) {
                 canMoveStartWait.setFlag(value);
             }
@@ -117,11 +121,13 @@ public class LobbySettingsModule extends MinigameModule {
     }
 
     public Callback<Boolean> getCanInteractPlayerWaitCallback() {
-        return new Callback<Boolean>() {
+        return new Callback<>() {
             @Override
             public Boolean getValue() {
                 return canInteractPlayerWait.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Boolean value) {
                 canInteractPlayerWait.setFlag(value);
             }
@@ -139,11 +145,13 @@ public class LobbySettingsModule extends MinigameModule {
     }
 
     public Callback<Boolean> getCanInteractStartWaitCallback() {
-        return new Callback<Boolean>() {
+        return new Callback<>() {
             @Override
             public Boolean getValue() {
                 return canInteractStartWait.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Boolean value) {
                 canInteractStartWait.setFlag(value);
             }
@@ -161,11 +169,13 @@ public class LobbySettingsModule extends MinigameModule {
     }
 
     public Callback<Boolean> getTeleportOnStartCallback() {
-        return new Callback<Boolean>() {
+        return new Callback<>() {
             @Override
             public Boolean getValue() {
                 return teleportOnStart.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Boolean value) {
                 teleportOnStart.setFlag(value);
             }
@@ -183,16 +193,16 @@ public class LobbySettingsModule extends MinigameModule {
     }
 
     public Callback<Boolean> getTeleportOnPlayerWaitCallback() {
-        return new Callback<Boolean>() {
+        return new Callback<>() {
             @Override
             public Boolean getValue() {
                 return teleportOnPlayerWait.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Boolean value) {
                 teleportOnPlayerWait.setFlag(value);
             }
-
-
         };
     }
 
@@ -205,16 +215,16 @@ public class LobbySettingsModule extends MinigameModule {
     }
 
     public Callback<Integer> getPlayerWaitTimeCallback() {
-        return new Callback<Integer>() {
+        return new Callback<>() {
             @Override
             public Integer getValue() {
                 return playerWaitTime.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Integer value) {
                 playerWaitTime.setFlag(value);
             }
-
-
         };
     }
 

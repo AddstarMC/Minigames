@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -75,16 +75,16 @@ public class ScoreCommand implements ICommand {
                 }
             }
 
-            if (args[0].equalsIgnoreCase("get") && args.length >= 2) {
+            if (args[0].equalsIgnoreCase("get")) {
                 if (ply != null) {
                     if (ply.isInMinigame()) {
                         sender.sendMessage(ChatColor.GRAY + ply.getName() + "'s Score: " + ChatColor.GREEN + ply.getScore());
                     } else {
                         sender.sendMessage(ChatColor.RED + ply.getName() + " is not playing a Minigame!");
                     }
-                } else if (color != null) {
+                } else {
                     if (args.length >= 3) {
-                        Minigame mg = null;
+                        Minigame mg;
                         if (plugin.getMinigameManager().hasMinigame(args[2])) {
                             mg = plugin.getMinigameManager().getMinigame(args[2]);
                         } else {
@@ -113,7 +113,7 @@ public class ScoreCommand implements ICommand {
                 return true;
             } else if (args[0].equalsIgnoreCase("set") && args.length >= 3) {
 
-                int score = 0;
+                int score;
 
                 if (args[2].matches("-?[0-9]+")) {
                     score = Integer.parseInt(args[2]);
@@ -134,9 +134,9 @@ public class ScoreCommand implements ICommand {
                     } else {
                         sender.sendMessage(ChatColor.RED + ply.getName() + " is not playing a Minigame!");
                     }
-                } else if (color != null) {
+                } else {
                     if (args.length >= 4) {
-                        Minigame mg = null;
+                        Minigame mg;
                         if (plugin.getMinigameManager().hasMinigame(args[3])) {
                             mg = plugin.getMinigameManager().getMinigame(args[3]);
                         } else {
@@ -147,7 +147,7 @@ public class ScoreCommand implements ICommand {
                         TeamsModule tmod = TeamsModule.getMinigameModule(mg);
 
                         if (mg.isTeamGame() && mg.hasPlayers()) {
-                            Team t = null;
+                            Team t;
                             if (tmod.hasTeam(color)) {
                                 t = tmod.getTeam(color);
                                 t.setScore(score);
@@ -178,7 +178,7 @@ public class ScoreCommand implements ICommand {
                 }
                 return true;
             } else if (args[0].equalsIgnoreCase("add") && args.length >= 3) {
-                int score = 0;
+                int score;
 
                 if (args[2].matches("-?[0-9]+")) {
                     score = Integer.parseInt(args[2]);
@@ -198,9 +198,9 @@ public class ScoreCommand implements ICommand {
                     } else {
                         sender.sendMessage(ChatColor.RED + ply.getName() + " is not playing a Minigame!");
                     }
-                } else if (color != null) {
-                    Minigame mg = null;
-                    String mgName = null;
+                } else {
+                    Minigame mg;
+                    String mgName;
 
                     if (args.length == 4) {
                         mgName = args[3];
@@ -219,7 +219,7 @@ public class ScoreCommand implements ICommand {
                     TeamsModule tmod = TeamsModule.getMinigameModule(mg);
 
                     if (mg.isTeamGame() && mg.hasPlayers()) {
-                        Team team = null;
+                        Team team;
                         if (tmod.hasTeam(color)) {
                             team = tmod.getTeam(color);
                             team.addScore(score);

@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MultiplayerBets {
-    private Map<MinigamePlayer, ItemStack> bet = new HashMap<>();
+    private final Map<MinigamePlayer, ItemStack> bet = new HashMap<>();
     private double greatestBet = 0;
-    private Map<MinigamePlayer, Double> moneyBet = new HashMap<>();
+    private final Map<MinigamePlayer, Double> moneyBet = new HashMap<>();
 
     public MultiplayerBets() {
     }
@@ -90,15 +90,12 @@ public class MultiplayerBets {
     }
 
     public int betValue(Material material) {
-        switch (material) {
-            case DIAMOND:
-                return 3;
-            case GOLD_INGOT:
-                return 2;
-            case IRON_INGOT:
-                return 1;
-        }
-        return 0;
+        return switch (material) {
+            case DIAMOND -> 3;
+            case GOLD_INGOT -> 2;
+            case IRON_INGOT -> 1;
+            default -> 0;
+        };
     }
 
     public ItemStack getPlayersBet(MinigamePlayer player) {

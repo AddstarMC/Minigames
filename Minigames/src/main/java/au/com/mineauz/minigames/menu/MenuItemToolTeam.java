@@ -1,18 +1,17 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.minigame.TeamColor;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.tool.MinigameTool;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.minigame.TeamColor;
-import au.com.mineauz.minigames.tool.MinigameTool;
+import java.util.List;
 
 public class MenuItemToolTeam extends MenuItemList {
 
-    private Callback<String> value;
+    private final Callback<String> value;
 
     public MenuItemToolTeam(String name, Material displayItem, Callback<String> value, List<String> options) {
         super(name, displayItem, value, options);

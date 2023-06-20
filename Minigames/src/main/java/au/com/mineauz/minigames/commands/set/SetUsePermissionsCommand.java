@@ -1,13 +1,12 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public class SetUsePermissionsCommand implements ICommand {
 
@@ -28,8 +27,10 @@ public class SetUsePermissionsCommand implements ICommand {
 
     @Override
     public String getDescription() {
-        return "Sets whether a player needs a specific permission to join a Minigame. " +
-                "\nPermissions as follows: \n\"minigame.join.<minigame>\" - must be all lower case";
+        return """
+                Sets whether a player needs a specific permission to join a Minigame.\s
+                Permissions as follows:\s
+                "minigame.join.<minigame>" - must be all lower case""";
     }
 
     @Override

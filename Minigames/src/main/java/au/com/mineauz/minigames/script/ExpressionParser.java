@@ -5,11 +5,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ExpressionParser {
-    private static Pattern pathSegmentPattern = Pattern.compile("([a-z]+)(?:\\[([a-z0-9]+)\\])?");
+    private static final Pattern pathSegmentPattern = Pattern.compile("([a-z]+)(?:\\[([a-z0-9]+)\\])?");
 
     /**
      * Parses a path and resolves an object from the path.
-     * Example: path 'a.b.c' will resolve to the c object if given the a object
+     * Example: path 'a.b.c' will resolve to the c object
      *
      * @param pathString The path to resolve
      * @param root       The root object
@@ -22,14 +22,14 @@ public class ExpressionParser {
 
         ScriptReference lastRef = null;
         ScriptObject current = root;
-        String pathToCurrent = "";
+        StringBuilder pathToCurrent = new StringBuilder();
 
         for (String segment : segments) {
             // Keep track of path for error display
-            if (!pathToCurrent.isEmpty()) {
-                pathToCurrent += ".";
+            if (pathToCurrent.length() > 0) {
+                pathToCurrent.append(".");
             }
-            pathToCurrent += segment;
+            pathToCurrent.append(segment);
 
             if (current == null) {
                 throw new NoSuchElementException("Unable to resolve '" + pathToCurrent + "'");
@@ -157,7 +157,7 @@ public class ExpressionParser {
                 path = buffer.substring(start + 1, braceEnd);
                 start = braceEnd + 1;
             } else {
-                // Find a non alphanumeric char
+                // Find a non-alphanumeric char
                 path = null;
                 for (int i = start; i < buffer.length(); ++i) {
                     if (!Character.isLetterOrDigit(buffer.charAt(i))) {

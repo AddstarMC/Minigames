@@ -1,13 +1,16 @@
 package au.com.mineauz.minigames.minigame.reward;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.reward.scheme.RewardScheme;
 import au.com.mineauz.minigames.minigame.reward.scheme.RewardSchemes;
 import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -49,7 +52,7 @@ public class RewardsModule extends MinigameModule {
     }
 
     public void awardPlayerOnLoss(MinigamePlayer player, StoredGameStats data, Minigame minigame) {
-      scheme.awardPlayerOnLoss(player,data,minigame);
+        scheme.awardPlayerOnLoss(player, data, minigame);
     }
 
     @Override
@@ -67,10 +70,10 @@ public class RewardsModule extends MinigameModule {
         String name = RewardSchemes.getName(scheme.getClass());
 
         ConfigurationSection root = config.getConfigurationSection(getMinigame().getName(false));
-        if(root != null) {
-          root.set("reward-scheme", name);
-          ConfigurationSection rewards = root.createSection("rewards");
-          scheme.save(rewards);
+        if (root != null) {
+            root.set("reward-scheme", name);
+            ConfigurationSection rewards = root.createSection("rewards");
+            scheme.save(rewards);
         }
     }
 
@@ -79,11 +82,9 @@ public class RewardsModule extends MinigameModule {
         ConfigurationSection root = config.getConfigurationSection(getMinigame().getName(false));
         if (root != null) {
             String name = root.getString("reward-scheme", "standard");
-            if(name != null) {
-              scheme = RewardSchemes.createScheme(name);
-              if (scheme == null) {
+            scheme = RewardSchemes.createScheme(name);
+            if (scheme == null) {
                 scheme = new StandardRewardScheme();
-              }
             }
             ConfigurationSection rewards = root.getConfigurationSection("rewards");
             scheme.load(rewards);
@@ -106,7 +107,7 @@ public class RewardsModule extends MinigameModule {
         final Menu submenu = new Menu(6, "Reward Settings", parent.getViewer());
         scheme.addMenuItems(submenu);
 
-        submenu.addItem(RewardSchemes.newMenuItem("Reward Scheme", Material.PAPER, new Callback<Class<? extends RewardScheme>>() {
+        submenu.addItem(RewardSchemes.newMenuItem("Reward Scheme", Material.PAPER, new Callback<>() {
             @Override
             public Class<? extends RewardScheme> getValue() {
                 return scheme.getClass();

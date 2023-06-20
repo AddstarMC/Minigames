@@ -1,17 +1,17 @@
 package au.com.mineauz.minigames.minigame;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.*;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptCollection;
 import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import com.google.common.collect.ImmutableSet;
-import org.bukkit.Bukkit;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.scoreboard.Objective;
@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.Set;
 
 public class Team implements ScriptObject {
-    private String displayName = null;
-    private TeamColor color;
     private final IntegerFlag maxPlayers = new IntegerFlag(0, "maxPlayers");
     private final List<Location> startLocations = new ArrayList<>();
     private final StringFlag assignMsg = new StringFlag(MinigameUtils.getLang("player.team.assign.joinTeam"), "assignMsg");
@@ -35,12 +33,12 @@ public class Team implements ScriptObject {
     private final StringFlag gameAutobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.minigameMsg"), "gameAutobalanceMsg");
     private final EnumFlag<OptionStatus> nametagVisibility = new EnumFlag<>(OptionStatus.ALWAYS, "nametagVisibility");
     private final BooleanFlag autoBalance = new BooleanFlag(true, "autoBalance");
-
     private final List<MinigamePlayer> players = new ArrayList<>();
-    private int score = 0;
     private final Minigame mgm;
-
-    private String scoreboardName;
+    private String displayName;
+    private TeamColor color;
+    private int score = 0;
+    private final String scoreboardName;
 
     /**
      * Creates a team for the use in a specific Minigame
@@ -50,7 +48,7 @@ public class Team implements ScriptObject {
      */
     public Team(TeamColor color, Minigame minigame) {
         this.color = color;
-        displayName = MinigameUtils.capitalize(color.toString()) + " Team";
+        displayName = WordUtils.capitalize(color.toString()) + " Team";
         scoreboardName = color.toString().toLowerCase();
         mgm = minigame;
     }
@@ -73,7 +71,7 @@ public class Team implements ScriptObject {
     public boolean setColor(TeamColor color) {
         if (!TeamsModule.getMinigameModule(mgm).hasTeam(color)) {
             if (displayName.toLowerCase().equals(this.color.toString().toLowerCase() + " team"))
-                displayName = MinigameUtils.capitalize(color.toString()) + " Team";
+                displayName = WordUtils.capitalize(color.toString()) + " Team";
             TeamsModule.getMinigameModule(mgm).removeTeam(this.color);
             this.color = color;
             TeamsModule.getMinigameModule(mgm).addTeam(color, this);
@@ -111,16 +109,6 @@ public class Team implements ScriptObject {
     }
 
     /**
-     * Gets the display name prefixed with its color. If none is set, 
-     * it will return the teams color followed by "Team".
-     * 
-     * @return The colored display name or the team color followed by "Team"
-     */
-    public String getColoredDisplayName() {
-        return getChatColor() + getDisplayName();
-    }
-
-    /**
      * Sets the display name for this team. If the name is longer than 32 characters,
      * it'll be trimmed to that length (Minecraft limitation).
      *
@@ -130,6 +118,16 @@ public class Team implements ScriptObject {
         if (name.length() > 32)
             name = name.substring(0, 31);
         displayName = name;
+    }
+
+    /**
+     * Gets the display name prefixed with its color. If none is set,
+     * it will return the teams color followed by "Team".
+     *
+     * @return The colored display name or the team color followed by "Team"
+     */
+    public String getColoredDisplayName() {
+        return getChatColor() + getDisplayName();
     }
 
     public Set<Flag<?>> getFlags() {
@@ -153,8 +151,8 @@ public class Team implements ScriptObject {
         this.maxPlayers.setFlag(maxPlayers);
     }
 
-    public boolean isFull() {
-        return maxPlayers.getFlag() != 0 && players.size() >= maxPlayers.getFlag();
+    public boolean hasRoom() {
+        return maxPlayers.getFlag() == 0 || players.size() < maxPlayers.getFlag();
     }
 
 
@@ -173,9 +171,9 @@ public class Team implements ScriptObject {
      * @param amount The score amount to set for the team.
      */
     public void setScore(int amount) {
-      score = amount;
-      Objective obj = mgm.getScoreboardManager().getObjective(mgm.getName(false));
-      if(obj != null)obj.getScore(getColoredDisplayName()).setScore(score);
+        score = amount;
+        Objective obj = mgm.getScoreboardManager().getObjective(mgm.getName(false));
+        if (obj != null) obj.getScore(getColoredDisplayName()).setScore(score);
     }
 
     /**
@@ -194,7 +192,7 @@ public class Team implements ScriptObject {
     public int addScore(int amount) {
         score += amount;
         Objective obj = mgm.getScoreboardManager().getObjective(mgm.getName(false));
-        if(obj != null)obj.getScore(getColoredDisplayName()).setScore(score);
+        if (obj != null) obj.getScore(getColoredDisplayName()).setScore(score);
         return score;
     }
 
@@ -225,7 +223,7 @@ public class Team implements ScriptObject {
         player.setTeam(this);
         player.getPlayer().setScoreboard(mgm.getScoreboardManager());
         org.bukkit.scoreboard.Team team = mgm.getScoreboardManager().getTeam(scoreboardName);
-        if(team != null)team.addEntry(player.getDisplayName(mgm.usePlayerDisplayNames()));
+        if (team != null) team.addEntry(player.getDisplayName(mgm.usePlayerDisplayNames()));
     }
 
     /**
@@ -236,11 +234,11 @@ public class Team implements ScriptObject {
     public void removePlayer(MinigamePlayer player) {
         players.remove(player);
         Scoreboard board = mgm.getScoreboardManager();
-      org.bukkit.scoreboard.Team team = board.getTeam(scoreboardName);
-      if(team != null) {
-       team.removeEntry(player.getDisplayName(mgm.usePlayerDisplayNames()));
-      }
-      player.getPlayer().setScoreboard(Minigames.getPlugin().getServer().getScoreboardManager().getMainScoreboard());
+        org.bukkit.scoreboard.Team team = board.getTeam(scoreboardName);
+        if (team != null) {
+            team.removeEntry(player.getDisplayName(mgm.usePlayerDisplayNames()));
+        }
+        player.getPlayer().setScoreboard(Minigames.getPlugin().getServer().getScoreboardManager().getMainScoreboard());
     }
 
     /**
@@ -337,19 +335,21 @@ public class Team implements ScriptObject {
     public void setNameTagVisibility(OptionStatus vis) {
         nametagVisibility.setFlag(vis);
         org.bukkit.scoreboard.Team team = mgm.getScoreboardManager().getTeam(color.toString().toLowerCase());
-        if(team != null)
-          team.setOption(Option.NAME_TAG_VISIBILITY, vis);
+        if (team != null)
+            team.setOption(Option.NAME_TAG_VISIBILITY, vis);
         else
-          Minigames.log().warning("No team set for visibility call");
+            Minigames.log().warning("No team set for visibility call");
     }
 
     public Callback<String> getNameTagVisibilityCallback() {
-        return new Callback<String>() {
+        return new Callback<>() {
 
             @Override
             public String getValue() {
                 return getNameTagVisibility().toString();
-            }            @Override
+            }
+
+            @Override
             public void setValue(String value) {
                 setNameTagVisibility(OptionStatus.valueOf(value));
             }
@@ -359,12 +359,14 @@ public class Team implements ScriptObject {
     }
 
     public Callback<Boolean> getAutoBalanceCallBack() {
-        return new Callback<Boolean>() {
+        return new Callback<>() {
 
             @Override
             public Boolean getValue() {
                 return getAutoBalanceTeam();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Boolean value) {
                 setAutoBalance(value);
             }

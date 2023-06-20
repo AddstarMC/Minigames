@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
@@ -9,6 +8,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class FinishSign implements MinigameSign {
 
-    private static Minigames plugin = Minigames.getPlugin();
+    private static final Minigames plugin = Minigames.getPlugin();
 
     @Override
     public String getName() {
@@ -95,17 +95,17 @@ public class FinishSign implements MinigameSign {
                         }
                     } else {
                         List<String> requiredFlags = plugin.getPlayerManager().checkRequiredFlags(player, minigame.getName(false));
-                        String flags = "";
+                        StringBuilder flags = new StringBuilder();
                         int num = requiredFlags.size();
 
                         for (int i = 0; i < num; i++) {
-                            flags += requiredFlags.get(i);
+                            flags.append(requiredFlags.get(i));
                             if (i != num - 1) {
-                                flags += ", ";
+                                flags.append(", ");
                             }
                         }
                         player.sendInfoMessage(MinigameUtils.getLang("sign.finish.requireFlags"));
-                        player.sendInfoMessage(ChatColor.GRAY + flags);
+                        player.sendInfoMessage(ChatColor.GRAY + flags.toString());
                     }
                 }
                 return true;

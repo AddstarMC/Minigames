@@ -2,6 +2,7 @@ package au.com.mineauz.minigamesregions.util;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
@@ -13,12 +14,14 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
+import java.util.UUID;
 
 public class NullCommandSender implements ConsoleCommandSender {
     @Override
-    public void sendMessage(String message) {
+    public void sendMessage(@NotNull String message) {
         MinigameUtils.debugMessage("[Suppressed] " + message);
     }
 
@@ -30,19 +33,34 @@ public class NullCommandSender implements ConsoleCommandSender {
             }
         }
     }
-    
+
     @Override
-    public void sendRawMessage(String message) {
+    public void sendMessage(@Nullable UUID uuid, @NotNull String s) {
+
+    }
+
+    @Override
+    public void sendMessage(@Nullable UUID uuid, @NotNull String... strings) {
+
+    }
+
+    @Override
+    public void sendRawMessage(@NotNull String message) {
         MinigameUtils.debugMessage("[Suppressed] " + message);
     }
 
     @Override
-    public Server getServer() {
+    public void sendRawMessage(@Nullable UUID uuid, @NotNull String s) {
+
+    }
+
+    @Override
+    public @NotNull Server getServer() {
         return Bukkit.getServer();
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Null";
     }
 
@@ -52,47 +70,52 @@ public class NullCommandSender implements ConsoleCommandSender {
     }
 
     @Override
-    public boolean isPermissionSet(String name) {
+    public Component name() {
+        return null;
+    }
+
+    @Override
+    public boolean isPermissionSet(@Nullable String name) {
         return true;
     }
 
     @Override
-    public boolean isPermissionSet(Permission perm) {
+    public boolean isPermissionSet(@Nullable Permission perm) {
         return true;
     }
 
     @Override
-    public boolean hasPermission(String name) {
+    public boolean hasPermission(@Nullable String name) {
         return true;
     }
 
     @Override
-    public boolean hasPermission(Permission perm) {
+    public boolean hasPermission(@Nullable Permission perm) {
         return true;
     }
 
     @Override
-    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value) {
+    public @NotNull PermissionAttachment addAttachment(@NotNull Plugin plugin, @NotNull String name, boolean value) {
         return new PermissionAttachment(plugin, this);
     }
 
     @Override
-    public PermissionAttachment addAttachment(Plugin plugin) {
+    public @NotNull PermissionAttachment addAttachment(@NotNull Plugin plugin) {
         return new PermissionAttachment(plugin, this);
     }
 
     @Override
-    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
+    public PermissionAttachment addAttachment(@NotNull Plugin plugin, @NotNull String name, boolean value, int ticks) {
         return new PermissionAttachment(plugin, this);
     }
 
     @Override
-    public PermissionAttachment addAttachment(Plugin plugin, int ticks) {
+    public PermissionAttachment addAttachment(@NotNull Plugin plugin, int ticks) {
         return new PermissionAttachment(plugin, this);
     }
 
     @Override
-    public void removeAttachment(PermissionAttachment attachment) {
+    public void removeAttachment(@NotNull PermissionAttachment attachment) {
     }
 
     @Override
@@ -100,7 +123,7 @@ public class NullCommandSender implements ConsoleCommandSender {
     }
 
     @Override
-    public Set<PermissionAttachmentInfo> getEffectivePermissions() {
+    public @NotNull Set<PermissionAttachmentInfo> getEffectivePermissions() {
         return Bukkit.getConsoleSender().getEffectivePermissions();
     }
 
@@ -119,19 +142,19 @@ public class NullCommandSender implements ConsoleCommandSender {
     }
 
     @Override
-    public void acceptConversationInput(String input) {
+    public void acceptConversationInput(@NotNull String input) {
     }
 
     @Override
-    public boolean beginConversation(Conversation conversation) {
+    public boolean beginConversation(@NotNull Conversation conversation) {
         return false;
     }
 
     @Override
-    public void abandonConversation(Conversation conversation) {
+    public void abandonConversation(@NotNull Conversation conversation) {
     }
 
     @Override
-    public void abandonConversation(Conversation conversation, ConversationAbandonedEvent details) {
+    public void abandonConversation(@NotNull Conversation conversation, @NotNull ConversationAbandonedEvent details) {
     }
 }

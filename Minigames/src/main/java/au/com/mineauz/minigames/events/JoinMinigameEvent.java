@@ -1,14 +1,13 @@
 package au.com.mineauz.minigames.events;
 
-import org.bukkit.entity.Player;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.bukkit.entity.Player;
 
 public class JoinMinigameEvent extends AbstractMinigameEvent {
 
-    private MinigamePlayer player = null;
-    private boolean betting = false;
+    private final MinigamePlayer player;
+    private final boolean betting;
 
     public JoinMinigameEvent(MinigamePlayer player, Minigame minigame) {
         this(player, minigame, false);

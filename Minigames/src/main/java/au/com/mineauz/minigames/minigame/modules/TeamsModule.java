@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.StringFlag;
@@ -10,10 +9,10 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import com.google.common.collect.ImmutableMap;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -24,8 +23,8 @@ import java.util.Map;
 import static au.com.mineauz.minigames.menu.MenuUtility.getBackMaterial;
 
 public class TeamsModule extends MinigameModule {
-    private Map<TeamColor, Team> teams = new HashMap<>();
-    private TeamSetFlag teamsFlag;
+    private final Map<TeamColor, Team> teams = new HashMap<>();
+    private final TeamSetFlag teamsFlag;
     private StringFlag defaultWinner = new StringFlag(null, "defaultwinner");
 
     public TeamsModule(Minigame mgm) {
@@ -85,22 +84,24 @@ public class TeamsModule extends MinigameModule {
         return builder.build();
     }
 
-  /**
-   *  Adds or returns the existing team of TeamColor
-   * @param color  {@link TeamColor}
-   * @return {@link Team}
-   */
+    /**
+     * Adds or returns the existing team of TeamColor
+     *
+     * @param color {@link TeamColor}
+     * @return {@link Team}
+     */
     public Team addTeam(TeamColor color) {
         return addTeam(color, "");
     }
 
-  /**
-   * Adds a new team with the color unless one already exists in which case this returns the
-   * existing team
-   * @param color {@link TeamColor}
-   * @param name Team name
-   * @return Team
-   */
+    /**
+     * Adds a new team with the color unless one already exists in which case this returns the
+     * existing team
+     *
+     * @param color {@link TeamColor}
+     * @param name  Team name
+     * @return Team
+     */
     public Team addTeam(TeamColor color, String name) {
         if (!hasTeam(color)) {
             teams.put(color, new Team(color, getMinigame()));
@@ -114,20 +115,21 @@ public class TeamsModule extends MinigameModule {
                 bukkitTeam.setDisplayName(name);
             }
         }
-      return teams.get(color);
+        return teams.get(color);
     }
 
-  /**
-   * Adds a team with the new color -and removes any other team with that color name from the scoreboard
-   * @param color  {@link TeamColor}  the TeamColor to set
-   * @param team The new Team
-   */
+    /**
+     * Adds a team with the new color -and removes any other team with that color name from the scoreboard
+     *
+     * @param color {@link TeamColor}  the TeamColor to set
+     * @param team  The new Team
+     */
     public void addTeam(TeamColor color, Team team) {
         teams.put(color, team);
         String sbTeam = color.toString().toLowerCase();
         Scoreboard scoreboard = getMinigame().getScoreboardManager();
         org.bukkit.scoreboard.Team bukkitTeam = scoreboard.getTeam(sbTeam);
-        if(bukkitTeam != null) {
+        if (bukkitTeam != null) {
             bukkitTeam.unregister();
         }
         bukkitTeam = getMinigame().getScoreboardManager().registerNewTeam(sbTeam);
@@ -137,25 +139,27 @@ public class TeamsModule extends MinigameModule {
         bukkitTeam.setColor(color.getColor());
     }
 
-  /**
-   * True of {@link TeamColor} exists as a team
-   * @param color {@link TeamColor}
-   * @return boolean
-   */
+    /**
+     * True of {@link TeamColor} exists as a team
+     *
+     * @param color {@link TeamColor}
+     * @return boolean
+     */
     public boolean hasTeam(TeamColor color) {
         return teams.containsKey(color);
     }
 
-  /**
-   * Removes a team from the module and the scoreboard
-   * @param color {@link TeamColor}
-   */
+    /**
+     * Removes a team from the module and the scoreboard
+     *
+     * @param color {@link TeamColor}
+     */
     public void removeTeam(TeamColor color) {
         if (hasTeam(color)) {
             teams.remove(color);
-          org.bukkit.scoreboard.Team bukkitTeam =
-              getMinigame().getScoreboardManager().getTeam(color.toString().toLowerCase());
-          if(bukkitTeam != null)bukkitTeam.unregister();
+            org.bukkit.scoreboard.Team bukkitTeam =
+                    getMinigame().getScoreboardManager().getTeam(color.toString().toLowerCase());
+            if (bukkitTeam != null) bukkitTeam.unregister();
         }
     }
 
@@ -168,7 +172,7 @@ public class TeamsModule extends MinigameModule {
     }
 
     public Callback<String> getDefaultWinnerCallback() {
-        return new Callback<String>() {
+        return new Callback<>() {
 
             @Override
             public String getValue() {
@@ -177,7 +181,7 @@ public class TeamsModule extends MinigameModule {
                         return "None";
                     }
 
-                    return MinigameUtils.capitalize(defaultWinner.getFlag().replace("_", " "));
+                    return WordUtils.capitalize(defaultWinner.getFlag().replace("_", " "));
                 }
                 return "None";
             }
@@ -220,7 +224,7 @@ public class TeamsModule extends MinigameModule {
         List<MenuItem> items = new ArrayList<>();
         List<String> teams = new ArrayList<>(this.teams.size() + 1);
         for (TeamColor t : this.teams.keySet()) {
-            teams.add(MinigameUtils.capitalize(t.toString().replace("_", " ")));
+            teams.add(WordUtils.capitalize(t.toString().replace("_", " ")));
         }
         teams.add("None");
         items.add(new MenuItemList("Default Winning Team", Material.PAPER, getDefaultWinnerCallback(), teams));

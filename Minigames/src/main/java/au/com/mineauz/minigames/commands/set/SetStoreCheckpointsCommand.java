@@ -1,16 +1,13 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.security.MessageDigest;
-import java.util.List;
-
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.managers.MessageManager;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public class SetStoreCheckpointsCommand implements ICommand {
 
@@ -58,9 +55,9 @@ public class SetStoreCheckpointsCommand implements ICommand {
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
         if (args != null) {
-            Boolean bool = Boolean.parseBoolean(args[0]);
+            boolean bool = Boolean.parseBoolean(args[0]);
             minigame.setSaveCheckpoint(bool);
-            MessageManager.sendMessage(sender,MinigameMessageType.INFO,null,"command.checkpoint.saving.toggle",bool.toString(),minigame.getName(true));
+            MessageManager.sendMessage(sender, MinigameMessageType.INFO, null, "command.checkpoint.saving.toggle", Boolean.toString(bool), minigame.getName(true));
             return true;
         }
         return false;
