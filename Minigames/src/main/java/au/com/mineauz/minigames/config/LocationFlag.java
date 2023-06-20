@@ -1,13 +1,12 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.List;
-
+import au.com.mineauz.minigames.menu.MenuItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import au.com.mineauz.minigames.menu.MenuItem;
+import java.util.List;
 
 public class LocationFlag extends Flag<Location> {
 

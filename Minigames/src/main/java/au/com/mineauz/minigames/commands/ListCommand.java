@@ -1,11 +1,10 @@
 package au.com.mineauz.minigames.commands;
 
-import java.util.List;
-
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import au.com.mineauz.minigames.minigame.Minigame;
+import java.util.List;
 
 public class ListCommand implements ICommand {
 
@@ -53,16 +52,16 @@ public class ListCommand implements ICommand {
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
         List<String> mglist = plugin.getConfig().getStringList("minigames");
-        String minigames = "";
+        StringBuilder minigames = new StringBuilder();
 
         for (int i = 0; i < mglist.size(); i++) {
-            minigames += mglist.get(i);
+            minigames.append(mglist.get(i));
             if (i != mglist.size() - 1) {
-                minigames += ", ";
+                minigames.append(", ");
             }
         }
 
-        sender.sendMessage(ChatColor.GRAY + minigames);
+        sender.sendMessage(ChatColor.GRAY + minigames.toString());
         return true;
     }
 

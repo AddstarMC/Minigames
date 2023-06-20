@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.tool;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -116,13 +116,13 @@ public class StartPositionMode implements ToolMode {
     public void select(MinigamePlayer player, Minigame minigame, Team team) {
         if (team != null) {
             for (Location loc : team.getStartLocations()) {
-                player.getPlayer().sendBlockChange(loc, Material.SKELETON_SKULL, (byte) 1);
+                player.getPlayer().sendBlockChange(loc, Material.SKELETON_SKULL.createBlockData());
             }
             player.sendInfoMessage("Selected " + team.getChatColor() + team.getDisplayName() + ChatColor.WHITE +
                     " start points in " + minigame);
         } else {
             for (Location loc : minigame.getStartLocations()) {
-                player.getPlayer().sendBlockChange(loc, Material.SKELETON_SKULL, (byte) 1);
+                player.getPlayer().sendBlockChange(loc, Material.SKELETON_SKULL.createBlockData());
             }
             player.sendInfoMessage("Selected start points in " + minigame);
         }

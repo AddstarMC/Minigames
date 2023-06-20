@@ -1,33 +1,25 @@
 package au.com.mineauz.minigames;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import au.com.mineauz.minigames.commands.JoinCommand;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.helpers.TestHelper;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.objects.SignBlockMock;
 import au.com.mineauz.minigames.objects.TestPlayer;
 import au.com.mineauz.minigames.objects.TestWorld;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
-import be.seeseemelk.mockbukkit.command.ConsoleCommandSenderMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
-import be.seeseemelk.mockbukkit.entity.PlayerMockFactory;
-import org.bukkit.Location;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.sqlite.SQLiteDataSource;
 
-import static org.junit.Assert.*;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/**
- * Created for the AddstarMC Project. Created by Narimm on 6/02/2019.
- */
+import static org.junit.Assert.assertTrue;
+
 public class MinigamePlayerManagerTest {
     private ServerMock server;
     private Minigames plugin;
@@ -40,11 +32,10 @@ public class MinigamePlayerManagerTest {
         } catch (IllegalStateException e) {
             server = MockBukkit.getMock();
         }
-        server.setPlayerFactory(new PlayerMockFactory(server, TestPlayer.class));
-        ((ConsoleCommandSenderMock) server.getConsoleSender()).setOutputOnSend(false);
+        server.addPlayer(new TestPlayer(server, "Silverzahn", UUID.randomUUID()));
         WorldMock world = new TestWorld();
         world.setName("GAMES");
-        world = MockBukkit.getMock().addWorld(world);
+        MockBukkit.getMock().addWorld(world);
         Logger log = Logger.getAnonymousLogger();
         log.setLevel(Level.ALL);
         plugin = MockBukkit.load(Minigames.class);
@@ -56,16 +47,15 @@ public class MinigamePlayerManagerTest {
     @After
     public void TearDown() {
         try {
-            MockBukkit.unload();
+            MockBukkit.unmock();
             server = null;
             plugin = null;
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
     @Test
     public void joinMinigame() {
-        final PlayerMock mock = server.addPlayer();
-        mock.setOutputOnSend(false);
+        final PlayerMock mock = server.getPlayer(0);
         plugin.getPlayerManager().addMinigamePlayer(mock);
         assertTrue(plugin.getPlayerManager().hasMinigamePlayer(mock.getUniqueId()));
         plugin.getPlayerManager().joinMinigame(plugin.getPlayerManager().getMinigamePlayer(mock), game, false, 0.0);

@@ -1,14 +1,13 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
-import java.util.Map;
-
-import org.bukkit.configuration.ConfigurationSection;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import org.bukkit.configuration.ConfigurationSection;
+
+import java.util.Map;
 
 /**
  * RewardSchemes allow more flexibility for reward handling.

@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.signs;
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.Minigames;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class SignBase implements Listener {
 
-    private static Map<String, MinigameSign> minigameSigns = new HashMap<>();
+    private static final Map<String, MinigameSign> minigameSigns = new HashMap<>();
 
     static {
         registerMinigameSign(new FinishSign());
@@ -80,8 +80,7 @@ public class SignBase implements Listener {
     private void signUse(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block cblock = event.getClickedBlock();
-            if (cblock.getState() instanceof Sign) {
-                Sign sign = (Sign) cblock.getState();
+            if (cblock.getState() instanceof Sign sign) {
                 if (sign.getLine(0).equals(ChatColor.DARK_BLUE + "[Minigame]") &&
                         minigameSigns.containsKey(ChatColor.stripColor(sign.getLine(1).toLowerCase()))) {
                     MinigameSign mgSign = minigameSigns.get(ChatColor.stripColor(sign.getLine(1).toLowerCase()));
@@ -102,7 +101,7 @@ public class SignBase implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     private void signBreak(BlockBreakEvent event) {
-        if (event.getBlock().getType() == Material.OAK_SIGN || event.getBlock().getType() == Material.OAK_WALL_SIGN) {
+        if (Tag.SIGNS.isTagged(event.getBlock().getType()) || Tag.WALL_SIGNS.isTagged(event.getBlock().getType())) {
             Sign sign = (Sign) event.getBlock().getState();
             if (sign.getLine(0).equals(ChatColor.DARK_BLUE + "[Minigame]") &&
                     minigameSigns.containsKey(ChatColor.stripColor(sign.getLine(1).toLowerCase()))) {

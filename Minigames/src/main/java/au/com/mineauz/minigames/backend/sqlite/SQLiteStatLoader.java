@@ -85,17 +85,10 @@ class SQLiteStatLoader {
     private List<StoredStat> loadStats(ConnectionHandler handler, int minigameId, MinigameStat stat, StatValueField field, ScoreboardOrder order, int offset, int length) throws SQLException {
         String statName = stat.getName() + field.getSuffix();
 
-        StatementKey statement;
-        switch (order) {
-            case ASCENDING:
-                statement = getSingleAsc;
-                break;
-            case DESCENDING:
-                statement = getSingleDesc;
-                break;
-            default:
-                throw new AssertionError();
-        }
+        StatementKey statement = switch (order) {
+            case ASCENDING -> getSingleAsc;
+            case DESCENDING -> getSingleDesc;
+        };
 
         List<StoredStat> stats = Lists.newArrayList();
         try (ResultSet rs = handler.executeQuery(statement, minigameId, statName, offset, length)) {

@@ -1,15 +1,15 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import java.util.Map;
-
-import org.bukkit.configuration.file.FileConfiguration;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.HashSet;
+import java.util.Map;
 
 public class ContainsEntireTeamCondition extends ConditionInterface {
 
@@ -17,12 +17,12 @@ public class ContainsEntireTeamCondition extends ConditionInterface {
     public String getName() {
         return "CONTAINS_ENTIRE_TEAM";
     }
-    
+
     @Override
-    public String getCategory(){
+    public String getCategory() {
         return "Team Conditions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
     }
@@ -39,7 +39,7 @@ public class ContainsEntireTeamCondition extends ConditionInterface {
 
     @Override
     public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-        return region.getPlayers().containsAll(player.getTeam().getPlayers());
+        return new HashSet<>(region.getPlayers()).containsAll(player.getTeam().getPlayers());
     }
 
     @Override
@@ -54,17 +54,21 @@ public class ContainsEntireTeamCondition extends ConditionInterface {
 
     @Override
     public void loadArguments(FileConfiguration config,
-            String path) {
+                              String path) {
         loadInvert(config, path);
     }
 
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu menu = new Menu(3, "Contains Entire Team", player);
-        menu.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), menu.getSize() - 9);
+        menu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), menu.getSize() - 9);
         addInvertMenuItem(menu);
         menu.displayMenu(player);
         return true;
     }
 
+    @Override
+    public boolean onPlayerApplicable() {
+        return true;
+    }
 }

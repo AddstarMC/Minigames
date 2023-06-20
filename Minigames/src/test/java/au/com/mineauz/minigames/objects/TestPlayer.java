@@ -3,9 +3,14 @@ package au.com.mineauz.minigames.objects;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import be.seeseemelk.mockbukkit.scoreboard.ScoreboardMock;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
+import org.bukkit.WeatherType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scoreboard.Scoreboard;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,13 +36,11 @@ public class TestPlayer extends PlayerMock {
     private float flyspeed;
     private int noDamageTicks;
     private WeatherType playerWeather = WeatherType.CLEAR;
-    private List<PotionEffect> effects;
+    private final List<PotionEffect> effects = new ArrayList<>();
     private Scoreboard scoreboard = new ScoreboardMock();
 
     public TestPlayer(ServerMock server, String name, UUID uuid) {
-
         super(server, name, uuid);
-        effects = new ArrayList<>();
     }
 
     @Override
@@ -75,7 +78,7 @@ public class TestPlayer extends PlayerMock {
     }
 
     @Override
-    public void setPlayerWeather(WeatherType type) {
+    public void setPlayerWeather(@NotNull WeatherType type) {
         playerWeather = type;
     }
 
@@ -95,27 +98,27 @@ public class TestPlayer extends PlayerMock {
     }
 
     @Override
-    public Collection<PotionEffect> getActivePotionEffects() {
+    public @NotNull Collection<PotionEffect> getActivePotionEffects() {
         return effects;
     }
 
     @Override
-    public void playSound(Location location, Sound sound, float volume, float pitch) {
+    public void playSound(@NotNull Location location, @NotNull Sound sound, float volume, float pitch) {
         this.playSound(location, sound, null, volume, pitch);
     }
 
     @Override
-    public void playSound(Location location, String sound, float volume, float pitch) {
+    public void playSound(@NotNull Location location, @NotNull String sound, float volume, float pitch) {
         this.playSound(location, sound, null, volume, pitch);
     }
 
     @Override
-    public void playSound(Location location, Sound sound, SoundCategory category, float volume, float pitch) {
+    public void playSound(@NotNull Location location, Sound sound, @Nullable SoundCategory category, float volume, float pitch) {
         this.playSound(location, sound.name(), category, volume, pitch);
     }
 
     @Override
-    public void playSound(Location location, String sound, SoundCategory category, float volume, float pitch) {
+    public void playSound(@NotNull Location location, @NotNull String sound, @Nullable SoundCategory category, float volume, float pitch) {
         String catString;
         if (category == null) catString = "null";
         else catString = category.name();
@@ -124,7 +127,7 @@ public class TestPlayer extends PlayerMock {
 
     @Override
     public void updateInventory() {
-        System.out.println(getInventory().toString());
+        System.out.println(getInventory());
     }
 
     @Override
@@ -148,12 +151,12 @@ public class TestPlayer extends PlayerMock {
     }
 
     @Override
-    public Scoreboard getScoreboard() {
+    public @NotNull Scoreboard getScoreboard() {
         return scoreboard;
     }
 
     @Override
-    public void setScoreboard(Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException {
+    public void setScoreboard(@NotNull Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException {
         this.scoreboard = scoreboard;
     }
 
@@ -185,11 +188,6 @@ public class TestPlayer extends PlayerMock {
     @Override
     public void setLevel(int level) {
         this.level = level;
-    }
-
-    @Override
-    public int getTotalExperience() {
-        return super.getTotalExperience();
     }
 
     @Override
@@ -235,7 +233,7 @@ public class TestPlayer extends PlayerMock {
 
     @Override
     public void setFallDistance(float distance) {
-        this.fallDistance = fallDistance;
+        this.fallDistance = distance;
     }
 
     @Override

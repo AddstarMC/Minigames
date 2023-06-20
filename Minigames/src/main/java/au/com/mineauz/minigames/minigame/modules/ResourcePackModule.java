@@ -1,8 +1,5 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
@@ -14,16 +11,15 @@ import au.com.mineauz.minigames.objects.ResourcePack;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static au.com.mineauz.minigames.menu.MenuUtility.getBackMaterial;
 
-/**
- * Created for the AddstarMC Project. Created by Narimm on 12/02/2019.
- */
 public class ResourcePackModule extends MinigameModule {
-
-    private BooleanFlag enabled = new BooleanFlag(false, "resourcePackEnabled");
-    private StringFlag resourcePackName = new StringFlag("", "resourcePackName");
-    private BooleanFlag forced = new BooleanFlag(false, "forceResourcePack");
+    private final BooleanFlag enabled = new BooleanFlag(false, "resourcePackEnabled");
+    private final StringFlag resourcePackName = new StringFlag("", "resourcePackName");
+    private final BooleanFlag forced = new BooleanFlag(false, "forceResourcePack");
 
     public ResourcePackModule(Minigame mgm) {
         super(mgm);
@@ -89,7 +85,7 @@ public class ResourcePackModule extends MinigameModule {
         Menu m = new Menu(3, "Teams", menu.getViewer());
         m.setPreviousPage(menu);
         m.addItem(enabled.getMenuItem("Enable Resource Pack", Material.MAP));
-        MenuItem item = new MenuItemString("Resource Pack Name", Material.PAPER, new Callback<String>() {
+        MenuItem item = new MenuItemString("Resource Pack Name", Material.PAPER, new Callback<>() {
             @Override
             public String getValue() {
                 return resourcePackName.getFlag();

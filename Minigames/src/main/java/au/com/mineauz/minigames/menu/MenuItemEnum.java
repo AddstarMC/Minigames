@@ -1,19 +1,15 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
-
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.MenuItem;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
 
 public class MenuItemEnum<T extends Enum<T>> extends MenuItem {
     private final List<String> baseDescription;

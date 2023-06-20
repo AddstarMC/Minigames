@@ -1,12 +1,12 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.List;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.List;
 
 public class RewardsFlag extends Flag<Rewards> {
 

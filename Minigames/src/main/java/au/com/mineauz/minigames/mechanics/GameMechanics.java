@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class GameMechanics {
-    private static Map<String, GameMechanicBase> gameMechanics = new HashMap<>();
+    private static final Map<String, GameMechanicBase> gameMechanics = new HashMap<>();
 
     static {
         addGameMechanic(new PlayerKillsMechanic());
@@ -73,7 +73,7 @@ public class GameMechanics {
         LIVES("lives"),
         JUGGERNAUT("juggernaut");
 
-        private String name;
+        private final String name;
 
         MECHANIC_NAME(String name) {
             this.name = name;

@@ -1,5 +1,9 @@
 package au.com.mineauz.minigames.managers;
 
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.config.MinigameSave;
+import au.com.mineauz.minigames.objects.ResourcePack;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -8,19 +12,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.MinigameSave;
-import au.com.mineauz.minigames.objects.ResourcePack;
-
-
-/**
- * Created for the AddstarMC Project. Created by Narimm on 12/02/2019.
- */
 public class ResourcePackManager {
-
     final static Path resourceDir = Paths.get(Minigames.getPlugin().getDataFolder().toString(), "resources");
     private boolean enabled = true;
-    private Map<String, ResourcePack> resources = new HashMap<>();
+    private final Map<String, ResourcePack> resources = new HashMap<>();
     private MinigameSave config;
 
     public ResourcePackManager() {
@@ -86,8 +81,7 @@ public class ResourcePackManager {
         boolean emptyPresent = false;
         final List<ResourcePack> resources = new ArrayList<>();
         final Object objects = this.config.getConfig().get("resources");
-        if (objects instanceof List) {
-            final List obj = (List) objects;
+        if (objects instanceof List<?> obj) {
             for (final Object object : obj) {
                 if (object instanceof ResourcePack) {
                     resources.add((ResourcePack) object);
@@ -107,7 +101,6 @@ public class ResourcePackManager {
                 enabled = false;
                 return false;
             }
-            enabled = true;
         }
         enabled = true;
         return true;

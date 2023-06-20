@@ -1,14 +1,14 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.List;
-
+import au.com.mineauz.minigames.minigame.ScoreboardDisplay;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import au.com.mineauz.minigames.minigame.ScoreboardDisplay;
+
+import java.util.List;
 
 public class MenuItemScoreboardSave extends MenuItem {
 
-    private ScoreboardDisplay disp;
+    private final ScoreboardDisplay disp;
 
     public MenuItemScoreboardSave(String name, Material displayItem, ScoreboardDisplay disp) {
         super(name, displayItem);

@@ -22,13 +22,7 @@ package org.apache.maven.artifact.versioning;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * Generic implementation of version comparison.
@@ -93,7 +87,7 @@ public class ComparableVersion
 
             if (prev != null) {
                 int compare = prev.compareTo(c);
-                System.out.println("   " + prev.toString() + ' '
+                System.out.println("   " + prev + ' '
                         + ((compare == 0) ? "==" : ((compare < 0) ? "<" : ">")) + ' ' + version);
             }
 
@@ -236,19 +230,12 @@ public class ComparableVersion
                 return BIG_INTEGER_ZERO.equals(value) ? 0 : 1; // 1.0 == 1, 1.1 > 1
             }
 
-            switch (item.getType()) {
-                case INTEGER_ITEM:
-                    return value.compareTo(((IntegerItem) item).value);
-
-                case STRING_ITEM:
-                    return 1; // 1.1 > 1-sp
-
-                case LIST_ITEM:
-                    return 1; // 1.1 > 1-1
-
-                default:
-                    throw new RuntimeException("invalid item: " + item.getClass());
-            }
+            return switch (item.getType()) {
+                case INTEGER_ITEM -> value.compareTo(((IntegerItem) item).value);
+                case STRING_ITEM -> 1; // 1.1 > 1-sp
+                case LIST_ITEM -> 1; // 1.1 > 1-1
+                default -> throw new RuntimeException("invalid item: " + item.getClass());
+            };
         }
 
         public String toString() {
@@ -259,8 +246,7 @@ public class ComparableVersion
     /**
      * Represents a string in the version item list, usually a qualifier.
      */
-    private static class StringItem
-            implements Item {
+    private static class StringItem implements Item {
         private static final String[] QUALIFIERS = {"alpha", "beta", "milestone", "rc", "snapshot", "", "sp"};
 
         @SuppressWarnings("checkstyle:constantname")
@@ -279,23 +265,17 @@ public class ComparableVersion
             ALIASES.put("cr", "rc");
         }
 
-        private String value;
+        private final String value;
 
         public StringItem(String value, boolean followedByDigit) {
             if (followedByDigit && value.length() == 1) {
                 // a1 = alpha-1, b1 = beta-1, m1 = milestone-1
-                switch (value.charAt(0)) {
-                    case 'a':
-                        value = "alpha";
-                        break;
-                    case 'b':
-                        value = "beta";
-                        break;
-                    case 'm':
-                        value = "milestone";
-                        break;
-                    default:
-                }
+                value = switch (value.charAt(0)) {
+                    case 'a' -> "alpha";
+                    case 'b' -> "beta";
+                    case 'm' -> "milestone";
+                    default -> null;
+                };
             }
             this.value = ALIASES.getProperty(value, value);
         }
@@ -332,19 +312,15 @@ public class ComparableVersion
                 // 1-rc < 1, 1-ga > 1
                 return comparableQualifier(value).compareTo(RELEASE_VERSION_INDEX);
             }
-            switch (item.getType()) {
-                case INTEGER_ITEM:
-                    return -1; // 1.any < 1.1 ?
+            return switch (item.getType()) {
+                case INTEGER_ITEM -> -1; // 1.any < 1.1 ?
 
-                case STRING_ITEM:
-                    return comparableQualifier(value).compareTo(comparableQualifier(((StringItem) item).value));
+                case STRING_ITEM ->
+                        comparableQualifier(value).compareTo(comparableQualifier(((StringItem) item).value));
+                case LIST_ITEM -> -1; // 1.any < 1-1
 
-                case LIST_ITEM:
-                    return -1; // 1.any < 1-1
-
-                default:
-                    throw new RuntimeException("invalid item: " + item.getClass());
-            }
+                default -> throw new RuntimeException("invalid item: " + item.getClass());
+            };
         }
 
         public String toString() {
@@ -389,16 +365,15 @@ public class ComparableVersion
                 return first.compareTo(null);
             }
             switch (item.getType()) {
-                case INTEGER_ITEM:
+                case INTEGER_ITEM -> {
                     return -1; // 1-1 < 1.0.x
-
-                case STRING_ITEM:
+                }
+                case STRING_ITEM -> {
                     return 1; // 1-1 > 1-sp
-
-                case LIST_ITEM:
+                }
+                case LIST_ITEM -> {
                     Iterator<Item> left = iterator();
                     Iterator<Item> right = ((ListItem) item).iterator();
-
                     while (left.hasNext() || right.hasNext()) {
                         Item l = left.hasNext() ? left.next() : null;
                         Item r = right.hasNext() ? right.next() : null;
@@ -410,11 +385,9 @@ public class ComparableVersion
                             return result;
                         }
                     }
-
                     return 0;
-
-                default:
-                    throw new RuntimeException("invalid item: " + item.getClass());
+                }
+                default -> throw new RuntimeException("invalid item: " + item.getClass());
             }
         }
 

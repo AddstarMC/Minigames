@@ -34,18 +34,11 @@ public enum StatValueField {
      * @return The resulting value that should be used for this field
      */
     public long apply(long currentValue, long newValue) {
-        switch (this) {
-            case Last:
-                return newValue;
-            case Min:
-                return Math.min(currentValue, newValue);
-            case Max:
-                return Math.max(currentValue, newValue);
-            case Total:
-                return currentValue + newValue;
-            default:
-                // Should be implemented
-                throw new AssertionError();
-        }
+        return switch (this) {
+            case Last -> newValue;
+            case Min -> Math.min(currentValue, newValue);
+            case Max -> Math.max(currentValue, newValue);
+            case Total -> currentValue + newValue;
+        };
     }
 }

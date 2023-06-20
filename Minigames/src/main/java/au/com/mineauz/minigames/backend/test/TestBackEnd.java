@@ -1,7 +1,5 @@
 package au.com.mineauz.minigames.backend.test;
 
-import java.util.*;
-
 import au.com.mineauz.minigames.backend.Backend;
 import au.com.mineauz.minigames.backend.BackendImportCallback;
 import au.com.mineauz.minigames.backend.ExportNotifier;
@@ -10,13 +8,11 @@ import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.*;
 import org.bukkit.configuration.ConfigurationSection;
 
-/**
- * Created for the AddstarMC Project. Created by Narimm on 7/02/2019.
- */
-public class TestBackEnd extends Backend {
-    private List<StoredGameStats> playerGameStats = new ArrayList<>();
-    private Map<Minigame, Collection<StatSettings>> gameSettings = new HashMap<>();
+import java.util.*;
 
+public class TestBackEnd extends Backend {
+    private final List<StoredGameStats> playerGameStats = new ArrayList<>();
+    private final Map<Minigame, Collection<StatSettings>> gameSettings = new HashMap<>();
 
     /**
      * Initializes the backend. This may include creating / converting tables as needed
@@ -54,9 +50,6 @@ public class TestBackEnd extends Backend {
     @Override
     public void saveGameStatus(StoredGameStats stats) {
         playerGameStats.add(stats);
-        for (StoredGameStats stat : playerGameStats) {
-
-        }
     }
 
     /**
@@ -76,13 +69,10 @@ public class TestBackEnd extends Backend {
                 result.add(new StoredStat(store.getPlayer().getUUID(), store.getPlayer().getName(), store.getPlayer().getDisplayName(true), store.getStat(stat)));
             }
         }
-        switch (order) {
-            case DESCENDING:
-                result.sort(Comparator.comparingLong(StoredStat::getValue).reversed());
-                break;
-            case ASCENDING:
-            default:
-                result.sort(Comparator.comparingLong(StoredStat::getValue));
+        if (Objects.requireNonNull(order) == ScoreboardOrder.DESCENDING) {
+            result.sort(Comparator.comparingLong(StoredStat::getValue).reversed());
+        } else {
+            result.sort(Comparator.comparingLong(StoredStat::getValue));
         }
         return result;
     }
@@ -178,7 +168,7 @@ public class TestBackEnd extends Backend {
      * Performs a conversion from a previous format
      *
      * @param notifier A notifier for progress updates
-     * @returns True if the conversion succeeded
+     * @return True if the conversion succeeded
      */
     @Override
     public boolean doConversion(ExportNotifier notifier) {

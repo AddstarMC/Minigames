@@ -1,12 +1,11 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.List;
-
+import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import au.com.mineauz.minigames.commands.ICommand;
-import au.com.mineauz.minigames.minigame.Minigame;
+import java.util.List;
 
 public class SetObjectiveCommand implements ICommand {
 
@@ -55,15 +54,15 @@ public class SetObjectiveCommand implements ICommand {
                              String label, String[] args) {
         if (args != null) {
             if (!args[0].equals("null")) {
-                String obj = "";
+                StringBuilder obj = new StringBuilder();
                 int count = 0;
                 for (String arg : args) {
-                    obj += arg;
+                    obj.append(arg);
                     count++;
                     if (count != args.length)
-                        obj += " ";
+                        obj.append(" ");
                 }
-                minigame.setObjective(obj);
+                minigame.setObjective(obj.toString());
                 sender.sendMessage(ChatColor.GRAY + "The objective for " + minigame + " has been set.");
             } else {
                 minigame.setObjective(null);

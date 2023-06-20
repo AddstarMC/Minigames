@@ -9,18 +9,16 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CommandDispatcher implements CommandExecutor, TabCompleter {
-    private static Map<String, ICommand> commands = new HashMap<>();
-    private static Minigames plugin = Minigames.getPlugin();
+    private static final Map<String, ICommand> commands = new HashMap<>();
+    private static final Minigames plugin = Minigames.getPlugin();
     private static BufferedWriter cmdFile;
 
     static {
@@ -52,8 +50,6 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         registerCommand(new RevertCommand());
         registerCommand(new HintCommand());
         registerCommand(new EndCommand());
-        //registerCommand(new RegenCommand());
-//        registerCommand(new RestoreInvCommand());
         registerCommand(new HelpCommand());
 //        registerCommand(new ReloadCommand());
         registerCommand(new ListCommand());
@@ -141,7 +137,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         }
     }
 
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         Player ply = null;
         if (sender instanceof Player) {
             ply = (Player) sender;
@@ -167,7 +163,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
                 }
             }
 
-            if (args != null && args.length > 1) {
+            if (args.length > 1) {
                 shortArgs = new String[args.length - 1];
                 System.arraycopy(args, 1, shortArgs, 0, args.length - 1);
             }
@@ -242,7 +238,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
         return false;
     }
 
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         if (args != null && args.length > 0) {
             Player ply = null;
             if (sender instanceof Player) {
@@ -255,7 +251,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
                 comd = commands.get(args[0].toLowerCase());
             }
 
-            if (args != null && args.length > 1) {
+            if (args.length > 1) {
                 shortArgs = new String[args.length - 1];
                 System.arraycopy(args, 1, shortArgs, 0, args.length - 1);
             }
@@ -264,10 +260,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
                 if (ply != null) {
                     if (args.length > 1) {
                         List<String> l = comd.onTabComplete(sender, null, alias, shortArgs);
-                        if (l != null)
-                            return l;
-                        else
-                            return MinigameUtils.stringToList("");
+                        return Objects.requireNonNullElseGet(l, () -> MinigameUtils.stringToList(""));
                     }
                 }
             } else {

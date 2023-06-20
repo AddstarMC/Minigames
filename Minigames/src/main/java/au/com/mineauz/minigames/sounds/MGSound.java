@@ -5,7 +5,7 @@ import org.bukkit.Sound;
 public class MGSound {
     private float volume = 10f;
     private float pitch = 1f;
-    private Sound sound;
+    private final Sound sound;
     private int count = 1;
     private long delay = 20L;
     private int timesPlayed = 0;

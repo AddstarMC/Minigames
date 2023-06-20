@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class MGSounds {
 
-    private static Map<String, MGSound> sounds = new HashMap<>();
+    private static final Map<String, MGSound> sounds = new HashMap<>();
 
     static {
         addSound("timerTick", new MGSound(Sound.BLOCK_NOTE_BLOCK_HAT, 10f, 1.5f));

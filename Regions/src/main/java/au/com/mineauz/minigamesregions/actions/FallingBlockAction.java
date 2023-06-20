@@ -1,15 +1,14 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.Map;
-
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigamesregions.Node;
+import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import java.util.Map;
 
 public class FallingBlockAction extends AbstractAction {
 
@@ -22,7 +21,7 @@ public class FallingBlockAction extends AbstractAction {
     public String getCategory() {
         return "World Actions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
     }
@@ -39,22 +38,22 @@ public class FallingBlockAction extends AbstractAction {
 
     @Override
     public void executeRegionAction(MinigamePlayer player,
-            Region region) {
-        debug(player,region);
+                                    Region region) {
+        debug(player, region);
         Location temp = region.getFirstPoint();
-        for(int y = region.getFirstPoint().getBlockY();
-                y <= region.getSecondPoint().getBlockY();
-                y++){
+        for (int y = region.getFirstPoint().getBlockY();
+             y <= region.getSecondPoint().getBlockY();
+             y++) {
             temp.setY(y);
-            for(int x = region.getFirstPoint().getBlockX();
-                    x <= region.getSecondPoint().getBlockX();
-                    x++){
+            for (int x = region.getFirstPoint().getBlockX();
+                 x <= region.getSecondPoint().getBlockX();
+                 x++) {
                 temp.setX(x);
-                for(int z = region.getFirstPoint().getBlockZ();
-                        z <= region.getSecondPoint().getBlockZ();
-                        z++){
+                for (int z = region.getFirstPoint().getBlockZ();
+                     z <= region.getSecondPoint().getBlockZ();
+                     z++) {
                     temp.setZ(z);
-                    if(temp.getBlock().getType() != Material.AIR){
+                    if (temp.getBlock().getType() != Material.AIR) {
                         temp.getWorld().spawnFallingBlock(temp, temp.getBlock().getBlockData());
                         temp.getBlock().setType(Material.AIR);
                     }
@@ -65,9 +64,9 @@ public class FallingBlockAction extends AbstractAction {
 
     @Override
     public void executeNodeAction(MinigamePlayer player,
-            Node node) {
-        debug(player,node);
-        if(node.getLocation().getBlock().getType() != Material.AIR){
+                                  Node node) {
+        debug(player, node);
+        if (node.getLocation().getBlock().getType() != Material.AIR) {
             node.getLocation().getWorld().spawnFallingBlock(node.getLocation(),
                     node.getLocation().getBlock().getBlockData());
             node.getLocation().getBlock().setType(Material.AIR);
@@ -76,12 +75,12 @@ public class FallingBlockAction extends AbstractAction {
 
     @Override
     public void saveArguments(FileConfiguration config,
-            String path) {
+                              String path) {
     }
 
     @Override
     public void loadArguments(FileConfiguration config,
-            String path) {
+                              String path) {
     }
 
     @Override

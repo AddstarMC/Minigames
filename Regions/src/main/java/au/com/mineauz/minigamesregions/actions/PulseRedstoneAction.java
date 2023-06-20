@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
@@ -8,6 +7,7 @@ import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Bukkit;
@@ -20,9 +20,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.Map;
 
 public class PulseRedstoneAction extends AbstractAction {
-    
-    private IntegerFlag time = new IntegerFlag(1, "time");
-    private BooleanFlag torch = new BooleanFlag(false, "torch");
+
+    private final IntegerFlag time = new IntegerFlag(1, "time");
+    private final BooleanFlag torch = new BooleanFlag(false, "torch");
 
     @Override
     public String getName() {
@@ -33,7 +33,7 @@ public class PulseRedstoneAction extends AbstractAction {
     public String getCategory() {
         return "Block Actions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
         out.put("Time", MinigameUtils.convertTime(time.getFlag(), true));
@@ -52,35 +52,35 @@ public class PulseRedstoneAction extends AbstractAction {
 
     @Override
     public void executeRegionAction(MinigamePlayer player,
-            Region region) {
-        debug(player,region);
+                                    Region region) {
+        debug(player, region);
     }
 
     @Override
     public void executeNodeAction(MinigamePlayer player,
-            Node node) {
-        debug(player,node);
+                                  Node node) {
+        debug(player, node);
         BlockData bdata = Material.REDSTONE_BLOCK.createBlockData();
-        if(torch.getFlag()) {
+        if (torch.getFlag()) {
             bdata = Material.REDSTONE_TORCH.createBlockData();
-            if(bdata instanceof Lightable)
-                    ((Lightable) bdata).setLit(true);
+            if (bdata instanceof Lightable)
+                ((Lightable) bdata).setLit(true);
         }
         final BlockState last = node.getLocation().getBlock().getState();
         node.getLocation().getBlock().setBlockData(bdata);
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () -> last.update(true), 20 * time.getFlag());
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Minigames.getPlugin(), () -> last.update(true), 20L * time.getFlag());
     }
 
     @Override
     public void saveArguments(FileConfiguration config,
-            String path) {
+                              String path) {
         time.saveValue(path, config);
         torch.saveValue(path, config);
     }
 
     @Override
     public void loadArguments(FileConfiguration config,
-            String path) {
+                              String path) {
         time.loadValue(path, config);
         torch.loadValue(path, config);
     }
@@ -88,7 +88,7 @@ public class PulseRedstoneAction extends AbstractAction {
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu previous) {
         Menu m = new Menu(3, "Redstone Pulse", player);
-        m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
         m.addItem(time.getMenuItem("Pulse Time", Material.CLOCK));
         m.addItem(torch.getMenuItem("Use Redstone Torch", Material.REDSTONE_BLOCK));
         m.displayMenu(player);

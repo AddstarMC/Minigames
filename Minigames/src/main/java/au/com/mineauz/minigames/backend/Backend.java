@@ -1,19 +1,14 @@
 package au.com.mineauz.minigames.backend;
 
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.ScoreboardOrder;
+import au.com.mineauz.minigames.stats.*;
+import org.bukkit.configuration.ConfigurationSection;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import org.bukkit.configuration.ConfigurationSection;
-
-import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.ScoreboardOrder;
-import au.com.mineauz.minigames.stats.MinigameStat;
-import au.com.mineauz.minigames.stats.StatSettings;
-import au.com.mineauz.minigames.stats.StatValueField;
-import au.com.mineauz.minigames.stats.StoredGameStats;
-import au.com.mineauz.minigames.stats.StoredStat;
 
 public abstract class Backend {
     /**
@@ -25,7 +20,7 @@ public abstract class Backend {
     public abstract boolean initialize(ConfigurationSection config, boolean debug);
 
     /**
-     * Shutsdown the backend cleaning up resources
+     * Shutdown the backend cleaning up resources
      */
     public abstract void shutdown();
 
@@ -110,7 +105,7 @@ public abstract class Backend {
      * Performs a conversion from a previous format
      *
      * @param notifier A notifier for progress updates
-     * @returns True if the conversion succeeded
+     * @return True if the conversion succeeded
      */
     public abstract boolean doConversion(ExportNotifier notifier);
 }

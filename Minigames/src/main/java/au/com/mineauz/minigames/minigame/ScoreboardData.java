@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.minigame;
 
-import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.config.MinigameSave;
 import com.google.common.collect.Maps;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;

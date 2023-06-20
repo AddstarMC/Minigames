@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  */
 public class MessageManager {
     /**
-     * Stores each prop file with a identifier
+     * Stores each prop file with an identifier
      */
     private static final Hashtable<String, ResourceBundle> propertiesHashMap = new Hashtable<>();
     private static Locale locale = Locale.getDefault();
@@ -84,7 +84,6 @@ public class MessageManager {
      * Register a new Bundle
      * To load the bundle use the {@link UTF8Control instance as the resource control.
      * This loads the resource with UTF8
-     *
      * @param identifier Unique identifier for your resource bundle
      * @param bundle     the ResourceBundle
      * @return true on success.
@@ -128,17 +127,9 @@ public class MessageManager {
      * @throws MissingResourceException If bundle not found.
      */
     public static String getUnformattedMessage(@Nullable String identifier, @NotNull String key) throws MissingResourceException {
-        ResourceBundle bundle;
-        if (identifier == null) {
-            bundle = propertiesHashMap.get("minigames");
-        } else {
-            bundle = propertiesHashMap.get(identifier);
-        }
+        ResourceBundle bundle = propertiesHashMap.get(Objects.requireNonNullElse(identifier, "minigames"));
         if (bundle == null) {
             String err = (identifier == null) ? "NULL" : identifier;
-            Collection<String> errArgs = new ArrayList<>();
-            errArgs.add("Identifier was invalid: " + err);
-            errArgs.add(key);
             throw new MissingResourceException(err, "MessageManager", key);
         }
         return bundle.getString(key);
@@ -161,7 +152,7 @@ public class MessageManager {
     }
 
     public static void sendMessage(MinigamePlayer target, MinigameMessageType type, String identifier, String key, String... args) {
-        sendMessage(target.getPlayer(), type, identifier, key, args);
+        sendMessage(target.getPlayer(), type, identifier, key, (Object[]) args);
     }
 
     public static void sendCoreMessage(CommandSender target, MinigameMessageType type, String key, Object... args) {
@@ -178,18 +169,10 @@ public class MessageManager {
     private static BaseComponent getMessageStart(MinigameMessageType type) {
         BaseComponent init = new TextComponent("[Minigames]");
         switch (type) {
-            case ERROR:
-                init.setColor(ChatColor.RED);
-                break;
-            case WIN:
-                init.setColor(ChatColor.GREEN);
-                break;
-            case LOSS:
-                init.setColor(ChatColor.DARK_RED);
-                break;
-            case INFO:
-            default:
-                init.setColor(ChatColor.AQUA);
+            case ERROR -> init.setColor(ChatColor.RED);
+            case WIN -> init.setColor(ChatColor.GREEN);
+            case LOSS -> init.setColor(ChatColor.DARK_RED);
+            default -> init.setColor(ChatColor.AQUA);
         }
         return init;
     }
@@ -230,7 +213,7 @@ public class MessageManager {
     public static void broadcast(String message, Minigame minigame, org.bukkit.ChatColor prefixColor) {
         BaseComponent init = new TextComponent("[Minigames]");
         init.setColor(prefixColor.asBungee());
-        TextComponent m = new TextComponent(" "+ message);
+        TextComponent m = new TextComponent(" " + message);
         MinigamesBroadcastEvent ev = new MinigamesBroadcastEvent(prefixColor + "[Minigames]" + org.bukkit.ChatColor.WHITE, message, minigame);
         Bukkit.getPluginManager().callEvent(ev);
 

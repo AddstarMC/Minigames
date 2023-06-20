@@ -1,8 +1,5 @@
 package au.com.mineauz.minigames;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import au.com.mineauz.minigames.commands.JoinCommand;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.helpers.TestHelper;
@@ -14,35 +11,32 @@ import au.com.mineauz.minigames.objects.TestWorld;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
-import be.seeseemelk.mockbukkit.command.ConsoleCommandSenderMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
-import be.seeseemelk.mockbukkit.entity.PlayerMockFactory;
-import org.bukkit.Location;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.junit.Before;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/**
- * Created for the AddstarMC Project. Created by Narimm on 6/02/2019.
- */
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 public class EventsTest {
-
     private ServerMock server;
     private Minigames plugin;
     private Minigame game;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         try {
             server = MockBukkit.mock();
         } catch (IllegalStateException e) {
             server = MockBukkit.getMock();
         }
-        PlayerMockFactory<TestPlayer> factory = new PlayerMockFactory<>(server,TestPlayer.class);
-        server.setPlayerFactory(factory);
-        ((ConsoleCommandSenderMock) server.getConsoleSender()).setOutputOnSend(true);
+
+        server.addPlayer(new TestPlayer(server, "testplayer", UUID.randomUUID()));
         plugin = MockBukkit.load(Minigames.class);
         Minigames.getPlugin().getConfig().set("saveInventory", true);
         TestWorld testworld = new TestWorld();
@@ -58,7 +52,7 @@ public class EventsTest {
     }
 
     public void onPlayerDisconnect() {
-        PlayerMock mock = server.addPlayer();
+        PlayerMock mock = server.getPlayer(0);
         mock.setLocation(server.getWorld("GAMES").getSpawnLocation());
         PlayerJoinEvent event = new PlayerJoinEvent(mock, "Joined the Server");
         server.getPluginManager().callEvent(event);

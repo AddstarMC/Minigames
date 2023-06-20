@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.objects;
 
-import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
