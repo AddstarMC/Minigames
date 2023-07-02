@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class MenuItemSaveMinigame extends MenuItem {
-    private Minigame mgm = null;
+    private Minigame mgm;
 
     public MenuItemSaveMinigame(String name, Material displayItem, Minigame minigame) {
         super(name, displayItem);

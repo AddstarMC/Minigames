@@ -1,28 +1,27 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 
-public class TriggerRandomAction extends AbstractAction{
-    
-    private IntegerFlag timesTriggered = new IntegerFlag(1, "timesTriggered");
-    private BooleanFlag randomPerTrigger = new BooleanFlag(false, "randomPerTrigger");
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+public class TriggerRandomAction extends AbstractAction {
+
+    private final IntegerFlag timesTriggered = new IntegerFlag(1, "timesTriggered");
+    private final BooleanFlag randomPerTrigger = new BooleanFlag(false, "randomPerTrigger");
 
     @Override
     public String getName() {
@@ -33,7 +32,7 @@ public class TriggerRandomAction extends AbstractAction{
     public String getCategory() {
         return "Region/Node Actions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
         out.put("Trigger Count", timesTriggered.getFlag());
@@ -52,26 +51,24 @@ public class TriggerRandomAction extends AbstractAction{
 
     @Override
     public void executeRegionAction(MinigamePlayer player, Region region) {
-        debug(player,region);
+        debug(player, region);
         List<RegionExecutor> exs = new ArrayList<>();
-        for(RegionExecutor ex : region.getExecutors()){
-            if(ex.getTrigger().getName().equalsIgnoreCase("RANDOM"))
+        for (RegionExecutor ex : region.getExecutors()) {
+            if (ex.getTrigger().getName().equalsIgnoreCase("RANDOM"))
                 exs.add(ex);
         }
         Collections.shuffle(exs);
-        if(timesTriggered.getFlag() == 1){
-            if(region.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
+        if (timesTriggered.getFlag() == 1) {
+            if (region.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
                 region.execute(exs.get(0), player);
-        }
-        else{
-            for(int i = 0; i < timesTriggered.getFlag(); i++){
-                if(!randomPerTrigger.getFlag()){
-                    if(i == timesTriggered.getFlag()) break;
-                    if(region.checkConditions(exs.get(i), player) && exs.get(i).canBeTriggered(player))
+        } else {
+            for (int i = 0; i < timesTriggered.getFlag(); i++) {
+                if (!randomPerTrigger.getFlag()) {
+                    if (i == timesTriggered.getFlag()) break;
+                    if (region.checkConditions(exs.get(i), player) && exs.get(i).canBeTriggered(player))
                         region.execute(exs.get(i), player);
-                }
-                else{
-                    if(region.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
+                } else {
+                    if (region.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
                         region.execute(exs.get(0), player);
                     Collections.shuffle(exs);
                 }
@@ -81,26 +78,24 @@ public class TriggerRandomAction extends AbstractAction{
 
     @Override
     public void executeNodeAction(MinigamePlayer player, Node node) {
-        debug(player,node);
+        debug(player, node);
         List<NodeExecutor> exs = new ArrayList<>();
-        for(NodeExecutor ex : node.getExecutors()){
-            if(ex.getTrigger().getName().equalsIgnoreCase("RANDOM"))
+        for (NodeExecutor ex : node.getExecutors()) {
+            if (ex.getTrigger().getName().equalsIgnoreCase("RANDOM"))
                 exs.add(ex);
         }
         Collections.shuffle(exs);
-        if(timesTriggered.getFlag() == 1){
-            if(node.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
+        if (timesTriggered.getFlag() == 1) {
+            if (node.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
                 node.execute(exs.get(0), player);
-        }
-        else{
-            for(int i = 0; i < timesTriggered.getFlag(); i++){
-                if(!randomPerTrigger.getFlag()){
-                    if(i == timesTriggered.getFlag()) break;
-                    if(node.checkConditions(exs.get(i), player) && exs.get(i).canBeTriggered(player))
+        } else {
+            for (int i = 0; i < timesTriggered.getFlag(); i++) {
+                if (!randomPerTrigger.getFlag()) {
+                    if (i == timesTriggered.getFlag()) break;
+                    if (node.checkConditions(exs.get(i), player) && exs.get(i).canBeTriggered(player))
                         node.execute(exs.get(i), player);
-                }
-                else{
-                    if(node.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
+                } else {
+                    if (node.checkConditions(exs.get(0), player) && exs.get(0).canBeTriggered(player))
                         node.execute(exs.get(0), player);
                     Collections.shuffle(exs);
                 }

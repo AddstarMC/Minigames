@@ -6,7 +6,7 @@ public enum MinigameType {
     //    TREASURE_HUNT("Treasure Hunt");
     GLOBAL("Global");
 
-    private String name;
+    private final String name;
 
     MinigameType(String name) {
         this.name = name;

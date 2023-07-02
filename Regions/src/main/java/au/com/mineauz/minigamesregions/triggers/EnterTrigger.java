@@ -17,4 +17,8 @@ public class EnterTrigger implements Trigger {
         return false;
     }
 
+    @Override
+    public boolean triggerOnPlayerAvailable() {
+        return true;
+    }
 }

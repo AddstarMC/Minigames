@@ -1,12 +1,12 @@
 package au.com.mineauz.minigames.mechanics;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.StartMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
@@ -82,7 +82,6 @@ public class LivesMechanic extends GameMechanicBase {
     @EventHandler
     private void playerDeath(PlayerDeathEvent event) {
         MinigamePlayer ply = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getEntity());
-        if (ply == null) return;
         if (ply.isInMinigame() && ply.getMinigame().getMechanicName().equals(getMechanic())) {
             ply.addScore(-1);
             ply.getMinigame().setScore(ply, ply.getScore());

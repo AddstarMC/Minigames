@@ -1,25 +1,24 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.Map;
-
+import au.com.mineauz.minigames.config.FloatFlag;
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigamesregions.Main;
+import au.com.mineauz.minigamesregions.Node;
+import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.util.Vector;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.config.FloatFlag;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemBack;
-import au.com.mineauz.minigamesregions.Main;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.Region;
+import java.util.Map;
 
-public class VelocityAction extends AbstractAction{
-    
-    private FloatFlag x = new FloatFlag(0f, "xv");
-    private FloatFlag y = new FloatFlag(5f, "yv");
-    private FloatFlag z = new FloatFlag(0f, "zv");
+public class VelocityAction extends AbstractAction {
+
+    private final FloatFlag x = new FloatFlag(0f, "xv");
+    private final FloatFlag y = new FloatFlag(5f, "yv");
+    private final FloatFlag z = new FloatFlag(0f, "zv");
 
     @Override
     public String getName() {
@@ -30,7 +29,7 @@ public class VelocityAction extends AbstractAction{
     public String getCategory() {
         return "Player Actions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
         out.put("Velocity", x.getFlag() + "," + y.getFlag() + "," + z.getFlag());
@@ -48,18 +47,18 @@ public class VelocityAction extends AbstractAction{
 
     @Override
     public void executeRegionAction(MinigamePlayer player, Region region) {
-        debug(player,region);
+        debug(player, region);
         execute(player);
     }
 
     @Override
     public void executeNodeAction(MinigamePlayer player, Node node) {
-        debug(player,node);
+        debug(player, node);
         execute(player);
     }
-    
-    private void execute(final MinigamePlayer player){
-        if(player == null) return;
+
+    private void execute(final MinigamePlayer player) {
+        if (player == null) return;
         Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), () -> player.getPlayer().setVelocity(new Vector(x.getFlag(), y.getFlag(), z.getFlag())));
     }
 

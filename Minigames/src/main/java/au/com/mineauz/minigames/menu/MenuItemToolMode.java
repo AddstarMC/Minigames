@@ -1,18 +1,17 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.tool.MinigameTool;
+import au.com.mineauz.minigames.tool.ToolMode;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.tool.MinigameTool;
-import au.com.mineauz.minigames.tool.ToolMode;
+import java.util.List;
 
 public class MenuItemToolMode extends MenuItem {
 
-    private ToolMode mode;
+    private final ToolMode mode;
 
     public MenuItemToolMode(String name, Material displayItem, ToolMode mode) {
         super(name, displayItem);

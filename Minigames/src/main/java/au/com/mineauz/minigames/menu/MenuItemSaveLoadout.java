@@ -8,7 +8,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class MenuItemSaveLoadout extends MenuItem {
-
     private PlayerLoadout loadout = null;
     private Menu altMenu = null;
 
@@ -50,21 +49,11 @@ public class MenuItemSaveLoadout extends MenuItem {
         for (int i = 36; i < a; i++) {
             if (items[i] != null) {
                 switch (i) {
-                    case 36:
-                        loadout.addItem(items[i], 103);
-                        break;
-                    case 37:
-                        loadout.addItem(items[i], 102);
-                        break;
-                    case 38:
-                        loadout.addItem(items[i], 101);
-                        break;
-                    case 39:
-                        loadout.addItem(items[i], 100);
-                        break;
-                    case 40:
-                        loadout.addItem(items[i], -106);
-                        break;
+                    case 36 -> loadout.addItem(items[i], 103);
+                    case 37 -> loadout.addItem(items[i], 102);
+                    case 38 -> loadout.addItem(items[i], 101);
+                    case 39 -> loadout.addItem(items[i], 100);
+                    case 40 -> loadout.addItem(items[i], -106);
                 }
             }
         }

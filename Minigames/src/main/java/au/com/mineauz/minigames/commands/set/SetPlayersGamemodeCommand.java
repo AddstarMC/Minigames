@@ -1,13 +1,12 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.List;
-
-import org.bukkit.GameMode;
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.GameMode;
+import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public class SetPlayersGamemodeCommand implements ICommand {
 

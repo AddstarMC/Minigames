@@ -58,17 +58,10 @@ public abstract class MinigameStat {
      */
     public boolean shouldStoreStat(long value, StatFormat actualFormat) {
         if (value == 0) {
-            switch (actualFormat) {
-                case Last:
-                case LastAndTotal:
-                case Min:
-                case MinAndTotal:
-                case MinMax:
-                case MinMaxAndTotal:
-                    return true;
-                default:
-                    return false;
-            }
+            return switch (actualFormat) {
+                case Last, LastAndTotal, Min, MinAndTotal, MinMax, MinMaxAndTotal -> true;
+                default -> false;
+            };
         } else {
             return true;
         }

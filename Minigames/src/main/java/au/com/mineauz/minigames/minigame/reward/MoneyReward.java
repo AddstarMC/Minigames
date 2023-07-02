@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.minigame.reward;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -34,7 +34,8 @@ public class MoneyReward extends RewardType {
     @Override
     public void giveReward(MinigamePlayer player) {
         Minigames.getPlugin().getEconomy().depositPlayer(player.getPlayer().getPlayer(), money);
-        player.sendInfoMessage(MinigameUtils.formStr("reward.money", Minigames.getPlugin().getEconomy().format(money)));
+        player.sendInfoMessage(
+                MessageManager.getMinigamesMessage("reward.money", Minigames.getPlugin().getEconomy().format(money)));
     }
 
     @Override
@@ -62,7 +63,7 @@ public class MoneyReward extends RewardType {
 
     private class MenuItemReward extends MenuItem {
         private List<String> options = new ArrayList<>();
-        private MoneyReward reward;
+        private final MoneyReward reward;
 
         public MenuItemReward(MoneyReward reward) {
             super("$" + money, Material.PAPER);
@@ -80,7 +81,7 @@ public class MoneyReward extends RewardType {
         }
 
         public void updateDescription() {
-            List<String> description = null;
+            List<String> description;
             if (options == null) {
                 options = new ArrayList<>();
                 for (RewardRarity rarity : RewardRarity.values()) {
@@ -101,30 +102,30 @@ public class MoneyReward extends RewardType {
                     String desc = ChatColor.stripColor(getDescription().get(1));
 
                     if (options.contains(desc)) {
-                        description.set(0, ChatColor.GRAY.toString() + options.get(before));
-                        description.set(1, ChatColor.GREEN.toString() + getRarity().toString());
-                        description.set(2, ChatColor.GRAY.toString() + options.get(after));
+                        description.set(0, ChatColor.GRAY + options.get(before));
+                        description.set(1, ChatColor.GREEN + getRarity().toString());
+                        description.set(2, ChatColor.GRAY + options.get(after));
                     } else {
-                        description.add(0, ChatColor.GRAY.toString() + options.get(before));
-                        description.add(1, ChatColor.GREEN.toString() + getRarity().toString());
-                        description.add(2, ChatColor.GRAY.toString() + options.get(after));
-                        description.add(3, ChatColor.DARK_PURPLE.toString() + "Shift + Click to change");
-                        description.add(4, ChatColor.DARK_PURPLE.toString() + "Shift + Right Click to remove");
+                        description.add(0, ChatColor.GRAY + options.get(before));
+                        description.add(1, ChatColor.GREEN + getRarity().toString());
+                        description.add(2, ChatColor.GRAY + options.get(after));
+                        description.add(3, ChatColor.DARK_PURPLE + "Shift + Click to change");
+                        description.add(4, ChatColor.DARK_PURPLE + "Shift + Right Click to remove");
                     }
                 } else {
-                    description.add(0, ChatColor.GRAY.toString() + options.get(before));
-                    description.add(1, ChatColor.GREEN.toString() + getRarity().toString());
-                    description.add(2, ChatColor.GRAY.toString() + options.get(after));
-                    description.add(3, ChatColor.DARK_PURPLE.toString() + "Shift + Click to change");
-                    description.add(4, ChatColor.DARK_PURPLE.toString() + "Shift + Right Click to remove");
+                    description.add(0, ChatColor.GRAY + options.get(before));
+                    description.add(1, ChatColor.GREEN + getRarity().toString());
+                    description.add(2, ChatColor.GRAY + options.get(after));
+                    description.add(3, ChatColor.DARK_PURPLE + "Shift + Click to change");
+                    description.add(4, ChatColor.DARK_PURPLE + "Shift + Right Click to remove");
                 }
             } else {
                 description = new ArrayList<>();
-                description.add(ChatColor.GRAY.toString() + options.get(before));
-                description.add(ChatColor.GREEN.toString() + getRarity().toString());
-                description.add(ChatColor.GRAY.toString() + options.get(after));
-                description.add(3, ChatColor.DARK_PURPLE.toString() + "Shift + Click to change");
-                description.add(4, ChatColor.DARK_PURPLE.toString() + "Shift + Right Click to remove");
+                description.add(ChatColor.GRAY + options.get(before));
+                description.add(ChatColor.GREEN + getRarity().toString());
+                description.add(ChatColor.GRAY + options.get(after));
+                description.add(3, ChatColor.DARK_PURPLE + "Shift + Click to change");
+                description.add(4, ChatColor.DARK_PURPLE + "Shift + Right Click to remove");
             }
 
             setDescription(description);
@@ -159,7 +160,7 @@ public class MoneyReward extends RewardType {
         @Override
         public ItemStack onShiftClick() {
             Menu m = new Menu(3, "Set Money Amount", getContainer().getViewer());
-            MenuItemDecimal dec = new MenuItemDecimal("Money", Material.PAPER, new Callback<Double>() {
+            MenuItemDecimal dec = new MenuItemDecimal("Money", Material.PAPER, new Callback<>() {
 
                 @Override
                 public Double getValue() {

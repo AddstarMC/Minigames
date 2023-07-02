@@ -1,36 +1,50 @@
 package au.com.mineauz.minigames.objects;
 
+import be.seeseemelk.mockbukkit.UnimplementedOperationException;
+import be.seeseemelk.mockbukkit.block.state.BlockStateMock;
+import net.kyori.adventure.text.Component;
+import org.bukkit.DyeColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Sign;
+import org.bukkit.entity.Entity;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
+
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import be.seeseemelk.mockbukkit.UnimplementedOperationException;
-import be.seeseemelk.mockbukkit.block.BlockStateMock;
-import org.bukkit.DyeColor;
-import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
-import org.bukkit.block.Sign;
-import org.bukkit.material.MaterialData;
-import org.bukkit.persistence.PersistentDataAdapterContext;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-/**
- * Created for the AddstarMC Project. Created by Narimm on 9/01/2019.
- */
 public class MockSign extends BlockStateMock implements Sign {
+    private final LinkedList<String> lines = new LinkedList<>();
+    private boolean edittable;
 
-    private LinkedList<String> lines = new LinkedList<String>();
-    private boolean edittable = false;
+    public MockSign(Material material, boolean edittable) {
+        super(material);
 
-    public MockSign(MaterialData data, boolean edittable) {
-        super(data);
         this.edittable = edittable;
         lines.add("");
         lines.addLast("");
         lines.addLast("");
         lines.addLast("");
+    }
+
+    @Override
+    public @NotNull List<Component> lines() {
+        return null;
+    }
+
+    @Override
+    public @NotNull Component line(int i) throws IndexOutOfBoundsException {
+        return null;
+    }
+
+    @Override
+    public void line(int i, @NotNull Component component) throws IndexOutOfBoundsException {
+
     }
 
     @Override
@@ -40,13 +54,13 @@ public class MockSign extends BlockStateMock implements Sign {
     }
 
     @Override
-    public String getLine(int i) throws IndexOutOfBoundsException {
+    public @NotNull String getLine(int i) throws IndexOutOfBoundsException {
         return lines.get(i);
     }
 
 
     @Override
-    public void setLine(int i, String s) throws IndexOutOfBoundsException {
+    public void setLine(int i, @NotNull String s) throws IndexOutOfBoundsException {
         lines.set(i, s);
     }
 
@@ -61,16 +75,51 @@ public class MockSign extends BlockStateMock implements Sign {
     }
 
     @Override
+    public boolean isGlowingText() {
+        return false;
+    }
+
+    @Override
+    public void setGlowingText(boolean b) {
+
+    }
+
+    @Override
     public Location getLocation(Location loc) {
         return super.getLocation(loc);
     }
 
-  @Override
+    @Override
+    public boolean isCollidable() {
+        return false;
+    }
+
+    @Override
+    public @Unmodifiable Collection<ItemStack> getDrops() {
+        return null;
+    }
+
+    @Override
+    public @Unmodifiable Collection<ItemStack> getDrops(@Nullable ItemStack tool) {
+        return null;
+    }
+
+    @Override
+    public @Unmodifiable Collection<ItemStack> getDrops(@NotNull ItemStack tool, @Nullable Entity entity) {
+        return null;
+    }
+
+    @Override
   public @NotNull PersistentDataContainer getPersistentDataContainer() {
     throw new UnimplementedOperationException("This is not yet implemented");
   }
 
-  @Override
+    @Override
+    public boolean isSnapshot() {
+        return false;
+    }
+
+    @Override
   public @Nullable DyeColor getColor() {
     return null;
   }

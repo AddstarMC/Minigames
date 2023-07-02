@@ -1,12 +1,13 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -16,7 +17,7 @@ import java.util.List;
 
 public class MenuItemAddTeam extends MenuItem {
 
-    private TeamsModule tm;
+    private final TeamsModule tm;
 
     public MenuItemAddTeam(String name, Minigame minigame) {
         super(name, MenuUtility.getCreateMaterial());
@@ -31,7 +32,7 @@ public class MenuItemAddTeam extends MenuItem {
         ply.sendMessage("Enter the color of the team you wish to add. All colors available below:", MinigameMessageType.INFO);
         List<String> teams = new ArrayList<>();
         for (TeamColor col : TeamColor.values())
-            teams.add(col.getColor() + MinigameUtils.capitalize(col.toString().replace("_", " ")));
+            teams.add(col.getColor() + WordUtils.capitalize(col.toString().replace("_", " ")));
         ply.sendInfoMessage(MinigameUtils.listToString(teams));
         ply.setManualEntry(this);
 
@@ -56,7 +57,7 @@ public class MenuItemAddTeam extends MenuItem {
 
             List<String> teams = new ArrayList<>(tm.getTeams().size() + 1);
             for (Team t : tm.getTeams()) {
-                teams.add(MinigameUtils.capitalize(t.getColor().toString().replace("_", " ")));
+                teams.add(WordUtils.capitalize(t.getColor().toString().replace("_", " ")));
             }
             teams.add("None");
             getContainer().removeItem(0);

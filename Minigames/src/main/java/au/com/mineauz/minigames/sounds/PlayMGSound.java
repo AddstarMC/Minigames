@@ -1,14 +1,14 @@
 package au.com.mineauz.minigames.sounds;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Bukkit;
 
 public class PlayMGSound {
 
-    private static boolean shouldPlay = Minigames.getPlugin().getConfig().getBoolean("playSounds");
+    private static final boolean shouldPlay = Minigames.getPlugin().getConfig().getBoolean("playSounds");
 
     public static void playSound(MinigamePlayer player, MGSound sound) {
         if (!shouldPlay) return;

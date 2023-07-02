@@ -17,4 +17,8 @@ public class GameJoinTrigger implements Trigger {
         return true;
     }
 
+    @Override
+    public boolean triggerOnPlayerAvailable() {
+        return true;
+    }
 }

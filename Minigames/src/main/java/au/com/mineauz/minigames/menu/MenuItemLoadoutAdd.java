@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class MenuItemLoadoutAdd extends MenuItem {
 
-    private Map<String, PlayerLoadout> loadouts;
+    private final Map<String, PlayerLoadout> loadouts;
     private Minigame minigame = null;
 
     public MenuItemLoadoutAdd(String name, Material displayItem, Map<String, PlayerLoadout> loadouts, Minigame mgm) {
@@ -53,7 +53,7 @@ public class MenuItemLoadoutAdd extends MenuItem {
     @Override
     public void checkValidEntry(String entry) {
         entry = entry.replace(" ", "_");
-        if (!loadouts.keySet().contains(entry)) {
+        if (!loadouts.containsKey(entry)) {
             for (int i = 0; i < 45; i++) {
                 if (!getContainer().hasMenuItem(i)) {
                     PlayerLoadout loadout = new PlayerLoadout(entry);

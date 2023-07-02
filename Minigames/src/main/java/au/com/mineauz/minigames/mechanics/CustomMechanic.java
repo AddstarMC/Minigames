@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.mechanics;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
@@ -52,7 +52,6 @@ public class CustomMechanic extends GameMechanicBase {
     @EventHandler
     public void playerAutoBalance(PlayerDeathEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
-        if (ply == null) return;
         if (ply.isInMinigame() && ply.getMinigame().isTeamGame()) {
             Minigame mgm = ply.getMinigame();
 

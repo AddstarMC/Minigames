@@ -1,22 +1,21 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import java.util.Map;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.Map;
 
 public class PlayerCountCondition extends ConditionInterface {
-    
-    private IntegerFlag min = new IntegerFlag(1, "min");
-    private IntegerFlag max = new IntegerFlag(5, "max");
+
+    private final IntegerFlag min = new IntegerFlag(1, "min");
+    private final IntegerFlag max = new IntegerFlag(5, "max");
 
     @Override
     public String getName() {
@@ -27,7 +26,7 @@ public class PlayerCountCondition extends ConditionInterface {
     public String getCategory() {
         return "Player Conditions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
         out.put("Count", min.getFlag() + " - " + max.getFlag());
@@ -70,7 +69,7 @@ public class PlayerCountCondition extends ConditionInterface {
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Player Count", player);
-        m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
         m.addItem(min.getMenuItem("Min Player Count", Material.STONE_SLAB, 1, null));
         m.addItem(max.getMenuItem("Max Player Count", Material.STONE, 1, null));
         addInvertMenuItem(m);
@@ -78,4 +77,8 @@ public class PlayerCountCondition extends ConditionInterface {
         return true;
     }
 
+    @Override
+    public boolean onPlayerApplicable() {
+        return true;
+    }
 }

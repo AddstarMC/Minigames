@@ -1,8 +1,8 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,7 +20,7 @@ public class RevertAction extends AbstractAction {
     public String getCategory() {
         return "Minigame Actions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
     }
@@ -38,8 +38,8 @@ public class RevertAction extends AbstractAction {
     @Override
     public void executeRegionAction(MinigamePlayer player, Region region) {
         debug(player, region);
-        if(player == null || !player.isInMinigame()) return;
-        if(!player.isDead())
+        if (player == null || !player.isInMinigame()) return;
+        if (player.isLiving())
             Minigames.getPlugin().getPlayerManager().revertToCheckpoint(player);
     }
 
@@ -47,14 +47,14 @@ public class RevertAction extends AbstractAction {
     public void executeNodeAction(MinigamePlayer player,
                                   Node node) {
         debug(player, node);
-        if(player == null || !player.isInMinigame()) return;
-        if(!player.isDead())
+        if (player == null || !player.isInMinigame()) return;
+        if (player.isLiving())
             Minigames.getPlugin().getPlayerManager().revertToCheckpoint(player);
     }
 
     @Override
     public void saveArguments(FileConfiguration config, String path) {
-    
+
     }
 
     @Override

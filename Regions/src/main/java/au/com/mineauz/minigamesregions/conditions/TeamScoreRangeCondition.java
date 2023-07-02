@@ -1,19 +1,15 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigames.menu.MenuItemList;
-import au.com.mineauz.minigames.menu.MenuItemPage;
-import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -22,10 +18,10 @@ import java.util.List;
 import java.util.Map;
 
 public class TeamScoreRangeCondition extends ConditionInterface {
-    
-    private IntegerFlag min = new IntegerFlag(5, "min");
-    private IntegerFlag max = new IntegerFlag(10, "max");
-    private StringFlag team = new StringFlag("NONE", "team");
+
+    private final IntegerFlag min = new IntegerFlag(5, "min");
+    private final IntegerFlag max = new IntegerFlag(10, "max");
+    private final StringFlag team = new StringFlag("NONE", "team");
 
     @Override
     public String getName() {
@@ -36,7 +32,7 @@ public class TeamScoreRangeCondition extends ConditionInterface {
     public String getCategory() {
         return "Team Conditions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
         out.put("Score", min.getFlag() + " - " + max.getFlag());
@@ -62,12 +58,12 @@ public class TeamScoreRangeCondition extends ConditionInterface {
     public boolean checkNodeCondition(MinigamePlayer player, Node node) {
         return checkCondition(player);
     }
-    
-    private boolean checkCondition(MinigamePlayer player){
+
+    private boolean checkCondition(MinigamePlayer player) {
         if (player == null || !player.isInMinigame()) {
             return false;
         }
-        
+
         Team team;
         if (player.getTeam() != null && this.team.getFlag().equals("NONE")) {
             team = player.getTeam();
@@ -77,7 +73,7 @@ public class TeamScoreRangeCondition extends ConditionInterface {
         } else {
             team = null;
         }
-        
+
         if (team != null) {
             return team.getScore() >= min.getFlag() && team.getScore() <= max.getFlag();
         } else {
@@ -107,23 +103,28 @@ public class TeamScoreRangeCondition extends ConditionInterface {
         m.addItem(min.getMenuItem("Minimum Score", Material.STONE_SLAB, 0, null));
         m.addItem(max.getMenuItem("Maximum Score", Material.STONE, 0, null));
         List<String> teams = new ArrayList<>();
-        for(TeamColor t : TeamColor.values())
-            teams.add(MinigameUtils.capitalize(t.toString().replace("_", " ")));
-        m.addItem(new MenuItemList("Team Color", Material.WHITE_WOOL, new Callback<String>() {
-            
+        for (TeamColor t : TeamColor.values())
+            teams.add(WordUtils.capitalize(t.toString().replace("_", " ")));
+        m.addItem(new MenuItemList("Team Color", Material.WHITE_WOOL, new Callback<>() {
+
+            @Override
+            public String getValue() {
+                return WordUtils.capitalize(team.getFlag().replace("_", " "));
+            }
+
             @Override
             public void setValue(String value) {
                 team.setFlag(value.toUpperCase().replace(" ", "_"));
             }
-            
-            @Override
-            public String getValue() {
-                return MinigameUtils.capitalize(team.getFlag().replace("_", " "));
-            }
         }, teams));
-        m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
         addInvertMenuItem(m);
         m.displayMenu(player);
+        return true;
+    }
+
+    @Override
+    public boolean onPlayerApplicable() {
         return true;
     }
 }

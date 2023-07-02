@@ -8,9 +8,9 @@ import java.util.List;
 
 public class RewardGroup {
 
-    private String groupName;
+    private final String groupName;
     //    private List<RewardItem> items = new ArrayList<RewardItem>();
-    private List<RewardType> items = new ArrayList<>();
+    private final List<RewardType> items = new ArrayList<>();
     private RewardRarity rarity;
 
     public RewardGroup(String groupName, RewardRarity rarity) {

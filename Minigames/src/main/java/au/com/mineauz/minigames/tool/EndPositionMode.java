@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.tool;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Material;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -58,7 +58,7 @@ public class EndPositionMode implements ToolMode {
     @Override
     public void select(MinigamePlayer player, Minigame minigame, Team team) {
         if (minigame.getEndPosition() != null) {
-            player.getPlayer().sendBlockChange(minigame.getEndPosition(), Material.SKELETON_SKULL, (byte) 1);
+            player.getPlayer().sendBlockChange(minigame.getEndPosition(), Material.SKELETON_SKULL.createBlockData());
             player.sendInfoMessage("Selected end position (marked with skull)");
         } else {
             player.sendMessage("No end position set!", MinigameMessageType.ERROR);
@@ -84,10 +84,5 @@ public class EndPositionMode implements ToolMode {
 
     @Override
     public void onUnsetMode(MinigamePlayer player, MinigameTool tool) {
-    }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
     }
 }

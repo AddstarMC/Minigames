@@ -8,20 +8,11 @@ import au.com.mineauz.minigames.objects.ModulePlaceHolderProvider;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-
-/**
- * Created for the AddstarMC Project.
- * Created by Narimm on 3/06/2020.
- */
 public class PlaceHolderManager extends PlaceholderExpansion {
-
     private final Minigames plugin;
     private final List<ModulePlaceHolderProvider> providers;
     private final Map<String, String> identifiers;
@@ -40,7 +31,7 @@ public class PlaceHolderManager extends PlaceholderExpansion {
     }
 
     @Override
-    public String onRequest(OfflinePlayer p, String params) {
+    public String onRequest(OfflinePlayer p, @NotNull String params) {
         return super.onRequest(p, params);
     }
 
@@ -55,23 +46,22 @@ public class PlaceHolderManager extends PlaceholderExpansion {
     }
 
     @Override
-    public String getIdentifier() {
+    public @NotNull String getIdentifier() {
         return Minigames.getPlugin().getName();
     }
 
     @Override
-    public String getAuthor() {
+    public @NotNull String getAuthor() {
         return Minigames.getPlugin().getDescription().getAuthors().toString();
     }
 
     @Override
-    public String getVersion() {
+    public @NotNull String getVersion() {
         return Minigames.getVERSION().toString();
     }
 
     @Override
-    public String onPlaceholderRequest(Player player, String identifier) {
-
+    public String onPlaceholderRequest(Player player, @NotNull String identifier) {
         if (player == null) {
             return "";
         }
@@ -86,33 +76,44 @@ public class PlaceHolderManager extends PlaceholderExpansion {
                 Minigame minigame = plugin.getMinigameManager().getMinigame(gameName);
                 try {
                     switch (parts[1]) {
-                        case "enabled":
+                        case "enabled" -> {
                             return Boolean.toString(minigame.isEnabled());
-                        case "maxPlayers":
+                        }
+                        case "maxPlayers" -> {
                             return Integer.toString(minigame.getMaxPlayers());
-                        case "currentPlayers":
+                        }
+                        case "currentPlayers" -> {
                             return Integer.toString(minigame.getPlayers().size());
-                        case "type":
+                        }
+                        case "type" -> {
                             return minigame.getType().getName();
-                        case "mechanic":
+                        }
+                        case "mechanic" -> {
                             return minigame.getMechanicName();
-                        case "state":
+                        }
+                        case "state" -> {
                             return minigame.getState().name();
-                        case "objective":
+                        }
+                        case "objective" -> {
                             return minigame.getObjective();
-                        case "gameType":
-                            return minigame.getGametypeName();
-                        case "timeLeft":
+                        }
+                        case "gameType" -> {
+                            return minigame.getGameTypeName();
+                        }
+                        case "timeLeft" -> {
                             return Integer.toString(minigame.getMinigameTimer().getTimeLeft());
-                        case "name":
+                        }
+                        case "name" -> {
                             return minigame.getName(true);
-                        default:
+                        }
+                        default -> {
                             for (ModulePlaceHolderProvider provider : providers) {
                                 if (provider.hasPlaceHolder(parts[1])) {
                                     return provider.onPlaceHolderRequest(player, gameName, parts[1]);
                                 }
                             }
                             return null;
+                        }
                     }
                 } catch (Exception e) {
                     plugin.getLogger().warning("Error processing PAPI:" + identifier);
@@ -127,19 +128,14 @@ public class PlaceHolderManager extends PlaceholderExpansion {
                 return null;
             }
         } else {
-            switch (identifier) {
-                case "gameCount":
-                    return Integer.toString(plugin.getMinigameManager().getAllMinigames().size());
-                case "enabledGameCount":
-                    return Long.toString(plugin.getMinigameManager().getAllMinigames().values()
-                          .stream().filter(Minigame::isEnabled).count());
-                case "totalPlaying":
-                    return Long.toString(plugin.getPlayerManager().getAllMinigamePlayers().stream()
-                          .filter(MinigamePlayer::isInMinigame).count());
-                default:
-
-                    return null;
-            }
+            return switch (identifier) {
+                case "gameCount" -> Integer.toString(plugin.getMinigameManager().getAllMinigames().size());
+                case "enabledGameCount" -> Long.toString(plugin.getMinigameManager().getAllMinigames().values()
+                        .stream().filter(Minigame::isEnabled).count());
+                case "totalPlaying" -> Long.toString(plugin.getPlayerManager().getAllMinigamePlayers().stream()
+                        .filter(MinigamePlayer::isInMinigame).count());
+                default -> null;
+            };
         }
     }
 

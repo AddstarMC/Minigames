@@ -31,7 +31,7 @@ public class MenuItemString extends MenuItem {
     }
 
     public void updateDescription() {
-        List<String> description = null;
+        List<String> description;
         String setting = str.getValue();
         if (setting == null)
             setting = "Not Set";
@@ -44,12 +44,12 @@ public class MenuItemString extends MenuItem {
             String desc = getDescription().get(0);
 
             if (desc.startsWith(ChatColor.GREEN.toString()))
-                description.set(0, ChatColor.GREEN.toString() + setting);
+                description.set(0, ChatColor.GREEN + setting);
             else
-                description.add(0, ChatColor.GREEN.toString() + setting);
+                description.add(0, ChatColor.GREEN + setting);
         } else {
             description = new ArrayList<>();
-            description.add(ChatColor.GREEN.toString() + setting);
+            description.add(ChatColor.GREEN + setting);
         }
 
         setDescription(description);

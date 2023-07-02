@@ -19,12 +19,12 @@ import java.util.Map;
 
 public class InfectionModule extends MinigameModule {
 
-    private IntegerFlag infectedPercent = new IntegerFlag(18, "infectedPercent");
-    private StringFlag infectedTeam = new StringFlag("red", "infectedTeam");
-    private StringFlag survivorTeam = new StringFlag("blue", "survivorTeam");
+    private final IntegerFlag infectedPercent = new IntegerFlag(18, "infectedPercent");
+    private final StringFlag infectedTeam = new StringFlag("red", "infectedTeam");
+    private final StringFlag survivorTeam = new StringFlag("blue", "survivorTeam");
 
     //Unsaved Data
-    private List<MinigamePlayer> infected = new ArrayList<>();
+    private final List<MinigamePlayer> infected = new ArrayList<>();
 
     public InfectionModule(Minigame mgm) {
         super(mgm);

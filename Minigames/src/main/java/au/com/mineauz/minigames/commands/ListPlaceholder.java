@@ -53,12 +53,12 @@ public class ListPlaceholder implements ICommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame, String label, String[] args) {
-        Set<String> placeholders =  plugin.getPlaceHolderManager().getRegisteredPlaceHolders();
+        Set<String> placeholders = plugin.getPlaceHolderManager().getRegisteredPlaceHolders();
         StringBuilder result = new StringBuilder();
-        for (String pHolder:placeholders) {
+        for (String pHolder : placeholders) {
             result.append("%").append(plugin.getName()).append("_").append(pHolder).append("%, ");
         }
-        result.delete(result.length()-1,result.length());
+        result.delete(result.length() - 1, result.length());
         sender.sendMessage("PlaceHolder List");
         sender.sendMessage(result.toString());
         return true;
