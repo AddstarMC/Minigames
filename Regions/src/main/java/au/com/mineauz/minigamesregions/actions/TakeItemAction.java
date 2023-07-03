@@ -60,30 +60,34 @@ public class TakeItemAction extends AbstractAction {
     }
 
     private void execute(MinigamePlayer player) {
-        ItemStack match = new ItemStack(Material.getMaterial(type.getFlag()), count.getFlag());
-        ItemStack matched = null;
-        boolean remove = false;
-        int slot = 0;
+        Material mat = Material.getMaterial(type.getFlag());
 
-        for (ItemStack i : player.getPlayer().getInventory().getContents()) {
-            if (i != null && i.getType() == match.getType()) {
-                if (match.getAmount() >= i.getAmount()) {
-                    matched = i.clone();
-                    remove = true;
-                } else {
-                    matched = i.clone();
-                    matched.setAmount(matched.getAmount() - match.getAmount());
+        if (mat != null) {
+            ItemStack match = new ItemStack(mat, count.getFlag());
+            ItemStack matched = null;
+            boolean remove = false;
+            int slot = 0;
+
+            for (ItemStack i : player.getPlayer().getInventory().getContents()) {
+                if (i != null && i.getType() == match.getType()) {
+                    if (match.getAmount() >= i.getAmount()) {
+                        matched = i.clone();
+                        remove = true;
+                    } else {
+                        matched = i.clone();
+                        matched.setAmount(matched.getAmount() - match.getAmount());
+                    }
+                    break;
+
                 }
-                break;
-
+                slot++;
             }
-            slot++;
-        }
 
-        if (remove)
-            player.getPlayer().getInventory().removeItem(matched);
-        else {
-            player.getPlayer().getInventory().getItem(slot).setAmount(matched.getAmount());
+            if (remove) {
+                player.getPlayer().getInventory().removeItem(matched);
+            } else {
+                player.getPlayer().getInventory().getItem(slot).setAmount(matched.getAmount());
+            }
         }
     }
 
