@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.objects.MgRegion;
-import au.com.mineauz.minigames.objects.Position;
+import io.papermc.paper.math.Position;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -56,7 +56,7 @@ public class RegionFlag extends Flag<MgRegion> {
             double y2 = Double.parseDouble(sliptPos2[1]);
             double z2 = Double.parseDouble(sliptPos2[2]);
 
-            setFlag(new MgRegion(Bukkit.getWorld(world), name, new Position(x1, y1, z1), new Position(x2, y2, z2)));
+            setFlag(new MgRegion(Bukkit.getWorld(world), name, Position.fine(x1, y1, z1), Position.fine(x2, y2, z2)));
         } else {
             //import legacy regions from before regions existed
             if (legacyFistPointLabel != null && legacySecondPointLabel != null) {

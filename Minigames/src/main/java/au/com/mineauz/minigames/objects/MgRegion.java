@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.objects;
 
+import io.papermc.paper.math.Position;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
@@ -89,9 +90,9 @@ public class MgRegion {
      */
     public void sortPositions() {
         //temporary storage to not overwrite the max values
-        Position pos1 = new Position(getMinX(), getMinY(), getMinZ());
+        Position pos1 = Position.fine(getMinX(), getMinY(), getMinZ());
 
-        this.pos2 = new Position(getMaxX(), getMaxY(), getMaxZ());
+        this.pos2 = Position.fine(getMaxX(), getMaxY(), getMaxZ());
         this.pos1 = pos1;
     }
 
