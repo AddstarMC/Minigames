@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
+import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.actions.Actions;
@@ -14,6 +15,7 @@ import au.com.mineauz.minigamesregions.conditions.Conditions;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemNode;
+import au.com.mineauz.minigamesregions.menuitems.MenuItemRegenRegion;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemRegion;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
 import org.bukkit.Location;
@@ -339,7 +341,7 @@ public class RegionModule extends MinigameModule {
         Menu rm = new Menu(6, "Regions and Nodes", viewer);
         List<MenuItem> items = new ArrayList<>(regions.size());
         for (String name : regions.keySet()) {
-            MenuItemRegion mir = new MenuItemRegion(name, Material.CHEST, regions.get(name), this);
+            MenuItemRegion mir = new MenuItemRegion(name, Material.ENDER_CHEST, regions.get(name), this);
             items.add(mir);
         }
         items.add(new MenuItemNewLine());
@@ -347,7 +349,20 @@ public class RegionModule extends MinigameModule {
             MenuItemNode min = new MenuItemNode(name, Material.CHEST, nodes.get(name), this);
             items.add(min);
         }
+
+        //display for regen regions
+        items.add(new MenuItemNewLine());
+        for (MgRegion region : getMinigame().getRegenRegions()) {
+            MenuItem min = new MenuItemRegenRegion(region.getName(), List.of(
+                    region.getName(),
+                    "from " + region.getMinX() + ", " + region.getMinY() + ", " + region.getMinZ(),
+                    "to " + region.getMaxX() + ", " + region.getMaxY() + ", " + region.getMaxZ(),
+                    "(" + region.getVolume() + ")"),
+                    Material.CHEST_MINECART, region, this);
+            items.add(min);
+        }
         rm.addItems(items);
+
         if (previous != null)
             rm.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), rm.getSize() - 9);
         rm.displayMenu(viewer);

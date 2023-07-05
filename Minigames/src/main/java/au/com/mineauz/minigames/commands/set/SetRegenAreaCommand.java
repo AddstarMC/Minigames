@@ -9,7 +9,9 @@ import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.RegenRegionSetResult;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SetRegenAreaCommand implements ICommand {
+    private final int REGIONS_PER_PAGE = 5;
 
     @Override
     public String getName() {
@@ -50,7 +53,8 @@ public class SetRegenAreaCommand implements ICommand {
         return new String[]{
                 "/minigame set <Minigame> regenarea select <1/2>",
                 "/minigame set <Minigame> regenarea create <name>",
-                "/minigame set <Minigame> regenarea delete <name>"};
+                "/minigame set <Minigame> regenarea list <page>",
+                "/minigame set <Minigame> regenarea delete <name>" };
     }
 
     @Override
@@ -63,6 +67,65 @@ public class SetRegenAreaCommand implements ICommand {
         return "minigame.set.regenarea";
     }
 
+    /**
+     * helper methode for creating the list-component for /minigame set <Minigame> regenarea list <page>
+     *
+     * @param minigame the minigame of the command
+     * @param page     the given page
+     * @return returns a component containing max 5 regen regions with their coordinates and volume
+     */
+    private Component makeList(Minigame minigame, int page) {
+        //get all currently active regions
+        List<MgRegion> regions = new ArrayList<>(minigame.getRegenRegions());
+        //how many regions are known. Needed to calculate how many pages there are and
+        //how many there should be on the given page (if the page is not full)
+        final int NUM_OF_REGIONS = regions.size();
+        //how many pages of regions are there? - needed in header and limit page to how many exits
+        final int NUM_OF_PAGES = (int) Math.ceil((double) NUM_OF_REGIONS / (double) REGIONS_PER_PAGE);
+
+        //limit page to range of possible pages
+        final int PAGE = Math.max(Math.min(page, NUM_OF_PAGES), 1);
+        //don't try to access more books than exits
+        final int MAX_BOOKS_THIS_PAGE = Math.min(NUM_OF_REGIONS, PAGE * REGIONS_PER_PAGE);
+
+        Component componentList = LegacyComponentSerializer.legacyAmpersand().deserialize(String.format("&6-----------{Regen Regions &e%s&6/&e%s}-----------", PAGE, NUM_OF_PAGES));
+
+        //add the books for the page
+        for (int id = (PAGE - 1) * REGIONS_PER_PAGE; id < MAX_BOOKS_THIS_PAGE; id++) {
+            MgRegion region = regions.get(id);
+
+            componentList = componentList.appendNewline();
+            componentList = componentList.append(Component.text(region.getName() +
+                    " from " + region.getMinX() + ", " + region.getMinY() + ", " + region.getMinZ() +
+                    " to " + region.getMaxX() + ", " + region.getMaxY() + ", " + region.getMaxZ() +
+                    "(" + region.getVolume() + ")"));
+        }
+
+        //add footer
+        componentList = componentList.appendNewline();
+        componentList = componentList.append(LegacyComponentSerializer.legacySection().deserialize("&2--"));
+
+        //back button or none
+        if (PAGE > 1) {
+            componentList = componentList.append(LegacyComponentSerializer.legacySection().deserialize(String.format("&6<<( &e%s&6 ) ", PAGE - 1)).clickEvent(ClickEvent.runCommand("/minigame set " + minigame.getName(false) + " regenarea list " + (PAGE - 1))));
+        } else {
+            componentList = componentList.append(Component.text("-------"));
+        }
+
+        //inner part, separating both buttons
+        componentList = componentList.append(LegacyComponentSerializer.legacySection().deserialize("&2---<*>---"));
+
+        //next button
+        if (PAGE < NUM_OF_PAGES) {
+            componentList = componentList.append(LegacyComponentSerializer.legacySection().deserialize(String.format("&6 ( &e%s&6 )>>", PAGE + 1)).clickEvent(ClickEvent.runCommand("/minigame set " + minigame.getName(false) + " regenarea list " + (PAGE + 1))));
+        } else {
+            componentList = componentList.append(Component.text("-------"));
+        }
+        componentList = componentList.append(LegacyComponentSerializer.legacySection().deserialize("&2--"));
+
+        return componentList;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
@@ -70,7 +133,10 @@ public class SetRegenAreaCommand implements ICommand {
             if (sender instanceof Player player) {
                 MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
 
-                if (args.length == 2) {
+                if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
+                    mgPlayer.sendInfoMessage(makeList(minigame, 1));
+
+                } else if (args.length == 2) {
                     switch (args[0].toLowerCase()) {
                         case "select" -> {
                             Location placerLoc = mgPlayer.getLocation();
@@ -116,6 +182,13 @@ public class SetRegenAreaCommand implements ICommand {
 
                             return true;
                         }
+                        case "list" -> {
+                            if (args[1].matches("\\d+")) {
+                                mgPlayer.sendInfoMessage(makeList(minigame, Integer.parseInt(args[1])));
+                            } else {
+                                mgPlayer.sendMessage(Component.text(args[1] + "Is not a valid number!"), MinigameMessageType.ERROR);
+                            }
+                        }
                         case "delete" -> {
                             if (minigame.removeRegenRegion(args[1])) {
                                 mgPlayer.sendInfoMessage(Component.text("Removed the regen region named " + args[1] + " from " + minigame.getName(false), NamedTextColor.GRAY));
@@ -144,6 +217,7 @@ public class SetRegenAreaCommand implements ICommand {
             List<String> tab = new ArrayList<>();
             tab.add("select");
             tab.add("create");
+            tab.add("list");
             tab.add("delete");
             return MinigameUtils.tabCompleteMatch(tab, args[0]);
         } else if (args.length == 2) {
@@ -154,6 +228,14 @@ public class SetRegenAreaCommand implements ICommand {
             } else if (args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("delete")) {
                 for (MgRegion region : minigame.getRegenRegions()) {
                     tab.add(region.getName());
+                }
+            } else if (args[0].equalsIgnoreCase("list")) {
+                //cache number of pages to not recalculate every loop
+                final int PAGES = (int) Math.ceil((double) minigame.getRegenRegions().size() / (double) REGIONS_PER_PAGE);
+
+                //make list of all known pages
+                for (int page = 1; page <= PAGES; page++) {
+                    tab.add(String.valueOf(page));
                 }
             }
             return MinigameUtils.tabCompleteMatch(tab, args[1]);
