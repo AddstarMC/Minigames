@@ -380,7 +380,6 @@ public class Events implements Listener {
             }
         }
 
-
         //Spectator disables:
         if (ply.isInMinigame() && pdata.getMinigamePlayer(event.getPlayer()).getMinigame().isSpectator(pdata.getMinigamePlayer(event.getPlayer()))) {
             event.setCancelled(true);

@@ -68,7 +68,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
         double ry;
         double rz;
         final int maxradius;
-        if (thm.getMaxRadius() == 0) {
+        if (thm.getMaxRadius() <= 0) {
             maxradius = 1000;
         } else {
             maxradius = thm.getMaxRadius();
@@ -112,10 +112,10 @@ public class TreasureHuntMechanic extends GameMechanicBase {
                 RewardsModule rewards = RewardsModule.getModule(mgm);
                 if (rewards.getScheme() instanceof StandardRewardScheme) {
                     if (!((StandardRewardScheme) rewards.getScheme()).getPrimaryReward().getRewards().isEmpty()) {
-                        int numitems = (int) Math.round(Math.random() * (thm.getMaxTreasure() - thm.getMinTreasure())) + thm.getMinTreasure();
+                        int numItems = (int) Math.min(27, Math.round(Math.random() * (thm.getMaxTreasure() - thm.getMinTreasure())) + thm.getMinTreasure());
 
                         final ItemStack[] items = new ItemStack[27];
-                        for (int i = 0; i < numitems; i++) {
+                        for (int i = 0; i < numItems; i++) {
                             RewardType rew = ((StandardRewardScheme) rewards.getScheme()).getPrimaryReward().getReward().get(0);
                             if (rew instanceof ItemReward irew) {
                                 items[i] = irew.getRewardItem();
@@ -343,5 +343,4 @@ public class TreasureHuntMechanic extends GameMechanicBase {
             }
         }
     }
-
 }
