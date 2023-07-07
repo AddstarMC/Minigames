@@ -717,7 +717,6 @@ public class Events implements Listener {
             ply.getManualEntry().checkValidEntry(event.getMessage());
             ply.setManualEntry(null);
         }
-
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -1120,10 +1120,10 @@ public class Minigame implements ScriptObject {
         MenuItemString obj = (MenuItemString) objective.getMenuItem("Objective Description", Material.DIAMOND);
         obj.setAllowNull(true);
         itemsMain.add(obj);
-        obj = (MenuItemString) gameTypeName.getMenuItem("Gametype Description", Material.OAK_WALL_SIGN);
+        obj = (MenuItemString) gameTypeName.getMenuItem("Gametype Description", Material.OAK_SIGN);
         obj.setAllowNull(true);
         itemsMain.add(obj);
-        obj = (MenuItemString) displayName.getMenuItem("Display Name", Material.OAK_WALL_SIGN);
+        obj = (MenuItemString) displayName.getMenuItem("Display Name", Material.OAK_SIGN);
         obj.setAllowNull(true);
         itemsMain.add(obj);
         itemsMain.add(new MenuItemNewLine());
@@ -1217,7 +1217,7 @@ public class Minigame implements ScriptObject {
         }, 0, null));
         itemsMain.add(new MenuItemNewLine());
         itemsMain.add(new MenuItemPage("Player Settings", Material.SKELETON_SKULL, playerMenu));
-//        List<String> thDes = new ArrayList<>();
+//      List<String> thDes = new ArrayList<>();
 //        thDes.add("Treasure hunt related");
 //        thDes.add("settings.");
 //        itemsMain.add(new MenuItemPage("Treasure Hunt Settings", thDes, Material.CHEST, treasureHunt));
@@ -1302,7 +1302,7 @@ public class Minigame implements ScriptObject {
         //--------------//
         List<MenuItem> itemsFlags = new ArrayList<>(getFlags().size());
         for (String flag : getFlags()) {
-            itemsFlags.add(new MenuItemFlag(Material.OAK_WALL_SIGN, flag, getFlags()));
+            itemsFlags.add(new MenuItemFlag(Material.OAK_SIGN, flag, getFlags()));
         }
         flags.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), playerMenu), flags.getSize() - 9);
         flags.addItem(new MenuItemAddFlag("Add Flag", MenuUtility.getCreateMaterial(), this), flags.getSize() - 1);
