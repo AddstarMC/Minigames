@@ -51,8 +51,7 @@ public class SingleplayerType extends MinigameTypeBase {
 
     @Override
     public boolean joinMinigame(MinigamePlayer player, Minigame mgm) {
-
-        if (mgm.getLives() > 0 && !Float.isFinite(mgm.getLives())) {
+        if (mgm.getLives() > 0 && Math.abs(mgm.getLives()) < Integer.MAX_VALUE) {
             player.sendInfoMessage(MessageManager.getMinigamesMessage("minigame.livesLeft", mgm.getLives()));
         }
         if (!mgm.isAllowedFlight()) {

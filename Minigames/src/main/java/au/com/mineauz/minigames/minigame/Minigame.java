@@ -962,12 +962,12 @@ public class Minigame implements ScriptObject {
         this.regenDelay.setFlag(regenDelay);
     }
 
-    public float getLives() {
-        return lives.getFlag();
+    public int getLives() {
+        return lives.getFlag().intValue();
     }
 
-    public void setLives(float lives) {
-        this.lives.setFlag(lives);
+    public void setLives(int lives) {
+        this.lives.setFlag((float) lives);
     }
 
     public int getFloorDegenTime() {
