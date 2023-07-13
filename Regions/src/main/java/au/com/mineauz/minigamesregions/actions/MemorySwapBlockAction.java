@@ -93,9 +93,9 @@ public class MemorySwapBlockAction extends AbstractAction {
         blockPool.add(Material.STRIPPED_JUNGLE_LOG);
         blockPool.add(Material.ACACIA_LOG);
         blockPool.add(Material.STRIPPED_ACACIA_LOG);
-        blockPool.add(Material.DARK_OAK_LOG);
         blockPool.add(Material.MANGROVE_LOG);
         blockPool.add(Material.STRIPPED_MANGROVE_LOG);
+        blockPool.add(Material.DARK_OAK_LOG);
         blockPool.add(Material.STRIPPED_DARK_OAK_LOG);
         blockPool.add(Material.CRIMSON_STEM);
         blockPool.add(Material.STRIPPED_CRIMSON_STEM);
@@ -211,7 +211,6 @@ public class MemorySwapBlockAction extends AbstractAction {
         return output;
     }
 
-
     @Override
     public String getName() {
         return "MEMORY_SWAP_BLOCK";
@@ -229,7 +228,6 @@ public class MemorySwapBlockAction extends AbstractAction {
         out.put("Whitelist mode", whitelistMode.getFlag()); //todo this can be quite long, maybe cut it off
         out.put("White/Blacklist", wbList.getFlag());
     }
-
 
     @Override
     public boolean useInRegions() {
@@ -320,7 +318,6 @@ public class MemorySwapBlockAction extends AbstractAction {
                                   Node node) {
         debug(player, node);
     }
-
 
     @Override
     public void saveArguments(FileConfiguration config, String path) {
