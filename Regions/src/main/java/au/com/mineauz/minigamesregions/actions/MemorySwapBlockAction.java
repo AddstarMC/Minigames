@@ -154,7 +154,6 @@ public class MemorySwapBlockAction extends AbstractAction {
 
         //kinda living
         blockPool.add(Material.SCULK);
-        blockPool.add(Material.SCULK_CATALYST);
         blockPool.add(Material.BONE_BLOCK);
         blockPool.add(Material.NETHER_WART_BLOCK);
         blockPool.add(Material.WARPED_WART_BLOCK);

@@ -102,6 +102,7 @@ public class Minigame implements ScriptObject {
     private final BooleanFlag unlimitedAmmo = new BooleanFlag(false, "unlimitedammo");
     private final BooleanFlag saveCheckpoints = new BooleanFlag(false, "saveCheckpoints");
     private final BooleanFlag lateJoin = new BooleanFlag(false, "latejoin");
+    // just to stay backwards compatible we have
     private final FloatFlag lives = new FloatFlag(0F, "lives");
 
     private final RegionMapFlag regenRegions = new RegionMapFlag(new HashMap<>(), "regenRegions", "regenarea.1", "regenarea.2");
