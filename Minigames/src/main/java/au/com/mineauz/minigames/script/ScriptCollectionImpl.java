@@ -1,10 +1,10 @@
 package au.com.mineauz.minigames.script;
 
+import com.google.common.collect.Iterables;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.NoSuchElementException;
-
-import com.google.common.collect.Iterables;
 
 class ScriptCollectionImpl<E extends ScriptReference> extends ScriptCollection {
     private final Collection<E> collection;

@@ -11,8 +11,8 @@ import java.util.List;
 
 public class MenuItemPotion extends MenuItem {
 
-    private PotionEffect eff;
-    private PlayerLoadout loadout;
+    private final PotionEffect eff;
+    private final PlayerLoadout loadout;
 
     public MenuItemPotion(String name, Material displayItem, PotionEffect eff, PlayerLoadout loadout) {
         super(name, displayItem);
@@ -29,27 +29,27 @@ public class MenuItemPotion extends MenuItem {
     }
 
     public void updateDescription() {
-        List<String> description = null;
+        List<String> description;
         if (getDescription() != null) {
             description = getDescription();
             if (getDescription().size() >= 2) {
                 String desc = ChatColor.stripColor(getDescription().get(0));
 
                 if (desc.equals("Level: " + (eff.getAmplifier() + 1))) {
-                    description.set(0, ChatColor.GREEN.toString() + "Level: " + ChatColor.GRAY + (eff.getAmplifier() + 1));
-                    description.set(1, ChatColor.GREEN.toString() + "Duration: " + ChatColor.GRAY + eff.getDuration());
+                    description.set(0, ChatColor.GREEN + "Level: " + ChatColor.GRAY + (eff.getAmplifier() + 1));
+                    description.set(1, ChatColor.GREEN + "Duration: " + ChatColor.GRAY + eff.getDuration());
                 } else {
-                    description.add(0, ChatColor.GREEN.toString() + "Level: " + ChatColor.GRAY + (eff.getAmplifier() + 1));
-                    description.add(1, ChatColor.GREEN.toString() + "Duration: " + ChatColor.GRAY + eff.getDuration());
+                    description.add(0, ChatColor.GREEN + "Level: " + ChatColor.GRAY + (eff.getAmplifier() + 1));
+                    description.add(1, ChatColor.GREEN + "Duration: " + ChatColor.GRAY + eff.getDuration());
                 }
             } else {
-                description.add(0, ChatColor.GREEN.toString() + "Level: " + ChatColor.GRAY + (eff.getAmplifier() + 1));
-                description.add(1, ChatColor.GREEN.toString() + "Duration: " + ChatColor.GRAY + eff.getDuration());
+                description.add(0, ChatColor.GREEN + "Level: " + ChatColor.GRAY + (eff.getAmplifier() + 1));
+                description.add(1, ChatColor.GREEN + "Duration: " + ChatColor.GRAY + eff.getDuration());
             }
         } else {
             description = new ArrayList<>();
-            description.add(0, ChatColor.GREEN.toString() + "Level: " + ChatColor.GRAY + (eff.getAmplifier() + 1));
-            description.add(1, ChatColor.GREEN.toString() + "Duration: " + ChatColor.GRAY + eff.getDuration());
+            description.add(0, ChatColor.GREEN + "Level: " + ChatColor.GRAY + (eff.getAmplifier() + 1));
+            description.add(1, ChatColor.GREEN + "Duration: " + ChatColor.GRAY + eff.getDuration());
         }
 
         setDescription(description);

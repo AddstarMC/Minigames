@@ -1,20 +1,19 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.Map;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 
-public class SetEnabledAction extends AbstractAction{
-    
-    private BooleanFlag state = new BooleanFlag(false, "state");
+import java.util.Map;
+
+public class SetEnabledAction extends AbstractAction {
+
+    private final BooleanFlag state = new BooleanFlag(false, "state");
 
     @Override
     public String getName() {
@@ -25,7 +24,7 @@ public class SetEnabledAction extends AbstractAction{
     public String getCategory() {
         return "Region/Node Actions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
         out.put("Enabled", state.getFlag());
@@ -44,13 +43,13 @@ public class SetEnabledAction extends AbstractAction{
     @Override
     public void executeRegionAction(MinigamePlayer player, Region region) {
 
-        debug(player,region);
+        debug(player, region);
         region.setEnabled(state.getFlag());
     }
 
     @Override
     public void executeNodeAction(MinigamePlayer player, Node node) {
-        debug(player,node);
+        debug(player, node);
         node.setEnabled(state.getFlag());
     }
 

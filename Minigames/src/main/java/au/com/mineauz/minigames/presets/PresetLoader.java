@@ -1,10 +1,10 @@
 package au.com.mineauz.minigames.presets;
 
-import au.com.mineauz.minigames.config.MinigameSave;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -27,7 +27,7 @@ public class PresetLoader {
             }
 
             return ChatColor.GRAY + "Loaded the " +
-                    MinigameUtils.capitalize(preset) + " preset to " + minigame.getName(false);
+                    WordUtils.capitalize(preset) + " preset to " + minigame.getName(false);
         } else {
             return ChatColor.RED + "Failed to load preset: " +
                     ChatColor.GRAY + preset + ".yml was not found in the presets folder!";

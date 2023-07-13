@@ -1,14 +1,13 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import au.com.mineauz.minigames.PlayerLoadout;
+import au.com.mineauz.minigames.menu.MenuItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import au.com.mineauz.minigames.PlayerLoadout;
-import au.com.mineauz.minigames.menu.MenuItem;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class LoadoutSetFlag extends Flag<Map<String, PlayerLoadout>> {
     public LoadoutSetFlag(Map<String, PlayerLoadout> value, String name) {

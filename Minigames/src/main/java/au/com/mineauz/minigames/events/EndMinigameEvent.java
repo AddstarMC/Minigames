@@ -1,14 +1,13 @@
 package au.com.mineauz.minigames.events;
 
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+
 import java.util.List;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.minigame.Minigame;
-
 public class EndMinigameEvent extends AbstractMinigameEvent {
-
-    private List<MinigamePlayer> winners = null;
-    private List<MinigamePlayer> losers = null;
+    private final List<MinigamePlayer> winners;
+    private final List<MinigamePlayer> losers;
 
 
     public EndMinigameEvent(List<MinigamePlayer> winners, List<MinigamePlayer> losers, Minigame minigame) {

@@ -19,4 +19,9 @@ public class PlayerDropFlagTrigger implements Trigger {
     public boolean useInNodes() {
         return true;
     }
+
+    @Override
+    public boolean triggerOnPlayerAvailable() {
+        return true;
+    }
 }

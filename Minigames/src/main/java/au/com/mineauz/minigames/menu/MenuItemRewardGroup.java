@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardRarity;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -15,8 +15,8 @@ import java.util.List;
 
 public class MenuItemRewardGroup extends MenuItem {
 
-    private RewardGroup group;
-    private Rewards rewards;
+    private final RewardGroup group;
+    private final Rewards rewards;
 
     public MenuItemRewardGroup(String name, Material displayItem, RewardGroup group, Rewards rewards) {
         super(name, displayItem);
@@ -41,7 +41,7 @@ public class MenuItemRewardGroup extends MenuItem {
     }
 
     public void updateDescription() {
-        List<String> description = null;
+        List<String> description;
         List<String> options = getOptions();
 
         int pos = options.indexOf(group.getRarity().toString());
@@ -58,24 +58,24 @@ public class MenuItemRewardGroup extends MenuItem {
                 String desc = ChatColor.stripColor(getDescription().get(1));
 
                 if (options.contains(desc)) {
-                    description.set(0, ChatColor.GRAY.toString() + options.get(before));
-                    description.set(1, ChatColor.GREEN.toString() + group.getRarity().toString());
-                    description.set(2, ChatColor.GRAY.toString() + options.get(after));
+                    description.set(0, ChatColor.GRAY + options.get(before));
+                    description.set(1, ChatColor.GREEN + group.getRarity().toString());
+                    description.set(2, ChatColor.GRAY + options.get(after));
                 } else {
-                    description.add(0, ChatColor.GRAY.toString() + options.get(before));
-                    description.add(1, ChatColor.GREEN.toString() + group.getRarity().toString());
-                    description.add(2, ChatColor.GRAY.toString() + options.get(after));
+                    description.add(0, ChatColor.GRAY + options.get(before));
+                    description.add(1, ChatColor.GREEN + group.getRarity().toString());
+                    description.add(2, ChatColor.GRAY + options.get(after));
                 }
             } else {
-                description.add(0, ChatColor.GRAY.toString() + options.get(before));
-                description.add(1, ChatColor.GREEN.toString() + group.getRarity().toString());
-                description.add(2, ChatColor.GRAY.toString() + options.get(after));
+                description.add(0, ChatColor.GRAY + options.get(before));
+                description.add(1, ChatColor.GREEN + group.getRarity().toString());
+                description.add(2, ChatColor.GRAY + options.get(after));
             }
         } else {
             description = new ArrayList<>();
-            description.add(ChatColor.GRAY.toString() + options.get(before));
-            description.add(ChatColor.GREEN.toString() + group.getRarity().toString());
-            description.add(ChatColor.GRAY.toString() + options.get(after));
+            description.add(ChatColor.GRAY + options.get(before));
+            description.add(ChatColor.GREEN + group.getRarity().toString());
+            description.add(ChatColor.GRAY + options.get(after));
         }
 
         setDescription(description);

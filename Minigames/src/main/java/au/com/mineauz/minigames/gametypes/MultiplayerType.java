@@ -1,7 +1,11 @@
 package au.com.mineauz.minigames.gametypes;
 
-import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.MultiplayerTimer;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -23,9 +27,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class MultiplayerType extends MinigameTypeBase {
-    private static Minigames plugin = Minigames.getPlugin();
-    private MinigamePlayerManager pdata = plugin.getPlayerManager();
-    private MinigameManager mdata = plugin.getMinigameManager();
+    private static final Minigames plugin = Minigames.getPlugin();
+    private final MinigamePlayerManager pdata = plugin.getPlayerManager();
+    private final MinigameManager mdata = plugin.getMinigameManager();
 
     public MultiplayerType() {
         setType(MinigameType.MULTIPLAYER);
@@ -54,14 +58,14 @@ public class MultiplayerType extends MinigameTypeBase {
         Location location = mgm.getLobbyPosition();
         boolean result = false;
         if (location == null) {
-          plugin.getLogger().warning("Game has no lobby set and it was expected:" + mgm.getName(true));
+            plugin.getLogger().warning("Game has no lobby set and it was expected:" + mgm.getName(true));
         } else {
-           result = player.teleport(location);
-          if (plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != location.getWorld() &&
-              player.getPlayer().hasPermission("minigame.set.lobby")) {
-            player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE +
-                "Lobby location is across worlds! This may cause some server performance issues!", MinigameMessageType.ERROR);
-          }
+            result = player.teleport(location);
+            if (plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != location.getWorld() &&
+                    player.getPlayer().hasPermission("minigame.set.lobby")) {
+                player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE +
+                        "Lobby location is across worlds! This may cause some server performance issues!", MinigameMessageType.ERROR);
+            }
         }
         return result;
     }
@@ -83,11 +87,11 @@ public class MultiplayerType extends MinigameTypeBase {
                 mdata.sendMinigameMessage(mgm, MinigameUtils.getLang("minigame.skipWaitTime"));
             } else if (mgm.getMpTimer() == null) {
                 int neededPlayers = mgm.getMinPlayers() - mgm.getPlayers().size();
-                mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("minigame.waitingForPlayers", neededPlayers));
+                mdata.sendMinigameMessage(mgm, MessageManager.getMinigamesMessage("minigame.waitingForPlayers", neededPlayers));
             }
         } else if (mgm.hasStarted()) {
             player.setLatejoining(true);
-            player.sendInfoMessage(MinigameUtils.formStr("minigame.lateJoin", 5)); //TODO: Late join delay variable
+            player.sendInfoMessage(MessageManager.getMinigamesMessage("minigame.lateJoin", 5)); //TODO: Late join delay variable
             final MinigamePlayer fply = player;
             final Minigame fmgm = mgm;
             if (mgm.isTeamGame()) {
@@ -206,7 +210,7 @@ public class MultiplayerType extends MinigameTypeBase {
             mgm.getMpTimer().removeTimer();
             mgm.setMpTimer(null);
             mgm.setState(MinigameState.IDLE);
-            mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("minigame.waitingForPlayers", 1));
+            mdata.sendMinigameMessage(mgm, MessageManager.getMinigamesMessage("minigame.waitingForPlayers", 1));
         }
     }
 
@@ -312,7 +316,7 @@ public class MultiplayerType extends MinigameTypeBase {
                         if (winner == null || (t.getScore() > winner.getScore() &&
                                 (drawTeams.isEmpty() || t.getScore() > drawTeams.get(0).getScore()))) {
                             winner = t;
-                        } else if (winner != null && t.getScore() == winner.getScore()) {
+                        } else if (t.getScore() == winner.getScore()) {
                             if (!drawTeams.isEmpty()) {
                                 drawTeams.clear();
                             }
@@ -362,21 +366,21 @@ public class MultiplayerType extends MinigameTypeBase {
                             pdata.quitMinigame(ply, true);
                             if (!plugin.getConfig().getBoolean("multiplayer.broadcastwin")) {
                                 if (drawTeams.size() == 2) {
-                                    ply.sendMessage(MinigameUtils.formStr("player.end.team.tie",
+                                    ply.sendMessage(MessageManager.getMinigamesMessage("player.end.team.tie",
                                             drawTeams.get(0).getChatColor() + drawTeams.get(0).getDisplayName() + ChatColor.WHITE,
                                             drawTeams.get(1).getChatColor() + drawTeams.get(1).getDisplayName() + ChatColor.WHITE,
                                             event.getMinigame().getName(true)), MinigameMessageType.ERROR);
                                 } else {
-                                    ply.sendMessage(MinigameUtils.formStr("player.end.team.tieCount",
+                                    ply.sendMessage(MessageManager.getMinigamesMessage("player.end.team.tieCount",
                                             drawTeams.size(),
                                             event.getMinigame().getName(true)), MinigameMessageType.ERROR);
                                 }
-                                String scores = "";
+                                StringBuilder scores = new StringBuilder();
                                 int c = 1;
                                 for (Team t : TeamsModule.getMinigameModule(mgm).getTeams()) {
-                                    scores += t.getChatColor().toString() + t.getScore();
+                                    scores.append(t.getChatColor().toString()).append(t.getScore());
                                     if (c != TeamsModule.getMinigameModule(mgm).getTeams().size())
-                                        scores += ChatColor.WHITE + " : ";
+                                        scores.append(ChatColor.WHITE + " : ");
                                     c++;
                                 }
                                 ply.sendInfoMessage(MinigameUtils.getLang("minigame.info.score") + " " + scores);
@@ -384,22 +388,22 @@ public class MultiplayerType extends MinigameTypeBase {
                         }
                         if (plugin.getConfig().getBoolean("multiplayer.broadcastwin")) {
                             if (drawTeams.size() == 2) {
-                                plugin.getServer().broadcastMessage(ChatColor.RED + "[Minigames] " + MinigameUtils.formStr("player.end.team.tie",
+                                plugin.getServer().broadcastMessage(ChatColor.RED + "[Minigames] " + MessageManager.getMinigamesMessage("player.end.team.tie",
                                         drawTeams.get(0).getChatColor() + drawTeams.get(0).getDisplayName() + ChatColor.WHITE,
                                         drawTeams.get(1).getChatColor() + drawTeams.get(1).getDisplayName() + ChatColor.WHITE,
                                         event.getMinigame().getName(true)));
                             } else {
-                                plugin.getServer().broadcastMessage(ChatColor.RED + "[Minigames] " + MinigameUtils.formStr("player.end.team.tieCount",
+                                plugin.getServer().broadcastMessage(ChatColor.RED + "[Minigames] " + MessageManager.getMinigamesMessage("player.end.team.tieCount",
                                         drawTeams.size(),
                                         event.getMinigame().getName(true)));
                             }
 
-                            String scores = "";
+                            StringBuilder scores = new StringBuilder();
                             int c = 1;
                             for (Team t : TeamsModule.getMinigameModule(mgm).getTeams()) {
-                                scores += t.getChatColor().toString() + t.getScore();
+                                scores.append(t.getChatColor().toString()).append(t.getScore());
                                 if (c != TeamsModule.getMinigameModule(mgm).getTeams().size())
-                                    scores += ChatColor.WHITE + " : ";
+                                    scores.append(ChatColor.WHITE + " : ");
                                 c++;
                             }
                             plugin.getServer().broadcastMessage(MinigameUtils.getLang("minigame.info.score") + " " + scores);

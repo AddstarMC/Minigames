@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.objects;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import org.bukkit.*;
@@ -91,19 +92,23 @@ public class CTFFlag {
             blockBelow.setY(blockBelow.getY() - 1);
         }
 
+        if (blockBelow.getBlock().getType() == Material.LAVA) {
+            return null;
+        }
+
         if (blockBelow.getBlock().getType() == Material.FURNACE ||
                 blockBelow.getBlock().getType() == Material.DISPENSER ||
                 blockBelow.getBlock().getType() == Material.CHEST ||
                 blockBelow.getBlock().getType() == Material.BREWING_STAND ||
-                blockBelow.getBlock().getType() == Material.OAK_SIGN ||
-                blockBelow.getBlock().getType() == Material.OAK_WALL_SIGN) {
+                Tag.SIGNS.isTagged(blockBelow.getBlock().getType()) ||
+                Tag.WALL_SIGNS.isTagged(blockBelow.getBlock().getType())) {
             blockBelow.setY(blockBelow.getY() + 1);
         }
 
         newLocation = blockBelow.clone();
         newLocation.setY(newLocation.getY() + 1);
 
-        newLocation.getBlock().setType(Material.OAK_SIGN);
+        newLocation.getBlock().setType(spawnData.getType());
         Sign sign = (Sign) newLocation.getBlock().getState();
 
         sign.setBlockData(data);
@@ -111,15 +116,13 @@ public class CTFFlag {
         originalBlock = blockBelow.getBlock().getState();
         blockBelow.getBlock().setType(Material.BEDROCK);
 
-        if (newLocation != null) {
-            atHome = false;
+        atHome = false;
 
-            for (int i = 0; i < 4; i++) {
-                sign.setLine(i, signText[i]);
-            }
-            sign.update();
-            currentLocation = newLocation.clone();
+        for (int i = 0; i < 4; i++) {
+            sign.setLine(i, signText[i]);
         }
+        sign.update();
+        currentLocation = newLocation.clone();
 
         return newLocation;
     }
@@ -181,14 +184,16 @@ public class CTFFlag {
                 minigame.addDroppedFlag(newID, self);
             }
             respawnFlag();
+            //TODO: Build this again with broadcasts.
             for (MinigamePlayer pl : minigame.getPlayers()) {
                 if (getTeam() != null)
-                    pl.sendInfoMessage(MinigameUtils.formStr("minigame.flag.returnedTeam", getTeam().getChatColor() + getTeam().getDisplayName() + ChatColor.WHITE));
+                    pl.sendInfoMessage(
+                            MessageManager.getMinigamesMessage("minigame.flag.returnedTeam", getTeam().getChatColor() + getTeam().getDisplayName() + ChatColor.WHITE));
                 else
                     pl.sendInfoMessage(MinigameUtils.getLang("minigame.flag.returnedNeutral"));
             }
             taskID = -1;
-        }, respawnTime * 20);
+        }, respawnTime * 20L);
     }
 
     public void startCarrierParticleEffect(final Player player) {

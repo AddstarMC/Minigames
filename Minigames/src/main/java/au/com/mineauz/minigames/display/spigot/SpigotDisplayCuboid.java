@@ -2,19 +2,22 @@ package au.com.mineauz.minigames.display.spigot;
 
 import au.com.mineauz.minigames.display.AbstractDisplayObject;
 import au.com.mineauz.minigames.display.DisplayManager;
-import au.com.mineauz.minigames.display.IDisplayCubiod;
-import au.com.mineauz.minigames.display.INonPersistantDisplay;
+import au.com.mineauz.minigames.display.IDisplayCuboid;
+import au.com.mineauz.minigames.display.INonPersistentDisplay;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class SpigotDisplayCuboid extends AbstractDisplayObject implements IDisplayCubiod, INonPersistantDisplay {
-    private static Location temp = new Location(null, 0, 0, 0);
+public class SpigotDisplayCuboid extends AbstractDisplayObject implements IDisplayCuboid, INonPersistentDisplay {
+    private static final Location temp = new Location(null, 0, 0, 0);
 
-    private Vector minCorner;
-    private Vector maxCorner;
+    private final Vector minCorner;
+    private final Vector maxCorner;
+
+    private int lastBarrier = 41;
 
     public SpigotDisplayCuboid(DisplayManager manager, World world, Vector minCorner, Vector maxCorner) {
         super(manager, world);
@@ -40,7 +43,7 @@ public class SpigotDisplayCuboid extends AbstractDisplayObject implements IDispl
 
     @Override
     public void refresh() {
-        // Dont display effect if they cant see it
+        // Don't display effect if they cant see it
         if (player != null && player.getWorld() != getWorld()) {
             return;
         }
@@ -72,15 +75,20 @@ public class SpigotDisplayCuboid extends AbstractDisplayObject implements IDispl
     }
 
     private void placeEffectAt(double x, double y, double z) {
+        lastBarrier++;
+        if (lastBarrier < 41) {
+            return;
+        }
+        lastBarrier = 0;
         temp.setX(x);
         temp.setY(y);
         temp.setZ(z);
         temp.setWorld(getWorld());
 
         if (player == null) {
-            getWorld().spawnParticle(Particle.BARRIER, temp, 1);
+            getWorld().spawnParticle(Particle.BLOCK_MARKER, temp, 1, 0, 0, 0, 0, Material.BARRIER.createBlockData());
         } else {
-            player.spawnParticle(Particle.BARRIER, temp, 1);
+            player.spawnParticle(Particle.BLOCK_MARKER, temp, 1, 0, 0, 0, 0, Material.BARRIER.createBlockData());
         }
     }
 }

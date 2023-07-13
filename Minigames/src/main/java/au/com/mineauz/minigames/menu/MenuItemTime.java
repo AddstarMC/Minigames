@@ -19,18 +19,18 @@ public class MenuItemTime extends MenuItemInteger {
 
     @Override
     public void updateDescription() {
-        List<String> description = null;
+        List<String> description;
         if (getDescription() != null) {
             description = getDescription();
             String desc = ChatColor.stripColor(getDescription().get(0));
 
             if (desc.matches("([0-9]+[dhms]:?)+"))
-                description.set(0, ChatColor.GREEN.toString() + MinigameUtils.convertTime(getValue().getValue(), true));
+                description.set(0, ChatColor.GREEN + MinigameUtils.convertTime(getValue().getValue(), true));
             else
-                description.add(0, ChatColor.GREEN.toString() + MinigameUtils.convertTime(getValue().getValue(), true));
+                description.add(0, ChatColor.GREEN + MinigameUtils.convertTime(getValue().getValue(), true));
         } else {
             description = new ArrayList<>();
-            description.add(ChatColor.GREEN.toString() + MinigameUtils.convertTime(getValue().getValue(), true));
+            description.add(ChatColor.GREEN + MinigameUtils.convertTime(getValue().getValue(), true));
         }
 
         setDescription(description);

@@ -16,10 +16,7 @@ import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.OfflineMinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.*;
@@ -36,17 +33,17 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Predicate;
 
 public class Events implements Listener {
-    private static Minigames plugin = Minigames.getPlugin();
-    private MinigamePlayerManager pdata = plugin.getPlayerManager();
-    private MinigameManager mdata = plugin.getMinigameManager();
+    private static final Minigames plugin = Minigames.getPlugin();
+    private final MinigamePlayerManager pdata = plugin.getPlayerManager();
+    private final MinigameManager mdata = plugin.getMinigameManager();
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerResourcePack(PlayerResourcePackStatusEvent event) {
@@ -58,21 +55,17 @@ public class Events implements Listener {
                 if (!module.isEnabled()) return;
                 if (!module.isForced()) return;
                 switch (event.getStatus()) {
-                    case ACCEPTED:
-                        required.remove(ply);
-                        return;
-                    case DECLINED:
+                    case ACCEPTED, SUCCESSFULLY_LOADED -> required.remove(ply);
+                    case DECLINED -> {
                         Minigames.getPlugin().getPlayerManager().quitMinigame(ply, true);
-                        MessageManager.sendMessage(ply,MinigameMessageType.ERROR,null,"minigames.resource.declined");
+                        MessageManager.sendMessage(ply, MinigameMessageType.ERROR, null, "minigames.resource.declined");
                         required.remove(ply);
-                        return;
-                    case FAILED_DOWNLOAD:
+                    }
+                    case FAILED_DOWNLOAD -> {
                         Minigames.getPlugin().getPlayerManager().quitMinigame(ply, true);
-                        MessageManager.sendMessage(ply,MinigameMessageType.ERROR,null,"minigames.resource.failed");
+                        MessageManager.sendMessage(ply, MinigameMessageType.ERROR, null, "minigames.resource.failed");
                         required.remove(ply);
-                        return;
-                    case SUCCESSFULLY_LOADED:
-                        required.remove(ply);
+                    }
                 }
             }
 
@@ -82,14 +75,20 @@ public class Events implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerDeath(PlayerDeathEvent event) {
         final MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity().getPlayer());
-        if (ply == null) return;
         if (ply.isInMinigame()) {
             Minigame mgm = ply.getMinigame();
             if (!mgm.hasDeathDrops()) {
+                if (mgm.keepInventory()) {
+                    List<ItemStack> drops = Arrays.asList(ply.getPlayer().getInventory().getContents());
+                    PlayerLoadout l = new PlayerLoadout("deathDrops");
+                    for (int i = 0; i < drops.size(); i++) {
+                        l.addItem(drops.get(i), i);
+                    }
+                    ply.setLoadout(l);
+                }
                 event.getDrops().clear();
             }
-            String msg = "";
-            msg = event.getDeathMessage();
+            String msg = event.getDeathMessage();
             event.setDeathMessage(null);
             event.setDroppedExp(0);
 
@@ -115,7 +114,7 @@ public class Events implements Listener {
                     }
                     pdata.quitMinigame(ply, false);
                 } else if (mgm.getLives() > 0) {
-                    ply.sendInfoMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives() - ply.getDeaths()));
+                    ply.sendInfoMessage(MessageManager.getMinigamesMessage("minigame.livesLeft", mgm.getLives() - ply.getDeaths()));
                 }
             } else if (mgm.getState() == MinigameState.ENDED) {
                 plugin.getPlayerManager().quitMinigame(ply, true);
@@ -126,7 +125,6 @@ public class Events implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     private void playerSpawn(PlayerRespawnEvent event) {
         final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-        if (ply == null) return;
         if (ply.isInMinigame()) {
             final WeatherTimeModule mod = WeatherTimeModule.getMinigameModule(ply.getMinigame());
             if (mod != null && mod.isUsingCustomWeather()) {
@@ -149,7 +147,6 @@ public class Events implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void playerDropItem(PlayerDropItemEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-        if (ply == null) return;
         if (ply.isInMinigame()) {
             Minigame mgm = pdata.getMinigamePlayer(event.getPlayer()).getMinigame();
             if (!mgm.hasItemDrops() ||
@@ -161,8 +158,7 @@ public class Events implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void itemPickup(EntityPickupItemEvent event) {
-        if (event.getEntity() instanceof Player) {
-            Player player = (Player) event.getEntity();
+        if (event.getEntity() instanceof Player player) {
             MinigamePlayer ply = pdata.getMinigamePlayer(player);
             if (ply.isInMinigame()) {
                 Minigame mgm = ply.getMinigame();
@@ -205,7 +201,7 @@ public class Events implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerConnect(PlayerJoinEvent event) {
         pdata.addMinigamePlayer(event.getPlayer());
-        File pldata = new File(plugin.getDataFolder() + "/playerdata/inventories/" + event.getPlayer().getUniqueId().toString() + ".yml");
+        File pldata = new File(plugin.getDataFolder() + "/playerdata/inventories/" + event.getPlayer().getUniqueId() + ".yml");
         final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
         if (pldata.exists()) {
             ply.setOfflineMinigamePlayer(new OfflineMinigamePlayer(event.getPlayer().getUniqueId()));
@@ -247,7 +243,6 @@ public class Events implements Listener {
     @EventHandler
     public void playerInterract(PlayerInteractEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-        if (ply == null) return;
 
         if (ply.isInMinigame() && !ply.canInteract()) {
             event.setCancelled(true);
@@ -257,7 +252,7 @@ public class Events implements Listener {
             event.setCancelled(true);
             ply.setNoClose(false);
             if (event.getClickedBlock() != null) {
-              ply.getManualEntry().checkValidEntry(event.getClickedBlock().getBlockData().getAsString());
+                ply.getManualEntry().checkValidEntry(event.getClickedBlock().getBlockData().getAsString());
             }
             ply.setManualEntry(null);
             return;
@@ -271,8 +266,7 @@ public class Events implements Listener {
 
         if (event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("minigame.sign.use.details")) {
             Block cblock = event.getClickedBlock();
-            if (cblock.getState() instanceof Sign && !event.isCancelled()) {
-                Sign sign = (Sign) cblock.getState();
+            if (cblock.getState() instanceof Sign sign && !event.isCancelled()) {
                 if (sign.getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]")) {
                     if ((sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Join") || sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Bet")) && !ply.isInMinigame()) {
                         Minigame mgm = mdata.getMinigame(sign.getLine(2));
@@ -345,7 +339,7 @@ public class Events implements Listener {
                         } else if (mgm == null) {
                             event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noMinigame"));
                         } else if (mgm.getUsePermissions()) {
-                            event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()));
+                            event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MessageManager.getMinigamesMessage("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()));
                         }
                     }
                 }
@@ -360,7 +354,7 @@ public class Events implements Listener {
             if (event.getPlayer().isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
                 tool.openMenu(ply);
                 event.setCancelled(true);
-            } else if (event.getClickedBlock() != null && (event.getClickedBlock().getType() == Material.OAK_WALL_SIGN || event.getClickedBlock().getType() == Material.OAK_SIGN)) {
+            } else if (event.getClickedBlock() != null && (Tag.WALL_SIGNS.isTagged(event.getClickedBlock().getType()) || Tag.SIGNS.isTagged(event.getClickedBlock().getType()))) {
                 Sign sign = (Sign) event.getClickedBlock().getState();
                 if (ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[Minigame]") && ChatColor.stripColor(sign.getLine(1)).equalsIgnoreCase("Join")) {
                     Minigame minigame = mdata.getMinigame(sign.getLine(2));
@@ -391,7 +385,7 @@ public class Events implements Listener {
     @EventHandler
     public void onTeleportAway(PlayerTeleportEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-        if (ply == null) return;
+
         if (ply.isInMinigame() && (event.getCause() == TeleportCause.COMMAND || event.getCause() == TeleportCause.PLUGIN || (!ply.getMinigame().isAllowedEnderpearls() && event.getCause() == TeleportCause.ENDER_PEARL))) {
             if (!ply.getAllowTeleport()) {
                 Location from = event.getFrom();
@@ -407,7 +401,6 @@ public class Events implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onGMChange(PlayerGameModeChangeEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-        if (ply == null) return;
         if (ply.isInMinigame() && !ply.getAllowGamemodeChange()) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noGamemode"));
@@ -417,7 +410,6 @@ public class Events implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onFlyToggle(PlayerToggleFlightEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-        if (ply == null) return;
         if (ply.isInMinigame() && (!ply.getMinigame().isSpectator(ply) || !ply.getMinigame().canSpectateFly()) &&
                 !ply.canFly()) {
             event.setCancelled(true);
@@ -433,7 +425,7 @@ public class Events implements Listener {
                 !event.getMinigamePlayer().getMinigame().isAllowedMPCheckpoints() &&
                 !event.getMinigamePlayer().isLatejoining()) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("minigame.error.noRevert", event.getMinigamePlayer().getMinigame().getType().getName()));
+            event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MessageManager.getMinigamesMessage("minigame.error.noRevert", event.getMinigamePlayer().getMinigame().getType().getName()));
         } else if (!event.getMinigamePlayer().getMinigame().hasStarted()) {
             event.setCancelled(true);
         }
@@ -442,7 +434,6 @@ public class Events implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void commandExecute(PlayerCommandPreprocessEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-        if (ply == null) return;
         if (ply.isInMinigame()) {
             for (String comd : pdata.getDeniedCommands()) {
                 if (event.getMessage().contains(comd)) {
@@ -456,13 +447,11 @@ public class Events implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     private void entityDamageEntity(EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof Player) {
-            if (event.getDamager() instanceof Snowball) {
+            if (event.getDamager() instanceof Snowball sb) {
                 MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getEntity());
-                if (ply == null) return;
-                Snowball sb = (Snowball) event.getDamager();
                 if (ply.isInMinigame() && ply.getMinigame().hasPaintBallMode()) {
-                    if (sb.getShooter() instanceof Player) {
-                        MinigamePlayer shooter = pdata.getMinigamePlayer((Player) sb.getShooter());
+                    if (sb.getShooter() instanceof Player player) {
+                        MinigamePlayer shooter = pdata.getMinigamePlayer(player);
                         Minigame mgm = ply.getMinigame();
                         if (shooter == null) return;
                         if (shooter.isInMinigame() && shooter.getMinigame().equals(ply.getMinigame())) {
@@ -482,7 +471,6 @@ public class Events implements Listener {
                 }
             } else if (event.getDamager() instanceof Player) {
                 MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getDamager());
-                if (ply == null) return;
                 if (ply.isInMinigame() && !ply.canPvP())
                     event.setCancelled(true);
                 else if (ply.isInMinigame() && ply.getMinigame().getState() == MinigameState.ENDED &&
@@ -490,19 +478,16 @@ public class Events implements Listener {
                         GameOverModule.getMinigameModule(ply.getMinigame()).getLosers().contains(ply)) {
                     event.setCancelled(true);
                 }
-            } else if (event.getDamager() instanceof Arrow) {
-                Arrow arrow = (Arrow) event.getDamager();
-                if (arrow.getShooter() instanceof Player) {
-                    Player ply = (Player) arrow.getShooter();
+            } else if (event.getDamager() instanceof Arrow arrow) {
+                if (arrow.getShooter() instanceof Player ply) {
                     MinigamePlayer mgpl = pdata.getMinigamePlayer(ply);
-                    if (mgpl == null) return;
+
                     if (mgpl.isInMinigame() && !mgpl.canPvP())
                         event.setCancelled(true);
                 }
             }
         }
-        if (event.getDamager() instanceof Player) {
-            Player player = (Player) event.getDamager();
+        if (event.getDamager() instanceof Player player) {
             MinigamePlayer ply = pdata.getMinigamePlayer(player);
             ItemStack item = player.getEquipment().getItemInMainHand();
             if (MinigameUtils.isMinigameTool(item) && player.hasPermission("minigame.tool")) {
@@ -566,7 +551,7 @@ public class Events implements Listener {
             Snowball snowball = (Snowball) event.getEntity();
             if (snowball.getShooter() != null && snowball.getShooter() instanceof Player) {
                 MinigamePlayer ply = pdata.getMinigamePlayer((Player) snowball.getShooter());
-                if (ply == null) return;
+
                 if (ply.isInMinigame() && ply.getMinigame().hasUnlimitedAmmo()) {
                     ItemStack mainhand = ply.getPlayer().getInventory().getItemInMainHand();
                     if (mainhand.getType() == Material.SNOW_BLOCK) {
@@ -580,9 +565,9 @@ public class Events implements Listener {
             }
         } else if (event.getEntityType() == EntityType.EGG) {
             Egg egg = (Egg) event.getEntity();
-            if (egg.getShooter() != null && egg.getShooter() instanceof Player) {
-                MinigamePlayer ply = pdata.getMinigamePlayer((Player) egg.getShooter());
-                if (ply == null) return;
+            if (egg.getShooter() != null && egg.getShooter() instanceof Player player) {
+                MinigamePlayer ply = pdata.getMinigamePlayer(player);
+
                 if (ply.isInMinigame() && ply.getMinigame().hasUnlimitedAmmo()) {
                     ply.getPlayer().getInventory().addItem(new ItemStack(Material.EGG));
                 }
@@ -592,18 +577,18 @@ public class Events implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     private void playerHurt(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player) {
-            MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getEntity());
-            if (ply == null) return;
+        if (event.getEntity() instanceof Player player) {
+            MinigamePlayer ply = pdata.getMinigamePlayer(player);
+
             if (ply.isInMinigame()) {
                 Minigame mgm = ply.getMinigame();
                 if (mgm.isSpectator(ply)) {
                     event.setCancelled(true);
                 } else if ((!ply.getMinigame().hasStarted() && ply.getMinigame().getState() != MinigameState.ENDED) || ply.isLatejoining()) {
                     event.setCancelled(true);
-                } else if (ply.isInvincible())
+                } else if (ply.isInvincible()) {
                     event.setCancelled(true);
-                else if (event.getCause() == DamageCause.FALL &&
+                } else if (event.getCause() == DamageCause.FALL &&
                         ply.getLoadout() != null && !ply.getLoadout().hasFallDamage()) {
                     event.setCancelled(true);
                 }
@@ -613,9 +598,8 @@ public class Events implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     private void spectatorAttack(EntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof Player) {
-            MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getDamager());
-            if (ply == null) return;
+        if (event.getDamager() instanceof Player player) {
+            MinigamePlayer ply = pdata.getMinigamePlayer(player);
             if (ply.isInMinigame() && ply.getMinigame().isSpectator(ply)) {
                 event.setCancelled(true);
             }
@@ -634,28 +618,19 @@ public class Events implements Listener {
                 if (item != null) {
                     ItemStack disItem = null;
                     switch (event.getClick()) {
-                        case LEFT:
+                        case LEFT -> {
                             if (event.getCursor().getType() != Material.AIR)
                                 disItem = item.onClickWithItem(event.getCursor());
                             else
                                 disItem = item.onClick();
-                            break;
-                        case RIGHT:
-                            disItem = item.onRightClick();
-                            break;
-                        case SHIFT_LEFT:
-                            disItem = item.onShiftClick();
-                            break;
-                        case SHIFT_RIGHT:
-                            disItem = item.onShiftRightClick();
-                            break;
-                        case DOUBLE_CLICK:
-                            disItem = item.onDoubleClick();
-                            break;
+                        }
+                        case RIGHT -> disItem = item.onRightClick();
+                        case SHIFT_LEFT -> disItem = item.onShiftClick();
+                        case SHIFT_RIGHT -> disItem = item.onShiftRightClick();
+                        case DOUBLE_CLICK -> disItem = item.onDoubleClick();
                     }
 
-                    if (item != null)
-                        event.setCurrentItem(disItem);
+                    event.setCurrentItem(disItem);
                 }
             }
         } else if (ply.isInMinigame()) {
@@ -706,7 +681,6 @@ public class Events implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void closeMenu(InventoryCloseEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getPlayer());
-        if (ply == null) return;
 
         if (ply.isInMenu() && !ply.getNoClose()) {
             ply.setMenu(null);
@@ -728,7 +702,7 @@ public class Events implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void playerHungry(FoodLevelChangeEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getEntity());
-        if (ply == null) return;
+
         if (ply.isInMinigame() && ply.getLoadout() != null &&
                 !ply.getLoadout().hasHunger()) {
             event.setCancelled(true);
@@ -738,7 +712,7 @@ public class Events implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void playerMove(PlayerMoveEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
-        if (ply == null) return;
+
         if (ply.isInMinigame()) {
             if (ply.isFrozen()) {
                 if (event.getFrom().getBlockX() != event.getTo().getBlockX() ||
@@ -754,11 +728,59 @@ public class Events implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void breakScoreboard(BlockBreakEvent event) {
         Block block = event.getBlock();
-        if (block.getType() == Material.OAK_WALL_SIGN) {
+        if (Tag.WALL_SIGNS.isTagged(block.getType())) {
             if (block.hasMetadata("MGScoreboardSign")) {
                 Minigame minigame = (Minigame) block.getMetadata("Minigame").get(0).value();
                 minigame.getScoreboardData().removeDisplay(block);
             }
         }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    private void potionAffectsPlayer(PotionSplashEvent event) {
+        if (!(event.getPotion().getShooter() instanceof Player)) return;
+        MinigamePlayer ply = pdata.getMinigamePlayer((Player) event.getPotion().getShooter());
+        if (!ply.isInMinigame()) return;
+        if (ply.getMinigame().friendlyFireSplashPotions()) return;
+        List<Player> list = event.getAffectedEntities().stream()
+                .filter(p -> p instanceof Player)
+                .filter(p -> pdata.getMinigamePlayer((Player) p).isInMinigame())
+                .filter(p -> pdata.getMinigamePlayer((Player) p).getMinigame() == ply.getMinigame())
+                .map(p -> (Player) p)
+                .toList();
+        if (list.isEmpty()) return;
+        List<PotionEffectType> effects = event.getPotion().getEffects().stream().map(PotionEffect::getType).toList();
+        list.stream().filter(Predicate.not(p -> isEffectApplicable(effects, ply, pdata.getMinigamePlayer(p)))).forEach(p -> event.setIntensity(p, 0.0));
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    private void effectAreaAffectsPlayer(AreaEffectCloudApplyEvent event) {
+        if (!(event.getEntity().getSource() instanceof Player player)) return;
+        MinigamePlayer ply = pdata.getMinigamePlayer(player);
+
+        if (!ply.isInMinigame()) return;
+        if (ply.getMinigame().friendlyFireLingeringPotions()) return;
+        List<Player> list = event.getAffectedEntities().stream()
+                .filter(p -> p instanceof Player)
+                .filter(p -> pdata.getMinigamePlayer((Player) p).isInMinigame())
+                .filter(p -> pdata.getMinigamePlayer((Player) p).getMinigame() == ply.getMinigame())
+                .map(p -> (Player) p)
+                .toList();
+        if (list.isEmpty()) return;
+        List<PotionEffectType> effects = List.of(event.getEntity().getBasePotionData().getType().getEffectType());
+        event.getAffectedEntities().removeAll(list.stream().filter(Predicate.not(p -> isEffectApplicable(effects, ply, pdata.getMinigamePlayer(p)))).toList());
+    }
+
+    private boolean isEffectApplicable(Collection<PotionEffectType> effectTypes, MinigamePlayer ply, MinigamePlayer rPly) {
+        if (!ply.getMinigame().isTeamGame()) {
+            if (ply == rPly) {
+                return !MinigameTag.NEGATIVE_POTION.isTagged(effectTypes);
+            }
+            return !MinigameTag.POSITIVE_POTION.isTagged(effectTypes);
+        }
+        if (ply.getTeam() == rPly.getTeam()) {
+            return !MinigameTag.NEGATIVE_POTION.isTagged(effectTypes);
+        }
+        return !MinigameTag.POSITIVE_POTION.isTagged(effectTypes);
     }
 }

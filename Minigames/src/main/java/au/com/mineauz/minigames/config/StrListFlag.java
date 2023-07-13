@@ -1,17 +1,17 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.List;
-
+import au.com.mineauz.minigames.menu.MenuItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import au.com.mineauz.minigames.menu.MenuItem;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ListFlag extends Flag<List<String>> {
+public class StrListFlag extends Flag<List<String>> {
 
-    public ListFlag(List<String> value, String name) {
+    public StrListFlag(List<String> value, String name) {
         setFlag(value);
-        setDefaultFlag(value);
+        setDefaultFlag(new ArrayList<>()); //saving tests if the flag is equal to their default
         setName(name);
     }
 

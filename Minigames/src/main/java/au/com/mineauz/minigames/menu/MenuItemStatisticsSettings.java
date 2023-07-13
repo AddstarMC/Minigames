@@ -1,11 +1,10 @@
 package au.com.mineauz.minigames.menu;
 
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.MinigameStats;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 public class MenuItemStatisticsSettings extends MenuItem {
     private final Minigame minigame;

@@ -1,19 +1,17 @@
 package au.com.mineauz.minigames.objects;
 
 import be.seeseemelk.mockbukkit.block.BlockMock;
-import be.seeseemelk.mockbukkit.block.BlockStateMock;
+import be.seeseemelk.mockbukkit.block.state.BlockStateMock;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Created for the AddstarMC Project. Created by Narimm on 10/01/2019.
- */
 public class SignBlockMock extends BlockMock {
 
     private BlockStateMock state;
-    private BlockData data;
+    private final BlockData data;
 
     /**
      * Creates a basic block with a given material that is also linked to a specific location.
@@ -28,12 +26,12 @@ public class SignBlockMock extends BlockMock {
     }
 
     @Override
-    public BlockData getBlockData() {
+    public @NotNull BlockData getBlockData() {
         return data;
     }
 
     @Override
-    public BlockState getState() {
+    public @NotNull BlockState getState() {
         return state;
     }
 

@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -11,14 +11,14 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 public class Menu {
-    private int rows = 2;
-    private ItemStack[] pageView;
-    private Map<Integer, MenuItem> pageMap = new HashMap<>();
-    private String name = "Menu";
+    private final int rows;
+    private final ItemStack[] pageView;
+    private final Map<Integer, MenuItem> pageMap = new HashMap<>();
+    private final String name;
     private boolean allowModify = false;
     private Menu previousPage = null;
     private Menu nextPage = null;
-    private MinigamePlayer viewer = null;
+    private final MinigamePlayer viewer;
     private int reopenTimerID = -1;
     private Inventory inv = null;
 
@@ -151,14 +151,17 @@ public class Menu {
     }
 
     public void displayMenu(MinigamePlayer ply) {
+        Menu t = this;
+        Player player = ply.getPlayer();
         updateAll();
         populateMenu();
-        Player player = ply.getPlayer();
-
         inv = Bukkit.createInventory(player, rows * 9, name);
         inv.setContents(pageView);
-        ply.getPlayer().openInventory(inv);
-        ply.setMenu(this);
+        // Some calls of displayMenu are async, which is not allowed.
+        Minigames.getPlugin().getServer().getScheduler().runTask(Minigames.getPlugin(), () -> {
+            ply.getPlayer().openInventory(inv);
+            ply.setMenu(t);
+        });
     }
 
     public boolean getAllowModify() {
@@ -214,7 +217,7 @@ public class Menu {
             viewer.setNoClose(false);
             viewer.setManualEntry(null);
             displayMenu(viewer);
-        }, (long) (time * 20));
+        }, time * 20L);
     }
 
     public void cancelReopenTimer() {

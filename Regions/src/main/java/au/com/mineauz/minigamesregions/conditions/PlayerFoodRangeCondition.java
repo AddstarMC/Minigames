@@ -1,33 +1,31 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import java.util.Map;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.Map;
 
 public class PlayerFoodRangeCondition extends ConditionInterface {
-    private IntegerFlag min = new IntegerFlag(20, "min");
-    private IntegerFlag max = new IntegerFlag(20, "max");
+    private final IntegerFlag min = new IntegerFlag(20, "min");
+    private final IntegerFlag max = new IntegerFlag(20, "max");
 
     @Override
     public String getName() {
         return "PLAYER_FOOD_RANGE";
     }
-    
+
     @Override
-    public String getCategory(){
+    public String getCategory() {
         return "Player Conditions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
         out.put("Food", min.getFlag() + " - " + max.getFlag());
@@ -52,21 +50,11 @@ public class PlayerFoodRangeCondition extends ConditionInterface {
     public boolean checkRegionCondition(MinigamePlayer player, Region region) {
         return checkCondition(player);
     }
-    
+
     private boolean checkCondition(MinigamePlayer player) {
-        if (player == null || !player.isInMinigame()) {
-            return false;
-        }
-        
-        Player p = player.getPlayer();
-        int food = p.getFoodLevel();
-        if (food >= min.getFlag() && food <= max.getFlag()) {
-            return true;
-        } else {
-            return true;
-        }
+        return player != null && player.isInMinigame();
     }
-    
+
     @Override
     public void saveArguments(FileConfiguration config, String path) {
         min.saveValue(path, config);
@@ -86,9 +74,14 @@ public class PlayerFoodRangeCondition extends ConditionInterface {
         Menu m = new Menu(3, "XP Range", player);
         m.addItem(min.getMenuItem("Min Food", Material.STONE_SLAB, 0, 20));
         m.addItem(max.getMenuItem("Max Food", Material.STONE, 0, 20));
-        m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
         addInvertMenuItem(m);
         m.displayMenu(player);
+        return true;
+    }
+
+    @Override
+    public boolean onPlayerApplicable() {
         return true;
     }
 }

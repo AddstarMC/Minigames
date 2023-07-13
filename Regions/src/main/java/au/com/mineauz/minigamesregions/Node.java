@@ -16,100 +16,100 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class Node implements ScriptObject {
-    
-    private String name;
+public class Node implements ExecutableScriptObject {
+
+    private final String name;
     private Location loc;
-    private List<NodeExecutor> executors = new ArrayList<>();
+    private final List<NodeExecutor> executors = new ArrayList<>();
     private boolean enabled = true;
-    
-    public Node(String name, Location loc){
+
+    public Node(String name, Location loc) {
         this.name = name;
         this.loc = loc;
     }
-    
-    public String getName(){
+
+    public String getName() {
         return name;
     }
-    
-    public Location getLocation(){
+
+    public Location getLocation() {
         return loc.clone();
     }
-    
+
     public void setLocation(Location loc) {
         this.loc = loc.clone();
     }
-    
-    public int addExecutor(Trigger trigger){
+
+    public int addExecutor(Trigger trigger) {
         executors.add(new NodeExecutor(trigger));
         return executors.size();
     }
-    
-    public int addExecutor(NodeExecutor exec){
+
+    public int addExecutor(NodeExecutor exec) {
         executors.add(exec);
         return executors.size();
     }
-    
-    public List<NodeExecutor> getExecutors(){
+
+    public List<NodeExecutor> getExecutors() {
         return executors;
     }
-    
-    public void removeExecutor(int id){
-        if(executors.size() <= id){
+
+    public void removeExecutor(int id) {
+        if (executors.size() <= id) {
             executors.remove(id - 1);
         }
     }
-    
-    public void removeExecutor(NodeExecutor executor){
+
+    public void removeExecutor(NodeExecutor executor) {
         executors.remove(executor);
     }
-    
-    public void setEnabled(boolean enabled){
-        this.enabled = enabled;
-    }
-    
-    public boolean getEnabled(){
+
+    public boolean getEnabled() {
         return enabled;
     }
-    
-    public void execute(Trigger trigger, MinigamePlayer player){
-        if(player != null && player.getMinigame() != null && player.getMinigame().isSpectator(player)) return;
-        if(player == null || player.getMinigame() == null)return;
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void execute(Trigger trigger, MinigamePlayer player) {
+        if (player != null && player.getMinigame() != null && player.getMinigame().isSpectator(player)) return;
+        if (player == null || player.getMinigame() == null) return;
         List<NodeExecutor> toExecute = new ArrayList<>();
-        for(NodeExecutor exec : executors){
-            if(exec.getTrigger() == trigger){
-                if(checkConditions(exec, player) && exec.canBeTriggered(player))
+        for (NodeExecutor exec : executors) {
+            if (exec.getTrigger() == trigger) {
+                if (checkConditions(exec, player) && exec.canBeTriggered(player))
                     toExecute.add(exec);
             }
         }
-        for(NodeExecutor exec : toExecute){
+        for (NodeExecutor exec : toExecute) {
             execute(exec, player);
         }
     }
-    
-    public boolean checkConditions(NodeExecutor exec, MinigamePlayer player){
-        for(ConditionInterface con : exec.getConditions()){
+
+    public boolean checkConditions(NodeExecutor exec, MinigamePlayer player) {
+        for (ConditionInterface con : exec.getConditions()) {
             boolean c = con.checkNodeCondition(player, this);
-            if(con.isInverted())
+            if (con.isInverted())
                 c = !c;
-            if(!c){
+            if (!c) {
                 return false;
             }
         }
         return true;
     }
-    
-    public void execute(NodeExecutor exec, MinigamePlayer player){
-        for(ActionInterface act : exec.getActions()){
-            if(!enabled && !act.getName().equalsIgnoreCase("SET_ENABLED")) continue;
+
+    public void execute(NodeExecutor exec, MinigamePlayer player) {
+        for (ActionInterface act : exec.getActions()) {
+            if (!enabled && !act.getName().equalsIgnoreCase("SET_ENABLED")) continue;
             act.executeNodeAction(player, this);
-            if(!exec.isTriggerPerPlayer())
+            if (!exec.isTriggerPerPlayer())
                 exec.addPublicTrigger();
             else
                 exec.addPlayerTrigger(player);
         }
     }
-    
+
     @Override
     public ScriptReference get(String name) {
         if (name.equalsIgnoreCase("name")) {
@@ -119,15 +119,15 @@ public class Node implements ScriptObject {
         } else if (name.equalsIgnoreCase("block")) {
             return ScriptWrapper.wrap(loc.getBlock());
         }
-        
+
         return null;
     }
-    
+
     @Override
     public Set<String> getKeys() {
         return ImmutableSet.of("name", "pos", "block");
     }
-    
+
     @Override
     public String getAsString() {
         return name;

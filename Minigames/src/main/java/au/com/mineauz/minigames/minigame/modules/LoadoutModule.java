@@ -1,14 +1,15 @@
 package au.com.mineauz.minigames.minigame.modules;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.LoadoutSetFlag;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import com.google.common.collect.Maps;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,10 +26,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class LoadoutModule extends MinigameModule {
-
-    private static Map<Class<? extends LoadoutAddon>, LoadoutAddon<?>> addons = Maps.newHashMap();
-    private Map<String, PlayerLoadout> extraLoadouts = new HashMap<>();
-    private LoadoutSetFlag loadoutsFlag = new LoadoutSetFlag(extraLoadouts, "loadouts");
+    private static final Map<Class<? extends LoadoutAddon>, LoadoutAddon<?>> addons = Maps.newHashMap();
+    private final Map<String, PlayerLoadout> extraLoadouts = new HashMap<>();
+    private final LoadoutSetFlag loadoutsFlag = new LoadoutSetFlag(extraLoadouts, "loadouts");
 
     public LoadoutModule(Minigame mgm) {
         super(mgm);
@@ -36,7 +37,7 @@ public class LoadoutModule extends MinigameModule {
         extraLoadouts.put("default", def);
     }
 
-    public static LoadoutModule getMinigameModule(Minigame minigame) {
+    public static LoadoutModule getMinigameModule(@NotNull Minigame minigame) {
         return (LoadoutModule) minigame.getModule("Loadouts");
     }
 
@@ -235,7 +236,7 @@ public class LoadoutModule extends MinigameModule {
                             if (!equip)
                                 fply.sendMessage(MinigameUtils.getLang("player.loadout.nextSpawn"), MinigameMessageType.INFO);
                             else {
-                                fply.sendMessage(MinigameUtils.formStr("player.loadout.equipped", floadout2.getName(true)), MinigameMessageType.INFO);
+                                fply.sendMessage(MessageManager.getMinigamesMessage("player.loadout.equipped", floadout2.getName(true)), MinigameMessageType.INFO);
                                 floadout2.equiptLoadout(fply);
                             }
                             return null;

@@ -13,7 +13,7 @@ public class LocationListFlag extends Flag<List<Location>> {
 
     public LocationListFlag(List<Location> value, String name) {
         setFlag(value);
-        setDefaultFlag(value);
+        setDefaultFlag(new ArrayList<>()); //saving tests if the flag is equal to their default
         setName(name);
     }
 

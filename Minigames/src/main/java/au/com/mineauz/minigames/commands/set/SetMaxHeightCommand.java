@@ -1,15 +1,13 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.List;
-
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.managers.MessageManager;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
+import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public class SetMaxHeightCommand implements ICommand {
 
@@ -61,7 +59,7 @@ public class SetMaxHeightCommand implements ICommand {
                 int num = Integer.parseInt(args[0]);
                 TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
                 thm.setMaxHeight(num);
-                MessageManager.sendMessage(sender, MinigameMessageType.INFO,null,"command.treasures.setMaxHeight.set",minigame.toString(),num);
+                MessageManager.sendMessage(sender, MinigameMessageType.INFO, null, "command.treasures.setMaxHeight.set", minigame.toString(), num);
                 return true;
             }
         }

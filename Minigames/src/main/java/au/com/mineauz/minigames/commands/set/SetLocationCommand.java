@@ -1,13 +1,12 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public class SetLocationCommand implements ICommand {
 
@@ -55,15 +54,15 @@ public class SetLocationCommand implements ICommand {
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
         if (args != null) {
-            String location = "";
+            StringBuilder location = new StringBuilder();
             for (int i = 0; i < args.length; i++) {
-                location += args[i];
+                location.append(args[i]);
                 if (i != args.length - 1) {
-                    location += " ";
+                    location.append(" ");
                 }
             }
             TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(minigame);
-            thm.setLocation(location);
+            thm.setLocation(location.toString());
             sender.sendMessage(ChatColor.GRAY + "The location name for " + minigame + " has been set to " + location);
             return true;
         }

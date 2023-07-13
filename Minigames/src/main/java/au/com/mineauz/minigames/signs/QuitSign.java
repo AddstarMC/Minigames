@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.signs;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -10,7 +10,7 @@ import org.bukkit.event.block.SignChangeEvent;
 
 public class QuitSign implements MinigameSign {
 
-    private static Minigames plugin = Minigames.getPlugin();
+    private static final Minigames plugin = Minigames.getPlugin();
 
     @Override
     public String getName() {
