@@ -230,7 +230,6 @@ public class MinigameManager {
         return this.minigameTypes.keySet();
     }
 
-
     public void addLoadout(final String name) {
         this.globalLoadouts.put(name, new PlayerLoadout(name));
     }
@@ -467,7 +466,7 @@ public class MinigameManager {
 
     public boolean teleportPlayerOnJoin(@NotNull final Minigame minigame, final MinigamePlayer player) {
         if (this.minigameType(minigame.getType()) == null) {
-            Minigames.log().warning(MessageManager.getMinigamesMessage("error.invalidType") + " : " + minigame.getName(true));
+            Minigames.log().warning(MessageManager.getMinigamesMessage("minigame.error.invalidType") + " : " + minigame.getName(true));
         }
         return this.minigameType(minigame.getType()).teleportOnJoin(player, minigame);
     }
