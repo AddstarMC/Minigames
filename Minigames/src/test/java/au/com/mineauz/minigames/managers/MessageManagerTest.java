@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.managers;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -8,21 +7,13 @@ import java.io.File;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-/**
- * Created for the Charlton IT Project.
- * Created by benjicharlton on 22/07/2020.
- */
 public class MessageManagerTest {
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MessageManager.setLogger(Logger.getAnonymousLogger());
-    }
-
-    @After
-    public void tearDown() throws Exception {
     }
 
     @Test

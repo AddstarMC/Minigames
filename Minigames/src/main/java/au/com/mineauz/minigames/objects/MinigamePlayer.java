@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.objects;
 
 import au.com.mineauz.minigames.*;
 import au.com.mineauz.minigames.config.MinigameSave;
-import au.com.mineauz.minigames.display.IDisplayCubiod;
+import au.com.mineauz.minigames.display.IDisplayCuboid;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -13,6 +13,8 @@ import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.script.ScriptWrapper;
 import com.google.common.collect.ImmutableSet;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -63,11 +65,12 @@ public class MinigamePlayer implements ScriptObject {
     private MenuItem manualEntry;
     private Location selection1;
     private Location selection2;
-    private IDisplayCubiod selectionDisplay;
+    private IDisplayCuboid selectionDisplay;
     private OfflineMinigamePlayer oply;
-    private StoredPlayerCheckpoints spc;
+    private final StoredPlayerCheckpoints spc;
     private List<String> claimedRewards = new ArrayList<>();
     private int lateJoinTimer = -1;
+
     public MinigamePlayer(final Player player) {
         this.player = player;
         this.spc = new StoredPlayerCheckpoints(this.getUUID().toString());
@@ -114,9 +117,10 @@ public class MinigamePlayer implements ScriptObject {
         return this.player.getLocation();
     }
 
+    @Deprecated
     private void sendMessage(final String msg) {
         final int enc = Math.floorDiv(msg.getBytes().length, msg.length());
-        if (msg.getBytes().length > 32000) {
+        if (msg.getBytes().length > 32000) { //chat limit set to a higher number.
             final int capLength = Math.floorDiv(msg.length(), enc);
             final String newMessage = msg.substring(0, capLength);
             this.player.sendMessage(newMessage);
@@ -125,14 +129,29 @@ public class MinigamePlayer implements ScriptObject {
         this.player.sendMessage(msg);
     }
 
+    private void sendMessage(final Component msg) {
+        this.player.sendMessage(msg);
+    }
+
+    @Deprecated
     public void sendInfoMessage(final String msg) {
         this.sendMessage(msg, MinigameMessageType.INFO);
     }
 
+    public void sendInfoMessage(final Component msg) {
+        this.sendMessage(msg, MinigameMessageType.INFO);
+    }
+
+    @Deprecated
     public void sendUnprefixedMessage(final String msg) {
         this.sendMessage(msg, MinigameMessageType.NONE);
     }
 
+    public void sendUnprefixedMessage(final Component msg) {
+        this.sendMessage(msg, MinigameMessageType.NONE);
+    }
+
+    @Deprecated
     public void sendMessage(final String msg, final @NotNull MinigameMessageType type) {
         String init = "";
         switch (type) {
@@ -152,6 +171,19 @@ public class MinigamePlayer implements ScriptObject {
                 init = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
         }
         this.sendMessage(init + msg);
+    }
+
+    public void sendMessage(final Component msg, final @NotNull MinigameMessageType type) {
+        Component init;
+        init = switch (type) {
+            case ERROR -> Component.text("[Minigames] ", NamedTextColor.RED);
+            case WIN -> Component.text("[Minigames] ", NamedTextColor.GREEN);
+            case LOSS -> Component.text("[Minigames]", NamedTextColor.DARK_RED);
+            case NONE -> Component.text("");
+            default -> Component.text("[Minigames]", NamedTextColor.AQUA); //also info
+        };
+
+        this.sendMessage(init.append(msg.colorIfAbsent(NamedTextColor.WHITE)));
     }
 
     public void storePlayerData() {
@@ -177,8 +209,8 @@ public class MinigamePlayer implements ScriptObject {
         this.player.setLevel(0);
         this.player.setExp(0);
 
-        this.oply = new OfflineMinigamePlayer(this.getPlayer().getUniqueId(),storedItems, storedArmour, food,
-                health, saturation, lastGM, exp, level,this.getPlayer().getLocation());
+        this.oply = new OfflineMinigamePlayer(this.getPlayer().getUniqueId(), storedItems, storedArmour, food,
+                health, saturation, lastGM, exp, level, this.getPlayer().getLocation());
         this.player.updateInventory();
     }
 
@@ -194,11 +226,7 @@ public class MinigamePlayer implements ScriptObject {
         else
             this.player.setHealth(this.oply.getHealth());
         this.player.setSaturation(this.oply.getSaturation());
-        if (this.lastScoreboard != null) {
-            this.player.setScoreboard(this.lastScoreboard);
-        } else {
-            this.player.setScoreboard(this.player.getServer().getScoreboardManager().getMainScoreboard());
-        }
+        this.player.setScoreboard(Objects.requireNonNullElseGet(this.lastScoreboard, () -> this.player.getServer().getScoreboardManager().getMainScoreboard()));
 
         if (this.oply.getExp() >= 0) {
             this.player.setExp(this.oply.getExp());
@@ -552,7 +580,7 @@ public class MinigamePlayer implements ScriptObject {
             this.selection2 = loc;
             this.showSelection(false);
             this.sendMessage("Position 2 set", MinigameMessageType.INFO);
-        } else if (this.selection2 != null) {
+        } else {
             this.showSelection(true);
             this.selection1 = loc;
             this.sendMessage("Selection restarted", MinigameMessageType.INFO);
@@ -582,6 +610,13 @@ public class MinigamePlayer implements ScriptObject {
     public void setSelection(final Location point1, final Location point2) {
         this.selection1 = point1;
         this.selection2 = point2;
+
+        this.showSelection(false);
+    }
+
+    public void setSelection(final MgRegion region) {
+        this.selection1 = region.getLocation1();
+        this.selection2 = region.getLocation2();
 
         this.showSelection(false);
     }
@@ -626,9 +661,8 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public boolean teleport(final @NotNull Location location) {
-        boolean bool = false;
         this.setAllowTeleport(true);
-        bool = this.getPlayer().teleport(location);
+        boolean bool = this.getPlayer().teleport(location);
         this.setAllowTeleport(false);
 
         return bool;
@@ -638,8 +672,8 @@ public class MinigamePlayer implements ScriptObject {
         this.getPlayer().updateInventory();
     }
 
-    public boolean isDead() {
-        return this.player.isDead();
+    public boolean isLiving() {
+        return !this.player.isDead();
     }
 
     public Team getTeam() {
@@ -727,7 +761,7 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public void claimTempRewardItems() {
-        if (!this.isDead()) {
+        if (this.isLiving()) {
             final List<ItemStack> tempItems = new ArrayList<>(this.getTempRewardItems());
 
             if (!tempItems.isEmpty()) {
@@ -744,7 +778,7 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public void claimRewards() {
-        if (!this.isDead()) {
+        if (this.isLiving()) {
             final List<ItemStack> tempItems = new ArrayList<>(this.getRewardItems());
 
             if (!tempItems.isEmpty()) {
@@ -766,27 +800,18 @@ public class MinigamePlayer implements ScriptObject {
 
     @Override
     public ScriptReference get(final String name) {
-        if (name.equalsIgnoreCase("name")) {
-            return ScriptValue.of(this.player.getName());
-        } else if (name.equalsIgnoreCase("displayname")) {
-            return ScriptValue.of(this.player.getDisplayName());
-        } else if (name.equalsIgnoreCase("score")) {
-            return ScriptValue.of(this.score);
-        } else if (name.equalsIgnoreCase("kills")) {
-            return ScriptValue.of(this.kills);
-        } else if (name.equalsIgnoreCase("deaths")) {
-            return ScriptValue.of(this.deaths);
-        } else if (name.equalsIgnoreCase("health")) {
-            return ScriptValue.of(this.player.getHealth());
-        } else if (name.equalsIgnoreCase("team")) {
-            return this.team;
-        } else if (name.equalsIgnoreCase("pos")) {
-            return ScriptWrapper.wrap(this.player.getLocation());
-        } else if (name.equalsIgnoreCase("minigame")) {
-            return this.minigame;
-        }
-
-        return null;
+        return switch (name.toLowerCase()) {
+            case "name" -> ScriptValue.of(this.player.getName());
+            case "displayname" -> ScriptValue.of(this.player.getDisplayName());
+            case "score" -> ScriptValue.of(this.score);
+            case "kills" -> ScriptValue.of(this.kills);
+            case "deaths" -> ScriptValue.of(this.deaths);
+            case "health" -> ScriptValue.of(this.player.getHealth());
+            case "team" -> this.team;
+            case "pos" -> ScriptWrapper.wrap(this.player.getLocation());
+            case "minigame" -> this.minigame;
+            default -> null;
+        };
     }
 
     @Override

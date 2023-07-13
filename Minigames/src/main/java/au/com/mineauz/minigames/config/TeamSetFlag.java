@@ -1,17 +1,16 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
-import org.bukkit.scoreboard.Team.Option;
 import au.com.mineauz.minigames.minigame.TeamColor;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.scoreboard.Team.Option;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class TeamSetFlag extends Flag<Map<TeamColor, Team>> {
 

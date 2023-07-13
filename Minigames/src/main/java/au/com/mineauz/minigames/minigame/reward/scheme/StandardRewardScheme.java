@@ -1,14 +1,5 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-
-import com.google.common.collect.ImmutableMap;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.RewardsFlag;
@@ -17,7 +8,14 @@ import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import com.google.common.collect.ImmutableMap;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * The standard reward scheme handles the previous reward behaviour.

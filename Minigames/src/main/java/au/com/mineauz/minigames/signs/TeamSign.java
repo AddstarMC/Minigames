@@ -1,21 +1,22 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 
 public class TeamSign implements MinigameSign {
 
-    private Minigames plugin = Minigames.getPlugin();
+    private final Minigames plugin = Minigames.getPlugin();
 
     @Override
     public String getName() {
@@ -29,7 +30,7 @@ public class TeamSign implements MinigameSign {
 
     @Override
     public String getCreatePermissionMessage() {
-        return MinigameUtils.getLang("sign.team.createPermission");
+        return MessageManager.getMessage(null, "sign.team.createPermission");
     }
 
     @Override
@@ -39,7 +40,7 @@ public class TeamSign implements MinigameSign {
 
     @Override
     public String getUsePermissionMessage() {
-        return MinigameUtils.getLang("sign.team.usePermission");
+        return MessageManager.getMessage(null, "sign.team.usePermission");
     }
 
     @Override
@@ -51,11 +52,11 @@ public class TeamSign implements MinigameSign {
                 event.setLine(2, ChatColor.GRAY + "Neutral");
             } else {
                 TeamColor col = TeamColor.matchColor(event.getLine(2));
-                event.setLine(2, col.getColor() + MinigameUtils.capitalize(col.toString().replace("_", " ")));
+                event.setLine(2, col.getColor() + WordUtils.capitalize(col.toString().replace("_", " ")));
             }
             return true;
         }
-        event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.formStr("sign.team.invalidFormat", "\"red\", \"blue\" or \"neutral\""));
+        event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MessageManager.getMessage(null, "sign.team.invalidFormat", "\"red\", \"blue\" or \"neutral\""));
         return false;
     }
 
@@ -69,7 +70,7 @@ public class TeamSign implements MinigameSign {
                         Team sm = null;
                         Team nt = matchTeam(mgm, sign.getLine(2));
                         if (nt != null) {
-                            if (!nt.isFull()) {
+                            if (nt.hasRoom()) {
                                 for (Team t : TeamsModule.getMinigameModule(mgm).getTeams()) {
                                     if (sm == null || t.getPlayers().size() < sm.getPlayers().size())
                                         sm = t;
@@ -79,12 +80,12 @@ public class TeamSign implements MinigameSign {
                                     plugin.getMinigameManager().sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getDisplayName(mgm.usePlayerDisplayNames()), nt.getChatColor() + nt.getDisplayName()), null, player);
                                     player.sendInfoMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()));
                                 } else {
-                                    player.sendInfoMessage(MinigameUtils.getLang("sign.team.noUnbalance"));
+                                    player.sendInfoMessage(MessageManager.getMessage(null, "sign.team.noUnbalance"));
                                 }
 
                                 player.getPlayer().damage(player.getPlayer().getHealth());
                             } else {
-                                player.sendMessage(MinigameUtils.getLang("player.team.full"), MinigameMessageType.ERROR);
+                                player.sendMessage(MessageManager.getMessage(null, "player.team.assign.full"), MinigameMessageType.ERROR);
                             }
                         }
                     } else if (sign.getLine(2).equals(ChatColor.GRAY + "Neutral") || matchTeam(mgm, sign.getLine(2)) != player.getTeam()) {
@@ -97,7 +98,7 @@ public class TeamSign implements MinigameSign {
                                     plugin.getMinigameManager().sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
                                     player.sendInfoMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()));
                                 } else {
-                                    player.sendInfoMessage(MinigameUtils.getLang("sign.team.noUnbalance"));
+                                    player.sendInfoMessage(MessageManager.getMessage(null, "sign.team.noUnbalance"));
                                 }
                             } else {
                                 player.removeTeam();
@@ -110,7 +111,7 @@ public class TeamSign implements MinigameSign {
                                     plugin.getMinigameManager().sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
                                     player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), MinigameMessageType.INFO);
                                 } else {
-                                    player.sendInfoMessage(MinigameUtils.getLang("player.team.full"));
+                                    player.sendInfoMessage(MessageManager.getMessage(null, "player.team.assign.full"));
                                 }
                             }
                         }

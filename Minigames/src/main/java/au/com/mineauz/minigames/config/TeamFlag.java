@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.List;
-import java.util.Set;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.List;
+import java.util.Set;
 
 public class TeamFlag extends Flag<Team> {
 

@@ -1,12 +1,13 @@
 package au.com.mineauz.minigames.tool;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MinigameTool {
-    private ItemStack tool;
+    private final ItemStack tool;
     private Minigame minigame = null;
     private ToolMode mode = null;
     private TeamColor team = null;
@@ -55,7 +56,7 @@ public class MinigameTool {
     public void setMode(ToolMode mode) {
         ItemMeta meta = tool.getItemMeta();
         List<String> lore = meta.getLore();
-        lore.set(1, ChatColor.AQUA + "Mode: " + ChatColor.WHITE + MinigameUtils.capitalize(mode.getName().replace("_", " ")));
+        lore.set(1, ChatColor.AQUA + "Mode: " + ChatColor.WHITE + WordUtils.capitalize(mode.getName().replace("_", " ")));
         meta.setLore(lore);
         tool.setItemMeta(meta);
         this.mode = mode;
@@ -85,7 +86,7 @@ public class MinigameTool {
         if (color == null) {
             lore.set(2, ChatColor.AQUA + "Team: " + ChatColor.WHITE + "None");
         } else {
-            lore.set(2, ChatColor.AQUA + "Team: " + color.getColor() + MinigameUtils.capitalize(color.toString().replace("_", " ")));
+            lore.set(2, ChatColor.AQUA + "Team: " + color.getColor() + WordUtils.capitalize(color.toString().replace("_", " ")));
         }
 
         meta.setLore(lore);
@@ -154,15 +155,15 @@ public class MinigameTool {
 
         List<String> teams = new ArrayList<>(TeamColor.values().length + 1);
         for (TeamColor col : TeamColor.values())
-            teams.add(MinigameUtils.capitalize(col.toString().replace("_", " ")));
+            teams.add(WordUtils.capitalize(col.toString().replace("_", " ")));
         teams.add("None");
 
-        men.addItem(new MenuItemToolTeam("Team", Material.PAPER, new Callback<String>() {
+        men.addItem(new MenuItemToolTeam("Team", Material.PAPER, new Callback<>() {
 
             @Override
             public String getValue() {
                 if (getTeam() != null)
-                    return MinigameUtils.capitalize(getTeam().toString().replace("_", " "));
+                    return WordUtils.capitalize(getTeam().toString().replace("_", " "));
                 return "None";
             }
 

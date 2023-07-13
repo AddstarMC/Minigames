@@ -27,7 +27,7 @@ public class FlatFileExporter {
 
     private SetMultimap<String, UUID> completions;
 
-    private Map<String, Integer> minigameIds;
+    private final Map<String, Integer> minigameIds;
     private int nextMinigameId;
 
     private String notifyState;
@@ -87,7 +87,7 @@ public class FlatFileExporter {
         for (UUID playerId : uniquePlayers) {
             // Attempt to get information about this player
             OfflinePlayer player = Bukkit.getPlayer(playerId);
-            if (player != null && player.getName() != null) {
+            if (player != null) {
                 callback.acceptPlayer(playerId, player.getName(), player.getName());
             } else {
                 callback.acceptPlayer(playerId, "Unknown", "Unknown");

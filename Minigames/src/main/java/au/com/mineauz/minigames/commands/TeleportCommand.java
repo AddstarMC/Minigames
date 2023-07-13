@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -68,7 +68,7 @@ public class TeleportCommand implements ICommand {
                              String label, String[] args) {
         if (args != null) {
             List<Player> plys = plugin.getServer().matchPlayer(args[0]);
-            MinigamePlayer ply = null;
+            MinigamePlayer ply;
             if (!plys.isEmpty()) {
                 ply = plugin.getPlayerManager().getMinigamePlayer(plys.get(0));
             } else {
@@ -79,9 +79,7 @@ public class TeleportCommand implements ICommand {
             if (args.length >= 4 && args[1].matches("~?(-?[0-9]+(.[0-9]+)?)|~") &&
                     args[2].matches("~?(-?[0-9]+(.[0-9]+)?)|~") &&
                     args[3].matches("~?(-?[0-9]+(.[0-9]+)?)|~")) {
-                double x = 0;
-                double y = 0;
-                double z = 0;
+                double x, y, z;
                 float yaw = ply.getLocation().getYaw();
                 float pitch = ply.getLocation().getPitch();
 
@@ -147,7 +145,7 @@ public class TeleportCommand implements ICommand {
                     int pos = 0;
                     Team team = null;
                     if (args.length == 3)
-                        team = TeamsModule.getMinigameModule(ply.getMinigame()).getTeam(TeamColor.matchColor(args[3]));
+                        team = TeamsModule.getMinigameModule(ply.getMinigame()).getTeam(TeamColor.matchColor(args[2]));
                     else if (ply.getTeam() != null)
                         team = ply.getTeam();
 
@@ -180,7 +178,7 @@ public class TeleportCommand implements ICommand {
                 return true;
             } else if (args.length == 2) {
                 plys = plugin.getServer().matchPlayer(args[1]);
-                MinigamePlayer ply2 = null;
+                MinigamePlayer ply2;
 
                 if (!plys.isEmpty()) {
                     ply2 = plugin.getPlayerManager().getMinigamePlayer(plys.get(0));

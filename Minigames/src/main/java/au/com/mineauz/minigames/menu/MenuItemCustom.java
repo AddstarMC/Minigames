@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class MenuItemCustom extends MenuItem {
 

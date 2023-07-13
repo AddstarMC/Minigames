@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.objects;
 
-import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.config.MinigameSave;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -12,9 +12,9 @@ import org.bukkit.inventory.ItemStack;
 import java.util.UUID;
 
 public class OfflineMinigamePlayer {
-    private UUID uuid;
-    private ItemStack[] storedItems = null;
-    private ItemStack[] storedArmour = null;
+    private final UUID uuid;
+    private final ItemStack[] storedItems;
+    private final ItemStack[] storedArmour;
     private int food = 20;
     private double health = 20;
     private float saturation = 15;
@@ -22,7 +22,6 @@ public class OfflineMinigamePlayer {
     private int level = -1; //Set To default value after 1.7
     private GameMode lastGM = GameMode.SURVIVAL;
     private Location loginLocation;
-    private boolean shouldSave = Minigames.getPlugin().getConfig().getBoolean("saveInventory");
 
     public OfflineMinigamePlayer(UUID uuid, ItemStack[] items,
                                  ItemStack[] armour, int food, double health,
@@ -40,7 +39,7 @@ public class OfflineMinigamePlayer {
         if (loginLocation != null && loginLocation.getWorld() == null)
             loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
         this.loginLocation = loginLocation;
-        if (shouldSave)
+        if (Minigames.getPlugin().getConfig().getBoolean("saveInventory"))
             savePlayerData();
     }
 
@@ -62,8 +61,8 @@ public class OfflineMinigamePlayer {
                     con.getDouble("location.x"),
                     con.getDouble("location.y"),
                     con.getDouble("location.z"),
-                    new Float(con.getString("location.yaw")),
-                    new Float(con.getString("location.pitch")));
+                    (float) con.getDouble("location.yaw"),
+                    (float) con.getDouble("location.pitch"));
             if (loginLocation.getWorld() == null)
                 loginLocation = Bukkit.getWorlds().get(0).getSpawnLocation();
         } else

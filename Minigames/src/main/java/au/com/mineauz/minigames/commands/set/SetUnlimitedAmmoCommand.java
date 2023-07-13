@@ -1,13 +1,12 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public class SetUnlimitedAmmoCommand implements ICommand {
 
@@ -55,7 +54,7 @@ public class SetUnlimitedAmmoCommand implements ICommand {
     public boolean onCommand(CommandSender sender, Minigame minigame,
                              String label, String[] args) {
         if (args != null) {
-            Boolean bool = Boolean.parseBoolean(args[0]);
+            boolean bool = Boolean.parseBoolean(args[0]);
             minigame.setUnlimitedAmmo(bool);
             if (bool) {
                 sender.sendMessage(ChatColor.GRAY + "Unlimited ammo has been turned on for " + minigame);

@@ -1,20 +1,19 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import java.util.Map;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.Map;
 
 public class HasFlagCondition extends ConditionInterface {
-    private StringFlag flagName = new StringFlag("flag", "flag");
+    private final StringFlag flagName = new StringFlag("flag", "flag");
 
     @Override
     public String getName() {
@@ -25,7 +24,7 @@ public class HasFlagCondition extends ConditionInterface {
     public String getCategory() {
         return "Player Conditions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
         out.put("Flag", flagName.getFlag());
@@ -50,7 +49,7 @@ public class HasFlagCondition extends ConditionInterface {
     public boolean checkNodeCondition(MinigamePlayer player, Node node) {
         return checkCondition(player);
     }
-    
+
     private boolean checkCondition(MinigamePlayer player) {
         if (player == null) {
             return false;
@@ -73,11 +72,15 @@ public class HasFlagCondition extends ConditionInterface {
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Has Flag", player);
-        m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
         m.addItem(flagName.getMenuItem("Flag Name", Material.NAME_TAG));
         addInvertMenuItem(m);
         m.displayMenu(player);
         return true;
     }
 
+    @Override
+    public boolean onPlayerApplicable() {
+        return true;
+    }
 }

@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.backend;
 
-import java.util.UUID;
-
 import au.com.mineauz.minigames.stats.StatFormat;
+
+import java.util.UUID;
 
 /**
  * This callback is used to take data from one backend and apply it to another backend.
@@ -32,7 +32,7 @@ public interface BackendImportCallback {
      * each player from the source backend.
      *
      * @param playerId    The UUID of the player
-     * @param name        The user name of the player
+     * @param name        The username of the player
      * @param displayName the display name of the player
      */
     void acceptPlayer(UUID playerId, String name, String displayName);

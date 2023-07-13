@@ -1,8 +1,9 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -73,7 +74,7 @@ public class QuitCommand implements ICommand {
             }
             if (player == null || player.hasPermission("minigame.quit.other")) {
                 List<Player> players = plugin.getServer().matchPlayer(args[0]);
-                MinigamePlayer ply = null;
+                MinigamePlayer ply;
                 if (args[0].equals("ALL")) {
                     if (args.length > 1) {
                         if (plugin.getMinigameManager().hasMinigame(args[1])) {
@@ -82,9 +83,9 @@ public class QuitCommand implements ICommand {
                             for (MinigamePlayer pl : pls) {
                                 plugin.getPlayerManager().quitMinigame(pl, true);
                             }
-                            sender.sendMessage(ChatColor.GRAY + MinigameUtils.formStr("command.quit.quitAllMinigame", mg.getName(true)));
+                            sender.sendMessage(ChatColor.GRAY + MessageManager.getMinigamesMessage("command.quit.quitAllMinigame", mg.getName(true)));
                         } else {
-                            sender.sendMessage(ChatColor.RED + MinigameUtils.formStr("minigame.error.noMinigameName", args[1]));
+                            sender.sendMessage(ChatColor.RED + MessageManager.getMinigamesMessage("minigame.error.noMinigameName", args[1]));
                         }
                     } else {
                         for (MinigamePlayer pl : plugin.getPlayerManager().getAllMinigamePlayers()) {
@@ -96,19 +97,19 @@ public class QuitCommand implements ICommand {
                     }
                     return true;
                 } else if (players.isEmpty()) {
-                    sender.sendMessage(ChatColor.RED + MinigameUtils.formStr("command.quit.invalidPlayer", args[0]));
+                    sender.sendMessage(ChatColor.RED + MessageManager.getMinigamesMessage("command.quit.invalidPlayer", args[0]));
                     return true;
                 } else {
                     ply = plugin.getPlayerManager().getMinigamePlayer(players.get(0));
                 }
 
-                if (ply != null && ply.isInMinigame()) {
+                if (ply.isInMinigame()) {
                     plugin.getPlayerManager().quitMinigame(ply, false);
-                    sender.sendMessage(ChatColor.GRAY + MinigameUtils.formStr("command.quit.quitOther", ply.getName()));
+                    sender.sendMessage(ChatColor.GRAY + MessageManager.getMinigamesMessage("command.quit.quitOther", ply.getName()));
                 } else {
-                    sender.sendMessage(ChatColor.RED + MinigameUtils.formStr("command.quit.invalidPlayer", args[0]));
+                    sender.sendMessage(ChatColor.RED + MessageManager.getMinigamesMessage("command.quit.invalidPlayer", args[0]));
                 }
-            } else if (player != null) {
+            } else {
                 sender.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.quit.noPermissionOther"));
                 sender.sendMessage(ChatColor.RED + "minigame.quit.other");
             }

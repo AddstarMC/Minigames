@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.tool;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Material;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -27,7 +27,7 @@ public interface ToolMode {
     void onRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEvent event);
 
     /**
-     * Triggers when an entity is right clicked by a Player with permission to use a minigame Tool
+     * Triggers when an entity is right-clicked by a Player with permission to use a minigame Tool
      * THe event IS NOT cancelled - we expect the tools to do that if needs be
      *
      * @param player   the MinigamePlayer
@@ -38,7 +38,7 @@ public interface ToolMode {
     void onEntityLeftClick(MinigamePlayer player, Minigame minigame, Team team, EntityDamageByEntityEvent event);
 
     /**
-     * Triggers when an entity is left clicked by a Player with permission to use a minigame Tool
+     * Triggers when an entity is left-clicked by a Player with permission to use a minigame Tool
      * THe event IS NOT cancelled - we expect the tools to do that if needs be
      *
      * @param player   the MinigamePlayer

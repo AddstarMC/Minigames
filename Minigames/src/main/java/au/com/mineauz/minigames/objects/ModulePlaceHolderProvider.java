@@ -12,7 +12,7 @@ public interface ModulePlaceHolderProvider {
 
     boolean hasPlaceHolder(String placeHolder);
 
-    default String onPlaceHolderRequest(Player player, String game, String placeHolder){
+    default String onPlaceHolderRequest(Player player, String game, String placeHolder) {
         return null;
     }
 

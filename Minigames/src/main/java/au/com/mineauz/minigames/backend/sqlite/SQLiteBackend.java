@@ -1,12 +1,12 @@
 package au.com.mineauz.minigames.backend.sqlite;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.backend.*;
 import au.com.mineauz.minigames.backend.both.SQLExport;
 import au.com.mineauz.minigames.backend.both.SQLImport;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.*;
 import com.google.common.collect.Maps;
 import org.bukkit.configuration.ConfigurationSection;
@@ -30,8 +30,8 @@ public class SQLiteBackend extends Backend {
     private StatementKey loadStatSettings;
     private StatementKey saveStatSettings;
     private boolean debug;
-    private SQLiteStatLoader loader;
-    private SQLiteStatSaver saver;
+    private final SQLiteStatLoader loader;
+    private final SQLiteStatSaver saver;
     private File database;
 
 
@@ -68,9 +68,9 @@ public class SQLiteBackend extends Backend {
             Properties properties = new Properties();
             properties.put("username", "");
             properties.put("password", "");
-            if (debug) logger.info("Properties: " + properties.toString());
+            if (debug) logger.info("Properties: " + properties);
             pool = new ConnectionPool(url, properties);
-            if (debug) logger.info("Pool: " + pool.toString());
+            if (debug) logger.info("Pool: " + pool);
             createStatements();
 
             // Test the connection
@@ -99,10 +99,10 @@ public class SQLiteBackend extends Backend {
         pool.removeExpired();
     }
 
-    private boolean checkForColumn(Statement statement, String tableName, String columnName) {
+    private boolean checkForColumn(Statement statement, String columnName) {
 
         try {
-            ResultSet rs = statement.executeQuery("Pragma table_info(`" + tableName + "`);");
+            ResultSet rs = statement.executeQuery("Pragma table_info(`PlayerStats`);");
 
             int nameColIndex = rs.findColumn("name");
 
@@ -114,7 +114,7 @@ public class SQLiteBackend extends Backend {
             return false;
 
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Exception looking for SQLite column " + columnName + " on table " + tableName, e);
+            logger.log(Level.SEVERE, "Exception looking for SQLite column " + columnName + " on table " + "PlayerStats", e);
             return false;
         }
 
@@ -147,7 +147,7 @@ public class SQLiteBackend extends Backend {
 
             // Check for column last_updated on the PlayerStats table
             try {
-                if (!checkForColumn(statement, "PlayerStats", "last_updated")) {
+                if (!checkForColumn(statement, "last_updated")) {
                     logger.info("Adding SQLite column 'last_updated' to table PlayerStats");
 
                     statement.executeUpdate("ALTER TABLE `PlayerStats` ADD COLUMN `last_updated` DATETIME default NULL;");
@@ -159,7 +159,7 @@ public class SQLiteBackend extends Backend {
 
             // Check for column entered on the PlayerStats table
             try {
-                if (!checkForColumn(statement, "PlayerStats", "entered")) {
+                if (!checkForColumn(statement, "entered")) {
                     logger.info("Adding SQLite column 'entered' to table PlayerStats");
 
                     statement.executeUpdate("ALTER TABLE `PlayerStats` ADD COLUMN `entered` DATETIME default NULL;");

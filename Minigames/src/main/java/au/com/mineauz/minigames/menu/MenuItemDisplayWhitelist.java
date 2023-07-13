@@ -9,8 +9,8 @@ import java.util.List;
 
 public class MenuItemDisplayWhitelist extends MenuItem {
 
-    private List<Material> whitelist;
-    private Callback<Boolean> whitelistMode;
+    private final List<Material> whitelist;
+    private final Callback<Boolean> whitelistMode;
 
     public MenuItemDisplayWhitelist(String name, Material displayItem, List<Material> whitelist, Callback<Boolean> whitelistMode) {
         super(name, displayItem);

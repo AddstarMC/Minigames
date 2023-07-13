@@ -1,17 +1,16 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.Map;
-
+import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigamesregions.Node;
+import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.executors.NodeExecutor;
+import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.menu.Menu;
-import au.com.mineauz.minigamesregions.Node;
-import au.com.mineauz.minigamesregions.executors.NodeExecutor;
-import au.com.mineauz.minigamesregions.Region;
-import au.com.mineauz.minigamesregions.executors.RegionExecutor;
+import java.util.Map;
 
-public class ResetTriggerCountAction extends AbstractAction{
+public class ResetTriggerCountAction extends AbstractAction {
 
     @Override
     public String getName() {
@@ -22,7 +21,7 @@ public class ResetTriggerCountAction extends AbstractAction{
     public String getCategory() {
         return "Region/Node Actions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
     }
@@ -39,15 +38,15 @@ public class ResetTriggerCountAction extends AbstractAction{
 
     @Override
     public void executeRegionAction(MinigamePlayer player, Region region) {
-        debug(player,region);
-        for(RegionExecutor ex : region.getExecutors())
+        debug(player, region);
+        for (RegionExecutor ex : region.getExecutors())
             ex.setTriggerCount(0);
     }
 
     @Override
     public void executeNodeAction(MinigamePlayer player, Node node) {
-        debug(player,node);
-        for(NodeExecutor ex : node.getExecutors())
+        debug(player, node);
+        for (NodeExecutor ex : node.getExecutors())
             ex.setTriggerCount(0);
     }
 

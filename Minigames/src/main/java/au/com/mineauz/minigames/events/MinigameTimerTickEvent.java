@@ -5,7 +5,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 
 public class MinigameTimerTickEvent extends AbstractMinigameEvent {
 
-    private MinigameTimer timer;
+    private final MinigameTimer timer;
 
     public MinigameTimerTickEvent(Minigame minigame, MinigameTimer timer) {
         super(minigame);

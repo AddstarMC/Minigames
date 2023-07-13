@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 
 public class MinigamesBroadcastEvent extends AbstractMinigameEvent {
     private String message;
-    private String prefix;
+    private final String prefix;
     private boolean cancelled = false;
 
     public MinigamesBroadcastEvent(String prefix, String message, Minigame minigame) {

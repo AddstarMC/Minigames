@@ -1,12 +1,11 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.List;
-
+import au.com.mineauz.minigames.menu.Callback;
+import au.com.mineauz.minigames.menu.MenuItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import au.com.mineauz.minigames.menu.Callback;
-import au.com.mineauz.minigames.menu.MenuItem;
+import java.util.List;
 
 public abstract class Flag<T> {
 
@@ -39,7 +38,7 @@ public abstract class Flag<T> {
     }
 
     public Callback<T> getCallback() {
-        return new Callback<T>() {
+        return new Callback<>() {
 
             @Override
             public T getValue() {

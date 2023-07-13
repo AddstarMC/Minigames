@@ -12,12 +12,12 @@ import java.util.List;
 
 public class MenuItemDecimal extends MenuItem {
 
-    protected Callback<Double> value;
+    protected final Callback<Double> value;
     protected DecimalFormat form = new DecimalFormat("#.##");
-    private double lowerInc;
-    private double upperInc;
-    private Double min;
-    private Double max;
+    private final double lowerInc;
+    private final double upperInc;
+    private final Double min;
+    private final Double max;
 
     public MenuItemDecimal(String name, Material displayItem, Callback<Double> value,
                            double lowerInc, double upperInc, Double min, Double max) {
@@ -46,24 +46,24 @@ public class MenuItemDecimal extends MenuItem {
     }
 
     public void updateDescription() {
-        List<String> description = null;
+        List<String> description;
         if (getDescription() != null) {
             description = getDescription();
             String desc = ChatColor.stripColor(getDescription().get(0));
 
             if (desc.matches("-?[0-9]+(.[0-9]+)?"))
-                description.set(0, ChatColor.GREEN.toString() + form.format(value.getValue()));
+                description.set(0, ChatColor.GREEN + form.format(value.getValue()));
             else if (value.getValue().isInfinite()) {
-                description.add(0, ChatColor.GREEN.toString() + "INFINITE");
+                description.add(0, ChatColor.GREEN + "INFINITE");
             } else {
-                description.add(0, ChatColor.GREEN.toString() + form.format(value.getValue()));
+                description.add(0, ChatColor.GREEN + form.format(value.getValue()));
             }
         } else {
             description = new ArrayList<>();
             if (value.getValue().isInfinite()) {
-                description.add(0, ChatColor.GREEN.toString() + "INFINITE");
+                description.add(0, ChatColor.GREEN + "INFINITE");
             } else {
-                description.add(0, ChatColor.GREEN.toString() + form.format(value.getValue()));
+                description.add(0, ChatColor.GREEN + form.format(value.getValue()));
             }
         }
 

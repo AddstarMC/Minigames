@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.config;
 
-import java.util.List;
-
+import au.com.mineauz.minigames.menu.MenuItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import au.com.mineauz.minigames.menu.MenuItem;
+import java.util.List;
 
 public class EnumFlag<T extends Enum<T>> extends Flag<T> {
 
-    private Class<T> enumClass;
+    private final Class<T> enumClass;
 
     @SuppressWarnings("unchecked")
     public EnumFlag(T value, String name) {
