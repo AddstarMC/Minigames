@@ -1,9 +1,8 @@
 package au.com.mineauz.minigames.signs;
 
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 
 public interface MinigameSign {
 

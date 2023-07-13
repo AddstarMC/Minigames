@@ -4,9 +4,7 @@ import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.helpers.TestHelper;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.TestPlayer;
 import au.com.mineauz.minigames.objects.TestWorld;
@@ -16,14 +14,10 @@ import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.command.ConsoleCommandSenderMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.inventory.ItemStack;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.sqlite.SQLiteDataSource;
-
 
 import java.util.UUID;
 import java.util.logging.Level;
@@ -32,11 +26,6 @@ import java.util.logging.Logger;
 import static junit.framework.TestCase.assertNotSame;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
-
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 8/07/2018.
- */
 
 public class MinigamesTest {
 
@@ -60,7 +49,6 @@ public class MinigamesTest {
             server = MockBukkit.getMock();
         }
         ConsoleCommandSenderMock sender = (ConsoleCommandSenderMock) server.getConsoleSender();
-        sender.setOutputOnSend(true);
         TestWorld testworld = new TestWorld();
         testworld.setName("GAMES");
         MockBukkit.getMock().addWorld(testworld);
@@ -74,7 +62,6 @@ public class MinigamesTest {
         spawn = world.getSpawnLocation();
         TestHelper.createMinigame(plugin,world,MinigameType.MULTIPLAYER, GameMechanics.MECHANIC_NAME.CTF);
         player = new TestPlayer(MockBukkit.getMock(), "TestPlayer", UUID.randomUUID());
-        player.setOutputOnSend(true);
         player.setLocation(spawn);
         MockBukkit.getMock().addPlayer(player);
     }
@@ -88,7 +75,7 @@ public class MinigamesTest {
         LobbySettingsModule module = (LobbySettingsModule) game.getModule("LobbySettings");
         player.assertLocation(lobby, 0);
         assertTrue(module.isTeleportOnStart());
-        assertNotSame(player.getLocation(),game.getStartLocations().indexOf(0));
+        assertNotSame(game.getStartLocations().indexOf(player.getLocation()), -1);
         server.getScheduler().performTicks(200L);
         player.assertLocation(start,0);
         server.getScheduler().performTicks(200L);
@@ -109,6 +96,7 @@ public class MinigamesTest {
         assertFalse(plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId()).isInMinigame());
     }
 
+    @Test
     public void testOnDisable(){
         assertTrue(plugin.isEnabled());
         server.getPluginManager().disablePlugin(plugin);

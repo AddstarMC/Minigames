@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.PlayerLoadout;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemPotionAdd extends MenuItem {
-
-    PlayerLoadout loadout;
+    private final PlayerLoadout loadout;
 
     public MenuItemPotionAdd(String name, Material displayItem, PlayerLoadout loadout) {
         super(name, displayItem);
@@ -48,9 +47,9 @@ public class MenuItemPotionAdd extends MenuItem {
                 if (split[1].matches("[0-9]+") && Integer.parseInt(split[1]) != 0) {
                     int level = Integer.parseInt(split[1]) - 1;
                     if ((split[2].matches("[0-9]+") && Integer.parseInt(split[2]) != 0) || split[2].equalsIgnoreCase("inf")) {
-                        int dur = 0;
+                        int dur;
                         if (split[2].equalsIgnoreCase("inf"))
-                            dur = 100000;
+                            dur = 100000; //todo there is a new infinit long thing for potions
                         else
                             dur = Integer.parseInt(split[2]);
 
@@ -64,8 +63,7 @@ public class MenuItemPotionAdd extends MenuItem {
 
                         PotionEffect peff = new PotionEffect(eff, dur, level);
                         for (int slot : getContainer().getSlotMap()) {
-                            if (getContainer().getClicked(slot) instanceof MenuItemPotion) {
-                                MenuItemPotion pot = (MenuItemPotion) getContainer().getClicked(slot);
+                            if (getContainer().getClicked(slot) instanceof MenuItemPotion pot) {
                                 if (pot.getEffect().getType() == peff.getType()) {
                                     pot.onShiftRightClick();
                                     break;

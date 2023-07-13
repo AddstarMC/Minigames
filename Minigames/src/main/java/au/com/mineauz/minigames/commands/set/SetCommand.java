@@ -10,13 +10,10 @@ import org.bukkit.entity.Player;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SetCommand implements ICommand {
-    private static Map<String, ICommand> parameterList = new HashMap<>();
+    private static final Map<String, ICommand> parameterList = new HashMap<>();
     private static BufferedWriter cmdFile;
 
     static {
@@ -79,7 +76,7 @@ public class SetCommand implements ICommand {
         registerSetCommand(new SetRegenAreaCommand());
         registerSetCommand(new SetLivesCommand());
         registerSetCommand(new SetDefaultWinnerCommand());
-        registerSetCommand(new SetAllowEnderpearlsCommand());
+        registerSetCommand(new SetAllowEnderPearlsCommand());
         registerSetCommand(new SetStartTimeCommand());
         registerSetCommand(new SetAllowMultiplayerCheckpointsCommand());
         registerSetCommand(new SetObjectiveCommand());
@@ -239,33 +236,33 @@ public class SetCommand implements ICommand {
                     }
                 }
 
-                if (args != null && args.length > 2) {
+                if (args.length > 2) {
                     shortArgs = new String[args.length - 2];
                     System.arraycopy(args, 2, shortArgs, 0, args.length - 2);
                 }
             }
 
             if (comd != null && mgm != null) {
-                if ((ply == null && comd.canBeConsole()) || ply != null) {
+                if (ply != null || comd.canBeConsole()) {
                     if (ply == null || (comd.getPermission() == null || ply.hasPermission(comd.getPermission()))) {
                         boolean returnValue = comd.onCommand(sender, mgm, label, shortArgs);
                         if (!returnValue) {
                             sender.sendMessage(ChatColor.GREEN + "------------------Command Info------------------");
                             sender.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + comd.getDescription());
                             if (comd.getParameters() != null) {
-                                String parameters = "";
+                                StringBuilder parameters = new StringBuilder();
                                 boolean switchColour = false;
                                 for (String par : comd.getParameters()) {
                                     if (switchColour) {
-                                        parameters += ChatColor.WHITE + par;
+                                        parameters.append(ChatColor.WHITE).append(par);
                                         if (!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])) {
-                                            parameters += ChatColor.WHITE + ", ";
+                                            parameters.append(ChatColor.WHITE + ", ");
                                         }
                                         switchColour = false;
                                     } else {
-                                        parameters += ChatColor.GRAY + par;
+                                        parameters.append(ChatColor.GRAY).append(par);
                                         if (!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])) {
-                                            parameters += ChatColor.WHITE + ", ";
+                                            parameters.append(ChatColor.WHITE + ", ");
                                         }
                                         switchColour = true;
                                     }
@@ -275,19 +272,19 @@ public class SetCommand implements ICommand {
                             sender.sendMessage(ChatColor.BLUE + "Usage: ");
                             sender.sendMessage(comd.getUsage());
                             if (comd.getAliases() != null) {
-                                String aliases = "";
+                                StringBuilder aliases = new StringBuilder();
                                 boolean switchColour = false;
                                 for (String alias : comd.getAliases()) {
                                     if (switchColour) {
-                                        aliases += ChatColor.WHITE + alias;
+                                        aliases.append(ChatColor.WHITE).append(alias);
                                         if (!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])) {
-                                            aliases += ChatColor.WHITE + ", ";
+                                            aliases.append(ChatColor.WHITE + ", ");
                                         }
                                         switchColour = false;
                                     } else {
-                                        aliases += ChatColor.GRAY + alias;
+                                        aliases.append(ChatColor.GRAY).append(alias);
                                         if (!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])) {
-                                            aliases += ChatColor.WHITE + ", ";
+                                            aliases.append(ChatColor.WHITE + ", ");
                                         }
                                         switchColour = true;
                                     }
@@ -319,7 +316,7 @@ public class SetCommand implements ICommand {
                 ply = (Player) sender;
             }
             ICommand comd = null;
-            String[] shortArgs = null;
+            String[] shortArgs;
             Minigame mgm = null;
 
             if (plugin.getMinigameManager().hasMinigame(args[0])) {
@@ -337,10 +334,7 @@ public class SetCommand implements ICommand {
                 if (comd != null) {
                     if (ply != null) {
                         List<String> l = comd.onTabComplete(sender, mgm, alias, shortArgs);
-                        if (l != null)
-                            return l;
-                        else
-                            return MinigameUtils.stringToList("");
+                        return Objects.requireNonNullElseGet(l, () -> MinigameUtils.stringToList(""));
                     }
                 } else {
                     List<String> ls = new ArrayList<>(parameterList.keySet());

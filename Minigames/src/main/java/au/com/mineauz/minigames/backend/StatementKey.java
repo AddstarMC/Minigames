@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class StatementKey {
-    private String sql;
-    private boolean returnGeneratedKeys;
+    private final String sql;
+    private final boolean returnGeneratedKeys;
     private boolean valid;
 
     public StatementKey(String sql) {

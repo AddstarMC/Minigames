@@ -1,13 +1,13 @@
 package au.com.mineauz.minigames.backend.both;
 
-import java.sql.SQLException;
-import java.util.UUID;
-
 import au.com.mineauz.minigames.backend.BackendImportCallback;
 import au.com.mineauz.minigames.backend.ConnectionHandler;
 import au.com.mineauz.minigames.backend.ConnectionPool;
 import au.com.mineauz.minigames.backend.StatementKey;
 import au.com.mineauz.minigames.stats.StatFormat;
+
+import java.sql.SQLException;
+import java.util.UUID;
 
 public class SQLImport implements BackendImportCallback {
     private final ConnectionPool pool;

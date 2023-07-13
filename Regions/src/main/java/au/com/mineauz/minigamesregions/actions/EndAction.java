@@ -1,7 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -19,7 +19,7 @@ public class EndAction extends AbstractAction {
     public String getCategory() {
         return "Minigame Actions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
     }
@@ -36,19 +36,19 @@ public class EndAction extends AbstractAction {
 
     @Override
     public void executeNodeAction(MinigamePlayer player,
-            Node node) {
+                                  Node node) {
         execute(player);
-        debug(player,node);
+        debug(player, node);
     }
 
     @Override
     public void executeRegionAction(MinigamePlayer player, Region region) {
-        debug(player,region);
+        debug(player, region);
         execute(player);
     }
-    
-    private void execute(MinigamePlayer player){
-        if(player == null || !player.isInMinigame()) return;
+
+    private void execute(MinigamePlayer player) {
+        if (player == null || !player.isInMinigame()) return;
         setWinnersLosers(player);
     }
 

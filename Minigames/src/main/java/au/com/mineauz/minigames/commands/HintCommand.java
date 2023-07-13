@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -83,14 +83,14 @@ public class HintCommand implements ICommand {
             if (!mgs.isEmpty()) {
                 if (mgs.size() > 1) {
                     player.sendInfoMessage(ChatColor.LIGHT_PURPLE + "Currently running Treasure Hunts:");
-                    String treasures = "";
+                    StringBuilder treasures = new StringBuilder();
                     for (int i = 0; i < mgs.size(); i++) {
-                        treasures += mgs.get(i).getName(false);
+                        treasures.append(mgs.get(i).getName(false));
                         if (i != mgs.size() - 1) {
-                            treasures += ", ";
+                            treasures.append(", ");
                         }
                     }
-                    player.sendInfoMessage(ChatColor.GRAY + treasures);
+                    player.sendInfoMessage(ChatColor.GRAY + treasures.toString());
                 } else {
                     TreasureHuntModule thm = TreasureHuntModule.getMinigameModule(mgs.get(0));
                     if (thm.hasTreasureLocation() && !thm.isTreasureFound()) {
@@ -99,7 +99,7 @@ public class HintCommand implements ICommand {
                         player.sendInfoMessage(ChatColor.GRAY + mgs.get(0).getName(false) + " is currently not running.");
                     }
                 }
-            } else if (mgs.isEmpty()) {
+            } else {
                 player.sendInfoMessage(ChatColor.LIGHT_PURPLE + "There are no Treasure Hunt minigames currently running.");
             }
         }

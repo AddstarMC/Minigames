@@ -1,8 +1,7 @@
 package au.com.mineauz.minigames.blockRecorder;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
-
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -15,12 +14,12 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 public class MgBlockData {
-    private Location location;
-    private BlockState state;
-    private String blockData;
+    private final Location location;
+    private final BlockState state;
+    private final String blockData;
+    private final Map<String, Object> specialData = new HashMap<>();
     private UUID playerUUID = null;
     private ItemStack[] items = null;
-    private Map<String, Object> specialData = new HashMap<>();
     private boolean hasRandomized = false;
 
     public MgBlockData(Block original, MinigamePlayer modifier) {
@@ -118,8 +117,7 @@ public class MgBlockData {
             inc++;
         }
 
-        if (state instanceof Chest) {
-            Chest chest = (Chest) state;
+        if (state instanceof Chest chest) {
             chest.getInventory().setContents(newItems);
         }
 
@@ -133,41 +131,41 @@ public class MgBlockData {
     @Override
     @Deprecated
     public String toString() {
-        String ret = "{";
-        ret += "mat:" + state.getType().toString() + ";";
-        ret += "data:" + blockData + ";";
-        ret += "x:" + state.getX() + ";";
-        ret += "y:" + state.getY() + ";";
-        ret += "z:" + state.getZ() + ";";
-        ret += "world:" + state.getWorld().getName();
+        StringBuilder ret = new StringBuilder("{");
+        ret.append("mat:").append(state.getType()).append(";");
+        ret.append("data:").append(blockData).append(";");
+        ret.append("x:").append(state.getX()).append(";");
+        ret.append("y:").append(state.getY()).append(";");
+        ret.append("z:").append(state.getZ()).append(";");
+        ret.append("world:").append(state.getWorld().getName());
         if (items != null) {
-            ret += ";";
+            ret.append(";");
 
             int c = 0;
-            ret += "items:";
+            ret.append("items:");
             for (ItemStack i : items) {
                 if (i != null) {
-                    ret += "(";
-                    ret += "item-" + i.getType().toString() + "|";
-                    ret += "dur-" + i.getDurability() + "|";
-                    ret += "c-" + i.getAmount() + "|";
+                    ret.append("(");
+                    ret.append("item-").append(i.getType()).append("|");
+                    ret.append("dur-").append(i.getDurability()).append("|");
+                    ret.append("c-").append(i.getAmount()).append("|");
                     if (!i.getEnchantments().isEmpty()) {
-                        ret += "enc-";
+                        ret.append("enc-");
                         for (Enchantment e : i.getEnchantments().keySet()) {
-                            ret += "[";
-                            ret += e.getName() + ",";
-                            ret += i.getEnchantments().get(e);
-                            ret += "]";
+                            ret.append("[");
+                            ret.append(e.getName()).append(",");
+                            ret.append(i.getEnchantments().get(e));
+                            ret.append("]");
                         }
-                        ret += "|";
+                        ret.append("|");
                     }
-                    ret += "slot-" + c;
-                    ret += ")";
+                    ret.append("slot-").append(c);
+                    ret.append(")");
                 }
                 c++;
             }
         }
-        ret += "}";
-        return ret;
+        ret.append("}");
+        return ret.toString();
     }
 }

@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.gametypes;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 
@@ -35,7 +35,7 @@ public abstract class MinigameTypeBase implements Listener {
      *
      * @param player the player
      * @param mgm    the Game
-     * @returns True if they join1
+     * @return True if they join1
      */
     public abstract boolean joinMinigame(MinigamePlayer player, Minigame mgm);
 

@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>au.com.mineauz</groupId>
   <artifactId>MinigamesProject</artifactId>
-  <version>1.16-SNAPSHOT</version>
+  <version>1.19-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Minigames-Project</name>
   <url>https://www.spigotmc.org/resources/minigames.19687/</url>
@@ -18,8 +18,8 @@
       <plugin.version>${project.version}-${build.number}</plugin.version>
       <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
       <spigot.version>${spigot.api.version}.${spigot.minor.version}-R0.1-SNAPSHOT</spigot.version>
-      <spigot.api.version>1.16</spigot.api.version>
-      <spigot.minor.version>1</spigot.minor.version>
+      <spigot.api.version>1.19</spigot.api.version>
+      <spigot.minor.version>3</spigot.minor.version>
       <codacy.api.token>${env.CODACY_API_TOKEN}</codacy.api.token>
       <!--suppress UnresolvedMavenProperty -->
       <travis.commit>${env.TRAVIS_COMMIT}</travis.commit>
@@ -89,8 +89,8 @@
           </releases>
       </repository>
       <repository>
-          <id>destroystokyo-repo</id>
-          <url>https://repo.destroystokyo.com/repository/maven-public/</url>
+          <id>papermc</id>
+          <url>https://repo.papermc.io/repository/maven-public/</url>
       </repository>
     <!-- Other repositories -->
       <repository>
@@ -112,7 +112,7 @@
   </repositories>
   <dependencies>
       <dependency>
-          <groupId>com.destroystokyo.paper</groupId>
+          <groupId>io.papermc.paper</groupId>
           <artifactId>paper-api</artifactId>
           <version>${spigot.version}</version>
           <scope>provided</scope>
@@ -120,7 +120,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13</version>
+      <version>4.13.1</version>
       <scope>test</scope>
     </dependency>
       <dependency>
@@ -217,6 +217,14 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>2.8.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>

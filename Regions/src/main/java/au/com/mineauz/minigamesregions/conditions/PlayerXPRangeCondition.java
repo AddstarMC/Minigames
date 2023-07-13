@@ -1,33 +1,31 @@
 package au.com.mineauz.minigamesregions.conditions;
 
-import java.util.Map;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.config.FloatFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuUtility;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.Map;
 
 public class PlayerXPRangeCondition extends ConditionInterface {
-    private FloatFlag min = new FloatFlag(1.0f, "min");
-    private FloatFlag max = new FloatFlag(1.0f, "max");
+    private final FloatFlag min = new FloatFlag(1.0f, "min");
+    private final FloatFlag max = new FloatFlag(1.0f, "max");
 
     @Override
     public String getName() {
         return "PLAYER_XP_RANGE";
     }
-    
+
     @Override
-    public String getCategory(){
+    public String getCategory() {
         return "Player Conditions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
         out.put("Xp", min.getFlag() + " - " + max.getFlag());
@@ -52,21 +50,11 @@ public class PlayerXPRangeCondition extends ConditionInterface {
     public boolean checkRegionCondition(MinigamePlayer player, Region region) {
         return checkCondition(player);
     }
-    
+
     private boolean checkCondition(MinigamePlayer player) {
-        if (player == null || !player.isInMinigame()) {
-            return false;
-        }
-        
-        Player p = player.getPlayer();
-        float xp = p.getLevel() + p.getExp();
-        if (xp >= min.getFlag() && xp <= max.getFlag()) {
-            return true;
-        } else {
-            return true;
-        }
+        return player != null && player.isInMinigame();
     }
-    
+
     @Override
     public void saveArguments(FileConfiguration config, String path) {
         min.saveValue(path, config);
@@ -86,9 +74,14 @@ public class PlayerXPRangeCondition extends ConditionInterface {
         Menu m = new Menu(3, "XP Range", player);
         m.addItem(min.getMenuItem("Min XP", Material.STONE_SLAB, 0.5, 1, 0.0, null));
         m.addItem(max.getMenuItem("Max XP", Material.STONE, 0.5, 1, 0.0, null));
-        m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
+        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
         addInvertMenuItem(m);
         m.displayMenu(player);
+        return true;
+    }
+
+    @Override
+    public boolean onPlayerApplicable() {
         return true;
     }
 }

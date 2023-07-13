@@ -1,19 +1,13 @@
 package au.com.mineauz.minigames;
 
-import org.junit.Before;
 import org.junit.Test;
-
 
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 31/03/2018.
- */
 public class MinigameUtilsTest {
-
 
     @Test
     public void TestSanitize() {

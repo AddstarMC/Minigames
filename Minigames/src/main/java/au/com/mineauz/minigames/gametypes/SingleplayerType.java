@@ -1,6 +1,10 @@
 package au.com.mineauz.minigames.gametypes;
 
-import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.StoredPlayerCheckpoints;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
@@ -17,8 +21,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class SingleplayerType extends MinigameTypeBase {
-    private static Minigames plugin = Minigames.getPlugin();
-    private MinigamePlayerManager pdata = plugin.getPlayerManager();
+    private static final Minigames plugin = Minigames.getPlugin();
+    private final MinigamePlayerManager pdata = plugin.getPlayerManager();
 
     public SingleplayerType() {
         setType(MinigameType.SINGLEPLAYER);
@@ -49,7 +53,7 @@ public class SingleplayerType extends MinigameTypeBase {
     public boolean joinMinigame(MinigamePlayer player, Minigame mgm) {
 
         if (mgm.getLives() > 0 && !Float.isFinite(mgm.getLives())) {
-            player.sendInfoMessage(MinigameUtils.formStr("minigame.livesLeft", mgm.getLives()));
+            player.sendInfoMessage(MessageManager.getMinigamesMessage("minigame.livesLeft", mgm.getLives()));
         }
         if (!mgm.isAllowedFlight()) {
             player.setCanFly(false);
@@ -126,8 +130,8 @@ public class SingleplayerType extends MinigameTypeBase {
             spc.saveCheckpoints();
         }
 
-        if (mgm.getBlockRecorder().hasData() && !mgm.getPlayers().isEmpty()) {
-            mgm.getBlockRecorder().restoreAll(player);
+        if (mgm.getRecorderData().hasData() && !mgm.getPlayers().isEmpty()) {
+            mgm.getRecorderData().restoreAll(player);
         }
     }
 

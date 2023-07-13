@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.minigame;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.*;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -13,6 +13,7 @@ import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -20,6 +21,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,14 +31,13 @@ public class ScoreboardDisplay {
     public static final int defaultWidth = 3;
     public static final int defaultHeight = 3;
     private final Location rootBlock;
-    private MinigameStat stat;
-    private StatValueField field;
-    private ScoreboardOrder order;
     private final Minigame minigame;
     private final int width;
     private final int height;
     private final BlockFace facing;
-
+    private MinigameStat stat;
+    private StatValueField field;
+    private ScoreboardOrder order;
     private StatSettings settings;
 
     private List<StoredStat> stats;
@@ -130,25 +131,14 @@ public class ScoreboardDisplay {
     }
 
     private List<Block> getSignBlocks(boolean onlySigns) {
-        // Find the horizontal direction (going across the the signs, left to right)
-        BlockFace horizontal;
-
-        switch (facing) {
-            case NORTH:
-                horizontal = BlockFace.WEST;
-                break;
-            case SOUTH:
-                horizontal = BlockFace.EAST;
-                break;
-            case WEST:
-                horizontal = BlockFace.SOUTH;
-                break;
-            case EAST:
-                horizontal = BlockFace.NORTH;
-                break;
-            default:
-                throw new AssertionError("Invalid facing " + facing);
-        }
+        // Find the horizontal direction (going across the signs, left to right)
+        BlockFace horizontal = switch (facing) {
+            case NORTH -> BlockFace.WEST;
+            case SOUTH -> BlockFace.EAST;
+            case WEST -> BlockFace.SOUTH;
+            case EAST -> BlockFace.NORTH;
+            default -> throw new AssertionError("Invalid facing " + facing);
+        };
 
         List<Block> blocks = Lists.newArrayListWithCapacity(width * height);
 
@@ -163,7 +153,7 @@ public class ScoreboardDisplay {
             Block start = block;
             for (int x = 0; x < width; ++x) {
                 // Only add signs
-                if (block.getType() == Material.OAK_WALL_SIGN || (!onlySigns && block.getType() == Material.AIR)) {
+                if (Tag.WALL_SIGNS.isTagged(block.getType()) || (!onlySigns && block.getType() == Material.AIR)) {
                     blocks.add(block);
                 }
 
@@ -227,7 +217,7 @@ public class ScoreboardDisplay {
         fieldChoice.setDescription(Collections.singletonList(ChatColor.GREEN + field.getTitle()));
 
         statisticChoice.setClick(object -> {
-            Menu childMenu = MinigameStats.createStatSelectMenu(setupMenu, new Callback<MinigameStat>() {
+            Menu childMenu = MinigameStats.createStatSelectMenu(setupMenu, new Callback<>() {
                 @Override
                 public MinigameStat getValue() {
                     throw new UnsupportedOperationException();
@@ -267,7 +257,7 @@ public class ScoreboardDisplay {
 
         fieldChoice.setClick(object -> {
             StatSettings settings1 = minigame.getSettings(stat);
-            Menu childMenu = MinigameStats.createStatFieldSelectMenu(setupMenu, settings1.getFormat(), new Callback<StatValueField>() {
+            Menu childMenu = MinigameStats.createStatFieldSelectMenu(setupMenu, settings1.getFormat(), new Callback<>() {
                 @Override
                 public StatValueField getValue() {
                     throw new UnsupportedOperationException();
@@ -291,12 +281,14 @@ public class ScoreboardDisplay {
         for (ScoreboardOrder o : ScoreboardOrder.values()) {
             sbotypes.add(o.toString().toLowerCase());
         }
-        setupMenu.addItem(new MenuItemList("Scoreboard Order", Material.ENDER_PEARL, new Callback<String>() {
+        setupMenu.addItem(new MenuItemList("Scoreboard Order", Material.ENDER_PEARL, new Callback<>() {
 
             @Override
             public String getValue() {
                 return order.toString().toLowerCase();
-            }            @Override
+            }
+
+            @Override
             public void setValue(String value) {
                 order = ScoreboardOrder.valueOf(value.toUpperCase());
             }
@@ -324,11 +316,11 @@ public class ScoreboardDisplay {
         }
     }
 
-    public void placeSigns() {
+    public void placeSigns(Material material) {
         List<Block> blocks = getSignBlocks(false);
 
         for (Block block : blocks) {
-            block.setType(Material.OAK_WALL_SIGN);
+            block.setType(material);
             Directional d = (Directional) block.getBlockData();
             d.setFacing(facing);
             block.setBlockData(d);
@@ -352,10 +344,9 @@ public class ScoreboardDisplay {
         }
 
         Block root = rootBlock.getBlock();
-        if (root.getType() == Material.OAK_WALL_SIGN || root.getType() == Material.OAK_SIGN) {
+        if (Tag.SIGNS.isTagged(root.getType()) || Tag.WALL_SIGNS.isTagged(root.getType())) {
             BlockState state = root.getState();
-            if (state instanceof Sign) {
-                Sign sign = (Sign) state;
+            if (state instanceof Sign sign) {
 
                 sign.setLine(0, ChatColor.BLUE + minigame.getName(true));
                 sign.setLine(1, ChatColor.GREEN + settings.getDisplayName());
@@ -366,10 +357,10 @@ public class ScoreboardDisplay {
                 sign.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.getPlugin(), true));
                 sign.setMetadata("Minigame", new FixedMetadataValue(Minigames.getPlugin(), minigame));
             } else {
-                Minigames.getPlugin().getLogger().warning("No Root Sign Block at: " + root.getLocation().toString());
+                Minigames.getPlugin().getLogger().warning("No Root Sign Block at: " + root.getLocation());
             }
         } else {
-            Minigames.getPlugin().getLogger().warning("No Root Sign Block at: " + root.getLocation().toString());
+            Minigames.getPlugin().getLogger().warning("No Root Sign Block at: " + root.getLocation());
         }
     }
 
@@ -381,7 +372,7 @@ public class ScoreboardDisplay {
 
     // The update callback to be provided to the future. MUST be executed on the bukkit server thread
     private FutureCallback<List<StoredStat>> getUpdateCallback() {
-        return new FutureCallback<List<StoredStat>>() {
+        return new FutureCallback<>() {
             @Override
             public void onSuccess(List<StoredStat> result) {
                 stats = result;
@@ -390,7 +381,7 @@ public class ScoreboardDisplay {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(@NotNull Throwable t) {
                 t.printStackTrace();
                 stats = Collections.emptyList();
                 needsLoad = true;

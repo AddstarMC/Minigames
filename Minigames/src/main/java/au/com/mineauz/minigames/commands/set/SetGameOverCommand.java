@@ -30,9 +30,10 @@ public class SetGameOverCommand implements ICommand {
 
     @Override
     public String getDescription() {
-        return "Modifies game over settings. Players will remain in the game until the game over timer ends.\n"
-                + "For the humiliation setting, losers will be stripped of items and can't attack.\n"
-                + "If interact is false, players will not be able to interact with buttons/pressure plates/doors etc.";
+        return """
+                Modifies game over settings. Players will remain in the game until the game over timer ends.
+                For the humiliation setting, losers will be stripped of items and can't attack.
+                If interact is false, players will not be able to interact with buttons/pressure plates/doors etc.""";
     }
 
     @Override
@@ -67,28 +68,27 @@ public class SetGameOverCommand implements ICommand {
             GameOverModule gmo = GameOverModule.getMinigameModule(minigame);
             if (args[0].equalsIgnoreCase("timer") && args.length == 2) {
                 if (args[1].matches("[0-9]+")) {
-                    Integer t = Integer.parseInt(args[1]);
+                    int t = Integer.parseInt(args[1]);
                     gmo.setTimer(t);
                     sender.sendMessage(ChatColor.GRAY + minigame.getName(false) + "'s game over timer has been set to " + MinigameUtils.convertTime(t));
-                    return true;
                 } else {
                     sender.sendMessage(ChatColor.RED + "Invalid time length! Value must be a number!");
-                    return true;
                 }
+                return true;
             } else if (args[0].equalsIgnoreCase("invincible") && args.length == 2) {
-                Boolean bool = Boolean.valueOf(args[1]);
+                boolean bool = Boolean.parseBoolean(args[1]);
                 gmo.setInvincible(bool);
-                sender.sendMessage(ChatColor.GRAY + "Set game over invincibility to " + bool.toString().toLowerCase() + " for " + minigame);
+                sender.sendMessage(ChatColor.GRAY + "Set game over invincibility to " + Boolean.toString(bool).toLowerCase() + " for " + minigame);
                 return true;
             } else if (args[0].equalsIgnoreCase("humiliation") && args.length == 2) {
-                Boolean bool = Boolean.valueOf(args[1]);
+                boolean bool = Boolean.parseBoolean(args[1]);
                 gmo.setHumiliationMode(bool);
-                sender.sendMessage(ChatColor.GRAY + "Set game over humiliation to " + bool.toString().toLowerCase() + " for " + minigame);
+                sender.sendMessage(ChatColor.GRAY + "Set game over humiliation to " + Boolean.toString(bool).toLowerCase() + " for " + minigame);
                 return true;
             } else if (args[0].equalsIgnoreCase("interact") && args.length == 2) {
-                Boolean bool = Boolean.valueOf(args[1]);
+                boolean bool = Boolean.parseBoolean(args[1]);
                 gmo.setInteractAllowed(bool);
-                sender.sendMessage(ChatColor.GRAY + "Set game over interating to " + bool.toString().toLowerCase() + " for " + minigame);
+                sender.sendMessage(ChatColor.GRAY + "Set game over interating to " + Boolean.toString(bool).toLowerCase() + " for " + minigame);
             }
 
         }

@@ -1,18 +1,9 @@
 package au.com.mineauz.minigames.script;
 
-public class ScriptValue<T> implements ScriptReference {
-    private final T value;
-
-    public ScriptValue(T value) {
-        this.value = value;
-    }
+public record ScriptValue<T>(T value) implements ScriptReference {
 
     public static <T> ScriptValue<T> of(T value) {
         return new ScriptValue<>(value);
-    }
-
-    public T getValue() {
-        return value;
     }
 
     @Override

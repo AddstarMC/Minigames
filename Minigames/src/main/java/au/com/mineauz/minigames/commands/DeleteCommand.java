@@ -29,7 +29,7 @@ public class DeleteCommand implements ICommand {
 
     @Override
     public String getDescription() {
-        return "Deletes a Minigame from existance. It will be gone forever! (A very long time)";
+        return "Deletes a Minigame from existence. It will be gone forever! (A very long time)";
     }
 
     @Override

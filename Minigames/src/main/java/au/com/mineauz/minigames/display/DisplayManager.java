@@ -5,8 +5,8 @@ import au.com.mineauz.minigames.display.bukkit.BukkitDisplayCuboid;
 import au.com.mineauz.minigames.display.bukkit.BukkitDisplayPoint;
 import au.com.mineauz.minigames.display.spigot.SpigotDisplayCuboid;
 import au.com.mineauz.minigames.display.spigot.SpigotDisplayPoint;
+import au.com.mineauz.minigames.objects.MgRegion;
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Maps;
 import com.google.common.collect.SetMultimap;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -16,24 +16,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 public class DisplayManager {
+    private final Map<INonPersistentDisplay, Integer> nextTickDelay = new IdentityHashMap<>();
+    private final SetMultimap<Player, AbstractDisplayObject> playerDisplays;
+    private final SetMultimap<World, AbstractDisplayObject> worldDisplays;
     private boolean isSpigot;
-
     private BukkitTask refreshTask;
-
-    private Map<INonPersistantDisplay, Integer> nextTickDelay;
-
-    private SetMultimap<Player, AbstractDisplayObject> playerDisplays;
-    private SetMultimap<World, AbstractDisplayObject> worldDisplays;
 
     public DisplayManager() {
         playerDisplays = HashMultimap.create();
         worldDisplays = HashMultimap.create();
-
-        nextTickDelay = Maps.newIdentityHashMap();
 
         checkSpigot();
     }
@@ -51,7 +47,7 @@ public class DisplayManager {
         return isSpigot;
     }
 
-    public IDisplayCubiod displayCuboid(Player player, Location corner1, Location corner2) {
+    public IDisplayCuboid displayCuboid(Player player, Location corner1, Location corner2) {
         Validate.isTrue(corner1.getWorld() == corner2.getWorld(), "Both corners must be in the same world");
 
         double minX = Math.min(corner1.getX(), corner2.getX());
@@ -64,7 +60,7 @@ public class DisplayManager {
         return displayCuboid(player, minX, minY, minZ, maxX, maxY, maxZ);
     }
 
-    public IDisplayCubiod displayCuboid(Location corner1, Location corner2) {
+    public IDisplayCuboid displayCuboid(Location corner1, Location corner2) {
         Validate.isTrue(corner1.getWorld() == corner2.getWorld(), "Both corners must be in the same world");
 
         double minX = Math.min(corner1.getX(), corner2.getX());
@@ -77,7 +73,7 @@ public class DisplayManager {
         return displayCuboid(corner1.getWorld(), minX, minY, minZ, maxX, maxY, maxZ);
     }
 
-    public IDisplayCubiod displayCuboid(Player player, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+    public IDisplayCuboid displayCuboid(Player player, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
         if (isSpigot) {
             return new SpigotDisplayCuboid(this, player, new Vector(minX, minY, minZ), new Vector(maxX, maxY, maxZ));
         } else {
@@ -85,11 +81,27 @@ public class DisplayManager {
         }
     }
 
-    public IDisplayCubiod displayCuboid(World world, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+    public IDisplayCuboid displayCuboid(Player player, MgRegion region) {
+        if (isSpigot) {
+            return new SpigotDisplayCuboid(this, player, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
+        } else {
+            return new BukkitDisplayCuboid(this, player, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
+        }
+    }
+
+    public IDisplayCuboid displayCuboid(World world, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
         if (isSpigot) {
             return new SpigotDisplayCuboid(this, world, new Vector(minX, minY, minZ), new Vector(maxX, maxY, maxZ));
         } else {
             return new BukkitDisplayCuboid(this, world, new Vector(minX, minY, minZ), new Vector(maxX, maxY, maxZ));
+        }
+    }
+
+    public IDisplayCuboid displayCuboid(World world, MgRegion region) {
+        if (isSpigot) {
+            return new SpigotDisplayCuboid(this, world, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
+        } else {
+            return new BukkitDisplayCuboid(this, world, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
         }
     }
 
@@ -143,8 +155,7 @@ public class DisplayManager {
     }
 
     protected void onShow(IDisplayObject object) {
-        if (object instanceof INonPersistantDisplay) {
-            INonPersistantDisplay display = (INonPersistantDisplay) object;
+        if (object instanceof INonPersistentDisplay display) {
             nextTickDelay.put(display, display.getRefreshInterval());
 
             enableRefreshTask();
@@ -152,8 +163,7 @@ public class DisplayManager {
     }
 
     protected void onHide(IDisplayObject object) {
-        if (object instanceof INonPersistantDisplay) {
-            INonPersistantDisplay display = (INonPersistantDisplay) object;
+        if (object instanceof INonPersistentDisplay display) {
             nextTickDelay.remove(display);
 
             disableRefreshTask();
@@ -169,7 +179,7 @@ public class DisplayManager {
     }
 
     private void doRefreshAll() {
-        for (Entry<INonPersistantDisplay, Integer> next : nextTickDelay.entrySet()) {
+        for (Entry<INonPersistentDisplay, Integer> next : nextTickDelay.entrySet()) {
             if (next.getValue() <= 0) {
                 next.setValue(next.getKey().getRefreshInterval());
                 next.getKey().refresh();

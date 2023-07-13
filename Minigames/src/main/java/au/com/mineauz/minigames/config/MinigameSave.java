@@ -12,7 +12,7 @@ public class MinigameSave {
     String minigame = null;
     private FileConfiguration minigameSave = null;
     private File minigameSaveFile = null;
-    private String name;
+    private final String name;
 
     public MinigameSave(String name) {
         this.name = name;
@@ -32,13 +32,12 @@ public class MinigameSave {
             if (minigameSaveFile == null) {
                 minigameSaveFile = new File(Minigames.getPlugin().getDataFolder() + "/minigames/" + minigame + "/", name + ".yml");
             }
-            minigameSave = YamlConfiguration.loadConfiguration(minigameSaveFile);
         } else {
             if (minigameSaveFile == null) {
                 minigameSaveFile = new File(Minigames.getPlugin().getDataFolder() + "/", name + ".yml");
             }
-            minigameSave = YamlConfiguration.loadConfiguration(minigameSaveFile);
         }
+        minigameSave = YamlConfiguration.loadConfiguration(minigameSaveFile);
     }
 
     public FileConfiguration getConfig() {

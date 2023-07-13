@@ -1,11 +1,11 @@
 package au.com.mineauz.minigamesregions;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
 import org.bukkit.Material;
@@ -43,33 +43,33 @@ public class RegionToolMode implements ToolMode {
     public void onSetMode(final MinigamePlayer player, MinigameTool tool) {
         tool.addSetting("Region", "None");
         final Menu m = new Menu(2, "Region Selection", player);
-        if(player.isInMenu()){
-            m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), player.getMenu()), m.getSize() - 9);
+        if (player.isInMenu()) {
+            m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), player.getMenu()), m.getSize() - 9);
         }
         final MinigameTool ftool = tool;
-        m.addItem(new MenuItemString("Region Name", Material.PAPER, new Callback<String>() {
-            
-            @Override
-            public void setValue(String value) {
-                ftool.changeSetting("Region", value);
-            }
-            
+        m.addItem(new MenuItemString("Region Name", Material.PAPER, new Callback<>() {
+
             @Override
             public String getValue() {
                 return ftool.getSetting("Region");
             }
+
+            @Override
+            public void setValue(String value) {
+                ftool.changeSetting("Region", value);
+            }
         }));
-        
+
         if (tool.getMinigame() != null) {
             // Node selection menu
             RegionModule module = RegionModule.getMinigameModule(tool.getMinigame());
-            
+
             Menu regionMenu = new Menu(6, "Regions", player);
             List<MenuItem> items = new ArrayList<>();
-            
-            for(final Region region : module.getRegions()){
+
+            for (final Region region : module.getRegions()) {
                 MenuItemCustom item = new MenuItemCustom(region.getName(), Material.CHEST);
-                
+
                 // Set the node and go back to the main menu
                 item.setClick(object -> {
                     ftool.changeSetting("Region", region.getName());
@@ -78,13 +78,13 @@ public class RegionToolMode implements ToolMode {
 
                     return object;
                 });
-                
+
                 items.add(item);
             }
-            
+
             regionMenu.addItems(items);
-            regionMenu.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), m), regionMenu.getSize() - 9);
-            
+            regionMenu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), m), regionMenu.getSize() - 9);
+
             m.addItem(new MenuItemPage("Edit Region", Material.CHEST, regionMenu));
         }
         m.displayMenu(player);
@@ -97,58 +97,55 @@ public class RegionToolMode implements ToolMode {
 
     @Override
     public void onLeftClick(MinigamePlayer player, Minigame minigame,
-            Team team, PlayerInteractEvent event) {
-        if(player.hasSelection()){
+                            Team team, PlayerInteractEvent event) {
+        if (player.hasSelection()) {
             String name = MinigameUtils.getMinigameTool(player).getSetting("Region");
             RegionModule module = RegionModule.getMinigameModule(minigame);
             Region region = module.getRegion(name);
-            
-            if(region == null) {
+
+            if (region == null) {
                 module.addRegion(name, new Region(name, player.getSelectionPoints()[0], player.getSelectionPoints()[1]));
                 player.sendInfoMessage("Created a new region in " + minigame + " called " + name);
                 player.clearSelection();
-            }
-            else{
+            } else {
                 region.updateRegion(player.getSelectionPoints()[0], player.getSelectionPoints()[1]);
                 Main.getPlugin().getDisplayManager().update(region);
                 player.sendInfoMessage("Updated region " + name + " in " + minigame);
             }
-        }
-        else{
+        } else {
             player.sendMessage("You need to select a region with right click first!", MinigameMessageType.ERROR);
         }
     }
 
     @Override
     public void onRightClick(MinigamePlayer player, Minigame minigame,
-            Team team, PlayerInteractEvent event) {
-        if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
+                             Team team, PlayerInteractEvent event) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             player.addSelectionPoint(event.getClickedBlock().getLocation());
-            if(player.hasSelection()){
+            if (player.hasSelection()) {
                 player.sendInfoMessage("Selection complete, finalise with left click.");
             }
         }
     }
-    
+
     @Override
     public void onEntityLeftClick(MinigamePlayer player, Minigame minigame, Team team, EntityDamageByEntityEvent event) {
-    
+
     }
-    
+
     @Override
     public void onEntityRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEntityEvent event) {
-    
+
     }
-    
+
     @Override
     public void select(MinigamePlayer player, Minigame minigame, Team team) {
         RegionModule mod = RegionModule.getMinigameModule(minigame);
         String name = MinigameUtils.getMinigameTool(player).getSetting("Region");
-        if(mod.hasRegion(name)){
+        if (mod.hasRegion(name)) {
             Main.getPlugin().getDisplayManager().show(mod.getRegion(name), player);
             player.sendInfoMessage("Selected the " + name + " region in " + minigame);
-        }
-        else{
+        } else {
             player.sendMessage("No region created by the name '" + name + "'", MinigameMessageType.ERROR);
         }
     }
@@ -157,12 +154,11 @@ public class RegionToolMode implements ToolMode {
     public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
         RegionModule mod = RegionModule.getMinigameModule(minigame);
         String name = MinigameUtils.getMinigameTool(player).getSetting("Region");
-        if(mod.hasRegion(name)){
+        if (mod.hasRegion(name)) {
             Main.getPlugin().getDisplayManager().hide(mod.getRegion(name), player);
             player.clearSelection();
             player.sendInfoMessage("Deselected the region");
-        }
-        else{
+        } else {
             player.sendMessage("No region created by the name '" + name + "'", MinigameMessageType.ERROR);
         }
     }

@@ -1,13 +1,12 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import java.util.Map;
-
-import org.bukkit.configuration.file.FileConfiguration;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.menu.Menu;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.Map;
 
 public class CheckpointAction extends AbstractAction {
 
@@ -20,7 +19,7 @@ public class CheckpointAction extends AbstractAction {
     public String getCategory() {
         return "Minigame Actions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
     }
@@ -37,31 +36,31 @@ public class CheckpointAction extends AbstractAction {
 
     @Override
     public void executeRegionAction(MinigamePlayer player,
-            Region region) {
-        debug(player,region);
+                                    Region region) {
+        debug(player, region);
         execute(player);
     }
 
     @Override
     public void executeNodeAction(MinigamePlayer player,
-            Node node) {
-        debug(player,node);
+                                  Node node) {
+        debug(player, node);
         execute(player);
     }
-    
-    private void execute(MinigamePlayer player){
-        if(player == null || !player.isInMinigame()) return;
+
+    private void execute(MinigamePlayer player) {
+        if (player == null || !player.isInMinigame()) return;
         player.setCheckpoint(player.getLocation());
     }
 
     @Override
     public void saveArguments(FileConfiguration config,
-            String path) {
+                              String path) {
     }
 
     @Override
     public void loadArguments(FileConfiguration config,
-            String path) {
+                              String path) {
     }
 
     @Override
