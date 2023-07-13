@@ -178,9 +178,9 @@ public class MinigamePlayer implements ScriptObject {
         init = switch (type) {
             case ERROR -> Component.text("[Minigames] ", NamedTextColor.RED);
             case WIN -> Component.text("[Minigames] ", NamedTextColor.GREEN);
-            case LOSS -> Component.text("[Minigames]", NamedTextColor.DARK_RED);
+            case LOSS -> Component.text("[Minigames] ", NamedTextColor.DARK_RED);
             case NONE -> Component.text("");
-            default -> Component.text("[Minigames]", NamedTextColor.AQUA); //also info
+            default -> Component.text("[Minigames] ", NamedTextColor.AQUA); //also info
         };
 
         this.sendMessage(init.append(msg.colorIfAbsent(NamedTextColor.WHITE)));
