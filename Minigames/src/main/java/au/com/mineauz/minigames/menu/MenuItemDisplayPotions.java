@@ -10,7 +10,7 @@ import java.util.List;
 
 public class MenuItemDisplayPotions extends MenuItem {
 
-    private PlayerLoadout loadout;
+    private final PlayerLoadout loadout;
 
     public MenuItemDisplayPotions(String name, Material displayItem, PlayerLoadout loadout) {
         super(name, displayItem);

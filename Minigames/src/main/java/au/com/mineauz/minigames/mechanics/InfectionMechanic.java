@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames.mechanics;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
@@ -11,6 +10,7 @@ import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.InfectionModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
@@ -52,21 +52,21 @@ public class InfectionMechanic extends GameMechanicBase {
             Team red = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.RED);
             Team blue = TeamsModule.getMinigameModule(minigame).getTeam(TeamColor.BLUE);
             Team team = ply.getTeam();
-            Double percent = ((Integer) InfectionModule.getMinigameModule(minigame).getInfectedPercent()).doubleValue() / 100d;
+            double percent = ((Integer) InfectionModule.getMinigameModule(minigame).getInfectedPercent()).doubleValue() / 100d;
             if (team == blue) {
-                if (red.getPlayers().size() < Math.ceil(players.size() * percent) && !red.isFull()) {
+                if (red.getPlayers().size() < Math.ceil(players.size() * percent) && red.hasRoom()) {
                     MultiplayerType.switchTeam(minigame, ply, red);
                     result.add(ply);
                     ply.sendInfoMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()));
                     mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), ply.getName(), red.getChatColor() + red.getDisplayName()), null, ply);
                 }
             } else if (team == null) {
-                if (red.getPlayers().size() < Math.ceil(players.size() * percent) && !red.isFull()) {
+                if (red.getPlayers().size() < Math.ceil(players.size() * percent) && red.hasRoom()) {
                     red.addPlayer(ply);
                     result.add(ply);
                     ply.sendInfoMessage(String.format(red.getAssignMessage(), red.getChatColor() + red.getDisplayName()));
                     mdata.sendMinigameMessage(minigame, String.format(red.getGameAssignMessage(), ply.getName(), red.getChatColor() + red.getDisplayName()), null, ply);
-                } else if (!blue.isFull()) {
+                } else if (blue.hasRoom()) {
                     blue.addPlayer(ply);
                     result.add(ply);
                     ply.sendInfoMessage(String.format(blue.getAssignMessage(), blue.getChatColor() + blue.getDisplayName()));
@@ -121,14 +121,13 @@ public class InfectionMechanic extends GameMechanicBase {
     @EventHandler(ignoreCancelled = true)
     private void playerDeath(PlayerDeathEvent event) {
         MinigamePlayer player = pdata.getMinigamePlayer(event.getEntity());
-        if (player == null) return;
         if (player.isInMinigame()) {
             Minigame mgm = player.getMinigame();
             if (mgm.isTeamGame() && mgm.getMechanicName().equals("infection")) {
                 Team blue = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.BLUE);
                 Team red = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.RED);
                 if (blue.getPlayers().contains(player)) {
-                    if (!red.isFull()) {
+                    if (red.hasRoom()) {
                         MultiplayerType.switchTeam(mgm, player, red);
                         InfectionModule.getMinigameModule(mgm).addInfectedPlayer(player);
                         if (event.getEntity().getKiller() != null) {

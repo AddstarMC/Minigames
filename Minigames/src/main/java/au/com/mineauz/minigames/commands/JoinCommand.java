@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -58,13 +59,13 @@ public class JoinCommand implements ICommand {
             Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
             if (mgm != null && (!mgm.getUsePermissions() || player.hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))) {
                 if (!plugin.getPlayerManager().getMinigamePlayer(player).isInMinigame()) {
-                    sender.sendMessage(ChatColor.GREEN + MinigameUtils.formStr("command.join.joining", mgm.getName(false)));
+                    sender.sendMessage(ChatColor.GREEN + MessageManager.getMinigamesMessage("command.join.joining", mgm.getName(false)));
                     plugin.getPlayerManager().joinMinigame(plugin.getPlayerManager().getMinigamePlayer(player), mgm, false, 0.0);
                 } else {
                     player.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.join.alreadyPlaying"));
                 }
             } else if (mgm != null && mgm.getUsePermissions()) {
-                player.sendMessage(ChatColor.RED + MinigameUtils.formStr("command.join.noMinigamePermission", "minigame.join." + mgm.getName(false).toLowerCase()));
+                player.sendMessage(ChatColor.RED + MessageManager.getMinigamesMessage("command.join.noMinigamePermission", "minigame.join." + mgm.getName(false).toLowerCase()));
             } else {
                 player.sendMessage(ChatColor.RED + MinigameUtils.getLang("minigame.error.noMinigame"));
             }

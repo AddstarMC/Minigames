@@ -1,10 +1,10 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.config.BlockDataFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.*;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Location;
@@ -14,12 +14,13 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
+
 //todo
 public class SetBlockAction extends AbstractAction {
-    
-    private BlockDataFlag type = new BlockDataFlag(Material.STONE.createBlockData(), "type");
-    private BooleanFlag useBlockData = new BooleanFlag(false, "usedur");//todo rename flag
-    private IntegerFlag dur = new IntegerFlag(0, "dur");
+
+    private final BlockDataFlag type = new BlockDataFlag(Material.STONE.createBlockData(), "type");
+    private final BooleanFlag useBlockData = new BooleanFlag(false, "usedur");//todo rename flag
+    private final IntegerFlag dur = new IntegerFlag(0, "dur");
 
     @Override
     public String getName() {
@@ -30,7 +31,7 @@ public class SetBlockAction extends AbstractAction {
     public String getCategory() {
         return "Block Actions";
     }
-    
+
     @Override
     public void describe(Map<String, Object> out) {
         if (useBlockData.getFlag()) {
@@ -49,23 +50,23 @@ public class SetBlockAction extends AbstractAction {
     public boolean useInNodes() {
         return true;
     }
-    
+
     @Override
     public void executeRegionAction(MinigamePlayer player,
-            Region region) {
-        debug(player,region);
+                                    Region region) {
+        debug(player, region);
         Location temp = region.getFirstPoint();
-        for(int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++){
+        for (int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++) {
             temp.setY(y);
-            for(int x = region.getFirstPoint().getBlockX(); x <= region.getSecondPoint().getBlockX(); x++){
+            for (int x = region.getFirstPoint().getBlockX(); x <= region.getSecondPoint().getBlockX(); x++) {
                 temp.setX(x);
-                for(int z = region.getFirstPoint().getBlockZ(); z <= region.getSecondPoint().getBlockZ(); z++){
+                for (int z = region.getFirstPoint().getBlockZ(); z <= region.getSecondPoint().getBlockZ(); z++) {
                     temp.setZ(z);
-                    
+
                     BlockState bs = temp.getBlock().getState();
-                    if(useBlockData.getFlag()){
+                    if (useBlockData.getFlag()) {
                         bs.setBlockData(type.getFlag());
-                    }else {
+                    } else {
                         bs.setBlockData(type.getFlag().getMaterial().createBlockData());
                     }
                     bs.update(true);
@@ -76,12 +77,12 @@ public class SetBlockAction extends AbstractAction {
 
     @Override
     public void executeNodeAction(MinigamePlayer player,
-            Node node) {
-        debug(player,node);
+                                  Node node) {
+        debug(player, node);
         BlockState bs = node.getLocation().getBlock().getState();
-        if(useBlockData.getFlag()){
+        if (useBlockData.getFlag()) {
             bs.setBlockData(type.getFlag());
-        }else {
+        } else {
             bs.setBlockData(type.getFlag().getMaterial().createBlockData());
         }
         bs.update(true);
@@ -89,13 +90,13 @@ public class SetBlockAction extends AbstractAction {
 
     @Override
     public void saveArguments(FileConfiguration config,
-            String path) {
+                              String path) {
         type.saveValue(path, config);
     }
 
     @Override
     public void loadArguments(FileConfiguration config,
-            String path) {
+                              String path) {
         type.loadValue(path, config);
         useBlockData.loadValue(path, config);
         dur.loadValue(path, config);
@@ -104,17 +105,16 @@ public class SetBlockAction extends AbstractAction {
     @Override
     public boolean displayMenu(MinigamePlayer player, Menu previous) {
         Menu m = new Menu(3, "Set Block", player);
-        final MinigamePlayer fply = player;
-        m.addItem(new MenuItemPage("Back",MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
-        m.addItem(new MenuItemBlockData("Type", Material.STONE, new Callback<BlockData>() {
-            @Override
-            public void setValue(BlockData value) {
-                type.setFlag(value);
-            }
-            
+        m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
+        m.addItem(new MenuItemBlockData("Type", Material.STONE, new Callback<>() {
             @Override
             public BlockData getValue() {
                 return type.getFlag();
+            }
+
+            @Override
+            public void setValue(BlockData value) {
+                type.setFlag(value);
             }
         }));
         m.addItem(useBlockData.getMenuItem("Use Specific BlockData", Material.ENDER_PEARL));

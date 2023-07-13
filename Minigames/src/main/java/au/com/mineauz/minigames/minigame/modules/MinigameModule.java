@@ -1,17 +1,16 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import java.util.Map;
-
-import au.com.mineauz.minigames.objects.ModulePlaceHolderProvider;
-import org.bstats.bukkit.Metrics;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import au.com.mineauz.minigames.ComparableVersion;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.ModulePlaceHolderProvider;
+import org.bstats.bukkit.Metrics;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 public abstract class MinigameModule {
     private static ComparableVersion minRequired = null;
@@ -64,10 +63,11 @@ public abstract class MinigameModule {
 
     /**
      * You should override this methid if the module should provide more placeholders for a game it services.
+     *
      * @return ModulePlaceHolderProvider
      */
     @Nullable
-    public ModulePlaceHolderProvider getModulePlaceHolders(){
+    public ModulePlaceHolderProvider getModulePlaceHolders() {
         return null;
     }
 }

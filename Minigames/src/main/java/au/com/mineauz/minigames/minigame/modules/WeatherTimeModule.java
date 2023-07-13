@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
@@ -9,6 +8,8 @@ import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.LongFlag;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.WeatherType;
@@ -62,48 +63,56 @@ public class WeatherTimeModule extends MinigameModule {
     @Override
     public void addEditMenuOptions(Menu menu) {
         Menu m = new Menu(6, "Time and Weather", menu.getViewer());
-        m.addItem(new MenuItemBoolean("Use Custom Time", Material.CLOCK, new Callback<Boolean>() {
+        m.addItem(new MenuItemBoolean("Use Custom Time", Material.CLOCK, new Callback<>() {
 
             @Override
             public Boolean getValue() {
                 return useCustomTime.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Boolean value) {
                 useCustomTime.setFlag(value);
             }
 
 
         }));
-        m.addItem(new MenuItemInteger("Time of Day", Material.CLOCK, new Callback<Integer>() {
+        m.addItem(new MenuItemInteger("Time of Day", Material.CLOCK, new Callback<>() {
 
             @Override
             public Integer getValue() {
                 return time.getFlag().intValue();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Integer value) {
                 time.setFlag(value.longValue());
             }
 
 
         }, 0, 24000));
-        m.addItem(new MenuItemBoolean("Use Custom Weather", Material.WATER_BUCKET, new Callback<Boolean>() {
+        m.addItem(new MenuItemBoolean("Use Custom Weather", Material.WATER_BUCKET, new Callback<>() {
 
             @Override
             public Boolean getValue() {
                 return useCustomWeather.getFlag();
-            }            @Override
+            }
+
+            @Override
             public void setValue(Boolean value) {
                 useCustomWeather.setFlag(value);
             }
 
 
         }));
-        m.addItem(new MenuItemList("Weather Type", Material.WATER_BUCKET, new Callback<String>() {
+        m.addItem(new MenuItemList("Weather Type", Material.WATER_BUCKET, new Callback<>() {
 
             @Override
             public String getValue() {
-                return MinigameUtils.capitalize(weather.getFlag().toString());
-            }            @Override
+                return WordUtils.capitalize(weather.getFlag().toString());
+            }
+
+            @Override
             public void setValue(String value) {
                 weather.setFlag(WeatherType.valueOf(value.toUpperCase()));
             }

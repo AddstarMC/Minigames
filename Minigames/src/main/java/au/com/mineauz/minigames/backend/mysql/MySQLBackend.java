@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.backend.mysql;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.backend.*;
 import au.com.mineauz.minigames.backend.both.SQLExport;
 import au.com.mineauz.minigames.backend.both.SQLImport;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.*;
 import com.google.common.collect.Maps;
 import org.bukkit.configuration.ConfigurationSection;
@@ -27,8 +27,8 @@ public class MySQLBackend extends Backend {
     private StatementKey loadStatSettings;
     private StatementKey saveStatSettings;
 
-    private MySQLStatLoader loader;
-    private MySQLStatSaver saver;
+    private final MySQLStatLoader loader;
+    private final MySQLStatSaver saver;
 
     public MySQLBackend(Logger logger) {
         this.logger = logger;
@@ -57,7 +57,7 @@ public class MySQLBackend extends Backend {
                     props.put(entry.getKey(), entry.getValue().toString());
                 }
             }
-            if (debug) logger.info("Properties: " + props.toString());
+            if (debug) logger.info("Properties: " + props);
             pool = new ConnectionPool(url, props);
 
             createStatements();

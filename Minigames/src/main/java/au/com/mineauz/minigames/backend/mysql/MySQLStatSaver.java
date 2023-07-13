@@ -1,11 +1,5 @@
 package au.com.mineauz.minigames.backend.mysql;
 
-import java.sql.SQLException;
-import java.util.UUID;
-import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.backend.ConnectionHandler;
 import au.com.mineauz.minigames.backend.StatementKey;
@@ -13,6 +7,12 @@ import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatFormat;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+
+import java.sql.SQLException;
+import java.util.Map.Entry;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 class MySQLStatSaver {
     private final MySQLBackend backend;

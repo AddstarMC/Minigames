@@ -12,9 +12,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MenuItemRegionExecutorAdd extends MenuItem{
-    
-    private Region region;
+public class MenuItemRegionExecutorAdd extends MenuItem {
+    private final Region region;
 
     public MenuItemRegionExecutorAdd(String name, Material displayItem, Region region) {
         super(name, displayItem);
@@ -25,22 +24,22 @@ public class MenuItemRegionExecutorAdd extends MenuItem{
         super(name, description, displayItem);
         this.region = region;
     }
-    
+
     @Override
-    public ItemStack onClick(){
+    public ItemStack onClick() {
         Menu m = new Menu(6, "Select Trigger", getContainer().getViewer());
 
         List<String> triggers = new ArrayList<>(Triggers.getAllRegionTriggers());
         Collections.sort(triggers);
-        
-        for(String trig : triggers){
+
+        for (String trig : triggers) {
             m.addItem(new MenuItemTrigger(Triggers.getTrigger(trig), region, getContainer()));
         }
-        
+
         m.addItem(new MenuItemBack(getContainer()), m.getSize() - 9);
-        
+
         m.displayMenu(getContainer().getViewer());
-        
+
         return null;
     }
 }

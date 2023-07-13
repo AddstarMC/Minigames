@@ -20,7 +20,7 @@ public enum TeamColor {
     DARK_GRAY(ChatColor.DARK_GRAY),
     BLACK(ChatColor.BLACK);
 
-    private ChatColor color;
+    private final ChatColor color;
 
     TeamColor(ChatColor color) {
         this.color = color;

@@ -33,10 +33,10 @@ public class SetRewardCommand implements ICommand {
 
     @Override
     public String getDescription() {
-        return "Sets the players reward for completing the Minigame for the first time. " +
-                "This can be one item or a randomly selected item added to the rewards, depending on its defined rarity. \n" +
-                "Possible rarities are: very_common, common, normal, rare and very_rare\n" +
-                "NOTE: This can only be used on minigames using the standard reward scheme";
+        return """
+                Sets the players reward for completing the Minigame for the first time. This can be one item or a randomly selected item added to the rewards, depending on its defined rarity.\s
+                Possible rarities are: very_common, common, normal, rare and very_rare
+                NOTE: This can only be used on minigames using the standard reward scheme""";
     }
 
     @Override

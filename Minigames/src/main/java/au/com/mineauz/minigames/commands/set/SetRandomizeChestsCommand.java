@@ -1,13 +1,12 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public class SetRandomizeChestsCommand implements ICommand {
 
@@ -28,10 +27,10 @@ public class SetRandomizeChestsCommand implements ICommand {
 
     @Override
     public String getDescription() {
-        return "All chests in a Minigame will have their items randomized as soon as a Minigame player opens one.\n" +
-                "Items will only be randomized once and will be reverted to their default state after the game ends. A " +
-                "new game will result in different items again. The number of items that are set in the chests are defined in this command.\n" +
-                "(Defaults: false, min: 5, max: 10)";
+        return """
+                All chests in a Minigame will have their items randomized as soon as a Minigame player opens one.
+                Items will only be randomized once and will be reverted to their default state after the game ends. A new game will result in different items again. The number of items that are set in the chests are defined in this command.
+                (Defaults: false, min: 5, max: 10)""";
     }
 
     @Override

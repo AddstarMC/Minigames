@@ -1,15 +1,14 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.List;
-
+import au.com.mineauz.minigames.minigame.reward.Rewards;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.minigame.reward.Rewards;
+import java.util.List;
 
 public class MenuItemDisplayRewards extends MenuItem {
 
-    private Rewards rewards;
+    private final Rewards rewards;
 
     public MenuItemDisplayRewards(String name, Material displayItem, Rewards rewards) {
         super(name, displayItem);

@@ -1,12 +1,11 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.managers.MessageManager;
-import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.minigame.Minigame;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
@@ -64,13 +63,13 @@ public class EnableAllCommand implements ICommand {
                 if (mdata.hasMinigame(arg))
                     minigames.remove(mdata.getMinigame(arg));
                 else
-                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR,null,"command.enable.notfound",arg);
+                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, null, "command.enable.notfound", arg);
             }
         }
         for (Minigame mg : minigames) {
             mg.setEnabled(true);
         }
-        MessageManager.sendMessage(sender,MinigameMessageType.INFO,null,"command.enable.resultnum",minigames.size());
+        MessageManager.sendMessage(sender, MinigameMessageType.INFO, null, "command.enable.resultnum", minigames.size());
         return true;
     }
 

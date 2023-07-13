@@ -1,13 +1,12 @@
 package au.com.mineauz.minigames.minigame.reward;
 
-import org.bukkit.configuration.ConfigurationSection;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import org.bukkit.configuration.ConfigurationSection;
 
 public abstract class RewardType {
     private RewardRarity rarity = RewardRarity.NORMAL;
-    private Rewards rewards;
+    private final Rewards rewards;
 
     public RewardType(Rewards rewards) {
         this.rewards = rewards;

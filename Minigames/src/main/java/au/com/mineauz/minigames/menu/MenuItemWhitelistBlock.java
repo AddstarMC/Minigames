@@ -1,18 +1,18 @@
 package au.com.mineauz.minigames.menu;
 
-import java.util.List;
-
+import au.com.mineauz.minigames.MinigameUtils;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.minigames.MinigameUtils;
+import java.util.List;
 
 public class MenuItemWhitelistBlock extends MenuItem {
 
-    private List<Material> whitelist;
+    private final List<Material> whitelist;
 
     public MenuItemWhitelistBlock(Material displayItem, List<Material> whitelist) {
-        super(MinigameUtils.capitalize(displayItem.toString().replace("_", " ")), displayItem);
+        super(WordUtils.capitalize(displayItem.toString().replace("_", " ")), displayItem);
         setDescription(MinigameUtils.stringToList("Right Click to remove"));
         this.whitelist = whitelist;
     }

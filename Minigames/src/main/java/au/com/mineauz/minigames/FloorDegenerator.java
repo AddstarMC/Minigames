@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MgRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,82 +26,40 @@ public class FloorDegenerator {
 
     private int radiusModifier = 0;
 
-    public FloorDegenerator(Location point1, Location point2, Minigame mgm) {
+    public FloorDegenerator(MgRegion region, Minigame mgm) {
         timeDelay = mgm.getFloorDegenTime();
         this.mgm = mgm;
-        double minX;
-        double maxX;
-        double minY;
-        double maxY;
-        double minZ;
-        double maxZ;
 
-        Double x1 = point1.getX();
-        Double x2 = point2.getX();
-        Double y1 = point1.getY();
-        Double y2 = point2.getY();
-        Double z1 = point1.getZ();
-        Double z2 = point2.getZ();
+        topCorner = new Location(region.getWorld(), region.getMaxX(), region.getMaxY(), region.getMaxZ());
+        bottomCorner = new Location(region.getWorld(), region.getMinX(), region.getMaxY(), region.getMinZ());
 
-        if (x1 < x2) {
-            minX = x1;
-            maxX = x2;
-        } else {
-            minX = x2;
-            maxX = x1;
-        }
-
-        if (y1 < y2) {
-            minY = y1;
-            maxY = y2;
-        } else {
-            minY = y2;
-            maxY = y1;
-        }
-
-        if (z1 < z2) {
-            minZ = z1;
-            maxZ = z2;
-        } else {
-            minZ = z2;
-            maxZ = z1;
-        }
-
-        topCorner = new Location(point1.getWorld(), maxX, maxY, maxZ);
-        bottomCorner = new Location(point1.getWorld(), minX, minY, minZ);
-
-        xSideNeg1 = new Location(point1.getWorld(), minX, minY, minZ);
-        xSideNeg2 = new Location(point1.getWorld(), maxX, maxY, minZ);
-        zSideNeg1 = new Location(point1.getWorld(), minX, minY, minZ);
-        zSideNeg2 = new Location(point1.getWorld(), minX, maxY, maxZ);
-        xSidePos1 = new Location(point1.getWorld(), minX, minY, maxZ);
-        xSidePos2 = new Location(point1.getWorld(), maxX, maxY, maxZ);
-        zSidePos1 = new Location(point1.getWorld(), maxX, minY, minZ);
-        zSidePos2 = new Location(point1.getWorld(), maxX, maxY, maxZ);
+        xSideNeg1 = new Location(region.getWorld(), region.getMinX(), region.getMinY(), region.getMinZ());
+        xSideNeg2 = new Location(region.getWorld(), region.getMaxX(), region.getMaxY(), region.getMinZ());
+        zSideNeg1 = new Location(region.getWorld(), region.getMinX(), region.getMinY(), region.getMinZ());
+        zSideNeg2 = new Location(region.getWorld(), region.getMinX(), region.getMaxY(), region.getMaxZ());
+        xSidePos1 = new Location(region.getWorld(), region.getMinX(), region.getMinY(), region.getMaxZ());
+        xSidePos2 = new Location(region.getWorld(), region.getMaxX(), region.getMaxY(), region.getMaxZ());
+        zSidePos1 = new Location(region.getWorld(), region.getMaxX(), region.getMinY(), region.getMinZ());
+        zSidePos2 = new Location(region.getWorld(), region.getMaxX(), region.getMaxY(), region.getMaxZ());
     }
 
     public void startDegeneration() {
         taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             switch (mgm.getDegenType()) {
-                case "inward":
+                case "inward" -> {
                     degenerateSide(xSideNeg1, xSideNeg2);
                     degenerateSide(xSidePos1, xSidePos2);
                     degenerateSide(zSideNeg1, zSideNeg2);
                     degenerateSide(zSidePos1, zSidePos2);
-
                     incrementSide();
                     if (xSideNeg1.getZ() >= xSidePos1.getZ() || zSideNeg1.getX() >= zSidePos1.getX()) {
                         stopDegenerator();
                     }
-                    break;
-                case "random":
-                    degenerateRandom(bottomCorner, topCorner, mgm.getDegenRandomChance());
-                    break;
-                case "circle":
-                    degenerateCircle(bottomCorner, topCorner);
-                    break;
+                }
+                case "random" -> degenerateRandom(bottomCorner, topCorner, mgm.getDegenRandomChance());
+                case "circle" -> degenerateCircle(bottomCorner, topCorner);
             }
-        }, timeDelay * 20, timeDelay * 20);
+        }, timeDelay * 20L, timeDelay * 20L);
     }
 
     private void incrementSide() {
@@ -126,7 +85,7 @@ public class FloorDegenerator {
             for (int i = loc1.getBlockX(); i <= loc2.getBlockX() + 1; i++) {
                 for (int k = loc1.getBlockZ(); k <= loc2.getBlockZ() + 1; k++) {
                     if (curblock.getBlock().getType() != Material.AIR) {
-                        mgm.getBlockRecorder().addBlock(curblock.getBlock(), null);
+                        mgm.getRecorderData().addBlock(curblock.getBlock(), null);
                         curblock.getBlock().setType(Material.AIR);
                     }
                     curblock.setZ(k);
@@ -151,7 +110,7 @@ public class FloorDegenerator {
             for (int i = lowest.getBlockX(); i <= highest.getBlockX() + 1; i++) {
                 for (int k = lowest.getBlockZ(); k <= highest.getBlockZ() + 1; k++) {
                     if (curblock.getBlock().getType() != Material.AIR && random.nextInt(100) < chance) {
-                        mgm.getBlockRecorder().addBlock(curblock.getBlock(), null);
+                        mgm.getRecorderData().addBlock(curblock.getBlock(), null);
                         curblock.getBlock().setType(Material.AIR);
                     }
                     curblock.setZ(k);
@@ -164,7 +123,7 @@ public class FloorDegenerator {
     }
 
     private void degenerateCircle(Location lowest, Location highest) {
-        int middledist = (int) Math.abs(Math.floor((highest.getBlockX() - lowest.getBlockX()) / 2));
+        int middledist = (int) Math.abs(Math.floor((double) (highest.getBlockX() - lowest.getBlockX()) / 2));
         int radius = middledist - radiusModifier;
         Location centerBlock = lowest.clone();
         centerBlock.setX(centerBlock.getX() + middledist);
@@ -181,7 +140,7 @@ public class FloorDegenerator {
             curBlock.setZ(cz);
             for (int k = lowest.getBlockY(); k <= highest.getBlockY(); k++) {
                 curBlock.setY(k);
-                mgm.getBlockRecorder().addBlock(curBlock.getBlock(), null);
+                mgm.getRecorderData().addBlock(curBlock.getBlock(), null);
                 curBlock.getBlock().setType(Material.AIR);
             }
         }

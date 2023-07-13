@@ -1,14 +1,17 @@
 package au.com.mineauz.minigamesregions.triggers;
 
-public class InvalidTriggerException extends RuntimeException{
-    
+import java.io.Serial;
+
+public class InvalidTriggerException extends RuntimeException {
+
+    @Serial
     private static final long serialVersionUID = 1L;
 
-    public InvalidTriggerException(){
+    public InvalidTriggerException() {
         super();
     }
-    
-    public InvalidTriggerException(String message){
+
+    public InvalidTriggerException(String message) {
         super(message);
     }
 

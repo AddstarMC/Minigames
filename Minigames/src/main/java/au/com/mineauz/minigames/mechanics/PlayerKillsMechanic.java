@@ -1,12 +1,12 @@
 package au.com.mineauz.minigames.mechanics;
 
-import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
@@ -61,10 +61,9 @@ public class PlayerKillsMechanic extends GameMechanicBase {
     @EventHandler
     private void playerAttackPlayer(PlayerDeathEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
-        if (ply == null) return;
         Minigame mgm = ply.getMinigame();
         if (ply.isInMinigame() && mgm.getMechanicName().equals("kills")) {
-            MinigamePlayer attacker = null;
+            MinigamePlayer attacker;
             if (ply.getPlayer().getKiller() != null) {
                 attacker = pdata.getMinigamePlayer(ply.getPlayer().getKiller());
                 if (attacker == ply) {
@@ -102,7 +101,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
 
                     ateam.addScore();
                     if (mgm.getMaxScore() != 0 && mgm.getMaxScorePerPlayer() <= ateam.getScore()) {
-                        mdata.sendMinigameMessage(mgm, MinigameUtils.formStr("player.kills.finalKill", attacker.getName(), ply.getName()));
+                        mdata.sendMinigameMessage(mgm, MessageManager.getMinigamesMessage("player.kills.finalKill", attacker.getName(), ply.getName()));
 
                         List<MinigamePlayer> w = new ArrayList<>(ateam.getPlayers());
                         List<MinigamePlayer> l = new ArrayList<>(mgm.getPlayers().size() - ateam.getPlayers().size());
@@ -120,7 +119,6 @@ public class PlayerKillsMechanic extends GameMechanicBase {
     @EventHandler
     private void playerSuicide(PlayerDeathEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
-        if (ply == null) return;
         if (ply.isInMinigame() &&
                 (ply.getPlayer().getKiller() == null || ply.getPlayer().getKiller() == ply.getPlayer()) &&
                 ply.getMinigame().hasStarted()) {
@@ -137,7 +135,6 @@ public class PlayerKillsMechanic extends GameMechanicBase {
     @EventHandler
     public void playerAutoBalance(PlayerDeathEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
-        if (ply == null) return;
         if (ply.isInMinigame() && ply.getMinigame().isTeamGame()) {
             Minigame mgm = ply.getMinigame();
 

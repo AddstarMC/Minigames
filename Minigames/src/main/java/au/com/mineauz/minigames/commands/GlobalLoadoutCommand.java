@@ -1,13 +1,13 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.managers.MinigameManager;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemDisplayLoadout;
 import au.com.mineauz.minigames.menu.MenuItemLoadoutAdd;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GlobalLoadoutCommand implements ICommand {
-    private MinigameManager mdata = Minigames.getPlugin().getMinigameManager();
+    private final MinigameManager mdata = Minigames.getPlugin().getMinigameManager();
 
     @Override
     public String getName() {

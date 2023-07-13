@@ -1,12 +1,13 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -14,7 +15,7 @@ import org.bukkit.event.block.SignChangeEvent;
 
 public class LoadoutSign implements MinigameSign {
 
-    private static Minigames plugin = Minigames.getPlugin();
+    private static final Minigames plugin = Minigames.getPlugin();
 
     @Override
     public String getName() {
@@ -53,20 +54,21 @@ public class LoadoutSign implements MinigameSign {
     public boolean signUse(Sign sign, MinigamePlayer player) {
         if (player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR && player.isInMinigame()) {
             Minigame mgm = player.getMinigame();
-            LoadoutModule loadout = LoadoutModule.getMinigameModule(mgm);
+
             if (mgm == null || mgm.isSpectator(player)) {
                 return false;
             }
 
+            LoadoutModule loadout = LoadoutModule.getMinigameModule(mgm);
+
             if (sign.getLine(2).equals(ChatColor.GREEN + "Menu")) {
-                boolean nores = true;
-                if (sign.getLine(3).equalsIgnoreCase("respawn"))
-                    nores = false;
+                boolean nores = !sign.getLine(3).equalsIgnoreCase("respawn");
                 LoadoutModule.getMinigameModule(mgm).displaySelectionMenu(player, nores);
             } else if (loadout.hasLoadout(sign.getLine(2))) {
                 if (!loadout.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())) {
                     if (player.setLoadout(loadout.getLoadout(sign.getLine(2)))) {
-                        player.sendInfoMessage(MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)));
+                        player.sendInfoMessage(
+                                MessageManager.getMinigamesMessage("sign.loadout.equipped", sign.getLine(2)));
 
                         if (mgm.getType() == MinigameType.SINGLEPLAYER ||
                                 mgm.hasStarted()) {
@@ -79,12 +81,12 @@ public class LoadoutSign implements MinigameSign {
                     }
                     return true;
                 } else {
-                    player.sendMessage(MinigameUtils.formStr("sign.loadout.noPermisson", sign.getLine(2)), MinigameMessageType.ERROR);
+                    player.sendMessage(MessageManager.getMinigamesMessage("sign.loadout.noPermisson", sign.getLine(2)), MinigameMessageType.ERROR);
                 }
             } else if (plugin.getMinigameManager().hasLoadout(sign.getLine(2))) {
                 if (!plugin.getMinigameManager().getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())) {
                     if (player.setLoadout(plugin.getMinigameManager().getLoadout(sign.getLine(2)))) {
-                        player.sendInfoMessage(MinigameUtils.formStr("sign.loadout.equipped", sign.getLine(2)));
+                        player.sendInfoMessage(MessageManager.getMinigamesMessage("sign.loadout.equipped", sign.getLine(2)));
 
                         if (mgm.getType() == MinigameType.SINGLEPLAYER ||
                                 mgm.hasStarted()) {
@@ -97,7 +99,7 @@ public class LoadoutSign implements MinigameSign {
                     }
                     return true;
                 } else {
-                    player.sendMessage(MinigameUtils.formStr("sign.loadout.noPermission", sign.getLine(2)), MinigameMessageType.ERROR);
+                    player.sendMessage(MessageManager.getMinigamesMessage("sign.loadout.noPermission", sign.getLine(2)), MinigameMessageType.ERROR);
                 }
             } else {
                 player.sendMessage(MinigameUtils.getLang("sign.loadout.noLoadout"), MinigameMessageType.ERROR);
