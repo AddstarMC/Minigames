@@ -503,7 +503,11 @@ public class MinigamePlayerManager {
                             loc = minigame.getEndPosition();
                         }
                     } else {
-                        loc = minigame.getEndPosition();
+                        if (minigame.getEndPosition() != null) {
+                            loc = minigame.getEndPosition();
+                        } else {
+                            loc = minigame.getQuitPosition();
+                        }
                     }
                     if (loc != null) {
                         player.teleport(loc);
@@ -684,6 +688,9 @@ public class MinigamePlayerManager {
                 PlayMGSound.playSound(player, MGSounds.getSound("lose"));
             }
 
+            if (minigame.getEndPosition() == null) {
+                plugin.getLogger().warning(MessageManager.getUnformattedMessage(null, "minigame.error.noEnd")  + " - " + minigame.getName(false));
+            }
             for (MinigamePlayer player : winners) {
                 player.setEndTime(System.currentTimeMillis());
 
