@@ -306,6 +306,13 @@ public class MinigamePlayer implements ScriptObject {
         return LoadoutModule.getMinigameModule(this.minigame).getLoadout("default");
     }
 
+    public PlayerLoadout getDefaultLoadout() {
+        if (this.team != null && LoadoutModule.getMinigameModule(this.minigame).hasLoadout(this.team.getColor().toString().toLowerCase())) {
+            return LoadoutModule.getMinigameModule(this.minigame).getLoadout(this.team.getColor().toString().toLowerCase());
+        }
+        return LoadoutModule.getMinigameModule(this.minigame).getLoadout("default");
+    }
+
     public boolean setLoadout(final PlayerLoadout loadout) {
         if (this.getMinigame() == null) return false;
         if (loadout == null || !this.getMinigame().isTeamGame() || loadout.getTeamColor() == null || this.getTeam().getColor() == loadout.getTeamColor()) {
