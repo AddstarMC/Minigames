@@ -1,16 +1,19 @@
 package au.com.mineauz.minigames.commands.set;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.WordUtils;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import java.util.List;
 
 public class SetStartCommand implements ICommand {
 
@@ -115,10 +118,16 @@ public class SetStartCommand implements ICommand {
     @Override
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
                                       String alias, String[] args) {
-        if (args.length == 1)
-            return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("red;blue;clear"), args[0]);
-        else if (args.length == 2 && args[0].equalsIgnoreCase("clear"))
-            return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("red;blue"), args[1]);
+        List<String> teams = new ArrayList<>(TeamsModule.getMinigameModule(minigame).getTeamsNameMap().size() + 1);
+        for (String t : TeamsModule.getMinigameModule(minigame).getTeamsNameMap().keySet()) {
+            teams.add(WordUtils.capitalize(t.replace("_", " ")));
+        }
+        if (args.length == 1) {
+            teams.add("Clear");
+            return MinigameUtils.tabCompleteMatch(teams, args[0]);
+        } else if (args.length == 2 && args[0].equalsIgnoreCase("clear")) {
+            return MinigameUtils.tabCompleteMatch(teams, args[1]);
+        }
         return null;
     }
 }
