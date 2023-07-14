@@ -38,17 +38,21 @@ public class MenuItemTeam extends MenuItem {
         LeatherArmorMeta m = (LeatherArmorMeta) getItem().getItemMeta();
         switch (team.getColor()) {
             case RED -> m.setColor(Color.RED);
-            case BLUE -> m.setColor(Color.BLUE);
-            case GREEN -> m.setColor(Color.GREEN);
+            case DARK_RED -> m.setColor(Color.MAROON);
+            case ORANGE -> m.setColor(Color.ORANGE);
             case YELLOW -> m.setColor(Color.YELLOW);
-            case BLACK -> m.setColor(Color.BLACK);
-            case WHITE -> m.setColor(Color.WHITE);
-            case GRAY -> m.setColor(Color.GRAY);
-            case PURPLE -> m.setColor(Color.PURPLE);
-            case DARK_BLUE -> m.setColor(Color.BLUE);
+            case GREEN -> m.setColor(Color.LIME);
             case DARK_GREEN -> m.setColor(Color.GREEN);
+            case CYAN -> m.setColor(Color.TEAL);
+            case LIGHT_BLUE -> m.setColor(Color.AQUA);
+            case BLUE -> m.setColor(Color.BLUE);
+            case DARK_BLUE -> m.setColor(Color.NAVY);
             case DARK_PURPLE -> m.setColor(Color.PURPLE);
-            case DARK_RED -> m.setColor(Color.RED);
+            case PURPLE -> m.setColor(Color.FUCHSIA);
+            case WHITE -> m.setColor(Color.WHITE);
+            case GRAY -> m.setColor(Color.SILVER);
+            case DARK_GRAY -> m.setColor(Color.GRAY);
+            case BLACK -> m.setColor(Color.BLACK);
         }
         getItem().setItemMeta(m);
     }
