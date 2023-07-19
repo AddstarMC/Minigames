@@ -62,32 +62,33 @@ public class TakeItemAction extends AbstractAction {
     private void execute(MinigamePlayer player) {
         Material mat = Material.getMaterial(type.getFlag());
 
-        if (mat != null) {
-            ItemStack match = new ItemStack(mat, count.getFlag());
-            ItemStack matched = null;
-            boolean remove = false;
-            int slot = 0;
+        if (mat == null) {
+            return;
+        }
+        ItemStack match = new ItemStack(mat, count.getFlag());
+        ItemStack matched = null;
+        boolean remove = false;
+        int slot = 0;
 
-            for (ItemStack i : player.getPlayer().getInventory().getContents()) {
-                if (i != null && i.getType() == match.getType()) {
-                    if (match.getAmount() >= i.getAmount()) {
-                        matched = i.clone();
-                        remove = true;
-                    } else {
-                        matched = i.clone();
-                        matched.setAmount(matched.getAmount() - match.getAmount());
-                    }
-                    break;
-
+        for (ItemStack i : player.getPlayer().getInventory().getContents()) {
+            if (i != null && i.getType() == match.getType()) {
+                if (match.getAmount() >= i.getAmount()) {
+                    matched = i.clone();
+                    remove = true;
+                } else {
+                    matched = i.clone();
+                    matched.setAmount(matched.getAmount() - match.getAmount());
                 }
-                slot++;
-            }
+                break;
 
-            if (remove) {
-                player.getPlayer().getInventory().removeItem(matched);
-            } else {
-                player.getPlayer().getInventory().getItem(slot).setAmount(matched.getAmount());
             }
+            slot++;
+        }
+
+        if (remove) {
+            player.getPlayer().getInventory().removeItem(matched);
+        } else {
+            player.getPlayer().getInventory().getItem(slot).setAmount(matched.getAmount());
         }
     }
 
