@@ -1,13 +1,13 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.config.StringFlag;
-import au.com.mineauz.minigames.menu.*;
-import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.IntegerFlag;
+import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
