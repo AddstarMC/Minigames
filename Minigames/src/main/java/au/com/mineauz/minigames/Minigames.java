@@ -52,7 +52,6 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class Minigames extends JavaPlugin {
-
     private static final Pattern COMPILE = Pattern.compile("[-]?[0-9]+");
     public static Logger log;
     private static Minigames plugin;

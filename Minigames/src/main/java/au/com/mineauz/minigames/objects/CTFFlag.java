@@ -9,11 +9,14 @@ import org.bukkit.*;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.Sign;
-import org.bukkit.block.data.BlockData;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 
+/**
+ * Flag of Capture the Flag.
+ * Technical background for au.com.mineauz.minigames.signs.FlagSign
+ */
 public class CTFFlag {
-
     private Location spawnLocation = null;
     private Location currentLocation = null;
     private BlockState spawnData = null;
@@ -26,10 +29,11 @@ public class CTFFlag {
     private Minigame minigame = null;
     private int cParticleID = -1;
 
-    public CTFFlag(Location spawn, Team team, Player carrier, Minigame minigame) {
+    public CTFFlag(Location spawn, Team team, Minigame minigame) {
         spawnLocation = spawn;
+        ((Sign) spawnLocation.getBlock().getState()).setWaxed(true);
         spawnData = spawnLocation.getBlock().getState();
-        signText = ((Sign) spawnLocation.getBlock().getState()).getLines();
+        signText = ((Sign) spawnLocation.getBlock().getState()).getSide(Side.FRONT).getLines();
         this.team = team;
         this.setMinigame(minigame);
         respawnTime = Minigames.getPlugin().getConfig().getInt("multiplayer.ctf.flagrespawntime");
@@ -96,8 +100,7 @@ public class CTFFlag {
         }
 
         if (blockBelow.getBlock().getState() instanceof Container ||
-                Tag.SIGNS.isTagged(blockBelow.getBlock().getType()) ||
-                Tag.WALL_SIGNS.isTagged(blockBelow.getBlock().getType())) {
+                Tag.ALL_SIGNS.isTagged(blockBelow.getBlock().getType())) {
             blockBelow.setY(blockBelow.getY() + 1);
         }
 
@@ -120,7 +123,7 @@ public class CTFFlag {
         atHome = false;
 
         for (int i = 0; i < 4; i++) {
-            sign.setLine(i, signText[i]);
+            sign.getSide(Side.FRONT).setLine(i, signText[i]);
         }
         sign.update();
         currentLocation = newLocation.clone();
@@ -154,9 +157,10 @@ public class CTFFlag {
         atHome = true;
 
         Sign sign = (Sign) spawnLocation.getBlock().getState();
+        sign.setWaxed(true);
 
         for (int i = 0; i < 4; i++) {
-            sign.setLine(i, signText[i]);
+            sign.getSide(Side.FRONT).setLine(i, signText[i]);
         }
         sign.update();
     }

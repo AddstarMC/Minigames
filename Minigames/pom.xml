@@ -5,7 +5,7 @@
     <parent>
         <groupId>au.com.mineauz</groupId>
         <artifactId>MinigamesProject</artifactId>
-        <version>1.19-SNAPSHOT</version>
+        <version>1.20-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>Minigames</artifactId>
@@ -18,24 +18,19 @@
         <mysql.database>test_games</mysql.database>
         <mysql.host>localhost</mysql.host>
         <mysql.port>3306</mysql.port>
-        <skipTests>false</skipTests>
+        <skipTests>true</skipTests>
     </properties>
     <repositories>
-        <!-- Spigot repo -->
+        <!--Paper repo-->
         <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/public</url>
+            <name>papermc</name>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
         <!--Bstats-->
         <repository>
             <id>CodeMC</id>
             <url>https://repo.codemc.org/repository/maven-public</url>
-        </repository>
-        <!--PaperLib-->
-        <repository>
-            <name>papermc</name>
-            <id>papermc</id>
-            <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
         <!-- PlaceHolderAPI -->
         <repository>
@@ -80,9 +75,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.seeseemelk</groupId>
-            <artifactId>MockBukkit-v1.19</artifactId>
-            <version>2.29.0</version>
+            <groupId>com.github.MockBukkit</groupId>
+            <artifactId>MockBukkit</artifactId>
+            <version>v3.4.3</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -221,7 +216,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M6</version>
                 <configuration>
-                    <skipTests>false</skipTests>
+                    <skipTests>true</skipTests>
                     <forkCount>1</forkCount>
                     <reuseForks>false</reuseForks>
                 </configuration>

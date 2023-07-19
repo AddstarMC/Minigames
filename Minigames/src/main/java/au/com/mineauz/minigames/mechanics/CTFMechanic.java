@@ -125,7 +125,7 @@ public class CTFMechanic extends GameMechanicBase {
                                     (TeamsModule.getMinigameModule(mgm).hasTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2)))) ||
                                             sign.getLine(2).equalsIgnoreCase(ChatColor.GRAY + "Neutral"))) {
                                 Team oTeam = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2))));
-                                CTFFlag flag = new CTFFlag(event.getClickedBlock().getLocation(), oTeam, event.getPlayer(), mgm);
+                                CTFFlag flag = new CTFFlag(event.getClickedBlock().getLocation(), oTeam, mgm);
                                 ev = new TakeFlagEvent(mgm, ply, flag);
                                 Bukkit.getPluginManager().callEvent(ev);
                                 if (!ev.isCancelled()) {
