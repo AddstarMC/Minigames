@@ -132,7 +132,7 @@ public class InfectionModule extends MinigameModule {
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
 
         m.addItem(infectedPercent.getMenuItem("Infected Percent", Material.ZOMBIE_HEAD,
-                List.of("The percentage of players;chosen to start as;infected"), 1, 99));
+                List.of("The percentage of players", "chosen to start as", "infected"), 1, 99));
 
         List<String> teams = new ArrayList<>(TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().size() + 3);
         for (String t : TeamsModule.getMinigameModule(getMinigame()).getTeamsNameMap().keySet()) {

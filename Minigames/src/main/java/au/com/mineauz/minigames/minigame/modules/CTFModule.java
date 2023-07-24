@@ -82,7 +82,7 @@ public class CTFModule extends MinigameModule {
         m.addItem(useFlagAsCapturePoint.getMenuItem("CTF Flag is Capture Point", Material.BLACK_BANNER,
                 List.of("Use a teams Flag as a capture point")));
         m.addItem(bringFlagBackManual.getMenuItem("Bring Flag Back Manually", Material.ENDER_EYE,
-                List.of("If enabled, the flag can be brought;back to the base manually")));
+                List.of("If enabled, the flag can be brought", "back to the base manually")));
         m.displayMenu(previous.getViewer());
         return true;
     }
