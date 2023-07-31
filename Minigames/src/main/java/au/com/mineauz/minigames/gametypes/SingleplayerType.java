@@ -39,6 +39,11 @@ public class SingleplayerType extends MinigameTypeBase {
     @Override
     public boolean teleportOnJoin(MinigamePlayer player, Minigame mgm) {
         List<Location> locs = new ArrayList<>(mgm.getStartLocations());
+
+        if (locs.isEmpty()) {
+            return false;
+        }
+
         Collections.shuffle(locs);
         boolean result = player.teleport(locs.get(0));
         if (plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != locs.get(0).getWorld() &&
