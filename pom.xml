@@ -18,9 +18,9 @@
         <build.number/>
         <plugin.version>${project.version}-${build.number}</plugin.version>
         <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
-        <spigot.version>${spigot.api.version}<!--.${spigot.minor.version}-->-R0.1-SNAPSHOT</spigot.version>
-        <spigot.api.version>1.20</spigot.api.version>
-        <spigot.minor.version>0</spigot.minor.version>
+        <paper.version>${paper.api.version}<!--.${paper.minor.version}-->-R0.1-SNAPSHOT</paper.version>
+        <paper.api.version>1.20</paper.api.version>
+        <paper.minor.version>0</paper.minor.version>
         <codacy.api.token>${env.CODACY_API_TOKEN}</codacy.api.token>
         <!--suppress UnresolvedMavenProperty -->
         <travis.commit>${env.TRAVIS_COMMIT}</travis.commit>
@@ -103,10 +103,6 @@
         </repository>
         <!-- Other repositories -->
         <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-        </repository>
-        <repository>
             <id>maven-central</id>
             <url>https://repo1.maven.org/maven2/</url>
         </repository>
@@ -123,7 +119,7 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>${spigot.version}</version>
+            <version>${paper.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

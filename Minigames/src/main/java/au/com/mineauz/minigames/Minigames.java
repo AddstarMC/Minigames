@@ -418,7 +418,7 @@ public class Minigames extends JavaPlugin {
 
         if (p.containsKey("version")) {
             VERSION = new ComparableVersion(p.getProperty("version"));
-            SPIGOT_VERSION = new ComparableVersion(p.getProperty("spigot_version"));
+            SPIGOT_VERSION = new ComparableVersion(p.getProperty("paper_version"));
             final ComparableVersion serverversion = new ComparableVersion(this.getServer().getBukkitVersion());
             return SPIGOT_VERSION.compareTo(serverversion);
         } else {
