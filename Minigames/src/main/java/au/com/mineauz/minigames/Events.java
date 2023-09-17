@@ -243,7 +243,7 @@ public class Events implements Listener {
     }
 
     @EventHandler
-    public void playerInterract(PlayerInteractEvent event) {
+    public void playerInteract(PlayerInteractEvent event) {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
 
         if (ply.isInMinigame() && !ply.canInteract()) {
@@ -271,6 +271,7 @@ public class Events implements Listener {
             if (cblock.getState() instanceof Sign sign && sign.getSide(Side.FRONT).getLine(0).equalsIgnoreCase(ChatColor.DARK_BLUE + "[Minigame]")) {
                 // wax signs automatically
                 sign.setWaxed(true);
+                sign.update();
                 if (event.getPlayer().hasPermission("minigame.sign.use.details")) {
                     if ((sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Join") || sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "Bet")) && !ply.isInMinigame()) {
                         Minigame mgm = mdata.getMinigame(sign.getLine(2));

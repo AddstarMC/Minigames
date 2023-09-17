@@ -136,15 +136,18 @@ public class BasicRecorder implements Listener {
             Minigame mgm = mgPlayer.getMinigame();
             RecorderData recData = mgm.getRecorderData();
 
-
             if (mgm.canBlockPlace()) {
                 if (recData.getWhitelistMode()) {
                     //white list --> blocks that are allowed to be placed
                     if (recData.getWBBlocks().contains(event.getBlock().getType())) {
                         recData.addBlock(event.getBlockReplacedState(), mgPlayer);
+                    } else {
+                        event.setCancelled(true);
                     }
                     //black list --> blocks that are not allowed to be placed
-                } else if (!recData.getWBBlocks().contains(event.getBlock().getType())) {
+                } else if (recData.getWBBlocks().contains(event.getBlock().getType())) {
+                    event.setCancelled(true);
+                } else {
                     recData.addBlock(event.getBlockReplacedState(), mgPlayer);
                 }
             } else {
