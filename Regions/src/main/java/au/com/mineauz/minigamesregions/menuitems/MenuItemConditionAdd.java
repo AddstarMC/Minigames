@@ -5,7 +5,7 @@ import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
 import au.com.mineauz.minigamesregions.conditions.Conditions;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

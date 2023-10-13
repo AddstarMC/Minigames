@@ -2,7 +2,6 @@ package au.com.mineauz.minigames.mechanics;
 
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.managers.MessageManager;
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
@@ -11,6 +10,7 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.InfectionModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
@@ -121,7 +121,6 @@ public class InfectionMechanic extends GameMechanicBase {
     @EventHandler(ignoreCancelled = true)
     private void playerDeath(PlayerDeathEvent event) {
         MinigamePlayer player = pdata.getMinigamePlayer(event.getEntity());
-        if (player == null) return;
         if (player.isInMinigame()) {
             Minigame mgm = player.getMinigame();
             if (mgm.isTeamGame() && mgm.getMechanicName().equals("infection")) {

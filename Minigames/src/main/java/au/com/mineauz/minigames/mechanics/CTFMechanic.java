@@ -102,7 +102,22 @@ public class CTFMechanic extends GameMechanicBase {
 
                     String sloc = MinigameUtils.createLocationID(event.getClickedBlock().getLocation());
 
-                    if ((!sign.getLine(2).equalsIgnoreCase(team.getChatColor() + team.getColor().toString()) && !sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture")) ||
+                    if (sign.getLine(2).equalsIgnoreCase(team.getChatColor() + team.getColor().toString()) &&
+                            mgm.hasDroppedFlag(sloc) &&
+                            !(sloc.equals(MinigameUtils.createLocationID(mgm.getDroppedFlag(sloc).getSpawnLocation())))) {
+                        if (CTFModule.getMinigameModule(mgm).getBringFlagBackManual()) {
+                            CTFFlag flag = mgm.getDroppedFlag(sloc);
+                            flag.stopTimer();
+                            mgm.removeDroppedFlag(sloc);
+                            String newID = MinigameUtils.createLocationID(flag.getSpawnLocation());
+                            mgm.addDroppedFlag(newID, flag);
+                            flag.respawnFlag();
+                            for (MinigamePlayer pl : mgm.getPlayers()) {
+                                pl.sendInfoMessage(
+                                        MessageManager.getMinigamesMessage("minigame.flag.returnedTeam", team.getChatColor() + team.getDisplayName() + ChatColor.WHITE));
+                            }
+                        }
+                    } else if ((!sign.getLine(2).equalsIgnoreCase(team.getChatColor() + team.getColor().toString()) && !sign.getLine(2).equalsIgnoreCase(ChatColor.GREEN + "Capture")) ||
                             sign.getLine(2).equalsIgnoreCase(ChatColor.GRAY + "Neutral")) {
                         if (mgm.getFlagCarrier(ply) == null) {
                             TakeFlagEvent ev = null;
@@ -110,7 +125,7 @@ public class CTFMechanic extends GameMechanicBase {
                                     (TeamsModule.getMinigameModule(mgm).hasTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2)))) ||
                                             sign.getLine(2).equalsIgnoreCase(ChatColor.GRAY + "Neutral"))) {
                                 Team oTeam = TeamsModule.getMinigameModule(mgm).getTeam(TeamColor.matchColor(ChatColor.stripColor(sign.getLine(2))));
-                                CTFFlag flag = new CTFFlag(event.getClickedBlock().getLocation(), oTeam, event.getPlayer(), mgm);
+                                CTFFlag flag = new CTFFlag(event.getClickedBlock().getLocation(), oTeam, mgm);
                                 ev = new TakeFlagEvent(mgm, ply, flag);
                                 Bukkit.getPluginManager().callEvent(ev);
                                 if (!ev.isCancelled()) {

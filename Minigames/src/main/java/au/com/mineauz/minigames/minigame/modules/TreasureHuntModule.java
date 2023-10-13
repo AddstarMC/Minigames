@@ -82,7 +82,7 @@ public class TreasureHuntModule extends MinigameModule {
         Menu treasureHunt = new Menu(6, getMinigame().getName(false), previous.getViewer());
 
         List<MenuItem> itemsTreasureHunt = new ArrayList<>(5);
-        itemsTreasureHunt.add(location.getMenuItem("Location Name", Material.WHITE_BED, MinigameUtils.stringToList("Name to appear when;treasure spawns")));
+        itemsTreasureHunt.add(location.getMenuItem("Location Name", Material.WHITE_BED, List.of("Name to appear when", "treasure spawns")));
         itemsTreasureHunt.add(maxRadius.getMenuItem("Max. Radius", Material.ENDER_PEARL, 10, null));
         List<String> maxHeightDes = new ArrayList<>();
         maxHeightDes.add("Max. height of where a");

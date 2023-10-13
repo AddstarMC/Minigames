@@ -1,24 +1,22 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.BooleanFlag;
-import au.com.mineauz.minigames.menu.MenuUtility;
-import au.com.mineauz.minigames.script.ScriptObject;
-import au.com.mineauz.minigamesregions.*;
-import au.com.mineauz.minigamesregions.triggers.TimedRemoteTrigger;
-
-import java.util.Map;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
-
-import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
+import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigames.script.ScriptObject;
+import au.com.mineauz.minigamesregions.*;
+import au.com.mineauz.minigamesregions.triggers.TimedRemoteTrigger;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.Map;
 
 /**
  * This Action trips {@link TimedRemoteTrigger} in a region or a node Applicable to nodes Uses the

@@ -1,19 +1,18 @@
 package au.com.mineauz.minigames.commands.set;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang.WordUtils;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import org.apache.commons.text.WordUtils;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SetStartCommand implements ICommand {
 

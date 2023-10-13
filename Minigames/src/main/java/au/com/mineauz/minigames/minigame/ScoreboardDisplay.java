@@ -9,7 +9,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,6 +19,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
+import org.bukkit.block.sign.Side;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
@@ -191,16 +192,16 @@ public class ScoreboardDisplay {
         Preconditions.checkArgument(stats.length >= 1 && stats.length <= 2);
 
         Sign sign = (Sign) block.getState();
-        sign.setLine(0, MinigameUtils.limitIgnoreCodes(ChatColor.GREEN + String.valueOf(place) + ". " + ChatColor.BLACK + stats[0].getPlayerDisplayName(), 15));
-        sign.setLine(1, MinigameUtils.limitIgnoreCodes(ChatColor.BLUE + stat.displayValueSign(stats[0].getValue(), settings), 15));
+        sign.getSide(Side.FRONT).setLine(0, MinigameUtils.limitIgnoreCodes(ChatColor.GREEN + String.valueOf(place) + ". " + ChatColor.BLACK + stats[0].getPlayerDisplayName(), 15));
+        sign.getSide(Side.FRONT).setLine(1, MinigameUtils.limitIgnoreCodes(ChatColor.BLUE + stat.displayValueSign(stats[0].getValue(), settings), 15));
 
         if (stats.length == 2) {
             ++place;
-            sign.setLine(2, MinigameUtils.limitIgnoreCodes(ChatColor.GREEN + String.valueOf(place) + ". " + ChatColor.BLACK + stats[1].getPlayerDisplayName(), 15));
-            sign.setLine(3, MinigameUtils.limitIgnoreCodes(ChatColor.BLUE + stat.displayValueSign(stats[1].getValue(), settings), 15));
+            sign.getSide(Side.FRONT).setLine(2, MinigameUtils.limitIgnoreCodes(ChatColor.GREEN + String.valueOf(place) + ". " + ChatColor.BLACK + stats[1].getPlayerDisplayName(), 15));
+            sign.getSide(Side.FRONT).setLine(3, MinigameUtils.limitIgnoreCodes(ChatColor.BLUE + stat.displayValueSign(stats[1].getValue(), settings), 15));
         } else {
-            sign.setLine(2, "");
-            sign.setLine(3, "");
+            sign.getSide(Side.FRONT).setLine(2, "");
+            sign.getSide(Side.FRONT).setLine(3, "");
         }
 
         sign.update();
@@ -301,10 +302,10 @@ public class ScoreboardDisplay {
 
     private void clearSign(Block block) {
         Sign sign = (Sign) block.getState();
-        sign.setLine(0, "");
-        sign.setLine(1, "");
-        sign.setLine(2, "");
-        sign.setLine(3, "");
+        sign.getSide(Side.FRONT).setLine(0, "");
+        sign.getSide(Side.FRONT).setLine(1, "");
+        sign.getSide(Side.FRONT).setLine(2, "");
+        sign.getSide(Side.FRONT).setLine(3, "");
         sign.update();
     }
 
@@ -344,14 +345,14 @@ public class ScoreboardDisplay {
         }
 
         Block root = rootBlock.getBlock();
-        if (Tag.SIGNS.isTagged(root.getType()) || Tag.WALL_SIGNS.isTagged(root.getType())) {
+        if (Tag.ALL_SIGNS.isTagged(root.getType())) {
             BlockState state = root.getState();
             if (state instanceof Sign sign) {
 
-                sign.setLine(0, ChatColor.BLUE + minigame.getName(true));
-                sign.setLine(1, ChatColor.GREEN + settings.getDisplayName());
-                sign.setLine(2, ChatColor.GREEN + field.getTitle());
-                sign.setLine(3, "(" + WordUtils.capitalize(order.toString()) + ")");
+                sign.getSide(Side.FRONT).setLine(0, ChatColor.BLUE + minigame.getName(true));
+                sign.getSide(Side.FRONT).setLine(1, ChatColor.GREEN + settings.getDisplayName());
+                sign.getSide(Side.FRONT).setLine(2, ChatColor.GREEN + field.getTitle());
+                sign.getSide(Side.FRONT).setLine(3, "(" + WordUtils.capitalize(order.toString()) + ")");
                 sign.update();
 
                 sign.setMetadata("MGScoreboardSign", new FixedMetadataValue(Minigames.getPlugin(), true));

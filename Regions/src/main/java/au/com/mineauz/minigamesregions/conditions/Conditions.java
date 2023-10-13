@@ -8,7 +8,7 @@ import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemCondition;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemConditionAdd;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 
 import java.lang.reflect.InvocationTargetException;

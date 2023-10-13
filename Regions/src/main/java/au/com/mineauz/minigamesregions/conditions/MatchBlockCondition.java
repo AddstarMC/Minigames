@@ -1,7 +1,6 @@
 package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BlockDataFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.menu.*;
@@ -15,6 +14,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
 import java.util.Map;
 
 public class MatchBlockCondition extends ConditionInterface {
@@ -87,7 +87,7 @@ public class MatchBlockCondition extends ConditionInterface {
         Menu m = new Menu(3, "Match Block", player);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
         final MenuItemCustom c = new MenuItemCustom("Auto Set Block",
-                MinigameUtils.stringToList("Click here with a;block you wish to;match to."), Material.ITEM_FRAME);
+                List.of("Click here with a", "block you wish to", "match to."), Material.ITEM_FRAME);
         m.addItem(c, m.getSize() - 1);
 
         final MenuItemBlockData btype = new MenuItemBlockData("Block Type", Material.STONE, new Callback<>() {

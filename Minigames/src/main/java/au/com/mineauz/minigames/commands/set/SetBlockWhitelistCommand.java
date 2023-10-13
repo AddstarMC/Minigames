@@ -142,7 +142,7 @@ public class SetBlockWhitelistCommand implements ICommand {
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
                                       String alias, String[] args) {
         if (args.length == 1)
-            return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("true;false;add;remove;list;clear"), args[0]);
+            return MinigameUtils.tabCompleteMatch(List.of("true", "false", "add", "remove", "list", "clear"), args[0]);
         else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
             List<String> ls = new ArrayList<>();
             for (Material m : minigame.getRecorderData().getWBBlocks()) {

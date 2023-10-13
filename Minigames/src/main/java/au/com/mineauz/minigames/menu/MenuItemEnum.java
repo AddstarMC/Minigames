@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.menu;
 
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

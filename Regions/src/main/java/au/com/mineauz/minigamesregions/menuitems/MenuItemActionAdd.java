@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.actions.Actions;
 import au.com.mineauz.minigamesregions.executors.BaseExecutor;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

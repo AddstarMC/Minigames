@@ -11,7 +11,7 @@ import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import com.google.common.collect.ImmutableSet;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.scoreboard.Objective;

@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.menu.Menu;
@@ -121,7 +120,7 @@ public class TriggerRandomAction extends AbstractAction {
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(timesTriggered.getMenuItem("Times to Trigger Random", Material.COMMAND_BLOCK, 1, null));
         m.addItem(randomPerTrigger.getMenuItem("Allow Same Executor", Material.ENDER_PEARL,
-                MinigameUtils.stringToList("Should there be a chance;that the same execeutor;can be triggered more?")));
+                List.of("Should there be a chance", "that the same executor", "can be triggered more?")));
         m.displayMenu(player);
         return true;
     }

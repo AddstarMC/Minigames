@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -11,17 +10,20 @@ public class MenuItemDisplayWhitelist extends MenuItem {
 
     private final List<Material> whitelist;
     private final Callback<Boolean> whitelistMode;
+    private final List<String> modeDescription;
 
-    public MenuItemDisplayWhitelist(String name, Material displayItem, List<Material> whitelist, Callback<Boolean> whitelistMode) {
+    public MenuItemDisplayWhitelist(String name, Material displayItem, List<Material> whitelist, Callback<Boolean> whitelistMode, List<String> modeDescription) {
         super(name, displayItem);
         this.whitelist = whitelist;
         this.whitelistMode = whitelistMode;
+        this.modeDescription = modeDescription;
     }
 
-    public MenuItemDisplayWhitelist(String name, List<String> description, Material displayItem, List<Material> whitelist, Callback<Boolean> whitelistMode) {
-        super(name, description, displayItem);
+    public MenuItemDisplayWhitelist(String name, List<String> mainDescription, Material displayItem, List<Material> whitelist, Callback<Boolean> whitelistMode, List<String> modeDescription) {
+        super(name, mainDescription, displayItem);
         this.whitelist = whitelist;
         this.whitelistMode = whitelistMode;
+        this.modeDescription = modeDescription;
     }
 
     @Override
@@ -33,7 +35,7 @@ public class MenuItemDisplayWhitelist extends MenuItem {
         }
         menu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), getContainer()), menu.getSize() - 9);
         menu.addItem(new MenuItemAddWhitelistBlock("Add Material", whitelist), menu.getSize() - 1);
-        menu.addItem(new MenuItemBoolean("Whitelist Mode", MinigameUtils.stringToList("If whitelist mode only;added items can be;broken."),
+        menu.addItem(new MenuItemBoolean("Whitelist Mode", modeDescription,
                 Material.ENDER_PEARL, whitelistMode), menu.getSize() - 2);
         menu.addItems(items);
         menu.displayMenu(getContainer().getViewer());

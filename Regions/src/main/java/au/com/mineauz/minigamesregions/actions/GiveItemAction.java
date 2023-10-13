@@ -1,7 +1,6 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Callback;
@@ -16,6 +15,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.List;
 import java.util.Map;
 
 public class GiveItemAction extends AbstractAction {
@@ -66,13 +66,13 @@ public class GiveItemAction extends AbstractAction {
     }
 
     private void execute(MinigamePlayer player) {
-        ItemStack item = new ItemStack(Material.getMaterial(type.getFlag()), count.getFlag());
+        ItemStack item = new ItemStack(Material.matchMaterial(type.getFlag()), count.getFlag());
         ItemMeta meta = item.getItemMeta();
         if (name.getFlag() != null) {
             meta.setDisplayName(name.getFlag());
         }
         if (lore.getFlag() != null) {
-            meta.setLore(MinigameUtils.stringToList(lore.getFlag()));
+            meta.setLore(List.of(lore.getFlag().split(";"))); //as the description states semicolons will be used for new lines
         }
         item.setItemMeta(meta);
 
@@ -116,7 +116,7 @@ public class GiveItemAction extends AbstractAction {
         n.setAllowNull(true);
         m.addItem(n);
         MenuItemString l = (MenuItemString) lore.getMenuItem("Lore", Material.PAPER,
-                MinigameUtils.stringToList("Separate with semi-colons;for new lines"));
+                List.of("Separate with semicolons", "for new lines"));
         l.setAllowNull(true);
         m.addItem(l);
 

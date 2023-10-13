@@ -1,13 +1,12 @@
 package au.com.mineauz.minigames.tool;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -134,8 +133,8 @@ public class MinigameTool {
     public void openMenu(MinigamePlayer player) {
         Menu men = new Menu(2, "Set Tool Mode", player);
 
-        final MenuItemCustom miselect = new MenuItemCustom("Select", MinigameUtils.stringToList("Selects and area;or points visually"), Material.DIAMOND_BLOCK);
-        final MenuItemCustom mideselect = new MenuItemCustom("Deselect", MinigameUtils.stringToList("Deselects an;area or points"), Material.GLASS);
+        final MenuItemCustom miselect = new MenuItemCustom("Select", List.of("Selects and area", "or points visually"), Material.DIAMOND_BLOCK);
+        final MenuItemCustom mideselect = new MenuItemCustom("Deselect", List.of("Deselects an", "area or points"), Material.GLASS);
         final MinigamePlayer fply = player;
         miselect.setClick(object -> {
             if (mode != null) {
@@ -174,7 +173,7 @@ public class MinigameTool {
         }, teams), men.getSize() - 3);
 
         for (ToolMode m : ToolModes.getToolModes()) {
-            men.addItem(new MenuItemToolMode(m.getDisplayName(), MinigameUtils.stringToList(m.getDescription()), m.getIcon(), m));
+            men.addItem(new MenuItemToolMode(m.getDisplayName(), List.of(m.getDescription()), m.getIcon(), m));
         }
 
         men.displayMenu(player);

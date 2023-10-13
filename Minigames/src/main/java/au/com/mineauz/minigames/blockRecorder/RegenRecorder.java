@@ -38,6 +38,7 @@ public class RegenRecorder implements Listener {
         this.recorderData = minigame.getRecorderData();
     }
 
+    //kill placed vehicles like minecarts
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void vehicleCreate(VehicleCreateEvent event) {
         if (minigame.hasPlayers() && minigame.isInRegenArea(event.getVehicle().getLocation())) {
@@ -45,6 +46,7 @@ public class RegenRecorder implements Listener {
         }
     }
 
+    //revive killed vehicles like minecarts
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void vehicleDestroy(VehicleDestroyEvent event) {
         if (event.getAttacker() == null) {
@@ -54,6 +56,7 @@ public class RegenRecorder implements Listener {
         }
     }
 
+    //give a hurt animal it's health back
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void animalDeath(EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof Animals animal) {
@@ -69,7 +72,7 @@ public class RegenRecorder implements Listener {
         }
     }
 
-
+    //kill spawned creatures (living entities)
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void mobSpawnEvent(CreatureSpawnEvent event) {
         if (minigame.hasPlayers() && minigame.isInRegenArea(event.getLocation())) {
@@ -77,6 +80,7 @@ public class RegenRecorder implements Listener {
         }
     }
 
+    //regen exploded blocks (and don't allow block removal of not white or blacklisted blocks) <-- todo move this mode testing into a better fitting class
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     private void entityExplode(EntityExplodeEvent event) {
         if (minigame.hasPlayers()) {
@@ -89,6 +93,7 @@ public class RegenRecorder implements Listener {
                             (!recorderData.getWhitelistMode() && !recorderData.getWBBlocks().contains(bl.getType()))) {
                         recorderData.addBlock(bl, null);
                     } else {
+                        // don't allow exploding blocks that anre not on
                         event.blockList().remove(bl);
                     }
                 }
@@ -99,6 +104,7 @@ public class RegenRecorder implements Listener {
         }
     }
 
+    // remove dropped items
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void itemDrop(ItemSpawnEvent event) {
         if (minigame.hasPlayers()) {
@@ -109,6 +115,7 @@ public class RegenRecorder implements Listener {
         }
     }
 
+    // reset block changes like gravity blocks falling
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     private void physicalBlock(EntityChangeBlockEvent event) {
         if (minigame.isInRegenArea(event.getBlock().getLocation())) {
@@ -127,6 +134,7 @@ public class RegenRecorder implements Listener {
         }
     }
 
+    // reset inventories of hopper minecarts picking up items from the world
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void cartHopperPickup(InventoryPickupItemEvent event) {
         if (minigame.hasPlayers() && event.getInventory().getHolder() instanceof HopperMinecart) {
@@ -137,24 +145,26 @@ public class RegenRecorder implements Listener {
         }
     }
 
+    // reset inventorys changed by hopper minecarts
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     private void cartMoveItem(InventoryMoveItemEvent event) {
         if (!minigame.hasPlayers()) return;
 
         Location loc;
-        if (event.getInitiator().getHolder() instanceof HopperMinecart) {
-            loc = ((HopperMinecart) event.getInitiator().getHolder()).getLocation().clone();
+        if (event.getInitiator().getHolder() instanceof HopperMinecart hopperMinecart) {
+            loc = hopperMinecart.getLocation().clone();
             if (minigame.isInRegenArea(loc))
                 recorderData.addEntity((Entity) event.getInitiator().getHolder(), null, false);
         }
 
-        if (event.getDestination().getHolder() instanceof HopperMinecart) {
-            loc = ((HopperMinecart) event.getDestination().getHolder()).getLocation().clone();
+        if (event.getDestination().getHolder() instanceof HopperMinecart hopperMinecart) {
+            loc = hopperMinecart.getLocation().clone();
             if (minigame.isInRegenArea(loc))
                 recorderData.addEntity((Entity) event.getInitiator().getHolder(), null, false);
         }
     }
 
+    // don't allow block physics (like gravity blocks falling) to happen while the minigame is regenerating
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     private void physEvent(BlockPhysicsEvent event) {
         if (minigame.isRegenerating() && minigame.isInRegenArea(event.getBlock().getLocation())) {
@@ -162,18 +172,21 @@ public class RegenRecorder implements Listener {
         }
     }
 
+    // don't allow water / lava to flow while the minigame is regenerating
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    private void waterFlow(BlockFromToEvent event) {
+    private void liquidFlow(BlockFromToEvent event) {
         if (minigame.isRegenerating() && minigame.isInRegenArea(event.getBlock().getLocation()))
             event.setCancelled(true);
     }
 
+    // don't allow fire to spread while the minigame is regenerating
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     private void fireSpread(BlockSpreadEvent event) {
         if (minigame.isRegenerating() && minigame.isInRegenArea(event.getBlock().getLocation()))
             event.setCancelled(true);
     }
 
+    // don't allow interacting with inventories while the minigame is regenerating
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     private void interact(PlayerInteractEvent event) {
         if (minigame.isRegenerating() && minigame.isInRegenArea(event.getClickedBlock().getLocation())) {

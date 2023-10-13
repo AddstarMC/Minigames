@@ -336,7 +336,7 @@ public class SetCommand implements ICommand {
                 if (comd != null) {
                     if (ply != null) {
                         List<String> l = comd.onTabComplete(sender, mgm, alias, shortArgs);
-                        return Objects.requireNonNullElseGet(l, () -> MinigameUtils.stringToList(""));
+                        return Objects.requireNonNullElseGet(l, () -> List.of(""));
                     }
                 } else {
                     List<String> ls = new ArrayList<>(parameterList.keySet());

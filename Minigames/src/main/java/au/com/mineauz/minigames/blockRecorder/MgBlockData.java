@@ -6,128 +6,152 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.Chest;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
+/**
+ * this class encodes the data and state a changed block had
+ */
 public class MgBlockData {
-    private final Location location;
-    private final BlockState state;
+    /**
+     * location of the block
+     */
+    private final @NotNull Location location;
+    /**
+     * state the block was in
+     */
+    private final @NotNull BlockState state;
+    /**
+     * data the block had
+     */
     private final String blockData;
-    private final Map<String, Object> specialData = new HashMap<>();
-    private UUID playerUUID = null;
-    private ItemStack[] items = null;
+    /**
+     * the uuid of the player who changed this block.
+     * If null, the block doesn't get reset if the player left the minigame
+     */
+    private @Nullable UUID playerUUID = null;
+    /**
+     * inventory of the block
+     */
+    private @Nullable ItemStack[] inventoryContents = null;
+    /**
+     * holds if the inventory was randomized ones
+     */
     private boolean hasRandomized = false;
 
-    public MgBlockData(Block original, MinigamePlayer modifier) {
+    public MgBlockData(@NotNull Block original, @Nullable MinigamePlayer modifier) {
         location = original.getLocation();
         state = original.getState();
         blockData = original.getBlockData().getAsString();
         if (modifier != null) playerUUID = modifier.getUUID();
     }
 
-    public MgBlockData(BlockState original, MinigamePlayer modifier) {
+    public MgBlockData(@NotNull BlockState original, @Nullable MinigamePlayer modifier) {
         location = original.getLocation();
         state = original;
         blockData = state.getBlockData().getAsString();
         if (modifier != null) playerUUID = modifier.getUUID();
     }
 
-    public Location getLocation() {
+    public @NotNull Location getLocation() {
         return location;
     }
 
-    public BlockState getBlockState() {
+    public @NotNull BlockState getBlockState() {
         return state;
     }
 
-    public MinigamePlayer getModifier() {
+    public @Nullable MinigamePlayer getModifier() {
         return Minigames.getPlugin().getPlayerManager().getMinigamePlayer(playerUUID);
     }
 
-    public void setModifier(MinigamePlayer modifier) {
+    public void setModifier(@Nullable MinigamePlayer modifier) {
         playerUUID = (modifier != null) ? modifier.getUUID() : null;
     }
 
-    public String getBlockDataString() {
+    public final @NotNull String getBlockDataString() {
         return blockData;
     }
 
-    public BlockData getBukkitBlockData() {
+    public @NotNull BlockData getBukkitBlockData() {
         return Bukkit.createBlockData(blockData);
     }
 
-    public ItemStack[] getItems() {
-        return items;
+    public @Nullable ItemStack[] getInventoryContents() {
+        return inventoryContents;
     }
 
-    public void setItems(ItemStack[] items) {
-        this.items = items;
+    public void setInventory(@Nullable ItemStack[] items) {
+        this.inventoryContents = items;
     }
 
-    public void setSpecialData(String key, Object data) {
-        specialData.put(key, data);
-    }
-
-    public Object getSpecialData(String key) {
-        return specialData.get(key);
-    }
-
+    /**
+     * shuffle the inventory (if any) of this block
+     *
+     * @param minContents minimum amount of items of all the ones already in the inventory of this block
+     * @param maxContents maximum amount of items left in the inventory after randomizing
+     */
     public void randomizeContents(int minContents, int maxContents) {
-        if (hasRandomized || items == null)
+        if (hasRandomized || inventoryContents == null)
             return;
 
-        List<ItemStack> itemRand = new ArrayList<>();
+        if (state instanceof InventoryHolder holder) {
+            //get a list of all non-null items
+            List<ItemStack> itemRand = Arrays.stream(inventoryContents)
+                    .filter(Objects::nonNull)
+                    .map(ItemStack::clone)
+                    .collect(Collectors.toCollection(ArrayList::new));
 
-        for (ItemStack item1 : items) {
-            if (item1 != null) {
-                itemRand.add(item1.clone());
+            //shuffle the list, it's random what item doesn't make it into the inventory if maxContents doesn't match the number of items
+            Collections.shuffle(itemRand);
+
+            //we can't put more Items into the inventory than we have to put into
+            if (maxContents > itemRand.size()) {
+                maxContents = itemRand.size();
             }
-        }
-
-        Collections.shuffle(itemRand);
-        List<ItemStack> itemChest = new ArrayList<>();
-
-        if (maxContents > itemRand.size()) {
-            maxContents = itemRand.size();
-        }
-        if (minContents > itemRand.size()) {
-            minContents = itemRand.size();
-        }
-
-        int rand = minContents + (int) (Math.random() * ((maxContents - minContents) + 1));
-
-        for (int i = 0; i < items.length; i++) {
-            if (i < rand) {
-                itemChest.add(i, itemRand.get(i));
-            } else {
-                itemChest.add(null);
+            if (minContents > itemRand.size()) {
+                minContents = itemRand.size();
             }
+
+            // get a random number to get how many items there should be left in the final inventory
+            int rand = (new Random()).nextInt(minContents, maxContents + 1);
+            List<ItemStack> itemResult = new ArrayList<>();
+
+            for (int i = 0; i < inventoryContents.length; i++) {
+                if (i < rand) {
+                    itemResult.add(i, itemRand.get(i));
+                } else {
+                    itemResult.add(null);
+                }
+            }
+
+            //shuffle where is no item
+            Collections.shuffle(itemResult);
+
+            //set the inventory
+            holder.getInventory().setContents(itemResult.toArray(ItemStack[]::new));
+
+            hasRandomized = true;
         }
-
-        Collections.shuffle(itemChest);
-
-        ItemStack[] newItems = new ItemStack[itemChest.size()];
-        int inc = 0;
-        for (ItemStack item : itemChest) {
-            newItems[inc] = item;
-            inc++;
-        }
-
-        if (state instanceof Chest chest) {
-            chest.getInventory().setContents(newItems);
-        }
-
-        hasRandomized = true;
     }
 
+    /**
+     * returns if the inventory (if any) was randomized
+     */
     public boolean hasRandomized() {
         return hasRandomized;
     }
 
+    /**
+     * old string representation. Don't use it!
+     */
     @Override
     @Deprecated
     public String toString() {
@@ -138,12 +162,12 @@ public class MgBlockData {
         ret.append("y:").append(state.getY()).append(";");
         ret.append("z:").append(state.getZ()).append(";");
         ret.append("world:").append(state.getWorld().getName());
-        if (items != null) {
+        if (inventoryContents != null) {
             ret.append(";");
 
             int c = 0;
             ret.append("items:");
-            for (ItemStack i : items) {
+            for (ItemStack i : inventoryContents) {
                 if (i != null) {
                     ret.append("(");
                     ret.append("item-").append(i.getType()).append("|");

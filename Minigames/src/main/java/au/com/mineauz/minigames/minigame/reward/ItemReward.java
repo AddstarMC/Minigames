@@ -1,11 +1,10 @@
 package au.com.mineauz.minigames.minigame.reward;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -71,7 +70,7 @@ public class ItemReward extends RewardType {
         private final ItemReward reward;
 
         public MenuItemReward(ItemReward reward) {
-            super("PLACEHOLDER", MinigameUtils.stringToList("Click with item;to change."), Material.DIAMOND);
+            super("PLACEHOLDER", List.of("Click with item", "to change."), Material.DIAMOND);
             setItem(reward.getRewardItem());
             for (RewardRarity rarity : RewardRarity.values()) {
                 options.add(rarity.toString());

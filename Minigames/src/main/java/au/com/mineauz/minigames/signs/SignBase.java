@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -18,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SignBase implements Listener {
-
     private static final Map<String, MinigameSign> minigameSigns = new HashMap<>();
 
     static {
@@ -52,26 +52,33 @@ public class SignBase implements Listener {
             signinfo[i] = ChatColor.stripColor(event.getLine(i));
         }
         if ("[minigame]".equalsIgnoreCase(signinfo[0]) || "[mgm]".equalsIgnoreCase(signinfo[0]) || "[mg]".equals(signinfo[0])) {
-            if (minigameSigns.containsKey(signinfo[1].toLowerCase())) {
-                event.setLine(0, ChatColor.DARK_BLUE + "[Minigame]");
-                MinigameSign mgSign = minigameSigns.get(signinfo[1].toLowerCase());
+            if (event.getSide() == Side.FRONT) {
+                if (minigameSigns.containsKey(signinfo[1].toLowerCase())) {
+                    event.setLine(0, ChatColor.DARK_BLUE + "[Minigame]");
+                    MinigameSign mgSign = minigameSigns.get(signinfo[1].toLowerCase());
 
-                if (mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())) {
+                    ((Sign) event.getBlock().getState()).setWaxed(true);
+
+                    if (mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())) {
+                        event.setCancelled(true);
+                        event.getBlock().breakNaturally();
+                        event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + mgSign.getCreatePermissionMessage());
+                        return;
+                    }
+
+                    if (!mgSign.signCreate(event)) {
+                        event.setCancelled(true);
+                        event.getBlock().breakNaturally();
+                        event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Invalid Minigames sign!");
+                    }
+                } else {
+                    Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()).sendMessage("Invalid Minigame sign!", MinigameMessageType.ERROR);
                     event.setCancelled(true);
                     event.getBlock().breakNaturally();
-                    event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + mgSign.getCreatePermissionMessage());
-                    return;
                 }
-
-                if (!mgSign.signCreate(event)) {
-                    event.setCancelled(true);
-                    event.getBlock().breakNaturally();
-                    event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Invalid Minigames sign!");
-                }
-            } else {
-                Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()).sendMessage("Invalid Minigame sign!", MinigameMessageType.ERROR);
+            } else { //just gives an error but doesn't break the sign in case the front was important
+                Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()).sendMessage("Invalid Minigame sign - used Backside!", MinigameMessageType.ERROR);
                 event.setCancelled(true);
-                event.getBlock().breakNaturally();
             }
         }
     }
@@ -101,7 +108,7 @@ public class SignBase implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     private void signBreak(BlockBreakEvent event) {
-        if (Tag.SIGNS.isTagged(event.getBlock().getType()) || Tag.WALL_SIGNS.isTagged(event.getBlock().getType())) {
+        if (Tag.ALL_SIGNS.isTagged(event.getBlock().getType())) {
             Sign sign = (Sign) event.getBlock().getState();
             if (sign.getLine(0).equals(ChatColor.DARK_BLUE + "[Minigame]") &&
                     minigameSigns.containsKey(ChatColor.stripColor(sign.getLine(1).toLowerCase()))) {

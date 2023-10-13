@@ -77,7 +77,7 @@ public class SetPresetCommand implements ICommand {
     public List<String> onTabComplete(CommandSender sender, Minigame minigame,
                                       String alias, String[] args) {
         if (args.length == 2)
-            return MinigameUtils.tabCompleteMatch(MinigameUtils.stringToList("info"), args[1]);
+            return MinigameUtils.tabCompleteMatch(List.of("info"), args[1]);
         return null;
     }
 

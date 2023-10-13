@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.*;
@@ -16,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -178,7 +178,7 @@ public class ExecuteCommandAction extends AbstractAction {
     public boolean displayMenu(MinigamePlayer player, Menu previous) {
         Menu m = new Menu(3, "Execute Command", player);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
-        m.addItem(new MenuItemString("Command", MinigameUtils.stringToList("Do not include '/';If '//' command, start with './'"),
+        m.addItem(new MenuItemString("Command", List.of("Do not include '/'", "If '//' command, start with './'"),
                 Material.COMMAND_BLOCK, new Callback<>() {
 
             @Override
@@ -193,7 +193,7 @@ public class ExecuteCommandAction extends AbstractAction {
                 comd.setFlag(value);
             }
         }));
-        m.addItem(silentExecute.getMenuItem("Is Silent", Material.NOTE_BLOCK, MinigameUtils.stringToList("When on, console output;for a command will be;silenced.;NOTE: Does not work with;minecraft commands")));
+        m.addItem(silentExecute.getMenuItem("Is Silent", Material.NOTE_BLOCK, List.of("When on, console output", "for a command will be", "silenced.", "NOTE: Does not work with", "minecraft commands")));
         m.displayMenu(player);
         return true;
     }

@@ -6,6 +6,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+/**
+ * This is the base class for all regions in the minigames plugin and its regions & nodes addon.
+ * It is a cuboid region defined by 2 Positions, a World and a name
+ */
 public class MgRegion {
     private final @NotNull String name;
     private @NotNull World world;
@@ -77,6 +81,18 @@ public class MgRegion {
 
         this.pos1 = Position.block(loc1);
         this.pos2 = Position.block(loc2);
+    }
+
+    /**
+     * sorts the 2 positions making up this region: pos1 will have all the smaller coordinates,
+     * while pos2 will hold all the bigger coordinates
+     */
+    public void sortPositions() {
+        //temporary storage to not overwrite the max values
+        Position pos1 = new Position(getMinX(), getMinY(), getMinZ());
+
+        this.pos2 = new Position(getMaxX(), getMaxY(), getMaxZ());
+        this.pos1 = pos1;
     }
 
     public double getMinX() {

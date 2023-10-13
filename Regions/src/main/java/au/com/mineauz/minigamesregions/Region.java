@@ -1,11 +1,13 @@
 package au.com.mineauz.minigamesregions;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.Position;
-import au.com.mineauz.minigames.script.*;
+import au.com.mineauz.minigames.script.ScriptCollection;
+import au.com.mineauz.minigames.script.ScriptReference;
+import au.com.mineauz.minigames.script.ScriptValue;
+import au.com.mineauz.minigames.script.ScriptWrapper;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
@@ -57,8 +59,8 @@ public class Region extends MgRegion implements ExecutableScriptObject {
     }
 
     public void updateRegion(Location point1, Location point2) {
-        Location[] locs = MinigameUtils.getMinMaxSelection(point1, point2);
-        super.updateRegion(locs[0], locs[1]);
+        super.updateRegion(point1, point2);
+        super.sortPositions();
     }
 
     public boolean hasPlayer(MinigamePlayer player) {

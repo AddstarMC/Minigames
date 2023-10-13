@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.Flag;
@@ -74,7 +73,7 @@ public class GameOverModule extends MinigameModule {
         m.addItem(timer.getMenuItem("Time Length", Material.CLOCK, 0, null));
 
         m.addItem(invincible.getMenuItem("Invincibility", Material.ENDER_PEARL));
-        m.addItem(humiliation.getMenuItem("Humiliation Mode", Material.DIAMOND_SWORD, MinigameUtils.stringToList("Losers are stripped;of weapons and can't kill")));
+        m.addItem(humiliation.getMenuItem("Humiliation Mode", Material.DIAMOND_SWORD, List.of("Losers are stripped", "of weapons and can't kill")));
         m.addItem(interact.getMenuItem("Allow Interact", Material.STONE_PRESSURE_PLATE));
 
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), menu), m.getSize() - 9);

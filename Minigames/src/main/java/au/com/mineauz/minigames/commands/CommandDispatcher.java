@@ -260,7 +260,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
                 if (ply != null) {
                     if (args.length > 1) {
                         List<String> l = comd.onTabComplete(sender, null, alias, shortArgs);
-                        return Objects.requireNonNullElseGet(l, () -> MinigameUtils.stringToList(""));
+                        return Objects.requireNonNullElseGet(l, () -> List.of(""));
                     }
                 }
             } else {
