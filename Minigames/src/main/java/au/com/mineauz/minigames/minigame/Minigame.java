@@ -32,10 +32,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -171,14 +168,13 @@ public class Minigame implements ScriptObject {
         if (start != null)
             startLocations.getFlag().add(start);
         if (sbManager != null) {
-            sbManager.registerNewObjective(this.name, "dummy", this.name);
-            sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
+            sbManager.registerNewObjective(this.name, Criteria.DUMMY, this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
         }
         for (Class<? extends MinigameModule> mod : Minigames.getPlugin().getMinigameManager().getModules()) {
             try {
                 addModule(mod.getDeclaredConstructor(Minigame.class).newInstance(this));
             } catch (Exception e) {
-                e.printStackTrace();
+                Minigames.getPlugin().getLogger().log(Level.WARNING, "Couldn't construct Module.", e);
             }
         }
 

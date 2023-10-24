@@ -24,6 +24,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -136,10 +137,9 @@ public class MinigameManager {
         if (Minigames.getPlugin().includesPapi()) {
             Minigames.getPlugin().getPlaceHolderManager().addGameIdentifiers(game);
         }
-
     }
 
-    public Minigame getMinigame(final String minigame) {
+    public @Nullable Minigame getMinigame(final String minigame) {
         if (this.minigames.containsKey(minigame)) {
             return this.minigames.get(minigame);
         }

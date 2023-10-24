@@ -256,7 +256,9 @@ public class MinigamePlayerManager {
                 pl.getPlayer().hidePlayer(plugin, player.getPlayer());
             }
 
-            player.getPlayer().setScoreboard(minigame.getScoreboardManager());
+            if (minigame.canDisplayScoreboard()) {
+                player.getPlayer().setScoreboard(minigame.getScoreboardManager());
+            }
 
             for (PotionEffect potion : player.getPlayer().getActivePotionEffects()) {
                 player.getPlayer().removePotionEffect(potion.getType());
@@ -686,7 +688,6 @@ public class MinigamePlayerManager {
         endMinigame(player.getMinigame(), w, l);
     }
 
-
     public void endMinigame(Minigame minigame, List<MinigamePlayer> winners, List<MinigamePlayer> losers) {
         //When the minigame ends, the flag for recognizing the start teleportation needs to be resetted
         minigame.setPlayersAtStart(false);
@@ -880,7 +881,6 @@ public class MinigamePlayerManager {
         }
     }
 
-
     @Deprecated
     public boolean playerInMinigame(Player player) {
         return minigamePlayers.get(player.getName()).isInMinigame();
@@ -1028,15 +1028,4 @@ public class MinigamePlayerManager {
     public void loadDeniedCommands() {
         setDeniedCommands(plugin.getConfig().getStringList("disabledCommands"));
     }
-
-    private class PlayerLocation {
-        final Location location;
-        final Integer position;
-
-        public PlayerLocation(int pos) {
-            location = null;
-            this.position = pos;
-        }
-    }
-
 }
