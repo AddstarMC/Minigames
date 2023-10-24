@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.entity.Player;
 
-public class QuitMinigameEvent extends AbstractMinigameEvent {
+public class QuitMinigameEvent extends AbstractCancellableMinigameEvent {
     private final MinigamePlayer player;
     private final boolean isForced;
     private final boolean isWinner;

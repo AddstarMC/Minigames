@@ -445,7 +445,6 @@ public class MinigamePlayerManager {
     }
 
     public void revertToCheckpoint(MinigamePlayer player) {
-
         RevertCheckpointEvent event = new RevertCheckpointEvent(player);
         Bukkit.getServer().getPluginManager().callEvent(event);
 
@@ -477,7 +476,35 @@ public class MinigamePlayerManager {
         QuitMinigameEvent event = new QuitMinigameEvent(player, minigame, forced, isWinner);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
-            if (!minigame.isSpectator(player)) {
+            if (minigame.isSpectator(player)) {
+                if (player.getPlayer().getVehicle() != null) {
+                    Vehicle vehicle = (Vehicle) player.getPlayer().getVehicle();
+                    vehicle.eject();
+                }
+                player.getPlayer().setFallDistance(0);
+                player.getPlayer().setNoDamageTicks(60);
+                final Player fplayer = player.getPlayer();
+                for (PotionEffect potion : player.getPlayer().getActivePotionEffects()) {
+                    player.getPlayer().removePotionEffect(potion.getType());
+                }
+                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> fplayer.setFireTicks(0));
+
+                player.getPlayer().closeInventory();
+                if (player.isLiving()) {
+                    player.restorePlayerData();
+                }
+                player.teleport(minigame.getQuitPosition());
+                player.setStartPos(null);
+                player.removeMinigame();
+                minigame.removeSpectator(player);
+
+                for (MinigamePlayer pl : minigame.getPlayers()) {
+                    pl.getPlayer().showPlayer(plugin, player.getPlayer());
+                }
+
+                player.sendMessage(MessageManager.getMinigamesMessage("player.spectate.quit.plyMsg", minigame.getName(true)), MinigameMessageType.ERROR);
+                mgManager.sendMinigameMessage(minigame, MessageManager.getMinigamesMessage("player.spectate.quit.minigameMsg", player.getName(), minigame.getName(true)), MinigameMessageType.ERROR, player);
+            } else {
                 if (player.getEndTime() == 0)
                     player.setEndTime(System.currentTimeMillis());
 
@@ -488,8 +515,9 @@ public class MinigamePlayerManager {
                         player.setCompleteTime(player.getEndTime() - player.getStartTime() + player.getStoredTime());
                     }
 
-                } else
+                } else {
                     GameOverModule.getMinigameModule(minigame).getLosers().remove(player);
+                }
 
                 if (!isWinner) {
                     if (!minigame.canSaveCheckpoint() && minigame.isEnabled()) {
@@ -572,7 +600,10 @@ public class MinigamePlayerManager {
                 player.claimRewards();
 
                 //Reset Minigame
-                if (minigame.getPlayers().size() == 0) {
+                if (minigame.getPlayers().isEmpty()) {
+                    //call event about this minigame has come to an end (and therefor is past an optional end phase)
+                    Bukkit.getServer().getPluginManager().callEvent(new EndedMinigameEvent(minigame));
+
                     if (minigame.getMinigameTimer() != null) {
                         minigame.getMinigameTimer().stopTimer();
                         minigame.setMinigameTimer(null);
@@ -602,15 +633,17 @@ public class MinigamePlayerManager {
                     }
 
                     mgManager.clearClaimedScore(minigame);
+
                     WeatherTimeModule mod = WeatherTimeModule.getMinigameModule(minigame);
                     if (mod != null) {
                         mod.stopTimeLoop();
                     }
+
                     GameOverModule.getMinigameModule(minigame).stopEndGameTimer();
+
                     for (Team team : TeamsModule.getMinigameModule(minigame).getTeams()) {
                         team.setScore(0);
                     }
-
                 }
 
                 minigame.getScoreboardManager().resetScores(player.getName());
@@ -629,34 +662,6 @@ public class MinigamePlayerManager {
                 }
                 plugin.getLogger().info(player.getName() + " quit " + minigame);
                 player.updateInventory();
-            } else {
-                if (player.getPlayer().getVehicle() != null) {
-                    Vehicle vehicle = (Vehicle) player.getPlayer().getVehicle();
-                    vehicle.eject();
-                }
-                player.getPlayer().setFallDistance(0);
-                player.getPlayer().setNoDamageTicks(60);
-                final Player fplayer = player.getPlayer();
-                for (PotionEffect potion : player.getPlayer().getActivePotionEffects()) {
-                    player.getPlayer().removePotionEffect(potion.getType());
-                }
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> fplayer.setFireTicks(0));
-
-                player.getPlayer().closeInventory();
-                if (player.isLiving()) {
-                    player.restorePlayerData();
-                }
-                player.teleport(minigame.getQuitPosition());
-                player.setStartPos(null);
-                player.removeMinigame();
-                minigame.removeSpectator(player);
-
-                for (MinigamePlayer pl : minigame.getPlayers()) {
-                    pl.getPlayer().showPlayer(plugin, player.getPlayer());
-                }
-
-                player.sendMessage(MessageManager.getMinigamesMessage("player.spectate.quit.plyMsg", minigame.getName(true)), MinigameMessageType.ERROR);
-                mgManager.sendMinigameMessage(minigame, MessageManager.getMinigamesMessage("player.spectate.quit.minigameMsg", player.getName(), minigame.getName(true)), MinigameMessageType.ERROR, player);
             }
             if (ResourcePackModule.getMinigameModule(minigame).isEnabled()) {
                 if (player.applyResourcePack(plugin.getResourceManager().getResourcePack("empty"))) {
@@ -685,7 +690,7 @@ public class MinigamePlayerManager {
     public void endMinigame(Minigame minigame, List<MinigamePlayer> winners, List<MinigamePlayer> losers) {
         //When the minigame ends, the flag for recognizing the start teleportation needs to be resetted
         minigame.setPlayersAtStart(false);
-        EndMinigameEvent event = new EndMinigameEvent(winners, losers, minigame);
+        EndPhaseMinigameEvent event = new EndPhaseMinigameEvent(winners, losers, minigame);
         Bukkit.getServer().getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {

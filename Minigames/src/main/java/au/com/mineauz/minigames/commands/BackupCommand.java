@@ -64,7 +64,7 @@ public class BackupCommand implements ICommand {
                 minigame = Minigames.getPlugin().getMinigameManager().getMinigame(args[0]);
                 if (!minigame.getRegenRegions().isEmpty()) {
                     if (args.length == 1) {
-                        if (minigame.getPlayers().size() == 0) {
+                        if (minigame.getPlayers().isEmpty()) {
                             minigame.setState(MinigameState.REGENERATING);
                             Minigames.getPlugin().getMinigameManager().addRegenDataToRecorder(minigame);
                             RecorderData d = minigame.getRecorderData();

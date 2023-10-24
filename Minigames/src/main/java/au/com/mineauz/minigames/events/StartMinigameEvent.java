@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * You cannot cancel this event
  */
-public class StartMinigameEvent extends AbstractMinigameEvent {
+public class StartMinigameEvent extends AbstractCancellableMinigameEvent {
     private final boolean willTeleport;
     private final List<MinigamePlayer> players;
 

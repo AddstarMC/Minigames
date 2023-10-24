@@ -151,7 +151,7 @@ public class MultiplayerType extends MinigameTypeBase {
         if (mgm.isTeamGame()) {
             player.removeTeam();
             for (Team t : TeamsModule.getMinigameModule(mgm).getTeams()) {
-                if (t.getPlayers().size() > 0)
+                if (!t.getPlayers().isEmpty())
                     teamsWithPlayers++;
             }
 
@@ -179,7 +179,7 @@ public class MultiplayerType extends MinigameTypeBase {
             if (TeamsModule.getMinigameModule(mgm).getTeams().size() != 1) {
                 Team winner = null;
                 for (Team t : TeamsModule.getMinigameModule(mgm).getTeams()) {
-                    if (t.getPlayers().size() > 0) {
+                    if (!t.getPlayers().isEmpty()) {
                         winner = t;
                         break;
                     }
