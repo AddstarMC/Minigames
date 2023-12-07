@@ -252,11 +252,11 @@ public class Events implements Listener {
         }
         if (ply.isInMenu() && ply.getNoClose() && ply.getManualEntry() != null) {
             event.setCancelled(true);
-            ply.setNoClose(false);
             if (event.getClickedBlock() != null) {
+                ply.setNoClose(false);
                 ply.getManualEntry().checkValidEntry(event.getClickedBlock().getBlockData().getAsString());
+                ply.setManualEntry(null);
             }
-            ply.setManualEntry(null);
             return;
         }
         if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.DRAGON_EGG) {
