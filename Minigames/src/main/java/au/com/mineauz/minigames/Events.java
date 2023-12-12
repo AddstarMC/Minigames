@@ -48,7 +48,7 @@ public class Events implements Listener {
     private final MinigameManager mdata = plugin.getMinigameManager();
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerResourcePack(PlayerResourcePackStatusEvent event) {
+    public void onPlayerResourcePack(PlayerResourcePackStatusEvent event) { //todo 1.20.3 + add ressource pack not set
         final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
         List<MinigamePlayer> required = plugin.getPlayerManager().getApplyingPack();
         if (ply.isInMinigame()) {
