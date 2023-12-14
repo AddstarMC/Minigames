@@ -122,9 +122,9 @@ public class MockSign extends BlockStateMock implements Sign {
     }
 
     @Override
-  public @NotNull PersistentDataContainer getPersistentDataContainer() {
-    throw new UnimplementedOperationException("This is not yet implemented");
-  }
+    public @NotNull PersistentDataContainer getPersistentDataContainer() {
+        throw new UnimplementedOperationException("This is not yet implemented");
+    }
 
     @Override
     public boolean isSnapshot() {

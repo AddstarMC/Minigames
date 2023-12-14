@@ -5,15 +5,18 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.RegionModule;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static au.com.mineauz.minigamesregions.RegionMessageManager.RegionLangKey;
 
 public class SetNodeCommand implements ICommand {
 
@@ -51,27 +54,22 @@ public class SetNodeCommand implements ICommand {
     }
 
     @Override
-    public String getPermissionMessage() {
-        return Main.getPlugin().getMessage("command.node.noPermission");
-    }
-
-    @Override
     public String getPermission() {
         return "minigame.set.node";
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame,
-                             String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+                             @NotNull String label, String @NotNull [] args) {
         if (args != null) {
             MinigamePlayer ply = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
             RegionModule rmod = RegionModule.getMinigameModule(minigame);
             if (args[0].equalsIgnoreCase("create") && args.length >= 2) {
                 if (!rmod.hasNode(args[1])) {
                     rmod.addNode(args[1], new Node(args[1], ply.getLocation()));
-                    sender.sendMessage(ChatColor.GRAY + Main.getPlugin().getMessage("command.node.addedNode", args[1], minigame.getName(true)));
+                    sender.sendMessage(ChatColor.GRAY + RegionMessageManager.getMessage(RegionLangKey.COMMAND_NODE_ADDED, args[1], minigame.getName(true)));
                 } else
-                    sender.sendMessage(ChatColor.RED + Main.getPlugin().getMessage("command.node.nodeExists", args[1], minigame.getName(true)));
+                    sender.sendMessage(ChatColor.RED + RegionMessageManager.getMessage(RegionLangKey.COMMAND_NODE_EXISTS, args[1], minigame.getName(true)));
                 return true;
             } else if (args[0].equalsIgnoreCase("modify")) {
                 rmod.displayMenu(ply, null);

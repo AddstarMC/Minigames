@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
@@ -79,9 +79,9 @@ public class QuitCommand implements ICommand {
                             for (MinigamePlayer pl : pls) {
                                 plugin.getPlayerManager().quitMinigame(pl, true);
                             }
-                            sender.sendMessage(ChatColor.GRAY + MessageManager.getMinigamesMessage("command.quit.quitAllMinigame", mg.getName(true)));
+                            sender.sendMessage(ChatColor.GRAY + MinigameMessageManager.getMinigamesMessage("command.quit.quitAllMinigame", mg.getName(true)));
                         } else {
-                            sender.sendMessage(ChatColor.RED + MessageManager.getMinigamesMessage("minigame.error.noMinigameName", args[1]));
+                            sender.sendMessage(ChatColor.RED + MinigameMessageManager.getMinigamesMessage("minigame.error.noMinigameName", args[1]));
                         }
                     } else {
                         for (MinigamePlayer pl : plugin.getPlayerManager().getAllMinigamePlayers()) {
@@ -97,7 +97,7 @@ public class QuitCommand implements ICommand {
                     List<Player> players = plugin.getServer().matchPlayer(args[0]);
 
                     if (players.isEmpty()) {
-                        sender.sendMessage(ChatColor.RED + MessageManager.getMinigamesMessage("command.quit.invalidPlayer", args[0]));
+                        sender.sendMessage(ChatColor.RED + MinigameMessageManager.getMinigamesMessage("command.quit.invalidPlayer", args[0]));
                         return true;
                     } else {
                         ply = plugin.getPlayerManager().getMinigamePlayer(players.get(0));
@@ -105,9 +105,9 @@ public class QuitCommand implements ICommand {
 
                     if (ply.isInMinigame()) {
                         plugin.getPlayerManager().quitMinigame(ply, false);
-                        sender.sendMessage(ChatColor.GRAY + MessageManager.getMinigamesMessage("command.quit.quitOther", ply.getName()));
+                        sender.sendMessage(ChatColor.GRAY + MinigameMessageManager.getMinigamesMessage("command.quit.quitOther", ply.getName()));
                     } else {
-                        sender.sendMessage(ChatColor.RED + MessageManager.getMinigamesMessage("command.quit.invalidPlayer", args[0]));
+                        sender.sendMessage(ChatColor.RED + MinigameMessageManager.getMinigamesMessage("command.quit.invalidPlayer", args[0]));
                     }
                 }
             } else {

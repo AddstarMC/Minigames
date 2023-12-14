@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
@@ -46,7 +46,7 @@ public class SpectateSign implements MinigameSign {
             event.setLine(2, plugin.getMinigameManager().getMinigame(event.getLine(2)).getName(false));
             return true;
         }
-        event.getPlayer().sendMessage(ChatColor.RED + MessageManager.getMinigamesMessage("minigame.error.noMinigameName", event.getLine(2)));
+        event.getPlayer().sendMessage(ChatColor.RED + MinigameMessageManager.getMinigamesMessage("minigame.error.noMinigameName", event.getLine(2)));
         return false;
     }
 

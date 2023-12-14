@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +52,8 @@ public class ToggleTimerCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame,
-                             String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+                             @NotNull String label, String @NotNull [] args) {
         if (args != null) {
             Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
             if (mgm != null) {

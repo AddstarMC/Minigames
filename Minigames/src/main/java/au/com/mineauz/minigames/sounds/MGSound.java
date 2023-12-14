@@ -3,9 +3,9 @@ package au.com.mineauz.minigames.sounds;
 import org.bukkit.Sound;
 
 public class MGSound {
+    private final Sound sound;
     private float volume = 10f;
     private float pitch = 1f;
-    private final Sound sound;
     private int count = 1;
     private long delay = 20L;
     private int timesPlayed = 0;

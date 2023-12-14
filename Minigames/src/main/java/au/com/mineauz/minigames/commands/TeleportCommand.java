@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,8 +65,8 @@ public class TeleportCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame,
-                             String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+                             @NotNull String label, String @NotNull [] args) {
         if (args != null) {
             List<Player> plys = plugin.getServer().matchPlayer(args[0]);
             MinigamePlayer ply;

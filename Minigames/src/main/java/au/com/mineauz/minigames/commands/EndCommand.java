@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +61,8 @@ public class EndCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame,
-                             String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+                             @NotNull String label, String @NotNull [] args) {
         if (args == null && sender instanceof Player) {
             MinigamePlayer ply = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
             if (ply.isInMinigame()) {
@@ -122,7 +123,7 @@ public class EndCommand implements ICommand {
                             }
                         }
                         plugin.getPlayerManager().endMinigame(mgm, w, l);
-                        sender.sendMessage(ChatColor.GRAY + "You forced " + team.getChatColor() + team.getDisplayName() + ChatColor.GRAY + " to win the Minigame.");
+                        sender.sendMessage(ChatColor.GRAY + "You forced " + team.getTextColor() + team.getDisplayName() + ChatColor.GRAY + " to win the Minigame.");
                     } else {
                         sender.sendMessage(ChatColor.RED + "This Minigame has no players!");
                     }

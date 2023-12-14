@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.signs;
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
@@ -71,7 +71,7 @@ public class ScoreSign implements MinigameSign {
                 player.addScore(score);
                 mg.setScore(player, player.getScore());
                 player.sendInfoMessage(
-                        MessageManager.getMinigamesMessage("sign.score.addScore", score, player.getScore()));
+                        MinigameMessageManager.getMinigamesMessage("sign.score.addScore", score, player.getScore()));
                 if (mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= player.getScore()) {
                     Minigames.getPlugin().getPlayerManager().endMinigame(player);
                 }
@@ -88,8 +88,8 @@ public class ScoreSign implements MinigameSign {
                     mg.setScore(player, player.getScore());
 
                     pteam.addScore(score);
-                    player.sendInfoMessage(MessageManager.getMinigamesMessage("sign.score.addScoreTeam",
-                            score, pteam.getChatColor().toString() + pteam.getScore()));
+                    player.sendInfoMessage(MinigameMessageManager.getMinigamesMessage("sign.score.addScoreTeam",
+                            score, pteam.getTextColor().toString() + pteam.getScore()));
                     Minigames.getPlugin().getMinigameManager().addClaimedScore(mg, sign.getLocation(), 0);
                     if (mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= pteam.getScore()) {
                         List<MinigamePlayer> winners = new ArrayList<>(pteam.getPlayers());

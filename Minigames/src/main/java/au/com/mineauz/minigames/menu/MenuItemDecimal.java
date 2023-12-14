@@ -13,11 +13,11 @@ import java.util.List;
 public class MenuItemDecimal extends MenuItem {
 
     protected final Callback<Double> value;
-    protected DecimalFormat form = new DecimalFormat("#.##");
     private final double lowerInc;
     private final double upperInc;
     private final Double min;
     private final Double max;
+    protected DecimalFormat form = new DecimalFormat("#.##");
 
     public MenuItemDecimal(String name, Material displayItem, Callback<Double> value,
                            double lowerInc, double upperInc, Double min, Double max) {

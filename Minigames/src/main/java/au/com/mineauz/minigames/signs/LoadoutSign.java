@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -68,14 +68,14 @@ public class LoadoutSign implements MinigameSign {
                 if (!loadout.getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())) {
                     if (player.setLoadout(loadout.getLoadout(sign.getLine(2)))) {
                         player.sendInfoMessage(
-                                MessageManager.getMinigamesMessage("sign.loadout.equipped", sign.getLine(2)));
+                                MinigameMessageManager.getMinigamesMessage("sign.loadout.equipped", sign.getLine(2)));
 
                         if (mgm.getType() == MinigameType.SINGLEPLAYER ||
                                 mgm.hasStarted()) {
                             if (sign.getLine(3).equalsIgnoreCase("respawn")) {
                                 player.sendInfoMessage(MinigameUtils.getLang("sign.loadout.nextRespawn"));
                             } else if (sign.getLine(3).equalsIgnoreCase("temporary")) {
-                                player.sendInfoMessage(MessageManager.getUnformattedMessage(null, "sign.loadout.temporarilyEquipped"));
+                                player.sendInfoMessage(MinigameMessageManager.getUnformattedMessage(null, "sign.loadout.temporarilyEquipped"));
                                 loadout.getLoadout(sign.getLine(2)).equiptLoadout(player);
                                 player.setLoadout(player.getDefaultLoadout());
                             } else {
@@ -85,19 +85,19 @@ public class LoadoutSign implements MinigameSign {
                     }
                     return true;
                 } else {
-                    player.sendMessage(MessageManager.getMinigamesMessage("sign.loadout.noPermisson", sign.getLine(2)), MinigameMessageType.ERROR);
+                    player.sendMessage(MinigameMessageManager.getMinigamesMessage("sign.loadout.noPermisson", sign.getLine(2)), MinigameMessageType.ERROR);
                 }
             } else if (plugin.getMinigameManager().hasLoadout(sign.getLine(2))) {
                 if (!plugin.getMinigameManager().getLoadout(sign.getLine(2)).getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + sign.getLine(2).toLowerCase())) {
                     if (player.setLoadout(plugin.getMinigameManager().getLoadout(sign.getLine(2)))) {
-                        player.sendInfoMessage(MessageManager.getMinigamesMessage("sign.loadout.equipped", sign.getLine(2)));
+                        player.sendInfoMessage(MinigameMessageManager.getMinigamesMessage("sign.loadout.equipped", sign.getLine(2)));
 
                         if (mgm.getType() == MinigameType.SINGLEPLAYER ||
                                 mgm.hasStarted()) {
                             if (sign.getLine(3).equalsIgnoreCase("respawn")) {
                                 player.sendInfoMessage(MinigameUtils.getLang("sign.loadout.nextRespawn"));
                             } else if (sign.getLine(3).equalsIgnoreCase("temporary")) {
-                                player.sendInfoMessage(MessageManager.getUnformattedMessage(null, "sign.loadout.temporarilyEquipped"));
+                                player.sendInfoMessage(MinigameMessageManager.getUnformattedMessage(null, "sign.loadout.temporarilyEquipped"));
                                 plugin.getMinigameManager().getLoadout(sign.getLine(2)).equiptLoadout(player);
                                 player.setLoadout(player.getDefaultLoadout());
                             } else {
@@ -107,7 +107,7 @@ public class LoadoutSign implements MinigameSign {
                     }
                     return true;
                 } else {
-                    player.sendMessage(MessageManager.getMinigamesMessage("sign.loadout.noPermission", sign.getLine(2)), MinigameMessageType.ERROR);
+                    player.sendMessage(MinigameMessageManager.getMinigamesMessage("sign.loadout.noPermission", sign.getLine(2)), MinigameMessageType.ERROR);
                 }
             } else {
                 player.sendMessage(MinigameUtils.getLang("sign.loadout.noLoadout"), MinigameMessageType.ERROR);

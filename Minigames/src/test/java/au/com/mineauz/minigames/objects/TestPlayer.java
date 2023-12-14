@@ -23,6 +23,7 @@ import java.util.UUID;
  */
 public class TestPlayer extends PlayerMock {
 
+    private final List<PotionEffect> effects = new ArrayList<>();
     private Long playerTime;
     private Long playerTimeoffset;
     private int foodLevel = 10;
@@ -36,7 +37,6 @@ public class TestPlayer extends PlayerMock {
     private float flyspeed;
     private int noDamageTicks;
     private WeatherType playerWeather = WeatherType.CLEAR;
-    private final List<PotionEffect> effects = new ArrayList<>();
     private Scoreboard scoreboard = new ScoreboardMock();
 
     public TestPlayer(ServerMock server, String name, UUID uuid) {

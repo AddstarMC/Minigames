@@ -15,6 +15,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +55,7 @@ public class SetRegenAreaCommand implements ICommand {
                 "/minigame set <Minigame> regenarea select <1/2>",
                 "/minigame set <Minigame> regenarea create <name>",
                 "/minigame set <Minigame> regenarea list <page>",
-                "/minigame set <Minigame> regenarea delete <name>" };
+                "/minigame set <Minigame> regenarea delete <name>"};
     }
 
     @Override
@@ -127,8 +128,8 @@ public class SetRegenAreaCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame,
-                             String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+                             @NotNull String label, String @NotNull [] args) {
         if (args != null) {
             if (sender instanceof Player player) {
                 MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);

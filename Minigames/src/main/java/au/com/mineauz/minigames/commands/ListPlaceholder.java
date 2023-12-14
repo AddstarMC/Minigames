@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Set;
@@ -52,7 +53,7 @@ public class ListPlaceholder implements ICommand {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame, @NotNull String label, String @NotNull [] args) {
         Set<String> placeholders = plugin.getPlaceHolderManager().getRegisteredPlaceHolders();
         StringBuilder result = new StringBuilder();
         for (String pHolder : placeholders) {

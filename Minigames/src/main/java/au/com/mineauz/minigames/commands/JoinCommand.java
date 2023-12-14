@@ -1,11 +1,12 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,19 +54,19 @@ public class JoinCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame, @NotNull String label, String @NotNull [] args) {
         Player player = (Player) sender;
         if (args != null) {
             Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
             if (mgm != null && (!mgm.getUsePermissions() || player.hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))) {
                 if (!plugin.getPlayerManager().getMinigamePlayer(player).isInMinigame()) {
-                    sender.sendMessage(ChatColor.GREEN + MessageManager.getMinigamesMessage("command.join.joining", mgm.getName(false)));
+                    sender.sendMessage(ChatColor.GREEN + MinigameMessageManager.getMinigamesMessage("command.join.joining", mgm.getName(false)));
                     plugin.getPlayerManager().joinMinigame(plugin.getPlayerManager().getMinigamePlayer(player), mgm, false, 0.0);
                 } else {
                     player.sendMessage(ChatColor.RED + MinigameUtils.getLang("command.join.alreadyPlaying"));
                 }
             } else if (mgm != null && mgm.getUsePermissions()) {
-                player.sendMessage(ChatColor.RED + MessageManager.getMinigamesMessage("command.join.noMinigamePermission", "minigame.join." + mgm.getName(false).toLowerCase()));
+                player.sendMessage(ChatColor.RED + MinigameMessageManager.getMinigamesMessage("command.join.noMinigamePermission", "minigame.join." + mgm.getName(false).toLowerCase()));
             } else {
                 player.sendMessage(ChatColor.RED + MinigameUtils.getLang("minigame.error.noMinigame"));
             }

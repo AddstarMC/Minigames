@@ -52,12 +52,9 @@ public class Minigame implements ScriptObject {
     private final IntegerFlag maxPlayers = new IntegerFlag(4, "maxplayers");
     private final BooleanFlag spMaxPlayers = new BooleanFlag(false, "spMaxPlayers");
     private final StrListFlag flags = new StrListFlag(null, "flags");
-    private MinigameState state = MinigameState.IDLE;
-
     private final StringFlag degenType = new StringFlag("inward", "degentype");
     private final IntegerFlag degenRandomChance = new IntegerFlag(15, "degenrandom");
     private final RegionFlag floorDegen = new RegionFlag(null, "sfloor", "sfloorpos.1", "sfloorpos.2");
-    private FloorDegenerator sFloorDegen;
     private final IntegerFlag floorDegenTime = new IntegerFlag(Minigames.getPlugin().getConfig().getInt("multiplayer.floordegenerator.time"), "floordegentime");
     // Respawn Module
     private final BooleanFlag respawn = new BooleanFlag(Minigames.getPlugin().getConfig().getBoolean("has-respawn"), "respawn");
@@ -67,13 +64,11 @@ public class Minigame implements ScriptObject {
     private final LocationFlag quitLocation = new LocationFlag(null, "quitpos");
     private final LocationFlag lobbyLocation = new LocationFlag(null, "lobbypos");
     private final LocationFlag spectatorPosition = new LocationFlag(null, "spectatorpos");
-
     private final BooleanFlag usePermissions = new BooleanFlag(false, "usepermissions");
     private final IntegerFlag timer = new IntegerFlag(0, "timer");
     private final BooleanFlag useXPBarTimer = new BooleanFlag(true, "useXPBarTimer");
     private final IntegerFlag startWaitTime = new IntegerFlag(0, "startWaitTime");
     private final BooleanFlag showCompletionTime = new BooleanFlag(false, "showCompletionTime");
-
     private final BooleanFlag itemDrops = new BooleanFlag(false, "itemdrops");
     private final BooleanFlag deathDrops = new BooleanFlag(false, "deathdrops");
     private final BooleanFlag itemPickup = new BooleanFlag(true, "itempickup");
@@ -92,7 +87,6 @@ public class Minigame implements ScriptObject {
     private final BooleanFlag keepInventory = new BooleanFlag(false, "keepInventory");
     private final BooleanFlag friendlyFireSplashPotions = new BooleanFlag(true, "friendlyFireSplashPotions");
     private final BooleanFlag friendlyFireLingeringPotions = new BooleanFlag(true, "friendlyFireLingeringPotions");
-
     private final StringFlag mechanic = new StringFlag("custom", "scoretype");
     private final BooleanFlag paintBallMode = new BooleanFlag(false, "paintball");
     private final IntegerFlag paintBallDamage = new IntegerFlag(2, "paintballdmg");
@@ -101,37 +95,34 @@ public class Minigame implements ScriptObject {
     private final BooleanFlag lateJoin = new BooleanFlag(false, "latejoin");
     // just to stay backwards compatible we have
     private final FloatFlag lives = new FloatFlag(0F, "lives");
-
     private final RegionMapFlag regenRegions = new RegionMapFlag(new HashMap<>(), "regenRegions", "regenarea.1", "regenarea.2");
     private final IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
     private final IntegerFlag maxBlocksRegenRegions = new IntegerFlag(300000, "maxBlocksRegenRegions");
-
     private final Map<String, MinigameModule> modules = new HashMap<>();
-    private Scoreboard sbManager = Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard();
     private final IntegerFlag minScore = new IntegerFlag(5, "minscore");
     private final IntegerFlag maxScore = new IntegerFlag(10, "maxscore");
     private final BooleanFlag displayScoreboard = new BooleanFlag(true, "displayScoreboard");
-
     private final BooleanFlag canSpectateFly = new BooleanFlag(false, "canspectatefly");
-
     private final BooleanFlag randomizeChests = new BooleanFlag(false, "randomizechests");
     private final IntegerFlag minChestRandom = new IntegerFlag(5, "minchestrandom");
     private final IntegerFlag maxChestRandom = new IntegerFlag(10, "maxchestrandom");
     @NotNull
     private final ScoreboardData sbData = new ScoreboardData();
     private final Map<MinigameStat, StatSettings> statSettings = Maps.newHashMap();
-
     //Unsaved data
     private final List<MinigamePlayer> players = new ArrayList<>();
     private final List<MinigamePlayer> spectators = new ArrayList<>();
     private final RecorderData blockRecorder = new RecorderData(this);
+    //CTF
+    private final Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<>();
+    private final Map<String, CTFFlag> droppedFlag = new HashMap<>();
+    private MinigameState state = MinigameState.IDLE;
+    private FloorDegenerator sFloorDegen;
+    private Scoreboard sbManager = Minigames.getPlugin().getServer().getScoreboardManager().getNewScoreboard();
     //Multiplayer
     private MultiplayerTimer mpTimer = null;
     private MinigameTimer miniTimer = null;
     private MultiplayerBets mpBets = null;
-    //CTF
-    private final Map<MinigamePlayer, CTFFlag> flagCarriers = new HashMap<>();
-    private final Map<String, CTFFlag> droppedFlag = new HashMap<>();
     private boolean playersAtStart = false;
 
     public Minigame(String name, MinigameType type, Location start) {

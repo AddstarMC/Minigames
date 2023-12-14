@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.mechanics;
 
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
@@ -101,7 +101,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
 
                     ateam.addScore();
                     if (mgm.getMaxScore() != 0 && mgm.getMaxScorePerPlayer() <= ateam.getScore()) {
-                        mdata.sendMinigameMessage(mgm, MessageManager.getMinigamesMessage("player.kills.finalKill", attacker.getName(), ply.getName()));
+                        mdata.sendMinigameMessage(mgm, MinigameMessageManager.getMinigamesMessage("player.kills.finalKill", attacker.getName(), ply.getName()));
 
                         List<MinigamePlayer> w = new ArrayList<>(ateam.getPlayers());
                         List<MinigamePlayer> l = new ArrayList<>(mgm.getPlayers().size() - ateam.getPlayers().size());

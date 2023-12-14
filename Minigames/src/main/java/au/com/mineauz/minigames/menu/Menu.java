@@ -15,10 +15,10 @@ public class Menu {
     private final ItemStack[] pageView;
     private final Map<Integer, MenuItem> pageMap = new HashMap<>();
     private final String name;
+    private final MinigamePlayer viewer;
     private boolean allowModify = false;
     private Menu previousPage = null;
     private Menu nextPage = null;
-    private final MinigamePlayer viewer;
     private int reopenTimerID = -1;
     private Inventory inv = null;
 

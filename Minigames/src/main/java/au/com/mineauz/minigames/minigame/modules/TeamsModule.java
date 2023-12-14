@@ -230,7 +230,7 @@ public class TeamsModule extends MinigameModule {
         items.add(new MenuItemList("Default Winning Team", Material.PAPER, getDefaultWinnerCallback(), teams));
         items.add(new MenuItemNewLine());
         for (Team t : this.teams.values()) {
-            items.add(new MenuItemTeam(t.getChatColor() + t.getDisplayName(), t));
+            items.add(new MenuItemTeam(t.getTextColor() + t.getDisplayName(), t));
         }
 
         m.addItem(new MenuItemAddTeam("Add Team", getMinigame()), m.getSize() - 1);

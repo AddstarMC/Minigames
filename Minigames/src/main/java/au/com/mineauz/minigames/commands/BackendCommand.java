@@ -59,7 +59,7 @@ public class BackendCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(final CommandSender sender, Minigame minigame, String label, String[] args) {
+    public boolean onCommand(final @NotNull CommandSender sender, Minigame minigame, @NotNull String label, String @NotNull [] args) {
         if (args == null || args.length != 2) {
             return false;
         }

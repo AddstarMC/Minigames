@@ -9,6 +9,7 @@ import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +61,8 @@ public class SetTeamCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame,
-                             String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+                             @NotNull String label, String @NotNull [] args) {
         if (args != null) {
             TeamsModule tmod = TeamsModule.getMinigameModule(minigame);
             if (args[0].equalsIgnoreCase("add")) {
@@ -106,8 +107,8 @@ public class SetTeamCommand implements ICommand {
             } else if (args[0].equalsIgnoreCase("list")) {
                 List<String> teams = new ArrayList<>(tmod.getTeams().size());
                 for (Team t : tmod.getTeams()) {
-                    teams.add(t.getChatColor() + t.getColor().toString() + ChatColor.GRAY +
-                            "(" + t.getChatColor() + t.getDisplayName() + ChatColor.GRAY + ")");
+                    teams.add(t.getTextColor() + t.getColor().toString() + ChatColor.GRAY +
+                            "(" + t.getTextColor() + t.getDisplayName() + ChatColor.GRAY + ")");
                 }
                 StringBuilder teamsString = new StringBuilder();
                 for (String t : teams) {

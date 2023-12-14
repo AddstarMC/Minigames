@@ -53,7 +53,7 @@ public abstract class GameMechanicBase implements Listener {
      * @param caller   The Player (or Null) to send the error messages to
      * @return true if all checks pass.
      */
-    public abstract boolean checkCanStart(Minigame minigame, MinigamePlayer caller);
+    public abstract boolean checkCanStart(Minigame minigame, MinigamePlayer caller); //todo better return value to indicate what went wrong
 
     /**
      * In the case of a Minigame having teams, this should be used to balance players
@@ -84,10 +84,10 @@ public abstract class GameMechanicBase implements Listener {
                         ply.sendMessage(MinigameUtils.getLang("minigame.full"), MinigameMessageType.ERROR);
                     } else {
                         smt.addPlayer(ply);
-                        ply.sendInfoMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()));
+                        ply.sendInfoMessage(String.format(smt.getAutobalanceMessage(), smt.getTextColor() + smt.getDisplayName()));
                         mdata.sendMinigameMessage(minigame,
                                 String.format(smt.getGameAutobalanceMessage(),
-                                        ply.getName(), smt.getChatColor() + smt.getDisplayName()), null, ply);
+                                        ply.getName(), smt.getTextColor() + smt.getDisplayName()), null, ply);
                     }
                 }
             }
@@ -105,10 +105,10 @@ public abstract class GameMechanicBase implements Listener {
                     MinigamePlayer pl = lgt.getPlayers().get(0);
                     MultiplayerType.switchTeam(minigame, pl, smt);
                     result.add(pl);
-                    pl.sendInfoMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()));
+                    pl.sendInfoMessage(String.format(smt.getAutobalanceMessage(), smt.getTextColor() + smt.getDisplayName()));
                     mdata.sendMinigameMessage(minigame,
                             String.format(smt.getGameAutobalanceMessage(),
-                                    pl.getDisplayName(minigame.usePlayerDisplayNames()), smt.getChatColor() + smt.getDisplayName()), null, pl);
+                                    pl.getDisplayName(minigame.usePlayerDisplayNames()), smt.getTextColor() + smt.getDisplayName()), null, pl);
                 } else {
                     sorted = true;
                 }
@@ -128,10 +128,10 @@ public abstract class GameMechanicBase implements Listener {
             if (smt != null) {
                 if (lgt.getPlayers().size() - smt.getPlayers().size() > 1 && smt.getAutoBalanceTeam()) {
                     MultiplayerType.switchTeam(mgm, ply, smt);
-                    ply.sendInfoMessage(String.format(smt.getAutobalanceMessage(), smt.getChatColor() + smt.getDisplayName()));
+                    ply.sendInfoMessage(String.format(smt.getAutobalanceMessage(), smt.getTextColor() + smt.getDisplayName()));
                     mdata.sendMinigameMessage(mgm,
                             String.format(smt.getGameAutobalanceMessage(),
-                                    ply.getDisplayName(mgm.usePlayerDisplayNames()), smt.getChatColor() + smt.getDisplayName()), null, ply);
+                                    ply.getDisplayName(mgm.usePlayerDisplayNames()), smt.getTextColor() + smt.getDisplayName()), null, ply);
                 }
             }
         }

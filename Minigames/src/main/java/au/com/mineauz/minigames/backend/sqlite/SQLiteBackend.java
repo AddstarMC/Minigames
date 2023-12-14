@@ -22,16 +22,15 @@ import java.util.logging.Logger;
 @SuppressWarnings("SyntaxError")
 public class SQLiteBackend extends Backend {
     private final Logger logger;
+    private final SQLiteStatLoader loader;
+    private final SQLiteStatSaver saver;
     private ConnectionPool pool;
     private StatementKey insertMinigame;
     private StatementKey getMinigameId;
-
     private StatementKey insertPlayer;
     private StatementKey loadStatSettings;
     private StatementKey saveStatSettings;
     private boolean debug;
-    private final SQLiteStatLoader loader;
-    private final SQLiteStatSaver saver;
     private File database;
 
 

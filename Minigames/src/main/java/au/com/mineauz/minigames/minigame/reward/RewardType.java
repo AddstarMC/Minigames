@@ -5,8 +5,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 
 public abstract class RewardType {
-    private RewardRarity rarity = RewardRarity.NORMAL;
     private final Rewards rewards;
+    private RewardRarity rarity = RewardRarity.NORMAL;
 
     public RewardType(Rewards rewards) {
         this.rewards = rewards;

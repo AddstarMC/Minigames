@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuUtility;
@@ -87,7 +87,7 @@ public class GameOverModule extends MinigameModule {
     }
 
     public void startEndGameTimer() {
-        Minigames.getPlugin().getMinigameManager().sendMinigameMessage(getMinigame(), MessageManager.getMinigamesMessage("minigame.gameOverQuit", timer.getFlag()));
+        Minigames.getPlugin().getMinigameManager().sendMinigameMessage(getMinigame(), MinigameMessageManager.getMinigamesMessage("minigame.gameOverQuit", timer.getFlag()));
         getMinigame().setState(MinigameState.ENDED);
 
         List<MinigamePlayer> allPlys = new ArrayList<>(winners.size() + losers.size());

@@ -19,6 +19,8 @@ import java.util.logging.Logger;
 
 public class MySQLBackend extends Backend {
     private final Logger logger;
+    private final MySQLStatLoader loader;
+    private final MySQLStatSaver saver;
     private ConnectionPool pool;
     private String database;
     private boolean debug = false;
@@ -26,9 +28,6 @@ public class MySQLBackend extends Backend {
     private StatementKey insertPlayer;
     private StatementKey loadStatSettings;
     private StatementKey saveStatSettings;
-
-    private final MySQLStatLoader loader;
-    private final MySQLStatSaver saver;
 
     public MySQLBackend(Logger logger) {
         this.logger = logger;

@@ -2,7 +2,7 @@ package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.events.MinigameTimerTickEvent;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.sounds.MGSounds;
@@ -14,10 +14,10 @@ import java.util.List;
 
 public class MinigameTimer {
     private static final Minigames plugin = Minigames.getPlugin();
-    private int time = 0;
-    private int otime = 0;
     private final Minigame minigame;
     private final List<Integer> timeMsg = new ArrayList<>();
+    private int time = 0;
+    private int otime = 0;
     private int taskID = -1;
     private boolean broadcastTime = true;
 
@@ -68,7 +68,7 @@ public class MinigameTimer {
         }
         if (timeMsg.contains(time) && broadcastTime) {
             PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
-            plugin.getMinigameManager().sendMinigameMessage(minigame, MessageManager.getMinigamesMessage("minigame.timeLeft", MinigameUtils.convertTime(time)));
+            plugin.getMinigameManager().sendMinigameMessage(minigame, MinigameMessageManager.getMinigamesMessage("minigame.timeLeft", MinigameUtils.convertTime(time)));
         }
 
         if (time <= 0) {

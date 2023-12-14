@@ -63,7 +63,7 @@ public class ScoreCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame,
-                             @Nullable String label, @NotNull String @Nullable [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null && args.length >= 3) {
             MinigamePlayer ply = null;
             TeamColor color = TeamColor.matchColor(args[2]);
@@ -138,7 +138,7 @@ public class ScoreCommand implements ICommand {
                                     if (tmod.hasTeam(color)) {
                                         changedTeam = tmod.getTeam(color);
                                         changedTeam.setScore(score);
-                                        sender.sendMessage(changedTeam.getChatColor() + changedTeam.getDisplayName() + ChatColor.GRAY + " score has been set to " + score);
+                                        sender.sendMessage(changedTeam.getTextColor() + changedTeam.getDisplayName() + ChatColor.GRAY + " score has been set to " + score);
 
                                         // check new score
                                         if (mg.getMaxScore() != 0 && score >= mg.getMaxScorePerPlayer()) {
@@ -195,7 +195,7 @@ public class ScoreCommand implements ICommand {
                                         Team changedTeam = tmod.getTeam(color);
                                         if (changedTeam != null) {
                                             changedTeam.addScore(score);
-                                            sender.sendMessage(ChatColor.GRAY + "Added " + score + " to " + changedTeam.getChatColor() + changedTeam.getDisplayName() +
+                                            sender.sendMessage(ChatColor.GRAY + "Added " + score + " to " + changedTeam.getTextColor() + changedTeam.getDisplayName() +
                                                     ChatColor.GRAY + " score, new score: " + changedTeam.getScore());
                                         } else {
                                             sender.sendMessage(ChatColor.RED + mg.getName(false) + " does not have a " + color.toString().toLowerCase() + " team.");

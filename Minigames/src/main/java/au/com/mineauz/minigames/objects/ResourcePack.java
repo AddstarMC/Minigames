@@ -27,12 +27,12 @@ public final class ResourcePack implements ConfigurationSerializable {
     private final String name;
     private final URL url;
     private final File local;
+    private final String description;
     /**
      * Unique SH1 hash
      */
     private byte[] hash;
     private boolean valid = false;
-    private final String description;
 
     /**
      * Instantiates a new Resource pack.

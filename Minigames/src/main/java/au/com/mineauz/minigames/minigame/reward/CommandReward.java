@@ -55,8 +55,8 @@ public class CommandReward extends RewardType {
 
     private class CommandRewardItem extends MenuItemString {
 
-        private List<String> options = new ArrayList<>();
         private final CommandReward reward;
+        private List<String> options = new ArrayList<>();
 
         public CommandRewardItem(CommandReward reward) {
             super("/" + command, Material.COMMAND_BLOCK, new Callback<>() {

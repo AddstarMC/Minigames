@@ -24,10 +24,8 @@ public class FlatFileExporter {
     private final FileConfiguration config;
     private final ExportNotifier notifier;
     private final BackendImportCallback callback;
-
-    private SetMultimap<String, UUID> completions;
-
     private final Map<String, Integer> minigameIds;
+    private SetMultimap<String, UUID> completions;
     private int nextMinigameId;
 
     private String notifyState;

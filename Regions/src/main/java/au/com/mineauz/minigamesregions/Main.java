@@ -2,7 +2,7 @@ package au.com.mineauz.minigamesregions;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.set.SetCommand;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.tool.ToolModes;
 import au.com.mineauz.minigamesregions.commands.SetNodeCommand;
@@ -14,8 +14,6 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 
 public class Main extends JavaPlugin {
-
-    public final static String LANG_KEY = "minigames-regions";
     private static Minigames minigames;
     private static Main plugin;
     private RegionDisplayManager display;
@@ -74,7 +72,7 @@ public class Main extends JavaPlugin {
             ToolModes.addToolMode(new RegionToolMode());
             ToolModes.addToolMode(new NodeToolMode());
             ToolModes.addToolMode(new RegionNodeEditToolMode());
-            loadLanguages();
+            RegionMessageManager.register();
             getLogger().info("Minigames Regions successfully enabled!");
         } catch (Throwable e) {
             plugin = null;
@@ -82,14 +80,6 @@ public class Main extends JavaPlugin {
             getLogger().log(Level.SEVERE, "Failed to enable Minigames Regions " + getDescription().getVersion() + ": ", e);
             getPluginLoader().disablePlugin(this);
         }
-    }
-
-    private void loadLanguages() {
-        MessageManager.registerMessageFile(LANG_KEY, ResourceBundle.getBundle("minigames_regions"));
-    }
-
-    public String getMessage(String key, String... args) {
-        return MessageManager.getMessage(LANG_KEY, key, (Object[]) args);
     }
 
     public RegionDisplayManager getDisplayManager() {

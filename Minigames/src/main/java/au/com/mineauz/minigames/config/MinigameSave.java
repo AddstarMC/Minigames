@@ -9,10 +9,10 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 public class MinigameSave {
+    private final String name;
     String minigame = null;
     private FileConfiguration minigameSave = null;
     private File minigameSaveFile = null;
-    private final String name;
 
     public MinigameSave(String name) {
         this.name = name;

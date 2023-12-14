@@ -7,476 +7,476 @@ softdepend: [ 'Multiverse-Core' ]
 description: ${project.description}
 
 libraries:
-    - org.apache.commons:commons-text:1.10.0
+  - org.apache.commons:commons-text:1.10.0
 
 commands:
-    minigame:
-        description: The Minigame creation command.
-        usage: Invalid command. Type "/minigame help" for help
-        permission: minigame.minigame
-        permission-message: You don't have <permission>
-        aliases: [ mgm, minigm, mgame, mg ]
+  minigame:
+    description: The Minigame creation command.
+    usage: Invalid command. Type "/minigame help" for help
+    permission: minigame.minigame
+    permission-message: You don't have <permission>
+    aliases: [ mgm, minigm, mgame, mg ]
 
 permissions:
-    minigame.minigame:
-        description: Adds permission to the main command.
-        default: true
-    minigame.help:
-        description: Access to the help command
-        default: true
-    minigame.*:
-        description: Gives access to all Minigame Commands
-        children:
-            minigame.join: true
-            minigame.join.disabled: true
-            minigame.spectate: true
-            minigame.quit: true
-            minigame.quit.other: true
-            minigame.end: true
-            minigame.end.other: true
-            minigame.start: true
-            minigame.stop: true
-            minigame.revert: true
-            minigame.create: true
-            minigame.set.*: true
-            minigame.delete: true
-            minigame.check: true
-            minigame.list: true
-            minigame.treasure.hint: true
-            minigame.treasure.announce: true
-            minigame.reload: true
-            minigame.sign.create.*: true
-            minigame.sign.use.*: true
-            minigame.restoreinv: true
-            minigame.info: true
-            minigame.regen: true
-            minigame.globalloadout: true
-            minigame.player: true
-            minigame.score: true
-            minigame.teleport: true
-            minigame.edit: true
-            minigame.tool: true
-            minigame.enableall: true
-            minigame.disableall: true
-            minigame.save: true
-            minigame.backend: true
-            minigmae.info: true
-    minigame.join:
-        description: Allows a player to join a Minigame, bypassing betting.
-        default: op
-    minigame.join.disabled:
-        description: Allows a player to join a disabled Minigame.
-        default: op
-    minigame.spectate:
-        description: Allows a player to spectate a Minigame without using a sign
-        default: op
-    minigame.start:
-        description: Allows access to starting global Minigames
-        default: op
-    minigame.stop:
-        description: Allows player to stop a global Minigame
-        default: op
-    minigame.quit:
-        description: Gives access to quitting a Minigame
-        default: true
-    minigame.info:
-        description: Allows to report on currently running game
-        default: op
-    minigame.quit.other:
-        description: Gives access to force another player to quit a minigame
-        default: op
-    minigame.end:
-        description: Allows player to end minigame, collecting the reward
-        default: op
-    minigame.end.other:
-        description: Allows player to end another players minigame, collecting the reward
-        default: op
-    minigame.revert:
-        description: Gives access to reverting to checkpoint
-        default: true
-    minigame.create:
-        description: Gives access to creating minigames
-        default: op
-    minigame.set.*:
-        description: Gives access to all the Minigame Set commands
-        children:
-            minigame.set.start: true
-            minigame.set.end: true
-            minigame.set.quit: true
-            minigame.set.reward: true
-            minigame.set.floordegenerator: true
-            minigame.set.type: true
-            minigame.set.lobby: true
-            minigame.set.bets: true
-            minigame.set.maxplayers: true
-            minigame.set.minplayers: true
-            minigame.set.loadout: true
-            minigame.set.flag: true
-            minigame.set.restoreblock: true
-            minigame.set.location: true
-            minigame.set.maxradius: true
-            minigame.set.enabled: true
-            minigame.set.usepermissions: true
-            minigame.set.minscore: true
-            minigame.set.maxscore: true
-            minigame.set.mintreasure: true
-            minigame.set.maxtreasure: true
-            minigame.set.timer: true
-            minigame.set.blocksdrop: true
-            minigame.set.blockwhitelist: true
-            minigame.set.gamemode: true
-            minigame.set.blockplace: true
-            minigame.set.blockbreak: true
-            minigame.set.itempickup: true
-            minigame.set.itemdrop: true
-            minigame.set.paintball: true
-            minigame.set.latejoin: true
-            minigame.set.unlimitedammo: true
-            minigame.set.spectatefly: true
-            minigame.set.regenarea: true
-            minigame.set.randomizechests: true
-            minigame.set.defaultwinner: true
-            minigame.set.gamemechanic: true
-            minigame.set.lives: true
-            minigame.set.allowenderpearls: true
-            minigame.set.starttime: true
-            minigame.set.multiplayercheckpoints: true
-            minigame.set.objective: true
-            minigame.set.gametypename: true
-            minigame.set.spmaxplayers: true
-            minigame.set.displayname: true
-            minigame.set.regendelay: true
-            minigame.set.team: true
-            minigame.set.flight: true
-            minigame.set.hintdelay: true
-            minigame.set.restartdelay: true
-            minigame.set.spectatorstart: true
-            minigame.set.gameover: true
-            minigame.set.infectedteam: true
-            minigame.set.survivorteam: true
-    minigame.set.start:
-        description: Gives access to setting a minigames starting position
-        default: op
-    minigame.set.end:
-        description: Gives access to setting a minigames ending position
-        default: op
-    minigame.set.reward:
-        description: Allows player to set the reward
-        default: op
-    minigame.set.quit:
-        description: Allows players to set the quitting position
-        default: op
-    minigame.set.type:
-        description: Allows players to set the minigame type
-        default: op
-    minigame.set.lobby:
-        description: Allows players to set lobby position
-        default: op
-    minigame.set.floordegenerator:
-        description: Allows players to set the floor degenerator corners
-        default: op
-    minigame.set.spleeffloormat:
-        description: Allows a player to change the floor material for spleef.
-        default: op
-    minigame.set.bets:
-        description: Access to enable betting in a minigame
-        default: op
-    minigame.set.maxplayers:
-        description: Access to setting maximum players for a minigame
-        default: op
-    minigame.set.minplayers:
-        description: Access to setting minimum players for a minigame
-        default: op
-    minigame.set.loadout:
-        description: Access to setting loadout item for a minigame
-        default: op
-    minigame.set.flag:
-        description: Access to adding, removing and clearing flags in a Minigame
-        default: op
-    minigame.set.location:
-        description: Access to adding a treasure hunt location name
-        default: op
-    minigame.set.restoreblock:
-        description: Allows player to use set restoreblock command
-        default: op
-    minigame.set.maxradius:
-        description: Allows player to change a treasure hunts max radius
-        default: op
-    minigame.set.mintreasure:
-        description: Allows player to change the minimum number of items to spawn in a treasure chest
-        default: op
-    minigame.set.maxtreasure:
-        description: Allows player to change the maximum number of items to spawn in a treasure chest
-        default: op
-    minigame.set.enabled:
-        description: Allows player to set whether the Minigame is enabled.
-        default: op
-    minigame.set.usepermissions:
-        description: Allows player to change a minigame to use a permission to join
-        default: op
-    minigame.set.minscore:
-        descripition: Allows a player to set the minimum score for scoring minigames.
-        default: op
-    minigame.set.maxscore:
-        description: Allows a player to set the maximum score for scoring Minigames.
-        default: op
-    minigame.set.timer:
-        description: Allows a player to set the time limit on a Minigame.
-        default: op
-    minigame.set.itemdrop:
-        description: Allows a player to change whether a player can drop items in a Minigame
-        default: op
-    minigame.set.itempickup:
-        description: Allows a player to change whether a player can pick up items in a Minigame
-        default: op
-    minigame.set.blocksdrop:
-        description: Allows a player to change whether blocks drop after being broken.
-        default: op
-    minigame.set.blockwhitelist:
-        description: Allows a player to change the whitelist mode and blocks
-        default: op
-    minigame.set.gamemode:
-        description: Allows a player to change what gamemode a player is in when they join
-        default: op
-    minigame.set.blockplace:
-        description: Allows a player to change whether a player can place blocks
-        default: op
-    minigame.set.blockbreak:
-        description: Allows a player to change whether a player can break blocks
-        default: op
-    minigame.set.paintball:
-        description: Lets a player set a Minigame to Paintball Mode
-        default: op
-    minigame.set.preset:
-        description: Lets a player use a preset on a Minigame.
-        default: op
-    minigame.set.latejoin:
-        description: Lets a player set if players can join late to a Minigame.
-        default: op
-    minigame.set.unlimitedammo:
-        description: Lets a player turn on infinite ammo for a Minigame.
-        default: op
-    minigame.set.spectatefly:
-        description: Allows a player to enable or disable spectator fly mode
-        default: op
-    minigame.set.randomizechests:
-        description: Allows the toggle of randomizing the contents of a chest.
-        default: op
-    minigame.set.regenarea:
-        description: Allows the setting of a regeneration area of a Minigame.
-        default: op
-    minigame.set.defaultwinner:
-        description: Allows the setting of the default Minigame winner.
-        default: op
-    minigame.set.gamemechanic:
-        description: Allows the setting of the game mechanic in a Minigame.
-        default: op
-    minigame.set.lives:
-        description: Allows the setting of the amount of lives per player.
-        default: op
-    minigame.set.allowenderpearls:
-        description: Allows players to change the use of enderpearls in a Minigame.
-        default: op
-    minigame.set.starttime:
-        description: Allows a player to change the start timer of a Minigame.
-        default: op
-    minigame.set.multiplayercheckpoints:
-        description: Allows a player to allow multiplayer checkpoints.
-        default: op
-    minigame.set.objective:
-        description: Allows a player to use the set objective command.
-        default: op
-    minigame.set.gametypename:
-        description: Allows a player to set the gametype name.
-        default: op
-    minigame.set.spmaxplayers:
-        description: Allows a player to toggle singleplayer max players.
-        default: op
-    minigame.set.displayname:
-        description: Allows a player to set the display name of a Minigame.
-        default: op
-    minigame.set.regendelay:
-        description: Allows a player to set the regeneration delay of a Minigame.
-        default: op
-    minigame.set.team:
-        description: Allows a player to use the set team command.
-        default: op
-    minigame.set.flight:
-        description: Allows a player to modify the flight settings in a game.
-        default: op
-    minigame.set.hintdelay:
-        description: Allows a player to set the hint delay of a Treasure Hunt Minigame.
-        default: op
-    minigame.set.restartdelay:
-        description: Allows a player to set the restart delay for a Treasure Hunt Game.
-        default: op
-    minigame.set.spectatorstart:
-        description: Allows a player to use the spectator start point command.
-        default: op
-    minigame.set.gameover:
-        default: op
-    minigame.set.infectedteam:
-        description: Allows a player to set the infected team of an Infection Minigame.
-        default: op
-    minigame.set.survivorteam:
-        description: Allows a player to set the survivor team of an Infection Minigame.
-        default: op
-    minigame.delete:
-        description: Allows access to deleting a minigame
-        default: op
-    minigame.list:
-        description: Allows access to the Minigame List command
-        default: op
-    minigame.restoreinv:
-        description: Allows access to inventory restore command
-        default: op
-    minigame.sign.create.finish:
-        description: Allows the creation of a minigame finish sign
-        default: op
-    minigame.sign.create.join:
-        description: Allows the creation of a minigame create sign
-        default: op
-    minigame.sign.create.bet:
-        description: Allows the creation of a minigame bet sign
-        default: op
-    minigame.sign.create.checkpoint:
-        description: Allows the creation of a minigame checkpoint sign
-        default: op
-    minigame.sign.create.flag:
-        description: Allows the creation of a minigame flag sign
-        default: op
-    minigame.sign.create.quit:
-        description: Allows the creation of a minigame quit sign
-        default: op
-    minigame.sign.create.loadout:
-        description: Allows the creation of a minigame loadout sign
-        default: op
-    minigame.sign.create.spectate:
-        description: Allows the creation of a Minigame spectate sign
-        default: op
-    minigame.sign.create.reward:
-        description: Allows the creation of a Minigame reward sign
-        default: op
-    minigame.sign.create.team:
-        description: Allows the creation of a Minigame team sign
-        default: op
-    minigame.sign.create.teleport:
-        description: Allows the creation of a Minigame teleport sign
-        default: op
-    minigame.sign.create.scoreboard:
-        description: Allows the creation of a scoreboard sign.
-        default: op
-    minigame.sign.create.score:
-        description: Allows the creation of a scoreboard sign.
-        default: op
-    minigame.sign.create.*:
-        description: Allows a player to create all Minigame signs
-        children:
-            minigame.sign.create.finish: true
-            minigame.sign.create.join: true
-            minigame.sign.create.bet: true
-            minigame.sign.create.checkpoint: true
-            minigame.sign.create.flag: true
-            minigame.sign.create.quit: true
-            minigame.sign.create.loadout: true
-            minigame.sign.create.spectate: true
-            minigame.sign.create.reward: true
-            minigame.sign.create.team: true
-            minigame.sign.create.teleport: true
-            minigame.sign.create.scoreboard: true
-            minigame.sign.create.score: true
-    minigame.sign.use.details:
-        description: Allows the usage of a minigame sign to show the details
-        default: true
-    minigame.sign.use.join:
-        description: Allows the usage of a minigame sign to join
-        default: true
-    minigame.sign.use.bet:
-        description: Allows the usage of a minigame sign to bet
-        default: true
-    minigame.sign.use.checkpoint:
-        description: Allows the usage of a minigame sign to set a checkpoint
-        default: true
-    minigame.sign.use.loadout:
-        description: Allows the usage of a minigame sign to get a loadout
-        default: true
-    minigame.sign.use.spectate:
-        description: Allows the usage of a Minigame spectate sign
-        default: true
-    minigame.sign.use.reward:
-        description: Allows the usage of a Minigame reward sign.
-        default: true
-    minigame.sign.use.team:
-        description: Allows the usage of a Minigame team sign.
-        default: true
-    minigame.sign.use.teleport:
-        description: Allows the usage of a Minigame teleport sign.
-        default: true
-    minigame.sign.use.scoreboard:
-        description: Allows a player to set up a scoreboard.
-        default: op
-    minigame.sign.use.score:
-        description: Allows a player to set up a Score sign.
-        default: true
-    minigame.sign.use.*:
-        description: Allows a player to use all the Minigame sign uses
-        children:
-            minigame.sign.use.details: true
-            minigame.sign.use.join: true
-            minigame.sign.use.bet: true
-            minigame.sign.use.checkpoint: true
-            minigame.sign.use.loadout: true
-            minigame.sign.use.spectate: true
-            minigame.sign.use.reward: true
-            minigame.sign.use.team: true
-            minigame.sign.use.teleport: true
-            minigame.sign.use.scoreboard: true
-            minigame.sign.use.score: true
-    minigame.reload:
-        description: Allows player to reload the currently loaded configuration files
-        default: op
-    minigame.treasure.announce:
-        description: Allows players to get the treasure broadcast message
-        default: true
-    minigame.treasure.hint:
-        description: Allows access to the hint command and receiving hint messages
-        default: true
-    minigame.toggletimer:
-        description: Allows a player to pause a multiplayer countdown timer.
-        default: op
-    minigame.partymode:
-        description: Party Mode.
-        default: op
-    minigame.globalloadout:
-        description: Allows a player to modify global loadouts.
-        default: op
-    minigame.player:
-        description: Allows a player to use the Minigame player command.
-        default: op
-    minigame.score:
-        description: Allows a player to use the Minigame score command.
-        default: op
-    minigame.teleport:
-        description: Allows a player to use the Minigame Teleport command.
-        default: op
-    minigame.edit:
-        description: Allows a player to open the Minigame edit menu.
-        default: op
-    minigame.tool:
-        description: Allows a player to spawn and use the Minigame Tool.
-        default: op
-    minigame.enableall:
-        description: Allows a player to enable all Minigames.
-        default: op
-    minigame.disableall:
-        description: Allows a player to disable all Minigames.
-        default: op
-    minigame.save:
-        description: Allows a player to use the save command.
-        default: op
-    minigame.loadout.menu:
-        description: Allows a player to use the Loadout selection menu command.
-        default: true
-    minigame.backend:
-        description: Allows admins to change and export the backend
-        default: op
+  minigame.minigame:
+    description: Adds permission to the main command.
+    default: true
+  minigame.help:
+    description: Access to the help command
+    default: true
+  minigame.*:
+    description: Gives access to all Minigame Commands
+    children:
+      minigame.join: true
+      minigame.join.disabled: true
+      minigame.spectate: true
+      minigame.quit: true
+      minigame.quit.other: true
+      minigame.end: true
+      minigame.end.other: true
+      minigame.start: true
+      minigame.stop: true
+      minigame.revert: true
+      minigame.create: true
+      minigame.set.*: true
+      minigame.delete: true
+      minigame.check: true
+      minigame.list: true
+      minigame.treasure.hint: true
+      minigame.treasure.announce: true
+      minigame.reload: true
+      minigame.sign.create.*: true
+      minigame.sign.use.*: true
+      minigame.restoreinv: true
+      minigame.info: true
+      minigame.regen: true
+      minigame.globalloadout: true
+      minigame.player: true
+      minigame.score: true
+      minigame.teleport: true
+      minigame.edit: true
+      minigame.tool: true
+      minigame.enableall: true
+      minigame.disableall: true
+      minigame.save: true
+      minigame.backend: true
+      minigmae.info: true
+  minigame.join:
+    description: Allows a player to join a Minigame, bypassing betting.
+    default: op
+  minigame.join.disabled:
+    description: Allows a player to join a disabled Minigame.
+    default: op
+  minigame.spectate:
+    description: Allows a player to spectate a Minigame without using a sign
+    default: op
+  minigame.start:
+    description: Allows access to starting global Minigames
+    default: op
+  minigame.stop:
+    description: Allows player to stop a global Minigame
+    default: op
+  minigame.quit:
+    description: Gives access to quitting a Minigame
+    default: true
+  minigame.info:
+    description: Allows to report on currently running game
+    default: op
+  minigame.quit.other:
+    description: Gives access to force another player to quit a minigame
+    default: op
+  minigame.end:
+    description: Allows player to end minigame, collecting the reward
+    default: op
+  minigame.end.other:
+    description: Allows player to end another players minigame, collecting the reward
+    default: op
+  minigame.revert:
+    description: Gives access to reverting to checkpoint
+    default: true
+  minigame.create:
+    description: Gives access to creating minigames
+    default: op
+  minigame.set.*:
+    description: Gives access to all the Minigame Set commands
+    children:
+      minigame.set.start: true
+      minigame.set.end: true
+      minigame.set.quit: true
+      minigame.set.reward: true
+      minigame.set.floordegenerator: true
+      minigame.set.type: true
+      minigame.set.lobby: true
+      minigame.set.bets: true
+      minigame.set.maxplayers: true
+      minigame.set.minplayers: true
+      minigame.set.loadout: true
+      minigame.set.flag: true
+      minigame.set.restoreblock: true
+      minigame.set.location: true
+      minigame.set.maxradius: true
+      minigame.set.enabled: true
+      minigame.set.usepermissions: true
+      minigame.set.minscore: true
+      minigame.set.maxscore: true
+      minigame.set.mintreasure: true
+      minigame.set.maxtreasure: true
+      minigame.set.timer: true
+      minigame.set.blocksdrop: true
+      minigame.set.blockwhitelist: true
+      minigame.set.gamemode: true
+      minigame.set.blockplace: true
+      minigame.set.blockbreak: true
+      minigame.set.itempickup: true
+      minigame.set.itemdrop: true
+      minigame.set.paintball: true
+      minigame.set.latejoin: true
+      minigame.set.unlimitedammo: true
+      minigame.set.spectatefly: true
+      minigame.set.regenarea: true
+      minigame.set.randomizechests: true
+      minigame.set.defaultwinner: true
+      minigame.set.gamemechanic: true
+      minigame.set.lives: true
+      minigame.set.allowenderpearls: true
+      minigame.set.starttime: true
+      minigame.set.multiplayercheckpoints: true
+      minigame.set.objective: true
+      minigame.set.gametypename: true
+      minigame.set.spmaxplayers: true
+      minigame.set.displayname: true
+      minigame.set.regendelay: true
+      minigame.set.team: true
+      minigame.set.flight: true
+      minigame.set.hintdelay: true
+      minigame.set.restartdelay: true
+      minigame.set.spectatorstart: true
+      minigame.set.gameover: true
+      minigame.set.infectedteam: true
+      minigame.set.survivorteam: true
+  minigame.set.start:
+    description: Gives access to setting a minigames starting position
+    default: op
+  minigame.set.end:
+    description: Gives access to setting a minigames ending position
+    default: op
+  minigame.set.reward:
+    description: Allows player to set the reward
+    default: op
+  minigame.set.quit:
+    description: Allows players to set the quitting position
+    default: op
+  minigame.set.type:
+    description: Allows players to set the minigame type
+    default: op
+  minigame.set.lobby:
+    description: Allows players to set lobby position
+    default: op
+  minigame.set.floordegenerator:
+    description: Allows players to set the floor degenerator corners
+    default: op
+  minigame.set.spleeffloormat:
+    description: Allows a player to change the floor material for spleef.
+    default: op
+  minigame.set.bets:
+    description: Access to enable betting in a minigame
+    default: op
+  minigame.set.maxplayers:
+    description: Access to setting maximum players for a minigame
+    default: op
+  minigame.set.minplayers:
+    description: Access to setting minimum players for a minigame
+    default: op
+  minigame.set.loadout:
+    description: Access to setting loadout item for a minigame
+    default: op
+  minigame.set.flag:
+    description: Access to adding, removing and clearing flags in a Minigame
+    default: op
+  minigame.set.location:
+    description: Access to adding a treasure hunt location name
+    default: op
+  minigame.set.restoreblock:
+    description: Allows player to use set restoreblock command
+    default: op
+  minigame.set.maxradius:
+    description: Allows player to change a treasure hunts max radius
+    default: op
+  minigame.set.mintreasure:
+    description: Allows player to change the minimum number of items to spawn in a treasure chest
+    default: op
+  minigame.set.maxtreasure:
+    description: Allows player to change the maximum number of items to spawn in a treasure chest
+    default: op
+  minigame.set.enabled:
+    description: Allows player to set whether the Minigame is enabled.
+    default: op
+  minigame.set.usepermissions:
+    description: Allows player to change a minigame to use a permission to join
+    default: op
+  minigame.set.minscore:
+    descripition: Allows a player to set the minimum score for scoring minigames.
+    default: op
+  minigame.set.maxscore:
+    description: Allows a player to set the maximum score for scoring Minigames.
+    default: op
+  minigame.set.timer:
+    description: Allows a player to set the time limit on a Minigame.
+    default: op
+  minigame.set.itemdrop:
+    description: Allows a player to change whether a player can drop items in a Minigame
+    default: op
+  minigame.set.itempickup:
+    description: Allows a player to change whether a player can pick up items in a Minigame
+    default: op
+  minigame.set.blocksdrop:
+    description: Allows a player to change whether blocks drop after being broken.
+    default: op
+  minigame.set.blockwhitelist:
+    description: Allows a player to change the whitelist mode and blocks
+    default: op
+  minigame.set.gamemode:
+    description: Allows a player to change what gamemode a player is in when they join
+    default: op
+  minigame.set.blockplace:
+    description: Allows a player to change whether a player can place blocks
+    default: op
+  minigame.set.blockbreak:
+    description: Allows a player to change whether a player can break blocks
+    default: op
+  minigame.set.paintball:
+    description: Lets a player set a Minigame to Paintball Mode
+    default: op
+  minigame.set.preset:
+    description: Lets a player use a preset on a Minigame.
+    default: op
+  minigame.set.latejoin:
+    description: Lets a player set if players can join late to a Minigame.
+    default: op
+  minigame.set.unlimitedammo:
+    description: Lets a player turn on infinite ammo for a Minigame.
+    default: op
+  minigame.set.spectatefly:
+    description: Allows a player to enable or disable spectator fly mode
+    default: op
+  minigame.set.randomizechests:
+    description: Allows the toggle of randomizing the contents of a chest.
+    default: op
+  minigame.set.regenarea:
+    description: Allows the setting of a regeneration area of a Minigame.
+    default: op
+  minigame.set.defaultwinner:
+    description: Allows the setting of the default Minigame winner.
+    default: op
+  minigame.set.gamemechanic:
+    description: Allows the setting of the game mechanic in a Minigame.
+    default: op
+  minigame.set.lives:
+    description: Allows the setting of the amount of lives per player.
+    default: op
+  minigame.set.allowenderpearls:
+    description: Allows players to change the use of enderpearls in a Minigame.
+    default: op
+  minigame.set.starttime:
+    description: Allows a player to change the start timer of a Minigame.
+    default: op
+  minigame.set.multiplayercheckpoints:
+    description: Allows a player to allow multiplayer checkpoints.
+    default: op
+  minigame.set.objective:
+    description: Allows a player to use the set objective command.
+    default: op
+  minigame.set.gametypename:
+    description: Allows a player to set the gametype name.
+    default: op
+  minigame.set.spmaxplayers:
+    description: Allows a player to toggle singleplayer max players.
+    default: op
+  minigame.set.displayname:
+    description: Allows a player to set the display name of a Minigame.
+    default: op
+  minigame.set.regendelay:
+    description: Allows a player to set the regeneration delay of a Minigame.
+    default: op
+  minigame.set.team:
+    description: Allows a player to use the set team command.
+    default: op
+  minigame.set.flight:
+    description: Allows a player to modify the flight settings in a game.
+    default: op
+  minigame.set.hintdelay:
+    description: Allows a player to set the hint delay of a Treasure Hunt Minigame.
+    default: op
+  minigame.set.restartdelay:
+    description: Allows a player to set the restart delay for a Treasure Hunt Game.
+    default: op
+  minigame.set.spectatorstart:
+    description: Allows a player to use the spectator start point command.
+    default: op
+  minigame.set.gameover:
+    default: op
+  minigame.set.infectedteam:
+    description: Allows a player to set the infected team of an Infection Minigame.
+    default: op
+  minigame.set.survivorteam:
+    description: Allows a player to set the survivor team of an Infection Minigame.
+    default: op
+  minigame.delete:
+    description: Allows access to deleting a minigame
+    default: op
+  minigame.list:
+    description: Allows access to the Minigame List command
+    default: op
+  minigame.restoreinv:
+    description: Allows access to inventory restore command
+    default: op
+  minigame.sign.create.finish:
+    description: Allows the creation of a minigame finish sign
+    default: op
+  minigame.sign.create.join:
+    description: Allows the creation of a minigame create sign
+    default: op
+  minigame.sign.create.bet:
+    description: Allows the creation of a minigame bet sign
+    default: op
+  minigame.sign.create.checkpoint:
+    description: Allows the creation of a minigame checkpoint sign
+    default: op
+  minigame.sign.create.flag:
+    description: Allows the creation of a minigame flag sign
+    default: op
+  minigame.sign.create.quit:
+    description: Allows the creation of a minigame quit sign
+    default: op
+  minigame.sign.create.loadout:
+    description: Allows the creation of a minigame loadout sign
+    default: op
+  minigame.sign.create.spectate:
+    description: Allows the creation of a Minigame spectate sign
+    default: op
+  minigame.sign.create.reward:
+    description: Allows the creation of a Minigame reward sign
+    default: op
+  minigame.sign.create.team:
+    description: Allows the creation of a Minigame team sign
+    default: op
+  minigame.sign.create.teleport:
+    description: Allows the creation of a Minigame teleport sign
+    default: op
+  minigame.sign.create.scoreboard:
+    description: Allows the creation of a scoreboard sign.
+    default: op
+  minigame.sign.create.score:
+    description: Allows the creation of a scoreboard sign.
+    default: op
+  minigame.sign.create.*:
+    description: Allows a player to create all Minigame signs
+    children:
+      minigame.sign.create.finish: true
+      minigame.sign.create.join: true
+      minigame.sign.create.bet: true
+      minigame.sign.create.checkpoint: true
+      minigame.sign.create.flag: true
+      minigame.sign.create.quit: true
+      minigame.sign.create.loadout: true
+      minigame.sign.create.spectate: true
+      minigame.sign.create.reward: true
+      minigame.sign.create.team: true
+      minigame.sign.create.teleport: true
+      minigame.sign.create.scoreboard: true
+      minigame.sign.create.score: true
+  minigame.sign.use.details:
+    description: Allows the usage of a minigame sign to show the details
+    default: true
+  minigame.sign.use.join:
+    description: Allows the usage of a minigame sign to join
+    default: true
+  minigame.sign.use.bet:
+    description: Allows the usage of a minigame sign to bet
+    default: true
+  minigame.sign.use.checkpoint:
+    description: Allows the usage of a minigame sign to set a checkpoint
+    default: true
+  minigame.sign.use.loadout:
+    description: Allows the usage of a minigame sign to get a loadout
+    default: true
+  minigame.sign.use.spectate:
+    description: Allows the usage of a Minigame spectate sign
+    default: true
+  minigame.sign.use.reward:
+    description: Allows the usage of a Minigame reward sign.
+    default: true
+  minigame.sign.use.team:
+    description: Allows the usage of a Minigame team sign.
+    default: true
+  minigame.sign.use.teleport:
+    description: Allows the usage of a Minigame teleport sign.
+    default: true
+  minigame.sign.use.scoreboard:
+    description: Allows a player to set up a scoreboard.
+    default: op
+  minigame.sign.use.score:
+    description: Allows a player to set up a Score sign.
+    default: true
+  minigame.sign.use.*:
+    description: Allows a player to use all the Minigame sign uses
+    children:
+      minigame.sign.use.details: true
+      minigame.sign.use.join: true
+      minigame.sign.use.bet: true
+      minigame.sign.use.checkpoint: true
+      minigame.sign.use.loadout: true
+      minigame.sign.use.spectate: true
+      minigame.sign.use.reward: true
+      minigame.sign.use.team: true
+      minigame.sign.use.teleport: true
+      minigame.sign.use.scoreboard: true
+      minigame.sign.use.score: true
+  minigame.reload:
+    description: Allows player to reload the currently loaded configuration files
+    default: op
+  minigame.treasure.announce:
+    description: Allows players to get the treasure broadcast message
+    default: true
+  minigame.treasure.hint:
+    description: Allows access to the hint command and receiving hint messages
+    default: true
+  minigame.toggletimer:
+    description: Allows a player to pause a multiplayer countdown timer.
+    default: op
+  minigame.partymode:
+    description: Party Mode.
+    default: op
+  minigame.globalloadout:
+    description: Allows a player to modify global loadouts.
+    default: op
+  minigame.player:
+    description: Allows a player to use the Minigame player command.
+    default: op
+  minigame.score:
+    description: Allows a player to use the Minigame score command.
+    default: op
+  minigame.teleport:
+    description: Allows a player to use the Minigame Teleport command.
+    default: op
+  minigame.edit:
+    description: Allows a player to open the Minigame edit menu.
+    default: op
+  minigame.tool:
+    description: Allows a player to spawn and use the Minigame Tool.
+    default: op
+  minigame.enableall:
+    description: Allows a player to enable all Minigames.
+    default: op
+  minigame.disableall:
+    description: Allows a player to disable all Minigames.
+    default: op
+  minigame.save:
+    description: Allows a player to use the save command.
+    default: op
+  minigame.loadout.menu:
+    description: Allows a player to use the Loadout selection menu command.
+    default: true
+  minigame.backend:
+    description: Allows admins to change and export the backend
+    default: op

@@ -18,6 +18,7 @@ import java.util.Map.Entry;
 public class PlayerLoadout {
     private final Map<Integer, ItemStack> itemSlot = new HashMap<>();
     private final List<PotionEffect> potions = new ArrayList<>();
+    private final Map<Class<? extends LoadoutAddon>, Object> addonValues = new HashMap<>();
     private String loadoutName = "default";
     private boolean usePermission = false;
     private boolean fallDamage = true;
@@ -30,8 +31,6 @@ public class PlayerLoadout {
     private boolean allowOffHand = true;
     private TeamColor team = null;
     private boolean displayInMenu = true;
-
-    private final Map<Class<? extends LoadoutAddon>, Object> addonValues = new HashMap<>();
 
     public PlayerLoadout(String name) {
         loadoutName = name;

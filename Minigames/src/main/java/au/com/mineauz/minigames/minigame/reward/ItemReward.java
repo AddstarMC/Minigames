@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.minigame.reward;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.apache.commons.text.WordUtils;
@@ -38,7 +38,7 @@ public class ItemReward extends RewardType {
             player.addRewardItem(item);
         else
             player.getPlayer().getInventory().addItem(item);
-        player.sendMessage(MessageManager.getMinigamesMessage("reward.item", item.getAmount(),
+        player.sendMessage(MinigameMessageManager.getMinigamesMessage("reward.item", item.getAmount(),
                 WordUtils.capitalize(item.getType().toString())), MinigameMessageType.WIN);
     }
 
@@ -66,8 +66,8 @@ public class ItemReward extends RewardType {
     }
 
     private class MenuItemReward extends MenuItem {
-        private List<String> options = new ArrayList<>();
         private final ItemReward reward;
+        private List<String> options = new ArrayList<>();
 
         public MenuItemReward(ItemReward reward) {
             super("PLACEHOLDER", List.of("Click with item", "to change."), Material.DIAMOND);

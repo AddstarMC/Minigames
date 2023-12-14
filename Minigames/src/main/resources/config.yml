@@ -37,7 +37,7 @@ disabledCommands:
   
 broadcastCompletion: true
 playSounds: true
-  
+
 regeneration:
   maxDelay: 10
 

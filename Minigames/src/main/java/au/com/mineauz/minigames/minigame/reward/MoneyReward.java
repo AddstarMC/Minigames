@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.minigame.reward;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
@@ -35,7 +35,7 @@ public class MoneyReward extends RewardType {
     public void giveReward(MinigamePlayer player) {
         Minigames.getPlugin().getEconomy().depositPlayer(player.getPlayer().getPlayer(), money);
         player.sendInfoMessage(
-                MessageManager.getMinigamesMessage("reward.money", Minigames.getPlugin().getEconomy().format(money)));
+                MinigameMessageManager.getMinigamesMessage("reward.money", Minigames.getPlugin().getEconomy().format(money)));
     }
 
     @Override
@@ -62,8 +62,8 @@ public class MoneyReward extends RewardType {
     }
 
     private class MenuItemReward extends MenuItem {
-        private List<String> options = new ArrayList<>();
         private final MoneyReward reward;
+        private List<String> options = new ArrayList<>();
 
         public MenuItemReward(MoneyReward reward) {
             super("$" + money, Material.PAPER);

@@ -11,5 +11,5 @@ spleef:
           ==: org.bukkit.inventory.ItemStack
           type: DIAMOND_SPADE
   whitelistblocks:
-  - SNOW_BLOCK
+    - SNOW_BLOCK
   whitelistmode: true

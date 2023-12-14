@@ -63,7 +63,7 @@ public class ScoreboardCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(final CommandSender sender, Minigame ignore, String label, String[] args) {
+    public boolean onCommand(final @NotNull CommandSender sender, Minigame ignore, @NotNull String label, String @NotNull [] args) {
         if (args == null || args.length < 3) {
             return false;
         }

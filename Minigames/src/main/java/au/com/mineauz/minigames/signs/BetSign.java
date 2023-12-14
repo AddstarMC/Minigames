@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.signs;
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
@@ -52,7 +52,7 @@ public class BetSign implements MinigameSign {
             }
             return true;
         }
-        event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MessageManager.getMinigamesMessage("minigame.error.noMinigameName", event.getLine(2)));
+        event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameMessageManager.getMinigamesMessage("minigame.error.noMinigameName", event.getLine(2)));
         return false;
     }
 
@@ -111,7 +111,7 @@ public class BetSign implements MinigameSign {
                 } else if (!mgm.isEnabled()) {
                     player.sendInfoMessage(MinigameUtils.getLang("minigame.error.notEnabled"));
                 } else if (mgm.getUsePermissions()) {
-                    player.sendInfoMessage(MessageManager.getMinigamesMessage("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()));
+                    player.sendInfoMessage(MinigameMessageManager.getMinigamesMessage("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()));
                 }
             } else if (!moneyBet) {
                 if (fullInv && player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR) {

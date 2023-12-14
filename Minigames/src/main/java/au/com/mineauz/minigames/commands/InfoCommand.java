@@ -1,16 +1,24 @@
 package au.com.mineauz.minigames.commands;
 
+import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameUtils;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.Permission;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static au.com.mineauz.minigames.managers.MinigameMessageManager.MinigameLangKey;
+import static au.com.mineauz.minigames.managers.MinigameMessageManager.PlaceHolderKey;
 
 /**
  * Created for use for the Add5tar MC Minecraft server
@@ -33,8 +41,8 @@ public class InfoCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
-        return MessageManager.getUnformattedMessage(null, "command.info.description");
+    public Component getDescription() {
+        return MinigameMessageManager.getMessage(MinigameLangKey.COMMAND_INFO_DESCRIPTION);
     }
 
     @Override
@@ -43,82 +51,92 @@ public class InfoCommand implements ICommand {
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame info [<minigame>]"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return MessageManager.getUnformattedMessage(null, "command.info.noPermission");
+    public Component getUsage() {
+        return Component.text("/minigame info [<minigame>]");
     }
 
     @Override
     public String getPermission() {
+        new Permission("");
         return "minigame.info";
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame, @NotNull String label, @NotNull String @Nullable @NotNull [] args) {
         if (args != null) {
             minigame = plugin.getMinigameManager().getMinigame(args[0]);
         }
         if (minigame != null) {
-            List<String> output = new ArrayList<>();
-            output.add(ChatColor.GREEN + MessageManager.getMessage(null, "command.info.output.header", minigame.getName(true)));
-            output.add(ChatColor.GOLD + "<-------------------------------------->");
-            output.add(ChatColor.WHITE + MessageManager.getMessage(null, "command.info.output.description", minigame.getObjective()));
-            output.add(ChatColor.WHITE + MessageManager.getMessage(null, "command.info.output.gameType", minigame.getType().getName()));
+            Component output = Component.empty();
+
+            output = output.append(MinigameMessageManager.getMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_HEADER,
+                    Placeholder.unparsed(PlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)))).appendNewline();
+            output = output.append(MinigameMessageManager.getMessage(MinigameLangKey.COMMAND_DIVIDER_LARGE)).appendNewline();
+            output = output.append(MinigameMessageManager.getMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_DESCRIPTION,
+                    Placeholder.unparsed(PlaceHolderKey.OBJECTIVE.getKey(), minigame.getObjective()))).appendNewline();
+            output = output.append(MinigameMessageManager.getMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_GAMETYPE,
+                    Placeholder.unparsed(PlaceHolderKey.TYPE.getKey(), minigame.getType().getName()))).appendNewline();
+
             if (minigame.isEnabled() && minigame.hasStarted()) {
                 if (minigame.getMinigameTimer() != null && minigame.getMinigameTimer().getTimeLeft() > 0) {
-                    output.add(ChatColor.WHITE + MessageManager.getMessage(null, "command.info.output.Timer", minigame.getMinigameTimer().getTimeLeft()));
+                    output = output.append(MinigameMessageManager.getMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_TIMER,
+                            Placeholder.unparsed(PlaceHolderKey.TIME.getKey(), String.valueOf(minigame.getMinigameTimer().getTimeLeft())))).appendNewline();
                 }
                 if (minigame.hasPlayers()) {
-                    output.add(ChatColor.WHITE + MessageManager.getMessage(null, "command.info.output.playerHeader", minigame.getPlayers().size(), minigame.getMaxPlayers()));
+                    output = output.append(MinigameMessageManager.getMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_PLAYERHEADER,
+                            Placeholder.unparsed(PlaceHolderKey.NUMBER.getKey(), String.valueOf(minigame.getPlayers().size())),
+                            Placeholder.unparsed(PlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getMaxPlayers())))).appendNewline();
                     if (minigame.isTeamGame()) {
-                        for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {
-                            String teamData = MessageManager.getMessage(null, "command.info.output.teamData", t.getDisplayName(), t.getScore(), t.getChatColor().name());
-                            output.add(teamData);
-                            output.add(ChatColor.GOLD + "~~~~~~~~~~~~~~~~~");
-                            for (MinigamePlayer ply : t.getPlayers()) {
-                                Integer score = ply.getScore();
-                                Integer deaths = ply.getDeaths();
-                                Integer reverts = ply.getReverts();
-                                Integer kills = ply.getKills();
-                                String name = ply.getTeam().getChatColor() + ply.getDisplayName(minigame.usePlayerDisplayNames()) + ChatColor.GRAY;
-                                String playerData = MessageManager.getMessage(null, "command.info.output.playerData", name, score, deaths, reverts, kills);
-                                output.add(playerData + ChatColor.GRAY);
+                        for (Team team : TeamsModule.getMinigameModule(minigame).getTeams()) {
+                            output = output.append(MinigameMessageManager.getMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_TEAMDATA,
+                                    Placeholder.unparsed(PlaceHolderKey.TEAM.getKey(), team.getDisplayName()),
+                                    Placeholder.unparsed(PlaceHolderKey.SCORE.getKey(), String.valueOf(team.getScore())),
+                                    Placeholder.unparsed(PlaceHolderKey.TYPE.getKey(), team.getColor().name()))).appendNewline();
+                            output = output.append(MinigameMessageManager.getMessage(MinigameLangKey.COMMAND_DIVIDER_SMALL)).appendNewline();
+                            for (MinigamePlayer mgPlayer : team.getPlayers()) {
+                                Component playerComponent = Component.text(mgPlayer.getDisplayName(minigame.usePlayerDisplayNames()));
+                                if (minigame.isTeamGame()) {
+                                    playerComponent = playerComponent.color(mgPlayer.getTeam().getTextColor());
+                                }
+
+                                output = output.append(MinigameMessageManager.getMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_PLAYERDATA,
+                                        Placeholder.component(PlaceHolderKey.PLAYER.getKey(), playerComponent),
+                                        Placeholder.unparsed(PlaceHolderKey.SCORE.getKey(), String.valueOf(mgPlayer.getScore())),
+                                        Placeholder.unparsed(PlaceHolderKey.DEATHS.getKey(), String.valueOf(mgPlayer.getDeaths())),
+                                        Placeholder.unparsed(PlaceHolderKey.REVERTS.getKey(), String.valueOf(mgPlayer.getReverts())),
+                                        Placeholder.unparsed(PlaceHolderKey.KILLS.getKey(), String.valueOf(mgPlayer.getKills())))).appendNewline();
                             }
                         }
                     } else {
-                        for (MinigamePlayer ply : minigame.getPlayers()) {
-                            Integer score = ply.getScore();
-                            Integer deaths = ply.getDeaths();
-                            Integer reverts = ply.getReverts();
-                            Integer kills = ply.getKills();
-                            String name = ply.getDisplayName(minigame.usePlayerDisplayNames());
+                        for (MinigamePlayer mgPlayer : minigame.getPlayers()) {
+                            Component playerComponent = Component.text(mgPlayer.getDisplayName(minigame.usePlayerDisplayNames()));
                             if (minigame.isTeamGame()) {
-                                name = ply.getTeam().getChatColor() + name;
+                                playerComponent = playerComponent.color(mgPlayer.getTeam().getTextColor());
                             }
-                            String playerData = MessageManager.getMessage(null, "command.info.output.playerData", name, score, deaths, reverts, kills);
-                            output.add(ChatColor.GRAY + playerData + ChatColor.GRAY);
+
+                            output = output.append(MinigameMessageManager.getMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_PLAYERDATA,
+                                    Placeholder.component(PlaceHolderKey.PLAYER.getKey(), playerComponent),
+                                    Placeholder.unparsed(PlaceHolderKey.SCORE.getKey(), String.valueOf(mgPlayer.getScore())),
+                                    Placeholder.unparsed(PlaceHolderKey.DEATHS.getKey(), String.valueOf(mgPlayer.getDeaths())),
+                                    Placeholder.unparsed(PlaceHolderKey.REVERTS.getKey(), String.valueOf(mgPlayer.getReverts())),
+                                    Placeholder.unparsed(PlaceHolderKey.KILLS.getKey(), String.valueOf(mgPlayer.getKills()))));
                         }
                     }
                 } else {
-                    output.add(ChatColor.RED + MessageManager.getUnformattedMessage(null, "command.info.output.noPlayer"));
+                    output = output.append(MinigameMessageManager.getMessage(MinigameLangKey.COMMAND_INFO_OUTPUT_NOPLAYER));
                 }
             } else {
                 if (minigame.isEnabled()) {
-                    output.add(ChatColor.RED + MessageManager.getUnformattedMessage(null, "command.info.output.notStarted"));
+                    output = output.append(MinigameMessageManager.getMessage(MinigameLangKey.MINIGAME_ERROR_NOTSTARTED));
                 } else {
-                    output.add(ChatColor.RED + MessageManager.getUnformattedMessage(null, "minigame.error.notEnabled"));
+                    output = output.append(MinigameMessageManager.getMessage(MinigameLangKey.MINIGAME_ERROR_NOTENABLED));
                 }
             }
-            for (String out : output) {
-                sender.sendMessage(out);
-            }
+
+            MinigameMessageManager.sendMessage(sender, MinigameMessageType.INFO, output);
             return true;
         } else {
-            sender.sendMessage(ChatColor.RED + MessageManager.getUnformattedMessage(null, "command.info.noMinigame"));
+            MinigameMessageManager.sendMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_INFO_OUTPUT_NOMINIGAME);
             return false;
         }
     }

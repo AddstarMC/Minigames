@@ -1,25 +1,28 @@
 package au.com.mineauz.minigames.gametypes;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.StoredPlayerCheckpoints;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+
+import static au.com.mineauz.minigames.managers.MinigameMessageManager.MinigameLangKey;
+import static au.com.mineauz.minigames.managers.MinigameMessageManager.PlaceHolderKey;
 
 public class SingleplayerType extends MinigameTypeBase {
     private static final Minigames plugin = Minigames.getPlugin();
@@ -30,15 +33,17 @@ public class SingleplayerType extends MinigameTypeBase {
     }
 
     @Override
-    public boolean cannotStart(Minigame mgm, MinigamePlayer player) {
+    public boolean cannotStart(@NotNull Minigame mgm, @NotNull MinigamePlayer mgPlayer) {
         boolean cannotStart = mgm.isSpMaxPlayers() && mgm.getPlayers().size() >= mgm.getMaxPlayers();
-        if (cannotStart) player.sendMessage(MinigameUtils.getLang("minigame.full"), MinigameMessageType.ERROR);
+        if (cannotStart) {
+            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_FULL);
+        }
 
         return cannotStart;
     }
 
     @Override
-    public boolean teleportOnJoin(MinigamePlayer player, Minigame mgm) {
+    public boolean teleportOnJoin(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame mgm) {
         List<Location> locs = new ArrayList<>(mgm.getStartLocations());
 
         if (locs.isEmpty()) {
@@ -46,60 +51,61 @@ public class SingleplayerType extends MinigameTypeBase {
         }
 
         Collections.shuffle(locs);
-        boolean result = player.teleport(locs.get(0));
-        if (plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != locs.get(0).getWorld() &&
-                player.getPlayer().hasPermission("minigame.set.start")) {
-            player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE +
-                    "Join location is across worlds! This may cause some server performance issues!", MinigameMessageType.ERROR);
+        boolean result = mgPlayer.teleport(locs.get(0));
+        if (plugin.getConfig().getBoolean("warnings") && mgPlayer.getPlayer().getWorld() != locs.get(0).getWorld() &&
+                mgPlayer.getPlayer().hasPermission("minigame.set.start")) {
+            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
         }
         return result;
     }
 
     @Override
-    public boolean joinMinigame(MinigamePlayer player, Minigame mgm) {
+    public boolean joinMinigame(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame mgm) {
+
         if (mgm.getLives() > 0 && Math.abs(mgm.getLives()) < Integer.MAX_VALUE) {
-            player.sendInfoMessage(MessageManager.getMinigamesMessage("minigame.livesLeft", mgm.getLives()));
+            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_LIVESLEFT,
+                    Placeholder.unparsed(PlaceHolderKey.NUMBER.getKey(), String.valueOf(mgm.getLives())));
         }
         if (!mgm.isAllowedFlight()) {
-            player.setCanFly(false);
+            mgPlayer.setCanFly(false);
         } else {
-            player.setCanFly(true);
+            mgPlayer.setCanFly(true);
             if (mgm.isFlightEnabled())
-                player.getPlayer().setFlying(true);
+                mgPlayer.getPlayer().setFlying(true);
         }
-        if (player.getStoredPlayerCheckpoints().hasCheckpoint(mgm.getName(false))) {
-            player.setCheckpoint(player.getStoredPlayerCheckpoints().getCheckpoint(mgm.getName(false)));
-            StoredPlayerCheckpoints spc = player.getStoredPlayerCheckpoints();
+        if (mgPlayer.getStoredPlayerCheckpoints().hasCheckpoint(mgm.getName(false))) {
+            mgPlayer.setCheckpoint(mgPlayer.getStoredPlayerCheckpoints().getCheckpoint(mgm.getName(false)));
+            StoredPlayerCheckpoints spc = mgPlayer.getStoredPlayerCheckpoints();
             if (spc.hasFlags(mgm.getName(false))) {
-                player.setFlags(spc.getFlags(mgm.getName(false)));
+                mgPlayer.setFlags(spc.getFlags(mgm.getName(false)));
             }
             if (spc.hasTime(mgm.getName(false))) {
-                player.setStoredTime(spc.getTime(mgm.getName(false)));
+                mgPlayer.setStoredTime(spc.getTime(mgm.getName(false)));
             }
             if (spc.hasDeaths(mgm.getName(false))) {
-                player.setDeaths(spc.getDeaths(mgm.getName(false)));
+                mgPlayer.setDeaths(spc.getDeaths(mgm.getName(false)));
             }
             if (spc.hasReverts(mgm.getName(false))) {
-                player.setReverts(spc.getReverts(mgm.getName(false)));
+                mgPlayer.setReverts(spc.getReverts(mgm.getName(false)));
             }
             spc.removeCheckpoint(mgm.getName(false));
             spc.removeFlags(mgm.getName(false));
             spc.removeDeaths(mgm.getName(false));
             spc.removeTime(mgm.getName(false));
             spc.removeReverts(mgm.getName(false));
-            player.teleport(player.getCheckpoint());
+            mgPlayer.teleport(mgPlayer.getCheckpoint());
             spc.saveCheckpoints();
         }
 
         if (mgm.getState() != MinigameState.OCCUPIED)
             mgm.setState(MinigameState.OCCUPIED);
 
-        player.getLoadout().equiptLoadout(player);
+        mgPlayer.getLoadout().equiptLoadout(mgPlayer);
         return true;
     }
 
     @Override
-    public void endMinigame(List<MinigamePlayer> winners, List<MinigamePlayer> losers, Minigame mgm) {
+    public void endMinigame(@NotNull List<@NotNull MinigamePlayer> winners, @Nullable List<@Nullable MinigamePlayer> losers, @NotNull Minigame mgm) {
         /*if(mgm.getBlockRecorder().hasData()){
             if(!mgm.getPlayers().isEmpty()){
                 for(MinigamePlayer player : winners){
@@ -145,15 +151,15 @@ public class SingleplayerType extends MinigameTypeBase {
     /*----------------*/
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerRespawn(PlayerRespawnEvent event) {
+    public void onPlayerRespawn(@NotNull PlayerRespawnEvent event) {
         if (pdata.getMinigamePlayer(event.getPlayer()).isInMinigame()) {
-            MinigamePlayer player = pdata.getMinigamePlayer(event.getPlayer());
-            Minigame mgm = player.getMinigame();
+            MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
+            Minigame mgm = mgPlayer.getMinigame();
             if (mgm.getType() == MinigameType.SINGLEPLAYER) {
-                event.setRespawnLocation(player.getCheckpoint());
-                player.sendMessage(MinigameUtils.getLang("player.checkpoint.deathRevert"), MinigameMessageType.ERROR);
+                event.setRespawnLocation(mgPlayer.getCheckpoint());
+                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_CHECKPOINT_DEATHREVERT);
 
-                player.getLoadout().equiptLoadout(player);
+                mgPlayer.getLoadout().equiptLoadout(mgPlayer);
             }
         }
     }

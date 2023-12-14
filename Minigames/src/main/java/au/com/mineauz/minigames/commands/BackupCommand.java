@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.recorder.RecorderData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,8 +58,8 @@ public class BackupCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame,
-                             String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+                             @NotNull String label, String @NotNull [] args) {
         if (args != null) {
             if (Minigames.getPlugin().getMinigameManager().hasMinigame(args[0])) {
                 minigame = Minigames.getPlugin().getMinigameManager().getMinigame(args[0]);

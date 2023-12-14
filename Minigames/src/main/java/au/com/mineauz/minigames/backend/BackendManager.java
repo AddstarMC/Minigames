@@ -22,11 +22,10 @@ import java.util.logging.Logger;
 
 public class BackendManager {
     private final Logger logger;
-    private boolean debug;
-
-    private Backend backend;
     private final ListeningExecutorService executorService;
     private final Executor bukkitThreadExecutor;
+    private boolean debug;
+    private Backend backend;
 
     public BackendManager(Logger logger) {
         this.logger = logger;

@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.signs;
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
@@ -28,7 +28,7 @@ public class JoinSign implements MinigameSign {
 
     @Override
     public String getCreatePermissionMessage() {
-        return MessageManager.getMessage(null, "sign.join.createPermission");
+        return MinigameMessageManager.getMessage(null, "sign.join.createPermission");
     }
 
     @Override
@@ -38,7 +38,7 @@ public class JoinSign implements MinigameSign {
 
     @Override
     public String getUsePermissionMessage() {
-        return MessageManager.getMessage(null, "sign.join.usePermission");
+        return MinigameMessageManager.getMessage(null, "sign.join.usePermission");
     }
 
     @Override
@@ -59,7 +59,7 @@ public class JoinSign implements MinigameSign {
             }
             return true;
         }
-        event.getPlayer().sendMessage(ChatColor.RED + MessageManager.getMinigamesMessage("minigame.error.noMinigameName", event.getLine(2)));
+        event.getPlayer().sendMessage(ChatColor.RED + MinigameMessageManager.getMinigamesMessage("minigame.error.noMinigameName", event.getLine(2)));
         return false;
     }
 
@@ -102,25 +102,25 @@ public class JoinSign implements MinigameSign {
                         if (Minigames.getPlugin().getEconomy().getBalance(player.getPlayer().getPlayer()) >= amount) {
                             Minigames.getPlugin().getEconomy().withdrawPlayer(player.getPlayer().getPlayer(), amount);
                         } else {
-                            player.sendMessage(MessageManager.getMessage(null, "sign.join.notEnoughMoney"), MinigameMessageType.ERROR);
+                            player.sendMessage(MinigameMessageManager.getMessage(null, "sign.join.notEnoughMoney"), MinigameMessageType.ERROR);
                             return false;
                         }
                     }
                     plugin.getPlayerManager().joinMinigame(player, mgm, false, 0.0);
                     return true;
                 } else if (!mgm.isEnabled()) {
-                    player.sendInfoMessage(ChatColor.WHITE + MessageManager.getMessage(null, "minigame.error.notEnabled"));
+                    player.sendInfoMessage(ChatColor.WHITE + MinigameMessageManager.getMessage(null, "minigame.error.notEnabled"));
                 }
             } else if (mgm == null) {
-                player.sendMessage(ChatColor.WHITE + MessageManager.getMessage(null, "minigame.error.noMinigame"), MinigameMessageType.ERROR);
+                player.sendMessage(ChatColor.WHITE + MinigameMessageManager.getMessage(null, "minigame.error.noMinigame"), MinigameMessageType.ERROR);
             } else if (mgm.getUsePermissions()) {
-                player.sendMessage(ChatColor.WHITE + MessageManager.getMessage(null, "minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()), MinigameMessageType.ERROR);
+                player.sendMessage(ChatColor.WHITE + MinigameMessageManager.getMessage(null, "minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()), MinigameMessageType.ERROR);
             }
         } else if (!MinigameUtils.isMinigameTool(player.getPlayer().getInventory().getItemInMainHand())) {
             if (fullInv) {
-                player.sendInfoMessage(ChatColor.WHITE + MessageManager.getMessage(null, "sign.emptyInv"));
+                player.sendInfoMessage(ChatColor.WHITE + MinigameMessageManager.getMessage(null, "sign.emptyInv"));
             } else {
-                player.sendInfoMessage(ChatColor.WHITE + MessageManager.getMessage(null, "sign.emptyHand"));
+                player.sendInfoMessage(ChatColor.WHITE + MinigameMessageManager.getMessage(null, "sign.emptyHand"));
             }
         }
 

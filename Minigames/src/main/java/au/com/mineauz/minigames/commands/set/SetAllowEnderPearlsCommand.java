@@ -3,8 +3,10 @@ package au.com.mineauz.minigames.commands.set;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class SetAllowEnderPearlsCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public Component getDescription() {
         return "Sets whether players can use ender pearls in a Minigame.";
     }
 
@@ -51,8 +53,8 @@ public class SetAllowEnderPearlsCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame,
-                             String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+                             @NotNull String label, String @NotNull [] args) {
         if (args != null) {
             if (Boolean.parseBoolean(args[0])) {
                 minigame.setAllowEnderPearls(true);

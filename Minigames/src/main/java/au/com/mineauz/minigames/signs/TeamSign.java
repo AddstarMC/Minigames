@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.signs;
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
@@ -30,7 +30,7 @@ public class TeamSign implements MinigameSign {
 
     @Override
     public String getCreatePermissionMessage() {
-        return MessageManager.getMessage(null, "sign.team.createPermission");
+        return MinigameMessageManager.getMessage(null, "sign.team.createPermission");
     }
 
     @Override
@@ -40,7 +40,7 @@ public class TeamSign implements MinigameSign {
 
     @Override
     public String getUsePermissionMessage() {
-        return MessageManager.getMessage(null, "sign.team.usePermission");
+        return MinigameMessageManager.getMessage(null, "sign.team.usePermission");
     }
 
     @Override
@@ -56,7 +56,7 @@ public class TeamSign implements MinigameSign {
             }
             return true;
         }
-        event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MessageManager.getMessage(null, "sign.team.invalidFormat", "\"red\", \"blue\" or \"neutral\""));
+        event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameMessageManager.getMessage(null, "sign.team.invalidFormat", "\"red\", \"blue\" or \"neutral\""));
         return false;
     }
 
@@ -77,15 +77,15 @@ public class TeamSign implements MinigameSign {
                                 }
                                 if (nt.getPlayers().size() - sm.getPlayers().size() < 1) {
                                     MultiplayerType.switchTeam(mgm, player, nt);
-                                    plugin.getMinigameManager().sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getDisplayName(mgm.usePlayerDisplayNames()), nt.getChatColor() + nt.getDisplayName()), null, player);
-                                    player.sendInfoMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()));
+                                    plugin.getMinigameManager().sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getDisplayName(mgm.usePlayerDisplayNames()), nt.getTextColor() + nt.getDisplayName()), null, player);
+                                    player.sendInfoMessage(String.format(nt.getUnformattedAssignMessage(), nt.getTextColor() + nt.getDisplayName()));
                                 } else {
-                                    player.sendInfoMessage(MessageManager.getMessage(null, "sign.team.noUnbalance"));
+                                    player.sendInfoMessage(MinigameMessageManager.getMessage(null, "sign.team.noUnbalance"));
                                 }
 
                                 player.getPlayer().damage(player.getPlayer().getHealth());
                             } else {
-                                player.sendMessage(MessageManager.getMessage(null, "player.team.assign.full"), MinigameMessageType.ERROR);
+                                player.sendMessage(MinigameMessageManager.getMessage(null, "player.team.assign.full"), MinigameMessageType.ERROR);
                             }
                         }
                     } else if (sign.getLine(2).equals(ChatColor.GRAY + "Neutral") || matchTeam(mgm, sign.getLine(2)) != player.getTeam()) {
@@ -95,10 +95,10 @@ public class TeamSign implements MinigameSign {
                             if (nt != null) {
                                 if (nt.getPlayers().size() - cur.getPlayers().size() < 2) {
                                     MultiplayerType.switchTeam(mgm, player, nt);
-                                    plugin.getMinigameManager().sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
-                                    player.sendInfoMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()));
+                                    plugin.getMinigameManager().sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getTextColor() + nt.getDisplayName()), null, player);
+                                    player.sendInfoMessage(String.format(nt.getUnformattedAssignMessage(), nt.getTextColor() + nt.getDisplayName()));
                                 } else {
-                                    player.sendInfoMessage(MessageManager.getMessage(null, "sign.team.noUnbalance"));
+                                    player.sendInfoMessage(MinigameMessageManager.getMessage(null, "sign.team.noUnbalance"));
                                 }
                             } else {
                                 player.removeTeam();
@@ -108,10 +108,10 @@ public class TeamSign implements MinigameSign {
                             if (nt != null) {
                                 if (nt.getPlayers().size() < nt.getMaxPlayers()) {
                                     MultiplayerType.switchTeam(mgm, player, nt);
-                                    plugin.getMinigameManager().sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getChatColor() + nt.getDisplayName()), null, player);
-                                    player.sendMessage(String.format(nt.getAssignMessage(), nt.getChatColor() + nt.getDisplayName()), MinigameMessageType.INFO);
+                                    plugin.getMinigameManager().sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getTextColor() + nt.getDisplayName()), null, player);
+                                    player.sendMessage(String.format(nt.getUnformattedAssignMessage(), nt.getTextColor() + nt.getDisplayName()), MinigameMessageType.INFO);
                                 } else {
-                                    player.sendInfoMessage(MessageManager.getMessage(null, "player.team.assign.full"));
+                                    player.sendInfoMessage(MinigameMessageManager.getMessage(null, "player.team.assign.full"));
                                 }
                             }
                         }

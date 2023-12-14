@@ -5,7 +5,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.LoadoutSetFlag;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -236,7 +236,7 @@ public class LoadoutModule extends MinigameModule {
                             if (!equip)
                                 fply.sendMessage(MinigameUtils.getLang("player.loadout.nextSpawn"), MinigameMessageType.INFO);
                             else {
-                                fply.sendMessage(MessageManager.getMinigamesMessage("player.loadout.equipped", floadout2.getName(true)), MinigameMessageType.INFO);
+                                fply.sendMessage(MinigameMessageManager.getMinigamesMessage("player.loadout.equipped", floadout2.getName(true)), MinigameMessageType.INFO);
                                 floadout2.equiptLoadout(fply);
                             }
                             return null;

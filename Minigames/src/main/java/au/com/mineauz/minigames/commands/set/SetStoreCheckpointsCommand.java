@@ -3,9 +3,10 @@ package au.com.mineauz.minigames.commands.set;
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class SetStoreCheckpointsCommand implements ICommand {
 
     @Override
     public String getDescription() {
-        return MessageManager.getMinigamesMessage("command.checkpoint.saving.description");
+        return MinigameMessageManager.getMinigamesMessage("command.checkpoint.saving.description");
     }
 
     @Override
@@ -43,7 +44,7 @@ public class SetStoreCheckpointsCommand implements ICommand {
 
     @Override
     public String getPermissionMessage() {
-        return MessageManager.getMinigamesMessage("command.checkpoint.saving.nopermission");
+        return MinigameMessageManager.getMinigamesMessage("command.checkpoint.saving.nopermission");
     }
 
     @Override
@@ -52,12 +53,12 @@ public class SetStoreCheckpointsCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame,
-                             String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+                             @NotNull String label, String @NotNull [] args) {
         if (args != null) {
             boolean bool = Boolean.parseBoolean(args[0]);
             minigame.setSaveCheckpoint(bool);
-            MessageManager.sendMessage(sender, MinigameMessageType.INFO, null, "command.checkpoint.saving.toggle", Boolean.toString(bool), minigame.getName(true));
+            MinigameMessageManager.sendMessage(sender, MinigameMessageType.INFO, null, "command.checkpoint.saving.toggle", Boolean.toString(bool), minigame.getName(true));
             return true;
         }
         return false;

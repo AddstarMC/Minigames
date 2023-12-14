@@ -3,12 +3,13 @@ package au.com.mineauz.minigames.commands;
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +49,8 @@ public class LoadoutCommand implements ICommand {
         return "minigame.loadout.menu";
     }
 
-    public boolean onCommand(CommandSender sender, Minigame minigame,
-                             String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+                             @NotNull String label, String @NotNull [] args) {
         MinigamePlayer ply = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
         if (ply.isInMinigame()) {
             if (args == null) {
@@ -59,9 +60,9 @@ public class LoadoutCommand implements ICommand {
                 if (LoadoutModule.getMinigameModule(ply.getMinigame()).hasLoadout(ln)) {
                     ply.setLoadout(LoadoutModule.getMinigameModule(ply.getMinigame()).getLoadout(ln));
                     ply.sendInfoMessage(
-                            MessageManager.getMinigamesMessage("player.loadout.nextSpawnName", ln));
+                            MinigameMessageManager.getMinigamesMessage("player.loadout.nextSpawnName", ln));
                 } else {
-                    ply.sendMessage(MessageManager.getMinigamesMessage("player.loadout.noLoadout", ln), MinigameMessageType.ERROR);
+                    ply.sendMessage(MinigameMessageManager.getMinigamesMessage("player.loadout.noLoadout", ln), MinigameMessageType.ERROR);
                 }
             }
         } else {

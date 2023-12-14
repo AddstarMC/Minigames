@@ -43,7 +43,7 @@ infection:
           ==: org.bukkit.inventory.ItemStack
           type: ARROW
           amount: 24
-        
+
   teams:
     RED:
       displayName: The Infected

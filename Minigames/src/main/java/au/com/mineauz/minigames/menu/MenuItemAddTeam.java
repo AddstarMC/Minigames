@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
@@ -30,7 +30,7 @@ public class MenuItemAddTeam extends MenuItem {
         MinigamePlayer ply = getContainer().getViewer();
         ply.setNoClose(true);
         ply.getPlayer().closeInventory();
-        ply.sendInfoMessage(MessageManager.getUnformattedMessage(null, "team.add"));
+        ply.sendInfoMessage(MinigameMessageManager.getUnformattedMessage(null, "team.add"));
         List<String> teams = new ArrayList<>();
         for (TeamColor col : TeamColor.values())
             teams.add(col.getColor() + WordUtils.capitalize(col.toString().replace("_", " ")));
@@ -51,9 +51,9 @@ public class MenuItemAddTeam extends MenuItem {
                 tm.addTeam(col);
                 Team t = tm.getTeam(col);
 
-                getContainer().addItem(new MenuItemTeam(t.getChatColor() + t.getDisplayName(), t));
+                getContainer().addItem(new MenuItemTeam(t.getTextColor() + t.getDisplayName(), t));
             } else {
-                getContainer().getViewer().sendInfoMessage(ChatColor.RED + MessageManager.getUnformattedMessage(null, "team.alreadyUsedColor"));
+                getContainer().getViewer().sendInfoMessage(ChatColor.RED + MinigameMessageManager.getUnformattedMessage(null, "team.alreadyUsedColor"));
             }
 
             List<String> teams = new ArrayList<>(tm.getTeams().size() + 1);
@@ -72,7 +72,7 @@ public class MenuItemAddTeam extends MenuItem {
         getContainer().cancelReopenTimer();
         getContainer().displayMenu(getContainer().getViewer());
 
-        getContainer().getViewer().sendMessage(MessageManager.getMessage(null, "team.invalidColor", entry.toLowerCase().replace("_", " ")), MinigameMessageType.ERROR);
+        getContainer().getViewer().sendMessage(MinigameMessageManager.getMessage(null, "team.invalidColor", entry.toLowerCase().replace("_", " ")), MinigameMessageType.ERROR);
     }
 
 }

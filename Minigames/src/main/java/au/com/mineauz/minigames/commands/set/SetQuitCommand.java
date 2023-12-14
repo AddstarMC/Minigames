@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -51,8 +52,8 @@ public class SetQuitCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame,
-                             String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+                             @NotNull String label, String @NotNull [] args) {
         Player player = (Player) sender;
         minigame.setQuitLocation(player.getLocation());
         sender.sendMessage(ChatColor.GRAY + "Quit position has been set for " + minigame);

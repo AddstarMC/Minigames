@@ -12,9 +12,9 @@ import java.util.Map;
 
 public class MultiplayerBets {
     private final Map<MinigamePlayer, ItemStack> itemBet = new HashMap<>();
+    private final Map<MinigamePlayer, Double> moneyBet = new HashMap<>();
     private double greatestMoneyBet = 0;
     private ItemStack greatestItemBet = new ItemStack(Material.AIR);
-    private final Map<MinigamePlayer, Double> moneyBet = new HashMap<>();
 
     public MultiplayerBets() {
     }

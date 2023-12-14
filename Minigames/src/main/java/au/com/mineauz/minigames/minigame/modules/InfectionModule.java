@@ -170,10 +170,6 @@ public class InfectionModule extends MinigameModule {
             return null;
     }
 
-    public TeamColor getDefaultInfectedTeam() {
-        return TeamColor.matchColor(infectedTeam.getDefaultFlag());
-    }
-
     public void setInfectedTeam(String iTeam) {
         if (iTeam != null) {
             if (iTeam.equalsIgnoreCase("None")) {
@@ -186,6 +182,10 @@ public class InfectionModule extends MinigameModule {
                 this.infectedTeam.setFlag(null);
         } else
             this.infectedTeam.setFlag(null);
+    }
+
+    public TeamColor getDefaultInfectedTeam() {
+        return TeamColor.matchColor(infectedTeam.getDefaultFlag());
     }
 
     public TeamColor getSurvivorTeam() {
@@ -201,10 +201,6 @@ public class InfectionModule extends MinigameModule {
             return null;
     }
 
-    public TeamColor getDefaultSurvivorTeam() {
-        return TeamColor.matchColor(survivorTeam.getDefaultFlag());
-    }
-
     public void setSurvivorTeam(String sTeam) {
         if (sTeam != null) {
             if (sTeam.equalsIgnoreCase("None")) {
@@ -217,6 +213,10 @@ public class InfectionModule extends MinigameModule {
                 this.survivorTeam.setFlag(null);
         } else
             this.survivorTeam.setFlag(null);
+    }
+
+    public TeamColor getDefaultSurvivorTeam() {
+        return TeamColor.matchColor(survivorTeam.getDefaultFlag());
     }
 
     public void addInfectedPlayer(MinigamePlayer ply) {

@@ -2,10 +2,11 @@ package au.com.mineauz.minigames.gametypes;
 
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
-import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public abstract class MinigameTypeBase implements Listener {
 
     public abstract boolean cannotStart(Minigame mgm, MinigamePlayer player);
 
-    public abstract boolean teleportOnJoin(MinigamePlayer player, Minigame mgm);
+    public abstract boolean teleportOnJoin(MinigamePlayer mgPlayer, Minigame mgm);
 
     /**
      * This should actually join the Player to the game Type
@@ -37,16 +38,17 @@ public abstract class MinigameTypeBase implements Listener {
      * @param mgm    the Game
      * @return True if they join1
      */
-    public abstract boolean joinMinigame(MinigamePlayer player, Minigame mgm);
+    public abstract boolean joinMinigame(@NotNull MinigamePlayer player, @NotNull Minigame mgm);
 
-    public abstract void quitMinigame(MinigamePlayer player, Minigame mgm, boolean forced);
+    public abstract void quitMinigame(@NotNull MinigamePlayer player, Minigame mgm, boolean forced);
 
     public abstract void endMinigame(List<MinigamePlayer> winners, List<MinigamePlayer> losers, Minigame mgm);
 
     public void callGeneralQuit(MinigamePlayer player, Minigame minigame) {
         if (!player.getPlayer().isDead()) {
-            if (player.getPlayer().getWorld() != minigame.getQuitLocation().getWorld() && player.getPlayer().hasPermission("minigame.set.quit") && plugin.getConfig().getBoolean("warnings")) {
-                player.sendMessage(ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Quit location is across worlds! This may cause some server performance issues!", MinigameMessageType.ERROR);
+            if (player.getPlayer().getWorld() != minigame.getQuitLocation().getWorld() && player.getPlayer().hasPermission("minigame.set.quit") &&
+                    plugin.getConfig().getBoolean("warnings")) {
+                MinigameMessageManager.sendMessage(player, MinigameMessageType.WARNING, MinigameMessageManager.MinigameLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
             }
             player.teleport(minigame.getQuitLocation());
         } else {

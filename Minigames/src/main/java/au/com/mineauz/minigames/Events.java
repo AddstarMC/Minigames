@@ -2,7 +2,7 @@ package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.events.RevertCheckpointEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.menu.MenuItem;
@@ -61,12 +61,12 @@ public class Events implements Listener {
                     case ACCEPTED, SUCCESSFULLY_LOADED -> required.remove(ply);
                     case DECLINED -> {
                         Minigames.getPlugin().getPlayerManager().quitMinigame(ply, true);
-                        MessageManager.sendMessage(ply, MinigameMessageType.ERROR, null, "minigames.resource.declined");
+                        MinigameMessageManager.sendMessage(ply, MinigameMessageType.ERROR, null, "minigames.resource.declined");
                         required.remove(ply);
                     }
                     case FAILED_DOWNLOAD -> {
                         Minigames.getPlugin().getPlayerManager().quitMinigame(ply, true);
-                        MessageManager.sendMessage(ply, MinigameMessageType.ERROR, null, "minigames.resource.failed");
+                        MinigameMessageManager.sendMessage(ply, MinigameMessageType.ERROR, null, "minigames.resource.failed");
                         required.remove(ply);
                     }
                 }
@@ -117,7 +117,7 @@ public class Events implements Listener {
                     }
                     pdata.quitMinigame(ply, false);
                 } else if (mgm.getLives() > 0) {
-                    ply.sendInfoMessage(MessageManager.getMinigamesMessage("minigame.livesLeft", mgm.getLives() - ply.getDeaths()));
+                    ply.sendInfoMessage(MinigameMessageManager.getMinigamesMessage("minigame.livesLeft", mgm.getLives() - ply.getDeaths()));
                 }
             } else if (mgm.getState() == MinigameState.ENDED) {
                 plugin.getPlayerManager().quitMinigame(ply, true);
@@ -345,7 +345,7 @@ public class Events implements Listener {
                         } else if (mgm == null) {
                             event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noMinigame"));
                         } else if (mgm.getUsePermissions()) {
-                            event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MessageManager.getMinigamesMessage("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()));
+                            event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameMessageManager.getMinigamesMessage("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()));
                         }
                     }
                 }
@@ -431,7 +431,7 @@ public class Events implements Listener {
                 !event.getMinigamePlayer().getMinigame().isAllowedMPCheckpoints() &&
                 !event.getMinigamePlayer().isLatejoining()) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MessageManager.getMinigamesMessage("minigame.error.noRevert", event.getMinigamePlayer().getMinigame().getType().getName()));
+            event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameMessageManager.getMinigamesMessage("minigame.error.noRevert", event.getMinigamePlayer().getMinigame().getType().getName()));
         } else if (!event.getMinigamePlayer().getMinigame().hasStarted()) {
             event.setCancelled(true);
         }

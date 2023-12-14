@@ -13,6 +13,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -63,27 +64,27 @@ public class SetFloorDegeneratorCommand implements ICommand {
 
     //todo this can easily expanded, so multible degen regions are possible. Will implement, if needed.
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame,
-                             String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+                             @NotNull String label, String @NotNull [] args) {
         if (args != null) {
-            if (sender instanceof Player player){
+            if (sender instanceof Player player) {
                 MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
                 Location placerLoc = mgPlayer.getLocation();
 
-                switch (args[0].toLowerCase()){
+                switch (args[0].toLowerCase()) {
                     case "1" -> {
                         Location p2 = mgPlayer.getSelectionPoints()[1];
                         mgPlayer.clearSelection();
                         mgPlayer.setSelection(placerLoc, p2);
 
-                        mgPlayer.sendInfoMessage(Component.text("Floor degenerator point 1  for " + minigame +"selected" , NamedTextColor.GRAY));
+                        mgPlayer.sendInfoMessage(Component.text("Floor degenerator point 1  for " + minigame + "selected", NamedTextColor.GRAY));
                     }
                     case "2" -> {
                         Location p2 = mgPlayer.getSelectionPoints()[0];
                         mgPlayer.clearSelection();
                         mgPlayer.setSelection(p2, placerLoc);
 
-                        mgPlayer.sendInfoMessage(Component.text("Floor degenerator point 2  for " + minigame +"selected", NamedTextColor.GRAY));
+                        mgPlayer.sendInfoMessage(Component.text("Floor degenerator point 2  for " + minigame + "selected", NamedTextColor.GRAY));
                     }
                     case "create" -> {
                         if (mgPlayer.hasSelection()) {
@@ -98,11 +99,11 @@ public class SetFloorDegeneratorCommand implements ICommand {
                     }
                     case "clear" -> {
                         minigame.removeFloorDegen();
-                        mgPlayer.sendInfoMessage(Component.text("Floor degenerator corners have been removed for " + minigame, NamedTextColor.GRAY ));
+                        mgPlayer.sendInfoMessage(Component.text("Floor degenerator corners have been removed for " + minigame, NamedTextColor.GRAY));
                     }
                     case "type" -> {
                         if (args.length >= 2) {
-                            switch (args[1].toLowerCase()){
+                            switch (args[1].toLowerCase()) {
                                 case "random", "inward", "circle" -> {
                                     minigame.setDegenType(args[1].toLowerCase());
 
@@ -112,8 +113,9 @@ public class SetFloorDegeneratorCommand implements ICommand {
 
                                     mgPlayer.sendInfoMessage(Component.text("Floor degenerator type has been set to " + args[1] + " in " + minigame, NamedTextColor.GRAY));
                                 }
-                                default -> mgPlayer.sendMessage(Component.join(JoinConfiguration.newlines(), Component.text("Invalid floor degenerator type!", NamedTextColor.RED),
-                                        Component.text("Possible types: \"inward\", \"circle\" and \"random\".", NamedTextColor.GRAY)), MinigameMessageType.ERROR);
+                                default ->
+                                        mgPlayer.sendMessage(Component.join(JoinConfiguration.newlines(), Component.text("Invalid floor degenerator type!", NamedTextColor.RED),
+                                                Component.text("Possible types: \"inward\", \"circle\" and \"random\".", NamedTextColor.GRAY)), MinigameMessageType.ERROR);
                             }
                         }
                     }
@@ -126,7 +128,8 @@ public class SetFloorDegeneratorCommand implements ICommand {
                             }
                         }
                     }
-                    default -> mgPlayer.sendMessage(Component.text("Error: Invalid floor degenerator command!", NamedTextColor.RED), MinigameMessageType.ERROR);
+                    default ->
+                            mgPlayer.sendMessage(Component.text("Error: Invalid floor degenerator command!", NamedTextColor.RED), MinigameMessageType.ERROR);
                 }
             }
             return true;

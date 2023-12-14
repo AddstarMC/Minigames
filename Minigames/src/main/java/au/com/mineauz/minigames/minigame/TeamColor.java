@@ -1,29 +1,32 @@
 package au.com.mineauz.minigames.minigame;
 
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Material;
 
 public enum TeamColor {
-    RED(ChatColor.RED),
-    DARK_RED(ChatColor.DARK_RED),
-    ORANGE(ChatColor.GOLD),
-    YELLOW(ChatColor.YELLOW),
-    GREEN(ChatColor.GREEN),
-    DARK_GREEN(ChatColor.DARK_GREEN),
-    CYAN(ChatColor.DARK_AQUA),
-    LIGHT_BLUE(ChatColor.AQUA),
-    BLUE(ChatColor.BLUE),
-    DARK_BLUE(ChatColor.DARK_BLUE),
-    DARK_PURPLE(ChatColor.DARK_PURPLE),
-    PURPLE(ChatColor.LIGHT_PURPLE),
-    WHITE(ChatColor.WHITE),
-    GRAY(ChatColor.GRAY),
-    DARK_GRAY(ChatColor.DARK_GRAY),
-    BLACK(ChatColor.BLACK);
+    RED(NamedTextColor.RED),
+    DARK_RED(NamedTextColor.DARK_RED),
+    ORANGE(NamedTextColor.GOLD),
+    YELLOW(NamedTextColor.YELLOW),
+    GREEN(NamedTextColor.GREEN),
+    DARK_GREEN(NamedTextColor.DARK_GREEN),
+    CYAN(NamedTextColor.DARK_AQUA),
+    LIGHT_BLUE(NamedTextColor.AQUA),
+    BLUE(NamedTextColor.BLUE),
+    DARK_BLUE(NamedTextColor.DARK_BLUE),
+    DARK_PURPLE(NamedTextColor.DARK_PURPLE),
+    PURPLE(NamedTextColor.LIGHT_PURPLE),
+    WHITE(NamedTextColor.WHITE),
+    GRAY(NamedTextColor.GRAY),
+    DARK_GRAY(NamedTextColor.DARK_GRAY),
+    BLACK(NamedTextColor.BLACK);
 
-    private final ChatColor color;
+    private final NamedTextColor color;
+    private final Material displaMaterial;
 
-    TeamColor(ChatColor color) {
+    TeamColor(NamedTextColor color, Material displaMaterial) {
         this.color = color;
+        this.displaMaterial = displaMaterial;
     }
 
     public static TeamColor matchColor(String color) {
@@ -35,7 +38,11 @@ public enum TeamColor {
         return null;
     }
 
-    public ChatColor getColor() {
+    public NamedTextColor getColor() {
         return color;
+    }
+
+    public Material getDisplaMaterial() {
+        return displaMaterial;
     }
 }

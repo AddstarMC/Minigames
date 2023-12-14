@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.minigame;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.*;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -11,13 +12,14 @@ import au.com.mineauz.minigames.script.ScriptObject;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import com.google.common.collect.ImmutableSet;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.text.WordUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team.Option;
 import org.bukkit.scoreboard.Team.OptionStatus;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,7 +29,7 @@ import java.util.Set;
 public class Team implements ScriptObject {
     private final IntegerFlag maxPlayers = new IntegerFlag(0, "maxPlayers");
     private final List<Location> startLocations = new ArrayList<>();
-    private final StringFlag assignMsg = new StringFlag(MinigameUtils.getLang("player.team.assign.joinTeam"), "assignMsg");
+    private final StringFlag unformattedAssignMsg = new StringFlag(MinigameMessageManager.getUnformattedMessage(MinigameMessageManager.MinigameLangKey.PLAYER_TEAM_ASSIGN_JOINTEAM), "assignMsg");
     private final StringFlag gameAssignMsg = new StringFlag(MinigameUtils.getLang("player.team.assign.joinAnnounce"), "gameAssignMsg");
     private final StringFlag autobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.plyMsg"), "autobalanceMsg");
     private final StringFlag gameAutobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.minigameMsg"), "gameAutobalanceMsg");
@@ -35,10 +37,10 @@ public class Team implements ScriptObject {
     private final BooleanFlag autoBalance = new BooleanFlag(true, "autoBalance");
     private final List<MinigamePlayer> players = new ArrayList<>();
     private final Minigame mgm;
-    private String displayName;
-    private TeamColor color;
-    private int score = 0;
     private final String scoreboardName;
+    private String displayName;
+    private @NotNull TeamColor color;
+    private int score = 0;
 
     /**
      * Creates a team for the use in a specific Minigame
@@ -86,7 +88,7 @@ public class Team implements ScriptObject {
      *
      * @return The teams color.
      */
-    public TeamColor getColor() {
+    public @NotNull TeamColor getColor() {
         return color;
     }
 
@@ -95,9 +97,9 @@ public class Team implements ScriptObject {
      *
      * @return The ChatColor
      */
-    public ChatColor getChatColor() {
+    public @NotNull NamedTextColor getTextColor() {
         return color.getColor();
-    }
+    } //todo
 
     /**
      * Gets the teams display name. If none is set, it will return the teams color followed by "Team".
@@ -127,13 +129,13 @@ public class Team implements ScriptObject {
      * @return The colored display name or the team color followed by "Team"
      */
     public String getColoredDisplayName() {
-        return getChatColor() + getDisplayName();
+        return getTextColor() + getDisplayName();
     }
 
     public Set<Flag<?>> getFlags() {
         Set<Flag<?>> flags = new HashSet<>();
         flags.add(maxPlayers);
-        flags.add(assignMsg);
+        flags.add(unformattedAssignMsg);
         flags.add(gameAssignMsg);
         flags.add(gameAutobalanceMsg);
         flags.add(autobalanceMsg);
@@ -296,12 +298,12 @@ public class Team implements ScriptObject {
         return false;
     }
 
-    public String getAssignMessage() {
-        return assignMsg.getFlag();
+    public String getUnformattedAssignMessage() {
+        return unformattedAssignMsg.getFlag();
     }
 
-    public void setAssignMessage(String msg) {
-        assignMsg.setFlag(msg);
+    public void setUnformattedAssignMsg(String msg) {
+        unformattedAssignMsg.setFlag(msg);
     }
 
     public String getGameAssignMessage() {
@@ -388,7 +390,7 @@ public class Team implements ScriptObject {
         if (name.equalsIgnoreCase("colorname")) {
             return ScriptValue.of(getColor().name());
         } else if (name.equalsIgnoreCase("color")) {
-            return ScriptValue.of(getChatColor().toString());
+            return ScriptValue.of(getTextColor().toString());
         } else if (name.equalsIgnoreCase("name")) {
             return ScriptValue.of(getDisplayName());
         } else if (name.equalsIgnoreCase("score")) {

@@ -13,8 +13,6 @@ import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
 import au.com.mineauz.minigames.script.ScriptWrapper;
 import com.google.common.collect.ImmutableSet;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -36,6 +34,7 @@ public class MinigamePlayer implements ScriptObject {
     private final List<ItemStack> tempRewardItems = new ArrayList<>();
     private final List<ItemStack> rewardItems = new ArrayList<>();
     private final List<String> claimedScoreSigns = new ArrayList<>();
+    private final StoredPlayerCheckpoints spc;
     private boolean allowTP;
     private boolean allowGMChange;
     private boolean canFly;
@@ -67,7 +66,6 @@ public class MinigamePlayer implements ScriptObject {
     private Location selection2;
     private IDisplayCuboid selectionDisplay;
     private OfflineMinigamePlayer offlineMinigamePlayer;
-    private final StoredPlayerCheckpoints spc;
     private List<String> claimedRewards = new ArrayList<>();
     private int lateJoinTimer = -1;
 
@@ -115,75 +113,6 @@ public class MinigamePlayer implements ScriptObject {
 
     public Location getLocation() {
         return this.player.getLocation();
-    }
-
-    @Deprecated
-    private void sendMessage(final String msg) {
-        final int enc = Math.floorDiv(msg.getBytes().length, msg.length());
-        if (msg.getBytes().length > 32000) { //chat limit set to a higher number.
-            final int capLength = Math.floorDiv(msg.length(), enc);
-            final String newMessage = msg.substring(0, capLength);
-            this.player.sendMessage(newMessage);
-            this.sendMessage(msg.substring(capLength));
-        }
-        this.player.sendMessage(msg);
-    }
-
-    private void sendMessage(final Component msg) {
-        this.player.sendMessage(msg);
-    }
-
-    @Deprecated
-    public void sendInfoMessage(final String msg) {
-        this.sendMessage(msg, MinigameMessageType.INFO);
-    }
-
-    public void sendInfoMessage(final Component msg) {
-        this.sendMessage(msg, MinigameMessageType.INFO);
-    }
-
-    @Deprecated
-    public void sendUnprefixedMessage(final String msg) {
-        this.sendMessage(msg, MinigameMessageType.NONE);
-    }
-
-    public void sendUnprefixedMessage(final Component msg) {
-        this.sendMessage(msg, MinigameMessageType.NONE);
-    }
-
-    @Deprecated
-    public void sendMessage(final String msg, final @NotNull MinigameMessageType type) {
-        String init = "";
-        switch (type) {
-            case ERROR:
-                init = ChatColor.RED + "[Minigames] " + ChatColor.WHITE;
-                break;
-            case WIN:
-                init = ChatColor.GREEN + "[Minigames] " + ChatColor.WHITE;
-                break;
-            case LOSS:
-                init = ChatColor.DARK_RED + "[Minigames] " + ChatColor.WHITE;
-                break;
-            case NONE:
-                break;
-            case INFO:
-            default:
-                init = ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE;
-        }
-        this.sendMessage(init + msg);
-    }
-
-    public void sendMessage(final Component msg, final @NotNull MinigameMessageType type) {
-        Component init;
-        init = switch (type) {
-            case ERROR -> Component.text("[Minigames] ", NamedTextColor.RED);
-            case WIN -> Component.text("[Minigames] ", NamedTextColor.GREEN);
-            case LOSS -> Component.text("[Minigames] ", NamedTextColor.DARK_RED);
-            case NONE -> Component.text("");
-            default -> Component.text("[Minigames] ", NamedTextColor.AQUA); //also info
-        };
-
-        this.sendMessage(init.append(msg.colorIfAbsent(NamedTextColor.WHITE)));
     }
 
     public void storePlayerData() {

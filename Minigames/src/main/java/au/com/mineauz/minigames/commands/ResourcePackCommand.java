@@ -1,10 +1,11 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,7 +36,7 @@ public class ResourcePackCommand implements ICommand {
 
     @Override
     public String getDescription() {
-        return MessageManager.getMessage(null, "minigame.resource.command.description");
+        return MinigameMessageManager.getMessage(null, "minigame.resource.command.description");
     }
 
     @Override
@@ -69,7 +70,7 @@ public class ResourcePackCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(final CommandSender sender, Minigame minigame, String label, String[] args) {
+    public boolean onCommand(final @NotNull CommandSender sender, Minigame minigame, @NotNull String label, String @NotNull [] args) {
         ResourcePack pack;
         switch (args[0]) {
             case "apply":
@@ -81,7 +82,7 @@ public class ResourcePackCommand implements ICommand {
                 if (pack != null && pack.isValid()) {
                     MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer(args[2]);
                     player.applyResourcePack(pack);
-                    player.sendInfoMessage(MessageManager.getMessage(null, "minigame.resourcepack.apply"));
+                    player.sendInfoMessage(MinigameMessageManager.getMessage(null, "minigame.resourcepack.apply"));
                     return true;
                 }
             case "remove":
@@ -90,7 +91,7 @@ public class ResourcePackCommand implements ICommand {
                 }
                 pack = plugin.getResourceManager().getResourcePack(args[1]);
                 plugin.getResourceManager().removeResourcePack(pack);
-                sender.sendMessage(MessageManager.getMessage(null, "minigame.resourcepack.command.remove"));
+                sender.sendMessage(MinigameMessageManager.getMessage(null, "minigame.resourcepack.command.remove"));
                 sendList(sender);
                 return true;
             case "addnew":
@@ -106,16 +107,16 @@ public class ResourcePackCommand implements ICommand {
                     plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
                         if (newPack.isValid()) {
                             plugin.getResourceManager().addResourcePack(newPack);
-                            sender.sendMessage(MessageManager.getMessage(null, "minigame.resourcepack.command.addresource"));
+                            sender.sendMessage(MinigameMessageManager.getMessage(null, "minigame.resourcepack.command.addresource"));
                             sendList(sender);
                         } else {
-                            sender.sendMessage(MessageManager.getMessage(null, "minigame.resourcepack.command.invalidpack"));
+                            sender.sendMessage(MinigameMessageManager.getMessage(null, "minigame.resourcepack.command.invalidpack"));
                         }
                     }, 100);
                     return true;
 
                 } catch (MalformedURLException e) {
-                    sender.sendMessage(MessageManager.getMessage(null, "minigame.resourcepack.command.badurl"));
+                    sender.sendMessage(MinigameMessageManager.getMessage(null, "minigame.resourcepack.command.badurl"));
                     return false;
                 }
             case "list":

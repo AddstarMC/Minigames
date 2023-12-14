@@ -4,7 +4,7 @@ import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.events.StartMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.JuggernautModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
@@ -70,7 +70,7 @@ public class JuggernautMechanic extends GameMechanicBase {
                     jm.setJuggernaut(j);
                     j.sendInfoMessage(MinigameUtils.getLang("player.juggernaut.plyMsg"));
                     mdata.sendMinigameMessage(minigame,
-                            MessageManager.getMinigamesMessage("player.juggernaut.gameMsg", j.getDisplayName(minigame.usePlayerDisplayNames())), null, j);
+                            MinigameMessageManager.getMinigamesMessage("player.juggernaut.gameMsg", j.getDisplayName(minigame.usePlayerDisplayNames())), null, j);
                 }
             }
         }

@@ -1,10 +1,10 @@
 package au.com.mineauz.minigames.mechanics;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.managers.MessageManager;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.InfectionModule;
@@ -38,7 +38,7 @@ public class InfectionMechanic extends GameMechanicBase {
                 !TeamsModule.getMinigameModule(minigame).hasTeam(InfectionModule.getMinigameModule(minigame).getInfectedTeam()) ||
                 !TeamsModule.getMinigameModule(minigame).hasTeam(InfectionModule.getMinigameModule(minigame).getSurvivorTeam())) {
             if (caller != null)
-                caller.sendMessage(MessageManager.getUnformattedMessage(null, "minigame.error.noInfection"), MinigameMessageType.ERROR);
+                caller.sendMessage(MinigameMessageManager.getUnformattedMessage(null, "minigame.error.noInfection"), MinigameMessageType.ERROR);
             return false;
         }
         return true;
@@ -57,20 +57,20 @@ public class InfectionMechanic extends GameMechanicBase {
                 if (infectedTeam.getPlayers().size() < Math.ceil(players.size() * percent) && infectedTeam.hasRoom()) {
                     MultiplayerType.switchTeam(minigame, ply, infectedTeam);
                     result.add(ply);
-                    ply.sendInfoMessage(String.format(infectedTeam.getAssignMessage(), infectedTeam.getChatColor() + infectedTeam.getDisplayName()));
-                    mdata.sendMinigameMessage(minigame, String.format(infectedTeam.getGameAssignMessage(), ply.getName(), infectedTeam.getChatColor() + infectedTeam.getDisplayName()), null, ply);
+                    ply.sendInfoMessage(String.format(infectedTeam.getUnformattedAssignMessage(), infectedTeam.getTextColor() + infectedTeam.getDisplayName()));
+                    mdata.sendMinigameMessage(minigame, String.format(infectedTeam.getGameAssignMessage(), ply.getName(), infectedTeam.getTextColor() + infectedTeam.getDisplayName()), null, ply);
                 }
             } else if (team == null) {
                 if (infectedTeam.getPlayers().size() < Math.ceil(players.size() * percent) && infectedTeam.hasRoom()) {
                     infectedTeam.addPlayer(ply);
                     result.add(ply);
-                    ply.sendInfoMessage(String.format(infectedTeam.getAssignMessage(), infectedTeam.getChatColor() + infectedTeam.getDisplayName()));
-                    mdata.sendMinigameMessage(minigame, String.format(infectedTeam.getGameAssignMessage(), ply.getName(), infectedTeam.getChatColor() + infectedTeam.getDisplayName()), null, ply);
+                    ply.sendInfoMessage(String.format(infectedTeam.getUnformattedAssignMessage(), infectedTeam.getTextColor() + infectedTeam.getDisplayName()));
+                    mdata.sendMinigameMessage(minigame, String.format(infectedTeam.getGameAssignMessage(), ply.getName(), infectedTeam.getTextColor() + infectedTeam.getDisplayName()), null, ply);
                 } else if (survivorTeam.hasRoom()) {
                     survivorTeam.addPlayer(ply);
                     result.add(ply);
-                    ply.sendInfoMessage(String.format(survivorTeam.getAssignMessage(), survivorTeam.getChatColor() + survivorTeam.getDisplayName()));
-                    mdata.sendMinigameMessage(minigame, String.format(survivorTeam.getGameAssignMessage(), ply.getName(), survivorTeam.getChatColor() + survivorTeam.getDisplayName()), null, ply);
+                    ply.sendInfoMessage(String.format(survivorTeam.getUnformattedAssignMessage(), survivorTeam.getTextColor() + survivorTeam.getDisplayName()));
+                    mdata.sendMinigameMessage(minigame, String.format(survivorTeam.getGameAssignMessage(), ply.getName(), survivorTeam.getTextColor() + survivorTeam.getDisplayName()), null, ply);
                 } else {
                     pdata.quitMinigame(ply, false);
                     ply.sendMessage(MinigameUtils.getLang("minigame.full"), MinigameMessageType.ERROR);
@@ -139,7 +139,7 @@ public class InfectionMechanic extends GameMechanicBase {
                         mgm.setScore(player, player.getScore());
 
                         if (mgm.getLives() != player.getDeaths()) {
-                            mdata.sendMinigameMessage(mgm, String.format(infectedTeam.getGameAssignMessage(), player.getName(), infectedTeam.getChatColor() + infectedTeam.getDisplayName()), MinigameMessageType.ERROR);
+                            mdata.sendMinigameMessage(mgm, String.format(infectedTeam.getGameAssignMessage(), player.getName(), infectedTeam.getTextColor() + infectedTeam.getDisplayName()), MinigameMessageType.ERROR);
                         }
                         if (survivorTeam.getPlayers().isEmpty()) {
                             List<MinigamePlayer> w;

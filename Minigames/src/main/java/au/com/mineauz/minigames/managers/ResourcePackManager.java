@@ -14,8 +14,8 @@ import java.util.*;
 
 public class ResourcePackManager {
     final static Path resourceDir = Paths.get(Minigames.getPlugin().getDataFolder().toString(), "resources");
-    private boolean enabled = true;
     private final Map<String, ResourcePack> resources = new HashMap<>();
+    private boolean enabled = true;
     private MinigameSave config;
 
     public ResourcePackManager() {

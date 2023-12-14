@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.commands;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -49,8 +50,8 @@ public class ListCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame,
-                             String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+                             @NotNull String label, String @NotNull [] args) {
         List<String> mglist = plugin.getConfig().getStringList("minigames");
         StringBuilder minigames = new StringBuilder();
 

@@ -212,8 +212,7 @@ public class Minigames extends JavaPlugin {
             }
             final PluginDescriptionFile desc = this.getDescription();
             ConfigurationSerialization.registerClass(ResourcePack.class);
-            MessageManager.setLogger(log);
-            MessageManager.registerCoreLanguage();
+            MinigameMessageManager.registerCoreLanguage();
             this.checkVersion();
             this.loadPresets();
             this.setupMinigames();
@@ -497,7 +496,7 @@ public class Minigames extends JavaPlugin {
     }
 
     /**
-     * Use {@link MessageManager}
+     * Use {@link MinigameMessageManager}
      */
     @Deprecated
     public FileConfiguration getLang() {

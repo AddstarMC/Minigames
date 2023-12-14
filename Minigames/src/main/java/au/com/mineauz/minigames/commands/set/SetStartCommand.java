@@ -10,6 +10,7 @@ import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +60,7 @@ public class SetStartCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame, @NotNull String label, String @NotNull [] args) {
         Player player = (Player) sender;
 
         if (args == null) {
@@ -88,7 +89,7 @@ public class SetStartCommand implements ICommand {
             if (position >= 1) {
                 team.addStartLocation(player.getLocation(), position);
                 sender.sendMessage(ChatColor.GRAY + "Starting position for " +
-                        team.getChatColor() + team.getDisplayName() + ChatColor.GRAY + " has been set for position " + position);
+                        team.getTextColor() + team.getDisplayName() + ChatColor.GRAY + " has been set for position " + position);
             } else {
                 sender.sendMessage(ChatColor.RED + "Error: Invalid starting position: " + args[1]);
                 return false;
@@ -105,7 +106,7 @@ public class SetStartCommand implements ICommand {
                     }
 
                     team.getStartLocations().clear();
-                    sender.sendMessage(ChatColor.GRAY + "Starting positions for " + team.getChatColor() + team.getDisplayName() + ChatColor.GRAY +
+                    sender.sendMessage(ChatColor.GRAY + "Starting positions for " + team.getTextColor() + team.getDisplayName() + ChatColor.GRAY +
                             " have been cleared in " + minigame);
                 } else {
                     sender.sendMessage(ChatColor.RED + "No team color found by the name: " + args[1]);

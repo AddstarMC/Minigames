@@ -10,10 +10,10 @@ import java.sql.SQLException;
 import java.util.Map;
 
 public class ConnectionHandler {
+    private final Map<StatementKey, PreparedStatement> preparedStatements;
     private Connection connection;
     private boolean inUse;
     private long openTime;
-    private final Map<StatementKey, PreparedStatement> preparedStatements;
 
     public ConnectionHandler(Connection connection) {
         this.connection = connection;

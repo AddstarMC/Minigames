@@ -1,7 +1,6 @@
 package au.com.mineauz.minigames;
 
-import au.com.mineauz.minigames.managers.MessageManager;
-import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import org.apache.commons.lang3.StringUtils;
@@ -11,7 +10,10 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class MinigameUtils {
@@ -24,7 +26,7 @@ public class MinigameUtils {
      * @return The ItemStack referred to in the parameter.
      * @deprecated use {@link org.bukkit.Material#matchMaterial} instead
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static @Nullable ItemStack stringToItemStack(@NotNull String itemStr, int quantity) {
         //legacy: ignore data behind ":"
         String itemName = StringUtils.substringBefore(itemStr, ":");
@@ -41,7 +43,7 @@ public class MinigameUtils {
      * @deprecated use {@link net.md_5.bungee.api.chat.TranslatableComponent}
      * together with {@link Material#getItemTranslationKey()} instead
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static String getItemStackName(ItemStack item) {
         return item.getType().toString().toLowerCase().replace("_", " ");
     }
@@ -54,7 +56,7 @@ public class MinigameUtils {
      * @param small - If the time should be shortened to: hh:mm:ss
      * @return A message with a neat time
      */
-    public static String convertTime(int time, boolean small) {
+    public static String convertTime(int time, boolean small) { //todo use TimeUnit
         int weeks = 0;
         int days = 0;
         int hours = 0;
@@ -214,42 +216,6 @@ public class MinigameUtils {
     }
 
     /**
-     * Formats a string from the language file.
-     *
-     * @param format - The location in the YAML of the string to format.
-     * @param text   - What to replace the formatted variables with.
-     * @return The formatted string. If not found, will return the format
-     * @deprecated use {@link MessageManager#getMinigamesMessage(String, Object...)}
-     */
-    @Deprecated
-    public static String formStr(String format, Object... text) {
-        String lang = getLang(format);
-        try {
-            return String.format(lang, text);
-        } catch (IllegalArgumentException e) {
-            return lang;
-        }
-    }
-
-    /**
-     * Gets the language string from the localization file.
-     *
-     * @param arg1 - The path of the language string
-     * @return The translation. If not found, will return the argument.
-     * @deprecated use {@link MessageManager#getUnformattedMessage(String, String)}
-     */
-    @Deprecated
-    public static String getLang(String arg1) {
-        String out;
-        try {
-            out = MessageManager.getUnformattedMessage(null, arg1);
-        } catch (MissingResourceException e) {
-            out = "No path found in: " + e.getMessage() + " for " + e.getKey();
-        }
-        return out;
-    }
-
-    /**
      * Gives the defined player a Minigame tool.
      *
      * @param player - The player to give the tool to.
@@ -259,7 +225,7 @@ public class MinigameUtils {
         Material toolMat = Material.matchMaterial(Minigames.getPlugin().getConfig().getString("tool"));
         if (toolMat == null) {
             toolMat = Material.BLAZE_ROD;
-            MessageManager.sendMessage(player, MinigameMessageType.ERROR, null, "minigame.error.noDefaultTool");
+            MinigameMessageManager.sendMessage(player, MinigameMessageType.ERROR, MinigameMessageManager.MinigameLangKey.MINIGAME_ERROR_NODEFAULTTOOL);
         }
 
         ItemStack tool = new ItemStack(toolMat);
@@ -366,37 +332,7 @@ public class MinigameUtils {
         return sloc;
     }
 
-    /**
-     * Broadcasts a message with a defined permission.
-     *
-     * @param message    - The message to be broadcast (Can be manipulated with MinigamesBroadcastEvent)
-     * @param minigame   - The Minigame this broadcast is related to.
-     * @param permission - The permission required to see this broadcast message.
-     * @deprecated use {@link MessageManager#broadcast(String, Minigame, String)}
-     */
-    @Deprecated
-    public static void broadcast(String message, Minigame minigame, String permission) {
-        MessageManager.broadcast(message, minigame, permission);
-    }
 
-    /**
-     * Broadcasts a server message without a permission.
-     *
-     * @param message     - The message to be broadcasted (Can be manipulated with MinigamesBroadcastEvent)
-     * @param minigame    - The Minigame this broadcast is related to.
-     * @param prefixColor - The color to be used in the prefix.
-     * @deprecated use {@link MessageManager#broadcast(String, Minigame, ChatColor)}
-     */
-    @Deprecated
-    public static void broadcast(String message, Minigame minigame, ChatColor prefixColor) {
-        MessageManager.broadcast(message, minigame, prefixColor);
-    }
-
-    public static void debugMessage(String message) {
-        if (Minigames.getPlugin().isDebugging()) {
-            Minigames.getPlugin().getLogger().info(ChatColor.RED + "[Debug] " + ChatColor.WHITE + message);
-        }
-    }
 
     /**
      * Loads a short location (x, y, z, world) from a configuration section

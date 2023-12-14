@@ -7,8 +7,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 public class TakeFlagEvent extends AbstractCancellableMinigameEvent {
     private final CTFFlag flag;
     private final String flagName;
-    private boolean displayMessage = true;
     private final MinigamePlayer player;
+    private boolean displayMessage = true;
 
     public TakeFlagEvent(Minigame minigame, MinigamePlayer player, CTFFlag flag) {
         this(minigame, player, flag, null);

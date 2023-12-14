@@ -10,8 +10,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class SignBlockMock extends BlockMock {
 
-    private BlockStateMock state;
     private final BlockData data;
+    private BlockStateMock state;
 
     /**
      * Creates a basic block with a given material that is also linked to a specific location.

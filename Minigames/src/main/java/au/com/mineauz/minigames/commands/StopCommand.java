@@ -7,6 +7,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,8 +56,8 @@ public class StopCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame,
-                             String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame,
+                             @NotNull String label, String @NotNull [] args) {
         if (args != null) {
             Minigame mgm = plugin.getMinigameManager().getMinigame(args[0]);
 

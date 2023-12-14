@@ -6,7 +6,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.events.MinigameTimerTickEvent;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
@@ -132,8 +132,8 @@ public class TreasureHuntMechanic extends GameMechanicBase {
 
         thm.setTreasureLocation(rpos);
         plugin.getLogger().info(
-                MessageManager.getMinigamesMessage("minigame.treasurehunt.consSpawn", mgm.getName(false), rpos.getBlockX() + ", " + rpos.getBlockY() + ", " + rpos.getBlockZ()));
-        MessageManager.broadcast(MessageManager.getMinigamesMessage("minigame.treasurehunt.plySpawn", maxradius, thm.getLocation()), mgm, "minigame.treasure.announce");
+                MinigameMessageManager.getMinigamesMessage("minigame.treasurehunt.consSpawn", mgm.getName(false), rpos.getBlockX() + ", " + rpos.getBlockY() + ", " + rpos.getBlockZ()));
+        MinigameMessageManager.broadcast(MinigameMessageManager.getMinigamesMessage("minigame.treasurehunt.plySpawn", maxradius, thm.getLocation()), mgm, "minigame.treasure.announce");
 
         mgm.setMinigameTimer(new MinigameTimer(mgm, mgm.getTimer()));
     }
@@ -186,7 +186,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
         if (thm.hasTreasureLocation()) {
             removeTreasure(minigame);
             if (!thm.isTreasureFound()) {
-                MessageManager.broadcast(MessageManager.getMinigamesMessage("minigame.treasurehunt.plyRemoved", minigame.getName(true))
+                MinigameMessageManager.broadcast(MinigameMessageManager.getMinigamesMessage("minigame.treasurehunt.plyRemoved", minigame.getName(true))
                         , minigame, "minigame.treasure.announce");
             }
         }
@@ -257,13 +257,13 @@ public class TreasureHuntMechanic extends GameMechanicBase {
                     dir = xdir;
                 }
             }
-            String hint = MessageManager.getMinigamesMessage("minigame.treasurehunt.hint1.hint", mgm.getName(true), dir, thm.getLocation());
-            MessageManager.broadcast(hint, mgm, "minigame.treasure.announce");
+            String hint = MinigameMessageManager.getMinigamesMessage("minigame.treasurehunt.hint1.hint", mgm.getName(true), dir, thm.getLocation());
+            MinigameMessageManager.broadcast(hint, mgm, "minigame.treasure.announce");
             thm.addHint(ChatColor.GRAY + hint);
         } else if (time == hintTime2) {
             block.setY(block.getY() - 1);
-            String hint = MessageManager.getMinigamesMessage("minigame.treasurehunt.hint2", mgm.getName(true), block.getBlock().getType().toString().toLowerCase().replace("_", " "));
-            MessageManager.broadcast(hint, mgm, "minigame.treasure.announce");
+            String hint = MinigameMessageManager.getMinigamesMessage("minigame.treasurehunt.hint2", mgm.getName(true), block.getBlock().getType().toString().toLowerCase().replace("_", " "));
+            MinigameMessageManager.broadcast(hint, mgm, "minigame.treasure.announce");
             thm.addHint(ChatColor.GRAY + hint);
             block.setY(block.getY() + 1);
         } else if (time == hintTime3) {
@@ -277,12 +277,12 @@ public class TreasureHuntMechanic extends GameMechanicBase {
                 dist = 62 - height;
                 dir = MinigameUtils.getLang("minigame.treasurehunt.hint3.below");
             }
-            String hint = MessageManager.getMinigamesMessage("minigame.treasurehunt.hint3.hint", mgm.getName(true), dist, dir);
-            MessageManager.broadcast(hint, mgm, "minigame.treasure.announce");
+            String hint = MinigameMessageManager.getMinigamesMessage("minigame.treasurehunt.hint3.hint", mgm.getName(true), dist, dir);
+            MinigameMessageManager.broadcast(hint, mgm, "minigame.treasure.announce");
             thm.addHint(ChatColor.GRAY + hint);
         } else if (time == hintTime4) {
-            String hint = MessageManager.getMinigamesMessage("minigame.treasurehunt.hint4", mgm.getName(true), block.getBlock().getBiome().toString().toLowerCase().replace("_", " "));
-            MessageManager.broadcast(hint, mgm, "minigame.treasure.announce");
+            String hint = MinigameMessageManager.getMinigamesMessage("minigame.treasurehunt.hint4", mgm.getName(true), block.getBlock().getBiome().toString().toLowerCase().replace("_", " "));
+            MinigameMessageManager.broadcast(hint, mgm, "minigame.treasure.announce");
             thm.addHint(ChatColor.GRAY + hint);
         }
     }
@@ -300,8 +300,8 @@ public class TreasureHuntMechanic extends GameMechanicBase {
             Location old = thm.getTreasureLocation();
             removeTreasure(mgm);
             if (!thm.isTreasureFound()) {
-                MessageManager.broadcast(MessageManager.getMinigamesMessage("minigame.treasurehunt.plyDespawn", mgm.getName(true)) + "\n" +
-                        ChatColor.GRAY + MessageManager.getMinigamesMessage("minigame.treasurehunt.plyDespawnCoords",
+                MinigameMessageManager.broadcast(MinigameMessageManager.getMinigamesMessage("minigame.treasurehunt.plyDespawn", mgm.getName(true)) + "\n" +
+                        ChatColor.GRAY + MinigameMessageManager.getMinigamesMessage("minigame.treasurehunt.plyDespawnCoords",
                         old.getBlockX(), old.getBlockY(), old.getBlockZ()), mgm, "minigame.treasure.announce");
             }
             thm.setTreasureFound(false);
@@ -329,7 +329,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
                             int z1 = thm.getTreasureLocation().getBlockZ();
                             int z2 = cblock.getLocation().getBlockZ();
                             if (x2 == x1 && y2 == y1 && z2 == z1) {
-                                MinigameUtils.broadcast(MessageManager.getMinigamesMessage("minigame.treasurehunt.plyFound",
+                                MinigameUtils.broadcast(MinigameMessageManager.getMinigamesMessage("minigame.treasurehunt.plyFound",
                                                 event.getPlayer().getDisplayName(),
                                                 minigame.getName(true)), minigame,
                                         "minigame.treasure.announce");

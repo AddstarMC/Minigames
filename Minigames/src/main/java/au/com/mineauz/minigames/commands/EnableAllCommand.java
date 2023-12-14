@@ -3,10 +3,11 @@ package au.com.mineauz.minigames.commands;
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.managers.MessageManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class EnableAllCommand implements ICommand {
 
     @Override
     public String getDescription() {
-        return MessageManager.getMinigamesMessage("command.enableAll.desc");
+        return MinigameMessageManager.getMinigamesMessage("command.enableAll.desc");
     }
 
     @Override
@@ -45,7 +46,7 @@ public class EnableAllCommand implements ICommand {
 
     @Override
     public String getPermissionMessage() {
-        return MessageManager.getMinigamesMessage("command.enable.noPerm");
+        return MinigameMessageManager.getMinigamesMessage("command.enable.noPerm");
     }
 
     @Override
@@ -54,8 +55,8 @@ public class EnableAllCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Minigame minigame,
-                             String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+                             @NotNull String label, String @NotNull [] args) {
         MinigameManager mdata = Minigames.getPlugin().getMinigameManager();
         List<Minigame> minigames = new ArrayList<>(mdata.getAllMinigames().values());
         if (args != null) {
@@ -63,13 +64,13 @@ public class EnableAllCommand implements ICommand {
                 if (mdata.hasMinigame(arg))
                     minigames.remove(mdata.getMinigame(arg));
                 else
-                    MessageManager.sendMessage(sender, MinigameMessageType.ERROR, null, "command.enable.notfound", arg);
+                    MinigameMessageManager.sendMessage(sender, MinigameMessageType.ERROR, null, "command.enable.notfound", arg);
             }
         }
         for (Minigame mg : minigames) {
             mg.setEnabled(true);
         }
-        MessageManager.sendMessage(sender, MinigameMessageType.INFO, null, "command.enable.resultnum", minigames.size());
+        MinigameMessageManager.sendMessage(sender, MinigameMessageType.INFO, null, "command.enable.resultnum", minigames.size());
         return true;
     }
 
