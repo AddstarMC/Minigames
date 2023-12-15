@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.mechanics;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
@@ -8,6 +7,7 @@ import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
@@ -124,12 +124,12 @@ public abstract class GameMechanicBase implements Listener {
     private void broadcastAutobalance(@NotNull Minigame minigame, @NotNull MinigamePlayer mgPlayer, @NotNull Team teamToJoin) {
         MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(
                 teamToJoin.getAutobalanceMessage(),
-                Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(teamToJoin.getDisplayName()).color(teamToJoin.getTextColor())))); //todo is NOT backwards compatible!!
+                Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(teamToJoin.getDisplayName(), teamToJoin.getTextColor())))); //todo is NOT backwards compatible!!
 
         mdata.sendMinigameMessage(minigame,
                 MiniMessage.miniMessage().deserialize(teamToJoin.getGameAutobalanceMessage(),
                         Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getDisplayName(minigame.usePlayerDisplayNames())),
-                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(teamToJoin.getDisplayName()).color(teamToJoin.getTextColor()))) //todo is NOT backwards compatible!!
+                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(teamToJoin.getDisplayName(), teamToJoin.getTextColor()))) //todo is NOT backwards compatible!!
                 , null, mgPlayer);
     }
 

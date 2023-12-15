@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.gametypes;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.MultiplayerTimer;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
@@ -8,6 +7,7 @@ import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
@@ -117,7 +117,7 @@ public class MultiplayerType extends MinigameTypeBase {
 
                 smTeam.addPlayer(mgPlayer);
                 MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(smTeam.getUnformattedAssignMessage(),
-                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(smTeam.getDisplayName()).color(smTeam.getTextColor()))));
+                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(smTeam.getDisplayName(), smTeam.getTextColor()))));
 
                 final Team fteam = smTeam;
                 mgPlayer.setLateJoinTimer(Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
@@ -378,8 +378,8 @@ public class MultiplayerType extends MinigameTypeBase {
                         if (plugin.getConfig().getBoolean("multiplayer.broadcastwin")) {
                             if (drawTeams.size() == 2) {
                                 MinigameMessageManager.broadcast(MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_END_TEAM_TIE,
-                                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(drawTeams.get(0).getDisplayName()).color(drawTeams.get(0).getTextColor())),
-                                        Placeholder.component(MinigamePlaceHolderKey.OTHER_TEAM.getKey(), Component.text(drawTeams.get(1).getDisplayName()).color(drawTeams.get(1).getTextColor())),
+                                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(drawTeams.get(0).getDisplayName(), drawTeams.get(0).getTextColor())),
+                                        Placeholder.component(MinigamePlaceHolderKey.OTHER_TEAM.getKey(), Component.text(drawTeams.get(1).getDisplayName(), drawTeams.get(1).getTextColor())),
                                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), event.getMinigame().getName(true))
                                 ), mgm, MinigameMessageType.TIE);
                             } else {
@@ -397,7 +397,7 @@ public class MultiplayerType extends MinigameTypeBase {
                                 scores = scores.append(Component.text(teams.get(i).getColor().name())).append(Component.text(teams.get(i).getScore()));
 
                                 if (++i < teams.size()) {
-                                    scores = scores.append(Component.text(" : ").color(NamedTextColor.WHITE));
+                                    scores = scores.append(Component.text(" : ", NamedTextColor.WHITE));
                                 }
                             }
 
@@ -412,8 +412,8 @@ public class MultiplayerType extends MinigameTypeBase {
 
                                 if (drawTeams.size() == 2) {
                                     MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_END_TEAM_TIE,
-                                            Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(drawTeams.get(0).getDisplayName()).color(drawTeams.get(0).getTextColor())),
-                                            Placeholder.component(MinigamePlaceHolderKey.OTHER_TEAM.getKey(), Component.text(drawTeams.get(1).getDisplayName()).color(drawTeams.get(1).getTextColor())),
+                                            Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(drawTeams.get(0).getDisplayName(), drawTeams.get(0).getTextColor())),
+                                            Placeholder.component(MinigamePlaceHolderKey.OTHER_TEAM.getKey(), Component.text(drawTeams.get(1).getDisplayName(), drawTeams.get(1).getTextColor())),
                                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), event.getMinigame().getName(true)));
                                 } else {
                                     MinigameMessageManager.broadcast(MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_END_TEAM_TIECOUNT,
@@ -430,7 +430,7 @@ public class MultiplayerType extends MinigameTypeBase {
                                     scores = scores.append(Component.text(teams.get(i).getColor().name())).append(Component.text(teams.get(i).getScore()));
 
                                     if (++i < teams.size()) {
-                                        scores = scores.append(Component.text(" : ").color(NamedTextColor.WHITE));
+                                        scores = scores.append(Component.text(" : ", NamedTextColor.WHITE));
                                     }
                                 }
 

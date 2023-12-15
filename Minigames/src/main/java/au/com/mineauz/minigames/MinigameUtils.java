@@ -2,54 +2,19 @@ package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
-import static au.com.mineauz.minigames.managers.MinigameMessageManager.debugMessage;
-
 public class MinigameUtils {
-
-    /**
-     * Returns the item stack from a number or name.
-     *
-     * @param itemStr  - The items material
-     * @param quantity - The number of said item
-     * @return The ItemStack referred to in the parameter.
-     * @deprecated use {@link org.bukkit.Material#matchMaterial} instead
-     */
-    @Deprecated(forRemoval = true)
-    public static @Nullable ItemStack stringToItemStack(@NotNull String itemStr, int quantity) {
-        //legacy: ignore data behind ":"
-        String itemName = StringUtils.substringBefore(itemStr, ":");
-
-        Material mat = Material.matchMaterial(itemName);
-        return mat == null ? null : new ItemStack(mat, quantity);
-    }
-
-    /**
-     * Gets the name of an ItemStack
-     *
-     * @param item - The ItemStack to get the name of
-     * @return The name of the item
-     * @deprecated use {@link net.md_5.bungee.api.chat.TranslatableComponent}
-     * together with {@link Material#getItemTranslationKey()} instead
-     */
-    @Deprecated(forRemoval = true)
-    public static String getItemStackName(ItemStack item) {
-        return item.getType().toString().toLowerCase().replace("_", " ");
-    }
 
     /**
      * Converts seconds into weeks, days, hours, minutes and seconds to be neatly
@@ -192,33 +157,6 @@ public class MinigameUtils {
     }
 
     /**
-     * Turns a list to a string.
-     *
-     * @param list the list to convert
-     * @return A string representation of the list
-     */
-    public static String listToString(List<String> list) {
-        StringBuilder slist = new StringBuilder();
-        boolean switchColour = false;
-        for (String entry : list) {
-            if (switchColour) {
-                slist.append(ChatColor.WHITE).append(entry);
-                if (!entry.equalsIgnoreCase(list.get(list.size() - 1))) {
-                    slist.append(ChatColor.WHITE + ", ");
-                }
-                switchColour = false;
-            } else {
-                slist.append(ChatColor.GRAY).append(entry);
-                if (!entry.equalsIgnoreCase(list.get(list.size() - 1))) {
-                    slist.append(ChatColor.WHITE + ", ");
-                }
-                switchColour = true;
-            }
-        }
-        return slist.toString();
-    }
-
-    /**
      * Gives the defined player a Minigame tool.
      *
      * @param player - The player to give the tool to.
@@ -272,7 +210,7 @@ public class MinigameUtils {
      * @param player The player to get the tool from
      * @return null if no tool was found
      */
-    public static @Nullable MinigameTool getMinigameTool(@Nullable MinigamePlayer player) {
+    public static @Nullable MinigameTool getMinigameTool(@NotNull MinigamePlayer player) {
         ItemStack inHand = player.getPlayer().getInventory().getItemInMainHand();
         if (isMinigameTool(inHand)) {
             return new MinigameTool(inHand);
@@ -300,38 +238,11 @@ public class MinigameUtils {
      * @return A list of possible tab completions
      */
     public static List<String> tabCompleteMatch(List<String> orig, String match) {
-        if (match.equals(""))
+        if (match.isEmpty()) {
             return orig;
-        else {
+        } else {
             return orig.stream().filter(m -> m.toLowerCase().startsWith(match.toLowerCase())).toList();
         }
-    }
-
-    /**
-     * Serializes a location to be stored in a config file.
-     *
-     * @param loc The location to be stored
-     * @return A map of values to store
-     * @deprecated use {@link Location#serialize()} instead
-     * (and test if the world was null for good measure)
-     */
-    @Deprecated
-    public static Map<String, Object> serializeLocation(@NotNull Location loc) {
-        Map<String, Object> sloc = new HashMap<>();
-        sloc.put("x", loc.getX());
-        sloc.put("y", loc.getY());
-        sloc.put("z", loc.getZ());
-        sloc.put("yaw", loc.getYaw());
-        sloc.put("pitch", loc.getPitch());
-        String name;
-        if (loc.getWorld() != null) {
-            name = loc.getWorld().getName();
-        } else {
-            debugMessage("A Location could not be deserialized the world was null");
-            return Collections.emptyMap();
-        }
-        sloc.put("world", name);
-        return sloc;
     }
 
     /**

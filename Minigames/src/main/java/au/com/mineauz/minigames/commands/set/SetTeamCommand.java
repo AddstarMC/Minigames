@@ -6,10 +6,12 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +34,7 @@ public class SetTeamCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public Component getDescription() {
         return "Adds, removes and modifies a team for a specific Minigame.";
     }
 
@@ -42,7 +44,7 @@ public class SetTeamCommand implements ICommand {
     }
 
     @Override
-    public String[] getUsage() {
+    public Component getUsage() {
         return new String[]{"/minigame set <Minigame> team add <TeamColor> [Display Name]",
                 "/minigame set <Minigame> team rename <TeamColor> <Display Name>",
                 "/minigame set <Minigame> team remove <TeamColor>",
@@ -62,7 +64,7 @@ public class SetTeamCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             TeamsModule tmod = TeamsModule.getMinigameModule(minigame);
             if (args[0].equalsIgnoreCase("add")) {
@@ -96,7 +98,7 @@ public class SetTeamCommand implements ICommand {
                         sender.sendMessage(MinigameUtils.listToString(cols));
                     }
                 } else {
-                    sender.sendMessage(ChatColor.RED + "Valid team color options:");
+                    sender.sendMessage(ChatColor.RED + "Valid team color options:"); //todo color them
                     List<String> cols = new ArrayList<>(TeamColor.values().length);
                     for (TeamColor c : TeamColor.values()) {
                         cols.add(c.toString());

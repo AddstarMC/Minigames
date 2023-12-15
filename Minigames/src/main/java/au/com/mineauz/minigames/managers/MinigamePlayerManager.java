@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.managers;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.MultiplayerBets;
 import au.com.mineauz.minigames.events.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
@@ -326,7 +326,7 @@ public class MinigamePlayerManager {
                     }
                 }
 
-                PlayMGSound.playSound(mgPlayer, MGSounds.getSound("gameStart"));
+                PlayMGSound.playSound(mgPlayer, MGSounds.GAME_START.getSound());
             }
         }
 
@@ -777,7 +777,7 @@ public class MinigamePlayerManager {
                 player.setEndTime(System.currentTimeMillis());
                 if (!usedTimer)
                     quitMinigame(player, true);
-                PlayMGSound.playSound(player, MGSounds.getSound("lose"));
+                PlayMGSound.playSound(player, MGSounds.LOSE.getSound());
             }
 
             if (minigame.getEndLocation() == null) {
@@ -847,7 +847,7 @@ public class MinigamePlayerManager {
                     }
                 }
 
-                PlayMGSound.playSound(mgWinner, MGSounds.getSound("win"));
+                PlayMGSound.playSound(mgWinner, MGSounds.WIN.getSound());
             }
 
             if (!usedTimer) {
@@ -876,7 +876,7 @@ public class MinigamePlayerManager {
                     Component score = Component.empty();
                     List<Team> teams = TeamsModule.getMinigameModule(minigame).getTeams();
                     for (Team t : teams) {
-                        score = score.append(Component.text(t.getColor().name()).color(t.getTextColor()).append(Component.text(t.getScore())));
+                        score = score.append(Component.text(t.getColor().name(), t.getTextColor()).append(Component.text(t.getScore())));
 
                         if (t != teams.get(teams.size() - 1)) {
                             score = score.append(Component.text(" : "));
@@ -893,7 +893,7 @@ public class MinigamePlayerManager {
                         ), minigame, MinigameMessageType.WIN);
                     } else {
                         MinigameMessageManager.broadcast(MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_END_TEAM_WIN,
-                                Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName()).color(team.getTextColor())),
+                                Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName(), team.getTextColor())),
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true))), minigame, MinigameMessageType.WIN);
                     }
                 } else {

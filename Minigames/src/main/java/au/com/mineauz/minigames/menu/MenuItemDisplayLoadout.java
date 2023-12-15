@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.PlayerLoadout;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;

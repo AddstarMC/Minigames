@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.RegionModule;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -34,8 +35,8 @@ public class SetRegionCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Creates, edits and deletes Minigame regions";
+    public List<Component> getDescription() {
+        return List.of("Creates, edits and deletes Minigame regions");
     }
 
     @Override
@@ -51,11 +52,6 @@ public class SetRegionCommand implements ICommand {
                 "/minigame set <Minigame> region delete <name>",
                 "/minigame set <Minigame> region modify"
         };
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You don't have permission to modify Minigame regions";
     }
 
     @Override

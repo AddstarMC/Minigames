@@ -1,18 +1,21 @@
 package au.com.mineauz.minigamesregions;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +28,16 @@ public class NodeToolMode implements ToolMode {
     }
 
     @Override
-    public String getDisplayName() {
+    public Component getDisplayName() {
         return "Node Creation";
     }
 
     @Override
-    public List<String> getDescription() {
-        return List.of("Creates a node where", "you are standing", "on right click");
+    public List<Component> getDescription() { //todo translation String
+        return List.of(
+                "Creates a node where",
+                "you are standing",
+                "on right click");
     }
 
     @Override
@@ -90,43 +96,43 @@ public class NodeToolMode implements ToolMode {
     }
 
     @Override
-    public void onUnsetMode(MinigamePlayer player, MinigameTool tool) {
+    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, MinigameTool tool) {
         tool.removeSetting("Node");
     }
 
     @Override
-    public void onLeftClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEvent event) {
+    public void onLeftClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team, @NotNull PlayerInteractEvent event) {
         if (event.getClickedBlock() != null) {
             RegionModule mod = RegionModule.getMinigameModule(minigame);
-            String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
+            String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Node");
 
             Location loc = event.getClickedBlock().getLocation().add(0.5, 0.5, 0.5);
             Node node = mod.getNode(name);
             if (node == null) {
                 node = new Node(name, loc);
                 mod.addNode(name, node);
-                player.sendInfoMessage("Added new node to " + minigame + " called " + name);
+                mgPlayer.sendInfoMessage("Added new node to " + minigame + " called " + name);
             } else {
                 node.setLocation(loc);
-                player.sendInfoMessage("Edited node " + name + " in " + minigame);
+                mgPlayer.sendInfoMessage("Edited node " + name + " in " + minigame);
                 Main.getPlugin().getDisplayManager().update(node);
             }
         }
     }
 
     @Override
-    public void onRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEvent event) {
+    public void onRightClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team, @NotNull PlayerInteractEvent event) {
         RegionModule mod = RegionModule.getMinigameModule(minigame);
-        String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
+        String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Node");
 
         Node node = mod.getNode(name);
         if (node == null) {
-            node = new Node(name, player.getLocation());
+            node = new Node(name, mgPlayer.getLocation());
             mod.addNode(name, node);
-            player.sendInfoMessage("Added new node to " + minigame + " called " + name);
+            mgPlayer.sendInfoMessage("Added new node to " + minigame + " called " + name);
         } else {
-            node.setLocation(player.getLocation());
-            player.sendInfoMessage("Edited node " + name + " in " + minigame);
+            node.setLocation(mgPlayer.getLocation());
+            mgPlayer.sendInfoMessage("Edited node " + name + " in " + minigame);
             Main.getPlugin().getDisplayManager().update(node);
         }
     }
@@ -142,26 +148,26 @@ public class NodeToolMode implements ToolMode {
     }
 
     @Override
-    public void select(MinigamePlayer player, Minigame minigame, Team team) {
+    public void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
         RegionModule mod = RegionModule.getMinigameModule(minigame);
-        String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
+        String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Node");
         if (mod.hasNode(name)) {
-            Main.getPlugin().getDisplayManager().show(mod.getNode(name), player);
-            player.sendInfoMessage("Selected node '" + name + "' visually.");
+            Main.getPlugin().getDisplayManager().show(mod.getNode(name), mgPlayer);
+            mgPlayer.sendInfoMessage("Selected node '" + name + "' visually.");
         } else {
-            player.sendMessage("No node exists by the name '" + name + "'", MinigameMessageType.ERROR);
+            mgPlayer.sendMessage("No node exists by the name '" + name + "'", MinigameMessageType.ERROR);
         }
     }
 
     @Override
-    public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
+    public void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
         RegionModule mod = RegionModule.getMinigameModule(minigame);
-        String name = MinigameUtils.getMinigameTool(player).getSetting("Node");
+        String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Node");
         if (mod.hasNode(name)) {
-            Main.getPlugin().getDisplayManager().hide(mod.getNode(name), player);
-            player.sendInfoMessage("Deselected node '" + name + "'");
+            Main.getPlugin().getDisplayManager().hide(mod.getNode(name), mgPlayer);
+            mgPlayer.sendInfoMessage("Deselected node '" + name + "'");
         } else {
-            player.sendMessage("No node exists by the name '" + name + "'", MinigameMessageType.ERROR);
+            mgPlayer.sendMessage("No node exists by the name '" + name + "'", MinigameMessageType.ERROR);
         }
     }
 

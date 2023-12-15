@@ -16,28 +16,28 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class QuitPositionMode implements ToolMode {
+public class EndLocationMode implements ToolMode {
 
     @Override
     public String getName() {
-        return "QUIT";
+        return "END";
     }
 
     @Override
     public Component getDisplayName() {
-        return "Quit Position";
+        return "End Position";
     }
 
     @Override
     public List<Component> getDescription() { //todo translation String
         return List.of(
-                "Sets the quit",
+                "Sets the end",
                 "location");
     }
 
     @Override
     public Material getIcon() {
-        return Material.OAK_DOOR;
+        return Material.GOLD_BLOCK;
     }
 
     @Override
@@ -49,8 +49,8 @@ public class QuitPositionMode implements ToolMode {
     @Override
     public void onRightClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame,
                              @Nullable Team team, @NotNull PlayerInteractEvent event) {
-        minigame.setQuitLocation(mgPlayer.getLocation());
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SET_QUITLOCATION);
+        minigame.setEndPosition(mgPlayer.getLocation());
+        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SET_ENDLOCATION);
     }
 
     @Override
@@ -65,22 +65,23 @@ public class QuitPositionMode implements ToolMode {
 
     @Override
     public void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
-        if (minigame.getQuitLocation() != null) {
-            mgPlayer.getPlayer().sendBlockChange(minigame.getQuitLocation(), Material.SKELETON_SKULL.createBlockData());
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SELECTED_QUITLOCATION);
+        if (minigame.getEndPosition() != null) {
+            mgPlayer.getPlayer().sendBlockChange(minigame.getEndPosition(),
+                    Material.SKELETON_SKULL.createBlockData());
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SELECTED_ENDLOCATION);
         } else {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_NOQUITLOCATION);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_NOENDLOCATION);
         }
     }
 
     @Override
     public void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
-        if (minigame.getQuitLocation() != null) {
-            mgPlayer.getPlayer().sendBlockChange(minigame.getQuitLocation(),
-                    minigame.getQuitLocation().getBlock().getBlockData());
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_DESELECTED_QUITLOCATION);
+        if (minigame.getEndPosition() != null) {
+            mgPlayer.getPlayer().sendBlockChange(minigame.getEndPosition(),
+                    minigame.getEndPosition().getBlock().getBlockData());
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_DESELECTED_ENDLOCATION);
         } else {
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_NOQUITLOCATION);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_NOENDLOCATION);
         }
     }
 
@@ -91,5 +92,4 @@ public class QuitPositionMode implements ToolMode {
     @Override
     public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, MinigameTool tool) {
     }
-
 }

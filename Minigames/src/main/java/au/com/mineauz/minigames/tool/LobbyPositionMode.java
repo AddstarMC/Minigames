@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.List;
 
-public class LobbyPositionMode implements ToolMode {
+public class LobbyLocationMode implements ToolMode {
 
     @Override
     public String getName() {

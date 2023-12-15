@@ -1,6 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

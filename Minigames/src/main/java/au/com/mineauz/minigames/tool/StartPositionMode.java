@@ -14,7 +14,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.List;
 
-public class StartPositionMode implements ToolMode {
+public class StartLocationMode implements ToolMode {
 
     @Override
     public String getName() {

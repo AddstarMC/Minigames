@@ -1,11 +1,11 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.LoadoutSetFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.minigame.Minigame;

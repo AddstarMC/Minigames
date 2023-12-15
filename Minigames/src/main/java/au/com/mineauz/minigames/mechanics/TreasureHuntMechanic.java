@@ -1,12 +1,12 @@
 package au.com.mineauz.minigames.mechanics;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameTimer;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.events.MinigameTimerTickEvent;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;

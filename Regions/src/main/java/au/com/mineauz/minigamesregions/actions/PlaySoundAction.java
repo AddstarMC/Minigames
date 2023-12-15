@@ -1,10 +1,10 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.FloatFlag;
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;

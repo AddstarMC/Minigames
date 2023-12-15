@@ -1,8 +1,12 @@
 package au.com.mineauz.minigames.objects;
 
-import au.com.mineauz.minigames.*;
+import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.PlayerLoadout;
+import au.com.mineauz.minigames.StoredPlayerCheckpoints;
 import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.display.DisplayCuboid;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;

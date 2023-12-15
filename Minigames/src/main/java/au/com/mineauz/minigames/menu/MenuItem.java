@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -13,12 +13,12 @@ public class MenuItem {
     private Menu container = null;
     private int slot = 0;
 
-    public MenuItem(String name, Material displayItem) {
+    public MenuItem(Component name, Material displayItem) {
         this(name, null, displayItem);
 
     }
 
-    public MenuItem(String name, List<String> description, Material displayItem) {
+    public MenuItem(Component name, List<Component> description, Material displayItem) {
         if (displayItem == null)
             if (description == null) {
                 displayItem = MenuUtility.getSlotFillerItem();
@@ -27,24 +27,24 @@ public class MenuItem {
             }
         this.displayItem = new ItemStack(displayItem);
         ItemMeta meta = this.displayItem.getItemMeta();
-        meta.setDisplayName(ChatColor.RESET + name);
-        if (description != null) meta.setLore(description);
+        meta.displayName(name);
+        if (description != null) meta.lore(description);
         this.displayItem.setItemMeta(meta);
     }
 
-    public List<String> getDescription() {
-        return displayItem.getItemMeta().getLore();
+    public List<Component> getDescription() {
+        return displayItem.getItemMeta().lore();
     }
 
-    public void setDescription(List<String> description) {
+    public void setDescription(List<Component> description) {
         ItemMeta meta = displayItem.getItemMeta();
 
-        meta.setLore(description);
+        meta.lore(description);
         displayItem.setItemMeta(meta);
     }
 
-    public String getName() {
-        return displayItem.getItemMeta().getDisplayName();
+    public Component getName() {
+        return displayItem.getItemMeta().displayName();
     }
 
     public ItemStack getItem() {
@@ -59,8 +59,8 @@ public class MenuItem {
         ItemMeta ometa = displayItem.getItemMeta();
         displayItem = item.clone();
         ItemMeta nmeta = displayItem.getItemMeta();
-        nmeta.setDisplayName(ometa.getDisplayName());
-        nmeta.setLore(nmeta.getLore());
+        nmeta.displayName(ometa.displayName());
+        nmeta.lore(nmeta.lore());
         displayItem.setItemMeta(nmeta);
     }
 

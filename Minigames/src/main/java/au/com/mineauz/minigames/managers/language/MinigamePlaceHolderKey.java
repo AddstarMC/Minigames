@@ -10,6 +10,7 @@ public enum MinigamePlaceHolderKey implements PlaceHolderKey {
     MAX("max"),
     MECHANIC("mechanic"),
     MINIGAME("minigame"),
+    REGION("region"),
     MONEY("money"),
     NUMBER("number"),
     OBJECTIVE("objective"),
@@ -20,6 +21,7 @@ public enum MinigamePlaceHolderKey implements PlaceHolderKey {
     SCORE("score"),
     TEAM("team"),
     TEXT("text"),
+    PERMISSION("permission"),
     TIME("time"),
     TYPE("type");
 

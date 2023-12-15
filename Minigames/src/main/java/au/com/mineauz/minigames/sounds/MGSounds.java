@@ -1,27 +1,22 @@
 package au.com.mineauz.minigames.sounds;
 
 import org.bukkit.Sound;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
+public enum MGSounds {
+    TIMER_TICK(new MGSound(Sound.BLOCK_NOTE_BLOCK_HAT, 10f, 1.5f)),
+    WIN(new MGSound(Sound.ENTITY_PLAYER_LEVELUP)),
+    LOSE(new MGSound(Sound.BLOCK_NOTE_BLOCK_PLING, 10f, 0.2f, 3, 5L)),
+    GAME_START(new MGSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP));
 
-public class MGSounds {
+    private final @NotNull MGSound sound;
 
-    private static final Map<String, MGSound> sounds = new HashMap<>();
-
-    static {
-        addSound("timerTick", new MGSound(Sound.BLOCK_NOTE_BLOCK_HAT, 10f, 1.5f));
-        addSound("win", new MGSound(Sound.ENTITY_PLAYER_LEVELUP));
-        addSound("lose", new MGSound(Sound.BLOCK_NOTE_BLOCK_PLING, 10f, 0.2f, 3, 5L));
-        addSound("gameStart", new MGSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP));
+    MGSounds(@NotNull MGSound sound) {
+        this.sound = sound;
     }
 
-    private static void addSound(String name, MGSound sound) {
-        sounds.put(name, sound);
-    }
-
-    public static MGSound getSound(String name) {
-        return sounds.get(name);
+    public @NotNull MGSound getSound() {
+        return sound;
     }
 
 }

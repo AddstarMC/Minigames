@@ -1,6 +1,5 @@
 package au.com.mineauz.minigamesregions;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.*;
@@ -57,12 +56,12 @@ public class RegionModule extends MinigameModule {
         Set<String> rs = regions.keySet();
         for (String name : rs) {
             Region r = regions.get(name);
-            Map<String, Object> sloc = MinigameUtils.serializeLocation(r.getFirstPoint());
+            Map<String, Object> sloc = r.getFirstPoint().serialize();
             for (String i : sloc.keySet()) {
                 if (!i.equals("yaw") && !i.equals("pitch"))
                     config.set(getMinigame() + ".regions." + name + ".point1." + i, sloc.get(i));
             }
-            sloc = MinigameUtils.serializeLocation(r.getSecondPoint());
+            sloc = r.getSecondPoint().serialize();
             for (String i : sloc.keySet()) {
                 if (!i.equals("yaw") && !i.equals("pitch"))
                     config.set(getMinigame() + ".regions." + name + ".point2." + i, sloc.get(i));

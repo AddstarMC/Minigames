@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import org.bukkit.command.CommandSender;

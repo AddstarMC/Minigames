@@ -1,9 +1,9 @@
 package au.com.mineauz.minigamesregions.actions;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -15,6 +15,7 @@ import au.com.mineauz.minigamesregions.Region;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Set;
@@ -116,23 +117,23 @@ public class BroadcastAction extends AbstractAction {
         execute(player, base);
     }
 
-    private void execute(MinigamePlayer player, ScriptObject base) {
-        MinigameMessageType type = MinigameMessageType.INFO;
-        if (redText.getFlag())
-            type = MinigameMessageType.ERROR;
+    private void execute(@NotNull MinigamePlayer mgPlayer, @NotNull ScriptObject base) {
+        MinigameMessageType type = redText.getFlag() ? MinigameMessageType.ERROR : MinigameMessageType.INFO;
+
         MinigamePlayer exclude = null;
-        if (excludeExecutor.getFlag())
-            exclude = player;
+        if (excludeExecutor.getFlag()) {
+            exclude = mgPlayer;
+        }
 
         // Old replacement
         String message = this.message.getFlag();
-        if (player != null) {
-            message = message.replace("%player%", player.getDisplayName(player.getMinigame().usePlayerDisplayNames()));
+        if (mgPlayer != null) {
+            message = message.replace("%player%", mgPlayer.getDisplayName(mgPlayer.getMinigame().usePlayerDisplayNames()));
         }
         // New expression system
         message = ExpressionParser.stringResolve(message, base, true, true);
-        if (player != null)
-            Minigames.getPlugin().getMinigameManager().sendMinigameMessage(player.getMinigame(), message, type, exclude);
+        if (mgPlayer != null)
+            Minigames.getPlugin().getMinigameManager().sendMinigameMessage(mgPlayer.getMinigame(), message, type, exclude);
 
     }
 

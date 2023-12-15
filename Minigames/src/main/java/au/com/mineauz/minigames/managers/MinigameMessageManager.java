@@ -1,10 +1,10 @@
 package au.com.mineauz.minigames.managers;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.MinigamesBroadcastEvent;
 import au.com.mineauz.minigames.managers.language.LangKey;
 import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.audience.Audience;

@@ -1,9 +1,12 @@
 package au.com.mineauz.minigames.tool;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.display.IDisplayObject;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
@@ -11,12 +14,14 @@ import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.RegenRegionSetResult;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,13 +37,16 @@ public class RegenAreaMode implements ToolMode {
     }
 
     @Override
-    public String getDisplayName() {
+    public Component getDisplayName() {
         return "Regeneration Region Selection";
     }
 
     @Override
-    public List<String> getDescription() {
-        return List.of("Selects an area", "for a regen region.", "Create via left click");
+    public List<Component> getDescription() { //todo translation String
+        return List.of(
+                "Selects an area",
+                "for a regen region.",
+                "Create via left click");
     }
 
     @Override
@@ -47,31 +55,29 @@ public class RegenAreaMode implements ToolMode {
     }
 
     @Override
-    public void onSetMode(final MinigamePlayer player, MinigameTool tool) {
+    public void onSetMode(final @NotNull MinigamePlayer mgPlayer, final @NotNull MinigameTool tool) {
         tool.addSetting("Region", "None");
-        final Menu menu = new Menu(2, "Regen Region Selection", player);
+        final Menu menu = new Menu(2, "Regen Region Selection", mgPlayer);
 
-        if (player.isInMenu()) {
-            menu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), player.getMenu()), menu.getSize() - 9);
+        if (mgPlayer.isInMenu()) {
+            menu.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), mgPlayer.getMenu()), menu.getSize() - 9);
         }
-
-        final MinigameTool ftool = tool;
 
         menu.addItem(new MenuItemString("Region Name", Material.PAPER, new Callback<>() {
 
             @Override
             public String getValue() {
-                return ftool.getSetting("Region");
+                return tool.getSetting("Region");
             }
 
             @Override
             public void setValue(String value) {
-                ftool.changeSetting("Region", value);
+                tool.changeSetting("Region", value);
             }
         }));
 
         if (tool.getMinigame() != null) {
-            Menu regionMenu = new Menu(6, "Regen Regions", player);
+            Menu regionMenu = new Menu(6, "Regen Regions", mgPlayer);
             List<MenuItem> items = new ArrayList<>();
 
             for (final MgRegion region : tool.getMinigame().getRegenRegions()) {
@@ -79,9 +85,9 @@ public class RegenAreaMode implements ToolMode {
 
                 // Set the node and go back to the main menu
                 item.setClick(object -> {
-                    ftool.changeSetting("Region", region.getName());
+                    tool.changeSetting("Region", region.getName());
 
-                    menu.displayMenu(player);
+                    menu.displayMenu(mgPlayer);
 
                     return object;
                 });
@@ -94,47 +100,56 @@ public class RegenAreaMode implements ToolMode {
 
             menu.addItem(new MenuItemPage("Edit Region", Material.CHEST, regionMenu));
         }
-        menu.displayMenu(player);
+        menu.displayMenu(mgPlayer);
     }
 
     @Override
-    public void onUnsetMode(MinigamePlayer player, MinigameTool tool) {
+    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameTool tool) {
         tool.removeSetting("Region");
     }
 
     @Override
-    public void onLeftClick(MinigamePlayer player, Minigame minigame,
-                            Team team, PlayerInteractEvent event) {
-        if (player.hasSelection()) {
-            String name = MinigameUtils.getMinigameTool(player).getSetting("Region");
+    public void onLeftClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame,
+                            @Nullable Team team, @NotNull PlayerInteractEvent event) {
+        if (mgPlayer.hasSelection()) {
+            String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Region"); //todo expose Settings
             MgRegion region = minigame.getRegenRegion(name);
 
-            RegenRegionSetResult result = minigame.setRegenRegion(new MgRegion(name, player.getSelectionPoints()[0], player.getSelectionPoints()[1]));
+            RegenRegionSetResult result = minigame.setRegenRegion(new MgRegion(name, mgPlayer.getSelectionPoints()[0], mgPlayer.getSelectionPoints()[1]));
 
             if (result.success()) {
                 if (region == null) {
-                    player.sendInfoMessage(Component.text("Created a new regen region in " + minigame + " called " + name + ", " + result.numOfBlocksTotal() + "/" + minigame.getRegenBlocklimit()));
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_REGENREGION_CREATED,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
                 } else {
-                    player.sendInfoMessage(Component.text("Updated region " + name + " in " + minigame));
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_REGENREGION_UPDATED,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
                 }
 
-                player.clearSelection();
+                mgPlayer.clearSelection();
             } else {
-                player.sendMessage(Component.text("Error: the limit of Blocks of all regen areas together has been reached +(" + result.numOfBlocksTotal() + "/" + minigame.getRegenBlocklimit() + ")." +
-                        " Please contact an admin if necessary.", NamedTextColor.RED), MinigameMessageType.ERROR);
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_REGENREGION_ERROR_LIMIT,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(result.numOfBlocksTotal())),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MAX.getKey(), String.valueOf(minigame.getRegenBlocklimit())));
             }
         } else {
-            player.sendMessage(Component.text("You need to select a region with right click first!"), MinigameMessageType.ERROR);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_NOREGIONSELECTED);
         }
     }
 
     @Override
-    public void onRightClick(MinigamePlayer player, Minigame minigame,
-                             Team team, PlayerInteractEvent event) {
+    public void onRightClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame,
+                             @Nullable Team team, @NotNull PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            player.addSelectionPoint(event.getClickedBlock().getLocation());
-            if (player.hasSelection()) {
-                player.sendInfoMessage(Component.text("Selection complete, finalise with left click."));
+            mgPlayer.addSelectionPoint(event.getClickedBlock().getLocation());
+            if (mgPlayer.hasSelection()) {
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SELECTED_REGION);
             }
         }
     }
@@ -150,31 +165,36 @@ public class RegenAreaMode implements ToolMode {
     }
 
     @Override
-    public void select(MinigamePlayer player, Minigame minigame, Team team) {
-        String name = MinigameUtils.getMinigameTool(player).getSetting("Region");
+    public void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
+        String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Region");
         if (minigame.getRegenRegion(name) != null) {
-            displayedRegions.put(player.getUUID(),
-                    Minigames.getPlugin().display.displayCuboid(player.getPlayer(), minigame.getRegenRegion(name)));
-            player.sendInfoMessage(Component.text("Selected the " + name + " region in " + minigame));
+            displayedRegions.put(mgPlayer.getUUID(),
+                    Minigames.getPlugin().display.displayCuboid(mgPlayer.getPlayer(), minigame.getRegenRegion(name)));
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SELECTED_REGENREGION,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name),
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)));
         } else {
-            player.sendMessage(Component.text("No region created by the name '" + name + "'"), MinigameMessageType.ERROR);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_NOREGENREION,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name));
         }
     }
 
     @Override
-    public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
-        String name = MinigameUtils.getMinigameTool(player).getSetting("Region");
+    public void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
+        String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Region");
         if (minigame.getRegenRegion(name) != null) {
 
-            IDisplayObject displayed = displayedRegions.get(player.getUUID());
+            IDisplayObject displayed = displayedRegions.get(mgPlayer.getUUID());
             if (displayed != null) {
                 displayed.remove();
             }
 
-            player.clearSelection();
-            player.sendInfoMessage(Component.text("Deselected the region"));
+            mgPlayer.clearSelection();
+
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_DESELECTED_REGION);
         } else {
-            player.sendMessage(Component.text("No region created by the name '" + name + "'"), MinigameMessageType.ERROR);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_NOREGENREION,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.REGION.getKey(), name));
         }
     }
 

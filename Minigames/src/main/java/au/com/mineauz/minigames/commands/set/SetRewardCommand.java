@@ -5,12 +5,14 @@ import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.*;
 import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,7 @@ public class SetRewardCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public Component getDescription() {
         return """
                 Sets the players reward for completing the Minigame for the first time. This can be one item or a randomly selected item added to the rewards, depending on its defined rarity.\s
                 Possible rarities are: very_common, common, normal, rare and very_rare
@@ -46,15 +48,10 @@ public class SetRewardCommand implements ICommand {
     }
 
     @Override
-    public String[] getUsage() {
+    public Component getUsage() {
         return new String[]{"/minigame set <Minigame> reward <Item Name> [Quantity] [Rarity]",
                 "/minigame set <Minigame> reward $<Money Amount> [Rarity]"
         };
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set a Minigames reward!";
     }
 
     @Override
@@ -64,7 +61,7 @@ public class SetRewardCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             RewardsModule module = RewardsModule.getModule(minigame);
             if (!(module.getScheme() instanceof StandardRewardScheme)) {
@@ -80,6 +77,7 @@ public class SetRewardCommand implements ICommand {
                 quantity = Integer.parseInt(args[1]);
             }
 
+            Material mat = null;
             ItemStack item = null;
             if (args[0].startsWith("$")) {
                 try {
@@ -87,7 +85,8 @@ public class SetRewardCommand implements ICommand {
                 } catch (NumberFormatException ignored) {
                 }
             } else {
-                item = MinigameUtils.stringToItemStack(args[0], quantity);
+                mat = Material.matchMaterial(args[0]);
+                item = mat == null ? null : new ItemStack(mat, quantity);
             }
 
             if (item != null && item.getType() != Material.AIR) {
@@ -100,11 +99,21 @@ public class SetRewardCommand implements ICommand {
                 ir.setRarity(rarity);
                 rewards.addReward(ir);
 
-                sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to primary rewards of \"" + minigame.getName(false) + "\" "
+                Component itemName;
+                if (mat.isItem()) {
+                    itemName = Component.translatable(item.getType().getItemTranslationKey());
+                } else if (mat.isBlock()) {
+                    itemName = Component.translatable(item.getType().getBlockTranslationKey());
+                } else {
+                    itemName = Component.text(mat.toString().toLowerCase().replace("_", " "));
+                }
+
+                sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + itemName + " to primary rewards of \"" + minigame.getName(false) + "\" "
                         + "with a rarity of \"" + rarity.toString().toLowerCase().replace("_", " ") + "\"");
                 return true;
-            } else if (sender instanceof Player && args[0].equals("SLOT")) {
-                item = ((Player) sender).getInventory().getItemInMainHand();
+            } else if (sender instanceof Player player && args[0].equals("SLOT")) {
+                item = player.getInventory().getItemInMainHand();
+                mat = item.getType();
                 RewardRarity rarity = RewardRarity.NORMAL;
                 if (args.length == 2) {
                     rarity = RewardRarity.valueOf(args[1].toUpperCase());
@@ -113,7 +122,17 @@ public class SetRewardCommand implements ICommand {
                 ir.setRewardItem(item);
                 ir.setRarity(rarity);
                 rewards.addReward(ir);
-                sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to primary rewards of \"" + minigame.getName(false) + "\" "
+
+                Component itemName;
+                if (mat.isItem()) {
+                    itemName = Component.translatable(item.getType().getItemTranslationKey());
+                } else if (mat.isBlock()) {
+                    itemName = Component.translatable(item.getType().getBlockTranslationKey());
+                } else {
+                    itemName = Component.text(mat.toString().toLowerCase().replace("_", " "));
+                }
+
+                sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + itemName + " to primary rewards of \"" + minigame.getName(false) + "\" "
                         + "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
                 return true;
             } else if (item != null && item.getType() == Material.AIR) {

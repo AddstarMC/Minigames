@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.mechanics;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.StartMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;

@@ -3,10 +3,13 @@ package au.com.mineauz.minigames.tool;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -14,19 +17,19 @@ public interface ToolMode {
 
     String getName();
 
-    String getDisplayName();
+    Component getDisplayName();
 
-    List<String> getDescription();
+    List<Component> getDescription();
 
     Material getIcon();
 
     void onSetMode(MinigamePlayer player, MinigameTool tool);
 
-    void onUnsetMode(MinigamePlayer player, MinigameTool tool);
+    void onUnsetMode(@NotNull MinigamePlayer mgPlayer, MinigameTool tool);
 
-    void onLeftClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEvent event);
+    void onLeftClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team, @NotNull PlayerInteractEvent event);
 
-    void onRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEvent event);
+    void onRightClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team, @NotNull PlayerInteractEvent event);
 
     /**
      * Triggers when an entity is right-clicked by a Player with permission to use a minigame Tool
@@ -50,7 +53,7 @@ public interface ToolMode {
      */
     void onEntityRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEntityEvent event);
 
-    void select(MinigamePlayer player, Minigame minigame, Team team);
+    void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team);
 
-    void deselect(MinigamePlayer player, Minigame minigame, Team team);
+    void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team);
 }

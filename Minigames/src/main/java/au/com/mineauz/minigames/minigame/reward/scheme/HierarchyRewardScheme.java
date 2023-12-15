@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.RewardType;

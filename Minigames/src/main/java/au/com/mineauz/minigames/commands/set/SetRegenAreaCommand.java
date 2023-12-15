@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.commands.set;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;

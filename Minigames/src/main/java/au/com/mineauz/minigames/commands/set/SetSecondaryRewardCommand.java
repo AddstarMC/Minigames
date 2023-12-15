@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.*;
 import au.com.mineauz.minigames.minigame.reward.scheme.StandardRewardScheme;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -79,6 +80,7 @@ public class SetSecondaryRewardCommand implements ICommand {
             if (args.length >= 2 && args[1].matches("[0-9]+")) {
                 quantity = Integer.parseInt(args[1]);
             }
+            Material mat = null;
             ItemStack item = null;
             if (args[0].startsWith("$")) {
                 try {
@@ -86,7 +88,8 @@ public class SetSecondaryRewardCommand implements ICommand {
                 } catch (NumberFormatException ignored) {
                 }
             } else {
-                item = MinigameUtils.stringToItemStack(args[0], quantity);
+                mat = Material.matchMaterial(args[0]);
+                item = mat == null ? null : new ItemStack(mat, quantity);
             }
 
             if (item != null && item.getType() != Material.AIR) {
@@ -99,11 +102,21 @@ public class SetSecondaryRewardCommand implements ICommand {
                 ir.setRarity(rarity);
                 rewards.addReward(ir);
 
-                sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to secondary rewards of \"" + minigame.getName(false) + "\" "
+                Component itemName;
+                if (mat.isItem()) {
+                    itemName = Component.translatable(item.getType().getItemTranslationKey());
+                } else if (mat.isBlock()) {
+                    itemName = Component.translatable(item.getType().getBlockTranslationKey());
+                } else {
+                    itemName = Component.text(mat.toString().toLowerCase().replace("_", " "));
+                }
+
+                sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + itemName + " to secondary rewards of \"" + minigame.getName(false) + "\" "
                         + "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
                 return true;
             } else if (sender instanceof Player && args[0].equals("SLOT")) {
                 item = ((Player) sender).getInventory().getItemInMainHand();
+                mat = item.getType();
                 RewardRarity rarity = RewardRarity.NORMAL;
                 if (args.length == 2) {
                     rarity = RewardRarity.valueOf(args[1].toUpperCase());
@@ -112,7 +125,17 @@ public class SetSecondaryRewardCommand implements ICommand {
                 ir.setRewardItem(item);
                 ir.setRarity(rarity);
                 rewards.addReward(ir);
-                sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + MinigameUtils.getItemStackName(item) + " to secondary rewards of \"" + minigame.getName(false) + "\" "
+
+                Component itemName;
+                if (mat.isItem()) {
+                    itemName = Component.translatable(item.getType().getItemTranslationKey());
+                } else if (mat.isBlock()) {
+                    itemName = Component.translatable(item.getType().getBlockTranslationKey());
+                } else {
+                    itemName = Component.text(mat.toString().toLowerCase().replace("_", " "));
+                }
+
+                sender.sendMessage(ChatColor.GRAY + "Added " + item.getAmount() + " of " + itemName + " to secondary rewards of \"" + minigame.getName(false) + "\" "
                         + "with a rarity of " + rarity.toString().toLowerCase().replace("_", " "));
                 return true;
             } else if (item != null && item.getType() == Material.AIR) {

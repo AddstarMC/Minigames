@@ -3,6 +3,7 @@ package au.com.mineauz.minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
@@ -71,7 +72,7 @@ public class MultiplayerTimer {
             } else if (timeMsg.contains(currentLobbyWaitTime)) {
                 plugin.getMinigameManager().sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_STARTUP_TIME,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(currentLobbyWaitTime))), MinigameMessageType.INFO);
-                PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
+                PlayMGSound.playSound(minigame, MGSounds.TIMER_TICK.getSound());
             }
         } else if (currentLobbyWaitTime == 0 && startWaitTime != 0 && !paused) {
             //wait time done game will start.
@@ -94,7 +95,7 @@ public class MultiplayerTimer {
             } else if (timeMsg.contains(startWaitTime)) {
                 plugin.getMinigameManager().sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_STARTUP_TIME,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(startWaitTime))), MinigameMessageType.INFO);
-                PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
+                PlayMGSound.playSound(minigame, MGSounds.TIMER_TICK.getSound());
             }
         } else if (currentLobbyWaitTime == 0 && startWaitTime == 0) {
             //game should start..

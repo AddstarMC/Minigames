@@ -1,4 +1,4 @@
-package au.com.mineauz.minigames;
+package au.com.mineauz.minigames.managers.language;
 
 public enum MinigameMessageType {
     DEFAULT,

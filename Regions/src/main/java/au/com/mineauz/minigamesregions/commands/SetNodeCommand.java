@@ -8,6 +8,7 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.RegionModule;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -36,8 +37,9 @@ public class SetNodeCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Creates and modifies customizable nodes";
+    public List<Component> getDescription() { //todo translation String
+        return List.of(
+                "Creates and modifies customizable nodes");
     }
 
     @Override

@@ -6,15 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 public class ToolModes {
-
     private static final Map<String, ToolMode> modes = new HashMap<>();
 
     static {
-        addToolMode(new StartPositionMode());
-        addToolMode(new SpectatorPositionMode());
+        addToolMode(new StartLocationMode());
+        addToolMode(new SpectatorLocationMode());
         addToolMode(new QuitPositionMode());
-        addToolMode(new EndPositionMode());
-        addToolMode(new LobbyPositionMode());
+        addToolMode(new EndLocationMode());
+        addToolMode(new LobbyLocationMode());
         addToolMode(new RegenAreaMode());
         addToolMode(new DegenAreaMode());
     }

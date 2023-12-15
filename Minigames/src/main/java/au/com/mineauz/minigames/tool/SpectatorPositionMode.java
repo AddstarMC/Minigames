@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.List;
 
-public class SpectatorPositionMode implements ToolMode {
+public class SpectatorLocationMode implements ToolMode {
 
     @Override
     public String getName() {

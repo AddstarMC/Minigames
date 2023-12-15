@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -13,12 +14,12 @@ public class MenuItemToolMode extends MenuItem {
 
     private final ToolMode mode;
 
-    public MenuItemToolMode(String name, Material displayItem, ToolMode mode) {
+    public MenuItemToolMode(Component name, Material displayItem, ToolMode mode) {
         super(name, displayItem);
         this.mode = mode;
     }
 
-    public MenuItemToolMode(String name, List<String> description, Material displayItem, ToolMode mode) {
+    public MenuItemToolMode(Component name, List<Component> description, Material displayItem, ToolMode mode) {
         super(name, description, displayItem);
         this.mode = mode;
     }
@@ -27,8 +28,9 @@ public class MenuItemToolMode extends MenuItem {
         MinigamePlayer ply = getContainer().getViewer();
         if (MinigameUtils.hasMinigameTool(ply)) {
             MinigameTool tool = MinigameUtils.getMinigameTool(ply);
-            if (tool.getMode() != null)
+            if (tool.getMode() != null) {
                 tool.getMode().onUnsetMode(ply, tool);
+            }
             tool.setMode(mode);
             tool.getMode().onSetMode(ply, tool);
         }

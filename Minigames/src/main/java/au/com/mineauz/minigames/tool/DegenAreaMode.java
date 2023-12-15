@@ -1,6 +1,8 @@
 package au.com.mineauz.minigames.tool;
 
-import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.objects.MgRegion;
@@ -11,6 +13,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -22,13 +26,16 @@ public class DegenAreaMode implements ToolMode {
     }
 
     @Override
-    public String getDisplayName() {
+    public Component getDisplayName() {
         return "Degeneration Area";
     }
 
     @Override
-    public List<String> getDescription() {
-        return List.of("Selects the degeneration", "area with right click", "finalise with left");
+    public List<Component> getDescription() { //todo translation String
+        return List.of(
+                "Selects the degeneration",
+                "area with right click",
+                "finalise with left");
     }
 
     @Override
@@ -37,65 +44,60 @@ public class DegenAreaMode implements ToolMode {
     }
 
     @Override
-    public void onLeftClick(MinigamePlayer player, Minigame minigame,
-                            Team team, PlayerInteractEvent event) {
-        if (player.hasSelection()) {
+    public void onLeftClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame,
+                            @Nullable Team team, @NotNull PlayerInteractEvent event) {
+        if (mgPlayer.hasSelection()) {
             if (minigame.getFloorDegen() != null) {
-                minigame.getFloorDegen().setFirstPos(player.getSelectionPoints()[0]);
-                minigame.getFloorDegen().setSecondPos(player.getSelectionPoints()[1]);
+                minigame.getFloorDegen().setFirstPos(mgPlayer.getSelectionPoints()[0]);
+                minigame.getFloorDegen().setSecondPos(mgPlayer.getSelectionPoints()[1]);
             } else {
                 //please note: the name is not important
-                minigame.setFloorDegen(new MgRegion("degen", player.getSelectionPoints()[0], player.getSelectionPoints()[1]));
+                minigame.setFloorDegen(new MgRegion("degen", mgPlayer.getSelectionPoints()[0], mgPlayer.getSelectionPoints()[1]));
             }
-            player.sendInfoMessage(Component.text("Created a degeneration area for " + minigame));
-        } else if (player.getSelectionPoints()[1] == null) {
-            player.sendMessage(Component.text("You must make a selection with right click first!"), MinigameMessageType.ERROR);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SET_DEGENAREA);
         } else {
-            minigame.removeFloorDegen();
-            player.sendInfoMessage(Component.text("Cleared degeneration area from " + minigame));
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_NOREGIONSELECTED);
         }
     }
 
     @Override
-    public void onRightClick(MinigamePlayer player, Minigame minigame,
-                             Team team, PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            player.addSelectionPoint(event.getClickedBlock().getLocation());
-            if (player.getSelectionPoints()[1] != null) {
-                player.sendInfoMessage("Left click to finalise selection");
+    public void onRightClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame,
+                             @Nullable Team team, @NotNull PlayerInteractEvent event) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock() != null) {
+            mgPlayer.addSelectionPoint(event.getClickedBlock().getLocation());
+            if (mgPlayer.getSelectionPoints()[1] != null) {
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SELECTED_REGION);
             }
         }
     }
 
     @Override
     public void onEntityLeftClick(MinigamePlayer player, Minigame minigame, Team team, EntityDamageByEntityEvent event) {
-
     }
 
     @Override
     public void onEntityRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEntityEvent event) {
-
     }
 
     @Override
-    public void select(MinigamePlayer player, Minigame minigame, Team team) {
+    public void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
         if (minigame.getFloorDegen() != null) {
-            player.setSelection(minigame.getFloorDegen());
-            player.showSelection(false);
-            player.sendInfoMessage("Selected degeneration area in " + minigame);
+            mgPlayer.setSelection(minigame.getFloorDegen());
+            mgPlayer.showSelection(false);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SELECTED_REGION);
         } else {
-            player.sendMessage("No degeneration area selected for " + minigame, MinigameMessageType.ERROR);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_NODEGENAREA);
         }
     }
 
     @Override
-    public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
+    public void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
         if (minigame.getFloorDegen() != null) {
-            player.setSelection(minigame.getFloorDegen());
-            player.showSelection(true);
-            player.sendInfoMessage("Selected degeneration area in " + minigame);
+            mgPlayer.setSelection(minigame.getFloorDegen());
+            mgPlayer.showSelection(true);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_DESELECTED_REGION);
         } else {
-            player.sendMessage("No degeneration area selected for " + minigame, MinigameMessageType.ERROR);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_NODEGENAREA);
         }
     }
 
@@ -104,7 +106,7 @@ public class DegenAreaMode implements ToolMode {
     }
 
     @Override
-    public void onUnsetMode(MinigamePlayer player, MinigameTool tool) {
+    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, MinigameTool tool) {
     }
 
 }

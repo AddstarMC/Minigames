@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +107,7 @@ public class MinigameTool {
         addSetting(name, setting);
     }
 
-    public String getSetting(String name) {
+    public @NotNull String getSetting(@NotNull String name) {
         ItemMeta meta = tool.getItemMeta();
         List<String> lore = meta.getLore();
         for (String l : lore) {
@@ -172,8 +173,8 @@ public class MinigameTool {
             }
         }, teams), men.getSize() - 3);
 
-        for (ToolMode m : ToolModes.getToolModes()) {
-            men.addItem(new MenuItemToolMode(m.getDisplayName(), m.getDescription(), m.getIcon(), m));
+        for (ToolMode toolMode : ToolModes.getToolModes()) {
+            men.addItem(new MenuItemToolMode(toolMode.getDisplayName(), toolMode.getDescription(), toolMode.getIcon(), toolMode));
         }
 
         men.displayMenu(player);

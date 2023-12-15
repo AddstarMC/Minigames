@@ -1,9 +1,9 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
@@ -61,7 +61,7 @@ public class InfoCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame, @NotNull String label, @NotNull String @Nullable @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame, @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             minigame = plugin.getMinigameManager().getMinigame(args[0]);
         }

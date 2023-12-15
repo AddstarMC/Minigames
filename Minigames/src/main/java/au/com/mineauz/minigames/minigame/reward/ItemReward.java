@@ -1,7 +1,7 @@
 package au.com.mineauz.minigames.minigame.reward;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.apache.commons.text.WordUtils;

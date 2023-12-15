@@ -70,7 +70,7 @@ public class MinigameTimer {
             }
         }
         if (timeMsg.contains(time) && broadcastTime) {
-            PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
+            PlayMGSound.playSound(minigame, MGSounds.TIMER_TICK.getSound());
             plugin.getMinigameManager().sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_TIMELEFT,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(time))));
         }

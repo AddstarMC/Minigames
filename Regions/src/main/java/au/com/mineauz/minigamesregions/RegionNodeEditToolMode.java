@@ -1,6 +1,6 @@
 package au.com.mineauz.minigamesregions;
 
-import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemSaveMinigame;
 import au.com.mineauz.minigames.menu.MenuUtility;
@@ -14,11 +14,14 @@ import au.com.mineauz.minigamesregions.menuitems.MenuItemRegion;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -33,13 +36,16 @@ public class RegionNodeEditToolMode implements ToolMode {
     }
 
     @Override
-    public String getDisplayName() {
+    public Component getDisplayName() {
         return "Region and Node editor";
     }
 
     @Override
-    public List<String> getDescription() {
-        return List.of("Allows you to simply", "edit regions and nodes", "with right click");
+    public List<Component> getDescription() { //todo translation String
+        return List.of(
+                "Allows you to simply",
+                "edit regions and nodes",
+                "with right click");
     }
 
     @Override
@@ -56,18 +62,18 @@ public class RegionNodeEditToolMode implements ToolMode {
     }
 
     @Override
-    public void onUnsetMode(MinigamePlayer player, MinigameTool tool) {
+    public void onUnsetMode(@NotNull MinigamePlayer mgPlayer, MinigameTool tool) {
         if (tool.getMinigame() != null) {
-            Main.getPlugin().getDisplayManager().hideAll(player.getPlayer());
+            Main.getPlugin().getDisplayManager().hideAll(mgPlayer.getPlayer());
         }
     }
 
     @Override
-    public void onLeftClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEvent event) {
+    public void onLeftClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team, @NotNull PlayerInteractEvent event) {
     }
 
     @Override
-    public void onRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEvent event) {
+    public void onRightClick(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team, @NotNull PlayerInteractEvent event) {
         Vector origin = event.getPlayer().getEyeLocation().toVector();
         Vector direction = event.getPlayer().getEyeLocation().getDirection().normalize();
 
@@ -107,9 +113,9 @@ public class RegionNodeEditToolMode implements ToolMode {
 
         // Tracing done, now show the results
         if (hits.size() == 1) {
-            openMenu(player, minigame, Iterables.getFirst(hits, null));
+            openMenu(mgPlayer, minigame, Iterables.getFirst(hits, null));
         } else if (!hits.isEmpty()) {
-            openChooseMenu(player, module, hits);
+            openChooseMenu(mgPlayer, module, hits);
         }
     }
 
@@ -166,12 +172,12 @@ public class RegionNodeEditToolMode implements ToolMode {
     }
 
     @Override
-    public void select(MinigamePlayer player, Minigame minigame, Team team) {
-        Main.getPlugin().getDisplayManager().showAll(minigame, player);
+    public void select(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
+        Main.getPlugin().getDisplayManager().showAll(minigame, mgPlayer);
     }
 
     @Override
-    public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
-        Main.getPlugin().getDisplayManager().hideAll(player.getPlayer());
+    public void deselect(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @Nullable Team team) {
+        Main.getPlugin().getDisplayManager().hideAll(mgPlayer.getPlayer());
     }
 }

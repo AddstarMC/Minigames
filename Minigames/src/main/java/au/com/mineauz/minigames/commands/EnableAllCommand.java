@@ -1,10 +1,10 @@
 package au.com.mineauz.minigames.commands;
 
-import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameManager;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
