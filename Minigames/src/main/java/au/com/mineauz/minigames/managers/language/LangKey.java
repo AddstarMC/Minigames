@@ -1,4 +1,4 @@
-package au.com.mineauz.minigames.managers;
+package au.com.mineauz.minigames.managers.language;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -1,16 +1,12 @@
-package au.com.mineauz.minigames.display.spigot;
+package au.com.mineauz.minigames.display;
 
-import au.com.mineauz.minigames.display.AbstractDisplayObject;
-import au.com.mineauz.minigames.display.DisplayManager;
-import au.com.mineauz.minigames.display.IDisplayPoint;
-import au.com.mineauz.minigames.display.INonPersistentDisplay;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class SpigotDisplayPoint extends AbstractDisplayObject implements IDisplayPoint, INonPersistentDisplay {
+public class DisplayPoint extends AbstractDisplayObject implements INonPersistentDisplay, IDisplayObject {
     private static final Location temp = new Location(null, 0, 0, 0);
 
     private final Vector position;
@@ -18,12 +14,12 @@ public class SpigotDisplayPoint extends AbstractDisplayObject implements IDispla
     private final float yaw;
     private final float pitch;
 
-    public SpigotDisplayPoint(DisplayManager manager, Player player, Vector position, float yaw, float pitch, boolean showDirection) {
+    public DisplayPoint(DisplayManager manager, Player player, Vector position, float yaw, float pitch, boolean showDirection) {
         this(manager, player.getWorld(), position, yaw, pitch, showDirection);
         this.player = player;
     }
 
-    public SpigotDisplayPoint(DisplayManager manager, World world, Vector position, float yaw, float pitch, boolean showDirection) {
+    public DisplayPoint(DisplayManager manager, World world, Vector position, float yaw, float pitch, boolean showDirection) {
         super(manager, world);
 
         this.position = position;

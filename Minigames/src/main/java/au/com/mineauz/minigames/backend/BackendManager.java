@@ -89,7 +89,7 @@ public class BackendManager {
         }
 
         // Init
-        if (!backend.initialize(backendSection, debug)) {
+        if (!backend.initialize(backendSection)) {
             return false;
         }
 
@@ -235,7 +235,7 @@ public class BackendManager {
             throw new IllegalArgumentException("You cannot export to the same backend that is in use");
         }
 
-        if (!destination.initialize(config.getConfigurationSection("backend"), debug)) {
+        if (!destination.initialize(config.getConfigurationSection("backend"))) {
             throw new IllegalArgumentException("Failed to initialize destination backend");
         }
 
@@ -261,7 +261,7 @@ public class BackendManager {
             throw new IllegalArgumentException("Cannot switch to the same backend");
         }
 
-        if (!newBackend.initialize(config.getConfigurationSection("backend"), debug)) {
+        if (!newBackend.initialize(config.getConfigurationSection("backend"))) {
             throw new IllegalArgumentException("Failed to initialize target backend");
         }
 

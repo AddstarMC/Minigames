@@ -9,6 +9,8 @@ import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -27,7 +29,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
     }
 
     @Override
-    public boolean checkCanStart(Minigame minigame, MinigamePlayer caller) {
+    public boolean checkCanStart(@NotNull Minigame minigame, @Nullable MinigamePlayer caller) {
         return true;
     }
 
@@ -139,7 +141,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
             Minigame mgm = ply.getMinigame();
 
             if (mgm.getMechanicName().equals("kills")) {
-                autoBalanceonDeath(ply, mgm);
+                autoBalanceOnDeath(ply, mgm);
             }
         }
     }

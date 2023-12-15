@@ -44,7 +44,8 @@ public interface ICommand {
 
     String getPermission();
 
-    boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame, @NotNull String label, @NotNull String @Nullable[] args);
+    boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame minigame,
+                      @NotNull String label, @NotNull String @Nullable [] args);
 
     List<String> onTabComplete(CommandSender sender, Minigame minigame, String alias, String[] args);
 }

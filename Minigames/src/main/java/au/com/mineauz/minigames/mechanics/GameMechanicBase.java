@@ -1,18 +1,25 @@
 package au.com.mineauz.minigames.mechanics;
 
 import au.com.mineauz.minigames.MinigameMessageType;
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.managers.MinigameManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -53,7 +60,7 @@ public abstract class GameMechanicBase implements Listener {
      * @param caller   The Player (or Null) to send the error messages to
      * @return true if all checks pass.
      */
-    public abstract boolean checkCanStart(Minigame minigame, MinigamePlayer caller); //todo better return value to indicate what went wrong
+    public abstract boolean checkCanStart(@NotNull Minigame minigame, @Nullable MinigamePlayer caller); //todo better return value to indicate what went wrong
 
     /**
      * In the case of a Minigame having teams, this should be used to balance players
@@ -67,48 +74,45 @@ public abstract class GameMechanicBase implements Listener {
      * @return List of {@link MinigamePlayer} that have been moved to a different or new team.
      */
 
-    public List<MinigamePlayer> balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
+    public List<MinigamePlayer> balanceTeam(@NotNull List<@NotNull MinigamePlayer> players, @NotNull Minigame minigame) {
         List<MinigamePlayer> result = new ArrayList<>();
         if (minigame.isTeamGame()) {
             boolean sorted = false;
-            for (MinigamePlayer ply : players) {
-                if (ply.getTeam() == null) {
-                    Team smt = null;
-                    for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {
-                        if (smt == null || (t.getPlayers().size() < smt.getPlayers().size() &&
-                                (t.getMaxPlayers() == 0 || t.getPlayers().size() != t.getMaxPlayers())))
-                            smt = t;
+            for (MinigamePlayer mgPlayer : players) {
+                if (mgPlayer.getTeam() == null) {
+                    Team teamToJoin = null;
+                    for (Team teamToCheck : TeamsModule.getMinigameModule(minigame).getTeams()) {
+                        if (teamToJoin == null || (teamToCheck.getPlayers().size() < teamToJoin.getPlayers().size() &&
+                                (teamToCheck.getMaxPlayers() == 0 || teamToCheck.getPlayers().size() != teamToCheck.getMaxPlayers())))
+                            teamToJoin = teamToCheck;
                     }
-                    if (smt == null) {
-                        pdata.quitMinigame(ply, false);
-                        ply.sendMessage(MinigameUtils.getLang("minigame.full"), MinigameMessageType.ERROR);
+                    if (teamToJoin == null) {
+                        pdata.quitMinigame(mgPlayer, false);
+                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_FULL);
                     } else {
-                        smt.addPlayer(ply);
-                        ply.sendInfoMessage(String.format(smt.getAutobalanceMessage(), smt.getTextColor() + smt.getDisplayName()));
-                        mdata.sendMinigameMessage(minigame,
-                                String.format(smt.getGameAutobalanceMessage(),
-                                        ply.getName(), smt.getTextColor() + smt.getDisplayName()), null, ply);
+                        teamToJoin.addPlayer(mgPlayer);
+                        broadcastAutobalance(minigame, mgPlayer, teamToJoin);
                     }
                 }
             }
 
             while (!sorted) {
-                Team smt = null;
-                Team lgt = null;
-                for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {
-                    if (smt == null || (t.getPlayers().size() < smt.getPlayers().size() - 1 && t.hasRoom() && t.getAutoBalanceTeam()))
-                        smt = t;
-                    if ((lgt == null || (t.getPlayers().size() > lgt.getPlayers().size() && t.hasRoom())) && t != smt && t.getAutoBalanceTeam())
-                        lgt = t;
+                Team teamToJoin = null;
+                Team teamToBalance = null;
+                for (Team teamToCheck : TeamsModule.getMinigameModule(minigame).getTeams()) {
+                    if (teamToJoin == null || (teamToCheck.getPlayers().size() < teamToJoin.getPlayers().size() - 1 && teamToCheck.hasRoom() && teamToCheck.getAutoBalanceTeam()))
+                        teamToJoin = teamToCheck;
+                    if ((teamToBalance == null || (teamToCheck.getPlayers().size() > teamToBalance.getPlayers().size() && teamToCheck.hasRoom())) && teamToCheck != teamToJoin && teamToCheck.getAutoBalanceTeam())
+                        teamToBalance = teamToCheck;
                 }
-                if (smt != null && lgt != null && lgt.getPlayers().size() - smt.getPlayers().size() > 1) {
-                    MinigamePlayer pl = lgt.getPlayers().get(0);
-                    MultiplayerType.switchTeam(minigame, pl, smt);
-                    result.add(pl);
-                    pl.sendInfoMessage(String.format(smt.getAutobalanceMessage(), smt.getTextColor() + smt.getDisplayName()));
-                    mdata.sendMinigameMessage(minigame,
-                            String.format(smt.getGameAutobalanceMessage(),
-                                    pl.getDisplayName(minigame.usePlayerDisplayNames()), smt.getTextColor() + smt.getDisplayName()), null, pl);
+                if (teamToJoin != null && teamToBalance != null && teamToBalance.getPlayers().size() - teamToJoin.getPlayers().size() > 1) {
+                    MinigamePlayer mgPlayer = teamToBalance.getPlayers().get(0);
+                    MultiplayerType.switchTeam(minigame, mgPlayer, teamToJoin);
+                    result.add(mgPlayer);
+
+
+                    teamToJoin.addPlayer(mgPlayer);
+                    broadcastAutobalance(minigame, mgPlayer, teamToJoin);
                 } else {
                     sorted = true;
                 }
@@ -117,26 +121,37 @@ public abstract class GameMechanicBase implements Listener {
         return result;
     }
 
-    void autoBalanceonDeath(MinigamePlayer ply, Minigame mgm) {
-        Team smt = null;
-        Team lgt = ply.getTeam();
-        if (lgt.getAutoBalanceTeam()) {//this team is flagged as  balanced - players will be removed.
+    private void broadcastAutobalance(@NotNull Minigame minigame, @NotNull MinigamePlayer mgPlayer, @NotNull Team teamToJoin) {
+        MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(
+                teamToJoin.getAutobalanceMessage(),
+                Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(teamToJoin.getDisplayName()).color(teamToJoin.getTextColor())))); //todo is NOT backwards compatible!!
+
+        mdata.sendMinigameMessage(minigame,
+                MiniMessage.miniMessage().deserialize(teamToJoin.getGameAutobalanceMessage(),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getDisplayName(minigame.usePlayerDisplayNames())),
+                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(teamToJoin.getDisplayName()).color(teamToJoin.getTextColor()))) //todo is NOT backwards compatible!!
+                , null, mgPlayer);
+    }
+
+    void autoBalanceOnDeath(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame mgm) {
+        Team teamToJoin = null;
+        Team teamToBalance = mgPlayer.getTeam();
+        if (teamToBalance.getAutoBalanceTeam()) {//this team is flagged as  balanced - players will be removed.
             for (Team t : TeamsModule.getMinigameModule(mgm).getTeams()) {
-                if (smt == null || t.getPlayers().size() < smt.getPlayers().size() - 1)
-                    smt = t;
+                if (teamToJoin == null || t.getPlayers().size() < teamToJoin.getPlayers().size() - 1)
+                    teamToJoin = t;
             }
-            if (smt != null) {
-                if (lgt.getPlayers().size() - smt.getPlayers().size() > 1 && smt.getAutoBalanceTeam()) {
-                    MultiplayerType.switchTeam(mgm, ply, smt);
-                    ply.sendInfoMessage(String.format(smt.getAutobalanceMessage(), smt.getTextColor() + smt.getDisplayName()));
-                    mdata.sendMinigameMessage(mgm,
-                            String.format(smt.getGameAutobalanceMessage(),
-                                    ply.getDisplayName(mgm.usePlayerDisplayNames()), smt.getTextColor() + smt.getDisplayName()), null, ply);
+            if (teamToJoin != null) {
+                if (teamToBalance.getPlayers().size() - teamToJoin.getPlayers().size() > 1 && teamToJoin.getAutoBalanceTeam()) {
+                    MultiplayerType.switchTeam(mgm, mgPlayer, teamToJoin);
+
+
+                    teamToJoin.addPlayer(mgPlayer);
+                    broadcastAutobalance(mgm, mgPlayer, teamToJoin);
                 }
             }
         }
     }
-
 
     /**
      * Returns the module that is assigned to this mechanic, or null if none is assigned. This is to open the settings menu

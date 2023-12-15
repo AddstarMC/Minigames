@@ -40,7 +40,7 @@ public class BlockDataFlag extends Flag<BlockData> {
     /**
      * Remove in 1.14 as no configs should have materialdata stored.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     private BlockData parseOldMaterialData(String path, FileConfiguration config) {
         try {
             String obj = config.getString(path + "." + getName());

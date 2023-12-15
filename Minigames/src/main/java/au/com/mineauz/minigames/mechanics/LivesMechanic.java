@@ -9,6 +9,8 @@ import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -26,7 +28,7 @@ public class LivesMechanic extends GameMechanicBase {
     }
 
     @Override
-    public boolean checkCanStart(Minigame minigame, MinigamePlayer caller) {
+    public boolean checkCanStart(@NotNull Minigame minigame, @Nullable MinigamePlayer caller) {
         if (minigame.getLives() > 0) {
             return true;
         }

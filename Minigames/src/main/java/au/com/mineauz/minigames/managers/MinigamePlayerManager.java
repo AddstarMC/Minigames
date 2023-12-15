@@ -5,6 +5,8 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.MultiplayerBets;
 import au.com.mineauz.minigames.events.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -38,9 +40,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.logging.Level;
-
-import static au.com.mineauz.minigames.managers.MinigameMessageManager.MinigameLangKey;
-import static au.com.mineauz.minigames.managers.MinigameMessageManager.PlaceHolderKey;
 
 /**
  * Manager Class of all players playing Minigames.
@@ -97,17 +96,17 @@ public class MinigamePlayerManager {
         //Give them the game type name
         if (minigame.getGameTypeName() == null) {
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.WIN, MinigameLangKey.PLAYER_JOIN_PLAYERINFO,
-                    Placeholder.unparsed(PlaceHolderKey.MINIGAME.getKey(), minigame.getType().getName()));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getType().getName()));
         } else {
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.WIN, MinigameLangKey.PLAYER_JOIN_PLAYERINFO,
-                    Placeholder.unparsed(PlaceHolderKey.MINIGAME.getKey(), minigame.getGameTypeName()));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getGameTypeName()));
         }
 
         //Give them the objective
         if (minigame.getObjective() != null) {
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.NONE, MinigameLangKey.COMMAND_DIVIDER_LARGE);
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_JOIN_OBJECTIVE,
-                    Placeholder.parsed(PlaceHolderKey.OBJECTIVE.getKey(), minigame.getObjective()));
+                    Placeholder.parsed(MinigamePlaceHolderKey.OBJECTIVE.getKey(), minigame.getObjective()));
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.NONE, MinigameLangKey.COMMAND_DIVIDER_LARGE);
         }
         //Prepare regeneration region for rollback.
@@ -148,10 +147,11 @@ public class MinigamePlayerManager {
         minigame.getMechanic().onJoinMinigame(minigame, mgPlayer);
 
         //Send other players the join message.
-        mgManager.sendMinigameMessage(minigame, MinigameMessageManager.getMinigamesMessage(
+        mgManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(
                 MinigameLangKey.PLAYER_JOIN_PLAYERMSG,
-                Placeholder.unparsed(PlaceHolderKey.PLAYER.getKey(), mgPlayer.getName()),
-                Placeholder.unparsed(PlaceHolderKey.MINIGAME.getKey(), minigame.getName(true))));
+                Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getName()),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true))),
+                MinigameMessageType.INFO);
         mgPlayer.updateInventory();
 
         if (minigame.canDisplayScoreboard()) {
@@ -161,7 +161,7 @@ public class MinigamePlayerManager {
         }
         if (minigame.getState() == MinigameState.STARTING && minigame.canLateJoin()) {
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_LATEJOINWAIT,
-                    Placeholder.unparsed(PlaceHolderKey.TIME.getKey(), String.valueOf(minigame.getMpTimer().getStartWaitTimeLeft())));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(minigame.getMpTimer().getStartWaitTimeLeft())));
         }
     }
 
@@ -195,7 +195,7 @@ public class MinigamePlayerManager {
                             //not enough money
                             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_BET_NOTENOUGHMONEY);
                             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_BET_NOTENOUGHMONEYINFO,
-                                    Placeholder.unparsed(PlaceHolderKey.MONEY.getKey(), Minigames.getPlugin().getEconomy().format(minigame.getMpBets().getHighestMoneyBet())));
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.MONEY.getKey(), Minigames.getPlugin().getEconomy().format(minigame.getMpBets().getHighestMoneyBet())));
                         }
                     }
 
@@ -214,14 +214,14 @@ public class MinigamePlayerManager {
                 } else {
                     if (mpBets.getHighestMoneyBet() > 0) {
                         MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_BET_INCORRECTMONEYAMOUNTINFO,
-                                Placeholder.unparsed(PlaceHolderKey.MONEY.getKey(), Minigames.getPlugin().getEconomy().format(mpBets.getHighestMoneyBet())));
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MONEY.getKey(), Minigames.getPlugin().getEconomy().format(mpBets.getHighestMoneyBet())));
                     }
                     //todo connect both messages with an "or"
                     if (mpBets.getHighestItemBet().getType() != Material.AIR) {
 
                         MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_BET_INCORRECTITEMAMOUNTINFO,
-                                Placeholder.unparsed(PlaceHolderKey.NUMBER.getKey(), String.valueOf(mpBets.getHighestItemBet().getAmount())),
-                                Placeholder.unparsed(PlaceHolderKey.TYPE.getKey(), mpBets.getHighestItemBet().getType().name())); //todo use translation
+                                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(mpBets.getHighestItemBet().getAmount())),
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), mpBets.getHighestItemBet().getType().name())); //todo use translation
                     }
                     return false;
                 }
@@ -274,13 +274,13 @@ public class MinigamePlayerManager {
                 mgPlayer.getPlayer().removePotionEffect(potion.getType());
             }
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SPECTATE_JOIN_PLAYERMSG,
-                    Placeholder.unparsed(PlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)));
 
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SPECTATE_JOIN_PLAYERHELP,
-                    Placeholder.unparsed(PlaceHolderKey.COMMAND.getKey(), "\"/minigame quit\"")); //todo get from quit command
-            mgManager.sendMinigameMessage(minigame, MinigameMessageManager.getMessage(MinigameLangKey.PLAYER_SPECTATE_JOIN_MINIGAMEMSG,
-                            Placeholder.unparsed(PlaceHolderKey.PLAYER.getKey(), mgPlayer.getName()),
-                            Placeholder.unparsed(PlaceHolderKey.MINIGAME.getKey(), minigame.getName(true))),
+                    Placeholder.unparsed(MinigamePlaceHolderKey.COMMAND.getKey(), "\"/minigame quit\"")); //todo get from quit command
+            mgManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_SPECTATE_JOIN_MINIGAMEMSG,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getName()),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true))),
                     MinigameMessageType.INFO, mgPlayer);
         }
     }
@@ -294,7 +294,7 @@ public class MinigamePlayerManager {
         for (MinigamePlayer mgPlayer : players) {
             if (minigame.getMaxScore() != 0) {
                 MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_SCORETOWIN,
-                        Placeholder.unparsed(PlaceHolderKey.SCORE.getKey(), String.valueOf(minigame.getMaxScorePerPlayer())));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(minigame.getMaxScorePerPlayer())));
             }
             if (minigame.isAllowedFlight()) {
                 mgPlayer.setCanFly(true);
@@ -307,7 +307,7 @@ public class MinigamePlayerManager {
             if (!minigame.isTeamGame()) {
                 if (minigame.getLives() > 0) {
                     MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_LIVESLEFT,
-                            Placeholder.unparsed(PlaceHolderKey.NUMBER.getKey(), String.valueOf(minigame.getLives())));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(minigame.getLives())));
                 }
                 mgPlayer.setStartTime(Calendar.getInstance().getTimeInMillis());
                 if (!minigame.isPlayersAtStart()) {
@@ -388,7 +388,7 @@ public class MinigamePlayerManager {
     }
 
     public void getStartLocations(@NotNull List<@NotNull MinigamePlayer> players, @NotNull Minigame game) {
-        mgManager.sendMinigameMessage(game, MinigameMessageManager.getMessage(MinigameLangKey.MINIGAME_STARTRANDOMIZED), MinigameMessageType.INFO, (List<MinigamePlayer>) null);
+        mgManager.sendMinigameMessage(game, MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_STARTRANDOMIZED), MinigameMessageType.INFO, (List<MinigamePlayer>) null);
         Collections.shuffle(players);
         int pos = 0;
         Map<Team, Integer> tpos = new HashMap<>();
@@ -397,26 +397,26 @@ public class MinigamePlayerManager {
         }
         if (game.isRandomizeStart()) {
             if (game.isTeamGame()) {
-                Minigames.log().log(Level.INFO, "[Debug] Setting Starts for Team game");
+                MinigameMessageManager.debugMessage("Setting Starts for Team game");
                 TeamsModule mod = TeamsModule.getMinigameModule(game);
                 if (mod.hasTeamStartLocations()) {
                     for (Team team : mod.getTeams()) {
-                        Minigames.log().log(Level.INFO, "[Debug] Team" + team.getDisplayName() + " is randomized");
+                        MinigameMessageManager.debugMessage("Team" + team.getDisplayName() + " is randomized");
                         Collections.shuffle(team.getStartLocations());
                     }
                 } else {
-                    Minigames.log().log(Level.INFO, "[Debug] Team game using global starts randomized");
+                    MinigameMessageManager.debugMessage("Team game using global starts randomized");
                     Collections.shuffle(game.getStartLocations());
                 }
             } else {
-                Minigames.log().log(Level.INFO, "[Debug] Setting Starts for MP game randomized");
+                MinigameMessageManager.debugMessage("Setting Starts for MP game randomized");
                 Collections.shuffle(game.getStartLocations());
             }
         } else {
             if (game.isTeamGame()) {
-                Minigames.log().log(Level.INFO, "[Debug] Setting Starts for Team game");
+                MinigameMessageManager.debugMessage("Setting Starts for Team game");
             } else {
-                Minigames.log().log(Level.INFO, "[Debug] MP game using global starts");
+                MinigameMessageManager.debugMessage("MP game using global starts");
             }
         }
         for (MinigamePlayer mgPlayer : players) {
@@ -426,7 +426,7 @@ public class MinigamePlayerManager {
                     mgPlayer.setStartTime(Calendar.getInstance().getTimeInMillis());
                     result = game.getStartLocations().get(pos);
                 } else {
-                    Minigames.log().log(Level.INFO, "[Debug] StartLocations filled - recycling from start");
+                    MinigameMessageManager.debugMessage("StartLocations filled - recycling from start");
                     if (!game.getStartLocations().isEmpty()) {
                         pos = 0;
                         result = game.getStartLocations().get(pos);
@@ -437,7 +437,7 @@ public class MinigamePlayerManager {
                 if (team != null) {
                     if (TeamsModule.getMinigameModule(game).hasTeamStartLocations()) {
                         if (tpos.get(team) >= team.getStartLocations().size()) {
-                            Minigames.log().log(Level.INFO, "[Debug] Team Starts for " + team.getDisplayName() + " filled - recylcing from start");
+                            MinigameMessageManager.debugMessage("Team Starts for " + team.getDisplayName() + " filled - recylcing from start");
                             tpos.put(team, 0);
                         }
                         result = team.getStartLocations().get(tpos.get(team));
@@ -446,7 +446,7 @@ public class MinigamePlayerManager {
                         if (pos < game.getStartLocations().size()) {
                             result = game.getStartLocations().get(pos);
                         } else {
-                            Minigames.log().log(Level.INFO, "[Debug] StartLocations filled - recycling from start");
+                            MinigameMessageManager.debugMessage("StartLocations filled - recycling from start");
                             pos = 0;
                             if (!game.getStartLocations().isEmpty()) {
                                 result = game.getStartLocations().get(pos);
@@ -697,9 +697,9 @@ public class MinigamePlayerManager {
 
                 //Send out messages
                 if (!forced) {
-                    mgManager.sendMinigameMessage(minigame, MinigameMessageManager.getMinigamesMessage(MinigameLangKey.PLAYER_QUIT_PLAYERMSG,
-                            Placeholder.unparsed(PlaceHolderKey.PLAYER.getKey(), mgPlayer.getName()),
-                            Placeholder.unparsed(PlaceHolderKey.MINIGAME.getKey(), minigame.getName(true))), MinigameMessageType.ERROR, mgPlayer);
+                    mgManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_QUIT_PLAYERMSG,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getName()),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true))), MinigameMessageType.ERROR, mgPlayer);
                 }
                 plugin.getLogger().info(mgPlayer.getName() + " quit " + minigame);
                 mgPlayer.updateInventory();
@@ -799,7 +799,7 @@ public class MinigamePlayerManager {
 
                 if (minigame.getShowCompletionTime()) {
                     MinigameMessageManager.sendMessage(mgWinner, MinigameMessageType.INFO, MinigameLangKey.PLAYER_COMPLETIONTIME,
-                            Placeholder.unparsed(PlaceHolderKey.TIME.getKey(), String.valueOf((double) (winners.get(0).getEndTime() - winners.get(0).getStartTime() + winners.get(0).getStoredTime()) / 1000)));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf((double) (winners.get(0).getEndTime() - winners.get(0).getStartTime() + winners.get(0).getStoredTime()) / 1000)));
                 }
 
                 for (DynamicMinigameStat stat : MinigameStats.getDynamicStats()) {
@@ -817,14 +817,14 @@ public class MinigamePlayerManager {
                 if (bets != 0) {
                     plugin.getEconomy().depositPlayer(mgWinner.getPlayer().getPlayer(), bets);
                     MinigameMessageManager.sendMessage(mgWinner, MinigameMessageType.INFO, MinigameLangKey.PLAYER_BET_WINMONEY,
-                            Placeholder.unparsed(PlaceHolderKey.MONEY.getKey(), Minigames.getPlugin().getEconomy().format(bets)));
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MONEY.getKey(), Minigames.getPlugin().getEconomy().format(bets)));
                 }
 
                 // Record player completion and give rewards
                 if (minigame.isEnabled()) {
                     plugin.queueStatSave(saveData, true);
                 } else {
-                    Minigames.log().log(Level.INFO, "[Debug] Skipping SQL data save for " + saveData + "; minigame is disabled");
+                    MinigameMessageManager.debugMessage("Skipping SQL data save for " + saveData + "; minigame is disabled");
                 }
 
                 //Item Bets (for non groups)
@@ -882,36 +882,36 @@ public class MinigamePlayerManager {
                             score = score.append(Component.text(" : "));
                         }
                     }
-                    Component nscore = Component.text(", ").append(MinigameMessageManager.getMinigamesMessage(MinigameLangKey.PLAYER_END_TEAM_SCORE,
-                            Placeholder.component(PlaceHolderKey.SCORE.getKey(), score)));
+                    Component nscore = Component.text(", ").append(MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_END_TEAM_SCORE,
+                            Placeholder.component(MinigamePlaceHolderKey.SCORE.getKey(), score)));
                     if (team.getScore() > 0) {
-                        MinigameMessageManager.broadcast(MinigameMessageManager.getMinigamesMessage(MinigameMessageManager.MinigameLangKey.PLAYER_END_TEAM_WIN,
-                                Placeholder.unparsed(MinigameMessageManager.PlaceHolderKey.TEAM.getKey(),
+                        MinigameMessageManager.broadcast(MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_END_TEAM_WIN,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEAM.getKey(),
                                         "<" + team.getTextColor().asHexString() + ">" + team.getDisplayName() + "</" + team.getTextColor().asHexString() + ">"),
-                                Placeholder.unparsed(MinigameMessageManager.PlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)),
-                                Placeholder.component(MinigameMessageManager.PlaceHolderKey.SCORE.getKey(), nscore)
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)),
+                                Placeholder.component(MinigamePlaceHolderKey.SCORE.getKey(), nscore)
                         ), minigame, MinigameMessageType.WIN);
                     } else {
-                        MinigameMessageManager.broadcast(MinigameMessageManager.getMinigamesMessage(MinigameMessageManager.MinigameLangKey.PLAYER_END_TEAM_WIN,
-                                Placeholder.component(PlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName()).color(team.getTextColor())),
-                                Placeholder.unparsed(PlaceHolderKey.MINIGAME.getKey(), minigame.getName(true))), minigame, MinigameMessageType.WIN);
+                        MinigameMessageManager.broadcast(MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_END_TEAM_WIN,
+                                Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(team.getDisplayName()).color(team.getTextColor())),
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true))), minigame, MinigameMessageType.WIN);
                     }
                 } else {
-                    MinigameMessageManager.broadcast(MinigameMessageManager.getMinigamesMessage(MinigameLangKey.PLAYER_END_BROADCAST_NOBODY,
-                            Placeholder.unparsed(PlaceHolderKey.MINIGAME.getKey(), minigame.getName(true))), minigame, MinigameMessageType.WIN);
+                    MinigameMessageManager.broadcast(MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_END_BROADCAST_NOBODY,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true))), minigame, MinigameMessageType.WIN);
                 }
             } else {
                 if (winners.size() == 1) {
                     Component score = Component.empty();
                     MinigamePlayer winner = winners.get(0);
                     if (winner.getScore() != 0) {
-                        score = MinigameMessageManager.getMinigamesMessage(MinigameLangKey.PLAYER_END_TEAM_SCORE,
-                                Placeholder.unparsed(PlaceHolderKey.SCORE.getKey(), String.valueOf(winner.getScore())));
+                        score = MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_END_TEAM_SCORE,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(winner.getScore())));
                     }
-                    MinigameMessageManager.broadcast(MinigameMessageManager.getMinigamesMessage(MinigameLangKey.PLAYER_END_BROADCAST_WIN,
-                            Placeholder.unparsed(PlaceHolderKey.PLAYER.getKey(), winner.getDisplayName(minigame.usePlayerDisplayNames())),
-                            Placeholder.unparsed(PlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)),
-                            Placeholder.component(PlaceHolderKey.SCORE.getKey(), score)), minigame, MinigameMessageType.WIN);
+                    MinigameMessageManager.broadcast(MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_END_BROADCAST_WIN,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), winner.getDisplayName(minigame.usePlayerDisplayNames())),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)),
+                            Placeholder.component(MinigamePlaceHolderKey.SCORE.getKey(), score)), minigame, MinigameMessageType.WIN);
                 } else if (winners.size() > 1) {
                     Component winComp = Component.empty();
                     winners.sort(Comparator.comparingInt(MinigamePlayer::getScore));
@@ -928,10 +928,10 @@ public class MinigamePlayerManager {
                             winComp.append((winners.size() - 3)).append(" others");
                         }
                     }
-                    MinigameMessageManager.broadcast(MinigameMessageManager.getMinigamesMessage("player.end.broadcastMsg", winComp.toString(), minigame.getName(true)) + ". ", minigame, MinigameMessageType.WIN);
+                    MinigameMessageManager.broadcast(MinigameMessageManager.getMessage("player.end.broadcastMsg", winComp.toString(), minigame.getName(true)) + ". ", minigame, MinigameMessageType.WIN);
                 } else {
-                    MinigameMessageManager.broadcast(MinigameMessageManager.getMinigamesMessage(MinigameLangKey.PLAYER_END_BROADCAST_NOBODY,
-                            Placeholder.unparsed(PlaceHolderKey.MINIGAME.getKey(), minigame.getName(true))), minigame, MinigameMessageType.ERROR);
+                    MinigameMessageManager.broadcast(MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_END_BROADCAST_NOBODY,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true))), minigame, MinigameMessageType.ERROR);
                 }
             }
         }

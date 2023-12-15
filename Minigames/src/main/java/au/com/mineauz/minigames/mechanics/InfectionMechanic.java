@@ -13,6 +13,8 @@ import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,20 +34,21 @@ public class InfectionMechanic extends GameMechanicBase {
     }
 
     @Override
-    public boolean checkCanStart(Minigame minigame, MinigamePlayer caller) {
+    public boolean checkCanStart(@NotNull Minigame minigame, @Nullable MinigamePlayer caller) {
         if (!minigame.isTeamGame() ||
                 TeamsModule.getMinigameModule(minigame).getTeams().size() != 2 ||
                 !TeamsModule.getMinigameModule(minigame).hasTeam(InfectionModule.getMinigameModule(minigame).getInfectedTeam()) ||
                 !TeamsModule.getMinigameModule(minigame).hasTeam(InfectionModule.getMinigameModule(minigame).getSurvivorTeam())) {
-            if (caller != null)
-                caller.sendMessage(MinigameMessageManager.getUnformattedMessage(null, "minigame.error.noInfection"), MinigameMessageType.ERROR);
+            if (caller != null) {
+                caller.sendMessage(MinigameMessageManager.getUnformattedMgMessage("minigame.error.noInfection"), MinigameMessageType.ERROR);
+            }
             return false;
         }
         return true;
     }
 
     @Override
-    public List<MinigamePlayer> balanceTeam(List<MinigamePlayer> players, Minigame minigame) {
+    public List<MinigamePlayer> balanceTeam(@NotNull List<MinigamePlayer> players, @NotNull Minigame minigame) {
         List<MinigamePlayer> result = new ArrayList<>();
         Collections.shuffle(players);
         for (MinigamePlayer ply : players) {

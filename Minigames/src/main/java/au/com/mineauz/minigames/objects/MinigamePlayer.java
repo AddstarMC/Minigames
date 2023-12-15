@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.objects;
 
 import au.com.mineauz.minigames.*;
 import au.com.mineauz.minigames.config.MinigameSave;
-import au.com.mineauz.minigames.display.IDisplayCuboid;
+import au.com.mineauz.minigames.display.DisplayCuboid;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -64,7 +64,7 @@ public class MinigamePlayer implements ScriptObject {
     private MenuItem manualEntry;
     private Location selection1;
     private Location selection2;
-    private IDisplayCuboid selectionDisplay;
+    private DisplayCuboid selectionDisplay;
     private OfflineMinigamePlayer offlineMinigamePlayer;
     private List<String> claimedRewards = new ArrayList<>();
     private int lateJoinTimer = -1;

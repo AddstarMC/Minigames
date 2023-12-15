@@ -3,10 +3,13 @@ package au.com.mineauz.minigames;
 import au.com.mineauz.minigames.events.MinigameTimerTickEvent;
 import au.com.mineauz.minigames.events.TimerExpireEvent;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.sounds.MGSounds;
 import au.com.mineauz.minigames.sounds.PlayMGSound;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
@@ -68,7 +71,8 @@ public class MinigameTimer {
         }
         if (timeMsg.contains(time) && broadcastTime) {
             PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
-            plugin.getMinigameManager().sendMinigameMessage(minigame, MinigameMessageManager.getMinigamesMessage("minigame.timeLeft", MinigameUtils.convertTime(time)));
+            plugin.getMinigameManager().sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.TIME_TIMELEFT,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(time))));
         }
 
         if (time <= 0) {

@@ -41,7 +41,7 @@ import java.util.logging.Level;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Minigame implements ScriptObject {
-    private final String name;
+    private final String name; //todo maybe component
     private final Map<String, Flag<?>> configFlags = new HashMap<>();
     private final StringFlag displayName = new StringFlag(null, "displayName");
     private final StringFlag objective = new StringFlag(null, "objective");
@@ -127,20 +127,11 @@ public class Minigame implements ScriptObject {
 
     public Minigame(String name, MinigameType type, Location start) {
         this.name = name;
-        if (sbManager == null) {
-            Minigames.getPlugin().getLogger().warning("Plugin loaded before worlds and no " +
-                    "ScoreboardManager was present - Could not scoreboard for Minigame:" + name);
-        }
         setup(type, start);
-
     }
 
     public Minigame(String name) {
         this.name = name;
-        if (sbManager == null) {
-            Minigames.getPlugin().getLogger().warning("Plugin loaded before worlds and no " +
-                    "ScoreboardManager was present - Could not scoreboard for Minigame:" + name);
-        }
         setup(MinigameType.SINGLEPLAYER, null);
     }
 
@@ -159,13 +150,14 @@ public class Minigame implements ScriptObject {
         if (start != null)
             startLocations.getFlag().add(start);
         if (sbManager != null) {
-            sbManager.registerNewObjective(this.name, Criteria.DUMMY, this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
+            sbManager.registerNewObjective(this.name, Criteria.DUMMY, this.name);
+            sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
         }
         for (Class<? extends MinigameModule> mod : Minigames.getPlugin().getMinigameManager().getModules()) {
             try {
                 addModule(mod.getDeclaredConstructor(Minigame.class).newInstance(this));
             } catch (Exception e) {
-                Minigames.getPlugin().getLogger().log(Level.WARNING, "Couldn't construct Module.", e);
+                Minigames.log().log(Level.WARNING, "Couldn't construct Module.", e);
             }
         }
 

@@ -1,10 +1,6 @@
 package au.com.mineauz.minigames.display;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.display.bukkit.BukkitDisplayCuboid;
-import au.com.mineauz.minigames.display.bukkit.BukkitDisplayPoint;
-import au.com.mineauz.minigames.display.spigot.SpigotDisplayCuboid;
-import au.com.mineauz.minigames.display.spigot.SpigotDisplayPoint;
 import au.com.mineauz.minigames.objects.MgRegion;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
@@ -24,30 +20,14 @@ public class DisplayManager {
     private final Map<INonPersistentDisplay, Integer> nextTickDelay = new IdentityHashMap<>();
     private final SetMultimap<Player, AbstractDisplayObject> playerDisplays;
     private final SetMultimap<World, AbstractDisplayObject> worldDisplays;
-    private boolean isSpigot;
     private BukkitTask refreshTask;
 
     public DisplayManager() {
         playerDisplays = HashMultimap.create();
         worldDisplays = HashMultimap.create();
-
-        checkSpigot();
     }
 
-    private void checkSpigot() {
-        try {
-            Class.forName("org.bukkit.Server$Spigot");
-            isSpigot = true;
-        } catch (ClassNotFoundException e) {
-            // Not spigot
-        }
-    }
-
-    public boolean isAdvanced() {
-        return isSpigot;
-    }
-
-    public IDisplayCuboid displayCuboid(Player player, Location corner1, Location corner2) {
+    public DisplayCuboid displayCuboid(Player player, Location corner1, Location corner2) {
         Validate.isTrue(corner1.getWorld() == corner2.getWorld(), "Both corners must be in the same world");
 
         double minX = Math.min(corner1.getX(), corner2.getX());
@@ -60,7 +40,7 @@ public class DisplayManager {
         return displayCuboid(player, minX, minY, minZ, maxX, maxY, maxZ);
     }
 
-    public IDisplayCuboid displayCuboid(Location corner1, Location corner2) {
+    public DisplayCuboid displayCuboid(Location corner1, Location corner2) {
         Validate.isTrue(corner1.getWorld() == corner2.getWorld(), "Both corners must be in the same world");
 
         double minX = Math.min(corner1.getX(), corner2.getX());
@@ -73,60 +53,36 @@ public class DisplayManager {
         return displayCuboid(corner1.getWorld(), minX, minY, minZ, maxX, maxY, maxZ);
     }
 
-    public IDisplayCuboid displayCuboid(Player player, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-        if (isSpigot) {
-            return new SpigotDisplayCuboid(this, player, new Vector(minX, minY, minZ), new Vector(maxX, maxY, maxZ));
-        } else {
-            return new BukkitDisplayCuboid(this, player, new Vector(minX, minY, minZ), new Vector(maxX, maxY, maxZ));
-        }
+    public DisplayCuboid displayCuboid(Player player, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+        return new DisplayCuboid(this, player, new Vector(minX, minY, minZ), new Vector(maxX, maxY, maxZ));
     }
 
-    public IDisplayCuboid displayCuboid(Player player, MgRegion region) {
-        if (isSpigot) {
-            return new SpigotDisplayCuboid(this, player, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
-        } else {
-            return new BukkitDisplayCuboid(this, player, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
-        }
+    public DisplayCuboid displayCuboid(Player player, MgRegion region) {
+        return new DisplayCuboid(this, player, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
     }
 
-    public IDisplayCuboid displayCuboid(World world, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-        if (isSpigot) {
-            return new SpigotDisplayCuboid(this, world, new Vector(minX, minY, minZ), new Vector(maxX, maxY, maxZ));
-        } else {
-            return new BukkitDisplayCuboid(this, world, new Vector(minX, minY, minZ), new Vector(maxX, maxY, maxZ));
-        }
+    public DisplayCuboid displayCuboid(World world, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+        return new DisplayCuboid(this, world, new Vector(minX, minY, minZ), new Vector(maxX, maxY, maxZ));
     }
 
-    public IDisplayCuboid displayCuboid(World world, MgRegion region) {
-        if (isSpigot) {
-            return new SpigotDisplayCuboid(this, world, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
-        } else {
-            return new BukkitDisplayCuboid(this, world, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
-        }
+    public DisplayCuboid displayCuboid(World world, MgRegion region) {
+        return new DisplayCuboid(this, world, new Vector(region.getMinX(), region.getMinY(), region.getMinZ()), new Vector(region.getMaxX(), region.getMaxY(), region.getMaxY()));
     }
 
-    public IDisplayPoint displayPoint(Player player, Location location, boolean showDirection) {
+    public DisplayPoint displayPoint(Player player, Location location, boolean showDirection) {
         return displayPoint(player, location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch(), showDirection);
     }
 
-    public IDisplayPoint displayPoint(Location location, boolean showDirection) {
+    public DisplayPoint displayPoint(Location location, boolean showDirection) {
         return displayPoint(location.getWorld(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch(), showDirection);
     }
 
-    public IDisplayPoint displayPoint(Player player, double x, double y, double z, float yaw, float pitch, boolean showDirection) {
-        if (isSpigot) {
-            return new SpigotDisplayPoint(this, player, new Vector(x, y, z), yaw, pitch, showDirection);
-        } else {
-            return new BukkitDisplayPoint(this, player, new Vector(x, y, z), yaw, pitch, showDirection);
-        }
+    public DisplayPoint displayPoint(Player player, double x, double y, double z, float yaw, float pitch, boolean showDirection) {
+        return new DisplayPoint(this, player, new Vector(x, y, z), yaw, pitch, showDirection);
     }
 
-    public IDisplayPoint displayPoint(World world, double x, double y, double z, float yaw, float pitch, boolean showDirection) {
-        if (isSpigot) {
-            return new SpigotDisplayPoint(this, world, new Vector(x, y, z), yaw, pitch, showDirection);
-        } else {
-            return new BukkitDisplayPoint(this, world, new Vector(x, y, z), yaw, pitch, showDirection);
-        }
+    public DisplayPoint displayPoint(World world, double x, double y, double z, float yaw, float pitch, boolean showDirection) {
+        return new DisplayPoint(this, world, new Vector(x, y, z), yaw, pitch, showDirection);
     }
 
     public void removeAll(Player player) {

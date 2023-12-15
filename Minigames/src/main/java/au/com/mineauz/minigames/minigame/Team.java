@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.*;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -29,7 +30,7 @@ import java.util.Set;
 public class Team implements ScriptObject {
     private final IntegerFlag maxPlayers = new IntegerFlag(0, "maxPlayers");
     private final List<Location> startLocations = new ArrayList<>();
-    private final StringFlag unformattedAssignMsg = new StringFlag(MinigameMessageManager.getUnformattedMessage(MinigameMessageManager.MinigameLangKey.PLAYER_TEAM_ASSIGN_JOINTEAM), "assignMsg");
+    private final StringFlag unformattedAssignMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MinigameLangKey.PLAYER_TEAM_ASSIGN_JOINTEAM), "assignMsg");
     private final StringFlag gameAssignMsg = new StringFlag(MinigameUtils.getLang("player.team.assign.joinAnnounce"), "gameAssignMsg");
     private final StringFlag autobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.plyMsg"), "autobalanceMsg");
     private final StringFlag gameAutobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.minigameMsg"), "gameAutobalanceMsg");

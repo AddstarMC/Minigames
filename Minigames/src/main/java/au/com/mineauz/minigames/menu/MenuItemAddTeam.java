@@ -30,7 +30,7 @@ public class MenuItemAddTeam extends MenuItem {
         MinigamePlayer ply = getContainer().getViewer();
         ply.setNoClose(true);
         ply.getPlayer().closeInventory();
-        ply.sendInfoMessage(MinigameMessageManager.getUnformattedMessage(null, "team.add"));
+        ply.sendInfoMessage(MinigameMessageManager.getUnformattedMgMessage("team.add"));
         List<String> teams = new ArrayList<>();
         for (TeamColor col : TeamColor.values())
             teams.add(col.getColor() + WordUtils.capitalize(col.toString().replace("_", " ")));
@@ -53,7 +53,7 @@ public class MenuItemAddTeam extends MenuItem {
 
                 getContainer().addItem(new MenuItemTeam(t.getTextColor() + t.getDisplayName(), t));
             } else {
-                getContainer().getViewer().sendInfoMessage(ChatColor.RED + MinigameMessageManager.getUnformattedMessage(null, "team.alreadyUsedColor"));
+                getContainer().getViewer().sendInfoMessage(ChatColor.RED + MinigameMessageManager.getUnformattedMgMessage("team.alreadyUsedColor"));
             }
 
             List<String> teams = new ArrayList<>(tm.getTeams().size() + 1);

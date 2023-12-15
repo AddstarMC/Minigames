@@ -60,7 +60,7 @@ public class QuitCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             String label, @NotNull String @Nullable [] args) {
+                             @NotNull String label, @NotNull String @Nullable @NotNull [] args) {
         if (args == null && sender instanceof Player) {
             MinigamePlayer player = plugin.getPlayerManager().getMinigamePlayer((Player) sender);
             if (player.isInMinigame()) {

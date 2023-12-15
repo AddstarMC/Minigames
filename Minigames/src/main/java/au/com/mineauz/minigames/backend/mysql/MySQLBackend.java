@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.backend.mysql;
 import au.com.mineauz.minigames.backend.*;
 import au.com.mineauz.minigames.backend.both.SQLExport;
 import au.com.mineauz.minigames.backend.both.SQLImport;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -23,7 +24,6 @@ public class MySQLBackend extends Backend {
     private final MySQLStatSaver saver;
     private ConnectionPool pool;
     private String database;
-    private boolean debug = false;
     private StatementKey insertMinigame;
     private StatementKey insertPlayer;
     private StatementKey loadStatSettings;
@@ -36,8 +36,7 @@ public class MySQLBackend extends Backend {
         saver = new MySQLStatSaver(this, logger);
     }
 
-    public boolean initialize(ConfigurationSection config, boolean debug) {
-        this.debug = debug;
+    public boolean initialize(ConfigurationSection config) {
         try {
             Class.forName("com.mysql.jdbc.Driver");
 
@@ -46,7 +45,7 @@ public class MySQLBackend extends Backend {
             // Create the pool
             String url = String.format("jdbc:mysql://%s/%s",
                     config.getString("host", "localhost:3306"), database);
-            if (debug) logger.info("URL: " + url);
+            MinigameMessageManager.debugMessage("URL: " + url);
             Properties props = new Properties();
             props.put("user", config.getString("username", "username"));
             props.put("password", config.getString("password", "password"));
@@ -56,7 +55,7 @@ public class MySQLBackend extends Backend {
                     props.put(entry.getKey(), entry.getValue().toString());
                 }
             }
-            if (debug) logger.info("Properties: " + props);
+            MinigameMessageManager.debugMessage("Properties: " + props);
             pool = new ConnectionPool(url, props);
 
             createStatements();

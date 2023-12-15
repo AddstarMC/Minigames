@@ -3,12 +3,14 @@ package au.com.mineauz.minigames.commands;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import com.google.common.base.Charsets;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.kitteh.pastegg.*;
 
 import java.io.IOException;
@@ -38,7 +40,7 @@ public class DebugCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public Component getDescription() {
         return "Debugs stuff.";
     }
 
@@ -48,13 +50,8 @@ public class DebugCommand implements ICommand {
     }
 
     @Override
-    public String[] getUsage() {
+    public Component getUsage() {
         return new String[]{"/minigame debug"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You may not debug!";
     }
 
     @Override
@@ -64,7 +61,7 @@ public class DebugCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null && args.length > 0) {
             switch (args[0].toUpperCase()) {
                 case "ON" -> {

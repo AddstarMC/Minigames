@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class SetFlagCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable @NotNull [] args) {
         if (args != null) {
             if (args[0].equalsIgnoreCase("add") && args.length >= 2) {
                 minigame.addFlag(args[1]);

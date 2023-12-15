@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.gametypes;
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.event.Listener;
@@ -48,7 +49,7 @@ public abstract class MinigameTypeBase implements Listener {
         if (!player.getPlayer().isDead()) {
             if (player.getPlayer().getWorld() != minigame.getQuitLocation().getWorld() && player.getPlayer().hasPermission("minigame.set.quit") &&
                     plugin.getConfig().getBoolean("warnings")) {
-                MinigameMessageManager.sendMessage(player, MinigameMessageType.WARNING, MinigameMessageManager.MinigameLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
+                MinigameMessageManager.sendMessage(player, MinigameMessageType.WARNING, MinigameLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
             }
             player.teleport(minigame.getQuitLocation());
         } else {
@@ -76,6 +77,6 @@ public abstract class MinigameTypeBase implements Listener {
 //        else{
 //            player.addTempRewardItem(reward.getItem());
 //        }
-//        player.sendMessage(MinigameUtils.formStr("player.end.awardItem", reward.getItem().getAmount(), MinigameUtils.getItemStackName(reward.getItem())), MinigameMessageType.WIN);
+//        player.sendMgMessage(MinigameUtils.formStr("player.end.awardItem", reward.getItem().getAmount(), MinigameUtils.getItemStackName(reward.getItem())), MinigameMessageType.WIN);
 //    }
 }

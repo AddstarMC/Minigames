@@ -24,6 +24,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -149,7 +151,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
     }
 
     @Override
-    public boolean checkCanStart(Minigame minigame, MinigamePlayer caller) {
+    public boolean checkCanStart(@NotNull Minigame minigame, @Nullable MinigamePlayer caller) {
         return true;
     }
 

@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.config.MinigameSave;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -127,7 +128,7 @@ public class StoredPlayerCheckpoints {
 
         save = new MinigameSave("playerdata/checkpoints/" + uuid);
         for (String mgm : checkpoints.keySet()) {
-            MinigameUtils.debugMessage("Attempting to save checkpoint for " + mgm + "...");
+            MinigameMessageManager.debugMessage("Attempting to save checkpoint for " + mgm + "...");
             try {
                 save.getConfig().set(mgm, null);
                 save.getConfig().set(mgm + ".x", checkpoints.get(mgm).getX());
@@ -186,7 +187,7 @@ public class StoredPlayerCheckpoints {
         Set<String> mgms = save.getConfig().getKeys(false);
         for (String mgm : mgms) {
             if (!mgm.equals("globalcheckpoint")) {
-                MinigameUtils.debugMessage("Attempting to load checkpoint for " + mgm + "...");
+                MinigameMessageManager.debugMessage("Attempting to load checkpoint for " + mgm + "...");
                 try {
                     double locx = save.getConfig().getDouble(mgm + ".x");
                     double locy = save.getConfig().getDouble(mgm + ".y");
@@ -204,7 +205,7 @@ public class StoredPlayerCheckpoints {
                     Location loc = new Location(w, locx, locy, locz, yaw, pitch);
                     checkpoints.put(mgm, loc);
                 } catch (ClassCastException e) {
-                    MinigameUtils.debugMessage("Checkpoint could not be loaded ... " + mgm + " xyz not double");
+                    MinigameMessageManager.debugMessage("Checkpoint could not be loaded ... " + mgm + " xyz not double");
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }

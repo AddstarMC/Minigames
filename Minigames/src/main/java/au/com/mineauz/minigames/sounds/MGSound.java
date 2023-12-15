@@ -62,6 +62,7 @@ public class MGSound {
         timesPlayed = count;
     }
 
+    @Override
     public MGSound clone() {
         MGSound s = new MGSound(sound, volume, pitch, count, delay);
         s.setTimesPlayed(getTimesPlayed());

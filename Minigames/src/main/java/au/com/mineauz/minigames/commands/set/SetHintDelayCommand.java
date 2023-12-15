@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class SetHintDelayCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args[0].matches("[0-9]+([mh])?")) {
                 int time = Integer.parseInt(args[0].replaceAll("[mh]", ""));

@@ -3,8 +3,7 @@ package au.com.mineauz.minigames;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 
 public interface MinigameTag<T> {
 
@@ -12,31 +11,34 @@ public interface MinigameTag<T> {
      * MinigameTag representing vanilla potions with negative effect(s).
      * Also represents all potions with exclusive negative effects, which aren't in the value list.
      */
-    MinigameTag<Collection<PotionEffectType>> NEGATIVE_POTION = new MinigameTag() {
-
+    MinigameTag<PotionEffectType> NEGATIVE_POTION = new MinigameTag<>() {
         @Override
-        public boolean isTagged(Object item) {
-            List<PotionEffectType> list = getValues().stream().flatMap(Collection::stream).toList();
-            return list.containsAll((Collection) item);
+        public boolean isTagged(PotionEffectType item) {
+            return getValues().contains(item);
         }
 
         @Override
-        public List<Collection<PotionEffectType>> getValues() {
-            return List.of(
-                    List.of(PotionEffectType.SLOW),
-                    List.of(PotionEffectType.HARM),
-                    List.of(PotionEffectType.WEAKNESS),
-                    List.of(PotionEffectType.POISON),
-                    List.of(PotionEffectType.BLINDNESS),
-                    List.of(PotionEffectType.BAD_OMEN),
-                    List.of(PotionEffectType.CONFUSION),
-                    List.of(PotionEffectType.DARKNESS),
-                    List.of(PotionEffectType.GLOWING),
-                    List.of(PotionEffectType.HUNGER),
-                    List.of(PotionEffectType.LEVITATION),
-                    List.of(PotionEffectType.SLOW_DIGGING),
-                    List.of(PotionEffectType.UNLUCK),
-                    List.of(PotionEffectType.WITHER)
+        public boolean allTagged(Collection<PotionEffectType> items) {
+            return getValues().containsAll(items);
+        }
+
+        @Override
+        public Set<PotionEffectType> getValues() {
+            return Set.of(
+                    PotionEffectType.SLOW,
+                    PotionEffectType.HARM,
+                    PotionEffectType.WEAKNESS,
+                    PotionEffectType.POISON,
+                    PotionEffectType.BLINDNESS,
+                    PotionEffectType.BAD_OMEN,
+                    PotionEffectType.CONFUSION,
+                    PotionEffectType.DARKNESS,
+                    PotionEffectType.GLOWING,
+                    PotionEffectType.HUNGER,
+                    PotionEffectType.LEVITATION,
+                    PotionEffectType.SLOW_DIGGING,
+                    PotionEffectType.UNLUCK,
+                    PotionEffectType.WITHER
             );
         }
     };
@@ -45,35 +47,39 @@ public interface MinigameTag<T> {
      * MinigameTag representing vanilla potions with positive effect(s)
      * Also represents all potions with exclusive positive effects, which aren't in the value list.
      */
-    MinigameTag<Collection<PotionEffectType>> POSITIVE_POTION = new MinigameTag<>() {
+    MinigameTag<PotionEffectType> POSITIVE_POTION = new MinigameTag<>() {
         @Override
-        public boolean isTagged(Collection<PotionEffectType> item) {
-            List<PotionEffectType> list = getValues().stream().flatMap(Collection::stream).toList();
-            return new HashSet<>(list).containsAll(item);
+        public boolean isTagged(PotionEffectType item) {
+            return getValues().contains(item);
         }
 
         @Override
-        public List<Collection<PotionEffectType>> getValues() {
-            return List.of(
-                    List.of(PotionEffectType.FIRE_RESISTANCE),
-                    List.of(PotionEffectType.LUCK),
-                    List.of(PotionEffectType.HEAL),
-                    List.of(PotionEffectType.NIGHT_VISION),
-                    List.of(PotionEffectType.REGENERATION),
-                    List.of(PotionEffectType.SLOW_FALLING),
-                    List.of(PotionEffectType.SPEED),
-                    List.of(PotionEffectType.JUMP),
-                    List.of(PotionEffectType.INCREASE_DAMAGE),
-                    List.of(PotionEffectType.INVISIBILITY),
-                    List.of(PotionEffectType.WATER_BREATHING),
-                    List.of(PotionEffectType.ABSORPTION),
-                    List.of(PotionEffectType.DAMAGE_RESISTANCE),
-                    List.of(PotionEffectType.CONDUIT_POWER),
-                    List.of(PotionEffectType.DOLPHINS_GRACE),
-                    List.of(PotionEffectType.FAST_DIGGING),
-                    List.of(PotionEffectType.HEALTH_BOOST),
-                    List.of(PotionEffectType.HERO_OF_THE_VILLAGE),
-                    List.of(PotionEffectType.SATURATION)
+        public boolean allTagged(Collection<PotionEffectType> items) {
+            return getValues().containsAll(items);
+        }
+
+        @Override
+        public Set<PotionEffectType> getValues() {
+            return Set.of(
+                    PotionEffectType.FIRE_RESISTANCE,
+                    PotionEffectType.LUCK,
+                    PotionEffectType.HEAL,
+                    PotionEffectType.NIGHT_VISION,
+                    PotionEffectType.REGENERATION,
+                    PotionEffectType.SLOW_FALLING,
+                    PotionEffectType.SPEED,
+                    PotionEffectType.JUMP,
+                    PotionEffectType.INCREASE_DAMAGE,
+                    PotionEffectType.INVISIBILITY,
+                    PotionEffectType.WATER_BREATHING,
+                    PotionEffectType.ABSORPTION,
+                    PotionEffectType.DAMAGE_RESISTANCE,
+                    PotionEffectType.CONDUIT_POWER,
+                    PotionEffectType.DOLPHINS_GRACE,
+                    PotionEffectType.FAST_DIGGING,
+                    PotionEffectType.HEALTH_BOOST,
+                    PotionEffectType.HERO_OF_THE_VILLAGE,
+                    PotionEffectType.SATURATION
             );
         }
     };
@@ -81,17 +87,22 @@ public interface MinigameTag<T> {
     /**
      * MinigameTag representing vanilla potions with both, positive and negative, effects
      */
-    MinigameTag<Collection<PotionEffectType>> MIXED_POTION = new MinigameTag() {
+    MinigameTag<Set<PotionEffectType>> MIXED_POTION = new MinigameTag<>() {
 
         @Override
-        public boolean isTagged(Object item) {
+        public boolean isTagged(Set<PotionEffectType> item) {
             return getValues().contains(item);
         }
 
         @Override
-        public List<Collection<PotionEffectType>> getValues() {
-            return List.of(
-                    List.of(PotionEffectType.SLOW, PotionEffectType.DAMAGE_RESISTANCE)
+        public boolean allTagged(Collection<Set<PotionEffectType>> items) {
+            return getValues().containsAll(items);
+        }
+
+        @Override
+        public Set<Set<PotionEffectType>> getValues() {
+            return Set.of(
+                    Set.of(PotionEffectType.SLOW, PotionEffectType.DAMAGE_RESISTANCE)
             );
         }
     };
@@ -104,8 +115,10 @@ public interface MinigameTag<T> {
      */
     boolean isTagged(T item);
 
+    boolean allTagged(Collection<T> items);
+
     /**
      * Returns a list of all tagged objects
      */
-    List<T> getValues();
+    Set<T> getValues();
 }

@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import static au.com.mineauz.minigames.managers.MinigameMessageManager.debugMessage;
 
 public class MinigameUtils {
 
@@ -225,7 +228,7 @@ public class MinigameUtils {
         Material toolMat = Material.matchMaterial(Minigames.getPlugin().getConfig().getString("tool"));
         if (toolMat == null) {
             toolMat = Material.BLAZE_ROD;
-            MinigameMessageManager.sendMessage(player, MinigameMessageType.ERROR, MinigameMessageManager.MinigameLangKey.MINIGAME_ERROR_NODEFAULTTOOL);
+            MinigameMessageManager.sendMessage(player, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NODEFAULTTOOL);
         }
 
         ItemStack tool = new ItemStack(toolMat);
@@ -282,7 +285,6 @@ public class MinigameUtils {
 
         //was not in hands, search in inventory.
         for (ItemStack item : player.getPlayer().getInventory().getContents()) {
-            ;
             if (isMinigameTool(item)) {
                 return new MinigameTool(item);
             }
@@ -331,8 +333,6 @@ public class MinigameUtils {
         sloc.put("world", name);
         return sloc;
     }
-
-
 
     /**
      * Loads a short location (x, y, z, world) from a configuration section

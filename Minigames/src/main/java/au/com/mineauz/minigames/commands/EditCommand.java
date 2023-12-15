@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,7 @@ public class EditCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable @NotNull [] args) {
 
         if (args != null) {
             if (plugin.getMinigameManager().hasMinigame(args[0])) {
@@ -68,7 +69,6 @@ public class EditCommand implements ICommand {
                 }
                 MinigamePlayer player = plugin.getPlayerManager()
                         .getMinigamePlayer((Player) sender);
-                //noinspection ConstantConditions sanity check
                 if (player == null) {
                     plugin.getLogger().warning("Player is null");
                     Thread.dumpStack();

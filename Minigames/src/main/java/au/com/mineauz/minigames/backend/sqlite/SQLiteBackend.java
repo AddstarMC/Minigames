@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.backend.*;
 import au.com.mineauz.minigames.backend.both.SQLExport;
 import au.com.mineauz.minigames.backend.both.SQLImport;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -30,7 +31,6 @@ public class SQLiteBackend extends Backend {
     private StatementKey insertPlayer;
     private StatementKey loadStatSettings;
     private StatementKey saveStatSettings;
-    private boolean debug;
     private File database;
 
 
@@ -52,8 +52,7 @@ public class SQLiteBackend extends Backend {
 
 
     @Override
-    public boolean initialize(ConfigurationSection config, boolean debug) {
-        this.debug = debug;
+    public boolean initialize(ConfigurationSection config) {
 
         try {
             Class.forName("org.sqlite.JDBC");
@@ -63,13 +62,13 @@ public class SQLiteBackend extends Backend {
                 return false;
             }
             String url = "jdbc:sqlite:" + database.getAbsolutePath();
-            if (debug) logger.info("URL: " + url);
+            MinigameMessageManager.debugMessage("URL: " + url);
             Properties properties = new Properties();
             properties.put("username", "");
             properties.put("password", "");
-            if (debug) logger.info("Properties: " + properties);
+            MinigameMessageManager.debugMessage("Properties: " + properties);
             pool = new ConnectionPool(url, properties);
-            if (debug) logger.info("Pool: " + pool);
+            MinigameMessageManager.debugMessage("Pool: " + pool);
             createStatements();
 
             // Test the connection

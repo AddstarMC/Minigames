@@ -12,6 +12,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +33,7 @@ public class JuggernautMechanic extends GameMechanicBase {
     }
 
     @Override
-    public boolean checkCanStart(Minigame minigame, MinigamePlayer caller) {
+    public boolean checkCanStart(@NotNull Minigame minigame, @Nullable MinigamePlayer caller) {
         if (minigame.isTeamGame()) {
             caller.sendMessage("Juggernaut cannot be a team Minigame!", MinigameMessageType.ERROR);
             return false;

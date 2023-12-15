@@ -1,9 +1,5 @@
-package au.com.mineauz.minigames.display.spigot;
+package au.com.mineauz.minigames.display;
 
-import au.com.mineauz.minigames.display.AbstractDisplayObject;
-import au.com.mineauz.minigames.display.DisplayManager;
-import au.com.mineauz.minigames.display.IDisplayCuboid;
-import au.com.mineauz.minigames.display.INonPersistentDisplay;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -11,7 +7,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class SpigotDisplayCuboid extends AbstractDisplayObject implements IDisplayCuboid, INonPersistentDisplay {
+public class DisplayCuboid extends AbstractDisplayObject implements INonPersistentDisplay, IDisplayObject {
     private static final Location temp = new Location(null, 0, 0, 0);
 
     private final Vector minCorner;
@@ -19,13 +15,13 @@ public class SpigotDisplayCuboid extends AbstractDisplayObject implements IDispl
 
     private int lastBarrier = 41;
 
-    public SpigotDisplayCuboid(DisplayManager manager, World world, Vector minCorner, Vector maxCorner) {
+    public DisplayCuboid(DisplayManager manager, World world, Vector minCorner, Vector maxCorner) {
         super(manager, world);
         this.minCorner = minCorner;
         this.maxCorner = maxCorner;
     }
 
-    public SpigotDisplayCuboid(DisplayManager manager, Player player, Vector minCorner, Vector maxCorner) {
+    public DisplayCuboid(DisplayManager manager, Player player, Vector minCorner, Vector maxCorner) {
         this(manager, player.getWorld(), minCorner, maxCorner);
         this.player = player;
     }

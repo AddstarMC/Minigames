@@ -10,6 +10,8 @@ import au.com.mineauz.minigames.events.StartGlobalMinigameEvent;
 import au.com.mineauz.minigames.events.StopGlobalMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.gametypes.MinigameTypeBase;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.modules.*;
@@ -30,9 +32,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.logging.Level;
-
-import static au.com.mineauz.minigames.managers.MinigameMessageManager.MinigameLangKey;
-import static au.com.mineauz.minigames.managers.MinigameMessageManager.PlaceHolderKey;
 
 public class MinigameManager {
     private static final Minigames PLUGIN = Minigames.getPlugin();
@@ -104,15 +103,15 @@ public class MinigameManager {
                 Minigames.log().log(Level.WARNING, "The Minigame Type \"" + MinigameType.GLOBAL.getName() + "\" cannot use the selected Mechanic \"" + minigame.getMechanicName() + "\"!");
             } else {
                 MinigameMessageManager.sendMessage(caller, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_INVALIDMECHANIC,
-                        Placeholder.unparsed(PlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()),
-                        Placeholder.unparsed(PlaceHolderKey.TYPE.getKey(), MinigameType.GLOBAL.getName()));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MinigameType.GLOBAL.getName()));
             }
         } else if (!canStart) {
             if (caller == null) {
                 Minigames.log().log(Level.WARNING, "The Game Mechanic \"" + minigame.getMechanicName() + "\" has failed to initiate!");
             } else {
                 MinigameMessageManager.sendMessage(caller, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_MECHANICSTARTFAIL,
-                        Placeholder.unparsed(PlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()));
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()));
             }
         }
     }
@@ -315,6 +314,10 @@ public class MinigameManager {
         sendBroadcastMessage(minigame, message, type, exclude);
     }
 
+    public void sendCTFMessage(final @NotNull Minigame minigame, final @NotNull Component message, @Nullable MinigameMessageType type) {
+        sendCTFMessage(minigame, message, type, null);
+    }
+
     // This sends a message to every player which is not excluded from the exclude list
     private void sendBroadcastMessage(@NotNull Minigame minigame, final @NotNull Component message, @Nullable MinigameMessageType type, @Nullable List<@NotNull MinigamePlayer> exclude) {
         if (type == null) {
@@ -440,7 +443,7 @@ public class MinigameManager {
             return false;
         } else if (!this.minigameMechanicCheck(minigame, mgPlayer)) {
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_MECHANICSTARTFAIL,
-                    Placeholder.unparsed(PlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()));
             return false;
         } else if (minigame.getState() == MinigameState.REGENERATING) {
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_REGENERATING);

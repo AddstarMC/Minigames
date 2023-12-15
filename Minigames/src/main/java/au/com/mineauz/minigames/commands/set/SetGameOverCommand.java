@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.minigame.modules.GameOverModule;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,7 +65,7 @@ public class SetGameOverCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             GameOverModule gmo = GameOverModule.getMinigameModule(minigame);
             if (args[0].equalsIgnoreCase("timer") && args.length == 2) {

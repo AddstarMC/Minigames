@@ -7,6 +7,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class SetAllowEnderPearlsCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable @NotNull [] args) {
         if (args != null) {
             if (Boolean.parseBoolean(args[0])) {
                 minigame.setAllowEnderPearls(true);

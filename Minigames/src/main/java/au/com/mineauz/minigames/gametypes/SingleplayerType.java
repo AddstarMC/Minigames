@@ -5,6 +5,8 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.StoredPlayerCheckpoints;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -20,9 +22,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-
-import static au.com.mineauz.minigames.managers.MinigameMessageManager.MinigameLangKey;
-import static au.com.mineauz.minigames.managers.MinigameMessageManager.PlaceHolderKey;
 
 public class SingleplayerType extends MinigameTypeBase {
     private static final Minigames plugin = Minigames.getPlugin();
@@ -64,7 +63,7 @@ public class SingleplayerType extends MinigameTypeBase {
 
         if (mgm.getLives() > 0 && Math.abs(mgm.getLives()) < Integer.MAX_VALUE) {
             MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_LIVESLEFT,
-                    Placeholder.unparsed(PlaceHolderKey.NUMBER.getKey(), String.valueOf(mgm.getLives())));
+                    Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(mgm.getLives())));
         }
         if (!mgm.isAllowedFlight()) {
             mgPlayer.setCanFly(false);

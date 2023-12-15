@@ -3,6 +3,8 @@ package au.com.mineauz.minigames.managers;
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.MinigamesBroadcastEvent;
+import au.com.mineauz.minigames.managers.language.LangKey;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.audience.Audience;
@@ -15,7 +17,6 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.util.UTF8ResourceBundleControl;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -97,7 +98,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
     }
 
 
-    public static Component getMessage(@NotNull LangKey key, TagResolver... resolvers) {
+    public static Component getMgMessage(@NotNull LangKey key, TagResolver... resolvers) {
         return getMessage(null, key, resolvers);
     }
 
@@ -115,7 +116,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         return MiniMessage.miniMessage().deserialize(unformatted, resolvers);
     }
 
-    public static String getStrippedMessage(@NotNull LangKey key, TagResolver... resolvers) {
+    public static String getStrippedMgMessage(@NotNull LangKey key, TagResolver... resolvers) {
         return getStrippedMessage(null, key, resolvers);
     }
 
@@ -123,7 +124,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         return PlainTextComponentSerializer.plainText().serialize(MiniMessage.miniMessage().deserialize(getUnformattedMessage(identifier, key), resolvers));
     }
 
-    public static String getUnformattedMessage(@NotNull LangKey key) throws MissingResourceException {
+    public static String getUnformattedMgMessage(@NotNull LangKey key) throws MissingResourceException {
         return getUnformattedMessage(null, key);
     }
 
@@ -140,10 +141,6 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
             throw new MissingResourceException(err, "MessageManager", key.getPath());
         }
         return bundle.getString(key.getPath());
-    }
-
-    public static Component getMinigamesMessage(@NotNull MinigameLangKey key, @NotNull TagResolver... resolvers) {
-        return getMessage(null, key, resolvers);
     }
 
     public static void sendClickedCommandMessage(@NotNull Audience target, @NotNull String command, @Nullable String identifier, @NotNull LangKey key,
@@ -216,138 +213,37 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         }
     }
 
-    public static void sendMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType, @Nullable String identifier, @NotNull MinigameLangKey key) {
+    public static void sendMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType, @Nullable String identifier, @NotNull LangKey key) {
         audience.sendMessage(getPluginPrefix(messageType).append(getMessage(identifier, key)));
+    }
+
+    public static void sendMgMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType, @NotNull MinigameLangKey key) {
+        sendMessage(audience, messageType, null, key);
+    }
+
+    public static void sendMgMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType, @NotNull MinigameLangKey key, @NotNull TagResolver... resolvers) {
+        sendMessage(audience, messageType, null, key, resolvers);
+    }
+
+    public static void sendMgMessage(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameMessageType messageType, @NotNull MinigameLangKey key, @NotNull TagResolver... resolvers) {
+        sendMessage(mgPlayer.getPlayer(), messageType, null, key, resolvers);
+    }
+
+    public static void sendMgMessage(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameMessageType type, @NotNull MinigameLangKey key) {
+        sendMessage(mgPlayer.getPlayer(), type, null, key);
     }
 
     public static void sendMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType, @NotNull Component message) {
         audience.sendMessage(getPluginPrefix(messageType).append(message));
     }
 
-    public static void sendMessage(@NotNull Audience audience, @NotNull MinigameMessageType messageType, @NotNull MinigameLangKey key) {
-        sendMessage(audience, messageType, null, key);
+    public static void sendMessage(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameMessageType type, @NotNull Component message) {
+        sendMessage(mgPlayer.getPlayer(), type, message);
     }
 
-    public static void sendMessage(MinigamePlayer player, MinigameMessageType type, Component message) {
-        sendMessage(player.getPlayer(), type, message);
-    }
-
-
-    public enum PlaceHolderKey {
-        TEAM("team"),
-        OTHER_TEAM("other_team"),
-        PLAYER("player"),
-        OTHER_PLAYER("other_player"),
-        MINIGAME("minigame"),
-        SCORE("score"),
-        TIME("time"),
-        DEATHS("deaths"),
-        REVERTS("reverts"),
-        KILLS("kills"),
-        NUMBER("number"),
-        MAX("max"),
-        TYPE("type"),
-        MECHANIC("mechanic"),
-        OBJECTIVE("objective"),
-        COMMAND("command"),
-        MONEY("money"),
-        LOADOUT("loadout");
-
-        private final String placeHolder;
-
-        PlaceHolderKey(String placeHolder) {
-            this.placeHolder = placeHolder;
-        }
-
-        @Subst("number")
-        public String getKey() {
-            return placeHolder;
-        }
-    }
-
-    public static void debugMessage(String message) {
+    public static void debugMessage(@NotNull String message) { //todo
         if (Minigames.getPlugin().isDebugging()) {
             Minigames.getPlugin().getLogger().info(ChatColor.RED + "[Debug] " + ChatColor.WHITE + message);
-        }
-    }
-
-    public enum MinigameLangKey implements LangKey {
-        COMMAND_INFO_OUTPUT_HEADER("command.info.output.header"),
-        COMMAND_INFO_OUTPUT_DESCRIPTION("command.info.output.description"),
-        COMMAND_INFO_OUTPUT_GAMETYPE("command.info.output.gameType"),
-        COMMAND_INFO_OUTPUT_TIMER("command.info.output.timer"),
-        COMMAND_INFO_OUTPUT_PLAYERHEADER("command.info.output.playerHeader"),
-        COMMAND_INFO_OUTPUT_TEAMDATA("command.info.output.teamData"),
-        COMMAND_INFO_OUTPUT_PLAYERDATA("command.info.output.playerData"),
-        COMMAND_INFO_OUTPUT_NOPLAYER("command.info.output.noPlayer"),
-        COMMAND_INFO_OUTPUT_NOMINIGAME("command.info.noMinigame"),
-        COMMAND_INFO_DESCRIPTION("command.info.description"),
-        MINIGAME_ERROR_NOTSTARTED("minigame.error.notStarted"),
-        MINIGAME_ERROR_NOTENABLED("minigame.error.notEnabled"),
-        MINIGAME_ERROR_NOMINIGAME("minigame.error.noMinigame"),
-        MINIGAME_ERROR_NOLOBY("minigame.error.noLobby"),
-        MINIGAME_ERROR_FULL("minigame.error.full"),
-        MINIGAME_ERROR_NODEFAULTTOOL("minigame.error.noDefaultTool"),
-        MINIGAME_ERROR_INVALIDMECHANIC("minigame.error.invalidMechanic"),
-        MINIGAME_ERROR_MECHANICSTARTFAIL("minigame.error.mechanicStartFail"),
-        MINIGAME_ERROR_INVALIDTYPE("minigame.error.invalidType"),
-        MINIGAME_ERROR_REGENERATING("minigame.error.regenerating"),
-        MINIGAME_ERROR_STARTED("minigame.error.started"),
-        MINIGAME_ERROR_NOEND("minigame.error.noEnd"),
-        MINIGAME_ERROR_NOQUIT("minigame.error.noQuit"),
-        MINIGAME_ERROR_NOSTART("minigame.error.noStart"),
-        MINIGAME_ERROR_NOSPECTATEPOS("minigame.error.noSpectatePos"),
-        MINIGAME_ERROR_NOTELEPORT("minigame.error.noTeleport"),
-        MINIGAME_ERROR_NOTEAM("minigame.error.noTeam"),
-        MINIGAME_ERROR_INCORRECTSTART("minigame.error.incorrectStart"),
-        MINIGAME_SKIPWAITTIME("minigame.skipWaitTime"),
-        MINIGAME_LATEJOIN("minigame.lateJoin"),
-        MINIGAME_LATEJOINWAIT("minigame.lateJoinWait"),
-        MINIGAME_WAITINGFORPLAYERS("minigame.waitingForPlayers"),
-        MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS("minigame.warning.TeleportAcrossWorlds"),
-        MINIGAME_SCORETOWIN("minigame.scoreToWin"),
-        MINIGAME_LIVESLEFT("minigame.livesLeft"),
-        MINIGAME_INFO_SCORE("minigame.info.score"),
-        MINIGAME_STARTRANDOMIZED("minigame.startRandomized"),
-        MINIGAME_RESSOURCEPACK_APPLY("minigame.resourcepack.apply"),
-        MINIGAME_RESSOURCEPACK_REMOVE("minigames.resourcepack.remove"),
-        PLAYER_TEAM_ASSIGN_JOINTEAM("player.team.assign.joinTeam"),
-        PLAYER_END_TEAM_WIN("player.end.team.win"),
-        PLAYER_END_BROADCAST_NOBODY("player.end.broadcast.nobodyWon"),
-        PLAYER_END_BROADCAST_WIN("player.end.broadcast.win"),
-        PLAYER_END_TEAM_TIE("player.end.team.tie"),
-        PLAYER_END_TEAM_TIECOUNT("player.end.team.tieCount"),
-        PLAYER_END_TEAM_SCORE("player.end.team.score"),
-        PLAYER_JOIN_PLAYERINFO("player.join.plyInfo"),
-        PLAYER_JOIN_PLAYERMSG("player.join.plyMsg"),
-        PLAYER_JOIN_OBJECTIVE("player.join.objective"),
-        PLAYER_SPECTATE_JOIN_PLAYERMSG("player.spectate.join.plyMsg"),
-        PLAYER_SPECTATE_JOIN_PLAYERHELP("player.spectate.join.plyHelp"),
-        PLAYER_SPECTATE_JOIN_MINIGAMEMSG("player.spectate.join.minigameMsg"),
-        PLAYER_SPECTATE_QUIT_PLAYERMSG("player.spectate.quit.plyMsg"),
-        PLAYER_SPECTATE_QUIT_MINIGAMEMSG("player.spectate.quit.minigameMsg"),
-        PLAYER_QUIT_PLAYERMSG("player.quit.plyMsg"),
-        PLAYER_BET_PLAYERMSG("player.bet.plyMsg"),
-        PLAYER_BET_NOTENOUGHMONEY("player.bet.notEnoughMoney"),
-        PLAYER_BET_NOTENOUGHMONEYINFO("player.bet.notEnoughMoneyInfo"),
-        PLAYER_BET_WINMONEY("player.bet.winMoney"),
-        PLAYER_CHECKPOINT_DEATHREVERT("player.checkpoint.deathRevert"),
-        PLAYER_CHECKPOINT_REVERT("player.checkpoint.revert"),
-        PLAYER_BET_PLAYERNOBET("player.bet.plyNoBet"),
-        PLAYER_BET_INCORRECTMONEYAMOUNTINFO("player.bet.incorrectMoneyAmountInfo"),
-        PLAYER_BET_INCORRECTITEMAMOUNTINFO("player.bet.incorrectItemAmountInfo"),
-        PLAYER_COMPLETIONTIME("player.completionTime"),
-        COMMAND_DIVIDER_LARGE("command.divider.large"),
-        COMMAND_DIVIDER_SMALL("command.divider.small");
-
-        private final @NotNull String path;
-
-        MinigameLangKey(@NotNull String path) {
-            this.path = path;
-        }
-
-        public @NotNull String getPath() {
-            return path;
         }
     }
 }

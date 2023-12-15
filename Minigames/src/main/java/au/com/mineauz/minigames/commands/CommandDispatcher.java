@@ -15,6 +15,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
 
 public class CommandDispatcher implements CommandExecutor, TabCompleter {
     private static final Map<String, ICommand> commands = new HashMap<>();
@@ -38,7 +39,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
                 cmdFile.write("! Alias");
                 cmdFile.newLine();
             } catch (IOException e) {
-                e.printStackTrace();
+                Minigames.log().log(Level.WARNING, "Couldn't output cmds to file!", e);
             }
         }
         registerCommand(new CreateCommand());
@@ -81,7 +82,7 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
                 cmdFile.write("|}");
                 cmdFile.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                Minigames.log().log(Level.WARNING, "Couldn't save cmds file!", e);
             }
         }
     }

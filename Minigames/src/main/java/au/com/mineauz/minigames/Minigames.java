@@ -504,7 +504,7 @@ public class Minigames extends JavaPlugin {
     }
 
     public void queueStatSave(final StoredGameStats saveData, final boolean winner) {
-        MinigameUtils.debugMessage("Scheduling SQL data save for " + saveData);
+        MinigameMessageManager.debugMessage("Scheduling SQL data save for " + saveData);
 
         final ListenableFuture<Long> winCountFuture = this.backend.loadSingleStat(saveData.getMinigame(), MinigameStats.Wins, StatValueField.Total, saveData.getPlayer().getUUID());
         this.backend.saveStats(saveData);

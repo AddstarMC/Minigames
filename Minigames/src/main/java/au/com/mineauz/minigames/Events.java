@@ -2,9 +2,11 @@ package au.com.mineauz.minigames;
 
 import au.com.mineauz.minigames.events.RevertCheckpointEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.MinigameManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
@@ -16,6 +18,9 @@ import au.com.mineauz.minigames.minigame.modules.WeatherTimeModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.OfflineMinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -49,25 +54,25 @@ public class Events implements Listener {
     private final MinigameManager mdata = plugin.getMinigameManager();
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerResourcePack(PlayerResourcePackStatusEvent event) { //todo 1.20.3 + add ressource pack not set
-        final MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
+    public void onPlayerResourcePack(PlayerResourcePackStatusEvent event) { //todo 1.20.3 + add ressource pack not set (redo with multible Ressoucepacks in mind.)
+        final MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
         List<MinigamePlayer> required = plugin.getPlayerManager().getApplyingPack();
-        if (ply.isInMinigame()) {
-            if (required.contains(ply)) {
-                ResourcePackModule module = ResourcePackModule.getMinigameModule(ply.getMinigame());
+        if (mgPlayer.isInMinigame()) {
+            if (required.contains(mgPlayer)) {
+                ResourcePackModule module = ResourcePackModule.getMinigameModule(mgPlayer.getMinigame());
                 if (!module.isEnabled()) return;
                 if (!module.isForced()) return;
                 switch (event.getStatus()) {
-                    case ACCEPTED, SUCCESSFULLY_LOADED -> required.remove(ply);
+                    case ACCEPTED, SUCCESSFULLY_LOADED -> required.remove(mgPlayer);
                     case DECLINED -> {
-                        Minigames.getPlugin().getPlayerManager().quitMinigame(ply, true);
-                        MinigameMessageManager.sendMessage(ply, MinigameMessageType.ERROR, null, "minigames.resource.declined");
-                        required.remove(ply);
+                        Minigames.getPlugin().getPlayerManager().quitMinigame(mgPlayer, true);
+                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_RESOURCE_DECLINED);
+                        required.remove(mgPlayer);
                     }
                     case FAILED_DOWNLOAD -> {
-                        Minigames.getPlugin().getPlayerManager().quitMinigame(ply, true);
-                        MinigameMessageManager.sendMessage(ply, MinigameMessageType.ERROR, null, "minigames.resource.failed");
-                        required.remove(ply);
+                        Minigames.getPlugin().getPlayerManager().quitMinigame(mgPlayer, true);
+                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_RESOURCE_FAILED);
+                        required.remove(mgPlayer);
                     }
                 }
             }
@@ -77,50 +82,52 @@ public class Events implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerDeath(PlayerDeathEvent event) {
-        final MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity().getPlayer());
-        if (ply.isInMinigame()) {
-            Minigame mgm = ply.getMinigame();
+        final MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getEntity().getPlayer());
+        if (mgPlayer.isInMinigame()) {
+            Minigame mgm = mgPlayer.getMinigame();
             if (!mgm.hasDeathDrops()) {
                 if (mgm.keepInventory()) {
-                    List<ItemStack> drops = Arrays.asList(ply.getPlayer().getInventory().getContents());
+                    List<ItemStack> drops = Arrays.asList(mgPlayer.getPlayer().getInventory().getContents());
                     PlayerLoadout l = new PlayerLoadout("deathDrops");
                     for (int i = 0; i < drops.size(); i++) {
                         l.addItem(drops.get(i), i);
                     }
-                    ply.setLoadout(l);
+                    mgPlayer.setLoadout(l);
                 }
                 event.getDrops().clear();
             }
-            String msg = event.getDeathMessage();
-            event.setDeathMessage(null);
+
+            Component msg = event.deathMessage();
+            event.deathMessage(Component.empty());
             event.setDroppedExp(0);
 
-            ply.addDeath();
-            ply.addRevert();
+            mgPlayer.addDeath();
+            mgPlayer.addRevert();
 
-            pdata.partyMode(ply);
+            pdata.partyMode(mgPlayer);
 
-            if (ply.getPlayer().getKiller() != null) {
-                MinigamePlayer killer = pdata.getMinigamePlayer(ply.getPlayer().getKiller());
+            if (mgPlayer.getPlayer().getKiller() != null) {
+                MinigamePlayer killer = pdata.getMinigamePlayer(mgPlayer.getPlayer().getKiller());
                 if (killer != null)
                     killer.addKill();
             }
 
-            if (msg != null && !msg.equals("")) {
+            if (msg != null && !PlainTextComponentSerializer.plainText().serialize(msg).isEmpty()) { //components really need a better way to check if they are empty
                 mdata.sendMinigameMessage(mgm, msg, MinigameMessageType.ERROR);
             }
             if (mgm.getState() == MinigameState.STARTED) {
-                if (mgm.getLives() > 0 && mgm.getLives() <= ply.getDeaths()) {
-                    ply.sendMessage(MinigameUtils.getLang("player.quit.plyOutOfLives"), MinigameMessageType.ERROR);
+                if (mgm.getLives() > 0 && mgm.getLives() <= mgPlayer.getDeaths()) {
+                    mgPlayer.sendMessage(MinigameUtils.getLang("player.quit.plyOutOfLives"), MinigameMessageType.ERROR);
                     if (!event.getDrops().isEmpty() && mgm.getPlayers().size() == 1) {
                         event.getDrops().clear();
                     }
-                    pdata.quitMinigame(ply, false);
+                    pdata.quitMinigame(mgPlayer, false);
                 } else if (mgm.getLives() > 0) {
-                    ply.sendInfoMessage(MinigameMessageManager.getMinigamesMessage("minigame.livesLeft", mgm.getLives() - ply.getDeaths()));
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_LIVESLEFT,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(mgm.getLives() - mgPlayer.getDeaths())));
                 }
             } else if (mgm.getState() == MinigameState.ENDED) {
-                plugin.getPlayerManager().quitMinigame(ply, true);
+                plugin.getPlayerManager().quitMinigame(mgPlayer, true);
             }
         }
     }
@@ -460,8 +467,9 @@ public class Events implements Listener {
                         MinigamePlayer shooter = pdata.getMinigamePlayer(player);
                         Minigame mgm = ply.getMinigame();
 
-                        if (shooter == null)
+                        if (shooter == null) {
                             return;
+                        }
 
                         if (shooter.isInMinigame() && shooter.getMinigame().equals(ply.getMinigame())) {
                             if (!shooter.canPvP()) {
@@ -823,13 +831,13 @@ public class Events implements Listener {
     private boolean isEffectApplicable(Collection<PotionEffectType> effectTypes, MinigamePlayer ply, MinigamePlayer rPly) {
         if (!ply.getMinigame().isTeamGame()) {
             if (ply == rPly) {
-                return !MinigameTag.NEGATIVE_POTION.isTagged(effectTypes);
+                return !MinigameTag.NEGATIVE_POTION.allTagged(effectTypes);
             }
-            return !MinigameTag.POSITIVE_POTION.isTagged(effectTypes);
+            return !MinigameTag.POSITIVE_POTION.allTagged(effectTypes);
         }
         if (ply.getTeam() == rPly.getTeam()) {
-            return !MinigameTag.NEGATIVE_POTION.isTagged(effectTypes);
+            return !MinigameTag.NEGATIVE_POTION.allTagged(effectTypes);
         }
-        return !MinigameTag.POSITIVE_POTION.isTagged(effectTypes);
+        return !MinigameTag.POSITIVE_POTION.allTagged(effectTypes);
     }
 }

@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemString extends MenuItem {
-
-    protected Callback<String> str;
+    protected final Callback<String> str;
     private boolean allowNull = false;
 
     public MenuItemString(String name, Material displayItem, Callback<String> str) {

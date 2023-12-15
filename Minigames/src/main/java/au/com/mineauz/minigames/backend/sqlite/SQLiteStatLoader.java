@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.backend.sqlite;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.backend.ConnectionHandler;
 import au.com.mineauz.minigames.backend.StatementKey;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.MinigameStat;
@@ -37,7 +37,7 @@ class SQLiteStatLoader {
     }
 
     public List<StoredStat> loadStatValues(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order, int offset, int length) {
-        MinigameUtils.debugMessage("SQLite beginning stat load for " + minigame.getName(false) + ", " + stat + ", " + field);
+        MinigameMessageManager.debugMessage("SQLite beginning stat load for " + minigame.getName(false) + ", " + stat + ", " + field);
         ConnectionHandler handler = null;
         try {
             handler = backend.getPool().getConnection();
@@ -51,7 +51,7 @@ class SQLiteStatLoader {
             if (handler != null) {
                 handler.release();
             }
-            MinigameUtils.debugMessage("SQLite completed stat load for " + minigame.getName(false));
+            MinigameMessageManager.debugMessage("SQLite completed stat load for " + minigame.getName(false));
         }
     }
 

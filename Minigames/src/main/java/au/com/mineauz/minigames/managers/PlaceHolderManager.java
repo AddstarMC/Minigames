@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class PlaceHolderManager extends PlaceholderExpansion {
+public class PlaceHolderManager extends PlaceholderExpansion { //todo integrate into new minimessage lang system
     private final Minigames plugin;
     private final List<ModulePlaceHolderProvider> providers;
     private final Map<String, String> identifiers;

@@ -75,7 +75,7 @@ public class LoadoutSign implements MinigameSign {
                             if (sign.getLine(3).equalsIgnoreCase("respawn")) {
                                 player.sendInfoMessage(MinigameUtils.getLang("sign.loadout.nextRespawn"));
                             } else if (sign.getLine(3).equalsIgnoreCase("temporary")) {
-                                player.sendInfoMessage(MinigameMessageManager.getUnformattedMessage(null, "sign.loadout.temporarilyEquipped"));
+                                player.sendInfoMessage(MinigameMessageManager.getUnformattedMgMessage("sign.loadout.temporarilyEquipped"));
                                 loadout.getLoadout(sign.getLine(2)).equiptLoadout(player);
                                 player.setLoadout(player.getDefaultLoadout());
                             } else {
@@ -97,7 +97,7 @@ public class LoadoutSign implements MinigameSign {
                             if (sign.getLine(3).equalsIgnoreCase("respawn")) {
                                 player.sendInfoMessage(MinigameUtils.getLang("sign.loadout.nextRespawn"));
                             } else if (sign.getLine(3).equalsIgnoreCase("temporary")) {
-                                player.sendInfoMessage(MinigameMessageManager.getUnformattedMessage(null, "sign.loadout.temporarilyEquipped"));
+                                player.sendInfoMessage(MinigameMessageManager.getUnformattedMgMessage("sign.loadout.temporarilyEquipped"));
                                 plugin.getMinigameManager().getLoadout(sign.getLine(2)).equiptLoadout(player);
                                 player.setLoadout(player.getDefaultLoadout());
                             } else {
