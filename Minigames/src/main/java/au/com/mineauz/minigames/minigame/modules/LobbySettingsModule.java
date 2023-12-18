@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LobbySettingsModule extends MinigameModule {
-
     private final BooleanFlag canMovePlayerWait = new BooleanFlag(true, "canMovePlayerWait");
     private final BooleanFlag canMoveStartWait = new BooleanFlag(true, "canMoveStartWait");
     private final BooleanFlag canInteractPlayerWait = new BooleanFlag(true, "canInteractPlayerWait");

@@ -12,6 +12,8 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,17 +52,17 @@ public class ApplyPotionAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player,
-                                    Region region) {
-        debug(player, region);
-        execute(player);
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer,
+                                    @NotNull Region region) {
+        debug(mgPlayer, region);
+        execute(mgPlayer);
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
-        debug(player, node);
-        execute(player);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+                                  @NotNull Node node) {
+        debug(mgPlayer, node);
+        execute(mgPlayer);
     }
 
     private void execute(MinigamePlayer player) {
@@ -86,8 +88,8 @@ public class ApplyPotionAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Apply Potion", player);
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Apply Potion", mgPlayer);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
         List<String> pots = new ArrayList<>(PotionEffectType.values().length);
         for (PotionEffectType type : PotionEffectType.values()) {
@@ -136,7 +138,7 @@ public class ApplyPotionAction extends AbstractAction {
 
 
         }, 0, 100));
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 

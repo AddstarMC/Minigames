@@ -8,6 +8,8 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -41,14 +43,14 @@ public class AddScoreAction extends ScoreAction {
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player,
-                                  Node base) {
-        executeAction(player, base);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+                                  @NotNull Node base) {
+        executeAction(mgPlayer, base);
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region base) {
-        executeAction(player, base);
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region base) {
+        executeAction(mgPlayer, base);
 
 
     }
@@ -77,8 +79,8 @@ public class AddScoreAction extends ScoreAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Add Score", player);
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Add Score", mgPlayer);
         m.addItem(new MenuItemInteger("Add Score Amount", Material.ENDER_PEARL, new Callback<>() {
 
             @Override
@@ -92,7 +94,7 @@ public class AddScoreAction extends ScoreAction {
             }
         }, null, null));
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 

@@ -5,12 +5,15 @@ import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -22,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 public class GameOverModule extends MinigameModule {
-
     private final IntegerFlag timer = new IntegerFlag(0, "gameOver.timer");
     private final BooleanFlag invincible = new BooleanFlag(false, "gameOver.invincible");
     private final BooleanFlag humiliation = new BooleanFlag(false, "gameOver.humiliation");
@@ -87,7 +89,8 @@ public class GameOverModule extends MinigameModule {
     }
 
     public void startEndGameTimer() {
-        Minigames.getPlugin().getMinigameManager().sendMinigameMessage(getMinigame(), MinigameMessageManager.getMinigamesMessage("minigame.gameOverQuit", timer.getFlag()));
+        Minigames.getPlugin().getMinigameManager().sendMinigameMessage(getMinigame(), MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_GAMEOVERQUIT,
+                Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(timer.getFlag()))));
         getMinigame().setState(MinigameState.ENDED);
 
         List<MinigamePlayer> allPlys = new ArrayList<>(winners.size() + losers.size());

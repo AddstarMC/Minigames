@@ -1,13 +1,15 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scoreboard.Team;
 
@@ -73,9 +75,10 @@ public class JuggernautModule extends MinigameModule {
             Team team = player.getMinigame().getScoreboardManager().getTeam("juggernaut");
             team.addEntry(team.getColor() + player.getPlayer().getDisplayName());
 
-            juggernaut.sendMessage(MinigameUtils.getLang("player.juggernaut.plyMsg"), MinigameMessageType.WIN);
-            Minigames.getPlugin().getMinigameManager().sendMinigameMessage(getMinigame(),
-                    MinigameMessageManager.getMinigamesMessage("player.juggernaut.gameMsg", juggernaut.getDisplayName(getMinigame().usePlayerDisplayNames())), MinigameMessageType.INFO, juggernaut);
+            MinigameMessageManager.sendMgMessage(juggernaut, MinigameMessageType.WIN, MinigameLangKey.PLAYER_JUGGERNAUT_PLAYERMSG);
+            Minigames.getPlugin().getMinigameManager().sendMinigameMessage(getMinigame(), MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_JUGGERNAUT_GAMEMSG,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), juggernaut.getDisplayName(getMinigame().usePlayerDisplayNames()))
+            ), MinigameMessageType.INFO, juggernaut);
 
             LoadoutModule lm = LoadoutModule.getMinigameModule(getMinigame());
             if (lm.hasLoadout("juggernaut")) {

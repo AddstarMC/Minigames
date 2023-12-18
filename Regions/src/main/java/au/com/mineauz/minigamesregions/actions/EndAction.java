@@ -5,6 +5,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -35,16 +37,16 @@ public class EndAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
-        execute(player);
-        debug(player, node);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+                                  @NotNull Node node) {
+        execute(mgPlayer);
+        debug(mgPlayer, node);
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
-        debug(player, region);
-        execute(player);
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        debug(mgPlayer, region);
+        execute(mgPlayer);
     }
 
     private void execute(MinigamePlayer player) {
@@ -61,7 +63,7 @@ public class EndAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         return false;
     }
 

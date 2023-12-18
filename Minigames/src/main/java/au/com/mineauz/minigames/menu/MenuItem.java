@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -101,7 +102,7 @@ public class MenuItem {
         //Do Stuff
     }
 
-    public Menu getContainer() {
+    public @Nullable Menu getContainer() {
         return container;
     }
 

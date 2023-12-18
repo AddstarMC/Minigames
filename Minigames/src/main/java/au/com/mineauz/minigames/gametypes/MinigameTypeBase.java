@@ -77,6 +77,6 @@ public abstract class MinigameTypeBase implements Listener {
 //        else{
 //            player.addTempRewardItem(reward.getItem());
 //        }
-//        player.sendMgMessage(MinigameUtils.formStr("player.end.awardItem", reward.getItem().getAmount(), MinigameUtils.getItemStackName(reward.getItem())), MinigameMessageType.WIN);
+//        player.sendMessage(MinigameUtils.formStr("player.end.awardItem", reward.getItem().getAmount(), MinigameUtils.getItemStackName(reward.getItem())), MinigameMessageType.WIN);
 //    }
 }

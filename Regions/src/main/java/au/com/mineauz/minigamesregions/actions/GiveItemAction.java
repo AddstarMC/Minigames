@@ -2,6 +2,7 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
@@ -10,10 +11,14 @@ import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -53,16 +58,16 @@ public class GiveItemAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
 
-        debug(player, region);
-        execute(player);
+        debug(mgPlayer, region);
+        execute(mgPlayer);
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
-        debug(player, node);
-        execute(player);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+        debug(mgPlayer, node);
+        execute(mgPlayer);
     }
 
     private void execute(MinigamePlayer player) {
@@ -107,8 +112,8 @@ public class GiveItemAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(final MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Give Item", player);
+    public boolean displayMenu(@NotNull final MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Give Item", mgPlayer);
 
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
@@ -121,7 +126,6 @@ public class GiveItemAction extends AbstractAction {
         m.addItem(l);
 
         m.addItem(new MenuItemString("Type", Material.STONE, new Callback<>() {
-
             @Override
             public String getValue() {
                 return type.getFlag();
@@ -131,12 +135,13 @@ public class GiveItemAction extends AbstractAction {
             public void setValue(String value) {
                 if (Material.getMaterial(value.toUpperCase()) != null) {
                     type.setFlag(value.toUpperCase());
-                } else
-                    player.sendMessage("Invalid item type!", MinigameMessageType.ERROR);
+                } else {
+                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(), RegionLangKey.ERROR_INVALID_ITEMTYPE);
+                }
             }
         }));
         m.addItem(count.getMenuItem("Count", Material.STONE_SLAB, 1, 64));
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 

@@ -11,6 +11,8 @@ import au.com.mineauz.minigamesregions.Region;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,13 +51,13 @@ public class SwitchTeamAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
-        executeAction(player);
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        executeAction(mgPlayer);
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
-        executeAction(player);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+        executeAction(mgPlayer);
     }
 
     private void executeAction(MinigamePlayer player) {
@@ -97,8 +99,8 @@ public class SwitchTeamAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu prev) {
-        Menu m = new Menu(3, "Switch Team", player);
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu prev) {
+        Menu m = new Menu(3, "Switch Team", mgPlayer);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
         List<String> teams = new ArrayList<>();
         teams.add("All");
@@ -134,7 +136,7 @@ public class SwitchTeamAction extends AbstractAction {
 
 
         }, teams));
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 }

@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.minigame.reward;
 
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -122,7 +123,7 @@ public class Rewards {
         return groups;
     }
 
-    public Menu createMenu(String name, MinigamePlayer player, Menu parent) {
+    public Menu createMenu(Component name, MinigamePlayer player, Menu parent) {
         Menu rewardMenu = new Menu(5, name, player);
 
         rewardMenu.setPreviousPage(parent);

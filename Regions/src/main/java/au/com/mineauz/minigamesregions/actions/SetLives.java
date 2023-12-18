@@ -6,6 +6,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -13,7 +15,7 @@ import java.util.Map;
  * Created for use for the Add5tar MC Minecraft server
  * Created by benjamincharlton on 6/11/2017.
  */
-public class SetLives extends AbstractAction {
+public class SetLives extends AbstractAction { //todo unused!
     private final IntegerFlag amount = new IntegerFlag(1, "amount");
 
     @Override
@@ -42,12 +44,12 @@ public class SetLives extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
-        player.getMinigame().setLives(amount.getFlag());
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        mgPlayer.getMinigame().setLives(amount.getFlag());
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
 
     }
 
@@ -62,7 +64,7 @@ public class SetLives extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         return false;
     }
 }

@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class SetLocationCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             StringBuilder location = new StringBuilder();
             for (int i = 0; i < args.length; i++) {

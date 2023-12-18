@@ -1,6 +1,7 @@
 package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
@@ -12,8 +13,11 @@ import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import com.google.common.collect.ImmutableSet;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Set;
@@ -48,9 +52,11 @@ public class MessageAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(final MinigamePlayer player, final Node node) {
-        debug(player, node);
-        if (player == null || !player.isInMinigame()) return;
+    public void executeNodeAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Node node) {
+        debug(mgPlayer, node);
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) {
+            return;
+        }
 
         ScriptObject base = new ScriptObject() {
             @Override
@@ -66,27 +72,30 @@ public class MessageAction extends AbstractAction {
             @Override
             public ScriptReference get(String name) {
                 if (name.equalsIgnoreCase("player")) {
-                    return player;
+                    return mgPlayer;
                 } else if (name.equalsIgnoreCase("area")) {
                     return node;
                 } else if (name.equalsIgnoreCase("minigame")) {
-                    return player.getMinigame();
+                    return mgPlayer.getMinigame();
                 } else if (name.equalsIgnoreCase("team")) {
-                    return player.getTeam();
+                    return mgPlayer.getTeam();
                 }
 
                 return null;
             }
         };
-        debug(player, base);
-        execute(player, base);
+        debug(mgPlayer, base);
+        execute(mgPlayer, base);
     }
 
     @Override
-    public void executeRegionAction(final MinigamePlayer player, final Region region) {
-        debug(player, region);
-        if (player == null || !player.isInMinigame()) return;
-        player.sendMessage(msg.getFlag(), MinigameMessageType.INFO);
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
+        debug(mgPlayer, region);
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) {
+            return;
+        }
+
+        MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(msg.getFlag()));
 
         ScriptObject base = new ScriptObject() {
             @Override
@@ -102,27 +111,27 @@ public class MessageAction extends AbstractAction {
             @Override
             public ScriptReference get(String name) {
                 if (name.equalsIgnoreCase("player")) {
-                    return player;
+                    return mgPlayer;
                 } else if (name.equalsIgnoreCase("area")) {
                     return region;
                 } else if (name.equalsIgnoreCase("minigame")) {
-                    return player.getMinigame();
+                    return mgPlayer.getMinigame();
                 } else if (name.equalsIgnoreCase("team")) {
-                    return player.getTeam();
+                    return mgPlayer.getTeam();
                 }
 
                 return null;
             }
         };
-        debug(player, base);
-        execute(player, base);
+        debug(mgPlayer, base);
+        execute(mgPlayer, base);
     }
 
-    private void execute(MinigamePlayer player, ScriptObject base) {
+    private void execute(@NotNull MinigamePlayer mgPlayer, @NotNull ScriptObject base) {
         String message = msg.getFlag();
 
         message = ExpressionParser.stringResolve(message, base, true, true);
-        player.sendMessage(message, MinigameMessageType.INFO);
+        MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(message));
     }
 
     @Override
@@ -136,12 +145,12 @@ public class MessageAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Options", player);
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Options", mgPlayer);
         m.setPreviousPage(previous);
         m.addItem(msg.getMenuItem("Message", Material.PAPER));
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), m.getPreviousPage()), m.getSize() - 9);
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 }

@@ -120,7 +120,7 @@ public class ExpressionParser {
      * @throws NoSuchElementException   Thrown if an object in a path cannot be resolved. Only thrown if ignoreResolutionErrors is false
      * @throws IllegalArgumentException Thrown if there is a syntax error in a path. Only thrown if ignoreSyntaxErrors is false
      */
-    public static String stringResolve(String input, ScriptObject object, boolean ignoreSyntaxErrors, boolean ignoreResolutionErrors) throws IllegalArgumentException, NoSuchElementException {
+    public static String stringResolve(String input, ScriptObject object, boolean ignoreSyntaxErrors, boolean ignoreResolutionErrors) throws IllegalArgumentException, NoSuchElementException { //todo maybe a resolve component with minimessage?
         StringBuilder buffer = new StringBuilder(input);
         int start = 0;
         int index = 0;

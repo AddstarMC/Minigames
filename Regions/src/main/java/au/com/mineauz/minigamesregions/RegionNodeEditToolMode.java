@@ -1,6 +1,8 @@
 package au.com.mineauz.minigamesregions;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemSaveMinigame;
 import au.com.mineauz.minigames.menu.MenuUtility;
@@ -9,15 +11,16 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemNode;
 import au.com.mineauz.minigamesregions.menuitems.MenuItemRegion;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -92,21 +95,21 @@ public class RegionNodeEditToolMode implements ToolMode {
             nodeLocs.put(node, node.getLocation().toVector());
         }
 
-        Set<Object> hits = Sets.newIdentityHashSet();
+        Set<ExecutableScriptObject> hits = Sets.newIdentityHashSet();
 
         // Raytrace the view vector
         for (double dist = 0; dist < 10; dist += 0.25) {
             Vector pos = origin.clone().add(direction.clone().multiply(dist));
 
-            for (Entry<Region, Vector[]> region : regionBBs.entrySet()) {
-                if (pos.isInAABB(region.getValue()[0], region.getValue()[1])) {
-                    hits.add(region.getKey());
+            for (Entry<Region, Vector[]> regionEntry : regionBBs.entrySet()) {
+                if (pos.isInAABB(regionEntry.getValue()[0], regionEntry.getValue()[1])) {
+                    hits.add(regionEntry.getKey());
                 }
             }
 
-            for (Entry<Node, Vector> node : nodeLocs.entrySet()) {
-                if (pos.isInSphere(node.getValue(), 0.4)) {
-                    hits.add(node.getKey());
+            for (Entry<Node, Vector> nodeEntry : nodeLocs.entrySet()) {
+                if (pos.isInSphere(nodeEntry.getValue(), 0.4)) {
+                    hits.add(nodeEntry.getKey());
                 }
             }
         }
@@ -119,37 +122,31 @@ public class RegionNodeEditToolMode implements ToolMode {
         }
     }
 
-    @Override
-    public void onEntityLeftClick(MinigamePlayer player, Minigame minigame, Team team, EntityDamageByEntityEvent event) {
-
-    }
-
-    @Override
-    public void onEntityRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEntityEvent event) {
-
-    }
-
-    private void openMenu(MinigamePlayer player, Minigame minigame, Object hit) {
+    private void openMenu(@NotNull MinigamePlayer mgPlayer, @NotNull Minigame minigame, @NotNull ExecutableScriptObject hit) {
         Menu menu = null;
-        if (hit instanceof Region) {
-            player.sendMessage("Editing region " + ((Region) hit).getName(), MinigameMessageType.INFO);
-            menu = MenuItemRegion.createMenu(player, null, (Region) hit);
-        } else if (hit instanceof Node) {
-            player.sendMessage("Editing node " + ((Node) hit).getName(), MinigameMessageType.INFO);
-            menu = MenuItemNode.createMenu(player, null, (Node) hit);
+        if (hit instanceof Region region) {
+            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+                    RegionLangKey.TOOL_REGION_EDIT,
+                    Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), region.getName()));
+            menu = MenuItemRegion.createMenu(mgPlayer, null, region);
+        } else if (hit instanceof Node node) {
+            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+                    RegionLangKey.TOOL_NODE_EDIT,
+                    Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), node.getName()));
+            menu = MenuItemNode.createMenu(mgPlayer, null, node);
         }
 
         menu.addItem(new MenuItemSaveMinigame("Save", MenuUtility.getSaveMaterial(), minigame), menu.getSize() - 9);
 
-        menu.displayMenu(player);
+        menu.displayMenu(mgPlayer);
     }
 
-    private void openChooseMenu(MinigamePlayer player, RegionModule module, Set<Object> objects) {
-        Menu menu = new Menu(3, "Choose Region or Node", player);
+    private void openChooseMenu(@NotNull MinigamePlayer mgPlayer, @NotNull RegionModule module, @NotNull Set<@NotNull ExecutableScriptObject> objects) {
+        Menu menu = new Menu(3, "Choose Region or Node", mgPlayer);
 
         StringBuilder options = new StringBuilder();
-        for (Object object : objects) {
-            if (options.length() != 0) {
+        for (ExecutableScriptObject object : objects) {
+            if (!options.isEmpty()) {
                 options.append(", ");
             }
 
@@ -166,9 +163,11 @@ public class RegionNodeEditToolMode implements ToolMode {
 
         menu.addItem(new MenuItemSaveMinigame("Save", MenuUtility.getSaveMaterial(), module.getMinigame()), menu.getSize() - 9);
 
-        menu.displayMenu(player);
+        menu.displayMenu(mgPlayer);
 
-        player.sendMessage("Multiple regions/nodes selected: " + options, MinigameMessageType.INFO);
+        MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+                RegionLangKey.TOOL_NODEREGION_SELECTED,
+                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), options.toString()));
     }
 
     @Override

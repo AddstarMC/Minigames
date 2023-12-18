@@ -1,21 +1,25 @@
 package au.com.mineauz.minigames.minigame.reward;
 
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ItemReward extends RewardType {
-
     private ItemStack item = new ItemStack(Material.DIAMOND);
 
     public ItemReward(Rewards rewards) {
@@ -33,13 +37,14 @@ public class ItemReward extends RewardType {
     }
 
     @Override
-    public void giveReward(MinigamePlayer player) {
-        if (player.isInMinigame())
-            player.addRewardItem(item);
+    public void giveReward(@NotNull MinigamePlayer mgPlayer) {
+        if (mgPlayer.isInMinigame())
+            mgPlayer.addRewardItem(item);
         else
-            player.getPlayer().getInventory().addItem(item);
-        player.sendMessage(MinigameMessageManager.getMinigamesMessage("reward.item", item.getAmount(),
-                WordUtils.capitalize(item.getType().toString())), MinigameMessageType.WIN);
+            mgPlayer.getPlayer().getInventory().addItem(item);
+        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WIN, MinigameLangKey.REWARD_ITEM,
+                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(item.getAmount())),
+                Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), Component.translatable(item.getType().getItemTranslationKey())));
     }
 
     @Override

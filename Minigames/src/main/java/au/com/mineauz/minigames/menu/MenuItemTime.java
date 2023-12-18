@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.MinigameUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
@@ -9,17 +10,17 @@ import java.util.List;
 
 public class MenuItemTime extends MenuItemInteger {
 
-    public MenuItemTime(String name, Material displayItem, Callback<Integer> value, Integer min, Integer max) {
+    public MenuItemTime(Component name, Material displayItem, Callback<Integer> value, Integer min, Integer max) {
         super(name, displayItem, value, min, max);
     }
 
-    public MenuItemTime(String name, List<String> description, Material displayItem, Callback<Integer> value, Integer min, Integer max) {
+    public MenuItemTime(Component name, List<Component> description, Material displayItem, Callback<Integer> value, Integer min, Integer max) {
         super(name, description, displayItem, value, min, max);
     }
 
     @Override
     public void updateDescription() {
-        List<String> description;
+        List<Component> description;
         if (getDescription() != null) {
             description = getDescription();
             String desc = ChatColor.stripColor(getDescription().get(0));

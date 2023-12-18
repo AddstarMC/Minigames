@@ -5,6 +5,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -35,14 +37,14 @@ public class TeleportAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
-        debug(player, region);
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        debug(mgPlayer, region);
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
-        debug(player, node);
-        player.teleport(node.getLocation());
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+        debug(mgPlayer, node);
+        mgPlayer.teleport(node.getLocation());
     }
 
     @Override
@@ -54,7 +56,7 @@ public class TeleportAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         return false;
     }
 

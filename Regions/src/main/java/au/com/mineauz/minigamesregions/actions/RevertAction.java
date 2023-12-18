@@ -6,6 +6,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -36,20 +38,20 @@ public class RevertAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
-        debug(player, region);
-        if (player == null || !player.isInMinigame()) return;
-        if (player.isLiving())
-            Minigames.getPlugin().getPlayerManager().revertToCheckpoint(player);
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        debug(mgPlayer, region);
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
+        if (mgPlayer.isLiving())
+            Minigames.getPlugin().getPlayerManager().revertToCheckpoint(mgPlayer);
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
-        debug(player, node);
-        if (player == null || !player.isInMinigame()) return;
-        if (player.isLiving())
-            Minigames.getPlugin().getPlayerManager().revertToCheckpoint(player);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+                                  @NotNull Node node) {
+        debug(mgPlayer, node);
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
+        if (mgPlayer.isLiving())
+            Minigames.getPlugin().getPlayerManager().revertToCheckpoint(mgPlayer);
     }
 
     @Override
@@ -62,7 +64,7 @@ public class RevertAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         return false;
     }
 

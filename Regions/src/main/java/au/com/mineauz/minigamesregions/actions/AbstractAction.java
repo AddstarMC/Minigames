@@ -2,6 +2,7 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -14,14 +15,14 @@ public abstract class AbstractAction implements ActionInterface {
     /**
      * Logs Debug re these 2 items.
      *
-     * @param p   the player
-     * @param obj a script object
+     * @param mgPlayer   the player
+     * @param scriptObject a script object
      */
-    public void debug(final MinigamePlayer p, final ScriptObject obj) {
+    public void debug(final MinigamePlayer mgPlayer, final ScriptObject scriptObject) {
         if (Minigames.getPlugin().isDebugging()) {
-            Minigames.getPlugin().getLogger().info("Debug: Execute on Obj:"
-                    + obj.getAsString() + " as Action: " + this + " Player: "
-                    + p.getAsString());
+            MinigameMessageManager.debugMessage("Debug: Execute on Obj:"
+                    + scriptObject.getAsString() + " as Action: " + this + " Player: "
+                    + mgPlayer.getAsString());
         }
     }
 

@@ -9,6 +9,8 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -41,16 +43,16 @@ public class HealAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
-        debug(player, node);
-        execute(player);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+                                  @NotNull Node node) {
+        debug(mgPlayer, node);
+        execute(mgPlayer);
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
-        debug(player, region);
-        execute(player);
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        debug(mgPlayer, region);
+        execute(mgPlayer);
     }
 
     private void execute(MinigamePlayer player) {
@@ -79,11 +81,11 @@ public class HealAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Heal", player);
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Heal", mgPlayer);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
         m.addItem(heal.getMenuItem("Heal Amount", Material.GOLDEN_APPLE, null, null));
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 

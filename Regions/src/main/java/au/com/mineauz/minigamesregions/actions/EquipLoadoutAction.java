@@ -10,6 +10,8 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,27 +48,27 @@ public class EquipLoadoutAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
-        debug(player, node);
-        if (player == null || !player.isInMinigame()) return;
-        LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+                                  @NotNull Node node) {
+        debug(mgPlayer, node);
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
+        LoadoutModule lmod = LoadoutModule.getMinigameModule(mgPlayer.getMinigame());
         if (lmod.hasLoadout(loadout.getFlag())) {
             PlayerLoadout pLoadOut = lmod.getLoadout(loadout.getFlag());
-            player.setLoadout(pLoadOut);
-            pLoadOut.equiptLoadout(player);
+            mgPlayer.setLoadout(pLoadOut);
+            pLoadOut.equiptLoadout(mgPlayer);
         }
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
-        debug(player, region);
-        if (player == null || !player.isInMinigame()) return;
-        LoadoutModule lmod = LoadoutModule.getMinigameModule(player.getMinigame());
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        debug(mgPlayer, region);
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
+        LoadoutModule lmod = LoadoutModule.getMinigameModule(mgPlayer.getMinigame());
         if (lmod.hasLoadout(loadout.getFlag())) {
             PlayerLoadout pLoadOut = lmod.getLoadout(loadout.getFlag());
-            player.setLoadout(pLoadOut);
-            pLoadOut.equiptLoadout(player);
+            mgPlayer.setLoadout(pLoadOut);
+            pLoadOut.equiptLoadout(mgPlayer);
         }
     }
 
@@ -83,8 +85,8 @@ public class EquipLoadoutAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Equip Loadout", player);
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Equip Loadout", mgPlayer);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
         m.addItem(new MenuItemString("Loadout Name", Material.DIAMOND_SWORD, new Callback<>() {
 
@@ -115,7 +117,7 @@ public class EquipLoadoutAction extends AbstractAction {
 
 
         }));
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 

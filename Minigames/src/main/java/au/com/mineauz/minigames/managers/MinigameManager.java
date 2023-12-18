@@ -269,7 +269,7 @@ public class MinigameManager {
         return this.globalLoadouts.containsKey(name);
     }
 
-    public void sendMinigameMessage(final @NotNull Minigame minigame, final @NotNull Component message) {
+    public void sendMinigameMessage(final @NotNull Minigame minigame, final @NotNull Component message) { //todo move this into Message Manager
         this.sendMinigameMessage(minigame, message, MinigameMessageType.INFO);
     }
 
@@ -332,7 +332,7 @@ public class MinigameManager {
         }
 
         for (final MinigamePlayer player : playersSendTo) {
-            MinigameMessageManager.sendMgMessage(player, type, message);
+            MinigameMessageManager.sendMessage(player, type, message);
         }
     }
 

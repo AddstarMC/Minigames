@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.apache.commons.text.WordUtils;
@@ -11,13 +12,13 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class MatchTeamCondition extends ConditionInterface {
-
-    private final StringFlag team = new StringFlag("RED", "team");
+    private final StringFlag team = new StringFlag(TeamColor.RED.toString(), "team");
 
     @Override
     public String getName() {
@@ -72,12 +73,11 @@ public class MatchTeamCondition extends ConditionInterface {
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Match Team", player);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
-        List<String> teams = new ArrayList<>();
-        for (TeamColor t : TeamColor.values())
-            teams.add(WordUtils.capitalize(t.toString().replace("_", " ")));
+
+        List<String> teams = Arrays.stream(TeamColor.values()).map(tc ->
+                WordUtils.capitalize(tc.toString().replace("_", " "))).toList();
 
         m.addItem(new MenuItemList("Team Color", getTeamMaterial(), new Callback<>() {
-
             @Override
             public String getValue() {
                 return WordUtils.capitalize(team.getFlag().replace("_", " "));
@@ -101,20 +101,14 @@ public class MatchTeamCondition extends ConditionInterface {
     }
 
     private Material getTeamMaterial() {
-        return switch (team.getFlag()) {
-            case "RED" -> Material.RED_WOOL;
-            case "BLUE" -> Material.BLUE_WOOL;
-            case "GREEN" -> Material.GREEN_WOOL;
-            case "YELLOW" -> Material.YELLOW_WOOL;
-            case "PURPLE" -> Material.PURPLE_WOOL;
-            case "BLACK" -> Material.BLACK_WOOL;
-            case "DARK_RED" -> Material.RED_CONCRETE;
-            case "DARK_BLUE" -> Material.BLUE_CONCRETE;
-            case "DARK_GREEN" -> Material.GREEN_CONCRETE;
-            case "DARK_PURPLE" -> Material.PURPLE_CONCRETE;
-            case "GRAY" -> Material.GRAY_WOOL;
-            default -> Material.WHITE_WOOL;
-        };
+        TeamColor teamColor = TeamColor.matchColor(team.getFlag());
+
+        if (teamColor != null) {
+            return teamColor.getDisplaMaterial();
+        } else {
+            Main.getPlugin().getLogger().log(Level.WARNING, "Couldn't get TeamColor for " + team);
+            return Material.BARRIER;
+        }
     }
 
     @Override

@@ -1,8 +1,8 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.RewardsFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemDisplayRewards;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -60,12 +60,12 @@ public class StandardRewardScheme implements RewardScheme {
         List<RewardType> rewards = primaryReward.getReward();
 
         if (firstCompletion && rewards != null) {
-            MinigameUtils.debugMessage("Issue Primary Reward for " + player.getName());
+            MinigameMessageManager.debugMessage("Issue Primary Reward for " + player.getName());
             giveRewards(rewards, player);
         } else {
             rewards = secondaryReward.getReward();
             if (rewards != null) {
-                MinigameUtils.debugMessage("Issue Secondary Reward for " + player.getName());
+                MinigameMessageManager.debugMessage("Issue Secondary Reward for " + player.getName());
                 giveRewards(rewards, player);
             }
         }
@@ -81,7 +81,7 @@ public class StandardRewardScheme implements RewardScheme {
     private void giveRewards(List<RewardType> rewards, MinigamePlayer player) {
         for (RewardType reward : rewards) {
             if (reward != null) {
-                MinigameUtils.debugMessage("Giving " + player.getName() + " " + reward.getName() + " reward type.");
+                MinigameMessageManager.debugMessage("Giving " + player.getName() + " " + reward.getName() + " reward type.");
                 reward.giveReward(player);
             }
         }

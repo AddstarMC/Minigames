@@ -4,22 +4,22 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 
 public enum TeamColor {
-    RED(NamedTextColor.RED),
-    DARK_RED(NamedTextColor.DARK_RED),
-    ORANGE(NamedTextColor.GOLD),
-    YELLOW(NamedTextColor.YELLOW),
-    GREEN(NamedTextColor.GREEN),
-    DARK_GREEN(NamedTextColor.DARK_GREEN),
-    CYAN(NamedTextColor.DARK_AQUA),
-    LIGHT_BLUE(NamedTextColor.AQUA),
-    BLUE(NamedTextColor.BLUE),
-    DARK_BLUE(NamedTextColor.DARK_BLUE),
-    DARK_PURPLE(NamedTextColor.DARK_PURPLE),
-    PURPLE(NamedTextColor.LIGHT_PURPLE),
-    WHITE(NamedTextColor.WHITE),
-    GRAY(NamedTextColor.GRAY),
-    DARK_GRAY(NamedTextColor.DARK_GRAY),
-    BLACK(NamedTextColor.BLACK);
+    BLACK(NamedTextColor.BLACK, Material.BLACK_WOOL),
+    BLUE(NamedTextColor.BLUE, Material.BLUE_WOOL),
+    CYAN(NamedTextColor.DARK_AQUA, Material.CYAN_WOOL),
+    DARK_BLUE(NamedTextColor.DARK_BLUE, Material.BLUE_CONCRETE),
+    DARK_GRAY(NamedTextColor.DARK_GRAY, Material.GRAY_CONCRETE),
+    DARK_GREEN(NamedTextColor.DARK_GREEN, Material.GREEN_CONCRETE),
+    DARK_PURPLE(NamedTextColor.DARK_PURPLE, Material.PURPLE_CONCRETE),
+    DARK_RED(NamedTextColor.DARK_RED, Material.RED_CONCRETE),
+    GRAY(NamedTextColor.GRAY, Material.GRAY_WOOL),
+    GREEN(NamedTextColor.GREEN, Material.GREEN_WOOL),
+    LIGHT_BLUE(NamedTextColor.AQUA, Material.LIGHT_BLUE_WOOL),
+    ORANGE(NamedTextColor.GOLD, Material.ORANGE_WOOL),
+    PURPLE(NamedTextColor.LIGHT_PURPLE, Material.PURPLE_WOOL),
+    RED(NamedTextColor.RED, Material.RED_WOOL),
+    WHITE(NamedTextColor.WHITE, Material.WHITE_WOOL),
+    YELLOW(NamedTextColor.YELLOW, Material.YELLOW_WOOL);
 
     private final NamedTextColor color;
     private final Material displaMaterial;

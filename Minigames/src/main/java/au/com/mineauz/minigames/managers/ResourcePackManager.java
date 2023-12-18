@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class ResourcePackManager {
+public class ResourcePackManager { //todo work with multiple ressource packs
     final static Path resourceDir = Paths.get(Minigames.getPlugin().getDataFolder().toString(), "resources");
     private final Map<String, ResourcePack> resources = new HashMap<>();
     private boolean enabled = true;

@@ -12,12 +12,13 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
 //todo
 public class SetBlockAction extends AbstractAction {
-
     private final BlockDataFlag type = new BlockDataFlag(Material.STONE.createBlockData(), "type");
     private final BooleanFlag useBlockData = new BooleanFlag(false, "usedur");//todo rename flag
     private final IntegerFlag dur = new IntegerFlag(0, "dur");
@@ -52,9 +53,9 @@ public class SetBlockAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player,
-                                    Region region) {
-        debug(player, region);
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer,
+                                    @NotNull Region region) {
+        debug(mgPlayer, region);
         Location temp = region.getFirstPoint();
         for (int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++) {
             temp.setY(y);
@@ -76,9 +77,9 @@ public class SetBlockAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
-        debug(player, node);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+                                  @NotNull Node node) {
+        debug(mgPlayer, node);
         BlockState bs = node.getLocation().getBlock().getState();
         if (useBlockData.getFlag()) {
             bs.setBlockData(type.getFlag());
@@ -103,8 +104,8 @@ public class SetBlockAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Set Block", player);
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Set Block", mgPlayer);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
         m.addItem(new MenuItemBlockData("Type", Material.STONE, new Callback<>() {
             @Override
@@ -118,7 +119,7 @@ public class SetBlockAction extends AbstractAction {
             }
         }));
         m.addItem(useBlockData.getMenuItem("Use Specific BlockData", Material.ENDER_PEARL));
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 

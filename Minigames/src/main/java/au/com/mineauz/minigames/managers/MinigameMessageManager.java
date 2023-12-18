@@ -17,6 +17,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.util.UTF8ResourceBundleControl;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -97,6 +98,9 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         return (propertiesHashMap.remove(identifier) != null);
     }
 
+    public static Component formatBlockPostion(@NotNull Location location) {
+        return Component.text(location.blockX() + ", " + location.blockY() + " ," + location.blockZ());
+    }
 
     public static Component getMgMessage(@NotNull LangKey key, TagResolver... resolvers) {
         return getMessage(null, key, resolvers);
@@ -233,7 +237,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         audience.sendMessage(getPluginPrefix(messageType).append(message));
     }
 
-    public static void sendMgMessage(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameMessageType type, @NotNull Component message) {
+    public static void sendMessage(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameMessageType type, @NotNull Component message) {
         sendMessage(mgPlayer.getPlayer(), type, message);
     }
 

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RewardGroup {
-
     private final String groupName;
     //    private List<RewardItem> items = new ArrayList<RewardItem>();
     private final List<RewardType> items = new ArrayList<>();

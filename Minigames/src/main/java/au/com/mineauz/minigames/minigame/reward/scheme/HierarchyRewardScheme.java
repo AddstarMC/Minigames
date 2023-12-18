@@ -1,9 +1,13 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
+import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.EnumFlag;
 import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
@@ -12,6 +16,8 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.StoredGameStats;
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableMap;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -193,7 +199,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
         };
     }
 
-    protected abstract String getMenuItemName(T value);
+    protected abstract Component getMenuItemName(T value);
 
     protected abstract String getMenuItemDescName(T value);
 
@@ -223,7 +229,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
         }
 
         private void updateDescription() {
-            List<String> description = Arrays.asList(
+            List<Component> description = Arrays.asList(
                     ChatColor.GREEN + getMenuItemDescName(value),
                     "Shift + Left click to edit rewards",
                     "Shift + Right click to remove"
@@ -279,12 +285,13 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
         @Override
         // Open editor
         public ItemStack onDoubleClick() {
-            MinigamePlayer ply = getContainer().getViewer();
-            ply.setNoClose(true);
-            ply.getPlayer().closeInventory();
-            ply.sendMessage("Enter the required value into chat, the menu will automatically reopen in 10s if nothing is entered.", MinigameMessageType.INFO);
+            MinigamePlayer mgPlayer = getContainer().getViewer();
+            mgPlayer.setNoClose(true);
+            mgPlayer.getPlayer().closeInventory();
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MENU_ENTERCHAT,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(10)));
 
-            ply.setManualEntry(this);
+            mgPlayer.setManualEntry(this);
             getContainer().startReopenTimer(10);
 
             return null;
@@ -295,13 +302,13 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
             try {
                 T value = loadValue(entry);
                 if (map.containsKey(value)) {
-                    getContainer().getViewer().sendMessage("You cannot add duplicate entries", MinigameMessageType.ERROR);
+                    MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MinigameLangKey.REWARDSCHEME_ERROR_DUPLICATE);
                 } else {
                     updateValue(value);
                     updateDescription();
                 }
             } catch (IllegalArgumentException e) {
-                getContainer().getViewer().sendMessage("Invalid value entry!", MinigameMessageType.ERROR);
+                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MinigameLangKey.REWARDSCHEME_ERROR_INVALID);
             }
 
             getContainer().cancelReopenTimer();
@@ -330,7 +337,7 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
     private class MenuItemAddReward extends MenuItem {
         private final TreeMap<T, Rewards> map;
 
-        public MenuItemAddReward(TreeMap<T, Rewards> map, String name, Material displayItem) {
+        public MenuItemAddReward(TreeMap<T, Rewards> map, Component name, Material displayItem) {
             super(name, displayItem);
 
             this.map = map;
@@ -338,12 +345,13 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
 
         @Override
         public ItemStack onClick() {
-            MinigamePlayer ply = getContainer().getViewer();
-            ply.setNoClose(true);
-            ply.getPlayer().closeInventory();
-            ply.sendMessage("Enter the required value into chat, the menu will automatically reopen in 10s if nothing is entered.", MinigameMessageType.INFO);
+            MinigamePlayer mgPlayer = getContainer().getViewer();
+            mgPlayer.setNoClose(true);
+            mgPlayer.getPlayer().closeInventory();
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MENU_ENTERCHAT,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(10)));
 
-            ply.setManualEntry(this);
+            mgPlayer.setManualEntry(this);
             getContainer().startReopenTimer(10);
 
             return null;
@@ -358,14 +366,14 @@ public abstract class HierarchyRewardScheme<T extends Comparable<T>> implements 
                 Rewards reward = new Rewards();
 
                 if (map.containsKey(value)) {
-                    getContainer().getViewer().sendMessage("You cannot add duplicate entries", MinigameMessageType.ERROR);
+                    MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MinigameLangKey.REWARDSCHEME_ERROR_DUPLICATE);
                 } else {
                     map.put(value, reward);
                     showRewardsMenu(map, getContainer().getViewer(), getContainer().getPreviousPage());
                     show = false;
                 }
             } catch (IllegalArgumentException e) {
-                getContainer().getViewer().sendMessage("Invalid value entry!", MinigameMessageType.ERROR);
+                MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MinigameLangKey.REWARDSCHEME_ERROR_INVALID);
             }
 
             getContainer().cancelReopenTimer();

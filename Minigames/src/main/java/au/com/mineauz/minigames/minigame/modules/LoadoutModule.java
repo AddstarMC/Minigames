@@ -1,16 +1,18 @@
 package au.com.mineauz.minigames.minigame.modules;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.LoadoutSetFlag;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import com.google.common.collect.Maps;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -216,29 +218,28 @@ public class LoadoutModule extends MinigameModule {
         }
     }
 
-    public void displaySelectionMenu(MinigamePlayer player, final boolean equip) {
-        Menu m = new Menu(6, "Select Loadout", player);
-        final MinigamePlayer fply = player;
+    public void displaySelectionMenu(final MinigamePlayer mgPlayer, final boolean equip) {
+        Menu m = new Menu(6, "Select Loadout", mgPlayer);
 
-        for (PlayerLoadout loadout : extraLoadouts.values()) {
+        for (final PlayerLoadout loadout : extraLoadouts.values()) {
             if (loadout.isDisplayedInMenu()) {
-                if (!loadout.getUsePermissions() || player.getPlayer().hasPermission("minigame.loadout." + loadout.getName(false).toLowerCase())) {
-                    if (!player.getMinigame().isTeamGame() || loadout.getTeamColor() == null ||
-                            player.getTeam().getColor() == loadout.getTeamColor()) {
+                if (!loadout.getUsePermissions() || mgPlayer.getPlayer().hasPermission("minigame.loadout." + loadout.getName(false).toLowerCase())) {
+                    if (!mgPlayer.getMinigame().isTeamGame() || loadout.getTeamColor() == null ||
+                            mgPlayer.getTeam().getColor() == loadout.getTeamColor()) {
                         MenuItemCustom c = new MenuItemCustom(loadout.getName(true), Material.GLASS);
                         if (!loadout.getItems().isEmpty()) {
                             ItemStack item = loadout.getItem(new ArrayList<>(loadout.getItems()).get(0));
                             c.setItem(item);
                         }
-                        final PlayerLoadout floadout2 = loadout;
                         c.setClick(object -> {
-                            fply.setLoadout(floadout2);
-                            fply.getPlayer().closeInventory();
+                            mgPlayer.setLoadout(loadout);
+                            mgPlayer.getPlayer().closeInventory();
                             if (!equip) {
-                                fply.sendMessage(MinigameUtils.getLang("player.loadout.nextSpawn"), MinigameMessageType.INFO);
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_LOADOUT_NEXTRESPAWN);
                             } else {
-                                fply.sendMessage(MinigameMessageManager.getMinigamesMessage("player.loadout.equipped", floadout2.getName(true)), MinigameMessageType.INFO);
-                                floadout2.equiptLoadout(fply);
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_LOADOUT_EQUIPPED,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.LOADOUT.getKey(), loadout.getName(true)));
+                                loadout.equiptLoadout(mgPlayer);
                             }
                             return null;
                         });
@@ -247,7 +248,7 @@ public class LoadoutModule extends MinigameModule {
                 }
             }
         }
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
     }
 
     @Override

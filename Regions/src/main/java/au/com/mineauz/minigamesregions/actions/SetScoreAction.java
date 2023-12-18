@@ -9,11 +9,12 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
 public class SetScoreAction extends ScoreAction {
-
     private final IntegerFlag amount = new IntegerFlag(1, "amount");
 
     @Override
@@ -42,20 +43,20 @@ public class SetScoreAction extends ScoreAction {
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
-        if (player == null || !player.isInMinigame()) return;
-        player.setScore(amount.getFlag());
-        player.getMinigame().setScore(player, player.getScore());
-        checkScore(player);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+                                  @NotNull Node node) {
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
+        mgPlayer.setScore(amount.getFlag());
+        mgPlayer.getMinigame().setScore(mgPlayer, mgPlayer.getScore());
+        checkScore(mgPlayer);
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
-        if (player == null || !player.isInMinigame()) return;
-        player.setScore(amount.getFlag());
-        player.getMinigame().setScore(player, player.getScore());
-        checkScore(player);
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
+        mgPlayer.setScore(amount.getFlag());
+        mgPlayer.getMinigame().setScore(mgPlayer, mgPlayer.getScore());
+        checkScore(mgPlayer);
     }
 
 
@@ -72,11 +73,11 @@ public class SetScoreAction extends ScoreAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Set Score", player);
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Set Score", mgPlayer);
         m.addItem(amount.getMenuItem("Set Score Amount", Material.ENDER_PEARL, null, null));
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 

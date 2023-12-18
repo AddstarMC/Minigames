@@ -2,11 +2,14 @@ package au.com.mineauz.minigames.mechanics;
 
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.jetbrains.annotations.NotNull;
@@ -61,14 +64,14 @@ public class PlayerKillsMechanic extends GameMechanicBase {
     }
 
     @EventHandler
-    private void playerAttackPlayer(PlayerDeathEvent event) {
-        MinigamePlayer ply = pdata.getMinigamePlayer(event.getEntity());
-        Minigame mgm = ply.getMinigame();
-        if (ply.isInMinigame() && mgm.getMechanicName().equals("kills")) {
+    private void playerAttackPlayer(@NotNull PlayerDeathEvent event) {
+        MinigamePlayer mgPlayerWhoDied = pdata.getMinigamePlayer(event.getEntity());
+        Minigame mgm = mgPlayerWhoDied.getMinigame();
+        if (mgPlayerWhoDied.isInMinigame() && mgm.getMechanicName().equals("kills")) {
             MinigamePlayer attacker;
-            if (ply.getPlayer().getKiller() != null) {
-                attacker = pdata.getMinigamePlayer(ply.getPlayer().getKiller());
-                if (attacker == ply) {
+            if (mgPlayerWhoDied.getPlayer().getKiller() != null) {
+                attacker = pdata.getMinigamePlayer(mgPlayerWhoDied.getPlayer().getKiller());
+                if (attacker == mgPlayerWhoDied) {
                     return;
                 }
             } else {
@@ -79,7 +82,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
                 return;
             }
 
-            if (ply.getTeam() == null) {
+            if (mgPlayerWhoDied.getTeam() == null) {
                 attacker.addScore();
                 mgm.setScore(attacker, attacker.getScore());
 
@@ -94,7 +97,7 @@ public class PlayerKillsMechanic extends GameMechanicBase {
                     pdata.endMinigame(mgm, winner, losers);
                 }
             } else {
-                Team team = ply.getTeam();
+                Team team = mgPlayerWhoDied.getTeam();
                 Team ateam = attacker.getTeam();
 
                 if (team != ateam) {
@@ -103,7 +106,9 @@ public class PlayerKillsMechanic extends GameMechanicBase {
 
                     ateam.addScore();
                     if (mgm.getMaxScore() != 0 && mgm.getMaxScorePerPlayer() <= ateam.getScore()) {
-                        mdata.sendMinigameMessage(mgm, MinigameMessageManager.getMinigamesMessage("player.kills.finalKill", attacker.getName(), ply.getName()));
+                        mdata.sendMinigameMessage(mgm, MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_KILLS_FINALKILL,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), attacker.getName()),
+                                Placeholder.unparsed(MinigamePlaceHolderKey.OTHER_PLAYER.getKey(), mgPlayerWhoDied.getName())));
 
                         List<MinigamePlayer> w = new ArrayList<>(ateam.getPlayers());
                         List<MinigamePlayer> l = new ArrayList<>(mgm.getPlayers().size() - ateam.getPlayers().size());

@@ -1,6 +1,8 @@
 package au.com.mineauz.minigamesregions;
 
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptCollection;
@@ -10,16 +12,16 @@ import au.com.mineauz.minigames.script.ScriptWrapper;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.conditions.ConditionInterface;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
 import com.google.common.collect.ImmutableSet;
 import io.papermc.paper.math.Position;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,7 +159,7 @@ public class Region extends MgRegion implements ExecutableScriptObject {
         this.enabled = enabled;
     }
 
-    public void execute(Trigger trigger, MinigamePlayer player) {
+    public void execute(@NotNull Trigger trigger, @Nullable MinigamePlayer player) {
         if (player != null && player.getMinigame() != null && player.getMinigame().isSpectator(player)) return;
         List<RegionExecutor> toExecute = new ArrayList<>();
         for (RegionExecutor exec : executors) {
@@ -171,7 +173,7 @@ public class Region extends MgRegion implements ExecutableScriptObject {
         }
     }
 
-    public boolean checkConditions(RegionExecutor exec, MinigamePlayer player) {
+    public boolean checkConditions(@NotNull RegionExecutor exec, @Nullable MinigamePlayer player) {
         for (ConditionInterface con : exec.getConditions()) {
             boolean c = con.checkRegionCondition(player, this);
             if (con.isInverted())
@@ -195,7 +197,7 @@ public class Region extends MgRegion implements ExecutableScriptObject {
     }
 
     public void executeGameTick() {
-        if (players.size() == 0) return;
+        if (players.isEmpty()) return;
         // There is no condition, which is not player specific, so we can just execute all executors.
         for (RegionExecutor exec : executors) {
             for (ActionInterface act : exec.getActions()) {
@@ -206,8 +208,9 @@ public class Region extends MgRegion implements ExecutableScriptObject {
                         exec.addPublicTrigger();
                     }
                 } catch (Exception e) {
-                    for (MinigamePlayer player : players) {
-                        player.sendInfoMessage(Component.text("Only RandomChanceCondition is applicable to game tick trigger!", NamedTextColor.RED));
+                    for (MinigamePlayer mgPlayer : players) {
+                        MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                                RegionLangKey.TRIGGER_TICK_ERROR_CONDITION);
                     }
                 }
             }

@@ -1,18 +1,21 @@
 package au.com.mineauz.minigamesregions;
 
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -111,10 +114,16 @@ public class NodeToolMode implements ToolMode {
             if (node == null) {
                 node = new Node(name, loc);
                 mod.addNode(name, node);
-                mgPlayer.sendInfoMessage("Added new node to " + minigame + " called " + name);
+                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+                        RegionLangKey.NODE_ADDED,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), name));
             } else {
                 node.setLocation(loc);
-                mgPlayer.sendInfoMessage("Edited node " + name + " in " + minigame);
+                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+                        RegionLangKey.NODE_EDITED,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), name));
                 Main.getPlugin().getDisplayManager().update(node);
             }
         }
@@ -129,22 +138,18 @@ public class NodeToolMode implements ToolMode {
         if (node == null) {
             node = new Node(name, mgPlayer.getLocation());
             mod.addNode(name, node);
-            mgPlayer.sendInfoMessage("Added new node to " + minigame + " called " + name);
+            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+                    RegionLangKey.NODE_ADDED,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                    Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), name));
         } else {
             node.setLocation(mgPlayer.getLocation());
-            mgPlayer.sendInfoMessage("Edited node " + name + " in " + minigame);
+            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+                    RegionLangKey.NODE_EDITED,
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                    Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), name));
             Main.getPlugin().getDisplayManager().update(node);
         }
-    }
-
-    @Override
-    public void onEntityLeftClick(MinigamePlayer player, Minigame minigame, Team team, EntityDamageByEntityEvent event) {
-
-    }
-
-    @Override
-    public void onEntityRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEntityEvent event) {
-
     }
 
     @Override
@@ -153,9 +158,13 @@ public class NodeToolMode implements ToolMode {
         String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Node");
         if (mod.hasNode(name)) {
             Main.getPlugin().getDisplayManager().show(mod.getNode(name), mgPlayer);
-            mgPlayer.sendInfoMessage("Selected node '" + name + "' visually.");
+            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+                    RegionLangKey.TOOL_NODE_SELECTED,
+                    Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), name));
         } else {
-            mgPlayer.sendMessage("No node exists by the name '" + name + "'", MinigameMessageType.ERROR);
+            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                    RegionLangKey.NODE_ERROR_NONODE,
+                    Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), name));
         }
     }
 
@@ -165,9 +174,13 @@ public class NodeToolMode implements ToolMode {
         String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Node");
         if (mod.hasNode(name)) {
             Main.getPlugin().getDisplayManager().hide(mod.getNode(name), mgPlayer);
-            mgPlayer.sendInfoMessage("Deselected node '" + name + "'");
+            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+                    RegionLangKey.TOOL_NODE_DESELECTED,
+                    Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), name));
         } else {
-            mgPlayer.sendMessage("No node exists by the name '" + name + "'", MinigameMessageType.ERROR);
+            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                    RegionLangKey.NODE_ERROR_NONODE,
+                    Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), name));
         }
     }
 

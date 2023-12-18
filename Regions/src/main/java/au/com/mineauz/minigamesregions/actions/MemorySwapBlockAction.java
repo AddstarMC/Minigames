@@ -4,17 +4,24 @@ import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.MaterialFlag;
 import au.com.mineauz.minigames.config.MaterialListFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.recorder.RecorderData;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -251,8 +258,8 @@ public class MemorySwapBlockAction extends AbstractAction {
      * skipped and the player will be warned.
      */
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
-        debug(player, region);
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        debug(mgPlayer, region);
         ArrayList<Material> localMatPool = cleanUpBlockPool();
 
         ArrayList<Block> blocksToSwap = new ArrayList<>();
@@ -272,15 +279,19 @@ public class MemorySwapBlockAction extends AbstractAction {
 
         //Sanity checks that can be handled without throwing an exception but need a warning to player
         if (blocksToSwap.size() % 2 != 0) {
-            player.sendMessage(
-                    "This gameboard has an odd amount of playing fields, there will be unmatched blocks",
-                    MinigameMessageType.ERROR);
+            if (mgPlayer != null) {
+                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                        RegionLangKey.ACTION_MEMORYSWAPBLOCK_ERROR_ODD);
+            } else {
+                RegionMessageManager.debugMessage("This game board of \"" + region.getName() + "\" has an odd amount of playing fields, there will be unmatched blocks!");
+            }
         }
         if (blocksToSwap.size() > 2 * localMatPool.size()) {
-            player.sendMessage(
-                    "This gameboard has more fields then supported by the pool of available blocks (2 * "
-                            + localMatPool.size() + "), there will remain not swapped blocks",
-                    MinigameMessageType.ERROR);
+            if (mgPlayer != null) {
+                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                        RegionLangKey.ACTION_MEMORYSWAPBLOCK_ERROR_TOOBIG,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(localMatPool.size())));
+            }
         }
 
 
@@ -301,7 +312,7 @@ public class MemorySwapBlockAction extends AbstractAction {
         for (int i = 0; i < max; i += 2) {
             if (matIt.hasNext()) {
                 //save block data in recorder
-                RecorderData data = player.getMinigame().getRecorderData();
+                RecorderData data = mgPlayer.getMinigame().getRecorderData();
                 data.addBlock(blocksToSwap.get(i), null);
                 data.addBlock(blocksToSwap.get(i + 1), null);
 
@@ -315,9 +326,9 @@ public class MemorySwapBlockAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
-        debug(player, node);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+                                  @NotNull Node node) {
+        debug(mgPlayer, node);
     }
 
     @Override
@@ -337,8 +348,8 @@ public class MemorySwapBlockAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Memory Swap Block", player);
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Memory Swap Block", mgPlayer);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
 
         //The menu entry for the from-block, aka the block that will be replaced
@@ -380,7 +391,7 @@ public class MemorySwapBlockAction extends AbstractAction {
             }
         }, List.of("If whitelist mode only", "added items can get", "used as memory.")));
 
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
 
         return false;
     }

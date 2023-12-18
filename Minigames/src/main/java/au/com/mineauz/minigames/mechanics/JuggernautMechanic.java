@@ -1,14 +1,16 @@
 package au.com.mineauz.minigames.mechanics;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.events.StartMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.JuggernautModule;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -34,8 +36,8 @@ public class JuggernautMechanic extends GameMechanicBase {
 
     @Override
     public boolean checkCanStart(@NotNull Minigame minigame, @Nullable MinigamePlayer caller) {
-        if (minigame.isTeamGame()) {
-            caller.sendMessage("Juggernaut cannot be a team Minigame!", MinigameMessageType.ERROR);
+        if (minigame.isTeamGame()) { // caller should not be null since that is only possible on global != multiplayer aka team game types
+            MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_JUGGERNAUT_ERROR_TEAM);
             return false;
         }
         return true;
@@ -59,20 +61,21 @@ public class JuggernautMechanic extends GameMechanicBase {
     }
 
     @Override
-    public void quitMinigame(Minigame minigame, MinigamePlayer player,
+    public void quitMinigame(@NotNull Minigame minigame, @NotNull MinigamePlayer mgPlayer,
                              boolean forced) {
-        JuggernautModule jm = JuggernautModule.getMinigameModule(minigame);
-        if (jm.getJuggernaut() != null && jm.getJuggernaut() == player) {
-            jm.setJuggernaut(null);
+        JuggernautModule juggernautModule = JuggernautModule.getMinigameModule(minigame);
+        if (juggernautModule.getJuggernaut() != null && juggernautModule.getJuggernaut() == mgPlayer) {
+            juggernautModule.setJuggernaut(null);
 
             if (!forced && minigame.getPlayers().size() > 1) {
-                MinigamePlayer j = assignNewJuggernaut(minigame.getPlayers(), player);
+                MinigamePlayer juggernaut = assignNewJuggernaut(minigame.getPlayers(), mgPlayer);
 
-                if (j != null) {
-                    jm.setJuggernaut(j);
-                    j.sendInfoMessage(MinigameUtils.getLang("player.juggernaut.plyMsg"));
-                    mdata.sendMinigameMessage(minigame,
-                            MinigameMessageManager.getMinigamesMessage("player.juggernaut.gameMsg", j.getDisplayName(minigame.usePlayerDisplayNames())), null, j);
+                if (juggernaut != null) {
+                    juggernautModule.setJuggernaut(juggernaut);
+                    MinigameMessageManager.sendMgMessage(juggernaut, MinigameMessageType.INFO, MinigameLangKey.PLAYER_JUGGERNAUT_PLAYERMSG);
+                    mdata.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_JUGGERNAUT_GAMEMSG,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), juggernaut.getDisplayName(minigame.usePlayerDisplayNames()))),
+                            MinigameMessageType.INFO, juggernaut);
                 }
             }
         }

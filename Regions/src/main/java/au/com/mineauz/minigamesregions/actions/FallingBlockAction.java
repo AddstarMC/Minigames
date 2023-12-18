@@ -7,6 +7,8 @@ import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -37,9 +39,9 @@ public class FallingBlockAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player,
-                                    Region region) {
-        debug(player, region);
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer,
+                                    @NotNull Region region) {
+        debug(mgPlayer, region);
         Location temp = region.getFirstPoint();
         for (int y = region.getFirstPoint().getBlockY();
              y <= region.getSecondPoint().getBlockY();
@@ -63,9 +65,9 @@ public class FallingBlockAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
-        debug(player, node);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+                                  @NotNull Node node) {
+        debug(mgPlayer, node);
         if (node.getLocation().getBlock().getType() != Material.AIR) {
             node.getLocation().getWorld().spawnFallingBlock(node.getLocation(),
                     node.getLocation().getBlock().getBlockData());
@@ -84,7 +86,7 @@ public class FallingBlockAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         return false;
     }
 

@@ -58,7 +58,7 @@ public class Minigames extends JavaPlugin {
     private static Economy econ;
     private static SignBase minigameSigns;
     private static ComparableVersion VERSION;
-    private static ComparableVersion SPIGOT_VERSION;
+    private static ComparableVersion PAPER_VERSION;
     private final StartUpLogHandler startUpHandler;
     public DisplayManager display;
     private ResourcePackManager resourceManager;
@@ -185,7 +185,7 @@ public class Minigames extends JavaPlugin {
             plugin = this;
             switch (this.checkVersion()) {
                 case -1:
-                    log().warning("This version of Minigames (" + VERSION.getCanonical() + ") is designed for Bukkit Version: " + SPIGOT_VERSION.getCanonical());
+                    log().warning("This version of Minigames (" + VERSION.getCanonical() + ") is designed for Bukkit Version: " + PAPER_VERSION.getCanonical());
                     log().warning("Your version is newer: " + Bukkit.getBukkitVersion());
                     log().warning("Please check for an updated");
 
@@ -195,7 +195,7 @@ public class Minigames extends JavaPlugin {
                 case 1:
                     if (!this.getConfig().getBoolean("forceload", true)) {
                         log().warning("This version of Minigames (" + VERSION.getCanonical() + ") " +
-                                "is designed for Bukkit Version: " + SPIGOT_VERSION.getCanonical());
+                                "is designed for Bukkit Version: " + PAPER_VERSION.getCanonical());
                         log().warning("Your version is " + Bukkit.getVersion());
                         log().warning(" Bypass this by setting forceload: true in the config");
 
@@ -206,7 +206,7 @@ public class Minigames extends JavaPlugin {
                     } else {
                         log().warning("Version incompatible - Force Loading Minigames.");
                         log().warning("This version of Minigames (" + VERSION.getCanonical() + ") " +
-                                "is designed for Bukkit Version: " + SPIGOT_VERSION.getCanonical());
+                                "is designed for Bukkit Version: " + PAPER_VERSION.getCanonical());
                         log().warning("Your version is " + Bukkit.getBukkitVersion());
                     }
             }
@@ -417,9 +417,9 @@ public class Minigames extends JavaPlugin {
 
         if (p.containsKey("version")) {
             VERSION = new ComparableVersion(p.getProperty("version"));
-            SPIGOT_VERSION = new ComparableVersion(p.getProperty("paper_version"));
+            PAPER_VERSION = new ComparableVersion(p.getProperty("paper_version"));
             final ComparableVersion serverversion = new ComparableVersion(this.getServer().getBukkitVersion());
-            return SPIGOT_VERSION.compareTo(serverversion);
+            return PAPER_VERSION.compareTo(serverversion);
         } else {
             return 1;
         }

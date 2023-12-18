@@ -4,10 +4,14 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.ResourcePack;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -16,7 +20,7 @@ import java.util.Map;
 
 import static au.com.mineauz.minigames.menu.MenuUtility.getBackMaterial;
 
-public class ResourcePackModule extends MinigameModule {
+public class ResourcePackModule extends MinigameModule { //todo rework to work with multiple ressource packs
     private final BooleanFlag enabled = new BooleanFlag(false, "resourcePackEnabled");
     private final StringFlag resourcePackName = new StringFlag("", "resourcePackName");
     private final BooleanFlag forced = new BooleanFlag(false, "forceResourcePack");
@@ -106,7 +110,8 @@ public class ResourcePackModule extends MinigameModule {
                 if (pack == null) {
                     getContainer().cancelReopenTimer();
                     getContainer().displayMenu(getContainer().getViewer());
-                    getContainer().getViewer().sendMessage("No resource pack exists for the name, \"" + entry + "\".", MinigameMessageType.ERROR);
+                    MinigameMessageManager.sendMgMessage(getContainer().getViewer(), MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_RESSOURCEPACK_NORESSOURCEPACK,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), entry));
                 } else {
                     super.checkValidEntry(entry);
                 }

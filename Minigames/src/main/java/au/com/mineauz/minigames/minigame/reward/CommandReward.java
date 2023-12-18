@@ -4,18 +4,19 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommandReward extends RewardType {
-
     private String command = "say Hello World!";
 
     public CommandReward(Rewards rewards) {
@@ -33,8 +34,8 @@ public class CommandReward extends RewardType {
     }
 
     @Override
-    public void giveReward(MinigamePlayer player) {
-        String finalCommand = command.replace("%player%", player.getName());
+    public void giveReward(@NotNull MinigamePlayer mgPlayer) {
+        String finalCommand = command.replace("%player%", mgPlayer.getName());
         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), finalCommand);
     }
 
@@ -95,7 +96,7 @@ public class CommandReward extends RewardType {
 
         @Override
         public void updateDescription() {
-            List<String> description;
+            List<Component> description;
             if (options == null) {
                 options = new ArrayList<>();
                 for (RewardRarity rarity : RewardRarity.values()) {

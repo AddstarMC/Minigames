@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Set;
@@ -54,7 +55,7 @@ public class BroadcastAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(final MinigamePlayer player, final Region region) {
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
         ScriptObject base = new ScriptObject() {
             @Override
             public Set<String> getKeys() {
@@ -69,24 +70,24 @@ public class BroadcastAction extends AbstractAction {
             @Override
             public ScriptReference get(String name) {
                 if (name.equalsIgnoreCase("player")) {
-                    return player;
+                    return mgPlayer;
                 } else if (name.equalsIgnoreCase("area")) {
                     return region;
                 } else if (name.equalsIgnoreCase("minigame")) {
-                    return player.getMinigame();
+                    return mgPlayer.getMinigame();
                 } else if (name.equalsIgnoreCase("team")) {
-                    return player.getTeam();
+                    return mgPlayer.getTeam();
                 }
 
                 return null;
             }
         };
-        debug(player, base);
-        execute(player, base);
+        debug(mgPlayer, base);
+        execute(mgPlayer, base);
     }
 
     @Override
-    public void executeNodeAction(final MinigamePlayer player, final Node node) {
+    public void executeNodeAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Node node) {
         ScriptObject base = new ScriptObject() {
             @Override
             public Set<String> getKeys() {
@@ -101,23 +102,23 @@ public class BroadcastAction extends AbstractAction {
             @Override
             public ScriptReference get(String name) {
                 if (name.equalsIgnoreCase("player")) {
-                    return player;
+                    return mgPlayer;
                 } else if (name.equalsIgnoreCase("area")) {
                     return node;
                 } else if (name.equalsIgnoreCase("minigame")) {
-                    return player.getMinigame();
+                    return mgPlayer.getMinigame();
                 } else if (name.equalsIgnoreCase("team")) {
-                    return player.getTeam();
+                    return mgPlayer.getTeam();
                 }
 
                 return null;
             }
         };
-        debug(player, base);
-        execute(player, base);
+        debug(mgPlayer, base);
+        execute(mgPlayer, base);
     }
 
-    private void execute(@NotNull MinigamePlayer mgPlayer, @NotNull ScriptObject base) {
+    private void execute(@Nullable MinigamePlayer mgPlayer, @NotNull ScriptObject base) {
         MinigameMessageType type = redText.getFlag() ? MinigameMessageType.ERROR : MinigameMessageType.INFO;
 
         MinigamePlayer exclude = null;
@@ -132,8 +133,9 @@ public class BroadcastAction extends AbstractAction {
         }
         // New expression system
         message = ExpressionParser.stringResolve(message, base, true, true);
-        if (mgPlayer != null)
+        if (mgPlayer != null) {
             Minigames.getPlugin().getMinigameManager().sendMinigameMessage(mgPlayer.getMinigame(), message, type, exclude);
+        }
 
     }
 
@@ -152,15 +154,15 @@ public class BroadcastAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Broadcast", player);
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Broadcast", mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
 
         m.addItem(message.getMenuItem("Message", Material.NAME_TAG));
         m.addItem(excludeExecutor.getMenuItem("Don't Send to Executor", Material.ENDER_PEARL));
         m.addItem(redText.getMenuItem("Red Message", Material.ENDER_PEARL));
 
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 

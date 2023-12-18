@@ -2,13 +2,13 @@ package au.com.mineauz.minigames.config;
 
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.List;
 
 public abstract class Flag<T> {
-
     private T value;
     private String name;
     private T defaultVal;
@@ -56,7 +56,7 @@ public abstract class Flag<T> {
 
     public abstract void loadValue(String path, FileConfiguration config);
 
-    public abstract MenuItem getMenuItem(String name, Material displayItem);
+    public abstract MenuItem getMenuItem(Component name, Material displayItem);
 
-    public abstract MenuItem getMenuItem(String name, Material displayItem, List<String> description);
+    public abstract MenuItem getMenuItem(Component name, Material displayItem, List<Component> description);
 }

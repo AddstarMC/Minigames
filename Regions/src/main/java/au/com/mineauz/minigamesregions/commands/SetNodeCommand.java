@@ -3,21 +3,26 @@ package au.com.mineauz.minigamesregions.commands;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.RegionModule;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static au.com.mineauz.minigamesregions.RegionMessageManager.RegionLangKey;
 
 public class SetNodeCommand implements ICommand {
 
@@ -37,7 +42,7 @@ public class SetNodeCommand implements ICommand {
     }
 
     @Override
-    public List<Component> getDescription() { //todo translation String
+    public Component getDescription() { //todo translation String
         return List.of(
                 "Creates and modifies customizable nodes");
     }
@@ -48,7 +53,7 @@ public class SetNodeCommand implements ICommand {
     }
 
     @Override
-    public String[] getUsage() {
+    public Component getUsage() {
         return new String[]{"/minigame set <Minigame> node create <name>",
                 "/minigame set <Minigame> node modify",
                 "/minigame set <minigame> node delete <name>"
@@ -62,19 +67,26 @@ public class SetNodeCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
-            MinigamePlayer ply = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
+            MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
             RegionModule rmod = RegionModule.getMinigameModule(minigame);
             if (args[0].equalsIgnoreCase("create") && args.length >= 2) {
                 if (!rmod.hasNode(args[1])) {
-                    rmod.addNode(args[1], new Node(args[1], ply.getLocation()));
-                    sender.sendMessage(ChatColor.GRAY + RegionMessageManager.getMessage(RegionLangKey.COMMAND_NODE_ADDED, args[1], minigame.getName(true)));
-                } else
-                    sender.sendMessage(ChatColor.RED + RegionMessageManager.getMessage(RegionLangKey.COMMAND_NODE_EXISTS, args[1], minigame.getName(true)));
+                    rmod.addNode(args[1], new Node(args[1], mgPlayer.getLocation()));
+                    MinigameMessageManager.sendMessage(sender, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+                            RegionLangKey.NODE_ADDED,
+                            Placeholder.unparsed(RegionPlaceHolderKey.NODE.getKey(), args[1]),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)));
+                } else {
+                    MinigameMessageManager.sendMessage(sender, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+                            RegionLangKey.COMMAND_NODE_EXISTS,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)));
+                }
                 return true;
             } else if (args[0].equalsIgnoreCase("modify")) {
-                rmod.displayMenu(ply, null);
+                rmod.displayMenu(mgPlayer, null);
                 return true;
             } else if (args[0].equalsIgnoreCase("delete") && args.length >= 2) {
                 if (rmod.hasNode(args[1])) {

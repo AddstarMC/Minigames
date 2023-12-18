@@ -3,16 +3,21 @@ package au.com.mineauz.minigamesregions.actions;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.recorder.RecorderData;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -59,9 +64,9 @@ public class RandomFillingAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player,
-                                    Region region) {
-        debug(player, region);
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer,
+                                    @NotNull Region region) {
+        debug(mgPlayer, region);
         Location temp = region.getFirstPoint();
         Random rndGen = new Random();
         for (int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++) {
@@ -73,7 +78,7 @@ public class RandomFillingAction extends AbstractAction {
                     int randomDraw = rndGen.nextInt(100);  //Generating a number between [0-99]
                     randomDraw++;                //Adding one to handle edge cases (0 %, 100 %) correctly.
 
-                    RecorderData data = player.getMinigame().getRecorderData();
+                    RecorderData data = mgPlayer.getMinigame().getRecorderData();
                     data.addBlock(temp.getBlock(), null);
 
                     if (randomDraw <= percentageChance.getFlag()) {
@@ -87,9 +92,9 @@ public class RandomFillingAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
-        debug(player, node);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+                                  @NotNull Node node) {
+        debug(mgPlayer, node);
     }
 
     @Override
@@ -110,11 +115,10 @@ public class RandomFillingAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
+    public boolean displayMenu(final @NotNull MinigamePlayer mgPlayer, Menu previous) {
 
-        Menu m = new Menu(4, "Random Filling", player);
+        Menu m = new Menu(4, "Random Filling", mgPlayer);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
-        final MinigamePlayer fply = player;
 
         //The menu entry for the block that will be placed
         m.addItem(new MenuItemString("To Block", Material.COBBLESTONE, new Callback<>() {
@@ -125,11 +129,12 @@ public class RandomFillingAction extends AbstractAction {
             }
 
             @Override
-            public void setValue(String value) {
-                if (Material.matchMaterial(value.toUpperCase()) != null) {
+            public void setValue(@NotNull String value) {
+                if (Material.matchMaterial(value) != null) {
                     toType.setFlag(value.toUpperCase());
                 } else {
-                    fply.sendMessage("Invalid block type!", MinigameMessageType.ERROR);
+                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                            RegionLangKey.ACTION_ERROR_INVALIDMATERIAL);
                 }
             }
 
@@ -165,7 +170,7 @@ public class RandomFillingAction extends AbstractAction {
         m.addItem(new MenuItemNewLine());
         m.addItem(replaceAll.getMenuItem("Replace misses with air?", Material.ENDER_PEARL));
 
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
 
         return false;
     }

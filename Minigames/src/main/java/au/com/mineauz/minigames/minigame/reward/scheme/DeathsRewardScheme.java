@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.MinigameStats;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import net.kyori.adventure.text.Component;
 
 public class DeathsRewardScheme extends HierarchyRewardScheme<Integer> {
     @Override
@@ -32,7 +33,7 @@ public class DeathsRewardScheme extends HierarchyRewardScheme<Integer> {
     }
 
     @Override
-    protected String getMenuItemName(Integer value) {
+    protected Component getMenuItemName(Integer value) {
         return value.toString();
     }
 }

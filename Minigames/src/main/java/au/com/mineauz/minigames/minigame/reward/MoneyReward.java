@@ -2,19 +2,24 @@ package au.com.mineauz.minigames.minigame.reward;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MoneyReward extends RewardType {
-
     private double money = 0d;
 
     public MoneyReward(Rewards rewards) {
@@ -32,10 +37,10 @@ public class MoneyReward extends RewardType {
     }
 
     @Override
-    public void giveReward(MinigamePlayer player) {
-        Minigames.getPlugin().getEconomy().depositPlayer(player.getPlayer().getPlayer(), money);
-        player.sendInfoMessage(
-                MinigameMessageManager.getMinigamesMessage("reward.money", Minigames.getPlugin().getEconomy().format(money)));
+    public void giveReward(@NotNull MinigamePlayer mgPlayer) {
+        Minigames.getPlugin().getEconomy().depositPlayer(mgPlayer.getPlayer().getPlayer(), money);
+        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WIN, MinigameLangKey.REWARD_MONEY,
+                Placeholder.unparsed(MinigamePlaceHolderKey.MONEY.getKey(), Minigames.getPlugin().getEconomy().format(money)));
     }
 
     @Override
@@ -81,7 +86,7 @@ public class MoneyReward extends RewardType {
         }
 
         public void updateDescription() {
-            List<String> description;
+            List<Component> description;
             if (options == null) {
                 options = new ArrayList<>();
                 for (RewardRarity rarity : RewardRarity.values()) {

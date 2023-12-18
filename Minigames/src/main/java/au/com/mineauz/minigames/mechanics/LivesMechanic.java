@@ -3,6 +3,8 @@ package au.com.mineauz.minigames.mechanics;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.StartMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
@@ -32,7 +34,12 @@ public class LivesMechanic extends GameMechanicBase {
         if (minigame.getLives() > 0) {
             return true;
         }
-        caller.sendMessage("The Minigame must have more than 0 lives to use this type", MinigameMessageType.ERROR);
+
+        if (caller == null) {
+            Minigames.log().warning("The Minigame \"" + minigame.getName(false) + "\" must have more than 0 lives to use this type");
+        } else {
+            MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_LIVES_ERROR_NOLIVES);
+        }
         return false;
     }
 

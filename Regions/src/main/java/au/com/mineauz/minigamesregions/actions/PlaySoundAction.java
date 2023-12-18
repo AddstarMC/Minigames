@@ -4,16 +4,21 @@ import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.FloatFlag;
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,17 +60,17 @@ public class PlaySoundAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player,
-                                    Region region) {
-        debug(player, region);
-        execute(player, player.getLocation());
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer,
+                                    @NotNull Region region) {
+        debug(mgPlayer, region);
+        execute(mgPlayer, mgPlayer.getLocation());
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
-        debug(player, node);
-        execute(player, node.getLocation());
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+                                  @NotNull Node node) {
+        debug(mgPlayer, node);
+        execute(mgPlayer, node.getLocation());
     }
 
     private void execute(MinigamePlayer player, Location loc) {
@@ -101,12 +106,12 @@ public class PlaySoundAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Play Sound", player);
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Play Sound", mgPlayer);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
         List<String> sounds = new ArrayList<>();
-        for (Sound s : Sound.values())
-            sounds.add(WordUtils.capitalize(s.toString().replace("_", " ")));
+        for (Sound sound : Sound.values())
+            sounds.add(WordUtils.capitalize(sound.toString().replace("_", " ")));
         m.addItem(new MenuItemList("Sound", Material.NOTE_BLOCK, new Callback<>() {
 
             @Override
@@ -123,7 +128,8 @@ public class PlaySoundAction extends AbstractAction {
                 if (sounds.contains(value)) {
                     sound.setFlag(value.toUpperCase().replace(" ", "_"));
                 } else {
-                    player.sendMessage("Sound not available", MinigameMessageType.ERROR);
+                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                            RegionLangKey.ACTION_PLAYSOUND_ERROR_NOSOUND);
                 }
             }
 
@@ -158,7 +164,7 @@ public class PlaySoundAction extends AbstractAction {
 
 
         }, 0.05, 0.1, 0d, 2d));
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 

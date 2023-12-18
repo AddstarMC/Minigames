@@ -5,9 +5,11 @@ import au.com.mineauz.minigamesregions.actions.ActionInterface;
 import au.com.mineauz.minigamesregions.executors.BaseExecutor;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +20,7 @@ public class MenuItemAction extends MenuItem {
     private final BaseExecutor exec;
     private final ActionInterface act;
 
-    public MenuItemAction(String name, Material displayItem, BaseExecutor exec, ActionInterface act) {
+    public MenuItemAction(Component name, Material displayItem, BaseExecutor exec, ActionInterface act) {
         super(name, displayItem);
         this.exec = exec;
         this.act = act;
@@ -79,9 +81,10 @@ public class MenuItemAction extends MenuItem {
     }
 
     @Override
-    public ItemStack onClick() {
-        if (act.displayMenu(getContainer().getViewer(), getContainer()))
+    public @Nullable ItemStack onClick() {
+        if (act.displayMenu(getContainer().getViewer(), getContainer())) {
             return null;
+        }
         return getItem();
     }
 

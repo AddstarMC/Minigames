@@ -15,6 +15,8 @@ import au.com.mineauz.minigamesregions.triggers.Triggers;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -57,13 +59,13 @@ public class TimedTriggerAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
-        execute(player, region);
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        execute(mgPlayer, region);
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
-        execute(player, node);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+        execute(mgPlayer, node);
     }
 
     private void execute(MinigamePlayer player, ScriptObject obj) {
@@ -99,13 +101,13 @@ public class TimedTriggerAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Timed Trigger", player);
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Timed Trigger", mgPlayer);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
         m.addItem(toTrigger.getMenuItem("Object Name", Material.ENDER_EYE));
         m.addItem(isRegion.getMenuItem("Is Region?", Material.ENDER_PEARL));
         m.addItem(delay.getMenuItem("Delay in ticks", Material.ENDER_PEARL));
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 

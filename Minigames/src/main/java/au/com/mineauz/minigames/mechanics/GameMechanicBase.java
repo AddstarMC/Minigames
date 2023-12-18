@@ -125,7 +125,7 @@ public abstract class GameMechanicBase implements Listener {
     }
 
     private void broadcastAutobalance(@NotNull Minigame minigame, @NotNull MinigamePlayer mgPlayer, @NotNull Team teamToJoin) {
-        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(
+        MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(
                 teamToJoin.getAutobalanceMessage(),
                 Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(teamToJoin.getDisplayName(), teamToJoin.getTextColor())))); //todo is NOT backwards compatible!!
 

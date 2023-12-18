@@ -13,6 +13,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.material.Directional;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -54,8 +56,8 @@ public class SwapBlockAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
-        debug(player, region);
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        debug(mgPlayer, region);
         for (int y = region.getFirstPoint().getBlockY(); y <= region.getSecondPoint().getBlockY(); y++) {
             for (int x = region.getFirstPoint().getBlockX(); x <= region.getSecondPoint().getBlockX(); x++) {
                 for (int z = region.getFirstPoint().getBlockZ(); z <= region.getSecondPoint().getBlockZ(); z++) {
@@ -79,7 +81,7 @@ public class SwapBlockAction extends AbstractAction {
                             ((Directional) newBlockData).setFacingDirection(facing);
                         }
 
-                        RecorderData data = player.getMinigame().getRecorderData();
+                        RecorderData data = mgPlayer.getMinigame().getRecorderData();
                         data.addBlock(block, null);
 
                         // Update block type
@@ -91,9 +93,9 @@ public class SwapBlockAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
-        debug(player, node);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+                                  @NotNull Node node) {
+        debug(mgPlayer, node);
     }
 
     @Override
@@ -113,8 +115,8 @@ public class SwapBlockAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Swap Block", player);
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Swap Block", mgPlayer);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
         m.addItem(new MenuItemBlockData("Match Block", Material.COBBLESTONE, new Callback<>() {
 
@@ -146,7 +148,7 @@ public class SwapBlockAction extends AbstractAction {
 
         }));
         m.addItem(keepAttachment.getMenuItem("Keep Attachment", Material.PISTON, List.of("When on, and To Block Use Data is off", "If the source and target block", "types are both blocks that", "attach to surfaces, this", "attachment will be preserved")));
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 

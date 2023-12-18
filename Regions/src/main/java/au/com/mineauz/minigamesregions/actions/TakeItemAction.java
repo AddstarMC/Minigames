@@ -2,6 +2,7 @@ package au.com.mineauz.minigamesregions.actions;
 
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
@@ -10,9 +11,13 @@ import au.com.mineauz.minigames.menu.MenuItemString;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -48,15 +53,15 @@ public class TakeItemAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
-        debug(player, region);
-        execute(player);
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        debug(mgPlayer, region);
+        execute(mgPlayer);
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
-        debug(player, node);
-        execute(player);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+        debug(mgPlayer, node);
+        execute(mgPlayer);
     }
 
     private void execute(MinigamePlayer player) {
@@ -105,8 +110,8 @@ public class TakeItemAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(final MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Take Item", player);
+    public boolean displayMenu(final @NotNull MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Take Item", mgPlayer);
 
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(new MenuItemString("Type", Material.STONE, new Callback<>() {
@@ -120,12 +125,14 @@ public class TakeItemAction extends AbstractAction {
             public void setValue(String value) {
                 if (Material.getMaterial(value.toUpperCase()) != null) {
                     type.setFlag(value.toUpperCase());
-                } else
-                    player.sendMessage("Invalid item type!", MinigameMessageType.ERROR);
+                } else {
+                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                            RegionLangKey.ERROR_INVALID_ITEMTYPE);
+                }
             }
         }));
         m.addItem(count.getMenuItem("Count", Material.STONE_SLAB, 1, 64));
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 

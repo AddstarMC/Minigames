@@ -1,18 +1,22 @@
 package au.com.mineauz.minigamesregions;
 
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -108,15 +112,22 @@ public class RegionToolMode implements ToolMode {
 
             if (region == null) {
                 module.addRegion(name, new Region(name, mgPlayer.getSelectionPoints()[0], mgPlayer.getSelectionPoints()[1]));
-                mgPlayer.sendInfoMessage("Created a new region in " + minigame + " called " + name);
+                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+                        RegionLangKey.REGION_CREATED,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), name));
                 mgPlayer.clearSelection();
             } else {
                 region.updateRegion(mgPlayer.getSelectionPoints()[0], mgPlayer.getSelectionPoints()[1]);
                 Main.getPlugin().getDisplayManager().update(region);
-                mgPlayer.sendInfoMessage("Updated region " + name + " in " + minigame);
+                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+                        RegionLangKey.REGION_EDITED,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), name));
             }
         } else {
-            mgPlayer.sendMessage("You need to select a region with right click first!", MinigameMessageType.ERROR);
+            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                    MinigameLangKey.TOOL_ERROR_NOREGIONSELECTED);
         }
     }
 
@@ -126,19 +137,9 @@ public class RegionToolMode implements ToolMode {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             mgPlayer.addSelectionPoint(event.getClickedBlock().getLocation());
             if (mgPlayer.hasSelection()) {
-                mgPlayer.sendInfoMessage("Selection complete, finalise with left click.");
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SELECTED_REGION);
             }
         }
-    }
-
-    @Override
-    public void onEntityLeftClick(MinigamePlayer player, Minigame minigame, Team team, EntityDamageByEntityEvent event) {
-
-    }
-
-    @Override
-    public void onEntityRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEntityEvent event) {
-
     }
 
     @Override
@@ -147,9 +148,15 @@ public class RegionToolMode implements ToolMode {
         String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Region");
         if (mod.hasRegion(name)) {
             Main.getPlugin().getDisplayManager().show(mod.getRegion(name), mgPlayer);
-            mgPlayer.sendInfoMessage("Selected the " + name + " region in " + minigame);
+            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+                    RegionLangKey.TOOL_REGION_SELECTED,
+                    Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), name),
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
         } else {
-            mgPlayer.sendMessage("No region created by the name '" + name + "'", MinigameMessageType.ERROR);
+            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                    RegionLangKey.REGION_ERROR_NOREGION,
+                    Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), name),
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
         }
     }
 
@@ -160,9 +167,13 @@ public class RegionToolMode implements ToolMode {
         if (mod.hasRegion(name)) {
             Main.getPlugin().getDisplayManager().hide(mod.getRegion(name), mgPlayer);
             mgPlayer.clearSelection();
-            mgPlayer.sendInfoMessage("Deselected the region");
+            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
+                    RegionLangKey.TOOL_REGION_DESELECTED);
         } else {
-            mgPlayer.sendMessage("No region created by the name '" + name + "'", MinigameMessageType.ERROR);
+            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                    RegionLangKey.REGION_ERROR_NOREGION,
+                    Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), name),
+                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
         }
     }
 

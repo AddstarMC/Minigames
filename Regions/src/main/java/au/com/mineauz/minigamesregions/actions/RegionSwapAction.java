@@ -3,6 +3,7 @@ package au.com.mineauz.minigamesregions.actions;
 import au.com.mineauz.minigames.MinigameMessageType;
 import au.com.mineauz.minigames.config.BooleanFlag;
 import au.com.mineauz.minigames.config.StringFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemNewLine;
@@ -13,11 +14,17 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.recorder.RecorderData;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
 import au.com.mineauz.minigamesregions.RegionModule;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
+import au.com.mineauz.minigamesregions.language.RegionPlaceHolderKey;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -63,8 +70,8 @@ public class RegionSwapAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
-        debug(player, region);
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        debug(mgPlayer, region);
 
     }
 
@@ -74,32 +81,36 @@ public class RegionSwapAction extends AbstractAction {
      * block with the From (start) regions block.
      */
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
-        debug(player, node);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+        debug(mgPlayer, node);
 
         Region startRegion = null;
         Region targetRegion = null;
         ArrayList<BlockState> startRegionBlocks = new ArrayList<BlockState>();
         ArrayList<BlockState> targetRegionBlocks = new ArrayList<BlockState>();
 
-        if (player == null || !player.isInMinigame()) {
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) {
             return;
         }
-        Minigame mg = player.getMinigame();
+        Minigame mgm = mgPlayer.getMinigame();
 
-        if (mg != null) {
-            RegionModule rmod = RegionModule.getMinigameModule(mg);
+        if (mgm != null) {
+            RegionModule rmod = RegionModule.getMinigameModule(mgm);
 
             if (rmod.hasRegion(fromRegion.getFlag())) {
                 startRegion = rmod.getRegion(fromRegion.getFlag());
             } else {
-                player.sendMessage(fromRegion.getFlag() + " does not exist", MinigameMessageType.ERROR);
+                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                        RegionLangKey.ACTION_ERROR_NOREGION,
+                        Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), fromRegion.getFlag()));
             }
 
             if (rmod.hasRegion(toRegion.getFlag())) {
                 targetRegion = rmod.getRegion(toRegion.getFlag());
             } else {
-                player.sendMessage(toRegion.getFlag() + " does not exist", MinigameMessageType.ERROR);
+                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                        RegionLangKey.ACTION_ERROR_NOREGION,
+                        Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), toRegion.getFlag()));
             }
         }
 
@@ -111,7 +122,7 @@ public class RegionSwapAction extends AbstractAction {
 
             if (startRegionBlocks.size() == targetRegionBlocks.size() && swapRegion.getFlag()) {
                 for (int i = 0; i < targetRegionBlocks.size(); i++) {
-                    RecorderData data = player.getMinigame().getRecorderData();
+                    RecorderData data = mgPlayer.getMinigame().getRecorderData();
                     data.addBlock(targetRegionBlocks.get(i).getBlock(), null);
                     data.addBlock(startRegionBlocks.get(i).getBlock(), null);
 
@@ -129,14 +140,15 @@ public class RegionSwapAction extends AbstractAction {
 
             } else if (startRegionBlocks.size() == targetRegionBlocks.size()) {
                 for (int i = 0; i < targetRegionBlocks.size(); i++) {
-                    RecorderData data = player.getMinigame().getRecorderData();
+                    RecorderData data = mgPlayer.getMinigame().getRecorderData();
                     data.addBlock(targetRegionBlocks.get(i).getBlock(), null);
                     targetRegionBlocks.get(i).setType(startRegionBlocks.get(i).getType());
                     targetRegionBlocks.get(i).setBlockData(startRegionBlocks.get(i).getBlockData());
                     targetRegionBlocks.get(i).update(true, false);
                 }
             } else {
-                player.sendMessage("The regions do not have the same size", MinigameMessageType.ERROR);
+                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                        RegionLangKey.ACTION_REGIONSWAP_ERROR_SIZE);
             }
         }
 
@@ -168,8 +180,8 @@ public class RegionSwapAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Trigger Node", player);
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Trigger Node", mgPlayer);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
         m.addItem(fromRegion.getMenuItem("From Region Name", Material.ENDER_EYE));
         m.addItem(swapRegion.getMenuItem("Swap Regions?", Material.ENDER_PEARL));
@@ -177,7 +189,7 @@ public class RegionSwapAction extends AbstractAction {
         m.addItem(new MenuItemNewLine());
         m.addItem(toRegion.getMenuItem("To Region Name", Material.ENDER_EYE));
 
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 

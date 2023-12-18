@@ -2,11 +2,14 @@ package au.com.mineauz.minigamesregions.conditions;
 
 import au.com.mineauz.minigames.config.BlockDataFlag;
 import au.com.mineauz.minigames.config.BooleanFlag;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
+import au.com.mineauz.minigamesregions.RegionMessageManager;
+import au.com.mineauz.minigamesregions.language.RegionLangKey;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -86,9 +89,9 @@ public class MatchBlockCondition extends ConditionInterface {
     public boolean displayMenu(MinigamePlayer player, Menu prev) {
         Menu m = new Menu(3, "Match Block", player);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
-        final MenuItemCustom c = new MenuItemCustom("Auto Set Block",
+        final MenuItemCustom autoSetBlockMenuItem = new MenuItemCustom("Auto Set Block",
                 List.of("Click here with a", "block you wish to", "match to."), Material.ITEM_FRAME);
-        m.addItem(c, m.getSize() - 1);
+        m.addItem(autoSetBlockMenuItem, m.getSize() - 1);
 
         final MenuItemBlockData btype = new MenuItemBlockData("Block Type", Material.STONE, new Callback<>() {
 
@@ -105,18 +108,20 @@ public class MatchBlockCondition extends ConditionInterface {
         m.addItem(btype);
         final MenuItemBoolean busedur = (MenuItemBoolean) useBlockData.getMenuItem("Use Data Values", Material.ENDER_PEARL);
         m.addItem(busedur);
-        c.setClickItem(object -> {
-            ItemStack i = (ItemStack) object;
-            try {
-                type.setFlag(i.getType().createBlockData());
+        autoSetBlockMenuItem.setClickItem(object -> {
+            ItemStack itemStack = (ItemStack) object;
+
+            if (itemStack.getType().isBlock()) {
+                type.setFlag(itemStack.getType().createBlockData());
                 useBlockData.setFlag(true);
-            } catch (IllegalArgumentException e) {
-                c.getContainer().getViewer().sendMessage("That item is not a block", MinigameMessageType.ERROR);
+            } else {
+                MinigameMessageManager.sendMessage(autoSetBlockMenuItem.getContainer().getViewer(), MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
+                        RegionLangKey.ITEM_ERROR_NOTBLOCK);
             }
             useBlockData.setFlag(true);
             busedur.updateDescription();
             btype.update();
-            return c.getItem();
+            return autoSetBlockMenuItem.getItem();
         });
         addInvertMenuItem(m);
         m.displayMenu(player);

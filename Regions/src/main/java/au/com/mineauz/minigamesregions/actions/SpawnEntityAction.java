@@ -16,6 +16,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,15 +66,15 @@ public class SpawnEntityAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player,
-                                    Region region) {
-        debug(player, region);
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer,
+                                    @NotNull Region region) {
+        debug(mgPlayer, region);
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
-        debug(player, node);
-        if (player == null || !player.isInMinigame()) return;
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+        debug(mgPlayer, node);
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
         final Entity ent = node.getLocation().getWorld().spawnEntity(node.getLocation(), EntityType.valueOf(type.getFlag()));
 
         final double vx = Double.parseDouble(settings.get("velocityx"));
@@ -88,7 +90,7 @@ public class SpawnEntityAction extends AbstractAction {
         }
 
         ent.setMetadata("MinigameEntity", new FixedMetadataValue(Minigames.getPlugin(), true));
-        player.getMinigame().getRecorderData().addEntity(ent, player, true);
+        mgPlayer.getMinigame().getRecorderData().addEntity(ent, mgPlayer, true);
     }
 
     @Override
@@ -106,8 +108,8 @@ public class SpawnEntityAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Spawn Entity", player);
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Spawn Entity", mgPlayer);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
         List<String> options = new ArrayList<>();
         for (EntityType type : EntityType.values()) {
@@ -178,10 +180,10 @@ public class SpawnEntityAction extends AbstractAction {
 
         m.addItem(new MenuItemNewLine());
 
-        final Menu eSet = new Menu(3, "Settings", player);
+        final Menu eSet = new Menu(3, "Settings", mgPlayer);
         final MenuItemPage backButton = new MenuItemPage("Back", MenuUtility.getBackMaterial(), m);
         final MenuItemCustom cus = new MenuItemCustom("Entity Settings", Material.CHEST);
-        final MinigamePlayer fply = player;
+        final MinigamePlayer fply = mgPlayer;
         cus.setClick(object -> {
             if (type.getFlag().equals("ZOMBIE")) {
                 eSet.clearMenu();
@@ -194,7 +196,7 @@ public class SpawnEntityAction extends AbstractAction {
         });
         m.addItem(cus);
 
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 

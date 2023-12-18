@@ -103,7 +103,7 @@ public class MultiplayerType extends MinigameTypeBase {
             }
         } else if (mgm.hasStarted()) {
             mgPlayer.setLatejoining(true);
-            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_LATEJOIN,
+            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_LATEJOIN,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(5)))); //TODO: Late join delay variable
             final MinigamePlayer fply = mgPlayer;
             final Minigame fmgm = mgm;
@@ -116,7 +116,7 @@ public class MultiplayerType extends MinigameTypeBase {
                 }
 
                 smTeam.addPlayer(mgPlayer);
-                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(smTeam.getPlayerAssignMessage(),
+                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(smTeam.getPlayerAssignMessage(),
                         Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(smTeam.getDisplayName(), smTeam.getTextColor()))));
 
                 final Team fteam = smTeam;

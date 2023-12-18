@@ -7,6 +7,8 @@ import au.com.mineauz.minigamesregions.Region;
 import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.executors.RegionExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -37,15 +39,15 @@ public class ResetTriggerCountAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
-        debug(player, region);
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        debug(mgPlayer, region);
         for (RegionExecutor ex : region.getExecutors())
             ex.setTriggerCount(0);
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
-        debug(player, node);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+        debug(mgPlayer, node);
         for (NodeExecutor ex : node.getExecutors())
             ex.setTriggerCount(0);
     }
@@ -59,7 +61,7 @@ public class ResetTriggerCountAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         return false;
     }
 

@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -14,7 +15,7 @@ public class Menu {
     private final int rows;
     private final ItemStack[] pageView;
     private final Map<Integer, MenuItem> pageMap = new HashMap<>();
-    private final String name;
+    private final Component name;
     private final MinigamePlayer viewer;
     private boolean allowModify = false;
     private Menu previousPage = null;
@@ -22,7 +23,7 @@ public class Menu {
     private int reopenTimerID = -1;
     private Inventory inv = null;
 
-    public Menu(int rows, String name, MinigamePlayer viewer) {
+    public Menu(int rows, Component name, MinigamePlayer viewer) {
         if (rows > 6)
             rows = 6;
         else if (rows < 2)
@@ -33,7 +34,7 @@ public class Menu {
         this.viewer = viewer;
     }
 
-    public String getName() {
+    public Component getName() {
         return name;
     }
 

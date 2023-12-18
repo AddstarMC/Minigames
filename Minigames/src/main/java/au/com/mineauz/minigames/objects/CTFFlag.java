@@ -3,9 +3,12 @@ package au.com.mineauz.minigames.objects;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.data.Directional;
@@ -194,13 +197,12 @@ public class CTFFlag {
                 minigame.addDroppedFlag(newID, self);
             }
             respawnFlag();
-            //TODO: Build this again with broadcasts.
-            for (MinigamePlayer pl : minigame.getPlayers()) {
-                if (getTeam() != null)
-                    pl.sendInfoMessage(
-                            MinigameMessageManager.getMinigamesMessage("minigame.flag.returnedTeam", getTeam().getTextColor() + getTeam().getDisplayName() + ChatColor.WHITE));
-                else
-                    pl.sendInfoMessage(MinigameUtils.getLang("minigame.flag.returnedNeutral"));
+
+            if (getTeam() != null) {
+                Minigames.getPlugin().getMinigameManager().sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_FLAG_RETURNEDTEAM,
+                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(getTeam().getDisplayName(), getTeam().getTextColor()))));
+            } else {
+                Minigames.getPlugin().getMinigameManager().sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_FLAG_RETURNEDNEUTRAL));
             }
             taskID = -1;
         }, respawnTime * 20L);

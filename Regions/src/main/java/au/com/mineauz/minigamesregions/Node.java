@@ -10,6 +10,8 @@ import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +73,7 @@ public class Node implements ExecutableScriptObject {
         this.enabled = enabled;
     }
 
-    public void execute(Trigger trigger, MinigamePlayer player) {
+    public void execute(@NotNull Trigger trigger, @Nullable MinigamePlayer player) {
         if (player != null && player.getMinigame() != null && player.getMinigame().isSpectator(player)) return;
         if (player == null || player.getMinigame() == null) return;
         List<NodeExecutor> toExecute = new ArrayList<>();

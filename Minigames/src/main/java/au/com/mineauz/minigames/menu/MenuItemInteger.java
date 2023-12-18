@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.menu;
 
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -15,7 +16,7 @@ public class MenuItemInteger extends MenuItem {
     private Integer min = null;
     private Integer max = null;
 
-    public MenuItemInteger(String name, Material displayItem, Callback<Integer> value, Integer min, Integer max) {
+    public MenuItemInteger(Component name, Material displayItem, Callback<Integer> value, Integer min, Integer max) {
         super(name, displayItem);
         this.value = value;
         if (min != null)
@@ -25,7 +26,7 @@ public class MenuItemInteger extends MenuItem {
         updateDescription();
     }
 
-    public MenuItemInteger(String name, List<String> description, Material displayItem, Callback<Integer> value, Integer min, Integer max) {
+    public MenuItemInteger(Component name, List<Component> description, Material displayItem, Callback<Integer> value, Integer min, Integer max) {
         super(name, description, displayItem);
         this.value = value;
         if (min != null)

@@ -306,7 +306,7 @@ public class MinigamePlayerManager {
 
             if (!minigame.isTeamGame()) {
                 if (minigame.getLives() > 0) {
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_LIVESLEFT,
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_LIVES_LIVESLEFT,
                             Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(minigame.getLives())));
                 }
                 mgPlayer.setStartTime(Calendar.getInstance().getTimeInMillis());

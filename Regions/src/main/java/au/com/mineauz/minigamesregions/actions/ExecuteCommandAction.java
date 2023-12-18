@@ -14,6 +14,8 @@ import com.google.common.collect.ImmutableSet;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -73,9 +75,9 @@ public class ExecuteCommandAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(final MinigamePlayer player, final Region region) {
-        debug(player, region);
-        String command = replacePlayerTags(player, comd.getFlag());
+    public void executeRegionAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Region region) {
+        debug(mgPlayer, region);
+        String command = replacePlayerTags(mgPlayer, comd.getFlag());
         command = command.replace("{region}", region.getName());
 
         // New expression system
@@ -93,13 +95,13 @@ public class ExecuteCommandAction extends AbstractAction {
             @Override
             public ScriptReference get(String name) {
                 if (name.equalsIgnoreCase("player")) {
-                    return player;
+                    return mgPlayer;
                 } else if (name.equalsIgnoreCase("area")) {
                     return region;
                 } else if (name.equalsIgnoreCase("minigame")) {
-                    return player.getMinigame();
+                    return mgPlayer.getMinigame();
                 } else if (name.equalsIgnoreCase("team")) {
-                    return player.getTeam();
+                    return mgPlayer.getTeam();
                 }
 
                 return null;
@@ -111,9 +113,9 @@ public class ExecuteCommandAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(final MinigamePlayer player, final Node node) {
-        debug(player, node);
-        String command = replacePlayerTags(player, comd.getFlag());
+    public void executeNodeAction(final @Nullable MinigamePlayer mgPlayer, final @NotNull Node node) {
+        debug(mgPlayer, node);
+        String command = replacePlayerTags(mgPlayer, comd.getFlag());
         command = command
                 .replace("{x}", String.valueOf(node.getLocation().getBlockX()))
                 .replace("{y}", String.valueOf(node.getLocation().getBlockY()))
@@ -135,13 +137,13 @@ public class ExecuteCommandAction extends AbstractAction {
             @Override
             public ScriptReference get(String name) {
                 if (name.equalsIgnoreCase("player")) {
-                    return player;
+                    return mgPlayer;
                 } else if (name.equalsIgnoreCase("area")) {
                     return node;
                 } else if (name.equalsIgnoreCase("minigame")) {
-                    return player.getMinigame();
+                    return mgPlayer.getMinigame();
                 } else if (name.equalsIgnoreCase("team")) {
-                    return player.getTeam();
+                    return mgPlayer.getTeam();
                 }
 
                 return null;
@@ -175,8 +177,8 @@ public class ExecuteCommandAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Execute Command", player);
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Execute Command", mgPlayer);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
         m.addItem(new MenuItemString("Command", List.of("Do not include '/'", "If '//' command, start with './'"),
                 Material.COMMAND_BLOCK, new Callback<>() {
@@ -194,7 +196,7 @@ public class ExecuteCommandAction extends AbstractAction {
             }
         }));
         m.addItem(silentExecute.getMenuItem("Is Silent", Material.NOTE_BLOCK, List.of("When on, console output", "for a command will be", "silenced.", "NOTE: Does not work with", "minecraft commands")));
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 

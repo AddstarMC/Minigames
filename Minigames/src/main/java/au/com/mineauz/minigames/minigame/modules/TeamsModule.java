@@ -109,7 +109,7 @@ public class TeamsModule extends MinigameModule {
             org.bukkit.scoreboard.@NotNull Team bukkitTeam = getMinigame().getScoreboardManager().registerNewTeam(teamNameString);
             bukkitTeam.setAllowFriendlyFire(false);
             bukkitTeam.setCanSeeFriendlyInvisibles(true);
-            bukkitTeam.setColor(color.getColor());
+            bukkitTeam.color(color.getColor());
             if (name != null && !name.equals("")) {
                 teams.get(color).setDisplayName(name);
                 bukkitTeam.setDisplayName(name);
@@ -136,7 +136,7 @@ public class TeamsModule extends MinigameModule {
         bukkitTeam.setAllowFriendlyFire(false);
         bukkitTeam.setCanSeeFriendlyInvisibles(true);
         bukkitTeam.setDisplayName(team.getDisplayName());
-        bukkitTeam.setColor(color.getColor());
+        bukkitTeam.color(color.getColor());
     }
 
     /**

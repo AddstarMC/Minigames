@@ -12,6 +12,8 @@ import au.com.mineauz.minigamesregions.RegionModule;
 import au.com.mineauz.minigamesregions.triggers.Triggers;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -44,27 +46,27 @@ public class TriggerRegionAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player,
-                                    Region region) {
-        debug(player, region);
-        if (player == null || !player.isInMinigame()) return;
-        Minigame mg = player.getMinigame();
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer,
+                                    @NotNull Region region) {
+        debug(mgPlayer, region);
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
+        Minigame mg = mgPlayer.getMinigame();
         if (mg != null) {
             RegionModule rmod = RegionModule.getMinigameModule(mg);
             if (rmod.hasRegion(this.region.getFlag()))
-                rmod.getRegion(this.region.getFlag()).execute(Triggers.getTrigger("REMOTE"), player);
+                rmod.getRegion(this.region.getFlag()).execute(Triggers.getTrigger("REMOTE"), mgPlayer);
         }
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
-        debug(player, node);
-        if (player == null || !player.isInMinigame()) return;
-        Minigame mg = player.getMinigame();
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+        debug(mgPlayer, node);
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
+        Minigame mg = mgPlayer.getMinigame();
         if (mg != null) {
             RegionModule rmod = RegionModule.getMinigameModule(mg);
             if (rmod.hasRegion(region.getFlag()))
-                rmod.getRegion(region.getFlag()).execute(Triggers.getTrigger("REMOTE"), player);
+                rmod.getRegion(region.getFlag()).execute(Triggers.getTrigger("REMOTE"), mgPlayer);
         }
     }
 
@@ -81,11 +83,11 @@ public class TriggerRegionAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Trigger Node", player);
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Trigger Node", mgPlayer);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
         m.addItem(region.getMenuItem("Region Name", Material.ENDER_EYE));
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 

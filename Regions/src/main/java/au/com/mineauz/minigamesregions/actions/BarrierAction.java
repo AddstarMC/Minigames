@@ -6,6 +6,8 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -36,16 +38,16 @@ public class BarrierAction extends AbstractAction {
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
-        debug(player, node);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+                                  @NotNull Node node) {
+        debug(mgPlayer, node);
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
-        debug(player, region);
-        if (player == null || !player.isInMinigame()) return;
-        Location o = player.getLocation().clone();
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
+        debug(mgPlayer, region);
+        if (mgPlayer == null || !mgPlayer.isInMinigame()) return;
+        Location o = mgPlayer.getLocation().clone();
         Location[] locs = {region.getFirstPoint(), region.getSecondPoint()};
         double xdis1 = Math.abs(o.getX() - locs[0].getX());
         double ydis1 = Math.abs(o.getY() - locs[0].getY());
@@ -75,7 +77,7 @@ public class BarrierAction extends AbstractAction {
         } else
             zval = zdis2;
         if (xval < yval && xval < zval) {
-            if (region.getPlayers().contains(player)) {
+            if (region.getPlayers().contains(mgPlayer)) {
                 if (isMinX)
                     o.setX(o.getX() - 0.5);
                 else
@@ -87,7 +89,7 @@ public class BarrierAction extends AbstractAction {
                     o.setX(o.getX() - 0.5);
             }
         } else if (yval < xval && yval < zval) {
-            if (region.getPlayers().contains(player)) {
+            if (region.getPlayers().contains(mgPlayer)) {
                 if (isMinY)
                     o.setY(o.getY() - 0.5);
                 else
@@ -99,7 +101,7 @@ public class BarrierAction extends AbstractAction {
                     o.setY(o.getY() - 0.5);
             }
         } else if (zval < xval && zval < yval) {
-            if (region.getPlayers().contains(player)) {
+            if (region.getPlayers().contains(mgPlayer)) {
                 if (isMinZ)
                     o.setZ(o.getZ() - 0.5);
                 else
@@ -111,11 +113,11 @@ public class BarrierAction extends AbstractAction {
                     o.setZ(o.getZ() - 0.5);
             }
         }
-        player.teleport(o);
-        if (region.getPlayers().contains(player))
-            region.removePlayer(player);
+        mgPlayer.teleport(o);
+        if (region.getPlayers().contains(mgPlayer))
+            region.removePlayer(mgPlayer);
         else
-            region.addPlayer(player);
+            region.addPlayer(mgPlayer);
     }
 
     @Override
@@ -131,7 +133,7 @@ public class BarrierAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
         return false;
     }
 }

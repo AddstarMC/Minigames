@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.minigame;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.*;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
@@ -32,8 +31,8 @@ public class Team implements ScriptObject {
     private final List<Location> startLocations = new ArrayList<>();
     private final StringFlag playerAssignMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MinigameLangKey.PLAYER_TEAM_ASSIGN_JOINTEAM), "assignMsg");
     private final StringFlag joinAnnounceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MinigameLangKey.PLAYER_TEAM_ASSIGN_JOINANNOUNCE), "gameAssignMsg");
-    private final StringFlag autobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.plyMsg"), "autobalanceMsg");
-    private final StringFlag gameAutobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.minigameMsg"), "gameAutobalanceMsg");
+    private final StringFlag autobalanceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MinigameLangKey.PLAYER_TEAM_AUTOBALANCE_PLYMSG), "autobalanceMsg");
+    private final StringFlag gameAutobalanceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MinigameLangKey.PLAYER_TEAM_AUTOBALANCE_MINIGAMEMSG), "gameAutobalanceMsg");
     private final EnumFlag<OptionStatus> nametagVisibility = new EnumFlag<>(OptionStatus.ALWAYS, "nametagVisibility");
     private final BooleanFlag autoBalance = new BooleanFlag(true, "autoBalance");
     private final List<MinigamePlayer> players = new ArrayList<>();

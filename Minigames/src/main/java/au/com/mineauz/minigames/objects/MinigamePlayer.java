@@ -6,6 +6,8 @@ import au.com.mineauz.minigames.PlayerLoadout;
 import au.com.mineauz.minigames.StoredPlayerCheckpoints;
 import au.com.mineauz.minigames.config.MinigameSave;
 import au.com.mineauz.minigames.display.DisplayCuboid;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
@@ -508,16 +510,16 @@ public class MinigamePlayer implements ScriptObject {
         if (this.selection1 == null) {
             this.selection1 = loc;
             this.showSelection(true);
-            this.sendMessage("Position 1 set", MinigameMessageType.INFO);
+            MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_POS1);
         } else if (this.selection2 == null) {
             this.selection2 = loc;
             this.showSelection(true);
-            this.sendMessage("Position 2 set", MinigameMessageType.INFO);
+            MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_POS2);
         } else {
             this.showSelection(false);
             this.selection1 = loc;
-            this.sendMessage("Selection restarted", MinigameMessageType.INFO);
-            this.sendMessage("Position 1 set", MinigameMessageType.INFO);
+            MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_RESTART);
+            MinigameMessageManager.sendMgMessage(this, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_POS1);
             this.selection2 = null;
             this.showSelection(true);
         }

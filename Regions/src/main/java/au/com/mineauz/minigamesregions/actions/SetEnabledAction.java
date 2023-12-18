@@ -8,11 +8,12 @@ import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
 public class SetEnabledAction extends AbstractAction {
-
     private final BooleanFlag state = new BooleanFlag(false, "state");
 
     @Override
@@ -41,15 +42,15 @@ public class SetEnabledAction extends AbstractAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player, Region region) {
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer, @NotNull Region region) {
 
-        debug(player, region);
+        debug(mgPlayer, region);
         region.setEnabled(state.getFlag());
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player, Node node) {
-        debug(player, node);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer, @NotNull Node node) {
+        debug(mgPlayer, node);
         node.setEnabled(state.getFlag());
     }
 
@@ -64,11 +65,11 @@ public class SetEnabledAction extends AbstractAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Set Enabled", player);
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Set Enabled", mgPlayer);
         m.addItem(new MenuItemBack(previous), m.getSize() - 9);
         m.addItem(state.getMenuItem("Set Enabled", Material.ENDER_PEARL));
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 

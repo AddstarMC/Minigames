@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.menu;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -10,20 +11,20 @@ import java.util.List;
 public class MenuItemBoolean extends MenuItem {
     private final Callback<Boolean> toggle;
 
-    public MenuItemBoolean(String name, Material displayItem, Callback<Boolean> toggle) {
+    public MenuItemBoolean(Component name, Material displayItem, Callback<Boolean> toggle) {
         super(name, displayItem);
         this.toggle = toggle;
         updateDescription();
     }
 
-    public MenuItemBoolean(String name, List<String> description, Material displayItem, Callback<Boolean> toggle) {
+    public MenuItemBoolean(Component name, List<Component> description, Material displayItem, Callback<Boolean> toggle) {
         super(name, description, displayItem);
         this.toggle = toggle;
         updateDescription();
     }
 
     public void updateDescription() {
-        List<String> description;
+        List<Component> description;
         String col;
         if (toggle.getValue()) {
             col = ChatColor.GREEN + "true";

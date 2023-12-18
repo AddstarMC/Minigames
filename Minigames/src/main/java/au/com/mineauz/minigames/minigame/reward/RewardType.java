@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.minigame.reward;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class RewardType {
     private final Rewards rewards;
@@ -28,7 +29,7 @@ public abstract class RewardType {
 
     public abstract boolean isUsable();
 
-    public abstract void giveReward(MinigamePlayer player);
+    public abstract void giveReward(@NotNull MinigamePlayer mgPlayer);
 
     public abstract MenuItem getMenuItem();
 

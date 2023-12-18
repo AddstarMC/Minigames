@@ -11,6 +11,8 @@ import au.com.mineauz.minigamesregions.Region;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,17 +50,17 @@ public class AddTeamScoreAction extends ScoreAction {
     }
 
     @Override
-    public void executeRegionAction(MinigamePlayer player,
-                                    Region region) {
-        debug(player, region);
-        executeAction(player);
+    public void executeRegionAction(@Nullable MinigamePlayer mgPlayer,
+                                    @NotNull Region region) {
+        debug(mgPlayer, region);
+        executeAction(mgPlayer);
     }
 
     @Override
-    public void executeNodeAction(MinigamePlayer player,
-                                  Node node) {
-        debug(player, node);
-        executeAction(player);
+    public void executeNodeAction(@Nullable MinigamePlayer mgPlayer,
+                                  @NotNull Node node) {
+        debug(mgPlayer, node);
+        executeAction(mgPlayer);
     }
 
     private void executeAction(MinigamePlayer player) {
@@ -89,8 +91,8 @@ public class AddTeamScoreAction extends ScoreAction {
     }
 
     @Override
-    public boolean displayMenu(MinigamePlayer player, Menu previous) {
-        Menu m = new Menu(3, "Add Team Score", player);
+    public boolean displayMenu(@NotNull MinigamePlayer mgPlayer, Menu previous) {
+        Menu m = new Menu(3, "Add Team Score", mgPlayer);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
         m.addItem(new MenuItemInteger("Add Score Amount", Material.STONE, new Callback<>() {
 
@@ -126,7 +128,7 @@ public class AddTeamScoreAction extends ScoreAction {
 
 
         }, teams));
-        m.displayMenu(player);
+        m.displayMenu(mgPlayer);
         return true;
     }
 
