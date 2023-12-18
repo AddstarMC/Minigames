@@ -1,7 +1,9 @@
 package au.com.mineauz.minigames.signs;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.events.TakeFlagEvent;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -11,11 +13,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class FlagSign implements MinigameSign {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Flag";
     }
 
@@ -25,22 +28,12 @@ public class FlagSign implements MinigameSign {
     }
 
     @Override
-    public String getCreatePermissionMessage() {
-        return MinigameUtils.getLang("sign.flag.createPermission");
-    }
-
-    @Override
     public String getUsePermission() {
         return null;
     }
 
     @Override
-    public String getUsePermissionMessage() {
-        return null;
-    }
-
-    @Override
-    public boolean signCreate(SignChangeEvent event) {
+    public boolean signCreate(@NotNull SignChangeEvent event) {
         event.setLine(1, ChatColor.GREEN + "Flag");
         if (TeamColor.matchColor(event.getLine(2)) != null) {
             TeamColor col = TeamColor.matchColor(event.getLine(2));
@@ -56,41 +49,40 @@ public class FlagSign implements MinigameSign {
                 event.setLine(3, ChatColor.GRAY + "Neutral");
             } else {
                 event.getBlock().breakNaturally();
-                event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.flag.invalidSyntax") + " red, blue and neutral.");
+                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.SIGN_ERROR_TEAM_INVALIDFORMAT);
                 return false;
             }
         }
-//        else{
-//            event.getBlock().breakNaturally();
-//            event.getPlayer().sendInfoMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.flag.invalidSyntax") + " red, blue and neutral.");
-//            return false;
-//        }
+
         return true;
     }
 
     @Override
-    public boolean signUse(Sign sign, MinigamePlayer player) {
-        if (player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR && player.isInMinigame()) {
-            Minigame mgm = player.getMinigame();
+    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
+        if (mgPlayer.isInMinigame()) {
+            if (mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
+                Minigame mgm = mgPlayer.getMinigame();
 
-            if (mgm.isSpectator(player)) {
-                return false;
+                if (mgm.isSpectator(mgPlayer)) {
+                    return false;
+                }
+                if (!sign.getLine(2).isEmpty() && mgPlayer.getPlayer().isOnGround() &&
+                        mgm.getMechanicName().equals("ctf") &&
+                        !mgPlayer.hasFlag(ChatColor.stripColor(sign.getLine(2))) &&
+                        !mgPlayer.getTeam().getDisplayName().equals(ChatColor.stripColor(sign.getLine(2) + " Team"))) {
+                    TakeFlagEvent ev = new TakeFlagEvent(mgm, mgPlayer, ChatColor.stripColor(sign.getLine(2)));
+                    Bukkit.getPluginManager().callEvent(ev);
+                    return true;
+                }
+            } else {
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.SIGN_ERROR_EMPTYHAND);
             }
-            if (!sign.getLine(2).isEmpty() && player.getPlayer().isOnGround() &&
-                    mgm.getMechanicName().equals("ctf") &&
-                    !player.hasFlag(ChatColor.stripColor(sign.getLine(2))) &&
-                    !player.getTeam().getDisplayName().equals(ChatColor.stripColor(sign.getLine(2) + " Team"))) {
-                TakeFlagEvent ev = new TakeFlagEvent(mgm, player, ChatColor.stripColor(sign.getLine(2)));
-                Bukkit.getPluginManager().callEvent(ev);
-                return true;
-            }
-        } else if (player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR)
-            player.sendInfoMessage(MinigameUtils.getLang("sign.emptyHand"));
+        }
         return false;
     }
 
     @Override
-    public void signBreak(Sign sign, MinigamePlayer player) {
+    public void signBreak(@NotNull Sign sign, MinigamePlayer mgPlayer) {
 
     }
 

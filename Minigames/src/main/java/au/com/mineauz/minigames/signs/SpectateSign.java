@@ -1,21 +1,26 @@
 package au.com.mineauz.minigames.signs;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.event.block.SignChangeEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class SpectateSign implements MinigameSign {
 
     private final Minigames plugin = Minigames.getPlugin();
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Spectate";
     }
 
@@ -25,52 +30,45 @@ public class SpectateSign implements MinigameSign {
     }
 
     @Override
-    public String getCreatePermissionMessage() {
-        return MinigameUtils.getLang("sign.spectate.createPermission");
-    }
-
-    @Override
     public String getUsePermission() {
         return "minigame.sign.use.spectate";
     }
 
     @Override
-    public String getUsePermissionMessage() {
-        return MinigameUtils.getLang("sign.spectate.usePermission");
-    }
-
-    @Override
-    public boolean signCreate(SignChangeEvent event) {
+    public boolean signCreate(@NotNull SignChangeEvent event) {
         if (plugin.getMinigameManager().hasMinigame(event.getLine(2))) {
             event.setLine(1, ChatColor.GREEN + "Spectate");
             event.setLine(2, plugin.getMinigameManager().getMinigame(event.getLine(2)).getName(false));
             return true;
         }
-        event.getPlayer().sendMessage(ChatColor.RED + MinigameMessageManager.getMinigamesMessage("minigame.error.noMinigameName", event.getLine(2)));
+
+        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), event.line(2)));
         return false;
     }
 
     @Override
-    public boolean signUse(Sign sign, MinigamePlayer player) {
-        if (player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR && !player.isInMinigame()) {
-            Minigame mgm = plugin.getMinigameManager().getMinigame(sign.getLine(2));
+    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
+        if (mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR && !mgPlayer.isInMinigame()) {
+            Minigame mgm = plugin.getMinigameManager().getMinigame(sign.getSide(Side.FRONT).getLine(2));
             if (mgm != null) {
                 if (mgm.isEnabled()) {
-                    plugin.getPlayerManager().spectateMinigame(player, mgm);
+                    plugin.getPlayerManager().spectateMinigame(mgPlayer, mgm);
                     return true;
                 } else if (!mgm.isEnabled()) {
-                    player.sendInfoMessage(MinigameUtils.getLang("minigame.error.notEnabled"));
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTENABLED);
                 }
             } else {
-                player.sendInfoMessage(MinigameUtils.getLang("minigame.error.noMinigame"));
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME);
             }
-        } else if (!player.isInMinigame())
-            player.sendInfoMessage(MinigameUtils.getLang("sign.emptyHand"));
+        } else if (!mgPlayer.isInMinigame()) {
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.SIGN_ERROR_EMPTYHAND);
+        }
         return false;
     }
 
     @Override
-    public void signBreak(Sign sign, MinigamePlayer player) {
+    public void signBreak(@NotNull Sign sign, MinigamePlayer mgPlayer) {
 
     }
 

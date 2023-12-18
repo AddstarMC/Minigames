@@ -261,7 +261,7 @@ public class Minigame implements ScriptObject {
     }
 
     public boolean isTeamGame() {
-        return getType() == MinigameType.MULTIPLAYER && TeamsModule.getMinigameModule(this).getTeams().size() > 0;
+        return getType() == MinigameType.MULTIPLAYER && !TeamsModule.getMinigameModule(this).getTeams().isEmpty();
     }
 
     public boolean hasFlags() {
@@ -1039,13 +1039,7 @@ public class Minigame implements ScriptObject {
     }
 
     public StatSettings getSettings(MinigameStat stat) {
-        StatSettings settings = statSettings.get(stat);
-        if (settings == null) {
-            settings = new StatSettings(stat);
-            statSettings.put(stat, settings);
-        }
-
-        return settings;
+        return statSettings.computeIfAbsent(stat, StatSettings::new);
     }
 
     public Map<MinigameStat, StatSettings> getStatSettings(StoredGameStats stats) {
@@ -1231,7 +1225,7 @@ public class Minigame implements ScriptObject {
         des.add("Shift + Right Click to Delete");
         for (String ld : LoadoutModule.getMinigameModule(this).getLoadouts()) {
             Material item = Material.GLASS_PANE;
-            if (LoadoutModule.getMinigameModule(this).getLoadout(ld).getItems().size() != 0) {
+            if (!LoadoutModule.getMinigameModule(this).getLoadout(ld).getItems().isEmpty()) {
                 item = LoadoutModule.getMinigameModule(this).getLoadout(ld).getItem((Integer) LoadoutModule.getMinigameModule(this).getLoadout(ld).getItems().toArray()[0]).getType();
             }
             if (LoadoutModule.getMinigameModule(this).getLoadout(ld).isDeleteable())

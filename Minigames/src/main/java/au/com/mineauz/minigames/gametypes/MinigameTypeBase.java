@@ -49,7 +49,7 @@ public abstract class MinigameTypeBase implements Listener {
         if (!player.getPlayer().isDead()) {
             if (player.getPlayer().getWorld() != minigame.getQuitLocation().getWorld() && player.getPlayer().hasPermission("minigame.set.quit") &&
                     plugin.getConfig().getBoolean("warnings")) {
-                MinigameMessageManager.sendMessage(player, MinigameMessageType.WARNING, MinigameLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
+                MinigameMessageManager.sendMgMessage(player, MinigameMessageType.WARNING, MinigameLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
             }
             player.teleport(minigame.getQuitLocation());
         } else {

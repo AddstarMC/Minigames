@@ -507,19 +507,19 @@ public class MinigamePlayer implements ScriptObject {
     public void addSelectionPoint(final Location loc) {
         if (this.selection1 == null) {
             this.selection1 = loc;
-            this.showSelection(false);
+            this.showSelection(true);
             this.sendMessage("Position 1 set", MinigameMessageType.INFO);
         } else if (this.selection2 == null) {
             this.selection2 = loc;
-            this.showSelection(false);
+            this.showSelection(true);
             this.sendMessage("Position 2 set", MinigameMessageType.INFO);
         } else {
-            this.showSelection(true);
+            this.showSelection(false);
             this.selection1 = loc;
             this.sendMessage("Selection restarted", MinigameMessageType.INFO);
             this.sendMessage("Position 1 set", MinigameMessageType.INFO);
             this.selection2 = null;
-            this.showSelection(false);
+            this.showSelection(true);
         }
     }
 
@@ -535,7 +535,7 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public void clearSelection() {
-        this.showSelection(true);
+        this.showSelection(false);
         this.selection1 = null;
         this.selection2 = null;
     }
@@ -544,23 +544,23 @@ public class MinigamePlayer implements ScriptObject {
         this.selection1 = point1;
         this.selection2 = point2;
 
-        this.showSelection(false);
+        this.showSelection(true);
     }
 
     public void setSelection(final MgRegion region) {
         this.selection1 = region.getLocation1();
         this.selection2 = region.getLocation2();
 
-        this.showSelection(false);
+        this.showSelection(true);
     }
 
-    public void showSelection(final boolean clear) {
+    public void showSelection(final boolean show) {
         if (this.selectionDisplay != null) {
             this.selectionDisplay.remove();
             this.selectionDisplay = null;
         }
 
-        if (!clear) {
+        if (show) {
             if (this.selection2 != null && this.selection1 != null) {
                 this.selectionDisplay = Minigames.getPlugin().display.displayCuboid(this.getPlayer(), selection1, selection2.clone().add(1, 1, 1));
                 this.selectionDisplay.show();

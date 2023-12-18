@@ -59,7 +59,7 @@ public class SignBase implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     private void signPlace(SignChangeEvent event) {
         String[] signinfo = new String[4];
         for (int i = 0; i < 4; i++) {
@@ -76,22 +76,22 @@ public class SignBase implements Listener {
                     if (mgSign.getCreatePermission() != null && !event.getPlayer().hasPermission(mgSign.getCreatePermission())) {
                         event.setCancelled(true);
                         event.getBlock().breakNaturally();
-                        event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + mgSign.getCreatePermissionMessage());
+                        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION);
                         return;
                     }
 
                     if (!mgSign.signCreate(event)) {
                         event.setCancelled(true);
                         event.getBlock().breakNaturally();
-                        event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + "Invalid Minigames sign!");
+                        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.SIGN_ERROR_INVALID);
                     }
                 } else {
-                    Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()).sendMessage("Invalid Minigame sign!", MinigameMessageType.ERROR);
+                    MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.SIGN_ERROR_INVALID);
                     event.setCancelled(true);
                     event.getBlock().breakNaturally();
                 }
             } else { //just gives an error but doesn't break the sign in case the front was important
-                Minigames.getPlugin().getPlayerManager().getMinigamePlayer(event.getPlayer()).sendMessage("Invalid Minigame sign - used Backside!", MinigameMessageType.ERROR);
+                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.SIGN_ERROR_BACKSIDE);
                 event.setCancelled(true);
             }
         }
@@ -108,7 +108,7 @@ public class SignBase implements Listener {
 
                     if (mgSign.getUsePermission() != null && !event.getPlayer().hasPermission(mgSign.getUsePermission())) {
                         event.setCancelled(true);
-                        event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + mgSign.getUsePermissionMessage());
+                        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION);
                         return;
                     }
 

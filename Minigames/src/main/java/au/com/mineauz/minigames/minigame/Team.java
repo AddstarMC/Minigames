@@ -30,8 +30,8 @@ import java.util.Set;
 public class Team implements ScriptObject {
     private final IntegerFlag maxPlayers = new IntegerFlag(0, "maxPlayers");
     private final List<Location> startLocations = new ArrayList<>();
-    private final StringFlag unformattedAssignMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MinigameLangKey.PLAYER_TEAM_ASSIGN_JOINTEAM), "assignMsg");
-    private final StringFlag gameAssignMsg = new StringFlag(MinigameUtils.getLang("player.team.assign.joinAnnounce"), "gameAssignMsg");
+    private final StringFlag playerAssignMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MinigameLangKey.PLAYER_TEAM_ASSIGN_JOINTEAM), "assignMsg");
+    private final StringFlag joinAnnounceMsg = new StringFlag(MinigameMessageManager.getUnformattedMgMessage(MinigameLangKey.PLAYER_TEAM_ASSIGN_JOINANNOUNCE), "gameAssignMsg");
     private final StringFlag autobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.plyMsg"), "autobalanceMsg");
     private final StringFlag gameAutobalanceMsg = new StringFlag(MinigameUtils.getLang("player.team.autobalance.minigameMsg"), "gameAutobalanceMsg");
     private final EnumFlag<OptionStatus> nametagVisibility = new EnumFlag<>(OptionStatus.ALWAYS, "nametagVisibility");
@@ -136,8 +136,8 @@ public class Team implements ScriptObject {
     public Set<Flag<?>> getFlags() {
         Set<Flag<?>> flags = new HashSet<>();
         flags.add(maxPlayers);
-        flags.add(unformattedAssignMsg);
-        flags.add(gameAssignMsg);
+        flags.add(playerAssignMsg);
+        flags.add(joinAnnounceMsg);
         flags.add(gameAutobalanceMsg);
         flags.add(autobalanceMsg);
         flags.add(nametagVisibility);
@@ -299,20 +299,20 @@ public class Team implements ScriptObject {
         return false;
     }
 
-    public String getUnformattedAssignMessage() {
-        return unformattedAssignMsg.getFlag();
+    public String getPlayerAssignMessage() {
+        return playerAssignMsg.getFlag();
     }
 
-    public void setUnformattedAssignMsg(String msg) {
-        unformattedAssignMsg.setFlag(msg);
+    public void setPlayerAssignMsg(String msg) {
+        playerAssignMsg.setFlag(msg);
     }
 
-    public String getGameAssignMessage() {
-        return gameAssignMsg.getFlag();
+    public String getJoinAnnounceMessage() {
+        return joinAnnounceMsg.getFlag();
     }
 
     public void setGameAssignMessage(String msg) {
-        gameAssignMsg.setFlag(msg);
+        joinAnnounceMsg.setFlag(msg);
     }
 
     public String getAutobalanceMessage() {

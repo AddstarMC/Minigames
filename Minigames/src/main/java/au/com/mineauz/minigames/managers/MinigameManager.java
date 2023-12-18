@@ -102,7 +102,7 @@ public class MinigameManager {
             if (caller == null) {
                 Minigames.log().log(Level.WARNING, "The Minigame Type \"" + MinigameType.GLOBAL.getName() + "\" cannot use the selected Mechanic \"" + minigame.getMechanicName() + "\"!");
             } else {
-                MinigameMessageManager.sendMessage(caller, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_INVALIDMECHANIC,
+                MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_INVALIDMECHANIC,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()),
                         Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), MinigameType.GLOBAL.getName()));
             }
@@ -110,7 +110,7 @@ public class MinigameManager {
             if (caller == null) {
                 Minigames.log().log(Level.WARNING, "The Game Mechanic \"" + minigame.getMechanicName() + "\" has failed to initiate!");
             } else {
-                MinigameMessageManager.sendMessage(caller, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_MECHANICSTARTFAIL,
+                MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_MECHANICSTARTFAIL,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()));
             }
         }
@@ -253,7 +253,7 @@ public class MinigameManager {
         return this.globalLoadouts;
     }
 
-    public @NotNull PlayerLoadout getLoadout(final @NotNull String name) {
+    public @Nullable PlayerLoadout getLoadout(final @NotNull String name) {
         PlayerLoadout pl = null;
         if (this.globalLoadouts.containsKey(name)) {
             pl = this.globalLoadouts.get(name);
@@ -332,7 +332,7 @@ public class MinigameManager {
         }
 
         for (final MinigamePlayer player : playersSendTo) {
-            MinigameMessageManager.sendMessage(player, type, message);
+            MinigameMessageManager.sendMgMessage(player, type, message);
         }
     }
 
@@ -439,17 +439,17 @@ public class MinigameManager {
 
     public boolean minigameStartStateCheck(final @NotNull Minigame minigame, final @NotNull MinigamePlayer mgPlayer) {
         if (!minigame.isEnabled() && !mgPlayer.getPlayer().hasPermission("minigame.join.disabled")) { //todo Permission Manager
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTENABLED);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTENABLED);
             return false;
         } else if (!this.minigameMechanicCheck(minigame, mgPlayer)) {
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_MECHANICSTARTFAIL,
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_MECHANICSTARTFAIL,
                     Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()));
             return false;
         } else if (minigame.getState() == MinigameState.REGENERATING) {
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_REGENERATING);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_REGENERATING);
             return false;
         } else if (minigame.getState() == MinigameState.STARTED && !minigame.canLateJoin()) {
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_STARTED);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_STARTED);
             return false;
         }
         return true;
@@ -457,20 +457,20 @@ public class MinigameManager {
 
     public boolean minigameStartSetupCheck(final Minigame minigame, final MinigamePlayer mgPlayer) {
         if (minigame.getEndLocation() == null) {
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOEND);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOEND);
             return false;
         } else if (minigame.getQuitLocation() == null) {
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOQUIT);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOQUIT);
             return false;
         } else if (minigame.getType() == null || this.minigameType(minigame.getType()).cannotStart(minigame, mgPlayer)) { //type specific reasons we cannot start.
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_INVALIDTYPE);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_INVALIDTYPE);
             return false;
         } else if (!minigame.getMechanic().validTypes().contains(minigame.getType())) {
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_INVALIDTYPE);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_INVALIDTYPE);
             return false;
         } else if (minigame.getStartLocations().isEmpty() ||
                 minigame.isTeamGame() && !TeamsModule.getMinigameModule(minigame).hasTeamStartLocations()) {
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOSTART);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOSTART);
             return false;
         }
         return true;

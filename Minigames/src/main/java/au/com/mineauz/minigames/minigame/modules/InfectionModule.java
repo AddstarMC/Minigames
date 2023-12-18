@@ -60,7 +60,7 @@ public class InfectionModule extends MinigameModule {
     }
 
     public Callback<String> getInfectedTeamCallback() {
-        return new Callback<String>() {
+        return new Callback<>() {
             @Override
             public String getValue() {
                 if (infectedTeam.getFlag() != null) {
@@ -91,7 +91,7 @@ public class InfectionModule extends MinigameModule {
     }
 
     public Callback<String> getSurvivorTeamCallback() {
-        return new Callback<String>() {
+        return new Callback<>() {
             @Override
             public String getValue() {
                 if (survivorTeam.getFlag() != null) {

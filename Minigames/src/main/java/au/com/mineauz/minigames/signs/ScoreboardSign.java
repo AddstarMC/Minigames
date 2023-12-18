@@ -1,21 +1,27 @@
 package au.com.mineauz.minigames.signs;
 
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardDisplay;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.ChatColor;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.WallSign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.jetbrains.annotations.NotNull;
 
 public class ScoreboardSign implements MinigameSign {
     private final Minigames plugin = Minigames.getPlugin();
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Scoreboard";
     }
 
@@ -25,32 +31,21 @@ public class ScoreboardSign implements MinigameSign {
     }
 
     @Override
-    public String getCreatePermissionMessage() {
-        return "You do not have permission to create a Minigame scoreboard sign!";
-    }
-
-    @Override
     public String getUsePermission() {
         return "minigame.sign.use.scoreboard";
     }
 
     @Override
-    public String getUsePermissionMessage() {
-        return "You do not have permission to set up a Minigame scoreboard sign!";
-    }
-
-    @Override
-    public boolean signCreate(SignChangeEvent event) {
+    public boolean signCreate(@NotNull SignChangeEvent event) {
         if (event.getBlock().getState().getBlockData() instanceof WallSign sign) {
-
             // Parse minigame
             Minigame minigame;
 
             if (plugin.getMinigameManager().hasMinigame(event.getLine(2))) {
                 minigame = plugin.getMinigameManager().getMinigame(event.getLine(2));
             } else {
-                event.getPlayer().sendMessage(
-                        ChatColor.RED + "No Minigame found by the name " + event.getLine(2));
+                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                        Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), event.line(2)));
                 return false;
             }
 
@@ -66,14 +61,13 @@ public class ScoreboardSign implements MinigameSign {
                 width = Integer.parseInt(parts[0]);
                 height = Integer.parseInt(parts[1]);
             } else {
-                event.getPlayer().sendMessage(
-                        ChatColor.RED + "Invalid size. Requires nothing or (width)x(height) eg. 3x3");
+                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.SIGN_SCOREBOARD_ERROR_SIZE);
                 return false;
             }
 
             // So we don't have to deal with even size scoreboards
             if (width % 2 == 0) {
-                event.getPlayer().sendMessage(ChatColor.RED + "Length must not be an even number!");
+                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.SIGN_SCOREBOARD_ERROR_UNEVENLENGTH);
                 return false;
             }
 
@@ -93,14 +87,14 @@ public class ScoreboardSign implements MinigameSign {
             event.getBlock().setMetadata("Minigame", new FixedMetadataValue(plugin, minigame));
             return true;
         } else {
-            event.getPlayer().sendMessage(ChatColor.RED + "Scoreboards must be placed on a wall!");
+            MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.SIGN_SCOREBOARD_ERROR_WALL);
             return false;
         }
 
     }
 
     @Override
-    public boolean signUse(Sign sign, MinigamePlayer player) {
+    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
         Minigame minigame = plugin.getMinigameManager().getMinigame(sign.getLine(2));
         if (minigame == null) {
             return false;
@@ -111,13 +105,13 @@ public class ScoreboardSign implements MinigameSign {
             return false;
         }
 
-        display.displayMenu(player);
+        display.displayMenu(mgPlayer);
 
         return false;
     }
 
     @Override
-    public void signBreak(Sign sign, MinigamePlayer player) {
+    public void signBreak(@NotNull Sign sign, MinigamePlayer mgPlayer) {
         Minigame minigame = (Minigame) sign.getBlock().getMetadata("Minigame").get(0).value();
         if (minigame != null) {
             minigame.getScoreboardData().removeDisplay(sign.getBlock());

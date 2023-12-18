@@ -41,11 +41,6 @@ public class PartyModeCommand implements ICommand {
     }
 
     @Override
-    public String getPermissionMessage() {
-        return "You don't have permission to change party mode!";
-    }
-
-    @Override
     public String getPermission() {
         return "minigame.partymode";
     }

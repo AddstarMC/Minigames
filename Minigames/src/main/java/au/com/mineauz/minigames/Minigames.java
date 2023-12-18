@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.gametypes.SingleplayerType;
 import au.com.mineauz.minigames.managers.*;
 import au.com.mineauz.minigames.mechanics.TreasureHuntMechanic;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
@@ -31,7 +32,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -482,7 +482,7 @@ public class Minigames extends JavaPlugin {
         });
         final SimpleBarChart barChart = new SimpleBarChart("Modules_v_Servers", () -> {
             final Map<String, Integer> result = new HashMap<>();
-            for (final Class module : this.minigameManager.getModules()) {
+            for (final Class<? extends MinigameModule> module : this.minigameManager.getModules()) {
                 result.put(module.getCanonicalName(), 1);
             }
             return result;
@@ -493,14 +493,6 @@ public class Minigames extends JavaPlugin {
 
     public void addMetric(final CustomChart chart) {
         this.metrics.addCustomChart(chart);
-    }
-
-    /**
-     * Use {@link MinigameMessageManager}
-     */
-    @Deprecated
-    public FileConfiguration getLang() {
-        return null;
     }
 
     public void queueStatSave(final StoredGameStats saveData, final boolean winner) {

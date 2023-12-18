@@ -19,6 +19,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -180,19 +181,19 @@ public class LoadoutModule extends MinigameModule {
         return extraLoadouts;
     }
 
-    public PlayerLoadout getLoadout(String name) {
-        PlayerLoadout pl = null;
+    public @Nullable PlayerLoadout getLoadout(@NotNull String name) {
+        PlayerLoadout playerLoadout = null;
         if (extraLoadouts.containsKey(name)) {
-            pl = extraLoadouts.get(name);
+            playerLoadout = extraLoadouts.get(name);
         } else {
             for (String loadout : extraLoadouts.keySet()) {
                 if (loadout.equalsIgnoreCase(name)) {
-                    pl = extraLoadouts.get(loadout);
+                    playerLoadout = extraLoadouts.get(loadout);
                     break;
                 }
             }
         }
-        return pl;
+        return playerLoadout;
     }
 
     public boolean hasLoadouts() {
@@ -233,9 +234,9 @@ public class LoadoutModule extends MinigameModule {
                         c.setClick(object -> {
                             fply.setLoadout(floadout2);
                             fply.getPlayer().closeInventory();
-                            if (!equip)
+                            if (!equip) {
                                 fply.sendMessage(MinigameUtils.getLang("player.loadout.nextSpawn"), MinigameMessageType.INFO);
-                            else {
+                            } else {
                                 fply.sendMessage(MinigameMessageManager.getMinigamesMessage("player.loadout.equipped", floadout2.getName(true)), MinigameMessageType.INFO);
                                 floadout2.equiptLoadout(fply);
                             }

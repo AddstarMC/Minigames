@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -44,13 +45,8 @@ public class BackendCommand implements ICommand {
     }
 
     @Override
-    public String[] getUsage() {
+    public Component getUsage() {
         return new String[]{"/minigame backend export <type>", "/minigame backend switch <type>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to control the backend.";
     }
 
     @Override

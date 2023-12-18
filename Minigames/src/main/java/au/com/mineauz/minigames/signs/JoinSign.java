@@ -3,21 +3,27 @@ package au.com.mineauz.minigames.signs;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class JoinSign implements MinigameSign {
 
     private static final Minigames plugin = Minigames.getPlugin();
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Join";
     }
 
@@ -27,45 +33,36 @@ public class JoinSign implements MinigameSign {
     }
 
     @Override
-    public String getCreatePermissionMessage() {
-        return MinigameMessageManager.getMessage(null, "sign.join.createPermission");
-    }
-
-    @Override
     public String getUsePermission() {
         return "minigame.sign.use.join";
     }
 
     @Override
-    public String getUsePermissionMessage() {
-        return MinigameMessageManager.getMessage(null, "sign.join.usePermission");
-    }
-
-    @Override
-    public boolean signCreate(SignChangeEvent event) {
+    public boolean signCreate(@NotNull SignChangeEvent event) {
         if (plugin.getMinigameManager().hasMinigame(event.getLine(2))) {
             event.setLine(1, ChatColor.GREEN + "Join");
             event.setLine(2, plugin.getMinigameManager().getMinigame(event.getLine(2)).getName(false));
             if (Minigames.getPlugin().hasEconomy()) {
                 if (!event.getLine(3).isEmpty() && !event.getLine(3).matches("\\$?[0-9]+(.[0-9]{2})?")) {
-                    event.getPlayer().sendMessage(ChatColor.RED + MinigameUtils.getLang("sign.join.invalidMoney"));
+                    MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.SIGN_JOIN_ERROR_INVALIDMONEY);
                     return false;
                 } else if (event.getLine(3).matches("[0-9]+(.[0-9]{2})?")) {
                     event.setLine(3, "$" + event.getLine(3));
                 }
-            } else {
-                event.setLine(3, "");
-                event.getPlayer().sendMessage(ChatColor.RED + MinigameUtils.getLang("minigame.error.noVault"));
+            } else if (plugin.getConfig().getBoolean("warnings")) {
+                event.line(3, Component.empty());
+                MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.WARNING, MinigameLangKey.MINIGAME_WARNING_NOVAULT);
             }
             return true;
         }
-        event.getPlayer().sendMessage(ChatColor.RED + MinigameMessageManager.getMinigamesMessage("minigame.error.noMinigameName", event.getLine(2)));
+        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), event.line(2)));
         return false;
     }
 
     @Override
-    public boolean signUse(Sign sign, MinigamePlayer player) {
-        if (player.isInMinigame()) {
+    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
+        if (mgPlayer.isInMinigame()) {
             return false;
         }
 
@@ -73,54 +70,55 @@ public class JoinSign implements MinigameSign {
         boolean fullInv;
         if (plugin.getConfig().getBoolean("requireEmptyInventory")) {
             fullInv = true;
-            for (ItemStack item : player.getPlayer().getInventory().getContents()) {
+            for (ItemStack item : mgPlayer.getPlayer().getInventory().getContents()) {
                 if (item != null) {
-                    System.out.println("Found: " + item);
+                    MinigameMessageManager.debugMessage("Found: " + item);
                     invOk = false;
                     break;
                 }
             }
 
-            for (ItemStack item : player.getPlayer().getInventory().getArmorContents()) {
+            for (ItemStack item : mgPlayer.getPlayer().getInventory().getArmorContents()) {
                 if (item != null && item.getType() != Material.AIR) {
-                    System.out.println("Found armor: " + item);
+                    MinigameMessageManager.debugMessage("Found armor: " + item);
                     invOk = false;
                     break;
                 }
             }
         } else {
             fullInv = false;
-            invOk = player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR;
+            invOk = mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR;
         }
         if (invOk) {
-            Minigame mgm = plugin.getMinigameManager().getMinigame(sign.getLine(2));
+            Minigame mgm = plugin.getMinigameManager().getMinigame(sign.getSide(Side.FRONT).getLine(2));
             if (mgm != null && (!mgm.getUsePermissions() ||
-                    player.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))) {
+                    mgPlayer.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))) {
                 if (mgm.isEnabled()) {
                     if (!sign.getLine(3).isEmpty() && Minigames.getPlugin().hasEconomy()) {
                         double amount = Double.parseDouble(sign.getLine(3).replace("$", ""));
-                        if (Minigames.getPlugin().getEconomy().getBalance(player.getPlayer().getPlayer()) >= amount) {
-                            Minigames.getPlugin().getEconomy().withdrawPlayer(player.getPlayer().getPlayer(), amount);
+                        if (Minigames.getPlugin().getEconomy().getBalance(mgPlayer.getPlayer().getPlayer()) >= amount) {
+                            Minigames.getPlugin().getEconomy().withdrawPlayer(mgPlayer.getPlayer().getPlayer(), amount);
                         } else {
-                            player.sendMessage(MinigameMessageManager.getMessage(null, "sign.join.notEnoughMoney"), MinigameMessageType.ERROR);
+                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_JOIN_ERROR_NOTENOUGH_MONEY);
                             return false;
                         }
                     }
-                    plugin.getPlayerManager().joinMinigame(player, mgm, false, 0.0);
+                    plugin.getPlayerManager().joinMinigame(mgPlayer, mgm, false, 0.0);
                     return true;
                 } else if (!mgm.isEnabled()) {
-                    player.sendInfoMessage(ChatColor.WHITE + MinigameMessageManager.getMessage(null, "minigame.error.notEnabled"));
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTENABLED);
                 }
             } else if (mgm == null) {
-                player.sendMessage(ChatColor.WHITE + MinigameMessageManager.getMessage(null, "minigame.error.noMinigame"), MinigameMessageType.ERROR);
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                        Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), sign.getSide(Side.FRONT).line(2)));
             } else if (mgm.getUsePermissions()) {
-                player.sendMessage(ChatColor.WHITE + MinigameMessageManager.getMessage(null, "minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()), MinigameMessageType.ERROR);
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION);
             }
-        } else if (!MinigameUtils.isMinigameTool(player.getPlayer().getInventory().getItemInMainHand())) {
+        } else if (!MinigameUtils.isMinigameTool(mgPlayer.getPlayer().getInventory().getItemInMainHand())) {
             if (fullInv) {
-                player.sendInfoMessage(ChatColor.WHITE + MinigameMessageManager.getMessage(null, "sign.emptyInv"));
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.SIGN_ERROR_FULLINV);
             } else {
-                player.sendInfoMessage(ChatColor.WHITE + MinigameMessageManager.getMessage(null, "sign.emptyHand"));
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.SIGN_ERROR_EMPTYHAND);
             }
         }
 
@@ -128,7 +126,7 @@ public class JoinSign implements MinigameSign {
     }
 
     @Override
-    public void signBreak(Sign sign, MinigamePlayer player) {
+    public void signBreak(@NotNull Sign sign, MinigamePlayer mgPlayer) {
 
     }
 

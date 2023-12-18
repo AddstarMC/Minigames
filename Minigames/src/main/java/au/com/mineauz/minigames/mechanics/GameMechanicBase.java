@@ -77,9 +77,10 @@ public abstract class GameMechanicBase implements Listener {
     public List<MinigamePlayer> balanceTeam(@NotNull List<@NotNull MinigamePlayer> players, @NotNull Minigame minigame) {
         List<MinigamePlayer> result = new ArrayList<>();
         if (minigame.isTeamGame()) {
-            boolean sorted = false;
+            // add teamless players to team with the least amount of other players
             for (MinigamePlayer mgPlayer : players) {
                 if (mgPlayer.getTeam() == null) {
+                    //get team with the least amount of players
                     Team teamToJoin = null;
                     for (Team teamToCheck : TeamsModule.getMinigameModule(minigame).getTeams()) {
                         if (teamToJoin == null || (teamToCheck.getPlayers().size() < teamToJoin.getPlayers().size() &&
@@ -96,6 +97,8 @@ public abstract class GameMechanicBase implements Listener {
                 }
             }
 
+            //rebalance teams
+            boolean sorted = false;
             while (!sorted) {
                 Team teamToJoin = null;
                 Team teamToBalance = null;
@@ -122,7 +125,7 @@ public abstract class GameMechanicBase implements Listener {
     }
 
     private void broadcastAutobalance(@NotNull Minigame minigame, @NotNull MinigamePlayer mgPlayer, @NotNull Team teamToJoin) {
-        MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(
+        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(
                 teamToJoin.getAutobalanceMessage(),
                 Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(teamToJoin.getDisplayName(), teamToJoin.getTextColor())))); //todo is NOT backwards compatible!!
 

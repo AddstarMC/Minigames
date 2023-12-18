@@ -43,11 +43,6 @@ public class ListPlaceholder implements ICommand {
     }
 
     @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to list all placeholders!";
-    }
-
-    @Override
     public String getPermission() {
         return "minigame.placeholders";
     }

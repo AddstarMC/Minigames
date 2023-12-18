@@ -1,23 +1,27 @@
 package au.com.mineauz.minigames.signs;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class BetSign implements MinigameSign {
 
     private static final Minigames plugin = Minigames.getPlugin();
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Bet";
     }
 
@@ -27,22 +31,12 @@ public class BetSign implements MinigameSign {
     }
 
     @Override
-    public String getCreatePermissionMessage() {
-        return MinigameUtils.getLang("sign.bet.createPermission");
-    }
-
-    @Override
     public String getUsePermission() {
         return "minigame.sign.use.bet";
     }
 
     @Override
-    public String getUsePermissionMessage() {
-        return MinigameUtils.getLang("sign.bet.usePermission");
-    }
-
-    @Override
-    public boolean signCreate(SignChangeEvent event) {
+    public boolean signCreate(@NotNull SignChangeEvent event) {
         if (plugin.getMinigameManager().hasMinigame(event.getLine(2))) {
             event.setLine(1, ChatColor.GREEN + "Bet");
             event.setLine(2, plugin.getMinigameManager().getMinigame(event.getLine(2)).getName(false));
@@ -52,13 +46,14 @@ public class BetSign implements MinigameSign {
             }
             return true;
         }
-        event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameMessageManager.getMinigamesMessage("minigame.error.noMinigameName", event.getLine(2)));
+        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), event.line(2)));
         return false;
     }
 
     @Override
-    public boolean signUse(Sign sign, MinigamePlayer player) {
-        Minigame mgm = plugin.getMinigameManager().getMinigame(sign.getLine(2));
+    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
+        Minigame mgm = plugin.getMinigameManager().getMinigame(sign.getSide(Side.FRONT).getLine(2));
         if (mgm != null) {
             boolean invOk = true;
             boolean fullInv;
@@ -66,10 +61,10 @@ public class BetSign implements MinigameSign {
 
             if (plugin.getConfig().getBoolean("requireEmptyInventory")) {
                 fullInv = true;
-                ItemStack[] contents = player.getPlayer().getInventory().getContents();
+                ItemStack[] contents = mgPlayer.getPlayer().getInventory().getContents();
                 for (int i = 0; i < contents.length; ++i) {
                     // Non money bets can hold an item
-                    if (!moneyBet && i == player.getPlayer().getInventory().getHeldItemSlot()) {
+                    if (!moneyBet && i == mgPlayer.getPlayer().getInventory().getHeldItemSlot()) {
                         continue;
                     }
 
@@ -79,7 +74,7 @@ public class BetSign implements MinigameSign {
                     }
                 }
 
-                for (ItemStack item : player.getPlayer().getInventory().getArmorContents()) {
+                for (ItemStack item : mgPlayer.getPlayer().getInventory().getArmorContents()) {
                     if (item != null && item.getType() != Material.AIR) {
                         invOk = false;
                         break;
@@ -87,53 +82,54 @@ public class BetSign implements MinigameSign {
                 }
             } else {
                 fullInv = false;
-                invOk = (moneyBet == (player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR));
+                invOk = (moneyBet == (mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR));
             }
 
             if (invOk) {
-                if (mgm.isEnabled() && (!mgm.getUsePermissions() || player.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))) {
-                    if (mgm.isSpectator(player)) {
+                if (mgm.isEnabled() && (!mgm.getUsePermissions() || mgPlayer.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))) {
+                    if (mgm.isSpectator(mgPlayer)) {
                         return false;
                     }
 
                     if (!sign.getLine(3).startsWith("$")) {
-                        plugin.getPlayerManager().joinMinigame(player, plugin.getMinigameManager().getMinigame(sign.getLine(2)), true, 0.0);
+                        plugin.getPlayerManager().joinMinigame(mgPlayer, plugin.getMinigameManager().getMinigame(sign.getLine(2)), true, 0.0);
                     } else {
                         if (plugin.hasEconomy()) {
                             //todo use  plugin.getEconomy().currencyNamePlural()
                             Double bet = Double.parseDouble(sign.getLine(3).replace("$", ""));
-                            plugin.getPlayerManager().joinMinigame(player, plugin.getMinigameManager().getMinigame(sign.getLine(2)), true, bet);
+                            plugin.getPlayerManager().joinMinigame(mgPlayer, plugin.getMinigameManager().getMinigame(sign.getLine(2)), true, bet);
                             return true;
-                        } else {
-                            player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("minigame.error.noVault"), MinigameMessageType.ERROR);
+                        } else if (plugin.getConfig().getBoolean("warnings")) {
+                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.WARNING, MinigameLangKey.MINIGAME_WARNING_NOVAULT);
                         }
                     }
                 } else if (!mgm.isEnabled()) {
-                    player.sendInfoMessage(MinigameUtils.getLang("minigame.error.notEnabled"));
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTENABLED);
                 } else if (mgm.getUsePermissions()) {
-                    player.sendInfoMessage(MinigameMessageManager.getMinigamesMessage("minigame.error.noPermission", "minigame.join." + mgm.getName(false).toLowerCase()));
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION);
                 }
             } else if (!moneyBet) {
-                if (fullInv && player.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR) {
-                    player.sendInfoMessage(MinigameUtils.getLang("sign.emptyInv"));
+                if (fullInv && mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR) {
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.SIGN_ERROR_FULLINV);
                 } else {
-                    player.sendMessage(MinigameUtils.getLang("sign.bet.noBet"), MinigameMessageType.ERROR);
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_BET_ERROR_NOBET);
                 }
             } else {
                 if (fullInv) {
-                    player.sendInfoMessage(MinigameUtils.getLang("sign.emptyInv"));
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.SIGN_ERROR_FULLINV);
                 } else {
-                    player.sendInfoMessage(MinigameUtils.getLang("sign.emptyHand"));
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.SIGN_ERROR_EMPTYHAND);
                 }
             }
         } else {
-            player.sendMessage(MinigameUtils.getLang("minigame.error.noMinigame"), MinigameMessageType.ERROR);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                    Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), sign.getSide(Side.FRONT).line(2)));
         }
         return false;
     }
 
     @Override
-    public void signBreak(Sign sign, MinigamePlayer player) {
+    public void signBreak(@NotNull Sign sign, MinigamePlayer mgPlayer) {
 
     }
 

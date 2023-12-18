@@ -29,7 +29,7 @@ public class LobbyLocationMode implements ToolMode {
     }
 
     @Override
-    public List<String> getDescription() { //todo translation String
+    public List<Component> getDescription() { //todo translation String
         return List.of(
                 "Sets the lobby",
                 "locatoin");

@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.commands;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -39,13 +40,8 @@ public class DeleteCommand implements ICommand {
     }
 
     @Override
-    public String[] getUsage() {
+    public Component getUsage() {
         return new String[]{"/minigame delete <Minigame>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to delete Minigames!";
     }
 
     @Override

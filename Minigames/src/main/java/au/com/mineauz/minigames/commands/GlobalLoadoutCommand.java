@@ -72,7 +72,7 @@ public class GlobalLoadoutCommand implements ICommand {
         List<MenuItem> mi = new ArrayList<>();
         for (String ld : mdata.getLoadouts()) {
             Material item = Material.WHITE_STAINED_GLASS_PANE;
-            if (mdata.getLoadout(ld).getItems().size() != 0) {
+            if (!mdata.getLoadout(ld).getItems().isEmpty()) {
                 item = mdata.getLoadout(ld).getItem((Integer) mdata.getLoadout(ld).getItems().toArray()[0]).getType();
             }
             mi.add(new MenuItemDisplayLoadout(ld, des, item, mdata.getLoadout(ld)));

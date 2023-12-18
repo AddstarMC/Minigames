@@ -47,11 +47,6 @@ public class CreateCommand implements ICommand {
     }
 
     @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to create Minigames!";
-    }
-
-    @Override
     public String getPermission() {
         return "minigame.create";
     }

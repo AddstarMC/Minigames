@@ -40,11 +40,6 @@ public class ListCommand implements ICommand {
     }
 
     @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to list all Minigames!";
-    }
-
-    @Override
     public String getPermission() {
         return "minigame.list";
     }

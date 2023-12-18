@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
+import net.kyori.adventure.text.Component;
 import au.com.mineauz.minigames.recorder.RecorderData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -41,15 +42,10 @@ public class BackupCommand implements ICommand {
     }
 
     @Override
-    public String[] getUsage() {
+    public Component getUsage() {
         return new String[]{
                 "/minigame backup <Minigame> [restore]"
         };
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to backup Minigames!";
     }
 
     @Override
@@ -80,7 +76,7 @@ public class BackupCommand implements ICommand {
                             sender.sendMessage(ChatColor.RED + minigame.getName(false) + " has players playing, can't be backed up until Minigame is empty.");
                         }
                     } else if (args.length == 2 && args[1].equalsIgnoreCase("restore")) {
-                        if (minigame.getPlayers().size() == 0) {
+                        if (minigame.getPlayers().isEmpty()) {
 
                             if (!minigame.getRecorderData().restoreBlockData()) {
                                 sender.sendMessage(ChatColor.RED + "No backup found for " + minigame.getName(false));

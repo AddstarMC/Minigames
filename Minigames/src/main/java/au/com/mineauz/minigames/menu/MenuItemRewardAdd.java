@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.minigame.reward.RewardGroup;
 import au.com.mineauz.minigames.minigame.reward.RewardType;
 import au.com.mineauz.minigames.minigame.reward.RewardTypes;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -16,22 +17,22 @@ public class MenuItemRewardAdd extends MenuItem {
     private Rewards rewards;
     private RewardGroup group = null;
 
-    public MenuItemRewardAdd(String name, Material displayItem, Rewards rewards) {
+    public MenuItemRewardAdd(Component name, Material displayItem, Rewards rewards) {
         super(name, displayItem);
         this.rewards = rewards;
     }
 
-    public MenuItemRewardAdd(String name, List<String> description, Material displayItem, Rewards rewards) {
+    public MenuItemRewardAdd(Component name, List<Component> description, Material displayItem, Rewards rewards) {
         super(name, description, displayItem);
         this.rewards = rewards;
     }
 
-    public MenuItemRewardAdd(String name, Material displayItem, RewardGroup group) {
+    public MenuItemRewardAdd(Component name, Material displayItem, RewardGroup group) {
         super(name, displayItem);
         this.group = group;
     }
 
-    public MenuItemRewardAdd(String name, List<String> description, Material displayItem, RewardGroup group) {
+    public MenuItemRewardAdd(Component name, List<Component> description, Material displayItem, RewardGroup group) {
         super(name, description, displayItem);
         this.group = group;
     }

@@ -77,7 +77,7 @@ public class SetLoadoutCommand implements ICommand {
 
         for (String ld : mod.getLoadouts()) {
             item = Material.WHITE_STAINED_GLASS_PANE;
-            if (mod.getLoadout(ld).getItems().size() != 0) {
+            if (!mod.getLoadout(ld).getItems().isEmpty()) {
                 item = mod.getLoadout(ld).getItem((Integer) mod.getLoadout(ld).getItems().toArray()[0]).getType();
             }
             MenuItemDisplayLoadout mil = new MenuItemDisplayLoadout(ld, des, item, mod.getLoadout(ld), minigame);

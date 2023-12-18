@@ -1,18 +1,21 @@
 package au.com.mineauz.minigames.signs;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +23,7 @@ import java.util.List;
 public class ScoreSign implements MinigameSign {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "score";
     }
 
@@ -30,22 +33,12 @@ public class ScoreSign implements MinigameSign {
     }
 
     @Override
-    public String getCreatePermissionMessage() {
-        return MinigameUtils.getLang("sign.score.createPermission");
-    }
-
-    @Override
     public String getUsePermission() {
         return "minigame.sign.use.score";
     }
 
     @Override
-    public String getUsePermissionMessage() {
-        return MinigameUtils.getLang("sign.score.usePermission");
-    }
-
-    @Override
-    public boolean signCreate(SignChangeEvent event) {
+    public boolean signCreate(@NotNull SignChangeEvent event) {
         if (event.getLine(2).matches("[0-9]+")) {
             event.setLine(1, ChatColor.GREEN + "Score");
             if (TeamColor.matchColor(event.getLine(3)) != null) {
@@ -59,37 +52,39 @@ public class ScoreSign implements MinigameSign {
     }
 
     @Override
-    public boolean signUse(Sign sign, MinigamePlayer player) {
-        if (player.isInMinigame() && player.getPlayer().isOnGround()) {
-            Minigame mg = player.getMinigame();
+    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
+        if (mgPlayer.isInMinigame()) {
+            Minigame mg = mgPlayer.getMinigame();
             int score = Integer.parseInt(sign.getLine(2));
             if (!mg.isTeamGame()) {
-                if (player.hasClaimedScore(sign.getLocation())) {
-                    player.sendMessage(MinigameUtils.getLang("sign.score.alreadyUsed"), MinigameMessageType.ERROR);
+                if (mgPlayer.hasClaimedScore(sign.getLocation())) {
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.SIGN_SCORE_ERROR_ALREADYUSED);
                     return true;
                 }
-                player.addScore(score);
-                mg.setScore(player, player.getScore());
-                player.sendInfoMessage(
-                        MinigameMessageManager.getMinigamesMessage("sign.score.addScore", score, player.getScore()));
-                if (mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= player.getScore()) {
-                    Minigames.getPlugin().getPlayerManager().endMinigame(player);
+                mgPlayer.addScore(score);
+                mg.setScore(mgPlayer, mgPlayer.getScore());
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.SIGN_SCORE_ADDSCORE,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(score)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(mgPlayer.getScore())));
+                if (mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= mgPlayer.getScore()) {
+                    Minigames.getPlugin().getPlayerManager().endMinigame(mgPlayer);
                 }
-                player.addClaimedScore(sign.getLocation());
+                mgPlayer.addClaimedScore(sign.getLocation());
             } else {
                 TeamColor steam = TeamColor.matchColor(ChatColor.stripColor(sign.getLine(3)));
-                Team pteam = player.getTeam();
+                Team pteam = mgPlayer.getTeam();
                 if (steam == null || !TeamsModule.getMinigameModule(mg).hasTeam(steam) || pteam.getColor() == steam) {
                     if (Minigames.getPlugin().getMinigameManager().hasClaimedScore(mg, sign.getLocation(), 0)) {
-                        player.sendMessage(MinigameUtils.getLang("sign.score.alreadyUsedTeam"), MinigameMessageType.ERROR);
+                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.SIGN_SCORE_ERROR_ALREADYUSEDTEAM);
                         return true;
                     }
-                    player.addScore(score);
-                    mg.setScore(player, player.getScore());
+                    mgPlayer.addScore(score);
+                    mg.setScore(mgPlayer, mgPlayer.getScore());
 
                     pteam.addScore(score);
-                    player.sendInfoMessage(MinigameMessageManager.getMinigamesMessage("sign.score.addScoreTeam",
-                            score, pteam.getTextColor().toString() + pteam.getScore()));
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.SIGN_SCORE_ADDSCORETEAM,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), String.valueOf(score)),
+                            Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), String.valueOf(pteam.getScore())));
                     Minigames.getPlugin().getMinigameManager().addClaimedScore(mg, sign.getLocation(), 0);
                     if (mg.getMaxScore() != 0 && mg.getMaxScorePerPlayer() <= pteam.getScore()) {
                         List<MinigamePlayer> winners = new ArrayList<>(pteam.getPlayers());
@@ -102,14 +97,12 @@ public class ScoreSign implements MinigameSign {
                     }
                 }
             }
-        } else if (player.isInMinigame() && !player.getPlayer().isOnGround()) {
-            player.sendMessage(MinigameUtils.getLang("sign.onGround"), MinigameMessageType.ERROR);
         }
         return true;
     }
 
     @Override
-    public void signBreak(Sign sign, MinigamePlayer player) {
+    public void signBreak(@NotNull Sign sign, MinigamePlayer mgPlayer) {
         //Eh...
 
     }

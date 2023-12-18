@@ -120,7 +120,7 @@ public class Events implements Listener {
             }
             if (mgm.getState() == MinigameState.STARTED) {
                 if (mgm.getLives() > 0 && mgm.getLives() <= mgPlayer.getDeaths()) {
-                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_QUIT_OUTOFLIVES);
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_QUIT_OUTOFLIVES);
                     if (!event.getDrops().isEmpty() && mgm.getPlayers().size() == 1) {
                         event.getDrops().clear();
                     }
@@ -290,9 +290,9 @@ public class Events implements Listener {
 
                         if (mgm != null && (!mgm.getUsePermissions() || event.getPlayer().hasPermission("minigame.join." + mgm.getName(false).toLowerCase()))) {
                             if (!mgm.isEnabled()) {
-                                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_ERROR_NOTENABLED);
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_ERROR_NOTENABLED);
                             } else {
-                                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.NONE, MinigameLangKey.MINIGAME_INFO_HEADER);
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.NONE, MinigameLangKey.MINIGAME_INFO_HEADER);
 
                                 if (mgm.getType() != MinigameType.SINGLEPLAYER) {
 
@@ -307,7 +307,7 @@ public class Events implements Listener {
                                     MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.NONE, MinigameLangKey.MINIGAME_INFO_STATUS_TITLE,
                                             Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), status));
 
-                                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.NONE, MinigameLangKey.MINIGAME_INFO_LATEJOIN_MSG,
+                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.NONE, MinigameLangKey.MINIGAME_INFO_LATEJOIN_MSG,
                                             Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), MinigameMessageManager.getMgMessage(
                                                     mgm.canLateJoin() ?
                                                             MinigameLangKey.MINIGAME_INFO_LATEJOIN_ENABLED :
@@ -315,7 +315,7 @@ public class Events implements Listener {
                                 }
 
                                 if (mgm.getMinigameTimer() != null) {
-                                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.NONE, MinigameLangKey.TIME_TIMELEFT,
+                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.NONE, MinigameLangKey.TIME_TIMELEFT,
                                             Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(mgm.getMinigameTimer().getTimeLeft())));
                                 }
 
@@ -329,7 +329,7 @@ public class Events implements Listener {
                                             sc.append(" : ");
                                         }
                                     }
-                                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.NONE, MinigameLangKey.MINIGAME_INFO_SCORE,
+                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.NONE, MinigameLangKey.MINIGAME_INFO_SCORE,
                                             Placeholder.unparsed(MinigamePlaceHolderKey.SCORE.getKey(), sc.toString()));
                                 }
 
@@ -350,9 +350,10 @@ public class Events implements Listener {
                                         Placeholder.component(MinigamePlaceHolderKey.PLAYER.getKey(), players));
                             }
                         } else if (mgm == null) {
-                            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME);
+                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                                    Placeholder.component(MinigamePlaceHolderKey.MINIGAME.getKey(), sign.getSide(Side.FRONT).line(2)));
                         } else if (mgm.getUsePermissions()) {
-                            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION,
+                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION,
                                     Placeholder.unparsed(MinigamePlaceHolderKey.PERMISSION.getKey(), "minigame.join." + mgm.getName(false).toLowerCase()));
                         }
                     }
@@ -407,7 +408,7 @@ public class Events implements Listener {
                 Location to = event.getTo();
                 if (from.getWorld() != to.getWorld() || from.distance(to) > 2) {
                     event.setCancelled(true);
-                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTELEPORT);
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTELEPORT);
                 }
             }
         }
@@ -418,7 +419,7 @@ public class Events implements Listener {
         MinigamePlayer mgPlayer = pdata.getMinigamePlayer(event.getPlayer());
         if (mgPlayer.isInMinigame() && !mgPlayer.getAllowGamemodeChange()) {
             event.setCancelled(true);
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOGAMEMODE);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOGAMEMODE);
         }
     }
 
@@ -429,7 +430,7 @@ public class Events implements Listener {
                 !mgPlayer.canFly()) {
             event.setCancelled(true);
             pdata.quitMinigame(mgPlayer, true);
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOFLY);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOFLY);
         }
     }
 
@@ -441,7 +442,7 @@ public class Events implements Listener {
                 !event.getMinigamePlayer().getMinigame().isAllowedMPCheckpoints() &&
                 !event.getMinigamePlayer().isLatejoining()) {
             event.setCancelled(true);
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOREVERT,
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOREVERT,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), event.getMinigamePlayer().getMinigame().getType().getName()));
         } else if (!event.getMinigamePlayer().getMinigame().hasStarted()) {
             event.setCancelled(true);
@@ -455,7 +456,7 @@ public class Events implements Listener {
             for (String comd : pdata.getDeniedCommands()) {
                 if (event.getMessage().contains(comd)) {
                     event.setCancelled(true);
-                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOCOMMAND);
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOCOMMAND);
                 }
             }
         }
@@ -513,19 +514,13 @@ public class Events implements Listener {
             ItemStack item = player.getEquipment().getItemInMainHand();
             if (MinigameUtils.isMinigameTool(item) && player.hasPermission("minigame.tool")) {
                 if (mgPlayer.isInMinigame()) {
-                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_INMINIGAME);
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_INMINIGAME);
                     return;
                 }
                 MinigameTool tool = new MinigameTool(item);
                 if (player.isSneaking()) {
                     tool.openMenu(mgPlayer);
                     event.setCancelled(true);
-                } else {
-                    checkTool(tool, mgPlayer);
-                    if (tool.getMinigame() != null && tool.getMode() != null) {
-                        Minigame mg = tool.getMinigame();
-                        tool.getMode().onEntityLeftClick(mgPlayer, mg, TeamsModule.getMinigameModule(mg).getTeam(tool.getTeam()), event);
-                    }
                 }
 
             }
@@ -539,29 +534,23 @@ public class Events implements Listener {
         ItemStack item = player.getEquipment().getItemInMainHand();
         if (MinigameUtils.isMinigameTool(item) && player.hasPermission("minigame.tool")) {
             if (mgPlayer.isInMinigame()) {
-                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_INMINIGAME);
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.TOOL_ERROR_INMINIGAME);
                 return;
             }
             MinigameTool tool = new MinigameTool(item);
             if (player.isSneaking()) {
                 tool.openMenu(mgPlayer);
                 event.setCancelled(true);
-            } else {
-                checkTool(tool, mgPlayer);
-                if (tool.getMinigame() != null && tool.getMode() != null) {
-                    Minigame mg = tool.getMinigame();
-                    tool.getMode().onEntityRightClick(mgPlayer, mg, TeamsModule.getMinigameModule(mg).getTeam(tool.getTeam()), event);
-                }
             }
         }
     }
 
     private void checkTool(@NotNull MinigameTool tool, @NotNull MinigamePlayer mgPlayer) {
         if (tool.getMinigame() == null) {
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_ERROR_NOMINIGAME);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_ERROR_NOMINIGAME);
         }
         if (tool.getMode() == null) {
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_ERROR_NOMODE);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_ERROR_NOMODE);
         }
     }
 

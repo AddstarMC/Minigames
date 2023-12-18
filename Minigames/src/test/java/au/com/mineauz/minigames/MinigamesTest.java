@@ -14,9 +14,9 @@ import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.command.ConsoleCommandSenderMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import org.bukkit.Location;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.sqlite.SQLiteDataSource;
 
 import java.util.UUID;
@@ -44,7 +44,7 @@ public class MinigamesTest {
             server = MockBukkit.getMock();
         }
 
-        ConsoleCommandSenderMock sender = (ConsoleCommandSenderMock) server.getConsoleSender();
+        ConsoleCommandSenderMock sender = server.getConsoleSender();
         TestWorld testworld = new TestWorld();
         testworld.setName("GAMES");
         MockBukkit.getMock().addWorld(testworld);

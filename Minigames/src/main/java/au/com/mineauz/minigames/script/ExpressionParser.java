@@ -26,7 +26,7 @@ public class ExpressionParser {
 
         for (String segment : segments) {
             // Keep track of path for error display
-            if (pathToCurrent.length() > 0) {
+            if (!pathToCurrent.isEmpty()) {
                 pathToCurrent.append(".");
             }
             pathToCurrent.append(segment);

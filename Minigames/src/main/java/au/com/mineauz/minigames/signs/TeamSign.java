@@ -3,23 +3,29 @@ package au.com.mineauz.minigames.signs;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MultiplayerType;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class TeamSign implements MinigameSign {
 
     private final Minigames plugin = Minigames.getPlugin();
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Team";
     }
 
@@ -29,43 +35,36 @@ public class TeamSign implements MinigameSign {
     }
 
     @Override
-    public String getCreatePermissionMessage() {
-        return MinigameMessageManager.getMessage(null, "sign.team.createPermission");
-    }
-
-    @Override
     public String getUsePermission() {
         return "minigame.sign.use.team";
     }
 
     @Override
-    public String getUsePermissionMessage() {
-        return MinigameMessageManager.getMessage(null, "sign.team.usePermission");
-    }
-
-    @Override
-    public boolean signCreate(SignChangeEvent event) {
+    public boolean signCreate(@NotNull SignChangeEvent event) {
         event.setLine(1, ChatColor.GREEN + "Team");
-        if (TeamColor.matchColor(event.getLine(2)) != null ||
-                event.getLine(2).equalsIgnoreCase("neutral")) {
-            if (event.getLine(2).equalsIgnoreCase("neutral")) {
-                event.setLine(2, ChatColor.GRAY + "Neutral");
-            } else {
-                TeamColor col = TeamColor.matchColor(event.getLine(2));
-                event.setLine(2, col.getColor() + WordUtils.capitalize(col.toString().replace("_", " ")));
-            }
+
+
+        if (event.getLine(2).equalsIgnoreCase("neutral")) {
+            event.setLine(2, ChatColor.GRAY + "Neutral");
             return true;
+        } else {
+            TeamColor color = TeamColor.matchColor(event.getLine(2));
+            if (color != null) {
+                event.line(2, Component.text(WordUtils.capitalize(color.toString().replace("_", " ")), color.getColor()));
+                return true;
+            }
         }
-        event.getPlayer().sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameMessageManager.getMessage(null, "sign.team.invalidFormat", "\"red\", \"blue\" or \"neutral\""));
+
+        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.SIGN_ERROR_TEAM_INVALIDFORMAT);
         return false;
     }
 
     @Override
-    public boolean signUse(Sign sign, MinigamePlayer player) {
-        if (player.isInMinigame()) {
-            Minigame mgm = player.getMinigame();
+    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
+        if (mgPlayer.isInMinigame()) {
+            Minigame mgm = mgPlayer.getMinigame();
             if (mgm.isTeamGame()) {
-                if (player.getTeam() != matchTeam(mgm, sign.getLine(2))) {
+                if (mgPlayer.getTeam() != matchTeam(mgm, sign.getLine(2))) {
                     if (!mgm.isWaitingForPlayers() && !sign.getLine(2).equals(ChatColor.GRAY + "Neutral")) {
                         Team sm = null;
                         Team nt = matchTeam(mgm, sign.getLine(2));
@@ -76,42 +75,56 @@ public class TeamSign implements MinigameSign {
                                         sm = t;
                                 }
                                 if (nt.getPlayers().size() - sm.getPlayers().size() < 1) {
-                                    MultiplayerType.switchTeam(mgm, player, nt);
-                                    plugin.getMinigameManager().sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getDisplayName(mgm.usePlayerDisplayNames()), nt.getTextColor() + nt.getDisplayName()), null, player);
-                                    player.sendInfoMessage(String.format(nt.getUnformattedAssignMessage(), nt.getTextColor() + nt.getDisplayName()));
+                                    MultiplayerType.switchTeam(mgm, mgPlayer, nt);
+                                    plugin.getMinigameManager().sendMinigameMessage(mgm, MiniMessage.miniMessage().deserialize(nt.getJoinAnnounceMessage(),
+                                                    Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getDisplayName(mgm.usePlayerDisplayNames())),
+                                                    Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(nt.getDisplayName(), nt.getTextColor()))),
+                                            MinigameMessageType.INFO, mgPlayer);
+
+                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(nt.getPlayerAssignMessage(),
+                                            Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(nt.getDisplayName(), nt.getTextColor()))));
                                 } else {
-                                    player.sendInfoMessage(MinigameMessageManager.getMessage(null, "sign.team.noUnbalance"));
+                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.SIGN_TEAM_ERROR_UNBALANCE);
                                 }
 
-                                player.getPlayer().damage(player.getPlayer().getHealth());
+                                mgPlayer.getPlayer().damage(mgPlayer.getPlayer().getHealth());
                             } else {
-                                player.sendMessage(MinigameMessageManager.getMessage(null, "player.team.assign.full"), MinigameMessageType.ERROR);
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_TEAM_ASSIGN_ERROR_FULL);
                             }
                         }
-                    } else if (sign.getLine(2).equals(ChatColor.GRAY + "Neutral") || matchTeam(mgm, sign.getLine(2)) != player.getTeam()) {
-                        Team cur = player.getTeam();
-                        if (cur != null) {
-                            Team nt = matchTeam(mgm, sign.getLine(2));
+                    } else if (sign.getLine(2).equals(ChatColor.GRAY + "Neutral") || matchTeam(mgm, sign.getLine(2)) != mgPlayer.getTeam()) {
+                        Team currentTeam = mgPlayer.getTeam();
+                        Team nt = matchTeam(mgm, sign.getLine(2));
+                        if (currentTeam != null) {
                             if (nt != null) {
-                                if (nt.getPlayers().size() - cur.getPlayers().size() < 2) {
-                                    MultiplayerType.switchTeam(mgm, player, nt);
-                                    plugin.getMinigameManager().sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getTextColor() + nt.getDisplayName()), null, player);
-                                    player.sendInfoMessage(String.format(nt.getUnformattedAssignMessage(), nt.getTextColor() + nt.getDisplayName()));
+                                if (nt.getPlayers().size() - currentTeam.getPlayers().size() < 2) { //todo this breaks with more then 2 teams
+                                    MultiplayerType.switchTeam(mgm, mgPlayer, nt);
+                                    plugin.getMinigameManager().sendMinigameMessage(mgm, MiniMessage.miniMessage().deserialize(nt.getJoinAnnounceMessage(),
+                                                    Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getDisplayName(mgm.usePlayerDisplayNames())),
+                                                    Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(nt.getDisplayName(), nt.getTextColor()))),
+                                            MinigameMessageType.INFO, mgPlayer);
+
+                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(nt.getPlayerAssignMessage(),
+                                            Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(nt.getDisplayName(), nt.getTextColor()))));
                                 } else {
-                                    player.sendInfoMessage(MinigameMessageManager.getMessage(null, "sign.team.noUnbalance"));
+                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.SIGN_TEAM_ERROR_UNBALANCE);
                                 }
                             } else {
-                                player.removeTeam();
+                                mgPlayer.removeTeam();
                             }
                         } else {
-                            Team nt = matchTeam(mgm, sign.getLine(2));
                             if (nt != null) {
-                                if (nt.getPlayers().size() < nt.getMaxPlayers()) {
-                                    MultiplayerType.switchTeam(mgm, player, nt);
-                                    plugin.getMinigameManager().sendMinigameMessage(mgm, String.format(nt.getGameAssignMessage(), player.getName(), nt.getTextColor() + nt.getDisplayName()), null, player);
-                                    player.sendMessage(String.format(nt.getUnformattedAssignMessage(), nt.getTextColor() + nt.getDisplayName()), MinigameMessageType.INFO);
+                                if (nt.getPlayers().size() < nt.getMaxPlayers()) { // todo this does not check balancing
+                                    MultiplayerType.switchTeam(mgm, mgPlayer, nt);
+                                    plugin.getMinigameManager().sendMinigameMessage(mgm, MiniMessage.miniMessage().deserialize(nt.getJoinAnnounceMessage(),
+                                                    Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getDisplayName(mgm.usePlayerDisplayNames())),
+                                                    Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(nt.getDisplayName(), nt.getTextColor()))),
+                                            MinigameMessageType.INFO, mgPlayer);
+
+                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(nt.getPlayerAssignMessage(),
+                                            Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(nt.getDisplayName(), nt.getTextColor()))));
                                 } else {
-                                    player.sendInfoMessage(MinigameMessageManager.getMessage(null, "player.team.assign.full"));
+                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_TEAM_ASSIGN_ERROR_FULL);
                                 }
                             }
                         }
@@ -123,7 +136,7 @@ public class TeamSign implements MinigameSign {
     }
 
     @Override
-    public void signBreak(Sign sign, MinigamePlayer player) {
+    public void signBreak(@NotNull Sign sign, MinigamePlayer mgPlayer) {
 
     }
 

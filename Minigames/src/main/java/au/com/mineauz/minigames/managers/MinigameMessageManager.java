@@ -151,10 +151,6 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         target.sendMessage(init.append(message));
     }
 
-    public static void sendMessage(MinigamePlayer mgPlayer, MinigameMessageType type, @NotNull MinigameLangKey key, @NotNull TagResolver... resolvers) {
-        sendMessage(mgPlayer.getPlayer(), type, null, key, resolvers);
-    }
-
     public static void sendMessage(MinigamePlayer mgPlayer, MinigameMessageType type, @Nullable String identifier, @NotNull LangKey key, TagResolver... resolvers) {
         sendMessage(mgPlayer.getPlayer(), type, identifier, key, resolvers);
     }
@@ -237,7 +233,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
         audience.sendMessage(getPluginPrefix(messageType).append(message));
     }
 
-    public static void sendMessage(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameMessageType type, @NotNull Component message) {
+    public static void sendMgMessage(@NotNull MinigamePlayer mgPlayer, @NotNull MinigameMessageType type, @NotNull Component message) {
         sendMessage(mgPlayer.getPlayer(), type, message);
     }
 

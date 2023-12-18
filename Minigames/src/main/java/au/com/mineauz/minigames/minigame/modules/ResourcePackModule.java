@@ -98,7 +98,7 @@ public class ResourcePackModule extends MinigameModule {
         }) {
             @Override
             public void checkValidEntry(String entry) {
-                if (entry.length() == 0) {
+                if (entry.isEmpty()) {
                     super.checkValidEntry(entry);
                     return;
                 }

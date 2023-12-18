@@ -3,6 +3,8 @@ package au.com.mineauz.minigames.signs;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.managers.MinigameManager;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.reward.RewardGroup;
@@ -14,6 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +27,7 @@ public class RewardSign implements MinigameSign {
     private final MinigameManager mdata = plugin.getMinigameManager();
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Reward";
     }
 
@@ -34,66 +37,56 @@ public class RewardSign implements MinigameSign {
     }
 
     @Override
-    public String getCreatePermissionMessage() {
-        return MinigameUtils.getLang("sign.reward.createPermission");
-    }
-
-    @Override
     public String getUsePermission() {
         return "minigame.sign.use.reward";
     }
 
     @Override
-    public String getUsePermissionMessage() {
-        return MinigameUtils.getLang("sign.reward.usePermission");
-    }
-
-    @Override
-    public boolean signCreate(SignChangeEvent event) {
+    public boolean signCreate(@NotNull SignChangeEvent event) {
         if (!event.getLine(2).equals("")) {
             event.setLine(1, ChatColor.GREEN + getName());
             return true;
         }
-        plugin.getPlayerManager().getMinigamePlayer(event.getPlayer()).sendMessage(MinigameUtils.getLang("sign.reward.noName"), MinigameMessageType.ERROR);
+        MinigameMessageManager.sendMgMessage(event.getPlayer(), MinigameMessageType.ERROR, MinigameLangKey.SIGN_REWARD_ERROR_NONAME);
         return false;
     }
 
     @Override
-    public boolean signUse(Sign sign, MinigamePlayer player) {
+    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
         Location loc = sign.getLocation();
-        if (!MinigameUtils.isMinigameTool(player.getPlayer().getInventory().getItemInMainHand())) {
+        if (!MinigameUtils.isMinigameTool(mgPlayer.getPlayer().getInventory().getItemInMainHand())) {
             String label = sign.getLine(2).toLowerCase();
-            if (player.isInMinigame()) {
-                if (!player.hasTempClaimedReward(label)) {
+            if (mgPlayer.isInMinigame()) {
+                if (!mgPlayer.hasTempClaimedReward(label)) {
                     if (mdata.hasRewardSign(loc)) {
                         Rewards rew = mdata.getRewardSign(loc);
                         for (RewardType r : rew.getReward()) {
-                            r.giveReward(player);
+                            r.giveReward(mgPlayer);
                         }
                     }
-                    player.addTempClaimedReward(label);
+                    mgPlayer.addTempClaimedReward(label);
                 }
             } else {
-                if (!player.hasClaimedReward(label)) {
+                if (!mgPlayer.hasClaimedReward(label)) {
                     if (mdata.hasRewardSign(loc)) {
                         Rewards rew = mdata.getRewardSign(loc);
                         for (RewardType r : rew.getReward()) {
-                            r.giveReward(player);
+                            r.giveReward(mgPlayer);
                         }
 
-                        player.updateInventory();
+                        mgPlayer.updateInventory();
                     }
-                    player.addClaimedReward(label);
+                    mgPlayer.addClaimedReward(label);
                 }
             }
-        } else if (player.getPlayer().hasPermission("minigame.tool")) {
+        } else if (mgPlayer.getPlayer().hasPermission("minigame.tool")) {
             Rewards rew;
             if (!mdata.hasRewardSign(loc)) {
                 mdata.addRewardSign(loc);
             }
             rew = mdata.getRewardSign(loc);
 
-            Menu rewardMenu = new Menu(5, getName(), player);
+            Menu rewardMenu = new Menu(5, getName(), mgPlayer);
 
             rewardMenu.addItem(new MenuItemRewardGroupAdd("Add Group", MenuUtility.getCreateMaterial(), rew), 42);
             rewardMenu.addItem(new MenuItemRewardAdd("Add Item", MenuUtility.getCreateMaterial(), rew), 43);
@@ -101,7 +94,7 @@ public class RewardSign implements MinigameSign {
             final Location floc = loc;
             mic.setClick(object -> {
                 mdata.saveRewardSign(MinigameUtils.createLocationID(floc), true);
-                mic.getContainer().getViewer().sendInfoMessage("Saved rewards for this sign.");
+                MinigameMessageManager.sendMgMessage(mic.getContainer().getViewer(), MinigameMessageType.INFO, MinigameLangKey.SIGN_REWARD_SAVED);
                 mic.getContainer().getViewer().getPlayer().closeInventory();
                 return null;
             });
@@ -122,13 +115,13 @@ public class RewardSign implements MinigameSign {
                 mi.add(rwg);
             }
             rewardMenu.addItems(mi);
-            rewardMenu.displayMenu(player);
+            rewardMenu.displayMenu(mgPlayer);
         }
         return true;
     }
 
     @Override
-    public void signBreak(Sign sign, MinigamePlayer player) {
+    public void signBreak(@NotNull Sign sign, MinigamePlayer mgPlayer) {
         if (plugin.getMinigameManager().hasRewardSign(sign.getLocation())) {
             plugin.getMinigameManager().removeRewardSign(sign.getLocation());
         }

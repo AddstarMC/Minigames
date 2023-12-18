@@ -49,15 +49,15 @@ public class MultiplayerType extends MinigameTypeBase {
     }
 
     @Override
-    public boolean cannotStart(@NotNull Minigame mgm, @NotNull MinigamePlayer player) {
+    public boolean cannotStart(@NotNull Minigame mgm, @NotNull MinigamePlayer mgPlayer) {
         if (mgm.getPlayers().size() < mgm.getMaxPlayers()) {
             if (mgm.getLobbyLocation() != null) {
                 return false;
             } else {
-                MinigameMessageManager.sendMessage(player, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOLOBY);
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOLOBY);
             }
         } else {
-            MinigameMessageManager.sendMessage(player, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_FULL);
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_FULL);
         }
 
         return true;
@@ -74,7 +74,7 @@ public class MultiplayerType extends MinigameTypeBase {
             if (plugin.getConfig().getBoolean("warnings") && player.getPlayer().getWorld() != location.getWorld() &&
                     player.getPlayer().hasPermission("minigame.set.lobby")) { //todo permission manager
 
-                MinigameMessageManager.sendMessage(player, MinigameMessageType.WARNING, MinigameLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
+                MinigameMessageManager.sendMgMessage(player, MinigameMessageType.WARNING, MinigameLangKey.MINIGAME_WARNING_TELEPORT_ACROSS_WORLDS);
             }
         }
         return result;
@@ -103,7 +103,7 @@ public class MultiplayerType extends MinigameTypeBase {
             }
         } else if (mgm.hasStarted()) {
             mgPlayer.setLatejoining(true);
-            MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_LATEJOIN,
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameMessageManager.getMgMessage(MinigameLangKey.MINIGAME_LATEJOIN,
                     Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), String.valueOf(5)))); //TODO: Late join delay variable
             final MinigamePlayer fply = mgPlayer;
             final Minigame fmgm = mgm;
@@ -116,7 +116,7 @@ public class MultiplayerType extends MinigameTypeBase {
                 }
 
                 smTeam.addPlayer(mgPlayer);
-                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(smTeam.getUnformattedAssignMessage(),
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MiniMessage.miniMessage().deserialize(smTeam.getPlayerAssignMessage(),
                         Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(smTeam.getDisplayName(), smTeam.getTextColor()))));
 
                 final Team fteam = smTeam;
@@ -411,7 +411,7 @@ public class MultiplayerType extends MinigameTypeBase {
                                 pdata.quitMinigame(mgPlayer, true);
 
                                 if (drawTeams.size() == 2) {
-                                    MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_END_TEAM_TIE,
+                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.PLAYER_END_TEAM_TIE,
                                             Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), Component.text(drawTeams.get(0).getDisplayName(), drawTeams.get(0).getTextColor())),
                                             Placeholder.component(MinigamePlaceHolderKey.OTHER_TEAM.getKey(), Component.text(drawTeams.get(1).getDisplayName(), drawTeams.get(1).getTextColor())),
                                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), event.getMinigame().getName(true)));
@@ -434,7 +434,7 @@ public class MultiplayerType extends MinigameTypeBase {
                                     }
                                 }
 
-                                MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_INFO_SCORE,
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.MINIGAME_INFO_SCORE,
                                         Placeholder.component(MinigamePlaceHolderKey.SCORE.getKey(), scores));
                             }
                         }

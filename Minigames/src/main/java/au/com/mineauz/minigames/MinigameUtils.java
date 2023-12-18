@@ -166,7 +166,7 @@ public class MinigameUtils {
         Material toolMat = Material.matchMaterial(Minigames.getPlugin().getConfig().getString("tool"));
         if (toolMat == null) {
             toolMat = Material.BLAZE_ROD;
-            MinigameMessageManager.sendMessage(player, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NODEFAULTTOOL);
+            MinigameMessageManager.sendMgMessage(player, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NODEFAULTTOOL);
         }
 
         ItemStack tool = new ItemStack(toolMat);

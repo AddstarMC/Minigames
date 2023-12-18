@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.objects;
 
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import be.seeseemelk.mockbukkit.scoreboard.ScoreboardMock;
@@ -122,12 +123,12 @@ public class TestPlayer extends PlayerMock {
         String catString;
         if (category == null) catString = "null";
         else catString = category.name();
-        System.out.println("Sound played:" + sound.toUpperCase() + " from " + catString + " at Vol" + volume + ":" + pitch);
+        MinigameMessageManager.debugMessage("Sound played:" + sound.toUpperCase() + " from " + catString + " at Vol" + volume + ":" + pitch);
     }
 
     @Override
     public void updateInventory() {
-        System.out.println(getInventory());
+        MinigameMessageManager.debugMessage(getInventory().toString());
     }
 
     @Override
@@ -227,7 +228,7 @@ public class TestPlayer extends PlayerMock {
 
     @Override
     public boolean teleport(Location location) {
-        System.out.println("Called Teleport on " + this.getName() + " to " + location.toString());
+        MinigameMessageManager.debugMessage("Called Teleport on " + this.getName() + " to " + location.toString());
         return super.teleport(location);
     }
 

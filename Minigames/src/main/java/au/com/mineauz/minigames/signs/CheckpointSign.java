@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.signs;
 
-import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
@@ -8,11 +9,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class CheckpointSign implements MinigameSign {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "Checkpoint";
     }
 
@@ -22,22 +24,12 @@ public class CheckpointSign implements MinigameSign {
     }
 
     @Override
-    public String getCreatePermissionMessage() {
-        return MinigameUtils.getLang("sign.checkpoint.createPermission");
-    }
-
-    @Override
     public String getUsePermission() {
         return "minigame.sign.use.checkpoint";
     }
 
     @Override
-    public String getUsePermissionMessage() {
-        return MinigameUtils.getLang("sign.checkpoint.usePermission");
-    }
-
-    @Override
-    public boolean signCreate(SignChangeEvent event) {
+    public boolean signCreate(@NotNull SignChangeEvent event) {
         event.setLine(1, ChatColor.GREEN + "Checkpoint");
         if (event.getLine(2).equalsIgnoreCase("global")) {
             event.setLine(2, ChatColor.BLUE + "Global");
@@ -46,32 +38,33 @@ public class CheckpointSign implements MinigameSign {
     }
 
     @Override
-    public boolean signUse(Sign sign, MinigamePlayer player) {
-        if ((player.isInMinigame() || (!player.isInMinigame() && sign.getLine(2).equals(ChatColor.BLUE + "Global")))
-                && player.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
-            if (player.isInMinigame() && player.getMinigame().isSpectator(player)) {
+    public boolean signUse(@NotNull Sign sign, @NotNull MinigamePlayer mgPlayer) {
+        if ((mgPlayer.isInMinigame() || (!mgPlayer.isInMinigame() && sign.getLine(2).equals(ChatColor.BLUE + "Global")))
+                && mgPlayer.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
+            if (mgPlayer.isInMinigame() && mgPlayer.getMinigame().isSpectator(mgPlayer)) {
                 return false;
             }
-            if (player.getPlayer().isOnGround()) {
-                Location newloc = player.getPlayer().getLocation();
+            if (mgPlayer.getPlayer().isOnGround()) {
+                Location newloc = mgPlayer.getPlayer().getLocation();
                 if (!sign.getLine(2).equals(ChatColor.BLUE + "Global")) {
-                    player.setCheckpoint(newloc);
+                    mgPlayer.setCheckpoint(newloc);
                 } else {
-                    player.getStoredPlayerCheckpoints().setGlobalCheckpoint(newloc);
+                    mgPlayer.getStoredPlayerCheckpoints().setGlobalCheckpoint(newloc);
                 }
 
-                player.sendInfoMessage(MinigameUtils.getLang("sign.checkpoint.set"));
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.SIGN_CHECKPOINT_SET);
                 return true;
             } else {
-                player.sendMessage(ChatColor.RED + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.checkpoint.fail"), MinigameMessageType.ERROR);
+                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.SIGN_CHECKPOINT_FAIL);
             }
-        } else
-            player.sendMessage(ChatColor.AQUA + "[Minigames] " + ChatColor.WHITE + MinigameUtils.getLang("sign.emptyHand"), MinigameMessageType.INFO);
+        } else {
+            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.SIGN_ERROR_EMPTYHAND);
+        }
         return false;
     }
 
     @Override
-    public void signBreak(Sign sign, MinigamePlayer player) {
+    public void signBreak(@NotNull Sign sign, MinigamePlayer mgPlayer) {
 
     }
 

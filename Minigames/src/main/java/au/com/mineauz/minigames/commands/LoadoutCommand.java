@@ -62,7 +62,7 @@ public class LoadoutCommand implements ICommand {
                     ply.sendInfoMessage(
                             MinigameMessageManager.getMinigamesMessage("player.loadout.nextSpawnName", ln));
                 } else {
-                    ply.sendMessage(MinigameMessageManager.getMinigamesMessage("player.loadout.noLoadout", ln), MinigameMessageType.ERROR);
+                    ply.sendMessage(MinigameMessageManager.getMinigamesMessage("player.loadout.error.noLoadout", ln), MinigameMessageType.ERROR);
                 }
             }
         } else {
