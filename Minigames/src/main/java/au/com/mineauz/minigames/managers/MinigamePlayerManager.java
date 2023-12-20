@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.managers;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.MultiplayerBets;
+import au.com.mineauz.minigames.commands.QuitCommand;
 import au.com.mineauz.minigames.events.*;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.managers.language.MinigameLangKey;
@@ -277,7 +278,7 @@ public class MinigamePlayerManager {
                     Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)));
 
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SPECTATE_JOIN_PLAYERHELP,
-                    Placeholder.unparsed(MinigamePlaceHolderKey.COMMAND.getKey(), "\"/minigame quit\"")); //todo get from quit command
+                    Placeholder.unparsed(MinigamePlaceHolderKey.COMMAND.getKey(), "\"" + new QuitCommand().getUsage()[0] + "\""));
             mgManager.sendMinigameMessage(minigame, MinigameMessageManager.getMgMessage(MinigameLangKey.PLAYER_SPECTATE_JOIN_MINIGAMEMSG,
                             Placeholder.unparsed(MinigamePlaceHolderKey.PLAYER.getKey(), mgPlayer.getName()),
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true))),

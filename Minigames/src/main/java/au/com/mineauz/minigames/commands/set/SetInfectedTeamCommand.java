@@ -11,6 +11,7 @@ import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,7 @@ public class SetInfectedTeamCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame, @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame, @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args[0].equalsIgnoreCase("None")) {
                 InfectionModule.getMinigameModule(minigame).setInfectedTeam(null);

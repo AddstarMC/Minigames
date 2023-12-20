@@ -185,7 +185,7 @@ public class Minigames extends JavaPlugin {
             plugin = this;
             switch (this.checkVersion()) {
                 case -1:
-                    log().warning("This version of Minigames (" + VERSION.getCanonical() + ") is designed for Bukkit Version: " + PAPER_VERSION.getCanonical());
+                    log().warning("This version of Minigames (" + VERSION.getCanonical() + ") is designed for Paper Version: " + PAPER_VERSION.getCanonical());
                     log().warning("Your version is newer: " + Bukkit.getBukkitVersion());
                     log().warning("Please check for an updated");
 

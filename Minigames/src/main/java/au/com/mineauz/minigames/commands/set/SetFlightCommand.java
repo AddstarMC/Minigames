@@ -2,8 +2,13 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.apache.commons.lang3.BooleanUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,36 +48,44 @@ public class SetFlightCommand implements ICommand {
     }
 
     @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to modify flight in a Minigame!";
-    }
-
-    @Override
     public String getPermission() {
         return "minigame.set.flight";
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null && args.length == 2) {
             if (args[0].equalsIgnoreCase("enabled")) {
-                boolean bool = Boolean.parseBoolean(args[1]);
-                minigame.setAllowedFlight(bool);
+                Boolean bool = BooleanUtils.toBooleanObject(args[1]);
 
-                if (bool)
-                    sender.sendMessage(ChatColor.GRAY + "Players are now allowed to fly in " + minigame);
-                else
-                    sender.sendMessage(ChatColor.GRAY + "Players are now not able to fly in " + minigame);
+                if (bool != null) {
+                    minigame.setAllowedFlight(bool);
+
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_FLIGHT_ALLOWED,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                            Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                                    bool ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
+                } else {
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOBOOL,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                }
+
                 return true;
             } else if (args[0].equalsIgnoreCase("startflying")) {
-                boolean bool = Boolean.parseBoolean(args[1]);
-                minigame.setFlightEnabled(bool);
+                Boolean bool = BooleanUtils.toBooleanObject(args[1]);
 
-                if (bool)
-                    sender.sendMessage(ChatColor.GRAY + "Players will start flying when the game starts in " + minigame);
-                else
-                    sender.sendMessage(ChatColor.GRAY + "Players will not start flying when the game starts in " + minigame);
+                if (bool != null) {
+                    minigame.setFlightEnabled(bool);
+
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_FLIGHT_START,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                            Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                                    bool ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
+                } else {
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOBOOL,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                }
                 return true;
             }
         }

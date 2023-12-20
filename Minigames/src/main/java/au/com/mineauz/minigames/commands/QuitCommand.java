@@ -49,11 +49,6 @@ public class QuitCommand implements ICommand {
     }
 
     @Override
-    public String getPermissionMessage() {
-        return MinigameUtils.getLang("command.quit.noPermission");
-    }
-
-    @Override
     public String getPermission() {
         return "minigame.quit";
     }

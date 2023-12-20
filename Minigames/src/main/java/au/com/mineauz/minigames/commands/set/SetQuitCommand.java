@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -42,18 +43,13 @@ public class SetQuitCommand implements ICommand {
     }
 
     @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set a Minigames quit position!";
-    }
-
-    @Override
     public String getPermission() {
         return "minigame.set.quit";
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         Player player = (Player) sender;
         minigame.setQuitLocation(player.getLocation());
         sender.sendMessage(ChatColor.GRAY + "Quit position has been set for " + minigame);

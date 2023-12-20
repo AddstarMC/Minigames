@@ -1,6 +1,7 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.ChatColor;
@@ -13,6 +14,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
 
 public class SetCommand implements ICommand {
     private static final Map<String, ICommand> parameterList = new HashMap<>();
@@ -35,7 +37,7 @@ public class SetCommand implements ICommand {
                 cmdFile.write("! Alias");
                 cmdFile.newLine();
             } catch (IOException e) {
-                e.printStackTrace();
+                Minigames.log().log(Level.WARNING, "couldn't write cmd file", e);
             }
         }
         registerSetCommand(new SetStartCommand());
@@ -102,7 +104,7 @@ public class SetCommand implements ICommand {
                 cmdFile.write("|}");
                 cmdFile.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                Minigames.log().log(Level.WARNING, "couldn't write cmd file", e);
             }
         }
     }
@@ -155,7 +157,7 @@ public class SetCommand implements ICommand {
                 cmdFile.newLine();
 
             } catch (IOException e) {
-                //Failed to write
+                Minigames.log().log(Level.WARNING, "couldn't write cmd file", e);
             }
         }
     }
@@ -194,11 +196,6 @@ public class SetCommand implements ICommand {
             inc++;
         }
         return parameters;
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return null;
     }
 
     @Override
@@ -301,11 +298,10 @@ public class SetCommand implements ICommand {
                         sender.sendMessage(ChatColor.RED + comd.getPermissionMessage());
                         sender.sendMessage(ChatColor.RED + comd.getPermission());
                     }
-                    return true;
                 } else {
                     sender.sendMessage(ChatColor.RED + "You must be a player to execute this command!");
-                    return true;
                 }
+                return true;
             } else if (mgm == null) {
                 sender.sendMessage(ChatColor.RED + "There is no Minigame by the name \"" + args[0] + "\"");
             }

@@ -3,8 +3,11 @@ package au.com.mineauz.minigames.managers.language;
 import org.jetbrains.annotations.NotNull;
 
 public enum MinigameLangKey implements LangKey {
+    BLACKLIST("blacklist"),
     COMMAND_DIVIDER_LARGE("command.divider.large"),
     COMMAND_DIVIDER_SMALL("command.divider.small"),
+    COMMAND_ERROR_NOBOOL("command.error.noBool"),
+    COMMAND_ERROR_NOMATERIAL("command.error.noMaterial"),
     COMMAND_INFO_DESCRIPTION("command.info.description"),
     COMMAND_INFO_OUTPUT_DESCRIPTION("command.info.output.description"),
     COMMAND_INFO_OUTPUT_GAMETYPE("command.info.output.gameType"),
@@ -15,6 +18,27 @@ public enum MinigameLangKey implements LangKey {
     COMMAND_INFO_OUTPUT_PLAYERHEADER("command.info.output.playerHeader"),
     COMMAND_INFO_OUTPUT_TEAMDATA("command.info.output.teamData"),
     COMMAND_INFO_OUTPUT_TIMER("command.info.output.timer"),
+    COMMAND_MULTIPLYCHKPNTS("command.set.multiPlyChkPnts"),
+    COMMAND_SET_BLOCKBREAKING("command.set.blockbreaking"),
+    COMMAND_SET_BLOCKPLACING("command.set.blockplacing"),
+    COMMAND_SET_BLOCKSDROP("command.set.blocksDrop"),
+    COMMAND_SET_ENDERPERLS("command.set.enderperls"),
+    COMMAND_SET_FLIGHT_ALLOWED("command.set.flight.allowed"),
+    COMMAND_SET_FLIGHT_START("command.set.flight.start"),
+    COMMAND_SET_ITEMSDROP_DEATH("command.set.itemsdrop.death"),
+    COMMAND_SET_ITEMSDROP_DROP("command.set.itemsdrop.drop"),
+    COMMAND_SET_ITEMSPICKUP("command.set.itemspickup"),
+    COMMAND_SET_LATEJOIN("command.set.latejoin"),
+    COMMAND_SET_PAINTBALL_MODE("command.set.paintball.mode"),
+    COMMAND_SET_RNGCHEST_SIMPLE("command.set.randomizedChests.simple"),
+    COMMAND_SET_UNLIMITEDAMMO("command.set.unlimitedAmmo"),
+    COMMAND_SET_WHITELIST_ADDED("command.set.whitelist.add"),
+    COMMAND_SET_WHITELIST_CLEAR("command.set.whitelist.clear"),
+    COMMAND_SET_WHITELIST_LIST("command.set.whitelist.list"),
+    COMMAND_SET_WHITELIST_MODE("command.set.whitelist.mode"),
+    COMMAND_SET_WHITELIST_REMOVE("command.set.whitelist.remove"),
+    COMMAND_STATE_DISABLED("command.state.disabled"),
+    COMMAND_STATE_ENABLED("command.state.enabled"),
     MENU_ENTERCHAT("menu.enterChat"),
     MINIGAME_ERROR_FULL("minigame.error.full"),
     MINIGAME_ERROR_INCORRECTSTART("minigame.error.incorrectStart"),
@@ -215,7 +239,8 @@ public enum MinigameLangKey implements LangKey {
     TOOL_SET_ENDLOCATION("tool.set.endLocation"),
     TOOL_SET_LOBBYLOCATION("tool.set.lobbyLocation"),
     TOOL_SET_QUITLOCATION("tool.set.quitLocation"),
-    TOOL_SET_SPECTATORLOCATION("tool.set.spectatorLocation");
+    TOOL_SET_SPECTATORLOCATION("tool.set.spectatorLocation"),
+    WHITELIST("whitelist");
 
     private final @NotNull String path;
 

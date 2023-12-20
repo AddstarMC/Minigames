@@ -2,10 +2,17 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.apache.commons.lang3.BooleanUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -44,26 +51,27 @@ public class SetPaintballCommand implements ICommand {
     }
 
     @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set paintball mode!";
-    }
-
-    @Override
     public String getPermission() {
         return "minigame.set.paintball";
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args.length == 1) {
-                boolean bool = Boolean.parseBoolean(args[0]);
-                minigame.setPaintBallMode(bool);
-                if (bool) {
-                    sender.sendMessage(ChatColor.GRAY + "Paintball mode has been enabled for " + minigame);
+                Boolean bool = BooleanUtils.toBooleanObject(args[0]);
+
+                if (bool != null) {
+                    minigame.setPaintBallMode(bool);
+
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_PAINTBALL_MODE,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                            Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                                    bool ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
                 } else {
-                    sender.sendMessage(ChatColor.GRAY + "Paintball mode has been disabled for " + minigame);
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOBOOL,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                 }
                 return true;
             } else if (args.length >= 2) {
