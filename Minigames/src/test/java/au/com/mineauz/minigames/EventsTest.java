@@ -33,15 +33,12 @@ public class EventsTest {
         }
 
         server.addPlayer(new TestPlayer(server, "testplayer", UUID.randomUUID()));
-        plugin = MockBukkit.load(Minigames.class);
+        plugin = MockBootstrap.createPluginWithTestContext(server);
         Minigames.getPlugin().getConfig().set("saveInventory", true);
         TestWorld testworld = new TestWorld();
         testworld.setName("GAMES");
         MockBukkit.getMock().addWorld(testworld);
-        Logger log = Logger.getAnonymousLogger();
-        log.setLevel(Level.ALL);
         plugin.toggleDebug();
-        plugin.setLog(log);
         WorldMock world = (WorldMock) MockBukkit.getMock().getWorld("GAMES");
         game = TestHelper.createMinigame(plugin, world, MinigameType.MULTIPLAYER, GameMechanics.MECHANIC_NAME.KILLS);
 

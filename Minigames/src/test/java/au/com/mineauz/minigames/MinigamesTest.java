@@ -11,14 +11,11 @@ import au.com.mineauz.minigames.objects.TestWorld;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
-import be.seeseemelk.mockbukkit.command.ConsoleCommandSenderMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
-import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Location;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.sqlite.SQLiteDataSource;
 
 import java.util.UUID;
 
@@ -28,10 +25,8 @@ public class MinigamesTest {
     private PlayerMock player;
     private Minigame game;
     private WorldMock world;
-    private SQLiteDataSource datasource;
     private Location spawn;
     private Location lobby;
-    private Location end;
     private Location start;
     private Location quit;
 
@@ -43,16 +38,15 @@ public class MinigamesTest {
             server = MockBukkit.getMock();
         }
 
-        ConsoleCommandSenderMock sender = server.getConsoleSender();
         TestWorld testworld = new TestWorld();
         testworld.setName("GAMES");
         MockBukkit.getMock().addWorld(testworld);
-        String ver = server.getBukkitVersion();
-        Logger log = Logger.getAnonymousLogger();
-        log.setLevel(Level.ALL);
-        plugin = MockBukkit.load(Minigames.class);
+
+        plugin = MockBootstrap.createPluginWithTestContext(server);
+
+        server.getPluginManager().registerLoadedPlugin(plugin);
+        server.getPluginManager().enablePlugin(plugin);
         plugin.toggleDebug();
-        plugin.setLog(log);
         world = (WorldMock) MockBukkit.getMock().getWorld("GAMES");
         spawn = world.getSpawnLocation();
         TestHelper.createMinigame(plugin, world, MinigameType.MULTIPLAYER, GameMechanics.MECHANIC_NAME.CTF);

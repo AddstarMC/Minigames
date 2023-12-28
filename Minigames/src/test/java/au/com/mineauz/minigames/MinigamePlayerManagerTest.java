@@ -15,8 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MinigamePlayerManagerTest {
     private ServerMock server;
@@ -34,11 +32,8 @@ public class MinigamePlayerManagerTest {
         WorldMock world = new WorldMock();
         world.setName("GAMES");
         MockBukkit.getMock().addWorld(world);
-        Logger log = Logger.getAnonymousLogger();
-        log.setLevel(Level.ALL);
-        plugin = MockBukkit.load(Minigames.class);
+        plugin = MockBootstrap.createPluginWithTestContext(server);
         plugin.toggleDebug();
-        plugin.setLog(log);
         game = TestHelper.createMinigame(plugin, world, MinigameType.MULTIPLAYER, GameMechanics.MECHANIC_NAME.KILLS);
     }
 
