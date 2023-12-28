@@ -23,7 +23,7 @@ public class ResourcePackManager { //todo work with multiple ressource packs
             try {
                 Path path = Files.createDirectories(resourceDir);
                 if (Files.notExists(path)) {
-                    Minigames.log().severe("Cannot create a resource directory to house resources " +
+                    Minigames.getCmpnntLogger().error("Cannot create a resource directory to house resources " +
                             "- they will be unavailable");
                     enabled = false;
                 } else {
@@ -31,13 +31,13 @@ public class ResourcePackManager { //todo work with multiple ressource packs
                         enabled = true;
                     else {
                         enabled = false;
-                        Minigames.log().severe("Cannot create a resource directory to house resources " +
+                        Minigames.getCmpnntLogger().error("Cannot create a resource directory to house resources " +
                                 "- they will be unavailable.");
                     }
                 }
 
             } catch (IOException e) {
-                Minigames.log().severe("Cannot create a resource directory to house resources " +
+                Minigames.getCmpnntLogger().error("Cannot create a resource directory to house resources " +
                         "- they will be unavailable: Message" + e.getMessage());
                 enabled = false;
             }
@@ -97,7 +97,7 @@ public class ResourcePackManager { //todo work with multiple ressource packs
         }
         if (!emptyPresent) {
             if (!loadEmptyPack()) {
-                Minigames.log().warning("Minigames Resource Manager could not create the empty reset pack");
+                Minigames.getCmpnntLogger().warn("Minigames Resource Manager could not create the empty reset pack");
                 enabled = false;
                 return false;
             }

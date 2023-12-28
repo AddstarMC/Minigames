@@ -2,6 +2,7 @@ package au.com.mineauz.minigamesregions;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.*;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.MinigamePlayerManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -163,7 +164,7 @@ public class RegionEvents implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void playerQuit(QuitMinigameEvent event) {
         if (RegionModule.getMinigameModule(event.getMinigame()) == null) {
-            Minigames.debugMessage(event.getMinigame() + " called region event with no RegionModule loaded... was this intended?");
+            MinigameMessageManager.debugMessage(event.getMinigame() + " called region event with no RegionModule loaded... was this intended?");
             return;
         }
         MinigamePlayer ply = event.getMinigamePlayer();
@@ -204,7 +205,7 @@ public class RegionEvents implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void playersEndPhase(EndPhaseMinigameEvent event) {
         if (RegionModule.getMinigameModule(event.getMinigame()) == null) {
-            Minigames.debugMessage(event.getMinigame() + " called region event with no RegionModule loaded... was this intended?");
+            MinigameMessageManager.debugMessage(event.getMinigame() + " called region event with no RegionModule loaded... was this intended?");
             return;
         }
 

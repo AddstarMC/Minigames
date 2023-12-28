@@ -6,7 +6,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
 
 public class MinigameSave {
     private final String name;
@@ -49,13 +48,13 @@ public class MinigameSave {
 
     public void saveConfig() {
         if (minigameSave == null || minigameSaveFile == null) {
-            Minigames.getPlugin().getLogger().log(Level.INFO, "Could not save " + minigame + File.separator + name + " config file!");
+            Minigames.getCmpnntLogger().info("Could not save " + minigame + File.separator + name + " config file!");
             return;
         }
         try {
             minigameSave.save(minigameSaveFile);
         } catch (IOException ex) {
-            Minigames.getPlugin().getLogger().log(Level.SEVERE, "Could not save " + minigame + File.separator + name + " config file!");
+            Minigames.getCmpnntLogger().error("Could not save " + minigame + File.separator + name + " config file!");
         }
     }
 

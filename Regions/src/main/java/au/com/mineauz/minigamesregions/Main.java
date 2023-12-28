@@ -9,8 +9,6 @@ import au.com.mineauz.minigamesregions.commands.SetRegionCommand;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.logging.Level;
-
 public class Main extends JavaPlugin {
     private static Minigames minigames;
     private static Main plugin;
@@ -75,7 +73,7 @@ public class Main extends JavaPlugin {
         } catch (Throwable e) {
             plugin = null;
             minigames = null;
-            getLogger().log(Level.SEVERE, "Failed to enable Minigames Regions " + getDescription().getVersion() + ": ", e);
+            Minigames.getCmpnntLogger().error("Failed to enable Minigames Regions " + getDescription().getVersion() + ": ", e);
             getPluginLoader().disablePlugin(this);
         }
     }

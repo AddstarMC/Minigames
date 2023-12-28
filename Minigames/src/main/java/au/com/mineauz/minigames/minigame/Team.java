@@ -340,7 +340,7 @@ public class Team implements ScriptObject {
         if (team != null)
             team.setOption(Option.NAME_TAG_VISIBILITY, vis);
         else
-            Minigames.log().warning("No team set for visibility call");
+            Minigames.getCmpnntLogger().warn("No team set for visibility call");
     }
 
     public Callback<String> getNameTagVisibilityCallback() {

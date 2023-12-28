@@ -158,7 +158,7 @@ public class ScoreboardCommand implements ICommand {
             @Override
             public void onFailure(@NotNull Throwable t) {
                 sender.sendMessage(ChatColor.RED + "An internal error occurred while loading the statistics");
-                t.printStackTrace();
+                Minigames.getCmpnntLogger().error("", t);
             }
         }, directExecutor());
 

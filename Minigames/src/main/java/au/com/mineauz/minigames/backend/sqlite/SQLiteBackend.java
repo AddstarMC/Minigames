@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.*;
 import com.google.common.collect.Maps;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
@@ -17,12 +18,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @SuppressWarnings("SyntaxError")
 public class SQLiteBackend extends Backend {
-    private final Logger logger;
+    private final ComponentLogger logger;
     private final SQLiteStatLoader loader;
     private final SQLiteStatSaver saver;
     private ConnectionPool pool;
@@ -34,14 +33,14 @@ public class SQLiteBackend extends Backend {
     private File database;
 
 
-    public SQLiteBackend(Logger logger) {
+    public SQLiteBackend(ComponentLogger logger) {
         this.logger = logger;
         loader = new SQLiteStatLoader(this, logger);
         saver = new SQLiteStatSaver(this, logger);
         try {
             database = new File(Minigames.getPlugin().getDataFolder(), "minigames.db");
         } catch (NullPointerException e) {
-            logger.warning("Could not locate or set database path");
+            logger.warn("Could not locate or set database path");
         }
 
     }
@@ -78,10 +77,10 @@ public class SQLiteBackend extends Backend {
                 handler.release();
                 return true;
             } catch (SQLException e) {
-                logger.severe("Failed to connect to the SQLite database. Please check your database settings");
+                logger.error("Failed to connect to the SQLite database. Please check your database settings");
             }
         } catch (ClassNotFoundException e) {
-            logger.severe("Failed to find sqlite JDBC driver. This version of craftbukkit is defective.");
+            logger.error("Failed to find sqlite JDBC driver. This version of craftbukkit is defective.");
         }
 
         return false;
@@ -112,7 +111,7 @@ public class SQLiteBackend extends Backend {
             return false;
 
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Exception looking for SQLite column " + columnName + " on table " + "PlayerStats", e);
+            logger.error("Exception looking for SQLite column " + columnName + " on table " + "PlayerStats", e);
             return false;
         }
 
@@ -152,7 +151,7 @@ public class SQLiteBackend extends Backend {
                 }
 
             } catch (SQLException e) {
-                logger.log(Level.SEVERE, "Failed to add column last_updated to the PlayerStats table in the SQLite Minigames database", e);
+                logger.error("Failed to add column last_updated to the PlayerStats table in the SQLite Minigames database", e);
             }
 
             // Check for column entered on the PlayerStats table
@@ -164,7 +163,7 @@ public class SQLiteBackend extends Backend {
                 }
 
             } catch (SQLException e) {
-                logger.log(Level.SEVERE, "Failed to add column entered to the PlayerStats table in the SQLite Minigames database", e);
+                logger.error("Failed to add column entered to the PlayerStats table in the SQLite Minigames database", e);
             }
 
             // Check the stat metadata table
@@ -276,7 +275,7 @@ public class SQLiteBackend extends Backend {
                 return settings;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Minigames.getCmpnntLogger().error("", e);
             return Collections.emptyMap();
         } finally {
             if (handler != null) {
@@ -300,7 +299,7 @@ public class SQLiteBackend extends Backend {
             handler.executeBatch(saveStatSettings);
             handler.endTransaction();
         } catch (SQLException e) {
-            e.printStackTrace();
+            Minigames.getCmpnntLogger().error("", e);
             handler.endTransactionFail();
         } finally {
             if (handler != null) {

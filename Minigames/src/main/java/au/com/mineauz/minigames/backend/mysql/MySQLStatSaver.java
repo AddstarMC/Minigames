@@ -1,22 +1,21 @@
 package au.com.mineauz.minigames.backend.mysql;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.backend.ConnectionHandler;
 import au.com.mineauz.minigames.backend.StatementKey;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatFormat;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 
 import java.sql.SQLException;
 import java.util.Map.Entry;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 class MySQLStatSaver {
     private final MySQLBackend backend;
-    private final Logger logger;
+    private final ComponentLogger logger;
 
     private final StatementKey insertStat;
     private final StatementKey insertStatTotal;
@@ -25,7 +24,7 @@ class MySQLStatSaver {
 
     private final StatementKey[] insertStatements = new StatementKey[4];
 
-    public MySQLStatSaver(MySQLBackend backend, Logger logger) {
+    public MySQLStatSaver(MySQLBackend backend, ComponentLogger logger) {
         this.backend = backend;
         this.logger = logger;
 
@@ -43,7 +42,7 @@ class MySQLStatSaver {
     }
 
     public void saveData(StoredGameStats data) {
-        MinigameUtils.debugMessage("MySQL beginning save of " + data);
+        MinigameMessageManager.debugMessage("MySQL beginning save of " + data);
 
         ConnectionHandler handler = null;
         try {
@@ -60,14 +59,14 @@ class MySQLStatSaver {
                 // Commit the changes
                 handler.endTransaction();
             } catch (SQLException e) {
-                logger.log(Level.SEVERE, "Failed to save stats for " + data.getPlayer().getName(), e);
+                logger.error("Failed to save stats for " + data.getPlayer().getName(), e);
 
                 handler.endTransactionFail();
             } finally {
-                MinigameUtils.debugMessage("MySQL completed save of " + data);
+                MinigameMessageManager.debugMessage("MySQL completed save of " + data);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("", e);
         } finally {
             if (handler != null) {
                 handler.release();
@@ -76,8 +75,7 @@ class MySQLStatSaver {
     }
 
     private void saveStats(ConnectionHandler handler, StoredGameStats data, UUID player, int minigameId) throws SQLException {
-
-        MinigameUtils.debugMessage("MySQL saving stats for " + player + ", game " + minigameId);
+        MinigameMessageManager.debugMessage("MySQL saving stats for " + player + ", game " + minigameId);
 
         // Prepare all updates
         for (Entry<MinigameStat, Long> entry : data.getStats().entrySet()) {
@@ -94,7 +92,7 @@ class MySQLStatSaver {
         handler.executeBatch(insertStatMin);
         handler.executeBatch(insertStatMax);
 
-        MinigameUtils.debugMessage("MySQL completed save for " + player + ", game " + minigameId);
+        MinigameMessageManager.debugMessage("MySQL completed save for " + player + ", game " + minigameId);
     }
 
     private void queueStat(ConnectionHandler handler, MinigameStat stat, long value, StatFormat format, UUID player, int minigameId) throws SQLException {

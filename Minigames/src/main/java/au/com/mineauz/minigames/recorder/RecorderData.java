@@ -380,11 +380,9 @@ public class RecorderData implements Listener {
         try (FileWriter writer = new FileWriter(f)) {
             customGson.toJson(blockdata, writer);
         } catch (FileNotFoundException e) {
-            Minigames.log().severe("File not found!!!");
-            e.printStackTrace();
+            Minigames.getCmpnntLogger().error("File not found!!!", e);
         } catch (IOException e) {
-            Minigames.log().severe("IO Error!");
-            e.printStackTrace();
+            Minigames.getCmpnntLogger().error("IO Error!", e);
         }
     }
 
@@ -410,8 +408,8 @@ public class RecorderData implements Listener {
                     }
 
                     return Position.fine(Double.parseDouble(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2])); //throws NumberFormatException
-                } catch (JsonParseException | NumberFormatException exception) {
-                    exception.printStackTrace();
+                } catch (JsonParseException | NumberFormatException e) {
+                    Minigames.getCmpnntLogger().error("", e);
                     return null;
                 }
             };
@@ -425,7 +423,7 @@ public class RecorderData implements Listener {
                 blockdata = customGson.fromJson(reader, type);
                 return true;
             } catch (IOException e) {
-                e.printStackTrace();
+                Minigames.getCmpnntLogger().error("", e);
             }
         }
         return false;
@@ -525,11 +523,9 @@ public class RecorderData implements Listener {
 
             br.close();
         } catch (FileNotFoundException e) {
-            Bukkit.getLogger().severe("File not found!!!");
-            e.printStackTrace();
+            Minigames.getCmpnntLogger().error("File not found!!!", e);
         } catch (IOException e) {
-            Bukkit.getLogger().severe("IO Error!");
-            e.printStackTrace();
+            Minigames.getCmpnntLogger().error("IO Error!", e);
         }
 
         return true;

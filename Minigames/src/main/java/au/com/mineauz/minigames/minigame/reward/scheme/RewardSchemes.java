@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.minigame.reward.scheme;
 
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemList;
@@ -32,7 +33,7 @@ public final class RewardSchemes {
             return type.getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                  NoSuchMethodException e) {
-            e.printStackTrace();
+            Minigames.getCmpnntLogger().error("", e);
             return null;
         }
     }
@@ -47,7 +48,7 @@ public final class RewardSchemes {
             }
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                  NoSuchMethodException e) {
-            e.printStackTrace();
+            Minigames.getCmpnntLogger().error("", e);
             return null;
         }
     }

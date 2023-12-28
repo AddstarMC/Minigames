@@ -180,7 +180,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
                 minigame.getMinigameTimer().stopTimer();
         } else {
             if (caller == null) {
-                Minigames.log().info("Treasure Hunt \"" + minigame.getName(false) + "\" requires a location name to run!");
+                Minigames.getCmpnntLogger().info("Treasure Hunt \"" + minigame.getName(false) + "\" requires a location name to run!");
             } else {
                 MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_TREASUREHUNT_ERROR_NOLOCATION);
             }

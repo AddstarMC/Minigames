@@ -46,7 +46,7 @@ public final class ResourcePack implements ConfigurationSerializable {
         try {
             url1 = new URL((String) input.get("url"));
         } catch (final MalformedURLException e) {
-            Minigames.log().warning("The URL defined in the configuration is malformed: " + e.getMessage());
+            Minigames.getCmpnntLogger().warn("The URL defined in the configuration is malformed: ", e);
             url1 = null;
             this.valid = false;
         }
@@ -124,7 +124,7 @@ public final class ResourcePack implements ConfigurationSerializable {
                         try (final FileInputStream fis = new FileInputStream(this.local)) {
                             this.hash = this.getSH1Hash(fis);
                         } catch (final IOException e) {
-                            e.printStackTrace();
+                            Minigames.getCmpnntLogger().error("", e);
                         }
                         //Validate the remote file hash = local.
                         final File temp;
@@ -132,20 +132,19 @@ public final class ResourcePack implements ConfigurationSerializable {
                             temp = File.createTempFile(this.name, ext);
                             Files.copy(in, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
                         } catch (final IOException e) {
-                            Minigames.log().warning(e.getMessage());
-                            e.printStackTrace();
+                            Minigames.getCmpnntLogger().warn("", e);
                             this.valid = false;
                             return;
                         }
                         try (final FileInputStream fis = new FileInputStream(temp)) {
                             final byte[] has = this.getSH1Hash(fis);
                             if (Arrays.equals(has, this.hash)) {
-                                Minigames.log().info("Resource Pack: " + this.name + " passed external validation");
+                                Minigames.getCmpnntLogger().info("Resource Pack: " + this.name + " passed external validation");
                                 this.valid = true;
                                 return;
                             }
                         } catch (final IOException e) {
-                            e.printStackTrace();
+                            Minigames.getCmpnntLogger().warn("", e);
                             this.valid = false;
                             return;
                         }
@@ -153,7 +152,7 @@ public final class ResourcePack implements ConfigurationSerializable {
                         try (final FileInputStream fis = new FileInputStream(temp)) {
                             Files.copy(fis, this.local.toPath(), StandardCopyOption.REPLACE_EXISTING);
                         } catch (final IOException e) {
-                            e.printStackTrace();
+                            Minigames.getCmpnntLogger().error("", e);
                         }
                         //set the new hash as long as it's not null its valid
                         this.setLocalHash();
@@ -165,7 +164,7 @@ public final class ResourcePack implements ConfigurationSerializable {
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            Minigames.getCmpnntLogger().error("", e);
             this.valid = false;
         }
     }
@@ -183,12 +182,12 @@ public final class ResourcePack implements ConfigurationSerializable {
                     }
                 }
             } catch (final IOException e) {
-                Minigames.log().warning(e.getMessage());
+                Minigames.getCmpnntLogger().warn("", e);
                 return null;
             }
             return digest.digest();
         } catch (final NoSuchAlgorithmException e) {
-            Minigames.log().severe(e.getMessage());
+            Minigames.getCmpnntLogger().error("", e);
             return null;
         }
     }
@@ -203,8 +202,7 @@ public final class ResourcePack implements ConfigurationSerializable {
                 this.valid = true;
                 return;
             } catch (final IOException e) {
-                Minigames.log().warning(e.getMessage());
-                e.printStackTrace();
+                Minigames.getCmpnntLogger().warn("", e);
                 this.valid = false;
                 return;
             }
@@ -229,7 +227,7 @@ public final class ResourcePack implements ConfigurationSerializable {
         try (final InputStream in = this.url.openStream()) {
             Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (final IOException e) {
-            e.printStackTrace();
+            Minigames.getCmpnntLogger().error("", e);
             this.valid = false;
         }
     }

@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.logging.Level;
 
 import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
 
@@ -145,7 +144,7 @@ public class BackendCommand implements ICommand {
         @Override
         public void onError(Throwable e, String state, int count) {
             sender.sendMessage(ChatColor.RED + "[Minigames] Export error. See console for details.");
-            Minigames.getPlugin().getLogger().log(Level.SEVERE, "Exporting error at " + state + ": " + count, e);
+            Minigames.getCmpnntLogger().error("Exporting error at " + state + ": " + count, e);
         }
     }
 }

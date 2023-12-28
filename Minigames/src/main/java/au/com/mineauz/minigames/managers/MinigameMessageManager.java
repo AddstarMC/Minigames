@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * Class will hold and store all messages that are required for minigames
@@ -43,7 +42,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
     public static void registerCoreLanguage() {
         String tag = Minigames.getPlugin().getConfig().getString("lang", Locale.getDefault().toLanguageTag());
         locale = Locale.forLanguageTag(tag);
-        Minigames.log().info("MessageManager set locale for language:" + locale.toLanguageTag());
+        Minigames.getCmpnntLogger().info("MessageManager set locale for language:" + locale.toLanguageTag());
         File file = new File(new File(Minigames.getPlugin().getDataFolder(), "lang"), "minigames.properties");
         registerCoreLanguage(file, Locale.getDefault());
     }
@@ -55,19 +54,19 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
             try (InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
                 langBundleMinigames = new PropertyResourceBundle(inputStreamReader);
             } catch (IOException e) {
-                Minigames.log().log(Level.WARNING, "couldn't get Ressource bundle from file " + file.getName(), e);
+                Minigames.getCmpnntLogger().warn("couldn't get Ressource bundle from file " + file.getName(), e);
             }
         } else {
             try {
                 langBundleMinigames = ResourceBundle.getBundle("messages", locale, Minigames.getPlugin().getClass().getClassLoader(), new UTF8ResourceBundleControl());
             } catch (MissingResourceException e) {
-                Minigames.log().log(Level.WARNING, "couldn't get Ressource bundle for lang " + locale.toLanguageTag(), e);
+                Minigames.getCmpnntLogger().warn("couldn't get Ressource bundle for lang " + locale.toLanguageTag(), e);
             }
         }
         if (langBundleMinigames != null) {
             registerMessageFile("minigames", langBundleMinigames);
         } else {
-            Minigames.log().severe("No Core Language Resource Could be loaded...messaging will be broken");
+            Minigames.getCmpnntLogger().error("No Core Language Resource Could be loaded...messaging will be broken");
         }
     }
 
@@ -85,7 +84,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
             return false;
         } else {
             if (propertiesHashMap.put(identifier, bundle) == null) {
-                Minigames.log().info("Loaded and registered Resource Bundle " + bundle.getBaseBundleName()
+                Minigames.getCmpnntLogger().info("Loaded and registered Resource Bundle " + bundle.getBaseBundleName()
                         + " with Locale:" + bundle.getLocale().toString() + " Added " + bundle.keySet().size() + " keys");
                 return true;
             } else {

@@ -37,7 +37,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.logging.Level;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Minigame implements ScriptObject {
@@ -157,7 +156,7 @@ public class Minigame implements ScriptObject {
             try {
                 addModule(mod.getDeclaredConstructor(Minigame.class).newInstance(this));
             } catch (Exception e) {
-                Minigames.log().log(Level.WARNING, "Couldn't construct Module.", e);
+                Minigames.getCmpnntLogger().warn("Couldn't construct Module.", e);
             }
         }
 
@@ -758,7 +757,7 @@ public class Minigame implements ScriptObject {
         try {
             this.mechanic.setFlag(GameMechanics.MECHANIC_NAME.valueOf(scoreType.toUpperCase()).toString());
         } catch (Exception e) {
-            Minigames.log(Level.WARNING, "Mechanic Not found:" + e.getLocalizedMessage());
+            Minigames.getCmpnntLogger().warn("Mechanic Not found:", e);
         }
     }
 
@@ -1417,10 +1416,10 @@ public class Minigame implements ScriptObject {
                 if (material == null) {
                     material = Material.matchMaterial(block, true);
                     if (material == null) {
-                        Minigames.log().info(" Failed to match config material.");
-                        Minigames.log().info(block + " did not match a material please update config: " + this.name);
+                        Minigames.getCmpnntLogger().info(" Failed to match config material.");
+                        Minigames.getCmpnntLogger().info(block + " did not match a material please update config: " + this.name);
                     } else {
-                        Minigames.log().info(block + " is a legacy material please review the config we will attempt to auto update..but you may want to add newer materials GAME: " + this.name);
+                        Minigames.getCmpnntLogger().info(block + " is a legacy material please review the config we will attempt to auto update..but you may want to add newer materials GAME: " + this.name);
                         getRecorderData().addWBBlock(material);
                     }
                 } else {
@@ -1449,7 +1448,7 @@ public class Minigame implements ScriptObject {
 
             @Override
             public void onFailure(@NotNull Throwable t) {
-                t.printStackTrace();
+                Minigames.getCmpnntLogger().error("", t);
             }
         });
 

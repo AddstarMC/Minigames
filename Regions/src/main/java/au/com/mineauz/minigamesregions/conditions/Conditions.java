@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions.conditions;
 
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuUtility;
@@ -55,7 +56,7 @@ public class Conditions {
                 return conditions.get(name.toUpperCase()).getDeclaredConstructor().newInstance();
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
                      InvocationTargetException e) {
-                e.printStackTrace();
+                Minigames.getCmpnntLogger().error("", e);
             }
         }
         return null;

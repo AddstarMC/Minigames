@@ -1,5 +1,7 @@
 package au.com.mineauz.minigames.minigame.reward;
 
+import au.com.mineauz.minigames.Minigames;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +31,7 @@ public class RewardTypes {
                 return types.get(name.toUpperCase()).getDeclaredConstructor(Rewards.class).newInstance(rewards);
             } catch (InstantiationException | SecurityException | NoSuchMethodException | InvocationTargetException |
                      IllegalArgumentException | IllegalAccessException e) {
-                e.printStackTrace();
+                Minigames.getCmpnntLogger().error("", e);
             }
         }
         return null;

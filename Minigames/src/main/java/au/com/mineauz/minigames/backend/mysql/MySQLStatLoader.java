@@ -1,32 +1,31 @@
 package au.com.mineauz.minigames.backend.mysql;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.backend.ConnectionHandler;
 import au.com.mineauz.minigames.backend.StatementKey;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredStat;
 import com.google.common.collect.Lists;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 class MySQLStatLoader {
     private final MySQLBackend backend;
-    private final Logger logger;
+    private final ComponentLogger logger;
 
     private final StatementKey getSingleAsc;
     private final StatementKey getSingleDesc;
     private final StatementKey getSingle;
 
-    public MySQLStatLoader(MySQLBackend backend, Logger logger) {
+    public MySQLStatLoader(MySQLBackend backend, ComponentLogger logger) {
         this.backend = backend;
         this.logger = logger;
 
@@ -37,7 +36,7 @@ class MySQLStatLoader {
     }
 
     public List<StoredStat> loadStatValues(Minigame minigame, MinigameStat stat, StatValueField field, ScoreboardOrder order, int offset, int length) {
-        MinigameUtils.debugMessage("MySQL beginning stat load for " + minigame.getName(false) + ", " + stat + ", " + field);
+        MinigameMessageManager.debugMessage("MySQL beginning stat load for " + minigame.getName(false) + ", " + stat + ", " + field);
         ConnectionHandler handler = null;
         try {
             handler = backend.getPool().getConnection();
@@ -51,7 +50,7 @@ class MySQLStatLoader {
             if (handler != null) {
                 handler.release();
             }
-            MinigameUtils.debugMessage("MySQL completed stat load for " + minigame.getName(false));
+            MinigameMessageManager.debugMessage("MySQL completed stat load for " + minigame.getName(false));
         }
     }
 
@@ -72,7 +71,7 @@ class MySQLStatLoader {
                 }
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Failed to load stat for " + minigame.getName(false) + " " + playerId, e);
+            logger.error("Failed to load stat for " + minigame.getName(false) + " " + playerId, e);
             return 0;
         } finally {
             if (handler != null) {

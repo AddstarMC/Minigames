@@ -119,7 +119,7 @@ public class PlaceHolderManager extends PlaceholderExpansion { //todo integrate 
                     plugin.getLogger().warning("Error processing PAPI:" + identifier);
                     plugin.getLogger().warning(e.getMessage());
                     if (plugin.isDebugging()) {
-                        e.printStackTrace();
+                        Minigames.getCmpnntLogger().error("", e);
                     }
                     return null;
                 }

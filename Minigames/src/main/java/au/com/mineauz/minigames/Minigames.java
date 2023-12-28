@@ -23,6 +23,7 @@ import com.google.common.io.Closeables;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.papermc.lib.PaperLib;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.CustomChart;
@@ -47,13 +48,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class Minigames extends JavaPlugin {
+    private static ComponentLogger componentLogger = null;
     private static final Pattern COMPILE = Pattern.compile("[-]?[0-9]+");
-    public static Logger log;
     private static Minigames plugin;
     private static Economy econ;
     private static SignBase minigameSigns;
@@ -73,13 +72,11 @@ public class Minigames extends JavaPlugin {
 
     public Minigames() {
         super();
-        log = this.getLogger();
         startUpHandler = new StartUpLogHandler();
     }
 
     protected Minigames(final JavaPluginLoader loader, final PluginDescriptionFile description, final File dataFolder, final File file) {
         super(loader, description, dataFolder, file);
-        log = this.getLogger();
         startUpHandler = new StartUpLogHandler();
     }
 
@@ -91,18 +88,12 @@ public class Minigames extends JavaPlugin {
         return plugin;
     }
 
-    public static Logger log() {
-        return log;
-    }
-
-    public static void log(final Level level, final String message) {
-        log.log(level, message);
-    }
-
-    public static void debugMessage(final String message) {
-        if (Minigames.getPlugin().debug) {
-            log(Level.INFO, "[MINIGAMES DEBUG] " + message);
+    public static ComponentLogger getCmpnntLogger() {
+        if (Minigames.componentLogger == null) {
+            Minigames.componentLogger = Minigames.getPlugin().getComponentLogger();
         }
+
+        return Minigames.componentLogger;
     }
 
     public String getStartupLog() {
@@ -117,13 +108,9 @@ public class Minigames extends JavaPlugin {
         return placeHolderManager;
     }
 
-    public void setLog(final Logger log) {
-        Minigames.log = log;
-    }
-
     public void onDisable() {
         if (getPlugin() == null) {
-            log().info("Minigames is disabled");
+            this.getComponentLogger().info("Minigames is disabled");
             return;
         }
         final PluginDescriptionFile desc = this.getDescription();
@@ -176,38 +163,39 @@ public class Minigames extends JavaPlugin {
         globalLoadouts.saveConfig();
         this.minigameManager.saveRewardSigns();
         resourceManager.saveResources();
-        log().info(desc.getName() + " successfully disabled.");
+        this.getCmpnntLogger().info(desc.getName() + " successfully disabled.");
     }
 
     public void onEnable() {
-        log.addHandler(startUpHandler);
+        this.getLogger().addHandler(startUpHandler);
+        ComponentLogger logger = this.getComponentLogger();
         try {
             plugin = this;
             switch (this.checkVersion()) {
                 case -1:
-                    log().warning("This version of Minigames (" + VERSION.getCanonical() + ") is designed for Paper Version: " + PAPER_VERSION.getCanonical());
-                    log().warning("Your version is newer: " + Bukkit.getBukkitVersion());
-                    log().warning("Please check for an updated");
+                    logger.warn("This version of Minigames (" + VERSION.getCanonical() + ") is designed for Paper Version: " + PAPER_VERSION.getCanonical());
+                    logger.warn("Your version is newer: " + Bukkit.getBukkitVersion());
+                    logger.warn("Please check for an updated");
 
                     break;
                 case 0:
                     break;
                 case 1:
                     if (!this.getConfig().getBoolean("forceload", true)) {
-                        log().warning("This version of Minigames (" + VERSION.getCanonical() + ") " +
+                        logger.warn("This version of Minigames (" + VERSION.getCanonical() + ") " +
                                 "is designed for Bukkit Version: " + PAPER_VERSION.getCanonical());
-                        log().warning("Your version is " + Bukkit.getVersion());
-                        log().warning(" Bypass this by setting forceload: true in the config");
+                        logger.warn("Your version is " + Bukkit.getVersion());
+                        logger.warn(" Bypass this by setting forceload: true in the config");
 
-                        log().warning("DISABLING MINIGAMES....");
+                        logger.warn("DISABLING MINIGAMES....");
                         plugin = null;
                         this.onDisable();
                         return;
                     } else {
-                        log().warning("Version incompatible - Force Loading Minigames.");
-                        log().warning("This version of Minigames (" + VERSION.getCanonical() + ") " +
+                        logger.warn("Version incompatible - Force Loading Minigames.");
+                        logger.warn("This version of Minigames (" + VERSION.getCanonical() + ") " +
                                 "is designed for Bukkit Version: " + PAPER_VERSION.getCanonical());
-                        log().warning("Your version is " + Bukkit.getBukkitVersion());
+                        logger.warn("Your version is " + Bukkit.getBukkitVersion());
                     }
             }
             final PluginDescriptionFile desc = this.getDescription();
@@ -219,7 +207,7 @@ public class Minigames extends JavaPlugin {
             if (!this.setupEconomy()) {
                 this.getLogger().info("No Vault plugin found! You may only reward items.");
             }
-            this.backend = new BackendManager(this.getLogger());
+            this.backend = new BackendManager(this.getComponentLogger());
             if (!this.backend.initialize(this.getConfig())) {
                 this.getServer().getPluginManager().disablePlugin(this);
                 return;
@@ -245,21 +233,20 @@ public class Minigames extends JavaPlugin {
             try {
                 this.initMetrics();
             } catch (final IllegalStateException | NoClassDefFoundError | ExceptionInInitializerError e) {
-                log().log(Level.INFO, "Metrics will not be available(enabled debug for more details): " + e.getMessage());
+                logger.info("Metrics will not be available(enabled debug for more details): " + e.getMessage());
                 if (this.debug) {
-                    e.printStackTrace();
+                    logger.info("", e);
                 }
             }
             PaperLib.suggestPaper(this);
-            log().info(desc.getName() + " successfully enabled.");
+            logger.info(desc.getName() + " successfully enabled.");
             this.hookPlaceHolderApi();
         } catch (final Throwable e) {
             plugin = null;
-            log().log(Level.SEVERE, "Failed to enable Minigames " + this.getDescription().getVersion() + ": " + e.getMessage());
-            e.printStackTrace();
+            logger.error("Failed to enable Minigames " + this.getDescription().getVersion() + ": ", e);
             Bukkit.getPluginManager().disablePlugin(this);
         }
-        log.removeHandler(startUpHandler);
+        this.getLogger().removeHandler(startUpHandler);
     }
 
     private void setupLoadOuts() {
@@ -346,22 +333,20 @@ public class Minigames extends JavaPlugin {
                             this.minigameManager.addMinigame(game);
                         } catch (final Exception e) {
                             this.getLogger().severe(ChatColor.RED + "Failed to load \"" + minigame + "\"! The configuration file may be corrupt or missing!");
-                            e.printStackTrace();
+                            getCmpnntLogger().error("", e);
                         }
                     }
                 }, 1L);
             }
         } catch (final FileNotFoundException ex) {
-            log().info("Failed to load config, creating one.");
+            this.getComponentLogger().info("Failed to load config, creating one.");
             try {
                 this.getConfig().save(this.getDataFolder() + "/config.yml");
             } catch (final IOException e) {
-                log().log(Level.SEVERE, "Could not save config.yml!");
-                e.printStackTrace();
+                this.getComponentLogger().error("Could not save config.yml!", e);
             }
         } catch (final Exception e) {
-            log().log(Level.SEVERE, "Failed to load config!");
-            e.printStackTrace();
+            this.getComponentLogger().error("Failed to load config!", e);
         }
 
     }
@@ -381,17 +366,17 @@ public class Minigames extends JavaPlugin {
     private void hookPlaceHolderApi() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             hasPAPI = true;
-            log.info("--------------------");
-            log.info("Hooking PlaceHolder API");
+            this.getComponentLogger().info("--------------------");
+            this.getComponentLogger().info("Hooking PlaceHolder API");
             placeHolderManager = new PlaceHolderManager(this);
             placeHolderManager.register();
-            log.info("Adding Placeholders for " + getMinigameManager().getAllMinigames().size() + " games");
+            this.getComponentLogger().info("Adding Placeholders for " + getMinigameManager().getAllMinigames().size() + " games");
             for (Map.Entry<String, Minigame> game : getMinigameManager().getAllMinigames().entrySet()) {
-                log.fine("Adding Placeholders for " + game.getKey());
+                this.getComponentLogger().trace("Adding Placeholders for " + game.getKey());
                 placeHolderManager.addGameIdentifiers(game.getValue());
             }
-            log.info("PlaceHolders: " + placeHolderManager.getRegisteredPlaceHolders().toString());
-            log.info("--------------------");
+            this.getComponentLogger().info("PlaceHolders: " + placeHolderManager.getRegisteredPlaceHolders().toString());
+            this.getComponentLogger().info("--------------------");
         }
     }
 

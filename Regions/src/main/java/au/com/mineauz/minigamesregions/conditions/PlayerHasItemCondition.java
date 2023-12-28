@@ -84,7 +84,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
         try {
             checkType = PositionType.valueOf(where.getFlag().toUpperCase());
         } catch (IllegalArgumentException e) {
-            Minigames.log().warning(e.getMessage());
+            Minigames.getCmpnntLogger().warn("", e);
         }
         PlayerInventory inventory = player.getPlayer().getInventory();
         ItemStack[] searchItems;

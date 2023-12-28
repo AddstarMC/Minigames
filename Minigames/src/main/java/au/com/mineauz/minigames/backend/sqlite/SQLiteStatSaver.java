@@ -1,22 +1,21 @@
 package au.com.mineauz.minigames.backend.sqlite;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.backend.ConnectionHandler;
 import au.com.mineauz.minigames.backend.StatementKey;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatFormat;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredGameStats;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 
 import java.sql.SQLException;
 import java.util.Map.Entry;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 class SQLiteStatSaver {
     private final SQLiteBackend backend;
-    private final Logger logger;
+    private final ComponentLogger logger;
 
     private final StatementKey insertStat;
     private final StatementKey insertStatTotal;
@@ -25,7 +24,7 @@ class SQLiteStatSaver {
 
     private final StatementKey[] insertStatements = new StatementKey[4];
 
-    public SQLiteStatSaver(SQLiteBackend backend, Logger logger) {
+    public SQLiteStatSaver(SQLiteBackend backend, ComponentLogger logger) {
         this.backend = backend;
         this.logger = logger;
 
@@ -48,7 +47,7 @@ class SQLiteStatSaver {
     }
 
     public void saveData(StoredGameStats data) {
-        MinigameUtils.debugMessage("SQLite beginning save of " + data);
+        MinigameMessageManager.debugMessage("SQLite beginning save of " + data);
 
         ConnectionHandler handler = null;
         try {
@@ -65,14 +64,14 @@ class SQLiteStatSaver {
                 // Commit the changes
                 handler.endTransaction();
             } catch (SQLException e) {
-                logger.log(Level.SEVERE, "Failed to save stats for " + data.getPlayer().getName(), e);
+                logger.error("Failed to save stats for " + data.getPlayer().getName(), e);
 
                 handler.endTransactionFail();
             } finally {
-                MinigameUtils.debugMessage("SQLite completed save of " + data);
+                MinigameMessageManager.debugMessage("SQLite completed save of " + data);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.warn("", e);
         } finally {
             if (handler != null) {
                 handler.release();
@@ -82,7 +81,7 @@ class SQLiteStatSaver {
 
     private void saveStats(ConnectionHandler handler, StoredGameStats data, UUID player, int minigameId) throws SQLException {
 
-        MinigameUtils.debugMessage("SQLite saving stats for " + player + ", game " + minigameId);
+        MinigameMessageManager.debugMessage("SQLite saving stats for " + player + ", game " + minigameId);
 
         // Prepare all updates
         for (Entry<MinigameStat, Long> entry : data.getStats().entrySet()) {
@@ -99,7 +98,7 @@ class SQLiteStatSaver {
         handler.executeBatch(insertStatMin);
         handler.executeBatch(insertStatMax);
 
-        MinigameUtils.debugMessage("SQLite completed save for " + player + ", game " + minigameId);
+        MinigameMessageManager.debugMessage("SQLite completed save for " + player + ", game " + minigameId);
     }
 
     private void queueStat(ConnectionHandler handler, MinigameStat stat, long value, StatFormat format, UUID player, int minigameId) throws SQLException {

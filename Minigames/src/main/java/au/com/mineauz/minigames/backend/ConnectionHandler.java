@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.backend;
 
+import au.com.mineauz.minigames.Minigames;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
@@ -133,7 +134,7 @@ public class ConnectionHandler {
         try {
             connection.setAutoCommit(false);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Minigames.getCmpnntLogger().error("", e);
         }
     }
 
@@ -142,7 +143,7 @@ public class ConnectionHandler {
             if (!connection.getAutoCommit()) connection.setAutoCommit(true);
             else connection.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
+            Minigames.getCmpnntLogger().error("", e);
         }
     }
 
@@ -151,7 +152,7 @@ public class ConnectionHandler {
             connection.rollback();
             connection.setAutoCommit(true);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Minigames.getCmpnntLogger().error("", e);
         }
     }
 }

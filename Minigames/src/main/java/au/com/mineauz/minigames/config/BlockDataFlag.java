@@ -10,7 +10,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
 
 public class BlockDataFlag extends Flag<BlockData> {
 
@@ -50,7 +49,7 @@ public class BlockDataFlag extends Flag<BlockData> {
             if (olddata == 0) olddata = config.getInt(path + ".dur");
             return Bukkit.getUnsafe().fromLegacy(mat, (byte) olddata);
         } catch (Exception ignored) {
-            Minigames.getPlugin().getLogger().log(Level.CONFIG, "Error loading Value for" + path);
+            Minigames.getCmpnntLogger().trace("Error loading Value for" + path);
         }
         return Material.STONE.createBlockData();
     }

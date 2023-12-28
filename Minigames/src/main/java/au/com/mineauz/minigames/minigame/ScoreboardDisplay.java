@@ -383,7 +383,7 @@ public class ScoreboardDisplay {
 
             @Override
             public void onFailure(@NotNull Throwable t) {
-                t.printStackTrace();
+                Minigames.getCmpnntLogger().error("", t);
                 stats = Collections.emptyList();
                 needsLoad = true;
             }

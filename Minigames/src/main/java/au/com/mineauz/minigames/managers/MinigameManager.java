@@ -31,7 +31,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.logging.Level;
 
 public class MinigameManager {
     private static final Minigames PLUGIN = Minigames.getPlugin();
@@ -100,7 +99,7 @@ public class MinigameManager {
             minigame.saveMinigame();
         } else if (!minigame.getMechanic().validTypes().contains(MinigameType.GLOBAL)) {
             if (caller == null) {
-                Minigames.log().log(Level.WARNING, "The Minigame Type \"" + MinigameType.GLOBAL.getName() + "\" cannot use the selected Mechanic \"" + minigame.getMechanicName() + "\"!");
+                Minigames.getCmpnntLogger().warn("The Minigame Type \"" + MinigameType.GLOBAL.getName() + "\" cannot use the selected Mechanic \"" + minigame.getMechanicName() + "\"!");
             } else {
                 MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_INVALIDMECHANIC,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()),
@@ -108,7 +107,7 @@ public class MinigameManager {
             }
         } else if (!canStart) {
             if (caller == null) {
-                Minigames.log().log(Level.WARNING, "The Game Mechanic \"" + minigame.getMechanicName() + "\" has failed to initiate!");
+                Minigames.getCmpnntLogger().warn("The Game Mechanic \"" + minigame.getMechanicName() + "\" has failed to initiate!");
             } else {
                 MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_MECHANICSTARTFAIL,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MECHANIC.getKey(), minigame.getMechanicName()));
@@ -217,13 +216,13 @@ public class MinigameManager {
                 }
             }
 
-            Minigames.debugMessage("Block Regen Data has been created for " + minigame.getName(false));
+            MinigameMessageManager.debugMessage("Block Regen Data has been created for " + minigame.getName(false));
         }
     }
 
     public void addMinigameType(final @NotNull MinigameTypeBase minigameType) {
         this.minigameTypes.put(minigameType.getType(), minigameType);
-        Minigames.debugMessage("Loaded " + minigameType.getType().getName() + " minigame type."); //DEBUG
+        MinigameMessageManager.debugMessage("Loaded " + minigameType.getType().getName() + " minigame type."); //DEBUG
     }
 
     public MinigameTypeBase minigameType(final @NotNull MinigameType name) {
@@ -478,7 +477,7 @@ public class MinigameManager {
 
     public boolean teleportPlayerOnJoin(final @NotNull Minigame minigame, final @NotNull MinigamePlayer mgPlayer) {
         if (this.minigameType(minigame.getType()) == null) {
-            Minigames.log().warning("The Minigame \"" + minigame.getName(true) + "\" failed the start-up checks for its Type");
+            Minigames.getCmpnntLogger().warn("The Minigame \"" + minigame.getName(true) + "\" failed the start-up checks for its Type");
         }
         return this.minigameType(minigame.getType()).teleportOnJoin(mgPlayer, minigame);
     }

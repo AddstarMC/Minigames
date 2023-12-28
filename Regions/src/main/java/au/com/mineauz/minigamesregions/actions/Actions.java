@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions.actions;
 
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.menu.MenuUtility;
@@ -69,7 +70,7 @@ public class Actions {
             try {
                 return actions.get(name.toUpperCase()).newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
+                Minigames.getCmpnntLogger().error("", e);
             }
         return null;
     }

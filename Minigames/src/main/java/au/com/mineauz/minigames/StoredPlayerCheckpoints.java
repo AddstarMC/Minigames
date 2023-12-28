@@ -152,7 +152,7 @@ public class StoredPlayerCheckpoints {
             } catch (Exception e) {
                 // When an error is detected, remove the stored erroneous checkpoint
                 Minigames.getPlugin().getLogger().warning("Unable to save checkpoint for " + mgm + "! It has been been removed.");
-                e.printStackTrace();
+                Minigames.getCmpnntLogger().error("", e);
 
                 // Remove the checkpoint from memory, so it doesn't cause an error again
                 save.getConfig().set(mgm, null);
@@ -176,7 +176,7 @@ public class StoredPlayerCheckpoints {
                 // When an error is detected, remove the global checkpoint
                 save.getConfig().set("globalcheckpoint", null);
                 Minigames.getPlugin().getLogger().warning("Unable to save global checkpoint!");
-                e.printStackTrace();
+                Minigames.getCmpnntLogger().error("", e);
             }
         }
         save.saveConfig();
@@ -207,7 +207,7 @@ public class StoredPlayerCheckpoints {
                 } catch (ClassCastException e) {
                     MinigameMessageManager.debugMessage("Checkpoint could not be loaded ... " + mgm + " xyz not double");
                 } catch (NullPointerException e) {
-                    e.printStackTrace();
+                    Minigames.getCmpnntLogger().error("", e);
                 }
                 if (save.getConfig().contains(mgm + ".flags")) {
                     flags.put(mgm, save.getConfig().getStringList(mgm + ".flags"));

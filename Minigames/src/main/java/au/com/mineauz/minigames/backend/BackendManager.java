@@ -8,6 +8,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.stats.*;
 import com.google.common.util.concurrent.*;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -17,17 +18,15 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class BackendManager {
-    private final Logger logger;
+    private final ComponentLogger logger;
     private final ListeningExecutorService executorService;
     private final Executor bukkitThreadExecutor;
     private boolean debug;
     private Backend backend;
 
-    public BackendManager(Logger logger) {
+    public BackendManager(ComponentLogger logger) {
         this.logger = logger;
         this.debug = false;
 
@@ -84,7 +83,7 @@ public class BackendManager {
 
         if (backend == null) {
             // Default to this
-            logger.warning("Invalid backend type " + type + ". Falling back to SQLite");
+            logger.warn("Invalid backend type " + type + ". Falling back to SQLite");
             backend = new SQLiteBackend(logger);
         }
 
@@ -103,7 +102,7 @@ public class BackendManager {
 
                 @Override
                 public void onError(Throwable e, String state, int count) {
-                    logger.log(Level.SEVERE, "Conversion error: " + state + " " + count, e);
+                    logger.error("Conversion error: " + state + " " + count, e);
                 }
 
                 @Override
@@ -122,7 +121,7 @@ public class BackendManager {
             // Start the cleaning task to remove old connections
             Bukkit.getScheduler().runTaskTimerAsynchronously(Minigames.getPlugin(), this.backend::clean, 300, 300);
         } catch (NullPointerException e) {
-            logger.warning("Bukkit could not schedule a the db pool cleaner");
+            logger.warn("Bukkit could not schedule a the db pool cleaner");
             return false;
         }
         return true;
@@ -268,7 +267,7 @@ public class BackendManager {
         return executorService.submit(() -> {
             backend.shutdown();
             backend = newBackend;
-            logger.warning("Backend has been switched to " + type);
+            logger.warn("Backend has been switched to " + type);
         }, null);
     }
 

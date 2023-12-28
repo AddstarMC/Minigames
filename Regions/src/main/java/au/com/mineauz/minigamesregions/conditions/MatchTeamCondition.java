@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 public class MatchTeamCondition extends ConditionInterface {
     private final StringFlag team = new StringFlag(TeamColor.RED.toString(), "team");
@@ -106,7 +105,7 @@ public class MatchTeamCondition extends ConditionInterface {
         if (teamColor != null) {
             return teamColor.getDisplaMaterial();
         } else {
-            Main.getPlugin().getLogger().log(Level.WARNING, "Couldn't get TeamColor for " + team);
+            Main.getPlugin().getComponentLogger().warn("Couldn't get TeamColor for " + team);
             return Material.BARRIER;
         }
     }

@@ -131,7 +131,7 @@ public class MinigamePlayer implements ScriptObject {
         final GameMode lastGM = this.player.getGameMode();
         float exp = this.player.getExp();
         if (exp < 0) {
-            Minigames.log.warning("Player Experience was less that 0: " + this.player.getDisplayName() + " " + this.player.getExp());
+            Minigames.getCmpnntLogger().warn("Player Experience was less that 0: " + this.player.getDisplayName() + " " + this.player.getExp());
             exp = 0;
         }
         final int level = this.player.getLevel();
@@ -684,7 +684,7 @@ public class MinigamePlayer implements ScriptObject {
             this.player.getPlayer().setResourcePack(pack.getUrl().toString(), pack.getSH1Hash());
             return true;
         } catch (final IllegalArgumentException e) {
-            Minigames.log().warning(e.getMessage());
+            Minigames.getCmpnntLogger().warn("", e);
         }
         return false;
     }

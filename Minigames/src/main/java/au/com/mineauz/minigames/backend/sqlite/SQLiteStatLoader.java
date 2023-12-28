@@ -9,24 +9,23 @@ import au.com.mineauz.minigames.stats.MinigameStat;
 import au.com.mineauz.minigames.stats.StatValueField;
 import au.com.mineauz.minigames.stats.StoredStat;
 import com.google.common.collect.Lists;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 class SQLiteStatLoader {
     private final SQLiteBackend backend;
-    private final Logger logger;
+    private final ComponentLogger logger;
 
     private final StatementKey getSingleAsc;
     private final StatementKey getSingleDesc;
     private final StatementKey getSingle;
 
-    public SQLiteStatLoader(SQLiteBackend backend, Logger logger) {
+    public SQLiteStatLoader(SQLiteBackend backend, ComponentLogger logger) {
         this.backend = backend;
         this.logger = logger;
 
@@ -72,7 +71,7 @@ class SQLiteStatLoader {
                 }
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Failed to load stat for " + minigame.getName(false) + " " + playerId, e);
+            logger.error("Failed to load stat for " + minigame.getName(false) + " " + playerId, e);
             return 0;
         } finally {
             if (handler != null) {

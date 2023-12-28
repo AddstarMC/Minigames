@@ -19,8 +19,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
 
 public class DebugCommand implements ICommand {
 
@@ -169,14 +167,14 @@ public class DebugCommand implements ICommand {
                     Paste paste = result.getPaste().get();
                     sender.sendMessage("Debug Paste: https://paste.gg/" + paste.getId());
                     sender.sendMessage("Deletion Key: " + paste.getDeletionKey());
-                    plugin.getLogger().log(new LogRecord(Level.INFO, "Paste:  https://paste.gg/" + paste.getId()));
-                    plugin.getLogger().log(new LogRecord(Level.INFO, "Paste:  Deletion Key: " + paste.getDeletionKey()));
+                    Minigames.getCmpnntLogger().info("Paste:  https://paste.gg/" + paste.getId());
+                    Minigames.getCmpnntLogger().info("Paste:  Deletion Key: " + paste.getDeletionKey());
                 } else {
                     sender.sendMessage("Paste Failed.");
                 }
             } catch (InvalidPasteException e) {
                 sender.sendMessage("Paste Failed" + e.getMessage());
-                Minigames.log().warning(e.getMessage());
+                Minigames.getCmpnntLogger().warn("", e);
             }
         });
     }

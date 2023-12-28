@@ -1,5 +1,6 @@
 package au.com.mineauz.minigames.backend.mysql;
 
+import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.backend.*;
 import au.com.mineauz.minigames.backend.both.SQLExport;
 import au.com.mineauz.minigames.backend.both.SQLImport;
@@ -9,17 +10,16 @@ import au.com.mineauz.minigames.minigame.ScoreboardOrder;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.stats.*;
 import com.google.common.collect.Maps;
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MySQLBackend extends Backend {
-    private final Logger logger;
+    private final ComponentLogger logger;
     private final MySQLStatLoader loader;
     private final MySQLStatSaver saver;
     private ConnectionPool pool;
@@ -29,7 +29,7 @@ public class MySQLBackend extends Backend {
     private StatementKey loadStatSettings;
     private StatementKey saveStatSettings;
 
-    public MySQLBackend(Logger logger) {
+    public MySQLBackend(ComponentLogger logger) {
         this.logger = logger;
 
         loader = new MySQLStatLoader(this, logger);
@@ -67,11 +67,10 @@ public class MySQLBackend extends Backend {
                 handler.release();
                 return true;
             } catch (SQLException e) {
-                logger.severe("Failed to connect to the MySQL database. Please check your database settings. ");
-                e.printStackTrace();
+                logger.error("Failed to connect to the MySQL database. Please check your database settings. ", e);
             }
         } catch (ClassNotFoundException e) {
-            logger.severe("Failed to find MySQL JDBC driver. This version of craftbukkit is defective.");
+            logger.error("Failed to find MySQL JDBC driver. This version of craftbukkit is defective.", e);
         }
 
         return false;
@@ -115,7 +114,7 @@ public class MySQLBackend extends Backend {
                 }
 
             } catch (SQLException e) {
-                logger.log(Level.SEVERE, "Failed to add column last_updated to the PlayerStats table in the MySQL Minigames database", e);
+                logger.error("Failed to add column last_updated to the PlayerStats table in the MySQL Minigames database", e);
             }
 
             // Check for column entered on the PlayerStats table
@@ -128,7 +127,7 @@ public class MySQLBackend extends Backend {
                 }
 
             } catch (SQLException e) {
-                logger.log(Level.SEVERE, "Failed to add column entered to the PlayerStats table in the MySQL Minigames database", e);
+                logger.error("Failed to add column entered to the PlayerStats table in the MySQL Minigames database", e);
             }
 
             // Check the stat metadata table
@@ -234,7 +233,7 @@ public class MySQLBackend extends Backend {
                 return settings;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Minigames.getCmpnntLogger().error("", e);
             return Collections.emptyMap();
         } finally {
             if (handler != null) {
@@ -258,7 +257,7 @@ public class MySQLBackend extends Backend {
             handler.executeBatch(saveStatSettings);
             handler.endTransaction();
         } catch (SQLException e) {
-            e.printStackTrace();
+            Minigames.getCmpnntLogger().error("", e);
             handler.endTransactionFail();
         } finally {
             if (handler != null) {

@@ -11,7 +11,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 public class ReloadCommand implements ICommand {
 
@@ -73,12 +72,10 @@ public class ReloadCommand implements ICommand {
             try {
                 plugin.getConfig().save(plugin.getDataFolder() + "/config.yml");
             } catch (IOException e) {
-                plugin.getLogger().log(Level.SEVERE, "Could not save config.yml!");
-                e.printStackTrace();
+                Minigames.getCmpnntLogger().error("Could not save config.yml!", e);
             }
         } catch (Exception e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to load config!");
-            e.printStackTrace();
+            Minigames.getCmpnntLogger().error("Failed to load config!", e);
         }
 
         List<String> mgs = new ArrayList<>();

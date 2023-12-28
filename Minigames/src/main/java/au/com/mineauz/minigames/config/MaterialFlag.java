@@ -30,7 +30,7 @@ public class MaterialFlag extends Flag<Material> {
             Material flag = Material.getMaterial(config.getString(path + "." + getName()));
             if (flag == null) {
                 flag = Material.STONE;
-                Minigames.log().warning("Failed to load Material from config at :" + path + "." + getName() + " Value: " + config.getString(path + "." + getName()));
+                Minigames.getCmpnntLogger().warn("Failed to load Material from config at :" + path + "." + getName() + " Value: " + config.getString(path + "." + getName()));
             }
             setFlag(flag);
         } else {

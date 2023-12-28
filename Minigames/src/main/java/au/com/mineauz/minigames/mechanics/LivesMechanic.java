@@ -36,7 +36,7 @@ public class LivesMechanic extends GameMechanicBase {
         }
 
         if (caller == null) {
-            Minigames.log().warning("The Minigame \"" + minigame.getName(false) + "\" must have more than 0 lives to use this type");
+            Minigames.getCmpnntLogger().warn("The Minigame \"" + minigame.getName(false) + "\" must have more than 0 lives to use this type");
         } else {
             MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_LIVES_ERROR_NOLIVES);
         }

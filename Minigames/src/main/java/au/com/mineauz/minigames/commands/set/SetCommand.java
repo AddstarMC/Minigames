@@ -14,7 +14,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Level;
 
 public class SetCommand implements ICommand {
     private static final Map<String, ICommand> parameterList = new HashMap<>();
@@ -37,7 +36,7 @@ public class SetCommand implements ICommand {
                 cmdFile.write("! Alias");
                 cmdFile.newLine();
             } catch (IOException e) {
-                Minigames.log().log(Level.WARNING, "couldn't write cmd file", e);
+                Minigames.getCmpnntLogger().warn("couldn't write cmd file", e);
             }
         }
         registerSetCommand(new SetStartCommand());
@@ -104,7 +103,7 @@ public class SetCommand implements ICommand {
                 cmdFile.write("|}");
                 cmdFile.close();
             } catch (IOException e) {
-                Minigames.log().log(Level.WARNING, "couldn't write cmd file", e);
+                Minigames.getCmpnntLogger().warn("couldn't write cmd file", e);
             }
         }
     }
@@ -157,7 +156,7 @@ public class SetCommand implements ICommand {
                 cmdFile.newLine();
 
             } catch (IOException e) {
-                Minigames.log().log(Level.WARNING, "couldn't write cmd file", e);
+                Minigames.getCmpnntLogger().warn("couldn't write cmd file", e);
             }
         }
     }
