@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -121,7 +122,7 @@ public class SingleplayerType extends MinigameTypeBase {
     }
 
     @Override
-    public void quitMinigame(final MinigamePlayer player, final Minigame mgm, boolean forced) {
+    public void quitMinigame(final @NotNull MinigamePlayer player, final @NotNull Minigame mgm, boolean forced) {
         if (mgm.canSaveCheckpoint()) {
             StoredPlayerCheckpoints spc = player.getStoredPlayerCheckpoints();
             spc.addCheckpoint(mgm.getName(false), player.getCheckpoint());

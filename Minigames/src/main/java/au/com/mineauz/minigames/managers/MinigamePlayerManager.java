@@ -922,8 +922,9 @@ public class MinigamePlayerManager {
 
     public @Nullable MinigamePlayer getMinigamePlayer(UUID uuid) {
         for (MinigamePlayer p : minigamePlayers.values()) {
-            if (p.getUUID() == uuid)
+            if (p.getUUID() == uuid) {
                 return p;
+            }
         }
 
         return getMinigamePlayer(Bukkit.getPlayer(uuid));
