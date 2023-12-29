@@ -16,6 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +25,12 @@ public class SetRegenAreaCommand implements ICommand {
     private final int REGIONS_PER_PAGE = 5;
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "regenarea";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -39,13 +40,13 @@ public class SetRegenAreaCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return "Creates and deletes regeneration regions. This only needs to be used for Minigames that have things like leaf decay, fire, tnt etc." +
                 " If the Minigame has anything that the player doesn't directly interact with that breaks, this should be used.";
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return new String[]{"select", "create", "delete", /*"modify"*/};
     }
 
@@ -64,7 +65,7 @@ public class SetRegenAreaCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.regenarea";
     }
 
@@ -211,8 +212,8 @@ public class SetRegenAreaCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
 
         if (args.length == 1) {
             List<String> tab = new ArrayList<>();

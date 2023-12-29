@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.commands;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,12 +16,12 @@ import java.util.List;
 public class EditCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "edit";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -30,13 +31,13 @@ public class EditCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return "Lets you edit a Minigame using a neat menu. Clicking on the menu items will allow"
                 + " you to change the settings of the Minigame.";
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return null;
     }
 
@@ -51,13 +52,13 @@ public class EditCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.edit";
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
 
         if (args != null) {
             if (plugin.getMinigameManager().hasMinigame(args[0])) {
@@ -85,8 +86,8 @@ public class EditCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args != null && args.length == 1) {
             List<String> mgs
                     = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());

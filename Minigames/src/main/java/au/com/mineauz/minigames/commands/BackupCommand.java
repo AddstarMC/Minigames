@@ -9,6 +9,7 @@ import au.com.mineauz.minigames.recorder.RecorderData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +17,12 @@ import java.util.List;
 public class BackupCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "backup";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -31,13 +32,13 @@ public class BackupCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return "Backs up or restores the regen area of a Minigame in case of regeneration failure.\n"
                 + "Note: This is not 100% accurate, some blocks may not return to their original state.";
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return null;
     }
 
@@ -49,7 +50,7 @@ public class BackupCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.backup";
     }
 
@@ -101,8 +102,8 @@ public class BackupCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args != null) {
             if (args.length == 1) {
                 return MinigameUtils.tabCompleteMatch(new ArrayList<>(Minigames.getPlugin().getMinigameManager().getAllMinigames().keySet()), args[0]);

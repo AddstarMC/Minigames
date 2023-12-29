@@ -71,7 +71,7 @@ public class MinigameUtils {
             }
         }
         if (days != 0) {
-            if (!msg.equals("")) {
+            if (!msg.isEmpty()) {
                 if (!small) {
                     if (seconds != 0 || hours != 0 || minutes != 0) {
                         msg += ", ";
@@ -88,7 +88,7 @@ public class MinigameUtils {
                 msg += days + "d";
         }
         if (hours != 0) {
-            if (!msg.equals("")) {
+            if (!msg.isEmpty()) {
                 if (!small) {
                     if (seconds != 0 || minutes != 0) {
                         msg += ", ";
@@ -104,7 +104,7 @@ public class MinigameUtils {
                 msg += hours + "h";
         }
         if (minutes != 0) {
-            if (!msg.equals("")) {
+            if (!msg.isEmpty()) {
                 if (!small) {
                     if (seconds != 0) {
                         msg += ", ";
@@ -119,8 +119,8 @@ public class MinigameUtils {
             else
                 msg += minutes + "m";
         }
-        if (seconds != 0 || msg.equals("")) {
-            if (!msg.equals("")) {
+        if (seconds != 0 || msg.isEmpty()) {
+            if (!msg.isEmpty()) {
                 if (!small)
                     msg += " " + getLang("time.and") + " ";
                 else

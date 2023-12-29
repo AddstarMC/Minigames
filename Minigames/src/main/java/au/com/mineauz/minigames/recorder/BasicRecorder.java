@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LeashHitch;
@@ -62,7 +63,7 @@ public class BasicRecorder implements Listener {
                 Block other = eBlock.getRelative(face);
 
                 if (other.getState() instanceof Sign sign &&
-                        PlainTextComponentSerializer.plainText().serialize(sign.line(0)).equalsIgnoreCase("[Minigame]")) {
+                        PlainTextComponentSerializer.plainText().serialize(sign.getSide(Side.FRONT).line(0)).equalsIgnoreCase("[Minigame]")) {
                     return true;
                 }
             }

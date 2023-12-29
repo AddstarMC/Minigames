@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.lang3.BooleanUtils;
 import org.bukkit.command.CommandSender;
@@ -18,12 +19,12 @@ import java.util.List;
 public class SetBlockPlaceCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "blockplace";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return new String[]{"bplace"};
     }
 
@@ -33,35 +34,35 @@ public class SetBlockPlaceCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Sets whether players can place blocks in Minigames. These will be reverted when the Minigame ends. (Default: false)";
+    public @NotNull Component getDescription() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_BLOCKPLACE_DESCRIPTION);
     }
 
     @Override
-    public String[] getParameters() {
-        return null;
+    public @NotNull String @Nullable [] getParameters() {
+        return new String[]{"true", "false"};
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> blockplace <true/false>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_BLOCKPLACE_USAGE);
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.blockplace";
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             Boolean bool = BooleanUtils.toBooleanObject(args[0]);
 
             if (bool != null) {
                 minigame.setCanBlockPlace(bool);
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_BLOCKPLACING,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_BLOCKPLACE_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
                         Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
                                 bool ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
@@ -75,8 +76,8 @@ public class SetBlockPlaceCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
         return null;

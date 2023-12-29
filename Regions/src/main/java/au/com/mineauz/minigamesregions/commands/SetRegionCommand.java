@@ -28,12 +28,12 @@ import java.util.List;
 public class SetRegionCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "region";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -43,12 +43,12 @@ public class SetRegionCommand implements ICommand {
     }
 
     @Override
-    public Component getDescription() {
+    public @NotNull Component getDescription() {
         return List.of("Creates, edits and deletes Minigame regions");
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return new String[]{"select", "create", "delete", "modify"};
     }
 
@@ -63,7 +63,7 @@ public class SetRegionCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.region";
     }
 
@@ -134,8 +134,8 @@ public class SetRegionCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
 
         if (args.length == 1) {
             List<String> tab = new ArrayList<>();

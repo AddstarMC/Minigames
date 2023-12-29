@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,12 +14,12 @@ import java.util.List;
 public class SetQuitCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "quit";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -28,12 +29,12 @@ public class SetQuitCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return "Sets the quitting position of a Minigame to where you are standing.";
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return null;
     }
 
@@ -43,7 +44,7 @@ public class SetQuitCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.quit";
     }
 
@@ -57,8 +58,8 @@ public class SetQuitCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         return null;
     }
 

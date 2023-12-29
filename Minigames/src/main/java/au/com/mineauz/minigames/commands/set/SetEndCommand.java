@@ -1,23 +1,28 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class SetEndCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "end";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -27,42 +32,37 @@ public class SetEndCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Sets the ending position for a player when they win a Minigame.";
+    public @NotNull Component getDescription() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_END_DESCRIPTION);
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return null;
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> end"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_END_USAGE);
     }
 
     @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set the end position!";
-    }
-
-    @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.end";
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         minigame.setEndLocation(((Player) sender).getLocation());
-        sender.sendMessage(ChatColor.GRAY + "Ending position has been set for " + minigame);
+        MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_END_SUCCESS,
+                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
         return true;
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         return null;
     }
-
 }

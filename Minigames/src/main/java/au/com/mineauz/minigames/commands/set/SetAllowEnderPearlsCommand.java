@@ -19,12 +19,12 @@ import java.util.List;
 public class SetAllowEnderPearlsCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "allowenderpearls";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -34,22 +34,22 @@ public class SetAllowEnderPearlsCommand implements ICommand {
     }
 
     @Override
-    public Component getDescription() {
-        return "Sets whether players can use ender pearls in a Minigame.";
+    public @NotNull Component getDescription() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_ALLOWENDERPERLS_DESCRIPTION);
     }
 
     @Override
-    public String[] getParameters() {
-        return null;
+    public @NotNull String @Nullable [] getParameters() {
+        return new String[]{"true", "false"};
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> allowenderpearls <true / false>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_ALLOWENDERPERLS_USAGE);
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.allowenderpearls";
     }
 
@@ -62,7 +62,7 @@ public class SetAllowEnderPearlsCommand implements ICommand {
             if (bool != null) {
                 minigame.setAllowEnderPearls(bool);
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_ENDERPERLS,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_ALLOWENDERPERLS_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
                         Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
                                 bool ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
@@ -76,8 +76,8 @@ public class SetAllowEnderPearlsCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
         return null;

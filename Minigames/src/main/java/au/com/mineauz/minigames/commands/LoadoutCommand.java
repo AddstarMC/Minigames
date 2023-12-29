@@ -7,9 +7,11 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +19,11 @@ import java.util.List;
 public class LoadoutCommand implements ICommand {
 
 
-    public String getName() {
+    public @NotNull String getName() {
         return "loadout";
     }
 
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -29,11 +31,11 @@ public class LoadoutCommand implements ICommand {
         return false;
     }
 
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return MinigameUtils.getLang("command.loadout.description");
     }
 
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return null;
     }
 
@@ -45,12 +47,12 @@ public class LoadoutCommand implements ICommand {
         return MinigameUtils.getLang("command.loadout.noPermission");
     }
 
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.loadout.menu";
     }
 
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         MinigamePlayer ply = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
         if (ply.isInMinigame()) {
             if (args == null) {
@@ -71,8 +73,8 @@ public class LoadoutCommand implements ICommand {
         return true;
     }
 
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args != null) {
             MinigamePlayer ply = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
             if (ply.isInMinigame()) {

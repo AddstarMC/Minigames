@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -16,12 +17,12 @@ import java.util.List;
 public class SetGameMechanicCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "gamemechanic";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return new String[]{"scoretype", "mech", "gamemech", "mechanic"};
     }
 
@@ -31,12 +32,12 @@ public class SetGameMechanicCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return "Sets the game mechanic for a multiplayer Minigame.";
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         String[] types = new String[GameMechanics.getGameMechanics().size()];
         int inc = 0;
         for (GameMechanicBase type : GameMechanics.getGameMechanics()) {
@@ -57,7 +58,7 @@ public class SetGameMechanicCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.gamemechanic";
     }
 
@@ -83,8 +84,8 @@ public class SetGameMechanicCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> types = new ArrayList<>(GameMechanics.getGameMechanics().size());
             for (GameMechanicBase type : GameMechanics.getGameMechanics()) {

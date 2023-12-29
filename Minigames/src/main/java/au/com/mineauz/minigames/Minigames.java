@@ -22,7 +22,6 @@ import au.com.mineauz.minigames.stats.StoredGameStats;
 import com.google.common.io.Closeables;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
-import io.papermc.lib.PaperLib;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
@@ -157,7 +156,7 @@ public class Minigames extends JavaPlugin {
         globalLoadouts.saveConfig();
         this.minigameManager.saveRewardSigns();
         resourceManager.saveResources();
-        this.getCmpnntLogger().info(desc.getName() + " successfully disabled.");
+        getCmpnntLogger().info(desc.getName() + " successfully disabled.");
     }
 
     public void onEnable() {
@@ -232,7 +231,7 @@ public class Minigames extends JavaPlugin {
                     logger.info("", e);
                 }
             }
-            PaperLib.suggestPaper(this);
+
             logger.info(desc.getName() + " successfully enabled.");
             this.hookPlaceHolderApi();
         } catch (final Throwable e) {

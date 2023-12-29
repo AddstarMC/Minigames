@@ -3,6 +3,7 @@ package au.com.mineauz.minigames.commands.set;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -13,12 +14,12 @@ import java.util.List;
 public class SetFlagCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "flag";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -28,12 +29,12 @@ public class SetFlagCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return "Sets capture flags for SP and Race Minigames. These can be captured with [Flag] Signs.";
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return new String[]{"add", "remove", "clear", "list"};
     }
 
@@ -48,12 +49,7 @@ public class SetFlagCommand implements ICommand {
     }
 
     @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to modify the flags in a Minigame!";
-    }
-
-    @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.flag";
     }
 
@@ -102,8 +98,8 @@ public class SetFlagCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("add", "remove", "clear", "list"), args[0]);
         return null;

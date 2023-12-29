@@ -9,9 +9,11 @@ import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,12 +25,12 @@ public class ScoreboardCommand implements ICommand {
     private final Minigames plugin = Minigames.getPlugin();
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "scoreboard";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -38,12 +40,12 @@ public class ScoreboardCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return "Displays a scoreboard of the desired Minigame, SQL must be enabled!";
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return null;
     }
 
@@ -53,17 +55,12 @@ public class ScoreboardCommand implements ICommand {
     }
 
     @Override
-    public String getPermissionMessage() {
-        return "You don't have permission to view the scoreboard!";
-    }
-
-    @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.scoreboard";
     }
 
     @Override
-    public boolean onCommand(final @NotNull CommandSender sender, Minigame ignore, @NotNull String label, String @NotNull [] args) {
+    public boolean onCommand(final @NotNull CommandSender sender, Minigame ignore, @NotNull String label, @NotNull String @Nullable [] args) {
         if (args == null || args.length < 3) {
             return false;
         }
@@ -166,7 +163,7 @@ public class ScoreboardCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame ignore, String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame ignore, String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) { // Minigame
             List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
             return MinigameUtils.tabCompleteMatch(mgs, args[0]);

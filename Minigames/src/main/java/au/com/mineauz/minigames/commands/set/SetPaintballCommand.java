@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.lang3.BooleanUtils;
 import org.bukkit.ChatColor;
@@ -19,12 +20,12 @@ import java.util.List;
 public class SetPaintballCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "paintball";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -34,13 +35,13 @@ public class SetPaintballCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return "Sets a Minigame to be in paintball mode. This lets snowballs damage players. " +
                 "(Default: false, default damage: 2)";
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return new String[]{"damage"};
     }
 
@@ -51,7 +52,7 @@ public class SetPaintballCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.paintball";
     }
 
@@ -86,8 +87,8 @@ public class SetPaintballCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("true", "false", "damage"), args[0]);
         return null;

@@ -4,6 +4,7 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.GameOverModule;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -16,12 +17,12 @@ import java.util.List;
 public class SetGameOverCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "gameover";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -31,7 +32,7 @@ public class SetGameOverCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return """
                 Modifies game over settings. Players will remain in the game until the game over timer ends.
                 For the humiliation setting, losers will be stripped of items and can't attack.
@@ -39,7 +40,7 @@ public class SetGameOverCommand implements ICommand {
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return new String[]{"timer", "invincible", "humiliation", "interact"};
     }
 
@@ -59,7 +60,7 @@ public class SetGameOverCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.gameover";
     }
 
@@ -98,8 +99,8 @@ public class SetGameOverCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         List<String> opts = new ArrayList<>();
         if (args.length == 1) {
             Collections.addAll(opts, getParameters());

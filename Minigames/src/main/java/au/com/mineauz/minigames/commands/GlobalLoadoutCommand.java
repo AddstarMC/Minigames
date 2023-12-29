@@ -8,10 +8,12 @@ import au.com.mineauz.minigames.menu.MenuItemDisplayLoadout;
 import au.com.mineauz.minigames.menu.MenuItemLoadoutAdd;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +22,12 @@ public class GlobalLoadoutCommand implements ICommand {
     private final MinigameManager mdata = Minigames.getPlugin().getMinigameManager();
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "globalloadout";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return new String[]{"gloadout", "loadout"};
     }
 
@@ -35,12 +37,12 @@ public class GlobalLoadoutCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return "Opens the Loadout edit window for Global Loadouts. These loadouts may be used in any Minigame.";
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return null;
     }
 
@@ -57,7 +59,7 @@ public class GlobalLoadoutCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.globalloadout";
     }
 
@@ -85,8 +87,8 @@ public class GlobalLoadoutCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         return null;
     }
 

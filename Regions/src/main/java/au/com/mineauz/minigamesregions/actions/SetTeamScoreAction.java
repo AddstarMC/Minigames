@@ -96,11 +96,7 @@ public class SetTeamScoreAction extends ScoreAction {
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
         m.addItem(score.getMenuItem("Set Score Amount", Material.STONE, null, null));
 
-        List<String> teams = new ArrayList<>();
-        teams.add("None");
-        for (TeamColor team : TeamColor.values()) {
-            teams.add(WordUtils.capitalize(team.toString()));
-        }
+        List<String> teams = new ArrayList<>(TeamColor.colorNames());
         m.addItem(new MenuItemList("Specific Team", List.of("If 'None', the players", "team will be used"), Material.PAPER, new Callback<>() {
 
             @Override

@@ -1,8 +1,10 @@
 package au.com.mineauz.minigames.commands;
 
 import au.com.mineauz.minigames.minigame.Minigame;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
@@ -13,12 +15,12 @@ import java.util.Set;
  */
 public class ListPlaceholder implements ICommand {
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "placeholders";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -28,12 +30,12 @@ public class ListPlaceholder implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return "List all registered placeholders";
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return null;
     }
 
@@ -43,7 +45,7 @@ public class ListPlaceholder implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.placeholders";
     }
 
@@ -61,7 +63,7 @@ public class ListPlaceholder implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame, String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String @NotNull [] args) {
         return null;
     }
 }

@@ -76,21 +76,17 @@ public class MenuItemDisplayLoadout extends MenuItem {
         mItems.add(new MenuItemBoolean("Lock Armour", Material.DIAMOND_CHESTPLATE, loadout.getArmourLockedCallback()));
         mItems.add(new MenuItemBoolean("Allow Offhand", Material.SHIELD, loadout.getAllowOffHandCallback()));
         mItems.add(new MenuItemBoolean("Display in Loadout Menu", Material.WHITE_STAINED_GLASS_PANE, loadout.getDisplayInMenuCallback()));
-        List<String> teams = new ArrayList<>();
-        teams.add("None");
-        for (TeamColor col : TeamColor.values())
-            teams.add(WordUtils.capitalize(col.toString()));
+        List<String> teams = new ArrayList<>(TeamColor.colorNames());
         mItems.add(new MenuItemList("Lock to Team", Material.LEATHER_CHESTPLATE, loadout.getTeamColorCallback(), teams));
         loadoutSettings.addItems(mItems);
+        MenuItemDisplayLoadout dl;
         if (mgm == null) {
-            MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back", MenuUtility.getBackMaterial(), loadout);
-            dl.setAltMenu(getContainer());
-            loadoutSettings.addItem(dl, getContainer().getSize() - 9);
+            dl = new MenuItemDisplayLoadout("Back", MenuUtility.getBackMaterial(), loadout);
         } else {
-            MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back", MenuUtility.getBackMaterial(), loadout, mgm);
-            dl.setAltMenu(getContainer());
-            loadoutSettings.addItem(dl, getContainer().getSize() - 9);
+            dl = new MenuItemDisplayLoadout("Back", MenuUtility.getBackMaterial(), loadout, mgm);
         }
+        dl.setAltMenu(getContainer());
+        loadoutSettings.addItem(dl, getContainer().getSize() - 9);
 
         LoadoutModule.addAddonMenuItems(loadoutSettings, loadout);
 
@@ -98,15 +94,14 @@ public class MenuItemDisplayLoadout extends MenuItem {
 
         potionMenu.setPreviousPage(loadoutMenu);
         potionMenu.addItem(new MenuItemPotionAdd("Add Potion", MenuUtility.getCreateMaterial(), loadout), 44);
+
         if (mgm == null) {
-            MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back", MenuUtility.getBackMaterial(), loadout);
-            dl.setAltMenu(getContainer());
-            potionMenu.addItem(dl, 45 - 9);
+            dl = new MenuItemDisplayLoadout("Back", MenuUtility.getBackMaterial(), loadout);
         } else {
-            MenuItemDisplayLoadout dl = new MenuItemDisplayLoadout("Back", MenuUtility.getBackMaterial(), loadout, mgm);
-            dl.setAltMenu(getContainer());
-            potionMenu.addItem(dl, 45 - 9);
+            dl = new MenuItemDisplayLoadout("Back", MenuUtility.getBackMaterial(), loadout, mgm);
         }
+        dl.setAltMenu(getContainer());
+        potionMenu.addItem(dl, 45 - 9);
 
         List<String> des = new ArrayList<>();
         des.add("Shift + Right Click to Delete");

@@ -22,12 +22,12 @@ import java.util.List;
 public class ToolCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "tool";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -37,12 +37,12 @@ public class ToolCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return "Spawns the Minigame tool for use in setting locations in a Minigame.";
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         String[] arr = new String[ToolModes.getToolModes().size() + 4];
         for (int i = 0; i < arr.length - 4; i++)
             arr[i] = ToolModes.getToolModes().get(i).getName().toLowerCase();
@@ -70,7 +70,7 @@ public class ToolCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.tool";
     }
 
@@ -157,8 +157,8 @@ public class ToolCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         List<String> ret = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
         if (args.length == 1) {
             Collections.addAll(ret, getParameters());

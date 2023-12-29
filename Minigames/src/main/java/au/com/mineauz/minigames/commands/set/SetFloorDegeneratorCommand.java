@@ -21,12 +21,12 @@ import java.util.List;
 public class SetFloorDegeneratorCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "floordegenerator";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return new String[]{"floord", "floordegen"};
     }
 
@@ -36,7 +36,7 @@ public class SetFloorDegeneratorCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return """
                 Sets the two corners of a floor to degenerate or clears both of them (if set).
                 The types of degeneration are: "inward"(default), "circle" and "random [%chance]"(Default chance: 15).
@@ -44,7 +44,7 @@ public class SetFloorDegeneratorCommand implements ICommand {
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return new String[]{"1", "2", "create", "clear", "type", "time"};
     }
 
@@ -59,7 +59,7 @@ public class SetFloorDegeneratorCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.floordegenerator";
     }
 
@@ -139,8 +139,8 @@ public class SetFloorDegeneratorCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             return MinigameUtils.tabCompleteMatch(List.of("1", "2", "create", "clear", "type", "time"), args[0]);
         } else if (args[0].equalsIgnoreCase("type")) {

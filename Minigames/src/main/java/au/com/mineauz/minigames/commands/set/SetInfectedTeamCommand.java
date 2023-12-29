@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.InfectionModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -18,12 +19,12 @@ import java.util.List;
 
 public class SetInfectedTeamCommand implements ICommand {
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "infectedteam";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @NotNull [] getAliases() {
         return new String[]{"infteam"};
     }
 
@@ -33,12 +34,12 @@ public class SetInfectedTeamCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return "Set which team color will represent the Infected team in an Infection Minigame (Default: red)";
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return null;
     }
 
@@ -53,7 +54,7 @@ public class SetInfectedTeamCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.infectedteam";
     }
 
@@ -82,7 +83,7 @@ public class SetInfectedTeamCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame, String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> teams = new ArrayList<>();
             for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {

@@ -20,12 +20,12 @@ import java.util.List;
 public class SetRewardCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "reward";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -35,7 +35,7 @@ public class SetRewardCommand implements ICommand {
     }
 
     @Override
-    public Component getDescription() {
+    public @NotNull Component getDescription() {
         return """
                 Sets the players reward for completing the Minigame for the first time. This can be one item or a randomly selected item added to the rewards, depending on its defined rarity.\s
                 Possible rarities are: very_common, common, normal, rare and very_rare
@@ -43,7 +43,7 @@ public class SetRewardCommand implements ICommand {
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return null;
     }
 
@@ -55,7 +55,7 @@ public class SetRewardCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.reward";
     }
 
@@ -159,8 +159,8 @@ public class SetRewardCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args.length == 3 || (args.length == 2 && args[0].startsWith("$"))) {
             List<String> ls = new ArrayList<>();
             for (RewardRarity r : RewardRarity.values()) {

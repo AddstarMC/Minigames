@@ -7,22 +7,24 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.InfectionModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SetSurvivorTeamCommand implements ICommand {
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "survivorteam";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return new String[]{"svteam"};
     }
 
@@ -32,12 +34,12 @@ public class SetSurvivorTeamCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return "Set which team color will represent the Survivor team in an Infection Minigame (Default: blue).";
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return null;
     }
 
@@ -52,7 +54,7 @@ public class SetSurvivorTeamCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.survivorteam";
     }
 
@@ -81,7 +83,7 @@ public class SetSurvivorTeamCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame, String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> teams = new ArrayList<>();
             for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {

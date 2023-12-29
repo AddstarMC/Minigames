@@ -23,12 +23,12 @@ import java.util.stream.Collectors;
 public class SetBlockWhitelistCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "blockwhitelist";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return new String[]{"bwl", "blockwl"};
     }
 
@@ -38,29 +38,22 @@ public class SetBlockWhitelistCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Adds, removes and changes whitelist mode on or off (off by default). " +
-                "When off, it is in blacklist mode, meaning the blocks in the list are the only blocks that list can't be placed or destroyed";
+    public @NotNull Component getDescription() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_WHITELIST_DESCRIPTION);
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return new String[]{"add", "remove", "list", "clear"};
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{
-                "/minigame set <Minigame> blockwhitelist <true/false>",
-                "/minigame set <Minigame> blockwhitelist add <Block type>",
-                "/minigame set <Minigame> blockwhitelist remove <Block type>",
-                "/minigame set <Minigame> blockwhitelist list",
-                "/minigame set <Minigame> blockwhitelist clear"
-        };
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_WHITELIST_USAGE);
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.blockwhitelist";
     }
 
@@ -117,14 +110,14 @@ public class SetBlockWhitelistCommand implements ICommand {
 
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_WHITELIST_CLEAR,
                         Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), MinigameMessageManager.getMgMessage(
-                                minigame.getRecorderData().getWhitelistMode() ? MinigameLangKey.WHITELIST : MinigameLangKey.BLACKLIST)),
+                                minigame.getRecorderData().getWhitelistMode() ? MinigameLangKey.CONFIG_WHITELIST : MinigameLangKey.CONFIG_BLACKLIST)),
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
             } else if (args[0].equalsIgnoreCase("list")) { //todo set list doesn't feel right
                 String whiteListedBlocks = minigame.getRecorderData().getWBBlocks().stream().map(Material::toString).collect(Collectors.joining("<gray>, </gray>"));
 
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_WHITELIST_LIST,
                         Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), MinigameMessageManager.getMgMessage(
-                                minigame.getRecorderData().getWhitelistMode() ? MinigameLangKey.WHITELIST : MinigameLangKey.BLACKLIST)),
+                                minigame.getRecorderData().getWhitelistMode() ? MinigameLangKey.CONFIG_WHITELIST : MinigameLangKey.CONFIG_BLACKLIST)),
                         Placeholder.parsed(MinigamePlaceHolderKey.TEXT.getKey(), whiteListedBlocks));
             } else {
                 Boolean bool = BooleanUtils.toBooleanObject(args[0]);
@@ -135,7 +128,7 @@ public class SetBlockWhitelistCommand implements ICommand {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_WHITELIST_MODE,
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
                             Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), MinigameMessageManager.getMgMessage(
-                                    bool ? MinigameLangKey.WHITELIST : MinigameLangKey.BLACKLIST)));
+                                    bool ? MinigameLangKey.CONFIG_WHITELIST : MinigameLangKey.CONFIG_BLACKLIST)));
                 } else {
                     MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOBOOL,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
@@ -147,8 +140,8 @@ public class SetBlockWhitelistCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("true", "false", "add", "remove", "list", "clear"), args[0]);
         else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {

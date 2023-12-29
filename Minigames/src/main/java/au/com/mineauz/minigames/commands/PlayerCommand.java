@@ -4,10 +4,12 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,12 +18,12 @@ import java.util.List;
 public class PlayerCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "player";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return new String[]{"ply", "pl"};
     }
 
@@ -31,12 +33,12 @@ public class PlayerCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return "Tells you what Minigame a player is playing and other useful information or lists all players currently playing Minigames.";
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return new String[]{"<PlayersName>", "list"};
     }
 
@@ -54,13 +56,13 @@ public class PlayerCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.player";
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args[0].equalsIgnoreCase("list")) {
                 List<MinigamePlayer> pls = new ArrayList<>();
@@ -104,8 +106,8 @@ public class PlayerCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> plys = new ArrayList<>(plugin.getServer().getOnlinePlayers().size() + 1);
             for (Player ply : plugin.getServer().getOnlinePlayers()) {

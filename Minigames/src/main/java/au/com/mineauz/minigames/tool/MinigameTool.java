@@ -153,12 +153,9 @@ public class MinigameTool {
         men.addItem(mideselect, men.getSize() - 1);
         men.addItem(miselect, men.getSize() - 2);
 
-        List<String> teams = new ArrayList<>(TeamColor.values().length + 1);
-        for (TeamColor col : TeamColor.values())
-            teams.add(WordUtils.capitalize(col.toString().replace("_", " ")));
-        teams.add("None");
+        List<String> teams = new ArrayList<>(TeamColor.colorNames());
 
-        men.addItem(new MenuItemToolTeam("Team", Material.PAPER, new Callback<>() {
+        men.addItem(new MenuItemToolTeam("Team", Material.PAPER, new Callback<>() { //todo new MenuItemList("Lock to Team", Material.LEATHER_CHESTPLATE, loadout.getTeamColorCallback(), teams)
 
             @Override
             public String getValue() {

@@ -4,9 +4,11 @@ import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.minigame.Minigame;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +16,12 @@ import java.util.List;
 public class SetTypeCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "type";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -29,12 +31,12 @@ public class SetTypeCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return "Sets a Minigames game type. All types can be seen in the parameter section. (also can be used as an alias of preset).";
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         String[] mgtypes = new String[plugin.getMinigameManager().getMinigameTypes().size() + 1];
         int inc = 0;
         for (MinigameType type : MinigameType.values()) {
@@ -55,7 +57,7 @@ public class SetTypeCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.type";
     }
 
@@ -75,8 +77,8 @@ public class SetTypeCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> types = new ArrayList<>();
             for (MinigameType t : MinigameType.values()) {

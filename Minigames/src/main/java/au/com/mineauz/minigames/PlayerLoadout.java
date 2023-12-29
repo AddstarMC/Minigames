@@ -34,12 +34,7 @@ public class PlayerLoadout {
 
     public PlayerLoadout(String name) {
         loadoutName = name;
-        for (TeamColor col : TeamColor.values()) {
-            if (name.toUpperCase().equals(col.toString())) {
-                team = col;
-                break;
-            }
-        }
+        team = TeamColor.matchColor(name);
     }
 
     public Callback<String> getDisplayNameCallback() {

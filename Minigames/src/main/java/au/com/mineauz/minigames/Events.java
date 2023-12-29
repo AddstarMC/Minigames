@@ -69,12 +69,12 @@ public class Events implements Listener {
                     case ACCEPTED, SUCCESSFULLY_LOADED -> required.remove(mgPlayer);
                     case DECLINED -> {
                         Minigames.getPlugin().getPlayerManager().quitMinigame(mgPlayer, true);
-                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_RESOURCE_DECLINED);
+                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_RESOURCEPACK_DECLINED);
                         required.remove(mgPlayer);
                     }
                     case FAILED_DOWNLOAD -> {
                         Minigames.getPlugin().getPlayerManager().quitMinigame(mgPlayer, true);
-                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_RESOURCE_FAILED);
+                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_RESOURCEPACK_FAILED);
                         required.remove(mgPlayer);
                     }
                 }
@@ -408,7 +408,7 @@ public class Events implements Listener {
                 Location to = event.getTo();
                 if (from.getWorld() != to.getWorld() || from.distance(to) > 2) {
                     event.setCancelled(true);
-                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTELEPORT);
+                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTELEPORTALLOWED);
                 }
             }
         }

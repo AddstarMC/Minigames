@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.lang3.BooleanUtils;
 import org.bukkit.command.CommandSender;
@@ -18,12 +19,12 @@ import java.util.List;
 public class SetBlocksDropCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "blocksdrop";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -33,22 +34,22 @@ public class SetBlocksDropCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Sets whether blocks drop item when broken within a Minigame. (Default: true)";
+    public @NotNull Component getDescription() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_BLOCKSDROP_DESCRIPTION);
     }
 
     @Override
-    public String[] getParameters() {
-        return null;
+    public @NotNull String @Nullable [] getParameters() {
+        return new String[]{"true", "false"};
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> blocksdrop <true/false>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_BLOCKSDROP_USAGE);
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.blocksdrop";
     }
 
@@ -61,7 +62,7 @@ public class SetBlocksDropCommand implements ICommand {
             if (bool != null) {
                 minigame.setBlocksDrop(bool);
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_BLOCKSDROP,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_BLOCKSDROP_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
                         Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
                                 bool ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
@@ -75,8 +76,8 @@ public class SetBlocksDropCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
         return null;

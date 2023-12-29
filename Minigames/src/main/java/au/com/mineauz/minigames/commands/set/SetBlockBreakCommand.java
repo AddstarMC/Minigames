@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.lang3.BooleanUtils;
 import org.bukkit.command.CommandSender;
@@ -18,12 +19,12 @@ import java.util.List;
 public class SetBlockBreakCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "blockbreak";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return new String[]{"bbreak"};
     }
 
@@ -33,22 +34,22 @@ public class SetBlockBreakCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Sets whether players can break blocks in Minigames. These will be reverted when the Minigame ends. (Default: false)";
+    public @NotNull Component getDescription() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_BLOCKBREAK_DESCRIPTION);
     }
 
     @Override
-    public String[] getParameters() {
-        return null;
+    public @NotNull String @Nullable [] getParameters() {
+        return new String[]{"true", "false"};
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> blockbreak <true/false>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_BLOCKBREAK_USAGE);
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.blockbreak";
     }
 
@@ -61,7 +62,7 @@ public class SetBlockBreakCommand implements ICommand {
             if (bool != null) {
                 minigame.setCanBlockBreak(bool);
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_BLOCKBREAKING,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_BLOCKBREAK_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
                         Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
                                 bool ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
@@ -75,8 +76,8 @@ public class SetBlockBreakCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
         return null;

@@ -25,13 +25,13 @@ import java.util.List;
  */
 public class InfoCommand implements ICommand {
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "info";
     }
 
     @Override
-    public String[] getAliases() {
-        return new String[0];
+    public @NotNull String @Nullable [] getAliases() {
+        return null;
     }
 
     @Override
@@ -40,13 +40,13 @@ public class InfoCommand implements ICommand {
     }
 
     @Override
-    public Component getDescription() {
+    public @NotNull Component getDescription() {
         return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_INFO_DESCRIPTION);
     }
 
     @Override
-    public String[] getParameters() {
-        return new String[0];
+    public @NotNull String @Nullable [] getParameters() {
+        return null;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class InfoCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         new Permission("");
         return "minigame.info";
     }
@@ -141,7 +141,7 @@ public class InfoCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame, String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> mgs = new ArrayList<>(plugin.getMinigameManager().getAllMinigames().keySet());
             return MinigameUtils.tabCompleteMatch(mgs, args[0]);

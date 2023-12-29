@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -19,12 +20,12 @@ import java.util.Locale;
 public class ScoreCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "score";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -34,12 +35,12 @@ public class ScoreCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return "Gets, sets or adds to a player's or team's score. The Minigame name is only required if not assigning the score to a player.";
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return new String[]{"get", "set", "add"};
     }
 
@@ -57,7 +58,7 @@ public class ScoreCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.score";
     }
 

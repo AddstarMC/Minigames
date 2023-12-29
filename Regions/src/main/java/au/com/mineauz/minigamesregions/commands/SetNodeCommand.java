@@ -27,12 +27,12 @@ import java.util.List;
 public class SetNodeCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "node";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -42,13 +42,13 @@ public class SetNodeCommand implements ICommand {
     }
 
     @Override
-    public Component getDescription() { //todo translation String
+    public @NotNull Component getDescription() { //todo translation String
         return List.of(
                 "Creates and modifies customizable nodes");
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return null;
     }
 
@@ -61,7 +61,7 @@ public class SetNodeCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.node";
     }
 
@@ -102,8 +102,8 @@ public class SetNodeCommand implements ICommand {
 
     // create, modify, delete
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> tab = new ArrayList<>();
             tab.add("create");

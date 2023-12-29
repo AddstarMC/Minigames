@@ -2,11 +2,16 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,12 +22,12 @@ import java.util.List;
 public class SetDefaultWinnerCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "defaultwinner";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return new String[]{"defwin"};
     }
 
@@ -32,44 +37,40 @@ public class SetDefaultWinnerCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Sets which team will win when the timer expires and neither team has won. (Useful for attack/defend modes of CTF) (Default: none).";
+    public @NotNull Component getDescription() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_DEFAULTWINNER_DESCRIPTION);
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return null;
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> defaultwinner <TeamColor>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_DEFAULTWINNER_USAGE);
     }
 
     @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set the default winner of a Minigame!";
-    }
-
-    @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.defaultwinner";
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
-            if (args[0].equalsIgnoreCase("none")) {
-                TeamsModule.getMinigameModule(minigame).setDefaultWinner(null);
-                sender.sendMessage(ChatColor.GRAY + "The default winner of " + minigame + " has been set to none.");
+            TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+            TeamColor teamColor = TeamColor.matchColor(args[0]);
+
+            if (teamColor != null) {
+                teamsModule.setDefaultWinner(teamColor);
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_DEFAULTWINNER_SUCCESS,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
             } else {
-                if (TeamsModule.getMinigameModule(minigame).hasTeam(TeamColor.matchColor(args[0]))) {
-                    TeamsModule.getMinigameModule(minigame).setDefaultWinner(TeamColor.matchColor(args[0]));
-                    sender.sendMessage(ChatColor.GRAY + "The default winner of " + minigame + " has been set to " + args[0] + ".");
-                } else {
-                    sender.sendMessage(ChatColor.RED + "There is no team for the color " + args[0]);
-                }
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTATEAM,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEAM.getKey(), args[0]));
             }
             return true;
         }
@@ -77,8 +78,8 @@ public class SetDefaultWinnerCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> teams = new ArrayList<>();
             for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {

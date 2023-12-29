@@ -12,7 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -73,8 +73,7 @@ public class MatchTeamCondition extends ConditionInterface {
         Menu m = new Menu(3, "Match Team", player);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), prev), m.getSize() - 9);
 
-        List<String> teams = Arrays.stream(TeamColor.values()).map(tc ->
-                WordUtils.capitalize(tc.toString().replace("_", " "))).toList();
+        List<String> teams = new ArrayList<>(TeamColor.validColorNames());
 
         m.addItem(new MenuItemList("Team Color", getTeamMaterial(), new Callback<>() {
             @Override

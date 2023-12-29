@@ -1,8 +1,13 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,12 +17,12 @@ import java.util.List;
 public class SetDisplayNameCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "displayname";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return new String[]{"dispname", "dname"};
     }
 
@@ -27,48 +32,40 @@ public class SetDisplayNameCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Sets the visible name for the Mingiame, unlike the actual name, this can include spaces and special characters. " +
-                "(setting it to \"null\" will remove the display name.)";
+    public @NotNull Component getDescription() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_DISPLAYNAME_DESCRIPTION);
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return null;
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> displayname <Some Displayname Here>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_DISPLAYNAME_USAGE);
     }
 
     @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set the display name of a Minigame!";
-    }
-
-    @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.displayname";
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
-            StringBuilder name = new StringBuilder();
-            for (String arg : args) {
-                name.append(arg);
-                if (!arg.equals(args[args.length - 1])) {
-                    name.append(" ");
-                }
-            }
-            if (name.toString().equalsIgnoreCase("null")) {
+            String name = String.join(" ", args);
+
+            if (name.equalsIgnoreCase("null")) {
                 minigame.setDisplayName(null);
-                sender.sendMessage(ChatColor.GRAY + "Removed " + minigame + "'s display name");
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_DISPLAYNAME_REMOVED,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)));
             } else {
-                minigame.setDisplayName(name.toString());
-                sender.sendMessage(ChatColor.GRAY + "Set " + minigame + "'s display name to \"" + name + "\"");
+                minigame.setDisplayName(name);
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_DISPLAYNAME_SUCCESS,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(true)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), name));
             }
             return true;
         }
@@ -76,8 +73,8 @@ public class SetDisplayNameCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         return null;
     }
 

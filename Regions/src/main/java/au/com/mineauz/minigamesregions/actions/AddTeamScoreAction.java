@@ -109,11 +109,7 @@ public class AddTeamScoreAction extends ScoreAction {
 
         }, null, null));
 
-        List<String> teams = new ArrayList<>();
-        teams.add("None");
-        for (TeamColor team : TeamColor.values()) {
-            teams.add(WordUtils.capitalize(team.toString()));
-        }
+        List<String> teams = new ArrayList<>(TeamColor.colorNames());
         m.addItem(new MenuItemList("Specific Team", List.of("If 'None', the players", "team will be used"), Material.PAPER, new Callback<>() {
 
             @Override

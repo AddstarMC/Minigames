@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.lang3.BooleanUtils;
 import org.bukkit.command.CommandSender;
@@ -15,15 +16,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SetAllowMultiplayerCheckpointsCommand implements ICommand {
+public class SetMultiplayerCheckpointsCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "multiplayercheckpoints";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return new String[]{
                 "mpcheckpoints",
                 "mpcp"
@@ -36,22 +37,22 @@ public class SetAllowMultiplayerCheckpointsCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Allows a Minigame to enable Checkpoint usage for multiplayer games (such as Free for All and Teams).";
+    public @NotNull Component getDescription() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_MULTIPLYCHKPNTS_DESCRITON);
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return null;
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> multiplayercheckpoints <true/false>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_MULTIPLYCHKPNTS_USAGE);
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.multiplayercheckpoints";
     }
 
@@ -64,7 +65,7 @@ public class SetAllowMultiplayerCheckpointsCommand implements ICommand {
             if (bool != null) {
                 minigame.setAllowMPCheckpoints(bool);
 
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_MULTIPLYCHKPNTS,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_MULTIPLYCHKPNTS_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
                         Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
                                 bool ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
@@ -79,8 +80,8 @@ public class SetAllowMultiplayerCheckpointsCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
         return null;

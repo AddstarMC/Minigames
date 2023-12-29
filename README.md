@@ -13,8 +13,7 @@ To build this source you require Vault and the latest build of Bukkit.
 | Master      | [![Build Status - Master](https://travis-ci.org/AddstarMC/Minigames.svg?branch=master)](https://travis-ci.org/AddstarMC/Minigames) | [![Coverage Status](https://coveralls.io/repos/github/AddstarMC/Minigames/badge.svg?branch=master)](https://coveralls.io/github/AddstarMC/Minigames?branch=master) | 
 | Development | [![Build Status - Master](https://travis-ci.org/AddstarMC/Minigames.svg?branch=dev)](https://travis-ci.org/AddstarMC/Minigames)    | [![Coverage Status](https://coveralls.io/repos/github/AddstarMC/Minigames/badge.svg?branch=dev)](https://coveralls.io/github/AddstarMC/Minigames?branch=dev)       |
 
-Minigames is also compiled against Spigot and Paper-Spigot
-and should work fine on that type of server as well.
+Minigames is compiled against Paper and will only work wih it or further downstream.
 
 The General release will always be available on SpigotMC
 For the most up-to-date info go to [Minigames](https://minigames.addstar.com.au)  You can access the wiki and other

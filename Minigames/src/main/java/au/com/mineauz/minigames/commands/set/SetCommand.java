@@ -3,14 +3,21 @@ package au.com.mineauz.minigames.commands.set;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -22,7 +29,7 @@ public class SetCommand implements ICommand {
     static {
         if (plugin.getConfig().getBoolean("outputCMDToFile")) {
             try {
-                cmdFile = new BufferedWriter(new FileWriter(plugin.getDataFolder() + "/setcmds.txt"));
+                cmdFile = new BufferedWriter(new FileWriter(plugin.getDataFolder() + File.pathSeparator + "setcmds.txt"));
                 cmdFile.write("{| class=\"wikitable\"");
                 cmdFile.newLine();
                 cmdFile.write("! Command");
@@ -81,7 +88,7 @@ public class SetCommand implements ICommand {
         registerSetCommand(new SetDefaultWinnerCommand());
         registerSetCommand(new SetAllowEnderPearlsCommand());
         registerSetCommand(new SetStartTimeCommand());
-        registerSetCommand(new SetAllowMultiplayerCheckpointsCommand());
+        registerSetCommand(new SetMultiplayerCheckpointsCommand());
         registerSetCommand(new SetObjectiveCommand());
         registerSetCommand(new SetGametypeNameCommand());
         registerSetCommand(new SetSPMaxPlayersCommand());
@@ -112,34 +119,31 @@ public class SetCommand implements ICommand {
         parameterList.put(command.getName(), command);
 
         if (plugin.getConfig().getBoolean("outputCMDToFile")) {
-            try {
+            PlainTextComponentSerializer plainCmpntSerial = PlainTextComponentSerializer.plainText();
 
+            try {
                 cmdFile.write("|-");
                 cmdFile.newLine();
                 cmdFile.write("| '''" + command.getName() + "'''");
                 cmdFile.newLine();
                 if (command.getUsage() != null) {
-                    int count = 0;
                     cmdFile.write("| ");
-                    for (String use : command.getUsage()) {
-                        cmdFile.write(use);
-                        count++;
-                        if (count != command.getUsage().length) {
-                            cmdFile.write("\n\n");
-                        }
-                    }
-                } else
+                    cmdFile.write(plainCmpntSerial.serialize(command.getUsage()));
+                } else {
                     cmdFile.write("| N/A");
+                }
                 cmdFile.newLine();
-                if (command.getDescription() != null)
+                if (command.getDescription() != null) {
                     cmdFile.write("| " + command.getDescription());
-                else
+                } else {
                     cmdFile.write("| N/A");
+                }
                 cmdFile.newLine();
-                if (command.getPermission() != null)
+                if (command.getPermission() != null) {
                     cmdFile.write("| " + command.getPermission());
-                else
+                } else {
                     cmdFile.write("| N/A");
+                }
                 cmdFile.newLine();
                 if (command.getAliases() != null) {
                     int count = 0;
@@ -151,8 +155,9 @@ public class SetCommand implements ICommand {
                             cmdFile.write("\n\n");
                         }
                     }
-                } else
+                } else {
                     cmdFile.write("| N/A");
+                }
                 cmdFile.newLine();
 
             } catch (IOException e) {
@@ -162,12 +167,12 @@ public class SetCommand implements ICommand {
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "set";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -177,17 +182,17 @@ public class SetCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Modifies a Minigame using special parameters for each game type.";
+    public @NotNull Component getDescription() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_DESCRIPTION);
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> <Parameters>..."};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_USAGE);
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @NotNull [] getParameters() {
         String[] parameters = new String[parameterList.size()];
         int inc = 0;
         for (String key : parameterList.keySet()) {
@@ -198,26 +203,22 @@ public class SetCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return null;
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable @NotNull [] args) {
-        Player ply = null;
-        if (sender instanceof Player) {
-            ply = (Player) sender;
-        }
+    public boolean onCommand(@NotNull CommandSender sender, @Nullable Minigame ignored,
+                             @NotNull String label, @NotNull String @Nullable [] args) {
 
         if (args != null) {
             ICommand comd = null;
-            Minigame mgm = null;
+            Minigame minigame = null;
             String[] shortArgs = null;
 
             if (args.length >= 1) {
                 if (plugin.getMinigameManager().hasMinigame(args[0])) {
-                    mgm = plugin.getMinigameManager().getMinigame(args[0]);
+                    minigame = plugin.getMinigameManager().getMinigame(args[0]);
                 }
                 if (args.length >= 2) {
                     if (parameterList.containsKey(args[1].toLowerCase())) {
@@ -243,73 +244,47 @@ public class SetCommand implements ICommand {
                 }
             }
 
-            if (comd != null && mgm != null) {
-                if (ply != null || comd.canBeConsole()) {
-                    if (ply == null || (comd.getPermission() == null || ply.hasPermission(comd.getPermission()))) {
-                        boolean returnValue = comd.onCommand(sender, mgm, label, shortArgs);
+            if (comd != null && minigame != null) {
+                if (sender instanceof Player || comd.canBeConsole()) {
+                    if (comd.getPermission() == null || sender.hasPermission(comd.getPermission())) {
+                        boolean returnValue = comd.onCommand(sender, minigame, label, shortArgs);
                         if (!returnValue) {
-                            sender.sendMessage(ChatColor.GREEN + "------------------Command Info------------------");
-                            sender.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + comd.getDescription());
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MinigameLangKey.COMMAND_SET_HEADER);
+
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MinigameLangKey.COMMAND_SET_SUBCOMMAND_DESCRIPTION,
+                                    Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), comd.getDescription()));
                             if (comd.getParameters() != null) {
-                                StringBuilder parameters = new StringBuilder();
-                                boolean switchColour = false;
-                                for (String par : comd.getParameters()) {
-                                    if (switchColour) {
-                                        parameters.append(ChatColor.WHITE).append(par);
-                                        if (!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])) {
-                                            parameters.append(ChatColor.WHITE + ", ");
-                                        }
-                                        switchColour = false;
-                                    } else {
-                                        parameters.append(ChatColor.GRAY).append(par);
-                                        if (!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])) {
-                                            parameters.append(ChatColor.WHITE + ", ");
-                                        }
-                                        switchColour = true;
-                                    }
-                                }
-                                sender.sendMessage(ChatColor.BLUE + "Parameters: " + parameters);
+                                String parameters = String.join("<gray>, </gray>", comd.getParameters());
+
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MinigameLangKey.COMMAND_SET_SUBCOMMAND_PARAMETERS,
+                                        Placeholder.parsed(MinigamePlaceHolderKey.TEXT.getKey(), parameters));
                             }
-                            sender.sendMessage(ChatColor.BLUE + "Usage: ");
-                            sender.sendMessage(comd.getUsage());
+                            MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MinigameLangKey.COMMAND_SET_SUBCOMMAND_USAGE,
+                                    Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), comd.getUsage()));
                             if (comd.getAliases() != null) {
-                                StringBuilder aliases = new StringBuilder();
-                                boolean switchColour = false;
-                                for (String alias : comd.getAliases()) {
-                                    if (switchColour) {
-                                        aliases.append(ChatColor.WHITE).append(alias);
-                                        if (!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])) {
-                                            aliases.append(ChatColor.WHITE + ", ");
-                                        }
-                                        switchColour = false;
-                                    } else {
-                                        aliases.append(ChatColor.GRAY).append(alias);
-                                        if (!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])) {
-                                            aliases.append(ChatColor.WHITE + ", ");
-                                        }
-                                        switchColour = true;
-                                    }
-                                }
-                                sender.sendMessage(ChatColor.BLUE + "Aliases: " + aliases);
+                                String aliases = String.join("<gray>, </gray>", comd.getAliases());
+
+                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MinigameLangKey.COMMAND_SET_SUBCOMMAND_ALIASES,
+                                        Placeholder.parsed(MinigamePlaceHolderKey.TEXT.getKey(), aliases));
                             }
                         }
                     } else {
-                        sender.sendMessage(ChatColor.RED + comd.getPermissionMessage());
-                        sender.sendMessage(ChatColor.RED + comd.getPermission());
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOPERMISSION);
                     }
                 } else {
-                    sender.sendMessage(ChatColor.RED + "You must be a player to execute this command!");
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTAPLAYER);
                 }
                 return true;
-            } else if (mgm == null) {
-                sender.sendMessage(ChatColor.RED + "There is no Minigame by the name \"" + args[0] + "\"");
+            } else if (minigame == null) {
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOMINIGAME,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), args[0]));
             }
         }
         return false;
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame, String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String @Nullable [] args) {
         if (args != null && args.length > 0) {
             Player ply = null;
             if (sender instanceof Player) {

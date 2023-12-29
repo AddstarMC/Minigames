@@ -15,17 +15,14 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static au.com.mineauz.minigames.menu.MenuUtility.getBackMaterial;
 
 public class TeamsModule extends MinigameModule {
     private final Map<TeamColor, Team> teams = new HashMap<>();
     private final TeamSetFlag teamsFlag;
-    private StringFlag defaultWinner = new StringFlag(null, "defaultwinner");
+    private StringFlag defaultWinner = new StringFlag(TeamColor.NONE.toString(), "defaultwinner");
 
     public TeamsModule(Minigame mgm) {
         super(mgm);
@@ -110,7 +107,7 @@ public class TeamsModule extends MinigameModule {
             bukkitTeam.setAllowFriendlyFire(false);
             bukkitTeam.setCanSeeFriendlyInvisibles(true);
             bukkitTeam.color(color.getColor());
-            if (name != null && !name.equals("")) {
+            if (name != null && !name.isEmpty()) {
                 teams.get(color).setDisplayName(name);
                 bukkitTeam.setDisplayName(name);
             }
@@ -178,20 +175,18 @@ public class TeamsModule extends MinigameModule {
             public String getValue() {
                 if (defaultWinner.getFlag() != null) {
                     if (!teams.containsKey(TeamColor.matchColor(defaultWinner.getFlag()))) {
-                        return "None";
+                        return TeamColor.NONE.toString();
                     }
 
                     return WordUtils.capitalize(defaultWinner.getFlag().replace("_", " "));
                 }
-                return "None";
+                return TeamColor.NONE.toString();
             }
 
             @Override
             public void setValue(String value) {
-                if (!value.equals("None"))
-                    defaultWinner.setFlag(TeamColor.matchColor(value.replace(" ", "_")).toString());
-                else
-                    defaultWinner.setFlag(null);
+                TeamColor match = TeamColor.matchColor(value.replace(" ", "_"));
+                defaultWinner.setFlag(Objects.requireNonNullElse(match, TeamColor.NONE).toString());
             }
         };
     }
@@ -208,7 +203,7 @@ public class TeamsModule extends MinigameModule {
         return null;
     }
 
-    public void setDefaultWinner(TeamColor defaultWinner) {
+    public void setDefaultWinner(@NotNull TeamColor defaultWinner) {
         this.defaultWinner.setFlag(defaultWinner.toString());
     }
 

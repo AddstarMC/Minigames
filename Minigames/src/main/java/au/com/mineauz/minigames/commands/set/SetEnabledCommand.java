@@ -2,8 +2,14 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.apache.commons.lang3.BooleanUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,12 +19,12 @@ import java.util.List;
 public class SetEnabledCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "enabled";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -28,50 +34,51 @@ public class SetEnabledCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Sets whether the Minigame is enabled or not. (Default: disabled)";
+    public @NotNull Component getDescription() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_ENABLED_DESCRIPTION);
     }
 
     @Override
-    public String[] getParameters() {
-        return null;
+    public @NotNull String @Nullable [] getParameters() {
+        return new String[]{"true", "false"};
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> enabled <true/false>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_ENABLED_USAGE);
     }
 
     @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to change the Minigames enabled state!";
-    }
-
-    @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.enabled";
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
-            boolean enabled = Boolean.parseBoolean(args[0]);
-            minigame.setEnabled(enabled);
-            if (enabled) {
-                sender.sendMessage(ChatColor.GRAY + minigame.getName(false) + " is now enabled.");
+            Boolean enabled = BooleanUtils.toBooleanObject(args[0]);
+            if (enabled != null) {
+                minigame.setEnabled(enabled);
+
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_ENABLED_SUCCESS,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(),
+                                MinigameMessageManager.getMgMessage(enabled ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
+
+                minigame.saveMinigame();
+                return true;
             } else {
-                sender.sendMessage(ChatColor.GRAY + minigame.getName(false) + " is now disabled.");
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOBOOL,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
             }
-            minigame.saveMinigame();
-            return true;
         }
         return false;
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
         return null;

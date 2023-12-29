@@ -2,24 +2,29 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.apache.commons.lang3.BooleanUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class SetDisplayScoreboardCommand implements ICommand {
+public class SetDisplayScoreboardCommand implements ICommand { //todo allow sidebar, below name all of the vanilla stuff
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "displayscoreboard";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return new String[]{
                 "showscoreboard",
                 "dispscore",
@@ -34,57 +39,58 @@ public class SetDisplayScoreboardCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Allows or denies a Minigame from showing its scoreboard. (true by default)";
+    public @NotNull Component getDescription() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_DISPLAYSCOREBOARD_DESCRIPTION);
     }
 
     @Override
-    public String[] getParameters() {
-        return null;
+    public @NotNull String @Nullable [] getParameters() {
+        return new String[]{"true", "false"};
     }
 
     @Override
-    public String[] getUsage() {
-        return new String[]{
-                "/minigame set <Minigame> displayscoreboard <true/false>"
-        };
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_DISPLAYSCOREBOARD_USAGE);
     }
 
     @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to change scoreboard display!";
-    }
-
-    @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.displayscoreboard";
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
-            boolean bool = Boolean.parseBoolean(args[0]);
+            Boolean bool = BooleanUtils.toBooleanObject(args[0]);
 
-            minigame.setDisplayScoreboard(bool);
-            if (bool)
-                sender.sendMessage(ChatColor.GRAY + "Players will now see the scoreboard in " + minigame.getName(false));
-            else
-                sender.sendMessage(ChatColor.GRAY + "Players will no longer see the scoreboard in " + minigame.getName(false));
-            return true;
+            if (bool != null) {
+                minigame.setDisplayScoreboard(bool);
+
+                if (bool) {
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO,
+                            MinigameLangKey.COMMAND_SET_DISPLAYSCOREBOARD_SUCCESS,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                } else {
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO,
+                            MinigameLangKey.COMMAND_SET_DISPLAYSCOREBOARD_REMOVED,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                }
+                return true;
+            } else {
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOBOOL,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+            }
         }
         return false;
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args.length == 1) {
-                List<String> items = new ArrayList<>();
-                items.add("true");
-                items.add("false");
-                return MinigameUtils.tabCompleteMatch(items, args[0]);
+                return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
             }
         }
         return null;

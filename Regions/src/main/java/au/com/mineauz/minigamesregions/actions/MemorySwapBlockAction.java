@@ -193,7 +193,7 @@ public class MemorySwapBlockAction extends AbstractAction {
     }
 
     private final MaterialFlag matchType = new MaterialFlag(Material.COBBLESTONE, "matchtype");
-    private final MaterialListFlag wbList = new MaterialListFlag(new ArrayList<>(), "blacklist");
+    private final MaterialListFlag wbList = new MaterialListFlag(new ArrayList<>(), "config.blacklist");
     // is it a white or a blacklist?
     private final BooleanFlag whitelistMode = new BooleanFlag(false, "whitelistmode");
 

@@ -23,12 +23,12 @@ import java.util.List;
 public class DebugCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "debug";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return null;
     }
 
@@ -38,12 +38,12 @@ public class DebugCommand implements ICommand {
     }
 
     @Override
-    public Component getDescription() {
+    public @NotNull Component getDescription() {
         return "Debugs stuff.";
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return null;
     }
 
@@ -53,7 +53,7 @@ public class DebugCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.debug";
     }
 
@@ -99,8 +99,8 @@ public class DebugCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         List<String> out = new ArrayList<>();
         if (args.length == 0) {
             out.add("NO");

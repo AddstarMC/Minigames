@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.lang3.BooleanUtils;
 import org.bukkit.ChatColor;
@@ -19,12 +20,12 @@ import java.util.List;
 public class SetRandomizeChestsCommand implements ICommand {
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "randomizechests";
     }
 
     @Override
-    public String[] getAliases() {
+    public @NotNull String @Nullable [] getAliases() {
         return new String[]{"randomisechests", "randomchests", "rchests"};
     }
 
@@ -34,7 +35,7 @@ public class SetRandomizeChestsCommand implements ICommand {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull Component getDescription() {
         return """
                 All chests in a Minigame will have their items randomized as soon as a Minigame player opens one.
                 Items will only be randomized once and will be reverted to their default state after the game ends. A new game will result in different items again. The number of items that are set in the chests are defined in this command.
@@ -42,7 +43,7 @@ public class SetRandomizeChestsCommand implements ICommand {
     }
 
     @Override
-    public String[] getParameters() {
+    public @NotNull String @Nullable [] getParameters() {
         return null;
     }
 
@@ -53,7 +54,7 @@ public class SetRandomizeChestsCommand implements ICommand {
     }
 
     @Override
-    public String getPermission() {
+    public @Nullable String getPermission() {
         return "minigame.set.randomizechests";
     }
 
@@ -90,8 +91,8 @@ public class SetRandomizeChestsCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Minigame minigame,
-                                      String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                      String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
         return null;

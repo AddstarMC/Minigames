@@ -1,6 +1,5 @@
 package au.com.mineauz.minigames.menu;
 
-import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.managers.MinigameMessageManager;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -31,10 +30,7 @@ public class MenuItemAddTeam extends MenuItem {
         ply.setNoClose(true);
         ply.getPlayer().closeInventory();
         ply.sendInfoMessage(MinigameMessageManager.getUnformattedMgMessage("team.add"));
-        List<String> teams = new ArrayList<>();
-        for (TeamColor col : TeamColor.values())
-            teams.add(col.getColor() + WordUtils.capitalize(col.toString().replace("_", " ")));
-        ply.sendInfoMessage(MinigameUtils.listToString(teams));
+        ply.sendInfoMessage(TeamColor.validColorNamesComp());
         ply.setManualEntry(this);
 
         getContainer().startReopenTimer(30);

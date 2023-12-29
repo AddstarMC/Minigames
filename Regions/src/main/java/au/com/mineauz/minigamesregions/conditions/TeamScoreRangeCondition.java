@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
+import au.com.mineauz.minigamesregions.Main;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import org.apache.commons.text.WordUtils;
@@ -18,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 public class TeamScoreRangeCondition extends ConditionInterface {
-
     private final IntegerFlag min = new IntegerFlag(5, "min");
     private final IntegerFlag max = new IntegerFlag(10, "max");
     private final StringFlag team = new StringFlag("NONE", "team");
@@ -102,10 +102,8 @@ public class TeamScoreRangeCondition extends ConditionInterface {
         Menu m = new Menu(3, "Team Score Range", player);
         m.addItem(min.getMenuItem("Minimum Score", Material.STONE_SLAB, 0, null));
         m.addItem(max.getMenuItem("Maximum Score", Material.STONE, 0, null));
-        List<String> teams = new ArrayList<>();
-        for (TeamColor t : TeamColor.values())
-            teams.add(WordUtils.capitalize(t.toString().replace("_", " ")));
-        m.addItem(new MenuItemList("Team Color", Material.WHITE_WOOL, new Callback<>() {
+        List<String> teams = new ArrayList<>(TeamColor.validColorNames());
+        m.addItem(new MenuItemList("Team Color", getTeamMaterial(), new Callback<>() {
 
             @Override
             public String getValue() {
@@ -122,6 +120,18 @@ public class TeamScoreRangeCondition extends ConditionInterface {
         m.displayMenu(player);
         return true;
     }
+
+    private Material getTeamMaterial() {
+        TeamColor teamColor = TeamColor.matchColor(team.getFlag());
+
+        if (teamColor != null) {
+            return teamColor.getDisplaMaterial();
+        } else {
+            Main.getPlugin().getComponentLogger().warn("Couldn't get TeamColor for " + team);
+            return TeamColor.NONE.getDisplaMaterial();
+        }
+    }
+
 
     @Override
     public boolean onPlayerApplicable() {
