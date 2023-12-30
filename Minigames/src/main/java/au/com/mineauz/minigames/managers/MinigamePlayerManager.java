@@ -34,6 +34,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -470,7 +471,7 @@ public class MinigamePlayerManager {
         }
     }
 
-    public void quitMinigame(MinigamePlayer player, boolean forced) {
+    public void quitMinigame(@NotNull MinigamePlayer player, boolean forced) {
         Minigame minigame = player.getMinigame();
 
         boolean isWinner = GameOverModule.getMinigameModule(minigame).getWinners().contains(player);
@@ -495,7 +496,20 @@ public class MinigamePlayerManager {
                 if (player.isLiving()) {
                     player.restorePlayerData();
                 }
-                player.teleport(minigame.getQuitPosition());
+
+                Location loc;
+                if (minigame.getEndLocation() != null) {
+                    loc = minigame.getEndLocation();
+                } else {
+                    loc = minigame.getQuitLocation();
+                }
+
+                if (loc != null) {
+                    player.teleport(loc);
+                } else {
+                    Minigames.log.warning("Minigame " + minigame.getName(true) + " has no end location set! (Player: " + player.getName() + ")");
+                }
+
                 player.setStartPos(null);
                 player.removeMinigame();
                 minigame.removeSpectator(player);
@@ -569,28 +583,29 @@ public class MinigamePlayerManager {
                     player.restorePlayerData();
                     Location loc;
                     if (!isWinner) {
-                        if (minigame.getQuitPosition() != null) {
-                            loc = minigame.getQuitPosition();
+                        if (minigame.getQuitLocation() != null) {
+                            loc = minigame.getQuitLocation();
                         } else {
-                            loc = minigame.getEndPosition();
+                            loc = minigame.getEndLocation();
                         }
                     } else {
-                        if (minigame.getEndPosition() != null) {
-                            loc = minigame.getEndPosition();
+                        if (minigame.getEndLocation() != null) {
+                            loc = minigame.getEndLocation();
                         } else {
-                            loc = minigame.getQuitPosition();
+                            loc = minigame.getQuitLocation();
                         }
                     }
                     if (loc != null) {
                         player.teleport(loc);
                     } else {
-                        Minigames.log.warning("Minigame " + minigame.getName(true) + " has no end position set! (Player: " + player.getName() + ")");
+                        Minigames.log.warning("Minigame " + minigame.getName(true) + " has no end location set! (Player: " + player.getName() + ")");
                     }
                 } else {
-                    if (!isWinner)
-                        player.setQuitPos(minigame.getQuitPosition());
-                    else
-                        player.setQuitPos(minigame.getEndPosition());
+                    if (!isWinner) {
+                        player.setQuitPos(minigame.getQuitLocation());
+                    } else {
+                        player.setQuitPos(minigame.getEndLocation());
+                    }
                     player.setRequiredQuit(true);
                 }
                 player.setStartPos(null);
@@ -741,7 +756,7 @@ public class MinigamePlayerManager {
                 PlayMGSound.playSound(player, MGSounds.getSound("lose"));
             }
 
-            if (minigame.getEndPosition() == null) {
+            if (minigame.getEndLocation() == null) {
                 plugin.getLogger().warning(MessageManager.getUnformattedMessage(null, "minigame.error.noEnd")  + " - " + minigame.getName(false));
             }
             for (MinigamePlayer player : winners) {

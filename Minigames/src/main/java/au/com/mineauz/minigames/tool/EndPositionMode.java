@@ -42,7 +42,7 @@ public class EndPositionMode implements ToolMode {
     @Override
     public void onRightClick(MinigamePlayer player, Minigame minigame,
                              Team team, PlayerInteractEvent event) {
-        minigame.setEndPosition(player.getLocation());
+        minigame.setEndLocation(player.getLocation());
         player.sendInfoMessage("Set end position.");
     }
 
@@ -58,8 +58,8 @@ public class EndPositionMode implements ToolMode {
 
     @Override
     public void select(MinigamePlayer player, Minigame minigame, Team team) {
-        if (minigame.getEndPosition() != null) {
-            player.getPlayer().sendBlockChange(minigame.getEndPosition(),
+        if (minigame.getEndLocation() != null) {
+            player.getPlayer().sendBlockChange(minigame.getEndLocation(),
                     Material.SKELETON_SKULL.createBlockData());
             player.sendInfoMessage("Selected end position (marked with skull)");
         } else {
@@ -69,9 +69,9 @@ public class EndPositionMode implements ToolMode {
 
     @Override
     public void deselect(MinigamePlayer player, Minigame minigame, Team team) {
-        if (minigame.getEndPosition() != null) {
-            player.getPlayer().sendBlockChange(minigame.getEndPosition(),
-                    minigame.getEndPosition().getBlock().getBlockData());
+        if (minigame.getEndLocation() != null) {
+            player.getPlayer().sendBlockChange(minigame.getEndLocation(),
+                    minigame.getEndLocation().getBlock().getBlockData());
             player.sendInfoMessage("Deselected end position");
         } else {
             player.sendMessage("No end position set!", MinigameMessageType.ERROR);

@@ -444,10 +444,10 @@ public class MinigameManager {
     }
 
     public boolean minigameStartSetupCheck(final Minigame minigame, final MinigamePlayer player) {
-        if (minigame.getEndPosition() == null) {
+        if (minigame.getEndLocation() == null) {
             player.sendMessage(MinigameUtils.getLang("minigame.error.noEnd"), MinigameMessageType.ERROR);
             return false;
-        } else if (minigame.getQuitPosition() == null) {
+        } else if (minigame.getQuitLocation() == null) {
             player.sendMessage(MinigameUtils.getLang("minigame.error.noQuit"), MinigameMessageType.ERROR);
             return false;
         } else if (minigame.getType() == null || this.minigameType(minigame.getType()).cannotStart(minigame, player)) { //type specific reasons we cannot start.

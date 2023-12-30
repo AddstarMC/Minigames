@@ -177,7 +177,7 @@ public class Events implements Listener {
         MinigamePlayer ply = pdata.getMinigamePlayer(event.getPlayer());
         if (ply.isInMinigame()) {
             if (ply.getPlayer().isDead()) {
-                ply.getOfflineMinigamePlayer().setLoginLocation(ply.getMinigame().getQuitPosition());
+                ply.getOfflineMinigamePlayer().setLoginLocation(ply.getMinigame().getQuitLocation());
                 ply.getOfflineMinigamePlayer().savePlayerData();
             }
             pdata.quitMinigame(pdata.getMinigamePlayer(event.getPlayer()), false);

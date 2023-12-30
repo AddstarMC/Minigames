@@ -63,9 +63,9 @@ public class Minigame implements ScriptObject {
     private final BooleanFlag respawn = new BooleanFlag(Minigames.getPlugin().getConfig().getBoolean("has-respawn"), "respawn");
     private final LocationListFlag startLocations = new LocationListFlag(null, "startpos");
     private final BooleanFlag randomizeStart = new BooleanFlag(false, "ranndomizeStart");
-    private final LocationFlag endPosition = new LocationFlag(null, "endpos");
-    private final LocationFlag quitPosition = new LocationFlag(null, "quitpos");
-    private final LocationFlag lobbyPosition = new LocationFlag(null, "lobbypos");
+    private final LocationFlag endLocation = new LocationFlag(null, "endpos");
+    private final LocationFlag quitLocation = new LocationFlag(null, "quitpos");
+    private final LocationFlag lobbyLocation = new LocationFlag(null, "lobbypos");
     private final LocationFlag spectatorPosition = new LocationFlag(null, "spectatorpos");
 
     private final BooleanFlag usePermissions = new BooleanFlag(false, "usepermissions");
@@ -194,7 +194,7 @@ public class Minigame implements ScriptObject {
         addConfigFlag(displayName);
         addConfigFlag(enableFlight);
         addConfigFlag(enabled);
-        addConfigFlag(endPosition);
+        addConfigFlag(endLocation);
         addConfigFlag(flags);
         addConfigFlag(floorDegen);
         addConfigFlag(floorDegenTime);
@@ -203,7 +203,7 @@ public class Minigame implements ScriptObject {
         addConfigFlag(itemPickup);
         addConfigFlag(lateJoin);
         addConfigFlag(lives);
-        addConfigFlag(lobbyPosition);
+        addConfigFlag(lobbyLocation);
         addConfigFlag(maxChestRandom);
         addConfigFlag(maxPlayers);
         addConfigFlag(maxScore);
@@ -219,7 +219,7 @@ public class Minigame implements ScriptObject {
         addConfigFlag(objective);
         addConfigFlag(paintBallDamage);
         addConfigFlag(paintBallMode);
-        addConfigFlag(quitPosition);
+        addConfigFlag(quitLocation);
         addConfigFlag(randomizeChests);
         addConfigFlag(regenRegions);
         addConfigFlag(regenDelay);
@@ -449,28 +449,28 @@ public class Minigame implements ScriptObject {
         this.degenRandomChance.setFlag(degenRandomChance);
     }
 
-    public Location getEndPosition() {
-        return endPosition.getFlag();
+    public @Nullable Location getEndLocation() {
+        return endLocation.getFlag();
     }
 
-    public void setEndPosition(Location endPosition) {
-        this.endPosition.setFlag(endPosition);
+    public void setEndLocation(Location endLocation) {
+        this.endLocation.setFlag(endLocation);
     }
 
-    public Location getQuitPosition() {
-        return quitPosition.getFlag();
+    public @Nullable Location getQuitLocation() {
+        return quitLocation.getFlag();
     }
 
-    public void setQuitPosition(Location quitPosition) {
-        this.quitPosition.setFlag(quitPosition);
+    public void setQuitLocation(Location quitLocation) {
+        this.quitLocation.setFlag(quitLocation);
     }
 
-    public Location getLobbyPosition() {
-        return lobbyPosition.getFlag();
+    public @Nullable Location getLobbyLocation() {
+        return lobbyLocation.getFlag();
     }
 
-    public void setLobbyPosition(Location lobbyPosisiton) {
-        this.lobbyPosition.setFlag(lobbyPosisiton);
+    public void setLobbyLocation(Location lobbyLocation) {
+        this.lobbyLocation.setFlag(lobbyLocation);
     }
 
     public String getName(boolean useDisplay) {
