@@ -16,7 +16,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.Map;
 
 public class MinigameTimerCondition extends ConditionInterface {
-
     private final IntegerFlag minTime = new IntegerFlag(5, "minTime");
     private final IntegerFlag maxTime = new IntegerFlag(10, "maxTime");
 
@@ -46,13 +45,13 @@ public class MinigameTimerCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean checkRegionCondition(MinigamePlayer player, Region region) { //todo add minigame to nodes, so this doesn't need players anymore to check
-        return check(player.getMinigame());
+    public boolean checkRegionCondition(MinigamePlayer player, Region region) {
+        return check(region.getMinigame());
     }
 
     @Override
     public boolean checkNodeCondition(MinigamePlayer player, Node node) {
-        return check(player.getMinigame());
+        return check(node.getMinigame());
     }
 
     private boolean check(Minigame mg) {
@@ -93,6 +92,6 @@ public class MinigameTimerCondition extends ConditionInterface {
 
     @Override
     public boolean PlayerNeeded() {
-        return true;
+        return false;
     }
 }

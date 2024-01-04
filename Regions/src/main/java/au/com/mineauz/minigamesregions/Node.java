@@ -1,5 +1,6 @@
 package au.com.mineauz.minigamesregions;
 
+import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.script.ScriptReference;
 import au.com.mineauz.minigames.script.ScriptValue;
@@ -10,6 +11,7 @@ import au.com.mineauz.minigamesregions.executors.NodeExecutor;
 import au.com.mineauz.minigamesregions.triggers.Trigger;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +19,14 @@ import java.util.Set;
 
 public class Node implements ExecutableScriptObject {
     private final String name;
+    private final Minigame minigame;
     private final List<NodeExecutor> executors = new ArrayList<>();
     private Location loc;
     private boolean enabled = true;
 
-    public Node(String name, Location loc) {
+    public Node(@NotNull String name, @NotNull Minigame minigame, @NotNull Location loc) {
         this.name = name;
+        this.minigame = minigame;
         this.loc = loc;
     }
 
@@ -131,5 +135,9 @@ public class Node implements ExecutableScriptObject {
     @Override
     public String getAsString() {
         return name;
+    }
+
+    public Minigame getMinigame() {
+        return minigame;
     }
 }

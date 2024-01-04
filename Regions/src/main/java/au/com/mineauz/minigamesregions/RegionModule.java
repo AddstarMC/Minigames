@@ -155,7 +155,7 @@ public class RegionModule extends MinigameModule {
                 Location loc1 = new Location(w1, x1, y1, z1);
                 Location loc2 = new Location(w2, x2, y2, z2);
 
-                regions.put(name, new Region(name, loc1, loc2));
+                regions.put(name, new Region(name, getMinigame(), loc1, loc2));
                 Region r = regions.get(name);
                 if (config.contains(getMinigame() + ".regions." + name + ".tickDelay")) {
                     r.changeTickDelay(config.getLong(getMinigame() + ".regions." + name + ".tickDelay"));
@@ -211,7 +211,7 @@ public class RegionModule extends MinigameModule {
                 }
                 Location loc1 = new Location(w1, x1, y1, z1, yaw, pitch);
 
-                nodes.put(name, new Node(name, loc1));
+                nodes.put(name, new Node(name, getMinigame(), loc1));
                 Node n = nodes.get(name);
                 if (config.contains(getMinigame() + ".nodes." + name + ".executors")) {
                     Set<String> ex = config.getConfigurationSection(getMinigame() + ".nodes." + name + ".executors").getKeys(false);

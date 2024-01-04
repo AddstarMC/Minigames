@@ -90,7 +90,7 @@ public class SetRegionCommand implements ICommand {
                 } else if (args[0].equalsIgnoreCase("create")) {
                     if (ply.hasSelection()) {
                         String name = args[1];
-                        rmod.addRegion(name, new Region(name, ply.getSelectionPoints()[0], ply.getSelectionPoints()[1]));
+                        rmod.addRegion(name, new Region(name, minigame, ply.getSelectionPoints()[0], ply.getSelectionPoints()[1]));
                         ply.clearSelection();
 
                         ply.sendInfoMessage(ChatColor.GRAY + "Created new region for " + minigame.getName(false) + " named " + name);

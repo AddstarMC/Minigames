@@ -68,7 +68,7 @@ public class SetNodeCommand implements ICommand {
             RegionModule rmod = RegionModule.getMinigameModule(minigame);
             if (args[0].equalsIgnoreCase("create") && args.length >= 2) {
                 if (!rmod.hasNode(args[1])) {
-                    rmod.addNode(args[1], new Node(args[1], ply.getLocation()));
+                    rmod.addNode(args[1], new Node(args[1], minigame, ply.getLocation()));
                     sender.sendMessage(ChatColor.GRAY + Main.getPlugin().getMessage("command.node.addedNode", args[1], minigame.getName(true)));
                 } else
                     sender.sendMessage(ChatColor.RED + Main.getPlugin().getMessage("command.node.nodeExists", args[1], minigame.getName(true)));

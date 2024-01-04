@@ -1,6 +1,7 @@
 package au.com.mineauz.minigamesregions;
 
 import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.Position;
@@ -29,17 +30,22 @@ public class Region extends MgRegion implements ExecutableScriptObject {
     private final List<RegionExecutor> executors = new ArrayList<>();
     private final List<MinigamePlayer> players = new ArrayList<>();
     private final int gameTickDelay = 1;
+    private final Minigame minigame;
     private long taskDelay = 20;
     private int taskID;
     private int gameTickTaskID;
     private boolean enabled = true;
 
-    public Region(@NotNull World world, @NotNull String name, @NotNull Position pos1, @NotNull Position pos2) {
+    public Region(@NotNull Minigame minigame, @NotNull World world, @NotNull String name, @NotNull Position pos1, @NotNull Position pos2) {
         super(world, name, pos1, pos2);
+
+        this.minigame = minigame;
     }
 
-    public Region(@NotNull String name, @NotNull Location loc1, @NotNull Location loc2) {
+    public Region(@NotNull String name, @NotNull Minigame minigame, @NotNull Location loc1, @NotNull Location loc2) {
         super(name, loc1, loc2);
+
+        this.minigame = minigame;
     }
 
     public boolean playerInRegion(MinigamePlayer player) {
@@ -237,5 +243,9 @@ public class Region extends MgRegion implements ExecutableScriptObject {
     @Override
     public Set<String> getKeys() {
         return ImmutableSet.of("name", "players", "min", "max");
+    }
+
+    public Minigame getMinigame() {
+        return minigame;
     }
 }

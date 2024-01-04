@@ -103,7 +103,7 @@ public class NodeToolMode implements ToolMode {
             Location loc = event.getClickedBlock().getLocation().add(0.5, 0.5, 0.5);
             Node node = mod.getNode(name);
             if (node == null) {
-                node = new Node(name, loc);
+                node = new Node(name, minigame, loc);
                 mod.addNode(name, node);
                 player.sendInfoMessage("Added new node to " + minigame + " called " + name);
             } else {
@@ -121,7 +121,7 @@ public class NodeToolMode implements ToolMode {
 
         Node node = mod.getNode(name);
         if (node == null) {
-            node = new Node(name, player.getLocation());
+            node = new Node(name, minigame, player.getLocation());
             mod.addNode(name, node);
             player.sendInfoMessage("Added new node to " + minigame + " called " + name);
         } else {

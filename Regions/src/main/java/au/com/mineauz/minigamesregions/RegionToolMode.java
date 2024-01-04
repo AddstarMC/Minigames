@@ -104,7 +104,7 @@ public class RegionToolMode implements ToolMode {
             Region region = module.getRegion(name);
 
             if (region == null) {
-                module.addRegion(name, new Region(name, player.getSelectionPoints()[0], player.getSelectionPoints()[1]));
+                module.addRegion(name, new Region(name, minigame, player.getSelectionPoints()[0], player.getSelectionPoints()[1]));
                 player.sendInfoMessage("Created a new region in " + minigame + " called " + name);
                 player.clearSelection();
             } else {
