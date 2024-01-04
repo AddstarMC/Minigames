@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 
 public class Node implements ExecutableScriptObject {
-
     private final String name;
     private final List<NodeExecutor> executors = new ArrayList<>();
     private Location loc;
@@ -77,8 +76,9 @@ public class Node implements ExecutableScriptObject {
         List<NodeExecutor> toExecute = new ArrayList<>();
         for (NodeExecutor exec : executors) {
             if (exec.getTrigger() == trigger) {
-                if (checkConditions(exec, player) && exec.canBeTriggered(player))
+                if (checkConditions(exec, player) && exec.canBeTriggered(player)) {
                     toExecute.add(exec);
+                }
             }
         }
         for (NodeExecutor exec : toExecute) {
@@ -88,10 +88,11 @@ public class Node implements ExecutableScriptObject {
 
     public boolean checkConditions(NodeExecutor exec, MinigamePlayer player) {
         for (ConditionInterface con : exec.getConditions()) {
-            boolean c = con.checkNodeCondition(player, this);
-            if (con.isInverted())
-                c = !c;
-            if (!c) {
+            boolean conditionCheck = con.checkNodeCondition(player, this);
+            if (con.isInverted()) {
+                conditionCheck = !conditionCheck;
+            }
+            if (!conditionCheck) {
                 return false;
             }
         }

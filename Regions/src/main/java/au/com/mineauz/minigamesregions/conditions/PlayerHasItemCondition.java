@@ -291,7 +291,7 @@ public class PlayerHasItemCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean onPlayerApplicable() {
+    public boolean PlayerNeeded() {
         return true;
     }
 

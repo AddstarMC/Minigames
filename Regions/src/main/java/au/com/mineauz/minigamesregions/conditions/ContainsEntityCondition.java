@@ -8,7 +8,6 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.Node;
 import au.com.mineauz.minigamesregions.Region;
 import com.google.common.base.Strings;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
@@ -48,16 +47,15 @@ public class ContainsEntityCondition extends ConditionInterface {
 
     @Override
     public boolean checkRegionCondition(MinigamePlayer player, Region region) {
-        Collection<? extends Entity> entities = region.getFirstPoint().getWorld().getEntitiesByClass(entityType.getFlag().getEntityClass());
+        Collection<Entity> entities = region.getFirstPoint().getWorld().getNearbyEntities(region.getBoundingBox());
 
         Pattern namePattern = null;
         if (matchName.getFlag()) {
             namePattern = createNamePattern();
         }
 
-        Location temp = new Location(null, 0, 0, 0);
         for (Entity entity : entities) {
-            if (entity.getType() == entityType.getFlag() && region.locationInRegion(entity.getLocation(temp))) {
+            if (entity.getType() == entityType.getFlag()) {
                 if (matchName.getFlag()) {
                     Matcher m = namePattern.matcher(Strings.nullToEmpty(entity.getCustomName()));
                     if (!m.matches()) {
@@ -135,7 +133,7 @@ public class ContainsEntityCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean onPlayerApplicable() {
-        return true;
+    public boolean PlayerNeeded() {
+        return false;
     }
 }

@@ -76,7 +76,7 @@ public class ContainsOneTeamCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean onPlayerApplicable() {
-        return true;
+    public boolean PlayerNeeded() {
+        return false;
     }
 }

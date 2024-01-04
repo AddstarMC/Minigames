@@ -18,9 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MatchBlockCondition extends ConditionInterface {
-
     private final BlockDataFlag type = new BlockDataFlag(Material.STONE.createBlockData(), "type");
-    private final BooleanFlag useBlockData = new BooleanFlag(false, "usedur");
+    private final BooleanFlag useBlockData = new BooleanFlag(false, "usedur"); //todo rename the name
 
     @Override
     public String getName() {
@@ -124,7 +123,7 @@ public class MatchBlockCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean onPlayerApplicable() {
-        return true;
+    public boolean PlayerNeeded() {
+        return false;
     }
 }

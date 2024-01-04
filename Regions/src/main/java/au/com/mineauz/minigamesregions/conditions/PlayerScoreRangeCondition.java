@@ -80,7 +80,7 @@ public class PlayerScoreRangeCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean onPlayerApplicable() {
+    public boolean PlayerNeeded() {
         return true;
     }
 }

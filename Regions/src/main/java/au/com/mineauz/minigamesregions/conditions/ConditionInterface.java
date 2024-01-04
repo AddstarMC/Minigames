@@ -13,7 +13,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.Map;
 
 public abstract class ConditionInterface {
-
     private final BooleanFlag invert = new BooleanFlag(false, "invert");
 
     protected void addInvertMenuItem(Menu m) {
@@ -50,7 +49,10 @@ public abstract class ConditionInterface {
 
     public abstract boolean displayMenu(MinigamePlayer player, Menu prev);
 
-    public abstract boolean onPlayerApplicable();
+    /**
+     * Returns if the condition needs a player who caused the check to happen.
+     */
+    public abstract boolean PlayerNeeded();
 
     public abstract void describe(Map<String, Object> out);
 

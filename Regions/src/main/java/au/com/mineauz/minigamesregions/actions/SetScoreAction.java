@@ -13,7 +13,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.Map;
 
 public class SetScoreAction extends ScoreAction {
-
     private final IntegerFlag amount = new IntegerFlag(1, "amount");
 
     @Override

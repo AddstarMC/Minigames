@@ -37,7 +37,7 @@ public class MenuItemConditionAdd extends MenuItem {
             if ((Conditions.getConditionByName(con).useInNodes() && nexec != null) ||
                     (Conditions.getConditionByName(con).useInRegions() && rexec != null)) {
                 if (!Objects.requireNonNullElseGet(rexec, () -> nexec).getTrigger().triggerOnPlayerAvailable()) {
-                    if (Conditions.getConditionByName(con).onPlayerApplicable()) {
+                    if (Conditions.getConditionByName(con).PlayerNeeded()) {
                         continue;
                     }
                 }

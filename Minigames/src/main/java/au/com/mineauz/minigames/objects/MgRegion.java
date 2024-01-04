@@ -2,6 +2,7 @@ package au.com.mineauz.minigames.objects;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -132,6 +133,10 @@ public class MgRegion {
 
     public double getVolume() {
         return getBaseArea() * Math.min(1, Math.abs(pos1.y() - pos2.y()));
+    }
+
+    public BoundingBox getBoundingBox() {
+        return new BoundingBox(pos1.x(), pos1.y(), pos1.z(), pos2.x(), pos2.y(), pos2.z());
     }
 
     @Override

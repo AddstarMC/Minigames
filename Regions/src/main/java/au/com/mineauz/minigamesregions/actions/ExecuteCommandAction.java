@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class ExecuteCommandAction extends AbstractAction {
-
     private final StringFlag comd = new StringFlag("say Hello World!", "command");
     private final BooleanFlag silentExecute = new BooleanFlag(false, "silent");
 

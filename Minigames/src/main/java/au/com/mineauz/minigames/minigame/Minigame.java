@@ -1011,6 +1011,7 @@ public class Minigame implements ScriptObject {
     }
 
     public Scoreboard getScoreboardManager() {
+
         return sbManager;
     }
 
@@ -1055,13 +1056,7 @@ public class Minigame implements ScriptObject {
     }
 
     public StatSettings getSettings(MinigameStat stat) {
-        StatSettings settings = statSettings.get(stat);
-        if (settings == null) {
-            settings = new StatSettings(stat);
-            statSettings.put(stat, settings);
-        }
-
-        return settings;
+        return statSettings.computeIfAbsent(stat, StatSettings::new);
     }
 
     public Map<MinigameStat, StatSettings> getStatSettings(StoredGameStats stats) {

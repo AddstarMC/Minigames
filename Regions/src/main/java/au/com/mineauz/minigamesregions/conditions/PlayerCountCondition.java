@@ -13,7 +13,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.Map;
 
 public class PlayerCountCondition extends ConditionInterface {
-
     private final IntegerFlag min = new IntegerFlag(1, "min");
     private final IntegerFlag max = new IntegerFlag(5, "max");
 
@@ -78,7 +77,7 @@ public class PlayerCountCondition extends ConditionInterface {
     }
 
     @Override
-    public boolean onPlayerApplicable() {
-        return true;
+    public boolean PlayerNeeded() {
+        return false;
     }
 }
