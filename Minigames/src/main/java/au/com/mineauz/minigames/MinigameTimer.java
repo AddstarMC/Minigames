@@ -14,16 +14,16 @@ import java.util.List;
 
 public class MinigameTimer {
     private static final Minigames plugin = Minigames.getPlugin();
-    private int time = 0;
-    private int otime = 0;
+    private final int timeLength;
     private final Minigame minigame;
     private final List<Integer> timeMsg = new ArrayList<>();
+    private int timeLeft = 0;
     private int taskID = -1;
     private boolean broadcastTime = true;
 
-    public MinigameTimer(Minigame minigame, int time) {
-        this.time = time;
-        otime = time;
+    public MinigameTimer(Minigame minigame, int timeLength) {
+        this.timeLength = timeLength;
+        this.timeLeft = timeLength;
         this.minigame = minigame;
         timeMsg.addAll(plugin.getConfig().getIntegerList("multiplayer.timerMessageInterval"));
         startTimer();
@@ -38,8 +38,8 @@ public class MinigameTimer {
     }
 
     public void startTimer() {
-        if (taskID != -1)
-            stopTimer();
+        stopTimer();
+
         //a delay of 1 is used because bukkit doesn't guarantee that it will run on the current tick if the scheduler has
         // already run that tick . In that case it runs next tick - a delay of 1 means the behaviour is consistent.
         /// this effectively means the timer runs 50ms behind expected.
@@ -47,36 +47,37 @@ public class MinigameTimer {
     }
 
     private void runTimer() {
-        time -= 1;
+        timeLeft--;
         if (minigame.isUsingXPBarTimer()) {
-            float timeper = ((Integer) time).floatValue() / ((Integer) otime).floatValue();
-            int level = 0;
-            if (time / 60 > 0)
-                level = time / 60;
-            else
-                level = time;
+            float timeLeftpercent = ((float) timeLeft) / ((float) timeLength);
+            int level;
+            if (timeLeft / 60 > 0) {
+                level = timeLeft / 60;
+            } else {
+                level = timeLeft;
+            }
 
             for (MinigamePlayer ply : minigame.getPlayers()) {
-                if (timeper < 0) {
+                if (timeLeftpercent < 0) {
                     ply.getPlayer().setExp(0);
                     ply.getPlayer().setLevel(0);
                 } else {
-                    ply.getPlayer().setExp(timeper);
+                    ply.getPlayer().setExp(timeLeftpercent);
                     ply.getPlayer().setLevel(level);
                 }
             }
         }
-        if (timeMsg.contains(time) && broadcastTime) {
+        if (timeMsg.contains(timeLeft) && broadcastTime) {
             PlayMGSound.playSound(minigame, MGSounds.getSound("timerTick"));
-            plugin.getMinigameManager().sendMinigameMessage(minigame, MessageManager.getMinigamesMessage("minigame.timeLeft", MinigameUtils.convertTime(time)));
+            plugin.getMinigameManager().sendMinigameMessage(minigame, MessageManager.getMinigamesMessage("minigame.timeLeft", MinigameUtils.convertTime(timeLeft)));
         }
 
-        if (time <= 0) {
+        if (timeLeft <= 0) {
             Bukkit.getServer().getPluginManager().callEvent(new TimerExpireEvent(minigame));
             stopTimer();
         }
 
-        if (time > 0)
+        if (timeLeft > 0)
             Bukkit.getPluginManager().callEvent(new MinigameTimerTickEvent(minigame, minigame.getMinigameTimer()));
 
     }
@@ -88,10 +89,10 @@ public class MinigameTimer {
     }
 
     public int getTimeLeft() {
-        return time;
+        return timeLeft;
     }
 
     public void setTimeLeft(int time) {
-        this.time = time;
+        this.timeLeft = time;
     }
 }
