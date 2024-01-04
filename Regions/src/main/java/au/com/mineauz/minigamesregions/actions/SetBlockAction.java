@@ -106,7 +106,7 @@ public class SetBlockAction extends AbstractAction {
     public boolean displayMenu(MinigamePlayer player, Menu previous) {
         Menu m = new Menu(3, "Set Block", player);
         m.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), previous), m.getSize() - 9);
-        m.addItem(new MenuItemBlockData("Type", Material.STONE, new Callback<>() {
+        m.addItem(new MenuItemBlockData("Type", type.getFlag().getMaterial(), new Callback<>() {
             @Override
             public BlockData getValue() {
                 return type.getFlag();

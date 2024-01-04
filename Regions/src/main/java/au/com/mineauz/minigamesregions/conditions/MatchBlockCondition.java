@@ -89,7 +89,7 @@ public class MatchBlockCondition extends ConditionInterface {
                 List.of("Click here with a", "block you wish to", "match to."), Material.ITEM_FRAME);
         m.addItem(c, m.getSize() - 1);
 
-        final MenuItemBlockData btype = new MenuItemBlockData("Block Type", Material.STONE, new Callback<>() {
+        final MenuItemBlockData btype = new MenuItemBlockData("Block Type", type.getFlag().getMaterial(), new Callback<>() {
 
             @Override
             public BlockData getValue() {
@@ -106,10 +106,10 @@ public class MatchBlockCondition extends ConditionInterface {
         m.addItem(busedur);
         c.setClickItem(object -> {
             ItemStack i = (ItemStack) object;
-            try {
+            if (i.getType().isBlock()) {
                 type.setFlag(i.getType().createBlockData());
                 useBlockData.setFlag(true);
-            } catch (IllegalArgumentException e) {
+            } else {
                 c.getContainer().getViewer().sendMessage("That item is not a block", MinigameMessageType.ERROR);
             }
             useBlockData.setFlag(true);
