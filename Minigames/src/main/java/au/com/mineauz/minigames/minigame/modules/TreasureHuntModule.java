@@ -18,11 +18,12 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class TreasureHuntModule extends MinigameModule {
-
     private final StringFlag location = new StringFlag(null, "location");
     private final IntegerFlag maxRadius = new IntegerFlag(1000, "maxradius");
     private final IntegerFlag maxHeight = new IntegerFlag(20, "maxheight");
@@ -36,17 +37,12 @@ public class TreasureHuntModule extends MinigameModule {
     private Location treasureLocation = null;
     private boolean treasureFound = false;
 
-    public TreasureHuntModule(Minigame mgm) {
-        super(mgm);
+    public TreasureHuntModule(@NotNull Minigame mgm, @NotNull String name) {
+        super(mgm, name);
     }
 
-    public static TreasureHuntModule getMinigameModule(Minigame minigame) {
-        return (TreasureHuntModule) minigame.getModule("TreasureHunt");
-    }
-
-    @Override
-    public String getName() {
-        return "TreasureHunt";
+    public static @Nullable TreasureHuntModule getMinigameModule(@NotNull Minigame mgm) {
+        return ((TreasureHuntModule) mgm.getModule(MgModules.TREASURE_HUNT.getName()));
     }
 
     @Override

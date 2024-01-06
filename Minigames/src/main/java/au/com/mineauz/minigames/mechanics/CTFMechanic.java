@@ -13,6 +13,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.TeamColor;
 import au.com.mineauz.minigames.minigame.modules.CTFModule;
+import au.com.mineauz.minigames.minigame.modules.MgModules;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.CTFFlag;
@@ -54,7 +55,7 @@ public class CTFMechanic extends GameMechanicBase {
 
     @Override
     public MinigameModule displaySettings(Minigame minigame) {
-        return CTFModule.getMinigameModule(minigame);
+        return minigame.getModule(MgModules.CAPTURE_THE_FLAG.getName());
     }
 
     @Override

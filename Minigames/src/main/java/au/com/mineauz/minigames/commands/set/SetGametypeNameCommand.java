@@ -1,9 +1,13 @@
 package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,23 +33,12 @@ public class SetGametypeNameCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Sets the name of the game type that displays when a player joins (Replacing \"Singleplayer\" and \"Free For All\"). " +
-                "Typing \"null\" will remove the name.";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_GAMETYPENAME_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> gametypename <Name>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You don't have permission to set the gametype name!";
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_GAMETYPENAME_USAGE);
     }
 
     @Override
@@ -54,23 +47,20 @@ public class SetGametypeNameCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
                              @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
-            if (!args[0].equals("null")) {
-                StringBuilder gtn = new StringBuilder();
-                int count = 0;
-                for (String arg : args) {
-                    gtn.append(arg);
-                    count++;
-                    if (count != args.length)
-                        gtn.append(" ");
-                }
-                minigame.setGameTypeName(gtn.toString());
-                sender.sendMessage(ChatColor.GRAY + "Gametype name for " + minigame + " has been set to " + gtn + ".");
-            } else {
+            if (args[0].equalsIgnoreCase("null")) {
                 minigame.setGameTypeName(null);
-                sender.sendMessage(ChatColor.GRAY + "Gametype name for " + minigame + " has been removed.");
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_GAMETYPENAME_REMOVE,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+            } else {
+                String gameTypeName = String.join(" ", args);
+
+                minigame.setGameTypeName(gameTypeName);
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_GAMETYPENAME_SUCCESS,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), gameTypeName));
             }
             return true;
         }
@@ -78,8 +68,8 @@ public class SetGametypeNameCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                      String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                                         String alias, @NotNull String @NotNull [] args) {
         return null;
     }
 

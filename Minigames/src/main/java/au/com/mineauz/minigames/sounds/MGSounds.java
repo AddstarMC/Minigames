@@ -3,7 +3,7 @@ package au.com.mineauz.minigames.sounds;
 import org.bukkit.Sound;
 import org.jetbrains.annotations.NotNull;
 
-public enum MGSounds {
+public enum MGSounds { //todo undo making this a plain enum and allow registeration of sounds again
     TIMER_TICK(new MGSound(Sound.BLOCK_NOTE_BLOCK_HAT, 10f, 1.5f)),
     WIN(new MGSound(Sound.ENTITY_PLAYER_LEVELUP)),
     LOSE(new MGSound(Sound.BLOCK_NOTE_BLOCK_PLING, 10f, 0.2f, 3, 5L)),

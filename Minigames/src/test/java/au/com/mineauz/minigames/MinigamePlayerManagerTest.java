@@ -34,7 +34,7 @@ public class MinigamePlayerManagerTest {
         MockBukkit.getMock().addWorld(world);
         plugin = MockBootstrap.createPluginWithTestContext(server);
         plugin.toggleDebug();
-        game = TestHelper.createMinigame(plugin, world, MinigameType.MULTIPLAYER, GameMechanics.MECHANIC_NAME.KILLS);
+        game = TestHelper.createMinigame(plugin, world, MinigameType.MULTIPLAYER, GameMechanics.MG_MECHANICS.KILLS.getMechanic());
     }
 
     @AfterEach

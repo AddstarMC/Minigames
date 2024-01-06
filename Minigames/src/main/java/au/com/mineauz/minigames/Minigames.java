@@ -10,7 +10,7 @@ import au.com.mineauz.minigames.gametypes.SingleplayerType;
 import au.com.mineauz.minigames.managers.*;
 import au.com.mineauz.minigames.mechanics.TreasureHuntMechanic;
 import au.com.mineauz.minigames.minigame.Minigame;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
+import au.com.mineauz.minigames.minigame.modules.ModuleFactory;
 import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
@@ -246,7 +246,7 @@ public class Minigames extends JavaPlugin {
         final MinigameSave globalLoadouts = new MinigameSave("globalLoadouts");
         final Set<String> keys = globalLoadouts.getConfig().getKeys(false);
         for (final String loadout : keys) {
-            this.minigameManager.addLoadout(loadout);
+            this.minigameManager.addGlobalLoadout(loadout);
             ConfigurationSection loadOutSection = globalLoadouts.getConfig().getConfigurationSection(loadout);
             if (loadOutSection != null) {
                 final Set<String> items = loadOutSection.getKeys(false);
@@ -460,8 +460,8 @@ public class Minigames extends JavaPlugin {
         });
         final SimpleBarChart barChart = new SimpleBarChart("Modules_v_Servers", () -> {
             final Map<String, Integer> result = new HashMap<>();
-            for (final Class<? extends MinigameModule> module : this.minigameManager.getModules()) {
-                result.put(module.getCanonicalName(), 1);
+            for (final ModuleFactory module : this.minigameManager.getModules()) {
+                result.put(module.getName(), 1);
             }
             return result;
         });

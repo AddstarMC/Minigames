@@ -46,11 +46,11 @@ public class DegenAreaMode implements ToolMode {
                             @Nullable Team team, @NotNull PlayerInteractEvent event) {
         if (mgPlayer.hasSelection()) {
             if (minigame.getFloorDegen() != null) {
-                minigame.getFloorDegen().setFirstPos(mgPlayer.getSelectionPoints()[0]);
-                minigame.getFloorDegen().setSecondPos(mgPlayer.getSelectionPoints()[1]);
+                minigame.getFloorDegen().setFirstPos(mgPlayer.getSelectionLocations()[0]);
+                minigame.getFloorDegen().setSecondPos(mgPlayer.getSelectionLocations()[1]);
             } else {
                 //please note: the name is not important
-                minigame.setFloorDegen(new MgRegion("degen", mgPlayer.getSelectionPoints()[0], mgPlayer.getSelectionPoints()[1]));
+                minigame.setFloorDegen(new MgRegion("degen", mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
             }
             MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SET_DEGENAREA);
         } else {
@@ -63,7 +63,7 @@ public class DegenAreaMode implements ToolMode {
                              @Nullable Team team, @NotNull PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock() != null) {
             mgPlayer.addSelectionPoint(event.getClickedBlock().getLocation());
-            if (mgPlayer.getSelectionPoints()[1] != null) {
+            if (mgPlayer.getSelectionLocations()[1] != null) {
                 MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.TOOL_SELECTED_REGION);
             }
         }

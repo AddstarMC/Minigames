@@ -17,7 +17,7 @@ public class TestMinigame extends Minigame {
     public TestMinigame(String name, MinigameType type, Location start, World world, MinigameManager manager, Location quit, Location end, Location lobby) {
         super(name, type, start);
         setType(MinigameType.MULTIPLAYER);
-        setMechanic(GameMechanics.MECHANIC_NAME.CTF.toString());
+        setMechanic(GameMechanics.MG_MECHANICS.CTF.getMechanic());
         setDeathDrops(true);
         setQuitLocation(quit);
         setLobbyLocation(lobby);
@@ -27,8 +27,8 @@ public class TestMinigame extends Minigame {
         setTimer(5);
         setMaxScore(3);
         setMaxPlayers(2);
-        ((TeamsModule) this.getModule("Teams")).addTeam(TeamColor.BLUE);
-        ((TeamsModule) this.getModule("Teams")).addTeam(TeamColor.RED);
+        TeamsModule.getMinigameModule(this).addTeam(TeamColor.BLUE);
+        TeamsModule.getMinigameModule(this).addTeam(TeamColor.RED);
         manager.addMinigame(this);
     }
 }

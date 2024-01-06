@@ -35,17 +35,12 @@ public class SetFlightCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Sets whether a player is allowed to fly in a Minigame and whether they are flying when they join or start the game.";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_FLIGHT_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return new String[]{"enabled", "startflying"};
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> flight <Parameter> <true/false>"};
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_FLIGHT_USAGE);
     }
 
     @Override
@@ -57,49 +52,59 @@ public class SetFlightCommand implements ICommand {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
                              @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null && args.length == 2) {
-            if (args[0].equalsIgnoreCase("enabled")) {
-                Boolean bool = BooleanUtils.toBooleanObject(args[1]);
+            switch (args[0].toLowerCase()) {
+                case "enabled" -> {
+                    Boolean bool = BooleanUtils.toBooleanObject(args[1]);
 
-                if (bool != null) {
-                    minigame.setAllowedFlight(bool);
+                    if (bool != null) {
+                        minigame.setAllowedFlight(bool);
 
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_FLIGHT_ALLOWED,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
-                            Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
-                                    bool ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
-                } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOBOOL,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_FLIGHT_ALLOWED,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                                Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                                        bool ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
+                    } else {
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTBOOL,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                    }
+                }
+                case "startflying" -> {
+                    Boolean bool = BooleanUtils.toBooleanObject(args[1]);
+
+                    if (bool != null) {
+                        minigame.setFlightEnabled(bool);
+
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_FLIGHT_START,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                                Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
+                                        bool ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
+                    } else {
+                        MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTBOOL,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                    }
                 }
 
-                return true;
-            } else if (args[0].equalsIgnoreCase("startflying")) {
-                Boolean bool = BooleanUtils.toBooleanObject(args[1]);
-
-                if (bool != null) {
-                    minigame.setFlightEnabled(bool);
-
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_FLIGHT_START,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
-                            Placeholder.component(MinigamePlaceHolderKey.STATE.getKey(), MinigameMessageManager.getMgMessage(
-                                    bool ? MinigameLangKey.COMMAND_STATE_ENABLED : MinigameLangKey.COMMAND_STATE_DISABLED)));
-                } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOBOOL,
-                            Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
+                default -> {
+                    return false;
                 }
-                return true;
             }
+
+            return true;
         }
         return false;
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                      String alias, @NotNull String @NotNull [] args) {
-        if (args != null && args.length == 1)
-            return MinigameUtils.tabCompleteMatch(List.of("enabled", "startflying"), args[0]);
-        else if (args != null && args.length == 2)
-            return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[1]);
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                                         String alias, @NotNull String @Nullable [] args) {
+        if (args != null) {
+            if (args.length == 1) {
+                return MinigameUtils.tabCompleteMatch(List.of("enabled", "startflying"), args[0]);
+            } else if (args.length == 2) {
+                return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[1]);
+            }
+        }
+
         return null;
     }
 

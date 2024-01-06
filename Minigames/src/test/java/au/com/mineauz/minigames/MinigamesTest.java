@@ -49,7 +49,7 @@ public class MinigamesTest {
         plugin.toggleDebug();
         world = (WorldMock) MockBukkit.getMock().getWorld("GAMES");
         spawn = world.getSpawnLocation();
-        TestHelper.createMinigame(plugin, world, MinigameType.MULTIPLAYER, GameMechanics.MECHANIC_NAME.CTF);
+        TestHelper.createMinigame(plugin, world, MinigameType.MULTIPLAYER, GameMechanics.MG_MECHANICS.CTF.getMechanic());
         player = new TestPlayer(MockBukkit.getMock(), "TestPlayer", UUID.randomUUID());
         player.setLocation(spawn);
         MockBukkit.getMock().addPlayer(player);
@@ -61,7 +61,7 @@ public class MinigamesTest {
         plugin.getPlayerManager().addMinigamePlayer(player);
         MinigamePlayer mplayer = plugin.getPlayerManager().getMinigamePlayer(player.getUniqueId());
         plugin.getPlayerManager().joinMinigame(mplayer, game, false, 0.0);
-        LobbySettingsModule module = (LobbySettingsModule) game.getModule("LobbySettings");
+        LobbySettingsModule module = LobbySettingsModule.getMinigameModule(game);
         player.assertLocation(lobby, 0.0);
         Assertions.assertTrue(module.isTeleportOnStart());
         Assertions.assertNotSame(game.getStartLocations().indexOf(player.getLocation()), -1);

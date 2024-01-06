@@ -14,6 +14,8 @@ import au.com.mineauz.minigames.objects.ResourcePack;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,12 +27,12 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
     private final StringFlag resourcePackName = new StringFlag("", "resourcePackName");
     private final BooleanFlag forced = new BooleanFlag(false, "forceResourcePack");
 
-    public ResourcePackModule(Minigame mgm) {
-        super(mgm);
+    public ResourcePackModule(@NotNull Minigame mgm, @NotNull String name) {
+        super(mgm, name);
     }
 
-    public static ResourcePackModule getMinigameModule(Minigame minigame) {
-        return (ResourcePackModule) minigame.getModule("ResourcePack");
+    public static @Nullable ResourcePackModule getMinigameModule(@NotNull Minigame mgm) {
+        return ((ResourcePackModule) mgm.getModule(MgModules.RESOURCEPACK.getName()));
     }
 
     public boolean isEnabled() {
@@ -51,11 +53,6 @@ public class ResourcePackModule extends MinigameModule { //todo rework to work w
 
     public String getResourcePackName() {
         return resourcePackName.getFlag();
-    }
-
-    @Override
-    public String getName() {
-        return "ResourcePack";
     }
 
     @Override

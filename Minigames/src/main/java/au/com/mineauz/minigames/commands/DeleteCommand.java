@@ -82,8 +82,8 @@ public class DeleteCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                      String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                                         String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> mgs = new ArrayList<>(Minigames.getPlugin().getMinigameManager().getAllMinigames().keySet());
             return MinigameUtils.tabCompleteMatch(mgs, args[0]);

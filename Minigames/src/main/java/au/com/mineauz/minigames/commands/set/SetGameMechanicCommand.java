@@ -2,16 +2,19 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SetGameMechanicCommand implements ICommand {
@@ -33,28 +36,12 @@ public class SetGameMechanicCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Sets the game mechanic for a multiplayer Minigame.";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_GAMEMECHANIC_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        String[] types = new String[GameMechanics.getGameMechanics().size()];
-        int inc = 0;
-        for (GameMechanicBase type : GameMechanics.getGameMechanics()) {
-            types[inc] = type.getMechanic();
-            inc++;
-        }
-        return types;
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> gamemechanic <Parameter>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set the game mechanic!";
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_GAMEMECHANIC_USAGE);
     }
 
     @Override
@@ -63,35 +50,31 @@ public class SetGameMechanicCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
                              @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
-            boolean bool = false;
-            for (String par : getParameters()) {
-                if (par.equalsIgnoreCase(args[0])) {
-                    bool = true;
-                    break;
-                }
-            }
+            GameMechanicBase gameMechanicBase = GameMechanics.matchGameMechanic(args[0]);
 
-            if (bool) {
-                minigame.setMechanic(args[0].toLowerCase());
-                sender.sendMessage(ChatColor.GRAY + minigame.getName(false) + " game mechanic has been set to " + args[0]);
+            if (gameMechanicBase != null) {
+                minigame.setMechanic(gameMechanicBase);
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_GAMEMECHANIC_SUCCESS,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), args[0]));
                 return true;
+            } else {
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTGAMEMECHANIC,
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), args[0]));
             }
         }
         return false;
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                      String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                                         String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            List<String> types = new ArrayList<>(GameMechanics.getGameMechanics().size());
-            for (GameMechanicBase type : GameMechanics.getGameMechanics()) {
-                types.add(type.getMechanic());
-            }
-            return MinigameUtils.tabCompleteMatch(types, args[0]);
+            return MinigameUtils.tabCompleteMatch(GameMechanics.getGameMechanics().stream().map(GameMechanicBase::getMechanic).toList(), args[0]);
         }
         return null;
     }

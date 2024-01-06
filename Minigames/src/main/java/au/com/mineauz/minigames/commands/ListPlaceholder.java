@@ -13,7 +13,7 @@ import java.util.Set;
  * Created for use for the Add5tar MC Minecraft server
  * Created by benjamincharlton on 3/06/2020.
  */
-public class ListPlaceholder implements ICommand {
+public class ListPlaceholder implements ICommand { //todo needs pages
     @Override
     public @NotNull String getName() {
         return "placeholders";
@@ -63,7 +63,7 @@ public class ListPlaceholder implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String @NotNull [] args) {
         return null;
     }
 }

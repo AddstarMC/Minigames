@@ -6,6 +6,7 @@ import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemBack;
 import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.modules.MgModules;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.reward.scheme.RewardScheme;
 import au.com.mineauz.minigames.minigame.reward.scheme.RewardSchemes;
@@ -15,28 +16,24 @@ import au.com.mineauz.minigames.stats.StoredGameStats;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
 public class RewardsModule extends MinigameModule {
-    public static final String Name = "rewards";
     private RewardScheme scheme;
 
-    public RewardsModule(Minigame minigame) {
-        super(minigame);
+    public RewardsModule(@NotNull Minigame mgm, @NotNull String name) {
+        super(mgm, name);
 
         // Default scheme
         scheme = new StandardRewardScheme();
     }
 
     public static RewardsModule getModule(Minigame minigame) {
-        return (RewardsModule) minigame.getModule(Name);
+        return (RewardsModule) minigame.getModule(MgModules.REWARDS.getName());
     }
 
-    @Override
-    public String getName() {
-        return Name;
-    }
 
     public RewardScheme getScheme() {
         return scheme;

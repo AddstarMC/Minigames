@@ -78,8 +78,8 @@ public class StopCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                      String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                                         String alias, @NotNull String @NotNull [] args) {
         List<String> mgs = new ArrayList<>();
         for (Minigame mg : plugin.getMinigameManager().getAllMinigames().values()) {
             if (mg.getType() == MinigameType.GLOBAL)

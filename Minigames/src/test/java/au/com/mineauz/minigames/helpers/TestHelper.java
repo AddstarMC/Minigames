@@ -2,7 +2,7 @@ package au.com.mineauz.minigames.helpers;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.gametypes.MinigameType;
-import au.com.mineauz.minigames.mechanics.GameMechanics;
+import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MockSign;
 import au.com.mineauz.minigames.objects.SignBlockMock;
@@ -24,11 +24,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public class TestHelper {
-    public static Minigame createMinigame(Minigames plugin, WorldMock world, MinigameType type, GameMechanics.MECHANIC_NAME mechanic) {
+    public static Minigame createMinigame(Minigames plugin, WorldMock world, MinigameType type, GameMechanicBase mechanic) {
         Location start = new Location(world, 0, 21, 0);
         Minigame game = new Minigame("TestGame", MinigameType.MULTIPLAYER, start);
         game.setType(type);
-        game.setMechanic(mechanic.toString());
+        game.setMechanic(mechanic);
         game.setDeathDrops(true);
         Location quit = new Location(world, 0, 20, 0);
         game.setQuitLocation(quit);

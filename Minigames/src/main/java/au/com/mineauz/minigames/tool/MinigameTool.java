@@ -12,13 +12,14 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MinigameTool {
     private final ItemStack tool;
-    private Minigame minigame = null;
+    private @Nullable Minigame minigame = null;
     private ToolMode mode = null;
     private TeamColor team = null;
 
@@ -62,11 +63,11 @@ public class MinigameTool {
         this.mode = mode;
     }
 
-    public Minigame getMinigame() {
+    public @Nullable Minigame getMinigame() {
         return minigame;
     }
 
-    public void setMinigame(Minigame minigame) {
+    public void setMinigame(@NotNull Minigame minigame) {
         ItemMeta meta = tool.getItemMeta();
         List<String> lore = meta.getLore();
         lore.set(0, ChatColor.AQUA + "Minigame: " + ChatColor.WHITE + minigame.getName(false));
@@ -139,6 +140,7 @@ public class MinigameTool {
         final MinigamePlayer fply = player;
         miselect.setClick(object -> {
             if (mode != null) {
+
                 mode.select(fply, minigame, TeamsModule.getMinigameModule(minigame).getTeam(team));
             }
             return miselect.getItem();

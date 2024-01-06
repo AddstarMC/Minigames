@@ -83,7 +83,7 @@ public class SetSurvivorTeamCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> teams = new ArrayList<>();
             for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {

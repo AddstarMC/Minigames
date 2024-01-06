@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.minigame.modules.InfectionModule;
+import au.com.mineauz.minigames.minigame.modules.MgModules;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -40,10 +41,12 @@ public class InfectionMechanic extends GameMechanicBase {
 
     @Override
     public boolean checkCanStart(@NotNull Minigame minigame, @Nullable MinigamePlayer caller) {
+        TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+        InfectionModule infectionModule = InfectionModule.getMinigameModule(minigame);
         if (!minigame.isTeamGame() ||
-                TeamsModule.getMinigameModule(minigame).getTeams().size() != 2 ||
-                !TeamsModule.getMinigameModule(minigame).hasTeam(InfectionModule.getMinigameModule(minigame).getInfectedTeam()) ||
-                !TeamsModule.getMinigameModule(minigame).hasTeam(InfectionModule.getMinigameModule(minigame).getSurvivorTeam())) {
+                teamsModule.getTeams().size() != 2 ||
+                !teamsModule.hasTeam(infectionModule.getInfectedTeam()) ||
+                !teamsModule.hasTeam(infectionModule.getSurvivorTeam())) {
             if (caller != null) {
                 MinigameMessageManager.sendMgMessage(caller, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOINFECTION);
             } else {
@@ -59,10 +62,12 @@ public class InfectionMechanic extends GameMechanicBase {
         List<MinigamePlayer> result = new ArrayList<>();
         Collections.shuffle(mgPlayers);
         for (MinigamePlayer mgPlayer : mgPlayers) {
-            Team infectedTeam = TeamsModule.getMinigameModule(minigame).getTeam(InfectionModule.getMinigameModule(minigame).getInfectedTeam());
-            Team survivorTeam = TeamsModule.getMinigameModule(minigame).getTeam(InfectionModule.getMinigameModule(minigame).getSurvivorTeam());
+            TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+            InfectionModule infectionModule = InfectionModule.getMinigameModule(minigame);
+            Team infectedTeam = teamsModule.getTeam(infectionModule.getInfectedTeam());
+            Team survivorTeam = teamsModule.getTeam(infectionModule.getSurvivorTeam());
             Team team = mgPlayer.getTeam();
-            double percent = ((Integer) InfectionModule.getMinigameModule(minigame).getInfectedPercent()).doubleValue() / 100d;
+            double percent = ((Integer) infectionModule.getInfectedPercent()).doubleValue() / 100d;
             if (team == survivorTeam) {
                 if (infectedTeam.getPlayers().size() < Math.ceil(mgPlayers.size() * percent) && infectedTeam.hasRoom()) {
                     MultiplayerType.switchTeam(minigame, mgPlayer, infectedTeam);
@@ -104,7 +109,7 @@ public class InfectionMechanic extends GameMechanicBase {
 
     @Override
     public MinigameModule displaySettings(Minigame minigame) {
-        return InfectionModule.getMinigameModule(minigame);
+        return minigame.getModule(MgModules.INFECTION.getName());
     }
 
     @Override
@@ -122,8 +127,9 @@ public class InfectionMechanic extends GameMechanicBase {
     @Override
     public void quitMinigame(Minigame minigame, MinigamePlayer player,
                              boolean forced) {
-        if (InfectionModule.getMinigameModule(minigame).isInfectedPlayer(player)) {
-            InfectionModule.getMinigameModule(minigame).removeInfectedPlayer(player);
+        InfectionModule infectionModule = InfectionModule.getMinigameModule(minigame);
+        if (infectionModule.isInfectedPlayer(player)) {
+            infectionModule.removeInfectedPlayer(player);
         }
     }
 
@@ -131,11 +137,12 @@ public class InfectionMechanic extends GameMechanicBase {
     public void endMinigame(Minigame minigame, List<MinigamePlayer> winners,
                             List<MinigamePlayer> losers) {
         List<MinigamePlayer> wins = new ArrayList<>(winners);
+        InfectionModule infectionModule = InfectionModule.getMinigameModule(minigame);
         for (MinigamePlayer ply : wins) {
-            if (InfectionModule.getMinigameModule(minigame).isInfectedPlayer(ply)) {
+            if (infectionModule.isInfectedPlayer(ply)) {
                 winners.remove(ply);
                 losers.add(ply);
-                InfectionModule.getMinigameModule(minigame).removeInfectedPlayer(ply);
+                infectionModule.removeInfectedPlayer(ply);
             }
         }
     }
@@ -146,12 +153,15 @@ public class InfectionMechanic extends GameMechanicBase {
         if (player.isInMinigame()) {
             Minigame mgm = player.getMinigame();
             if (mgm.isTeamGame() && mgm.getMechanicName().equals("infection")) {
-                Team survivorTeam = TeamsModule.getMinigameModule(mgm).getTeam(InfectionModule.getMinigameModule(mgm).getSurvivorTeam());
-                Team infectedTeam = TeamsModule.getMinigameModule(mgm).getTeam(InfectionModule.getMinigameModule(mgm).getInfectedTeam());
+                TeamsModule teamsModule = TeamsModule.getMinigameModule(mgm);
+                InfectionModule infectionModule = InfectionModule.getMinigameModule(mgm);
+
+                Team survivorTeam = teamsModule.getTeam(infectionModule.getSurvivorTeam());
+                Team infectedTeam = teamsModule.getTeam(infectionModule.getInfectedTeam());
                 if (survivorTeam.getPlayers().contains(player)) {
                     if (!infectedTeam.hasRoom()) {
                         MultiplayerType.switchTeam(mgm, player, infectedTeam);
-                        InfectionModule.getMinigameModule(mgm).addInfectedPlayer(player);
+                        infectionModule.addInfectedPlayer(player);
                         if (event.getEntity().getKiller() != null) {
                             MinigamePlayer killer = pdata.getMinigamePlayer(event.getEntity().getKiller());
                             killer.addScore();

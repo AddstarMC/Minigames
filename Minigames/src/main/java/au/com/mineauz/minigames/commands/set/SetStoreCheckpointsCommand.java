@@ -67,8 +67,8 @@ public class SetStoreCheckpointsCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                      String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                                         String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
         return null;

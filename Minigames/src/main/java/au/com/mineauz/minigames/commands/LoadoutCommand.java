@@ -73,14 +73,14 @@ public class LoadoutCommand implements ICommand {
         return true;
     }
 
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                      String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                                         String alias, @NotNull String @Nullable [] args) {
         if (args != null) {
             MinigamePlayer ply = Minigames.getPlugin().getPlayerManager().getMinigamePlayer((Player) sender);
             if (ply.isInMinigame()) {
                 if (args.length == 1) {
-                    return MinigameUtils.tabCompleteMatch(new ArrayList<>(
-                                    LoadoutModule.getMinigameModule(ply.getMinigame()).getLoadoutMap().keySet()),
+                    return MinigameUtils.tabCompleteMatch(
+                            new ArrayList<>(LoadoutModule.getMinigameModule(ply.getMinigame()).getLoadoutMap().keySet()),
                             args[0]);
                 }
             }

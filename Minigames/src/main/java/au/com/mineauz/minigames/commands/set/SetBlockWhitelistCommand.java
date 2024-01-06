@@ -43,11 +43,6 @@ public class SetBlockWhitelistCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return new String[]{"add", "remove", "list", "clear"};
-    }
-
-    @Override
     public Component getUsage() {
         return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_WHITELIST_USAGE);
     }
@@ -80,7 +75,7 @@ public class SetBlockWhitelistCommand implements ICommand {
                             Placeholder.component(MinigamePlaceHolderKey.MATERIAL.getKey(), addedMat),
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOMATERIAL,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTMATERIAL,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                 }
             } else if (args[0].equalsIgnoreCase("remove") && args.length >= 2) {
@@ -102,7 +97,7 @@ public class SetBlockWhitelistCommand implements ICommand {
                             Placeholder.component(MinigamePlaceHolderKey.MATERIAL.getKey(), removedMat),
                             Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOMATERIAL,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTMATERIAL,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                 }
             } else if (args[0].equalsIgnoreCase("clear")) {
@@ -130,7 +125,7 @@ public class SetBlockWhitelistCommand implements ICommand {
                             Placeholder.component(MinigamePlaceHolderKey.TYPE.getKey(), MinigameMessageManager.getMgMessage(
                                     bool ? MinigameLangKey.CONFIG_WHITELIST : MinigameLangKey.CONFIG_BLACKLIST)));
                 } else {
-                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOBOOL,
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTBOOL,
                             Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                 }
             }
@@ -140,8 +135,8 @@ public class SetBlockWhitelistCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                      String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                                         String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("true", "false", "add", "remove", "list", "clear"), args[0]);
         else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {

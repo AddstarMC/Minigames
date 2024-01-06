@@ -33,15 +33,15 @@ public class LoadoutModule extends MinigameModule {
     private final Map<String, PlayerLoadout> extraLoadouts = new HashMap<>();
     private final LoadoutSetFlag loadoutsFlag = new LoadoutSetFlag(extraLoadouts, "loadouts");
 
-    public LoadoutModule(Minigame mgm) {
-        super(mgm);
+    public LoadoutModule(@NotNull Minigame mgm, @NotNull String name) {
+        super(mgm, name);
         PlayerLoadout def = new PlayerLoadout("default");
         def.setDeleteable(false);
         extraLoadouts.put("default", def);
     }
 
-    public static LoadoutModule getMinigameModule(@NotNull Minigame minigame) {
-        return (LoadoutModule) minigame.getModule("Loadouts");
+    public static @Nullable LoadoutModule getMinigameModule(@NotNull Minigame mgm) {
+        return ((LoadoutModule) mgm.getModule(MgModules.LOADOUT.getName()));
     }
 
     /**
@@ -78,11 +78,6 @@ public class LoadoutModule extends MinigameModule {
         for (LoadoutAddon<?> addon : addons.values()) {
             addon.addMenuOptions(menu, loadout);
         }
-    }
-
-    @Override
-    public String getName() {
-        return "Loadouts";
     }
 
     @Override

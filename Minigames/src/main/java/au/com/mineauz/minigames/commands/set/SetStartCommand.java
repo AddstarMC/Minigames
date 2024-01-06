@@ -125,8 +125,8 @@ public class SetStartCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                      String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                                         String alias, @NotNull String @NotNull [] args) {
         List<String> teams = new ArrayList<>(TeamsModule.getMinigameModule(minigame).getTeamsNameMap().size() + 1);
         if (args.length == 1) {
             TeamsModule.getMinigameModule(minigame).getTeamsNameMap().keySet().forEach(teamName -> teams.add(WordUtils.capitalize(teamName)));

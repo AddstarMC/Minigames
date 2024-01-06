@@ -12,6 +12,7 @@ import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scoreboard.Team;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -19,17 +20,8 @@ public class JuggernautModule extends MinigameModule {
 
     private MinigamePlayer juggernaut = null;
 
-    public JuggernautModule(Minigame mgm) {
-        super(mgm);
-    }
-
-    public static JuggernautModule getMinigameModule(Minigame minigame) {
-        return (JuggernautModule) minigame.getModule("Juggernaut");
-    }
-
-    @Override
-    public String getName() {
-        return "Juggernaut";
+    public JuggernautModule(@NotNull Minigame mgm, @NotNull String name) {
+        super(mgm, name);
     }
 
     @Override

@@ -18,6 +18,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.potion.PotionEffect;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,17 +36,12 @@ public class GameOverModule extends MinigameModule {
     private final List<MinigamePlayer> losers = new ArrayList<>();
     private int task = -1;
 
-    public GameOverModule(Minigame mgm) {
-        super(mgm);
+    public GameOverModule(@NotNull Minigame mgm, @NotNull String name) {
+        super(mgm, name);
     }
 
-    public static GameOverModule getMinigameModule(Minigame minigame) {
-        return (GameOverModule) minigame.getModule("GameOver");
-    }
-
-    @Override
-    public String getName() {
-        return "GameOver";
+    public static @Nullable GameOverModule getMinigameModule(@NotNull Minigame mgm) {
+        return ((GameOverModule) mgm.getModule(MgModules.GAME_OVER.getName()));
     }
 
     @Override

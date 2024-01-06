@@ -39,11 +39,6 @@ public class SetEnabledCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return new String[]{"true", "false"};
-    }
-
-    @Override
     public Component getUsage() {
         return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_ENABLED_USAGE);
     }
@@ -54,7 +49,7 @@ public class SetEnabledCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
                              @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             Boolean enabled = BooleanUtils.toBooleanObject(args[0]);
@@ -69,7 +64,7 @@ public class SetEnabledCommand implements ICommand {
                 minigame.saveMinigame();
                 return true;
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOBOOL,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTBOOL,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
             }
         }
@@ -77,8 +72,8 @@ public class SetEnabledCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                      String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                                         String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);
         return null;

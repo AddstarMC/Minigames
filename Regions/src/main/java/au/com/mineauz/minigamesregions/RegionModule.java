@@ -5,6 +5,7 @@ import au.com.mineauz.minigames.config.Flag;
 import au.com.mineauz.minigames.menu.*;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
+import au.com.mineauz.minigames.minigame.modules.ModuleFactory;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigamesregions.actions.ActionInterface;
@@ -21,6 +22,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -28,17 +30,24 @@ public class RegionModule extends MinigameModule {
     private final Map<String, Region> regions = new HashMap<>();
     private final Map<String, Node> nodes = new HashMap<>();
 
-    public RegionModule(Minigame mgm) {
-        super(mgm);
+    public RegionModule(@NotNull Minigame mgm, @NotNull String name) {
+        super(mgm, name);
     }
 
-    public static RegionModule getMinigameModule(Minigame minigame) {
-        return (RegionModule) minigame.getModule("Regions");
-    }
+    public static @NotNull ModuleFactory getFactory() {
+        return new ModuleFactory() {
+            private final String name = "Regions";
 
-    @Override
-    public String getName() {
-        return "Regions";
+            @Override
+            public @NotNull MinigameModule makeNewModule(Minigame minigame) {
+                return new RegionModule(minigame, name);
+            }
+
+            @Override
+            public @NotNull String getName() {
+                return name;
+            }
+        };
     }
 
     @Override

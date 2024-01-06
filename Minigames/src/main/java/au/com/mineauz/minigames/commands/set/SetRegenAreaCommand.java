@@ -130,7 +130,7 @@ public class SetRegenAreaCommand implements ICommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, String @NotNull [] args) {
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             if (sender instanceof Player player) {
                 MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
@@ -145,13 +145,13 @@ public class SetRegenAreaCommand implements ICommand {
                             placerLoc.subtract(0, 1, 0);
 
                             if (args[1].equals("1")) {
-                                Location p2 = mgPlayer.getSelectionPoints()[1];
+                                Location p2 = mgPlayer.getSelectionLocations()[1];
                                 mgPlayer.clearSelection();
                                 mgPlayer.setSelection(placerLoc, p2);
 
                                 mgPlayer.sendInfoMessage(Component.text("Point 1 selected", NamedTextColor.GRAY));
-                            } else {
-                                Location p2 = mgPlayer.getSelectionPoints()[0];
+                            } else if (args[1].equals("2")) {
+                                Location p2 = mgPlayer.getSelectionLocations()[0];
                                 mgPlayer.clearSelection();
                                 mgPlayer.setSelection(p2, placerLoc);
 
@@ -164,7 +164,7 @@ public class SetRegenAreaCommand implements ICommand {
                                 String name = args[1];
                                 MgRegion region = minigame.getRegenRegion(name);
 
-                                RegenRegionSetResult result = minigame.setRegenRegion(new MgRegion(name, mgPlayer.getSelectionPoints()[0], mgPlayer.getSelectionPoints()[1]));
+                                RegenRegionSetResult result = minigame.setRegenRegion(new MgRegion(name, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
 
                                 if (result.success()) {
                                     if (region == null) {
@@ -212,8 +212,8 @@ public class SetRegenAreaCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                      String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                                         String alias, @NotNull String @NotNull [] args) {
 
         if (args.length == 1) {
             List<String> tab = new ArrayList<>();

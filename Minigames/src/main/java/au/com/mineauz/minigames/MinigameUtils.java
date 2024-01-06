@@ -24,7 +24,7 @@ public class MinigameUtils {
      * @param small - If the time should be shortened to: hh:mm:ss
      * @return A message with a neat time
      */
-    public static String convertTime(int time, boolean small) { //todo use TimeUnit
+    public static String convertTime(int time, boolean small) { //todo use TimeUnit; make reverse methode
         int weeks = 0;
         int days = 0;
         int hours = 0;

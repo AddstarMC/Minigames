@@ -176,46 +176,11 @@ public class CommandDispatcher implements CommandExecutor, TabCompleter {
                             sender.sendMessage(ChatColor.GREEN + "------------------Command Info------------------");
                             sender.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + comd.getDescription());
                             if (comd.getParameters() != null) {
-                                StringBuilder parameters = new StringBuilder();
-                                boolean switchColour = false;
-                                for (String par : comd.getParameters()) {
-                                    if (switchColour) {
-                                        parameters.append(ChatColor.WHITE).append(par);
-                                        if (!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])) {
-                                            parameters.append(ChatColor.WHITE + ", ");
-                                        }
-                                        switchColour = false;
-                                    } else {
-                                        parameters.append(ChatColor.GRAY).append(par);
-                                        if (!par.equalsIgnoreCase(comd.getParameters()[comd.getParameters().length - 1])) {
-                                            parameters.append(ChatColor.WHITE + ", ");
-                                        }
-                                        switchColour = true;
-                                    }
-                                }
-                                sender.sendMessage(ChatColor.BLUE + "Parameters: " + parameters);
+                                sender.sendMessage(ChatColor.BLUE + "Parameters: " + ChatColor.WHITE + String.join(", ", comd.getParameters()));
                             }
-                            sender.sendMessage(ChatColor.BLUE + "Usage: ");
-                            sender.sendMessage(comd.getUsage());
+                            sender.sendMessage(ChatColor.BLUE + "Usage: " + ChatColor.WHITE + "<newline>" + comd.getUsage());
                             if (comd.getAliases() != null) {
-                                StringBuilder aliases = new StringBuilder();
-                                boolean switchColour = false;
-                                for (String alias : comd.getAliases()) {
-                                    if (switchColour) {
-                                        aliases.append(ChatColor.WHITE).append(alias);
-                                        if (!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])) {
-                                            aliases.append(ChatColor.WHITE + ", ");
-                                        }
-                                        switchColour = false;
-                                    } else {
-                                        aliases.append(ChatColor.GRAY).append(alias);
-                                        if (!alias.equalsIgnoreCase(comd.getAliases()[comd.getAliases().length - 1])) {
-                                            aliases.append(ChatColor.WHITE + ", ");
-                                        }
-                                        switchColour = true;
-                                    }
-                                }
-                                sender.sendMessage(ChatColor.BLUE + "Aliases: " + aliases);
+                                sender.sendMessage(ChatColor.BLUE + "Aliases: " + ChatColor.WHITE + String.join(", ", comd.getAliases()));
                             }
                         }
                     } else {

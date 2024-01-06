@@ -115,7 +115,7 @@ public class RegenAreaMode implements ToolMode {
             String name = MinigameUtils.getMinigameTool(mgPlayer).getSetting("Region"); //todo expose Settings
             MgRegion region = minigame.getRegenRegion(name);
 
-            RegenRegionSetResult result = minigame.setRegenRegion(new MgRegion(name, mgPlayer.getSelectionPoints()[0], mgPlayer.getSelectionPoints()[1]));
+            RegenRegionSetResult result = minigame.setRegenRegion(new MgRegion(name, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
 
             if (result.success()) {
                 if (region == null) {

@@ -19,7 +19,6 @@ public enum RegionLangKey implements LangKey {
     REGION_CREATED("region.created"),
     REGION_EDITED("region.edited"),
     REGION_ERROR_NOREGION("region.error.noRegion"),
-    REGION_ERROR_NOSELECTION("region.error.noSelection"),
     REGION_REMOVED("region.removed"),
     TOOL_NODEREGION_SELECTED("tool.noderegion.selected"),
     TOOL_NODE_DESELECTED("tool.node.deselected"),

@@ -7,6 +7,7 @@ import au.com.mineauz.minigames.menu.Callback;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,17 +21,12 @@ public class LobbySettingsModule extends MinigameModule {
     private final BooleanFlag teleportOnStart = new BooleanFlag(true, "teleportOnStart");
     private final IntegerFlag playerWaitTime = new IntegerFlag(0, "playerWaitTime");
 
-    public LobbySettingsModule(Minigame mgm) {
-        super(mgm);
+    public LobbySettingsModule(@NotNull Minigame mgm, @NotNull String name) {
+        super(mgm, name);
     }
 
-    public static LobbySettingsModule getMinigameModule(Minigame minigame) {
-        return (LobbySettingsModule) minigame.getModule("LobbySettings");
-    }
-
-    @Override
-    public String getName() {
-        return "LobbySettings";
+    public static LobbySettingsModule getMinigameModule(Minigame mgm) {
+        return ((LobbySettingsModule) mgm.getModule(MgModules.LOBBY_SETTINGS.getName()));
     }
 
     @Override

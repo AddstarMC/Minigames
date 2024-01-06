@@ -10,6 +10,7 @@ import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.modules.MgModules;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 import au.com.mineauz.minigames.minigame.modules.TreasureHuntModule;
 import au.com.mineauz.minigames.minigame.reward.ItemReward;
@@ -167,7 +168,7 @@ public class TreasureHuntMechanic extends GameMechanicBase {
 
     @Override
     public MinigameModule displaySettings(Minigame minigame) {
-        return minigame.getModule("TreasureHunt");
+        return minigame.getModule(MgModules.TREASURE_HUNT.getName());
     }
 
     @Override

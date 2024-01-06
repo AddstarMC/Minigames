@@ -37,11 +37,6 @@ public class SetEndCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
     public Component getUsage() {
         return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_END_USAGE);
     }
@@ -52,7 +47,7 @@ public class SetEndCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
                              @NotNull String label, @NotNull String @Nullable [] args) {
         minigame.setEndLocation(((Player) sender).getLocation());
         MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_END_SUCCESS,
@@ -61,8 +56,8 @@ public class SetEndCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                      String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                                         String alias, @NotNull String @NotNull [] args) {
         return null;
     }
 }

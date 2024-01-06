@@ -79,13 +79,13 @@ public class SetRegionCommand implements ICommand {
                     ploc.setY(ploc.getY() - 1);
 
                     if (args[1].equals("1")) {
-                        Location p2 = mgPlayer.getSelectionPoints()[1];
+                        Location p2 = mgPlayer.getSelectionLocations()[1];
                         mgPlayer.clearSelection();
                         mgPlayer.setSelection(ploc, p2);
 
                         MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.PLAYER_SELECT_POS1);
                     } else {
-                        Location p2 = mgPlayer.getSelectionPoints()[0];
+                        Location p2 = mgPlayer.getSelectionLocations()[0];
                         mgPlayer.clearSelection();
                         mgPlayer.setSelection(p2, ploc);
 
@@ -95,7 +95,7 @@ public class SetRegionCommand implements ICommand {
                 } else if (args[0].equalsIgnoreCase("create")) {
                     if (mgPlayer.hasSelection()) {
                         String name = args[1];
-                        rmod.addRegion(name, new Region(name, mgPlayer.getSelectionPoints()[0], mgPlayer.getSelectionPoints()[1]));
+                        rmod.addRegion(name, new Region(name, mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
                         mgPlayer.clearSelection();
 
                         MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.INFO, RegionMessageManager.getBundleKey(),
@@ -103,8 +103,8 @@ public class SetRegionCommand implements ICommand {
                                 Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
                                 Placeholder.unparsed(RegionPlaceHolderKey.REGION.getKey(), name));
                     } else {
-                        MinigameMessageManager.sendMessage(mgPlayer, MinigameMessageType.ERROR, RegionMessageManager.getBundleKey(),
-                                RegionLangKey.REGION_ERROR_NOSELECTION);
+                        // this is a message already in the main plugin
+                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.REGION_ERROR_NOSELECTION);
                     }
                     return true;
                 } else if (args[0].equalsIgnoreCase("delete")) {
@@ -134,8 +134,8 @@ public class SetRegionCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                      String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                                         String alias, @NotNull String @NotNull [] args) {
 
         if (args.length == 1) {
             List<String> tab = new ArrayList<>();

@@ -233,19 +233,22 @@ public class MinigamePlayer implements ScriptObject {
     }
 
     public PlayerLoadout getLoadout() {
+        LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(minigame);
+
         if (this.loadout != null) {
             return this.loadout;
-        } else if (this.team != null && LoadoutModule.getMinigameModule(this.minigame).hasLoadout(this.team.getColor().toString().toLowerCase())) {
-            return LoadoutModule.getMinigameModule(this.minigame).getLoadout(this.team.getColor().toString().toLowerCase());
+        } else if (this.team != null && loadoutModule.hasLoadout(this.team.getColor().toString().toLowerCase())) {
+            return loadoutModule.getLoadout(this.team.getColor().toString().toLowerCase());
         }
-        return LoadoutModule.getMinigameModule(this.minigame).getLoadout("default");
+        return loadoutModule.getLoadout("default");
     }
 
     public PlayerLoadout getDefaultLoadout() {
-        if (this.team != null && LoadoutModule.getMinigameModule(this.minigame).hasLoadout(this.team.getColor().toString().toLowerCase())) {
-            return LoadoutModule.getMinigameModule(this.minigame).getLoadout(this.team.getColor().toString().toLowerCase());
+        LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(minigame);
+        if (this.team != null && loadoutModule.hasLoadout(this.team.getColor().toString().toLowerCase())) {
+            return loadoutModule.getLoadout(this.team.getColor().toString().toLowerCase());
         }
-        return LoadoutModule.getMinigameModule(this.minigame).getLoadout("default");
+        return loadoutModule.getLoadout("default");
     }
 
     public boolean setLoadout(final PlayerLoadout loadout) {
@@ -529,7 +532,7 @@ public class MinigamePlayer implements ScriptObject {
         return this.selection1 != null && this.selection2 != null;
     }
 
-    public Location[] getSelectionPoints() {
+    public Location[] getSelectionLocations() {
         final Location[] loc = new Location[2];
         loc[0] = this.selection1;
         loc[1] = this.selection2;

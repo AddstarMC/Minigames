@@ -2,9 +2,14 @@ package au.com.mineauz.minigames.commands.set;
 
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
+import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,22 +35,12 @@ public class SetFlagCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return "Sets capture flags for SP and Race Minigames. These can be captured with [Flag] Signs.";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_FLAG_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return new String[]{"add", "remove", "clear", "list"};
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{
-                "/minigame set <Minigame> flag add <Name>",
-                "/minigame set <Minigame> flag remove <Name>",
-                "/minigame set <Minigame> flag clear",
-                "/minigame set <Minigame> flag list"
-        };
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_FLAG_USAGE);
     }
 
     @Override
@@ -54,42 +49,43 @@ public class SetFlagCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args[0].equalsIgnoreCase("add") && args.length >= 2) {
                 minigame.addFlag(args[1]);
-                sender.sendMessage(ChatColor.GRAY + args[1] + " flag added to " + minigame);
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_FLAG_ADD,
+                        Placeholder.parsed(MinigamePlaceHolderKey.FLAG.getKey(), args[1]),
+                        Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                 return true;
             } else if (args[0].equalsIgnoreCase("remove") && args.length >= 2) {
                 if (minigame.removeFlag(args[1])) {
-                    sender.sendMessage(ChatColor.GRAY + "Removed the " + args[1] + " flag.");
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_FLAG_REMOVE,
+                            Placeholder.parsed(MinigamePlaceHolderKey.FLAG.getKey(), args[1]));
                 } else {
-                    sender.sendMessage(ChatColor.RED + "There is no flag by the name " + args[1] + ".");
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_FLAG_ERROR_NOFLAG,
+                            Placeholder.parsed(MinigamePlaceHolderKey.FLAG.getKey(), args[1]));
                 }
                 return true;
             } else if (args[0].equalsIgnoreCase("list")) {
                 if (minigame.hasFlags()) {
-                    List<String> flag = minigame.getFlags();
-                    StringBuilder flags = new StringBuilder();
-                    for (int i = 0; i < flag.size(); i++) {
-                        flags.append(flag.get(i));
-                        if (i != flag.size() - 1) {
-                            flags.append(", ");
-                        }
-                    }
-                    sender.sendMessage(ChatColor.BLUE + "All " + minigame.getName(false) + " flags:");
-                    sender.sendMessage(ChatColor.GRAY + flags.toString());
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MinigameLangKey.COMMAND_SET_FLAG_LIST_HEADER,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
+                    MinigameMessageManager.sendMessage(sender, MinigameMessageType.NONE,
+                            MiniMessage.miniMessage().deserialize(String.join("<gray>, </gray>", minigame.getFlags())));
                 } else {
-                    sender.sendMessage(ChatColor.RED + "There are no flags in " + minigame.getName(false) + "!");
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_SET_FLAG_NOFLAGS,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                 }
                 return true;
             } else if (args[0].equalsIgnoreCase("clear")) {
                 if (minigame.hasFlags()) {
                     minigame.getFlags().clear();
-                    sender.sendMessage(ChatColor.GRAY + "Cleared all flags from " + minigame.getName(false));
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_FLAG_CLEAR,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                 } else {
-                    sender.sendMessage(ChatColor.RED + "There are no flags in " + minigame.getName(false) + "!");
+                    MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_SET_FLAG_NOFLAGS,
+                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                 }
                 return true;
             }
@@ -98,8 +94,8 @@ public class SetFlagCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                      String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                                         String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1)
             return MinigameUtils.tabCompleteMatch(List.of("add", "remove", "clear", "list"), args[0]);
         return null;

@@ -44,11 +44,6 @@ public class SetDisplayScoreboardCommand implements ICommand { //todo allow side
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return new String[]{"true", "false"};
-    }
-
-    @Override
     public Component getUsage() {
         return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_DISPLAYSCOREBOARD_USAGE);
     }
@@ -59,7 +54,7 @@ public class SetDisplayScoreboardCommand implements ICommand { //todo allow side
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
                              @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             Boolean bool = BooleanUtils.toBooleanObject(args[0]);
@@ -78,7 +73,7 @@ public class SetDisplayScoreboardCommand implements ICommand { //todo allow side
                 }
                 return true;
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOBOOL,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTBOOL,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
             }
         }
@@ -86,8 +81,8 @@ public class SetDisplayScoreboardCommand implements ICommand { //todo allow side
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                      String alias, @NotNull String @Nullable [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                                         String alias, @NotNull String @Nullable [] args) {
         if (args != null) {
             if (args.length == 1) {
                 return MinigameUtils.tabCompleteMatch(List.of("true", "false"), args[0]);

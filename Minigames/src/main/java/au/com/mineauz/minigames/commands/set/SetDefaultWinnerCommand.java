@@ -42,11 +42,6 @@ public class SetDefaultWinnerCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return null;
-    }
-
-    @Override
     public Component getUsage() {
         return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_DEFAULTWINNER_USAGE);
     }
@@ -57,19 +52,18 @@ public class SetDefaultWinnerCommand implements ICommand {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
                              @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
-            TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
             TeamColor teamColor = TeamColor.matchColor(args[0]);
 
             if (teamColor != null) {
-                teamsModule.setDefaultWinner(teamColor);
+                TeamsModule.getMinigameModule(minigame).setDefaultWinner(teamColor);
                 MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_DEFAULTWINNER_SUCCESS,
                         Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)),
                         Placeholder.component(MinigamePlaceHolderKey.TEAM.getKey(), teamColor.getCompName()));
             } else {
-                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.MINIGAME_ERROR_NOTATEAM,
+                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTTEAM,
                         Placeholder.unparsed(MinigamePlaceHolderKey.TEAM.getKey(), args[0]));
             }
             return true;
@@ -78,8 +72,8 @@ public class SetDefaultWinnerCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
-                                      String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                                                         String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> teams = new ArrayList<>();
             for (Team t : TeamsModule.getMinigameModule(minigame).getTeams()) {

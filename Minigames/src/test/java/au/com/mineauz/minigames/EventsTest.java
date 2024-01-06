@@ -40,7 +40,7 @@ public class EventsTest {
         MockBukkit.getMock().addWorld(testworld);
         plugin.toggleDebug();
         WorldMock world = (WorldMock) MockBukkit.getMock().getWorld("GAMES");
-        game = TestHelper.createMinigame(plugin, world, MinigameType.MULTIPLAYER, GameMechanics.MECHANIC_NAME.KILLS);
+        game = TestHelper.createMinigame(plugin, world, MinigameType.MULTIPLAYER, GameMechanics.MG_MECHANICS.KILLS.getMechanic());
 
     }
 

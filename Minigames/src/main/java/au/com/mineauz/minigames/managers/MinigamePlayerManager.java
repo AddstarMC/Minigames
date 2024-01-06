@@ -36,6 +36,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -365,7 +366,7 @@ public class MinigamePlayerManager {
     }
 
     public ResourcePack getResourcePack(@NotNull Minigame game) {
-        ResourcePackModule module = (ResourcePackModule) game.getModule("ResourcePack"); //todo modulManager
+        ResourcePackModule module = ResourcePackModule.getMinigameModule(game);
         if (module != null && module.isEnabled()) {
             ResourcePack pack = plugin.getResourceManager().getResourcePack(module.getResourcePackName());
             if (pack != null && pack.isValid()) {
@@ -866,15 +867,16 @@ public class MinigamePlayerManager {
     public void broadcastEndGame(@NotNull List<@NotNull MinigamePlayer> winners, @NotNull Minigame minigame) {
         if (plugin.getConfig().getBoolean("broadcastCompletion") && minigame.isEnabled()) {
             if (minigame.isTeamGame()) {
-                if (!winners.isEmpty() || ((TeamsModule) minigame.getModule("Teams")).getDefaultWinner() != null) {
+                TeamsModule teamsModule = TeamsModule.getMinigameModule(minigame);
+                if (!winners.isEmpty() || teamsModule.getDefaultWinner() != null) {
                     Team team;
                     if (!winners.isEmpty()) {
                         team = winners.get(0).getTeam();
                     } else {
-                        team = ((TeamsModule) minigame.getModule("Teams")).getTeam(((TeamsModule) minigame.getModule("Teams")).getDefaultWinner());
+                        team = teamsModule.getTeam(teamsModule.getDefaultWinner());
                     }
                     Component score = Component.empty();
-                    List<Team> teams = TeamsModule.getMinigameModule(minigame).getTeams();
+                    List<Team> teams = teamsModule.getTeams();
                     for (Team t : teams) {
                         score = score.append(Component.text(t.getColor().name(), t.getTextColor()).append(Component.text(t.getScore())));
 
@@ -964,6 +966,7 @@ public class MinigamePlayerManager {
     /**
      * @return null, if the given player was null, the respecting MinigamePlayer object otherwise
      */
+    @Contract("null -> null; !null -> !null")
     public @Nullable MinigamePlayer getMinigamePlayer(Player player) {
         if (player == null) {
             return null;

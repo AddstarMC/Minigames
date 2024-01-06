@@ -1,23 +1,17 @@
 package au.com.mineauz.minigames.mechanics;
 
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class GameMechanics {
     private static final Map<String, GameMechanicBase> gameMechanics = new HashMap<>();
 
     static {
-        addGameMechanic(new PlayerKillsMechanic());
-        addGameMechanic(new CTFMechanic());
-        addGameMechanic(new InfectionMechanic());
         addGameMechanic(new CustomMechanic());
-        addGameMechanic(new TreasureHuntMechanic());
-        addGameMechanic(new LivesMechanic());
-        addGameMechanic(new JuggernautMechanic());
+        Arrays.stream(MG_MECHANICS.values()).forEach(s -> addGameMechanic(s.getMechanic()));
     }
 
     /**
@@ -65,23 +59,37 @@ public class GameMechanics {
         return new HashSet<>(gameMechanics.values());
     }
 
-    public enum MECHANIC_NAME {
-        KILLS("kills"),
-        CTF("ctf"),
-        INFECTION("infection"),
-        TREASUREHUNT("treasurehunt"),
-        LIVES("lives"),
-        JUGGERNAUT("juggernaut");
+    public static @Nullable GameMechanicBase matchGameMechanic(@NotNull String name) {
+        for (Map.Entry<String, GameMechanicBase> entry : gameMechanics.entrySet()) {
+            if (entry.getKey().equalsIgnoreCase(name)) {
+                return entry.getValue();
+            }
+        }
 
-        private final String name;
+        return null;
+    }
 
-        MECHANIC_NAME(String name) {
-            this.name = name;
+    public enum MG_MECHANICS {
+        KILLS(new PlayerKillsMechanic()),
+        CTF(new CTFMechanic()),
+        INFECTION(new InfectionMechanic()),
+        TREASUREHUNT(new TreasureHuntMechanic()),
+        LIVES(new LivesMechanic()),
+        JUGGERNAUT(new JuggernautMechanic());
+
+        private final GameMechanicBase mechanic;
+
+        MG_MECHANICS(GameMechanicBase name) {
+            this.mechanic = name;
+        }
+
+        public GameMechanicBase getMechanic() {
+            return this.mechanic;
         }
 
         @Override
         public String toString() {
-            return name;
+            return mechanic.getMechanic();
         }
     }
 }

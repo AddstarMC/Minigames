@@ -30,7 +30,7 @@ public class Main extends JavaPlugin {
         for (Minigame mg : minigames.getMinigameManager().getAllMinigames().values()) {
             mg.saveMinigame();
         }
-        minigames.getMinigameManager().removeModule("Regions", RegionModule.class);
+        minigames.getMinigameManager().removeModule(RegionModule.getFactory().getName());
 
         ToolModes.removeToolMode("REGION");
         ToolModes.removeToolMode("NODE");
@@ -58,7 +58,7 @@ public class Main extends JavaPlugin {
 
             display = new RegionDisplayManager();
 
-            minigames.getMinigameManager().addModule(RegionModule.class);
+            minigames.getMinigameManager().addModule(RegionModule.getFactory());
 
             SetCommand.registerSetCommand(new SetNodeCommand());
             SetCommand.registerSetCommand(new SetRegionCommand());

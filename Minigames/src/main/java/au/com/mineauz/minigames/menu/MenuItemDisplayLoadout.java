@@ -168,10 +168,11 @@ public class MenuItemDisplayLoadout extends MenuItem {
     public void checkValidEntry(String entry) {
         if (entry.equalsIgnoreCase("yes")) {
             String loadoutName = loadout.getName(false);
-            if (mgm != null)
+            if (mgm != null) {
                 LoadoutModule.getMinigameModule(mgm).deleteLoadout(loadoutName);
-            else
-                Minigames.getPlugin().getMinigameManager().deleteLoadout(loadoutName);
+            } else {
+                Minigames.getPlugin().getMinigameManager().deleteGlobalLoadout(loadoutName);
+            }
             getContainer().removeItem(getSlot());
             getContainer().cancelReopenTimer();
             getContainer().displayMenu(getContainer().getViewer());

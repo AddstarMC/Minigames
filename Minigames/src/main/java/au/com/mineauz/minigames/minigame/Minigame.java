@@ -6,10 +6,7 @@ import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.menu.*;
-import au.com.mineauz.minigames.minigame.modules.LoadoutModule;
-import au.com.mineauz.minigames.minigame.modules.LobbySettingsModule;
-import au.com.mineauz.minigames.minigame.modules.MinigameModule;
-import au.com.mineauz.minigames.minigame.modules.TeamsModule;
+import au.com.mineauz.minigames.minigame.modules.*;
 import au.com.mineauz.minigames.objects.CTFFlag;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
@@ -97,7 +94,7 @@ public class Minigame implements ScriptObject {
     private final RegionMapFlag regenRegions = new RegionMapFlag(new HashMap<>(), "regenRegions", "regenarea.1", "regenarea.2");
     private final IntegerFlag regenDelay = new IntegerFlag(0, "regenDelay");
     private final IntegerFlag maxBlocksRegenRegions = new IntegerFlag(300000, "maxBlocksRegenRegions");
-    private final Map<String, MinigameModule> modules = new HashMap<>();
+    private final @NotNull Map<@NotNull String, @NotNull MinigameModule> modules = new HashMap<>();
     private final IntegerFlag minScore = new IntegerFlag(5, "minscore");
     private final IntegerFlag maxScore = new IntegerFlag(10, "maxscore");
     private final BooleanFlag displayScoreboard = new BooleanFlag(true, "displayScoreboard");
@@ -152,12 +149,9 @@ public class Minigame implements ScriptObject {
             sbManager.registerNewObjective(this.name, Criteria.DUMMY, this.name);
             sbManager.getObjective(this.name).setDisplaySlot(DisplaySlot.SIDEBAR);
         }
-        for (Class<? extends MinigameModule> mod : Minigames.getPlugin().getMinigameManager().getModules()) {
-            try {
-                addModule(mod.getDeclaredConstructor(Minigame.class).newInstance(this));
-            } catch (Exception e) {
-                Minigames.getCmpnntLogger().warn("Couldn't construct Module.", e);
-            }
+
+        for (ModuleFactory factory : Minigames.getPlugin().getMinigameManager().getModules()) {
+            addModule(factory);
         }
 
         flags.setFlag(new ArrayList<>());
@@ -239,12 +233,8 @@ public class Minigame implements ScriptObject {
         return configFlags.get(name);
     }
 
-    public boolean addModule(MinigameModule module) {
-        if (!modules.containsKey(module.getName())) {
-            modules.put(module.getName(), module);
-            return true;
-        }
-        return false;
+    public MinigameModule addModule(@NotNull ModuleFactory factory) {
+        return modules.put(factory.getName(), factory.makeNewModule(this));
     }
 
     public void removeModule(String moduleName) {
@@ -255,7 +245,13 @@ public class Minigame implements ScriptObject {
         return new ArrayList<>(modules.values());
     }
 
-    public @Nullable MinigameModule getModule(String name) {
+    /**
+     * Please use the Modules getMinigameModule() methode whenever possible - simply because its less error-prone.
+     *
+     * @param name
+     * @return
+     */
+    public @Nullable MinigameModule getModule(@NotNull String name) {
         return modules.get(name);
     }
 
@@ -753,12 +749,8 @@ public class Minigame implements ScriptObject {
         return GameMechanics.getGameMechanic(mechanic.getFlag());
     }
 
-    public void setMechanic(String scoreType) {
-        try {
-            this.mechanic.setFlag(GameMechanics.MECHANIC_NAME.valueOf(scoreType.toUpperCase()).toString());
-        } catch (Exception e) {
-            Minigames.getCmpnntLogger().warn("Mechanic Not found:", e);
-        }
+    public void setMechanic(@NotNull GameMechanicBase gameMechanicBase) {
+        this.mechanic.setFlag(gameMechanicBase.getMechanic());
     }
 
     public boolean isFlagCarrier(MinigamePlayer ply) {
@@ -1005,11 +997,11 @@ public class Minigame implements ScriptObject {
         this.objective.setFlag(objective);
     }
 
-    public String getGameTypeName() {
+    public @Nullable String getGameTypeName() {
         return gameTypeName.getFlag();
     }
 
-    public void setGameTypeName(String gameTypeName) {
+    public void setGameTypeName(@Nullable String gameTypeName) {
         this.gameTypeName.setFlag(gameTypeName);
     }
 
@@ -1222,19 +1214,28 @@ public class Minigame implements ScriptObject {
         List<MenuItem> mi = new ArrayList<>();
         List<String> des = new ArrayList<>();
         des.add("Shift + Right Click to Delete");
-        for (String ld : LoadoutModule.getMinigameModule(this).getLoadouts()) {
-            Material item = Material.GLASS_PANE;
-            if (!LoadoutModule.getMinigameModule(this).getLoadout(ld).getItems().isEmpty()) {
-                item = LoadoutModule.getMinigameModule(this).getLoadout(ld).getItem((Integer) LoadoutModule.getMinigameModule(this).getLoadout(ld).getItems().toArray()[0]).getType();
+
+
+        LoadoutModule loadoutModule = LoadoutModule.getMinigameModule(this);
+        if (loadoutModule != null) {
+            for (String ld : loadoutModule.getLoadouts()) {
+                Material item = Material.GLASS_PANE;
+                PlayerLoadout playerLoadout = loadoutModule.getLoadout(ld);
+
+                if (!playerLoadout.getItems().isEmpty()) {
+                    item = playerLoadout.getItem((Integer) playerLoadout.getItems().toArray()[0]).getType();
+                }
+                if (playerLoadout.isDeleteable()) {
+                    mi.add(new MenuItemDisplayLoadout(ld, des, item, playerLoadout, this));
+                } else {
+                    mi.add(new MenuItemDisplayLoadout(ld, item, playerLoadout, this));
+                }
             }
-            if (LoadoutModule.getMinigameModule(this).getLoadout(ld).isDeleteable())
-                mi.add(new MenuItemDisplayLoadout(ld, des, item, LoadoutModule.getMinigameModule(this).getLoadout(ld), this));
-            else
-                mi.add(new MenuItemDisplayLoadout(ld, item, LoadoutModule.getMinigameModule(this).getLoadout(ld), this));
+
+            loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", MenuUtility.getCreateMaterial(), loadoutModule.getLoadoutMap(), this), 53);
+            loadouts.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), main), loadouts.getSize() - 9);
+            loadouts.addItems(mi);
         }
-        loadouts.addItem(new MenuItemLoadoutAdd("Add Loadout", MenuUtility.getCreateMaterial(), LoadoutModule.getMinigameModule(this).getLoadoutMap(), this), 53);
-        loadouts.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), main), loadouts.getSize() - 9);
-        loadouts.addItems(mi);
 
         main.addItems(itemsMain);
         main.addItem(new MenuItemSaveMinigame("Save " + getName(false), MenuUtility.getSaveMaterial(), this), main.getSize() - 1);
@@ -1288,20 +1289,23 @@ public class Minigame implements ScriptObject {
         //--------------//
         //Lobby Settings//
         //--------------//
-        List<MenuItem> itemsLobby = new ArrayList<>(4);
-        itemsLobby.add(new MenuItemBoolean("Can Interact on Player Wait", Material.STONE_BUTTON, LobbySettingsModule.getMinigameModule(this).getCanInteractPlayerWaitCallback()));
-        itemsLobby.add(new MenuItemBoolean("Can Interact on Start Wait", Material.STONE_BUTTON, LobbySettingsModule.getMinigameModule(this).getCanInteractStartWaitCallback()));
-        itemsLobby.add(new MenuItemBoolean("Can Move on Player Wait", Material.ICE, LobbySettingsModule.getMinigameModule(this).getCanMovePlayerWaitCallback()));
-        itemsLobby.add(new MenuItemBoolean("Can Move on Start Wait", Material.ICE, LobbySettingsModule.getMinigameModule(this).getCanMoveStartWaitCallback()));
-        itemsLobby.add(new MenuItemBoolean("Teleport After Player Wait", List.of("Should players be teleported", "after player wait time?"),
-                Material.ENDER_PEARL, LobbySettingsModule.getMinigameModule(this).getTeleportOnPlayerWaitCallback()));
-        itemsLobby.add(new MenuItemBoolean("Teleport on Start", List.of("Should players teleport", "to the start position", "after lobby?"),
-                Material.ENDER_PEARL, LobbySettingsModule.getMinigameModule(this).getTeleportOnStartCallback()));
-        itemsLobby.add(new MenuItemInteger("Waiting for Players Time", List.of("The time in seconds", "the game will wait for", "more players to join.", "A value of 0 will use", "the config setting"),
-                Material.CLOCK, LobbySettingsModule.getMinigameModule(this).getPlayerWaitTimeCallback(), 0, Integer
-                .MAX_VALUE));
-        lobby.addItems(itemsLobby);
-        lobby.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), main), lobby.getSize() - 9);
+        LobbySettingsModule lobbySettingsModule = LobbySettingsModule.getMinigameModule(this);
+        if (lobbySettingsModule != null) {
+            List<MenuItem> itemsLobby = new ArrayList<>(4);
+            itemsLobby.add(new MenuItemBoolean("Can Interact on Player Wait", Material.STONE_BUTTON, lobbySettingsModule.getCanInteractPlayerWaitCallback()));
+            itemsLobby.add(new MenuItemBoolean("Can Interact on Start Wait", Material.STONE_BUTTON, lobbySettingsModule.getCanInteractStartWaitCallback()));
+            itemsLobby.add(new MenuItemBoolean("Can Move on Player Wait", Material.ICE, lobbySettingsModule.getCanMovePlayerWaitCallback()));
+            itemsLobby.add(new MenuItemBoolean("Can Move on Start Wait", Material.ICE, lobbySettingsModule.getCanMoveStartWaitCallback()));
+            itemsLobby.add(new MenuItemBoolean("Teleport After Player Wait", List.of("Should players be teleported", "after player wait time?"),
+                    Material.ENDER_PEARL, lobbySettingsModule.getTeleportOnPlayerWaitCallback()));
+            itemsLobby.add(new MenuItemBoolean("Teleport on Start", List.of("Should players teleport", "to the start position", "after lobby?"),
+                    Material.ENDER_PEARL, lobbySettingsModule.getTeleportOnStartCallback()));
+            itemsLobby.add(new MenuItemInteger("Waiting for Players Time", List.of("The time in seconds", "the game will wait for", "more players to join.", "A value of 0 will use", "the config setting"),
+                    Material.CLOCK, lobbySettingsModule.getPlayerWaitTimeCallback(), 0, Integer
+                    .MAX_VALUE));
+            lobby.addItems(itemsLobby);
+            lobby.addItem(new MenuItemPage("Back", MenuUtility.getBackMaterial(), main), lobby.getSize() - 9);
+        }
 
         for (MinigameModule mod : getModules()) {
             mod.addEditMenuOptions(main);

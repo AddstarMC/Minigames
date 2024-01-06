@@ -3,13 +3,15 @@ package au.com.mineauz.minigames.commands.set;
 import au.com.mineauz.minigames.MinigameUtils;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.commands.ICommand;
+import au.com.mineauz.minigames.managers.MinigameMessageManager;
+import au.com.mineauz.minigames.managers.language.MinigameLangKey;
 import au.com.mineauz.minigames.managers.language.MinigameMessageType;
+import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.JoinConfiguration;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -37,25 +39,12 @@ public class SetFloorDegeneratorCommand implements ICommand {
 
     @Override
     public @NotNull Component getDescription() {
-        return """
-                Sets the two corners of a floor to degenerate or clears both of them (if set).
-                The types of degeneration are: "inward"(default), "circle" and "random [%chance]"(Default chance: 15).
-                Optionally, a degeneration time can be set, this defaults to the value set in the main config.""";
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_FLOORDEGEN_DESCRIPTION);
     }
 
     @Override
-    public @NotNull String @Nullable [] getParameters() {
-        return new String[]{"1", "2", "create", "clear", "type", "time"};
-    }
-
-    @Override
-    public String[] getUsage() {
-        return new String[]{"/minigame set <Minigame> floordegenerator <Parameters...>"};
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return "You do not have permission to set the Minigames floor area!";
+    public Component getUsage() {
+        return MinigameMessageManager.getMgMessage(MinigameLangKey.COMMAND_SET_FLOORDEGEN_USAGE);
     }
 
     @Override
@@ -63,10 +52,10 @@ public class SetFloorDegeneratorCommand implements ICommand {
         return "minigame.set.floordegenerator";
     }
 
-    //todo this can easily expanded, so multible degen regions are possible. Will implement, if needed.
+    //todo this can easily expanded, so multiple degen regions are possible. Will implement, if needed.
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Minigame minigame,
-                             @NotNull String label, @NotNull String @Nullable @NotNull [] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Minigame minigame,
+                             @NotNull String label, @NotNull String @Nullable [] args) {
         if (args != null) {
             if (sender instanceof Player player) {
                 MinigamePlayer mgPlayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
@@ -74,33 +63,37 @@ public class SetFloorDegeneratorCommand implements ICommand {
 
                 switch (args[0].toLowerCase()) {
                     case "1" -> {
-                        Location p2 = mgPlayer.getSelectionPoints()[1];
+                        Location firstLoc = mgPlayer.getSelectionLocations()[1];
                         mgPlayer.clearSelection();
-                        mgPlayer.setSelection(placerLoc, p2);
+                        mgPlayer.setSelection(placerLoc, firstLoc);
 
-                        mgPlayer.sendInfoMessage(Component.text("Floor degenerator point 1  for " + minigame + "selected", NamedTextColor.GRAY));
+                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.REGION_SELECT_POINT,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), "1"));
                     }
                     case "2" -> {
-                        Location p2 = mgPlayer.getSelectionPoints()[0];
+                        Location secondLoc = mgPlayer.getSelectionLocations()[0];
                         mgPlayer.clearSelection();
-                        mgPlayer.setSelection(p2, placerLoc);
+                        mgPlayer.setSelection(secondLoc, placerLoc);
 
-                        mgPlayer.sendInfoMessage(Component.text("Floor degenerator point 2  for " + minigame + "selected", NamedTextColor.GRAY));
+                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.REGION_SELECT_POINT,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.NUMBER.getKey(), "2"));
                     }
                     case "create" -> {
                         if (mgPlayer.hasSelection()) {
-                            minigame.setFloorDegen(new MgRegion("degen", mgPlayer.getSelectionPoints()[0], mgPlayer.getSelectionPoints()[1]));
+                            minigame.setFloorDegen(new MgRegion("degen", mgPlayer.getSelectionLocations()[0], mgPlayer.getSelectionLocations()[1]));
 
                             mgPlayer.clearSelection();
 
-                            mgPlayer.sendInfoMessage(Component.text("Set degeneration region for " + minigame.getName(false), NamedTextColor.GRAY));
+                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_FLOORDEGEN_CREATE,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                         } else {
-                            mgPlayer.sendInfoMessage(Component.text("You have not made a selection!", NamedTextColor.RED));
+                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.REGION_ERROR_NOSELECTION);
                         }
                     }
                     case "clear" -> {
                         minigame.removeFloorDegen();
-                        mgPlayer.sendInfoMessage(Component.text("Floor degenerator corners have been removed for " + minigame, NamedTextColor.GRAY));
+                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_FLOORDEGEN_CLEAR,
+                                Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                     }
                     case "type" -> {
                         if (args.length >= 2) {
@@ -112,25 +105,32 @@ public class SetFloorDegeneratorCommand implements ICommand {
                                         minigame.setDegenRandomChance(Integer.parseInt(args[2]));
                                     }
 
-                                    mgPlayer.sendInfoMessage(Component.text("Floor degenerator type has been set to " + args[1] + " in " + minigame, NamedTextColor.GRAY));
+                                    MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_FLOORDEGEN_TYPE,
+                                            Placeholder.unparsed(MinigamePlaceHolderKey.TYPE.getKey(), args[1]),
+                                            Placeholder.unparsed(MinigamePlaceHolderKey.MINIGAME.getKey(), minigame.getName(false)));
                                 }
                                 default ->
-                                        mgPlayer.sendMessage(Component.join(JoinConfiguration.newlines(), Component.text("Invalid floor degenerator type!", NamedTextColor.RED),
-                                                Component.text("Possible types: \"inward\", \"circle\" and \"random\".", NamedTextColor.GRAY)), MinigameMessageType.ERROR);
+                                        MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_SET_FLOORDEGEN_ERROR_NOTYPE);
                             }
                         }
                     }
                     case "time" -> {
                         if (args.length >= 2) {
                             if (args[1].matches("[0-9]+")) {
+
                                 int time = Integer.parseInt(args[1]);
                                 minigame.setFloorDegenTime(time);
-                                mgPlayer.sendInfoMessage(Component.text("Floor degeneration time has been set to " + MinigameUtils.convertTime(time), NamedTextColor.GRAY));
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.INFO, MinigameLangKey.COMMAND_SET_FLOORDEGEN_TIME,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.TIME.getKey(), MinigameUtils.convertTime(time)));
+                            } else {
+                                MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_NOTTIME,
+                                        Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[1]));
                             }
                         }
                     }
                     default ->
-                            mgPlayer.sendMessage(Component.text("Error: Invalid floor degenerator command!", NamedTextColor.RED), MinigameMessageType.ERROR);
+                            MinigameMessageManager.sendMgMessage(mgPlayer, MinigameMessageType.ERROR, MinigameLangKey.COMMAND_ERROR_UNKNOWN_PARAM,
+                                    Placeholder.unparsed(MinigamePlaceHolderKey.TEXT.getKey(), args[0]));
                 }
             }
             return true;
@@ -139,8 +139,8 @@ public class SetFloorDegeneratorCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                      String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                                         String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             return MinigameUtils.tabCompleteMatch(List.of("1", "2", "create", "clear", "type", "time"), args[0]);
         } else if (args[0].equalsIgnoreCase("type")) {

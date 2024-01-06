@@ -163,8 +163,8 @@ public class SetSecondaryRewardCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
-                                      String alias, @NotNull String @NotNull [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame,
+                                                         String alias, @NotNull String @NotNull [] args) {
         if (args.length == 3 || (args.length == 2 && args[0].startsWith("$"))) {
             List<String> ls = new ArrayList<>();
             for (RewardRarity r : RewardRarity.values()) {

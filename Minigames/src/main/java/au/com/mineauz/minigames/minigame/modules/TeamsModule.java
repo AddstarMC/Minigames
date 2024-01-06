@@ -14,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -24,19 +25,14 @@ public class TeamsModule extends MinigameModule {
     private final TeamSetFlag teamsFlag;
     private StringFlag defaultWinner = new StringFlag(TeamColor.NONE.toString(), "defaultwinner");
 
-    public TeamsModule(Minigame mgm) {
-        super(mgm);
+    public TeamsModule(@NotNull Minigame mgm, @NotNull String name) {
+        super(mgm, name);
         teamsFlag = new TeamSetFlag(null, "teams", getMinigame());
         teamsFlag.setFlag(teams);
     }
 
-    public static TeamsModule getMinigameModule(Minigame minigame) {
-        return (TeamsModule) minigame.getModule("Teams");
-    }
-
-    @Override
-    public String getName() {
-        return "Teams";
+    public static @Nullable TeamsModule getMinigameModule(@NotNull Minigame mgm) {
+        return ((TeamsModule) mgm.getModule(MgModules.TEAMS.getName()));
     }
 
     @Override
@@ -75,7 +71,7 @@ public class TeamsModule extends MinigameModule {
         ImmutableMap.Builder<String, Team> builder = ImmutableMap.builder();
 
         for (Team team : teams.values()) {
-            builder.put(team.getColor().name().toLowerCase(), team);
+            builder.put(team.getColor().toString().toLowerCase(), team);
         }
 
         return builder.build();

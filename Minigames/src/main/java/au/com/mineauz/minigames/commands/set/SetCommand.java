@@ -192,17 +192,6 @@ public class SetCommand implements ICommand {
     }
 
     @Override
-    public @NotNull String @NotNull [] getParameters() {
-        String[] parameters = new String[parameterList.size()];
-        int inc = 0;
-        for (String key : parameterList.keySet()) {
-            parameters[inc] = key;
-            inc++;
-        }
-        return parameters;
-    }
-
-    @Override
     public @Nullable String getPermission() {
         return null;
     }
@@ -253,12 +242,6 @@ public class SetCommand implements ICommand {
 
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MinigameLangKey.COMMAND_SET_SUBCOMMAND_DESCRIPTION,
                                     Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), comd.getDescription()));
-                            if (comd.getParameters() != null) {
-                                String parameters = String.join("<gray>, </gray>", comd.getParameters());
-
-                                MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MinigameLangKey.COMMAND_SET_SUBCOMMAND_PARAMETERS,
-                                        Placeholder.parsed(MinigamePlaceHolderKey.TEXT.getKey(), parameters));
-                            }
                             MinigameMessageManager.sendMgMessage(sender, MinigameMessageType.NONE, MinigameLangKey.COMMAND_SET_SUBCOMMAND_USAGE,
                                     Placeholder.component(MinigamePlaceHolderKey.TEXT.getKey(), comd.getUsage()));
                             if (comd.getAliases() != null) {
@@ -284,7 +267,7 @@ public class SetCommand implements ICommand {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String @Nullable [] args) {
+    public @Nullable List<@NotNull String> onTabComplete(@NotNull CommandSender sender, Minigame minigame, String alias, @NotNull String @Nullable [] args) {
         if (args != null && args.length > 0) {
             Player ply = null;
             if (sender instanceof Player) {

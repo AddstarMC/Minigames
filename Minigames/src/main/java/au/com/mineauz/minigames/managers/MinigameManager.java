@@ -14,9 +14,11 @@ import au.com.mineauz.minigames.managers.language.MinigameMessageType;
 import au.com.mineauz.minigames.managers.language.MinigamePlaceHolderKey;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.MinigameState;
-import au.com.mineauz.minigames.minigame.modules.*;
+import au.com.mineauz.minigames.minigame.modules.MgModules;
+import au.com.mineauz.minigames.minigame.modules.ModuleFactory;
+import au.com.mineauz.minigames.minigame.modules.ResourcePackModule;
+import au.com.mineauz.minigames.minigame.modules.TeamsModule;
 import au.com.mineauz.minigames.minigame.reward.Rewards;
-import au.com.mineauz.minigames.minigame.reward.RewardsModule;
 import au.com.mineauz.minigames.objects.MgRegion;
 import au.com.mineauz.minigames.objects.MinigamePlayer;
 import au.com.mineauz.minigames.objects.ResourcePack;
@@ -41,37 +43,28 @@ public class MinigameManager {
     private final Map<String, RewardsFlag> rewardSigns = new HashMap<>();
     private final Map<Minigame, List<String>> claimedScoreSignsRed = new HashMap<>();
     private final Map<Minigame, List<String>> claimedScoreSignsBlue = new HashMap<>();
-    private final List<Class<? extends MinigameModule>> modules = new ArrayList<>();
+    private final Map<String, ModuleFactory> modules = new HashMap<>();
     private MinigameSave rewardSignsSave;
 
     public MinigameManager() {
-        this.modules.add(LoadoutModule.class);
-        this.modules.add(LobbySettingsModule.class);
-        this.modules.add(TeamsModule.class);
-        this.modules.add(WeatherTimeModule.class);
-        this.modules.add(TreasureHuntModule.class);
-        this.modules.add(InfectionModule.class);
-        this.modules.add(GameOverModule.class);
-        this.modules.add(JuggernautModule.class);
-        this.modules.add(RewardsModule.class);
-        this.modules.add(CTFModule.class);
-        this.modules.add(ResourcePackModule.class);
+        for (ModuleFactory moduleFactory : MgModules.values()) {
+            addModule(moduleFactory);
+        }
     }
 
-    public List<Class<? extends MinigameModule>> getModules() {
-        return this.modules;
+    public Collection<ModuleFactory> getModules() {
+        return this.modules.values();
     }
 
-    public void addModule(final @NotNull Class<? extends MinigameModule> module) {
-        this.modules.add(module);
+    public void addModule(final @NotNull ModuleFactory moduleFactory) {
+        this.modules.put(moduleFactory.getName(), moduleFactory);
     }
-
-    public void removeModule(final @NotNull String moduleName, final @NotNull Class<? extends MinigameModule> module) {
+    public void removeModule(final @NotNull String moduleName) {
         for (final Minigame mg : this.minigames.values()) {
             mg.removeModule(moduleName);
         }
 
-        this.modules.remove(module);
+        this.modules.remove(moduleName);
     }
 
     public void startGlobalMinigame(final @NotNull Minigame minigame, final @Nullable MinigamePlayer caller) {
@@ -83,7 +76,7 @@ public class MinigameManager {
             Bukkit.getPluginManager().callEvent(ev);
 
             minigame.getMechanic().startMinigame(minigame, caller);
-            final ResourcePackModule module = (ResourcePackModule) minigame.getModule("ResourcePack");
+            final ResourcePackModule module = ResourcePackModule.getMinigameModule(minigame);
             if (module != null) {
                 if (module.isEnabled()) {
                     final String name = module.getResourcePackName();
@@ -123,7 +116,7 @@ public class MinigameManager {
             minigame.getMechanic().stopMinigame(minigame, caller);
 
             minigame.setEnabled(false);
-            final ResourcePackModule module = (ResourcePackModule) minigame.getModule("ResourcePack");
+            final ResourcePackModule module = ResourcePackModule.getMinigameModule(minigame);
             if (module != null) {
                 if (module.isEnabled()) {
                     final ResourcePack pack = PLUGIN.getResourceManager().getResourcePack("empty");
@@ -236,11 +229,11 @@ public class MinigameManager {
         return this.minigameTypes.keySet();
     }
 
-    public void addLoadout(final @NotNull String name) {
+    public void addGlobalLoadout(final @NotNull String name) {
         this.globalLoadouts.put(name, new PlayerLoadout(name));
     }
 
-    public void deleteLoadout(final @NotNull String name) {
+    public void deleteGlobalLoadout(final @NotNull String name) {
         this.globalLoadouts.remove(name);
     }
 

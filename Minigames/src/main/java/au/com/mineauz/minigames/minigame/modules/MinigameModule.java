@@ -8,16 +8,23 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.objects.ModulePlaceHolderProvider;
 import org.bstats.charts.CustomChart;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
 public abstract class MinigameModule {
     private static ComparableVersion minRequired = null;
-    private final Minigame mgm;
+    private final @NotNull Minigame mgm;
+    protected final @NotNull String name;
 
-    public MinigameModule(Minigame mgm) {
+    protected MinigameModule(@NotNull Minigame mgm, @NotNull String name) {
         this.mgm = mgm;
+        this.name = name;
+    }
+
+    public @NotNull String getName() {
+        return name;
     }
 
     public static void setVersion(ComparableVersion version) {
@@ -47,8 +54,6 @@ public abstract class MinigameModule {
         return mgm;
     }
 
-    public abstract String getName();
-
     public abstract Map<String, Flag<?>> getFlags();
 
     public abstract boolean useSeparateConfig();
@@ -62,12 +67,11 @@ public abstract class MinigameModule {
     public abstract boolean displayMechanicSettings(Menu previous);
 
     /**
-     * You should override this methid if the module should provide more placeholders for a game it services.
+     * You should override this method if the module should provide more placeholders for a game it services.
      *
      * @return ModulePlaceHolderProvider
      */
-    @Nullable
-    public ModulePlaceHolderProvider getModulePlaceHolders() {
+    public @Nullable ModulePlaceHolderProvider getModulePlaceHolders() {
         return null;
     }
 }

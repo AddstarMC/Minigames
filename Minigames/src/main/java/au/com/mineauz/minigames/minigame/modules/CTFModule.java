@@ -8,6 +8,7 @@ import au.com.mineauz.minigames.menu.MenuUtility;
 import au.com.mineauz.minigames.minigame.Minigame;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,12 +18,12 @@ public class CTFModule extends MinigameModule {
     private final BooleanFlag useFlagAsCapturePoint = new BooleanFlag(true, "useFlagAsCapturePoint");
     private final BooleanFlag bringFlagBackManual = new BooleanFlag(false, "bringFlagBackManual");
 
-    public CTFModule(Minigame mgm) {
-        super(mgm);
+    public CTFModule(@NotNull Minigame mgm, String name) {
+        super(mgm, name);
     }
 
     public static CTFModule getMinigameModule(Minigame mgm) {
-        return (CTFModule) mgm.getModule("CTF");
+        return ((CTFModule) mgm.getModule(MgModules.INFECTION.getName()));
     }
 
     public Boolean getUseFlagAsCapturePoint() {
@@ -39,11 +40,6 @@ public class CTFModule extends MinigameModule {
 
     public void setBringFlagBackManual(Boolean bringFlagBackManual) {
         this.bringFlagBackManual.setFlag(bringFlagBackManual);
-    }
-
-    @Override
-    public String getName() {
-        return "CTF";
     }
 
     @Override

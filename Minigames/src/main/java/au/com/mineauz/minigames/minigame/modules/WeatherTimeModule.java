@@ -13,7 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.WeatherType;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,22 +29,8 @@ public class WeatherTimeModule extends MinigameModule {
     private final EnumFlag<WeatherType> weather = new EnumFlag<>(WeatherType.CLEAR, "customWeather.type");
     private int task = -1;
 
-    public WeatherTimeModule(Minigame mgm) {
-        super(mgm);
-    }
-
-    /**
-     * @param minigame The game
-     * @return WeatherTimeModule
-     */
-    @Nullable
-    public static WeatherTimeModule getMinigameModule(Minigame minigame) {
-        return (WeatherTimeModule) minigame.getModule("WeatherTime");
-    }
-
-    @Override
-    public String getName() {
-        return "WeatherTime";
+    public WeatherTimeModule(@NotNull Minigame mgm, @NotNull String name) {
+        super(mgm, name);
     }
 
     @Override

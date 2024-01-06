@@ -136,7 +136,7 @@ public class MinigameMessageManager { // todo cache unformatted // todo clean al
      * @return Unformatted String.
      * @throws MissingResourceException If bundle not found.
      */
-    public static String getUnformattedMessage(@Nullable String identifier, @NotNull LangKey key) throws MissingResourceException {
+    public static String getUnformattedMessage(@Nullable String identifier, @NotNull LangKey key) throws MissingResourceException { //todo don't crash if bundle is missing or can't get string. simply return key
         ResourceBundle bundle = propertiesHashMap.get(Objects.requireNonNullElse(identifier, BUNDLE_KEY));
         if (bundle == null) {
             String err = (identifier == null) ? "NULL" : identifier;
